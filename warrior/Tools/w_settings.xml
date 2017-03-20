@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<Default>
+    <Setting name="def_dir">
+        <Logsdir></Logsdir> <!--Optional, uses default, support absolute path, relative path and environment variable(${ENV.DEF_LOGSDIR})-->
+        <Resultsdir></Resultsdir> <!--Optional, uses default, support absolute path, relative path and environment variable(${ENV.DEF_RESULTSDIR})-->
+	</Setting>
+    <Setting name="mail_to">
+		<smtp_host></smtp_host> <!-- Optional, use FNC smtp host smtp.fnc.fujitsu.com to notify test case execution results -->
+		<sender></sender> <!-- Optional, use sender's email such as Warrior_PBO@fnc.fujitsu.com -->
+		<receiver></receiver> <!-- Optional, use receiver's email such as FNC.User@fnc.fujitsu.com -->
+		<subject></subject> <!-- Optional, use this as subject line such as WARRIOR , additional test case execution results Pass/Fail and Test Execution File shall be appeneded to this -->
+	</Setting>	
+</Default>

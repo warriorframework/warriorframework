@@ -1,0 +1,146 @@
+<?xml version="1.0"?>
+
+<data>
+    <warhorn name="Warhorn">
+
+        <!-- The required versions for each of the dependencies given below are:
+            jira: 1.0.3
+            lxml: 3.5
+            ncclient: 0.4.6
+            paramiko: 1.16.0
+            pexpect: 4.2
+            pysnmp: 4.3.1
+            requests: 2.9.1
+            selenium: 2.48.0
+        Your system may or may not have the correct version installed.
+        ** Set the 'install' attribute to yes if you want to install the
+        dependency in your system.
+        ** Set the 'correct_version' attribute to yes if you want to upgrade the
+        existing package to the required version
+        -->
+
+        <!-- Necessary for Jira module to log defects to Jira automatically -->
+        <dependency name="jira" install="no"/>
+        <!-- Used by IronClaw tool -->
+        <dependency name="lxml" install="yes"/>
+        <!-- Used for netconf operations -->
+        <dependency name="ncclient" install="no"/>
+        <!-- Used by ncclient -->
+        <dependency name="paramiko" install="yes"/>
+        <!-- Used by cli utilities -->
+        <dependency name="pexpect" install="yes"/>
+        <!-- Used for snmp operations -->
+        <dependency name="pysnmp" install="yes"/>
+        <!-- Used for rest operations -->
+        <dependency name="requests" install="yes"/>
+        <!-- Used for web based testing -->
+        <dependency name="selenium" install="yes"/>
+    </warhorn>
+
+    <!--
+        ATTRIBUTES:
+         -warrior tag-
+        ** url: remote URL of the warrior repository
+
+        ** destination: The path to the directory where the user wants to
+        clone Warrior
+
+        ** label: This is an attribute can be set to reflect the name of the
+        branch, or tag, or commit-id that the user wants to checkout.
+
+        ** clean_install: Setting this attribute value to 'yes',
+        would delete the existing Warrior in the directory in which the user
+        wants to clone Warrior and will clone Warrior afresh. Setting this to
+        'no', or leaving it empty would not delete the existing Warrior.
+    -->
+
+    <warrior url="http://rtx-swtl-git.fnc.net.local/scm/war/warrior_main.git"
+             destination="" label="" clean_install="">
+    </warrior>
+
+    <katana url="http://rtx-swtl-git.fnc.net.local/scm/war/katana.git"
+             destination="" label="" clean_install="" clone="yes">
+    </katana>
+
+    <drivers>
+        <!--
+        ATTRIBUTES:
+         -repository tag-
+        ** url: URL of the repository to be cloned
+
+        ** clone: Can be set to 'yes' or 'no' or can be left empty. Leaving
+        this attribute value empty would be considered a default yes. Until
+        and unless an explicit 'no' is not mentioned as a value of this
+        attribute, it would always be considered as 'yes'
+
+        ** label: This is an attribute can be set to reflect the name of the
+        branch, or tag, or commit-id that the user wants to checkout.
+
+        ** all_drivers: If the user wants to clone all the drivers in the
+        repository, s/he can set this tag to 'yes'.
+
+        *  If driver tags are created under the repository tag, only the
+        specified drivers will be cloned, provided that the all_drivers tag
+        is not present, set to "", or set to "no"
+
+        *  If the all_drivers attribute is set to "yes", everything in the
+        corresponding repository WILL BE cloned and any drivers mentioned
+        under the repository tag would be disregarded.
+
+        *  If no drivers are specified under the repository tag, the entire
+        repository will be cloned if the all_drivers attribute is either set
+        to "" or if it is not present.
+
+        *  If no drivers are mentioned under the repository tag and if the clone
+        attribute is explicitly set to "no", only then, nothing would be
+        cloned. all_drivers attribute is disregarded at that point
+
+         -driver tag-
+
+        ** name: This attribute can be set to reflect the name of the driver
+        that the user wants to clone.
+
+        -->
+
+        <!-- Sample
+
+		<repository url="http://repository/one/url.git" clone="yes" label=""
+		all_drivers="no">
+            <driver name="driver_one_name" clone="yes"></driver>
+			<driver name="driver_two_name" clone=""></driver>
+			<driver name="driver_three_name" clone="no"></driver>
+			<driver name="driver_four_name"></driver>
+        </repository>
+
+		<repository url="http://repository/two/url.git" clone="yes"
+		label="feature/xyz" all_drivers="yes">
+        </repository>
+
+        -->
+
+    </drivers>
+    <warriorspace>
+        <!--
+        ATTRIBUTES:
+         -repository tag-
+        ** url: URL of the repository to be cloned
+
+        ** clone: Can be set to 'yes' or 'no' or can be left empty. Leaving
+        this attribute value empty would be considered a default yes. Until
+        and unless an explicit 'no' is not mentioned as a value of this
+        attribute, it would always be considered as 'yes'
+
+        ** label: This is an attribute can be set to reflect the name of the
+        branch, or tag, or commit-id that the user wants to checkout.
+        -->
+
+		<!-- Sample
+
+        <repository url="http://warriorspace/repository/url.git"
+        label="f455scd00i" clone="">
+        </repository>
+
+		-->
+
+    </warriorspace>
+</data>

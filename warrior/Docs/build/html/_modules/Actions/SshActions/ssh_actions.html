@@ -1,0 +1,552 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Actions.SshActions.ssh_actions &mdash; Warrior Ninja documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="Warrior Ninja documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../warrior_index.html" class="icon icon-home"> Warrior
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                Ninja
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../Actions.html">Actions package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Framework.html">Framework package</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../warrior_index.html">Warrior</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../warrior_index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>Actions.SshActions.ssh_actions</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for Actions.SshActions.ssh_actions</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python</span>
+
+<span class="sd">&quot;&quot;&quot;ssh actions module where keywords related to paramiko library are developed &quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">Framework.Utils</span> <span class="k">as</span> <span class="nn">Utils</span>
+<span class="kn">from</span> <span class="nn">Framework.Utils.print_Utils</span> <span class="k">import</span> <span class="n">print_info</span><span class="p">,</span> <span class="n">print_error</span><span class="p">,</span> <span class="n">print_warning</span>
+<span class="kn">import</span> <span class="nn">Framework.ClassUtils.ssh_utils_class</span> <span class="k">as</span> <span class="nn">ssh_utils_class</span>
+
+
+<div class="viewcode-block" id="SshActions"><a class="viewcode-back" href="../../../Actions.SshActions.html#Actions.SshActions.ssh_actions.SshActions">[docs]</a><span class="k">class</span> <span class="nc">SshActions</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;SshActions class which has methods(keywords)</span>
+<span class="sd">    related to actions performed using paramiko library &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resultfile</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">config_Utils</span><span class="o">.</span><span class="n">resultfile</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datafile</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">config_Utils</span><span class="o">.</span><span class="n">datafile</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logsdir</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">config_Utils</span><span class="o">.</span><span class="n">logsdir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">config_Utils</span><span class="o">.</span><span class="n">filename</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logfile</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">config_Utils</span><span class="o">.</span><span class="n">logfile</span>
+
+<div class="viewcode-block" id="SshActions.open_ssh_session"><a class="viewcode-back" href="../../../Actions.SshActions.html#Actions.SshActions.ssh_actions.SshActions.open_ssh_session">[docs]</a>    <span class="k">def</span> <span class="nf">open_ssh_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">system_name</span><span class="p">,</span> <span class="n">session_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Connects to the ssh port of the the given system and creates a</span>
+<span class="sd">        paramiko session object for the system</span>
+
+<span class="sd">        A session_id is created using the combintation system_name+session_name</span>
+<span class="sd">        and returned by this keyword to be stored in Warrior framework&#39;s data</span>
+<span class="sd">        repository</span>
+
+<span class="sd">        Tags to be used in input datafile to retrieve values for open_ssh_session</span>
+<span class="sd">        &lt;ip&gt; = IP address of the system</span>
+<span class="sd">        &lt;username&gt; = login username of the system</span>
+<span class="sd">        &lt;password&gt; = login password of the system</span>
+
+<span class="sd">        :Arguments:</span>
+<span class="sd">            1. system_name(string) = Name of the system from the input datafile</span>
+<span class="sd">            2. session_name(string) = name of the session to the system</span>
+
+<span class="sd">        :Returns:</span>
+<span class="sd">            1. status(bool)= True / False</span>
+<span class="sd">            2. session_id (dict element)= key, value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">wdesc</span> <span class="o">=</span> <span class="s2">&quot;Connect to the ssh port of the system and creates a session&quot;</span>
+        <span class="n">Utils</span><span class="o">.</span><span class="n">testcase_Utils</span><span class="o">.</span><span class="n">pSubStep</span><span class="p">(</span><span class="n">wdesc</span><span class="p">)</span>
+        <span class="n">output_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">credentials</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">data_Utils</span><span class="o">.</span><span class="n">get_credentials</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datafile</span><span class="p">,</span>
+                                                       <span class="n">system_name</span><span class="p">,</span>
+                                                       <span class="p">[</span><span class="s1">&#39;ip&#39;</span><span class="p">,</span> <span class="s1">&#39;username&#39;</span><span class="p">,</span> <span class="s1">&#39;password&#39;</span><span class="p">])</span>
+        <span class="n">logfile</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">file_Utils</span><span class="o">.</span><span class="n">getCustomLogFile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
+                                                    <span class="bp">self</span><span class="o">.</span><span class="n">logsdir</span><span class="p">,</span> <span class="s1">&#39;ssh_</span><span class="si">%s</span><span class="s1">_&#39;</span> <span class="o">%</span> <span class="n">system_name</span><span class="p">)</span>
+        <span class="n">Utils</span><span class="o">.</span><span class="n">testcase_Utils</span><span class="o">.</span><span class="n">pNote</span><span class="p">(</span><span class="n">system_name</span><span class="p">)</span>
+        <span class="n">Utils</span><span class="o">.</span><span class="n">testcase_Utils</span><span class="o">.</span><span class="n">pNote</span><span class="p">(</span><span class="n">Utils</span><span class="o">.</span><span class="n">file_Utils</span><span class="o">.</span><span class="n">getDateTime</span><span class="p">())</span>
+        <span class="n">session_id</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">data_Utils</span><span class="o">.</span><span class="n">get_session_id</span><span class="p">(</span><span class="n">system_name</span><span class="p">,</span> <span class="n">session_name</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">credentials</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="n">credentials</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">session_object</span> <span class="o">=</span> <span class="n">ssh_utils_class</span><span class="o">.</span><span class="n">SSHComm</span><span class="p">(</span><span class="n">credentials</span><span class="p">[</span><span class="s1">&#39;ip&#39;</span><span class="p">],</span>
+                                                     <span class="n">uid</span><span class="o">=</span><span class="n">credentials</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">],</span>
+                                                     <span class="n">pid</span><span class="o">=</span><span class="n">credentials</span><span class="p">[</span><span class="s1">&#39;password&#39;</span><span class="p">],</span> <span class="n">logfile</span><span class="o">=</span><span class="n">logfile</span><span class="p">)</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="n">session_object</span><span class="o">.</span><span class="n">ssh_con</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">output_dict</span><span class="p">[</span><span class="n">session_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">session_object</span>
+                <span class="n">print_info</span><span class="p">(</span><span class="s2">&quot;Connection to ssh port of the given system </span><span class="si">{0}</span><span class="s2"> successful&quot;</span><span class="o">.</span>\
+                    <span class="nb">format</span><span class="p">(</span><span class="n">credentials</span><span class="p">[</span><span class="s1">&#39;ip&#39;</span><span class="p">]))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">print_error</span><span class="p">(</span><span class="s2">&quot;Connection to ssh port of the given system </span><span class="si">{0}</span><span class="s2"> failed&quot;</span><span class="o">.</span>\
+                    <span class="nb">format</span><span class="p">(</span><span class="n">credentials</span><span class="p">[</span><span class="s1">&#39;ip&#39;</span><span class="p">]))</span>
+
+        <span class="n">Utils</span><span class="o">.</span><span class="n">testcase_Utils</span><span class="o">.</span><span class="n">report_substep_status</span><span class="p">(</span><span class="n">status</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">status</span><span class="p">,</span> <span class="n">output_dict</span></div>
+
+<div class="viewcode-block" id="SshActions.send_ssh_command"><a class="viewcode-back" href="../../../Actions.SshActions.html#Actions.SshActions.ssh_actions.SshActions.send_ssh_command">[docs]</a>    <span class="k">def</span> <span class="nf">send_ssh_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">system_name</span><span class="p">,</span> <span class="n">session_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Sends a command to the paramiko session of the system</span>
+<span class="sd">        This keyword expects a paramiko session with the combination of</span>
+<span class="sd">        system_name and session to be available in the Warrior Framework&#39;s</span>
+<span class="sd">        data repository.</span>
+<span class="sd">        i.e. the session should have been established using open_ssh_session</span>
+<span class="sd">        method in this file.</span>
+<span class="sd">        :Arguments:</span>
+<span class="sd">            1. command(string)      = the command to be sent to the system</span>
+<span class="sd">            2. system_name(string)  = Name of the system from the input datafile</span>
+<span class="sd">            3. session_name(string) = name of the session to the system</span>
+
+<span class="sd">        :Returns:</span>
+<span class="sd">            1. status(bool)= True / False</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">wdesc</span> <span class="o">=</span> <span class="s2">&quot;Send command to the provided system&quot;</span>
+        <span class="n">Utils</span><span class="o">.</span><span class="n">testcase_Utils</span><span class="o">.</span><span class="n">pSubStep</span><span class="p">(</span><span class="n">wdesc</span><span class="p">)</span>
+        <span class="n">Utils</span><span class="o">.</span><span class="n">testcase_Utils</span><span class="o">.</span><span class="n">pNote</span><span class="p">(</span><span class="n">system_name</span><span class="p">)</span>
+        <span class="n">Utils</span><span class="o">.</span><span class="n">testcase_Utils</span><span class="o">.</span><span class="n">pNote</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datafile</span><span class="p">)</span>
+        <span class="n">session_id</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">data_Utils</span><span class="o">.</span><span class="n">get_session_id</span><span class="p">(</span><span class="n">system_name</span><span class="p">,</span> <span class="n">session_name</span><span class="p">)</span>
+        <span class="n">session_object</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">data_Utils</span><span class="o">.</span><span class="n">get_object_from_datarepository</span><span class="p">(</span><span class="n">session_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">session_object</span><span class="p">:</span>
+            <span class="n">status</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">session_object</span><span class="o">.</span><span class="n">get_response</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">print_info</span><span class="p">(</span><span class="s2">&quot;Command executed successfully&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">print_error</span><span class="p">(</span><span class="s2">&quot;Failed to execute the command </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">command</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">print_warning</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">-</span><span class="si">%s</span><span class="s2"> is not available for use&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">system_name</span><span class="p">,</span> <span class="n">session_name</span><span class="p">))</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="n">Utils</span><span class="o">.</span><span class="n">testcase_Utils</span><span class="o">.</span><span class="n">report_substep_status</span><span class="p">(</span><span class="n">status</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">status</span></div>
+
+<div class="viewcode-block" id="SshActions.send_ssh_cmds_by_testdata"><a class="viewcode-back" href="../../../Actions.SshActions.html#Actions.SshActions.ssh_actions.SshActions.send_ssh_cmds_by_testdata">[docs]</a>    <span class="k">def</span> <span class="nf">send_ssh_cmds_by_testdata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">system_name</span><span class="p">,</span> <span class="n">session_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Sends all commands from all rows that are marked execute=yes from the testdata</span>
+<span class="sd">        - This keyword expects the usage of warrior framework&#39;s</span>
+<span class="sd">            recommended testcase datafile and testdata xml files.</span>
+<span class="sd">        - Warrior framework&#39;s recommended sample testcase datafile is</span>
+<span class="sd">            available in Warriorspace/Data/sample_Data.xml</span>
+<span class="sd">        - This keyword expects the testcase datafile to have a testdata tag pointing to</span>
+<span class="sd">        the location of the testdatafile.</span>
+<span class="sd">        - The Description and instructions on how to use the recommended testdata file is available</span>
+<span class="sd">            in the sample testdata file located at Warriorspace/Config_files/sample_testdata.xml</span>
+
+<span class="sd">        - This keyword expects a paramiko session with the combination of</span>
+<span class="sd">            system_name and session to be available in the Warrior Framework&#39;s</span>
+<span class="sd">            data repository.</span>
+<span class="sd">            i.e. the session should have been established using open_ssh_session</span>
+<span class="sd">            method in this file.</span>
+
+<span class="sd">        :Arguments:</span>
+<span class="sd">            1. system_name (string) = name of the system in the input datafile</span>
+<span class="sd">            2. session_name(string) = name of the session to the string</span>
+
+<span class="sd">        :Returns:</span>
+<span class="sd">            1. status (bool)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">wdesc</span> <span class="o">=</span> <span class="s2">&quot;Send commands from rows marked execute=yes in the test data of the system&quot;</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">send_ssh_cmds_from_testdata</span><span class="p">(</span><span class="n">wdesc</span><span class="p">,</span> <span class="n">system_name</span><span class="p">,</span> <span class="n">session_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">status</span></div>
+
+<div class="viewcode-block" id="SshActions.send_ssh_cmds_by_testdata_row"><a class="viewcode-back" href="../../../Actions.SshActions.html#Actions.SshActions.ssh_actions.SshActions.send_ssh_cmds_by_testdata_row">[docs]</a>    <span class="k">def</span> <span class="nf">send_ssh_cmds_by_testdata_row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row_num</span><span class="p">,</span> <span class="n">system_name</span><span class="p">,</span> <span class="n">session_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Sends all the commands from the provided row_num of testdata to the session</span>
+<span class="sd">        - This keyword expects the usage of warrior framework&#39;s</span>
+<span class="sd">        recommended testcase datafile and testdata xml files.</span>
+<span class="sd">        - Warrior framework&#39;s recommended sample testcase datafile is</span>
+<span class="sd">        available in Warriorspace/Data/sample_Data.xml</span>
+<span class="sd">        - This keyword expects the testcase datafile to have a testdata tag pointing to</span>
+<span class="sd">        the location of the testdatafile.</span>
+<span class="sd">        - The Description and instructions on how to use the recommended testdata file is available</span>
+<span class="sd">        in the sample testdata file located at Warriorspace/Config_files/sample_testdata.xml</span>
+
+<span class="sd">        - This keyword expects a paramiko session with the combination of</span>
+<span class="sd">        system_name and session to be available in the Warrior Framework&#39;s</span>
+<span class="sd">        data repository.</span>
+<span class="sd">            i.e. the session should have been established using open_ssh_session</span>
+<span class="sd">            method in this file.</span>
+
+<span class="sd">        :Arguments:</span>
+<span class="sd">            1. row_num (string) = row number in string representation</span>
+<span class="sd">            2. system_name (string) = name of the system in the input datafile</span>
+<span class="sd">            3. session_name(string) = name of the session to the string</span>
+
+<span class="sd">        :Returns:</span>
+<span class="sd">            1. status(bool)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">wdesc</span> <span class="o">=</span> <span class="s2">&quot;Send commands by row num of testdata file&quot;</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">send_ssh_cmds_from_testdata</span><span class="p">(</span><span class="n">wdesc</span><span class="p">,</span> <span class="n">system_name</span><span class="p">,</span> <span class="n">session_name</span><span class="p">,</span> <span class="n">row_num</span><span class="o">=</span><span class="n">row_num</span><span class="p">)</span>
+        <span class="k">return</span>  <span class="n">status</span></div>
+
+<div class="viewcode-block" id="SshActions.send_ssh_cmds_by_testdata_title"><a class="viewcode-back" href="../../../Actions.SshActions.html#Actions.SshActions.ssh_actions.SshActions.send_ssh_cmds_by_testdata_title">[docs]</a>    <span class="k">def</span> <span class="nf">send_ssh_cmds_by_testdata_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">system_name</span><span class="p">,</span> <span class="n">session_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Sends all the commands from the provided title of testdata to the session</span>
+<span class="sd">        - This keyword expects the usage of warrior framework&#39;s</span>
+<span class="sd">        recommended testcase datafile and testdata xml files.</span>
+<span class="sd">        - Warrior framework&#39;s recommended sample testcase datafile is</span>
+<span class="sd">        available in Warriorspace/Data/sample_Data.xml</span>
+<span class="sd">        - This keyword expects the testcase datafile to have a testdata tag pointing to</span>
+<span class="sd">        the location of the testdatafile.</span>
+<span class="sd">        - The Description and instructions on how to use the recommended testdata file is available</span>
+<span class="sd">        in the sample testdata file located at Warriorspace/Config_files/sample_testdata.xml</span>
+
+<span class="sd">        - This keyword expects a paramiko session with the combination of</span>
+<span class="sd">            system_name and session to be available in the Warrior Framework&#39;s</span>
+<span class="sd">            data repository.</span>
+<span class="sd">            i.e. the session should have been established using open_ssh_session</span>
+<span class="sd">            method in this file.</span>
+
+<span class="sd">        :Arguments:</span>
+<span class="sd">            1. title (string) = title in string representation</span>
+<span class="sd">            2. system_name (string) = name of the system in the input datafile</span>
+<span class="sd">            3. session_name(string) = name of the session to the string</span>
+
+<span class="sd">        :Returns:</span>
+<span class="sd">            1. status(bool)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">wdesc</span> <span class="o">=</span> <span class="s2">&quot;Send commands by title of testdata file&quot;</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">send_ssh_cmds_from_testdata</span><span class="p">(</span><span class="n">wdesc</span><span class="p">,</span> <span class="n">system_name</span><span class="p">,</span> <span class="n">session_name</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">status</span></div>
+
+<div class="viewcode-block" id="SshActions.send_ssh_cmds_from_testdata"><a class="viewcode-back" href="../../../Actions.SshActions.html#Actions.SshActions.ssh_actions.SshActions.send_ssh_cmds_from_testdata">[docs]</a>    <span class="k">def</span> <span class="nf">send_ssh_cmds_from_testdata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wdesc</span><span class="p">,</span> <span class="n">system_name</span><span class="p">,</span> <span class="n">session_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                    <span class="n">row_num</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;UseAsKeyword=NO</span>
+<span class="sd">         This keyword will not be displayed in katana GUI</span>
+<span class="sd">         It behaves as master keyword for send_ssh_cmds_by_testdata</span>
+<span class="sd">         send_ssh_cmds_by_testdata_row and send_ssh_cmds_by_testdata_title</span>
+
+<span class="sd">        :Arguments:</span>
+<span class="sd">            1. wdesc (string) = description of keyword</span>
+<span class="sd">            2. system_name (string) = name of the system in the input datafile</span>
+<span class="sd">            3. session_name(string) = name of the session to the string</span>
+<span class="sd">            4. row_num (string) = row number in string representation</span>
+<span class="sd">            5. title (string) = title in string representation</span>
+
+<span class="sd">        :Returns:</span>
+<span class="sd">            1. status(bool)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">Utils</span><span class="o">.</span><span class="n">testcase_Utils</span><span class="o">.</span><span class="n">pSubStep</span><span class="p">(</span><span class="n">wdesc</span><span class="p">)</span>
+        <span class="n">Utils</span><span class="o">.</span><span class="n">testcase_Utils</span><span class="o">.</span><span class="n">pNote</span><span class="p">(</span><span class="n">system_name</span><span class="p">)</span>
+
+        <span class="n">session_id</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">data_Utils</span><span class="o">.</span><span class="n">get_session_id</span><span class="p">(</span><span class="n">system_name</span><span class="p">,</span> <span class="n">session_name</span><span class="p">)</span>
+        <span class="n">session_object</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">data_Utils</span><span class="o">.</span><span class="n">get_object_from_datarepository</span><span class="p">(</span><span class="n">session_id</span><span class="p">)</span>
+        <span class="n">credentials</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">data_Utils</span><span class="o">.</span><span class="n">get_credentials</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datafile</span><span class="p">,</span> <span class="n">system_name</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;testdata&#39;</span><span class="p">])</span>
+        <span class="n">testdata</span> <span class="o">=</span> <span class="n">credentials</span><span class="p">[</span><span class="s1">&#39;testdata&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">session_object</span><span class="p">:</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="n">session_object</span><span class="o">.</span><span class="n">send_testdata_cmds</span><span class="p">(</span><span class="n">testdata</span><span class="p">,</span>\
+                                                       <span class="n">str_rownum</span><span class="o">=</span><span class="n">row_num</span><span class="p">,</span> <span class="n">strtitle</span><span class="o">=</span><span class="n">title</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">print_warning</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">-</span><span class="si">%s</span><span class="s2"> is not available for use&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">system_name</span><span class="p">,</span> <span class="n">session_name</span><span class="p">))</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">Utils</span><span class="o">.</span><span class="n">testcase_Utils</span><span class="o">.</span><span class="n">report_substep_status</span><span class="p">(</span><span class="n">status</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">status</span></div>
+
+<div class="viewcode-block" id="SshActions.download_remote_file_sftp"><a class="viewcode-back" href="../../../Actions.SshActions.html#Actions.SshActions.ssh_actions.SshActions.download_remote_file_sftp">[docs]</a>    <span class="k">def</span> <span class="nf">download_remote_file_sftp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">system_name</span><span class="p">,</span> <span class="n">session_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Downloads a remote file (remotepath) from the remote host to</span>
+<span class="sd">        the local host as localpath using SFTP</span>
+
+<span class="sd">        Tags to be used in input datafile to retrieve values for download_remote_file_sftp</span>
+<span class="sd">        &lt;remotepath&gt; = the remote path to download the file from remotehost</span>
+<span class="sd">        &lt;localpath&gt; = the local path on the local host</span>
+<span class="sd">        &lt;remotefile&gt; = name of the remote file to download</span>
+<span class="sd">        &lt;remotehost&gt; = remote host</span>
+<span class="sd">        &lt;remoteuser&gt; = remote login username</span>
+<span class="sd">        &lt;remotepwd&gt; = remote login password</span>
+
+<span class="sd">        :Arguments:</span>
+<span class="sd">            1. system_name (string) = name of the system in the input datafile</span>
+<span class="sd">            2. session_name(string) = name of the session to the string</span>
+
+<span class="sd">        :Returns:</span>
+<span class="sd">            1. status(bool)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">wdesc</span> <span class="o">=</span> <span class="s2">&quot;Download remote file using SFTP&quot;</span>
+        <span class="n">Utils</span><span class="o">.</span><span class="n">testcase_Utils</span><span class="o">.</span><span class="n">pSubStep</span><span class="p">(</span><span class="n">wdesc</span><span class="p">)</span>
+
+        <span class="n">credentials</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">data_Utils</span><span class="o">.</span><span class="n">get_credentials</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datafile</span><span class="p">,</span> <span class="n">system_name</span><span class="p">,</span>\
+            <span class="p">[</span><span class="s1">&#39;remotepath&#39;</span><span class="p">,</span> <span class="s1">&#39;localpath&#39;</span><span class="p">,</span> <span class="s1">&#39;remotefile&#39;</span><span class="p">,</span> <span class="s1">&#39;remotehost&#39;</span><span class="p">,</span> <span class="s1">&#39;remoteuser&#39;</span><span class="p">,</span> <span class="s1">&#39;remotepwd&#39;</span><span class="p">])</span>
+        <span class="n">session_id</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">data_Utils</span><span class="o">.</span><span class="n">get_session_id</span><span class="p">(</span><span class="n">system_name</span><span class="p">,</span> <span class="n">session_name</span><span class="p">)</span>
+        <span class="n">session_object</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">data_Utils</span><span class="o">.</span><span class="n">get_object_from_datarepository</span><span class="p">(</span><span class="n">session_id</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">session_object</span><span class="p">:</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="n">session_object</span><span class="o">.</span><span class="n">download_remote_file_sftp</span><span class="p">(</span><span class="n">credentials</span><span class="p">[</span><span class="s1">&#39;remotepath&#39;</span><span class="p">],</span>
+                                                              <span class="n">credentials</span><span class="p">[</span><span class="s1">&#39;localpath&#39;</span><span class="p">],</span>
+                                                              <span class="n">credentials</span><span class="p">[</span><span class="s1">&#39;remotefile&#39;</span><span class="p">],</span>
+                                                              <span class="n">credentials</span><span class="p">[</span><span class="s1">&#39;remotehost&#39;</span><span class="p">],</span>
+                                                              <span class="n">credentials</span><span class="p">[</span><span class="s1">&#39;remoteuser&#39;</span><span class="p">],</span>
+                                                              <span class="n">credentials</span><span class="p">[</span><span class="s1">&#39;remotepwd&#39;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">print_warning</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">-</span><span class="si">%s</span><span class="s2"> is not available for use&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">system_name</span><span class="p">,</span> <span class="n">session_name</span><span class="p">))</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">Utils</span><span class="o">.</span><span class="n">testcase_Utils</span><span class="o">.</span><span class="n">report_substep_status</span><span class="p">(</span><span class="n">status</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">status</span></div>
+
+<div class="viewcode-block" id="SshActions.create_nested_session"><a class="viewcode-back" href="../../../Actions.SshActions.html#Actions.SshActions.ssh_actions.SshActions.create_nested_session">[docs]</a>    <span class="k">def</span> <span class="nf">create_nested_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">system_name</span><span class="p">,</span> <span class="n">session_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates a SSH session to destination system via a proxy</span>
+<span class="sd">        Tags to be used in input datafile to retrieve values for</span>
+<span class="sd">        download_remote_file_sftp</span>
+<span class="sd">        &lt;via_host&gt; = host that would be connecting to remotehost</span>
+<span class="sd">        &lt;via_username&gt; = remote login username</span>
+<span class="sd">        &lt;via_password&gt; = remote login password</span>
+<span class="sd">        :Arguments:</span>
+<span class="sd">            1. system_name (string) = name of the system in the input datafile</span>
+<span class="sd">            2. session_name(string) = name of the session to the string</span>
+
+<span class="sd">        :Returns:</span>
+<span class="sd">            1. status(bool)</span>
+<span class="sd">            2. output_dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">wdesc</span> <span class="o">=</span> <span class="s2">&quot;Open connection to system via proxy&quot;</span>
+        <span class="n">Utils</span><span class="o">.</span><span class="n">testcase_Utils</span><span class="o">.</span><span class="n">pSubStep</span><span class="p">(</span><span class="n">wdesc</span><span class="p">)</span>
+        <span class="n">output_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">credentials</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">data_Utils</span><span class="o">.</span><span class="n">get_credentials</span><span class="p">(</span>\
+                        <span class="bp">self</span><span class="o">.</span><span class="n">datafile</span><span class="p">,</span> <span class="n">system_name</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;ip&#39;</span><span class="p">,</span> <span class="s1">&#39;username&#39;</span><span class="p">,</span>
+                                                     <span class="s1">&#39;password&#39;</span><span class="p">,</span> <span class="s1">&#39;via_host&#39;</span><span class="p">,</span>
+                                                     <span class="s1">&#39;via_username&#39;</span><span class="p">,</span>
+                                                     <span class="s1">&#39;via_password&#39;</span><span class="p">])</span>
+        <span class="n">logfile</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">file_Utils</span><span class="o">.</span><span class="n">getCustomLogFile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
+                                                    <span class="bp">self</span><span class="o">.</span><span class="n">logsdir</span><span class="p">,</span>
+                                                    <span class="s1">&#39;target_ssh_</span><span class="si">%s</span><span class="s1">_&#39;</span> <span class="o">%</span> <span class="n">system_name</span><span class="p">)</span>
+    
+        <span class="n">Utils</span><span class="o">.</span><span class="n">testcase_Utils</span><span class="o">.</span><span class="n">pNote</span><span class="p">(</span><span class="n">system_name</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">credentials</span><span class="p">:</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="n">credentials</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">host_object</span> <span class="o">=</span> <span class="n">ssh_utils_class</span><span class="o">.</span><span class="n">SSHComm</span><span class="p">(</span>\
+                                               <span class="n">credentials</span><span class="p">[</span><span class="s1">&#39;via_host&#39;</span><span class="p">],</span>
+                                               <span class="n">uid</span><span class="o">=</span><span class="n">credentials</span><span class="p">[</span><span class="s1">&#39;via_username&#39;</span><span class="p">],</span>
+                                               <span class="n">pid</span><span class="o">=</span><span class="n">credentials</span><span class="p">[</span><span class="s1">&#39;via_password&#39;</span><span class="p">],</span>
+                                               <span class="n">logfile</span><span class="o">=</span><span class="n">logfile</span><span class="p">)</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="n">host_object</span><span class="o">.</span><span class="n">ssh_con</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">dest_obj</span><span class="p">,</span> <span class="n">status</span> <span class="o">=</span> <span class="n">host_object</span><span class="o">.</span><span class="n">connect_target_via_host</span><span class="p">(</span>\
+                                               <span class="n">credentials</span><span class="p">[</span><span class="s1">&#39;ip&#39;</span><span class="p">],</span>
+                                               <span class="n">credentials</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">],</span>
+                                               <span class="n">credentials</span><span class="p">[</span><span class="s1">&#39;password&#39;</span><span class="p">],</span>
+                                               <span class="n">log</span><span class="o">=</span><span class="n">logfile</span><span class="p">)</span>
+        <span class="n">host_session_id</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">data_Utils</span><span class="o">.</span><span class="n">get_session_id</span><span class="p">(</span><span class="n">system_name</span><span class="p">,</span>
+                                                          <span class="s1">&#39;_host&#39;</span><span class="p">)</span>
+        <span class="n">dest_session_id</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">data_Utils</span><span class="o">.</span><span class="n">get_session_id</span><span class="p">(</span><span class="n">system_name</span><span class="p">,</span>
+                                                          <span class="n">session_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">output_dict</span><span class="p">[</span><span class="n">host_session_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">host_object</span>
+            <span class="n">output_dict</span><span class="p">[</span><span class="n">dest_session_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">dest_obj</span>
+            <span class="n">print_info</span><span class="p">(</span><span class="s2">&quot;Connection to ssh port of the given system </span><span class="si">{0}</span><span class="s2"> &quot;</span>
+                       <span class="s2">&quot;successful&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">credentials</span><span class="p">[</span><span class="s1">&#39;ip&#39;</span><span class="p">]))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">print_error</span><span class="p">(</span><span class="s2">&quot;Connection to ssh port of the given system </span><span class="si">{0}</span><span class="s2"> &quot;</span>
+                        <span class="s2">&quot;failed&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">credentials</span><span class="p">[</span><span class="s1">&#39;ip&#39;</span><span class="p">]))</span>
+
+        <span class="n">Utils</span><span class="o">.</span><span class="n">testcase_Utils</span><span class="o">.</span><span class="n">report_substep_status</span><span class="p">(</span><span class="n">status</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">status</span><span class="p">,</span> <span class="n">output_dict</span></div></div>
+
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, FNC.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'Ninja',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

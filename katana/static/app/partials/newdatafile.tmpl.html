@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<div class='col-md-12'>
+    <h4 class='text-muted nav-font' style="color:rgb(0, 0, 0)">
+        <b>Katana Input Data File Editor</b>
+    </h4>
+    <hr/>
+    <form action="" method="post" class="form-horizontal" role="form">
+        <br>
+        <div class="form-group">
+            <label for="df_name" class="col-sm-2 control-label mandatory-field ellipsis-the-overflow">DataFile Name</label>
+            <div class="tooltip-on-right align-fa-icon-after-label">
+                <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                <span class="tooltip-content">
+                    <div ng-if="idfTooltips.filename.tooltip != ''">
+                        <i class="fa fa-rocket" aria-hidden="true"></i>
+                        &nbsp;
+                        {{idfTooltips.filename.tooltip}}
+                        <br>
+                    </div>
+                    <div ng-if="idfTooltips.filename.protip != ''">
+                        <br>
+                        <i class="fa fa-bolt" aria-hidden="true"></i>
+                        &nbsp;
+                        {{idfTooltips.filename.protip}}
+                        <br>
+                    </div>
+                    <div ng-if="idfTooltips.filename.bantip != ''">
+                        <br>
+                        <i class="fa fa-ban" aria-hidden="true"></i>
+                        &nbsp;
+                        {{idfTooltips.filename.bantip}}
+                        <br>
+                    </div>
+                    <div ng-if="idfTooltips.filename.snowflake != ''">
+                        <br>
+                        <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                        &nbsp;
+                        {{idfTooltips.filename.snowflake}}
+                        <br>
+                    </div>
+                </span>
+            </div>
+            <div class="col-sm-6">
+                <input type="text" class="form-control" id="df_name" ng-model='df_name'>
+            </div>
+            <div class="col-sm-1 align-fa-icon-after-input">
+                <div class="tooltip-on-right">
+                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                    <span class="tooltip-content">
+                        <div ng-if="idfTooltips.filename.tooltip != ''">
+                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                            &nbsp;
+                            {{idfTooltips.filename.tooltip}}
+                            <br>
+                        </div>
+                        <div ng-if="idfTooltips.filename.protip != ''">
+                            <br>
+                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                            &nbsp;
+                            {{idfTooltips.filename.protip}}
+                            <br>
+                        </div>
+                        <div ng-if="idfTooltips.filename.bantip != ''">
+                            <br>
+                            <i class="fa fa-ban" aria-hidden="true"></i>
+                            &nbsp;
+                            {{idfTooltips.filename.bantip}}
+                            <br>
+                        </div>
+                        <div ng-if="idfTooltips.filename.snowflake != ''">
+                            <br>
+                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                            &nbsp;
+                            {{idfTooltips.filename.snowflake}}
+                            <br>
+                        </div>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <br>
+        <div class="form-group">
+            <label for="ww" class="col-sm-2 control-label ellipsis-the-overflow">DataFile Description</label>
+            <div class="tooltip-on-right align-fa-icon-after-label">
+                <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                <span class="tooltip-content">
+                    <div ng-if="idfTooltips.file_desc.tooltip != ''">
+                        <i class="fa fa-rocket" aria-hidden="true"></i>
+                        &nbsp;
+                        {{idfTooltips.file_desc.tooltip}}
+                        <br>
+                    </div>
+                    <div ng-if="idfTooltips.file_desc.protip != ''">
+                        <br>
+                        <i class="fa fa-bolt" aria-hidden="true"></i>
+                        &nbsp;
+                        {{idfTooltips.file_desc.protip}}
+                        <br>
+                    </div>
+                    <div ng-if="idfTooltips.file_desc.bantip != ''">
+                        <br>
+                        <i class="fa fa-ban" aria-hidden="true"></i>
+                        &nbsp;
+                        {{idfTooltips.file_desc.bantip}}
+                        <br>
+                    </div>
+                    <div ng-if="idfTooltips.file_desc.snowflake != ''">
+                        <br>
+                        <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                        &nbsp;
+                        {{idfTooltips.file_desc.snowflake}}
+                        <br>
+                    </div>
+                </span>
+            </div>
+            <div class="col-sm-6">
+                <input type="text" class="form-control" id="ww" ng-model='description'>
+            </div>
+            <div class="col-sm-1 align-fa-icon-after-input">
+                <div class="tooltip-on-right">
+                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                    <span class="tooltip-content">
+                        <div ng-if="idfTooltips.file_desc.tooltip != ''">
+                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                            &nbsp;
+                            {{idfTooltips.file_desc.tooltip}}
+                            <br>
+                        </div>
+                        <div ng-if="idfTooltips.file_desc.protip != ''">
+                            <br>
+                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                            &nbsp;
+                            {{idfTooltips.file_desc.protip}}
+                            <br>
+                        </div>
+                        <div ng-if="idfTooltips.file_desc.bantip != ''">
+                            <br>
+                            <i class="fa fa-ban" aria-hidden="true"></i>
+                            &nbsp;
+                            {{idfTooltips.file_desc.bantip}}
+                            <br>
+                        </div>
+                        <div ng-if="idfTooltips.file_desc.snowflake != ''">
+                            <br>
+                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                            &nbsp;
+                            {{idfTooltips.file_desc.snowflake}}
+                            <br>
+                        </div>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <br> <hr>
+            <div class="row">
+                <div class="form-group">
+                    <label class="col-sm-2 text-uppercase mandatory-field" style="padding-left: 3em">Systems</label>
+                </div>
+            </div>
+        <br>
+
+        <div class="form-group">
+
+            <div class="col-sm-12">
+                <div class="row" ng-show="savedSystemTable">
+                    <div class="form-group" style="padding-left:0">
+                        <label style="color:rgb(214, 48, 48)" class="col-sm-1 control-label text-info text-uppercase">Systems</label>
+                    </div>
+                </div>
+                <div class="form-group" ng-show="savedSystemTable && (systemBeingEdited != 0)">
+                    <div class="col-sm-12">
+                        <table class='table table-bordered table-condensed table-hover'>
+                            <thead>
+                            <tr>
+                                <th class='text-muted text-right'>#</th>
+                                <th class='text-muted'>System Name</th>
+                                <th class='text-muted'>System Child-Tags/Attributes</th> <!--  col-sm-2 -->
+                                <th class='text-muted'>Subsystem Details</th>
+                                <th class='text-muted'>Default</th> <!--  col-sm-2 -->
+                                <th class='text-muted'>Edit</th>
+                                <th class='text-muted'>Delete</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat='system in system_info track by $index' ng-hide="$index >= systemBeingEdited">
+                                <td class="text-right">{{ $index + 1 }}</td>
+                                <td>{{ system }}</td>
+
+                                <td>
+                                    <div ng-repeat='tag in tag_info[$index]'>
+                                        <div ng-repeat="childTag in childTagsList[$parent.$index][$index]">
+                                                <div ng-if="childTag[0]">
+                                                    <div ng-if="$parent.$index == 0 && $index == 0">
+                                                        <br>
+                                                        <b>Tag Name: </b>{{tag[0]}}
+                                                        <br>
+                                                        <b>Child Tags:</b>
+                                                    </div>
+                                                    {{childTag[0]}} = {{childTag[1]}}
+                                                </div>
+                                                <div ng-if="!childTag[0] && tag[0]">
+                                                    {{tag[0]}} = {{tag[1]}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <br>
+                                </td>
+
+                                <td>
+                                    <div ng-repeat='subsys in subsys_info[$index]'>
+                                        <div ng-if="subsys_name_list[$parent.$index][$index]">
+                                            <br>
+                                            <b>Subsystem {{$index+1}} Name =</b> {{subsys_name_list[$parent.$parent.$index][$parent.$index]}}
+                                            <br>
+                                            <div ng-if="defSubsystemList[$parent.$parent.$index][$parent.$index]">
+                                                <b>Default = </b>Yes
+                                            </div>
+                                            <b>Subsystem {{$index+1}} Child-Tags/Attributes</b>
+                                            <div ng-repeat='subsys_details in subsys'>
+                                                {{$index+1}}. {{subsys_details[0]}} = {{subsys_details[1]}}
+                                            </div>
+                                            <br>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div ng-if="defSystemList[$index]">
+                                        Yes
+                                    </div>
+                                </td>
+
+                                <td ng-click="editSystem($index)" class='text-center' style='vertical-align:middle'>
+                                    <div class="tooltip-on-left-dark-big">
+                                        <span class="fa fa-pencil-square-o" aria-hidden="true"></span>
+                                        <span class="tooltip-content text-left">
+                                            <div ng-if="idfTooltips.edit_system.tooltip != ''">
+                                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{idfTooltips.edit_system.tooltip}}
+                                                <br>
+                                            </div>
+                                            <div ng-if="idfTooltips.edit_system.protip != ''">
+                                                <br>
+                                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{idfTooltips.edit_system.protip}}
+                                                <br>
+                                            </div>
+                                            <div ng-if="idfTooltips.edit_system.bantip != ''">
+                                                <br>
+                                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{idfTooltips.edit_system.bantip}}
+                                                <br>
+                                            </div>
+                                            <div ng-if="idfTooltips.edit_system.snowflake != ''">
+                                                <br>
+                                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{idfTooltips.edit_system.snowflake}}
+                                                <br>
+                                            </div>
+                                        </span>
+                                    </div>
+                                </td>
+
+                                <td ng-click='closeSystemEditor($index)' class='text-center' style='vertical-align:middle'>
+                                    <div class="tooltip-on-left-dark-big">
+                                        <span class="fa fa-times-circle-o" aria-hidden="true"></span>
+                                        <span class="tooltip-content text-left">
+                                            <div ng-if="idfTooltips.delete_system.tooltip != ''">
+                                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{idfTooltips.delete_system.tooltip}}
+                                                <br>
+                                            </div>
+                                            <div ng-if="idfTooltips.delete_system.protip != ''">
+                                                <br>
+                                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{idfTooltips.delete_system.protip}}
+                                                <br>
+                                            </div>
+                                            <div ng-if="idfTooltips.delete_system.bantip != ''">
+                                                <br>
+                                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{idfTooltips.delete_system.bantip}}
+                                                <br>
+                                            </div>
+                                            <div ng-if="idfTooltips.delete_system.snowflake != ''">
+                                                <br>
+                                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{idfTooltips.delete_system.snowflake}}
+                                                <br>
+                                            </div>
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div ng-repeat="system in system_info track by $index" ng-show="!savedSystemList[$index]">
+                    <br>
+                <div class="form-group">
+                    <label for="Name" class="col-sm-2 control-label mandatory-field ellipsis-the-overflow">System {{$index+1}} Name</label>
+                    <div class="tooltip-on-right align-fa-icon-after-label">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                            <div ng-if="idfTooltips.system_name.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{idfTooltips.system_name.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="idfTooltips.system_name.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{idfTooltips.system_name.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="idfTooltips.system_name.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{idfTooltips.system_name.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="idfTooltips.system_name.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{idfTooltips.system_name.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="Name" ng-model='system_info[$index]'>
+                            <span class="input-group-addon" style="background-color: white">
+                                <input type="checkbox" id="defaultSys{{$index}}"
+                                       ng-click="setAsDefault($index)" ng-checked="defSystemList[$index]">
+                                <label for="defaultSys{{$index}}">&nbsp;Default</label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-sm-1 align-fa-icon-after-input">
+                        <div class="tooltip-on-right">
+                            <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                            <span class="tooltip-content">
+                                <div ng-if="idfTooltips.system_name.tooltip != ''">
+                                    <i class="fa fa-rocket" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{idfTooltips.system_name.tooltip}}
+                                    <br>
+                                </div>
+                                <div ng-if="idfTooltips.system_name.protip != ''">
+                                    <br>
+                                    <i class="fa fa-bolt" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{idfTooltips.system_name.protip}}
+                                    <br>
+                                </div>
+                                <div ng-if="idfTooltips.system_name.bantip != ''">
+                                    <br>
+                                    <i class="fa fa-ban" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{idfTooltips.system_name.bantip}}
+                                    <br>
+                                </div>
+                                <div ng-if="idfTooltips.system_name.snowflake != ''">
+                                    <br>
+                                    <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{idfTooltips.system_name.snowflake}}
+                                    <br>
+                                </div>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <br>
+
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs nav-justified" role="tablist">
+                    <li class="nav-item" id="li_tag_tab{{$index}}" data-toggle="tab" ng-click="setSystemInfo('tag', $index, $event)">
+                        <a data-toggle="tab" id="a_tag_tab{{$index}}" data-target="#tags{{$index}}">Create Tags</a>
+                    </li>
+                    <li class="nav-item" id="li_subsys_tab{{$index}}" data-toggle="tab" ng-click="setSystemInfo('subsys', $index, $event)">
+                        <a data-toggle="tab" id="a_subsys_tab{{$index}}" data-target="#subsys{{$index}}">Create Subsystems</a>
+                    </li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div class="collapse" id="tags{{$index}}" role="tabpanel">
+                        <br><br>
+                        <div ng-show="showCopyTags">
+                            <div class="form-group">
+                                <div class="col-sm-10 col-sm-offset-1">
+                                    <label for="copyTagsFromSys" class="col-sm-3 control-label">Copy Tags from System:</label>
+                                    <div class="col-sm-2">
+                                        <select class="form-control" id="copyTagsFromSys" ng-model="selectedSysForTags"
+                                                ng-change="updateSelectedSystemForTags(selectedSysForTags, $index)">
+                                            <option ng-repeat="option in sysListForTagCopying[$index]" class="dropdown-content">{{option}}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-1">
+                                        <input type="button" class="btn btn-default form-control ellipsis-the-overflow"
+                                               value="Go" ng-click="copyOverTagsFromSystem($index)">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div ng-repeat="tag in tag_info[$index] track by $index">
+                            <div class="row">
+                                <div class="form-group">
+                                    <label for="tag_name{{$parent.$index}}{{$index}}"
+                                           class="col-sm-2 control-label mandatory-field ellipsis-the-overflow">Tag {{$index+1}} Name</label>
+                                    <div class="tooltip-on-right align-fa-icon-after-label">
+                                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                        <span class="tooltip-content">
+                                            <div ng-if="idfTooltips.sys_tag_name.tooltip != ''">
+                                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{idfTooltips.sys_tag_name.tooltip}}
+                                                <br>
+                                            </div>
+                                            <div ng-if="idfTooltips.sys_tag_name.protip != ''">
+                                                <br>
+                                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{idfTooltips.sys_tag_name.protip}}
+                                                <br>
+                                            </div>
+                                            <div ng-if="idfTooltips.sys_tag_name.bantip != ''">
+                                                <br>
+                                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{idfTooltips.sys_tag_name.bantip}}
+                                                <br>
+                                            </div>
+                                            <div ng-if="idfTooltips.sys_tag_name.snowflake != ''">
+                                                <br>
+                                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{idfTooltips.sys_tag_name.snowflake}}
+                                                <br>
+                                            </div>
+                                        </span>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <input class="typeahead tag-default form-control" id="tag_name{{$parent.$index}}{{$index}}"
+                                               ng-model="tag_info[$parent.$index][$index][0]" ng-blur="updateModel('', $parent.$index, $index, 'tag')">
+                                    </div>
+                                    <div class="col-sm-1 align-fa-icon-after-input">
+                                        <div class="tooltip-on-right">
+                                            <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                            <span class="tooltip-content">
+                                                <div ng-if="idfTooltips.sys_tag_name.tooltip != ''">
+                                                    <i class="fa fa-rocket" aria-hidden="true"></i>
+                                                    &nbsp;
+                                                    {{idfTooltips.sys_tag_name.tooltip}}
+                                                    <br>
+                                                </div>
+                                                <div ng-if="idfTooltips.sys_tag_name.protip != ''">
+                                                    <br>
+                                                    <i class="fa fa-bolt" aria-hidden="true"></i>
+                                                    &nbsp;
+                                                    {{idfTooltips.sys_tag_name.protip}}
+                                                    <br>
+                                                </div>
+                                                <div ng-if="idfTooltips.sys_tag_name.bantip != ''">
+                                                    <br>
+                                                    <i class="fa fa-ban" aria-hidden="true"></i>
+                                                    &nbsp;
+                                                    {{idfTooltips.sys_tag_name.bantip}}
+                                                    <br>
+                                                </div>
+                                                <div ng-if="idfTooltips.sys_tag_name.snowflake != ''">
+                                                    <br>
+                                                    <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                                    &nbsp;
+                                                    {{idfTooltips.sys_tag_name.snowflake}}
+                                                    <br>
+                                                </div>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" ng-show="!showTagChildren[$parent.$index][$index]">
+                                <div class="form-group">
+                                    <label for="tag_value{{$parent.$index}}{{$index}}"
+                                           class="col-sm-2 control-label ellipsis-the-overflow">
+                                        Tag {{$index+1}} Value</label>
+                                    <div class="tooltip-on-right align-fa-icon-after-label">
+                                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                        <span class="tooltip-content">
+                                            <div ng-if="idfTooltips.sys_tag_value.tooltip != ''">
+                                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{idfTooltips.sys_tag_value.tooltip}}
+                                                <br>
+                                            </div>
+                                            <div ng-if="idfTooltips.sys_tag_value.protip != ''">
+                                                <br>
+                                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{idfTooltips.sys_tag_value.protip}}
+                                                <br>
+                                            </div>
+                                            <div ng-if="idfTooltips.sys_tag_value.bantip != ''">
+                                                <br>
+                                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{idfTooltips.sys_tag_value.bantip}}
+                                                <br>
+                                            </div>
+                                            <div ng-if="idfTooltips.sys_tag_value.snowflake != ''">
+                                                <br>
+                                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{idfTooltips.sys_tag_value.snowflake}}
+                                                <br>
+                                            </div>
+                                        </span>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <input type="text" class="form-control" id="tag_value{{$parent.$index}}{{$index}}"
+                                               ng-model='tag_info[$parent.$index][$index][1]' ng-blur="updateModel('', $parent.$index, $index, 'tagvalue')">
+                                    </div>
+                                    <div class="col-sm-1 align-fa-icon-after-input">
+                                        <div class="tooltip-on-right">
+                                            <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                            <span class="tooltip-content">
+                                                <div ng-if="idfTooltips.sys_tag_value.tooltip != ''">
+                                                    <i class="fa fa-rocket" aria-hidden="true"></i>
+                                                    &nbsp;
+                                                    {{idfTooltips.sys_tag_value.tooltip}}
+                                                    <br>
+                                                </div>
+                                                <div ng-if="idfTooltips.sys_tag_value.protip != ''">
+                                                    <br>
+                                                    <i class="fa fa-bolt" aria-hidden="true"></i>
+                                                    &nbsp;
+                                                    {{idfTooltips.sys_tag_value.protip}}
+                                                    <br>
+                                                </div>
+                                                <div ng-if="idfTooltips.sys_tag_value.bantip != ''">
+                                                    <br>
+                                                    <i class="fa fa-ban" aria-hidden="true"></i>
+                                                    &nbsp;
+                                                    {{idfTooltips.sys_tag_value.bantip}}
+                                                    <br>
+                                                </div>
+                                                <div ng-if="idfTooltips.sys_tag_value.snowflake != ''">
+                                                    <br>
+                                                    <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                                    &nbsp;
+                                                    {{idfTooltips.sys_tag_value.snowflake}}
+                                                    <br>
+                                                </div>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" ng-show="!showTagChildren[$parent.$index][$index]">
+                                <div class="form-group">
+                                    <div class="col-sm-offset-2 col-sm-2">
+                                        <input type="button" class="btn btn-default form-control ellipsis-the-overflow" value="Add Child Tag"
+                                               ng-click="toggleChildren($parent.$index, $index)">
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <input type="button" class="btn btn-default form-control ellipsis-the-overflow" value="Delete Tag"
+                                               ng-click="deleteTag($parent.$parent.$index, $parent.$index, $index, 'tag')">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <div class="well col-sm-6 col-sm-offset-2" ng-show="showTagChildren[$parent.$index][$index]">
+                                        <div ng-repeat="tag in childTagsList[$parent.$index][$index] track by $index">
+                                            <div class="row">
+                                                <div class="form-group">
+                                                    <label for="child_tag_name{{$parent.$parent.$index}}{{$parent.$index}}{{$index}}"
+                                                           class="col-sm-3 control-label mandatory-field ellipsis-the-overflow"> Child Tag {{$index+1}} Name</label>
+                                                    <div class="tooltip-on-right-dark-big align-fa-icon-after-label">
+                                                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                                        <span class="tooltip-content">
+                                                            <div ng-if="idfTooltips.sys_child_tag_name.tooltip != ''">
+                                                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                                                &nbsp;
+                                                                {{idfTooltips.sys_child_tag_name.tooltip}}
+                                                                <br>
+                                                            </div>
+                                                            <div ng-if="idfTooltips.sys_child_tag_name.protip != ''">
+                                                                <br>
+                                                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                                                &nbsp;
+                                                                {{idfTooltips.sys_child_tag_name.protip}}
+                                                                <br>
+                                                            </div>
+                                                            <div ng-if="idfTooltips.sys_child_tag_name.bantip != ''">
+                                                                <br>
+                                                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                                                &nbsp;
+                                                                {{idfTooltips.sys_child_tag_name.bantip}}
+                                                                <br>
+                                                            </div>
+                                                            <div ng-if="idfTooltips.sys_child_tag_name.snowflake != ''">
+                                                                <br>
+                                                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                                                &nbsp;
+                                                                {{idfTooltips.sys_child_tag_name.snowflake}}
+                                                                <br>
+                                                            </div>
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <input class="typeahead tag-default form-control"
+                                                               id="child_tag_name{{$parent.$parent.$index}}{{$parent.$index}}{{$index}}"
+                                                               type="text"
+                                                               ng-model="childTagsList[$parent.$parent.$index][$parent.$index][$index][0]"
+                                                               ng-blur="updateChildTags($parent.$parent.$index, $parent.$index, $index, 'child_tag_name')">
+                                                    </div>
+                                                    <div class="col-sm-1 align-fa-icon-after-input">
+                                                        <div class="tooltip-on-right-dark-big">
+                                                            <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                                            <span class="tooltip-content">
+                                                                <div ng-if="idfTooltips.sys_child_tag_name.tooltip != ''">
+                                                                    <i class="fa fa-rocket" aria-hidden="true"></i>
+                                                                    &nbsp;
+                                                                    {{idfTooltips.sys_child_tag_name.tooltip}}
+                                                                    <br>
+                                                                </div>
+                                                                <div ng-if="idfTooltips.sys_child_tag_name.protip != ''">
+                                                                    <br>
+                                                                    <i class="fa fa-bolt" aria-hidden="true"></i>
+                                                                    &nbsp;
+                                                                    {{idfTooltips.sys_child_tag_name.protip}}
+                                                                    <br>
+                                                                </div>
+                                                                <div ng-if="idfTooltips.sys_child_tag_name.bantip != ''">
+                                                                    <br>
+                                                                    <i class="fa fa-ban" aria-hidden="true"></i>
+                                                                    &nbsp;
+                                                                    {{idfTooltips.sys_child_tag_name.bantip}}
+                                                                    <br>
+                                                                </div>
+                                                                <div ng-if="idfTooltips.sys_child_tag_name.snowflake != ''">
+                                                                    <br>
+                                                                    <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                                                    &nbsp;
+                                                                    {{idfTooltips.sys_child_tag_name.snowflake}}
+                                                                    <br>
+                                                                </div>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="form-group">
+                                                    <label for="child_tag_value{{$parent.$parent.$index}}{{$parent.$index}}{{$index}}"
+                                                           class="col-sm-3 control-label ellipsis-the-overflow">Child Tag {{$index+1}} Value</label>
+                                                    <div class="tooltip-on-right-dark-big align-fa-icon-after-label">
+                                                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                                        <span class="tooltip-content">
+                                                            <div ng-if="idfTooltips.sys_child_tag_value.tooltip != ''">
+                                                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                                                &nbsp;
+                                                                {{idfTooltips.sys_child_tag_value.tooltip}}
+                                                                <br>
+                                                            </div>
+                                                            <div ng-if="idfTooltips.sys_child_tag_value.protip != ''">
+                                                                <br>
+                                                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                                                &nbsp;
+                                                                {{idfTooltips.sys_child_tag_value.protip}}
+                                                                <br>
+                                                            </div>
+                                                            <div ng-if="idfTooltips.sys_child_tag_value.bantip != ''">
+                                                                <br>
+                                                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                                                &nbsp;
+                                                                {{idfTooltips.sys_child_tag_value.bantip}}
+                                                                <br>
+                                                            </div>
+                                                            <div ng-if="idfTooltips.sys_child_tag_value.snowflake != ''">
+                                                                <br>
+                                                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                                                &nbsp;
+                                                                {{idfTooltips.sys_child_tag_value.snowflake}}
+                                                                <br>
+                                                            </div>
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <input type="text" class="form-control"
+                                                               id="child_tag_value{{$parent.$parent.$index}}{{$parent.$index}}{{$index}}"
+                                                               ng-model='childTagsList[$parent.$parent.$index][$parent.$index][$index][1]'
+                                                               ng-blur="updateChildTags($parent.$parent.$index, $parent.$index, $index, 'child_tag_value')">
+                                                    </div>
+                                                    <div class="col-sm-1 align-fa-icon-after-input">
+                                                        <div class="tooltip-on-right-dark-big">
+                                                            <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                                            <span class="tooltip-content">
+                                                                <div ng-if="idfTooltips.sys_child_tag_value.tooltip != ''">
+                                                                    <i class="fa fa-rocket" aria-hidden="true"></i>
+                                                                    &nbsp;
+                                                                    {{idfTooltips.sys_child_tag_value.tooltip}}
+                                                                    <br>
+                                                                </div>
+                                                                <div ng-if="idfTooltips.sys_child_tag_value.protip != ''">
+                                                                    <br>
+                                                                    <i class="fa fa-bolt" aria-hidden="true"></i>
+                                                                    &nbsp;
+                                                                    {{idfTooltips.sys_child_tag_value.protip}}
+                                                                    <br>
+                                                                </div>
+                                                                <div ng-if="idfTooltips.sys_child_tag_value.bantip != ''">
+                                                                    <br>
+                                                                    <i class="fa fa-ban" aria-hidden="true"></i>
+                                                                    &nbsp;
+                                                                    {{idfTooltips.sys_child_tag_value.bantip}}
+                                                                    <br>
+                                                                </div>
+                                                                <div ng-if="idfTooltips.sys_child_tag_value.snowflake != ''">
+                                                                    <br>
+                                                                    <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                                                    &nbsp;
+                                                                    {{idfTooltips.sys_child_tag_value.snowflake}}
+                                                                    <br>
+                                                                </div>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="form-group">
+                                                    <div class="col-sm-offset-3 col-sm-3">
+                                                        <input type="button" class="btn btn-default form-control ellipsis-the-overflow" value="Delete Child Tag"
+                                                               ng-click="deleteChildTag($parent.$parent.$index, $parent.$index, $index)">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-4 col-sm-offset-2">
+                                                <input type="button" class="btn btn-default form-control ellipsis-the-overflow" value="Add Another Child Tag"
+                                                       ng-click="addAnotherChild($parent.$index, $index)">
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <input type="button" class="btn btn-default form-control ellipsis-the-overflow" value="Delete All Child Tags"
+                                                       ng-click="deleteAllChildTags($parent.$index, $index)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" ng-show="showTagChildren[$parent.$index][$index]">
+                                <div class="form-group">
+                                    <div class="col-sm-offset-2 col-sm-2">
+                                        <input type="button" class="btn btn-default form-control ellipsis-the-overflow" value="Delete Tag"
+                                               ng-click="deleteTag($parent.$parent.$index, $parent.$index, $index, 'tag')">
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                        </div>
+                        <br><br>
+                        <div class="form-group">
+                            <div class="col-sm-10 col-sm-offset-3">
+                                <input type="button" class="btn btn-default" value="Add Another Tag"
+                                       ng-click="addAnotherTag($parent.$index, $index, 'tag')">
+                                <input type="button" class="btn btn-default" value="Reset"
+                                       ng-click="resetTag($parent.$index, $index, 'tag', 'yes')">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="collapse" id="subsys{{$index}}" role="tabpanel">
+                        <br><br>
+                        <div class="row" ng-show="showSavedSubsystem[$index]">
+                            <div class="form-group" style="padding-left:0">
+                                <label style="color:rgb(214, 48, 48)" class="col-sm-1 control-label text-info text-uppercase">Subsystems</label>
+                            </div>
+                        </div>
+                        <div class="form-group" ng-show="showSavedSubsystem[$index] && (subsysBeingEdited != 0)">
+                            <div class="col-sm-12">
+                                <table class='table table-bordered table-condensed table-hover'>
+                                    <thead>
+                                    <tr>
+                                        <th class='text-muted text-right'>#</th>
+                                        <th class='text-muted'>Subsystem Name</th>
+                                        <th class='text-muted'>Child-Tags and Attributes</th>  <!-- col-sm-3 -->
+                                        <th class='text-muted'>Default</th>
+                                        <th class='text-muted'>Edit</th>
+                                        <th class='text-muted'>Delete</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr ng-repeat="subsys in subsys_info[$index]" ng-hide="$index >= subsysBeingEdited">
+                                        <td class="text-right">{{ $index + 1 }}</td>
+                                        <td>{{subsys_name_list[$parent.$index][$index]}}</td>
+                                        <td>
+                                            <div>
+                                                <div ng-repeat="subsys in subsys_info[$parent.$index][$index]">
+                                                    {{ $index + 1 }}. {{subsys[0]}}={{subsys[1]}}<br/>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div ng-if="defSubsystemList[$parent.$index][$index]">
+                                                Yes
+                                            </div>
+                                        </td>
+                                        <td ng-click="editSubsystem($parent.$index, $index)" class='text-center' style='vertical-align:middle'>
+                                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                        </td>
+                                        <td ng-click="resetTag($parent.$index, $index, 'subsys-tag', 'yes')" class='text-center' style='vertical-align:middle'>
+                                            <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div ng-repeat="subsys in subsys_info[$index]" ng-show="!showSpecificSubsys[$parent.$index][$index]">
+                        <br><br>
+                            <div ng-show="showCopySubsysTags">
+                                <div class="row">
+                                    <div class="form-group">
+                                        <div class="col-sm-10 col-sm-offset-1">
+                                            <label for="copyTagsFromSystem{{$parent.$index}}{{$index}}" class="col-sm-3 control-label">Copy Tags from System:</label>
+                                            <div class="col-sm-2">
+                                                <select class="form-control" id="copyTagsFromSystem{{$parent.$index}}{{$index}}"
+                                                        ng-model="selectedSystem" ng-change="updateSelectedSystem(selectedSystem, $parent.$index, $index)">
+                                                    <option ng-repeat="option in sysListForTagCopying[$parent.$index]" class="dropdown-content">{{option}}</option>
+                                                </select>
+                                            </div>
+                                            <label for="copyTagsFromSubsys" class="col-sm-2 control-label">and Subsystem:</label>
+                                            <div class="col-sm-2">
+                                                <select class="form-control" id="copyTagsFromSubsys" ng-model="selectedSubsystem"
+                                                        ng-change="updateSelectedSubsystem(selectedSubsystem, $parent.$index, $index)">
+                                                    <option ng-repeat="option in temp_model[$parent.$index][$index]"
+                                                            class="dropdown-content">{{option}}</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-sm-1">
+                                                <input type="button" class="btn btn-default" value="Go"
+                                                       ng-click="copyOverTagsFromSubSystem($parent.$index, $index)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                            <br>
+                            <div class="row">
+                                <div class="form-group">
+                                    <label for="ss_name{{$parent.$index}}{{$index}}" class="col-sm-2 control-label mandatory-field ellipsis-the-overflow">Subsystem {{$index+1}} Name</label>
+                                    <div class="tooltip-on-right align-fa-icon-after-label">
+                                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                        <span class="tooltip-content">
+                                            <div ng-if="idfTooltips.subsys_name.tooltip != ''">
+                                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{idfTooltips.subsys_name.tooltip}}
+                                                <br>
+                                            </div>
+                                            <div ng-if="idfTooltips.subsys_name.protip != ''">
+                                                <br>
+                                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{idfTooltips.subsys_name.protip}}
+                                                <br>
+                                            </div>
+                                            <div ng-if="idfTooltips.subsys_name.bantip != ''">
+                                                <br>
+                                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{idfTooltips.subsys_name.bantip}}
+                                                <br>
+                                            </div>
+                                            <div ng-if="idfTooltips.subsys_name.snowflake != ''">
+                                                <br>
+                                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{idfTooltips.subsys_name.snowflake}}
+                                                <br>
+                                            </div>
+                                        </span>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="ss_name{{$parent.$index}}{{$index}}"
+                                                   ng-model='subsys_name_list[$parent.$index][$index]'
+                                                   ng-blur="updateSubsysNameModel($parent.$index, $index)">
+                                            <span class="input-group-addon" style="background-color: white">
+                                                <input type="checkbox" id="defaultSubsys{{$parent.$index}}{{$index}}"
+                                                       ng-click="setSubsysAsDefault($parent.$index, $index)"
+                                                       ng-checked="defSubsystemList[$parent.$index][$index]">
+                                                <label for="defaultSubsys{{$parent.$index}}{{$index}}">&nbsp;Default</label>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-1 align-fa-icon-after-input">
+                                        <div class="tooltip-on-right">
+                                            <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                            <span class="tooltip-content">
+                                                <div ng-if="idfTooltips.subsys_name.tooltip != ''">
+                                                    <i class="fa fa-rocket" aria-hidden="true"></i>
+                                                    &nbsp;
+                                                    {{idfTooltips.subsys_name.tooltip}}
+                                                    <br>
+                                                </div>
+                                                <div ng-if="idfTooltips.subsys_name.protip != ''">
+                                                    <br>
+                                                    <i class="fa fa-bolt" aria-hidden="true"></i>
+                                                    &nbsp;
+                                                    {{idfTooltips.subsys_name.protip}}
+                                                    <br>
+                                                </div>
+                                                <div ng-if="idfTooltips.subsys_name.bantip != ''">
+                                                    <br>
+                                                    <i class="fa fa-ban" aria-hidden="true"></i>
+                                                    &nbsp;
+                                                    {{idfTooltips.subsys_name.bantip}}
+                                                    <br>
+                                                </div>
+                                                <div ng-if="idfTooltips.subsys_name.snowflake != ''">
+                                                    <br>
+                                                    <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                                    &nbsp;
+                                                    {{idfTooltips.subsys_name.snowflake}}
+                                                    <br>
+                                                </div>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                        <div ng-repeat="subsys in subsys_info[$parent.$index][$index]">
+                            <div class="row">
+                                <div class="form-group">
+                                    <label for="subsys_tag_name{{$parent.$parent.$index}}{{$parent.$index}}{{$index}}"
+                                           class="col-sm-2 control-label mandatory-field ellipsis-the-overflow">Tag {{$index+1}} Name</label>
+                                    <div class="tooltip-on-right align-fa-icon-after-label">
+                                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                        <span class="tooltip-content">
+                                            <div ng-if="idfTooltips.subsys_tag_name.tooltip != ''">
+                                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{idfTooltips.subsys_tag_name.tooltip}}
+                                                <br>
+                                            </div>
+                                            <div ng-if="idfTooltips.subsys_tag_name.protip != ''">
+                                                <br>
+                                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{idfTooltips.subsys_tag_name.protip}}
+                                                <br>
+                                            </div>
+                                            <div ng-if="idfTooltips.subsys_tag_name.bantip != ''">
+                                                <br>
+                                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{idfTooltips.subsys_tag_name.bantip}}
+                                                <br>
+                                            </div>
+                                            <div ng-if="idfTooltips.subsys_tag_name.snowflake != ''">
+                                                <br>
+                                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{idfTooltips.subsys_tag_name.snowflake}}
+                                                <br>
+                                            </div>
+                                        </span>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <input type="text" class="typeahead tag-default form-control"
+                                               id="subsys_tag_name{{$parent.$parent.$index}}{{$parent.$index}}{{$index}}"
+                                               ng-model='subsys_info[$parent.$parent.$index][$parent.$index][$index][0]'
+                                               ng-blur="updateSubsysTagNameModel($parent.$parent.$index, $parent.$index, $index)">
+                                    </div>
+                                    <div class="col-sm-1 align-fa-icon-after-input">
+                                        <div class="tooltip-on-right">
+                                            <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                            <span class="tooltip-content">
+                                                <div ng-if="idfTooltips.subsys_tag_name.tooltip != ''">
+                                                    <i class="fa fa-rocket" aria-hidden="true"></i>
+                                                    &nbsp;
+                                                    {{idfTooltips.subsys_tag_name.tooltip}}
+                                                    <br>
+                                                </div>
+                                                <div ng-if="idfTooltips.subsys_tag_name.protip != ''">
+                                                    <br>
+                                                    <i class="fa fa-bolt" aria-hidden="true"></i>
+                                                    &nbsp;
+                                                    {{idfTooltips.subsys_tag_name.protip}}
+                                                    <br>
+                                                </div>
+                                                <div ng-if="idfTooltips.subsys_tag_name.bantip != ''">
+                                                    <br>
+                                                    <i class="fa fa-ban" aria-hidden="true"></i>
+                                                    &nbsp;
+                                                    {{idfTooltips.subsys_tag_name.bantip}}
+                                                    <br>
+                                                </div>
+                                                <div ng-if="idfTooltips.subsys_tag_name.snowflake != ''">
+                                                    <br>
+                                                    <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                                    &nbsp;
+                                                    {{idfTooltips.subsys_tag_name.snowflake}}
+                                                    <br>
+                                                </div>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <label for="subsys_tag_value{{$parent.$parent.$index}}{{$parent.$index}}{{$index}}"
+                                           class="col-sm-2 control-label ellipsis-the-overflow">Tag {{$index+1}} Value</label>
+                                    <div class="tooltip-on-right align-fa-icon-after-label">
+                                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                        <span class="tooltip-content">
+                                            <div ng-if="idfTooltips.subsys_tag_value.tooltip != ''">
+                                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{idfTooltips.subsys_tag_value.tooltip}}
+                                                <br>
+                                            </div>
+                                            <div ng-if="idfTooltips.subsys_tag_value.protip != ''">
+                                                <br>
+                                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{idfTooltips.subsys_tag_value.protip}}
+                                                <br>
+                                            </div>
+                                            <div ng-if="idfTooltips.subsys_tag_value.bantip != ''">
+                                                <br>
+                                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{idfTooltips.subsys_tag_value.bantip}}
+                                                <br>
+                                            </div>
+                                            <div ng-if="idfTooltips.subsys_tag_value.snowflake != ''">
+                                                <br>
+                                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{idfTooltips.subsys_tag_value.snowflake}}
+                                                <br>
+                                            </div>
+                                        </span>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <input type="text" class="form-control" id="subsys_tag_value{{$parent.$parent.$index}}{{$parent.$index}}{{$index}}"
+                                               ng-model='subsys_info[$parent.$parent.$index][$parent.$index][$index][1]'
+                                        ng-blur="updateSubsysTagValueModel($parent.$parent.$index, $parent.$index, $index)">
+                                    </div>
+                                    <div class="col-sm-1 align-fa-icon-after-input">
+                                        <div class="tooltip-on-right">
+                                            <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                            <span class="tooltip-content">
+                                                <div ng-if="idfTooltips.subsys_tag_value.tooltip != ''">
+                                                    <i class="fa fa-rocket" aria-hidden="true"></i>
+                                                    &nbsp;
+                                                    {{idfTooltips.subsys_tag_value.tooltip}}
+                                                    <br>
+                                                </div>
+                                                <div ng-if="idfTooltips.subsys_tag_value.protip != ''">
+                                                    <br>
+                                                    <i class="fa fa-bolt" aria-hidden="true"></i>
+                                                    &nbsp;
+                                                    {{idfTooltips.subsys_tag_value.protip}}
+                                                    <br>
+                                                </div>
+                                                <div ng-if="idfTooltips.subsys_tag_value.bantip != ''">
+                                                    <br>
+                                                    <i class="fa fa-ban" aria-hidden="true"></i>
+                                                    &nbsp;
+                                                    {{idfTooltips.subsys_tag_value.bantip}}
+                                                    <br>
+                                                </div>
+                                                <div ng-if="idfTooltips.subsys_tag_value.snowflake != ''">
+                                                    <br>
+                                                    <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                                    &nbsp;
+                                                    {{idfTooltips.subsys_tag_value.snowflake}}
+                                                    <br>
+                                                </div>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                                    <!--<div class="col-sm-1">
+                                        <input type="button" class="btn btn-default" value="Add Child"
+                                               ng-click="">
+                                    </div>-->
+                            <div class="row">
+                                <div class="form-group">
+                                    <div class="col-sm-2 col-sm-offset-2">
+                                        <input type="button" class="btn btn-default" value="Delete Tag"
+                                               ng-click="deleteTag($parent.$parent.$index, $parent.$index, $index, 'subsys-tag')">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <br>
+                        </div>
+                        <br><br>
+                            <div class="row">
+                                <div class="form-group">
+                                    <div class="col-sm-10 col-sm-offset-3">
+                                        <input type="button" class="btn btn-default" value="Add Another Tag"
+                                               ng-click="addAnotherTag($parent.$index, $index, 'subsys')">
+                                        <input type="button" class="btn btn-default" value="Save Subsystem"
+                                               id="save_subsys{{$parent.$index}}{{$index}}"
+                                               ng-click="saveSubsys($parent.$index, $index)">
+                                        <input type="button" class="btn btn-default" value="Delete Subsystem"
+                                               ng-click="resetTag($parent.$index, $index, 'subsys-tag', 'yes')">
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                        </div>
+                        <div class="form-group" ng-show="showSavedSubsystem[$index] && (subsysBeingEdited != 'None') && (subsysBeingEdited != (subsys_info[$index].length-1))">
+                            <div class="col-sm-12">
+                                <table class='table table-bordered table-condensed table-hover'>
+                                    <thead>
+                                    <tr>
+                                        <th class='text-muted text-right'>#</th>
+                                        <th class='text-muted'>Subsystem Name</th>
+                                        <th class='text-muted'>Child-Tags and Attributes</th>  <!-- col-sm-3 -->
+                                        <th class='text-muted'>Default</th>
+                                        <th class='text-muted'>Edit</th>
+                                        <th class='text-muted'>Delete</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr ng-repeat="subsys in subsys_info[$index]" ng-show="$index > subsysBeingEdited">
+                                        <td class="text-right">{{ $index + 1 }}</td>
+                                        <td>{{subsys_name_list[$parent.$index][$index]}}</td>
+                                        <td>
+                                            <div>
+                                                <div ng-repeat="subsys in subsys_info[$parent.$index][$index]">
+                                                    {{ $index + 1 }}. {{subsys[0]}}={{subsys[1]}}<br/>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div ng-if="defSubsystemList[$parent.$index][$index]">
+                                                Yes
+                                            </div>
+                                        </td>
+                                        <td ng-click="editSubsystem($parent.$index, $index)" class='text-center' style='vertical-align:middle'>
+                                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                        </td>
+                                        <td ng-click="resetTag($parent.$index, $index, 'subsys-tag', 'yes')" class='text-center' style='vertical-align:middle'>
+                                            <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <br><br>
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-sm-10 col-sm-offset-2">
+                                    <input type="button" class="btn btn-default" id="addAnotherSubsys{{$index}}"
+                                           value="Add Another Subsystem" ng-click="addAnotherSubsys($index)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <br><br><br>
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-sm-10 col-sm-offset-2">
+                                <input type="button" class="btn btn-default" value="Save System" ng-click="saveSystemInfo($index)">
+                                <input type="button" class="btn btn-default" value="Delete System" ng-click="closeSystemEditor($index)">
+                            </div>
+                        </div>
+                    </div>
+                    <br><br>
+            </div>
+
+                <div class="form-group" ng-show="savedSystemTable && (systemBeingEdited != 'None') && (systemBeingEdited != system_info.length-1)">
+                    <div class="col-sm-12">
+                        <table class='table table-bordered table-condensed table-hover'>
+                            <thead>
+                            <tr>
+                                <th class='text-muted text-right'>#</th>
+                                <th class='text-muted'>System Name</th>
+                                <th class='text-muted'>System Child-Tags/Attributes</th> <!--  col-sm-2 -->
+                                <th class='text-muted'>Subsystem Details</th>
+                                <th class='text-muted'>Default</th> <!--  col-sm-2 -->
+                                <th class='text-muted'>Edit</th>
+                                <th class='text-muted'>Delete</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat='system in system_info track by $index' ng-show="$index > systemBeingEdited">
+                                <td class="text-right">{{ $index + 1 }}</td>
+                                <td>{{ system }}</td>
+
+                                <td>
+                                    <div ng-repeat='tag in tag_info[$index]'>
+                                        <div ng-repeat="childTag in childTagsList[$parent.$index][$index]">
+                                                <div ng-if="childTag[0]">
+                                                    <div ng-if="$parent.$index == 0 && $index == 0">
+                                                        <br>
+                                                        <b>Tag Name: </b>{{tag[0]}}
+                                                        <br>
+                                                        <b>Child Tags:</b>
+                                                    </div>
+                                                    {{childTag[0]}} = {{childTag[1]}}
+                                                </div>
+                                                <div ng-if="!childTag[0] && tag[0]">
+                                                    {{tag[0]}} = {{tag[1]}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <br>
+                                </td>
+
+                                <td>
+                                    <div ng-repeat='subsys in subsys_info[$index]'>
+                                        <div ng-if="subsys_name_list[$parent.$index][$index]">
+                                            <br>
+                                            <b>Subsystem {{$index+1}} Name =</b> {{subsys_name_list[$parent.$parent.$index][$parent.$index]}}
+                                            <br>
+                                            <div ng-if="defSubsystemList[$parent.$parent.$index][$parent.$index]">
+                                                <b>Default = </b>Yes
+                                            </div>
+                                            <b>Subsystem {{$index+1}} Child-Tags/Attributes</b>
+                                            <div ng-repeat='subsys_details in subsys'>
+                                                {{$index+1}}. {{subsys_details[0]}} = {{subsys_details[1]}}
+                                            </div>
+                                            <br>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div ng-if="defSystemList[$index]">
+                                        Yes
+                                    </div>
+                                </td>
+
+                                <td ng-click="editSystem($index)" class='text-center' style='vertical-align:middle'>
+                                    <div class="tooltip-on-left-dark-big">
+                                        <span class="fa fa-pencil-square-o" aria-hidden="true"></span>
+                                        <span class="tooltip-content text-left">
+                                            <div ng-if="idfTooltips.edit_system.tooltip != ''">
+                                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{idfTooltips.edit_system.tooltip}}
+                                                <br>
+                                            </div>
+                                            <div ng-if="idfTooltips.edit_system.protip != ''">
+                                                <br>
+                                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{idfTooltips.edit_system.protip}}
+                                                <br>
+                                            </div>
+                                            <div ng-if="idfTooltips.edit_system.bantip != ''">
+                                                <br>
+                                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{idfTooltips.edit_system.bantip}}
+                                                <br>
+                                            </div>
+                                            <div ng-if="idfTooltips.edit_system.snowflake != ''">
+                                                <br>
+                                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{idfTooltips.edit_system.snowflake}}
+                                                <br>
+                                            </div>
+                                        </span>
+                                    </div>
+                                </td>
+
+                                <td ng-click='closeSystemEditor($index)' class='text-center' style='vertical-align:middle'>
+                                    <div class="tooltip-on-left-dark-big">
+                                        <span class="fa fa-times-circle-o" aria-hidden="true"></span>
+                                        <span class="tooltip-content text-left">
+                                            <div ng-if="idfTooltips.delete_system.tooltip != ''">
+                                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{idfTooltips.delete_system.tooltip}}
+                                                <br>
+                                            </div>
+                                            <div ng-if="idfTooltips.delete_system.protip != ''">
+                                                <br>
+                                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{idfTooltips.delete_system.protip}}
+                                                <br>
+                                            </div>
+                                            <div ng-if="idfTooltips.delete_system.bantip != ''">
+                                                <br>
+                                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{idfTooltips.delete_system.bantip}}
+                                                <br>
+                                            </div>
+                                            <div ng-if="idfTooltips.delete_system.snowflake != ''">
+                                                <br>
+                                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{idfTooltips.delete_system.snowflake}}
+                                                <br>
+                                            </div>
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+        </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-sm-10 col-sm-offset-3">
+                        <input type="button" class="btn btn-default" value="Add Another System" ng-click="insertAnotherSystem()">
+                        <input type="button" class="btn btn-default" value="Save" ng-click="saveDataFile()">
+                        <input type="button" class="btn btn-default" value="Cancel" ng-click="cancelDataFile()">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

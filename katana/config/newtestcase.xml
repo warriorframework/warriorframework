@@ -1,0 +1,37 @@
+<Testcase>
+	<Details>
+		<Name></Name>
+		<Title></Title>
+		<Engineer></Engineer>
+		<Date></Date>
+		<Time></Time>
+		<State></State>
+		<InputDataFile></InputDataFile>
+		<Datatype></Datatype>
+		<default_onError action="next"/>
+		<Logsdir></Logsdir>
+        <Resultsdir></Resultsdir>
+        <ExpectedResults></ExpectedResults>
+	</Details>
+	<Requirements>
+	</Requirements>
+	<Steps>
+		<!--
+		<step Driver="cli_driver" Keyword="connect_ssh" >
+			<Arguments>
+	            <argument name='system_name' value="dpoe01"/>
+	        </Arguments>
+	    </step>
+		<step Driver="cli_driver" Keyword="connect_ssh" >
+			<Arguments>
+	            <argument name='system_name' value="dpoe03" />
+	        </Arguments>
+	    </step>
+		<step Driver="cli_driver" Keyword="connect_ssh" >
+			<Arguments>
+	        	<argument name='system_name' value="schatterlnx02" />
+	        </Arguments>
+	    </step>
+		-->
+	</Steps>
+</Testcase>

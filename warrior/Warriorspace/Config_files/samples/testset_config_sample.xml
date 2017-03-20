@@ -1,0 +1,110 @@
+<!-- Instructions and description on using this testset config file. 
+The testset config file has multiple test_set blocks.
+
+Each block has a set of inputs for the respective testset.
+The block also includes input arguments for each keyword (more details below).
+
+1.Input Parameters xml under Config_files needs to be defined for usage of any testset.
+ During connect few testset level and class level parameters needs to be defined.
+ At keyword level its own specific keywords needs to be used
+
+2.Library level parameters like Make, Model of the testset, IP, Port and Serial Number etc., 
+ which needs to be defined
+ Eg:
+   <test_set name="JDSUTBerd" make="JDSU" model="TBerd" conn_type="telnet" port="8000" ip="167.254.212.185" serial_number="222">
+
+3.Class Level parameters (init_parameters) which will be used through for all keywords of its
+ specific test set needs to be defined
+ Eg:
+   <init_parameters function='SONET'  module= 'BERT' application= 'TermOc192Sts192cBert' side= 'OPPS' slice_id= 'SLIC1'/>
+
+4.Keyword Level parameters (under data_set) which will be used within that particular keyword 
+ needs to be defined
+
+ Arguments needed for using a keyword for a specific testset can be identified using Warrior documentation.
+ Keyword input arguments should be the element tag for data_set block.
+
+ For eg: 
+   Input argument for 'source_alarm' keyword identified as 'condition_name' from following function signature:
+   def source_alarm(self, condition_name=None, **discard):
+
+   'condition_name' value can be given under data_set block in either of 2 ways:
+   1. if source_alarm is used only once in the script.
+      <condition_name>alarm_PHY_LOS</condition_name>
+   2. if source_alarm is used multiple times.  For the case where source_alarm is used with 3 different conditions in the script,
+      below is the way you define the argument in data_set.
+      <condition_name alarm_los="alarm_PHY_LOS" alarm_aisl="alarm_AISL" alarm_vtuneq="alarm_VTUNEQP"/>
+
+ Eg: data_set block format as follows
+    <data_set>
+      <overhead_data>0</overhead_data>
+      <overhead_type>overhead_K1K2</overhead_type>
+      <length>1</length>        
+      <user_pattern>0</user_pattern>
+      <sts_spe>spe_sts1</sts_spe>
+      <test_mode>mode_coupled</test_mode>i
+      <condition_name alarm_los="alarm_PHY_LOS" alarm_aisl="alarm_AISL" alarm_vtuneq="alarm_VTUNEQP"/>
+    </data_set>
+
+5.If the same keyword needs to be called with different arguments, below pattern can be followed
+ Eg:
+   <condition_name alarm_los="alarm_PHY_LOS" alarm_aisl="alarm_AISL" alarm_vtuneq="alarm_VTUNEQP"/>
+ 
+ This is called from the testcase within argument node with "name=list_of_keys" and "value=['name used in data_set']"
+ eg:
+   <argument name="list_of_keys" value="['alarm_aisl']"/>
+
+
+How to simulate test sets using DIP?
+
+Testsets can be simulated using DIP, testset_config format for the DIP is similiar to normal testset block.
+1. Library level parameters: name, make(DIP), model(product - eg. onefinity), conn_type, port, ip, serial_number
+2. Class Level parameters: username, password, prompt(expected cli prompt during login)
+   Optional class level parameters for DIP initialization:
+	   a. su_command - command to switch user
+	   b. su_password - su password
+	   c. su_prompt - expected cli(su) end prompt(default value - ".*(%|#|\$)")
+	   d. su_init_commands - list of DIP commands to be executed(default value - "[]")
+   su_command and su_password are mandatory for DIP initialization
+3. Keyword Level parameters: Mandatory keyword specific parameters and optional parameters.
+   Optional keyword level parameters:
+	   a. start_prompt - expected cli start prompt
+	   b. end_prompt - expected cli end prompt
+	   c. timeout - command timeout duration
+	   d. search_string - string to be searched in the command response
+
+Format for data file & test case file are similiar to normal tetset, please refer below files for more information:
+for data file - warrior_main/Warrior/Warriorspace/Data/samples/testset_Data_sample.xml
+for tc file - warrior_main/Warrior/Warriorspace/Testcases/samples/testset_tc_sample.xml
+
+-->
+<Testsets>
+
+    
+    <test_set name="JDSUTBerd" make="JDSU" model="TBerd" conn_type="telnet" port="8000" ip="167.254.212.185" serial_number="222" >
+      <init_parameters function='SONET'  module= 'BERT' application= 'TermOc192Sts192cBert' side= 'OPPS' slice_id= 'SLIC1' signal= 'OC192' rate= 'STS192C'/>
+      <data_set>
+        
+        <condition_name alarm_los="alarm_PHY_LOS" alarm_aisl="alarm_AISL"/>
+        <alarm>LOS</alarm>
+        <alarm_type>LOS</alarm_type>
+        <error_type err_ty1='TSE' err_ty2='error_B1'  err_ty3='error_B2' err_ty4='error_B3' err_ty5='error_CVV' verr_ty1='FAS' verr_ty2='B1'  verr_ty3='B2' verr_ty4='B3'/>
+        <insert_rate rate_e9="rate_1E-9" rate_e7="rate_1E-7"></insert_rate>
+        <insert_mode mode_rate="insert_RATE" mode_single="insert_SING"></insert_mode>
+      </data_set>
+    </test_set>
+    
+    <!-- To simulate testset using DIP -->
+    <test_set name="DIP1" make="DIP" model="onefinity" conn_type="ssh" port="11111" ip="1.1.1.1" serial_number="" >
+        <init_parameters username="username" password="password" prompt=".*\$" su_command="sudo su -" su_password="su_password" su_prompt=".*#" su_init_commands="['/usr/bin/hal_ctrl_sim 6 &amp;']"/>
+        <data_set>
+            <dip_command src_alrm="/tmp/dip/hal/sim/set_alarm PORT 1 0 0 C1 0 0 0 eqpt_rmvd 1" rmv_alrm="/tmp/dip/hal/sim/set_alarm PORT 1 0 0 C1 0 0 0 eqpt_rmvd 0" />
+            <!-- start_prompt, end_prompt, timeout & search_string are optional -->
+            <start_prompt start_prompt1=".*" />
+            <end_prompt end_prompt1="\$" />
+            <timeout timeout1="30" />
+            <search_string search_string1="" />
+        </data_set>
+    </test_set>
+
+</Testsets>

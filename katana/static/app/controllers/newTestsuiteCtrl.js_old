@@ -1,0 +1,251 @@
+app.controller('newTestsuiteCtrl', ['$scope', '$http', '$location', '$route', '$controller', '$timeout', 'saveNewTestsuiteFactory', 'fileFactory',
+    function($scope, $http, $location, $route, $controller, $timeout, saveNewTestsuiteFactory, fileFactory) {
+
+        $scope.resultsdirSuite = '';
+        $scope.suitereqs = [""];
+        $scope.date = new Date();
+        $scope.newtestsuiteTooltip = [];
+        
+        var ChildCtrl=this;
+        ChildCtrl.baseCtrl = $controller('baseChariotCtrl',{ $scope: $scope, $http: $http });
+
+        $scope.testcases = [{
+            "path": "",
+            "context": "",
+            "runtype": "",
+            "onError": {
+                "_action": "next",
+                "_value": ""
+            },
+            "impact": "impact"
+        }];
+
+        fileFactory.readtooltipfile('testsuite')
+            .then(
+                function(data) {    
+                    console.log(data);
+                    $scope.newtestsuiteTooltip = data;
+                },
+                function(data) {
+                    alert(data);
+                });
+        
+        $scope.defaultRuntypes = ['sequential_keywords', 'parallel_keywords']; //Options in the dropdown for the default on runtype.
+        $scope.defaultRuntype = 'sequential_keywords'; //this will be the default value shown in the dropdown
+
+        $scope.defaultContexts = ['positive', 'negative']; //Options in the dropdown for the default on context.
+        $scope.defaultContext = 'positive'; //this will be the default value shown in the dropdown
+
+        $scope.defaultExectypes = ['sequential_testcases', 'parallel_testcases', 'Run_Until_Fail', 'Run_Multiple']; //Options in the dropdown for the default on exectype.
+        $scope.defaultExectype = 'Functional'; //this will be the default value shown in the dropdown
+        $scope.isMaxAttempSelected = function() {
+            if ($scope.exectype == 'Run_Until_Fail') {
+                console.log("Run_Until_Fail");
+                return true;
+            } else {
+                return false;
+            }
+        };
+        $scope.isNumAttempSelected = function() {
+            if ($scope.exectype == 'Run_Multiple') {
+                console.log("Run_Multiple");
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        $scope.defaultSuiteActions = ['next', 'abort', 'goto']; //Options in the dropdown for the default on error action.
+        $scope.defaultSuiteAction = 'next'; //this will be the default value shown in the dropdown
+        $scope.isGotoSelectedSuite = function() {
+            if ($scope.defaultSuiteAction == 'goto') {
+                console.log("goto");
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        $scope.isGotoSelectedTestcase = function(action) {
+            if (action != undefined) {
+                if (action.indexOf('goto') != -1) {
+                    return true;
+                }
+            }
+            return false;
+        }   
+
+        $scope.deleteTestcase = function(index) {
+            if ($scope.testcases.length > 1) {
+                $scope.testcases.splice(index, 1);
+            } else {
+                alert('The testsuite requires at least one test case!');
+            }
+        }
+
+        $scope.addTestcase = function() {
+            $scope.testcases.push({
+                "path": "",
+                "runtype": "",
+                "runtype": "",
+                "onError": {
+                    "_action": "",
+                    "_value": ""
+                },
+                "impact": "impact"
+            });
+        }
+
+        //Requirements Section
+        $scope.appendSuiteReqFields = function() {
+            $scope.suitereqs.push("");
+        }
+
+        $scope.deleteSuiteReqField = function(index) {
+            if ($scope.suitereqs.length > 1) {
+                $scope.suitereqs.splice(index, 1);
+            } else {
+                alert("Testsuite Requires at least one requirement!");
+            }
+        }
+
+        $scope.changeTestsuiteImpact = function(impact, index) {
+            if (impact == true) {
+                $scope.testcases[index].impact = 'impact';
+            } else {
+                $scope.testcases[index].impact = 'noimpact';
+            }
+        }        
+
+        //Impact Section
+        $scope.isTestsuiteImpacted = function(index) {
+            if ($scope.testcases[index].impact == 'noimpact') {
+                $scope.changeTestsuiteImpact(false, index);
+                return false;
+            } else {
+                $scope.changeTestsuiteImpact(true, index);
+                return true;
+            }
+        }
+
+        $timeout(function() {
+
+            $scope.suiteDate = ChildCtrl.baseCtrl.getDate();
+            $scope.suiteTime = ChildCtrl.baseCtrl.getTime();
+            $scope.suiteEngineer = $scope.cfg.engineer;        
+
+        }, 500);        
+
+        //save functionality section
+        $scope.saveTestsuite = function() {
+            if ($scope.testsuitename == undefined || $scope.testsuitename === '') {
+                alert('Suite name is mandatory!');
+            } else if ($scope.exectype == undefined) {
+                alert('Type is mandatory!');
+            } else if ($scope.exectype === 'Run_Until_Fail' && $scope.maxAttempts == undefined) {
+                alert('Max attempt should be specified for type Run Until Fail!');
+            } else if ($scope.exectype === 'Run_Multiple' && $scope.numAttempts == undefined) {
+                alert('Number of attempt should be specified for type Run Multiple!');
+            } else if ($scope.defaultSuiteAction === 'goto' && $scope.gotovalueSuite == undefined) {
+                alert('Step to go should be specified for default on error action GoTo!');
+            }  else {
+
+                var inValid = false;
+                var msg = '';
+
+
+                $.each($scope.testcases, function(index, value) {
+                    var step = parseInt(index) + 1; 
+                    if (value.path == undefined || value.path === '') {
+                        inValid = true;
+                        msg = 'Path should be specified for the Test Case ' + step + '!';
+                        return false;
+                    } else if (value.onError._action === 'goto' && (value.onError._value == undefined || value.onError._value === '')) {
+                        inValid = true;
+                        msg = 'Test case to go should be specified for default on error action GoTo for the Test Case ' + step + '!';
+                    } 
+                })
+
+                if (inValid) {
+                    alert(msg);
+                } else {
+
+                    var filename = $scope.testsuitename + ".xml";
+
+                    fileFactory.checkfileexist(filename, 'suite')
+                        .then(
+                            function(data) {    
+                                console.log(data);
+                                var fileExist = data.response;
+
+                                if (fileExist == 'yes') {
+                                    var r = confirm("File already exist. Do you want to override?");
+                                    if (r == true) {
+                                        save(filename);
+                                    } else {
+                                         return false;
+                                    }
+                                } else {
+                                    save(filename);
+                                }
+                            },
+                            function(data) {
+                                alert(data);
+                            });
+                }
+             }                           
+        }
+
+        $scope.cancelSuite = function() {
+            $location.path('/testsuites');        
+        }
+
+        function save(filename) {
+           var finalJSON = {
+                "TestSuite": {
+                    "Details": {
+                        "Name": $scope.testsuitename,
+                        "Title": $scope.testsuitetitle,
+                        "Engineer": $scope.suiteEngineer,
+                        "Date": $scope.suiteDate,
+                        "Time": $scope.suiteTime,   
+                        "type": {
+                            "_exectype": $scope.exectype,
+                            "_Max_Attempts": $scope.maxAttempts,
+                            "_Number_Attempts": $scope.numAttempts
+                        },                        
+                        "default_onError": {
+                            "_action": $scope.defaultSuiteAction,
+                            "_value": $scope.gotovalueSuite
+                        },
+                        "Resultsdir": $scope.resultsdirSuite
+                    },
+                    "Requirements": {
+                        "Requirement": $scope.suitereqs
+                    },
+                    "Testcases": {
+                        "Testcase": $scope.testcases
+                    }
+                }
+            }
+            var x2js = new X2JS();
+            var token = angular.toJson(finalJSON);
+            var xmlObj = x2js.json2xml_str(JSON.parse(token));
+            saveNewTestsuiteFactory.saveNew(filename, xmlObj)
+                .then(
+                    function(data) {
+                        console.log(data);
+                    },
+                    function(data) {
+                        alert(data);
+                    });
+
+            if ($scope.savecreateTestsuite == true) {
+                $route.reload(); 
+            }  else {
+                $location.path('/testsuites');          
+            }         
+        }
+
+    }
+]);

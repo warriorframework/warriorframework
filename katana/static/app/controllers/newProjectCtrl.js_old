@@ -1,0 +1,192 @@
+app.controller('newProjectCtrl', ['$scope', '$http', '$controller', '$location', '$route', '$timeout', 'saveasProjectFactory', 'fileFactory',
+    function($scope, $http, $controller, $location, $route, $timeout, saveasProjectFactory, fileFactory) {
+
+
+        $scope.defaultProjectActions = ['next', 'abort', 'goto'];
+        $scope.newProjecttooltips = {}; 
+        $scope.resultsdirPrj = '';
+
+        var ChildCtrl=this;
+        ChildCtrl.baseCtrl = $controller('baseChariotCtrl',{ $scope: $scope, $http: $http });
+
+        fileFactory.readtooltipfile('project')
+            .then(
+                function(data) {    
+                    console.log(data);
+                    $scope.newProjecttooltips = data;
+                },
+                function(data) {
+                    alert(data);
+                });   
+        
+        $scope.isGotoSelectedProject = function() {
+            if ($scope.defaultProjectAction == 'goto') {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        $scope.isGotoSelectedSuite = function(action) {
+            if (action != undefined) {
+                if (action.indexOf('goto') != -1) {
+                    return true;
+                }
+            }
+            return false;
+        }        
+
+        $scope.suites = [{
+            "path": "",
+            "onError": {
+                "_action": "next",
+                "_value": ""
+            },
+            "impact": "impact"                        
+        }];
+
+        $scope.deleteSuite = function(index) {
+            if ($scope.suites.length > 1) {
+                $scope.suites.splice(index, 1);
+            } else {
+                alert('The project requires at least one test suite!');
+            }
+
+        };
+
+        $scope.addSuite = function() {
+            $scope.suites.push({
+                "path": "",
+                "onError": {
+                    "_action": "next",
+                    "_value": ""
+                },
+                "impact": "impact"                 
+            });
+        };
+
+        $timeout(function() {
+
+            $scope.prjDate = ChildCtrl.baseCtrl.getDate();
+            $scope.prjTime = ChildCtrl.baseCtrl.getTime();
+            $scope.prjEngineer = $scope.cfg.engineer;        
+
+        }, 500);
+
+        $scope.changeProjectImpact = function(impact, index) {
+            if (impact == true) {
+                $scope.suites[index].impact = 'impact';
+            } else {
+                $scope.suites[index].impact = 'noimpact';
+            }
+        }        
+
+        //Impact Section
+        $scope.isProjectImpacted = function(index) {
+            if ($scope.suites[index].impact == 'noimpact') {
+                $scope.changeProjectImpact(false, index);
+                return false;
+            } else {
+                $scope.changeProjectImpact(true, index);
+                return true;
+            }
+        }        
+
+        $scope.saveProject = function() {
+            
+            if ($scope.projectName == undefined || $scope.projectName.trim().length == 0) {
+                alert('Project name is mandatory!');
+            } else if ($scope.defaultProjectAction === 'goto' && $scope.gotoStep == undefined) {
+                alert('Step to go should be specified for default on error action GoTo!');
+            }  else {
+        
+                var inValid = false;
+                var msg = '';
+
+
+                $.each($scope.suites, function(index, value) {
+                    var step = parseInt(index) + 1; 
+                    if (value.path == undefined || value.path === '') {
+                        inValid = true;
+                        msg = 'Path should be specified for the Test Suite ' + step + '!';
+                        return false;
+                    } else if (value.onError._action === 'goto' && (value.onError._value == undefined || value.onError._value === '')) {
+                        inValid = true;
+                        msg = 'Test suite to go should be specified for default on error action GoTo for the Test Suite ' + step + '!';
+                    } 
+                })
+
+                if (inValid) {
+                    alert(msg);
+                } else {
+
+                    var filename = $scope.projectName + ".xml";
+
+                    fileFactory.checkfileexist(filename, 'project')
+                        .then(
+                            function(data) {    
+                                console.log(data);
+                                var fileExist = data.response;
+
+                                if (fileExist == 'yes') {
+                                    var r = confirm("File already exist. Do you want to override?");
+                                    if (r == true) {
+                                        save(filename);
+                                    } else {
+                                         return false;
+                                    }
+                                } else {
+                                    save(filename);
+                                }
+                            },
+                            function(data) {
+                                alert(data);
+                            });
+                }
+            }
+        }
+
+        $scope.cancelProject = function() {
+            $location.path('/projects');        
+        }
+
+        function save(filename) {
+            var finalJSON = {
+                "Project": {
+                    "Details": {
+                        "Name": $scope.projectName,
+                        "Title": $scope.projectTitle,
+                        "Engineer": $scope.prjEngineer,
+                        "Date": $scope.prjDate,
+                        "Time": $scope.prjTime,                        
+                        "default_onError": {
+                            "_action": $scope.defaultProjectAction,
+                            "_value": $scope.gotoStep
+                        },
+                        "Resultsdir": $scope.resultsdirPrj
+                    },
+                    "Testsuites": {
+                        "Testsuite": $scope.suites
+                    }
+                }
+            }
+            var x2js = new X2JS();
+            var token = angular.toJson(finalJSON);
+            var xmlObj = x2js.json2xml_str(JSON.parse(token));
+            saveasProjectFactory.projectsaveas(filename, xmlObj)
+                .then(
+                    function(data) {
+                        console.log(data);
+                    },
+                    function(data) {
+                        alert(data);
+                    });
+
+            if ($scope.savecreateProject == true) {
+                $route.reload(); 
+            }  else {
+                $location.path('/projects');          
+            }         
+        }
+    }
+]);

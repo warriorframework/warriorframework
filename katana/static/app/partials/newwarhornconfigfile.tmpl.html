@@ -1,0 +1,2032 @@
+<!DOCTYPE html>
+<div class='col-md-12'>
+    <h4>
+        <b>Katana Warhorn Configuration File Editor</b>
+    </h4>
+    <hr/>
+    <form action="" method="post" class="form-horizontal" role="form">
+        <br>
+        <div class="row">
+            <div class="form-group">
+                <label for="wcf_name" class="col-sm-2 control-label mandatory-field ellipsis-the-overflow">File Name</label>
+                <div class="tooltip-on-right align-fa-icon-after-label">
+                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                    <span class="tooltip-content">
+                        <div ng-if="wcfTooltips.wcf_name.tooltip != ''">
+                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                            &nbsp;
+                            {{wcfTooltips.wcf_name.tooltip}}
+                            <br>
+                        </div>
+                        <div ng-if="wcfTooltips.wcf_name.protip != ''">
+                            <br>
+                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                            &nbsp;
+                            {{wcfTooltips.wcf_name.protip}}
+                            <br>
+                        </div>
+                        <div ng-if="wcfTooltips.wcf_name.bantip != ''">
+                            <br>
+                            <i class="fa fa-ban" aria-hidden="true"></i>
+                            &nbsp;
+                            {{wcfTooltips.wcf_name.bantip}}
+                            <br>
+                        </div>
+                        <div ng-if="wcfTooltips.wcf_name.snowflake != ''">
+                            <br>
+                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                            &nbsp;
+                            {{wcfTooltips.wcf_name.snowflake}}
+                            <br>
+                        </div>
+                    </span>
+                </div>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="wcf_name" ng-model='wcf_name'>
+                </div>
+                <div class="col-sm-1 align-fa-icon-after-input">
+                    <div class="tooltip-on-right">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                            <div ng-if="wcfTooltips.wcf_name.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.wcf_name.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.wcf_name.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.wcf_name.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.wcf_name.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.wcf_name.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.wcf_name.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.wcf_name.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <br><hr><br>
+        <div class="row">
+            <div class="form-group">
+                <label class="col-sm-2 text-uppercase mandatory-field" style="padding-left: 3em">Dependencies</label>
+            </div>
+        </div>
+        <br>
+
+        <div class="row">
+            <div class="form-group">
+                <div class="col-sm-6 col-sm-offset-2">
+                    <table class='table table-bordered table-condensed table-hover'>
+                        <thead>
+                        <tr>
+                            <th class='text-muted'>#</th>
+                            <th class='text-muted'>Dependency</th>
+                            <th class='text-muted'>Version That Will Be Installed</th>
+                            <th class='text-muted text-center'>Install?</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat='dependency in dependencies track by $index'>
+                            <td>{{ $index + 1 }}</td>
+                            <td>{{dependency[0]}}</td>
+                            <td>{{dependency[2]}}</td>
+                            <td class="text-center">
+                                <input type="checkbox" ng-checked='dependency[1]' ng-click="updateDependency($index)">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <br><hr><br>
+
+        <div class="row">
+            <div class="form-group">
+                <label class="col-sm-3 text-uppercase mandatory-field" style="padding-left: 3em">Warrior Installation Details</label>
+            </div>
+        </div>
+        <br>
+
+        <div class="row">
+            <div class="form-group">
+                <label for="warrior_url" class="col-sm-2 control-label mandatory-field ellipsis-the-overflow">URL</label>
+                <div class="tooltip-on-right align-fa-icon-after-label">
+                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                    <span class="tooltip-content">
+                        <div ng-if="wcfTooltips.warrior_url.tooltip != ''">
+                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                            &nbsp;
+                            {{wcfTooltips.warrior_url.tooltip}}
+                            <br>
+                        </div>
+                        <div ng-if="wcfTooltips.warrior_url.protip != ''">
+                            <br>
+                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                            &nbsp;
+                            {{wcfTooltips.warrior_url.protip}}
+                            <br>
+                        </div>
+                        <div ng-if="wcfTooltips.warrior_url.bantip != ''">
+                            <br>
+                            <i class="fa fa-ban" aria-hidden="true"></i>
+                            &nbsp;
+                            {{wcfTooltips.warrior_url.bantip}}
+                            <br>
+                        </div>
+                        <div ng-if="wcfTooltips.warrior_url.snowflake != ''">
+                            <br>
+                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                            &nbsp;
+                            {{wcfTooltips.warrior_url.snowflake}}
+                            <br>
+                        </div>
+                    </span>
+                </div>
+                <div class="col-sm-6">
+                    <input class="form-control" id="warrior_url" type="text" ng-model="jsonData.data.warrior._url">
+                </div>
+                <div class="col-sm-1 align-fa-icon-after-input">
+                    <div class="tooltip-on-right">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                            <div ng-if="wcfTooltips.warrior_url.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.warrior_url.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.warrior_url.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.warrior_url.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.warrior_url.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.warrior_url.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.warrior_url.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.warrior_url.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <label for="warrior_label" class="col-sm-2 control-label ellipsis-the-overflow">Label</label>
+                <div class="tooltip-on-right align-fa-icon-after-label">
+                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                    <span class="tooltip-content">
+                        <div ng-if="wcfTooltips.warrior_label.tooltip != ''">
+                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                            &nbsp;
+                            {{wcfTooltips.warrior_label.tooltip}}
+                            <br>
+                        </div>
+                        <div ng-if="wcfTooltips.warrior_label.protip != ''">
+                            <br>
+                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                            &nbsp;
+                            {{wcfTooltips.warrior_label.protip}}
+                            <br>
+                        </div>
+                        <div ng-if="wcfTooltips.warrior_label.bantip != ''">
+                            <br>
+                            <i class="fa fa-ban" aria-hidden="true"></i>
+                            &nbsp;
+                            {{wcfTooltips.warrior_label.bantip}}
+                            <br>
+                        </div>
+                        <div ng-if="wcfTooltips.warrior_label.snowflake != ''">
+                            <br>
+                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                            &nbsp;
+                            {{wcfTooltips.warrior_label.snowflake}}
+                            <br>
+                        </div>
+                    </span>
+                </div>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="warrior_label" ng-model='jsonData.data.warrior._label'>
+                </div>
+                <div class="col-sm-1 align-fa-icon-after-input">
+                    <div class="tooltip-on-right">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                            <div ng-if="wcfTooltips.warrior_label.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.warrior_label.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.warrior_label.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.warrior_label.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.warrior_label.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.warrior_label.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.warrior_label.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.warrior_label.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <label for="warrior_destination" class="col-sm-2 control-label ellipsis-the-overflow">Destination</label>
+                <div class="tooltip-on-right align-fa-icon-after-label">
+                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                    <span class="tooltip-content">
+                        <div ng-if="wcfTooltips.warrior_dest.tooltip != ''">
+                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                            &nbsp;
+                            {{wcfTooltips.warrior_dest.tooltip}}
+                            <br>
+                        </div>
+                        <div ng-if="wcfTooltips.warrior_dest.protip != ''">
+                            <br>
+                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                            &nbsp;
+                            {{wcfTooltips.warrior_dest.protip}}
+                            <br>
+                        </div>
+                        <div ng-if="wcfTooltips.warrior_dest.bantip != ''">
+                            <br>
+                            <i class="fa fa-ban" aria-hidden="true"></i>
+                            &nbsp;
+                            {{wcfTooltips.warrior_dest.bantip}}
+                            <br>
+                        </div>
+                        <div ng-if="wcfTooltips.warrior_dest.snowflake != ''">
+                            <br>
+                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                            &nbsp;
+                            {{wcfTooltips.warrior_dest.snowflake}}
+                            <br>
+                        </div>
+                    </span>
+                </div>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="warrior_destination" ng-model='jsonData.data.warrior._destination'>
+                </div>
+                <div class="col-sm-1 align-fa-icon-after-input">
+                    <div class="tooltip-on-right">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                            <div ng-if="wcfTooltips.warrior_dest.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.warrior_dest.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.warrior_dest.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.warrior_dest.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.warrior_dest.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.warrior_dest.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.warrior_dest.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.warrior_dest.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <label for="warrior_clean_install" class="col-sm-2 control-label ellipsis-the-overflow">Clean Install</label>
+                <div class="tooltip-on-right align-fa-icon-after-label">
+                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                    <span class="tooltip-content">
+                        <div ng-if="wcfTooltips.warrior_clean_install.tooltip != ''">
+                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                            &nbsp;
+                            {{wcfTooltips.warrior_clean_install.tooltip}}
+                            <br>
+                        </div>
+                        <div ng-if="wcfTooltips.warrior_clean_install.protip != ''">
+                            <br>
+                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                            &nbsp;
+                            {{wcfTooltips.warrior_clean_install.protip}}
+                            <br>
+                        </div>
+                        <div ng-if="wcfTooltips.warrior_clean_install.bantip != ''">
+                            <br>
+                            <i class="fa fa-ban" aria-hidden="true"></i>
+                            &nbsp;
+                            {{wcfTooltips.warrior_clean_install.bantip}}
+                            <br>
+                        </div>
+                        <div ng-if="wcfTooltips.warrior_clean_install.snowflake != ''">
+                            <br>
+                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                            &nbsp;
+                            {{wcfTooltips.warrior_clean_install.snowflake}}
+                            <br>
+                        </div>
+                    </span>
+                </div>
+                <div class="col-sm-6">
+                    <select class="form-control" id="warrior_clean_install" ng-model="jsonData.data.warrior._clean_install">
+                        <option ng-repeat="choice in choices" class="dropdown-content">{{choice}}</option>
+                    </select>
+                </div>
+                <div class="col-sm-1 align-fa-icon-after-input">
+                    <div class="tooltip-on-right">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                            <div ng-if="wcfTooltips.warrior_clean_install.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.warrior_clean_install.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.warrior_clean_install.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.warrior_clean_install.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.warrior_clean_install.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.warrior_clean_install.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.warrior_clean_install.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.warrior_clean_install.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <br><hr><br>
+
+        <div class="row">
+            <div class="form-group">
+                <label class="col-sm-3 text-uppercase mandatory-field" style="padding-left: 3em">Katana Installation Details</label>
+            </div>
+        </div>
+        <br>
+
+        <div class="row">
+            <div class="form-group">
+                <label for="katana_url" class="col-sm-2 control-label mandatory-field ellipsis-the-overflow">URL</label>
+                <div class="tooltip-on-right align-fa-icon-after-label">
+                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                    <span class="tooltip-content">
+                        <div ng-if="wcfTooltips.katana_url.tooltip != ''">
+                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                            &nbsp;
+                            {{wcfTooltips.katana_url.tooltip}}
+                            <br>
+                        </div>
+                        <div ng-if="wcfTooltips.katana_url.protip != ''">
+                            <br>
+                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                            &nbsp;
+                            {{wcfTooltips.katana_url.protip}}
+                            <br>
+                        </div>
+                        <div ng-if="wcfTooltips.katana_url.bantip != ''">
+                            <br>
+                            <i class="fa fa-ban" aria-hidden="true"></i>
+                            &nbsp;
+                            {{wcfTooltips.katana_url.bantip}}
+                            <br>
+                        </div>
+                        <div ng-if="wcfTooltips.katana_url.snowflake != ''">
+                            <br>
+                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                            &nbsp;
+                            {{wcfTooltips.katana_url.snowflake}}
+                            <br>
+                        </div>
+                    </span>
+                </div>
+                <div class="col-sm-6">
+                    <input class="form-control" id="katana_url" type="text" ng-model="jsonData.data.katana._url">
+                </div>
+                <div class="col-sm-1 align-fa-icon-after-input">
+                    <div class="tooltip-on-right">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                            <div ng-if="wcfTooltips.katana_url.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.katana_url.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.katana_url.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.katana_url.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.katana_url.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.katana_url.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.katana_url.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.katana_url.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <label for="katana_label" class="col-sm-2 control-label ellipsis-the-overflow">Label</label>
+                <div class="tooltip-on-right align-fa-icon-after-label">
+                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                    <span class="tooltip-content">
+                        <div ng-if="wcfTooltips.katana_label.tooltip != ''">
+                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                            &nbsp;
+                            {{wcfTooltips.katana_label.tooltip}}
+                            <br>
+                        </div>
+                        <div ng-if="wcfTooltips.katana_label.protip != ''">
+                            <br>
+                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                            &nbsp;
+                            {{wcfTooltips.katana_label.protip}}
+                            <br>
+                        </div>
+                        <div ng-if="wcfTooltips.katana_label.bantip != ''">
+                            <br>
+                            <i class="fa fa-ban" aria-hidden="true"></i>
+                            &nbsp;
+                            {{wcfTooltips.katana_label.bantip}}
+                            <br>
+                        </div>
+                        <div ng-if="wcfTooltips.katana_label.snowflake != ''">
+                            <br>
+                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                            &nbsp;
+                            {{wcfTooltips.katana_label.snowflake}}
+                            <br>
+                        </div>
+                    </span>
+                </div>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="katana_label" ng-model='jsonData.data.katana._label'>
+                </div>
+                <div class="col-sm-1 align-fa-icon-after-input">
+                    <div class="tooltip-on-right">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                            <div ng-if="wcfTooltips.katana_label.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.katana_label.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.katana_label.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.katana_label.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.katana_label.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.katana_label.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.katana_label.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.katana_label.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <label for="katana_destination" class="col-sm-2 control-label ellipsis-the-overflow">Destination</label>
+                <div class="tooltip-on-right align-fa-icon-after-label">
+                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                    <span class="tooltip-content">
+                        <div ng-if="wcfTooltips.katana_dest.tooltip != ''">
+                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                            &nbsp;
+                            {{wcfTooltips.katana_dest.tooltip}}
+                            <br>
+                        </div>
+                        <div ng-if="wcfTooltips.katana_dest.protip != ''">
+                            <br>
+                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                            &nbsp;
+                            {{wcfTooltips.katana_dest.protip}}
+                            <br>
+                        </div>
+                        <div ng-if="wcfTooltips.katana_dest.bantip != ''">
+                            <br>
+                            <i class="fa fa-ban" aria-hidden="true"></i>
+                            &nbsp;
+                            {{wcfTooltips.katana_dest.bantip}}
+                            <br>
+                        </div>
+                        <div ng-if="wcfTooltips.katana_dest.snowflake != ''">
+                            <br>
+                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                            &nbsp;
+                            {{wcfTooltips.katana_dest.snowflake}}
+                            <br>
+                        </div>
+                    </span>
+                </div>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="katana_destination" ng-model='jsonData.data.katana._destination'>
+                </div>
+                <div class="col-sm-1 align-fa-icon-after-input">
+                    <div class="tooltip-on-right">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                            <div ng-if="wcfTooltips.katana_dest.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.katana_dest.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.katana_dest.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.katana_dest.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.katana_dest.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.katana_dest.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.katana_dest.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.katana_dest.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <label for="katana_clean_install" class="col-sm-2 control-label ellipsis-the-overflow">Clean Install</label>
+                <div class="tooltip-on-right align-fa-icon-after-label">
+                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                    <span class="tooltip-content">
+                        <div ng-if="wcfTooltips.katana_clean_install.tooltip != ''">
+                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                            &nbsp;
+                            {{wcfTooltips.katana_clean_install.tooltip}}
+                            <br>
+                        </div>
+                        <div ng-if="wcfTooltips.katana_clean_install.protip != ''">
+                            <br>
+                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                            &nbsp;
+                            {{wcfTooltips.katana_clean_install.protip}}
+                            <br>
+                        </div>
+                        <div ng-if="wcfTooltips.katana_clean_install.bantip != ''">
+                            <br>
+                            <i class="fa fa-ban" aria-hidden="true"></i>
+                            &nbsp;
+                            {{wcfTooltips.katana_clean_install.bantip}}
+                            <br>
+                        </div>
+                        <div ng-if="wcfTooltips.katana_clean_install.snowflake != ''">
+                            <br>
+                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                            &nbsp;
+                            {{wcfTooltips.katana_clean_install.snowflake}}
+                            <br>
+                        </div>
+                    </span>
+                </div>
+                <div class="col-sm-6">
+                    <select class="form-control" id="katana_clean_install" ng-model="jsonData.data.katana._clean_install">
+                        <option ng-repeat="choice in choices" class="dropdown-content">{{choice}}</option>
+                    </select>
+                </div>
+                <div class="col-sm-1 align-fa-icon-after-input">
+                    <div class="tooltip-on-right">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                            <span class="tooltip-content">
+                            <div ng-if="wcfTooltips.katana_clean_install.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.katana_clean_install.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.katana_clean_install.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.katana_clean_install.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.katana_clean_install.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.katana_clean_install.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.katana_clean_install.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.katana_clean_install.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <label for="katana_clone" class="col-sm-2 control-label ellipsis-the-overflow">Clone Katana</label>
+                <div class="tooltip-on-right align-fa-icon-after-label">
+                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                    <span class="tooltip-content">
+                        <div ng-if="wcfTooltips.katana_clone.tooltip != ''">
+                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                            &nbsp;
+                            {{wcfTooltips.katana_clone.tooltip}}
+                            <br>
+                        </div>
+                        <div ng-if="wcfTooltips.katana_clone.protip != ''">
+                            <br>
+                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                            &nbsp;
+                            {{wcfTooltips.katana_clone.protip}}
+                            <br>
+                        </div>
+                        <div ng-if="wcfTooltips.katana_clone.bantip != ''">
+                            <br>
+                            <i class="fa fa-ban" aria-hidden="true"></i>
+                            &nbsp;
+                            {{wcfTooltips.katana_clone.bantip}}
+                            <br>
+                        </div>
+                        <div ng-if="wcfTooltips.katana_clone.snowflake != ''">
+                            <br>
+                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                            &nbsp;
+                            {{wcfTooltips.katana_clone.snowflake}}
+                            <br>
+                        </div>
+                    </span>
+                </div>
+                <div class="col-sm-6">
+                    <select class="form-control" id="katana_clone" ng-model="jsonData.data.katana._clone">
+                        <option ng-repeat="choice in choices" class="dropdown-content">{{choice}}</option>
+                    </select>
+                </div>
+                <div class="col-sm-1 align-fa-icon-after-input">
+                    <div class="tooltip-on-right">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                            <div ng-if="wcfTooltips.katana_clone.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.katana_clone.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.katana_clone.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.katana_clone.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.katana_clone.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.katana_clone.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.katana_clone.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.katana_clone.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <br><hr><br>
+
+        <div class="row">
+            <div class="form-group">
+                <label class="col-sm-3 text-uppercase mandatory-field" style="padding-left: 3em">Warrior Keyword Repositories</label>
+            </div>
+        </div>
+        <br>
+
+        <div class="form-group" ng-show="showKWRepoTable && (kwRepoBeingEdited != 0)">
+            <div class="col-sm-12">
+                <table class='table table-bordered table-condensed table-hover'>
+                    <thead>
+                        <tr>
+                            <th class='text-muted text-right'>#</th>
+                            <th class='text-muted'>URL</th>
+                            <th class='text-muted'>Label</th>
+                            <th class='text-muted'>All Drivers</th>
+                            <th class='text-muted'>Clone Repository</th>
+                            <th class='text-muted'>Overwrite Files</th>
+                            <th class='text-muted'>Edit</th>
+                            <th class='text-muted'>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="ws_repo in jsonData.data.drivers.repository track by $index" ng-hide="$index >= kwRepoBeingEdited">
+                             <td class="text-right">
+                                {{ $index + 1 }}
+                            </td>
+                            <td>{{jsonData.data.drivers.repository[$index]._url}}</td>
+                            <td>{{jsonData.data.drivers.repository[$index]._label}}</td>
+                            <td>Clone all Drivers: <b>{{jsonData.data.drivers.repository[$index]._all_drivers}}</b>
+
+                                <div ng-show="jsonData.data.drivers.repository[$index]._all_drivers == 'no'">
+                                    <div ng-repeat="dr in jsonData.data.drivers.repository[$index].driver track by $index">
+                                        <br>
+                                        Driver {{$index+1}} Name: <b>{{jsonData.data.drivers.repository[$parent.$index].driver[$index]._name}}</b>
+                                        <br>
+                                        Clone {{jsonData.data.drivers.repository[$parent.$index].driver[$index]._name}}: <b>{{jsonData.data.drivers.repository[$parent.$index].driver[$index]._clone}}</b>
+                                        <br>
+                                    </div>
+                                </div>
+
+                            </td>
+                            <td>{{jsonData.data.drivers.repository[$index]._clone}}</td>
+                            <td>{{jsonData.data.drivers.repository[$index]._overwrite}}</td>
+                            <td ng-click="EditKeywordRepo($index)">
+                                <div class="tooltip-on-left-dark-big">
+                                    <span class="fa fa-pencil-square-o" aria-hidden="true"></span>
+                                    <span class="tooltip-content text-left">
+                                        <div ng-if="wcfTooltips.editKWRepo.tooltip != ''">
+                                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{wcfTooltips.editKWRepo.tooltip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="wcfTooltips.editKWRepo.protip != ''">
+                                            <br>
+                                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{wcfTooltips.editKWRepo.protip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="wcfTooltips.editKWRepo.bantip != ''">
+                                            <br>
+                                            <i class="fa fa-ban" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{wcfTooltips.editKWRepo.bantip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="wcfTooltips.editKWRepo.snowflake != ''">
+                                            <br>
+                                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{wcfTooltips.editKWRepo.snowflake}}
+                                            <br>
+                                        </div>
+                                    </span>
+                                </div>
+                            </td>
+                            <td ng-click="DeleteKeywordRepo($index)">
+                                <div class="tooltip-on-left-dark-big">
+                                    <span class="fa fa-times-circle-o" aria-hidden="true"></span>
+                                    <span class="tooltip-content text-left">
+                                        <div ng-if="wcfTooltips.deleteKWRepo.tooltip != ''">
+                                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{wcfTooltips.deleteKWRepo.tooltip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="wcfTooltips.deleteKWRepo.protip != ''">
+                                            <br>
+                                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{wcfTooltips.deleteKWRepo.protip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="wcfTooltips.deleteKWRepo.bantip != ''">
+                                            <br>
+                                            <i class="fa fa-ban" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{wcfTooltips.deleteKWRepo.bantip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="wcfTooltips.deleteKWRepo.snowflake != ''">
+                                            <br>
+                                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{wcfTooltips.deleteKWRepo.snowflake}}
+                                            <br>
+                                        </div>
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <br>
+
+        <div ng-repeat="kw_repo in jsonData.data.drivers.repository track by $index" ng-show="showKWRepoEditor[$index]">
+            <div class="row">
+                <div class="form-group">
+                    <label for="kw_repo_url{{$index}}" class="col-sm-2 control-label mandatory-field ellipsis-the-overflow">URL</label>
+                    <div class="tooltip-on-right align-fa-icon-after-label">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                            <div ng-if="wcfTooltips.kw_repo_url.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.kw_repo_url.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.kw_repo_url.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.kw_repo_url.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.kw_repo_url.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.kw_repo_url.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.kw_repo_url.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.kw_repo_url.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                    <div class="col-sm-6">
+                        <input class="form-control" id="kw_repo_url{{$index}}" type="text"
+                               ng-model="jsonData.data.drivers.repository[$index]._url">
+                    </div>
+                    <div class="col-sm-1 align-fa-icon-after-input">
+                        <div class="tooltip-on-right">
+                            <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                            <span class="tooltip-content">
+                                <div ng-if="wcfTooltips.kw_repo_url.tooltip != ''">
+                                    <i class="fa fa-rocket" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{wcfTooltips.kw_repo_url.tooltip}}
+                                    <br>
+                                </div>
+                                <div ng-if="wcfTooltips.kw_repo_url.protip != ''">
+                                    <br>
+                                    <i class="fa fa-bolt" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{wcfTooltips.kw_repo_url.protip}}
+                                    <br>
+                                </div>
+                                <div ng-if="wcfTooltips.kw_repo_url.bantip != ''">
+                                    <br>
+                                    <i class="fa fa-ban" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{wcfTooltips.kw_repo_url.bantip}}
+                                    <br>
+                                </div>
+                                <div ng-if="wcfTooltips.kw_repo_url.snowflake != ''">
+                                    <br>
+                                    <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{wcfTooltips.kw_repo_url.snowflake}}
+                                    <br>
+                                </div>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label for="kw_repo_label{{$index}}" class="col-sm-2 control-label ellipsis-the-overflow">Label</label>
+                    <div class="tooltip-on-right align-fa-icon-after-label">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                            <div ng-if="wcfTooltips.kw_repo_label.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.kw_repo_label.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.kw_repo_label.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.kw_repo_label.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.kw_repo_label.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.kw_repo_label.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.kw_repo_label.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.kw_repo_label.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="kw_repo_label{{$index}}"
+                               ng-model='jsonData.data.drivers.repository[$index]._label'>
+                    </div>
+                    <div class="col-sm-1 align-fa-icon-after-input">
+                        <div class="tooltip-on-right">
+                            <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                            <span class="tooltip-content">
+                                <div ng-if="wcfTooltips.kw_repo_label.tooltip != ''">
+                                    <i class="fa fa-rocket" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{wcfTooltips.kw_repo_label.tooltip}}
+                                    <br>
+                                </div>
+                                <div ng-if="wcfTooltips.kw_repo_label.protip != ''">
+                                    <br>
+                                    <i class="fa fa-bolt" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{wcfTooltips.kw_repo_label.protip}}
+                                    <br>
+                                </div>
+                                <div ng-if="wcfTooltips.kw_repo_label.bantip != ''">
+                                    <br>
+                                    <i class="fa fa-ban" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{wcfTooltips.kw_repo_label.bantip}}
+                                    <br>
+                                </div>
+                                <div ng-if="wcfTooltips.kw_repo_label.snowflake != ''">
+                                    <br>
+                                    <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{wcfTooltips.kw_repo_label.snowflake}}
+                                    <br>
+                                </div>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label for="kw_repo_all_drivers{{$index}}" class="col-sm-2 control-label ellipsis-the-overflow">All Drivers</label>
+                    <div class="tooltip-on-right align-fa-icon-after-label">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                            <div ng-if="wcfTooltips.kw_repo_all_drivers.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.kw_repo_all_drivers.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.kw_repo_all_drivers.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.kw_repo_all_drivers.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.kw_repo_all_drivers.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.kw_repo_all_drivers.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.kw_repo_all_drivers.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.kw_repo_all_drivers.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                    <div class="col-sm-2">
+                        <select class="form-control" id="kw_repo_all_drivers{{$index}}"
+                                ng-model="jsonData.data.drivers.repository[$index]._all_drivers" ng-change="addOrRemoveDriverNames($index)">
+                            <option ng-repeat="choice in choices" class="dropdown-content">{{choice}}</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="panelArgs" ng-if="jsonData.data.drivers.repository[$index]._all_drivers == 'no'">
+                           <div class="mArgs">
+                               <div ng-repeat="driverName in jsonData.data.drivers.repository[$parent.$index].driver">
+                                   <div class="form-group">
+                                       <label class="col-sm-3 control-label">Driver {{$index + 1}} Name</label>
+                                       <div class="col-sm-6">
+                                           <div class="input-group">
+                                               <input type="text" class="form-control" placeholder="Drive Name"
+                                                      ng-model="jsonData.data.drivers.repository[$parent.$parent.$index].driver[$index]._name">
+                                               <span class="input-group-addon" ng-click="deleteDriver($parent.$parent.$index, $index)">
+                                                   <span class="fa fa-times-circle-o" aria-hidden="true"></span>
+                                               </span>
+                                           </div>
+                                       </div>
+                                       <div class="col-sm-3">
+                                           <input type="checkbox"
+                                                  ng-checked="jsonData.data.drivers.repository[$parent.$parent.$index].driver[$index]._clone == 'yes'"
+                                                  ng-click="doNotCloneKWDriver($parent.$parent.$index, $index)">&nbsp;Clone
+                                       </div>
+                                   </div>
+                               </div>
+                               <div class="form-group">
+                                   <div class="col-sm-4 col-sm-offset-3">
+                                       <input type="button" ng-click="addAnotherDriver($index)" class="btn btn-default" value="Add Another Driver">
+                                   </div>
+                               </div>
+                           </div>
+                       </div>
+                    </div>
+                    <div class="col-sm-1 align-fa-icon-after-input">
+                        <div class="tooltip-on-right">
+                            <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                            <span class="tooltip-content">
+                                <div ng-if="wcfTooltips.kw_repo_all_drivers.tooltip != ''">
+                                    <i class="fa fa-rocket" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{wcfTooltips.kw_repo_all_drivers.tooltip}}
+                                    <br>
+                                </div>
+                                <div ng-if="wcfTooltips.kw_repo_all_drivers.protip != ''">
+                                    <br>
+                                    <i class="fa fa-bolt" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{wcfTooltips.kw_repo_all_drivers.protip}}
+                                    <br>
+                                </div>
+                                <div ng-if="wcfTooltips.kw_repo_all_drivers.bantip != ''">
+                                    <br>
+                                    <i class="fa fa-ban" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{wcfTooltips.kw_repo_all_drivers.bantip}}
+                                    <br>
+                                </div>
+                                <div ng-if="wcfTooltips.kw_repo_all_drivers.snowflake != ''">
+                                    <br>
+                                    <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{wcfTooltips.kw_repo_all_drivers.snowflake}}
+                                    <br>
+                                </div>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label for="kw_repo_clone{{$index}}" class="col-sm-2 control-label ellipsis-the-overflow">Clone Repository</label>
+                    <div class="tooltip-on-right align-fa-icon-after-label">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                            <div ng-if="wcfTooltips.kw_repo_clone.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.kw_repo_clone.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.kw_repo_clone.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.kw_repo_clone.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.kw_repo_clone.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.kw_repo_clone.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.kw_repo_clone.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.kw_repo_clone.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                    <div class="col-sm-6">
+                        <select class="form-control" id="kw_repo_clone{{$index}}" ng-model="jsonData.data.drivers.repository[$index]._clone">
+                            <option ng-repeat="choice in choices" class="dropdown-content">{{choice}}</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-1 align-fa-icon-after-input">
+                        <div class="tooltip-on-right">
+                            <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                            <span class="tooltip-content">
+                                <div ng-if="wcfTooltips.kw_repo_clone.tooltip != ''">
+                                    <i class="fa fa-rocket" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{wcfTooltips.kw_repo_clone.tooltip}}
+                                    <br>
+                                </div>
+                                <div ng-if="wcfTooltips.kw_repo_clone.protip != ''">
+                                    <br>
+                                    <i class="fa fa-bolt" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{wcfTooltips.kw_repo_clone.protip}}
+                                    <br>
+                                </div>
+                                <div ng-if="wcfTooltips.kw_repo_clone.bantip != ''">
+                                    <br>
+                                    <i class="fa fa-ban" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{wcfTooltips.kw_repo_clone.bantip}}
+                                    <br>
+                                </div>
+                                <div ng-if="wcfTooltips.kw_repo_clone.snowflake != ''">
+                                    <br>
+                                    <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{wcfTooltips.kw_repo_clone.snowflake}}
+                                    <br>
+                                </div>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label for="kw_repo_overwrite{{$index}}" class="col-sm-2 control-label ellipsis-the-overflow">Overwrite Files</label>
+                    <div class="tooltip-on-right align-fa-icon-after-label">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                            <div ng-if="wcfTooltips.kw_repo_overwrite.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.kw_repo_overwrite.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.kw_repo_overwrite.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.kw_repo_overwrite.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.kw_repo_overwrite.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.kw_repo_overwrite.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.kw_repo_overwrite.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.kw_repo_overwrite.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                    <div class="col-sm-6">
+                        <select class="form-control" id="kw_repo_overwrite{{$index}}" ng-model="jsonData.data.drivers.repository[$index]._overwrite">
+                            <option ng-repeat="choice in choices" class="dropdown-content">{{choice}}</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-1 align-fa-icon-after-input">
+                        <div class="tooltip-on-right">
+                            <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                            <span class="tooltip-content">
+                                <div ng-if="wcfTooltips.kw_repo_overwrite.tooltip != ''">
+                                    <i class="fa fa-rocket" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{wcfTooltips.kw_repo_overwrite.tooltip}}
+                                    <br>
+                                </div>
+                                <div ng-if="wcfTooltips.kw_repo_overwrite.protip != ''">
+                                    <br>
+                                    <i class="fa fa-bolt" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{wcfTooltips.kw_repo_overwrite.protip}}
+                                    <br>
+                                </div>
+                                <div ng-if="wcfTooltips.kw_repo_overwrite.bantip != ''">
+                                    <br>
+                                    <i class="fa fa-ban" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{wcfTooltips.kw_repo_overwrite.bantip}}
+                                    <br>
+                                </div>
+                                <div ng-if="wcfTooltips.kw_repo_overwrite.snowflake != ''">
+                                    <br>
+                                    <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{wcfTooltips.kw_repo_overwrite.snowflake}}
+                                    <br>
+                                </div>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <br>
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-sm-6 col-sm-offset-2">
+                        <input type="button" class="btn btn-default" id="save_kw_repo{{$index}}"
+                               ng-click="SaveKeywordRepo($index)" value="Save Repository">
+                        <input type="button" class="btn btn-default" id="delete_kw_repo{{$index}}"
+                               ng-click="DeleteKeywordRepo($index)" value="Delete Repository">
+                    </div>
+                </div>
+            </div>
+            <br><br>
+
+            </div>
+        <br>
+
+        <div class="form-group" ng-show="showKWRepoTable && (kwRepoBeingEdited != 'None') && (kwRepoBeingEdited != (jsonData.data.drivers.repository.length-1))">
+            <div class="col-sm-12">
+                <table class='table table-bordered table-condensed table-hover'>
+                    <thead>
+                        <tr>
+                            <th class='text-muted text-right'>#</th>
+                            <th class='text-muted'>URL</th>
+                            <th class='text-muted'>Label</th>
+                            <th class='text-muted'>All Drivers</th>
+                            <th class='text-muted'>Clone Repository</th>
+                            <th class='text-muted'>Overwrite Files</th>
+                            <th class='text-muted'>Edit</th>
+                            <th class='text-muted'>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="ws_repo in jsonData.data.drivers.repository track by $index" ng-show="$index > kwRepoBeingEdited">
+                             <td class="text-right">
+                                {{ $index + 1 }}
+                            </td>
+                            <td>{{jsonData.data.drivers.repository[$index]._url}}</td>
+                            <td>{{jsonData.data.drivers.repository[$index]._label}}</td>
+                            <td>Clone all Drivers: <b>{{jsonData.data.drivers.repository[$index]._all_drivers}}</b>
+
+                                <div ng-show="jsonData.data.drivers.repository[$index]._all_drivers == 'no'">
+                                    <div ng-repeat="dr in jsonData.data.drivers.repository[$index].driver track by $index">
+                                        <br>
+                                        Driver {{$index+1}} Name: <b>{{jsonData.data.drivers.repository[$parent.$index].driver[$index]._name}}</b>
+                                        <br>
+                                        Clone {{jsonData.data.drivers.repository[$parent.$index].driver[$index]._name}}: <b>{{jsonData.data.drivers.repository[$parent.$index].driver[$index]._clone}}</b>
+                                        <br>
+                                    </div>
+                                </div>
+
+                            </td>
+                            <td>{{jsonData.data.drivers.repository[$index]._clone}}</td>
+                            <td>{{jsonData.data.drivers.repository[$index]._overwrite}}</td>
+                            <td ng-click="EditKeywordRepo($index)">
+                                <div class="tooltip-on-left-dark-big">
+                                    <span class="fa fa-pencil-square-o" aria-hidden="true"></span>
+                                    <span class="tooltip-content text-left">
+                                        <div ng-if="wcfTooltips.editKWRepo.tooltip != ''">
+                                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{wcfTooltips.editKWRepo.tooltip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="wcfTooltips.editKWRepo.protip != ''">
+                                            <br>
+                                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{wcfTooltips.editKWRepo.protip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="wcfTooltips.editKWRepo.bantip != ''">
+                                            <br>
+                                            <i class="fa fa-ban" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{wcfTooltips.editKWRepo.bantip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="wcfTooltips.editKWRepo.snowflake != ''">
+                                            <br>
+                                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{wcfTooltips.editKWRepo.snowflake}}
+                                            <br>
+                                        </div>
+                                    </span>
+                                </div>
+                            </td>
+                            <td ng-click="DeleteKeywordRepo($index)">
+                                <div class="tooltip-on-left-dark-big">
+                                    <span class="fa fa-times-circle-o" aria-hidden="true"></span>
+                                    <span class="tooltip-content text-left">
+                                        <div ng-if="wcfTooltips.deleteKWRepo.tooltip != ''">
+                                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{wcfTooltips.deleteKWRepo.tooltip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="wcfTooltips.deleteKWRepo.protip != ''">
+                                            <br>
+                                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{wcfTooltips.deleteKWRepo.protip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="wcfTooltips.deleteKWRepo.bantip != ''">
+                                            <br>
+                                            <i class="fa fa-ban" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{wcfTooltips.deleteKWRepo.bantip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="wcfTooltips.deleteKWRepo.snowflake != ''">
+                                            <br>
+                                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{wcfTooltips.deleteKWRepo.snowflake}}
+                                            <br>
+                                        </div>
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <br>
+        <div class="row">
+            <div class="form-group">
+                <div class="col-sm-2 col-sm-offset-2">
+                    <input type="button" class="btn btn-default" id="add_kw_repo"
+                           ng-click="addKeywordRepo()" value="Add A Keyword Repository" title={{wcfTooltips.kw_repo_add_repo}}>
+                </div>
+            </div>
+        </div>
+
+
+        <br><hr><br>
+
+        <div class="row">
+            <div class="form-group">
+                <label class="col-sm-3 text-uppercase mandatory-field" style="padding-left: 3em">Warriorspace Repositories</label>
+            </div>
+        </div>
+
+        <br>
+
+        <div class="form-group" ng-show="showWariosTable && wariosBeingEdited != 0">
+            <div class="col-sm-12">
+                <table class='table table-bordered table-condensed table-hover'>
+                    <thead>
+                        <tr>
+                            <th class='text-muted text-right'>#</th>
+                            <th class='text-muted'>URL</th>
+                            <th class='text-muted'>Label</th>
+                            <th class='text-muted'>Clone Repository</th>
+                            <th class='text-muted'>Overwrite Files</th>
+                            <th class='text-muted'>Edit</th>
+                            <th class='text-muted'>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="ws_repo in jsonData.data.warriorspace.repository track by $index" ng-hide="$index >= wariosBeingEdited">
+                             <td class="text-right">
+                                {{ $index + 1 }}
+                            </td>
+                            <td>{{jsonData.data.warriorspace.repository[$index]._url}}</td>
+                            <td>{{jsonData.data.warriorspace.repository[$index]._label}}</td>
+                            <td>{{jsonData.data.warriorspace.repository[$index]._clone}}</td>
+                            <td>{{jsonData.data.warriorspace.repository[$index]._overwrite}}</td>
+                            <td ng-click="EditWarriorSpaceRepo($index)">
+                                <div class="tooltip-on-left-dark-big">
+                                    <span class="fa fa-pencil-square-o" aria-hidden="true"></span>
+                                    <span class="tooltip-content text-left">
+                                        <div ng-if="wcfTooltips.editWariosRepo.tooltip != ''">
+                                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{wcfTooltips.editWariosRepo.tooltip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="wcfTooltips.editWariosRepo.protip != ''">
+                                            <br>
+                                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{wcfTooltips.editWariosRepo.protip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="wcfTooltips.editWariosRepo.bantip != ''">
+                                            <br>
+                                            <i class="fa fa-ban" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{wcfTooltips.editWariosRepo.bantip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="wcfTooltips.editWariosRepo.snowflake != ''">
+                                            <br>
+                                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{wcfTooltips.editWariosRepo.snowflake}}
+                                            <br>
+                                        </div>
+                                    </span>
+                                </div>
+                            </td>
+                            <td ng-click="DeleteWarriorSpaceRepo($index)">
+                                <div class="tooltip-on-left-dark-big">
+                                    <span class="fa fa-times-circle-o" aria-hidden="true"></span>
+                                    <span class="tooltip-content text-left">
+                                        <div ng-if="wcfTooltips.deleteWariosRepo.tooltip != ''">
+                                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{wcfTooltips.deleteWariosRepo.tooltip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="wcfTooltips.deleteWariosRepo.protip != ''">
+                                            <br>
+                                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{wcfTooltips.deleteWariosRepo.protip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="wcfTooltips.deleteWariosRepo.bantip != ''">
+                                            <br>
+                                            <i class="fa fa-ban" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{wcfTooltips.deleteWariosRepo.bantip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="wcfTooltips.deleteWariosRepo.snowflake != ''">
+                                            <br>
+                                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{wcfTooltips.deleteWariosRepo.snowflake}}
+                                            <br>
+                                        </div>
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <br>
+
+        <div ng-repeat="ws_repo in jsonData.data.warriorspace.repository track by $index" ng-show="showWariosEditor[$index]">
+            <div class="row">
+                <div class="form-group">
+                    <label for="ws_repo_url{{$index}}" class="col-sm-2 control-label mandatory-field">URL</label>
+                    <div class="tooltip-on-right align-fa-icon-after-label">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                            <div ng-if="wcfTooltips.ws_repo_url.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.ws_repo_url.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.ws_repo_url.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.ws_repo_url.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.ws_repo_url.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.ws_repo_url.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.ws_repo_url.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.ws_repo_url.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                    <div class="col-sm-6">
+                        <input class="form-control" id="ws_repo_url{{$index}}" type="text"
+                               ng-model="jsonData.data.warriorspace.repository[$index]._url">
+                    </div>
+                    <div class="col-sm-1 align-fa-icon-after-input">
+                        <div class="tooltip-on-right">
+                            <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                            <span class="tooltip-content">
+                                <div ng-if="wcfTooltips.ws_repo_url.tooltip != ''">
+                                    <i class="fa fa-rocket" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{wcfTooltips.ws_repo_url.tooltip}}
+                                    <br>
+                                </div>
+                                <div ng-if="wcfTooltips.ws_repo_url.protip != ''">
+                                    <br>
+                                    <i class="fa fa-bolt" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{wcfTooltips.ws_repo_url.protip}}
+                                    <br>
+                                </div>
+                                <div ng-if="wcfTooltips.ws_repo_url.bantip != ''">
+                                    <br>
+                                    <i class="fa fa-ban" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{wcfTooltips.ws_repo_url.bantip}}
+                                    <br>
+                                </div>
+                                <div ng-if="wcfTooltips.ws_repo_url.snowflake != ''">
+                                    <br>
+                                    <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{wcfTooltips.ws_repo_url.snowflake}}
+                                    <br>
+                                </div>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label for="ws_repo_label{{$index}}" class="col-sm-2 control-label ellipsis-the-overflow">Label</label>
+                    <div class="tooltip-on-right align-fa-icon-after-label">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                            <div ng-if="wcfTooltips.ws_repo_label.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.ws_repo_label.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.ws_repo_label.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.ws_repo_label.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.ws_repo_label.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.ws_repo_label.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.ws_repo_label.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.ws_repo_label.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="ws_repo_label{{$index}}"
+                               ng-model='jsonData.data.warriorspace.repository[$index]._label'>
+                    </div>
+                    <div class="col-sm-1 align-fa-icon-after-input">
+                        <div class="tooltip-on-right">
+                            <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                            <span class="tooltip-content">
+                                <div ng-if="wcfTooltips.ws_repo_label.tooltip != ''">
+                                    <i class="fa fa-rocket" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{wcfTooltips.ws_repo_label.tooltip}}
+                                    <br>
+                                </div>
+                                <div ng-if="wcfTooltips.ws_repo_label.protip != ''">
+                                    <br>
+                                    <i class="fa fa-bolt" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{wcfTooltips.ws_repo_label.protip}}
+                                    <br>
+                                </div>
+                                <div ng-if="wcfTooltips.ws_repo_label.bantip != ''">
+                                    <br>
+                                    <i class="fa fa-ban" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{wcfTooltips.ws_repo_label.bantip}}
+                                    <br>
+                                </div>
+                                <div ng-if="wcfTooltips.ws_repo_label.snowflake != ''">
+                                    <br>
+                                    <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{wcfTooltips.ws_repo_label.snowflake}}
+                                    <br>
+                                </div>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label for="ws_repo_clone{{$index}}" class="col-sm-2 control-label ellipsis-the-overflow">Clone Repository</label>
+                    <div class="tooltip-on-right align-fa-icon-after-label">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                            <div ng-if="wcfTooltips.ws_repo_clone.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.ws_repo_clone.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.ws_repo_clone.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.ws_repo_clone.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.ws_repo_clone.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.ws_repo_clone.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.ws_repo_clone.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.ws_repo_clone.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                    <div class="col-sm-6">
+                        <select class="form-control" id="ws_repo_clone{{$index}}" ng-model="jsonData.data.warriorspace.repository[$index]._clone">
+                            <option ng-repeat="choice in choices" class="dropdown-content">{{choice}}</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-1 align-fa-icon-after-input">
+                        <div class="tooltip-on-right">
+                            <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                            <span class="tooltip-content">
+                                <div ng-if="wcfTooltips.ws_repo_clone.tooltip != ''">
+                                    <i class="fa fa-rocket" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{wcfTooltips.ws_repo_clone.tooltip}}
+                                    <br>
+                                </div>
+                                <div ng-if="wcfTooltips.ws_repo_clone.protip != ''">
+                                    <br>
+                                    <i class="fa fa-bolt" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{wcfTooltips.ws_repo_clone.protip}}
+                                    <br>
+                                </div>
+                                <div ng-if="wcfTooltips.ws_repo_clone.bantip != ''">
+                                    <br>
+                                    <i class="fa fa-ban" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{wcfTooltips.ws_repo_clone.bantip}}
+                                    <br>
+                                </div>
+                                <div ng-if="wcfTooltips.ws_repo_clone.snowflake != ''">
+                                    <br>
+                                    <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{wcfTooltips.ws_repo_clone.snowflake}}
+                                    <br>
+                                </div>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label for="ws_repo_overwrite{{$index}}" class="col-sm-2 control-label ellipsis-the-overflow">Overwrite Files</label>
+                    <div class="tooltip-on-right align-fa-icon-after-label">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                            <div ng-if="wcfTooltips.ws_repo_overwrite.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.ws_repo_overwrite.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.ws_repo_overwrite.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.ws_repo_overwrite.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.ws_repo_overwrite.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.ws_repo_overwrite.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="wcfTooltips.ws_repo_overwrite.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{wcfTooltips.ws_repo_overwrite.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                    <div class="col-sm-6">
+                        <select class="form-control" id="ws_repo_overwrite{{$index}}" ng-model="jsonData.data.warriorspace.repository[$index]._overwrite">
+                            <option ng-repeat="choice in choices" class="dropdown-content">{{choice}}</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-1 align-fa-icon-after-input">
+                        <div class="tooltip-on-right">
+                            <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                            <span class="tooltip-content">
+                                <div ng-if="wcfTooltips.ws_repo_overwrite.tooltip != ''">
+                                    <i class="fa fa-rocket" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{wcfTooltips.ws_repo_overwrite.tooltip}}
+                                    <br>
+                                </div>
+                                <div ng-if="wcfTooltips.ws_repo_overwrite.protip != ''">
+                                    <br>
+                                    <i class="fa fa-bolt" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{wcfTooltips.ws_repo_overwrite.protip}}
+                                    <br>
+                                </div>
+                                <div ng-if="wcfTooltips.ws_repo_overwrite.bantip != ''">
+                                    <br>
+                                    <i class="fa fa-ban" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{wcfTooltips.ws_repo_overwrite.bantip}}
+                                    <br>
+                                </div>
+                                <div ng-if="wcfTooltips.ws_repo_overwrite.snowflake != ''">
+                                    <br>
+                                    <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{wcfTooltips.ws_repo_overwrite.snowflake}}
+                                    <br>
+                                </div>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-sm-6 col-sm-offset-2">
+                        <input type="button" class="btn btn-default" id="save_ws_repo{{$index}}"
+                               ng-click="SaveWarriorSpaceRepo($index)" value="Save Repository" title={{wcfTooltips.save_repo_delete}}>
+                        <input type="button" class="btn btn-default" id="delete_ws_repo{{$index}}"
+                               ng-click="DeleteWarriorSpaceRepo($index)" value="Delete Repository" title={{wcfTooltips.ws_repo_delete}}>
+                    </div>
+                </div>
+            </div>
+            <br><br>
+        </div>
+        <br>
+
+        <div class="form-group" ng-show="showWariosTable && (wariosBeingEdited != 'None') && (wariosBeingEdited != (jsonData.data.warriorspace.repository.length-1))">
+            <div class="col-sm-12">
+                <table class='table table-bordered table-condensed table-hover'>
+                    <thead>
+                        <tr>
+                            <th class='text-muted text-right'>#</th>
+                            <th class='text-muted'>URL</th>
+                            <th class='text-muted'>Label</th>
+                            <th class='text-muted'>Clone Repository</th>
+                            <th class='text-muted'>Overwrite Files</th>
+                            <th class='text-muted'>Edit</th>
+                            <th class='text-muted'>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="ws_repo in jsonData.data.warriorspace.repository track by $index" ng-show="$index > wariosBeingEdited">
+                             <td class="text-right">
+                                {{ $index + 1 }}
+                            </td>
+                            <td>{{jsonData.data.warriorspace.repository[$index]._url}}</td>
+                            <td>{{jsonData.data.warriorspace.repository[$index]._label}}</td>
+                            <td>{{jsonData.data.warriorspace.repository[$index]._clone}}</td>
+                            <td>{{jsonData.data.warriorspace.repository[$index]._overwrite}}</td>
+                            <td ng-click="EditWarriorSpaceRepo($index)">
+                                <div class="tooltip-on-left-dark-big">
+                                    <span class="fa fa-pencil-square-o" aria-hidden="true"></span>
+                                    <span class="tooltip-content text-left">
+                                        <div ng-if="wcfTooltips.editWariosRepo.tooltip != ''">
+                                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{wcfTooltips.editWariosRepo.tooltip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="wcfTooltips.editWariosRepo.protip != ''">
+                                            <br>
+                                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{wcfTooltips.editWariosRepo.protip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="wcfTooltips.editWariosRepo.bantip != ''">
+                                            <br>
+                                            <i class="fa fa-ban" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{wcfTooltips.editWariosRepo.bantip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="wcfTooltips.editWariosRepo.snowflake != ''">
+                                            <br>
+                                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{wcfTooltips.editWariosRepo.snowflake}}
+                                            <br>
+                                        </div>
+                                    </span>
+                                </div>
+                            </td>
+                            <td ng-click="DeleteWarriorSpaceRepo($index)">
+                                <div class="tooltip-on-left-dark-big">
+                                    <span class="fa fa-times-circle-o" aria-hidden="true"></span>
+                                    <span class="tooltip-content text-left">
+                                        <div ng-if="wcfTooltips.deleteWariosRepo.tooltip != ''">
+                                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{wcfTooltips.deleteWariosRepo.tooltip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="wcfTooltips.deleteWariosRepo.protip != ''">
+                                            <br>
+                                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{wcfTooltips.deleteWariosRepo.protip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="wcfTooltips.deleteWariosRepo.bantip != ''">
+                                            <br>
+                                            <i class="fa fa-ban" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{wcfTooltips.deleteWariosRepo.bantip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="wcfTooltips.deleteWariosRepo.snowflake != ''">
+                                            <br>
+                                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{wcfTooltips.deleteWariosRepo.snowflake}}
+                                            <br>
+                                        </div>
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <br>
+
+        <div class="row">
+            <div class="form-group">
+                <div class="col-sm-3 col-sm-offset-2">
+                    <input type="button" class="btn btn-default" id="add_ws_repo"
+                           ng-click="addWarriorSpaceRepo()" value="Add A Warriorspace Repository" title={{wcfTooltips.ws_repo_add_repo}}>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        <br>
+        <div class="form-group">
+            <div class="col-sm-1 col-sm-offset-2">
+                <input type="button" class="btn btn-default" id="save_file"
+                       ng-click="saveFile()" value="Save File" title={{wcfTooltips.save_file}}>
+            </div>
+            <div class="col-sm-1">
+                <input type="button" class="btn btn-default" id="cancel"
+                       ng-click="cancel()" value="Cancel" title={{wcfTooltips.cancel}}>
+            </div>
+        </div>
+
+    </form>
+</div>

@@ -1,0 +1,559 @@
+<div class='col-md-12'>  <!-- Without this def, the form is sticking 'outside' the margin! -->
+
+    <h4 class='text-muted'>
+    Testcase Editor
+    </h4>
+
+    <hr/>
+
+    <div class="row">
+      <div class="form-group">
+        <label class="col-sm-1 control-label text-info text-uppercase">Details</label>
+      </div>
+    </div>
+
+    <form action="" method="post" class="form-horizontal" role="form" style="padding-left:1em">
+
+      <div class="row">
+        <div class="form-group">
+          <label for="Name" class="col-sm-2 control-label">Name<span style="color: red"> * </span></label>
+          <div class="col-sm-6">
+            <input type="text" class="form-control"
+                   id="Name"
+                   autofocus required
+                   placeholder="Test case form name, will be used as the file name. No spaces."
+                   ng-model='model.Testcase.Details.Name'
+                   title={{testcaseTooltips.name}}>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="form-group">
+          <label for="Title" class="col-sm-2 control-label">Test case Title<span style="color: red"> * </span></label>
+          <div class="col-sm-6">
+            <input type="text" class="form-control" required
+                    id="Title"
+                    ng-model='model.Testcase.Details.Title'
+                    placeholder="Title or Description of this Test case"
+                    title={{testcaseTooltips.title}}>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="form-group">
+          <label for="Category" class="col-sm-2 control-label">Category</label>
+          <div class="col-sm-6">
+            <input type="text" class="form-control"
+                   id="Name"
+                   placeholder="Testcase Category"
+                   ng-model='model.Testcase.Details.Category'
+                   title={{testcaseTooltips.category}}>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="form-group">
+          <label for="Engineer" class="col-sm-2 control-label">Engineer<span style="color: red"> * </span></label>
+          <div class="col-sm-6">
+            <input type="text" class="form-control" required
+                    id="Engineer"
+                    ng-model='model.Testcase.Details.Engineer'
+                    placeholder="Who created/edited this testcase definition"
+                    title={{testcaseTooltips.engineer}}>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="form-group">
+          <label for="Date" class="col-sm-2 control-label">Last updated</label>
+          <div class="form-group">
+            <div class="col-sm-8">
+              <div class="col-sm-3" style='margin-left:0; padding-left:0'>
+                <input type="text" class="form-control"
+                        id="Date"
+                        ng-model='model.Testcase.Details.Date'
+                        placeholder="Creation/updated date"
+                        title={{testcaseTooltips.time}} disabled>
+              </div>
+              <div class="col-sm-3">
+                <input type="text" class="form-control disabled"
+                        id="Time"
+                        ng-model='model.Testcase.Details.Time'
+                        placeholder="Creation/updated time"
+                        title={{testcaseTooltips.time}} disabled>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="form-group">
+          <label for='ondetailerror' class="col-sm-2 control-label">Default On Error</label>
+          <div class="col-sm-2">
+            <select class='form-control' id='ondetailerror'
+                    ng-model="status.default_onError._action"
+                    ng-options="o as o for o in status.steperrors"
+                    title={{testcaseTooltips.defaultError}}></select>
+          </div>
+          <div class="col-sm-3" ng-if='status.default_onError._action == "goto"'>
+              <input type="text" class="form-control"
+                  id="details_error_step"
+                  placeholder='Step # to go to'
+                  ng-model="status.default_onError._value"
+                  title={{testcaseTooltips.stepgoto}}>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="form-group">
+          <label for="InputDataFile" class="col-sm-2 control-label">Input Data File</label>
+          <div class="col-sm-6">
+            <input type="text" class="form-control" required
+                    id="InputDataFile"
+                    ng-change="putReqEditorOutOfSight()"
+                    ng-model='model.Testcase.Details.InputDataFile'
+                    ng-disabled='status.nodatafile == 1'
+                    placeholder="Location of the Input Data File"
+                    title={{testcaseTooltips.inputDataFile}}>
+            <label>
+              <input type="checkbox"
+                      ng-model='status.nodatafile'
+                      ng-click='noteInputDataStatus()'
+                      ng-true-value="'1'" ng-false-value="'0'">
+                &nbsp; No Data File.
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="form-group" ng-show='status.nodatafile == 0'>
+          <label for="Datatype" class="col-sm-2 control-label">Data type<span style="color: red"> * </span></label>
+          <div class="col-sm-6">
+            <select class='form-control'
+                    ng-model='model.Testcase.Details.Datatype'
+                    ng-options="o as o for o in status.datatypes" title={{testcaseTooltips.datatype}}></select>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="form-group">
+          <label for="Logsdir" class="col-sm-2 control-label">Log Directory</label>
+          <div class="col-sm-6">
+            <input type="text" class="form-control" required
+                id="Logsdir"
+                ng-model='model.Testcase.Details.Logsdir'
+                placeholder='Path to the Log Directory.'
+                title={{testcaseTooltips.logDirectory}}>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="form-group">
+          <label for="Resultsdir" class="col-sm-2 control-label">Results Directory</label>
+          <div class="col-sm-6">
+            <input type="text" class="form-control" id="Resultsdir" required
+                  ng-model='model.Testcase.Details.Resultsdir'
+                  placeholder='Path to where Results of this testcase are stored.'
+                  title={{testcaseTooltips.resultsDirectory}}>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="form-group">
+          <label for="ExpectedResults" class="col-sm-2 control-label">Expected Results</label>
+          <div class="col-sm-6">
+            <!-- <input type="text" class="form-control" id="Resultsdir"
+                  ng-model='model.Testcase.Details.ExpectedResults'
+                  title="Location of the results directory."> -->
+            <textarea id="ExpectedResults" class="form-control" rows="3" ng-model='model.Testcase.Details.ExpectedResults'
+                      placeholder='Your expectated value for this testcase.'
+                      ng-trim='true' title={{testcaseTooltips.expectedresult}}></textarea>
+          </div>
+        </div>
+      </div>
+
+      <hr/>
+
+      <div class="row">
+        <div class="form-group" style="padding-left:1em">
+          <label class="col-sm-1 control-label text-info text-uppercase">Requirements</label>
+        </div>
+      </div>
+
+      <div class="form-group" ng-hide="hasNoReqs()">
+        <div class="col-sm-12">
+          <table class='table table-bordered table-condensed table-striped table-hover'>
+            <tr ng-repeat='req in model.Testcase.Requirements.Requirement track by $index'>
+              <td ng-click='startReqEdit("Edit", req, $index)'>{{ req }}</td>
+              <td style="text-align:center" ng-click='delReq($index)' class='col-sm-1'>
+                <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <!--
+      <div class="row">
+        <div class="form-group" ng-show="hasNoReqs()" style='padding-left:1em'>
+          <div class="well text-info" style='margin-left:1em; margin-right:1em;'>
+            There are no Requirement definitions specified yet. <br/>
+            For a Testcase at least one Requirement definition is required. <br/>
+            Please use the <b>New Requirement</b> button below to create a new Requirement definition.
+          </div>
+        </div>
+      </div>
+      -->
+
+      <div class="row" ng-show="showReqEditor()" style="padding-left:1em">
+        <div class="form-group">
+          <div class="form-inline">
+            <div class="col-sm-6 col-md-6 col-lg-6">
+              <input type="text" class="form-control"
+                     id="reqeditor"
+                     style='width:100%'
+                     ng-model='status.requirement'
+                     placeholder="Specify the test case requirement"
+                     title={{testcaseTooltips.reqeditor}}>
+            </div>
+            <button type="button" class="btn btn-default" ng-click='saveReq()'>OK</button>
+            <button type="button" class="btn btn-default" ng-click='cancelReq()'>Cancel</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="row" style="padding-left:1em">
+        <div class="form-group">
+          <div class="form-inline">
+            <div class="col-sm-10 col-md-10 col-lg-10">
+              <button type="button" class="btn btn-default" ng-click='startReqEdit("New", "", -1)'>
+                {{reqEdTypeAsString()}} Requirement
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr/>
+
+      <div class="form-group" style="padding-left:0">
+        <label class="col-sm-1 control-label text-info text-uppercase">Steps</label>
+      </div>
+
+      <div class="form-group" ng-hide="hasNoSteps()">
+        <div class="col-sm-12">
+          <table class='table table-bordered table-condensed table-striped table-hover'>
+            <thead>
+              <tr>
+                <th class='text-muted text-right'>#</th>
+                <th class='text-muted'>Driver</th>
+                <th class='text-muted'>Keyword</th> <!--  col-sm-2 -->
+                <th class='text-muted'>Execute</th> <!--  col-sm-2 -->
+                <th class='text-muted'>Arguments</th>  <!-- col-sm-3 -->
+                <th class='text-muted'>onError</th>
+                <th class='text-muted'>Impact</th>
+                <th class='text-muted'>Context</th>
+                <th class='text-muted text-center' >
+                  <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat='step in model.Testcase.Steps.step'>
+
+                <td class="text-right">
+                  {{ $index + 1 }}
+                </td>
+
+                <td ng-click="editStep(step._Driver, $index)" class='bg-info'
+                    title="{{testcaseTooltips.edit}}">
+                  {{ step._Driver }}
+                </td>
+
+                <td>
+                  <b class='text-success'>{{ step._Keyword }}</b> <br/><br/>
+                  <i class='text-info'>{{ step.Description }}</i>
+                </td>
+
+                <td>
+                  Type = {{ step.Execute._ExecType }}<br>
+                  <div ng-if="step.Execute._ExecType == 'If' || step.Execute._ExecType == 'If Not'">
+                    Condition = {{ step.Execute.Rule._Condition }}<br>
+                    Condition value= {{ step.Execute.Rule._Condvalue }}<br>
+                    Else = {{ step.Execute.Rule._Else }}<br>
+                    <div ng-if="step.Execute.Rule._Else == 'goto'">
+                      Else value= {{ step.Execute.Rule._Elsevalue }}
+                    <div>
+                  <div>
+                </td>
+
+                <td>
+                  <div ng-if=" step.Arguments.argument.length !== undefined  ">
+                      <div ng-repeat='arg in step.Arguments.argument'>
+                          {{ $index + 1 }}. {{ arg._name}} = {{ arg._value }}  <br/>
+                      </div>
+                  </div>
+                  <div ng-if=" step.Arguments.argument._name !== undefined ">
+                      {{ step.Arguments.argument._name }} = {{ step.Arguments.argument._value }} <br/>
+                  </div>
+                </td>
+
+                <td>
+                  {{ step.onError._action }}  {{ step.onError._value }}
+                </td>
+
+                <td>{{ step.impact }}</td>
+
+                <td style='text-align:center; vertical-align:middle'>
+                  <span ng-if='step.context=="positive"'
+                    class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                  <span ng-if='step.context=="negative"'
+                    class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+                </td>
+
+                <td ng-click='delStep($index)' class='text-center' style='vertical-align:middle'>
+                  <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class='form-group' ng-show='hasNoSteps()'>
+        <div class='well text-info' style='margin-left:1em; margin-right:1em;'>
+        There are no Steps defined yet. <br/>
+
+        A Testcase requires at least one Step definition. <br/>
+
+        You may use the <b>New Step</b> button below to create a new one.
+        </div>
+      </div>
+
+      <div class="row" ng-show="showStepEditor()" style="padding-left:1em">
+
+        <div class="form-group">
+              <label for='stepdriver'  class="col-sm-2 col-sm-offset-1 control-label">Drivers<span style="color: red"> * </span></label>
+              <div class="col-sm-6">
+                <select class='form-control' id='stepdriver'
+                        ng-model="status.drivername"
+                        ng-change="driverSelected(status.drivername)"
+                        ng-options="o as o for o in xml.drivers" title={{testcaseTooltips.driver}}>
+                  <option value=''>Select Driver</option>
+                </select>
+              </div>
+        </div>
+
+        <div class="form-group">
+          <label for='stepkwd' class="col-sm-2 col-sm-offset-1 control-label">Keywords<span style="color: red"> * </span></label>
+          <div class="col-sm-6">
+            <select class='form-control' id='stepkwd'
+                    ng-model="status.keyword"
+                    ng-change="selectKeyword(status.keyword)"
+                    ng-options="o.fn as o.fn for o in xml.keywords" title={{testcaseTooltips.keyword}}>
+                <option value=''>Select Keyword</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+            <label for='stepdescription' class="col-sm-2 col-sm-offset-1 control-label">Description</label>
+            <div class="col-sm-6">
+                <textarea id="stepdescription" class="form-control"
+                          rows="3" ng-model='status.stepdescription'
+                          ng-change='putReqEditorOutOfSight()'
+                          ng-trim='true' title={{testcaseTooltips.description}}></textarea>
+            </div>
+        </div>
+
+        <div class="form-group">
+          <label for='stepexecute' class="col-sm-2 col-sm-offset-1 control-label">Execute Type</label>
+          <div class="col-sm-6" style="padding-top:0.5em">
+            <select class='form-control' id='stepexecute'
+                    ng-model="status.step.Execute._ExecType"
+                    ng-options="o as o for o in status.stepsexecutes" title={{testcaseTooltips.exectype}}>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group" ng-if="status.step.Execute._ExecType == 'If' || status.step.Execute._ExecType == 'If Not'">
+          <label for='steprulecondition' class="col-sm-2 col-sm-offset-1 control-label">Condition</label>
+          <div class="col-sm-6">
+            <input type="text" class="form-control"
+                    id="steprulecondition"
+                    ng-model='status.step.Execute.Rule._Condition'
+                    placeholder="Rule condition"
+                    title="Specify the rule condition" title={{testcaseTooltips.condition}}>
+          </div>
+        </div>
+
+        <div class="form-group" ng-if="status.step.Execute._ExecType == 'If' || status.step.Execute._ExecType == 'If Not'">
+          <label for='steprulecondvalue' class="col-sm-2 col-sm-offset-1 control-label">Condition Value</label>
+          <div class="col-sm-6">
+            <input type="text" class="form-control"
+                    id="steprulecondvalue"
+                    ng-model='status.step.Execute.Rule._Condvalue'
+                    placeholder="Rule condition value"
+                    title="Specify the rule condition value" title={{testcaseTooltips.condvalue}}>
+          </div>
+        </div>
+
+        <div class="form-group" ng-if="status.step.Execute._ExecType == 'If' || status.step.Execute._ExecType == 'If Not'">
+          <label for='stepruleelse' class="col-sm-2 col-sm-offset-1 control-label">Else</label>
+          <div class="col-sm-6">
+            <select class='form-control' id='stepruleelse'
+                    ng-model="status.step.Execute.Rule._Else"
+                    ng-change='grabStepNum()'
+                    ng-options="o as o for o in status.steperrors" title={{testcaseTooltips.condelse}}></select>
+          </div>
+        </div>
+
+        <div class="form-group" ng-if="(status.step.Execute._ExecType == 'If' || status.step.Execute._ExecType == 'If Not') && status.step.Execute.Rule._Else == 'goto'">
+          <label for='stepruleelsevalue' class="col-sm-2 col-sm-offset-1 control-label">Else Value</label>
+          <div class="col-sm-6">
+            <input type="text" class="form-control"
+                    id="stepruleelsevalue"
+                    ng-model='status.step.Execute.Rule._Elsevalue'
+                    placeholder="Step to go to on Error"
+                    title={{testcaseTooltips.condelsevalue}}>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-2 col-sm-offset-1 control-label">Arguments</label>
+          <div class="col-sm-8" style="padding-top:0.25em">
+
+              <div class="form-inline" ng-repeat="arg in xml.args.args"
+                   ng-if='status.keyword != "" && xml.args.args.length == 1 && xml.args.args[0] == "self"'>
+                <b class='text-danger'>There are no editable values for this function / keyword.</b>
+              </div>
+
+              <div class="form-inline" ng-repeat="arg in xml.arglist"
+                   ng-if='status.keyword != "" && xml.arglist.length > 0 && arg != "self"'>
+                <label for="arg{{$index}}" class="col-sm-4 control-label text-info">{{arg}}</label>
+                <div class="col-sm-6">
+                  <input type="text" class="form-control"
+                          id="arg{{$index}}"
+                          ng-model='xml.mapargs[arg]'
+                          placeholder=""
+                          title={{testcaseTooltips.steparg}}> <br/>
+                </div>
+              </div>
+
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-2 col-sm-offset-1 control-label">Signature &amp; Comment</label>
+          <div class="col-sm-9" style="padding-top:0.25em" ng-hide='status.keyword == ""'>
+              <b class='text-success'>{{ xml.args.def }}</b> <br/><br/>
+              <pre ng-if='xml.args.comment.length > 0'>{{xml.args.comment.join("\n")}}</pre>
+              <pre ng-if='xml.args.comment.length === 0'>No comments available.</pre>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for='stepimpact' class="col-sm-2 col-sm-offset-1 control-label">Impact</label>
+          <div class="col-sm-6">
+            <select class='form-control' id='stepimpact'
+                    ng-model="status.step.impact"
+                    ng-options="o as o for o in status.stepsimpacts"
+                    title={{testcaseTooltips.impact}}>
+            </select> {{step.impact}}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for='stepcontext' class="col-sm-2 col-sm-offset-1 control-label">Context</label>
+          <div class="col-sm-6" style="padding-top:0.5em">
+            <select class='form-control' id='stepcontext'
+                    ng-model="status.step.context"
+                    ng-options="o as o for o in status.stepscontexts"
+                    title={{testcaseTooltips.context}}>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for='onsteperror' class="col-sm-2 col-sm-offset-1 control-label">On Error</label>
+          <div class="col-sm-6">
+            <select class='form-control' id='onsteperror'
+                    ng-model="status.step.onError._action"
+                    ng-change='grabStepNum()'
+                    ng-options="o as o for o in status.steperrors" title={{testcaseTooltips.stepDefaultError}}></select>
+          </div> {{step.onError._action}}
+        </div>
+
+        <div class="form-group" ng-if="status.step.onError._action == 'goto'">
+          <label for='capsteperror' class="col-sm-2 col-sm-offset-1 control-label">Goto Step #</label>
+          <div class="col-sm-6">
+            <input type="text" class="form-control"
+                    id="capsteperror"
+                    ng-model='status.step.onError._value'
+                    placeholder="Step to go to on Error"
+                    title={{testcaseTooltips.stepgoto}}>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-sm-8 col-sm-offset-3">
+            <button type="button"
+                    class="btn btn-sm btn-info"
+                    ng-click='saveArguments()'
+                    title={{testcaseTooltips.stepsave}}>
+              Save Step
+            </button>
+            &nbsp;
+            <button type="button"
+                    class="btn btn-sm btn-default"
+                    ng-click='cancelArguments()'
+                    title={{testcaseTooltips.stepcancel}}>
+              Cancel
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="row" style="padding-left:1em">
+        <div class="form-group">
+          <div class="form-inline">
+            <div class="col-sm-10 col-md-10 col-lg-10">
+              <button type="button" class="btn btn-default" ng-click='startStepEdit("New", "", -1)'
+                      title={{testcaseTooltips.stepnew}}>
+                New Step
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr/>
+
+      <div class="form-group">
+        <div class="col-sm-10">
+          <input type="checkbox" ng-model="savecreateTestcaseCap"/><span>&nbsp;Create another&nbsp;</span>
+          <input type="button" class="btn btn-success" value="Save" ng-click="saveTestcaseCap()" />
+          <input type="button" class="btn btn-success" value="Cancel" ng-click="cancelTestcaseCap()" />
+        </div>
+      </div>
+
+    </form>
+
+    <hr/>
+
+    <!--
+    <pre>{{model | json}}</pre>
+    <pre>{{xml.file}}</pre>
+    <pre>{{xml.pycs | json}}</pre>
+    -->
+</div>

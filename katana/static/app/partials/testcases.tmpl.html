@@ -1,0 +1,50 @@
+<h4 class="nav-font" style="color:rgb(0, 0, 0)">
+<b>Cases</b>
+</h4>
+
+<hr/>
+
+<a href='#/testcase/__new__/none' class='btn btn-default' style="color:rgb(214, 48, 48)"
+        title='Click to create a new Testcase'>Create New Case</a>
+
+<hr/>
+
+<div style="cursor: pointer">
+    <i class="fa fa-folder-open" aria-hidden="true"> </i>
+    <a ng-click="goToDir(base_dir)"> {{base_dir}} </a>
+    <span ng-repeat="dir in dirs track by $index">
+        <label> > </label>
+        <a ng-click="goToDir(dir)"> {{dir}} </a>
+    </span>
+</div>
+
+<br>
+
+<table class='table table-striped table-bordered table-condensed'>
+	<tr>
+		<th> Directories </th>
+	</tr>
+    <tr ng-show="dir_path !== undefined && dir_path !== 'none'" style="cursor: pointer">
+        <td>
+            <a ng-click="getParentFilesAndFolders()">
+                <i class="fa fa-arrow-left"> Go Back</i>
+            </a>
+        </td>
+    </tr>
+    <tr ng-repeat='folder in xml.folders track by $index' style="cursor: pointer">
+        <td>
+            <a ng-click="getSubFilesAndFolders(folder)">{{folder}}</a>
+        </td>
+    </tr>
+</table>
+
+<table class='table table-striped table-bordered table-condensed'>
+    <tr>
+		<th> File Name </th>
+	</tr>
+    <tr ng-repeat='file in xml.files track by $index'>
+        <td>
+            <a href='#/testcase/{{file}}/{{dir_path}}'>{{file}}</a>
+        </td>
+    </tr>
+</table>
