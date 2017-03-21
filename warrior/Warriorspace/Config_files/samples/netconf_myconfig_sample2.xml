@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<edit-config>
+    <target>
+      <running/>
+    </target>
+  <config>
+    <eqpt xmlns="urn:fujitsu:params:xml:ns:yang:equipment">
+		<shelf>
+			<shelfId>1</shelfId>
+			<slot>
+				<slotID>0</slotID>
+				<subslot>
+					<subslotID>0</subslotID>
+					<port>
+						<portID>C2</portID>
+						<pluggableInterfaceType>CFP4</pluggableInterfaceType>
+						<admin-status>up</admin-status>
+					</port>	
+				</subslot>
+			</slot>				
+		</shelf>
+	</eqpt>	
+ </config>
+ </edit-config>
+

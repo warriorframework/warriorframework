@@ -1,0 +1,60 @@
+<?xml version="1.0" ?>
+
+<jira>
+
+    <system name="warrior" >
+		<url>https://demojiraplat.atlassian.net/</url>
+		<username>admin</username>
+		<password>satmu1323*</password>
+		<Assignee>Automatic</Assignee>
+		<project_key>WAR</project_key>
+	</system>
+
+    <system name="project1">
+		<url>https://demojiraplat.atlassian.net/</url>
+		<username>admin</username>
+		<password>satmu1323*</password>
+		<Assignee>Automatic</Assignee>
+        <project_key>PROJ</project_key>
+    </system>
+
+    <system name="project2" >
+		<url>https://demojiraplat.atlassian.net/</url>
+		<username>admin</username>
+		<password>satmu1323*</password>
+		<Assignee>Automatic</Assignee>
+        <project_key>PROJ2</project_key>
+    </system>
+
+    <system name="project3" default="true">
+        <url>https://demojiraplat.atlassian.net</url>
+        <username>admin</username>
+        <password>123456</password>
+		<Assignee>Automatic</Assignee>
+        <project_key>WAR</project_key>
+        <append_log>true</append_log>
+        <issue_type>
+            <type>story</type>
+            <pass>pass</pass>
+            <fail>fail</fail>
+            <error>error</error>
+            <skip>skip</skip>
+        </issue_type>
+        <issue_type>
+            <type>task</type>
+            <pass>pass</pass>
+            <fail>fail</fail>
+            <error>error</error>
+            <skip>skip</skip>
+        </issue_type>
+        <issue_type>
+            <type>default</type>
+            <pass>pass</pass>
+            <fail>fail</fail>
+            <error>error</error>
+            <skip>skip</skip>
+        </issue_type>
+    </system>
+	
+</jira>
+

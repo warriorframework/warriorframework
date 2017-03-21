@@ -1,0 +1,4 @@
+Run selected files in sequence mode allows you to select as many testcases, suites and projects and execute them in sequence.
+Select the directory that contain the xml files to be executed. You may select as many directories as needed by setting the
+path and clicking the add button.
+

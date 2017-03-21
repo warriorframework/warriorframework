@@ -1,0 +1,104 @@
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="TestSuite">
+    <xs:complexType mixed="true">
+      <xs:sequence>
+        <xs:element name="Details">
+          <xs:complexType>
+            <xs:all>
+              <xs:element type="xs:string" name="Name"/>
+              <xs:element type="xs:string" name="Title"/>
+              <xs:element type="xs:string" name="Engineer" minOccurs="0"/>
+              <xs:element type="xs:string" name="Date" minOccurs="0"/>
+              <xs:element type="xs:string" name="Time" minOccurs="0"/>
+              <xs:element type="xs:string" name="State" minOccurs="0"/>
+              <xs:element name="type">
+                <xs:complexType>
+                  <xs:simpleContent>
+                    <xs:extension base="xs:string">
+                      <xs:attribute type="xs:string" name="exectype" use="optional"/>
+                      <xs:attribute type="xs:positiveInteger" name="Max_Attempts" use="optional"/>
+                      <xs:attribute type="xs:positiveInteger" name="Number_Attempts" use="optional"/>
+                    </xs:extension>
+                  </xs:simpleContent>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="default_onError" minOccurs="0">
+                <xs:complexType>
+                  <xs:simpleContent>
+                    <xs:extension base="xs:string">
+                      <xs:attribute type="xs:string" name="action"/>
+                      <xs:attribute type="xs:positiveInteger" name="value"/>
+                    </xs:extension>
+                  </xs:simpleContent>
+                </xs:complexType>
+              </xs:element>
+              <xs:element type="xs:string" name="InputDataFile" minOccurs="0"/>
+              <xs:element type="xs:string" name="Resultsdir" minOccurs="0"/>
+            </xs:all>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Requirements" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element type="xs:string" name="Requirement" maxOccurs="unbounded" minOccurs="0"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Testcases">
+          <xs:complexType >
+            <xs:sequence>
+              <xs:element name="Testcase" maxOccurs="unbounded" minOccurs="1">
+                <xs:complexType mixed="true">
+                  <xs:all>
+                    <xs:element type="xs:string" name="path"/>
+                    <xs:element type="xs:string" name="context" minOccurs="0"/>
+                    <xs:element type="xs:string" name="runtype" minOccurs="0"/>
+                    <xs:element type="xs:string" name="InputDataFile" minOccurs="0"/>
+                    <xs:element type="xs:positiveInteger" name="rmt" minOccurs="0"/>
+                    <xs:element name="onError" minOccurs="0">
+                      <xs:complexType>
+                        <xs:simpleContent>
+                          <xs:extension base="xs:string">
+                            <xs:attribute type="xs:string" name="action"/>
+                            <xs:attribute type="xs:string" name="value"/>
+                          </xs:extension>
+                        </xs:simpleContent>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element type="xs:string" name="impact" minOccurs="0"/>
+                    <xs:element name="Execute" minOccurs="0">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="Rule"  minOccurs="0">
+                            <xs:complexType>
+                              <xs:simpleContent>
+                                <xs:extension base="xs:string">
+                                  <xs:attribute type="xs:string" name="Condition"/>
+                                  <xs:attribute name="Condvalue">
+                                    <xs:simpleType>
+                                     <xs:restriction base="xs:string">
+                                      <xs:pattern value="PASS|FAIL|ERROR|EXCEPTION|SKIP"/>
+                                     </xs:restriction>
+                                    </xs:simpleType>
+                                  </xs:attribute>
+                                  <xs:attribute type="xs:string" name="Else"/>
+                                  <xs:attribute type="xs:positiveInteger" name="Elsevalue"/>
+                                </xs:extension>
+                              </xs:simpleContent>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                        <xs:attribute type="xs:string" name="ExecType" />
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:all>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
+

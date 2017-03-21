@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<credentials>
+    <system name="ConfD">
+        <ip>168.127.45.155</ip>
+        <nc_port>10638</nc_port>
+        <username>fujitsu</username>
+        <password>1finity</password>
+        <timeout>30</timeout>
+        <hostkey_verify>False</hostkey_verify>
+        <allow_agent>False</allow_agent>
+        <look_for_keys>False</look_for_keys>
+        <device_name>default</device_name>
+        <netconf_data>../../Config_files/samples/netconf_config_data_sample2.xml</netconf_data>
+        <variable_config>../../Config_files/samples/netconf_varconfig_sample.xml</variable_config>
+    </system>
+</credentials>

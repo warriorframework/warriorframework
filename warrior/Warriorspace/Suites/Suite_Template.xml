@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+<TestSuite>
+        <Details>
+            <Name>Suite1</Name>
+            <Title>Test Suite Title or Description</Title>
+			<Engineer></Engineer>
+			<Date></Date>
+			<type exectype ='parallel_testcases, sequential_testcases, Run_Multiple, Run_Until_Fail' Max_Attempts= '3'/><!-- Default is sequential.
+			-->
+            <default_onError action = 'next, abort, goto, abort_as_error' value='2' /><!-- Optional. Default error handling for the suite-->
+			<InputDataFile></InputDataFile> <!--Optional -The user shall be able to select a data file -->
+			<Resultsdir></Resultsdir> <!-- (Optional) -Browse button to select directory -->
+        </Details>
+       <Requirements><!-- The user shall be able to add as many requirements as needed, Show one edit box with ability 
+							to add more -->
+       			<Requirement>Requirement-001</Requirement>
+       			<Requirement>Requirement-002</Requirement>
+       </Requirements>
+		<Testcases><!-- The user shall be able to add as many test cases as needed.-->
+			<Testcase>
+				<path>../../Testcases/S1_TC10.xml</path><!--User shoud be able to enter a relative path -->
+				<context>positive</context> <!-- dropdown name context, values are positive and negative -->
+				<runtype>sequential_keywords</runtype><!-- Optional, Values are 'sequential keywords' and 'parallel keywords' 
+				default should be sequential keywords. -->
+				<InputDataFile></InputDataFile> <!--Optional -The user shall be able to select a data file -->
+				<onError action='Abort, Next, Goto, abort_as_error' value ='2' /> <!-- Optional, Testcase error handling -->
+				<impact>impact</impact><!-- Optional, Used to decide if status of step will or will not impact 
+					the testcase status. -->
+			</Testcase>
+			
+		</Testcases>
+</TestSuite>
+
+     

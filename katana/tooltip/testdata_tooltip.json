@@ -1,0 +1,361 @@
+{
+  "filename": {
+    "tooltip": "This is the file name.",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },"send": {
+    "tooltip": "The actual command that has to be sent - variable is command should be referenced from the variable config file in dot notations inside the pattern '${}', values for such variables will be substituted from the variable config file of the respective system. The patterns [VAR_SUB] will be replaced by the var_sub argument provided in the testcase steps. Sending control characters to the session: In order to send control characters to the session like ctrl-x, ctrl-z etc. Use the format \"wctrl:char\" in the command. Eg: to send ctrl-x to the session send=\"wctrl:x\"",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "GSys": {
+    "tooltip": "system/subsystem on which the command should be executed. Connection to the system/subsystem should have been established earlier. A. system = provide the system name directly. Eg:- \"NE1\", \"server1\". B. system+subsystem = provide system+subsystem combination, only a single subsystem is supported. Eg: \"NE1[cli]\", sever1[\"interface1\"] C. subsystem only = to refer only a subsystem provide the subsystem name enclosed by square brackets, In this case the system name provided in the testcase keyword will be used. Eg:- [cli], [dip], [interface1]",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "GSession": {
+    "tooltip": "session name of the system or susbsystem to connect to",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "GStart": {
+    "tooltip": "(default=\".*\") Starting prompt of the command. Using \".*\" ignores the check for start prompts. Variable substitution is supported for this parameter",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "GEnd": {
+    "tooltip": "Ending prompt of the command, the command is considered to have completed successfully if the end prompt is found in the command's response. Variable substitution is supported for this parameter.",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "GTimeout": {
+    "tooltip": "(default=60 sec) Time to wait to receive the end prompt. If a command time's out, command status will be marked as error. - after timeout will wait for an additional 60 seconds to receive the end prompt, this is a to provide an extra buffer to check if it is a intermittent delay or a long delay. Irrespective of whether or not the end prompt is received during this extra time the command will be marked as error.",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "GSleep": {
+    "tooltip": "(default=0 sec) time to wait(in secs) after completion of a command.",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "GVerify": {
+    "tooltip": "(tags) provided the tag names containing verification details If multiple verification are required for a command, provide tag names seperated by commas Eg: \"v1,v2,v3\"",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "GRetry": {
+    "tooltip": "(supported values= \"y\" or \"n\", default = \"n\") when \"y\", retry sending a command if the command fails.",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "GRetry_count": {
+    "tooltip": "(default=5), when retry=y, this is no of attempts to. If during one of the attempts the command passes, re trials will be passed.",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "GRetry_timer": {
+    "tooltip": "(default=60 secs), when retry=y, this is the time interval(in secs) between subsequent re-trails.",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "GRetry_onmatch": {
+    "tooltip": "A text or a regular expression. If provided and retry=y, re-trials will be attempted only when the response of the command has the provided text/regular expression.",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "GResp_req": {
+    "tooltip": "(supported values =\"n\") save the response in the framework's data repository this feature is always enabled, user can turn it off by providing \"n\" ",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "GResp_pat_req": {
+    "tooltip": "(text or regular expression) To save only a particular text or regular expression from the response",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "GResp_ref": {
+    "tooltip": "(text, default=position of command in the testdata block) a user provided reference text for the response of this command. The responses will be saved in the framework's data repository using this text as key. If user does not provide resp_ref, framework automatically assigns this value based on the position of the command in the test data section. i.e. if the command is the 2nd command in the test data then resp_ref=\"2\" will be used and so on.",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "GMonitor": {
+    "tooltip": "(comma separated system names - Eg. NE1[cli].session, NE2, [dip] - where NE1, NE2 are the system names, [cli], [dip] are the subsystem names and .session is the session name.) Responses from the system names obtained from this parameter are printed out on the console. If this attribute is left empty, or is not present, monitoring would take place on the systems mentioned in the monitor attribute in the parent testdata tag. If even that tag is left empty, then monitoring takes place on the system on which the keyword is getting executed.",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "GInorder": {
+    "tooltip": "(supported value = \"y\") In-order response verification will happen. This feature is always disabled, user can turn it on by providing \"y\". If enabled, command passes only when the received response order matches with the order given in the 'verify' tag",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "GRepeat": {
+    "tooltip": "(supported value = \"y\") when iter_type=‘per_td_block’ with repeat='y', corresponding command in testdata block will be executed in each iteration. This feature is always disabled, user can turn it on by providing \"y\" and this tag is applicable only for the testdata commands without any iteration pattern in it.",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "sys": {
+    "tooltip": "system/subsystem on which the command should be executed. Connection to the system/subsystem should have been established earlier. A. system = provide the system name directly. Eg:- \"NE1\", \"server1\". B. system+subsystem = provide system+subsystem combination, only a single subsystem is supported. Eg: \"NE1[cli]\", sever1[\"interface1\"] C. subsystem only = to refer only a subsystem provide the subsystem name enclosed by square brackets, In this case the system name provided in the testcase keyword will be used. Eg:- [cli], [dip], [interface1]",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "session": {
+    "tooltip": "session name of the system or susbsystem to connect to",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "_start": {
+    "tooltip": "(default=\".*\") Starting prompt of the command. Using \".*\" ignores the check for start prompts. Variable substitution is supported for this parameter",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "_end": {
+    "tooltip": "Ending prompt of the command, the command is considered to have completed successfully if the end prompt is found in the command's response. Variable substitution is supported for this parameter.",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "timeout": {
+    "tooltip": "(default=60 sec) Time to wait to receive the end prompt. If a command time's out, command status will be marked as error. - after timeout will wait for an additional 60 seconds to receive the end prompt, this is a to provide an extra buffer to check if it is a intermittent delay or a long delay. Irrespective of whether or not the end prompt is received during this extra time the command will be marked as error.",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "sleep": {
+    "tooltip": "(default=0 sec) time to wait(in secs) after completion of a command.",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "verify": {
+    "tooltip": "(tags) provided the tag names containing verification details If multiple verification are required for a command, provide tag names seperated by commas Eg: \"v1,v2,v3\"",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "retry": {
+    "tooltip": "(supported values= \"y\" or \"n\", default = \"n\") when \"y\", retry sending a command if the command fails.",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "retry_count": {
+    "tooltip": "(default=5), when retry=y, this is no of attempts to. If during one of the attempts the command passes, re trials will be passed.",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "retry_timer": {
+    "tooltip": "(default=60 secs), when retry=y, this is the time interval(in secs) between subsequent re-trails.",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "retry_onmatch": {
+    "tooltip": "A text or a regular expression. If provided and retry=y, re-trials will be attempted only when the response of the command has the provided text/regular expression.",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "resp_req": {
+    "tooltip": "(supported values =\"n\") save the response in the framework's data repository this feature is always enabled, user can turn it off by providing \"n\" ",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "resp_pat_req": {
+    "tooltip": "(text or regular expression) To save only a particular text or regular expression from the response",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "resp_ref": {
+    "tooltip": "(text, default=position of command in the testdata block) a user provided reference text for the response of this command. The responses will be saved in the framework's data repository using this text as key. If user does not provide resp_ref, framework automatically assigns this value based on the position of the command in the test data section. i.e. if the command is the 2nd command in the test data then resp_ref=\"2\" will be used and so on.",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "monitor": {
+    "tooltip": "(comma separated system names - Eg. NE1[cli].session, NE2, [dip] - where NE1, NE2 are the system names, [cli], [dip] are the subsystem names and .session is the session name.) Responses from the system names obtained from this parameter are printed out on the console. If this attribute is left empty, or is not present, monitoring would take place on the systems mentioned in the monitor attribute in the parent testdata tag. If even that tag is left empty, then monitoring takes place on the system on which the keyword is getting executed.",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "inorder": {
+    "tooltip": "(supported value = \"y\") In-order response verification will happen. This feature is always disabled, user can turn it on by providing \"y\". If enabled, command passes only when the received response order matches with the order given in the 'verify' tag",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "repeat": {
+    "tooltip": "(supported value = \"y\") when iter_type=‘per_td_block’ with repeat='y', corresponding command in testdata block will be executed in each iteration. This feature is always disabled, user can turn it on by providing \"y\" and this tag is applicable only for the testdata commands without any iteration pattern in it.",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "global_verify_found": {
+    "tooltip": "This attribute indicates whether the Search string should be in the response obtained or not. The accepted values are 'yes' and 'no'",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "global_verify_search": {
+    "tooltip": "This attribute takes in the value of the search string that needs to be found in the response text.",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "global_verify_verify_on": {
+    "tooltip": "This attribute takes in comma separated system/subsystem names. The connection to these given systems should be established before verifying responses on this system.",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "global_verify_tag_name": {
+    "tooltip": "Verify Tags created in the global section would be used whenever local (inside testdata block) verify tags with the same name are not available",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "global_combo_tag_name": {
+    "tooltip": "These combo tags contain combinations of verify tags.",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "global_combo": {
+    "tooltip": "This attribute takes in comma separated values of verify tags. Eg - v1, v2, v3",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "td_block_title": {
+    "tooltip": "This is the title of the testdata block. It is only mandatory if you are not going to provide a value in the 'row' attribute. The combination of title+row should be unique.",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "td_block_row": {
+    "tooltip": "This is the row number of this testdata block. It is only mandatory if you are not going to provide a value in the 'title' attribute. The combination of title+row should be unique.",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "td_block_execute": {
+    "tooltip": "This is the execute attribute of the testdata block. Supported values are 'yes' and 'no'",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "td_block_monitor": {
+    "tooltip": "This is the monitor attribute on the testdata level. If this attribute is given, and the monitor attribute in a command tag inside the td block is left empty, then this value would be used.",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "td_block_iter_type": {
+    "tooltip": "This attribute allows the user to dictate how the commands in a testdata block be sent. This attribute can take in two values: ‘per_td_block’ and ‘per_cmd’. The default is per_cmd -  which is the standard way in which the command are sent. By setting this attribute to iter_type to 'per_td_block', the command would be sent according to this example: After variable substitution, these 3 command in a td block are supposed to be sent - Command1 = [‘cmd_1_vc_1’, ‘cmd_1_vc_2’, ‘cmd_1_vc_3’], Command2 = [‘cmd_2_vc_1’, ‘cmd_2_vc_2’, ‘cmd_2_vc_3’, ‘cmd_2_vc_4’, ‘cmd_2_vc_5’], Command3 = [‘cmd_3_vc_1’]. They will now be sent this way: ‘cmd_1_vc_1’,  ‘cmd_2_vc_1’, ‘cmd_3_vc_1’ , ‘cmd_1_vc_2’, ‘cmd_2_vc_2’, ‘cmd_1_vc_3’, ‘cmd_2_vc_3’, ‘cmd_2_vc_4’, ‘cmd_2_vc_5’",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "td_block_found": {
+    "tooltip": "This attribute indicates whether the Search string should be in the response obtained or not. The accepted values are 'yes' and 'no'",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "td_block_search": {
+    "tooltip": "This attribute takes in the value of the search string that needs to be found in the response text.",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "td_block_verify_on": {
+    "tooltip": "This attribute takes in comma separated system/subsystem names. The connection to these given systems should be established before verifying responses on this system.",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "td_block_tag_name": {
+    "tooltip": "Verify Tags created in the global section would be used whenever local (inside testdata block) verify tags with the same name are not available",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "editGlobalCP": {
+    "tooltip": "Click this icon to edit the Global Command Parameters",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "editGlobalVerify": {
+    "tooltip": "Click this icon to edit this Global Verification Tag",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "deleteGlobalVerify": {
+    "tooltip": "Click this icon to delete this Global Verification Tag",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "editGlobalCombo": {
+    "tooltip": "Click this icon to edit this Global Combination Tag",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "deleteGlobalCombo": {
+    "tooltip": "Click this icon to delete this Global Combination Tag",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "editTDCP": {
+    "tooltip": "Click this icon to edit this Testdata Block Command Tag",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "deleteTDCP": {
+    "tooltip": "Click this icon to delete this Testdata Block Command Tag",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "editTDVerify": {
+    "tooltip": "Click this icon to edit this Testdata Block Verification Tag",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "deleteTDVerify": {
+    "tooltip": "Click this icon to delete this Testdata Block Verification Tag",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  }
+}

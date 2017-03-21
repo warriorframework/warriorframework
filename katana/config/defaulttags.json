@@ -1,0 +1,1 @@
+{"defaults":[{"tag":"conn_type"},{"tag":"ip"},{"tag":"password"},{"tag":"prompt"},{"tag":"ssh_port"},{"tag":"telnet_port"},{"tag":"testdata"},{"tag":"timeout"},{"tag":"url"},{"tag":"username"},{"tag":"variable_config"}]}

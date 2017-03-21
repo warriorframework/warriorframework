@@ -1,0 +1,87 @@
+<?xml version="1.0" ?>
+<Testcase>
+	<Details>
+		<Name>netconf_tc_sample</Name>
+		<Title>netconf_tc_sample</Title>
+		<Engineer>Carl Hoffmann</Engineer>
+		<Date>2015-11-03</Date>
+		<Time>15:04</Time>
+		<InputDataFile>../../Data/samples/netconf_Data_sample.xml</InputDataFile>
+		<Datatype>Custom</Datatype>
+		<default_onError action="next"/>
+		<Logsdir/>
+		<Resultsdir/>
+		<ExpectedResults/>
+	</Details>
+	<Requirements>
+		<Requirement/>
+	</Requirements>
+	<Steps>
+		<step Driver="netconf_driver" Keyword="connect_netconf" TS="1">
+			<Arguments>
+				<argument name="system_name" value="ConfD"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>connect_netconf</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="netconf_driver" Keyword="get_config" TS="2">
+			<Arguments>
+				<argument name="datastore" value="candidate"/>
+				<argument name="system_name" value="ConfD"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>get_config</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+        </step>
+        <step Driver="netconf_driver" Keyword="edit_config" TS="3">
+            <Arguments>
+                <argument name="system_name" value="ConfD"/>
+                <argument name="datastore" value="candidate"/>
+                <argument name="config" value="myConfig"/>
+            </Arguments>
+            <onError action="next"/>
+            <Description>edit_config</Description>
+            <Execute ExecType="Yes"/>
+            <context>positive</context>
+            <impact>impact</impact>
+        </step>
+        <step Driver="netconf_driver" Keyword="edit_config" TS="4">
+            <Arguments>
+                <argument name="system_name" value="ConfD"/>
+                <argument name="datastore" value="candidate"/>
+                <argument name="config" value="theirConfigFile"/>
+            </Arguments>
+            <onError action="next"/>
+            <Description>edit_config</Description>
+            <Execute ExecType="Yes"/>
+            <context>positive</context>
+            <impact>impact</impact>
+        </step>
+		<step Driver="netconf_driver" Keyword="get_config" TS="5">
+			<Arguments>
+				<argument name="datastore" value="candidate"/>
+				<argument name="system_name" value="ConfD"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>get_config</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="netconf_driver" Keyword="close_netconf" TS="5">
+			<Arguments>
+				<argument name="system_name" value="ConfD"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>close_netconf</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+	</Steps>
+</Testcase>

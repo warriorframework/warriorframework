@@ -1,0 +1,58 @@
+<?xml version="1.0" ?>
+<Testcase>
+
+	<Details>
+		<Name>demo_tc2</Name>
+		<Title>Demo tc2 test 2 KWs: check_lab_equipment and pc_replacement</Title>
+		<InputDataFile>../Data/demo_tc_Data.xml</InputDataFile>
+		<Datatype>Custom</Datatype>
+		<default_onError action="next"/>
+		<Logsdir>../Execution</Logsdir>
+		<Resultsdir>../Execution</Resultsdir>
+		<Date>2016-01-13</Date>
+		<Time>14:52</Time>
+		<Engineer>Tomas Le</Engineer>
+		<ExpectedResults>Failed due to sub-steps intentionally testing Failed scenarios.</ExpectedResults>
+	</Details>
+
+	<Requirements>
+		<Requirement>Demo-requirement-001</Requirement>
+		<Requirement>Demo-requirement-002</Requirement>
+		<Requirement>Demo-requirement-003</Requirement>
+	</Requirements>
+
+	<Steps>
+	<!--
+	Using check_lab_equipment KW to look up eqpt_type then call
+		pc_replacement
+		testset_calibration
+	KW as appropriate.
+	-->
+	<!--
+	Testing pc_replacement KW, with NO subsystem
+	-->
+		<step Driver="demo_driver" Keyword="pc_replacement" TS="1">
+			<Arguments>
+				<argument name="system_name" value="Laptop"/>
+			</Arguments>
+		</step>
+	<!--
+	Testing pc_replacement KW, with subsystem
+	-->
+		<step Driver="demo_driver" Keyword="pc_replacement" TS="2">
+			<Arguments>
+				<argument name="system_name" value="PCs[HP]"/>
+			</Arguments>
+		</step>
+	<!--
+	Test check_lab_equipment KW calling pc_replacement KW
+	Test under system with MULTI subsystems:
+	-->
+		<step Driver="demo_driver" Keyword="check_lab_equipment" TS="3">
+			<Arguments>
+				<argument name="system_name" value="PCs[all]"/>
+			</Arguments>
+		</step>
+	</Steps>
+
+</Testcase>

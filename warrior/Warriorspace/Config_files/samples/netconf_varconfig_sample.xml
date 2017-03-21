@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<configuration>
+	<variable_set name="shelf_global" value="1" />
+	
+	<network name="network1">
+		<network_element name="ne1">
+			<shelf name="shelf1" id="1" >
+				<slot name="slot1" id="0" id1="1" id2="2">
+					<subslot name="subslot1" id="0" >
+						<portid name="port" port1="C1" port2="C2" port3="C3" port4="C4" />
+						<pluggableInterfaceType name="pint" id="CFP4" />
+						<admin-status name="admin" state1="up" state2="down"/>
+					</subslot>
+				</slot>
+			</shelf>
+		</network_element>
+		
+		<network_element name="ne2">
+			<shelf name="shelf1" id="1" >
+				<slot name="slot1" id="0" >
+					<subslot name="subslot1" id="0" >
+						<portid name="port" port1="C1" port2="C2" port3="C3" port4="C4" />
+						<pluggableInterfaceType name="pint" id="CFP4" />
+						<admin-status name="admin" state1="up" />
+					</subslot>
+				</slot>
+			</shelf>
+		</network_element>
+	</network>
+</configuration>
+
+
+
+ 
+
+

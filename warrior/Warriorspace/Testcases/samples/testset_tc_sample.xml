@@ -1,0 +1,111 @@
+<?xml version="1.0" ?>
+<Testcase>
+	<Details>
+		<Name>sample_testset</Name>
+		<Title>sample_testset</Title>
+		<Engineer>savitha</Engineer>
+		<Date>2015-10-28</Date>
+		<Time>09:48</Time>
+    <InputDataFile>../Data/testset_Data_sample.xml</InputDataFile>
+		<Datatype>Iterative</Datatype>
+    <default_onError action="next"/>
+	</Details>
+  <Steps>
+    <step Driver="ts_general_driver" Keyword="connect_ts" TS="1">
+       <Arguments>
+         <argument name="name" value="JDSUTBerd"/>
+       </Arguments>
+       <onError action="abort"/>
+       <Description>Connect JDSU TBerd testset</Description>
+       <Execute ExecType="Yes"/>
+       <context>positive</context>
+       <impact>impact</impact>
+    </step>
+    <step Driver="ts_trp_driver" Keyword="source_alarm" TS="2">
+       <Arguments>
+         <argument name="name" value="JDSUTBerd"/>
+         <argument name="list_of_keys" value="['alarm_aisl']"/>
+       </Arguments>
+       <onError action="next"/>
+       <Description>Source alarm</Description>
+       <Execute ExecType="Yes"/>
+       <context>positive</context>
+       <impact>impact</impact>
+    </step>
+    <step Driver="ts_trp_driver" Keyword="remove_alarm" TS="3">
+       <Arguments>
+         <argument name="name" value="JDSUTBerd"/>
+         <argument name="list_of_keys" value="['alarm_aisl']"/>
+       </Arguments>
+       <onError action="next"/>
+       <Description>Remove alarm</Description>
+       <Execute ExecType="Yes"/>
+       <context>positive</context>
+       <impact>impact</impact>
+    </step>
+    <step Driver="ts_trp_driver" Keyword="source_alarm" TS="4">
+       <Arguments>
+         <argument name="name" value="JDSUTBerd"/>
+         <argument name="list_of_keys" value="['alarm_los']"/>
+       </Arguments>
+       <onError action="next"/>
+       <Description>Source alarm</Description>
+       <Execute ExecType="Yes"/>
+       <context>positive</context>
+       <impact>impact</impact>
+    </step>
+    <step Driver="ts_trp_driver" Keyword="verify_alarm" TS="5">
+       <Arguments>
+         <argument name="name" value="JDSUTBerd"/>
+       </Arguments>
+       <onError action="next"/>
+       <Description>Verify alarm</Description>
+       <Execute ExecType="Yes"/>
+       <context>positive</context>
+       <impact>impact</impact>
+    </step>
+    <step Driver="ts_trp_driver" Keyword="remove_alarm" TS="6">
+       <Arguments>
+         <argument name="name" value="JDSUTBerd"/>
+         <argument name="list_of_keys" value="['alarm_los']"/>
+       </Arguments>
+       <onError action="next"/>
+       <Description>Remove alarm</Description>
+       <Execute ExecType="Yes"/>
+       <context>positive</context>
+       <impact>impact</impact>
+    </step>
+    <step Driver="ts_trp_driver" Keyword="source_error" TS="7">
+       <Arguments>
+         <argument name="name" value="JDSUTBerd"/>
+         <argument name="list_of_keys" value="['mode_rate', 'rate_e7', 'err_ty1']"/>
+       </Arguments>
+       <onError action="next"/>
+       <Description>source Error</Description>
+       <Execute ExecType="Yes"/>
+       <context>positive</context>
+       <impact>impact</impact>
+    </step>
+    <step Driver="ts_trp_driver" Keyword="source_error" TS="8">
+       <Arguments>
+         <argument name="name" value="JDSUTBerd"/>
+         <argument name="list_of_keys" value="['mode_single', 'rate_e9', 'err_ty2']"/>
+       </Arguments>
+       <onError action="next"/>
+       <Description>source Error</Description>
+       <Execute ExecType="Yes"/>
+       <context>positive</context>
+       <impact>impact</impact>
+    </step>
+    <step Driver="ts_general_driver" Keyword="close" TS="9">
+       <Arguments>
+         <argument name="name" value="JDSUTBerd"/>
+       </Arguments>
+       <onError action="next"/>
+       <Description>Close JDSU TBerd testset connection</Description>
+       <Execute ExecType="Yes"/>
+       <context>positive</context>
+       <impact>impact</impact>
+    </step>
+  </Steps>
+</Testcase>

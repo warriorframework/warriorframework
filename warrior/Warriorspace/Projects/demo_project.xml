@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<Project>
+	<Details>
+		<Name>demo_project</Name>
+		<Title>A project xml to be use for Warrior demo</Title>
+		<Engineer>Tomas Le</Engineer>
+		<Date>01/08/2016</Date>
+		<Time>13:50:45</Time>
+		<default_onError action="abort"/>
+	</Details>
+	<Testsuites>
+		<Testsuite>
+			<path>../Suites/demo_suite.xml</path>
+			<onError action="abort" value=""/>
+			<impact>impact</impact>
+		</Testsuite>
+	</Testsuites>
+</Project>

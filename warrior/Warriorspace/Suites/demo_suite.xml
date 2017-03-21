@@ -1,0 +1,40 @@
+<?xml version="1.0" ?>
+<TestSuite>
+	<Details>
+		<Name>demo_suite</Name>
+		<Title>suite for Warrior demo</Title>
+		<Engineer>Tomas Le</Engineer>
+		<Date>01/08/2016</Date>
+		<Time>13:52:26</Time>
+		<type exectype="sequential_testcases"/>
+		<default_onError action="next"/>
+		<Resultsdir/>
+	</Details>
+	<Requirements>
+		<Requirement>Requirement-demo-001</Requirement>
+		<Requirement>Requirement-demo-002</Requirement>
+	</Requirements>
+	<Testcases>
+		<Testcase>
+			<path>../Testcases/demo_tc1.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>impact</impact>
+		</Testcase>
+		<Testcase>
+			<path>../Testcases/demo_tc2.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>impact</impact>
+		</Testcase>
+		<Testcase>
+			<path>../Testcases/demo_tc3.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="abort"/>
+			<impact>impact</impact>
+		</Testcase>
+	</Testcases>
+</TestSuite>

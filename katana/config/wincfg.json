@@ -1,0 +1,9 @@
+{
+  "logsdir": "/data/fujitsu/logs",
+  "testsuitedir": "D:/Work/Fujitsu/Workspace/chariot/BaseDirectory/Workspace/Suites",
+  "resultsdir": "/data/fujitsu/results",
+  "projdir": "D:/Work/Fujitsu/Workspace/chariot/BaseDirectory/Workspace/Projects",
+  "pythonsrcdir": "D:/Work/Fujitsu/Workspace/chariot/raw/python",
+  "xmldir": "D:/Work/Fujitsu/Workspace/chariot/BaseDirectory/Workspace/Testcases",
+  "engineer": "Nikola Tesla"
+}

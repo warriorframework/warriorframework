@@ -1,0 +1,10 @@
+{
+    "type":"Execution type",
+    "directory":"Specify the file directory",
+    "paralleltype":"Parallel execution run type",
+    "performancetype":"Performance execution run type",
+    "dateFormat":"Format::  yyyy-mm-dd",
+    "timeFormat":"Format::  hh-mm-ss",
+    "schedulerun":"Schedule a execution",
+    "autodetect":"Automatically create defects in defect management tool"
+}
