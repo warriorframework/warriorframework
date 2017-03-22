@@ -30,9 +30,43 @@ from docstrings import read_lines, parse_docs, class_defs
 from scanfiles import fetch_action_file_names
 
 
+current_file_dir = os.path.dirname(os.path.realpath(__file__))
+# all paths below are relative to current_file_dir
+cfg_relpath = './config/config.json'
+name_file_relpath = 'name.dat'
+datafile_relpath = './config/data.json'
+statesfile_relpath = './config/states.json'
+newtestcasefile_relpath = './config/newtestcase.xml'
+newtestsuitefile_relpath = './config/newtestsuite.xml'
+newprojectfile_relpath = './config/newproject.xml'
+newdatafile_relpath = './config/newdatafile.xml'
+states_relpath = './config/states.json'
+newwarhornconfigfile_relpath = './config/newwarhornconfigfile.xml'
+newtestdatafile_relpath = './config/newtestdatafile.xml'
+deftagsfile_relpath = './config/defaulttags.json'
+
+# compute abs paths
+CFGFILE = os.path.normpath((os.path.join(current_file_dir, cfg_relpath)))
+NAMEFILE = os.path.normpath((os.path.join(current_file_dir, name_file_relpath)))
+DATAFILE = os.path.normpath((os.path.join(current_file_dir, datafile_relpath)))
+STATESFILE = os.path.normpath((os.path.join(current_file_dir, statesfile_relpath)))
+NEWTESTCASEFILE = os.path.normpath((os.path.join(current_file_dir, newtestcasefile_relpath)))
+NEWTESTSUITEFILE = os.path.normpath((os.path.join(current_file_dir, newtestsuitefile_relpath)))
+NEWPROJECTFILE = os.path.normpath((os.path.join(current_file_dir, newprojectfile_relpath)))
+NEWDATAFILE = os.path.normpath((os.path.join(current_file_dir, newdatafile_relpath)))
+STATES = os.path.normpath((os.path.join(current_file_dir, states_relpath)))
+NEWWARHORNCONFIGFILE = os.path.normpath((os.path.join(current_file_dir, newwarhornconfigfile_relpath)))
+NEWTESTDATAFILE = os.path.normpath((os.path.join(current_file_dir, newtestdatafile_relpath)))
+DEFTAGSFILE = os.path.normpath((os.path.join(current_file_dir, deftagsfile_relpath)))
+TOOLTIP_DIR = '{0}{1}{2}{1}'.format(current_file_dir, os.sep, 'tooltip')
+
+
+ROOT = '{0}{1}{2}{1}'.format(current_file_dir, os.sep, 'static') 
+
+
 @route('/assets/<filename:path>')
 def staticfiles(filename):
-    return static_file(filename, root='./static')
+    return static_file(filename, root=ROOT)
 
 
 @route('/')
@@ -42,20 +76,9 @@ def index():
 
 @route('/katana/')
 def katana():
-    return template('index')
+    template_lookup = [current_file_dir, "{0}{1}{2}{1}".format(current_file_dir, os.sep, 'views')]
+    return template('index', template_lookup=template_lookup)
 
-
-CFGFILE = './config/config.json'
-DATAFILE = './config/data.json'
-STATESFILE = './config/states.json'
-NEWTESTCASEFILE = './config/newtestcase.xml'
-NEWTESTSUITEFILE = './config/newtestsuite.xml'
-NEWPROJECTFILE = './config/newproject.xml'
-NEWDATAFILE = './config/newdatafile.xml'
-STATES = './config/states.json'
-NEWWARHORNCONFIGFILE = './config/newwarhornconfigfile.xml'
-NEWTESTDATAFILE = './config/newtestdatafile.xml'
-DEFTAGSFILE = './config/defaulttags.json'
 
 
 @route('/readconfig')
@@ -102,7 +125,6 @@ def readstatesfile():
     return states
 
 
-TOOLTIP_DIR = './tooltip/'
 
 
 @route('/readtooltip/:tab')
@@ -1321,7 +1343,7 @@ def execute():
     print cfg
     Warrior_location = cfg['pythonsrcdir']
     toolname = ''
-    with open('chariot.dat') as f:
+    with open(NAMEFILE) as f:
         toolname = f.read().strip()
 
     # logfile_config = open("warriorlog_location.dat")
@@ -1446,7 +1468,7 @@ def get_files_and_folders(path):
         some_string += ']}\n'
         break
 
-    with open("config/data.json", "w") as outfile:
+    with open(DATAFILE, "w") as outfile:
         outfile.write(some_string)
 
 
