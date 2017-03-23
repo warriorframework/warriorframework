@@ -13,8 +13,8 @@ Index of contents:
 Python:
 =======
 Warrior is supported on python2.7
-The primary requirement of Warrior to work is python installation itself, please make sure you have python2.7.9 or higher installed in the machine where you want to run Warrior.
-Python 2.7.9 or higher ensures that all the compatible versions of the external packages that have to be downloaded satisfy their own version requirements. Python 2.7.9 or higher also includes pip - the preferred installer -in the Python binary installers by default. 
+The primary requirement of Warrior to work is python installation itself, please make sure you have python2.7.0 or a higher version in the 2.7+ family installed in the machine where you want to run Warrior.
+
 refer https://wiki.python.org/moin/BeginnersGuide/Download on how to install python on different platforms.
 
 ==============================
