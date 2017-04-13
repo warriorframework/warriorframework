@@ -1,47 +1,49 @@
 <?xml version="1.0" ?>
 <Testcase>
         <Details>
-                <Name>Name</Name> <!-- Required. Testcase name or ID -->
-                <Title>Title</Title> <!-- Required. Testcase title or Description -->
-				<ExpectedResults>ExpectedResults</ExpectedResults> <!--optional -->
-				<Category>Feature</Category> <!-- optional -->
-                <Engineer></Engineer> <!--Required -->
-				<Date></Date>
-				<Time></Time>
-			    <default_onError action = 'goto' value='9'  /><!--Optional --><!--
-				action = next, abort, goto, abort_as_error
-				value = used with action goto to specify step number 
-				Default Error Handling should be a drop down with default value of 'next' 
-				 -->
-				<InputDataFile>Path_to_InputDataFile</InputDataFile> <!-- 
-				Optional. The user shall be able to select a data file from a local machine. Relative Path is supported.
-				-->
-				<Datatype>Datatype</Datatype><!-- Required if using InputDataFile Options: 'Iterative, Custom'
-				Iterative: Expects a system based input data file. Will run the keywords on every system defined.
-				Custom : Allows for a custom defined data file, with custome variables assigned to keyword to 
-				access the input data file-->
-				<Logsdir></Logsdir> <!--Optional, uses default-->
-				<Resultsdir></Resultsdir> <!--Optional, uses default-->
+                <Name>Name</Name>
+                <Title>Title</Title>
+                <ExpectedResults>ExpectedResults</ExpectedResults>
+                <Category>Feature</Category>
+                <Engineer>Warrior_user</Engineer>
+                <Date>2017-03-17</Date>
+                <Time>22:06</Time>
+                <default_onError action="goto" value="9"/>
+                <InputDataFile>Path_to_InputDataFile</InputDataFile>
+                <Datatype>Custom</Datatype>
+                <Logsdir/>
+                <Resultsdir/>
+                <State>New</State>
         </Details>
-       <Requirements> <!-- The user shall be able to add as many requirements as needed-->
-       			<Requirement>requirement-001</Requirement> <!--Optional -->
-       			<Requirement>requirement-002</Requirement>
-       </Requirements>
-        <Steps> <!-- The user shall be able to add as many steps as needed. At least one is required-->
-				<step TS= '1' Driver='DriverName'      Keyword='KeywordName' > 
-					<Description>WDescdription text</Description> <!--Optional -->
-					<Execute ExecType='If, If Not, Yes, No' ><!--Optional default is Yes -->
-						<Rule Condition= 'variable' Condvalue='1' Else='next, abort, goto' Elsevalue='2'/>
-					</Execute>
-					<context>positive</context> <!-- values are positive and negative -->
-					<Arguments><!-- user adds as many as needed. Optional -->
-                            <argument name='count' value='1'/> 
-                    </Arguments>
-                    <onError action='next, abort, goto, abort_as_error' value='9'  /> <!-- step error handling, default is next
-					value = used with action goto to specify step number -->
-					<impact>noimpact</impact><!-- Used to decide if status of step will or will not impact 
-					the testcase status. -->
-               </step>
-                <step Driver='DriverName'            Keyword='KeywordName'   />				
+        <Requirements>
+                <Requirement>requirement-001</Requirement>
+                <Requirement>requirement-002</Requirement>
+        </Requirements>
+        <Steps>
+                <step Driver="DriverName" Keyword="KeywordName" TS="1">
+                        <Description>WDescdription text</Description>
+                        <Execute ExecType="If, If Not, Yes, No">
+                                <Rule Condition="variable" Condvalue="1" Else="next, abort, goto" Elsevalue="2"/>
+                        </Execute>
+                        <context>positive</context>
+                        <Arguments>
+                                <argument name="count" value="1"/>
+                        </Arguments>
+                        <onError action="next, abort, goto, abort_as_error" value="9"/>
+                        <impact>noimpact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="DriverName" Keyword="KeywordName" TS="2">
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <onError action="next" value=""/>
+                        <Description/>
+                        <Iteration_type type="Standard"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
         </Steps>
 </Testcase>

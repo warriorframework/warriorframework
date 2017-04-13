@@ -34,77 +34,97 @@ class NetconfActions(object):
         self.filename = Utils.config_Utils.filename
         self.logfile = Utils.config_Utils.logfile
         self.netconf_object = WNetConf()
-    
-    def request_rpc(self, xmlns, system_name, request_type, xmlns_tag = "xmlns", session_name=None):
-    
-        """ Request operations through Netconf interface.
-        :Arguments:
-            1. xmlns(string) = xmlnsNamespace of the particular request. 
-            2. system_name(string)  = Name of the system from the input datafile.
-            3. Request_type(string) = The operation that we want to perform.
-            4. xmlns_tag(string) = xml tag for the particular request. 
-	       for eg: 
-	       For request Type : 
-               <init-pm xmlns="urn:params:xml:ns:yang:perfmon">
-               usage:
-	       xmlns_tag = xmlns(default value, no need pass this argument)
-	       xmlns = "urn:params:xml:ns:yang:perfmon"
-	       request_type= "init-pm"
 
-	       For Request Type : 
-	       <org-openroadm-de-operations:restart xmlns:org-openroadm-de-operations="http://org/openroadm/de/operations">
-               usage:
-               xmlns_tag = "xmlns:org-openroadm-de-operations"
-	       xmlns = "http://org/openroadm/de/operations"
-	       request_type = "org-openroadm-de-operations:restart"
-	       
+    def request_rpc(self, system_name, session_name=None, request="",
+                    xmlns="", request_type="", xmlns_tag="xmlns"):
+
+        """ Request operations through Netconf interface.
+        If value for 'request' is provided, it will be used for request
+        operations else the XML input will be taken from the netconf_data
+        file based on xmlns, request_type, xmlns_tag values.
+        :Arguments:
+            1. system_name(string) = Name of the system from the input datafile
+            2. session_name(string) = Name of the session to the system
+            3. request(string) = command to be sent as xml string
+            4. xmlns(string) = XML namespace of the particular request
+            5. Request_type(string) = The operation that we want to perform
+            6. xmlns_tag(string) = xml tag for the particular request
+            for eg:
+            For request Type:
+                <init-pm xmlns="urn:params:xml:ns:yang:perfmon">
+            usage:
+                xmlns_tag = xmlns(default value, no need pass this argument)
+                xmlns = "urn:params:xml:ns:yang:perfmon"
+                request_type= "init-pm"
+
+            For Request Type :
+            <org-openroadm-de-operations:restart xmlns:
+             org-openroadm-de-operations="http://org/openroadm/de/operations">
+            usage:
+                xmlns_tag = "xmlns:org-openroadm-de-operations"
+                xmlns = "http://org/openroadm/de/operations"
+                request_type = "org-openroadm-de-operations:restart"
         :Returns:
-            1. status(bool)= True / False            
-            2. Get Response in the data repository {data:reply(xml)}
+            1. status = True/False/error
+            2. RPC replies in a list & it will be updated in the data
+               repository in key - [system_name]_request_rpc_reply.
         """
 
         wdesc = "Request particular operation from the system"
         pSubStep(wdesc)
-        
-        reply_key = '{}_edit_config_reply'.format(system_name)
-        reply_list = []				
+
+        reply_key = '{}_request_rpc_reply'.format(system_name)
+        reply_list = []
         pNote(system_name)
         pNote(self.datafile)
         session_id = Utils.data_Utils.get_session_id(system_name, session_name)
-        netconf_object = Utils.data_Utils.get_object_from_datarepository(session_id)
-        config_datafile = Utils.data_Utils.get_filepath_from_system(self.datafile, system_name, 'netconf_data')[0]
-        var_configfile = Utils.data_Utils.get_filepath_from_system(self.datafile, system_name, 'variable_config')
-        if len(var_configfile) > 0:
-            var_configfile = var_configfile[0]
-        else:
-            var_configfile = None
+        netconf_object = Utils.data_Utils.\
+            get_object_from_datarepository(session_id)
+        config_data_list = []
+        status = True
 
-        if Utils.file_Utils.fileExists(config_datafile):
-            status, config_data_list = Utils.data_Utils.get_nc_request_rpc_string(config_datafile, xmlns, request_type, xmlns_tag, var_configfile)
+        if request:
+            config_data_list = [request]
+        elif all([xmlns != "", request_type != "", xmlns_tag != ""]):
+            config_datafile = Utils.data_Utils.\
+                get_filepath_from_system(self.datafile, system_name,
+                                         'netconf_data')[0]
+            if config_datafile and Utils.file_Utils.\
+               fileExists(config_datafile):
+                status, config_data_list = Utils.data_Utils.\
+                    get_nc_request_rpc_string(config_datafile, xmlns,
+                                              request_type, xmlns_tag)
+            else:
+                status = "error"
+                pNote("Datafile does not have any value for netconf_data tag "
+                      "or the filepath mentioned in the netconf_data tag "
+                      "does not exist", 'error')
         else:
-            config_data_list = []
             status = "error"
-        if config_data_list:
+            pNote("Please provide value(s) for 'request' or 'xmlns &"
+                  " request_type'", 'error')
+
+        if status is True and config_data_list:
             for config_data in config_data_list:
                 if config_data:
-
                     reply = netconf_object.request_rpc(config_data)
                     reply_list.append(reply)
-                    pNote('Request Reply= {}'.format(reply))
+                    pNote('Request RPC Reply= {}'.format(reply))
                     if netconf_object.isCOMPLD:
-                        status = status and True if status != "error" else status
-                    else:			
-                        pNote('Request Failed {}'.format(netconf_object.ErrorMessage), "error")
-                        status = status and False if status != "error" else status
-                        break
+                        sub_status = True
+                    else:
+                        pNote('Request RPC Failed {}'.format(
+                         netconf_object.ErrorMessage), "error")
+                        sub_status = False
                 else:
-                    reply = "error"
-                    pNote('Request rpc Failed', "error")
-                    status = status and False 
+                    reply_list.append("error")
+                    pNote('Request RPC Failed', "error")
+                    sub_status = "error"
+                status = status and sub_status if sub_status != "error" \
+                    else sub_status
 
         report_substep_status(status)
         return status, {reply_key: reply_list}
-
 
     def connect_netconf(self, system_name, session_name=None):
         """ 

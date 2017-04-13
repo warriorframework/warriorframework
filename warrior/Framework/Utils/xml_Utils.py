@@ -25,7 +25,12 @@ print_exception
 import file_Utils
 import json
 from collections import OrderedDict
-from lxml import etree, objectify
+
+try:
+    from lxml import etree, objectify
+except ImportError as err:
+    print_error("Module lxml is not installed, Refer to the exception trace below for more details")
+    print_exception(err)
 
 def create_subelement(parent, tag, attrib):
     """Creates a subelement with given tag
@@ -440,7 +445,7 @@ def getElementWithTagAttribValueMatch(start, tag, attrib, value):
             print_warning('The file={0} is not found.'.format(start))
     elif isinstance(start, ElementTree.Element):
         node = start
-    if node is not False or node is not None:
+    if node is not False and node is not None:
         elementName = ".//%s[@%s='%s']" % (tag, attrib, value)
         element = node.find(elementName)
     else:
@@ -974,7 +979,7 @@ def list_path_responses_datafile(datafile, system_name):
         Returns the path_list and responses_list
         path_list contains list of response_path tags under the comparison_mode
         under the system with given system_name in the datafile
-        responses_list contains list of response_value tags under the 
+        responses_list contains list of response_value tags under the
         expected_api_response under the system with given system_name in datafile
     """
     path_element_list = getElementListWithSpecificXpath(datafile,

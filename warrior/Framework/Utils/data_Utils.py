@@ -47,34 +47,41 @@ cmd_params = OrderedDict([("command_list", "send"),
                           ("verify_on_list", "verify_on"),
                           ("inorder_search_list", "inorder"),
                           ("verify_map_list", ""),
+                          ("operator_list", "operator"),
+                          ("cond_value_list", "cond_value"),
+                          ("cond_type_list", "cond_type"),
                           ("repeat_list", "repeat")])
 
 
-def get_nc_request_rpc_string(config_datafile, xmlns, request_type, xmlns_tag, var_configfile=None):
+def get_nc_request_rpc_string(config_datafile, xmlns, request_type, xmlns_tag):
     """
     Get the Request of netconf as a list
     """
-    
+
     configuration = ""
     status = True
     try:
-        data = xml_Utils.get_element_by_attribute(config_datafile, request_type, xmlns_tag, xmlns)						  
+        data = xml_Utils.get_element_by_attribute(config_datafile,
+                                                  request_type,
+                                                  xmlns_tag, xmlns)
         if data:
             configuration = xml_Utils.convert_dom_to_string(data)
         else:
-            testcase_Utils.pNote("XMLNS={0} is not found in config "\
-			                     "file ={1}".format(xmlns, config_datafile),"error")
+            testcase_Utils.pNote("XMLNS={0} is not found in config "
+                                 "file ={1}".format(xmlns, config_datafile),
+                                 "error")
             status = "error"
-        
+
     except IOError as err:
-        testcase_Utils.pNote("File does not exist: {0}".format(err),"error")
+        testcase_Utils.pNote("File does not exist: {0}".format(err),
+                             "error")
         status = "error"
 
     except Exception as exception:
         print_exception(exception)
         status = "error"
-    return status, configuration  
-     
+    return status, configuration
+
 
 def getSystemData(datafile, system_name, cnode, system='system'):
     """
@@ -421,6 +428,8 @@ def _get_cmd_details(testdata, global_obj, system_name, varconfigfile):
     """Get the command details from testdata file
     as a details dictionary"""
     details_dict = {}
+    verifyparams = ["verify_text_list", "verify_context_list", "operator_list",
+                    "cond_value_list", "cond_type_list"]
 
     # Initialize all lists
     for param, attrib in cmd_params.items():
@@ -429,12 +438,14 @@ def _get_cmd_details(testdata, global_obj, system_name, varconfigfile):
             vfylist = _get_cmdparams_list(testdata, global_obj, "verify")
             vfylist, maplist = _get_mapping_details(global_obj, vfylist)
             resultant_list = vfylist
-        elif param == "verify_text_list" or param == "verify_context_list":
-            resultant_list = _get_verification_details(testdata, global_obj, vfylist,
-                                                       attrib)
+        elif param in verifyparams:
+            resultant_list = _get_verification_details(testdata, global_obj,
+                                                       vfylist, attrib)
         elif param == "verify_on_list":
             vfylist = details_dict["verify_list"]
-            resultant_list = _get_verification_details(testdata, global_obj, vfylist, attrib, system_name)
+            resultant_list = _get_verification_details(testdata, global_obj,
+                                                       vfylist, attrib,
+                                                       system_name)
         elif param == "verify_map_list":
             vfylist = _get_cmdparams_list(testdata, global_obj, "verify")
             vfylist, maplist = _get_mapping_details(global_obj, vfylist)
@@ -443,7 +454,8 @@ def _get_cmd_details(testdata, global_obj, system_name, varconfigfile):
             resultant_list = _get_cmdparams_list(testdata, global_obj, attrib)
             if param == "sys_list":
                 details_dict["vc_file_list"] = []
-                vc_file_list = _get_vc_details(resultant_list, system_name, varconfigfile)
+                vc_file_list = _get_vc_details(resultant_list, system_name,
+                                               varconfigfile)
                 details_dict["vc_file_list"].extend(vc_file_list)
         details_dict[param].extend(resultant_list)
 
@@ -661,7 +673,8 @@ def get_verify_text_context_as_list(testdata, verify_list):
 
 def verify_resp_across_sys(match_list, context_list, command,
                            response, varconfigfile=None, verify_on_list=None,
-                           verify_list=None, remote_resp_dict=None, endprompt=""):
+                           verify_list=None, remote_resp_dict=None,
+                           endprompt="", verify_group=None):
     """ New method to verify response of a command
     sent on one system with the response recieved from
     another system """
@@ -673,17 +686,23 @@ def verify_resp_across_sys(match_list, context_list, command,
     for i in range(0, len(verify_on_list)):
         for j in range(0, len(verify_on_list[i])):
             temp_list = verify_on_list[i][j].split(".")
-            if len(temp_list)>1:
-                verify_on_list[i][j] = get_session_id(temp_list[0], temp_list[1])
+            if len(temp_list) > 1:
+                verify_on_list[i][j] = get_session_id(temp_list[0],
+                                                      temp_list[1])
             else:
                 verify_on_list[i][j] = get_session_id(temp_list[0])
             # print "\n---------- VERIFICATION --- Search Pattern: {0} --- Pattern Context: {1} ----------\n".format(match_list[i], context_list[i])
             try:
                 data = remote_resp_dict[verify_on_list[i][j]]
-                tmp_status = verify_cmd_response([match_list[i]], [context_list[i]], command, data, verify_on_list[i][j], varconfigfile, endprompt)
+                tmp_status = verify_cmd_response(
+                                [match_list[i]], [context_list[i]], command,
+                                data, verify_on_list[i][j], varconfigfile,
+                                endprompt, verify_group)
                 status = status and tmp_status
             except KeyError:
-                print_error("Response could not be collected for {0}, hence, it cannot be verified".format(verify_on_list[i][j]))
+                print_error("Response could not be collected for {0}, hence, "
+                            "it cannot be verified".format(
+                                                verify_on_list[i][j]))
                 status = "ERROR"
                 # print "\n---------- END OF VERIFICATION ----------\n"
     return status
@@ -693,19 +712,32 @@ def get_no_impact_logic(context_str):
     return silence value and context value"""
     return {'YES:NOIMPACT': (True, 'YES'), 'NO:NOIMPACT': (True, 'No'), 'NO': (False, 'No'), 'YES': (False, 'YES')}.get(context_str.upper())
 
-def verify_cmd_response(match_list, context_list, command, response, verify_on_system,
-                        varconfigfile=None, endprompt=""):
+
+def convert2type(value, data_type='str'):
+    """Convert value to data_type and return value in that data_type
+    Currently supported are str/int/float only
+    """
+    type_funcs = {'str': str, 'int': int, 'float': float}
+    convert = type_funcs[data_type]
+    return convert(value)
+
+
+def verify_cmd_response(match_list, context_list, command, response,
+                        verify_on_system, varconfigfile=None, endprompt="",
+                        verify_group=None):
     """Verifies the response with the provided
-    match and context list """
-    err_msg = "Incorrect or no value provided for verification" \
-              " search/found, check the verification data provided for the command. " \
-              "Command result will be marked as ERROR"
+    match and context list
+    """
+    err_msg = "Incorrect or no value provided for verification search/found, "
+    "check the verification data provided for the command. Command result will"
+    " be marked as ERROR"
 
     if varconfigfile and varconfigfile is not None:
         match_list = string_Utils.sub_from_varconfig(varconfigfile, match_list)
     verify_status = True
 
     for i in range(0, len(match_list)):
+        nogroup = False
         if context_list[i] and match_list[i]:
             noiimpact, found = get_no_impact_logic(context_list[i])
             found = testcase_Utils.pConvertLogical(found)
@@ -715,23 +747,47 @@ def verify_cmd_response(match_list, context_list, command, response, verify_on_s
                 match_object = False
             if match_object:
                 match = match_object.group()
-                status = True
+                msg = "{0} '{1}' in  response to '{2}' on {4} :[{3}]:".format(
+                        "Found ", match, command, "pattern matched",
+                        verify_on_system)
+                cond_value = verify_group[1][i]
+                if cond_value:
+                    grps = match_object.groups()
+                    if len(grps) == 1:
+                        actual_value = grps[0]
+                        operator = verify_group[0][i]
+                        cond_type = verify_group[2][i]
+                        status = verify_relation(actual_value, cond_value,
+                                                 operator, cond_type)
+                        msg += "\n{0} comparison: {1} {2} {3} ".format(
+                            cond_type or "str", actual_value, operator,
+                            cond_value)
+                        msg += "succeeded" if status else "failed"
+                    else:
+                        msg += ("pattern to compare should have exactly one "
+                                "group to match with the condition value: "
+                                "pattern failed")
+                        nogroup = True
+                        status = False
+                else:
+                    status = True
             else:
                 match = match_list[i]
+                msg = "{0} '{1}' in  response to '{2}' on {4} :[{3}]:".format(
+                        "Did not find", match, command, "pattern match failed",
+                        verify_on_system)
                 status = False
-            success_text = {True: "Found ", False: "Did not find "}.get(found)
-            failure_text = {True: "Did not find ", False: "Found "}.get(found)
             if found is status:
-                msg = "{0} '{1}' in  response to '{2}' on {4} :[{3}]:".format(success_text, match, command, "verification success", verify_on_system)
-                result = True
+                result = False if not found and nogroup else True
             elif found is None:
                 msg = err_msg
                 result = "ERROR"
             else:
-                msg = "{0} '{1}' in  response to '{2}' on {4} :[{3}]:".format(failure_text, match, command, "verification failed", verify_on_system)
                 if noiimpact:
                     result = True
-                    testcase_Utils.pNote("Noimpact was requested on the below verification, hence the failure would not impact command status")
+                    testcase_Utils.pNote("Noimpact was requested on the below "
+                                         "verification, hence the failure "
+                                         "would not impact command status")
                 else:
                     result = False
             testcase_Utils.pNote(msg, "debug")
@@ -747,9 +803,11 @@ def verify_cmd_response(match_list, context_list, command, response, verify_on_s
             else:
                 result = False if response == "" else True
 
-            verification_text = "verification success" if result else "verification failed"
-            msg = "Response found from response to command '{0}' on {2} :[{1}]:".format(command, verification_text, verify_on_system) if found\
-                    else "No response found from response to command '{0}' on {2} :[{1}]:".format(command, verification_text, verify_on_system)
+            verification_text = "verification success" if result else "veri"
+            "fication failed"
+            msg = "Response " if found else "No response "
+            msg += "found from command '{0}' on {2} :[{1}]:".format(
+                            command, verification_text, verify_on_system)
             testcase_Utils.pNote(msg)
         else:
             testcase_Utils.pNote(err_msg, "error")
@@ -758,28 +816,28 @@ def verify_cmd_response(match_list, context_list, command, response, verify_on_s
             result = "ERROR"
             verify_status = "ERROR"
         verify_status = verify_status and result
-    #print "\n---------- END OF VERIFICATION ----------\n"
+    # print "\n---------- END OF VERIFICATION ----------\n"
     return verify_status
 
 
-def verify_data(expected, key, type='str', comparison='eq'):
+def verify_data(expected, key, data_type='str', comparison='eq'):
     """Verify the value of the key in data repository matches
     with expected value
     """
     def validate():
         result = "TRUE"
         err_msg = ""
-        if type not in type_funcs:
+        if data_type not in type_funcs:
             err_msg += "type {} not supported, only one of {} supported\n".\
-                format(type, '/'.join(type_funcs.keys()))
+                format(data_type, '/'.join(type_funcs.keys()))
             result = "ERROR"
         else:
-            convert = type_funcs[type]
+            convert = type_funcs[data_type]
             try:
                 exp = convert(expected)
             except ValueError:
-                err_msg += "expected {} should be of type {}\n".format(expected,
-                                                                       type)
+                err_msg += "expected {} should be of type {}\n".format(
+                                                        expected, data_type)
                 result = "ERROR"
             except Exception as e:
                 err_msg += "Got unknown exception {}, please check\n".format(e)
@@ -810,9 +868,11 @@ def verify_data(expected, key, type='str', comparison='eq'):
         result = "FALSE"
     return result
 
+
 def verify_resp_inorder(match_list, context_list, command, response,
                         varconfigfile=None, verify_on_list=None,
-                        verify_list=None, remote_resp_dict=None):
+                        verify_list=None, remote_resp_dict=None,
+                        verify_group=None):
     """ Method for in-order search.
     Verifies the 'search strings' in the system response
     and also verifies whether they are in order or not """
@@ -825,8 +885,8 @@ def verify_resp_inorder(match_list, context_list, command, response,
         match_list = string_Utils.sub_from_varconfig(varconfigfile, match_list)
 
     status = True
-    verify_list = verify_list.split(",") if isinstance(verify_list, str) \
-                                         else verify_list
+    if isinstance(verify_list, str):
+        verify_list = verify_list.split(",")
 
     resp_details_dict = _get_resp_details(match_list, context_list,
                                           verify_on_list, verify_list,
@@ -834,8 +894,10 @@ def verify_resp_inorder(match_list, context_list, command, response,
 
     for system in resp_details_dict:
         if resp_details_dict[system]:
-            sys_status =  verify_inorder_cmd_response(match_list, verify_list,
-                          system, command, resp_details_dict[system])
+            sys_status = verify_inorder_cmd_response(match_list, verify_list,
+                                                     system, command,
+                                                     resp_details_dict[system],
+                                                     verify_group)
         else:
             pNote("Verification can not be done for the system : "
                   "{0}".format(system), "error")
@@ -849,20 +911,21 @@ def _get_resp_details(match_list, context_list, verify_on_list, verify_list,
                       remote_resp_dict):
     """ Get the response verification details """
     resp_details_dict = {}
+    value = None
     for i in range(0, len(verify_list)):
-        verify_dict = {i:{}}
+        verify_dict = {i: {}}
         for j in range(0, len(verify_on_list[i])):
             temp_list = verify_on_list[i][j].split(".")
-            if len(temp_list)>1:
+            if len(temp_list) > 1:
                 verify_on_list[i][j] = get_session_id(temp_list[0],
                                                       temp_list[1])
             else:
                 verify_on_list[i][j] = get_session_id(temp_list[0])
 
-            if not resp_details_dict.has_key(verify_on_list[i][j]):
+            if verify_on_list[i][j] not in resp_details_dict:
                 resp_details_dict[verify_on_list[i][j]] = {}
 
-            if remote_resp_dict.has_key(verify_on_list[i][j]):
+            if verify_on_list[i][j] in remote_resp_dict:
                 data = remote_resp_dict[verify_on_list[i][j]]
                 if data:
                     match_object = re.search(match_list[i], data)
@@ -872,19 +935,21 @@ def _get_resp_details(match_list, context_list, verify_on_list, verify_list,
                     match = True
                     start_index = match_object.start()
                     end_index = match_object.end()
-                    match = True
+                    values = match_object.groups()
+                    value = values[0] if len(values) == 1 else None
                 else:
                     match = False
                     start_index = None
                     end_index = None
                 noimpact, found = get_no_impact_logic(context_list[i])
                 found = testcase_Utils.pConvertLogical(found)
-                verify_dict[i].update({'start_index':start_index})
-                verify_dict[i].update({'end_index':end_index})
-                verify_dict[i].update({'match':match})
-                verify_dict[i].update({'verify':verify_list[i]})
-                verify_dict[i].update({'found':found})
-                verify_dict[i].update({'noimpact':noimpact})
+                verify_dict[i].update({'start_index': start_index})
+                verify_dict[i].update({'end_index': end_index})
+                verify_dict[i].update({'match': match})
+                verify_dict[i].update({'value': value})
+                verify_dict[i].update({'verify': verify_list[i]})
+                verify_dict[i].update({'found': found})
+                verify_dict[i].update({'noimpact': noimpact})
 
             resp_details_dict[verify_on_list[i][j]].update(verify_dict)
 
@@ -978,74 +1043,131 @@ def _validate_index_value(index, index_list, context_list):
 
     return status
 
+
+def verify_relation(actual_value, cond_value, operator, cond_type):
+    ver_args = {}
+    if cond_type:
+        pNote("cond_type is {}".format(cond_type))
+        actual_value = convert2type(actual_value, cond_type)
+        cond_value = convert2type(cond_value, cond_type)
+        ver_args.update({"data_type": cond_type})
+    if operator:
+        ver_args.update({"comparison": operator})
+    update_datarepository({"verify_cond": actual_value})
+    result = verify_data(cond_value, "verify_cond", **ver_args)
+    status = True if result == "TRUE" else False
+    return status
+
+
 def verify_inorder_cmd_response(match_list, verify_list, system, command,
-                                verify_dict):
+                                verify_dict, verify_group=None):
     """ Verifies search strings in the system response and matches the
     received response order with the expected order """
     status = True
     verify_order_list = []
     for i, tag in enumerate(verify_list):
-        if verify_dict.has_key(i) and verify_dict[i].get('verify') == tag:
+        if i in verify_dict and verify_dict[i].get('verify') == tag:
             match = verify_dict[i].get('match', None)
             verify_order = verify_dict[i].get('verify_order', None)
             noimpact = verify_dict[i].get('noimpact', None)
             found = verify_dict[i].get('found', None)
 
             if match is True:
+                actual_value = verify_dict[i].get("value")
                 if verify_order is True:
                     verify_status = True
                     if found is True:
-                        msg = "Found '{0}' in response to '{1}' on {2} " \
-                        "and '{0}' is in the correct order".format(
-                        match_list[i], command, system)
+                        msg = ("Found '{0}' in response to '{1}' on {2} "
+                               "and '{0}' is in the correct order").format(
+                                                match_list[i], command, system)
+                        if verify_group:
+                            cond_value = verify_group[1][i]
+                            operator = verify_group[0][i]
+                            cond_type = verify_group[2][i]
+                            if cond_value and actual_value:
+                                verify_status = verify_relation(actual_value,
+                                                                cond_value,
+                                                                operator,
+                                                                cond_type)
+                                msg += "\n{0} comparison: {1} {2} {3} ".format(
+                                    cond_type or "str", actual_value, operator,
+                                    cond_value)
+                                if verify_status:
+                                    msg += "succeeded"
+                                else:
+                                    msg += "failed"
+                            elif cond_value:
+                                verify_status = False
+                                msg += ("\npattern to compare should have "
+                                        "exactly one group to match with the "
+                                        "condition value: pattern failed")
                     else:
-                        msg = "Found '{0}' in response to '{1}' on {2} " \
-                        "but '{0}' is not in the specified location as " \
-                        "expected".format(match_list[i], command, system)
+                        if verify_group[1][i] and not actual_value:
+                            verify_status = False
+                            msg += ("\npattern to compare should have exactly "
+                                    "one group to match with the condition "
+                                    "value: pattern failed")
+                        else:
+                            msg = ("Found '{0}' in response to '{1}' on {2} "
+                                   "but '{0}' is not in the specified location"
+                                   " as expected").format(match_list[i],
+                                                          command, system)
                 else:
                     verify_status = False
                     verify_order_list.append(tag)
                     if found is True:
-                        msg = "Found '{0}' in response to '{1}' on {2} " \
-                        "but '{0}' not in the correct order".format(
-                        match_list[i], command,system)
+                        msg = ("Found '{0}' in response to '{1}' on {2} but"
+                               " '{0}' not in the correct order").format(
+                                    match_list[i], command, system)
                     else:
-                        msg = "Found '{0}' in response to '{1}' on {2} " \
-                        "but '{0}' is not expected to be found in the " \
-                        "location where it is found now".format(
-                        match_list[i], command, system)
+                        if verify_group[1][i] and not actual_value:
+                            msg = ("Found '{0}' in response to '{1}' on {2} in"
+                                   " the correct order, but \npattern to "
+                                   "compare should have exactly one group to "
+                                   "match with the condition value: pattern "
+                                   "failed").format(match_list[i], command,
+                                                    system)
+                        else:
+                            msg = ("Found '{0}' in response to '{1}' on {2}, "
+                                   "but '{0}' is not expected to be found in "
+                                   "the location where it is found "
+                                   "now").format(match_list[i], command,
+                                                 system)
             else:
-                msg = "Did not find '{0}' in response to '{1}' on " \
-                "{2}".format(match_list[i], command, system)
+                msg = ("Did not find '{0}' in response to '{1}' on "
+                       "{2}").format(match_list[i], command, system)
                 verify_status = True if verify_order is True else False
 
             if noimpact is True:
                 verify_status = True
-                pNote("Noimpact was requested on the below verification, " \
-                "hence the failure would not impact command status")
+                pNote("Noimpact was requested on the below verification, hence"
+                      " the failure would not impact command status")
             pNote(msg, "debug")
         else:
             verify_status = "ERROR"
-            pNote("Verification of '{0}' in response to '{1}' on {2} can not" \
-                  " be done".format(match_list[i], command, system), "error")
+            pNote("Verification of '{0}' in response to '{1}' on {2} can "
+                  "not be done".format(match_list[i], command, system),
+                  "error")
 
-        status = "ERROR" if verify_status == "ERROR" else \
-        status and verify_status
+        if verify_status == "ERROR":
+            status = "ERROR"
+        else:
+            status = status and verify_status
 
     rcv_all_resp_order = verify_dict.get('rcv_all_resp_order', [])
     rcv_all_resp_string = ",".join(rcv_all_resp_order)
 
-    pNote("Search string(s) is/are found in the following order for the " \
-          "command '{0}': '{1}' on {2}".format(command, rcv_all_resp_string,
-          system), "debug")
+    pNote("Search string(s) is/are found in the following order for the "
+          "command '{0}': '{1}' on {2}".format(
+                    command, rcv_all_resp_string, system), "debug")
 
     if verify_order_list:
         verify_order_str = ",".join(verify_order_list)
-        pNote("Following verification string(s) - {0} not in the expected" \
-              " order on {1}".format(verify_order_str, system), "debug")
+        pNote("Following verification string(s) - {0} not in the expected "
+              "order on {1}".format(verify_order_str, system), "debug")
     else:
-        pNote("Search string(s) is/are found in the expected order " \
-              "on {0}".format(system), "debug")
+        pNote("Search string(s) is/are found in the expected order on "
+              "{0}".format(system), "debug")
 
     return status
 
@@ -1497,7 +1619,7 @@ def _helper_unique_group(all_system_list, tag):
     return other_system_list
 
 def get_system_list(datafile, node_req=False):
-    """Get the list of systems from the datafile 
+    """Get the list of systems from the datafile
     if node_req = True returns 1. list of system names, 2. list of system nodes
     if node_rq = False returns on the list of system names
     """
@@ -1534,7 +1656,7 @@ def get_system_list(datafile, node_req=False):
         return system_list
 
 
-                
+
 def get_iteration_syslist(system_node_list, system_name_list):
     """
     Takes a list of system nodes and system names and
@@ -1542,7 +1664,7 @@ def get_iteration_syslist(system_node_list, system_name_list):
     1. List of system names with iter=yes
     2. List of system nodes with iter=yes
     """
-     
+
     iteration_sysnamelist = []
     iteration_sysnodelist = []
     for i in range (0, len(system_node_list)):
@@ -1551,7 +1673,7 @@ def get_iteration_syslist(system_node_list, system_name_list):
         if iter_flag is None:
             iter_flag = xml_Utils.get_text_from_direct_child(system, "iter")
         iter_flag = sub_from_env_var(iter_flag)
-         
+
         if str(iter_flag).lower() == "no":
             pass
         else:
@@ -1569,14 +1691,15 @@ def generate_datafile(lists_of_systems, output_dir, filename):
         take in a list of lists which contains systems
         generate one input data file per list
     """
+    result = []
     for index, list_of_sys in enumerate(lists_of_systems):
         output_filename = filename + "_" + str(index) + ".xml"
         output_file = os.path.join(output_dir, output_filename)
         fd = file_Utils.open_file(output_file, "w+")
-        if fd is None:
-            return False
-        root = xml_Utils.create_element("root")
-        for system in list_of_sys:
-            root.append(system)
-        fd.write(xml_Utils.convert_element_to_string(root))
-    return True
+        if fd is not None:
+            root = xml_Utils.create_element("root")
+            for system in list_of_sys:
+                root.append(system)
+            fd.write(xml_Utils.convert_element_to_string(root))
+            result.append(output_file)
+    return result

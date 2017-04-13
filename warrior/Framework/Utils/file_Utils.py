@@ -527,13 +527,8 @@ def getAbsPath(relative_path, start_directory="."):
         relative_path = relative_path.strip()
         try:
             #print relative_path
-            relative_path = os.path.expanduser(relative_path) if\
-                relative_path.startswith("~") else relative_path
-            start_directory = os.path.expanduser(start_directory) if\
-                start_directory.startswith("~") else start_directory
-
-            start_directory = os.path.normpath(os.path.join(os.getcwd(), start_directory))
-            path = os.path.normpath(os.path.join(start_directory, relative_path))
+            os.chdir(start_directory)
+            path = os.path.abspath(relative_path)
             value = path
         except Exception, err:
             print_error("{0} file does not exist in provided path".format(relative_path))
