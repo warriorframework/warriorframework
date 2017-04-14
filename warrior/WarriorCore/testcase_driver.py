@@ -29,7 +29,7 @@ from WarriorCore.Classes import execution_files_class, junit_class, hybrid_drive
 import Framework.Utils as Utils
 from Framework.Utils.testcase_Utils import convertLogic
 from Framework.Utils.print_Utils import print_notype, print_info,print_warning, print_error, print_debug, print_exception
-
+import Framework.Utils.email_utils as email
 
 def get_testcase_details(testcase_filepath, data_repository, jiraproj):
     """Gets all the details of the Testcase
@@ -299,12 +299,37 @@ def report_testcase_result(tc_status, data_repository):
                 print_info("{0:15} {1:45} {2:10}".format(str(step_num), str(kw_name), str(kw_status)))
     print_info("=================== END OF TESTCASE ===========================")
 
-def get_system_list(datafile, node_req=False):
-    """Get the list of systems from the datafile """
+def get_system_list(datafile, node_req=False, iter_req=False):
+    """Get the list of systems from the datafile
+    :Arguments:
+        1. datafile(string) - path of the input data file
+        2. node_req(boolean) :
+            If True, returns system_node_list(system xml objects) along
+            with system_list(name of the systems)
+        3. iter_req(boolean) :
+             If True, picks systems only with 'iter' value other than 'no'
+             If False, picks all systems from the data file
+    :Returns:
+        1. system_list(list) - name of the systems in the datafile
+        2. system_node_list(list) - xml objects of the systems in the
+                                    datafile(when node_req is True)
+    """
     root = Utils.xml_Utils.getRoot(datafile)
-    systems = root.findall('system')
+    temp_systems = root.findall('system')
+    systems = []
     system_list = []
     system_node_list = []
+    # exclude the systems with iter value as no
+    if iter_req is True:
+        for system in temp_systems:
+            iter_flag = system.get('iter')
+            if iter_flag:
+                if str(iter_flag).lower() != "no":
+                    systems.append(system)
+            else:
+                systems.append(system)
+    else:
+        systems = temp_systems
     for system in systems:
         #check if the system has subsystem or not.
         subsystems = system.findall('subsystem')
@@ -446,8 +471,9 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
 
     elif data_type.upper() == 'ITERATIVE' and runtype.upper() == 'SEQUENTIAL_KEYWORDS':
         print_info("iterative sequential")
-        system_list = get_system_list(data_repository['wt_datafile']) if iter_ts_sys is None\
-        else [iter_ts_sys]
+        system_list = get_system_list(data_repository['wt_datafile'],
+                                      iter_req=True) \
+            if iter_ts_sys is None else [iter_ts_sys]
 
         #print len(system_list)
         if len(system_list) == 0:
@@ -459,8 +485,9 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
 
     elif data_type.upper() == 'ITERATIVE' and runtype.upper() == 'PARALLEL_KEYWORDS':
         print_info("iterative parallel")
-        system_list = get_system_list(data_repository['wt_datafile']) if iter_ts_sys is None\
-        else [iter_ts_sys]
+        system_list = get_system_list(data_repository['wt_datafile'],
+                                      iter_req=True) \
+            if iter_ts_sys is None else [iter_ts_sys]
 
         #print len(system_list)
         if len(system_list) == 0:
@@ -528,6 +555,27 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
         if data_repository.get("db_obj") is not False:
             tc_junit_xml =  data_repository['wt_resultsdir'] + os.sep +tc_junit_object.filename+"_junit.xml"
             data_repository.get("db_obj").add_html_result_to_mongodb(tc_junit_xml)
+    else:
+        # send an email on TC failure(no need to send an email here when
+        # executing a single case).
+        if str(tc_status).upper() in ["FALSE", "ERROR", "EXCEPTION"]:
+            email_setting = None
+            # for first TC failure
+            if "any_failures" not in data_repository:
+                email_params = email.get_email_params("first_failure")
+                if all(value != "" for value in email_params[:3]):
+                    email_setting = "first_failure"
+                data_repository['any_failures'] = True
+            # for further TC failures
+            if email_setting is None:
+                email_params = email.get_email_params("every_failure")
+                if all(value != "" for value in email_params[:3]):
+                    email_setting = "every_failure"
+
+            if email_setting is not None:
+                email.compose_send_email("Test Case: ", data_repository[
+                 'wt_testcase_filepath'], data_repository['wt_logsdir'],
+                 data_repository['wt_resultsdir'], tc_status, email_setting)
 
     if tc_parallel:
         tc_impact   =  data_repository['wt_tc_impact']
@@ -588,4 +636,5 @@ def main(testcase_filepath, data_repository = {}, tc_context='POSITIVE',
             queue.put(('ERROR', str(testcase_filepath), 'IMPACT', '0'))
             
     tc_duration = Utils.datetime_utils.get_time_delta(tc_start_time)
+
     return tc_status, tc_duration, data_repository

@@ -14,7 +14,6 @@ limitations under the License.
 """Driver utils module which handles gathers the argument
 information about the keywords, executes the keywords and reports the
 keyword status back to the product driver """
-from Framework.Utils import data_Utils
 
 
 import inspect
@@ -138,7 +137,6 @@ class KeywordOperations(object):
         self.all_args_list = self.get_all_arguments()
         self.req_args_list = self.get_mandatory_arguments()
         self.optional_args_list = list(set(self.all_args_list) - set(self.req_args_list))
-        self.datafile = Utils.config_Utils.datafile
 
     def get_all_arguments(self):
         """Returns a list of all arguments required for
@@ -164,49 +162,28 @@ class KeywordOperations(object):
         python dictionary """
         print_info("getting values for mandatory arguments")
         arg_kv = {}
-        system_name = self.args_repository.get("system_name", None)
         for args in self.req_args_list:
-            if args in self.args_repository:
+            if self.args_repository.has_key(args) is True:
                 arg_kv[args] = self.args_repository[args]
-                if type(arg_kv[args]) is str and arg_kv[args].startswith("tag=")\
-                and system_name is not None:
-                    arg_kv[args] = Utils.data_Utils.resolve_argument_value_to_get_tag_value(
-                                    self.datafile, system_name, arg_kv[args])
-            elif args in self.data_repository:
+            elif  self.data_repository.has_key(args) is True:
                 arg_kv[args] = self.data_repository[args]
             else:
-                value = data_Utils.getSystemData(self.datafile, system_name, args) if \
-                system_name is not None else False
-                if value:
-                    arg_kv[args] = value
-                else:
-                    print_error("value for mandatory argument '%s' not "
-                                "available in data_repository/args_repository/"
-                                "datafile" % args)
+                print_error("value for mandatory argument '%s' "\
+                                  "not available in data_repository/args_repository" % args)
         return arg_kv
 
     def get_values_for_optional_args(self, arg_kv):
         """The th values for optional arguments as a
         python dictionary """
         print_info("getting values for optional arguments")
-        system_name = self.args_repository.get("system_name", None)
         for args in self.optional_args_list:
-            if args in self.args_repository:
+            if self.args_repository.has_key(args) is True:
                 arg_kv[args] = self.args_repository[args]
-                if type(arg_kv[args]) is str and arg_kv[args].startswith("tag=") and \
-                system_name is not None:
-                    arg_kv[args] = Utils.data_Utils.resolve_argument_value_to_get_tag_value(
-                                    self.datafile, system_name, arg_kv[args])
-            elif args in self.data_repository:
+            elif self.data_repository.has_key(args) is True:
                 arg_kv[args] = self.data_repository[args]
             else:
-                value = data_Utils.getSystemData(self.datafile, system_name, args) if \
-                system_name is not None else False
-                if value:
-                    arg_kv[args] = value
-                else:
-                    print_info("executing with default values for optional "
-                               "argument '{0}'".format(args))
+                print_info("executing with default values "\
+                                 "for optional argument '{0}'".format(args))
         return arg_kv
 
     def get_argument_as_keywords(self):
@@ -305,7 +282,7 @@ class KeywordOperations(object):
                 data_repository['step-%s_status' % step_num] = 'Error'
                 for element in keyword_result:
                     if isinstance(element, bool):
-                        pNote_level("Keyword '{0}' returned "\
+                        pNote_level("Keyword '{0}' returned"\
                                     "a status..".format(keyword), "debug", "kw")
                         data_repository['step-%s_status' % step_num] = element
                     elif isinstance(element, dict):

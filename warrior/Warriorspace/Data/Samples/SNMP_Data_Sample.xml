@@ -1,0 +1,35 @@
+<credentials>
+	<system name="NE1">
+                <ip>5.5.5.5</ip>
+                <conn_type>ssh</conn_type>
+                <ssh_port>30305</ssh_port>
+                <prompt>HASHPROMPT</prompt>
+                <timeout>120</timeout>
+                <username>abc</username>
+                <password>secret</password>
+                <snmp_trap_port>30310</snmp_trap_port>
+                <variable_config>../Config_files/variable_config/Variable_Sample.xml</variable_config>
+                <testdata>../Config_files/Test_Data/CLI_Test_Data_Sample.xml</testdata>                
+	</system>
+	<system name="NE1_DIP">
+                <ip>1.1.1.1</ip>
+                <conn_type>ssh</conn_type>
+                <ssh_port>30306</ssh_port>
+                <prompt>abc.*</prompt>
+                <timeout>120</timeout>
+                <username>abc</username>
+                <password>secret</password>                
+		<variable_config>../Config_files/variable_config/Variable_Sample.xml</variable_config>
+                <testdata>../Config_files/Test_Data/CLI_Test_Data_Sample.xml</testdata>                
+	</system>
+        <system name="SNMP-SERVER1">
+                <ip>4.4.4.4</ip>
+                <conn_type>ssh</conn_type>
+                <ssh_port>22</ssh_port>
+                <prompt>blade</prompt>
+                <timeout>120</timeout>
+                <username>pthangar</username>
+                <password>tnpm1836#</password>
+                <snmp_port>30310</snmp_port>
+      </system>     
+</credentials>

@@ -17,7 +17,6 @@ Implementation of the Bottle web socket server related keywords
 
 import Framework.Utils as Utils
 from Framework.ClassUtils.rest_server_class import RestServer
-import time
 # Written by Sourav
 # from Framework.Utils import rest_server
 # from Framework.Utils.rest_server import b_start_server, b_stop_server, \
@@ -64,7 +63,6 @@ class ServerActions(object):
         Utils.testcase_Utils.pSubStep(wdesc)
         server_controller = Utils.data_Utils.get_object_from_datarepository("{}_server_controller".format(system_name))
         server_controller.stop()
-        time.sleep(2)
         server_thread = Utils.data_Utils.get_object_from_datarepository("{}_server_thread".format(system_name))
         
         if server_thread.is_alive():

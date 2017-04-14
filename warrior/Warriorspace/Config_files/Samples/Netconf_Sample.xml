@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<edit-config>
+  <target>
+    <candidate/>
+  </target>
+    <config>
+    <port-connection xmlns="urn:abc:params:xml:ns:yang:eqpt:fcon">
+        <connection-id>FCON-SPL-WSS1-1</connection-id>
+        <source>
+            <shelf>3</shelf>
+            <slot>1</slot>
+            <subslot>0</subslot>
+            <port>E1</port>
+        </source>
+        <destination>
+            <shelf>1</shelf>
+            <slot>0</slot>
+            <subslot>0</subslot>
+            <port>C1</port>
+        </destination>
+    </port-connection>
+    </config>
+</edit-config>

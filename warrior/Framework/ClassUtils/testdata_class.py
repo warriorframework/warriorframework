@@ -46,10 +46,13 @@ CMD_PARAMS = OrderedDict([("command_list", "send"),
                           ("resp_pat_req_list", "resp_pat_req"),
                           ("log_list", "monitor"),
                           ("verify_on_list", "verify_on"),
-                          ("inorder_search_list","inorder"),
+                          ("inorder_search_list", "inorder"),
                           ("vc_file_list", ""),
                           ("verify_map_list", ""),
-                          ("repeat_list","repeat")])
+                          ("operator_list", "operator"),
+                          ("cond_value_list", "cond_value"),
+                          ("cond_type_list", "cond_type"),
+                          ("repeat_list", "repeat")])  # keep this in the last
 
 
 VERIFY_PARAMS = ["verify_context_list", "verify_on_list", "verify_map_list"]
@@ -66,7 +69,8 @@ class TestData(object):
         pass
 
     @staticmethod
-    def varsub_varconfig_substitutions(details_dict, vc_file, var_sub, start_pat="${", end_pat="}"):
+    def varsub_varconfig_substitutions(details_dict, vc_file, var_sub,
+                                       start_pat="${", end_pat="}"):
         """
         Substitute the patterns [VAR_SUB] in command, command parameters,
         verification search, verification parameters with the value of
@@ -79,7 +83,8 @@ class TestData(object):
 
         """
         vfy_param_list = ["verify_text_list", "verify_context_list",
-                          "verify_on_list", "verify_map_list"]
+                          "verify_on_list", "verify_map_list", "operator_list",
+                          "cond_value_list", "cond_type_list"]
         vc_file_list = None if vc_file is None else details_dict["vc_file_list"]
         for param, _ in CMD_PARAMS.items():
             if param not in vfy_param_list and param!="vc_file_list":
@@ -96,8 +101,9 @@ class TestData(object):
                     if sub_list is not None:
                         sub_vc_file_list = None if vc_file_list is None\
                         else [vc_file_list[i]]*len(sub_list)
-                        new_sub_list = string_Utils.sub_from_varconfig\
-                        (sub_vc_file_list, sub_list, var_sub, start_pat, end_pat)
+                        new_sub_list = string_Utils.sub_from_varconfig(
+                                        sub_vc_file_list, sub_list,
+                                        var_sub, start_pat, end_pat)
 
                         string_list[i] = new_sub_list
                         details_dict[param] = string_list
@@ -495,8 +501,9 @@ class TestData(object):
 
         """
         vfy_param_list = ["verify_text_list", "verify_context_list",
-                          "verify_on_list", "verify_map_list"]
-        #vc_file_list = None if vc_file is None else details_dict["vc_file_list"]
+                          "verify_on_list", "verify_map_list", "operator_list",
+                          "cond_value_list", "cond_type_list"]
+    # vc_file_list = None if vc_file is None else details_dict["vc_file_list"]
         for param, _ in CMD_PARAMS.items():
             if param not in vfy_param_list and param!="vc_file_list":
                 string_list = details_dict[param]
