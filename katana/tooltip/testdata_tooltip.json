@@ -89,13 +89,13 @@
     "snowflake": ""
   },
   "GResp_ref": {
-    "tooltip": "(text, default=position of command in the CLI data block) a user provided reference text for the response of this command. The responses will be saved in the framework's data repository using this text as key. If user does not provide resp_ref, framework automatically assigns this value based on the position of the command in the CLI data section. i.e. if the command is the 2nd command in the CLI data then resp_ref=\"2\" will be used and so on.",
+    "tooltip": "(text, default=position of command in the testdata block) a user provided reference text for the response of this command. The responses will be saved in the framework's data repository using this text as key. If user does not provide resp_ref, framework automatically assigns this value based on the position of the command in the test data section. i.e. if the command is the 2nd command in the test data then resp_ref=\"2\" will be used and so on.",
     "protip": "",
     "bantip": "",
     "snowflake": ""
   },
   "GMonitor": {
-    "tooltip": "(comma separated system names - Eg. NE1[cli].session, NE2, [dip] - where NE1, NE2 are the system names, [cli], [dip] are the subsystem names and .session is the session name.) Responses from the system names obtained from this parameter are printed out on the console. If this attribute is left empty, or is not present, monitoring would take place on the systems mentioned in the monitor attribute in the parent CLI data tag. If even that tag is left empty, then monitoring takes place on the system on which the keyword is getting executed.",
+    "tooltip": "(comma separated system names - Eg. NE1[cli].session, NE2, [dip] - where NE1, NE2 are the system names, [cli], [dip] are the subsystem names and .session is the session name.) Responses from the system names obtained from this parameter are printed out on the console. If this attribute is left empty, or is not present, monitoring would take place on the systems mentioned in the monitor attribute in the parent testdata tag. If even that tag is left empty, then monitoring takes place on the system on which the keyword is getting executed.",
     "protip": "",
     "bantip": "",
     "snowflake": ""
@@ -107,7 +107,7 @@
     "snowflake": ""
   },
   "GRepeat": {
-    "tooltip": "(supported value = \"y\") when iter_type=‘per_td_block’ with repeat='y', corresponding command in CLI data block will be executed in each iteration. This feature is always disabled, user can turn it on by providing \"y\" and this tag is applicable only for the CLI data commands without any iteration pattern in it.",
+    "tooltip": "(supported value = \"y\") when iter_type=‘per_td_block’ with repeat='y', corresponding command in testdata block will be executed in each iteration. This feature is always disabled, user can turn it on by providing \"y\" and this tag is applicable only for the testdata commands without any iteration pattern in it.",
     "protip": "",
     "bantip": "",
     "snowflake": ""
@@ -191,13 +191,13 @@
     "snowflake": ""
   },
   "resp_ref": {
-    "tooltip": "(text, default=position of command in the CLI data block) a user provided reference text for the response of this command. The responses will be saved in the framework's data repository using this text as key. If user does not provide resp_ref, framework automatically assigns this value based on the position of the command in the CLI data section. i.e. if the command is the 2nd command in the CLI data then resp_ref=\"2\" will be used and so on.",
+    "tooltip": "(text, default=position of command in the testdata block) a user provided reference text for the response of this command. The responses will be saved in the framework's data repository using this text as key. If user does not provide resp_ref, framework automatically assigns this value based on the position of the command in the test data section. i.e. if the command is the 2nd command in the test data then resp_ref=\"2\" will be used and so on.",
     "protip": "",
     "bantip": "",
     "snowflake": ""
   },
   "monitor": {
-    "tooltip": "(comma separated system names - Eg. NE1[cli].session, NE2, [dip] - where NE1, NE2 are the system names, [cli], [dip] are the subsystem names and .session is the session name.) Responses from the system names obtained from this parameter are printed out on the console. If this attribute is left empty, or is not present, monitoring would take place on the systems mentioned in the monitor attribute in the parent CLI data tag. If even that tag is left empty, then monitoring takes place on the system on which the keyword is getting executed.",
+    "tooltip": "(comma separated system names - Eg. NE1[cli].session, NE2, [dip] - where NE1, NE2 are the system names, [cli], [dip] are the subsystem names and .session is the session name.) Responses from the system names obtained from this parameter are printed out on the console. If this attribute is left empty, or is not present, monitoring would take place on the systems mentioned in the monitor attribute in the parent testdata tag. If even that tag is left empty, then monitoring takes place on the system on which the keyword is getting executed.",
     "protip": "",
     "bantip": "",
     "snowflake": ""
@@ -209,7 +209,7 @@
     "snowflake": ""
   },
   "repeat": {
-    "tooltip": "(supported value = \"y\") when iter_type=‘per_td_block’ with repeat='y', corresponding command in CLI data block will be executed in each iteration. This feature is always disabled, user can turn it on by providing \"y\" and this tag is applicable only for the CLI data commands without any iteration pattern in it.",
+    "tooltip": "(supported value = \"y\") when iter_type=‘per_td_block’ with repeat='y', corresponding command in testdata block will be executed in each iteration. This feature is always disabled, user can turn it on by providing \"y\" and this tag is applicable only for the testdata commands without any iteration pattern in it.",
     "protip": "",
     "bantip": "",
     "snowflake": ""
@@ -233,7 +233,7 @@
     "snowflake": ""
   },
   "global_verify_tag_name": {
-    "tooltip": "Verify Tags created in the global section would be used whenever local (inside CLI data block) verify tags with the same name are not available",
+    "tooltip": "Verify Tags created in the global section would be used whenever local (inside testdata block) verify tags with the same name are not available",
     "protip": "",
     "bantip": "",
     "snowflake": ""
@@ -251,31 +251,31 @@
     "snowflake": ""
   },
   "td_block_title": {
-    "tooltip": "This is the title of the CLI data block. It is only mandatory if you are not going to provide a value in the 'row' attribute. The combination of title+row should be unique.",
+    "tooltip": "This is the title of the testdata block. It is only mandatory if you are not going to provide a value in the 'row' attribute. The combination of title+row should be unique.",
     "protip": "",
     "bantip": "",
     "snowflake": ""
   },
   "td_block_row": {
-    "tooltip": "This is the row number of this CLI data block. It is only mandatory if you are not going to provide a value in the 'title' attribute. The combination of title+row should be unique.",
+    "tooltip": "This is the row number of this testdata block. It is only mandatory if you are not going to provide a value in the 'title' attribute. The combination of title+row should be unique.",
     "protip": "",
     "bantip": "",
     "snowflake": ""
   },
   "td_block_execute": {
-    "tooltip": "This is the execute attribute of the CLI data block. Supported values are 'yes' and 'no'",
+    "tooltip": "This is the execute attribute of the testdata block. Supported values are 'yes' and 'no'",
     "protip": "",
     "bantip": "",
     "snowflake": ""
   },
   "td_block_monitor": {
-    "tooltip": "This is the monitor attribute on the CLI data level. If this attribute is given, and the monitor attribute in a command tag inside the td block is left empty, then this value would be used.",
+    "tooltip": "This is the monitor attribute on the testdata level. If this attribute is given, and the monitor attribute in a command tag inside the td block is left empty, then this value would be used.",
     "protip": "",
     "bantip": "",
     "snowflake": ""
   },
   "td_block_iter_type": {
-    "tooltip": "This attribute allows the user to dictate how the commands in a CLI data block be sent. This attribute can take in two values: ‘per_td_block’ and ‘per_cmd’. The default is per_cmd -  which is the standard way in which the command are sent. By setting this attribute to iter_type to 'per_td_block', the command would be sent according to this example: After variable substitution, these 3 command in a td block are supposed to be sent - Command1 = [‘cmd_1_vc_1’, ‘cmd_1_vc_2’, ‘cmd_1_vc_3’], Command2 = [‘cmd_2_vc_1’, ‘cmd_2_vc_2’, ‘cmd_2_vc_3’, ‘cmd_2_vc_4’, ‘cmd_2_vc_5’], Command3 = [‘cmd_3_vc_1’]. They will now be sent this way: ‘cmd_1_vc_1’,  ‘cmd_2_vc_1’, ‘cmd_3_vc_1’ , ‘cmd_1_vc_2’, ‘cmd_2_vc_2’, ‘cmd_1_vc_3’, ‘cmd_2_vc_3’, ‘cmd_2_vc_4’, ‘cmd_2_vc_5’",
+    "tooltip": "This attribute allows the user to dictate how the commands in a testdata block be sent. This attribute can take in two values: ‘per_td_block’ and ‘per_cmd’. The default is per_cmd -  which is the standard way in which the command are sent. By setting this attribute to iter_type to 'per_td_block', the command would be sent according to this example: After variable substitution, these 3 command in a td block are supposed to be sent - Command1 = [‘cmd_1_vc_1’, ‘cmd_1_vc_2’, ‘cmd_1_vc_3’], Command2 = [‘cmd_2_vc_1’, ‘cmd_2_vc_2’, ‘cmd_2_vc_3’, ‘cmd_2_vc_4’, ‘cmd_2_vc_5’], Command3 = [‘cmd_3_vc_1’]. They will now be sent this way: ‘cmd_1_vc_1’,  ‘cmd_2_vc_1’, ‘cmd_3_vc_1’ , ‘cmd_1_vc_2’, ‘cmd_2_vc_2’, ‘cmd_1_vc_3’, ‘cmd_2_vc_3’, ‘cmd_2_vc_4’, ‘cmd_2_vc_5’",
     "protip": "",
     "bantip": "",
     "snowflake": ""
@@ -299,7 +299,7 @@
     "snowflake": ""
   },
   "td_block_tag_name": {
-    "tooltip": "Verify Tags created in the global section would be used whenever local (inside CLI data block) verify tags with the same name are not available",
+    "tooltip": "Verify Tags created in the global section would be used whenever local (inside testdata block) verify tags with the same name are not available",
     "protip": "",
     "bantip": "",
     "snowflake": ""
@@ -335,25 +335,25 @@
     "snowflake": ""
   },
   "editTDCP": {
-    "tooltip": "Click this icon to edit this CLI data Block Command Tag",
+    "tooltip": "Click this icon to edit this Testdata Block Command Tag",
     "protip": "",
     "bantip": "",
     "snowflake": ""
   },
   "deleteTDCP": {
-    "tooltip": "Click this icon to delete this CLI data Block Command Tag",
+    "tooltip": "Click this icon to delete this Testdata Block Command Tag",
     "protip": "",
     "bantip": "",
     "snowflake": ""
   },
   "editTDVerify": {
-    "tooltip": "Click this icon to edit this CLI data Block Verification Tag",
+    "tooltip": "Click this icon to edit this Testdata Block Verification Tag",
     "protip": "",
     "bantip": "",
     "snowflake": ""
   },
   "deleteTDVerify": {
-    "tooltip": "Click this icon to delete this CLI data Block Verification Tag",
+    "tooltip": "Click this icon to delete this Testdata Block Verification Tag",
     "protip": "",
     "bantip": "",
     "snowflake": ""
