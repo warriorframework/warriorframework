@@ -2347,7 +2347,7 @@
 
         <div class="row">
             <div class="form-group">
-                <label class="col-sm-2 text-uppercase mandatory-field" style="padding-left: 3em">Testdata Blocks</label>
+                <label class="col-sm-2 text-uppercase mandatory-field" style="padding-left: 3em">CLI Data Blocks</label>
             </div>
         </div>
         <hr>
@@ -2356,14 +2356,14 @@
         <div ng-repeat="td_block in jsonData.data.testdata track by $index">
 
             <div class="form-group">
-                <label class="col-sm-2 control-label color-me-dark-grey text-uppercase">Testdata Block {{$index + 1}}</label>
+                <label class="col-sm-2 control-label color-me-dark-grey text-uppercase">CLI Data Block {{$index + 1}}</label>
                 <hr>
             </div>
             <br>
 
             <div class="row">
                 <div class="form-group" ng-show="jsonData.data.testdata.length > 1">
-                    <label for="cp_copy_entire_td{{$index}}" class="col-sm-4 control-label">Copy Over Testdata Block:</label>
+                    <label for="cp_copy_entire_td{{$index}}" class="col-sm-4 control-label">Copy Over CLI Data Block:</label>
                     <div class="col-sm-2">
                         <select class="form-control"
                                 id="cp_copy_entire_td{{$index}}"
@@ -4891,7 +4891,7 @@
                 </div>
                 <div class="col-sm-2">-->
                     <input type="button" class="btn btn-default"
-                           value="Delete Testdata Block"
+                           value="Delete CLI Data Block"
                            ng-click="deleteTDBlock($index)">
                 </div>
             </div>
@@ -4902,7 +4902,7 @@
         <div class="form-group">
             <div class="col-sm-3 col-sm-offset-2">
                 <input type="button" class="btn btn-default"
-                       value="Add A Testdata Block"
+                       value="Add A CLI Data Block"
                        ng-click="addAnotherTDBlock()">
             </div>
         </div>
@@ -4913,12 +4913,12 @@
         <br>
 
         <div class="form-group">
-            <div class="col-sm-2 col-sm-offset-4">
-                <input type="button" class="btn btn-default"
-                       value="Save Testdata File" ng-click="saveFile()">
+            <div class="col-sm-1 col-sm-offset-3">
+                <input type="button" class="btn btn-default form-control ellipsis-the-overflow"
+                       value="Save File" ng-click="saveFile()">
             </div>
-            <div class="col-sm-2">
-                <input type="button" class="btn btn-default" value="Cancel"
+            <div class="col-sm-1">
+                <input type="button" class="btn btn-default form-control ellipsis-the-overflow" value="Cancel"
                        ng-click="cancelFile()">
             </div>
         </div>

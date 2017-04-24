@@ -31,7 +31,7 @@ app.controller('testdatafileCtrl', ['$scope', '$http', '$location', 'fileFactory
                 if(temp == ""){
                     setTimeout(function(){
                         swal({
-                            title: "The Configuration for Test Data Files hasn't been set up yet. Do you want to set it up?",
+                            title: "The Configuration for CLI Data Files hasn't been set up yet. Do you want to set it up?",
                             text: "By setting up the configuration, you would be able to view existing files or create and save new ones.",
                             showCancelButton: true,
                             closeOnConfirm: true,
@@ -44,8 +44,8 @@ app.controller('testdatafileCtrl', ['$scope', '$http', '$location', 'fileFactory
                                 if (isConfirm) {
                                     setTimeout(function(){
                                         swal({
-                                            title: "Test Data File Configuration",
-                                            text: "Location of the Test Data File Directory:",
+                                            title: "CLI Data File Configuration",
+                                            text: "Location of the CLI Data File Directory:",
                                             type: "input",
                                             showCancelButton: true,
                                             closeOnConfirm: false,
@@ -59,7 +59,7 @@ app.controller('testdatafileCtrl', ['$scope', '$http', '$location', 'fileFactory
                                           if (inputValue === false) return false;
 
                                           if (inputValue === "") {
-                                            swal.showInputError("You should enter the location of the Test Data File Directory.");
+                                            swal.showInputError("You should enter the location of the CLI Data File Directory.");
                                             return false
                                           }
                                           else{
@@ -89,7 +89,7 @@ app.controller('testdatafileCtrl', ['$scope', '$http', '$location', 'fileFactory
                                                                         readTestDataFileNames("none");
                                                                         readTestDataFolderNames("none");
                                                                         swal({
-                                                                            title: "Saved Test Data File Directory Path: ",
+                                                                            title: "Saved CLI Data File Directory Path: ",
                                                                             text: inputValue,
                                                                             timer: 1250,
                                                                             type: "success",
@@ -152,7 +152,7 @@ app.controller('testdatafileCtrl', ['$scope', '$http', '$location', 'fileFactory
                 console.log('testdatafoldernames: ' + JSON.stringify(data));
             })
             .error(function(data, status, headers, config) {
-                alert("Error fetching testdata file names.", status, headers);
+                alert("Error fetching CLI data file names.", status, headers);
             });
     }
 
