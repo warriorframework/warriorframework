@@ -10,7 +10,7 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
+limitations under the License.
 '''
 
 """
@@ -572,6 +572,7 @@ def install_depen(dependency, dependency_name, logfile, print_log_name):
     """
     counter = 0
     try:
+        print_info("installing "+dependency, logfile, print_log_name)
         sp_output = subprocess.Popen(['pip', 'install', dependency],
                                      stdout=subprocess.PIPE,
                                      stderr=subprocess.PIPE,
@@ -696,7 +697,7 @@ def get_dest(logfile, print_log_name, config_file_name):
     file with mode set to 'a'
 
     :Returns:
-    
+
     1. dest (str) = the path where warrior is being cloned to, if blank
                     it means on the same level of warhorn folder
 
