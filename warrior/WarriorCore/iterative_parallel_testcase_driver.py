@@ -68,17 +68,19 @@ def execute_iterative_parallel_testcases(system_list, testcase_list, suite_repos
     # Get the junit object of each testcase, extract the information from it and combine with testsuite junit object
     tc_junit_list = []
 
+    # Suite results
     for result in result_list:
-        tc_status_list.append(result[0])
-        tc_name_list.append(result[1])
-        tc_impact_list.append(result[2])
-        tc_duration_list.append(result[3])
-        tc_junit_list.append(result[4])
-    
+        # Case results
+        for val in range(len(result[0])):
+            tc_status_list.append(result[0][val])
+            tc_name_list.append(result[1])
+            tc_impact_list.append(result[2][val])
+            tc_duration_list.append(result[3][val])
+            tc_junit_list.append(result[4][val])
     # parallel testcases generate multiple testcase junit result files
     # each files log the result for one testcase and not intergrated
     # update testsuite junit result file with individual testcase result files
-    update_ts_junit_resultfile(suite_repository['junit_resultfile'], tc_junit_list)
+    update_ts_junit_resultfile(suite_repository['wt_junit_object'], tc_junit_list)
     testsuite_status = Utils.testcase_Utils.compute_status_using_impact(tc_status_list,
                                                                         tc_impact_list)
     return testsuite_status
