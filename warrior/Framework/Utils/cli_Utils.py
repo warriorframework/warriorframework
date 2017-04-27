@@ -216,9 +216,14 @@ def connect_telnet(ip, port="23", username="", password="",
 
 def disconnect_telnet(child):
     """Disconnects a telnet session """
+    time.sleep(2)
     child.sendcontrol(']')
+    time.sleep(2)
     child.expect('telnet> ')
+    time.sleep(2)
     child.sendline('q')
+    time.sleep(2)
+    child.close()
     return child
 
 
