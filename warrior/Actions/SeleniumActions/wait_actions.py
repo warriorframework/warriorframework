@@ -15,7 +15,6 @@ limitations under the License.
 from Framework.ClassUtils.WSelenium.element_locator import ElementLocator
 from Framework.ClassUtils.WSelenium.wait_operations import WaitOperations
 from Framework.ClassUtils.json_utils_class import JsonUtils
-
 try:
     import json
     import os
@@ -31,7 +30,6 @@ from Framework.Utils import data_Utils
 from Framework.Utils.testcase_Utils import pNote, pSubStep
 from Framework.Utils import xml_Utils
 from Framework.Utils import selenium_Utils
-
 
 class wait_actions(object):
 

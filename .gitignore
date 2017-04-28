@@ -1,0 +1,59 @@
+# Compiled source #
+###################
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so 
+*.pyc
+workspace.*
+*~
+
+# Directories     #
+###################
+#/Warriorspace/Execution
+
+
+
+# Created by .ignore support plugin (hsz.mobi) #
+############### Eclipse template ################
+*.pydevproject
+.metadata
+.gradle
+/build
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+/.idea
+.project
+
+# External tool builders
+.externalToolBuilders/
+
+# Locally stored "Eclipse launch configurations"
+*.launch
+
+# CDT-specific
+.cproject
+
+# JDT-specific (Eclipse Java Development Tools)
+.classpath
+
+# Java annotation processor (APT)
+.factorypath
+
+# PDT-specific
+.buildpath
+
+# sbteclipse plugin
+.target
+
+# TeXlipse plugin
+.texlipse
+

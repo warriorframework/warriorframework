@@ -1,2 +1,0 @@
-This is a temporary info file.
-This directory is used to store all warrior automation flows.

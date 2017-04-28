@@ -1,0 +1,50 @@
+<?xml version="1.0" ?>
+<credentials>
+        <system name="Laptop">
+                <eqpt_type>lab_pc</eqpt_type>
+                <dom>2012-06-05</dom>
+            	<user>John</user>
+            	<os>window</os>
+                <testdata>../../Config_files/Demo_Config_Files/Demo_Inventory_Mgt_Testdata.xml</testdata>
+        </system>
+        <system name="PCs">
+            <subsystem name="abc">
+                <eqpt_type>lab_pc</eqpt_type>
+                <dom>2013-05-02</dom>
+            	<user>John</user>
+            	<os>window</os>
+                <testdata>../../Config_files/Demo_Config_Files/Demo_Inventory_Mgt_Testdata.xml</testdata>
+            </subsystem>
+            <subsystem name="HP">
+                <eqpt_type>lab_pc</eqpt_type>
+                <dom>2014-03-05</dom>
+            	<user>Jim</user>
+            	<os>RedHat</os>
+                <testdata>../../Config_files/Demo_Config_Files/Demo_Inventory_Mgt_Testdata.xml</testdata>
+            </subsystem>
+            <subsystem name="Dell" eqpt_type="lab_pc" dom="2009-07-15" user="Jerry"
+                       os="Ubuntu" testdata="../../Config_files/Demo_Config_Files/Demo_Inventory_Mgt_Testdata.xml">
+            </subsystem>
+    	</system>
+
+        <system name="TestSets">
+            <subsystem name="TBERD">
+                <eqpt_type>lab_testset</eqpt_type>
+                <calibration>2015-08-20</calibration>
+            	<user>SVT</user>
+            	<location>Rack F31</location>
+                <testdata>../../Config_files/Demo_Config_Files/Demo_Inventory_Mgt_Testdata.xml</testdata>
+            </subsystem>
+            <subsystem name="STC">
+                <eqpt_type>lab_testset</eqpt_type>
+                <calibration>2015-04-01</calibration>
+            	<user>SW</user>
+            	<location>Rack E11</location>
+                <testdata>../../Config_files/Demo_Config_Files/Demo_Inventory_Mgt_Testdata.xml</testdata>
+            </subsystem>
+            <subsystem name="Ixia" eqpt_type="lab_testset"
+                       calibration="2013-12-20" user="IQT" location="Rack A12"
+            		   testdata="../../Config_files/Demo_Config_Files/Demo_Inventory_Mgt_Testdata.xml">
+            </subsystem>
+    	</system>
+</credentials>

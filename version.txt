@@ -1,5 +1,6 @@
 Name        : Warrior_Test_Automation                         
-Version     : 2.9                         
+Version     : 3.0                         
+Version     : master                        
 Release     : Ninja
-Build Date  : Tue 21 March 2017 00:00:01 AM CST                        
-Size        : 13M                          
+Build Date  : Fri 14 april 2017 16:34:00 PM CDT                        
+Size        : 52M

@@ -494,9 +494,10 @@ class HybridDriver(object):
         for step in step_list:
             iteration_type = None
             iteration_type_tag = step.find("iteration_type")
-            if iteration_type_tag is not None or False:
+            if iteration_type_tag is not None and \
+               iteration_type_tag is not False:
                 iteration_type = iteration_type_tag.get("type")
-            if iteration_type is not False or None:
+            if iteration_type is not None and iteration_type is not False:
                 iteration_type = str(iteration_type).lower().strip()
             else:
                 iteration_type = "standard"

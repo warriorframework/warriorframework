@@ -50,11 +50,10 @@ def warrior_framework_details():
     release = False
     version = False
     possible_install_time = False
-    current_file_dir = os.path.dirname(os.path.realpath(__file__))
-    warrior_fw_dir = os.path.dirname(os.path.dirname(current_file_dir))
-    #current_path = path.rstrip('c')[:-32]
-    version_file_path = "{0}{1}{2}{1}{2}{1}version.txt".format(current_file_dir, os.sep, "..")
-    version_file = file_Utils.fileExists(version_file_path)
+    path = os.path.realpath(__file__)
+    current_path = path.rstrip('c')[:-32]
+    version_file_path = current_path+"/version.txt"
+    version_file = file_Utils.fileExists(version_file_path) 
     if version_file:
         release_notes =  open(version_file_path, "r")
         for line in release_notes:
@@ -72,9 +71,9 @@ def warrior_framework_details():
         current_time = datetime.strptime(current_time, "%a %b %d %H:%M:%S %Y")
         install_time = datetime.strptime(possible_install_time, "%a %b %d %H:%M:%S %Y")
         difference = current_time - install_time 
-    if release and version and version_file:          
+    if release and version and current_path:          
         pNote("========================== WARRIOR FRAMEWORK DETAILS ==========================", 'notype')
-        print_info('The Warrior framework used is {0}'.format(warrior_fw_dir))
+        print_info('The Warrior framework used is {0}'.format(current_path))
         print_info('The Warrior framework Release is{0}'.format(release))
         print_info('The Warrior framework version is{0}'.format(version))
         pNote("========================== WARRIOR FRAMEWORK DETAILS ==========================", 'notype')

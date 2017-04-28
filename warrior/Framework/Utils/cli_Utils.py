@@ -740,6 +740,7 @@ def get_unique_log_and_verify_list(log_list, verify_on_list, system_name):
             final_list.append(comma_sep_verify_names[i])
     return final_list
 
+
 @cmdprinter
 def _send_cmd_get_status(obj_session, details_dict, index, system_name=None):
     """Sends a command, verifies the response and returns
@@ -759,17 +760,26 @@ def _send_cmd_get_status(obj_session, details_dict, index, system_name=None):
     log_list = details_dict["log_list"][index]
     inorder_search = details_dict["inorder_search_list"][index]
     varconfigfile = details_dict["vc_file_list"][index]
-    unique_log_verify_list = get_unique_log_and_verify_list(log_list, verify_on_list, system_name)
+    operator = details_dict["operator_list"][index]
+    cond_value = details_dict["cond_value_list"][index]
+    cond_type = details_dict["cond_type_list"][index]
+    unique_log_verify_list = get_unique_log_and_verify_list(log_list,
+                                                            verify_on_list,
+                                                            system_name)
 
-    startprompt = {None:".*", "":".*"}.get(startprompt, str(startprompt))
-    resp_req = {None:'y', '':'y',
-                'no':'n', 'n':'n'}.get(str(resp_req).lower(), 'y')
-    resp_ref = {None:index+1, '':index+1}.get(resp_ref, str(resp_ref))
-    resp_pat_req = {None:""}.get(resp_pat_req, str(resp_pat_req))
-    sleeptime = {None: 0, "":0, "none":0, False:0, "false":0}.get(str(sleeptime).lower(), str(sleeptime))
+    startprompt = {None: ".*", "": ".*"}.get(startprompt, str(startprompt))
+    resp_req = {None: 'y', '': 'y',
+                'no': 'n', 'n': 'n'}.get(str(resp_req).lower(), 'y')
+    resp_ref = {None: index+1, '': index+1}.get(resp_ref, str(resp_ref))
+    resp_pat_req = {None: ""}.get(resp_pat_req, str(resp_pat_req))
+    sleeptime = {None: 0, "": 0, "none": 0, False: 0, "false": 0}.get(
+                                str(sleeptime).lower(), str(sleeptime))
     sleeptime = int(sleeptime)
-    inorder_search = True if inorder_search is not None and \
-                     inorder_search.lower().startswith("y") else False
+
+    if inorder_search is not None and inorder_search.lower().startswith("y"):
+        inorder_search = True
+    else:
+        inorder_search = False
 
     pNote("Startprompt\t: {0}".format(startprompt))
     pNote("Endprompt\t: {0}".format(endprompt))
@@ -777,12 +787,13 @@ def _send_cmd_get_status(obj_session, details_dict, index, system_name=None):
     pNote("Response required: {0}".format(resp_req))
     pNote("Response reference: {0}".format(resp_ref))
     pNote("Response pattern required: {0}".format(resp_pat_req))
-    
+
     if not command:
-        pNote("Received a boolean False or None type instead of a string command, "
-              "Command not provided or Variable substitution for the "
+        pNote("Received a boolean False or None type instead of a string "
+              "command, Command not provided or Variable substitution for the "
               "command could have gone wrong", "error")
-        pNote("Skipping execution of this command, result will be marked as error", "debug")
+        pNote("Skipping execution of this command, result will be marked as "
+              "error", "debug")
         result = 'ERROR'
         response = ''
     else:
@@ -794,7 +805,8 @@ def _send_cmd_get_status(obj_session, details_dict, index, system_name=None):
                                      cmd_timeout=cmd_timeout)
 
     if sleeptime > 0:
-        pNote("Sleep time of '{0} seconds' requested post command execution".format(sleeptime))
+        pNote("Sleep time of '{0} seconds' requested post command "
+              "execution".format(sleeptime))
         time.sleep(sleeptime)
 
     try:
@@ -803,18 +815,24 @@ def _send_cmd_get_status(obj_session, details_dict, index, system_name=None):
                                              same_system, response)
     except NameError:
         remote_resp_dict = get_response_dict([], [], [], response)
-    verify_on_list_as_list = get_list_by_separating_strings(verify_on_list, ",", system_name)
+    verify_on_list_as_list = get_list_by_separating_strings(verify_on_list,
+                                                            ",", system_name)
     if result and result is not 'ERROR':
         if verify_text_list is not None and verify_list is not None:
+            verify_group = (operator, cond_value, cond_type)
             if inorder_search is True and len(verify_text_list) > 1:
-                result = data_Utils.verify_resp_inorder(verify_text_list,
-                         verify_context_list, command, response, varconfigfile,
-                         verify_on_list_as_list, verify_list, remote_resp_dict)
+                result = data_Utils.verify_resp_inorder(
+                            verify_text_list, verify_context_list, command,
+                            response, varconfigfile, verify_on_list_as_list,
+                            verify_list, remote_resp_dict, verify_group)
             else:
-                result = data_Utils.verify_resp_across_sys(verify_text_list,
-                         verify_context_list, command, response, varconfigfile,
-                         verify_on_list_as_list, verify_list, remote_resp_dict, endprompt)
-    command_status = {True: "PASS", False:"FAIL", "ERROR":"ERROR"}.get(result)
+                result = data_Utils.verify_resp_across_sys(
+                            verify_text_list, verify_context_list, command,
+                            response, varconfigfile, verify_on_list_as_list,
+                            verify_list, remote_resp_dict, endprompt,
+                            verify_group)
+    command_status = {True: "PASS", False: "FAIL", "ERROR": "ERROR"}.get(
+                                                                    result)
     pNote("COMMAND STATUS:{0}".format(command_status))
 
     return result, response
