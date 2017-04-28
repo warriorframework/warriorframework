@@ -16,11 +16,11 @@
         <dependency name="cloudshell-automation-api" install="no"/>
     </warhorn>
 
-    <warrior url="git@github.com:warriorframework/warriorframework.git"
+    <warrior url="checkout/warriorframework/atgithub.git"
              destination="" label="master" clean_install="" clone="no">
     </warrior>
 
-    <katana url="git@github.com:warriorframework/warriorframework.git"
+    <katana url="checkout/warriorframework/atgithub.git"
              destination="" label="" clean_install="" clone="no">
     </katana>
     
