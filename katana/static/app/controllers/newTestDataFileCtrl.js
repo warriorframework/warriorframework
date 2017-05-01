@@ -180,7 +180,7 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
                     if(($scope.jsonData.data.testdata[i]._title == "" || $scope.jsonData.data.testdata[i]._title == "") &&
                         ($scope.jsonData.data.testdata[i]._row == "" || $scope.jsonData.data.testdata[i]._row== "")){
                         swal({
-                            title: "Both title and row for testdata block " + (i+1) + " are empty. At least one of two is required.",
+                            title: "Both title and row for CLI data block " + (i+1) + " are empty. At least one of two is required.",
                             type: "error",
                             confirmButtonText: "Ok",
                             closeOnConfirm: true,
@@ -199,8 +199,8 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
                             $scope.jsonData.data.testdata[i]._row === $scope.jsonData.data.testdata[j]._row){
                             check = false;
                             swal({
-                                title: "Title and Row for testdata blocks " + (i+1) + " and " + (j+1) + " are the same.",
-                                text: "Both title and row of any two testdata blocks cannot be the same. Please change at least one of them",
+                                title: "Title and Row for CLI data blocks " + (i+1) + " and " + (j+1) + " are the same.",
+                                text: "Both title and row of any two CLI data blocks cannot be the same. Please change at least one of them",
                                 type: "warning",
                                 confirmButtonText: "Ok",
                                 closeOnConfirm: true,
@@ -218,7 +218,7 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
                         if($scope.td_verification_tag_names[i][j] === "" || $scope.td_verification_tag_names[i][j].trim() === ""){
                             check = false;
                             swal({
-                                title: "Tag name of the Verification tag number " + (j+1) + " in the Testdata block number " + (i+1) +" has been left empty.",
+                                title: "Tag name of the Verification tag number " + (j+1) + " in the CLI data block number " + (i+1) +" has been left empty.",
                                 type: "error",
                                 confirmButtonText: "Ok",
                                 closeOnConfirm: true,
@@ -237,7 +237,7 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
                             if($scope.jsonData.data.testdata[i].command[j]._end === ""){
                                 check = false;
                                 swal({
-                                    title: "The end field in testdata block " + (i+1) + " and command number " + (j+1) + " has been left empty.",
+                                    title: "The end field in CLI data block " + (i+1) + " and command number " + (j+1) + " has been left empty.",
                                     text: "End prompt is a mandatory field since the end attribute in the global command params has been left empty.",
                                     type: "error",
                                     confirmButtonText: "Ok",
@@ -444,7 +444,7 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
         $scope.addTDVerificationTag = function(index){
             if($scope.td_ver_tag_editor_is_open[index]){
                 swal({
-                    title: "You have a Verification already open in The Editor for Testdata Block " + (index+1) + ".",
+                    title: "You have a Verification already open in The Editor for CLI data Block " + (index+1) + ".",
                     text: "Please save that Verification before creating a new one.",
                     type: "warning",
                     confirmButtonText: "Ok",
@@ -528,7 +528,7 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
         $scope.editTDVerificationTag = function(parent_index, index){
             if($scope.td_ver_tag_editor_is_open[parent_index]){
                 swal({
-                    title: "You have a Verification already open in The Editor for Testdata Block " + (parent_index+1) + ".",
+                    title: "You have a Verification already open in The Editor for CLI data Block " + (parent_index+1) + ".",
                     text: "Please save that Verification before editing a new one.",
                     type: "warning",
                     confirmButtonText: "Ok",
@@ -621,7 +621,7 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
         $scope.editCommandTag = function(parent_index, index){
             if($scope.td_cp_tag_editor_is_open[parent_index]){
                 swal({
-                    title: "You have a Command already open in The Editor for Testdata Block " + (parent_index+1) + ".",
+                    title: "You have a Command already open in The Editor for CLI data Block " + (parent_index+1) + ".",
                     text: "Please save that Command before editing a new one.",
                     type: "warning",
                     confirmButtonText: "Ok",
@@ -694,7 +694,7 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
         $scope.addAnotherCommandTag = function(index){
             if($scope.td_cp_tag_editor_is_open[index]){
                 swal({
-                    title: "You have a Command already open in The Editor for Testdata Block " + (index+1) + ".",
+                    title: "You have a Command already open in The Editor for CLI data Block " + (index+1) + ".",
                     text: "Please save that Command before creating a new one.",
                     type: "warning",
                     confirmButtonText: "Ok",
@@ -1063,7 +1063,7 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
                     $scope.jsonData = x2js.xml_str2json($scope.xmlData);
                     if ($scope.jsonData == null) {
                         sweetAlert({
-                            title: "There was an error reading the TestData File: " + data["filename"],
+                            title: "There was an error reading the CLI Data File: " + data["filename"],
                             text: "This XML file may be malformed.",
                             closeOnConfirm: true,
                             confirmButtonColor: '#3b3131',
