@@ -1246,7 +1246,7 @@ def assemble_warrior():
 
     node_list = get_all_direct_child_nodes(config_file_name)
     node_list = remove_extra_list_elements(node_list, "warhorn", "drivers",
-                                           "warriorspace")
+                                           "warriorspace", "virtualenv")
     for node in node_list:
         clone_major_repositories(node, logfile=logfile,
                                  config_file_name=config_file_name,

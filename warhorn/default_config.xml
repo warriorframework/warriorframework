@@ -29,8 +29,8 @@
     <virtualenv name="warrior_virtualenv" activate="yes"
         location="~/.local/bin/virtualenv" install="no" />
 
-    <warrior url="http://rtx-swtl-git.fnc.net.local/scm/war/warriorframework.git"
-        destination="" label="" clean_install="">
+    <warrior url="ssh://git@rtx-swtl-git.fnc.net.local:7999/war/warriorframework.git"
+        destination="" label="" clean_install="" clone="yes">
     </warrior>
 
     <drivers>
