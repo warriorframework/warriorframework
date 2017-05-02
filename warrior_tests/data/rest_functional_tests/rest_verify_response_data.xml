@@ -1,0 +1,39 @@
+<?xml version="1.0" ?>
+<credentials>
+	<system name="http_bin_1">
+		<url>http://httpbin.org</url>
+		<cookies>cookie</cookies>
+		<response_1>../../config_files/rest_functional_tests/verify_api_response.json</response_1>
+		<cookiejar>dict</cookiejar>
+		<variable_config></variable_config>
+		<comparison_mode>
+			 <response_path>jsonpath=key</response_path>
+			 <response_path>jsonpath=Content-Type</response_path>
+		</comparison_mode>
+		<expected_api_response>
+			 <response_value>val</response_value>
+			 <response_value>application/json</response_value>
+		</expected_api_response>
+	</system>
+	<system name="http_bin_2">
+		<url>http://httpbin.org</url>
+		<cookies>cookie</cookies>
+		<cookiejar>dict</cookiejar>
+		<variable_config></variable_config>
+		<comparison_mode>
+			 <response_path>xpath=/*/@title</response_path>
+			 <response_path>xpath=/*/@date</response_path>
+		</comparison_mode>
+		<expected_api_response>
+			 <response_value>Sample Slide Show</response_value>
+			 <response_value>Date of publication</response_value>
+		</expected_api_response>
+	</system>
+	<system name="http_bin_3">
+		<url>http://httpbin.org</url>
+		<cookies>cookie</cookies>
+		<response_2>../../config_files/rest_functional_tests/verify_api_response.txt</response_2>
+		<cookiejar>dict</cookiejar>
+		<variable_config></variable_config>
+	</system>
+</credentials>
