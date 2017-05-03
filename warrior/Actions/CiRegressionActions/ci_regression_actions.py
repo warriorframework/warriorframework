@@ -226,3 +226,44 @@ class CIregressionActions(object):
             for i in range(start_index-1,last_index+1):
                 print result_content[i].strip("\n")
         return False
+
+    def increase_value(self, key, status, max_value, max_status):
+        """
+        write to a value in datarepo and return status
+        if value == max, return max_status instead
+        """
+        value = data_Utils.get_object_from_datarepository(key)
+        if key == False:
+            num = 1
+        else:
+            if isinstance(value, int):
+                num = value + 1
+            else:
+                num = 1
+        if num == int(max_value):
+            status = max_status
+
+        if status == "pass":
+            status = True
+        elif status == "fail":
+            status = False
+        else:
+            raise Exception("This is raised in ci_regression_actions.increase_value")
+
+        output_dict = {key: num}
+        return status, output_dict
+
+    def local_data_test(self, desired_status):
+        """For testing/demo/placeholder
+        return true/false/exception based on input
+        :Argument:
+            desired_status = user desired status
+            input pass->true, fail->false and everything else ->exception
+        """
+        # print "desired_status: " + desired_status
+        if desired_status == "pass":
+            return True
+        elif desired_status == "fail":
+            return False
+        else:
+            raise Exception("This is raised in ci_regression_actions.local_data_test")
