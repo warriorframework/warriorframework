@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<configuration>
+    <trial name="trial1">
+        <new name="new1">
+            <var name="var1" value="comment"/>
+        </new>
+        <new name="new2">
+            <var name="var1" value="new"/>
+            <var name="var2" value="This is a"/>
+        </new>
+        <blew name="blew1">
+            <var name="var1" value="This is a new comment" list="{1..5}"/>
+        </blew>
+        <blew name="blew2">
+            <var name="var1" value="This is a new comment" list="{2..10}"/>
+        </blew>
+    </trial>
+</configuration>
