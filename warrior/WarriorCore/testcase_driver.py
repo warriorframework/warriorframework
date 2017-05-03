@@ -465,7 +465,6 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
 
     tc_state = Utils.xml_Utils.getChildTextbyParentTag(testcase_filepath,
                                                        'Details', 'State')
-    print "#### tc_state : ", tc_state
     if tc_state is not False and tc_state is not None and \
        tc_state.upper() == "DRAFT":
         print_warning("Testcase is in 'Draft' state, it may have keywords "
