@@ -1,0 +1,126 @@
+<?xml version="1.0" ?>
+<Testcase>
+	<Details>
+		<Name>file processing keywords check</Name>
+		<Title>Check file keywords</Title>
+		<Engineer>Arvind Kumar Sethuraman</Engineer>
+		<Date>2017-04-05</Date>
+		<Time>12:51</Time>
+		<State/>
+		<InputDataFile>No_Data</InputDataFile>
+		<Datatype/>
+		<default_onError action="next"/>
+		<Logsdir/>
+		<Resultsdir/>
+		<ExpectedResults/>
+	</Details>
+	<Requirements>
+		<Requirement/>
+	</Requirements>
+	<Steps>
+		<step Driver="file_driver" Keyword="write" TS="1">
+			<Arguments>
+                <argument name="filename" value="../warriorframework_tests/warrior_tests/sample_files/file_sample"/>
+				<argument name="string" value="This is the first line"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>file write</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="file_driver" Keyword="write" TS="2">
+			<Arguments>
+                <argument name="filename" value="../warriorframework_tests/warrior_tests/sample_files/file_sample"/>
+				<argument name="string" value="This is the second line"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>file write</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="file_driver" Keyword="copy" TS="3">
+			<Arguments>
+                <argument name="filename" value="../warriorframework_tests/warrior_tests/sample_files/file_sample"/>
+                <argument name="newname" value="../warriorframework_tests/warrior_tests/sample_files/new_sample"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>file write</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		
+		<step Driver="file_driver" Keyword="copy2" TS="4">
+			<Arguments>
+                <argument name="filename" value="../warriorframework_tests/warrior_tests/sample_files/file_sample"/>
+                <argument name="newname" value="../warriorframework_tests/warrior_tests/sample_files/new_sample_with_stat"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>file write</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="file_driver" Keyword="rename" TS="5">
+			<Arguments>
+                <argument name="filename" value="../warriorframework_tests/warrior_tests/sample_files/new_sample_with_stat"/>
+                <argument name="newname" value="../warriorframework_tests/warrior_tests/sample_files/new_sampleWithstat"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>file write</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="file_driver" Keyword="copystat" TS="6">
+			<Arguments>
+                <argument name="filename" value="../warriorframework_tests/warrior_tests/sample_files/new_sample"/>
+                <argument name="newname" value="../warriorframework_tests/warrior_tests/sample_files/new_sampleWithstat"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>file write</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="file_driver" Keyword="remove" TS="7">
+			<Arguments>
+                <argument name="filename" value="../warriorframework_tests/warrior_tests/sample_files/new_sampleWithstat"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>file write</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="file_driver" Keyword="findreplace" TS="8">
+			<Arguments>
+                <argument name="filename" value="../warriorframework_tests/warrior_tests/sample_files/new_sample"/>
+				<argument name="regex" value="Th.."/>
+				<argument name="newstring" value="That"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>file write</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="file_driver" Keyword="findreplace" TS="8">
+			<Arguments>
+                <argument name="filename" value="../warriorframework_tests/warrior_tests/sample_files/new_sample"/>
+				<argument name="regex" value="first"/>
+				<argument name="newstring" value="Third"/>
+				<argument name="occurence" value="3,6"/>
+				<argument name="startidx" value="2"/>
+				<argument name="endidx" value="10"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>file write</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+	</Steps>
+</Testcase>
