@@ -79,9 +79,11 @@ class ThreadedLog(Base):
         pexpect read_nonblocking method
         """
         response = " "
-        while not self.stop_thread_flag:
+        str_length = 1024
+        while self.stop_thread_flag is not True and str_length == 1024:
             try:
-                string = session.read_nonblocking(1024, timeout=None)
+                string = session.read_nonblocking(str_length, timeout=None)
+                str_length = len(string)
                 response = response + string
                 time.sleep(0.5)
                 self.data = response
