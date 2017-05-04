@@ -1,0 +1,130 @@
+<?xml version="1.0" ?>
+<TestSuite>
+	<Details>
+		<Name>cond_var</Name>
+		<Title>Test conditional statement for different tc statues</Title>
+		<Engineer>Ka Hei Chan</Engineer>
+		<Date>08/22/2016</Date>
+		<Time>17:01:28</Time>
+		<type exectype="sequential_testcases"/>
+		<State/>
+		<default_onError action="next"/>
+		<Resultsdir/>
+		<IDF/>
+	</Details>
+	<Requirements>
+		<Requirement/>
+	</Requirements>
+	<Testcases>
+		<Testcase>
+			<path>../../../testcases/framework_tests/cond_var/pass.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<rmt/>
+			<impact>impact</impact>
+			<Execute ExecType="Yes">
+				<Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+			</Execute>
+		</Testcase>
+		<Testcase>
+			<path>../../../testcases/framework_tests/cond_var/pass.xml</path>
+			<Execute ExecType="If">
+				<Rule Condition="testcase_1_result" Condvalue="PASS" Else="abort" Elsevalue=""/>
+			</Execute>
+			<context>negative</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<rmt/>
+			<impact>noimpact</impact>
+		</Testcase>
+		<Testcase>
+			<path>../../../testcases/framework_tests/cond_var/error.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<Execute ExecType="If">
+				<Rule Condition="testcase_2_result" Condvalue="FAIL" Else="next" Elsevalue=""/>
+			</Execute>
+			<rmt/>
+			<impact>noimpact</impact>
+		</Testcase>
+		<Testcase>
+			<path>../../../testcases/framework_tests/cond_var/pass.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<Execute ExecType="If">
+				<Rule Condition="testcase_3_result" Condvalue="ERROR" Else="next" Elsevalue=""/>
+			</Execute>
+			<rmt/>
+			<impact>impact</impact>
+		</Testcase>
+		<Testcase>
+			<path>../../../testcases/framework_tests/cond_var/pass.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<Execute ExecType="No">
+				<Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+			</Execute>
+			<rmt/>
+			<impact>impact</impact>
+		</Testcase>
+		<Testcase>
+			<path>../../../testcases/framework_tests/cond_var/fail.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<Execute ExecType="If">
+				<Rule Condition="testcase_5_result" Condvalue="SKIP" Else="next" Elsevalue=""/>
+			</Execute>
+			<rmt/>
+			<impact>noimpact</impact>
+		</Testcase>
+		<Testcase>
+			<path>../../../testcases/framework_tests/cond_var/pass.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<Execute ExecType="If Not">
+				<Rule Condition="testcase_6_result" Condvalue="PASS" Else="next" Elsevalue=""/>
+			</Execute>
+			<rmt/>
+			<impact>impact</impact>
+		</Testcase>
+		<Testcase>
+			<path>../../../testcases/framework_tests/cond_var/pass.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<Execute ExecType="If Not">
+				<Rule Condition="testcase_7_result" Condvalue="FAIL" Else="next" Elsevalue=""/>
+			</Execute>
+			<rmt/>
+			<impact>impact</impact>
+		</Testcase>
+		<Testcase>
+			<path>../../../testcases/framework_tests/cond_var/error.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<Execute ExecType="If Not">
+				<Rule Condition="testcase_8_result" Condvalue="ERROR" Else="next" Elsevalue=""/>
+			</Execute>
+			<rmt/>
+			<impact>noimpact</impact>
+		</Testcase>
+		<Testcase>
+			<path>../../../testcases/framework_tests/cond_var/pass.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<Execute ExecType="If Not">
+				<Rule Condition="testcase_9_result" Condvalue="SKIP" Else="next" Elsevalue=""/>
+			</Execute>
+			<rmt/>
+			<impact>impact</impact>
+		</Testcase>
+	</Testcases>
+</TestSuite>
