@@ -21,7 +21,7 @@
          expects the dependency packages to be already installed or
          admin privileges available for installing them. location is the 
          place where virtualenv binary can be found. The virtual env
-         would be created at the warrior main destination path.
+         would be created in the local directory itself with the name provided.
          If install is set to yes, then warhorn expects atleast the
          admin privileges to install virtual env.
          -->
@@ -33,6 +33,15 @@
         destination="" label="" clean_install="" clone="yes">
     </warrior>
 
+    <!-- 
+
+    Fill this out with the details of the repository that you want to clone
+
+    <tools url="http://repository/one/url.git" label="" clone="yes">
+    </tools>  
+
+    -->
+  
     <drivers>
 
         <!--

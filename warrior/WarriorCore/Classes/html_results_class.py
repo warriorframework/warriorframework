@@ -66,8 +66,11 @@ class WarriorHtmlResults():
                     tc_details = {"tc_resultsdir": tc_resultsdir,
                                   "tc_logsdir": tc_logsdir,
                                   "tc_name": tc_name}
-                    # for each testcase nod ein testcase node list get its keyword node list.
-                    kw_node_list = testcase_node.findall("keyword")
+                    # for each testcase node in testcase node list get its
+                    # keyword(property type = 'keyword') list.
+                    kw_node_list = xml_Utils.\
+                        getChildElementsListWithTagAttribValueMatch(
+                         testcase_node, 'property', 'type', 'keyword')
                     # for each kw nod ein kw_node_list create kw record
                     for kw_node in kw_node_list:
                         self.create_keyword_record(kw_node, tc_details=tc_details)
