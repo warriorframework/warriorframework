@@ -16,6 +16,7 @@ limitations under the License.
 
 import os
 import sys
+import time
 import subprocess
 
 from Framework import Utils
@@ -74,7 +75,10 @@ class WarriorConnect(object):
         """ To close SSH/Telnet session """
 
         if self.session_object:
-            self.session_object.disconnect()
+            if self.conn_type == "TELNET":
+                self.session_object.disconnect_telnet()
+            else:
+                self.session_object.disconnect()
 
     # start_prompt, end_prompt, timeout are not required for paramiko session,
     # used here for backward compatibility(it's not a good solution)
@@ -548,6 +552,20 @@ class PexpectConnect(object):
         if self.target_host.isalive():
             if self.target_host.ignore_sighup:
                 self.target_host.ignore_sighup = False
+            self.target_host.close()
+
+    def disconnect_telnet(self):
+        """
+        Disconnects a telnet session
+        """
+        if self.target_host.isalive():
+            time.sleep(2)
+            self.target_host.sendcontrol(']')
+            time.sleep(2)
+            self.target_host.expect('telnet> ')
+            time.sleep(2)
+            self.target_host.sendline('q')
+            time.sleep(2)
             self.target_host.close()
 
     def send_command(self, start_prompt, end_prompt, command,
