@@ -146,10 +146,9 @@ class CommonActions(object):
         "matches with expected"
         Utils.testcase_Utils.pNote(wDesc)
 
-        result = Utils.data_Utils.verify_data(expected, object_key,
-                                              type, comparison)
+        result, value = Utils.data_Utils.verify_data(expected, object_key,
+                                                     type, comparison)
         if result == "FALSE":
-            value = get_object_from_datarepository(object_key)
             print_error("Expected: {0} {1} {2} but found {0}={3}".format(
                 object_key, comparison, expected, value))
         if result == "TRUE":
