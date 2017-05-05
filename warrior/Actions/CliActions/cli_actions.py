@@ -141,8 +141,6 @@ class CliActions(object):
 
     def disconnect(self, system_name, session_name=None):
         """ Disconnects/Closes  session established with the system
-        :Datafile usage:
-            1. conn_type = the type of connection to be closed (ssh/telnet)
 
         :Arguments:
             1. system_name (string) = This can be name of the\
@@ -176,7 +174,6 @@ class CliActions(object):
             subsystem_name = subsystem_list[i] if subsystem_list != None else None
             call_system_name = system_name if subsystem_name is None \
             else "{0}[{1}]".format(system_name, subsystem_name)
-            conn_type = getSystemData(self.datafile, call_system_name, "conn_type")
             Utils.testcase_Utils.pSubStep(wdesc)
             Utils.testcase_Utils.pNote(system_name)
             Utils.testcase_Utils.pNote(self.datafile)
