@@ -859,10 +859,8 @@ def verify_data(expected, key, data_type='str', comparison='eq'):
     result, err_msg, exp = validate()
     keys = key.split('.')
     value = get_object_from_datarepository(keys[0])
-    print "{}:{}".format(keys[0], value)
     for k in keys[1:]:
         value = value[k]
-        print "{}:{}".format(k, value)
     if not value:
         err_msg += "key {} not present in data repository\n".format(key)
         result = "ERROR"
