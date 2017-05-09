@@ -99,10 +99,8 @@ def update_tc_junit_resultfile(tc_junit_obj, kw_junit_list, tc_timestamp):
                     # make sure we are obtaining only the wanted keywords
                     if (tc_part.get('timestamp') == tc_timestamp):
                         # add keyword element to testcase, add property result to properties, update count
-                        for keyword in tc_part.iter('keyword'):
-                            master_tc.append(keyword)
                         for result in tc_part.find('properties').iter('property'):
-                            if result.attrib['name'] == keyword.attrib['name']:
+                            if result.get('type') == "keyword":
                                 master_tc.find('properties').append(result)
                         master_tc.attrib = update_attribute(master_tc.attrib, tc_part.attrib)
 
