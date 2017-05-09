@@ -211,7 +211,8 @@ def get_steps_list(testcase_filepath):
     root = Utils.xml_Utils.getRoot(testcase_filepath)   
     Steps = root.find('Steps')
     if Steps is None:
-        print_info('Testcase has no commands: tag <Steps> not found in the input file ')
+        print_warning("Case: '{}' has no Steps/Keywords "
+                      "to be executed".format(testcase_filepath))
     else:
         step_list = []
         new_step_list = Steps.findall('step')
@@ -220,39 +221,22 @@ def get_steps_list(testcase_filepath):
             runmode, value = common_execution_utils.get_runmode_from_xmlfile(step)
             retry_type, _, _, retry_value, _ = common_execution_utils.get_retry_from_xmlfile(step)
             if runmode is not None and value > 0:
-                #more than one step in step list, insert new step
-                if len(new_step_list) > 1:
-                    go_next = len(step_list) + value + 1
-                    for i in range(0, value):
-                        copy_step = copy.deepcopy(step)
-                        copy_step.find("runmode").set("value", go_next)
-                        copy_step.find("runmode").set("attempt", i+1)
-                        step_list.append(copy_step)
-                #only one step in step list, append new step
-                else:
-                    for i in range(0, value):
-                        copy_step = copy.deepcopy(step)
-                        copy_step.find("runmode").set("attempt", i+1)
-                        step_list.append(copy_step)
+                go_next = len(step_list) + value + 1
+                for i in range(0, value):
+                    copy_step = copy.deepcopy(step)
+                    copy_step.find("runmode").set("value", go_next)
+                    copy_step.find("runmode").set("attempt", i+1)
+                    step_list.append(copy_step)
             if retry_type is not None and retry_value > 0:
-                if len(new_step_list) > 1:
-                    go_next = len(step_list) + retry_value + 1
-                    if runmode is not None:
-                        get_runmode = step.find('runmode')
-                        step.remove(get_runmode)
-                    for i in range(0, retry_value):
-                        copy_step = copy.deepcopy(step)
-                        copy_step.find("retry").set("count", go_next)
-                        copy_step.find("retry").set("attempt", i+1)
-                        step_list.append(copy_step)
-                else:
-                    if runmode is not None:
-                        get_runmode = step.find('runmode')
-                        step.remove(get_runmode)
-                    for i in range(0, retry_value):
-                        copy_step = copy.deepcopy(step)
-                        copy_step.find("retry").set("attempt", i+1)
-                        step_list.append(copy_step)
+                go_next = len(step_list) + retry_value + 1
+                if runmode is not None:
+                    get_runmode = step.find('runmode')
+                    step.remove(get_runmode)
+                for i in range(0, retry_value):
+                    copy_step = copy.deepcopy(step)
+                    copy_step.find("retry").set("count", go_next)
+                    copy_step.find("retry").set("attempt", i+1)
+                    step_list.append(copy_step)
             if retry_type is None and runmode is None:
                 step_list.append(step)
         return step_list
@@ -463,50 +447,70 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
     print_testcase_details_to_console(testcase_filepath, data_repository)
     step_list = get_steps_list(testcase_filepath)
 
-    if data_type.upper() == 'CUSTOM' and runtype.upper() == 'SEQUENTIAL_KEYWORDS':
-        tc_status = execute_custom(data_type, runtype, custom_sequential_kw_driver, data_repository, step_list)
-
-    elif data_type.upper() == 'CUSTOM' and runtype.upper() == 'PARALLEL_KEYWORDS':
-        tc_status = execute_custom(data_type, runtype, custom_parallel_kw_driver, data_repository, step_list)
-
-    elif data_type.upper() == 'ITERATIVE' and runtype.upper() == 'SEQUENTIAL_KEYWORDS':
-        print_info("iterative sequential")
-        system_list = get_system_list(data_repository['wt_datafile'],
-                                      iter_req=True) \
-            if iter_ts_sys is None else [iter_ts_sys]
-
-        #print len(system_list)
-        if len(system_list) == 0:
-            print_warning("Datatype is iterative but no systems found in input datafile")
-            print_warning("when Datatype is iterative the InputDataFile should have system(s) to iterate upon")
-            tc_status = False
-        elif len(system_list) > 0:
-            tc_status = iterative_sequential_kw_driver.main(step_list, data_repository, tc_status, system_list)
-
-    elif data_type.upper() == 'ITERATIVE' and runtype.upper() == 'PARALLEL_KEYWORDS':
-        print_info("iterative parallel")
-        system_list = get_system_list(data_repository['wt_datafile'],
-                                      iter_req=True) \
-            if iter_ts_sys is None else [iter_ts_sys]
-
-        #print len(system_list)
-        if len(system_list) == 0:
-            print_warning("DataType is iterative but no systems found in input datafile")
-            print_warning("when DataType id iterative the InputDataFile should have system(s) to iterate upon")
-            tc_status = False
-        elif len(system_list) > 0:
-            tc_status = iterative_parallel_kw_driver.main(step_list, data_repository, tc_status, system_list)
-            
-    elif data_type.upper() == "HYBRID":
-        print_info("Hybrid")
-        system_list, system_node_list = get_system_list(data_repository['wt_datafile'], node_req=True)
-        # call the hybrid driver here
-        hyb_drv_obj = hybrid_driver_class.HybridDriver(step_list, data_repository, tc_status, system_list, system_node_list)
-        tc_status = hyb_drv_obj.execute_hybrid_mode()
-        
+    tc_state = Utils.xml_Utils.getChildTextbyParentTag(testcase_filepath,
+                                                       'Details', 'State')
+    if tc_state is not False and tc_state is not None and \
+       tc_state.upper() == "DRAFT":
+        print_warning("Testcase is in 'Draft' state, it may have keywords "
+                      "that have not been developed yet. Skipping the "
+                      "testcase execution and it will be marked as 'ERROR'")
+        tc_status = "ERROR"
     else:
-        print_warning("unsupported value provided for testcase data_type or testsuite runtype")
-        tc_status = False
+        if data_type.upper() == 'CUSTOM' and \
+         runtype.upper() == 'SEQUENTIAL_KEYWORDS':
+            tc_status = execute_custom(data_type, runtype,
+                                       custom_sequential_kw_driver,
+                                       data_repository, step_list)
+        elif data_type.upper() == 'CUSTOM' and \
+                runtype.upper() == 'PARALLEL_KEYWORDS':
+            tc_status = execute_custom(data_type, runtype,
+                                       custom_parallel_kw_driver,
+                                       data_repository, step_list)
+        elif data_type.upper() == 'ITERATIVE' and \
+                runtype.upper() == 'SEQUENTIAL_KEYWORDS':
+            print_info("iterative sequential")
+            system_list = get_system_list(data_repository['wt_datafile'],
+                                          iter_req=True) \
+                if iter_ts_sys is None else [iter_ts_sys]
+            # print len(system_list)
+            if len(system_list) == 0:
+                print_warning("Datatype is iterative but no systems found in "
+                              "input datafile, when Datatype is iterative the "
+                              "InputDataFile should have system(s) to "
+                              "iterate upon")
+                tc_status = False
+            elif len(system_list) > 0:
+                tc_status = iterative_sequential_kw_driver.main(
+                 step_list, data_repository, tc_status, system_list)
+        elif data_type.upper() == 'ITERATIVE' and \
+                runtype.upper() == 'PARALLEL_KEYWORDS':
+            print_info("iterative parallel")
+            system_list = get_system_list(data_repository['wt_datafile'],
+                                          iter_req=True) \
+                if iter_ts_sys is None else [iter_ts_sys]
+            # print len(system_list)
+            if len(system_list) == 0:
+                print_warning("DataType is iterative but no systems found in "
+                              "input datafile, when DataType id iterative the "
+                              "InputDataFile should have system(s) to "
+                              "iterate upon")
+                tc_status = False
+            elif len(system_list) > 0:
+                tc_status = iterative_parallel_kw_driver.main(
+                 step_list, data_repository, tc_status, system_list)
+        elif data_type.upper() == "HYBRID":
+            print_info("Hybrid")
+            system_list, system_node_list = get_system_list(
+             data_repository['wt_datafile'], node_req=True)
+            # call the hybrid driver here
+            hyb_drv_obj = hybrid_driver_class.HybridDriver(
+             step_list, data_repository, tc_status, system_list,
+             system_node_list)
+            tc_status = hyb_drv_obj.execute_hybrid_mode()
+        else:
+            print_warning("unsupported value provided for testcase data_type "
+                          "or testsuite runtype")
+            tc_status = False
 
     if tc_context.upper() == 'NEGATIVE':
         if all([tc_status != 'EXCEPTION', tc_status != 'ERROR']):

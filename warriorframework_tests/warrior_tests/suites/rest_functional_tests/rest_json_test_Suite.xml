@@ -1,0 +1,30 @@
+<?xml version="1.0" ?>
+<TestSuite>
+	<Details>
+		<Name>rest_json_test_Suite</Name>
+		<Title>rest suite for testing functionalities related to json</Title>
+		<Engineer>Sanika Kulkarni</Engineer>
+		<Date>10/12/2016</Date>
+		<Time>13:39:26</Time>
+		<type exectype="sequential_testcases"/>
+		<default_onError action="next"/>
+		<Resultsdir/>
+	</Details>
+	<Requirements/>
+	<Testcases>
+		<Testcase>
+			<path>../../testcases/rest_functional_tests/rest_variable_in_json_test.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>impact</impact>
+		</Testcase>
+		<Testcase>
+			<path>../../testcases/rest_functional_tests/tc_rest_verify_response.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>impact</impact>
+		</Testcase>
+	</Testcases>
+</TestSuite>

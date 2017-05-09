@@ -20,6 +20,15 @@
              destination="" label="" clean_install="">
     </warrior>
 
+    <!-- 
+
+    Fill this out with the details of the repository that you want to clone
+
+    <tools url="http://repository/one/url.git" label="" clone="yes">
+    </tools>  
+
+    -->
+  
     <drivers>
 
         <!--
