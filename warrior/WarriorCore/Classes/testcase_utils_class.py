@@ -185,14 +185,16 @@ class TestcaseUtils(object):
         if write_locn is not None:
             doc = ET.SubElement(write_locn, "Note")
             doc.text = txt
-            self.print_output() 
-        #The below elif is bypasses the else below. As we may want to\ 
-        #print items (banners) before we have a handle to write 
-        elif print_type=="notype":
+            self.print_output()
+        # The below elif is bypasses the else below. As we may want to
+        # print items (banners) before we have a handle to write
+        elif print_type == "notype":
             pass
 
         else:
-            print_error("Unable to write to location in result file, the message is logged in terminal but not in result file")
+            return ("Unable to write to location in result file, the message "
+                    "is logged in terminal but not in result file")
+        return "pass"
 
 
     def rem_nonprintable_ctrl_chars(self, txt):

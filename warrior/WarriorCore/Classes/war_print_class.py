@@ -17,14 +17,9 @@ It takes console_logfile and write_to_stdout ( boolean flag) as arguments.
 """
 import sys
 import re
-try:
-    from testcase_utils_class import TestcaseUtils
-except Exception:
-    sys.stdout.write('could not import testcase_utils_class')
-    sys.stdout.flush()
 
 
-def print_main(message, print_type, color_message=None, *kwargs):
+def print_main(message, print_type="notype", color_message=None, *kwargs):
     """The main print function will be called by other print functions
     """
     if color_message is not None:
@@ -36,12 +31,11 @@ def print_main(message, print_type, color_message=None, *kwargs):
     # print print_string
     sys.stdout.write(print_string + '\n')
     sys.stdout.flush()
-    try:
-        tcutils = TestcaseUtils()
-        tcutils.p_note_level(message, print_type)
-    except Exception:
-        sys.stdout.write("cldn't use TestcaseUtils from testcase_utils_class")
-        sys.stdout.flush()
+    from testcase_utils_class import TestcaseUtils
+    tcutils = TestcaseUtils()
+    msg = tcutils.p_note_level(message, print_type, ptc=False)
+    if msg != "pass":
+        print_string += msg
     return print_string
 
 
