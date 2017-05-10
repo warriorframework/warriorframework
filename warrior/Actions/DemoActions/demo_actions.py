@@ -171,8 +171,7 @@ class DemoActions(object):
         """
         # print "desired_status: " + desired_status
 
-        import time
-        time.sleep(7)
+        print "Please use the one in ci_regression_actions"
         if desired_status == "pass":
             return True
         elif desired_status == "fail":

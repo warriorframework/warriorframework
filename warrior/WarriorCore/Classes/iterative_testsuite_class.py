@@ -131,5 +131,5 @@ class IterativeTestsuite(object):
                                                                 self.suite_repository,
                                                                 self.data_repository,
                                                                 self.from_project,
-                                                                False, self.auto_defects)
+                                                                True, self.auto_defects)
         return ts_status
