@@ -49,11 +49,11 @@ CMD_PARAMS = OrderedDict([("command_list", "send"),
                           ("inorder_search_list", "inorder"),
                           ("vc_file_list", ""),
                           ("verify_map_list", ""),
-                          ("operator_list", "operator"),
-                          ("cond_value_list", "cond_value"),
-                          ("cond_type_list", "cond_type"),
                           ("repeat_list", "repeat")])  # keep this in the last
 
+
+VFY_PARAM_LIST = ["verify_text_list", "verify_context_list",
+                  "verify_on_list", "verify_map_list"]
 
 VERIFY_PARAMS = ["verify_context_list", "verify_on_list", "verify_map_list"]
 
@@ -82,19 +82,16 @@ class TestData(object):
         in the varaiable config file (vc_file).
 
         """
-        vfy_param_list = ["verify_text_list", "verify_context_list",
-                          "verify_on_list", "verify_map_list", "operator_list",
-                          "cond_value_list", "cond_type_list"]
         vc_file_list = None if vc_file is None else details_dict["vc_file_list"]
         for param, _ in CMD_PARAMS.items():
-            if param not in vfy_param_list and param!="vc_file_list":
+            if param not in VFY_PARAM_LIST and param!="vc_file_list":
                 # list in here is just a list of strings
                 string_list = details_dict[param]
                 new_string_list = string_Utils.sub_from_varconfig\
                 (vc_file_list, string_list, var_sub, start_pat, end_pat)
                 details_dict[param] = new_string_list
 
-            elif param in vfy_param_list:
+            elif param in VFY_PARAM_LIST:
                 # list in here is a list of sublists of strings
                 string_list = details_dict[param]
                 for i, sub_list in enumerate(string_list):
@@ -329,17 +326,15 @@ class TestData(object):
             or []
         :return:
         """
-        vfy_param_list = ["verify_text_list", "verify_context_list",
-                          "verify_on_list", "verify_map_list"]
 
         for sub_cmd_index, cmd in enumerate(details_dict["command_list"][cmd_index]):
             # for every expanded cmd...
             for param, _ in CMD_PARAMS.items():
-                if param not in vfy_param_list and param != "command_list":
+                if param not in VFY_PARAM_LIST and param != "command_list":
                     # list in here is just a list of strings
                     # insert duplicated element after the current element
                     details_dict[param].insert(cmd_index+sub_cmd_index+1, details_dict[param][cmd_index])
-                elif param in vfy_param_list:
+                elif param in VFY_PARAM_LIST:
                     # list in here is a list of sublists of strings
                     # for example: verify_text_list = [[v1[1], v1[2], v1[3]], [v2], [v3[1], v3[2]]]
                     processed_list = []
@@ -390,9 +385,6 @@ class TestData(object):
             list for value indicating whether cmd text list has list substitution
         :return:
         """
-        vfy_param_list = ["verify_text_list", "verify_context_list",
-                          "verify_on_list", "verify_map_list"]
-
         for sub_cmd_index, cmd in enumerate(details_dict["command_list"][cmd_index]):
             # for every expanded cmd...
             for param, _ in CMD_PARAMS.items():
@@ -447,9 +439,6 @@ class TestData(object):
             list for value indicating whether verify text list has list substitution
         :return:
         """
-        vfy_param_list = ["verify_text_list", "verify_context_list",
-                          "verify_on_list", "verify_map_list"]
-
         old_cmd_index = 0
         cmd_index = 0
 
@@ -482,7 +471,7 @@ class TestData(object):
 
                     self.align_ver(details_dict, cmd_index, verify_text_match_list)
 
-                    for param in vfy_param_list:
+                    for param in VFY_PARAM_LIST:
                         del details_dict[param][cmd_index]
 
                 else:
@@ -500,19 +489,15 @@ class TestData(object):
          provided by user in the datafile.
 
         """
-        vfy_param_list = ["verify_text_list", "verify_context_list",
-                          "verify_on_list", "verify_map_list", "operator_list",
-                          "cond_value_list", "cond_type_list"]
-    # vc_file_list = None if vc_file is None else details_dict["vc_file_list"]
         for param, _ in CMD_PARAMS.items():
-            if param not in vfy_param_list and param!="vc_file_list":
+            if param not in VFY_PARAM_LIST and param!="vc_file_list":
                 string_list = details_dict[param]
                 td_sys_list = details_dict["sys_list"]
                 new_string_list = string_Utils.sub_from_wdf\
                 (datafile, string_list, td_sys_list, kw_system_name)
                 details_dict[param] = new_string_list
 
-            elif param in vfy_param_list:
+            elif param in VFY_PARAM_LIST:
                 string_list = details_dict[param]
                 for i, sub_list in enumerate(string_list):
                     if sub_list is not None:

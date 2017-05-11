@@ -82,10 +82,10 @@ class ExecFilesClass(object):
 
             #get default results directory
             default_xml = Tools.__path__[0] + os.sep + 'w_settings.xml'
-            default_resultsdir = get_credentials(default_xml, 'def_dir',['Resultsdir'], 'Setting')
+            default_resultsdir = get_credentials(default_xml, 'def_dir', ['Resultsdir'], 'Setting')
             #use the default directory if user didn't define it in test case/test suite/project
-            if results_location is None or results_location is False :
-                if default_resultsdir['Resultsdir'] is not None :
+            if results_location is None or results_location is False:
+                if default_resultsdir['Resultsdir'] is not None:
                     results_location = default_resultsdir['Resultsdir']
 
             if results_location is None or results_location is False\

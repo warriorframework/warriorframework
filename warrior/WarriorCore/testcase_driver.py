@@ -88,9 +88,6 @@ def get_testcase_details(testcase_filepath, data_repository, jiraproj):
     logsdir = efile_obj.logsdir
     defectsdir = efile_obj.get_defect_files()
 
-
-
-
     """Data files can be passed on to a test by four methods, below are the 
        four methods and its priority in order. 
        By this feature we allow the user to run the same testcases, with
@@ -153,11 +150,11 @@ def get_testcase_details(testcase_filepath, data_repository, jiraproj):
     data_repository['wt_operating_system'] = operating_system.upper()
     data_repository['wt_def_on_error_action'] = def_on_error_action.upper()
     data_repository['wt_def_on_error_value'] = def_on_error_value
-   
+
     # For custom jira project name
     if not data_repository.has_key('jiraproj'):
         data_repository['jiraproj'] = jiraproj
-    
+
     # write resultfile, logsdir, datafile, filename, logfile to config file
     Utils.config_Utils.set_resultfile(resultfile)
     Utils.config_Utils.set_datafile(datafile)
@@ -165,7 +162,7 @@ def get_testcase_details(testcase_filepath, data_repository, jiraproj):
     Utils.config_Utils.set_filename(filename)
     Utils.config_Utils.set_logfile(logfile)
     Utils.config_Utils.set_testcase_path(filedir)
- 
+
     # write TC details to result file
     Utils.testcase_Utils.pTestcase()
     Utils.testcase_Utils.pCustomTag("Title", title)
@@ -176,9 +173,8 @@ def get_testcase_details(testcase_filepath, data_repository, jiraproj):
     Utils.testcase_Utils.pCustomTag("Resultfile", resultfile)
     Utils.testcase_Utils.pCustomTag("Operating_System", operating_system)
 
-    
     # copying testcase xml file to execution directory of this testcase
-    exec_dir =  os.path.dirname(data_repository['wt_resultsdir'])
+    exec_dir = os.path.dirname(data_repository['wt_resultsdir'])
     shutil.copy2(testcase_filepath, exec_dir)
 
     return data_repository
@@ -270,18 +266,18 @@ def report_testcase_result(tc_status, data_repository):
     fail_count = 0
     for value in root.findall('Keyword'):
         kw_status = value.find('KeywordStatus').text
-        if kw_status != "PASS":
+        if kw_status != "PASS" and kw_status != "RAN":
             fail_count += 1
             kw_name = value.find('Name').text
             get_step_value = value.attrib.values()
             step_num = ','.join(get_step_value)
             if fail_count == 1:
-                print_info("++++++++++++++++++++++++ Summary of Failed Keywords ++++++++++++++++++++++++")
+                print_info("++++++++++++++++++++++++ Summary of Failed/Skipped Keywords ++++++++++++++++++++++++")
                 print_info("{0:15} {1:45} {2:10}".format('StepNumber', 'KeywordName', 'Status'))
                 print_info("{0:15} {1:45} {2:10}".format(str(step_num), str(kw_name), str(kw_status)))
             elif fail_count > 1:
                 print_info("{0:15} {1:45} {2:10}".format(str(step_num), str(kw_name), str(kw_status)))
-    print_info("=================== END OF TESTCASE ===========================")
+    print_info("============================== END OF TESTCASE ====================================")
 
 def get_system_list(datafile, node_req=False, iter_req=False):
     """Get the list of systems from the datafile

@@ -21,6 +21,7 @@ from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.data_Utils import getSystemData,\
 get_session_id, get_credentials, get_object_from_datarepository
 from Framework.Utils.encryption_utils import decrypt
+from WarriorCore.Classes.warmock_class import mockready
 from WarriorCore.Classes.war_cli_class import WarriorCliClass
 try:
     if 'linux' in sys.platform:
@@ -42,6 +43,7 @@ class CliActions(object):
         self.filename = Utils.config_Utils.filename
         self.logfile = Utils.config_Utils.logfile
 
+    @mockready
     def connect(self, system_name, session_name=None, prompt=".*(%|#|\$)", ip_type="ip"):
         """
         This is a generic connect that can connect to ssh/telnet based
@@ -142,6 +144,7 @@ class CliActions(object):
             status = status and result
         return status, output_dict
 
+    @mockready
     def disconnect(self, system_name, session_name=None):
         """ Disconnects/Closes  session established with the system
 
@@ -186,8 +189,6 @@ class CliActions(object):
                    "session_name={1}".format(system_name, session_name)
             msg2 = "Disconnection of system_name={0}, "\
                    "session_name={1} Failed".format(system_name, session_name)
-            if WarriorCliClass.cmdprint:
-                result = True
             if isinstance(session_object, pexpect.spawn):
                 # execute smart action to produce user report
                 connect_testdata = Utils.data_Utils.get_object_from_datarepository(session_id+"_system", verbose=False)
@@ -196,17 +197,20 @@ class CliActions(object):
 
                 session_object = Utils.cli_Utils.disconnect(session_object)
                 result = False if session_object.isalive() else True
-
+            elif WarriorCliClass.mock or WarriorCliClass.sim:
+                result = True
             else:
                 pNote("session does not exist", "warning")
                 result = False
 
             msg = msg1 if result else msg2
-            Utils.testcase_Utils.pNote(msg)
+            if not WarriorCliClass.mock and not WarriorCliClass.sim:
+                Utils.testcase_Utils.pNote(msg)
             Utils.testcase_Utils.report_substep_status(result)
             status = status and result
         return status
 
+    @mockready
     def connect_ssh(self, system_name, session_name=None, prompt=".*(%|#|\$)", ip_type="ip", int_timeout=60):
         """Connects to the ssh port of the the given system or subsystems
 
@@ -308,6 +312,7 @@ class CliActions(object):
                 else:
                     ip = credentials[ip_type]
                     session_object, conn_string = Utils.cli_Utils.connect_ssh(ip, **credentials)
+                # Instead of checking the session_object here, can move the check into the utils
                 if isinstance(session_object, pexpect.spawn):
                     output_dict[session_id] = session_object
                     output_dict[session_id + "_connstring"] = conn_string.replace("\r\n", "")
@@ -323,8 +328,10 @@ class CliActions(object):
                     if smart_result is not None:
                         output_dict[session_id + "_system"] = smart_result
 
-                elif WarriorCliClass.cmdprint:
-                    output_dict[session_id] = session_id
+                elif WarriorCliClass.mock or WarriorCliClass.sim:
+                    output_dict[session_id] = session_object
+                    output_dict[session_id + "_connstring"] = conn_string
+                    output_dict[session_id + "_td_response"] = {}
                     result = True
                 else:
                     result = False
@@ -339,6 +346,7 @@ class CliActions(object):
             status = status and result
         return status, output_dict
 
+    @mockready
     def connect_telnet(self, system_name, session_name=None, ip_type="ip", int_timeout=60):
         """Connects to the telnet port of the the given system and/or subsystem and creates a
         pexpect session object for the system
@@ -457,8 +465,10 @@ class CliActions(object):
                     if smart_result is not None:
                         output_dict[session_id + "_system"] = smart_result
 
-                elif WarriorCliClass.cmdprint:
-                    output_dict[session_id] = session_id
+                elif WarriorCliClass.mock or WarriorCliClass.sim:
+                    output_dict[session_id] = session_object
+                    output_dict[session_id + "_connstring"] = conn_string
+                    output_dict[session_id + "_td_response"] = {}
                     result = True
                 else:
                     result = False
@@ -473,7 +483,7 @@ class CliActions(object):
             status = status and result
         return status, output_dict
 
-
+    @mockready
     def send_command(self, command, system_name, session_name=None,
                      start_prompt='.*', end_prompt='.*', int_timeout=60):
         """Sends a command to a system or a subsystem
@@ -508,8 +518,9 @@ class CliActions(object):
             command_status = False
 
         Utils.testcase_Utils.report_substep_status(command_status)
-        return  command_status
+        return command_status
 
+    @mockready
     def send_all_testdata_commands(self, system_name, session_name=None, var_sub=None,
                                    description=None, td_tag=None, vc_tag=None):
         """
@@ -564,7 +575,7 @@ class CliActions(object):
         return self.send_testdata_command_kw(system_name, session_name, desc, var_sub,
                                              td_tag, vc_tag)
 
-
+    @mockready
     def send_commands_by_testdata_rownum(self, row_num, system_name,
                                          session_name=None, var_sub=None, description=None,
                                          td_tag=None, vc_tag=None):
@@ -621,6 +632,7 @@ class CliActions(object):
                                              desc, var_sub, row_num=row_num,
                                              td_tag=td_tag, vc_tag=vc_tag)
 
+    @mockready
     def send_commands_by_testdata_title(self, title, system_name, session_name=None,
                                         var_sub=None, description=None,
                                         td_tag=None, vc_tag=None):
@@ -676,6 +688,7 @@ class CliActions(object):
         return self.send_testdata_command_kw(system_name, session_name, desc, var_sub,
                                              title=title, td_tag=td_tag, vc_tag=vc_tag)
 
+    @mockready
     def send_commands_by_testdata_title_rownum(self, title, row_num, system_name,
                                                session_name=None, var_sub=None,
                                                description=None, td_tag=None, vc_tag=None):
@@ -732,6 +745,7 @@ class CliActions(object):
                                              desc, var_sub, title=title, row_num=row_num,
                                              td_tag=td_tag, vc_tag=vc_tag)
 
+    @mockready
     def send_testdata_command_kw(self, system_name, session_name=None, wdesc='', var_sub=None,
                                  title=None, row_num=None, td_tag=None, vc_tag=None):
         """
@@ -776,10 +790,7 @@ class CliActions(object):
                                                                   datafile=self.datafile)
 
         td_resp_dict = get_object_from_datarepository(str(session_id)+"_td_response")
-        if not WarriorCliClass.cmdprint:
-            td_resp_dict.update(resp_dict)
-
-
+        td_resp_dict.update(resp_dict)
         Utils.testcase_Utils.report_substep_status(status)
         return  status, td_resp_dict
 
@@ -841,6 +852,7 @@ class CliActions(object):
                                        " is not alive".format(system_name, session_name))
         return status
 
+    @mockready
     def connect_all(self):
         """This is a connect all operation that can connect to  all ssh/telnet based
         on the conn_type provided by the user in the input datafile.

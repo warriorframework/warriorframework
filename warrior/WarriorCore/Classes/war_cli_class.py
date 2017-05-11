@@ -23,7 +23,6 @@ import WarriorCore.Classes.manual_defect_class as manual_defect_class
 
 class WarriorCliClass(object):
     """Handle the command line input for warrior"""
-    cmdprint = False
     def __init__(self):
         return None
 
@@ -339,21 +338,6 @@ class WarriorCliClass(object):
 
         parser.add_argument('-encrypt', action='store', nargs='*', dest="encrypt", help="encrypt data string")
 
-        parser.add_argument('-cmdprint', action='store_true', default=False,
-                            help=":cmdprint: print the command to be executed "\
-                            "without actually executing...")
-
-        parser.add_argument('-mockrun', action='store_true', default=False,
-                            help=":mockrun: print the command to be executed "\
-                            "without actually executing...")
-
-        parser.add_argument('-debug', action='store_true', default=False,
-                            help=":debug: It should be used along with the mockrun command "\
-                            "...")
-
-        parser.add_argument('-summary', action='store_true', default=False,
-                            help=":summary: It should be used along with the mockrun command "\
-                            "...")
         # Run Testcases/Suites/Projects in default locations
         parser.add_argument('-wt', action='store', nargs='*', dest="tc_name",
                             help="Runs testcases available in default path, "\
@@ -392,9 +376,21 @@ class WarriorCliClass(object):
                             "database server. Database config file " \
                             "location = Tools/Database/database_config.xml.")
 
+        #Running Warrior in Mock mode and Test mode
+        parser.add_argument('-mock', action='store_true', default=False,
+                            help=":testmode: Trial run the Cases/Suites/Project")
+
+        #Running Warrior in Mock mode and Test mode
+        parser.add_argument('-sim', action='store_true', default=False,
+                            help=":testmode: Trial run the Cases/Suites/Project")
+
         namespace = parser.parse_args(arglist)
-        if namespace.cmdprint:
-            WarriorCliClass.cmdprint = True
+        #see if the below line is requried
+        WarriorCliClass.mock = WarriorCliClass.sim = False
+        if namespace.mock:
+            WarriorCliClass.mock = True
+        if namespace.sim:
+            WarriorCliClass.sim = True
         return namespace
 
 class CreateTestSuite(object):

@@ -29,6 +29,7 @@ from Framework.Utils.list_Utils import get_list_by_separating_strings
 from Framework.ClassUtils.WNetwork.loging import ThreadedLog
 from WarriorCore.Classes.war_cli_class import WarriorCliClass
 from Framework.ClassUtils import database_utils_class
+from WarriorCore.Classes.warmock_class import mocked
 try:
     import pexpect
 except ImportError:
@@ -38,28 +39,7 @@ except ImportError:
                "without pexpect module. Users can however create"\
                "their own custom libraries for cli interaction \n")
 
-def cmdprinter(cmdfunc):
-    def inner(*args, **kwargs):
-        if WarriorCliClass.cmdprint:
-            result = (True,"")
-            if cmdfunc.__name__ == "_send_cmd_get_status":
-                pNote(":CMD: %s"%(args[1]["command_list"][kwargs['index']]))
-            elif cmdfunc.__name__ == "_send_command_retrials":
-                pass
-            elif cmdfunc.__name__ == "send_command":
-                pNote(":CMD: %s"%(args[3]))
-            elif cmdfunc.__name__ == "send_command_and_get_response":
-                pNote(":CMD: %s"%(args[3]))
-                result = ""
-            elif cmdfunc.__name__ == "_send_cmd":
-                pNote(":CMD: %s"%(kwargs['command']))
-            else:
-                pNote(":CMD: %s"%(args[3]))
-        else:
-            result = cmdfunc(*args, **kwargs)
-        return result
-    return inner
-
+@mocked
 def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=60,
                 prompt=".*(%|#|\$)", conn_options="", custom_keystroke="", **kwargs):
     """
@@ -76,9 +56,6 @@ def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=6
     command = 'ssh -p {0} {1}@{2} {3}'.format(port, username, ip, conn_options)
     #command = ('ssh -p '+ port + ' ' + username + '@' + ip)
     print_debug("connectSSH: cmd = %s" % command)
-    if WarriorCliClass.cmdprint:
-        pNote(("connectSSH: :CMD: %s" %command))
-        return None, ""
     child = pexpect.spawn(command, timeout=int(timeout))
 
     child.logfile = sys.stdout
@@ -139,6 +116,7 @@ def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=6
         print_exception(exception)
     return sshobj, conn_string
 
+@mocked
 def connect_telnet(ip, port="23", username="", password="",
                    logfile=None, timeout=60, prompt=".*(%|#|\$)",
                    conn_options="", custom_keystroke="", **kwargs):
@@ -233,7 +211,7 @@ def disconnect(child):
         child.close()
     return child
 
-@cmdprinter
+@mocked
 def send_command_and_get_response(sessionobj, prompt1, prompt2, command):
     """"Sends a command to a terminal expects a completion prompt
     If completion prompt was found, returns the response of the command """
@@ -372,7 +350,7 @@ def get_connection_port(conn_type, inpdict):
 
     return inpdict
 
-@cmdprinter
+@mocked
 def send_command(session_object, start_prompt, end_prompt, command,
                  timeout=60):
     """
@@ -533,10 +511,6 @@ def send_commands_from_testdata(testdatafile, obj_session, **args):
     var_sub = args.get('var_sub', None)
     title = args.get('title', None)
     row = args.get('row', None)
-    if WarriorCliClass.cmdprint:
-        pNote( "**************{}**************".format('Title: ' + title))
-        if row:
-            pNote("**************{}**************".format('Row: ' + row))
     system_name = args.get("system_name")
     testdata_dict = data_Utils.get_command_details_from_testdata(testdatafile, varconfigfile,
                                                                  var_sub=var_sub, title=title,
@@ -544,11 +518,12 @@ def send_commands_from_testdata(testdatafile, obj_session, **args):
     finalresult = True if len(testdata_dict) > 0 else False
     for key, details_dict in testdata_dict.iteritems():
         response_dict = {}
-        responses_dict[key]=""
+        responses_dict[key] = ""
+        details_dict['varconfigfile'] = varconfigfile
         command_list = details_dict["command_list"]
         stepdesc = "Send the following commands: "
         pNote(stepdesc)
-        n=0
+        n = 0
         for commands in command_list:
             pNote("Command #{0}\t: {1}".format((n+1), commands))
             n = n + 1
@@ -581,10 +556,10 @@ def send_commands_from_testdata(testdatafile, obj_session, **args):
                 result = "ERROR"
                 finalresult = "ERROR"
             finalresult = finalresult and result
-        responses_dict[key]=response_dict
+        responses_dict[key] = response_dict
     return finalresult, responses_dict
 
-@cmdprinter
+@mocked
 def _send_cmd(obj_session, **kwargs):
     """method to send command based on the type of object """
     result = False
@@ -740,8 +715,6 @@ def get_unique_log_and_verify_list(log_list, verify_on_list, system_name):
             final_list.append(comma_sep_verify_names[i])
     return final_list
 
-
-@cmdprinter
 def _send_cmd_get_status(obj_session, details_dict, index, system_name=None):
     """Sends a command, verifies the response and returns
     status of the command """
@@ -805,8 +778,7 @@ def _send_cmd_get_status(obj_session, details_dict, index, system_name=None):
                                      cmd_timeout=cmd_timeout)
 
     if sleeptime > 0:
-        pNote("Sleep time of '{0} seconds' requested post command "
-              "execution".format(sleeptime))
+        pNote("Sleep time of {0} seconds requested post command execution".format(sleeptime))
         time.sleep(sleeptime)
 
     try:
@@ -831,8 +803,7 @@ def _send_cmd_get_status(obj_session, details_dict, index, system_name=None):
                             response, varconfigfile, verify_on_list_as_list,
                             verify_list, remote_resp_dict, endprompt,
                             verify_group)
-    command_status = {True: "PASS", False: "FAIL", "ERROR": "ERROR"}.get(
-                                                                    result)
+    command_status = {True: "PASS", False:"FAIL", "ERROR":"ERROR", "RAN":"RAN"}.get(result)
     pNote("COMMAND STATUS:{0}".format(command_status))
 
     return result, response
@@ -880,7 +851,7 @@ def _get_obj_session(details_dict, obj_session, kw_system_name, index):
     pNote("System name\t: {0}".format(system_name))
     return value, details_dict
 
-@cmdprinter
+@mocked
 def _send_command_retrials(obj_session, details_dict, index, **kwargs):
     """ Sends a command to a session, if a user provided pattern
     is found in the command response then tries to resend the command multiple

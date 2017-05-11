@@ -186,7 +186,7 @@ class TestcaseUtils(object):
             doc = ET.SubElement(write_locn, "Note")
             doc.text = txt
             self.print_output() 
-        #The below elif is bypasses the else below. As we may want to\ 
+        #The below elif bypasses the else below. As we may want to\ 
         #print items (banners) before we have a handle to write 
         elif print_type=="notype":
             pass
@@ -241,6 +241,12 @@ class TestcaseUtils(object):
         status_tag = ET.SubElement(levelobj, "%sStatus" % level)
         status_tag.text = status
         self.print_output()
+
+    def p_ran(self, level, text=""):
+        """Report a pass """
+        print_info("{0} STATUS:RAN".format(text))
+        #print_info("PASS: %s\n" % text)
+        self.p_status("RAN", level)
 
     def p_pass(self, level, text=""):
         """Report a pass """
@@ -319,7 +325,7 @@ class TestcaseUtils(object):
         EXCEPTION -> ERROR
         """
         result = {True: 'PASS', False: 'FAIL',
-                  'ERROR': 'ERROR', 'EXCEPTION': 'ERROR'}.get(text)
+                  'ERROR': 'ERROR', 'EXCEPTION': 'ERROR', 'RAN': 'RAN'}.get(text)
         if result is None:
             print_error("junk or no value received, expecting TRUE/FALSE/ERROR/EXCEPTION")
             result = 'ERROR'
@@ -327,12 +333,13 @@ class TestcaseUtils(object):
 
     def report_status(self, status, text="", level='Keyword'):
         """
-        Reports the status to the testcase xml result file base don the received status
+        Reports the status to the testcase xml result file base on the received status
         On receiving a True reports keyword status as Passed
         On receiving a False reports keyword status as Failed
         On receiving a Skip reports keyword status as Skipped
         On receiving a Exception reports keyword status as Exception
         On receiving a Error reports Keyword status as Error
+        On receiving a RAN reports Keyword status as RAN 
 
         :Arguments:
             1. status = (bool) True or False
@@ -345,7 +352,7 @@ class TestcaseUtils(object):
 
         status = {'TRUE': self.p_pass, 'FALSE': self.p_fail,
                   'SKIP': self.p_skip, 'EXCEPTION': self.p_exception,
-                  'ERROR': self.p_error}.get(str(status).upper())
+                  'ERROR': self.p_error, 'RAN': self.p_ran}.get(str(status).upper())
         if status is None:
             print_error("unexpected or no value received, expecting TRUE/FALSE/SKIP")
             self.p_error(level, text)
@@ -354,7 +361,7 @@ class TestcaseUtils(object):
 
     def report_warning(self, status, text="", level='subStep'):
         """
-        Reports the status to the testcase xml result file base don the received status
+        Reports the status to the testcase xml result file based on the received status
         On receiving a True reports keyword status as Passed
         On receiving a False reports keyword status as Warning
         On receiving a Skip reports keyword status as Skipped
@@ -369,9 +376,13 @@ class TestcaseUtils(object):
         :Returns:
             None
         """
+        from WarriorCore.Classes.war_cli_class import WarriorCliClass
+        if WarriorCliClass.mock:
+            if str(status).upper() == 'TRUE' or str(status).upper() == 'FALSE':
+                status = 'RAN'
         status = {'TRUE': self.p_pass, 'FALSE': self.p_warn,
                   'SKIP': self.p_skip, 'EXCEPTION': self.p_exception,
-                  'ERROR': self.p_error}.get(str(status).upper())
+                  'ERROR': self.p_error, 'RAN': self.p_ran}.get(str(status).upper())
         if status is None:
             print_error("unexpected or no value received, expecting TRUE/FALSE/SKIP")
             self.p_error(level, text)
@@ -476,7 +487,13 @@ class TestcaseUtils(object):
                     #input_status_list[i] = False
                     status = 'ERROR'
                     break
-                status &= input_status
+                elif str(input_status).upper() == 'RAN':
+                    status = 'RAN'
+                elif input_status == False:
+                    status = False 
+                    break
+                elif input_status is True:
+                    status = True 
         return status
 
     @staticmethod
@@ -490,7 +507,13 @@ class TestcaseUtils(object):
                     #input_status_list[i] = False
                     status = 'ERROR'
                     break
-                status &= input_status
+                elif str(input_status).upper() == 'RAN':
+                    status = 'RAN'
+                elif input_status == False:
+                    status = False
+                    break
+                elif input_status is True:
+                    status = True
         return status
 
     def compute_system_resultfile(self, kw_resultfile_list, resultsdir, system_name):
@@ -624,7 +647,3 @@ class TestcaseUtils(object):
         else:
             step_list = steps.findall('step')
             return step_list
-
-
-
-

@@ -25,6 +25,7 @@ from Framework.ClassUtils.testdata_class import TestData, TestDataIterations
 from Framework.Utils.xml_Utils import get_attributevalue_from_directchildnode as av_fromdc
 from Framework.Utils.string_Utils import sub_from_varconfigfile
 from Framework.ClassUtils import database_utils_class
+from WarriorCore.Classes.warmock_class import mocked
 
 cmd_params = OrderedDict([("command_list", "send"),
                           ("sys_list", "sys"),
@@ -289,7 +290,7 @@ def get_object_from_datarepository(object_key, verbose=True):
             print_warning('{0} is not found in data repository'.format(object_key))
     return obj
 
-
+@mocked
 def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
     """Gets the command_list, startprompt_list, endprompt_list,
     verify_list from testdata """
@@ -343,11 +344,11 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
         # use only test data blocks that are marked to execute
         exec_flag = get_exec_flag(testdata, title, row)
         if testdata.get("execute") == "yes" and exec_flag:
-            testdata_key="{0}{1}".format(testdata.get('title',""), \
+            testdata_key = "{0}{1}".format(testdata.get('title', ""), \
                                          _get_row(testdata))
             details_dict = _get_cmd_details(testdata, global_obj, system_name, varconfigfile)
-            start_pat =  _get_pattern_list(testdata, global_obj)
-            end_pat =  _get_pattern_list(testdata, global_obj, pattern="end")
+            start_pat = _get_pattern_list(testdata, global_obj)
+            end_pat = _get_pattern_list(testdata, global_obj, pattern="end")
             details_dict = sub_from_env_var(details_dict, start_pat, end_pat)
 
             print_info("var_sub:{0}".format(var_sub))
@@ -375,8 +376,7 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
 
             details_dict = td_obj.varsub_varconfig_substitutions\
             (details_dict, vc_file=varconfigfile, var_sub=None, start_pat=start_pat, end_pat=end_pat)
-            testdata_dict[testdata_key]=details_dict
-            found = 1
+            testdata_dict[testdata_key] = details_dict
 
         else:
             not_found += 1
@@ -423,7 +423,7 @@ def _get_mapping_details(global_obj, vfylist):
             map_list.append(None)
     return (vfylist, map_list)
 
-
+@mocked
 def _get_cmd_details(testdata, global_obj, system_name, varconfigfile):
     """Get the command details from testdata file
     as a details dictionary"""
@@ -712,7 +712,6 @@ def get_no_impact_logic(context_str):
     return silence value and context value"""
     return {'YES:NOIMPACT': (True, 'YES'), 'NO:NOIMPACT': (True, 'No'), 'NO': (False, 'No'), 'YES': (False, 'YES')}.get(context_str.upper())
 
-
 def convert2type(value, data_type='str'):
     """Convert value to data_type and return value in that data_type
     Currently supported are str/int/float only
@@ -721,7 +720,7 @@ def convert2type(value, data_type='str'):
     convert = type_funcs[data_type]
     return convert(value)
 
-
+@mocked
 def verify_cmd_response(match_list, context_list, command, response,
                         verify_on_system, varconfigfile=None, endprompt="",
                         verify_group=None):
@@ -1043,7 +1042,6 @@ def _validate_index_value(index, index_list, context_list):
 
     return status
 
-
 def verify_relation(actual_value, cond_value, operator, cond_type):
     ver_args = {}
     if cond_type:
@@ -1058,7 +1056,7 @@ def verify_relation(actual_value, cond_value, operator, cond_type):
     status = True if result == "TRUE" else False
     return status
 
-
+@mocked
 def verify_inorder_cmd_response(match_list, verify_list, system, command,
                                 verify_dict, verify_group=None):
     """ Verifies search strings in the system response and matches the

@@ -59,12 +59,10 @@ def set_logfile(filepath):
 def set_filename(name):
     global filename
     filename = name
-    
-    
+
 def set_datarepository(repository):
     global data_repository
     data_repository = repository
-
 
 def set_data_repository_for_parallel(repository):
     global par_data_repository

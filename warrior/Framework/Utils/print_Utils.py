@@ -51,6 +51,10 @@ def print_info(message, *args):
             color_message = message[:msg_upper.index(":PASS") + 1] + "\033[1;32m" + "PASS" +\
             "\033[0m" + message[msg_upper.index(":PASS") + 5:]
 
+        elif ":RAN" in msg_upper:
+            color_message = message[:msg_upper.index(":RAN") + 1] + "\033[1;32m" + "RAN" +\
+            "\033[0m" + message[msg_upper.index(":RAN") + 5:]
+
         elif ":FAIL" in msg_upper:
             color_message = message[:msg_upper.index(":FAIL") + 1] + "\033[1;31m" + "FAIL" +\
             "\033[0m" + message[msg_upper.index(":FAIL") + 5:]

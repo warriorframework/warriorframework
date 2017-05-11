@@ -28,9 +28,8 @@ import Framework.Utils.email_utils as email
 import Framework.Utils as Utils
 from Framework.Utils.print_Utils import print_error, print_info
 from WarriorCore import warrior_cli_driver, testcase_driver, testsuite_driver, project_driver
-from WarriorCore import ironclaw_driver, mockrun_driver, framework_detail
+from WarriorCore import ironclaw_driver, framework_detail
 from Framework.Utils import file_Utils
-from WarriorCore.Classes.war_cli_class import WarriorCliClass
 from WarriorCore.Classes.jira_rest_class import Jira
 from Framework.ClassUtils import database_utils_class
 import shutil
@@ -52,7 +51,7 @@ def update_jira_by_id(jiraproj, jiraid, exec_dir, status):
     else:
         print_info("jiraid not provided, will not update jira issue")
 
-def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw, jiraproj, overwrite, jiraid, dbsystem):
+def main(parameter_list, a_defects, cse_execution, iron_claw, jiraproj, overwrite, jiraid, dbsystem):
     """Parses the input parameters (i.e. sys.argv)
         If the input parameter is an xml file:
             - check if file exists, if exists
@@ -74,10 +73,6 @@ def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw, jiraproj,
 
     elif iron_claw:
         status = ironclaw_driver.main(parameter_list)
- 
-    elif mockrun:
-        mockrun_driver.main(parameter_list)
-        status = True
 
     else:
         abs_cur_dir = os.path.abspath(os.curdir)
@@ -141,17 +136,21 @@ def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw, jiraproj,
 
 if __name__ == '__main__':
 
-    FILEPATH, mockrun, AUTO_DEFECTS, version, CSE_EXEC, IRON_CLAW, JIRAPROJ, \
+    FILEPATH, AUTO_DEFECTS, version, CSE_EXEC, IRON_CLAW, JIRAPROJ, \
     OVERWRITE, JIRAID, DBSYSTEM = warrior_cli_driver.main(sys.argv[1:])
     if version:
         framework_detail.warrior_framework_details() 
         sys.exit(0)
     if not CSE_EXEC and len(FILEPATH) == 0:
         print_error("Provide atleast one xml file to execute")
-    status = main(FILEPATH, mockrun, AUTO_DEFECTS, CSE_EXEC, IRON_CLAW,
+    status = main(FILEPATH, AUTO_DEFECTS, CSE_EXEC, IRON_CLAW,
                   JIRAPROJ, OVERWRITE, JIRAID, DBSYSTEM)
     status = {"true": True, "pass": True}.get(str(status).lower())
     if status is True:
+        print_info("DONE 0")
+        sys.exit(0)
+        print "This line should not be printed"
+    elif status is 'RAN':
         print_info("DONE 0")
         sys.exit(0)
         print "This line should not be printed"

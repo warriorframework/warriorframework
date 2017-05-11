@@ -19,6 +19,7 @@ import exec_type_driver
 from WarriorCore.Classes.argument_datatype_class import ArgumentDatatype
 import Framework.Utils as Utils
 from Framework.Utils.print_Utils import print_info, print_debug, print_error, print_exception
+from WarriorCore.Classes.war_cli_class import WarriorCliClass
 from WarriorCore import onerror_driver
 
 
@@ -159,6 +160,8 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
             print_debug("Keyword status = {0}, Flip status as context is Negative".format(
                 keyword_status))
             keyword_status = not keyword_status
+        if WarriorCliClass.mock and (keyword_status is True or keyword_status is False):
+            keyword_status = "RAN"
     elif action == 'SKIP':
         print_debug("Action is {0}".format(action))
 
@@ -166,7 +169,7 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
         exec_type_onerror = True
         print_debug("Action is {0}".format(action))
 
-    print("\n")
+    print ("\n")
     print_info("*** Keyword status ***")
     step_goto_value = False
     step_onError_action = Utils.xml_Utils.get_attributevalue_from_directchildnode(
@@ -190,7 +193,7 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
     print_info("step number: {0}".format(step_num))
 
     string_status = {"TRUE": "PASS", "FALSE": "FAIL",
-                     "ERROR": "ERROR", "EXCEPTION": "EXCEPTION", "SKIP": "SKIP"}
+                     "ERROR": "ERROR", "EXCEPTION": "EXCEPTION", "SKIP": "SKIP", "RAN":"RAN"}
 
     if str(keyword_status).upper() in string_status.keys():
         data_repository['step_%s_result' %
@@ -213,7 +216,7 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
             data_repository['step-%s_exception' % step_num]
         Utils.testcase_Utils.pNote_level(msg, "debug", "kw", ptc=False)
     # time.sleep(1)
-    print("\n")
+    print "\n"
     kw_end_time = Utils.datetime_utils.get_current_timestamp()
     tc_duration = Utils.datetime_utils.get_time_delta(kw_start_time)
     hms = Utils.datetime_utils.get_hms_for_seconds(tc_duration)

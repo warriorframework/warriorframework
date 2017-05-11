@@ -42,12 +42,6 @@ class ModuleOperations(object):
         self.function_list = self.get_function_list_from_modlist()
         self.matching_method_list = self.search_keyword_in_list(keyword, self.method_list)
         self.matching_function_list = self.search_keyword_in_list(keyword, self.function_list)
-#         print "methods"
-#         for method in self.method_list:
-#             print method.__name__
-#         print "functions"
-#         for function in self.function_list:
-#             print function.__name__
 
     def import_sub_modules(self):
         """Import sub modules for the given package """
@@ -118,7 +112,14 @@ class ModuleOperations(object):
         match_list = []
         for element in input_list:
             if element.__name__ == keyword:
-                match_list.append(element)
+                if WarriorCliClass.mock or WarriorCliClass.sim:
+                    if element.__dict__.get("mockready") is None:
+                        pNote_level("The selected keyword {} isn't supported in trial mode".format(element.__name__), "ERROR")
+                    else:
+                        pNote_level("Keyword {} is being mocked".format(element.__name__), "INFO")
+                        match_list.append(element)
+                else:
+                    match_list.append(element)
         return match_list
 
 class KeywordOperations(object):
@@ -203,15 +204,11 @@ class KeywordOperations(object):
 
         Utils.config_Utils.set_datarepository(self.data_repository)
         kwargs, kw_status = self.get_argument_as_keywords()
+        print_info("The Arguments passed for the current Step is: '{0}'".format(kwargs))
         if kw_status:
             # Execute the corresponding method
             method_loader = self.exec_obj.im_class()
             try:
-                if WarriorCliClass.cmdprint:
-                    sessid = kwargs['system_name']
-                    if 'session_name' in kwargs: sessid += kwargs['session_name']
-                    print_info("{:*^80}".format(' System: '+sessid+' '))
-                    self.data_repository.update({sessid : sessid, sessid+'_td_response' : {}})
                 keyword_result = self.exec_obj(method_loader, **kwargs)
             except Exception as exception:
                 trcback = print_exception(exception)
@@ -227,9 +224,9 @@ class KeywordOperations(object):
         Utils.config_Utils.set_datarepository(self.data_repository)
         kwargs, kw_status = self.get_argument_as_keywords()
 
+        print_info ("The Arguments passed for the current Step is: '{0}'".format(kwargs))
         if kw_status:
             # Execute the corresponding function
-            # print_info ( 'kwargs: ', kwargs)
             try:
                 keyword_result = self.exec_obj(**kwargs)
             except Exception as exception:
@@ -254,7 +251,7 @@ class KeywordOperations(object):
 
         elif isinstance(keyword_result, str):
             if keyword_result.upper() == "ERROR" or \
-            keyword_result.upper() == "EXCEPTION":
+            keyword_result.upper() == "EXCEPTION" or keyword_result.upper() == "RAN":
                 pNote_level("Keyword '{0}' returned an {1}".format(keyword, keyword_result),
                             "debug", "kw")
                 data_repository['step-%s_status' % step_num] = keyword_result.upper()
@@ -276,6 +273,10 @@ class KeywordOperations(object):
                             "exception".format(keyword), "debug", "kw")
                 data_repository['step-%s_status' % step_num] = keyword_result[0]
                 data_repository['step-%s_exception' % step_num] = keyword_result[1]
+            elif isinstance(keyword_result[0], str) and keyword_result[0].upper() == "RAN":
+                pNote_level("Keyword '{0}' returned "\
+                            "a status..".format(keyword), "debug", "kw")
+                data_repository['step-%s_status' % step_num] = "RAN"
             else:
                 pNote_level("Keyword '{0}' returned multiple"\
                             "values ".format(keyword), "debug", "kw")
