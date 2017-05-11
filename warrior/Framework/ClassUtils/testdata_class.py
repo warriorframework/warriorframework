@@ -49,11 +49,15 @@ CMD_PARAMS = OrderedDict([("command_list", "send"),
                           ("inorder_search_list", "inorder"),
                           ("vc_file_list", ""),
                           ("verify_map_list", ""),
+                          ("operator_list", "operator"),
+                          ("cond_value_list", "cond_value"),
+                          ("cond_type_list", "cond_type"),
                           ("repeat_list", "repeat")])  # keep this in the last
 
 
 VFY_PARAM_LIST = ["verify_text_list", "verify_context_list",
-                  "verify_on_list", "verify_map_list"]
+                  "verify_on_list", "verify_map_list", "operator_list",
+                  "cond_value_list", "cond_type_list"]
 
 VERIFY_PARAMS = ["verify_context_list", "verify_on_list", "verify_map_list"]
 
