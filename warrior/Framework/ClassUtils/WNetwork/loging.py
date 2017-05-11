@@ -18,8 +18,20 @@ as a separate thread
 
 import threading
 import time
+import sys
+import os
+
 from Framework.ClassUtils.WNetwork.base_class import Base
-from Framework.Utils.print_Utils import print_exception, print_error
+from Framework.Utils.print_Utils import print_exception, print_error, \
+ print_info
+
+try:
+    if 'linux' in sys.platform:
+        import pexpect
+except Exception:
+    print_info("{0}: {1} module is not installed".format(
+     os.path.abspath(__file__), 'pexpect'))
+
 
 class ThreadedLog(Base):
     """
@@ -79,14 +91,16 @@ class ThreadedLog(Base):
         pexpect read_nonblocking method
         """
         response = " "
-        str_length = 1024
-        while self.stop_thread_flag is not True and str_length == 1024:
+        while not self.stop_thread_flag:
             try:
-                string = session.read_nonblocking(str_length, timeout=None)
-                str_length = len(string)
+                # default timeout for pexpect-spawn object is 30s
+                string = session.read_nonblocking(1024, timeout=30)
                 response = response + string
                 time.sleep(0.5)
                 self.data = response
+            # continue reading data from 'session' until the thread is stopped
+            except pexpect.TIMEOUT:
+                continue
             except Exception as exception:
                 print_exception(exception)
                 break

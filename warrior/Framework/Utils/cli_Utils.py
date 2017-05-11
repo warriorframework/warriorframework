@@ -701,6 +701,12 @@ def get_response_dict(started_thread_for_system, thread_instance_list, same_syst
         pNote(data)
         pNote("\n\n++++++++++++++++++++++++ END OF DATA FROM SYSTEM: {0} ++++++++++++++++++++\n\n".format(started_thread_for_system[i]))
         remote_resp_dict[started_thread_for_system[i]] = data
+    if len(started_thread_for_system) > 0:
+        print_info("Waiting for 30 seconds to gracefully close the listening "
+                   "threads on verify_on system(s)")
+        # timeout used in the read_nonblocking method for getting
+        # system response is 30 seconds
+        time.sleep(30)
 
     return remote_resp_dict
 
