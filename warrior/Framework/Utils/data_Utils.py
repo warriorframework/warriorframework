@@ -345,7 +345,8 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
         if testdata.get("execute") == "yes" and exec_flag:
             testdata_key="{0}{1}".format(testdata.get('title',""), \
                                          _get_row(testdata))
-            details_dict = _get_cmd_details(testdata, global_obj, system_name, varconfigfile)
+            details_dict = _get_cmd_details(testdata, global_obj, system_name,
+                                            varconfigfile, var_sub=var_sub)
             start_pat =  _get_pattern_list(testdata, global_obj)
             end_pat =  _get_pattern_list(testdata, global_obj, pattern="end")
             details_dict = sub_from_env_var(details_dict, start_pat, end_pat)
@@ -388,6 +389,15 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
                                                                        testdatafile))
     return testdata_dict
 
+def _substitute_var_sub(vfylist, global_obj, varconfigfile, values):
+    """
+        To substitute the var_sub from variable config file
+    """
+    vfylist = string_Utils.sub_from_varconfigfile(values, varconfigfile, start_pat="${", end_pat="}")
+    vfylist = vfylist.split(' ')
+    vfylist, maplist = _get_mapping_details(global_obj, vfylist)
+    return  vfylist, maplist
+
 def _get_mapping_details(global_obj, vfylist):
     """
         get cmd-verify text mapping detail from xml (global_obj) and vfylist
@@ -424,7 +434,8 @@ def _get_mapping_details(global_obj, vfylist):
     return (vfylist, map_list)
 
 
-def _get_cmd_details(testdata, global_obj, system_name, varconfigfile):
+def _get_cmd_details(testdata, global_obj, system_name, varconfigfile,
+                     var_sub=None):
     """Get the command details from testdata file
     as a details dictionary"""
     details_dict = {}
@@ -432,12 +443,23 @@ def _get_cmd_details(testdata, global_obj, system_name, varconfigfile):
                     "cond_value_list", "cond_type_list"]
 
     # Initialize all lists
+    v_list = []
     for param, attrib in cmd_params.items():
         details_dict[param] = []
         if param == "verify_list":
             vfylist = _get_cmdparams_list(testdata, global_obj, "verify")
             vfylist, maplist = _get_mapping_details(global_obj, vfylist)
-            resultant_list = vfylist
+            vfylist = string_Utils.sub_from_varconfig(None, vfylist, var_sub)
+            for values in vfylist:
+                if values is not None and "$" in values:
+                    vfylist, maplist = _substitute_var_sub(vfylist,
+                                                           global_obj,
+                                                           varconfigfile,
+                                                           values)
+                    v_list = v_list+vfylist
+                else:
+                    v_list.append(values)
+            resultant_list = v_list
         elif param in verifyparams:
             resultant_list = _get_verification_details(testdata, global_obj,
                                                        vfylist, attrib)
