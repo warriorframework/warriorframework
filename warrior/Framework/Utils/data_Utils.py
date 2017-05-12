@@ -10,7 +10,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
 import os
 import re
 import sys
@@ -858,7 +857,10 @@ def verify_data(expected, key, data_type='str', comparison='eq'):
         'le': lambda x, y: x <= y
     }
     result, err_msg, exp = validate()
-    value = get_object_from_datarepository(key)
+    keys = key.split('.')
+    value = get_object_from_datarepository(keys[0])
+    for k in keys[1:]:
+        value = value[k]
     if not value:
         err_msg += "key {} not present in data repository\n".format(key)
         result = "ERROR"
@@ -866,7 +868,7 @@ def verify_data(expected, key, data_type='str', comparison='eq'):
         print_error(err_msg)
     elif not comp_funcs[comparison](value, exp):
         result = "FALSE"
-    return result
+    return result, value
 
 
 def verify_resp_inorder(match_list, context_list, command, response,
@@ -1323,48 +1325,71 @@ def sub_from_env_var(raw_value, start_pattern="${", end_pattern="}"):
     it and return the updated dictionary. If environment variable
     is not found then substitutes with None"""
     # Also take string now for free!
-    error_msg1 = "Could not find any environment variable '{0}' corresponding"\
-                 " to '{1}' provided in input data/testdata file. \n"\
-                 "Will default to None"
-    error_msg2 = "Unable to substitute environment variable '{0}' "\
-                 "corresponding to '{1}' provided in input data/testdata file"
+    def subst_var(str):
+        if str.startswith("ENV"):
+            return os.environ[str.split('.')[1]]
+        if str.startswith("REPO"):
+            keys = str.split('.')
+            val = get_object_from_datarepository(keys[1])
+            for key in keys[2:]:
+                val = val[key]
+            else:
+                return val
+    error_msg1 = ("Could not find any environment/datarepository variable '{0}'"
+                  " corresponding to '{1}' provided in input data/testdata file"
+                  ". \nWill default to None")
+    error_msg2 = ("Unable to substitute environment/datarepository variable "
+                  "'{0}' corresponding to '{1}' provided in input data/testdata"
+                  " file")
     if type(raw_value) == dict:
         for k in raw_value:
             value = raw_value[k]
-            extracted_var = string_Utils.return_quote(str(value), start_pattern, end_pattern)
-            extracted_var = [string for string in extracted_var if "ENV." in string]
+            extracted_var = string_Utils.return_quote(str(value), start_pattern,
+                                                      end_pattern)
+            extracted_var = [string for string in extracted_var
+                             if "ENV." in string or "REPO." in string]
             if len(extracted_var) > 0:
                 for string in extracted_var:
                     try:
                         if isinstance(raw_value[k], str):
-                            raw_value[k] = raw_value[k].replace(start_pattern+string+end_pattern,
-                                           os.environ[string[4:]])
+                            raw_value[k] = raw_value[k].replace(
+                                start_pattern+string+end_pattern,
+                                subst_var(string))
                         elif isinstance(raw_value[k], (list, dict)):
-                            raw_value[k] = literal_eval(str(raw_value[k]).replace(
-                                           start_pattern+string+end_pattern,os.environ[string[4:]]))
+                            raw_value[k] = literal_eval(
+                                str(raw_value[k]).replace(
+                                    start_pattern+string+end_pattern,
+                                    subst_var(string)))
                         else:
-                            print_error("Unsupported format - " + \
+                            print_error("Unsupported format - " +
                                         error_msg2.format(string, value))
-                    except KeyError:
+                    except (KeyError, TypeError):
                         print_error(error_msg1.format(string, value))
                         if isinstance(raw_value[k], str):
                             raw_value[k] = None
                         elif isinstance(raw_value[k], (list, dict)):
-                            search_str = "'[^']*"+re.escape(start_pattern)+string+re.escape(end_pattern)+"[^']*'"
-                            search_obj = re.search(search_str, str(raw_value[k]))
+                            search_str = ("'[^']*" + re.escape(start_pattern) +
+                                          string + re.escape(end_pattern) +
+                                          "[^']*'")
+                            search_obj = re.search(search_str,
+                                                   str(raw_value[k]))
                             if search_obj:
-                                raw_value[k] = literal_eval(str(raw_value[k]).replace(
-                                               search_obj.group(), 'None'))
+                                raw_value[k] = literal_eval(
+                                    str(raw_value[k]).replace(
+                                        search_obj.group(), 'None'))
                     except SyntaxError:
-                        print_error("Syntax Error - " + \
-                                    error_msg2.format(string,value))
+                        print_error("Syntax Error - " +
+                                    error_msg2.format(string, value))
     elif type(raw_value) == str:
-        extracted_var = string_Utils.return_quote(str(raw_value), start_pattern, end_pattern)
-        extracted_var = [string for string in extracted_var if "ENV." in string]
+        extracted_var = string_Utils.return_quote(str(raw_value),
+                                                  start_pattern, end_pattern)
+        extracted_var = [string for string in extracted_var
+                         if "ENV." in string or "REPO." in string]
         if len(extracted_var) > 0:
             for string in extracted_var:
                 try:
-                    raw_value = raw_value.replace(start_pattern+string+end_pattern, os.environ[string[4:]])
+                    raw_value = raw_value.replace(
+                        start_pattern+string+end_pattern, subst_var(string))
                 except KeyError:
                     print_error(error_msg1.format(string, raw_value))
                     raw_value = None

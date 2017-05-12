@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<credentials>
+    <system name="rtxttalp01_no_subsys">
+		<ip>168.127.134.184</ip>>
+		<conn_type>ssh</conn_type>
+		<ssh_port>22</ssh_port>
+		<username>labadmin</username>
+		<password>labadmin</password>
+		<prompt>labadmin@rtxttalp01:</prompt>
+        <testdata>../../config_files/cli_functional_tests/cli_repo_var_td_testdata.xml</testdata>
+        <variable_config>../../config_files/cli_functional_tests/cli_repo_var_td_varconfig.xml</variable_config>
+    </system>
+</credentials>

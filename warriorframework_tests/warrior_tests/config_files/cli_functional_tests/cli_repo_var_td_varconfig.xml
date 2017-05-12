@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<configuration>
+	<variable_set name="v3" value=".Xauthority" />
+
+	<network name="net1">
+		<network_element name="ne1">
+			<shelf name="shp1" shelfNo="1" >
+				<port name="prt1" cmd="ls" option=" -af" />
+			</shelf>
+		</network_element>
+	</network>
+
+</configuration>
+

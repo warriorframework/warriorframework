@@ -1,0 +1,98 @@
+<Testcase>
+    <Details>
+        <Name>tc_repo_var_testdata</Name>
+        <Title>Test if method can correctly add and get variables stored in data repository from previous steps, replace the key with value in testdata file</Title>
+        <InputDataFile>../../../data/cli_functional_tests/cli_repo_var_td_Data.xml</InputDataFile>
+        <Datatype>Custom</Datatype>
+        <default_onError action="next"/>
+        <Engineer>asethura</Engineer>
+    </Details>
+
+    <Requirements>
+    </Requirements>
+
+    <Steps>
+        <step Driver="common_driver" Keyword="store_in_repo" TS="1" >
+            <Arguments>
+                <argument name="datavar" value="ls_cmd"/>
+                <argument name="datavalue" value="ls"/>
+            </Arguments>
+        </step>
+        <step Driver="common_driver" Keyword="store_in_repo" TS="2" >
+            <Arguments>
+                <argument name="datavar" value="WarriorUSER"/>
+                <argument name="datavalue" value="labadmin"/>
+            </Arguments>
+        </step>
+        <step Driver="common_driver" Keyword="store_in_repo" TS="3" >
+            <Arguments>
+                <argument name="datavar" value="ls_opt"/>
+                <argument name="datavalue" value=" -af"/>
+            </Arguments>
+        </step>
+        <step Driver="common_driver" Keyword="store_in_repo" TS="4" >
+            <Arguments>
+                <argument name="datavar" value="v1"/>
+                <argument name="datavalue" value="ERR:"/>
+            </Arguments>
+        </step>
+        <step Driver="common_driver" Keyword="store_in_repo" TS="5" >
+            <Arguments>
+                <argument name="datavar" value="v2"/>
+                <argument name="datavalue" value=".eclipse"/>
+            </Arguments>
+        </step>
+		<step Driver="cli_driver" Keyword="connect_ssh" TS="6">
+			<Arguments>
+				<argument name="system_name" value="rtxttalp01_no_subsys"/>
+				<argument name="int_timeout" value="50"/>
+				<argument name="prompt" value="labadmin@rtxttalp01:"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>connect_ssh</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="cli_driver" Keyword="send_commands_by_testdata_title" TS="7">
+			<Arguments>
+				<argument name="system_name" value="rtxttalp01_no_subsys"/>
+				<argument name="title" value="td_with_repo_valid"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>Verify Variable config support for Testdata</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+        <step Driver="common_driver" Keyword="verify_data" TS="5" >
+            <Arguments>
+                <argument name="expected" value="2"/>
+                <argument name="object_key" value="td_with_repo_valid.lsout"/>
+            </Arguments>
+        </step>
+		<step Driver="cli_driver" Keyword="send_commands_by_testdata_title" TS="8">
+			<Arguments>
+				<argument name="system_name" value="rtxttalp01_no_subsys"/>
+				<argument name="title" value="td_with_repo_invalid"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>Verify Variable config support for Testdata</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>noimpact</impact>
+		</step>
+		<step Driver="cli_driver" Keyword="disconnect" TS="9">
+			<Arguments>
+				<argument name="system_name" value="rtxttalp01_no_subsys"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>disconnect</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+
+    </Steps>
+
+</Testcase>
