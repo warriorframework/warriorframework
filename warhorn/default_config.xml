@@ -16,9 +16,13 @@
         <dependency name="cloudshell-automation-api" install="yes" user="no"/>
     </warhorn>
 
-    <warrior url="http://rtx-swtl-git.fnc.net.local/scm/war/warriorframework.git"
-             destination="" label="" clean_install="">
+    <warrior url="checkout/warriorframework/atgithub.git"
+        destination="" label="master" clean_install="" clone="no">
     </warrior>
+
+    <katana url="checkout/warriorframework/atgithub.git"
+        destination="" label="" clean_install="" clone="no">
+    </katana>
 
     <!-- 
 
