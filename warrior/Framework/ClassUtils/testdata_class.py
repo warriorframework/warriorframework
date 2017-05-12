@@ -56,10 +56,12 @@ CMD_PARAMS = OrderedDict([("command_list", "send"),
 
 
 VFY_PARAM_LIST = ["verify_text_list", "verify_context_list",
-                  "verify_on_list", "verify_map_list", "operator_list",
-                  "cond_value_list", "cond_type_list"]
+                  "verify_on_list", "verify_map_list"]
 
 VERIFY_PARAMS = ["verify_context_list", "verify_on_list", "verify_map_list"]
+
+VARSUB_PARAM_LIST = ["verify_text_list", "verify_context_list", "verify_on_list",
+                    "verify_map_list", "operator_list", "cond_value_list", "cond_type_list"]
 
 class TestData(object):
     """
@@ -88,14 +90,14 @@ class TestData(object):
         """
         vc_file_list = None if vc_file is None else details_dict["vc_file_list"]
         for param, _ in CMD_PARAMS.items():
-            if param not in VFY_PARAM_LIST and param!="vc_file_list":
+            if param not in VARSUB_PARAM_LIST and param!="vc_file_list":
                 # list in here is just a list of strings
                 string_list = details_dict[param]
                 new_string_list = string_Utils.sub_from_varconfig\
                 (vc_file_list, string_list, var_sub, start_pat, end_pat)
                 details_dict[param] = new_string_list
 
-            elif param in VFY_PARAM_LIST:
+            elif param in VARSUB_PARAM_LIST:
                 # list in here is a list of sublists of strings
                 string_list = details_dict[param]
                 for i, sub_list in enumerate(string_list):
@@ -494,14 +496,14 @@ class TestData(object):
 
         """
         for param, _ in CMD_PARAMS.items():
-            if param not in VFY_PARAM_LIST and param!="vc_file_list":
+            if param not in VARSUB_PARAM_LIST and param!="vc_file_list":
                 string_list = details_dict[param]
                 td_sys_list = details_dict["sys_list"]
                 new_string_list = string_Utils.sub_from_wdf\
                 (datafile, string_list, td_sys_list, kw_system_name)
                 details_dict[param] = new_string_list
 
-            elif param in VFY_PARAM_LIST:
+            elif param in VARSUB_PARAM_LIST:
                 string_list = details_dict[param]
                 for i, sub_list in enumerate(string_list):
                     if sub_list is not None:
