@@ -169,7 +169,7 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
         exec_type_onerror = True
         print_debug("Action is {0}".format(action))
 
-    print ("\n")
+    print "\n"
     print_info("*** Keyword status ***")
     step_goto_value = False
     step_onError_action = Utils.xml_Utils.get_attributevalue_from_directchildnode(

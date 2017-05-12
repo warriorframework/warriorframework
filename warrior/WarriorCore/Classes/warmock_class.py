@@ -4,6 +4,10 @@ from collections import OrderedDict
 VERIFY_ONLY = ["verify_cmd_response", "verify_inorder_cmd_response"]
 
 def mockready(func):
+    """
+        Decorator function that assign a mockready attrib to input func
+        the attrib will be used to decide if the func is mockable or not
+    """
     from WarriorCore.Classes.war_cli_class import WarriorCliClass
     if not WarriorCliClass.mock and not WarriorCliClass.sim:
         return func
@@ -12,12 +16,16 @@ def mockready(func):
     return func
 
 def mocked(func):
+    """
+        Decorator function that route function to mocked function
+    """
     def inner(*args, **kwargs):
         from WarriorCore.Classes.war_cli_class import WarriorCliClass
         if (not WarriorCliClass.mock and not WarriorCliClass.sim) or\
              (WarriorCliClass.sim and func.__name__ in VERIFY_ONLY):
             return func(*args, **kwargs)
 
+        # If it is in simulator mode, this function needs to retrieve response for command
         if func.__name__ == "get_command_details_from_testdata":
             if WarriorCliClass.sim and args[0] is not None and args[0] != "":
                 from Framework.Utils.data_Utils import cmd_params
@@ -25,6 +33,7 @@ def mocked(func):
                 get_response_file(args[0])
             return func(*args, **kwargs)
 
+        # same as above function to retrieve response
         if func.__name__ == "_get_cmd_details":
             result = func(*args, **kwargs)
             pNote("The non-substituted commands:")
@@ -40,6 +49,8 @@ def mocked(func):
         #     pNote(value)
         # for key, value in kwargs.items():
         #     pNote(str(key) + ": " + str(value))
+
+        # mapping function to mocked function
         func_name = func.__name__
         func_module = func.__module__.split(".")[-1]
         if func_module in dir(MockUtils):
@@ -56,6 +67,9 @@ def mocked(func):
     return inner
 
 def get_response_file(testdatafile):
+    """
+        Link response to command in testdatafile
+    """
     from Framework.Utils.xml_Utils import getRoot, getElementListWithSpecificXpath
     from Framework.Utils.data_Utils import _get_row
     tmp_list = getElementListWithSpecificXpath(testdatafile, "./global/response_file")
@@ -83,16 +97,25 @@ def get_response_file(testdatafile):
     MockUtils.cli_Utils.response_dict = response_dict
 
 class MockUtils(object):
+    """
+        This class contains all the mocked Utils
+    """
     def __init__(self):
         return None
 
     class cli_Utils():
+        """
+            Mocked cli_Utils
+        """
         response_dict = {}
         response_reference_dict = {}
 
         @staticmethod
         def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=60,
                 prompt=".*(%|#|\$)", conn_options="", custom_keystroke="", **kwargs):
+            """
+                This function doesn't actually connect to the server
+            """
             pNote("Mocking connect_ssh")
             sshobj = "Mocking connect_ssh"
             conn_string = ""
@@ -111,6 +134,9 @@ class MockUtils(object):
         def connect_telnet(ip, port="23", username="", password="",
                 logfile=None, timeout=60, prompt=".*(%|#|\$)",
                 conn_options="", custom_keystroke="", **kwargs):
+            """
+                This function doesn't actually connect to the server
+            """
             pNote("Mocking connect_telnet")
             conn_options = "" if conn_options is False or conn_options is None else conn_options
             pNote("timeout is: %s" % timeout, "DEBUG")
@@ -128,6 +154,9 @@ class MockUtils(object):
 
         @classmethod
         def _send_cmd(cls, *args, **kwargs):
+            """
+                This function pass the command to the mocked send_command function
+            """
             command = kwargs.get('command')
             startprompt = kwargs.get('startprompt', ".*")
             endprompt = kwargs.get('endprompt', None)
@@ -137,6 +166,9 @@ class MockUtils(object):
 
         @classmethod
         def send_command(cls, *args, **kwargs):
+            """
+                Get response from the processed response dict
+            """
             from WarriorCore.Classes.war_cli_class import WarriorCliClass
             pNote(":CMD: %s"%(args[3]))
             specific_response = MockUtils.cli_Utils.response_reference_dict.get(args[3], True) if WarriorCliClass.sim else False
@@ -158,6 +190,9 @@ class MockUtils(object):
 
         @classmethod
         def send_command_and_get_response(cls, *args, **kwargs):
+            """
+                Get response from the processed response dict
+            """
             from WarriorCore.Classes.war_cli_class import WarriorCliClass
             response = MockUtils.cli_Utils.response_dict.get(args[3], [""])[0] if WarriorCliClass.sim else ""
             pNote(":CMD: %s"%(args[3]))
@@ -166,13 +201,19 @@ class MockUtils(object):
     class data_Utils():
         @staticmethod
         def get_td_vc(datafile, system_name, td_tag, vc_tag):
-            print "well this one should be mocked better"
+            """
+                This function is called in another mocked function
+            """
+            print "Mocked data_Utils.get_td_vs"
             return None, None
 
         @staticmethod
         def verify_cmd_response(match_list, context_list, command, response,
                         verify_on_system, varconfigfile=None, endprompt="",
                         verify_group=None):
+            """
+                Trialmode only: it prints the verify text instead of doing actual verification
+            """
             from Framework.Utils import string_Utils
             from Framework.Utils.data_Utils import get_no_impact_logic
             from Framework.Utils import testcase_Utils
@@ -193,6 +234,9 @@ class MockUtils(object):
         @staticmethod
         def verify_inorder_cmd_response(match_list, verify_list, system, command,
                                 verify_dict):
+            """
+                Trialmode only: it prints the verify text instead of doing actual verification
+            """
             pNote("Verifying {} on system {}".format(command, system))
             pNote("match list: {}".format(str(match_list)))
             pNote("verify_list: {}".format(str(verify_list)))
