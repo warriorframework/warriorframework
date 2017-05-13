@@ -479,7 +479,6 @@ def _get_cmd_details(testdata, global_obj, system_name, varconfigfile, var_sub=N
         details_dict[param].extend(resultant_list)
     return details_dict
 
-
 def _get_global_var(global_obj, key):
     return global_obj.find(key) if global_obj is not None else None
 
