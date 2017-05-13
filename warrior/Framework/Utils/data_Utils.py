@@ -424,7 +424,6 @@ def _get_mapping_details(global_obj, vfylist):
             map_list.append(None)
     return (vfylist, map_list)
 
-
 def _substitute_var_sub(vfylist, global_obj, varconfigfile, values):
     """
         To substitute the var_sub from variable config file
