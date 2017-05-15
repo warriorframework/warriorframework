@@ -1,4 +1,7 @@
 https://askubuntu.com/questions/661186/how-to-install-previous-firefox-version
+sudo apt-get purge firefox
+wget sourceforge.net/projects/ubuntuzilla/files/mozilla/apt/pool/main/f/firefox-mozilla-build/firefox-mozilla-build_39.0.3-0ubuntu1_amd64.deb
+cd Downloads/ && sudo dpkg -i firefox-mozilla-build_39.0.3-0ubuntu1_amd64.deb
 '''
 Copyright 2017, Fujitsu Network Communications, Inc.
 Licensed under the Apache License, Version 2.0 (the "License");
