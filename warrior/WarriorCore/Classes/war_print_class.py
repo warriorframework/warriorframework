@@ -19,7 +19,7 @@ import sys
 import re
 
 
-def print_main(message, print_type="notype", color_message=None, *kwargs):
+def print_main(message, print_type, color_message=None, *kwargs):
     """The main print function will be called by other print functions
     """
     if color_message is not None:
@@ -31,9 +31,8 @@ def print_main(message, print_type="notype", color_message=None, *kwargs):
     # print print_string
     sys.stdout.write(print_string + '\n')
     sys.stdout.flush()
-    from testcase_utils_class import TestcaseUtils
-    tcutils = TestcaseUtils()
-    msg = tcutils.p_note_level(message, print_type, ptc=False)
+    from Framework.Utils.testcase_Utils import TCOBJ
+    msg = TCOBJ.p_note_level(message, print_type)
     if msg != "pass":
         print_string += msg
     return print_string
