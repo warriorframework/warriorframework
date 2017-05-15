@@ -88,16 +88,22 @@ class ElementOperations():
                 count = 0
                 while (count <= 3):
                     try:
-                        status = action_function(element, **kwargs)
-                        if status == True:
-                            return status
+                        if action == "get_text":
+                            status, value = action_function(element, **kwargs)
+                            if status == True:
+                                return status, value
+                            else:
+                                status = self.count_incr(count, browser, locator, action)
+                                if status == True:
+                                    return status
                         else:
-                            count = count + 1
-                            print_info("waiting for 3 seconds before retrying")
-                            sleep(3)
-                            status = self._stale_element_exception(browser, locator, action)
+                            status = action_function(element, **kwargs)
                             if status == True:
                                 return status
+                            else:
+                                status = self.count_incr(count, browser, locator, action)
+                                if status == True:
+                                    return status
                     except StaleElementReferenceException:
                         status = False
                         print_info("waiting for 3 seconds before retrying")
@@ -121,6 +127,14 @@ class ElementOperations():
             status = False
             print_error("Provide a valid WebElement to perform "\
                         "a {0} operation got {1}".format(action, element))
+        return status
+
+    def count_incr(self, count, browser, locator, action):
+        "To increase the count and to wait for three seconds"
+        count = count + 1
+        print_info("waiting for 3 seconds before retrying")
+        sleep(3)
+        status = self._stale_element_exception(browser, locator, action)
         return status
 
     def get_page_source(self, browser):
