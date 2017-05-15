@@ -79,7 +79,7 @@ def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=6
     if WarriorCliClass.cmdprint:
         pNote(("connectSSH: :CMD: %s" %command))
         return None, ""
-    child = pexpect.spawn(command, timeout=int(timeout))
+    child = pexpect.spawn(command, timeout=int(timeout), env={"TERM": "dumb"})
 
     child.logfile = sys.stdout
 
@@ -133,7 +133,7 @@ def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=6
                 print_debug("SSH Host Key is changed - Remove it from "
                             "known_hosts file : cmd = %s" % cmd)
                 subprocess.call(cmd, shell=True)
-                child = pexpect.spawn(command, timeout=int(timeout))
+                child = pexpect.spawn(command, timeout=int(timeout), env={"TERM": "dumb"})
                 print_debug("ReconnectSSH: cmd = %s" % command)
     except Exception as exception:
         print_exception(exception)
@@ -168,7 +168,7 @@ def connect_telnet(ip, port="23", username="", password="",
         conn_options = ""
     command = command + str(conn_options)
     print_debug("connectTelnet cmd = %s" % command)
-    child = pexpect.spawn(command, timeout=int(timeout))
+    child = pexpect.spawn(command, timeout=int(timeout), env={"TERM": "dumb"})
     conn_string = ""
     telnetobj = None
     try:
