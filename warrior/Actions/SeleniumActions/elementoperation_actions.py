@@ -361,13 +361,13 @@ class elementoperation_actions(object):
                 br_name = system_name + "_" + browser_details["browser_name"]
                 current_element = Utils.data_Utils.\
                     get_object_from_datarepository(element_name)
-                current_browser = Utils.data_Utils.\
-                        get_object_from_datarepository(br_name)
                 if not var:
                     var = element_name + "_text"
                 if not current_element:
                     pNote("No element instance {0} found in the data "
                           "repository!".format(element_name), "info")
+                    current_browser = Utils.data_Utils.\
+                        get_object_from_datarepository(br_name)
                     if not current_browser:
                         pNote("No browser instance {0} found in the data "
                               "repository!".format(br_name),
