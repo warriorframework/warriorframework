@@ -133,6 +133,7 @@ class ElementOperations():
         return status
 
     def wait_time(self, browser, locator, action):
+        """ wait time to find the element again """
         print_info("waiting for 3 seconds before retrying")
         sleep(3)
         status = self._stale_element_exception(browser, locator, action)
