@@ -566,20 +566,14 @@ class client(Thread):
 
     def waitfor_subscription(self, wait_string, timeout=600):
         '''waitfor a notification event report
-           wait_string(tuple) = tuple of xpath string and namespace dict(prefix
-                                    and namespace string)
-           e.g.
-           wait_string = (".//ns:event[text()='fault']",
-                {'ns':'urn:ietf:params:xml:ns:netconf:notification:1.0'})
-           *xpath string must include namespace prefix
-           multiple namespaces and multiple event checks can also be given
-           for a single notification as follows:
-               wait_string = (".//ns1:event1[text()='fault1'] and
-                                .//ns2:event2[text()='fault2']",
-                {'ns1':'urn:ietf:params:xml:ns:netconf:notification:1.0',
-                'ns2':'urn:ietf:params:xml:ns:netconf:yang:xml'})
-                where events can be from same namespaces as well
-           timeout(integer) = timeout in sec.
+        :ARGUMENTS:
+            wait_string(tuple) = tuple of xpath string and namespace dict(
+                                key - prefix
+                                value - namespace string)
+            timeout(integer) = timeout in sec.
+        :Returns:
+            True: if successful
+            False: if unsuccessful
         '''
         status = False
         self.__wait_rept.clear()

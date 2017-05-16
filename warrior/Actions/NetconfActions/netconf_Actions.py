@@ -699,33 +699,32 @@ class NetconfActions(object):
         :Returns:
             1. status(bool)= True / False
         E.g., Assuming the following notification is the one received:
-****************************
-<?xml version="1.0" encoding="UTF-8"?>
-<notification xmlns="urn:ietf:params:xml:ns:netconf:notification:1.0">
-  <eventTime>2015-08-10T10:36:58.427756-07:00</eventTime>
-  <netconf-config-change xmlns="urn:ietf:params:xml:ns:yang:ietf-netconf-notifications">
-    <changed-by>
-      <username>admin</username>
-      <session-id>0</session-id>
-      <source-host>127.0.0.1</source-host>
-    </changed-by>
-    <datastore>running</datastore>
-    <edit>
-      <target xmlns:notif="http://tail-f.com/ns/test/notif">/notif:test</target>
-      <operation>replace</operation>
-    </edit>
-  </netconf-config-change>
-</notification>
-****************************
-        for checking username, source-host and target in this notification,
-        the waitstring could be ".//ns1:username[text()='admin'] and
-        .//ns1:source-host[text()='127.0.0.1'] and
-        .//ns2:target[text()='/notif:test']"
-        where ns1 and ns2 are namespace prefixes whose values are provided as
-        list in namespaceString as "'urn:ietf:params:xml:ns:netconf:notification
-        :1.0','http://tail-f.com/ns/test/notif'"
-        namespacePrefix should be "'ns1', 'ns2'" which corresponds to the order
-        of the namespace strings
+        ****************************
+        <?xml version="1.0" encoding="UTF-8"?>
+        <notification xmlns="urn:ietf:params:xml:ns:netconf:notification:1.0">
+          <eventTime>2015-08-10T10:36:58.427756-07:00</eventTime>
+          <netconf-config-change xmlns="urn:ietf:params:xml:ns:yang:ietf-netconf-notifications">
+            <changed-by>
+              <username>admin</username>
+              <session-id>0</session-id>
+              <source-host>127.0.0.1</source-host>
+            </changed-by>
+            <datastore>running</datastore>
+            <edit>
+              <target xmlns:notif="http://tail-f.com/ns/test/notif">/notif:test</target>
+              <operation>replace</operation>
+            </edit>
+          </netconf-config-change>
+        </notification>
+        ****************************
+        for the notification received above, please find the appropriate
+        argument and its values for checking username, source-host and target
+        in this notification as follows:
+           waitstring = ".//ns1:username[text()='admin'] and
+                         .//ns1:source-host[text()='127.0.0.1'] and
+                         .//ns2:target[text()='/notif:test']"
+           namespaceString = "'urn:ietf:params:xml:ns:netconf:notification:1.0','http://tail-f.com/ns/test/notif'"
+           namespacePrefix = "'ns1', 'ns2'"
         """
         wdesc = ("waitfor_subscription to wait specified netconf event "
                  "notification")
@@ -734,10 +733,16 @@ class NetconfActions(object):
         pNote(self.datafile)
 
         session_id = Utils.data_Utils.get_session_id(system_name, session_name)
-        netconf_object = Utils.data_Utils.get_object_from_datarepository(session_id)
+        netconf_object = Utils.data_Utils.get_object_from_datarepository(
+                                                             session_id)
         namespace_dict = {}
         prefixes = namespace_prefix.split(",")
         namespaces = namespace_string.split(",")
+        if len(prefixes) != len(namespaces):
+            pNote("the number of prefixes and namespaces should match", "error")
+            pNote("No of prefixes ({}) != No of namespaces({})".format(
+                                len(prefixes), len(namespaces)), "error")
+            return False
         for (prefix, namespace) in zip(prefixes, namespaces):
             namespace_dict[prefix] = namespace
 
