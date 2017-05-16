@@ -144,7 +144,7 @@ def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=6
 
 def connect_telnet(ip, port="23", username="", password="",
                    logfile=None, timeout=60, prompt=".*(%|#|\$)",
-                   conn_options="", custom_keystroke="", **kwargs):
+                   conn_options="", custom_keystroke="", escape="", **kwargs):
     """
     Initiates Telnet connection via a specific port. Creates log file.
 
@@ -171,7 +171,10 @@ def connect_telnet(ip, port="23", username="", password="",
         conn_options = ""
     command = command + str(conn_options)
     print_debug("connectTelnet cmd = %s" % command)
-    child = pexpect.spawn(command, timeout=int(timeout), env={"TERM": "dumb"})
+    if str(escape).lower() == "yes" or str(escape).lower() == "true":
+        child = pexpect.spawn(command, timeout=int(timeout), env={"TERM": "dumb"})
+    else:
+        child = pexpect.spawn(command, timeout=int(timeout))
     conn_string = ""
     telnetobj = None
     try:
@@ -453,7 +456,7 @@ def send_command(session_object, start_prompt, end_prompt, command,
         else:
             response = session_object.before
             response = str(response) + str(session_object.after)
-            if 'TERM' in session_object.env and session_object.env['TERM'] == 'dumb': 
+            if session_object.env is not None and 'TERM' in session_object.env and session_object.env['TERM'] == 'dumb': 
                 escape_seq = re.compile(r'(\x9B|\x1B\[)[0-?]*[ -\/]*[@-~]')
                 response = escape_seq.sub('', response)
             pNote("Response:\n{0}\n".format(response))

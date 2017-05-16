@@ -421,7 +421,7 @@ class CliActions(object):
             else "{0}[{1}]".format(system_name, subsystem_name)
             credentials = get_credentials(self.datafile, call_system_name,
                                           [ip_type, 'telnet_port','username',
-                                           'prompt','password','timeout', 'conn_options', 'custom_keystroke'])
+                                           'prompt','password','timeout', 'conn_options', 'custom_keystroke', 'escape'])
             pNote("system={0}, session={1}".format(call_system_name, session_name))
             Utils.testcase_Utils.pNote(Utils.file_Utils.getDateTime())
             session_id = get_session_id(call_system_name, session_name)
