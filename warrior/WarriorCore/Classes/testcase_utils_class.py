@@ -175,7 +175,7 @@ class TestcaseUtils(object):
                 doc = ET.SubElement(write_locn, "Note")
                 doc.text = txt
                 self.print_output()
-            return "pass"
+            return
         p_type = {'INFO': print_info,
                   'DEBUG': print_debug,
                   'WARN': print_warning,
@@ -199,11 +199,9 @@ class TestcaseUtils(object):
         # print items (banners) before we have a handle to write
         elif print_type == "notype":
             pass
-
         else:
-            return ("Unable to write to location in result file, the message "
-                    "is logged in terminal but not in result file")
-        return "pass"
+            print_error("Unable to write to location in result file, the "
+                        "message is logged in terminal but not in result file")
 
 
     def rem_nonprintable_ctrl_chars(self, txt):

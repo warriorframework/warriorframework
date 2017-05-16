@@ -32,9 +32,7 @@ def print_main(message, print_type, color_message=None, *kwargs):
     sys.stdout.write(print_string + '\n')
     sys.stdout.flush()
     from Framework.Utils.testcase_Utils import TCOBJ
-    msg = TCOBJ.p_note_level(message, print_type)
-    if msg != "pass":
-        print_string += msg
+    TCOBJ.p_note_level(message, print_type)
     return print_string
 
 
