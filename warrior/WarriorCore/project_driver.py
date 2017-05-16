@@ -138,6 +138,7 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
 
     project_name = project_repository['project_name']
     wp_results_execdir = project_repository['wp_results_execdir']
+    data_repository['wp_results_execdir'] = wp_results_execdir
     wp_logs_execdir = project_repository['wp_logs_execdir']
 
     project_error_action = project_repository['def_on_error_action']
@@ -220,6 +221,7 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
                 pj_junit_object.update_attr("impact", impact_dict.get(testsuite_impact.upper()),
                                             "ts", tmp_timestamp)
                 pj_junit_object.update_attr("onerror", "N/A", "ts", tmp_timestamp)
+                pj_junit_object.output_junit(wp_results_execdir)
                 continue
 
         else:

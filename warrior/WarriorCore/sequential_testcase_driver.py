@@ -194,6 +194,8 @@ def execute_sequential_testcases(testcase_list, suite_repository,
                                 "tc", tmp_timestamp)
                 data_repository['wt_junit_object'].update_attr(
                                 "onerror", "N/A", "tc", tmp_timestamp)
+                data_repository['wt_junit_object'].output_junit(
+                                data_repository['wt_results_execdir'])
                 continue
 
         else:
@@ -350,7 +352,6 @@ def execute_sequential_testcases(testcase_list, suite_repository,
                         goto_tc = str(retry_value)
 # suite_status = testsuite_utils.compute_testsuite_status(suite_status,
 # tc_status, tc_impact)
-
         update_suite_attribs(junit_resultfile, str(errors),
                              str(skipped), str(tests), str(failures),
                              time='0')

@@ -400,6 +400,9 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
         if data_repository.get("db_obj") is not False:
             ts_junit_xml =  data_repository['wt_results_execdir'] + os.sep + ts_junit_object.filename+"_junit.xml"
             data_repository.get("db_obj").add_html_result_to_mongodb(ts_junit_xml)
+    else:
+        # Update/Create Project junit file for each suite
+        ts_junit_object.output_junit(data_repository['wp_results_execdir'])
 
     return test_suite_status, suite_repository
 
