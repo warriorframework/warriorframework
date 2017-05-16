@@ -1,3 +1,16 @@
+'''
+Copyright 2017, Fujitsu Network Communications, Inc.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+'''
+
 """This is file_actions module that has all file related keywords """
 
 import Framework.Utils as Utils
@@ -17,6 +30,14 @@ class FileActions(object):
         self.filename = Utils.config_Utils.filename
         self.logfile = Utils.config_Utils.logfile
 
+    def _log_result(self, oper, result, msglist=[]):
+        resmsg = "completed successfully" if result else "failed"
+        print_type = "info" if result else "error"
+        msg = "file {} operation {}".format(oper, resmsg)
+        for (printtype, txt) in msglist:
+            pNote(txt, printtype)
+        pNote(msg, print_type)
+
     def write(self, filename, string, index=None):
         """write string in the filename at index location
         :Arguments:
@@ -26,23 +47,26 @@ class FileActions(object):
                     end of file if not provided
         :Returns:
             True if successful otherwise False
-            output_dictionary
         """
         wdesc = "write string in the filename at index location"
         pNote(wdesc)
         status = True
+        msglist = []
 
         fd = file_Utils.open_file(filename, "a")
         if index and file_Utils.move_to_position(fd, index) == -1:
+            msg = "Could not move file position to index {}".format(index)
+            msglist.append(("error", msg))
             status = False
         if status:
             status = file_Utils.write(fd, string+"\n")
         file_Utils.close(fd)
+        self._log_result("write", status, msglist)
 
         return status
 
     def findreplace(self, filename, regex, newstring, occurence="",
-                    startidx=0, endidx=-1):
+                    int_startidx=0, int_endidx=-1):
         """find regex/string in the filename and replace it with newstring
         :Arguments:
             filename - file path in which to do the operation
@@ -55,33 +79,41 @@ class FileActions(object):
             endidx - ending line to do the find/replace, last line if not given
         :Returns:
             True if successfully replaced else False
-            output_dictionary
         """
         wdesc = ("find regex/string in the filename and replace it with "
                  "newstring")
         pNote(wdesc)
-        startidx = int(startidx)
-        endidx = int(endidx)
         lines_to_replace = occurence.split(',') if occurence else []
         rec = re.compile(regex)
         status = True
+        msglist = []
 
-        fd = file_Utils.open_file(filename, "r")
-        lines = file_Utils.readlines(fd)
-        newlines = lines[:startidx] if startidx > 0 else []
-        for (idx, line) in enumerate(lines[startidx:endidx]):
-            if (lines_to_replace and
-                    str(startidx+idx+1) not in lines_to_replace):
-                newlines.append(line)
+        try:
+            fd = file_Utils.open_file(filename, "r")
+            lines = file_Utils.readlines(fd)
+            newlines = lines[:int_startidx] if int_startidx > 0 else []
+            for (idx, line) in enumerate(lines[int_startidx:int_endidx]):
+                if (lines_to_replace and
+                        str(int_startidx+idx+1) not in lines_to_replace):
+                    newlines.append(line)
+                else:
+                    newlines.append(rec.sub(newstring, line))
             else:
-                newlines.append(rec.sub(newstring, line))
+                if int_endidx != -1 and int_endidx != len(lines):
+                    newlines.extend(lines[int_endidx:])
+            file_Utils.close(fd)
+        except Exception as e:
+            exc_msg = "findreplace returned exception {}".format(str(e))
+            msglist.append(("exception", exc_msg))
         else:
-            if endidx != -1 and endidx != len(lines):
-                newlines.extend(lines[endidx:])
-        file_Utils.close(fd)
-        fd = file_Utils.open_file(filename, "w")
-        file_Utils.writelines(fd, newlines)
-        file_Utils.close(fd)
+            if newlines:
+                fd = file_Utils.open_file(filename, "w")
+                file_Utils.writelines(fd, newlines)
+                file_Utils.close(fd)
+            else:
+                msglist.append(("info", "no lines were replaced as no lines "
+                                "were selected"))
+        self._log_result("findreplace", status, msglist)
 
         return status
 
@@ -91,11 +123,11 @@ class FileActions(object):
             filename - filename path to be removed from system
         :Returns:
             True if successful otherwise False
-            output_dictionary
         """
         wdesc = "remove the filename from the system"
         pNote(wdesc)
         status = file_Utils.remove(filename)
+        self._log_result("remove", status)
         return status
 
     def rename(self, filename, newname):
@@ -105,11 +137,11 @@ class FileActions(object):
             newname - new file name or path to which the file has to be moved
         :Returns:
             True if successful otherwise False
-            output_dictionary
         """
         wdesc = "rename or move a file"
         pNote(wdesc)
         status = file_Utils.move(filename, newname)
+        self._log_result("rename", status)
         return status
 
     def copy(self, filename, newname):
@@ -119,25 +151,25 @@ class FileActions(object):
             newname - new file name or path to which the file has to be copied
         :Returns:
             True if successful otherwise False
-            output_dictionary
         """
         wdesc = "copy filename to newname"
         pNote(wdesc)
         status = file_Utils.copy(filename, newname)
+        self._log_result("copy", status)
         return status
 
     def copystat(self, filename, newname):
-        """copy stats of filename to newname
+        """copy only stats of filename to newname and not its contents
         :Arguments:
             filename - stats of the filename path to be copied
             newname - new file name or path to which the stats has to be copied
         :Returns:
             True if successful otherwise False
-            output_dictionary
         """
         wdesc = "copy stats of filename to newname"
         pNote(wdesc)
         status = file_Utils.copystat(filename, newname)
+        self._log_result("copystat", status)
         return status
 
     def copy2(self, filename, newname):
@@ -148,9 +180,9 @@ class FileActions(object):
                     to be moved
         :Returns:
             True if successful otherwise False
-            output_dictionary
         """
         wdesc = "copy filename to newname along with stats"
         pNote(wdesc)
         status = file_Utils.copy2(filename, newname)
+        self._log_result("copy2", status)
         return status
