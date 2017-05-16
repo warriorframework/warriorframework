@@ -71,10 +71,11 @@ class ElementOperations():
         """ constructor """
         pass
 
-    def perform_element_action(self, element_or_browser, locator=None, action=None, **kwargs):
+    def perform_element_action(self, element_or_browser, locator=None,
+                               action=None, **kwargs):
         """Generic method to perform specific actions on an element
         :Currently supported actions and the values that they take """
-        browser  = kwargs.get('browser')
+        browser = kwargs.get('browser')
         status = True
         if action != "perform_keypress":
             element = self._get_element(element_or_browser, locator)
@@ -90,28 +91,30 @@ class ElementOperations():
                     try:
                         if action == "get_text":
                             status, value = action_function(element, **kwargs)
-                            if status == True:
+                            if status is True:
                                 return status, value
                             else:
                                 count = count + 1
-                                status = self.wait_time(browser, locator, action)
-                                if status == True:
+                                status = self.wait_time(browser, locator,
+                                                        action)
+                                if status is True:
                                     return status
                         else:
                             status = action_function(element, **kwargs)
-                            if status == True:
+                            if status is True:
                                 return status
                             else:
                                 count = count + 1
-                                status = self.wait_time(browser, locator, action)
-                                if status == True:
+                                status = self.wait_time(browser, locator,
+                                                        action)
+                                if status is True:
                                     return status
                     except StaleElementReferenceException:
                         status = False
                         try:
                             count = count + 1
                             status = self.wait_time(browser, locator, action)
-                            if status == True:
+                            if status is True:
                                 return status
                         except StaleElementReferenceException:
                             status = False
@@ -120,12 +123,12 @@ class ElementOperations():
                         print_exception(exception)
                         return status
                 else:
-                    print_error("StaleElementReferenceException occured."\
+                    print_error("StaleElementReferenceException occured."
                                 "Tried three times to locate the element")
                     status = False
         else:
             status = False
-            print_error("Provide a valid WebElement to perform "\
+            print_error("Provide a valid WebElement to perform "
                         "a {0} operation got {1}".format(action, element))
         return status
 
