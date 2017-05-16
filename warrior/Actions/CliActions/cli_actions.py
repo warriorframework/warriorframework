@@ -286,7 +286,7 @@ class CliActions(object):
             credentials = get_credentials(self.datafile, call_system_name,
                                           [ip_type, 'ssh_port', 'username',
                                            'password', 'prompt', 'timeout',
-                                           'conn_options', 'custom_keystroke'])
+                                           'conn_options', 'custom_keystroke', 'escape'])
             # parse more things here
             pNote("system={0}, session={1}".format(call_system_name, session_name))
             session_id = get_session_id(call_system_name, session_name)

@@ -61,7 +61,7 @@ def cmdprinter(cmdfunc):
     return inner
 
 def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=60,
-                prompt=".*(%|#|\$)", conn_options="", custom_keystroke="", **kwargs):
+                prompt=".*(%|#|\$)", conn_options="", custom_keystroke="", escape="", **kwargs):
     """
     - Initiates SSH connection via a specific port. Creates log file.
     - return session as object and conn_string(pre and post login message).
@@ -79,7 +79,10 @@ def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=6
     if WarriorCliClass.cmdprint:
         pNote(("connectSSH: :CMD: %s" %command))
         return None, ""
-    child = pexpect.spawn(command, timeout=int(timeout), env={"TERM": "dumb"})
+    if str(escape).lower() == "yes" or str(escape).lower() == "true":
+        child = pexpect.spawn(command, timeout=int(timeout), env={"TERM": "dumb"})
+    else:
+        child = pexpect.spawn(command, timeout=int(timeout))
 
     child.logfile = sys.stdout
 
@@ -450,6 +453,9 @@ def send_command(session_object, start_prompt, end_prompt, command,
         else:
             response = session_object.before
             response = str(response) + str(session_object.after)
+            if 'TERM' in session_object.env and session_object.env['TERM'] == 'dumb': 
+                escape_seq = re.compile(r'(\x9B|\x1B\[)[0-?]*[ -\/]*[@-~]')
+                response = escape_seq.sub('', response)
             pNote("Response:\n{0}\n".format(response))
             pNote(msg, "debug")
             if status is True:
