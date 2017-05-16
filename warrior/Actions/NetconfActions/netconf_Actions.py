@@ -683,25 +683,49 @@ class NetconfActions(object):
              for checking single data
              waitString = ".//ns:event[./ns:eventClass/text()='fault']"
              Note that "ns" = namespace prefix
-             for multiple data use and
-             waitString = ".//ns:event1[text()='fault1'] and
-                            .//ns:event2[text()='fault2']"
-                            etc.
-            Note that "ns" = namespace prefix should be the one
-                               having that event and hence can be
-                               different for different events
+
+             for checking multiple data
+             waitString = ".//ns1:event1[text()='fault1'] and
+                            .//ns1:event2[text()='fault2']"
             3. namespaceString(list of string) = list of namespace string
                                                  separated by comma
-             e.g.
-             namespaceString = "urn:ietf:params:xml:ns:yang:ietf-alarms"
+             e.g., namespaceString = "'namespace_value1','namespace_value2'"
             4. namespacePrefix(list of string) = list of namespace prefix
                                                  separated by comma
-              any string but same as in waitString
-              in above case, namespacePrefix="ns"
+              e.g.,
+              namespaceprefix = "'ns1', 'ns2'"
             5. timeout(integer) = timeout value in second, default=600
             6. session_name(string) = Name of the session to the system
         :Returns:
             1. status(bool)= True / False
+        E.g., Assuming the following notification is the one received:
+****************************
+<?xml version="1.0" encoding="UTF-8"?>
+<notification xmlns="urn:ietf:params:xml:ns:netconf:notification:1.0">
+  <eventTime>2015-08-10T10:36:58.427756-07:00</eventTime>
+  <netconf-config-change xmlns="urn:ietf:params:xml:ns:yang:ietf-netconf-notifications">
+    <changed-by>
+      <username>admin</username>
+      <session-id>0</session-id>
+      <source-host>127.0.0.1</source-host>
+    </changed-by>
+    <datastore>running</datastore>
+    <edit>
+      <target xmlns:notif="http://tail-f.com/ns/test/notif">/notif:test</target>
+      <operation>replace</operation>
+    </edit>
+  </netconf-config-change>
+</notification>
+****************************
+        for checking username, source-host and target in this notification,
+        the waitstring could be ".//ns1:username[text()='admin'] and
+        .//ns1:source-host[text()='127.0.0.1'] and
+        .//ns2:target[text()='/notif:test']"
+        where ns1 and ns2 are namespace prefixes whose values are provided as
+        list in namespaceString as "'urn:ietf:params:xml:ns:netconf:notification
+        :1.0','http://tail-f.com/ns/test/notif'"
+        namespacePrefix should be "'ns1', 'ns2'" which corresponds to the order
+        of the namespace strings
         """
         wdesc = ("waitfor_subscription to wait specified netconf event "
                  "notification")
