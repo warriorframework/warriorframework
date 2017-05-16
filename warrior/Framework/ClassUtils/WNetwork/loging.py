@@ -81,6 +81,14 @@ class ThreadedLog(Base):
         """
         return self.current_thread.isAlive()
 
+    def join_thread(self, timeout=30):
+        """
+        Call join method of Thread class to block caller thread until
+        the current_thread terminates
+        """
+        if self.current_thread is not None:
+            self.current_thread.join(timeout)
+
     def collect_log(self, session):
         """
         Collects the response from a connected session
