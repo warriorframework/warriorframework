@@ -402,7 +402,8 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
             data_repository.get("db_obj").add_html_result_to_mongodb(ts_junit_xml)
     else:
         # Create and replace existing Project junit file for each suite
-        ts_junit_object.output_junit(data_repository['wp_results_execdir'])
+        ts_junit_object.output_junit(data_repository['wp_results_execdir'],
+                                     print_summary=False)
 
     return test_suite_status, suite_repository
 

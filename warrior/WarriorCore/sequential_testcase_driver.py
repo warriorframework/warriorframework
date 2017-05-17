@@ -195,7 +195,8 @@ def execute_sequential_testcases(testcase_list, suite_repository,
                 data_repository['wt_junit_object'].update_attr(
                                 "onerror", "N/A", "tc", tmp_timestamp)
                 data_repository['wt_junit_object'].output_junit(
-                                data_repository['wt_results_execdir'])
+                                data_repository['wt_results_execdir'],
+                                print_summary=False)
                 continue
 
         else:

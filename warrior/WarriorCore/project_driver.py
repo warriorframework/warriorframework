@@ -213,7 +213,10 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
                                                                msg)
                 tmp_timestamp = str(Utils.datetime_utils.get_current_timestamp())
                 time.sleep(2)
-                pj_junit_object.create_testsuite(location=os.path.dirname(testsuite_path), name=testsuite_nameonly, timestamp=tmp_timestamp, **pj_junit_object.init_arg())
+                pj_junit_object.create_testsuite(
+                    location=os.path.dirname(testsuite_path),
+                    name=testsuite_nameonly, timestamp=tmp_timestamp,
+                    **pj_junit_object.init_arg())
                 pj_junit_object.update_attr("status", "SKIPPED", "ts", tmp_timestamp)
                 pj_junit_object.update_attr("skipped", "1", "pj", tmp_timestamp)
                 pj_junit_object.update_count("suites", "1", "pj", tmp_timestamp)
@@ -222,7 +225,8 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
                 pj_junit_object.update_attr("impact", impact_dict.get(testsuite_impact.upper()),
                                             "ts", tmp_timestamp)
                 pj_junit_object.update_attr("onerror", "N/A", "ts", tmp_timestamp)
-                pj_junit_object.output_junit(wp_results_execdir)
+                pj_junit_object.output_junit(wp_results_execdir,
+                                             print_summary=False)
                 continue
 
         else:
