@@ -689,11 +689,11 @@ class NetconfActions(object):
                             .//ns1:event2[text()='fault2']"
             3. namespaceString(list of string) = list of namespace string
                                                  separated by comma
-             e.g., namespaceString = "'namespace_value1','namespace_value2'"
+             e.g., namespaceString = "namespace_value1,namespace_value2"
             4. namespacePrefix(list of string) = list of namespace prefix
                                                  separated by comma
               e.g.,
-              namespaceprefix = "'ns1', 'ns2'"
+              namespaceprefix = "ns1,ns2"
             5. timeout(integer) = timeout value in second, default=600
             6. session_name(string) = Name of the session to the system
         :Returns:
@@ -723,8 +723,10 @@ class NetconfActions(object):
            waitstring = ".//ns1:username[text()='admin'] and
                          .//ns1:source-host[text()='127.0.0.1'] and
                          .//ns2:target[text()='/notif:test']"
-           namespaceString = "'urn:ietf:params:xml:ns:netconf:notification:1.0','http://tail-f.com/ns/test/notif'"
-           namespacePrefix = "'ns1', 'ns2'"
+           namespaceString = "urn:ietf:params:xml:ns:netconf:notification:1.0,
+                                http://tail-f.com/ns/test/notif"
+           namespacePrefix = "ns1,ns2"
+        Caveat: This keyword does not validate XMLSchema for notification.
         """
         wdesc = ("waitfor_subscription to wait specified netconf event "
                  "notification")
@@ -736,11 +738,11 @@ class NetconfActions(object):
         netconf_object = Utils.data_Utils.get_object_from_datarepository(
                                                              session_id)
         namespace_dict = {}
-        prefixes = namespace_prefix.split(",")
-        namespaces = namespace_string.split(",")
+        prefixes = [prefix.strip() for prefix in namespace_prefix.split(",")]
+        namespaces = [ns.strip() for ns in namespace_string.split(",")]
         if len(prefixes) != len(namespaces):
             pNote("the number of prefixes and namespaces should match", "error")
-            pNote("No of prefixes ({}) != No of namespaces({})".format(
+            pNote("Number of prefixes ({}) != Number of namespaces({})".format(
                                 len(prefixes), len(namespaces)), "error")
             return False
         for (prefix, namespace) in zip(prefixes, namespaces):
