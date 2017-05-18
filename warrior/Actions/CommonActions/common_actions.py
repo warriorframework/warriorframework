@@ -20,7 +20,7 @@ import os
 from Framework.Utils.print_Utils import print_info, print_error
 from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.data_Utils import get_object_from_datarepository, update_datarepository
-from Framework.Utils.file_Utils import fileExists, getAbsPath
+from Framework.Utils.file_Utils import getAbsPath
 
 
 class CommonActions(object):
@@ -180,8 +180,9 @@ class CommonActions(object):
                            '{1}'.format(var_key, var_value))
                 status = True
         if filepath is not None:
+            testcasefile_path = get_object_from_datarepository('wt_testcase_filepath')
             try:
-                filepath=getAbsPath(filepath)
+                filepath=getAbsPath(filepath, os.path.dirname(testcasefile_path))
                 with open(filepath, "r") as json_handle:
                     get_json = json.load(json_handle)
                     if "environmental_variables" in get_json:
@@ -197,12 +198,15 @@ class CommonActions(object):
                                     '\"environmental_variables\", please refer to '
                                     'the Samples in Config_files'.format(filepath))
                         status = False
-            except ValueError, e:
+            except ValueError:
                 print_error('The file {0} is not a valid json '
                             'file'.format(filepath))
                 status = False
-            except IOError, e:
+            except IOError:
                 print_error('The file {0} does not exist'.format(filepath))
+                status = False
+            except Exception as error:
+                print_error('Encountered {0} error'.format(error))
                 status = False
 
         return status
