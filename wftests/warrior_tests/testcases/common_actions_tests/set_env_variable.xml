@@ -97,6 +97,29 @@
 			<impact>impact</impact>
 
                 </step>
+                <step Driver="common_driver" Keyword="set_env_var" TS="7">
+                        <Arguments>
+                                <argument name="var_key" value="check3"/>
+                                <argument name="var_value" value="3"/>
+                                <argument name="filepath" value="../../../../warrior/Warriorspace/Config_files/Samples/Set_ENV_Variable_Sample.json"/>
+                                <argument name="jsonkey" value="my_variable"/>
+			</Arguments>
+                        <Description>User can give jsonkey value and set another set of env variables from the same file.</Description>
+			<onError action="next"/>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+                </step>
+		
+                <step Driver="common_driver" Keyword="set_env_var" TS="8">
+                        <Arguments>
+                        </Arguments>
+                        <Description>Negative:Expected to Fail because no arguments are passed to the function/KW</Description>
+			<onError action="next"/>
+			<Execute ExecType="Yes"/>
+			<context>negative</context>
+			<impact>impact</impact>
+                </step>
                 
 
         </Steps>

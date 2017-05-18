@@ -160,19 +160,25 @@ class CommonActions(object):
         else:
             return False
 
-    def set_env_var(self, var_key=None, var_value=None, filepath=None):
+    def set_env_var(self, var_key=None, var_value=None, filepath=None,
+                    jsonkey="environmental_variables"):
         """create a temp environment variable
         the value will only stay for this run
         :Argument:
             var_key = key of the environment variable
             var_value = value of the environment variable
             filepath = Json file where Environmental variables are defined
+            jsonkey = The key where all the ENV variable & values are defined
+        With jsonkey arg, Users can call same file to set various ENV Variable
 
         Variable File :
         Sample environmental_variable file is available under
-        Warriorspace/Config_file/Samples
+        Warriorspace/Config_file/Samples/Set_ENV_Variable_Sample.json
         """
         status = False
+        if not any([var_key, var_value, filepath]):
+            print_error('Either Provide values to arguments \"var_key\" & \"var_value\" or to argument \"filepath\"')
+
         if var_key is not None and var_value is not None:
             os.environ[var_key] = var_value
             if os.environ[var_key] == var_value:
@@ -185,8 +191,8 @@ class CommonActions(object):
                 filepath=getAbsPath(filepath, os.path.dirname(testcasefile_path))
                 with open(filepath, "r") as json_handle:
                     get_json = json.load(json_handle)
-                    if "environmental_variables" in get_json:
-                        env_dict = get_json['environmental_variables']
+                    if jsonkey in get_json:
+                        env_dict = get_json[jsonkey]
                         for var_key, var_value in env_dict.items():
                             os.environ[var_key] = var_value
                             if os.environ[var_key] == var_value:
