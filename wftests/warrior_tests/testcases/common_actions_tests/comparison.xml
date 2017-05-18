@@ -1,0 +1,305 @@
+<?xml version="1.0" ?>
+<Testcase>
+	<Details>
+		<Name>comparison</Name>
+		<Title>verify comparison operations</Title>
+		<Datatype>Custom</Datatype>
+		<default_onError action="next"/>
+		<Logsdir>Execution</Logsdir>
+                <InputDataFile>No_Data</InputDataFile>
+		<Resultsdir>Execution</Resultsdir>
+		<Date>2016-12-30</Date>
+		<Time>16:20</Time>
+		<Engineer>Arvind Kumar</Engineer>
+	</Details>
+	<Steps>
+		<step Driver="common_driver" Keyword="store_in_repo" TS="1">
+			<Arguments>
+				<argument name="datavar" value="demovar"/>
+				<argument name="datavalue" value="demovalue"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>compare values</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="common_driver" Keyword="verify_data" TS="2">
+			<Arguments>
+				<argument name="object_key" value="demovar"/>
+				<argument name="expected" value="demovalue"/>
+				<argument name="comparison" value="eq"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>compare values</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="common_driver" Keyword="store_in_repo" TS="3">
+			<Arguments>
+				<argument name="datavar" value="demovar"/>
+				<argument name="datavalue" value="demovalue"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>compare values</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="common_driver" Keyword="verify_data" TS="4">
+			<Arguments>
+				<argument name="object_key" value="demovar"/>
+				<argument name="expected" value="demovalue"/>
+				<argument name="comparison" value="ne"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>compare values</Description>
+			<Execute ExecType="Yes"/>
+			<context>negative</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="common_driver" Keyword="store_in_repo" TS="5">
+			<Arguments>
+				<argument name="datavar" value="demovar"/>
+				<argument name="datavalue" value="demovalue"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>compare values</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="common_driver" Keyword="verify_data" TS="6">
+			<Arguments>
+				<argument name="object_key" value="demovar"/>
+				<argument name="expected" value="demovalue"/>
+				<argument name="comparison" value="gt"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>compare values</Description>
+			<Execute ExecType="Yes"/>
+			<context>negative</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="common_driver" Keyword="store_in_repo" TS="7">
+			<Arguments>
+				<argument name="datavar" value="demovar"/>
+				<argument name="datavalue" value="demovalue"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>compare values</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="common_driver" Keyword="verify_data" TS="8">
+			<Arguments>
+				<argument name="object_key" value="demovar"/>
+				<argument name="expected" value="demovalue"/>
+				<argument name="comparison" value="ge"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>compare values</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="common_driver" Keyword="store_in_repo" TS="9">
+			<Arguments>
+				<argument name="datavar" value="demovar"/>
+				<argument name="datavalue" value="demovalue"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>compare values</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="common_driver" Keyword="verify_data" TS="10">
+			<Arguments>
+				<argument name="object_key" value="demovar"/>
+				<argument name="expected" value="demovalue"/>
+				<argument name="comparison" value="lt"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>compare values</Description>
+			<Execute ExecType="Yes"/>
+			<context>negative</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="common_driver" Keyword="store_in_repo" TS="11">
+			<Arguments>
+				<argument name="datavar" value="demovar"/>
+				<argument name="datavalue" value="demovalue"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>compare values</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="common_driver" Keyword="verify_data" TS="12">
+			<Arguments>
+				<argument name="object_key" value="demovar"/>
+				<argument name="expected" value="demovalue"/>
+				<argument name="comparison" value="le"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>compare values</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="common_driver" Keyword="store_in_repo" TS="13">
+			<Arguments>
+				<argument name="datavar" value="demovar"/>
+				<argument name="datavalue" value="28"/>
+				<argument name="type" value="int"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>compare values</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="common_driver" Keyword="verify_data" TS="14">
+			<Arguments>
+				<argument name="object_key" value="demovar"/>
+				<argument name="expected" value="28"/>
+				<argument name="comparison" value="eq"/>
+				<argument name="type" value="int"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>compare values</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="common_driver" Keyword="store_in_repo" TS="15">
+			<Arguments>
+				<argument name="datavar" value="demovar"/>
+				<argument name="datavalue" value="28"/>
+				<argument name="type" value="int"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>compare values</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="common_driver" Keyword="verify_data" TS="16">
+			<Arguments>
+				<argument name="object_key" value="demovar"/>
+				<argument name="expected" value="28"/>
+				<argument name="comparison" value="ne"/>
+				<argument name="type" value="int"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>compare values</Description>
+			<Execute ExecType="Yes"/>
+			<context>negative</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="common_driver" Keyword="store_in_repo" TS="17">
+			<Arguments>
+				<argument name="datavar" value="demovar"/>
+				<argument name="datavalue" value="28"/>
+				<argument name="type" value="int"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>compare values</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="common_driver" Keyword="verify_data" TS="18">
+			<Arguments>
+				<argument name="object_key" value="demovar"/>
+				<argument name="expected" value="28"/>
+				<argument name="comparison" value="gt"/>
+				<argument name="type" value="int"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>compare values</Description>
+			<Execute ExecType="Yes"/>
+			<context>negative</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="common_driver" Keyword="store_in_repo" TS="19">
+			<Arguments>
+				<argument name="datavar" value="demovar"/>
+				<argument name="datavalue" value="28"/>
+				<argument name="type" value="int"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>compare values</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="common_driver" Keyword="verify_data" TS="20">
+			<Arguments>
+				<argument name="object_key" value="demovar"/>
+				<argument name="expected" value="28"/>
+				<argument name="comparison" value="ge"/>
+				<argument name="type" value="int"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>compare values</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="common_driver" Keyword="store_in_repo" TS="21">
+			<Arguments>
+				<argument name="datavar" value="demovar"/>
+				<argument name="datavalue" value="28"/>
+				<argument name="type" value="int"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>compare values</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="common_driver" Keyword="verify_data" TS="22">
+			<Arguments>
+				<argument name="object_key" value="demovar"/>
+				<argument name="expected" value="28"/>
+				<argument name="comparison" value="lt"/>
+				<argument name="type" value="int"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>compare values</Description>
+			<Execute ExecType="Yes"/>
+			<context>negative</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="common_driver" Keyword="store_in_repo" TS="23">
+			<Arguments>
+				<argument name="datavar" value="demovar"/>
+				<argument name="datavalue" value="28"/>
+				<argument name="type" value="int"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>compare values</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="common_driver" Keyword="verify_data" TS="24">
+			<Arguments>
+				<argument name="object_key" value="demovar"/>
+				<argument name="expected" value="28"/>
+				<argument name="comparison" value="le"/>
+				<argument name="type" value="int"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>compare values</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+	</Steps>
+</Testcase>
