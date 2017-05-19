@@ -38,7 +38,8 @@ import Framework.Utils as Utils
 from Framework.Utils.print_Utils import print_info, print_debug, print_warning, print_error
 
 
-def get_suite_details(testsuite_filepath, data_repository, from_project, res_startdir, logs_startdir):
+def get_suite_details(testsuite_filepath, data_repository, from_project,
+                      res_startdir, logs_startdir):
     """Gets all the details of the Testsuite from its xml file
     Details that are currently obtained are:
         1. Name,
@@ -50,15 +51,26 @@ def get_suite_details(testsuite_filepath, data_repository, from_project, res_sta
 
     """
     suite_repository = {}
-    suite_name = Utils.xml_Utils.getChildTextbyParentTag(testsuite_filepath, 'Details', 'Name')
-    suite_title = Utils.xml_Utils.getChildTextbyParentTag(testsuite_filepath, 'Details', 'Title')
-    suite_exectype = testsuite_utils.get_exectype_from_xmlfile(testsuite_filepath)
-    def_on_error_action = Utils.testcase_Utils.get_defonerror_fromxml_file(testsuite_filepath)
-    def_on_error_value = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath, 'Details', 'default_onError', 'value')
+    print_info("initializing suite fields in data_repository")
+    suite_fields_to_initialize = ['wt_suite_execution_dir', 'suite_data_file',
+                                  'wt_suite_name', 'suite_exectype']
+    for suite_field in suite_fields_to_initialize:
+        if suite_field in data_repository:
+            del data_repository[suite_field]
+    suite_name = Utils.xml_Utils.getChildTextbyParentTag(testsuite_filepath,
+                                                         'Details', 'Name')
+    suite_title = Utils.xml_Utils.getChildTextbyParentTag(testsuite_filepath,
+                                                          'Details', 'Title')
+    suite_exectype = testsuite_utils.get_exectype_from_xmlfile(
+                                                testsuite_filepath)
+    def_on_error_action = Utils.testcase_Utils.get_defonerror_fromxml_file(
+                                                            testsuite_filepath)
+    def_on_error_value = Utils.xml_Utils.getChildAttributebyParentTag(
+                            testsuite_filepath, 'Details', 'default_onError',
+                            'value')
     filename = os.path.basename(testsuite_filepath)
     nameonly = Utils.file_Utils.getNameOnly(filename)
     operating_system = sys.platform
-
 
     if suite_name is None or suite_name is False:
         suite_name = nameonly
@@ -68,30 +80,32 @@ def get_suite_details(testsuite_filepath, data_repository, from_project, res_sta
             print_warning("<Name> tag in xml file should match the filename")
             suite_name = nameonly
 
-
     if suite_title is None or suite_title is False:
-        print_warning("title is missing, please provide a title for the testsuite")
-        suite_title = "None" 
+        print_warning("title is missing, please provide a title for the"
+                      " testsuite")
+        suite_title = "None"
     else:
         suite_title = str(suite_title).strip()
 
     if def_on_error_value is None or def_on_error_value is False:
         def_on_error_value = None
 
-    if data_repository.has_key('ow_resultdir') and not from_project:
+    if 'ow_resultdir' in data_repository and not from_project:
         res_startdir = data_repository['ow_resultdir']
-    if data_repository.has_key('ow_logdir') and not from_project:
+    if 'ow_logdir' in data_repository and not from_project:
         logs_startdir = data_repository['ow_logdir']
 
-    efile_obj = execution_files_class.ExecFilesClass(testsuite_filepath, "ts", res_startdir, logs_startdir)
+    efile_obj = execution_files_class.ExecFilesClass(testsuite_filepath, "ts",
+                                                     res_startdir,
+                                                     logs_startdir)
     data_file = efile_obj.get_data_files()[0]
     suite_resultfile = efile_obj.resultfile
     suite_execution_dir = os.path.dirname(suite_resultfile)
-    junit_resultfile = Utils.file_Utils.getNameOnly(suite_resultfile) + "_tsjunit.xml"
+    junit_resultfile = (Utils.file_Utils.getNameOnly(suite_resultfile) +
+                        "_tsjunit.xml")
     ws_results_execdir = efile_obj.results_execdir
     ws_logs_execdir = efile_obj.logs_execdir
-    
-    
+
     Utils.config_Utils.junit_file(junit_resultfile)
 
     suite_repository['suite_name'] = suite_name
