@@ -9,9 +9,6 @@ matrix:
       env: INSTALL=yes TESTFILE=./warrior/Warriorspace/Testcases/Demo_Cases/Demo_Warrior_Rest_Automation_Capabilities.xml
       python: 2.7
     - os: linux
-      env: INSTALL=yes TESTFILE=./warrior/Warriorspace/Testcases/Demo_Cases/Demo_Warrior_Web_Automation_With_Selenium.xml
-      python: 2.7
-    - os: linux
       env: INSTALL=no TESTFILE=./warrior/Warriorspace/Testcases/Demo_Cases/Demo_Test_Of_Inventory_Management_System.xml
       python: 2.7
 
