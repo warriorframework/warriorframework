@@ -168,14 +168,6 @@ class TestcaseUtils(object):
         txt = self.rem_nonprintable_ctrl_chars(str(txt))
         write_locn = self.get_write_locn(str(level).upper())
         print_util_types = ["-D-", "", "-I-", "-E-", "-W-"]
-        if print_type in print_util_types:
-            if write_locn is None:
-                write_locn = self.current_pointer
-            else:
-                doc = ET.SubElement(write_locn, "Note")
-                doc.text = txt
-                self.print_output()
-            return
         p_type = {'INFO': print_info,
                   'DEBUG': print_debug,
                   'WARN': print_warning,
@@ -183,12 +175,11 @@ class TestcaseUtils(object):
                   'ERROR': print_error,
                   'EXCEPTION': print_exception,
                   'SUB': print_sub,
-                  'NOTYPE': print_notype}.get(str(print_type).upper())
-        if p_type is None:
-            p_type = print_info
+                  'NOTYPE': print_notype}.get(str(print_type).upper(),
+                                              print_info)
         if write_locn is None:
             write_locn = self.current_pointer
-        if ptc:
+        if ptc and print_type not in print_util_types:
             p_type(txt)
         # self.current_pointer may be None,which is not a intended behavior
         if write_locn is not None:
@@ -199,7 +190,7 @@ class TestcaseUtils(object):
         # print items (banners) before we have a handle to write
         elif print_type == "notype":
             pass
-        else:
+        elif print_type not in print_util_types:
             print_error("Unable to write to location in result file, the "
                         "message is logged in terminal but not in result file")
 
@@ -633,7 +624,3 @@ class TestcaseUtils(object):
         else:
             step_list = steps.findall('step')
             return step_list
-
-
-
-
