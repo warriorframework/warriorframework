@@ -126,14 +126,14 @@ class TestcaseUtils(object):
         test case result xml file"""
         self.gkeyword[self.gkeywordloop].set('step_num', str(step_num))
         self.gstep[self.gsteploop].set('step_num', str(step_num))
-    
+
     def update_arguments(self, args):
         """Update the arguments supplied to the keyword """
         arguements = ET.SubElement(self.gkeyword[self.gkeywordloop], "Arguments")
         for arg in args:
             ET.SubElement(arguements, "argument", name=str(arg), value=str(args[arg]))
-        
-        
+
+
     def p_substep(self, substep_txt=""):
         """Create a substep tag"""
         self.gsubsteploop = self.gsubsteploop+1
@@ -165,7 +165,9 @@ class TestcaseUtils(object):
 
     def p_note_level(self, txt, print_type="info", level=None, ptc=True):
         """Create Note at the provided level"""
+        txt = self.rem_nonprintable_ctrl_chars(str(txt))
         write_locn = self.get_write_locn(str(level).upper())
+        print_util_types = ["-D-", "", "-I-", "-E-", "-W-"]
         p_type = {'INFO': print_info,
                   'DEBUG': print_debug,
                   'WARN': print_warning,
@@ -173,26 +175,24 @@ class TestcaseUtils(object):
                   'ERROR': print_error,
                   'EXCEPTION': print_exception,
                   'SUB': print_sub,
-                  'NOTYPE': print_notype}.get(str(print_type).upper())
-        txt = self.rem_nonprintable_ctrl_chars(str(txt))
-        if p_type is None:
-            p_type = print_info
+                  'NOTYPE': print_notype}.get(str(print_type).upper(),
+                                              print_info)
         if write_locn is None:
             write_locn = self.current_pointer
-        if ptc:
+        if ptc and print_type not in print_util_types:
             p_type(txt)
         # self.current_pointer may be None,which is not a intended behavior
         if write_locn is not None:
             doc = ET.SubElement(write_locn, "Note")
             doc.text = txt
-            self.print_output() 
-        #The below elif is bypasses the else below. As we may want to\ 
-        #print items (banners) before we have a handle to write 
-        elif print_type=="notype":
+            self.print_output()
+        # The below elif is bypasses the else below. As we may want to
+        # print items (banners) before we have a handle to write
+        elif print_type == "notype":
             pass
-
-        else:
-            print_error("Unable to write to location in result file, the message is logged in terminal but not in result file")
+        elif print_type not in print_util_types:
+            print_error("Unable to write to location in result file, the "
+                        "message is logged in terminal but not in result file")
 
 
     def rem_nonprintable_ctrl_chars(self, txt):
@@ -548,7 +548,7 @@ class TestcaseUtils(object):
                 print_info("Hence using default value for context which is 'positive'")
                 context = 'POSITIVE'
         return context
-    
+
     @staticmethod
     def get_description_from_xmlfile(element):
         """Gets the description value of a step/testcase/suite
@@ -624,7 +624,3 @@ class TestcaseUtils(object):
         else:
             step_list = steps.findall('step')
             return step_list
-
-
-
-
