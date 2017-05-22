@@ -1,3 +1,16 @@
+'''
+Copyright 2017, Fujitsu Network Communications, Inc.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+'''
+
 """
 Implementation of the standard SNMP protocol commands for SNMP v1 and v2c and V3
 and IPv6 support added.
@@ -8,7 +21,7 @@ import os, re
 import Framework.Utils as Utils
 from Framework.Utils.print_Utils import print_exception
 from Framework.ClassUtils.snmp_utlity_class import WSnmp as ws
-from Framework.Utils import testcase_Utils, config_Utils, data_Utils
+from Framework.Utils import testcase_Utils, config_Utils, data_Utils, snmp_utils
 from threading import Thread
 from time import sleep
 import Queue
@@ -135,18 +148,7 @@ class CommonSnmpActions(object):
             oid = tuple([int(e) if e.isdigit() else e for e in oid_string.split('.')])
         else:
             if custom_mib_paths:
-                __custom_mib_paths = []
-                custom_mib_paths = custom_mib_paths.split(',')
-                for paths in custom_mib_paths:
-                    if 'http' in paths and '@mib@' not in paths:
-                        if paths[-1] == '/':
-                            paths = paths+'/@mib@'
-                        else:
-                            paths = paths+'@mib@'
-                    if 'http' in paths and 'browse' in paths:
-                        paths = paths.replace('browse', 'raw')
-                    __custom_mib_paths.append(paths)
-                __custom_mib_paths.append('/usr/share/snmp/mibs')
+                __custom_mib_paths = snmp_utils.split_mib_path(custom_mib_paths)
                 oid = wsnmp.mibvariable(mib_name, mib_index, mib_value).addAsn1MibSource(*__custom_mib_paths)
             else:
                 oid = wsnmp.mibvariable(mib_name, mib_index, mib_value)
@@ -279,19 +281,10 @@ class CommonSnmpActions(object):
             oid = tuple([int(e) if e.isdigit() else e for e in oid_string.split('.')])
         else:
             if custom_mib_paths:
-                __custom_mib_paths = []
-                custom_mib_paths = custom_mib_paths.split(',')
-                for paths in custom_mib_paths:
-                    if 'http' in paths and '@mib@' not in paths:
-                        if paths[-1] == '/':
-                            paths = paths+'/@mib@'
-                        else:
-                            paths = paths+'@mib@'
-                    if 'http' in paths and 'browse' in paths:
-                        paths = paths.replace('browse', 'raw')
-                    __custom_mib_paths.append(paths)
-                __custom_mib_paths.append('/usr/share/snmp/mibs')
+                __custom_mib_paths = snmp_utils.split_mib_path(custom_mib_paths)
                 oid = wsnmp.mibvariable(mib_name, mib_index, mib_value).addAsn1MibSource(*__custom_mib_paths)
+            else:
+                oid = wsnmp.mibvariable(mib_name, mib_index, mib_value)
         try:
             errindication, errstatus, errindex, \
             result = cmdgen.nextCmd(auth_data,
@@ -426,19 +419,10 @@ class CommonSnmpActions(object):
             oid = tuple([int(e) if e.isdigit() else e for e in oid_string.split('.')])
         else:
             if custom_mib_paths:
-                __custom_mib_paths = []
-                custom_mib_paths = custom_mib_paths.split(',')
-                for paths in custom_mib_paths:
-                    if 'http' in paths and '@mib@' not in paths:
-                        if paths[-1] == '/':
-                            paths = paths+'/@mib@'
-                        else:
-                            paths = paths+'@mib@'
-                    if 'http' in paths and 'browse' in paths:
-                        paths = paths.replace('browse', 'raw')
-                    __custom_mib_paths.append(paths)
+                __custom_mib_paths = snmp_utils.split_mib_path(custom_mib_paths)
                 oid = wsnmp.mibvariable(mib_name, mib_index).addAsn1MibSource(*__custom_mib_paths)
-                __custom_mib_paths.append('/usr/share/snmp/mibs')
+            else:
+                oid = wsnmp.mibvariable(mib_name, mib_index)
         try:
             errindication, errstatus, errindex,\
             result = cmdgen.nextCmd(auth_data,
@@ -570,19 +554,10 @@ class CommonSnmpActions(object):
                          else e for e in oid_string.split('.')])
         else:
             if custom_mib_paths:
-                __custom_mib_paths = []
-                custom_mib_paths = custom_mib_paths.split(',')
-                for paths in custom_mib_paths:
-                    if 'http' in paths and '@mib@' not in paths:
-                        if paths[-1] == '/':
-                            paths = paths+'/@mib@'
-                        else:
-                            paths = paths+'@mib@'
-                    if 'http' in paths and 'browse' in paths:
-                        paths = paths.replace('browse', 'raw')
-                    __custom_mib_paths.append(paths)
+                __custom_mib_paths = snmp_utils.split_mib_path(custom_mib_paths)
                 oid = wsnmp.mibvariable(mib_name, mib_index, mib_value).addAsn1MibSource(*__custom_mib_paths)
-                __custom_mib_paths.append('/usr/share/snmp/mibs')
+            else:
+                oid = wsnmp.mibvariable(mib_name, mib_index, mib_value)
         try:
             errindication, errstatus, errindex, \
             result = cmdgen.bulkCmd(auth_data,
