@@ -30,7 +30,7 @@ class FileActions(object):
         self.filename = Utils.config_Utils.filename
         self.logfile = Utils.config_Utils.logfile
 
-    def _log_result(self, oper, result, msglist=[]):
+    def _log_result(self, oper, result):
         """UseAsKeyword=No
         the methods in this class can use this to log the result
         of its operation
@@ -38,8 +38,6 @@ class FileActions(object):
         resmsg = "completed successfully" if result else "failed"
         print_type = "info" if result else "error"
         msg = "file {} operation {}".format(oper, resmsg)
-        for (printtype, txt) in msglist:
-            pNote(txt, printtype)
         pNote(msg, print_type)
 
     def write(self, filename, string, index=None):
@@ -55,17 +53,16 @@ class FileActions(object):
         wdesc = "write string in the filename at index location"
         pNote(wdesc)
         status = True
-        msglist = []
 
         fd = file_Utils.open_file(filename, "a")
         if index and file_Utils.move_to_position(fd, index) == -1:
             msg = "Could not move file position to index {}".format(index)
-            msglist.append(("error", msg))
+            pNote(msg, "error")
             status = False
         if status:
             status = file_Utils.write(fd, string+"\n")
         file_Utils.close(fd)
-        self._log_result("write", status, msglist)
+        self._log_result("write", status)
 
         return status
 
@@ -90,7 +87,6 @@ class FileActions(object):
         lines_to_replace = occurence.split(',') if occurence else []
         rec = re.compile(regex)
         status = True
-        msglist = []
 
         try:
             fd = file_Utils.open_file(filename, "r")
@@ -108,16 +104,17 @@ class FileActions(object):
             file_Utils.close(fd)
         except Exception as e:
             exc_msg = "findreplace returned exception {}".format(str(e))
-            msglist.append(("exception", exc_msg))
+            pNote(exc_msg, "exception")
+            status = False
         else:
             if newlines:
                 fd = file_Utils.open_file(filename, "w")
                 file_Utils.writelines(fd, newlines)
                 file_Utils.close(fd)
             else:
-                msglist.append(("info", "no lines were replaced as no lines "
-                                "were selected"))
-        self._log_result("findreplace", status, msglist)
+                pNote("no lines were replaced as no lines were selected",
+                      "warning")
+        self._log_result("findreplace", status)
 
         return status
 
