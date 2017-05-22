@@ -100,8 +100,6 @@ class Junit(object):
         keyword_items = {"type":"keyword", "step":step_num, "name":kw_name, "status":status, "timestamp":kw_timestamp,
                          "time":duration, "resultfile": resultfile, "impact":impact, "onerror":onerror}
         self.add_property(name=kw_name, value="KEYWORD_DISCARD", elem_type = "kw", timestamp=tc_timestamp, keyword_items=keyword_items)
-        elem = self.get_tc_with_timestamp(tc_timestamp)
-        elem.append(self.create_element("keyword", keyword_items))
 
     def add_testcase_message(self, timestamp, status):
         elem = self.get_tc_with_timestamp(timestamp)
