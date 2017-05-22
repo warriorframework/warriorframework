@@ -3,13 +3,16 @@ language: python
 matrix:
   include:
     - os: linux
-      env: INSTALL=yes TESTFILE=./warrior/Warriorspace/Testcases/Demo_Cases/Demo_Test_Of_Inventory_Management_System.xml
+      env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/pj_comparison.xml
       python: 2.7
     - os: linux
-      env: INSTALL=yes TESTFILE=./warrior/Warriorspace/Testcases/Demo_Cases/Demo_Warrior_Rest_Automation_Capabilities.xml
+      env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/pj_cond_var.xml
       python: 2.7
     - os: linux
-      env: INSTALL=no TESTFILE=./warrior/Warriorspace/Testcases/Demo_Cases/Demo_Test_Of_Inventory_Management_System.xml
+      env: INSTALL=no TESTFILE=./wftests/warrior_tests/projects/pj_rest.xml
+      python: 2.7
+    - os: linux
+      env: INSTALL=no TESTFILE=./wftests/warrior_tests/projects/pj_retry.xml
       python: 2.7
 
 before_install:
