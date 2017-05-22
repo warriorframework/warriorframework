@@ -107,7 +107,7 @@
 			<context>positive</context>
 			<impact>impact</impact>
 		</step>
-		<step Driver="file_driver" Keyword="findreplace" TS="8">
+		<step Driver="file_driver" Keyword="findreplace" TS="9">
 			<Arguments>
                 <argument name="filename" value="../warriorframework_tests/warrior_tests/sample_files/new_sample"/>
 				<argument name="regex" value="first"/>
@@ -115,6 +115,26 @@
 				<argument name="occurence" value="3,6"/>
 				<argument name="startidx" value="2"/>
 				<argument name="endidx" value="10"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>file write</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="file_driver" Keyword="remove" TS="10">
+			<Arguments>
+                <argument name="filename" value="../warriorframework_tests/warrior_tests/sample_files/new_sample"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>file write</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="file_driver" Keyword="remove" TS="11">
+			<Arguments>
+                <argument name="filename" value="../warriorframework_tests/warrior_tests/sample_files/file_sample"/>
 			</Arguments>
 			<onError action="next"/>
 			<Description>file write</Description>

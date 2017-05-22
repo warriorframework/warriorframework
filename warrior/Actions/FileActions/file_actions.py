@@ -31,6 +31,10 @@ class FileActions(object):
         self.logfile = Utils.config_Utils.logfile
 
     def _log_result(self, oper, result, msglist=[]):
+        """UseAsKeyword=No
+        the methods in this class can use this to log the result
+        of its operation
+        """
         resmsg = "completed successfully" if result else "failed"
         print_type = "info" if result else "error"
         msg = "file {} operation {}".format(oper, resmsg)
