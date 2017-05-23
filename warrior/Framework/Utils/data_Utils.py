@@ -1319,11 +1319,19 @@ def get_filepath_from_system(datafile, system_name, *args):
 
 
 def sub_from_env_var(raw_value, start_pattern="${", end_pattern="}"):
-    """Takes a key value pair as input, if the value
-    has a pattern matching ${ENV.env_variable_name}.
+    """Takes a key value pair as input in raw_value,
+        if the value has a pattern matching ${ENV.env_variable_name}.
     Searches for the env_variable_name in the environment and replaces
     it and return the updated dictionary. If environment variable
-    is not found then substitutes with None"""
+    is not found then substitutes with None.
+        if the value has a pattern matching ${REPO.key}.
+    Searches for the key in the data repository and replaces it and return
+    the updated dictionary. If key is not found then None is substituted.
+        if the value has a pattern matching ${REPO.k1.k2.k3}.
+    Searches for the keys k1, k2, k3 in the data repository in nested order
+    as provided and replaces it and return the updated dictionary. If
+    keys is not found in the order or does not exist then None is substituted.
+    """
     # Also take string now for free!
     def subst_var(str):
         if str.startswith("ENV"):
