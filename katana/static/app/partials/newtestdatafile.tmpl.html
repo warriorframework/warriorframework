@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <div class='col-md-12'>
     <h4 class='text-muted nav-font' style="color:rgb(0, 0, 0)">
-        <b>Katana Testdata File Editor</b>
+        <b>Katana CLI Data Editor</b>
     </h4>
     <hr/>
     <form action="" method="post" class="form-horizontal" role="form">
@@ -96,15 +96,15 @@
 
         <div class="row">
             <div class="form-group">
-                <label class="col-sm-2 text-uppercase mandatory-field" style="padding-left: 3em">Global</label>
+                <label class="col-sm-2 text-uppercase mandatory-field level1" style="padding-left: 3em">Global</label>
             </div>
         </div>
 
         <hr> <br>
-
+			
         <div class="row">
             <div class="form-group">
-                <label class="col-sm-2 color-me-dark-grey text-uppercase" style="padding-left: 3em">Command Parameters</label>
+                <label class="col-sm-2 color-me-dark-grey text-uppercase level2" style="padding-left: 3em">Command Parameters</label>
             </div>
         </div>
 
@@ -1546,22 +1546,21 @@
 
         <div class="row">
             <div class="form-group" style="padding-left: 1em">
-                <label class="col-sm-1 color-me-dark-grey text-uppercase" style="padding-left: 3em">Verifications</label>
+                <label class="col-sm-1 color-me-dark-grey text-uppercase level2" style="padding-left: 3em">Verifications</label>
             </div>
         </div>
         <br>
 
         <div class="form-group" ng-show="!showGlobalVerificationTags">
             <div class="col-sm-12">
-                <label class="col-sm-2 control-label text-info">Verification
-                    Tags</label>
+                <label class="col-sm-2 control-label text-info">Verification</label>
                 <hr>
                 <br>
                 <table class='table table-bordered table-condensed table-hover'>
                     <thead>
                     <tr>
                         <th class='text-muted text-right'>#</th>
-                        <th class='text-muted'>Tag Name</th>
+                        <th class='text-muted'>Verification Name</th>
                         <th class='text-muted'>Found</th>
                         <th class='text-muted'>Search</th>
                         <th class='text-muted'>Verify On</th>
@@ -1657,15 +1656,14 @@
 
         <div class="form-group" ng-show="!showGlobalComboTags">
             <div class="col-sm-12">
-                <label class="col-sm-2 control-label text-info">Combination
-                    Tags</label>
+                <label class="col-sm-2 control-label text-info">Combinations</label>
                 <hr>
                 <br>
                 <table class='table table-bordered table-condensed table-hover'>
                     <thead>
                     <tr>
                         <th class='text-muted text-right'>#</th>
-                        <th class='text-muted'>Tag Name</th>
+                        <th class='text-muted'>Combination Name</th>
                         <th class='text-muted'>Combo</th>
                         <th class='text-muted'>Edit</th>
                         <th class='text-muted'>Delete</th>
@@ -1755,35 +1753,18 @@
             <div class="col-sm-12">
                 <div style="float: left; width: 50%; border-right: solid 1px; padding: 15px 15px 15px 15px">
                     <label style="color:rgb(214, 48, 48)"
-                           class="col-sm-4 control-label text-info">Verification
-                        Tags</label>
+                           class="col-sm-4 control-label text-info level3">Verification</label>
                     <hr>
                     <br>
                     <div ng-repeat="cp_ver_tags in cp_verification_tag_names track by $index"
                          ng-show="individualCPVerificationTag[$index]">
 
-                        <div class="row">
-                            <div class="form-group" ng-show="cp_verification_tag_names.length > 1">
-                                <label for="cp_copy_ver_tag{{$index}}" class="col-sm-5 control-label">Copy Over Verification Tag:</label>
-                                <div class="col-sm-2">
-                                    <select class="form-control"
-                                            id="cp_copy_ver_tag{{$index}}"
-                                            ng-model="selectedNumber"
-                                            ng-options="option for option in copy_global_ver_list[$index]">
-                                    </select>
-                                </div>
-                                <div class="col-sm-1">
-                                    <input type="button" class="btn btn-default"
-                                           value="Go"
-                                           ng-click="copyGlobalVerifyTags($index, selectedNumber)">
-                                </div>
-                            </div>
-                        </div>
+                      
                         <br>
 
                         <div class="row">
                             <div class="form-group">
-                                <label for="cp_ver_tag_name{{$index}}" class="col-sm-3 control-label mandatory-field ellipsis-the-overflow">Tag {{$index+1}} Name</label>
+                                <label for="cp_ver_tag_name{{$index}}" class="col-sm-3 control-label mandatory-field ellipsis-the-overflow">Verification Name <!--{{$index+1}}--> </label>
                                 <div class="tooltip-on-right align-fa-icon-after-label">
                                     <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
                                     <span class="tooltip-content">
@@ -2127,36 +2108,18 @@
                 </div>
                 <div style="float: right; width: 50%; border-left: solid 1px; padding: 15px 15px 15px 15px">
                     <label style="color:rgb(214, 48, 48)"
-                           class="col-sm-4 control-label text-info">Combination Tags</label>
+                           class="col-sm-4 control-label text-info level3">Combinations</label>
                     <hr>
                     <br>
                     <div ng-repeat="cp_combo_tags in cp_combo_tag_names track by $index"
                          ng-show="individualCPComboTag[$index]">
 
-                        <div class="row">
-                            <div class="form-group"
-                                 ng-show="cp_combo_tag_names.length > 1">
-                                <label for="cp_copy_combo_tag{{$index}}"
-                                       class="col-sm-5 control-label">Copy Over Combo Tag:</label>
-                                <div class="col-sm-2">
-                                    <select class="form-control"
-                                            id="cp_copy_combo_tag{{$index}}"
-                                            ng-model="selectedNumber"
-                                            ng-options="option for option in copy_global_combo_list[$index]">
-                                    </select>
-                                </div>
-                                <div class="col-sm-1">
-                                <input type="button" class="btn btn-default"
-                                       value="Go"
-                                       ng-click="copyGlobalComboTags($index, selectedNumber)">
-                                </div>
-                            </div>
-                        </div>
+               
                         <br>
 
                         <div class="row">
                             <div class="form-group">
-                                <label for="cp_combo_tag_name{{$index}}" class="col-sm-3 control-label mandatory-field ellipsis-the-overflow">Tag {{$index + 1}} Name</label>
+                                <label for="cp_combo_tag_name{{$index}}" class="col-sm-3 control-label mandatory-field ellipsis-the-overflow">Combination Name <!--{{$index + 1}}--></label>
                                 <div class="tooltip-on-right align-fa-icon-after-label">
                                     <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
                                     <span class="tooltip-content">
@@ -2347,36 +2310,21 @@
 
         <div class="row">
             <div class="form-group">
-                <label class="col-sm-2 text-uppercase mandatory-field" style="padding-left: 3em">Testdata Blocks</label>
+                <label class="col-sm-2 text-uppercase mandatory-field level1" style="padding-left: 3em">Testdata Blocks</label>
             </div>
         </div>
         <hr>
         <br>
 
         <div ng-repeat="td_block in jsonData.data.testdata track by $index">
-
+					<div class="row">
             <div class="form-group">
-                <label class="col-sm-2 control-label color-me-dark-grey text-uppercase">Testdata Block {{$index + 1}}</label>
+                <label class="level2 col-sm-2 control-label color-me-dark-grey text-uppercase">Testdata Block {{$index + 1}}</label>
                 <hr>
-            </div>
+            </div></div>
             <br>
 
-            <div class="row">
-                <div class="form-group" ng-show="jsonData.data.testdata.length > 1">
-                    <label for="cp_copy_entire_td{{$index}}" class="col-sm-4 control-label">Copy Over Testdata Block:</label>
-                    <div class="col-sm-2">
-                        <select class="form-control"
-                                id="cp_copy_entire_td{{$index}}"
-                                ng-model="selectedNumber"
-                                ng-options="option for option in copy_entire_td_list[$index]">
-                        </select>
-                    </div>
-                    <div class="col-sm-1">
-                    <input type="button" class="btn btn-default" value="Go"
-                           ng-click="copyEntireTestdata($index, selectedNumber)">
-                    </div>
-                </div>
-            </div>
+      
             <br>
 
             <div class="row">
@@ -2943,18 +2891,24 @@
                     </table>
                 </div>
             </div>
+						 <br>
 
+						<div class="row">
+								<div class="form-group" style="padding-left: 1em">
+										<label class="col-sm-1 color-me-dark-grey text-uppercase level2" style="padding-left: 3em">Verifications</label>
+								</div>
+						</div>
+						<br>
             <div class="form-group" ng-show="!showTDVerificationTags[$index]">
                 <div class="col-sm-12">
-                    <label class="col-sm-2 control-label text-info">Verification
-                        Tags</label>
+                    <label class="col-sm-2 control-label text-info">Verification</label>
                     <hr>
                     <br>
                     <table class='table table-bordered table-condensed table-hover'>
                         <thead>
                         <tr>
                             <th class='text-muted text-right'>#</th>
-                            <th class='text-muted'>Tag Name</th>
+                            <th class='text-muted'>Verification Name</th>
                             <th class='text-muted'>Found</th>
                             <th class='text-muted'>Search</th>
                             <th class='text-muted'>Verify On</th>
@@ -3056,33 +3010,14 @@
                 <div class="col-sm-12">
                     <div style="float: left; width: 50%; border-right: solid 1px; padding: 15px 15px 15px 15px">
                         <label style="color:rgb(214, 48, 48)"
-                               class="col-sm-4 control-label text-info">Command Tags</label>
+                               class="col-sm-4 control-label text-info level3">Command</label>
                         <hr>
                         <br>
 
                         <div ng-repeat="command in jsonData.data.testdata[$index].command track by $index"
                              ng-show="individualTDCommandTag[$parent.$index][$index]">
 
-                            <div class="row">
-                                <div class="form-group"
-                                     ng-show="jsonData.data.testdata[$parent.$index].command.length > 1">
-                                    <label for="cp_copy_command_td{{$parent.$index}}{{$index}}"
-                                           class="col-sm-5 control-label">Copy Over
-                                        Command:</label>
-                                    <div class="col-sm-2">
-                                        <select class="form-control"
-                                                id="cp_copy_command_td{{$parent.$index}}{{$index}}"
-                                                ng-model="selectedNumber"
-                                                ng-options="option for option in copy_command_list[$parent.$index][$index]">
-                                        </select>
-                                    </div>
-                                    <div class="col-sm-1">
-                                    <input type="button" class="btn btn-default"
-                                           value="Go"
-                                           ng-click="copyTDCommandTags($parent.$index, $index, selectedNumber)">
-                                    </div>
-                                </div>
-                            </div>
+                         
                             <br>
 
                             <div class="row">
@@ -4509,39 +4444,20 @@
                     </div>
                     <div style="float: right; width: 50%; border-left: solid 1px; padding: 15px 15px 15px 15px">
                         <label style="color:rgb(214, 48, 48)"
-                               class="col-sm-4 control-label text-info">Verification Tags</label>
+                               class="col-sm-4 control-label text-info level3">Verification</label>
                         <hr>
                         <br>
 
                         <div ng-repeat="ver_tag in td_verification_tag_names[$index] track by $index"
                              ng-show="individualTDVerificationTag[$parent.$index][$index]">
 
-                            <div class="row">
-                                <div class="form-group"
-                                     ng-show="td_verification_tag_names[$parent.$index].length > 1">
-                                    <label for="td_copy_ver_tag{{$parent.$index}}{{$index}}"
-                                           class="col-sm-5 control-label">Copy Over
-                                        Verification Tag:</label>
-                                    <div class="col-sm-2">
-                                        <select class="form-control"
-                                                id="td_copy_ver_tag{{$parent.$index}}{{$index}}"
-                                                ng-model="selectedNumber"
-                                                ng-options="option for option in copy_td_ver_list[$parent.$index][$index]">
-                                        </select>
-                                    </div>
-                                    <div class="col-sm-1">
-                                        <input type="button" class="btn btn-default"
-                                               value="Go"
-                                               ng-click="copyTDVerifyTags($parent.$index, $index, selectedNumber)">
-                                    </div>
-                                </div>
-                            </div>
+                        
                             <br>
 
                             <div class="row">
                                 <div class="form-group">
                                     <label for="td_tag_name{{$parent.$index}}{{$index}}"
-                                           class="col-sm-3 control-label col-sm-offset-1 ellipsis-the-overflow mandatory-field">Tag Name</label>
+                                           class="col-sm-3 control-label col-sm-offset-1 ellipsis-the-overflow mandatory-field">Verification Name</label>
                                     <div class="tooltip-on-right align-fa-icon-after-label">
                                         <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
                                         <span class="tooltip-content">
@@ -4923,6 +4839,474 @@
             </div>
         </div>
         <br>
+	
+<script>
+	var wizardAPI = {
+		view: $('<div class="view"><div class="feilds"></div><div class="button back">back</div><div class="button next">next</div></div>'),
+		
+		init: function(){
+			wizardAPI.body = $(document.body);
+			wizardAPI.body.find('#screen-view').addClass('loading');
+			setTimeout(function(){
+				wizardAPI.body.find('#screen-view').removeClass('loading');
+				wizardAPI.container = $('<div class="wizard"><div class="leftColumn"></div><div class="rightColumn"><h3>File Previews<div class="save"></div><div class="cancel"></div></h3><div class="table-container"></div></div></div>');
+				wizardAPI.scope = wizardAPI.body.find('div#screen-view .col-md-12.ng-scope');
+				wizardAPI.getExestingForms();
+				wizardAPI.generatePage();
+				wizardAPI.scope.replaceWith( wizardAPI.container );
+				wizardAPI.buttonControle();
+				wizardAPI.container.find('.view:first').addClass('active');
+				wizardAPI.pin();
+			}, 900);
+		},
+		
+		initEventHandler: function( input, tableItem ){
+			input.off( 'change keyup' ).on( 'change keyup', function(){
+				wizardAPI.inputChange( input, tableItem );
+			});
+			tableItem.off( 'click' ).on( 'click', function(){
+				var view = input.closest('.view');
+				view.parent().find('.active').removeClass('active');
+				view.addClass('active');
+				input.addClass('selected');
+				tableItem.addClass('selected');
+				input.focus();
+				setTimeout(function(){
+					input.removeClass('selected');
+					tableItem.removeClass('selected');
+				}, 900);
+			});
+		},
+		
+		inputChange: function( input, tableItem ){
+			if( input.is('select') ){
+				tableItem.text( input.find(':selected').attr('label') );
+				if(input.attr('id') == 'cp_retry'){
+					var dependents = input.parent().nextAll(':lt(2)').add( tableItem.closest('li').nextAll(':lt(2)') );
+					if( input.val() == '0' )
+						dependents.fadeIn();
+					else
+						dependents.fadeOut();
+				}
+			}
+			else
+				tableItem.text( input.val() );
+		},
+		
+		buttonControle: function(){
+			wizardAPI.container.on('click', '.button', function(){
+				var $elem = $(this);
+				var activeView = $elem.closest('.view');
+				var prevView = activeView.prev('.view');
+				var nextView = activeView.next('.view');
+			  if( $elem.hasClass('back') && prevView.length > 0 ){
+					activeView.removeClass('active');
+					prevView.addClass('active');
+					wizardAPI.scrollRight( prevView );
+				}
+				else if( $elem.hasClass('next') && nextView.length > 0){
+					activeView.removeClass('active');
+					nextView.addClass('active');
+					wizardAPI.scrollRight( nextView );
+				}
+			});
+		},
+		
+		newView: function( currentView, table, specialCase ){
+			var $elem = $(this);
+			var isNew = $elem.hasClass('new');
+			var tableItems = [];
+			!specialCase && currentView.parent().find('.active').removeClass('active');
+			lastView = currentView.nextUntil('.view:not(.son)').length > 0 ? currentView.nextUntil('.view:not(.son)').last() : currentView;
+			if( currentView.find('h4').text().includes('Testdata') && !specialCase )
+			{
+				lastView = currentView.nextAll().andSelf().find('h4:contains("Testdata Block")').closest('.view').last() ;
+				var verificationView = currentView.nextAll().find('h4:contains("Command")').closest('.view').last().next();
+				var commandView = currentView.next();
+				var view = currentView.clone().appendTo( currentView.parent() );
+				var initalT = table;
+				setTimeout(function(){
+					wizardAPI.newView( verificationView, initalT.next().next(), view );
+					wizardAPI.newView( commandView, initalT.next(), view );
+				}, 10 );
+				table = table.clone().appendTo( table.parent() );
+			}
+		  else if( !specialCase )	
+				var view = currentView.clone().insertAfter( lastView );
+			
+			
+			if( specialCase ){
+				view = currentView.clone().insertAfter( specialCase );
+				var inputs = view.find('input, select');
+				inputs.val('');
+				table = table.clone().appendTo( table.parent() );
+			}
+			else{
+			  var inputs = view.find('input, select');
+				if( this == false )
+					view.addClass('son');
+				else
+					view.addClass('active son');
+				var headerTxt = lastView.find('h4');
+				
+        var numeric = headerTxt.text().match(/\d/g) ? headerTxt.text().match(/\d/g).toString().replace(',', '') : null;
+				if( numeric )
+					headerTxt = view.find('h4').text( headerTxt.text().replace( numeric, parseInt( numeric ) + 1 ));
+				else
+					headerTxt = view.find('h4').append(' 2');
+				
+				currentView.find('h4').text().includes('Testdata') && table.find('h4').text(headerTxt.text());
+				
+				wizardAPI.addDeleteButton( tableItems, view );
+				if( isNew )
+					inputs.val('');
+				else
+					inputs.trigger('change');
+			}
+			var determentent = currentView.find('h4').text().includes('Testdata') || specialCase ? true : false;
+			inputs.each( function( i ){
+				var $elem = $(this);
+				var column = table.find('.columns').get( i );
+				determentent && $(column).find('div').remove();
+				var tableItem = $('<div></div>').appendTo( column );
+				tableItems.push( tableItem );
+				wizardAPI.initEventHandler( $elem, tableItem );
+				
+			});
+			
+			view.find('.new, .copy').off('click').on('click', function(){
+				wizardAPI.newView.call( this, view, table );
+			});
+			return view;
+		},
+		
+		addDeleteButton: function( tableItems, view, clear ){
+			var deleteButton = view.find('.delete').length > 0 && view.find('.delete').remove();
+			deleteButton = $('<div class="button delete" title="' + (clear ? 'Clear' : 'Delete') + '"><div>');
+			deleteButton = deleteButton.prependTo( view );
+			if( !clear )
+				deleteButton.off('click').one('click', function(){
+					$elem = $(this);
+					var view = $elem.closest('.view');
+					if( view.find('h4').text().includes('Testdata') ){
+						view.nextUntil( wizardAPI.container.find('h4:contains(Testdata)').closest('.view') ).remove();
+						var table = $(tableItems[0]).closest('.table');
+						table.next().next().remove();
+						table.next().remove();
+						table.remove();
+					}
+					view.prev().addClass('active');
+					view.remove();
+					$(tableItems).each(function(){
+						$(this).remove();
+					});
 
+				});
+			else
+				deleteButton.off('click').on('click', function(){
+					$elem = $(this);
+					var view = $elem.closest('.view');
+					view.find('input').val('');
+				});
+		},
+		
+		Table: {
+			dom: '',
+			tableTemplate: '<div class="table"><div class="table-header"><div class="pin"></div></div><ul><li></li></ul></div>',
+			
+			createTable: function( elem ){
+				this.dom = $(this.tableTemplate).clone();
+				this.dom.find('.table-header').append( elem );
+			},
+			
+			addRow: function( feild, label ){
+				var newItem = $('<li><div class="labels"><div>' + label + '</div></div><div class="columns"><div>' + feild.val() + '</div></div></li>').appendTo(this.dom.find('ul'));
+				wizardAPI.initEventHandler( feild, newItem.find('.columns > div') );
+				feild.attr('placeholder', label + '...');
+				var title = feild.attr('title');
+				var tooltip =  title && title.indexOf('{') != -1 ? JSON.parse(title).tooltip : '';
+				feild.attr('title', tooltip);
+				setTimeout(function(){
+					wizardAPI.inputChange( feild, newItem.find('.columns > div') );
+				}, 50);
+			}
+			
+		},
+		
+		specialCases: function(){
+			var name = wizardAPI.body.find('#tdf_name');
+			name.attr('placeholder', 'File Name...');
+			name.appendTo(wizardAPI.container.find('.leftColumn'));
+			wizardAPI.fixSelects();
+		},
+		
+		fixSelects: function(){
+			var selects = wizardAPI.body.find('select');
+			selects.each( function(){
+				var $elem = $(this);
+				var first = $elem.find('option:first');
+				if(	first.val() == "?" )
+					first.remove();
+				first = $elem.find('option:first');
+				var second = $elem.find('option:last');
+				if( first.attr('label').length == 0 || first.attr('label')[0] == "y" ){
+					first.attr('label', 'yes'); 
+					second.attr('label', 'no');
+				}
+
+			});
+		},
+		
+		scrollRight: function( view ){
+			var sons = wizardAPI.body.find('.view.son').not( wizardAPI.body.find('.view.son h4:contains("Testdata Block")').closest('.view') );
+			var table = $(wizardAPI.body.find('.table').get( view.prevAll().andSelf().not( sons ).length - 2 ));
+			var container = table.parent();
+			if( !container.hasClass('locked') ){
+				var topDistance = table.position().top;
+				container.scrollTop( container.scrollTop() + topDistance );
+			}
+		},
+		
+		pin: function(){
+			wizardAPI.body.find('.pin').on('click', function(){
+				var $elem =$(this);
+			  var table = $elem.closest('.table');
+				var container = table.parent();
+				if( !container.hasClass('locked') ){
+					table.addClass('active');
+					container.addClass('locked');
+					container.scrollTop(0);
+				}
+				else{
+					table.removeClass('active');
+					container.removeClass('locked');
+					wizardAPI.scrollRight( wizardAPI.body.find('.view.active') );
+				}
+					
+				
+			});
+		},
+		
+		generatePage: function(){
+			wizardAPI.specialCases();
+			$.each( wizardAPI.formJSON, function( j ){
+				var elem = this;
+				var view = wizardAPI.view.clone();
+				var table = wizardAPI.Table;
+				var header = '<h3>' + elem.level1 + '</h3><h4>' + elem.level2 + ' ' + ( elem.level3 && elem.level3 != 'Verification' ? elem.level3 : '' ) + '</h4>';
+				header = header.replace('Verifications Command', 'Commands');
+				header = header.replace('Verifications Combinations', 'Verification Combinations');
+				var feilds = view.find('.feilds');
+				table.createTable( header );
+
+				$.each( elem.feilds, function( i ){
+					var label = $(elem.labels[ i ]);
+					var temp = $( '<div class="feild"><label class= "' + (label.hasClass('mandatory-field') ? 'mandatory-field' : '') + '">' + label.text() + '</label></div>' );
+					temp.append( this );
+					feilds.append( temp );
+					table.addRow( $(this), label.text() );
+				});
+				var newButton = (elem.hasAdd && !elem.level2.includes("Testdata Block") ? '<div class="button new" title="Add"></div><div class="button copy" title="Duplicate"></div>' : elem.level2.includes("Testdata Block") ? '<div class="button new" title="Add"></div>' : '');
+				view.prepend( newButton + header );
+				if( parseInt( elem.level2.replace(/[^0-9\.]/g, ''), 10) != NaN && parseInt( elem.level2.replace(/[^0-9\.]/g, ''), 10) > 1 ){
+					wizardAPI.addDeleteButton( table, view );
+					view.addClass('son');
+				}
+				else
+					wizardAPI.addDeleteButton( table, view, true );
+				
+				view = view.appendTo(wizardAPI.container.find('.leftColumn'));
+				table = table.dom.appendTo(wizardAPI.container.find('.rightColumn > div'));
+				var duplication = view.find('[id^="' + view.find('input:first').attr('id').replace(/[0-9]/g, '') + '"]');
+				if( duplication.length > 1 )
+					wizardAPI.duplicateDefault( view, 1, view, table, duplication );
+				view.find('.new, .copy').on('click', function(){
+					wizardAPI.newView.call( this, view, table );
+				});
+			});	
+			wizardAPI.container.find('.save').on('click', function(){
+				window.save();wizardAPI.body.find('select').trigger('change');
+			});
+			wizardAPI.container.find('.cancel').on('click', function(){
+				window.cancelFile();
+			});
+		},
+		
+		duplicateDefault: function( view, i, temp, table, duplication ){
+			var induplicate = $(duplication[i]).closest('.feild');
+			var $elems = induplicate.nextUntil($(duplication[i + 1]).closest('.feild')).andSelf();
+			temp = wizardAPI.newView.call( false, temp, table );
+			$elems = $elems.appendTo( temp.find('.feilds').empty() );
+			
+			$elems.find('input, select').each( function( j ){
+				
+				var column = table.find('.columns').get( j );
+				wizardAPI.initEventHandler( $(this), $(column).find('div:nth-child(' + (i + 1) + ')') );
+			});
+			i++;
+			if( i < duplication.length )
+				wizardAPI.duplicateDefault( view, i, temp, table, duplication );
+			else{
+				$(duplication[0]).closest('.feild').prev().nextAll().remove();
+				table.find('li:nth-child(' + (temp.find('.feilds > .feild').length + 1) + ')').nextAll().remove();
+			}
+		},
+		
+		getExestingForms: function(){
+			wizardAPI.formJSON = [];
+			var level1 = wizardAPI.scope.find( '.level1' ).closest( '.row' ).toArray();
+			
+			$.each( level1, function( i ){
+				var level1Elem = $( this );
+				var untilPoint = $( level1[ i + 1 ] );
+				if( level1Elem.nextUntil( untilPoint ).find( '.level2' ).length < 1)
+					wizardAPI.openForms( level1Elem.nextUntil( untilPoint ) );
+				var level2 = level1Elem.nextUntil( untilPoint ).find( '.level2' ).closest( '.row' ).toArray();
+				
+				$.each( level2, function( j ){
+					var level2Elem = $(this);
+					untilPoint = $( level2[ j + 1 ] ).add( untilPoint );
+					var point = level2Elem.nextUntil( untilPoint );
+				  var search = point.find( '.level3' ).closest( 'div' );
+					
+					if( search.length < 1){
+						var feilds = point.find( 'input, select' ).not('[type="button"]');
+						if( feilds.length < 1)
+							wizardAPI.openForms( point );
+						
+						feilds = point.find( 'input, select' ).not('[type="button"]');
+						var labels = feilds.parent().siblings('label:first-of-type').toArray();
+						wizardAPI.formJSON.push({
+							level1: level1Elem.find('label:first').text(),
+							level2: level2Elem.find('label:first').text(),
+							feilds: feilds.toArray(),
+							labels: labels,
+							hasAdd: point.find( '[type="button"][value*="Add"]' ).length > 0 ? true : false
+						});
+					}
+					
+					else{
+						var level3 = search.toArray();		
+						$.each( level3, function( j ){
+							var level3Elem = $(this);
+							var feilds = level3Elem.find( 'input, select' ).not('[type="button"]');
+							if( feilds.length < 1)
+								wizardAPI.openForms( level3Elem );
+							feilds = level3Elem.find( 'input, select' ).not('[type="button"]');
+							var labels = feilds.parent().siblings('label:first-of-type').toArray();
+							
+							wizardAPI.formJSON.push({
+								level1: level1Elem.find('label:first').text(),
+								level2: level2Elem.find('label:first').text(),
+								level3: level3Elem.find('label:first').text(),
+								feilds: feilds.toArray(),
+								labels: labels,
+								hasAdd: level3Elem.find( '[type="button"][value*="Add"]' ).length > 0 ? true : false
+							});
+						});
+					}
+					
+				});
+				
+			});
+		},
+
+		
+		formsToJSON: function(){
+			var jsonData = { 
+				data: {
+					global: {
+						command_params: {},
+						verifications:  {},
+					},
+					testdata: []
+				}
+			};
+			var num = 0;
+			wizardAPI.container.find('.view').each( function(){
+				var $elem = $(this);
+				var topLevelType =  $elem.find('h3').text().toLowerCase();
+				var type = $elem.find('h4').text().toLowerCase();
+				if( $elem.find('.mandatory-field + input').length == 0 || $elem.find('.mandatory-field + input').val() != "" ){
+					var headerTxt = $elem.find('h4');
+					var numeric = headerTxt.text().match(/\d/g) ? parseInt( headerTxt.text().match(/\d/g).toString().replace(',', '') ) : null;
+					var vtitle = '';
+					$elem.find('input, select').each( function(){
+						var input = $(this);
+						
+						if( topLevelType.includes('testdata') ){
+							var inputAttr = input.attr('ng-model');
+							
+							if( type.includes('testdata') ){
+								num =  numeric - 1 ;
+								var str = inputAttr.replace(/\[(.+?)\]/g, "["+num+"]");
+								jsonData.data.testdata[num] ? jsonData.data.testdata[num] : jsonData.data.testdata[num] = {};
+								eval( str + ' = input.val()' );
+							}
+							else if( type.includes('command') ){
+								var str = inputAttr.substr( inputAttr.lastIndexOf('.') );
+								var i = !numeric ? 0 : numeric - 1;
+								jsonData.data.testdata[num] = jsonData.data.testdata[num] ? jsonData.data.testdata[num] : jsonData.data.testdata[0];
+								jsonData.data.testdata[num].command = jsonData.data.testdata[num].command ? jsonData.data.testdata[num].command : [];
+								jsonData.data.testdata[num].command[i] = jsonData.data.testdata[num].command[i] ? jsonData.data.testdata[num].command[i] : {};
+								
+								eval( 'jsonData.data.testdata[num].command[i]' + str + ' = input.val()' );
+							}
+							else if( type.includes('verification') ){
+								var parent = 'jsonData.data.testdata[' + num + ']';
+								if( inputAttr.lastIndexOf('.') != -1 && inputAttr[inputAttr.length - 1] != ']' )
+									 temp = parent + '.' + vtitle + inputAttr.substr( inputAttr.lastIndexOf('.') ) + ' = input.val()';
+								else{
+									vtitle = input.val().replace(/\s/g,'');
+									temp = parent + '.' + vtitle + ' = {}';
+								}
+								eval( temp );
+							}
+						}
+						else if( topLevelType.includes('global') ){
+							if( type.includes('verification') && input.closest('.feilds').find('input').first().get(0) == input.get(0) ){
+								var parent = 'jsonData.data.global.verifications.' + input.val().replace(/\s/g,'');
+								eval( parent + ' = {}');
+								input.closest('.feilds').find('input:not(:first)').each( function(){
+									var input = $(this);
+									var inputAttr = input.attr('ng-model');
+									
+									eval( parent + inputAttr.substr( inputAttr.indexOf('.') ) + ' = input.val()');
+								});
+							}
+
+							else if( type.includes('command') ){
+								eval( input.attr('ng-model') + '= input.val()' );
+							}
+						}
+					});	
+					
+				}
+			});
+			
+			return jsonData;
+		},
+		
+		returnFileName: function(){
+			return wizardAPI.container.find('input#tdf_name').val();
+		},
+		
+		openForms: function( feilds ){
+			var buttons = feilds.find('input[type="button"][value*="Add"]');
+			buttons.click();
+		},
+		
+		getJSONFromServer: function( iterations ){
+			$.ajax({
+				url: 'somelink/' + iterations
+			}).done( function( json ){
+				wizardAPI.getJSONFromServer( iterations++ );
+			});
+		}
+	};
+
+		wizardAPI.init();
+
+</script>	
     </form>
 </div>
