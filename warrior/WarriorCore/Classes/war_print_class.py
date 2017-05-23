@@ -12,34 +12,29 @@ limitations under the License.
 '''
 
 """
-This class will trap stdout and redirects the message to logfile and stdout
+This class will trap trap stdout and redirects the message to logfile and stdout
 It takes console_logfile and write_to_stdout ( boolean flag) as arguments.
+
 """
 import sys
 import re
 
-
 def print_main(message, print_type, color_message=None, *kwargs):
-    """The main print function will be called by other print functions
-    """
+    """The main print function will be called by other print functions """
     if color_message is not None:
         print_string = print_type + " " + str(color_message)
     elif color_message is None:
         print_string = print_type + " " + str(message)
     if len(kwargs) > 0:
-        print_string = (print_type + " " + str(message) + str(kwargs))
-    # print print_string
+        print_string = (print_type+ " " + str(message) + str(kwargs))
+    #print print_string
     sys.stdout.write(print_string + '\n')
     sys.stdout.flush()
-    from Framework.Utils.testcase_Utils import TCOBJ
-    TCOBJ.p_note_level(message, print_type)
     return print_string
-
 
 class RedirectPrint(object):
     """Class that has methods to redirect prints
-    from stdout to correct console log files
-    """
+    from stdout to correct console log files """
     def __init__(self, console_logfile):
         """Constructor"""
         self.get_file(console_logfile)
@@ -47,9 +42,8 @@ class RedirectPrint(object):
         self.stdout = sys.stdout
 
     def get_file(self, console_logfile):
-        """If the console logfile is not None redirect sys.stdout to
-        console logfile
-        """
+        """If the console logfile is not None redirect sys.stdout to 
+        console logfile"""
         self.file = console_logfile
         if self.file is not None:
             sys.stdout = self
@@ -66,11 +60,11 @@ class RedirectPrint(object):
         self.file.flush()
 
     def isatty(self):
-        """Check if sys.stdout is a tty
-        """
+        """Check if sys.stdout is a tty """
+        # print self.stdout.isatty()
         return self.stdout.isatty()
 
     def flush(self):
-        """flush logfile
-        """
+        """flush logfile """
         return self.stdout.flush()
+
