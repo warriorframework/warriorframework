@@ -61,7 +61,7 @@ Bugfixes:
 =================================================
 
 1. Clone warrior main
-$ git clone http://rtx-swtl-git.fnc.net.local/scm/war/warrior_main.git
+$ git clone https://github.com/warriorframework/warriorframework.git
 2. go to warrior_main directory
 $cd warrior_main
 3. To check the list of versions available, execute "git tag --list" command
