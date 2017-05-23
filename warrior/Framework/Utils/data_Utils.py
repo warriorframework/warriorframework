@@ -111,7 +111,7 @@ def getSystemData(datafile, system_name, cnode, system='system'):
         value = element.get(cnode, None)
         if value is None:
             value = xml_Utils.get_text_from_direct_child(element, cnode)
-        value = sub_from_env_var(value)
+        value = substitute_variables(value)
 
     return value
 
@@ -179,7 +179,7 @@ def get_credentials(datafile, system_name, myInfo=[], tag_name="system",
                                                                           x)
                 output_dict[x] = cred_value
         value = output_dict
-    updated_dict = sub_from_env_var(value)
+    updated_dict = substitute_variables(value)
     return updated_dict
 
 
@@ -347,7 +347,7 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
             details_dict = _get_cmd_details(testdata, global_obj, system_name, varconfigfile)
             start_pat =  _get_pattern_list(testdata, global_obj)
             end_pat =  _get_pattern_list(testdata, global_obj, pattern="end")
-            details_dict = sub_from_env_var(details_dict, start_pat, end_pat)
+            details_dict = substitute_variables(details_dict, start_pat, end_pat)
 
             print_info("var_sub:{0}".format(var_sub))
             td_obj = TestData()
@@ -355,7 +355,7 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
             (details_dict, vc_file=None, var_sub=var_sub, start_pat=start_pat, end_pat=end_pat)
 
             details_dict = td_obj.wdf_substitutions(details_dict, datafile, kw_system_name=system_name)
-            details_dict = sub_from_env_var(details_dict)
+            details_dict = substitute_variables(details_dict)
 
             td_iter_obj = TestDataIterations()
             details_dict, cmd_loc_list = td_iter_obj.resolve_iteration_patterns\
@@ -1307,8 +1307,8 @@ def get_filepath_from_system(datafile, system_name, *args):
                 if os.path.isfile(abspath):
                     abspath_lst.append(abspath)
                 else:
-                    print_warning( "File '{0}' provided for tag '{1}' does "
-                                   "not exist".format(abspath, tag))
+                    print_warning("File '{0}' provided for tag '{1}' does not "
+                                  "exist".format(abspath, tag))
                     abspath_lst.append(None)
             else:
                 abspath_lst.append(None)
@@ -1318,8 +1318,8 @@ def get_filepath_from_system(datafile, system_name, *args):
     return abspath_lst
 
 
-def sub_from_env_var(raw_value, start_pattern="${", end_pattern="}"):
-    """Takes a key value pair as input in raw_value,
+def substitute_variables(raw_value, start_pattern="${", end_pattern="}"):
+    """Takes a key value pair or string (value) as input in raw_value,
         if the value has a pattern matching ${ENV.env_variable_name}.
     Searches for the env_variable_name in the environment and replaces
     it and return the updated dictionary. If environment variable
@@ -1331,28 +1331,29 @@ def sub_from_env_var(raw_value, start_pattern="${", end_pattern="}"):
     Searches for the keys k1, k2, k3 in the data repository in nested order
     as provided and replaces it and return the updated dictionary. If
     keys is not found in the order or does not exist then None is substituted.
+    source could be environment or datarepository for now.
     """
-    # Also take string now for free!
-    def subst_var(str):
-        if str.startswith("ENV"):
-            return os.environ[str.split('.')[1]]
-        if str.startswith("REPO"):
-            keys = str.split('.')
+    def subst_var(s):
+        if s.startswith("ENV"):
+            return os.environ[s.split('.')[1]]
+        if s.startswith("REPO"):
+            keys = s.split('.')
             val = get_object_from_datarepository(keys[1])
             for key in keys[2:]:
                 val = val[key]
             else:
                 return val
-    error_msg1 = ("Could not find any environment/datarepository variable '{0}'"
-                  " corresponding to '{1}' provided in input data/testdata file"
-                  ". \nWill default to None")
+    error_msg1 = ("Could not find any environment/datarepository variable "
+                  "'{0}' corresponding to '{1}' provided in input "
+                  "data/testdata file. \nWill default to None")
     error_msg2 = ("Unable to substitute environment/datarepository variable "
-                  "'{0}' corresponding to '{1}' provided in input data/testdata"
-                  " file")
+                  "'{0}' corresponding to ""'{1}' provided in input "
+                  "data/testdata file")
     if type(raw_value) == dict:
         for k in raw_value:
             value = raw_value[k]
-            extracted_var = string_Utils.return_quote(str(value), start_pattern,
+            extracted_var = string_Utils.return_quote(str(value),
+                                                      start_pattern,
                                                       end_pattern)
             extracted_var = [string for string in extracted_var
                              if "ENV." in string or "REPO." in string]
@@ -1705,7 +1706,7 @@ def get_iteration_syslist(system_node_list, system_name_list):
         iter_flag = system.get("iter", None)
         if iter_flag is None:
             iter_flag = xml_Utils.get_text_from_direct_child(system, "iter")
-        iter_flag = sub_from_env_var(iter_flag)
+        iter_flag = substitute_variables(iter_flag)
 
         if str(iter_flag).lower() == "no":
             pass

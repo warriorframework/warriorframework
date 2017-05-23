@@ -40,7 +40,8 @@ def get_arguments(step):
                 if arg_value is None or arg_value is False:
                     arg_value = argument.text
                 if "${ENV." in arg_value:
-                    arg_value = Utils.data_Utils.sub_from_env_var(arg_value)
+                    arg_value = Utils.data_Utils.substitute_variables(
+                                                            arg_value)
                 arg_datatype_object.arg_name = arg_name
                 arg_datatype_object.arg_value = arg_value
                 value = arg_datatype_object.convert_arg_to_datatype()
