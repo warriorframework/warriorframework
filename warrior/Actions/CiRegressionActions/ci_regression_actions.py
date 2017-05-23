@@ -267,3 +267,8 @@ class CIregressionActions(object):
             return False
         else:
             raise Exception("This is raised in ci_regression_actions.local_data_test")
+
+    def create_dir(self):
+        # def remove(nfile):
+        # def createDir(path, dirname)
+        # to be developed: ls/dir to list files in dir
