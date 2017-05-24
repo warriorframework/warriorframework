@@ -4846,7 +4846,7 @@
 		
 		init: function(){
 			wizardAPI.body = $(document.body);
-			wizardAPI.body.find('#screen-view').addClass('loading');
+			
 			setTimeout(function(){
 				wizardAPI.body.find('#screen-view').removeClass('loading');
 				wizardAPI.container = $('<div class="wizard"><div class="leftColumn"></div><div class="rightColumn"><h3>File Previews<div class="save"></div><div class="cancel"></div></h3><div class="table-container"></div></div></div>');
@@ -4857,7 +4857,7 @@
 				wizardAPI.buttonControle();
 				wizardAPI.container.find('.view:first').addClass('active');
 				wizardAPI.pin();
-			}, 900);
+			}, 10);
 		},
 		
 		initEventHandler: function( input, tableItem ){
@@ -4881,7 +4881,7 @@
 		inputChange: function( input, tableItem ){
 			if( input.is('select') ){
 				tableItem.text( input.find(':selected').attr('label') );
-				if(input.attr('id') == 'cp_retry'){
+				if(input.attr('id') == 'cp_retry' || input.attr('id') == 'td_retry' ){
 					var dependents = input.parent().nextAll(':lt(2)').add( tableItem.closest('li').nextAll(':lt(2)') );
 					if( input.val() == '0' )
 						dependents.fadeIn();
@@ -5037,7 +5037,7 @@
 				var tooltip =  title && title.indexOf('{') != -1 ? JSON.parse(title).tooltip : '';
 				feild.attr('title', tooltip);
 				setTimeout(function(){
-					wizardAPI.inputChange( feild, newItem.find('.columns > div') );
+					feild.trigger('change');
 				}, 50);
 			}
 			
@@ -5056,8 +5056,10 @@
 				var $elem = $(this);
 				var first = $elem.find('option:first');
 				if(	first.val() == "?" )
-					first.remove();
-				first = $elem.find('option:first');
+					first = $elem.find('option:first').next();
+				else if( first.val() == "" )
+					first.clone().removeAttr('selected').insertBefore(first).attr('label', '').val('').text('');
+				
 				var second = $elem.find('option:last');
 				if( first.attr('label').length == 0 || first.attr('label')[0] == "y" ){
 					first.attr('label', 'yes'); 
@@ -5138,7 +5140,8 @@
 				});
 			});	
 			wizardAPI.container.find('.save').on('click', function(){
-				window.save();wizardAPI.body.find('select').trigger('change');
+				window.save();
+				
 			});
 			wizardAPI.container.find('.cancel').on('click', function(){
 				window.cancelFile();
@@ -5152,7 +5155,6 @@
 			$elems = $elems.appendTo( temp.find('.feilds').empty() );
 			
 			$elems.find('input, select').each( function( j ){
-				
 				var column = table.find('.columns').get( j );
 				wizardAPI.initEventHandler( $(this), $(column).find('div:nth-child(' + (i + 1) + ')') );
 			});
@@ -5280,7 +5282,7 @@
 							if( type.includes('verification') && input.closest('.feilds').find('input').first().get(0) == input.get(0) ){
 								var parent = 'jsonData.data.global.verifications.' + input.val().replace(/\s/g,'');
 								eval( parent + ' = {}');
-								input.closest('.feilds').find('input:not(:first)').each( function(){
+								input.closest('.feilds').find('input:not(:first), select').each( function(){
 									var input = $(this);
 									var inputAttr = input.attr('ng-model');
 									
@@ -5317,8 +5319,8 @@
 			});
 		}
 	};
-
-		wizardAPI.init();
+	$('#screen-view').addClass('loading');
+		//wizardAPI.init();
 
 </script>	
     </form>

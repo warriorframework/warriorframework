@@ -1263,8 +1263,8 @@ select#cp_repeat {}
     user-select: none; /* Standard syntax */
 }
 *::-webkit-scrollbar {
-    width: 5px;
-		height: 6px;
+    width: 8px;
+		height: 8px;
     background: rgb(206, 206, 206);
 }
  
@@ -1466,7 +1466,7 @@ a > i + span {
 }
 .wizard .save:before {
     content: 'save';
-    font-size: 18px;
+    font-size: 14px;
     font-weight: 300;
     font-family: inherit;
     vertical-align: 1px;
@@ -1983,7 +1983,7 @@ label.filelist.ng-binding.ng-scope:last-child {
     background-image: url(/assets/images/image.jpg);
     background-position: center;
     background-size: cover;
-    z-index: 999;
+    z-index: 9999999;
 		-webkit-animation: opacity .4s ease;
     animation: opacity .4s ease;
 }
@@ -2044,4 +2044,48 @@ i.fa.fa-folder-open {
 i.fa.fa-folder-open:hover + a{
     color: #262626; 
     text-decoration: none;
+}
+.table .columns
+ > div:last-child {
+    border-right: none;
+}
+
+.wizard .table li:last-child > div
+ > div, .wizard .table li:last-child 
+ .labels {
+    border-bottom: none ;
+}
+
+
+
+
+
+
+
+
+
+@media only screen and (max-width: 1200px) {
+.page-content .tab {
+        padding-bottom: 20.4%;
+    width: 20.4%;
+}
+}
+@media only screen and (max-width: 680px) {
+.page-content .tab {
+        padding-bottom: 28.59999%;
+    width: 28.59999%;
+}
+}
+@media only screen and (max-width: 480px) {
+.page-content .tab {
+        padding-bottom: 50%;
+        width: 50%;
+        margin: 0px;
+        /* box-shadow: none; */
+        border-radius: 0;
+        margin-left: -1%;
+}
+.page{
+    padding: 0px;
+}
 }

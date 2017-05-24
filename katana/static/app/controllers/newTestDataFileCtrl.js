@@ -1054,6 +1054,8 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
             $scope.subdirs = subdirs;
             readTestDataFile();
         }
+				else
+					wizardAPI && wizardAPI.init();
 
         function readTestDataFile(){
             TestDataFileFactory.fetch()
@@ -1477,6 +1479,7 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
                             }
                         }
                     }
+								wizardAPI && wizardAPI.init();
                 },
                     function (msg) {
                         alert(msg);
