@@ -64,6 +64,7 @@ KEYS = {'ADD': Keys.ADD, 'ALT': Keys.ALT, 'ARROW_DOWN': Keys.ARROW_DOWN,
          'UP': Keys.UP
          }
 
+
 class ElementOperations():
     """ Element operations """
 
@@ -84,7 +85,8 @@ class ElementOperations():
         if element:
             action_function = self._get_action_function(action.lower())
             if not action_function:
-                print_error((action + " is not a supported a supported value."))
+                print_error((action + " is not a supported "
+                             "a supported value."))
             else:
                 count = 0
                 while (count <= 3):
@@ -113,9 +115,20 @@ class ElementOperations():
                         status = False
                         try:
                             count = count + 1
-                            status = self.wait_time(browser, locator, action)
-                            if status is True:
-                                return status
+                            if action == "get_text":
+                                print_info("waiting for 3 seconds "
+                                           "before retrying")
+                                sleep(3)
+                                status, value = action_function(element,
+                                                                **kwargs)
+                                if status is True:
+                                    return status, value
+                            else:
+                                status = self.wait_time(browser,
+                                                        locator,
+                                                        action)
+                                if status is True:
+                                    return status
                         except StaleElementReferenceException:
                             status = False
                     except Exception as exception:
