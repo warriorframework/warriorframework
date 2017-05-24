@@ -1749,6 +1749,7 @@ a.list-group-item.border-less
     width: 100%;
     line-height: 14px;
     margin-top: 3px;
+		font-variant: small-caps;
 }
 a.list-group-item.border-less:nth-child(1)
  > i{
@@ -1985,4 +1986,62 @@ label.filelist.ng-binding.ng-scope:last-child {
     z-index: 999;
 		-webkit-animation: opacity .4s ease;
     animation: opacity .4s ease;
+}
+
+table.table.table-striped.table-bordered.table-condensed.ng-scope {
+    border: none;
+}
+
+.table-bordered>tbody>tr>td, .table-bordered>tbody>tr>th, .table-bordered>tfoot>tr>td, .table-bordered>tfoot>tr>th, .table-bordered>thead>tr>td, .table-bordered>thead>tr>th {
+    border: none;
+    padding: 9px 10px;
+    border-bottom: solid 1px #ddd;
+}
+
+.table-bordered>tbody>tr>th {
+    border-top: none;
+}
+
+.table-bordered>tbody>tr>td > a {
+    color: grey;
+}
+i.fa.fa-folder-open ~ a, i.fa.fa-folder-open ~ span a {
+    color: grey;
+}
+i.fa.fa-folder-open ~ a:hover, i.fa.fa-folder-open ~ span a:hover{
+    color: #262626; 
+    text-decoration: none;
+}
+i.fa.fa-folder-open ~ span label{
+    font-size: 0;
+}
+i.fa.fa-folder-open ~ span label:before{
+    content: "\f105";
+    color: grey;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: 14px;
+    margin: 0 4px;
+}
+.table-bordered>tbody>tr>td > a:hover{
+    color: #262626;  
+    text-decoration: none;
+}
+
+.btn.btn-default {
+    color: #5b5b5b !important;
+}
+
+i.fa.fa-folder-open {
+    padding: 5px;
+    margin-right: 5px;
+    background: #6b6b6b;
+    color: white;
+    border-radius: 3px;
+    margin-left: 9px;
+    text-align: center;
+}
+
+i.fa.fa-folder-open:hover + a{
+    color: #262626; 
+    text-decoration: none;
 }
