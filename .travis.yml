@@ -6,6 +6,9 @@ matrix:
       env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/pj_comparison.xml
       python: 2.7
     - os: linux
+      env: INSTALL=yes TESTFILE=wrong_file PYLINT=yes
+      python: 2.7
+    - os: linux
       env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/pj_cond_var.xml
       python: 2.7
     - os: linux
