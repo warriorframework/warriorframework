@@ -4928,6 +4928,7 @@
 				setTimeout(function(){
 					wizardAPI.newView( verificationView, initalT.next().next(), view );
 					wizardAPI.newView( commandView, initalT.next(), view );
+					wizardAPI.scrollRight( view );
 				}, 10 );
 				table = table.clone().appendTo( table.parent() );
 			}
@@ -4940,6 +4941,14 @@
 				var inputs = view.find('input, select');
 				inputs.val('');
 				table = table.clone().appendTo( table.parent() );
+				
+				var headerTxt = view.find('h3');
+				
+        var numeric = headerTxt.text().match(/\d/g) ? headerTxt.text().match(/\d/g).toString().replace(',', '') : null;
+				if( numeric )
+					headerTxt = view.find('h3').add(table.find('h3')).text( headerTxt.text().replace( numeric, parseInt( numeric ) + 1 ));
+				else
+					headerTxt = view.find('h3').add(table.find('h3')).append(' 2');
 			}
 			else{
 			  var inputs = view.find('input, select');
@@ -4977,6 +4986,7 @@
 			view.find('.new, .copy').off('click').on('click', function(){
 				wizardAPI.newView.call( this, view, table );
 			});
+			wizardAPI.pin();
 			return view;
 		},
 		
@@ -5068,7 +5078,7 @@
 		},
 		
 		pin: function(){
-			wizardAPI.body.find('.pin').on('click', function(){
+			wizardAPI.body.find('.pin').off('click').on('click', function(){
 				var $elem =$(this);
 			  var table = $elem.closest('.table');
 				var container = table.parent();
@@ -5089,11 +5099,14 @@
 		
 		generatePage: function(){
 			wizardAPI.specialCases();
+			var testBlock = '';
 			$.each( wizardAPI.formJSON, function( j ){
 				var elem = this;
 				var view = wizardAPI.view.clone();
 				var table = wizardAPI.Table;
+				elem.level1 = testBlock && testBlock.includes('Testdata') && !elem.level2.includes('Testdata') ? testBlock : elem.level1;
 				var header = '<h3>' + elem.level1 + '</h3><h4>' + elem.level2 + ' ' + ( elem.level3 && elem.level3 != 'Verification' ? elem.level3 : '' ) + '</h4>';
+			  testBlock = elem.level2.includes('Testdata') ? elem.level2 : testBlock;
 				header = header.replace('Verifications Command', 'Commands');
 				header = header.replace('Verifications Combinations', 'Verification Combinations');
 				var feilds = view.find('.feilds');
