@@ -17,7 +17,7 @@
         </Requirements>
         <Testcases>
                 <Testcase>
-                        <path>../../testcases/framework_tests/par_seq_execution/seq_ts_seq_tc_1.xml</path>
+                        <path>../../../testcases/framework_tests/par_seq_execution/seq_ts_seq_tc_1.xml</path>
                         <context>positive</context>
                         <InputDataFile/>
                         <runtype>sequential_keywords</runtype>

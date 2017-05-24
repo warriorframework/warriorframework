@@ -78,6 +78,16 @@ def delFile(fname):
         filestatus = os.remove(fname)
     return filestatus
 
+def delFolder(path):
+    status = False
+    if dirExists(path):
+        try:
+            shutil.rmtree(path)
+            status = True
+        except OSError:
+            print_error("Cannot remove folder {}".format(path))
+    return status
+
 # Return time and date
 def getDateTime (time_format=None):
     """Returns the current year-month-date_hour-minute-second """

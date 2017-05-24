@@ -6,7 +6,6 @@
                 <Engineer>ka</Engineer>
                 <Date>2017-05-23</Date>
                 <Time>13:40</Time>
-                <State>Draft</State>
                 <InputDataFile>No_Data</InputDataFile>
                 <Datatype/>
                 <default_onError action="next"/>
@@ -18,10 +17,9 @@
                 <Requirement/>
         </Requirements>
         <Steps>
-                <step Driver="ci_regression_driver" Keyword="create_file" TS="1" draft="yes">
+                <step Driver="ci_regression_driver" Keyword="create_sub_tmp_file" TS="1" draft="yes">
                         <Arguments>
-                                <argument name="dir" value=""/>
-                                <argument name="filename" value=""/>
+                                <argument name="filename" value="1.txt"/>
                         </Arguments>
                         <onError action="next"/>
                         <Description/>
@@ -31,10 +29,9 @@
                         <impact>impact</impact>
                         <runmode type="Standard" value=""/>
                 </step>
-                <step Driver="ci_regression_driver" Keyword="create_file" TS="2" draft="yes">
+                <step Driver="ci_regression_driver" Keyword="create_sub_tmp_file" TS="2" draft="yes">
                         <Arguments>
-                                <argument name="dir" value=""/>
-                                <argument name="filename" value=""/>
+                                <argument name="filename" value="2.txt"/>
                         </Arguments>
                         <onError action="next"/>
                         <Description/>
@@ -44,10 +41,21 @@
                         <impact>impact</impact>
                         <runmode type="Standard" value=""/>
                 </step>
-                <step Driver="ci_regression_driver" Keyword="create_file" TS="3" draft="yes">
+                <step Driver="ci_regression_driver" Keyword="create_sub_tmp_file" TS="3" draft="yes">
                         <Arguments>
-                                <argument name="dir" value=""/>
-                                <argument name="filename" value=""/>
+                                <argument name="filename" value="3.txt"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type=""/>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="ci_regression_driver" Keyword="tmp_file_count" TS="3" draft="yes">
+                        <Arguments>
+                                <argument name="int_count" value="0"/>
                         </Arguments>
                         <onError action="next"/>
                         <Description/>

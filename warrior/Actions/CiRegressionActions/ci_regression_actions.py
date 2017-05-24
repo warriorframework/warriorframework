@@ -15,6 +15,7 @@ import datetime
 from Framework import Utils
 from Framework.Utils import data_Utils, file_Utils
 import os
+import time
 from Framework.Utils.testcase_Utils import pNote
 
 class CIregressionActions(object):
@@ -268,7 +269,37 @@ class CIregressionActions(object):
         else:
             raise Exception("This is raised in ci_regression_actions.local_data_test")
 
-    def create_dir(self):
+    def create_tmp_dir(self):
+        path = file_Utils.createDir(file_Utils.getDirName(self.logsdir), "tmp")
+        return True, {"parallel_exec_tmp_dir": os.path.join(file_Utils.getDirName(self.logsdir), "tmp")} if path else False
+
+    def create_sub_tmp_file(self, filename):
+        path = data_Utils.get_object_from_datarepository("parallel_exec_tmp_dir")
+        f = open(os.path.join(path, filename), "w")
+        f.write("This is a test string")
+        f.close()
+        time.sleep(10)
+        status = False
+        try:
+            file_Utils.delFile(os.path.join(path, filename))
+            status = True
+        except OSError:
+            pNote("Cannot remove tmp file, no write access to {}".format(path), "error")
+        return status
+
+    def tmp_file_count(self, int_count):
+        # in datautils
         # def remove(nfile):
         # def createDir(path, dirname)
         # to be developed: ls/dir to list files in dir
+        path = data_Utils.get_object_from_datarepository("parallel_exec_tmp_dir")
+        content = os.listdir(path)
+        print content
+        time.sleep(5)
+        return len(content) == int_count
+
+    def delete_tmp_dir(self):
+        path = data_Utils.get_object_from_datarepository("parallel_exec_tmp_dir")
+        # return file_Utils.delFolder(path)
+        print path
+        return True

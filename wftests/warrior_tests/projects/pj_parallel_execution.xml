@@ -11,7 +11,7 @@
         </Details>
         <Testsuites>
                 <Testsuite>
-                        <path>../../suites/framework_tests/seq_par_execution/seq_ts_seq_tc.xml</path>
+                        <path>../suites/framework_tests/seq_par_execution/seq_ts_seq_tc.xml</path>
                         <Execute ExecType="Yes">
                                 <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
                         </Execute>
@@ -19,7 +19,7 @@
                         <impact>impact</impact>
                 </Testsuite>
                 <Testsuite>
-                        <path>../../suites/framework_tests/seq_par_execution/seq_ts_par_tc.xml</path>
+                        <path>../suites/framework_tests/seq_par_execution/seq_ts_par_tc.xml</path>
                         <Execute ExecType="Yes">
                                 <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
                         </Execute>
@@ -27,7 +27,7 @@
                         <impact>impact</impact>
                 </Testsuite>
                 <Testsuite>
-                        <path>../../suites/framework_tests/seq_par_execution/ts_par_tc_seq_1.xml</path>
+                        <path>../suites/framework_tests/seq_par_execution/ts_par_tc_seq_1.xml</path>
                         <Execute ExecType="Yes">
                                 <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
                         </Execute>
@@ -35,7 +35,7 @@
                         <impact>impact</impact>
                 </Testsuite>
                 <Testsuite>
-                        <path>../../suites/framework_tests/seq_par_execution/ts_par_tc_seq_2.xml</path>
+                        <path>../suites/framework_tests/seq_par_execution/ts_par_tc_seq_2.xml</path>
                         <Execute ExecType="Yes">
                                 <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
                         </Execute>
@@ -43,7 +43,7 @@
                         <impact>impact</impact>
                 </Testsuite>
                 <Testsuite>
-                        <path>../../suites/framework_tests/seq_par_execution/ts_par_tc_seq_3.xml</path>
+                        <path>../suites/framework_tests/seq_par_execution/ts_par_tc_seq_3.xml</path>
                         <Execute ExecType="Yes">
                                 <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
                         </Execute>
@@ -51,7 +51,7 @@
                         <impact>impact</impact>
                 </Testsuite>
                 <Testsuite>
-                        <path>../../suites/framework_tests/seq_par_execution/ts_par_tc_par_1.xml</path>
+                        <path>../suites/framework_tests/seq_par_execution/ts_par_tc_par_1.xml</path>
                         <Execute ExecType="Yes">
                                 <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
                         </Execute>
@@ -59,7 +59,7 @@
                         <impact>impact</impact>
                 </Testsuite>
                 <Testsuite>
-                        <path>../../suites/framework_tests/seq_par_execution/ts_par_tc_par_2.xml</path>
+                        <path>../suites/framework_tests/seq_par_execution/ts_par_tc_par_2.xml</path>
                         <Execute ExecType="Yes">
                                 <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
                         </Execute>
@@ -67,7 +67,7 @@
                         <impact>impact</impact>
                 </Testsuite>
                 <Testsuite>
-                        <path>../../suites/framework_tests/seq_par_execution/ts_par_tc_par_3.xml</path>
+                        <path>../suites/framework_tests/seq_par_execution/ts_par_tc_par_3.xml</path>
                         <Execute ExecType="Yes">
                                 <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
                         </Execute>

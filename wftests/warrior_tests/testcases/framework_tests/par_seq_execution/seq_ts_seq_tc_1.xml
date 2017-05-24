@@ -6,7 +6,6 @@
                 <Engineer>ka</Engineer>
                 <Date>2017-05-23</Date>
                 <Time>13:34</Time>
-                <State>Draft</State>
                 <InputDataFile>No_Data</InputDataFile>
                 <Datatype/>
                 <default_onError action="next"/>
@@ -18,9 +17,8 @@
                 <Requirement/>
         </Requirements>
         <Steps>
-                <step Driver="ci_regression_driver" Keyword="create_dir" TS="1" draft="yes">
+                <step Driver="ci_regression_driver" Keyword="create_tmp_dir" TS="1" draft="yes">
                         <Arguments>
-                                <argument name="dir" value=""/>
                         </Arguments>
                         <onError action="next"/>
                         <Description/>
