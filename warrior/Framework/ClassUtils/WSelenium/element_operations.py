@@ -75,7 +75,10 @@ class ElementOperations():
     def perform_element_action(self, element_or_browser, locator=None,
                                action=None, **kwargs):
         """Generic method to perform specific actions on an element
-        :Currently supported actions and the values that they take """
+        :Currently supported actions and the values that they take
+        if the user provided action is "get_text", it would return the
+        value of the particular element and the status of it. If not it would
+        return only the status"""
         browser = kwargs.get('browser')
         status = True
         if action != "perform_keypress":
