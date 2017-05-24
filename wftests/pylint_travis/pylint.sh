@@ -52,4 +52,6 @@ if [ "${PYLINT}" = "yes" ] ; then
     else
         exit 0;
     fi
+else
+    echo "env var PYLINT is not set to yes"
 fi
