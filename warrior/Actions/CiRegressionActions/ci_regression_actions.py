@@ -292,10 +292,11 @@ class CIregressionActions(object):
         # def remove(nfile):
         # def createDir(path, dirname)
         # to be developed: ls/dir to list files in dir
+        time.sleep(5)
         path = data_Utils.get_object_from_datarepository("parallel_exec_tmp_dir")
         content = os.listdir(path)
         print content
-        time.sleep(5)
+        print len(content), int_count
         return len(content) == int_count
 
     def delete_tmp_dir(self):
