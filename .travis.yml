@@ -6,7 +6,7 @@ matrix:
       env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/pj_comparison.xml
       python: 2.7
     - os: linux
-      env: INSTALL=yes TESTFILE=no_test PYLINT=yes
+      env: INSTALL=yes TESTFILE=./wftests/pylint_travis/pylint.sh PYLINT=yes
       python: 2.7
     - os: linux
       env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/pj_cond_var.xml
@@ -36,7 +36,7 @@ install:
 
 script:
     - if [ ${PYLINT} = "yes" ]; then
-        ./wftests/pylint_travis/pylint.sh
+        $TESTFILE
       else
         python ./warrior/Warrior $TESTFILE
       fi
