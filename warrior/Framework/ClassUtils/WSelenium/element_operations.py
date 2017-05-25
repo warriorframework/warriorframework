@@ -180,7 +180,7 @@ class ElementOperations():
         action to be performed"""
         action_function = ACTIONS.get(action.lower().replace(' ', ''), None)
         return getattr(self, action_function) if action_function else None
-    
+
     def _click_element(self, element, **kwargs):
         """ Clicks on the provided element
         :Arguments:
@@ -188,9 +188,11 @@ class ElementOperations():
         """
         status = True
         print_info("Click on element")
-        if element is not None:
-            element.click()
-        else:
+        try:
+            if element is not None:
+                element.click()
+        except Exception as e:
+            print_error("An Exception Occurred {}".format(e))
             status = False
         return status
 
@@ -201,10 +203,11 @@ class ElementOperations():
         """
         status = True
         print_info("Double click on element")
-        if element is not None:
+        try:
             browser_instance = kwargs.get('browser')
             ActionChains(browser_instance).double_click(element)
-        else:
+        except Exception as e:
+            print_error("An Exception Occurred {}".format(e))
             status = False
         return status
 
@@ -216,11 +219,12 @@ class ElementOperations():
             2. value = a string that has to be typed into the element.
         """
         status = True
-        if element is not None:
-            value = kwargs.get('value', '')
-            print_info("Sending '{0}' to element".format(value))
+        value = kwargs.get('value', '')
+        print_info("Sending '{0}' to element".format(value))
+        try:
             element.send_keys(value)
-        else:
+        except Exception as e:
+            print_error("An Exception Occurred {}".format(e))
             status = False
         return status
 
@@ -250,14 +254,18 @@ class ElementOperations():
             1. source = a valid WebElement
             2. target = a valid WebElement
         """
-        status = False
-        browser_instance = kwargs.get('browser')
-        target = self._get_element(browser_instance,
-                                   kwargs.get('target_locator'))
-        if source is not None and target is not None:
-            ActionChains(browser_instance).drag_and_drop(source,
-                                                         target).perform()
-            status = True
+        status = True
+        print_info("Simulate a drag and drop")
+        try:
+            browser_instance = kwargs.get('browser')
+            target = self._get_element(browser_instance,
+                                       kwargs.get('target_locator'))
+            if source is not None and target is not None:
+                ActionChains(browser_instance).drag_and_drop(source,
+                                                             target).perform()
+        except Exception as e:
+            print_error("An Exception Occurred {}".format(e))
+            status = False
         return status
 
     def _drag_and_drop_by_offset(self, source, **kwargs):
@@ -268,14 +276,20 @@ class ElementOperations():
             2. xoffset = X offset to move to
             3. yoffset = Y offset to move to
         """
-        status = False
-        xoffset = kwargs.get('xoffset')
-        yoffset = kwargs.get('yoffset')
-        browser_instance = kwargs.get('browser')
-        actions = ActionChains(browser_instance)
-        if source is not None and xoffset is not None and yoffset is not None:
+        status = True
+        print_info("drag and drop an element with offset")
+        try:
+            xoffset = kwargs.get('xoffset')
+            yoffset = kwargs.get('yoffset')
+            browser_instance = kwargs.get('browser')
+            actions = ActionChains(browser_instance)
             actions.drag_and_drop_by_offset(source, xoffset, yoffset).perform()
-            status = True
+        except NoSuchElementException as e:
+            print_error("NoSuchElementException occurred")
+            status = False
+        except Exception as e:
+            print_error("An Exception Occurred {}".format(e))
+            status = False
         return status
 
     def _clear_text(self, element, **kwargs):
@@ -284,10 +298,11 @@ class ElementOperations():
             1. element = a valid WebElement
         """
         status = True
-        if element is not None:
-            print_info("Clear element")
+        print_info("Clear element")
+        try:
             element.clear()
-        else:
+        except Exception as e:
+            print_error("An Exception Occurred {}".format(e))
             status = False
         return status
 
