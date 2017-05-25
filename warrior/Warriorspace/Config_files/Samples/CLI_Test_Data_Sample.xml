@@ -346,9 +346,7 @@ Also refer the python regex documentation https://docs.python.org/2/library/re.h
 				In this case the [VAR_SUB] will be substituted with the node reference provided and then the equivalent
 				value will be substituted from the varaiable config file.
 
-	**** Currently VAR_SUB is supported for command, prompts (start/end).
-	Support for VAR_SUB on the verification is being added and will
-	be delivered soon ****
+	**** Currently VAR_SUB is supported for command, prompts (start/end) and verify tag ****
 
 	-->
 
@@ -364,6 +362,10 @@ Also refer the python regex documentation https://docs.python.org/2/library/re.h
 
 		<command verify="v7" end="qemux86-64%" start=".*"
 		send="set eqpt shelf ${network1.ne1.shelf1.card1.shelf} admin-state [VAR_SUB]"/>
+
+        <!-- command showing "VAR_SUB" support in verify tag
+        - In the the testcase step-1:  var_sub="network1.ne1.shelf1"-->
+        <command verify="${[VAR_SUB].verify_tag" send="show eqpt shelf ${network1.ne1.shelf1.id} pi"/>
 
 	<!--
 	- Here i have defined the alarms as and their related data in the alarms
