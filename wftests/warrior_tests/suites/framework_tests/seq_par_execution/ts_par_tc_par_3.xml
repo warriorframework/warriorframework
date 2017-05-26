@@ -6,7 +6,7 @@
                 <Engineer>ka</Engineer>
                 <Date>05/23/2017</Date>
                 <Time>14:21:58</Time>
-                <type exectype="parallel_testcases"/>
+                <type exectype="sequential_testcases"/>
                 <State/>
                 <default_onError action="next"/>
                 <Resultsdir/>
