@@ -11,7 +11,15 @@
         </Details>
         <Testsuites>
                 <Testsuite>
-                        <path>../Suites/demo_suite.xml</path>
+                        <path>../Suites/demo_suite1.xml</path>
+                        <onError action="abort" value=""/>
+                        <impact>impact</impact>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                </Testsuite>
+                <Testsuite>
+                        <path>../Suites/demo_suite2.xml</path>
                         <onError action="abort" value=""/>
                         <impact>impact</impact>
                         <Execute ExecType="Yes">

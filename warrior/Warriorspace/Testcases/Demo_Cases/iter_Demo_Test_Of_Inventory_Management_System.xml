@@ -1,0 +1,59 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+                <Name>Demo_Test_Of_Inventory_Management_System</Name>
+                <Title>Demo_Test_Of_Inventory_Management_System</Title>
+                <Datatype>Iterative</Datatype>
+                <default_onError action="next"/>
+                <Date>2017-05-26</Date>
+                <Time>21:28</Time>
+                <Engineer>asethura</Engineer>
+                <ExpectedResults>Pass To Demo iterative parallel </ExpectedResults>
+                <Category>Demo</Category>
+                <State>Released</State>
+        </Details>
+        <Requirements>
+                <Requirement>Demo-requirement-001</Requirement>
+                <Requirement>Demo-requirement-002</Requirement>
+                <Requirement>Demo-requirement-003</Requirement>
+        </Requirements>
+        <Steps>
+                <step Driver="demo_driver" Keyword="pc_replacement" TS="1">
+                        <Arguments>
+                                <argument name="system_name" value="PCs[HP]"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Check if lab PC is current or need replacement</Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+
+                </step>
+                <step Driver="demo_driver" Keyword="pc_replacement" TS="2">
+                        <Arguments>
+                                <argument name="system_name" value="PCs[HP]"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Check if lab PC is current or need replacement</Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+
+                </step>
+                <step Driver="demo_driver" Keyword="check_lab_equipment" TS="4">
+                        <Arguments>
+                                <argument name="system_name" value="PCs[all]"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Check lab PC replacement or test set calibration status</Description>
+                        <Execute ExecType="Yes"/>
+                        <context>negative</context>
+                        <impact>noimpact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+        </Steps>
+</Testcase>
