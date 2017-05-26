@@ -1056,7 +1056,7 @@ def verify_relation(actual_value, cond_value, operator, cond_type):
     if operator:
         ver_args.update({"comparison": operator})
     update_datarepository({"verify_cond": actual_value})
-    result = verify_data(cond_value, "verify_cond", **ver_args)
+    result, _ = verify_data(cond_value, "verify_cond", **ver_args)
     status = True if result == "TRUE" else False
     return status
 
