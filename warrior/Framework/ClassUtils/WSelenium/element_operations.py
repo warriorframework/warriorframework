@@ -99,9 +99,9 @@ class ElementOperations():
                             if status is True:
                                 return status, value
                             else:
-                                count = count + 1
-                                status = self.wait_time(browser, locator,
-                                                        action)
+                                status, count = self.wait_time(count, browser,
+                                                               locator,
+                                                               action)
                                 if status is True:
                                     return status
                         else:
@@ -109,16 +109,16 @@ class ElementOperations():
                             if status is True:
                                 return status
                             else:
-                                count = count + 1
-                                status = self.wait_time(browser, locator,
-                                                        action)
+                                status, count = self.wait_time(count, browser,
+                                                               locator,
+                                                               action)
                                 if status is True:
                                     return status
                     except StaleElementReferenceException:
                         status = False
                         try:
-                            count = count + 1
                             if action == "get_text":
+                                count = count + 1
                                 print_info("waiting for 3 seconds "
                                            "before retrying")
                                 sleep(3)
@@ -127,9 +127,9 @@ class ElementOperations():
                                 if status is True:
                                     return status, value
                             else:
-                                status = self.wait_time(browser,
-                                                        locator,
-                                                        action)
+                                status, count = self.wait_time(count, browser,
+                                                               locator,
+                                                               action)
                                 if status is True:
                                     return status
                         except StaleElementReferenceException:
@@ -148,12 +148,13 @@ class ElementOperations():
                         "a {0} operation got {1}".format(action, element))
         return status
 
-    def wait_time(self, browser, locator, action):
+    def wait_time(self, count, browser, locator, action):
         """ wait time to find the element again """
+        count = count + 1
         print_info("waiting for 3 seconds before retrying")
         sleep(3)
         status = self._stale_element_exception(browser, locator, action)
-        return status
+        return status, count
 
     def get_page_source(self, browser):
         '''
