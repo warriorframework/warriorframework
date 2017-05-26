@@ -56,12 +56,49 @@ Eg ${ENV.IPADDR} will be replaced with the value of IPADDR variable in the envir
 	    	<vc2>../Config_files/Cli_varconfig2.xml</vc2>
 	   	</subsystem>
 
+<!-- 6. Substituting values form Repository variables:
+Substituting values from Repository variables is supported in input datafile
+
+To reference the Repository variables use the pattern ${REPO.variable_name}
+where variable_name is the name of the variable in the Repository
+Eg ${REPO.IPADDR} will be replaced with the value of IPADDR key in the Repository
+
+Even nested key substitutions are supported
+E.g if the repository has ssh ports for different shell in the form of dictionary
+we can specify the SSH_PORT from BASH as ${REPO.BASH.SSH_PORT}
+  -->
+
+    	<subsystem name="if1">
+	    	<ip>${REPO.IPADDR}</ip> 
+	    	<conn_type>ssh</conn_type>
+            <ssh_port>${REPO.BASH.SSH_PORT}</ssh_port>
+	    	<username>labadmin</username>
+	    	<password>labadmin</password>
+	    	<prompt>labadmin@rtxdpoe03:</prompt>
+	    	<testdata>../Config_files/Cli_testdata.xml</testdata>
+	    	<variable_config>../Config_files/Cli_varconfig.xml</variable_config>
+	    	<!-- By default the core keywords to send commands from testdata
+	    	will use the values provided for the tag/attribute 'testdata' & 'variable_config' 
+	    	to get the location of testdata and variable config files.
+	    	
+	    	If the user wishes to use a different test data or variable config file for a 
+	    	particular step in the testcase then they can provide the details in any user-defined
+	    	tag/attribute as shown below and provide the name of tag/attribute as value to the
+	    	argument td_tag/vc_tag in the steps.
+	    	
+	    	-->
+	    	<td1>../Config_files/Cli_testdata1.xml</td1>
+	    	<td2>../Config_files/Cli_testdata2.xml</td2>
+	    	<vc1>../Config_files/Cli_varconfig1.xml</vc1>
+	    	<vc2>../Config_files/Cli_varconfig2.xml</vc2>
+	   	</subsystem>
+
 	</system>
 
   <Testsets>
 
 
-<!-- 6. Testsets -->
+<!-- 7. Testsets -->
 <!-- This section describes how to provide data for a testset 
 
 a. Data for testset should be provided in the format specified in 
