@@ -935,6 +935,26 @@ per_td_block:
 			a 7 - a, b, c, d, e
 			a 6 - a, b, c, d, e
 			a 5 - a, b, c, d, e
+
+		==================================================
+		V : Repository variable substitution support:
+		==================================================
+
+		User can verify with the variable that is already stored in the data repository
+		For example
+		-->
+		<testdata title="list_substitution_9" execute="yes" start_pattern="ddd" end_pattern="bbb">
+			<command send="a dddv1.listbbb" verify="v1,v2"/>
+            <v1 found="yes" search="${REPO.key}"/>
+            <v2 found="yes" search="${REPO.key1.key2}"/>
+		</testdata>
+        <!--
+             here the repository should already have a key whose value needs to be matched here
+             for v1 verification
+             This also supports nested checking when the value from the repository is nested like
+             for v2 we are checking the value of key2 within key1 of Repository
+             i.e., Repository[key1][key2] value would be verified against the output
+
 -->
 
 </data>
