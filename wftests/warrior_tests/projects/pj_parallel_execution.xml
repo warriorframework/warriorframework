@@ -10,7 +10,7 @@
                 <default_onError action="next"/>
         </Details>
         <Testsuites>
-                <!-- <Testsuite>
+                <Testsuite>
                         <path>../suites/framework_tests/seq_par_execution/seq_ts_seq_tc.xml</path>
                         <Execute ExecType="Yes">
                                 <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
@@ -25,7 +25,7 @@
                         </Execute>
                         <onError action="next" value=""/>
                         <impact>impact</impact>
-                </Testsuite> -->
+                </Testsuite>
                 <Testsuite>
                         <path>../suites/framework_tests/seq_par_execution/ts_par_tc_seq_1.xml</path>
                         <Execute ExecType="Yes">
@@ -42,14 +42,14 @@
                         <onError action="next" value=""/>
                         <impact>impact</impact>
                 </Testsuite>
-                <!-- <Testsuite>
+                <Testsuite>
                         <path>../suites/framework_tests/seq_par_execution/ts_par_tc_seq_3.xml</path>
                         <Execute ExecType="Yes">
                                 <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
                         </Execute>
                         <onError action="next" value=""/>
                         <impact>impact</impact>
-                </Testsuite>
+                </Testsuite> 
                 <Testsuite>
                         <path>../suites/framework_tests/seq_par_execution/ts_par_tc_par_1.xml</path>
                         <Execute ExecType="Yes">
@@ -73,6 +73,6 @@
                         </Execute>
                         <onError action="next" value=""/>
                         <impact>impact</impact>
-                </Testsuite> -->
+                </Testsuite>
         </Testsuites>
 </Project>

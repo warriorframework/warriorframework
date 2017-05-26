@@ -20,7 +20,7 @@
                         <path>../../../testcases/framework_tests/par_seq_execution/seq_ts_par_tc_2.xml</path>
                         <context>positive</context>
                         <InputDataFile/>
-                        <runtype>sequential_keywords</runtype>
+                        <runtype>parallel_keywords</runtype>
                         <onError action="next" value=""/>
                         <runmode type="Standard" value=""/>
                         <Execute ExecType="Yes">
