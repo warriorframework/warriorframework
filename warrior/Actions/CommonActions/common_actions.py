@@ -109,20 +109,32 @@ class CommonActions(object):
         Utils.testcase_Utils.report_substep_status(status)
         return status
 
-    def store_in_repo(self, datavar, datavalue, type='str'):
+    def store_in_repo(self, datavar, datavalue, datatype='str'):
         """For storing datavalue in datavar datarepository
         :Argument:
             datavar = var in data repository in which to store
+                      this could be dot separated to store in nested fashion
+                      i.e., if var is k1.k2.k3 then the data value would be
+                      stored as a value in datarepository[k1][k2][k3]
             datavalue = the value to be stored
-            type = type of datavalue (string/int/float)
+            datatype = type of datavalue (string/int/float)
         """
+        def get_dict_to_update(var, val):
+            dic = {}
+            if '.' in var:
+                [key, value] = var.split('.', 1)
+                dic[key] = get_dict_to_update(value, val)
+            else:
+                dic[var] = val
+            return dic
         if type == 'int':
             value = int(datavalue)
         elif type == 'float':
             value = float(datavalue)
         else:
             value = datavalue
-        update_datarepository({datavar: value})
+        dict_to_update = get_dict_to_update(datavar, value)
+        update_datarepository(dict_to_update)
         return True
 
     def verify_data(self, expected, object_key, type='str', comparison='eq'):
