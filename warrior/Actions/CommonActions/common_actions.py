@@ -109,7 +109,7 @@ class CommonActions(object):
         Utils.testcase_Utils.report_substep_status(status)
         return status
 
-    def store_in_repo(self, datavar, datavalue, datatype='str'):
+    def store_in_repo(self, datavar, datavalue, type='str'):
         """For storing datavalue in datavar datarepository
         :Argument:
             datavar = var in data repository in which to store
@@ -117,7 +117,7 @@ class CommonActions(object):
                       i.e., if var is k1.k2.k3 then the data value would be
                       stored as a value in datarepository[k1][k2][k3]
             datavalue = the value to be stored
-            datatype = type of datavalue (string/int/float)
+            type = type of datavalue (string/int/float)
         """
         def get_dict_to_update(var, val):
             dic = {}
