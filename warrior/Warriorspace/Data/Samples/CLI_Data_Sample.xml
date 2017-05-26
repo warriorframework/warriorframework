@@ -66,6 +66,13 @@ Eg ${REPO.IPADDR} will be replaced with the value of IPADDR key in the Repositor
 Even nested key substitutions are supported
 E.g if the repository has ssh ports for different shell in the form of dictionary
 we can specify the SSH_PORT from BASH as ${REPO.BASH.SSH_PORT}
+The Repository is {...
+                    BASH: {
+                            SSH_PORT: port1,
+                            KSH_PORT: port2}
+                    KSH: ...
+                    ...
+                    }
   -->
 
     	<subsystem name="if1">
