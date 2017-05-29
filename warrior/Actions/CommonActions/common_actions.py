@@ -14,11 +14,14 @@ limitations under the License.
 
 """common_actions module where keywords common to all products are developed"""
 import time
+import json
 import Framework.Utils as Utils
 import os
 from Framework.Utils.print_Utils import print_info, print_error
 from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.data_Utils import get_object_from_datarepository, update_datarepository
+from Framework.Utils.file_Utils import getAbsPath
+
 
 class CommonActions(object):
     """class CommonActions having methods (keywords) that are common for all the products"""
@@ -157,12 +160,61 @@ class CommonActions(object):
         else:
             return False
 
-    def set_env_var(self, var_key, var_value):
+    def set_env_var(self, var_key=None, var_value=None, filepath=None,
+                    jsonkey="environmental_variables"):
         """create a temp environment variable
         the value will only stay for this run
         :Argument:
             var_key = key of the environment variable
             var_value = value of the environment variable
+            filepath = Json file where Environmental variables are defined
+            jsonkey = The key where all the ENV variable & values are defined
+        With jsonkey arg, Users can call same file to set various ENV Variable
+
+        Variable File :
+        Sample environmental_variable file is available under
+        Warriorspace/Config_file/Samples/Set_ENV_Variable_Sample.json
         """
-        os.environ[var_key] = var_value
-        return True
+        status = False
+        if not any([var_key, var_value, filepath]):
+            print_error('Either Provide values to arguments \"var_key\" & \"var_value\" or to argument \"filepath\"')
+
+        if var_key is not None and var_value is not None:
+            os.environ[var_key] = var_value
+            if os.environ[var_key] == var_value:
+                print_info('Set ENV variable {0} with value '
+                           '{1}'.format(var_key, var_value))
+                status = True
+        if filepath is not None:
+            testcasefile_path = get_object_from_datarepository('wt_testcase_filepath')
+            try:
+                filepath=getAbsPath(filepath, os.path.dirname(testcasefile_path))
+                with open(filepath, "r") as json_handle:
+                    get_json = json.load(json_handle)
+                    if jsonkey in get_json:
+                        env_dict = get_json[jsonkey]
+                        for var_key, var_value in env_dict.items():
+                            os.environ[var_key] = var_value
+                            if os.environ[var_key] == var_value:
+                                print_info('Set ENV variable {0} with value '
+                                           '{1}'.format(var_key, var_value))
+                                status = True
+                    else:
+                        print_error('The {0} file is missing the key '
+                                    '\"environmental_variables\", please refer to '
+                                    'the Samples in Config_files'.format(filepath))
+                        status = False
+            except ValueError:
+                print_error('The file {0} is not a valid json '
+                            'file'.format(filepath))
+                status = False
+            except IOError:
+                print_error('The file {0} does not exist'.format(filepath))
+                status = False
+            except Exception as error:
+                print_error('Encountered {0} error'.format(error))
+                status = False
+
+        return status
+
+

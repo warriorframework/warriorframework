@@ -21,19 +21,20 @@ import Framework.Utils as Utils
 from Framework.Utils.print_Utils import print_info, print_debug, print_error, print_exception
 from WarriorCore import onerror_driver
 
-def get_arguments(step): 
+
+def get_arguments(step):
     """ For a step in the testcase xml file gets the list of all
     user supplied arguments and updates it to the args_repository
-    
+
     Arguments:
     1. step = (xml element) an xml element with tag <step>
     """
-    arg_datatype_object = ArgumentDatatype(None, None)   
+    arg_datatype_object = ArgumentDatatype(None, None)
     args_repository = {}
-    Arguments   = step.find('Arguments')
+    Arguments = step.find('Arguments')
     if Arguments is not None and Arguments is not False:
         for argument in Arguments.findall('argument'):
-            arg_name  = argument.get('name')
+            arg_name = argument.get('name')
             if arg_name is not None:
                 arg_value = argument.get('value')
                 if arg_value is None or arg_value is False:
@@ -46,26 +47,29 @@ def get_arguments(step):
                 args_repository[arg_name] = value
     return args_repository
 
+
 def send_keyword_to_productdriver(driver_name, keyword, data_repository, args_repository):
     """send the keyword to corresponding product driver for excution"""
     step_num = data_repository["step_num"]
     #driver_call = 'ProductDrivers.{0}'.format(driver_name)
-    try: 
-        driver_call = __import__("ProductDrivers.{0}".format(driver_name), fromlist=[driver_name])
+    try:
+        driver_call = __import__("ProductDrivers.{0}".format(
+            driver_name), fromlist=[driver_name])
     except Exception:
         trcback = print_exception(Exception)
         data_repository['step-%s_status' % step_num] = 'ERROR'
         data_repository['step-%s_exception' % step_num] = trcback
         Utils.testcase_Utils.pStep()
         return data_repository
-    #return eval(driver_call).main(keyword, data_repository, args_repository)
+    # return eval(driver_call).main(keyword, data_repository, args_repository)
     else:
         return driver_call.main(keyword, data_repository, args_repository)
+
 
 def get_keyword_resultfile(data_repository, system_name, step_num, keyword):
     """Get the keyword result file """
     kw_results_dir = data_repository['wt_kw_results_dir']
-    if system_name is  None:
+    if system_name is None:
         prefix = "step-{0}".format(str(step_num))
     elif system_name is not None:
         prefix = "{0}_step-{1}".format(system_name, str(step_num))
@@ -74,15 +78,19 @@ def get_keyword_resultfile(data_repository, system_name, step_num, keyword):
 
     return keyword_resultfile
 
+
 def get_step_console_log(filename, logsdir, console_name):
     """Assign seperate console logfile for each step in parallel execution """
-    
-    console_logfile = Utils.file_Utils.getCustomLogFile(filename, logsdir, console_name)
+
+    console_logfile = Utils.file_Utils.getCustomLogFile(
+        filename, logsdir, console_name)
     print_info("\n************ This is parallel execution ************")
-    print_info("\n... console logs for {0} will be logged in {1} ".format(console_name, console_logfile))
+    print_info("\n... console logs for {0} will be logged in {1} ".format(
+        console_name, console_logfile))
     Utils.config_Utils.debug_file(console_logfile)
-    
+
     return console_logfile
+
 
 def execute_step(step, step_num, data_repository, system_name, parallel, queue):
     """ Executes a step from the testcase xml file
@@ -91,7 +99,7 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
         - If the step has arguments, get all the arguments and store them as key/value pairs in args_repository
         - Sends the Keyword, data_repository, args_repository to the respective Driver.
         - Reports the status of the keyword executed (obtained as return value from the respective Driver)
-        
+
     Arguments:
     1. step            = (xml element) xml element with tag <step> containing the details of the step to be executed like (Driver, Keyword, Arguments, Impact etc..)
     2. step_num        = (int) step number being executed
@@ -99,16 +107,16 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
     """
 
     tc_junit_object = data_repository['wt_junit_object']
-    driver  = step.get('Driver')
+    driver = step.get('Driver')
     keyword = step.get('Keyword')
     context = Utils.testcase_Utils.get_context_from_xmlfile(step)
     step_impact = Utils.testcase_Utils.get_impact_from_xmlfile(step)
     step_description = Utils.testcase_Utils.get_description_from_xmlfile(step)
-        
-    if parallel is True:            
-            step_console_log = get_step_console_log(data_repository['wt_filename'], data_repository['wt_logsdir'],
-                                                    'step-{0}_{1}_consoleLogs'.format(step_num, keyword))
- 
+
+    if parallel is True:
+        step_console_log = get_step_console_log(data_repository['wt_filename'], data_repository['wt_logsdir'],
+                                                'step-{0}_{1}_consoleLogs'.format(step_num, keyword))
+
     data_repository['step_num'] = step_num
     data_repository['wt_driver'] = driver
     data_repository['wt_keyword'] = keyword
@@ -116,8 +124,8 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
     data_repository['wt_step_context'] = context
     data_repository['wt_step_description'] = step_description
 
-
-    kw_resultfile = get_keyword_resultfile(data_repository, system_name,  step_num, keyword)
+    kw_resultfile = get_keyword_resultfile(
+        data_repository, system_name,  step_num, keyword)
     Utils.config_Utils.set_resultfile(kw_resultfile)
     # print keyword to result file
     Utils.testcase_Utils.pKeyword(keyword, driver)
@@ -125,14 +133,16 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
     print_info("Teststep Description: {0}".format(step_description))
 
     if step.find("runmode") is not None and step.find("runmode").get("attempt") is not None:
-        print_info("keyword attempt: {0}".format(step.find("runmode").get("attempt")))
+        print_info("keyword attempt: {0}".format(
+            step.find("runmode").get("attempt")))
     if step.find("retry") is not None and step.find("retry").get("attempt") is not None:
-        print_info("keyword attempt: {0}".format(step.find("retry").get("attempt")))
+        print_info("keyword attempt: {0}".format(
+            step.find("retry").get("attempt")))
     kw_start_time = Utils.datetime_utils.get_current_timestamp()
     print_info("[{0}] Keyword execution starts".format(kw_start_time))
     # get argument list provided by user
     args_repository = get_arguments(step)
-    if system_name is not None: 
+    if system_name is not None:
         args_repository['system_name'] = system_name
     Utils.testcase_Utils.update_arguments(args_repository)
     Utils.testcase_Utils.update_kw_resultfile(kw_resultfile)
@@ -141,88 +151,99 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
     action, keyword_status = exec_type_driver.main(step)
 
     if action is True:
-        send_keyword_to_productdriver(driver, keyword, data_repository, args_repository)
-        keyword_status  = data_repository['step-%s_status' % step_num] 
-        Utils.testcase_Utils.update_step_num(str(step_num))     
+        send_keyword_to_productdriver(
+            driver, keyword, data_repository, args_repository)
+        keyword_status = data_repository['step-%s_status' % step_num]
+        Utils.testcase_Utils.update_step_num(str(step_num))
         if context.upper() == 'NEGATIVE' and type(keyword_status) == bool:
-            print_debug("Keyword status = {0}, Flip status as context is Negative".format(keyword_status))
+            print_debug("Keyword status = {0}, Flip status as context is Negative".format(
+                keyword_status))
             keyword_status = not keyword_status
     elif action == 'SKIP':
-        print_debug ( "Action is {0}".format(action))
+        print_debug("Action is {0}".format(action))
 
     elif action is False:
         exec_type_onerror = True
-        print_debug ( "Action is {0}".format(action))
-    
+        print_debug("Action is {0}".format(action))
+
     print("\n")
-    print_info ("*** Keyword status ***")
-    step_onError_action = Utils.xml_Utils.get_attributevalue_from_directchildnode(step, 'onError', 'action')
+    print_info("*** Keyword status ***")
+    step_goto_value = False
+    step_onError_action = Utils.xml_Utils.get_attributevalue_from_directchildnode(
+        step, 'onError', 'action')
+    if step_onError_action is not False:
+        if step_onError_action.upper() == 'GOTO':
+            step_goto_value = Utils.xml_Utils.get_attributevalue_from_directchildnode(
+                step, 'onError', 'value')
     testcase_error_action = data_repository['wt_def_on_error_action']
     step_onError_action = step_onError_action if step_onError_action else testcase_error_action
+    if step_onError_action.upper() == "GOTO" and step_goto_value == False:
+        step_goto_value = data_repository['wt_def_on_error_value']
+    onerror = step_onError_action.upper()
+    if step_goto_value is not False and step_goto_value is not None:
+        onerror = onerror + " step " + step_goto_value
     if keyword_status == False and step_onError_action and step_onError_action.upper() == 'ABORT_AS_ERROR':
-        print_info("Keyword status will be marked as ERROR as onError action is set to 'abort_as_error'")
+        print_info(
+            "Keyword status will be marked as ERROR as onError action is set to 'abort_as_error'")
         keyword_status = "ERROR"
     Utils.testcase_Utils.reportKeywordStatus(keyword_status, keyword)
     print_info("step number: {0}".format(step_num))
 
-    string_status = {"TRUE":"PASS", "FALSE":"FAIL", "ERROR":"ERROR", "EXCEPTION":"EXCEPTION", "SKIP":"SKIP"}
+    string_status = {"TRUE": "PASS", "FALSE": "FAIL",
+                     "ERROR": "ERROR", "EXCEPTION": "EXCEPTION", "SKIP": "SKIP"}
 
     if str(keyword_status).upper() in string_status.keys():
-        data_repository['step_%s_result' % step_num] = string_status[str(keyword_status).upper()]
+        data_repository['step_%s_result' %
+                        step_num] = string_status[str(keyword_status).upper()]
     else:
         print_error("unexpected step status, default to exception")
         data_repository['step_%s_result' % step_num] = "EXCEPTION"
 
-    if step_impact.upper() == 'IMPACT': 
+    if step_impact.upper() == 'IMPACT':
         msg = "Status of the executed step  impacts TC result"
         if str(keyword_status).upper() == 'SKIP':
-            keyword_status= None
-        #elif exec_type_onerror is False and str(keyword_status).upper() == 'SKIP':
+            keyword_status = None
+        # elif exec_type_onerror is False and str(keyword_status).upper() ==
+        # 'SKIP':
     elif step_impact.upper() == 'NOIMPACT':
         msg = "Status of the executed step does not impact TC result"
     Utils.testcase_Utils.pNote_level(msg, "debug", "kw")
     if data_repository.has_key('step-%s_exception' % step_num):
-        msg = "Exception message: " + data_repository['step-%s_exception' % step_num]
+        msg = "Exception message: " + \
+            data_repository['step-%s_exception' % step_num]
         Utils.testcase_Utils.pNote_level(msg, "debug", "kw", ptc=False)
-    #time.sleep(1)
+    # time.sleep(1)
     print("\n")
     kw_end_time = Utils.datetime_utils.get_current_timestamp()
     tc_duration = Utils.datetime_utils.get_time_delta(kw_start_time)
     hms = Utils.datetime_utils.get_hms_for_seconds(tc_duration)
     print_info("Keyword duration= {0}".format(hms))
     print_info("[{0}] Keyword execution completed".format(kw_end_time))
-    print_info("\n-----------------------------------------------------\n")
 
-    default_error_action = data_repository['wt_def_on_error_action']
-    default_error_value = data_repository['wt_def_on_error_value']
-    goto_stepnum = onerror_driver.main(step, default_error_action, default_error_value, exec_type_onerror)
-    if goto_stepnum == False:
-        onerror = "Next"
-    elif goto_stepnum == "ABORT":
-        onerror = "Abort"
-    else:
-        onerror = "Goto:" + str(goto_stepnum)
-
-    impact_dict = {"IMPACT":"Impact", "NOIMPACT":"No Impact"}
+    impact_dict = {"IMPACT": "Impact", "NOIMPACT": "No Impact"}
     tc_junit_object.add_keyword_result(data_repository['wt_tc_timestamp'], step_num, keyword,
                                        str(keyword_status), kw_start_time, tc_duration, kw_resultfile,
                                        impact_dict.get(step_impact.upper()), onerror)
-    tc_junit_object.update_count(str(keyword_status), "1", "tc", data_repository['wt_tc_timestamp'])
-    tc_junit_object.update_count("keywords", "1", "tc", data_repository['wt_tc_timestamp'])
+    tc_junit_object.update_count(
+        str(keyword_status), "1", "tc", data_repository['wt_tc_timestamp'])
+    tc_junit_object.update_count(
+        "keywords", "1", "tc", data_repository['wt_tc_timestamp'])
 
     if parallel is True:
-        # put result into multiprocessing queue and later retrieve in corresponding driver
-        queue.put((keyword_status, kw_resultfile, step_impact.upper(), tc_junit_object))
+        # put result into multiprocessing queue and later retrieve in
+        # corresponding driver
+        queue.put((keyword_status, kw_resultfile,
+                   step_impact.upper(), tc_junit_object))
     else:
         return keyword_status, kw_resultfile, step_impact, exec_type_onerror
+
 
 def main(step, step_num, data_repository, system_name, parallel=False, queue=None):
     """Get a step, executes it and returns the result """
     try:
-        step_status = execute_step(step, step_num, 
+        step_status = execute_step(step, step_num,
                                    data_repository, system_name, parallel, queue)
     except Exception:
         step_status = False, [], data_repository['wt_step_impact'], False
         print_error('unexpected error: {0}'.format(traceback.format_exc()))
     return step_status
-

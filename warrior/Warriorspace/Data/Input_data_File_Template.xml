@@ -64,7 +64,7 @@ shown below.
 	    </subsystem>
 
     	<subsystem name="cli" ip="mycli" conn_type="ssh" ssh_port="22"
-	    	username="labadmin" password="labadmin" prompt="labadmin@xyz:"
+	    	username="username" password="password" prompt="username@xyz:"
 	    	testdata="../Config_files/Cli_testdata.xml" variable_config="../Config_files/Cli_varconfig.xml" 
 	    	default="yes">
 	    </subsystem>
@@ -163,9 +163,9 @@ Eg ${ENV.IPADDR} will be replaced with the value of IPADDR variable in the envir
 	    	<ip>${ENV.IPADDR}</ip> 
 	    	<conn_type>ssh</conn_type>
 	    	<ssh_port>${ENV.SSH_PORT}</ssh_port>
-	    	<username>labadmin</username>
-	    	<password>labadmin</password>
-	    	<prompt>labadmin@xyz:</prompt>
+	    	<username>username</username>
+	    	<password>password</password>
+	    	<prompt>username@xyz:</prompt>
 	    	<testdata>../Config_files/Cli_testdata.xml</testdata>
 	    	<variable_config>../Config_files/Cli_varconfig.xml</variable_config>
 	    	<!-- By default the core keywords to send commands from testdata

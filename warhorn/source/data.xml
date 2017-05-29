@@ -63,7 +63,6 @@
             <question>Do you want to clone Katana?</question>
         </attribute>
         <attribute name="url">
-            <suggestion>http://rtx-swtl-git.fnc.net.local/scm/war/katana.git</suggestion>
             <question>Please provide an alternate URL: </question>
         </attribute>
         <attribute name="destination">
@@ -82,7 +81,6 @@
 
     <tag name="warrior">
         <attribute name="url">
-            <suggestion>http://rtx-swtl-git.fnc.net.local/scm/war/warrior_main.git</suggestion>
             <question>Please provide an alternate URL: </question>
         </attribute>
         <attribute name="destination">
@@ -102,11 +100,9 @@
     <tag name="drivers">
         <child name="repository">
             <attribute name="name">
-                <info>The repositories in http://rtx-swtl-git.fnc.net.local/scm/warkey are available</info>
                 <question>Please provide the name of the repository that you want to clone: </question>
             </attribute>
             <attribute name="url">
-                <suggestion>http://rtx-swtl-git.fnc.net.local/scm/warkey/</suggestion>
                 <question>Please provide an alternate URL: </question>
             </attribute>
             <attribute name="label">
@@ -119,11 +115,9 @@
     <tag name="warriorspace">
         <child name="repository">
             <attribute name="name">
-                <info>The repositories in http://rtx-swtl-git.fnc.net.local/scm/was are available</info>
                 <question>Please provide the name of the repository that you want to clone:</question>
             </attribute>
             <attribute name="url">
-                <suggestion>http://rtx-swtl-git.fnc.net.local/scm/was/</suggestion>
                 <question>Please provide an alternate URL:</question>
             </attribute>
             <attribute name="label">
