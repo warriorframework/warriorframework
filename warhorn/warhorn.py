@@ -1131,6 +1131,7 @@ def activate_virtualenv(node, destination, logfile, print_log_name):
     subprocess.call([venv_cmd, "--system-site-packages", ve_name])
     venv_file = "{}/bin/activate_this.py".format(ve_name)
     execfile(venv_file, dict(__file__=venv_file))
+    return True
 
 def replace_tools_from_product_repo(node_list, **kwargs):
     """ This will clone the tools from product repo and then replaces
@@ -1193,6 +1194,7 @@ def assemble_warrior():
 
     """
     setDone(0)
+    virtualenv_activated = False
     if sys.executable is None or sys.executable == "":
         python_executable = "python"
     else:
@@ -1239,9 +1241,11 @@ def assemble_warrior():
             setDone(1)
             getDone()
         dest = get_attribute_value(war_tag, 'destination')
-        activate_virtualenv(node, dest, logfile, print_log_name)
+        virtualenv_activated = activate_virtualenv(node, dest, logfile,
+                                                   print_log_name)
 
-    get_dependencies(logfile, print_log_name, config_file_name)
+    get_dependencies(logfile, print_log_name, config_file_name,
+                     virtualenv_activated)
     internal_copy = get_dest(logfile, print_log_name, config_file_name)
 
     node_list = get_all_direct_child_nodes(config_file_name)
