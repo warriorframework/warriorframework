@@ -15,8 +15,8 @@ class lineResult():
     html = ''
 
     def setDynamicContent( self, line ):
-        self.data.dynamic = [ line.get("keywords"), line.get("passes"), line.get("failures"), line.get("errors"), line.get("exceptions"), line.get("skipped") ]
-        self.data.timestamp = line.get("timestamp")
+        self.data['dynamic'] = [ line.get("keywords"), line.get("passes"), line.get("failures"), line.get("errors"), line.get("exceptions"), line.get("skipped") ]
+        self.data['timestamp'] = line.get("timestamp")
 
     def setAttributes( self, line, type ):
         self.data = {'nameAttr' : type + 'Record',
@@ -25,33 +25,32 @@ class lineResult():
                      'info': line.get("title"),
                      'timestamp': line.get("timestamp"),
                      'duration': line.get("time"),
+                     'status': line.get("status"),
                      'impact': line.get("impact"),
                      'onerror': line.get("onerror"),
-                     'msc': '<span style="padding-left:10px; padding-right: 10px;"><a href="' + line.get("resultfile") + '"><i class="fa fa-line-chart"> </i></a></span><span style="padding-left:10px; padding-right: 10px;"><a href="' + line.get("logsdir") + '"><i class="fa fa-book"> </i></a></span>',
+                     'msc': '<span style="padding-left:10px; padding-right: 10px;"><a href="' + (line.get("resultfile") if line.get("resultfile") else '') + '"><i class="fa fa-line-chart"> </i></a></span><span style="padding-left:10px; padding-right: 10px;"><a href="' + (line.get("logsdir") if line.get("logsdir") else '') + '"><i class="fa fa-book"> </i></a></span>',
                      'static': [ 'Count', 'Passed', 'Failed', 'Errors', 'Exceptions', 'Skipped' ]
                     }
-        self.keys = [ 'type', 'name', 'info', 'timestamp', 'duration', 'impact', 'onerror', 'msc', 'static', 'dynamic' ]
+        self.keys = [ 'type', 'name', 'info', 'timestamp', 'duration', 'status', 'impact', 'onerror', 'msc', 'static', 'dynamic' ]
 
     def setHTML( self, line, type ):
         if self.html == '':
             self.setAttributes( line, type )
         self.setDynamicContent( line )
-
         topLevel = ''
         topLevelNext = ''
         for elem in self.keys:
             if elem == 'dynamic':
-                for dynamicElem in self.data.elem:
-                    topLevelNext += '<td><div>' + dynamicElem + '</div></td>'
-            elif elem == 'static':
-                for staticElem in self.data.elem:
-                    topLevel += '<td><div>' + staticElem + '</div></td>'
+                for dynamicElem in self.data['dynamic']:
+                    topLevelNext += '<td><div>' + (dynamicElem if dynamicElem else '0') + '</div></td>'
+            elif elem == 'static': 
+                for staticElem in self.data['static']:
+                    topLevel += '<td><div>' + (staticElem if staticElem else '') + '</div></td>'
             else:
-                topLevel += '<td rowspan="2"><div>' + self.data.elem + '</div></td>'
+                topLevel += '<td rowspan="2"><div>' + (self.data[elem] if self.data[elem] else '') + '</div></td>'
 
         topLevelNext = '<tr>' + topLevelNext + '</tr>'
-        self.html = '<tr name="' + self.data.nameAttr + '">' + topLevel + '</tr>' + topLevelNext
-
+        self.html = '<tr name="' + self.data['nameAttr'] + '">' + topLevel + '</tr>' + topLevelNext
 
 class WarriorHtmlResults():
     lineObjs = []
@@ -64,11 +63,11 @@ class WarriorHtmlResults():
         self.junit_root = xml_Utils.getRoot(self.junit_file)
 
     def createLineResult( self, line, type ):
-        self.lineCount += 1
-        if self.lineCount > self.lineObjs:
+        if self.lineCount >= len(self.lineObjs):
             temp = lineResult()
             temp.setHTML( line, type )
             self.lineObjs.append( temp )
+            self.lineCount += 1
         else:
             self.lineObjs[ self.lineCount ].setHTML( line, type )
 
@@ -81,8 +80,8 @@ class WarriorHtmlResults():
                 self.createLineResult( testsuite_node, "Testsuite"  )
                 for testcase_node in testsuite_node.findall("testcase"):
                     self.createLineResult(testcase_node, "Testcase" )
-                    for step_num, kw_node in enumerate(testcase_node.findall("keyword"), 1):
-                        self.createLineResult( kw_node, "Keyword" )
+                    for step_node in testcase_node.findall("keyword"):
+                        self.createLineResult( step_node, "Keyword" )
 
     def getPath( self ):
         """Get the results path for the
@@ -90,7 +89,7 @@ class WarriorHtmlResults():
         filename = file_Utils.getNameOnly(os.path.basename( self.junit_file ))
         filename = filename.split( "_junit" )[0]
         html_filename = filename + ".html"
-        if self.givenPath:
+        if hasattr( self, 'givenPath' ):
             html_results_path = self.givenPath + os.sep + html_filename
         else:
             results_dir = os.path.dirname( self.junit_file )
@@ -121,3 +120,8 @@ class WarriorHtmlResults():
         file.write( html )
         file.close()
 
+        print_info("++++ Results Summary ++++")
+        print_info("Open the Results summary file given below in a browser to "\
+                   "view results summary for this execution")
+        print_info("Results sumary file: {0}".format(self.getPath()))
+        print_info("+++++++++++++++++++++++++")
