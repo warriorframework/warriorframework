@@ -345,7 +345,8 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
         if testdata.get("execute") == "yes" and exec_flag:
             testdata_key="{0}{1}".format(testdata.get('title',""), \
                                          _get_row(testdata))
-            details_dict = _get_cmd_details(testdata, global_obj, system_name, varconfigfile)
+            details_dict = _get_cmd_details(testdata, global_obj, system_name,
+                                            varconfigfile, var_sub=var_sub)
             start_pat =  _get_pattern_list(testdata, global_obj)
             end_pat =  _get_pattern_list(testdata, global_obj, pattern="end")
             details_dict = sub_from_env_var(details_dict, start_pat, end_pat)
@@ -388,6 +389,7 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
                                                                        testdatafile))
     return testdata_dict
 
+
 def _get_mapping_details(global_obj, vfylist):
     """
         get cmd-verify text mapping detail from xml (global_obj) and vfylist
@@ -404,9 +406,10 @@ def _get_mapping_details(global_obj, vfylist):
                 if ':m' in sub_element.lower():
                     sub_map_list.append("2")
                 else:
-                    # Check if the verify list has combo value, if yes, expand the mapping list as well
+                    # Check if the verify list has combo value, if yes,
+                    # expand the mapping list as well
                     combo_value = av_fromdc(g_verify, sub_element,
-                              "combo") if g_verify is not None else False
+                        "combo") if g_verify is not None else False
                     if combo_value:
                         for i in combo_value.split(","):
                             if ':m' in i.lower():
@@ -424,7 +427,8 @@ def _get_mapping_details(global_obj, vfylist):
     return (vfylist, map_list)
 
 
-def _get_cmd_details(testdata, global_obj, system_name, varconfigfile):
+def _get_cmd_details(testdata, global_obj, system_name,
+                     varconfigfile, var_sub=None):
     """Get the command details from testdata file
     as a details dictionary"""
     details_dict = {}
@@ -437,8 +441,11 @@ def _get_cmd_details(testdata, global_obj, system_name, varconfigfile):
         if param == "verify_list":
             vfylist = _get_cmdparams_list(testdata, global_obj, "verify")
             vfylist, maplist = _get_mapping_details(global_obj, vfylist)
+            vfylist = string_Utils.sub_from_varconfig(None, vfylist, var_sub)
+            vfylist = string_Utils.sub_from_varconfig(varconfigfile, vfylist)
             resultant_list = vfylist
         elif param in verifyparams:
+            vfylist = details_dict["verify_list"]
             resultant_list = _get_verification_details(testdata, global_obj,
                                                        vfylist, attrib)
         elif param == "verify_on_list":
@@ -447,7 +454,7 @@ def _get_cmd_details(testdata, global_obj, system_name, varconfigfile):
                                                        vfylist, attrib,
                                                        system_name)
         elif param == "verify_map_list":
-            vfylist = _get_cmdparams_list(testdata, global_obj, "verify")
+            vfylist = details_dict["verify_list"]
             vfylist, maplist = _get_mapping_details(global_obj, vfylist)
             resultant_list = maplist
         else:
@@ -458,11 +465,12 @@ def _get_cmd_details(testdata, global_obj, system_name, varconfigfile):
                                                varconfigfile)
                 details_dict["vc_file_list"].extend(vc_file_list)
         details_dict[param].extend(resultant_list)
-
     return details_dict
+
 
 def _get_global_var(global_obj, key):
     return global_obj.find(key) if global_obj is not None else None
+
 
 def _get_cmdparams_list(testdata, global_obj, cmd_attrib):
     """Get the list of values for a
@@ -555,7 +563,8 @@ def _get_vc_details(sys_list, system_name, varconfigfile):
                 print_info("Resolving varconfig details from DB system - "
                            "'{}'".format(vc_file.get('var_system')))
                 db_var_obj = database_utils_class.\
-                 create_database_connection('dataservers', vc_file.get('var_system'))
+                    create_database_connection('dataservers',
+                                               vc_file.get('var_system'))
                 vc_file = db_var_obj.get_varblock_as_xmlobj(vc_file)
                 db_var_obj.close_connection()
         else:
@@ -563,6 +572,7 @@ def _get_vc_details(sys_list, system_name, varconfigfile):
 
         vc_file_list.append(vc_file)
     return vc_file_list
+
 
 def _get_pattern_list(testdata, global_obj, pattern="start"):
     """
@@ -579,10 +589,12 @@ def _get_pattern_list(testdata, global_obj, pattern="start"):
 
     if testdata.get(pattern+"_pattern") is not None:
         resultant = testdata.get(pattern+"_pattern")
-    elif global_var_pattern is not None and global_var_pattern.get(pattern+"_pattern") is not None:
+    elif global_var_pattern is not None and global_var_pattern.\
+            get(pattern+"_pattern") is not None:
         resultant = global_var_pattern.get(pattern+"_pattern")
 
     return resultant
+
 
 def get_exec_flag(testdata, title, row):
     """Get exec flag value """
@@ -595,7 +607,7 @@ def get_exec_flag(testdata, title, row):
         if testdata.get('title', None) == title and process_row == row:
             exec_flag = True
     elif title:
-        if testdata.get('title', None) == title and process_row == None:
+        if testdata.get('title', None) == title and process_row is None:
             exec_flag = True
         elif testdata.get('title', None) == title and process_row == 'none':
             exec_flag = True
@@ -621,7 +633,7 @@ def _get_row(testdata):
     value = ""
     for key in keys:
         td_row = testdata.get(key, None)
-        if td_row == None:
+        if td_row is None:
             continue
         else:
             value = td_row
@@ -652,14 +664,16 @@ def get_verify_text_context_as_list(testdata, verify_list):
             verify_context_sublist = []
             verify_sublist = verify.split(",")
             for element in verify_sublist:
-                verify_text = xml_Utils.get_attributevalue_from_directchildnode(
-                    testdata, element, "search")
-                verify_context = xml_Utils.get_attributevalue_from_directchildnode(
-                    testdata, element, "found")
+                verify_text = xml_Utils.\
+                    get_attributevalue_from_directchildnode(testdata, element,
+                                                            "search")
+                verify_context = xml_Utils.\
+                    get_attributevalue_from_directchildnode(testdata,
+                                                            element, "found")
                 if verify_text is False:
                     print_error(
-                        "could not find childnode:{0} under testdata:{1}".format(
-                            element, testdata))
+                        "could not find childnode:{0} under testdata:"
+                        "{1}".format(element, testdata))
                 if verify_context is None:
                     verify_context = "yes"
                 verify_text_sublist.append(verify_text)
@@ -691,7 +705,9 @@ def verify_resp_across_sys(match_list, context_list, command,
                                                       temp_list[1])
             else:
                 verify_on_list[i][j] = get_session_id(temp_list[0])
-            # print "\n---------- VERIFICATION --- Search Pattern: {0} --- Pattern Context: {1} ----------\n".format(match_list[i], context_list[i])
+            # print "\n---------- VERIFICATION --- Search Pattern: {0} ---
+            # Pattern Context: {1} ----------\n".format(match_list[i],
+            # context_list[i])
             try:
                 data = remote_resp_dict[verify_on_list[i][j]]
                 tmp_status = verify_cmd_response(
@@ -706,6 +722,7 @@ def verify_resp_across_sys(match_list, context_list, command,
                 status = "ERROR"
                 # print "\n---------- END OF VERIFICATION ----------\n"
     return status
+
 
 def get_no_impact_logic(context_str):
     """Get the silent tag from context

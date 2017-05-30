@@ -581,6 +581,15 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                  'wt_testcase_filepath'], data_repository['wt_logsdir'],
                  data_repository['wt_resultsdir'], tc_status, email_setting)
 
+        if 'wp_results_execdir' in data_repository:
+            # Create and replace existing Project junit file for each case
+            tc_junit_object.output_junit(data_repository['wp_results_execdir'],
+                                         print_summary=False)
+        else:
+            # Create and replace existing Suite junit file for each case
+            tc_junit_object.output_junit(data_repository['wt_results_execdir'],
+                                         print_summary=False)
+
     if tc_parallel:
         tc_impact   =  data_repository['wt_tc_impact']
         if tc_impact.upper() == 'IMPACT': 
