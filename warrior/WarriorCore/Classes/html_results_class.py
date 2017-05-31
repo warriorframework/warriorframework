@@ -39,17 +39,22 @@ class lineResult():
         self.setDynamicContent( line )
         topLevel = ''
         topLevelNext = ''
-        for elem in self.keys:
-            if elem == 'dynamic':
-                for dynamicElem in self.data['dynamic']:
-                    topLevelNext += '<td><div>' + (dynamicElem if dynamicElem else '0') + '</div></td>'
-            elif elem == 'static': 
-                for staticElem in self.data['static']:
-                    topLevel += '<td><div>' + (staticElem if staticElem else '') + '</div></td>'
-            else:
-                topLevel += '<td rowspan="2"><div>' + (self.data[elem] if self.data[elem] else '') + '</div></td>'
+        if self.data['nameAttr'] != 'KeywordRecord':
+            for elem in self.keys:
+                if elem == 'dynamic':
+                    for dynamicElem in self.data['dynamic']:
+                        topLevelNext += '<td>' + (dynamicElem if dynamicElem else '0') + '</td>'
+                elif elem == 'static':
+                    for staticElem in self.data['static']:
+                        topLevel += '<td>' + (staticElem if staticElem else '') + '</td>'
+                else:
+                    topLevel += '<td rowspan="2"><div>' + (self.data[elem] if self.data[elem] else '') + '</div></td>'
+            topLevelNext = '<tr>' + topLevelNext + '</tr>'
+        else:
+            for elem in self.keys:
+                if  elem != 'static' and elem != 'dynamic':
+                    topLevel += '<td rowspan="2"><div>' + (self.data[elem] if self.data[elem] else '') + '</div></td>'
 
-        topLevelNext = '<tr>' + topLevelNext + '</tr>'
         self.html = '<tr name="' + self.data['nameAttr'] + '">' + topLevel + '</tr>' + topLevelNext
 
 class WarriorHtmlResults():
