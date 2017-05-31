@@ -10,8 +10,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
-"""This is the netconf_actions module that has all netconf related keywords 
+"""This is the netconf_actions module that has all netconf related keywords
 ymizugaki 2016/01/15
 original = netconf_Actions.py
 """
@@ -127,7 +126,7 @@ class NetconfActions(object):
         return status, {reply_key: reply_list}
 
     def connect_netconf(self, system_name, session_name=None):
-        """ 
+        """
         Connects to the Netconf interface of the the given system or subsystems
 
         :Datafile usage:
@@ -149,10 +148,10 @@ class NetconfActions(object):
             9. unknown_host_cb = This would be used when the server host key is not \
 	       recognized.
            10. key_filename = where the private key can be found.
-           11. ssh_config = Enables parsing of OpenSSH configuration file. 
+           11. ssh_config = Enables parsing of OpenSSH configuration file.
            12. device_params = netconf client device name, by default the name \
-	       "default" is used.            
-			
+	       "default" is used.
+
         :Arguments:
             1. system_name(string) = Name of the system from the input datafile.
             2. session_name(string) = Name of the session to the system
@@ -160,16 +159,16 @@ class NetconfActions(object):
         :Returns:
             1. status(bool)= True / False
             2. session_id (dict element)= key, value
-  
-   
+
+
         """
 
-        """ 
+        """
         :DESCRIPTION:
 	     This Keyword is used to connect to the netconf interface of the system.
              The keyword upon executing saves the System_name and Session_id,\
              which can be used by all subsequet keywords in the test
-	     to interact with the system through netconf interface. 
+	     to interact with the system through netconf interface.
         """
         wdesc = "Connect to the netconf port of the system and creates a session"
         pSubStep(wdesc)
@@ -200,7 +199,7 @@ class NetconfActions(object):
             1. status(bool)= True / False
             2. Close response from the system to the data repository (data:reply.data(string)}
         """
-        
+
         wdesc = "Request graceful termination of Netconf session"
         pSubStep(wdesc)
         pNote(system_name)
@@ -230,10 +229,10 @@ class NetconfActions(object):
             2. system_name(string)  = Name of the system from the input datafile.
             3. session_name(string) = Name of the session to the system.
             4. filter_string(string) = xml string, by default entire configuration is \
-	       retrieved. 
+	       retrieved.
             5. filter_type(string) = Type of the Filter , default is subtree of xpath.
         :Returns:
-            1. status(bool)= True / False            
+            1. status(bool)= True / False
             2. Get Response in the data repository {data:reply(xml)}
         """
 
@@ -258,7 +257,7 @@ class NetconfActions(object):
 
 
     def copy_config(self, source, target, system_name, session_name=None):
-       
+
         """Create or replace an entire configuration datastore
             with the contents of another complete configuation datastore
         :Arguments:
@@ -373,6 +372,7 @@ class NetconfActions(object):
         status = True
         session_id = Utils.data_Utils.get_session_id(system_name, session_name)
         netconf_object = Utils.data_Utils.get_object_from_datarepository(session_id)
+        data_parameters = ['netconf_data']
         config_datafile = Utils.data_Utils.get_filepath_from_system(self.datafile, system_name, 'netconf_data')[0]
         var_configfile = Utils.data_Utils.get_filepath_from_system(self.datafile, system_name, 'variable_config')
         if len(var_configfile) > 0:
@@ -402,7 +402,7 @@ class NetconfActions(object):
                 else:
                     reply = "error"
                     pNote('Edit Config Failed', "error")
-                    status = status and False 
+                    status = status and False
         pNote('Edit Config Reply= {}'.format(reply_list))
 
         report_substep_status(status)
@@ -589,7 +589,6 @@ class NetconfActions(object):
         reply_key = '{}_validate_netconf_reply'.format(system_name)
         return status, {reply_key: reply}
 
-
     def edit_config_from_string(self, datastore, config, system_name,
                                 session_name=None, default_operation=None,
                                 test_option=None, error_option=None):
@@ -674,41 +673,89 @@ class NetconfActions(object):
         reply_key = '{}_create_subscription_reply'.format(system_name)
         return status, {reply_key: reply}
 
-    def waitfor_subscription(self, system_name, wait_string, namespace_string, namespace_prefix,
-                             timeout=600, session_name=None):
+    def waitfor_subscription(self, system_name, wait_string, namespace_string,
+                             namespace_prefix, timeout=600, session_name=None):
         """Wait for specified notification event
         :Arguments:
             1. system_name(string) = Name of the system from the input datafile
             2. waitString(string) = xpath string with namespace prefix
              e.g.
-             waitString = "//ns:event[./ns:eventClass/text()='fault']"
+             for checking single data
+             waitString = ".//ns:event[./ns:eventClass/text()='fault']"
              Note that "ns" = namespace prefix
-            3. namespaceString(string) = namespace string
-             e.g.
-             namespaceString = "urn:ietf:params:xml:ns:yang:ietf-alarms"
-            4. namespacePrefix(string) = namespace prefix
-              any string but same as in waitString
-              in above case, namespacePrefix="ns"
+
+             for checking multiple data
+             waitString = ".//ns1:event1[text()='fault1'] and
+                            .//ns1:event2[text()='fault2']"
+            3. namespaceString(list of string) = list of namespace string
+                                                 separated by comma
+             e.g., namespaceString = "namespace_value1,namespace_value2"
+            4. namespacePrefix(list of string) = list of namespace prefix
+                                                 separated by comma
+              e.g.,
+              namespaceprefix = "ns1,ns2"
             5. timeout(integer) = timeout value in second, default=600
             6. session_name(string) = Name of the session to the system
         :Returns:
             1. status(bool)= True / False
+        E.g., Assuming the following notification is the one received:
+        ****************************
+        <?xml version="1.0" encoding="UTF-8"?>
+        <notification xmlns="urn:ietf:params:xml:ns:netconf:notification:1.0">
+          <eventTime>2015-08-10T10:36:58.427756-07:00</eventTime>
+          <netconf-config-change xmlns="urn:ietf:params:xml:ns:yang:ietf-netconf-notifications">
+            <changed-by>
+              <username>admin</username>
+              <session-id>0</session-id>
+              <source-host>127.0.0.1</source-host>
+            </changed-by>
+            <datastore>running</datastore>
+            <edit>
+              <target xmlns:notif="http://tail-f.com/ns/test/notif">/notif:test</target>
+              <operation>replace</operation>
+            </edit>
+          </netconf-config-change>
+        </notification>
+        ****************************
+        for the notification received above, please find the appropriate
+        argument and its values for checking username, source-host and target
+        in this notification as follows:
+           waitstring = ".//ns1:username[text()='admin'] and
+                         .//ns1:source-host[text()='127.0.0.1'] and
+                         .//ns2:target[text()='/notif:test']"
+           namespaceString = "urn:ietf:params:xml:ns:netconf:notification:1.0,
+                                http://tail-f.com/ns/test/notif"
+           namespacePrefix = "ns1,ns2"
+        Caveat: This keyword does not validate XMLSchema for notification.
         """
-        wdesc = "waitfor_subscription to wait specified netconf event notification"
+        wdesc = ("waitfor_subscription to wait specified netconf event "
+                 "notification")
         pSubStep(wdesc)
         pNote(system_name)
         pNote(self.datafile)
 
         session_id = Utils.data_Utils.get_session_id(system_name, session_name)
-        netconf_object = Utils.data_Utils.get_object_from_datarepository(session_id)
+        netconf_object = Utils.data_Utils.get_object_from_datarepository(
+                                                             session_id)
+        namespace_dict = {}
+        prefixes = [prefix.strip() for prefix in namespace_prefix.split(",")]
+        namespaces = [ns.strip() for ns in namespace_string.split(",")]
+        if len(prefixes) != len(namespaces):
+            pNote("the number of prefixes and namespaces should match", "error")
+            pNote("Number of prefixes ({}) != Number of namespaces({})".format(
+                                len(prefixes), len(namespaces)), "error")
+            return False
+        for (prefix, namespace) in zip(prefixes, namespaces):
+            namespace_dict[prefix] = namespace
 
-        temp_waitstring = (wait_string, {namespace_prefix:namespace_string})
-        pNote("waiting for %s timeout=%s ..." %(wait_string, str(timeout)))
-        status = netconf_object.waitfor_subscription(temp_waitstring, int(timeout))
+        temp_waitstring = (wait_string, namespace_dict)
+        pNote("waiting for %s timeout=%s ..." % (wait_string, str(timeout)))
+        status = netconf_object.waitfor_subscription(temp_waitstring,
+                                                     int(timeout))
         if status:
-            pNote("waitfor %s received" %wait_string)
+            pNote("waitfor %s received" % wait_string)
         else:
-            pNote("waitfor %s timeouted" %wait_string, "error")
+            pNote("waitfor %s timeouted" % wait_string, "error")
         report_substep_status(status)
         return status
 
