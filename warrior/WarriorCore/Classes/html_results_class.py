@@ -89,8 +89,6 @@ class WarriorHtmlResults():
                         self.createLineResult( step_node, "Keyword" )
 
     def getPath( self ):
-        """Get the results path for the
-        html results file"""
         filename = file_Utils.getNameOnly(os.path.basename( self.junit_file ))
         filename = filename.split( "_junit" )[0]
         html_filename = filename + ".html"

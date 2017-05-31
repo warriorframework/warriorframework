@@ -6,7 +6,7 @@
 	<variable_set name="default_lambda" value="193.5"/>
 	<network name="network1">
 		<ne name ="ne1">
-			<shelf name="shelf1" id="1" type="main">
+			<shelf name="shelf1" id="1" type="main" verify_tag="v1,v2">
 				<slot name="slot1" id="1" card="ctc1">
 					<port name="port1" id="1" sfp="10gelr"/>
 					<port name="port2" id="2" sfp="10gelr"/>

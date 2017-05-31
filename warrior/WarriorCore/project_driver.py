@@ -138,6 +138,7 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
 
     project_name = project_repository['project_name']
     wp_results_execdir = project_repository['wp_results_execdir']
+    data_repository['wp_results_execdir'] = wp_results_execdir
     wp_logs_execdir = project_repository['wp_logs_execdir']
 
     project_error_action = project_repository['def_on_error_action']
@@ -172,6 +173,7 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
         action, testsuite_status = exec_type_driver.main(testsuite)
         testsuite_impact = Utils.testcase_Utils.get_impact_from_xmlfile(testsuite)
         testsuite_name = Utils.file_Utils.getFileName(testsuite_path)
+        testsuite_nameonly = Utils.file_Utils.getNameOnly(testsuite_name)
         ts_onError_action = Utils.xml_Utils.get_attributevalue_from_directchildnode(testsuite, 'onError', 'action')
         ts_onError_action = ts_onError_action if ts_onError_action else project_error_action
         if Utils.file_Utils.fileExists(testsuite_path):
@@ -211,7 +213,10 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
                                                                msg)
                 tmp_timestamp = str(Utils.datetime_utils.get_current_timestamp())
                 time.sleep(2)
-                pj_junit_object.create_testsuite(location=os.path.dirname(testsuite_path), name=testsuite_name, timestamp=tmp_timestamp, **pj_junit_object.init_arg())
+                pj_junit_object.create_testsuite(
+                    location=os.path.dirname(testsuite_path),
+                    name=testsuite_nameonly, timestamp=tmp_timestamp,
+                    **pj_junit_object.init_arg())
                 pj_junit_object.update_attr("status", "SKIPPED", "ts", tmp_timestamp)
                 pj_junit_object.update_attr("skipped", "1", "pj", tmp_timestamp)
                 pj_junit_object.update_count("suites", "1", "pj", tmp_timestamp)
@@ -220,6 +225,8 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
                 pj_junit_object.update_attr("impact", impact_dict.get(testsuite_impact.upper()),
                                             "ts", tmp_timestamp)
                 pj_junit_object.update_attr("onerror", "N/A", "ts", tmp_timestamp)
+                pj_junit_object.output_junit(wp_results_execdir,
+                                             print_summary=False)
                 continue
 
         else:

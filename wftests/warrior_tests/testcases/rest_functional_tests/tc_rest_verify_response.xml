@@ -1,0 +1,165 @@
+<?xml version="1.0" ?>
+<Testcase>
+	<Details>
+		<Name>tc_rest_verify_response</Name>
+		<Title>To test verify api response keyword </Title>
+		<Engineer>Ragh</Engineer>
+		<Date>2016-11-14</Date>
+		<Time>11:25</Time>
+		<InputDataFile>../../data/rest_functional_tests/rest_verify_response_data.xml</InputDataFile>
+		<Datatype>Custom</Datatype>
+		<default_onError action="next"/>
+		<Logsdir/>
+		<Resultsdir/>
+		<ExpectedResults>PASS</ExpectedResults>
+		<Category>Feature</Category>
+	</Details>
+	<Requirements>
+		<Requirement/>
+	</Requirements>
+	<Steps>
+		<step Driver="rest_driver" Keyword="perform_http_get" TS="1">
+			<Arguments>
+				<argument name="system_name" value="http_bin_1"/>
+				<argument name="url" value="http://httpbin.org/response-headers?key=val"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>This step tests the GET capability of REST</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="rest_driver" Keyword="verify_response" TS="2">
+			<Arguments>
+				<argument name="system_name" value="http_bin_1"/>
+				<argument name="expected_api_response" value="tag=response_1"/>
+        		<argument name="expected_response_type" value="json"/>
+        		<argument name="comparison_mode" value="file" />
+			</Arguments>
+			<onError action="next"/>
+			<Description>This step verifies the API response with the expected API response</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="rest_driver" Keyword="perform_http_get" TS="3">
+			<Arguments>
+				<argument name="system_name" value="http_bin_2"/>
+				<argument name="url" value="http://httpbin.org/xml"/>
+				<argument name="request_id" value="123"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>This step tests the GET capability of REST</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="rest_driver" Keyword="verify_response" TS="4">
+			<Arguments>
+				<argument name="system_name" value="http_bin_2"/>
+				<argument name="expected_api_response" value="../../config_files/rest_functional_tests/verify_api_response.xml"/>
+        		<argument name="expected_response_type" value="xml"/>
+				<argument name="request_id" value="123"/>
+				<argument name="comparison_mode" value="file" />
+			</Arguments>
+			<onError action="next"/>
+			<Description>This step verifies the API response with the expected API response</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="rest_driver" Keyword="perform_http_get" TS="5">
+			<Arguments>
+				<argument name="system_name" value="http_bin_3"/>
+				<argument name="url" value="http://httpbin.org/robots.txt"/>
+				<argument name="request_id" value="1234"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>This step tests the GET capability of REST</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="rest_driver" Keyword="verify_response" TS="6">
+			<Arguments>
+				<argument name="system_name" value="http_bin_3"/>
+				<argument name="expected_api_response" value="tag=response_2"/>
+        		<argument name="expected_response_type" value="text"/>
+				<argument name="request_id" value="1234"/>
+				<argument name="comparison_mode" value="file" />
+			</Arguments>
+			<onError action="next"/>
+			<Description>This step verifies the API response with the expected API response</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="rest_driver" Keyword="verify_response" TS="7">
+			<Arguments>
+				<argument name="system_name" value="http_bin_2"/>
+				<argument name="expected_api_response" value="../../config_files/rest_functional_tests/verify_api_response_http.xml"/>
+        		<argument name="expected_response_type" value="xml"/>
+				<argument name="request_id" value="123"/>
+				<argument name="comparison_mode" value="file" />
+			</Arguments>
+			<onError action="next"/>
+			<Description>This step verifies the API response with the expected API response</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>noimpact</impact>
+		</step>
+		<step Driver="rest_driver" Keyword="verify_response" TS="8">
+			<Arguments>
+				<argument name="system_name" value="http_bin_3"/>
+				<argument name="expected_api_response" value="../../config_files/rest_functional_tests/verify_api_response_http.txt"/>
+        		<argument name="expected_response_type" value="text"/>
+				<argument name="request_id" value="1234"/>
+				<argument name="comparison_mode" value="file" />
+			</Arguments>
+			<onError action="next"/>
+			<Description>This step verifies the API response with the expected API response</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>noimpact</impact>
+		</step>
+		<step Driver="rest_driver" Keyword="verify_response" TS="9">
+			<Arguments>
+				<argument name="system_name" value="http_bin_1"/>
+				<argument name="expected_api_response" value="../../config_files/rest_functional_tests/verify_api_response_http.json"/>
+        		<argument name="expected_response_type" value="json"/>
+        		<argument name="comparison_mode" value="file" />
+			</Arguments>
+			<onError action="next"/>
+			<Description>This step verifies the API response with the expected API response</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>noimpact</impact>
+		</step>
+		<step Driver="rest_driver" Keyword="verify_response" TS="10">
+			<Arguments>
+				<argument name="system_name" value="http_bin_1"/>
+				<argument name="expected_api_response" value="../../config_files/rest_functional_tests/verify_api_response_http.json"/>
+        		<argument name="expected_response_type" value="xml"/>
+        		<argument name="comparison_mode" value="file" />
+			</Arguments>
+			<onError action="next"/>
+			<Description>This step verifies the API response with the expected API response</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>noimpact</impact>
+		</step>
+		<step Driver="rest_driver" Keyword="verify_response" TS="11">
+			<Arguments>
+				<argument name="system_name" value="http_bin_1"/>
+				<argument name="expected_api_response" value="../../config_files/rest_functional_tests/verify_api.json"/>
+        		<argument name="expected_response_type" value="json"/>
+        		<argument name="comparison_mode" value="file" />
+			</Arguments>
+			<onError action="next"/>
+			<Description>This step verifies the API response with the expected API response</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>noimpact</impact>
+		</step>
+	</Steps>
+</Testcase>

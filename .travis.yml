@@ -1,0 +1,35 @@
+language: python
+
+matrix:
+  include:
+    - os: linux
+      env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/pj_comparison.xml
+      python: 2.7
+    - os: linux
+      env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/pj_cond_var.xml
+      python: 2.7
+    - os: linux
+      env: INSTALL=no TESTFILE=./wftests/warrior_tests/projects/pj_rest.xml
+      python: 2.7
+    - os: linux
+      env: INSTALL=no TESTFILE=./wftests/warrior_tests/projects/pj_retry.xml
+      python: 2.7
+
+before_install:
+    - if [ ${INSTALL} = "yes" ]; then
+        sudo apt-get install xvfb ;
+      fi
+
+install:
+    - if [ ${INSTALL} = "yes" ]; then
+        pip install pexpect==4.2 ;
+        pip install requests==2.9.1 ;
+        pip install selenium==2.53.0 ;
+        pip install lxml==3.3.3 ;
+        pip install paramiko==1.16.0 ;
+        pip install pysnmp==4.3.2 ;
+        pip install pyvirtualdisplay==0.2.1 ;
+      fi
+
+script:
+    - python ./warrior/Warrior $TESTFILE
