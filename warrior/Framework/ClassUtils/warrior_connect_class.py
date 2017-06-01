@@ -12,7 +12,8 @@ limitations under the License.
 '''
 
 """ Module to handle SSH/Telnet session operations """
-# ToDo - remove connect_ssh, connect_telent, disconnect methods from cli_Utils
+# ToDo - remove connect_ssh, connect_telent, disconnect, disconnect_telnet &
+# send_command methods from cli_Utils file
 
 import os
 import sys
