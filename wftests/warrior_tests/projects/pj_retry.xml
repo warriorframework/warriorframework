@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+<Project>
+    <Details>
+        <Name>pj_retry</Name>
+        <Title>Project for testing retry tag in test files</Title>
+        <Engineer>Ka</Engineer>
+        <State>New</State>
+        <Date>04/21/2017</Date>
+        <Time>11:59:51</Time>
+        <default_onError action="next"/>
+    </Details>
+    <Testsuites>
+        <Testsuite>
+            <path>../suites/framework_tests/ts_retry.xml</path>
+            <Execute ExecType="Yes"/>
+            <onError action="next" value=""/>
+            <impact>impact</impact>
+        </Testsuite>
+        <Testsuite>
+            <path>../suites/framework_tests/ts_retry_at_tclevel.xml</path>
+            <Execute ExecType="Yes"/>
+            <onError action="next" value=""/>
+            <impact>impact</impact>
+        </Testsuite>
+    </Testsuites>
+</Project>

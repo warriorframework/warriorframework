@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<TestSuite>
+	<Details>
+		<Name>common_action_suite</Name>
+		<Title>common_action_suite</Title>
+		<Engineer>Arvind Kumar Sethuraman</Engineer>
+		<Date>23/01/2017</Date>
+		<Time>13:07:26</Time>
+		<type exectype="sequential_testcases"/>
+		<default_onError action="next"/>
+		<Resultsdir/>
+	</Details>
+	<Requirements/>
+	<Testcases>
+		<Testcase> 
+			<path>../../testcases/common_actions_tests/comparison.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>impact</impact>
+		</Testcase>
+                <Testcase>
+                        <path>../../testcases/common_actions_tests/set_env_variable.xml</path>
+                        <context>positive</context>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next"/>
+                        <impact>impact</impact>
+                </Testcase>
+
+	</Testcases>
+</TestSuite>

@@ -1,0 +1,111 @@
+<?xml version="1.0" ?>
+<!-- This is a sample file to explain how server routes work -->
+<!-- 
+     Explaination of each tags:
+     request_method - This is the request type that server is going to handle
+     response_value - Response with this value when a request is received (or when verification pass)
+     request_verify_data - Use this data to verify with request data
+     response_status_code - Response with this status code when a request is received (or when verification pass)
+     request_param - Use to verify with param that comes with the request
+                     All param in the actual request need to match the request_param here
+     on_fail_response_value - Response with this value when verification fail
+     on_fail_response_status_code - Response with this status code when verification fail
+     async_response_value - Response with this value when async timer is up
+     async_response_timer - Time between 1st and 2nd response in seconds
+     async_response_status_code - Response with this status code when async timer is up
+-->
+<credentials>
+    <!-- system name is the route, in order to access this server, use localhost:port/att -->
+    <system name="att" >
+        <!-- minimum version of get method-->
+        <!-- GET method supports multiple param and their verification -->
+        <!-- but you can only have either 1. one general post response per route or 2. one on_fail_response per route-->
+        <subsystem>
+            <request_method>GET</request_method>
+            <response_value>General GET response</response_value>
+        </subsystem>
+        <!-- minimum version of post method-->
+        <!-- There can be more than one post method in the same route -->
+        <!-- but you can only have either 1. one general post response per route or 2. one on_fail_response per route-->
+        <subsystem>
+            <request_method>POST</request_method>
+            <response_value>General POST response</response_value>
+        </subsystem>
+        <!-- post method with data verification -->
+        <subsystem>
+            <request_method>POST</request_method>
+            <request_verify_data>/home/user/Desktop/test.json</request_verify_data>
+            <response_value>Verification success POST response</response_value>
+            <response_status_code>200</response_status_code>
+        </subsystem>
+        <!-- post method with data verification -->
+        <subsystem>
+            <request_method>POST</request_method>
+            <request_verify_data>wrongdata.file</request_verify_data>
+            <response_value>Verification failed POST response</response_value>
+            <response_status_code>401</response_status_code>
+        </subsystem>
+
+        <!-- PUT is similar to POST -->
+        <subsystem>
+            <request_method>PUT</request_method>
+            <response_value>General PUT response</response_value>
+        </subsystem>
+
+        <!-- DELETE is similar to GET -->
+        <subsystem>
+            <request_method>DELETE</request_method>
+            <response_value>General DELETE response</response_value>
+        </subsystem>
+
+        <!-- PATCH is similar to POST -->
+        <subsystem>
+            <request_method>PATCH</request_method>
+            <response_value>General PATCH response</response_value>
+        </subsystem>
+    </system>
+
+    <system name="tmobile">
+        <subsystem>
+            <!-- GET with multiple param, format is key=value -->
+            <request_method>GET</request_method>
+            <request_param>id=135</request_param>
+            <request_param>id2=140</request_param>
+            <response_value>Param verification success GET response</response_value>
+            <response_status_code>200</response_status_code>
+        </subsystem>
+
+        <!-- POST with multiple verification, format is key=key,value=value -->
+        <!-- If the verification doesn't pass, user can choose to send an on fail response which has the format as below -->
+        <subsystem>
+            <request_method>POST</request_method>
+            <request_verify>key=abc,value=1</request_verify>
+            <request_verify>key=abcd[def],value="2"</request_verify>
+            <response_status_code>200</response_status_code>
+            <on_fail_response_value>Param verification failed POST respons</on_fail_response_value>
+            <on_fail_response_status_code>401</on_fail_response_status_code>
+        </subsystem>
+    </system>
+
+    <system name="verizon" >
+        <subsystem>
+            <!-- Async response is mocked by setting timer -->
+            <request_method>GET</request_method>
+            <response_value>General GET response</response_value>
+            <response_status_code>200</response_status_code>
+            <async_response_value>Async GET response</async_response_value>
+            <async_response_timer>1</async_response_timer>
+            <async_response_status_code>201</async_response_status_code>
+        </subsystem>
+        
+        <subsystem>
+            <request_method>POST</request_method>
+            <request_verify>key=./system[@name="server1"]/port,value=5000</request_verify>
+            <response_value>$PATH:/etc/hosts</response_value>
+            <response_status_code>200</response_status_code>
+            <on_fail_response_value>$PATH:/etc/legal</on_fail_response_value>
+            <on_fail_response_status_code>401</on_fail_response_status_code>
+        </subsystem>
+    </system>
+</credentials>
+

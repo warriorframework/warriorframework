@@ -4,30 +4,34 @@
 
 <data>
     <warhorn name="Warhorn">
-        <dependency name="jira" install="no"/>
-        <dependency name="lxml" install="yes"/>
-        <dependency name="ncclient" install="no"/>
-        <dependency name="paramiko" install="yes"/>
-        <dependency name="pexpect" install="yes"/>
-        <dependency name="pysnmp" install="yes"/>
-        <dependency name="requests" install="yes"/>
-        <dependency name="selenium" install="yes"/>
-        <dependency name="xlrd" install="no"/>
-        <dependency name="cloudshell-automation-api" install="yes"/>
+        <dependency name="jira" install="no" user="no"/>
+        <dependency name="lxml" install="yes" user="no"/>
+        <dependency name="ncclient" install="no" user="no"/>
+        <dependency name="paramiko" install="yes" user="no"/>
+        <dependency name="pexpect" install="yes" user="no"/>
+        <dependency name="pysnmp" install="yes" user="no"/>
+        <dependency name="requests" install="yes" user="no"/>
+        <dependency name="selenium" install="yes" user="no"/>
+        <dependency name="xlrd" install="no" user="no"/>
+        <dependency name="cloudshell-automation-api" install="yes" user="no"/>
     </warhorn>
 
-    <warrior url="ssh://git@rtx-swtl-git.fnc.net.local:7999/war/warrior_fw.git"
-             destination="" label="master" clean_install="" clone="yes">
+    <warrior url="checkout/warriorframework/atgithub.git"
+        destination="" label="master" clean_install="" clone="no">
     </warrior>
 
-    <katana url="http://rtx-swtl-git.fnc.net.local/scm/wartools/katana.git"
-             destination="" label="" clean_install="" clone="no">
+    <katana url="checkout/warriorframework/atgithub.git"
+        destination="" label="" clean_install="" clone="no">
     </katana>
-    
-    
-  
-    <tools url="ssh://git@rtx-swtl-git.fnc.net.local:7999/wsan/warhorn_tools.git" label="" clone="yes">
-    </tools> 
+
+    <!-- 
+
+    Fill this out with the details of the repository that you want to clone
+
+    <tools url="http://repository/one/url.git" label="" clone="yes">
+    </tools>  
+
+    -->
   
     <drivers>
 

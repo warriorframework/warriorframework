@@ -384,14 +384,12 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
         print_info("Testsuite status will be marked as ERROR as onError action is set to 'abort_as_error'")
         test_suite_status = "ERROR"
     testsuite_utils.report_testsuite_result(suite_repository, test_suite_status)
-    
-    # replaced junit result file with junit object
-    if execution_type.upper() != "ITERATIVE_PARALLEL":
-        ts_junit_object = data_repository['wt_junit_object']
-        ts_junit_object.update_count(test_suite_status, "1", "pj")
-        ts_junit_object.update_count("suites", "1", "pj", "not appicable")
-        ts_junit_object.update_attr("status", str(test_suite_status), "ts", suite_timestamp)
-        ts_junit_object.update_attr("time", str(suite_duration), "ts", suite_timestamp)
+
+    ts_junit_object = data_repository['wt_junit_object']
+    ts_junit_object.update_count(test_suite_status, "1", "pj")
+    ts_junit_object.update_count("suites", "1", "pj", "not appicable")
+    ts_junit_object.update_attr("status", str(test_suite_status), "ts", suite_timestamp)
+    ts_junit_object.update_attr("time", str(suite_duration), "ts", suite_timestamp)
 
     if not from_project:
         ts_junit_object.update_attr("status", str(test_suite_status), "pj", "not applicable")
@@ -402,6 +400,10 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
         if data_repository.get("db_obj") is not False:
             ts_junit_xml =  data_repository['wt_results_execdir'] + os.sep + ts_junit_object.filename+"_junit.xml"
             data_repository.get("db_obj").add_html_result_to_mongodb(ts_junit_xml)
+    else:
+        # Create and replace existing Project junit file for each suite
+        ts_junit_object.output_junit(data_repository['wp_results_execdir'],
+                                     print_summary=False)
 
     return test_suite_status, suite_repository
 

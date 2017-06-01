@@ -100,8 +100,6 @@ class Junit(object):
         keyword_items = {"type":"keyword", "step":step_num, "name":kw_name, "status":status, "timestamp":kw_timestamp,
                          "time":duration, "resultfile": resultfile, "impact":impact, "onerror":onerror}
         self.add_property(name=kw_name, value="KEYWORD_DISCARD", elem_type = "kw", timestamp=tc_timestamp, keyword_items=keyword_items)
-        elem = self.get_tc_with_timestamp(tc_timestamp)
-        elem.append(self.create_element("keyword", keyword_items))
 
     def add_testcase_message(self, timestamp, status):
         elem = self.get_tc_with_timestamp(timestamp)
@@ -191,16 +189,17 @@ class Junit(object):
         html_result_obj.html_from_junit()
         html_result_obj.output_html()
 
-    def output_junit(self, path):
+    def output_junit(self, path, print_summary=True):
         """output the actual file
-        copy xslt to the results folder"""
+        copy xslt to the results folder
+        Print execution summary in console based on 'print_summary' value """
 
-        fpath = path+ os.sep +self.filename+"_junit.xml"
+        fpath = path + os.sep + self.filename + "_junit.xml"
         tree = ET.ElementTree(self.root)
         tree.write(fpath)
-        summary_obj = ExecutionSummary(fpath)
-        summary_obj.print_result_in_console(fpath)
+        if print_summary is True:
+            summary_obj = ExecutionSummary(fpath)
+            summary_obj.print_result_in_console(fpath)
         print("\n")
 
         self._junit_to_html(fpath)
-        

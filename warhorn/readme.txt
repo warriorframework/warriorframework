@@ -71,12 +71,12 @@ any repository
 Running Warhorn
 ===============
 The git repository is located at:
-http://rtx-swtl-git.fnc.net.local/scm/wartools/warhorn.git
+https://github.com/warriorframework/warriorframework.git
 
 From your command line, go to directory where you would like to clone Warhorn.
 Type in the following commands:
 
-	git clone http://rtx-swtl-git.fnc.net.local/scm/wartools/warhorn.git
+	git clone https://github.com/warriorframework/warriorframework.git
 
 Once warhorn has been cloned, open the now cloned repository and open the
 "config" folder. Open the file named "default_config.xml". The file has been
@@ -90,6 +90,7 @@ everything in the current working directory.
 
 Once that is done, go back to your terminal and type in:
 
+	cd warriorframework
 	cd warhorn
 
 This command gets you inside the warhorn folder. After that type in:
@@ -98,16 +99,6 @@ This command gets you inside the warhorn folder. After that type in:
 
 This command runs Warhorn which will then install Warrior and other repositories
 as per the xml file.
-
-The command
-
-    python warhorn.py -interactive
-
-creates the xml file for you without you having to go to an xml editor and
-manually editing the file. This command would prompt you to answer a few
-questions that would help it populate the xml file that it generates. Once
-the xml file is ready, you will be prompted to run warhorn using that newly
-created file and/or save it for later.
 
 Warhorn also has the ability to work with user specified xml files. The command:
 

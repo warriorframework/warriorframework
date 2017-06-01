@@ -1,0 +1,251 @@
+<?xml version="1.0" ?>
+<Testcase>
+	<Details>
+		<Name>build_server</Name>
+		<Title>Start a rest server and wait for remote request</Title>
+		<Engineer>Ka Hei Chan</Engineer>
+		<Date>2016-11-03</Date>
+		<Time>13:40</Time>
+		<State/>
+		<InputDataFile>../../data/rest_functional_tests/server_sys.xml</InputDataFile>
+		<Datatype>Custom</Datatype>
+		<default_onError action="next"/>
+		<Logsdir/>
+		<Resultsdir/>
+		<ExpectedResults/>
+	</Details>
+	<Requirements>
+		<Requirement/>
+	</Requirements>
+	<Steps>
+		<step Driver="server_driver" Keyword="start_server" TS="1">
+			<Arguments>
+				<argument name="system_name" value="server1"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>Starting Bottle web socket server.</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+			<runmode type="" value=""/>
+		</step>
+		<!-- General response -->
+		<step Driver="rest_driver" Keyword="perform_http_get" TS="2">
+			<Arguments>
+				<argument name="system_name" value="server1"/>
+				<argument name="url" value="http://localhost:5001/att"/>
+				<argument name="expected_response" value="201"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>Perform a http get to the url</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+			<runmode type="" value=""/>
+		</step>
+		<!-- Verify param -->
+		<step Driver="rest_driver" Keyword="perform_http_get" TS="3">
+			<Arguments>
+				<argument name="system_name" value="server1"/>
+				<argument name="url" value="http://localhost:5001/att"/>
+				<argument name="params" value="id=135;id2=140"/>
+				<argument name="expected_response" value="200"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>Perform a http get to the url</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+			<runmode type="" value=""/>
+		</step>
+		<!-- Verify form -->
+		<step Driver="rest_driver" Keyword="perform_http_put" TS="14">
+			<Arguments>
+				<argument name="system_name" value="server1"/>
+				<argument name="url" value="http://localhost:5001/att"/>
+				<argument name="data" value="abc=1;abcd=2"/>
+				<argument name="expected_response" value="200"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>Perform a http putt to the url</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+			<runmode type="" value=""/>
+		</step>
+		<!-- Testing post response -->
+		<step Driver="rest_driver" Keyword="perform_http_post" TS="4">
+			<Arguments>
+				<argument name="system_name" value="server1"/>
+				<argument name="url" value="http://localhost:5001/att"/>
+				<argument name="expected_response" value="201"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>Perform a http post</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+			<runmode type="" value=""/>
+		</step>
+		<!-- Testing json verification for whole file-->
+		<step Driver="rest_driver" Keyword="perform_http_post" TS="5">
+			<Arguments>
+				<argument name="system_name" value="server1"/>
+				<argument name="url" value="http://localhost:5001/att"/>
+				<argument name="json" value="../../config_files/rest_functional_tests/server_verify_files/test.json"/>
+				<argument name="expected_response" value="200"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>Perform a http post</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+			<runmode type="" value=""/>
+		</step>
+		<!-- Testing multiple verification -->
+		<step Driver="rest_driver" Keyword="perform_http_post" TS="6">
+			<Arguments>
+				<argument name="system_name" value="server1"/>
+				<argument name="url" value="http://localhost:5001/att"/>
+				<argument name="json" value="../../config_files/rest_functional_tests/server_verify_files/test2.json"/>
+				<argument name="expected_response" value="401"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>Perform a http post</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+			<runmode type="" value=""/>
+		</step>
+		<!-- Testing json verification with key value pair only -->
+		<step Driver="rest_driver" Keyword="perform_http_post" TS="7">
+			<Arguments>
+				<argument name="system_name" value="server1"/>
+				<argument name="url" value="http://localhost:5001/tmobile"/>
+				<argument name="json" value="../../config_files/rest_functional_tests/server_verify_files/test2.json"/>
+				<argument name="expected_response" value="200"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>Perform a http putt to the url</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+			<runmode type="" value=""/>
+		</step>
+		<!-- Testing fail response -->
+		<step Driver="rest_driver" Keyword="perform_http_put" TS="8">
+			<Arguments>
+				<argument name="system_name" value="server1"/>
+				<argument name="url" value="http://localhost:5001/att"/>
+				<argument name="expected_response" value="201"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>Perform a http putt to the url</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+			<runmode type="" value=""/>
+		</step>
+		<!-- Testing delete function -->
+		<step Driver="rest_driver" Keyword="perform_http_delete" TS="9">
+			<Arguments>
+				<argument name="system_name" value="server1"/>
+				<argument name="url" value="http://localhost:5001/att"/>
+				<argument name="expected_response" value="201"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>Perform a http delete to the url</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+			<runmode type="" value=""/>
+		</step>
+		<!-- Testing json string verified with expected json file -->
+		<step Driver="rest_driver" Keyword="perform_http_delete" TS="10">
+			<Arguments>
+				<argument name="system_name" value="server1"/>
+				<argument name="json" value='{"abc":1,"abcd":{"def":"2"}}'/>
+				<argument name="url" value="http://localhost:5001/att"/>
+				<argument name="expected_response" value="200"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>Perform a http delete to the url</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+			<runmode type="" value=""/>
+		</step>
+		<!-- Testing patch -->
+		<step Driver="rest_driver" Keyword="perform_http_patch" TS="11">
+			<Arguments>
+				<argument name="system_name" value="server1"/>
+				<argument name="url" value="http://localhost:5001/att"/>
+				<argument name="expected_response" value="201"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>Perform a http patch to the url</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+			<runmode type="" value=""/>
+		</step>
+		<!-- Testing xml comparison with whole file -->
+		<step Driver="rest_driver" Keyword="perform_http_put" TS="12">
+			<Arguments>
+				<argument name="system_name" value="server1"/>
+				<argument name="data" value="../../config_files/rest_functional_tests/server_route_testdata.xml"/>
+				<argument name="url" value="http://localhost:5001/verizon"/>
+				<argument name="expected_response" value="200"/>
+				<argument name="headers" value="Content-Type=xml"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>Perform a http put to the url</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+			<runmode type="" value=""/>
+		</step>
+		<!-- Testing xml comparison with xpath only -->
+		<step Driver="rest_driver" Keyword="perform_http_post" TS="13">
+			<Arguments>
+				<argument name="system_name" value="server1"/>
+				<argument name="data" value="../../testcases/rest_functional_tests/build_server.xml"/>
+				<argument name="url" value="http://localhost:5001/verizon"/>
+				<argument name="expected_response" value="200"/>
+				<argument name="headers" value="Content-Type=xml"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>Perform a http puttto the url</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+			<runmode type="" value=""/>
+		</step>
+		<step Driver="server_driver" Keyword="stop_server" TS="15">
+			<Arguments>
+				<argument name="system_name" value="server1"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>Closing Bottle web socket server.</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+			<runmode type="" value=""/>
+		</step>
+	</Steps>
+</Testcase>

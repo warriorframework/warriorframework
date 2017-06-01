@@ -22,15 +22,16 @@ You are on the master branch of Katana(beta), this is a version under developmen
 Please checkout a stable version to get stable functionalities.
 Procedure to get a specific version is available in section-3 of this document.
 
-=====================================================
-3. Procedure to get a specific version of Katana(beta) 
-=====================================================
+================================================
+3. Procedure to get a specific version of Katana
+================================================
 
-1. Clone Katana(beta)
-	$ git clone http://rtx-swtl-git.fnc.net.local/scm/wsan/katana_beta.git
+1. Clone Katana
+	$ git clone https://github.com/warriorframework/warriorframework.git
 
-2. go to katana_beta directory
-	$cd katana_beta
+2. go to katana directory
+	$cd warriorframework
+	$cd katana
 
 3. To check the list of versions available, execute "git tag --list" command
 	$ git tag --list

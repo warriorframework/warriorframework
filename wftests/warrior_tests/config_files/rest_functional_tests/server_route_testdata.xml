@@ -1,0 +1,111 @@
+<?xml version="1.0" ?>
+<credentials>
+    <system name="att" >
+        <subsystem>
+            <request_method>GET</request_method>
+            <response_value>General GET response</response_value>
+            <response_status_code>201</response_status_code>
+        </subsystem>
+        <subsystem>
+            <request_method>GET</request_method>
+            <request_param>id=135</request_param>
+            <request_param>id2=140</request_param>
+            <response_value>Param verification success GET response</response_value>
+            <response_status_code>200</response_status_code>
+        </subsystem>
+
+        <subsystem>
+            <request_method>POST</request_method>
+            <response_value>General POST response</response_value>
+            <response_status_code>201</response_status_code>
+        </subsystem>
+        <subsystem>
+            <request_method>POST</request_method>
+            <request_verify_data>../Config_files/server_verify_files/test.json</request_verify_data>
+            <response_value>Verification success POST response</response_value>
+            <response_status_code>200</response_status_code>
+        </subsystem>
+        <subsystem>
+            <request_method>POST</request_method>
+            <request_verify_data>../Config_files/server_verify_files/test2.json</request_verify_data>
+            <response_value>2nd Verification success POST response</response_value>
+            <response_status_code>401</response_status_code>
+        </subsystem>
+
+        <subsystem>
+            <request_method>PUT</request_method>
+            <request_verify>key=abc,value=1</request_verify>
+            <request_verify>key=abcd,value=2</request_verify>
+            <response_value>Verification success PUT response</response_value>
+            <response_status_code>200</response_status_code>
+            <on_fail_response_value>Verification failed POST response</on_fail_response_value>
+            <on_fail_response_status_code>201</on_fail_response_status_code>
+        </subsystem>
+
+        <subsystem>
+            <request_method>DELETE</request_method>
+            <response_value>General DELETE response</response_value>
+            <response_status_code>201</response_status_code>
+        </subsystem>
+
+        <subsystem>
+            <request_method>DELETE</request_method>
+            <request_verify_data>../Config_files/server_verify_files/test2.json</request_verify_data>
+            <response_value>Verification success DELETE response</response_value>
+            <response_status_code>200</response_status_code>
+        </subsystem>
+
+        <subsystem>
+            <request_method>PATCH</request_method>
+            <response_value>$PATH:/etc/hosts</response_value>
+            <response_status_code>201</response_status_code>
+        </subsystem>
+    </system>
+
+    <system name="tmobile">
+        <subsystem>
+            <request_method>GET</request_method>
+            <request_param>id=135</request_param>
+            <request_param>id2=140</request_param>
+            <response_value>Param verification success GET response</response_value>
+            <response_status_code>401</response_status_code>
+        </subsystem>
+
+        <subsystem>
+            <request_method>POST</request_method>
+            <request_verify>key=abc,value=1</request_verify>
+            <request_verify>key=abcd[def],value="2"</request_verify>
+            <response_status_code>200</response_status_code>
+            <on_fail_response_value>Verification failed POST response</on_fail_response_value>
+            <on_fail_response_status_code>401</on_fail_response_status_code>
+        </subsystem>
+    </system>
+
+    <system name="verizon" >
+        <subsystem>
+            <!-- Async response is mocked by setting timer -->
+            <request_method>GET</request_method>
+            <response_value>General GET response</response_value>
+            <response_status_code>200</response_status_code>
+            <async_response_value>Async GET response</async_response_value>
+            <async_response_timer>1</async_response_timer>
+            <async_response_status_code>201</async_response_status_code>
+        </subsystem>
+        
+        <subsystem>
+            <request_method>POST</request_method>
+            <request_verify>key=./Details/Name,value=build_server</request_verify>
+            <response_value>$PATH:/etc/hosts</response_value>
+            <response_status_code>200</response_status_code>
+            <on_fail_response_value>$PATH:/etc/legal</on_fail_response_value>
+            <on_fail_response_status_code>401</on_fail_response_status_code>
+        </subsystem>
+
+        <subsystem>
+            <request_method>PUT</request_method>
+            <request_verify_data>../Config_files/server_route_testdata.xml</request_verify_data>
+            <response_value>Verified DELETE response</response_value>
+            <response_status_code>200</response_status_code>
+        </subsystem>
+    </system>
+</credentials>

@@ -1,0 +1,233 @@
+<?xml version="1.0" ?>
+<Testcase>
+	<Details>
+		<Name>rest_variable_in_json_test</Name>
+		<Title>Rest Sample Testcase</Title>
+		<Engineer>Sanika Kulkarni</Engineer>
+		<Date>2016-04-13</Date>
+		<Time>11:25</Time>
+		<InputDataFile>../../data/rest_functional_tests/rest_variable_in_json_test_Data.xml</InputDataFile>
+		<Datatype>Custom</Datatype>
+		<default_onError action="next"/>
+		<Logsdir/>
+		<Resultsdir/>
+		<ExpectedResults>PASS</ExpectedResults>
+		<Category>Feature</Category>
+	</Details>
+	<Requirements>
+		<Requirement/>
+	</Requirements>
+	<Steps>
+
+		<step Driver="rest_driver" Keyword="perform_http_post" TS="1">
+			<Arguments>
+				<argument name="system_name" value="http_bin_1"/>
+				<argument name="url" value="http://httpbin.org/post"/>
+				<argument name="data" value="userId=1;id=1;title=Changed Post;body=New Comment"/>
+				<argument name="json" value='{"postId":1, "comments":"${trial1.blew1.var1.value} ${trial1.blew2.var1.list} ${trial1.blew3.var1.list}"}'/>
+				<argument name="cookies" value="cookie=cookie_name"/>
+				<argument name="allow_redirects" value="yes"/>
+				<argument name="expected_response" value="200, 302, 404"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>This step tests the POST capability of REST</Description>
+			<Execute ExecType="Yes"/>
+			<context>negative</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="rest_driver" Keyword="perform_http_post" TS="1">
+			<Arguments>
+				<argument name="system_name" value="http_bin_1"/>
+				<argument name="url" value="http://httpbin.org/post"/>
+				<argument name="data" value="userId=1;id=1;title=Changed Post;body=New Comment"/>
+				<argument name="json" value='{"postId":1, "comments":"${trial1.blew+.var+.value}"}'/>
+				<argument name="cookies" value="cookie=cookie_name"/>
+				<argument name="allow_redirects" value="yes"/>
+				<argument name="expected_response" value="200, 302, 404"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>This step tests the POST capability of REST</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="rest_driver" Keyword="perform_http_post" TS="1">
+			<Arguments>
+				<argument name="system_name" value="http_bin_1"/>
+				<argument name="url" value="http://httpbin.org/post"/>
+				<argument name="data" value="userId=1;id=1;title=Changed Post;body=New Comment"/>
+				<argument name="json" value='{"postId":1, "comments":"${trial1.blew+.var+.list}"}'/>
+				<argument name="cookies" value="cookie=cookie_name"/>
+				<argument name="allow_redirects" value="yes"/>
+				<argument name="expected_response" value="200, 302, 404"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>This step tests the POST capability of REST</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="rest_driver" Keyword="perform_http_post" TS="1">
+			<Arguments>
+				<argument name="system_name" value="http_bin_1"/>
+				<argument name="url" value="http://httpbin.org/post"/>
+				<argument name="data" value="userId=1;id=1;title=Changed Post;body=New Comment"/>
+				<argument name="json" value='{"postId":1, "comments":"${trial1.new1.var1.value}"}'/>
+				<argument name="cookies" value="cookie=cookie_name"/>
+				<argument name="allow_redirects" value="yes"/>
+				<argument name="expected_response" value="200, 302, 404"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>This step tests the POST capability of REST</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="rest_driver" Keyword="perform_http_post" TS="1">
+			<Arguments>
+				<argument name="system_name" value="http_bin_1"/>
+				<argument name="url" value="http://httpbin.org/post"/>
+				<argument name="data" value="userId=1;id=1;title=Changed Post;body=New Comment"/>
+				<argument name="json" value='{"postId":1, "comments":"Non vaiable comment"}'/>
+				<argument name="cookies" value="cookie=cookie_name"/>
+				<argument name="allow_redirects" value="yes"/>
+				<argument name="expected_response" value="200, 302, 404"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>This step tests the POST capability of REST</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="rest_driver" Keyword="perform_http_post" TS="1">
+			<Arguments>
+				<argument name="system_name" value="http_bin_1"/>
+				<argument name="url" value="http://httpbin.org/post"/>
+				<argument name="data" value="userId=1;id=1;title=Changed Post;body=New Comment"/>
+				<argument name="json" value='{"postId":1, "comments":"${trial1.blew1.var1.list} ${trial1.blew2.var1.list}"}'/>
+				<argument name="cookies" value="cookie=cookie_name"/>
+				<argument name="allow_redirects" value="yes"/>
+				<argument name="expected_response" value="200, 302, 404"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>This step tests the POST capability of REST</Description>
+			<Execute ExecType="Yes"/>
+			<context>negative</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="rest_driver" Keyword="perform_http_post" TS="1">
+			<Arguments>
+				<argument name="system_name" value="http_bin_1"/>
+				<argument name="url" value="http://httpbin.org/post"/>
+				<argument name="data" value="userId=1;id=1;title=Changed Post;body=New Comment"/>
+				<argument name="json" value='{"postId":1, "comments":" [var_sub] ${trial1.blew+.var+.value} ${trial1.blew+.var+.list}"}'/>
+				<argument name="cookies" value="cookie=cookie_name"/>
+				<argument name="allow_redirects" value="yes"/>
+				<argument name="expected_response" value="200, 302, 404"/>
+				<argument name="var_sub" value="This got substituted from a Keyword Argument."/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>This step tests the POST capability of REST</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="rest_driver" Keyword="perform_http_post" TS="1">
+			<Arguments>
+				<argument name="system_name" value="http_bin_1"/>
+				<argument name="url" value="http://httpbin.org/post"/>
+				<argument name="data" value="userId=1;id=1;title=Changed Post;body=New Comment"/>
+				<argument name="json" value='{"postId":1, "comments":" $wdf{http_bin_1.chelsea_fc}"}'/>
+				<argument name="cookies" value="cookie=cookie_name"/>
+				<argument name="allow_redirects" value="yes"/>
+				<argument name="expected_response" value="200, 302, 404"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>This step tests the POST capability of REST</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="rest_driver" Keyword="perform_http_post" TS="1">
+			<Arguments>
+				<argument name="system_name" value="http_bin_1"/>
+				<argument name="url" value="http://httpbin.org/post"/>
+				<argument name="data" value="userId=1;id=1;title=Changed Post;body=New Comment"/>
+				<argument name="json" value='{"postId":1, "comments":"$wdf{http_bin_2.dallas_cowboys}"}'/>
+				<argument name="cookies" value="cookie=cookie_name"/>
+				<argument name="allow_redirects" value="yes"/>
+				<argument name="expected_response" value="200, 302, 404"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>This step tests the POST capability of REST</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="rest_driver" Keyword="perform_http_post" TS="1">
+			<Arguments>
+				<argument name="system_name" value="http_bin_1"/>
+				<argument name="url" value="http://httpbin.org/post"/>
+				<argument name="data" value="userId=1;id=1;title=Changed Post;body=New Comment"/>
+				<argument name="json" value='tag=tag9'/>
+				<argument name="cookies" value="cookie=cookie_name"/>
+				<argument name="allow_redirects" value="yes"/>
+				<argument name="expected_response" value="200, 302, 404"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>This step tests the POST capability of REST</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="rest_driver" Keyword="perform_http_post" TS="1">
+			<Arguments>
+				<argument name="system_name" value="http_bin_1"/>
+				<argument name="url" value="http://httpbin.org/post"/>
+				<argument name="data" value="userId=1;id=1;title=Changed Post;body=New Comment"/>
+				<argument name="json" value='../../config_files/rest_functional_tests/json_data.json'/>
+				<argument name="cookies" value="cookie=cookie_name"/>
+				<argument name="allow_redirects" value="yes"/>
+				<argument name="expected_response" value="200, 302, 404"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>This step tests the POST capability of REST</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="rest_driver" Keyword="perform_http_post" TS="1">
+			<Arguments>
+				<argument name="system_name" value="http_bin_1"/>
+				<argument name="url" value="http://httpbin.org/post"/>
+				<argument name="data" value="userId=1;id=1;title=Changed Post;body=New Comment"/>
+				<argument name="json" value=''/>
+				<argument name="cookies" value="cookie=cookie_name"/>
+				<argument name="allow_redirects" value="yes"/>
+				<argument name="expected_response" value="200, 302, 404"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>This step tests the POST capability of REST</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="rest_driver" Keyword="perform_http_post" TS="1">
+			<Arguments>
+				<argument name="system_name" value="http_bin_1"/>
+				<argument name="url" value="http://httpbin.org/post"/>
+				<argument name="data" value="userId=1;id=1;title=Changed Post;body=New Comment"/>
+				<argument name="json" value='../../config_files/rest_functional_tests/json_data.json'/>
+				<argument name="cookies" value="cookie=cookie_name"/>
+				<argument name="allow_redirects" value="yes"/>
+				<argument name="expected_response" value="200, 302, 404"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>This step tests the POST capability of REST</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+	</Steps>
+
+</Testcase>
