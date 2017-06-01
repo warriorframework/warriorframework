@@ -80,13 +80,29 @@ Also refer the python regex documentation https://docs.python.org/2/library/re.h
 		:execute: the execute tag can take values 'yes' or 'no'
 				  any testdata that is marked 'no' will not be executed.
 
-		1. Substituting Variables in the command or verifications .
+		1. Substituting Variables in the command or verifications other than environment or data repository.
 			- To substitute variables in a command, use the variable config file to provide the variables.
 			- In the testdata variable reference should be provided as dotted notation within a '${}' format.
 				Eg: ${network1.ne1.shelf1.card1.shelf} will traverse the variable config
 				to network1.ne1.shelf1.card1 and get the value for the attribute shelf.
 			- Sample variable config file is available in Warriorspace/Config_files/variable_config_sample.xml
-
+        2. Substituting Variables in the command or verifications with environment value.
+            - To substitute variables with environment value, use ${ENV.variable} notation
+                Eg: ${ENV.IPADDR} will get the value of environment variable IPADDR
+            - The variable IPADDR should already be an environment variable in the system
+        2. Substituting Variables in the command or verifications with data repository value.
+            - To substitute variables with data repository value, use ${REPO.variable} notation
+                Eg: ${REPO.IPADDR} will get the value of key IPADDR in the data repository
+            - The data repository should already have a key IPADDR with its corresponding value
+            - Here, you can also provide a nested key to get the value of nested elements
+                Eg: ${REPO.K1.K2.K3} will get the value of  key K3 within K2 within K1 in data repository
+            - The datarepository should be in the format - { ...
+                                                             K1: {...
+                                                                  K2: {...
+                                                                       K3: value
+                                                                       ...}
+                                                                    }
+                                                                }
 
 	-->
 

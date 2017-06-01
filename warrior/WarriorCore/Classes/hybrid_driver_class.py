@@ -428,7 +428,7 @@ class HybridDriver(object):
             if iter_flag is None:
                 iter_flag = xml_Utils.get_text_from_direct_child(system,
                                                                  "iter")
-            iter_flag = data_Utils.substitute_variables(iter_flag)
+            iter_flag = data_Utils.sub_from_env_var(iter_flag)
 
             if str(iter_flag).lower() == "no":
                 pass
