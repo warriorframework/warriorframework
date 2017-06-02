@@ -10,14 +10,14 @@
                 <default_onError action="next"/>
         </Details>
         <Testsuites>
-                <!-- <Testsuite>
+                <Testsuite>
                         <path>../suites/framework_tests/iter_execution/ts_iter_seq.xml</path>
                         <Execute ExecType="Yes">
                                 <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
                         </Execute>
                         <onError action="next" value=""/>
                         <impact>impact</impact>
-                </Testsuite> -->
+                </Testsuite>
                 <Testsuite>
                         <path>../suites/framework_tests/iter_execution/ts_iter_par_1.xml</path>
                         <Execute ExecType="Yes">
