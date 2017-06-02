@@ -51,8 +51,8 @@ def warrior_framework_details():
     version = False
     possible_install_time = False
     current_file_path = os.path.dirname(os.path.realpath(__file__))
-    version_file_path = current_file_path.replace("/warrior/WarriorCore", "")
-    version_file = version_file_path+"/version.txt"
+    version_file_path = os.path.normpath(os.path.join(__file__, "..{0}..{0}..".format(os.sep)))
+    version_file = os.path.join(version_file_path, "version.txt")
     version_file_exists = file_Utils.fileExists(version_file)
     if version_file_exists:
         release_notes =  open(version_file, "r")
