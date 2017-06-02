@@ -61,8 +61,8 @@ Installation of external python packages
 Auto installation:
 ==================
 
-For auto installation of Warrior, please go to http://rtx-swtl-git.fnc.net.local/projects/WARTOOLS and
-clone the warhorn repository and follow the instructions given in its readme.
+For auto installation of Warrior, please cd into the warhorn directory inside warriorframework and follow the
+instructions given in its readme.
 
 
 Manual Installation:

@@ -10,7 +10,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
 '''
 netconf.py  NETCONF client library.
 2016/1/14
@@ -25,7 +24,6 @@ from threading import Thread, Event
 from select import select
 from binascii import hexlify
 from xml.dom.minidom import parseString
-from Queue import Queue
 from lxml import etree
 
 from Framework.Utils.testcase_Utils import pNote
@@ -67,7 +65,6 @@ class client(Thread):
         self.__wait_resp.clear()
         self.__wait_rept = Event()
         self.__wait_rept.clear()
-        self.__wait_rept_q = Queue()
         self.__response_buffer = ""
         self.__notification_buffer = ""
         self.__hello_buffer = ""
@@ -76,6 +73,8 @@ class client(Thread):
         self.__error_message = ""
         self.__isOpen = False
         self.__send_data = ""
+        self.__notification_list = []
+        self.__wait_string = ("", {})
 
     def connect(self, host, port, username, password, hostkey_verify=False):
         '''
@@ -221,7 +220,6 @@ class client(Thread):
                 if xml_len >= 0:
                     recv_data = self.__temp_buf[:xml_len]
                     self.__temp_buf = self.__temp_buf[xml_len+len(NETCONF_DELIM):]
-                    #print recv_data
                     recv_dom = parseString(recv_data)
                     recv_data = parseString(recv_data).toprettyxml()
                     resType = recv_dom.documentElement.tagName
@@ -242,13 +240,7 @@ class client(Thread):
                         self.__response_buffer += recv_data
                         self.__wait_resp.set()
                     elif resType == "notification":
-                        self.__notification_buffer += recv_data
-                        if not self.__wait_rept_q.empty():
-                            waitstr = self.__wait_rept_q.get()
-                            xml = etree.fromstring(self.__notification_buffer)
-                            temp = xml.xpath(waitstr[0], namespaces=waitstr[1])
-                            if len(temp) > 0:
-                                self.__wait_rept.set()
+                        self.__notification_list.append(recv_data)
                     elif resType == "hello":
                         self.__hello_buffer = recv_data
                         pNote(recv_data)
@@ -263,8 +255,6 @@ class client(Thread):
                 rlist, wlist, xlist = select([self.__chan], [], [], POLL_INTERVAL)
                 if rlist:
                     data = self.__chan.recv(BUF_SIZE)
-                    #print "lenth=" + str(len(data))
-                    #print "recv:" + data
                     if data:
                         self.__temp_buf += str(data)
                     else:
@@ -274,6 +264,23 @@ class client(Thread):
                         self.__wait_resp.set()
                         self.close()
                         return False
+                if len(self.__wait_string) != 0 and self.__wait_string[0]:
+                    waitstr = self.__wait_string
+                    for notification in self.__notification_list:
+                        pNote("Checking notification: "
+                              "##{}##".format(notification))
+                        match = False
+                        xml = etree.fromstring(notification)
+                        temp = xml.xpath(waitstr[0], namespaces=waitstr[1])
+                        if isinstance(temp, bool) and temp:
+                            match = True
+                        elif isinstance(temp, list) and len(temp) > 0:
+                            match = True
+                        if match:
+                            self.__wait_rept.set()
+                            self.__notification_list.remove(notification)
+                            break
+
         except Exception as e:
             pNote(str(e), "error")
             traceback.print_exc()
@@ -558,23 +565,28 @@ class client(Thread):
         return self.rpc(xml)
 
     def waitfor_subscription(self, wait_string, timeout=600):
+        '''waitfor a notification event report
+        :ARGUMENTS:
+            wait_string(tuple) = tuple of xpath string and namespace dict(
+                                key - prefix
+                                value - namespace string)
+            timeout(integer) = timeout in sec.
+        :Returns:
+            True: if successful
+            False: if unsuccessful
         '''
-        #waitfor a notification event report
-          wait_string(tuple) = tuple of xpath string and namespace dict(prefix and namespace string).
-           e.g.
-           wait_string = ("//ns:event[./ns:eventClass/text()='fault']",{'ns':'urn:ietf:params:xml:ns:netconf:notification:1.0'})
-           *xpath string must include namespace prefix
-          timeout(integer) = timeout in sec.
-        '''
-        self.__wait_rept_q.put(wait_string)
+        status = False
         self.__wait_rept.clear()
-        self.__wait_rept.wait(timeout)
+        self.__wait_string = wait_string
+        if len(self.__wait_string) != 0:
+            self.__wait_rept.wait(timeout)
         if self.__wait_rept.isSet():
-            pNote("netconf: waitfor %s received" %wait_string[0])
-            return True
+            status = True
+            pNote("netconf: waitfor %s received" % wait_string[0])
         else:
-            pNote("netconf: waitfor timeouted:%s" %wait_string[0], "warning")
-            return False
+            pNote("netconf: waitfor timeouted:%s" % wait_string[0], "warning")
+        self.__wait_string = ("", {})
+        return status
 
     @property
     def session_id(self):

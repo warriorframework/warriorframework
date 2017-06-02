@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 '''
 Copyright 2017, Fujitsu Network Communications, Inc.
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -10,13 +9,11 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
+limitations under the License.
 '''
-
 """
 Utility functions for warhorn.py
 """
-
 
 import os
 import platform
@@ -27,9 +24,7 @@ import re
 import imp
 import subprocess
 import datetime
-
 import sys
-
 from war_print_class import print_main
 
 
@@ -566,14 +561,19 @@ def get_dict_with_versions():
     return versions
 
 
-def install_depen(dependency, dependency_name, logfile, print_log_name):
+def install_depen(dependency, dependency_name, logfile, print_log_name,
+                  user=None):
     """ This function checks if a dependency was installed. If not,
      then it raises an error.
     """
     counter = 0
+    pip_cmds = ['pip', 'install', dependency]
+    if user:
+        print_info("Installing {} as user...".format(dependency), logfile,
+                   print_log_name)
+        pip_cmds.insert(2, "--user")
     try:
-        sp_output = subprocess.Popen(['pip', 'install', dependency],
-                                     stdout=subprocess.PIPE,
+        sp_output = subprocess.Popen(pip_cmds, stdout=subprocess.PIPE,
                                      stderr=subprocess.PIPE,
                                      stdin=subprocess.PIPE)
         output = sp_output.stdout.read()
@@ -581,7 +581,7 @@ def install_depen(dependency, dependency_name, logfile, print_log_name):
     except IOError:
         counter = 1
         print_error("Warhorn was unable to install " +
-                    dependency_name  +
+                    dependency_name +
                     " because Warhorn does not have write permissions. "
                     "You need to have admin privileges to install anything!",
                     logfile, print_log_name)
@@ -598,8 +598,9 @@ def install_depen(dependency, dependency_name, logfile, print_log_name):
     if counter == 0:
         try:
             sp_output = subprocess.Popen(["pip", "show", dependency_name],
-                                 stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-                                 stderr=subprocess.PIPE)
+                                         stdin=subprocess.PIPE,
+                                         stdout=subprocess.PIPE,
+                                         stderr=subprocess.PIPE)
             output = sp_output.stdout.read()
             if output == "":
                 print_error(dependency_name + " could not be installed!!",
@@ -657,10 +658,17 @@ def get_dependencies(logfile, print_log_name, config_file_name):
                                dependency.attrib["name"] +
                                " as it was set to 'yes' in the .xml file",
                                logfile, print_log_name)
-                    install_depen(dependency.attrib["name"] + "==" +
-                                  versions.get(dependency.attrib["name"]),
-                                  dependency.attrib["name"],
-                                  logfile, print_log_name)
+                    if ('user' in dependency.attrib and
+                            dependency.attrib["user"] == "yes"):
+                        install_depen(dependency.attrib["name"] + "==" +
+                                      versions.get(dependency.attrib["name"]),
+                                      dependency.attrib["name"], logfile,
+                                      print_log_name, True)
+                    else:
+                        install_depen(dependency.attrib["name"] + "==" +
+                                      versions.get(dependency.attrib["name"]),
+                                      dependency.attrib["name"], logfile,
+                                      print_log_name)
                 elif dependency.attrib["install"] == "no":
                     print_info("Warhorn will not install " +
                                dependency.attrib["name"] +
@@ -696,24 +704,23 @@ def get_dest(logfile, print_log_name, config_file_name):
     file with mode set to 'a'
 
     :Returns:
-    
+
     1. dest (str) = the path where warrior is being cloned to, if blank
                     it means on the same level of warhorn folder
 
     """
     node = get_node(config_file_name, 'warrior')
     if node is False:
-        print_error("warrior tag not found! Installation cannot continue"
-                    , logfile, print_log_name)
+        print_error("warrior tag not found! Installation cannot continue",
+                    logfile, print_log_name)
         setDone(1)
     else:
         if "destination" in node.attrib:
             return get_attribute_value(node, "destination")
         else:
-            print_error("Destination attrib not found! Installation cannot continue"
-                    , logfile, print_log_name)
+            print_error("Destination attrib not found! Installation cannot "
+                        "continue", logfile, print_log_name)
             setDone(1)
-
 
 def set_file_names():
     """ Function written so that setup.py can access these file names.

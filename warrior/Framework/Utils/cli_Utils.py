@@ -677,7 +677,8 @@ def start_threads(started_thread_for_system, thread_instance_list, same_system, 
     return started_thread_for_system, thread_instance_list, same_system
 
 
-def get_response_dict(started_thread_for_system, thread_instance_list, same_system, response):
+def get_response_dict(started_thread_for_system, thread_instance_list,
+                      same_system, response):
     """This function iterates over thread_instance_list and gets the data that
     the threads have stored in its data variable. Updates the remote_resp_dict
     with the system name and the corresponding data collected.
@@ -697,11 +698,25 @@ def get_response_dict(started_thread_for_system, thread_instance_list, same_syst
     for i in range(0, len(started_thread_for_system)):
         data = thread_instance_list[i].data
         thread_instance_list[i].stop_thread()
-        pNote("\n\n++++++++++++++++++++++++ RESPONSE FROM SYSTEM: {0} ++++++++++++++++++++\n\n".format(started_thread_for_system[i]))
+        pNote("\n\n++++++++++++++++++++++++ RESPONSE FROM SYSTEM: {0} "
+              "++++++++++++++++++++\n\n".format(started_thread_for_system[i]))
         pNote(data)
-        pNote("\n\n++++++++++++++++++++++++ END OF DATA FROM SYSTEM: {0} ++++++++++++++++++++\n\n".format(started_thread_for_system[i]))
+        pNote("\n\n++++++++++++++++++++++++ END OF DATA FROM SYSTEM: {0} "
+              "++++++++++++++++++++\n\n".format(started_thread_for_system[i]))
         remote_resp_dict[started_thread_for_system[i]] = data
 
+    if len(started_thread_for_system) > 0:
+        print_info("Waiting for maximum of 30 seconds to stop collecting "
+                   "logs from verify_on system(s)")
+
+    for i in range(0, len(started_thread_for_system)):
+        thread_instance_list[i].join_thread(timeout=30, retry=3)
+        if thread_instance_list[i].thread_status() is True:
+            print_error("Unable to stop collecting logs from {0}.Please check "
+                        "below message for all exception trace that occurred: "
+                        "\n{1}".format(started_thread_for_system[i],
+                                       thread_instance_list[i].
+                                       stop_thread_err_msg))
     return remote_resp_dict
 
 

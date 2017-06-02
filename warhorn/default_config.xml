@@ -4,28 +4,26 @@
 
 <data>
     <warhorn name="Warhorn">
-        <dependency name="jira" install="no"/>
-        <dependency name="lxml" install="yes"/>
-        <dependency name="ncclient" install="no"/>
-        <dependency name="paramiko" install="yes"/>
-        <dependency name="pexpect" install="yes"/>
-        <dependency name="pysnmp" install="yes"/>
-        <dependency name="requests" install="yes"/>
-        <dependency name="selenium" install="yes"/>
-        <dependency name="xlrd" install="no"/>
-        <dependency name="cloudshell-automation-api" install="no"/>
+        <dependency name="jira" install="no" user="no"/>
+        <dependency name="lxml" install="yes" user="no"/>
+        <dependency name="ncclient" install="no" user="no"/>
+        <dependency name="paramiko" install="yes" user="no"/>
+        <dependency name="pexpect" install="yes" user="no"/>
+        <dependency name="pysnmp" install="yes" user="no"/>
+        <dependency name="requests" install="yes" user="no"/>
+        <dependency name="selenium" install="yes" user="no"/>
+        <dependency name="xlrd" install="no" user="no"/>
+        <dependency name="cloudshell-automation-api" install="yes" user="no"/>
     </warhorn>
 
     <warrior url="checkout/warriorframework/atgithub.git"
-             destination="" label="master" clean_install="" clone="no">
+        destination="" label="master" clean_install="" clone="no">
     </warrior>
 
     <katana url="checkout/warriorframework/atgithub.git"
-             destination="" label="" clean_install="" clone="no">
+        destination="" label="" clean_install="" clone="no">
     </katana>
-    
-    
-  
+
     <!-- 
 
     Fill this out with the details of the repository that you want to clone
