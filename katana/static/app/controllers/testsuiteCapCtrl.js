@@ -485,6 +485,16 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
                         $scope.xml.suitejson = JSON.stringify(jsonObj, null, 2);
                         $scope.suitemodel = jsonObj;
                         console.log(JSON.stringify(jsonObj));
+
+                        if(!$scope.suitemodel.TestSuite.Details.hasOwnProperty("InputDataFile")){
+                            $scope.suitemodel.TestSuite.Details.InputDataFile = "";
+                        }
+                        if($scope.suitemodel.TestSuite.Details.hasOwnProperty("IDF")){
+                            $scope.suitemodel.TestSuite.Details.InputDataFile = $scope.suitemodel.TestSuite.Details["IDF"];
+                            delete $scope.suitemodel.TestSuite.Details["IDF"];
+                        }
+
+
                     },
                     function(data) {
                         alert(data);
