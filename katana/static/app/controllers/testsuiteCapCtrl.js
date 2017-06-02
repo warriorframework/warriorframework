@@ -276,7 +276,7 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
         };
 
         $scope.idf_monitorPathBtnValue = function(){
-            if($scope.suitemodel.TestSuite.Details.IDF === undefined || $scope.suitemodel.TestSuite.Details.IDF === ""){
+            if($scope.suitemodel.TestSuite.Details.InputDataFile === undefined || $scope.suitemodel.TestSuite.Details.InputDataFile === ""){
                 $scope.idf_btnValue = "Path";
             } else {
                 $scope.idf_btnValue = "Edit";
@@ -327,7 +327,7 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
             var idf_tc_folder_array = [];
             var idf_folder_index = -1;
             var idf_final_array = [];
-            $scope.suitemodel.TestSuite.Details.IDF = "";
+            $scope.suitemodel.TestSuite.Details.InputDataFile = "";
             if ($scope.cfg.idfdir.indexOf('/') === -1) {
                 idf_data_folder_array = $scope.cfg.idfdir.split("\\");
             }
@@ -373,10 +373,10 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
                 idf_final_array.push(idf_data_folder_array[i]);
             }
             for (i = 0; i < idf_final_array.length; i++) {
-                $scope.suitemodel.TestSuite.Details.IDF = $scope.suitemodel.TestSuite.Details.IDF + idf_final_array[i] + "/"
+                $scope.suitemodel.TestSuite.Details.InputDataFile = $scope.suitemodel.TestSuite.Details.InputDataFile + idf_final_array[i] + "/"
             }
-            if (!$scope.suitemodel.TestSuite.Details.IDF.match(/\.\.\/$/)) {
-                $scope.suitemodel.TestSuite.Details.IDF = $scope.suitemodel.TestSuite.Details.IDF.slice(0, -1);
+            if (!$scope.suitemodel.TestSuite.Details.InputDataFile.match(/\.\.\/$/)) {
+                $scope.suitemodel.TestSuite.Details.InputDataFile = $scope.suitemodel.TestSuite.Details.InputDataFile.slice(0, -1);
             }
             $scope.idf_btnValue = "Edit";
             $scope.idf_toggleModal();
@@ -1473,7 +1473,7 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
                                 "_value": $scope.suiteGotoStep
                             },
                             "Resultsdir": $scope.suitemodel.TestSuite.Details.Resultsdir,
-                            "IDF": $scope.suitemodel.TestSuite.Details.IDF
+                            "InputDataFile": $scope.suitemodel.TestSuite.Details.InputDataFile
                         },
                         "Requirements": {
                             "Requirement": $scope.suitereqs
