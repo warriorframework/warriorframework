@@ -10,38 +10,14 @@
                 <State/>
                 <default_onError action="next"/>
                 <Resultsdir/>
-                <IDF>../../../data/framework_tests/data_iter_ts.xml</IDF>
+                <InputDataFile>../../../data/framework_tests/data_iter_ts.xml</InputDataFile>
         </Details>
         <Requirements>
                 <Requirement/>
         </Requirements>
         <Testcases>
                 <Testcase>
-                        <path>../../../testcases/framework_tests/iter_execution/par_tc_2.xml</path>
-                        <context>positive</context>
-                        <InputDataFile/>
-                        <runtype>sequential_keywords</runtype>
-                        <onError action="next" value=""/>
-                        <runmode type="Standard" value=""/>
-                        <Execute ExecType="Yes">
-                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
-                        </Execute>
-                        <impact>impact</impact>
-                </Testcase>
-                <Testcase>
-                        <path>../../../testcases/framework_tests/iter_execution/par_tc_3.xml</path>
-                        <context>positive</context>
-                        <InputDataFile/>
-                        <runtype>sequential_keywords</runtype>
-                        <onError action="next" value=""/>
-                        <runmode type="Standard" value=""/>
-                        <Execute ExecType="Yes">
-                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
-                        </Execute>
-                        <impact>impact</impact>
-                </Testcase>
-                <Testcase>
-                        <path>../../../testcases/framework_tests/iter_execution/par_tc_4.xml</path>
+                        <path>../../../testcases/framework_tests/iter_execution/tc_par_2.xml</path>
                         <context>positive</context>
                         <InputDataFile/>
                         <runtype>sequential_keywords</runtype>

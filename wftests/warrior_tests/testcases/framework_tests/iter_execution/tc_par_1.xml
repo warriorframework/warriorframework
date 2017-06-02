@@ -7,7 +7,7 @@
                 <Date>2017-05-23</Date>
                 <Time>13:34</Time>
                 <InputDataFile>No_Data</InputDataFile>
-                <Datatype/>
+                <Datatype>iterative</Datatype>
                 <default_onError action="next"/>
                 <Logsdir/>
                 <Resultsdir/>

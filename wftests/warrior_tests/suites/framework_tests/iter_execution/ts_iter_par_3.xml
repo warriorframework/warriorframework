@@ -6,18 +6,18 @@
                 <Engineer>ka</Engineer>
                 <Date>05/23/2017</Date>
                 <Time>14:21:58</Time>
-                <type exectype="iterative_parallel"/>
+                <type exectype="sequential_testcases"/>
                 <State/>
                 <default_onError action="next"/>
                 <Resultsdir/>
-                <IDF>../../../data/framework_tests/data_iter_ts.xml</IDF>
+                <InputDataFile>../../../data/framework_tests/data_iter_ts.xml</InputDataFile>
         </Details>
         <Requirements>
                 <Requirement/>
         </Requirements>
         <Testcases>
                 <Testcase>
-                        <path>../../../testcases/framework_tests/iter_execution/par_tc_5.xml</path>
+                        <path>../../../testcases/framework_tests/iter_execution/tc_par_3.xml</path>
                         <context>positive</context>
                         <InputDataFile/>
                         <runtype>sequential_keywords</runtype>

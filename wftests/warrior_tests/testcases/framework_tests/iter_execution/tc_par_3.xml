@@ -7,7 +7,7 @@
                 <Date>2017-05-23</Date>
                 <Time>13:51</Time>
                 <InputDataFile>No_Data</InputDataFile>
-                <Datatype/>
+                <Datatype>iterative</Datatype>
                 <default_onError action="next"/>
                 <Logsdir/>
                 <Resultsdir/>
@@ -17,6 +17,18 @@
                 <Requirement/>
         </Requirements>
         <Steps>
+                <step Driver="ci_regression_driver" Keyword="tmp_file_count" TS="3" draft="yes">
+                        <Arguments>
+                                <argument name="int_count" value="3"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type=""/>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
                 <step Driver="ci_regression_driver" Keyword="delete_tmp_dir" TS="1" draft="yes">
                         <Arguments>
                                 <argument name="dir" value=""/>

@@ -10,8 +10,16 @@
                 <default_onError action="next"/>
         </Details>
         <Testsuites>
+                <!-- <Testsuite>
+                        <path>../suites/framework_tests/iter_execution/ts_iter_seq.xml</path>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                        <onError action="next" value=""/>
+                        <impact>impact</impact>
+                </Testsuite> -->
                 <Testsuite>
-                        <path>../suites/framework_tests/iter_execution/iter_seq_ts.xml</path>
+                        <path>../suites/framework_tests/iter_execution/ts_iter_par_1.xml</path>
                         <Execute ExecType="Yes">
                                 <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
                         </Execute>
@@ -19,7 +27,7 @@
                         <impact>impact</impact>
                 </Testsuite>
                 <Testsuite>
-                        <path>../suites/framework_tests/iter_execution/iter_par_ts_1.xml</path>
+                        <path>../suites/framework_tests/iter_execution/ts_iter_par_2.xml</path>
                         <Execute ExecType="Yes">
                                 <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
                         </Execute>
@@ -27,15 +35,7 @@
                         <impact>impact</impact>
                 </Testsuite>
                 <Testsuite>
-                        <path>../suites/framework_tests/iter_execution/iter_par_ts_2.xml</path>
-                        <Execute ExecType="Yes">
-                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
-                        </Execute>
-                        <onError action="next" value=""/>
-                        <impact>impact</impact>
-                </Testsuite>
-                <Testsuite>
-                        <path>../suites/framework_tests/iter_execution/iter_par_ts_3.xml</path>
+                        <path>../suites/framework_tests/iter_execution/ts_iter_par_3.xml</path>
                         <Execute ExecType="Yes">
                                 <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
                         </Execute>
