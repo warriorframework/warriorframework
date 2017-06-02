@@ -6,18 +6,18 @@
                 <Engineer>ka</Engineer>
                 <Date>05/23/2017</Date>
                 <Time>14:11:26</Time>
-                <type exectype="sequential_testcases"/>
+                <type exectype="iterative_sequential"/>
                 <State/>
                 <default_onError action="next"/>
                 <Resultsdir/>
-                <IDF>../../../data/framework_tests/data_iter_ts.xml</IDF>
+                <InputDataFile>../../../data/framework_tests/data_iter_ts.xml</InputDataFile>
         </Details>
         <Requirements>
                 <Requirement/>
         </Requirements>
         <Testcases>
                 <Testcase>
-                        <path>../../../testcases/framework_tests/iter_execution/seq_tc_1.xml</path>
+                        <path>../../../testcases/framework_tests/iter_execution/tc_seq_1.xml</path>
                         <context>positive</context>
                         <InputDataFile/>
                         <runtype>sequential_keywords</runtype>
@@ -29,7 +29,7 @@
                         <impact>impact</impact>
                 </Testcase>
                 <Testcase>
-                        <path>../../../testcases/framework_tests/iter_execution/seq_tc_2.xml</path>
+                        <path>../../../testcases/framework_tests/iter_execution/tc_seq_2.xml</path>
                         <context>positive</context>
                         <InputDataFile/>
                         <runtype>sequential_keywords</runtype>
@@ -41,7 +41,7 @@
                         <impact>impact</impact>
                 </Testcase>
                 <Testcase>
-                        <path>../../../testcases/framework_tests/iter_execution/seq_tc_3.xml</path>
+                        <path>../../../testcases/framework_tests/iter_execution/tc_seq_3.xml</path>
                         <context>positive</context>
                         <InputDataFile/>
                         <runtype>sequential_keywords</runtype>

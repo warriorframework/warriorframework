@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <Testcase>
         <Details>
-                <Name>seq_ts_seq_tc_3</Name>
+                <Name>tc_par_3</Name>
                 <Title>TS running sequential TC with sequential</Title>
                 <Engineer>ka</Engineer>
                 <Date>2017-05-23</Date>

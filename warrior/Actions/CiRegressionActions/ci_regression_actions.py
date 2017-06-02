@@ -273,18 +273,25 @@ class CIregressionActions(object):
         path = file_Utils.createDir(file_Utils.getDirName(self.logsdir), "tmp")
         return True, {"parallel_exec_tmp_dir": os.path.join(file_Utils.getDirName(self.logsdir), "tmp")} if path else False
 
-    def create_sub_tmp_file(self, filename):
+    def create_sub_tmp_file(self, system_name="", filename="", delete="yes"):
         path = data_Utils.get_object_from_datarepository("parallel_exec_tmp_dir")
+        if system_name != "" and filename == "":
+            filename = data_Utils.getSystemData(self.datafile, system_name, "filename")
+        elif system_name == "" and filename == "":
+            pNote("No system or filename found, needs to provide at least one", "error")
         f = open(os.path.join(path, filename), "w")
         f.write("This is a test string")
         f.close()
         time.sleep(10)
         status = False
-        try:
-            file_Utils.delFile(os.path.join(path, filename))
+        if delete == "yes":
+            try:
+                file_Utils.delFile(os.path.join(path, filename))
+                status = True
+            except OSError:
+                pNote("Cannot remove tmp file, no write access to {}".format(path), "error")
+        else:
             status = True
-        except OSError:
-            pNote("Cannot remove tmp file, no write access to {}".format(path), "error")
         return status
 
     def tmp_file_count(self, int_count):
@@ -299,8 +306,15 @@ class CIregressionActions(object):
         print len(content), int_count
         return len(content) == int_count
 
+    def check_tmp_file_exists(self, system_name="", filename=""):
+        if system_name != "" and filename == "":
+            filename = data_Utils.getSystemData(self.datafile, system_name, "filename")
+        elif system_name == "" and filename == "":
+            pNote("No system or filename found, needs to provide at least one", "error")
+        path = data_Utils.get_object_from_datarepository("parallel_exec_tmp_dir")
+        path = os.path.join(path, filename)
+        return file_Utils.fileExists(path)
+
     def delete_tmp_dir(self):
         path = data_Utils.get_object_from_datarepository("parallel_exec_tmp_dir")
-        # return file_Utils.delFolder(path)
-        print path
-        return True
+        return file_Utils.delFolder(path)
