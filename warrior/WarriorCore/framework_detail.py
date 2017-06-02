@@ -71,7 +71,7 @@ def warrior_framework_details():
         current_time = datetime.strptime(current_time, "%a %b %d %H:%M:%S %Y")
         install_time = datetime.strptime(possible_install_time, "%a %b %d %H:%M:%S %Y")
         difference = current_time - install_time 
-    if release and version and current_file_path:
+    if release and version and version_file_path:
         pNote("========================== WARRIOR FRAMEWORK DETAILS ==========================", 'notype')
         print_info('The Warrior framework used is {0}'.format(version_file_path))
         print_info('The Warrior framework Release is{0}'.format(release))
