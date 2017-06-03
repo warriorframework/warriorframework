@@ -49,7 +49,6 @@ def warrior_framework_details():
     # release notes.Assumes the relative structure remains constant.
     release = False
     version = False
-    possible_install_time = False
     version_file_path = os.path.normpath(os.path.join(__file__, "..{0}..{0}..".format(os.sep)))
     version_file = os.path.join(version_file_path, "version.txt")
     version_file_exists = file_Utils.fileExists(version_file)
@@ -65,11 +64,6 @@ def warrior_framework_details():
             if (re.match('(Version.*):(.*)', line)):
                 m = re.match(r'(Version.*):(.*)', line)
                 version = m.group(2)
-        possible_install_time = time.ctime(os.path.getctime(version_file))
-        current_time = time.strftime("%a %b %d %H:%M:%S %Y")
-        current_time = datetime.strptime(current_time, "%a %b %d %H:%M:%S %Y")
-        install_time = datetime.strptime(possible_install_time, "%a %b %d %H:%M:%S %Y")
-        difference = current_time - install_time 
     if release and version and version_file_path:
         pNote("========================== WARRIOR FRAMEWORK DETAILS ==========================", 'notype')
         print_info('The Warrior framework used is {0}'.format(version_file_path))
