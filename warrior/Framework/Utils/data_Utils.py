@@ -24,6 +24,7 @@ from Framework.ClassUtils.testdata_class import TestData, TestDataIterations
 from Framework.Utils.xml_Utils import get_attributevalue_from_directchildnode as av_fromdc
 from Framework.Utils.string_Utils import sub_from_varconfigfile
 from Framework.ClassUtils import database_utils_class
+from __builtin__ import str
 
 cmd_params = OrderedDict([("command_list", "send"),
                           ("sys_list", "sys"),
@@ -1435,6 +1436,56 @@ def sub_from_env_var(raw_value, start_pattern="${", end_pattern="}"):
 def sub_from_data_repo(raw_value, start_pattern="${", end_pattern="}"):
     return subst_var_patterns_by_prefix(raw_value, start_pattern, end_pattern,
                                         "REPO")
+
+
+def substitute_var_patterns(raw_value, start_pattern="${", end_pattern="}"):
+    def get_data(var):
+        repokeys = var.split('.')
+        val = get_object_from_datarepository(repokeys[0])
+        for key in repokeys[1:]:
+            val = val[key]
+        else:
+            return val
+    prefixes = {'ENV': ('environment', lambda var: os.environ[var]),
+                'REPO': ('data repository', get_data)}
+    error_msg = ("Could not find any {0} variable {1!r} corresponding to {2!r}"
+                 "provided in input data/testdata file. \nWill default to None"
+                 )
+    if raw_value is None:
+        return raw_value
+    elif isinstance(raw_value, str):
+        extracted_var = string_Utils.return_quote(raw_value, start_pattern,
+                                                  end_pattern)
+        for string in extracted_var:
+            [prefix, var] = string.split('.', 1)
+            if prefix in prefixes:
+                try:
+                    val = prefixes[prefix][1](var)
+                except KeyError:
+                    print_error(error_msg.format(prefixes[prefix][0], string,
+                                                 raw_value))
+            if val:
+                raw_value = raw_value.replace(start_pattern+string+end_pattern,
+                                              val)
+        else:
+            return raw_value
+    elif isinstance(raw_value, list):
+        return map(lambda val: substitute_var_patterns(val, start_pattern,
+                                                       end_pattern), raw_value)
+    elif isinstance(raw_value, dict):
+        for key in raw_value:
+            raw_value[key] = substitute_var_patterns(raw_value[key],
+                                                     start_pattern,
+                                                     end_pattern)
+        else:
+            return raw_value
+    else:
+        print_error("Unsupported format - raw_value should either be a string,"
+                    " list or dictionary")
+        print_error("raw_value: #{}# and its type is {}".format(raw_value,
+                                                                type(raw_value)
+                                                                ))
+    return raw_value
 
 
 def process_subsystem_list(datafile, system_name, subsystem=None):
