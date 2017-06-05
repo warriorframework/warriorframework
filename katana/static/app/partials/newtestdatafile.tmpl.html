@@ -446,7 +446,7 @@
 
             <div class="row">
                 <div class="form-group">
-                    <label for="cp_end" class="col-sm-2 control-label mandatory-field ellipsis-the-overflow">End</label>
+                    <label for="cp_end" class="col-sm-2 control-label req ellipsis-the-overflow">End</label>
                     <div class="tooltip-on-right align-fa-icon-after-label">
                         <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
                         <span class="tooltip-content">
@@ -5037,6 +5037,8 @@
 				var title = feild.attr('title');
 				var tooltip =  title && title.indexOf('{') != -1 ? JSON.parse(title).tooltip : '';
 				feild.attr('title', tooltip);
+				if(feild.attr('id') == 'cp_end')
+					feild.parent().find('label').addClass('req');
 				setTimeout(function(){
 					feild.trigger('change');
 				}, 50);

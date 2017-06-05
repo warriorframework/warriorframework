@@ -947,7 +947,7 @@ label.col-sm-3.control-label {
     min-height: 34px;
 }
 
-.mandatory-field:after {
+.mandatory-field:after, .req:after {
     color: rgb(214, 48, 48) !important;
     content: "\f111";
     font: normal normal normal 14px/1 FontAwesome;
@@ -957,7 +957,7 @@ label.col-sm-3.control-label {
     top: -7px;
 }
 
-.mandatory-field {
+.mandatory-field, .req {
     color: inherit;
 }
 
