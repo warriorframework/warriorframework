@@ -64,6 +64,7 @@ Bugfixes:
 [WAR-1121] - TS with parallel_kw tc throws error when trying to combine junit result
 [WAR-1155] - Selenium: Need to correct the relative paths of the config files which is mentioned in data files
 [WAR-1169] - Due to rearrangement of version file in the new repo, details of the version will not be logged in the log file.
+[WAR-1066] - copy option in test data doesn't list the step number to be copied
 
 =================================================
 3. Procedure to get a specific version of Warrior 
