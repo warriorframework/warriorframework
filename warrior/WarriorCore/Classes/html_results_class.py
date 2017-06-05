@@ -52,7 +52,7 @@ class lineResult():
             topLevelNext = '<tr>' + topLevelNext + '</tr>'
         else:
             for elem in self.keys:
-                if  elem != 'static' and elem != 'dynamic':
+                if elem != 'static' and elem != 'dynamic':
                     topLevel += '<td rowspan="2"><div>' + (self.data[elem] if self.data[elem] else '') + '</div></td>'
 
         self.html = '<tr name="' + self.data['nameAttr'] + '">' + topLevel + '</tr>' + topLevelNext
@@ -85,8 +85,10 @@ class WarriorHtmlResults():
                 self.createLineResult( testsuite_node, "Testsuite"  )
                 for testcase_node in testsuite_node.findall("testcase"):
                     self.createLineResult(testcase_node, "Testcase" )
-                    for step_node in testcase_node.findall("keyword"):
-                        self.createLineResult( step_node, "Keyword" )
+                    for step_node in testcase_node.findall("properties"):
+                        for node in step_node.findall("property"):
+                            if node.get('type') == 'keyword':
+                                self.createLineResult( node, "Keyword" )
 
     def getPath( self ):
         filename = file_Utils.getNameOnly(os.path.basename( self.junit_file ))
