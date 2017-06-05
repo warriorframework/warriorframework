@@ -4967,10 +4967,7 @@
 				currentView.find('h4').text().includes('Testdata') && table.find('h4').text(headerTxt.text());
 				
 				wizardAPI.addDeleteButton( tableItems, view );
-				if( isNew )
-					inputs.val('');
-				else
-					inputs.trigger('change');
+
 			}
 			var determentent = currentView.find('h4').text().includes('Testdata') || specialCase ? true : false;
 			inputs.each( function( i ){
@@ -4982,6 +4979,10 @@
 				wizardAPI.initEventHandler( $elem, tableItem );
 				
 			});
+				if( isNew )
+					inputs && inputs.val('');
+				else
+					inputs && inputs.trigger('change');
 			
 			view.find('.new, .copy').off('click').on('click', function(){
 				wizardAPI.newView.call( this, view, table );

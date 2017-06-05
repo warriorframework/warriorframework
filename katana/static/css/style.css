@@ -896,7 +896,7 @@ input {}
     height: 34px;
 }
 
-form > .row > .form-group {flex-wrap: nowrap;}
+form > .row > .form-group {}
 
 .row.no-gutters {
     /* max-width: 1200px; */
@@ -2055,10 +2055,81 @@ i.fa.fa-folder-open:hover + a{
  .labels {
     border-bottom: none ;
 }
+.row .form-group .col-sm-10.col-sm-offset-3 {
+    flex-grow: 1;
+    white-space: nowrap;
+}
 
+label.col-sm-3.control-label, label.col-sm-2.control-label:not(.color-me-dark-grey) {
+    text-align: left;
+}
 
+select#kw_repo_all_drivers0 {
+    width: 100% !important;
+    display: block;
+}
 
+.row > .form-group > div.col-sm-2 {
+    width: 50%;
+    flex-grow: 6;
+}
 
+.row > .form-group > div.col-sm-2 +
+ .col-sm-4 {
+    display: none;
+}
+hr {
+    visibility: hidden;
+}
+
+@media (min-width: 768px){
+.col-sm-5 {
+    width: auto !important;
+}
+}
+@media (max-width: 1100px){
+    .row{
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    label.col-sm-3.control-label, label.col-sm-2.control-label:not(.color-me-dark-grey){
+        display: block;
+        width: 100%;
+        background: white;
+        border: none;
+    }
+	    .col-sm-8{
+        width: 100%
+        
+    }
+}
+
+input.btn.btn-default {}
+
+.col-sm-12 {
+    padding: 0px;
+}
+b.text-danger {
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    top: 10px;
+    z-index: 1;
+    font-size: 10px;
+}
+
+.panelArgs {
+    position: relative;
+}
+
+b.text-danger > br {
+    display: none;
+}
+[style="width: 40%"] label {
+    min-width: auto !important;
+}
 
 
 
