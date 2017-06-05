@@ -446,7 +446,7 @@
 
             <div class="row">
                 <div class="form-group">
-                    <label for="cp_end" class="col-sm-2 control-label ellipsis-the-overflow">End</label>
+                    <label for="cp_end" class="col-sm-2 control-label mandatory-field ellipsis-the-overflow">End</label>
                     <div class="tooltip-on-right align-fa-icon-after-label">
                         <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
                         <span class="tooltip-content">
@@ -4883,7 +4883,7 @@
 				tableItem.text( input.find(':selected').attr('label') );
 				if(input.attr('id') == 'cp_retry' || input.attr('id') == 'td_retry' ){
 					var dependents = input.parent().nextAll(':lt(2)').add( tableItem.closest('li').nextAll(':lt(2)') );
-					if( input.val() == '0' )
+					if( input.val() == 'y' )
 						dependents.fadeIn();
 					else
 						dependents.fadeOut();
@@ -5048,6 +5048,14 @@
 			var name = wizardAPI.body.find('#tdf_name');
 			name.attr('placeholder', 'File Name...');
 			name.appendTo(wizardAPI.container.find('.leftColumn'));
+			if( name.val() == '' )
+				wizardAPI.container.find('.save').addClass('inactive');
+			name.on('keyup', function(){
+				if( name.val() != '' )
+					wizardAPI.container.find('.save').removeClass('inactive');
+				else
+					wizardAPI.container.find('.save').addClass('inactive');
+			});
 			wizardAPI.fixSelects();
 		},
 		
@@ -5063,8 +5071,8 @@
 				
 				var second = $elem.find('option:last');
 				if( first.attr('label').length == 0 || first.attr('label')[0] == "y" ){
-					first.attr('label', 'yes'); 
-					second.attr('label', 'no');
+					first.attr('label', 'yes').val('y'); 
+					second.attr('label', 'no').val('n');
 				}
 
 			});

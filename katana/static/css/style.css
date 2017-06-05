@@ -2131,8 +2131,15 @@ b.text-danger > br {
 [style="width: 40%"] label {
     min-width: auto !important;
 }
-
-
+.mArgs.form-group > label {
+    width: 30% !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.save.inactive {
+    pointer-events: none;
+    opacity: .6;
+}
 
 
 
