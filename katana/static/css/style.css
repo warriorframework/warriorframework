@@ -1699,6 +1699,7 @@ a.list-group-item.border-less {
     padding-bottom: 43%;
     border-radius: 10px;
     margin: 3%;
+		background-color: rgba(255, 255, 255, 0.8);
     text-align: center;
     position: relative; 
     vertical-align: bottom;
@@ -1895,7 +1896,7 @@ label.filelist.ng-binding.ng-scope:last-child {
     position: relative;
     border-radius: 27px;
     color: #6b6b6b;
-    background: rgba(255, 255, 255, 0.95);
+		background: rgba(255, 255, 255, 0.8);
     -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.6);
     -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.6);
     box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.6);
