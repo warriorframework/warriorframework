@@ -13,7 +13,7 @@
         <dependency name="requests" install="yes" user="no"/>
         <dependency name="selenium" install="yes" user="no"/>
         <dependency name="xlrd" install="no" user="no"/>
-        <dependency name="cloudshell-automation-api" install="no" user="no"/>
+        <dependency name="cloudshell-automation-api" install="yes" user="no"/>
     </warhorn>
 
 	<warriorframework url="https://github.com/warriorframework/warriorframework.git"
