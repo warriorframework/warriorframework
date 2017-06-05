@@ -5,13 +5,13 @@
 <data>
     <warhorn name="Warhorn">
         <dependency name="jira" install="no" user="no"/>
-        <dependency name="lxml" install="no" user="no"/>
+        <dependency name="lxml" install="yes" user="no"/>
         <dependency name="ncclient" install="no" user="no"/>
-        <dependency name="paramiko" install="no" user="no"/>
-        <dependency name="pexpect" install="no" user="no"/>
-        <dependency name="pysnmp" install="no" user="no"/>
-        <dependency name="requests" install="no" user="no"/>
-        <dependency name="selenium" install="no" user="no"/>
+        <dependency name="paramiko" install="yes" user="no"/>
+        <dependency name="pexpect" install="yes" user="no"/>
+        <dependency name="pysnmp" install="yes" user="no"/>
+        <dependency name="requests" install="yes" user="no"/>
+        <dependency name="selenium" install="yes" user="no"/>
         <dependency name="xlrd" install="no" user="no"/>
         <dependency name="cloudshell-automation-api" install="no" user="no"/>
     </warhorn>
@@ -31,19 +31,6 @@
 
     <drivers>
 
-        <repository url="http://SKULKARN@rtx-swtl-git.fnc.net.local/scm/warkey/sdn_topology.git" clone="yes" label="" all_drivers="yes">
-        </repository>
-
-        <repository url="http://SKULKARN@rtx-swtl-git.fnc.net.local/scm/warkey/solution_validation.git" clone="yes" label="" all_drivers="yes">
-        </repository>
-
-        <repository url="http://SKULKARN@rtx-swtl-git.fnc.net.local/scm/warkey/1finity.git" clone="yes" label="" all_drivers="no">
-            <driver name="onefinity_fw_driver" clone="yes"/>
-			<driver name="onefinity_l3_driver" clone=""/>
-			<driver name="onefinity_otn_driver" clone="no"/>
-			<driver name="store_and_verify_driver"/>
-        </repository>
-
         <!--
 
         Fill this out with the details of the repository that you want to clone
@@ -60,12 +47,6 @@
     </drivers>
 
     <warriorspace>
-
-        <repository url="http://SKULKARN@rtx-swtl-git.fnc.net.local/scm/was/sdn_topology.git" overwrite="yes" label="" clone="yes">
-        </repository>
-
-        <repository url="http://SKULKARN@rtx-swtl-git.fnc.net.local/scm/was/1finity.git" overwrite="yes" label="" clone="yes">
-        </repository>
 
         <!--
 
