@@ -37,6 +37,7 @@ New Features:
 [WAR-1106] - OSS: Change warhorn default config file so new users can run without any changes
 [WAR-1115] - Move cli_tests data file into a separate folder
 [WAR-1136] - As a user, I want to set many ENV variables and pass it to a file
+[WAR-1132] - Option to substitute WF data repository values in Testdata blocks
 
 -------------
 Improvements:
@@ -62,6 +63,7 @@ Bugfixes:
 [WAR-1098] - Junit file format is incorrect
 [WAR-1121] - TS with parallel_kw tc throws error when trying to combine junit result
 [WAR-1155] - Selenium: Need to correct the relative paths of the config files which is mentioned in data files
+[WAR-1169] - Due to rearrangement of version file in the new repo, details of the version will not be logged in the log file.
 
 =================================================
 3. Procedure to get a specific version of Warrior 
