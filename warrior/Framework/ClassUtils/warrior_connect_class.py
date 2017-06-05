@@ -25,6 +25,7 @@ from Framework.Utils.print_Utils import print_info, print_debug,\
  print_exception, print_error
 from Framework.Utils.testcase_Utils import pNote
 from WarriorCore.Classes.war_cli_class import WarriorCliClass
+from Framework.Utils.cli_Utils import cmdprinter
 
 
 class WarriorConnect(object):
@@ -83,6 +84,7 @@ class WarriorConnect(object):
 
     # start_prompt, end_prompt, timeout are not required for paramiko session,
     # used here for backward compatibility(it's not a good solution)
+    @cmdprinter
     def send_command(self, start_prompt, end_prompt, command,
                      timeout=60):
         """ Sends the command to ssh/telnet session """

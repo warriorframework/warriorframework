@@ -29,7 +29,7 @@ from Framework.Utils.list_Utils import get_list_by_separating_strings
 from Framework.ClassUtils.WNetwork.loging import ThreadedLog
 from WarriorCore.Classes.war_cli_class import WarriorCliClass
 from Framework.ClassUtils import database_utils_class
-from Framework.ClassUtils.warrior_connect_class import WarriorConnect
+
 try:
     import pexpect
 except ImportError:
@@ -596,7 +596,8 @@ def _send_cmd(obj_session, **kwargs):
     result = False
     response = ""
     command = kwargs.get('command')
-    if isinstance(obj_session, WarriorConnect):
+    if isinstance(obj_session,
+                  Framework.ClassUtils.warrior_connect_class.WarriorConnect):
         startprompt = kwargs.get('startprompt', ".*")
         endprompt = kwargs.get('endprompt', None)
         cmd_timeout = kwargs.get('cmd_timeout', None)
