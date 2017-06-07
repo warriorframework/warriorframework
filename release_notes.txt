@@ -25,7 +25,6 @@ Procedure to get a specific version is available in section-3 of this document.
 -------------
 New Features:
 -------------
-
 [WAR-547] - Improve the structure of the built-in tests
 [WAR-855] - Update print error, info, debug and all other print utils to write to result file same way like pNote
 [WAR-885] - SNMP Warrior MIB Browser
@@ -38,11 +37,11 @@ New Features:
 [WAR-1115] - Move cli_tests data file into a separate folder
 [WAR-1136] - As a user, I want to set many ENV variables and pass it to a file
 [WAR-1132] - Option to substitute WF data repository values in Testdata blocks
+[WAR-1182] - Update .travis.yml file with the new project name
 
 -------------
 Improvements:
 -------------
-
 [WAR-1131] - VAR_SUB substitution doesn't happen when used with "verify="${[VAR_SUB].verify_commit}""
 
 ---------
@@ -65,6 +64,7 @@ Bugfixes:
 [WAR-1155] - Selenium: Need to correct the relative paths of the config files which is mentioned in data files
 [WAR-1169] - Due to rearrangement of version file in the new repo, details of the version will not be logged in the log file.
 [WAR-1066] - copy option in test data doesn't list the step number to be copied
+[WAR-1180] - Change the import for print utils and other files to prevent loop import
 
 =================================================
 3. Procedure to get a specific version of Warrior 
