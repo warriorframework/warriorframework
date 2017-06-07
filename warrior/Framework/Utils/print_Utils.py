@@ -11,7 +11,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-"""Warrior Frameworks print library """
+"""
+Warrior Frameworks print library
+
+!!! Important!!!
+DO NOT import any modules from warrior/Framework package that uses
+warrior/Framework/Utils/print_Utils.py at module level into this module
+as it will lead to cyclic imports.
+
+"""
 
 from WarriorCore.Classes.war_print_class import print_main
 import sys
