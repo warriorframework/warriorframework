@@ -47,9 +47,7 @@ class TestcaseUtils(object):
         self.grequirementloop = 0
         self.gsubkey = {}
         self.gsubkeyloop = 0
-        #self.file_utils = self.get_file_utils()
-        #self.xml_utils = self.get_xml_utils()
-    
+
     def file_utils(self):
         """
         """
@@ -83,6 +81,8 @@ class TestcaseUtils(object):
             tree.write(resultfile)
         except UnicodeDecodeError as e:
             print_exception(e)
+        except Exception as err:
+            print_exception(err)
 
     @staticmethod
     def p_open(fileobject):
