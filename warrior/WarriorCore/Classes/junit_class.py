@@ -189,16 +189,17 @@ class Junit(object):
         html_result_obj.html_from_junit()
         html_result_obj.output_html()
 
-    def output_junit(self, path):
+    def output_junit(self, path, print_summary=True):
         """output the actual file
-        copy xslt to the results folder"""
+        copy xslt to the results folder
+        Print execution summary in console based on 'print_summary' value """
 
-        fpath = path+ os.sep +self.filename+"_junit.xml"
+        fpath = path + os.sep + self.filename + "_junit.xml"
         tree = ET.ElementTree(self.root)
         tree.write(fpath)
-        summary_obj = ExecutionSummary(fpath)
-        summary_obj.print_result_in_console(fpath)
+        if print_summary is True:
+            summary_obj = ExecutionSummary(fpath)
+            summary_obj.print_result_in_console(fpath)
         print("\n")
 
         self._junit_to_html(fpath)
-        

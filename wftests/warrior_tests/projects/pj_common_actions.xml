@@ -1,8 +1,8 @@
 <?xml version="1.0" ?>
 <Project>
 	<Details>
-		<Name>pj_comparison</Name>
-		<Title>pj_comparison</Title>
+		<Name>pj_common_actions</Name>
+		<Title>pj_common_actions</Title>
 		<Engineer>Arvind Kumar Sethuraman</Engineer>
 		<Date>23/01/2017</Date>
 		<Time>13:07:26</Time>
@@ -10,7 +10,7 @@
 	</Details>
 	<Testsuites>
 		<Testsuite>
-			<path>../suites/framework_tests/ts_comparison.xml</path>
+			<path>../suites/common_action_tests/common_action_suite.xml</path>
 			<onError action="next" value=""/>
 			<impact>impact</impact>
 		</Testsuite>
