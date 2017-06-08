@@ -1,17 +1,17 @@
 <?xml version="1.0" ?>
 <Project>
         <Details>
-                <Name>Demo_Project</Name>
-                <Title>Demo_Project</Title>
-                <Engineer>Warrior_user</Engineer>
+                <Name>pj_chk_war_1031</Name>
+                <Title>project to check war-1031 iter parallel test suite followed by non-iter suite</Title>
+                <Engineer>asethura</Engineer>
                 <State>In Review</State>
-                <Date>03/17/2017</Date>
+                <Date>08/07/2017</Date>
                 <Time>21:40:17</Time>
                 <default_onError action="abort" value=""/>
         </Details>
         <Testsuites>
                 <Testsuite>
-                        <path>../Suites/demo_suite1.xml</path>
+                    <path>../suites/framework_tests/ts_iter_sample.xml</path>
                         <onError action="abort" value=""/>
                         <impact>impact</impact>
                         <Execute ExecType="Yes">
@@ -19,7 +19,7 @@
                         </Execute>
                 </Testsuite>
                 <Testsuite>
-                        <path>../Suites/demo_suite2.xml</path>
+                    <path>../suites/framework_tests/ts_non_iter_sample.xml</path>
                         <onError action="abort" value=""/>
                         <impact>impact</impact>
                         <Execute ExecType="Yes">
