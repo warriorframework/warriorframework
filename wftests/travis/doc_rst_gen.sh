@@ -1,4 +1,4 @@
-git checkout release
+git checkout feature/WAR-970
 
 #Remove all existing package .rst files.
 rm -rf docs/source/Actions*rst
@@ -9,8 +9,8 @@ rm -rf docs/build/*
 sphinx-apidoc -f -o  docs/source  warrior/Actions
 sphinx-apidoc -f -o  docs/source  warrior/Framework
 
-git config --global user.email "travis@travis-ci.org"
-git config --global user.name "Travis CI"
+git config --global user.email "warriorframework.docs@gmail.com"
+git config --global user.name "wf-docs"
 # please refer to https://docs.travis-ci.com/user/encryption-keys
 # to see how to generate the encryption key
 git remote add origin-docs https://$GITHUB_TOKEN@github.com/warriorframework/warriorframework.git
@@ -18,4 +18,4 @@ git remote add origin-docs https://$GITHUB_TOKEN@github.com/warriorframework/war
 git add docs
 git commit -m "[skip ci] update warriorframework rst documents"
 # git config --list
-git push -u origin-docs release
+git push -u origin-docs feature/WAR-970

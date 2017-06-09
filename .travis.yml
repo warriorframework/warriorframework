@@ -16,10 +16,14 @@ matrix:
       python: 2.7
     - os: linux
       env: INSTALL=yes TESTFILE=./wftests/travis/doc_rst_gen.sh DOC=yes
+      secure: "ogehraYwrvkRnlNfdH/y9KqSlVNiCMNXFi1xyz866x7YgtMSkzPJDbg8fHtOwDVK0JBhFXHyzd5JX2B7Pv7oxU596ImxOsqY2jpJ353UEeCTmWBONvU/+SW/vB8I2oCddIk3EDSqVdoC8oxcPqm1QX1BgJIKPnztto7py0Sr4c07bPUhE/CrXmyJwFsJqomFOocT1sTxLDbQ6TU4WjHSRQrtKmE7TdVeyrJPINX+xaCE3Oey1TYc6bRYTO7XMmds9Lf6W46RTC/MK3BExrcxhyTNgXY2F86Uzs33cDAXEXdv2lLfAgdZOiaeHnq3hfWOETrgpbODG4VfdjgqhIpYUp/oy+7wk2PQRpSQuyfTiSehF8jV2rCzh+9BhsCS1Lavs3YyauQwUJ5SHosmTyceCAmm6BZZ67Xg6kUNEVKYzced5/JtdnZwyihdSPWrtt+qutjCO35lQCGZZ+nOVmzVHYpfp63NCZBp9jIfdsbyHsEJrJcTtXY4Ehir2HLnDcTcHTtDQ1D3HSGUJl9Z8CzNEsTOFOHnYvduVFh3gHOGmtUJ6UfF8/i45QEzUF3i1wMT49IFIYcTs3BOh75ryFfSu53hlwxA6XAty7efU0vVcQ5gPLHoi8qwuqffGLLqzaD/NmLx9hEL+k+yHuIPrAEvm0DDJgdNVG0RZukSRumm31U="
       python: 2.7
       branches:
         only:
           - release
+          - develop
+          - master
+          - feature/WAR-970
 
 before_install:
     - if [ ${INSTALL} = "yes" ]; then
