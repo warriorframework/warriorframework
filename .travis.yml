@@ -49,7 +49,7 @@ install:
 
 script:
     - if [ ${DOC} = "yes" ] || [ ${PYLINT} = "yes" ]; then
-        $TESTFILE
+        $TESTFILE ;
       else
-        python ./warrior/Warrior $TESTFILE
+        python ./warrior/Warrior $TESTFILE ;
       fi
