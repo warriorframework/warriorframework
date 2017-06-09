@@ -24,9 +24,6 @@ matrix:
     - os: linux
       env: INSTALL=yes TESTFILE=./wftests/travis/doc_rst_gen.sh DOC=yes
       python: 2.7
-      branches:
-        only:
-          - docs
 
 before_install:
     - if [ ${INSTALL} = "yes" ]; then
