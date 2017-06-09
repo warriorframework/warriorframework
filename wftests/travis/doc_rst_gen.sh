@@ -16,4 +16,4 @@ git remote add origin-docs https://$GITHUB_TOKEN@github.com/warriorframework/war
 git add -A
 git commit -m "[skip ci] update warriorframework rst documents"
 # git config --list
-git push -u origin-docs
+git push -u origin-docs docs
