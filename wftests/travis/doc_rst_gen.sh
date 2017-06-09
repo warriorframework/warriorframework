@@ -1,7 +1,4 @@
-set -x
-git fetch
-git branch
-git checkout $TRAVIS_BRANCH
+git checkout develop
 
 #Remove all existing package .rst files.
 rm -rf docs/source/Actions*rst
@@ -19,6 +16,6 @@ git config --global user.name "wf-docs"
 git remote add origin-docs https://$GITHUB_TOKEN@github.com/warriorframework/warriorframework.git
 
 git add -A
-git commit -m "[skip ci] update warriorframework rst documents"
+git commit -m "[skip ci] Update warriorframework rst documents for readthedoc"
 git config --list
-git push -u origin-docs $TRAVIS_BRANCH
+git push -u origin-docs develop
