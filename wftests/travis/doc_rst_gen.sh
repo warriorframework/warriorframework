@@ -1,7 +1,7 @@
 git branch
 git checkout $TRAVIS_BRANCH
 
-if [ $TRAVIS_BRANCH = "develop" ] ; then
+if [ $TRAVIS_BRANCH = "feature/WAR-970" ] || [ $TRAVIS_BRANCH = "develop" ] ; then
 	#Remove all existing package .rst files.
 	rm -rf docs/source/Actions*rst
 	rm -rf docs/source/Framework*rst
