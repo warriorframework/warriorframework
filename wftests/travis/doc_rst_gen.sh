@@ -1,3 +1,8 @@
+set -x
+git fetch
+git branch
+git checkout $TRAVIS_BRANCH
+
 #Remove all existing package .rst files.
 rm -rf docs/source/Actions*rst
 rm -rf docs/source/Framework*rst
@@ -12,12 +17,8 @@ git config --global user.name "wf-docs"
 # please refer to https://docs.travis-ci.com/user/encryption-keys
 # to see how to generate the encryption key
 git remote add origin-docs https://$GITHUB_TOKEN@github.com/warriorframework/warriorframework.git
-set -x
-git fetch
-git branch
-git checkout docs
 
 git add -A
 git commit -m "[skip ci] update warriorframework rst documents"
-# git config --list
-git push -u origin-docs docs
+git config --list
+git push -u origin-docs $TRAVIS_BRANCH
