@@ -29,7 +29,6 @@ matrix:
           - release
           - develop
           - master
-          - feature/WAR-970
 
 before_install:
     - if [ ${INSTALL} = "yes" ]; then
