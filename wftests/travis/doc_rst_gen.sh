@@ -1,5 +1,3 @@
-git checkout develop
-
 #Remove all existing package .rst files.
 rm -rf docs/source/Actions*rst
 rm -rf docs/source/Framework*rst
@@ -18,4 +16,4 @@ git remote add origin-docs https://$GITHUB_TOKEN@github.com/warriorframework/war
 git add -A
 git commit -m "[skip ci] update warriorframework rst documents"
 # git config --list
-git push -u origin-docs develop
+git push -u origin-docs

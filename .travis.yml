@@ -26,7 +26,6 @@ matrix:
       python: 2.7
       branches:
         only:
-          - release
           - develop
           - master
 
