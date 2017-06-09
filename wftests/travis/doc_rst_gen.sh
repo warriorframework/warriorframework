@@ -1,3 +1,4 @@
+git fetch
 git checkout feature/WAR-970
 
 #Remove all existing package .rst files.
