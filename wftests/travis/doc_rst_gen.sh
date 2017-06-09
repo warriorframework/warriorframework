@@ -1,3 +1,4 @@
+git branch
 git checkout $TRAVIS_BRANCH
 
 #Remove all existing package .rst files.

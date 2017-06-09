@@ -26,7 +26,7 @@ matrix:
       python: 2.7
       branches:
         only:
-        - docs
+        - develop
         - feature/WAR-970
 
 before_install:
