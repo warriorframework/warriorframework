@@ -1,3 +1,4 @@
+git fetch
 git checkout develop
 
 #Remove all existing package .rst files.
