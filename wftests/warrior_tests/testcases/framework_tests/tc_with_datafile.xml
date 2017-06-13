@@ -1,12 +1,12 @@
 <?xml version="1.0" ?>
 <Testcase>
         <Details>
-                <Name>tc_sample_with_datafile</Name>
+                <Name>tc_with_datafile</Name>
                 <Title>sample testcase with data file</Title>
                 <Engineer>asethura</Engineer>
                 <Date>2017-07-08</Date>
                 <Time>21:29</Time>
-                <InputDataFile>../../data/data_sample_for_tcwithdatafile.xml</InputDataFile>
+                <InputDataFile>../../data/data_tcwithdatafile.xml</InputDataFile>
                 <Datatype>Custom</Datatype>
                 <default_onError action="next"/>
                 <Logsdir/>

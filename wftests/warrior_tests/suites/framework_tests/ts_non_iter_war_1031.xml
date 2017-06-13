@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <TestSuite>
         <Details>
-                <Name>ts_non_iter_sample</Name>
+                <Name>ts_non_iter_war_1031</Name>
                 <Title>Non iterative sample suite file</Title>
                 <Engineer>asethura</Engineer>
                 <Date>26/05/2017</Date>
@@ -17,7 +17,7 @@
         </Requirements>
         <Testcases>
                 <Testcase>
-                    <path>../../testcases/framework_tests/tc_sample_with_datafile.xml</path>
+                    <path>../../testcases/framework_tests/tc_with_datafile.xml</path>
                         <context>positive</context>
                         <runtype>sequential_keywords</runtype>
                         <onError action="next" value=""/>

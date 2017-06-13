@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <Testcase>
         <Details>
-                <Name>tc_iter_sample</Name>
+                <Name>tc_iter_war_1031</Name>
                 <Title>Demo_Test_Of_Inventory_Management_System</Title>
                 <Datatype>Iterative</Datatype>
                 <default_onError action="next"/>

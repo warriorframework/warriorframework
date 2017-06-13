@@ -1,13 +1,13 @@
 <?xml version="1.0" ?>
 <TestSuite>
         <Details>
-                <Name>ts_iter_sample</Name>
+                <Name>ts_iter_war_1031</Name>
                 <Title>iterative parallel suite</Title>
                 <Engineer>asethura</Engineer>
                 <Date>26/05/2017</Date>
                 <Time>21:37:23</Time>
                 <type Max_Attempts="" Number_Attempts="" exectype="iterative_parallel"/>
-                <InputDataFile>../../data/data_iter_sample.xml</InputDataFile>
+                <InputDataFile>../../data/data_iter_war_1031.xml</InputDataFile>
                 <State>Released</State>
                 <default_onError action="next" />
                 <Resultsdir/>
@@ -18,7 +18,7 @@
         </Requirements>
         <Testcases>
                 <Testcase>
-                    <path>../../testcases/framework_tests/tc_iter_sample.xml</path>
+                    <path>../../testcases/framework_tests/tc_iter_war_1031.xml</path>
                         <context>positive</context>
                         <runtype>sequential_keywords</runtype>
                         <onError action="next" value=""/>
@@ -28,7 +28,7 @@
                         <runmode type="Standard" value=""/>
                 </Testcase>
                 <Testcase>
-                    <path>../../testcases/framework_tests/tc_iter_sample.xml</path>
+                    <path>../../testcases/framework_tests/tc_iter_war_1031.xml</path>
                         <context>positive</context>
                         <runtype>sequential_keywords</runtype>
                         <onError action="next" value=""/>
