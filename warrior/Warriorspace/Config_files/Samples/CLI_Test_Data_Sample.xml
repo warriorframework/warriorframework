@@ -80,13 +80,29 @@ Also refer the python regex documentation https://docs.python.org/2/library/re.h
 		:execute: the execute tag can take values 'yes' or 'no'
 				  any testdata that is marked 'no' will not be executed.
 
-		1. Substituting Variables in the command or verifications .
+		1. Substituting Variables in the command or verifications other than environment or data repository.
 			- To substitute variables in a command, use the variable config file to provide the variables.
 			- In the testdata variable reference should be provided as dotted notation within a '${}' format.
 				Eg: ${network1.ne1.shelf1.card1.shelf} will traverse the variable config
 				to network1.ne1.shelf1.card1 and get the value for the attribute shelf.
 			- Sample variable config file is available in Warriorspace/Config_files/variable_config_sample.xml
-
+        2. Substituting Variables in the command or verifications with environment value.
+            - To substitute variables with environment value, use ${ENV.variable} notation
+                Eg: ${ENV.IPADDR} will get the value of environment variable IPADDR
+            - The variable IPADDR should already be an environment variable in the system
+        2. Substituting Variables in the command or verifications with data repository value.
+            - To substitute variables with data repository value, use ${REPO.variable} notation
+                Eg: ${REPO.IPADDR} will get the value of key IPADDR in the data repository
+            - The data repository should already have a key IPADDR with its corresponding value
+            - Here, you can also provide a nested key to get the value of nested elements
+                Eg: ${REPO.K1.K2.K3} will get the value of  key K3 within K2 within K1 in data repository
+            - The datarepository should be in the format - { ...
+                                                             K1: {...
+                                                                  K2: {...
+                                                                       K3: value
+                                                                       ...}
+                                                                    }
+                                                                }
 
 	-->
 
@@ -325,7 +341,7 @@ Also refer the python regex documentation https://docs.python.org/2/library/re.h
         <v1 found="no" search="Error: application communication failure" verify_on="NE2[dip], [cli]"/>
         <v2 found="no" search="Error: application error" verify_on="[dip]"/>
         <v3 found="no" search="Aborted: application communication failure" verify_on=""/>
-        <v4 found="yes" search=".*(\d+).*" cond_value="9000" cond_type="int" operator="lt"> # check if (\d+) satisfies < 9000 as int
+        <v4 found="yes" search=".*(\d+).*" cond_value="9000" cond_type="int" operator="lt"/> <!-- check if (\d+) satisfies < 9000 as int -->
 	</testdata>
 
 
@@ -346,9 +362,7 @@ Also refer the python regex documentation https://docs.python.org/2/library/re.h
 				In this case the [VAR_SUB] will be substituted with the node reference provided and then the equivalent
 				value will be substituted from the varaiable config file.
 
-	**** Currently VAR_SUB is supported for command, prompts (start/end).
-	Support for VAR_SUB on the verification is being added and will
-	be delivered soon ****
+	**** Currently VAR_SUB is supported for command, prompts (start/end) and verify tag ****
 
 	-->
 
@@ -364,6 +378,10 @@ Also refer the python regex documentation https://docs.python.org/2/library/re.h
 
 		<command verify="v7" end="qemux86-64%" start=".*"
 		send="set eqpt shelf ${network1.ne1.shelf1.card1.shelf} admin-state [VAR_SUB]"/>
+
+        <!-- command showing "VAR_SUB" support in verify tag
+        - In the the testcase step-1:  var_sub="network1.ne1.shelf1"-->
+        <command verify="${[VAR_SUB].verify_tag" send="show eqpt shelf ${network1.ne1.shelf1.id} pi"/>
 
 	<!--
 	- Here i have defined the alarms as and their related data in the alarms
@@ -935,6 +953,26 @@ per_td_block:
 			a 7 - a, b, c, d, e
 			a 6 - a, b, c, d, e
 			a 5 - a, b, c, d, e
+
+		==================================================
+		V : Repository variable substitution support:
+		==================================================
+
+		User can verify with the variable that is already stored in the data repository
+		For example
+		-->
+		<testdata title="test_repo_variables" execute="yes">
+			<command send="get repovars" verify="v1,v2"/>
+            <v1 found="yes" search="${REPO.key}"/>
+            <v2 found="yes" search="${REPO.key1.key2}"/>
+		</testdata>
+        <!--
+             here the repository should already have a key whose value needs to be matched here
+             for v1 verification
+             This also supports nested checking when the value from the repository is nested like
+             for v2 we are checking the value of key2 within key1 of Repository
+             i.e., Repository[key1][key2] value would be verified against the output
+
 -->
 
 </data>

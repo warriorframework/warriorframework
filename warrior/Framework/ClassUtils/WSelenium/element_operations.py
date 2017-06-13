@@ -64,6 +64,7 @@ KEYS = {'ADD': Keys.ADD, 'ALT': Keys.ALT, 'ARROW_DOWN': Keys.ARROW_DOWN,
          'UP': Keys.UP
          }
 
+
 class ElementOperations():
     """ Element operations """
 
@@ -71,10 +72,14 @@ class ElementOperations():
         """ constructor """
         pass
 
-    def perform_element_action(self, element_or_browser, locator=None, action=None, **kwargs):
+    def perform_element_action(self, element_or_browser, locator=None,
+                               action=None, **kwargs):
         """Generic method to perform specific actions on an element
-        :Currently supported actions and the values that they take """
-        browser  = kwargs.get('browser')
+        :Currently supported actions and the values that they take
+        if the user provided action is "get_text", it would return the
+        value of the particular element and the status of it. If not it would
+        return only the status"""
+        browser = kwargs.get('browser')
         status = True
         if action != "perform_keypress":
             element = self._get_element(element_or_browser, locator)
@@ -83,30 +88,50 @@ class ElementOperations():
         if element:
             action_function = self._get_action_function(action.lower())
             if not action_function:
-                print_error((action + " is not a supported a supported value."))
+                print_error((action + " is not a supported "
+                             "a supported value."))
             else:
                 count = 0
                 while (count <= 3):
                     try:
-                        status = action_function(element, **kwargs)
-                        if status == True:
-                            return status
+                        if action == "get_text":
+                            status, value = action_function(element, **kwargs)
+                            if status is True:
+                                return status, value
+                            else:
+                                status, count = self.wait_time(count, browser,
+                                                               locator,
+                                                               action)
+                                if status is True:
+                                    return status
                         else:
-                            count = count + 1
-                            print_info("waiting for 3 seconds before retrying")
-                            sleep(3)
-                            status = self._stale_element_exception(browser, locator, action)
-                            if status == True:
+                            status = action_function(element, **kwargs)
+                            if status is True:
                                 return status
+                            else:
+                                status, count = self.wait_time(count, browser,
+                                                               locator,
+                                                               action)
+                                if status is True:
+                                    return status
                     except StaleElementReferenceException:
                         status = False
-                        print_info("waiting for 3 seconds before retrying")
-                        sleep(3)
                         try:
-                            count = count + 1
-                            status = self._stale_element_exception(browser, locator, action)
-                            if status == True:
-                                return status
+                            if action == "get_text":
+                                count = count + 1
+                                print_info("waiting for 3 seconds "
+                                           "before retrying")
+                                sleep(3)
+                                status, value = action_function(element,
+                                                                **kwargs)
+                                if status is True:
+                                    return status, value
+                            else:
+                                status, count = self.wait_time(count, browser,
+                                                               locator,
+                                                               action)
+                                if status is True:
+                                    return status
                         except StaleElementReferenceException:
                             status = False
                     except Exception as exception:
@@ -114,14 +139,22 @@ class ElementOperations():
                         print_exception(exception)
                         return status
                 else:
-                    print_error("StaleElementReferenceException occured."\
+                    print_error("StaleElementReferenceException occured."
                                 "Tried three times to locate the element")
                     status = False
         else:
             status = False
-            print_error("Provide a valid WebElement to perform "\
+            print_error("Provide a valid WebElement to perform "
                         "a {0} operation got {1}".format(action, element))
         return status
+
+    def wait_time(self, count, browser, locator, action):
+        """ wait time to find the element again """
+        count = count + 1
+        print_info("waiting for 3 seconds before retrying")
+        sleep(3)
+        status = self._stale_element_exception(browser, locator, action)
+        return status, count
 
     def get_page_source(self, browser):
         '''
@@ -180,7 +213,7 @@ class ElementOperations():
         action to be performed"""
         action_function = ACTIONS.get(action.lower().replace(' ', ''), None)
         return getattr(self, action_function) if action_function else None
-    
+
     def _click_element(self, element, **kwargs):
         """ Clicks on the provided element
         :Arguments:
@@ -188,9 +221,11 @@ class ElementOperations():
         """
         status = True
         print_info("Click on element")
-        if element is not None:
-            element.click()
-        else:
+        try:
+            if element is not None:
+                element.click()
+        except Exception as e:
+            print_error("An Exception Occurred {}".format(e))
             status = False
         return status
 
@@ -201,10 +236,11 @@ class ElementOperations():
         """
         status = True
         print_info("Double click on element")
-        if element is not None:
+        try:
             browser_instance = kwargs.get('browser')
             ActionChains(browser_instance).double_click(element)
-        else:
+        except Exception as e:
+            print_error("An Exception Occurred {}".format(e))
             status = False
         return status
 
@@ -216,11 +252,12 @@ class ElementOperations():
             2. value = a string that has to be typed into the element.
         """
         status = True
-        if element is not None:
-            value = kwargs.get('value', '')
-            print_info("Sending '{0}' to element".format(value))
+        value = kwargs.get('value', '')
+        print_info("Sending '{0}' to element".format(value))
+        try:
             element.send_keys(value)
-        else:
+        except Exception as e:
+            print_error("An Exception Occurred {}".format(e))
             status = False
         return status
 
@@ -250,14 +287,18 @@ class ElementOperations():
             1. source = a valid WebElement
             2. target = a valid WebElement
         """
-        status = False
-        browser_instance = kwargs.get('browser')
-        target = self._get_element(browser_instance,
-                                   kwargs.get('target_locator'))
-        if source is not None and target is not None:
-            ActionChains(browser_instance).drag_and_drop(source,
-                                                         target).perform()
-            status = True
+        status = True
+        print_info("Simulate a drag and drop")
+        try:
+            browser_instance = kwargs.get('browser')
+            target = self._get_element(browser_instance,
+                                       kwargs.get('target_locator'))
+            if source is not None and target is not None:
+                ActionChains(browser_instance).drag_and_drop(source,
+                                                             target).perform()
+        except Exception as e:
+            print_error("An Exception Occurred {}".format(e))
+            status = False
         return status
 
     def _drag_and_drop_by_offset(self, source, **kwargs):
@@ -268,14 +309,20 @@ class ElementOperations():
             2. xoffset = X offset to move to
             3. yoffset = Y offset to move to
         """
-        status = False
-        xoffset = kwargs.get('xoffset')
-        yoffset = kwargs.get('yoffset')
-        browser_instance = kwargs.get('browser')
-        actions = ActionChains(browser_instance)
-        if source is not None and xoffset is not None and yoffset is not None:
+        status = True
+        print_info("drag and drop an element with offset")
+        try:
+            xoffset = kwargs.get('xoffset')
+            yoffset = kwargs.get('yoffset')
+            browser_instance = kwargs.get('browser')
+            actions = ActionChains(browser_instance)
             actions.drag_and_drop_by_offset(source, xoffset, yoffset).perform()
-            status = True
+        except NoSuchElementException as e:
+            print_error("NoSuchElementException occurred")
+            status = False
+        except Exception as e:
+            print_error("An Exception Occurred {}".format(e))
+            status = False
         return status
 
     def _clear_text(self, element, **kwargs):
@@ -284,10 +331,11 @@ class ElementOperations():
             1. element = a valid WebElement
         """
         status = True
-        if element is not None:
-            print_info("Clear element")
+        print_info("Clear element")
+        try:
             element.clear()
-        else:
+        except Exception as e:
+            print_error("An Exception Occurred {}".format(e))
             status = False
         return status
 
@@ -302,8 +350,10 @@ class ElementOperations():
             value = element.get_attribute("value")
         else:
             value = element.text
+        if value is not None:
+            status = True
         print_info("The text for this element is {}".format(value))
-        return value
+        return status, value
 
     def _get_property(self, element, **kwargs):
         status = True

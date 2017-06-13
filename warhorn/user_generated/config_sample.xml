@@ -54,11 +54,11 @@
         'no', or leaving it empty would not delete the existing Warrior.
     -->
 
-    <warrior url="http://rtx-swtl-git.fnc.net.local/scm/war/warrior_main.git"
+    <warrior url="checkout/warriorframework/atgithub.git"
              destination="" label="" clean_install="">
     </warrior>
 
-    <katana url="http://rtx-swtl-git.fnc.net.local/scm/war/katana.git"
+    <katana url="checkout/warriorframework/atgithub.git"
              destination="" label="" clean_install="" clone="yes">
     </katana>
 

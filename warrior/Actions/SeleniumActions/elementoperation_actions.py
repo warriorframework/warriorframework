@@ -373,11 +373,12 @@ class elementoperation_actions(object):
                               "repository!".format(br_name),
                               "error")
                     else:
-                        '''work on the browser instance on which to perform the 
+                        '''work on the browser instance on which to perform the
                         action since enclosed element not provided
                         '''
-                        value = self.elem_oper_obj.perform_element_action(
-                            current_browser, comp_locator, "get_text")
+                        status, value = self.elem_oper_obj.perform_element_action(
+                            current_browser, comp_locator, "get_text",
+                            browser=current_browser)
                         data_Utils.update_datarepository({var: value})
                         if expected is not None:
                             status = self.elem_oper_obj.verify_text(
@@ -386,8 +387,9 @@ class elementoperation_actions(object):
                     '''enclosing element of the locator is itself provided
                     use that to perform the action
                     '''
-                    value = self.elem_oper_obj.perform_element_action(
-                        current_element, comp_locator, "get_text")
+                    status, value = self.elem_oper_obj.perform_element_action(
+                        current_element, comp_locator, "get_text",
+                        browser=current_browser)
                     data_Utils.update_datarepository({var: value})
                     if expected is not None:
                         status = self.elem_oper_obj.verify_text(
