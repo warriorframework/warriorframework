@@ -6,6 +6,7 @@
 		<Datatype>Custom</Datatype>
 		<default_onError action="next"/>
 		<Logsdir>Execution</Logsdir>
+                <InputDataFile>No_Data</InputDataFile>
 		<Resultsdir>Execution</Resultsdir>
 		<Date>2016-12-30</Date>
 		<Time>16:20</Time>

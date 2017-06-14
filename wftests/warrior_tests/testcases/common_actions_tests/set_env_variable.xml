@@ -1,0 +1,126 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+                <Name>set_env_variable</Name>
+                <Title>set_env_variable</Title>
+                <default_onError action="next"/>
+                <Date>2017-05-14</Date>
+                <Time>23:02</Time>
+                <InputDataFile>No_Data</InputDataFile>
+                <Engineer>Warrior_Test</Engineer>
+                <Category>Regression</Category>
+                <State>Released</State>
+        </Details>
+        <Requirements>
+                <Requirement>Demo-requirement-001</Requirement>
+                <Requirement>Demo-requirement-002</Requirement>
+                <Requirement>Demo-requirement-003</Requirement>
+        </Requirements>
+        <Steps>
+                <step Driver="common_driver" Keyword="set_env_var" TS="1">
+                        <Arguments>
+                                <argument name="var_key" value="check3"/>
+                                <argument name="var_value" value="3"/>
+                        </Arguments>
+                        <Description>Regression for existing support, setting one ENV variable</Description>
+                        <onError action="next"/>
+			<Description>compare values</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+	
+                </step>
+                <step Driver="common_driver" Keyword="set_env_var" TS="2">
+                        <Arguments>
+                                <argument name="filepath" value="../../../../warrior/Warriorspace/Config_files/Samples/Set_ENV_Variable_Sample.json"/>
+                        </Arguments>
+                        <Description>Passing variables only through json file</Description>
+			<onError action="next"/>
+			<Description>compare values</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+
+                </step>
+                <step Driver="common_driver" Keyword="set_env_var" TS="3">
+                        <Arguments>
+                                <argument name="var_key" value="check3"/>
+                                <argument name="var_value" value="3"/>
+                                <argument name="filepath" value="../../../../warrior/Warriorspace/Config_files/Samples/Set_ENV_Variable_Sample.json"/>
+                        </Arguments>
+                        <Description>Passing variables though json file and through Testcase args</Description>
+			<onError action="next"/>
+			<Description>compare values</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+
+                </step>
+                <step Driver="common_driver" Keyword="set_env_var" TS="4">
+                        <Arguments>
+                                <argument name="var_key" value="check3"/>
+                                <argument name="var_value" value="3"/>
+                                <argument name="filepath" value="../../Config_files/Samples/Set_Environmental_Variable_Sample.json"/>
+                        </Arguments>
+                        <Description>Expected to fail due to wrong file path</Description>
+			<onError action="next"/>
+			<Description>compare values</Description>
+			<Execute ExecType="Yes"/>
+			<context>negative</context>
+			<impact>impact</impact>
+
+                </step>
+                <step Driver="common_driver" Keyword="set_env_var" TS="5">
+                        <Arguments>
+                                <argument name="var_key" value="check3"/>
+                                <argument name="var_value" value="3"/>
+                                <argument name="filepath" value="../../config_files/set_env_variable_malformed.json"/>
+                        </Arguments>
+                        <Description>Expected to fail because JSON is malformed</Description>
+			<onError action="next"/>
+			<Description>compare values</Description>
+			<Execute ExecType="Yes"/>
+			<context>negative</context>
+			<impact>impact</impact>
+
+                </step>
+                <step Driver="common_driver" Keyword="set_env_var" TS="6">
+                        <Arguments>
+                                <argument name="var_key" value="check3"/>
+                                <argument name="var_value" value="3"/>
+                                <argument name="filepath" value="../../config_files/rest_functional_tests/json_data.json"/>
+                        </Arguments>
+                        <Description>Negative:Expected to Fail because the KEY value = "environemntal_variable" in JSON is not set appropriately as per the suggested sample</Description>
+			<onError action="next"/>
+			<Execute ExecType="Yes"/>
+			<context>negative</context>
+			<impact>impact</impact>
+
+                </step>
+                <step Driver="common_driver" Keyword="set_env_var" TS="7">
+                        <Arguments>
+                                <argument name="var_key" value="check3"/>
+                                <argument name="var_value" value="3"/>
+                                <argument name="filepath" value="../../../../warrior/Warriorspace/Config_files/Samples/Set_ENV_Variable_Sample.json"/>
+                                <argument name="jsonkey" value="my_variable"/>
+			</Arguments>
+                        <Description>User can give jsonkey value and set another set of env variables from the same file.</Description>
+			<onError action="next"/>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+                </step>
+		
+                <step Driver="common_driver" Keyword="set_env_var" TS="8">
+                        <Arguments>
+                        </Arguments>
+                        <Description>Negative:Expected to Fail because no arguments are passed to the function/KW</Description>
+			<onError action="next"/>
+			<Execute ExecType="Yes"/>
+			<context>negative</context>
+			<impact>impact</impact>
+                </step>
+                
+
+        </Steps>
+</Testcase>

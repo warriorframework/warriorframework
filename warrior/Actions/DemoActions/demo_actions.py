@@ -15,12 +15,15 @@ limitations under the License.
 import base64
 import json
 import urllib2
+import os
 
 import Framework.Utils as Utils
 from Framework.Utils.testcase_Utils import pNote, pSubStep
 from Framework.Utils.data_Utils import getSystemData, get_credentials
 from Framework.Utils.print_Utils import print_info, print_warning,\
 print_error, print_debug, print_exception
+from Framework.Utils import file_Utils as file_Utils
+
 
 class DemoActions(object):
     """DemoActions class which has methods(keywords)
@@ -90,7 +93,7 @@ class DemoActions(object):
                                           ['dom', 'user', 'os', 'testdata'])
             pNote("system={0}".format(call_system_name))
             #Demo Framework testdata capability
-            testdatafile = credentials["testdata"]
+            testdatafile = file_Utils.getAbsPath(credentials["testdata"], os.path.dirname(self.datafile))
             add_info = Utils.xml_Utils.getElementWithTagAttribValueMatch(testdatafile,
                        'add_info', 'name', 'testdata')
             if add_info is not None:
@@ -137,7 +140,7 @@ class DemoActions(object):
                                 ['calibration', 'user', 'location', 'testdata'])
             pNote("system={0}".format(call_system_name))
             #Demo Framework testdata capability
-            testdatafile = credentials["testdata"]
+            testdatafile = file_Utils.getAbsPath(credentials["testdata"], os.path.dirname(self.datafile))
             add_info = Utils.xml_Utils.getElementWithTagAttribValueMatch(testdatafile,
                        'add_info', 'name', 'testdata')
             if add_info is not None:
