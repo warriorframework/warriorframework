@@ -10,7 +10,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
 import os
 import re
 import sys
@@ -25,6 +24,7 @@ from Framework.ClassUtils.testdata_class import TestData, TestDataIterations
 from Framework.Utils.xml_Utils import get_attributevalue_from_directchildnode as av_fromdc
 from Framework.Utils.string_Utils import sub_from_varconfigfile
 from Framework.ClassUtils import database_utils_class
+from __builtin__ import str
 
 cmd_params = OrderedDict([("command_list", "send"),
                           ("sys_list", "sys"),
@@ -358,6 +358,7 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
 
             details_dict = td_obj.wdf_substitutions(details_dict, datafile, kw_system_name=system_name)
             details_dict = sub_from_env_var(details_dict)
+            details_dict = sub_from_data_repo(details_dict)
 
             td_iter_obj = TestDataIterations()
             details_dict, cmd_loc_list = td_iter_obj.resolve_iteration_patterns\
@@ -875,7 +876,10 @@ def verify_data(expected, key, data_type='str', comparison='eq'):
         'le': lambda x, y: x <= y
     }
     result, err_msg, exp = validate()
-    value = get_object_from_datarepository(key)
+    keys = key.split('.')
+    value = get_object_from_datarepository(keys[0])
+    for k in keys[1:]:
+        value = value[k]
     if not value:
         err_msg += "key {} not present in data repository\n".format(key)
         result = "ERROR"
@@ -883,7 +887,7 @@ def verify_data(expected, key, data_type='str', comparison='eq'):
         print_error(err_msg)
     elif not comp_funcs[comparison](value, exp):
         result = "FALSE"
-    return result
+    return result, value
 
 
 def verify_resp_inorder(match_list, context_list, command, response,
@@ -1071,7 +1075,7 @@ def verify_relation(actual_value, cond_value, operator, cond_type):
     if operator:
         ver_args.update({"comparison": operator})
     update_datarepository({"verify_cond": actual_value})
-    result = verify_data(cond_value, "verify_cond", **ver_args)
+    result, _ = verify_data(cond_value, "verify_cond", **ver_args)
     status = True if result == "TRUE" else False
     return status
 
@@ -1322,8 +1326,8 @@ def get_filepath_from_system(datafile, system_name, *args):
                 if os.path.isfile(abspath):
                     abspath_lst.append(abspath)
                 else:
-                    print_warning( "File '{0}' provided for tag '{1}' does "
-                                   "not exist".format(abspath, tag))
+                    print_warning("File '{0}' provided for tag '{1}' does not "
+                                  "exist".format(abspath, tag))
                     abspath_lst.append(None)
             else:
                 abspath_lst.append(None)
@@ -1333,59 +1337,154 @@ def get_filepath_from_system(datafile, system_name, *args):
     return abspath_lst
 
 
-def sub_from_env_var(raw_value, start_pattern="${", end_pattern="}"):
-    """Takes a key value pair as input, if the value
-    has a pattern matching ${ENV.env_variable_name}.
+def get_var_by_string_prefix(string):
+    if "ENV" in string:
+        return os.environ[string.split('.')[1]]
+    if "REPO" in string:
+        keys = string.split('.')
+        val = get_object_from_datarepository(keys[1])
+        for key in keys[2:]:
+            val = val[key]
+        else:
+            return val
+
+
+def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
+                                 end_pattern="}", prefix="ENV"):
+    """Takes a key value pair or string (value) as input in raw_value,
+        if the value has a pattern matching ${ENV.env_variable_name}.
     Searches for the env_variable_name in the environment and replaces
     it and return the updated dictionary. If environment variable
-    is not found then substitutes with None"""
-    # Also take string now for free!
-    error_msg1 = "Could not find any environment variable '{0}' corresponding"\
-                 " to '{1}' provided in input data/testdata file. \n"\
-                 "Will default to None"
-    error_msg2 = "Unable to substitute environment variable '{0}' "\
-                 "corresponding to '{1}' provided in input data/testdata file"
+    is not found then substitutes with None.
+        if the value has a pattern matching ${REPO.key}.
+    Searches for the key in the data repository and replaces it and return
+    the updated dictionary. If key is not found then None is substituted.
+        if the value has a pattern matching ${REPO.k1.k2.k3}.
+    Searches for the keys k1, k2, k3 in the data repository in nested order
+    as provided and replaces it and return the updated dictionary. If
+    keys is not found in the order or does not exist then None is substituted.
+    source could be environment or datarepository for now.
+    """
+    error_msg1 = ("Could not find any %s variable {0!r} corresponding to {1!r}"
+                  "provided in input data/testdata file. \nWill default to "
+                  "None") % (prefix)
+    error_msg2 = ("Unable to substitute %s variable {0!r} corresponding to "
+                  "{1!r} provided in input data/testdata file") % (prefix)
     if type(raw_value) == dict:
         for k in raw_value:
             value = raw_value[k]
-            extracted_var = string_Utils.return_quote(str(value), start_pattern, end_pattern)
-            extracted_var = [string for string in extracted_var if "ENV." in string]
+            extracted_var = string_Utils.return_quote(str(value),
+                                                      start_pattern,
+                                                      end_pattern)
+            extracted_var = [string for string in extracted_var
+                             if prefix in string]
             if len(extracted_var) > 0:
                 for string in extracted_var:
                     try:
                         if isinstance(raw_value[k], str):
-                            raw_value[k] = raw_value[k].replace(start_pattern+string+end_pattern,
-                                           os.environ[string[4:]])
+                            raw_value[k] = raw_value[k].replace(
+                                start_pattern+string+end_pattern,
+                                get_var_by_string_prefix(string))
                         elif isinstance(raw_value[k], (list, dict)):
-                            raw_value[k] = literal_eval(str(raw_value[k]).replace(
-                                           start_pattern+string+end_pattern,os.environ[string[4:]]))
+                            raw_value[k] = literal_eval(
+                                str(raw_value[k]).replace(
+                                    start_pattern+string+end_pattern,
+                                    get_var_by_string_prefix(string)))
                         else:
-                            print_error("Unsupported format - " + \
+                            print_error("Unsupported format - " +
                                         error_msg2.format(string, value))
-                    except KeyError:
+                    except (KeyError, TypeError):
                         print_error(error_msg1.format(string, value))
                         if isinstance(raw_value[k], str):
                             raw_value[k] = None
                         elif isinstance(raw_value[k], (list, dict)):
-                            search_str = "'[^']*"+re.escape(start_pattern)+string+re.escape(end_pattern)+"[^']*'"
-                            search_obj = re.search(search_str, str(raw_value[k]))
+                            search_str = ("'[^']*" + re.escape(start_pattern) +
+                                          string + re.escape(end_pattern) +
+                                          "[^']*'")
+                            search_obj = re.search(search_str,
+                                                   str(raw_value[k]))
                             if search_obj:
-                                raw_value[k] = literal_eval(str(raw_value[k]).replace(
-                                               search_obj.group(), 'None'))
+                                raw_value[k] = literal_eval(
+                                    str(raw_value[k]).replace(
+                                        search_obj.group(), 'None'))
                     except SyntaxError:
-                        print_error("Syntax Error - " + \
-                                    error_msg2.format(string,value))
+                        print_error("Syntax Error - " +
+                                    error_msg2.format(string, value))
     elif type(raw_value) == str:
-        extracted_var = string_Utils.return_quote(str(raw_value), start_pattern, end_pattern)
-        extracted_var = [string for string in extracted_var if "ENV." in string]
+        extracted_var = string_Utils.return_quote(str(raw_value),
+                                                  start_pattern, end_pattern)
+        extracted_var = [string for string in extracted_var
+                         if prefix in string]
         if len(extracted_var) > 0:
             for string in extracted_var:
                 try:
-                    raw_value = raw_value.replace(start_pattern+string+end_pattern, os.environ[string[4:]])
+                    raw_value = raw_value.replace(
+                                start_pattern+string+end_pattern,
+                                get_var_by_string_prefix(string))
                 except KeyError:
                     print_error(error_msg1.format(string, raw_value))
                     raw_value = None
 
+    return raw_value
+
+
+def sub_from_env_var(raw_value, start_pattern="${", end_pattern="}"):
+    return subst_var_patterns_by_prefix(raw_value, start_pattern, end_pattern,
+                                        "ENV")
+
+
+def sub_from_data_repo(raw_value, start_pattern="${", end_pattern="}"):
+    return subst_var_patterns_by_prefix(raw_value, start_pattern, end_pattern,
+                                        "REPO")
+
+
+def substitute_var_patterns(raw_value, start_pattern="${", end_pattern="}"):
+    def get_data(var):
+        repokeys = var.split('.')
+        val = get_object_from_datarepository(repokeys[0])
+        for key in repokeys[1:]:
+            val = val[key]
+        else:
+            return val
+    prefixes = {'ENV': ('environment', lambda var: os.environ[var]),
+                'REPO': ('data repository', get_data)}
+    error_msg = ("Could not find any {0} variable {1!r} corresponding to {2!r}"
+                 "provided in input data/testdata file. \nWill default to None"
+                 )
+    if raw_value is None:
+        return raw_value
+    elif isinstance(raw_value, str):
+        extracted_var = string_Utils.return_quote(raw_value, start_pattern,
+                                                  end_pattern)
+        for string in extracted_var:
+            [prefix, var] = string.split('.', 1)
+            if prefix in prefixes:
+                try:
+                    val = prefixes[prefix][1](var)
+                except KeyError:
+                    print_error(error_msg.format(prefixes[prefix][0], string,
+                                                 raw_value))
+            if val:
+                raw_value = raw_value.replace(start_pattern+string+end_pattern,
+                                              val)
+        else:
+            return raw_value
+    elif isinstance(raw_value, list):
+        return map(lambda val: substitute_var_patterns(val, start_pattern,
+                                                       end_pattern), raw_value)
+    elif isinstance(raw_value, dict):
+        for key in raw_value:
+            raw_value[key] = substitute_var_patterns(raw_value[key],
+                                                     start_pattern,
+                                                     end_pattern)
+        else:
+            return raw_value
+    else:
+        print_error("Unsupported format - raw_value should either be a string,"
+                    " list or dictionary")
+        print_error("raw_value: #{}# and its type is {}".format(raw_value,
+                                                                type(raw_value)
+                                                                ))
     return raw_value
 
 
