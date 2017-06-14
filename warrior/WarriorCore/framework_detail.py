@@ -49,13 +49,11 @@ def warrior_framework_details():
     # release notes.Assumes the relative structure remains constant.
     release = False
     version = False
-    possible_install_time = False
-    path = os.path.realpath(__file__)
-    current_path = path.rstrip('c')[:-32]
-    version_file_path = current_path+"/version.txt"
-    version_file = file_Utils.fileExists(version_file_path) 
-    if version_file:
-        release_notes =  open(version_file_path, "r")
+    version_file_path = os.path.normpath(os.path.join(__file__, "..{0}..{0}..".format(os.sep)))
+    version_file = os.path.join(version_file_path, "version.txt")
+    version_file_exists = file_Utils.fileExists(version_file)
+    if version_file_exists:
+        release_notes =  open(version_file, "r")
         for line in release_notes:
             line = line.strip()
             #pattern matching Release:<>  
@@ -66,14 +64,9 @@ def warrior_framework_details():
             if (re.match('(Version.*):(.*)', line)):
                 m = re.match(r'(Version.*):(.*)', line)
                 version = m.group(2)
-        possible_install_time = time.ctime(os.path.getctime(version_file_path))
-        current_time = time.strftime("%a %b %d %H:%M:%S %Y")
-        current_time = datetime.strptime(current_time, "%a %b %d %H:%M:%S %Y")
-        install_time = datetime.strptime(possible_install_time, "%a %b %d %H:%M:%S %Y")
-        difference = current_time - install_time 
-    if release and version and current_path:          
+    if release and version and version_file_path:
         pNote("========================== WARRIOR FRAMEWORK DETAILS ==========================", 'notype')
-        print_info('The Warrior framework used is {0}'.format(current_path))
+        print_info('The Warrior framework used is {0}'.format(version_file_path))
         print_info('The Warrior framework Release is{0}'.format(release))
         print_info('The Warrior framework version is{0}'.format(version))
         pNote("========================== WARRIOR FRAMEWORK DETAILS ==========================", 'notype')

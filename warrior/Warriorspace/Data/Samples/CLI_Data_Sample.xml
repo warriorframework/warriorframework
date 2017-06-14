@@ -56,6 +56,8 @@ Eg ${ENV.IPADDR} will be replaced with the value of IPADDR variable in the envir
 	    	<vc2>../Config_files/Cli_varconfig2.xml</vc2>
 	   	</subsystem>
 
+
+
 	</system>
 
   <Testsets>
