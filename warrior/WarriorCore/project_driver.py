@@ -19,6 +19,7 @@ import sys
 import os
 import shutil
 import time
+import copy
 
 import WarriorCore.testsuite_driver as testsuite_driver
 import WarriorCore.onerror_driver as onerror_driver
