@@ -13,7 +13,6 @@ limitations under the License.
 
 
 """step driver module"""
-import time
 import traceback
 import exec_type_driver
 from WarriorCore.Classes.argument_datatype_class import ArgumentDatatype

@@ -1,17 +1,16 @@
 <?xml version="1.0" ?>
 <Testcase>
         <Details>
-                <Name>tc_retry_cond_tc_level_verify</Name>
-                <Title>support TC for tc level retry tag verification</Title>
+                <Name>tc_retry_cond_for_suite_in_project_file_verify</Name>
+                <Title>support TC for suite level retry tag verification in project file</Title>
                 <Datatype>Custom</Datatype>
                 <default_onError action="next"/>
                 <Logsdir>../../Execution</Logsdir>
+                <InputDataFile>No_Data</InputDataFile>
                 <Resultsdir>../../Execution</Resultsdir>
-                <InputDataFile>No_Data</InputDataFile>
                 <Date>2017-04-20</Date>
-                <InputDataFile>No_Data</InputDataFile>
                 <Time>16:20</Time>
-                <Engineer>Ka</Engineer>
+                <Engineer>Annalakshmi</Engineer>
         </Details>
         <Requirements>
                 <Requirement/>
@@ -45,7 +44,7 @@
                 </step>
                 <step Driver="common_driver" Keyword="verify_data" TS="3">
                         <Arguments>
-                                <argument name="expected" value="5"/>
+                                <argument name="expected" value="1"/>
                                 <argument name="object_key" value="ts_retry_if_not_cond_met_count"/>
                                 <argument name="type" value="int"/>
                                 <argument name="comparison" value="eq"/>
@@ -58,7 +57,7 @@
                 </step>
                 <step Driver="common_driver" Keyword="verify_data" TS="4">
                         <Arguments>
-                                <argument name="expected" value="1"/>
+                                <argument name="expected" value="5"/>
                                 <argument name="object_key" value="ts_retry_if_not_cond_not_met_count"/>
                                 <argument name="type" value="int"/>
                                 <argument name="comparison" value="eq"/>
@@ -71,3 +70,4 @@
                 </step>
         </Steps>
 </Testcase>
+                      
