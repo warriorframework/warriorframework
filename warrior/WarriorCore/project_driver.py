@@ -131,7 +131,11 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
     ts_impact_list = []
     impact_dict = {"IMPACT":"Impact", "NOIMPACT":"No Impact"}
     project_dir = os.path.dirname(project_filepath)
+    project_title = Utils.xml_Utils.getChildTextbyParentTag(project_filepath,
+                                                            'Details',
+                                                            'Title')
     project_repository = get_project_details(project_filepath, res_startdir, logs_startdir, data_repository)
+    project_repository['project_title'] = project_title
     testsuite_list = get_testsuite_list(project_filepath)
 
     project_resultfile = project_repository['project_resultfile']
@@ -145,8 +149,11 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
     project_error_value = project_repository['def_on_error_value']
 
     pj_junit_object = junit_class.Junit(filename=project_name, timestamp=project_start_time, name=project_name)
-    
-    pj_junit_object.update_attr("resultsdir", project_repository['project_execution_dir'],
+
+    pj_junit_object.update_attr("resultsdir",
+                                project_repository['project_execution_dir'],
+                                "pj", project_start_time)
+    pj_junit_object.update_attr("title", project_repository['project_title'],
                                 "pj", project_start_time)
     pj_junit_object.add_property("resultsdir", project_repository['project_execution_dir'],
                                 "pj", project_start_time)
@@ -162,7 +169,7 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
         testsuite = testsuite_list[suite_cntr]
         suite_junit_type = 'file'
         suite_cntr += 1
-        
+
         testsuite_rel_path = testsuite_utils.get_path_from_xmlfile(testsuite)
         if testsuite_rel_path is not None:
             testsuite_path = Utils.file_Utils.getAbsPath(testsuite_rel_path, project_dir)

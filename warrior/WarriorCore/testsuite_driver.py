@@ -260,7 +260,13 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
             del data_repository["jobid"]
         data_repository["wt_junit_object"] = ts_junit_object
     suite_repository["wt_junit_object"] = ts_junit_object
-    ts_junit_object.create_testsuite(location=os.path.dirname(testsuite_filepath), name=suite_name, timestamp=suite_timestamp, suite_location=suite_repository['testsuite_filepath'], **ts_junit_object.init_arg())
+    ts_junit_object.create_testsuite(location=os.path.
+                                     dirname(testsuite_filepath),
+                                     name=suite_name,
+                                     timestamp=suite_timestamp,
+                                     suite_location=suite_repository['testsuite_filepath'],
+                                     title=suite_repository['suite_title'],
+                                     **ts_junit_object.init_arg())
 
     # Adding resultsdir as attributes to testsuite_tag in the junit result file
     # Need to remove these after making resultsdir, logsdir as part of properties tag in testcase

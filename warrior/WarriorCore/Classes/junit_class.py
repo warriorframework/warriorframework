@@ -91,15 +91,21 @@ class Junit(object):
             if testsuite.get("timestamp") == timestamp:
                 return testsuite
 
-    def add_keyword_result(self, tc_timestamp, step_num, kw_name, status, kw_timestamp, duration,
-                           resultfile, impact, onerror):
+    def add_keyword_result(self, tc_timestamp, step_num, kw_name, status,
+                           kw_timestamp, duration, resultfile,
+                           impact, onerror, desc=""):
         if str(status).lower() == "true":
             status = "PASS"
         elif str(status).lower() == "false":
             status = "FAIL"
-        keyword_items = {"type":"keyword", "step":step_num, "name":kw_name, "status":status, "timestamp":kw_timestamp,
-                         "time":duration, "resultfile": resultfile, "impact":impact, "onerror":onerror}
-        self.add_property(name=kw_name, value="KEYWORD_DISCARD", elem_type = "kw", timestamp=tc_timestamp, keyword_items=keyword_items)
+        keyword_items = {"type": "keyword", "step": step_num, "name": kw_name,
+                         "status": status, "timestamp": kw_timestamp,
+                         "time": duration, "resultfile": resultfile,
+                         "impact": impact, "onerror": onerror,
+                         "description": desc}
+        self.add_property(name=kw_name, value="KEYWORD_DISCARD",
+                          elem_type="kw", timestamp=tc_timestamp,
+                          keyword_items=keyword_items)
 
     def add_testcase_message(self, timestamp, status):
         elem = self.get_tc_with_timestamp(timestamp)

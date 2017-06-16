@@ -388,6 +388,8 @@ class HybridDriver(object):
         keyword = step.get('Keyword')
         kw_resultfile = step_driver.get_keyword_resultfile(
                         self.data_repository, system_name, step_num, keyword)
+        keyword_description = testcase_Utils.\
+            get_description_from_xmlfile(step)
         config_Utils.set_resultfile(kw_resultfile)
         testcase_Utils.pKeyword(keyword, step.get('Driver'))
         testcase_Utils.reportStatus('Skip')
@@ -399,7 +401,7 @@ class HybridDriver(object):
         self.data_repository['wt_junit_object'].add_keyword_result(
                 self.data_repository['wt_tc_timestamp'], step_num, keyword,
                 "SKIPPED", "skipped", "skipped", "skipped", "skipped",
-                "skipped")
+                "skipped", keyword_description)
         result = ("Skip", kw_resultfile, None, None)
         return result
 
