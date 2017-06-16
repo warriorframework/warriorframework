@@ -60,17 +60,18 @@ class ExecutionSummary():
             for value in tree.iter('testcase'):
                 testcase_details = value.attrib
                 testcase_status = testcase_details.get('status')
+                testcase_name = testcase_details.get('name')+".xml"
+                testcase_location = testcase_details.get('testcasefile_path')
                 case_result_dir_with_tc_name = testcase_details.\
                     get('resultsdir')
-                case_result_dir = case_result_dir_with_tc_name.split("/")[:-1]
-                case_result_dir = "/".join(case_result_dir)
-                testcase_location = testcase_details.get('testcasefile_path')
-                testcase_name = testcase_details.get('name')+".xml"
-                if suite_result_dir == case_result_dir:
-                    print_info("{0:10}{1:50}{2:10}{3:30}".format("Testcase",
-                                                                 testcase_name,
-                                                                 testcase_status,
-                                                                 testcase_location))
+                if case_result_dir_with_tc_name is not None:
+                    case_result_dir = case_result_dir_with_tc_name.split("/")[:-1]
+                    case_result_dir = "/".join(case_result_dir)
+                    if suite_result_dir == case_result_dir:
+                        print_info("{0:10}{1:50}{2:10}{3:30}".format("Testcase",
+                                                                     testcase_name,
+                                                                     testcase_status,
+                                                                     testcase_location))
 
     def get_file_type(self, junit_file):
         """To get the file type which is given for execution"""
