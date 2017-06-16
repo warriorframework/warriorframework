@@ -1,8 +1,8 @@
 <?xml version="1.0" ?>
 <Testcase>
         <Details>
-                <Name>tc_verify_runmode</Name>
-                <Title>To verify runmode tags</Title>
+                <Name>tc_verify_runmode_at_suite_level</Name>
+                <Title>To verify runmode tags at suite level</Title>
                 <Datatype>Custom</Datatype>
                 <default_onError action="next"/>
                 <Logsdir>../../Execution</Logsdir>
