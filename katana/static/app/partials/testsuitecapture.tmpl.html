@@ -203,11 +203,11 @@
                 <div class="col-sm-3" ng-show="isMaxFailAttempSelected() || isMaxPassAttempSelected() || isNumAttempSelected()">
                     <input type="text" class="form-control"
                            ng-model="maxAttemptsCap"
-                           ng-show="isMaxAttempSelected_Fail()"
+                           ng-show="isMaxPassAttempSelected()"
                            placeholder="enter the max attempts">
                     <input type="text" class="form-control"
                            ng-model="maxAttemptsCap"
-                           ng-show="isMaxAttempSelected_Pass()"
+                           ng-show="isMaxFailAttempSelected()"
                            placeholder="enter the max attempts">
                     <input type="text" class="form-control"
                            ng-model="numAttemptsCap" ng-show="isNumAttempSelected()"
@@ -290,13 +290,13 @@
                             ng-model="suitemodel.TestSuite.Details.State"
                             ng-options="o for o in suitestates"></select>
                 </div>
-                <div class="col-sm-2" ng-show="isAddAnotherSelectedSuite()">
+                <div class="col-sm-2" ng-show="isAddAnotherSelectedSuiteEx()">
                     <input type="text" class="form-control"
                            placeholder="Specify a new Suite State"
                            ng-change="getNewStateValue(new_state)"
                            ng-model="new_state">
                 </div>
-                <div class="col-sm-1" ng-show="isAddAnotherSelectedSuite()">
+                <div class="col-sm-1" ng-show="isAddAnotherSelectedSuiteEx()">
                     <input type="button"
                            class="btn btn-default form-control ellipsis-the-overflow"
                            value="Done"
@@ -2059,7 +2059,7 @@
                         </div>
                     </div>
 
-                    <div class="row" ng-show="isGotoSelectedAction(testcase.onError._action)">
+                    <div class="row" ng-show="isGotoSelectedActionIndex(suite.onError._action, $index)">
                         <div class="form-group">
                             <label for="Title" class="col-sm-2 control-label mandatory-field ellipsis-the-overflow">Go To Step #</label>
                             <div class="tooltip-on-right align-fa-icon-after-label">
@@ -2097,7 +2097,7 @@
                             <div class="col-sm-6">
                                 <input type="text" class="form-control"
                                        ng-model="testcase.onError._value"
-                                       ng-show="isGotoSelectedAction(testcase.onError._action)">
+                                       ng-show="isGotoSelectedActionIndex(suite.onError._action, $index)">
                             </div>
                             <div class="col-sm-1 align-fa-icon-after-input">
                                 <div class="tooltip-on-right">
@@ -2361,7 +2361,7 @@
                 <div class="form-group">
                     <div class="col-sm-6 col-sm-offset-2">
                         <input type="button" class="btn btn-default"
-                               value="Add Another Case"
+                               value="New Case"
                                ng-click="insertTestcaseCap(testcases.length - 1)">
                     </div>
                 </div>
@@ -2376,7 +2376,7 @@
                        class="btn btn-default" value="Save"
                        ng-click="saveTestsuiteCap()"/>
                 <input type="button" class="btn btn-default" value="Cancel"
-                       ng-click="cancelSuiteCap()"/>
+                       ng-click="cancelSuite()"/>
             </div>
         </div>
     </form>

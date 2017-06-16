@@ -55,7 +55,7 @@ app.config(function($routeProvider) {
         })
         .when('/newtestsuite', {
             templateUrl: '/assets/app/partials/newtestsuite.tmpl.html',
-            controller: 'newTestsuiteCtrl',
+            controller: 'testsuiteCtrlMerged',
             resolve: {
                 subdirs: function () {
                     return "none"
@@ -64,7 +64,7 @@ app.config(function($routeProvider) {
         })
         .when('/testsuite/:testsuite/:subdirs', {
             templateUrl: '/assets/app/partials/testsuitecapture.tmpl.html',
-            controller: 'testsuiteCapCtrl',
+            controller: 'testsuiteCtrlMerged',
             resolve: {
                 subdirs: function ($route) {
                     return $route.current.params.subdirs;
