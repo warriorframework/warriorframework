@@ -450,10 +450,12 @@ def _get_cmd_details(testdata, global_obj, system_name,
             resultant_list = _get_verification_details(testdata, global_obj,
                                                        vfylist, attrib)
         elif param == "verify_on_list":
+            sys_list = details_dict["sys_list"]
+            new_sys = sys_list[0] if sys_list[0] is not None else system_name
             vfylist = details_dict["verify_list"]
             resultant_list = _get_verification_details(testdata, global_obj,
                                                        vfylist, attrib,
-                                                       system_name)
+                                                       system_name=new_sys)
         elif param == "verify_map_list":
             vfylist = details_dict["verify_list"]
             vfylist, maplist = _get_mapping_details(global_obj, vfylist)

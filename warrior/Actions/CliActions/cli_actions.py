@@ -773,6 +773,7 @@ class CliActions(object):
                                                                   var_sub=var_sub,
                                                                   title=title, row=row_num,
                                                                   system_name=system_name,
+                                                                  session_name=session_name,
                                                                   datafile=self.datafile)
 
         td_resp_dict = get_object_from_datarepository(str(session_id)+"_td_response")

@@ -538,6 +538,9 @@ def send_commands_from_testdata(testdatafile, obj_session, **args):
         if row:
             pNote("**************{}**************".format('Row: ' + row))
     system_name = args.get("system_name")
+    session_name = args.get("session_name")
+    if session_name is not None:
+        system_name = system_name + "." + session_name
     testdata_dict = data_Utils.get_command_details_from_testdata(testdatafile, varconfigfile,
                                                                  var_sub=var_sub, title=title,
                                                                  row=row, system_name=system_name, datafile=datafile)
@@ -895,7 +898,11 @@ def _get_obj_session(details_dict, obj_session, kw_system_name, index):
         system_name = kw_system_name
 
     pNote("System name\t: {0}".format(system_name))
-    return value, system_name, details_dict
+
+    if details_dict["sys_list"][index] is not None:
+        kw_system_name = details_dict["sys_list"][index]
+
+    return value, kw_system_name, details_dict
 
 @cmdprinter
 def _send_command_retrials(obj_session, details_dict, index, **kwargs):
