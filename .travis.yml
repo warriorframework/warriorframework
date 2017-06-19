@@ -20,6 +20,7 @@ install:
         pip install paramiko==1.16.0 ;
         pip install pysnmp==4.3.2 ;
         pip install pyvirtualdisplay==0.2.1 ;
+        pip install pylint ;
       fi
 
 script:
