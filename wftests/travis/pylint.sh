@@ -29,7 +29,7 @@ do
     line_status="pass"
     num1=$(grep -oP "at \K[0-9\.\-]*" <<< "$line");
     num2="5";
-    if [ "$(echo "$num1 < $num2" | bc)" -ne 0 ] ; then
+    if [ $(echo "$num1 < $num2" | bc) -ne 0 ] ; then
         echo "score lower than 5: $num1"
         status="fail"
         line_status="fail"
@@ -37,7 +37,7 @@ do
     
     num3=$(grep -oP "previous run.*/10, \K[0-9\.\-+]*" <<< "$line" | tr -d "+")
     num4="0"
-    if [ "$(echo "$num3 < $num4" | bc)" -ne 0 ] ; then
+    if [ $(echo "$num3 < $num4" | bc) -ne 0 ] ; then
         echo "score decrease: $num3"
         status="fail"
         line_status="fail"
