@@ -1,5 +1,5 @@
-set -v
-# ls -l
+# set -v
+ls -l
 git checkout master
 if [[ $(git --no-pager diff --name-only master "${TRAVIS_COMMIT}"  | grep -v 'OSS' | grep '.py$') ]]; then
     echo "List of .py files that have changed in this commit"
@@ -8,7 +8,8 @@ else
     echo "no .py file has changed in this commit, exiting"
     exit 0;
 fi
-git --no-pager diff --name-only master "${TRAVIS_COMMIT}"  | grep -v 'OSS' | grep '.py$' | xargs pylint || true
+git --no-pager diff --name-only master "${TRAVIS_COMMIT}"  | grep -v 'OSS' | grep '.py$' > tmp.txt
+pylint < tmp.txt
 git checkout "${TRAVIS_COMMIT}" ;
 git --no-pager diff --name-only "${TRAVIS_COMMIT}" master  | grep -v 'OSS' | grep '.py$'
 git --no-pager diff --name-only "${TRAVIS_COMMIT}" master  | grep -v 'OSS' | grep '.py$' | xargs pylint | tee pylint_result.txt || true
