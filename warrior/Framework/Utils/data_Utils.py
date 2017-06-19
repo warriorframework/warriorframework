@@ -116,7 +116,6 @@ def getSystemData(datafile, system_name, cnode, system='system'):
 
     return value
 
-
 def get_credentials(datafile, system_name, myInfo=[], tag_name="system",
                     attr_name="name", **kwargs):
     """
