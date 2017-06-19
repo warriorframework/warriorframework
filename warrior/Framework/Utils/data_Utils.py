@@ -452,10 +452,9 @@ def _get_cmd_details(testdata, global_obj, system_name,
         elif param == "verify_on_list":
             sys_list = details_dict["sys_list"]
             vfylist = details_dict["verify_list"]
-
             resultant_list = _get_verification_details(testdata, global_obj,
                                                        vfylist, attrib,
-                                                       sys_list)
+                                                       system_name, sys_list)
         elif param == "verify_map_list":
             vfylist = details_dict["verify_list"]
             vfylist, maplist = _get_mapping_details(global_obj, vfylist)
@@ -500,7 +499,8 @@ def _get_cmdparams_list(testdata, global_obj, cmd_attrib):
     return resultant_list
 
 
-def _get_verification_details(testdata, global_obj, verify_list, cmd_attrib, sys_list=None):
+def _get_verification_details(testdata, global_obj, verify_list, cmd_attrib,
+                              system_name=None, sys_list=None):
     """From the testdata file takes a testdata node and
     a list of nodes with verification present as input
 
@@ -542,8 +542,11 @@ def _get_verification_details(testdata, global_obj, verify_list, cmd_attrib, sys
                             "for verification node={0}".format(element))
                 if value is None or value is "":
                     value = 'yes' if cmd_attrib == "found" else value
-                    if cmd_attrib == "verify_on" and sys_list is not None:
+                    if cmd_attrib == "verify_on" and sys_list is not None and \
+                       sys_list[index] is not None:
                         value = sys_list[index]
+                    else:
+                        value = system_name
                 value = value if not value else str(value).strip()
                 resultant_sublist.append(value)
             resultant_list.append(resultant_sublist)
