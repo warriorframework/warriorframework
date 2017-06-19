@@ -1,4 +1,4 @@
-# set -v
+set -v
 # ls -l
 git checkout master
 if [[ $(git --no-pager diff --name-only master "${TRAVIS_COMMIT}"  | grep -v 'OSS' | grep '.py$') ]]; then
@@ -8,10 +8,10 @@ else
     echo "no .py file has changed in this commit, exiting"
     exit 0;
 fi
-git --no-pager diff --name-only master "${TRAVIS_COMMIT}"  | grep -v 'OSS' | grep '.py$' | xargs -L 1 pylint || true
+git --no-pager diff --name-only master "${TRAVIS_COMMIT}"  | grep -v 'OSS' | grep '.py$' | xargs pylint || true
 git checkout "${TRAVIS_COMMIT}" ;
 git --no-pager diff --name-only "${TRAVIS_COMMIT}" master  | grep -v 'OSS' | grep '.py$'
-git --no-pager diff --name-only "${TRAVIS_COMMIT}" master  | grep -v 'OSS' | grep '.py$' | xargs -L 1 pylint | tee pylint_result.txt || true
+git --no-pager diff --name-only "${TRAVIS_COMMIT}" master  | grep -v 'OSS' | grep '.py$' | xargs pylint | tee pylint_result.txt || true
 
 grep "Your code has been rated" pylint_result.txt > score.txt
 grep "Module" pylint_result.txt > filename.txt
