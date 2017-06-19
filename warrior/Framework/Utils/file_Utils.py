@@ -33,8 +33,7 @@ except Exception:
 def findLastString (filename, searchterm):
     fd = open (filename, "r")
     linenum = -1
-    print "producing super long line in code to see if pylint can actully run and if not what should I do about it, this is so unsettling"
-    for i, line in enumerate (fd, 1):
+    for i, line in enumerate(fd, 1):
         if searchterm in line:
             linenum = i
     return linenum

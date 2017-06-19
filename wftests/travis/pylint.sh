@@ -1,5 +1,6 @@
 # set -v
 # ls -l
+pip install pylint
 git checkout master
 if [[ $(git --no-pager diff --name-only master "${TRAVIS_COMMIT}"  | grep -v 'OSS' | grep '.py$') ]]; then
     echo "List of .py files that have changed in this commit"
