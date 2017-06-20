@@ -27,6 +27,7 @@ status="pass"
 while read -r line;
 do 
     line_status="pass"
+    echo "$line"
     num1=$(grep -oP "at \K[0-9\.\-]*" <<< "$line");
     num2="5";
     echo "$num1"
