@@ -26,7 +26,7 @@ try:
         mod = 'pexpect'
         import pexpect
 except Exception:
-    print_info("{0}: {1} module is not installed".format(os.path.abspath(__file__), mod))
+    print_info("{0}: {1} module is not inaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaastalled".format(os.path.abspath(__file__), mod))
 
 
 # Return the last line of a file
