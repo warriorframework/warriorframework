@@ -26,8 +26,12 @@ try:
         mod = 'pexpect'
         import pexpect
 except Exception:
-    print_info("{0}: {1} module is not inaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaastalled".format(os.path.abspath(__file__), mod))
+    print_info("{0}: {1} module is not installed".format(os.path.abspath(__file__), mod))
 
+def SOMEMETHODTHATREALLY_WRONG (YOU,DONT,SAY):
+    "I don't put return statement here for a reason"
+    a=1
+    B=2
 
 # Return the last line of a file
 def findLastString (filename, searchterm):
