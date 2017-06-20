@@ -379,7 +379,7 @@
                 <div class="col-sm-6">
                     <input type="text" class="form-control" required
                            id="Engineer"
-                           ng-model='suiteEngineer'
+                           ng-model='suitemodel.TestSuite.Details.Engineer'
                            placeholder="Who created/edited this Suite definition">
                 </div>
                 <div class="col-sm-1 align-fa-icon-after-input">
@@ -457,13 +457,13 @@
                 <div class="col-sm-3">
                     <input type="text" class="form-control"
                            id="Date"
-                           ng-model='suiteDate'
+                           ng-model='suitemodel.TestSuite.Details.Date'
                            placeholder="Creation/updated date" disabled>
                 </div>
                 <div class="col-sm-3">
                     <input type="text" class="form-control disabled"
                            id="Time"
-                           ng-model='suiteTime'
+                           ng-model='suitemodel.TestSuite.Details.Time'
                            placeholder="Creation/updated time" disabled>
                 </div>
                 <div class="col-sm-1 align-fa-icon-after-input">
@@ -700,7 +700,7 @@
                 </div>
                 <div class="col-sm-5">
                     <input type="text" class="form-control" ng-model="IDFSuite" id="IDF"
-                           ng-change="idf_monitorPathBtnValue()"
+                           ng-change="idf_monitorPathBtnValueNew()"
                            placeholder="Location of the Input Data File">
                 </div>
                 <div class="col-sm-1">
@@ -933,7 +933,7 @@
                                         </span>
                                     </div>
                                 </td>
-                                <td ng-click="deleteTestcase($index)">
+                                <td ng-click="deleteTestcaseCap($index)">
                                     <div class="tooltip-on-left-dark-big">
                                         <span class="fa fa-times-circle-o" aria-hidden="true"></span>
                                         <span class="tooltip-content text-left">
@@ -989,7 +989,7 @@
                             <input type="button" class="btn btn-default form-control ellipsis-the-overflow" value="Go!" ng-click="copyTestCase()">
                         </div>
                         <div class="col-sm-1">
-                            <input type="button" class="btn btn-default form-control ellipsis-the-overflow" value="Save Case" ng-click="saveTestcaseCap(testcaseBeingEdited)">
+                            <input type="button" class="btn btn-default form-control ellipsis-the-overflow" value="Save Case" ng-click="saveTestcase(testcaseBeingEdited)">
                         </div>
                     </div>
                 </div>
@@ -2224,11 +2224,11 @@
                             <div class="col-sm-6 col-sm-offset-2">
                                 <input type="button" class="btn btn-default"
                                        value="Save Case"
-                                       ng-click="saveTestcaseCap($index)">
+                                       ng-click="saveTestcase($index)">
                                 <input type="button"
                                        class="btn btn-default"
                                        value="Delete Case"
-                                       ng-click="deleteTestcase($index)">
+                                       ng-click="deleteTestcaseCap($index)">
                             </div>
                         </div>
                     </div>
@@ -2327,7 +2327,7 @@
                                         </span>
                                     </div>
                                 </td>
-                                <td ng-click="deleteTestcase($index)">
+                                <td ng-click="deleteTestcaseCap($index)">
                                     <div class="tooltip-on-left-dark-big">
                                         <span class="fa fa-times-circle-o" aria-hidden="true"></span>
                                         <span class="tooltip-content text-left">
@@ -2371,7 +2371,7 @@
                 <div class="form-group">
                     <div class="col-sm-6 col-sm-offset-2">
                         <input type="button" class="btn btn-default"
-                               value="Add Another Case"
+                               value="New Case"
                                ng-click="insertTestcaseCap(testcases.length - 1)">
                     </div>
                 </div>
