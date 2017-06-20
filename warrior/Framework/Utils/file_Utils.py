@@ -28,12 +28,11 @@ try:
 except Exception:
     print_info("{0}: {1} module is not installed".format(os.path.abspath(__file__), mod))
 
-
 # Return the last line of a file
 def findLastString (filename, searchterm):
     fd = open (filename, "r")
     linenum = -1
-    for i, line in enumerate (fd, 1):
+    for i, line in enumerate(fd, 1):
         if searchterm in line:
             linenum = i
     return linenum
