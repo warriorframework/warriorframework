@@ -10,6 +10,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from Framework.Utils import file_Utils, data_Utils
+from __builtin__ import list
 
 
 """common_actions module where keywords common to all products are developed"""
@@ -217,4 +219,58 @@ class CommonActions(object):
 
         return status
 
+    def get_values_from_datafile(self, system_name, strvar, langs, states,
+                                 currencys, ramspace, configfile, intvar,
+                                 file_config):
+        def check_type(var, datatype):
+            vartype = type(var)
+            if vartype is not datatype:
+                print_error('is not a {}, but {}'.format(datatype, vartype))
+                return False
+            return True
+        wdesc = "get values from datafile"
+        status = True
+        Utils.testcase_Utils.pStep(wdesc)
+        Utils.testcase_Utils.pNote(self.datafile)
+        Utils.testcase_Utils.pNote(system_name)
+        tc_filepath = os.path.dirname(get_object_from_datarepository(
+                                            'wt_testcase_filepath'))
+        s = Utils.data_Utils.get_credentials(self.datafile, system_name)
+        print "string from datafile is", s
+        print "strvar is", strvar
+        status = status and check_type(strvar, str)
+        print "langs is", langs
+        status = status and check_type(langs, list)
+        print "states is", states
+        status = status and check_type(states, tuple)
+        print "currencys is", currencys
+        status = status and check_type(currencys, dict)
+        print "ramspace is", ramspace
+        status = status and check_type(ramspace, bool)
+        print "file_config:", file_config
+        try:
+            if file_config.startswith('tag'):
+                file_config = data_Utils.resolve_argument_value_to_get_tag_value(
+                                        self.datafile, system_name, file_config)
+            if not os.path.isabs(configfile):
+                configfile = getAbsPath(configfile, tc_filepath)
+            if not os.path.isabs(file_config):
+                file_config = getAbsPath(file_config, tc_filepath)
+            print "configfile is", configfile
+            print "configfile exists", file_Utils.fileExists(configfile)
+            print "file_config is", file_config
+            print "file_config exists", file_Utils.fileExists(file_config)
+        except AttributeError:
+            print_error('configfile and file_config are expected to be files')
+            print_error('type of configfile is {}'.format(type(configfile)))
+            print_error('type of file_config is {}'.format(type(file_config)))
+            status = False
+        print "intvar is", intvar
+        if type(intvar) is str and intvar.startswith('tag'):
+            intvar = data_Utils.resolve_argument_value_to_get_tag_value(
+                                    self.datafile, system_name, intvar)
+            print "intvar is", intvar
+        else:
+            status = status and check_type(intvar, int)
 
+        return status

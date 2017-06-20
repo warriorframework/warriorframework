@@ -10,24 +10,36 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
-"""This is argument datatype class api that converts the user input
-arguments in Warrior testcase xml into python datatypes"""
-
-
 import ast
 import traceback
 from Framework.Utils.print_Utils import print_error, print_info
 
+"""This is argument datatype class api that converts the user input
+arguments in Warrior testcase xml into python datatypes
+"""
+
+
 class ArgumentDatatype(object):
     """This is the class that gets the data type of an argument
     supplied by the user and stores it in the data repository """
+    type_funcs = {'str': str,
+                  'int': int,
+                  'float': float,
+                  'bool': bool,
+                  'list': list,
+                  'tuple': tuple,
+                  'dict': dict,
+                  'file': file,
+                  }
 
     def __init__(self, arg_name, arg_value):
         """Constructor that gets the arg_name and arg_value """
         self.arg_name = arg_name
         self.arg_value = arg_value
         self.datatype = None
+
+    def get_type_func(self, datatype='str'):
+        return self.type_funcs[datatype]
 
     def convert_arg_to_datatype(self):
         """Parses the input argument to find the data type requested by the user
@@ -80,9 +92,11 @@ class ArgumentDatatype(object):
     def convert_string_to_datatype(self):
         """Converts an input string to a python datatype """
 
-        err_msg = "User input argument value {0} does"\
-        "not match python syntax for '{1}'".format(self.arg_value, self.datatype)
-        info_msg = "Warrior FW will handle user input argument value as string (default)"
+        err_msg = ("User input argument value {0} does not match python syntax"
+                   " for '{1}'").format(self.arg_value, self.datatype)
+        info_msg = ("Warrior FW will handle user input argument value as "
+                    "string (default)")
+        # file type should be handled before coming here
         try:
             result = ast.literal_eval(self.arg_value)
         except Exception:
@@ -99,6 +113,4 @@ class ArgumentDatatype(object):
                 print_info(info_msg)
                 print '\n'
                 result = self.arg_value
-
         return result
-    

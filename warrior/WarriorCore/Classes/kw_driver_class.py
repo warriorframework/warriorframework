@@ -10,6 +10,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from Framework.Utils import xml_Utils, data_Utils
 
 """Driver utils module which handles gathers the argument
 information about the keywords, executes the keywords and reports the
@@ -157,33 +158,67 @@ class KeywordOperations(object):
             args.remove('self')
         return args
 
+    def get_credential_value(self, arg, system):
+        datafile = self.data_repository['wt_datafile']
+        if arg == system:
+            return arg
+        if not hasattr(self, 'tag_dict'):
+            self.tag_dict = data_Utils.get_credentials(datafile, system)
+        if arg in self.tag_dict:
+            return self.tag_dict[arg]
+        if arg.startswith("wtag"):
+            var = arg.split("=")[1]
+            return self.tag_dict[var]
+        return None
+
     def get_values_for_mandatory_args(self):
-        """The th values for mandatory arguments as a
-        python dictionary """
+        """The values for mandatory arguments as a python dictionary
+        """
         print_info("getting values for mandatory arguments")
         arg_kv = {}
         for args in self.req_args_list:
-            if self.args_repository.has_key(args) is True:
+            chk_arg = None
+            if args in self.args_repository:
                 arg_kv[args] = self.args_repository[args]
-            elif  self.data_repository.has_key(args) is True:
+            elif args in self.data_repository:
                 arg_kv[args] = self.data_repository[args]
             else:
-                print_error("value for mandatory argument '%s' "\
-                                  "not available in data_repository/args_repository" % args)
+                chk_arg = args
+            chk_arg = arg_kv[args] if not chk_arg else chk_arg
+            value = self.get_credential_value(chk_arg, arg_kv['system_name'])
+            if value is not None:
+                arg_kv[args] = value
+            elif chk_arg is not None:
+                arg_kv[args] = chk_arg
+            else:
+                print_error("value for mandatory argument '{}' not available "
+                            "in data_repository/args_repository/datafile".
+                            format(args))
         return arg_kv
 
     def get_values_for_optional_args(self, arg_kv):
-        """The th values for optional arguments as a
-        python dictionary """
+        """The values for optional arguments as a python dictionary
+        """
         print_info("getting values for optional arguments")
         for args in self.optional_args_list:
-            if self.args_repository.has_key(args) is True:
+            chk_arg = None
+            if args in self.args_repository:
                 arg_kv[args] = self.args_repository[args]
-            elif self.data_repository.has_key(args) is True:
+            elif args in self.data_repository:
                 arg_kv[args] = self.data_repository[args]
             else:
-                print_info("executing with default values "\
-                                 "for optional argument '{0}'".format(args))
+                chk_arg = args
+            chk_arg = arg_kv[args] if not chk_arg else chk_arg
+            value = self.get_credential_value(chk_arg, arg_kv['system_name'])
+            if value is not None:
+                arg_kv[args] = value
+            elif chk_arg is not None:
+                arg_kv[args] = chk_arg
+            else:
+                print_info("executing with default values for optional "
+                           "argument '{0}'".format(args))
+        else:
+            del self.tag_dict
         return arg_kv
 
     def get_argument_as_keywords(self):
