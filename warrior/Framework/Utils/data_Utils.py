@@ -1339,7 +1339,7 @@ def get_filepath_from_system(datafile, system_name, *args):
 
 def get_var_by_string_prefix(string):
     if "ENV" in string:
-        return os.environ[string.split('.')[1]]
+        return os.environ[string.split('.', 1)[1]]
     if "REPO" in string:
         keys = string.split('.')
         val = get_object_from_datarepository(keys[1])
