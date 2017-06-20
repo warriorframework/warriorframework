@@ -24,6 +24,8 @@ try:
     from selenium import webdriver
     from selenium.webdriver import ActionChains
     from selenium.webdriver.common.keys import Keys
+    from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
+    from selenium.common.exceptions import WebDriverException
 
     KEYS = {1: Keys.NUMPAD1, 2: Keys.NUMPAD2, 3: Keys.NUMPAD3,
         4: Keys.NUMPAD4, 5: Keys.NUMPAD5, 6: Keys.NUMPAD6,
@@ -37,6 +39,8 @@ BROWSER_NAMES = {'ff': "_make_ff",
                  'firefox': "_make_ff",
                  'chrome': "_make_chrome"
                 }
+
+
 class BrowserManagement(object):
     """Browser management class"""
 
@@ -46,7 +50,8 @@ class BrowserManagement(object):
         self.current_window = None
 
     def open_browser(self, browser_name='firefox', webdriver_remote_url=False,
-                     desired_capabilities=None, **kwargs):
+                     desired_capabilities=None, binary=None, gecko_path=None,
+                     **kwargs):
         """Open a browser session"""
 
         profile_dir = kwargs.get('profile_dir', None)
@@ -58,7 +63,8 @@ class BrowserManagement(object):
             print_debug("Opening browser '%s'" % (browser_name))
         browser_name = browser_name
         browser = self._make_browser(browser_name, desired_capabilities,
-                                     profile_dir, webdriver_remote_url)
+                                     profile_dir, webdriver_remote_url,
+                                     binary=binary, gecko_path=gecko_path)
         return browser
 
     def close_browser(self, browser_instance=None):
@@ -73,7 +79,7 @@ class BrowserManagement(object):
             print_exception(exception)
             status = False
         return status
-            
+
     # window management
 
     def close_window(self, browser_instance=None):
@@ -387,10 +393,10 @@ class BrowserManagement(object):
 
         return status
 
-
     # private methods
     def _make_browser(self, browser_name, desired_capabilities=None,
-                      profile_dir=None, webdriver_remote_url=None):
+                      profile_dir=None, webdriver_remote_url=None,
+                      binary=None, gecko_path=None):
         """method to open a browser, calls other sepcific/generic
         make browser methods to open a browser """
         creation_func = self._get_browser_creation_function(browser_name)
@@ -398,7 +404,8 @@ class BrowserManagement(object):
         if not creation_func:
             raise ValueError(browser_name + " is not a supported browser.")
 
-        browser = creation_func(webdriver_remote_url, desired_capabilities, profile_dir)
+        browser = creation_func(webdriver_remote_url, desired_capabilities,
+                                profile_dir, binary, gecko_path)
         return browser
 
     def _get_browser_creation_function(self, browser_name):
@@ -407,36 +414,59 @@ class BrowserManagement(object):
         func_name = BROWSER_NAMES.get(browser_name.lower().replace(' ', ''))
         return getattr(self, func_name) if func_name else None
 
-
-    def _make_ff(self, webdriver_remote_url, desired_capabilites, profile_dir):
+    def _make_ff(self, webdriver_remote_url, desired_capabilites, profile_dir,
+                 binary, gecko_path):
         """Create an instance of firefox browser"""
+        try:
+            if webdriver_remote_url:
+                browser = self._create_remote_web_driver(
+                                webdriver.DesiredCapabilities.FIREFOX,
+                                webdriver_remote_url, desired_capabilites,
+                                profile_dir)
+            else:
+                ff_capabilities = webdriver.DesiredCapabilities.FIREFOX
+                if ff_capabilities['marionette']:
+                    ff_capabilities['acceptInsecureCerts'] = True
+                    ffbinary = FirefoxBinary(binary)
+                    browser = webdriver.Firefox(firefox_binary=ffbinary,
+                                                firefox_profile=profile_dir,
+                                                executable_path=gecko_path)
+                else:
+                    browser = webdriver.Firefox(firefox_profile=profile_dir)
+            return browser
+        except WebDriverException as e:
+            if "executable needs to be in PATH" in str(e):
+                print_info("Please provide path for geckodriver executable")
+            elif "Expected browser binary location" in str(e):
+                print_info("Please provide path of firefox executable")
 
-        if webdriver_remote_url:
-            browser = self._create_remote_web_driver(webdriver.DesiredCapabilities.FIREFOX,
-                                                     webdriver_remote_url, desired_capabilites,
-                                                     profile_dir)
-        else:
-            browser = webdriver.Firefox(firefox_profile=profile_dir)
-        return browser
-
-    def _make_chrome(self, webdriver_remote_url, desired_capabilities, profile_dir):
+    def _make_chrome(self, webdriver_remote_url, desired_capabilities,
+                     profile_dir, binary, gecko_path):
         """Creates an instance of chrome browser and returns it
         Need to have selenium chrome driver exe placed in the python path"""
         return self._generic_make_browser(webdriver.Chrome,
                                           webdriver.DesiredCapabilities.CHROME,
-                                          webdriver_remote_url, desired_capabilities)
+                                          webdriver_remote_url,
+                                          desired_capabilities, binary)
 
     def _generic_make_browser(self, webdriver_type, desired_cap_type,
-                              webdriver_remote_url, desired_caps):
+                              webdriver_remote_url, desired_caps, binary):
         """most of the make browser functions just call this function which creates the
         appropriate web-driver"""
-        if not webdriver_remote_url:
-            browser = webdriver_type()
-        else:
-            browser = self._create_remote_web_driver(desired_cap_type, webdriver_remote_url,
-                                                     desired_caps)
-        return browser
-
+        try:
+            if not webdriver_remote_url:
+                if binary is not None:
+                    browser = webdriver_type(binary)
+                else:
+                    browser = webdriver_type()
+            else:
+                browser = self._create_remote_web_driver(desired_cap_type,
+                                                         webdriver_remote_url,
+                                                         desired_caps)
+            return browser
+        except WebDriverException as e:
+            if "executable needs to be in PATH" in str(e):
+                print_info("Please provide path for chrome driver executable")
 
     def _create_remote_web_driver(self, capabilities_type, webdriver_remote_url,
                                   desired_capabilities=None, profile=None):
