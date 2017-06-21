@@ -79,9 +79,20 @@ def logical_decision(exec_type, exec_condition, exec_cond_var, operator):
     if not status:
         pNote("Execution condition failed for exec type: {}, "\
             "expected value: {} , condition: {}, actual value: {}"\
-            .format(exec_type, exec_cond_var, operator, 
-                get_object_from_datarepository(exec_condition)), "WARNING")
+            .format(exec_type, exec_cond_var, operator,
+                    get_object_from_datarepository(exec_condition)), "WARNING")
     return status if status is not None else False
+
+# Expression parsing and handling
+    # parse (),each parenthesis becomes a new layer of conditions
+    # priority will base on order or )
+    # for each layer, do split and get list of rules num and logical operator
+        # get value of each rule
+        # use logical operator to combine each value
+        # return result
+# Else statement builder
+    # Once else is triggered, build the return status and action
+# AND/OR logic handling
 
 def main(step):
     """
