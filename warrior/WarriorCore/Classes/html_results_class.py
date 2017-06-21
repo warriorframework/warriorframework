@@ -129,8 +129,11 @@ class WarriorHtmlResults():
 
     def getWarVersion(self):
         path = self.getPath().split('warriorframework')[0] + 'warriorframework/version.txt'
-        version = open( path, 'r').read().split(':')[2]
-        return '<div class="version">' + version + '</div>'
+        if os.path.isfile( path ):
+            version = open( path, 'r').read().split(':')[2]
+            return '<div class="version">' + version + '</div>'
+        else:
+            return ''
 
     def generateHTML( self, junitObj, givenPath ):
         if junitObj:
