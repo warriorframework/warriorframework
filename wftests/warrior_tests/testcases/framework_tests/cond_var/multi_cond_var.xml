@@ -1,0 +1,130 @@
+<?xml version="1.0" ?>
+<Testcase>
+    <Details>
+        <Name>multi_cond_var</Name>
+        <Title>Accept non-string condition value for exec type in tc/ts/pj</Title>
+        <Engineer>Ka Hei Chan</Engineer>
+        <Date>2017-1-23</Date>
+        <Time>14:53</Time>
+        <State/>
+        <InputDataFile>No_Data</InputDataFile>
+        <Datatype/>
+        <default_onError action="next"/>
+        <Logsdir/>
+        <Resultsdir/>
+        <ExpectedResults/>
+    </Details>
+    <Requirements>
+        <Requirement/>
+    </Requirements>
+    <Steps>
+        <step Driver="demo_driver" Keyword="local_data_test" TS="1">
+            <Arguments>
+                <argument name="desired_status" value="pass"/>
+            </Arguments>
+            <onError action="next"/>
+            <Description>local_data_test</Description>
+            <iteration_type type=""/>
+            <Execute ExecType="yes"/>
+            <context>positive</context>
+            <impact>impact</impact>
+            <rmt/>
+        </step>
+        <step Driver="demo_driver" Keyword="local_data_test" TS="2">
+            <Arguments>
+                <argument name="desired_status" value="pass"/>
+            </Arguments>
+            <onError action="next"/>
+            <Description>local_data_test</Description>
+            <iteration_type type=""/>
+            <Execute ExecType="If Not">
+                <Rule Condition="step_1_result" Condvalue="FAIL"/>
+                <Rule Condition="step_1_result" Condvalue="FAIL"/>
+                <Rule Condition="step_1_result" Condvalue="FAIL"/>
+            </Execute>
+            <Execute ExecType="If">
+                <!-- No multiple Else value should be used here -->
+                <!-- if more than once, the first occurence will be use -->
+                <Rule Condition="step_1_result" Condvalue="PASS"/>
+            </Execute>
+            <context>positive</context>
+            <impact>impact</impact>
+            <rmt/>
+        </step>
+        <step Driver="demo_driver" Keyword="local_data_test" TS="3">
+            <Arguments>
+                <argument name="desired_status" value="fail"/>
+            </Arguments>
+            <onError action="next"/>
+            <Description>local_data_test</Description>
+            <iteration_type type=""/>
+            <Execute ExecType="If">
+                <!-- No multiple Else value should be used here -->
+                <!-- if more than once, the first occurence will be use -->
+                <Rule Condition="step_1_result" Condvalue="FAIL" Else="goto" Elsevalue="5"/>
+                <Rule Condition="step_1_result" Condvalue="PASS"/>
+                <Rule Condition="step_1_result" Condvalue="PASS"/>
+            </Execute>
+            <context>positive</context>
+            <impact>impact</impact>
+            <rmt/>
+        </step>
+        <step Driver="demo_driver" Keyword="local_data_test" TS="4">
+            <Arguments>
+                <argument name="desired_status" value="error"/>
+            </Arguments>
+            <onError action="next"/>
+            <Description>local_data_test</Description>
+            <iteration_type type=""/>
+            <Execute ExecType="Yes"/>
+            <context>positive</context>
+            <impact>impact</impact>
+            <rmt/>
+        </step>
+        <step Driver="demo_driver" Keyword="local_data_test" TS="5">
+            <Arguments>
+                <argument name="desired_status" value="pass"/>
+            </Arguments>
+            <onError action="next"/>
+            <Description>local_data_test</Description>
+            <iteration_type type=""/>
+            <Execute ExecType="If">
+                <Rule Condition="step_2_result" Condvalue="PASS"/>
+                <Rule Condition="step_3_result" Condvalue="SKIP" Else="NEXT"/>
+                <Rule Condition="int_step_num" Condvalue="5" Operator="smaller_equal"/>
+            </Execute>
+            <context>positive</context>
+            <impact>impact</impact>
+            <rmt/>
+        </step>
+        <step Driver="demo_driver" Keyword="local_data_test" TS="6">
+            <Arguments>
+                <argument name="desired_status" value="fail"/>
+            </Arguments>
+            <onError action="next"/>
+            <Description>local_data_test</Description>
+            <iteration_type type=""/>
+            <Execute ExecType="If Not">
+                <Rule Condition="step_2_result" Condvalue="PASS"/>
+                <Rule Condition="step_3_result" Condvalue="SKIP" Else="NEXT"/>
+                <Rule Condition="int_step_num" Condvalue="5" Operator="greater_equal"/>
+            </Execute>
+            <context>positive</context>
+            <impact>impact</impact>
+            <rmt/>
+        </step>
+        <step Driver="demo_driver" Keyword="local_data_test" TS="7">
+            <Arguments>
+                <argument name="desired_status" value="pass"/>
+            </Arguments>
+            <onError action="next"/>
+            <Description>local_data_test</Description>
+            <iteration_type type=""/>
+            <Execute ExecType="Yes"/>
+            <Execute ExecType="No"/>
+            <context>positive</context>
+            <impact>impact</impact>
+            <rmt/>
+        </step>
+    </Steps>
+</Testcase>

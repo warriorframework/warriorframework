@@ -21,6 +21,7 @@ import time
 import traceback
 import WarriorCore.step_driver as step_driver
 import WarriorCore.onerror_driver as onerror_driver
+import exec_type_driver
 from WarriorCore import common_execution_utils
 import Framework
 import Framework.Utils as Utils
@@ -28,13 +29,13 @@ from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.print_Utils import print_info, print_debug, print_warning, print_error
 
 def get_system_console_log(filename, logsdir, console_name):
-        """Assign seperate console logfile for each system in parallel execution """
+    """Assign seperate console logfile for each system in parallel execution """
 
-        console_logfile = Utils.file_Utils.getCustomLogFile(filename, logsdir, console_name)
-        print_info ("************ This is parallel execution... console logs for {0} will be logged in {1} ************".format(console_name, console_logfile))
-        Utils.config_Utils.debug_file(console_logfile)
+    console_logfile = Utils.file_Utils.getCustomLogFile(filename, logsdir, console_name)
+    print_info ("************ This is parallel execution... console logs for {0} will be logged in {1} ************".format(console_name, console_logfile))
+    Utils.config_Utils.debug_file(console_logfile)
 
-        return console_logfile
+    return console_logfile
 
 def execute_steps(step_list, data_repository, system_name, parallel, queue):
     default_error_action = data_repository['wt_def_on_error_action']
@@ -55,6 +56,10 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
         # execute steps
         step_num += 1
 
+        skip_current_step = False
+        # Decide whether or not to execute keyword
+        # Based on Exectype information
+        skip_current_step, trigger_action = exec_type_driver.main(step)
         if not goto_stepnum:
             try:
                 result = step_driver.main(step, step_num, data_repository, system_name)
@@ -64,31 +69,31 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
                 exec_type_onerror = result[3]
                 #print "exec_type_onerror:", exec_type_onerror
 
-            except Exception,e:
-                print_error ('unexpected error %s' % str(e))
+            except Exception, e:
+                print_error('unexpected error %s' % str(e))
                 step_status     = False
                 kw_resultfile   = None
                 step_impact     = Utils.testcase_Utils.get_impact_from_xmlfile(step)
                 print_error('unexpected error {0}'.format(traceback.format_exc()))
 
-        elif (goto_stepnum and goto_stepnum == str(step_num)):
-                try:
-                    result = step_driver.main(step, step_num, data_repository, system_name)
-                    step_status = result[0]
-                    kw_resultfile = result[1]
-                    step_impact = result[2]
-                    exec_type_onerror = result[3]
-                    #print "exec_type_onerror:", exec_type_onerror
+        elif goto_stepnum and goto_stepnum == str(step_num):
+            try:
+                result = step_driver.main(step, step_num, data_repository, system_name)
+                step_status = result[0]
+                kw_resultfile = result[1]
+                step_impact = result[2]
+                exec_type_onerror = result[3]
+                #print "exec_type_onerror:", exec_type_onerror
 
-                except Exception,e:
-                    print_error ('unexpected error %s' % str(e))
-                    step_status     = False
-                    kw_resultfile   = None
-                    step_impact     = Utils.testcase_Utils.get_impact_from_xmlfile(step)
-                    print_error('unexpected error {0}'.format(traceback.format_exc()))
-                goto_stepnum = False
+            except Exception, e:
+                print_error('unexpected error %s' % str(e))
+                step_status     = False
+                kw_resultfile   = None
+                step_impact     = Utils.testcase_Utils.get_impact_from_xmlfile(step)
+                print_error('unexpected error {0}'.format(traceback.format_exc()))
+            goto_stepnum = False
 
-        else:
+        if skip_current_step:
             keyword = step.get('Keyword')
             kw_resultfile= step_driver.get_keyword_resultfile(data_repository, system_name, step_num, keyword)
             Utils.config_Utils.set_resultfile(kw_resultfile)

@@ -37,13 +37,13 @@ def get_testcase_details(testcase_filepath, data_repository, jiraproj):
     action/value etc) from its xml file,for details that are not provided
     by user assigns default values.
     """
-
-    name = Utils.xml_Utils.getChildTextbyParentTag (testcase_filepath, 'Details', 'Name')
-    title = Utils.xml_Utils.getChildTextbyParentTag (testcase_filepath, 'Details', 'Title')
-    category = Utils.xml_Utils.getChildTextbyParentTag (testcase_filepath, 'Details', 'Category')
+    Utils.config_Utils.set_datarepository(data_repository)
+    name = Utils.xml_Utils.getChildTextbyParentTag(testcase_filepath, 'Details', 'Name')
+    title = Utils.xml_Utils.getChildTextbyParentTag(testcase_filepath, 'Details', 'Title')
+    category = Utils.xml_Utils.getChildTextbyParentTag(testcase_filepath, 'Details', 'Category')
     def_on_error_action = Utils.testcase_Utils.get_defonerror_fromxml_file(testcase_filepath)
-    def_on_error_value = Utils.xml_Utils.getChildAttributebyParentTag (testcase_filepath, 'Details', 'default_onError', 'value')
-    filename = os.path.basename (testcase_filepath)
+    def_on_error_value = Utils.xml_Utils.getChildAttributebyParentTag(testcase_filepath, 'Details', 'default_onError', 'value')
+    filename = os.path.basename(testcase_filepath)
     filedir = os.path.dirname(testcase_filepath)
     nameonly = Utils.file_Utils.getNameOnly (filename)
     operating_system = sys.platform
