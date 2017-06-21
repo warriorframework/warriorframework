@@ -333,9 +333,9 @@ def get_browser_details(browser, datafile, br_name="browser_name",
     # Browser name matching
     if kwargs[br_name] != "all" and final_dict[br_name] != kwargs[br_name]:
         return None
-        
+
     final_dict = data_Utils.sub_from_env_var(final_dict)
-    
+
     return final_dict
 
 
