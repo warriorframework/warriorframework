@@ -31,9 +31,11 @@ class lineResult():
         self.data['dynamic'] = [ line.get("keywords"), line.get("passes"), line.get("failures"), line.get("errors"), line.get("exceptions"), line.get("skipped") ]
         self.data['timestamp'] = line.get("timestamp")
 
-    def setAttributes( self, line, type ):
+    def setAttributes( self, line, type, stepcount ):
+        if 'Keyword' not in type and 'step' not in type:
+            stepcount = ''
         self.data = {'nameAttr' : type + 'Record',
-                     'type': type.replace( 'Test', '' ).replace( 'Keyword', 'step' ),
+                     'type': type.replace( 'Test', '' ).replace( 'Keyword', 'step ' ) + str(stepcount),
                      'name': line.get("name"),
                      'info': line.get("title"),
                      'timestamp': line.get("timestamp"),
@@ -46,9 +48,9 @@ class lineResult():
                     }
         self.keys = [ 'type', 'name', 'info', 'timestamp', 'duration', 'status', 'impact', 'onerror', 'msc', 'static', 'dynamic' ]
 
-    def setHTML( self, line, type ):
+    def setHTML( self, line, type, stepcount ):
         if self.html == '':
-            self.setAttributes( line, type )
+            self.setAttributes( line, type, stepcount )
         self.setDynamicContent( line )
         topLevel = ''
         topLevelNext = ''
@@ -73,6 +75,7 @@ class lineResult():
 class WarriorHtmlResults():
     lineObjs = []
     lineCount = 0
+    steps = 0
 
     def __init__( self, junit_file=None ):
         self.junit_file = junit_file
@@ -83,11 +86,11 @@ class WarriorHtmlResults():
     def createLineResult( self, line, type ):
         if self.lineCount >= len(self.lineObjs):
             temp = lineResult()
-            temp.setHTML( line, type )
+            temp.setHTML( line, type, self.steps )
             self.lineObjs.append( temp )
             self.lineCount += 1
         else:
-            self.lineObjs[ self.lineCount ].setHTML( line, type )
+            self.lineObjs[ self.lineCount ].setHTML( line, type, self.steps )
 
     def setLineObjs( self ):
         self.lineCount = 0
@@ -98,9 +101,11 @@ class WarriorHtmlResults():
                 self.createLineResult( testsuite_node, "Testsuite"  )
                 for testcase_node in testsuite_node.findall("testcase"):
                     self.createLineResult(testcase_node, "Testcase" )
+                    self.steps = 0
                     for step_node in testcase_node.findall("properties"):
                         for node in step_node.findall("property"):
                             if node.get('type') == 'keyword':
+                                self.steps += 1
                                 self.createLineResult( node, "Keyword" )
 
     def getPath( self ):
@@ -119,7 +124,13 @@ class WarriorHtmlResults():
         temp = open(self.html_template)
         templateHTML = temp.read().replace('\n', '')
         temp.close()
-        return templateHTML.replace( '</table>', dynamicHTML + '</table>' )
+        index = templateHTML.rfind('</table>')
+        return templateHTML[:index] + dynamicHTML + templateHTML[index:] + self.getWarVersion()
+
+    def getWarVersion(self):
+        path = self.getPath().split('warriorframework')[0] + 'warriorframework/version.txt'
+        version = open( path, 'r').read().split(':')[2]
+        return '<div class="version">' + version + '</div>'
 
     def generateHTML( self, junitObj, givenPath ):
         if junitObj:
