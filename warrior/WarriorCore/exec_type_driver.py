@@ -20,6 +20,10 @@ from Framework.Utils.print_Utils import print_error, print_info
 from Classes.argument_datatype_class import ArgumentDatatype
 from Framework.Utils.testcase_Utils import pNote
 
+class ElseException(Exception):
+    def __init__(self, else_action):
+        self.action = else_action
+
 def math_decision(exec_condition, exec_cond_var, operator):
     """
         Handle the math operator decision
@@ -45,11 +49,10 @@ def math_decision(exec_condition, exec_cond_var, operator):
     pNote("Unknown error occur when deciding value, please check condition value of the step", "Error")
     return False
 
-def logical_decision(exec_type, exec_condition, exec_cond_var, operator="equal"):
+def logical_decision(exec_condition, exec_cond_var, operator="equal"):
     """
         Handle the logical decision for the value comparison
         :param:
-            exec_type: If or If Not (== or !=)
             exec_condition: value from data_repo to be compared
             exec_cond_var: user provided value to be compared
             operator: math operator in plain English
@@ -63,7 +66,8 @@ def logical_decision(exec_type, exec_condition, exec_cond_var, operator="equal")
         status = False
     elif operator in ["greater_equal", "greater", "smaller_equal", "smaller"] and\
          not isinstance(exec_condition, int) and not isinstance(exec_condition, float):
-        pNote("Comparing non-numerical value using numerical operator, please check value and operator type", "ERROR")
+        pNote("Comparing non-numerical value using numerical operator,"\
+            "please check value and operator type", "ERROR")
         status = False
 
     if status and operator == "equal":
@@ -73,9 +77,8 @@ def logical_decision(exec_type, exec_condition, exec_cond_var, operator="equal")
     elif status and operator in ["greater_equal", "greater", "smaller_equal", "smaller"]:
         result = math_decision(exec_condition, exec_cond_var, operator)
     else:
-        pNote("Execution condition failed for exec type: {}, "\
-              "expected value: {} , condition: {}, actual value: {}"\
-              .format(exec_type, exec_cond_var, operator,
+        pNote("Execution condition failed for expected value: {} , condition: {}, actual value: {}"\
+              .format(exec_cond_var, operator,
                       get_object_from_datarepository(exec_condition)), "WARNING")
 
     return result
@@ -100,13 +103,14 @@ def rule_parser(rule):
         else_action = rule.get("Elsevalue")
 
     # Check for math operator
-    support_operators = ["greater_equal", "greater", "smaller_equal", "smaller", "equal", "not_equal"]
+    support_operators = ["greater_equal", "greater", "smaller_equal",
+                         "smaller", "equal", "not_equal"]
     operator = rule.get("Operator", None)
     if operator is not None and operator.lower() not in support_operators:
         pNote("Invaid Operator value, please use the following: {}".format(support_operators))
         operator = None
 
-    # Check for value prefix
+    # Parse value with prefix
     supported_prefix = ["bool_", "str_", "int_", "float_", "list_", "tuple_", "dict_"]
     if any([exec_condition.startswith(i) for i in supported_prefix]):
         exec_condition = exec_condition[exec_condition.find('_')+1:]
@@ -114,64 +118,102 @@ def rule_parser(rule):
     arg_datatype_object = ArgumentDatatype(exec_condition, exec_cond_var)
     exec_cond_var = arg_datatype_object.convert_arg_to_datatype()
 
-    status = logical_decision(exec_type, exec_condition, exec_cond_var, operator)
+    status = logical_decision(exec_condition, exec_cond_var, operator)
 
-def simple_expression_parser(expression_str):
-    elements = expression_str.split()
-    if len(elements) == 0:
-        # illegal expression
-        raise Exception("element ")
-    elif len(elements) == 1:
-        return rule_parser(elements[0])
+    if status is False:
+        raise ElseException(else_action)
     else:
-        status = rule_parser(elements[0])
+        return status
+
+def simple_exp_parser(expression_str, rules):
+    elements = expression_str.split()
+    status = None
+    if not elements:
+        # illegal expression
+        raise Exception("expression_str invalid or not found")
+    elif len(elements) == 1:
+        status = rule_parser(rules[elements[0]])
+    else:
+        status = rule_parser(rules[elements[0]])
         for x in range(1, len(elements) - 2):
             if elements[x+1].lower() == "and" or elements[x+1] == "&":
-                status = status & rule_parser(elements[x+2])
+                status = status & rule_parser(rules[elements[x+2]])
             elif elements[x+1].lower() == "or" or elements[x+1] == "|":
-                status = status | rule_parser(elements[x+2])
+                status = status | rule_parser(rules[elements[x+2]])
             else:
                 # invalid operator
-                raise Exception
+                raise Exception("invalid operator in expression_str: {}".format(expression_str))
+    return status
 
-def expression_parser(expression_str):
-    return True
+def expression_split(src):
+    result = []
+    for x in range(len(src)):
+        if src[x] == ")":
+            result.append((src[:x].rfind("("), x))
+    return result
+
+def expression_parser(src, rules):
+    src = src.strip()
+    opening = src.count("(")
+    closing = src.count(")")
+    if opening != closing:
+        raise Exception("expression invalid")
+    exps = expression_split(src)
+    status = None
+    if not exps:
+        status = simple_exp_parser(src, rules)
+    elif len(exps) == 1:
+        status = simple_exp_parser(src[1:-1], rules)
+    else:
+        status = simple_exp_parser(src[exps[0][0]:exps[0][1]], rules)
+        for x in range(len(exps) - 1):
+            # if next exp is in a same level paren
+            if exps[1][0] > exps[0][1]:
+                operator = src[exps[x][1]+1:exps[x+1][0]]
+                # Crap, this can have more than just an operator...
+                if operator.lower() == "and" or operator == "&":
+                    status = status & simple_exp_parser(src[exps[x+1][0]:exps[x+1][1]], rules)
+                elif operator.lower() == "or" or operator == "|":
+                    status = status | simple_exp_parser(src[exps[x+1][0]:exps[x+1][1]], rules)
+                elif any([x.isdigit() for x in operator]):
+                    # actually have rules in here
+                    pass
+                else:
+                    # invalid operator
+                    raise Exception("invalid operator in expression string: {}".format(src))
+            # if next exp is a wrapper of the current paren
+            else:
+                # Check the left side, should only have simple expression left
+                if src[exps[x][0]+1:exps[x+1][0]].strip() != "":
+                    pass
+                # Check the right side, should only have simple expression left
+
+    return status
 
 def decision_maker(exec_node):
-    decision = True
     exec_type = exec_node.get("ExecType", "")
     expression = exec_node.get("Expression", "")
+    action = exec_node.get("Else", None)
+    if exec_node.get("Elsevalue", "") != "":
+        action = exec_node.get("Elsevalue")
     rules = exec_node.findall("Rule")
-    # Sanity check for multiple else
 
-    else_node = exec_node.find("./Rule[@Else]") if exec_node.find("./Rule[@Else]") is not None else {}
-    else_action = else_node.get("Else", None)
-    if else_action is not None and else_action.upper() == "GOTO":
-        else_action = else_node.get("Elsevalue")
+    if expression == "":
+        expression = ' & '.join(range(1, len(rules)+1))
+    try:
+        status = expression_parser(expression, rules)
+        if exec_type.upper() == 'IF NOT':
+            status = not status
+    except ElseException, else_action:
+        # do something
+        status = False
+        action = else_action
+    except Exception:
+        # do something else
+        status = False
+        action = else_action
 
-    for rule in rules:
-        exec_condition = rule.get("Condition", None)
-        exec_cond_var = rule.get("Condvalue", None)
-
-        # Check for math operator
-        support_operators = ["greater_equal", "greater", "smaller_equal", "smaller"]
-        operator = rule.get("Operator", None)
-        if operator is not None and operator.lower() not in support_operators:
-            pNote("Invaid Operator value, please use the following: {}".format(support_operators))
-            operator = None
-
-        arg_datatype_object = ArgumentDatatype(exec_condition, exec_cond_var)
-        exec_cond_var = arg_datatype_object.convert_arg_to_datatype()
-
-        supported_prefix = ["bool_", "str_", "int_", "float_", "list_", "tuple_", "dict_"]
-        if any([exec_condition.startswith(i) for i in supported_prefix]):
-            exec_condition = exec_condition[exec_condition.find('_')+1:]
-
-        decision = decision and logical_decision(exec_type, exec_condition, exec_cond_var, operator)
-
-    if not decision:
-        trigger_action = else_action if else_action is not None else "SKIP"
-        pNote("Failed action: {}".format(trigger_action))
+    return status, action
 
 def main(step):
     """
@@ -196,7 +238,9 @@ def main(step):
     elif exec_type.upper() == 'NO':
         decision = False
         trigger_action = "SKIP"
-    elif exec_type.upper() != 'YES':
+    elif exec_type.upper() == 'YES':
+        decision = True
+    else:
         decision = False
         supported_values = ['no', 'yes', 'if', 'if not']
         print_error("Unsupported value used for ExecType, supported values are: {0} and case-insensitive".format(supported_values))
