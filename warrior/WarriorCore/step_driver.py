@@ -229,6 +229,19 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
     tc_junit_object.update_count(
         "keywords", "1", "tc", data_repository['wt_tc_timestamp'])
 
+    if 'wp_results_execdir' in data_repository:
+        # Create and replace existing Project junit file for each step
+        tc_junit_object.output_junit(data_repository['wp_results_execdir'],
+                                     print_summary=False)
+    elif 'suite_exectype' in data_repository:
+        # Create and replace existing Suite junit file for each step
+        tc_junit_object.output_junit(data_repository['wt_results_execdir'],
+                                     print_summary=False)
+    else:
+        # Create and replace existing Case junit file for each step
+        tc_junit_object.output_junit(data_repository['wt_resultsdir'],
+                                     print_summary=False)
+
     if parallel is True:
         # put result into multiprocessing queue and later retrieve in
         # corresponding driver
