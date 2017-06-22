@@ -279,28 +279,3 @@ def main(step):
         print_error("Unsupported value used for ExecType, supported values are: {0} and case-insensitive".format(supported_values))
 
     return decision, trigger_action
-
-if __name__ == "__main__":
-    from xml.etree import ElementTree as ET
-    root = ET.fromstring("""<step Driver="demo_driver" Keyword="local_data_test" TS="2">
-            <Arguments>
-                <argument name="desired_status" value="pass"/>
-            </Arguments>
-            <onError action="next"/>
-            <Description>local_data_test</Description>
-            <iteration_type type=""/>
-            <Execute ExecType="If Not">
-                <Rule Condition="step_1_result" Condvalue="FAIL"/>
-                <Rule Condition="step_1_result" Condvalue="FAIL"/>
-                <Rule Condition="step_1_result" Condvalue="FAIL"/>
-            </Execute>
-            <Execute ExecType="If">
-                <!-- No multiple Else value should be used here -->
-                <!-- if more than once, the first occurence will be use -->
-                <Rule Condition="step_1_result" Condvalue="PASS"/>
-            </Execute>
-            <context>positive</context>
-            <impact>impact</impact>
-            <rmt/>
-        </step>""")
-    print main("")
