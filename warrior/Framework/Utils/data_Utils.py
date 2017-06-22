@@ -1338,9 +1338,9 @@ def get_filepath_from_system(datafile, system_name, *args):
 
 
 def get_var_by_string_prefix(string):
-    if string.startswith("ENV"):
+    if string.startswith("ENV."):
         return os.environ[string.split('.', 1)[1]]
-    if string.startswith("REPO"):
+    if string.startswith("REPO."):
         keys = string.split('.')
         val = get_object_from_datarepository(keys[1])
         for key in keys[2:]:
