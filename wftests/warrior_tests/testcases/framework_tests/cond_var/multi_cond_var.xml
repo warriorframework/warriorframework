@@ -42,16 +42,11 @@
                 <Rule Condition="step_1_result" Condvalue="FAIL"/>
                 <Rule Condition="step_1_result" Condvalue="FAIL"/>
             </Execute>
-            <Execute ExecType="If">
-                <!-- No multiple Else value should be used here -->
-                <!-- if more than once, the first occurence will be use -->
-                <Rule Condition="step_1_result" Condvalue="PASS"/>
-            </Execute>
             <context>positive</context>
             <impact>impact</impact>
             <rmt/>
         </step>
-        <step Driver="demo_driver" Keyword="local_data_test" TS="3">
+        <!-- <step Driver="demo_driver" Keyword="local_data_test" TS="3">
             <Arguments>
                 <argument name="desired_status" value="fail"/>
             </Arguments>
@@ -59,8 +54,6 @@
             <Description>local_data_test</Description>
             <iteration_type type=""/>
             <Execute ExecType="If">
-                <!-- No multiple Else value should be used here -->
-                <!-- if more than once, the first occurence will be use -->
                 <Rule Condition="step_1_result" Condvalue="FAIL" Else="goto" Elsevalue="5"/>
                 <Rule Condition="step_1_result" Condvalue="PASS"/>
                 <Rule Condition="step_1_result" Condvalue="PASS"/>
@@ -125,6 +118,6 @@
             <context>positive</context>
             <impact>impact</impact>
             <rmt/>
-        </step>
+        </step> -->
     </Steps>
 </Testcase>

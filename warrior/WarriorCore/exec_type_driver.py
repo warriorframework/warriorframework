@@ -232,7 +232,7 @@ def decision_maker(exec_node):
     rules = exec_node.findall("Rule")
 
     if expression == "":
-        expression = ' & '.join(range(1, len(rules)+1))
+        expression = ' & '.join([str(x) for x in range(1, len(rules)+1)])
     try:
         status = expression_parser(expression, rules)
         if exec_type.upper() == 'IF NOT':
