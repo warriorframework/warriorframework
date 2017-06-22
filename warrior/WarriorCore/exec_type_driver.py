@@ -96,6 +96,13 @@ def logical_decision(exec_condition, exec_cond_var, operator="equal"):
 
 def rule_parser(rule):
     # Get data
+    if isinstance(rule, str):
+        if rule.lower() == True:
+            return True
+        elif rule.lower() == False:
+            return False
+        else:
+            raise Exception("rule value is wrong")
     exec_condition = rule.get("Condition", None)
     exec_cond_var = rule.get("Condvalue", None)
     else_action = rule.get("Else", None)
@@ -135,7 +142,7 @@ def simple_exp_parser(expression_str, rules):
         status = rule_parser(rules[elements[0]])
     else:
         status = rule_parser(rules[elements[0]])
-        for x in range(1, len(elements) - 2):
+        for x in range(1, len(elements) - 2, 2):
             if elements[x+1].lower() == "and" or elements[x+1] == "&":
                 status = status & rule_parser(rules[elements[x+2]])
             elif elements[x+1].lower() == "or" or elements[x+1] == "|":
@@ -143,6 +150,31 @@ def simple_exp_parser(expression_str, rules):
             else:
                 # invalid operator
                 raise Exception("invalid operator in expression_str: {}".format(expression_str))
+    return status
+
+def special_exp_parser(expression_str, rules, status_first, status_last):
+    status = status_first
+    elements = expression_str.split()
+    if not elements or len(elements) < 3:
+        # illegal expression or no rule in expression
+        raise Exception("expression_str invalid or not found")
+    else:
+        for x in range(0, len(elements)-1, 2):
+            if elements[x].lower() == "and" or elements[x] == "&":
+                status = status & rule_parser(rules[elements[x+1]])
+            elif elements[x].lower() == "or" or elements[x] == "|":
+                status = status | rule_parser(rules[elements[x+1]])
+            else:
+                # invalid operator
+                raise Exception("invalid operator in expression_str: {}".format(expression_str))
+        # at this point we should have the last operator left to be processed
+        if elements[-1].lower() == "and" or elements[-1] == "&":
+            status = status & status_last
+        elif elements[-1].lower() == "or" or elements[-1] == "|":
+            status = status | status_last
+        else:
+            # invalid operator
+            raise Exception("invalid operator in expression_str: {}".format(expression_str))
     return status
 
 def expression_split(src):
@@ -170,13 +202,14 @@ def expression_parser(src, rules):
             # if next exp is in a same level paren
             if exps[1][0] > exps[0][1]:
                 operator = src[exps[x][1]+1:exps[x+1][0]]
-                # Crap, this can have more than just an operator...
                 if operator.lower() == "and" or operator == "&":
                     status = status & simple_exp_parser(src[exps[x+1][0]:exps[x+1][1]], rules)
                 elif operator.lower() == "or" or operator == "|":
                     status = status | simple_exp_parser(src[exps[x+1][0]:exps[x+1][1]], rules)
                 elif any([x.isdigit() for x in operator]):
-                    # actually have rules in here
+                    # actually have rules in here, 
+                    status_2 = simple_exp_parser(src[exps[x+1][0]:exps[x+1][1]], rules)
+                    status = special_exp_parser(operator, rules, status, status_2)
                     pass
                 else:
                     # invalid operator
@@ -246,3 +279,28 @@ def main(step):
         print_error("Unsupported value used for ExecType, supported values are: {0} and case-insensitive".format(supported_values))
 
     return decision, trigger_action
+
+if __name__ == "__main__":
+    from xml.etree import ElementTree as ET
+    root = ET.fromstring("""<step Driver="demo_driver" Keyword="local_data_test" TS="2">
+            <Arguments>
+                <argument name="desired_status" value="pass"/>
+            </Arguments>
+            <onError action="next"/>
+            <Description>local_data_test</Description>
+            <iteration_type type=""/>
+            <Execute ExecType="If Not">
+                <Rule Condition="step_1_result" Condvalue="FAIL"/>
+                <Rule Condition="step_1_result" Condvalue="FAIL"/>
+                <Rule Condition="step_1_result" Condvalue="FAIL"/>
+            </Execute>
+            <Execute ExecType="If">
+                <!-- No multiple Else value should be used here -->
+                <!-- if more than once, the first occurence will be use -->
+                <Rule Condition="step_1_result" Condvalue="PASS"/>
+            </Execute>
+            <context>positive</context>
+            <impact>impact</impact>
+            <rmt/>
+        </step>""")
+    print main("")
