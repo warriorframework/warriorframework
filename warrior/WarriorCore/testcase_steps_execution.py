@@ -56,10 +56,30 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
         # execute steps
         step_num += 1
 
-        skip_current_step = False
+        run_current_step = False
         # Decide whether or not to execute keyword
         # Based on Exectype information
-        skip_current_step, trigger_action = exec_type_driver.main(step)
+        run_current_step, trigger_action = exec_type_driver.main(step)
+        if not run_current_step:
+            keyword = step.get('Keyword')
+            kw_resultfile= step_driver.get_keyword_resultfile(data_repository, system_name, step_num, keyword)
+            Utils.config_Utils.set_resultfile(kw_resultfile)
+            Utils.testcase_Utils.pKeyword(keyword, step.get('Driver'))
+            Utils.testcase_Utils.reportStatus('Skip' )
+            kw_resultfile_list.append(kw_resultfile)
+            data_repository['wt_junit_object'].update_count("skipped", "1", "tc", data_repository['wt_tc_timestamp'])
+            data_repository['wt_junit_object'].update_count("keywords", "1", "tc", data_repository['wt_tc_timestamp'])
+            kw_start_time = Utils.datetime_utils.get_current_timestamp()
+            step_impact = Utils.testcase_Utils.get_impact_from_xmlfile(step)
+            impact_dict = {"IMPACT":"Impact", "NOIMPACT":"No Impact"}
+            data_repository['wt_junit_object'].add_keyword_result(data_repository['wt_tc_timestamp'], step_num, keyword,
+                                                                  "SKIPPED", kw_start_time, "0", "skipped",
+                                                                  impact_dict.get(step_impact.upper()), "N/A")
+
+            import pdb
+            pdb.set_trace()
+            continue
+
         if not goto_stepnum:
             try:
                 result = step_driver.main(step, step_num, data_repository, system_name)
@@ -92,23 +112,6 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
                 step_impact     = Utils.testcase_Utils.get_impact_from_xmlfile(step)
                 print_error('unexpected error {0}'.format(traceback.format_exc()))
             goto_stepnum = False
-
-        if skip_current_step:
-            keyword = step.get('Keyword')
-            kw_resultfile= step_driver.get_keyword_resultfile(data_repository, system_name, step_num, keyword)
-            Utils.config_Utils.set_resultfile(kw_resultfile)
-            Utils.testcase_Utils.pKeyword(keyword, step.get('Driver'))
-            Utils.testcase_Utils.reportStatus('Skip' )
-            kw_resultfile_list.append(kw_resultfile)
-            data_repository['wt_junit_object'].update_count("skipped", "1", "tc", data_repository['wt_tc_timestamp'])
-            data_repository['wt_junit_object'].update_count("keywords", "1", "tc", data_repository['wt_tc_timestamp'])
-            kw_start_time = Utils.datetime_utils.get_current_timestamp()
-            step_impact = Utils.testcase_Utils.get_impact_from_xmlfile(step)
-            impact_dict = {"IMPACT":"Impact", "NOIMPACT":"No Impact"}
-            data_repository['wt_junit_object'].add_keyword_result(data_repository['wt_tc_timestamp'], step_num, keyword,
-                                                                  "SKIPPED", kw_start_time, "0", "skipped",
-                                                                  impact_dict.get(step_impact.upper()), "N/A")
-            continue
 
         step_status_list.append(step_status)
         kw_resultfile_list.append(kw_resultfile)

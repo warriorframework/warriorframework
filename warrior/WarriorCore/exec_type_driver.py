@@ -127,6 +127,8 @@ def rule_parser(rule):
 
     status = logical_decision(exec_condition, exec_cond_var, operator)
 
+    import pdb
+    pdb.set_trace()
     if status is False:
         raise ElseException(else_action)
     else:
@@ -244,6 +246,8 @@ def decision_maker(exec_node):
         status = expression_parser(expression, rules)
         if exec_type.upper() == 'IF NOT':
             status = not status
+        if not status:
+            trigger_action = action
     except ElseException, else_action:
         # do something
         status = False
