@@ -1,7 +1,10 @@
 # set -v
 # ls -l
 pip install pylint
-git checkout develop
+
+git config --replace-all remote.origin.fetch +refs/heads/*:refs/remotes/origin/*
+
+git branch
 # Displaying what .py files have changed
 if [[ $(git --no-pager diff --name-only develop "${TRAVIS_COMMIT}"  | grep -v 'OSS' | grep '.py$') ]]; then
     echo "List of .py files that have changed in this commit"
