@@ -241,10 +241,10 @@ def decision_maker(exec_node):
         # do something
         status = False
         action = else_action
-    except Exception:
-        # do something else
-        status = False
-        action = else_action
+    # except Exception, err:
+    #     # do something else
+    #     status = False
+    #     print "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n", err
 
     return status, action
 

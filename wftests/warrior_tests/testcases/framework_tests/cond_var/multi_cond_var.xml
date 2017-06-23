@@ -18,7 +18,7 @@
         <Requirement/>
     </Requirements>
     <Steps>
-        <step Driver="demo_driver" Keyword="local_data_test" TS="1">
+        <step Driver="ci_regression_driver" Keyword="local_data_test" TS="1">
             <Arguments>
                 <argument name="desired_status" value="pass"/>
             </Arguments>
@@ -30,7 +30,7 @@
             <impact>impact</impact>
             <rmt/>
         </step>
-        <step Driver="demo_driver" Keyword="local_data_test" TS="2">
+        <step Driver="ci_regression_driver" Keyword="local_data_test" TS="2">
             <Arguments>
                 <argument name="desired_status" value="pass"/>
             </Arguments>
