@@ -58,27 +58,34 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
 
         run_current_step = False
         # Decide whether or not to execute keyword
-        # Based on Exectype information
-        run_current_step, trigger_action = exec_type_driver.main(step)
-        if not run_current_step:
-            keyword = step.get('Keyword')
-            kw_resultfile= step_driver.get_keyword_resultfile(data_repository, system_name, step_num, keyword)
-            Utils.config_Utils.set_resultfile(kw_resultfile)
-            Utils.testcase_Utils.pKeyword(keyword, step.get('Driver'))
-            Utils.testcase_Utils.reportStatus('Skip' )
-            kw_resultfile_list.append(kw_resultfile)
-            data_repository['wt_junit_object'].update_count("skipped", "1", "tc", data_repository['wt_tc_timestamp'])
-            data_repository['wt_junit_object'].update_count("keywords", "1", "tc", data_repository['wt_tc_timestamp'])
-            kw_start_time = Utils.datetime_utils.get_current_timestamp()
-            step_impact = Utils.testcase_Utils.get_impact_from_xmlfile(step)
-            impact_dict = {"IMPACT":"Impact", "NOIMPACT":"No Impact"}
-            data_repository['wt_junit_object'].add_keyword_result(data_repository['wt_tc_timestamp'], step_num, keyword,
-                                                                  "SKIPPED", kw_start_time, "0", "skipped",
-                                                                  impact_dict.get(step_impact.upper()), "N/A")
+        # First decide if this step is skipped by goto or not
+        if not goto_stepnum or goto_stepnum == str(step_num):
+            # Based on Exectype information
+            run_current_step, trigger_action = exec_type_driver.main(step)
+            if not run_current_step:
+                keyword = step.get('Keyword')
+                kw_resultfile= step_driver.get_keyword_resultfile(data_repository, system_name, step_num, keyword)
+                Utils.config_Utils.set_resultfile(kw_resultfile)
+                Utils.testcase_Utils.pKeyword(keyword, step.get('Driver'))
+                Utils.testcase_Utils.reportStatus('Skip' )
+                kw_resultfile_list.append(kw_resultfile)
+                data_repository['wt_junit_object'].update_count("skipped", "1", "tc", data_repository['wt_tc_timestamp'])
+                data_repository['wt_junit_object'].update_count("keywords", "1", "tc", data_repository['wt_tc_timestamp'])
+                kw_start_time = Utils.datetime_utils.get_current_timestamp()
+                step_impact = Utils.testcase_Utils.get_impact_from_xmlfile(step)
+                impact_dict = {"IMPACT":"Impact", "NOIMPACT":"No Impact"}
+                data_repository['wt_junit_object'].add_keyword_result(data_repository['wt_tc_timestamp'], step_num, keyword,
+                                                                      "SKIPPED", kw_start_time, "0", "skipped",
+                                                                      impact_dict.get(step_impact.upper()), "N/A")
 
-            import pdb
-            pdb.set_trace()
-            continue
+                if goto_stepnum in ['ABORT', 'ABORT_AS_ERROR']: break
+                # when 'onError:goto' value is less than the current step num,
+                # change the next iteration point to goto value
+                elif goto_stepnum and int(goto_stepnum) < step_num:
+                    step_num = int(goto_stepnum)-1
+                    goto_stepnum = False
+
+                continue
 
         if not goto_stepnum:
             try:
@@ -86,8 +93,6 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
                 step_status = result[0]
                 kw_resultfile = result[1]
                 step_impact = result[2]
-                exec_type_onerror = result[3]
-                #print "exec_type_onerror:", exec_type_onerror
 
             except Exception, e:
                 print_error('unexpected error %s' % str(e))
@@ -102,8 +107,6 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
                 step_status = result[0]
                 kw_resultfile = result[1]
                 step_impact = result[2]
-                exec_type_onerror = result[3]
-                #print "exec_type_onerror:", exec_type_onerror
 
             except Exception, e:
                 print_error('unexpected error %s' % str(e))
@@ -112,6 +115,23 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
                 step_impact     = Utils.testcase_Utils.get_impact_from_xmlfile(step)
                 print_error('unexpected error {0}'.format(traceback.format_exc()))
             goto_stepnum = False
+        else:
+            # Skip because of goto 
+            keyword = step.get('Keyword')
+            kw_resultfile= step_driver.get_keyword_resultfile(data_repository, system_name, step_num, keyword)
+            Utils.config_Utils.set_resultfile(kw_resultfile)
+            Utils.testcase_Utils.pKeyword(keyword, step.get('Driver'))
+            Utils.testcase_Utils.reportStatus('Skip' )
+            kw_resultfile_list.append(kw_resultfile)
+            data_repository['wt_junit_object'].update_count("skipped", "1", "tc", data_repository['wt_tc_timestamp'])
+            data_repository['wt_junit_object'].update_count("keywords", "1", "tc", data_repository['wt_tc_timestamp'])
+            kw_start_time = Utils.datetime_utils.get_current_timestamp()
+            step_impact = Utils.testcase_Utils.get_impact_from_xmlfile(step)
+            impact_dict = {"IMPACT":"Impact", "NOIMPACT":"No Impact"}
+            data_repository['wt_junit_object'].add_keyword_result(data_repository['wt_tc_timestamp'], step_num, keyword,
+                                                                  "SKIPPED", kw_start_time, "0", "skipped",
+                                                                  impact_dict.get(step_impact.upper()), "N/A")
+            continue
 
         step_status_list.append(step_status)
         kw_resultfile_list.append(kw_resultfile)
@@ -121,7 +141,7 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
         if runmode is not None:
             # if runmode is 'ruf' & step_status is False, skip the repeated
             # execution of same TC step and move to next actual step
-            if not exec_type_onerror and runmode == "RUF" and step_status is False:
+            if runmode == "RUF" and step_status is False:
                 goto_stepnum = str(value)
             # if runmode is 'rup' & step_status is True, skip the repeated
             # execution of same TC step and move to next actual step
@@ -129,8 +149,8 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
                 goto_stepnum = str(value)
             else:
                 if step_status is False or str(step_status).upper() == "ERROR" \
-                or str(step_status).upper() == "EXCEPTION" or exec_type_onerror is True:
-                    goto_stepnum = onerror_driver.main(step, default_error_action, default_error_value, exec_type_onerror)
+                or str(step_status).upper() == "EXCEPTION":
+                    goto_stepnum = onerror_driver.main(step, default_error_action, default_error_value)
                     if goto_stepnum in ['ABORT', 'ABORT_AS_ERROR']: break
         elif retry_type is not None:
             if retry_type.upper() == 'IF':
@@ -166,8 +186,8 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
                         goto_stepnum = str(retry_value)
         else:
             if step_status is False or str(step_status).upper() == "ERROR" \
-            or str(step_status).upper() == "EXCEPTION" or exec_type_onerror is True:
-                goto_stepnum = onerror_driver.main(step, default_error_action, default_error_value, exec_type_onerror)
+            or str(step_status).upper() == "EXCEPTION":
+                goto_stepnum = onerror_driver.main(step, default_error_action, default_error_value)
                 if goto_stepnum in ['ABORT', 'ABORT_AS_ERROR']: break
                 # when 'onError:goto' value is less than the current step num,
                 # change the next iteration point to goto value

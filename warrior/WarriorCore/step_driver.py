@@ -146,8 +146,6 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
     Utils.testcase_Utils.update_arguments(args_repository)
     Utils.testcase_Utils.update_kw_resultfile(kw_resultfile)
 
-    exec_type_onerror = False
-
     # Executing keyword
     send_keyword_to_productdriver(
         driver, keyword, data_repository, args_repository)
@@ -233,7 +231,7 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
         queue.put((keyword_status, kw_resultfile,
                    step_impact.upper(), tc_junit_object))
     else:
-        return keyword_status, kw_resultfile, step_impact, exec_type_onerror
+        return keyword_status, kw_resultfile, step_impact
 
 
 def main(step, step_num, data_repository, system_name, parallel=False, queue=None):
