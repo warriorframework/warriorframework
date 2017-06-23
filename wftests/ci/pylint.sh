@@ -3,6 +3,7 @@
 pip install pylint
 
 git config --replace-all remote.origin.fetch +refs/heads/*:refs/remotes/origin/*
+git fetch origin develop
 
 git branch
 # Displaying what .py files have changed
