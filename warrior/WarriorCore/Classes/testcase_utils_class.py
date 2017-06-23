@@ -11,21 +11,30 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-"""Module that contains methods for testcase results related operations """
+"""
+Module that contains methods for testcase results related operations
+
+!!! Important!!!
+DO NOT import any modules from warrior/Framework package that uses
+warrior/Framework/Utils/print_Utils.py at module level into this module
+as it will lead to cyclic imports.
+"""
+
 import xml.etree.ElementTree as ET
-import Framework.Utils.file_Utils as file_Utils
-import Framework.Utils.config_Utils as config_Utils
-import Framework.Utils.xml_Utils as xml_Utils
 import inspect
 import re
+
 from Framework.Utils.print_Utils import  print_info, print_debug, print_warning,\
 print_error, print_exception, print_sub, print_notype
-#resultfile = config_Utils.resultfile
+
+#import Framework.Utils.file_Utils as file_Utils
+#import Framework.Utils.config_Utils as config_Utils
+#import Framework.Utils.xml_Utils as xml_Utils
 
 class TestcaseUtils(object):
     """testcase utils class"""
     def __init__(self):
-        self.resultfile = config_Utils.resultfile
+        #self.resultfile = config_Utils.resultfile
         self.root = None
         self.current_pointer = None
         self.gkeyword = {}
@@ -39,6 +48,19 @@ class TestcaseUtils(object):
         self.gsubkey = {}
         self.gsubkeyloop = 0
 
+    def file_utils(self):
+        """
+        """
+        import Framework.Utils.file_Utils as file_utils
+        return file_utils
+        
+    def xml_utils(self):
+        """
+        """
+        import Framework.Utils.xml_Utils as xml_utils
+        return xml_utils
+           
+
 
     def print_output(self):
         """ Prints the dump of the xml object to the file specified.
@@ -51,12 +73,16 @@ class TestcaseUtils(object):
         :Returns:
             None
         """
-        resultfile = config_Utils.resultfile
-        tree = ET.ElementTree(self.root)
+
         try:
+            import Framework.Utils.config_Utils as config_Utils 
+            resultfile = config_Utils.resultfile
+            tree = ET.ElementTree(self.root)
             tree.write(resultfile)
         except UnicodeDecodeError as e:
             print_exception(e)
+        except Exception as err:
+            print_exception(err)
 
     @staticmethod
     def p_open(fileobject):
@@ -433,7 +459,7 @@ class TestcaseUtils(object):
     def p_test_result(self, text, resultfile):
         """Report test result"""
         result = self.convert_logic(text)
-        self.root = xml_Utils.getRoot(resultfile)
+        self.root = self.xml_utils().getRoot(resultfile)
         tcstatus = ET.SubElement(self.root, "TCstatus")
         tcstatus.text = result
         tree = ET.ElementTree(self.root)
@@ -445,17 +471,17 @@ class TestcaseUtils(object):
             finstring = ''
             for kw_file in kw_resultfile_list:
                 if kw_file is not None and kw_file is not False:
-                    tree = xml_Utils.get_tree_from_file(kw_file)
+                    tree = self.xml_utils().get_tree_from_file(kw_file)
                     self.root = tree.getroot()
                     for child in self.root:
                         if child.tag == childtag:
-                            finstring = finstring+xml_Utils.convert_element_to_string(child)
+                            finstring = finstring+self.xml_utils().convert_element_to_string(child)
             tc_string = ' '
-            if file_Utils.fileExists(dst_resultfile):
+            if self.file_utils().fileExists(dst_resultfile):
                 tc_tree = ET.parse(dst_resultfile)
                 tc_root = tc_tree.getroot()
                 for tc_child in tc_root:
-                    tc_string = tc_string+xml_Utils.convert_element_to_string(tc_child)
+                    tc_string = tc_string+self.xml_utils().convert_element_to_string(tc_child)
             finalresult = '\n'.join(['<{0}>'.format(dst_root), tc_string + finstring,
                                      '</{0}>'.format(dst_root)])
             with open(dst_resultfile, 'w') as resultfile:
@@ -497,26 +523,26 @@ class TestcaseUtils(object):
     def compute_system_resultfile(self, kw_resultfile_list, resultsdir, system_name):
         """Generates a system resultfile from the list of keyword result files """
 
-        system_results_dir = file_Utils.createDir(resultsdir, 'System_Results')
-        system_resultfile = file_Utils.getCustomLogFile('system', system_results_dir,
+        system_results_dir = self.file_utils().createDir(resultsdir, 'System_Results')
+        system_resultfile = self.file_utils().getCustomLogFile('system', system_results_dir,
                                                         system_name, '.xml')
         self.append_result_files(system_resultfile, kw_resultfile_list, dst_root='System')
         return system_resultfile
 
     def add_defects_to_resultfile(self, resultfile, defect_id):
         """Adds defects if any to the testcase result file """
-        self.root = xml_Utils.getRoot(resultfile)
+        self.root = self.xml_utils().getRoot(resultfile)
         defects = ET.SubElement(self.root, "Defect")
         defects.text = defect_id
         tree = ET.ElementTree(self.root)
         tree.write(resultfile)
 
-    @staticmethod
-    def get_impact_from_xmlfile(element):
+
+    def get_impact_from_xmlfile(self, element):
         """Gets the impact value of a step/testcase/suite
         from the testcase.xml/testsuite.xml/project.xml file """
 
-        impact = xml_Utils.get_text_from_direct_child(element, 'impact')
+        impact = self.xml_utils().get_text_from_direct_child(element, 'impact')
         if impact is None or impact is False:
             impact = 'IMPACT'
         elif impact is not None and impact is not False:
@@ -531,12 +557,11 @@ class TestcaseUtils(object):
         return impact
 
 
-    @staticmethod
-    def get_context_from_xmlfile(element):
+    def get_context_from_xmlfile(self, element):
         """Gets the context value of a step/testcase/suite
         from the testcase.xml/testsuite.xml/project.xml file """
 
-        context = xml_Utils.get_text_from_direct_child(element, 'context')
+        context = self.xml_utils().get_text_from_direct_child(element, 'context')
         if context is None or context is False:
             context = 'POSITIVE'
         elif context is not None and context is not False:
@@ -550,24 +575,22 @@ class TestcaseUtils(object):
                 context = 'POSITIVE'
         return context
     
-    @staticmethod
-    def get_description_from_xmlfile(element):
+    def get_description_from_xmlfile(self, element):
         """Gets the description value of a step/testcase/suite
         from the testcase.xml/testsuite.xml/project.xml file """
 
-        description = xml_Utils.get_text_from_direct_child(element, 'Description')
+        description = self.xml_utils().get_text_from_direct_child(element, 'Description')
         if not description:
             description = '*** Description not provided by user ***'
         else:
             description = str(description).strip()
         return description
 
-    @staticmethod
-    def get_defonerror_fromxml_file(filepath):
+    def get_defonerror_fromxml_file(self, filepath):
         """Gets the default on error value of a step/testcase/suite
         from the testcase.xml/testsuite.xml/project.xml file """
 
-        def_on_error_action = xml_Utils.getChildAttributebyParentTag(filepath, 'Details',
+        def_on_error_action = self.xml_utils().getChildAttributebyParentTag(filepath, 'Details',
                                                                      'default_onError', 'action')
 
         if def_on_error_action is None or def_on_error_action is False:
@@ -583,11 +606,10 @@ class TestcaseUtils(object):
                 def_on_error_action = 'NEXT'
         return def_on_error_action
 
-    @staticmethod
-    def get_requirement_id_list(testcase_filepath):
+    def get_requirement_id_list(self, testcase_filepath):
         """gets the list of requirements for the testcase """
 
-        tc_root = xml_Utils.getRoot(testcase_filepath)
+        tc_root = self.xml_utils().getRoot(testcase_filepath)
         requirements = tc_root.find('Requirements')
         req_id_list = []
         if requirements is None or requirements is False:
@@ -608,8 +630,7 @@ class TestcaseUtils(object):
 
         return req_id_list
 
-    @staticmethod
-    def get_steps_list(testcase_filepath):
+    def get_steps_list(self, testcase_filepath):
         """Takes the location of any Testcase xml file as input
         Returns a list of all the step elements present in the Testcase
 
@@ -618,7 +639,7 @@ class TestcaseUtils(object):
         """
 
         step_list = []
-        tc_root = xml_Utils.getRoot(testcase_filepath)
+        tc_root = self.xml_utils().getRoot(testcase_filepath)
         steps = tc_root.find('Steps')
         if steps is None:
             print_info('Testcase has no commands: tag <Steps> not found in the input file ')

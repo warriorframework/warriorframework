@@ -14,6 +14,12 @@ limitations under the License.
 """
 This class will trap stdout and redirects the message to logfile and stdout
 It takes console_logfile and write_to_stdout ( boolean flag) as arguments.
+
+!!! Important!!!
+DO NOT import any modules from warrior/Framework package that uses
+warrior/Framework/Utils/print_Utils.py at module level into this module
+as it will lead to cyclic imports.
+
 """
 import sys
 import re
