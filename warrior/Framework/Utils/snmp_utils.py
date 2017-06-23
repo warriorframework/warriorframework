@@ -10,7 +10,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from pysnmp.smi import builder, view, compiler, rfc1902, error
+from Framework.Utils import testcase_Utils
 
 def split_mib_path(custom_mib_paths):
     """
@@ -32,3 +33,38 @@ def split_mib_path(custom_mib_paths):
         __custom_mib_paths.append(paths)
     __custom_mib_paths.append('/usr/share/snmp/mibs')
     return __custom_mib_paths
+
+def translate_mib(custom_mib_paths, load_mib_modules, name, val):
+    """
+    Translate OID to MIB
+    Argument:
+    custom_mib_paths:STRING.User can provide multiple MIB source path seperated by comma (',')
+                     e.g. 'http://rtx-swtl-git.fnc.net.local/projects/TYREPO/repos/fujitsu_base_yang_repo/browse/src/util/snmp/,/data/users/MIBS/'
+    load_mib_modules: User can provide the MIBS(name)
+    name: OID/MIB string
+    val: SNMP o/p string
+    Return: translated MIB and value pair
+    """
+    if custom_mib_paths and load_mib_modules:
+        try:
+            mibBuilder = builder.MibBuilder()
+            compiler.addMibCompiler(mibBuilder, sources=custom_mib_paths)
+            mibViewController = view.MibViewController(mibBuilder)
+            for mibs in load_mib_modules.split(','):
+                mibBuilder.loadModules(mibs)
+        except error.MibNotFoundError:
+            testcase_Utils.pNote("Mib Not Found!", "Error")
+    if custom_mib_paths and load_mib_modules:
+        output = rfc1902.ObjectType(rfc1902.ObjectIdentity(name), val).resolveWithMib(mibViewController).prettyPrint()
+        op_list = output.split(" = ")
+        name = op_list[0].strip()
+        val = op_list[1].strip()
+        testcase_Utils.pNote('%s = %s' %
+                         (name,
+                          val))
+        return name, val
+    else:
+        testcase_Utils.pNote('%s = %s' %
+                         (name.prettyPrint(),
+                          val.prettyPrint()))
+        return name.prettyPrint(), val.prettyPrint()
