@@ -270,8 +270,8 @@ def main(step):
             trigger_action: When decision failed, what kind of action to perform
     """
     exec_node = step.find("Execute")
-    if exec_node == []:
-        return False, None
+    if exec_node is None:
+        return True, None
 
     decision = True
     trigger_action = None
