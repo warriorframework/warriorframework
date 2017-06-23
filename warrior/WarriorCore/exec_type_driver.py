@@ -77,7 +77,7 @@ def logical_decision(exec_condition, exec_cond_var, operator="equal"):
     elif status and operator in ["greater_equal", "greater", "smaller_equal", "smaller"]:
         result = math_decision(exec_condition, exec_cond_var, operator)
     else:
-        pNote("Execution condition failed for expected value: {} , condition: {}, actual value: {}"\
+        pNote("Execution condition failed for expected value: {} , operator: {}, actual value: {}"\
               .format(exec_cond_var, operator,
                       get_object_from_datarepository(exec_condition)), "WARNING")
 
@@ -112,7 +112,7 @@ def rule_parser(rule):
     # Check for math operator
     support_operators = ["greater_equal", "greater", "smaller_equal",
                          "smaller", "equal", "not_equal"]
-    operator = rule.get("Operator", None)
+    operator = rule.get("Operator", "equal")
     if operator is not None and operator.lower() not in support_operators:
         pNote("Invaid Operator value, please use the following: {}".format(support_operators))
         operator = None
@@ -132,8 +132,15 @@ def rule_parser(rule):
     else:
         return status
 
-def simple_exp_parser(expression_str, rules):
+def int_split(expression_str):
     elements = expression_str.split()
+    for ind, ele in enumerate(elements):
+        if str.isdigit(ele):
+            elements[ind] = int(ele)
+    return elements
+
+def simple_exp_parser(expression_str, rules):
+    elements = int_split(expression_str)
     status = None
     if not elements:
         # illegal expression
@@ -142,7 +149,7 @@ def simple_exp_parser(expression_str, rules):
         status = rule_parser(rules[elements[0]])
     else:
         status = rule_parser(rules[elements[0]])
-        for x in range(1, len(elements) - 2, 2):
+        for x in range(0, len(elements) - 2, 2):
             if elements[x+1].lower() == "and" or elements[x+1] == "&":
                 status = status & rule_parser(rules[elements[x+2]])
             elif elements[x+1].lower() == "or" or elements[x+1] == "|":
@@ -154,7 +161,7 @@ def simple_exp_parser(expression_str, rules):
 
 def special_exp_parser(expression_str, rules, status_first, status_last):
     status = status_first
-    elements = expression_str.split()
+    elements = int_split(expression_str)
     if not elements or len(elements) < 3:
         # illegal expression or no rule in expression
         raise Exception("expression_str invalid or not found")
