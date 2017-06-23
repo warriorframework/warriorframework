@@ -237,9 +237,10 @@ def decision_maker(exec_node):
     if exec_node.get("Elsevalue", "") != "":
         action = exec_node.get("Elsevalue")
     rules = exec_node.findall("Rule")
+    rules.insert(0, '')
 
     if expression == "":
-        expression = ' & '.join([str(x) for x in range(1, len(rules)+1)])
+        expression = ' & '.join([str(x) for x in range(1, len(rules))])
     try:
         status = expression_parser(expression, rules)
         if exec_type.upper() == 'IF NOT':
