@@ -10,18 +10,17 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
-"""This is file_actions module that has all file related keywords """
-
 import Framework.Utils as Utils
 import re
-from Framework.Utils.testcase_Utils import pNote
+from Framework.Utils.testcase_Utils import pNote, pStep
 from Framework.Utils import file_Utils
+"""This is file_actions module that has all file related keywords """
 
 
 class FileActions(object):
     """FileActions class which has methods(keywords)
-    related to actions used in file KW """
+    related to actions used in file KW
+    """
 
     def __init__(self):
         self.resultfile = Utils.config_Utils.resultfile
@@ -29,16 +28,6 @@ class FileActions(object):
         self.logsdir = Utils.config_Utils.logsdir
         self.filename = Utils.config_Utils.filename
         self.logfile = Utils.config_Utils.logfile
-
-    def _log_result(self, oper, result):
-        """UseAsKeyword=No
-        the methods in this class can use this to log the result
-        of its operation
-        """
-        resmsg = "completed successfully" if result else "failed"
-        print_type = "info" if result else "error"
-        msg = "file {} operation {}".format(oper, resmsg)
-        pNote(msg, print_type)
 
     def write(self, filename, string, index=None):
         """write string in the filename at index location
@@ -61,19 +50,20 @@ class FileActions(object):
             status = False
         if status:
             status = file_Utils.write(fd, string+"\n")
+        pStep('Writing {!r} in {!r}'.format(string, filename))
         file_Utils.close(fd)
-        self._log_result("write", status)
+        file_Utils.log_result("write", status)
 
         return status
 
-    def findreplace(self, filename, regex, newstring, occurence="",
+    def findreplace(self, filename, regex, newstring, occurrence="",
                     int_startidx=0, int_endidx=-1):
         """find regex/string in the filename and replace it with newstring
         :Arguments:
             filename - file path in which to do the operation
             regex - regex or string to be replaced
             newstring - the new string to replace the regex
-            occurence - list of comma separated lines index to find/replace,
+            occurrence - list of comma separated lines index to find/replace,
                         empty to replace all occurrences
             startidx - starting line from which to do find/replace, first line
                         if not given
@@ -84,37 +74,93 @@ class FileActions(object):
         wdesc = ("find regex/string in the filename and replace it with "
                  "newstring")
         pNote(wdesc)
-        lines_to_replace = occurence.split(',') if occurence else []
+        lines_to_replace = occurrence.split(',') if occurrence else []
         rec = re.compile(regex)
         status = True
+        lines_replaced = 0
 
         try:
             fd = file_Utils.open_file(filename, "r")
             lines = file_Utils.readlines(fd)
             newlines = lines[:int_startidx] if int_startidx > 0 else []
-            for (idx, line) in enumerate(lines[int_startidx:int_endidx]):
+            if int_endidx < 0:
+                int_endidx += len(lines)
+            if int_endidx >= len(lines):
+                pNote("indices of lines to replace are more than the length of"
+                      " the file", "error")
+                return False
+            for (idx, line) in enumerate(lines[int_startidx:int_endidx+1]):
                 if (lines_to_replace and
                         str(int_startidx+idx+1) not in lines_to_replace):
                     newlines.append(line)
                 else:
                     newlines.append(rec.sub(newstring, line))
+                    lines_replaced += 1
             else:
-                if int_endidx != -1 and int_endidx != len(lines):
+                if int_endidx+1 != len(lines):
                     newlines.extend(lines[int_endidx:])
+            linenos = occurrence if occurrence else "all"
+            pStep('replacing {!r} with {!r} in file {!r} on {!r} lines'.format(
+                                        regex, newstring, filename, linenos))
             file_Utils.close(fd)
         except Exception as e:
             exc_msg = "findreplace returned exception {}".format(str(e))
             pNote(exc_msg, "exception")
             status = False
         else:
-            if newlines:
+            if lines_replaced:
                 fd = file_Utils.open_file(filename, "w")
                 file_Utils.writelines(fd, newlines)
                 file_Utils.close(fd)
             else:
                 pNote("no lines were replaced as no lines were selected",
                       "warning")
-        self._log_result("findreplace", status)
+        file_Utils.log_result("findreplace", status)
+
+        return status
+
+    def check_text_occurrence(self, filename, regex, occurrence="",
+                              int_startidx=0, int_endidx=-1):
+        """find regex/string in the filename
+        :Arguments:
+            filename - file path in which to do the operation
+            regex - regex or string to be checked
+            occurrence - list of comma separated lines index to check,
+                        empty to check all lines
+            startidx - starting line from which to do check, first line
+                        if not given
+            endidx - ending line to do the check, last line if not given
+        :Returns:
+            True if successfully checked for all occurrences else False
+        """
+        wdesc = "find regex/string in the filename in the desired location"
+        pNote(wdesc)
+        lines_to_check = occurrence.split(',') if occurrence else []
+        rec = re.compile(regex)
+        status = True
+
+        try:
+            fd = file_Utils.open_file(filename, "r")
+            lines = file_Utils.readlines(fd)
+            if int_endidx < 0:
+                int_endidx += len(lines)
+            if int_endidx >= len(lines):
+                pNote("indices of lines to check are more than the length of "
+                      "the file", "error")
+                return False
+            for (idx, line) in enumerate(lines[int_startidx:int_endidx+1]):
+                if not lines_to_check or str(int_startidx+idx+1) in lines_to_check:
+                    if rec.search(line) is None:
+                        status = status and False
+            linenos = occurrence if occurrence else "all"
+            pStep('Checking {!r} in file {!r} on {!r} lines'.format(
+                                        regex, filename, linenos))
+            file_Utils.close(fd)
+        except Exception as e:
+            exc_msg = "check_text_occurrence returned exception {}".format(str(e))
+            pNote(exc_msg, "exception")
+            status = False
+        file_Utils.log_result("check_text_occurrence", status)
 
         return status
 
@@ -128,7 +174,8 @@ class FileActions(object):
         wdesc = "remove the filename from the system"
         pNote(wdesc)
         status = file_Utils.remove(filename)
-        self._log_result("remove", status)
+        pStep('removing {!r}'.format(filename))
+        file_Utils.log_result("remove", status)
         return status
 
     def rename(self, filename, newname):
@@ -142,7 +189,8 @@ class FileActions(object):
         wdesc = "rename or move a file"
         pNote(wdesc)
         status = file_Utils.move(filename, newname)
-        self._log_result("rename", status)
+        pStep('renaming {!r} to {!r}'.format(filename, newname))
+        file_Utils.log_result("rename", status)
         return status
 
     def copy(self, filename, newname):
@@ -156,7 +204,8 @@ class FileActions(object):
         wdesc = "copy filename to newname"
         pNote(wdesc)
         status = file_Utils.copy(filename, newname)
-        self._log_result("copy", status)
+        pStep('Copying {!r} to {!r}'.format(filename, newname))
+        file_Utils.log_result("copy", status)
         return status
 
     def copystat(self, filename, newname):
@@ -170,7 +219,8 @@ class FileActions(object):
         wdesc = "copy stats of filename to newname"
         pNote(wdesc)
         status = file_Utils.copystat(filename, newname)
-        self._log_result("copystat", status)
+        pStep('Copying stat of {!r} to {!r}'.format(filename, newname))
+        file_Utils.log_result("copystat", status)
         return status
 
     def copy2(self, filename, newname):
@@ -185,5 +235,6 @@ class FileActions(object):
         wdesc = "copy filename to newname along with stats"
         pNote(wdesc)
         status = file_Utils.copy2(filename, newname)
-        self._log_result("copy2", status)
+        pStep('Copying contents with stats of {!r} to {!r}'.format(filename, newname))
+        file_Utils.log_result("copy2", status)
         return status
