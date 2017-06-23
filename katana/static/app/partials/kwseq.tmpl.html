@@ -1,0 +1,276 @@
+
+<div class='col-md-12'>
+    <h4>
+        <b>Keyword Sequencing Tool</b>
+    </h4>
+
+    <hr/>
+
+    <form action="" method="post" class="form-horizontal" role="form">
+
+      
+        <div class="row" ng-show="showEditor()" style="padding-left:1em">
+
+            <div class="container pull-left" style="width: 40%">
+
+    <div class="row">
+        <div class="form-group">
+            <label class="col-sm-5 control-label text-uppercase">Wrapper Keyword Details</label>
+        </div>
+    </div>
+               <div class="form-group" style="margin-bottom:0px;">
+                    <label for='wkeywordname'
+                           class="col-sm-5 offset-1 control-label ellipsis-the-overflow color-me-red">Wrapper Keyword Name</label>
+
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control"
+                               id="wkeywordname"
+                               ng-model='status.wkeywordname'
+                               ng-trim='true' ng-disabled="disKwname"
+                               placeholder="Wrapper Keyword Name"> <br/>
+                    </div>
+
+
+                </div>
+
+                <div class="form-group" style="margin-bottom:0px;">
+                    <label for='actionfilename'
+                           class="col-sm-5 offset-1 control-label ellipsis-the-overflow color-me-red">Action File Name</label>
+
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control"
+                               id="actionfilename"
+                               ng-model='status.actionfilename'
+                               ng-trim='true' ng-disabled="disAcfname"
+                               placeholder="Action File Name"> <br/>
+                    </div>
+                </div>
+
+                  <div class="form-group" style="margin-bottom:0px;">
+                    <label for='wdesc'
+                           class="col-sm-5 offset-1 control-label ellipsis-the-overflow color-me-red">W Description</label>
+
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control"
+                               id="wdesc"
+                               ng-model='status.wdesc'
+                               ng-trim='true' ng-disabled="disWdesc"
+                               placeholder="W Description"> <br/>
+                    </div>
+                </div>
+
+            
+
+            </div>
+
+        </div>
+
+        <hr>
+    <div class="row">
+        <div class="form-group">
+            <label style="margin-left:2.5%" class="text-uppercase">Subkeyword Details</label>
+        </div>
+    </div>
+          
+<div ng-show="myvalue1">
+                <div class="container pull-left" style="width: 40%">
+
+
+                <div class="form-group" id="keyNameDiv" style="margin-bottom:20px;">
+                    <label for='subkwname'
+                           class="col-sm-5 control-label ellipsis-the-overflow color-me-red">Subkeyword Driver
+                    </label>
+
+                    <div class="col-sm-7">
+                        <select class='form-control'
+                                id='subkwname'
+                                ng-model="status.subkwname"
+                                ng-change="driverSelected([status.subkwname])"
+                                ng-options="o as o for o in xml.drivers">
+                            <option value=''>Select Subkeyword Driver</option>
+                        </select>
+                    </div>
+
+                </div>
+
+
+                <div class="form-group" id="keyArgsDiv"> 
+                    <label for='subkwargs'
+                           class="col-sm-5 control-label ellipsis-the-overflow color-me-red">Subkeyword Name</label>
+
+                    <div class="col-sm-7">
+                        <select class='form-control' id='subkwargs'
+                                ng-model="status.subkwargs"
+                                ng-change="selectsubkwargs(status.subkwargs)"
+                                ng-options="o.fn as o.fn for o in xml.subkwargss">
+                            <option value=''>Select Subkeyword Name</option>
+                        </select>
+                    </div>
+
+                </div>
+
+
+
+                <div class="form-group">
+                    <label class="col-sm-5 control-label ellipsis-the-overflow">Arguments</label>
+
+                    <div class="col-sm-7" style="margin-top:5px;">
+                    <div class="panelArgs">
+                       Arguments for the selected Keyword
+
+                        <div
+                             ng-repeat="arg in xml.args.args"
+                             ng-if='status.subkwargs != "" && xml.args.args.length == 1 && xml.args.args[0] == "self"'>
+                            <b class='text-danger' style="color: rgb(214, 48, 48)">There are no editable values
+                                for this function / subkwargs.</b> 
+                        </div>
+
+                        <div ng-repeat="arg in xml.arglist"
+                             ng-if='status.subkwargs != "" && xml.arglist.length > 0 && arg != "self"'>
+                            <div class="form-group mArgs" >
+                            <label for="arg{{$index}}"
+                                   class="col-sm-5 control-label text-info breakword"
+                                   style="color: black">{{arg}}</label>
+                            <label for="arg{{$index}}"
+                                   class="col-sm-5 control-label text-info ellipsis-the-overflow-arg"
+                                   style="color: black">{{arg}}</label>
+                            <div class="col-sm-7">
+                                <input type="text"
+                                       class="form-control"
+                                       id="arg{{$index}}"
+                                       ng-model='status.xml.mapargs[arg]'
+                                       placeholder=""> <br/>
+                            </div>
+                            </div> 
+                        </div>
+                        </div>
+                    </div>
+
+                </div>
+
+             
+
+                <div class="form-group mBot40"> 
+                    <div style="color:rgb(214, 48, 48)"
+                         class="col-sm-9 col-sm-offset-5">
+
+                              <button style="color:rgb(214, 48, 48)" type="button"
+
+
+                                class="btn btn-default"
+                                ng-click='saveArguments()' title="Save Keyword"
+                                >
+                            Save Subkeyword
+                        </button>
+                         &nbsp;
+            
+                    <button style="color:rgb(214, 48, 48)" type="button"
+                            class="btn btn-default btn-reg"
+                            ng-click='resetVal()' title="Clear Fields"> 
+                            
+                        Reset
+                    </button>
+                        
+
+                    </div>
+                </div>
+
+                </div>
+
+ 
+            <div class="container pull-right" style="width: 60%">
+                 <div class="form-group">
+                    <label class="col-sm-3 control-label">Signature &amp;
+                        Comment</label>
+                    <div class="col-sm-9" style="padding-top:0.25em"
+                         ng-hide='status.subkwargs == ""' ng-show="myvalue1">
+                        <b class='text-success' style="color: black">{{ xml.args.def }}</b>
+                        <br/><br/>
+                        <pre ng-if='xml.args.comment.length > 0'>{{xml.args.comment.join("\n")}}</pre>
+                        <pre ng-if='xml.args.comment.length === 0'>No comments available.</pre>
+                    </div>
+                </div>
+            </div>
+
+
+
+</div>
+
+
+<div ng-show="keyVal">
+
+        <div class="form-group">
+<!-- 
+        <div class="row">
+            <div style="padding-left:1em">
+                <label class="col-sm-1 control-label text-uppercase">Keywords</label>
+            </div>
+        </div> -->
+
+            <div class="col-sm-12">
+                <table class='table table-bordered table-condensed table-hover'>
+                    <thead>
+                    <tr>
+                     <th class='text-muted text-right'>#</th> 
+                        <th class='text-muted'>Subkeyword Driver & Name</th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                     <tr ng-repeat='item in items'> 
+                        <td class="text-right">
+                            {{ $index + 1 }}
+                        </td>
+
+                        <td>
+                            {{ item}}
+                        </td>
+
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+     <div class="row">
+            <div class="form-group">
+            <div class="col-sm-9 col-sm-offset-3">
+       <button style="color:rgb(214, 48, 48)" type="button"
+                            class="btn btn-default btn-reg"
+                            ng-click='insertAntKW()' title="Add Subkeyword for the Wrapper Keyword" ng-disabled="disabled">
+                            
+                        Add Subkeyword
+                    </button>
+                    </div>
+
+                    </div>
+                    </div>
+
+       </div>
+
+     <div class="row">
+        <div class="form-group">
+        <div class="col-sm-12" style="margin-left:0;"><hr/></div>
+        <div class="col-sm-9 col-sm-offset-3">
+
+          <button style="color:rgb(214, 48, 48)" type="button"
+                    class="btn btn-default"
+                    ng-click='toAppendData()' title="Save Keyword" ng-disabled = "disabled"
+                    >
+                Save Wrapper Keyword
+          </button>
+
+                      &nbsp;
+            <button type="button" style="color:rgb(214, 48, 48)"
+                    class="btn btn-default"
+                    ng-click='cancelArguments()' title="Cancel"
+                    >
+                Cancel
+            </button>
+           
+        </div>
+        </div>
+     </div>
+
+
+    </form>
