@@ -198,6 +198,22 @@ app.config(function($routeProvider) {
             }
         })
 
+        .when('/kwseq/:testcase/:subdirs', {
+            templateUrl: '/assets/app/partials/copy_testcasecapture.tmpl.html',
+            controller: 'copy_TestcaseCapCtrl',
+            resolve: {
+                subdirs: function ($route) {
+                    return $route.current.params.subdirs;
+                },
+                app: function ($q) {
+                    var defer = $q.defer();
+                    defer.resolve();
+                    return defer.promise;
+                }
+            }
+        
+        })
+
         .when('/testDatafile/:testdatafile/:subdirs', {
             templateUrl: '/assets/app/partials/newtestdatafile.tmpl.html',
             controller: 'newTestDataFileCtrl',
@@ -289,6 +305,10 @@ app.config(function($routeProvider) {
         .when('/performance', {
             templateUrl: '/assets/app/partials/performance.html',
             controller: 'performanceCtrl'
+        })
+        .when('/kwseq', {
+            templateUrl: '/assets/app/partials/kwsequencer.html',
+            controller: 'KwSeqCtrl'
         })
         .otherwise({
             redirectTo: '/'

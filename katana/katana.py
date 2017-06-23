@@ -18,6 +18,7 @@ import os
 import platform
 import re
 import subprocess
+import xml.etree.ElementTree as ET
 import threading
 import xml.etree.ElementTree
 from os.path import expanduser
@@ -90,6 +91,114 @@ def readconfig():
     cfg = json.loads("".join(lines))
     return cfg
 
+@route('/parsexmlobj', method='POST')
+def parsexmlobj():
+    import sys
+    import importlib
+    import inspect
+    import io
+
+    arg_name_list = []
+    sample = []
+    action_file_list = []
+    doc_string_value = []
+    kw_list_1 = ""
+    xmlobj = parseString("".join(request.body))
+    indented_xml = "".join(xmlobj.toprettyxml(newl='\n'))
+    corrected_xml = remove_extra_newlines_char_xml(indented_xml)
+    with open('output.txt', 'w') as f:
+        f.write(corrected_xml)
+    tree = ET.parse('output.txt')
+    root = tree.getroot()
+    WrapperName = getChildTextbyParentTag('output.txt',
+                                          'Details',
+                                          'WrapperName')
+    ActionFile = getChildTextbyParentTag('output.txt', 'Details', 'ActionFile')
+    Description = getChildTextbyParentTag('output.txt', 'Details',
+                                          'Description')
+    Subkeyword = root.find('Subkeyword')
+    subkw_list = Subkeyword.findall('step')
+    class_value = "x"
+    for values in subkw_list:
+        subkw_list_attrib = values.attrib
+        driver = subkw_list_attrib.get('Driver')
+        kw_list = subkw_list_attrib.get('Keyword')
+        Arguments = values.find('Arguments')
+        if Arguments is not None:
+            argument_list = Arguments.findall('argument')
+            if len(argument_list) == 1:
+                for argument in argument_list:
+                    argument_name = argument.get('name')
+                    if argument_name is not None:
+                        arg_value = argument.get('value')
+                        if arg_value is None or arg_value is False:
+                            arg_value = argument.text
+                        arg_name = argument_name + "=" + arg_value
+                        doc_string_value.append("The keyword {0} in Driver {1} has a defined arguments {2} You must want to send other values through data file".format(kw_list, driver, arg_name))
+            else:
+                for argument in argument_list:
+                    argument_name = argument.get('name')
+                    if argument_name is not None:
+                        arg_value = argument.get('value')
+                        if arg_value is None or arg_value is False:
+                            arg_value = argument.text
+                        arg_name_list.append(argument_name + "=" + arg_value)
+                        #kw_list_1 += "{0}.{1}.{2}".format(class_value, kw_list,arg_name_list)
+                doc_string_value.append("The keyword {0} in Driver {1} has a defined arguments {2} You must want to send other values through data file".format(kw_list, driver, arg_name_list))
+    open_actionfile = io.open(ActionFile, 'a+')
+    sum = 1
+    for _, n in enumerate(doc_string_value):
+        sample.append('\n' + "        " + str(sum) + ". " + n)
+        sample_string = "".join(sample)
+        sum += sum
+        if sum > len(subkw_list):
+            break
+    for line in io.open('kw_seq_template', 'r'):
+        line = line.replace('$wrapper_kw', WrapperName)
+        line = line.replace('$wdesc', Description)
+        line = line.replace('kw_list_1', kw_list_1)
+        line = line.replace('$doc_string_values', sample_string)
+        open_actionfile.write(line)
+    open_actionfile.close()
+    file_list = ["/data/users/ajeyashi/war-1037_new/warriorframework/warrior/Actions/CliActions/cli_actions.py", "/data/users/ajeyashi/war-1037_new/warriorframework/warrior/Actions/CloudshellActions/cloudshell_actions.py"]
+    for i in file_list:
+        source_file = i
+        with open(source_file) as f:
+            with open("i.txt", "a+") as f1:
+                for line in f:
+                    if "import " in line:
+                        f1.write(line)
+
+    lines_seen = set() # holds lines already seen
+    outfile = open(ActionFile, "a+")
+    for line in open("temp_file.txt", "r"):
+        if line not in lines_seen: # not a duplicate
+            outfile.write(line)
+            lines_seen.add(line)
+    outfile.close()
+
+def getChildTextbyParentTag(datafile, pnode, cnode):
+    """
+    Seraches XML file for the first parent. Finds the child node and returns its text
+    datafile = xml file searched
+    pnode = parent node
+    cnode = child node
+    """
+    value = False
+    tree = ET.parse(datafile)
+    root = tree.getroot()
+    node = root.find(pnode)
+    if node is not None:
+        child = node.find(cnode)
+        if child is not None:
+            value = child.text
+            return value
+        else:
+            # print_info("could not find cnode under the given pnode")
+            return value
+    else:
+        # print_info("could not find pnode in the provided file")
+        return value
 
 @route('/readdeftagsfile')
 def readdeftagsfile():

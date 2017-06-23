@@ -1,0 +1,21 @@
+    def $wrapper_kw(self):
+        '''
+        The KW is auto-generated with Sequential KW tool, you could group Warrior Keywords to perform a specific action repeatedly.
+        The Author of the KW has predefined variables and its values. Please use Data file to pass to the values to this KW, if required.
+        The predefined KW and variables are listed below exactly in the order of execution.
+        $doc_string_values
+        '''
+        wdesc = "$wdesc"
+        status_list = []
+        kw_list = $kw_list_1
+		status = True
+		for i in kw_list:
+		    output = eval(i)
+			if isinstance(output, tuple):
+				data_Utils.update_datarepository(output[1])
+				status &= output[0]
+				Utils.testcase_Utils.report_substep_status(output[0])
+			else:
+				status &= output
+				Utils.testcase_Utils.report_substep_status(output[0])
+		return status
