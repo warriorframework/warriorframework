@@ -26,7 +26,8 @@ class Junit(object):
     def __init__(self, filename, **kwargs):
         """constructor """
         self.junit_xslt = "{0}{1}Reporting{1}junit_to_html.xsl".format(Tools.__path__[0], os.sep)
-        self.root = self.create_element("testsuites", tests="0", suites="0", **self.init_arg(**kwargs))
+        self.root = self.create_element("testsuites", tests="0", suites="0",
+                                        **self.init_arg(**kwargs))
         self.filename = filename
         properties = self.create_element("properties")
         self.root.append(properties)
@@ -34,7 +35,7 @@ class Junit(object):
     def init_arg(self, **kwargs):
         default_keys = ["errors", "failures", "skipped", "time", "passes"]
         result = {}
-        for default_key in default_keys: 
+        for default_key in default_keys:
             result[default_key] = kwargs[default_key] if default_key in kwargs else "0"
         for key, val in kwargs.items():
             result[key] = val
@@ -50,10 +51,13 @@ class Junit(object):
 
         self.root.append(testsuite)
 
-    def create_testcase(self, location, timestamp, ts_timestamp, name, classname="customTestsuite_independant_testcase_execution", **kwargs):
+    def create_testcase(self, location, timestamp, ts_timestamp, name,
+                        classname="customTestsuite_independant_testcase_execution",
+                        **kwargs):
         if self.root.find("testsuite") is None:
             self.update_attr("timestamp", timestamp, "pj", "0")
-            self.create_testsuite(location=location, name=classname, timestamp=timestamp, **self.init_arg(**kwargs))
+            self.create_testsuite(location=location, name=classname, timestamp=timestamp,
+                                  **self.init_arg(**kwargs))
 
         for ts in self.root.findall("testsuite"):
             if ts.get("timestamp") == ts_timestamp:
@@ -112,7 +116,7 @@ class Junit(object):
         if elem is None:
             elem = self.get_ts_with_timestamp(timestamp)
         if str(status).lower() == "false":
-            elem.append(self.create_element("failure", {"message":"test failure"}))
+            elem.append(self.create_element("failure", {"message": "test failure"}))
         elif str(status).lower() == "error":
             elem.append(self.create_element("error", {}))
         elif str(status).lower() == "skipped":
@@ -120,8 +124,10 @@ class Junit(object):
 
     def add_requirement(self, requirement, timestamp):
         """add a new requirement when called"""
-        self.get_ts_with_timestamp(timestamp).find("properties").append(
-            self.create_element("property", {"name":"requirement", "value":requirement}))
+        self.get_ts_with_timestamp(timestamp).find("properties").append(self.create_element
+                                                                       ("property",
+                                                                       {"name": "requirement",
+                                                                        "value": requirement}))
 
     def add_property(self, name, value, elem_type, timestamp, **kwargs):
         if elem_type == "pj":
@@ -134,19 +140,19 @@ class Junit(object):
         if elem_type == "kw":
             item = self.create_element("property", kwargs["keyword_items"])
         else:
-            item = self.create_element("property", {"name":name, "value":value})
+            item = self.create_element("property", {"name": name, "value": value})
         elem.find("properties").append(item)
 
     def add_jobid(self, jobid):
         """add a new requirement when called"""
-        self.root.append(self.create_element("property", {"name":"jobid", "value":jobid}))
+        self.root.append(self.create_element("property", {"name": "jobid", "value": jobid}))
 
     def add_project_location(self, location):
         """add a new requirement when called"""
         self.root.find("properties").append(self.create_element(
-            "property", {"name":"location", "value":location}))
+            "property", {"name": "location", "value": location}))
         self.root.append(self.create_element(
-            "property", {"name":"location", "value":location}))
+            "property", {"name": "location", "value": location}))
 
     def update_count(self, attr, value, elem_type, timestamp="0"):
         if elem_type == "pj":
@@ -157,7 +163,8 @@ class Junit(object):
             elem = self.get_tc_with_timestamp(timestamp)
         attr = str(attr).lower()
 
-        statuses = {"true":"passes", "false":"failures", "exception":"exceptions", "error":"errors", "skip":"skipped"}
+        statuses = {"true": "passes", "false": "failures", "exception": "exceptions",
+                    "error": "errors", "skip": "skipped"}
         if attr in statuses:
             attr = statuses[attr]
 
@@ -177,11 +184,11 @@ class Junit(object):
         if attr == "status":
             if elem.tag == "testcase":
                 if attr == "false":
-                    elem.append(self.create_element("failure", {"message":"test failure"}))
+                    elem.append(self.create_element("failure", {"message": "test failure"}))
                 elif attr == "exception" or attr == "error":
                     elem.append(self.create_element("failure",
-                                                         {"message":"errors/exceptions "\
-                                                          "encountered during testcase execution"}))
+                                                   {"message": "errors/exceptions "
+                                                    "encountered during testcase execution"}))
             if str(value).lower() == "true":
                 value = "PASS"
             elif str(value).lower() == "false":
