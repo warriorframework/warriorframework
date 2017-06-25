@@ -268,8 +268,7 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir,
                 pj_junit_object.update_count("suites", "1", "pj",
                                              tmp_timestamp)
                 data_repository['testsuite_{}_result'.format(suite_cntr)] = "SKIP"
-                # pj_junit_object.add_testcase_message(tmp_timestamp,
-                # "skipped")
+                # pj_junit_object.add_testcase_message(tmp_timestamp, "skipped")
                 pj_junit_object.update_attr("impact", impact_dict.
                                             get(testsuite_impact.upper()),
                                             "ts", tmp_timestamp)
@@ -299,7 +298,7 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir,
                                                  project_error_value)
         if goto_testsuite_num is False:
             onerror = "Next"
-        elif goto_testsuite_num is "ABORT":
+        elif goto_testsuite_num == "ABORT":
             onerror = "Abort"
         else:
             onerror = "Goto:" + str(goto_testsuite_num)
