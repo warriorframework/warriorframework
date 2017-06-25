@@ -14,11 +14,12 @@ limitations under the License.
 """helper methods to create a Junit file"""
 import xml.etree.ElementTree as ET
 import os
-import  Tools
 import shutil
+import  Tools
 from Framework.Utils.print_Utils import print_info
 from WarriorCore.Classes.html_results_class import WarriorHtmlResults
 from WarriorCore.Classes.execution_summary_class import ExecutionSummary
+
 
 class Junit(object):
     """Junit class"""
@@ -47,7 +48,7 @@ class Junit(object):
         testsuite.append(properties)
 
         properties.append(self.create_element(
-            "property", {"name":"location", "value":location}))
+             "property", {"name": "location", "value": location}))
 
         self.root.append(testsuite)
 
@@ -61,7 +62,9 @@ class Junit(object):
 
         for ts in self.root.findall("testsuite"):
             if ts.get("timestamp") == ts_timestamp:
-                tc = self.create_element("testcase", classname=classname, timestamp=timestamp, exceptions="0", keywords="0", name=name, **self.init_arg(**kwargs))
+                tc = self.create_element("testcase", classname=classname, timestamp=timestamp,
+                                         exceptions="0", keywords="0", name=name,
+                                         **self.init_arg(**kwargs))
                 ts.append(tc)
                 properties = self.create_element("properties")
                 tc.append(properties)
@@ -187,8 +190,8 @@ class Junit(object):
                     elem.append(self.create_element("failure", {"message": "test failure"}))
                 elif attr == "exception" or attr == "error":
                     elem.append(self.create_element("failure",
-                                                   {"message": "errors/exceptions "
-                                                    "encountered during testcase execution"}))
+                                                    {"message": "errors/exceptions "
+                                                     "encountered during testcase execution"}))
             if str(value).lower() == "true":
                 value = "PASS"
             elif str(value).lower() == "false":
