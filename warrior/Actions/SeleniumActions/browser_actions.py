@@ -189,6 +189,7 @@ class browser_actions(object):
                     from pyvirtualdisplay import Display
                     display = Display(visible=0, size=(1024, 768))
                     display.start()
+                    pNote("Running in headless mode")
                 except ImportError:
                     print_error("pyvirtualdisplay is not installed in order "
                                 "to launch the browser in headless mode")
