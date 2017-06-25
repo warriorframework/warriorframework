@@ -14,7 +14,7 @@ limitations under the License.
 """ Selenium keywords for Generic Browser Actions """
 import os, re
 from Framework.ClassUtils.WSelenium.browser_mgmt import BrowserManagement
-from Framework.Utils.print_Utils import print_warning
+from Framework.Utils.print_Utils import print_warning, print_error
 
 try:
     import Framework.Utils as Utils
@@ -44,6 +44,16 @@ class browser_actions(object):
                        element_tag=None):
         """
         This will launch a browser.
+
+        If the user wants to test the selenium functionalities in headless
+        mode, install pyvirtualdisplay and Xvfb. To install it follow
+        the below steps.
+
+        1. To install pyvirtualdisplay:
+               pip install pyvirtualdisplay
+
+        2. To install Xvfb:
+               sudo apt-get install Xvfb
 
         :Datafile Usage:
 
@@ -175,10 +185,21 @@ class browser_actions(object):
                 browser_details = selenium_Utils.\
                     get_browser_details(browser, self.datafile, **arguments)
             if browser_details is not None:
+                try:
+                    from pyvirtualdisplay import Display
+                    display = Display(visible=0, size=(1024, 768))
+                    display.start()
+                except ImportError:
+                    print_error("pyvirtualdisplay is not installed in order "
+                                "to launch the browser in headless mode")
+                except:
+                    print_error("Xvfb is not installed in order "
+                                "to launch the browser in headless mode")
                 browser_inst = self.browser_object.open_browser(
                     browser_details["type"], webdriver_remote_url)
                 if browser_inst:
-                    browser_fullname = "{0}_{1}".format(system_name, browser_details["browser_name"])
+                    browser_fullname = "{0}_{1}".format(system_name,
+                                                        browser_details["browser_name"])
                     output_dict[browser_fullname] = browser_inst
                     if "url" in browser_details and browser_details["url"]\
                             is not None:
