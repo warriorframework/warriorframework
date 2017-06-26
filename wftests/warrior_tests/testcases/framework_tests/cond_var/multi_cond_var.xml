@@ -18,9 +18,13 @@
         <Requirement/>
     </Requirements>
     <Steps>
-        <step Driver="ci_regression_driver" Keyword="local_data_test" TS="1">
+        <!-- Normal Cases -->
+        <step Driver="ci_regression_driver" Keyword="increase_value" TS="1">
             <Arguments>
-                <argument name="desired_status" value="pass"/>
+                <argument name="key" value="multi_cond_var_one_rule_count"/>
+                <argument name="status" value="pass"/>
+                <argument name="max_status" value="pass"/>
+                <argument name="max_value" value="10"/>
             </Arguments>
             <onError action="next"/>
             <Description>local_data_test</Description>
@@ -30,22 +34,51 @@
             <impact>impact</impact>
             <rmt/>
         </step>
-        <step Driver="ci_regression_driver" Keyword="local_data_test" TS="2">
+        <step Driver="ci_regression_driver" Keyword="local_data_test" TS="1">
             <Arguments>
-                <argument name="desired_status" value="pass"/>
+                <argument name="desired_status" value="fail"/>
             </Arguments>
             <onError action="next"/>
             <Description>local_data_test</Description>
             <iteration_type type=""/>
-            <Execute ExecType="If Not">
-                <Rule Condition="step_1_result" Condvalue="FAIL"/>
-                <Rule Condition="step_1_result" Condvalue="FAIL"/>
-                <Rule Condition="step_1_result" Condvalue="FAIL"/>
+            <Execute ExecType="no"/>
+            <context>positive</context>
+            <impact>impact</impact>
+            <rmt/>
+        </step>
+        <step Driver="ci_regression_driver" Keyword="increase_value" TS="1">
+            <Arguments>
+                <argument name="key" value="multi_cond_var_one_rule_count"/>
+                <argument name="status" value="pass"/>
+                <argument name="max_status" value="pass"/>
+                <argument name="max_value" value="10"/>
+            </Arguments>
+            <onError action="next"/>
+            <Description>local_data_test</Description>
+            <iteration_type type=""/>
+            <Execute ExecType="If">
+                <Rule Condition="step_2_result" Condvalue="SKIPPED"/>
             </Execute>
             <context>positive</context>
             <impact>impact</impact>
             <rmt/>
         </step>
+        <step Driver="ci_regression_driver" Keyword="local_data_test" TS="2">
+            <Arguments>
+                <argument name="desired_status" value="fail"/>
+            </Arguments>
+            <onError action="next"/>
+            <Description>local_data_test</Description>
+            <iteration_type type=""/>
+            <Execute ExecType="If Not">
+                <Rule Condition="step_1_result" Condvalue="PASS"/>
+            </Execute>
+            <context>positive</context>
+            <impact>impact</impact>
+            <rmt/>
+        </step>
+        <!-- Multi rules: no else, global else, indi else overwrite global, global else overwrite indi -->
+        <!-- A&B, A|B, (A&B), (A&B)|C, A|(B&C), A&(B&C|(D|E)), A&(B|(C&D)&E)|F -->
         <!-- <step Driver="demo_driver" Keyword="local_data_test" TS="3">
             <Arguments>
                 <argument name="desired_status" value="fail"/>
