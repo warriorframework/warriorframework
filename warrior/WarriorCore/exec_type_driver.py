@@ -126,8 +126,7 @@ def rule_parser(rule):
     exec_cond_var = arg_datatype_object.convert_arg_to_datatype()
 
     status = logical_decision(exec_condition, exec_cond_var, operator)
-
-    if status is False:
+    if status is False and else_action is not None:
         raise ElseException(else_action)
     else:
         return status
@@ -202,7 +201,16 @@ def expression_parser(src, rules):
     if not exps:
         status = simple_exp_parser(src, rules)
     elif len(exps) == 1:
-        status = simple_exp_parser(src[1:-1], rules)
+        # TODO: need to handle expression outside of parenthesis too
+        print src
+        print src[exps[0][0]+1:exps[0][1]]
+        status = simple_exp_parser(src[exps[0][0]+1:exps[0][1]], rules)
+        if exps[0][0] != 0:
+            # Left flank has enemy
+            status = special_exp_parser(" & "+src, rules, True, status)
+        if exps[0][1] != len(src):
+            # Right flank has enemy
+            status = special_exp_parser(src+" & ", rules, status, True)
     else:
         status = simple_exp_parser(src[exps[0][0]:exps[0][1]], rules)
         for x in range(len(exps) - 1):
@@ -214,19 +222,22 @@ def expression_parser(src, rules):
                 elif operator.lower() == "or" or operator == "|":
                     status = status | simple_exp_parser(src[exps[x+1][0]:exps[x+1][1]], rules)
                 elif any([x.isdigit() for x in operator]):
-                    # actually have rules in here, 
+                    # actually have rules in here,
                     status_2 = simple_exp_parser(src[exps[x+1][0]:exps[x+1][1]], rules)
                     status = special_exp_parser(operator, rules, status, status_2)
-                    pass
                 else:
                     # invalid operator
                     raise Exception("invalid operator in expression string: {}".format(src))
             # if next exp is a wrapper of the current paren
             else:
-                # Check the left side, should only have simple expression left
-                if src[exps[x][0]+1:exps[x+1][0]].strip() != "":
-                    pass
-                # Check the right side, should only have simple expression left
+                # TODO: Check the left side, should only have simple expression left
+                if src[exps[x+1][0]+1:exps[x][0]].strip() != "":
+                    print "Left flank!"
+                    print src[exps[x+1][0]+1:exps[x][0]].strip()
+                # TODO: Check the right side, should only have simple expression left
+                if src[exps[x][1]+1:exps[x+1][1]].strip() != "":
+                    print "Right flank!"
+                    print src[exps[x][1]+1:exps[x+1][1]].strip()
 
     return status
 
@@ -245,8 +256,6 @@ def decision_maker(exec_node):
         status = expression_parser(expression, rules)
         if exec_type.upper() == 'IF NOT':
             status = not status
-        if not status:
-            trigger_action = action
     except ElseException, else_action:
         # do something
         status = False

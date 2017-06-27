@@ -58,9 +58,9 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
 
         run_current_step = False
         # Decide whether or not to execute keyword
-        # First decide if this step is skipped by goto or not
+        # First decide if this step should be executed in this iteration
         if not goto_stepnum or goto_stepnum == str(step_num):
-            # Based on Exectype information
+            # get Exectype information
             run_current_step, trigger_action = exec_type_driver.main(step)
             if not run_current_step:
                 keyword = step.get('Keyword')
@@ -77,6 +77,7 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
                 data_repository['wt_junit_object'].add_keyword_result(data_repository['wt_tc_timestamp'], step_num, keyword,
                                                                       "SKIPPED", kw_start_time, "0", "skipped",
                                                                       impact_dict.get(step_impact.upper()), "N/A")
+                data_repository['step_{}_result'.format(step_num)] = "SKIPPED"
 
                 if goto_stepnum in ['ABORT', 'ABORT_AS_ERROR']: break
                 # when 'onError:goto' value is less than the current step num,
@@ -131,6 +132,7 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
             data_repository['wt_junit_object'].add_keyword_result(data_repository['wt_tc_timestamp'], step_num, keyword,
                                                                   "SKIPPED", kw_start_time, "0", "skipped",
                                                                   impact_dict.get(step_impact.upper()), "N/A")
+            data_repository['step_{}_result'.format(step_num)] = "SKIPPED"
             continue
 
         step_status_list.append(step_status)
