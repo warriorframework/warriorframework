@@ -342,7 +342,9 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
     for testdata in root.findall("testdata"):
         # use only test data blocks that are marked to execute
         exec_flag = get_exec_flag(testdata, title, row)
-        if testdata.get("execute") == "yes" and exec_flag:
+        exec_text = testdata.get("execute").strip()
+        execute_req = string_Utils.conv_str_to_bool(exec_text)
+        if  execute_req and exec_flag:
             testdata_key="{0}{1}".format(testdata.get('title',""), \
                                          _get_row(testdata))
             details_dict = _get_cmd_details(testdata, global_obj, system_name,
@@ -728,7 +730,18 @@ def verify_resp_across_sys(match_list, context_list, command,
 def get_no_impact_logic(context_str):
     """Get the silent tag from context
     return silence value and context value"""
-    return {'YES:NOIMPACT': (True, 'YES'), 'NO:NOIMPACT': (True, 'No'), 'NO': (False, 'No'), 'YES': (False, 'YES')}.get(context_str.upper())
+    value =  {
+              'YES:NOIMPACT': (True, 'YES'),
+              'YES': (False, 'YES'),
+              'Y:NOIMPACT': (True, 'YES'),
+              'Y': (False, 'YES'),
+              'NO:NOIMPACT': (True, 'No'), 
+              'NO': (False, 'No'), 
+              'N:NOIMPACT': (True, 'No'), 
+              'N': (False, 'No'), 
+              }.get(context_str.upper(), False)
+              
+    return value
 
 
 def convert2type(value, data_type='str'):
@@ -758,7 +771,7 @@ def verify_cmd_response(match_list, context_list, command, response,
         nogroup = False
         if context_list[i] and match_list[i]:
             noiimpact, found = get_no_impact_logic(context_list[i])
-            found = testcase_Utils.pConvertLogical(found)
+            found = string_Utils.conv_str_to_bool(found)
             if response:
                 match_object = re.search(match_list[i], response)
             else:
@@ -811,7 +824,7 @@ def verify_cmd_response(match_list, context_list, command, response,
             testcase_Utils.pNote(msg, "debug")
         elif context_list[i] and match_list[i] == "":
             noiimpact, found = get_no_impact_logic(context_list[i])
-            found = testcase_Utils.pConvertLogical(found)
+            found = string_Utils.conv_str_to_bool(found)
             escapes = ''.join([chr(char) for char in range(1, 32)])
             response = re.sub(endprompt, "", response).strip()
             response = response.translate(None, escapes)
