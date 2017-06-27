@@ -18,10 +18,8 @@ try:
 except ImportWarning:
     raise ImportError
 
-from Framework.Utils import xml_Utils
-from Framework.Utils import data_Utils
 from Framework.Utils import selenium_Utils
-from Framework.Utils.testcase_Utils import pNote,pSubStep
+from Framework.Utils.testcase_Utils import pNote, pSubStep
 
 
 class elementlocator_actions(object):
@@ -80,13 +78,13 @@ class elementlocator_actions(object):
             locator. So if locator_type = name and locator = navigation-bar,
             then Warrior can search for an element with name "navigation-bar"
 
-            b. You can give location of the element_config_file and a tag inside
-            it so that Warrior can search for that tag and get the required
-            information from there.
+            b. You can give location of the element_config_file and a
+            tag inside it so that Warrior can search for that tag and
+            get the required information from there.
 
             - Now, if the locator type is given, Warrior
-            will search for that locator_type in the children of that element in
-            the element_config_file
+            will search for that locator_type in the children of
+            that element in the element_config_file
 
             - You can also set defaults in the element_config_file, and now,
             even if the locator_type is not given, Warrior will know which
@@ -102,7 +100,8 @@ class elementlocator_actions(object):
                 following conditions must be satisfied.
 
                 1. locator_type and locator must be given
-                2. locator_type, element_config_file, and element_tag must be given
+                2. locator_type, element_config_file, and element_tag must
+                be given
                 3. element_config_file, and element_tag must be given
 
                 The datafile has the first priority, then the json file, and
@@ -140,31 +139,18 @@ class elementlocator_actions(object):
         arguments.pop('self')
         status = True
         wdesc = "Finding an element by its given locator and locator type."
-        output_dict = {}
         pNote(wdesc)
         pSubStep(wdesc)
-        element = None
         browser_details = {}
-
-        system = xml_Utils.getElementWithTagAttribValueMatch(self.datafile,
-                                                             "system",
-                                                             "name",
-                                                             system_name)
-        browser_list = system.findall("browser")
-        try:
-            browser_list.extend(system.find("browsers").findall("browser"))
-        except AttributeError:
-            pass
-
-        if not browser_list:
-            browser_list.append(1)
-            browser_details = arguments
-
+        output_dict = {}
+        element = None
+        browser_list, browser_details = selenium_Utils.\
+            get_browser_details_from_data_file(system_name, arguments,
+                                               browser_details)
         for browser in browser_list:
-            arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
-            if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+            browser_details = selenium_Utils.\
+                get_current_browser_details(system_name, browser, arguments,
+                                            browser_details)
             if browser_details is not None:
                 current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
                 if current_browser:
@@ -186,9 +172,7 @@ class elementlocator_actions(object):
             browser_details = {}
         if element is None or element is False:
             status = False
-        Utils.testcase_Utils.report_substep_status(status)
-        if current_browser:
-            selenium_Utils.save_screenshot_onerror(status, current_browser)
+        selenium_Utils.report_status_and_screenshot(status, current_browser)
         return status, output_dict
 
     def get_element_by_xpath(self, system_name, xpath=None,
@@ -238,9 +222,9 @@ class elementlocator_actions(object):
             xpath = [some_xpath], then Warrior can search for an element with
             that xpath
 
-            b. You can give location of the element_config_file and a tag inside
-            it so that Warrior can search for that tag and get the required
-            information from there. Now, as this is the keyword -
+            b. You can give location of the element_config_file and a tag
+            inside it so that Warrior can search for that tag and get the
+            required information from there. Now, as this is the keyword -
             get_element_by_xpath, an child element of the element_tag with id
             as 'xpath' would be searched for in the element_config_file
 
@@ -284,36 +268,25 @@ class elementlocator_actions(object):
         arguments.pop('self')
         status = True
         wdesc = "Finding an element by its xpath."
-        output_dict = {}
         pNote(wdesc)
         pSubStep(wdesc)
-        element = None
         browser_details = {}
-
-        system = xml_Utils.getElementWithTagAttribValueMatch(self.datafile,
-                                                             "system",
-                                                             "name",
-                                                             system_name)
-        browser_list = system.findall("browser")
-        try:
-            browser_list.extend(system.find("browsers").findall("browser"))
-        except AttributeError:
-            pass
-
-        if not browser_list:
-            browser_list.append(1)
-            browser_details = arguments
-
+        output_dict = {}
+        element = None
+        browser_list, browser_details = selenium_Utils.\
+            get_browser_details_from_data_file(system_name, arguments,
+                                               browser_details)
         for browser in browser_list:
-            arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
-            if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+            browser_details = selenium_Utils.\
+                get_current_browser_details(system_name, browser, arguments,
+                                            browser_details)
             if browser_details is not None:
                 if not browser_details["xpath"].startswith("xpath"):
                     browser_details["xpath"] = \
                         "xpath=" + browser_details["xpath"]
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     element = self.elem_loc_object.\
                         get_element(current_browser, browser_details["xpath"])
@@ -329,14 +302,12 @@ class elementlocator_actions(object):
             browser_details = {}
         if element is None or element is False:
             status = False
-        Utils.testcase_Utils.report_substep_status(status)
-        if current_browser:
-            selenium_Utils.save_screenshot_onerror(status, current_browser)
+        selenium_Utils.report_status_and_screenshot(status, current_browser)
         return status, output_dict
 
     def get_element_by_id(self, system_name, id=None,
-                             element_config_file=None, element_tag=None,
-                             browser_name="all"):
+                          element_config_file=None, element_tag=None,
+                          browser_name="all"):
         """
         This will get an element by the element's ID
 
@@ -376,12 +347,12 @@ class elementlocator_actions(object):
             None of these arguments are mandatory BUT to search an element,
             you need to provide Warrior with some way to do it.
 
-            a. You can either directly give values for the id. So if  id = x_id,
-            then Warrior can search for an element with that id
+            a. You can either directly give values for the id. So if
+            id = x_id, then Warrior can search for an element with that id
 
-            b. You can give location of the element_config_file and a tag inside
-            it so that Warrior can search for that tag and get the required
-            information from there. Now, as this is the keyword -
+            b. You can give location of the element_config_file and a tag
+            inside it so that Warrior can search for that tag and get the
+            required information from there. Now, as this is the keyword -
             get_element_by_id, an child element of the element_tag with id
             as 'id' would be searched for in the element_config_file
 
@@ -425,36 +396,23 @@ class elementlocator_actions(object):
         arguments.pop('self')
         status = True
         wdesc = "Finding an element by its ID."
-        output_dict = {}
         pNote(wdesc)
         pSubStep(wdesc)
-        element = None
         browser_details = {}
-
-        system = xml_Utils.getElementWithTagAttribValueMatch(self.datafile,
-                                                             "system",
-                                                             "name",
-                                                             system_name)
-        browser_list = system.findall("browser")
-        try:
-            browser_list.extend(system.find("browsers").findall("browser"))
-        except AttributeError:
-            pass
-
-        if not browser_list:
-            browser_list.append(1)
-            browser_details = arguments
-
+        output_dict = {}
+        element = None
+        browser_list, browser_details = selenium_Utils.\
+            get_browser_details_from_data_file(system_name, arguments,
+                                               browser_details)
         for browser in browser_list:
-            arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
-            if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
-            pNote(browser_details)
+            browser_details = selenium_Utils.\
+                get_current_browser_details(system_name, browser, arguments,
+                                            browser_details)
             if browser_details is not None:
                 if not browser_details["id"].startswith("id"):
                     browser_details["id"] = "id=" + browser_details["id"]
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
                 if current_browser:
                     element = self.elem_loc_object.\
                         get_element(current_browser, browser_details["id"])
@@ -470,14 +428,12 @@ class elementlocator_actions(object):
             browser_details = {}
         if element is None or element is False:
             status = False
-        Utils.testcase_Utils.report_substep_status(status)
-        if current_browser:
-            selenium_Utils.save_screenshot_onerror(status, current_browser)
+        selenium_Utils.report_status_and_screenshot(status, current_browser)
         return status, output_dict
 
     def get_element_by_selector(self, system_name, css_selector=None,
-                             element_config_file=None, element_tag=None,
-                             browser_name="all"):
+                                element_config_file=None, element_tag=None,
+                                browser_name="all"):
         """
         This will get an element by the element's CSS selector
 
@@ -502,8 +458,8 @@ class elementlocator_actions(object):
 
                               Eg: <browser_name>Unique_name_1</browser_name>
 
-            3. css_selector = This contains the css selector of the element that
-                              you want to find.
+            3. css_selector = This contains the css selector of the element
+                              that you want to find.
 
             4. element_config_file = This contains the location of the json
                                      file that contains information about all
@@ -522,11 +478,11 @@ class elementlocator_actions(object):
             css_selector = x_css_selector, then Warrior can search for an
             element with that css
 
-            b. You can give location of the element_config_file and a tag inside
-            it so that Warrior can search for that tag and get the required
-            information from there. Now, as this is the keyword -
-            get_element_by_selector, an child element of the element_tag with id
-            as 'css' would be searched for in the element_config_file
+            b. You can give location of the element_config_file and a tag
+            inside it so that Warrior can search for that tag and get the
+            required information from there. Now, as this is the keyword -
+            get_element_by_selector, an child element of the element_tag with
+            id as 'css' would be searched for in the element_config_file
 
             NOTES:
                 For these three arguments to be given correctly, ONE of the
@@ -568,36 +524,25 @@ class elementlocator_actions(object):
         arguments.pop('self')
         status = True
         wdesc = "Finding an element by its CSS selector."
-        output_dict ={}
         pNote(wdesc)
         pSubStep(wdesc)
-        element = None
         browser_details = {}
-
-        system = xml_Utils.getElementWithTagAttribValueMatch(self.datafile,
-                                                             "system",
-                                                             "name",
-                                                             system_name)
-        browser_list = system.findall("browser")
-        try:
-            browser_list.extend(system.find("browsers").findall("browser"))
-        except AttributeError:
-            pass
-
-        if not browser_list:
-            browser_list.append(1)
-            browser_details = arguments
-
+        output_dict = {}
+        element = None
+        browser_list, browser_details = selenium_Utils.\
+            get_browser_details_from_data_file(system_name, arguments,
+                                               browser_details)
         for browser in browser_list:
-            arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
-            if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+            browser_details = selenium_Utils.\
+                get_current_browser_details(system_name, browser, arguments,
+                                            browser_details)
             if browser_details is not None:
                 if not browser_details["css_selector"].startswith("css"):
                     browser_details["css_selector"] = \
                         "css=" + browser_details["css_selector"]
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     element = self.elem_loc_object.\
                         get_element(current_browser,
@@ -614,14 +559,12 @@ class elementlocator_actions(object):
             browser_details = {}
         if element is None or element is False:
             status = False
-        Utils.testcase_Utils.report_substep_status(status)
-        if current_browser:
-            selenium_Utils.save_screenshot_onerror(status, current_browser)
+        selenium_Utils.report_status_and_screenshot(status, current_browser)
         return status, output_dict
 
     def get_element_by_link_text(self, system_name, link_text=None,
-                             element_config_file=None, element_tag=None,
-                             browser_name="all"):
+                                 element_config_file=None, element_tag=None,
+                                 browser_name="all"):
         """
         This will get an element by the element's Link Text
 
@@ -666,11 +609,11 @@ class elementlocator_actions(object):
             link_text = x_link_text, then Warrior can search for an
             element with that link text
 
-            b. You can give location of the element_config_file and a tag inside
-            it so that Warrior can search for that tag and get the required
-            information from there. Now, as this is the keyword -
-            get_element_by_link_text, an child element of the element_tag with
-            id as 'link' would be searched for in the element_config_file
+            b. You can give location of the element_config_file and a tag
+            inside it so that Warrior can search for that tag and get the
+            required information from there. Now, as this is the keyword -
+            get_element_by_selector, an child element of the element_tag with
+            id as 'css' would be searched for in the element_config_file
 
             NOTES:
                 For these three arguments to be given correctly, ONE of the
@@ -712,36 +655,24 @@ class elementlocator_actions(object):
         arguments.pop('self')
         status = True
         wdesc = "Finding an element by its link text."
-        output_dict = {}
         pNote(wdesc)
         pSubStep(wdesc)
-        element = None
         browser_details = {}
-
-        system = xml_Utils.getElementWithTagAttribValueMatch(self.datafile,
-                                                             "system",
-                                                             "name",
-                                                             system_name)
-        browser_list = system.findall("browser")
-        try:
-            browser_list.extend(system.find("browsers").findall("browser"))
-        except AttributeError:
-            pass
-
-        if not browser_list:
-            browser_list.append(1)
-            browser_details = arguments
-
+        output_dict = {}
+        element = None
+        browser_list, browser_details = selenium_Utils.\
+            get_browser_details_from_data_file(system_name, arguments,
+                                               browser_details)
         for browser in browser_list:
-            arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
-            if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+            browser_details = selenium_Utils.\
+                get_current_browser_details(system_name, browser, arguments,
+                                            browser_details)
             if browser_details is not None:
                 if not browser_details["link_text"].startswith("link"):
                     browser_details["link_text"] = "link=" + \
                                                    browser_details["link_text"]
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" +
+                                                                                  browser_details["browser_name"])
                 if current_browser:
                     element = self.elem_loc_object.\
                         get_element(current_browser,
@@ -759,9 +690,7 @@ class elementlocator_actions(object):
             browser_details = {}
         if element is None or element is False:
             status = False
-        Utils.testcase_Utils.report_substep_status(status)
-        if current_browser:
-            selenium_Utils.save_screenshot_onerror(status, current_browser)
+        selenium_Utils.report_status_and_screenshot(status, current_browser)
         return status, output_dict
 
     def get_element_by_partial_link_text(self, system_name,
@@ -809,14 +738,14 @@ class elementlocator_actions(object):
             you need to provide Warrior with some way to do it.
 
             a. You can either directly give values for the link_text. So if
-            partial_link_text = x_partial_link_text, then Warrior can search for
-            link element containing that text
+            partial_link_text = x_partial_link_text, then Warrior can search
+            for link element containing that text
 
-            b. You can give location of the element_config_file and a tag inside
-            it so that Warrior can search for that tag and get the required
-            information from there. Now, as this is the keyword -
-            get_element_by_link_text, an child element of the element_tag with
-            id as 'partial_link' would be searched for in the element_config_file
+            b. You can give location of the element_config_file and a tag
+            inside it so that Warrior can search for that tag and get the
+            required information from there. Now, as this is the keyword -
+            get_element_by_selector, an child element of the element_tag with
+            id as 'css' would be searched for in the element_config_file
 
             NOTES:
                 For these three arguments to be given correctly, ONE of the
@@ -831,10 +760,10 @@ class elementlocator_actions(object):
                 If partial_link_text is given, then it would have priority.
                 Otherwise, the element_config_file would be searched
 
-                The partial_link_text and the element_tag can be given the datafile
-                as children of the <browser> tag, but these values would remain
-                constant for that browser. It is recommended that these values
-                be passed from the testcase step.
+                The partial_link_text and the element_tag can be given the
+                datafile as children of the <browser> tag, but these values
+                would remain constant for that browser. It is recommended that
+                these values be passed from the testcase step.
 
                 The element_config_file typically would not change from step to
                 step, so it can be passed from the data file
@@ -858,35 +787,24 @@ class elementlocator_actions(object):
         arguments.pop('self')
         status = True
         wdesc = "Finding an element by its partial link text."
-        output_dict = {}
         pNote(wdesc)
         pSubStep(wdesc)
-        element = None
         browser_details = {}
-
-        system = xml_Utils.getElementWithTagAttribValueMatch(self.datafile,
-                                                             "system",
-                                                             "name",
-                                                             system_name)
-        browser_list = system.findall("browser")
-        try:
-            browser_list.extend(system.find("browsers").findall("browser"))
-        except AttributeError:
-            pass
-
-        if not browser_list:
-            browser_list.append(1)
-            browser_details = arguments
-
+        output_dict = {}
+        element = None
+        browser_list, browser_details = selenium_Utils.\
+            get_browser_details_from_data_file(system_name, arguments,
+                                               browser_details)
         for browser in browser_list:
-            arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
-            if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+            browser_details = selenium_Utils.\
+                get_current_browser_details(system_name, browser, arguments,
+                                            browser_details)
             if browser_details is not None:
                 if not browser_details["partial_link_text"].startswith("partial"):
-                    browser_details["partial_link_text"] = "partial_link=" + browser_details["partial_link_text"]
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                    browser_details["partial_link_text"] = "partial_link=" +\
+                        browser_details["partial_link_text"]
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
                 if current_browser:
                     element = self.elem_loc_object.\
                         get_element(current_browser,
@@ -904,14 +822,12 @@ class elementlocator_actions(object):
             browser_details = {}
         if element is None or element is False:
             status = False
-        Utils.testcase_Utils.report_substep_status(status)
-        if current_browser:
-            selenium_Utils.save_screenshot_onerror(status, current_browser)
+        selenium_Utils.report_status_and_screenshot(status, current_browser)
         return status, output_dict
 
     def get_element_by_tagname(self, system_name, tag_name=None,
-                             element_config_file=None, element_tag=None,
-                             browser_name="all"):
+                               element_config_file=None, element_tag=None,
+                               browser_name="all"):
         """
         This will get an element by the element's tag name
 
@@ -956,11 +872,11 @@ class elementlocator_actions(object):
             tag_name = x_tag_name, then Warrior can search for an
             element with that tag name
 
-            b. You can give location of the element_config_file and a tag inside
-            it so that Warrior can search for that tag and get the required
-            information from there. Now, as this is the keyword -
-            get_element_by_tag_name, an child element of the element_tag with
-            id as 'tag' would be searched for in the element_config_file
+            b. You can give location of the element_config_file and a tag
+            inside it so that Warrior can search for that tag and get the
+            required information from there. Now, as this is the keyword -
+            get_element_by_selector, an child element of the element_tag with
+            id as 'css' would be searched for in the element_config_file
 
             NOTES:
                 For these three arguments to be given correctly, ONE of the
@@ -1002,31 +918,18 @@ class elementlocator_actions(object):
         arguments.pop('self')
         status = True
         wdesc = "Finding an element by its TAG name."
-        output_dict = {}
         pNote(wdesc)
         pSubStep(wdesc)
-        element = None
         browser_details = {}
-
-        system = xml_Utils.getElementWithTagAttribValueMatch(self.datafile,
-                                                             "system",
-                                                             "name",
-                                                             system_name)
-        browser_list = system.findall("browser")
-        try:
-            browser_list.extend(system.find("browsers").findall("browser"))
-        except AttributeError:
-            pass
-
-        if not browser_list:
-            browser_list.append(1)
-            browser_details = arguments
-
+        output_dict = {}
+        element = None
+        browser_list, browser_details = selenium_Utils.\
+            get_browser_details_from_data_file(system_name, arguments,
+                                               browser_details)
         for browser in browser_list:
-            arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
-            if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+            browser_details = selenium_Utils.\
+                get_current_browser_details(system_name, browser, arguments,
+                                            browser_details)
             if browser_details is not None:
                 if not browser_details["tag_name"].startswith("tag"):
                     browser_details["tag_name"] = "tag=" + \
@@ -1049,14 +952,12 @@ class elementlocator_actions(object):
             browser_details = {}
         if element is None or element is False:
             status = False
-        Utils.testcase_Utils.report_substep_status(status)
-        if current_browser:
-            selenium_Utils.save_screenshot_onerror(status, current_browser)
+        selenium_Utils.report_status_and_screenshot(status, current_browser)
         return status, output_dict
 
     def get_element_by_classname(self, system_name, class_name=None,
-                             element_config_file=None, element_tag=None,
-                             browser_name="all"):
+                                 element_config_file=None, element_tag=None,
+                                 browser_name="all"):
         """
         This will get an element by the element's class name
 
@@ -1101,11 +1002,11 @@ class elementlocator_actions(object):
             class_name = x_class_name, then Warrior can search for an
             element with that class name
 
-            b. You can give location of the element_config_file and a tag inside
-            it so that Warrior can search for that tag and get the required
-            information from there. Now, as this is the keyword -
-            get_element_by_class_name, an child element of the element_tag with
-            id as 'class' would be searched for in the element_config_file
+            b. You can give location of the element_config_file and a tag
+            inside it so that Warrior can search for that tag and get the
+            required information from there. Now, as this is the keyword -
+            get_element_by_selector, an child element of the element_tag with
+            id as 'css' would be searched for in the element_config_file
 
             NOTES:
                 For these three arguments to be given correctly, ONE of the
@@ -1147,36 +1048,24 @@ class elementlocator_actions(object):
         arguments.pop('self')
         status = True
         wdesc = "Finding an element by its CLASS name."
-        output_dict = {}
         pNote(wdesc)
         pSubStep(wdesc)
-        element = None
         browser_details = {}
-
-        system = xml_Utils.getElementWithTagAttribValueMatch(self.datafile,
-                                                             "system",
-                                                             "name",
-                                                             system_name)
-        browser_list = system.findall("browser")
-        try:
-            browser_list.extend(system.find("browsers").findall("browser"))
-        except AttributeError:
-            pass
-
-        if not browser_list:
-            browser_list.append(1)
-            browser_details = arguments
-
+        output_dict = {}
+        element = None
+        browser_list, browser_details = selenium_Utils.\
+            get_browser_details_from_data_file(system_name, arguments,
+                                               browser_details)
         for browser in browser_list:
-            arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
-            if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+            browser_details = selenium_Utils.\
+                get_current_browser_details(system_name, browser, arguments,
+                                            browser_details)
             if browser_details is not None:
                 if not browser_details["class_name"].startswith("class"):
                     browser_details["class_name"] = \
                         "class=" + browser_details["class_name"]
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
                 if current_browser:
                     element = self.elem_loc_object.\
                         get_element(current_browser,
@@ -1193,14 +1082,12 @@ class elementlocator_actions(object):
             browser_details = {}
         if element is None or element is False:
             status = False
-        Utils.testcase_Utils.report_substep_status(status)
-        if current_browser:
-            selenium_Utils.save_screenshot_onerror(status, current_browser)
+        selenium_Utils.report_status_and_screenshot(status, current_browser)
         return status, output_dict
 
     def get_element_by_name(self, system_name, name_of_element=None,
-                             element_config_file=None, element_tag=None,
-                             browser_name="all"):
+                            element_config_file=None, element_tag=None,
+                            browser_name="all"):
         """
         This will get an element by the element's name
 
@@ -1245,11 +1132,11 @@ class elementlocator_actions(object):
             if name_of_element = x_name_of_element, then Warrior can search for
             an element with that name
 
-            b. You can give location of the element_config_file and a tag inside
-            it so that Warrior can search for that tag and get the required
-            information from there. Now, as this is the keyword -
-            get_element_by_name, an child element of the element_tag with
-            id as 'name' would be searched for in the element_config_file
+            b. You can give location of the element_config_file and a tag
+            inside it so that Warrior can search for that tag and get the
+            required information from there. Now, as this is the keyword -
+            get_element_by_selector, an child element of the element_tag with
+            id as 'css' would be searched for in the element_config_file
 
             NOTES:
                 For these three arguments to be given correctly, ONE of the
@@ -1264,10 +1151,10 @@ class elementlocator_actions(object):
                 If name_of_element is given, then it would have priority.
                 Otherwise, the element_config_file would be searched
 
-                The name_of_element and the element_tag can be given the datafile
-                as children of the <browser> tag, but these values would remain
-                constant for that browser. It is recommended that these values
-                be passed from the testcase step.
+                The name_of_element and the element_tag can be given the
+                datafile as children of the <browser> tag, but these values
+                would remain constant for that browser. It is recommended that
+                these values be passed from the testcase step.
 
                 The element_config_file typically would not change from step to
                 step, so it can be passed from the data file
@@ -1291,36 +1178,24 @@ class elementlocator_actions(object):
         arguments.pop('self')
         status = True
         wdesc = "Finding an element by its name."
-        output_dict = {}
         pNote(wdesc)
         pSubStep(wdesc)
-        element = None
         browser_details = {}
-
-        system = xml_Utils.getElementWithTagAttribValueMatch(self.datafile,
-                                                             "system",
-                                                             "name",
-                                                             system_name)
-        browser_list = system.findall("browser")
-        try:
-            browser_list.extend(system.find("browsers").findall("browser"))
-        except AttributeError:
-            pass
-
-        if not browser_list:
-            browser_list.append(1)
-            browser_details = arguments
-
+        output_dict = {}
+        element = None
+        browser_list, browser_details = selenium_Utils.\
+            get_browser_details_from_data_file(system_name, arguments,
+                                               browser_details)
         for browser in browser_list:
-            arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
-            if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+            browser_details = selenium_Utils.\
+                get_current_browser_details(system_name, browser, arguments,
+                                            browser_details)
             if browser_details is not None:
                 if not browser_details["name_of_element"].startswith("name"):
                     browser_details["name_of_element"] = \
                         "name=" + browser_details["name_of_element"]
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
                 if current_browser:
                     element = self.elem_loc_object.\
                         get_element(current_browser,
@@ -1338,7 +1213,5 @@ class elementlocator_actions(object):
             browser_details = {}
         if element is None or element is False:
             status = False
-        Utils.testcase_Utils.report_substep_status(status)
-        if current_browser:
-            selenium_Utils.save_screenshot_onerror(status, current_browser)
+        selenium_Utils.report_status_and_screenshot(status, current_browser)
         return status, output_dict

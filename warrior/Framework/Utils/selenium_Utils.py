@@ -20,6 +20,8 @@ from Framework.Utils import data_Utils
 from Framework.Utils import config_Utils
 from Framework.ClassUtils.WSelenium.browser_mgmt import BrowserManagement
 from Framework.Utils.print_Utils import print_error, print_info
+from Framework.Utils import testcase_Utils
+from Framework.Utils.testcase_Utils import pNote, pSubStep
 from Framework.Utils import file_Utils as file_Utils
 
 def evaluate_argument_value(xpath_or_tagname, datafile):
@@ -37,16 +39,52 @@ def evaluate_argument_value(xpath_or_tagname, datafile):
         xpath_or_tagname = None
     return xpath_or_tagname
 
+
+def get_browser_details_from_data_file(system_name, arguments,
+                                       browser_details):
+    """ To get the browser details from the data file"""
+    datafile = config_Utils.datafile
+    system = xml_Utils.getElementWithTagAttribValueMatch(datafile,
+                                                         "system",
+                                                         "name",
+                                                         system_name)
+    browser_list = system.findall("browser")
+    try:
+        browser_list.extend(system.find("browsers").findall("browser"))
+    except AttributeError:
+        pass
+    if not browser_list:
+        browser_list.append(1)
+        browser_details = arguments
+    return browser_list, browser_details
+
+
+def get_current_browser_details(system_name, browser,
+                                arguments, browser_details):
+    datafile = config_Utils.datafile
+    arguments = data_Utils.get_default_ecf_and_et(arguments, datafile, browser)
+    if browser_details == {}:
+        browser_details = get_browser_details(browser, datafile, **arguments)
+    return browser_details
+
+
+def report_status_and_screenshot(status, current_browser):
+    testcase_Utils.report_substep_status(status)
+    if current_browser:
+        save_screenshot_onerror(status, current_browser)
+
+
 def save_screenshot_onerror(status, current_browser):
     """ To get the filename, directory name and to take screenshot of the current browser window """
     if status != True:
-         browser_object = BrowserManagement()
-         data_repository = config_Utils.data_repository
-         tc_name = data_repository['wt_testcase_filepath'].split("/")[-1].split('.xml')[0]
-         step_number = data_repository['step_num']
-         kw_name = data_repository['wt_keyword']
-         filename = tc_name + "_" + "step-{0}".format(step_number) + "_" + kw_name
-         browser_object.save_screenshot(current_browser, filename, data_repository['wt_defectsdir'])
+        browser_object = BrowserManagement()
+        data_repository = config_Utils.data_repository
+        tc_name = data_repository['wt_testcase_filepath'].split("/")[-1].split('.xml')[0]
+        step_number = data_repository['step_num']
+        kw_name = data_repository['wt_keyword']
+        filename = tc_name + "_" + "step-{0}".format(step_number) + "_" + kw_name
+        browser_object.save_screenshot(current_browser, filename, data_repository['wt_defectsdir'])
+
 
 def get_json_value_from_path(path, file, default):
     data_dict = None
@@ -102,6 +140,7 @@ def get_json_value_from_path(path, file, default):
                     data_dict = None
     return data_dict
 
+
 def execute_script(browser_instance, user_script):
     """To exceute a user provided script """
     status = True
@@ -112,6 +151,7 @@ def execute_script(browser_instance, user_script):
         print_error("Provide the correct input to execute a script")
         status = False
     return status
+
 
 def split_kwargs_on_tag_equalto(kwargs, datafile, browser):
     """
@@ -335,7 +375,6 @@ def get_browser_details(browser, datafile, br_name="browser_name",
         return None
 
     final_dict = data_Utils.sub_from_env_var(final_dict)
-
     return final_dict
 
 
