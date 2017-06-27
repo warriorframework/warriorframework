@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2017, Fujitsu Network Communications, Inc.
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -9,11 +9,9 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
 
 import os
-import xml.etree.ElementTree as ET
-from collections import OrderedDict
 
 import Tools
 from Framework.Utils import xml_Utils, file_Utils
@@ -23,18 +21,23 @@ from Framework.Utils.xml_Utils import getElementWithTagAttribValueMatch
 
 __author__ = 'Keenan Jabri'
 
-class lineResult():
+
+class LineResult():
     data = {}
     html = ''
-			
-    def setDynamicContent(self, line):
-        self.data['dynamic'] = [ line.get("keywords"), line.get("passes"), line.get("failures"), line.get("errors"), line.get("exceptions"), line.get("skipped") ]
+
+    def __init__(self):
+        pass
+
+    def set_dynamic_content(self, line):
+        self.data['dynamic'] = [line.get("keywords"), line.get("passes"), line.get("failures"), line.get("errors"),
+                                line.get("exceptions"), line.get("skipped")]
         self.data['timestamp'] = line.get("timestamp")
 
-    def setAttributes(self, line, type, stepcount):
+    def set_attributes(self, line, type, stepcount):
         if 'Keyword' not in type and 'step' not in type:
             stepcount = ''
-        self.data = {'nameAttr' : type + 'Record',
+        self.data = {'nameAttr': type + 'Record',
                      'type': type.replace('Test', '').replace('Keyword', 'step ') + str(stepcount),
                      'name': line.get("name"),
                      'info': line.get("title"),
@@ -43,15 +46,20 @@ class lineResult():
                      'status': line.get("status"),
                      'impact': line.get("impact"),
                      'onerror': line.get("onerror"),
-                     'msc': '<span style="padding-left:10px; padding-right: 10px;"><a href="' + (line.get("resultfile") if line.get("resultfile") else '') + '"><i class="fa fa-line-chart"> </i></a></span><span style="padding-left:10px; padding-right: 10px;"><a href="' + (line.get("logsdir") if line.get("logsdir") else '') + '"><i class="fa fa-book"> </i></a></span>',
-                     'static': [ 'Count', 'Passed', 'Failed', 'Errors', 'Exceptions', 'Skipped' ]
-                    }
-        self.keys = [ 'type', 'name', 'info', 'timestamp', 'duration', 'status', 'impact', 'onerror', 'msc', 'static', 'dynamic' ]
+                     'msc': '<span style="padding-left:10px; padding-right: 10px;"><a href="' + (
+                     line.get("resultfile") if line.get(
+                         "resultfile") else '') + '"><i class="fa fa-line-chart"> </i></a></span><span style="padding-left:10px; padding-right: 10px;"><a href="' + (
+                            line.get("logsdir") if line.get(
+                                "logsdir") else '') + '"><i class="fa fa-book"> </i></a></span>',
+                     'static': ['Count', 'Passed', 'Failed', 'Errors', 'Exceptions', 'Skipped']
+                     }
+        self.keys = ['type', 'name', 'info', 'timestamp', 'duration', 'status', 'impact', 'onerror', 'msc', 'static',
+                     'dynamic']
 
-    def setHTML(self, line, type, stepcount):
+    def set_html(self, line, type, stepcount):
         if self.html == '':
-            self.setAttributes(line, type, stepcount)
-        self.setDynamicContent(line)
+            self.set_attributes(line, type, stepcount)
+        self.set_dynamic_content(line)
         topLevel = ''
         topLevelNext = ''
         if self.data['nameAttr'] != 'KeywordRecord':
@@ -72,7 +80,8 @@ class lineResult():
 
         self.html = '<tr name="' + self.data['nameAttr'] + '">' + topLevel + '</tr>' + topLevelNext
 
-class WarriorHtmlResults():
+
+class WarriorHtmlResults:
     lineObjs = []
     lineCount = 0
     steps = 0
@@ -83,32 +92,32 @@ class WarriorHtmlResults():
             .format(Tools.__path__[0], os.sep)
         self.junit_root = xml_Utils.getRoot(self.junit_file)
 
-    def createLineResult(self, line, type):
+    def create_line_result(self, line, type):
         if self.lineCount >= len(self.lineObjs):
-            temp = lineResult()
-            temp.setHTML(line, type, self.steps)
+            temp = LineResult()
+            temp.set_html(line, type, self.steps)
             self.lineObjs.append(temp)
             self.lineCount += 1
         else:
-            self.lineObjs[ self.lineCount ].setHTML(line, type, self.steps)
+            self.lineObjs[self.lineCount].set_html(line, type, self.steps)
 
-    def setLineObjs(self):
+    def set_line_objs(self):
         self.lineCount = 0
         project_node_list = [self.junit_root]
         for project_node in project_node_list:
-            self.createLineResult(project_node, "Project")
+            self.create_line_result(project_node, "Project")
             for testsuite_node in project_node.findall("testsuite"):
-                self.createLineResult(testsuite_node, "Testsuite" )
+                self.create_line_result(testsuite_node, "Testsuite")
                 for testcase_node in testsuite_node.findall("testcase"):
-                    self.createLineResult(testcase_node, "Testcase")
+                    self.create_line_result(testcase_node, "Testcase")
                     self.steps = 0
                     for step_node in testcase_node.findall("properties"):
                         for node in step_node.findall("property"):
                             if node.get('type') == 'keyword':
                                 self.steps += 1
-                                self.createLineResult(node, "Keyword")
+                                self.create_line_result(node, "Keyword")
 
-    def getPath(self):
+    def get_path(self):
         filename = file_Utils.getNameOnly(os.path.basename(self.junit_file))
         filename = filename.split("_junit")[0]
         html_filename = filename + ".html"
@@ -120,15 +129,15 @@ class WarriorHtmlResults():
 
         return html_results_path
 
-    def mergeHTML(self, dynamicHTML):
+    def merge_html(self, dynamicHTML):
         temp = open(self.html_template)
         templateHTML = temp.read().replace('\n', '')
         temp.close()
         index = templateHTML.rfind('</table>')
-        return templateHTML[:index] + dynamicHTML + templateHTML[index:] + self.getWarVersion()
+        return templateHTML[:index] + dynamicHTML + templateHTML[index:] + self.get_war_version()
 
-    def getWarVersion(self):
-        path = self.getPath().split('warriorframework')[0] + 'warriorframework/version.txt'
+    def get_war_version(self):
+        path = self.get_path().split('warriorframework')[0] + 'warriorframework/version.txt'
         if os.path.isfile(path):
             version = open(path, 'r').read().split(':')[2]
             return '<div class="version">' + version + '</div>'
@@ -142,18 +151,18 @@ class WarriorHtmlResults():
         if givenPath:
             self.givenPath = givenPath
 
-        self.setLineObjs()
+        self.set_line_objs()
         html = ''
         for item in self.lineObjs:
             html += item.html
-        html = self.mergeHTML(html)
+        html = self.merge_html(html)
 
-        file = open(self.getPath(), 'w')
+        file = open(self.get_path(), 'w')
         file.write(html)
         file.close()
 
         print_info("++++ Results Summary ++++")
-        print_info("Open the Results summary file given below in a browser to "\
+        print_info("Open the Results summary file given below in a browser to "
                    "view results summary for this execution")
-        print_info("Results sumary file: {0}".format(self.getPath()))
+        print_info("Results sumary file: {0}".format(self.get_path()))
         print_info("+++++++++++++++++++++++++")
