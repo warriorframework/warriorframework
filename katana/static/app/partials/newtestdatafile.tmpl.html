@@ -4918,7 +4918,7 @@
 			var tableItems = [];
 			!specialCase && currentView.parent().find('.active').removeClass('active');
 			lastView = currentView.nextUntil('.view:not(.son)').length > 0 ? currentView.nextUntil('.view:not(.son)').last() : currentView;
-			if( currentView.find('h4').text().includes('Testdata') && !specialCase )
+			if( currentView.find('h4').text().indexOf('Testdata') >= 0 && !specialCase )
 			{
 				lastView = currentView.nextAll().andSelf().find('h4:contains("Testdata Block")').closest('.view').last() ;
 				var verificationView = currentView.nextAll().find('h4:contains("Command")').closest('.view').last().next();
@@ -4964,12 +4964,12 @@
 				else
 					headerTxt = view.find('h4').append(' 2');
 				
-				currentView.find('h4').text().includes('Testdata') && table.find('h4').text(headerTxt.text());
+				currentView.find('h4').text().indexOf('Testdata') >= 0 && table.find('h4').text(headerTxt.text());
 				
 				wizardAPI.addDeleteButton( tableItems, view );
 
 			}
-			var determentent = currentView.find('h4').text().includes('Testdata') || specialCase ? true : false;
+			var determentent = currentView.find('h4').text().indexOf('Testdata') >= 0 || specialCase ? true : false;
 			inputs.each( function( i ){
 				var $elem = $(this);
 				var column = table.find('.columns').get( i );
@@ -4999,7 +4999,7 @@
 				deleteButton.off('click').one('click', function(){
 					$elem = $(this);
 					var view = $elem.closest('.view');
-					if( view.find('h4').text().includes('Testdata') ){
+					if( view.find('h4').text().indexOf('Testdata') >= 0 ){
 						view.nextUntil( wizardAPI.container.find('h4:contains(Testdata)').closest('.view') ).remove();
 						var table = $(tableItems[0]).closest('.table');
 						table.next().next().remove();
@@ -5084,6 +5084,10 @@
 					first.attr('label', '').val(''); 
 					second.attr('label', 'n').val('n');
 				}
+				else if ( id.indexOf( 'td_block_iter_type') >= 0){
+					first.val( first.text() );
+					second.val( second.text() );
+				}
 				
 
 			});
@@ -5126,9 +5130,9 @@
 				var elem = this;
 				var view = wizardAPI.view.clone();
 				var table = wizardAPI.Table;
-				elem.level1 = testBlock && testBlock.includes('Testdata') && !elem.level2.includes('Testdata') ? testBlock : elem.level1;
+				elem.level1 = testBlock && testBlock.indexOf('Testdata') >= 0 && elem.level2.indexOf('Testdata') == -1 ? testBlock : elem.level1;
 				var header = '<h3>' + elem.level1 + '</h3><h4>' + elem.level2 + ' ' + ( elem.level3 && elem.level3 != 'Verification' ? elem.level3 : '' ) + '</h4>';
-			  testBlock = elem.level2.includes('Testdata') ? elem.level2 : testBlock;
+			  testBlock = elem.level2.indexOf('Testdata') >= 0 ? elem.level2 : testBlock;
 				header = header.replace('Verifications Command', 'Commands');
 				header = header.replace('Verifications Combinations', 'Verification Combinations');
 				var feilds = view.find('.feilds');
@@ -5141,7 +5145,7 @@
 					feilds.append( temp );
 					table.addRow( $(this), label.text() );
 				});
-				var newButton = (elem.hasAdd && !elem.level2.includes("Testdata Block") ? '<div class="button new" title="Add"></div><div class="button copy" title="Duplicate"></div>' : elem.level2.includes("Testdata Block") ? '<div class="button new" title="Add"></div>' : '');
+				var newButton = (elem.hasAdd && elem.level2.indexOf("Testdata Block") == -1 ? '<div class="button new" title="Add"></div><div class="button copy" title="Duplicate"></div>' : elem.level2.indexOf("Testdata Block") >= 0 ? '<div class="button new" title="Add"></div>' : '');
 				view.prepend( newButton + header );
 				if( parseInt( elem.level2.replace(/[^0-9\.]/g, ''), 10) != NaN && parseInt( elem.level2.replace(/[^0-9\.]/g, ''), 10) > 1 ){
 					wizardAPI.addDeleteButton( table, view );
@@ -5269,16 +5273,16 @@
 					$elem.find('input, select').each( function(){
 						var input = $(this);
 						
-						if( topLevelType.includes('testdata') ){
+						if( topLevelType.indexOf('testdata') >= 0 ){
 							var inputAttr = input.attr('ng-model');
 							
-							if( type.includes('testdata') ){
+							if( type.indexOf('testdata') >= 0 ){
 								num =  numeric - 1 ;
 								var str = inputAttr.replace(/\[(.+?)\]/g, "["+num+"]");
 								jsonData.data.testdata[num] ? jsonData.data.testdata[num] : jsonData.data.testdata[num] = {};
 								eval( str + ' = input.val()' );
 							}
-							else if( type.includes('command') ){
+							else if( type.indexOf('command') >= 0 ){
 								var str = inputAttr.substr( inputAttr.lastIndexOf('.') );
 								var i = !numeric ? 0 : numeric - 1;
 								jsonData.data.testdata[num] = jsonData.data.testdata[num] ? jsonData.data.testdata[num] : jsonData.data.testdata[0];
@@ -5287,7 +5291,7 @@
 								
 								eval( 'jsonData.data.testdata[num].command[i]' + str + ' = input.val()' );
 							}
-							else if( type.includes('verification') ){
+							else if( type.indexOf('verification') >= 0 ){
 								var parent = 'jsonData.data.testdata[' + num + ']';
 								if( inputAttr.lastIndexOf('.') != -1 && inputAttr[inputAttr.length - 1] != ']' )
 									 temp = parent + '.' + vtitle + inputAttr.substr( inputAttr.lastIndexOf('.') ) + ' = input.val()';
@@ -5298,8 +5302,8 @@
 								eval( temp );
 							}
 						}
-						else if( topLevelType.includes('global') ){
-							if( type.includes('verification') && input.closest('.feilds').find('input').first().get(0) == input.get(0) ){
+						else if( topLevelType.indexOf('global') >= 0 ){
+							if( type.indexOf('verification') >= 0 && input.closest('.feilds').find('input').first().get(0) == input.get(0) ){
 								var parent = 'jsonData.data.global.verifications.' + input.val().replace(/\s/g,'');
 								eval( parent + ' = {}');
 								input.closest('.feilds').find('input:not(:first), select').each( function(){
@@ -5310,7 +5314,7 @@
 								});
 							}
 
-							else if( type.includes('command') ){
+							else if( type.indexOf('command') >= 0 ){
 								eval( input.attr('ng-model') + '= input.val()' );
 							}
 						}
