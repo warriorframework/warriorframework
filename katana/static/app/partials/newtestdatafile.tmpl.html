@@ -5084,6 +5084,10 @@
 					first.attr('label', '').val(''); 
 					second.attr('label', 'n').val('n');
 				}
+				else if ( id.includes( 'td_block_iter_type') ){
+					first.val( first.text() );
+					second.val( second.text() );
+				}
 				
 
 			});
