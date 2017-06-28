@@ -491,7 +491,7 @@ def _get_cmdparams_list(testdata, global_obj, cmd_attrib):
         default_value = global_cmd_params.get(
             cmd_attrib) if global_cmd_params is not None else None
         if not cmd_attrib in global_exempt_list:
-            value = default_value if value is None or value is "" else value
+            value = default_value if value is None or value == "" else value
         else:
             if cmd_attrib in testdata.attrib and cmd_attrib == "monitor":
                 value = testdata.attrib[cmd_attrib]
@@ -540,7 +540,7 @@ def _get_verification_details(testdata, global_obj, verify_list, cmd_attrib,
                         print_warning(
                             "could not find specific or global value  " \
                             "for verification node={0}".format(element))
-                if value is None or value is "":
+                if value is None or value == "":
                     value = 'yes' if cmd_attrib == "found" else value
                     if cmd_attrib == "verify_on" and sys_list is not None and \
                        sys_list[index] is not None:
