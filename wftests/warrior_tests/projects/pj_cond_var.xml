@@ -90,5 +90,13 @@
 			<onError action="next" value=""/>
 			<impact>impact</impact>
 		</Testsuite>
+		<Testsuite>
+			<path>../suites/framework_tests/cond_var/ts_exectype_rules_expressions.xml</path>
+			<Execute ExecType="Yes">
+				<Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+			</Execute>
+			<onError action="next" value=""/>
+			<impact>impact</impact>
+		</Testsuite>
 	</Testsuites>
 </Project>

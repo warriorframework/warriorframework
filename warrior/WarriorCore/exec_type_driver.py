@@ -198,7 +198,7 @@ def expression_parser(src, rules):
     opening = src.count("(")
     closing = src.count(")")
     if opening != closing:
-        raise Exception("expression invalid")
+        raise Exception("expression: {} is invalid".format(src))
     exps = expression_split(src)
     status = None
     if not exps:
@@ -233,7 +233,7 @@ def expression_parser(src, rules):
             else:
                 # Check the left side, should only have simple expression left
                 if src[exps[x+1][0]+1:exps[x][0]].strip() != "":
-                    status = special_exp_parser(" & "+src[exps[x+1][0]+1:exps[x][0]], rules, True, status)
+                    status = special_exp_parser(" & "+src[exps[x+1][0]+1:exps[x+1][0]+1+src[exps[x+1][0]+1:].find("(")], rules, True, status)
                 # Check the right side, should only have simple expression left
                 if src[exps[x][1]+1:exps[x+1][1]].strip() != "":
                     status = special_exp_parser(src[exps[x][1]+1:exps[x+1][1]]+" & ", rules, status, True)
