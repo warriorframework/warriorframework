@@ -607,20 +607,23 @@ def _get_response_dict(details_dict, index, response, response_dict):
     resp_req = details_dict["resp_req_list"][index]
     resp_pat_req = details_dict["resp_pat_req_list"][index]
 
-    resp_req = {None:'y', '':'y',
-                'no':'n', 'n':'n'}.get(str(resp_req).lower(), 'y')
-    resp_ref = {None:index+1, '':index+1 }.get(resp_ref, str(resp_ref))
-    #response_key=resp_ref_list[i] if resp_ref_list[i] else i+1
-    if not resp_req=="n":
+    resp_req = {None: 'y', '': 'y', 'no': 'n', 'n': 'n'}.get(str(resp_req).lower(), 'y')
+    resp_ref = {None: index+1, '': index+1}.get(resp_ref, str(resp_ref))
+    # response_key=resp_ref_list[i] if resp_ref_list[i] else i+1
+    if not resp_req == "n":
         if resp_pat_req is not None:
             # if the requested pattern not found return empty string
-            reobj=re.search(resp_pat_req, response)
-            response=reobj.group(0) if reobj is not None else ""
-            pNote("User has requested saving response. Response pattern required by user is : {0}".format(resp_pat_req))
-            pNote("Portion of response saved to the data repository with key: {0}, value: {1}".format(resp_ref, response))
+            reobj = re.search(resp_pat_req, response)
+            response = reobj.group(0) if reobj is not None else ""
+            # removing non-ascii/control characters (line feed) from response
+            response = "".join([c for c in response if 31 < ord(c) < 127])
+            pNote("User has requested saving response. Response pattern "
+                  "required by user is : {0}".format(resp_pat_req))
+            pNote("Portion of response saved to the data repository with key: "
+                  "{0}, value: {1}".format(resp_ref, response))
     else:
-        response=""
-    response_dict[resp_ref]=response
+        response = ""
+    response_dict[resp_ref] = response
     return response_dict
 
 
