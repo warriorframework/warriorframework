@@ -23,7 +23,7 @@ import Framework.ClassUtils
 from Framework.Utils import datetime_utils, data_Utils, xml_Utils
 from Framework.Utils.data_Utils import get_object_from_datarepository
 from Framework.Utils.print_Utils import print_debug, print_info,\
-print_error, print_exception
+print_error, print_exception, print_warning
 from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.list_Utils import get_list_by_separating_strings
 from Framework.ClassUtils.WNetwork.loging import ThreadedLog
@@ -67,6 +67,10 @@ def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=6
     - Initiates SSH connection via a specific port. Creates log file.
     - return session as object and conn_string(pre and post login message).
     """
+    print_warning("This method is obsolete and will be deprecated soon. Please"
+                  " use 'connect_ssh' method of 'PexpectConnect' class "
+                  "in 'warrior/Framework/ClassUtils/warrior_connect_class.py'")
+
     sshobj = None
     conn_string = ""
     conn_options = "" if conn_options is False or conn_options is None else conn_options
@@ -159,6 +163,9 @@ def connect_telnet(ip, port="23", username="", password="",
         1.telnet session as object
         2.conn_string(pre and post login message)
     """
+    print_warning("This method is obsolete and will be deprecated soon. Please"
+                  " use 'connect_telnet' method of 'PexpectConnect' class "
+                  "in 'warrior/Framework/ClassUtils/warrior_connect_class.py'")
 
     conn_options = "" if conn_options is False or conn_options is None else conn_options
     custom_keystroke = "wctrl:M" if not custom_keystroke else custom_keystroke
@@ -217,6 +224,10 @@ def connect_telnet(ip, port="23", username="", password="",
 
 def disconnect_telnet(child):
     """Disconnects a telnet session """
+    print_warning("This method is obsolete and will be deprecated soon. Please"
+                  " use 'disconnect_telnet' method of 'PexpectConnect' class "
+                  "in 'warrior/Framework/ClassUtils/warrior_connect_class.py'")
+
     time.sleep(2)
     child.sendcontrol(']')
     time.sleep(2)
@@ -233,6 +244,10 @@ def disconnect(child):
     - Disconnects a pexpect session
     - Returns session object(same child)
     """
+    print_warning("This method is obsolete and will be deprecated soon. Please"
+                  " use 'disconnect' method of 'PexpectConnect' class "
+                  "in 'warrior/Framework/ClassUtils/warrior_connect_class.py'")
+
     if child.isalive():
         if child.ignore_sighup:
             child.ignore_sighup = False
@@ -392,6 +407,10 @@ def send_command(session_object, start_prompt, end_prompt, command,
     - else if failure response was not found and end prompt found,
     then returns true.
     """
+    print_warning("This method is obsolete and will be deprecated soon. Please"
+                  " use 'send_command' method of 'PexpectConnect' class "
+                  "in 'warrior/Framework/ClassUtils/warrior_connect_class.py'")
+
     tmout = {None: 60, "":60, "none":60}.get(timeout, str(timeout).lower())
     session_object.timeout = int(tmout)
     pNote("Command timeout: {0}".format(session_object.timeout))

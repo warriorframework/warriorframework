@@ -112,7 +112,8 @@ class CliActions(object):
         pNote(wdesc)
         #Resolve system_name and subsystem_list
         #Removing duplicate subsystem entry and blank spaces in entry name
-        system_name, subsystem_list = Utils.data_Utils.resolve_system_subsystem_list(self.datafile, system_name)
+        system_name, subsystem_list = Utils.data_Utils.resolve_system_subsystem_list(self.datafile,
+                                                                                     system_name)
         output_dict = {}
         status = True
 
@@ -128,9 +129,11 @@ class CliActions(object):
 
             if conn_type is not False:
                 if conn_type == "ssh":
-                    result, output_dict = self.connect_ssh(call_system_name, session_name, prompt, ip_type, via_host=via_host)
+                    result, output_dict = self.connect_ssh(call_system_name, session_name, prompt,
+                                                           ip_type, via_host=via_host)
                 elif conn_type == "telnet":
-                    result, output_dict = self.connect_telnet(call_system_name, session_name, ip_type)
+                    result, output_dict = self.connect_telnet(call_system_name, session_name,
+                                                              ip_type)
                 else:
                     pNote("<conn_type>={0} provided for '{1}' is  not "\
                           "supported".format(conn_type, call_system_name), "error")

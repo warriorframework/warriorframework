@@ -12,8 +12,6 @@ limitations under the License.
 '''
 
 """ Module to handle SSH/Telnet session operations """
-# ToDo - remove connect_ssh, connect_telent, disconnect, disconnect_telnet &
-# send_command methods from cli_Utils file
 
 import os
 import sys
@@ -42,7 +40,11 @@ class WarriorConnect(object):
         self.status = None
 
     def connect(self, credentials):
-        """ To create SSH/Telnet connections using pexpect/paramiko modules """
+        """ To create SSH/Telnet connections using pexpect/paramiko modules.
+        :Arguments:
+            1. credentials = refer constructor method arguments of
+                             ParamikoConnect & PexpectConnect classes
+         """
 
         self.status = False
         if 'conn_type' in credentials:
@@ -82,8 +84,6 @@ class WarriorConnect(object):
             else:
                 self.session_object.disconnect()
 
-    # start_prompt, end_prompt, timeout are not required for paramiko session,
-    # used here for backward compatibility(it's not a good solution)
     @cmdprinter
     def send_command(self, start_prompt, end_prompt, command,
                      timeout=60):
@@ -156,7 +156,6 @@ class WarriorConnect(object):
         timeout = None
         if self.conn_type in ["SSH", "TELNET"]:
             timeout = self.session_object.target_host.timeout
-        # ToDo - set/get session timeout for paramiko
         # elif self.conn_type == "SSH_NESTED":
         #    timeout = self.session_object.timeout
         #    # paramiko timeout value will be in seconds, convert it to mins
@@ -571,6 +570,7 @@ class PexpectConnect(object):
             time.sleep(2)
             self.target_host.close()
 
+    @cmdprinter
     def send_command(self, start_prompt, end_prompt, command,
                      timeout=60, *args, **kwargs):
         """
