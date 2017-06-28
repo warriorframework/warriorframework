@@ -155,10 +155,10 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
     pj_junit_object.update_attr("resultsdir",
                                 project_repository['project_execution_dir'],
                                 "pj", project_start_time)
-    pj_junit_object.update_attr("title", project_repository['project_title'],
-                                "pj", project_start_time)
-    pj_junit_object.add_property("resultsdir", project_repository['project_execution_dir'],
-                                 "pj", project_start_time)
+    pj_junit_object.update_attr("title", project_repository['project_title'], "pj",
+                                project_start_time)
+    pj_junit_object.add_property("resultsdir", project_repository['project_execution_dir'], "pj",
+                                 project_start_time)
 
     # adding the resultsdir as attribute, need to be removed after making it a property
     pj_junit_object.add_project_location(project_filepath)

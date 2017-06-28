@@ -95,8 +95,7 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
             Utils.config_Utils.set_resultfile(kw_resultfile)
             Utils.testcase_Utils.pKeyword(keyword, step.get('Driver'))
             Utils.testcase_Utils.reportStatus('Skip')
-            step_description = Utils.testcase_Utils.\
-                get_description_from_xmlfile(step)
+            step_description = Utils.testcase_Utils.get_description_from_xmlfile(step)
             kw_resultfile_list.append(kw_resultfile)
             data_repository['wt_junit_object'].update_count("skipped", "1", "tc",
                                                             data_repository['wt_tc_timestamp'])

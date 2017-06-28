@@ -237,17 +237,14 @@ class HybridDriver(object):
             exec_type_onerror = result[3]
 
             self._update_status_items(step_status, kw_resultfile, step_impact)
-            goto_stepnum, step_num = self._compute_runmode_goto_operations(step,
-                                                                           step_status,
+            goto_stepnum, step_num = self._compute_runmode_goto_operations(step, step_status,
                                                                            exec_type_onerror,
-                                                                           goto_stepnum,
-                                                                           step_num)
+                                                                           goto_stepnum, step_num)
             if (goto_stepnum == 'ABORT'):
                 if any([self.iter_type_list[index] == "once_per_tc",
                        self.iter_type_list[index] == "end_of_tc"]):
-                    pNote("step iter_type={0}, and onerror action=ABORT hence "
-                          "aborting execution compeletely".format(self.
-                                                                  iter_type_list[index]), "debug")
+                    pNote("step iter_type={0}, and onerror action=ABORT hence aborting execution"
+                          "compeletely".format(self.iter_type_list[index]), "debug")
                     self.stop_after_current_iteration = True
                     self.stop_after_current_step = True
                 goto_stepnum = False
@@ -383,8 +380,7 @@ class HybridDriver(object):
         keyword = step.get('Keyword')
         kw_resultfile = step_driver.get_keyword_resultfile(self.data_repository, system_name,
                                                            step_num, keyword)
-        keyword_description = testcase_Utils.\
-            get_description_from_xmlfile(step)
+        keyword_description = testcase_Utils.get_description_from_xmlfile(step)
         config_Utils.set_resultfile(kw_resultfile)
         testcase_Utils.pKeyword(keyword, step.get('Driver'))
         testcase_Utils.reportStatus('Skip')

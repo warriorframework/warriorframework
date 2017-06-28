@@ -96,11 +96,11 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
     """ Executes a step from the testcase xml file
         - Parses a step from the testcase xml file
         - Get the values of Driver, Keyword, impactsTcResult
-        - If the step has arguments, get all the arguments and store them as
-          key/value pairs in args_repository
+        - If the step has arguments, get all the arguments and store them as key/value pairs in
+          args_repository
         - Sends the Keyword, data_repository, args_repository to the respective Driver.
-        - Reports the status of the keyword executed (obtained as return value
-          from the respective Driver)
+        - Reports the status of the keyword executed (obtained as return value from the respective
+          Driver)
 
     Arguments:
     1. step            = (xml element) xml element with tag <step> containing the details of the

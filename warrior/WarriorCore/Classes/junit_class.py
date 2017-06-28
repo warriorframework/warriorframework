@@ -53,8 +53,7 @@ class Junit(object):
         self.root.append(testsuite)
 
     def create_testcase(self, location, timestamp, ts_timestamp, name,
-                        classname="customTestsuite_independant_testcase_execution",
-                        **kwargs):
+                        classname="customTestsuite_independant_testcase_execution", **kwargs):
         if self.root.find("testsuite") is None:
             self.update_attr("timestamp", timestamp, "pj", "0")
             self.create_testsuite(location=location, name=classname, timestamp=timestamp,

@@ -84,8 +84,8 @@ def get_suite_details(testsuite_filepath, data_repository, from_project, res_sta
     if data_repository.has_key('ow_logdir') and not from_project:
         logs_startdir = data_repository['ow_logdir']
 
-    efile_obj = execution_files_class.ExecFilesClass(testsuite_filepath, "ts",
-                                                     res_startdir, logs_startdir)
+    efile_obj = execution_files_class.ExecFilesClass(testsuite_filepath, "ts", res_startdir,
+                                                     logs_startdir)
     data_file = efile_obj.get_data_files()[0]
     suite_resultfile = efile_obj.resultfile
     suite_execution_dir = os.path.dirname(suite_resultfile)

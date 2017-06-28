@@ -28,8 +28,8 @@ common_execution_utils, framework_detail
 from WarriorCore.Classes import execution_files_class, junit_class, hybrid_driver_class
 import Framework.Utils as Utils
 from Framework.Utils.testcase_Utils import convertLogic
-from Framework.Utils.print_Utils import print_notype, print_info, print_warning,\
-    print_error, print_debug, print_exception
+from Framework.Utils.print_Utils import print_notype, print_info, print_warning, print_error,\
+    print_debug, print_exception
 import Framework.Utils.email_utils as email
 
 
@@ -83,8 +83,8 @@ def get_testcase_details(testcase_filepath, data_repository, jiraproj):
     res_startdir = data_repository['wt_results_execdir']
     logs_startdir = data_repository['wt_logs_execdir']
 
-    efile_obj = execution_files_class.ExecFilesClass(testcase_filepath, "tc",
-                                                     res_startdir, logs_startdir)
+    efile_obj = execution_files_class.ExecFilesClass(testcase_filepath, "tc", res_startdir,
+                                                     logs_startdir)
     resultfile = efile_obj.resultfile
     resultsdir = efile_obj.resultsdir
     logfile = efile_obj.logfile
@@ -378,9 +378,8 @@ def create_defects(auto_defects, data_repository):
             print_info("auto-create defects ")
             defects_json_list = defect_obj.get_defect_json_list()
             if len(defects_json_list) == 0:
-                print_warning("No defect json files found in defects"
-                              "directory '{0}' of this testcase".format
-                              (data_repository['wt_defectsdir']))
+                print_warning("No defect json files found in defects directory '{0}' of this "
+                              "testcase".format(data_repository['wt_defectsdir']))
             elif len(defects_json_list) > 0:
                 connect = defect_obj.connect_warrior_jira()
                 if connect is True:
@@ -536,8 +535,8 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
 
     if tc_context.upper() == 'NEGATIVE':
         if all([tc_status != 'EXCEPTION', tc_status != 'ERROR']):
-            print_debug("Test case status is: '{0}', flip status as context"
-                        "is negative".format(tc_status))
+            print_debug("Test case status is: '{0}', flip status as context is "
+                        "negative".format(tc_status))
             tc_status = not tc_status
 
     if tc_status == False and tc_onError_action and tc_onError_action.upper() == 'ABORT_AS_ERROR':
@@ -653,8 +652,8 @@ def execute_custom(datatype, runtype, driver, data_repository, step_list):
 
 
 def main(testcase_filepath, data_repository = {}, tc_context='POSITIVE',
-         runtype='SEQUENTIAL_KEYWORDS', tc_parallel=False, auto_defects=False,
-         suite=None, tc_onError_action=None, iter_ts_sys=None, queue=None, jiraproj=None):
+         runtype='SEQUENTIAL_KEYWORDS', tc_parallel=False, auto_defects=False, suite=None,
+         tc_onError_action=None, iter_ts_sys=None, queue=None, jiraproj=None):
 
     """ Executes a testcase """
     tc_start_time = Utils.datetime_utils.get_current_timestamp()
