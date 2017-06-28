@@ -21,8 +21,8 @@ from Framework.Utils import config_Utils
 from Framework.ClassUtils.WSelenium.browser_mgmt import BrowserManagement
 from Framework.Utils.print_Utils import print_error, print_info
 from Framework.Utils import testcase_Utils
-from Framework.Utils.testcase_Utils import pNote, pSubStep
 from Framework.Utils import file_Utils as file_Utils
+
 
 def evaluate_argument_value(xpath_or_tagname, datafile):
     tree = ET.parse(datafile)
@@ -163,8 +163,8 @@ def split_kwargs_on_tag_equalto(kwargs, datafile, browser):
     idf_data_dict = {}
     final_dict = {}
     for element in kwargs:
-        if isinstance(kwargs[element],str) and kwargs[element] is not None and\
-        kwargs[element] is not False:
+        if isinstance(kwargs[element], str) and kwargs[element] is not None and\
+                kwargs[element] is not False:
             if kwargs[element].startswith("tag") and "=" in kwargs[element]:
                 temp_list = kwargs[element].split("=")
                 temp_var = temp_list[1]
@@ -209,7 +209,8 @@ def get_mappers_for_all_elements(final_dict, def_name_tuple):
     """
     mapper = {}
     for element in final_dict:
-        if final_dict[element] is not None and final_dict[element] is not False and "=" in final_dict[element]:
+        if final_dict[element] is not None and final_dict[element] is\
+                not False and "=" in final_dict[element]:
             temp_list_1 = final_dict[element].split("=")
             if temp_list_1[0] in final_dict:
                 if "=" in final_dict[temp_list_1[0]]:
@@ -244,7 +245,8 @@ def update_final_dict_to_have_no_mappings(final_dict):
     values are retained
     """
     for element in final_dict:
-        if final_dict[element] is not None and final_dict[element] is not False and "=" in final_dict[element]:
+        if final_dict[element] is not None and final_dict[element] is\
+                not False and "=" in final_dict[element]:
             temp_list = final_dict[element].split("=")
             if temp_list[0] in final_dict:
                 temp_var = temp_list[1]
@@ -360,11 +362,12 @@ def get_browser_details(browser, datafile, br_name="browser_name",
     # since data file has priority, vales from data file get imposed on the
     # json values
     for element in final_dict:
-        if element in idf_data_dict and idf_data_dict[element] is not None and idf_data_dict[element] is not False:
+        if element in idf_data_dict and idf_data_dict[element] is not None and\
+                idf_data_dict[element] is not False:
             final_dict[element] = idf_data_dict[element]
 
     # Finally, if arguments are still None, the defaults and alues from the
-    # testcases are applied
+    # test cases are applied
     for element in final_dict:
         if final_dict[element] is None:
             if element in kwargs:
@@ -431,13 +434,15 @@ def get_element_from_config_file(config_file, element_tag, child_tag,
     """
     locator_types = ("xpath", "id", "css", "link", "partial_link", "tag",
                      "class", "name")
-    wt_datafile = data_Utils.get_object_from_datarepository('wt_datafile') 
-    if wt_datafile: 
+    wt_datafile = data_Utils.get_object_from_datarepository('wt_datafile')
+    if wt_datafile:
         config_file = file_Utils.getAbsPath(config_file, os.path.dirname(wt_datafile))
     if config_file is not None and config_file is not False:
         if child_tag in locator_types:
             if element_tag is not None:
-                final_value = get_json_value_from_path(element_tag + "/" + child_tag, config_file, default)
+                final_value = get_json_value_from_path(element_tag + "/" +
+                                                       child_tag, config_file,
+                                                       default)
             else:
                 final_value = get_json_value_from_path(child_tag, config_file, default)
             if is_locator_type == "yes":
@@ -445,7 +450,9 @@ def get_element_from_config_file(config_file, element_tag, child_tag,
         else:
             if child_tag is not None:
                 if element_tag is not None:
-                    final_value = get_json_value_from_path(element_tag + "/" + child_tag, config_file, default)
+                    final_value = get_json_value_from_path(element_tag + "/" +
+                                                           child_tag, config_file,
+                                                           default)
                 else:
                     final_value = get_json_value_from_path(child_tag, config_file, default)
             else:

@@ -208,7 +208,7 @@ class verify_actions(object):
 
             3. verification_text = text to be verified in the web page should be given as a comma
                                    separated value without any space in between, if it is multiple
-                                   values 
+                                   values
                                    Eg. <verification_text>Gmail,Google</verification_text>
 
             4. element_config_file = This contains the location of the json
@@ -312,10 +312,11 @@ class verify_actions(object):
                                             'xpath=//*[contains(text(),"{}")]'.format(values),
                                             findall='y')
                             if verification_status and len(verification_status) > 0:
-                                print_info("Verification text found {}"
-                                    " times in the window pane".format(len(verification_status)))
+                                print_info("Verification text found {} times in the "
+                                           "window pane".format(len(verification_status)))
                             if not verification_status:
-                                print_error("The given string {} is not present in DOM".format(values))
+                                print_error("The given string {} is not present "
+                                            "in DOM".format(values))
                                 status = False
             else:
                 print_error("Value for browser_details/verification_text is None."
