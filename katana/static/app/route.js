@@ -199,8 +199,8 @@ app.config(function($routeProvider) {
         })
 
         .when('/kwseq/:testcase/:subdirs', {
-            templateUrl: '/assets/app/partials/copy_testcasecapture.tmpl.html',
-            controller: 'copy_TestcaseCapCtrl',
+            templateUrl: '/assets/app/partials/kwseq.tmpl.html',
+            controller: 'kwSeqCtrlr',
             resolve: {
                 subdirs: function ($route) {
                     return $route.current.params.subdirs;
