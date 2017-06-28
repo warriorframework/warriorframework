@@ -37,14 +37,11 @@ class ExecutionSummary():
                 if project_details.get('name') == 'location':
                     proj_loc.append(project_details.get('value'))
                     proj_location = proj_loc[0]
-            print_info("{0:10}{1:50}{2:10}{3:30}".format(file_type,
-                                                         proj_name,
-                                                         project_status,
+            print_info("{0:10}{1:50}{2:10}{3:30}".format(file_type, proj_name, project_status,
                                                          proj_location))
 
     def suite_summary(self, junit_file):
-        """ To get the name, status and location of both test suite and test
-        case"""
+        """ To get the name, status and location of both test suite and test case"""
         tree = xml_Utils.get_tree_from_file(self.junit_file)
         for values in tree.iter('testsuite'):
             suite_detail = values.attrib
@@ -53,9 +50,7 @@ class ExecutionSummary():
             suite_location = suite_detail.get('suite_location')
             suite_result_dir = suite_detail.get('resultsdir')
             if suite_location is not None:
-                print_info("{0:10}{1:50}{2:10}{3:30}".format("Suites",
-                                                             suite_name,
-                                                             suite_status,
+                print_info("{0:10}{1:50}{2:10}{3:30}".format("Suites", suite_name, suite_status,
                                                              suite_location))
             for value in tree.iter('testcase'):
                 testcase_details = value.attrib
@@ -68,8 +63,7 @@ class ExecutionSummary():
                     case_result_dir = case_result_dir_with_tc_name.split("/")[:-1]
                     case_result_dir = "/".join(case_result_dir)
                     if suite_result_dir == case_result_dir:
-                        print_info("{0:10}{1:50}{2:10}{3:30}".format("Testcase",
-                                                                     testcase_name,
+                        print_info("{0:10}{1:50}{2:10}{3:30}".format("Testcase", testcase_name,
                                                                      testcase_status,
                                                                      testcase_location))
 
@@ -86,12 +80,11 @@ class ExecutionSummary():
         return file_type
 
     def print_result_in_console(self, junit_file):
-        """To print the consolidated test cases result in console at the end
-        of Test Case/Test Suite/Project Execution"""
+        """To print the consolidated test cases result in console at the end of Test Case/Test
+           Suite/Project Execution"""
         file_type = self.get_file_type(junit_file)
         print_info("+++++++++++++++++++++++++++++++++++++++++++++++++ Execution Summary +++++++++++++++++++++++++++++++++++++++++++++++++")
-        print_info("{0:10}{1:50}{2:10}{3:50}".format('Type', 'Name',
-                                                     'Status', 'Path'))
+        print_info("{0:10}{1:50}{2:10}{3:50}".format('Type', 'Name', 'Status', 'Path'))
         if file_type == "Project":
             self.project_summary(junit_file)
             self.suite_summary(junit_file)
