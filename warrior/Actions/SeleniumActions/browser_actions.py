@@ -39,10 +39,8 @@ class browser_actions(object):
         self.jsonobj = JsonUtils()
         self.browser_object = BrowserManagement()
 
-    def browser_launch(self, system_name, browser_name="all",
-                       type="firefox", url=None, ip=None,
-                       remote=None, element_config_file=None,
-                       element_tag=None):
+    def browser_launch(self, system_name, browser_name="all", type="firefox", url=None, ip=None,
+                       remote=None, element_config_file=None, element_tag=None):
         """
         This will launch a browser.
 
@@ -177,11 +175,9 @@ class browser_actions(object):
                     output_dict[browser_fullname] = browser_inst
                     if "url" in browser_details and browser_details["url"]\
                             is not None:
-                        result, url = self.browser_object.\
-                            check_url(browser_details["url"])
+                        result, url = self.browser_object.check_url(browser_details["url"])
                         if result == True:
-                            result = self.browser_object.\
-                                go_to(url, browser_inst)
+                            result = self.browser_object.go_to(url, browser_inst)
                     else:
                         result = True
                 else:
@@ -258,10 +254,8 @@ class browser_actions(object):
                 if current_browser:
                     self.browser_object.maximize_browser_window(current_browser)
                 else:
-                    pNote("Browser of system {0} and name {1} not found in the"
-                          "datarepository"
-                          .format(system_name, browser_details["browser_name"]),
-                          "Exception")
+                    pNote("Browser of system {0} and name {1} not found in the datarepository"
+                          .format(system_name, browser_details["browser_name"]), "Exception")
                     status = False
             browser_details = {}
         selenium_Utils.report_status_and_screenshot(status, current_browser)
@@ -444,10 +438,8 @@ class browser_actions(object):
                 if current_browser:
                     self.browser_object.go_forward(current_browser)
                 else:
-                    pNote("Browser of system {0} and name {1} not found in "
-                          "the datarepository"
-                          .format(system_name, browser_details["browser_name"]),
-                          "Exception")
+                    pNote("Browser of system {0} and name {1} not found in the datarepository"
+                          .format(system_name, browser_details["browser_name"]), "Exception")
                     status = False
             browser_details = {}
         selenium_Utils.report_status_and_screenshot(status, current_browser)
