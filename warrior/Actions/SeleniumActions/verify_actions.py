@@ -10,14 +10,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
-""" Selenium keywords for Verify Actions """
 from Framework.ClassUtils.WSelenium.verify_operations import VerifyOperations
 from Framework.ClassUtils.json_utils_class import JsonUtils
 from Framework.ClassUtils.WSelenium.element_locator import ElementLocator
 from Framework.Utils.print_Utils import print_error, print_info
 from Framework.Utils.testcase_Utils import pNote, pSubStep
 from Framework.Utils import selenium_Utils
+
+""" Selenium keywords for Verify Actions """
 
 try:
     import re

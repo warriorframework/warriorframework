@@ -11,12 +11,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-""" Selenium keywords for Wait Actions """
 from Framework.ClassUtils.WSelenium.element_locator import ElementLocator
 from Framework.ClassUtils.WSelenium.wait_operations import WaitOperations
 from Framework.ClassUtils.json_utils_class import JsonUtils
 from Framework.Utils.testcase_Utils import pNote, pSubStep
 from Framework.Utils import selenium_Utils
+
+""" Selenium keywords for Wait Actions """
 try:
     import Framework.Utils as Utils
 except ImportWarning:
@@ -24,7 +25,8 @@ except ImportWarning:
 
 
 class wait_actions(object):
-
+    """wait_actions class which has methods(keywords)
+    related to actions performed on any web page """
     def __init__(self):
         self.resultfile = Utils.config_Utils.resultfile
         self.datafile = Utils.config_Utils.datafile

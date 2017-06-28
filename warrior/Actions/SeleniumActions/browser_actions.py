@@ -11,13 +11,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-""" Selenium keywords for Generic Browser Actions """
 import os
 from Framework.ClassUtils.WSelenium.browser_mgmt import BrowserManagement
 from Framework.Utils import selenium_Utils
 from Framework.Utils import data_Utils
 from Framework.Utils.testcase_Utils import pNote, pSubStep
 from Framework.ClassUtils.json_utils_class import JsonUtils
+
+""" Selenium keywords for Generic Browser Actions """
 
 try:
     import Framework.Utils as Utils
@@ -26,6 +27,8 @@ except ImportWarning:
 
 
 class browser_actions(object):
+    """ browser_actions class which has methods(keywords)
+    related to actions performed on any web page """
 
     def __init__(self, *args, **kwargs):
         self.resultfile = Utils.config_Utils.resultfile
@@ -658,7 +661,7 @@ class browser_actions(object):
                     self.browser_object.hard_reload_page(current_browser)
                 else:
                     pNote("Browser of system {0} and name {1} not found in the datarepository"
-                         .format(system_name, browser_details["browser_name"]), "Exception")
+                          .format(system_name, browser_details["browser_name"]), "Exception")
                     status = False
             browser_details = {}
         selenium_Utils.report_status_and_screenshot(status, current_browser)

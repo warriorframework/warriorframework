@@ -11,10 +11,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-""" Selenium keywords for Element Locator Actions """
 from Framework.ClassUtils.WSelenium.element_locator import ElementLocator
 from Framework.Utils import selenium_Utils
 from Framework.Utils.testcase_Utils import pNote, pSubStep
+
+""" Selenium keywords for Element Locator Actions """
 
 try:
     import Framework.Utils as Utils

@@ -11,13 +11,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-""" Selenium keywords for Element Operation Actions """
 from Framework.ClassUtils.WSelenium.element_operations import ElementOperations
 from Framework.ClassUtils.json_utils_class import JsonUtils
 from Framework.Utils.list_Utils import get_list_comma_sep_string
 from Framework.Utils import data_Utils
 from Framework.Utils import selenium_Utils
 from Framework.Utils.testcase_Utils import pNote, pSubStep
+
+""" Selenium keywords for Element Operation Actions """
 
 try:
     import Framework.Utils as Utils
@@ -352,8 +353,7 @@ class elementoperation_actions(object):
                         browser=current_browser)
                     data_Utils.update_datarepository({var: value})
                     if expected is not None:
-                        status = self.elem_oper_obj.verify_text(
-                                var=var, expected=expected)
+                        status = self.elem_oper_obj.verify_text(var=var, expected=expected)
             browser_details = {}
         step_res = 'TRUE' if status else 'ERROR'
         Utils.testcase_Utils.report_substep_status(step_res)
@@ -1428,8 +1428,10 @@ class elementoperation_actions(object):
             <argument name="system_name" value="system_1"/>
             <argument name="source_locator_type" value="element_tag=xpath"/>
             <argument name="target_locator_type" value="second_element_tag=xpath"/>
-            <argument name="element_config_file" value="../Config_files/demo_selenium_tc_Config_1.json"/>
-            <argument name="second_element_config_file" value="../Config_files/demo_selenium_tc_Config_2.json"/>
+            <argument name="element_config_file"
+            value="../Config_files/demo_selenium_tc_Config_1.json"/>
+            <argument name="second_element_config_file"
+            value="../Config_files/demo_selenium_tc_Config_2.json"/>
             <argument name="element_tag" value="element_config_file=source"/>
             <argument name="second_element_tag" value="second_element_config_file=target"/>
         </Arguments>
@@ -1453,8 +1455,8 @@ class elementoperation_actions(object):
                                      located for the target element
             4. browser_name(str) = Unique name for this particular browser
             5. element_config_file(str) = location of the element config file
-            6. element_tag(str) = json id of the locator that you want to use
-                                  from the element config file
+            6. element_tag(str) = json id of the locator that you want to use from the element
+                                  config file
 
         :Returns:
 
@@ -1480,8 +1482,7 @@ class elementoperation_actions(object):
                 target_comp_locator = browser_details["target_locator_type"] +\
                     "=" + browser_details["target_locator"]
                 br_name = system_name + "_" + browser_details["browser_name"]
-                current_browser = Utils.data_Utils.\
-                    get_object_from_datarepository(br_name)
+                current_browser = Utils.data_Utils.get_object_from_datarepository(br_name)
                 if not current_browser:
                         pNote("No browser instance {0} found in the data "
                               "repository!".format(br_name), "error")
@@ -1627,16 +1628,11 @@ class elementoperation_actions(object):
                     browser_details["browser_name"] + "_" + \
                     comp_locator
                 br_name = system_name + "_" + browser_details["browser_name"]
-                current_element = Utils.data_Utils.\
-                    get_object_from_datarepository(element_name)
-                current_browser = Utils.data_Utils.\
-                    get_object_from_datarepository(br_name)
-                status = self.elem_oper_obj.\
-                    element_operations_util(current_element, br_name,
-                                            current_browser,
-                                            comp_locator,
-                                            "mouse_over",
-                                            element_name)
+                current_element = Utils.data_Utils.get_object_from_datarepository(element_name)
+                current_browser = Utils.data_Utils.get_object_from_datarepository(br_name)
+                status = self.elem_oper_obj.element_operations_util(current_element, br_name,
+                                                                    current_browser, comp_locator,
+                                                                    "mouse_over", element_name)
             browser_details = {}
         selenium_Utils.report_status_and_screenshot(status, current_browser)
         return status
@@ -1904,8 +1900,7 @@ class elementoperation_actions(object):
                 source_comp_locator = browser_details["source_locator_type"] +\
                      "=" + browser_details["source_locator"]
                 br_name = system_name + "_" + browser_details["browser_name"]
-                current_browser = Utils.data_Utils.\
-                    get_object_from_datarepository(br_name)
+                current_browser = Utils.data_Utils.get_object_from_datarepository(br_name)
                 if not current_browser:
                         pNote("No browser instance {0} found in the data "
                               "repository!".format(br_name), "error")
@@ -2060,8 +2055,7 @@ class elementoperation_actions(object):
                 br_name = system_name + "_" + browser_details["browser_name"]
                 current_browser = Utils.data_Utils.\
                     get_object_from_datarepository(br_name)
-                current_element = Utils.data_Utils.\
-                    get_object_from_datarepository(element_name)
+                current_element = Utils.data_Utils.get_object_from_datarepository(element_name)
                 if not current_element:
                     pNote("No element instance {0} found in the data "
                           "repository!".format(element_name), "info")
@@ -2070,9 +2064,10 @@ class elementoperation_actions(object):
                               "repository!".format(br_name), "error")
                     else:
                         status = self.elem_oper_obj.\
-                            perform_element_action(current_browser,
-                                                   comp_locator, "get_property",
-                                                   attribute_name=browser_details["attribute_name"],
+                            perform_element_action(current_browser, comp_locator, "get_property",
+                                                   attribute_name=browser_details[
+                                                                                  "attribute_name"
+                                                                                  ],
                                                    browser=current_browser)
                 else:
                     status = self.elem_oper_obj.\
@@ -2236,9 +2231,7 @@ class elementoperation_actions(object):
                               "repository!".format(br_name), "error")
                     else:
                         status = self.elem_oper_obj.\
-                            perform_element_action(current_browser,
-                                                   comp_locator,
-                                                   "check_property",
+                            perform_element_action(current_browser, comp_locator, "check_property",
                                                    attribute_name=browser_details["attribute_name"],
                                                    property_name=browser_details["property_name"],
                                                    browser=current_browser)
@@ -2332,8 +2325,7 @@ class elementoperation_actions(object):
                                             browser_details)
             if browser_details is not None:
                 br_name = system_name + "_" + browser_details["browser_name"]
-                current_browser = Utils.data_Utils.\
-                    get_object_from_datarepository(br_name)
+                current_browser = Utils.data_Utils.get_object_from_datarepository(br_name)
                 if not current_browser:
                     pNote("No browser instance {0} found in the data "
                           "repository!".format(br_name), "error")
@@ -2343,20 +2335,14 @@ class elementoperation_actions(object):
                         pNote("Simulating simultaneous key presses for keys:"
                               "{0}".format(browser_details["keys"]))
                         status = self.elem_oper_obj.\
-                            perform_element_action(current_browser,
-                                                   None,
-                                                   "perform_keypress",
-                                                   keys=list_keys,
-                                                   browser=current_browser)
+                            perform_element_action(current_browser, None, "perform_keypress",
+                                                   keys=list_keys, browser=current_browser)
                     else:
                         for key in list_keys:
                             pNote("Simulating key press for {0}".format(key))
                             status = status and self.elem_oper_obj.\
-                                perform_element_action(current_browser,
-                                                       None,
-                                                       "perform_keypress",
-                                                       keys=[key],
-                                                       browser=current_browser)
+                                perform_element_action(current_browser, None, "perform_keypress",
+                                                       keys=[key], browser=current_browser)
             browser_details = {}
         selenium_Utils.report_status_and_screenshot(status, current_browser)
         return status
