@@ -262,7 +262,7 @@ def conv_str_to_bool(text, mapping_dict=None):
                    'n': False               
                    }
     mapping = mapping_dict if mapping_dict else default_map
-    result = mapping.get(text.upper(), False)
+    result = mapping.get(text.lower(), False)
     
     return result
 
