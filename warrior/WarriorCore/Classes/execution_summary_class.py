@@ -13,6 +13,7 @@ limitations under the License.
 
 """Class which generates the consolidated test cases result in console at the
 end of Test Suite or Project Execution """
+import os
 from Framework.Utils import xml_Utils
 from Framework.Utils.print_Utils import print_info
 
@@ -57,11 +58,9 @@ class ExecutionSummary():
                 testcase_status = testcase_details.get('status')
                 testcase_name = testcase_details.get('name')+".xml"
                 testcase_location = testcase_details.get('testcasefile_path')
-                case_result_dir_with_tc_name = testcase_details.\
-                    get('resultsdir')
+                case_result_dir_with_tc_name = testcase_details.get('resultsdir')
                 if case_result_dir_with_tc_name is not None:
-                    case_result_dir = case_result_dir_with_tc_name.split("/")[:-1]
-                    case_result_dir = "/".join(case_result_dir)
+                    case_result_dir = os.path.dirname(case_result_dir_with_tc_name)
                     if suite_result_dir == case_result_dir:
                         print_info("{0:10}{1:50}{2:10}{3:30}".format("Testcase", testcase_name,
                                                                      testcase_status,
