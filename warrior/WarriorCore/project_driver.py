@@ -133,11 +133,9 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
     ts_impact_list = []
     impact_dict = {"IMPACT": "Impact", "NOIMPACT": "No Impact"}
     project_dir = os.path.dirname(project_filepath)
-    project_title = Utils.xml_Utils.getChildTextbyParentTag(project_filepath,
-                                                            'Details',
-                                                            'Title')
-    project_repository = get_project_details(project_filepath, res_startdir,
-                                             logs_startdir, data_repository)
+    project_title = Utils.xml_Utils.getChildTextbyParentTag(project_filepath, 'Details', 'Title')
+    project_repository = get_project_details(project_filepath, res_startdir, logs_startdir,
+                                             data_repository)
     project_repository['project_title'] = project_title
     testsuite_list = get_testsuite_list(project_filepath)
 

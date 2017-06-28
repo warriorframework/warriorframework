@@ -227,17 +227,13 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
     print_info("[{0}] Keyword execution completed".format(kw_end_time))
 
     impact_dict = {"IMPACT": "Impact", "NOIMPACT": "No Impact"}
-    tc_junit_object.add_keyword_result(data_repository['wt_tc_timestamp'],
-                                       step_num, keyword, str(keyword_status),
-                                       kw_start_time, tc_duration,
-                                       kw_resultfile,
-                                       impact_dict.get(step_impact.upper()),
-                                       onerror,
-                                       data_repository['wt_step_description'])
-    tc_junit_object.update_count(
-        str(keyword_status), "1", "tc", data_repository['wt_tc_timestamp'])
-    tc_junit_object.update_count(
-        "keywords", "1", "tc", data_repository['wt_tc_timestamp'])
+    tc_junit_object.add_keyword_result(data_repository['wt_tc_timestamp'], step_num, keyword,
+                                       str(keyword_status), kw_start_time, tc_duration,
+                                       kw_resultfile, impact_dict.get(step_impact.upper()),
+                                       onerror, data_repository['wt_step_description'])
+    tc_junit_object.update_count(str(keyword_status), "1", "tc",
+                                 data_repository['wt_tc_timestamp'])
+    tc_junit_object.update_count("keywords", "1", "tc", data_repository['wt_tc_timestamp'])
 
     if parallel is True:
         # put result into multiprocessing queue and later retrieve in

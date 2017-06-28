@@ -106,11 +106,9 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
             step_impact = Utils.testcase_Utils.get_impact_from_xmlfile(step)
             impact_dict = {"IMPACT": "Impact", "NOIMPACT": "No Impact"}
             data_repository['wt_junit_object'].\
-                add_keyword_result(data_repository['wt_tc_timestamp'],
-                                   step_num, keyword, "SKIPPED",
+                add_keyword_result(data_repository['wt_tc_timestamp'], step_num, keyword, "SKIPPED",
                                    kw_start_time, "0", "skipped",
-                                   impact_dict.get(step_impact.upper()),
-                                   "N/A", step_description)
+                                   impact_dict.get(step_impact.upper()), "N/A", step_description)
             continue
 
         step_status_list.append(step_status)
