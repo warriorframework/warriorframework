@@ -1226,7 +1226,7 @@ app.controller('newTestsuiteCtrl', ['$scope', '$http', '$location', '$route', '$
                             "_value": $scope.gotovalueSuite
                         },
                         "Resultsdir": $scope.resultsdirSuite,
-                        "IDF": $scope.IDFSuite
+                        "InputDataFile": $scope.IDFSuite
                     },
                     "Requirements": {
                         "Requirement": $scope.suitereqs
