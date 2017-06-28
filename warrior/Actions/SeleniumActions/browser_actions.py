@@ -14,16 +14,15 @@ limitations under the License.
 """ Selenium keywords for Generic Browser Actions """
 import os
 from Framework.ClassUtils.WSelenium.browser_mgmt import BrowserManagement
+from Framework.Utils import selenium_Utils
+from Framework.Utils import data_Utils
+from Framework.Utils.testcase_Utils import pNote, pSubStep
+from Framework.ClassUtils.json_utils_class import JsonUtils
 
 try:
     import Framework.Utils as Utils
 except ImportWarning:
     raise ImportError
-
-from Framework.Utils import selenium_Utils
-from Framework.Utils import data_Utils
-from Framework.Utils.testcase_Utils import pNote, pSubStep
-from Framework.ClassUtils.json_utils_class import JsonUtils
 
 
 class browser_actions(object):
@@ -250,7 +249,9 @@ class browser_actions(object):
                 get_current_browser_details(system_name, browser, arguments,
                                             browser_details)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     self.browser_object.maximize_browser_window(current_browser)
                 else:
@@ -361,7 +362,9 @@ class browser_actions(object):
                 get_current_browser_details(system_name, browser, arguments,
                                             browser_details)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     self.browser_object.go_to(browser_details["url"],
                                               current_browser)
@@ -432,7 +435,9 @@ class browser_actions(object):
                 get_current_browser_details(system_name, browser, arguments,
                                             browser_details)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     self.browser_object.go_forward(current_browser)
                 else:
@@ -502,7 +507,9 @@ class browser_actions(object):
                 get_current_browser_details(system_name, browser, arguments,
                                             browser_details)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     self.browser_object.go_back(current_browser)
                 else:
@@ -572,7 +579,9 @@ class browser_actions(object):
                 get_current_browser_details(system_name, browser, arguments,
                                             browser_details)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     self.browser_object.reload_page(current_browser)
                 else:
@@ -642,14 +651,14 @@ class browser_actions(object):
                 get_current_browser_details(system_name, browser, arguments,
                                             browser_details)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     self.browser_object.hard_reload_page(current_browser)
                 else:
-                    pNote("Browser of system {0} and name {1} not found in "
-                         "the datarepository"
-                         .format(system_name, browser_details["browser_name"]),
-                         "Exception")
+                    pNote("Browser of system {0} and name {1} not found in the datarepository"
+                         .format(system_name, browser_details["browser_name"]), "Exception")
                     status = False
             browser_details = {}
         selenium_Utils.report_status_and_screenshot(status, current_browser)
@@ -712,15 +721,14 @@ class browser_actions(object):
                 get_current_browser_details(system_name, browser, arguments,
                                             browser_details)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     self.browser_object.close_browser(current_browser)
                 else:
-                    pNote("Browser of system {0} and name {1} not found in"
-                          "the datarepository"
-                          .format(system_name,
-                          browser_details["browser_name"]),
-                          "Exception")
+                    pNote("Browser of system {0} and name {1} not found in the datarepository"
+                          .format(system_name, browser_details["browser_name"]), "Exception")
                     status = False
             browser_details = {}
         selenium_Utils.report_status_and_screenshot(status, current_browser)
@@ -837,15 +845,16 @@ class browser_actions(object):
                 get_current_browser_details(system_name, browser, arguments,
                                             browser_details)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     self.browser_object.\
                         set_window_size(int(browser_details["xsize"]),
                                         int(browser_details["ysize"]),
                                         current_browser)
                 else:
-                    pNote("Browser of system {0} and name {1} not found in the "
-                          "datarepository"
+                    pNote("Browser of system {0} and name {1} not found in the datarepository"
                           .format(system_name, browser_details["browser_name"]),
                           "Exception")
                     status = False
@@ -964,15 +973,16 @@ class browser_actions(object):
                 get_current_browser_details(system_name, browser, arguments,
                                             browser_details)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     self.browser_object.\
                         set_window_position(int(browser_details["xpos"]),
                                             int(browser_details["ypos"]),
                                             current_browser)
                 else:
-                    pNote("Browser of system {0} and name {1} not found in the "
-                          "datarepository"
+                    pNote("Browser of system {0} and name {1} not found in the datarepository"
                           .format(system_name, browser_details["browser_name"]),
                           "Exception")
                     status = False
@@ -1079,14 +1089,15 @@ class browser_actions(object):
                 get_current_browser_details(system_name, browser, arguments,
                                             browser_details)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     self.browser_object.open_tab(current_browser,
                                                  browser_details["url"],
                                                  browser_details["type"])
                 else:
-                    pNote("Browser of system {0} and name {1} not found in the "
-                          "datarepository"
+                    pNote("Browser of system {0} and name {1} not found in the datarepository"
                           .format(system_name, browser_details["browser_name"]),
                           "Exception")
                     status = False
@@ -1200,7 +1211,9 @@ class browser_actions(object):
                 get_current_browser_details(system_name, browser, arguments,
                                             browser_details)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     status = self.browser_object.\
                              switch_tab(current_browser,
@@ -1321,17 +1334,17 @@ class browser_actions(object):
                 get_current_browser_details(system_name, browser, arguments,
                                             browser_details)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     status = self.browser_object.\
                         close_tab(current_browser,
                                   browser_details["tab_number"],
                                   browser_details["type"])
                 else:
-                    pNote("Browser of system {0} and name {1} not found in the "
-                          "datarepository"
-                          .format(system_name, browser_details["browser_name"]),
-                          "Exception")
+                    pNote("Browser of system {0} and name {1} not found in the datarepository"
+                          .format(system_name, browser_details["browser_name"]), "Exception")
                     status = False
             browser_details = {}
         selenium_Utils.report_status_and_screenshot(status, current_browser)
@@ -1433,17 +1446,17 @@ class browser_actions(object):
                 get_current_browser_details(system_name, browser, arguments,
                                             browser_details)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     width, height = self.browser_object.\
                         get_window_size(current_browser)
                     pNote("Window width: {0} and window"
                           "height: {1}".format(width, height))
                 else:
-                    pNote("Browser of system {0} and name {1} not found in the "
-                          "datarepository"
-                          .format(system_name, browser_details["browser_name"]),
-                          "Exception")
+                    pNote("Browser of system {0} and name {1} not found in the datarepository"
+                          .format(system_name, browser_details["browser_name"]), "Exception")
                     status = False
             browser_details = {}
         selenium_Utils.report_status_and_screenshot(status, current_browser)
@@ -1546,17 +1559,17 @@ class browser_actions(object):
                 get_current_browser_details(system_name, browser, arguments,
                                             browser_details)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     x, y = self.browser_object.\
                         get_window_position(current_browser)
                     pNote("Window X co-ordinate: {0} and window Y "
                           "co-ordinate: {1}".format(x, y))
                 else:
-                    pNote("Browser of system {0} and name {1} not found in the "
-                          "datarepository"
-                          .format(system_name, browser_details["browser_name"]),
-                          "Exception")
+                    pNote("Browser of system {0} and name {1} not found in the datarepository"
+                          .format(system_name, browser_details["browser_name"]), "Exception")
                     status = False
             browser_details = {}
         selenium_Utils.report_status_and_screenshot(status, current_browser)
@@ -1679,7 +1692,9 @@ class browser_actions(object):
                 get_current_browser_details(system_name, browser, arguments,
                                             browser_details)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     if directory is not None:
                         status = self.browser_object.\
@@ -1692,10 +1707,8 @@ class browser_actions(object):
                                             browser_details["filename"],
                                             os.path.dirname(self.logsdir))
                 else:
-                    pNote("Browser of system {0} and name {1} not found in the "
-                          "datarepository"
-                          .format(system_name, browser_details["browser_name"]),
-                          "Exception")
+                    pNote("Browser of system {0} and name {1} not found in the datarepository"
+                          .format(system_name, browser_details["browser_name"]), "Exception")
                     status = False
             browser_details = {}
         selenium_Utils.report_status_and_screenshot(status, current_browser)
@@ -1797,15 +1810,15 @@ class browser_actions(object):
                 get_current_browser_details(system_name, browser, arguments,
                                             browser_details)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     status = self.browser_object.\
                         delete_all_cookies_in_browser(current_browser)
                 else:
-                    pNote("Browser of system {0} and name {1} not found in the "
-                          "datarepository"
-                          .format(system_name, browser_details["browser_name"]),
-                          "Exception")
+                    pNote("Browser of system {0} and name {1} not found in the datarepository"
+                          .format(system_name, browser_details["browser_name"]), "Exception")
                     status = False
             browser_details = {}
         selenium_Utils.report_status_and_screenshot(status, current_browser)
@@ -1915,16 +1928,16 @@ class browser_actions(object):
                 get_current_browser_details(system_name, browser, arguments,
                                             browser_details)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     status = self.browser_object.\
                         delete_a_specific_cookie(current_browser,
                                                  browser_details["cookie_name"])
                 else:
-                    pNote("Browser of system {0} and name {1} not found in the "
-                          "datarepository"
-                          .format(system_name, browser_details["browser_name"]),
-                          "Exception")
+                    pNote("Browser of system {0} and name {1} not found in the datarepository"
+                          .format(system_name, browser_details["browser_name"]), "Exception")
                     status = False
             browser_details = {}
         selenium_Utils.report_status_and_screenshot(status, current_browser)

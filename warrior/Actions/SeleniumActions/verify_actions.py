@@ -16,19 +16,14 @@ from Framework.ClassUtils.WSelenium.verify_operations import VerifyOperations
 from Framework.ClassUtils.json_utils_class import JsonUtils
 from Framework.ClassUtils.WSelenium.element_locator import ElementLocator
 from Framework.Utils.print_Utils import print_error, print_info
+from Framework.Utils.testcase_Utils import pNote, pSubStep
+from Framework.Utils import selenium_Utils
+
 try:
-    import json
-    import os
-    import sys
     import re
-    import getopt
-    import datetime
     import Framework.Utils as Utils
 except ImportWarning:
     raise ImportError
-
-from Framework.Utils.testcase_Utils import pNote, pSubStep
-from Framework.Utils import selenium_Utils
 
 
 class verify_actions(object):
@@ -155,7 +150,9 @@ class verify_actions(object):
                 get_current_browser_details(system_name, browser, arguments,
                                             browser_details)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     obtained_value = self.verify_oper_object.\
                         get_page_property(current_browser,
@@ -168,8 +165,7 @@ class verify_actions(object):
                     else:
                         pNote("The obtained {0}: {1} does not match the "
                               "expected value: {2}. Verification failed!".
-                              format(value_type, obtained_value,
-                              expected_value), "Error")
+                              format(value_type, obtained_value, expected_value), "Error")
                         status = False
                 else:
                     pNote("Browser of system {0} and name {1} not found in the "
@@ -210,8 +206,9 @@ class verify_actions(object):
 
                               Eg: <browser_name>Unique_name_1</browser_name>
 
-            3. verification_text = text to be verified in the web page should be given as a comma separated value
-                                   without any space in between, if it is multiple values
+            3. verification_text = text to be verified in the web page should be given as a comma
+                                   separated value without any space in between, if it is multiple
+                                   values 
                                    Eg. <verification_text>Gmail,Google</verification_text>
 
             4. element_config_file = This contains the location of the json
@@ -229,8 +226,8 @@ class verify_actions(object):
             you need to provide Warrior with some way to do it.
 
             a. You can either directly give values for the verification_text. So
-            if verification_text = verification_text(comma seperated values), then Warrior can search 
-            the given verification_text in the window pane
+            if verification_text = verification_text(comma seperated values), then Warrior can
+            search the given verification_text in the window pane
 
             b. You can give location of the element_config_file and a tag inside
             it so that Warrior can search for that tag and get the required
@@ -295,8 +292,9 @@ class verify_actions(object):
                 if not browser_details["verification_text"].startswith("verification_text"):
                     browser_details["verification_text"] = \
                         "verification_text=" + browser_details["verification_text"]
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" +
-                                                                                  browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if not current_browser:
                     pNote("Browser of system {0} and name {1} not found in the "
                           "data repository"
@@ -309,14 +307,19 @@ class verify_actions(object):
                         for values in browser_details["verification_text"].split(","):
                             if re.search("verification_text=", values):
                                 values = re.sub("verification_text=", "", values)
-                            verification_status = self.element_locator_obj.get_element(current_browser, 'xpath=//*[contains(text(),"{}")]'.format(values), findall='y')
+                            verification_status = self.element_locator_obj.\
+                                get_element(current_browser,
+                                            'xpath=//*[contains(text(),"{}")]'.format(values),
+                                            findall='y')
                             if verification_status and len(verification_status) > 0:
-                                print_info("Verification text found {} times in the window pane".format(len(verification_status)))
+                                print_info("Verification text found {}"
+                                    " times in the window pane".format(len(verification_status)))
                             if not verification_status:
                                 print_error("The given string {} is not present in DOM".format(values))
                                 status = False
             else:
-                print_error("Value for browser_details/verification_text is None. Provide the value")
+                print_error("Value for browser_details/verification_text is None."
+                            "Provide the value")
                 status = False
 
             browser_details = {}
@@ -414,7 +417,9 @@ class verify_actions(object):
                 get_current_browser_details(system_name, browser, arguments,
                                             browser_details)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     status = self.verify_oper_object.\
                         verify_alert_is_present(current_browser,

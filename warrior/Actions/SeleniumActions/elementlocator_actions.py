@@ -13,13 +13,13 @@ limitations under the License.
 
 """ Selenium keywords for Element Locator Actions """
 from Framework.ClassUtils.WSelenium.element_locator import ElementLocator
+from Framework.Utils import selenium_Utils
+from Framework.Utils.testcase_Utils import pNote, pSubStep
+
 try:
     import Framework.Utils as Utils
 except ImportWarning:
     raise ImportError
-
-from Framework.Utils import selenium_Utils
-from Framework.Utils.testcase_Utils import pNote, pSubStep
 
 
 class elementlocator_actions(object):
@@ -152,7 +152,9 @@ class elementlocator_actions(object):
                 get_current_browser_details(system_name, browser, arguments,
                                             browser_details)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     element = self.elem_loc_object.\
                         get_element(current_browser,
@@ -412,7 +414,8 @@ class elementlocator_actions(object):
                 if not browser_details["id"].startswith("id"):
                     browser_details["id"] = "id=" + browser_details["id"]
                 current_browser = Utils.data_Utils.\
-                    get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     element = self.elem_loc_object.\
                         get_element(current_browser, browser_details["id"])
@@ -671,8 +674,9 @@ class elementlocator_actions(object):
                 if not browser_details["link_text"].startswith("link"):
                     browser_details["link_text"] = "link=" + \
                                                    browser_details["link_text"]
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" +
-                                                                                  browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     element = self.elem_loc_object.\
                         get_element(current_browser,
@@ -804,7 +808,8 @@ class elementlocator_actions(object):
                     browser_details["partial_link_text"] = "partial_link=" +\
                         browser_details["partial_link_text"]
                 current_browser = Utils.data_Utils.\
-                    get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     element = self.elem_loc_object.\
                         get_element(current_browser,
@@ -934,7 +939,9 @@ class elementlocator_actions(object):
                 if not browser_details["tag_name"].startswith("tag"):
                     browser_details["tag_name"] = "tag=" + \
                                                   browser_details["tag_name"]
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     element = self.elem_loc_object.\
                         get_element(current_browser,
@@ -1065,7 +1072,8 @@ class elementlocator_actions(object):
                     browser_details["class_name"] = \
                         "class=" + browser_details["class_name"]
                 current_browser = Utils.data_Utils.\
-                    get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     element = self.elem_loc_object.\
                         get_element(current_browser,
@@ -1195,7 +1203,8 @@ class elementlocator_actions(object):
                     browser_details["name_of_element"] = \
                         "name=" + browser_details["name_of_element"]
                 current_browser = Utils.data_Utils.\
-                    get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     element = self.elem_loc_object.\
                         get_element(current_browser,

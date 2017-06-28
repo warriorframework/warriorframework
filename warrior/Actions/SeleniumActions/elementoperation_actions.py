@@ -15,15 +15,14 @@ limitations under the License.
 from Framework.ClassUtils.WSelenium.element_operations import ElementOperations
 from Framework.ClassUtils.json_utils_class import JsonUtils
 from Framework.Utils.list_Utils import get_list_comma_sep_string
+from Framework.Utils import data_Utils
+from Framework.Utils import selenium_Utils
+from Framework.Utils.testcase_Utils import pNote, pSubStep
 
 try:
     import Framework.Utils as Utils
 except ImportWarning:
     raise ImportError
-
-from Framework.Utils import data_Utils
-from Framework.Utils import selenium_Utils
-from Framework.Utils.testcase_Utils import pNote, pSubStep
 
 
 class elementoperation_actions(object):
@@ -338,13 +337,13 @@ class elementoperation_actions(object):
                         '''work on the browser instance on which to perform the
                         action since enclosed element not provided
                         '''
-                        status, value = self.elem_oper_obj.perform_element_action(
-                            current_browser, comp_locator, "get_text",
-                            browser=current_browser)
+                        status, value = self.elem_oper_obj.perform_element_action(current_browser,
+                                                                                  comp_locator,
+                                                                                  "get_text",
+                                                                                  browser=current_browser)
                         data_Utils.update_datarepository({var: value})
                         if expected is not None:
-                            status = self.elem_oper_obj.verify_text(
-                                    var=var, expected=expected)
+                            status = self.elem_oper_obj.verify_text(var=var, expected=expected)
                 else:
                     '''enclosing element of the locator is itself provided
                     use that to perform the action
@@ -1903,7 +1902,8 @@ class elementoperation_actions(object):
                 get_current_browser_details(system_name, browser, arguments,
                                             browser_details)
             if browser_details is not None:
-                source_comp_locator = browser_details["source_locator_type"] + "=" + browser_details["source_locator"]
+                source_comp_locator = browser_details["source_locator_type"] +\
+                     "=" + browser_details["source_locator"]
                 br_name = system_name + "_" + browser_details["browser_name"]
                 current_browser = Utils.data_Utils.\
                     get_object_from_datarepository(br_name)

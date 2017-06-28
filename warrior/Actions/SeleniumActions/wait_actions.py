@@ -15,19 +15,13 @@ limitations under the License.
 from Framework.ClassUtils.WSelenium.element_locator import ElementLocator
 from Framework.ClassUtils.WSelenium.wait_operations import WaitOperations
 from Framework.ClassUtils.json_utils_class import JsonUtils
+from Framework.Utils.testcase_Utils import pNote, pSubStep
+from Framework.Utils import selenium_Utils
 try:
-    import json
-    import os
-    import sys
-    import re
-    import getopt
-    import datetime
     import Framework.Utils as Utils
 except ImportWarning:
     raise ImportError
 
-from Framework.Utils.testcase_Utils import pNote, pSubStep
-from Framework.Utils import selenium_Utils
 
 class wait_actions(object):
 
@@ -135,7 +129,9 @@ class wait_actions(object):
                 get_current_browser_details(system_name, browser, arguments,
                                             browser_details)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if not current_browser:
                     pNote("Browser of system {0} and name {1} not found in the "
                           "datarepository"
@@ -281,7 +277,9 @@ class wait_actions(object):
                 get_current_browser_details(system_name, browser, arguments,
                                             browser_details)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if not current_browser:
                     pNote("Browser of system {0} and name {1} not found in the "
                           "datarepository"
@@ -429,7 +427,9 @@ class wait_actions(object):
                 get_current_browser_details(system_name, browser, arguments,
                                             browser_details)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if not current_browser:
                     pNote("Browser of system {0} and name {1} not found in the"
                           "datarepository"
@@ -579,7 +579,9 @@ class wait_actions(object):
                 get_current_browser_details(system_name, browser, arguments,
                                             browser_details)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if not current_browser:
                     pNote("Browser of system {0} and name {1} not found in the"
                           "datarepository"
@@ -729,7 +731,9 @@ class wait_actions(object):
                 get_current_browser_details(system_name, browser, arguments,
                                             browser_details)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if not current_browser:
                     pNote("Browser of system {0} and name {1} not found in the"
                           "datarepository"
@@ -895,7 +899,9 @@ class wait_actions(object):
                 get_current_browser_details(system_name, browser, arguments,
                                             browser_details)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if not current_browser:
                     pNote("Browser of system {0} and name {1} not found in the"
                           "datarepository"
