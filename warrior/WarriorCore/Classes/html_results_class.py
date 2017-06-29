@@ -60,11 +60,11 @@ class WarriorHtmlResults():
                 # for each testcase in testcase node list create testcase record.
                 for testcase_node in testcase_node_list:
                     self.create_testcase_record(testcase_node)
-                    tc_result_node = xml_Utils.getElementWithTagAttribValueMatch(testcase_node,
-                                                                                 'property',
-                                                                                 'name',
-                                                                                 'resultsdir')
-                    tc_resultsdir = tc_result_node.get("value")
+                    tc_results_node = xml_Utils.getElementWithTagAttribValueMatch(testcase_node,
+                                                                                  'property',
+                                                                                  'name',
+                                                                                  'resultsdir')
+                    tc_resultsdir = tc_results_node.get("value")
                     tc_logs_node = xml_Utils.getElementWithTagAttribValueMatch(testcase_node,
                                                                                  'property',
                                                                                  'name',
