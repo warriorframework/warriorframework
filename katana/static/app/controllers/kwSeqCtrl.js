@@ -830,7 +830,7 @@ app.controller('kwSeqCtrlr', ['$scope','$routeParams','$http', '$location', '$an
                             type: "success",
                             timer: 1250
                         });
-
+                        $location.path('/kwseq');
                     }
                     else{
                         var drivername = $scope.model.WrapperKeyword.Details.WrapperName;
@@ -842,18 +842,14 @@ app.controller('kwSeqCtrlr', ['$scope','$routeParams','$http', '$location', '$an
                             timer: 20000
                         });
 
-                        $location.path('/kwseq/__new__/none');
+                        if ($scope.savecreateTestcaseCap) {
+                            $location.path('/kwseq');
+                          }  else {
+
+                        }
                     }
-
-
                 });
 
-        if ($scope.savecreateTestcaseCap) {
-
-            $location.path('/kwseq/__new__/none');
-        }  else {
-            $location.path('/kwseq');
-        }
     }
 
     window.S = $scope;

@@ -120,84 +120,83 @@ def parsexmlobj():
                 next_word = line[line.index("def")+1].split("(")[0]
                 method_names.append(next_word)
 
+    Description = getChildTextbyParentTag('output.txt', 'Details',
+                                          'Description')
+
     if WrapperName in method_names:
         checkval = "yes"
     else:
         checkval = "no"
+        Subkeyword = root.find('Subkeyword')
+        subkw_list = Subkeyword.findall('Skw')
+        class_value = "x"
+        for values in subkw_list:
+            subkw_list_attrib = values.attrib
+            driver = subkw_list_attrib.get('Driver')
+            kw_list = subkw_list_attrib.get('Keyword')
+            Arguments = values.find('Arguments')
+            if Arguments is not None:
+                argument_list = Arguments.findall('argument')
+                if len(argument_list) == 1:
+                    for argument in argument_list:
+                        argument_name = argument.get('name')
+                        if argument_name is not None:
+                            arg_value = argument.get('value')
+                            if arg_value is None or arg_value is False:
+                                arg_value = argument.text
+                            arg_name = argument_name + "=" + arg_value
+                        else:
+                            arg_name = None
+                    doc_string_value.append("The keyword {0} in Driver {1} has a defined arguments {2} You must want to send other values through data file".format(kw_list, driver, arg_name))
+                else:
+                    for argument in argument_list:
+                        argument_name = argument.get('name')
+                        if argument_name is not None:
+                            arg_value = argument.get('value')
+                            if arg_value is None or arg_value is False:
+                                arg_value = argument.text
+                            arg_name_list.append(argument_name + "=" + arg_value)
+                            #kw_list_1 += "{0}.{1}.{2}".format(class_value, kw_list,arg_name_list)
+                    doc_string_value.append("The keyword {0} in Driver {1} has a defined arguments {2} You must want to send other values through data file".format(kw_list, driver, arg_name_list))
+        open_actionfile = io.open(ActionFile, 'a+')
+        sum = 1
+
+        for _, n in enumerate(doc_string_value):
+            sample.append('\n' + "        " + str(sum) + ". " + n)
+            sample_string = "".join(sample)
+            sum += sum
+            if sum > len(subkw_list):
+                break
+        for line in io.open('kw_seq_template', 'r'):
+            line = line.replace('$wrapper_kw', WrapperName)
+            if Description is not None:
+                line = line.replace('$wdesc', Description)
+            else:
+                line = line.replace('$wdesc', 'Description not provided by the user')
+            line = line.replace('kw_list_1', kw_list_1)
+            line = line.replace('$doc_string_values', sample_string)
+            open_actionfile.write(line)
+        open_actionfile.close()
+        """
+        file_list = ["/data/users/ajeyashi/war-1037_new/warriorframework/warrior/Actions/CliActions/cli_actions.py", "/data/users/ajeyashi/war-1037_new/warriorframework/warrior/Actions/CloudshellActions/cloudshell_actions.py"]
+        for i in file_list:
+            source_file = i
+            with open(source_file) as f:
+                with open("i.txt", "a+") as f1:
+                    for line in f:
+                        if "import " in line:
+                            f1.write(line)
+
+        lines_seen = set() # holds lines already seen
+        outfile = open(ActionFile, "a+")
+        for line in open("temp_file.txt", "r"):
+            if line not in lines_seen: # not a duplicate
+                outfile.write(line)
+                lines_seen.add(line)
+        outfile.close()
+        """
     return checkval
 
-    Description = getChildTextbyParentTag('output.txt', 'Details',
-                                          'Description')
-    Subkeyword = root.find('Subkeyword')
-    subkw_list = Subkeyword.findall('Skw')
-    class_value = "x"
-    for values in subkw_list:
-        subkw_list_attrib = values.attrib
-        driver = subkw_list_attrib.get('Driver')
-        kw_list = subkw_list_attrib.get('Keyword')
-        Arguments = values.find('Arguments')
-        if Arguments is not None:
-            argument_list = Arguments.findall('argument')
-            if len(argument_list) == 1:
-                for argument in argument_list:
-                    argument_name = argument.get('name')
-                    if argument_name is not None:
-                        arg_value = argument.get('value')
-                        if arg_value is None or arg_value is False:
-                            arg_value = argument.text
-                        arg_name = argument_name + "=" + arg_value
-                    else:
-                        arg_name = None
-                doc_string_value.append("The keyword {0} in Driver {1} has a defined arguments {2} You must want to send other values through data file".format(kw_list, driver, arg_name))
-            else:
-                for argument in argument_list:
-                    argument_name = argument.get('name')
-                    if argument_name is not None:
-                        arg_value = argument.get('value')
-                        if arg_value is None or arg_value is False:
-                            arg_value = argument.text
-                        arg_name_list.append(argument_name + "=" + arg_value)
-                        #kw_list_1 += "{0}.{1}.{2}".format(class_value, kw_list,arg_name_list)
-                doc_string_value.append("The keyword {0} in Driver {1} has a defined arguments {2} You must want to send other values through data file".format(kw_list, driver, arg_name_list))
-    open_actionfile = io.open(ActionFile, 'a+')
-    sum = 1
-
-    for _, n in enumerate(doc_string_value):
-        sample.append('\n' + "        " + str(sum) + ". " + n)
-        sample_string = "".join(sample)
-        sum += sum
-        if sum > len(subkw_list):
-            break
-    for line in io.open('kw_seq_template', 'r'):
-        line = line.replace('$wrapper_kw', WrapperName)
-        if Description is not None:
-            line = line.replace('$wdesc', Description)
-        else:
-            line = line.replace('$wdesc', 'Description not provided by the user')
-        line = line.replace('kw_list_1', kw_list_1)
-        line = line.replace('$doc_string_values', sample_string)
-        open_actionfile.write(line)
-    open_actionfile.close()
-    """
-    file_list = ["/data/users/ajeyashi/war-1037_new/warriorframework/warrior/Actions/CliActions/cli_actions.py", "/data/users/ajeyashi/war-1037_new/warriorframework/warrior/Actions/CloudshellActions/cloudshell_actions.py"]
-    for i in file_list:
-        source_file = i
-        with open(source_file) as f:
-            with open("i.txt", "a+") as f1:
-                for line in f:
-                    if "import " in line:
-                        f1.write(line)
-
-    lines_seen = set() # holds lines already seen
-    outfile = open(ActionFile, "a+")
-    for line in open("temp_file.txt", "r"):
-        if line not in lines_seen: # not a duplicate
-            outfile.write(line)
-            lines_seen.add(line)
-    outfile.close()
-
-
-"""
 def getChildTextbyParentTag(datafile, pnode, cnode):
     """
     Seraches XML file for the first parent. Finds the child node and returns its text
