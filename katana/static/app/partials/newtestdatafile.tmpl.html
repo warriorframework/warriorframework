@@ -831,7 +831,7 @@
             </div>
 
             <div class="row">
-                <div class="form-group" ng-if="jsonData.data.global.command_params._retry == 'y'">
+                <div class="form-group">
                     <label for="cp_retry_timer" class="col-sm-2 control-label ellipsis-the-overflow">Retry Timer</label>
                     <div class="tooltip-on-right align-fa-icon-after-label">
                         <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
@@ -984,7 +984,7 @@
                 </div>
             </div>
 
-            <div class="row" ng-show="jsonData.data.global.command_params._retry == 'y'">
+            <div class="row">
                 <div class="form-group">
                     <label for="cp_retry_onmatch" class="col-sm-2 control-label ellipsis-the-overflow">Retry On Match</label>
                     <div class="tooltip-on-right align-fa-icon-after-label">
@@ -2329,7 +2329,7 @@
 
             <div class="row">
                 <div class="form-group">
-                    <label for="td_block_title{{$index}}" class="col-sm-2 control-label mandatory-field ellipsis-the-overflow"
+                    <label for="td_block_title{{$index}}" class="col-sm-2 control-label ellipsis-the-overflow"
                            ng-show="jsonData.data.testdata[$index]._row == ''">Title</label>
                     <label for="td_block_title{{$index}}" class="col-sm-2 control-label ellipsis-the-overflow"
                            ng-show="jsonData.data.testdata[$index]._row != ''">Title</label>
@@ -2409,7 +2409,7 @@
 
             <div class="row">
                 <div class="form-group">
-                    <label for="td_block_row{{$index}}" class="col-sm-2 control-label mandatory-field ellipsis-the-overflow"
+                    <label for="td_block_row{{$index}}" class="col-sm-2 control-label ellipsis-the-overflow"
                            ng-show="jsonData.data.testdata[$index]._title == ''">Row</label>
                     <label for="td_block_row{{$index}}" class="col-sm-2 control-label ellipsis-the-overflow"
                            ng-show="jsonData.data.testdata[$index]._title != ''">Row</label>
@@ -3870,7 +3870,7 @@
                             </div>
 
                             <div class="row">
-                                <div class="form-group" ng-if="jsonData.data.testdata[$parent.$index].command[$index]._retry == 'y'">
+                                <div class="form-group">
                                     <label for="td_retry_onmatch" class="col-sm-4 control-label ellipsis-the-overflow">Retry On Match</label>
                                     <div class="tooltip-on-right align-fa-icon-after-label">
                                         <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
@@ -4889,7 +4889,7 @@
 			if( input.is('select') ){
 				tableItem.text( input.find(':selected').attr('label') );
 				if(input.attr('id') == 'cp_retry' || input.attr('id') == 'td_retry' ){
-					var dependents = input.parent().nextAll(':lt(2)').add( tableItem.closest('li').nextAll(':lt(2)') );
+					var dependents = input.parent().nextAll(':lt(3)').add( tableItem.closest('li').nextAll(':lt(3)') );
 					if( input.val() == 'y' )
 						dependents.fadeIn();
 					else
@@ -4946,7 +4946,7 @@
 			if( specialCase ){
 				view = currentView.clone().insertAfter( specialCase );
 				var inputs = view.find('input, select');
-				inputs.val('');
+				inputs.not('select').val('');
 				table = table.clone().appendTo( table.parent() );
 				
 				var headerTxt = view.find('h3');
@@ -4987,7 +4987,7 @@
 				
 			});
 				if( isNew )
-					inputs && inputs.val('');
+					inputs && inputs.not('select').val('');
 				else
 					inputs && inputs.trigger('change');
 			
@@ -5343,7 +5343,7 @@
 			reqInputs.each( function(){
 				var $elem = $(this);
 				var view = $elem.closest('.view');
-				if( $elem.val() == ''  && $elem.closest('.view').find('h4').text().indexOf('erification') == -1 ){
+				if( $elem.val() == '' && $elem.closest('.view').find('h4').text().indexOf('erification') == -1 ){
 					cond = false;
 					var activeAlert = alert.appendTo('body').text( $elem.parent().find('.req, .mandatory-field').text() + ' in ' +  view.find('h3').text() + ' ' + view.find('h4').text() + ' is required to save');
 					setTimeout( function(){
