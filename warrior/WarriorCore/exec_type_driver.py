@@ -157,11 +157,11 @@ def simple_exp_parser(expression_str, rules):
         status = rule_parser(rules[elements[0]])
     else:
         status = rule_parser(rules[elements[0]])
-        for x in range(0, len(elements) - 2, 2):
-            if elements[x+1].lower() == "and" or elements[x+1] == "&":
-                status = status & rule_parser(rules[elements[x+2]])
-            elif elements[x+1].lower() == "or" or elements[x+1] == "|":
-                status = status | rule_parser(rules[elements[x+2]])
+        for ind in range(0, len(elements) - 2, 2):
+            if elements[ind+1].lower() == "and" or elements[ind+1] == "&":
+                status = status & rule_parser(rules[elements[ind+2]])
+            elif elements[ind+1].lower() == "or" or elements[ind+1] == "|":
+                status = status | rule_parser(rules[elements[ind+2]])
             else:
                 # invalid operator
                 raise Exception("invalid operator in expression_str: {}".format(expression_str))
@@ -187,11 +187,11 @@ def special_exp_parser(expression_str, rules, status_first, status_last):
         # illegal expression or no rule in expression
         raise Exception("expression_str invalid or not found")
     else:
-        for x in range(0, len(elements)-1, 2):
-            if elements[x].lower() == "and" or elements[x] == "&":
-                status = status & rule_parser(rules[elements[x+1]])
-            elif elements[x].lower() == "or" or elements[x] == "|":
-                status = status | rule_parser(rules[elements[x+1]])
+        for ind in range(0, len(elements)-1, 2):
+            if elements[ind].lower() == "and" or elements[ind] == "&":
+                status = status & rule_parser(rules[elements[ind+1]])
+            elif elements[ind].lower() == "or" or elements[ind] == "|":
+                status = status | rule_parser(rules[elements[ind+1]])
             else:
                 # invalid operator
                 raise Exception("invalid operator in expression_str: {}".format(expression_str))
@@ -216,11 +216,11 @@ def expression_split(src):
     """
     result = []
     open_index = []
-    for x in range(len(src)):
-        if src[x] == "(":
-            open_index.append(x)
-        if src[x] == ")":
-            result.append((open_index.pop(), x))
+    for ind, _ in enumerate(src):
+        if src[ind] == "(":
+            open_index.append(ind)
+        if src[ind] == ")":
+            result.append((open_index.pop(), ind))
     return result
 
 def expression_parser(src, rules):
@@ -273,10 +273,13 @@ def expression_parser(src, rules):
             else:
                 # Check the left side, should only have simple expression left
                 if src[exps[x+1][0]+1:exps[x][0]].strip() != "":
-                    status = special_exp_parser(" & "+src[exps[x+1][0]+1:exps[x+1][0]+1+src[exps[x+1][0]+1:].find("(")], rules, True, status)
+                    exp_start = exps[x+1][0] + 1
+                    exp_end = exps[x+1][0] + 1 + src[exps[x+1][0]+1:].find("(")
+                    status = special_exp_parser(" & "+src[exp_start:exp_end], rules, True, status)
                 # Check the right side, should only have simple expression left
                 if src[exps[x][1]+1:exps[x+1][1]].strip() != "":
-                    status = special_exp_parser(src[exps[x][1]+1:exps[x+1][1]]+" & ", rules, status, True)
+                    exp_build = src[exps[x][1]+1:exps[x+1][1]]+" & "
+                    status = special_exp_parser(exp_build, rules, status, True)
         # Outside of all parenthesis
         if src[0] != "(":
             # Left side has expression

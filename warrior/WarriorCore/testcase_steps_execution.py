@@ -15,13 +15,11 @@ limitations under the License.
 
 """This module is used for sequential execution of testcase steps """
 
-import sys
-import os
 import time
 import traceback
 import WarriorCore.step_driver as step_driver
 import WarriorCore.onerror_driver as onerror_driver
-import exec_type_driver
+import WarriorCore.exec_type_driver as exec_type_driver
 from WarriorCore import common_execution_utils
 import Framework
 import Framework.Utils as Utils
@@ -64,27 +62,32 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
             run_current_step, trigger_action = exec_type_driver.main(step)
             if not run_current_step:
                 keyword = step.get('Keyword')
-                kw_resultfile= step_driver.get_keyword_resultfile(data_repository, system_name, step_num, keyword)
+                kw_resultfile = step_driver.get_keyword_resultfile(data_repository, system_name,
+                                                                   step_num, keyword)
                 Utils.config_Utils.set_resultfile(kw_resultfile)
                 Utils.testcase_Utils.pKeyword(keyword, step.get('Driver'))
-                Utils.testcase_Utils.reportStatus('Skip' )
+                Utils.testcase_Utils.reportStatus('Skip')
                 kw_resultfile_list.append(kw_resultfile)
-                data_repository['wt_junit_object'].update_count("skipped", "1", "tc", data_repository['wt_tc_timestamp'])
-                data_repository['wt_junit_object'].update_count("keywords", "1", "tc", data_repository['wt_tc_timestamp'])
+                data_repository['wt_junit_object'].update_count("skipped", "1", "tc",
+                                                                data_repository['wt_tc_timestamp'])
+                data_repository['wt_junit_object'].update_count("keywords", "1", "tc",
+                                                                data_repository['wt_tc_timestamp'])
                 kw_start_time = Utils.datetime_utils.get_current_timestamp()
                 step_impact = Utils.testcase_Utils.get_impact_from_xmlfile(step)
                 impact_dict = {"IMPACT":"Impact", "NOIMPACT":"No Impact"}
-                data_repository['wt_junit_object'].add_keyword_result(data_repository['wt_tc_timestamp'], step_num, keyword,
-                                                                      "SKIPPED", kw_start_time, "0", "skipped",
-                                                                      impact_dict.get(step_impact.upper()), "N/A")
+                data_repository['wt_junit_object'].add_keyword_result(
+                    data_repository['wt_tc_timestamp'], step_num, keyword,
+                    "SKIPPED", kw_start_time, "0", "skipped",
+                    impact_dict.get(step_impact.upper()), "N/A")
                 data_repository['step_{}_result'.format(step_num)] = "SKIPPED"
 
-                if goto_stepnum in ['ABORT', 'ABORT_AS_ERROR']: break
+                if trigger_action in ['ABORT', 'ABORT_AS_ERROR']:
+                    break
                 # when 'onError:goto' value is less than the current step num,
                 # change the next iteration point to goto value
-                elif goto_stepnum and int(goto_stepnum) < step_num:
-                    step_num = int(goto_stepnum)-1
-                    goto_stepnum = False
+                elif trigger_action and int(trigger_action) < step_num:
+                    step_num = int(trigger_action)-1
+                    trigger_action = False
 
                 continue
 
@@ -117,21 +120,25 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
                 print_error('unexpected error {0}'.format(traceback.format_exc()))
             goto_stepnum = False
         else:
-            # Skip because of goto 
+            # Skip because of goto
             keyword = step.get('Keyword')
-            kw_resultfile= step_driver.get_keyword_resultfile(data_repository, system_name, step_num, keyword)
+            kw_resultfile = step_driver.get_keyword_resultfile(data_repository, system_name,
+                                                               step_num, keyword)
             Utils.config_Utils.set_resultfile(kw_resultfile)
             Utils.testcase_Utils.pKeyword(keyword, step.get('Driver'))
-            Utils.testcase_Utils.reportStatus('Skip' )
+            Utils.testcase_Utils.reportStatus('Skip')
             kw_resultfile_list.append(kw_resultfile)
-            data_repository['wt_junit_object'].update_count("skipped", "1", "tc", data_repository['wt_tc_timestamp'])
-            data_repository['wt_junit_object'].update_count("keywords", "1", "tc", data_repository['wt_tc_timestamp'])
+            data_repository['wt_junit_object'].update_count("skipped", "1", "tc",
+                                                            data_repository['wt_tc_timestamp'])
+            data_repository['wt_junit_object'].update_count("keywords", "1", "tc",
+                                                            data_repository['wt_tc_timestamp'])
             kw_start_time = Utils.datetime_utils.get_current_timestamp()
             step_impact = Utils.testcase_Utils.get_impact_from_xmlfile(step)
             impact_dict = {"IMPACT":"Impact", "NOIMPACT":"No Impact"}
-            data_repository['wt_junit_object'].add_keyword_result(data_repository['wt_tc_timestamp'], step_num, keyword,
-                                                                  "SKIPPED", kw_start_time, "0", "skipped",
-                                                                  impact_dict.get(step_impact.upper()), "N/A")
+            data_repository['wt_junit_object'].add_keyword_result(
+                data_repository['wt_tc_timestamp'], step_num, keyword,
+                "SKIPPED", kw_start_time, "0", "skipped",
+                impact_dict.get(step_impact.upper()), "N/A")
             data_repository['step_{}_result'.format(step_num)] = "SKIPPED"
             continue
 
@@ -139,7 +146,8 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
         kw_resultfile_list.append(kw_resultfile)
         step_impact_list.append(step_impact)
         runmode, value = common_execution_utils.get_runmode_from_xmlfile(step)
-        retry_type, retry_cond, retry_cond_value, retry_value, retry_interval = common_execution_utils.get_retry_from_xmlfile(step)
+        retry_type, retry_cond, retry_cond_value, retry_value, retry_interval = \
+            common_execution_utils.get_retry_from_xmlfile(step)
         if runmode is not None:
             # if runmode is 'ruf' & step_status is False, skip the repeated
             # execution of same TC step and move to next actual step
