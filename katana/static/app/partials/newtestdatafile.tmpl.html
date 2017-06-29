@@ -5343,7 +5343,7 @@
 			reqInputs.each( function(){
 				var $elem = $(this);
 				var view = $elem.closest('.view');
-				if( $elem.val() == '' ){
+				if( $elem.val() == ''  && $elem.closest('.view').find('h4').text().indexOf('erification') == -1 ){
 					cond = false;
 					var activeAlert = alert.appendTo('body').text( $elem.parent().find('.req, .mandatory-field').text() + ' in ' +  view.find('h3').text() + ' ' + view.find('h4').text() + ' is required to save');
 					setTimeout( function(){
