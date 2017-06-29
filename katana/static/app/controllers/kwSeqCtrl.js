@@ -22,6 +22,7 @@ app.controller('kwSeqCtrlr', ['$scope','$routeParams','$http', '$location', '$an
         $scope.subdirs = subdirs;
         $scope.xml = {};
         $scope.xml.file = '';
+        $scope.xml.check = '';
         $scope.xml.json = '';
         $scope.xml.pycs = {};
         $scope.xml.args = {};
@@ -29,6 +30,7 @@ app.controller('kwSeqCtrlr', ['$scope','$routeParams','$http', '$location', '$an
         $scope.showStepEdit = false;
         $scope.insertStep = false;
 
+        //Angular Model for Wrapper Keyword
         $scope.model = {
             "WrapperKeyword": {
                 "Details": {
@@ -48,6 +50,7 @@ app.controller('kwSeqCtrlr', ['$scope','$routeParams','$http', '$location', '$an
 
         $scope.keweqTooltips = [];
 
+        //To Read Tooltip
         fileFactory.readtooltipfile('kwseq')
             .then(
                 function(data) {
@@ -56,7 +59,7 @@ app.controller('kwSeqCtrlr', ['$scope','$routeParams','$http', '$location', '$an
                 function(data) {
                     alert(data);
                 });
-
+        //To Read Config File
         function readConfig(){
             getConfigFactory.readconfig()
             .then(function (data) {
@@ -101,6 +104,7 @@ app.controller('kwSeqCtrlr', ['$scope','$routeParams','$http', '$location', '$an
             }
         };
 
+    //To Copy the existing Subkeyword Step
         $scope.copyStep = function(){
 
             if($scope.stepToBeCopied == "None"){
@@ -175,6 +179,7 @@ app.controller('kwSeqCtrlr', ['$scope','$routeParams','$http', '$location', '$an
 
         };
 
+        //To Read the file
     function readTestCaseFile() {
         KwSeqFactory.fetch()
             .then(function (data) {
@@ -240,6 +245,7 @@ app.controller('kwSeqCtrlr', ['$scope','$routeParams','$http', '$location', '$an
 
     readTestCaseFile();
 
+    //Model
     $scope.status = {
 
         nodatafile: '0',
@@ -262,6 +268,7 @@ app.controller('kwSeqCtrlr', ['$scope','$routeParams','$http', '$location', '$an
         }
     };
 
+    //To Delete Subkeyword
     $scope.delKwseq = function (index) {
 
         sweetAlert({
@@ -345,6 +352,7 @@ app.controller('kwSeqCtrlr', ['$scope','$routeParams','$http', '$location', '$an
 
         };
 
+        //To Add Subkeyword
     $scope.addKwseq = function (index) {
         if($scope.showStepEdit){
             swal({
@@ -523,6 +531,7 @@ app.controller('kwSeqCtrlr', ['$scope','$routeParams','$http', '$location', '$an
         return $scope.status.step_edit_mode = 'None';
     };
 
+        //Driver related fucntionalities
     $scope.driverSelected = function (drivername) {
 
         $scope.putReqEditorOutOfSight();
@@ -543,6 +552,7 @@ app.controller('kwSeqCtrlr', ['$scope','$routeParams','$http', '$location', '$an
         return kwds;
     };
 
+    //Keyword related functionalities
     $scope.selectKeyword = function (keyword) {
         $scope.putReqEditorOutOfSight();
         console.log('In selectKeyword(' + keyword + ')');
@@ -600,6 +610,7 @@ app.controller('kwSeqCtrlr', ['$scope','$routeParams','$http', '$location', '$an
         return rec;
     }
 
+    //Called when Subkeyword is saved
     $scope.saveArguments = function () {
         var driver = $.trim($scope.status.drivername) || '',
             keyword = $.trim($scope.status.keyword) || '';
@@ -679,6 +690,7 @@ app.controller('kwSeqCtrlr', ['$scope','$routeParams','$http', '$location', '$an
         $location.path('/kwseq');
     };
 
+    //Called when Wrapper Keyword is saved
     $scope.saveKwseqCap = function () {
 
         if($scope.showStepEdit){
@@ -789,71 +801,51 @@ app.controller('kwSeqCtrlr', ['$scope','$routeParams','$http', '$location', '$an
         var token = angular.toJson($scope.model);
         var xmlDoc = x2js.json2xml_str(JSON.parse(token));
 
-       var a1 = $scope.model.WrapperKeyword.Details.WrapperName;
-       var a3 = '<root>' + a1 + '</root>'
-        var a2 = $scope.model.WrapperKeyword.Details.ActionFile;
-
-        KwSeqFactory.checkVal(a1)
-            .then(
-                function(data) {
-                    console.log(data);
-                    /* var drivername = $scope.model.WrapperKeyword.Details.WrapperName;
-                    // alert(drivername);
-                    $scope.model = {
-                        "WrapperKeyword": {
-                            "Details": {
-                                "WrapperName": "",
-                                "ActionFile": "",
-                                "Description": "",
-                            },
-                            "Subkeyword": {
-                                "Skw": []
-                            }
-                        }
-                    };;*/
-
-                    sweetAlert({
-                        title: "in",
-                        showConfirmButton: true,
-                        type: "success",
-                        timer: 1250
-                    });
-                },
-                function(data) {
-                    alert(data);
-                });
-
         $scope.final = xmlDoc;
 
         KwSeqFactory.save(xmlDoc)
             .then(
                 function(data) {
                     console.log(data);
-                    var drivername = $scope.model.WrapperKeyword.Details.WrapperName;
+                    if(data == "no"){
 
-                    $scope.model = {
-                          "WrapperKeyword": {
-                            "Details": {
-                              "WrapperName": "",
-                              "ActionFile": "",
-                              "Description": "",
-                            },
-                            "Subkeyword": {
-                              "Skw": []
+                        var drivername = $scope.model.WrapperKeyword.Details.WrapperName;
+                        $scope.model = {
+                            "WrapperKeyword": {
+                                "Details": {
+                                    "WrapperName": "",
+                                    "ActionFile": "",
+                                    "Description": "",
+                                },
+                                "Subkeyword": {
+                                    "Skw": []
+                                }
                             }
-                          }
                         };
-                    $scope.status.nodatafile = '0';
+                        $scope.status.nodatafile = '0';
 
-                    sweetAlert({
-                        title: "Wrapper Keyword -- '" + drivername + "' -- is Saved",
-                        showConfirmButton: false,
-                        type: "success",
-                        timer: 1250
-                    });
-                },
-                function(data) {
-                    alert(data);
+                        sweetAlert({
+                            title: "Wrapper Keyword '" + drivername + "' is Saved",
+                            showConfirmButton: false,
+                            type: "success",
+                            timer: 1250
+                        });
+
+                    }
+                    else{
+                        var drivername = $scope.model.WrapperKeyword.Details.WrapperName;
+                        sweetAlert({
+                            title: "Wrapper Keyword '" + drivername + "' Already Exist",
+                            showConfirmButton: true,
+                            type: "warning",
+                            text: "Create Wrapper Keyword with different Name",
+                            timer: 20000
+                        });
+
+                        $location.path('/kwseq/__new__/none');
+                    }
+
+
                 });
 
         if ($scope.savecreateTestcaseCap) {

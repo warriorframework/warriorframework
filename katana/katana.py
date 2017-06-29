@@ -80,8 +80,6 @@ def katana():
     template_lookup = [current_file_dir, "{0}{1}{2}{1}".format(current_file_dir, os.sep, 'views')]
     return template('index', template_lookup=template_lookup)
 
-
-
 @route('/readconfig')
 def readconfig():
     lines = ""
@@ -94,7 +92,7 @@ def readconfig():
 @route('/parsexmlobj', method='POST')
 def parsexmlobj():
     import sys
-    import importlib
+    # import importlib
     import inspect
     import io
 
@@ -114,10 +112,24 @@ def parsexmlobj():
                                           'Details',
                                           'WrapperName')
     ActionFile = getChildTextbyParentTag('output.txt', 'Details', 'ActionFile')
+    method_names =[]
+    with open(ActionFile,'r') as file:
+        for line in file:
+            line = line.split()
+            if "def" in line:
+                next_word = line[line.index("def")+1].split("(")[0]
+                method_names.append(next_word)
+
+    if WrapperName in method_names:
+        checkval = "yes"
+    else:
+        checkval = "no"
+    return checkval
+
     Description = getChildTextbyParentTag('output.txt', 'Details',
                                           'Description')
     Subkeyword = root.find('Subkeyword')
-    subkw_list = Subkeyword.findall('step')
+    subkw_list = Subkeyword.findall('Skw')
     class_value = "x"
     for values in subkw_list:
         subkw_list_attrib = values.attrib
@@ -134,7 +146,9 @@ def parsexmlobj():
                         if arg_value is None or arg_value is False:
                             arg_value = argument.text
                         arg_name = argument_name + "=" + arg_value
-                        doc_string_value.append("The keyword {0} in Driver {1} has a defined arguments {2} You must want to send other values through data file".format(kw_list, driver, arg_name))
+                    else:
+                        arg_name = None
+                doc_string_value.append("The keyword {0} in Driver {1} has a defined arguments {2} You must want to send other values through data file".format(kw_list, driver, arg_name))
             else:
                 for argument in argument_list:
                     argument_name = argument.get('name')
@@ -147,6 +161,7 @@ def parsexmlobj():
                 doc_string_value.append("The keyword {0} in Driver {1} has a defined arguments {2} You must want to send other values through data file".format(kw_list, driver, arg_name_list))
     open_actionfile = io.open(ActionFile, 'a+')
     sum = 1
+
     for _, n in enumerate(doc_string_value):
         sample.append('\n' + "        " + str(sum) + ". " + n)
         sample_string = "".join(sample)
@@ -155,11 +170,15 @@ def parsexmlobj():
             break
     for line in io.open('kw_seq_template', 'r'):
         line = line.replace('$wrapper_kw', WrapperName)
-        line = line.replace('$wdesc', Description)
+        if Description is not None:
+            line = line.replace('$wdesc', Description)
+        else:
+            line = line.replace('$wdesc', 'Description not provided by the user')
         line = line.replace('kw_list_1', kw_list_1)
         line = line.replace('$doc_string_values', sample_string)
         open_actionfile.write(line)
     open_actionfile.close()
+    """
     file_list = ["/data/users/ajeyashi/war-1037_new/warriorframework/warrior/Actions/CliActions/cli_actions.py", "/data/users/ajeyashi/war-1037_new/warriorframework/warrior/Actions/CloudshellActions/cloudshell_actions.py"]
     for i in file_list:
         source_file = i
@@ -177,6 +196,8 @@ def parsexmlobj():
             lines_seen.add(line)
     outfile.close()
 
+
+"""
 def getChildTextbyParentTag(datafile, pnode, cnode):
     """
     Seraches XML file for the first parent. Finds the child node and returns its text

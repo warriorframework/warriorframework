@@ -25,20 +25,7 @@ app.factory('KwSeqFactory', ['$http', '$routeParams', '$q', function($http, $rou
             return deferred.promise;
         },
 
-        checkVal: function(a11) {
-            var deferred = $q.defer();
-            $http.post('/checkValPy' ,a11)
-                .success(function(data, status, headers, config) {
-                    deferred.resolve(data);
-                })
-                .error(function(data, status, headers, config) {
-                    deferred.reject("Error fetching XML file: " + status + ' ' + JSON.stringify(headers));
-                });
-            return deferred.promise;
-        },
-
         save: function(xmlObj) {
-
             var deferred = $q.defer();
             $http.post('/parsexmlobj', xmlObj)
                 .success(function(data, status, headers, config) {
