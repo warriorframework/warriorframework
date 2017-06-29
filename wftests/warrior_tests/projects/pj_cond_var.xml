@@ -91,7 +91,7 @@
 			<impact>impact</impact>
 		</Testsuite>
 		<Testsuite>
-			<path>../suites/framework_tests/cond_var/ts_exectype_rules_expressions.xml</path>
+			<path>../suites/framework_tests/cond_var/ts_exectype_rules_expression.xml</path>
 			<Execute ExecType="Yes">
 				<Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
 			</Execute>
