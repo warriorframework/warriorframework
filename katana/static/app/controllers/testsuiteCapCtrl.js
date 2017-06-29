@@ -1500,16 +1500,17 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
                     .then(
                         function(data) {
                             console.log(data);
+                            if ($scope.savecreateTestsuiteCap == true) {
+                                $location.path('/newtestsuite');
+                            }  else {
+                                $location.path('/testsuites');
+                            }
                         },
                         function(data) {
                             alert(data);
                         });
 
-                if ($scope.savecreateTestsuiteCap == true) {
-                    $location.path('/newtestsuite');
-                }  else {
-                    $location.path('/testsuites');
-                }
+
             }
 
             fileFactory.readdatafile()
