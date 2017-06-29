@@ -22,6 +22,7 @@ from Framework.Utils.testcase_Utils import pNote
 
 class ElseException(Exception):
     def __init__(self, else_action):
+        super(ElseException, self).__init__(else_action)
         self.action = else_action
 
 def math_decision(exec_condition, exec_cond_var, operator):
@@ -83,19 +84,14 @@ def logical_decision(exec_condition, exec_cond_var, operator="equal"):
 
     return result
 
-# Expression parsing and handling
-    # parse (),each parenthesis becomes a new layer of conditions
-    # priority will base on order or )
-    # for each layer, do split and get list of rules num and logical operator
-        # get value of each rule
-        # use logical operator to combine each value
-        # return result
-# Else statement builder
-    # Once else is triggered, build the return status and action
-# AND/OR logic handling
-
 def rule_parser(rule):
-    # Get data
+    """
+        Parse an xml rule element and call logical decision function
+        :param:
+            rule: xml element for a single rule
+        :return:
+            status of the rule
+    """
     if isinstance(rule, str):
         if rule.lower() == True:
             return True
@@ -132,6 +128,14 @@ def rule_parser(rule):
         return status
 
 def int_split(expression_str):
+    """
+        split the expression into list of rules and logical symbols/words
+        only be used with simple rule, no parenthesis
+        :param:
+            expression_str: a string of expression ex. 1 & 2 & 3
+        :return:
+            list of rules and logical symbols/words
+    """
     elements = expression_str.split()
     for ind, ele in enumerate(elements):
         if str.isdigit(ele):
@@ -139,6 +143,15 @@ def int_split(expression_str):
     return elements
 
 def simple_exp_parser(expression_str, rules):
+    """
+        Parse a expression string which only contains rule numbers and logical symbols/words
+        calculate the final status of the expression string
+        :param:
+            expression_str: a string of simple expression ex. 1 | 2 & 3
+            rules: list of rule xml elements
+        :return:
+            status of the expression
+    """
     elements = int_split(expression_str)
     status = None
     if not elements:
@@ -159,6 +172,19 @@ def simple_exp_parser(expression_str, rules):
     return status
 
 def special_exp_parser(expression_str, rules, status_first, status_last):
+    """
+        Parse a partial expression string which
+        1. only contains rule numbers and logical symbols/words
+        2. doesn't start and end with a rule
+        calculate the final status of the expression string
+        :param:
+            expression_str: a string of simple expression ex. 1 | 2 & 3
+            rules: list of rule xml elements
+            status_first: status to be used with the left most logical symbol/word
+            status_last: status to be used with the right most logical symbol/word
+        :return:
+            status of the expression
+    """
     status = status_first
     elements = int_split(expression_str)
     if not elements or len(elements) < 3:
@@ -184,6 +210,14 @@ def special_exp_parser(expression_str, rules, status_first, status_last):
     return status
 
 def expression_split(src):
+    """
+        parse a string and return a list of pair with
+        open and close parenthesis
+        :param:
+            src: input string
+        :return:
+            list of pair
+    """
     result = []
     open_index = []
     for x in range(len(src)):
@@ -194,6 +228,16 @@ def expression_split(src):
     return result
 
 def expression_parser(src, rules):
+    """
+        parse the expression string and break it up into simple expression
+        pass each simple expression into other functions
+        combine the results of each pieces and return a final result
+        :param:
+            src: unparsed expression string
+            rules: list of rule xml elements
+        :return:
+            the status of the parsed expression string
+    """
     src = src.strip()
     opening = src.count("(")
     closing = src.count(")")
@@ -237,7 +281,7 @@ def expression_parser(src, rules):
                 # Check the right side, should only have simple expression left
                 if src[exps[x][1]+1:exps[x+1][1]].strip() != "":
                     status = special_exp_parser(src[exps[x][1]+1:exps[x+1][1]]+" & ", rules, status, True)
-
+        # Outside of all parenthesis
         if src[0] != "(":
             # Left side has expression
             status = special_exp_parser(" & "+src[:src.find("(")], rules, True, status)
@@ -248,6 +292,14 @@ def expression_parser(src, rules):
     return status
 
 def decision_maker(exec_node):
+    """
+        return the status, action combo for the step exec node
+        :param:
+            exec_node: the xml element exectype in the step element
+        :return:
+            status of the expression
+            action to be executed when status is not True
+    """
     exec_type = exec_node.get("ExecType", "")
     expression = exec_node.get("Expression", "")
     action = exec_node.get("Else", "next")
@@ -269,8 +321,7 @@ def decision_maker(exec_node):
             action = else_action.action
     # except Exception, err:
     #     # do something else
-    #     status = False
-    #     print "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n", err
+    #       Pass to step level exception handler
 
     return status, action
 
