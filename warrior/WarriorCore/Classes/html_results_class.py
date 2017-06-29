@@ -47,10 +47,11 @@ class LineResult():
                      'impact': line.get("impact"),
                      'onerror': line.get("onerror"),
                      'msc': '<span style="padding-left:10px; padding-right: 10px;"><a href="' + (
-                     line.get("resultfile") if line.get(
-                         "resultfile") else '') + '"><i class="fa fa-line-chart"> </i></a></span><span style="padding-left:10px; padding-right: 10px;"><a href="' + (
-                            line.get("logsdir") if line.get(
-                                "logsdir") else '') + '"><i class="fa fa-book"> </i></a></span>',
+                         line.get("resultfile") if line.get(
+                             "resultfile") else '') + '"><i class="fa fa-line-chart"> </i></a></span><span '
+                                                      'style="padding-left:10px; padding-right: 10px;"><a href="' + ( 
+                                line.get("logsdir") if line.get(
+                                    "logsdir") else '') + '"><i class="fa fa-book"> </i></a></span>',
                      'static': ['Count', 'Passed', 'Failed', 'Errors', 'Exceptions', 'Skipped']
                      }
         self.keys = ['type', 'name', 'info', 'timestamp', 'duration', 'status', 'impact', 'onerror', 'msc', 'static',
@@ -60,30 +61,31 @@ class LineResult():
         if self.html == '':
             self.set_attributes(line, type, stepcount)
         self.set_dynamic_content(line)
-        topLevel = ''
-        topLevelNext = ''
+        top_level = ''
+        top_level_next = ''
         if self.data['nameAttr'] != 'KeywordRecord':
             for elem in self.keys:
                 if elem == 'dynamic':
                     for dynamicElem in self.data['dynamic']:
-                        topLevelNext += '<td>' + (dynamicElem if dynamicElem else '0') + '</td>'
+                        top_level_next += '<td>' + (dynamicElem if dynamicElem else '0') + '</td>'
                 elif elem == 'static':
                     for staticElem in self.data['static']:
-                        topLevel += '<td>' + (staticElem if staticElem else '') + '</td>'
+                        top_level += '<td>' + (staticElem if staticElem else '') + '</td>'
                 else:
-                    topLevel += '<td rowspan="2"><div>' + (self.data[elem] if self.data[elem] else '') + '</div></td>'
-            topLevelNext = '<tr>' + topLevelNext + '</tr>'
+                    top_level += '<td rowspan="2"><div>' + (self.data[elem] if self.data[elem] else '') + '</div></td>'
+            top_level_next = '<tr>' + top_level_next + '</tr>'
         else:
             for elem in self.keys:
                 if elem != 'static' and elem != 'dynamic':
-                    topLevel += '<td rowspan="2"><div>' + (self.data[elem] if self.data[elem] else '') + '</div></td>'
+                    top_level += '<td rowspan="2"><div>' + (self.data[elem] if self.data[elem] else '') + '</div></td>'
 
-        self.html = '<tr name="' + self.data['nameAttr'] + '">' + topLevel + '</tr>' + topLevelNext
+        self.html = '<tr name="' + self.data['nameAttr'] + '">' + top_level + '</tr>' + top_level_next
 
 
 class WarriorHtmlResults:
     lineObjs = []
     lineCount = 0
+    recount = 0
     steps = 0
 
     def __init__(self, junit_file=None):
@@ -93,13 +95,10 @@ class WarriorHtmlResults:
         self.junit_root = xml_Utils.getRoot(self.junit_file)
 
     def create_line_result(self, line, type):
-        if self.lineCount >= len(self.lineObjs):
-            temp = LineResult()
-            temp.set_html(line, type, self.steps)
-            self.lineObjs.append(temp)
-            self.lineCount += 1
-        else:
-            self.lineObjs[self.lineCount].set_html(line, type, self.steps)
+        temp = LineResult()
+        temp.set_html(line, type, self.steps)
+        self.lineObjs.append(temp)
+        self.lineCount += 1
 
     def set_line_objs(self):
         self.lineCount = 0
@@ -129,12 +128,12 @@ class WarriorHtmlResults:
 
         return html_results_path
 
-    def merge_html(self, dynamicHTML):
+    def merge_html(self, dynamic_html):
         temp = open(self.html_template)
         templateHTML = temp.read().replace('\n', '')
         temp.close()
         index = templateHTML.rfind('</table>')
-        return templateHTML[:index] + dynamicHTML + templateHTML[index:] + self.get_war_version()
+        return templateHTML[:index] + dynamic_html + templateHTML[index:] + self.get_war_version()
 
     def get_war_version(self):
         path = self.get_path().split('warriorframework')[0] + 'warriorframework/version.txt'
@@ -157,10 +156,10 @@ class WarriorHtmlResults:
             html += item.html
         html = self.merge_html(html)
 
-        file = open(self.get_path(), 'w')
-        file.write(html)
-        file.close()
-
+        elem_file = open(self.get_path(), 'w')
+        elem_file.write(html)
+        elem_file.close()
+        self.lineObjs = []
         print_info("++++ Results Summary ++++")
         print_info("Open the Results summary file given below in a browser to "
                    "view results summary for this execution")
