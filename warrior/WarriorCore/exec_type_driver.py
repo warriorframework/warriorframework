@@ -11,16 +11,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-"""Module that handles the actions to be performed for 
+"""Module that handles the actions to be performed for
 conditional execution of a step in Testcase/Suite/Project """
 
-import sys
 from Framework.Utils.data_Utils import get_object_from_datarepository
 from Framework.Utils.print_Utils import print_error, print_info
 from Classes.argument_datatype_class import ArgumentDatatype
 from Framework.Utils.testcase_Utils import pNote
 
 class ElseException(Exception):
+    """
+        Raise an exception when a rule fails with individual else action
+    """
     def __init__(self, else_action):
         super(ElseException, self).__init__(else_action)
         self.action = else_action
@@ -33,7 +35,7 @@ def math_decision(exec_condition, exec_cond_var, operator):
             exec_cond_var: user provided value to be compared
             operator: math operator in plain English
         :return:
-            True if operator condition match 
+            True if operator condition match
             for repo value on left and user value on right
             Else False
     """
@@ -47,7 +49,8 @@ def math_decision(exec_condition, exec_cond_var, operator):
     elif operator == "smaller":
         return True if get_object_from_datarepository(exec_condition) < exec_cond_var else False
 
-    pNote("Unknown error occur when deciding value, please check condition value of the step", "Error")
+    pNote("Unknown error occur when deciding value, please check condition value of the step",
+          "Error")
     return False
 
 def logical_decision(exec_condition, exec_cond_var, operator="equal"):
@@ -92,13 +95,6 @@ def rule_parser(rule):
         :return:
             status of the rule
     """
-    if isinstance(rule, str):
-        if rule.lower() == True:
-            return True
-        elif rule.lower() == False:
-            return False
-        else:
-            raise Exception("rule value is wrong")
     exec_condition = rule.get("Condition", None)
     exec_cond_var = rule.get("Condvalue", None)
     else_action = rule.get("Else", None)
@@ -353,6 +349,7 @@ def main(step):
     else:
         decision = False
         supported_values = ['no', 'yes', 'if', 'if not']
-        print_error("Unsupported value used for ExecType, supported values are: {0} and case-insensitive".format(supported_values))
+        print_error("Unsupported value used for ExecType, supported values are:"
+                    "{0} and case-insensitive".format(supported_values))
 
     return decision, trigger_action
