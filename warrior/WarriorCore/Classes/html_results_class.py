@@ -69,9 +69,9 @@ class WarriorHtmlResults():
                     else:
                         tc_resultsdir = None
                     tc_logs_node = xml_Utils.getElementWithTagAttribValueMatch(testcase_node,
-                                                                                 'property',
-                                                                                 'name',
-                                                                                 'logsdir')
+                                                                               'property',
+                                                                               'name',
+                                                                               'logsdir')
                     if tc_logs_node is not None:
                         tc_logsdir = tc_logs_node.get("value")
                     else:
