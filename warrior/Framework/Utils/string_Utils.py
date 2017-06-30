@@ -243,27 +243,26 @@ def seek_next(pattern, data):
         prev = pos
     else:
         raise StopIteration
-    
+
 
 def conv_str_to_bool(text, mapping_dict=None):
-    """ 
+    """
     Map a text to a boolean value.
-    The default text to bool mapping is provided in the 
+    The default text to bool mapping is provided in the
     default_map dict below, however text
     and mapping_dict as inputs to map as per needs.
     default_map = {'yes': True, 'y': True, 'no': False, 'n': False }
     """
-    
-    
-    default_map = {
-                   'yes': True,
+
+
+    default_map = {'yes': True,
                    'y': True,
                    'no': False,
-                   'n': False               
+                   'n': False
                    }
     mapping = mapping_dict if mapping_dict else default_map
     result = mapping.get(text.lower(), False)
-    
+
     return result
 
 
