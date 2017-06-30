@@ -92,15 +92,15 @@ def readconfig():
 @route('/parsexmlobj', method='POST')
 def parsexmlobj():
     import sys
-    # import importlib
     import inspect
     import io
 
     arg_name_list = []
     sample = []
-    action_file_list = []
+    obj_list = []
+    object_list = []
     doc_string_value = []
-    kw_list_1 = ""
+    kw_list_1 = []
     xmlobj = parseString("".join(request.body))
     indented_xml = "".join(xmlobj.toprettyxml(newl='\n'))
     corrected_xml = remove_extra_newlines_char_xml(indented_xml)
@@ -111,17 +111,17 @@ def parsexmlobj():
     WrapperName = getChildTextbyParentTag('output.txt',
                                           'Details',
                                           'WrapperName')
+
     ActionFile = getChildTextbyParentTag('output.txt', 'Details', 'ActionFile')
+    Description = getChildTextbyParentTag('output.txt', 'Details',
+                                          'Description')
     method_names =[]
     with open(ActionFile,'r') as file:
         for line in file:
             line = line.split()
             if "def" in line:
-                next_word = line[line.index("def")+1].split("(")[0]
-                method_names.append(next_word)
-
-    Description = getChildTextbyParentTag('output.txt', 'Details',
-                                          'Description')
+               next_word = line[line.index("def")+1].split("(")[0]
+               method_names.append(next_word)
 
     if WrapperName in method_names:
         checkval = "yes"
@@ -129,8 +129,13 @@ def parsexmlobj():
         checkval = "no"
         Subkeyword = root.find('Subkeyword')
         subkw_list = Subkeyword.findall('Skw')
-        class_value = "x"
+        count = 0
         for values in subkw_list:
+            object_dict = {'CliActions_obj': 'CliActions()', 'DemoActions_obj': 'DemoActions()'}
+            object_dict_keys = object_dict.keys()
+            object_dict_values = object_dict.values()
+            object = object_dict_keys[count] + "=" + object_dict_values[count]
+            obj_list.append(object)
             subkw_list_attrib = values.attrib
             driver = subkw_list_attrib.get('Driver')
             kw_list = subkw_list_attrib.get('Keyword')
@@ -144,9 +149,13 @@ def parsexmlobj():
                             arg_value = argument.get('value')
                             if arg_value is None or arg_value is False:
                                 arg_value = argument.text
-                            arg_name = argument_name + "=" + arg_value
+                            arg_name = argument_name + "=" + "\"" + arg_value + "\""
+                            kw_list_1.append("{0}.{1}({2})".format(object_dict_keys[count], kw_list, arg_name))
+                            count += 1
                         else:
-                            arg_name = None
+                            arg_name = ""
+                            kw_list_1.append("{0}.{1}({2})".format(object_dict_keys[count], kw_list, arg_name))
+                            count += 1
                     doc_string_value.append("The keyword {0} in Driver {1} has a defined arguments {2} You must want to send other values through data file".format(kw_list, driver, arg_name))
                 else:
                     for argument in argument_list:
@@ -155,12 +164,12 @@ def parsexmlobj():
                             arg_value = argument.get('value')
                             if arg_value is None or arg_value is False:
                                 arg_value = argument.text
-                            arg_name_list.append(argument_name + "=" + arg_value)
-                            #kw_list_1 += "{0}.{1}.{2}".format(class_value, kw_list,arg_name_list)
+                            arg_name_list.append(argument_name + "="  + arg_value )
+                            kw_list_1.append("{0}.{1}({2})".format(object_dict_keys[count], kw_list, arg_name_list))
+                            count += 1
                     doc_string_value.append("The keyword {0} in Driver {1} has a defined arguments {2} You must want to send other values through data file".format(kw_list, driver, arg_name_list))
         open_actionfile = io.open(ActionFile, 'a+')
         sum = 1
-
         for _, n in enumerate(doc_string_value):
             sample.append('\n' + "        " + str(sum) + ". " + n)
             sample_string = "".join(sample)
@@ -173,30 +182,14 @@ def parsexmlobj():
                 line = line.replace('$wdesc', Description)
             else:
                 line = line.replace('$wdesc', 'Description not provided by the user')
-            line = line.replace('kw_list_1', kw_list_1)
+            kw_list_2 = str(kw_list_1)
+            line = line.replace('$kw_list_1', kw_list_2)
+            obj_list = str(obj_list)
+            line = line.replace('$object', obj_list)
             line = line.replace('$doc_string_values', sample_string)
             open_actionfile.write(line)
         open_actionfile.close()
-        """
-        file_list = ["/data/users/ajeyashi/war-1037_new/warriorframework/warrior/Actions/CliActions/cli_actions.py", "/data/users/ajeyashi/war-1037_new/warriorframework/warrior/Actions/CloudshellActions/cloudshell_actions.py"]
-        for i in file_list:
-            source_file = i
-            with open(source_file) as f:
-                with open("i.txt", "a+") as f1:
-                    for line in f:
-                        if "import " in line:
-                            f1.write(line)
-
-        lines_seen = set() # holds lines already seen
-        outfile = open(ActionFile, "a+")
-        for line in open("temp_file.txt", "r"):
-            if line not in lines_seen: # not a duplicate
-                outfile.write(line)
-                lines_seen.add(line)
-        outfile.close()
-        """
     return checkval
-
 def getChildTextbyParentTag(datafile, pnode, cnode):
     """
     Seraches XML file for the first parent. Finds the child node and returns its text
