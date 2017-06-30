@@ -317,6 +317,7 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
                 .then(
                     function(data) {
                         console.log(data);
+                        $location.path('/testDatafiles');
                     },
                     function(data) {
                         alert(data);
@@ -327,7 +328,7 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
                 type: "success",
                 timer: 1250
             });
-            $location.path('/testDatafiles');
+
         }
 				window.save = save;
         $scope.spanClick = function(){
