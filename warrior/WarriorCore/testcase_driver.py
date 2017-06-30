@@ -440,7 +440,7 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                                 "tc", tc_timestamp)
     tc_junit_object.add_property("logsdir", os.path.dirname(data_repository['wt_logsdir']),
                                 "tc", tc_timestamp)
-    tc_junit_object.update_attr("title", data_repository['wt_title'], "tc", tc_timestamp )
+    tc_junit_object.update_attr("title", data_repository['wt_title'], "tc", tc_timestamp)
 
     data_repository['wt_junit_object'] = tc_junit_object
     print_testcase_details_to_console(testcase_filepath, data_repository)
