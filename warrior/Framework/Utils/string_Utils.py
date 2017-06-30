@@ -23,7 +23,9 @@ from xml.etree import ElementTree
 def strip_white_spaces(input_list):
     """Takes a list of string as input
     Removes the leading and trailing white spaces from each string in the list
-    Returns an output list having the string elements with leading and trailing white spaces removed """
+    Returns an output list having the string elements with leading and trailing
+    white spaces removed
+    """
 
     output_list = []
     for element in input_list:
@@ -34,11 +36,19 @@ def strip_white_spaces(input_list):
     return output_list
 
 def replace_from_varconfig(varconfigfile, details_dict, var_sub=None):
-    """ """
+    """
+    replace variables with values from variable config file
+    """
     if varconfigfile is not None or var_sub is not None:
-        details_dict["command_list"] = sub_from_varconfig(varconfigfile, details_dict["command_list"], var_sub)
-        details_dict["startprompt_list"] = sub_from_varconfig(varconfigfile, details_dict["startprompt_list"], var_sub)
-        details_dict["endprompt_list"] = sub_from_varconfig(varconfigfile, details_dict["endprompt_list"], var_sub)
+        details_dict["command_list"] = sub_from_varconfig(varconfigfile,
+                                                          details_dict["command_list"],
+                                                          var_sub)
+        details_dict["startprompt_list"] = sub_from_varconfig(varconfigfile,
+                                                              details_dict["startprompt_list"],
+                                                              var_sub)
+        details_dict["endprompt_list"] = sub_from_varconfig(varconfigfile,
+                                                            details_dict["endprompt_list"],
+                                                            var_sub)
 
     return details_dict
 
@@ -70,8 +80,10 @@ def sub_from_varconfig(varconfigfile, string_list, var_sub=None, start_pat="${",
     """
     Replaces the string variables with their values taken from varconfig_file.
     :Arguments:
-        1. varconfigfile - xml file or list of xml files from which the values will be taken for subtitution
-        2. string_list - List of command strings, where the variables will be replaced by the config values
+        1. varconfigfile - xml file or list of xml files from which the values will be taken
+        for subtitution
+        2. string_list - List of command strings, where the variables will be replaced by
+        the config values
         3. var_sub(string) = the pattern [var_sub] in the testdata commands,
                                  start_prompt, end_prompt, verification search
                                  will substituted with this value.
@@ -160,7 +172,7 @@ def sub_from_varsub(string, var_sub):
     """
     match = re.search(r".*(\[(var_sub)\]).*", string, re.IGNORECASE)
     if match is not None:
-        string = string.replace(match.group(1),var_sub)
+        string = string.replace(match.group(1), var_sub)
 
     return string
 
