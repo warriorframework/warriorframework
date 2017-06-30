@@ -64,12 +64,18 @@ class WarriorHtmlResults():
                                                                                   'property',
                                                                                   'name',
                                                                                   'resultsdir')
-                    tc_resultsdir = tc_results_node.get("value")
+                    if tc_results_node is not None:
+                        tc_resultsdir = tc_results_node.get("value")
+                    else:
+                        tc_resultsdir = None
                     tc_logs_node = xml_Utils.getElementWithTagAttribValueMatch(testcase_node,
                                                                                  'property',
                                                                                  'name',
                                                                                  'logsdir')
-                    tc_logsdir = tc_logs_node.get("value")
+                    if tc_logs_node is not None:
+                        tc_logsdir = tc_logs_node.get("value")
+                    else:
+                        tc_logsdir = None
                     tc_name = testcase_node.get("name")
                     tc_details = {"tc_resultsdir": tc_resultsdir,
                                   "tc_logsdir": tc_logsdir,
