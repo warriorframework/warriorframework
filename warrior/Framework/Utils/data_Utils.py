@@ -258,12 +258,12 @@ def get_child_tag_value_list(datafile, system_name, child_list=[], *args):
 
     element = xml_Utils.getElementWithTagAttribValueMatch(datafile, 'system',
                                                           'name', system_name)
-    if (element is not None and element is not False):
+    if element is not None and element is not False:
         tag_list = []
         value_list = []
         for child in child_list:
             cnode = element.find(child)
-            if (cnode is not None and cnode is not False):
+            if cnode is not None and cnode is not False:
                 for child in cnode:
                     tag_list.append(child.tag)
                     value_list.append(child.text)
@@ -342,13 +342,15 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
     for testdata in root.findall("testdata"):
         # use only test data blocks that are marked to execute
         exec_flag = get_exec_flag(testdata, title, row)
-        if testdata.get("execute") == "yes" and exec_flag:
-            testdata_key="{0}{1}".format(testdata.get('title',""), \
+        exec_text = testdata.get("execute").strip()
+        execute_req = string_Utils.conv_str_to_bool(exec_text)
+        if  execute_req and exec_flag:
+            testdata_key="{0}{1}".format(testdata.get('title', ""), \
                                          _get_row(testdata))
             details_dict = _get_cmd_details(testdata, global_obj, system_name,
                                             varconfigfile, var_sub=var_sub)
-            start_pat =  _get_pattern_list(testdata, global_obj)
-            end_pat =  _get_pattern_list(testdata, global_obj, pattern="end")
+            start_pat = _get_pattern_list(testdata, global_obj)
+            end_pat = _get_pattern_list(testdata, global_obj, pattern="end")
             details_dict = sub_from_env_var(details_dict, start_pat, end_pat)
 
             print_info("var_sub:{0}".format(var_sub))
@@ -377,7 +379,7 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
 
             details_dict = td_obj.varsub_varconfig_substitutions\
             (details_dict, vc_file=varconfigfile, var_sub=None, start_pat=start_pat, end_pat=end_pat)
-            testdata_dict[testdata_key]=details_dict
+            testdata_dict[testdata_key] = details_dict
             found = 1
 
         else:
@@ -552,7 +554,7 @@ def _get_vc_details(sys_list, system_name, varconfigfile):
     vc_file_list = []
     data_file = config_Utils.datafile
     for system in sys_list:
-        if system and system!=system_name:
+        if system and system != system_name:
             # Get system name when sys tag has both system & session name
             system = system.split(".")[0]
             if system.startswith("[") and system.endswith("]"):
@@ -728,7 +730,18 @@ def verify_resp_across_sys(match_list, context_list, command,
 def get_no_impact_logic(context_str):
     """Get the silent tag from context
     return silence value and context value"""
-    return {'YES:NOIMPACT': (True, 'YES'), 'NO:NOIMPACT': (True, 'No'), 'NO': (False, 'No'), 'YES': (False, 'YES')}.get(context_str.upper())
+    value = {
+              'YES:NOIMPACT': (True, 'YES'),
+              'YES': (False, 'YES'),
+              'Y:NOIMPACT': (True, 'YES'),
+              'Y': (False, 'YES'),
+              'NO:NOIMPACT': (True, 'No'),
+              'NO': (False, 'No'), 
+              'N:NOIMPACT': (True, 'No'),
+              'N': (False, 'No'),
+            }.get(context_str.upper(), False)
+
+    return value
 
 
 def convert2type(value, data_type='str'):
@@ -758,7 +771,7 @@ def verify_cmd_response(match_list, context_list, command, response,
         nogroup = False
         if context_list[i] and match_list[i]:
             noiimpact, found = get_no_impact_logic(context_list[i])
-            found = testcase_Utils.pConvertLogical(found)
+            found = string_Utils.conv_str_to_bool(found)
             if response:
                 match_object = re.search(match_list[i], response)
             else:
@@ -811,7 +824,7 @@ def verify_cmd_response(match_list, context_list, command, response,
             testcase_Utils.pNote(msg, "debug")
         elif context_list[i] and match_list[i] == "":
             noiimpact, found = get_no_impact_logic(context_list[i])
-            found = testcase_Utils.pConvertLogical(found)
+            found = string_Utils.conv_str_to_bool(found)
             escapes = ''.join([chr(char) for char in range(1, 32)])
             response = re.sub(endprompt, "", response).strip()
             response = response.translate(None, escapes)
@@ -1051,7 +1064,7 @@ def _validate_index_value(index, index_list, context_list):
     status = True
 
     new_index = 0
-    for i in range(index-1,0,-1):
+    for i in range(index-1, 0, -1):
         _, found = get_no_impact_logic(context_list[i])
         found = testcase_Utils.pConvertLogical(found)
         if found is True:
@@ -1594,7 +1607,7 @@ def get_nc_config_string(config_datafile, config_name, var_configfile=None):
             if config_node:
                 configuration = xml_Utils.convert_dom_to_string(config_node)
                 if var_configfile:
-                    configuration = sub_from_varconfigfile(configuration,var_configfile)
+                    configuration = sub_from_varconfigfile(configuration, var_configfile)
                 configuration_list.append(configuration)
             else:
                 filepath_list = xml_Utils.get_child_with_matching_tags(data, "filepath")
@@ -1607,23 +1620,23 @@ def get_nc_config_string(config_datafile, config_name, var_configfile=None):
                         if config_node:
                             configuration = xml_Utils.convert_dom_to_string(config_node)
                             if var_configfile:
-                                configuration = sub_from_varconfigfile(configuration,var_configfile)
+                                configuration = sub_from_varconfigfile(configuration, var_configfile)
                             configuration_list.append(configuration)
                         else:
-                            testcase_Utils.pNote("no <config> found in file {0}".format(abs_filepath),"error")
+                            testcase_Utils.pNote("no <config> found in file {0}".format(abs_filepath), "error")
 
                 if not filepath_list:
                     testcase_Utils.pNote("neither <config> nor a file containing <config> "\
 					                     "provided for the config_data = {0} in config file "\
-										 "= {1}".format(config_name, config_datafile),"error")
+										 "= {1}".format(config_name, config_datafile), "error")
                     status = "error"
         else:
             testcase_Utils.pNote("config_data={0} is not found in config "\
-			                     "file ={1}".format(config_name, config_datafile),"error")
+			                     "file ={1}".format(config_name, config_datafile), "error")
             status = "error"
 
     except IOError as err:
-        testcase_Utils.pNote("File does not exist: {0}".format(err),"error")
+        testcase_Utils.pNote("File does not exist: {0}".format(err), "error")
         status = "error"
 
     except Exception as exception:
