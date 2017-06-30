@@ -150,13 +150,16 @@ def parsexmlobj():
                             if arg_value is None or arg_value is False:
                                 arg_value = argument.text
                             arg_name = argument_name + "=" + "\"" + arg_value + "\""
-                            kw_list_1.append("{0}.{1}({2})".format(object_dict_keys[count], kw_list, arg_name))
+                            kw_list_1.append("{0}.{1}({2})".format(object_dict_keys[count],
+                                                                   kw_list, arg_name))
                             count += 1
                         else:
                             arg_name = ""
                             kw_list_1.append("{0}.{1}({2})".format(object_dict_keys[count], kw_list, arg_name))
                             count += 1
-                    doc_string_value.append("The keyword {0} in Driver {1} has a defined arguments {2} You must want to send other values through data file".format(kw_list, driver, arg_name))
+                    doc_string_value.append("The keyword {0} in Driver {1} has a defined "
+                                            "arguments {2} You must want to send other valuesi"
+                                            " through data file".format(kw_list, driver, arg_name))
                 else:
                     for argument in argument_list:
                         argument_name = argument.get('name')
@@ -167,7 +170,9 @@ def parsexmlobj():
                             arg_name_list.append(argument_name + "="  + arg_value )
                             kw_list_1.append("{0}.{1}({2})".format(object_dict_keys[count], kw_list, arg_name_list))
                             count += 1
-                    doc_string_value.append("The keyword {0} in Driver {1} has a defined arguments {2} You must want to send other values through data file".format(kw_list, driver, arg_name_list))
+                    doc_string_value.append("The keyword {0} in Driver {1} has a defined arguments "
+                                            "{2} You must want to send other values through data "
+                                            "file".format(kw_list, driver, arg_name_list))
         open_actionfile = io.open(ActionFile, 'a+')
         sum = 1
         for _, n in enumerate(doc_string_value):
@@ -190,6 +195,8 @@ def parsexmlobj():
             open_actionfile.write(line)
         open_actionfile.close()
     return checkval
+
+
 def getChildTextbyParentTag(datafile, pnode, cnode):
     """
     Seraches XML file for the first parent. Finds the child node and returns its text
@@ -207,11 +214,10 @@ def getChildTextbyParentTag(datafile, pnode, cnode):
             value = child.text
             return value
         else:
-            # print_info("could not find cnode under the given pnode")
             return value
     else:
-        # print_info("could not find pnode in the provided file")
         return value
+
 
 @route('/readdeftagsfile')
 def readdeftagsfile():
