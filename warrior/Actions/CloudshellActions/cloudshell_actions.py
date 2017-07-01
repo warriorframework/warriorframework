@@ -109,11 +109,16 @@ class CloudShellActions(object):
         testcase_Utils.report_substep_status(status)
         return status
 
-
     def cs_create_reservation(self, system_name, reservation_name,
                               duration_in_mins, notify_on_start, notify_on_end,
                               notify_mins_before_end):
-        """Defines a reservation to be started immediately
+        """
+        Defines a reservation to be created.
+        
+        This keyword only defines the reservation with all its details by saving
+        the details in the data repository. Actual creation is done by using the 
+        cs_add_topology_to_reservation keyword by providing the reservation name
+        to it.
 
         :Datafile usage:
             Tags or attributes to be used in input datafile for the system
@@ -142,11 +147,90 @@ class CloudShellActions(object):
                   creation of resources.
         """
 
-        wdesc = "Create Reservation in CloudShell API Host"
+        wdesc = "Save reservation details for the reservation name provided"
         testcase_Utils.pSubStep(wdesc)
         testcase_Utils.pNote(file_Utils.getDateTime())
 
-        testcase_Utils.pNote("cs_create_reservation, cs obj-{}".\
+        testcase_Utils.pNote("save reservation, cs obj-{}".\
+                             format(cloud_shell), "info")
+
+        keys_for_credentials = ['username']
+        credentials = data_Utils.get_credentials(self.datafile, system_name,
+                                                 keys_for_credentials)
+
+        status = True
+        output_dict = {}
+        try:
+            pNote("This keyword will only collect the reservation information "\
+                  "and save the details in data repository.\n")
+            pNote("In order to create reservation in cloudshell, execute this keyword and then "\
+                  "use the keyword 'cs_add_topology_to_reservation' and provide the "\
+                  "reservation_name to it, 'cs_add_topology_to_reservation' keyword will use "\
+                  "the reservation  details for he reservation_name provided, create a "\
+                  "reservation and add topology to the reservation.")
+            
+            res_key = "{0}_{1}_cs_rsrv_details".format(system_name, reservation_name)
+            output_dict = {
+                           res_key: {"reservation_name": reservation_name,
+                                     "username": credentials['username'],
+                                     "duration": duration_in_mins,
+                                     "notify_on_start": notify_on_start,
+                                     "notify_on_end": notify_on_end,
+                                     "notify_mins_before_end": notify_mins_before_end
+                                     }
+                           }
+            
+        except Exception as exception:
+            pNote("Saving reservation details for reservation_name={0} failed!!".format(reservation_name))
+            print_exception(exception)
+            status = False
+        else:
+            pNote("Sucessfully saved reservation details for reservation_name={0}".format(reservation_name))
+
+        testcase_Utils.report_substep_status(status)
+        return status, output_dict
+
+
+    def cs_create_topology_reservation(self, system_name, reservation_name,
+                              duration_in_mins, notify_on_start, notify_on_end,
+                              notify_mins_before_end, topology_full_path):
+        """Defines a reservation to be started immediately
+
+        :Datafile usage:
+            Tags or attributes to be used in input datafile for the system
+            or subsystem.If both tag and attribute is provided the attribute
+            will be used.
+            1. username   = name of the cloudshell user
+
+        :Arguments:
+            1. system_name(string) = Name of the UAP system from the datafile
+            2. reservation_name(string) = Specify the name of the reservation.
+            3. duration_in_mins(int) = Specify the length of the reservation.
+            4. notify_on_start(bool) = Indicate whether to notify the
+               reservation owner when the reservation starts.
+            5. notify_on_end(bool) = Indicate whether to notify the reservation
+               owner when the reservation ends.
+            6. notify_mins_before_end(int) = Notification Minutes Before End -
+               Indicate the number of minutes before the end of the reservation
+               to send out a Notify On End alert to the reservation owner.
+               (0 = disabled)
+            7. topology_full_path(string) = Specify the full topology name. Include
+               the full path from the root to the topology, separated by slashes.
+               For example: FolderName/Topologies/TopologyName
+
+        :Returns:
+            1. status(bool)= True/False
+            2. output_dict = consists of following key value pairs:
+               1. domain_id: Domain Id returned after login to cloudshell.
+               2. reservation_id: Reservation Id returned after successful
+                  creation of resources.
+        """
+
+        wdesc = "Create Topology Reservation in CloudShell API Host"
+        testcase_Utils.pSubStep(wdesc)
+        testcase_Utils.pNote(file_Utils.getDateTime())
+
+        testcase_Utils.pNote("cs_create_topology_reservation, cs obj-{}".\
                              format(cloud_shell), "info")
 
         keys_for_credentials = ['username']
@@ -156,18 +240,19 @@ class CloudShellActions(object):
         status = False
         output_dict = {}
         try:
-            xml_resp = cloud_shell.CreateImmediateReservation(reservation_name,
+            xml_resp = cloud_shell.CreateImmediateTopologyReservation(reservation_name,
                                                               credentials['username'],
                                                               int(duration_in_mins),
                                                               notify_on_start,
                                                               notify_on_end,
-                                                              int(notify_mins_before_end))
+                                                              int(notify_mins_before_end),
+                                                              topology_full_path)
             if xml_resp is not None:
                 reservation_id = xml_resp.Reservation.Id
                 output_dict = {'domain_id': cloud_shell.domain,
                                '{0}_{1}_reservationId'.
                                format(system_name,reservation_name): reservation_id}
-                testcase_Utils.pNote("\n\n *** Cloudshell CreateReservation"
+                testcase_Utils.pNote("\n\n *** Cloudshell CreateTopologyReservation"
                                      " successfull for ResName-\"{}\" ResId-{}\n".\
                                      format(reservation_name,
                                             output_dict['{0}_{1}_reservationId'.\
@@ -175,7 +260,7 @@ class CloudShellActions(object):
                                      "info")
                 status = True
             else:
-                testcase_Utils.pNote("\n\n *** Cloudshell CreateReservation"
+                testcase_Utils.pNote("\n\n *** Cloudshell CreateTopologyReservation"
                                      " failed for \"{}\"".format(reservation_name),
                                      "warning")
         except Exception as exception:
@@ -184,9 +269,9 @@ class CloudShellActions(object):
         testcase_Utils.report_substep_status(status)
         return status, output_dict
 
-
     def cs_add_topology_to_reservation(self, system_name, reservation_name, topology_full_path):
-        """Add Topology to reservation in Cloudshell
+        """
+        Create the reservation and add topology to the reservation in Cloudshell
 
         :Datafile usage:
              NA
@@ -200,36 +285,71 @@ class CloudShellActions(object):
         :Returns:
             1. status(bool)= True/False
         """
-        wdesc = "Add Topology to Reservation in CloudShell API Host"
+        wdesc = "Create the reservation and add Topology to Reservation in CloudShell API Host"
         testcase_Utils.pSubStep(wdesc)
         testcase_Utils.pNote(file_Utils.getDateTime())
 
-        testcase_Utils.pNote("cs_add_topology_to_reservation, cs obj-{}".\
-                             format(cloud_shell), "info")
+        status = True
+        res_key = "{0}_{1}_cs_rsrv_details".format(system_name, reservation_name)
+        res_details = data_Utils.get_object_from_datarepository(res_key)
+        output_dict = {}
+       
+        if res_details:
+            username = res_details["username"]
+            reservation_name = res_details["reservation_name"]
+            duration = int(res_details["duration"])
+            notify_on_start = res_details["notify_on_start"]
+            notify_on_end = res_details["notify_on_end"]
+            notify_mins_before_end = int(res_details["notify_mins_before_end"])
+            try:
+                xml_resp = cloud_shell.CreateImmediateTopologyReservation(reservation_name,
+                                                                          username,
+                                                                          duration,
+                                                                          notify_on_start,
+                                                                          notify_on_end,
+                                                                          notify_mins_before_end,
+                                                                          topology_full_path)                
+                if xml_resp is not None:
+                    reservation_id = xml_resp.Reservation.Id
+                    output_dict = {'domain_id': cloud_shell.domain,
+                                   '{0}_{1}_reservationId'.
+                                   format(system_name,reservation_name): reservation_id}
+                    
+                    testcase_Utils.pNote("\n\n *** Cloudshell CreateReservation"
+                                         " successful for ResName-\"{}\" ResId-{}\n".\
+                                         format(reservation_name,
+                                                output_dict['{0}_{1}_reservationId'.\
+                                                            format(system_name,reservation_name)]),
+                                         "info")
 
-        status = False
-        cs_res_id = data_Utils.get_object_from_datarepository\
-                    (system_name+"_"+reservation_name+"_reservationId")
-        try:
-            xml_resp = cloud_shell.AddTopologyToReservation(cs_res_id,\
-                                                            topology_full_path)
-            if xml_resp is not None:
-                testcase_Utils.pNote("\n\n *** Cloudshell Add Topology \"{}\""
-                                     " successfull for \"{}\"\n".\
-                                     format(topology_full_path, reservation_name),
-                                     "info")
-                status = True
-            else:
-                testcase_Utils.pNote("\n\n *** Cloudshell Add Topology \"{}\""
-                                     " failed for \"{}\"".\
-                                     format(topology_full_path, reservation_name),
-                                     "warning")
-        except Exception as exception:
-            print_exception(exception)
+                    testcase_Utils.pNote("\n\n *** Cloudshell Add Topology \"{}\""
+                                         " successful for \"{}\"\n".\
+                                         format(topology_full_path, reservation_name),
+                                         "info")
+
+                else:
+                    testcase_Utils.pNote("\n\n *** Cloudshell CreateReservation"
+                                         " failed for \"{}\"".format(reservation_name),
+                                         "warning")
+
+                    testcase_Utils.pNote("\n\n *** Cloudshell Add Topology \"{}\""
+                                         " failed for \"{}\"".\
+                                         format(topology_full_path, reservation_name),
+                                         "warning")
+                    status = False
+            except Exception as exception:
+                print_exception(exception)
+                status = False
+        else:
+            pNote("Details for reservation_name={0}, for sysem={1} "\
+                  "not found in data repository. Please make sure "\
+                  "to execute the keyword '{2}' before this"\
+                  "step".format(reservation_name, system_name, 'cs_create_reservation'),
+                  "warning")
+            status = False
 
         testcase_Utils.report_substep_status(status)
-        return status
-
+        return status, output_dict
 
 
 
