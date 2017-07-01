@@ -14,6 +14,7 @@ limitations under the License.
 """This is the CloudShell Actions module that has all Cloudshell related keywords """
 from Framework.Utils import config_Utils, data_Utils, file_Utils
 from Framework.Utils import testcase_Utils
+from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.print_Utils import print_exception, print_info
 import os
 import time
@@ -624,7 +625,7 @@ class CloudShellActions(object):
 
         testcase_Utils.report_substep_status(status)
         return status
-    
+
     def cs_remove_routes_from_reservation(self, system_name, reservation_name,
                                           list_of_endpoints, mapping_type):
 
@@ -653,7 +654,7 @@ class CloudShellActions(object):
         cs_res_id = data_Utils.get_object_from_datarepository\
                 (system_name+"_"+reservation_name+"_reservationId")
         try:
-            xml_resp = cloud_shell.RemoveRoutesFromReservation(cs_res_id, 
+            xml_resp = cloud_shell.RemoveRoutesFromReservation(cs_res_id,
                                                 list_of_endpoints, mapping_type)
             if xml_resp is not None:
                 testcase_Utils.pNote("\n\n *** Cloudshell Remove Routes From"
@@ -670,7 +671,7 @@ class CloudShellActions(object):
 
         testcase_Utils.report_substep_status(status)
         return status
-    
+
     def cs_create_routes_in_reservation(self, system_name, reservation_name,
                                         list_of_source_resources,
                                         list_of_target_resources,
@@ -788,7 +789,7 @@ class CloudShellActions(object):
                reservation.
                For example: To add many users to access the reservation
                             list_of_usernames = ['user1','user2','userx']
- 
+
         :Returns:
             1. status(bool)= True/False
         """
