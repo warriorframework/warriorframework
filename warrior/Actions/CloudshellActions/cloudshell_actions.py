@@ -16,7 +16,7 @@ from Framework.Utils import config_Utils, data_Utils, file_Utils
 from Framework.Utils import testcase_Utils
 from Framework.Utils.print_Utils import print_exception, print_info
 import os
-import time 
+import time
 
 try:
     from cloudshell.api.cloudshell_api import CloudShellAPISession as cs
@@ -27,7 +27,7 @@ except ImportError:
 
 cloud_shell = None
 
-    
+
 class CloudShellActions(object):
     '''
     Cloudshell wrapper APIs to create reservations, adding topologies and
@@ -114,9 +114,9 @@ class CloudShellActions(object):
                               notify_mins_before_end):
         """
         Defines a reservation to be created.
-        
+
         This keyword only defines the reservation with all its details by saving
-        the details in the data repository. Actual creation is done by using the 
+        the details in the data repository. Actual creation is done by using the
         cs_add_topology_to_reservation keyword by providing the reservation name
         to it.
 
@@ -168,7 +168,7 @@ class CloudShellActions(object):
                   "reservation_name to it, 'cs_add_topology_to_reservation' keyword will use "\
                   "the reservation  details for he reservation_name provided, create a "\
                   "reservation and add topology to the reservation.")
-            
+
             res_key = "{0}_{1}_cs_rsrv_details".format(system_name, reservation_name)
             output_dict = {
                            res_key: {"reservation_name": reservation_name,
@@ -179,13 +179,15 @@ class CloudShellActions(object):
                                      "notify_mins_before_end": notify_mins_before_end
                                      }
                            }
-            
+
         except Exception as exception:
-            pNote("Saving reservation details for reservation_name={0} failed!!".format(reservation_name))
+            pNote("Saving reservation details for reservation_name={0} failed!!"\
+                  .format(reservation_name))
             print_exception(exception)
             status = False
         else:
-            pNote("Sucessfully saved reservation details for reservation_name={0}".format(reservation_name))
+            pNote("Sucessfully saved reservation details for reservation_name={0}"\
+                  .format(reservation_name))
 
         testcase_Utils.report_substep_status(status)
         return status, output_dict
@@ -251,12 +253,12 @@ class CloudShellActions(object):
                 reservation_id = xml_resp.Reservation.Id
                 output_dict = {'domain_id': cloud_shell.domain,
                                '{0}_{1}_reservationId'.
-                               format(system_name,reservation_name): reservation_id}
+                               format(system_name, reservation_name): reservation_id}
                 testcase_Utils.pNote("\n\n *** Cloudshell CreateTopologyReservation"
                                      " successfull for ResName-\"{}\" ResId-{}\n".\
                                      format(reservation_name,
                                             output_dict['{0}_{1}_reservationId'.\
-                                                        format(system_name,reservation_name)]),
+                                                        format(system_name, reservation_name)]),
                                      "info")
                 status = True
             else:
@@ -293,7 +295,7 @@ class CloudShellActions(object):
         res_key = "{0}_{1}_cs_rsrv_details".format(system_name, reservation_name)
         res_details = data_Utils.get_object_from_datarepository(res_key)
         output_dict = {}
-       
+
         if res_details:
             username = res_details["username"]
             reservation_name = res_details["reservation_name"]
@@ -308,18 +310,19 @@ class CloudShellActions(object):
                                                                           notify_on_start,
                                                                           notify_on_end,
                                                                           notify_mins_before_end,
-                                                                          topology_full_path)                
+                                                                          topology_full_path)
                 if xml_resp is not None:
                     reservation_id = xml_resp.Reservation.Id
                     output_dict = {'domain_id': cloud_shell.domain,
                                    '{0}_{1}_reservationId'.
-                                   format(system_name,reservation_name): reservation_id}
-                    
+                                   format(system_name, reservation_name): reservation_id}
+
                     testcase_Utils.pNote("\n\n *** Cloudshell CreateReservation"
                                          " successful for ResName-\"{}\" ResId-{}\n".\
                                          format(reservation_name,
                                                 output_dict['{0}_{1}_reservationId'.\
-                                                            format(system_name,reservation_name)]),
+                                                            format(system_name,
+                                                                   reservation_name)]),
                                          "info")
 
                     testcase_Utils.pNote("\n\n *** Cloudshell Add Topology \"{}\""
@@ -354,7 +357,7 @@ class CloudShellActions(object):
 
 
 
-    def cs_activate_topology(self, system_name, reservation_name, 
+    def cs_activate_topology(self, system_name, reservation_name,
                              topology_full_path, time_out=60):
         """Activate Topology to reservation in Cloudshell
 
@@ -368,9 +371,9 @@ class CloudShellActions(object):
                For example: FolderName/Topologies/TopologyName
             4. time_out(int): Before activating topology, we need to check status
                 of the reservation. If it is started, then we need to activate the
-                topology. 
-                Need to wait for some time before activating topology for 
-                reservation status to get started, making the default value of 
+                topology.
+                Need to wait for some time before activating topology for
+                reservation status to get started, making the default value of
                 time_out as 60 sec and can change the value depending on number
                 of resources.
         :Returns:
@@ -383,23 +386,23 @@ class CloudShellActions(object):
 
         testcase_Utils.pNote("cs_activate_topology, cs obj-{}".\
                              format(cloud_shell), "info")
-        
+
         status = True
         cs_res_id = data_Utils.get_object_from_datarepository\
                     (system_name+"_"+reservation_name+"_reservationId")
 
-        #Before entering try block to activate the topology, 
+        #Before entering try block to activate the topology,
         #check whether Reservation status is Started. If status is not Started,
-        #then wait for time_out seconds before activating.  
+        #then wait for time_out seconds before activating.
 
         reservation_status = cloud_shell.GetReservationDetails(cs_res_id).ReservationDescription.Status
         sec = 0
-        while (reservation_status != "Started"):
+        while reservation_status != "Started":
             sec = sec + 1
             reservation_status = cloud_shell.GetReservationDetails(cs_res_id).ReservationDescription.Status
-            time.sleep(1) 
+            time.sleep(1)
             if sec == int(time_out):
-                testcase_Utils.pNote("Waited for {0} seconds, the current reservation" 
+                testcase_Utils.pNote("Waited for {0} seconds, the current reservation"
                                      " status is {1}, but the"
                                      " expected status is Started".\
                                      format(int(time_out), reservation_status),
@@ -446,7 +449,7 @@ class CloudShellActions(object):
         testcase_Utils.pNote("cs_disconnect_routes, cs obj-{}".\
                              format(cloud_shell), "info")
 
-        endpoints = [first_endpoint,second_endpoint]
+        endpoints = [first_endpoint, second_endpoint]
 
         status = False
         cs_res_id = data_Utils.get_object_from_datarepository\
@@ -490,7 +493,7 @@ class CloudShellActions(object):
         testcase_Utils.pNote("cs_connect_routes, cs obj-{}".\
                              format(cloud_shell), "info")
 
-        endpoints = [first_endpoint,second_endpoint]
+        endpoints = [first_endpoint, second_endpoint]
 
         status = False
         cs_res_id = data_Utils.get_object_from_datarepository\
@@ -512,7 +515,7 @@ class CloudShellActions(object):
 
         testcase_Utils.report_substep_status(status)
         return status
-    
+
 
     def cs_remove_route_from_reservation(self, system_name, reservation_name,
                                           first_endpoint, second_endpoint,
@@ -562,7 +565,7 @@ class CloudShellActions(object):
         testcase_Utils.report_substep_status(status)
         return status
 
-    
+
     def cs_create_route_in_reservation(self, system_name, reservation_name,
                                        source_resource_full_path,
                                        target_resource_full_path,
