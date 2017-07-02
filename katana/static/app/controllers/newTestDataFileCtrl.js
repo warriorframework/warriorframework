@@ -254,7 +254,7 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
 
             return check;
         }
-
+				
         $scope.saveFile = function() {
 
             var check = verifyInput();
@@ -274,37 +274,7 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
                     }
                 }
 
-                fileFactory.checkfileexistwithsubdir(filename, 'testdatafile', $scope.subdirs)
-                    .then(
-                        function(data) {
-                            console.log(data);
-                            var fileExist = data.response;
-                            if (fileExist == 'yes') {
-                                sweetAlert({
-                                    title: "File " + filename + " already exists. Do you want to overwrite it?",
-                                    closeOnConfirm: false,
-                                    confirmButtonColor: '#3b3131',
-                                    confirmButtonText: "Yes!",
-                                    showCancelButton: true,
-                                    cancelButtonText: "Nope.",
-                                    type: "warning"
-                                },
-                                function(isConfirm){
-                                    if (isConfirm) {
-                                        save(filename);
-                                    }
-                                    else {
-                                        return false;
-                                    }
-                                });
-
-                            } else {
-                                save(filename);
-                            }
-                        },
-                        function(data) {
-                            alert(data);
-                        });
+            
             }
         };
 
@@ -329,6 +299,38 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
             });
             $location.path('/testDatafiles');
         }
+			    window.checkExists = function(){ fileFactory.checkfileexistwithsubdir( wizardAPI.returnFileName() + '.xml', 'testdatafile', $scope.subdirs)
+                    .then(
+                        function(data) {
+                            console.log(data);
+                            var fileExist = data.response;
+                            if (fileExist == 'yes') {
+                                sweetAlert({
+                                    title: "File " + wizardAPI.returnFileName() + '.xml' + " already exists. Do you want to overwrite it?",
+                                    closeOnConfirm: false,
+                                    confirmButtonColor: '#3b3131',
+                                    confirmButtonText: "Yes!",
+                                    showCancelButton: true,
+                                    cancelButtonText: "Nope.",
+                                    type: "warning"
+                                },
+                                function(isConfirm){
+                                    if (isConfirm) {
+                                       window.save();
+                                    }
+                                    else {
+                                        return false;
+                                    }
+                                });
+
+                            } else {
+                                window.save();
+                            }
+                        },
+                        function(data) {
+                            alert(data);
+                        });
+																				 };
 				window.save = save;
         $scope.spanClick = function(){
         };
