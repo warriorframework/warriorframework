@@ -1,11 +1,11 @@
 {
   "warhorn_config": "", 
-  "pythonsrcdir": "/data/users/ajeyashi/war-864/warrior_main/Warrior/", 
-  "projdir": "/data/users/ajeyashi/war-864/warrior_main/Warrior/Warriorspace/Projects", 
-  "xmldir": "/data/users/ajeyashi/war-864/warrior_main/Warrior/Warriorspace/Testcases", 
-  "idfdir": "/data/users/ajeyashi/war-864/warrior_main/Warrior/Warriorspace/Data", 
+  "pythonsrcdir": "", 
+  "projdir": "", 
+  "xmldir": "", 
+  "idfdir": "", 
   "pythonpath": "", 
-  "testdata": "/data/users/ajeyashi/war-864/warrior_main/Warrior/Warriorspace/Config_files", 
-  "testsuitedir": "/data/users/ajeyashi/war-864/warrior_main/Warrior/Warriorspace/Suites", 
-  "engineer": "annam"
+  "testdata": "", 
+  "testsuitedir": "", 
+  "engineer": ""
 }
