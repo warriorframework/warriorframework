@@ -653,6 +653,7 @@ class CommonSnmpActions(object):
 
         result_list = []
         status = False
+
         if errindication:
             testcase_Utils.pNote("%s" % errindication)
         else:
@@ -661,15 +662,18 @@ class CommonSnmpActions(object):
                                                    errindex and
                                                    varBindTable[-1][int(errindex)-1][0]or '?'))
             else:
-                if type(varBindTable[0]) is not list:
-                    # for SNMP Get/Get-Next output only
-                    for name, val in varBindTable:
-                        result_list.append(snmp_utils.translate_mib(custom_mib_paths, load_mib_modules, name, val))
-                else:
-                    # for SNMP Getbulk/walk output only
-                    for varBindTableRow in varBindTable:
-                        for name, val in varBindTableRow:
+                if varBindTable:
+                    if type(varBindTable[0]) is not list:
+                        # for SNMP Get/Get-Next output only
+                        for name, val in varBindTable:
                             result_list.append(snmp_utils.translate_mib(custom_mib_paths, load_mib_modules, name, val))
+                    else:
+                        # for SNMP Getbulk/walk output only
+                        for varBindTableRow in varBindTable:
+                            for name, val in varBindTableRow:
+                                result_list.append(snmp_utils.translate_mib(custom_mib_paths, load_mib_modules, name, val))
+                else:
+                    testcase_Utils.pNote("No SNMP Result Present!", 'error')
         for element in result_list:
             if mib_string:
                 if mib_string in element[0] and snmp_result in element[-1]:
