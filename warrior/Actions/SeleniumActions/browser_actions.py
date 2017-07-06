@@ -15,7 +15,6 @@ limitations under the License.
 import os, re
 from Framework.ClassUtils.WSelenium.browser_mgmt import BrowserManagement
 from Framework.Utils.print_Utils import print_warning
-from selenium import webdriver
 
 try:
     import Framework.Utils as Utils
@@ -201,23 +200,12 @@ class browser_actions(object):
                     get_browser_details(browser, self.datafile, **arguments)
             if browser_details is not None:
                 if type == "firefox":
-                    fp = webdriver.FirefoxProfile()
-                    if proxy_ip is not None and proxy_port is not None:
-                        proxy_port = int(proxy_port)
-                        fp.set_preference("network.proxy.type", 1)
-                        fp.set_preference("network.proxy.http", proxy_ip)
-                        fp.set_preference("network.proxy.http_port",
-                                          proxy_port)
-                        fp.set_preference("network.proxy.ssl", proxy_ip)
-                        fp.set_preference("network.proxy.ssl_port", proxy_port)
-                        fp.set_preference("network.proxy.ftp", proxy_ip)
-                        fp.set_preference("network.proxy.ftp_port", proxy_port)
-                        fp.update_preferences()
-                else:
-                    fp = None
+                    ff_profile = self.browser_object.\
+                        set_firefoxprofile(proxy_ip, proxy_port)
                 browser_inst = self.browser_object.open_browser(
                     browser_details["type"], webdriver_remote_url,
-                    binary=binary, gecko_path=gecko_path, profile_dir=fp)
+                    binary=binary, gecko_path=gecko_path,
+                    profile_dir=ff_profile)
                 if browser_inst:
                     browser_fullname = "{0}_{1}".format(system_name, browser_details["browser_name"])
                     output_dict[browser_fullname] = browser_inst

@@ -392,6 +392,22 @@ class BrowserManagement(object):
 
         return status
 
+    def set_firefoxprofile(self, proxy_ip, proxy_port):
+        ff_profile = webdriver.FirefoxProfile()
+        if proxy_ip is not None and proxy_port is not None:
+            proxy_port = int(proxy_port)
+            ff_profile.set_preference("network.proxy.type", 1)
+            ff_profile.set_preference("network.proxy.http", proxy_ip)
+            ff_profile.set_preference("network.proxy.http_port", proxy_port)
+            ff_profile.set_preference("network.proxy.ssl", proxy_ip)
+            ff_profile.set_preference("network.proxy.ssl_port", proxy_port)
+            ff_profile.set_preference("network.proxy.ftp", proxy_ip)
+            ff_profile.set_preference("network.proxy.ftp_port", proxy_port)
+            ff_profile.update_preferences()
+        else:
+            ff_profile = None
+        return ff_profile
+
     # private methods
     def _make_browser(self, browser_name, desired_capabilities=None,
                       profile_dir=None, webdriver_remote_url=None,
