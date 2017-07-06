@@ -202,7 +202,7 @@ class BrowserManagement(object):
         except urllib2.URLError as url_err:
             print_error("URLError: {} reason: ({})".format(url, url_err.reason))
             status = False
-        if status == False:
+        if status is False:
             print_error("Incorrect URL provided")
         return status, url
 
@@ -392,7 +392,9 @@ class BrowserManagement(object):
 
         return status
 
-    def set_firefoxprofile(self, proxy_ip, proxy_port):
+    @staticmethod
+    def set_firefoxprofile(proxy_ip, proxy_port):
+        """method to update the given preferences in Firefox profile"""
         ff_profile = webdriver.FirefoxProfile()
         if proxy_ip is not None and proxy_port is not None:
             proxy_port = int(proxy_port)
