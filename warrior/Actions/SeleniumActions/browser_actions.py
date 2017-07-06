@@ -225,8 +225,7 @@ class browser_actions(object):
                             is not None:
                         result, url = self.browser_object.check_url(browser_details["url"])
                         if result is True:
-                            result = self.browser_object.go_to(url,
-                                                               browser_inst)
+                            result = self.browser_object.go_to(url, browser_inst)
                     else:
                         result = True
                 else:
@@ -1797,7 +1796,7 @@ class browser_actions(object):
         return status
 
     def save_screenshot(self, system_name, type="firefox", directory=None,
-                        filename =None, browser_name="all",
+                        filename=None, browser_name="all",
                         element_config_file=None, element_tag=None):
         """
         This keyword will save a screenshot of the current browser window.

@@ -28,8 +28,8 @@ try:
     from selenium.common.exceptions import WebDriverException
 
     KEYS = {1: Keys.NUMPAD1, 2: Keys.NUMPAD2, 3: Keys.NUMPAD3,
-        4: Keys.NUMPAD4, 5: Keys.NUMPAD5, 6: Keys.NUMPAD6,
-        7: Keys.NUMPAD7, 8: Keys.NUMPAD8, 9: Keys.NUMPAD9}
+            4: Keys.NUMPAD4, 5: Keys.NUMPAD5, 6: Keys.NUMPAD6,
+            7: Keys.NUMPAD7, 8: Keys.NUMPAD8, 9: Keys.NUMPAD9}
 
 except Exception as exception:
     print_exception(exception)
@@ -251,12 +251,11 @@ class BrowserManagement(object):
         if url is not None:
             self.go_to(url, browser_instance)
             sleep(1)
-    
+
     def switch_tab(self, browser_instance=None, tab_number=None, browser_type="firefox"):
         status = True
         if browser_instance is None:
             browser_instance = self.current_browser
-        
         if tab_number is not None:
             try:
                 tab_number = int(tab_number)
@@ -419,10 +418,11 @@ class BrowserManagement(object):
         """Create an instance of firefox browser"""
         try:
             if webdriver_remote_url:
-                browser = self._create_remote_web_driver(
-                                webdriver.DesiredCapabilities.FIREFOX,
-                                webdriver_remote_url, desired_capabilites,
-                                profile_dir)
+                browser = \
+                    self._create_remote_web_driver(
+                        webdriver.DesiredCapabilities.FIREFOX,
+                        webdriver_remote_url, desired_capabilites,
+                        profile_dir)
             else:
                 ff_capabilities = webdriver.DesiredCapabilities.FIREFOX
                 if ff_capabilities['marionette']:
