@@ -55,7 +55,7 @@ def send_keyword_to_productdriver(driver_name, keyword, data_repository, args_re
     # driver_call = 'ProductDrivers.{0}'.format(driver_name)
     try:
         # Find if the driver file is in warrior plugins
-        plugin_driver = Utils.file_Utils.recursive_findfile(driver_name + ".py", "plugins")
+        plugin_driver = Utils.file_Utils.recursive_findfile(driver_name + ".py", "Plugins")
         # When a keyword is part of warrior plugins
         if plugin_driver:
             plugin_dir = ".".join(os.path.dirname(plugin_driver).split(os.sep))
