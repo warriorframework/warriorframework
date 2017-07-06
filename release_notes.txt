@@ -1,5 +1,5 @@
 Release: Ninja
-Version: 3.0
+Version: warrior-3.1.1
 
 ===================
 1: Release details
@@ -9,52 +9,37 @@ This is release Ninja of Warrior Test Automation Framework
 -------------------------------
 1.1: List of available releases
 -------------------------------
-1. Ninja = 3.0 to current
+1. Ninja = warrior-3.1.1 to current
 
 ==================
 2. Version Details
 ==================
-You are on Release Ninja, Version 3.0 of Warrior Framework.
+You are on Release Ninja, Version warrior-3.1.1 of Warrior Framework.
 Procedure to get a specific version is available in section-3 of this document.
 
 +++++++++++++++++++++++++++++++++
 2.1. Change log for this release
 +++++++++++++++++++++++++++++++++
 
-------------------
-Hghlight Features:
-------------------
-
-[WAR-984] - Added the fast feedback mechanism for failed Cases during Suite execution
-[WAR-874] - The ability to verify whether certain value in the response is less than or greater than a specified value
-[WAR-752] - Added "iter" functionality in the datafile so that it can work with iterative cases as well
-
--------------
-New Features:
--------------
-
-[WAR-613] - Keyword to separate test files for parallel execution added
-[WAR-579] - Keyword to verify if elements are present on the page added to the Warrior Core Selenium Keywords
-
 -------------
 Improvements:
 -------------
-
-[WAR-452] - New Demo and Sample Cases, Suites, and Projects added in Warrior's Warriorspace
-[WAR-1040] - Warrior User Guide updated
-[WAR-960] - Moved bottle.py from Utils to OSS
-[WAR-961] - Separated non-OSS from OSS related content into separate modules in the actions directory
-[WAR-986] - Default value for iteration_type in a step set to Standard
-[WAR-971] - Added license files to the Repository
-[WAR-988] - Katana can now be started by giving the absolute path of the katana executable.
-[WAR-968] - Warhorn updated to handle new structure of Warrior Framework
-
+[WAR-1257] : Upgrade cloudshell KWs with the cloudshell api version 8.0 and above
+			 Details:
+			 
+			 - New keyword 'cs_create_topology_reservation' added to create reservation and add topology to the reservation created in one step,
+			 this is to be compatible with cloudshell v8.0 support.
+			 
+			 - Existing keywords modified to be compatible with both v7.x, v8.0 of chloudshell api's.
+			 cs_create_reservation: going forward this keyword will only save the reservation details to the data repository
+			 cs_add_topology_to_reservation: going forward this keyword will create the reservation (details of which were provided and saved by 
+			 cs_create_reservation) and add topology to the reservation thus created.
 ---------
 Bugfixes:
 ---------
-[WAR-977] - node check condition xml_Utils.py corrected
-[WAR-1008] - Handled Request_rpc TypeError failure
-[WAR-1041] - Handled lxml Import Error
+[WAR-1258] - Katana : Testdata Block not executing due to wrong parsing of execute type value.
+[WAR-1260] - Katana: Add bypassed checks in testdata files back into the testdata controller
+
 
 =================================================
 3. Procedure to get a specific version of Warrior 

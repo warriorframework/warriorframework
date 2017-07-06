@@ -125,9 +125,10 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
         };
 
          $scope.cancelFile = function() {
-            $location.path('/testdatafiles');
+            location.href = '/katana/#/testdatafiles';
         };
-
+				window.cancelFile = $scope.cancelFile;
+			
         function verifyInput(){
             var check = true;
 
@@ -253,7 +254,7 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
 
             return check;
         }
-
+				
         $scope.saveFile = function() {
 
             var check = verifyInput();
@@ -273,14 +274,39 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
                     }
                 }
 
-                fileFactory.checkfileexistwithsubdir(filename, 'testdatafile', $scope.subdirs)
+            
+            }
+        };
+
+        function save(filename){
+            var x2js = new X2JS();
+            var token = angular.toJson($scope.jsonData);
+						console.log('save', $scope.jsonData, token);
+            var xmlObj = x2js.json2xml_str(wizardAPI.formsToJSON());
+            saveNewTestDataFileFactory.saveNew( wizardAPI.returnFileName() + '.xml', $scope.subdirs, xmlObj)
+                .then(
+                    function(data) {
+                        console.log(data);
+                    },
+                    function(data) {
+                        alert(data);
+                    });
+            sweetAlert({
+                title: "File saved: " + wizardAPI.returnFileName() + '.xml',
+                showConfirmButton: false,
+                type: "success",
+                timer: 1250
+            });
+            $location.path('/testDatafiles');
+        }
+			    window.checkExists = function(){ fileFactory.checkfileexistwithsubdir( wizardAPI.returnFileName() + '.xml', 'testdatafile', $scope.subdirs)
                     .then(
                         function(data) {
                             console.log(data);
                             var fileExist = data.response;
                             if (fileExist == 'yes') {
                                 sweetAlert({
-                                    title: "File " + filename + " already exists. Do you want to overwrite it?",
+                                    title: "File " + wizardAPI.returnFileName() + '.xml' + " already exists. Do you want to overwrite it?",
                                     closeOnConfirm: false,
                                     confirmButtonColor: '#3b3131',
                                     confirmButtonText: "Yes!",
@@ -290,7 +316,7 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
                                 },
                                 function(isConfirm){
                                     if (isConfirm) {
-                                        save(filename);
+                                       window.save();
                                     }
                                     else {
                                         return false;
@@ -298,36 +324,13 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
                                 });
 
                             } else {
-                                save(filename);
+                                window.save();
                             }
                         },
                         function(data) {
                             alert(data);
                         });
-            }
-        };
-
-        function save(filename){
-            var x2js = new X2JS();
-            var token = angular.toJson($scope.jsonData);
-            var xmlObj = x2js.json2xml_str(JSON.parse(token));
-            saveNewTestDataFileFactory.saveNew(filename, $scope.subdirs, xmlObj)
-                .then(
-                    function(data) {
-                        console.log(data);
-                    },
-                    function(data) {
-                        alert(data);
-                    });
-            sweetAlert({
-                title: "File saved: " + filename,
-                showConfirmButton: false,
-                type: "success",
-                timer: 1250
-            });
-            $location.path('/testDatafiles');
-        }
-
+				window.save = save;
         $scope.spanClick = function(){
         };
 
@@ -690,7 +693,7 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
                 }
             }
         };
-
+				window.jsonData = $scope.jsonData.data;
         $scope.addAnotherCommandTag = function(index){
             if($scope.td_cp_tag_editor_is_open[index]){
                 swal({
@@ -1052,6 +1055,8 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
             $scope.subdirs = subdirs;
             readTestDataFile();
         }
+				else
+					wizardAPI && wizardAPI.init();
 
         function readTestDataFile(){
             TestDataFileFactory.fetch()
@@ -1061,6 +1066,7 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
 
                     var x2js = new X2JS();
                     $scope.jsonData = x2js.xml_str2json($scope.xmlData);
+										window.tdOriginalJSON = $scope.jsonData;
                     if ($scope.jsonData == null) {
                         sweetAlert({
                             title: "There was an error reading the TestData File: " + data["filename"],
@@ -1474,6 +1480,7 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
                             }
                         }
                     }
+								wizardAPI && wizardAPI.init();
                 },
                     function (msg) {
                         alert(msg);
