@@ -1236,3 +1236,26 @@ def remove(nfile):
         print_error("removing file {} raised exception {}".
                     format(nfile, str(e)))
     return status
+
+
+def recursive_findfile(file_name, src_dir):
+    """
+    Finds the file(with extension) in the given directory.
+    :Arguments:
+        1. file_name - name of the file(with extension) to be searched
+        2. src_dir - path of the directory where the file will be searched
+    :Return:
+        Path of the file(from src_dir) with extension if exists else False
+    """
+
+    output = False
+    if dirExists(src_dir):
+        for root, _, files in os.walk(src_dir):
+            for f in files:
+                if f == file_name:
+                    output = os.path.join(root, f)
+                    return output
+    else:
+        print_warning("Directory does not exist in the provided path: {}".format(src_dir))
+
+    return output

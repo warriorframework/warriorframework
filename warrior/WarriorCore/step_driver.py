@@ -13,6 +13,7 @@ limitations under the License.
 
 
 """step driver module"""
+import os
 import time
 import traceback
 import exec_type_driver
@@ -49,12 +50,21 @@ def get_arguments(step):
 
 
 def send_keyword_to_productdriver(driver_name, keyword, data_repository, args_repository):
-    """send the keyword to corresponding product driver for excution"""
+    """send the keyword to corresponding product driver for execution"""
     step_num = data_repository["step_num"]
-    #driver_call = 'ProductDrivers.{0}'.format(driver_name)
+    # driver_call = 'ProductDrivers.{0}'.format(driver_name)
     try:
-        driver_call = __import__("ProductDrivers.{0}".format(
-            driver_name), fromlist=[driver_name])
+        # Find if the driver file is in warrior plugins
+        plugin_driver = Utils.file_Utils.recursive_findfile(driver_name + ".py", "plugins")
+        # When a keyword is part of warrior plugins
+        if plugin_driver:
+            plugin_dir = ".".join(os.path.dirname(plugin_driver).split(os.sep))
+            driver_call = __import__("{0}.{1}".format(plugin_dir, driver_name),
+                                     fromlist=[driver_name])
+        # When a keyword is a part of warrior core keywords
+        else:
+            driver_call = __import__("ProductDrivers.{0}".format(
+                driver_name), fromlist=[driver_name])
     except Exception:
         trcback = print_exception(Exception)
         data_repository['step-%s_status' % step_num] = 'ERROR'
