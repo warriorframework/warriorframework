@@ -1240,15 +1240,16 @@ def remove(nfile):
 
 def recursive_findfile(file_name, src_dir):
     """
-    Finds the file(with extension) in the given directory.
+    Finds the file_name in the given directory.
     :Arguments:
-        1. file_name - name of the file(with extension) to be searched
-        2. src_dir - path of the directory where the file will be searched
+        1. file_name(string) - name of the file(with extension) to be searched
+        2. src_dir(string) - path of the dir where the file will be searched
     :Return:
-        Path of the file(from src_dir) with extension if exists else False
+        1. output_path(string) - Path of the file(from src_dir) with extension
+                                 if the file exists else False
     """
 
-    output = False
+    output_path = False
     if dirExists(src_dir):
         for root, _, files in os.walk(src_dir):
             for f in files:
@@ -1256,6 +1257,38 @@ def recursive_findfile(file_name, src_dir):
                     output = os.path.join(root, f)
                     return output
     else:
-        print_warning("Directory does not exist in the provided path: {}".format(src_dir))
+        print_warning("Directory does not exist in the provided "
+                      "path: {}".format(src_dir))
 
-    return output
+    return output_path
+
+
+def get_modified_files(src_dir, time_stamp, filetypes=""):
+    """
+    Finds the modified files(with any one of the filetypes) after a given
+    time_stamp in the src_dir. If filetypes argument is empty, all
+    modified files will be included.
+    :Arguments:
+        1. src_dir(string) - path of the directory where the files will be
+        2. time_stamp(int/float) - time stamp value. Ex. time.time() will
+                                   return current system time in seconds
+        3. filetypes(sting) - comma separated file types. Ex. ".py, .xml"
+    :Return:
+        1. modified_files(list) - list of files modified
+    """
+
+    modified_files = []
+    filetypes = tuple([ft.strip() for ft in filetypes.split(',') if ft])
+    for dirname, _, files in os.walk(src_dir):
+        for fname in files:
+            full_path = os.path.join(dirname, fname)
+            # os.path.getmtime(full_path)
+            mtime = os.stat(full_path).st_mtime
+            if mtime > time_stamp:
+                if filetypes:
+                    if full_path.lower().endswith(filetypes):
+                        modified_files.append(full_path)
+                else:
+                    modified_files.append(full_path)
+
+    return modified_files

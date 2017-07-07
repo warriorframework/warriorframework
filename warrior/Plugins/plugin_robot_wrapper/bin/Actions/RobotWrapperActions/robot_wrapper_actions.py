@@ -15,14 +15,15 @@ limitations under the License.
 """ robot_wrapper_actions module that has all robot framework related keywords """
 
 import os
+import time
 from subprocess import Popen, PIPE
 
 import Framework.Utils as Utils
 from Framework.Utils.print_Utils import print_info, print_warning
 from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.data_Utils import get_object_from_datarepository
-from Framework.Utils.file_Utils import getAbsPath
-
+from Framework.Utils.file_Utils import getAbsPath, get_modified_files
+from Plugins.plugin_robot_wrapper.bin.Utils import robot_wrapper_utils
 
 class RobotWrapperActions(object):
     """ RobotWrapperActions class which has methods(keywords) related to Robot Framework """
@@ -46,6 +47,7 @@ class RobotWrapperActions(object):
         testcasefile_path = get_object_from_datarepository('wt_testcase_filepath')
         abs_filepath = getAbsPath(file_path, os.path.dirname(testcasefile_path))
 
+        current_time = time.time()
         if os.path.isfile(abs_filepath):
             p = Popen("python " + file_path, stderr=PIPE, stdout=PIPE, shell=True)
             output, errors = p.communicate()
@@ -59,5 +61,10 @@ class RobotWrapperActions(object):
         else:
             pNote("Robot script: '{}' does not exist".format(abs_filepath), 'warning')
             status = False
+
+        # Get modified xml files in the output_dir
+        modified_list = get_modified_files(output_dir, current_time, ".xml")
+        # Get the robot xml files from the modified list of files
+        robot_xml_list = robot_wrapper_utils.get_robot_xml_files(modified_list)
 
         return status
