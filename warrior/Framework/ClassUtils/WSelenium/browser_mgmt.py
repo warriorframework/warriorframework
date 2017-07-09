@@ -17,7 +17,8 @@ import re
 from time import sleep
 import urllib2
 from Framework.Utils.datetime_utils import get_current_timestamp
-from Framework.Utils.print_Utils import print_error, print_info, print_debug, print_exception
+from Framework.Utils.print_Utils import print_error, print_info, print_debug, print_exception, \
+    print_warning
 
 
 try:
@@ -178,27 +179,21 @@ class BrowserManagement(object):
 
     def check_url(self, url):
         """To check whether the user provided url is valid or not."""
-        status = True
         search_http = re.search("http", url)
         if not search_http:
-            print_error("Provide the url along with http/https")
-            status = False
-            return status, url
+            print_warning("The url with http/https is missing")
+            return None
         try:
             url_open = urllib2.urlopen(url)
             get_status_code = url_open.code
             pattern = re.compile('^2[0-9][0-9]$')
             if not pattern.match(str(get_status_code)):
-                status = False
+                print_warning("The Status code for url : {} is {}".format(url, get_status_code))
         except urllib2.HTTPError as http_error:
             print_error("URLError: {} reason: ({}) status code: {}".format(url, http_error.reason, http_error.code))
-            status = False
         except urllib2.URLError as url_err:
             print_error("URLError: {} reason: ({})".format(url, url_err.reason))
-            status = False
-        if status == False:
-            print_error("Incorrect URL provided")
-        return status, url
+        return None
 
     def go_to(self, url, browser_instance=None):
         """Navigates the active browser instance to the provided URL."""
