@@ -1394,7 +1394,7 @@ def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
             if len(extracted_var) > 0:
                 for string in extracted_var:
                     try:
-                        if isinstance(raw_value[k], str):
+                        if isinstance(raw_value[k], (str, unicode):
                             raw_value[k] = raw_value[k].replace(
                                 start_pattern+string+end_pattern,
                                 get_var_by_string_prefix(string))
