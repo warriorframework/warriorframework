@@ -579,9 +579,9 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
             $scope.maxAttemptsCap = $scope.suitemodel.TestSuite.Details.type._Max_Attempts;
             $scope.numAttemptsCap = $scope.suitemodel.TestSuite.Details.type._Number_Attempts;
 
-            $scope.suitemodel.TestSuite.Details.Date = ChildCtrl.baseCtrl.getDate();
+/*            $scope.suitemodel.TestSuite.Details.Date = ChildCtrl.baseCtrl.getDate();
             $scope.suitemodel.TestSuite.Details.Time = ChildCtrl.baseCtrl.getTime();
-            $scope.suitemodel.TestSuite.Details.Engineer = $scope.cfg.engineer;
+            $scope.suitemodel.TestSuite.Details.Engineer = $scope.cfg.engineer;*/
 
             $scope.isMaxAttempSelected_Fail = function() {
                 if ($scope.exectypeCap == 'Run_Until_Fail') {
