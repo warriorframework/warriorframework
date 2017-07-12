@@ -1,5 +1,5 @@
 Release: Ninja
-Version: warrior-3.1.0
+Version: warrior-3.1.1
 
 ===================
 1: Release details
@@ -9,62 +9,37 @@ This is release Ninja of Warrior Test Automation Framework
 -------------------------------
 1.1: List of available releases
 -------------------------------
-1. Ninja = warrior-3.1.0 to current
+1. Ninja = warrior-3.1.1 to current
 
 ==================
 2. Version Details
 ==================
-You are on Release Ninja, Version warrior-3.1.0 of Warrior Framework.
+You are on Release Ninja, Version warrior-3.1.1 of Warrior Framework.
 Procedure to get a specific version is available in section-3 of this document.
 
 +++++++++++++++++++++++++++++++++
 2.1. Change log for this release
 +++++++++++++++++++++++++++++++++
 
-
--------------
-New Features:
--------------
-[WAR-547] - Improve the structure of the built-in tests
-[WAR-855] - Update print error, info, debug and all other print utils to write to result file same way like pNote
-[WAR-885] - SNMP Warrior MIB Browser
-[WAR-934] - Selenium KWs: Selenium functional tests need to be updated as the elements on the webpages that they were accessing have changed
-[WAR-939] - WARHORN: allow --user option when installing dependency
-[WAR-940] - If a testcase is in the "Draft" state, Warrior should not run the testcase as it would contain keywords and/or drivers that have not been developed yet.
-[WAR-958] - OSS: Create/move tests folder inside Warrior/Katana/Warhorn directories
-[WAR-1099] - Create JUnit file during execution
-[WAR-1106] - OSS: Change warhorn default config file so new users can run without any changes
-[WAR-1115] - Move cli_tests data file into a separate folder
-[WAR-1136] - As a user, I want to set many ENV variables and pass it to a file
-[WAR-1132] - Option to substitute WF data repository values in Testdata blocks
-[WAR-1182] - Update .travis.yml file with the new project name
-
 -------------
 Improvements:
 -------------
-[WAR-1131] - VAR_SUB substitution doesn't happen when used with "verify="${[VAR_SUB].verify_commit}""
-
+[WAR-1257] : Upgrade cloudshell KWs with the cloudshell api version 8.0 and above
+			 Details:
+			 
+			 - New keyword 'cs_create_topology_reservation' added to create reservation and add topology to the reservation created in one step,
+			 this is to be compatible with cloudshell v8.0 support.
+			 
+			 - Existing keywords modified to be compatible with both v7.x, v8.0 of chloudshell api's.
+			 cs_create_reservation: going forward this keyword will only save the reservation details to the data repository
+			 cs_add_topology_to_reservation: going forward this keyword will create the reservation (details of which were provided and saved by 
+			 cs_create_reservation) and add topology to the reservation thus created.
 ---------
 Bugfixes:
 ---------
-[WAR-721] - Junit is not generated correctly for iterative parallel testsuite
-[WAR-760] - Keyword waitfor_subscription fails after timeout
-[WAR-837] - MIBS Loading from GIT url not working.
-[WAR-865] - Selenium keyword mentioned in the description returns pass when it should have failed
-[WAR-879] - SNMP: keyword start_tarp_listener should be changed to start_trap_listener
-[WAR-935] - runmode value taken as one less
-[WAR-936] - Issue : Prints "-I- failed: failure action= Abort" in all Passed steps.
-[WAR-978] - WNetwork expects "%" in response to ping. "%" may also be prompt in most systems
-[WAR-982] - Change in file utils in resolving the absolute path has impacted the demo action files.
-[WAR-983] - From 2.9 Selenium element config files in data files have become unresolvable.
-[WAR-1033] - selenium : Need to correct selenium_generic_tc_10.xml
-[WAR-1064] - Warrior hang in certain scenario when verify_on is set
-[WAR-1098] - Junit file format is incorrect
-[WAR-1121] - TS with parallel_kw tc throws error when trying to combine junit result
-[WAR-1155] - Selenium: Need to correct the relative paths of the config files which is mentioned in data files
-[WAR-1169] - Due to rearrangement of version file in the new repo, details of the version will not be logged in the log file.
-[WAR-1066] - copy option in test data doesn't list the step number to be copied
-[WAR-1180] - Change the import for print utils and other files to prevent loop import
+[WAR-1258] - Katana : Testdata Block not executing due to wrong parsing of execute type value.
+[WAR-1260] - Katana: Add bypassed checks in testdata files back into the testdata controller
+
 
 =================================================
 3. Procedure to get a specific version of Warrior 
