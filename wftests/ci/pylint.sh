@@ -5,7 +5,9 @@ pip install pylint
 cd ../
 git clone https://github.com/warriorframework/warriorframework.git pylint_warrior
 cd pylint_warrior
+git checkout develop
 git checkout "${TRAVIS_PULL_REQUEST_BRANCH}"
+git merge develop
 git checkout develop
 
 git branch
