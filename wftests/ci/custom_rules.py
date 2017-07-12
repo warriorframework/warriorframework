@@ -3,7 +3,6 @@ Use ast module to check custom rules enforced by warrior dev team
 """
 import ast
 import sys
-import pprint
 
 def func_check(node, kw=False):
     '''
@@ -19,8 +18,10 @@ def func_check(node, kw=False):
     have_return = False
     substep_count = 0
 
+    # investigate everything in a function
     for child in ast.walk(node):
         if child != node and isinstance(child, ast.FunctionDef):
+            # check for private method in action file
             if kw and child.name.startswith("_"):
                 print node.name, child.name, "should move to utils"
                 status = False
@@ -30,11 +31,14 @@ def func_check(node, kw=False):
             tmp_status = class_check(child, kw)
             status &= tmp_status
         elif isinstance(child, ast.Print):
+            # check for print statement
             status = False
             print "Please use print_Utils instead of print in {}: {}".format(sys.argv[1], child.lineno)
         elif isinstance(child, ast.Return):
+            # check for return statement
             have_return = True
         elif isinstance(child, ast.Attribute) and child.attr == 'pSubStep':
+            # check for Substep and report substep pair
             substep_count += 1
         elif isinstance(child, ast.Attribute) and child.attr == 'report_substep_status':
             substep_count -= 1
@@ -72,6 +76,7 @@ def class_check(node, kw=False):
             status &= tmp_status
 
     if ast.get_docstring(node) is None:
+        # check for docstring
         print node.name, "doesn't contain any docstring"
         status = False
     return status
@@ -85,7 +90,7 @@ def main(kw=False):
         scan for function - function check
     """
     f = open(sys.argv[1])
-    if "-kw" in sys.argv:
+    if "Actions/" in sys.argv:
         kw = True
     root = ast.parse(f.read())
     have_license = False
