@@ -66,11 +66,15 @@ do
     fi
 done < summary.txt
 
+custom_status="pass"
 for i in $filelist; do
     python wftests/ci/custom_rules.py "$i"
+    if [[ $? -ne 0 ]] ; then
+        custom_status="fail"
+    fi
 done
 
-if [ "$status" = "fail" ] ; then
+if [ "$status" = "fail" ] || [ "$custom_status" = "fail" ]; then
     exit 1;
 else
     exit 0;
