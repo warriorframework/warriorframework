@@ -66,6 +66,8 @@ do
     fi
 done < summary.txt
 
+$filelist | xargs -L 1 python custom_rules.py
+
 if [ "$status" = "fail" ] ; then
     exit 1;
 else
