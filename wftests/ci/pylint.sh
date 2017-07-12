@@ -67,7 +67,7 @@ do
 done < summary.txt
 
 custom_status="pass"
-for i in $($filelist | grep -v "custom_rules.py") ; do
+for i in $(echo $filelist | grep -v "custom_rules.py") ; do
     python wftests/ci/custom_rules.py "$i"
     if [[ $? -ne 0 ]] ; then
         custom_status="fail"
