@@ -93,6 +93,14 @@ Framework\.ClassUtils\.testdata\_class module
     :undoc-members:
     :show-inheritance:
 
+Framework\.ClassUtils\.warrior\_connect\_class module
+-----------------------------------------------------
+
+.. automodule:: Framework.ClassUtils.warrior_connect_class
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Framework\.ClassUtils\.xl\_utils\_class module
 ----------------------------------------------
 
