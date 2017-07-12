@@ -47,7 +47,7 @@ do
         line_status="fail"
     fi
     
-    num3=$(grep -oP "previous run.*/10, \K[0-9\.\-+]*" <<< "$line" | tr -d "+")
+    num3=$(grep -oP "previous run.*/10, \K[0-9\.\-+]*" <<< "$line" | tr -d "+":-0)
     num4="0"
     if [[ $(echo "$num3 < $num4" | bc) -ne 0 ]] ; then
         echo "score decrease: $num3"
