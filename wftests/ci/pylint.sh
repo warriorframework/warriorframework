@@ -8,18 +8,20 @@ git checkout FETCH_HEAD
 
 git branch
 # Displaying what .py files have changed
-if [[ $(git --no-pager diff --name-only FETCH_HEAD "${TRAVIS_COMMIT}"  | grep -v 'OSS' | grep -v 'conf.py' | grep '.py$') ]]; then
+filelist=$(git --no-pager diff --name-only FETCH_HEAD "${TRAVIS_COMMIT}"  | grep -v 'OSS' | grep -v 'conf.py' | grep '.py$')
+if [[ $filelist ]]; then
     echo "List of .py files that have changed in this commit"
-    git --no-pager diff --name-only FETCH_HEAD "${TRAVIS_COMMIT}"  | grep -v 'OSS' | grep -v 'conf.py' | grep '.py$'
+    echo $filelist
 else
     echo "no .py file has changed in this commit, exiting"
     exit 0;
 fi
+
 # Do pylint on develop and the latest commit, output result to pylint_result.txt
-git --no-pager diff --name-only FETCH_HEAD "${TRAVIS_COMMIT}"  | grep -v 'OSS' | grep -v 'conf.py' | grep '.py$' | xargs -L 1 pylint || true
+echo $filelist | xargs -L 1 pylint || true
 git checkout "${TRAVIS_COMMIT}" ;
-git --no-pager diff --name-only "${TRAVIS_COMMIT}" FETCH_HEAD  | grep -v 'OSS' | grep -v 'conf.py' | grep '.py$'
-git --no-pager diff --name-only "${TRAVIS_COMMIT}" FETCH_HEAD  | grep -v 'OSS' | grep -v 'conf.py' | grep '.py$' | xargs -L 1 pylint | tee pylint_result.txt || true
+echo $filelist
+echo $filelist | xargs -L 1 pylint | tee pylint_result.txt || true
 
 # Match filename and score into summary.txt
 grep "Your code has been rated" pylint_result.txt > score.txt
@@ -30,13 +32,13 @@ sed -i -e 's/Your code//g' score.txt
 paste -d "^" filename.txt score.txt | column -t -s "^" | tee summary.txt
 
 # Check if there is an increase 
-set +x
+# set +x
 echo "Files that doesn't meet the pylint score requirement (>5 with score increase)"
 status="pass"
 while read -r line;
 do 
     line_status="pass"
-    echo "$line"
+    # echo "$line"
     num1=$(grep -oP "at \K[0-9\.\-]*" <<< "$line");
     num2="5";
     if [[ $(echo "$num1 < $num2" | bc) -ne 0 ]] ; then
