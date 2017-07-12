@@ -9,7 +9,7 @@ git checkout develop
 
 git branch
 # Displaying what .py files have changed
-filelist=$(git --no-pager diff --name-only develop "${TRAVIS_BRANCH}"  | grep -v 'OSS' | grep -v 'conf.py' | grep '.py$')
+filelist=$(git --no-pager diff --name-only develop "${TRAVIS_PULL_REQUEST_BRANCH}"  | grep -v 'OSS' | grep -v 'conf.py' | grep '.py$')
 if [[ $filelist ]]; then
     echo "List of .py files that have changed in this commit"
     echo $filelist
@@ -20,7 +20,7 @@ fi
 
 # Do pylint on develop and the latest commit, output result to pylint_result.txt
 echo $filelist | xargs -L 1 pylint || true
-git checkout "${TRAVIS_BRANCH}" ;
+git checkout "${TRAVIS_PULL_REQUEST_BRANCH}" ;
 echo $filelist
 echo $filelist | xargs -L 1 pylint | tee pylint_result.txt || true
 
