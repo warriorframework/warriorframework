@@ -50,7 +50,7 @@ do
     fi
     
     num3=$(grep -oP "previous run.*/10, \K[0-9\.\-+]*" <<< "$line" | tr -d "+")
-    if ![[ $num3 ]]; then
+    if [[ !$num3 ]]; then
         num3="0"
     fi
     num4="0"
