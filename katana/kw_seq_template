@@ -1,26 +1,21 @@
-def $wrapper_kw(self):
-    '''
-    The KW is auto-generated with Sequential KW tool, you could group Warrior Keywords to perform a specific action repeatedly.
-    The Author of the KW has predefined variables and its values. Please use Data file to pass to the values to this KW, if required.
-    The predefined KW and variables are listed below exactly in the order of execution.
-    $doc_string_values
-    '''
-    from Actions.CliActions.cli_actions import CliActions
-    from Actions.DemoActions.demo_actions import DemoActions
-    wdesc = "$wdesc"
-    status_list = []
-    object_list = []
-    object_list = $object
-    DemoActions_obj=DemoActions()
-    CliActions_obj=CliActions()
-    kw_list, status = $kw_list_1, True
-    for i in kw_list:
-        output = eval(i)
-        if isinstance(output, tuple):
-            data_Utils.update_datarepository(output[1])
-            status &= output[0]
-            Utils.testcase_Utils.report_substep_status(output[0])
-        else:
-            status &= output
-            Utils.testcase_Utils.report_substep_status(output[0])
-    return status
+
+$new_line    def $wrapper_kw(self):
+        """
+        The KW is auto-generated with Sequential KW tool, you could group Warrior Keywords to perform a specific action repeatedly.
+        The Author of the KW has predefined variables and its values. Please use Data file to pass to the values to this KW, if required.
+        The predefined KW and variables are listed below exactly in the order of execution.
+        $doc_string_values
+        """
+        from Actions.CliActions.cli_actions import CliActions
+        from Actions.CiRegressionActions.ci_regression_actions import CIregressionActions
+        from Actions.CloudshellActions.cloudshell_actions import CloudShellActions
+        from Actions.CommonActions.common_actions import CommonActions
+        from Actions.DemoActions.demo_actions import DemoActions
+        from Actions.NetconfActions.netconf_Actions import NetconfActions
+        from Actions.RestActions.rest_actions import RestActions
+        from Actions.ServerActions.server_actions import ServerActions
+        from Actions.SnmpActions.common_snmp_actions import CommonSnmpActions
+        from Framework.Utils import data_Utils
+        wdesc = "$wdesc"
+        status_list = []
+        kw_list, status = $kw_list_1, True

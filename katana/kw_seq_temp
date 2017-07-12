@@ -1,0 +1,8 @@
+    for i in kw_list:
+        output = eval(i)
+        if isinstance(output, tuple):
+            data_Utils.update_datarepository(output[1])
+            status &= output[0]
+        else:
+            status &= output
+    return status

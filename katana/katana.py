@@ -17,6 +17,10 @@ import json
 import os
 import platform
 import re
+import sys
+import inspect
+import importlib
+import io
 import subprocess
 import xml.etree.ElementTree as ET
 import threading
@@ -89,16 +93,17 @@ def readconfig():
     cfg = json.loads("".join(lines))
     return cfg
 
+
 @route('/parsexmlobj', method='POST')
 def parsexmlobj():
-    import sys
-    import inspect
-    import io
-
-    arg_name_list = []
+    method_names = []
+    arg_name_list = ""
+    class_name = ""
+    actions_package_list = []
+    object_list_new = []
+    class_list_new = []
     sample = []
-    obj_list = []
-    object_list = []
+    py_files = ""
     doc_string_value = []
     kw_list_1 = []
     xmlobj = parseString("".join(request.body))
@@ -115,13 +120,12 @@ def parsexmlobj():
     ActionFile = getChildTextbyParentTag('output.txt', 'Details', 'ActionFile')
     Description = getChildTextbyParentTag('output.txt', 'Details',
                                           'Description')
-    method_names =[]
-    with open(ActionFile,'r') as file:
-        for line in file:
+    with open(ActionFile, 'r') as files:
+        for line in files:
             line = line.split()
             if "def" in line:
-               next_word = line[line.index("def")+1].split("(")[0]
-               method_names.append(next_word)
+                next_word = line[line.index("def")+1].split("(")[0]
+                method_names.append(next_word)
 
     if WrapperName in method_names:
         checkval = "yes"
@@ -131,17 +135,33 @@ def parsexmlobj():
         subkw_list = Subkeyword.findall('Skw')
         count = 0
         for values in subkw_list:
-            object_dict = {'CliActions_obj': 'CliActions()', 'DemoActions_obj': 'DemoActions()'}
-            object_dict_keys = object_dict.keys()
-            object_dict_values = object_dict.values()
-            object = object_dict_keys[count] + "=" + object_dict_values[count]
-            obj_list.append(object)
+            global gpysrcdir
             subkw_list_attrib = values.attrib
             driver = subkw_list_attrib.get('Driver')
+            driver_file = gpysrcdir + 'ProductDrivers/' + driver + ".py"
+            actiondir = mkactiondirs(driver_file)
+            pyfiles = mkactionpyfiles(actiondir)
+            class_name = str(actiondir).split('/')[-1]
+            class_name = re.sub(class_name[-1], '', class_name)
+            class_name = re.sub(class_name[-1], '', class_name)
+            for valuees in pyfiles:
+                py_files = str(valuees).encode('utf-8', 'ignore')
+                (_, file_name) = py_files.rsplit('/', 1)
+                path = str(gpysrcdir).encode('utf-8', 'ignore')
+                sys.path.append(path)
+                file_name = file_name.split('.')[0]
+                actions_package = get_action_dirlist(driver_file)[0] + "." + file_name
+                modules = importlib.import_module(actions_package)
+                class_list_new = inspect.getmembers(modules, inspect.isclass)[0][0]
+                object_list = class_list_new + "_obj = " + class_list_new + "()"
+                object_list_new.append(object_list)
+                class_list = object_list.split('=')[0]
+            actions_package_list.append(get_action_dirlist(driver_file))
             kw_list = subkw_list_attrib.get('Keyword')
             Arguments = values.find('Arguments')
             if Arguments is not None:
                 argument_list = Arguments.findall('argument')
+                len_arg_list = len(argument_list)
                 if len(argument_list) == 1:
                     for argument in argument_list:
                         argument_name = argument.get('name')
@@ -150,15 +170,19 @@ def parsexmlobj():
                             if arg_value is None or arg_value is False:
                                 arg_value = argument.text
                             arg_name = argument_name + "=" + "\"" + arg_value + "\""
-                            kw_list_1.append("{0}.{1}({2})".format(object_dict_keys[count],
-                                                                   kw_list, arg_name))
+                            kw_list_1.append("{0}.{1}({2})".format(class_list, kw_list, arg_name))
                             count += 1
+                            doc_string_value.append("The keyword {0} in Driver {1} has a defined "
+                                                    "arguments {2} You must want to send other "
+                                                    "values through data file".format(kw_list,
+                                                                                      driver,
+                                                                                      arg_name))
                         else:
                             arg_name = ""
-                            kw_list_1.append("{0}.{1}({2})".format(object_dict_keys[count], kw_list, arg_name))
+                            kw_list_1.append("{0}.{1}({2})".format(class_list, kw_list, arg_name))
                             count += 1
                     doc_string_value.append("The keyword {0} in Driver {1} has a defined "
-                                            "arguments {2} You must want to send other valuesi"
+                                            "arguments {2} You must want to send other values"
                                             " through data file".format(kw_list, driver, arg_name))
                 else:
                     for argument in argument_list:
@@ -167,33 +191,42 @@ def parsexmlobj():
                             arg_value = argument.get('value')
                             if arg_value is None or arg_value is False:
                                 arg_value = argument.text
-                            arg_name_list.append(argument_name + "="  + arg_value )
-                            kw_list_1.append("{0}.{1}({2})".format(object_dict_keys[count], kw_list, arg_name_list))
+                            arg_list = argument_name + "=" + "\'" + arg_value + "\',"
+                            arg_name_list += arg_list
                             count += 1
+                    if len_arg_list == count:
+                        kw_list_1.append("{0}.{1}({2})".format(class_list, kw_list, arg_name_list))
                     doc_string_value.append("The keyword {0} in Driver {1} has a defined arguments "
                                             "{2} You must want to send other values through data "
                                             "file".format(kw_list, driver, arg_name_list))
-        open_actionfile = io.open(ActionFile, 'a+')
-        sum = 1
-        for _, n in enumerate(doc_string_value):
-            sample.append('\n' + "        " + str(sum) + ". " + n)
+                    count = 0
+                    arg_name_list = ""
+        sum_val = 1
+        for _, new in enumerate(doc_string_value):
+            sample.append('\n' + "        " + str(sum_val) + ". " + new)
             sample_string = "".join(sample)
-            sum += sum
-            if sum > len(subkw_list):
+            sum_val += 1
+            if sum_val > len(subkw_list):
                 break
         for line in io.open('kw_seq_template', 'r'):
-            line = line.replace('$wrapper_kw', WrapperName)
-            if Description is not None:
-                line = line.replace('$wdesc', Description)
-            else:
-                line = line.replace('$wdesc', 'Description not provided by the user')
-            kw_list_2 = str(kw_list_1)
-            line = line.replace('$kw_list_1', kw_list_2)
-            obj_list = str(obj_list)
-            line = line.replace('$object', obj_list)
-            line = line.replace('$doc_string_values', sample_string)
-            open_actionfile.write(line)
-        open_actionfile.close()
+            with open(ActionFile, 'a+') as f2:
+                line = line.replace('$new_line', '\n')
+                line = line.replace('$wrapper_kw', WrapperName)
+                line = line.replace('$doc_string_values', sample_string)
+                if Description is not None:
+                    line = line.replace('$wdesc', Description)
+                else:
+                    line = line.replace('$wdesc', 'Description not provided by the user')
+                line = line.replace('$kw_list_1', str(kw_list_1))
+                f2.write(line)
+
+        with open(ActionFile, 'a+') as f2:
+            for _, val in enumerate(object_list_new):
+                val = val.decode('utf-8')
+                f2.write('\n' + "        " + val)
+            for line in io.open('kw_seq_temp', 'r'):
+                f2.write('\n' + "    " + line)
+        f2.close()
     return checkval
 
 
@@ -1530,7 +1563,7 @@ def get_jira_projects():
     node_dict[1] = "None"
     id = 2
     path = readconfig()
-    xml_file = os.path.join(path["pythonsrcdir"], "Tools", "jira",
+    xml_file = os.path.join(path["pythonsrcdir"], "Tools", "Jira",
                             "jira_config.xml")
     if os.path.exists(xml_file):
         tree = xml.etree.ElementTree.parse(xml_file)
