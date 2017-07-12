@@ -67,8 +67,7 @@ do
 done < summary.txt
 
 for i in $filelist; do
-    custom_status=$(python wftests/ci/custom_rules.py "$i")
-    echo $custom_status
+    python wftests/ci/custom_rules.py "$i"
 done
 
 if [ "$status" = "fail" ] ; then
