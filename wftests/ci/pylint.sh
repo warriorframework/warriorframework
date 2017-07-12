@@ -5,14 +5,12 @@ pip install pylint
 cd ../
 git clone https://github.com/warriorframework/warriorframework.git pylint_warrior
 cd pylint_warrior
-git checkout develop
-git checkout "${TRAVIS_PULL_REQUEST_BRANCH}"
-git merge develop
+git checkout "${TRAVIS_PULL_REQUEST_SHA}"
 git checkout develop
 
 git branch
 # Displaying what .py files have changed
-filelist=$(git --no-pager diff --name-only develop "${TRAVIS_PULL_REQUEST_BRANCH}" | grep -v 'OSS' | grep -v 'conf.py' | grep '.py$')
+filelist=$(git --no-pager diff --name-only develop "${TRAVIS_PULL_REQUEST_SHA}" | grep -v 'OSS' | grep -v 'conf.py' | grep '.py$')
 if [[ $filelist ]]; then
     echo "List of .py files that have changed in this commit"
     echo $filelist
@@ -23,7 +21,7 @@ fi
 
 # Do pylint on develop and the latest commit, output result to pylint_result.txt
 echo $filelist | xargs -L 1 pylint || true
-git checkout "${TRAVIS_PULL_REQUEST_BRANCH}" ;
+git checkout "${TRAVIS_PULL_REQUEST_SHA}" ;
 echo $filelist
 echo $filelist | xargs -L 1 pylint | tee pylint_result.txt || true
 
@@ -68,7 +66,10 @@ do
     fi
 done < summary.txt
 
-echo $filelist | xargs -L 1 python wftests/ci/custom_rules.py
+for i in $filelist; do
+    custom_status=$(python wftests/ci/custom_rules.py "$i")
+    echo $custom_status
+done
 
 if [ "$status" = "fail" ] ; then
     exit 1;
