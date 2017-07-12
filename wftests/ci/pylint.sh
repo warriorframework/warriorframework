@@ -5,11 +5,12 @@ pip install pylint
 cd ../
 git clone https://github.com/warriorframework/warriorframework.git pylint_warrior
 cd pylint_warrior
+git checkout "${TRAVIS_PULL_REQUEST_BRANCH}"
 git checkout develop
 
 git branch
 # Displaying what .py files have changed
-filelist=$(git --no-pager diff --name-only develop "${TRAVIS_PULL_REQUEST_BRANCH}"  | grep -v 'OSS' | grep -v 'conf.py' | grep '.py$')
+filelist=$(git --no-pager diff --name-only develop "${TRAVIS_PULL_REQUEST_BRANCH}" | grep -v 'OSS' | grep -v 'conf.py' | grep '.py$')
 if [[ $filelist ]]; then
     echo "List of .py files that have changed in this commit"
     echo $filelist
