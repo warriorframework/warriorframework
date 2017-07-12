@@ -10,7 +10,7 @@ git checkout develop
 
 git branch
 # Displaying what .py files have changed
-filelist=$(git --no-pager diff --name-only develop "${TRAVIS_PULL_REQUEST_SHA}" | grep -v 'OSS' | grep -v 'conf.py' | grep '.py$')
+filelist=$(git --no-pager diff --name-only develop "${TRAVIS_PULL_REQUEST_SHA}" | grep -v 'OSS' | grep -v 'conf.py' | grep -v "custom_rules.py" | grep '.py$')
 if [[ $filelist ]]; then
     echo "List of .py files that have changed in this commit"
     echo $filelist
@@ -67,7 +67,7 @@ do
 done < summary.txt
 
 custom_status="pass"
-for i in $(echo $filelist | grep -v "custom_rules.py") ; do
+for i in $filelist ; do
     python wftests/ci/custom_rules.py "$i"
     if [[ $? -ne 0 ]] ; then
         custom_status="fail"
