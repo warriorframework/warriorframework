@@ -68,7 +68,7 @@ do
     fi
 done < summary.txt
 
-$filelist | xargs -L 1 python wftests/ci/custom_rules.py
+echo $filelist | xargs -L 1 python wftests/ci/custom_rules.py
 
 if [ "$status" = "fail" ] ; then
     exit 1;
