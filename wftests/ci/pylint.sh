@@ -2,13 +2,14 @@ set -x
 # ls -l
 pip install pylint
 
-git config --replace-all remote.origin.fetch +refs/heads/*:refs/remotes/origin/*
-git fetch origin develop
-git checkout FETCH_HEAD
+cd ../
+git clone https://github.com/warriorframework/warriorframework.git pylint_warrior
+cd pylint_warrior
+git checkout develop
 
 git branch
 # Displaying what .py files have changed
-filelist=$(git --no-pager diff --name-only FETCH_HEAD "${TRAVIS_COMMIT}"  | grep -v 'OSS' | grep -v 'conf.py' | grep '.py$')
+filelist=$(git --no-pager diff --name-only develop "${TRAVIS_COMMIT}"  | grep -v 'OSS' | grep -v 'conf.py' | grep '.py$')
 if [[ $filelist ]]; then
     echo "List of .py files that have changed in this commit"
     echo $filelist
