@@ -3,19 +3,7 @@ language: python
 matrix:
   include:
     - os: linux
-      env: INSTALL=no TESTFILE=./wftests/warrior_tests/projects/pj_common_actions.xml
-      python: 2.7
-    - os: linux
       env: INSTALL=yes TESTFILE=./wftests/ci/pylint.sh PYLINT=yes
-      python: 2.7
-    - os: linux
-      env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/pj_cond_var.xml
-      python: 2.7
-    - os: linux
-      env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/pj_rest.xml
-      python: 2.7
-    - os: linux
-      env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/pj_retry.xml
       python: 2.7
 
 before_install:
