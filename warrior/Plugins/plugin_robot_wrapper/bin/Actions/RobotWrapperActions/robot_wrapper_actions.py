@@ -39,9 +39,11 @@ class RobotWrapperActions(object):
         """
         This keyword is to execute python scripts which internally calls robot scripts.
         :Arguments:
-            1. file_path - Path of python script to be executed
-            2. output_dir - Directory path used as outputdir for robot scripts
-                            available in the python script
+            1. file_path(string) - Path of python script to be executed
+            2. output_dir(string) - Directory path used as outputdir for robot
+                                    scripts available in the python script
+        :Returns:
+            1. status(bool)= True/False
         """
 
         testcasefile_path = get_object_from_datarepository('wt_testcase_filepath')
@@ -62,9 +64,13 @@ class RobotWrapperActions(object):
             pNote("Robot script: '{}' does not exist".format(abs_filepath), 'warning')
             status = False
 
-        # Get modified xml files in the output_dir
+        # Get the modified xml files in the output_dir
         modified_list = get_modified_files(output_dir, current_time, ".xml")
         # Get the robot xml files from the modified list of files
         robot_xml_list = robot_wrapper_utils.get_robot_xml_files(modified_list)
+        # Get results from robot xml files
+        robot_test_results = robot_wrapper_utils.get_results_from_robot_xml(robot_xml_list)
+        # Create junit for robot tests
+        robot_wrapper_utils.create_case_junit(robot_test_results)
 
         return status

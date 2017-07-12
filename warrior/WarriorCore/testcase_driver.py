@@ -411,6 +411,8 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
 
     get_testcase_details(testcase_filepath, data_repository, jiraproj)
 
+    isValid, isRobotCase = validate_case(testcase_filepath)
+
     # These lines are for creating testcase junit file
     from_ts = False
     if not 'wt_junit_object' in data_repository:
@@ -454,6 +456,10 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
         print_warning("Testcase is in 'Draft' state, it may have keywords "
                       "that have not been developed yet. Skipping the "
                       "testcase execution and it will be marked as 'ERROR'")
+        tc_status = "ERROR"
+    elif isValid is False and isRobotCase is True:
+        print_warning("Mix of normal and robot steps is not allowed, "
+                      "this case will be marked as 'ERROR'")
         tc_status = "ERROR"
     else:
         if data_type.upper() == 'CUSTOM' and \
@@ -624,6 +630,32 @@ def execute_custom(datatype, runtype, driver, data_repository, step_list):
     else:
         print_error("Unsuppored runtype found, please check testcase file")
     return tc_status
+
+
+def validate_case(testcase_filepath):
+    """
+    Check if the case doesn't have the mix of normal and robot steps.
+    Mix of normal and robot steps is not supported.
+    """
+
+    isValid = True
+    # Get the steps from the case
+    steps = Utils.xml_Utils.getElementListWithSpecificXpath(testcase_filepath,
+                                                            './/step[@Driver]')
+    isRobotCase = False
+    # Check if the case has any step which uses robot wrapper plug-in
+    for step in steps:
+        if step.get("Plugin") == "plugin_robot_wrapper":
+            isRobotCase = True
+            break
+    # Check if the case  has any non-robot steps
+    if isRobotCase is True:
+        for step in steps:
+            if step.get("Plugin") != "plugin_robot_wrapper":
+                isValid = False
+                break
+    return isValid, isRobotCase
+
 
 def main(testcase_filepath, data_repository = {}, tc_context='POSITIVE',
          runtype='SEQUENTIAL_KEYWORDS', tc_parallel=False, auto_defects=False, suite=None,

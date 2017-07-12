@@ -222,19 +222,16 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
     # time.sleep(1)
     print("\n")
     kw_end_time = Utils.datetime_utils.get_current_timestamp()
-    tc_duration = Utils.datetime_utils.get_time_delta(kw_start_time)
-    hms = Utils.datetime_utils.get_hms_for_seconds(tc_duration)
+    kw_duration = Utils.datetime_utils.get_time_delta(kw_start_time)
+    hms = Utils.datetime_utils.get_hms_for_seconds(kw_duration)
     print_info("Keyword duration= {0}".format(hms))
     print_info("[{0}] Keyword execution completed".format(kw_end_time))
 
     impact_dict = {"IMPACT": "Impact", "NOIMPACT": "No Impact"}
-    tc_junit_object.add_keyword_result(data_repository['wt_tc_timestamp'], step_num, keyword,
-                                       str(keyword_status), kw_start_time, tc_duration, kw_resultfile,
-                                       impact_dict.get(step_impact.upper()), onerror)
-    tc_junit_object.update_count(
-        str(keyword_status), "1", "tc", data_repository['wt_tc_timestamp'])
-    tc_junit_object.update_count(
-        "keywords", "1", "tc", data_repository['wt_tc_timestamp'])
+    tc_timestamp = data_repository['wt_tc_timestamp']
+    add_keyword_result(tc_junit_object, tc_timestamp, step_num, keyword,
+                       keyword_status, kw_start_time, kw_duration,
+                       kw_resultfile, impact_dict, step_impact, onerror)
 
     if parallel is True:
         # put result into multiprocessing queue and later retrieve in
@@ -243,6 +240,20 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
                    step_impact.upper(), tc_junit_object))
     else:
         return keyword_status, kw_resultfile, step_impact, exec_type_onerror
+
+
+def add_keyword_result(tc_junit_object, tc_timestamp, step_num, keyword,
+                       keyword_status, kw_start_time, kw_duration,
+                       kw_resultfile, impact_dict, step_impact, onerror):
+    """ Add keyword results into junit object """
+
+    tc_junit_object.add_keyword_result(tc_timestamp, step_num, keyword,
+                                       str(keyword_status), kw_start_time,
+                                       kw_duration, kw_resultfile,
+                                       impact_dict.get(step_impact.upper()),
+                                       onerror)
+    tc_junit_object.update_count(str(keyword_status), "1", "tc", tc_timestamp)
+    tc_junit_object.update_count("keywords", "1", "tc", tc_timestamp)
 
 
 def main(step, step_num, data_repository, system_name, parallel=False, queue=None):
