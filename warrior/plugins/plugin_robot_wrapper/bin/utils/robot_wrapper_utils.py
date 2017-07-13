@@ -21,7 +21,7 @@ from WarriorCore.step_driver import add_keyword_result
 
 def get_robot_xml_files(input_list):
     """
-    Get robot xml files from the list of files.
+    Find robot xml files from the list of files.
     :Arguments:
         1. input_list(list) - list of file names
     :Return:
@@ -96,6 +96,10 @@ def create_case_junit(robot_tests):
                                     "tc", tc_timestamp)
         tc_junit_object.update_attr("title", test_name, "tc", tc_timestamp)
 
+        string_status = {"PASS": "TRUE", "FAIL": "FALSE"}
+        # Convert robot test results
+        if str(tc_status).upper() in string_status.keys():
+            tc_status = string_status[str(tc_status).upper()]
         tc_junit_object.update_count(tc_status, "1", "ts", data_repository['wt_ts_timestamp'])
         tc_junit_object.update_count("tests", "1", "ts", data_repository['wt_ts_timestamp'])
         tc_junit_object.update_count("tests", "1", "pj", "not appicable")
@@ -122,7 +126,6 @@ def create_case_junit(robot_tests):
                  test_elem, 'status', 'status')
 
                 # Convert robot keyword results
-                string_status = {"PASS": "TRUE", "FAIL": "FALSE"}
                 if str(kw_status).upper() in string_status.keys():
                     kw_status = string_status[str(kw_status).upper()]
 
