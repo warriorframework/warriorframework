@@ -411,7 +411,7 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
 
     get_testcase_details(testcase_filepath, data_repository, jiraproj)
 
-    isValid, isRobotCase = validate_case(testcase_filepath)
+    isValid, isRobotWrapperCase = validate_case(testcase_filepath)
 
     # These lines are for creating testcase junit file
     from_ts = False
@@ -456,13 +456,14 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                       "that have not been developed yet. Skipping the "
                       "testcase execution and it will be marked as 'ERROR'")
         tc_status = "ERROR"
-    elif isValid is False and isRobotCase is True:
-        print_warning("Mix of normal and robot steps is not allowed. Skipping "
-                      "the case execution and it will be marked as 'ERROR'")
+    elif isValid is False and isRobotWrapperCase is True:
+        print_warning("Mix of normal and robot_wrapper steps is not allowed. "
+                      "Skipping the case execution and it will be marked as "
+                      "'ERROR'")
         tc_status = "ERROR"
-    elif isValid is True and isRobotCase is True and from_ts is False:
-        print_warning("Case which has robot steps should be executed as part "
-                      "of a Suite. Skipping the case execution and "
+    elif isValid is True and isRobotWrapperCase is True and from_ts is False:
+        print_warning("Case which has robot_wrapper steps should be executed "
+                      "as part of a Suite. Skipping the case execution and "
                       "it will be marked as 'ERROR'")
         tc_status = "ERROR"
     else:
@@ -638,27 +639,27 @@ def execute_custom(datatype, runtype, driver, data_repository, step_list):
 
 def validate_case(testcase_filepath):
     """
-    Check if the case doesn't have the mix of normal and robot steps.
-    Mix of normal and robot steps is not supported.
+    Check if the case doesn't have the mix of normal and robot_wrapper steps.
+    Mix of normal and robot_wrapper steps is not supported.
     """
 
     isValid = True
     # Get the steps from the case
     steps = Utils.xml_Utils.getElementListWithSpecificXpath(testcase_filepath,
                                                             './/step[@Driver]')
-    isRobotCase = False
+    isRobotWrapperCase = False
     # Check if the case has any step which uses robot wrapper plug-in
     for step in steps:
         if step.get("Plugin") == "plugin_robot_wrapper":
-            isRobotCase = True
+            isRobotWrapperCase = True
             break
     # Check if the case  has any non-robot steps
-    if isRobotCase is True:
+    if isRobotWrapperCase is True:
         for step in steps:
             if step.get("Plugin") != "plugin_robot_wrapper":
                 isValid = False
                 break
-    return isValid, isRobotCase
+    return isValid, isRobotWrapperCase
 
 
 def main(testcase_filepath, data_repository = {}, tc_context='POSITIVE',
