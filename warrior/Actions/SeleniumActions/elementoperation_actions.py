@@ -1484,8 +1484,8 @@ class elementoperation_actions(object):
                 br_name = system_name + "_" + browser_details["browser_name"]
                 current_browser = Utils.data_Utils.get_object_from_datarepository(br_name)
                 if not current_browser:
-                        pNote("No browser instance {0} found in the data "
-                              "repository!".format(br_name), "error")
+                    pNote("No browser instance {0} found in the data "
+                          "repository!".format(br_name), "error")
                 else:
                     status = self.elem_oper_obj.\
                         perform_element_action(current_browser,
@@ -1855,7 +1855,8 @@ class elementoperation_actions(object):
             <Arguments>
                 <argument name="system_name" value="system_1"/>
                 <argument name="source_locator_type" value="element_tag=xpath"/>
-                <argument name="element_config_file" value="../Config_files/demo_selenium_tc_Config_1.json"/>
+                <argument name="element_config_file"
+                value="../Config_files/demo_selenium_tc_Config_1.json"/>
                 <argument name="element_tag" value="element_config_file=source"/>
                 <argument name="xoffset" value="100"/>
                 <argument name="yoffset" value="0"/>
@@ -1902,8 +1903,8 @@ class elementoperation_actions(object):
                 br_name = system_name + "_" + browser_details["browser_name"]
                 current_browser = Utils.data_Utils.get_object_from_datarepository(br_name)
                 if not current_browser:
-                        pNote("No browser instance {0} found in the data "
-                              "repository!".format(br_name), "error")
+                    pNote("No browser instance {0} found in the data "
+                          "repository!".format(br_name), "error")
                 else:
                     status = self.elem_oper_obj.\
                         perform_element_action(current_browser,
@@ -2065,9 +2066,7 @@ class elementoperation_actions(object):
                     else:
                         status = self.elem_oper_obj.\
                             perform_element_action(current_browser, comp_locator, "get_property",
-                                                   attribute_name=browser_details[
-                                                                                  "attribute_name"
-                                                                                  ],
+                                                   attribute_name=browser_details["attribute_name"],
                                                    browser=current_browser)
                 else:
                     status = self.elem_oper_obj.\

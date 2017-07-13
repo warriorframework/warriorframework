@@ -18,8 +18,6 @@ from Framework.Utils import data_Utils
 from Framework.Utils.testcase_Utils import pNote, pSubStep
 from Framework.ClassUtils.json_utils_class import JsonUtils
 
-""" Selenium keywords for Generic Browser Actions """
-
 try:
     import Framework.Utils as Utils
 except ImportWarning:
@@ -27,8 +25,11 @@ except ImportWarning:
 
 
 class browser_actions(object):
-    """ browser_actions class which has methods(keywords)
-    related to actions performed on any web page """
+    """
+    Selenium keywords for Generic Browser Actions
+    browser_actions class which has methods(keywords)
+    related to actions performed on any web page
+    """
 
     def __init__(self, *args, **kwargs):
         self.resultfile = Utils.config_Utils.resultfile
@@ -176,7 +177,7 @@ class browser_actions(object):
                     if "url" in browser_details and browser_details["url"]\
                             is not None:
                         result, url = self.browser_object.check_url(browser_details["url"])
-                        if result == True:
+                        if result is True:
                             result = self.browser_object.go_to(url, browser_inst)
                     else:
                         result = True
@@ -1558,10 +1559,10 @@ class browser_actions(object):
                     get_object_from_datarepository(system_name + "_" +
                                                    browser_details["browser_name"])
                 if current_browser:
-                    x, y = self.browser_object.\
+                    x_co_ord, y_co_ord = self.browser_object.\
                         get_window_position(current_browser)
                     pNote("Window X co-ordinate: {0} and window Y "
-                          "co-ordinate: {1}".format(x, y))
+                          "co-ordinate: {1}".format(x_co_ord, y_co_ord))
                 else:
                     pNote("Browser of system {0} and name {1} not found in the datarepository"
                           .format(system_name, browser_details["browser_name"]), "Exception")
