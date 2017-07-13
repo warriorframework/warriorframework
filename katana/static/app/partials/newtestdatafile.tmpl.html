@@ -5067,6 +5067,7 @@
 		},
 		
 		fixSelects: function(){
+            //alert("22");
 			var selects = wizardAPI.body.find('select');
 			selects.each( function(){
 				var $elem = $(this);
@@ -5077,23 +5078,34 @@
 				//	first.clone().removeAttr('selected').insertBefore(first).attr('label', '').val('').text('');
 				var id = $elem.attr('id');
 				var second = $elem.find('option:last');
-				if( first.attr('label').length == 0 || first.attr('label')[0] == "y" ){
-					first.attr('label', 'yes').val('y'); 
-					second.attr('label', 'no').val('n');
+				if( first.attr('label').length == 0 || first.attr('label')[0] == "y"){
+					
+                    first.attr('label', 'yes').val('yes');
+					second.attr('label', 'no').val('no');
 				}
 				if ( id == 'td_inorder' || id == 'td_repeat' || id == 'cp_inorder' || id == 'cp_repeat' ){
-					first.attr('label', '').val(''); 
+
+					first.attr('label', '').val('');
 					second.attr('label', 'y').val('y');
 				}
-				else if ( id == 'td_resp_req' || id == 'cp_resp_req' ){
+
+                else if ( id == 'td_resp_req' || id == 'cp_resp_req' ){
+
 					first.attr('label', '').val(''); 
 					second.attr('label', 'n').val('n');
 				}
 				else if ( id.indexOf('td_block_iter_type') >= 0){
+
 					first.val( first.text() );
 					second.val( second.text() );
 				}
-				
+
+                else if ( id.indexOf('td_block_execute') >= 0){
+
+                    first.val( first.text() );
+                    second.val( second.text() );
+                }
+                
 
 			});
 		},

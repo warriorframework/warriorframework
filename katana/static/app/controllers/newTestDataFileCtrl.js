@@ -31,7 +31,7 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
         $scope.individualTDVerificationTag = [];
         $scope.tdf_name = "";
         $scope.showCmdParams = true;
-        $scope.retry_list = ["y", "n"];
+        $scope.retry_list = ["yes", "no"];
         $scope.resp_req_list = ["", "n"];
         $scope.inorder_list = ["", "y"];
         $scope.repeat_list = ["", "y"];
@@ -304,6 +304,7 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
                         function(data) {
                             console.log(data);
                             var fileExist = data.response;
+
                             if (fileExist == 'yes') {
                                 sweetAlert({
                                     title: "File " + wizardAPI.returnFileName() + '.xml' + " already exists. Do you want to overwrite it?",
