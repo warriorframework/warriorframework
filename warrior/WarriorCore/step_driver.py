@@ -56,7 +56,7 @@ def send_keyword_to_productdriver(driver_name, plugin_name, keyword,
     # driver_call = 'ProductDrivers.{0}'.format(driver_name)
     try:
         if plugin_name is not None and driver_name is not None:
-            import_name = ".".join(["Plugins", plugin_name, "bin", driver_name])
+            import_name = ".".join(["plugins", plugin_name, "bin", driver_name])
         else:
             import_name = "ProductDrivers.{0}".format(driver_name)
         driver_call = __import__(import_name, fromlist=[driver_name])
