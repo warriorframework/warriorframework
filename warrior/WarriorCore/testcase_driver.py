@@ -457,8 +457,13 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                       "testcase execution and it will be marked as 'ERROR'")
         tc_status = "ERROR"
     elif isValid is False and isRobotCase is True:
-        print_warning("Mix of normal and robot steps is not allowed, "
-                      "this case will be marked as 'ERROR'")
+        print_warning("Mix of normal and robot steps is not allowed. Skipping "
+                      "the case execution and it will be marked as 'ERROR'")
+        tc_status = "ERROR"
+    elif isValid is True and isRobotCase is True and from_ts is False:
+        print_warning("Case which has robot steps should be executed as part "
+                      "of a Suite. Skipping the case execution and "
+                      "it will be marked as 'ERROR'")
         tc_status = "ERROR"
     else:
         if data_type.upper() == 'CUSTOM' and \
