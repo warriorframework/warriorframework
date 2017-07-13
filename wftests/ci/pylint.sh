@@ -8,18 +8,18 @@ git checkout FETCH_HEAD
 
 git branch
 # Displaying what .py files have changed
-if [[ $(git --no-pager diff --name-only FETCH_HEAD "${TRAVIS_COMMIT}"  | grep -v 'OSS' | grep '.py$') ]]; then
+if [[ $(git --no-pager diff --name-only FETCH_HEAD "${TRAVIS_COMMIT}"  | grep -v 'OSS' | grep -v 'conf.py' | grep '.py$') ]]; then
     echo "List of .py files that have changed in this commit"
-    git --no-pager diff --name-only FETCH_HEAD "${TRAVIS_COMMIT}"  | grep -v 'OSS' | grep '.py$'
+    git --no-pager diff --name-only FETCH_HEAD "${TRAVIS_COMMIT}"  | grep -v 'OSS' | grep -v 'conf.py' | grep '.py$'
 else
     echo "no .py file has changed in this commit, exiting"
     exit 0;
 fi
 # Do pylint on develop and the latest commit, output result to pylint_result.txt
-git --no-pager diff --name-only FETCH_HEAD "${TRAVIS_COMMIT}"  | grep -v 'OSS' | grep '.py$' | xargs -L 1 pylint || true
+git --no-pager diff --name-only FETCH_HEAD "${TRAVIS_COMMIT}"  | grep -v 'OSS' | grep -v 'conf.py' | grep '.py$' | xargs -L 1 pylint || true
 git checkout "${TRAVIS_COMMIT}" ;
-git --no-pager diff --name-only "${TRAVIS_COMMIT}" FETCH_HEAD  | grep -v 'OSS' | grep '.py$'
-git --no-pager diff --name-only "${TRAVIS_COMMIT}" FETCH_HEAD  | grep -v 'OSS' | grep '.py$' | xargs -L 1 pylint | tee pylint_result.txt || true
+git --no-pager diff --name-only "${TRAVIS_COMMIT}" FETCH_HEAD  | grep -v 'OSS' | grep -v 'conf.py' | grep '.py$'
+git --no-pager diff --name-only "${TRAVIS_COMMIT}" FETCH_HEAD  | grep -v 'OSS' | grep -v 'conf.py' | grep '.py$' | xargs -L 1 pylint | tee pylint_result.txt || true
 
 # Match filename and score into summary.txt
 grep "Your code has been rated" pylint_result.txt > score.txt
