@@ -125,7 +125,8 @@ def split_kwargs_on_tag_equalto(kwargs, datafile, browser):
     for element in kwargs:
         if isinstance(kwargs[element],str) and kwargs[element] is not None and\
         kwargs[element] is not False:
-            if kwargs[element].startswith("tag") and "=" in kwargs[element]:
+            if kwargs[element].startswith("tag") and "=" in kwargs[element] \
+                    and datafile is not None:
                 temp_list = kwargs[element].split("=")
                 temp_var = temp_list[1]
                 for i in range(2, len(temp_list)):
@@ -285,7 +286,7 @@ def get_final_json_values(element, final_dict, mapper, def_name_tuple):
     return final_dict
 
 
-def get_browser_details(browser, datafile, br_name="browser_name",
+def get_browser_details(browser, datafile=None, br_name="browser_name",
                         def_name_tuple=("DEF_ecf", "DEF_et"), **kwargs):
 
     # Gets all tags from the data file and adds it to idf_data_dict.

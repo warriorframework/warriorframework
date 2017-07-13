@@ -163,8 +163,8 @@ class elementlocator_actions(object):
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
                 if current_browser:
@@ -307,8 +307,8 @@ class elementlocator_actions(object):
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 if not browser_details["xpath"].startswith("xpath"):
                     browser_details["xpath"] = \
@@ -448,8 +448,8 @@ class elementlocator_actions(object):
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             pNote(browser_details)
             if browser_details is not None:
                 if not browser_details["id"].startswith("id"):
@@ -591,8 +591,8 @@ class elementlocator_actions(object):
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 if not browser_details["css_selector"].startswith("css"):
                     browser_details["css_selector"] = \
@@ -735,8 +735,8 @@ class elementlocator_actions(object):
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 if not browser_details["link_text"].startswith("link"):
                     browser_details["link_text"] = "link=" + \
@@ -881,8 +881,8 @@ class elementlocator_actions(object):
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 if not browser_details["partial_link_text"].startswith("partial"):
                     browser_details["partial_link_text"] = "partial_link=" + browser_details["partial_link_text"]
@@ -1025,8 +1025,8 @@ class elementlocator_actions(object):
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 if not browser_details["tag_name"].startswith("tag"):
                     browser_details["tag_name"] = "tag=" + \
@@ -1170,8 +1170,8 @@ class elementlocator_actions(object):
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 if not browser_details["class_name"].startswith("class"):
                     browser_details["class_name"] = \
@@ -1314,8 +1314,8 @@ class elementlocator_actions(object):
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 if not browser_details["name_of_element"].startswith("name"):
                     browser_details["name_of_element"] = \
