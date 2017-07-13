@@ -121,7 +121,12 @@ def create_case_junit(robot_tests):
                 kw_status = xml_Utils.get_attributevalue_from_directchildnode(
                  test_elem, 'status', 'status')
 
+                # Convert robot keyword results
+                string_status = {"PASS": "TRUE", "FAIL": "FALSE"}
+                if str(kw_status).upper() in string_status.keys():
+                    kw_status = string_status[str(kw_status).upper()]
+
                 add_keyword_result(tc_junit_object, tc_timestamp, step_num,
                                    kw_name, kw_status, kw_start_time,
-                                   kw_duration, "skipped", {}, "", "")
+                                   kw_duration, "skipped", "Impact", "Next")
                 step_num += 1
