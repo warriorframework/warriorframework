@@ -294,7 +294,7 @@ class WarriorCliClass(object):
                             "Default project:- Is the first proj marked default='true', "\
                             "in the jira config file. If no projects are marked default='true' "\
                             "it is first project in the jira config file."\
-                            "jira config file location = Tools/Jira/jira_config.xml.")
+                            "jira config file location = Tools/jira/jira_config.xml.")
 
         parser.add_argument('-ujd', action='store_true', default=False,
                             help=":upload jira defects: Manually upload "\
@@ -315,7 +315,7 @@ class WarriorCliClass(object):
                             "Used with -ad or -ujd. When provided with -ad or -jd jira bugs "\
                             "will be created against the "\
                             "provided project instead of default jira project."\
-                            "jira config file location = Tools/Jira/jira_config.xml.")
+                            "jira config file location = Tools/jira/jira_config.xml.")
 
         parser.add_argument('-datafile', action='store', nargs='?',
                             help="overwrite the path of datafile in execution "\
@@ -381,7 +381,7 @@ class WarriorCliClass(object):
                                  "encrypt command to create a secret key"\
                             "...")
 
-        # Update Jira issue based on input ID and detail
+        # Update jira issue based on input ID and detail
         parser.add_argument('-jiraid', action='store', default=False,
                             help="The issue that will be updated based on current execution result")
 
@@ -389,8 +389,8 @@ class WarriorCliClass(object):
                             help=":dbsystem: Represents the name of database "\
                             "server in the database config file, both html " \
                             "and xml results will be stored in this " \
-                            "database server. Database config file " \
-                            "location = Tools/Database/database_config.xml.")
+                            "database server, database config file " \
+                            "location = Tools/database/database_config.xml.")
 
         namespace = parser.parse_args(arglist)
         if namespace.cmdprint:
