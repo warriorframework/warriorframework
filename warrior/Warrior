@@ -66,14 +66,8 @@ def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
 
     if cse_execution:
         status = cse_command_line_exec()
-
     elif iron_claw:
         status = ironclaw_driver.main(parameter_list)
-
-#     elif mockrun:
-#         mockrun_driver.main(parameter_list)
-#         status = True
-
     else:
         abs_cur_dir = os.path.abspath(os.curdir)
         status = True
