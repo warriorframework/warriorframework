@@ -38,7 +38,7 @@ class RobotWrapperActions(object):
         self.logfile = config_Utils.logfile
 
     def execute_robot_wrapper(self, file_path, output_dir, system_name,
-                              session_name=None, prompt=".*(%|#|\$)", remote='n'):
+                              session_name=None, prompt=".*(%|#|\$)"):
         """
         This keyword is to execute python scripts which internally calls robot scripts.
         :Arguments:
@@ -48,7 +48,6 @@ class RobotWrapperActions(object):
             3. system_name(string) - Name of the system/subsystem in the datafile
             4. session_name(string) - name of the session to the system
             5. prompt(string) - prompt expected in the terminal
-            6. remote(string) - 'y' for remote system & 'n' for local system
         :Returns:
             1. status(bool)= True/False
         :Datafile usage:
@@ -64,8 +63,12 @@ class RobotWrapperActions(object):
             2. username = username for the session
             3. password = password for the session
             4. prompt = prompt expected when the connection is successful
-            5. local_output_dir = path of the directory where the robot output
-                files will be stored in the local system
+            5. remote = 'yes' when executed in remote system & 'no'(default)
+                when executed in local system
+            6. local_output_dir = path of the directory where the robot output
+                files will be stored in the local system. If this tag is
+                available or left empty, results will be stored in
+                'home/<username>/robot_wrapper_opdir' directory.
         """
 
         session_id = get_session_id(system_name, session_name)
@@ -84,15 +87,19 @@ class RobotWrapperActions(object):
             if status is True:
                 pNote("Robot_wrapper script: '{}' execution is successful".format(abs_filepath))
             else:
-                pNote("Robot_wrapper script: '{}' execution failed".format(abs_filepath), 'warning')
+                pNote("Robot_wrapper script: '{}' execution failed".format(abs_filepath),
+                      'warning')
         else:
             pNote("Robot_wrapper script: '{}' does not exist".format(abs_filepath), 'warning')
             status = False
 
+        credentials = get_credentials(self.datafile, system_name,
+                                      ['ip', 'username', 'password', 'remote',
+                                       'local_output_dir'])
+
         # When executed in remote machine
-        if remote.upper().startswith('y'):
-            credentials = get_credentials(self.datafile, system_name,
-                                          ['ip', 'username', 'password', 'local_output_dir'])
+        if credentials['remote'] and credentials['remote'].upper() == "YES":
+
             if credentials['local_output_dir']:
                 local_output_dir = credentials['local_output_dir']
             else:
