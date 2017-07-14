@@ -101,7 +101,8 @@ class RobotWrapperActions(object):
         if credentials['remote'] and credentials['remote'].upper() == "YES":
 
             if credentials['local_output_dir']:
-                local_output_dir = credentials['local_output_dir']
+                data_directory = os.path.dirname(self.datafile)
+                local_output_dir = getAbsPath(credentials['local_output_dir'], data_directory)
             else:
                 local_output_dir = "~/robot_wrapper_opdir"
             get_file_from_remote_server(credentials['ip'], credentials['username'],
