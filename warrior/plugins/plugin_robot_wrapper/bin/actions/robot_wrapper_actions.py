@@ -18,6 +18,7 @@ import os
 import time
 from subprocess import Popen, PIPE
 
+from Framework.Utils import config_Utils
 from Framework.Utils.print_Utils import print_info, print_warning
 from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.data_Utils import get_object_from_datarepository,\
@@ -30,7 +31,11 @@ class RobotWrapperActions(object):
     """ RobotWrapperActions class which has methods(keywords) related to Robot Framework """
 
     def __init__(self):
-        pass
+        self.resultfile = config_Utils.resultfile
+        self.datafile = config_Utils.datafile
+        self.logsdir = config_Utils.logsdir
+        self.filename = config_Utils.filename
+        self.logfile = config_Utils.logfile
 
     def execute_robot_wrapper(self, file_path, output_dir, system_name,
                               session_name=None, prompt=".*(%|#|\$)"):
