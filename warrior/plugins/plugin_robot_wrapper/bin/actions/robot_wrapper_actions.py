@@ -79,6 +79,7 @@ class RobotWrapperActions(object):
 
         testcasefile_path = get_object_from_datarepository('wt_testcase_filepath')
         abs_filepath = getAbsPath(file_path, os.path.dirname(testcasefile_path))
+        abs_output_dir = getAbsPath(output_dir, os.path.dirname(testcasefile_path))
 
         current_time = time.time()
         if os.path.isfile(abs_filepath):
@@ -106,11 +107,10 @@ class RobotWrapperActions(object):
             else:
                 local_output_dir = "~/robot_wrapper_opdir"
             get_file_from_remote_server(credentials['ip'], credentials['username'],
-                                        credentials['password'], output_dir, local_output_dir)
-            output_dir = local_output_dir
-
+                                        credentials['password'], abs_output_dir, local_output_dir)
+            abs_output_dir = local_output_dir + os.sep + os.path.basename(abs_output_dir)
         # Get the modified xml files in the output_dir
-        modified_list = get_modified_files(output_dir, current_time, ".xml")
+        modified_list = get_modified_files(abs_output_dir, current_time, ".xml")
         # Get the robot xml files from the modified list of files
         robot_xml_list = robot_wrapper_utils.get_robot_xml_files(modified_list)
         # Get results from robot xml files
