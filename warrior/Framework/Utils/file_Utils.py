@@ -263,7 +263,7 @@ def getNameOnly(filename):
 
 
 def get_file_from_remote_server(remote_ip, remote_uname, remote_passwd, src, dest, logfile=None):
-    child = pexpect.spawn('scp %s@%s:%s %s' % (remote_uname, remote_ip, src, dest ))
+    child = pexpect.spawn('scp -r %s@%s:%s %s' % (remote_uname, remote_ip, src, dest ))
     try:
         child.logfile = open(logfile, "a")
     except Exception,e:

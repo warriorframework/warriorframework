@@ -19,11 +19,11 @@ import time
 from subprocess import Popen, PIPE
 
 from Framework.Utils import config_Utils
-from Framework.Utils.print_Utils import print_info, print_warning
 from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.data_Utils import get_object_from_datarepository,\
- get_session_id, getSystemData
-from Framework.Utils.file_Utils import getAbsPath, get_modified_files
+ get_session_id, getSystemData, get_credentials
+from Framework.Utils.file_Utils import getAbsPath, get_modified_files,\
+ get_file_from_remote_server
 from plugins.plugin_robot_wrapper.bin.utils import robot_wrapper_utils
 
 
@@ -38,15 +38,34 @@ class RobotWrapperActions(object):
         self.logfile = config_Utils.logfile
 
     def execute_robot_wrapper(self, file_path, output_dir, system_name,
-                              session_name=None, prompt=".*(%|#|\$)"):
+                              session_name=None, prompt=".*(%|#|\$)", remote='n'):
         """
         This keyword is to execute python scripts which internally calls robot scripts.
         :Arguments:
             1. file_path(string) - Path of python script to be executed
             2. output_dir(string) - Directory path used as outputdir for robot
                                     scripts available in the python script
+            3. system_name(string) - Name of the system/subsystem in the datafile
+            4. session_name(string) - name of the session to the system
+            5. prompt(string) - prompt expected in the terminal
+            6. remote(string) - 'y' for remote system & 'n' for local system
         :Returns:
             1. status(bool)= True/False
+        :Datafile usage:
+            Tags or attributes to be used in input datafile for the system/subsystem
+            If both tag and attribute is provided the attribute will be used
+            1. ip = IP address of the system
+                Default value for ip type is ip, it can take any type of ip's
+                to connect to (like ipv4, ipv6, dns etc)
+                Users can provide tag/attribute for any ip_type under the
+                system in the input datafile and specify the tag/attribute name
+                as the value for ip_type argument, then the connection will be
+                established using that value
+            2. username = username for the session
+            3. password = password for the session
+            4. prompt = prompt expected when the connection is successful
+            5. local_output_dir = path of the directory where the robot output
+                files will be stored in the local system
         """
 
         session_id = get_session_id(system_name, session_name)
@@ -61,10 +80,26 @@ class RobotWrapperActions(object):
         current_time = time.time()
         if os.path.isfile(abs_filepath):
             command = "python " + abs_filepath
-            status, response = session_object.send_command(".*", prompt, command)
+            status = session_object.send_command(".*", prompt, command)[0]
+            if status is True:
+                pNote("Robot_wrapper script: '{}' execution is successful".format(abs_filepath))
+            else:
+                pNote("Robot_wrapper script: '{}' execution failed".format(abs_filepath), 'warning')
         else:
-            pNote("Robot script: '{}' does not exist".format(abs_filepath), 'warning')
+            pNote("Robot_wrapper script: '{}' does not exist".format(abs_filepath), 'warning')
             status = False
+
+        # When executed in remote machine
+        if remote.upper().startswith('y'):
+            credentials = get_credentials(self.datafile, system_name,
+                                          ['ip', 'username', 'password', 'local_output_dir'])
+            if credentials['local_output_dir']:
+                local_output_dir = credentials['local_output_dir']
+            else:
+                local_output_dir = "~/robot_wrapper_opdir"
+            get_file_from_remote_server(credentials['ip'], credentials['username'],
+                                        credentials['password'], output_dir, local_output_dir)
+            output_dir = local_output_dir
 
         # Get the modified xml files in the output_dir
         modified_list = get_modified_files(output_dir, current_time, ".xml")
