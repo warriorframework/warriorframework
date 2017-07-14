@@ -18,24 +18,22 @@ import os
 import time
 from subprocess import Popen, PIPE
 
-import Framework.Utils as Utils
 from Framework.Utils.print_Utils import print_info, print_warning
 from Framework.Utils.testcase_Utils import pNote
-from Framework.Utils.data_Utils import get_object_from_datarepository
+from Framework.Utils.data_Utils import get_object_from_datarepository,\
+ get_session_id, getSystemData
 from Framework.Utils.file_Utils import getAbsPath, get_modified_files
 from plugins.plugin_robot_wrapper.bin.utils import robot_wrapper_utils
+
 
 class RobotWrapperActions(object):
     """ RobotWrapperActions class which has methods(keywords) related to Robot Framework """
 
     def __init__(self):
-        self.resultfile = Utils.config_Utils.resultfile
-        self.datafile = Utils.config_Utils.datafile
-        self.logsdir = Utils.config_Utils.logsdir
-        self.filename = Utils.config_Utils.filename
-        self.logfile = Utils.config_Utils.logfile
+        pass
 
-    def execute_robot_wrapper(self, file_path, output_dir=None):
+    def execute_robot_wrapper(self, file_path, output_dir, system_name,
+                              session_name=None, prompt=".*(%|#|\$)"):
         """
         This keyword is to execute python scripts which internally calls robot scripts.
         :Arguments:
@@ -46,20 +44,19 @@ class RobotWrapperActions(object):
             1. status(bool)= True/False
         """
 
+        session_id = get_session_id(system_name, session_name)
+        session_object = get_object_from_datarepository(session_id)
+        end_prompt = getSystemData(self.datafile, system_name, "prompt")
+        if end_prompt:
+            prompt = end_prompt
+
         testcasefile_path = get_object_from_datarepository('wt_testcase_filepath')
         abs_filepath = getAbsPath(file_path, os.path.dirname(testcasefile_path))
 
         current_time = time.time()
         if os.path.isfile(abs_filepath):
-            p = Popen("python " + file_path, stderr=PIPE, stdout=PIPE, shell=True)
-            output, errors = p.communicate()
-            print_info("Robot execution output:\n{}".format(output))
-            if p.returncode or errors:
-                print_warning("Something went wrong in the execution, "
-                              "error logs below:\n{}".format(errors))
-                status = False
-            else:
-                status = True
+            command = "python " + abs_filepath
+            status, response = session_object.send_command(".*", prompt, command)
         else:
             pNote("Robot script: '{}' does not exist".format(abs_filepath), 'warning')
             status = False
