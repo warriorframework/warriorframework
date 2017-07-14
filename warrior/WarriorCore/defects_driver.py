@@ -140,7 +140,7 @@ class DefectsDriver(object):
                     self.attach_logs_to_jira_issues(issue)
                     time.sleep(3)
             elif self.w_jira_object.status is False:
-                print_error("could not obtain Jira credentials!! "\
+                print_error("could not obtain jira credentials!! "\
                             "check jira config file ")
 
         return issue_list
