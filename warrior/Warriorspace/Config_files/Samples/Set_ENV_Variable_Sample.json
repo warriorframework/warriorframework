@@ -1,0 +1,13 @@
+{
+  "environmental_variables":{
+    "variable2" : "2",
+    "variablex" : "y",
+    "variablen" : "n" 
+  },
+ "my_variable":{
+    "hello" : "hi how are you"
+}
+
+
+}
+

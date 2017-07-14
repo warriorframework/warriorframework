@@ -38,7 +38,7 @@ class IronClaw(object):
     def __init__(self):
         """ Contructor """
 
-        self.xsd_dir = Tools.__path__[0] + os.sep + 'Xsd' + os.sep
+        self.xsd_dir = Tools.__path__[0] + os.sep + 'xsd' + os.sep
 
     @staticmethod
     def xml_to_xsd_validation(file_xml, file_xsd):

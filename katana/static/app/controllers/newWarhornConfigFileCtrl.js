@@ -47,13 +47,13 @@ app.controller('newWarhornConfigFileCtrl', ['$scope', '$http', '$controller', '$
                     ]
                 },
                 "warrior": {
-                    "_url": "http://rtx-swtl-git.fnc.net.local/scm/war/warrior_main.git",
+                    "_url": "",
                     "_destination": "",
                     "_label": "",
                     "_clean_install": "no"
                 },
                 "katana": {
-                    "_url": "http://rtx-swtl-git.fnc.net.local/scm/war/katana.git",
+                    "_url": "",
                     "_destination": "",
                     "_label": "",
                     "_clean_install": "no",
@@ -140,6 +140,7 @@ app.controller('newWarhornConfigFileCtrl', ['$scope', '$http', '$controller', '$
             saveNewWarhornConfigFileFactory.saveNew(filename, $scope.subdirs, xmlObj)
                 .then(
                     function(data) {
+                        $location.path('/warhornconfigfiles');
                         console.log(data);
                     },
                     function(data) {
@@ -151,7 +152,7 @@ app.controller('newWarhornConfigFileCtrl', ['$scope', '$http', '$controller', '$
                 type: "success",
                 timer: 1250
             });
-            $location.path('/warhornconfigfiles');
+
         }
 
         $scope.cancel = function() {
@@ -511,7 +512,7 @@ app.controller('newWarhornConfigFileCtrl', ['$scope', '$http', '$controller', '$
 
                         //Warrior details JSON validation
                         if(!$scope.jsonData.data.warrior.hasOwnProperty("_url")){
-                            $scope.jsonData.data.warrior._url = "http://rtx-swtl-git.fnc.net.local/scm/war/warrior_main.git";
+                            $scope.jsonData.data.warrior._url = "";
                         }
                         if(!$scope.jsonData.data.warrior.hasOwnProperty("_label")){
                             $scope.jsonData.data.warrior._label = "";
@@ -536,7 +537,7 @@ app.controller('newWarhornConfigFileCtrl', ['$scope', '$http', '$controller', '$
 
                         //Katana details JSON validation
                         if(!$scope.jsonData.data.katana.hasOwnProperty("_url")){
-                            $scope.jsonData.data.katana._url = "http://rtx-swtl-git.fnc.net.local/scm/war/katana.git";
+                            $scope.jsonData.data.katana._url = "";
                         }
                         if(!$scope.jsonData.data.katana.hasOwnProperty("_label")){
                             $scope.jsonData.data.katana._label = "";
