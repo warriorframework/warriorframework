@@ -456,11 +456,6 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                       "that have not been developed yet. Skipping the "
                       "testcase execution and it will be marked as 'ERROR'")
         tc_status = "ERROR"
-    elif isValid is False and isRobotWrapperCase is True:
-        print_warning("Mix of normal and robot_wrapper steps is not allowed. "
-                      "Skipping the case execution and it will be marked as "
-                      "'ERROR'")
-        tc_status = "ERROR"
     elif isValid is True and isRobotWrapperCase is True and from_ts is False:
         print_warning("Case which has robot_wrapper steps should be executed "
                       "as part of a Suite. Skipping the case execution and "
