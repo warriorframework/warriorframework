@@ -1402,7 +1402,7 @@ def get_jira_projects():
     node_dict[1] = "None"
     id = 2
     path = readconfig()
-    xml_file = os.path.join(path["pythonsrcdir"], "Tools", "Jira",
+    xml_file = os.path.join(path["pythonsrcdir"], "Tools", "jira",
                             "jira_config.xml")
     if os.path.exists(xml_file):
         tree = xml.etree.ElementTree.parse(xml_file)
