@@ -287,7 +287,8 @@ def get_final_json_values(element, final_dict, mapper, def_name_tuple):
 
 
 def get_browser_details(browser, datafile=None, br_name="browser_name",
-                        def_name_tuple=("DEF_ecf", "DEF_et"), **kwargs):
+                        def_name_tuple=("DEF_ecf", "DEF_et"),
+                        bw_comp=("element_config_file", "element_tag"), **kwargs):
 
     # Gets all tags from the data file and adds it to idf_data_dict.
     # kwargs remains intact
@@ -300,9 +301,13 @@ def get_browser_details(browser, datafile=None, br_name="browser_name",
 
     final_dict.update(idf_data_dict)
 
+    # To maintain backward compatibilty
+    for dnt_el, bwc_el in zip(def_name_tuple, bw_comp):
+        if (dnt_el not in final_dict or final_dict[dnt_el] is None) and bwc_el in final_dict:
+                final_dict[dnt_el] = final_dict[bwc_el]
+
     # gets mappings of all elements
     mapper = get_mappers_for_all_elements(final_dict, def_name_tuple)
-
     mapper_list = get_mapped_to_elements(mapper)
 
     # final_dict updated to contain only element values and no mappings
