@@ -446,7 +446,7 @@
 
             <div class="row">
                 <div class="form-group">
-                    <label for="cp_end" class="col-sm-2 control-label req ellipsis-the-overflow">End</label>
+                    <label for="cp_end" class="col-sm-2 control-label ellipsis-the-overflow">End</label>
                     <div class="tooltip-on-right align-fa-icon-after-label">
                         <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
                         <span class="tooltip-content">
@@ -831,7 +831,7 @@
             </div>
 
             <div class="row">
-                <div class="form-group" ng-if="jsonData.data.global.command_params._retry == 'y'">
+                <div class="form-group">
                     <label for="cp_retry_timer" class="col-sm-2 control-label ellipsis-the-overflow">Retry Timer</label>
                     <div class="tooltip-on-right align-fa-icon-after-label">
                         <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
@@ -984,7 +984,7 @@
                 </div>
             </div>
 
-            <div class="row" ng-show="jsonData.data.global.command_params._retry == 'y'">
+            <div class="row">
                 <div class="form-group">
                     <label for="cp_retry_onmatch" class="col-sm-2 control-label ellipsis-the-overflow">Retry On Match</label>
                     <div class="tooltip-on-right align-fa-icon-after-label">
@@ -2329,7 +2329,7 @@
 
             <div class="row">
                 <div class="form-group">
-                    <label for="td_block_title{{$index}}" class="col-sm-2 control-label mandatory-field ellipsis-the-overflow"
+                    <label for="td_block_title{{$index}}" class="col-sm-2 control-label ellipsis-the-overflow"
                            ng-show="jsonData.data.testdata[$index]._row == ''">Title</label>
                     <label for="td_block_title{{$index}}" class="col-sm-2 control-label ellipsis-the-overflow"
                            ng-show="jsonData.data.testdata[$index]._row != ''">Title</label>
@@ -2409,7 +2409,7 @@
 
             <div class="row">
                 <div class="form-group">
-                    <label for="td_block_row{{$index}}" class="col-sm-2 control-label mandatory-field ellipsis-the-overflow"
+                    <label for="td_block_row{{$index}}" class="col-sm-2 control-label ellipsis-the-overflow"
                            ng-show="jsonData.data.testdata[$index]._title == ''">Row</label>
                     <label for="td_block_row{{$index}}" class="col-sm-2 control-label ellipsis-the-overflow"
                            ng-show="jsonData.data.testdata[$index]._title != ''">Row</label>
@@ -3022,7 +3022,7 @@
 
                             <div class="row">
                                 <div class="form-group">
-                                    <label for="td_send" class="col-sm-4 control-label ellipsis-the-overflow">Send</label>
+                                    <label for="td_send" class="col-sm-4 control-label ellipsis-the-overflow mandatory-field">Send</label>
                                     <div class="tooltip-on-right align-fa-icon-after-label">
                                         <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
                                         <span class="tooltip-content">
@@ -3870,7 +3870,7 @@
                             </div>
 
                             <div class="row">
-                                <div class="form-group" ng-if="jsonData.data.testdata[$parent.$index].command[$index]._retry == 'y'">
+                                <div class="form-group">
                                     <label for="td_retry_onmatch" class="col-sm-4 control-label ellipsis-the-overflow">Retry On Match</label>
                                     <div class="tooltip-on-right align-fa-icon-after-label">
                                         <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
@@ -4863,6 +4863,13 @@
 		initEventHandler: function( input, tableItem ){
 			input.off( 'change keyup' ).on( 'change keyup', function(){
 				wizardAPI.inputChange( input, tableItem );
+				var id = input.attr('id');
+				
+				if( id == 'cp_end' && input.val() != '' )
+					$('#td_end').parent().find('.mandatory-field').removeClass('mandatory-field');
+				else if( id == 'cp_end' )
+					$('#td_end').parent().find('label').addClass('mandatory-field');
+					
 			});
 			tableItem.off( 'click' ).on( 'click', function(){
 				var view = input.closest('.view');
@@ -4882,7 +4889,7 @@
 			if( input.is('select') ){
 				tableItem.text( input.find(':selected').attr('label') );
 				if(input.attr('id') == 'cp_retry' || input.attr('id') == 'td_retry' ){
-					var dependents = input.parent().nextAll(':lt(2)').add( tableItem.closest('li').nextAll(':lt(2)') );
+					var dependents = input.parent().nextAll(':lt(3)').add( tableItem.closest('li').nextAll(':lt(3)') );
 					if( input.val() == 'y' )
 						dependents.fadeIn();
 					else
@@ -4918,7 +4925,7 @@
 			var tableItems = [];
 			!specialCase && currentView.parent().find('.active').removeClass('active');
 			lastView = currentView.nextUntil('.view:not(.son)').length > 0 ? currentView.nextUntil('.view:not(.son)').last() : currentView;
-			if( currentView.find('h4').text().includes('Testdata') && !specialCase )
+			if( currentView.find('h4').text().indexOf('Testdata') >= 0 && !specialCase )
 			{
 				lastView = currentView.nextAll().andSelf().find('h4:contains("Testdata Block")').closest('.view').last() ;
 				var verificationView = currentView.nextAll().find('h4:contains("Command")').closest('.view').last().next();
@@ -4939,7 +4946,7 @@
 			if( specialCase ){
 				view = currentView.clone().insertAfter( specialCase );
 				var inputs = view.find('input, select');
-				inputs.val('');
+				inputs.not('select').val('');
 				table = table.clone().appendTo( table.parent() );
 				
 				var headerTxt = view.find('h3');
@@ -4964,12 +4971,12 @@
 				else
 					headerTxt = view.find('h4').append(' 2');
 				
-				currentView.find('h4').text().includes('Testdata') && table.find('h4').text(headerTxt.text());
+				currentView.find('h4').text().indexOf('Testdata') >= 0 && table.find('h4').text(headerTxt.text());
 				
 				wizardAPI.addDeleteButton( tableItems, view );
 
 			}
-			var determentent = currentView.find('h4').text().includes('Testdata') || specialCase ? true : false;
+			var determentent = currentView.find('h4').text().indexOf('Testdata') >= 0 || specialCase ? true : false;
 			inputs.each( function( i ){
 				var $elem = $(this);
 				var column = table.find('.columns').get( i );
@@ -4980,7 +4987,7 @@
 				
 			});
 				if( isNew )
-					inputs && inputs.val('');
+					inputs && inputs.not('select').val('');
 				else
 					inputs && inputs.trigger('change');
 			
@@ -4999,7 +5006,7 @@
 				deleteButton.off('click').one('click', function(){
 					$elem = $(this);
 					var view = $elem.closest('.view');
-					if( view.find('h4').text().includes('Testdata') ){
+					if( view.find('h4').text().indexOf('Testdata') >= 0 ){
 						view.nextUntil( wizardAPI.container.find('h4:contains(Testdata)').closest('.view') ).remove();
 						var table = $(tableItems[0]).closest('.table');
 						table.next().next().remove();
@@ -5037,8 +5044,6 @@
 				var title = feild.attr('title');
 				var tooltip =  title && title.indexOf('{') != -1 ? JSON.parse(title).tooltip : '';
 				feild.attr('title', tooltip);
-				if(feild.attr('id') == 'cp_end')
-					feild.parent().find('label').addClass('req');
 				setTimeout(function(){
 					feild.trigger('change');
 				}, 50);
@@ -5068,7 +5073,7 @@
 				var first = $elem.find('option:first');
 				//if(	first.val() == "?" )
 				//	first = $elem.find('option:first').next();
-			//	else if( first.val() == "" )
+				//	else if( first.val() == "" )
 				//	first.clone().removeAttr('selected').insertBefore(first).attr('label', '').val('').text('');
 				var id = $elem.attr('id');
 				var second = $elem.find('option:last');
@@ -5083,6 +5088,10 @@
 				else if ( id == 'td_resp_req' || id == 'cp_resp_req' ){
 					first.attr('label', '').val(''); 
 					second.attr('label', 'n').val('n');
+				}
+				else if ( id.indexOf('td_block_iter_type') >= 0){
+					first.val( first.text() );
+					second.val( second.text() );
 				}
 				
 
@@ -5126,9 +5135,9 @@
 				var elem = this;
 				var view = wizardAPI.view.clone();
 				var table = wizardAPI.Table;
-				elem.level1 = testBlock && testBlock.includes('Testdata') && !elem.level2.includes('Testdata') ? testBlock : elem.level1;
+				elem.level1 = testBlock && testBlock.indexOf('Testdata') >= 0 && elem.level2.indexOf('Testdata') == -1 ? testBlock : elem.level1;
 				var header = '<h3>' + elem.level1 + '</h3><h4>' + elem.level2 + ' ' + ( elem.level3 && elem.level3 != 'Verification' ? elem.level3 : '' ) + '</h4>';
-			  testBlock = elem.level2.includes('Testdata') ? elem.level2 : testBlock;
+			  testBlock = elem.level2.indexOf('Testdata') >= 0 ? elem.level2 : testBlock;
 				header = header.replace('Verifications Command', 'Commands');
 				header = header.replace('Verifications Combinations', 'Verification Combinations');
 				var feilds = view.find('.feilds');
@@ -5141,7 +5150,7 @@
 					feilds.append( temp );
 					table.addRow( $(this), label.text() );
 				});
-				var newButton = (elem.hasAdd && !elem.level2.includes("Testdata Block") ? '<div class="button new" title="Add"></div><div class="button copy" title="Duplicate"></div>' : elem.level2.includes("Testdata Block") ? '<div class="button new" title="Add"></div>' : '');
+				var newButton = (elem.hasAdd && elem.level2.indexOf("Testdata Block") == -1 ? '<div class="button new" title="Add"></div><div class="button copy" title="Duplicate"></div>' : elem.level2.indexOf("Testdata Block") >= 0 ? '<div class="button new" title="Add"></div>' : '');
 				view.prepend( newButton + header );
 				if( parseInt( elem.level2.replace(/[^0-9\.]/g, ''), 10) != NaN && parseInt( elem.level2.replace(/[^0-9\.]/g, ''), 10) > 1 ){
 					wizardAPI.addDeleteButton( table, view );
@@ -5160,7 +5169,8 @@
 				});
 			});	
 			wizardAPI.container.find('.save').on('click', function(){
-				window.save();
+				if( wizardAPI.preSaveChecks() == true )
+					window.checkExists();
 				
 			});
 			wizardAPI.container.find('.cancel').on('click', function(){
@@ -5269,16 +5279,16 @@
 					$elem.find('input, select').each( function(){
 						var input = $(this);
 						
-						if( topLevelType.includes('testdata') ){
+						if( topLevelType.indexOf('testdata') >= 0 ){
 							var inputAttr = input.attr('ng-model');
 							
-							if( type.includes('testdata') ){
+							if( type.indexOf('testdata') >= 0 ){
 								num =  numeric - 1 ;
 								var str = inputAttr.replace(/\[(.+?)\]/g, "["+num+"]");
 								jsonData.data.testdata[num] ? jsonData.data.testdata[num] : jsonData.data.testdata[num] = {};
 								eval( str + ' = input.val()' );
 							}
-							else if( type.includes('command') ){
+							else if( type.indexOf('command') >= 0 ){
 								var str = inputAttr.substr( inputAttr.lastIndexOf('.') );
 								var i = !numeric ? 0 : numeric - 1;
 								jsonData.data.testdata[num] = jsonData.data.testdata[num] ? jsonData.data.testdata[num] : jsonData.data.testdata[0];
@@ -5287,7 +5297,7 @@
 								
 								eval( 'jsonData.data.testdata[num].command[i]' + str + ' = input.val()' );
 							}
-							else if( type.includes('verification') ){
+							else if( type.indexOf('verification') >= 0 ){
 								var parent = 'jsonData.data.testdata[' + num + ']';
 								if( inputAttr.lastIndexOf('.') != -1 && inputAttr[inputAttr.length - 1] != ']' )
 									 temp = parent + '.' + vtitle + inputAttr.substr( inputAttr.lastIndexOf('.') ) + ' = input.val()';
@@ -5298,8 +5308,8 @@
 								eval( temp );
 							}
 						}
-						else if( topLevelType.includes('global') ){
-							if( type.includes('verification') && input.closest('.feilds').find('input').first().get(0) == input.get(0) ){
+						else if( topLevelType.indexOf('global') >= 0 ){
+							if( type.indexOf('verification') >= 0 && input.closest('.feilds').find('input').first().get(0) == input.get(0) ){
 								var parent = 'jsonData.data.global.verifications.' + input.val().replace(/\s/g,'');
 								eval( parent + ' = {}');
 								input.closest('.feilds').find('input:not(:first), select').each( function(){
@@ -5310,7 +5320,7 @@
 								});
 							}
 
-							else if( type.includes('command') ){
+							else if( type.indexOf('command') >= 0 ){
 								eval( input.attr('ng-model') + '= input.val()' );
 							}
 						}
@@ -5324,6 +5334,24 @@
 		
 		returnFileName: function(){
 			return wizardAPI.container.find('input#tdf_name').val();
+		},
+		
+		preSaveChecks: function(){
+			var reqInputs = wizardAPI.container.find('.req, .mandatory-field').parent().find('input');
+			var alert = $('<div class="alert"></div>');
+			var cond = true;
+			reqInputs.each( function(){
+				var $elem = $(this);
+				var view = $elem.closest('.view');
+				if( $elem.val() == '' && $elem.closest('.view').find('h4').text().indexOf('erification') == -1 ){
+					cond = false;
+					var activeAlert = alert.appendTo('body').text( $elem.parent().find('.req, .mandatory-field').text() + ' in ' +  view.find('h3').text() + ' ' + view.find('h4').text() + ' is required to save');
+					setTimeout( function(){
+						activeAlert.remove();
+					}, 3000);
+				}
+			});
+			return cond;
 		},
 		
 		openForms: function( feilds ){
