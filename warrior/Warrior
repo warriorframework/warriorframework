@@ -12,21 +12,24 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import sys
-import os
-import shutil
-import Framework.Utils.email_utils as email
-import Framework.Utils as Utils
-from Framework.Utils.print_Utils import print_error, print_info
-from WarriorCore import warrior_cli_driver, testcase_driver, testsuite_driver, project_driver
-from WarriorCore import ironclaw_driver, mockrun_driver, framework_detail
-from WarriorCore.Classes.jira_rest_class import Jira
-from Framework.ClassUtils import database_utils_class
-"""
-This is the Warrior executable
-"""
 if sys.version_info < (2, 7):
     print("Warrior doesn't support Python version lower than 2.7, now exiting")
     sys.exit(0)
+try:
+    import os
+    import shutil
+    import Framework.Utils.email_utils as email
+    import Framework.Utils as Utils
+    from Framework.Utils.print_Utils import print_error, print_info
+    from WarriorCore import warrior_cli_driver, testcase_driver, testsuite_driver, project_driver
+    from WarriorCore import ironclaw_driver, mockrun_driver, framework_detail
+    from WarriorCore.Classes.jira_rest_class import Jira
+    from Framework.ClassUtils import database_utils_class
+except:
+    raise
+"""
+This is the Warrior executable
+"""
 
 CSE_EXEC = False
 AUTO_DEFECTS = False
@@ -77,12 +80,10 @@ def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
             # check if the input parameter is an xml file
             if Utils.file_Utils.get_extension_from_path(parameter) == '.xml':
                 filepath = parameter
-                # print '\nFILE_PATH:,',filepath #xml path by warrior- relative/absolute
                 framework_detail.warrior_banner()
                 abs_filepath = Utils.file_Utils.getAbsPath(filepath, abs_cur_dir)
-                print_info('Abosulete path: {0}'.format(abs_filepath))
+                print_info('Absolute path: {0}'.format(abs_filepath))
                 if Utils.file_Utils.fileExists(abs_filepath):
-                    # execution_dir = Utils.file_Utils.create_execution_directory(abs_filepath)
                     if len(overwrite.items()) > 0:
                         default_repo = overwrite
                     else:
@@ -143,7 +144,7 @@ if __name__ == '__main__':
         framework_detail.warrior_framework_details()
         sys.exit(0)
     if not CSE_EXEC and len(FILEPATH) == 0:
-        print_error("Provide atleast one xml file to execute")
+        print_error("Provide at least one xml file to execute")
     status = main(FILEPATH, mockrun, AUTO_DEFECTS, CSE_EXEC, IRON_CLAW,
                   JIRAPROJ, OVERWRITE, JIRAID, DBSYSTEM)
     status = {"true": True, "pass": True}.get(str(status).lower())
