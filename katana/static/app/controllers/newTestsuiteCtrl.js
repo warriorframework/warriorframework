@@ -1226,7 +1226,7 @@ app.controller('newTestsuiteCtrl', ['$scope', '$http', '$location', '$route', '$
                             "_value": $scope.gotovalueSuite
                         },
                         "Resultsdir": $scope.resultsdirSuite,
-                        "IDF": $scope.IDFSuite
+                        "InputDataFile": $scope.IDFSuite
                     },
                     "Requirements": {
                         "Requirement": $scope.suitereqs
@@ -1243,16 +1243,17 @@ app.controller('newTestsuiteCtrl', ['$scope', '$http', '$location', '$route', '$
                 .then(
                     function(data) {
                         console.log(data);
+                        if ($scope.savecreateTestsuite == true) {
+                          //  $route.reload();
+                        }  else {
+                            $location.path('/testsuites');
+                        }
                     },
                     function(data) {
                         alert(data);
                     });
 
-            if ($scope.savecreateTestsuite == true) {
-                $route.reload();
-            }  else {
-                $location.path('/testsuites');
-            }
+
         }
 
 

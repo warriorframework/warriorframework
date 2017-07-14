@@ -21,7 +21,9 @@ from WarriorCore import warrior_cli_driver, testcase_driver, testsuite_driver, p
 from WarriorCore import ironclaw_driver, mockrun_driver, framework_detail
 from WarriorCore.Classes.jira_rest_class import Jira
 from Framework.ClassUtils import database_utils_class
-"""This is the Warrior executable """
+"""
+This is the Warrior executable
+"""
 if sys.version_info < (2, 7):
     print("Warrior doesn't support Python version lower than 2.7, now exiting")
     sys.exit(0)

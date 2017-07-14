@@ -22,10 +22,10 @@ from Framework.Utils.print_Utils import print_warning, print_info
 
 def create_database_connection(server_type="resultservers", dbsystem=None):
     """ To create object for the database class based on the dbsystem:dbtype
-    value of server_type in Tools/Database/database_config.xml """
-
+    value of server_type in Tools/database/database_config.xml """
+    db_config_fpath = 'database/database_config.xml'
     db_config_xml = os.path.join(Tools.__path__[0],
-                                 'Database/database_config.xml')
+                                 db_config_fpath)
 
     db_type_list = get_database_details(db_config_xml, server_type,
                                         dbsystem, ['dbtype'])
@@ -112,11 +112,11 @@ class WMongodb(object):
                         self.status = True
                     else:
                         if self.dbname in self.conn.database_names():
-                            # print_info("Database - '{}' is found in MongoDB "
+                            # print_info("database - '{}' is found in MongoDB "
                             #            "server".format(self.dbname))
                             self.status = True
                         else:
-                            print_warning("Database - '{}' is not in MongoDB "
+                            print_warning("database - '{}' is not in MongoDB "
                                           "server".format(self.dbname))
                     self.db = self.conn[self.dbname]
             except ImportError:
