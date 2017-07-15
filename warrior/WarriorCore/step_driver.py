@@ -15,7 +15,6 @@ limitations under the License.
 """step driver module"""
 import time
 import traceback
-import exec_type_driver
 from WarriorCore.Classes.argument_datatype_class import ArgumentDatatype
 import Framework.Utils as Utils
 from Framework.Utils.print_Utils import print_info, print_debug, print_error, print_exception
@@ -125,7 +124,7 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
     data_repository['wt_step_description'] = step_description
 
     kw_resultfile = get_keyword_resultfile(
-        data_repository, system_name,  step_num, keyword)
+        data_repository, system_name, step_num, keyword)
     Utils.config_Utils.set_resultfile(kw_resultfile)
     # print keyword to result file
     Utils.testcase_Utils.pKeyword(keyword, driver)
@@ -147,26 +146,19 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
     Utils.testcase_Utils.update_arguments(args_repository)
     Utils.testcase_Utils.update_kw_resultfile(kw_resultfile)
 
-    exec_type_onerror = False
-    action, keyword_status = exec_type_driver.main(step)
+    # Executing keyword
+    send_keyword_to_productdriver(
+        driver, keyword, data_repository, args_repository)
+    keyword_status = data_repository['step-%s_status' % step_num]
+    Utils.testcase_Utils.update_step_num(str(step_num))
+    if context.upper() == 'NEGATIVE' and type(keyword_status) == bool:
+        print_debug("Keyword status = {0}, Flip status as context is Negative".format(
+            keyword_status))
+        keyword_status = not keyword_status
 
-    if action is True:
-        send_keyword_to_productdriver(
-            driver, keyword, data_repository, args_repository)
-        keyword_status = data_repository['step-%s_status' % step_num]
-        Utils.testcase_Utils.update_step_num(str(step_num))
-        if context.upper() == 'NEGATIVE' and type(keyword_status) == bool:
-            print_debug("Keyword status = {0}, Flip status as context is Negative".format(
-                keyword_status))
-            keyword_status = not keyword_status
-    elif action == 'SKIP':
-        print_debug("Action is {0}".format(action))
-
-    elif action is False:
-        exec_type_onerror = True
-        print_debug("Action is {0}".format(action))
-
-    print("\n")
+    # Getting onError action
+    # Insert rules else statement here
+    print "\n"
     print_info("*** Keyword status ***")
     step_goto_value = False
     step_onError_action = Utils.xml_Utils.get_attributevalue_from_directchildnode(
@@ -182,6 +174,8 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
     onerror = step_onError_action.upper()
     if step_goto_value is not False and step_goto_value is not None:
         onerror = onerror + " step " + step_goto_value
+
+    # Abort_as_error related code
     if keyword_status == False and step_onError_action and step_onError_action.upper() == 'ABORT_AS_ERROR':
         print_info(
             "Keyword status will be marked as ERROR as onError action is set to 'abort_as_error'")
@@ -189,6 +183,7 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
     Utils.testcase_Utils.reportKeywordStatus(keyword_status, keyword)
     print_info("step number: {0}".format(step_num))
 
+    # Reporting status to data repo
     string_status = {"TRUE": "PASS", "FALSE": "FAIL",
                      "ERROR": "ERROR", "EXCEPTION": "EXCEPTION", "SKIP": "SKIP"}
 
@@ -199,6 +194,7 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
         print_error("unexpected step status, default to exception")
         data_repository['step_%s_result' % step_num] = "EXCEPTION"
 
+    # Addressing impact
     if step_impact.upper() == 'IMPACT':
         msg = "Status of the executed step  impacts TC result"
         if str(keyword_status).upper() == 'SKIP':
@@ -212,8 +208,8 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
         msg = "Exception message: " + \
             data_repository['step-%s_exception' % step_num]
         Utils.testcase_Utils.pNote_level(msg, "debug", "kw", ptc=False)
-    # time.sleep(1)
-    print("\n")
+
+    print "\n"
     kw_end_time = Utils.datetime_utils.get_current_timestamp()
     tc_duration = Utils.datetime_utils.get_time_delta(kw_start_time)
     hms = Utils.datetime_utils.get_hms_for_seconds(tc_duration)
@@ -222,8 +218,8 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
 
     impact_dict = {"IMPACT": "Impact", "NOIMPACT": "No Impact"}
     tc_junit_object.add_keyword_result(data_repository['wt_tc_timestamp'], step_num, keyword,
-                                       str(keyword_status), kw_start_time, tc_duration, kw_resultfile,
-                                       impact_dict.get(step_impact.upper()), onerror)
+                                       str(keyword_status), kw_start_time, tc_duration,
+                                       kw_resultfile, impact_dict.get(step_impact.upper()), onerror)
     tc_junit_object.update_count(
         str(keyword_status), "1", "tc", data_repository['wt_tc_timestamp'])
     tc_junit_object.update_count(
@@ -250,7 +246,7 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
         queue.put((keyword_status, kw_resultfile,
                    step_impact.upper(), tc_junit_object))
     else:
-        return keyword_status, kw_resultfile, step_impact, exec_type_onerror
+        return keyword_status, kw_resultfile, step_impact
 
 
 def main(step, step_num, data_repository, system_name, parallel=False, queue=None):
