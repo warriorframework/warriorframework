@@ -22,6 +22,7 @@ from Framework.ClassUtils.WSelenium.browser_mgmt import BrowserManagement
 from Framework.Utils.print_Utils import print_error, print_info
 from Framework.Utils import file_Utils as file_Utils
 
+
 def evaluate_argument_value(xpath_or_tagname, datafile):
     tree = ET.parse(datafile)
     root = tree.getroot()
@@ -37,6 +38,7 @@ def evaluate_argument_value(xpath_or_tagname, datafile):
         xpath_or_tagname = None
     return xpath_or_tagname
 
+
 def save_screenshot_onerror(status, current_browser):
     """ To get the filename, directory name and to take screenshot of the current browser window """
     if status != True:
@@ -47,6 +49,7 @@ def save_screenshot_onerror(status, current_browser):
         kw_name = data_repository['wt_keyword']
         filename = tc_name + "_" + "step-{0}".format(step_number) + "_" + kw_name
         browser_object.save_screenshot(current_browser, filename, data_repository['wt_defectsdir'])
+
 
 def get_json_value_from_path(path, file, default):
     data_dict = None
@@ -102,6 +105,7 @@ def get_json_value_from_path(path, file, default):
                     data_dict = None
     return data_dict
 
+
 def execute_script(browser_instance, user_script):
     """To exceute a user provided script """
     status = True
@@ -113,6 +117,7 @@ def execute_script(browser_instance, user_script):
         status = False
     return status
 
+
 def split_kwargs_on_tag_equalto(kwargs, datafile, browser):
     """
     This function splits kwargs on tag=
@@ -123,7 +128,7 @@ def split_kwargs_on_tag_equalto(kwargs, datafile, browser):
     idf_data_dict = {}
     final_dict = {}
     for element in kwargs:
-        if isinstance(kwargs[element],str) and kwargs[element] is not None and\
+        if isinstance(kwargs[element], str) and kwargs[element] is not None and\
         kwargs[element] is not False:
             if kwargs[element].startswith("tag") and "=" in kwargs[element] \
                     and datafile is not None:
@@ -304,7 +309,7 @@ def get_browser_details(browser, datafile=None, br_name="browser_name",
     # To maintain backward compatibilty
     for dnt_el, bwc_el in zip(def_name_tuple, bw_comp):
         if (dnt_el not in final_dict or final_dict[dnt_el] is None) and bwc_el in final_dict:
-                final_dict[dnt_el] = final_dict[bwc_el]
+            final_dict[dnt_el] = final_dict[bwc_el]
 
     # gets mappings of all elements
     mapper = get_mappers_for_all_elements(final_dict, def_name_tuple)
