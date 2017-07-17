@@ -56,24 +56,27 @@ class RobotWrapperActions(object):
                 established using that value
             2. username = username for the session
             3. password = password for the session
-            4. prompt = prompt expected when the connection is successful
-                 default value: .*(%|#|\$)
+            4. end_prompt = prompt expected when the command(python script) execution
+                is successful, default value: .*(%|#|\$).
             5. remote = 'yes' when executed in remote system & 'no'(default)
                 when executed in local system
             6. file_path = path of the python script to be executed
             7. output_dir = directory path used as outputdir for robot scripts
-               available in the python script(in execution machine)
+               available in the python script(in execution machine). All the
+               Robot tests listed in the Python script should have same output directory.
             8. local_output_dir = path of the directory in the local system
                 where the robot output files from remote system will be copied.
                 If this tag is not available or left empty, results will be
                 stored in 'home/<username>/robot_wrapper_opdir' directory.
+            Note: Tags 1,2,3 & 8 are only required to copy the results from
+             remote to local system  when remote(5) argument is set to 'yes'.
         """
 
         session_id = get_session_id(system_name, session_name)
         session_object = get_object_from_datarepository(session_id)
 
         credentials = get_credentials(self.datafile, system_name,
-                                      ['ip', 'username', 'password', 'prompt', 'remote',
+                                      ['ip', 'username', 'password', 'end_prompt', 'remote',
                                        'file_path', 'output_dir', 'local_output_dir'])
 
         if not credentials['file_path'] or not credentials['output_dir']:
@@ -81,8 +84,8 @@ class RobotWrapperActions(object):
                   "tags in input data_file", 'warning')
             return False
 
-        if credentials['prompt']:
-            prompt = credentials['prompt']
+        if credentials['end_prompt']:
+            prompt = credentials['end_prompt']
         else:
             prompt = ".*(%|#|\$)"
 
