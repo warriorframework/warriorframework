@@ -11,19 +11,19 @@ git checkout develop
 git branch
 # Displaying what .py files have changed
 filelist=$(git --no-pager diff --name-only develop "${TRAVIS_PULL_REQUEST_SHA}" | grep -v 'OSS' | grep -v 'conf.py' | grep -v "custom_rules.py" | grep '.py$')
-if [[ $filelist ]]; then
+if [[ "$filelist" ]]; then
     echo "List of .py files that have changed in this commit"
-    echo $filelist
+    echo "$filelist"
 else
     echo "no .py file has changed in this commit, exiting"
     exit 0;
 fi
 
 # Do pylint on develop and the latest commit, output result to pylint_result.txt
-echo $filelist | xargs -L 1 pylint || true
+echo "$filelist" | xargs -L 1 pylint || true
 git checkout "${TRAVIS_PULL_REQUEST_SHA}" ;
-echo $filelist
-echo $filelist | xargs -L 1 pylint | tee pylint_result.txt || true
+echo "$filelist"
+echo "$filelist" | xargs -L 1 pylint | tee pylint_result.txt || true
 
 # Match filename and score into summary.txt
 grep "Your code has been rated" pylint_result.txt > score.txt
