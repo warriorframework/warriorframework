@@ -29,8 +29,12 @@ from Framework.ClassUtils.json_utils_class import JsonUtils
 
 
 class browser_actions(object):
+    """This is a class that deals with all 'browser' related functionality like
+    opening and closing a browser, maximizing a browser window, navigating to
+    a URL, resizing a browser window."""
 
     def __init__(self, *args, **kwargs):
+        """This is a constructor for the browser_actions class"""
         self.resultfile = Utils.config_Utils.resultfile
         self.datafile = Utils.config_Utils.datafile
         self.logsdir = Utils.config_Utils.logsdir

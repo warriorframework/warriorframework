@@ -27,8 +27,12 @@ from Framework.Utils.testcase_Utils import pNote,pSubStep
 from Framework.Utils import xml_Utils
 
 class elementoperation_actions(object):
+    """This is a class that deals with all 'element' (HTML element) related
+    operations like clicking on an element, drag and drop of an element,
+    hovering on an element"""
 
     def __init__(self):
+        """This is a constructor for the elementoperation_actions class"""
         self.datafile = Utils.config_Utils.datafile
         self.jsonobj = JsonUtils()
         self.elem_oper_obj = ElementOperations()
