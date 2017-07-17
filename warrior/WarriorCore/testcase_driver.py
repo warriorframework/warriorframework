@@ -411,7 +411,7 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
 
     get_testcase_details(testcase_filepath, data_repository, jiraproj)
 
-    isValid, isRobotWrapperCase = validate_case(testcase_filepath)
+    isRobotWrapperCase = check_robot_wrapper_case(testcase_filepath)
 
     # These lines are for creating testcase junit file
     from_ts = False
@@ -456,7 +456,7 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                       "that have not been developed yet. Skipping the "
                       "testcase execution and it will be marked as 'ERROR'")
         tc_status = "ERROR"
-    elif isValid is True and isRobotWrapperCase is True and from_ts is False:
+    elif isRobotWrapperCase is True and from_ts is False:
         print_warning("Case which has robot_wrapper steps should be executed "
                       "as part of a Suite. Skipping the case execution and "
                       "it will be marked as 'ERROR'")
@@ -632,13 +632,11 @@ def execute_custom(datatype, runtype, driver, data_repository, step_list):
     return tc_status
 
 
-def validate_case(testcase_filepath):
+def check_robot_wrapper_case(testcase_filepath):
     """
-    Check if the case doesn't have the mix of normal and robot_wrapper steps.
-    Mix of normal and robot_wrapper steps is not supported.
+    Check if the case has any robot_wrapper steps in it.
     """
 
-    isValid = True
     # Get the steps from the case
     steps = Utils.xml_Utils.getElementListWithSpecificXpath(testcase_filepath,
                                                             './/step[@Driver]')
@@ -648,13 +646,7 @@ def validate_case(testcase_filepath):
         if step.get("Plugin") == "plugin_robot_wrapper":
             isRobotWrapperCase = True
             break
-    # Check if the case  has any non-robot steps
-    if isRobotWrapperCase is True:
-        for step in steps:
-            if step.get("Plugin") != "plugin_robot_wrapper":
-                isValid = False
-                break
-    return isValid, isRobotWrapperCase
+    return isRobotWrapperCase
 
 
 def main(testcase_filepath, data_repository = {}, tc_context='POSITIVE',

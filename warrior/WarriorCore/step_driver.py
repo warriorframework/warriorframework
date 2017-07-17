@@ -55,8 +55,9 @@ def send_keyword_to_productdriver(driver_name, plugin_name, keyword,
     step_num = data_repository["step_num"]
     # driver_call = 'ProductDrivers.{0}'.format(driver_name)
     try:
-        if plugin_name is not None and driver_name is not None:
-            import_name = ".".join(["plugins", plugin_name, "bin", driver_name])
+        if plugin_name is not None:
+            import_name = ".".join(["plugins", plugin_name, "bin",
+                                    plugin_name[7:]+'_driver'])
         else:
             import_name = "ProductDrivers.{0}".format(driver_name)
         driver_call = __import__(import_name, fromlist=[driver_name])
