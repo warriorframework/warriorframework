@@ -2074,11 +2074,6 @@ select#kw_repo_all_drivers0 {
     width: 50%;
     flex-grow: 6;
 }
-
-.row > .form-group > div.col-sm-2 +
- .col-sm-4 {
-    display: none;
-}
 hr {
     visibility: hidden;
 }

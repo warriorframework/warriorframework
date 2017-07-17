@@ -263,7 +263,7 @@ def getNameOnly(filename):
 
 
 def get_file_from_remote_server(remote_ip, remote_uname, remote_passwd, src, dest, logfile=None):
-    child = pexpect.spawn('scp %s@%s:%s %s' % (remote_uname, remote_ip, src, dest ))
+    child = pexpect.spawn('scp -r %s@%s:%s %s' % (remote_uname, remote_ip, src, dest ))
     try:
         child.logfile = open(logfile, "a")
     except Exception,e:
@@ -1236,3 +1236,59 @@ def remove(nfile):
         print_error("removing file {} raised exception {}".
                     format(nfile, str(e)))
     return status
+
+
+def recursive_findfile(file_name, src_dir):
+    """
+    Finds the file_name in the given directory.
+    :Arguments:
+        1. file_name(string) - name of the file(with extension) to be searched
+        2. src_dir(string) - path of the dir where the file will be searched
+    :Return:
+        1. output_path(string) - Path of the file(from src_dir) with extension
+                                 if the file exists else False
+    """
+
+    output_path = False
+    if dirExists(src_dir):
+        for root, _, files in os.walk(src_dir):
+            for f in files:
+                if f == file_name:
+                    output = os.path.join(root, f)
+                    return output
+    else:
+        print_warning("Directory does not exist in the provided "
+                      "path: {}".format(src_dir))
+
+    return output_path
+
+
+def get_modified_files(src_dir, time_stamp, filetypes=""):
+    """
+    Finds the modified files(with any one of the filetypes) after a given
+    time_stamp in the src_dir. If filetypes argument is empty, all
+    modified files will be included.
+    :Arguments:
+        1. src_dir(string) - path of the directory where the files will be
+        2. time_stamp(int/float) - time stamp value. Ex. time.time() will
+                                   return current system time in seconds
+        3. filetypes(sting) - comma separated file types. Ex. ".py, .xml"
+    :Return:
+        1. modified_files(list) - list of files modified
+    """
+
+    modified_files = []
+    filetypes = tuple([ft.strip() for ft in filetypes.split(',') if ft])
+    for dirname, _, files in os.walk(src_dir):
+        for fname in files:
+            full_path = os.path.join(dirname, fname)
+            # os.path.getmtime(full_path)
+            mtime = os.stat(full_path).st_mtime
+            if mtime > time_stamp:
+                if filetypes:
+                    if full_path.lower().endswith(filetypes):
+                        modified_files.append(full_path)
+                else:
+                    modified_files.append(full_path)
+
+    return modified_files

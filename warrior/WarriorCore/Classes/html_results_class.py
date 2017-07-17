@@ -29,7 +29,7 @@ class WarriorHtmlResults():
     def __init__(self, junit_file=None):
         """ Constructor """
         self.junit_file = junit_file
-        self.html_template = "{0}{1}Reporting{1}html_results_template.html"\
+        self.html_template = "{0}{1}reporting{1}html_results_template.html"\
                              .format(Tools.__path__[0], os.sep)
         self.junit_root = xml_Utils.getRoot(self.junit_file)
         self.html_root = xml_Utils.getRoot(self.html_template)
@@ -60,8 +60,22 @@ class WarriorHtmlResults():
                 # for each testcase in testcase node list create testcase record.
                 for testcase_node in testcase_node_list:
                     self.create_testcase_record(testcase_node)
-                    tc_resultsdir = testcase_node.get("resultsdir")
-                    tc_logsdir = testcase_node.get("logsdir")
+                    tc_results_node = xml_Utils.getElementWithTagAttribValueMatch(testcase_node,
+                                                                                  'property',
+                                                                                  'name',
+                                                                                  'resultsdir')
+                    if tc_results_node is not None:
+                        tc_resultsdir = tc_results_node.get("value")
+                    else:
+                        tc_resultsdir = None
+                    tc_logs_node = xml_Utils.getElementWithTagAttribValueMatch(testcase_node,
+                                                                               'property',
+                                                                               'name',
+                                                                               'logsdir')
+                    if tc_logs_node is not None:
+                        tc_logsdir = tc_logs_node.get("value")
+                    else:
+                        tc_logsdir = None
                     tc_name = testcase_node.get("name")
                     tc_details = {"tc_resultsdir": tc_resultsdir,
                                   "tc_logsdir": tc_logsdir,
