@@ -16,12 +16,11 @@ limitations under the License.
 
 import os
 import time
-from subprocess import Popen, PIPE
 
 from Framework.Utils import config_Utils
 from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.data_Utils import get_object_from_datarepository,\
- get_session_id, getSystemData, get_credentials
+ get_session_id, get_credentials
 from Framework.Utils.file_Utils import getAbsPath, get_modified_files,\
  get_file_from_remote_server
 from plugins.plugin_robot_wrapper.bin.utils import robot_wrapper_utils
@@ -37,23 +36,18 @@ class RobotWrapperActions(object):
         self.filename = config_Utils.filename
         self.logfile = config_Utils.logfile
 
-    def execute_robot_wrapper(self, file_path, output_dir, system_name,
-                              session_name=None, prompt=".*(%|#|\$)"):
+    def execute_robot_wrapper(self, system_name, session_name=None):
         """
         This keyword is to execute python scripts which internally calls robot scripts.
         :Arguments:
-            1. file_path(string) - Path of python script to be executed
-            2. output_dir(string) - Directory path used as outputdir for robot
-                                    scripts available in the python script
-            3. system_name(string) - Name of the system/subsystem in the datafile
-            4. session_name(string) - name of the session to the system
-            5. prompt(string) - prompt expected in the terminal
+            1. system_name(string) - Name of the system/subsystem in the datafile
+            2. session_name(string) - name of the session to the system
         :Returns:
             1. status(bool)= True/False
         :Datafile usage:
             Tags or attributes to be used in input datafile for the system/subsystem
             If both tag and attribute is provided the attribute will be used
-            1. ip = IP address of the system
+            1. ip = IP address of the system where the python script will be executed
                 Default value for ip type is ip, it can take any type of ip's
                 to connect to (like ipv4, ipv6, dns etc)
                 Users can provide tag/attribute for any ip_type under the
@@ -63,23 +57,38 @@ class RobotWrapperActions(object):
             2. username = username for the session
             3. password = password for the session
             4. prompt = prompt expected when the connection is successful
+                 default value: .*(%|#|\$)
             5. remote = 'yes' when executed in remote system & 'no'(default)
                 when executed in local system
-            6. local_output_dir = path of the directory where the robot output
-                files will be stored in the local system. If this tag is
-                available or left empty, results will be stored in
-                'home/<username>/robot_wrapper_opdir' directory.
+            6. file_path = path of the python script to be executed
+            7. output_dir = directory path used as outputdir for robot scripts
+               available in the python script(in execution machine)
+            8. local_output_dir = path of the directory in the local system
+                where the robot output files from remote system will be copied.
+                If this tag is not available or left empty, results will be
+                stored in 'home/<username>/robot_wrapper_opdir' directory.
         """
 
         session_id = get_session_id(system_name, session_name)
         session_object = get_object_from_datarepository(session_id)
-        end_prompt = getSystemData(self.datafile, system_name, "prompt")
-        if end_prompt:
-            prompt = end_prompt
 
-        testcasefile_path = get_object_from_datarepository('wt_testcase_filepath')
-        abs_filepath = getAbsPath(file_path, os.path.dirname(testcasefile_path))
-        abs_output_dir = getAbsPath(output_dir, os.path.dirname(testcasefile_path))
+        credentials = get_credentials(self.datafile, system_name,
+                                      ['ip', 'username', 'password', 'prompt', 'remote',
+                                       'file_path', 'output_dir', 'local_output_dir'])
+
+        if not credentials['file_path'] or not credentials['output_dir']:
+            pNote("Please provide values for 'file_path & output_dir' "
+                  "tags in input data_file", 'warning')
+            return False
+
+        if credentials['prompt']:
+            prompt = credentials['prompt']
+        else:
+            prompt = ".*(%|#|\$)"
+
+        data_directory = os.path.dirname(self.datafile)
+        abs_filepath = getAbsPath(credentials['file_path'], data_directory)
+        abs_output_dir = getAbsPath(credentials['output_dir'], data_directory)
 
         current_time = time.time()
         if os.path.isfile(abs_filepath):
@@ -94,15 +103,10 @@ class RobotWrapperActions(object):
             pNote("Robot_wrapper script: '{}' does not exist".format(abs_filepath), 'warning')
             status = False
 
-        credentials = get_credentials(self.datafile, system_name,
-                                      ['ip', 'username', 'password', 'remote',
-                                       'local_output_dir'])
-
         # When executed in remote machine
         if credentials['remote'] and credentials['remote'].upper() == "YES":
 
             if credentials['local_output_dir']:
-                data_directory = os.path.dirname(self.datafile)
                 local_output_dir = getAbsPath(credentials['local_output_dir'], data_directory)
             else:
                 local_output_dir = "~/robot_wrapper_opdir"
