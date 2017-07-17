@@ -229,6 +229,21 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
     tc_junit_object.update_count(
         "keywords", "1", "tc", data_repository['wt_tc_timestamp'])
 
+    # Get the type of the file being executed by Warrior: Case/Suite/Project
+    war_file_type = data_repository.get('war_file_type')
+    if war_file_type == "Case":
+        # Create and replace existing Case junit file for each step
+        tc_junit_object.output_junit(data_repository['wt_resultsdir'],
+                                     print_summary=False)
+    elif war_file_type == "Suite":
+        # Create and replace existing Suite junit file for each step
+        tc_junit_object.output_junit(data_repository['wt_results_execdir'],
+                                     print_summary=False)
+    elif war_file_type == "Project":
+        # Create and replace existing Project junit file for each step
+        tc_junit_object.output_junit(data_repository['wp_results_execdir'],
+                                     print_summary=False)
+
     if parallel is True:
         # put result into multiprocessing queue and later retrieve in
         # corresponding driver
