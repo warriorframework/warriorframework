@@ -40,13 +40,13 @@ def evaluate_argument_value(xpath_or_tagname, datafile):
 def save_screenshot_onerror(status, current_browser):
     """ To get the filename, directory name and to take screenshot of the current browser window """
     if status != True:
-         browser_object = BrowserManagement()
-         data_repository = config_Utils.data_repository
-         tc_name = data_repository['wt_testcase_filepath'].split("/")[-1].split('.xml')[0]
-         step_number = data_repository['step_num']
-         kw_name = data_repository['wt_keyword']
-         filename = tc_name + "_" + "step-{0}".format(step_number) + "_" + kw_name
-         browser_object.save_screenshot(current_browser, filename, data_repository['wt_defectsdir'])
+        browser_object = BrowserManagement()
+        data_repository = config_Utils.data_repository
+        tc_name = data_repository['wt_testcase_filepath'].split("/")[-1].split('.xml')[0]
+        step_number = data_repository['step_num']
+        kw_name = data_repository['wt_keyword']
+        filename = tc_name + "_" + "step-{0}".format(step_number) + "_" + kw_name
+        browser_object.save_screenshot(current_browser, filename, data_repository['wt_defectsdir'])
 
 def get_json_value_from_path(path, file, default):
     data_dict = None
