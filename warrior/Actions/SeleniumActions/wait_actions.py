@@ -17,7 +17,7 @@ from Framework.ClassUtils.json_utils_class import JsonUtils
 from Framework.Utils.testcase_Utils import pNote, pSubStep
 from Framework.Utils import selenium_Utils
 
-""" Selenium keywords for Wait Actions """
+
 try:
     import Framework.Utils as Utils
 except ImportWarning:
