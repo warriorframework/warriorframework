@@ -29,8 +29,12 @@ from Framework.ClassUtils.json_utils_class import JsonUtils
 
 
 class browser_actions(object):
+    """This is a class that deals with all 'browser' related functionality like
+    opening and closing a browser, maximizing a browser window, navigating to
+    a URL, resizing a browser window."""
 
     def __init__(self, *args, **kwargs):
+        """This is a constructor for the browser_actions class"""
         self.resultfile = Utils.config_Utils.resultfile
         self.datafile = Utils.config_Utils.datafile
         self.logsdir = Utils.config_Utils.logsdir
@@ -183,7 +187,7 @@ class browser_actions(object):
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             if browser_details == {}:
                 browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 try:
                     from pyvirtualdisplay import Display
@@ -288,8 +292,8 @@ class browser_actions(object):
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
                 if current_browser:
@@ -412,8 +416,8 @@ class browser_actions(object):
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
                 if current_browser:
@@ -498,8 +502,8 @@ class browser_actions(object):
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
                 if current_browser:
@@ -583,8 +587,8 @@ class browser_actions(object):
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
                 if current_browser:
@@ -668,8 +672,8 @@ class browser_actions(object):
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
                 if current_browser:
@@ -753,8 +757,8 @@ class browser_actions(object):
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
                 if current_browser:
@@ -838,8 +842,8 @@ class browser_actions(object):
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
                 if current_browser:
@@ -975,8 +979,8 @@ class browser_actions(object):
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
                 if current_browser:
@@ -1113,8 +1117,8 @@ class browser_actions(object):
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
                 if current_browser:
@@ -1239,8 +1243,8 @@ class browser_actions(object):
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
                 if current_browser:
@@ -1372,8 +1376,8 @@ class browser_actions(object):
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
                 if current_browser:
@@ -1506,8 +1510,8 @@ class browser_actions(object):
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
                 if current_browser:
@@ -1631,8 +1635,8 @@ class browser_actions(object):
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
                 if current_browser:
@@ -1756,8 +1760,8 @@ class browser_actions(object):
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
                 if current_browser:
@@ -1901,8 +1905,8 @@ class browser_actions(object):
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
                 if current_browser:
@@ -2032,8 +2036,8 @@ class browser_actions(object):
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
                 if current_browser:
@@ -2162,8 +2166,8 @@ class browser_actions(object):
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
                 if current_browser:
