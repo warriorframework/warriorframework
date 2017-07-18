@@ -170,7 +170,7 @@ def split_kwargs_on_tag_equalto(kwargs, datafile, browser):
         if isinstance(kwargs[element], str) and kwargs[element] is not None and\
                 kwargs[element] is not False:
             if kwargs[element].startswith("tag") and "=" in kwargs[element]:
-        kwargs[element] is not False:
+                kwargs[element] is not False:
             if kwargs[element].startswith("tag") and "=" in kwargs[element] \
                     and datafile is not None:
                 temp_list = kwargs[element].split("=")
