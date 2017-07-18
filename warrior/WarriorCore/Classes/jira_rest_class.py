@@ -29,7 +29,7 @@ class Jira(object):
 
     def __init__(self, jiraproj):
         """Constructor"""
-        jira_dir = Tools.__path__[0] + os.sep + 'Jira' + os.sep
+        jira_dir = Tools.__path__[0] + os.sep + 'jira' + os.sep
         self.jira_template_xml = jira_dir + os.sep + 'jira_config.xml'
         self.jiraproj = jiraproj
         credentials = self.get_jira_system_creds(self.jira_template_xml, self.jiraproj,
@@ -49,7 +49,7 @@ class Jira(object):
 
     def check_jira_issue(self, issue_summary, headers):
         """
-            check Jira server for any existing issue with the same summary(title)
+            check jira server for any existing issue with the same summary(title)
             :para,:
                 issue_summary: issue title
                 headers: auth header
@@ -142,7 +142,7 @@ class Jira(object):
                     print_info("The available status are: " + str([trans["to"]["name"] for trans in transitions["transitions"]]))
                     return False
             else:
-                print_error("Cannot find the correct issue type, unable to update Jira status")
+                print_error("Cannot find the correct issue type, unable to update jira status")
                 return False
 
             # Update status
@@ -160,12 +160,12 @@ class Jira(object):
                 print_info(e)
         else:
             msg = "There is no project with name: '{0}' "\
-            "in the jira config file: '{1}'".format(self.jiraproj, "Tools/Jira/jira_config.xml")
+            "in the jira config file: '{1}'".format(self.jiraproj, "Tools/jira/jira_config.xml")
             print_warning(msg)
         return False
 
     def create_jira_issue(self, issue_summary, issue_description, issue_type='Bug'):
-        """Function to Create Jira Ticket using JIRA rest API"""
+        """Function to Create jira Ticket using JIRA rest API"""
 
         issue_summary=issue_summary.replace('"', " ")
         issue_description=issue_description.replace('"', "-")
@@ -221,7 +221,7 @@ class Jira(object):
                 return None
 
     def upload_logfile_to_jira_issue(self, issue_id, logfile, attachment_name=None):
-        """Function to attach logs to Jira Ticket using JIRA rest API"""
+        """Function to attach logs to jira Ticket using JIRA rest API"""
 
         fetchuri = self.server
         postdata_url=fetchuri+'/rest/api/2/issue/'+issue_id+'/attachments'
@@ -352,7 +352,7 @@ class Jira(object):
             return output_dict
         else:
             msg = "There is no project with name: '{0}' "\
-            "in the jira config file: '{1}'".format(system_name, "Tools/Jira/jira_config.xml")
+            "in the jira config file: '{1}'".format(system_name, "Tools/jira/jira_config.xml")
             print_warning(msg)
             return False
 

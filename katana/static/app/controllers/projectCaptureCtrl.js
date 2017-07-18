@@ -1008,16 +1008,17 @@ app.controller('projectCapCtrl', ['$scope', '$http', '$routeParams', '$controlle
                     .then(
                         function(data) {
                             console.log(data);
+                            if ($scope.savecreateProjectCap == true) {
+                                // $location.path('/newproject');
+                            }  else {
+                                $location.path('/projects');
+                            }
                         },
                         function(data) {
                             alert(data);
                         });
 
-                if ($scope.savecreateProjectCap == true) {
-                    $location.path('/newproject');
-                }  else {
-                    $location.path('/projects');
-                }
+
             }
 
             $scope.projectSaveCreate = function() {

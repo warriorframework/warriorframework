@@ -330,7 +330,6 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
                         function(data) {
                             alert(data);
                         });
-																				 };
 				window.save = save;
         $scope.spanClick = function(){
         };
