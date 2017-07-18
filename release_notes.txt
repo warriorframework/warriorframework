@@ -1,6 +1,5 @@
 Release: Ninja
-Version: warrior-3.1.1
-
+Version: 3.2.0
 ===================
 1: Release details
 ===================
@@ -9,46 +8,51 @@ This is release Ninja of Warrior Test Automation Framework
 -------------------------------
 1.1: List of available releases
 -------------------------------
-1. Ninja = warrior-3.1.1 to current
+1. Ninja = warrior-3.2.0 to current
 
 ==================
 2. Version Details
 ==================
-You are on Release Ninja, Version warrior-3.1.1 of Warrior Framework.
+You are on Release Ninja, Version 3.2.0 of Warrior Framework.
 Procedure to get a specific version is available in section-3 of this document.
-
 +++++++++++++++++++++++++++++++++
 2.1. Change log for this release
 +++++++++++++++++++++++++++++++++
-
 -------------
-Improvements:
+New features:
 -------------
-[WAR-1257] : Upgrade cloudshell KWs with the cloudshell api version 8.0 and above
-			 Details:
-			 
-			 - New keyword 'cs_create_topology_reservation' added to create reservation and add topology to the reservation created in one step,
-			 this is to be compatible with cloudshell v8.0 support.
-			 
-			 - Existing keywords modified to be compatible with both v7.x, v8.0 of chloudshell api's.
-			 cs_create_reservation: going forward this keyword will only save the reservation details to the data repository
-			 cs_add_topology_to_reservation: going forward this keyword will create the reservation (details of which were provided and saved by 
-			 cs_create_reservation) and add topology to the reservation thus created.
+[WAR-1157] - Generate JUnit file after each step
+[WAR-1052] - Design and implement architecture for Plugins
+[WAR-1047] - As a user, I need a plugin to execute Robot testcases
+[WAR-1005] - Katana: While saving a new testcase if the user doe not have write permissions notify a appropriate error in the UI
+[WAR-970] - OSS: generate docs for our new repo structure.
+[WAR-897] - As a user i need the ability to make nested ssh connections
+[WAR-1154] - Katana : User permission error notification while saving.
 ---------
 Bugfixes:
 ---------
-[WAR-1258] - Katana : Testdata Block not executing due to wrong parsing of execute type value.
-[WAR-1260] - Katana: Add bypassed checks in testdata files back into the testdata controller
-
-
+[WAR-1300] - Existing Warrior Test cases created using version 2.5 are failing when ran with Warrior version 3.1.1
+[WAR-1204] - pylint job on Travis fail to calculate result
+[WAR-1203] - Run-init script execution fails with ENV variable 'ENV.NE1.MAIN.DIP_PORT' not found on Warrior latest 3.1.0
+[WAR-1197] - Katana : Insert New Step hides the first saved Step.
+[WAR-1193] - Katana : Testcase Screen - 'Goto' not showing up its input field.
+[WAR-1170] - Katana: Input data file information getting saved as the <IDF> tag instead of the <InputDataFile>Tag
+[WAR-1037] - Execution summary results are not getting printed correctly at the end of warrior execution
+-------------
+Improvements:
+-------------
+[WAR-1309] - Change pylint diff branch from master to develop
+[WAR-1188] - Automate part of the code review process using pylint custom checker
+[WAR-1161] - Change directory names in Tools to be uniform i.e. all lower case
 =================================================
 3. Procedure to get a specific version of Warrior 
 =================================================
-
-1. Clone warrior main
+1. Clone warriorframework
 $ git clone https://github.com/warriorframework/warriorframework.git
-2. go to warrior_main directory
-$cd warrior_main
+
+2. go to warriorframework directory
+$cd warriorframework
+
 3. To check the list of versions available, execute "git tag --list" command
 $ git tag --list
 3.0
@@ -57,6 +61,7 @@ $ git tag --list
 3.3
 3.4
 $
+
 3. To Check the current version you are at, execute "git branch" command
 $ git branch
 * master
@@ -90,6 +95,7 @@ master
 $ 
 
 - * indicates the active version.
+
 6. Switch from one version to another (current=3.4, switch to 3.3)
 $ git checkout 3.3
 Previous HEAD position was 146313d... reduce command timeout, wait after timeout=60
@@ -99,6 +105,7 @@ $ git branch
 * (HEAD detached at 3.3)
 master
 $
+
 7. Switch to master branch again.
 $ git checkout master
 Previous HEAD position was ecb6373... WAR-180, handle nd prompt on timeout

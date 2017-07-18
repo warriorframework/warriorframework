@@ -25,13 +25,12 @@ except ImportWarning:
 
 
 class browser_actions(object):
-    """
-    Selenium keywords for Generic Browser Actions
-    browser_actions class which has methods(keywords)
-    related to actions performed on any web page
-    """
+    """This is a class that deals with all 'browser' related functionality like
+    opening and closing a browser, maximizing a browser window, navigating to
+    a URL, resizing a browser window."""
 
     def __init__(self, *args, **kwargs):
+        """This is a constructor for the browser_actions class"""
         self.resultfile = Utils.config_Utils.resultfile
         self.datafile = Utils.config_Utils.datafile
         self.logsdir = Utils.config_Utils.logsdir
@@ -166,7 +165,7 @@ class browser_actions(object):
                                                                 browser)
             if browser_details == {}:
                 browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 browser_inst = self.browser_object.open_browser(
                     browser_details["type"], webdriver_remote_url)

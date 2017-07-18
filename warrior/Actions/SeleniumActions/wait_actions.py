@@ -25,9 +25,13 @@ except ImportWarning:
 
 
 class wait_actions(object):
-    """wait_actions class which has methods(keywords)
-    related to actions performed on any web page """
+    """This class has the functionality to wait till an event has happened on
+    the webpage - such as the browser will wait till an element is clickable,
+    visible, or present on a webpage. Implicit wait can also be set for a
+    webpage with this class """
+
     def __init__(self):
+        """This is a constructor for the wait_actions class"""
         self.resultfile = Utils.config_Utils.resultfile
         self.datafile = Utils.config_Utils.datafile
         self.logsdir = Utils.config_Utils.logsdir

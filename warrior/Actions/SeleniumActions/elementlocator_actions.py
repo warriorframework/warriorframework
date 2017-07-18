@@ -24,8 +24,12 @@ except ImportWarning:
 
 
 class elementlocator_actions(object):
+    """This is a class that deals with all 'element' (HTML element) related
+    functionality like locating an element via its tag name, class name, name,
+    id, css selector, partial and complete links."""
 
     def __init__(self):
+        """This is a constructor for the elementlocator_actions class"""
         self.datafile = Utils.config_Utils.datafile
         self.elem_loc_object = ElementLocator()
 

@@ -27,8 +27,12 @@ except ImportWarning:
 
 
 class elementoperation_actions(object):
+    """This is a class that deals with all 'element' (HTML element) related
+    operations like clicking on an element, drag and drop of an element,
+    hovering on an element"""
 
     def __init__(self):
+        """This is a constructor for the elementoperation_actions class"""
         self.datafile = Utils.config_Utils.datafile
         self.jsonobj = JsonUtils()
         self.elem_oper_obj = ElementOperations()
@@ -944,6 +948,7 @@ class elementoperation_actions(object):
             browser_details = selenium_Utils.\
                 get_current_browser_details(system_name, browser, arguments,
                                             browser_details)
+            pNote(browser_details)
             if browser_details is not None:
                 comp_locator = browser_details["locator_type"] + "=" + \
                                browser_details["locator"]

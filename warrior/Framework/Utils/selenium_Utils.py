@@ -25,6 +25,8 @@ from Framework.Utils import file_Utils as file_Utils
 
 
 def evaluate_argument_value(xpath_or_tagname, datafile):
+    """This function takes checks if the given xpath_or_tagname exists in the
+    datafile and returns its value. Else returns None."""
     tree = ET.parse(datafile)
     root = tree.getroot()
     if xpath_or_tagname.startswith(root.tag + "/"):
@@ -87,6 +89,8 @@ def save_screenshot_onerror(status, current_browser):
 
 
 def get_json_value_from_path(path, file, default):
+    """This function returns the value of json key (it can also be a path)
+    obtained from the json file."""
     data_dict = None
     flag = False
     try:
@@ -166,6 +170,9 @@ def split_kwargs_on_tag_equalto(kwargs, datafile, browser):
         if isinstance(kwargs[element], str) and kwargs[element] is not None and\
                 kwargs[element] is not False:
             if kwargs[element].startswith("tag") and "=" in kwargs[element]:
+        kwargs[element] is not False:
+            if kwargs[element].startswith("tag") and "=" in kwargs[element] \
+                    and datafile is not None:
                 temp_list = kwargs[element].split("=")
                 temp_var = temp_list[1]
                 for i in range(2, len(temp_list)):
@@ -327,8 +334,11 @@ def get_final_json_values(element, final_dict, mapper, def_name_tuple):
     return final_dict
 
 
-def get_browser_details(browser, datafile, br_name="browser_name",
-                        def_name_tuple=("DEF_ecf", "DEF_et"), **kwargs):
+def get_browser_details(browser, datafile=None, br_name="browser_name",
+                        def_name_tuple=("DEF_ecf", "DEF_et"),
+                        bw_comp=("element_config_file", "element_tag"), **kwargs):
+    """This function returns the correct browser details by evaluating the data
+    files and the element config files"""
 
     # Gets all tags from the data file and adds it to idf_data_dict.
     # kwargs remains intact
@@ -341,9 +351,13 @@ def get_browser_details(browser, datafile, br_name="browser_name",
 
     final_dict.update(idf_data_dict)
 
+    # To maintain backward compatibilty
+    for dnt_el, bwc_el in zip(def_name_tuple, bw_comp):
+        if (dnt_el not in final_dict or final_dict[dnt_el] is None) and bwc_el in final_dict:
+            final_dict[dnt_el] = final_dict[bwc_el]
+
     # gets mappings of all elements
     mapper = get_mappers_for_all_elements(final_dict, def_name_tuple)
-
     mapper_list = get_mapped_to_elements(mapper)
 
     # final_dict updated to contain only element values and no mappings
@@ -382,6 +396,8 @@ def get_browser_details(browser, datafile, br_name="browser_name",
 
 
 def get_default_tag_for_locs(config_file, element_tag, locator_types):
+    """This function gets the default value of the locator_type from the
+    element config file."""
     output = [None, None]
     with open(config_file) as data_file:
         data = json.load(data_file)

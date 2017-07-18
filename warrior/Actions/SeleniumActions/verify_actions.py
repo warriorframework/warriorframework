@@ -27,8 +27,13 @@ except ImportWarning:
 
 
 class verify_actions(object):
+    """This class deals with functionality related to verifications that can be
+    performed in a browser window - like verifying a page by its property (like
+    url, title, page source, and name), verifying if an alert is present on the
+    webpage"""
 
     def __init__(self):
+        """This is a constructor for the verify_actions class"""
         self.resultfile = Utils.config_Utils.resultfile
         self.datafile = Utils.config_Utils.datafile
         self.logsdir = Utils.config_Utils.logsdir
@@ -286,8 +291,8 @@ class verify_actions(object):
                                                                 self.datafile,
                                                                 browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None and browser_details["verification_text"] is not None:
                 if not browser_details["verification_text"].startswith("verification_text"):
                     browser_details["verification_text"] = \
