@@ -154,7 +154,6 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
     Utils.testcase_Utils.update_arguments(args_repository)
     Utils.testcase_Utils.update_kw_resultfile(kw_resultfile)
 
-<<<<<<< HEAD
     # Executing keyword
     send_keyword_to_productdriver(
         driver, keyword, data_repository, args_repository)
@@ -168,7 +167,6 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
     # Getting onError action
     # Insert rules else statement here
     print "\n"
-=======
     exec_type_onerror = False
     action, keyword_status = exec_type_driver.main(step)
 
@@ -248,15 +246,6 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
     print_info("[{0}] Keyword execution completed".format(kw_end_time))
 
     impact_dict = {"IMPACT": "Impact", "NOIMPACT": "No Impact"}
-<<<<<<< HEAD
-    tc_junit_object.add_keyword_result(data_repository['wt_tc_timestamp'], step_num, keyword,
-                                       str(keyword_status), kw_start_time, tc_duration,
-                                       kw_resultfile, impact_dict.get(step_impact.upper()), onerror)
-    tc_junit_object.update_count(
-        str(keyword_status), "1", "tc", data_repository['wt_tc_timestamp'])
-    tc_junit_object.update_count(
-        "keywords", "1", "tc", data_repository['wt_tc_timestamp'])
-=======
     tc_timestamp = data_repository['wt_tc_timestamp']
     impact = impact_dict.get(step_impact.upper())
     add_keyword_result(tc_junit_object, tc_timestamp, step_num, keyword,
@@ -292,7 +281,6 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
         # Create and replace existing Project junit file for each step
         tc_junit_object.output_junit(data_repository['wp_results_execdir'],
                                      print_summary=False)
->>>>>>> origin/develop
 
     if parallel is True:
         # put result into multiprocessing queue and later retrieve in
