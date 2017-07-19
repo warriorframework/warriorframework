@@ -424,6 +424,8 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
 
     get_testcase_details(testcase_filepath, data_repository, jiraproj)
 
+    isRobotWrapperCase = check_robot_wrapper_case(testcase_filepath)
+
     # These lines are for creating testcase junit file
     from_ts = False
     if not 'wt_junit_object' in data_repository:
@@ -459,10 +461,7 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
     # Need to remove these after making resultsdir, logsdir as part of properties tag in testcase
     tc_junit_object.add_property("resultsdir", os.path.dirname(data_repository['wt_resultsdir']),
                                  "tc", tc_timestamp)
-    tc_junit_object.add_property("logsdir", os.path.dirname(data_repository['wt_logsdir']),
-                                 "tc", tc_timestamp)
     tc_junit_object.update_attr("title", data_repository['wt_title'], "tc", tc_timestamp)
-    data_repository['wt_junit_object'] = tc_junit_object
 
     data_repository['wt_junit_object'] = tc_junit_object
     print_testcase_details_to_console(testcase_filepath, data_repository)
@@ -475,6 +474,11 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
         print_warning("Testcase is in 'Draft' state, it may have keywords "
                       "that have not been developed yet. Skipping the "
                       "testcase execution and it will be marked as 'ERROR'")
+        tc_status = "ERROR"
+    elif isRobotWrapperCase is True and from_ts is False:
+        print_warning("Case which has robot_wrapper steps should be executed "
+                      "as part of a Suite. Skipping the case execution and "
+                      "it will be marked as 'ERROR'")
         tc_status = "ERROR"
     else:
         if data_type.upper() == 'CUSTOM' and \
@@ -649,6 +653,23 @@ def execute_custom(datatype, runtype, driver, data_repository, step_list):
     else:
         print_error("Unsuppored runtype found, please check testcase file")
     return tc_status
+
+
+def check_robot_wrapper_case(testcase_filepath):
+    """
+    Check if the case has any robot_wrapper steps in it.
+    """
+
+    # Get the steps from the case
+    steps = Utils.xml_Utils.getElementListWithSpecificXpath(testcase_filepath,
+                                                            './/step[@Driver]')
+    isRobotWrapperCase = False
+    # Check if the case has any step which uses robot wrapper plug-in
+    for step in steps:
+        if step.get("Plugin") == "plugin_robot_wrapper":
+            isRobotWrapperCase = True
+            break
+    return isRobotWrapperCase
 
 
 def main(testcase_filepath, data_repository = {}, tc_context='POSITIVE',
