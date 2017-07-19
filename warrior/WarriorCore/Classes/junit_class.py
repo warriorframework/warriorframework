@@ -25,7 +25,7 @@ class Junit(object):
 
     def __init__(self, filename, **kwargs):
         """constructor """
-        self.junit_xslt = "{0}{1}Reporting{1}junit_to_html.xsl".format(Tools.__path__[0], os.sep)
+        self.junit_xslt = "{0}{1}reporting{1}junit_to_html.xsl".format(Tools.__path__[0], os.sep)
         self.root = self.create_element("testsuites", tests="0", suites="0", **self.init_arg(**kwargs))
         self.filename = filename
         properties = self.create_element("properties")

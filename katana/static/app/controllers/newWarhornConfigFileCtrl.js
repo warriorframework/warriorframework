@@ -140,6 +140,7 @@ app.controller('newWarhornConfigFileCtrl', ['$scope', '$http', '$controller', '$
             saveNewWarhornConfigFileFactory.saveNew(filename, $scope.subdirs, xmlObj)
                 .then(
                     function(data) {
+                        $location.path('/warhornconfigfiles');
                         console.log(data);
                     },
                     function(data) {
@@ -151,7 +152,7 @@ app.controller('newWarhornConfigFileCtrl', ['$scope', '$http', '$controller', '$
                 type: "success",
                 timer: 1250
             });
-            $location.path('/warhornconfigfiles');
+
         }
 
         $scope.cancel = function() {

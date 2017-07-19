@@ -209,7 +209,7 @@ class TestData(object):
             # when varconfigfile is an XMl object(root element) - this happens
             # only when varconfigfile is taken from database server
             if isinstance(varconfigfile, ElementTree.Element) is True:
-                cfg_elem_obj = ConfigurationElement("Varconfig_from_Database",
+                cfg_elem_obj = ConfigurationElement("Varconfig_from_database",
                                                     start_pat, end_pat)
                 cfg_elem_obj.parse_data(varconfigfile, elem_type="xml_object")
             else:

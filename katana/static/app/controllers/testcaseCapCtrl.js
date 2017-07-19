@@ -1817,16 +1817,18 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
                         type: "success",
                         timer: 1250
                     });
+
+            if ($scope.savecreateTestcaseCap) {
+                     
+             }else{
+                     $location.path('/testcases');
+                 }
+
+
                 },
                 function(data) {
                     alert(data);
                 });
-
-        if ($scope.savecreateTestcaseCap) {
-            $location.path('testcase/__new__');
-        }  else {
-            $location.path('/testcases');
-        }
     }
 
     window.S = $scope;
