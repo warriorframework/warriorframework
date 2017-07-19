@@ -2163,3 +2163,22 @@ b.text-danger > br {
     padding: 0px;
 }
 }
+
+.alert {
+    position: fixed;
+    top: 50px;
+    min-width: 300px;
+    max-width: 800px;
+    text-align: center;
+    margin: 0 auto;
+    background: rgba(102, 102, 102, 0.82);
+    left: 0;
+    right: 0;
+    height: 40px;
+    width: 100%;
+    z-index: 999;
+    line-height: 40px;
+    padding: 0;
+    color: white;
+    border-radius: 0;
+}
