@@ -14,7 +14,6 @@ limitations under the License.
 app.controller('newProjectCtrl', ['$scope', '$http', '$controller', '$location', '$route', 'saveasProjectFactory', 'fileFactory', 'subdirs',
     function($scope, $http, $controller, $location, $route, saveasProjectFactory, fileFactory, subdirs) {
 
-
         $scope.subdirs = subdirs;
         $scope.defaultProjectActions = ['next', 'abort', 'abort_as_error', 'goto'];
         $scope.newProjecttooltips = {};
@@ -810,16 +809,17 @@ app.controller('newProjectCtrl', ['$scope', '$http', '$controller', '$location',
                 .then(
                     function(data) {
                         console.log(data);
+                        if ($scope.savecreateProject == true) {
+                            // $route.reload();
+                        }  else {
+                            $location.path('/projects');
+                        }
                     },
                     function(data) {
                         alert(data);
                     });
 
-            if ($scope.savecreateProject == true) {
-                $route.reload();
-            }  else {
-                $location.path('/projects');
-            }
+
         }
     }
 ]);

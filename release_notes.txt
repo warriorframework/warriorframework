@@ -1,6 +1,5 @@
 Release: Ninja
-Version: warrior-3.1.0
-
+Version: 3.2.0
 ===================
 1: Release details
 ===================
@@ -9,71 +8,51 @@ This is release Ninja of Warrior Test Automation Framework
 -------------------------------
 1.1: List of available releases
 -------------------------------
-1. Ninja = warrior-3.1.0 to current
+1. Ninja = warrior-3.2.0 to current
 
 ==================
 2. Version Details
 ==================
-You are on Release Ninja, Version warrior-3.1.0 of Warrior Framework.
+You are on Release Ninja, Version 3.2.0 of Warrior Framework.
 Procedure to get a specific version is available in section-3 of this document.
-
 +++++++++++++++++++++++++++++++++
 2.1. Change log for this release
 +++++++++++++++++++++++++++++++++
-
-
 -------------
-New Features:
+New features:
 -------------
-[WAR-547] - Improve the structure of the built-in tests
-[WAR-855] - Update print error, info, debug and all other print utils to write to result file same way like pNote
-[WAR-885] - SNMP Warrior MIB Browser
-[WAR-934] - Selenium KWs: Selenium functional tests need to be updated as the elements on the webpages that they were accessing have changed
-[WAR-939] - WARHORN: allow --user option when installing dependency
-[WAR-940] - If a testcase is in the "Draft" state, Warrior should not run the testcase as it would contain keywords and/or drivers that have not been developed yet.
-[WAR-958] - OSS: Create/move tests folder inside Warrior/Katana/Warhorn directories
-[WAR-1099] - Create JUnit file during execution
-[WAR-1106] - OSS: Change warhorn default config file so new users can run without any changes
-[WAR-1115] - Move cli_tests data file into a separate folder
-[WAR-1136] - As a user, I want to set many ENV variables and pass it to a file
-[WAR-1132] - Option to substitute WF data repository values in Testdata blocks
-[WAR-1182] - Update .travis.yml file with the new project name
-
--------------
-Improvements:
--------------
-[WAR-1131] - VAR_SUB substitution doesn't happen when used with "verify="${[VAR_SUB].verify_commit}""
-
+[WAR-1157] - Generate JUnit file after each step
+[WAR-1052] - Design and implement architecture for Plugins
+[WAR-1047] - As a user, I need a plugin to execute Robot testcases
+[WAR-1005] - Katana: While saving a new testcase if the user doe not have write permissions notify a appropriate error in the UI
+[WAR-970] - OSS: generate docs for our new repo structure.
+[WAR-897] - As a user i need the ability to make nested ssh connections
+[WAR-1154] - Katana : User permission error notification while saving.
 ---------
 Bugfixes:
 ---------
-[WAR-721] - Junit is not generated correctly for iterative parallel testsuite
-[WAR-760] - Keyword waitfor_subscription fails after timeout
-[WAR-837] - MIBS Loading from GIT url not working.
-[WAR-865] - Selenium keyword mentioned in the description returns pass when it should have failed
-[WAR-879] - SNMP: keyword start_tarp_listener should be changed to start_trap_listener
-[WAR-935] - runmode value taken as one less
-[WAR-936] - Issue : Prints "-I- failed: failure action= Abort" in all Passed steps.
-[WAR-978] - WNetwork expects "%" in response to ping. "%" may also be prompt in most systems
-[WAR-982] - Change in file utils in resolving the absolute path has impacted the demo action files.
-[WAR-983] - From 2.9 Selenium element config files in data files have become unresolvable.
-[WAR-1033] - selenium : Need to correct selenium_generic_tc_10.xml
-[WAR-1064] - Warrior hang in certain scenario when verify_on is set
-[WAR-1098] - Junit file format is incorrect
-[WAR-1121] - TS with parallel_kw tc throws error when trying to combine junit result
-[WAR-1155] - Selenium: Need to correct the relative paths of the config files which is mentioned in data files
-[WAR-1169] - Due to rearrangement of version file in the new repo, details of the version will not be logged in the log file.
-[WAR-1066] - copy option in test data doesn't list the step number to be copied
-[WAR-1180] - Change the import for print utils and other files to prevent loop import
-
+[WAR-1300] - Existing Warrior Test cases created using version 2.5 are failing when ran with Warrior version 3.1.1
+[WAR-1204] - pylint job on Travis fail to calculate result
+[WAR-1203] - Run-init script execution fails with ENV variable 'ENV.NE1.MAIN.DIP_PORT' not found on Warrior latest 3.1.0
+[WAR-1197] - Katana : Insert New Step hides the first saved Step.
+[WAR-1193] - Katana : Testcase Screen - 'Goto' not showing up its input field.
+[WAR-1170] - Katana: Input data file information getting saved as the <IDF> tag instead of the <InputDataFile>Tag
+[WAR-1037] - Execution summary results are not getting printed correctly at the end of warrior execution
+-------------
+Improvements:
+-------------
+[WAR-1309] - Change pylint diff branch from master to develop
+[WAR-1188] - Automate part of the code review process using pylint custom checker
+[WAR-1161] - Change directory names in Tools to be uniform i.e. all lower case
 =================================================
 3. Procedure to get a specific version of Warrior 
 =================================================
-
-1. Clone warrior main
+1. Clone warriorframework
 $ git clone https://github.com/warriorframework/warriorframework.git
-2. go to warrior_main directory
-$cd warrior_main
+
+2. go to warriorframework directory
+$cd warriorframework
+
 3. To check the list of versions available, execute "git tag --list" command
 $ git tag --list
 3.0
@@ -82,6 +61,7 @@ $ git tag --list
 3.3
 3.4
 $
+
 3. To Check the current version you are at, execute "git branch" command
 $ git branch
 * master
@@ -115,6 +95,7 @@ master
 $ 
 
 - * indicates the active version.
+
 6. Switch from one version to another (current=3.4, switch to 3.3)
 $ git checkout 3.3
 Previous HEAD position was 146313d... reduce command timeout, wait after timeout=60
@@ -124,6 +105,7 @@ $ git branch
 * (HEAD detached at 3.3)
 master
 $
+
 7. Switch to master branch again.
 $ git checkout master
 Previous HEAD position was ecb6373... WAR-180, handle nd prompt on timeout
