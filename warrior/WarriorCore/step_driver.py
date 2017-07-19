@@ -156,7 +156,7 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
 
     # Executing keyword
     send_keyword_to_productdriver(
-        driver, keyword, data_repository, args_repository)
+        driver, plugin, keyword, data_repository, args_repository)
     keyword_status = data_repository['step-%s_status' % step_num]
     Utils.testcase_Utils.update_step_num(str(step_num))
     if context.upper() == 'NEGATIVE' and type(keyword_status) == bool:
@@ -167,27 +167,6 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
     # Getting onError action
     # Insert rules else statement here
     print "\n"
-    exec_type_onerror = False
-    action, keyword_status = exec_type_driver.main(step)
-
-    if action is True:
-        send_keyword_to_productdriver(driver, plugin, keyword,
-                                      data_repository, args_repository)
-        keyword_status = data_repository['step-%s_status' % step_num]
-        Utils.testcase_Utils.update_step_num(str(step_num))
-        if context.upper() == 'NEGATIVE' and type(keyword_status) == bool:
-            print_debug("Keyword status = {0}, Flip status as context is Negative".format(
-                keyword_status))
-            keyword_status = not keyword_status
-    elif action == 'SKIP':
-        print_debug("Action is {0}".format(action))
-
-    elif action is False:
-        exec_type_onerror = True
-        print_debug("Action is {0}".format(action))
-
-    print("\n")
->>>>>>> origin/develop
     print_info("*** Keyword status ***")
     step_goto_value = False
     step_onError_action = Utils.xml_Utils.get_attributevalue_from_directchildnode(
