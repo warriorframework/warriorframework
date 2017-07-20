@@ -30,6 +30,9 @@ class DemoActions(object):
     related to actions used in demo KW """
 
     def __init__(self):
+        """
+        constructor
+        """
         self.resultfile = Utils.config_Utils.resultfile
         self.datafile = Utils.config_Utils.datafile
         self.logsdir = Utils.config_Utils.logsdir
