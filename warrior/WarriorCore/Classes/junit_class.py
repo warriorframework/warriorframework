@@ -34,6 +34,9 @@ class Junit(object):
         self.root.append(properties)
 
     def init_arg(self, **kwargs):
+        """
+            initialize the common attribute for an element
+        """
         default_keys = ["errors", "failures", "skipped", "time", "passes"]
         result = {}
         for default_key in default_keys:
@@ -43,6 +46,9 @@ class Junit(object):
         return result
 
     def create_testsuite(self, location, **kwargs):
+        """
+            Create a testsuite element
+        """
         testsuite = self.create_element("testsuite", tests="0", **self.init_arg(**kwargs))
         properties = self.create_element("properties")
         testsuite.append(properties)
@@ -54,6 +60,9 @@ class Junit(object):
 
     def create_testcase(self, location, timestamp, ts_timestamp, name,
                         classname="customTestsuite_independant_testcase_execution", **kwargs):
+        """
+            Create a testcase element
+        """
         if self.root.find("testsuite") is None:
             self.update_attr("timestamp", timestamp, "pj", "0")
             self.create_testsuite(location=location, name=classname, timestamp=timestamp,
@@ -81,24 +90,28 @@ class Junit(object):
         return elem
 
     def get_family_with_timestamp(self, timestamp):
+        """use timestamp to locate pj, ts and tc in etree"""
         for testsuite in list(self.root):
             for testcase in list(testsuite):
                 if testcase.get("timestamp") == timestamp:
                     return [testcase, testsuite, self.root]
 
     def get_tc_with_timestamp(self, timestamp):
+        """use timestamp to locate testcase in etree"""
         for testsuite in list(self.root):
             for testcase in list(testsuite):
                 if testcase.get("timestamp") == timestamp:
                     return testcase
 
     def get_ts_with_timestamp(self, timestamp):
+        """use timestamp to locate testsuite in etree"""
         for testsuite in list(self.root):
             if testsuite.get("timestamp") == timestamp:
                 return testsuite
 
     def add_keyword_result(self, tc_timestamp, step_num, kw_name, status, kw_timestamp, duration,
                            resultfile, impact, onerror, desc=""):
+        """form a keyword status dict with kw info and call function to build keyword elem"""
         if str(status).lower() == "true":
             status = "PASS"
         elif str(status).lower() == "false":
@@ -110,6 +123,7 @@ class Junit(object):
                           timestamp=tc_timestamp, keyword_items=keyword_items)
 
     def add_testcase_message(self, timestamp, status):
+        """add a testcase message based on status"""
         elem = self.get_tc_with_timestamp(timestamp)
         if elem is None:
             elem = self.get_ts_with_timestamp(timestamp)
@@ -128,6 +142,8 @@ class Junit(object):
                                                                         "value": requirement}))
 
     def add_property(self, name, value, elem_type, timestamp, **kwargs):
+        """add a new property to specific element when called
+        since steps are logged as property, need special handling to create kw item"""
         if elem_type == "pj":
             elem = self.root
         elif elem_type == "ts":
@@ -153,6 +169,10 @@ class Junit(object):
             "property", {"name": "location", "value": location}))
 
     def update_count(self, attr, value, elem_type, timestamp="0"):
+        """
+            increase the value of an attribute based on
+            element type (project, testsuite or testcase) and timestamp
+        """
         if elem_type == "pj":
             elem = self.root
         elif elem_type == "ts":
@@ -172,6 +192,11 @@ class Junit(object):
             elem.set(attr, str(int(elem.get(attr)) + int(value)))
 
     def update_attr(self, attr, value, elem_type, timestamp):
+        """
+            update the value of an attribute based on
+            element type (project, testsuite or testcase) and timestamp
+            special handling to create failure message for fail/exception status
+        """
         if elem_type == "pj":
             elem = self.root
         elif elem_type == "ts":
