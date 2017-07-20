@@ -97,6 +97,7 @@ def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
                     if mockrun:
                         result = mockrun_driver.main(abs_filepath, len(parameter_list))
                     elif Utils.xml_Utils.getRoot(abs_filepath).tag == 'Testcase':
+                        default_repo['war_file_type'] = "Case"
                         result, tc_duration, data_repository = testcase_driver.main(
                                 abs_filepath, data_repository=default_repo,
                                 runtype='SEQUENTIAL_KEYWORDS',
@@ -107,6 +108,7 @@ def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
                                                  data_repository['wt_logsdir'],
                                                  data_repository['wt_resultsdir'], result)
                     elif Utils.xml_Utils.getRoot(abs_filepath).tag == 'TestSuite':
+                        default_repo['war_file_type'] = "Suite"
                         result, suite_repository = testsuite_driver.main(
                                 abs_filepath, auto_defects=a_defects,
                                 jiraproj=jiraproj, data_repository=default_repo)
@@ -116,6 +118,7 @@ def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
                                                  suite_repository['ws_logs_execdir'],
                                                  suite_repository['ws_results_execdir'], result)
                     elif Utils.xml_Utils.getRoot(abs_filepath).tag == 'Project':
+                        default_repo['war_file_type'] = "Project"
                         result, project_repository = project_driver.main(
                                 abs_filepath, auto_defects=a_defects,
                                 jiraproj=jiraproj, data_repository=default_repo)
