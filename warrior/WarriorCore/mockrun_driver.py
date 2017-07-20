@@ -10,32 +10,32 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
-"""This is the library for mockrun tool which checks the
-script errors in the xml files"""
 import sys
 import subprocess
-from xml.etree import ElementTree
 from WarriorCore.Classes.mockrun_class import MockRun
-from WarriorCore.Classes.war_cli_class import WarriorCliClass
 from Framework.Utils.print_Utils import print_info
-
-
+"""This is the library for mockrun tool which checks the
+script errors in the xml files
+"""
 mockrun_obj = MockRun()
 
-def main(parameter_list):
+
+def main(filepath, nooftests):
     """Check the script errors of testcase/testuite/project xml files"""
-    args = sys.argv[1:]
+    args = sys.argv[1:-nooftests]
     debug, summary = False, False
 
-    if args[0] == '-debug':
+    if '-debug' in args:
         debug = True
-        args = args[1:]
+        args.remove('-debug')
 
-    if args[0] == '-summary':
+    if '-summary' in args:
         summary = True
-        args = args[1:]
-    cmd = 'python Warrior -cmdprint %s' % (' '.join(parameter_list))
+        args.remove('-summary')
+    args.remove('-mockrun')
+    arg_list = " ".join(args)
+    cmd = '{} Warrior -cmdprint {} {}'.format(
+            sys.executable, arg_list, filepath)
     print_info("Executing %s" % cmd)
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
     out, err = p.communicate()
@@ -62,4 +62,5 @@ def main(parameter_list):
             print_info(lin.split(':CMD:')[1])
         elif any(map(lambda x: x in lin, pats)):
             print_info(lin)
-    print_info("Done executing Warrior")
+    print_info("Done executing Warrior mockrun")
+    return True

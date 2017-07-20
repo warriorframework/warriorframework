@@ -95,8 +95,7 @@ def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
                         default_repo.update({'db_obj': False})
 
                     if mockrun:
-                        mockrun_driver.main(parameter_list)
-                        result = True
+                        result = mockrun_driver.main(abs_filepath, len(parameter_list))
                     elif Utils.xml_Utils.getRoot(abs_filepath).tag == 'Testcase':
                         result, tc_duration, data_repository = testcase_driver.main(
                                 abs_filepath, data_repository=default_repo,
