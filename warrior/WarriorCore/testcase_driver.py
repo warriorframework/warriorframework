@@ -194,6 +194,8 @@ def report_testcase_requirements(testcase_filepath):
 
 
 def junit_requirements(testcase_filepath, tc_junit_object, timestamp):
+    """ Takes the location of any Testcase xml file as input and add a new requirement when
+    called"""
     req_id_list = Utils.testcase_Utils.get_requirement_id_list(testcase_filepath)
     if req_id_list is not None:
         for req_id in req_id_list:

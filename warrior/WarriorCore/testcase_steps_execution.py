@@ -37,6 +37,7 @@ def get_system_console_log(filename, logsdir, console_name):
         return console_logfile
 
 def execute_steps(step_list, data_repository, system_name, parallel, queue):
+     """Executes the teststep(provided as a xml test case)"""
     default_error_action = data_repository['wt_def_on_error_action']
     default_error_value = data_repository['wt_def_on_error_value']
 
