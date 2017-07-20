@@ -63,6 +63,7 @@ def get_browser_details_from_data_file(system_name, arguments,
 
 def get_current_browser_details(system_name, browser,
                                 arguments, browser_details):
+    """ To get the details of current browser """
     datafile = config_Utils.datafile
     arguments = data_Utils.get_default_ecf_and_et(arguments, datafile, browser)
     if browser_details == {}:
@@ -71,6 +72,7 @@ def get_current_browser_details(system_name, browser,
 
 
 def report_status_and_screenshot(status, current_browser):
+    """ To report the substep status and to take screenshot of webpage if any failure occured"""
     testcase_Utils.report_substep_status(status)
     if current_browser:
         save_screenshot_onerror(status, current_browser)

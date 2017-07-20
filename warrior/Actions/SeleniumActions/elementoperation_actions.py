@@ -18,7 +18,6 @@ from Framework.Utils import data_Utils
 from Framework.Utils import selenium_Utils
 from Framework.Utils.testcase_Utils import pNote, pSubStep
 
-""" Selenium keywords for Element Operation Actions """
 
 try:
     import Framework.Utils as Utils
