@@ -186,7 +186,9 @@ class DemoActions(object):
             raise Exception("This is raised in demo_actions.local_data_test")
 
     def create_jira_issue(self, server_url, username, password, issue_summary, issue_description, project_key, issue_type='Bug'):
-
+        """
+            connect to jira server and create an issue under a specific project
+        """
         status = True
         output_dict = {}
         wdesc = "Creates a JIRA issue"
