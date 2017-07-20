@@ -81,8 +81,10 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
                     impact_dict.get(step_impact.upper()), "N/A")
                 data_repository['step_{}_result'.format(step_num)] = "SKIPPED"
 
-                if trigger_action in ['ABORT', 'ABORT_AS_ERROR', 'SKIP']:
+                if trigger_action.upper() in ['ABORT', 'ABORT_AS_ERROR']:
                     break
+                elif trigger_action.upper() in ['SKIP', 'NEXT']:
+                    continue
                 # when 'onError:goto' value is less than the current step num,
                 # change the next iteration point to goto value
                 elif trigger_action and int(trigger_action) < step_num:

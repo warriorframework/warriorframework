@@ -29,11 +29,7 @@
             <onError action="next"/>
             <Description>local_data_test</Description>
             <iteration_type type=""/>
-            <Execute ExecType="If">
-                <Rule Condition="step_1_result" Condvalue="PASS"/>
-                <Rule Condition="step_2_result" Condvalue="SKIPPED"/>
-                <Rule Condition="step_3_result" Condvalue="PASS"/>
-            </Execute>
+            <Execute ExecType="Yes"/>
             <context>positive</context>
             <impact>impact</impact>
             <rmt/>
@@ -48,7 +44,6 @@
             <iteration_type type=""/>
             <Execute ExecType="If Not" Else="next">
                 <Rule Condition="step_1_result" Condvalue="PASS"/>
-                <Rule Condition="step_2_result" Condvalue="SKIPPED"/>
             </Execute>
             <context>positive</context>
             <impact>impact</impact>
