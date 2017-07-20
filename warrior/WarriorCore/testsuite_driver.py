@@ -204,7 +204,7 @@ def report_testsuite_result(suite_repository, suite_status):
 def print_suite_details_to_console(suite_repository, testsuite_filepath, junit_resultfile):
     """Prints the testsuite details to console """
 
-    print "\n\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$  TESTSUITE-DETAILS  $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n"
+    print_info( "\n\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$  TESTSUITE-DETAILS  $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
     print_info("Executing testsuite '{0}'".format(suite_repository['suite_name'].strip()))
     print_info("Title: {0}".format(suite_repository['suite_title'].strip()))
     print_info("Results directory: %s" % suite_repository['suite_execution_dir'])
@@ -377,7 +377,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
 		# if execution type is iterative sequential call WarriorCore.Classes.iterative_testsuite
         # class and 
 		# execute the testcases in iterative sequential fashion on the systems
-        print "Iterative sequential suite"
+        print_info("Iterative sequential suite")
         iter_seq_ts_obj = IterativeTestsuite(testcase_list, suite_repository,
                                              data_repository, from_project,
                                              auto_defects)
@@ -387,7 +387,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
 		# if execution type is iterative parallel call WarriorCore.Classes.iterative_testsuite
         # class and 
 		# execute the testcases in iterative parallel fashion on the systems
-        print "Iterative parallel suite"
+        print_info("Iterative parallel suite")
         iter_seq_ts_obj = IterativeTestsuite(testcase_list, suite_repository, data_repository,
                                              from_project, auto_defects)
         test_suite_status = iter_seq_ts_obj.execute_iterative_parallel()
@@ -396,7 +396,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
         print_error("unexpected suite_type received...aborting execution")
         test_suite_status = False
 
-    print ("\n")
+    print_info("\n")
     suite_end_time = Utils.datetime_utils.get_current_timestamp()
     print_info("[{0}] Testsuite execution completed".format(suite_end_time))
     suite_duration = Utils.datetime_utils.get_time_delta(suite_start_time)

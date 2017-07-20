@@ -304,7 +304,7 @@ class HybridDriver(object):
     def _execute_step(self, system_executed, step_num, index, goto_stepnum):
         """
         """
-        print "\n"
+        print_info("\n")
         result = (None, None, None, None)
 
         if not self.execute_endoftc:

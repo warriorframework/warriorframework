@@ -211,6 +211,6 @@ class Junit(object):
         if print_summary is True:
             summary_obj = ExecutionSummary(fpath)
             summary_obj.print_result_in_console(fpath)
-        print("\n")
+        print_info("\n")
 
         self._junit_to_html(fpath)

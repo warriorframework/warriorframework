@@ -177,7 +177,7 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
             testsuite_path = Utils.file_Utils.getAbsPath(testsuite_rel_path, project_dir)
         else:
             testsuite_path = str(testsuite_rel_path)
-        print '\n'
+        print_info('\n')
         print_debug("<<<< Starting execution of Test suite: {0}>>>>".format(testsuite_path))
         action, testsuite_status = exec_type_driver.main(testsuite)
         testsuite_impact = Utils.testcase_Utils.get_impact_from_xmlfile(testsuite)
@@ -299,7 +299,7 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
 
     project_status = Utils.testcase_Utils.compute_status_using_impact(ts_status_list,
                                                                       ts_impact_list)
-    print ("\n")
+    print_info("\n")
     project_end_time = Utils.datetime_utils.get_current_timestamp()
     print_info("[{0}] Project execution completed".format(project_end_time))
     project_duration = Utils.datetime_utils.get_time_delta(project_start_time)

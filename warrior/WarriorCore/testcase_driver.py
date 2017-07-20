@@ -267,7 +267,7 @@ def report_testcase_result(tc_status, data_repository):
     print_info("\n**** Testcase Result ***")
     print_info("TESTCASE:{0}  STATUS:{1}".format(data_repository['wt_name'],
                                                  convertLogic(tc_status)))
-    print("\n")
+    print_info("\n")
     Utils.testcase_Utils.pTestResult(tc_status, data_repository['wt_resultfile'])
     root = Utils.xml_Utils.getRoot(data_repository['wt_resultfile'])
     fail_count = 0
@@ -549,7 +549,7 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
 
     check_and_create_defects(tc_status, auto_defects, data_repository, tc_junit_object)
 
-    print("\n")
+    print_info("\n")
     tc_end_time = Utils.datetime_utils.get_current_timestamp()
     print_info("[{0}] Testcase execution completed".format(tc_end_time))
     tc_duration = Utils.datetime_utils.get_time_delta(tc_start_time)

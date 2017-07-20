@@ -189,7 +189,7 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
             # parallel testcase sequenial keywords
             queue.put((step_status_list, kw_resultfile_list, system_name, step_impact_list, data_repository['wt_junit_object']))
         except Exception,e:
-            print traceback.format_exc()
+            print_info(traceback.format_exc())
 
     else:
         return  step_status_list, kw_resultfile_list, step_impact_list
