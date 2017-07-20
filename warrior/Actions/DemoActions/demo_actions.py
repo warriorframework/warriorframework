@@ -177,7 +177,7 @@ class DemoActions(object):
         """
         # print "desired_status: " + desired_status
 
-        print "Please use the one in ci_regression_actions"
+        print_error("Please use the one in ci_regression_actions")
         if desired_status == "pass":
             return True
         elif desired_status == "fail":

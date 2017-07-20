@@ -19,8 +19,6 @@ else
     exit 0;
 fi
 
-pwd
-ls -a
 # Do pylint on develop and the latest commit, output result to pylint_result.txt
 echo "$filelist" | xargs -L 1 -I {} pylint --rcfile=pylintrc {} || true
 git checkout "${TRAVIS_PULL_REQUEST_SHA}"
