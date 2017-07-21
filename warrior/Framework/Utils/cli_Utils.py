@@ -100,7 +100,7 @@ def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=6
             print_exception(exception)
 
     try:
-        flag=True
+        flag = True
         child.setecho(False)
         child.delaybeforesend = .5
         while True:
@@ -124,12 +124,12 @@ def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=6
                 pNote("Connection failed: {0}, with the system response: {1}"\
                       .format(command, child.before), "error")
                 break
-            elif result == 5: 
+            elif result == 5:
                 # Some terminal expect specific keystroke before showing login prompt
-                if flag==True:
+                if flag is True:
                     pNote("Initial timeout occur, sending custom_keystroke")
                     _send_cmd_by_type(child, custom_keystroke)
-                    flag=False
+                    flag = False
                     continue
                 pNote("Connection timed out: {0}, expected prompt: {1} "\
                       "is not found in the system response: {2}"\
@@ -342,7 +342,7 @@ def send_smart_cmd(connect_testdata, session_object, tag_value, call_system_name
             Distinguish if it is a connect smart action or disconnect smart action
     """
     if xml_Utils.getElementWithTagAttribValueMatch(connect_testdata, "testdata", "title", tag_value) is not None:
-        print("**********The following command are sent as part of the smart analysis**********")
+        print_info("**********The following command are sent as part of the smart analysis**********")
         main_log = session_object.logfile
         if pre_tag:
             smart_log = main_log.name.replace(".log", "pre_.log")
@@ -351,7 +351,7 @@ def send_smart_cmd(connect_testdata, session_object, tag_value, call_system_name
         session_object.logfile = open(smart_log, "a")
         send_commands_from_testdata(connect_testdata, session_object, title=tag_value, system_name=call_system_name)
         session_object.logfile = main_log
-        print("**********smart analysis finished**********")
+        print_info("**********smart analysis finished**********")
     else:
         print_error()
 
@@ -595,7 +595,7 @@ def send_commands_from_testdata(testdatafile, obj_session, **args):
 
         # Send Commands
         for i in range(0, intsize):
-            print("\n")
+            print_info("")
             print_debug(">>>")
             command = details_dict["command_list"][i]
             pNote("Command #{0}\t: {1}".format(str(i+1), command))
@@ -962,7 +962,7 @@ def _send_command_retrials(obj_session, details_dict, index, **kwargs):
         retry_count = details_dict["retry_count_list"][index]
         retry_timer = {None:60, "":60, "none":60}.get(str(retry_timer).lower(), retry_timer)
         retry_count = {None:5, "":5, "none":5}.get(str(retry_count).lower(), retry_count)
-        print ('\n')
+        print_info("")
         pNote("Retry was requested for the command")
         pNote("Command re-trials will begin since the most recent "\
               "command status was FAIL or ERROR")
@@ -977,7 +977,7 @@ def _send_command_retrials(obj_session, details_dict, index, **kwargs):
                 match_status = _get_match_status(retry_onmatch, response)
                 if match_status:
                     count = count + 1
-                    print ('\n')
+                    print_info("")
                     pNote("RETRIAL ATTEMPT:{0}".format(count))
                     pNote("Wait for {0}sec (retry_timer) before sending"\
                                " the command again".format(retry_timer))
