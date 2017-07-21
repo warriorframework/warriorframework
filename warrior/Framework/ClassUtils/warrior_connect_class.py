@@ -375,6 +375,7 @@ class PexpectConnect(object):
         self.prompt = credentials.get('prompt', '.*(%|#|\$)')
         self.conn_options = credentials.get('conn_options', '')
         self.custom_keystroke = credentials.get('custom_keystroke', '')
+        self.escape = credentials.get('escape', '')
 
     def __import_pexpect(self):
         """Import the pexpect module """
@@ -415,7 +416,12 @@ class PexpectConnect(object):
         if WarriorCliClass.cmdprint:
             pNote("connectSSH: :CMD: %s" % command)
             return None, ""
-        child = self.pexpect.spawn(command, timeout=int(self.timeout))
+        import pdb
+        pdb.set_trace()
+        if str(self.escape).lower() == "yes" or str(self.escape).lower() == "true":
+            child = self.pexpect.spawn(command, timeout=int(self.timeout), env={"TERM": "dumb"})
+        else:
+            child = self.pexpect.spawn(command, timeout=int(self.timeout))
 
         child.logfile = sys.stdout
 
@@ -500,7 +506,12 @@ class PexpectConnect(object):
             conn_options = ""
         command = command + str(conn_options)
         print_debug("connectTelnet cmd = %s" % command)
-        child = self.pexpect.spawn(command, timeout=int(self.timeout))
+
+        if str(self.escape).lower() == "yes" or str(self.escape).lower() == "true":
+            child = self.pexpect.spawn(command, timeout=int(self.timeout), env={"TERM": "dumb"})
+        else:
+            child = self.pexpect.spawn(command, timeout=int(self.timeout))
+
         try:
             child.logfile = open(self.logfile, "a")
         except Exception:
