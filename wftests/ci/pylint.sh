@@ -65,6 +65,7 @@ do
         echo "$filename ($num1, $num3)"
     fi
 done < summary.txt
+echo "pylint score check finish, starting custom rule check"
 
 custom_status="pass"
 for i in $filelist ; do
