@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<Project>
+	<Details>
+		<Name>pj_common_actions</Name>
+		<Title>pj_common_actions</Title>
+		<Engineer>Arvind Kumar Sethuraman</Engineer>
+		<Date>23/01/2017</Date>
+		<Time>13:07:26</Time>
+		<default_onError action="next"/>
+	</Details>
+	<Testsuites>
+		<Testsuite>
+			<path>../suites/common_action_tests/common_action_suite.xml</path>
+			<onError action="next" value=""/>
+			<impact>impact</impact>
+		</Testsuite>
+	</Testsuites>
+</Project>

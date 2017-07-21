@@ -15,18 +15,24 @@ limitations under the License.
 import base64
 import json
 import urllib2
+import os
 
 import Framework.Utils as Utils
 from Framework.Utils.testcase_Utils import pNote, pSubStep
 from Framework.Utils.data_Utils import getSystemData, get_credentials
 from Framework.Utils.print_Utils import print_info, print_warning,\
 print_error, print_debug, print_exception
+from Framework.Utils import file_Utils as file_Utils
+
 
 class DemoActions(object):
     """DemoActions class which has methods(keywords)
     related to actions used in demo KW """
 
     def __init__(self):
+        """
+        constructor
+        """
         self.resultfile = Utils.config_Utils.resultfile
         self.datafile = Utils.config_Utils.datafile
         self.logsdir = Utils.config_Utils.logsdir
@@ -90,7 +96,7 @@ class DemoActions(object):
                                           ['dom', 'user', 'os', 'testdata'])
             pNote("system={0}".format(call_system_name))
             #Demo Framework testdata capability
-            testdatafile = credentials["testdata"]
+            testdatafile = file_Utils.getAbsPath(credentials["testdata"], os.path.dirname(self.datafile))
             add_info = Utils.xml_Utils.getElementWithTagAttribValueMatch(testdatafile,
                        'add_info', 'name', 'testdata')
             if add_info is not None:
@@ -137,7 +143,7 @@ class DemoActions(object):
                                 ['calibration', 'user', 'location', 'testdata'])
             pNote("system={0}".format(call_system_name))
             #Demo Framework testdata capability
-            testdatafile = credentials["testdata"]
+            testdatafile = file_Utils.getAbsPath(credentials["testdata"], os.path.dirname(self.datafile))
             add_info = Utils.xml_Utils.getElementWithTagAttribValueMatch(testdatafile,
                        'add_info', 'name', 'testdata')
             if add_info is not None:
@@ -171,7 +177,7 @@ class DemoActions(object):
         """
         # print "desired_status: " + desired_status
 
-        print "Please use the one in ci_regression_actions"
+        print_error("Please use the one in ci_regression_actions")
         if desired_status == "pass":
             return True
         elif desired_status == "fail":
@@ -180,7 +186,9 @@ class DemoActions(object):
             raise Exception("This is raised in demo_actions.local_data_test")
 
     def create_jira_issue(self, server_url, username, password, issue_summary, issue_description, project_key, issue_type='Bug'):
-
+        """
+            connect to jira server and create an issue under a specific project
+        """
         status = True
         output_dict = {}
         wdesc = "Creates a JIRA issue"

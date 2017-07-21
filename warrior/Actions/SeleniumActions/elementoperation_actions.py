@@ -27,8 +27,12 @@ from Framework.Utils.testcase_Utils import pNote,pSubStep
 from Framework.Utils import xml_Utils
 
 class elementoperation_actions(object):
+    """This is a class that deals with all 'element' (HTML element) related
+    operations like clicking on an element, drag and drop of an element,
+    hovering on an element"""
 
     def __init__(self):
+        """This is a constructor for the elementoperation_actions class"""
         self.datafile = Utils.config_Utils.datafile
         self.jsonobj = JsonUtils()
         self.elem_oper_obj = ElementOperations()
@@ -166,8 +170,8 @@ class elementoperation_actions(object):
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 comp_locator = browser_details["locator_type"] + "=" + \
                                    browser_details["locator"]
@@ -351,8 +355,8 @@ class elementoperation_actions(object):
                                                                 'self.datafile',
                                                                 browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 comp_locator = browser_details["locator_type"] + "=" + \
                                    browser_details["locator"]
@@ -373,11 +377,12 @@ class elementoperation_actions(object):
                               "repository!".format(br_name),
                               "error")
                     else:
-                        '''work on the browser instance on which to perform the 
+                        '''work on the browser instance on which to perform the
                         action since enclosed element not provided
                         '''
-                        value = self.elem_oper_obj.perform_element_action(
-                            current_browser, comp_locator, "get_text")
+                        status, value = self.elem_oper_obj.perform_element_action(
+                            current_browser, comp_locator, "get_text",
+                            browser=current_browser)
                         data_Utils.update_datarepository({var: value})
                         if expected is not None:
                             status = self.elem_oper_obj.verify_text(
@@ -386,8 +391,9 @@ class elementoperation_actions(object):
                     '''enclosing element of the locator is itself provided
                     use that to perform the action
                     '''
-                    value = self.elem_oper_obj.perform_element_action(
-                        current_element, comp_locator, "get_text")
+                    status, value = self.elem_oper_obj.perform_element_action(
+                        current_element, comp_locator, "get_text",
+                        browser=current_browser)
                     data_Utils.update_datarepository({var: value})
                     if expected is not None:
                         status = self.elem_oper_obj.verify_text(
@@ -529,8 +535,8 @@ class elementoperation_actions(object):
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 comp_locator = browser_details["locator_type"] + "=" + \
                                browser_details["locator"]
@@ -692,8 +698,8 @@ class elementoperation_actions(object):
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 comp_locator = browser_details["locator_type"] + "=" + \
                                browser_details["locator"]
@@ -864,8 +870,8 @@ class elementoperation_actions(object):
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 comp_locator = browser_details["locator_type"] + "=" + \
                                browser_details["locator"]
@@ -1039,8 +1045,8 @@ class elementoperation_actions(object):
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
                 pNote(browser_details)
             if browser_details is not None:
                 comp_locator = browser_details["locator_type"] + "=" + \
@@ -1214,8 +1220,8 @@ class elementoperation_actions(object):
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             pNote(browser_details)
             if browser_details is not None:
                 comp_locator = browser_details["locator_type"] + "=" + \
@@ -1383,8 +1389,8 @@ class elementoperation_actions(object):
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 comp_locator = browser_details["locator_type"] + "=" + \
                                browser_details["locator"]
@@ -1612,8 +1618,8 @@ class elementoperation_actions(object):
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 source_comp_locator = browser_details["source_locator_type"] + "=" + browser_details["source_locator"]
                 target_comp_locator = browser_details["target_locator_type"] + "=" + browser_details["target_locator"]
@@ -1762,8 +1768,8 @@ class elementoperation_actions(object):
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                                  get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 comp_locator = browser_details["locator_type"] + "=" + \
                                                browser_details["locator"]
@@ -1858,8 +1864,8 @@ class elementoperation_actions(object):
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 br_name = system_name + "_" + browser_details["browser_name"]
                 current_browser = Utils.data_Utils.get_object_from_datarepository(br_name)
@@ -2039,8 +2045,8 @@ class elementoperation_actions(object):
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 source_comp_locator = browser_details["source_locator_type"] + "=" + browser_details["source_locator"]
                 br_name = system_name + "_" + browser_details["browser_name"]
@@ -2199,8 +2205,8 @@ class elementoperation_actions(object):
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 comp_locator = browser_details["locator_type"] + "=" + \
                                browser_details["locator"]
@@ -2375,8 +2381,8 @@ class elementoperation_actions(object):
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 comp_locator = browser_details["locator_type"] + "=" + \
                                browser_details["locator"]
@@ -2502,8 +2508,8 @@ class elementoperation_actions(object):
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 br_name = system_name + "_" + browser_details["browser_name"]
                 current_browser = Utils.data_Utils.\

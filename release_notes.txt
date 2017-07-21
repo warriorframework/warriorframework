@@ -1,6 +1,5 @@
 Release: Ninja
-Version: 3.0
-
+Version: 3.2.0
 ===================
 1: Release details
 ===================
@@ -9,61 +8,51 @@ This is release Ninja of Warrior Test Automation Framework
 -------------------------------
 1.1: List of available releases
 -------------------------------
-1. Ninja = 3.0 to current
+1. Ninja = warrior-3.2.0 to current
 
 ==================
 2. Version Details
 ==================
-You are on Release Ninja, Version 3.0 of Warrior Framework.
+You are on Release Ninja, Version 3.2.0 of Warrior Framework.
 Procedure to get a specific version is available in section-3 of this document.
-
 +++++++++++++++++++++++++++++++++
 2.1. Change log for this release
 +++++++++++++++++++++++++++++++++
-
-------------------
-Hghlight Features:
-------------------
-
-[WAR-984] - Added the fast feedback mechanism for failed Cases during Suite execution
-[WAR-874] - The ability to verify whether certain value in the response is less than or greater than a specified value
-[WAR-752] - Added "iter" functionality in the datafile so that it can work with iterative cases as well
-
 -------------
-New Features:
+New features:
 -------------
-
-[WAR-613] - Keyword to separate test files for parallel execution added
-[WAR-579] - Keyword to verify if elements are present on the page added to the Warrior Core Selenium Keywords
-
--------------
-Improvements:
--------------
-
-[WAR-452] - New Demo and Sample Cases, Suites, and Projects added in Warrior's Warriorspace
-[WAR-1040] - Warrior User Guide updated
-[WAR-960] - Moved bottle.py from Utils to OSS
-[WAR-961] - Separated non-OSS from OSS related content into separate modules in the actions directory
-[WAR-986] - Default value for iteration_type in a step set to Standard
-[WAR-971] - Added license files to the Repository
-[WAR-988] - Katana can now be started by giving the absolute path of the katana executable.
-[WAR-968] - Warhorn updated to handle new structure of Warrior Framework
-
+[WAR-1157] - Generate JUnit file after each step
+[WAR-1052] - Design and implement architecture for Plugins
+[WAR-1047] - As a user, I need a plugin to execute Robot testcases
+[WAR-1005] - Katana: While saving a new testcase if the user doe not have write permissions notify a appropriate error in the UI
+[WAR-970] - OSS: generate docs for our new repo structure.
+[WAR-897] - As a user i need the ability to make nested ssh connections
+[WAR-1154] - Katana : User permission error notification while saving.
 ---------
 Bugfixes:
 ---------
-[WAR-977] - node check condition xml_Utils.py corrected
-[WAR-1008] - Handled Request_rpc TypeError failure
-[WAR-1041] - Handled lxml Import Error
-
+[WAR-1300] - Existing Warrior Test cases created using version 2.5 are failing when ran with Warrior version 3.1.1
+[WAR-1204] - pylint job on Travis fail to calculate result
+[WAR-1203] - Run-init script execution fails with ENV variable 'ENV.NE1.MAIN.DIP_PORT' not found on Warrior latest 3.1.0
+[WAR-1197] - Katana : Insert New Step hides the first saved Step.
+[WAR-1193] - Katana : Testcase Screen - 'Goto' not showing up its input field.
+[WAR-1170] - Katana: Input data file information getting saved as the <IDF> tag instead of the <InputDataFile>Tag
+[WAR-1037] - Execution summary results are not getting printed correctly at the end of warrior execution
+-------------
+Improvements:
+-------------
+[WAR-1309] - Change pylint diff branch from master to develop
+[WAR-1188] - Automate part of the code review process using pylint custom checker
+[WAR-1161] - Change directory names in Tools to be uniform i.e. all lower case
 =================================================
 3. Procedure to get a specific version of Warrior 
 =================================================
+1. Clone warriorframework
+$ git clone https://github.com/warriorframework/warriorframework.git
 
-1. Clone warrior main
-$ git clone http://rtx-swtl-git.fnc.net.local/scm/war/warrior_main.git
-2. go to warrior_main directory
-$cd warrior_main
+2. go to warriorframework directory
+$cd warriorframework
+
 3. To check the list of versions available, execute "git tag --list" command
 $ git tag --list
 3.0
@@ -72,6 +61,7 @@ $ git tag --list
 3.3
 3.4
 $
+
 3. To Check the current version you are at, execute "git branch" command
 $ git branch
 * master
@@ -105,6 +95,7 @@ master
 $ 
 
 - * indicates the active version.
+
 6. Switch from one version to another (current=3.4, switch to 3.3)
 $ git checkout 3.3
 Previous HEAD position was 146313d... reduce command timeout, wait after timeout=60
@@ -114,6 +105,7 @@ $ git branch
 * (HEAD detached at 3.3)
 master
 $
+
 7. Switch to master branch again.
 $ git checkout master
 Previous HEAD position was ecb6373... WAR-180, handle nd prompt on timeout

@@ -7,6 +7,7 @@
                 <default_onError action="next"/>
                 <Logsdir>../../Execution</Logsdir>
                 <Resultsdir>../../Execution</Resultsdir>
+                <InputDataFile>No_Data</InputDataFile>
                 <Date>2017-04-20</Date>
                 <Time>16:20</Time>
                 <Engineer>Ka</Engineer>

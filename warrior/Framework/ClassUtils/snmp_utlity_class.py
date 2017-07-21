@@ -12,23 +12,23 @@ limitations under the License.
 '''
 
 """SNMP utility module using the python PYSNMP module"""
-#!/usr/bin/env python
 
 import os
 import re, sys, time
 from time import sleep
 from Framework.Utils import testcase_Utils, data_Utils, config_Utils
-from Framework.Utils.print_Utils import print_info, print_error, print_debug, print_exception
 from pysnmp.entity.rfc3413.oneliner import cmdgen, ntforg
 from pysnmp import error as snmp_exception
 from pysnmp.proto.rfc1902 import OctetString
 import threading
-from pysnmp.carrier.asyncore.dispatch import AsyncoreDispatcher
+from pysnmp.proto.api import v2c
+from pysnmp.entity import engine, config
 from pysnmp.carrier.asyncore.dgram import udp, udp6, unix
 from pyasn1.codec.ber import decoder
 from pysnmp.proto import api
-from pysnmp.smi import builder, view, compiler, rfc1902
-import Framework.Utils as Utils
+from pysnmp.smi import builder, view, compiler, rfc1902, error
+from pysnmp import debug 
+
 
 
 def threadsafe_function(fn):
@@ -51,8 +51,16 @@ def threadsafe_function(fn):
 
 class WSnmp(object):
     """SNMP Util class using PYSNMP"""
-    
     data_repo={}
+    snmpEngine = {}
+    mibViewController = None
+    __authProtocol = {'usmHMACMD5AuthProtocol':config.usmHMACMD5AuthProtocol, 
+                        'usmHMACSHAAuthProtocol':config.usmHMACSHAAuthProtocol,
+                        'usmAesCfb128Protocol':config.usmAesCfb128Protocol,
+                        'usmAesCfb256Protocol':config.usmAesCfb256Protocol,
+                        'usmAesCfb192Protocol':config.usmAesCfb192Protocol,
+                        'usmDESPrivProtocol':config.usmDESPrivProtocol,
+    }
     
     def __init__(self,communityname, mpModel, ipaddr, port='161',
                  snmp_timeout=60, userName=None, authKey=None, privKey=None,
@@ -165,9 +173,14 @@ class WSnmp(object):
         else:
             return False
 ##TRAP Listner related method
-    @staticmethod
-    def get_asyncoredispatcher():
-        return AsyncoreDispatcher()
+## This will support SNMP v1 v2 V3 Trap and Inform as well
+        
+    @classmethod
+    def get_asyncoredispatcher(cls, port):
+        eng = "snmpEngine{}".format(port)
+        if cls.snmpEngine.get(eng) == None:
+            cls.snmpEngine.update({eng:engine.SnmpEngine()})
+        return cls.snmpEngine.get(eng)
 
     @staticmethod
     def get_proto_api():
@@ -177,92 +190,85 @@ class WSnmp(object):
     def get_asn_decoder():
         return decoder()
 
-    @staticmethod
-    def start_trap_listner_job(transportDispatcher):
+    @classmethod
+    def start_trap_listner_job(cls, port):
         """
         Start the listner Job
         Dispatcher will never finish as job#1 never reaches zero
-        :param transportDispatcher:
         :return:None
         """
+        __snmpEngine = cls.get_asyncoredispatcher(port)
         try:
             # Dispatcher will never finish as job#1 never reaches zero
-            transportDispatcher.runDispatcher()
+            __snmpEngine.transportDispatcher.runDispatcher()
         except:
-            transportDispatcher.closeDispatcher()
+            __snmpEngine.transportDispatcher.closeDispatcher()
             raise
 
-    @staticmethod
-    def create_trap_listner_job(transportDispatcher, q,
-                            ipv4_addr=None,
-                            ipv6_addr=None,
-              port="162", provision_ipv4='yes', provision_ipv6='no'
+    @classmethod
+    def create_trap_listner_job(cls,
+              port="162"
               ):
         """
         Create Trap listner job
-        :param transportDispatcher:
-        :param ipv4_addr:
-        :param ipv6_addr:
         :param port:
         :return:None
         """
-        #transportDispatcher.registerRecvCbFun(__trap_decoder)
-        if provision_ipv4.lower() == 'yes' and ipv4_addr:
-            try:
-                transportDispatcher.registerTransport(udp.domainName,
-                                              udp.UdpSocketTransport().openServerMode(
-                                                  (ipv4_addr, int(port))))
-                q.put(True)
-            except:
-                testcase_Utils.pNote("Can not bind {} and {}".format(ipv4_addr, port),
-                                     'warning')
-                q.put(False)
-        if provision_ipv6.lower() == 'yes' and ipv6_addr:
-            try:
-                transportDispatcher.registerTransport(udp6.domainName,
-                                              udp6.Udp6SocketTransport().openServerMode(
-                                                  (ipv6_addr, int(port))))
-                q.put(True)
-            except:
-                testcase_Utils.pNote("Can not bind {} and {}".format(ipv6_addr, port),
-                                     'warning')
-                q.put(False)
-        transportDispatcher.jobStarted(1)
+        mibBuilder = builder.MibBuilder()
+        custom_mib_path = cls.data_repo.get("custom_mib_path")
+        load_mib_module = cls.data_repo.get("load_mib_module")
+        __custom_mib_paths = []
+        if custom_mib_path:
+            custom_mib_paths = custom_mib_path.split(',')
+            for paths in custom_mib_paths:
+                if 'http' in paths and '@mib@' not in paths:
+                    if paths[-1] == '/':
+                        paths = paths + '/@mib@'
+                    else:
+                        paths = paths + '@mib@'
+                if 'http' in paths and 'browse' in paths:
+                    paths = paths.replace('browse', 'raw')
+                if 'http' in paths and 'browse' in paths:
+                    paths = paths.replace('browse', 'raw')
+                __custom_mib_paths.append(paths)
+            if os.name == 'posix' and '/usr/share/snmp/' not in custom_mib_path:
+                __custom_mib_paths = __custom_mib_paths+',/usr/share/snmp/'
+            compiler.addMibCompiler(mibBuilder, sources=__custom_mib_paths)
+            cls.mibViewController = view.MibViewController(mibBuilder)
+            for mibs in load_mib_module.split(","):
+                mibBuilder.loadModules(mibs)
+        else:
+            for mibs in load_mib_module.split(","):
+                mibBuilder.loadModules(mibs)
+            mibBuilder.loadModules('SNMPv2-MIB', 'SNMP-COMMUNITY-MIB')
+            cls.mibViewController = view.MibViewController(mibBuilder)
+        __snmpEngine = cls.get_asyncoredispatcher(port)
+        config.addTransport(__snmpEngine, udp.domainName,
+                            udp.UdpTransport().openServerMode(('0.0.0.0', int(port))))
+        __snmpEngine.transportDispatcher.jobStarted(1) 
 
-    @staticmethod 
-    def close_trap_listner_job(transportDispatcher, provision_ipv4,
-                           provision_ipv6, queue):
+    @classmethod 
+    def close_trap_listner_job(cls, port):
         """
         Close the trap listner job
         :param transportDispatcher:
         :return:None
         """
-        transportDispatcher.jobFinished(1)
-        transportDispatcher.unregisterRecvCbFun(recvId=None)
-        if provision_ipv4.lower() == 'yes':
-            try :
-                transportDispatcher.unregisterTransport(udp.domainName)
-                queue.put(True)
-            except:
-                queue.put(False)
-                testcase_Utils.pNote("Can not unregister udp Transport domain",
-                                     'warning')
-        if provision_ipv6.lower() == 'yes':
-            try:
-                queue.put(True)
-                transportDispatcher.unregisterTransport(udp6.domainName)
-            except:
-                queue.put(False)
-                testcase_Utils.pNote("Can not unregister udp6 transport domanin",
-                                     'warning')
+        __snmpEngine = cls.get_asyncoredispatcher(port)
+        __snmpEngine.transportDispatcher.jobFinished(1)
+        try :
+            __snmpEngine.transportDispatcher.unregisterTransport(udp.domainName)
+        except:
+            testcase_Utils.pNote("Can not unregister udp Transport domain",
+                                 'warning')
 
     @classmethod
     @threadsafe_function
-    def trap_decoder(cls, transportDispatcher, transportDomain,
-                 transportAddress,
-                 wholeMsg):
+    def trap_decoder(cls, snmpEngine, stateReference, contextEngineId, contextName,
+                    varBinds, cbCtx):
         """
         Decode the trap messages and saves it in to data repository
+        This is call back method which will be coalled internaly for each trap message
         :param transportDispatcher:
         :param transportDomain:
         :param transportAddress:
@@ -270,49 +276,93 @@ class WSnmp(object):
         :return: the actual ASN1 data dumps
         """
         ticks = time.ctime()
+        transportAddress = snmpEngine.msgAndPduDsp.getTransportInfo(stateReference)[-1][0]
+        if not cls.data_repo.get("snmp_trap_messages_{}".format(transportAddress)):
+            cls.data_repo.update({"snmp_trap_messages_{}".format(transportAddress):[]})
+        execContext = snmpEngine.observer.getExecutionContext(
+                            'rfc3412.receiveMessage:request'
+                            )
         decoded_msg = []
         decoded_msg.append({"time_stamp":ticks})
-        if not cls.data_repo.get("snmp_trap_messages_{}".format(transportAddress[0])):
-            cls.data_repo.update({"snmp_trap_messages_{}".format(transportAddress[0]):[]})
-        mibBuilder = builder.MibBuilder()
-        custom_mib_path = cls.data_repo.get("custom_mib_path")
-        load_mib_module = cls.data_repo.get("load_mib_module")
-        if custom_mib_path:
-            #for mib_path in custom_mib_path.split(","):
-            compiler.addMibCompiler(mibBuilder, sources=custom_mib_path.split(","))
-            mibViewController = view.MibViewController(mibBuilder)
-            for mibs in load_mib_module.split(","):
-                mibBuilder.loadModules(mibs)
-            mibBuilder.loadModules('SNMPv2-MIB', 'SNMP-COMMUNITY-MIB')#common MIBS needed for timetick, systime etc.
-        else:
-            for mibs in load_mib_module.split(","):
-                mibBuilder.loadModules(mibs)
-            mibBuilder.loadModules('SNMPv2-MIB', 'SNMP-COMMUNITY-MIB')
-            mibViewController = view.MibViewController(mibBuilder)
-        #mibBuilder.loadModules('RFC-1212', 'RFC-1215', 'RFC1065-SMI', 'RFC1155-SMI', 'RFC1158-MIB', 'RFC1213-MIB', 'SNMP-FRAMEWORK-MIB', 'SNMP-TARGET-MIB', 'SNMPv2-CONF', 'SNMPv2-SMI', 'SNMPv2-TC', 'SNMPv2-TM', 'TRANSPORT-ADDRESS-MIB')
-        while wholeMsg:
-            msgVer = int(api.decodeMessageVersion(wholeMsg))
-            if msgVer in api.protoModules:
-                pMod = api.protoModules[msgVer]
-            else:
-                testcase_Utils.pNote('SNMP version %s' % msgVer)
-                return
-            reqMsg, wholeMsg = decoder.decode(
-                wholeMsg, asn1Spec=pMod.Message(),
-            )
-            reqPDU = pMod.apiMessage.getPDU(reqMsg)
-            if reqPDU.isSameTypeWith(pMod.TrapPDU()):
-                varBinds = pMod.apiPDU.getVarBindList(reqPDU)
-                for oid, val in varBinds:
-                    objectType = rfc1902.ObjectType(rfc1902.ObjectIdentity(oid.prettyPrint()))
-                    objectType.resolveWithMib(mibViewController)
-                    oid = str(objectType).strip().strip("=").strip()
-                    value=val.prettyPrint().strip()
-                    match=re.search(r"(_BindValue:.*=.*=.*\n\s+)(.*-value=.*$)", value , re.DOTALL)
-                    value = match.group(2)
-                    decoded_msg.append((oid, value))
-                    #print '{} = {}'.format(oid, value)
-        __decoded_msg = cls.data_repo.get("snmp_trap_messages_{}".format(transportAddress[0]))
+        decoded_msg.append({"contextEngineId":contextEngineId.prettyPrint()})
+        decoded_msg.append({"SNMPVER":execContext["securityModel"]})
+        decoded_msg.append({"securityName":execContext['securityName']})
+        for oid, val in varBinds:
+            output = rfc1902.ObjectType(rfc1902.ObjectIdentity(oid),
+                             val).resolveWithMib(cls.mibViewController).prettyPrint()
+            op_list = output.split(" = ")
+            oid = op_list[0].strip()
+            value = op_list[1].strip()
+            #print "#######################Recived Notification from {} #######################".format(snmpEngine.msgAndPduDsp.getTransportInfo(stateReference)[-1][0])
+            #print output
+            decoded_msg.append((oid, value))
+        __decoded_msg = cls.data_repo.get("snmp_trap_messages_{}".format(transportAddress))
         __decoded_msg.append(decoded_msg)
-        cls.data_repo.update({"snmp_trap_messages_{}".format(transportAddress[0]):__decoded_msg})
-        return wholeMsg
+        cls.data_repo.update({"snmp_trap_messages_{}".format(transportAddress):__decoded_msg})
+
+    @staticmethod
+    def get_first_node_name(mib_filepath, mib_filename):
+        """
+        Get the node name from the given mib file path and file name
+        :param mib_filepath: Mib file path of the git url or abs file path
+        :param mib_filename: MIB file name
+        :return: oid, lable, suffix, mibView, mibBuilder
+        """
+        mibBuilder = builder.MibBuilder()
+        compiler.addMibCompiler(mibBuilder, sources=mib_filepath.split(","))
+        for mib in mib_filename.split(","):
+            mibBuilder.loadModules(mib)
+        mibView = view.MibViewController(mibBuilder)
+        oid, label, suffix = mibView.getFirstNodeName()
+        return oid, label, suffix, mibView, mibBuilder
+
+    @classmethod
+    def add_user(cls, port, username, securityengineid,
+                 authkey=None, privkey=None,
+                 authProtocol=None, privProtocol=None):
+        """
+        Add SNMP V3 User
+        :param port: SNMP Trap Port
+        :param username: SNMP User name
+        :param securityengineid: SNMP Engine id in Hex form
+        :param authkey: SNMP Authkey default is None
+        :param privkey: SNMP Privkey string default is None
+        :param authProtocol: Auth Protocol, default is None
+        :param privProtocol: Privacy Protocol, default is None
+        :return: Treu or False
+        """
+        result = True
+        __snmpEngine = cls.get_asyncoredispatcher(port)
+        #debug.setLogger(debug.Debug('all'))
+        try:
+            authprotocol = cls.__authProtocol.get(authProtocol, None)
+            privprotocol =  cls.__authProtocol.get(privProtocol, None)
+            config.addV3User(
+                snmpEngine=__snmpEngine, userName=username,
+                authProtocol = authprotocol, authKey=authkey,
+                privProtocol = privprotocol, privKey=privkey,
+                securityEngineId = v2c.OctetString(hexValue=securityengineid)
+            )
+        except:
+            testcase_Utils.pNote("ADD SNMPv3 User Failed", "error")
+            result = False
+        return result
+
+    @classmethod
+    def add_community(cls, port, community="public"):
+        """
+        Add SNMP Community
+        for this NEW Trap/Inform Reciver its mandatory to add community string also
+        :param port: SNMP TRAP/Inform Port
+        :param community: SNMP community string, default is 'public'
+        :return:
+        """
+        __snmpEngine = cls.get_asyncoredispatcher(port)
+        result = True
+        try:
+            config.addV1System(__snmpEngine, community, community)
+            testcase_Utils.pNote("Added SNMP Community {}".format(community))
+        except:
+            testcase_Utils.pNote("ADD SNMP Community Failed", "error")
+            result = False
+        return result
