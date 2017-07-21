@@ -11,13 +11,11 @@ How to start Warrior UI (Katana):
 
 2. Traverse to /warriorframework/katana
 
-3. execute "python katana.py"
-	- by default katana start on port# 5000.
+3. Execute "python katana.py"
+	- by default Warrior UI (katana) will start on port 5000.
 
-4. If port # 5000 is not available or user wishes to start katana on a different port
-   - execute "python katana.py -p <port>" (where <port>=port number to be used)
-   - If the port is not available to be used a error message is printed and it is the user's
-     responsibility to provide an available port
+4. If you wish to start Warrior UI on a different port, execute
+   - "python katana.py -p <port>" (where <port>=port number to be used)
 
 
 Limitations:
