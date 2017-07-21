@@ -103,6 +103,7 @@ def main(kw=False):
         scan for function - function check
     """
     f = open(sys.argv[1])
+    print "filepath:", str(sys.argv[1])
     if "Actions/" in sys.argv:
         kw = True
     root = ast.parse(f.read())

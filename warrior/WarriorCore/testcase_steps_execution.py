@@ -36,6 +36,11 @@ def get_system_console_log(filename, logsdir, console_name):
     return console_logfile
 
 def execute_steps(step_list, data_repository, system_name, parallel, queue):
+    """
+        Take in a list of steps
+        iterate through each of them and decide if each should run (pre-run check)
+        get status and report to term and log
+    """
     default_error_action = data_repository['wt_def_on_error_action']
     default_error_value = data_repository['wt_def_on_error_value']
 
@@ -212,8 +217,8 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
             # put result into multiprocessing queue and later retrieve in corresponding driver
             # parallel testcase sequenial keywords
             queue.put((step_status_list, kw_resultfile_list, system_name, step_impact_list, data_repository['wt_junit_object']))
-        except Exception,e:
-            print traceback.format_exc()
+        except Exception, e:
+            print_error(traceback.format_exc())
 
     else:
         return  step_status_list, kw_resultfile_list, step_impact_list

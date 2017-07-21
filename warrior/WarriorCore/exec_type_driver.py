@@ -24,6 +24,7 @@ class ElseException(Exception):
         Raise an exception when a rule fails with individual else action
     """
     def __init__(self, else_action):
+        """Custom exception that used to break through the rule parsing loop"""
         super(ElseException, self).__init__(else_action)
         self.action = else_action
 
