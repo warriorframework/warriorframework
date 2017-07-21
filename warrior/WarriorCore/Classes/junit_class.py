@@ -32,6 +32,7 @@ class Junit(object):
         self.root.append(properties)
 
     def init_arg(self, **kwargs):
+        """ Initialize arguments """
         default_keys = ["errors", "failures", "skipped", "time", "passes"]
         result = {}
         for default_key in default_keys: 
@@ -41,6 +42,7 @@ class Junit(object):
         return result
 
     def create_testsuite(self, location, **kwargs):
+        """ Create a suite xml element and attach it to root element """
         testsuite = self.create_element("testsuite", tests="0", **self.init_arg(**kwargs))
         properties = self.create_element("properties")
         testsuite.append(properties)
@@ -51,6 +53,7 @@ class Junit(object):
         self.root.append(testsuite)
 
     def create_testcase(self, location, timestamp, ts_timestamp, name, classname="customTestsuite_independant_testcase_execution", **kwargs):
+        """ Create a case xml element and attach it to suite element """
         if self.root.find("testsuite") is None:
             self.update_attr("timestamp", timestamp, "pj", "0")
             self.create_testsuite(location=location, name=classname, timestamp=timestamp, **self.init_arg(**kwargs))
@@ -75,24 +78,28 @@ class Junit(object):
         return elem
 
     def get_family_with_timestamp(self, timestamp):
+        """ Get case, suite & root element based on the timestamp value """
         for testsuite in list(self.root):
             for testcase in list(testsuite):
                 if testcase.get("timestamp") == timestamp:
                     return [testcase, testsuite, self.root]
 
     def get_tc_with_timestamp(self, timestamp):
+        """ Get case element based on the timestamp value """
         for testsuite in list(self.root):
             for testcase in list(testsuite):
                 if testcase.get("timestamp") == timestamp:
                     return testcase
 
     def get_ts_with_timestamp(self, timestamp):
+        """ Get suite element based on the timestamp value """
         for testsuite in list(self.root):
             if testsuite.get("timestamp") == timestamp:
                 return testsuite
 
     def add_keyword_result(self, tc_timestamp, step_num, kw_name, status, kw_timestamp, duration,
                            resultfile, impact, onerror):
+        """ Add keyword results to junit object """
         if str(status).lower() == "true":
             status = "PASS"
         elif str(status).lower() == "false":
@@ -102,6 +109,7 @@ class Junit(object):
         self.add_property(name=kw_name, value="KEYWORD_DISCARD", elem_type = "kw", timestamp=tc_timestamp, keyword_items=keyword_items)
 
     def add_testcase_message(self, timestamp, status):
+        """ Add a message element for fail/error/skip cases """
         elem = self.get_tc_with_timestamp(timestamp)
         if elem is None:
             elem = self.get_ts_with_timestamp(timestamp)
@@ -118,6 +126,7 @@ class Junit(object):
             self.create_element("property", {"name":"requirement", "value":requirement}))
 
     def add_property(self, name, value, elem_type, timestamp, **kwargs):
+        """ Add a new property to properties element """
         if elem_type == "pj":
             elem = self.root
         elif elem_type == "ts":
@@ -143,6 +152,7 @@ class Junit(object):
             "property", {"name":"location", "value":location}))
 
     def update_count(self, attr, value, elem_type, timestamp="0"):
+        """ Increment the attribute count by given value  """
         if elem_type == "pj":
             elem = self.root
         elif elem_type == "ts":
@@ -161,6 +171,7 @@ class Junit(object):
             elem.set(attr, str(int(elem.get(attr)) + int(value)))
 
     def update_attr(self, attr, value, elem_type, timestamp):
+        """ Set the attribute value """
         if elem_type == "pj":
             elem = self.root
         elif elem_type == "ts":
