@@ -416,8 +416,6 @@ class PexpectConnect(object):
         if WarriorCliClass.cmdprint:
             pNote("connectSSH: :CMD: %s" % command)
             return None, ""
-        import pdb
-        pdb.set_trace()
         if str(self.escape).lower() == "yes" or str(self.escape).lower() == "true":
             child = self.pexpect.spawn(command, timeout=int(self.timeout), env={"TERM": "dumb"})
         else:
