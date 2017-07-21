@@ -40,7 +40,9 @@ except ImportError:
                "their own custom libraries for cli interaction \n")
 
 def cmdprinter(cmdfunc):
+    """decorator"""
     def inner(*args, **kwargs):
+        """routing different mock functions"""
         if WarriorCliClass.cmdprint:
             result = (True,"")
             if cmdfunc.__name__ == "_send_cmd_get_status":
