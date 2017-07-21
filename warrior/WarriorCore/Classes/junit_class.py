@@ -183,11 +183,11 @@ class Junit(object):
 
         elem.set(attr, value)
 
-    def _junit_to_html(self, junit_file):
+    def _junit_to_html(self, junit_file, print_summary=True):
         """ Convert junit file to html"""
         html_result_obj = WarriorHtmlResults(junit_file)
         html_result_obj.html_from_junit()
-        html_result_obj.output_html()
+        html_result_obj.output_html(print_summary)
 
     def output_junit(self, path, print_summary=True):
         """output the actual file
@@ -202,4 +202,4 @@ class Junit(object):
             summary_obj.print_result_in_console(fpath)
         print("\n")
 
-        self._junit_to_html(fpath)
+        self._junit_to_html(fpath, print_summary)
