@@ -11,16 +11,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-# !/usr/bin/python
-"""This the project driver that executes a collections of
-Warrior testsuites """
-
 import sys
 import os
 import shutil
 import time
 import copy
-
 import WarriorCore.testsuite_driver as testsuite_driver
 import WarriorCore.onerror_driver as onerror_driver
 import traceback
@@ -30,6 +25,10 @@ from Framework.Utils.print_Utils import print_info, print_error, print_debug, pr
 from WarriorCore.Classes import execution_files_class, junit_class
 from WarriorCore import testsuite_utils, common_execution_utils
 from Framework.Utils.testcase_Utils import pNote
+
+# !/usr/bin/python
+"""This the project driver that executes a collections of
+Warrior testsuites """
 
 
 def get_project_details(project_filepath, res_startdir, logs_startdir, data_repository):
@@ -251,7 +250,7 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
                 testsuite_resultfile = '<testsuite errors="0" failures="0" name="{0}" '\
                 'skipped="0" tests="0" time="0" timestamp="{1}" > '
                 '<skipped message="{2}"/> </testsuite>'.format(testsuite_name,
-                                                              project_start_time,
+                                                               project_start_time,
                                                                msg)
                 tmp_timestamp = str(Utils.datetime_utils.get_current_timestamp())
                 time.sleep(2)
@@ -363,8 +362,9 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
                             pNote("Wait for {0}sec before "
                                   "retrying".format(retry_interval))
                             pNote("The condition value '{0}' does not match "
-                                  "with the expected value '{1}'".format(data_repository[retry_cond],
-                                                                         retry_cond_value))
+                                  "with the expected value '{1}'".
+                                  format(data_repository[retry_cond],
+                                         retry_cond_value))
                             time.sleep(int(retry_interval))
                         else:
                             condition_met = False
