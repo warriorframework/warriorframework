@@ -98,7 +98,7 @@ def decide_ujd_actions(w_cli_obj, namespace):
 def decide_overwrite_var(namespace):
     overwrite = {}
     if namespace.datafile:
-        overwrite['ow_datafile'] = namespace.datafile
+        overwrite['ow_datafile'] = file_Utils.getAbsPath(namespace.datafile, os.getcwd())
     if namespace.resultdir:
         overwrite['ow_resultdir'] = namespace.resultdir
     if namespace.logdir:
