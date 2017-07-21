@@ -246,19 +246,11 @@ class CommonActions(object):
         Utils.testcase_Utils.pNote(system_name)
         tc_filepath = os.path.dirname(get_object_from_datarepository(
                                             'wt_testcase_filepath'))
-        s = Utils.data_Utils.get_credentials(self.datafile, system_name)
-        print "string from datafile is", s
-        print "strvar is", strvar
         status = status and check_type(strvar, str)
-        print "langs is", langs
         status = status and check_type(langs, list)
-        print "states is", states
         status = status and check_type(states, tuple)
-        print "currencys is", currencys
         status = status and check_type(currencys, dict)
-        print "ramspace is", ramspace
         status = status and check_type(ramspace, bool)
-        print "file_config:", file_config
         try:
             if file_config.startswith('tag'):
                 file_config = data_Utils.resolve_argument_value_to_get_tag_value(
@@ -267,20 +259,14 @@ class CommonActions(object):
                 configfile = getAbsPath(configfile, tc_filepath)
             if not os.path.isabs(file_config):
                 file_config = getAbsPath(file_config, tc_filepath)
-            print "configfile is", configfile
-            print "configfile exists", file_Utils.fileExists(configfile)
-            print "file_config is", file_config
-            print "file_config exists", file_Utils.fileExists(file_config)
         except AttributeError:
             print_error('configfile and file_config are expected to be files')
             print_error('type of configfile is {}'.format(type(configfile)))
             print_error('type of file_config is {}'.format(type(file_config)))
             status = False
-        print "intvar is", intvar
         if type(intvar) is str and intvar.startswith('tag'):
             intvar = data_Utils.resolve_argument_value_to_get_tag_value(
                                     self.datafile, system_name, intvar)
-            print "intvar is", intvar
         else:
             status = status and check_type(intvar, int)
 

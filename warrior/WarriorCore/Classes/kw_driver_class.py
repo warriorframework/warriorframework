@@ -160,8 +160,6 @@ class KeywordOperations(object):
 
     def get_credential_value(self, arg, system):
         datafile = self.data_repository['wt_datafile']
-        if arg == system:
-            return arg
         if not hasattr(self, 'tag_dict'):
             self.tag_dict = data_Utils.get_credentials(datafile, system)
         if arg in self.tag_dict:
@@ -177,23 +175,18 @@ class KeywordOperations(object):
         print_info("getting values for mandatory arguments")
         arg_kv = {}
         for args in self.req_args_list:
-            chk_arg = None
             if args in self.args_repository:
                 arg_kv[args] = self.args_repository[args]
             elif args in self.data_repository:
                 arg_kv[args] = self.data_repository[args]
-            else:
-                chk_arg = args
-            chk_arg = arg_kv[args] if not chk_arg else chk_arg
-            value = self.get_credential_value(chk_arg, arg_kv['system_name'])
-            if value is not None:
-                arg_kv[args] = value
-            elif chk_arg is not None:
-                arg_kv[args] = chk_arg
-            else:
-                print_error("value for mandatory argument '{}' not available "
-                            "in data_repository/args_repository/datafile".
-                            format(args))
+            if args != 'system_name' and 'system_name' in arg_kv:
+                targ = arg_kv[args] if args in arg_kv else args
+                value = self.get_credential_value(targ, arg_kv['system_name'])
+                if value is not None:
+                    arg_kv[args] = value
+            if args not in arg_kv:
+                print_error("value for mandatory argument '{0}' not available "
+                            "in data_repository/args_repository/datafile".format(args))
         return arg_kv
 
     def get_values_for_optional_args(self, arg_kv):
@@ -201,24 +194,21 @@ class KeywordOperations(object):
         """
         print_info("getting values for optional arguments")
         for args in self.optional_args_list:
-            chk_arg = None
             if args in self.args_repository:
                 arg_kv[args] = self.args_repository[args]
             elif args in self.data_repository:
                 arg_kv[args] = self.data_repository[args]
-            else:
-                chk_arg = args
-            chk_arg = arg_kv[args] if not chk_arg else chk_arg
-            value = self.get_credential_value(chk_arg, arg_kv['system_name'])
-            if value is not None:
-                arg_kv[args] = value
-            elif chk_arg is not None:
-                arg_kv[args] = chk_arg
-            else:
+            if args != 'system_name' and 'system_name' in arg_kv:
+                targ = arg_kv[args] if args in arg_kv else args
+                value = self.get_credential_value(targ, arg_kv['system_name'])
+                if value is not None:
+                    arg_kv[args] = value
+            if args not in arg_kv:
                 print_info("executing with default values for optional "
                            "argument '{0}'".format(args))
         else:
-            del self.tag_dict
+            if hasattr(self, 'tag_dict'):
+                del self.tag_dict
         return arg_kv
 
     def get_argument_as_keywords(self):
@@ -293,7 +283,7 @@ class KeywordOperations(object):
                 pNote_level("Keyword '{0}' returned an {1}".format(keyword, keyword_result),
                             "debug", "kw")
                 data_repository['step-%s_status' % step_num] = keyword_result.upper()
-        
+
         elif isinstance(keyword_result, bool):
             pNote_level("Keyword '{0}' returned a status only....".format(keyword), "debug", "kw")
             data_repository['step-%s_status' % step_num] = keyword_result

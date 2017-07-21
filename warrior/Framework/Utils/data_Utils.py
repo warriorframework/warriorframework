@@ -743,7 +743,7 @@ def get_no_impact_logic(context_str):
               'Y:NOIMPACT': (True, 'YES'),
               'Y': (False, 'YES'),
               'NO:NOIMPACT': (True, 'No'),
-              'NO': (False, 'No'), 
+              'NO': (False, 'No'),
               'N:NOIMPACT': (True, 'No'),
               'N': (False, 'No'),
             }.get(context_str.upper(), False)
@@ -865,9 +865,10 @@ def verify_data(expected, key, data_type='str', comparison='eq'):
     def validate():
         result = "TRUE"
         err_msg = ""
+        exp = expected
         if data_type not in type_funcs:
-            err_msg += "type {} not supported, only one of {} supported\n".\
-                format(data_type, '/'.join(type_funcs.keys()))
+            err_msg += ("type {} not supported, only one of {} supported\n".
+                        format(data_type, '/'.join(type_funcs.keys())))
             result = "ERROR"
         else:
             convert = type_funcs[data_type]
