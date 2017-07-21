@@ -185,12 +185,12 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
                 step, 'onError', 'value')
     testcase_error_action = data_repository['wt_def_on_error_action']
     step_onError_action = step_onError_action if step_onError_action else testcase_error_action
-    if step_onError_action.upper() == "GOTO" and step_goto_value == False:
+    if step_onError_action.upper() == "GOTO" and step_goto_value is False:
         step_goto_value = data_repository['wt_def_on_error_value']
     onerror = step_onError_action.upper()
     if step_goto_value is not False and step_goto_value is not None:
         onerror = onerror + " step " + step_goto_value
-    if keyword_status == False and step_onError_action and step_onError_action.upper() == 'ABORT_AS_ERROR':
+    if keyword_status is False and step_onError_action and step_onError_action.upper() == 'ABORT_AS_ERROR':
         print_info(
             "Keyword status will be marked as ERROR as onError action is set to 'abort_as_error'")
         keyword_status = "ERROR"
