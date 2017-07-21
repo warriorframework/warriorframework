@@ -127,11 +127,11 @@ def class_defs(ls, pyfile):
             # if "UseAsKeyword=NO" in ls[lno+2]:
             #     print("This method is hidden: "+l)
             # print 'def:', l
-            # a reference here, adding this line will make katana skip the function name starts with wait_for_timeout
+            # a reference here, adding this line will make katana-old skip the function name starts with wait_for_timeout
             # if not m[1].startswith('wait_for_timeout'):
             # else:
             defs.append(nameType(closeParaentheses(ls[lno:]), 'fn', lno))
-            # this makes katana only shows one line of function name, which is bad
+            # this makes katana-old only shows one line of function name, which is bad
     return defs
 
 
