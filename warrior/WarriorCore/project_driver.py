@@ -19,6 +19,7 @@ import sys
 import os
 import shutil
 import time
+import copy
 
 import WarriorCore.testsuite_driver as testsuite_driver
 import WarriorCore.onerror_driver as onerror_driver
@@ -27,7 +28,8 @@ import exec_type_driver
 import Framework.Utils as Utils
 from Framework.Utils.print_Utils import print_info, print_error, print_debug, print_warning
 from WarriorCore.Classes import execution_files_class, junit_class
-from WarriorCore import testsuite_utils
+from WarriorCore import testsuite_utils, common_execution_utils
+from Framework.Utils.testcase_Utils import pNote
 
 
 def get_project_details(project_filepath, res_startdir, logs_startdir, data_repository):
@@ -97,14 +99,41 @@ def get_testsuite_list(project_filepath):
     """Takes the location of any Project.xml file as input
     Returns a list of all the Testsuite elements present in the Project"""
 
-    testsuite_list = []
+    testsuite_list_new = []
     root = Utils.xml_Utils.getRoot(project_filepath)
     testsuites = root.find('Testsuites')
     if testsuites is None:
-        print_info('Testsuite is empty: tag <Testsuites> not found in the input file ')
+        print_info('Testsuite is empty: tag <Testsuites> not "\
+                   "found in the input file ')
     else:
         testsuite_list = testsuites.findall('Testsuite')
-        return testsuite_list
+        for ts in testsuite_list:
+            runmode, value = common_execution_utils.\
+                get_runmode_from_xmlfile(ts)
+            retry_type, _, _, retry_value, _ = common_execution_utils.\
+                get_retry_from_xmlfile(ts)
+            if runmode is not None and value > 0:
+                # more than one suite in suite list, insert new suite
+                go_next = len(testsuite_list_new) + value + 1
+                for i in range(0, value):
+                    copy_ts = copy.deepcopy(ts)
+                    copy_ts.find("runmode").set("value", go_next)
+                    copy_ts.find("runmode").set("attempt", i+1)
+                    testsuite_list_new.append(copy_ts)
+            if retry_type is not None and retry_value > 0:
+                if len(testsuite_list) > 1:
+                    go_next = len(testsuite_list_new) + retry_value + 1
+                    if runmode is not None:
+                        get_runmode = ts.find('runmode')
+                        ts.remove(get_runmode)
+                    for i in range(0, retry_value):
+                        copy_ts = copy.deepcopy(ts)
+                        copy_ts.find("retry").set("count", go_next)
+                        copy_ts.find("retry").set("attempt", i+1)
+                        testsuite_list_new.append(copy_ts)
+            if retry_type is None and runmode is None:
+                testsuite_list_new.append(ts)
+        return testsuite_list_new
 
 
 def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs_startdir,
@@ -114,7 +143,8 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
     - Iterates over the list and sends each testsuite
     location to testsuite_driver for execution.
     - Gets the status of the testsuite from the
-    Warrior and computes the project_status based on the impact value of the testsuite.
+    Warrior and computes the project_status based on the impact value
+    of the testsuite.
     - If the testsuite fails, handles the failure using
     the default or specific  onError action,value.
     - Finally reports the project status to the result file.
@@ -156,11 +186,11 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
                                 project_repository['project_execution_dir'],
                                 "pj", project_start_time)
     pj_junit_object.update_attr("title", project_repository['project_title'], "pj",
-                                project_start_time)
     pj_junit_object.add_property("resultsdir", project_repository['project_execution_dir'], "pj",
                                  project_start_time)
 
-    # adding the resultsdir as attribute, need to be removed after making it a property
+    # adding the resultsdir as attribute, need to be removed after making it
+    # a property
     pj_junit_object.add_project_location(project_filepath)
     if "jobid" in data_repository:
         pj_junit_object.add_jobid(data_repository["jobid"])
@@ -177,7 +207,7 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
             testsuite_path = Utils.file_Utils.getAbsPath(testsuite_rel_path, project_dir)
         else:
             testsuite_path = str(testsuite_rel_path)
-        print_info('\n')
+        print_info("\n")
         print_debug("<<<< Starting execution of Test suite: {0}>>>>".format(testsuite_path))
         action, testsuite_status = exec_type_driver.main(testsuite)
         testsuite_impact = Utils.testcase_Utils.get_impact_from_xmlfile(testsuite)
@@ -201,7 +231,8 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
                 testsuite_status = testsuite_result[0]
                 # testsuite_resultfile = testsuite_result[1]
 
-            elif goto_testsuite and goto_testsuite == str(suite_cntr) and action is True:
+            elif goto_testsuite and goto_testsuite == str(suite_cntr)\
+                    and action is True:
                 testsuite_result = testsuite_driver.main(testsuite_path,
                                                          data_repository=data_repository,
                                                          from_project=True,
@@ -230,13 +261,12 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
                 pj_junit_object.update_attr("status", "SKIPPED", "ts", tmp_timestamp)
                 pj_junit_object.update_attr("skipped", "1", "pj", tmp_timestamp)
                 pj_junit_object.update_count("suites", "1", "pj", tmp_timestamp)
-                data_repository['testsuite_%d_result' % suite_cntr] = "SKIP"
+                data_repository['testsuite_{}_result'.format(suite_cntr)] = "SKIP"
                 # pj_junit_object.add_testcase_message(tmp_timestamp, "skipped")
                 pj_junit_object.update_attr("impact", impact_dict.get(testsuite_impact.upper()),
                                             "ts", tmp_timestamp)
                 pj_junit_object.update_attr("onerror", "N/A", "ts", tmp_timestamp)
-                pj_junit_object.output_junit(wp_results_execdir,
-                                             print_summary=False)
+                pj_junit_object.output_junit(wp_results_execdir, print_summary=False)
                 continue
 
         else:
@@ -251,26 +281,27 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
             if goto_testsuite and goto_testsuite == str(suite_cntr):
                 goto_testsuite = False
             elif goto_testsuite and goto_testsuite != str(suite_cntr):
-                data_repository['testsuite_%d_result' % suite_cntr] = "ERROR"
+                data_repository['testsuite_{}_result'.format(suite_cntr)] = "ERROR"
                 continue
 
-        goto_testsuite_num = onerror_driver.main(testsuite, project_error_action,
+        goto_testsuite_num = onerror_driver.main(testsuite,
+                                                 project_error_action,
                                                  project_error_value)
-        if goto_testsuite_num == False:
+        if goto_testsuite_num is False:
             onerror = "Next"
         elif goto_testsuite_num == "ABORT":
             onerror = "Abort"
         else:
             onerror = "Goto:" + str(goto_testsuite_num)
-        pj_junit_object.update_attr("impact", impact_dict.get(testsuite_impact.upper()),
-                                    "ts", data_repository['wt_ts_timestamp'])
+        pj_junit_object.update_attr("impact", impact_dict.
+                                    get(testsuite_impact.upper()), "ts",
+                                    data_repository['wt_ts_timestamp'])
         pj_junit_object.update_attr("onerror", onerror, "ts", data_repository['wt_ts_timestamp'])
 
         string_status = {"TRUE": "PASS", "FALSE": "FAIL", "ERROR": "ERROR", "SKIP": "SKIP"}
 
         if str(testsuite_status).upper() in string_status.keys():
-            data_repository['testsuite_%d_result'%suite_cntr] = string_status\
-                [str(testsuite_status).upper()]
+            data_repository['testsuite_{}_result'.format(suite_cntr)] = string_status[str(testsuite_status).upper()]
         else:
             print_error("unexpected testsuite status, default to exception")
             data_repository['testsuite_%d_result'%suite_cntr] = "ERROR"
@@ -279,16 +310,77 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
         ts_impact_list.append(testsuite_impact)
         if testsuite_impact.upper() == 'IMPACT':
             msg = "Status of the executed test suite impacts Project result"
-        elif testsuite_impact.upper() == 'NOIMPACT': 
+        elif testsuite_impact.upper() == 'NOIMPACT':
             msg = "Status of the executed test suite does not impact project result"
         print_debug(msg)
-#         project_status = compute_project_status(project_status, testsuite_status,
+# project_status = compute_project_status(project_status, testsuite_status,
 #                                                 testsuite_impact)
+        runmode, value = common_execution_utils.get_runmode_from_xmlfile(testsuite)
+        retry_type, retry_cond, retry_cond_value, retry_value,\
+            retry_interval = common_execution_utils.get_retry_from_xmlfile(testsuite)
+        if runmode is not None:
+            if testsuite.find("runmode") is not None and\
+              testsuite.find("runmode").get("attempt") is not None:
+                print_info("runmode attempt: {0}".format(testsuite.find("runmode").get("attempt")))
+            # if runmode is 'ruf' & step_status is False, skip the repeated
+            # execution of same TC step and move to next actual step
+            if not project_error_value and runmode == "RUF" and\
+                    testsuite_status is False:
+                goto_testsuite = str(value)
+            # if runmode is 'rup' & step_status is True, skip the repeated
+            # execution of same TC step and move to next actual step
+            elif runmode == "RUP" and testsuite_status is True:
+                goto_testsuite = str(value)
+        elif retry_type is not None:
+            if testsuite.find("retry") is not None and\
+              testsuite.find("retry").get("attempt") is not None:
+                print_info("retry attempt: {0}".format(testsuite.find("retry").get("attempt")))
+            if retry_type.upper() == 'IF':
+                try:
+                    if data_repository[retry_cond] == retry_cond_value:
+                        condition_met = True
+                        pNote("Wait for {0}sec before retrying".format(retry_interval))
+                        pNote("The given condition '{0}' matches the expected"
+                              "value '{1}'".format(data_repository[retry_cond], retry_cond_value))
+                        time.sleep(int(retry_interval))
+                    else:
+                        condition_met = False
+                        print_warning("The condition value '{0}' does not match with the expected "
+                                      "value '{1}'".format(data_repository[retry_cond], retry_cond_value))
+                except KeyError:
+                    print_warning("The given condition '{0}' do not exists in "
+                                  "the data repository".format(retry_cond_value))
 
-        if testsuite_status is False or testsuite_status == "ERROR" \
-                or testsuite_status == "EXCEPTION":
-            goto_testsuite = onerror_driver.main(testsuite, project_error_action,
-                                                 project_error_value)
+                    condition_met = False
+                if condition_met is False:
+                    goto_testsuite = str(retry_value)
+            else:
+                if retry_type.upper() == 'IF NOT':
+                    try:
+                        if data_repository[retry_cond] != retry_cond_value:
+                            condition_met = True
+                            pNote("Wait for {0}sec before "
+                                  "retrying".format(retry_interval))
+                            pNote("The condition value '{0}' does not match "
+                                  "with the expected value '{1}'".format(data_repository[retry_cond],
+                                                                         retry_cond_value))
+                            time.sleep(int(retry_interval))
+                        else:
+                            condition_met = False
+                    except KeyError:
+                        condition_met = False
+                        print_warning("The given condition '{0}' is not there "
+                                      "in the data repository".format(retry_cond_value))
+                    if condition_met is False:
+                        pNote("The given condition '{0}' matched with the "
+                              "value '{1}'".format(data_repository[retry_cond],
+                                                   retry_cond_value))
+                        goto_testsuite = str(retry_value)
+        else:
+            if testsuite_status is False or testsuite_status == "ERROR" or\
+                    testsuite_status == "EXCEPTION":
+                goto_testsuite = onerror_driver.main(testsuite, project_error_action,
+                                                     project_error_value)
             if goto_testsuite in ['ABORT', 'ABORT_AS_ERROR']:
                 break
             # when 'onError:goto' value is less than the current ts num,
@@ -314,7 +406,7 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
 
     # Save JUnit/HTML results of the Project in MongoDB server
     if data_repository.get("db_obj") is not False:
-        pj_junit_xml =  project_repository['wp_results_execdir'] +\
+        pj_junit_xml = project_repository['wp_results_execdir'] +\
             os.sep + pj_junit_object.filename + "_junit.xml"
         data_repository.get("db_obj").add_html_result_to_mongodb(pj_junit_xml)
 
@@ -326,10 +418,8 @@ def compute_project_status(project_status, testsuite_status, testsuite_impact):
 
     Arguments:
     1. project_status    = (bool) status of the project under execution
-    1. testsuite_status  = (bool) status of the
-                            executed testsuite
-    2. testsuite_impact  = (string) impact
-                                    noimpact
+    1. testsuite_status  = (bool) status of the executed testsuite
+    2. testsuite_impact  = (string) impact noimpact
     """
     if testsuite_impact.upper() == 'IMPACT':
         project_status = project_status and testsuite_status
@@ -345,9 +435,11 @@ def report_project_result(project_status, project_repository):
     """
 
     project_status = {'TRUE': 'PASS', 'FALSE': 'FAIL',
-                      'ERROR': 'ERROR', 'EXCEPTION': 'ERROR'}.get(str(project_status).upper())
+                      'ERROR': 'ERROR', 'EXCEPTION': 'ERROR'}.\
+        get(str(project_status).upper())
 
-    print_info("Project:{0}  STATUS:{1}".format(project_repository['project_name'], project_status))
+    print_info("Project:{0}  STATUS:{1}".format(project_repository['project_name'],
+                                                project_status))
     return project_status
 
 
