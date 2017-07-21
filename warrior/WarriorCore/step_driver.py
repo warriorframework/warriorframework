@@ -174,7 +174,7 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
         exec_type_onerror = True
         print_debug("Action is {0}".format(action))
 
-    print("\n")
+    print_info("\n")
     print_info("*** Keyword status ***")
     step_goto_value = False
     step_onError_action = Utils.xml_Utils.get_attributevalue_from_directchildnode(
@@ -221,7 +221,7 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
             data_repository['step-%s_exception' % step_num]
         Utils.testcase_Utils.pNote_level(msg, "debug", "kw", ptc=False)
     # time.sleep(1)
-    print("\n")
+    print_info("\n")
     kw_end_time = Utils.datetime_utils.get_current_timestamp()
     kw_duration = Utils.datetime_utils.get_time_delta(kw_start_time)
     hms = Utils.datetime_utils.get_hms_for_seconds(kw_duration)
