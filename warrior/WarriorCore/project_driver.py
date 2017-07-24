@@ -322,13 +322,13 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
             if testsuite.find("runmode") is not None and\
               testsuite.find("runmode").get("attempt") is not None:
                 print_info("runmode attempt: {0}".format(testsuite.find("runmode").get("attempt")))
-            # if runmode is 'ruf' & step_status is False, skip the repeated
-            # execution of same TC step and move to next actual step
+            # if runmode is 'ruf' & testsuite_status is False, skip the repeated execution of same
+            # test suite and move to next actual test suite
             if not project_error_value and runmode == "RUF" and\
                     testsuite_status is False:
                 goto_testsuite = str(value)
-            # if runmode is 'rup' & step_status is True, skip the repeated
-            # execution of same TC step and move to next actual step
+            # if runmode is 'rup' & testsuite_status is True, skip the repeated
+            # execution of same testsuite and move to next actual testsuite
             elif runmode == "RUP" and testsuite_status is True:
                 goto_testsuite = str(value)
         elif retry_type is not None:
