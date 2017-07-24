@@ -20,4 +20,4 @@ from django.shortcuts import render
 
 
 def index(request):
-    return render(request, 'core/index.html', {"data": "This is the main Katana Core page"})
+    return render(request, 'configuration/index.html', {"data": "This is the Configuration page"})
