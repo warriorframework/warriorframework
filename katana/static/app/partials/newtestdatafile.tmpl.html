@@ -5075,13 +5075,18 @@
 					first.remove();
 					first = $elem.find('option:first');
 				}
-				//	else if( first.val() == "" )
-				//	first.clone().removeAttr('selected').insertBefore(first).attr('label', '').val('').text('');
+				
+				
 				var id = $elem.attr('id');
 				var second = $elem.find('option:last');
-				if( first.attr('label').length == 0 || first.attr('label')[0] == "y" ){
+				if( first.attr('label').length == 0 || first.attr('label')[0] == "y" || second.attr('label')[0] == "n" ){
 					first.attr('label', 'y').val('y'); 
 					second.attr('label', 'n').val('n');
+					if( $elem.find('option:selected').attr('label')[0] == "y" )
+						first.prop('selected', true);
+					else if( $elem.find('option:selected').attr('label')[0] == "n")
+						second.prop('selected', true);
+					$elem.find('option').not(first).not(second).remove();
 				}
 				if ( id == 'td_inorder' || id == 'td_repeat' || id == 'cp_inorder' || id == 'cp_repeat' ){
 					first.attr('label', '').val(''); 
