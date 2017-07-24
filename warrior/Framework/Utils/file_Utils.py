@@ -115,7 +115,7 @@ def getXMLDataFile(filename, path):
 
     path = path.replace ('Testcases','Data')
     filename = filename.replace(".py", "")
-    print path + os.sep + filename + os.sep + filename + '.xml'
+    print_info(path + os.sep + filename + os.sep + filename + '.xml')
     return path + os.sep + filename + os.sep + filename + '.xml'
 
 def createDirForPyTc(filename, path, dirname):
@@ -465,7 +465,8 @@ def getLinesBetweenMatchingLines(srcfile, dstfile, start, end, no_of_search=1):
         if no_of_search == 'EOF' or no_of_search == 'eof' or iteration < no_of_search: i+=1
         elif no_of_search==iteration: break
 
-    if len(resultantList)==0 : print "no match found in the file"
+    if len(resultantList)==0 :
+        print_error("no match found in the file")
     open(dstfile,'w+').writelines(resultantList)
 
 
@@ -546,7 +547,7 @@ def getAbsPath(relative_path, start_directory="."):
             value = path
         except Exception, err:
             print_error("{0} file does not exist in provided path".format(relative_path))
-            print(err)
+            print_error(err)
     return value
 
 
