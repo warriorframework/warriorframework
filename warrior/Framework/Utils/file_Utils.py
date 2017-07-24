@@ -112,7 +112,6 @@ def getDirName(filepath):
 
 def getXMLDataFile(filename, path):
     """Get the xml Datafile for '.py' testcases """
-
     path = path.replace ('Testcases','Data')
     filename = filename.replace(".py", "")
     print_info(path + os.sep + filename + os.sep + filename + '.xml')
@@ -137,7 +136,6 @@ def createDir(path, dirname):
         1. path     = (string) full path of an existing directory where a new directory need to be created
         2. dirname  = (string) name of the new directory to be created
     """
-
     if dirExists(path):
         dirpath = path + os.sep + dirname
         if dirExists(dirpath):
