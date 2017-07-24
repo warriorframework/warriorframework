@@ -24,6 +24,7 @@ import sys
 from Framework.Utils.print_Utils import print_error, print_info
 import Framework.Utils.encryption_utils as Encrypt
 
+
 def decide_runcat_actions(w_cli_obj, namespace):
     """Decide the actions to be taken for runcat tag """
     filepath = namespace.filepath
@@ -44,8 +45,9 @@ def decide_runcat_actions(w_cli_obj, namespace):
     if len(filepath) == 0:
         print_error("No matching Testcases found for the provided category(ies)")
         exit(1)
-    print filepath
+    print_info("file path for runcat actions is ", filepath)
     return filepath
+
 
 def decide_createsuite_actions(w_cli_obj, namespace):
     """Decide the actions for -createsuite tag """
@@ -78,6 +80,7 @@ def decide_createsuite_actions(w_cli_obj, namespace):
 
     return filepath
 
+
 def decide_ujd_actions(w_cli_obj, namespace):
     """Decide upload jira objects actions """
     if namespace.ujd and any([namespace.ddir, namespace.djson]):
@@ -95,7 +98,10 @@ def decide_ujd_actions(w_cli_obj, namespace):
         print_error("Use -ujd with one of -ddir or -djson")
         exit(1)
 
+
 def decide_overwrite_var(namespace):
+    """options provided in cli get preference over the ones provided inside tests
+    """
     overwrite = {}
     if namespace.datafile:
         overwrite['ow_datafile'] = file_Utils.getAbsPath(namespace.datafile, os.getcwd())
@@ -169,6 +175,8 @@ def decide_action(w_cli_obj, namespace):
         decide_ujd_actions(w_cli_obj, namespace)
 
     def append_path(path_list, path):
+        """Append appropriate paths for testcase/suite/project in test folder
+        """
         temp_list = []
         for file_name in path_list:
             file_name = path + file_name
