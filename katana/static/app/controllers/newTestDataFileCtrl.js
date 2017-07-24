@@ -35,9 +35,9 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
         $scope.resp_req_list = ["", "n"];
         $scope.inorder_list = ["", "y"];
         $scope.repeat_list = ["", "y"];
-        $scope.found_list = ["y", "n"];
+        $scope.found_list = ["y", "n", "yes", "no"];
         $scope.iter_type_list = ["per_cmd", "per_td_block"];
-        $scope.execute_list = ["y", "n"];
+        $scope.execute_list = ["y", "n", "yes", "no"];
         $scope.copy_global_ver_list = [];
         $scope.copy_global_combo_list = [];
         $scope.copy_entire_td_list = [];
