@@ -1,0 +1,2 @@
+icon=cog
+color=blue
