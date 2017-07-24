@@ -45,7 +45,7 @@ class browser_actions(object):
 
     def browser_launch(self, system_name, browser_name="all", type="firefox",
                        url=None, ip=None, remote=None, element_config_file=None,
-                       element_tag=None):
+                       element_tag=None, headless_mode=None):
         """
         This will launch a browser.
 
@@ -58,6 +58,11 @@ class browser_actions(object):
 
         2. To install Xvfb:
                sudo apt-get install Xvfb
+
+               i) For red hat based systems:
+                   yum install xorg-x11-server-Xvfb
+                               or
+                   yum search xvfb
 
         :Datafile Usage:
 
@@ -128,6 +133,9 @@ class browser_actions(object):
 
                              FOR TEST CASE
                              Eg: <argument name="element_tag" value="json_name_1">
+            9. headless_mode = This headless_mode tag refers to whether the browser has to be
+                               launched in headless mode or not. Defaults to False
+                            Eg: <argument name="headless_mode" value="yes">
 
         :Arguments:
 
@@ -141,9 +149,10 @@ class browser_actions(object):
             7. element_config_file (str) = location of the element configuration
                                            file that contains all element
                                            locators
-            8. element_tag (str) = particular element in the json fie which
+            8. element_tag (str) = particular element in the json file which
                                    contains relevant information to that element
-
+            9. headless_mode(str) = 'yes' or 'no' to indicate whether you want to launch the
+                                     browser in headless mode or not.
         :Returns:
 
             1. status(bool)= True / False.
@@ -165,6 +174,8 @@ class browser_actions(object):
         if remote is None:
             remote = data_Utils.getSystemData(self.datafile, system_name,
                                               "remote")
+        if headless_mode is None:
+            headless_mode = data_Utils.getSystemData(self.datafile, system_name, "headless_mode")
 
         webdriver_remote_url = ip if str(remote).strip().lower() == "yes"\
             else False
@@ -189,17 +200,18 @@ class browser_actions(object):
                 browser_details = selenium_Utils.\
                     get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
-                try:
-                    from pyvirtualdisplay import Display
-                    display = Display(visible=0, size=(1024, 768))
-                    display.start()
-                    pNote("Running in headless mode")
-                except ImportError:
-                    print_error("pyvirtualdisplay is not installed in order "
-                                "to launch the browser in headless mode")
-                except:
-                    print_error("Xvfb is not installed in order "
-                                "to launch the browser in headless mode")
+                if str(headless_mode).strip().lower() == "yes":
+                    try:
+                        from pyvirtualdisplay import Display
+                        display = Display(visible=0, size=(1024, 768))
+                        display.start()
+                        pNote("Running in headless mode")
+                    except ImportError:
+                        print_error("pyvirtualdisplay is not installed in order "
+                                    "to launch the browser in headless mode")
+                    except:
+                        print_error("Xvfb is not installed in order "
+                                    "to launch the browser in headless mode")
                 browser_inst = self.browser_object.open_browser(
                     browser_details["type"], webdriver_remote_url)
                 if browser_inst:
