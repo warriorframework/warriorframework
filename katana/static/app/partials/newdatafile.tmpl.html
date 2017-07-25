@@ -459,10 +459,22 @@
                                             </div>
                                         </span>
                                     </div>
-                                    <div class="col-sm-5">
+                                     <div class="col-sm-5">
                                         <input class="typeahead tag-default form-control" id="tag_name{{$parent.$index}}{{$index}}"
                                                ng-model="tag_info[$parent.$index][$index][0]" ng-blur="updateModel('', $parent.$index, $index, 'tag')">
-                                    </div>
+                                    </div> 
+
+                                    <!-- <div class="col-sm-2">
+                                     <select class='form-control'
+                                        id="tag_name{{$parent.$index}}{{$index}}"
+                                        ng-model="tag_info[$parent.$index][$index][0]"
+                                        ng-change="checkTagName(tag_info[$parent.$index][$index][0])"
+                                        ng-options="o as o for o in tag_name_list">
+                                         <option value=''>Select Tag ddd</option>
+                                     </select>
+                                     </div> -->
+
+
                                     <div class="col-sm-1 align-fa-icon-after-input">
                                         <div class="tooltip-on-right">
                                             <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
@@ -540,6 +552,28 @@
                                         <input type="text" class="form-control" id="tag_value{{$parent.$index}}{{$index}}"
                                                ng-model='tag_info[$parent.$index][$index][1]' ng-blur="updateModel('', $parent.$index, $index, 'tagvalue')">
                                     </div>
+
+                                      <div>
+                                    <!--  <div class="col-sm-1"> -->
+                                        <input type="button"
+                                               class="btn btn-default ellipsis-the-overflow"
+                                               id="tag_name{{$parent.$index}}{{$index}}"
+                                               ng-value="btnValue"
+                                               ng-click="toggleModal()"
+                                               >
+                                    <!-- </div> -->
+                                    </div>
+                                    <modal title="Select a Data File" show-modal="showModal">
+                                        <div class="form-group" style="padding: 5%">
+                                            <div id="tree_div" ng-click="getPaths($event)"></div>
+                                        </div>
+                                        <input type="button"
+                                               value="Submit"
+                                               class="btn btn-default"
+                                               ng-click="storePaths($index)">
+                                    </modal>
+
+
                                     <div class="col-sm-1 align-fa-icon-after-input">
                                         <div class="tooltip-on-right">
                                             <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>

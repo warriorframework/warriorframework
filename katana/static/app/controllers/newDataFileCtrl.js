@@ -43,9 +43,9 @@ limitations under the License.
  * **/
 
 
-app.controller('newDataFileCtrl', ['$scope', '$http', '$controller', '$location', '$route', 'saveNewDataFileFactory', 'DataFileFactory', 'fileFactory', 'subdirs',
-    function($scope, $http, $controller, $location, $route, saveNewDataFileFactory, DataFileFactory, fileFactory, subdirs) {
-
+app.controller('newDataFileCtrl', ['$scope', '$http', '$controller', '$location', '$route', 'saveNewDataFileFactory', 'DataFileFactory', 'fileFactory', 'subdirs','getConfigFactory',
+    function($scope, $http, $controller, $location, $route, saveNewDataFileFactory, DataFileFactory, fileFactory, subdirs, getConfigFactory) {
+//alert(3);
         $scope.subdirs = "none";
         $scope.idfTooltips = {};
         $scope.xmlData = "";
@@ -82,7 +82,161 @@ app.controller('newDataFileCtrl', ['$scope', '$http', '$controller', '$location'
         $scope.childTagsList = [[[[undefined, undefined]]]];
         $scope.subsysEditorIsOpen = false;
         $scope.subsysBeingEdited = "None";
+        $scope.btnValue = "Path";
+        $scope.showModal = {visible: false};
+        $scope.earlier_li = [];
+        $scope.IsVisible = true;
+        $scope.table = "";
+  function readConfig(){
+            getConfigFactory.readconfig()
+            .then(function (data) {
+               $scope.cfg = data;
+               //alert(   $scope.cfg);
+            });
+        }
 
+        readConfig();
+
+         
+
+ function get_folders_names(json_dir_data){
+            var dir = json_dir_data["dir"];
+            var files = json_dir_data["file"];
+            $scope.table = $scope.table + "<li>";
+            $scope.table = $scope.table + dir;
+            $scope.table = $scope.table + "<ul>";
+            if(json_dir_data["children"].length > 0){
+                for(var j=0; j<json_dir_data["children"].length; j++){
+                    var children = json_dir_data["children"][j];
+                     get_folders_names(children);
+                }
+            }
+            if(files !== undefined){
+                for(var i=0; i<files.length; i++){
+                    $scope.table = $scope.table + "<li>" + files[i] + "</li>"
+                }
+            }
+            $scope.table = $scope.table + "</ul></li>";
+        }
+         $scope.getPaths = function(e) {
+             $scope.path_array = [];
+             $scope.earlier_li.className = "";
+            if(e == undefined){
+                 e = window.event;
+             }
+             var li = (e.target ? e.target : e.srcElement);
+             var temp_name = li.innerHTML.split("<");
+             $scope.path_array.push(temp_name[0]);
+             var li_temp = li;
+           /*  while(li_temp.parentNode.id != "tree_div"){
+                 if(!li_temp.parentNode.innerHTML.match(/^</)){
+                     var temp_list = li_temp.parentNode.innerHTML.split("<");
+                     $scope.path_array.push(temp_list[0]);
+                 }
+                 li_temp = li_temp.parentNode
+             }*/
+             if (li.className == ""){
+                 li.className = "colorChange";
+                 $scope.earlier_li = li;
+             }
+        };
+
+        $scope.storePaths = function($index) {
+           // alert("aassasa");
+            var data_folder_array = [];
+            var tc_folder_array = [];
+            var folder_index = -1;
+            var final_array = [];
+           //$scope.model.Testcase.Details.InputDataFile = "";
+          
+           $scope.tag_info[$index][0][1] = "";
+           //alert("sasa" + $scope.cfg.idfdir);
+            if ($scope.cfg.idfdir.indexOf('/') === -1) {
+                data_folder_array = $scope.cfg.idfdir.split("\\");
+            }
+            else {
+             //   alert("else");
+                data_folder_array = $scope.cfg.idfdir.split("/");
+            }
+            for (var i = 0; i < data_folder_array.length; i++) {
+
+                if (data_folder_array[i] === $scope.path_array[$scope.path_array.length - 1]) {
+                    data_folder_array.splice(i, (data_folder_array.length - i));
+                    break;
+                }
+            }
+            for (i = $scope.path_array.length - 1; i >= 0; i--) {
+                data_folder_array.push($scope.path_array[i])
+            }
+            if ($scope.cfg.xmldir.indexOf('/') === -1) {
+                tc_folder_array = $scope.cfg.xmldir.split("\\");
+            }
+            else {
+                tc_folder_array = $scope.cfg.xmldir.split("/");
+            }
+            if($scope.subdirs != "none"){
+                var subdir_array = $scope.subdirs.split(",");
+                for(i=0; i<subdir_array.length; i++){
+                    tc_folder_array.push(subdir_array[i]);
+                }
+            }
+            for (i = 0; i < tc_folder_array.length; i++) {
+                if (data_folder_array[i] !== tc_folder_array[i]) {
+                    folder_index = i;
+                    break;
+                }
+            }
+            if (folder_index !== -1) {
+                var dots = tc_folder_array.length - folder_index;
+                for (i = 0; i < dots; i++) {
+                    final_array.push("..");
+                }
+            } else {
+                folder_index = tc_folder_array.length;
+            }
+            for (i = folder_index; i < data_folder_array.length; i++) {
+                final_array.push(data_folder_array[i]);
+            }
+            for (i = 0; i < final_array.length; i++) {
+//scope.model.Testcase.Details.InputDataFile = $scope.model.Testcase.Details.InputDataFile + final_array[i] + "/"
+                $scope.tag_info[$index][0][1] = $scope.tag_info[$index][0][1] + final_array[i] + "/"
+            }
+            if (!$scope.tag_info[$index][0][1].match(/\.\.\/$/)) {
+                $scope.tag_info[$index][0][1] = $scope.tag_info[$index][0][1].slice(0, -1);
+            }
+
+            //alert($scope.tag_info[$index][0][1]);
+            $scope.btnValue = "Edit";
+            $scope.toggleModal();
+        };
+
+       
+fileFactory.readdatafile()
+            .then(
+                function(data) {
+                    $scope.alldirinfo = data;
+                 //   $scope.table = '';
+                   // alert("111111111111" + $scope.table);
+                    $scope.table = $scope.table + "<ul class=\"collapsibleList\" id='path_list'>";
+                    
+                    get_folders_names($scope.alldirinfo);
+                    $scope.table = $scope.table + "</ul>";
+                    document.getElementById("tree_div").innerHTML = $scope.table;
+                    CollapsibleLists.applyTo(document.getElementById('tree_div'));
+                },
+                function(data) {
+                    alert(data);
+                });
+
+        $scope.toggleModal = function(){
+           // alert("toggleModaltoggleModaltoggleModaltoggleModal");
+            document.getElementById("tree_div").innerHTML = $scope.table;
+            //alert($scope.table);
+            CollapsibleLists.applyTo(document.getElementById('tree_div'));
+            $scope.showModal.visible = !$scope.showModal.visible;
+        };
+
+        
         $scope.editSubsystem = function(parent_index, index){
             if($scope.subsysEditorIsOpen){
                 swal({
@@ -444,6 +598,7 @@ app.controller('newDataFileCtrl', ['$scope', '$http', '$controller', '$location'
             });
         }
 
+        
         $scope.addAnotherChild = function(parent_index, index){
             $scope.childTagsList[parent_index][index].push([undefined, undefined]);
         };
@@ -465,12 +620,15 @@ app.controller('newDataFileCtrl', ['$scope', '$http', '$controller', '$location'
 
                             for(var i=0; i<$scope.default_tags_list.local.length; i++){
                                 $scope.tag_name_list.push($scope.default_tags_list.local[i]["tag"]);
+                                //$scope.tag_name_list.splice(i,1);
+                               
                             }
                         },
                         function(data) {
                             alert(data);
                         });
 
+              
         function verify_mandatory_fields() {
             var check = true;
             if($scope.df_name == ""){
@@ -546,6 +704,7 @@ app.controller('newDataFileCtrl', ['$scope', '$http', '$controller', '$location'
         };
 
         function updateBloodhound(x){
+          //  alert(x);
             if($scope.tag_name_list.indexOf(x) == -1){
                 $scope.tag_name_list.push(x);
                 $scope.tag_name_list.sort(); //quicksort in chrome, merge sort in firefox
@@ -554,6 +713,7 @@ app.controller('newDataFileCtrl', ['$scope', '$http', '$controller', '$location'
                     temp_list["defaults"].push({"tag": $scope.tag_name_list[i]})
                 }
                 var temp_str = JSON.stringify(temp_list);
+               // alert(temp_str);
                 fileFactory.updatedeftagsfile(temp_str)
                     .then(
                         function(data) {
@@ -656,11 +816,28 @@ app.controller('newDataFileCtrl', ['$scope', '$http', '$controller', '$location'
         }
 
         $scope.updateModel = function(grandpa_index, parent_index, index, identifier){
+
+
             if(identifier === 'tag'){
+                
                 var x = document.getElementById("tag_name"+ parent_index + index).value;
+
+                 if(x ==  "testdata")
+                {
+               
+                   scope.IsVisible = false; //enable
+                               
+                }
+                else{
+                    $scope.IsVisible = true; //disable
+                    }
+
+                                    
                 $scope.$apply($scope.tag_info[parent_index][index][0] = x);
+
                 $scope.$apply($scope.buffer_tag_info[parent_index][index][0] = x);
                 updateBloodhound(x);
+                
                 disableTagTab(parent_index);
             }
             else if(identifier === 'tagvalue'){
@@ -1260,7 +1437,8 @@ app.controller('newDataFileCtrl', ['$scope', '$http', '$controller', '$location'
                 $scope.subsys_info[index].push([[undefined, undefined]]);
                 $scope.showSpecificSubsys[index]= [false];
                 disableTagTab(index);
-            }
+
+               }
             else if(identifier === "subsys"){
                 $scope.subsys_info[parent_index][index].push(["", ""]);
                 $scope.buffer_subsys_info[parent_index][index].push(["", ""]);
