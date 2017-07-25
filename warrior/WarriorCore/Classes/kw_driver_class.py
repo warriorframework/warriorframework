@@ -160,14 +160,20 @@ class KeywordOperations(object):
 
     def get_credential_value(self, arg, system):
         datafile = self.data_repository['wt_datafile']
+        var = arg
         if not hasattr(self, 'tag_dict'):
             self.tag_dict = data_Utils.get_credentials(datafile, system)
-        if arg in self.tag_dict:
-            return self.tag_dict[arg]
-        if arg.startswith("wtag"):
+        if isinstance(arg, basestring) and arg.startswith("wtag"):
             var = arg.split("=")[1]
-            return self.tag_dict[var]
-        return None
+        if var in self.tag_dict:
+            value = self.tag_dict[var]
+            # substitute environment/datarepo variables in the value and return
+            if isinstance(value, (basestring, list, dict)):
+                return data_Utils.substitute_var_patterns(value)
+            else:
+                return value
+        else:
+            return None
 
     def get_values_for_mandatory_args(self):
         """The values for mandatory arguments as a python dictionary
