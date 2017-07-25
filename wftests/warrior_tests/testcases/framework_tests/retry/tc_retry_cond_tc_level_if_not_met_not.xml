@@ -8,6 +8,7 @@
                 <Logsdir>../../Execution</Logsdir>
                 <Resultsdir>../../Execution</Resultsdir>
                 <Date>2017-04-20</Date>
+                <InputDataFile>No_Data</InputDataFile>
                 <Time>16:20</Time>
                 <Engineer>Ka</Engineer>
         </Details>
