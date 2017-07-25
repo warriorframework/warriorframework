@@ -27,6 +27,7 @@ matrix:
       env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/pj_parallel_execution_2.xml
       python: 2.7
 
+
 before_install:
     - if [ ${INSTALL} = "yes" ]; then
         sudo apt-get install xvfb ;
