@@ -434,6 +434,7 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
         from_ts = True
         junit_requirements(testcase_filepath, tc_junit_object, data_repository['wt_ts_timestamp'])
     data_repository['wt_tc_timestamp'] = tc_timestamp
+    data_repository['tc_parallel'] = tc_parallel
     data_type = data_repository['wt_data_type']
 
     # Adding resultsdir, logsdir, title as attributes to testcase_tag in the junit result file
@@ -466,12 +467,12 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
          runtype.upper() == 'SEQUENTIAL_KEYWORDS':
             tc_status = execute_custom(data_type, runtype,
                                        custom_sequential_kw_driver,
-                                       data_repository, step_list, tc_parallel)
+                                       data_repository, step_list)
         elif data_type.upper() == 'CUSTOM' and \
                 runtype.upper() == 'PARALLEL_KEYWORDS':
             tc_status = execute_custom(data_type, runtype,
                                        custom_parallel_kw_driver,
-                                       data_repository, step_list, tc_parallel)
+                                       data_repository, step_list)
         elif data_type.upper() == 'ITERATIVE' and \
                 runtype.upper() == 'SEQUENTIAL_KEYWORDS':
             print_info("iterative sequential")
@@ -487,7 +488,7 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                 tc_status = False
             elif len(system_list) > 0:
                 tc_status = iterative_sequential_kw_driver.main(
-                 step_list, data_repository, tc_status, system_list, tc_parallel)
+                 step_list, data_repository, tc_status, system_list)
         elif data_type.upper() == 'ITERATIVE' and \
                 runtype.upper() == 'PARALLEL_KEYWORDS':
             print_info("iterative parallel")
@@ -503,7 +504,7 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                 tc_status = False
             elif len(system_list) > 0:
                 tc_status = iterative_parallel_kw_driver.main(
-                 step_list, data_repository, tc_status, system_list, tc_parallel)
+                 step_list, data_repository, tc_status, system_list)
         elif data_type.upper() == "HYBRID":
             print_info("Hybrid")
             system_list, system_node_list = get_system_list(
@@ -616,7 +617,7 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
     return tc_status, data_repository
 
 
-def execute_custom(datatype, runtype, driver, data_repository, step_list, tc_parallel=False):
+def execute_custom(datatype, runtype, driver, data_repository, step_list):
     """
     Execute a custom testcase
     """

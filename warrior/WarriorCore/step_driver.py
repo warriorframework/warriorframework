@@ -241,6 +241,8 @@ def execute_step(step, step_num, data_repository, system_name, kw_parallel, queu
         # corresponding driver
         queue.put((keyword_status, kw_resultfile,
                    step_impact.upper(), tc_junit_object))
+    elif data_repository['tc_parallel']:
+        pass
     else:
         # Get the type of the file being executed by Warrior: Case/Suite/Project
         war_file_type = data_repository.get('war_file_type')
