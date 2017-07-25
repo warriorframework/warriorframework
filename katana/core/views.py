@@ -36,7 +36,10 @@ def index(request):
     setting_path = get_abs_path(rel_path_settings_py, current_directory)
     apps_in_settings_py = get_apps_in_settings_py_file(setting_path)
 
+    print apps_in_settings_py
+
     urls_path = get_abs_path(rel_path_urls_py, current_directory)
+    print urls_path
     url_dict = get_url_info_from_urls_py(urls_path)
 
     apps = consolidate_app_details(apps=apps, app_content=app_content,
