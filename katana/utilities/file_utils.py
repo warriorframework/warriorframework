@@ -41,6 +41,29 @@ def get_abs_path(relative_path, base_path):
     return value
 
 
+def readlines_from_file(path, start=None, end=None):
+    with open(path, "r") as f:
+        data = f.readlines()
+    output_list = []
+
+    if start is not None and end is not None:
+        flag = False
+        for line in data:
+            if flag and line == end:
+                break
+            if flag:
+                output_list.append(line)
+            if not flag and line.startswith(start):
+                flag = True
+        return output_list
+
+    return data
+
+
+def get_current_directory(current_directory):
+    return os.path.basename(os.path.normpath(current_directory))
+
+
 if __name__ == "__main__":
     path = get_abs_path("../default", "/home/sanika/django-katana-development-related/warriorframework/katana/core")
     print get_sub_folders(path)

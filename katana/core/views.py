@@ -15,55 +15,35 @@ limitations under the License.
 from __future__ import unicode_literals
 import os
 from django.shortcuts import render
-from utils.file_utils import get_sub_folders, get_abs_path
+
+from core.utils.core_utils import get_available_apps, get_apps_in_settings_py_file, \
+    get_url_info_from_urls_py, consolidate_app_details
+from utilities.file_utils import get_abs_path, readlines_from_file
 
 
 def index(request):
+    template = 'core/index.html'
+    key = "app"
+    apps = {key: []}
+    app_content = {"name": "", "color": "", "url": "", "icon": ""}
+    config_file = "details.txt"
+    rel_path_settings_py = "../wui/settings.py"
+    rel_path_urls_py = "../wui/urls.py"
+
     current_directory = os.path.dirname(os.path.realpath(__file__))
-    sub_dirs = get_sub_folders(os.path.dirname(current_directory))
-    installed_apps = ["core"]
-    if "apps" in sub_dirs:
-        apps_sub_dir = get_sub_folders(os.path.dirname(current_directory) + os.sep + "apps")
-        for i in range(0, len(apps_sub_dir)):
-            apps_sub_dir[i] = "apps." + apps_sub_dir[i]
-        installed_apps.extend(apps_sub_dir)
-    if "default" in sub_dirs:
-        def_sub_dir = get_sub_folders(os.path.dirname(current_directory) + os.sep + "default")
-        for i in range(0, len(def_sub_dir)):
-            def_sub_dir[i] = "default." + def_sub_dir[i]
-        installed_apps.extend(def_sub_dir)
+    available_apps = get_available_apps(current_directory)
 
-    setting_path = get_abs_path("../wui/settings.py", current_directory)
-    with open(setting_path, "r") as f:
-        data = f.readlines()
-    apps_list = []
-    flag = False
-    for line in data:
-        if flag and line == "]\n":
-            break
-        if flag:
-            apps_list.append(line)
-        if not flag and line.startswith("INSTALLED_APPS = ["):
-            flag = True
-    final_apps = []
-    for i in range(0, len(apps_list)):
-        apps_list[i] = apps_list[i].strip(" ")
-        apps_list[i] = apps_list[i].strip("\n")
-        apps_list[i] = apps_list[i].strip(",")
-        apps_list[i] = apps_list[i].strip("'")
-        if not apps_list[i].startswith("django."):
-            final_apps.append(apps_list[i])
+    setting_path = get_abs_path(rel_path_settings_py, current_directory)
+    apps_in_settings_py = get_apps_in_settings_py_file(setting_path)
 
+    urls_path = get_abs_path(rel_path_urls_py, current_directory)
+    url_dict = get_url_info_from_urls_py(urls_path)
 
-    print installed_apps
-    print final_apps
+    apps = consolidate_app_details(apps=apps, app_content=app_content,
+                                   available_apps=available_apps, key=key,
+                                   apps_in_settings_py=apps_in_settings_py, url_dict=url_dict,
+                                   current_directory=current_directory, config_file=config_file)
 
-    apps = {"app": []}
+    print apps
 
-    for app1 in installed_apps:
-        for app2 in final_apps:
-            if app1 == app2:
-                apps["app"].append({"name": app1, "color": "blue", "url": "", "icon": ""})
-
-
-    return render(request, 'core/index.html', {"data": "This is the main Katana Core page"})
+    return render(request, template, {"apps": apps})

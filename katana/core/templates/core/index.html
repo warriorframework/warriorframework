@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    {% load staticfiles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'core/css/main.css' %}" />
 </head>
 <body>
 
-<div>{{ data }}</div>
+<div>{{ apps }}</div>
 
 </body>
 </html>
