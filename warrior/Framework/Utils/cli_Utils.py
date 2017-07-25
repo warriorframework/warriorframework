@@ -63,6 +63,18 @@ def cmdprinter(cmdfunc):
         return result
     return inner
 
+def pexpect_spawn_with_env(pexpect_obj, command, timeout, escape=False, env=None):
+    """
+        spawn a pexpect object with environment variable
+    """
+    if env is None:
+        env = {}
+    if str(escape).lower() == "yes" or str(escape).lower() == "true":
+        child = pexpect_obj.spawn(command, timeout=int(timeout), env=env)
+    else:
+        child = pexpect_obj.spawn(command, timeout=int(timeout))
+    return child
+
 def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=60,
                 prompt=".*(%|#|\$)", conn_options="", custom_keystroke="", escape="", **kwargs):
     """
@@ -86,10 +98,8 @@ def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=6
     if WarriorCliClass.cmdprint:
         pNote(("connectSSH: :CMD: %s" %command))
         return None, ""
-    if str(escape).lower() == "yes" or str(escape).lower() == "true":
-        child = pexpect.spawn(command, timeout=int(timeout), env={"TERM": "dumb"})
-    else:
-        child = pexpect.spawn(command, timeout=int(timeout))
+    child = pexpect_spawn_with_env(pexpect, command, timeout=int(timeout),
+                                   escape=escape, env={"TERM": "dumb"})
 
     child.logfile = sys.stdout
 
@@ -143,10 +153,8 @@ def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=6
                 print_debug("SSH Host Key is changed - Remove it from "
                             "known_hosts file : cmd = %s" % cmd)
                 subprocess.call(cmd, shell=True)
-                if str(escape).lower() == "yes" or str(escape).lower() == "true":
-                    child = pexpect.spawn(command, timeout=int(timeout), env={"TERM": "dumb"})
-                else:
-                    child = pexpect.spawn(command, timeout=int(timeout))
+                child = pexpect_spawn_with_env(pexpect, command, timeout=int(timeout),
+                                               escape=escape, env={"TERM": "dumb"})
                 print_debug("ReconnectSSH: cmd = %s" % command)
     except Exception as exception:
         print_exception(exception)
@@ -184,10 +192,8 @@ def connect_telnet(ip, port="23", username="", password="",
         conn_options = ""
     command = command + str(conn_options)
     print_debug("connectTelnet cmd = %s" % command)
-    if str(escape).lower() == "yes" or str(escape).lower() == "true":
-        child = pexpect.spawn(command, timeout=int(timeout), env={"TERM": "dumb"})
-    else:
-        child = pexpect.spawn(command, timeout=int(timeout))
+    child = pexpect_spawn_with_env(pexpect, command, timeout=int(timeout),
+                                   escape=escape, env={"TERM": "dumb"})
     conn_string = ""
     telnetobj = None
     try:

@@ -23,12 +23,12 @@ from Framework.Utils.print_Utils import print_info, print_debug,\
  print_exception, print_error
 from Framework.Utils.testcase_Utils import pNote
 from WarriorCore.Classes.war_cli_class import WarriorCliClass
-from Framework.Utils.cli_Utils import cmdprinter
+from Framework.Utils.cli_Utils import cmdprinter, pexpect_spawn_with_env
 
 
 class WarriorConnect(object):
     """
-    Class to handle SSH/Telnet operations.
+    Class to handle SSH/Telnet operations.f
     Supported conn_type values : SSH, TELNET, SSH_NESTED
     """
 
@@ -375,7 +375,7 @@ class PexpectConnect(object):
         self.prompt = credentials.get('prompt', '.*(%|#|\$)')
         self.conn_options = credentials.get('conn_options', '')
         self.custom_keystroke = credentials.get('custom_keystroke', '')
-        self.escape = credentials.get('escape', '')
+        self.escape = credentials.get('escape', False)
 
     def __import_pexpect(self):
         """Import the pexpect module """
@@ -416,10 +416,8 @@ class PexpectConnect(object):
         if WarriorCliClass.cmdprint:
             pNote("connectSSH: :CMD: %s" % command)
             return None, ""
-        if str(self.escape).lower() == "yes" or str(self.escape).lower() == "true":
-            child = self.pexpect.spawn(command, timeout=int(self.timeout), env={"TERM": "dumb"})
-        else:
-            child = self.pexpect.spawn(command, timeout=int(self.timeout))
+        child = pexpect_spawn_with_env(self.pexpect, command, timeout=int(self.timeout),
+                                       escape=self.escape, env={"TERM": "dumb"})
 
         child.logfile = sys.stdout
 
@@ -505,10 +503,8 @@ class PexpectConnect(object):
         command = command + str(conn_options)
         print_debug("connectTelnet cmd = %s" % command)
 
-        if str(self.escape).lower() == "yes" or str(self.escape).lower() == "true":
-            child = self.pexpect.spawn(command, timeout=int(self.timeout), env={"TERM": "dumb"})
-        else:
-            child = self.pexpect.spawn(command, timeout=int(self.timeout))
+        child = pexpect_spawn_with_env(self.pexpect, command, timeout=int(self.timeout),
+                                       escape=self.escape, env={"TERM": "dumb"})
 
         try:
             child.logfile = open(self.logfile, "a")
