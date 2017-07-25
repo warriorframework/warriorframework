@@ -1296,6 +1296,7 @@ def get_user_specified_tag_values_in_tc(datafile, system_name, **kwargs):
     for element in kwargs:
         if kwargs[element] is not None:
             credentials[element] = resolve_argument_value_to_get_tag_value(datafile, system_name, kwargs[element])
+    credentials = sub_from_env_var(credentials)
     return credentials
 
 
