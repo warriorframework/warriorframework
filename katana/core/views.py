@@ -15,38 +15,28 @@ limitations under the License.
 from __future__ import unicode_literals
 import os
 from django.shortcuts import render
+from django.views import View
+from django.views.generic import DetailView
 
-from core.utils.core_utils import get_available_apps, get_apps_in_settings_py_file, \
-    get_url_info_from_urls_py, consolidate_app_details
-from utilities.file_utils import get_abs_path, readlines_from_file
+from core.utils.core_utils import CoreIndex
 
 
-def index(request):
-    template = 'core/index.html'
-    key = "app"
-    apps = {key: []}
-    app_content = {"name": "", "color": "", "url": "", "icon": ""}
-    config_file = "details.txt"
-    rel_path_settings_py = "../wui/settings.py"
-    rel_path_urls_py = "../wui/urls.py"
+class CoreView(View):
 
-    current_directory = os.path.dirname(os.path.realpath(__file__))
-    available_apps = get_available_apps(current_directory)
+    def get(self, request):
+        template = 'core/index.html'
+        key = "app"
+        apps = {key: []}
+        app_content = {"name": "", "color": "", "url": "", "icon": ""}
+        config_file = "details.txt"
+        rel_path_settings_py = "../wui/settings.py"
+        rel_path_urls_py = "../wui/urls.py"
+        config_details_dict = {"icon": "", "color": ""}
 
-    setting_path = get_abs_path(rel_path_settings_py, current_directory)
-    apps_in_settings_py = get_apps_in_settings_py_file(setting_path)
+        current_directory = os.path.dirname(os.path.realpath(__file__))
+        core_index_obj = CoreIndex(current_directory, rel_path_settings_py, rel_path_urls_py, apps,
+                                   app_content, config_file, config_details_dict, key)
 
-    print apps_in_settings_py
+        apps = core_index_obj.consolidate_app_details()
 
-    urls_path = get_abs_path(rel_path_urls_py, current_directory)
-    print urls_path
-    url_dict = get_url_info_from_urls_py(urls_path)
-
-    apps = consolidate_app_details(apps=apps, app_content=app_content,
-                                   available_apps=available_apps, key=key,
-                                   apps_in_settings_py=apps_in_settings_py, url_dict=url_dict,
-                                   current_directory=current_directory, config_file=config_file)
-
-    print apps
-
-    return render(request, template, {"apps": apps})
+        return render(request, template, {"apps": apps})

@@ -62,8 +62,3 @@ def readlines_from_file(path, start=None, end=None):
 
 def get_current_directory(current_directory):
     return os.path.basename(os.path.normpath(current_directory))
-
-
-if __name__ == "__main__":
-    path = get_abs_path("../default", "/home/sanika/django-katana-development-related/warriorframework/katana/core")
-    print get_sub_folders(path)
