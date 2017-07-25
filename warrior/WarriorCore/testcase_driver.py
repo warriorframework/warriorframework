@@ -466,12 +466,12 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
          runtype.upper() == 'SEQUENTIAL_KEYWORDS':
             tc_status = execute_custom(data_type, runtype,
                                        custom_sequential_kw_driver,
-                                       data_repository, step_list)
+                                       data_repository, step_list, tc_parallel)
         elif data_type.upper() == 'CUSTOM' and \
                 runtype.upper() == 'PARALLEL_KEYWORDS':
             tc_status = execute_custom(data_type, runtype,
                                        custom_parallel_kw_driver,
-                                       data_repository, step_list)
+                                       data_repository, step_list, tc_parallel)
         elif data_type.upper() == 'ITERATIVE' and \
                 runtype.upper() == 'SEQUENTIAL_KEYWORDS':
             print_info("iterative sequential")
@@ -487,7 +487,7 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                 tc_status = False
             elif len(system_list) > 0:
                 tc_status = iterative_sequential_kw_driver.main(
-                 step_list, data_repository, tc_status, system_list)
+                 step_list, data_repository, tc_status, system_list, tc_parallel)
         elif data_type.upper() == 'ITERATIVE' and \
                 runtype.upper() == 'PARALLEL_KEYWORDS':
             print_info("iterative parallel")
@@ -503,7 +503,7 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                 tc_status = False
             elif len(system_list) > 0:
                 tc_status = iterative_parallel_kw_driver.main(
-                 step_list, data_repository, tc_status, system_list)
+                 step_list, data_repository, tc_status, system_list, tc_parallel)
         elif data_type.upper() == "HYBRID":
             print_info("Hybrid")
             system_list, system_node_list = get_system_list(
@@ -587,14 +587,15 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                  'wt_testcase_filepath'], data_repository['wt_logsdir'],
                  data_repository['wt_resultsdir'], tc_status, email_setting)
 
-        if 'wp_results_execdir' in data_repository:
-            # Create and replace existing Project junit file for each case
-            tc_junit_object.output_junit(data_repository['wp_results_execdir'],
-                                         print_summary=False)
-        else:
-            # Create and replace existing Suite junit file for each case
-            tc_junit_object.output_junit(data_repository['wt_results_execdir'],
-                                         print_summary=False)
+        if not tc_parallel:
+            if 'wp_results_execdir' in data_repository:
+                # Create and replace existing Project junit file for each case
+                tc_junit_object.output_junit(data_repository['wp_results_execdir'],
+                                             print_summary=False)
+            else:
+                # Create and replace existing Suite junit file for each case
+                tc_junit_object.output_junit(data_repository['wt_results_execdir'],
+                                             print_summary=False)
 
     if tc_parallel:
         tc_impact   =  data_repository['wt_tc_impact']
@@ -615,7 +616,7 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
     return tc_status, data_repository
 
 
-def execute_custom(datatype, runtype, driver, data_repository, step_list):
+def execute_custom(datatype, runtype, driver, data_repository, step_list, tc_parallel=False):
     """
     Execute a custom testcase
     """
