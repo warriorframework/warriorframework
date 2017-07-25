@@ -105,7 +105,7 @@ class browser_actions(object):
                                       </element_config_file>
 
             8. element_tag = This element_tag refers to a particular element in
-                             the json fie which contains relevant information to
+                             the json file which contains relevant information to
                              that element. If you want to use this one element
                              through out the testcase for a particular browser,
                              you can include it in the data file. If this not
@@ -287,6 +287,181 @@ class browser_actions(object):
         if current_browser:
             selenium_Utils.save_screenshot_onerror(status, current_browser)
         return status
+
+
+    def browser_launch_and_maximize(self,self, system_name, browser_name="all", type="firefox",
+                                    url=None, ip=None, remote=None, element_config_file=None,
+                                    element_tag=None):
+        """
+        This will launch a browser and maximize it.
+
+        :Datafile Usage:
+
+            Tags or attributes to be used in input datafile for the system or
+            subsystem. If both tag and attribute is provided the attribute will
+            be used.
+
+            1. system_name = This attribute can be specified in the datafile as
+                             a <system> tag directly under the <credentials>
+                             tag. An attribute "name" has to be added to this
+                             tag and the value of that attribute would be taken
+                             in as value to this keyword attribute.
+
+                             <system name="name_of_the_system"/>
+
+            2. ip = Specify this tag as a direct child of the <system> tag
+                    This tag would contain information about the IP of the
+                    remote machine on which you want your testcase to run
+
+                    Eg: <ip>167.125.0.1</ip>
+
+            3. remote = Specify this tag as a direct child of the <system> tag
+                        This tag when set to set, would use the IP above and
+                        start up a browser on that machine. If this tag is set
+                        to 'no', a browser would launch on your machine
+
+                        Eg: <remote>yes</remote>
+
+            4. type = This <type> tag is a child og the <browser> tag in the
+                      data file. The type of browser that should be opened can
+                      be added in here.
+
+                      Eg: <type>firefox</type>
+
+            5. browser_name = This <browser_name> tag is a child og the
+                              <browser> tag in the data file. Each browser
+                              instance should have a unique name. This name can
+                              be added here
+
+                              Eg: <browser_name>Unique_name_1</browser_name>
+
+            6. url = The URL that you want to open your browser to can be added
+                     in the <url> tag under the <browser> tag.
+
+                     Eg: <url>https://www.google.com</url>
+
+            7. element_config_file = This <element_config_file> tag is a child
+                                     of the <browser> tag in the data file. This
+                                     stores the location of the element
+                                     configuration file that contains all
+                                     element locators.
+
+                                  Eg: <element_config_file>
+                                      ../Config_files/slenium_config.json
+                                      </element_config_file>
+
+            8. element_tag = This element_tag refers to a particular element in
+                             the json file which contains relevant information to
+                             that element. If you want to use this one element
+                             through out the testcase for a particular browser,
+                             you can include it in the data file. If this not
+                             the case, then you should create an argument tag
+                             in the relevant testcase step and add the value
+                             directly in the testcase step.
+
+                             FOR DATA FILE
+                             Eg: <element_tag>json_name_1</element_tag>
+
+                             FOR TEST CASE
+                             Eg: <argument name="element_tag" value="json_name_1">
+
+        :Arguments:
+
+            1. system_name(str) = the system name.
+            2. type(str) = Type of browser: firefox, chrome, ie.
+            3. browser_name(str) = Unique name for this particular browser
+            4. url(str) = URL to which the browser should be directed
+            5. ip(str) = IP of the remote machine
+            6. remote(str) = 'yes' or 'no' to indicate whether you want to
+                              connect to the given aboveIP
+            7. element_config_file (str) = location of the element configuration
+                                           file that contains all element
+                                           locators
+            8. element_tag (str) = particular element in the json fie which
+                                   contains relevant information to that element
+
+        :Returns:
+
+            1. status(bool)= True / False.
+            2. output_dict(dict) = dictionary containing information about the
+                                   browser
+
+        """
+        arguments = locals()
+        arguments.pop('self')
+        status = True
+        output_dict = {}
+        wdesc = "Opens browser instances"
+        pNote(wdesc)
+        pSubStep(wdesc)
+        browser_details = {}
+
+        if ip is None:
+            ip = data_Utils.getSystemData(self.datafile, system_name, "ip")
+        if remote is None:
+            remote = data_Utils.getSystemData(self.datafile, system_name,
+                                              "remote")
+
+        webdriver_remote_url = ip if str(remote).strip().lower() == "yes"\
+            else False
+
+        system = xml_Utils.getElementWithTagAttribValueMatch(self.datafile,
+                                                             "system",
+                                                             "name",
+                                                             system_name)
+        browser_list = system.findall("browser")
+        try:
+            browser_list.extend(system.find("browsers").findall("browser"))
+        except AttributeError:
+            pass
+
+        if not browser_list:
+            browser_list.append(1)
+            browser_details = arguments
+
+        for browser in browser_list:
+            arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
+            if browser_details == {}:
+                browser_details = selenium_Utils.\
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
+            if browser_details is not None:
+                browser_inst = self.browser_object.open_browser(
+                    browser_details["type"], webdriver_remote_url)
+                if browser_inst:
+                    browser_fullname = "{0}_{1}".format(system_name, browser_details["browser_name"])
+                    output_dict[browser_fullname] = browser_inst
+                    current_browser = Utils.data_Utils.\
+                        get_object_from_datarepository(browser_fullname)
+                    if "url" in browser_details and browser_details["url"]\
+                            is not None:
+                        result, url = self.browser_object.check_url(browser_details["url"])
+                        if result == True:
+                            result = self.browser_object.go_to(url,
+                                                               browser_inst)
+                            if current_browser:
+                                self.browser_object.maximize_browser_window(current_browser)
+                            else:
+                                pNote("Browser of system {0} and name {1} not found in the"
+                                      "datarepository"
+                                      .format(system_name, browser_details["browser_name"]),
+                                      "Exception")
+                                status = False
+                        else:
+                            result = True
+                            if current_browser:
+                                self.browser_object.maximize_browser_window(current_browser)
+                            else:
+                                pNote("Browser of system {0} and name {1} not found in the"
+                                      "datarepository"
+                                      .format(system_name, browser_details["browser_name"]),
+                                      "Exception")
+                                status = False
+            browser_details = {}
+        Utils.testcase_Utils.report_substep_status(status)
+        if current_browser:
+            selenium_Utils.save_screenshot_onerror(status, current_browser)
+        return status
+
 
     def navigate_to_url(self, system_name, type="firefox", browser_name="all",
                         url=None, element_config_file=None, element_tag=None):
