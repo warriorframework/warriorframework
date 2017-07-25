@@ -306,8 +306,7 @@ class elementoperation_actions(object):
         arguments = locals()
         arguments.pop('self')
         status = False
-        wdesc = "verify the text from the element/input box"
-        " is matching expected"
+        wdesc = "verify the text from the element/input box is matching expected"
         pNote(wdesc)
         pSubStep(wdesc)
         browser_details = {}
@@ -338,9 +337,8 @@ class elementoperation_actions(object):
                               "repository!".format(br_name),
                               "error")
                     else:
-                        '''work on the browser instance on which to perform the
-                        action since enclosed element not provided
-                        '''
+                        # work on the browser instance on which to perform the action since
+                        # enclosed element not provided
                         status, value = self.elem_oper_obj.\
                             perform_element_action(current_browser, comp_locator, "get_text",
                                                    browser=current_browser)
@@ -348,9 +346,8 @@ class elementoperation_actions(object):
                         if expected is not None:
                             status = self.elem_oper_obj.verify_text(var=var, expected=expected)
                 else:
-                    '''enclosing element of the locator is itself provided
-                    use that to perform the action
-                    '''
+                    # enclosing element of the locator is itself provided use that to perform the
+                    # action
                     status, value = self.elem_oper_obj.perform_element_action(
                         current_element, comp_locator, "get_text",
                         browser=current_browser)
