@@ -241,9 +241,7 @@ def execute_step(step, step_num, data_repository, system_name, kw_parallel, queu
         # corresponding driver
         queue.put((keyword_status, kw_resultfile,
                    step_impact.upper(), tc_junit_object))
-    elif data_repository['tc_parallel']:
-        return keyword_status, kw_resultfile, step_impact, exec_type_onerror
-    else:
+    elif not data_repository['tc_parallel']:
         # Get the type of the file being executed by Warrior: Case/Suite/Project
         war_file_type = data_repository.get('war_file_type')
         if war_file_type == "Case":
@@ -273,7 +271,7 @@ def execute_step(step, step_num, data_repository, system_name, kw_parallel, queu
             # Create and replace existing Project junit file for each step
             tc_junit_object.output_junit(data_repository['wp_results_execdir'],
                                          print_summary=False)
-        return keyword_status, kw_resultfile, step_impact, exec_type_onerror
+    return keyword_status, kw_resultfile, step_impact, exec_type_onerror
 
 
 def add_keyword_result(tc_junit_object, tc_timestamp, step_num, keyword,
