@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 '''
 Copyright 2017, Fujitsu Network Communications, Inc.
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,31 +11,26 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
-"""
-This is the Warrior executable
-"""
-
-
 import sys
 if sys.version_info < (2, 7):
     print("Warrior doesn't support Python version lower than 2.7, now exiting")
     sys.exit(0)
+try:
+    import os
+    import shutil
+    import Framework.Utils.email_utils as email
+    import Framework.Utils as Utils
+    from Framework.Utils.print_Utils import print_error, print_info
+    from WarriorCore import warrior_cli_driver, testcase_driver, testsuite_driver, project_driver
+    from WarriorCore import ironclaw_driver, mockrun_driver, framework_detail
+    from WarriorCore.Classes.jira_rest_class import Jira
+    from Framework.ClassUtils import database_utils_class
+except:
+    raise
+"""
+This is the Warrior executable
+"""
 
-import os
-import Tools
-import Framework.Utils.email_utils as email
-
-import Framework.Utils as Utils
-from Framework.Utils.print_Utils import print_error, print_info
-from WarriorCore import warrior_cli_driver, testcase_driver, testsuite_driver, project_driver
-from WarriorCore import ironclaw_driver, mockrun_driver, framework_detail
-from Framework.Utils import file_Utils
-from WarriorCore.Classes.war_cli_class import WarriorCliClass
-from WarriorCore.Classes.jira_rest_class import Jira
-from Framework.ClassUtils import database_utils_class
-import shutil
-                                                           
 CSE_EXEC = False
 AUTO_DEFECTS = False
 IRON_CLAW = False
@@ -54,7 +48,9 @@ def update_jira_by_id(jiraproj, jiraid, exec_dir, status):
     else:
         print_info("jiraid not provided, will not update jira issue")
 
-def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw, jiraproj, overwrite, jiraid, dbsystem):
+
+def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
+         jiraproj, overwrite, jiraid, dbsystem):
     """Parses the input parameters (i.e. sys.argv)
         If the input parameter is an xml file:
             - check if file exists, if exists
@@ -63,8 +59,8 @@ def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw, jiraproj,
                 - if the input is a project xml file, excute the project
 
         If the input is not an xml file:
-            - check if it is a json object/array respresenting a valid Warrior suite structure,
-              if yes to execute a build
+            - check if it is a json object/array respresenting a valid Warrior
+            suite structure, if yes to execute a build
     Arguments:
         1. parameter_list = list of command line parameters supplied by
         the user to execute Warrior
@@ -73,14 +69,8 @@ def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw, jiraproj,
 
     if cse_execution:
         status = cse_command_line_exec()
-
     elif iron_claw:
         status = ironclaw_driver.main(parameter_list)
- 
-    elif mockrun:
-        mockrun_driver.main(parameter_list)
-        status = True
-
     else:
         abs_cur_dir = os.path.abspath(os.curdir)
         status = True
@@ -90,49 +80,53 @@ def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw, jiraproj,
             # check if the input parameter is an xml file
             if Utils.file_Utils.get_extension_from_path(parameter) == '.xml':
                 filepath = parameter
-                #print '\nFILE_PATH:,',filepath #xml path by warrior- relative/absolute
                 framework_detail.warrior_banner()
                 abs_filepath = Utils.file_Utils.getAbsPath(filepath, abs_cur_dir)
-                print_info('Abosulete path: {0}'.format(abs_filepath))
+                print_info('Absolute path: {0}'.format(abs_filepath))
                 if Utils.file_Utils.fileExists(abs_filepath):
-                    #execution_dir = Utils.file_Utils.create_execution_directory(abs_filepath)
                     if len(overwrite.items()) > 0:
                         default_repo = overwrite
                     else:
                         default_repo = {}
 
-                    if db_obj is not False and db_obj.status == True:
-                        default_repo.update({'db_obj':db_obj})
+                    if db_obj is not False and db_obj.status is True:
+                        default_repo.update({'db_obj': db_obj})
                     else:
-                        default_repo.update({'db_obj':False})
+                        default_repo.update({'db_obj': False})
 
-                    if Utils.xml_Utils.getRoot(abs_filepath).tag == 'Testcase':
+                    if mockrun:
+                        result = mockrun_driver.main(abs_filepath, len(parameter_list))
+                    elif Utils.xml_Utils.getRoot(abs_filepath).tag == 'Testcase':
                         default_repo['war_file_type'] = "Case"
-                        result, tc_duration, data_repository = testcase_driver.main(abs_filepath,
-                                                      data_repository=default_repo,
-                                                      runtype='SEQUENTIAL_KEYWORDS',
-                                                      auto_defects=a_defects, jiraproj=jiraproj)
-                        update_jira_by_id(jiraproj, jiraid, os.path.dirname(data_repository['wt_resultsdir']), result)
-                        email.compose_send_email("Test Case: ", abs_filepath, data_repository\
-                            ['wt_logsdir'], data_repository['wt_resultsdir'], result)
+                        result, tc_duration, data_repository = testcase_driver.main(
+                                abs_filepath, data_repository=default_repo,
+                                runtype='SEQUENTIAL_KEYWORDS',
+                                auto_defects=a_defects, jiraproj=jiraproj)
+                        update_jira_by_id(jiraproj, jiraid, os.path.dirname(
+                                            data_repository['wt_resultsdir']), result)
+                        email.compose_send_email("Test Case: ", abs_filepath,
+                                                 data_repository['wt_logsdir'],
+                                                 data_repository['wt_resultsdir'], result)
                     elif Utils.xml_Utils.getRoot(abs_filepath).tag == 'TestSuite':
                         default_repo['war_file_type'] = "Suite"
-                        result, suite_repository = testsuite_driver.main(abs_filepath, 
-                                                       auto_defects=a_defects,
-                                                       jiraproj=jiraproj, 
-                                                       data_repository=default_repo)
-                        update_jira_by_id(jiraproj, jiraid, suite_repository['suite_execution_dir'], result)
-                        email.compose_send_email("Test Suite: ", abs_filepath, suite_repository\
-                            ['ws_logs_execdir'], suite_repository['ws_results_execdir'], result)
+                        result, suite_repository = testsuite_driver.main(
+                                abs_filepath, auto_defects=a_defects,
+                                jiraproj=jiraproj, data_repository=default_repo)
+                        update_jira_by_id(jiraproj, jiraid,
+                                          suite_repository['suite_execution_dir'], result)
+                        email.compose_send_email("Test Suite: ", abs_filepath,
+                                                 suite_repository['ws_logs_execdir'],
+                                                 suite_repository['ws_results_execdir'], result)
                     elif Utils.xml_Utils.getRoot(abs_filepath).tag == 'Project':
                         default_repo['war_file_type'] = "Project"
-                        result, project_repository = project_driver.main(abs_filepath,\
-                                                     auto_defects=a_defects,\
-                                                     jiraproj=jiraproj,\
-                                                     data_repository=default_repo)
-                        update_jira_by_id(jiraproj, jiraid, project_repository['project_execution_dir'], result)
-                        email.compose_send_email("Project: ", abs_filepath, project_repository\
-                            ['wp_logs_execdir'], project_repository['wp_results_execdir'], result)
+                        result, project_repository = project_driver.main(
+                                abs_filepath, auto_defects=a_defects,
+                                jiraproj=jiraproj, data_repository=default_repo)
+                        update_jira_by_id(jiraproj, jiraid,
+                                          project_repository['project_execution_dir'], result)
+                        email.compose_send_email("Project: ", abs_filepath,
+                                                 project_repository['wp_logs_execdir'],
+                                                 project_repository['wp_results_execdir'], result)
                     else:
                         print_error("Unrecognized root tag in the input xml file ! exiting!!!")
                 else:
@@ -140,19 +134,19 @@ def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw, jiraproj,
             else:
                 print_error("unrecognized file format !!!")
             status = status and result
-        if db_obj is not False and db_obj.status == True:
+        if db_obj is not False and db_obj.status is True:
             db_obj.close_connection()
     return status
 
 if __name__ == '__main__':
 
-    FILEPATH, mockrun, AUTO_DEFECTS, version, CSE_EXEC, IRON_CLAW, JIRAPROJ, \
-    OVERWRITE, JIRAID, DBSYSTEM = warrior_cli_driver.main(sys.argv[1:])
+    (FILEPATH, mockrun, AUTO_DEFECTS, version, CSE_EXEC, IRON_CLAW, JIRAPROJ,
+     OVERWRITE, JIRAID, DBSYSTEM) = warrior_cli_driver.main(sys.argv[1:])
     if version:
-        framework_detail.warrior_framework_details() 
+        framework_detail.warrior_framework_details()
         sys.exit(0)
     if not CSE_EXEC and len(FILEPATH) == 0:
-        print_error("Provide atleast one xml file to execute")
+        print_error("Provide at least one xml file to execute")
     status = main(FILEPATH, mockrun, AUTO_DEFECTS, CSE_EXEC, IRON_CLAW,
                   JIRAPROJ, OVERWRITE, JIRAID, DBSYSTEM)
     status = {"true": True, "pass": True}.get(str(status).lower())
@@ -164,5 +158,3 @@ if __name__ == '__main__':
         print_info("DONE 1")
         sys.exit(1)
         print "This line should not be printed"
-
-
