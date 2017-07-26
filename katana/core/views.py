@@ -25,8 +25,7 @@ class CoreView(View):
 
     def get(self, request):
         template = 'core/index.html'
-        key = "app"
-        apps = {key: []}
+        apps = []
         app_content = {"name": "", "color": "", "url": "", "icon": ""}
         config_file = "details.txt"
         rel_path_settings_py = "../wui/settings.py"
@@ -35,7 +34,7 @@ class CoreView(View):
 
         current_directory = os.path.dirname(os.path.realpath(__file__))
         core_index_obj = CoreIndex(current_directory, rel_path_settings_py, rel_path_urls_py, apps,
-                                   app_content, config_file, config_details_dict, key)
+                                   app_content, config_file, config_details_dict)
 
         apps = core_index_obj.consolidate_app_details()
 
