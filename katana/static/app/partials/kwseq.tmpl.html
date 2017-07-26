@@ -1,3 +1,14 @@
+<style>
+select > option[value=""] {
+    display: none;
+}
+
+select > option:first-child{
+    display: none;
+}
+
+</style>
+
 <div class='col-md-12'>
     <h4>
         <b>KATANA WRAPPER KEYWORD EDITOR</b>
@@ -91,6 +102,89 @@
                 </div>
             </div>
 
+            <div class="form-group" style="margin-bottom:10px;">
+                <label for='topdriver' class="col-sm-2 control-label mandatory-field ellipsis-the-overflow">Drivers </label>
+
+                <div class="tooltip-on-right align-fa-icon-after-label-step">
+                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                    <span class="tooltip-content">
+                             <div ng-if="keweqTooltips.dvname.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{keweqTooltips.dvname.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="keweqTooltips.dvname.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{keweqTooltips.dvname.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="keweqTooltips.dvname.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{keweqTooltips.dvname.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="keweqTooltips.dvname.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{keweqTooltips.dvname.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                </div>
+                <div class="col-sm-6">
+                    <div class="input-group">
+                        <select class='form-control'
+                                id='topdriver'
+                                ng-model="status.dvname"
+                                ng-change="driverSelectedUp(status.dvname)"
+                                ng-options="o as o for o in xml.drivers">
+                            <option value=''>Select Driver</option>
+                        </select>
+
+                    </div>
+
+                </div>
+                <div class="col-sm-1">
+                    <div class="tooltip-on-right align-fa-icon-after-input-step">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                                 <div ng-if="keweqTooltips.dvname.tooltip != ''">
+                                    <i class="fa fa-rocket" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{keweqTooltips.dvname.tooltip}}
+                                    <br>
+                                </div>
+                                <div ng-if="keweqTooltips.dvname.protip != ''">
+                                    <br>
+                                    <i class="fa fa-bolt" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{keweqTooltips.dvname.protip}}
+                                    <br>
+                                </div>
+                                <div ng-if="keweqTooltips.dvname.bantip != ''">
+                                    <br>
+                                    <i class="fa fa-ban" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{keweqTooltips.dvname.bantip}}
+                                    <br>
+                                </div>
+                                <div ng-if="keweqTooltips.dvname.snowflake != ''">
+                                    <br>
+                                    <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{keweqTooltips.dvname.snowflake}}
+                                    <br>
+                                </div>
+                            </span>
+                    </div>
+                </div>
+            </div>
 
 
             <div class="form-group" style="margin-bottom:10px;">
@@ -129,12 +223,19 @@
                         </span>
                 </div>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control"
-                           required
-                           id="ActionFile"
-                           ng-model='model.WrapperKeyword.Details.ActionFile'
-                           placeholder="Name of the Action File">
-                </div>
+                        <select class='form-control'
+                                id='ActionFile'
+                                ng-model="model.WrapperKeyword.Details.ActionFile" ng-options="res as res for res in myList">
+                        <option value=''>Select ActionFile Name</option>
+                <!--         <option ng-repeat="res in myList track by [$index]">
+                            {{res}}
+                        </option>
+ -->
+
+                        </select>
+
+               </div>
+
                 <div class="col-sm-1 align-fa-icon-after-input">
                     <div class="tooltip-on-right">
                         <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
@@ -497,22 +598,9 @@
                                     ng-options="o as o for o in xml.drivers">
                                 <option value=''>Select Driver</option>
                             </select>
-                            <!--<span class="input-group-addon" style="background-color: white">
-                                <input id="driverCheckbox1" type="checkbox"
-                                       ng-model='status.driverCheckbox'
-                                       ng-click="emptyDriverName()">
-                                <label for="driverCheckbox1" class="control-label">&nbsp;To be developed</label>
-                            </span>-->
+
                         </div>
-                        <!-- <div class="input-group" ng-show="status.driverCheckbox">
-                             <input class="form-control" ng-model="status.drivername">
-                             <span class="input-group-addon" style="background-color: white">
-                                 <input id="driverCheckbox2" type="checkbox"
-                                        ng-model='status.driverCheckbox'
-                                        ng-click="emptyDriverName()">
-                                 <label for="driverCheckbox2" class="control-label">&nbsp;To be developed</label>
-                             </span>
-                         </div>-->
+
                     </div>
                     <div class="col-sm-1">
                         <div class="tooltip-on-right align-fa-icon-after-input-step">

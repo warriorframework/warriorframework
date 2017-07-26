@@ -29,12 +29,16 @@ app.controller('kwSeqCtrlr', ['$scope','$routeParams','$http', '$location', '$an
         $scope.arg_list = [{"_name": "", "_value": ""}];
         $scope.showStepEdit = false;
         $scope.insertStep = false;
+        $scope.res1 = [];
+        $scope.resNew = [];
+        $scope.myList = [];
 
         //Angular Model for Wrapper Keyword
         $scope.model = {
             "WrapperKeyword": {
                 "Details": {
                     "WrapperName": "",
+                    "dvname" : "",
                     "ActionFile": "",
                     "Description": "",
 
@@ -531,6 +535,44 @@ app.controller('kwSeqCtrlr', ['$scope','$routeParams','$http', '$location', '$an
         return $scope.status.step_edit_mode = 'None';
     };
 
+//To auto populate Actionfile path
+        $scope.driverSelectedUp = function(drivername){
+            var abc = "<root>" + drivername + "</root>";
+            if($scope.myList != ''){
+                $scope.myList = '';
+                               
+                $scope.myList = [];
+                $scope.checkField(abc);
+            }
+            else{
+               $scope.checkField(abc);
+            }
+        };
+
+        $scope.checkField = function(abc){
+
+            KwSeqFactory.search(abc)
+                .then(
+                    function (data) {
+                        $scope.res1.push(data);
+                        var xx = JSON.stringify($scope.res1);
+                        var count = (xx.match(/py/g) || []).length;
+                        for (var i=0;i<count;i++){
+                            var temp = xx.split('.py')[i];
+                            if(i==0){
+                              temp = temp.split('[\"')[1];
+                            }
+                            $scope.resNew = temp + ".py";
+                            $scope.myList.push($scope.resNew);
+							
+                        }
+                      });
+            $scope.res1 = '';
+            $scope.res1 = [];
+
+        };
+
+
         //Driver related fucntionalities
     $scope.driverSelected = function (drivername) {
 
@@ -765,30 +807,8 @@ app.controller('kwSeqCtrlr', ['$scope','$routeParams','$http', '$location', '$an
             .then(
                 function(data) {
                     console.log(data);
-                   // var fileExist = data.response;
-
-     /*               if (fileExist == 'yes') {
-
-                        sweetAlert({
-                            title: "File " + filename + " already exists. Do you want to overwrite it?",
-                            closeOnConfirm: false,
-                            confirmButtonColor: '#3b3131',
-                            confirmButtonText: "Yes!",
-                            showCancelButton: true,
-                            cancelButtonText: "Nope.",
-                            type: "warning"
-                        },
-                        function(isConfirm){
-                            if (isConfirm) {
-                                save(filename);
-                            }
-                            else {
-                                return false;
-                            }
-                        });
-                    } else {*/
                         save(filename);
-                   // }
+
                 },
                 function(data) {
                     alert(data);
@@ -814,6 +834,7 @@ app.controller('kwSeqCtrlr', ['$scope','$routeParams','$http', '$location', '$an
                             "WrapperKeyword": {
                                 "Details": {
                                     "WrapperName": "",
+                                    "dvname" : "",
                                     "ActionFile": "",
                                     "Description": "",
                                 },
@@ -854,3 +875,4 @@ app.controller('kwSeqCtrlr', ['$scope','$routeParams','$http', '$location', '$an
 
     window.S = $scope;
 }]);
+

@@ -93,6 +93,22 @@ def readconfig():
     cfg = json.loads("".join(lines))
     return cfg
 
+@route('/searchkw', method='POST')
+def searchkw():
+    value = parseString("".join(request.body))
+    indented_xml = "".join(value.toprettyxml(newl='\n'))
+    corrected_xml = remove_extra_newlines_char_xml(indented_xml)
+    corrected_xml = corrected_xml
+    with open('obj.txt', 'w') as f:
+        f.write(corrected_xml)
+    tree = ET.parse('obj.txt')
+    root = tree.getroot()
+    driver_name = root.text
+    global gpysrcdir
+    driver_file = gpysrcdir + '/ProductDrivers/' + driver_name + ".py"
+    actiondir_1 = mkactiondirs(driver_file)
+    py_files = mkactionpyfiles(actiondir_1)
+    return py_files
 
 @route('/parsexmlobj', method='POST')
 def parsexmlobj():
@@ -120,6 +136,8 @@ def parsexmlobj():
     ActionFile = getChildTextbyParentTag('output.txt', 'Details', 'ActionFile')
     Description = getChildTextbyParentTag('output.txt', 'Details',
                                           'Description')
+										  
+    ActionFile = ActionFile.strip()
     with open(ActionFile, 'r') as files:
         for line in files:
             line = line.split()
@@ -131,6 +149,7 @@ def parsexmlobj():
         checkval = "yes"
     else:
         checkval = "no"
+        #import pdb;pdb.set_trace()
         Subkeyword = root.find('Subkeyword')
         subkw_list = Subkeyword.findall('Skw')
         count = 0
@@ -138,7 +157,7 @@ def parsexmlobj():
             global gpysrcdir
             subkw_list_attrib = values.attrib
             driver = subkw_list_attrib.get('Driver')
-            driver_file = gpysrcdir + 'ProductDrivers/' + driver + ".py"
+            driver_file = gpysrcdir + '/ProductDrivers/' + driver + ".py"
             actiondir = mkactiondirs(driver_file)
             pyfiles = mkactionpyfiles(actiondir)
             class_name = str(actiondir).split('/')[-1]

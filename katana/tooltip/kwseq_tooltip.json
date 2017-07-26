@@ -5,10 +5,16 @@
         "bantip": "No spaces or special characters but for the exception of underscores, hyphens, and periods",
         "snowflake": "This is a mandatory field"
     },
-    "file": {
-        "tooltip": "In this field, you can specify the ActionFile Path to which the Wrapper Keyword should be saved.",
+    "dvname": {
+        "tooltip": "Select the Product Driver from the list of Product Drivers available to you.",
         "protip": "",
-        "bantip": "Special characters Acceptable.",
+        "bantip": "",
+        "snowflake": "This is a mandatory field"
+    },
+    "file": {
+        "tooltip": "ActionFile Path respective to the above Selected driver would be populated here. ",
+        "protip": "",
+        "bantip": "",
         "snowflake": "This is a mandatory field."
     },
     "desc": {
