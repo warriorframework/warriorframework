@@ -10,19 +10,17 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from Framework.Utils import xml_Utils, data_Utils
-
+import inspect
+import traceback
+import Framework.Utils as Utils
+from Framework.Utils import data_Utils
+from Framework.Utils.print_Utils import print_info, print_error, print_exception
+from Framework.Utils.testcase_Utils import pNote_level
+from WarriorCore.Classes.war_cli_class import WarriorCliClass
 """Driver utils module which handles gathers the argument
 information about the keywords, executes the keywords and reports the
 keyword status back to the product driver """
 
-
-import inspect
-import traceback
-import Framework.Utils as Utils
-from Framework.Utils.print_Utils import print_info, print_error, print_exception
-from Framework.Utils.testcase_Utils import pNote_level
-from WarriorCore.Classes.war_cli_class import WarriorCliClass
 
 class ModuleOperations(object):
     """Module operations class has methods
@@ -72,7 +70,7 @@ class ModuleOperations(object):
         module present in the package and sub-packages"""
 
         for name, obj in inspect.getmembers(package, inspect.ismodule):
-            #name_only = Utils.file_Utils.getNameOnly(os.path.basename(obj.__file__))
+            # name_only = Utils.file_Utils.getNameOnly(os.path.basename(obj.__file__))
             mod_list.append(obj)
             if name == '__init__.py':
                 self.get_module_list_from_pkg_rcrsv(obj, mod_list)
@@ -122,6 +120,7 @@ class ModuleOperations(object):
                 match_list.append(element)
         return match_list
 
+
 class KeywordOperations(object):
     """KeywordOperations class has methods that
     gets the mandatory/optional args requored to execute
@@ -148,7 +147,8 @@ class KeywordOperations(object):
         return args
 
     def get_mandatory_arguments(self):
-        """Returns a list of mandatory arguments required for the provided function/method """
+        """Returns a list of mandatory arguments required for the provided function/method
+        """
         args, varargs, keyword, defaults = inspect.getargspec(self.exec_obj)
 
         if defaults is not None:
@@ -240,9 +240,10 @@ class KeywordOperations(object):
             try:
                 if WarriorCliClass.cmdprint:
                     sessid = kwargs['system_name']
-                    if 'session_name' in kwargs: sessid += kwargs['session_name']
+                    if 'session_name' in kwargs:
+                        sessid += kwargs['session_name']
                     print_info("{:*^80}".format(' System: '+sessid+' '))
-                    self.data_repository.update({sessid : sessid, sessid+'_td_response' : {}})
+                    self.data_repository.update({sessid: sessid, sessid+'_td_response': {}})
                 keyword_result = self.exec_obj(method_loader, **kwargs)
             except Exception as exception:
                 trcback = print_exception(exception)
@@ -275,57 +276,63 @@ class KeywordOperations(object):
 
     @staticmethod
     def update_data_repository(keyword, keyword_result, data_repository):
-        """updates the datarepository based on the return from the keyword execution"""
+        """updates the datarepository based on the return from the keyword execution
+        """
 
         step_num = data_repository['step_num']
 
         if keyword_result is None:
-            pNote_level("Keyword '{0}' did not return anything".format(keyword), "debug", "kw")
+            pNote_level("Keyword '{0}' did not return anything".format(keyword),
+                        "debug", "kw")
             data_repository['step-%s_status' % step_num] = 'ERROR'
 
         elif isinstance(keyword_result, str):
-            if keyword_result.upper() == "ERROR" or \
-            keyword_result.upper() == "EXCEPTION":
+            if keyword_result.upper() == "ERROR" or keyword_result.upper() == "EXCEPTION":
                 pNote_level("Keyword '{0}' returned an {1}".format(keyword, keyword_result),
                             "debug", "kw")
                 data_repository['step-%s_status' % step_num] = keyword_result.upper()
 
         elif isinstance(keyword_result, bool):
-            pNote_level("Keyword '{0}' returned a status only....".format(keyword), "debug", "kw")
+            pNote_level("Keyword '{0}' returned a status only....".format(keyword),
+                        "debug", "kw")
             data_repository['step-%s_status' % step_num] = keyword_result
 
         elif isinstance(keyword_result, dict):
-            pNote_level("Keyword '{0}' returned only a dictionary .. "\
+            pNote_level("Keyword '{0}' returned only a dictionary .. "
                         "updating data_repository".format(keyword), "debug", "kw")
-            pNote_level("Keyword '{0}' did not return any status ".format(keyword), "debug", "kw")
+            pNote_level("Keyword '{0}' did not return any status ".format(keyword),
+                        "debug", "kw")
             data_repository.update(keyword_result)
             data_repository['step-%s_status' % step_num] = 'Error'
 
         elif isinstance(keyword_result, tuple):
             if isinstance(keyword_result[0], str) and keyword_result[0] == "EXCEPTION":
-                pNote_level("Keyword  '{0}' execution raised an"\
+                pNote_level("Keyword  '{0}' execution raised an"
                             "exception".format(keyword), "debug", "kw")
                 data_repository['step-%s_status' % step_num] = keyword_result[0]
                 data_repository['step-%s_exception' % step_num] = keyword_result[1]
             else:
-                pNote_level("Keyword '{0}' returned multiple"\
+                pNote_level("Keyword '{0}' returned multiple"
                             "values ".format(keyword), "debug", "kw")
                 data_repository['step-%s_status' % step_num] = 'Error'
                 for element in keyword_result:
                     if isinstance(element, bool):
-                        pNote_level("Keyword '{0}' returned"\
+                        pNote_level("Keyword '{0}' returned"
                                     "a status..".format(keyword), "debug", "kw")
                         data_repository['step-%s_status' % step_num] = element
                     elif isinstance(element, dict):
-                        pNote_level("Keyword '{0}' returned a dictionary.. "\
-                                    "will update data_repository".format(keyword), "debug", "kw")
+                        pNote_level("Keyword '{0}' returned a dictionary.. "
+                                    "will update data_repository".format(keyword),
+                                    "debug", "kw")
                         data_repository.update(element)
                     else:
-                        pNote_level("unexpected return type form keyword '{0}'... "\
-                                    "expecting bool or dict ".format(keyword), "debug", "kw")
+                        pNote_level("unexpected return type form keyword '{0}'... "
+                                    "expecting bool or dict ".format(keyword),
+                                    "debug", "kw")
         else:
-            pNote_level("unexpected return type form keyword '{0}'... "\
-                        "expecting bool/dict/error/exception".format(keyword), "debug", "kw")
+            pNote_level("unexpected return type form keyword '{0}'... "
+                        "expecting bool/dict/error/exception".format(keyword),
+                        "debug", "kw")
             data_repository['step-%s_status' % step_num] = False
 
         return data_repository
