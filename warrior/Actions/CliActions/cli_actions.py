@@ -516,7 +516,6 @@ class CliActions(object):
             status = status and result
         return status, output_dict
 
-
     def send_command(self, command, system_name, session_name=None,
                      start_prompt='.*', end_prompt='.*', int_timeout=60):
         """Sends a command to a system or a subsystem
@@ -543,15 +542,15 @@ class CliActions(object):
 
         session_id = Utils.data_Utils.get_session_id(system_name, session_name)
         session_object = Utils.data_Utils.get_object_from_datarepository(session_id)
-        if session_object:
-            command_status, _ = Utils.cli_Utils.send_command(session_object, start_prompt,
-                                                                    end_prompt, command, int_timeout)
+        if session_object and isinstance(session_object, WarriorConnect):
+            command_status, _ = session_object.send_command(start_prompt, end_prompt,
+                                                            command, int_timeout)
         else:
             print_warning("%s-%s is not available for use" % (system_name, session_name))
             command_status = False
 
         Utils.testcase_Utils.report_substep_status(command_status)
-        return  command_status
+        return command_status
 
     def send_all_testdata_commands(self, system_name, session_name=None, var_sub=None,
                                    description=None, td_tag=None, vc_tag=None):
