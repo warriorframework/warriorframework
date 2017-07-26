@@ -236,17 +236,12 @@ def execute_step(step, step_num, data_repository, system_name, kw_parallel, queu
                        keyword_status, kw_start_time, kw_duration,
                        kw_resultfile, impact, onerror)
 
-    for x in range(5):
-        print "******************************"
-    print data_repository['tc_parallel']
-    for x in range(5):
-        print "XXXXXXXXXXXXXXXXXXXXXXXXXXX"
     if parallel is True:
         # put result into multiprocessing queue and later retrieve in
         # corresponding driver
         queue.put((keyword_status, kw_resultfile,
                    step_impact.upper(), tc_junit_object))
-    elif not data_repository['tc_parallel']:
+    elif not data_repository['war_parallel']:
         # Get the type of the file being executed by Warrior: Case/Suite/Project
         war_file_type = data_repository.get('war_file_type')
         if war_file_type == "Case":

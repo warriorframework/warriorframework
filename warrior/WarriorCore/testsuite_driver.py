@@ -289,8 +289,10 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
         # del data_repository["jobid"]
    
     print_suite_details_to_console(suite_repository, testsuite_filepath, junit_resultfile)
-   
+    
+    data_repository["war_parallel"] = False
     if execution_type.upper() == 'PARALLEL_TESTCASES':
+        data_repository["war_parallel"] = True
         print_info("Executing testcases in parallel")
         test_suite_status = parallel_testcase_driver.main(testcase_list, suite_repository,
                                                           data_repository, from_project, tc_parallel=True,
@@ -366,6 +368,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
 		# if execution type is iterative parallel call WarriorCore.Classes.iterative_testsuite_class and 
 		# execute the testcases in iterative parallel fashion on the systems
         print "Iterative parallel suite"
+        data_repository["war_parallel"] = True
         iter_seq_ts_obj = IterativeTestsuite(testcase_list, suite_repository, data_repository, from_project, auto_defects)
         test_suite_status = iter_seq_ts_obj.execute_iterative_parallel()
 

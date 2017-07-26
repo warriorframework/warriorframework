@@ -53,11 +53,6 @@ def execute_iterative_parallel_testcases(system_list, testcase_list, suite_repos
                                   ("output_q", output_q)
                                   ])
 
-        for x in range(5):
-            print "******************************"
-        print tc_parallel
-        for x in range(5):
-            print "XXXXXXXXXXXXXXXXXXXXXXXXXXX"
         process, jobs_list, output_q = create_and_start_process_with_queue(target_module, tc_args_dict, jobs_list, output_q)
 
     print_debug("process: {0}".format(process))
