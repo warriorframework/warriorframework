@@ -23,6 +23,7 @@ __author__ = 'Keenan Jabri'
 
 
 class LineResult():
+    """Class that generates html result line items"""
     data = {}
     html = ''
 
@@ -83,24 +84,28 @@ class LineResult():
 
 
 class WarriorHtmlResults:
+    """Class that generates html results using hte junit result file """
     lineObjs = []
     lineCount = 0
     recount = 0
     steps = 0
 
     def __init__(self, junit_file=None):
+        """ init function"""
         self.junit_file = junit_file
         self.html_template = "{0}{1}Reporting{1}html_results_template.html" \
             .format(Tools.__path__[0], os.sep)
         self.junit_root = xml_Utils.getRoot(self.junit_file)
 
     def create_line_result(self, line, type):
+        """ create new objs"""
         temp = LineResult()
         temp.set_html(line, type, self.steps)
         self.lineObjs.append(temp)
         self.lineCount += 1
 
     def set_line_objs(self):
+        """ call to create a new obj per item"""
         self.lineCount = 0
         project_node_list = [self.junit_root]
         for project_node in project_node_list:
@@ -117,6 +122,7 @@ class WarriorHtmlResults:
                                 self.create_line_result(node, "Keyword")
 
     def get_path(self):
+        """ get the html results path """
         filename = file_Utils.getNameOnly(os.path.basename(self.junit_file))
         filename = filename.split("_junit")[0]
         html_filename = filename + ".html"
@@ -129,6 +135,7 @@ class WarriorHtmlResults:
         return html_results_path
 
     def merge_html(self, dynamic_html):
+        """ merge html from template and dynamic """
         temp = open(self.html_template)
         templateHTML = temp.read().replace('\n', '')
         temp.close()
@@ -136,6 +143,7 @@ class WarriorHtmlResults:
         return templateHTML[:index] + dynamic_html + templateHTML[index:] + self.get_war_version()
 
     def get_war_version(self):
+        """ find the warrior version """
         path = self.get_path().split('warriorframework')[0] + 'warriorframework/version.txt'
         if os.path.isfile(path):
             version = open(path, 'r').read().split(':')[2]
@@ -144,6 +152,7 @@ class WarriorHtmlResults:
             return ''
 
     def generateHTML(self, junitObj, givenPath):
+        """ build the html """
         if junitObj:
             self.junit_file = junitObj
             self.junit_root = xml_Utils.getRoot(self.junit_file)
