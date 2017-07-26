@@ -19,6 +19,6 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^katana/', include('core.urls')),
+    url(r'^katana/', include('wui.core.urls')),
     url(r'^katana/configuration/', include('default.configuration.urls')),
 ]

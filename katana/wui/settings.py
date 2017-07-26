@@ -31,7 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'core',
+    'wui.core',
     'default.configuration',
     'django.contrib.admin',
     'django.contrib.auth',
