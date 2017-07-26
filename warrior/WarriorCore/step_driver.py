@@ -236,6 +236,11 @@ def execute_step(step, step_num, data_repository, system_name, kw_parallel, queu
                        keyword_status, kw_start_time, kw_duration,
                        kw_resultfile, impact, onerror)
 
+    for x in range(5):
+        print "******************************"
+    print data_repository['tc_parallel']
+    for x in range(5):
+        print "XXXXXXXXXXXXXXXXXXXXXXXXXXX"
     if parallel is True:
         # put result into multiprocessing queue and later retrieve in
         # corresponding driver
