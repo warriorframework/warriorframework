@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<TestSuite>
+        <Details>
+                <Name>ts_retry_cond_tc_level_if_met_not</Name>
+                <Title>test suite to verify retry condition if condition not met</Title>
+                <Engineer>Annalakshmi</Engineer>
+                <Date>04/21/2017</Date>
+                <Time>12:14:26</Time>
+                <type exectype="sequential_testcases"/>
+                <default_onError action="next"/>
+                <Resultsdir/>
+        </Details>
+        <Requirements>
+                <Requirement>Requirement-001</Requirement>
+                <Requirement>Requirement-002</Requirement>
+        </Requirements>
+        <Testcases>
+                <Testcase>
+                        <path>../../testcases/framework_tests/retry/tc_retry_cond_tc_level_if_met_not.xml</path>
+                        <context>positive</context>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next"/>
+                        <impact>impact</impact>
+                </Testcase>
+        </Testcases>
+</TestSuite>
+
