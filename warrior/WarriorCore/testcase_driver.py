@@ -595,7 +595,7 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                  'wt_testcase_filepath'], data_repository['wt_logsdir'],
                  data_repository['wt_resultsdir'], tc_status, email_setting)
 
-        if not tc_parallel:
+        if not tc_parallel and not data_repository["war_parallel"]:
             if 'wp_results_execdir' in data_repository:
                 # Create and replace existing Project junit file for each case
                 tc_junit_object.output_junit(data_repository['wp_results_execdir'],
