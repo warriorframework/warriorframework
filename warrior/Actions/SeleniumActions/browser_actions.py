@@ -288,8 +288,7 @@ class browser_actions(object):
             selenium_Utils.save_screenshot_onerror(status, current_browser)
         return status
 
-
-    def browser_launch_and_maximize(self,self, system_name, browser_name="all", type="firefox",
+    def browser_launch_and_maximize(self, system_name, browser_name="all", type="firefox",
                                     url=None, ip=None, remote=None, element_config_file=None,
                                     element_tag=None):
         """
@@ -425,8 +424,8 @@ class browser_actions(object):
                 browser_details = selenium_Utils.\
                     get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
-                browser_inst = self.browser_object.open_browser(
-                    browser_details["type"], webdriver_remote_url)
+                browser_inst = self.browser_object.open_browser(browser_details["type"],
+                                                                webdriver_remote_url)
                 if browser_inst:
                     browser_fullname = "{0}_{1}".format(system_name, browser_details["browser_name"])
                     output_dict[browser_fullname] = browser_inst
