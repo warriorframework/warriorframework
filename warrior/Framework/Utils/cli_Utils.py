@@ -10,9 +10,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
-"""Api for cli related operations """
-
 import os
 import sys
 import time
@@ -22,44 +19,47 @@ import Tools
 import Framework.ClassUtils
 from Framework.Utils import datetime_utils, data_Utils, xml_Utils
 from Framework.Utils.data_Utils import get_object_from_datarepository
-from Framework.Utils.print_Utils import print_debug, print_info,\
-print_error, print_exception, print_warning
+from Framework.Utils.print_Utils import (print_debug, print_info, print_error,
+                                         print_exception, print_warning)
 from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.list_Utils import get_list_by_separating_strings
 from Framework.ClassUtils.WNetwork.loging import ThreadedLog
 from WarriorCore.Classes.war_cli_class import WarriorCliClass
 from Framework.ClassUtils import database_utils_class
+"""Api for cli related operations """
 
 try:
     import pexpect
 except ImportError:
     print_info("{0}: pexpect module is not installed".format(os.path.abspath(__file__)))
     print_info("Warrior framework by default uses pexpect for all cli related activites")
-    print_info("All default methods/functions that use cli will fail"\
-               "without pexpect module. Users can however create"\
+    print_info("All default methods/functions that use cli will fail"
+               "without pexpect module. Users can however create"
                "their own custom libraries for cli interaction \n")
+
 
 def cmdprinter(cmdfunc):
     def inner(*args, **kwargs):
         if WarriorCliClass.cmdprint:
-            result = (True,"")
+            result = (True, "")
             if cmdfunc.__name__ == "_send_cmd_get_status":
-                pNote(":CMD: %s"%(args[1]["command_list"][kwargs['index']]))
+                pNote(":CMD: %s" % (args[1]["command_list"][kwargs['index']]))
             elif cmdfunc.__name__ == "_send_command_retrials":
                 pass
             elif cmdfunc.__name__ == "send_command":
-                pNote(":CMD: %s"%(args[3]))
+                pNote(":CMD: %s" % (args[3]))
             elif cmdfunc.__name__ == "send_command_and_get_response":
-                pNote(":CMD: %s"%(args[3]))
+                pNote(":CMD: %s" % (args[3]))
                 result = ""
             elif cmdfunc.__name__ == "_send_cmd":
-                pNote(":CMD: %s"%(kwargs['command']))
+                pNote(":CMD: %s" % (kwargs['command']))
             else:
-                pNote(":CMD: %s"%(args[3]))
+                pNote(":CMD: %s" % (args[3]))
         else:
             result = cmdfunc(*args, **kwargs)
         return result
     return inner
+
 
 def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=60,
                 prompt=".*(%|#|\$)", conn_options="", custom_keystroke="", **kwargs):
@@ -79,10 +79,10 @@ def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=6
     if not conn_options or conn_options is None:
         conn_options = ""
     command = 'ssh -p {0} {1}@{2} {3}'.format(port, username, ip, conn_options)
-    #command = ('ssh -p '+ port + ' ' + username + '@' + ip)
+    # command = ('ssh -p '+ port + ' ' + username + '@' + ip)
     print_debug("connectSSH: cmd = %s" % command)
     if WarriorCliClass.cmdprint:
-        pNote(("connectSSH: :CMD: %s" %command))
+        pNote(("connectSSH: :CMD: %s" % command))
         return None, ""
     child = pexpect.spawn(command, timeout=int(timeout))
 
@@ -97,12 +97,13 @@ def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=6
             print_exception(exception)
 
     try:
-        flag=True
+        flag = True
         child.setecho(False)
         child.delaybeforesend = .5
         while True:
             result = child.expect(["(yes/no)", prompt, '.*(?i)password:.*',
-                                   ".*(?i)(user(name)?:|login:) *$", pexpect.EOF, pexpect.TIMEOUT,
+                                   ".*(?i)(user(name)?:|login:) *$",
+                                   pexpect.EOF, pexpect.TIMEOUT,
                                    '.*(?i)remote host identification has '
                                    'changed.*'])
 
@@ -118,18 +119,18 @@ def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=6
             elif result == 3:
                 child.sendline(username)
             elif result == 4:
-                pNote("Connection failed: {0}, with the system response: {1}"\
+                pNote("Connection failed: {0}, with the system response: {1}"
                       .format(command, child.before), "error")
                 break
-            elif result == 5: 
+            elif result == 5:
                 # Some terminal expect specific keystroke before showing login prompt
-                if flag==True:
+                if flag is True:
                     pNote("Initial timeout occur, sending custom_keystroke")
                     _send_cmd_by_type(child, custom_keystroke)
-                    flag=False
+                    flag = False
                     continue
-                pNote("Connection timed out: {0}, expected prompt: {1} "\
-                      "is not found in the system response: {2}"\
+                pNote("Connection timed out: {0}, expected prompt: {1} "
+                      "is not found in the system response: {2}"
                       .format(command, prompt, child.before), "error")
                 break
             elif result == 6:
@@ -143,6 +144,7 @@ def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=6
     except Exception as exception:
         print_exception(exception)
     return sshobj, conn_string
+
 
 def connect_telnet(ip, port="23", username="", password="",
                    logfile=None, timeout=60, prompt=".*(%|#|\$)",
@@ -171,7 +173,7 @@ def connect_telnet(ip, port="23", username="", password="",
     custom_keystroke = "wctrl:M" if not custom_keystroke else custom_keystroke
     print_debug("timeout is: %s" % timeout)
     print_debug("port num is: %s" % port)
-    command = ('telnet '+ ip + ' '+ port)
+    command = ('telnet ' + ip + ' ' + port)
     if not conn_options or conn_options is None:
         conn_options = ""
     command = command + str(conn_options)
@@ -185,12 +187,13 @@ def connect_telnet(ip, port="23", username="", password="",
         child.logfile = None
 
     try:
-        flag=True
+        flag = True
         child.setecho(False)
         child.delaybeforesend = .5
         while True:
             result = child.expect([prompt, '.*(?i)password:.*',
-                                   ".*(?i)(user(name)?:|login:) *$", pexpect.EOF, pexpect.TIMEOUT])
+                                   ".*(?i)(user(name)?:|login:) *$",
+                                   pexpect.EOF, pexpect.TIMEOUT])
             if result == 0:
                 telnetobj = child
                 conn_string = conn_string + child.before + child.after
@@ -201,18 +204,18 @@ def connect_telnet(ip, port="23", username="", password="",
             elif result == 2:
                 child.sendline(username)
             elif result == 3:
-                pNote("Connection failed: {0}, with the system response: {1}"\
+                pNote("Connection failed: {0}, with the system response: {1}"
                       .format(command, child.before), "error")
                 break
             elif result == 4:
                 # timed out tryonce with Enter has some terminal expects it
-                if flag==True:
+                if flag is True:
                     pNote("Initial timeout occur, sending custom_keystroke")
                     _send_cmd_by_type(child, custom_keystroke)
-                    flag=False
+                    flag = False
                     continue
-                pNote("Connection timed out: {0}, expected prompt: {1} "\
-                      "is not found in the system response: {2}"\
+                pNote("Connection timed out: {0}, expected prompt: {1} "
+                      "is not found in the system response: {2}"
                       .format(command, prompt, child.before), "error")
                 break
     except Exception as exception:
@@ -254,6 +257,7 @@ def disconnect(child):
         child.close()
     return child
 
+
 @cmdprinter
 def send_command_and_get_response(sessionobj, prompt1, prompt2, command):
     """"Sends a command to a terminal expects a completion prompt
@@ -275,6 +279,7 @@ def send_command_and_get_response(sessionobj, prompt1, prompt2, command):
         else:
             response = sessionobj.before
     return response
+
 
 def smart_analyze(prompt, testdatafile=None):
     """
@@ -305,17 +310,21 @@ def smart_analyze(prompt, testdatafile=None):
     con_settings = con_settings_dir + "connect_settings.xml"
 
     if system_name is not None:
-        sys_elem = xml_Utils.getElementWithTagAttribValueMatch(con_settings, "system", "name", system_name.text)
+        sys_elem = xml_Utils.getElementWithTagAttribValueMatch(con_settings,
+                                                               "system", "name", system_name.text)
         if sys_elem is None or sys_elem.find("testdata") is None:
             return None
     else:
-        system_list = xml_Utils.getElementListWithSpecificXpath(con_settings, "system[search_string]")
+        system_list = xml_Utils.getElementListWithSpecificXpath(con_settings,
+                                                                "system[search_string]")
         for sys_elem in system_list:
-            if sys_elem.find("search_string").text in prompt and sys_elem.find("testdata") is not None:
+            if (sys_elem.find("search_string").text in prompt and
+                    sys_elem.find("testdata") is not None):
                 return con_settings_dir + sys_elem.find("testdata").text
         return None
 
     return con_settings_dir + sys_elem.find("testdata").text
+
 
 def send_smart_cmd(connect_testdata, session_object, tag_value, call_system_name, pre_tag):
     """
@@ -332,7 +341,8 @@ def send_smart_cmd(connect_testdata, session_object, tag_value, call_system_name
         :param pre_tag:
             Distinguish if it is a connect smart action or disconnect smart action
     """
-    if xml_Utils.getElementWithTagAttribValueMatch(connect_testdata, "testdata", "title", tag_value) is not None:
+    if xml_Utils.getElementWithTagAttribValueMatch(connect_testdata, "testdata",
+                                                   "title", tag_value) is not None:
         print("**********The following command are sent as part of the smart analysis**********")
         main_log = session_object.logfile
         if pre_tag:
@@ -340,13 +350,16 @@ def send_smart_cmd(connect_testdata, session_object, tag_value, call_system_name
         else:
             smart_log = main_log.name.replace(".log", "post_.log")
         session_object.logfile = open(smart_log, "a")
-        send_commands_from_testdata(connect_testdata, session_object, title=tag_value, system_name=call_system_name)
+        send_commands_from_testdata(connect_testdata, session_object,
+                                    title=tag_value, system_name=call_system_name)
         session_object.logfile = main_log
         print("**********smart analysis finished**********")
     else:
         print_error()
 
-def smart_action(datafile, call_system_name, raw_prompt, session_object, tag_value, connect_testdata=None):
+
+def smart_action(datafile, call_system_name, raw_prompt, session_object,
+                 tag_value, connect_testdata=None):
     """
         entry function for sending smart command
         :param datafile:
@@ -375,6 +388,7 @@ def smart_action(datafile, call_system_name, raw_prompt, session_object, tag_val
         return connect_testdata
     return None
 
+
 def get_connection_port(conn_type, inpdict):
     """Gets the port for ssh or telnet connections
     1. ssh :
@@ -384,14 +398,15 @@ def get_connection_port(conn_type, inpdict):
     """
     if inpdict:
         conn_string = "{0}_port".format(conn_type)
-        if  conn_string in inpdict and inpdict[conn_string] is not False\
-        and inpdict[conn_string] is not None:
+        if (conn_string in inpdict and inpdict[conn_string] is not False and
+                inpdict[conn_string] is not None):
             inpdict["port"] = inpdict["{0}_port".format(conn_type)]
-        elif "conn_port" in inpdict and inpdict["conn_port"] is not False\
-        and inpdict["conn_port"] is not None:
+        elif ("conn_port" in inpdict and inpdict["conn_port"] is not False and
+                inpdict["conn_port"] is not None):
             inpdict["port"] = inpdict["conn_port"]
 
     return inpdict
+
 
 @cmdprinter
 def send_command(session_object, start_prompt, end_prompt, command,
@@ -411,7 +426,7 @@ def send_command(session_object, start_prompt, end_prompt, command,
                   " use 'send_command' method of 'PexpectConnect' class "
                   "in 'warrior/Framework/ClassUtils/warrior_connect_class.py'")
 
-    tmout = {None: 60, "":60, "none":60}.get(timeout, str(timeout).lower())
+    tmout = {None: 60, "": 60, "none": 60}.get(timeout, str(timeout).lower())
     session_object.timeout = int(tmout)
     pNote("Command timeout: {0}".format(session_object.timeout))
     response = ""
@@ -419,11 +434,12 @@ def send_command(session_object, start_prompt, end_prompt, command,
     end_time = False
     status = False
     cmd_timedout = False
-    #time_format = "%Y-%b-%d %H:%M:%S"
+    # time_format = "%Y-%b-%d %H:%M:%S"
     try:
         boolprompt = session_object.expect(start_prompt)
     except Exception as exception:
-        pNote("Could not find the start_prompt '{0}'!! exiting!!".format(str(start_prompt)), "error")
+        pNote("Could not find the start_prompt '{0}'!! exiting!!".format(
+                                            str(start_prompt)), "error")
         boolprompt = -1
     if boolprompt == 0:
         start_time = datetime_utils.get_current_timestamp()
@@ -431,15 +447,17 @@ def send_command(session_object, start_prompt, end_prompt, command,
         _send_cmd_by_type(session_object, command)
         try:
             while True:
-                result = session_object.expect([end_prompt, pexpect.EOF, pexpect.TIMEOUT]) if end_prompt\
-                else -1
+                result = -1
+                if end_prompt:
+                    result = session_object.expect([end_prompt, pexpect.EOF, pexpect.TIMEOUT])
                 end_time = datetime_utils.get_current_timestamp()
                 if result == 0:
                     curr_time = datetime_utils.get_current_timestamp()
                     msg1 = "[{0}] Command completed successfully".format(end_time)
-                    msg2 = "[{0}] Found end prompt '{1}' after command had timed out".format(curr_time, end_prompt)
-                    status = {True:"ERROR", False:True}.get(cmd_timedout)
-                    msg = {True:msg2, False:msg1}.get(cmd_timedout)
+                    msg2 = ("[{0}] Found end prompt '{1}' after command had "
+                            "timed out").format(curr_time, end_prompt)
+                    status = {True: "ERROR", False: True}.get(cmd_timedout)
+                    msg = {True: msg2, False: msg1}.get(cmd_timedout)
                     break
                 elif result == -1:
                     pNote("[{0}] end prompt not provided".format(end_time), "error")
@@ -450,10 +468,12 @@ def send_command(session_object, start_prompt, end_prompt, command,
                     status = "ERROR"
                     break
                 elif result == 2:
-                    tmsg1 = "[{0}] Command timed out, command will be marked as error".format(end_time)
-                    tmsg2 = "Will wait 60 more seconds to get end prompt '{0}'".format(end_prompt)
-                    tmsg3 = "Irrespective of whether end prompt is received or not command will "\
-                           "be marked as error because command had timed out once."
+                    tmsg1 = ("[{0}] Command timed out, command will be marked "
+                             "as error").format(end_time)
+                    tmsg2 = ("Will wait 60 more seconds to get end prompt '{0}'"
+                             .format(end_prompt))
+                    tmsg3 = ("Irrespective of whether end prompt is received or not command "
+                             "will be marked as error because command had timed out once.")
                     if not cmd_timedout:
                         session_object.timeout = 1
                         pNote(tmsg1, "debug")
@@ -464,9 +484,9 @@ def send_command(session_object, start_prompt, end_prompt, command,
                     status = "ERROR"
                     tdelta = datetime_utils.get_time_delta(tstamp)
                     if int(tdelta) >= 60:
-                        msg = "[{0}] Did not find end prompt '{1}' even after 60 seconds post"\
-                              "command time out".format(datetime_utils.get_current_timestamp(),
-                                                        end_prompt)
+                        msg = ("[{0}] Did not find end prompt '{1}' even after 60 seconds post "
+                               "command time out").format(datetime_utils.
+                                                          get_current_timestamp(), end_prompt)
                         break
                     else:
                         continue
@@ -559,21 +579,22 @@ def send_commands_from_testdata(testdatafile, obj_session, **args):
     title = args.get('title', None)
     row = args.get('row', None)
     if WarriorCliClass.cmdprint:
-        pNote( "**************{}**************".format('Title: ' + title))
+        pNote("**************{}**************".format('Title: ' + title))
         if row:
             pNote("**************{}**************".format('Row: ' + row))
     system_name = args.get("system_name")
     testdata_dict = data_Utils.get_command_details_from_testdata(testdatafile, varconfigfile,
                                                                  var_sub=var_sub, title=title,
-                                                                 row=row, system_name=system_name, datafile=datafile)
+                                                                 row=row, system_name=system_name,
+                                                                 datafile=datafile)
     finalresult = True if len(testdata_dict) > 0 else False
     for key, details_dict in testdata_dict.iteritems():
         response_dict = {}
-        responses_dict[key]=""
+        responses_dict[key] = ""
         command_list = details_dict["command_list"]
         stepdesc = "Send the following commands: "
         pNote(stepdesc)
-        n=0
+        n = 0
         for commands in command_list:
             pNote("Command #{0}\t: {1}".format((n+1), commands))
             n = n + 1
@@ -587,12 +608,14 @@ def send_commands_from_testdata(testdatafile, obj_session, **args):
             print_debug(">>>")
             command = details_dict["command_list"][i]
             pNote("Command #{0}\t: {1}".format(str(i+1), command))
-            new_obj_session, details_dict = _get_obj_session(details_dict, obj_session, system_name,
-                                                         index=i)
+            new_obj_session, details_dict = _get_obj_session(details_dict, obj_session,
+                                                             system_name, index=i)
             if new_obj_session:
-                result, response = _send_cmd_get_status(new_obj_session, details_dict, index=i, system_name=system_name)
+                result, response = _send_cmd_get_status(new_obj_session, details_dict,
+                                                        index=i, system_name=system_name)
                 result, response = _send_command_retrials(new_obj_session, details_dict, index=i,
-                                                          result=result, response=response, system_name=system_name)
+                                                          result=result, response=response,
+                                                          system_name=system_name)
                 response_dict = _get_response_dict(details_dict, i, response,
                                                    response_dict)
                 print_debug("<<<")
@@ -606,8 +629,9 @@ def send_commands_from_testdata(testdatafile, obj_session, **args):
                 result = "ERROR"
                 finalresult = "ERROR"
             finalresult = finalresult and result
-        responses_dict[key]=response_dict
+        responses_dict[key] = response_dict
     return finalresult, responses_dict
+
 
 @cmdprinter
 def _send_cmd(obj_session, **kwargs):
@@ -659,7 +683,8 @@ def _get_response_dict(details_dict, index, response, response_dict):
     return response_dict
 
 
-def start_threads(started_thread_for_system, thread_instance_list, same_system, unique_log_verify_list, system_name):
+def start_threads(started_thread_for_system, thread_instance_list, same_system,
+                  unique_log_verify_list, system_name):
     """ This function iterates over unique_log_verify_list which consists of unique values
     gotten from monitor attributes and verify_on attributes
 
@@ -685,7 +710,7 @@ def start_threads(started_thread_for_system, thread_instance_list, same_system, 
     for i in range(0, len(unique_log_verify_list)):
         if unique_log_verify_list[i] == system_name:
             temp_list = unique_log_verify_list[i].split(".")
-            if len(temp_list)>1:
+            if len(temp_list) > 1:
                 unique_log_verify_list[i] = data_Utils.get_session_id(temp_list[0], temp_list[1])
             else:
                 unique_log_verify_list[i] = data_Utils.get_session_id(temp_list[0])
@@ -693,22 +718,26 @@ def start_threads(started_thread_for_system, thread_instance_list, same_system, 
         else:
             if unique_log_verify_list[i]:
                 temp_list = unique_log_verify_list[i].split(".")
-                if len(temp_list)>1:
-                    unique_log_verify_list[i] = data_Utils.get_session_id(temp_list[0], temp_list[1])
+                if len(temp_list) > 1:
+                    unique_log_verify_list[i] = data_Utils.get_session_id(
+                                                temp_list[0], temp_list[1])
                 else:
                     unique_log_verify_list[i] = data_Utils.get_session_id(temp_list[0])
                 datarep_obj = get_object_from_datarepository(unique_log_verify_list[i])
                 if datarep_obj is False:
-                    print_info("{0} does not exist in data repository".format(unique_log_verify_list[i]))
+                    print_info("{0} does not exist in data repository".format(
+                                                        unique_log_verify_list[i]))
                 else:
                     try:
                         new_thread = ThreadedLog()
                         new_thread.start_thread(datarep_obj)
-                        print_info("Collecting response from: {0}".format(unique_log_verify_list[i]))
+                        print_info("Collecting response from: {0}".format(
+                                                        unique_log_verify_list[i]))
                         started_thread_for_system.append(unique_log_verify_list[i])
                         thread_instance_list.append(new_thread)
                     except:
-                        print_info("Unable to collect response from: {0}".format(unique_log_verify_list[i]))
+                        print_info("Unable to collect response from: {0}".format(
+                                                        unique_log_verify_list[i]))
     return started_thread_for_system, thread_instance_list, same_system
 
 
@@ -770,7 +799,8 @@ def get_unique_log_and_verify_list(log_list, verify_on_list, system_name):
     comma_sep_verify_names = []
     if verify_on_list is not None and verify_on_list is not "" and verify_on_list is not False:
         for i in range(0, len(verify_on_list)):
-            if verify_on_list[i] is not None and verify_on_list[i] is not "" and verify_on_list[i] is not False:
+            if (verify_on_list[i] is not None and verify_on_list[i] is not "" and
+                    verify_on_list[i] is not False):
                 temp_list = verify_on_list[i].split(",")
                 for j in range(0, len(temp_list)):
                     comma_sep_verify_names.append(temp_list[j].strip())
@@ -905,16 +935,18 @@ def _get_obj_session(details_dict, obj_session, kw_system_name, index):
         session = details_dict["session_list"][index]
 
     td_sys = td_sys.strip() if isinstance(td_sys, str) else td_sys
-    td_sys = {None:False, False:False, "":False}.get(td_sys, td_sys)
+    td_sys = {None: False, False: False, "": False}.get(td_sys, td_sys)
     session = session.strip() if isinstance(session, str) else session
-    session = {None:None, False:None, "":None}.get(session, session)
+    session = {None: None, False: None, "": None}.get(session, session)
     if td_sys:
-        system_name = kw_system_nameonly + td_sys if td_sys.startswith("[") \
-        and td_sys.endswith("]") else td_sys
+        if td_sys.startswith("[") and td_sys.endswith("]"):
+            system_name = kw_system_nameonly + td_sys
+        else:
+            system_name = td_sys
         session_id = data_Utils.get_session_id(system_name, session)
         obj_session = data_Utils.get_object_from_datarepository(session_id)
         if not obj_session:
-            pNote("Could not find a valid connection for "\
+            pNote("Could not find a valid connection for "
                   "system_name={}, session_name={}".format(system_name, session), "error")
             value = False
         else:
@@ -930,6 +962,7 @@ def _get_obj_session(details_dict, obj_session, kw_system_name, index):
     pNote("System name\t: {0}".format(system_name))
     return value, details_dict
 
+
 @cmdprinter
 def _send_command_retrials(obj_session, details_dict, index, **kwargs):
     """ Sends a command to a session, if a user provided pattern
@@ -941,41 +974,41 @@ def _send_command_retrials(obj_session, details_dict, index, **kwargs):
     retry_count = no of times to retry.
     """
     retry = details_dict["retry_list"][index]
-    retry = {None:'n', '':'n', 'none':'n'}.get(str(retry).lower(), retry)
+    retry = {None: 'n', '': 'n', 'none': 'n'}.get(str(retry).lower(), retry)
     result = kwargs.get('result')
     response = kwargs.get('response')
-    if retry == 'y' and (result == False or result == 'ERROR'):
+    if retry == 'y' and (result is False or result == 'ERROR'):
         retry_timer = details_dict["retry_timer_list"][index]
         retry_onmatch = details_dict["retry_onmatch_list"][index]
         retry_count = details_dict["retry_count_list"][index]
-        retry_timer = {None:60, "":60, "none":60}.get(str(retry_timer).lower(), retry_timer)
-        retry_count = {None:5, "":5, "none":5}.get(str(retry_count).lower(), retry_count)
-        print ('\n')
-        pNote("Retry was requested for the command")
-        pNote("Command re-trials will begin since the most recent "\
+        retry_timer = {None: 60, "": 60, "none": 60}.get(str(retry_timer).lower(), retry_timer)
+        retry_count = {None: 5, "": 5, "none": 5}.get(str(retry_count).lower(), retry_count)
+        pNote("\nRetry was requested for the command")
+        pNote("Command re-trials will begin since the most recent "
               "command status was FAIL or ERROR")
         pNote("Retry count\t: {0}".format(retry_count))
         pNote("Retry timer\t: {0}".format(retry_timer))
-        retry_onmatch = {None:False, "":False}.get(retry_onmatch, str(retry_onmatch))
-        print_onmatch = {False:""}.get(retry_onmatch, str(retry_onmatch))
+        retry_onmatch = {None: False, "": False}.get(retry_onmatch, str(retry_onmatch))
+        print_onmatch = {False: ""}.get(retry_onmatch, str(retry_onmatch))
         pNote("Retry onmatch: {0}".format(print_onmatch))
         count = 0
         while count < int(retry_count):
-            if result == False or result == 'ERROR':
+            if result is False or result == 'ERROR':
                 match_status = _get_match_status(retry_onmatch, response)
                 if match_status:
                     count = count + 1
                     print ('\n')
                     pNote("RETRIAL ATTEMPT:{0}".format(count))
-                    pNote("Wait for {0}sec (retry_timer) before sending"\
-                               " the command again".format(retry_timer))
+                    pNote("Wait for {0}sec (retry_timer) before sending the "
+                          "command again".format(retry_timer))
                     time.sleep(int(retry_timer))
-                    result, response = _send_cmd_get_status(obj_session, details_dict, index, system_name=kwargs.get("system_name"))
-                    command_status = {True: "PASS", False:"FAIL", "ERROR":"ERROR"}.get(result)
+                    result, response = _send_cmd_get_status(obj_session, details_dict, index,
+                                                            system_name=kwargs.get("system_name"))
+                    command_status = {True: "PASS", False: "FAIL", "ERROR": "ERROR"}.get(result)
                     pNote("RETRIAL ATTEMPT:{0} STATUS:{1}".format(count, command_status))
                 else:
                     break
-            elif result == True:
+            elif result is True:
                 break
     return result, response
 
@@ -984,18 +1017,15 @@ def _get_match_status(retry_onmatch, response):
     """ """
     status = True
     if retry_onmatch:
-        pNote("Command will be executed again if "\
-              "the pattern {0} is present in the "
-              "response of the previous execution of the command"\
+        pNote("Command will be executed again if the pattern {0} is present in the "
+              "response of the previous execution of the command"
               .format(retry_onmatch))
         match_object = re.search(retry_onmatch, response)
         if match_object:
-            pNote("Found the pattern '{0}' "\
-                  "in the response of the previous execution "\
+            pNote("Found the pattern '{0}' in the response of the previous execution "
                   "of the command".format(retry_onmatch))
         else:
-            pNote("Did not find the pattern '{0}' "\
-                  "in the response of the previous execution "\
+            pNote("Did not find the pattern '{0}' in the response of the previous execution "
                   "of the command".format(retry_onmatch))
             status = False
     return status

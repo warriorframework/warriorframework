@@ -10,18 +10,16 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
-"""This is the cli_actions module that has all cli related keywords """
-
 import Framework.Utils as Utils
 from Framework.Utils import cli_Utils
 from Framework.Utils.print_Utils import print_warning
 from Framework.Utils.testcase_Utils import pNote
-from Framework.Utils.data_Utils import getSystemData,\
-get_session_id, get_credentials, get_object_from_datarepository
+from Framework.Utils.data_Utils import (getSystemData, get_session_id,
+                                        get_credentials, get_object_from_datarepository)
 from Framework.Utils.encryption_utils import decrypt
 from WarriorCore.Classes.war_cli_class import WarriorCliClass
 from Framework.ClassUtils.warrior_connect_class import WarriorConnect
+"""This is the cli_actions module that has all cli related keywords """
 
 
 class CliActions(object):
@@ -29,6 +27,8 @@ class CliActions(object):
     related to actions performed on any command line interface """
 
     def __init__(self):
+        """log, result, data files being set
+        """
         self.resultfile = Utils.config_Utils.resultfile
         self.datafile = Utils.config_Utils.datafile
         self.logsdir = Utils.config_Utils.logsdir
@@ -110,21 +110,22 @@ class CliActions(object):
 
         wdesc = "Connect to the ssh/telnet port of the system"
         pNote(wdesc)
-        #Resolve system_name and subsystem_list
-        #Removing duplicate subsystem entry and blank spaces in entry name
-        system_name, subsystem_list = Utils.data_Utils.resolve_system_subsystem_list(self.datafile,
-                                                                                     system_name)
+        # Resolve system_name and subsystem_list
+        # Removing duplicate subsystem entry and blank spaces in entry name
+        system_name, subsystem_list = Utils.data_Utils.resolve_system_subsystem_list(
+                                                            self.datafile, system_name)
         output_dict = {}
         status = True
 
-        attempt = 1 if subsystem_list == None else len(subsystem_list)
+        attempt = 1 if subsystem_list is None else len(subsystem_list)
         for i in range(attempt):
             result = False
-            subsystem_name = subsystem_list[i] if subsystem_list != None else None
-            #Put system_name in system_name[subsystem] format before calling
-            #connect_ssh/connect_telnet.
-            call_system_name = system_name if subsystem_name is None \
-            else "{0}[{1}]".format(system_name, subsystem_name)
+            subsystem_name = subsystem_list[i] if subsystem_list is not None else None
+            # Put system_name in system_name[subsystem] format before calling
+            # connect_ssh/connect_telnet.
+            call_system_name = system_name
+            if subsystem_name:
+                call_system_name += "[{}]".format(subsystem_name)
             conn_type = getSystemData(self.datafile, call_system_name, "conn_type")
 
             if conn_type is not False:
@@ -135,7 +136,7 @@ class CliActions(object):
                     result, output_dict = self.connect_telnet(call_system_name, session_name,
                                                               ip_type)
                 else:
-                    pNote("<conn_type>={0} provided for '{1}' is  not "\
+                    pNote("<conn_type>={0} provided for '{1}' is  not "
                           "supported".format(conn_type, call_system_name), "error")
             else:
                 pNote("conn_type not provided for system={0}".format(call_system_name), "warn")
@@ -166,36 +167,36 @@ class CliActions(object):
         """
 
         wdesc = "Disconnects/Closes  session established with the system/subsystem"
-        #Resolve system_name and subsystem_list
-        #Removing duplicate subsystem entry and blank spaces in entry name
-        system_name, subsystem_list = Utils.data_Utils.resolve_system_subsystem_list(self.datafile, system_name)
+        # Resolve system_name and subsystem_list
+        # Removing duplicate subsystem entry and blank spaces in entry name
+        system_name, subsystem_list = Utils.data_Utils.resolve_system_subsystem_list(
+                                                            self.datafile, system_name)
         status = True
 
-        attempt = 1 if subsystem_list == None else len(subsystem_list)
+        attempt = 1 if subsystem_list is None else len(subsystem_list)
         for i in range(attempt):
             Utils.testcase_Utils.pNote(wdesc)
-            subsystem_name = subsystem_list[i] if subsystem_list != None else None
-            call_system_name = system_name if subsystem_name is None \
-            else "{0}[{1}]".format(system_name, subsystem_name)
+            subsystem_name = subsystem_list[i] if subsystem_list is not None else None
+            call_system_name = system_name
+            if subsystem_name:
+                call_system_name += "[{}]".format(subsystem_name)
             Utils.testcase_Utils.pSubStep(wdesc)
             Utils.testcase_Utils.pNote(system_name)
             Utils.testcase_Utils.pNote(self.datafile)
             session_id = get_session_id(call_system_name, session_name)
             war_conn_object = Utils.data_Utils.get_object_from_datarepository(session_id)
-            msg1 = "Disconnect successful for system_name={0}, "\
-                   "session_name={1}".format(system_name, session_name)
-            msg2 = "Disconnection of system_name={0}, "\
-                   "session_name={1} Failed".format(system_name, session_name)
+            msg1 = ("Disconnect successful for system_name={0}, "
+                    "session_name={1}").format(system_name, session_name)
+            msg2 = ("Disconnection of system_name={0}, session_name={1} Failed").format(
+                                                            system_name, session_name)
             if WarriorCliClass.cmdprint:
                 result = True
-            if isinstance(war_conn_object, WarriorConnect) and \
-               war_conn_object.conn_type in ["SSH", "TELNET", "SSH_NESTED"]:
+            if (isinstance(war_conn_object, WarriorConnect) and
+               war_conn_object.conn_type in ["SSH", "TELNET", "SSH_NESTED"]):
                 # execute smart action to produce user report
-                connect_testdata = \
-                 Utils.data_Utils.get_object_from_datarepository(
+                connect_testdata = Utils.data_Utils.get_object_from_datarepository(
                   session_id+"_system", verbose=False)
-                if connect_testdata is not None and \
-                   connect_testdata is not False:
+                if connect_testdata is not None and connect_testdata is not False:
                     Utils.cli_Utils.smart_action(
                      self.datafile, call_system_name, "", war_conn_object,
                      "disconnect", connect_testdata)
@@ -260,7 +261,7 @@ class CliActions(object):
             2. session_name(string) = name of the session to the system/subsystem.
             3. prompt(string) = prompt expected in the terminal
             4. ip_type(string) = type of the ip address(ip, ipv4, ipv6, dns, etc).
-            5. int_timeout(int) = use this to set timeout value for commands\
+            5. int_timeout(int) = use this to set timeout value for commands
                 issued in this session.
             6. via_host(string) = name of the system in the data file to be
                 used as an intermediate system for establishing nested ssh
@@ -268,28 +269,30 @@ class CliActions(object):
 
         :Returns:
             1. status(bool)= True / False.
-            2. session_id (dict element)= an id is generated for each connection\
-                and each connection is stored in the framework's data_repository.\
+            2. session_id (dict element)= an id is generated for each connection
+                and each connection is stored in the framework's data_repository.
                 session_id=system_name+subsystem_name+session_name.
-            3. response dictionary(dict): an empty dictionary to store the responses of all\
-                commands sent to the particular system or subsystem.\
-                This dictionary is available in warrior frameworks global data_repository\
+            3. response dictionary(dict): an empty dictionary to store the responses of all
+                commands sent to the particular system or subsystem.
+                This dictionary is available in warrior frameworks global data_repository
                 and can be retrieved using the key= "session_id + _td_response".
         """
         wdesc = "Connect to the ssh port of the system/subsystem and creates a session"
-        #Resolve system_name and subsystem_list
-        #Removing duplicate subsystem entry and blank spaces in entry name
-        system_name, subsystem_list = Utils.data_Utils.resolve_system_subsystem_list(self.datafile, system_name)
+        # Resolve system_name and subsystem_list
+        # Removing duplicate subsystem entry and blank spaces in entry name
+        system_name, subsystem_list = Utils.data_Utils.resolve_system_subsystem_list(
+                                                            self.datafile, system_name)
         output_dict = {}
         status = True
 
-        attempt = 1 if subsystem_list == None else len(subsystem_list)
+        attempt = 1 if subsystem_list is None else len(subsystem_list)
         for i in range(attempt):
             Utils.testcase_Utils.pSubStep(wdesc)
-            #Get name from the list when it's not 'None', otherwise, set it to 'None'
-            subsystem_name = subsystem_list[i] if subsystem_list != None else None
-            call_system_name = system_name if subsystem_name is None \
-            else "{0}[{1}]".format(system_name, subsystem_name)
+            # Get name from the list when it's not 'None', otherwise, set it to 'None'
+            subsystem_name = subsystem_list[i] if subsystem_list is not None else None
+            call_system_name = system_name
+            if subsystem_name:
+                call_system_name += "[{}]".format(subsystem_name)
             credentials = get_credentials(self.datafile, call_system_name,
                                           [ip_type, 'ssh_port', 'username',
                                            'password', 'prompt', 'timeout',
@@ -304,10 +307,10 @@ class CliActions(object):
                 credentials["logfile"] = Utils.file_Utils.getCustomLogFile(self.filename,
                                                                            self.logsdir,
                                                                            'ssh_%s_' % session_id)
-                credentials["prompt"] = prompt if not credentials["prompt"]\
-                else credentials["prompt"]
-                credentials["timeout"] = int_timeout if not credentials["timeout"]\
-                else credentials["timeout"]
+                if not credentials["prompt"]:
+                    credentials["prompt"] = prompt
+                if not credentials["timeout"]:
+                    credentials["timeout"] = int_timeout
                 credentials["password"] = decrypt(credentials["password"])
 
                 if ip_type != "ip":
@@ -323,9 +326,10 @@ class CliActions(object):
                     credentials['via_port'] = via_crendentials['ssh_port']
                     credentials['via_username'] = via_crendentials['username']
                     credentials['via_password'] = via_crendentials['password']
-                    credentials["via_timeout"] = int_timeout if not \
-                        via_crendentials["timeout"] else \
-                        int(via_crendentials["timeout"])
+                    if via_crendentials["timeout"]:
+                        credentials["via_timeout"] = int(via_crendentials["timeout"])
+                    else:
+                        credentials["via_timeout"] = int_timeout
                 else:
                     credentials['conn_type'] = "SSH"
 
@@ -339,8 +343,7 @@ class CliActions(object):
                    war_conn_object.session_object is not None and \
                    war_conn_object.status is True:
                     output_dict[session_id] = war_conn_object
-                    output_dict[session_id + "_connstring"] = \
-                        conn_string.replace("\r\n", "")
+                    output_dict[session_id + "_connstring"] = conn_string.replace("\r\n", "")
                     output_dict[session_id + "_td_response"] = {}
                     result = True
                     pNote("Connection to system-subsystem"
@@ -439,22 +442,25 @@ class CliActions(object):
         """
 
         wdesc = "Connect to the telnet port of the system and creates a session"
-        #Resolve system_name and subsystem_list
-        #Removing duplicate subsystem entry and blank spaces in entry name
-        system_name, subsystem_list = Utils.data_Utils.resolve_system_subsystem_list(self.datafile, system_name)
+        # Resolve system_name and subsystem_list
+        # Removing duplicate subsystem entry and blank spaces in entry name
+        system_name, subsystem_list = Utils.data_Utils.resolve_system_subsystem_list(
+                                                            self.datafile, system_name)
         output_dict = {}
         status = True
 
-        attempt = 1 if subsystem_list == None else len(subsystem_list)
+        attempt = 1 if subsystem_list is None else len(subsystem_list)
         for i in range(attempt):
             Utils.testcase_Utils.pSubStep(wdesc)
-            #Get name from the list when it's not 'None', otherwise, set it to 'None'
-            subsystem_name = subsystem_list[i] if subsystem_list != None else None
-            call_system_name = system_name if subsystem_name is None \
-            else "{0}[{1}]".format(system_name, subsystem_name)
+            # Get name from the list when it's not 'None', otherwise, set it to 'None'
+            subsystem_name = subsystem_list[i] if subsystem_list is not None else None
+            call_system_name = system_name
+            if subsystem_name:
+                call_system_name += "[{}]".format(subsystem_name)
             credentials = get_credentials(self.datafile, call_system_name,
-                                          [ip_type, 'telnet_port','username',
-                                           'prompt','password','timeout', 'conn_options', 'custom_keystroke'])
+                                          [ip_type, 'telnet_port', 'username',
+                                           'prompt', 'password', 'timeout',
+                                           'conn_options', 'custom_keystroke'])
             pNote("system={0}, session={1}".format(call_system_name, session_name))
             Utils.testcase_Utils.pNote(Utils.file_Utils.getDateTime())
             session_id = get_session_id(call_system_name, session_name)
@@ -464,10 +470,10 @@ class CliActions(object):
                 credentials = Utils.cli_Utils.get_connection_port("telnet", credentials)
                 credentials['logfile'] = Utils.file_Utils.getCustomLogFile(self.filename,
                                                                            self.logsdir,
-                                                                           'telnet_{0}_'\
+                                                                           'telnet_{0}_'
                                                                            .format(session_id))
-                credentials["timeout"] = int_timeout if not credentials["timeout"]\
-                else credentials["timeout"]
+                if not credentials["timeout"]:
+                    credentials["timeout"] = int_timeout
                 credentials["password"] = decrypt(credentials["password"])
 
                 if ip_type != "ip":
@@ -516,7 +522,6 @@ class CliActions(object):
             status = status and result
         return status, output_dict
 
-
     def send_command(self, command, system_name, session_name=None,
                      start_prompt='.*', end_prompt='.*', int_timeout=60):
         """Sends a command to a system or a subsystem
@@ -545,13 +550,13 @@ class CliActions(object):
         session_object = Utils.data_Utils.get_object_from_datarepository(session_id)
         if session_object:
             command_status, _ = Utils.cli_Utils.send_command(session_object, start_prompt,
-                                                                    end_prompt, command, int_timeout)
+                                                             end_prompt, command, int_timeout)
         else:
             print_warning("%s-%s is not available for use" % (system_name, session_name))
             command_status = False
 
         Utils.testcase_Utils.report_substep_status(command_status)
-        return  command_status
+        return command_status
 
     def send_all_testdata_commands(self, system_name, session_name=None, var_sub=None,
                                    description=None, td_tag=None, vc_tag=None):
@@ -606,7 +611,6 @@ class CliActions(object):
         desc = wdesc if description is None else description
         return self.send_testdata_command_kw(system_name, session_name, desc, var_sub,
                                              td_tag, vc_tag)
-
 
     def send_commands_by_testdata_rownum(self, row_num, system_name,
                                          session_name=None, var_sub=None, description=None,
@@ -805,11 +809,12 @@ class CliActions(object):
         Utils.testcase_Utils.pNote("Datafile: {0}".format(self.datafile))
         session_id = Utils.data_Utils.get_session_id(system_name, session_name)
         session_object = Utils.data_Utils.get_object_from_datarepository(session_id)
-        testdata, varconfigfile = Utils.data_Utils.get_td_vc(self.datafile, system_name, td_tag, vc_tag)
-        #abspaths = Utils.data_Utils.get_filepath_from_system(self.datafile, system_name,
+        testdata, varconfigfile = Utils.data_Utils.get_td_vc(self.datafile,
+                                                             system_name, td_tag, vc_tag)
+        # abspaths = Utils.data_Utils.get_filepath_from_system(self.datafile, system_name,
         #                                                     'testdata', 'variable_config')
-        #testdata = abspaths[0]
-        #varconfigfile = abspaths[1]
+        # testdata = abspaths[0]
+        # varconfigfile = abspaths[1]
         # td_resp_dict = {}
         status, resp_dict = cli_Utils.send_commands_from_testdata(testdata, session_object,
                                                                   varconfigfile=varconfigfile,
@@ -822,9 +827,8 @@ class CliActions(object):
         if not WarriorCliClass.cmdprint:
             td_resp_dict.update(resp_dict)
 
-
         Utils.testcase_Utils.report_substep_status(status)
-        return  status, td_resp_dict
+        return status, td_resp_dict
 
     def set_session_timeout(self, system_name, session_name=None, int_timeout=30):
         """Sets the timeout period for the ssh/telnet session
@@ -848,11 +852,12 @@ class CliActions(object):
 
         if session_object.isalive():
             session_object.timeout = int_timeout
-            Utils.testcase_Utils.pNote("Timeout value is set to {0}mins for the session with system name : {1},"\
-                                       " session name : {2}".format(int_timeout, system_name, session_name))
+            Utils.testcase_Utils.pNote("Timeout value is set to {0}mins for the session "
+                                       "with system name : {1}, session name : "
+                                       "{2}".format(int_timeout, system_name, session_name))
         else:
             status = False
-            Utils.testcase_Utils.pNote("Session with system name : {0}, session name : {1}"\
+            Utils.testcase_Utils.pNote("Session with system name : {0}, session name : {1}"
                                        " is timedout/closed".format(system_name, session_name))
         return status
 
@@ -876,11 +881,11 @@ class CliActions(object):
         session_object = Utils.data_Utils.get_object_from_datarepository(session_id)
 
         if session_object.isalive():
-            Utils.testcase_Utils.pNote("Session with system name : {0}, session name : {1}"\
+            Utils.testcase_Utils.pNote("Session with system name : {0}, session name : {1}"
                                        " is alive".format(system_name, session_name))
         else:
             status = False
-            Utils.testcase_Utils.pNote("Session with system name : {0}, session name : {1}"\
+            Utils.testcase_Utils.pNote("Session with system name : {0}, session name : {1}"
                                        " is not alive".format(system_name, session_name))
         return status
 
@@ -894,15 +899,15 @@ class CliActions(object):
             If both tag and attribute is provided the attribute will be used.
 
             1. ip = IP address of the system.\
-            
+
                 Default value for ip type is ip, it can take any type of ip's
                 to connect to (like ipv4, ipv6, dns etc)
-                
+
                 Users can provide tag/attribute for any ip_type under the system
                 in the input datafile and specify the tag/attribute name
                 as the value for ip_type argument, then the connection will be 
                 established using that value.
-             
+
             2. username = username for the  session.
             3. password = password for the  session.
             4. timeout = use if you want to set timeout while connecting,\
@@ -917,16 +922,17 @@ class CliActions(object):
 
 
         :Arguments:
-            None. Keyword will read the input datafile and get the data from tag <system> and <subsystem>.
+            None. Keyword will read the input datafile and get the data from
+            tag <system> and <subsystem>.
 
         :Returns:
             1. status(bool)= True / False.
-            2. session_id (dict element)= an id is generated for each connection\
-                and each connection is stored in the framework's data_repository.\
+            2. session_id (dict element)= an id is generated for each connection
+                and each connection is stored in the framework's data_repository.
                 session_id=system_name+subsystem_name+session_name.
-            3. response dictionary(dict): an empty dictionary to store the responses of all\
-                commands sent to the particular system or subsystem.\
-                This dictionary is available in warrior frameworks global data_repository\
+            3. response dictionary(dict): an empty dictionary to store the responses of all
+                commands sent to the particular system or subsystem.
+                This dictionary is available in warrior frameworks global data_repository
                 and can be retrieved using the key= "session_id + _td_response".
         """
         wdesc = "Connect to all systems and subsystems in the datafile."
@@ -934,19 +940,19 @@ class CliActions(object):
 
         output_dict = {}
         status = True
-        
+
         root = Utils.xml_Utils.getRoot(self.datafile)
         systems = root.findall('system')
         system_list = []
         for system in systems:
-            #check if the system has subsystem or not.
+            # check if the system has subsystem or not.
             subsystems = system.findall('subsystem')
             if subsystems != []:
                 for subsystem in subsystems:
                     subsystem_name = subsystem.get('name')
                     system_name = system.get('name') + '[' + subsystem_name + ']'
                     system_list.append(system_name)
-            #if there is no subsystem use the system.
+            # if there is no subsystem use the system.
             else:
                 system_name = system.get('name')
                 system_list.append(system_name)
@@ -954,7 +960,7 @@ class CliActions(object):
         for system_name in system_list:
             sys_status, sys_dict = self.connect(system_name)
             status = status and sys_status
-            output_dict.update(sys_dict)        
+            output_dict.update(sys_dict)
         return status, output_dict
 
     def disconnect_all(self):
@@ -962,7 +968,8 @@ class CliActions(object):
         based on the details provided by the user in the input datafile.
 
         :Arguments:
-            None. Keyword will read the input datafile and get the data from tag <system> and <subsystem>.
+            None. Keyword will read the input datafile and get the data from
+            tag <system> and <subsystem>.
 
         :Returns:
             1. status(bool)= True / False.
@@ -974,14 +981,14 @@ class CliActions(object):
         systems = root.findall('system')
         system_list = []
         for system in systems:
-            #check if the system has subsystem or not.
+            # check if the system has subsystem or not.
             subsystems = system.findall('subsystem')
             if subsystems != []:
                 for subsystem in subsystems:
                     subsystem_name = subsystem.get('name')
                     system_name = system.get('name') + '[' + subsystem_name + ']'
                     system_list.append(system_name)
-            #if there is no subsystem use the system.
+            # if there is no subsystem use the system.
             else:
                 system_name = system.get('name')
                 system_list.append(system_name)
