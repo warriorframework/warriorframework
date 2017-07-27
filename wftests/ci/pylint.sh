@@ -16,7 +16,7 @@ if [[ "$filelist" ]]; then
     echo "List of .py files that have changed in this commit"
     echo "$filelist"
     echo "$filelist" > filelist.txt
-    python ../pylint_checker.py filelist.txt
+    python wftests/ci/pylint_checker.py filelist.txt
 else
     echo "no .py file has changed in this commit, exiting"
     exit 0;
