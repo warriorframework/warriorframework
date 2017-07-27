@@ -93,7 +93,7 @@ def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw, jiraproj,
                 #print '\nFILE_PATH:,',filepath #xml path by warrior- relative/absolute
                 framework_detail.warrior_banner()
                 abs_filepath = Utils.file_Utils.getAbsPath(filepath, abs_cur_dir)
-                print_info('Abosulete path: {0}'.format(abs_filepath))
+                print_info('Absolute path: {0}'.format(abs_filepath))
                 if Utils.file_Utils.fileExists(abs_filepath):
                     #execution_dir = Utils.file_Utils.create_execution_directory(abs_filepath)
                     if len(overwrite.items()) > 0:
