@@ -29,7 +29,7 @@ class CliActions(object):
     related to actions performed on any command line interface """
 
     def __init__(self):
-        """ Constructor """
+        """constructor"""
         self.resultfile = Utils.config_Utils.resultfile
         self.datafile = Utils.config_Utils.datafile
         self.logsdir = Utils.config_Utils.logsdir
@@ -294,7 +294,7 @@ class CliActions(object):
             credentials = get_credentials(self.datafile, call_system_name,
                                           [ip_type, 'ssh_port', 'username',
                                            'password', 'prompt', 'timeout',
-                                           'conn_options', 'custom_keystroke'])
+                                           'conn_options', 'custom_keystroke', 'escape'])
             # parse more things here
             pNote("system={0}, session={1}".format(call_system_name, session_name))
             session_id = get_session_id(call_system_name, session_name)
@@ -454,8 +454,9 @@ class CliActions(object):
             call_system_name = system_name if subsystem_name is None \
             else "{0}[{1}]".format(system_name, subsystem_name)
             credentials = get_credentials(self.datafile, call_system_name,
-                                          [ip_type, 'telnet_port','username',
-                                           'prompt','password','timeout', 'conn_options', 'custom_keystroke'])
+                                          [ip_type, 'telnet_port', 'username',
+                                           'prompt', 'password', 'timeout', 'conn_options',
+                                           'custom_keystroke', 'escape'])
             pNote("system={0}, session={1}".format(call_system_name, session_name))
             Utils.testcase_Utils.pNote(Utils.file_Utils.getDateTime())
             session_id = get_session_id(call_system_name, session_name)
