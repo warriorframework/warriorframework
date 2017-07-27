@@ -95,6 +95,9 @@ def readconfig():
 
 @route('/searchkw', method='POST')
 def searchkw():
+    """
+    This method returns the ActionFile Path of the selected Driver.
+    """
     value = parseString("".join(request.body))
     indented_xml = "".join(value.toprettyxml(newl='\n'))
     corrected_xml = remove_extra_newlines_char_xml(indented_xml)
@@ -106,12 +109,16 @@ def searchkw():
     driver_name = root.text
     global gpysrcdir
     driver_file = gpysrcdir + '/ProductDrivers/' + driver_name + ".py"
-    actiondir_1 = mkactiondirs(driver_file)
-    py_files = mkactionpyfiles(actiondir_1)
+    actiondir_new = mkactiondirs(driver_file)
+    py_files = mkactionpyfiles(actiondir_new)
     return py_files
 
 @route('/parsexmlobj', method='POST')
 def parsexmlobj():
+    """
+    This method fetch the XML object from the Katana UI of Keyword sequencing tool screen.
+	And parse it to form a new Wrapper keyword & place it in the user provided file path.
+    """
     method_names = []
     arg_name_list = ""
     class_name = ""
@@ -149,7 +156,6 @@ def parsexmlobj():
         checkval = "yes"
     else:
         checkval = "no"
-        #import pdb;pdb.set_trace()
         Subkeyword = root.find('Subkeyword')
         subkw_list = Subkeyword.findall('Skw')
         count = 0
