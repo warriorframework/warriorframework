@@ -1,4 +1,4 @@
-set -x
+# set -x
 # ls -l
 pip install pylint
 
@@ -15,6 +15,8 @@ filelist=$(git --no-pager diff --name-only develop)
 if [[ "$filelist" ]]; then
     echo "List of .py files that have changed in this commit"
     echo "$filelist"
+    echo "$filelist" > filelist.txt
+    python ../pylint_checker.py filelist.txt
 else
     echo "no .py file has changed in this commit, exiting"
     exit 0;
