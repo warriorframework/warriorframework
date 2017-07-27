@@ -39,7 +39,9 @@ except ImportError:
 
 
 def cmdprinter(cmdfunc):
+    """decorator"""
     def inner(*args, **kwargs):
+        """routing different mock functions"""
         if WarriorCliClass.cmdprint:
             result = (True, "")
             if cmdfunc.__name__ == "_send_cmd_get_status":
@@ -60,9 +62,20 @@ def cmdprinter(cmdfunc):
         return result
     return inner
 
+def pexpect_spawn_with_env(pexpect_obj, command, timeout, escape=False, env=None):
+    """
+        spawn a pexpect object with environment variable
+    """
+    if env is None:
+        env = {}
+    if str(escape).lower() == "yes" or str(escape).lower() == "true":
+        child = pexpect_obj.spawn(command, timeout=int(timeout), env=env)
+    else:
+        child = pexpect_obj.spawn(command, timeout=int(timeout))
+    return child
 
 def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=60,
-                prompt=".*(%|#|\$)", conn_options="", custom_keystroke="", **kwargs):
+                prompt=".*(%|#|\$)", conn_options="", custom_keystroke="", escape="", **kwargs):
     """
     - Initiates SSH connection via a specific port. Creates log file.
     - return session as object and conn_string(pre and post login message).
@@ -84,7 +97,8 @@ def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=6
     if WarriorCliClass.cmdprint:
         pNote(("connectSSH: :CMD: %s" % command))
         return None, ""
-    child = pexpect.spawn(command, timeout=int(timeout))
+    child = pexpect_spawn_with_env(pexpect, command, timeout=int(timeout),
+                                   escape=escape, env={"TERM": "dumb"})
 
     child.logfile = sys.stdout
 
@@ -139,7 +153,8 @@ def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=6
                 print_debug("SSH Host Key is changed - Remove it from "
                             "known_hosts file : cmd = %s" % cmd)
                 subprocess.call(cmd, shell=True)
-                child = pexpect.spawn(command, timeout=int(timeout))
+                child = pexpect_spawn_with_env(pexpect, command, timeout=int(timeout),
+                                               escape=escape, env={"TERM": "dumb"})
                 print_debug("ReconnectSSH: cmd = %s" % command)
     except Exception as exception:
         print_exception(exception)
@@ -148,7 +163,7 @@ def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=6
 
 def connect_telnet(ip, port="23", username="", password="",
                    logfile=None, timeout=60, prompt=".*(%|#|\$)",
-                   conn_options="", custom_keystroke="", **kwargs):
+                   conn_options="", custom_keystroke="", escape="", **kwargs):
     """
     Initiates Telnet connection via a specific port. Creates log file.
 
@@ -178,7 +193,8 @@ def connect_telnet(ip, port="23", username="", password="",
         conn_options = ""
     command = command + str(conn_options)
     print_debug("connectTelnet cmd = %s" % command)
-    child = pexpect.spawn(command, timeout=int(timeout))
+    child = pexpect_spawn_with_env(pexpect, command, timeout=int(timeout),
+                                   escape=escape, env={"TERM": "dumb"})
     conn_string = ""
     telnetobj = None
     try:
@@ -343,7 +359,7 @@ def send_smart_cmd(connect_testdata, session_object, tag_value, call_system_name
     """
     if xml_Utils.getElementWithTagAttribValueMatch(connect_testdata, "testdata",
                                                    "title", tag_value) is not None:
-        print("**********The following command are sent as part of the smart analysis**********")
+        print_info("**********The following command are sent as part of the smart analysis**********")
         main_log = session_object.logfile
         if pre_tag:
             smart_log = main_log.name.replace(".log", "pre_.log")
@@ -353,7 +369,7 @@ def send_smart_cmd(connect_testdata, session_object, tag_value, call_system_name
         send_commands_from_testdata(connect_testdata, session_object,
                                     title=tag_value, system_name=call_system_name)
         session_object.logfile = main_log
-        print("**********smart analysis finished**********")
+        print_info("**********smart analysis finished**********")
     else:
         print_error()
 
@@ -495,6 +511,9 @@ def send_command(session_object, start_prompt, end_prompt, command,
         else:
             response = session_object.before
             response = str(response) + str(session_object.after)
+            if session_object.env is not None and 'TERM' in session_object.env and session_object.env['TERM'] == 'dumb': 
+                escape_seq = re.compile(r'(\x9B|\x1B\[)[0-?]*[ -\/]*[@-~]')
+                response = escape_seq.sub('', response)
             pNote("Response:\n{0}\n".format(response))
             pNote(msg, "debug")
             if status is True:
@@ -604,7 +623,7 @@ def send_commands_from_testdata(testdatafile, obj_session, **args):
 
         # Send Commands
         for i in range(0, intsize):
-            print("\n")
+            print_info("")
             print_debug(">>>")
             command = details_dict["command_list"][i]
             pNote("Command #{0}\t: {1}".format(str(i+1), command))
@@ -997,7 +1016,7 @@ def _send_command_retrials(obj_session, details_dict, index, **kwargs):
                 match_status = _get_match_status(retry_onmatch, response)
                 if match_status:
                     count = count + 1
-                    print ('\n')
+                    print_info("")
                     pNote("RETRIAL ATTEMPT:{0}".format(count))
                     pNote("Wait for {0}sec (retry_timer) before sending the "
                           "command again".format(retry_timer))
