@@ -10,23 +10,22 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from Framework.Utils import file_Utils, data_Utils
 from __builtin__ import list
-
-
-"""common_actions module where keywords common to all products are developed"""
 import time
 import json
-import Framework.Utils as Utils
 import os
+import Framework.Utils as Utils
+from Framework.Utils import data_Utils
 from Framework.Utils.print_Utils import print_info, print_error
 from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.data_Utils import get_object_from_datarepository, update_datarepository
 from Framework.Utils.file_Utils import getAbsPath
+"""common_actions module where keywords common to all products are developed"""
 
 
 class CommonActions(object):
-    """class CommonActions having methods (keywords) that are common for all the products"""
+    """class CommonActions having methods (keywords) that are common for all the products
+    """
 
     def __init__(self):
         self.resultfile = Utils.config_Utils.resultfile
@@ -65,7 +64,8 @@ class CommonActions(object):
             1. system_name = system name in the datafile
         :Returns:
             1. status (boolean)
-            2. system_type (dict element): name=system_type, value=type of the system_name (string).
+            2. system_type (dict element): name=system_type, value=type of the
+                system_name (string).
         """
 
         WDesc = "Find the system type from datafile"
@@ -105,11 +105,11 @@ class CommonActions(object):
         result = Utils.data_Utils.get_object_from_datarepository(object_key)
         if result is not None and result is not False:
             if resp_pat == result[resp_ref]:
-                pNote("Found resp_pat={0} for resp_ref={1} in the data "\
+                pNote("Found resp_pat={0} for resp_ref={1} in the data "
                       "repository".format(resp_pat, resp_ref))
             else:
                 status = False
-                pNote("NOT found resp_pat={0} for resp_ref={1} in the data "\
+                pNote("NOT found resp_pat={0} for resp_ref={1} in the data "
                       "repository!!".format(resp_pat, resp_ref), "warning")
         Utils.testcase_Utils.report_substep_status(status)
         return status
@@ -190,7 +190,8 @@ class CommonActions(object):
         """
         status = False
         if not any([var_key, var_value, filepath]):
-            print_error('Either Provide values to arguments \"var_key\" & \"var_value\" or to argument \"filepath\"')
+            print_error('Either Provide values to arguments "var_key" & '
+                        '"var_value" or to argument "filepath"')
 
         if var_key is not None and var_value is not None:
             os.environ[var_key] = var_value
@@ -201,7 +202,7 @@ class CommonActions(object):
         if filepath is not None:
             testcasefile_path = get_object_from_datarepository('wt_testcase_filepath')
             try:
-                filepath=getAbsPath(filepath, os.path.dirname(testcasefile_path))
+                filepath = getAbsPath(filepath, os.path.dirname(testcasefile_path))
                 with open(filepath, "r") as json_handle:
                     get_json = json.load(json_handle)
                     if jsonkey in get_json:
@@ -214,7 +215,7 @@ class CommonActions(object):
                                 status = True
                     else:
                         print_error('The {0} file is missing the key '
-                                    '\"environmental_variables\", please refer to '
+                                    '"environmental_variables", please refer to '
                                     'the Samples in Config_files'.format(filepath))
                         status = False
             except ValueError:
