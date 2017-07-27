@@ -1,82 +1,53 @@
 import os
-from utilities.file_utils import get_abs_path, readlines_from_file
-from wui.core.utils.app_directory_class_utils import AppDirectoryClass
-from wui.core.utils.reg_utils import get_app_path_from_name
-from wui.core.utils.settings_file_class_utils import SettingsFileDetailsClass
-from wui.core.utils.urls_py_class_utils import UrlsFileDetailsClass
+from utilities.directory_traversal_utils import get_abs_path
 
 
-class CoreIndex():
+def get_app_path_from_name(app_name, config_file, base_directory):
+    """
+    This function gets the path to the wf_config_file in the app directory
 
-    def __init__(self, current_directory, settings_file_path=None, urls_file_path=None):
-        self.current_directory = current_directory
+    Args:
+        app_name: Name of the app (eg: default.configuration)
+        config_file: Name of the config file
+        base_directory: Absolute path to the base directory (/warriorframework/katana/)
 
-        self.available_apps = []
-        self.create_adc_object()
+    Returns:
+        app_config_file_path
 
-        self.settings_file_abs_path = None
-        self.sfd_obj = None
-        if settings_file_path is not None:
-            self.set_settings_file_path(settings_file_path)
-            self.create_sfd_object()
+    """
+    temp = app_name.split(".")
+    app_config_file_rel_path = ".." + os.sep
+    for el in temp:
+        app_config_file_rel_path += el
+        app_config_file_rel_path += os.sep
 
-        self.urls_file_abs_path = None
-        self.ufd_obj = None
-        if urls_file_path is not None:
-            self.set_urls_file_path(urls_file_path)
-            self.create_ufd_object()
+    app_config_file_rel_path += config_file
 
-        self.settings_installed_apps = []
-        self.urls_dictionary = {}
+    app_config_file_path = get_abs_path(app_config_file_rel_path, base_directory)
 
-    def set_settings_file_path(self, settings_file_path):
-        self.settings_file_abs_path = get_abs_path(settings_file_path, self.current_directory)
+    return app_config_file_path
 
-    def create_sfd_object(self):
-        self.sfd_obj = SettingsFileDetailsClass(self.settings_file_abs_path)
 
-    def set_urls_file_path(self, urls_file_path):
-        self.urls_file_abs_path = get_abs_path(urls_file_path, self.current_directory)
+def _get_package_name(directory_path, trailing_period=True):
+    """
+    This function changes directory path to a package format
 
-    def create_ufd_object(self):
-        self.ufd_obj = UrlsFileDetailsClass(self.urls_file_abs_path)
+    apps = apps.
+    katana/default = katana.default.
 
-    def get_available_apps(self):
-        self.available_apps = self.adc_obj.get_all_apps()
-        return self.available_apps
+    Args:
+        directory_path: directory path that needs to be changed to a package format
+        trailing_period: if set to False, the last period at the end of the package would be
+                         remove.
 
-    def create_adc_object(self):
-        self.adc_obj = AppDirectoryClass(os.path.dirname(os.path.dirname(self.current_directory)))
+    Returns:
+        package_name: directory path in a package format
 
-    def get_apps_from_settings_file(self):
-        self.settings_installed_apps = self.sfd_obj.get_installed_apps()
-        return self.settings_installed_apps
-
-    def get_urls_from_urls_file(self):
-        self.urls_dictionary = self.ufd_obj.get_urls_from_urls_py()
-        return self.urls_dictionary
-
-    def consolidate_app_details(self, apps, app_content, config_file, config_details_dict):
-        for app1 in self.available_apps:
-            for app2 in self.settings_installed_apps:
-                if app1 == app2:
-                    apps.append(app_content.copy())
-                    index = len(apps) - 1
-
-                    apps[index]["url"] = self.urls_dictionary[app1]
-                    apps[index]["name"] = app1.split(".")[-1].title()
-
-                    app_config_file_path = get_app_path_from_name(app1, config_file,
-                                                                       os.path.dirname(self.current_directory))
-
-                    data = readlines_from_file(app_config_file_path)
-
-                    for i in range(0, len(data)):
-                        data[i] = data[i].strip()
-                        temp = data[i].split("=")
-                        temp[0] = temp[0].strip()
-                        temp[1] = temp[1].strip()
-                        config_details_dict[temp[0]] = temp[1]
-
-                    apps[index].update(config_details_dict)
-        return apps
+    """
+    dir_list = directory_path.split(os.sep)
+    package_name = ""
+    for el in dir_list:
+        package_name += el + "."
+    if not trailing_period:
+        package_name = package_name[:-1]
+    return package_name

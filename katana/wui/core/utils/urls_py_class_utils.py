@@ -1,7 +1,7 @@
 import os
 from utilities.file_utils import readlines_from_file
-from wui.core.utils.reg_utils import strip_list_elements_of, strip_list_element_of, \
-    split_str_at_last_index
+from utilities.string_utils import remove_trailing_characters_from_list, \
+    remove_trailing_characters_from_string, split_str_at_last_index
 
 
 class UrlsFileDetailsClass():
@@ -50,15 +50,15 @@ class UrlsFileDetailsClass():
             include_formatting_list = [" ", "include(", ")", "'"]
 
         urls_list = readlines_from_file(self.file_path, start=start, end=end)
-        urls_list = strip_list_elements_of(urls_list, formatting_list)
+        urls_list = remove_trailing_characters_from_list(urls_list, formatting_list)
 
         for i in range(0, len(urls_list)):
             temp = urls_list[i].split(",")
 
-            temp[0] = strip_list_element_of(temp[0], url_formatting_list)
+            temp[0] = remove_trailing_characters_from_string(temp[0], url_formatting_list)
             temp[0] = os.sep + temp[0]
 
-            temp[1] = strip_list_element_of(temp[1], include_formatting_list)
+            temp[1] = remove_trailing_characters_from_string(temp[1], include_formatting_list)
 
             output = split_str_at_last_index(temp[1], ".")
             self.url_dict[output] = temp[0]

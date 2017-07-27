@@ -1,6 +1,7 @@
 import os
-from utilities.file_utils import get_sub_folders
-from wui.core.utils.reg_utils import _get_package_name
+
+from utilities.directory_traversal_utils import get_sub_folders
+from wui.core.utils.core_utils import _get_package_name
 
 
 class AppDirectoryClass():

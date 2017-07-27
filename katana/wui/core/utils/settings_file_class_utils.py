@@ -1,5 +1,5 @@
 from utilities.file_utils import readlines_from_file
-from wui.core.utils.reg_utils import strip_list_elements_of
+from utilities.string_utils import remove_trailing_characters_from_list
 
 
 class SettingsFileDetailsClass():
@@ -49,7 +49,7 @@ class SettingsFileDetailsClass():
         if formatting_list is None:
             formatting_list = [" ", "\n", ",", "'"]
         apps_list = readlines_from_file(self.file_path, start=start, end=end)
-        formatted_apps_list = strip_list_elements_of(apps_list, formatting_list)
+        formatted_apps_list = remove_trailing_characters_from_list(apps_list, formatting_list)
 
         for i in range(0, len(formatted_apps_list)):
             if not formatted_apps_list[i].startswith(starts_with):
