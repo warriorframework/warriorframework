@@ -424,16 +424,15 @@ def copyFileContents(srcfile, dstfile):
     lines=open(srcfile,'r').readlines()
     open(dstfile, 'a').writelines(lines)
 
-
 def getLinesBetweenMatchingLines(srcfile, dstfile, start, end, no_of_search=1):
     """ This function opens a file, searches for the start and end strings and writes  the lines in between start and end string into a new file (start, end inluded)
-                # srcfile = source file which has the data to be parsed
-                # dstfile = destination file to which the captured data is to be written
-                # start = starting string to be serached for
-                # end = ending string to be searched for
-                # no_of_searches = denotes the number of times the file has to be searched for the start and end strings
-                #                    supported values = any interger greater than 0
-                #                                     = EOF | eof searches the entire file"""
+        # srcfile = source file which has the data to be parsed
+        # dstfile = destination file to which the captured data is to be written
+        # start = starting string to be serached for
+        # end = ending string to be searched for
+        # no_of_searches = denotes the number of times the file has to be searched for the start and end strings
+        #                    supported values = any interger greater than 0
+        #                                     = EOF | eof searches the entire file"""
     lines = open(srcfile,'r').readlines()
     #print_info ("lines:%s"% lines)
     i=0
@@ -468,30 +467,27 @@ def getLinesBetweenMatchingLines(srcfile, dstfile, start, end, no_of_search=1):
     open(dstfile,'w+').writelines(resultantList)
 
 
-
-
 def getSubDirFile(subdir, existing_dir, ext):
     """ Searches for a sub-directory with provided name under a directory. If it does
-                # not exist creates a new sub-directory
-                # Now under this newly created directory creates file with  sub-directory name and
-                # provided extension.If a file with the same name already exists # adds data and
-                # time-stamp to the filename .
-                # Returns the filename thus created to the calling function
-                #
-                # Arguments:
-                # subdir    = name of the directory and the file to be created under an existing directory
-                # dir       = an existing directory
-                # ext       = extension for the newly created filename
-                #
-                # Note: This function does not open the result file, it only creates a name for the file.
-                # The file with the created name has to be opened seperately
-                #"""
+    # not exist creates a new sub-directory
+    # Now under this newly created directory creates file with  sub-directory name and
+    # provided extension.If a file with the same name already exists # adds data and
+    # time-stamp to the filename .
+    # Returns the filename thus created to the calling function
+    #
+    # Arguments:
+    # subdir    = name of the directory and the file to be created under an existing directory
+    # dir       = an existing directory
+    # ext       = extension for the newly created filename
+    #
+    # Note: This function does not open the result file, it only creates a name for the file.
+    # The file with the created name has to be opened seperately
+    """
     path        = createDir_addtimestamp(existing_dir, subdir )
     fullpath    = path + os.sep + subdir + '.' + ext
     if fileExists(fullpath):
         fullpath = addTimeDate(fullpath)
     return fullpath
-
 
 
 def create_execution_directory(filepath):
@@ -516,7 +512,6 @@ def create_zipdir(zipname, path, extn='zip'):
     output_filepath = path + os.sep + zipname
     zip_file_path = shutil.make_archive(output_filepath, extn, path)
     return zip_file_path
-
 
 
 def getAbsPath(relative_path, start_directory="."):
@@ -560,6 +555,7 @@ def get_parent_dir(path, child):
         path = get_parent_dir(path, child)
     return path
 
+
 def check_extension_get_absolute_path(relative_path, start_directory, list_extn=[".json", ".xml", ".txt"]):
     """
     This is wrapper function that gets and verifies extention of a file path
@@ -573,6 +569,7 @@ def check_extension_get_absolute_path(relative_path, start_directory, list_extn=
         value = relative_path
     return value
 
+
 def get_absolute_path_from_start_directory(relative_path, start_directory, extension=".json"):
     """
     DEPRECATED IN 2.9
@@ -584,6 +581,7 @@ def get_absolute_path_from_start_directory(relative_path, start_directory, exten
     """
     print_error("This function is deprecated in 2.9, use check_extension_get_absolute_path or getAbspath instead")
     return check_extension_get_absolute_path(relative_path, start_directory, extension)
+
 
 def get_absolute_path_of_directory(relative_path_of_dir, start_directory):
     """
@@ -603,6 +601,18 @@ def get_absolute_path_of_directory(relative_path_of_dir, start_directory):
 # ==============================================================================
 # File Operations
 # ==============================================================================
+
+
+def log_result(oper, result):
+    """the methods in file_actions class use this to log the result of
+    its operation
+    """
+    resmsg = "completed successfully" if result else "failed"
+    msg = "file {} operation {}".format(oper, resmsg)
+    if result:
+        print_info(msg)
+    else:
+        print_error(msg)
 
 
 def open_file(newfile, mode):

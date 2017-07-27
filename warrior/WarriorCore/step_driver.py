@@ -186,12 +186,12 @@ def execute_step(step, step_num, data_repository, system_name, kw_parallel, queu
                 step, 'onError', 'value')
     testcase_error_action = data_repository['wt_def_on_error_action']
     step_onError_action = step_onError_action if step_onError_action else testcase_error_action
-    if step_onError_action.upper() == "GOTO" and step_goto_value == False:
+    if step_onError_action.upper() == "GOTO" and step_goto_value is False:
         step_goto_value = data_repository['wt_def_on_error_value']
     onerror = step_onError_action.upper()
     if step_goto_value is not False and step_goto_value is not None:
         onerror = onerror + " step " + step_goto_value
-    if keyword_status == False and step_onError_action and step_onError_action.upper() == 'ABORT_AS_ERROR':
+    if keyword_status is False and step_onError_action and step_onError_action.upper() == 'ABORT_AS_ERROR':
         print_info(
             "Keyword status will be marked as ERROR as onError action is set to 'abort_as_error'")
         keyword_status = "ERROR"
@@ -242,21 +242,6 @@ def execute_step(step, step_num, data_repository, system_name, kw_parallel, queu
         queue.put((keyword_status, kw_resultfile,
                    step_impact.upper(), tc_junit_object))
     elif not data_repository['war_parallel']:
-        # Get the type of the file being executed by Warrior: Case/Suite/Project
-        war_file_type = data_repository.get('war_file_type')
-        if war_file_type == "Case":
-            # Create and replace existing Case junit file for each step
-            tc_junit_object.output_junit(data_repository['wt_resultsdir'],
-                                         print_summary=False)
-        elif war_file_type == "Suite":
-            # Create and replace existing Suite junit file for each step
-            tc_junit_object.output_junit(data_repository['wt_results_execdir'],
-                                         print_summary=False)
-        elif war_file_type == "Project":
-            # Create and replace existing Project junit file for each step
-            tc_junit_object.output_junit(data_repository['wp_results_execdir'],
-                                         print_summary=False)
-
         # Get the type of the file being executed by Warrior: Case/Suite/Project
         war_file_type = data_repository.get('war_file_type')
         if war_file_type == "Case":
