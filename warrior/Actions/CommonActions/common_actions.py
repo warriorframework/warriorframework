@@ -28,6 +28,8 @@ class CommonActions(object):
     """
 
     def __init__(self):
+        """Setting log, result data files
+        """
         self.resultfile = Utils.config_Utils.resultfile
         self.datafile = Utils.config_Utils.datafile
         self.logsdir = Utils.config_Utils.logsdir
@@ -125,6 +127,10 @@ class CommonActions(object):
             type = type of datavalue (string/int/float)
         """
         def get_dict_to_update(var, val):
+            """prepare the dictionary from dot separated variable for storing in data repository
+            e.g., a.b.c = val
+            would return {a: {b: {c: val}}}
+            """
             dic = {}
             if '.' in var:
                 [key, value] = var.split('.', 1)
@@ -234,7 +240,11 @@ class CommonActions(object):
     def get_values_from_datafile(self, system_name, strvar, langs, states,
                                  currencys, ramspace, configfile, intvar,
                                  file_config):
+        """get the values from datafile
+        """
         def check_type(var, datatype):
+            """check that vars are of correct datatype
+            """
             vartype = type(var)
             if vartype is not datatype:
                 print_error('is not a {}, but {}'.format(datatype, vartype))

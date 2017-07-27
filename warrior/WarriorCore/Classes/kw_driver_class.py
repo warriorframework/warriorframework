@@ -159,6 +159,8 @@ class KeywordOperations(object):
         return args
 
     def get_credential_value(self, arg, system):
+        """get the value of arg in test data file corresponding to system
+        """
         datafile = self.data_repository['wt_datafile']
         var = arg
         if not hasattr(self, 'tag_dict'):

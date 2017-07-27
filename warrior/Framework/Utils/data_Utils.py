@@ -479,6 +479,8 @@ def _get_cmd_details(testdata, global_obj, system_name,
 
 
 def _get_global_var(global_obj, key):
+    """get the value of key in the global object global_obj
+    """
     return global_obj.find(key) if global_obj is not None else None
 
 
@@ -863,6 +865,9 @@ def verify_data(expected, key, data_type='str', comparison='eq'):
     with expected value
     """
     def validate():
+        """check that the types of expected and key matches
+        and the comparison between them as expected
+        """
         result = "TRUE"
         err_msg = ""
         exp = expected
@@ -1087,6 +1092,8 @@ def _validate_index_value(index, index_list, context_list):
 
 
 def verify_relation(actual_value, cond_value, operator, cond_type):
+    """verify the actual_value with the expected value
+    """
     ver_args = {}
     if cond_type:
         pNote("cond_type is {}".format(cond_type))
@@ -1359,6 +1366,9 @@ def get_filepath_from_system(datafile, system_name, *args):
 
 
 def get_var_by_string_prefix(string):
+    """get the value of string from either enivironment variables or
+    data repository which may be stored previous test steps
+    """
     if string.startswith("ENV."):
         return os.environ[string.split('.', 1)[1]]
     if string.startswith("REPO."):
@@ -1450,17 +1460,25 @@ def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
 
 
 def sub_from_env_var(raw_value, start_pattern="${", end_pattern="}"):
+    """substitute all the environment variables in raw_value
+    """
     return subst_var_patterns_by_prefix(raw_value, start_pattern, end_pattern,
                                         "ENV")
 
 
 def sub_from_data_repo(raw_value, start_pattern="${", end_pattern="}"):
+    """substitute all the data repository variables in raw_value
+    """
     return subst_var_patterns_by_prefix(raw_value, start_pattern, end_pattern,
                                         "REPO")
 
 
 def substitute_var_patterns(raw_value, start_pattern="${", end_pattern="}"):
+    """substitute env vars or data repository vars in raw_value
+    """
     def get_data(var):
+        """get nested value from data repository by going through dot separated var
+        """
         repokeys = var.split('.')
         val = get_object_from_datarepository(repokeys[0])
         for key in repokeys[1:]:

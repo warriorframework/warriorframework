@@ -39,6 +39,8 @@ class ArgumentDatatype(object):
         self.datatype = None
 
     def get_type_func(self, datatype='str'):
+        """get the function to do the type conversion
+        """
         return self.type_funcs[datatype]
 
     def convert_arg_to_datatype(self):
@@ -92,25 +94,21 @@ class ArgumentDatatype(object):
     def convert_string_to_datatype(self):
         """Converts an input string to a python datatype """
 
-        err_msg = ("User input argument value {0} does not match python syntax"
-                   " for '{1}'").format(self.arg_value, self.datatype)
+        err_msg = ("\nUser input argument value {0} does not match python "
+                   "syntax for '{1}'").format(self.arg_value, self.datatype)
         info_msg = ("Warrior FW will handle user input argument value as "
-                    "string (default)")
+                    "string (default)\n")
         # file type should be handled before coming here
         try:
             result = ast.literal_eval(self.arg_value)
         except Exception:
-            print '\n'
             print_error(err_msg)
             print_info(info_msg)
-            print '\n'
             print_error('unexpected error: {0}'.format(traceback.format_exc()))
             result = self.arg_value
         else:
             if not isinstance(result, self.datatype):
-                print '\n'
                 print_error(err_msg)
                 print_info(info_msg)
-                print '\n'
                 result = self.arg_value
         return result
