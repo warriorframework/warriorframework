@@ -29,6 +29,7 @@ class CliActions(object):
     related to actions performed on any command line interface """
 
     def __init__(self):
+        """ Constructor """
         self.resultfile = Utils.config_Utils.resultfile
         self.datafile = Utils.config_Utils.datafile
         self.logsdir = Utils.config_Utils.logsdir
@@ -117,7 +118,7 @@ class CliActions(object):
         output_dict = {}
         status = True
 
-        attempt = 1 if subsystem_list == None else len(subsystem_list)
+        attempt = 1 if subsystem_list is None else len(subsystem_list)
         for i in range(attempt):
             result = False
             subsystem_name = subsystem_list[i] if subsystem_list != None else None
@@ -171,7 +172,7 @@ class CliActions(object):
         system_name, subsystem_list = Utils.data_Utils.resolve_system_subsystem_list(self.datafile, system_name)
         status = True
 
-        attempt = 1 if subsystem_list == None else len(subsystem_list)
+        attempt = 1 if subsystem_list is None else len(subsystem_list)
         for i in range(attempt):
             Utils.testcase_Utils.pNote(wdesc)
             subsystem_name = subsystem_list[i] if subsystem_list != None else None
@@ -283,7 +284,7 @@ class CliActions(object):
         output_dict = {}
         status = True
 
-        attempt = 1 if subsystem_list == None else len(subsystem_list)
+        attempt = 1 if subsystem_list is None else len(subsystem_list)
         for i in range(attempt):
             Utils.testcase_Utils.pSubStep(wdesc)
             #Get name from the list when it's not 'None', otherwise, set it to 'None'
@@ -445,7 +446,7 @@ class CliActions(object):
         output_dict = {}
         status = True
 
-        attempt = 1 if subsystem_list == None else len(subsystem_list)
+        attempt = 1 if subsystem_list is None else len(subsystem_list)
         for i in range(attempt):
             Utils.testcase_Utils.pSubStep(wdesc)
             #Get name from the list when it's not 'None', otherwise, set it to 'None'
