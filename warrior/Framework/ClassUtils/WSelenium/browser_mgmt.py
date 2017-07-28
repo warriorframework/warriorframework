@@ -17,6 +17,7 @@ import re
 from time import sleep
 import urllib2
 from Framework.Utils.datetime_utils import get_current_timestamp
+from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.print_Utils import print_error, print_info, print_debug, print_exception
 
 
@@ -73,8 +74,9 @@ class BrowserManagement(object):
             print_exception(exception)
             status = False
         return status
-            
+
     # window management
+
 
     def close_window(self, browser_instance=None):
         """close the current window """
@@ -199,6 +201,15 @@ class BrowserManagement(object):
         if status == False:
             print_error("Incorrect URL provided")
         return status, url
+
+    def max_browser_return_status(self, browser, system_name, browser_name):
+        if browser:
+            status = self.maximize_browser_window(browser)
+        else:
+            pNote("Browser of system {0} and name {1} not found in the datarepository"
+                  .format(system_name, browser_name), "Exception")
+            status = False
+        return status
 
     def go_to(self, url, browser_instance=None):
         """Navigates the active browser instance to the provided URL."""
