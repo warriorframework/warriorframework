@@ -135,7 +135,8 @@ def compose_send_email(exec_type, abs_filepath, logs_dir, results_dir, result,
     # Temporary fix - HTML file can not be attached since it will be generated
     # only after the completion of the warrior execution. Creating html result
     # file at runtime will solve this.
-    if mail_on == "per_execution":
+    # KH. 2017-07-27
+    if mail_on in ["per_execution" , "first_failure", "every_failure"]:
         files = {report_attachment}
     else:
         files = {}
