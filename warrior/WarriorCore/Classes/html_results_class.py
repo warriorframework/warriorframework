@@ -60,8 +60,22 @@ class WarriorHtmlResults():
                 # for each testcase in testcase node list create testcase record.
                 for testcase_node in testcase_node_list:
                     self.create_testcase_record(testcase_node)
-                    tc_resultsdir = testcase_node.get("resultsdir")
-                    tc_logsdir = testcase_node.get("logsdir")
+                    tc_results_node = xml_Utils.getElementWithTagAttribValueMatch(testcase_node,
+                                                                                  'property',
+                                                                                  'name',
+                                                                                  'resultsdir')
+                    if tc_results_node is not None:
+                        tc_resultsdir = tc_results_node.get("value")
+                    else:
+                        tc_resultsdir = None
+                    tc_logs_node = xml_Utils.getElementWithTagAttribValueMatch(testcase_node,
+                                                                               'property',
+                                                                               'name',
+                                                                               'logsdir')
+                    if tc_logs_node is not None:
+                        tc_logsdir = tc_logs_node.get("value")
+                    else:
+                        tc_logsdir = None
                     tc_name = testcase_node.get("name")
                     tc_details = {"tc_resultsdir": tc_resultsdir,
                                   "tc_logsdir": tc_logsdir,
@@ -421,14 +435,15 @@ class WarriorHtmlResults():
         html_results_path = results_dir + os.sep + html_filename
         return html_results_path
 
-    def output_html(self):
+    def output_html(self, print_summary=True):
         """Output the html file and its required
         script/stylesheets/bootstrap files to results folder """
         tree = ET.ElementTree(self.html_root)
         tree.write(self.html_results_path)
-        print_info("++++ Results Summary ++++")
-        print_info("Open the Results summary file given below in a browser to "\
-                   "view results summary for this execution")
-        print_info("Results sumary file: {0}".format(self.html_results_path))
-        print_info("+++++++++++++++++++++++++")
-        
+        if print_summary is True:
+            print_info("++++ Results Summary ++++")
+            print_info("Open the Results summary file given below in a browser"
+                       " to view results summary for this execution")
+            print_info("Results sumary file: {0}".format(self.html_results_path))
+            print_info("+++++++++++++++++++++++++")
+
