@@ -429,37 +429,25 @@ class browser_actions(object):
                 if browser_inst:
                     browser_fullname = "{0}_{1}".format(system_name, browser_details["browser_name"])
                     output_dict[browser_fullname] = browser_inst
-                    current_browser = Utils.data_Utils.\
-                        get_object_from_datarepository(browser_fullname)
                     if "url" in browser_details and browser_details["url"]\
                             is not None:
                         result, url = self.browser_object.check_url(browser_details["url"])
                         if result == True:
                             result = self.browser_object.go_to(url,
                                                                browser_inst)
-                            if current_browser:
-                                self.browser_object.maximize_browser_window(current_browser)
-                            else:
-                                pNote("Browser of system {0} and name {1} not found in the"
-                                      "datarepository"
-                                      .format(system_name, browser_details["browser_name"]),
-                                      "Exception")
-                                status = False
+                            status = self.browser_object.\
+                                max_browser_return_status(output_dict[browser_fullname], system_name,
+                                                          browser_details["browser_name"])
                         else:
                             result = True
-                            if current_browser:
-                                self.browser_object.maximize_browser_window(current_browser)
-                            else:
-                                pNote("Browser of system {0} and name {1} not found in the"
-                                      "datarepository"
-                                      .format(system_name, browser_details["browser_name"]),
-                                      "Exception")
-                                status = False
+                            status = self.browser_object.\
+                                max_browser_return_status(output_dict[browser_fullname], system_name,
+                                                          browser_details["browser_name"])
             browser_details = {}
         Utils.testcase_Utils.report_substep_status(status)
-        if current_browser:
-            selenium_Utils.save_screenshot_onerror(status, current_browser)
-        return status
+        if output_dict[browser_fullname]:
+            selenium_Utils.save_screenshot_onerror(status, output_dict[browser_fullname])
+        return status,  output_dict
 
 
     def navigate_to_url(self, system_name, type="firefox", browser_name="all",
