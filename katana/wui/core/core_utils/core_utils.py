@@ -1,5 +1,5 @@
 import os
-from utilities.directory_traversal_utils import get_abs_path
+from utils.directory_traversal_utils import get_abs_path
 
 
 def get_app_path_from_name(app_name, config_file, base_directory):
@@ -16,7 +16,7 @@ def get_app_path_from_name(app_name, config_file, base_directory):
 
     """
     temp = app_name.split(".")
-    app_config_file_rel_path = ".." + os.sep
+    app_config_file_rel_path = ""
     for el in temp:
         app_config_file_rel_path += el
         app_config_file_rel_path += os.sep

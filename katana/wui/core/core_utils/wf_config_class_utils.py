@@ -1,4 +1,4 @@
-import json
+from utils.json_utils import read_json_data
 
 
 class WfConfigFileClass():
@@ -13,7 +13,7 @@ class WfConfigFileClass():
         """
         self.config_file_path = config_file_path
 
-        self.config_file_data = self._get_config_file_data()
+        self.config_file_data = read_json_data(self.config_file_path)
         self.config_details_dict = config_details_dict
 
     def set_config_details_dict(self, config_details_dict):
@@ -34,15 +34,3 @@ class WfConfigFileClass():
         else:
             self.config_details_dict = self.config_file_data.copy()
         return self.config_details_dict
-
-    def _get_config_file_data(self):
-        """
-        This function reads the wf_config file contenets and converts the string type to JSON (dict)
-
-        Returns:
-            data (dict): Contents of the config file
-
-        """
-        with open(self.config_file_path) as data_file:
-            data = json.load(data_file)
-        return data

@@ -1,23 +1,23 @@
-from utilities.directory_traversal_utils import get_parent_directory
-from wui.core.utils.app_directory_class_utils import AppDirectoryClass
-from wui.core.utils.core_utils import get_app_path_from_name
-from wui.core.utils.settings_file_class_utils import SettingsFileDetailsClass
-from wui.core.utils.urls_py_class_utils import UrlsFileDetailsClass
-from wui.core.utils.wf_config_class_utils import WfConfigFileClass
+from utils.directory_traversal_utils import get_parent_directory
+from wui.core.core_utils.app_directory_class_utils import AppDirectoryClass
+from wui.core.core_utils.core_utils import get_app_path_from_name
+from wui.core.core_utils.settings_file_class_utils import SettingsFileDetailsClass
+from wui.core.core_utils.urls_py_class_utils import UrlsFileDetailsClass
+from wui.core.core_utils.wf_config_class_utils import WfConfigFileClass
 
 
 class CoreIndex():
 
-    def __init__(self, current_directory, settings_file_path=None, urls_file_path=None):
+    def __init__(self, base_directory, settings_file_path=None, urls_file_path=None):
         """
         This is the constructor for the class CoreIndex()
 
         Args:
-            current_directory: Absolute path of current working directory
+            base_directory: Absolute path to the katana directory
             settings_file_path: Absolute path to the settings.py file
             urls_file_path: Absolute path to the urls.py file
         """
-        self.current_directory = current_directory
+        self.base_directory = base_directory
 
         self.available_apps = []
         self.create_adc_object()
@@ -57,7 +57,7 @@ class CoreIndex():
         """
         This function creates the AppDirectoryClass() object
         """
-        self.adc_obj = AppDirectoryClass(get_parent_directory(self.current_directory, level=2))
+        self.adc_obj = AppDirectoryClass(self.base_directory)
 
     def create_wcc_object(self):
         """
@@ -171,8 +171,7 @@ class CoreIndex():
                     apps[index]["name"] = app1.split(".")[-1].title()
 
                     app_config_file_path = get_app_path_from_name(app1, config_file_name,
-                                                                  get_parent_directory(
-                                                                      self.current_directory))
+                                                                  self.base_directory)
                     self.set_config_file_path_and_details(app_config_file_path, config_details_dict)
 
                     final_dict = self.wcc_obj.get_details_from_file()

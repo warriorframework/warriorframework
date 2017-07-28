@@ -16,8 +16,8 @@ from __future__ import unicode_literals
 import os
 from django.shortcuts import render
 from django.views import View
-from utilities.directory_traversal_utils import get_abs_path
-from wui.core.utils.core_index_class_utils import CoreIndex
+from utils.directory_traversal_utils import get_abs_path, get_parent_directory
+from wui.core.core_utils.core_index_class_utils import CoreIndex
 
 
 class CoreView(View):
@@ -39,14 +39,14 @@ class CoreView(View):
 
         template = 'core/index.html'
 
-        current_directory = os.path.dirname(os.path.realpath(__file__))
+        base_directory = get_parent_directory(os.path.dirname(os.path.realpath(__file__)), 2)
         apps = []
         config_file_name = "wf_config.json"
-        settings_file_path = get_abs_path("../settings.py", current_directory)
-        urls_file_path = get_abs_path("../urls.py", current_directory)
+        settings_file_path = get_abs_path(os.path.join("wui", "settings.py"), base_directory)
+        urls_file_path = get_abs_path(os.path.join("wui", "urls.py"), base_directory)
         config_details_dict = {"icon": "", "color": ""}
 
-        core_index_obj = CoreIndex(current_directory, settings_file_path=settings_file_path,
+        core_index_obj = CoreIndex(base_directory, settings_file_path=settings_file_path,
                                    urls_file_path=urls_file_path)
 
         available_apps = core_index_obj.get_available_apps()

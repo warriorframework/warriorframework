@@ -1,6 +1,6 @@
 import os
-from utilities.file_utils import readlines_from_file
-from utilities.string_utils import remove_trailing_characters_from_list, \
+from utils.file_utils import readlines_from_file
+from utils.string_utils import remove_trailing_characters_from_list, \
     remove_trailing_characters_from_string, split_str_at_last_index
 
 
