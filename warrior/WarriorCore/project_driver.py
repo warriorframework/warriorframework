@@ -24,7 +24,8 @@ import traceback
 from Framework.Utils import xml_Utils, file_Utils, datetime_utils, testcase_Utils
 from Framework.Utils.print_Utils import print_info, print_error, print_warning
 from WarriorCore.Classes import execution_files_class, junit_class
-from WarriorCore import common_execution_utils, sequential_testsuite_driver
+from WarriorCore import common_execution_utils, sequential_testsuite_driver, \
+ parallel_testsuite_driver
 
 
 def get_project_details(project_filepath, res_startdir, logs_startdir, data_repository):
@@ -184,13 +185,16 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
 
     execution_type = xml_Utils.getChildAttributebyParentTag(project_filepath, 'Details',
                                                             'type', 'exectype')
-    if execution_type.upper() == 'SEQUENTIAL_SUITES':
+
+    if execution_type.upper() == 'PARALLEL_SUITES':
+        print_info("Executing suites in parallel")
+        project_status = parallel_testsuite_driver.main(testsuite_list, project_repository,
+                                                        data_repository, auto_defects,
+                                                        ts_parallel=True)
+    elif execution_type.upper() == 'SEQUENTIAL_SUITES':
+        print_info("Executing suites sequentially")
         project_status = sequential_testsuite_driver.main(testsuite_list, project_repository,
-                                                          data_repository,
-                                                          auto_defects=auto_defects)
-    elif execution_type.upper() == 'PARALLEL_SUITES':
-        # To be developed
-        pass
+                                                          data_repository, auto_defects)
     else:
         print_error("unexpected project_type received...aborting execution")
         project_status = False

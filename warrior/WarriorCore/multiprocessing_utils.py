@@ -72,6 +72,23 @@ def update_ts_junit_resultfile(ts_junit_obj, tc_junit_list):
             ts_junit_obj.attrib = update_attribute(ts_junit_obj.root.find('testsuite').attrib, tc.attrib)
     return ts_junit_obj
 
+
+def update_pj_junit_resultfile(pj_junit_object, ts_junit_list):
+    """loop through ts_junit object and attach suite result to project(testsuites)
+    :Arguments:
+        1. pj_junit_object = target project
+        2. ts_junit_list = list of suite junit objects
+    """
+    for ts_junit_obj in ts_junit_list:
+        for ts in ts_junit_obj.root.iter('testsuite'):
+            # append suite result to testsuites
+            pj_junit_object.root.append(ts)
+            # update the count in testsuites attribute
+            pj_junit_object.attrib = update_attribute(pj_junit_object.root.attrib,
+                                                      ts.attrib)
+    return pj_junit_object
+
+
 def update_attribute(dict1, dict2):
     """merge the count for 2 attribute dictionary
     Arguments:

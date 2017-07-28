@@ -29,8 +29,7 @@ from Framework.Utils.testcase_Utils import pNote
 
 
 def execute_sequential_testsuites(testsuite_list, project_repository,
-                                  data_repository, auto_defects,
-                                  iter_pj_sys, ts_parallel, queue):
+                                  data_repository, auto_defects):
     """ Executes suites in a project sequentially """
 
     suite_cntr = 0
@@ -235,14 +234,12 @@ def execute_sequential_testsuites(testsuite_list, project_repository,
     return project_status
 
 
-def main(testsuite_list, project_repository, data_repository={},
-         auto_defects=False, iter_pj_sys=None, ts_parallel=False, queue=False):
+def main(testsuite_list, project_repository, data_repository={}, auto_defects=False):
     """ Executes suites in a project sequentially """
 
     try:
         project_status = execute_sequential_testsuites(testsuite_list, project_repository,
-                                                       data_repository, auto_defects,
-                                                       iter_pj_sys, ts_parallel, queue)
+                                                       data_repository, auto_defects)
     except Exception:
         project_status = False
         print_error('unexpected error {0}'.format(traceback.format_exc()))

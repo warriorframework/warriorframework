@@ -208,7 +208,7 @@ def print_suite_details_to_console(suite_repository, testsuite_filepath, junit_r
 
 def execute_testsuite(testsuite_filepath, data_repository, from_project,
                       auto_defects, jiraproj, res_startdir, logs_startdir,
-                      ts_onError_action):
+                      ts_onError_action, queue, ts_parallel):
     """Executes the testsuite (provided as a xml file)
             - Takes a testsuite xml file as input and
             sends each testcase to Basedriver for execution.
@@ -405,17 +405,31 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
         ts_junit_object.output_junit(data_repository['wp_results_execdir'],
                                      print_summary=False)
 
+    if ts_parallel:
+        ts_impact = data_repository['wt_ts_impact']
+        if ts_impact.upper() == 'IMPACT':
+            msg = "Status of the executed suite impacts project result"
+        elif ts_impact.upper() == 'NOIMPACT':
+            msg = "Status of the executed suite case does not impact project result"
+        print_debug(msg)
+        ts_name = Utils.file_Utils.getFileName(testsuite_filepath)
+        # put result into multiprocessing queue and later retrieve in corresponding driver
+        queue.put((test_suite_status, ts_name, ts_impact, suite_duration, ts_junit_object))
+
     return test_suite_status, suite_repository
 
-def main(testsuite_filepath, data_repository={},
-         from_project=False, auto_defects=False, jiraproj=None,
-         res_startdir=None, logs_startdir=None, ts_onError_action=None):
+
+def main(testsuite_filepath, data_repository={}, from_project=False, auto_defects=False,
+         jiraproj=None, res_startdir=None, logs_startdir=None, ts_onError_action=None,
+         queue=None, ts_parallel=False):
     """Executes a test suite """ 
     try:
         test_suite_status, suite_repository = execute_testsuite(testsuite_filepath,
-                                             data_repository, from_project,
-                                             auto_defects, jiraproj, res_startdir,
-                                             logs_startdir, ts_onError_action)
+                                                                data_repository, from_project,
+                                                                auto_defects, jiraproj,
+                                                                res_startdir, logs_startdir,
+                                                                ts_onError_action, queue,
+                                                                ts_parallel)
     except Exception:
         print_error('unexpected error {0}'.format(traceback.format_exc()))
         test_suite_status, suite_repository = False, None
