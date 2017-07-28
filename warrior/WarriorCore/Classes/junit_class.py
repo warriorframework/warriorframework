@@ -90,21 +90,21 @@ class Junit(object):
         return elem
 
     def get_family_with_timestamp(self, timestamp):
-        """use timestamp to locate pj, ts and tc in etree"""
+        """ Get case, suite & root element based on the timestamp value """
         for testsuite in list(self.root):
             for testcase in list(testsuite):
                 if testcase.get("timestamp") == timestamp:
                     return [testcase, testsuite, self.root]
 
     def get_tc_with_timestamp(self, timestamp):
-        """use timestamp to locate testcase in etree"""
+        """ Get case element based on the timestamp value """
         for testsuite in list(self.root):
             for testcase in list(testsuite):
                 if testcase.get("timestamp") == timestamp:
                     return testcase
 
     def get_ts_with_timestamp(self, timestamp):
-        """use timestamp to locate testsuite in etree"""
+        """ Get suite element based on the timestamp value """
         for testsuite in list(self.root):
             if testsuite.get("timestamp") == timestamp:
                 return testsuite
@@ -123,7 +123,7 @@ class Junit(object):
                           timestamp=tc_timestamp, keyword_items=keyword_items)
 
     def add_testcase_message(self, timestamp, status):
-        """add a testcase message based on status"""
+        """ Add a message element for fail/error/skip cases """
         elem = self.get_tc_with_timestamp(timestamp)
         if elem is None:
             elem = self.get_ts_with_timestamp(timestamp)
@@ -219,11 +219,11 @@ class Junit(object):
 
         elem.set(attr, value)
 
-    def _junit_to_html(self, junit_file):
+    def _junit_to_html(self, junit_file, print_summary=True):
         """ Convert junit file to html"""
         html_result_obj = WarriorHtmlResults(junit_file)
         html_result_obj.html_from_junit()
-        html_result_obj.output_html()
+        html_result_obj.output_html(print_summary)
 
     def output_junit(self, path, print_summary=True):
         """output the actual file
@@ -238,4 +238,4 @@ class Junit(object):
             summary_obj.print_result_in_console(fpath)
         print_info("\n")
 
-        self._junit_to_html(fpath)
+        self._junit_to_html(fpath, print_summary)
