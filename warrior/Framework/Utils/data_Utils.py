@@ -345,7 +345,7 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
         exec_text = testdata.get("execute").strip()
         execute_req = string_Utils.conv_str_to_bool(exec_text)
         if  execute_req and exec_flag:
-            testdata_key="{0}{1}".format(testdata.get('title', ""), \
+            testdata_key = "{0}{1}".format(testdata.get('title', ""), \
                                          _get_row(testdata))
             details_dict = _get_cmd_details(testdata, global_obj, system_name,
                                             varconfigfile, var_sub=var_sub)
@@ -452,10 +452,11 @@ def _get_cmd_details(testdata, global_obj, system_name,
             resultant_list = _get_verification_details(testdata, global_obj,
                                                        vfylist, attrib)
         elif param == "verify_on_list":
+            sys_list = details_dict["sys_list"]
             vfylist = details_dict["verify_list"]
             resultant_list = _get_verification_details(testdata, global_obj,
                                                        vfylist, attrib,
-                                                       system_name)
+                                                       system_name, sys_list)
         elif param == "verify_map_list":
             vfylist = details_dict["verify_list"]
             vfylist, maplist = _get_mapping_details(global_obj, vfylist)
@@ -492,7 +493,7 @@ def _get_cmdparams_list(testdata, global_obj, cmd_attrib):
         default_value = global_cmd_params.get(
             cmd_attrib) if global_cmd_params is not None else None
         if not cmd_attrib in global_exempt_list:
-            value = default_value if value is None or value is "" else value
+            value = default_value if value is None or value == "" else value
         else:
             if cmd_attrib in testdata.attrib and cmd_attrib == "monitor":
                 value = testdata.attrib[cmd_attrib]
@@ -500,7 +501,8 @@ def _get_cmdparams_list(testdata, global_obj, cmd_attrib):
     return resultant_list
 
 
-def _get_verification_details(testdata, global_obj, verify_list, cmd_attrib, system_name=None):
+def _get_verification_details(testdata, global_obj, verify_list, cmd_attrib,
+                              system_name=None, sys_list=None):
     """From the testdata file takes a testdata node and
     a list of nodes with verification present as input
 
@@ -510,7 +512,7 @@ def _get_verification_details(testdata, global_obj, verify_list, cmd_attrib, sys
     g_verify = global_obj.find("verifications") if global_obj is not None \
         else None
     resultant_list = []
-    for verify in verify_list:
+    for index, verify in enumerate(verify_list):
         if verify is None or verify == "":
             value = None
             resultant_list.append(value)
@@ -540,9 +542,13 @@ def _get_verification_details(testdata, global_obj, verify_list, cmd_attrib, sys
                         print_warning(
                             "could not find specific or global value  " \
                             "for verification node={0}".format(element))
-                if value is None or value is "":
+                if value is None or value == "":
                     value = 'yes' if cmd_attrib == "found" else value
-                    value = system_name if cmd_attrib == "verify_on" else value
+                    if cmd_attrib == "verify_on" and sys_list is not None and \
+                       sys_list[index] is not None:
+                        value = sys_list[index]
+                    else:
+                        value = system_name
                 value = value if not value else str(value).strip()
                 resultant_sublist.append(value)
             resultant_list.append(resultant_sublist)
@@ -1260,13 +1266,15 @@ def resolve_argument_value_to_get_tag_value(datafile, system_name,
     if element_value_in_argument.startswith("tag"):
         tag_name = evaluate_tc_argument_value(element_value_in_argument)
         if tag_name is not False:
-            system_name_list = xml_Utils.get_matching_firstlevel_children_from_root(datafile, "system")
+            system_name_list = xml_Utils.get_matching_firstlevel_children_from_root(datafile, 
+                                                                                    "system")
             if system_name_list == [] or system_name_list is None or system_name_list is False:
                 return element_value_in_argument
             else:
                 for system in system_name_list:
                     if system.attrib["name"] == system_name:
-                        node_list = xml_Utils.get_matching_firstlevel_children_from_node(system, tag_name)
+                        node_list = xml_Utils.get_matching_firstlevel_children_from_node(system,
+                                                                                         tag_name)
                         if node_list == [] or node_list is None or node_list is False:
                             return False
                         else:
@@ -1292,7 +1300,6 @@ def get_user_specified_tag_values_in_tc(datafile, system_name, **kwargs):
     for element in kwargs:
         in_list.append(element)
     credentials = get_credentials(datafile, system_name, in_list)
-
     for element in kwargs:
         if kwargs[element] is not None:
             credentials[element] = resolve_argument_value_to_get_tag_value(datafile, system_name, kwargs[element])
