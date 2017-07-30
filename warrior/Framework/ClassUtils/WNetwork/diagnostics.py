@@ -14,9 +14,8 @@ limitations under the License.
 """Warrior Network diagnostics module """
 import re
 from Framework.ClassUtils.WNetwork.base_class import Base
+from Framework.Utils import  cli_Utils
 from Framework.Utils.testcase_Utils import pNote
-
-
 class Diag(Base):
     """Warrior Diagnostics class """
 
@@ -45,9 +44,10 @@ class Diag(Base):
         if ip_type == "ipv6":
             ping_cmd = "ping6"
 
-        command = ping_cmd + " -c {} {}".format(count, dest_address)
+        command = ping_cmd +" -c {} {}".format(count, dest_address)
 
-        _, output = session_object.send_command(".*", prompt, command)
+        output = cli_Utils.send_command_and_get_response(session_object, ".*",
+                                                         prompt, command)
         if " 0% packet loss" in output or "alive" in output:
             pNote("ping successfully completed")
             status = True
@@ -55,7 +55,7 @@ class Diag(Base):
             pNote("ping command failed")
             status = False
 
-        return status
+        return  status
 
     @staticmethod
     def traceroute_from_remotehost(session_object, ip_type, dest_address,
@@ -77,9 +77,10 @@ class Diag(Base):
         if ip_type == "ipv6":
             traceroute_cmd = "traceroute6"
 
-        command = traceroute_cmd + " {}".format(dest_address)
+        command = traceroute_cmd +" {}".format(dest_address)
 
-        _, output = session_object.send_command(".*", prompt, command)
+        output = cli_Utils.send_command_and_get_response(session_object, ".*",
+                                                         prompt, command)
         if not isinstance(output, str):
             pNote("traceroute command returned invalid value", "error")
             return False
@@ -97,3 +98,4 @@ class Diag(Base):
             pNote("Traceroute failed", "error")
 
         return status
+

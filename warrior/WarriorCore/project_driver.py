@@ -11,11 +11,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
+#!/usr/bin/python
+"""This the project driver that executes a collections of
+Warrior testsuites """
+
 import sys
 import os
 import shutil
 import time
 import copy
+
 import WarriorCore.testsuite_driver as testsuite_driver
 import WarriorCore.onerror_driver as onerror_driver
 import traceback
@@ -25,11 +30,6 @@ from Framework.Utils.print_Utils import print_info, print_error, print_debug, pr
 from WarriorCore.Classes import execution_files_class, junit_class
 from WarriorCore import testsuite_utils, common_execution_utils
 from Framework.Utils.testcase_Utils import pNote
-
-# !/usr/bin/python
-"""This the project driver that executes a collections of
-Warrior testsuites """
-
 
 def get_project_details(project_filepath, res_startdir, logs_startdir, data_repository):
     """Gets all details of the Project from its xml file"""
@@ -58,7 +58,8 @@ def get_project_details(project_filepath, res_startdir, logs_startdir, data_repo
         print_warning("title is missing, please provide a title for the project")
     else:
         project_title = str(project_title).strip()
-    if def_on_error_value is None or def_on_error_value is False:
+
+    if def_on_error_value  is None or def_on_error_value is False:
         def_on_error_value = None
 
     if data_repository.has_key('ow_resultdir'):
@@ -75,8 +76,8 @@ def get_project_details(project_filepath, res_startdir, logs_startdir, data_repo
     project_execution_dir = os.path.dirname(project_resultfile)
     wp_results_execdir = efile_obj.results_execdir
     wp_logs_execdir = efile_obj.logs_execdir
-    # project_resultfile = open(project_resultfile, 'a+')
-    # Utils.config_Utils.junit_file(project_resultfile)
+    #project_resultfile = open(project_resultfile, 'a+')
+    #Utils.config_Utils.junit_file(project_resultfile)
 
     project_repository['title'] = project_title
     project_repository['operating_system'] = operating_system
@@ -156,16 +157,13 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
     project_start_time = Utils.datetime_utils.get_current_timestamp()
     print_info("[{0}] Project execution starts".format(project_start_time))
     suite_cntr = 0
-    # project_status = True
     goto_testsuite = False
     ts_status_list = []
     ts_impact_list = []
     impact_dict = {"IMPACT": "Impact", "NOIMPACT": "No Impact"}
     project_dir = os.path.dirname(project_filepath)
-    project_title = Utils.xml_Utils.getChildTextbyParentTag(project_filepath, 'Details', 'Title')
     project_repository = get_project_details(project_filepath, res_startdir, logs_startdir,
                                              data_repository)
-    project_repository['project_title'] = project_title
     testsuite_list = get_testsuite_list(project_filepath)
 
     # project_resultfile = project_repository['project_resultfile']
@@ -181,10 +179,7 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
     pj_junit_object = junit_class.Junit(filename=project_name, timestamp=project_start_time,
                                         name=project_name)
 
-    pj_junit_object.update_attr("resultsdir",
-                                project_repository['project_execution_dir'],
-                                "pj", project_start_time)
-    pj_junit_object.update_attr("title", project_repository['project_title'], "pj",
+    pj_junit_object.update_attr("resultsdir", project_repository['project_execution_dir'], "pj",
                                 project_start_time)
     pj_junit_object.add_property("resultsdir", project_repository['project_execution_dir'], "pj",
                                  project_start_time)
@@ -199,7 +194,6 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
 
     while suite_cntr < len(testsuite_list):
         testsuite = testsuite_list[suite_cntr]
-        # suite_junit_type = 'file'
         suite_cntr += 1
 
         testsuite_rel_path = testsuite_utils.get_path_from_xmlfile(testsuite)
@@ -248,7 +242,7 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
             else:
                 msg = print_info('skipped testsuite: {0} '.format(testsuite_path))
                 testsuite_resultfile = '<testsuite errors="0" failures="0" name="{0}" '\
-                'skipped="0" tests="0" time="0" timestamp="{1}" > '
+                'skipped="0" tests="0" time="0" timestamp="{1}" > '\
                 '<skipped message="{2}"/> </testsuite>'.format(testsuite_name,
                                                                project_start_time,
                                                                msg)
@@ -274,10 +268,10 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
             msg = print_error("Test suite does not exist in "
                               "provided path: {0}".format(testsuite_path))
             testsuite_status = 'ERROR'
-            # testsuite_resultfile = '<testsuite errors="0" failures="0" name="{0}" '\
+            testsuite_resultfile = '<testsuite errors="0" failures="0" name="{0}" '\
             'skipped="0" tests="0" time="0" timestamp="{1}" > '\
             '<error message="{2}"/> </testsuite>'.format(testsuite_name, project_start_time, msg)
-            # suite_junit_type = 'string'
+            suite_junit_type = 'string'
             if goto_testsuite and goto_testsuite == str(suite_cntr):
                 goto_testsuite = False
             elif goto_testsuite and goto_testsuite != str(suite_cntr):
@@ -308,7 +302,7 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
 
         ts_status_list.append(testsuite_status)
         ts_impact_list.append(testsuite_impact)
-        if testsuite_impact.upper() == 'IMPACT':
+        if testsuite_impact.upper() == 'IMPACT': 
             msg = "Status of the executed test suite impacts Project result"
         elif testsuite_impact.upper() == 'NOIMPACT':
             msg = "Status of the executed test suite does not impact project result"
@@ -322,13 +316,13 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
             if testsuite.find("runmode") is not None and\
               testsuite.find("runmode").get("attempt") is not None:
                 print_info("runmode attempt: {0}".format(testsuite.find("runmode").get("attempt")))
-            # if runmode is 'ruf' & testsuite_status is False, skip the repeated execution of same
-            # test suite and move to next actual test suite
+            # if runmode is 'ruf' & step_status is False, skip the repeated
+            # execution of same TC step and move to next actual step
             if not project_error_value and runmode == "RUF" and\
                     testsuite_status is False:
                 goto_testsuite = str(value)
-            # if runmode is 'rup' & testsuite_status is True, skip the repeated
-            # execution of same testsuite and move to next actual testsuite
+            # if runmode is 'rup' & step_status is True, skip the repeated
+            # execution of same TC step and move to next actual step
             elif runmode == "RUP" and testsuite_status is True:
                 goto_testsuite = str(value)
         elif retry_type is not None:
@@ -362,9 +356,8 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
                             pNote("Wait for {0}sec before "
                                   "retrying".format(retry_interval))
                             pNote("The condition value '{0}' does not match "
-                                  "with the expected value '{1}'".
-                                  format(data_repository[retry_cond],
-                                         retry_cond_value))
+                                  "with the expected value '{1}'".format(data_repository[retry_cond],
+                                                                         retry_cond_value))
                             time.sleep(int(retry_interval))
                         else:
                             condition_met = False

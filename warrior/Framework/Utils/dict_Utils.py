@@ -40,9 +40,7 @@ def convert_string_to_dict(element, key_value_pair_sep=";", key_value_sep="="):
             element[i] = element[i].strip()
             if element[i] is not None and element[i] is not False \
                     and element[i] != "":
-                # element[i] will be split into 2 based on the key_value_sep
-                # element[i] will be split on the first occurance of delimiter
-                element[i] = element[i].split(key_value_sep, 1)
+                element[i] = element[i].split(key_value_sep)
                 for j in range(0, len(element[i])):
                     element[i][j] = element[i][j].strip()
                 if len(element[i]) < 2:

@@ -364,7 +364,7 @@ def deletLinesFromLast(filename):
 
     # Searches existing file for text and creates new file without the lines containing the text.
     # sradhakr - changed the name from deleteFileLines to deleteMatchingFileLines
-def deleteMatchingFileLines(origfile, newfile, arrValues):
+def deleteMatchingFileLines (origfile, newfile, arrValues):
     fin  = open(origfile, 'r')
     fout = open(newfile, 'w')
     for line in fin:
@@ -419,8 +419,7 @@ def copyFileContents(srcfile, dstfile):
 #                                     = EOF | eof searches the entire file
 #========================================================================
 
-
-def getLinesBetweenMatchingLines(srcfile, dstfile, start, end, no_of_search=1):
+def getLinesBetweenMatchingLines (srcfile, dstfile, start, end, no_of_search=1):
     lines = open(srcfile,'r').readlines()
     #print_info ("lines:%s"% lines)
     i=0
@@ -472,12 +471,14 @@ def getLinesBetweenMatchingLines(srcfile, dstfile, start, end, no_of_search=1):
 # The file with the created name has to be opened seperately
 #
 #===============================================================================
+
 def getSubDirFile(subdir, existing_dir, ext):
     path        = createDir_addtimestamp(existing_dir, subdir )
     fullpath    = path + os.sep + subdir + '.' + ext
     if fileExists(fullpath):
         fullpath = addTimeDate(fullpath)
     return fullpath
+
 
 
 def create_execution_directory(filepath):
@@ -502,6 +503,7 @@ def create_zipdir(zipname, path, extn='zip'):
     output_filepath = path + os.sep + zipname
     zip_file_path = shutil.make_archive(output_filepath, extn, path)
     return zip_file_path
+
 
 
 def getAbsPath(relative_path, start_directory="."):
@@ -545,7 +547,6 @@ def get_parent_dir(path, child):
         path = get_parent_dir(path, child)
     return path
 
-
 def check_extension_get_absolute_path(relative_path, start_directory, list_extn=[".json", ".xml", ".txt"]):
     """
     This is wrapper function that gets and verifies extention of a file path
@@ -559,7 +560,6 @@ def check_extension_get_absolute_path(relative_path, start_directory, list_extn=
         value = relative_path
     return value
 
-
 def get_absolute_path_from_start_directory(relative_path, start_directory, extension=".json"):
     """
     DEPRECATED IN 2.9
@@ -571,7 +571,6 @@ def get_absolute_path_from_start_directory(relative_path, start_directory, exten
     """
     print_error("This function is deprecated in 2.9, use check_extension_get_absolute_path or getAbspath instead")
     return check_extension_get_absolute_path(relative_path, start_directory, extension)
-
 
 def get_absolute_path_of_directory(relative_path_of_dir, start_directory):
     """
@@ -591,18 +590,6 @@ def get_absolute_path_of_directory(relative_path_of_dir, start_directory):
 # ==============================================================================
 # File Operations
 # ==============================================================================
-
-
-def log_result(oper, result):
-    """the methods in file_actions class use this to log the result of
-    its operation
-    """
-    resmsg = "completed successfully" if result else "failed"
-    msg = "file {} operation {}".format(oper, resmsg)
-    if result:
-        print_info(msg)
-    else:
-        print_error(msg)
 
 
 def open_file(newfile, mode):

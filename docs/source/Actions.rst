@@ -12,7 +12,6 @@ Subpackages
     Actions.CommonActions
     Actions.DemoActions
     Actions.ExampleActions
-    Actions.FileActions
     Actions.NetconfActions
     Actions.NetworkActions
     Actions.RestActions

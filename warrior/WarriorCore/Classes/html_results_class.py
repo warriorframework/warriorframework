@@ -435,15 +435,14 @@ class WarriorHtmlResults():
         html_results_path = results_dir + os.sep + html_filename
         return html_results_path
 
-    def output_html(self, print_summary=True):
+    def output_html(self):
         """Output the html file and its required
         script/stylesheets/bootstrap files to results folder """
         tree = ET.ElementTree(self.html_root)
         tree.write(self.html_results_path)
-        if print_summary is True:
-            print_info("++++ Results Summary ++++")
-            print_info("Open the Results summary file given below in a browser"
-                       " to view results summary for this execution")
-            print_info("Results sumary file: {0}".format(self.html_results_path))
-            print_info("+++++++++++++++++++++++++")
-
+        print_info("++++ Results Summary ++++")
+        print_info("Open the Results summary file given below in a browser to "\
+                   "view results summary for this execution")
+        print_info("Results sumary file: {0}".format(self.html_results_path))
+        print_info("+++++++++++++++++++++++++")
+        

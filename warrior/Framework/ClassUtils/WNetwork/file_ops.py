@@ -17,8 +17,6 @@ import re
 from Framework.ClassUtils.WNetwork.base_class import Base
 from Framework.Utils import cli_Utils, file_Utils
 from Framework.Utils.testcase_Utils import pNote
-
-
 class FileOps(Base):
     """Warrior File operations class """
 
@@ -39,7 +37,9 @@ class FileOps(Base):
             1. status(bool) - True/False
 
         """
-        _, output = session_object.send_command(".*", ">", "put {}".format(filename))
+        output = cli_Utils.send_command_and_get_response(session_object, ".*",
+                                                         ">", "put {}".
+                                                         format(filename))
         if output.find("226 Transfer complete"):
             status = True
             pNote("successfully put file from dest")
@@ -62,8 +62,10 @@ class FileOps(Base):
             1. status(bool) - True/False
 
         """
-        _, output = session_object.send_command(".*", ">", "get {}".format(filename))
-        if output.find("Fetching {0} to {1}".format(filedir + "/" + filename, filename)):
+        output = cli_Utils.send_command_and_get_response(session_object, ".*", ">",
+                                                         "get {}".format(filename))
+        if output.find("Fetching {0} to {1}".format(filedir+"/"+
+                                                    filename, filename)):
             status = True
             pNote("successfully got file from dest")
         else:
@@ -85,7 +87,9 @@ class FileOps(Base):
             1. status(bool) - True/False
 
          """
-        _, output = session_object.send_command(".*", ">", "put {}".format(filename))
+        output = cli_Utils.send_command_and_get_response(session_object,
+                                                         ".*", ">",
+                                                         "put {}".format(filename))
         if output.find("Uploading {0} to {1}".format(filename, filedir+"/"+filename)):
             status = True
             pNote("successfully put file from dest")
@@ -109,7 +113,9 @@ class FileOps(Base):
          """
 
         # To check Fetching from remote host
-        _, output = session_object.send_command(".*", ">", "get {}".format(filename))
+        output = cli_Utils.send_command_and_get_response(session_object, ".*",
+                                                         ">", "get {}".
+                                                         format(filename))
         if output.find("226 Transfer complete"):
             status = True
             pNote("successfully got file from dest")
@@ -138,7 +144,9 @@ class FileOps(Base):
         if session == "ftp":
 
             command = "ls {} ".format(filename)
-            _, output = session_object.send_command(".*", ">", command)
+            output = cli_Utils.send_command_and_get_response(session_object,
+                                                             ".*", ">",
+                                                             command)
             size1 = ([line for line in output.split("\n")
                       if filename in line][1].split(" "))
             size = [line for line in size1 if line != ""][4]
@@ -146,20 +154,22 @@ class FileOps(Base):
         elif session == "sftp":
 
             command = "ls -l {} ".format(filename)
-            _, output = session_object.send_command(".*", ">", command)
+            output = cli_Utils.send_command_and_get_response(session_object,
+                                                             ".*", ">", command)
             size1 = output.split("\n")[1].split(" ")
             size = [line for line in size1 if line != ""][4]
         else:
 
             command = "ls -l {} | awk '{{print $5}}'".format(filename)
-            _, output = session_object.send_command(".*", prompt, command)
+            _, output = cli_Utils.send_command(session_object, ".*",
+                                               prompt, command)
             # to remove discrepancy between solaris and linux
             output_list = [output.replace('\r', '')
                            for output in output.split("\n")
                            if command not in output]
             size = output_list[0]
 
-        pNote("File:{0} size found to be:{1}".format(filename, str(size)))
+        pNote("File:%s size found to be:%s"%(filename, str(size)))
         return size
 
     @staticmethod
@@ -179,9 +189,10 @@ class FileOps(Base):
         """
         status = False
         command = "ls -l {}".format(filename)
-        _, output = session_object.send_command(".*", prompt, command)
+        _, output = cli_Utils.send_command(session_object, ".*", prompt,
+                                           command)
         if output.find("No such file or directory") >= 0:
-            pNote("File:{} not  found".format(filename), "error")
+            pNote("File:%s not  found"%(filename), "error")
         else:
             status = True
 
@@ -201,9 +212,10 @@ class FileOps(Base):
             1. status(bool) = True/False
 
         """
-        session_object.send_command(".*", ":", command)
-        session_object.send_command(".*", ":", username)
-        status, response = session_object.send_command(".*", ">", password)
+        cli_Utils.send_command(session_object, ".*", ":", command)
+        cli_Utils.send_command(session_object, ".*", ":", username)
+        status, response = cli_Utils.send_command(session_object,
+                                                  ".*", ">", password)
         if status and "Login successful" in response:
             status = True
             pNote("ftp session established successfully")
@@ -227,7 +239,8 @@ class FileOps(Base):
             1. status(bool) = True/False
 
         """
-        status, response = session_object.send_command(".*", "password:|>", command)
+        status, response = cli_Utils.send_command(session_object, ".*",
+                                                  "password:|>", command)
 
         if re.search('.*(?i)remote host identification has changed.*', response):
             line_del = re.search('Offending key in .*?:(\d+)', response).group(1)
@@ -235,16 +248,22 @@ class FileOps(Base):
             ssh_key_remove = "sed '"+line_del+"d' ~/.ssh/known_hosts> /tmp/temp "\
                              "&& mv -f /tmp/temp  ~/.ssh/known_hosts"
 
-            status, _ = session_object.send_command(".*", prompt, ssh_key_remove)
+            status, _ = cli_Utils.send_command(session_object, ".*",
+                                               prompt, ssh_key_remove)
 
-            status, response = session_object.send_command(".*", "password:|>", command)
+            status, response = cli_Utils.send_command(session_object, ".*",
+                                                      "password:|>", command)
         if re.search('(yes/no)', response):
-            status, _ = session_object.send_command(".*", '.*(?i)password.*', 'yes')
-            if status is not True:
-                status, response = session_object.send_command(".*", "password:|>", command)
+            status, _ = cli_Utils.send_command(session_object, ".*",
+                                               '.*(?i)password.*', 'yes')
+            if status != True:
+                status, response = cli_Utils.send_command(session_object, ".*",
+                                                          "password:|>", command)
 
-        status, _ = session_object.send_command(".*", ">", password)
-        if status is True:
+        status, _ = cli_Utils.send_command(session_object, ".*", ">",
+                                           password)
+        if status == True:
+            status = True
             pNote("sftp session established successfully")
         else:
             status = False
@@ -281,9 +300,9 @@ class FileOps(Base):
 
         """
         put = True if ("put" in ftp_operation or "both" in ftp_operation) \
-            else False
+                   else False
         get = True if ("get" in ftp_operation or "both" in ftp_operation) \
-            else False
+                   else False
 
         status_get = False if get else True
         status_put = False if put else True
@@ -297,9 +316,11 @@ class FileOps(Base):
         filedir_dest, filename_dest = (file_Utils.getDirName(filepath_dest),
                                        file_Utils.getFileName(filepath_dest))
 
-        command = ftp_cmd + " [{}]".format(dest_address)
+
+        command = ftp_cmd +" [{}]".format(dest_address)
         # move into the path
-        session_object.send_command(".*", prompt, "cd {}".format(filedir))
+        cli_Utils.send_command(session_object, ".*", prompt, "cd {}".
+                               format(filedir))
 
         # check whether file is available
         putfilepresent = cls.file_exists_on_remote(session_object, prompt,
@@ -315,7 +336,8 @@ class FileOps(Base):
         status = cls.start_ftp_on_remote(session_object, command,
                                          username, password)
         if status:
-            session_object.send_command(".*", ">", "cd {}".format(filedir_dest))
+            cli_Utils.send_command(session_object, ".*", ">", "cd {}".
+                                   format(filedir_dest))
 
             if putfilepresent and put:
                 status_put = cls.ftp_put_from_remote(session_object, filename)
@@ -323,8 +345,8 @@ class FileOps(Base):
                                                          filename,
                                                          session="ftp")
                 if status_put:
-                    pNote("Actual put file size:{0} Transferred put file size"
-                          ":{1}".format(str(put_file_size), str(put_file_size_transf)))
+                    pNote("Actual put file size:%s Transferred put file size"
+                          ":%s"%(str(put_file_size), str(put_file_size_transf)))
                     if str(put_file_size) == str(put_file_size_transf):
                         status_put = True
                         pNote("Transferred put file size matches the origin")
@@ -346,7 +368,7 @@ class FileOps(Base):
                                                          filename_dest)
 
                     # exiting the ftp terminal
-                    session_object.send_command(".*", prompt, "exit")
+                    cli_Utils.send_command(session_object, ".*", prompt, "exit")
 
                     if status_get:
                         # check the get file size after transfer
@@ -354,8 +376,9 @@ class FileOps(Base):
                                                               prompt,
                                                               filename_dest)
 
-                        pNote("Actual get file size:{0} Transferred get file"
-                              "size:{1}".format(str(gfile_size), str(gfile_size_transf)))
+                        pNote("Actual get file size:%s Transferred get file"
+                              "size:%s"%(str(gfile_size),
+                                         str(gfile_size_transf)))
                         if str(gfile_size) == str(gfile_size_transf):
                             status_get = True
                             pNote("Transferred get file size matches the origin")
@@ -367,12 +390,12 @@ class FileOps(Base):
                           "error")
 
             else:
-                session_object.send_command(".*", prompt, "exit")
+                cli_Utils.send_command(session_object, ".*", prompt, "exit")
 
             status = status_get and status_put
         else:
             status = False
-        return status
+        return  status
 
     @classmethod
     def sftp_from_remotehost(cls, session_object, ip_type, sftp_operation, port,
@@ -405,9 +428,9 @@ class FileOps(Base):
 
         """
         put = True if ("put" in sftp_operation or "both" in sftp_operation) \
-            else False
+                   else False
         get = True if ("get" in sftp_operation or "both" in sftp_operation) \
-            else False
+                   else False
 
         status_get = False if get else True
         status_put = False if put else True
@@ -422,9 +445,10 @@ class FileOps(Base):
             sftp_cmd = "sftp6"
 
         # move into the path
-        session_object.send_command(".*", prompt, "cd {}".format(filedir))
-        command = sftp_cmd + "  -oPort={0} {1}@{2}".format(port, username,
-                                                           dest_address)
+        cli_Utils.send_command(session_object, ".*", prompt, "cd {}".
+                               format(filedir))
+        command = sftp_cmd +"  -oPort={0} {1}@{2}".format(port, username,
+                                                          dest_address)
 
         # check whether file is available
         putfilepresent = cls.file_exists_on_remote(session_object, prompt,
@@ -440,7 +464,8 @@ class FileOps(Base):
         status = cls.start_sftp_on_remote(session_object, command,
                                           password, prompt)
         if status:
-            session_object.send_command(".*", ">", "cd {}".format(filedir_dest))
+            cli_Utils.send_command(session_object, ".*", ">", "cd {}".
+                                   format(filedir_dest))
 
             if putfilepresent and put:
                 status_put = cls.sftp_put_from_remote(session_object,
@@ -449,8 +474,8 @@ class FileOps(Base):
                                                          filename,
                                                          session="sftp")
                 if status_put:
-                    pNote("Actual put file size:{0} Transferred put file size"
-                          ":{1}".format(str(put_file_size), str(put_file_size_transf)))
+                    pNote("Actual put file size:%s Transferred put file size"
+                          ":%s"%(str(put_file_size), str(put_file_size_transf)))
                     if str(put_file_size) == str(put_file_size_transf):
                         status_put = True
                         pNote("Transferred put file size matches the origin")
@@ -473,7 +498,7 @@ class FileOps(Base):
                                                           filedir_dest)
 
                     # exiting the sftp terminal
-                    session_object.send_command(".*", prompt, "exit")
+                    cli_Utils.send_command(session_object, ".*", prompt, "exit")
 
                     if status_get:
                         # check the get file size after transfer
@@ -481,8 +506,9 @@ class FileOps(Base):
                                                               prompt,
                                                               filename_dest)
 
-                        pNote("Actual get file size:{0} Transferred get file"
-                              "size:{1}".format(str(gfile_size), str(gfile_size_transf)))
+                        pNote("Actual get file size:%s Transferred get file"
+                              "size:%s"%(str(gfile_size),
+                                         str(gfile_size_transf)))
                         if str(gfile_size) == str(gfile_size_transf):
                             status_get = True
                             pNote("Transferred get file size matches the origin")
@@ -494,10 +520,10 @@ class FileOps(Base):
                           "error")
 
             else:
-                session_object.send_command(".*", prompt, "exit")
+                cli_Utils.send_command(session_object, ".*", prompt, "exit")
 
             status = status_get and status_put
         else:
             status = False
-        return status
+        return  status
 
