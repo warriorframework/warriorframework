@@ -219,10 +219,8 @@ class Junit(object):
 
         elem.set(attr, value)
 
-    def _junit_to_html(self, junit_file):
-        """ Convert junit file to html
-        :type junit_file: object
-        """
+    def _junit_to_html(self, junit_file, print_summary=True):
+        """ Convert junit file to html"""
         if hasattr(self, 'html_result_obj') == False:
             self.html_result_obj = WarriorHtmlResults(junit_file)
         self.html_result_obj.generateHTML( junit_file, None )
