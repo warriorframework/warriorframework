@@ -240,8 +240,6 @@ class WarriorHtmlResults():
                                            ("Errors", "errors"),
                                            ("Exceptions", "exceptions"),
                                            ("Skipped","skipped")])
->>>>>>> origin/develop
-
 __author__ = 'Keenan Jabri'
 
 
