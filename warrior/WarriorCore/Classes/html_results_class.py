@@ -18,8 +18,7 @@ from Framework.Utils import xml_Utils, file_Utils
 from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.print_Utils import print_info
 from Framework.Utils.xml_Utils import getElementWithTagAttribValueMatch
-<<<<<<< HEAD
-=======
+
 class WarriorHtmlResults():
     """Warrior html results class """
 
@@ -358,7 +357,6 @@ class WarriorHtmlResults:
 
         return html_results_path
 
-<<<<<<< HEAD
     def merge_html(self, dynamic_html):
         """ merge html from template and dynamic """
         temp = open(self.html_template)
@@ -399,7 +397,7 @@ class WarriorHtmlResults:
                    "view results summary for this execution")
         print_info("Results sumary file: {0}".format(self.get_path()))
         print_info("+++++++++++++++++++++++++")
-=======
+
     def output_html(self, print_summary=True):
         """Output the html file and its required
         script/stylesheets/bootstrap files to results folder """
@@ -412,4 +410,3 @@ class WarriorHtmlResults:
             print_info("Results sumary file: {0}".format(self.html_results_path))
             print_info("+++++++++++++++++++++++++")
 
->>>>>>> origin/develop
