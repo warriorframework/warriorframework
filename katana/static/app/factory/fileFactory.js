@@ -14,6 +14,7 @@ limitations under the License.
 app.factory('fileFactory', ['$http', '$routeParams', '$q', function($http, $routeParams, $q) {
     return {
 
+         
         checkfileexist: function(filename, filetype) {
             var deferred = $q.defer();
             $http.get('/checkfileexist/' + filename + '/' + filetype)
@@ -153,6 +154,33 @@ app.factory('fileFactory', ['$http', '$routeParams', '$q', function($http, $rout
                 })
                 .error(function(data, status, headers, config) {
                         deferred.reject("Error reading tootip file : " + status + ' ' + JSON.stringify(headers));
+                });
+            return deferred.promise;
+        },
+
+        winXml: function(path) {
+            
+            var deferred = $q.defer();
+            $http.get('/newWinXml/' + path)
+                .success(function(data, status, headers, config) {
+                    
+                    deferred.resolve(data);
+                })
+                .error(function(data, status, headers, config) {
+                    deferred.reject("Could not retrieve file paths: " + status + ' ' + JSON.stringify(headers));
+                });
+            return deferred.promise;
+        },
+
+        linuxXml: function(path) {
+     
+            var deferred = $q.defer();
+            $http.get('/newLinuxXml/' + path)
+                .success(function(data, status, headers, config) {
+                    deferred.resolve(data);
+                })
+                .error(function(data, status, headers, config) {
+                    deferred.reject("Could not retrieve file paths: " + status + ' ' + JSON.stringify(headers));
                 });
             return deferred.promise;
         }

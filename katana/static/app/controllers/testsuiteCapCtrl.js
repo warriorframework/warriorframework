@@ -45,6 +45,97 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
         $scope.testcaseEditor = false;
         $scope.testcaseBeingEdited = "None";
 
+    
+    function readConfig() {
+        $http.get('/readconfig')
+            .success(function(data, status, headers, config) {
+                $scope.cfg = data;
+                $scope.orig.pythonsrcdir = $scope.cfg.pythonsrcdir;
+            })
+            .error(function(data, status, headers, config) {
+                alert("Error fetching config data. ", status, headers);
+            });
+    }
+
+    readConfig();
+
+    $scope.cfg = {};
+    $scope.path = "";
+    $scope.pathUG = "";
+    $scope.osFinder="";
+    $scope.default_paths = {
+        "pythonsrcdir": "Warrior"
+    };
+
+    $scope.orig = {
+
+        pythonsrcdir: ""
+
+    };
+
+    $scope.loadXml = function(check) {
+
+        checkNew = check.split('..')[1];      
+        $scope.osFinder = location.hostname;
+        
+        if($scope.osFinder == "localhost"  || $scope.osFinder == "0.0"){
+
+            $scope.pathUG = $scope.cfg.pythonsrcdir + "/Warriorspace" + checkNew;
+
+            $scope.pathUrl= $scope.pathUG.replace(/\\/g, "/");
+
+            $scope.checkPath = "file://"+$scope.pathUrl;
+
+            var s = $scope.checkPath;
+            var i = s.indexOf("/");
+             if (i != -1) {
+                 $scope.newPath = s.substring(i, s.length);
+             }
+
+            guideSplit();
+            fileFactory.winXml($scope.pathXml)
+                .then(
+                     function(data) {
+                     });
+                                            
+         }
+
+         else {
+
+           $scope.pathUG = $scope.cfg.pythonsrcdir + "/Warriorspace" + checkNew;
+
+            var s = $scope.pathUG;
+            var i = s.indexOf("/");
+            if (i != -1) {
+                    $scope.newPath = s.substring(i, s.length);
+                  }
+            guideSplit();
+
+                fileFactory.linuxXml($scope.pathXml)
+                .then(
+                     function(data) {
+                     })
+         }
+     
+      };
+
+    function guideSplit(){
+      
+        var array = [];
+        if($scope.newPath.indexOf("\\")>= 0) {
+            array = $scope.newPath.split("\\");
+        }
+        else {
+            array = $scope.newPath.split("/");
+        }
+        var path = "";
+        for(var i=0; i<=array.length-1; i++){
+            path = path + array[i] + ">"
+        }
+        $scope.pathXml = path.replace(/\>$/, '');
+              
+    }
+
         function get_folders_names(json_dir_data){
             var dir = json_dir_data["dir"];
             var files = json_dir_data["file"];
