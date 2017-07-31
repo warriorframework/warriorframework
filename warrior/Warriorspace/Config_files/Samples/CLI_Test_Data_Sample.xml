@@ -165,35 +165,35 @@ Also refer the python regex documentation https://docs.python.org/2/library/re.h
 		9.  :retry: 	(supported values= "y" or "n", default = "n")
 						when "y", retry sending a command if the command fails.
 
-		10. :retry_timer: (default=60 secs), when retry=y, this is the time interval(in secs) between subsequent re-trails.
-		11. :retry_count: (default=5), when retry=y, this is no of attempts to.
+			9.a) :retry_timer: (default=60 secs), when retry=y, this is the time interval(in secs) between subsequent re-trails.
+			9.b) :retry_count: (default=5), when retry=y, this is no of attempts to.
 						  if during one of the attempts the command passes, re trials will be passed.
 
-		12. :retry_onmatch: a text or a regular expression.
+			9.c) :retry_onmatch: a text or a regular expression.
 							 if provided and retry=y, re-trials will be attempted only when the response of the
 							 command has the provided text/regular expression.
 
-		13. :resp_req: 		(supported values ="n") save the response in the framework's data repository
+		10. :	a):resp_req: 		(supported values ="n") save the response in the framework's data repository
 							this feature is always enabled, user can turn it off by providing "n"
 
-		14. :resp_pat_req: 	(text or regular expression) to save only a particular text or regular expression
+				b):resp_pat_req: 	(text or regular expression) to save only a particular text or regular expression
 							from the response
 
-		15. :resp_ref:  	(text, default=position of command in the testdata block) a user provided refernce text
+				c):resp_ref:  	(text, default=position of command in the testdata block) a user provided refernce text
 							for the response of this command
 							The responses will be saved in the framework's data repository using this text as key.
 							If user does not provide resp_ref, framework automatically assigns this value based on the
 							position of the command in the test data section.
 							i.e. if the command is the 2nd command in the test data then resp_ref="2" will be used and so on.
 
-		16. :monitor: 		(comma separated system names - Eg. NE1[cli].session, NE2, [dip] - where NE1, NE2 are the system names,
+		11. :monitor: 		(comma separated system names - Eg. NE1[cli].session, NE2, [dip] - where NE1, NE2 are the system names,
 							[cli], [dip] are the subsystem names and .session is the session name.) Responses from the
 							system names obtained from this parameter are printed out on the console. If this attribute is left empty, or
 							is not present, monitoring would take place on the systems mentioned in the monitor attribute in the
 							parent testdata tag. If even that tag is left empty, then monitoring takes place on the system on which
 							the keyword is getting executed.
 
-		17. :iter_type: 	This attribute allows the user to dictate how the commands in a testdata block be sent.
+		12. :iter_type: 	This attribute allows the user to dictate how the commands in a testdata block be sent.
 							This attribute can take in two values: ‘per_td_block’ and ‘per_cmd’.
 
 							If an incorrect value is given or if the attribute is left empty, or is absent, then the
@@ -218,14 +218,13 @@ Also refer the python regex documentation https://docs.python.org/2/library/re.h
 							This continues till al the commands are finished. So the commands would be sent in this order:
 							‘cmd_1_vc_1’,  ‘cmd_2_vc_1’, ‘cmd_3_vc_1’ , ‘cmd_1_vc_2’, ‘cmd_2_vc_2’, ‘cmd_1_vc_3’, ‘cmd_2_vc_3’, ‘cmd_2_vc_4’, ‘cmd_2_vc_5’
 
-		18.	:inorder:		(supported value = "y") In-order response verification will happen.
+		13.	:inorder:		(supported value = "y") In-order response verification will happen.
 							This feature is always disabled, user can turn it on by providing "y".
 							If enabled, command passes only when the received response order matches with the order given in the 'verify' tag
 
-		19.	:repeat:		(supported value = "y") when iter_type=‘per_td_block’ with repeat='y', corresponding command in testdata block
+		14.	:repeat:		(supported value = "y") when iter_type=‘per_td_block’ with repeat='y', corresponding command in testdata block
 							will be executed in each iteration. This feature is always disabled, user can turn it on by providing "y" and this
 							tag is applicable only for the testdata commands without any iteration pattern in it.
-
 
 		=============================================================
 		II.b How are responses saved to framework's data repository:
