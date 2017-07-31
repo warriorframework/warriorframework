@@ -61,7 +61,8 @@ class ExecutionSummary():
                 case_result_dir_with_tc_name = testcase_details.get('resultsdir')
                 if case_result_dir_with_tc_name is not None:
                     case_result_dir = os.path.dirname(case_result_dir_with_tc_name)
-                    if suite_result_dir == case_result_dir:
+                    # suite junit element will not have resultsdir attrib for case execution
+                    if suite_result_dir is None or suite_result_dir == case_result_dir:
                         print_info("{0:10}{1:50}{2:10}{3:30}".format("Testcase", testcase_name,
                                                                      testcase_status,
                                                                      testcase_location))
