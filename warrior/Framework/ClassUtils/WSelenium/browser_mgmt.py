@@ -178,22 +178,30 @@ class BrowserManagement(object):
             self.current_browser.forward()
 
     def check_url(self, url):
-        """To check whether the user provided url is valid or not."""
+        """To check whether the user provided url is valid or not.
+           Returns:
+                    1. status(bool)= True / False.(Whether the url is a valid public url as per urllib2)
+                    2. url : The actual url itself
+        """
+        status = True
         search_http = re.search("http", url)
         if not search_http:
-            print_warning("The url with http/https is missing")
-            return None
+            print_warning("Your url missing http/https")
+            return False, url
         try:
             url_open = urllib2.urlopen(url)
             get_status_code = url_open.code
             pattern = re.compile('^2[0-9][0-9]$')
             if not pattern.match(str(get_status_code)):
                 print_warning("The Status code for url : {} is {}".format(url, get_status_code))
+                status = False
         except urllib2.HTTPError as http_error:
-            print_error("URLError: {} reason: ({}) status code: {}".format(url, http_error.reason, http_error.code))
+            print_warning("URLError: {} reason: ({}) status code: {}".format(url, http_error.reason, http_error.code))
+            status = False
         except urllib2.URLError as url_err:
-            print_error("URLError: {} reason: ({})".format(url, url_err.reason))
-        return None
+            status = False
+            print_warning("URLError: {} reason: ({})".format(url, url_err.reason))
+        return status, url
 
     def go_to(self, url, browser_instance=None):
         """Navigates the active browser instance to the provided URL."""
