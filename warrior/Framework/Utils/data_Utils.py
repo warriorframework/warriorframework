@@ -459,10 +459,11 @@ def _get_cmd_details(testdata, global_obj, system_name,
             resultant_list = _get_verification_details(testdata, global_obj,
                                                        vfylist, attrib)
         elif param == "verify_on_list":
+            sys_list = details_dict["sys_list"]
             vfylist = details_dict["verify_list"]
             resultant_list = _get_verification_details(testdata, global_obj,
                                                        vfylist, attrib,
-                                                       system_name)
+                                                       system_name, sys_list)
         elif param == "verify_map_list":
             vfylist = details_dict["verify_list"]
             vfylist, maplist = _get_mapping_details(global_obj, vfylist)
@@ -501,7 +502,7 @@ def _get_cmdparams_list(testdata, global_obj, cmd_attrib):
         default_value = global_cmd_params.get(
             cmd_attrib) if global_cmd_params is not None else None
         if not cmd_attrib in global_exempt_list:
-            value = default_value if value is None or value is "" else value
+            value = default_value if value is None or value == "" else value
         else:
             if cmd_attrib in testdata.attrib and cmd_attrib == "monitor":
                 value = testdata.attrib[cmd_attrib]
@@ -509,7 +510,8 @@ def _get_cmdparams_list(testdata, global_obj, cmd_attrib):
     return resultant_list
 
 
-def _get_verification_details(testdata, global_obj, verify_list, cmd_attrib, system_name=None):
+def _get_verification_details(testdata, global_obj, verify_list, cmd_attrib,
+                              system_name=None, sys_list=None):
     """From the testdata file takes a testdata node and
     a list of nodes with verification present as input
 
@@ -519,7 +521,7 @@ def _get_verification_details(testdata, global_obj, verify_list, cmd_attrib, sys
     g_verify = global_obj.find("verifications") if global_obj is not None \
         else None
     resultant_list = []
-    for verify in verify_list:
+    for index, verify in enumerate(verify_list):
         if verify is None or verify == "":
             value = None
             resultant_list.append(value)
@@ -549,9 +551,13 @@ def _get_verification_details(testdata, global_obj, verify_list, cmd_attrib, sys
                         print_warning(
                             "could not find specific or global value  " \
                             "for verification node={0}".format(element))
-                if value is None or value is "":
+                if value is None or value == "":
                     value = 'yes' if cmd_attrib == "found" else value
-                    value = system_name if cmd_attrib == "verify_on" else value
+                    if cmd_attrib == "verify_on" and sys_list is not None and \
+                       sys_list[index] is not None:
+                        value = sys_list[index]
+                    else:
+                        value = system_name
                 value = value if not value else str(value).strip()
                 resultant_sublist.append(value)
             resultant_list.append(resultant_sublist)

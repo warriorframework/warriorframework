@@ -602,6 +602,9 @@ def send_commands_from_testdata(testdatafile, obj_session, **args):
         if row:
             pNote("**************{}**************".format('Row: ' + row))
     system_name = args.get("system_name")
+    session_name = args.get("session_name")
+    if session_name is not None:
+        system_name = system_name + "." + session_name
     testdata_dict = data_Utils.get_command_details_from_testdata(testdatafile, varconfigfile,
                                                                  var_sub=var_sub, title=title,
                                                                  row=row, system_name=system_name,
@@ -627,8 +630,10 @@ def send_commands_from_testdata(testdatafile, obj_session, **args):
             print_debug(">>>")
             command = details_dict["command_list"][i]
             pNote("Command #{0}\t: {1}".format(str(i+1), command))
-            new_obj_session, details_dict = _get_obj_session(details_dict, obj_session,
-                                                             system_name, index=i)
+
+            new_obj_session, system_name, details_dict = _get_obj_session(
+              details_dict, obj_session, system_name, index=i)
+
             if new_obj_session:
                 result, response = _send_cmd_get_status(new_obj_session, details_dict,
                                                         index=i, system_name=system_name)
@@ -914,6 +919,7 @@ def _send_cmd_get_status(obj_session, details_dict, index, system_name=None):
                                              same_system, response)
     except NameError:
         remote_resp_dict = get_response_dict([], [], [], response)
+
     verify_on_list_as_list = get_list_by_separating_strings(verify_on_list,
                                                             ",", system_name)
     if result and result is not 'ERROR':
@@ -979,7 +985,11 @@ def _get_obj_session(details_dict, obj_session, kw_system_name, index):
         system_name = kw_system_name
 
     pNote("System name\t: {0}".format(system_name))
-    return value, details_dict
+
+    if details_dict["sys_list"][index] is not None:
+        kw_system_name = details_dict["sys_list"][index]
+
+    return value, kw_system_name, details_dict
 
 
 @cmdprinter
