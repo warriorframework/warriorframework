@@ -186,6 +186,10 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
     execution_type = xml_Utils.getChildAttributebyParentTag(project_filepath, 'Details',
                                                             'type', 'exectype')
 
+    # for backward compatibility(when exectype is not provided)
+    if execution_type is False:
+        execution_type = "sequential_suites"
+
     if execution_type.upper() == 'PARALLEL_SUITES':
         print_info("Executing suites in parallel")
         project_status = parallel_testsuite_driver.main(testsuite_list, project_repository,
@@ -259,6 +263,6 @@ def main(project_filepath, data_repository={}, auto_defects=False, jiraproj=None
                                                              jiraproj, res_startdir, logs_startdir,
                                                              data_repository)
     except Exception:
-        project_status = False
+        project_status, project_repository = False, None
         print_error('unexpected error {0}'.format(traceback.format_exc()))
     return project_status, project_repository
