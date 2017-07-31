@@ -93,7 +93,7 @@ class WarriorHtmlResults:
     def __init__(self, junit_file=None):
         """ init function"""
         self.junit_file = junit_file
-        self.html_template = "{0}{1}Reporting{1}html_results_template.html" \
+        self.html_template = "{0}{1}reporting{1}html_results_template.html" \
             .format(Tools.__path__[0], os.sep)
         self.junit_root = xml_Utils.getRoot(self.junit_file)
 
