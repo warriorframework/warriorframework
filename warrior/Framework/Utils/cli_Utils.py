@@ -23,12 +23,13 @@ import Framework.ClassUtils
 from Framework.Utils import datetime_utils, data_Utils, xml_Utils
 from Framework.Utils.data_Utils import get_object_from_datarepository
 from Framework.Utils.print_Utils import print_debug, print_info,\
-print_error, print_exception
+print_error, print_exception, print_warning
 from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.list_Utils import get_list_by_separating_strings
 from Framework.ClassUtils.WNetwork.loging import ThreadedLog
 from WarriorCore.Classes.war_cli_class import WarriorCliClass
 from Framework.ClassUtils import database_utils_class
+
 try:
     import pexpect
 except ImportError:
@@ -39,7 +40,9 @@ except ImportError:
                "their own custom libraries for cli interaction \n")
 
 def cmdprinter(cmdfunc):
+    """decorator"""
     def inner(*args, **kwargs):
+        """routing different mock functions"""
         if WarriorCliClass.cmdprint:
             result = (True,"")
             if cmdfunc.__name__ == "_send_cmd_get_status":
@@ -60,12 +63,28 @@ def cmdprinter(cmdfunc):
         return result
     return inner
 
+def pexpect_spawn_with_env(pexpect_obj, command, timeout, escape=False, env=None):
+    """
+        spawn a pexpect object with environment variable
+    """
+    if env is None:
+        env = {}
+    if str(escape).lower() == "yes" or str(escape).lower() == "true":
+        child = pexpect_obj.spawn(command, timeout=int(timeout), env=env)
+    else:
+        child = pexpect_obj.spawn(command, timeout=int(timeout))
+    return child
+
 def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=60,
-                prompt=".*(%|#|\$)", conn_options="", custom_keystroke="", **kwargs):
+                prompt=".*(%|#|\$)", conn_options="", custom_keystroke="", escape="", **kwargs):
     """
     - Initiates SSH connection via a specific port. Creates log file.
     - return session as object and conn_string(pre and post login message).
     """
+    print_warning("This method is obsolete and will be deprecated soon. Please"
+                  " use 'connect_ssh' method of 'PexpectConnect' class "
+                  "in 'warrior/Framework/ClassUtils/warrior_connect_class.py'")
+
     sshobj = None
     conn_string = ""
     conn_options = "" if conn_options is False or conn_options is None else conn_options
@@ -79,7 +98,8 @@ def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=6
     if WarriorCliClass.cmdprint:
         pNote(("connectSSH: :CMD: %s" %command))
         return None, ""
-    child = pexpect.spawn(command, timeout=int(timeout))
+    child = pexpect_spawn_with_env(pexpect, command, timeout=int(timeout),
+                                   escape=escape, env={"TERM": "dumb"})
 
     child.logfile = sys.stdout
 
@@ -92,7 +112,7 @@ def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=6
             print_exception(exception)
 
     try:
-        flag=True
+        flag = True
         child.setecho(False)
         child.delaybeforesend = .5
         while True:
@@ -116,12 +136,12 @@ def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=6
                 pNote("Connection failed: {0}, with the system response: {1}"\
                       .format(command, child.before), "error")
                 break
-            elif result == 5: 
+            elif result == 5:
                 # Some terminal expect specific keystroke before showing login prompt
-                if flag==True:
+                if flag is True:
                     pNote("Initial timeout occur, sending custom_keystroke")
                     _send_cmd_by_type(child, custom_keystroke)
-                    flag=False
+                    flag = False
                     continue
                 pNote("Connection timed out: {0}, expected prompt: {1} "\
                       "is not found in the system response: {2}"\
@@ -133,7 +153,8 @@ def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=6
                 print_debug("SSH Host Key is changed - Remove it from "
                             "known_hosts file : cmd = %s" % cmd)
                 subprocess.call(cmd, shell=True)
-                child = pexpect.spawn(command, timeout=int(timeout))
+                child = pexpect_spawn_with_env(pexpect, command, timeout=int(timeout),
+                                               escape=escape, env={"TERM": "dumb"})
                 print_debug("ReconnectSSH: cmd = %s" % command)
     except Exception as exception:
         print_exception(exception)
@@ -141,7 +162,7 @@ def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=6
 
 def connect_telnet(ip, port="23", username="", password="",
                    logfile=None, timeout=60, prompt=".*(%|#|\$)",
-                   conn_options="", custom_keystroke="", **kwargs):
+                   conn_options="", custom_keystroke="", escape="", **kwargs):
     """
     Initiates Telnet connection via a specific port. Creates log file.
 
@@ -158,6 +179,9 @@ def connect_telnet(ip, port="23", username="", password="",
         1.telnet session as object
         2.conn_string(pre and post login message)
     """
+    print_warning("This method is obsolete and will be deprecated soon. Please"
+                  " use 'connect_telnet' method of 'PexpectConnect' class "
+                  "in 'warrior/Framework/ClassUtils/warrior_connect_class.py'")
 
     conn_options = "" if conn_options is False or conn_options is None else conn_options
     custom_keystroke = "wctrl:M" if not custom_keystroke else custom_keystroke
@@ -168,7 +192,8 @@ def connect_telnet(ip, port="23", username="", password="",
         conn_options = ""
     command = command + str(conn_options)
     print_debug("connectTelnet cmd = %s" % command)
-    child = pexpect.spawn(command, timeout=int(timeout))
+    child = pexpect_spawn_with_env(pexpect, command, timeout=int(timeout),
+                                   escape=escape, env={"TERM": "dumb"})
     conn_string = ""
     telnetobj = None
     try:
@@ -216,9 +241,18 @@ def connect_telnet(ip, port="23", username="", password="",
 
 def disconnect_telnet(child):
     """Disconnects a telnet session """
+    print_warning("This method is obsolete and will be deprecated soon. Please"
+                  " use 'disconnect_telnet' method of 'PexpectConnect' class "
+                  "in 'warrior/Framework/ClassUtils/warrior_connect_class.py'")
+
+    time.sleep(2)
     child.sendcontrol(']')
+    time.sleep(2)
     child.expect('telnet> ')
+    time.sleep(2)
     child.sendline('q')
+    time.sleep(2)
+    child.close()
     return child
 
 
@@ -227,6 +261,10 @@ def disconnect(child):
     - Disconnects a pexpect session
     - Returns session object(same child)
     """
+    print_warning("This method is obsolete and will be deprecated soon. Please"
+                  " use 'disconnect' method of 'PexpectConnect' class "
+                  "in 'warrior/Framework/ClassUtils/warrior_connect_class.py'")
+
     if child.isalive():
         if child.ignore_sighup:
             child.ignore_sighup = False
@@ -312,7 +350,7 @@ def send_smart_cmd(connect_testdata, session_object, tag_value, call_system_name
             Distinguish if it is a connect smart action or disconnect smart action
     """
     if xml_Utils.getElementWithTagAttribValueMatch(connect_testdata, "testdata", "title", tag_value) is not None:
-        print("**********The following command are sent as part of the smart analysis**********")
+        print_info("**********The following command are sent as part of the smart analysis**********")
         main_log = session_object.logfile
         if pre_tag:
             smart_log = main_log.name.replace(".log", "pre_.log")
@@ -321,7 +359,7 @@ def send_smart_cmd(connect_testdata, session_object, tag_value, call_system_name
         session_object.logfile = open(smart_log, "a")
         send_commands_from_testdata(connect_testdata, session_object, title=tag_value, system_name=call_system_name)
         session_object.logfile = main_log
-        print("**********smart analysis finished**********")
+        print_info("**********smart analysis finished**********")
     else:
         print_error()
 
@@ -386,6 +424,10 @@ def send_command(session_object, start_prompt, end_prompt, command,
     - else if failure response was not found and end prompt found,
     then returns true.
     """
+    print_warning("This method is obsolete and will be deprecated soon. Please"
+                  " use 'send_command' method of 'PexpectConnect' class "
+                  "in 'warrior/Framework/ClassUtils/warrior_connect_class.py'")
+
     tmout = {None: 60, "":60, "none":60}.get(timeout, str(timeout).lower())
     session_object.timeout = int(tmout)
     pNote("Command timeout: {0}".format(session_object.timeout))
@@ -450,6 +492,9 @@ def send_command(session_object, start_prompt, end_prompt, command,
         else:
             response = session_object.before
             response = str(response) + str(session_object.after)
+            if session_object.env is not None and 'TERM' in session_object.env and session_object.env['TERM'] == 'dumb': 
+                escape_seq = re.compile(r'(\x9B|\x1B\[)[0-?]*[ -\/]*[@-~]')
+                response = escape_seq.sub('', response)
             pNote("Response:\n{0}\n".format(response))
             pNote(msg, "debug")
             if status is True:
@@ -538,6 +583,9 @@ def send_commands_from_testdata(testdatafile, obj_session, **args):
         if row:
             pNote("**************{}**************".format('Row: ' + row))
     system_name = args.get("system_name")
+    session_name = args.get("session_name")
+    if session_name is not None:
+        system_name = system_name + "." + session_name
     testdata_dict = data_Utils.get_command_details_from_testdata(testdatafile, varconfigfile,
                                                                  var_sub=var_sub, title=title,
                                                                  row=row, system_name=system_name, datafile=datafile)
@@ -558,12 +606,13 @@ def send_commands_from_testdata(testdatafile, obj_session, **args):
 
         # Send Commands
         for i in range(0, intsize):
-            print("\n")
+            print_info("")
             print_debug(">>>")
             command = details_dict["command_list"][i]
             pNote("Command #{0}\t: {1}".format(str(i+1), command))
-            new_obj_session, details_dict = _get_obj_session(details_dict, obj_session, system_name,
-                                                         index=i)
+            new_obj_session, system_name, details_dict = \
+                _get_obj_session(details_dict, obj_session,
+                                 system_name, index=i)
             if new_obj_session:
                 result, response = _send_cmd_get_status(new_obj_session, details_dict, index=i, system_name=system_name)
                 result, response = _send_command_retrials(new_obj_session, details_dict, index=i,
@@ -590,11 +639,21 @@ def _send_cmd(obj_session, **kwargs):
     result = False
     response = ""
     command = kwargs.get('command')
-    if isinstance(obj_session, pexpect.spawn):
+    if isinstance(obj_session,
+                  Framework.ClassUtils.warrior_connect_class.WarriorConnect):
         startprompt = kwargs.get('startprompt', ".*")
         endprompt = kwargs.get('endprompt', None)
         cmd_timeout = kwargs.get('cmd_timeout', None)
-        result, response = send_command(obj_session, startprompt, endprompt, command, cmd_timeout)
+        result, response = obj_session.send_command(startprompt, endprompt,
+                                                    command, cmd_timeout)
+    # below block is for backward compatibility - should be removed when we
+    # take out send_command method from this file
+    elif isinstance(obj_session, pexpect.spawn):
+        startprompt = kwargs.get('startprompt', ".*")
+        endprompt = kwargs.get('endprompt', None)
+        cmd_timeout = kwargs.get('cmd_timeout', None)
+        result, response = send_command(obj_session, startprompt, endprompt,
+                                        command, cmd_timeout)
     elif isinstance(obj_session, Framework.ClassUtils.ssh_utils_class.SSHComm):
         result, response = obj_session.get_response(command)
         print_info(response)
@@ -830,6 +889,7 @@ def _send_cmd_get_status(obj_session, details_dict, index, system_name=None):
                                              same_system, response)
     except NameError:
         remote_resp_dict = get_response_dict([], [], [], response)
+
     verify_on_list_as_list = get_list_by_separating_strings(verify_on_list,
                                                             ",", system_name)
     if result and result is not 'ERROR':
@@ -893,7 +953,11 @@ def _get_obj_session(details_dict, obj_session, kw_system_name, index):
         system_name = kw_system_name
 
     pNote("System name\t: {0}".format(system_name))
-    return value, details_dict
+
+    if details_dict["sys_list"][index] is not None:
+        kw_system_name = details_dict["sys_list"][index]
+
+    return value, kw_system_name, details_dict
 
 @cmdprinter
 def _send_command_retrials(obj_session, details_dict, index, **kwargs):
@@ -915,7 +979,7 @@ def _send_command_retrials(obj_session, details_dict, index, **kwargs):
         retry_count = details_dict["retry_count_list"][index]
         retry_timer = {None:60, "":60, "none":60}.get(str(retry_timer).lower(), retry_timer)
         retry_count = {None:5, "":5, "none":5}.get(str(retry_count).lower(), retry_count)
-        print ('\n')
+        print_info("")
         pNote("Retry was requested for the command")
         pNote("Command re-trials will begin since the most recent "\
               "command status was FAIL or ERROR")
@@ -930,7 +994,7 @@ def _send_command_retrials(obj_session, details_dict, index, **kwargs):
                 match_status = _get_match_status(retry_onmatch, response)
                 if match_status:
                     count = count + 1
-                    print ('\n')
+                    print_info("")
                     pNote("RETRIAL ATTEMPT:{0}".format(count))
                     pNote("Wait for {0}sec (retry_timer) before sending"\
                                " the command again".format(retry_timer))

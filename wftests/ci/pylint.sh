@@ -1,20 +1,30 @@
-# set -v
+# set -x
 # ls -l
 pip install pylint
-git checkout master
+
+cd ../
+git clone https://github.com/warriorframework/warriorframework.git pylint_warrior
+cd pylint_warrior
+git checkout "${TRAVIS_PULL_REQUEST_BRANCH}"
+git merge --no-edit develop
+
+git branch
 # Displaying what .py files have changed
-if [[ $(git --no-pager diff --name-only master "${TRAVIS_COMMIT}"  | grep -v 'OSS' | grep '.py$') ]]; then
+filelist=$(git --no-pager diff develop --name-only "${TRAVIS_PULL_REQUEST_BRANCH}" | grep -v 'OSS' | grep -v 'conf.py' | grep -v "custom_rules.py" | grep '.py$')
+if [[ "$filelist" ]]; then
     echo "List of .py files that have changed in this commit"
-    git --no-pager diff --name-only master "${TRAVIS_COMMIT}"  | grep -v 'OSS' | grep '.py$'
+    echo "$filelist"
 else
     echo "no .py file has changed in this commit, exiting"
     exit 0;
 fi
-# Do pylint on master and the latest commit, output result to pylint_result.txt
-git --no-pager diff --name-only master "${TRAVIS_COMMIT}"  | grep -v 'OSS' | grep '.py$' | xargs -L 1 pylint || true
-git checkout "${TRAVIS_COMMIT}" ;
-git --no-pager diff --name-only "${TRAVIS_COMMIT}" master  | grep -v 'OSS' | grep '.py$'
-git --no-pager diff --name-only "${TRAVIS_COMMIT}" master  | grep -v 'OSS' | grep '.py$' | xargs -L 1 pylint | tee pylint_result.txt || true
+
+git checkout develop
+# Do pylint on develop and the latest commit, output result to pylint_result.txt
+echo "$filelist" | xargs -L 1 -I {} pylint --rcfile=.pylintrc {} || true
+git checkout "${TRAVIS_PULL_REQUEST_BRANCH}"
+echo "$filelist"
+echo "$filelist" | xargs -L 1 -I {} pylint --rcfile=.pylintrc {} | tee pylint_result.txt || true
 
 # Match filename and score into summary.txt
 grep "Your code has been rated" pylint_result.txt > score.txt
@@ -25,13 +35,13 @@ sed -i -e 's/Your code//g' score.txt
 paste -d "^" filename.txt score.txt | column -t -s "^" | tee summary.txt
 
 # Check if there is an increase 
-set +x
+# set +x
 echo "Files that doesn't meet the pylint score requirement (>5 with score increase)"
 status="pass"
 while read -r line;
 do 
     line_status="pass"
-    echo "$line"
+    # echo "$line"
     num1=$(grep -oP "at \K[0-9\.\-]*" <<< "$line");
     num2="5";
     if [[ $(echo "$num1 < $num2" | bc) -ne 0 ]] ; then
@@ -41,6 +51,9 @@ do
     fi
     
     num3=$(grep -oP "previous run.*/10, \K[0-9\.\-+]*" <<< "$line" | tr -d "+")
+    if [[ -z $num3 ]]; then
+        num3="0"
+    fi
     num4="0"
     if [[ $(echo "$num3 < $num4" | bc) -ne 0 ]] ; then
         echo "score decrease: $num3"
@@ -54,7 +67,15 @@ do
     fi
 done < summary.txt
 
-if [ "$status" = "fail" ] ; then
+custom_status="pass"
+for i in $filelist ; do
+    python wftests/ci/custom_rules.py "$i"
+    if [[ $? -ne 0 ]] ; then
+        custom_status="fail"
+    fi
+done
+
+if [ "$status" = "fail" ] || [ "$custom_status" = "fail" ]; then
     exit 1;
 else
     exit 0;

@@ -263,7 +263,7 @@ def getNameOnly(filename):
 
 
 def get_file_from_remote_server(remote_ip, remote_uname, remote_passwd, src, dest, logfile=None):
-    child = pexpect.spawn('scp %s@%s:%s %s' % (remote_uname, remote_ip, src, dest ))
+    child = pexpect.spawn('scp -r %s@%s:%s %s' % (remote_uname, remote_ip, src, dest ))
     try:
         child.logfile = open(logfile, "a")
     except Exception,e:
@@ -364,7 +364,7 @@ def deletLinesFromLast(filename):
 
     # Searches existing file for text and creates new file without the lines containing the text.
     # sradhakr - changed the name from deleteFileLines to deleteMatchingFileLines
-def deleteMatchingFileLines (origfile, newfile, arrValues):
+def deleteMatchingFileLines(origfile, newfile, arrValues):
     fin  = open(origfile, 'r')
     fout = open(newfile, 'w')
     for line in fin:
@@ -419,7 +419,8 @@ def copyFileContents(srcfile, dstfile):
 #                                     = EOF | eof searches the entire file
 #========================================================================
 
-def getLinesBetweenMatchingLines (srcfile, dstfile, start, end, no_of_search=1):
+
+def getLinesBetweenMatchingLines(srcfile, dstfile, start, end, no_of_search=1):
     lines = open(srcfile,'r').readlines()
     #print_info ("lines:%s"% lines)
     i=0
@@ -471,14 +472,12 @@ def getLinesBetweenMatchingLines (srcfile, dstfile, start, end, no_of_search=1):
 # The file with the created name has to be opened seperately
 #
 #===============================================================================
-
 def getSubDirFile(subdir, existing_dir, ext):
     path        = createDir_addtimestamp(existing_dir, subdir )
     fullpath    = path + os.sep + subdir + '.' + ext
     if fileExists(fullpath):
         fullpath = addTimeDate(fullpath)
     return fullpath
-
 
 
 def create_execution_directory(filepath):
@@ -503,7 +502,6 @@ def create_zipdir(zipname, path, extn='zip'):
     output_filepath = path + os.sep + zipname
     zip_file_path = shutil.make_archive(output_filepath, extn, path)
     return zip_file_path
-
 
 
 def getAbsPath(relative_path, start_directory="."):
@@ -547,6 +545,7 @@ def get_parent_dir(path, child):
         path = get_parent_dir(path, child)
     return path
 
+
 def check_extension_get_absolute_path(relative_path, start_directory, list_extn=[".json", ".xml", ".txt"]):
     """
     This is wrapper function that gets and verifies extention of a file path
@@ -560,6 +559,7 @@ def check_extension_get_absolute_path(relative_path, start_directory, list_extn=
         value = relative_path
     return value
 
+
 def get_absolute_path_from_start_directory(relative_path, start_directory, extension=".json"):
     """
     DEPRECATED IN 2.9
@@ -571,6 +571,7 @@ def get_absolute_path_from_start_directory(relative_path, start_directory, exten
     """
     print_error("This function is deprecated in 2.9, use check_extension_get_absolute_path or getAbspath instead")
     return check_extension_get_absolute_path(relative_path, start_directory, extension)
+
 
 def get_absolute_path_of_directory(relative_path_of_dir, start_directory):
     """
@@ -590,6 +591,18 @@ def get_absolute_path_of_directory(relative_path_of_dir, start_directory):
 # ==============================================================================
 # File Operations
 # ==============================================================================
+
+
+def log_result(oper, result):
+    """the methods in file_actions class use this to log the result of
+    its operation
+    """
+    resmsg = "completed successfully" if result else "failed"
+    msg = "file {} operation {}".format(oper, resmsg)
+    if result:
+        print_info(msg)
+    else:
+        print_error(msg)
 
 
 def open_file(newfile, mode):
@@ -1236,3 +1249,59 @@ def remove(nfile):
         print_error("removing file {} raised exception {}".
                     format(nfile, str(e)))
     return status
+
+
+def recursive_findfile(file_name, src_dir):
+    """
+    Finds the file_name in the given directory.
+    :Arguments:
+        1. file_name(string) - name of the file(with extension) to be searched
+        2. src_dir(string) - path of the dir where the file will be searched
+    :Return:
+        1. output_path(string) - Path of the file(from src_dir) with extension
+                                 if the file exists else False
+    """
+
+    output_path = False
+    if dirExists(src_dir):
+        for root, _, files in os.walk(src_dir):
+            for f in files:
+                if f == file_name:
+                    output = os.path.join(root, f)
+                    return output
+    else:
+        print_warning("Directory does not exist in the provided "
+                      "path: {}".format(src_dir))
+
+    return output_path
+
+
+def get_modified_files(src_dir, time_stamp, filetypes=""):
+    """
+    Finds the modified files(with any one of the filetypes) after a given
+    time_stamp in the src_dir. If filetypes argument is empty, all
+    modified files will be included.
+    :Arguments:
+        1. src_dir(string) - path of the directory where the files will be
+        2. time_stamp(int/float) - time stamp value. Ex. time.time() will
+                                   return current system time in seconds
+        3. filetypes(sting) - comma separated file types. Ex. ".py, .xml"
+    :Return:
+        1. modified_files(list) - list of files modified
+    """
+
+    modified_files = []
+    filetypes = tuple([ft.strip() for ft in filetypes.split(',') if ft])
+    for dirname, _, files in os.walk(src_dir):
+        for fname in files:
+            full_path = os.path.join(dirname, fname)
+            # os.path.getmtime(full_path)
+            mtime = os.stat(full_path).st_mtime
+            if mtime > time_stamp:
+                if filetypes:
+                    if full_path.lower().endswith(filetypes):
+                        modified_files.append(full_path)
+                else:
+                    modified_files.append(full_path)
+
+    return modified_files

@@ -61,7 +61,7 @@
         (d) uri    - Connection string in URI format, optional when
                      host & port specified
                      Ex. mongodb://localhost:27017
-        (e) dbname - Database name
+        (e) dbname - database name
 
         Note - When both host,port pair & uri are specified, URI will be
                used for establishing database connection
