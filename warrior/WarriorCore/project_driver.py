@@ -11,10 +11,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-#!/usr/bin/python
-"""This the project driver that executes a collections of
-Warrior testsuites """
-
 import sys
 import os
 import shutil
@@ -26,6 +22,11 @@ from Framework.Utils.print_Utils import print_info, print_error, print_warning
 from WarriorCore.Classes import execution_files_class, junit_class
 from WarriorCore import common_execution_utils, sequential_testsuite_driver, \
  parallel_testsuite_driver
+
+
+# !/usr/bin/python
+"""This the project driver that executes a collections of
+Warrior testsuites """
 
 
 def get_project_details(project_filepath, res_startdir, logs_startdir, data_repository):
@@ -55,8 +56,7 @@ def get_project_details(project_filepath, res_startdir, logs_startdir, data_repo
         print_warning("title is missing, please provide a title for the project")
     else:
         project_title = str(project_title).strip()
-
-    if def_on_error_value  is None or def_on_error_value is False:
+    if def_on_error_value is None or def_on_error_value is False:
         def_on_error_value = None
 
     if data_repository.has_key('ow_resultdir'):
@@ -73,8 +73,8 @@ def get_project_details(project_filepath, res_startdir, logs_startdir, data_repo
     project_execution_dir = os.path.dirname(project_resultfile)
     wp_results_execdir = efile_obj.results_execdir
     wp_logs_execdir = efile_obj.logs_execdir
-    #project_resultfile = open(project_resultfile, 'a+')
-    #Utils.config_Utils.junit_file(project_resultfile)
+    # project_resultfile = open(project_resultfile, 'a+')
+    # Utils.config_Utils.junit_file(project_resultfile)
 
     project_repository['title'] = project_title
     project_repository['operating_system'] = operating_system
@@ -154,9 +154,10 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
     """
     project_start_time = datetime_utils.get_current_timestamp()
     print_info("[{0}] Project execution starts".format(project_start_time))
-
+    project_title = xml_Utils.getChildTextbyParentTag(project_filepath, 'Details', 'Title')
     project_repository = get_project_details(project_filepath, res_startdir, logs_startdir,
                                              data_repository)
+    project_repository['project_title'] = project_title
     testsuite_list = get_testsuite_list(project_filepath)
 
     # project_resultfile = project_repository['project_resultfile']
@@ -170,7 +171,10 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
     pj_junit_object = junit_class.Junit(filename=project_name, timestamp=project_start_time,
                                         name=project_name)
 
-    pj_junit_object.update_attr("resultsdir", project_repository['project_execution_dir'], "pj",
+    pj_junit_object.update_attr("resultsdir",
+                                project_repository['project_execution_dir'],
+                                "pj", project_start_time)
+    pj_junit_object.update_attr("title", project_repository['project_title'], "pj",
                                 project_start_time)
     pj_junit_object.add_property("resultsdir", project_repository['project_execution_dir'], "pj",
                                  project_start_time)
