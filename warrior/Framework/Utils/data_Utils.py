@@ -345,8 +345,7 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
         exec_text = testdata.get("execute").strip()
         execute_req = string_Utils.conv_str_to_bool(exec_text)
         if  execute_req and exec_flag:
-            testdata_key="{0}{1}".format(testdata.get('title', ""), \
-                                         _get_row(testdata))
+            testdata_key ="{0}{1}".format(testdata.get('title', ""), _get_row(testdata))
             details_dict = _get_cmd_details(testdata, global_obj, system_name,
                                             varconfigfile, var_sub=var_sub)
             start_pat = _get_pattern_list(testdata, global_obj)
@@ -411,8 +410,7 @@ def _get_mapping_details(global_obj, vfylist):
                 else:
                     # Check if the verify list has combo value, if yes,
                     # expand the mapping list as well
-                    combo_value = av_fromdc(g_verify, sub_element,
-                        "combo") if g_verify is not None else False
+                    combo_value = av_fromdc(g_verify, sub_element,"combo") if g_verify is not None else False
                     if combo_value:
                         for i in combo_value.split(","):
                             if ':m' in i.lower():
@@ -452,10 +450,11 @@ def _get_cmd_details(testdata, global_obj, system_name,
             resultant_list = _get_verification_details(testdata, global_obj,
                                                        vfylist, attrib)
         elif param == "verify_on_list":
+            sys_list = details_dict["sys_list"]
             vfylist = details_dict["verify_list"]
             resultant_list = _get_verification_details(testdata, global_obj,
                                                        vfylist, attrib,
-                                                       system_name)
+                                                       system_name, sys_list)
         elif param == "verify_map_list":
             vfylist = details_dict["verify_list"]
             vfylist, maplist = _get_mapping_details(global_obj, vfylist)
@@ -492,7 +491,7 @@ def _get_cmdparams_list(testdata, global_obj, cmd_attrib):
         default_value = global_cmd_params.get(
             cmd_attrib) if global_cmd_params is not None else None
         if not cmd_attrib in global_exempt_list:
-            value = default_value if value is None or value is "" else value
+            value = default_value if value is None or value == "" else value
         else:
             if cmd_attrib in testdata.attrib and cmd_attrib == "monitor":
                 value = testdata.attrib[cmd_attrib]
@@ -500,7 +499,8 @@ def _get_cmdparams_list(testdata, global_obj, cmd_attrib):
     return resultant_list
 
 
-def _get_verification_details(testdata, global_obj, verify_list, cmd_attrib, system_name=None):
+def _get_verification_details(testdata, global_obj, verify_list, cmd_attrib,
+                              system_name=None, sys_list=None):
     """From the testdata file takes a testdata node and
     a list of nodes with verification present as input
 
@@ -510,7 +510,7 @@ def _get_verification_details(testdata, global_obj, verify_list, cmd_attrib, sys
     g_verify = global_obj.find("verifications") if global_obj is not None \
         else None
     resultant_list = []
-    for verify in verify_list:
+    for index, verify in enumerate(verify_list):
         if verify is None or verify == "":
             value = None
             resultant_list.append(value)
@@ -521,8 +521,7 @@ def _get_verification_details(testdata, global_obj, verify_list, cmd_attrib, sys
             for element in verify_sublist:
                 # Get the attribute value(name:'combo') of the element in
                 # the "global/verifications" section
-                combo_value = av_fromdc(g_verify, element,
-                              "combo") if g_verify is not None else False
+                combo_value = av_fromdc(g_verify, element, "combo") if g_verify is not None else False
                 # Add combo value if exists else add verify tag in new list
                 if combo_value:
                     new_verify_sublist.extend(combo_value.split(","))
@@ -540,9 +539,13 @@ def _get_verification_details(testdata, global_obj, verify_list, cmd_attrib, sys
                         print_warning(
                             "could not find specific or global value  " \
                             "for verification node={0}".format(element))
-                if value is None or value is "":
+                if value is None or value == "":
                     value = 'yes' if cmd_attrib == "found" else value
-                    value = system_name if cmd_attrib == "verify_on" else value
+                    if cmd_attrib == "verify_on" and sys_list is not None and \
+                       sys_list[index] is not None:
+                        value = sys_list[index]
+                    else:
+                        value = system_name
                 value = value if not value else str(value).strip()
                 resultant_sublist.append(value)
             resultant_list.append(resultant_sublist)
@@ -713,9 +716,8 @@ def verify_resp_across_sys(match_list, context_list, command,
             # context_list[i])
             try:
                 data = remote_resp_dict[verify_on_list[i][j]]
-                tmp_status = verify_cmd_response(
-                                [match_list[i]], [context_list[i]], command,
-                                data, verify_on_list[i][j], varconfigfile,
+                tmp_status = verify_cmd_response( [match_list[i]], [context_list[i]], command, \
+                                data, verify_on_list[i][j], varconfigfile, \
                                 endprompt, verify_group)
                 status = status and tmp_status
             except KeyError:

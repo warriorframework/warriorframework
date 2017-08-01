@@ -29,6 +29,7 @@ class CliActions(object):
     related to actions performed on any command line interface """
 
     def __init__(self):
+        """constructor"""
         self.resultfile = Utils.config_Utils.resultfile
         self.datafile = Utils.config_Utils.datafile
         self.logsdir = Utils.config_Utils.logsdir
@@ -117,7 +118,7 @@ class CliActions(object):
         output_dict = {}
         status = True
 
-        attempt = 1 if subsystem_list == None else len(subsystem_list)
+        attempt = 1 if subsystem_list is None else len(subsystem_list)
         for i in range(attempt):
             result = False
             subsystem_name = subsystem_list[i] if subsystem_list != None else None
@@ -171,7 +172,7 @@ class CliActions(object):
         system_name, subsystem_list = Utils.data_Utils.resolve_system_subsystem_list(self.datafile, system_name)
         status = True
 
-        attempt = 1 if subsystem_list == None else len(subsystem_list)
+        attempt = 1 if subsystem_list is None else len(subsystem_list)
         for i in range(attempt):
             Utils.testcase_Utils.pNote(wdesc)
             subsystem_name = subsystem_list[i] if subsystem_list != None else None
@@ -283,7 +284,7 @@ class CliActions(object):
         output_dict = {}
         status = True
 
-        attempt = 1 if subsystem_list == None else len(subsystem_list)
+        attempt = 1 if subsystem_list is None else len(subsystem_list)
         for i in range(attempt):
             Utils.testcase_Utils.pSubStep(wdesc)
             #Get name from the list when it's not 'None', otherwise, set it to 'None'
@@ -293,7 +294,7 @@ class CliActions(object):
             credentials = get_credentials(self.datafile, call_system_name,
                                           [ip_type, 'ssh_port', 'username',
                                            'password', 'prompt', 'timeout',
-                                           'conn_options', 'custom_keystroke'])
+                                           'conn_options', 'custom_keystroke', 'escape'])
             # parse more things here
             pNote("system={0}, session={1}".format(call_system_name, session_name))
             session_id = get_session_id(call_system_name, session_name)
@@ -445,7 +446,7 @@ class CliActions(object):
         output_dict = {}
         status = True
 
-        attempt = 1 if subsystem_list == None else len(subsystem_list)
+        attempt = 1 if subsystem_list is None else len(subsystem_list)
         for i in range(attempt):
             Utils.testcase_Utils.pSubStep(wdesc)
             #Get name from the list when it's not 'None', otherwise, set it to 'None'
@@ -453,8 +454,9 @@ class CliActions(object):
             call_system_name = system_name if subsystem_name is None \
             else "{0}[{1}]".format(system_name, subsystem_name)
             credentials = get_credentials(self.datafile, call_system_name,
-                                          [ip_type, 'telnet_port','username',
-                                           'prompt','password','timeout', 'conn_options', 'custom_keystroke'])
+                                          [ip_type, 'telnet_port', 'username',
+                                           'prompt', 'password', 'timeout', 'conn_options',
+                                           'custom_keystroke', 'escape'])
             pNote("system={0}, session={1}".format(call_system_name, session_name))
             Utils.testcase_Utils.pNote(Utils.file_Utils.getDateTime())
             session_id = get_session_id(call_system_name, session_name)
@@ -516,7 +518,6 @@ class CliActions(object):
             status = status and result
         return status, output_dict
 
-
     def send_command(self, command, system_name, session_name=None,
                      start_prompt='.*', end_prompt='.*', int_timeout=60):
         """Sends a command to a system or a subsystem
@@ -543,15 +544,15 @@ class CliActions(object):
 
         session_id = Utils.data_Utils.get_session_id(system_name, session_name)
         session_object = Utils.data_Utils.get_object_from_datarepository(session_id)
-        if session_object:
-            command_status, _ = Utils.cli_Utils.send_command(session_object, start_prompt,
-                                                                    end_prompt, command, int_timeout)
+        if session_object and isinstance(session_object, WarriorConnect):
+            command_status, _ = session_object.send_command(start_prompt, end_prompt,
+                                                            command, int_timeout)
         else:
             print_warning("%s-%s is not available for use" % (system_name, session_name))
             command_status = False
 
         Utils.testcase_Utils.report_substep_status(command_status)
-        return  command_status
+        return command_status
 
     def send_all_testdata_commands(self, system_name, session_name=None, var_sub=None,
                                    description=None, td_tag=None, vc_tag=None):
@@ -816,6 +817,7 @@ class CliActions(object):
                                                                   var_sub=var_sub,
                                                                   title=title, row=row_num,
                                                                   system_name=system_name,
+                                                                  session_name=session_name,
                                                                   datafile=self.datafile)
 
         td_resp_dict = get_object_from_datarepository(str(session_id)+"_td_response")

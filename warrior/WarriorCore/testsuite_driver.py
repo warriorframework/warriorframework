@@ -199,7 +199,7 @@ def report_testsuite_result(suite_repository, suite_status):
 def print_suite_details_to_console(suite_repository, testsuite_filepath, junit_resultfile):
     """Prints the testsuite details to console """
 
-    print "\n\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$  TESTSUITE-DETAILS  $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n"
+    print_info("\n\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$  TESTSUITE-DETAILS  $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
     print_info("Executing testsuite '{0}'".format(suite_repository['suite_name'].strip()))
     print_info("Title: {0}".format(suite_repository['suite_title'].strip()))
     print_info("Results directory: %s" % suite_repository['suite_execution_dir'])
@@ -278,9 +278,8 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
     #if not from_project:
     testsuite_utils.pSuite_root(junit_resultfile)
     
-    testsuite_utils.pSuite_testsuite(junit_resultfile, suite_name,
-                                           errors='0', skipped='0',
-                                           tests=no_of_tests, failures='0',
+    testsuite_utils.pSuite_testsuite(junit_resultfile, suite_name, errors='0', skipped='0',\
+                                           tests=no_of_tests, failures='0',\
                                            time='0', timestamp=suite_timestamp)
     testsuite_utils.pSuite_property(junit_resultfile, 'title', suite_repository['suite_title'])
     testsuite_utils.pSuite_property(junit_resultfile, 'location', testsuite_filepath)
@@ -292,26 +291,26 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
    
     if execution_type.upper() == 'PARALLEL_TESTCASES':
         print_info("Executing testcases in parallel")
-        test_suite_status = parallel_testcase_driver.main(testcase_list, suite_repository,
-                                                          data_repository, from_project, tc_parallel=True,
+        test_suite_status = parallel_testcase_driver.main(testcase_list, suite_repository,\
+                                                          data_repository, from_project, tc_parallel=True,\
                                                           auto_defects=auto_defects)
     
     elif execution_type.upper() == 'SEQUENTIAL_TESTCASES':
         print_info("Executing testccases sequentially")
-        test_suite_status = sequential_testcase_driver.main(testcase_list, suite_repository,
-                                                            data_repository, from_project,
+        test_suite_status = sequential_testcase_driver.main(testcase_list, suite_repository,\
+                                                            data_repository, from_project,\
                                                             auto_defects=auto_defects)
    
     elif execution_type.upper() == 'RUN_UNTIL_FAIL':
-        execution_value = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath, 'Details',
+        execution_value = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath, 'Details',\
                                                                        'type', 'Max_Attempts')
         print_info("Execution type: {0}, Attempts: {1}".format(execution_type, execution_value))
         i = 0
         while i < int(execution_value):
             i += 1
             print_debug("\n\n<======= ATTEMPT: {0} ======>".format(i))
-            test_suite_status = sequential_testcase_driver.main(testcase_list, suite_repository,
-                                                                data_repository, from_project,
+            test_suite_status = sequential_testcase_driver.main(testcase_list, suite_repository,\
+                                                                data_repository, from_project,\
                                                                 auto_defects=auto_defects)
             test_count = i * len(testcase_list)
             testsuite_utils.pSuite_update_suite_tests(str(test_count))
@@ -319,15 +318,15 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
                 break
 
     elif execution_type.upper() == 'RUN_UNTIL_PASS':
-        execution_value = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath, 'Details',
+        execution_value = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath, 'Details',\
                                                                        'type', 'Max_Attempts')
         print_info("Execution type: {0}, Attempts: {1}".format(execution_type, execution_value))
         i = 0
         while i < int(execution_value):
             i += 1
             print_debug("\n\n<======= ATTEMPT: {0} ======>".format(i))
-            test_suite_status = sequential_testcase_driver.main(testcase_list, suite_repository,
-                                                                data_repository, from_project,
+            test_suite_status = sequential_testcase_driver.main(testcase_list, suite_repository,\
+                                                                data_repository, from_project,\
                                                                 auto_defects=auto_defects)
             test_count = i * len(testcase_list)
             testsuite_utils.pSuite_update_suite_tests(str(test_count))
@@ -351,21 +350,21 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
             i += 1
             print_debug("\n\n<======= ATTEMPT: {0} ======>".format(i))
             # We aren't actually summing each test result here...
-            test_suite_status = sequential_testcase_driver.main(testcase_list, suite_repository,
-                                                                data_repository,
+            test_suite_status = sequential_testcase_driver.main(testcase_list, suite_repository,\
+                                                                data_repository,\
                                                                 from_project, auto_defects=auto_defects)
 
     elif execution_type.upper() == "ITERATIVE_SEQUENTIAL":
 		# if execution type is iterative sequential call WarriorCore.Classes.iterative_testsuite_class and 
 		# execute the testcases in iterative sequential fashion on the systems
-        print "Iterative sequential suite"
+        print_info("Iterative sequential suite") 
         iter_seq_ts_obj = IterativeTestsuite(testcase_list, suite_repository, data_repository, from_project, auto_defects)
         test_suite_status = iter_seq_ts_obj.execute_iterative_sequential()
 
     elif execution_type.upper() == "ITERATIVE_PARALLEL":
 		# if execution type is iterative parallel call WarriorCore.Classes.iterative_testsuite_class and 
 		# execute the testcases in iterative parallel fashion on the systems
-        print "Iterative parallel suite"
+        print_info("Iterative parallel suite") 
         iter_seq_ts_obj = IterativeTestsuite(testcase_list, suite_repository, data_repository, from_project, auto_defects)
         test_suite_status = iter_seq_ts_obj.execute_iterative_parallel()
 
@@ -373,7 +372,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
         print_error("unexpected suite_type received...aborting execution")
         test_suite_status = False
 
-    print ("\n")
+    print_info("\n")
     suite_end_time = Utils.datetime_utils.get_current_timestamp()
     print_info("[{0}] Testsuite execution completed".format(suite_end_time))
     suite_duration = Utils.datetime_utils.get_time_delta(suite_start_time)
@@ -398,7 +397,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
 
         # Save JUnit/HTML results of the Suite in MongoDB server
         if data_repository.get("db_obj") is not False:
-            ts_junit_xml =  data_repository['wt_results_execdir'] + os.sep + ts_junit_object.filename+"_junit.xml"
+            ts_junit_xml = data_repository['wt_results_execdir'] + os.sep + ts_junit_object.filename+"_junit.xml"
             data_repository.get("db_obj").add_html_result_to_mongodb(ts_junit_xml)
     else:
         # Create and replace existing Project junit file for each suite
@@ -412,9 +411,9 @@ def main(testsuite_filepath, data_repository={},
          res_startdir=None, logs_startdir=None, ts_onError_action=None):
     """Executes a test suite """ 
     try:
-        test_suite_status, suite_repository = execute_testsuite(testsuite_filepath,
-                                             data_repository, from_project,
-                                             auto_defects, jiraproj, res_startdir,
+        test_suite_status, suite_repository = execute_testsuite(testsuite_filepath,\
+                                             data_repository, from_project,\
+                                             auto_defects, jiraproj, res_startdir,\
                                              logs_startdir, ts_onError_action)
     except Exception:
         print_error('unexpected error {0}'.format(traceback.format_exc()))
