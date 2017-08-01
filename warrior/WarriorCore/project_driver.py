@@ -17,7 +17,7 @@ import shutil
 import copy
 import traceback
 
-from Framework.Utils import xml_Utils, file_Utils, datetime_utils, testcase_Utils
+import Framework.Utils as Utils
 from Framework.Utils.print_Utils import print_info, print_error, print_warning
 from WarriorCore.Classes import execution_files_class, junit_class
 from WarriorCore import common_execution_utils, sequential_testsuite_driver, \
@@ -33,15 +33,15 @@ def get_project_details(project_filepath, res_startdir, logs_startdir, data_repo
     """Gets all details of the Project from its xml file"""
 
     project_repository = {}
-    project_name = xml_Utils.getChildTextbyParentTag(project_filepath, 'Details', 'Name')
-    project_title = xml_Utils.getChildTextbyParentTag(project_filepath, 'Details', 'Title')
-    def_on_error_action = testcase_Utils.get_defonerror_fromxml_file(project_filepath)
-    def_on_error_value = xml_Utils.getChildAttributebyParentTag(project_filepath,
+    project_name = Utils.xml_Utils.getChildTextbyParentTag(project_filepath, 'Details', 'Name')
+    project_title = Utils.xml_Utils.getChildTextbyParentTag(project_filepath, 'Details', 'Title')
+    def_on_error_action = Utils.testcase_Utils.get_defonerror_fromxml_file(project_filepath)
+    def_on_error_value = Utils.xml_Utils.getChildAttributebyParentTag(project_filepath,
                                                                       'Details',
                                                                       'default_onError',
                                                                       'value')
     filename = os.path.basename(project_filepath)
-    nameonly = file_Utils.getNameOnly(filename)
+    nameonly = Utils.file_Utils.getNameOnly(filename)
     operating_system = sys.platform
 
     if project_name is None or project_name is False:
@@ -69,7 +69,7 @@ def get_project_details(project_filepath, res_startdir, logs_startdir, data_repo
                                                      res_startdir,
                                                      logs_startdir)
     project_resultfile = efile_obj.resultfile
-    project_junit = file_Utils.getNameOnly(project_resultfile) + "_prjunit.xml"
+    project_junit = Utils.file_Utils.getNameOnly(project_resultfile) + "_prjunit.xml"
     project_execution_dir = os.path.dirname(project_resultfile)
     wp_results_execdir = efile_obj.results_execdir
     wp_logs_execdir = efile_obj.logs_execdir
@@ -98,7 +98,7 @@ def get_testsuite_list(project_filepath):
     Returns a list of all the Testsuite elements present in the Project"""
 
     testsuite_list_new = []
-    root = xml_Utils.getRoot(project_filepath)
+    root = Utils.xml_Utils.getRoot(project_filepath)
     testsuites = root.find('Testsuites')
     if testsuites is None:
         print_info('Testsuite is empty: tag <Testsuites> not "\
@@ -152,9 +152,9 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
     2. testsuite_driver      = (module loader) module loader of the testsuite_driver
     3. project_repository    = (dict) dictionary containing all data of the project under execution
     """
-    project_start_time = datetime_utils.get_current_timestamp()
+    project_start_time = Utils.datetime_utils.get_current_timestamp()
     print_info("[{0}] Project execution starts".format(project_start_time))
-    project_title = xml_Utils.getChildTextbyParentTag(project_filepath, 'Details', 'Title')
+    project_title = Utils.xml_Utils.getChildTextbyParentTag(project_filepath, 'Details', 'Title')
     project_repository = get_project_details(project_filepath, res_startdir, logs_startdir,
                                              data_repository)
     project_repository['project_title'] = project_title
@@ -187,8 +187,8 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
         del data_repository["jobid"]
     data_repository['wt_junit_object'] = pj_junit_object
 
-    execution_type = xml_Utils.getChildAttributebyParentTag(project_filepath, 'Details',
-                                                            'type', 'exectype')
+    execution_type = Utils.xml_Utils.getChildAttributebyParentTag(project_filepath, 'Details',
+                                                                  'type', 'exectype')
 
     # for backward compatibility(when exectype is not provided)
     if execution_type is False:
@@ -208,10 +208,10 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
         project_status = False
 
     print_info("\n")
-    project_end_time = datetime_utils.get_current_timestamp()
+    project_end_time = Utils.datetime_utils.get_current_timestamp()
     print_info("[{0}] Project execution completed".format(project_end_time))
-    project_duration = datetime_utils.get_time_delta(project_start_time)
-    hms = datetime_utils.get_hms_for_seconds(project_duration)
+    project_duration = Utils.datetime_utils.get_time_delta(project_start_time)
+    hms = Utils.datetime_utils.get_hms_for_seconds(project_duration)
     print_info("Project duration= {0}".format(hms))
 
     project_status = report_project_result(project_status, project_repository)
