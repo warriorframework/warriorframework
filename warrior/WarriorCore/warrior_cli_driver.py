@@ -98,10 +98,16 @@ def decide_ujd_actions(w_cli_obj, namespace):
 def decide_overwrite_var(namespace):
     overwrite = {}
     if namespace.datafile:
+        if namespace.datafile[0] != os.sep: 
+            namespace.datafile = os.getcwd() + os.sep + namespace.datafile
         overwrite['ow_datafile'] = namespace.datafile
     if namespace.resultdir:
+        if namespace.resultdir[0] != os.sep: 
+            namespace.resultdir = os.getcwd() + os.sep + namespace.resultdir
         overwrite['ow_resultdir'] = namespace.resultdir
     if namespace.logdir:
+        if namespace.logdir[0] != os.sep: 
+            namespace.logdir = os.getcwd() + os.sep + namespace.logdir
         overwrite['ow_logdir'] = namespace.logdir
     if namespace.outputdir:
         overwrite['ow_resultdir'] = namespace.outputdir
