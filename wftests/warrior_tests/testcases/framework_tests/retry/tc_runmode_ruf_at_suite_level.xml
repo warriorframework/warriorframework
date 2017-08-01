@@ -1,8 +1,8 @@
 <?xml version="1.0" ?>
 <Testcase>
         <Details>
-                <Name>tc_retry_cond_tc_level_if_met</Name>
-                <Title>support TC for tc level retry tag with if cond and met</Title>
+                <Name>tc_runmode_ruf_at_suite_level</Name>
+                <Title>To verify runmode tags</Title>
                 <Datatype>Custom</Datatype>
                 <default_onError action="next"/>
                 <Logsdir>../../Execution</Logsdir>
@@ -10,7 +10,7 @@
                 <InputDataFile>No_Data</InputDataFile>
                 <Date>2017-04-20</Date>
                 <Time>16:20</Time>
-                <Engineer>Ka</Engineer>
+                <Engineer>Annalakshmi</Engineer>
         </Details>
         <Requirements>
                 <Requirement/>
@@ -18,9 +18,9 @@
         <Steps>
                 <step Driver="ci_regression_driver" Keyword="increase_value" TS="2">
                         <Arguments>
-                                <argument name="key" value="ts_retry_if_cond_met_count"/>
+                                <argument name="key" value="ts_ruf_count"/>
                                 <argument name="status" value="pass"/>
-                                <argument name="max_value" value="3"/>
+                                <argument name="max_value" value="2"/>
                                 <argument name="max_status" value="pass"/>
                         </Arguments>
                         <onError action="next"/>
