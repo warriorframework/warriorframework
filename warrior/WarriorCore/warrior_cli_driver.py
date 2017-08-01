@@ -110,6 +110,8 @@ def decide_overwrite_var(namespace):
             namespace.logdir = os.getcwd() + os.sep + namespace.logdir
         overwrite['ow_logdir'] = namespace.logdir
     if namespace.outputdir:
+        if namespace.outputdir[0] != os.sep: 
+            namespace.outputdir = os.getcwd() + os.sep + namespace.outputdir
         overwrite['ow_resultdir'] = namespace.outputdir
         overwrite['ow_logdir'] = namespace.outputdir
     if all([namespace.outputdir, any([namespace.resultdir, namespace.logdir])]):
