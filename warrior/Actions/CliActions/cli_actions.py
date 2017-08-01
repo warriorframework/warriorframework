@@ -29,6 +29,9 @@ class CliActions(object):
     related to actions performed on any command line interface """
 
     def __init__(self):
+        """
+        Create files for logging information. 
+        """
         self.resultfile = Utils.config_Utils.resultfile
         self.datafile = Utils.config_Utils.datafile
         self.logsdir = Utils.config_Utils.logsdir
