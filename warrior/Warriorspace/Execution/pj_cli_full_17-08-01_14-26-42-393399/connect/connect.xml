@@ -1,0 +1,106 @@
+<?xml version="1.0" ?>
+<TestSuite>
+	<Details>
+		<Name>connect</Name>
+		<Title>cli funct. connect, connect_ssh, connect_telnet tests</Title>
+		<Engineer>Tomas Le</Engineer>
+		<Date>01/08/2016</Date>
+		<Time>13:52:26</Time>
+		<type exectype="sequential_testcases"/>
+		<default_onError action="next"/>
+		<Resultsdir/>
+	</Details>
+	<Requirements>
+		<Requirement>Requirement-001</Requirement>
+		<Requirement>Requirement-002</Requirement>
+	</Requirements>
+	<Testcases>
+		<Testcase>
+			<path>../../testcases/cli_tests/connect_tc/connect_call_connect_ssh_no_subsys.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>impact</impact>
+		</Testcase>
+		
+		<Testcase>
+			<path>../../testcases/cli_tests/connect_tc/connect_call_connect_ssh_one_subsys.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>impact</impact>
+		</Testcase>
+		<Testcase>
+			<path>../../testcases/cli_tests/connect_tc/connect_call_connect_ssh_multi_subsys.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>impact</impact>
+		</Testcase>
+		<Testcase>
+			<path>../../testcases/cli_tests/connect_tc/connect_call_connect_telnet_no_subsys.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>impact</impact>
+		</Testcase>
+		<Testcase>
+			<path>../../testcases/cli_tests/connect_tc/connect_call_connect_telnet_one_subsys.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>impact</impact>
+		</Testcase>
+		<Testcase>
+			<path>../../testcases/cli_tests/connect_tc/connect_call_connect_telnet_multi_subsys.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>impact</impact>
+		</Testcase>
+		<Testcase>
+			<path>../../testcases/cli_tests/connect_tc/connect_call_connect_telnet_custom_keystroke.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>noimpact</impact>
+		</Testcase>
+		<Testcase>
+			<path>../../testcases/cli_tests/connect_tc/tc_cli_conn_option.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>impact</impact>
+		</Testcase>
+		<Testcase>
+			<path>../../testcases/cli_tests/connect_tc/tc_connect_disconnect_all.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>impact</impact>
+		</Testcase>
+		<!-- 
+		smart connect isn't currently in used as the prompt text and commands needs to be provided by end user
+		<Testcase>
+			<path>../../testcases/cli_tests/connect_tc/tc_smart_connect_disconnect.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>impact</impact>
+		</Testcase> -->
+		<Testcase>
+			<path>../../testcases/cli_tests/connect_tc/connect_encrypt_pwd.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>impact</impact>
+		</Testcase>
+		<Testcase>
+			<path>../../testcases/cli_tests/connect_tc/connect_abort_as_error.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>noimpact</impact>
+		</Testcase>
+	</Testcases>
+</TestSuite>

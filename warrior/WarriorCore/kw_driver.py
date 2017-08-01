@@ -47,6 +47,7 @@ def execute_keyword(keyword, data_repository, args_repository, package_list):
     drv_obj = ModuleOperations(package_list, keyword)
     if len(drv_obj.matching_method_list) == 1:
         method_call = drv_obj.matching_method_list[0]
+        print_info("Method call is %s " % method_call) 
         wdesc = Utils.testcase_Utils.get_wdesc_string(method_call)
         Utils.testcase_Utils.pStep(wdesc)
         kw_obj = KeywordOperations(keyword, method_call, args_repository, data_repository)

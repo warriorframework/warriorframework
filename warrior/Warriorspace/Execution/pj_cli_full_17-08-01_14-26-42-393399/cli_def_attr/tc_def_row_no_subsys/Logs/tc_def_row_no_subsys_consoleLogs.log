@@ -1,0 +1,15 @@
+ ========================== WARRIOR FRAMEWORK DETAILS ========================== 
+-I- The Warrior framework used is /home/khusain/WAR-210/warriorframework
+-I- The Warrior framework Release is Ninja
+-I- The Warrior framework version is warrior-3.2.0
+ ========================== WARRIOR FRAMEWORK DETAILS ========================== 
+-I- 
+===============================  TC-DETAILS  ==================================================
+-I- Title: cli cmd attr. default
+-I- Results directory: /home/khusain/WAR-210/warriorframework/warrior/Warriorspace/Execution/pj_cli_full_17-08-01_14-26-42-393399/cli_def_attr/tc_def_row_no_subsys/Results
+-I- Logs directory: /home/khusain/WAR-210/warriorframework/warrior/Warriorspace/Execution/pj_cli_full_17-08-01_14-26-42-393399/cli_def_attr/tc_def_row_no_subsys/Logs
+-I- Defects directory: /home/khusain/WAR-210/warriorframework/warrior/Warriorspace/Execution/pj_cli_full_17-08-01_14-26-42-393399/cli_def_attr/tc_def_row_no_subsys/Defects
+-I- Datafile: /home/khusain/WAR-210/warriorframework/warrior_fnc_tests/warrior_tests/data/cli_tests/cli_def_Data.xml
+-I- Requirement: ssh-connect-001 
+-I- Requirement: ssh-disconnect-001 
+-I- ================================================================================================

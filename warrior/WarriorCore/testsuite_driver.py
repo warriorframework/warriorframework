@@ -200,7 +200,7 @@ def print_suite_details_to_console(suite_repository, testsuite_filepath, junit_r
     """Prints the testsuite details to console """
 
     print_info("\n\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$  TESTSUITE-DETAILS  $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
-    print_info("Executing testsuite '{0}'".format(suit e_repository['suite_name'].strip()))
+    print_info("Executing testsuite '{0}'".format(suite_repository['suite_name'].strip()))
     print_info("Title: {0}".format(suite_repository['suite_title'].strip()))
     print_info("Results directory: %s" % suite_repository['suite_execution_dir'])
     report_suite_requirements(suite_repository, testsuite_filepath)
@@ -414,7 +414,7 @@ def main(testsuite_filepath, data_repository={},
         test_suite_status, suite_repository = execute_testsuite(testsuite_filepath,\
                                              data_repository, from_project,\
                                              auto_defects, jiraproj, res_startdir,\
-                                             logs_startdir, ts_onError_action)\
+                                             logs_startdir, ts_onError_action)
     except Exception:
         print_error('unexpected error {0}'.format(traceback.format_exc()))
         test_suite_status, suite_repository = False, None

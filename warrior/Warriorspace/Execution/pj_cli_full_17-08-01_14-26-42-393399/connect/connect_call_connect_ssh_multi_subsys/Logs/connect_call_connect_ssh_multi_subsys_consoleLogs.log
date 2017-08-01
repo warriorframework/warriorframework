@@ -1,0 +1,217 @@
+ ========================== WARRIOR FRAMEWORK DETAILS ========================== 
+-I- The Warrior framework used is /home/khusain/WAR-210/warriorframework
+-I- The Warrior framework Release is Ninja
+-I- The Warrior framework version is warrior-3.2.0
+ ========================== WARRIOR FRAMEWORK DETAILS ========================== 
+-I- 
+===============================  TC-DETAILS  ==================================================
+-I- Title: connect kw calling connect_ssh, multi subsystem
+-I- Results directory: /home/khusain/WAR-210/warriorframework/warrior/Warriorspace/Execution/pj_cli_full_17-08-01_14-26-42-393399/connect/connect_call_connect_ssh_multi_subsys/Results
+-I- Logs directory: /home/khusain/WAR-210/warriorframework/warrior/Warriorspace/Execution/pj_cli_full_17-08-01_14-26-42-393399/connect/connect_call_connect_ssh_multi_subsys/Logs
+-I- Defects directory: /home/khusain/WAR-210/warriorframework/warrior/Warriorspace/Execution/pj_cli_full_17-08-01_14-26-42-393399/connect/connect_call_connect_ssh_multi_subsys/Defects
+-I- Datafile: /home/khusain/WAR-210/warriorframework/warrior_fnc_tests/warrior_tests/data/cli_tests/connect_ssh_Data.xml
+-I- Requirement: ssh-connect-001 
+-I- Requirement: ssh-disconnect-001 
+-I- ================================================================================================
+-I- CUSTOM sequential_keywords
+-I- 
+********************* Keyword: connect *********************
+
+-I- step number: 1
+-I- Teststep Description: connect
+-I- [2017-08-01 14:26:57] Keyword execution starts
+-E- unexpected error: Traceback (most recent call last):
+  File "/home/khusain/WAR-210/warriorframework/warrior/WarriorCore/step_driver.py", line 280, in main
+    data_repository, system_name, parallel, queue)
+  File "/home/khusain/WAR-210/warriorframework/warrior/WarriorCore/step_driver.py", line 163, in execute_step
+    data_repository, args_repository)
+  File "/home/khusain/WAR-210/warriorframework/warrior/WarriorCore/step_driver.py", line 72, in send_keyword_to_productdriver
+    return driver_call.main(keyword, data_repository, args_repository)
+  File "/home/khusain/WAR-210/warriorframework/warrior/ProductDrivers/cli_driver.py", line 27, in main
+    return kw_driver.execute_keyword(keyword, data_repository, args_repository, package_list)
+  File "/home/khusain/WAR-210/warriorframework/warrior/WarriorCore/kw_driver.py", line 50, in execute_keyword
+    wdesc = Utils.testcase_Utils.get_wdesc_string(method_call)
+  File "/home/khusain/WAR-210/warriorframework/warrior/Framework/Utils/testcase_Utils.py", line 154, in get_wdesc_string
+    return TCOBJ.get_wdesc_string(function_object)
+  File "/home/khusain/WAR-210/warriorframework/warrior/WarriorCore/Classes/testcase_utils_class.py", line 322, in get_wdesc_string
+    source = inspect.getsource(function_object)
+  File "/usr/lib/python2.7/inspect.py", line 700, in getsource
+    lines, lnum = getsourcelines(object)
+  File "/usr/lib/python2.7/inspect.py", line 689, in getsourcelines
+    lines, lnum = findsource(object)
+  File "/usr/lib/python2.7/inspect.py", line 528, in findsource
+    raise IOError('source code not available')
+IOError: source code not available
+
+-I- failure action= next
+-I- 
+********************* Keyword: disconnect *********************
+
+-I- step number: 2
+-I- Teststep Description: disconnect
+-I- [2017-08-01 14:26:57] Keyword execution starts
+-E- unexpected error: Traceback (most recent call last):
+  File "/home/khusain/WAR-210/warriorframework/warrior/WarriorCore/step_driver.py", line 280, in main
+    data_repository, system_name, parallel, queue)
+  File "/home/khusain/WAR-210/warriorframework/warrior/WarriorCore/step_driver.py", line 163, in execute_step
+    data_repository, args_repository)
+  File "/home/khusain/WAR-210/warriorframework/warrior/WarriorCore/step_driver.py", line 72, in send_keyword_to_productdriver
+    return driver_call.main(keyword, data_repository, args_repository)
+  File "/home/khusain/WAR-210/warriorframework/warrior/ProductDrivers/cli_driver.py", line 27, in main
+    return kw_driver.execute_keyword(keyword, data_repository, args_repository, package_list)
+  File "/home/khusain/WAR-210/warriorframework/warrior/WarriorCore/kw_driver.py", line 50, in execute_keyword
+    wdesc = Utils.testcase_Utils.get_wdesc_string(method_call)
+  File "/home/khusain/WAR-210/warriorframework/warrior/Framework/Utils/testcase_Utils.py", line 154, in get_wdesc_string
+    return TCOBJ.get_wdesc_string(function_object)
+  File "/home/khusain/WAR-210/warriorframework/warrior/WarriorCore/Classes/testcase_utils_class.py", line 322, in get_wdesc_string
+    source = inspect.getsource(function_object)
+  File "/usr/lib/python2.7/inspect.py", line 700, in getsource
+    lines, lnum = getsourcelines(object)
+  File "/usr/lib/python2.7/inspect.py", line 689, in getsourcelines
+    lines, lnum = findsource(object)
+  File "/usr/lib/python2.7/inspect.py", line 528, in findsource
+    raise IOError('source code not available')
+IOError: source code not available
+
+-I- failure action= next
+-I- 
+********************* Keyword: connect *********************
+
+-I- step number: 3
+-I- Teststep Description: connect
+-I- [2017-08-01 14:26:57] Keyword execution starts
+-E- unexpected error: Traceback (most recent call last):
+  File "/home/khusain/WAR-210/warriorframework/warrior/WarriorCore/step_driver.py", line 280, in main
+    data_repository, system_name, parallel, queue)
+  File "/home/khusain/WAR-210/warriorframework/warrior/WarriorCore/step_driver.py", line 163, in execute_step
+    data_repository, args_repository)
+  File "/home/khusain/WAR-210/warriorframework/warrior/WarriorCore/step_driver.py", line 72, in send_keyword_to_productdriver
+    return driver_call.main(keyword, data_repository, args_repository)
+  File "/home/khusain/WAR-210/warriorframework/warrior/ProductDrivers/cli_driver.py", line 27, in main
+    return kw_driver.execute_keyword(keyword, data_repository, args_repository, package_list)
+  File "/home/khusain/WAR-210/warriorframework/warrior/WarriorCore/kw_driver.py", line 50, in execute_keyword
+    wdesc = Utils.testcase_Utils.get_wdesc_string(method_call)
+  File "/home/khusain/WAR-210/warriorframework/warrior/Framework/Utils/testcase_Utils.py", line 154, in get_wdesc_string
+    return TCOBJ.get_wdesc_string(function_object)
+  File "/home/khusain/WAR-210/warriorframework/warrior/WarriorCore/Classes/testcase_utils_class.py", line 322, in get_wdesc_string
+    source = inspect.getsource(function_object)
+  File "/usr/lib/python2.7/inspect.py", line 700, in getsource
+    lines, lnum = getsourcelines(object)
+  File "/usr/lib/python2.7/inspect.py", line 689, in getsourcelines
+    lines, lnum = findsource(object)
+  File "/usr/lib/python2.7/inspect.py", line 528, in findsource
+    raise IOError('source code not available')
+IOError: source code not available
+
+-I- failure action= next
+-I- 
+********************* Keyword: disconnect *********************
+
+-I- step number: 4
+-I- Teststep Description: disconnect
+-I- [2017-08-01 14:26:57] Keyword execution starts
+-E- unexpected error: Traceback (most recent call last):
+  File "/home/khusain/WAR-210/warriorframework/warrior/WarriorCore/step_driver.py", line 280, in main
+    data_repository, system_name, parallel, queue)
+  File "/home/khusain/WAR-210/warriorframework/warrior/WarriorCore/step_driver.py", line 163, in execute_step
+    data_repository, args_repository)
+  File "/home/khusain/WAR-210/warriorframework/warrior/WarriorCore/step_driver.py", line 72, in send_keyword_to_productdriver
+    return driver_call.main(keyword, data_repository, args_repository)
+  File "/home/khusain/WAR-210/warriorframework/warrior/ProductDrivers/cli_driver.py", line 27, in main
+    return kw_driver.execute_keyword(keyword, data_repository, args_repository, package_list)
+  File "/home/khusain/WAR-210/warriorframework/warrior/WarriorCore/kw_driver.py", line 50, in execute_keyword
+    wdesc = Utils.testcase_Utils.get_wdesc_string(method_call)
+  File "/home/khusain/WAR-210/warriorframework/warrior/Framework/Utils/testcase_Utils.py", line 154, in get_wdesc_string
+    return TCOBJ.get_wdesc_string(function_object)
+  File "/home/khusain/WAR-210/warriorframework/warrior/WarriorCore/Classes/testcase_utils_class.py", line 322, in get_wdesc_string
+    source = inspect.getsource(function_object)
+  File "/usr/lib/python2.7/inspect.py", line 700, in getsource
+    lines, lnum = getsourcelines(object)
+  File "/usr/lib/python2.7/inspect.py", line 689, in getsourcelines
+    lines, lnum = findsource(object)
+  File "/usr/lib/python2.7/inspect.py", line 528, in findsource
+    raise IOError('source code not available')
+IOError: source code not available
+
+-I- failure action= next
+-I- 
+********************* Keyword: connect *********************
+
+-I- step number: 5
+-I- Teststep Description: connect
+-I- [2017-08-01 14:26:58] Keyword execution starts
+-E- unexpected error: Traceback (most recent call last):
+  File "/home/khusain/WAR-210/warriorframework/warrior/WarriorCore/step_driver.py", line 280, in main
+    data_repository, system_name, parallel, queue)
+  File "/home/khusain/WAR-210/warriorframework/warrior/WarriorCore/step_driver.py", line 163, in execute_step
+    data_repository, args_repository)
+  File "/home/khusain/WAR-210/warriorframework/warrior/WarriorCore/step_driver.py", line 72, in send_keyword_to_productdriver
+    return driver_call.main(keyword, data_repository, args_repository)
+  File "/home/khusain/WAR-210/warriorframework/warrior/ProductDrivers/cli_driver.py", line 27, in main
+    return kw_driver.execute_keyword(keyword, data_repository, args_repository, package_list)
+  File "/home/khusain/WAR-210/warriorframework/warrior/WarriorCore/kw_driver.py", line 50, in execute_keyword
+    wdesc = Utils.testcase_Utils.get_wdesc_string(method_call)
+  File "/home/khusain/WAR-210/warriorframework/warrior/Framework/Utils/testcase_Utils.py", line 154, in get_wdesc_string
+    return TCOBJ.get_wdesc_string(function_object)
+  File "/home/khusain/WAR-210/warriorframework/warrior/WarriorCore/Classes/testcase_utils_class.py", line 322, in get_wdesc_string
+    source = inspect.getsource(function_object)
+  File "/usr/lib/python2.7/inspect.py", line 700, in getsource
+    lines, lnum = getsourcelines(object)
+  File "/usr/lib/python2.7/inspect.py", line 689, in getsourcelines
+    lines, lnum = findsource(object)
+  File "/usr/lib/python2.7/inspect.py", line 528, in findsource
+    raise IOError('source code not available')
+IOError: source code not available
+
+-I- failure action= next
+-I- 
+********************* Keyword: disconnect *********************
+
+-I- step number: 6
+-I- Teststep Description: disconnect
+-I- [2017-08-01 14:26:58] Keyword execution starts
+-E- unexpected error: Traceback (most recent call last):
+  File "/home/khusain/WAR-210/warriorframework/warrior/WarriorCore/step_driver.py", line 280, in main
+    data_repository, system_name, parallel, queue)
+  File "/home/khusain/WAR-210/warriorframework/warrior/WarriorCore/step_driver.py", line 163, in execute_step
+    data_repository, args_repository)
+  File "/home/khusain/WAR-210/warriorframework/warrior/WarriorCore/step_driver.py", line 72, in send_keyword_to_productdriver
+    return driver_call.main(keyword, data_repository, args_repository)
+  File "/home/khusain/WAR-210/warriorframework/warrior/ProductDrivers/cli_driver.py", line 27, in main
+    return kw_driver.execute_keyword(keyword, data_repository, args_repository, package_list)
+  File "/home/khusain/WAR-210/warriorframework/warrior/WarriorCore/kw_driver.py", line 50, in execute_keyword
+    wdesc = Utils.testcase_Utils.get_wdesc_string(method_call)
+  File "/home/khusain/WAR-210/warriorframework/warrior/Framework/Utils/testcase_Utils.py", line 154, in get_wdesc_string
+    return TCOBJ.get_wdesc_string(function_object)
+  File "/home/khusain/WAR-210/warriorframework/warrior/WarriorCore/Classes/testcase_utils_class.py", line 322, in get_wdesc_string
+    source = inspect.getsource(function_object)
+  File "/usr/lib/python2.7/inspect.py", line 700, in getsource
+    lines, lnum = getsourcelines(object)
+  File "/usr/lib/python2.7/inspect.py", line 689, in getsourcelines
+    lines, lnum = findsource(object)
+  File "/usr/lib/python2.7/inspect.py", line 528, in findsource
+    raise IOError('source code not available')
+IOError: source code not available
+
+-I- failure action= next
+-D- Updating Testcase result file...
+-I- unexpected error: coercing to Unicode: need string or buffer, list found
+-E- No Keywords found in resultfile of testcase connect_call_connect_ssh_multi_subsys
+
+
+-I- [2017-08-01 14:26:58] Testcase execution completed
+-I- Testcase duration= 0 hours: 00 min: 05 sec
+-I- 
+**** Testcase Result ***
+-I- TESTCASE:connect_call_connect_ssh_multi_subsys  STATUS:FAIL
+
+
+-I- =================== END OF TESTCASE ===========================
+-I- 
+
+-I- failure action= next
+-D- Status of the executed test case impacts Testsuite result
+
+
+-D- <<<< Starting execution of Test case: /home/khusain/WAR-210/warriorframework/warrior_fnc_tests/warrior_tests/testcases/cli_tests/connect_tc/connect_call_connect_telnet_no_subsys.xml>>>>
+-I- [2017-08-01 14:26:58] Testcase execution starts

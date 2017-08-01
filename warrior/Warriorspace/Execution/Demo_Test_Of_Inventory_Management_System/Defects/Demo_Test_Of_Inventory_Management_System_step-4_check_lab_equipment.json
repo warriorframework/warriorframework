@@ -1,0 +1,89 @@
+[
+    {
+        "tc_name": "Demo_Test_Of_Inventory_Management_System"
+    }, 
+    {
+        "step_num": "4"
+    }, 
+    {
+        "testcase_filepath": "/home/khusain/WAR-210/warriorframework/warrior/Warriorspace/Testcases/Demo_Cases/Demo_Test_Of_Inventory_Management_System.xml"
+    }, 
+    {
+        "data_filepath": "/home/khusain/WAR-210/warriorframework/warrior/Warriorspace/Data/Demo_Input_Data_Files/Demo_Datafile_For_Inventory_Mgt.xml"
+    }, 
+    {
+        "defectsdir": "/home/khusain/WAR-210/warriorframework/warrior/Warriorspace/Execution/Demo_Test_Of_Inventory_Management_System/Defects"
+    }, 
+    {
+        "logsdir": "/home/khusain/WAR-210/warriorframework/warrior/Warriorspace/Execution/Demo_Test_Of_Inventory_Management_System/Logs"
+    }, 
+    {
+        "resultfile": "/home/khusain/WAR-210/warriorframework/warrior/Warriorspace/Execution/Demo_Test_Of_Inventory_Management_System/Results/Demo_Test_Of_Inventory_Management_System_results.xml"
+    }, 
+    {
+        "Keyword": "check_lab_equipment"
+    }, 
+    {
+        "Driver": "demo_driver"
+    }, 
+    {
+        "Note": "step number: 4"
+    }, 
+    {
+        "Note": "Teststep Description: Check lab PC replacement or test set calibration status"
+    }, 
+    {
+        "Note": "[2017-08-01 14:32:18] Keyword execution starts"
+    }, 
+    {
+        "argument": "name=system_name, value=PCs[all]"
+    }, 
+    {
+        "Resultfile": "/home/khusain/WAR-210/warriorframework/warrior/Warriorspace/Execution/Demo_Test_Of_Inventory_Management_System/Results/Keyword_Results/step-4_check_lab_equipment.xml"
+    }, 
+    {
+        "Note": "could not find any function/class method corresponding to keyword 'check_lab_equipment' in package(s) '['Actions.DemoActions']'"
+    }, 
+    {
+        "Note": "could not find any function/class method corresponding to keyword 'check_lab_equipment' in package(s) '['Actions.DemoActions']'"
+    }, 
+    {
+        "Note": "could not find any function/class method corresponding to keyword 'check_lab_equipment' in package(s) '['Actions.DemoActions']'"
+    }, 
+    {
+        "Note": "\n"
+    }, 
+    {
+        "Note": "*** Keyword status ***"
+    }, 
+    {
+        "Note": "KEYWORD:check_lab_equipment   STATUS:ERROR"
+    }, 
+    {
+        "Note": "step number: 4"
+    }, 
+    {
+        "Note": "Status of the executed step does not impact TC result"
+    }, 
+    {
+        "Note": "\n"
+    }, 
+    {
+        "Note": "Keyword duration= 0 hours: 00 min: 00 sec"
+    }, 
+    {
+        "Note": "[2017-08-01 14:32:18] Keyword execution completed"
+    }, 
+    {
+        "Note": "\n"
+    }, 
+    {
+        "Note": "failure action= next"
+    }, 
+    {
+        "KeywordStatus": "ERROR"
+    }, 
+    {
+        "Note": "Status of the executed step does not impact TC result"
+    }
+]

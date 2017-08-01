@@ -1,0 +1,24 @@
+<Testcase>
+    
+    <Details>
+        <Name>tc_env_var</Name>
+        <Title>Test if method can correctly add and get environment variable, replace the key with value</Title>
+        <InputDataFile>../../../data/cli_tests/tc_cli_conn_option_Data.xml</InputDataFile>
+        <Datatype>iterative</Datatype>
+        <default_onError action="next"/>
+        <Logsdir>../Execution</Logsdir>
+        <Resultsdir>../Execution</Resultsdir>
+    </Details>
+    
+    <Requirements>
+        <requirement>ssh-iterative-001</requirement>
+        <requirement>ssh-iterative-002</requirement>
+        <requirement>ssh-iterative-003</requirement>
+    </Requirements>
+    
+    <Steps>
+        <step Driver="cli_driver" Keyword="connect" />
+        <step Driver="cli_driver" Keyword="connect_ssh" />
+    </Steps>
+
+</Testcase>

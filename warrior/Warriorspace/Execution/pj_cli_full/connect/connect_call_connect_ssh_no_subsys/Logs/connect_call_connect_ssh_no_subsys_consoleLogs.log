@@ -1,0 +1,33 @@
+ ========================== WARRIOR FRAMEWORK DETAILS ========================== 
+-I- The Warrior framework used is /home/khusain/WAR-210/warriorframework
+-I- The Warrior framework Release is Ninja
+-I- The Warrior framework version is warrior-3.2.0
+ ========================== WARRIOR FRAMEWORK DETAILS ========================== 
+-I- 
+===============================  TC-DETAILS  ==================================================
+-I- Title: connect kw calling connect_ssh, NO subsystem
+-I- Results directory: /home/khusain/WAR-210/warriorframework/warrior/Warriorspace/Execution/pj_cli_full/connect/connect_call_connect_ssh_no_subsys/Results
+-I- Logs directory: /home/khusain/WAR-210/warriorframework/warrior/Warriorspace/Execution/pj_cli_full/connect/connect_call_connect_ssh_no_subsys/Logs
+-I- Defects directory: /home/khusain/WAR-210/warriorframework/warrior/Warriorspace/Execution/pj_cli_full/connect/connect_call_connect_ssh_no_subsys/Defects
+-I- Datafile: /home/khusain/WAR-210/warriorframework/warrior_fnc_tests/warrior_tests/data/cli_tests/connect_ssh_Data.xml
+-I- Requirement: ssh-connect-001 
+-I- Requirement: ssh-disconnect-001 
+-I- ================================================================================================
+-I- CUSTOM sequential_keywords
+-I- 
+********************* Keyword: connect *********************
+
+-I- step number: 1
+-I- Teststep Description: connect
+-I- [2017-08-01 14:25:08] Keyword execution starts
+-I- getting values for mandatory arguments
+-I- getting values for optional arguments
+-I- executing with default values for optional argument 'ip_type'
+-I- executing with default values for optional argument 'session_name'
+-I- executing with default values for optional argument 'via_host'
+-I- Connect to the ssh/telnet port of the system
+-I- 
+<< Substep >>
+-I- Keyword Description: Connect to the ssh port of the system/subsystem and creates a session
+-I- system=rtxttalp01_no_subsys, session=None
+-D- connectSSH: cmd = ssh -p 22 labadmin@168.127.134.184 

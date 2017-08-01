@@ -1,0 +1,53 @@
+<?xml version="1.0" ?>
+<Project>
+	<Details>
+		<Name>pj_cli_full</Name>
+		<Title>cli functional tests</Title>
+		<Engineer>Tomas Le</Engineer>
+		<Date>01/08/2016</Date>
+		<Time>13:50:45</Time>
+		<default_onError action="next"/>
+	</Details>
+	<Testsuites>
+		<Testsuite>
+			<path>../suites/cli_tests/connect.xml</path>
+			<onError action="next" value=""/>
+			<impact>impact</impact>
+		</Testsuite>
+		<Testsuite>
+			<path>../suites/cli_tests/cli_def_attr.xml</path>
+			<onError action="next" value=""/>
+			<impact>impact</impact>
+		</Testsuite>
+		<Testsuite>
+			<path>../suites/cli_tests/cli_global_attr.xml</path>
+			<onError action="next" value=""/>
+			<impact>impact</impact>
+		</Testsuite>
+		<Testsuite>
+			<path>../suites/cli_tests/cli_local_attr.xml</path>
+			<onError action="next" value=""/>
+			<impact>impact</impact>
+		</Testsuite>
+		<Testsuite>
+			<path>../suites/cli_tests/cli_other_attr.xml</path>
+			<onError action="next" value=""/>
+			<impact>impact</impact>
+		</Testsuite>
+		<Testsuite>
+			<path>../suites/cli_tests/cli_iteration.xml</path>
+			<onError action="next" value=""/>
+			<impact>impact</impact>
+		</Testsuite>
+		<Testsuite>
+			<path>../suites/cli_tests/list_range.xml</path>
+			<onError action="next" value=""/>
+			<impact>impact</impact>
+		</Testsuite>
+		<Testsuite>
+			<path>../suites/cli_tests/log_verify_on_suite.xml</path>
+			<onError action="next" value=""/>
+			<impact>impact</impact>
+		</Testsuite>
+	</Testsuites>
+</Project>

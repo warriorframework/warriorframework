@@ -1,0 +1,112 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+                <Name>Demo_Test_Of_Inventory_Management_System</Name>
+                <Title>Demo_Test_Of_Inventory_Management_System</Title>
+                <InputDataFile>../../Data/Demo_Input_Data_Files/Demo_Datafile_For_Inventory_Mgt.xml</InputDataFile>
+                <Datatype>Custom</Datatype>
+                <default_onError action="next"/>
+                <Date>2017-03-17</Date>
+                <Time>21:28</Time>
+                <Engineer>Warrior_user</Engineer>
+                <ExpectedResults>Pass To Demo features, changed
+Context to negative in Steps 3,4,5 the impact to &quot;no impact&quot; .</ExpectedResults>
+                <Category>Demo</Category>
+                <State>Released</State>
+        </Details>
+        <Requirements>
+                <Requirement>Demo-requirement-001</Requirement>
+                <Requirement>Demo-requirement-002</Requirement>
+                <Requirement>Demo-requirement-003</Requirement>
+        </Requirements>
+        <Steps>
+                <step Driver="demo_driver" Keyword="pc_replacement" TS="1">
+                        <Arguments>
+                                <argument name="system_name" value="PCs[HP]"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Check if lab PC is current or need replacement</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="RMT" value="1"/>
+                        <Iteration_type type="Standard"/>
+
+                </step>
+                <step Driver="demo_driver" Keyword="pc_replacement" TS="2">
+                        <Arguments>
+                                <argument name="system_name" value="PCs[HP]"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Check if lab PC is current or need replacement</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="RUP" value="1"/>
+                        <Iteration_type type="Standard"/>
+
+                </step>
+                <step Driver="demo_driver" Keyword="testset_calibration" TS="3">
+                        <Arguments>
+                                <argument name="system_name" value="TestSets[TBERD]"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Check if Lab Test set calibration is current.</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>negative</context>
+                        <impact>impact</impact>
+                        <runmode type="RUF" value="1"/>
+                        <Iteration_type type="Standard"/>
+
+                </step>
+                <step Driver="demo_driver" Keyword="check_lab_equipment" TS="4">
+                        <Arguments>
+                                <argument name="system_name" value="PCs[all]"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Check lab PC replacement or test set calibration status</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>negative</context>
+                        <impact>noimpact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="demo_driver" Keyword="check_lab_equipment" TS="5" draft="no">
+                        <Arguments>
+                                <argument name="system_name" value="TestSets[all]"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Check lab PC replacement Status</Description>
+
+                        <Execute ExecType="Yes"/>
+                        <context>negative</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="common_driver" Keyword="set_env_var" TS="6">
+                        <Arguments>
+                                <argument name="var_key" value="dict_key"/>
+                                <argument name="var_value" value="Expected_dict_value"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>To show Skip feature : This keyword will not be executed as the Execute Type is No</Description>
+                        <Execute ExecType="No">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+        </Steps>
+</Testcase>

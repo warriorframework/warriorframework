@@ -1,0 +1,61 @@
+<?xml version="1.0" ?>
+<Testcase>
+	<Details>
+		<Name>connect_encrypt_pwd</Name>
+		<Title>connect kw calling connect_ssh with encrypted password</Title>
+		<InputDataFile>../../../data/cli_tests/connect_encrypt_pwd_Data.xml</InputDataFile>
+		<Datatype>Custom</Datatype>
+		<default_onError action="next"/>
+		<Logsdir>../../../Execution</Logsdir>
+		<Resultsdir>../../../Execution</Resultsdir>
+		<Date>2016-04-26</Date>
+		<Time>12:30</Time>
+		<Engineer>vsethura</Engineer>
+	</Details>
+	<Requirements>
+		<Requirement>ssh-connect-001</Requirement>
+		<Requirement>ssh-disconnect-001</Requirement>
+	</Requirements>
+	<Steps>
+		<step Driver="cli_driver" Keyword="connect" TS="1">
+			<Arguments>
+				<argument name="system_name" value="rtxttalp01_no_subsys"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>connect</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="cli_driver" Keyword="disconnect" TS="2">
+			<Arguments>
+				<argument name="system_name" value="rtxttalp01_no_subsys"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>disconnect</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="cli_driver" Keyword="connect" TS="3">
+			<Arguments>
+				<argument name="system_name" value="rtxttalp01_1_subsys[cli_1]"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>connect</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="cli_driver" Keyword="disconnect" TS="4">
+			<Arguments>
+				<argument name="system_name" value="rtxttalp01_1_subsys[cli_1]"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>disconnect</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+	</Steps>
+</Testcase>

@@ -1,0 +1,48 @@
+<html>
+<head>
+<link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" />
+</head>
+	<style>
+
+	table#t1 {
+		 font-size:11pt;
+	}
+
+	table#t1 th	{
+	    background-color: black;
+	    color: white;
+	}
+	
+	td#summary {
+		padding:0 15px;
+		border: 100px;
+	}
+	
+	</style>
+<body>
+
+
+	<h2>Results Summary</h2>	
+	<table border="1" id="t1" name="ResultsSummaryTable" style="width:90%">
+		<tr id="tr1" name="HeadingRow">
+			<th>Type</th>
+			<th>Name</th>
+			<th>Info</th>
+			<th>Timestamp</th>
+			<th>Duration</th>
+			<th>Status</th>
+			<th>Impact</th>
+			<th>On Error</th>
+			<th>
+			<span style="padding-left:5px">Results (<i class="fa fa-line-chart">)</i></span><br />
+			<span style="padding-left:5px">Logs (<i class="fa fa fa-book">)</i></span><br />
+			<span style="padding-left:5px">Defects (<i class="fa fa fa-bug">)</i></span><br />
+			</th>
+			<th colspan="6" id="summary">Summary</th>
+		</tr>
+
+	<tr bgcolor="#b2b266" name="ProjectRecord"><td rowspan="2"><div style="word-wrap: break-word; width: 70px">Project</div></td><td rowspan="2"><div style="word-wrap: break-word; width: 275px"><a href="pj_cli_full.xml">pj_cli_full</a></div></td><td rowspan="2"><div style="word-wrap: break-word; width: 275px" /></td><td rowspan="2"><div style="word-wrap: break-word; width: 90px">2017-08-01 14:30:19</div></td><td rowspan="2"><div style="word-wrap: break-word; width: 40px">0</div></td><td rowspan="2"><div style="word-wrap: break-word; width: 60px" /></td><td rowspan="2"><div style="word-wrap: break-word; width: 80px" /></td><td rowspan="2"><div style="word-wrap: break-word; width: 90px" /></td><td rowspan="2"><div style="word-wrap: break-word; width: 100px"><span style="padding-left:10px; padding-right: 10px;"><a href="pj_cli_full_junit.xml"><i class="fa fa-line-chart"> </i></a></span></div></td><td>Ts Count</td><td>Ts Passed</td><td>Ts Failed</td><td>Ts Errors</td><td>Ts Exceptions</td><td>Ts Skipped</td></tr><tr><td>0</td><td>0</td><td>0</td><td>0</td><td /><td>0</td></tr><tr bgcolor="#ccffe6" name="TestsuiteRecord"><td rowspan="2"><div style="word-wrap: break-word; width: 70px">Suite</div></td><td rowspan="2"><div style="word-wrap: break-word; width: 275px"><a href="connect/connect.xml">connect</a></div></td><td rowspan="2"><div style="word-wrap: break-word; width: 275px" /></td><td rowspan="2"><div style="word-wrap: break-word; width: 90px">2017-08-01T14:30:21</div></td><td rowspan="2"><div style="word-wrap: break-word; width: 40px">0</div></td><td rowspan="2"><div style="word-wrap: break-word; width: 60px" /></td><td rowspan="2"><div style="word-wrap: break-word; width: 80px" /></td><td rowspan="2"><div style="word-wrap: break-word; width: 90px" /></td><td rowspan="2"><div style="word-wrap: break-word; width: 100px"><span style="padding-left:10px; padding-right: 10px;"><a href="."><i class="fa fa-line-chart"> </i></a></span></div></td><td>Tc Count</td><td>Tc Passed</td><td>Tc Failed</td><td>Tc Errors</td><td>Tc Exceptions</td><td>Tc Skipped</td></tr><tr><td>1</td><td>0</td><td>1</td><td>0</td><td /><td>0</td></tr><tr bgcolor="#e5e5ff" name="TestcaseRecord"><td rowspan="2"><div style="word-wrap: break-word; width: 70px">Case</div></td><td rowspan="2"><div style="word-wrap: break-word; width: 275px"><a href="connect/connect_call_connect_ssh_no_subsys/connect_call_connect_ssh_no_subsys.xml">connect_call_connect_ssh_no_subsys</a></div></td><td rowspan="2"><div style="word-wrap: break-word; width: 275px">connect kw calling connect_ssh, NO subsystem<span /></div></td><td rowspan="2"><div style="word-wrap: break-word; width: 90px">2017-08-01 14:30:25</div></td><td rowspan="2"><div style="word-wrap: break-word; width: 40px">4.0</div></td><td rowspan="2"><div style="word-wrap: break-word; width: 60px">FAIL</div></td><td rowspan="2"><div style="word-wrap: break-word; width: 80px" /></td><td rowspan="2"><div style="word-wrap: break-word; width: 90px" /></td><td rowspan="2"><div style="word-wrap: break-word; width: 100px"><span style="padding-left:10px; padding-right: 10px;"><a href="connect/connect_call_connect_ssh_no_subsys/Results/connect_call_connect_ssh_no_subsys_results.xml"><i class="fa fa-line-chart"> </i></a></span><span style="padding-left:10px; padding-right: 10px;"><a href="connect/connect_call_connect_ssh_no_subsys/Logs"><i class="fa fa-book"> </i></a></span><span style="padding-left:8px; padding-right: 8px;"><a href="connect/connect_call_connect_ssh_no_subsys/Defects"><i class="fa fa-bug"> </i></a></span></div></td><td>Kw Count</td><td>Kw Passed</td><td>Kw Failed</td><td>Kw Errors</td><td>Kw Exceptions</td><td>Kw Skipped</td></tr><tr><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr></table>
+
+
+</body>
+</html>

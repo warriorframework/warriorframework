@@ -1,0 +1,134 @@
+<?xml version="1.0" ?>
+<Testcase>
+	<Details>
+		<Name>tc_connect_disconnect_all</Name>
+		<Title>connect and disconnect all systems and subsystems in the data file</Title>
+		<InputDataFile>../../../data/cli_tests/data_connect_all.xml</InputDataFile>
+		<Datatype>Custom</Datatype>
+		<default_onError action="next"/>
+		<Logsdir>../../../Execution</Logsdir>
+		<Resultsdir>../../../Execution</Resultsdir>
+		<Date>2016-01-26</Date>
+		<Time>11:20</Time>
+		<Engineer>Tomas Le</Engineer>
+	</Details>
+	<Requirements>
+		<Requirement>ssh-connect-001</Requirement>
+		<Requirement>ssh-disconnect-001</Requirement>
+	</Requirements>
+	<Steps>
+		<step Driver="cli_driver" Keyword="connect_all" TS="1">
+			<Arguments>
+
+			</Arguments>
+			<onError action="next"/>
+			<Description>connect</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="cli_driver" Keyword="send_commands_by_testdata_title" TS="2">
+			<Arguments>
+				<argument name="system_name" value="system-1"/>
+				<argument name="title" value="t1"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description></Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="cli_driver" Keyword="send_commands_by_testdata_title" TS="3">
+			<Arguments>
+				<argument name="system_name" value="system-2[sub-1]"/>
+				<argument name="title" value="t1"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description></Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="cli_driver" Keyword="send_commands_by_testdata_title" TS="4">
+			<Arguments>
+				<argument name="system_name" value="system-2[sub-2]"/>
+				<argument name="title" value="t1"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description></Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="cli_driver" Keyword="verify_session_status" TS="5">
+			<Arguments>
+				<argument name="system_name" value="system-1"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description></Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="cli_driver" Keyword="verify_session_status" TS="6">
+			<Arguments>
+				<argument name="system_name" value="system-2[sub-1]"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description></Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="cli_driver" Keyword="verify_session_status" TS="7">
+			<Arguments>
+				<argument name="system_name" value="system-2[sub-2]"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description></Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="cli_driver" Keyword="disconnect_all" TS="8">
+			<Arguments>
+
+			</Arguments>
+			<onError action="next"/>
+			<Description>connect</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="cli_driver" Keyword="verify_session_status" TS="9">
+			<Arguments>
+				<argument name="system_name" value="system-1"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description></Description>
+			<Execute ExecType="Yes"/>
+			<context>negative</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="cli_driver" Keyword="verify_session_status" TS="10">
+			<Arguments>
+				<argument name="system_name" value="system-2[sub-1]"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description></Description>
+			<Execute ExecType="Yes"/>
+			<context>negative</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="cli_driver" Keyword="verify_session_status" TS="11">
+			<Arguments>
+				<argument name="system_name" value="system-2[sub-2]"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description></Description>
+			<Execute ExecType="Yes"/>
+			<context>negative</context>
+			<impact>impact</impact>
+		</step>
+	</Steps>
+</Testcase>

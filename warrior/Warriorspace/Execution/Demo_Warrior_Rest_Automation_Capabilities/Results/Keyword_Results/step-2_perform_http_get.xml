@@ -1,0 +1,40 @@
+<Testcase><Note>
+********************* Keyword: perform_http_get *********************
+</Note><Keyword step_num="2"><Name>perform_http_get</Name><Driver>rest_driver</Driver><Note>step number: 2</Note><Note>Teststep Description: This step tests the GET capability of REST</Note><Note>[2017-08-01 14:34:54] Keyword execution starts</Note><Arguments><argument name="system_name" value="http_bin_3" /><argument name="timeout" value="5" /></Arguments><Resultfile>/home/khusain/WAR-210/warriorframework/warrior/Warriorspace/Execution/Demo_Warrior_Rest_Automation_Capabilities/Results/Keyword_Results/step-2_perform_http_get.xml</Resultfile><Note>Method call is &lt;unbound method RestActions.perform_http_get&gt; </Note><Step step_num="2">"Perform a http get to the url"<Note>getting values for mandatory arguments</Note><Note>getting values for optional arguments</Note><Note>executing with default values for optional argument 'files'</Note><Note>executing with default values for optional argument 'cookies'</Note><Note>executing with default values for optional argument 'password'</Note><Note>executing with default values for optional argument 'stream'</Note><Note>executing with default values for optional argument 'url'</Note><Note>executing with default values for optional argument 'verify'</Note><Note>executing with default values for optional argument 'json'</Note><Note>executing with default values for optional argument 'headers'</Note><Note>executing with default values for optional argument 'cert'</Note><Note>executing with default values for optional argument 'expected_response'</Note><Note>executing with default values for optional argument 'params'</Note><Note>executing with default values for optional argument 'user'</Note><Note>executing with default values for optional argument 'request_id'</Note><Note>executing with default values for optional argument 'variable_config'</Note><Note>executing with default values for optional argument 'proxies'</Note><Note>executing with default values for optional argument 'allow_redirects'</Note><Note>executing with default values for optional argument 'var_sub'</Note><SubStep>Perform a http get to the url<Note>
+&lt;&lt; Substep &gt;&gt;</Note><Note>Keyword Description: Perform a http get to the url</Note><Note>http_bin_3</Note><Note>http_bin_3</Note><Note>url is: http://httpbin.org/get</Note><Note>url is: http://httpbin.org/get</Note><Note>Sending argument 'files': None</Note><Note>Sending argument 'files': None</Note><Note>Sending argument 'cookies': None</Note><Note>Sending argument 'cookies': None</Note><Note>Sending argument 'stream': False</Note><Note>Sending argument 'stream': False</Note><Note>Sending argument 'url': http://httpbin.org/get</Note><Note>Sending argument 'url': http://httpbin.org/get</Note><Note>Sending argument 'verify': True</Note><Note>Sending argument 'verify': True</Note><Note>Sending argument 'json': None</Note><Note>Sending argument 'json': None</Note><Note>Sending argument 'auth': ('Warrior_user3', '536ett')</Note><Note>Sending argument 'auth': ('Warrior_user3', '536ett')</Note><Note>Sending argument 'headers': None</Note><Note>Sending argument 'headers': None</Note><Note>Sending argument 'cert': None</Note><Note>Sending argument 'cert': None</Note><Note>Sending argument 'expected_response': ['200']</Note><Note>Sending argument 'expected_response': ['200']</Note><Note>Sending argument 'params': {'key2': 'value2, value3', 'key1': 'value1'}</Note><Note>Sending argument 'params': {'key2': 'value2, value3', 'key1': 'value1'}</Note><Note>Sending argument 'timeout': 5.0</Note><Note>Sending argument 'timeout': 5.0</Note><Note>Sending argument 'allow_redirects': False</Note><Note>Sending argument 'allow_redirects': False</Note><Note>Sending argument 'proxies': None</Note><Note>Sending argument 'proxies': None</Note><Note>Perform a http get</Note><Note>Perform a http get</Note><Note>http get successful</Note><Note>http get successful</Note><Note>Total number of requests in this step: 1</Note><Note>Total number of requests in this step: 1</Note><Note>This is request number: 1</Note><Note>This is request number: 1</Note><Note>status: True</Note><Note>status: True</Note><Note>api_response: &lt;Response [200]&gt;</Note><Note>api_response: &lt;Response [200]&gt;</Note><Note>api_response (JSON format): 
+ {
+    "origin": "204.253.82.211", 
+    "headers": {
+        "Accept-Encoding": "gzip, deflate", 
+        "Connection": "close", 
+        "Accept": "*/*", 
+        "User-Agent": "python-requests/2.18.2", 
+        "Host": "httpbin.org", 
+        "Authorization": "Basic V2Fycmlvcl91c2VyMzo1MzZldHQ="
+    }, 
+    "args": {
+        "key2": "value2, value3", 
+        "key1": "value1"
+    }, 
+    "url": "http://httpbin.org/get?key2=value2%2C+value3&amp;key1=value1"
+}</Note><Note>api_response (JSON format): 
+ {
+    "origin": "204.253.82.211", 
+    "headers": {
+        "Accept-Encoding": "gzip, deflate", 
+        "Connection": "close", 
+        "Accept": "*/*", 
+        "User-Agent": "python-requests/2.18.2", 
+        "Host": "httpbin.org", 
+        "Authorization": "Basic V2Fycmlvcl91c2VyMzo1MzZldHQ="
+    }, 
+    "args": {
+        "key2": "value2, value3", 
+        "key1": "value1"
+    }, 
+    "url": "http://httpbin.org/get?key2=value2%2C+value3&amp;key1=value1"
+}</Note><Note>api_response_history: []</Note><Note>api_response_history: []</Note><Note>http get successful</Note><Note>http get successful</Note><Note>
+&lt;&lt; Substep status &gt;&gt;</Note><Note> STATUS:PASS</Note><subStepStatus>PASS</subStepStatus><Note>Keyword 'perform_http_get' returned multiplevalues </Note><Note>Keyword 'perform_http_get' returneda status..</Note><Note>Keyword 'perform_http_get' returned a dictionary.. will update data_repository</Note><Note>
+</Note><Note>*** Keyword status ***</Note><Note>KEYWORD:perform_http_get   STATUS:PASS</Note><Note>step number: 2</Note><Note>Status of the executed step  impacts TC result</Note><Note>
+</Note><Note>Keyword duration= 0 hours: 00 min: 03 sec</Note><Note>[2017-08-01 14:34:57] Keyword execution completed</Note><Note>
+</Note></SubStep></Step><Note>Keyword 'perform_http_get' returned multiplevalues </Note><Note>Keyword 'perform_http_get' returneda status..</Note><Note>Keyword 'perform_http_get' returned a dictionary.. will update data_repository</Note><KeywordStatus>PASS</KeywordStatus><Note>Status of the executed step  impacts TC result</Note></Keyword></Testcase>
