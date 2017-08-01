@@ -20,7 +20,7 @@ import exec_type_driver
 from WarriorCore.Classes.argument_datatype_class import ArgumentDatatype
 import Framework.Utils as Utils
 from Framework.Utils.print_Utils import print_info, print_debug, print_error, print_exception
-from WarriorCore import onerror_driver
+# from WarriorCore import onerror_driver
 
 
 def get_arguments(step):
@@ -102,12 +102,15 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
     """ Executes a step from the testcase xml file
         - Parses a step from the testcase xml file
         - Get the values of Driver, Keyword, impactsTcResult
-        - If the step has arguments, get all the arguments and store them as key/value pairs in args_repository
+        - If the step has arguments, get all the arguments and store them as key/value pairs in
+          args_repository
         - Sends the Keyword, data_repository, args_repository to the respective Driver.
-        - Reports the status of the keyword executed (obtained as return value from the respective Driver)
+        - Reports the status of the keyword executed (obtained as return value from the respective
+          Driver)
 
     Arguments:
-    1. step            = (xml element) xml element with tag <step> containing the details of the step to be executed like (Driver, Keyword, Arguments, Impact etc..)
+    1. step            = (xml element) xml element with tag <step> containing the details of the
+                         step to be executed like (Driver, Keyword, Arguments, Impact etc..)
     2. step_num        = (int) step number being executed
     3. data_repository = (dict) data_repository of the testcase
     """
@@ -121,8 +124,10 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
     step_description = Utils.testcase_Utils.get_description_from_xmlfile(step)
 
     if parallel is True:
-        step_console_log = get_step_console_log(data_repository['wt_filename'], data_repository['wt_logsdir'],
-                                                'step-{0}_{1}_consoleLogs'.format(step_num, keyword))
+        step_console_log = get_step_console_log(data_repository['wt_filename'],
+                                                data_repository['wt_logsdir'],
+                                                'step-{0}_{1}_consoleLogs'.format(step_num,
+                                                                                  keyword))
 
     data_repository['step_num'] = step_num
     data_repository['wt_driver'] = driver
@@ -190,9 +195,10 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
     onerror = step_onError_action.upper()
     if step_goto_value is not False and step_goto_value is not None:
         onerror = onerror + " step " + step_goto_value
-    if keyword_status is False and step_onError_action and step_onError_action.upper() == 'ABORT_AS_ERROR':
-        print_info(
-            "Keyword status will be marked as ERROR as onError action is set to 'abort_as_error'")
+    if keyword_status == False and step_onError_action and\
+            step_onError_action.upper() == 'ABORT_AS_ERROR':
+        print_info("Keyword status will be marked as ERROR as onError action is set to"
+                   "'abort_as_error'")
         keyword_status = "ERROR"
     Utils.testcase_Utils.reportKeywordStatus(keyword_status, keyword)
     print_info("step number: {0}".format(step_num))
@@ -229,6 +235,13 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
     print_info("[{0}] Keyword execution completed".format(kw_end_time))
 
     impact_dict = {"IMPACT": "Impact", "NOIMPACT": "No Impact"}
+    tc_junit_object.add_keyword_result(data_repository['wt_tc_timestamp'], step_num, keyword,
+                                       str(keyword_status), kw_start_time, kw_duration,
+                                       kw_resultfile, impact_dict.get(step_impact.upper()),
+                                       onerror, data_repository['wt_step_description'])
+    tc_junit_object.update_count(str(keyword_status), "1", "tc",
+                                 data_repository['wt_tc_timestamp'])
+    tc_junit_object.update_count("keywords", "1", "tc", data_repository['wt_tc_timestamp'])
     tc_timestamp = data_repository['wt_tc_timestamp']
     impact = impact_dict.get(step_impact.upper())
     add_keyword_result(tc_junit_object, tc_timestamp, step_num, keyword,
