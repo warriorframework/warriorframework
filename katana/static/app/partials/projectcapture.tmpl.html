@@ -602,8 +602,10 @@
                                  <td class="text-right">
                                     {{ $index + 1 }}
                                 </td>
-                                <td style="word-break: break-all">{{suites[$index].path}}</td>
-                                <td>
+                                 <td style="word-break: break-all">
+                                <a href="" target="_blank" ng-click="loadXmlProj(suites[$index].path)" >                           {{suites[$index].path}}
+                                </a>
+                                </td>
                                     Type = {{ suites[$index].Execute._ExecType }}<br>
                                     <div ng-if="suites[$index].Execute._ExecType == 'If' || suites[$index].Execute._ExecType == 'If Not'">
                                         Condition = {{ suites[$index].Execute.Rule._Condition}}
@@ -1576,8 +1578,10 @@
                                  <td class="text-right">
                                     {{ $index + 1 }}
                                 </td>
-                                <td style="word-break: break-all">{{suites[$index].path}}</td>
-                                <td>
+                               <td style="word-break: break-all">
+                                <a href="" target="_blank" ng-click="loadXmlProj(suites[$index].path)" >                           {{suites[$index].path}}
+                                </a>
+                                </td>
                                     Type = {{ suites[$index].Execute._ExecType }}<br>
                                     <div ng-if="suites[$index].Execute._ExecType == 'If' || suites[$index].Execute._ExecType == 'If Not'">
                                         Condition = {{ suites[$index].Execute.Rule._Condition}}

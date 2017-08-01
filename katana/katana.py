@@ -22,6 +22,7 @@ import threading
 import xml.etree.ElementTree
 from os.path import expanduser
 from xml.dom.minidom import parseString
+import webbrowser 
 
 import docstrings
 from bottle import route, run, static_file, template, redirect, post, request, \
@@ -79,7 +80,16 @@ def katana():
     template_lookup = [current_file_dir, "{0}{1}{2}{1}".format(current_file_dir, os.sep, 'views')]
     return template('index', template_lookup=template_lookup)
 
+@route('/newWinXmlProj/:path')
+def newWinXmlProj(path):
+    path = path.replace(">", os.sep)
+    path = "file:" + path
+    webbrowser.open_new_tab(path)
 
+@route('/newLinuxXmlProj/:path')
+def newLinuxXmlProj(path):
+    path = path.replace(">", os.sep)
+    webbrowser.open_new_tab(path)
 
 @route('/readconfig')
 def readconfig():
