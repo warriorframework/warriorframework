@@ -48,11 +48,10 @@ class LineResult:
                      'impact': line.get("impact"),
                      'onerror': line.get("onerror"),
                      'msc': '<span style="padding-left:10px; padding-right: 10px;"><a href="' + (
-                         line.get("resultfile") if line.get(
-                             "resultfile") else '') + '"><i class="fa fa-line-chart"> </i></a></span><span '
+                         line.get("resultfile") if line.get("resultfile") else ''
+                     ) + '"><i class="fa fa-line-chart"> </i></a></span><span '
                                                       'style="padding-left:10px; padding-right: 10px;"><a href="' + ( 
-                                line.get("logsdir") if line.get(
-                                    "logsdir") else '') + '"><i class="fa fa-book"> </i></a></span>',
+                                line.get("logsdir") if line.get("logsdir") else '') + '"><i class="fa fa-book"> </i></a></span>',
                      'static': ['Count', 'Passed', 'Failed', 'Errors', 'Exceptions', 'Skipped']
                      }
         self.keys = ['type', 'name', 'info', 'timestamp', 'duration', 'status', 'impact', 'onerror', 'msc', 'static',
@@ -77,8 +76,10 @@ class LineResult:
             top_level_next = '<tr>' + top_level_next + '</tr>'
         else:
             for elem in self.keys:
-                if elem != 'static' and elem != 'dynamic':
+                if elem != 'static' and elem != 'dynamic' and elem != 'msc':
                     top_level += '<td rowspan="2"><div>' + (self.data[elem] if self.data[elem] else '') + '</div></td>'
+                elif elem == 'msc':
+                    top_level += '<td rowspan="2"><div></div></td>'
 
         self.html = '<tr name="' + self.data['nameAttr'] + '">' + top_level + '</tr>' + top_level_next
 
@@ -152,7 +153,9 @@ class WarriorHtmlResults:
             return ''
 
     def generateHTML(self, junitObj, givenPath):
-        """ build the html """
+        """ build the html
+            givenPath: added this feature in case of later down the line calling from outside junit file ( no actual use as of now )
+         """
         if junitObj:
             self.junit_file = junitObj
             self.junit_root = xml_Utils.getRoot(self.junit_file)
@@ -174,16 +177,3 @@ class WarriorHtmlResults:
                    "view results summary for this execution")
         print_info("Results sumary file: {0}".format(self.get_path()))
         print_info("+++++++++++++++++++++++++")
-
-    def output_html(self, print_summary=True):
-        """Output the html file and its required
-        script/stylesheets/bootstrap files to results folder """
-        tree = ET.ElementTree(self.html_root)
-        tree.write(self.html_results_path)
-        if print_summary is True:
-            print_info("++++ Results Summary ++++")
-            print_info("Open the Results summary file given below in a browser"
-                       " to view results summary for this execution")
-            print_info("Results sumary file: {0}".format(self.html_results_path))
-            print_info("+++++++++++++++++++++++++")
-
