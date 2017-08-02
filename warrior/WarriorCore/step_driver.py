@@ -12,9 +12,8 @@ limitations under the License.
 '''
 
 
-"""step driver module"""
-import os
-import time
+# step driver module
+
 import traceback
 import exec_type_driver
 from WarriorCore.Classes.argument_datatype_class import ArgumentDatatype
@@ -138,7 +137,7 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
     data_repository['wt_step_description'] = step_description
 
     kw_resultfile = get_keyword_resultfile(
-        data_repository, system_name,  step_num, keyword)
+        data_repository, system_name, step_num, keyword)
     Utils.config_Utils.set_resultfile(kw_resultfile)
     # print keyword to result file
     Utils.testcase_Utils.pKeyword(keyword, driver)
@@ -195,7 +194,7 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
     onerror = step_onError_action.upper()
     if step_goto_value is not False and step_goto_value is not None:
         onerror = onerror + " step " + step_goto_value
-    if keyword_status == False and step_onError_action and\
+    if keyword_status is False and step_onError_action and\
             step_onError_action.upper() == 'ABORT_AS_ERROR':
         print_info("Keyword status will be marked as ERROR as onError action is set to"
                    "'abort_as_error'")
@@ -237,7 +236,7 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
     impact_dict = {"IMPACT": "Impact", "NOIMPACT": "No Impact"}
     tc_timestamp = data_repository['wt_tc_timestamp']
     impact = impact_dict.get(step_impact.upper())
-    
+
     add_keyword_result(tc_junit_object, tc_timestamp, step_num, keyword,
                        keyword_status, kw_start_time, kw_duration,
                        kw_resultfile, impact, onerror, step_description)
