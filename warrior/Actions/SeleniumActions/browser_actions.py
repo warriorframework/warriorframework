@@ -13,6 +13,8 @@ limitations under the License.
 
 """ Selenium keywords for Generic Browser Actions """
 import os, re
+
+from urlparse import urlparse
 from Framework.ClassUtils.WSelenium.browser_mgmt import BrowserManagement
 from Framework.Utils.print_Utils import print_warning
 
@@ -184,10 +186,16 @@ class browser_actions(object):
                 if browser_inst:
                     browser_fullname = "{0}_{1}".format(system_name, browser_details["browser_name"])
                     output_dict[browser_fullname] = browser_inst
-                    if "url" in browser_details and browser_details["url"]\
-                            is not None:
-                        status, url = self.browser_object.check_url(browser_details["url"])
-                        result = self.browser_object.go_to(url, browser_inst)
+                    url = browser_details["url"]
+                    if url is not None:
+                        urlschema = urlparse(url)
+                        if  urlschema.scheme:
+                            result, url = self.browser_object.check_url(url)
+                            result = self.browser_object.go_to(url, browser_inst)
+                        else:
+                            status = False
+                            pNote("Scheme in your URL:{0} is missing, it could be http/ftp/file"
+                                  " etc".format(url), "error")
                     else:
                         result = True
                 else:

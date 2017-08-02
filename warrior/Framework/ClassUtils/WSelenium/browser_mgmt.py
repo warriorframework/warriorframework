@@ -184,16 +184,12 @@ class BrowserManagement(object):
                     2. url : The actual url itself
         """
         status = True
-        search_http = re.search("http", url)
-        if not search_http:
-            print_warning("Your url missing http/https")
-            return False, url
         try:
             url_open = urllib2.urlopen(url)
             get_status_code = url_open.code
             pattern = re.compile('^2[0-9][0-9]$')
             if not pattern.match(str(get_status_code)):
-                print_warning("The Status code for url : {} is {}".format(url, get_status_code))
+                print_info("The Status code for url : {} is {}".format(url, get_status_code))
                 status = False
         except urllib2.HTTPError as http_error:
             print_warning("URLError: {} reason: ({}) status code: {}".format(url, http_error.reason, http_error.code))
@@ -215,6 +211,7 @@ class BrowserManagement(object):
         except Exception as exception:
             print_exception(exception)
             status = False
+            print_error("Unable to Navigate to URL:'%s'" % url)
         return status
 
     def reload_page(self, browser_instance=None):
