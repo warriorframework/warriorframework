@@ -699,7 +699,6 @@ class NetconfActions(object):
                                            default_operation=default_operation,
                                            test_option=test_option,
                                            error_option=error_option)
-        # pNote('Edit Config Reply= {}'.format(reply))
         if netconf_object.isCOMPLD:
             status = True
             if reply:
@@ -884,6 +883,7 @@ class NetconfActions(object):
             pNote("kill-session FAIL", "error")
         report_substep_status(status)
         return status
+
     def cancel_commit(self, system_name, persist_id=None, session_name=None):
         """cancel-commit
         :Arguments:
@@ -954,7 +954,6 @@ class NetconfActions(object):
         temp_dict = Utils.config_Utils.data_repository
         for s0, s1 in temp_dict.items():
             if s0 != session_id and isinstance(s1, WNetConf):
-                #pNote("clear for %s" %s0)
                 s1.clear_notification_buffer()
         report_substep_status(True)
         return True

@@ -71,7 +71,6 @@ class client(Thread):
         self.__wait_rept = Event()
         self.__wait_rept.clear()
         self.__response_buffer = ""
-        # self.__notification_buffer = ""
         self.__hello_buffer = ""
         self.__session_id = None
         self.__isCOMPLD = False
