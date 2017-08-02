@@ -307,6 +307,7 @@ class BrowserManagement(object):
         return status
 
     def close_tab(self, browser_instance=None, tab_number=None, browser_type="firefox"):
+        """Closing tabs in a browser with unique tab_number"""
         if browser_instance is None:
             browser_instance = self.current_browser
 
@@ -363,6 +364,7 @@ class BrowserManagement(object):
         return status
 
     def delete_all_cookies_in_browser(self, browser_instance=None):
+        """Delete the cookies for a particular browser instance"""
         status = True
         if browser_instance is None:
             browser_instance = self.current_browser
@@ -375,6 +377,7 @@ class BrowserManagement(object):
         return status
 
     def delete_a_specific_cookie(self, browser_instance=None, cookie_name=None):
+        """Delete a specific cookie on a specific browser instance"""
         status = True
         if browser_instance is None:
             browser_instance = self.current_browser
