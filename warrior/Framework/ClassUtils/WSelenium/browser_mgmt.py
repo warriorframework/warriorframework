@@ -222,6 +222,7 @@ class BrowserManagement(object):
             self.current_browser.refresh()
 
     def hard_reload_page(self, browser_instance=None):
+        """Simulates Refreshing/Reloading the page by using F5 """
         if browser_instance is None:
             self.current_browser.refresh()
 
@@ -230,6 +231,7 @@ class BrowserManagement(object):
         sleep(1)
 
     def open_tab(self, browser_instance=None, url=None, browser_type="firefox"):
+        """Opens a new tab in the browser"""
         if browser_instance is None:
             browser_instance = self.current_browser
 
@@ -247,6 +249,7 @@ class BrowserManagement(object):
             sleep(1)
     
     def switch_tab(self, browser_instance=None, tab_number=None, browser_type="firefox"):
+        """Switching to different tabs in a browser with unique tab_number"""
         status = True
         if browser_instance is None:
             browser_instance = self.current_browser
