@@ -147,7 +147,7 @@ class WarriorHtmlResults:
         """ find the warrior version """
         path = self.get_path().split('warriorframework')[0] + 'warriorframework/version.txt'
         if os.path.isfile(path):
-            version = open(path, 'r').read().split(':')[2]
+            version = open(path, 'r').read().splitlines()[1].split(':')[1]
             return '<div class="version">' + version + '</div>'
         else:
             return ''
