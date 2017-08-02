@@ -235,18 +235,12 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
     print_info("[{0}] Keyword execution completed".format(kw_end_time))
 
     impact_dict = {"IMPACT": "Impact", "NOIMPACT": "No Impact"}
-    tc_junit_object.add_keyword_result(data_repository['wt_tc_timestamp'], step_num, keyword,
-                                       str(keyword_status), kw_start_time, kw_duration,
-                                       kw_resultfile, impact_dict.get(step_impact.upper()),
-                                       onerror, data_repository['wt_step_description'])
-    tc_junit_object.update_count(str(keyword_status), "1", "tc",
-                                 data_repository['wt_tc_timestamp'])
-    tc_junit_object.update_count("keywords", "1", "tc", data_repository['wt_tc_timestamp'])
     tc_timestamp = data_repository['wt_tc_timestamp']
     impact = impact_dict.get(step_impact.upper())
+    
     add_keyword_result(tc_junit_object, tc_timestamp, step_num, keyword,
                        keyword_status, kw_start_time, kw_duration,
-                       kw_resultfile, impact, onerror)
+                       kw_resultfile, impact, onerror, step_description)
 
     # Get the type of the file being executed by Warrior: Case/Suite/Project
     war_file_type = data_repository.get('war_file_type')
@@ -274,13 +268,13 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
 
 def add_keyword_result(tc_junit_object, tc_timestamp, step_num, keyword,
                        keyword_status, kw_start_time, kw_duration,
-                       kw_resultfile, impact, onerror):
+                       kw_resultfile, impact, onerror, step_description):
     """ Add keyword results into junit object """
 
     tc_junit_object.add_keyword_result(tc_timestamp, step_num, keyword,
                                        str(keyword_status), kw_start_time,
                                        kw_duration, kw_resultfile,
-                                       impact, onerror)
+                                       impact, onerror, step_description)
 
     tc_junit_object.update_count(str(keyword_status), "1", "tc", tc_timestamp)
     tc_junit_object.update_count("keywords", "1", "tc", tc_timestamp)
