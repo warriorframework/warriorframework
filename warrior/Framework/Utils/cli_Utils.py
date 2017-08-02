@@ -44,7 +44,7 @@ def cmdprinter(cmdfunc):
     def inner(*args, **kwargs):
         """routing different mock functions"""
         if WarriorCliClass.cmdprint:
-            result = (True , "")
+            result = (True,"")
             if cmdfunc.__name__ == "_send_cmd_get_status":
                 pNote(":CMD: %s"%(args[1]["command_list"][kwargs['index']]))
             elif cmdfunc.__name__ == "_send_command_retrials":
@@ -202,7 +202,7 @@ def connect_telnet(ip, port="23", username="", password="",
         child.logfile = None
 
     try:
-        flag = True
+        flag=True
         child.setecho(False)
         child.delaybeforesend = .5
         while True:
@@ -226,7 +226,7 @@ def connect_telnet(ip, port="23", username="", password="",
                 if flag==True:
                     pNote("Initial timeout occur, sending custom_keystroke")
                     _send_cmd_by_type(child, custom_keystroke)
-                    flag = False
+                    flag=False
                     continue
                 pNote("Connection timed out: {0}, expected prompt: {1} "\
                       "is not found in the system response: {2}"\
@@ -630,7 +630,7 @@ def send_commands_from_testdata(testdatafile, obj_session, **args):
                 result = "ERROR"
                 finalresult = "ERROR"
             finalresult = finalresult and result
-        responses_dict[key] = response_dict
+        responses_dict[key]=response_dict
     return finalresult, responses_dict
 
 @cmdprinter
@@ -644,14 +644,16 @@ def _send_cmd(obj_session, **kwargs):
         startprompt = kwargs.get('startprompt', ".*")
         endprompt = kwargs.get('endprompt', None)
         cmd_timeout = kwargs.get('cmd_timeout', None)
-        result, response = obj_session.send_command(startprompt, endprompt, command, cmd_timeout)
+        result, response = obj_session.send_command(startprompt, endprompt,
+                                                    command, cmd_timeout)
     # below block is for backward compatibility - should be removed when we
     # take out send_command method from this file
     elif isinstance(obj_session, pexpect.spawn):
         startprompt = kwargs.get('startprompt', ".*")
         endprompt = kwargs.get('endprompt', None)
         cmd_timeout = kwargs.get('cmd_timeout', None)
-        result, response = send_command(obj_session, startprompt, endprompt, command, cmd_timeout)
+        result, response = send_command(obj_session, startprompt, endprompt,
+                                        command, cmd_timeout)
     elif isinstance(obj_session, Framework.ClassUtils.ssh_utils_class.SSHComm):
         result, response = obj_session.get_response(command)
         print_info(response)
@@ -664,10 +666,11 @@ def _get_response_dict(details_dict, index, response, response_dict):
     resp_req = details_dict["resp_req_list"][index]
     resp_pat_req = details_dict["resp_pat_req_list"][index]
 
-    resp_req = {None:'y', '':'y', 'no':'n', 'n':'n'}.get(str(resp_req).lower(), 'y')
+    resp_req = {None:'y', '':'y',
+                'no':'n', 'n':'n'}.get(str(resp_req).lower(), 'y')
     resp_ref = {None:index+1, '':index+1 }.get(resp_ref, str(resp_ref))
     #response_key=resp_ref_list[i] if resp_ref_list[i] else i+1
-    if not resp_req == "n":
+    if not resp_req=="n":
         if resp_pat_req is not None:
             # if the requested pattern not found return empty string
             reobj=re.search(resp_pat_req, response)
@@ -676,7 +679,7 @@ def _get_response_dict(details_dict, index, response, response_dict):
             pNote("Portion of response saved to the data repository with key: {0}, value: {1}".format(resp_ref, response))
     else:
         response=""
-    response_dict[resp_ref] = response
+    response_dict[resp_ref]=response
     return response_dict
 
 
@@ -714,7 +717,7 @@ def start_threads(started_thread_for_system, thread_instance_list, same_system, 
         else:
             if unique_log_verify_list[i]:
                 temp_list = unique_log_verify_list[i].split(".")
-                if len(temp_list) > 1:
+                if len(temp_list)>1:
                     unique_log_verify_list[i] = data_Utils.get_session_id(temp_list[0], temp_list[1])
                 else:
                     unique_log_verify_list[i] = data_Utils.get_session_id(temp_list[0])
@@ -839,8 +842,8 @@ def _send_cmd_get_status(obj_session, details_dict, index, system_name=None):
                                                             system_name)
 
     startprompt = {None: ".*", "": ".*"}.get(startprompt, str(startprompt))
-    resp_req = {None: 'y', '': 'y',\
-                'no': 'n', 'n': 'n'}.get(str(resp_req).lower(), 'y') 
+    resp_req = {None: 'y', '': 'y',
+                'no': 'n', 'n': 'n'}.get(str(resp_req).lower(), 'y')
     resp_ref = {None: index+1, '': index+1}.get(resp_ref, str(resp_ref))
     resp_pat_req = {None: ""}.get(resp_pat_req, str(resp_pat_req))
     sleeptime = {None: 0, "": 0, "none": 0, False: 0, "false": 0}.get(
@@ -893,16 +896,18 @@ def _send_cmd_get_status(obj_session, details_dict, index, system_name=None):
         if verify_text_list is not None and verify_list is not None:
             verify_group = (operator, cond_value, cond_type)
             if inorder_search is True and len(verify_text_list) > 1:
-                result = data_Utils.verify_resp_inorder( \
-                            verify_text_list, verify_context_list, command, \
-                            response, varconfigfile, verify_on_list_as_list, \
+                result = data_Utils.verify_resp_inorder(
+                            verify_text_list, verify_context_list, command,
+                            response, varconfigfile, verify_on_list_as_list,
                             verify_list, remote_resp_dict, verify_group)
             else:
-                result = data_Utils.verify_resp_across_sys( \
-                            verify_text_list, verify_context_list, command, \
-                            response, varconfigfile, verify_on_list_as_list, \
-                            verify_list, remote_resp_dict, endprompt, verify_group)
-    command_status = {True: "PASS", False: "FAIL", "ERROR": "ERROR"}.get(result)
+                result = data_Utils.verify_resp_across_sys(
+                            verify_text_list, verify_context_list, command,
+                            response, varconfigfile, verify_on_list_as_list,
+                            verify_list, remote_resp_dict, endprompt,
+                            verify_group)
+    command_status = {True: "PASS", False: "FAIL", "ERROR": "ERROR"}.get(
+                                                                    result)
     pNote("COMMAND STATUS:{0}".format(command_status))
 
     return result, response

@@ -345,9 +345,9 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
         exec_text = testdata.get("execute").strip()
         execute_req = string_Utils.conv_str_to_bool(exec_text)
         if  execute_req and exec_flag:
-            testdata_key = "{0}{1}".format(testdata.get('title', ""), \
+            testdata_key="{0}{1}".format(testdata.get('title', ""), \
                                          _get_row(testdata))
-            details_dict = _get_cmd_details(testdata, global_obj, system_name, \
+            details_dict = _get_cmd_details(testdata, global_obj, system_name,
                                             varconfigfile, var_sub=var_sub)
             start_pat = _get_pattern_list(testdata, global_obj)
             end_pat = _get_pattern_list(testdata, global_obj, pattern="end")
@@ -411,7 +411,7 @@ def _get_mapping_details(global_obj, vfylist):
                 else:
                     # Check if the verify list has combo value, if yes,
                     # expand the mapping list as well
-                    combo_value = av_fromdc(g_verify, sub_element, \
+                    combo_value = av_fromdc(g_verify, sub_element,
                         "combo") if g_verify is not None else False
                     if combo_value:
                         for i in combo_value.split(","):
@@ -719,9 +719,9 @@ def verify_resp_across_sys(match_list, context_list, command,
             # context_list[i])
             try:
                 data = remote_resp_dict[verify_on_list[i][j]]
-                tmp_status = verify_cmd_response( \
-                                [match_list[i]], [context_list[i]], command, \
-                                data, verify_on_list[i][j], varconfigfile, \
+                tmp_status = verify_cmd_response(
+                                [match_list[i]], [context_list[i]], command,
+                                data, verify_on_list[i][j], varconfigfile,
                                 endprompt, verify_group)
                 status = status and tmp_status
             except KeyError:
@@ -736,15 +736,15 @@ def verify_resp_across_sys(match_list, context_list, command,
 def get_no_impact_logic(context_str):
     """Get the silent tag from context
     return silence value and context value"""
-    value = { \
-              'YES:NOIMPACT': (True, 'YES'), \
-              'YES': (False, 'YES'), \
-              'Y:NOIMPACT': (True, 'YES'), \
-              'Y': (False, 'YES'), \
-              'NO:NOIMPACT': (True, 'No'), \
-              'NO': (False, 'No'),  \
-              'N:NOIMPACT': (True, 'No'), \
-              'N': (False, 'No'), \
+    value = {
+              'YES:NOIMPACT': (True, 'YES'),
+              'YES': (False, 'YES'),
+              'Y:NOIMPACT': (True, 'YES'),
+              'Y': (False, 'YES'),
+              'NO:NOIMPACT': (True, 'No'),
+              'NO': (False, 'No'), 
+              'N:NOIMPACT': (True, 'No'),
+              'N': (False, 'No'),
             }.get(context_str.upper(), False)
 
     return value
@@ -784,8 +784,8 @@ def verify_cmd_response(match_list, context_list, command, response,
                 match_object = False
             if match_object:
                 match = match_object.group()
-                msg = "{0} '{1}' in  response to '{2}' on {4} :[{3}]:".format(\
-                        "Found ", match, command, "pattern matched",\
+                msg = "{0} '{1}' in  response to '{2}' on {4} :[{3}]:".format(
+                        "Found ", match, command, "pattern matched",
                         verify_on_system)
                 cond_value = verify_group[1][i]
                 if cond_value:
@@ -794,15 +794,15 @@ def verify_cmd_response(match_list, context_list, command, response,
                         actual_value = grps[0]
                         operator = verify_group[0][i]
                         cond_type = verify_group[2][i]
-                        status = verify_relation(actual_value, cond_value,\
+                        status = verify_relation(actual_value, cond_value,
                                                  operator, cond_type)
-                        msg += "\n{0} comparison: {1} {2} {3} ".format(\
-                            cond_type or "str", actual_value, operator,\
+                        msg += "\n{0} comparison: {1} {2} {3} ".format(
+                            cond_type or "str", actual_value, operator,
                             cond_value)
                         msg += "succeeded" if status else "failed"
                     else:
-                        msg += ("pattern to compare should have exactly one "\
-                                "group to match with the condition value: "\
+                        msg += ("pattern to compare should have exactly one "
+                                "group to match with the condition value: "
                                 "pattern failed")
                         nogroup = True
                         status = False
@@ -810,8 +810,8 @@ def verify_cmd_response(match_list, context_list, command, response,
                     status = True
             else:
                 match = match_list[i]
-                msg = "{0} '{1}' in  response to '{2}' on {4} :[{3}]:".format(\
-                        "Did not find", match, command, "pattern match failed",\
+                msg = "{0} '{1}' in  response to '{2}' on {4} :[{3}]:".format(
+                        "Did not find", match, command, "pattern match failed",
                         verify_on_system)
                 status = False
             if found is status:
@@ -822,8 +822,8 @@ def verify_cmd_response(match_list, context_list, command, response,
             else:
                 if noiimpact:
                     result = True
-                    testcase_Utils.pNote("Noimpact was requested on the below "\
-                                         "verification, hence the failure "\
+                    testcase_Utils.pNote("Noimpact was requested on the below "
+                                         "verification, hence the failure "
                                          "would not impact command status")
                 else:
                     result = False
@@ -843,7 +843,7 @@ def verify_cmd_response(match_list, context_list, command, response,
             verification_text = "verification success" if result else "veri"
             "fication failed"
             msg = "Response " if found else "No response "
-            msg += "found from command '{0}' on {2} :[{1}]:".format(\
+            msg += "found from command '{0}' on {2} :[{1}]:".format(
                             command, verification_text, verify_on_system)
             testcase_Utils.pNote(msg)
         else:
@@ -873,7 +873,7 @@ def verify_data(expected, key, data_type='str', comparison='eq'):
             try:
                 exp = convert(expected)
             except ValueError:
-                err_msg += "expected {} should be of type {}\n".format(\
+                err_msg += "expected {} should be of type {}\n".format(
                                                         expected, data_type)
                 result = "ERROR"
             except Exception as e:
@@ -909,9 +909,9 @@ def verify_data(expected, key, data_type='str', comparison='eq'):
     return result, value
 
 
-def verify_resp_inorder(match_list, context_list, command, response,\
-                        varconfigfile=None, verify_on_list=None,\
-                        verify_list=None, remote_resp_dict=None,\
+def verify_resp_inorder(match_list, context_list, command, response,
+                        varconfigfile=None, verify_on_list=None,
+                        verify_list=None, remote_resp_dict=None,
                         verify_group=None):
     """ Method for in-order search.
     Verifies the 'search strings' in the system response
@@ -928,15 +928,15 @@ def verify_resp_inorder(match_list, context_list, command, response,\
     if isinstance(verify_list, str):
         verify_list = verify_list.split(",")
 
-    resp_details_dict = _get_resp_details(match_list, context_list,\
-                                          verify_on_list, verify_list,\
+    resp_details_dict = _get_resp_details(match_list, context_list,
+                                          verify_on_list, verify_list,
                                           remote_resp_dict)
 
     for system in resp_details_dict:
         if resp_details_dict[system]:
-            sys_status = verify_inorder_cmd_response(match_list, verify_list,\
-                                                     system, command,\
-                                                     resp_details_dict[system],\
+            sys_status = verify_inorder_cmd_response(match_list, verify_list,
+                                                     system, command,
+                                                     resp_details_dict[system],
                                                      verify_group)
         else:
             pNote("Verification can not be done for the system : "
@@ -947,7 +947,7 @@ def verify_resp_inorder(match_list, context_list, command, response,\
     return status
 
 
-def _get_resp_details(match_list, context_list, verify_on_list, verify_list,\
+def _get_resp_details(match_list, context_list, verify_on_list, verify_list,
                       remote_resp_dict):
     """ Get the response verification details """
     resp_details_dict = {}
@@ -957,7 +957,7 @@ def _get_resp_details(match_list, context_list, verify_on_list, verify_list,\
         for j in range(0, len(verify_on_list[i])):
             temp_list = verify_on_list[i][j].split(".")
             if len(temp_list) > 1:
-                verify_on_list[i][j] = get_session_id(temp_list[0],\
+                verify_on_list[i][j] = get_session_id(temp_list[0],
                                                       temp_list[1])
             else:
                 verify_on_list[i][j] = get_session_id(temp_list[0])
@@ -993,17 +993,17 @@ def _get_resp_details(match_list, context_list, verify_on_list, verify_list,\
 
             resp_details_dict[verify_on_list[i][j]].update(verify_dict)
 
-    resp_details_dict = _update_search_index(match_list, verify_list,\
-                                             remote_resp_dict,\
+    resp_details_dict = _update_search_index(match_list, verify_list,
+                                             remote_resp_dict,
                                              resp_details_dict)
 
-    resp_details_dict = _get_resp_order(context_list, verify_list,\
+    resp_details_dict = _get_resp_order(context_list, verify_list,
                                         resp_details_dict)
 
     return resp_details_dict
 
 
-def _update_search_index(match_list, verify_list, remote_resp_dict,\
+def _update_search_index(match_list, verify_list, remote_resp_dict,
                          resp_details_dict):
     """ To find if the search strings are in given order in the response.
     Update the exiting start & end index in case if it is found in order """
@@ -1046,7 +1046,7 @@ def _get_resp_order(context_list, verify_list, resp_details_dict):
             verify_order = False
             if resp_details_dict[system][i]['found'] is True:
                 if resp_details_dict[system][i]['match'] is True:
-                    index_status = _validate_index_value(i, index_list,\
+                    index_status = _validate_index_value(i, index_list,
                                                          context_list)
                     if index_status is True:
                         verify_order = True
@@ -1054,7 +1054,7 @@ def _get_resp_order(context_list, verify_list, resp_details_dict):
                 if resp_details_dict[system][i]['match'] is False:
                     verify_order = True
                 elif resp_details_dict[system][i]['match'] is True:
-                    index_status = _validate_index_value(i, index_list,\
+                    index_status = _validate_index_value(i, index_list,
                                                          context_list)
                     if index_status is False:
                         verify_order = True
@@ -1099,7 +1099,7 @@ def verify_relation(actual_value, cond_value, operator, cond_type):
     return status
 
 
-def verify_inorder_cmd_response(match_list, verify_list, system, command,\
+def verify_inorder_cmd_response(match_list, verify_list, system, command,
                                 verify_dict, verify_group=None):
     """ Verifies search strings in the system response and matches the
     received response order with the expected order """
@@ -1118,18 +1118,18 @@ def verify_inorder_cmd_response(match_list, verify_list, system, command,\
                     verify_status = True
                     if found is True:
                         msg = ("Found '{0}' in response to '{1}' on {2} "
-                               "and '{0}' is in the correct order").format(\
+                               "and '{0}' is in the correct order").format(
                                                 match_list[i], command, system)
                         if verify_group:
                             cond_value = verify_group[1][i]
                             operator = verify_group[0][i]
                             cond_type = verify_group[2][i]
                             if cond_value and actual_value:
-                                verify_status = verify_relation(actual_value,\
-                                                                cond_value,\
-                                                                operator,\
+                                verify_status = verify_relation(actual_value,
+                                                                cond_value,
+                                                                operator,
                                                                 cond_type)
-                                msg += "\n{0} comparison: {1} {2} {3} ".format(\
+                                msg += "\n{0} comparison: {1} {2} {3} ".format(
                                     cond_type or "str", actual_value, operator,
                                     cond_value)
                                 if verify_status:
@@ -1138,54 +1138,54 @@ def verify_inorder_cmd_response(match_list, verify_list, system, command,\
                                     msg += "failed"
                             elif cond_value:
                                 verify_status = False
-                                msg += ("\npattern to compare should have "\
-                                        "exactly one group to match with the "\
+                                msg += ("\npattern to compare should have "
+                                        "exactly one group to match with the "
                                         "condition value: pattern failed")
                     else:
                         if verify_group[1][i] and not actual_value:
                             verify_status = False
-                            msg += ("\npattern to compare should have exactly "\
-                                    "one group to match with the condition "\
+                            msg += ("\npattern to compare should have exactly "
+                                    "one group to match with the condition "
                                     "value: pattern failed")
                         else:
-                            msg = ("Found '{0}' in response to '{1}' on {2} "\
-                                   "but '{0}' is not in the specified location"\
+                            msg = ("Found '{0}' in response to '{1}' on {2} "
+                                   "but '{0}' is not in the specified location"
                                    " as expected").format(match_list[i],
                                                           command, system)
                 else:
                     verify_status = False
                     verify_order_list.append(tag)
                     if found is True:
-                        msg = ("Found '{0}' in response to '{1}' on {2} but"\
-                               " '{0}' not in the correct order").format(\
+                        msg = ("Found '{0}' in response to '{1}' on {2} but"
+                               " '{0}' not in the correct order").format(
                                     match_list[i], command, system)
                     else:
                         if verify_group[1][i] and not actual_value:
-                            msg = ("Found '{0}' in response to '{1}' on {2} in"\
-                                   " the correct order, but \npattern to "\
-                                   "compare should have exactly one group to "\
-                                   "match with the condition value: pattern "\
-                                   "failed").format(match_list[i], command,\
+                            msg = ("Found '{0}' in response to '{1}' on {2} in"
+                                   " the correct order, but \npattern to "
+                                   "compare should have exactly one group to "
+                                   "match with the condition value: pattern "
+                                   "failed").format(match_list[i], command,
                                                     system)
                         else:
-                            msg = ("Found '{0}' in response to '{1}' on {2}, "\
-                                   "but '{0}' is not expected to be found in "\
-                                   "the location where it is found "\
-                                   "now").format(match_list[i], command,\
+                            msg = ("Found '{0}' in response to '{1}' on {2}, "
+                                   "but '{0}' is not expected to be found in "
+                                   "the location where it is found "
+                                   "now").format(match_list[i], command,
                                                  system)
             else:
-                msg = ("Did not find '{0}' in response to '{1}' on "\
+                msg = ("Did not find '{0}' in response to '{1}' on "
                        "{2}").format(match_list[i], command, system)
                 verify_status = True if verify_order is True else False
 
             if noimpact is True:
                 verify_status = True
-                pNote("Noimpact was requested on the below verification, hence"\
+                pNote("Noimpact was requested on the below verification, hence"
                       " the failure would not impact command status")
             pNote(msg, "debug")
         else:
             verify_status = "ERROR"
-            pNote("Verification of '{0}' in response to '{1}' on {2} can "\
+            pNote("Verification of '{0}' in response to '{1}' on {2} can "
                   "not be done".format(match_list[i], command, system),
                   "error")
 
@@ -1197,16 +1197,16 @@ def verify_inorder_cmd_response(match_list, verify_list, system, command,\
     rcv_all_resp_order = verify_dict.get('rcv_all_resp_order', [])
     rcv_all_resp_string = ",".join(rcv_all_resp_order)
 
-    pNote("Search string(s) is/are found in the following order for the "\
+    pNote("Search string(s) is/are found in the following order for the "
           "command '{0}': '{1}' on {2}".format(
                     command, rcv_all_resp_string, system), "debug")
 
     if verify_order_list:
         verify_order_str = ",".join(verify_order_list)
-        pNote("Following verification string(s) - {0} not in the expected "\
+        pNote("Following verification string(s) - {0} not in the expected "
               "order on {1}".format(verify_order_str, system), "debug")
     else:
-        pNote("Search string(s) is/are found in the expected order on "\
+        pNote("Search string(s) is/are found in the expected order on "
               "{0}".format(system), "debug")
 
     return status
@@ -1243,7 +1243,7 @@ def evaluate_tc_argument_value(element):
         return False
 
 
-def resolve_argument_value_to_get_tag_value(datafile, system_name,\
+def resolve_argument_value_to_get_tag_value(datafile, system_name,
                                             element_value_in_argument):
     """ Here, the value of the attribute value in the argument tag is resolved.
     From now on value represents the value of the attribute value in the
@@ -1318,7 +1318,7 @@ def get_netconf_data(datafile, config_name, **kwargs):
     for element in kwargs:
         in_list.append(element)
     print_info('Get Netconf Data(): {}, {}'.format(datafile, config_name))
-    config_data = get_credentials(datafile, config_name, attr_name='name',\
+    config_data = get_credentials(datafile, config_name, attr_name='name',
                                   tag_name='config')
     for element in kwargs:
         if kwargs[element] is not None:
@@ -1345,7 +1345,7 @@ def get_filepath_from_system(datafile, system_name, *args):
                 if os.path.isfile(abspath):
                     abspath_lst.append(abspath)
                 else:
-                    print_warning("File '{0}' provided for tag '{1}' does not "\
+                    print_warning("File '{0}' provided for tag '{1}' does not "
                                   "exist".format(abspath, tag))
                     abspath_lst.append(None)
             else:
@@ -1368,7 +1368,7 @@ def get_var_by_string_prefix(string):
             return val
 
 
-def subst_var_patterns_by_prefix(raw_value, start_pattern="${",\
+def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
                                  end_pattern="}", prefix="ENV"):
     """Takes a key value pair or string (value) as input in raw_value,
         if the value has a pattern matching ${ENV.env_variable_name}.
@@ -1392,8 +1392,8 @@ def subst_var_patterns_by_prefix(raw_value, start_pattern="${",\
     if type(raw_value) == dict:
         for k in raw_value:
             value = raw_value[k]
-            extracted_var = string_Utils.return_quote(str(value),\
-                                                      start_pattern,\
+            extracted_var = string_Utils.return_quote(str(value),
+                                                      start_pattern,
                                                       end_pattern)
             extracted_var = [string for string in extracted_var
                              if prefix in string]
@@ -1401,44 +1401,44 @@ def subst_var_patterns_by_prefix(raw_value, start_pattern="${",\
                 for string in extracted_var:
                     try:
                         if isinstance(raw_value[k], str):
-                            raw_value[k] = raw_value[k].replace(\
-                                start_pattern+string+end_pattern,\
+                            raw_value[k] = raw_value[k].replace(
+                                start_pattern+string+end_pattern,
                                 get_var_by_string_prefix(string))
                         elif isinstance(raw_value[k], (list, dict)):
                             raw_value[k] = literal_eval(
-                                str(raw_value[k]).replace(\
-                                    start_pattern+string+end_pattern,\
+                                str(raw_value[k]).replace(
+                                    start_pattern+string+end_pattern,
                                     get_var_by_string_prefix(string)))
                         else:
-                            print_error("Unsupported format - " +\
+                            print_error("Unsupported format - " +
                                         error_msg2.format(string, value))
                     except (KeyError, TypeError):
                         print_error(error_msg1.format(string, value))
                         if isinstance(raw_value[k], str):
                             raw_value[k] = None
                         elif isinstance(raw_value[k], (list, dict)):
-                            search_str = ("'[^']*" + re.escape(start_pattern) +\
-                                          string + re.escape(end_pattern) +\
+                            search_str = ("'[^']*" + re.escape(start_pattern) +
+                                          string + re.escape(end_pattern) +
                                           "[^']*'")
-                            search_obj = re.search(search_str,\
+                            search_obj = re.search(search_str,
                                                    str(raw_value[k]))
                             if search_obj:
-                                raw_value[k] = literal_eval(\
-                                    str(raw_value[k]).replace(\
+                                raw_value[k] = literal_eval(
+                                    str(raw_value[k]).replace(
                                         search_obj.group(), 'None'))
                     except SyntaxError:
-                        print_error("Syntax Error - " +\
+                        print_error("Syntax Error - " +
                                     error_msg2.format(string, value))
     elif type(raw_value) == str:
-        extracted_var = string_Utils.return_quote(str(raw_value),\
+        extracted_var = string_Utils.return_quote(str(raw_value),
                                                   start_pattern, end_pattern)
-        extracted_var = [string for string in extracted_var \
+        extracted_var = [string for string in extracted_var
                          if prefix in string]
         if len(extracted_var) > 0:
             for string in extracted_var:
                 try:
-                    raw_value = raw_value.replace(\
-                                start_pattern+string+end_pattern,\
+                    raw_value = raw_value.replace(
+                                start_pattern+string+end_pattern,
                                 get_var_by_string_prefix(string))
                 except KeyError:
                     print_error(error_msg1.format(string, raw_value))
@@ -1448,12 +1448,12 @@ def subst_var_patterns_by_prefix(raw_value, start_pattern="${",\
 
 
 def sub_from_env_var(raw_value, start_pattern="${", end_pattern="}"):
-    return subst_var_patterns_by_prefix(raw_value, start_pattern, end_pattern,\
+    return subst_var_patterns_by_prefix(raw_value, start_pattern, end_pattern,
                                         "ENV")
 
 
 def sub_from_data_repo(raw_value, start_pattern="${", end_pattern="}"):
-    return subst_var_patterns_by_prefix(raw_value, start_pattern, end_pattern,\
+    return subst_var_patterns_by_prefix(raw_value, start_pattern, end_pattern,
                                         "REPO")
 
 
@@ -1473,7 +1473,7 @@ def substitute_var_patterns(raw_value, start_pattern="${", end_pattern="}"):
     if raw_value is None:
         return raw_value
     elif isinstance(raw_value, str):
-        extracted_var = string_Utils.return_quote(raw_value, start_pattern,\
+        extracted_var = string_Utils.return_quote(raw_value, start_pattern,
                                                   end_pattern)
         for string in extracted_var:
             [prefix, var] = string.split('.', 1)
@@ -1481,28 +1481,28 @@ def substitute_var_patterns(raw_value, start_pattern="${", end_pattern="}"):
                 try:
                     val = prefixes[prefix][1](var)
                 except KeyError:
-                    print_error(error_msg.format(prefixes[prefix][0], string,\
+                    print_error(error_msg.format(prefixes[prefix][0], string,
                                                  raw_value))
             if val:
-                raw_value = raw_value.replace(start_pattern+string+end_pattern,\
+                raw_value = raw_value.replace(start_pattern+string+end_pattern,
                                               val)
         else:
             return raw_value
     elif isinstance(raw_value, list):
-        return map(lambda val: substitute_var_patterns(val, start_pattern,\
+        return map(lambda val: substitute_var_patterns(val, start_pattern,
                                                        end_pattern), raw_value)
     elif isinstance(raw_value, dict):
         for key in raw_value:
-            raw_value[key] = substitute_var_patterns(raw_value[key],\
-                                                     start_pattern,\
+            raw_value[key] = substitute_var_patterns(raw_value[key],
+                                                     start_pattern,
                                                      end_pattern)
         else:
             return raw_value
     else:
-        print_error("Unsupported format - raw_value should either be a string,"\
+        print_error("Unsupported format - raw_value should either be a string,"
                     " list or dictionary")
-        print_error("raw_value: #{}# and its type is {}".format(raw_value,\
-                                                                type(raw_value)\
+        print_error("raw_value: #{}# and its type is {}".format(raw_value,
+                                                                type(raw_value)
                                                                 ))
     return raw_value
 
@@ -1514,7 +1514,7 @@ def process_subsystem_list(datafile, system_name, subsystem=None):
     in the list is 'all', a list of all subsystem exist under the provided
     system_name in the datafile will be return. If the system_name is not found
     in the datafile, subsystem_list will be set None."""
-    system = xml_Utils.getElementWithTagAttribValueMatch(datafile, 'system',\
+    system = xml_Utils.getElementWithTagAttribValueMatch(datafile, 'system',
                                                          'name', system_name)
     if system is not None and system is not False:
         if subsystem is not None and subsystem is not False:
@@ -1527,7 +1527,7 @@ def process_subsystem_list(datafile, system_name, subsystem=None):
             # Remove duplicate entry
             subsystem_list = []
 
-            [subsystem_list.append(item) for item in strip_subsystem_list if \
+            [subsystem_list.append(item) for item in strip_subsystem_list if
              item not in subsystem_list]
             # Look for any subsystem = 'all'
             all_subsys_flag = False
@@ -1537,8 +1537,8 @@ def process_subsystem_list(datafile, system_name, subsystem=None):
                     break
             if all_subsys_flag is True:
                 # Find all subsystem_names for the system in datafile:
-                subsystem_list = xml_Utils.getNodeListbyAttribute(system, \
-                                                                  'subsystem', \
+                subsystem_list = xml_Utils.getNodeListbyAttribute(system,
+                                                                  'subsystem',
                                                                   'name')
             else:  # when subsystem_list is empty, set it to None
                 if len(subsystem_list) == 0: subsystem_list = None
