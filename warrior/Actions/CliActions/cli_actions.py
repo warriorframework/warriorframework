@@ -193,12 +193,9 @@ class CliActions(object):
                war_conn_object.conn_type in ["SSH", "TELNET", "SSH_NESTED"]:
                 # execute smart action to produce user report
                 connect_testdata = \
-                 Utils.data_Utils.get_object_from_datarepository(
-                  session_id+"_system", verbose=False)
-                if connect_testdata is not None and \
-                   connect_testdata is not False:
-                    Utils.cli_Utils.smart_action(
-                     self.datafile, call_system_name, "", war_conn_object,
+                 Utils.data_Utils.get_object_from_datarepository( session_id + "_system", verbose=False)
+                if connect_testdata is not None and connect_testdata is not False:
+                    Utils.cli_Utils.smart_action( self.datafile, call_system_name, "", war_conn_object, \
                      "disconnect", connect_testdata)
 
                 war_conn_object.disconnect()

@@ -251,12 +251,10 @@ class ParamikoConnect(object):
                 pNote("Nested SSH connection is requested, first connecting to"
                       " intermediate system - {}".format(self.via_ip))
                 self.via_host = self.paramiko.SSHClient()
-                self.via_host.set_missing_host_key_policy(
-                 self.paramiko.AutoAddPolicy())
-                self.via_host.connect(self.via_ip, port=self.via_port,
-                                      username=self.via_username,
-                                      password=self.via_password,
-                                      timeout=self.via_timeout)
+                self.via_host.set_missing_host_key_policy(self.paramiko.AutoAddPolicy())
+                self.via_host.connect(self.via_ip, port=self.via_port, \
+                                      username=self.via_username, \
+                                      password=self.via_password, timeout=self.via_timeout)
 
                 self.via_transport = self.via_host.get_transport()
 
@@ -271,13 +269,10 @@ class ParamikoConnect(object):
                 self.via_channel = None
 
             self.target_host = self.paramiko.SSHClient()
-            self.target_host.set_missing_host_key_policy(
-             self.paramiko.AutoAddPolicy())
+            self.target_host.set_missing_host_key_policy(self.paramiko.AutoAddPolicy())
 
-            self.target_host.connect(self.ip, port=self.port,
-                                     username=self.username,
-                                     password=self.password,
-                                     timeout=self.timeout,
+            self.target_host.connect(self.ip, port=self.port, username=self.username, \
+                                     password=self.password, timeout=self.timeout, \
                                      sock=self.via_channel)
 
             if self.logfile is not None:
