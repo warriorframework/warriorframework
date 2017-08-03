@@ -290,9 +290,9 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
     testsuite_utils.pSuite_root(junit_resultfile)
 
     testsuite_utils.pSuite_testsuite(junit_resultfile, suite_name,
-                                    errors='0', skipped='0',
-                                    tests=no_of_tests, failures='0',
-                                    time='0', timestamp=suite_timestamp)
+                                     errors='0', skipped='0',
+                                     tests=no_of_tests, failures='0',
+                                     time='0', timestamp=suite_timestamp)
     testsuite_utils.pSuite_property(junit_resultfile, 'title', suite_repository['suite_title'])
     testsuite_utils.pSuite_property(junit_resultfile, 'location', testsuite_filepath)
     if "jobid" in data_repository:
@@ -302,7 +302,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
 
     print_suite_details_to_console(suite_repository, testsuite_filepath, junit_resultfile)
 
-    
+
     data_repository["war_parallel"] = False
 
     if execution_type.upper() == 'PARALLEL_TESTCASES':
@@ -355,10 +355,11 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
                 break
 
     elif execution_type.upper() == 'RUN_MULTIPLE':
-        Max_Attempts = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath, 'Details', 'type',
-                                                                    'Max_Attempts')
-        Number_Attempts = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath, 'Details',
-                                                                       'type', 'Number_Attempts')
+        Max_Attempts = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath, 'Details', 
+                                                                    'type', 'Max_Attempts')
+        Number_Attempts = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath,
+                                                                        'Details', 'type',
+                                                                        'Number_Attempts')
 
         if Max_Attempts == "":
             execution_value = Number_Attempts
@@ -395,7 +396,8 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
 		# execute the testcases in iterative parallel fashion on the systems
         print_info("Iterative parallel suite")
         data_repository["war_parallel"] = True
-        iter_seq_ts_obj = IterativeTestsuite(testcase_list, suite_repository, data_repository, from_project, auto_defects)
+        iter_seq_ts_obj = IterativeTestsuite(testcase_list, suite_repository,
+                                             data_repository, from_project, auto_defects)
 
         test_suite_status = iter_seq_ts_obj.execute_iterative_parallel()
 
