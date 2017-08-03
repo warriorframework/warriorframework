@@ -35,31 +35,30 @@ class LineResult:
                                 line.get("exceptions"), line.get("skipped")]
         self.data['timestamp'] = line.get("timestamp")
 
-    def set_attributes(self, line, type, stepcount):
-        if 'Keyword' not in type and 'step' not in type:
+    def set_attributes(self, line, variant, stepcount):
+        if 'Keyword' not in variant and 'step' not in variant:
             stepcount = ''
-        self.data = {'nameAttr': type + 'Record',
-                     'type': type.replace('Test', '').replace('Keyword', 'step ') + str(stepcount),
+        self.data = {'nameAttr': variant + 'Record',
+                     'type': variant.replace('Test', '').replace('Keyword', 'step ') + str(stepcount),
                      'name': line.get("name"),
                      'info': line.get("title"),
                      'timestamp': line.get("timestamp"),
                      'duration': line.get("time"),
-                     'status': line.get("status"),
+                     'status': '<span class=' + line.get("status") + '>' + line.get("status") + '</span>',
                      'impact': line.get("impact"),
                      'onerror': line.get("onerror"),
                      'msc': '<span style="padding-left:10px; padding-right: 10px;"><a href="' + (
                          line.get("resultfile") if line.get("resultfile") else ''
-                     ) + '"><i class="fa fa-line-chart"> </i></a></span><span '
-                                                      'style="padding-left:10px; padding-right: 10px;"><a href="' + ( 
-                                line.get("logsdir") if line.get("logsdir") else '') + '"><i class="fa fa-book"> </i></a></span>',
+                     ) + '"><i class="fa fa-line-chart"> </i></a></span>' + ('' if variant == 'Keyword' else '<span style="padding-left:10px; padding-right: 10px;"><a href="' + (
+                            line.get("logsdir") if line.get("logsdir") else '') + '"><i class="fa fa-book"> </i></a></span>') + '',
                      'static': ['Count', 'Passed', 'Failed', 'Errors', 'Exceptions', 'Skipped']
                      }
         self.keys = ['type', 'name', 'info', 'timestamp', 'duration', 'status', 'impact', 'onerror', 'msc', 'static',
                      'dynamic']
 
-    def set_html(self, line, type, stepcount):
+    def set_html(self, line, variant, stepcount):
         if self.html == '':
-            self.set_attributes(line, type, stepcount)
+            self.set_attributes(line, variant, stepcount)
         self.set_dynamic_content(line)
         top_level = ''
         top_level_next = ''
@@ -76,10 +75,8 @@ class LineResult:
             top_level_next = '<tr>' + top_level_next + '</tr>'
         else:
             for elem in self.keys:
-                if elem != 'static' and elem != 'dynamic' and elem != 'msc':
+                if elem != 'static' and elem != 'dynamic':
                     top_level += '<td rowspan="2"><div>' + (self.data[elem] if self.data[elem] else '') + '</div></td>'
-                elif elem == 'msc':
-                    top_level += '<td rowspan="2"><div></div></td>'
 
         self.html = '<tr name="' + self.data['nameAttr'] + '">' + top_level + '</tr>' + top_level_next
 
@@ -98,10 +95,10 @@ class WarriorHtmlResults:
             .format(Tools.__path__[0], os.sep)
         self.junit_root = xml_Utils.getRoot(self.junit_file)
 
-    def create_line_result(self, line, type):
+    def create_line_result(self, line, variant):
         """ create new objs"""
         temp = LineResult()
-        temp.set_html(line, type, self.steps)
+        temp.set_html(line, variant, self.steps)
         self.lineObjs.append(temp)
         self.lineCount += 1
 

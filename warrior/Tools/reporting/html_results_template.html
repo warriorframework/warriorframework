@@ -268,7 +268,7 @@ td:not([rowspan]):nth-last-child(6){
 tr[name] td:not([rowspan]):nth-last-child(6):hover ~ td:not([rowspan]), tr[name] td:not([rowspan]):nth-last-child(6):hover {
     display: block;
     z-index: 1 !important;
-    background: #585858 !important;
+    background: #2578c1 !important;
     color: white !important;
     height: 80px !important;
     -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.28);
@@ -297,7 +297,7 @@ position: absolute;
     z-index: 1;
     padding-right: 17px;
     color: white;
-    background: #444444;
+    background: #3699ff;
     -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.28);
     -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.28);
     box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.28);
@@ -417,7 +417,7 @@ tr[name="TestcaseRecord"] > td:first-child div:before {content: '^';content: "\f
 
 tr[name="TestcaseRecord"].active ~ tr[name="KeywordRecord"] {
     display: flex;
-    background: #585858;
+    background: #2578c1;
     color: white;
 }
 tr[name="TestcaseRecord"].active ~ tr[name="TestcaseRecord"] ~ tr[name="KeywordRecord"] {display: none;}
@@ -426,7 +426,7 @@ tr.active {
     -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.28);
     -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.28);
     box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.28);
-    background: #444444 !important;
+    background: #3699ff !important;
     color: white;
 }
 
@@ -460,7 +460,7 @@ td[rowspan]:nth-child(3):hover{
 
 td[rowspan]:nth-child(3):hover div:not(:empty) {
     position: absolute;
-    background: #444444;
+    background: #3699ff;
     z-index: 1;
     left: 0;
     top: 0;
@@ -508,7 +508,7 @@ tr[name="TestcaseRecord"] {
 .filterBar {
 		width: 100%;
     z-index: 0;
-    background: #5d5d5d;
+    background: #2578c1;
     height: 40px;
     top: 40px;
     position: absolute;
@@ -555,7 +555,7 @@ tbody{
 }
 tr.hover {
     overflow: visible !important;
-    background: #444444 !important;
+    background: #3699ff !important;
     color: white;
 }
 
@@ -564,7 +564,7 @@ tr.hover {
 }
 .hoverConainer > tr {
 		border: none;
-    background: #5d5d5d !important;
+    background: #2578c1 !important;
     color: white;
 }
 span.useData {
@@ -586,6 +586,23 @@ tr[name] td:not([rowspan]):nth-last-child(6):hover:before {
 
 .version:before {
     content: 'Warrior';
+}
+.EXCEPTION {
+    color: #4ccbff;
+}
+
+.FAIL {
+    color: #ff3c3c;
+}
+
+.ERROR {
+    color: #ff9100;
+}
+.PASS {
+    color: #43ff43;
+}
+.SKIPPED{
+		color: #4ccbff;
 }
 	</style>
 </head>
