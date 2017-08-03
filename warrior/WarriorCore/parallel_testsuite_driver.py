@@ -97,9 +97,9 @@ def execute_parallel_testsuites(testsuite_list, project_repository, data_reposit
     # update project junit result file with individual suite result files
     data_repository['wt_junit_object'] = \
         update_pj_junit_resultfile(data_repository['wt_junit_object'], ts_junit_list)
-    testsuite_status = Utils.testcase_Utils.compute_status_using_impact(ts_status_list,
-                                                                        ts_impact_list)
-    return testsuite_status
+    project_status = Utils.testcase_Utils.compute_status_using_impact(ts_status_list,
+                                                                      ts_impact_list)
+    return project_status
 
 
 def main(testsuite_list, project_repository, data_repository,
@@ -107,11 +107,9 @@ def main(testsuite_list, project_repository, data_repository,
     """Executes the list of testcases in parallel
     Computes and returns the testsuite status"""
     try:
-        testsuite_status = execute_parallel_testsuites(testsuite_list, project_repository,
-                                                       data_repository,
-                                                       auto_defects,
-                                                       ts_parallel)
+        project_status = execute_parallel_testsuites(testsuite_list, project_repository,
+                                                     data_repository, auto_defects, ts_parallel)
     except Exception:
-        testsuite_status = False
+        project_status = False
         print_error('unexpected error {0}'.format(traceback.format_exc()))
-    return testsuite_status
+    return project_status
