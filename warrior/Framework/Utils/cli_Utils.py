@@ -44,7 +44,7 @@ def cmdprinter(cmdfunc):
     def inner(*args, **kwargs):
         """routing different mock functions"""
         if WarriorCliClass.cmdprint:
-            result = (True,"")
+            result = (True, "")
             if cmdfunc.__name__ == "_send_cmd_get_status":
                 pNote(":CMD: %s"%(args[1]["command_list"][kwargs['index']]))
             elif cmdfunc.__name__ == "_send_command_retrials":
@@ -202,7 +202,7 @@ def connect_telnet(ip, port="23", username="", password="",
         child.logfile = None
 
     try:
-        flag=True
+        flag = True
         child.setecho(False)
         child.delaybeforesend = .5
         while True:
@@ -223,10 +223,10 @@ def connect_telnet(ip, port="23", username="", password="",
                 break
             elif result == 4:
                 # timed out tryonce with Enter has some terminal expects it
-                if flag==True:
+                if flag is True:
                     pNote("Initial timeout occur, sending custom_keystroke")
                     _send_cmd_by_type(child, custom_keystroke)
-                    flag=False
+                    flag = False
                     continue
                 pNote("Connection timed out: {0}, expected prompt: {1} "\
                       "is not found in the system response: {2}"\
