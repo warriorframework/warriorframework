@@ -290,6 +290,6 @@ class CommonActions(object):
             intvar = data_Utils.resolve_argument_value_to_get_tag_value(
                                     self.datafile, system_name, intvar)
         else:
-            status = status and check_type(intvar, int)
+            status = status and check_type(intvar, "intvar", int)
 
         return status
