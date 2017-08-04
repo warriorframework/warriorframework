@@ -15,9 +15,14 @@ import datetime
 from Framework import Utils
 from Framework.Utils import data_Utils, file_Utils
 import os
+import time
 from Framework.Utils.testcase_Utils import pNote
 
 class CIregressionActions(object):
+    """
+        This class contains keywords that are used in warrior regression test
+    """
+
     def __init__(self):
         """
             constructor
@@ -217,14 +222,14 @@ class CIregressionActions(object):
         else:
             diff = input_set.difference(output_set)
             result_content = input_content
-        print "**************The difference between the files is******************"
+        pNote("**************The difference between the files is******************")
         for j in diff:
             s = str(j[0])
             index = result_content.index(s)
             last_index = result_content.index("****************************\n",index)
             start_index = last_index-2
             for i in range(start_index-1,last_index+1):
-                print result_content[i].strip("\n")
+                pNote(result_content[i].strip("\n"))
         return False
 
     def increase_value(self, key, status, max_value, max_status):
@@ -267,3 +272,60 @@ class CIregressionActions(object):
             return False
         else:
             raise Exception("This is raised in ci_regression_actions.local_data_test")
+
+    def create_tmp_dir(self):
+        """
+            Create a temp directory for parallel execution test
+        """
+        path = file_Utils.createDir(file_Utils.getDirName(self.logsdir), "tmp")
+        return True, {"parallel_exec_tmp_dir": os.path.join(file_Utils.getDirName(self.logsdir), "tmp")} if path else False
+
+    def create_sub_tmp_file(self, system_name="", filename="", delete="yes"):
+        """
+            Create temp file for parallel execution test
+        """
+        path = data_Utils.get_object_from_datarepository("parallel_exec_tmp_dir")
+        if system_name != "" and filename == "":
+            filename = data_Utils.getSystemData(self.datafile, system_name, "filename")
+        elif system_name == "" and filename == "":
+            pNote("No system or filename found, needs to provide at least one", "error")
+        f = open(os.path.join(path, filename), "w")
+        f.write("This is a test string")
+        f.close()
+        time.sleep(10)
+        status = False
+        if delete == "yes":
+            try:
+                file_Utils.delFile(os.path.join(path, filename))
+                status = True
+            except OSError:
+                pNote("Cannot remove tmp file, no write access to {}".format(path), "error")
+        else:
+            status = True
+        return status
+
+    def tmp_file_count(self, int_count):
+        """ count how many files are under the temp dir """
+        time.sleep(5)
+        path = data_Utils.get_object_from_datarepository("parallel_exec_tmp_dir")
+        content = os.listdir(path)
+        pNote(content)
+        pNote(str(len(content)) + str(int_count))
+        return len(content) == int_count
+
+    def check_tmp_file_exists(self, system_name="", filename=""):
+        """ check if temp folder exist in the parallel execution result tmp dir """
+        if system_name != "" and filename == "":
+            filename = data_Utils.getSystemData(self.datafile, system_name, "filename")
+        elif system_name == "" and filename == "":
+            pNote("No system or filename found, needs to provide at least one", "error")
+        path = data_Utils.get_object_from_datarepository("parallel_exec_tmp_dir")
+        path = os.path.join(path, filename)
+        return file_Utils.fileExists(path)
+
+    def delete_tmp_dir(self):
+        """
+            Delete temp directory for parallel execution test
+        """
+        path = data_Utils.get_object_from_datarepository("parallel_exec_tmp_dir")
+        return file_Utils.delFolder(path)

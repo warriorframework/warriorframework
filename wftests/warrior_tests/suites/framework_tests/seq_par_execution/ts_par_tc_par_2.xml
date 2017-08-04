@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+<TestSuite>
+        <Details>
+                <Name>ts_par_tc_seq_2</Name>
+                <Title>TS running tc parallel and kw sequential</Title>
+                <Engineer>ka</Engineer>
+                <Date>05/23/2017</Date>
+                <Time>14:21:58</Time>
+                <type exectype="parallel_testcases"/>
+                <State/>
+                <default_onError action="next"/>
+                <Resultsdir/>
+                <IDF/>
+        </Details>
+        <Requirements>
+                <Requirement/>
+        </Requirements>
+        <Testcases>
+                <Testcase>
+                        <path>../../../testcases/framework_tests/par_seq_execution/seq_ts_par_tc_2.xml</path>
+                        <context>positive</context>
+                        <InputDataFile/>
+                        <runtype>parallel_keywords</runtype>
+                        <onError action="next" value=""/>
+                        <runmode type="Standard" value=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                        <impact>impact</impact>
+                </Testcase>
+        </Testcases>
+</TestSuite>

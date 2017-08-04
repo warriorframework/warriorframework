@@ -30,6 +30,9 @@ class RobotWrapperActions(object):
     """ RobotWrapperActions class which has methods(keywords) related to Robot Framework """
 
     def __init__(self):
+        """
+        constructor for RobotWrapperActions
+        """
         self.resultfile = config_Utils.resultfile
         self.datafile = config_Utils.datafile
         self.logsdir = config_Utils.logsdir
