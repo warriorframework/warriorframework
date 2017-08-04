@@ -168,7 +168,7 @@ def execute_step(step, step_num, data_repository, system_name, kw_parallel, queu
                                       data_repository, args_repository)
         keyword_status = data_repository['step-%s_status' % step_num]
         Utils.testcase_Utils.update_step_num(str(step_num))
-        if context.upper() == 'NEGATIVE' and type(keyword_status) == bool:
+        if context.upper() == 'NEGATIVE' and isinstance(keyword_status, bool):
             print_debug("Keyword status = {0}, Flip status as context is Negative".format(
                 keyword_status))
             keyword_status = not keyword_status
@@ -240,7 +240,8 @@ def execute_step(step, step_num, data_repository, system_name, kw_parallel, queu
 
     add_keyword_result(tc_junit_object, tc_timestamp, step_num, keyword,
                        keyword_status, kw_start_time, kw_duration,
-                       kw_resultfile, impact, onerror, step_description)
+                       kw_resultfile, impact, onerror, step_description,
+                       info=str(args_repository))
 
     if parallel is True:
         # put result into multiprocessing queue and later retrieve in
@@ -267,13 +268,13 @@ def execute_step(step, step_num, data_repository, system_name, kw_parallel, queu
 
 def add_keyword_result(tc_junit_object, tc_timestamp, step_num, keyword,
                        keyword_status, kw_start_time, kw_duration,
-                       kw_resultfile, impact, onerror, step_description):
+                       kw_resultfile, impact, onerror, step_description,
+                       info=""):
     """ Add keyword results into junit object """
-
     tc_junit_object.add_keyword_result(tc_timestamp, step_num, keyword,
                                        str(keyword_status), kw_start_time,
                                        kw_duration, kw_resultfile,
-                                       impact, onerror, step_description)
+                                       impact, onerror, step_description, info=info)
 
     tc_junit_object.update_count(str(keyword_status), "1", "tc", tc_timestamp)
     tc_junit_object.update_count("keywords", "1", "tc", tc_timestamp)

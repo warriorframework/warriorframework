@@ -256,12 +256,16 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
     data_repository["suite_exectype"] = "iterative" if execution_type == "ITERATIVE_SEQUENTIAL" or \
     execution_type == "ITERATIVE_PARALLEL" else execution_type
 
+    ts_junit_display = "True"
+    pj_junit_display = "False"
     if "wt_junit_object" in data_repository:
         ts_junit_object = data_repository["wt_junit_object"]
+
     else:
         ts_junit_object = junit_class.Junit(filename=suite_name, timestamp=suite_timestamp,
                                             name="customProject_independant_testcase_execution",
-                                            display="False")
+                                            display=pj_junit_display)
+
         if "jobid" in data_repository:
             ts_junit_object.add_jobid(data_repository["jobid"])
             del data_repository["jobid"]
@@ -271,6 +275,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
                                      name=suite_name, timestamp=suite_timestamp,
                                      suite_location=suite_repository['testsuite_filepath'],
                                      title=suite_repository['suite_title'],
+                                     display=ts_junit_display,
                                      **ts_junit_object.init_arg())
 
     # Adding resultsdir as attributes to testsuite_tag in the junit result file
@@ -355,7 +360,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
                 break
 
     elif execution_type.upper() == 'RUN_MULTIPLE':
-        Max_Attempts = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath, 'Details', 
+        Max_Attempts = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath, 'Details',
                                                                     'type', 'Max_Attempts')
         Number_Attempts = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath,
                                                                         'Details', 'type',
@@ -381,7 +386,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
 
     elif execution_type.upper() == "ITERATIVE_SEQUENTIAL":
 		# if execution type is iterative sequential call WarriorCore.Classes.iterative_testsuite
-        # class and 
+        # class and
 		# execute the testcases in iterative sequential fashion on the systems
         print_info("Iterative sequential suite")
 
@@ -392,7 +397,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
 
     elif execution_type.upper() == "ITERATIVE_PARALLEL":
 		# if execution type is iterative parallel call WarriorCore.Classes.iterative_testsuite
-        # class and 
+        # class and
 		# execute the testcases in iterative parallel fashion on the systems
         print_info("Iterative parallel suite")
         data_repository["war_parallel"] = True
