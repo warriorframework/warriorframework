@@ -97,7 +97,7 @@ def get_step_console_log(filename, logsdir, console_name):
     return console_logfile
 
 
-def execute_step(step, step_num, data_repository, system_name, parallel, queue):
+def execute_step(step, step_num, data_repository, system_name, kw_parallel, queue):
     """ Executes a step from the testcase xml file
         - Parses a step from the testcase xml file
         - Get the values of Driver, Keyword, impactsTcResult
@@ -121,6 +121,7 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
     context = Utils.testcase_Utils.get_context_from_xmlfile(step)
     step_impact = Utils.testcase_Utils.get_impact_from_xmlfile(step)
     step_description = Utils.testcase_Utils.get_description_from_xmlfile(step)
+    parallel = kw_parallel
 
     if parallel is True:
         step_console_log = get_step_console_log(data_repository['wt_filename'],
@@ -241,28 +242,27 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
                        keyword_status, kw_start_time, kw_duration,
                        kw_resultfile, impact, onerror, step_description)
 
-    # Get the type of the file being executed by Warrior: Case/Suite/Project
-    war_file_type = data_repository.get('war_file_type')
-    if war_file_type == "Case":
-        # Create and replace existing Case junit file for each step
-        tc_junit_object.output_junit(data_repository['wt_resultsdir'],
-                                     print_summary=False)
-    elif war_file_type == "Suite":
-        # Create and replace existing Suite junit file for each step
-        tc_junit_object.output_junit(data_repository['wt_results_execdir'],
-                                     print_summary=False)
-    elif war_file_type == "Project":
-        # Create and replace existing Project junit file for each step
-        tc_junit_object.output_junit(data_repository['wp_results_execdir'],
-                                     print_summary=False)
-
     if parallel is True:
         # put result into multiprocessing queue and later retrieve in
         # corresponding driver
         queue.put((keyword_status, kw_resultfile,
                    step_impact.upper(), tc_junit_object))
-    else:
-        return keyword_status, kw_resultfile, step_impact, exec_type_onerror
+    elif not data_repository['war_parallel']:
+        # Get the type of the file being executed by Warrior: Case/Suite/Project
+        war_file_type = data_repository.get('war_file_type')
+        if war_file_type == "Case":
+            # Create and replace existing Case junit file for each step
+            tc_junit_object.output_junit(data_repository['wt_resultsdir'],
+                                         print_summary=False)
+        elif war_file_type == "Suite":
+            # Create and replace existing Suite junit file for each step
+            tc_junit_object.output_junit(data_repository['wt_results_execdir'],
+                                         print_summary=False)
+        elif war_file_type == "Project":
+            # Create and replace existing Project junit file for each step
+            tc_junit_object.output_junit(data_repository['wp_results_execdir'],
+                                         print_summary=False)
+    return keyword_status, kw_resultfile, step_impact, exec_type_onerror
 
 
 def add_keyword_result(tc_junit_object, tc_timestamp, step_num, keyword,
@@ -279,11 +279,11 @@ def add_keyword_result(tc_junit_object, tc_timestamp, step_num, keyword,
     tc_junit_object.update_count("keywords", "1", "tc", tc_timestamp)
 
 
-def main(step, step_num, data_repository, system_name, parallel=False, queue=None):
+def main(step, step_num, data_repository, system_name, kw_parallel=False, queue=None):
     """Get a step, executes it and returns the result """
     try:
         step_status = execute_step(step, step_num,
-                                   data_repository, system_name, parallel, queue)
+                                   data_repository, system_name, kw_parallel, queue)
     except Exception:
         step_status = False, [], data_repository['wt_step_impact'], False
         print_error('unexpected error: {0}'.format(traceback.format_exc()))

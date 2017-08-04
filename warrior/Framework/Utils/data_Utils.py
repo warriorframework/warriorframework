@@ -473,8 +473,8 @@ def _get_cmd_details(testdata, global_obj, system_name,
 
 
 def _get_global_var(global_obj, key):
+    """locate element in a etree object (in this case, child of global tag in testdata file)"""
     return global_obj.find(key) if global_obj is not None else None
-
 
 def _get_cmdparams_list(testdata, global_obj, cmd_attrib):
     """Get the list of values for a
@@ -862,6 +862,9 @@ def verify_data(expected, key, data_type='str', comparison='eq'):
     with expected value
     """
     def validate():
+        """Verify the value of the key in data repository matches
+        with expected value
+        """
         result = "TRUE"
         err_msg = ""
         if data_type not in type_funcs:
@@ -1085,6 +1088,9 @@ def _validate_index_value(index, index_list, context_list):
 
 
 def verify_relation(actual_value, cond_value, operator, cond_type):
+    """
+        use verify_data to do comparison of two values
+    """
     ver_args = {}
     if cond_type:
         pNote("cond_type is {}".format(cond_type))
@@ -1357,6 +1363,9 @@ def get_filepath_from_system(datafile, system_name, *args):
 
 
 def get_var_by_string_prefix(string):
+    """
+        Get value from Environment variable or data repo
+    """
     if string.startswith("ENV."):
         return os.environ[string.split('.', 1)[1]]
     if string.startswith("REPO."):
@@ -1448,17 +1457,25 @@ def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
 
 
 def sub_from_env_var(raw_value, start_pattern="${", end_pattern="}"):
+    """wrapper function for subst_var_patterns_by_prefix"""
     return subst_var_patterns_by_prefix(raw_value, start_pattern, end_pattern,
                                         "ENV")
 
 
 def sub_from_data_repo(raw_value, start_pattern="${", end_pattern="}"):
+    """wrapper function for subst_var_patterns_by_prefix"""
     return subst_var_patterns_by_prefix(raw_value, start_pattern, end_pattern,
                                         "REPO")
 
 
 def substitute_var_patterns(raw_value, start_pattern="${", end_pattern="}"):
+    """
+        substitute variable inside start and end pattern
+    """
     def get_data(var):
+        """
+            get data from datarepo
+        """
         repokeys = var.split('.')
         val = get_object_from_datarepository(repokeys[0])
         for key in repokeys[1:]:
