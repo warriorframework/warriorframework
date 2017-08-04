@@ -35,6 +35,7 @@ def execute_parallel_testsuites(testsuite_list, project_repository, data_reposit
 
     jobs_list = []
     output_q = None
+    impact_dict = {"IMPACT": "Impact", "NOIMPACT": "No Impact"}
     project_error_action = project_repository['def_on_error_action']
     project_filepath = project_repository['project_filepath']
     project_dir = os.path.dirname(project_filepath)
@@ -80,6 +81,8 @@ def execute_parallel_testsuites(testsuite_list, project_repository, data_reposit
     ts_status_list = []
     ts_name_list = []
     ts_impact_list = []
+    ts_onerror_list = []
+    ts_timestamp_list = []
     ts_duration_list = []
     # Get the junit object of each suite, extract the information from it
     # and combine with project junit object
@@ -89,14 +92,24 @@ def execute_parallel_testsuites(testsuite_list, project_repository, data_reposit
         ts_status_list.append(result[0])
         ts_name_list.append(result[1])
         ts_impact_list.append(result[2])
-        ts_duration_list.append(result[3])
-        ts_junit_list.append(result[4])
+        ts_onerror_list.append(result[3])
+        ts_timestamp_list.append(result[4])
+        ts_duration_list.append(result[5])
+        ts_junit_list.append(result[6])
 
     # parallel suites generate multiple suite junit result files
     # each files log the result for one suite and not integrated
     # update project junit result file with individual suite result files
     data_repository['wt_junit_object'] = \
         update_pj_junit_resultfile(data_repository['wt_junit_object'], ts_junit_list)
+
+    for i in range(len(ts_junit_list)):
+        data_repository['wt_junit_object'].update_attr("impact",
+                                                       impact_dict.get(ts_impact_list[i].upper()),
+                                                       "ts", ts_timestamp_list[i])
+        data_repository['wt_junit_object'].update_attr("onerror", ts_onerror_list[i], "ts",
+                                                       ts_timestamp_list[i])
+
     project_status = Utils.testcase_Utils.compute_status_using_impact(ts_status_list,
                                                                       ts_impact_list)
     return project_status
