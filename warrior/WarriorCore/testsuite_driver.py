@@ -10,32 +10,26 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
-
-"""Test suite driver module to execute a collection of testcases """
 import sys
 import os
 import time
 import traceback
 import shutil
 import copy
-
 import sequential_testcase_driver
-import testcase_driver
-import onerror_driver
 import parallel_testcase_driver
 from WarriorCore.Classes import execution_files_class, junit_class
 from WarriorCore.Classes.iterative_testsuite_class import IterativeTestsuite
 from WarriorCore import testsuite_utils, common_execution_utils
+import Framework.Utils as Utils
+from Framework.Utils.print_Utils import print_info, print_debug, print_warning, print_error
+"""Test suite driver module to execute a collection of testcases """
 
 #===============================================================================
 # Import all the necessary packages, libraries
 # Utils     = package containing all utility files
 # Actions   = package containing all Actions files
 #===============================================================================
-
-import Framework.Utils as Utils
-from Framework.Utils.print_Utils import print_info, print_debug, print_warning, print_error
 
 
 def initialize_suite_fields(data_repository):
@@ -53,6 +47,7 @@ def initialize_suite_fields(data_repository):
     for suite_field in suite_fields_to_initialize:
         if suite_field in data_repository:
             del data_repository[suite_field]
+
 
 def get_suite_details(testsuite_filepath, data_repository, from_project,
                       res_startdir, logs_startdir):
