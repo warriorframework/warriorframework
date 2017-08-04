@@ -44,7 +44,7 @@ class LineResult:
                      'info': line.get("title"),
                      'timestamp': line.get("timestamp"),
                      'duration': line.get("time"),
-                     'status': '<span class=' + line.get("status") + '>' + line.get("status") + '</span>',
+                     'status': '<span class=' + line.get("status") if line.get("status") else '' + '>' + line.get("status") if line.get("status") else '' + '</span>',
                      'impact': line.get("impact"),
                      'onerror': line.get("onerror"),
                      'msc': '<span style="padding-left:10px; padding-right: 10px;"><a href="' + (
