@@ -187,6 +187,8 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
         del data_repository["jobid"]
     data_repository['wt_junit_object'] = pj_junit_object
 
+    data_repository["war_parallel"] = False
+
     execution_type = Utils.xml_Utils.getChildAttributebyParentTag(project_filepath, 'Details',
                                                                   'type', 'exectype')
 
@@ -195,6 +197,7 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
         execution_type = "sequential_suites"
 
     if execution_type.upper() == 'PARALLEL_SUITES':
+        data_repository["war_parallel"] = True
         print_info("Executing suites in parallel")
         project_status = parallel_testsuite_driver.main(testsuite_list, project_repository,
                                                         data_repository, auto_defects,
