@@ -16,6 +16,7 @@ import xml.etree.ElementTree as ET
 import os
 import  Tools
 from Framework.Utils.print_Utils import print_info
+from Framework.Utils import file_Utils
 from WarriorCore.Classes.html_results_class import WarriorHtmlResults
 from WarriorCore.Classes.execution_summary_class import ExecutionSummary
 
@@ -108,17 +109,32 @@ class Junit(object):
                 return testsuite
 
     def add_keyword_result(self, tc_timestamp, step_num, kw_name, status, kw_timestamp, duration,
-                           resultfile, impact, onerror, desc="", info=""):
+                           resultfile, impact, onerror, desc="", info="", tc_name="",
+                           tc_resultsdir=""):
         """form a keyword status dict with kw info and call function to build keyword elem"""
         if str(status).lower() == "true":
             status = "PASS"
         elif str(status).lower() == "false":
             status = "FAIL"
+
+
         keyword_items = {"type": "keyword", 'display': 'True', "step": step_num,
                          "name": kw_name, "status": status, "timestamp": kw_timestamp,
                          "time": duration, "resultfile": resultfile,
                          "impact": impact, "onerror": onerror, "description": desc,
                          "info":info}
+        # if a failing status if encountered add a defects atribute to the keyword tag
+        # and its value is the path to the defects file.
+        failing_status = ['FAIL', 'EXCEPTION', 'ERROR']
+        if str(status).upper() in failing_status:
+            defects_dir = os.path.dirname(tc_resultsdir) + os.sep + 'Defects'
+            kw_resultfile_nameonly = file_Utils.getNameOnly(os.path.basename(resultfile))
+            defects_file = tc_name + "_" + kw_resultfile_nameonly + ".json"
+            defects_filepath = defects_dir + os.sep + defects_file
+            keyword_items['defects'] = defects_filepath
+
+
+
         self.add_property(name=kw_name, value="KEYWORD_DISCARD", elem_type="kw",
                           timestamp=tc_timestamp, keyword_items=keyword_items)
 
