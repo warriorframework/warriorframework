@@ -459,10 +459,11 @@ def _get_cmd_details(testdata, global_obj, system_name,
             resultant_list = _get_verification_details(testdata, global_obj,
                                                        vfylist, attrib)
         elif param == "verify_on_list":
+            sys_list = details_dict["sys_list"]
             vfylist = details_dict["verify_list"]
             resultant_list = _get_verification_details(testdata, global_obj,
                                                        vfylist, attrib,
-                                                       system_name)
+                                                       system_name, sys_list)
         elif param == "verify_map_list":
             vfylist = details_dict["verify_list"]
             vfylist, maplist = _get_mapping_details(global_obj, vfylist)
@@ -479,7 +480,7 @@ def _get_cmd_details(testdata, global_obj, system_name,
 
 
 def _get_global_var(global_obj, key):
-    """get the value of key in the global object global_obj
+    """locate element in a etree object (in this case, child of global tag in testdata file)
     """
     return global_obj.find(key) if global_obj is not None else None
 
@@ -501,7 +502,7 @@ def _get_cmdparams_list(testdata, global_obj, cmd_attrib):
         default_value = global_cmd_params.get(
             cmd_attrib) if global_cmd_params is not None else None
         if not cmd_attrib in global_exempt_list:
-            value = default_value if value is None or value is "" else value
+            value = default_value if value is None or value == "" else value
         else:
             if cmd_attrib in testdata.attrib and cmd_attrib == "monitor":
                 value = testdata.attrib[cmd_attrib]
@@ -509,7 +510,8 @@ def _get_cmdparams_list(testdata, global_obj, cmd_attrib):
     return resultant_list
 
 
-def _get_verification_details(testdata, global_obj, verify_list, cmd_attrib, system_name=None):
+def _get_verification_details(testdata, global_obj, verify_list, cmd_attrib,
+                              system_name=None, sys_list=None):
     """From the testdata file takes a testdata node and
     a list of nodes with verification present as input
 
@@ -519,7 +521,7 @@ def _get_verification_details(testdata, global_obj, verify_list, cmd_attrib, sys
     g_verify = global_obj.find("verifications") if global_obj is not None \
         else None
     resultant_list = []
-    for verify in verify_list:
+    for index, verify in enumerate(verify_list):
         if verify is None or verify == "":
             value = None
             resultant_list.append(value)
@@ -549,9 +551,13 @@ def _get_verification_details(testdata, global_obj, verify_list, cmd_attrib, sys
                         print_warning(
                             "could not find specific or global value  " \
                             "for verification node={0}".format(element))
-                if value is None or value is "":
+                if value is None or value == "":
                     value = 'yes' if cmd_attrib == "found" else value
-                    value = system_name if cmd_attrib == "verify_on" else value
+                    if cmd_attrib == "verify_on" and sys_list is not None and \
+                       sys_list[index] is not None:
+                        value = sys_list[index]
+                    else:
+                        value = system_name
                 value = value if not value else str(value).strip()
                 resultant_sublist.append(value)
             resultant_list.append(resultant_sublist)
@@ -865,8 +871,8 @@ def verify_data(expected, key, data_type='str', comparison='eq'):
     with expected value
     """
     def validate():
-        """check that the types of expected and key matches
-        and the comparison between them as expected
+        """Verify the value of the key in data repository matches
+        with expected value
         """
         result = "TRUE"
         err_msg = ""
@@ -922,7 +928,8 @@ def verify_resp_inorder(match_list, context_list, command, response,
                         verify_group=None):
     """ Method for in-order search.
     Verifies the 'search strings' in the system response
-    and also verifies whether they are in order or not """
+    and also verifies whether they are in order or not
+    """
 
     msg = ("In-order verification requested for the command: "
            "'{0}' ".format(command))
@@ -1092,7 +1099,7 @@ def _validate_index_value(index, index_list, context_list):
 
 
 def verify_relation(actual_value, cond_value, operator, cond_type):
-    """verify the actual_value with the expected value
+    """use verify_data to do comparison of two values
     """
     ver_args = {}
     if cond_type:
@@ -1219,6 +1226,7 @@ def verify_inorder_cmd_response(match_list, verify_list, system, command,
               "{0}".format(system), "debug")
 
     return status
+
 
 def get_cse_script_args_string(datafile, system_name):
     """Form the argument string for the CSE script from the arguments
@@ -1366,8 +1374,7 @@ def get_filepath_from_system(datafile, system_name, *args):
 
 
 def get_var_by_string_prefix(string):
-    """get the value of string from either enivironment variables or
-    data repository which may be stored previous test steps
+    """Get value from Environment variable or data repo
     """
     if string.startswith("ENV."):
         return os.environ[string.split('.', 1)[1]]
@@ -1412,7 +1419,7 @@ def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
             if len(extracted_var) > 0:
                 for string in extracted_var:
                     try:
-                        if isinstance(raw_value[k], str):
+                        if isinstance(raw_value[k], (str, unicode)):
                             raw_value[k] = raw_value[k].replace(
                                 start_pattern+string+end_pattern,
                                 get_var_by_string_prefix(string))
@@ -1460,21 +1467,19 @@ def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
 
 
 def sub_from_env_var(raw_value, start_pattern="${", end_pattern="}"):
-    """substitute all the environment variables in raw_value
-    """
+    """wrapper function for subst_var_patterns_by_prefix"""
     return subst_var_patterns_by_prefix(raw_value, start_pattern, end_pattern,
                                         "ENV")
 
 
 def sub_from_data_repo(raw_value, start_pattern="${", end_pattern="}"):
-    """substitute all the data repository variables in raw_value
-    """
+    """wrapper function for subst_var_patterns_by_prefix"""
     return subst_var_patterns_by_prefix(raw_value, start_pattern, end_pattern,
                                         "REPO")
 
 
 def substitute_var_patterns(raw_value, start_pattern="${", end_pattern="}"):
-    """substitute env vars or data repository vars in raw_value
+    """substitute variable inside start and end pattern
     """
     def get_data(var):
         """get nested value from data repository by going through dot separated var
