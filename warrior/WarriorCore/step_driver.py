@@ -286,17 +286,7 @@ def add_keyword_result(tc_junit_object, tc_timestamp, step_num, keyword,
     tc_junit_object.update_count(str(keyword_status), "1", "tc", tc_timestamp)
     tc_junit_object.update_count("keywords", "1", "tc", tc_timestamp)
 
-def get_defects_filepath(kw_resultfile, data_repository):
-    """
-    If a keyword fails get the path to the defects json file
-    and add it as value to the defects attribute of the junit file.
-    """
-    tc_resultsdir = data_repository['wt_resultsdir']
-    defects_dir = os.path.dirname(tc_resultsdir)
-    kw_resultfile_nameonly = file_Utils.getNameOnly(os.path.basename(kw_resultfile))
-    defects_file = data_repository['wt_name'] + "_" + kw_resultfile_nameonly + ".json"
-    defects_filepath = defects_dir + os.sep + defects_file
-    return defects_filepath
+
 
 def main(step, step_num, data_repository, system_name, kw_parallel=False, queue=None):
     """Get a step, executes it and returns the result """
