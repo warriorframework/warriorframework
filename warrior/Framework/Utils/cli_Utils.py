@@ -19,6 +19,7 @@ import time
 import re
 import subprocess
 import Tools
+import signal 
 import Framework.ClassUtils
 from Framework.Utils import datetime_utils, data_Utils, xml_Utils
 from Framework.Utils.data_Utils import get_object_from_datarepository
@@ -1075,3 +1076,32 @@ def _send_cmd_by_type(session_object, command):
 #         return (True, response)
 #     else:
 #         return (False, response)
+
+def sleep_for_n_seconds(n_seconds):
+    """
+    Sleeps for n_seconds; Returns the integer value of n. Returns -1 if n_seconds < 1
+    The number of seconds is an approximate value - do not assume accuracy in timing less than +/- 0.5 seconds 
+    """
+    n = int(n_seconds) 
+    if n < 1: return -1
+    print_warning("Sleeping for %d seconds" % n ) 
+    time.sleep(n)
+    return n
+
+def wait_for_keystroke(n_seconds=None):
+    """
+    MAY NOT WORK IN WINDOWS !!!!
+    Sleeps for n_seconds; Returns the integer value of n. Returns -1 if n_seconds < 1
+    The number of seconds is an approximate value - do not assume accuracy in timing less than +/- 0.5 seconds 
+    If enter is pressed, the timer is disabled and the function returns immediately 
+    """
+    n = int(n_seconds) 
+    if n < 1: return -1
+    print_warning("Waiting for %d seconds or enter key..." % n) 
+    i,o,e = select.select([sys.stdin],[],[],n) 
+    if (i): 
+        print "Input ", sys.stdin.readline().strip()
+    else: 
+        print "timed out"
+    returns n
+
