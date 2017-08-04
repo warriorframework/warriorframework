@@ -1,0 +1,43 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+                <Name>tc_par_2</Name>
+                <Title>TS running sequential TC with sequential kw</Title>
+                <Engineer>ka</Engineer>
+                <Date>2017-05-23</Date>
+                <Time>13:40</Time>
+                <InputDataFile>No_Data</InputDataFile>
+                <Datatype>iterative</Datatype>
+                <default_onError action="next"/>
+                <Logsdir/>
+                <Resultsdir/>
+                <ExpectedResults/>
+        </Details>
+        <Requirements>
+                <Requirement/>
+        </Requirements>
+        <Steps>
+                <step Driver="ci_regression_driver" Keyword="create_sub_tmp_file" TS="1" draft="yes">
+                        <Arguments>
+                                <argument name="delete" value="no"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type=""/>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="ci_regression_driver" Keyword="check_tmp_file_exists" TS="2" draft="yes">
+                        <Arguments/>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type=""/>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+        </Steps>
+</Testcase>

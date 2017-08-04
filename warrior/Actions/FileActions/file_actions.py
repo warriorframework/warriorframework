@@ -100,7 +100,7 @@ class FileActions(object):
                 if int_endidx+1 != len(lines):
                     newlines.extend(lines[int_endidx:])
             linenos = occurrence if occurrence else "all"
-            pStep('replacing {!r} with {!r} in file {!r} on {!r} lines'.format(
+            pStep('replacing {!r} with {!r} in file {!r} on {!r} lines'.format( \
                                         regex, newstring, filename, linenos))
             file_Utils.close(fd)
         except Exception as e:
@@ -153,7 +153,7 @@ class FileActions(object):
                     if rec.search(line) is None:
                         status = status and False
             linenos = occurrence if occurrence else "all"
-            pStep('Checking {!r} in file {!r} on {!r} lines'.format(
+            pStep('Checking {!r} in file {!r} on {!r} lines'.format(\
                                         regex, filename, linenos))
             file_Utils.close(fd)
         except Exception as e:
