@@ -511,7 +511,7 @@ def send_command(session_object, start_prompt, end_prompt, command,
         else:
             response = session_object.before
             response = str(response) + str(session_object.after)
-            if session_object.env is not None and 'TERM' in session_object.env and session_object.env['TERM'] == 'dumb': 
+            if session_object.env is not None and 'TERM' in session_object.env and session_object.env['TERM'] == 'dumb':
                 escape_seq = re.compile(r'(\x9B|\x1B\[)[0-?]*[ -\/]*[@-~]')
                 response = escape_seq.sub('', response)
             pNote("Response:\n{0}\n".format(response))
@@ -630,8 +630,10 @@ def send_commands_from_testdata(testdatafile, obj_session, **args):
             print_debug(">>>")
             command = details_dict["command_list"][i]
             pNote("Command #{0}\t: {1}".format(str(i+1), command))
-            new_obj_session, details_dict = _get_obj_session(details_dict, obj_session,
-                                                             system_name, index=i)
+
+            new_obj_session, system_name, details_dict = _get_obj_session(
+              details_dict, obj_session, system_name, index=i)
+
             if new_obj_session:
                 result, response = _send_cmd_get_status(new_obj_session, details_dict,
                                                         index=i, system_name=system_name)

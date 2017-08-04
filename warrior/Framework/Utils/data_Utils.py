@@ -1099,7 +1099,7 @@ def _validate_index_value(index, index_list, context_list):
 
 
 def verify_relation(actual_value, cond_value, operator, cond_type):
-    """use verify_data to do comparison of two values
+    """verify the actual_value with the expected value
     """
     ver_args = {}
     if cond_type:
