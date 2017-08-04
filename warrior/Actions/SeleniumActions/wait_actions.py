@@ -32,8 +32,13 @@ from Framework.Utils import xml_Utils
 from Framework.Utils import selenium_Utils
 
 class wait_actions(object):
+    """This class has the functionality to wait till an event has happened on
+    the webpage - such as the browser will wait till an element is clickable,
+    visible, or present on a webpage. Implicit wait can also be set for a
+    webpage with this class """
 
     def __init__(self):
+        """This is a constructor for the wait_actions class"""
         self.resultfile = Utils.config_Utils.resultfile
         self.datafile = Utils.config_Utils.datafile
         self.logsdir = Utils.config_Utils.logsdir
@@ -145,8 +150,8 @@ class wait_actions(object):
                                                                 self.datafile,
                                                                 browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
                 if not current_browser:
@@ -307,8 +312,8 @@ class wait_actions(object):
                                                                 self.datafile,
                                                                 browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
                 if not current_browser:
@@ -471,8 +476,8 @@ class wait_actions(object):
                                                                 self.datafile,
                                                                 browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
                 if not current_browser:
@@ -636,8 +641,8 @@ class wait_actions(object):
                                                                 self.datafile,
                                                                 browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
                 if not current_browser:
@@ -802,8 +807,8 @@ class wait_actions(object):
                                                                 self.datafile,
                                                                 browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
                 if not current_browser:
@@ -983,8 +988,8 @@ class wait_actions(object):
                                                                 self.datafile,
                                                                 browser)
             if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, self.datafile, **arguments)
+                browser_details = selenium_Utils. \
+                    get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
                 if not current_browser:
