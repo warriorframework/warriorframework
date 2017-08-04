@@ -6,15 +6,6 @@ $new_line    def $wrapper_kw(self):
         The predefined KW and variables are listed below exactly in the order of execution.
         $doc_string_values
         """
-        from Actions.CliActions.cli_actions import CliActions
-        from Actions.CiRegressionActions.ci_regression_actions import CIregressionActions
-        from Actions.CloudshellActions.cloudshell_actions import CloudShellActions
-        from Actions.CommonActions.common_actions import CommonActions
-        from Actions.DemoActions.demo_actions import DemoActions
-        from Actions.NetconfActions.netconf_Actions import NetconfActions
-        from Actions.RestActions.rest_actions import RestActions
-        from Actions.ServerActions.server_actions import ServerActions
-        from Actions.SnmpActions.common_snmp_actions import CommonSnmpActions
         from Framework.Utils import data_Utils
         wdesc = "$wdesc"
         status_list = []

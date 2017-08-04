@@ -113,18 +113,18 @@ def searchkw():
     py_files = mkactionpyfiles(actiondir_new)
     return py_files
 
+
 @route('/parsexmlobj', method='POST')
 def parsexmlobj():
     """
     This method fetch the XML object from the Katana UI of Keyword sequencing tool screen.
-	And parse it to form a new Wrapper keyword & place it in the user provided file path.
+    And parse it to form a new Wrapper keyword & place it in the user provided file path.
     """
     method_names = []
     arg_name_list = ""
-    class_name = ""
-    actions_package_list = []
     object_list_new = []
     class_list_new = []
+    import_action_list = []
     sample = []
     py_files = ""
     doc_string_value = []
@@ -143,7 +143,8 @@ def parsexmlobj():
     ActionFile = getChildTextbyParentTag('output.txt', 'Details', 'ActionFile')
     Description = getChildTextbyParentTag('output.txt', 'Details',
                                           'Description')
-										  
+
+    # To check if the user provided wrapper keyword name already exists in action file
     ActionFile = ActionFile.strip()
     with open(ActionFile, 'r') as files:
         for line in files:
@@ -163,26 +164,40 @@ def parsexmlobj():
             global gpysrcdir
             subkw_list_attrib = values.attrib
             driver = subkw_list_attrib.get('Driver')
+            kw_list = subkw_list_attrib.get('Keyword')
             driver_file = gpysrcdir + '/ProductDrivers/' + driver + ".py"
             actiondir = mkactiondirs(driver_file)
+            actions = get_action_dirlist(driver_file)
             pyfiles = mkactionpyfiles(actiondir)
-            class_name = str(actiondir).split('/')[-1]
-            class_name = re.sub(class_name[-1], '', class_name)
-            class_name = re.sub(class_name[-1], '', class_name)
-            for valuees in pyfiles:
-                py_files = str(valuees).encode('utf-8', 'ignore')
-                (_, file_name) = py_files.rsplit('/', 1)
-                path = str(gpysrcdir).encode('utf-8', 'ignore')
-                sys.path.append(path)
-                file_name = file_name.split('.')[0]
-                actions_package = get_action_dirlist(driver_file)[0] + "." + file_name
-                modules = importlib.import_module(actions_package)
-                class_list_new = inspect.getmembers(modules, inspect.isclass)[0][0]
-                object_list = class_list_new + "_obj = " + class_list_new + "()"
-                object_list_new.append(object_list)
-                class_list = object_list.split('=')[0]
-            actions_package_list.append(get_action_dirlist(driver_file))
-            kw_list = subkw_list_attrib.get('Keyword')
+            if len(pyfiles) > 1:
+                for action_file in pyfiles:
+                    with open(action_file, 'r') as new_file:
+                        for line in new_file:
+                            line = line.split()
+                            if "def" in line:
+                                next_word = line[line.index("def")+1].split("(")[0]
+                                if next_word == kw_list:
+                                    pyfiles = str(action_file).encode('utf-8', 'ignore')
+
+            py_files = str(pyfiles).encode('utf-8', 'ignore')
+            (_, file_name) = py_files.rsplit('/', 1)
+            path = str(gpysrcdir).encode('utf-8', 'ignore')
+            sys.path.append(path)
+            file_name = file_name.split('.')[0]
+            py_files_1 = py_files.split('/')
+            py_files_1 = ('.').join(py_files_1)
+            for action in actions:
+                if action.strip() in py_files_1:
+                    actions_package = action.strip() + "." + file_name
+            modules = importlib.import_module(actions_package)
+            class_list_new = inspect.getmembers(modules, inspect.isclass)
+            for elem in class_list_new:
+                if actions_package in str(elem[1]):
+                    class_list_new = elem[0]
+            import_action_list.append('from ' + action.strip() + " import " + class_list_new)
+            object_list = class_list_new + "_obj = " + class_list_new + "()"
+            object_list_new.append(object_list)
+            class_list = (object_list.split('=')[0]).strip()
             Arguments = values.find('Arguments')
             if Arguments is not None:
                 argument_list = Arguments.findall('argument')
@@ -244,8 +259,10 @@ def parsexmlobj():
                     line = line.replace('$wdesc', 'Description not provided by the user')
                 line = line.replace('$kw_list_1', str(kw_list_1))
                 f2.write(line)
-
         with open(ActionFile, 'a+') as f2:
+            for _, vals in enumerate(import_action_list):
+                vals = vals.decode('utf-8')
+                f2.write('\n' + "        " + vals)
             for _, val in enumerate(object_list_new):
                 val = val.decode('utf-8')
                 f2.write('\n' + "        " + val)
