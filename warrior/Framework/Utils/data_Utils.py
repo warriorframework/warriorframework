@@ -480,10 +480,9 @@ def _get_cmd_details(testdata, global_obj, system_name,
 
 
 def _get_global_var(global_obj, key):
-    """get the value of key in the global object global_obj
+    """locate element in a etree object (in this case, child of global tag in testdata file)
     """
     return global_obj.find(key) if global_obj is not None else None
-
 
 def _get_cmdparams_list(testdata, global_obj, cmd_attrib):
     """Get the list of values for a
@@ -871,8 +870,8 @@ def verify_data(expected, key, data_type='str', comparison='eq'):
     with expected value
     """
     def validate():
-        """check that the types of expected and key matches
-        and the comparison between them as expected
+        """Verify the value of the key in data repository matches
+        with expected value
         """
         result = "TRUE"
         err_msg = ""
@@ -1372,8 +1371,7 @@ def get_filepath_from_system(datafile, system_name, *args):
 
 
 def get_var_by_string_prefix(string):
-    """get the value of string from either enivironment variables or
-    data repository which may be stored previous test steps
+    """Get value from Environment variable or data repo
     """
     if string.startswith("ENV."):
         return os.environ[string.split('.', 1)[1]]
@@ -1418,7 +1416,7 @@ def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
             if len(extracted_var) > 0:
                 for string in extracted_var:
                     try:
-                        if isinstance(raw_value[k], str):
+                        if isinstance(raw_value[k], (str, unicode)):
                             raw_value[k] = raw_value[k].replace(
                                 start_pattern+string+end_pattern,
                                 get_var_by_string_prefix(string))
@@ -1466,21 +1464,19 @@ def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
 
 
 def sub_from_env_var(raw_value, start_pattern="${", end_pattern="}"):
-    """substitute all the environment variables in raw_value
-    """
+    """wrapper function for subst_var_patterns_by_prefix"""
     return subst_var_patterns_by_prefix(raw_value, start_pattern, end_pattern,
                                         "ENV")
 
 
 def sub_from_data_repo(raw_value, start_pattern="${", end_pattern="}"):
-    """substitute all the data repository variables in raw_value
-    """
+    """wrapper function for subst_var_patterns_by_prefix"""
     return subst_var_patterns_by_prefix(raw_value, start_pattern, end_pattern,
                                         "REPO")
 
 
 def substitute_var_patterns(raw_value, start_pattern="${", end_pattern="}"):
-    """substitute env vars or data repository vars in raw_value
+    """substitute variable inside start and end pattern
     """
     def get_data(var):
         """get nested value from data repository by going through dot separated var
