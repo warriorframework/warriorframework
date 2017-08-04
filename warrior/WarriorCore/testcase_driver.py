@@ -196,6 +196,7 @@ def report_testcase_requirements(testcase_filepath):
 def junit_requirements(testcase_filepath, tc_junit_object, timestamp):
     """ Takes the location of any Testcase xml file as input and add a new requirement when
     called"""
+
     req_id_list = Utils.testcase_Utils.get_requirement_id_list(testcase_filepath)
     if req_id_list is not None:
         for req_id in req_id_list:
@@ -267,8 +268,10 @@ def report_testcase_result(tc_status, data_repository):
         2. data_repository (dict) = data_repository of the executed  testcase
     """
     print_info("\n**** Testcase Result ***")
+
     print_info("TESTCASE:{0}  STATUS:{1}".format(data_repository['wt_name'],
                                                  convertLogic(tc_status)))
+
     print_info("\n")
     Utils.testcase_Utils.pTestResult(tc_status, data_repository['wt_resultfile'])
     root = Utils.xml_Utils.getRoot(data_repository['wt_resultfile'])
@@ -457,7 +460,10 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
         from_ts = True
         junit_requirements(testcase_filepath, tc_junit_object, data_repository['wt_ts_timestamp'])
     data_repository['wt_tc_timestamp'] = tc_timestamp
+    data_repository['tc_parallel'] = tc_parallel
     data_type = data_repository['wt_data_type']
+    if not from_ts:
+        data_repository["war_parallel"] = False
 
     # Adding resultsdir, logsdir, title as attributes to testcase_tag in the junit result file
     # Need to remove these after making resultsdir, logsdir as part of properties tag in testcase
@@ -490,6 +496,7 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                                        data_repository, step_list)
         elif data_type.upper() == 'CUSTOM' and \
                 runtype.upper() == 'PARALLEL_KEYWORDS':
+            data_repository["war_parallel"] = True
             tc_status = execute_custom(data_type, runtype,
                                        custom_parallel_kw_driver,
                                        data_repository, step_list)
@@ -511,6 +518,7 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                  step_list, data_repository, tc_status, system_list)
         elif data_type.upper() == 'ITERATIVE' and \
                 runtype.upper() == 'PARALLEL_KEYWORDS':
+            data_repository["war_parallel"] = True
             print_info("iterative parallel")
             system_list = get_system_list(data_repository['wt_datafile'],
                                           iter_req=True) \
@@ -611,14 +619,15 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                  'wt_testcase_filepath'], data_repository['wt_logsdir'],
                  data_repository['wt_resultsdir'], tc_status, email_setting)
 
-        if 'wp_results_execdir' in data_repository:
-            # Create and replace existing Project junit file for each case
-            tc_junit_object.output_junit(data_repository['wp_results_execdir'],
-                                         print_summary=False)
-        else:
-            # Create and replace existing Suite junit file for each case
-            tc_junit_object.output_junit(data_repository['wt_results_execdir'],
-                                         print_summary=False)
+        if not tc_parallel and not data_repository["war_parallel"]:
+            if 'wp_results_execdir' in data_repository:
+                # Create and replace existing Project junit file for each case
+                tc_junit_object.output_junit(data_repository['wp_results_execdir'],
+                                             print_summary=False)
+            else:
+                # Create and replace existing Suite junit file for each case
+                tc_junit_object.output_junit(data_repository['wt_results_execdir'],
+                                             print_summary=False)
 
     if tc_parallel:
         tc_impact = data_repository['wt_tc_impact']
