@@ -8,7 +8,6 @@
 		<Time>15:51</Time>
 		<State/>
 		<InputDataFile>../../data/data_wtag.xml</InputDataFile>
-		<!-- <InputDataFile>../../../warrior_fnc_tests/warrior_tests/data/framework_tests/data_wtag.xml</InputDataFile> -->
 		<Datatype/>
 		<default_onError action="next"/>
 		<Logsdir/>

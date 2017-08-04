@@ -241,13 +241,24 @@ class CommonActions(object):
                                  currencys, ramspace, configfile, intvar,
                                  file_config):
         """get the values from datafile
+        :Argument:
+            1. system_name = system name in the datafile
+            2. strvar = string variable
+            3. langs = list variable (should get from data file using wtag)
+            4. states = tuple variable
+            5. currencys = dict variable
+            6. ramspace = boolean variable
+            7. configfile = file variable
+            8. intvar = int variable
+            9. file_config = file variable
         """
-        def check_type(var, datatype):
+        def check_type(var, varname, datatype):
             """check that vars are of correct datatype
             """
             vartype = type(var)
             if vartype is not datatype:
-                print_error('is not a {}, but {}'.format(datatype, vartype))
+                print_error('{} is expected to be {} type, but found to be of '
+                            '{} type'.format(varname, datatype, vartype))
                 return False
             return True
         wdesc = "get values from datafile"
@@ -257,11 +268,11 @@ class CommonActions(object):
         Utils.testcase_Utils.pNote(system_name)
         tc_filepath = os.path.dirname(get_object_from_datarepository(
                                             'wt_testcase_filepath'))
-        status = status and check_type(strvar, str)
-        status = status and check_type(langs, list)
-        status = status and check_type(states, tuple)
-        status = status and check_type(currencys, dict)
-        status = status and check_type(ramspace, bool)
+        status = status and check_type(strvar, "strvar", str)
+        status = status and check_type(langs, "langs", list)
+        status = status and check_type(states, "states", tuple)
+        status = status and check_type(currencys, "currencys", dict)
+        status = status and check_type(ramspace, "ramspace", bool)
         try:
             if file_config.startswith('tag'):
                 file_config = data_Utils.resolve_argument_value_to_get_tag_value(
