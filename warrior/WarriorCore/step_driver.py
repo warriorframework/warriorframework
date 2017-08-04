@@ -15,9 +15,11 @@ limitations under the License.
 # step driver module
 
 import traceback
+import os
 import exec_type_driver
 from WarriorCore.Classes.argument_datatype_class import ArgumentDatatype
 import Framework.Utils as Utils
+from Framework.Utils import file_Utils
 from Framework.Utils.print_Utils import print_info, print_debug, print_error, print_exception
 # from WarriorCore import onerror_driver
 
@@ -238,10 +240,14 @@ def execute_step(step, step_num, data_repository, system_name, kw_parallel, queu
     tc_timestamp = data_repository['wt_tc_timestamp']
     impact = impact_dict.get(step_impact.upper())
 
+    tc_resultsdir = data_repository['wt_resultsdir']
+    tc_name = data_repository['wt_name']
+
     add_keyword_result(tc_junit_object, tc_timestamp, step_num, keyword,
                        keyword_status, kw_start_time, kw_duration,
                        kw_resultfile, impact, onerror, step_description,
-                       info=str(args_repository))
+                       info=str(args_repository), tc_name=tc_name,
+                       tc_resultsdir=tc_resultsdir)
 
     if parallel is True:
         # put result into multiprocessing queue and later retrieve in
@@ -269,16 +275,28 @@ def execute_step(step, step_num, data_repository, system_name, kw_parallel, queu
 def add_keyword_result(tc_junit_object, tc_timestamp, step_num, keyword,
                        keyword_status, kw_start_time, kw_duration,
                        kw_resultfile, impact, onerror, step_description,
-                       info=""):
+                       info="", tc_name="", tc_resultsdir=""):
     """ Add keyword results into junit object """
     tc_junit_object.add_keyword_result(tc_timestamp, step_num, keyword,
                                        str(keyword_status), kw_start_time,
                                        kw_duration, kw_resultfile,
-                                       impact, onerror, step_description, info=info)
+                                       impact, onerror, step_description, info=info,
+                                       tc_name=tc_name, tc_resultsdir=tc_resultsdir)
 
     tc_junit_object.update_count(str(keyword_status), "1", "tc", tc_timestamp)
     tc_junit_object.update_count("keywords", "1", "tc", tc_timestamp)
 
+def get_defects_filepath(kw_resultfile, data_repository):
+    """
+    If a keyword fails get the path to the defects json file
+    and add it as value to the defects attribute of the junit file.
+    """
+    tc_resultsdir = data_repository['wt_resultsdir']
+    defects_dir = os.path.dirname(tc_resultsdir)
+    kw_resultfile_nameonly = file_Utils.getNameOnly(os.path.basename(kw_resultfile))
+    defects_file = data_repository['wt_name'] + "_" + kw_resultfile_nameonly + ".json"
+    defects_filepath = defects_dir + os.sep + defects_file
+    return defects_filepath
 
 def main(step, step_num, data_repository, system_name, kw_parallel=False, queue=None):
     """Get a step, executes it and returns the result """
