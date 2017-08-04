@@ -433,12 +433,13 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
 
     # These lines are for creating testcase junit file
     from_ts = False
+    pj_junit_display = 'False'
     if not 'wt_junit_object' in data_repository:
         # not from testsuite
         tc_junit_object = junit_class.Junit(filename=data_repository['wt_name'],
                                             timestamp=tc_timestamp,
                                             name="customProject_independant_testcase_execution",
-                                            display="False")
+                                            display=pj_junit_display)
         if "jobid" in data_repository:
             tc_junit_object.add_jobid(data_repository["jobid"])
             del data_repository["jobid"]
@@ -446,8 +447,7 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                                         timestamp=tc_timestamp,
                                         ts_timestamp=tc_timestamp,
                                         name=data_repository['wt_name'],
-                                        testcasefile_path=data_repository['wt_testcase_filepath'],
-                                        display="False")
+                                        testcasefile_path=data_repository['wt_testcase_filepath'])
         junit_requirements(testcase_filepath, tc_junit_object, tc_timestamp)
         data_repository['wt_ts_timestamp'] = tc_timestamp
     else:

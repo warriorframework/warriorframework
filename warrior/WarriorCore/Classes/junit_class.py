@@ -10,11 +10,10 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+#helper methods to create a Junit file
 
-"""helper methods to create a Junit file"""
 import xml.etree.ElementTree as ET
 import os
-import shutil
 import  Tools
 from Framework.Utils.print_Utils import print_info
 from WarriorCore.Classes.html_results_class import WarriorHtmlResults
@@ -53,8 +52,7 @@ class Junit(object):
         properties = self.create_element("properties")
         testsuite.append(properties)
 
-        properties.append(self.create_element(
-             "property", {"name": "location", "value": location}))
+        properties.append(self.create_element("property", {"name": "location", "value": location}))
 
         self.root.append(testsuite)
 
@@ -66,13 +64,13 @@ class Junit(object):
         if self.root.find("testsuite") is None:
             self.update_attr("timestamp", timestamp, "pj", "0")
             self.create_testsuite(location=location, name=classname, timestamp=timestamp,
-                                  **self.init_arg(**kwargs))
+                                  display='False', **self.init_arg(**kwargs))
 
         for ts in self.root.findall("testsuite"):
             if ts.get("timestamp") == ts_timestamp:
                 tc = self.create_element("testcase", classname=classname, timestamp=timestamp,
                                          exceptions="0", keywords="0", name=name,
-                                         **self.init_arg(**kwargs))
+                                         display='True', **self.init_arg(**kwargs))
                 ts.append(tc)
                 properties = self.create_element("properties")
                 tc.append(properties)
@@ -110,15 +108,17 @@ class Junit(object):
                 return testsuite
 
     def add_keyword_result(self, tc_timestamp, step_num, kw_name, status, kw_timestamp, duration,
-                           resultfile, impact, onerror, desc=""):
+                           resultfile, impact, onerror, desc="", info=""):
         """form a keyword status dict with kw info and call function to build keyword elem"""
         if str(status).lower() == "true":
             status = "PASS"
         elif str(status).lower() == "false":
             status = "FAIL"
-        keyword_items = {"type": "keyword", "step": step_num, "name": kw_name, "status": status,
-                         "timestamp": kw_timestamp, "time": duration, "resultfile": resultfile,
-                         "impact": impact, "onerror": onerror, "description": desc}
+        keyword_items = {"type": "keyword", 'display': 'True', "step": step_num,
+                         "name": kw_name, "status": status, "timestamp": kw_timestamp,
+                         "time": duration, "resultfile": resultfile,
+                         "impact": impact, "onerror": onerror, "description": desc,
+                         "info":info}
         self.add_property(name=kw_name, value="KEYWORD_DISCARD", elem_type="kw",
                           timestamp=tc_timestamp, keyword_items=keyword_items)
 
@@ -136,10 +136,8 @@ class Junit(object):
 
     def add_requirement(self, requirement, timestamp):
         """add a new requirement when called"""
-        self.get_ts_with_timestamp(timestamp).find("properties").append(self.create_element
-                                                                       ("property",
-                                                                       {"name": "requirement",
-                                                                        "value": requirement}))
+        self.get_ts_with_timestamp(timestamp).find("properties").append(self.create_element\
+        ("property", {"name": "requirement", "value": requirement}))
 
     def add_property(self, name, value, elem_type, timestamp, **kwargs):
         """add a new property to specific element when called
@@ -210,7 +208,7 @@ class Junit(object):
                     elem.append(self.create_element("failure", {"message": "test failure"}))
                 elif attr == "exception" or attr == "error":
                     elem.append(self.create_element("failure",
-                                                    {"message": "errors/exceptions "
+                                                    {"message": "errors/exceptions "\
                                                      "encountered during testcase execution"}))
             if str(value).lower() == "true":
                 value = "PASS"
