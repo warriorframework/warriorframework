@@ -38,18 +38,19 @@ class LineResult:
     def set_attributes(self, line, variant, stepcount):
         if 'Keyword' not in variant and 'step' not in variant:
             stepcount = ''
+        resultFile = line.get("resultfile") if line.get("resultfile") else line.get("resultsdir") if line.get("resultsdir") else ''
+        statusName = line.get("status") if line.get("status") else ''
         self.data = {'nameAttr': variant + 'Record',
                      'type': variant.replace('Test', '').replace('Keyword', 'step ') + str(stepcount),
                      'name': line.get("name"),
                      'info': line.get("title"),
                      'timestamp': line.get("timestamp"),
                      'duration': line.get("time"),
-                     'status': '<span class=' + line.get("status") if line.get("status") else '' + '>' + line.get("status") if line.get("status") else '' + '</span>',
+                     'status': '<span class=' + statusName + '>' + statusName + '</span>',
                      'impact': line.get("impact"),
                      'onerror': line.get("onerror"),
-                     'msc': '<span style="padding-left:10px; padding-right: 10px;"><a href="' + (
-                         line.get("resultfile") if line.get("resultfile") else ''
-                     ) + '"><i class="fa fa-line-chart"> </i></a></span>' + ('' if variant == 'Keyword' else '<span style="padding-left:10px; padding-right: 10px;"><a href="' + (
+                     'msc': '<span style="padding-left:10px; padding-right: 10px;"><a href="' + resultFile
+                            + '"><i class="fa fa-line-chart"> </i></a></span>' + ('' if variant == 'Keyword' else '<span style="padding-left:10px; padding-right: 10px;"><a href="' + (
                             line.get("logsdir") if line.get("logsdir") else '') + '"><i class="fa fa-book"> </i></a></span>') + '',
                      'static': ['Count', 'Passed', 'Failed', 'Errors', 'Exceptions', 'Skipped']
                      }
@@ -62,23 +63,24 @@ class LineResult:
         self.set_dynamic_content(line)
         top_level = ''
         top_level_next = ''
-        if self.data['nameAttr'] != 'KeywordRecord':
-            for elem in self.keys:
-                if elem == 'dynamic':
-                    for dynamicElem in self.data['dynamic']:
-                        top_level_next += '<td>' + (dynamicElem if dynamicElem else '0') + '</td>'
-                elif elem == 'static':
-                    for staticElem in self.data['static']:
-                        top_level += '<td>' + (staticElem if staticElem else '') + '</td>'
-                else:
-                    top_level += '<td rowspan="2"><div>' + (self.data[elem] if self.data[elem] else '') + '</div></td>'
-            top_level_next = '<tr>' + top_level_next + '</tr>'
-        else:
-            for elem in self.keys:
-                if elem != 'static' and elem != 'dynamic':
-                    top_level += '<td rowspan="2"><div>' + (self.data[elem] if self.data[elem] else '') + '</div></td>'
+        if not line.get("display") or line.get("logsdir") == 'true':
+            if self.data['nameAttr'] != 'KeywordRecord':
+                for elem in self.keys:
+                    if elem == 'dynamic':
+                        for dynamicElem in self.data['dynamic']:
+                            top_level_next += '<td>' + (dynamicElem if dynamicElem else '0') + '</td>'
+                    elif elem == 'static':
+                        for staticElem in self.data['static']:
+                            top_level += '<td>' + (staticElem if staticElem else '') + '</td>'
+                    else:
+                        top_level += '<td rowspan="2"><div>' + (self.data[elem] if self.data[elem] else '') + '</div></td>'
+                top_level_next = '<tr>' + top_level_next + '</tr>'
+            else:
+                for elem in self.keys:
+                    if elem != 'static' and elem != 'dynamic':
+                        top_level += '<td rowspan="2"><div>' + (self.data[elem] if self.data[elem] else '') + '</div></td>'
 
-        self.html = '<tr name="' + self.data['nameAttr'] + '">' + top_level + '</tr>' + top_level_next
+            self.html = '<tr name="' + self.data['nameAttr'] + '">' + top_level + '</tr>' + top_level_next
 
 
 class WarriorHtmlResults:
