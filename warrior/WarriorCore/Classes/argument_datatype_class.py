@@ -10,15 +10,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
-"""This is argument datatype class api that converts the user input
-arguments in Warrior testcase xml into python datatypes"""
-
-import os
 import ast
 import traceback
 from Framework.Utils.print_Utils import print_error, print_info, print_warning
 from Framework.Utils import config_Utils, file_Utils
+"""This is argument datatype class api that converts the user input
+arguments in Warrior testcase xml into python datatypes"""
+
 
 class ArgumentDatatype(object):
     """This is the class that gets the data type of an argument
@@ -73,12 +71,14 @@ class ArgumentDatatype(object):
             try:
                 self.arg_value = file(fname)
             except IOError:
-                print_warning("given file {} does not exist, please check, it should be relative to testcase path {}".format(fname, tc_path))
+                print_warning("given file {} does not exist, please check, it "
+                              "should be relative to testcase path {}".format(fname, tc_path))
 
         else:
             return self.arg_value
         if self.datatype is not None:
-            convert_msg = "Input argument {0} will be converted to a {1}".format(self.arg_name, self.datatype)
+            convert_msg = "Input argument {0} will be converted to a {1}".format(
+                                                        self.arg_name, self.datatype)
             print_info(convert_msg)
 
         result = self.convert_string_to_datatype()
@@ -90,17 +90,18 @@ class ArgumentDatatype(object):
         err_msg = ("\nUser input argument value '{0}' does not match python "
                    "syntax for '{1}'").format(self.arg_value, self.datatype)
         info_msg = "Warrior FW will handle user input argument value as string (default)\n"
+        result = self.arg_value
+
         try:
-            result = ast.literal_eval(self.arg_value) if self.datatype is not file else self.arg_value
+            if self.datatype is not file:
+                result = ast.literal_eval(self.arg_value)
         except Exception:
             print_error(err_msg)
             print_info(info_msg)
             print_error('unexpected error: {0}'.format(traceback.format_exc()))
-            result = self.arg_value
         else:
             if not isinstance(result, self.datatype):
                 print_error(err_msg)
                 print_info(info_msg)
-                result = self.arg_value
 
         return result
