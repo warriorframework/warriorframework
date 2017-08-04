@@ -23,7 +23,7 @@ from Framework.Utils.data_Utils import get_object_from_datarepository,\
  get_session_id, get_credentials
 from Framework.Utils.file_Utils import getAbsPath, get_modified_files,\
  get_file_from_remote_server
-from plugins.plugin_robot_wrapper.bin.utils import robot_wrapper_utils
+from plugins.robot_wrapper_plugin.bin.utils import robot_wrapper_utils
 
 
 class RobotWrapperActions(object):
