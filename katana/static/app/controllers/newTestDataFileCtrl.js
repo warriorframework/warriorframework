@@ -35,9 +35,9 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
         $scope.resp_req_list = ["", "n"];
         $scope.inorder_list = ["", "y"];
         $scope.repeat_list = ["", "y"];
-        $scope.found_list = ["yes", "no"];
+        $scope.found_list = ["y", "n", "yes", "no"];
         $scope.iter_type_list = ["per_cmd", "per_td_block"];
-        $scope.execute_list = ["yes", "no"];
+        $scope.execute_list = ["y", "n", "yes", "no"];
         $scope.copy_global_ver_list = [];
         $scope.copy_global_combo_list = [];
         $scope.copy_entire_td_list = [];
@@ -125,9 +125,10 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
         };
 
          $scope.cancelFile = function() {
-            $location.path('/testdatafiles');
+            location.href = '/katana/#/testdatafiles';
         };
-
+				window.cancelFile = $scope.cancelFile;
+			
         function verifyInput(){
             var check = true;
 
@@ -253,7 +254,7 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
 
             return check;
         }
-
+				
         $scope.saveFile = function() {
 
             var check = verifyInput();
@@ -272,13 +273,12 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
                         $scope.jsonData.data.testdata[i][$scope.td_verification_tag_names[i][j]] = $scope.td_verification_tag_attributes[i][j];
                     }
                 }
-
-                fileFactory.checkfileexistwithsubdir(filename, 'testdatafile', $scope.subdirs)
+							  fileFactory.checkfileexistwithsubdir(filename, 'testdatafile', $scope.subdirs)
                     .then(
                         function(data) {
                             console.log(data);
                             var fileExist = data.response;
-                            if (fileExist == 'yes') {
+                            if (fileExist == 'y') {
                                 sweetAlert({
                                     title: "File " + filename + " already exists. Do you want to overwrite it?",
                                     closeOnConfirm: false,
@@ -290,7 +290,7 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
                                 },
                                 function(isConfirm){
                                     if (isConfirm) {
-                                        save(filename);
+                                       return true;
                                     }
                                     else {
                                         return false;
@@ -298,20 +298,22 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
                                 });
 
                             } else {
-                                save(filename);
+                                return true;
                             }
                         },
                         function(data) {
                             alert(data);
                         });
+            
             }
         };
 
         function save(filename){
             var x2js = new X2JS();
             var token = angular.toJson($scope.jsonData);
-            var xmlObj = x2js.json2xml_str(JSON.parse(token));
-            saveNewTestDataFileFactory.saveNew(filename, $scope.subdirs, xmlObj)
+						console.log('save', $scope.jsonData, token);
+            var xmlObj = x2js.json2xml_str(wizardAPI.formsToJSON());
+            saveNewTestDataFileFactory.saveNew( wizardAPI.returnFileName() + '.xml', $scope.subdirs, xmlObj)
                 .then(
                     function(data) {
                         console.log(data);
@@ -320,14 +322,46 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
                         alert(data);
                     });
             sweetAlert({
-                title: "File saved: " + filename,
+                title: "File saved: " + wizardAPI.returnFileName() + '.xml',
                 showConfirmButton: false,
                 type: "success",
                 timer: 1250
             });
             $location.path('/testDatafiles');
         }
+			    window.checkExists = function(){ fileFactory.checkfileexistwithsubdir( wizardAPI.returnFileName() + '.xml', 'testdatafile', $scope.subdirs)
+                    .then(
+                        function(data) {
+                            console.log(data);
+                            var fileExist = data.response;
+                            if (fileExist == 'yes') {
+                                sweetAlert({
+                                    title: "File " + wizardAPI.returnFileName() + '.xml' + " already exists. Do you want to overwrite it?",
+                                    closeOnConfirm: false,
+                                    confirmButtonColor: '#3b3131',
+                                    confirmButtonText: "Yes!",
+                                    showCancelButton: true,
+                                    cancelButtonText: "Nope.",
+                                    type: "warning"
+                                },
+                                function(isConfirm){
+                                    if (isConfirm) {
+                                       window.save();
+                                    }
+                                    else {
+                                        return false;
+                                    }
+                                });
 
+                            } else {
+                                window.save();
+                            }
+                        },
+                        function(data) {
+                            alert(data);
+                        });
+																				 };
+				window.save = save;
         $scope.spanClick = function(){
         };
 
@@ -347,7 +381,7 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
             $scope.jsonData.data.testdata.push({
                 "_title": "",
                 "_row": "",
-                "_execute": "yes",
+                "_execute": "y",
                 "_monitor": "",
                 "_iter_type": "per_cmd",
                 "command": [
@@ -457,7 +491,7 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
             $scope.individualTDVerificationTag[index].push(true);
             $scope.td_verification_tag_names[index].push("");
             $scope.td_verification_tag_attributes[index].push({
-                            "_found": "yes",
+                            "_found": "y",
                             "_search": "",
                             "_verify_on": ""
                         });
@@ -690,7 +724,7 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
                 }
             }
         };
-
+				window.jsonData = $scope.jsonData.data;
         $scope.addAnotherCommandTag = function(index){
             if($scope.td_cp_tag_editor_is_open[index]){
                 swal({
@@ -806,7 +840,7 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
             $scope.individualCPVerificationTag.push(true);
             $scope.cp_verification_tag_names.push("");
             $scope.cp_verification_tag_attributes.push({
-                            "_found": "yes",
+                            "_found": "y",
                             "_search": "",
                             "_verify_on": ""
                         });
@@ -1052,6 +1086,8 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
             $scope.subdirs = subdirs;
             readTestDataFile();
         }
+				else
+					wizardAPI && wizardAPI.init();
 
         function readTestDataFile(){
             TestDataFileFactory.fetch()
@@ -1061,6 +1097,7 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
 
                     var x2js = new X2JS();
                     $scope.jsonData = x2js.xml_str2json($scope.xmlData);
+										window.tdOriginalJSON = $scope.jsonData;
                     if ($scope.jsonData == null) {
                         sweetAlert({
                             title: "There was an error reading the TestData File: " + data["filename"],
@@ -1240,7 +1277,7 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
                                 else{
                                     $scope.cp_verification_tag_names.push(key);
                                     if(!$scope.jsonData.data.global.verifications[key].hasOwnProperty("_found")){
-                                        $scope.jsonData.data.global.verifications[key]._found = "yes";
+                                        $scope.jsonData.data.global.verifications[key]._found = "y";
                                     }
 
                                     for(i=0; i<$scope.found_list.length; i++){
@@ -1290,7 +1327,7 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
                                 $scope.jsonData.data.testdata[i]._row = "";
                             }
                             if(!$scope.jsonData.data.testdata[i].hasOwnProperty("_execute")){
-                                $scope.jsonData.data.testdata[i]._execute = "yes";
+                                $scope.jsonData.data.testdata[i]._execute = "y";
                             }
 
                             for(j=0; j<$scope.execute_list.length; j++){
@@ -1435,7 +1472,7 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
                                         $scope.showTDVerificationTags[$scope.showTDVerificationTags.length - 1] = false;
                                         $scope.td_verification_tag_names[i].push(key);
                                         if(!$scope.jsonData.data.testdata[i][key].hasOwnProperty("_found")){
-                                            $scope.jsonData.data.testdata[i][key]._found = "yes";
+                                            $scope.jsonData.data.testdata[i][key]._found = "y";
                                         }
 
                                         for(j=0; j<$scope.found_list.length; j++){
@@ -1474,6 +1511,7 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
                             }
                         }
                     }
+								wizardAPI && wizardAPI.init();
                 },
                     function (msg) {
                         alert(msg);

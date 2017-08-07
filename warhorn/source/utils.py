@@ -44,14 +44,15 @@ def check_url_is_a_valid_repo(url, repo_name, logfile, print_log_name):
     bool = True/False.
 
     """
+    print_info("Verifying if {0} is a valid git repository.".format(url), logfile, print_log_name)
     if subprocess.call(["git", "ls-remote", url],
                        stdout=logfile, stderr=subprocess.STDOUT) != 0:
-        print_error(url + "is not a valid git repository",
+        print_error("{0} is not a valid git repository.".format(url),
                     logfile, print_log_name)
         setDone(1)
-        print_info(repo_name + " not cloned.", logfile, print_log_name)
+        print_info("{0} not cloned.".format(repo_name), logfile, print_log_name)
         return False
-    print_info(url + " is available", logfile, print_log_name)
+    print_info("{0} is available".format(url), logfile, print_log_name)
     return True
 
 
@@ -710,12 +711,8 @@ def get_dest(logfile, print_log_name, config_file_name):
                     it means on the same level of warhorn folder
 
     """
-    node = get_node(config_file_name, 'warrior')
+    node = get_node(config_file_name, 'warriorframework')
     if node is False:
-        print_error("warrior tag not found! Installation cannot continue",
-                    logfile, print_log_name)
-        setDone(1)
-    else:
         if "destination" in node.attrib:
             return get_attribute_value(node, "destination")
         else:

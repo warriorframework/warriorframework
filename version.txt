@@ -1,6 +1,5 @@
-Name        : Warrior_Test_Automation                         
-Version     : 3.0                         
-Version     : master                        
+Name        : warriorframework                       
+Version     : warrior-3.2.0    
 Release     : Ninja
-Build Date  : Fri 14 april 2017 16:34:00 PM CDT                        
-Size        : 52M
+Build Date  : Mon Jul 17 18:30:00 CDT 2017                     
+Size        : 80M
