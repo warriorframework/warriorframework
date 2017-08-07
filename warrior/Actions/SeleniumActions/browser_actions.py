@@ -200,7 +200,8 @@ class browser_actions(object):
                 browser_details = selenium_Utils.\
                     get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
-                if str(headless_mode).strip().lower() == "yes":
+                headless_mode_pattern = re.compile(r'y(es)?$', flags=re.IGNORECASE)
+                if headless_mode_pattern.match(str(headless_mode).strip()):
                     try:
                         from pyvirtualdisplay import Display
                         display = Display(visible=0, size=(1024, 768))
@@ -209,9 +210,11 @@ class browser_actions(object):
                     except ImportError:
                         print_error("pyvirtualdisplay is not installed in order "
                                     "to launch the browser in headless mode")
+                        status = False
                     except:
                         print_error("Xvfb is not installed in order "
                                     "to launch the browser in headless mode")
+                        status = False
                 browser_inst = self.browser_object.open_browser(
                     browser_details["type"], webdriver_remote_url)
                 if browser_inst:
