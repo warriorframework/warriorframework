@@ -48,10 +48,12 @@ def execute_iterative_parallel(step_list, data_repository, tc_status, system_lis
                                                                            jobs_list, output_q)
 
     print_debug("process: {0}".format(process))
+    result_list = []
     for job in jobs_list:
         job.join()
-
-    result_list = get_results_from_queue(output_q)
+        # since a queue is joined, data should be in the queue
+        for i in range(output_q.qsize()):
+            result_list.append(output_q.get())
 
     system_status_list = []
     system_resultfile_list = []

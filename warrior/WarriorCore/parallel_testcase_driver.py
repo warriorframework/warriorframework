@@ -86,10 +86,12 @@ def execute_parallel_testcases(testcase_list, suite_repository,
         process, jobs_list, output_q = create_and_start_process_with_queue(target_module, tc_args_dict, jobs_list, output_q)
 
     print_debug("process: {0}".format(process))
+    result_list = []
     for job in jobs_list:
         job.join()
-
-    result_list = get_results_from_queue(output_q)
+        # since a queue is joined, data should be in the queue
+        for i in range(output_q.qsize()):
+            result_list.append(output_q.get())
 
     tc_status_list = []
     tc_name_list = []
