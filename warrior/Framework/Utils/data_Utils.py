@@ -345,7 +345,7 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
         exec_text = testdata.get("execute").strip()
         execute_req = string_Utils.conv_str_to_bool(exec_text)
         if  execute_req and exec_flag:
-            testdata_key="{0}{1}".format(testdata.get('title', ""), \
+            testdata_key = "{0}{1}".format(testdata.get('title', ""), \
                                          _get_row(testdata))
             details_dict = _get_cmd_details(testdata, global_obj, system_name,
                                             varconfigfile, var_sub=var_sub)
@@ -473,8 +473,8 @@ def _get_cmd_details(testdata, global_obj, system_name,
 
 
 def _get_global_var(global_obj, key):
+    """locate element in a etree object (in this case, child of global tag in testdata file)"""
     return global_obj.find(key) if global_obj is not None else None
-
 
 def _get_cmdparams_list(testdata, global_obj, cmd_attrib):
     """Get the list of values for a
@@ -862,6 +862,9 @@ def verify_data(expected, key, data_type='str', comparison='eq'):
     with expected value
     """
     def validate():
+        """Verify the value of the key in data repository matches
+        with expected value
+        """
         result = "TRUE"
         err_msg = ""
         if data_type not in type_funcs:
@@ -1085,6 +1088,9 @@ def _validate_index_value(index, index_list, context_list):
 
 
 def verify_relation(actual_value, cond_value, operator, cond_type):
+    """
+        use verify_data to do comparison of two values
+    """
     ver_args = {}
     if cond_type:
         pNote("cond_type is {}".format(cond_type))
@@ -1263,22 +1269,31 @@ def resolve_argument_value_to_get_tag_value(datafile, system_name,
     then value is returned.
 
     """
-    if element_value_in_argument.startswith("tag"):
+    if element_value_in_argument.startswith("tag="):
         tag_name = evaluate_tc_argument_value(element_value_in_argument)
-        if tag_name is not False:
-            system_name_list = xml_Utils.get_matching_firstlevel_children_from_root(datafile, "system")
+        if tag_name:
+            system_name_list = xml_Utils.get_matching_firstlevel_children_from_root(datafile, 
+                                                                                    "system")
             if system_name_list == [] or system_name_list is None or system_name_list is False:
                 return element_value_in_argument
             else:
                 for system in system_name_list:
                     if system.attrib["name"] == system_name:
-                        node_list = xml_Utils.get_matching_firstlevel_children_from_node(system, tag_name)
+                        node_list = xml_Utils.get_matching_firstlevel_children_from_node(system, 
+                                                                                         tag_name)
                         if node_list == [] or node_list is None or node_list is False:
+                            print_error("The tag value: {0} is not defined in the datafile:{1}"\
+                                .format(tag_name, datafile))
                             return False
                         else:
-                            return node_list[0].text
+                            tag_value = node_list[0].text
+                            tag_value = sub_from_env_var(tag_value)
+                            tag_value = sub_from_data_repo(tag_value)
+                            return tag_value
                 return element_value_in_argument
         else:
+            print_error("The value for arg {0} is not defined in the case".
+                        format(element_value_in_argument))
             return element_value_in_argument
     else:
         return element_value_in_argument
@@ -1298,7 +1313,6 @@ def get_user_specified_tag_values_in_tc(datafile, system_name, **kwargs):
     for element in kwargs:
         in_list.append(element)
     credentials = get_credentials(datafile, system_name, in_list)
-
     for element in kwargs:
         if kwargs[element] is not None:
             credentials[element] = resolve_argument_value_to_get_tag_value(datafile, system_name, kwargs[element])
@@ -1357,6 +1371,9 @@ def get_filepath_from_system(datafile, system_name, *args):
 
 
 def get_var_by_string_prefix(string):
+    """
+        Get value from Environment variable or data repo
+    """
     if string.startswith("ENV."):
         return os.environ[string.split('.', 1)[1]]
     if string.startswith("REPO."):
@@ -1400,7 +1417,7 @@ def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
             if len(extracted_var) > 0:
                 for string in extracted_var:
                     try:
-                        if isinstance(raw_value[k], str):
+                        if isinstance(raw_value[k], (str, unicode)):
                             raw_value[k] = raw_value[k].replace(
                                 start_pattern+string+end_pattern,
                                 get_var_by_string_prefix(string))
@@ -1448,17 +1465,25 @@ def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
 
 
 def sub_from_env_var(raw_value, start_pattern="${", end_pattern="}"):
+    """wrapper function for subst_var_patterns_by_prefix"""
     return subst_var_patterns_by_prefix(raw_value, start_pattern, end_pattern,
                                         "ENV")
 
 
 def sub_from_data_repo(raw_value, start_pattern="${", end_pattern="}"):
+    """wrapper function for subst_var_patterns_by_prefix"""
     return subst_var_patterns_by_prefix(raw_value, start_pattern, end_pattern,
                                         "REPO")
 
 
 def substitute_var_patterns(raw_value, start_pattern="${", end_pattern="}"):
+    """
+        substitute variable inside start and end pattern
+    """
     def get_data(var):
+        """
+            get data from datarepo
+        """
         repokeys = var.split('.')
         val = get_object_from_datarepository(repokeys[0])
         for key in repokeys[1:]:
