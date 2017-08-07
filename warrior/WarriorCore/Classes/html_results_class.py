@@ -63,7 +63,9 @@ class LineResult:
                             + '"><i class="fa fa-line-chart"> </i></a></span>' + (
                                 '' if variant == 'Keyword' else '<span style="padding-left:10px; padding-right: 10px;"><a href="' + (
                                     line.get("logsdir") if line.get(
-                                        "logsdir") else '') + '"><i class="fa fa-book"> </i></a></span>') + '',
+                                        "logsdir") else '') + '"><i class="fa fa-book"> </i></a></span>') + (
+                            '<span style="padding-left:10px; padding-right: 10px;"><a href="' + line.get("defects")
+                            + '"><i class="fa fa-bug"> </i></a></span>' if line.get("defects") else ''),
                      'static': ['Count', 'Passed', 'Failed', 'Errors', 'Exceptions', 'Skipped']
                      }
 

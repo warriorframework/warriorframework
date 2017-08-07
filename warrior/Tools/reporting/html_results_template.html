@@ -213,14 +213,18 @@ td[rowspan]:nth-child(8){
 }
 
 .nav th:nth-child(9){
-    flex-grow: .4;
+    flex-grow: .5;
     padding-right: 0px;
     min-width: 140px;
+    margin-right: -17px;
+		white-space: nowrap;
 }
 .nav th:nth-child(4) {
     flex-grow: .4;
 }
-
+.nav th:nth-child(9) span{
+    font-size: 12px;
+}
 td[rowspan]:nth-child(4) {
     flex-grow: .4;
 }
@@ -604,6 +608,9 @@ tr[name] td:not([rowspan]):nth-last-child(6):hover:before {
 }
 .SKIPPED{
 		color: #4ccbff;
+}
+tr[name="TestsuiteRecord"] .fa-book, tr[name="ProjectRecord"] .fa-book {
+    display: none;
 }
 	</style>
 </head>
