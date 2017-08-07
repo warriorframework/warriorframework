@@ -134,8 +134,11 @@ class browser_actions(object):
                              FOR TEST CASE
                              Eg: <argument name="element_tag" value="json_name_1">
             9. headless_mode = This headless_mode tag refers to whether the browser has to be
-                               launched in headless mode or not. Defaults to False
+                               launched in headless mode or not.
                             Eg: <argument name="headless_mode" value="yes">
+                                                or
+                                <argument name="headless_mode" value="y">
+                                <argument name="headless_mode" value="no"/>
 
         :Arguments:
 
@@ -151,8 +154,8 @@ class browser_actions(object):
                                            locators
             8. element_tag (str) = particular element in the json file which
                                    contains relevant information to that element
-            9. headless_mode(str) = 'yes' or 'no' to indicate whether you want to launch the
-                                     browser in headless mode or not.
+            9. headless_mode(str) = 'yes/y' or 'no' to indicate whether you want to launch the
+                                     browser in headless mode or not. And it is case insensitive.
         :Returns:
 
             1. status(bool)= True / False.
