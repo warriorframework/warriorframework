@@ -235,9 +235,10 @@ class Junit(object):
 
     def _junit_to_html(self, junit_file, print_summary=True):
         """ Convert junit file to html"""
+        # This part attached a huge html result object to the junit object and overload the queue
         if hasattr(self, 'html_result_obj') == False:
-            self.html_result_obj = WarriorHtmlResults(junit_file)
-        self.html_result_obj.generate_html(junit_file, None)
+            html_result_obj = WarriorHtmlResults(junit_file)
+        html_result_obj.generate_html(junit_file, None)
 
     def output_junit(self, path, print_summary=True):
         """output the actual file

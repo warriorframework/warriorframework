@@ -58,10 +58,10 @@ def execute_iterative_parallel_testcases(system_list, testcase_list, suite_repos
     print_debug("process: {0}".format(process))
     result_list = []
     for job in jobs_list:
-        job.join()
         # since a queue is joined, data should be in the queue
-        for i in range(output_q.qsize()):
+        while not output_q.empty():
             result_list.append(output_q.get())
+        job.join()
 
     tc_status_list = []
     tc_name_list = []
