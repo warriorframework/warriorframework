@@ -169,7 +169,7 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
     data_repository['jiraproj'] = jiraproj
 
     pj_junit_object = junit_class.Junit(filename=project_name, timestamp=project_start_time,
-                                        name=project_name)
+                                        name=project_name, display="True")
 
     pj_junit_object.update_attr("resultsdir",
                                 project_repository['project_execution_dir'],
