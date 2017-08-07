@@ -8,6 +8,7 @@ cd pylint_warrior
 git checkout develop
 git checkout "${TRAVIS_PULL_REQUEST_BRANCH}"
 git merge --no-edit develop
+ls -a
 
 git branch
 # Displaying what .py files have changed
