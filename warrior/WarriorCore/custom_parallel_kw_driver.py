@@ -51,10 +51,12 @@ def execute_custom_parallel(step_list, data_repository, tc_status, system_name):
         process, jobs_list, output_q = create_and_start_process_with_queue(target_module, args_dict,
                                                                            jobs_list, output_q)
     print_debug("process: {0}".format(process))
+    result_list = []
     for job in jobs_list:
         job.join()
-
-    result_list = get_results_from_queue(output_q)
+        # since a queue is joined, data should be in the queue
+        for i in range(output_q.qsize()):
+            result_list.append(output_q.get())
 
     step_status_list = []
     kw_resultfile_list = []
