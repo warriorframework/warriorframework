@@ -8,4 +8,4 @@ if __name__ == "__main__":
         for fi in filelist:
             if fi.endswith(".py"):
                 print "this file is changed: ", fi
-                lint.py_run('{} --rcfile=.pylintrc'.format(fi))
+                lint.py_run('{} --rcfile=../../.pylintrc'.format(fi))
