@@ -61,7 +61,7 @@ def execute_iterative_parallel_testcases(system_list, testcase_list, suite_repos
         job.join()
         # since a queue is joined, data should be in the queue
         for i in range(output_q.qsize()):
-            result_list.append(output_q.get())
+            result_list.append(output_q.get(block=True))
 
     tc_status_list = []
     tc_name_list = []
