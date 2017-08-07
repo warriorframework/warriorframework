@@ -29,13 +29,14 @@ class LineResult:
     html = ''
 
     def __init__(self):
-        pass
+        self.keys = ['type', 'name', 'info', 'timestamp', 'duration', 'status', 'impact', 'onerror', 'msc', 'static',
+                     'dynamic']
 
-    def getInfo(self, line):
+    def get_info(self, line):
         """gets info for line"""
         inf_obj = line.get("info") if line.get("info") else ' '
         info = json.dumps(inf_obj)
-        info = info.replace('}"',',').replace('"{', '').replace( "'", "").replace('"', '')
+        info = info.replace('}"', ',').replace('"{', '').replace("'", "").replace('"', '')
         return info
 
     def set_dynamic_content(self, line):
@@ -46,24 +47,25 @@ class LineResult:
     def set_attributes(self, line, variant, stepcount):
         if 'Keyword' not in variant and 'step' not in variant:
             stepcount = ''
-        resultFile = line.get("resultfile") if line.get("resultfile") else line.get("resultsdir") if line.get("resultsdir") else ''
-        statusName = line.get("status") if line.get("status") else ''
+        result_file = line.get("resultfile") if line.get("resultfile") else line.get("resultsdir") if line.get(
+            "resultsdir") else ''
+        status_name = line.get("status") if line.get("status") else ''
         self.data = {'nameAttr': variant + 'Record',
                      'type': variant.replace('Test', '').replace('Keyword', 'step ') + str(stepcount),
                      'name': line.get("name"),
-                     'info': self.getInfo( line ),
+                     'info': self.get_info(line),
                      'timestamp': line.get("timestamp"),
                      'duration': line.get("time"),
-                     'status': '<span class=' + statusName + '>' + statusName + '</span>',
+                     'status': '<span class=' + status_name + '>' + status_name + '</span>',
                      'impact': line.get("impact"),
                      'onerror': line.get("onerror"),
-                     'msc': '<span style="padding-left:10px; padding-right: 10px;"><a href="' + resultFile
-                            + '"><i class="fa fa-line-chart"> </i></a></span>' + ('' if variant == 'Keyword' else '<span style="padding-left:10px; padding-right: 10px;"><a href="' + (
-                            line.get("logsdir") if line.get("logsdir") else '') + '"><i class="fa fa-book"> </i></a></span>') + '',
+                     'msc': '<span style="padding-left:10px; padding-right: 10px;"><a href="' + result_file
+                            + '"><i class="fa fa-line-chart"> </i></a></span>' + (
+                                '' if variant == 'Keyword' else '<span style="padding-left:10px; padding-right: 10px;"><a href="' + (
+                                    line.get("logsdir") if line.get(
+                                        "logsdir") else '') + '"><i class="fa fa-book"> </i></a></span>') + '',
                      'static': ['Count', 'Passed', 'Failed', 'Errors', 'Exceptions', 'Skipped']
                      }
-        self.keys = ['type', 'name', 'info', 'timestamp', 'duration', 'status', 'impact', 'onerror', 'msc', 'static',
-                     'dynamic']
 
     def set_html(self, line, variant, stepcount):
         if self.html == '':
@@ -81,12 +83,14 @@ class LineResult:
                         for staticElem in self.data['static']:
                             top_level += '<td>' + (staticElem if staticElem else '') + '</td>'
                     else:
-                        top_level += '<td rowspan="2"><div>' + (self.data[elem] if self.data[elem] else '') + '</div></td>'
+                        top_level += '<td rowspan="2"><div>' + (
+                            self.data[elem] if self.data[elem] else '') + '</div></td>'
                 top_level_next = '<tr>' + top_level_next + '</tr>'
             else:
                 for elem in self.keys:
                     if elem != 'static' and elem != 'dynamic':
-                        top_level += '<td rowspan="2"><div>' + (self.data[elem] if self.data[elem] else '') + '</div></td>'
+                        top_level += '<td rowspan="2"><div>' + (
+                            self.data[elem] if self.data[elem] else '') + '</div></td>'
 
             self.html = '<tr name="' + self.data['nameAttr'] + '">' + top_level + '</tr>' + top_level_next
 
@@ -145,10 +149,10 @@ class WarriorHtmlResults:
     def merge_html(self, dynamic_html):
         """ merge html from template and dynamic """
         temp = open(self.html_template)
-        templateHTML = temp.read().replace('\n', '')
+        template_html = temp.read().replace('\n', '')
         temp.close()
-        index = templateHTML.rfind('</table>')
-        return templateHTML[:index] + dynamic_html + templateHTML[index:] + self.get_war_version()
+        index = template_html.rfind('</table>')
+        return template_html[:index] + dynamic_html + template_html[index:] + self.get_war_version()
 
     def get_war_version(self):
         """ find the warrior version """
@@ -159,10 +163,10 @@ class WarriorHtmlResults:
         else:
             return ''
 
-    def generateHTML(self, junitObj, givenPath):
-        """ build the html
-            givenPath: added this feature in case of later down the line calling from outside junit file ( no actual use as of now )
-         """
+    def generate_html(self, junitObj, givenPath):
+        """ build the html givenPath: added this feature in case of later down the line calling from outside junit
+        file ( no actual use as of now )
+        """
         if junitObj:
             self.junit_file = junitObj
             self.junit_root = xml_Utils.getRoot(self.junit_file)

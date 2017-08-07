@@ -237,7 +237,7 @@ class Junit(object):
         """ Convert junit file to html"""
         if hasattr(self, 'html_result_obj') == False:
             self.html_result_obj = WarriorHtmlResults(junit_file)
-        self.html_result_obj.generateHTML( junit_file, None )
+        self.html_result_obj.generate_html(junit_file, None)
 
     def output_junit(self, path, print_summary=True):
         """output the actual file
