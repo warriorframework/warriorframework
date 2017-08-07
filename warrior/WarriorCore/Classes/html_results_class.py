@@ -13,6 +13,7 @@ limitations under the License.
 
 import os
 
+import json
 import Tools
 from Framework.Utils import xml_Utils, file_Utils
 from Framework.Utils.testcase_Utils import pNote
@@ -30,6 +31,13 @@ class LineResult:
     def __init__(self):
         pass
 
+    def getInfo(self, line):
+        """gets info for line"""
+        inf_obj = line.get("info") if line.get("info") else ' '
+        info = json.dumps(inf_obj)
+        info = info.replace('}"',',').replace('"{', '').replace( "'", "").replace('"', '')
+        return info
+
     def set_dynamic_content(self, line):
         self.data['dynamic'] = [line.get("keywords"), line.get("passes"), line.get("failures"), line.get("errors"),
                                 line.get("exceptions"), line.get("skipped")]
@@ -43,7 +51,7 @@ class LineResult:
         self.data = {'nameAttr': variant + 'Record',
                      'type': variant.replace('Test', '').replace('Keyword', 'step ') + str(stepcount),
                      'name': line.get("name"),
-                     'info': line.get("title"),
+                     'info': self.getInfo( line ),
                      'timestamp': line.get("timestamp"),
                      'duration': line.get("time"),
                      'status': '<span class=' + statusName + '>' + statusName + '</span>',
@@ -63,7 +71,7 @@ class LineResult:
         self.set_dynamic_content(line)
         top_level = ''
         top_level_next = ''
-        if not line.get("display") or line.get("logsdir") == 'true':
+        if not line.get("display") or line.get("display") == 'True':
             if self.data['nameAttr'] != 'KeywordRecord':
                 for elem in self.keys:
                     if elem == 'dynamic':
