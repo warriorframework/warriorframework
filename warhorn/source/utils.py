@@ -423,16 +423,13 @@ def verify_python_version(str_version, regex_str, logfile, print_log_name):
     """
     pattern = re.compile(regex_str)
     if not pattern.match(str_version):
-        print_error("You are currently using Python " +
-                    str_version +
-                    ". It is strongly recommended that you install the correct "
-                    "version of Python (2.7.0 or above in the 2.7 family).",
-                    logfile, print_log_name)
+        print_error("You are currently using Python " + str_version + ". It is strongly "
+                    "recommended that you install the correct version of Python (2.7.0 or "
+                    "above in the 2.7 family).", logfile, print_log_name)
         setDone(1)
-        getDone()
+        getDone(logfile, print_log_name)
     else:
-        print_info("Python version satisfies requirements.", logfile,
-                   print_log_name)
+        print_info("Python version satisfies requirements.", logfile, print_log_name)
 
 
 def get_latest_tag(base_path="", current_dir=""):
@@ -717,9 +714,9 @@ def setDone(value):
     DONE = value
 
 
-def getDone():
+def getDone(logfile, print_log_name):
     """This function prints the exit value of warhorn"""
-    print "DONE " + str(DONE)
+    print_info("DONE " + str(DONE), logfile, print_log_name)
     sys.exit(DONE)
 
 

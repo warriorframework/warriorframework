@@ -915,16 +915,13 @@ def delete_temp_files_and_folders(base_path="", current_dir="", **kwargs):
     Deletes the temp log files
 
     :Arguments:
-
     1. console_log_name (str) = Contains the name of the console_log file.
     2. print_log_name (str) = Contains the name of the print_log file.
     3. config_file_name (str) = Contains the path to the .xml file.
     4. logfile (file object) = Contains the file object for the console_log
     file. This file object is the 'opened' console_log file with mode set to 'a'
     4. base_path (str) = path to the temp folders inside Warrior
-
     :Returns:
-
     """
     logfile = kwargs.get("logfile")
     config_file_name = kwargs.get("config_file_name")
@@ -934,15 +931,11 @@ def delete_temp_files_and_folders(base_path="", current_dir="", **kwargs):
     # temp folder deletions.
     # .git and tests folder deletions.
     if internal_copy == "":
-        path_list = [os.path.join(base_path, 'warrior', 'temp'),
-                    os.path.join(base_path, 'temp'),
-                    os.path.join(base_path, 'warrior', '.git')]
+        path_list = [os.path.join(base_path, 'warrior', 'temp'), os.path.join(base_path, 'temp'),
+                     os.path.join(base_path, 'warrior', '.git')]
     else:
-        path_list = [os.path.join(base_path,
-                                           'warrior', 'temp'),
-                    os.path.join(base_path, 'temp'),
-                    os.path.join(base_path,
-                                           'warrior', '.git')]
+        path_list = [os.path.join(base_path, 'warrior', 'temp'), os.path.join(base_path, 'temp'),
+                     os.path.join(base_path, 'warrior', '.git')]
     if base_path != "":
         for path in path_list:
             if os.path.exists(path):
@@ -962,11 +955,13 @@ def delete_temp_files_and_folders(base_path="", current_dir="", **kwargs):
             shutil.copyfile(config_file_name, os.path.join(path, 'config.xml'))
 
         # log files copied over
-        shutil.copyfile(print_log_name, os.path.join(path, os.path.basename(os.path.normpath(print_log_name))))
-        shutil.copyfile(console_log_name, os.path.join(path, os.path.basename(os.path.normpath(console_log_name))))
+        shutil.copyfile(print_log_name, os.path.join(path,
+                        os.path.basename(os.path.normpath(print_log_name))))
+        shutil.copyfile(console_log_name, os.path.join(path,
+                        os.path.basename(os.path.normpath(console_log_name))))
     except:
-        print "Unable to copy config/print_log/console_log file to " \
-        "correct location", logfile, print_log_name
+        print_warning("Unable to copy config/print_log/console_log file to "
+                      "correct location", logfile, print_log_name)
 
     # log files deleted from the original directory.
     os.remove(print_log_name)
@@ -1102,13 +1097,16 @@ def get_base_path(node_name="warriorframework", **kwargs):
 
 
 def activate_virtualenv(node, destination, logfile, print_log_name):
+    '''Activate virtual environment to add dependencies
+    '''
     ve_name = get_attribute_value(node, 'name')
     ve_loc = get_attribute_value(node, 'location')
+    ve_dest = destination + '/' + ve_name
     print_info("ve_name: "+ve_name, logfile, print_log_name)
-    print_info("destination: "+destination, logfile, print_log_name)
+    print_info("destination: "+ve_dest, logfile, print_log_name)
     venv_cmd = os.path.expanduser(ve_loc)
-    subprocess.call([venv_cmd, "--system-site-packages", ve_name])
-    venv_file = "{}/bin/activate_this.py".format(ve_name)
+    subprocess.call([venv_cmd, "--system-site-packages", ve_dest])
+    venv_file = "{}/bin/activate_this.py".format(ve_dest)
     execfile(venv_file, dict(__file__=venv_file))
     return True
 
@@ -1262,7 +1260,7 @@ def assemble_warrior():
                                   print_log_name=print_log_name,
                                   dest=internal_copy)
 
-    getDone()
+    getDone(logfile, print_log_name)
 
 
 if __name__ == "__main__":
