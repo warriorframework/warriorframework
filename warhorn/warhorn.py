@@ -10,7 +10,7 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
+limitations under the License.
 '''
 
 """
@@ -67,7 +67,8 @@ from source.utils import check_installed_python_version, print_info, \
     get_all_leaf_dirs, words, get_repository_name, get_date_and_time, \
     get_relative_path, set_file_names, get_dependencies, setDone, getDone, \
     get_parent_dir, get_all_direct_child_nodes, remove_extra_list_elements, \
-    git_clone_repository, get_latest_tag, git_checkout_label, get_dest
+    git_clone_repository, get_latest_tag, git_checkout_label, get_dest, \
+    install_depen
 
 
 def check_basic_requirements(logfile, config_file_name, console_log_name,
@@ -1103,6 +1104,17 @@ def get_base_path(node_name="warriorframework", **kwargs):
     return base_path, node
 
 
+def activate_virtualenv(node, destination, logfile, print_log_name):
+    ve_name = get_attribute_value(node, 'name')
+    ve_loc = get_attribute_value(node, 'location')
+    print_info("ve_name: "+ve_name, logfile, print_log_name)
+    print_info("destination: "+destination, logfile, print_log_name)
+    venv_cmd = os.path.expanduser(ve_loc)
+    subprocess.call([venv_cmd, "--system-site-packages", ve_name])
+    venv_file = "{}/bin/activate_this.py".format(ve_name)
+    execfile(venv_file, dict(__file__=venv_file))
+    return True
+
 def replace_tools_from_product_repo(node_list, **kwargs):
     """ This will clone the tools from product repo and then replaces
         tools directory in warrior main with this tools repo.
@@ -1164,6 +1176,7 @@ def assemble_warrior():
 
     """
     setDone(0)
+    virtualenv_activated = False
     if sys.executable is None or sys.executable == "":
         python_executable = "python"
     else:
@@ -1198,12 +1211,28 @@ def assemble_warrior():
 
     check_basic_requirements(logfile, config_file_name, console_log_name,
                              print_log_name, python_executable)
-    get_dependencies(logfile, print_log_name, config_file_name)
+    node = get_node(config_file_name, 'virtualenv')
+    if node is not False and get_attribute_value(node, 'activate') == 'yes':
+        if get_attribute_value(node, 'install') == 'yes':
+            install_depen('virtualenv==15.1.0', 'virtualenv', logfile,
+                          print_log_name)
+        war_tag = get_node(config_file_name, 'warrior')
+        if war_tag is False:
+            print_error("warrior is a mandatory repo. Please add and rerun",
+                        logfile, print_log_name)
+            setDone(1)
+            getDone()
+        dest = get_attribute_value(war_tag, 'destination')
+        virtualenv_activated = activate_virtualenv(node, dest, logfile,
+                                                   print_log_name)
+
+    get_dependencies(logfile, print_log_name, config_file_name,
+                     virtualenv_activated)
     internal_copy = get_dest(logfile, print_log_name, config_file_name)
 
     node_list = get_all_direct_child_nodes(config_file_name)
     node_list = remove_extra_list_elements(node_list, "warhorn", "drivers",
-                                           "warriorspace")
+                                           "warriorspace", "virtualenv")
     for node in node_list:
         if node == "warriorframework":
             print_info("The ability to upgrade/downgrade wariorframework version would be available for use soon.", logfile, print_log_name)

@@ -574,6 +574,7 @@ def install_depen(dependency, dependency_name, logfile, print_log_name,
                    print_log_name)
         pip_cmds.insert(2, "--user")
     try:
+        print_info("installing "+dependency, logfile, print_log_name)
         sp_output = subprocess.Popen(pip_cmds, stdout=subprocess.PIPE,
                                      stderr=subprocess.PIPE,
                                      stdin=subprocess.PIPE)
@@ -618,7 +619,7 @@ def install_depen(dependency, dependency_name, logfile, print_log_name,
             setDone(1)
 
 
-def get_dependencies(logfile, print_log_name, config_file_name):
+def get_dependencies(logfile, print_log_name, config_file_name, venv=False):
     """ Function gets called from setup.py
     Gets the dependencies that need to be installed.
     Appends dependency name and version to a list if attribute 'install'
@@ -659,7 +660,7 @@ def get_dependencies(logfile, print_log_name, config_file_name):
                                dependency.attrib["name"] +
                                " as it was set to 'yes' in the .xml file",
                                logfile, print_log_name)
-                    if ('user' in dependency.attrib and
+                    if (not venv and 'user' in dependency.attrib and
                             dependency.attrib["user"] == "yes"):
                         install_depen(dependency.attrib["name"] + "==" +
                                       versions.get(dependency.attrib["name"]),
