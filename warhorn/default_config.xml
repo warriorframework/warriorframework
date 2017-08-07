@@ -16,6 +16,19 @@
         <dependency name="cloudshell-automation-api" install="yes" user="no"/>
     </warhorn>
 
+    <!-- Fill this out with the details of the virtual environment
+         to be used. Please note that if this is not used, then the warhorn
+         expects the dependency packages to be already installed or
+         admin privileges available for installing them. location is the
+         place where virtualenv binary can be found. The virtual env
+         would be created in the local directory itself with the name provided.
+         If install is set to yes, then warhorn expects atleast the
+         admin privileges to install virtual env.
+         -->
+
+    <virtualenv name="warrior_virtualenv" activate="yes"
+        location="~/.local/bin/virtualenv" install="no" />
+
 	<warriorframework url="https://github.com/warriorframework/warriorframework.git"
                       destination="" label="" clean_install="yes" clone="no">
 	</warriorframework>
