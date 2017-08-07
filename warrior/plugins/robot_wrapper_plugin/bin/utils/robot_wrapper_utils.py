@@ -117,13 +117,17 @@ def create_case_junit(robot_tests):
                 kw_start_time = datetime.datetime.strptime(
                  kw_start_time, "%Y%m%d %H:%M:%S.%f").replace(microsecond=0)
                 kw_end_time = xml_Utils.get_attributevalue_from_directchildnode(
-                 test_elem, 'status', 'endtime')
+                 kw_elem, 'status', 'endtime')
                 kw_end_time = datetime.datetime.strptime(
                  kw_end_time, "%Y%m%d %H:%M:%S.%f").replace(microsecond=0)
                 kw_duration = datetime_utils.get_time_delta(kw_start_time, kw_end_time)
 
                 kw_status = xml_Utils.get_attributevalue_from_directchildnode(
-                 test_elem, 'status', 'status')
+                 kw_elem, 'status', 'status')
+
+                kw_desc = xml_Utils.get_text_from_direct_child(kw_elem, 'doc')
+                if kw_desc is False:
+                    kw_desc = "No doc/desc provided"
 
                 # Convert robot keyword results
                 if str(kw_status).upper() in string_status.keys():
@@ -131,5 +135,5 @@ def create_case_junit(robot_tests):
 
                 add_keyword_result(tc_junit_object, tc_timestamp, step_num,
                                    kw_name, kw_status, kw_start_time,
-                                   kw_duration, "skipped", "Impact", "Next")
+                                   kw_duration, "skipped", "Impact", "Next", kw_desc)
                 step_num += 1
