@@ -206,11 +206,11 @@ def install_pip(logfile, print_log_name, python_executable):
         print_info(output, logfile, print_log_name)
         output, error = sp_output.communicate()
         if sp_output.returncode != 0:
-                print_error("An error occured while installing pip: "
-                            "{0}".format(error), logfile, print_log_name)
-                print_info("Exiting Warhorn.", logfile, print_log_name)
-                setDone(1)
-                getDone()
+            print_error("An error occured while installing pip: {0}".format(error),
+                        logfile, print_log_name)
+            print_info("Exiting Warhorn.", logfile, print_log_name)
+            setDone(1)
+            getDone()
         print_info("Pip installed.", logfile, print_log_name)
     except IOError:
         print_error("Pip couldn't be installed! Seems like Warhorn does not "
@@ -332,9 +332,8 @@ def clone_warrior_and_tools(base_path, current_dir, repo_root, **kwargs):
         print_info("Pulling " + repo_name + ".", logfile, print_log_name)
         os.chdir(path)
         try:
-            sp_output = subprocess.Popen(["git", "pull", url],
-                             stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+            sp_output = subprocess.Popen(["git", "pull", url], stdout=subprocess.PIPE,
+                                         stderr=subprocess.PIPE, stdin=subprocess.PIPE)
             os.chdir(current_dir)
             output = sp_output.stdout.read()
             print_info(output, logfile, print_log_name)
@@ -461,8 +460,7 @@ def get_docs_folder(path, repository, direc, destination):
             shutil.rmtree(os.path.join(path, direc, subdir),
                           onerror=delete_read_only)
         else:
-            sub_subfiles, sub_subdirs = get_subfiles(os.path.join(path, direc,
-                                                            subdir))
+            sub_subfiles, sub_subdirs = get_subfiles(os.path.join(path, direc, subdir))
             for sub_subfile in sub_subfiles:
                 os.remove(os.path.join(path, direc, subdir, sub_subfile))
             for sub_subdir in sub_subdirs:
@@ -470,14 +468,11 @@ def get_docs_folder(path, repository, direc, destination):
                     shutil.rmtree(os.path.join(path, direc, subdir, sub_subdir),
                                   onerror=delete_read_only)
                 else:
-                    if os.path.exists(os.path.join(
-                            destination, direc, name, sub_subdir)):
-                        shutil.rmtree(os.path.join(
-                            destination, direc, name, sub_subdir),
-                            onerror=delete_read_only)
-                    shutil.copytree(os.path.join(path, direc, subdir,
-                                                 sub_subdir), os.path.join(
-                            destination, direc, name, sub_subdir))
+                    if os.path.exists(os.path.join(destination, direc, name, sub_subdir)):
+                        shutil.rmtree(os.path.join(destination, direc, name, sub_subdir),
+                                      onerror=delete_read_only)
+                    shutil.copytree(os.path.join(path, direc, subdir, sub_subdir),
+                                    os.path.join(destination, direc, name, sub_subdir))
 
 
 def replace_folders(path, repository, destination, logfile, print_log_name):
@@ -740,8 +735,7 @@ def clone_drivers(base_path, current_dir, **kwargs):
                 if internal_copy == "":
                     tmp_path = os.path.join(base_path, 'temp', name)
                 else:
-                    tmp_path = os.path.join(base_path,
-                                               'temp', name)
+                    tmp_path = os.path.join(base_path, 'temp', name)
                 if os.path.exists(tmp_path):
                     delete_directory(tmp_path, logfile, print_log_name)
 
@@ -825,11 +819,9 @@ def clone_warriorspace(base_path, current_dir, **kwargs):
                     continue
                 try:
                     if internal_copy == "":
-                        create_dir(os.path.join(base_path,
-                                            'warrior', 'temp'))
+                        create_dir(os.path.join(base_path, 'warrior', 'temp'))
                     else:
-                        create_dir(os.path.join(base_path,
-                                            'warrior', 'temp'))
+                        create_dir(os.path.join(base_path, 'warrior', 'temp'))
                 except:
                     print_error("Warhorn does not have the required "
                                 "permissions to clone " + name,
@@ -839,12 +831,9 @@ def clone_warriorspace(base_path, current_dir, **kwargs):
                     overwrite = get_attribute_value(repository, "overwrite")
                     label = get_attribute_value(repository, "label")
                     if internal_copy == "":
-                        path = os.path.join(base_path, 'warrior',
-                                        'temp', name)
+                        path = os.path.join(base_path, 'warrior', 'temp', name)
                     else:
-                        path = os.path.join(base_path, 'warrior',
-                                        'temp', name)
-
+                        path = os.path.join(base_path, 'warrior', 'temp', name)
 
                     # current_dir stores the path of the directory in which
                     # warhorn.py is running
@@ -854,11 +843,9 @@ def clone_warriorspace(base_path, current_dir, **kwargs):
                     # directory switch to where the warriorspace should be
                     # cloned.
                     if internal_copy == "":
-                        os.chdir(os.path.join(base_path,
-                                          'warrior', 'temp'))
+                        os.chdir(os.path.join(base_path, 'warrior', 'temp'))
                     else:
-                        os.chdir(os.path.join(base_path,
-                                          'warrior', 'temp'))
+                        os.chdir(os.path.join(base_path, 'warrior', 'temp'))
                     try:
                         subprocess.check_output(["git", "clone", url])
                     except:
@@ -878,11 +865,9 @@ def clone_warriorspace(base_path, current_dir, **kwargs):
                     # directory switch to where warhorn.py is running.
                     print_info("Cloning complete", logfile, print_log_name)
                     if internal_copy == "":
-                        destination = os.path.join(base_path,
-                                               'warrior', 'Warriorspace')
+                        destination = os.path.join(base_path, 'warrior', 'Warriorspace')
                     else:
-                        destination = os.path.join(base_path,
-                                               'warrior', 'Warriorspace')
+                        destination = os.path.join(base_path, 'warrior', 'Warriorspace')
                     dummy, root_repo_folder_list = get_subfiles(path)
                     try:
                         overwrite_files(os.path.join(path,
@@ -890,9 +875,8 @@ def clone_warriorspace(base_path, current_dir, **kwargs):
                                         destination, overwrite,
                                         logfile, print_log_name)
                     except:
-                        print_error("Could not copy Warriorspace files from "
-                                    + name + " into warriorframework", logfile,
-                                    print_log_name)
+                        print_error("Could not copy Warriorspace files from " + name + " into "
+                                    "warriorframework", logfile, print_log_name)
                         setDone(1)
 
             # folder inside the temp folder that had the initial clone of the
@@ -900,11 +884,9 @@ def clone_warriorspace(base_path, current_dir, **kwargs):
             # because if user wants to clone another repository with the same
             # name, it should not create a problem.
             if internal_copy == "":
-                tmp_path = os.path.join(base_path,
-                                           'warrior', 'temp', name)
+                tmp_path = os.path.join(base_path, 'warrior', 'temp', name)
             else:
-                tmp_path = os.path.join(base_path,
-                                           'warrior', 'temp', name)
+                tmp_path = os.path.join(base_path, 'warrior', 'temp', name)
             if os.path.exists(tmp_path):
                 delete_directory(tmp_path, logfile, print_log_name)
 
@@ -1049,10 +1031,8 @@ def check_if_tools_should_be_cloned(node, p_node, base_path, current_dir,
                                 print_log_name=print_log_name,
                                 repo_name=p_node)
     else:
-        print_info("Warhorn will not install "
-                   + p_node +
-                   " as the clone attribute was not set to 'yes'.",
-                   logfile, print_log_name)
+        print_info("Warhorn will not install " + p_node + " as the clone attribute "
+                   "was not set to 'yes'.", logfile, print_log_name)
 
 
 def clone_major_repositories(p_node, **kwargs):
@@ -1101,7 +1081,7 @@ def activate_virtualenv(node, destination, logfile, print_log_name):
     '''
     ve_name = get_attribute_value(node, 'name')
     ve_loc = get_attribute_value(node, 'location')
-    ve_dest = destination + '/' + ve_name
+    ve_dest = destination + ve_name
     print_info("ve_name: "+ve_name, logfile, print_log_name)
     print_info("destination: "+ve_dest, logfile, print_log_name)
     venv_cmd = os.path.expanduser(ve_loc)
