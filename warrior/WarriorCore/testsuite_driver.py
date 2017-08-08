@@ -268,12 +268,16 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
     data_repository["suite_exectype"] = "iterative" if execution_type == "ITERATIVE_SEQUENTIAL" or \
     execution_type == "ITERATIVE_PARALLEL" else execution_type
 
+    ts_junit_display = "True"
+    pj_junit_display = "False"
     if "wt_junit_object" in data_repository:
         ts_junit_object = data_repository["wt_junit_object"]
+
     else:
         ts_junit_object = junit_class.Junit(filename=suite_name, timestamp=suite_timestamp,
                                             name="customProject_independant_testcase_execution",
-                                            display="False")
+                                            display=pj_junit_display)
+
         if "jobid" in data_repository:
             ts_junit_object.add_jobid(data_repository["jobid"])
             del data_repository["jobid"]
@@ -283,6 +287,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
                                      name=suite_name, timestamp=suite_timestamp,
                                      suite_location=suite_repository['testsuite_filepath'],
                                      title=suite_repository['suite_title'],
+                                     display=ts_junit_display,
                                      **ts_junit_object.init_arg())
 
     # Adding resultsdir as attributes to testsuite_tag in the junit result file

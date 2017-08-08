@@ -2,6 +2,7 @@
 
 	<system name="http_bin_1">
 		<url>http://httpbin.org</url>
+                <url1>http://httpbin.org/${ENV.rest_action}</url1>
 		<cookies>cookie</cookies>
 		<cookiejar>dict</cookiejar>
 		<variable_config>../../config_files/rest_functional_tests/var_config.xml</variable_config>
