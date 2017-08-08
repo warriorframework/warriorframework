@@ -433,12 +433,13 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
 
     # These lines are for creating testcase junit file
     from_ts = False
+    pj_junit_display = 'False'
     if not 'wt_junit_object' in data_repository:
         # not from testsuite
         tc_junit_object = junit_class.Junit(filename=data_repository['wt_name'],
                                             timestamp=tc_timestamp,
                                             name="customProject_independant_testcase_execution",
-                                            display="False")
+                                            display=pj_junit_display)
         if "jobid" in data_repository:
             tc_junit_object.add_jobid(data_repository["jobid"])
             del data_repository["jobid"]
@@ -446,8 +447,7 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                                         timestamp=tc_timestamp,
                                         ts_timestamp=tc_timestamp,
                                         name=data_repository['wt_name'],
-                                        testcasefile_path=data_repository['wt_testcase_filepath'],
-                                        display="False")
+                                        testcasefile_path=data_repository['wt_testcase_filepath'])
         junit_requirements(testcase_filepath, tc_junit_object, tc_timestamp)
         data_repository['wt_ts_timestamp'] = tc_timestamp
     else:
@@ -556,7 +556,7 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
     if tc_status == False and tc_onError_action and tc_onError_action.upper() == 'ABORT_AS_ERROR':
         print_info("Testcase status will be marked as ERROR as onError action is set to 'abort_as_error'")
         tc_status = "ERROR"
-
+    defectsdir = data_repository['wt_defectsdir']
     check_and_create_defects(tc_status, auto_defects, data_repository, tc_junit_object)
 
     print_info("\n")
@@ -570,8 +570,10 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
     tc_junit_object.update_count("tests", "1", "ts", data_repository['wt_ts_timestamp'])
     tc_junit_object.update_count("tests", "1", "pj", "not appicable")
     tc_junit_object.update_attr("status", str(tc_status), "tc", tc_timestamp)
-    tc_junit_object.update_attr("time", str(tc_duration), "tc", tc_timestamp)
+    tc_junit_object.update_attr("time", str(tc_duration), "tc", tc_timestamp)    
     tc_junit_object.add_testcase_message(tc_timestamp, tc_status)
+    if str(tc_status).upper() in ["FALSE", "ERROR", "EXCEPTION"]:
+        tc_junit_object.update_attr("defects", defectsdir, "tc", tc_timestamp)
 
     # Adding resultsdir, logsdir, title as attributes to testcase_tag in the junit result file
     # Need to remove these after making resultsdir, logsdir as part of properties tag in testcase
