@@ -28,6 +28,7 @@ from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.list_Utils import get_list_by_separating_strings
 from Framework.ClassUtils.WNetwork.loging import ThreadedLog
 from WarriorCore.Classes.war_cli_class import WarriorCliClass
+from WarriorCore.Classes.testcase_utils_class import TestcaseUtils
 from Framework.ClassUtils import database_utils_class
 
 try:
@@ -651,7 +652,8 @@ def _get_response_dict(details_dict, index, response, response_dict):
             reobj = re.search(resp_pat_req, response)
             response = reobj.group(0) if reobj is not None else ""
             # removing non-ascii/control characters (line feed) from response
-            response = "".join([c for c in response if 31 < ord(c) < 127])
+            tuc_obj = TestcaseUtils()
+            response = tuc_obj.rem_nonprintable_ctrl_chars(response)
             pNote("User has requested saving response. Response pattern "
                   "required by user is : {0}".format(resp_pat_req))
             pNote("Portion of response saved to the data repository with key: "
