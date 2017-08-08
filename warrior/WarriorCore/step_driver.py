@@ -15,9 +15,11 @@ limitations under the License.
 # step driver module
 
 import traceback
+import os
 import exec_type_driver
 from WarriorCore.Classes.argument_datatype_class import ArgumentDatatype
 import Framework.Utils as Utils
+from Framework.Utils import file_Utils
 from Framework.Utils.print_Utils import print_info, print_debug, print_error, print_exception
 # from WarriorCore import onerror_driver
 
@@ -56,7 +58,7 @@ def send_keyword_to_productdriver(driver_name, plugin_name, keyword,
     try:
         if plugin_name is not None:
             import_name = ".".join(["plugins", plugin_name, "bin",
-                                    plugin_name[7:]+'_driver'])
+                                    plugin_name[:-7]+'_driver'])
         else:
             import_name = "ProductDrivers.{0}".format(driver_name)
         driver_call = __import__(import_name, fromlist=[driver_name])
@@ -168,7 +170,7 @@ def execute_step(step, step_num, data_repository, system_name, kw_parallel, queu
                                       data_repository, args_repository)
         keyword_status = data_repository['step-%s_status' % step_num]
         Utils.testcase_Utils.update_step_num(str(step_num))
-        if context.upper() == 'NEGATIVE' and type(keyword_status) == bool:
+        if context.upper() == 'NEGATIVE' and isinstance(keyword_status, bool):
             print_debug("Keyword status = {0}, Flip status as context is Negative".format(
                 keyword_status))
             keyword_status = not keyword_status
@@ -238,9 +240,14 @@ def execute_step(step, step_num, data_repository, system_name, kw_parallel, queu
     tc_timestamp = data_repository['wt_tc_timestamp']
     impact = impact_dict.get(step_impact.upper())
 
+    tc_resultsdir = data_repository['wt_resultsdir']
+    tc_name = data_repository['wt_name']
+
     add_keyword_result(tc_junit_object, tc_timestamp, step_num, keyword,
                        keyword_status, kw_start_time, kw_duration,
-                       kw_resultfile, impact, onerror, step_description)
+                       kw_resultfile, impact, onerror, step_description,
+                       info=str(args_repository), tc_name=tc_name,
+                       tc_resultsdir=tc_resultsdir)
 
     if parallel is True:
         # put result into multiprocessing queue and later retrieve in
@@ -267,16 +274,18 @@ def execute_step(step, step_num, data_repository, system_name, kw_parallel, queu
 
 def add_keyword_result(tc_junit_object, tc_timestamp, step_num, keyword,
                        keyword_status, kw_start_time, kw_duration,
-                       kw_resultfile, impact, onerror, step_description):
+                       kw_resultfile, impact, onerror, step_description,
+                       info="", tc_name="", tc_resultsdir=""):
     """ Add keyword results into junit object """
-
     tc_junit_object.add_keyword_result(tc_timestamp, step_num, keyword,
                                        str(keyword_status), kw_start_time,
                                        kw_duration, kw_resultfile,
-                                       impact, onerror, step_description)
+                                       impact, onerror, step_description, info=info,
+                                       tc_name=tc_name, tc_resultsdir=tc_resultsdir)
 
     tc_junit_object.update_count(str(keyword_status), "1", "tc", tc_timestamp)
     tc_junit_object.update_count("keywords", "1", "tc", tc_timestamp)
+
 
 
 def main(step, step_num, data_repository, system_name, kw_parallel=False, queue=None):
