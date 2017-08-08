@@ -112,7 +112,7 @@ def check_basic_requirements(logfile, config_file_name, console_log_name,
                                       console_log_name=console_log_name,
                                       print_log_name=print_log_name)
         setDone(1)
-        getDone()
+        getDone(logfile, print_log_name)
     else:
         print_info("Setuptools package is available.", logfile, print_log_name)
 
@@ -134,7 +134,7 @@ def check_basic_requirements(logfile, config_file_name, console_log_name,
                                       console_log_name=console_log_name,
                                       print_log_name=print_log_name)
         setDone(1)
-        getDone()
+        getDone(logfile, print_log_name)
 
 
 def overwrite_files(path, destination, overwrite, logfile, print_log_name):
@@ -210,19 +210,19 @@ def install_pip(logfile, print_log_name, python_executable):
                         logfile, print_log_name)
             print_info("Exiting Warhorn.", logfile, print_log_name)
             setDone(1)
-            getDone()
+            getDone(logfile, print_log_name)
         print_info("Pip installed.", logfile, print_log_name)
     except IOError:
         print_error("Pip couldn't be installed! Seems like Warhorn does not "
                     "have write permissions.", logfile, print_log_name)
         setDone(1)
-        getDone()
+        getDone(logfile, print_log_name)
     except Exception as e:
         print_error("An error occured while installing pip: {0}".format(e),
                     logfile, print_log_name)
         print_info("Exiting Warhorn.", logfile, print_log_name)
         setDone(1)
-        getDone()
+        getDone(logfile, print_log_name)
 
 
 def print_out_checkout_status(label, check, current_tag, repo_name, **kwargs):
@@ -288,7 +288,7 @@ def clone_warrior_and_tools(base_path, current_dir, repo_root, **kwargs):
                                           config_file_name=config_file_name,
                                           console_log_name=console_log_name,
                                           print_log_name=print_log_name)
-            getDone()
+            getDone(logfile, print_log_name)
         else:
             return
     if not check_url_is_a_valid_repo(url, repo_name, logfile, print_log_name):
@@ -299,7 +299,7 @@ def clone_warrior_and_tools(base_path, current_dir, repo_root, **kwargs):
                                           config_file_name=config_file_name,
                                           console_log_name=console_log_name,
                                           print_log_name=print_log_name)
-            getDone()
+            getDone(logfile, print_log_name)
         else:
             return
 
@@ -318,10 +318,9 @@ def clone_warrior_and_tools(base_path, current_dir, repo_root, **kwargs):
                        logfile, print_log_name)
             try:
                 delete_directory(path, logfile, print_log_name)
-            except:
-                print_error("Warhorn was unable to delete existing "
-                            + repo_name + ". " + repo_name +
-                            " will be pulled.", logfile, print_log_name)
+            except Exception:
+                print_error("Warhorn was unable to delete existing " + repo_name + ". " +
+                            repo_name + " will be pulled.", logfile, print_log_name)
                 setDone(1)
             else:
                 print_info("Existing " + repo_name + " deleted successfully",
@@ -337,7 +336,7 @@ def clone_warrior_and_tools(base_path, current_dir, repo_root, **kwargs):
             os.chdir(current_dir)
             output = sp_output.stdout.read()
             print_info(output, logfile, print_log_name)
-        except:
+        except Exception:
             os.chdir(current_dir)
             print_error("Pulling unsuccessful", logfile, print_log_name)
             setDone(1)
@@ -396,7 +395,7 @@ def clone_warrior_and_tools(base_path, current_dir, repo_root, **kwargs):
                                               config_file_name=config_file_name,
                                               console_log_name=console_log_name,
                                               print_log_name=print_log_name)
-                getDone()
+                getDone(logfile, print_log_name)
 
 
 def remove_extra_drivers(drivers, path):
@@ -569,12 +568,12 @@ def remove_extra_actions(path, logfile, print_log_name):
     paths = []
     get_all_leaf_dirs(os.path.join(path, 'Actions'), paths)
     for actions_dir in actions_dirs:
-        for path in paths:
-            if path == actions_dir:
-                paths.remove(path)
+        for p in paths:
+            if p == actions_dir:
+                paths.remove(p)
                 break
-    for path in reversed(paths):
-        delete_directory(path, logfile, print_log_name)
+    for p in reversed(paths):
+        delete_directory(p, logfile, print_log_name)
 
 
 def get_action_folder_details(path, destination):
@@ -656,10 +655,8 @@ def clone_drivers(base_path, current_dir, **kwargs):
     else:
         repositories = get_firstlevel_children(node, "repository")
         for repository in repositories:
-            if 'url' not in repository.attrib and\
-                            'label' not in repository.attrib and\
-                            'all_drivers' not in repository.attrib and\
-                            'clone' not in repository.attrib:
+            if ('url' not in repository.attrib and 'label' not in repository.attrib and
+                'all_drivers' not in repository.attrib and 'clone' not in repository.attrib):
                 continue
             url = get_attribute_value(repository, "url")
             name = get_repository_name(url)
@@ -679,7 +676,7 @@ def clone_drivers(base_path, current_dir, **kwargs):
                     create_dir(os.path.join(base_path, 'temp'))
                 else:
                     create_dir(os.path.join(base_path, 'temp'))
-            except:
+            except Exception:
                 print_error("Warhorn does not have the required permissions "
                             "to clone " + name, logfile, print_log_name)
                 setDone(1)
@@ -700,18 +697,15 @@ def clone_drivers(base_path, current_dir, **kwargs):
                     os.chdir(os.path.join(base_path, 'temp'))
                 try:
                     subprocess.check_output(["git", "clone", url])
-                except:
+                except Exception:
                     print_error(name + " could not be cloned.",
                                 logfile, print_log_name)
                     setDone(1)
                     continue
                 if label != "":
-                    print_info("Checking out: " + label, logfile,
-                               print_log_name)
-                    check, current_tag = git_checkout_label(label, path,
-                                                            current_dir)
-                    print_out_checkout_status(label, check, current_tag, name,
-                                              logfile=logfile,
+                    print_info("Checking out: " + label, logfile, print_log_name)
+                    check, current_tag = git_checkout_label(label, path, current_dir)
+                    print_out_checkout_status(label, check, current_tag, name, logfile=logfile,
                                               print_log_name=print_log_name)
 
                 print_info("Cloning complete", logfile, print_log_name)
@@ -1196,7 +1190,7 @@ def assemble_warrior():
             print_error("warriorframework is a mandatory repo. Please add and rerun",
                         logfile, print_log_name)
             setDone(1)
-            getDone()
+            getDone(logfile, print_log_name)
         dest = get_attribute_value(war_tag, 'destination')
         virtualenv_activated = activate_virtualenv(node, dest, logfile, print_log_name)
 
