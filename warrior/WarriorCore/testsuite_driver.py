@@ -396,13 +396,8 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
                                                                 auto_defects=auto_defects)
 
     elif execution_type.upper() == "ITERATIVE_SEQUENTIAL":
-		# if execution type is iterative sequential call WarriorCore.Classes.iterative_testsuite
-<<<<<<< HEAD
+        # if execution type is iterative sequential call WarriorCore.Classes.iterative_testsuite
         # class and execute the testcases in iterative sequential fashion on the systems
-=======
-        # class and
-		# execute the testcases in iterative sequential fashion on the systems
->>>>>>> 389cc469874b92aa033951a408cb4e6f7977f6d3
         print_info("Iterative sequential suite")
 
         iter_seq_ts_obj = IterativeTestsuite(testcase_list, suite_repository,
@@ -411,13 +406,8 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
         test_suite_status = iter_seq_ts_obj.execute_iterative_sequential()
 
     elif execution_type.upper() == "ITERATIVE_PARALLEL":
-		# if execution type is iterative parallel call WarriorCore.Classes.iterative_testsuite
-<<<<<<< HEAD
+        # if execution type is iterative parallel call WarriorCore.Classes.iterative_testsuite
         # class and execute the testcases in iterative parallel fashion on the systems
-=======
-        # class and
-		# execute the testcases in iterative parallel fashion on the systems
->>>>>>> 389cc469874b92aa033951a408cb4e6f7977f6d3
         print_info("Iterative parallel suite")
         data_repository["war_parallel"] = True
         iter_seq_ts_obj = IterativeTestsuite(testcase_list, suite_repository,
