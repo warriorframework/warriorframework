@@ -41,14 +41,11 @@ class CoreView(View):
         template = 'core/index.html'
 
         base_directory = get_parent_directory(os.path.dirname(os.path.realpath(__file__)), 2)
-        apps = []
         config_file_name = "wf_config.json"
         settings_file_path = get_abs_path(os.path.join("wui", "settings.py"), base_directory)
-        urls_file_path = get_abs_path(os.path.join("wui", "urls.py"), base_directory)
         config_details_dict = {"icon": "", "color": ""}
 
-        core_index_obj = CoreIndex(base_directory, settings_file_path=settings_file_path,
-                                   urls_file_path=urls_file_path)
+        core_index_obj = CoreIndex(base_directory, settings_file_path=settings_file_path)
 
         available_apps = core_index_obj.get_available_apps()
         # print available_apps
@@ -56,13 +53,11 @@ class CoreView(View):
         settings_installed_apps = core_index_obj.get_apps_from_settings_file()
         # print settings_installed_apps
 
-        urls_dictionary = core_index_obj.get_urls_from_urls_file()
-        # print urls_in_urls_file
-        appObj = Apps()
-        apps = appObj.setApps( { 'config_file_name': config_file_name,
-                                                         'config_details_dict': config_details_dict,
-                                                         'available_apps': available_apps,
-                                                         'settings_installed_apps': settings_installed_apps,
-                                                         'urls_dictionary': urls_dictionary } )
+        app_obj = Apps()
+        apps = app_obj.set_apps({'base_directory': base_directory,
+                                 'config_file_name': config_file_name,
+                                 'config_details_dict': config_details_dict,
+                                 'available_apps': available_apps,
+                                 'settings_installed_apps': settings_installed_apps})
 
         return render(request, template, {"apps": apps})

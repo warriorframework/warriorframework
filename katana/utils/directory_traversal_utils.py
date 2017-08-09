@@ -35,8 +35,8 @@ def get_sub_folders(path):
         if os.path.isdir(folder):
             folders.append(folder)
     folders = [f.replace("\\", '/') for f in folders]
-    onlyfolders = map(lambda f: f.rpartition('/')[2], folders)
-    return onlyfolders
+    only_folders = map(lambda f: f.rpartition('/')[2], folders)
+    return only_folders
 
 
 def get_sub_files(path):
@@ -51,33 +51,32 @@ def get_sub_files(path):
     """
     files = glob.glob(path + os.sep + "*.*")
     files = [f.replace("\\", '/') for f in files]
-    onlyfiles = map(lambda f: f.rpartition('/')[2], files)
-    return onlyfiles
+    only_files = map(lambda f: f.rpartition('/')[2], files)
+    return only_files
 
 
-def get_abs_path(relative_path, base_path):
+def get_abs_path(relative_path, base_path=None):
     """
     Gets the absolute path from the given relative_path and base_path
     Args:
         relative_path: relative path to the file/directory
-        base_path: absolute path to the relative_path
+        base_path: absolute path from where the relative path should be traced. If not provided, the
+                   current working directory path will be used.
 
     Returns:
-        value: absolute path derived from relative_path and base_path
+        path: absolute path derived from relative_path and base_path
 
     """
-    value = False
-    current_directory = os.path.dirname(os.path.realpath(__file__))
-    relative_path = relative_path.strip()
-    try:
-        os.chdir(base_path)
-        path = os.path.abspath(relative_path)
-        value = path
-        os.chdir(current_directory)
-    except Exception, err:
-        print "{0} file does not exist in provided path".format(relative_path)
-        print(err)
-    return value
+    if base_path is None:
+        base_path = os.getcwd()
+
+    path = os.path.join(base_path.strip(), relative_path.strip())
+
+    if not os.path.exists(path):
+        print "An Error Occurred: {0} does not exist".format(path)
+        path = None
+
+    return path
 
 
 def get_parent_directory(directory_path, level=1):

@@ -18,9 +18,11 @@
 				<div class="page" id="launchpad">
 					<div class="page-content">
 						<div class="tabs">
-						
+
+
 
 							{% for app in apps %}
+							{{ app.json_data }}
 								<div class="tab {{ app.data.color }}" katana-click="templateAPI.load" url="{{ app.data.url }}"><i class="fa fa-{{ app.data.icon }}"></i><span>{{ app.data.name }}</span></div>
 							{% endfor %}
 						</div>

@@ -2,5 +2,5 @@
   "icon": "cog",
   "color": "blue",
   "name" : "Settings",
-  "url" : "configuration"
+  "url" : "/katana/settings/"
 }

@@ -1,9 +1,9 @@
 def split_str_at_last_index(str, split_at):
     """
-    This funtion splits a string at the last index of the character in "split_at"
+    This function splits a string at the last index of the character in "split_at"
     Args:
         str: String to be split
-        split_at: Charater at which the string should be split
+        split_at: Character at which the string should be split
 
     Returns:
 

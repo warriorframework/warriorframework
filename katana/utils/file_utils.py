@@ -13,19 +13,24 @@ def readlines_from_file(path, start=None, end=None):
         data: list of lines read from the file
 
     """
-    with open(path, "r") as f:
-        data = f.readlines()
-    output_list = []
+    data = None
+    try:
+        with open(path, "r") as f:
+            data = f.readlines()
+    except IOError:
+        print "{0} does not exist".format(path)
+    else:
+        output_list = []
 
-    if start is not None and end is not None:
-        flag = False
-        for line in data:
-            if flag and end is not None and line == end:
-                break
-            if flag:
-                output_list.append(line)
-            if not flag and line.startswith(start):
-                flag = True
-        return output_list
+        if start is not None and end is not None:
+            flag = False
+            for line in data:
+                if flag and end is not None and line == end:
+                    break
+                if flag:
+                    output_list.append(line)
+                if not flag and line.startswith(start):
+                    flag = True
+            return output_list
 
     return data
