@@ -20,7 +20,7 @@ if [[ "$filelist" ]]; then
     echo "$filelist"
     echo ""
     echo "$filelist" > filelist.txt
-    python ../warriorframework/wftests/ci/pylint_checker.py filelist.txt .pylintrc
+    python ../warriorframework/wftests/ci/pylint_checker.py filelist.txt .pylintrc "${TRAVIS_BRANCH}" "${TRAVIS_PULL_REQUEST_BRANCH}"
 else
     echo "no .py file has changed in this commit, exiting"
     # exit 0;
