@@ -194,7 +194,8 @@ def parsexmlobj():
             for elem in class_list_new:
                 if actions_package in str(elem[1]):
                     class_list_new = elem[0]
-            import_action_list.append('from ' + action.strip() + " import " + class_list_new)
+            import_action_list.append('from ' + action.strip() + "." + file_name + " " +
+                                      "import " + class_list_new)
             object_list = class_list_new + "_obj = " + class_list_new + "()"
             object_list_new.append(object_list)
             class_list = (object_list.split('=')[0]).strip()
