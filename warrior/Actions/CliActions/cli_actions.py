@@ -21,7 +21,7 @@ from Framework.Utils.data_Utils import getSystemData,\
 get_session_id, get_credentials, get_object_from_datarepository
 from Framework.Utils.encryption_utils import decrypt
 from WarriorCore.Classes.war_cli_class import WarriorCliClass
-from Framework.ClassUtils.warrior_connect_class import WarriorConnect
+from Framework.ClassUtils.WNetwork.warrior_connect_class import WarriorConnect
 
 
 class CliActions(object):

@@ -83,7 +83,7 @@ def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=6
     """
     print_warning("This method is obsolete and will be deprecated soon. Please"
                   " use 'connect_ssh' method of 'PexpectConnect' class "
-                  "in 'warrior/Framework/ClassUtils/warrior_connect_class.py'")
+                  "in 'warrior/Framework/ClassUtils/WNetwork/warrior_connect_class.py'")
 
     sshobj = None
     conn_string = ""
@@ -181,7 +181,7 @@ def connect_telnet(ip, port="23", username="", password="",
     """
     print_warning("This method is obsolete and will be deprecated soon. Please"
                   " use 'connect_telnet' method of 'PexpectConnect' class "
-                  "in 'warrior/Framework/ClassUtils/warrior_connect_class.py'")
+                  "in 'warrior/Framework/ClassUtils/WNetwork/warrior_connect_class.py'")
 
     conn_options = "" if conn_options is False or conn_options is None else conn_options
     custom_keystroke = "wctrl:M" if not custom_keystroke else custom_keystroke
@@ -243,7 +243,7 @@ def disconnect_telnet(child):
     """Disconnects a telnet session """
     print_warning("This method is obsolete and will be deprecated soon. Please"
                   " use 'disconnect_telnet' method of 'PexpectConnect' class "
-                  "in 'warrior/Framework/ClassUtils/warrior_connect_class.py'")
+                  "in 'warrior/Framework/ClassUtils/WNetwork/warrior_connect_class.py'")
 
     time.sleep(2)
     child.sendcontrol(']')
@@ -263,7 +263,7 @@ def disconnect(child):
     """
     print_warning("This method is obsolete and will be deprecated soon. Please"
                   " use 'disconnect' method of 'PexpectConnect' class "
-                  "in 'warrior/Framework/ClassUtils/warrior_connect_class.py'")
+                  "in 'warrior/Framework/ClassUtils/WNetwork/warrior_connect_class.py'")
 
     if child.isalive():
         if child.ignore_sighup:
@@ -426,7 +426,7 @@ def send_command(session_object, start_prompt, end_prompt, command,
     """
     print_warning("This method is obsolete and will be deprecated soon. Please"
                   " use 'send_command' method of 'PexpectConnect' class "
-                  "in 'warrior/Framework/ClassUtils/warrior_connect_class.py'")
+                  "in 'warrior/Framework/ClassUtils/WNetwork/warrior_connect_class.py'")
 
     tmout = {None: 60, "":60, "none":60}.get(timeout, str(timeout).lower())
     session_object.timeout = int(tmout)
@@ -640,7 +640,7 @@ def _send_cmd(obj_session, **kwargs):
     response = ""
     command = kwargs.get('command')
     if isinstance(obj_session,
-                  Framework.ClassUtils.warrior_connect_class.WarriorConnect):
+                  Framework.ClassUtils.WNetwork.warrior_connect_class.WarriorConnect):
         startprompt = kwargs.get('startprompt', ".*")
         endprompt = kwargs.get('endprompt', None)
         cmd_timeout = kwargs.get('cmd_timeout', None)
