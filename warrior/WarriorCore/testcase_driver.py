@@ -632,6 +632,7 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                                              print_summary=False)
 
     if tc_parallel:
+        tc_junit_object.remove_html_obj()
         tc_impact = data_repository['wt_tc_impact']
         if tc_impact.upper() == 'IMPACT':
             msg = "Status of the executed test case impacts Testsuite result"
