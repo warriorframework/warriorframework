@@ -5,17 +5,20 @@ import os
 import re, sys, time
 from time import sleep
 from Framework.Utils import testcase_Utils, data_Utils, config_Utils
-from pysnmp.entity.rfc3413.oneliner import cmdgen, ntforg
-from pysnmp import error as snmp_exception
-from pysnmp.proto.rfc1902 import OctetString
 import threading
-from pysnmp.proto.api import v2c
-from pysnmp.entity import engine, config
-from pysnmp.carrier.asyncore.dgram import udp, udp6, unix
-from pyasn1.codec.ber import decoder
-from pysnmp.proto import api
-from pysnmp.smi import builder, view, compiler, rfc1902, error
-from pysnmp import debug 
+try:
+    from pysnmp.entity.rfc3413.oneliner import cmdgen, ntforg
+    from pysnmp import error as snmp_exception
+    from pysnmp.proto.api import v2c
+    from pysnmp.entity import engine, config
+    from pysnmp.carrier.asyncore.dgram import udp, udp6, unix
+    from pyasn1.codec.ber import decoder
+    from pysnmp.proto import api
+    from pysnmp.smi import builder, view, compiler, rfc1902, error
+    from pysnmp import debug
+    from pysnmp.proto.rfc1902 import OctetString
+except ImportError:
+    testcase_Utils.pNote("Please Install PYSNMP 4.3.8 or Above", "error")
 
 
 

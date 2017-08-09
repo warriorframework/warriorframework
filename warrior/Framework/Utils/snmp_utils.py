@@ -11,7 +11,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from pysnmp.smi import builder, view, compiler, rfc1902, error
-from Framework.Utils import testcase_Utils
+try:
+    from Framework.Utils import testcase_Utils
+except ImportError:
+    testcase_Utils.pNote("Please Install PYSNMP 4.3.8 or Above", "error")
 
 def split_mib_path(custom_mib_paths):
     """

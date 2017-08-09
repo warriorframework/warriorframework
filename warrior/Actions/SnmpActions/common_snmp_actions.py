@@ -24,9 +24,12 @@ from Framework.Utils import testcase_Utils, config_Utils, data_Utils, snmp_utils
 from threading import Thread
 from time import sleep
 import Queue
-from pysnmp.smi import builder, view, compiler, error
-from pysnmp.entity.rfc3413 import ntfrcv
-from pysnmp.smi import builder, view, compiler, rfc1902, error
+try:
+    from pysnmp.smi import builder, view, compiler, error
+    from pysnmp.entity.rfc3413 import ntfrcv
+    from pysnmp.smi import builder, view, compiler, rfc1902, error
+except ImportError:
+    testcase_Utils.pNote("Please Install PYSNMP 4.3.8 or Above", "error")
 
 
 
