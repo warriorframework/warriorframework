@@ -1,17 +1,5 @@
-'''
-Copyright 2017, Fujitsu Network Communications, Inc.
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-'''
-
 """SNMP utility module using the python PYSNMP module"""
+#!/usr/bin/env python
 
 import os
 import re, sys, time
@@ -218,9 +206,10 @@ class WSnmp(object):
         custom_mib_path = cls.data_repo.get("custom_mib_path")
         load_mib_module = cls.data_repo.get("load_mib_module")
         __custom_mib_paths = []
-        if custom_mib_path:
+        if custom_mib_path and load_mib_module:
             custom_mib_paths = custom_mib_path.split(',')
             for paths in custom_mib_paths:
+                paths = paths.strip()
                 if 'http' in paths and '@mib@' not in paths:
                     if paths[-1] == '/':
                         paths = paths + '/@mib@'
@@ -232,16 +221,14 @@ class WSnmp(object):
                     paths = paths.replace('browse', 'raw')
                 __custom_mib_paths.append(paths)
             if os.name == 'posix' and '/usr/share/snmp/' not in custom_mib_path:
-                __custom_mib_paths = __custom_mib_paths+',/usr/share/snmp/'
-            compiler.addMibCompiler(mibBuilder, sources=__custom_mib_paths)
-            cls.mibViewController = view.MibViewController(mibBuilder)
-            for mibs in load_mib_module.split(","):
-                mibBuilder.loadModules(mibs)
-        else:
-            for mibs in load_mib_module.split(","):
-                mibBuilder.loadModules(mibs)
-            mibBuilder.loadModules('SNMPv2-MIB', 'SNMP-COMMUNITY-MIB')
-            cls.mibViewController = view.MibViewController(mibBuilder)
+                __custom_mib_paths.append('/usr/share/snmp/')
+            try:
+                compiler.addMibCompiler(mibBuilder, sources=__custom_mib_paths)
+                cls.mibViewController = view.MibViewController(mibBuilder)
+                mibs=load_mib_module.split(",")
+                mibBuilder.loadModules(*mibs)
+            except error.MibNotFoundError as excep:
+                testcase_Utils.pNote("{} Mib Not Found!".format(excep), "Error")
         __snmpEngine = cls.get_asyncoredispatcher(port)
         config.addTransport(__snmpEngine, udp.domainName,
                             udp.UdpTransport().openServerMode(('0.0.0.0', int(port))))
@@ -288,13 +275,14 @@ class WSnmp(object):
         decoded_msg.append({"SNMPVER":execContext["securityModel"]})
         decoded_msg.append({"securityName":execContext['securityName']})
         for oid, val in varBinds:
-            output = rfc1902.ObjectType(rfc1902.ObjectIdentity(oid),
+            try:
+                output = rfc1902.ObjectType(rfc1902.ObjectIdentity(oid),
                              val).resolveWithMib(cls.mibViewController).prettyPrint()
+            except error.SmiError as excep:
+                testcase_Utils.pNote("{} Decode Error!".format(excep), "Error")
             op_list = output.split(" = ")
             oid = op_list[0].strip()
             value = op_list[1].strip()
-            #print "#######################Recived Notification from {} #######################".format(snmpEngine.msgAndPduDsp.getTransportInfo(stateReference)[-1][0])
-            #print output
             decoded_msg.append((oid, value))
         __decoded_msg = cls.data_repo.get("snmp_trap_messages_{}".format(transportAddress))
         __decoded_msg.append(decoded_msg)

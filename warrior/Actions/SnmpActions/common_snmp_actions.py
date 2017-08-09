@@ -14,8 +14,7 @@ limitations under the License.
 """
 Implementation of the standard SNMP protocol commands for SNMP v1 and v2c and V3
 and IPv6 support added.
-SNMP v3 Trap and Inform support added.
-The 
+SNMP v3 Trap and Inform support added. 
 """
 import os, re
 import Framework.Utils as Utils
@@ -27,6 +26,7 @@ from time import sleep
 import Queue
 from pysnmp.smi import builder, view, compiler, error
 from pysnmp.entity.rfc3413 import ntfrcv
+from pysnmp.smi import builder, view, compiler, rfc1902, error
 
 
 
@@ -43,6 +43,8 @@ class CommonSnmpActions(object):
         self.filename = Utils.config_Utils.filename
         self.logfile = Utils.config_Utils.logfile
         self.snmpver = {'1':'0', '2':'1', '2c':'1', '3':'2'}
+        self.boolval = {"True":True, "False":False}
+
 
     def snmp_get(self, snmp_ver, system_name, mib_name=None,
                  mib_index=None, mib_value=None,
@@ -96,7 +98,7 @@ class CommonSnmpActions(object):
                               e.g. privProtocol="1,3,6,1,6,3,10,1,2,2"
             14.custom_mib_paths: User can provide multiple MIB source path seperated by comma (',')
                       Source path can be url or just absolute directory path. Refer bellow example.
-                      e.g. 'https://github.com/warriorframework/warriorframework, /data/users/username/MIBS/FNC'.
+                      e.g. 'http://rtx-swtl-git.fnc.net.local/projects/TYREPO/repos/fujitsu_base_yang_repo/browse/src/util/snmp/@mib@, /data/users/sbhattac/MIBS/FNC'.
                       For URL it supports http, file, https, ftp and sftp.
                       Use @mib@ placeholder token in URL location to refer.
             15.load_mib_modules: User can provide the MIBS(name) need to be loaded from the path "custom_mib_path".
@@ -120,7 +122,7 @@ class CommonSnmpActions(object):
 
         wdesc = "Executing SNMP GET command"
         Utils.testcase_Utils.pSubStep(wdesc)
-
+        status = False
         snmp_parameters = ['ip', 'snmp_port']
         snmp_param_dic = Utils.data_Utils.get_credentials(self.datafile,
                                                           system_name,
@@ -129,6 +131,7 @@ class CommonSnmpActions(object):
         port = snmp_param_dic.get('snmp_port')
 
         output_dict = {}
+        __custom_mib_paths = None
 
         wsnmp = ws(communityname, self.snmpver.get(snmp_ver), ipaddr, port, snmp_timeout,
                    userName, authKey, privKey,authProtocol,
@@ -142,13 +145,15 @@ class CommonSnmpActions(object):
             transport = wsnmp.udp6transporttarget()
         else:    #for ipv4
             transport = wsnmp.udptransporttarget()
+        if custom_mib_paths:
+            __custom_mib_paths = snmp_utils.split_mib_path(custom_mib_paths)
+
         if oid_string == None and mib_name == None:
             testcase_Utils.pNote("Please provide OID or MIB Information!", "error")
         if oid_string:
             oid = tuple([int(e) if e.isdigit() else e for e in oid_string.split('.')])
         else:
             if custom_mib_paths:
-                __custom_mib_paths = snmp_utils.split_mib_path(custom_mib_paths)
                 oid = wsnmp.mibvariable(mib_name, mib_index, mib_value).addAsn1MibSource(*__custom_mib_paths)
             else:
                 oid = wsnmp.mibvariable(mib_name, mib_index, mib_value)
@@ -159,14 +164,19 @@ class CommonSnmpActions(object):
                            '{0}_errindication'.format(system_name):errindication,
                            '{0}_errstatus'.format(system_name):errstatus,
                            '{0}_errindex'.format(system_name):errindex,
-                           '{0}_result'.format(system_name):result}
+                           '{0}_result'.format(system_name):result,
+                           '{}_custom_mib_paths'.format(system_name):__custom_mib_paths,
+                           '{}_load_mib_modules'.format(system_name):load_mib_modules
+                           }
+            if result != []:
+                status = True
+                testcase_Utils.pNote("Successfully executed SNMP GET command {}".format(result), "info")
+            else:
+                testcase_Utils.pNote("Failure SNMP Command Return Null Value! {}".format(result), "error")
 
-            status = True
-            testcase_Utils.pNote("Successfully executed SNMP GET command {}".format(result), "info")
-
-        except wsnmp.exception:
+        except wsnmp.exception as excep:
             status = False
-            testcase_Utils.pNote("SNMP GET command Failed.", "error")
+            testcase_Utils.pNote("SNMP GET command Failed!\n{}".format(excep), "error")
 
         Utils.testcase_Utils.report_substep_status(status)
         return status, output_dict
@@ -227,7 +237,7 @@ class CommonSnmpActions(object):
                               e.g. privProtocol='1,3,6,1,6,3,10,1,2,2)'
             15.custom_mib_paths: User can provide multiple MIB source path seperated by comma (',')
                       Source path can be url or just absolute directory path. Refer bellow example.
-                      e.g. 'https://github.com/warriorframework/warriorframework, /data/users/username/MIBS/FNC'.
+                      e.g. 'http://rtx-swtl-git.fnc.net.local/projects/TYREPO/repos/fujitsu_base_yang_repo/browse/src/util/snmp/@mib@, /data/users/sbhattac/MIBS/FNC'.
                       For URL it supports http, file, https, ftp and sftp.
                       Use @mib@ placeholder token in URL location to refer.
             16.load_mib_module: User can provide the MIBS(name) need to be loaded from the path "custom_mib_path".
@@ -251,7 +261,7 @@ class CommonSnmpActions(object):
 
         wdesc = "Executing SNMP GETNEXT command"
         Utils.testcase_Utils.pSubStep(wdesc)
-
+        status = False
         snmp_parameters = ['ip', 'snmp_port']
         snmp_param_dic = Utils.data_Utils.get_credentials(self.datafile,
                                                           system_name,
@@ -260,7 +270,7 @@ class CommonSnmpActions(object):
         port = snmp_param_dic.get('snmp_port')
 
         output_dict = {}
-
+        __custom_mib_paths = None
         wsnmp = ws(communityname, self.snmpver.get(snmp_ver), ipaddr, port, snmp_timeout,
                    userName, authKey, privKey,authProtocol,
                    privProtocol)
@@ -274,6 +284,8 @@ class CommonSnmpActions(object):
             transport = wsnmp.udp6transporttarget()
         else:    #for ipv4
             transport = wsnmp.udptransporttarget()
+        if custom_mib_paths:
+            __custom_mib_paths = snmp_utils.split_mib_path(custom_mib_paths)
         if oid_string == None and mib_name == None:
             testcase_Utils.pNote("Please provide OID or MIB Information!", "error")
 
@@ -281,14 +293,13 @@ class CommonSnmpActions(object):
             oid = tuple([int(e) if e.isdigit() else e for e in oid_string.split('.')])
         else:
             if custom_mib_paths:
-                __custom_mib_paths = snmp_utils.split_mib_path(custom_mib_paths)
                 oid = wsnmp.mibvariable(mib_name, mib_index, mib_value).addAsn1MibSource(*__custom_mib_paths)
             else:
                 oid = wsnmp.mibvariable(mib_name, mib_index, mib_value)
         try:
             errindication, errstatus, errindex, \
             result = cmdgen.nextCmd(auth_data,
-                                    transport, oid, lexicographicMode=True,
+                                    transport, oid,
                                     ignoreNonIncreasingOid=True, maxRows=int(max_rows),
                                     lookupNames=True, lookupValues=True)
             #  maxRows=1 will control the mib walk
@@ -296,14 +307,18 @@ class CommonSnmpActions(object):
                            '{0}_errindication'.format(system_name):errindication,
                            '{0}_errstatus'.format(system_name):errstatus,
                            '{0}_errindex'.format(system_name):errindex,
-                           '{0}_result'.format(system_name):result}
-
-            status = True
-            testcase_Utils.pNote("Successfully executed SNMP GET-NEXT "
+                           '{0}_result'.format(system_name):result,
+                           '{}_custom_mib_paths'.format(system_name):__custom_mib_paths,
+                           '{}_load_mib_modules'.format(system_name):load_mib_modules}
+            if result != []:
+                status = True
+                testcase_Utils.pNote("Successfully executed SNMP GET-NEXT "
                                  "command {}".format(result), "info")
-        except wsnmp.exception:
+            else:
+                testcase_Utils.pNote("Failure SNMP Command Return Null Value! {}".format(result), "error")
+        except wsnmp.exception as excep:
             status = False
-            testcase_Utils.pNote("SNMP GET-Next command Failed.", "error")
+            testcase_Utils.pNote("SNMP GET-Next command Failed! \n{}".format(excep), "error")
 
         Utils.testcase_Utils.report_substep_status(status)
 
@@ -317,7 +332,7 @@ class CommonSnmpActions(object):
                  privProtocol=None,
                  custom_mib_paths=None,
                  load_mib_modules=None,
-                 lexicographicMode=False):
+                 lexicographicMode="False"):
         """
         snmp_walk uses the SNMP WALK request to query for information on
         a network entity
@@ -362,7 +377,7 @@ class CommonSnmpActions(object):
                               e.g. privProtocol='1,3,6,1,6,3,10,1,2,2'
             14.custom_mib_paths: User can provide multiple MIB source path seperated by comma (',')
                       Source path can be url or just absolute directory path. Refer bellow example.
-                      e.g. 'https://github.com/warriorframework/warriorframework, /data/users/username/MIBS/FNC'.
+                      e.g. 'http://rtx-swtl-git.fnc.net.local/projects/TYREPO/repos/fujitsu_base_yang_repo/browse/src/util/snmp/@mib@, /data/users/sbhattac/MIBS/FNC'.
                       For URL it supports http, file, https, ftp and sftp.
                       Use @mib@ placeholder token in URL location to refer.
             15.load_mib_modules: User can provide the MIBS(name) need to be loaded from the path "custom_mib_path".
@@ -388,7 +403,7 @@ class CommonSnmpActions(object):
 
         wdesc = "Executing SNMP WALK command"
         Utils.testcase_Utils.pSubStep(wdesc)
-
+        status = False
         snmp_parameters = ['ip', 'snmp_port']
         snmp_param_dic = Utils.data_Utils.get_credentials(self.datafile,
                                                           system_name,
@@ -397,7 +412,7 @@ class CommonSnmpActions(object):
         port = snmp_param_dic.get('snmp_port')
 
         output_dict = {}
-
+        __custom_mib_paths = None
         wsnmp = ws(communityname, self.snmpver.get(snmp_ver), ipaddr, port, snmp_timeout,
                    userName, authKey, privKey,authProtocol,
                    privProtocol)
@@ -414,12 +429,12 @@ class CommonSnmpActions(object):
 
         if oid_string == None and mib_name == None:
             testcase_Utils.pNote("Please provide OID or MIB Information!", "error")
-
+        if custom_mib_paths:
+            __custom_mib_paths = snmp_utils.split_mib_path(custom_mib_paths)
         if oid_string: #OID String is optional
             oid = tuple([int(e) if e.isdigit() else e for e in oid_string.split('.')])
         else:
             if custom_mib_paths:
-                __custom_mib_paths = snmp_utils.split_mib_path(custom_mib_paths)
                 oid = wsnmp.mibvariable(mib_name, mib_index).addAsn1MibSource(*__custom_mib_paths)
             else:
                 oid = wsnmp.mibvariable(mib_name, mib_index)
@@ -427,20 +442,26 @@ class CommonSnmpActions(object):
             errindication, errstatus, errindex,\
             result = cmdgen.nextCmd(auth_data,
                                     transport,
-                                    oid, lexicographicMode=lexicographicMode,
-                                    ignoreNonIncreasingOid=True, maxRows=5000,
+                                    oid, lexicographicMode=self.boolval[lexicographicMode],
+                                    ignoreNonIncreasingOid=True, maxRows=50000,
                                     lookupNames=True, lookupValues=True)
             output_dict = {
                            '{0}_errindication'.format(system_name):errindication,
                            '{0}_errstatus'.format(system_name):errstatus,
                            '{0}_errindex'.format(system_name):errindex,
-                           '{0}_result'.format(system_name):result}
+                           '{0}_result'.format(system_name):result,
+                           '{}_custom_mib_paths'.format(system_name):__custom_mib_paths,
+                           '{}_load_mib_modules'.format(system_name):load_mib_modules
+                           }
 
-            status = True
-            testcase_Utils.pNote("Successfully executed SNMP WALK command {}".format(result), "info")
-        except wsnmp.exception:
+            if result != []:
+                status = True
+                testcase_Utils.pNote("Successfully executed SNMP WALK command {}".format(result), "info")
+            else:
+                testcase_Utils.pNote("Failure SNMP Command Return Null Value! {}".format(result), "error")
+        except wsnmp.exception as excep:
             status = False
-            testcase_Utils.pNote("SNMP Walk command Failed.", "error")
+            testcase_Utils.pNote("SNMP Walk command Failed!\n{}".format(excep), "error")
         Utils.testcase_Utils.report_substep_status(status)
         return status, output_dict
 
@@ -448,6 +469,8 @@ class CommonSnmpActions(object):
                  mib_index=None, mib_value=None,
                  oid_string=None, communityname=None,
                  snmp_timeout=60,
+                 nonrepeaters='0',
+                 maxrepetitions='10',
                  userName=None, authKey=None, privKey=None,authProtocol=None,
                  privProtocol=None,
                  custom_mib_paths=None,
@@ -497,13 +520,15 @@ class CommonSnmpActions(object):
                               e.g. privProtocol='1,3,6,1,6,3,10,1,2,2'
             15.custom_mib_paths: User can provide multiple MIB source path seperated by comma (',')
                       Source path can be url or just absolute directory path. Refer bellow example.
-                      e.g. 'https://github.com/warriorframework/warriorframework, /data/users/username/MIBS/FNC'.
+                      e.g. 'http://rtx-swtl-git.fnc.net.local/projects/TYREPO/repos/fujitsu_base_yang_repo/browse/src/util/snmp/@mib@, /data/users/sbhattac/MIBS/FNC'.
                       For URL it supports http, file, https, ftp and sftp.
                       Use @mib@ placeholder token in URL location to refer.
             16.load_mib_modules: User can provide the MIBS(name) need to be loaded from the path "custom_mib_path".
                       It is a string of MIB names separated by comma(',')
             17.lexicographicMode : "True" will return everything under given prefix plus the next table also e.g. if request 1.3.6.1 will also provide 1.3.6.2
                                    "False" will return only under given prefix. Default its False.
+            18. maxrepetitions: This specifies the maximum number of iterations over the repeating variables. The default is 10.
+            19. nonrepeaters : This specifies the number of supplied variables that should not be iterated over. default is 0
         :Return:
             status(bool)= True / False.
             output_dict = consists of following key value:
@@ -523,7 +548,7 @@ class CommonSnmpActions(object):
 
         wdesc = "Executing SNMP BULKGET command"
         Utils.testcase_Utils.pSubStep(wdesc)
-
+        status = False
         snmp_parameters = ['ip', 'snmp_port']
         snmp_param_dic = Utils.data_Utils.get_credentials(self.datafile,
                                                           system_name,
@@ -532,6 +557,7 @@ class CommonSnmpActions(object):
         port = snmp_param_dic.get('snmp_port')
 
         output_dict = {}
+        __custom_mib_paths = None
 
         wsnmp = ws(communityname, self.snmpver.get(snmp_ver), ipaddr, port, snmp_timeout,
                    userName, authKey, privKey,authProtocol,
@@ -546,6 +572,8 @@ class CommonSnmpActions(object):
             transport = wsnmp.udp6transporttarget()
         else:    #for ipv4
             transport = wsnmp.udptransporttarget()
+        if custom_mib_paths:
+            __custom_mib_paths = snmp_utils.split_mib_path(custom_mib_paths)
         if oid_string == None and mib_name == None:
             testcase_Utils.pNote("Please provide OID or MIB Information!", "error")
 
@@ -554,7 +582,6 @@ class CommonSnmpActions(object):
                          else e for e in oid_string.split('.')])
         else:
             if custom_mib_paths:
-                __custom_mib_paths = snmp_utils.split_mib_path(custom_mib_paths)
                 oid = wsnmp.mibvariable(mib_name, mib_index, mib_value).addAsn1MibSource(*__custom_mib_paths)
             else:
                 oid = wsnmp.mibvariable(mib_name, mib_index, mib_value)
@@ -562,12 +589,13 @@ class CommonSnmpActions(object):
             errindication, errstatus, errindex, \
             result = cmdgen.bulkCmd(auth_data,
                                     transport,
-                                    1, 25, oid, 
-                                    lexicographicMode=lexicographicMode,
+                                    int(nonrepeaters), int(maxrepetitions), oid,
                                     lookupNames=True,
                                     lookupValues=True,
-                                    maxRows=20)
-            # nonRepeaters(1)(int): One MIB variable is requested in response
+                                    lexicographicMode=self.boolval[lexicographicMode],
+                                    maxRows=int(maxrepetitions)
+                                    )
+            # nonrepeaters(1)(int): One MIB variable is requested in response
             # for the first nonRepeaters MIB variables in request.
             # maxRepetitions(25)(int): maxRepetitions MIB variables are
             # requested in response for each of the remaining MIB variables in
@@ -577,14 +605,19 @@ class CommonSnmpActions(object):
                            '{0}_errindication'.format(system_name):errindication,
                            '{0}_errstatus'.format(system_name):errstatus,
                            '{0}_errindex'.format(system_name):errindex,
-                           '{0}_result'.format(system_name):result}
+                           '{0}_result'.format(system_name):result,
+                           '{}_custom_mib_paths'.format(system_name):__custom_mib_paths,
+                           '{}_load_mib_modules'.format(system_name):load_mib_modules}
 
-            status = True
-            testcase_Utils.pNote("Successfully executed SNMP BULK GET "
-                                 "command".format(result), "info")
-        except wsnmp.exception:
+            if result != []:
+                status = True
+                testcase_Utils.pNote("Successfully executed SNMP BULK GET "
+                                 "command {}".format(result), "info")
+            else:
+                testcase_Utils.pNote("Failure SNMP Command Return Null Value! {}".format(result), "error")
+        except wsnmp.exception as excep:
             status = False
-            testcase_Utils.pNote("SNMP BULK GET command Failed.", "error")
+            testcase_Utils.pNote("SNMP BULK GET command Failed!\n{}".format(excep), "error")
 
         Utils.testcase_Utils.report_substep_status(status)
 
@@ -612,6 +645,8 @@ class CommonSnmpActions(object):
         varBindTable = Utils.data_Utils.get_object_from_datarepository(str(system_name)+"_result")
         errorstatus = Utils.data_Utils.get_object_from_datarepository(str(system_name)+"_errstatus")
         errindex = Utils.data_Utils.get_object_from_datarepository(str(system_name)+"_errindex")
+        custom_mib_paths = Utils.data_Utils.get_object_from_datarepository(str(system_name)+"_custom_mib_paths")
+        load_mib_modules = Utils.data_Utils.get_object_from_datarepository(str(system_name)+"_load_mib_modules")
 
         #Non-empty errorIndication string indicates SNMP engine-level error.
         #The pair of errorStatus and errorIndex variables determines SNMP
@@ -622,6 +657,7 @@ class CommonSnmpActions(object):
 
         result_list = []
         status = False
+
         if errindication:
             testcase_Utils.pNote("%s" % errindication)
         else:
@@ -630,74 +666,39 @@ class CommonSnmpActions(object):
                                                    errindex and
                                                    varBindTable[-1][int(errindex)-1][0]or '?'))
             else:
-                if type(varBindTable[0]) is not list:
-                    # for SNMP Get/Get-Next output only
-                    for name, val in varBindTable:
-                        if ws.checkoctetstring(val):
-                            if '0x' == val.prettyPrint()[:2]: # to
-                                # confirm if it is a hex string or not
-                                if len(val.prettyPrint()) == 14:# for MAC
-                                    s = val.prettyPrint()
-                                    val = ':'.join( s[x:x+2] for x in
-                                                    range(2,len(s), 2))
-                                if len(val.prettyPrint()) == 12:# for IP
-                                    s = val.prettyPrint()
-                                    val = '.'.join( s[x:x+2] for x in
-                                                    range(2,len(s), 2))
-
-                            result_list.append((name.prettyPrint(),
-                                                val))
-                            testcase_Utils.pNote('%s = %s' %(
-                                name.prettyPrint(),val))
-                        else:
-                            result_list.append((name.prettyPrint(),
-                                                val.prettyPrint()))
-                            testcase_Utils.pNote('%s = %s' % (
-                                name.prettyPrint(),val.prettyPrint()))
+                if varBindTable:
+                    if type(varBindTable[0]) is not list:
+                        # for SNMP Get/Get-Next output only
+                        for name, val in varBindTable:
+                            result_list.append(snmp_utils.translate_mib(custom_mib_paths, load_mib_modules, name, val))
+                    else:
+                        # for SNMP Getbulk/walk output only
+                        for varBindTableRow in varBindTable:
+                            for name, val in varBindTableRow:
+                                result_list.append(snmp_utils.translate_mib(custom_mib_paths, load_mib_modules, name, val))
                 else:
-                    # for SNMP Getbulk/walk output only
-                    for varBindTableRow in varBindTable:
-                        for name, val in varBindTableRow:
-                            if ws.checkoctetstring(val):
-                                if '0x' == val.prettyPrint()[:2]: # to
-                                    # confirm if it is a hex string or not
-                                    if len(val.prettyPrint()) == 14:# for MAC
-                                        s = val.prettyPrint()
-                                        val = ':'.join( s[x:x+2] for x in
-                                                        range(2,len(s), 2))
-                                    if len(val.prettyPrint()) == 12:# for IP
-                                        s = val.prettyPrint()
-                                        val = '.'.join( s[x:x+2] for x in
-                                                        range(2,len(s), 2))
-
-                                result_list.append((name.prettyPrint(),
-                                                    val))
-                                testcase_Utils.pNote('%s = %s' %(
-                                    name.prettyPrint(),val))
-                            else:
-                                result_list.append((name.prettyPrint(),
-                                                    val.prettyPrint()))
-                                testcase_Utils.pNote('%s = %s' %
-                                                     (name.prettyPrint(),
-                                                      val.prettyPrint()))
-
+                    testcase_Utils.pNote("No SNMP Result Present!", 'error')
         for element in result_list:
             if mib_string:
-                if mib_string in element and snmp_result in element:
+                if mib_string in element[0] and snmp_result in element[-1]:
                     status = True
                     testcase_Utils.pNote('%s and %s found in SNMP Output' %(
                         mib_string, snmp_result))
                     break
             else:
-                if snmp_result in element:
+                if snmp_result in element[-1]:
                     status = True
-                    testcase_Utils.pNote('%s found in SNMP Output' %(
+                    testcase_Utils.pNote('%s Found! in SNMP Output' %(
                         snmp_result))
                     break
-
+        if status == False:
+            if mib_string:
+                testcase_Utils.pNote('{} and {} NOT Found in SNMP Output'.format(mib_string, snmp_result))
+            else:
+                testcase_Utils.pNote('{} NOT Found in SNMP Output'.format(snmp_result))
         Utils.testcase_Utils.report_substep_status(status)
-
         return status
+
 
     def add_snmp_v3_user(self, port, username, securityEngineId,
                          authkey=None, privkey=None,
@@ -759,7 +760,7 @@ class CommonSnmpActions(object):
             system_name: SNMP Agents system name from the data file.
             custom_mib_path: User can provide multiple MIB source path seperated by comma (',')
                       Source path can be url or just absolute directory path. Refer bellow example.
-                      e.g. 'https://github.com/warriorframework/warriorframework, /data/users/username/MIBS/FNC'.
+                      e.g. 'http://rtx-swtl-git.fnc.net.local/projects/TYREPO/repos/fujitsu_base_yang_repo/browse/src/util/snmp/@mib@, /data/users/sbhattac/MIBS/FNC'.
                       For URL it supports http, file, https, ftp and sftp.
                       Use @mib@ placeholder token in URL location to refer.
             load_mib_module: User can provide the MIBS(name) need to be loaded from the path "custom_mib_path".

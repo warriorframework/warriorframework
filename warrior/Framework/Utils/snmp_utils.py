@@ -10,7 +10,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from pysnmp.smi import builder, view, compiler, rfc1902, error
+from Framework.Utils import testcase_Utils
 
 def split_mib_path(custom_mib_paths):
     """
@@ -32,3 +33,43 @@ def split_mib_path(custom_mib_paths):
         __custom_mib_paths.append(paths)
     __custom_mib_paths.append('/usr/share/snmp/mibs')
     return __custom_mib_paths
+
+def translate_mib(custom_mib_paths, load_mib_modules, name, val):
+    """
+    Translate OID to MIB
+    custom_mib_paths: comma separated mib paths as a string
+    load_mib_modules: MIB Module to load e.g. "MIB-FILE-1,MIB-FILE-2"
+    Return: Translated OID string and value
+    """
+    if custom_mib_paths and load_mib_modules:
+        try:
+            mibBuilder = builder.MibBuilder()
+            compiler.addMibCompiler(mibBuilder, sources=custom_mib_paths)
+            mibViewController = view.MibViewController(mibBuilder)
+            __load_mib_modules = load_mib_modules.split(',')
+            mibBuilder.loadModules(*__load_mib_modules)
+        except error.MibNotFoundError as excep:
+            testcase_Utils.pNote(" {} Mib Not Found!".format(excep), "Error")
+    if custom_mib_paths and load_mib_modules:
+        __type = val.__class__.__name__
+        output = rfc1902.ObjectType(rfc1902.ObjectIdentity(name), val).resolveWithMib(mibViewController).prettyPrint()
+        op_list = output.split(" = ")
+        name = op_list[0].strip()
+        __val = op_list[1].strip()
+        if __type == "Integer":
+            testcase_Utils.pNote('%s = %s(%s): %s' %
+                         (name, __type,val.prettyPrint(),
+                          __val))
+        else:
+            if __val == '': #For empty String
+                testcase_Utils.pNote('%s = %s: ""' %
+                         (name, __type))
+            else:
+                testcase_Utils.pNote('%s = %s: %s' %
+                         (name, __type, __val))            
+        return name, __val
+    else:
+        testcase_Utils.pNote('%s = %s: %s' %
+                         (name.prettyPrint(), __type,
+                          val.prettyPrint()))
+        return name.prettyPrint(), val.prettyPrint()
