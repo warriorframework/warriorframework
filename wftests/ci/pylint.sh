@@ -1,18 +1,20 @@
 # set -x
-# ls -l
-pip install pylint
+# rm -rf ../pylint_warrior
+TRAVIS_BRANCH=develop
+TRAVIS_PULL_REQUEST_BRANCH=feature/WAR-1336
+# pip install pylint
 
 cd ../
-git clone https://github.com/warriorframework/warriorframework.git pylint_warrior
+# git clone https://github.com/warriorframework/warriorframework.git pylint_warrior
 cd pylint_warrior
-git checkout develop
-git checkout "${TRAVIS_PULL_REQUEST_BRANCH}"
-git merge --no-edit develop
-ls -a
+# git checkout "${TRAVIS_BRANCH}"
+# git checkout "${TRAVIS_PULL_REQUEST_BRANCH}"
+# echo "Merging ${TRAVIS_BRANCH} into ${TRAVIS_PULL_REQUEST_BRANCH}"
+# git merge --no-edit "${TRAVIS_BRANCH}"
 
-git branch
+# git branch
 # Displaying what .py files have changed
-filelist=$(git --no-pager diff develop --name-only)
+filelist=$(git --no-pager diff "${TRAVIS_BRANCH}" --name-only)
 if [[ "$filelist" ]]; then
     echo "List of .py files that have changed in this commit"
     echo "$filelist"
@@ -20,12 +22,13 @@ if [[ "$filelist" ]]; then
     python wftests/ci/pylint_checker.py filelist.txt
 else
     echo "no .py file has changed in this commit, exiting"
-    exit 0;
+    # exit 0;
 fi
 
-# # Do pylint on develop and the latest commit, output result to pylint_result.txt
+# git checkout "${TRAVIS_BRANCH}"
+# # Do pylint on target branch and the latest commit, output result to pylint_result.txt
 # echo "$filelist" | xargs -L 1 -I {} pylint --rcfile=.pylintrc {} || true
-# git checkout "${TRAVIS_PULL_REQUEST_SHA}"
+# git checkout "${TRAVIS_PULL_REQUEST_BRANCH}"
 # echo "$filelist"
 # echo "$filelist" | xargs -L 1 -I {} pylint --rcfile=.pylintrc {} | tee pylint_result.txt || true
 
