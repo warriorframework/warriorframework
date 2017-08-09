@@ -35,7 +35,13 @@ if __name__ == "__main__":
     args = sys.argv[1:]
     directory = os.path.dirname(sys.argv[0])
 
-    command = "python"
+    python_executable = sys.executable
+
+    if not python_executable:
+        command = "python"
+    else:
+        command = python_executable
+
     port = 5000
     runserver = "runserver"
     filepath = "manage.py"
