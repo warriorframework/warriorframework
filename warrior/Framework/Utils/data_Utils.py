@@ -750,11 +750,13 @@ def convert2type(value, data_type='str'):
     """
     type_funcs = {'str': str, 'int': int, 'float': float}
     convert = type_funcs[data_type]
+    cvalue = value
     try:
         cvalue = convert(value)
+    except ValueError:
+        print_error("'{}' should be of type {}, please correct".format(value, data_type))
     except Exception as exception:
         print_exception(exception)
-        return None
     return cvalue
 
 
@@ -863,6 +865,7 @@ def verify_data(expected, key, data_type='str', comparison='eq'):
     def validate():
         result = "TRUE"
         err_msg = ""
+        exp = None
         if data_type not in type_funcs:
             err_msg += "type {} not supported, only one of {} supported\n".\
                 format(data_type, '/'.join(type_funcs.keys()))
