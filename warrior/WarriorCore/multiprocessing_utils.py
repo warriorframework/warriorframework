@@ -98,7 +98,7 @@ def update_attribute(dict1, dict2):
     keys = ["errors", "failures", "skipped", "passes", "exceptions",
             "keywords", 'tests', 'suites']
     for key in keys:
-        if key in dict1:
+        if key in dict1 and key in dict2:
             dict1[key] = str(int(dict1[key])+int(dict2[key]))
     return dict1
 

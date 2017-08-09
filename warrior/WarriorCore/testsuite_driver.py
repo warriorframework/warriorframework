@@ -454,10 +454,8 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
         elif ts_impact.upper() == 'NOIMPACT':
             msg = "Status of the executed suite case does not impact project result"
         print_debug(msg)
-        ts_name = Utils.file_Utils.getFileName(testsuite_filepath)
         # put result into multiprocessing queue and later retrieve in corresponding driver
-        queue.put((test_suite_status, ts_name, ts_impact, ts_onError_action,
-                   suite_timestamp, suite_duration, ts_junit_object))
+        queue.put((test_suite_status, ts_impact, suite_timestamp, ts_junit_object))
 
     return test_suite_status, suite_repository
 
