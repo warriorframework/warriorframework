@@ -10,11 +10,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from pysnmp.smi import builder, view, compiler, rfc1902, error
+
+from Framework.Utils import testcase_Utils
 try:
-    from Framework.Utils import testcase_Utils
+    from pysnmp.smi import builder, view, compiler, rfc1902, error
 except ImportError:
     testcase_Utils.pNote("Please Install PYSNMP 4.3.8 or Above", "error")
+
 
 def split_mib_path(custom_mib_paths):
     """
@@ -69,7 +71,7 @@ def translate_mib(custom_mib_paths, load_mib_modules, name, val):
                          (name, __type))
             else:
                 testcase_Utils.pNote('%s = %s: %s' %
-                         (name, __type, __val))            
+                         (name, __type, __val))
         return name, __val
     else:
         testcase_Utils.pNote('%s = %s: %s' %
