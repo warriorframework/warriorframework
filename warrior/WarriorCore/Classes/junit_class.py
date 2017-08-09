@@ -240,6 +240,7 @@ class Junit(object):
         self.html_result_obj.generate_html(junit_file, None)
 
     def remove_html_obj(self):
+        """checks and removes html_results_obj from junit object usecase in parralel execution"""
         if hasattr(self, 'html_result_obj'):
             del self.html_result_obj
 

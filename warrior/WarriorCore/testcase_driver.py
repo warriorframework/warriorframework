@@ -496,6 +496,7 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                                        data_repository, step_list)
         elif data_type.upper() == 'CUSTOM' and \
                 runtype.upper() == 'PARALLEL_KEYWORDS':
+            tc_junit_object.remove_html_obj()
             data_repository["war_parallel"] = True
             tc_status = execute_custom(data_type, runtype,
                                        custom_parallel_kw_driver,
@@ -518,6 +519,7 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                  step_list, data_repository, tc_status, system_list)
         elif data_type.upper() == 'ITERATIVE' and \
                 runtype.upper() == 'PARALLEL_KEYWORDS':
+            tc_junit_object.remove_html_obj()
             data_repository["war_parallel"] = True
             print_info("iterative parallel")
             system_list = get_system_list(data_repository['wt_datafile'],
@@ -632,7 +634,6 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                                              print_summary=False)
 
     if tc_parallel:
-        tc_junit_object.remove_html_obj()
         tc_impact = data_repository['wt_tc_impact']
         if tc_impact.upper() == 'IMPACT':
             msg = "Status of the executed test case impacts Testsuite result"
