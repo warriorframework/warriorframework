@@ -11,33 +11,33 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-"""Api for cli related operations """
 
 import os
-import sys
 import time
 import re
-import subprocess
 import Tools
 import Framework.ClassUtils
 from Framework.Utils import datetime_utils, data_Utils, xml_Utils
 from Framework.Utils.data_Utils import get_object_from_datarepository
 from Framework.Utils.print_Utils import print_debug, print_info,\
-print_error, print_exception, print_warning
+ print_error, print_exception, print_warning
 from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.list_Utils import get_list_by_separating_strings
 from Framework.ClassUtils.WNetwork.loging import ThreadedLog
 from WarriorCore.Classes.war_cli_class import WarriorCliClass
 from Framework.ClassUtils import database_utils_class
+from Framework.ClassUtils import WNetwork
 
 try:
     import pexpect
 except ImportError:
     print_info("{0}: pexpect module is not installed".format(os.path.abspath(__file__)))
     print_info("Warrior framework by default uses pexpect for all cli related activites")
-    print_info("All default methods/functions that use cli will fail"\
-               "without pexpect module. Users can however create"\
+    print_info("All default methods/functions that use cli will fail"
+               "without pexpect module. Users can however create"
                "their own custom libraries for cli interaction \n")
+
+""" Api for cli related operations """
 
 def cmdprinter(cmdfunc):
     """decorator"""
@@ -75,90 +75,50 @@ def pexpect_spawn_with_env(pexpect_obj, command, timeout, escape=False, env=None
         child = pexpect_obj.spawn(command, timeout=int(timeout))
     return child
 
+
 def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=60,
                 prompt=".*(%|#|\$)", conn_options="", custom_keystroke="", escape="", **kwargs):
     """
     - Initiates SSH connection via a specific port. Creates log file.
-    - return session as object and conn_string(pre and post login message).
+    :Arguments:
+        1. ip = destination ip
+        2. port(string) = telnet port
+        3. username(string) = username
+        4. password(string) = password
+        5. logfile(string) = logfile name
+        6. timeout(int) = timeout duration
+        7. prompt(string) = destination prompt
+        8. conn_options(string) = extra arguments that will be used when
+                                  sending the ssh/telnet command
+        9. custom_keystroke(string) = keystroke(to be given after initial timeout)
+        10. escape(string) = true/false(to set TERM as dump)
+
+    :Returns:
+        1. warrior_connect_class object
+        2. conn_string(pre and post login message)
     """
     print_warning("This method is obsolete and will be deprecated soon. Please"
                   " use 'connect_ssh' method of 'PexpectConnect' class "
                   "in 'warrior/Framework/ClassUtils/WNetwork/warrior_connect_class.py'")
 
-    sshobj = None
-    conn_string = ""
-    conn_options = "" if conn_options is False or conn_options is None else conn_options
-    custom_keystroke = "wctrl:M" if not custom_keystroke else custom_keystroke
-    # delete -o StrictHostKeyChecking=no and put them in conn_options
-    if not conn_options or conn_options is None:
-        conn_options = ""
-    command = 'ssh -p {0} {1}@{2} {3}'.format(port, username, ip, conn_options)
-    #command = ('ssh -p '+ port + ' ' + username + '@' + ip)
-    print_debug("connectSSH: cmd = %s" % command)
-    if WarriorCliClass.cmdprint:
-        pNote(("connectSSH: :CMD: %s" %command))
-        return None, ""
-    child = pexpect_spawn_with_env(pexpect, command, timeout=int(timeout),
-                                   escape=escape, env={"TERM": "dumb"})
+    credentials = {}
+    credentials['conn_type'] = 'ssh'
+    credentials['ip'] = ip
+    credentials['port'] = port
+    credentials['username'] = username
+    credentials['password'] = password
+    credentials['logfile'] = logfile
+    credentials['timeout'] = timeout
+    credentials['prompt'] = prompt
+    credentials['conn_options'] = conn_options
+    credentials['custom_keystroke'] = custom_keystroke
+    credentials['escape'] = escape
 
-    child.logfile = sys.stdout
+    wc_obj = WNetwork.warrior_connect_class.WarriorConnect()
+    wc_obj.connect(credentials)
 
-    if logfile is not None:
-        try:
-            fdobj = open(logfile, "a")
-            if fdobj:
-                child.logfile = fdobj
-        except Exception as exception:
-            print_exception(exception)
+    return wc_obj, wc_obj.conn_string
 
-    try:
-        flag = True
-        child.setecho(False)
-        child.delaybeforesend = .5
-        while True:
-            result = child.expect(["(yes/no)", prompt, '.*(?i)password:.*',
-                                   ".*(?i)(user(name)?:|login:) *$", pexpect.EOF, pexpect.TIMEOUT,
-                                   '.*(?i)remote host identification has '
-                                   'changed.*'])
-
-            if result == 0:
-                child.sendline('yes')
-            elif result == 1:
-                sshobj = child
-                conn_string = conn_string + child.before + child.after
-                break
-            elif result == 2:
-                child.sendline(password)
-                conn_string = conn_string + child.before + child.after
-            elif result == 3:
-                child.sendline(username)
-            elif result == 4:
-                pNote("Connection failed: {0}, with the system response: {1}"\
-                      .format(command, child.before), "error")
-                break
-            elif result == 5:
-                # Some terminal expect specific keystroke before showing login prompt
-                if flag is True:
-                    pNote("Initial timeout occur, sending custom_keystroke")
-                    _send_cmd_by_type(child, custom_keystroke)
-                    flag = False
-                    continue
-                pNote("Connection timed out: {0}, expected prompt: {1} "\
-                      "is not found in the system response: {2}"\
-                      .format(command, prompt, child.before), "error")
-                break
-            elif result == 6:
-                cmd = "ssh-keygen -R " + ip if port == '22' else \
-                      "ssh-keygen -R " + "[" + ip + "]:" + port
-                print_debug("SSH Host Key is changed - Remove it from "
-                            "known_hosts file : cmd = %s" % cmd)
-                subprocess.call(cmd, shell=True)
-                child = pexpect_spawn_with_env(pexpect, command, timeout=int(timeout),
-                                               escape=escape, env={"TERM": "dumb"})
-                print_debug("ReconnectSSH: cmd = %s" % command)
-    except Exception as exception:
-        print_exception(exception)
-    return sshobj, conn_string
 
 def connect_telnet(ip, port="23", username="", password="",
                    logfile=None, timeout=60, prompt=".*(%|#|\$)",
@@ -174,69 +134,36 @@ def connect_telnet(ip, port="23", username="", password="",
         5. logfile(string) = logfile name
         6. timeout(int) = timeout duration
         7. prompt(string) = destination prompt
+        8. conn_options(string) = extra arguments that will be used when
+                                  sending the ssh/telnet command
+        9. custom_keystroke(string) = keystroke(to be given after initial timeout)
+        10. escape(string) = true/false(to set TERM as dump)
 
     :Returns:
-        1.telnet session as object
-        2.conn_string(pre and post login message)
+        1. warrior_connect_class object
+        2. conn_string(pre and post login message)
     """
     print_warning("This method is obsolete and will be deprecated soon. Please"
                   " use 'connect_telnet' method of 'PexpectConnect' class "
                   "in 'warrior/Framework/ClassUtils/WNetwork/warrior_connect_class.py'")
 
-    conn_options = "" if conn_options is False or conn_options is None else conn_options
-    custom_keystroke = "wctrl:M" if not custom_keystroke else custom_keystroke
-    print_debug("timeout is: %s" % timeout)
-    print_debug("port num is: %s" % port)
-    command = ('telnet '+ ip + ' '+ port)
-    if not conn_options or conn_options is None:
-        conn_options = ""
-    command = command + str(conn_options)
-    print_debug("connectTelnet cmd = %s" % command)
-    child = pexpect_spawn_with_env(pexpect, command, timeout=int(timeout),
-                                   escape=escape, env={"TERM": "dumb"})
-    conn_string = ""
-    telnetobj = None
-    try:
-        child.logfile = open(logfile, "a")
-    except Exception:
-        child.logfile = None
+    credentials = {}
+    credentials['conn_type'] = 'telnet'
+    credentials['ip'] = ip
+    credentials['port'] = port
+    credentials['username'] = username
+    credentials['password'] = password
+    credentials['logfile'] = logfile
+    credentials['timeout'] = timeout
+    credentials['prompt'] = prompt
+    credentials['conn_options'] = conn_options
+    credentials['custom_keystroke'] = custom_keystroke
+    credentials['escape'] = escape
 
-    try:
-        flag = True
-        child.setecho(False)
-        child.delaybeforesend = .5
-        while True:
-            result = child.expect([prompt, '.*(?i)password:.*',
-                                   ".*(?i)(user(name)?:|login:) *$", pexpect.EOF, pexpect.TIMEOUT])
-            if result == 0:
-                telnetobj = child
-                conn_string = conn_string + child.before + child.after
-                break
-            elif result == 1:
-                child.sendline(password)
-                conn_string = conn_string + child.before + child.after
-            elif result == 2:
-                child.sendline(username)
-            elif result == 3:
-                pNote("Connection failed: {0}, with the system response: {1}"\
-                      .format(command, child.before), "error")
-                break
-            elif result == 4:
-                # timed out tryonce with Enter has some terminal expects it
-                if flag is True:
-                    pNote("Initial timeout occur, sending custom_keystroke")
-                    _send_cmd_by_type(child, custom_keystroke)
-                    flag = False
-                    continue
-                pNote("Connection timed out: {0}, expected prompt: {1} "\
-                      "is not found in the system response: {2}"\
-                      .format(command, prompt, child.before), "error")
-                break
-    except Exception as exception:
-        print_error(" ! could not connect to %s...check logs" % ip)
-        print_exception(exception)
-    else:
-        return telnetobj, conn_string
+    wc_obj = WNetwork.warrior_connect_class.WarriorConnect()
+    wc_obj.connect(credentials)
+
+    return wc_obj, wc_obj.conn_string
 
 
 def disconnect_telnet(child):
@@ -245,14 +172,9 @@ def disconnect_telnet(child):
                   " use 'disconnect_telnet' method of 'PexpectConnect' class "
                   "in 'warrior/Framework/ClassUtils/WNetwork/warrior_connect_class.py'")
 
-    time.sleep(2)
-    child.sendcontrol(']')
-    time.sleep(2)
-    child.expect('telnet> ')
-    time.sleep(2)
-    child.sendline('q')
-    time.sleep(2)
-    child.close()
+    if isinstance(child, WNetwork.warrior_connect_class.WarriorConnect):
+        child.disconnect()
+
     return child
 
 
@@ -265,10 +187,9 @@ def disconnect(child):
                   " use 'disconnect' method of 'PexpectConnect' class "
                   "in 'warrior/Framework/ClassUtils/WNetwork/warrior_connect_class.py'")
 
-    if child.isalive():
-        if child.ignore_sighup:
-            child.ignore_sighup = False
-        child.close()
+    if isinstance(child, WNetwork.warrior_connect_class.WarriorConnect):
+        child.disconnect()
+
     return child
 
 @cmdprinter
@@ -640,7 +561,7 @@ def _send_cmd(obj_session, **kwargs):
     response = ""
     command = kwargs.get('command')
     if isinstance(obj_session,
-                  Framework.ClassUtils.WNetwork.warrior_connect_class.WarriorConnect):
+                  WNetwork.warrior_connect_class.WarriorConnect):
         startprompt = kwargs.get('startprompt', ".*")
         endprompt = kwargs.get('endprompt', None)
         cmd_timeout = kwargs.get('cmd_timeout', None)

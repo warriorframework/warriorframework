@@ -358,6 +358,8 @@ class PexpectConnect(object):
                 8. conn_options = connection options
                 9. custom_keystroke = keystroke(to be given
                                       after initial timeout)
+                10. escape(string) = true/false(to escape color codes by
+                                     setting TERM as dump)
          """
 
         self.pexpect = None
