@@ -57,8 +57,8 @@ var katana = {
 				var created = temp.clone().insertAfter( temp );
 				created.attr( 'uid', uid ).text( this.hasClass('tab') ? this.find('span').text() + count : uid ).append('<i class="fa fa-times" katana-click="closeTab"></i>');
 				katana.switchTab.call( created, uid );
-				katana.tabAdded( newTab, this );
 				callBack && callBack( newTab.find('.page-content-inner') );
+				katana.tabAdded( newTab, this );
 			}		 
 	},	
 	
