@@ -7,6 +7,7 @@ git clone https://github.com/warriorframework/warriorframework.git pylint_warrio
 cd pylint_warrior
 git checkout "${TRAVIS_BRANCH}"
 git checkout "${TRAVIS_PULL_REQUEST_BRANCH}"
+echo "Merging ${TRAVIS_BRANCH} into ${TRAVIS_PULL_REQUEST_BRANCH}"
 git merge --no-edit "${TRAVIS_BRANCH}"
 
 git branch
