@@ -46,15 +46,13 @@ def pylint(file_list):
 def report(branch_file_score):
     print "\n\n\n!---------- Detail score for this pull request ----------!\n"
     for k, v in branch_file_score.items():
-        # print k, "\n", v[1]
-        pass
+        print k, "\n", v[1]
 
     print "\n\n\n!---------- Summary score for this pull request ----------!\n"
     for k, v in branch_file_score.items():
         print k, v[0]
 
 def judge(branch_file_score):
-    print "\n\n\n!---------- Judgement Time ----------!\n"
     status = True
     for k, v in branch_file_score.items():
         # print k, v[0]
@@ -70,6 +68,15 @@ def judge(branch_file_score):
                 print k, "failed with a decreasing score"
     return status
 
+def custom_rules(file_list):
+    for fi in file_list:
+        try:
+            output = subprocess.check_output('python wftests/ci/custom_rules.py {}'.format('fi'), shell=True)
+        except subprocess.CalledProcessError as e:
+            output = e.output
+
+        print output
+
 def main():
     """
         main function to process logic
@@ -79,15 +86,18 @@ def main():
 
         print "target branch:", sys.argv[3], "\nsource branch:", sys.argv[4]
         subprocess.check_output("git checkout {}".format(sys.argv[3]), shell=True)
-        print "\nRunning pylint on", sys.argv[3]
+        print "Running pylint on", sys.argv[3]
         pylint(file_list)
 
+        print "\n"
         subprocess.check_output("git checkout {}".format(sys.argv[4]), shell=True)
         print "\nRunning pylint on", sys.argv[4]
         branch_file_score = pylint(file_list)
 
         report(branch_file_score)
+        print "\n\n\n!---------- Judging score for branch {} ----------!\n".format(sys.argv[4])
         status = judge(branch_file_score)
+        custom_rules(file_list)
         if status:
             exit(0)
         else:

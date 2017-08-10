@@ -21,9 +21,9 @@ as it will lead to cyclic imports.
 
 """
 
-from WarriorCore.Classes.war_print_class import print_main
 import sys
 import traceback
+from WarriorCore.Classes.war_print_class import print_main
 
 def print_debug(message, *args):
     """Print a debug message to the terminal """
@@ -42,7 +42,7 @@ def print_notype(message, *args):
             message += arg + ", "
     color_message = None
     if sys.stdout.isatty():
-        color_message = "\033[0;34m" + str(message) + "\033[0m "     
+        color_message = "\033[0;34m" + str(message) + "\033[0m "
     print_main(message, print_type, color_message)
     return message
 
