@@ -511,7 +511,7 @@ class CliActions(object):
                         output_dict[session_id + "_system"] = smart_result
 
                 elif WarriorCliClass.mock or WarriorCliClass.sim:
-                    output_dict[session_id] = session_object
+                    output_dict[session_id] = war_conn_object
                     output_dict[session_id + "_connstring"] = conn_string
                     output_dict[session_id + "_td_response"] = {}
                     result = True
