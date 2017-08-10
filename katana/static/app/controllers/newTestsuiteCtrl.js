@@ -42,6 +42,9 @@ app.controller('newTestsuiteCtrl', ['$scope', '$http', '$location', '$route', '$
         $scope.testcase_numbers = [];
         $scope.testcaseEditor = true;
         $scope.testcaseBeingEdited = "None";
+        $scope.newDate = '';
+        $scope.newTime = '';
+        $scope.newEng = '';
 
         fileFactory.readdatafile()
             .then(
@@ -249,6 +252,9 @@ app.controller('newTestsuiteCtrl', ['$scope', '$http', '$location', '$route', '$
         var ChildCtrl=this;
         ChildCtrl.baseCtrl = $controller('baseChariotCtrl',{ $scope: $scope, $http: $http });
         ChildCtrl.baseCtrl.readConfig();
+
+        $scope.newDate = ChildCtrl.baseCtrl.getDate();
+        $scope.newTime = ChildCtrl.baseCtrl.getTime();
 
         $scope.toggleModal = function(index){
             document.getElementById("tree_div-" + index.toString()).innerHTML = $scope.table;
@@ -461,12 +467,15 @@ app.controller('newTestsuiteCtrl', ['$scope', '$http', '$location', '$route', '$
         fileFactory.readtooltipfile('testsuite')
             .then(
                 function(data) {
+                    $scope.newEng = $scope.cfg.engineer;
                     console.log(data);
                     $scope.newtestsuiteTooltip = data;
                 },
                 function(data) {
                     alert(data);
                 });
+
+
         fileFactory.readstatesfile()
             .then(
                 function(data) {
@@ -1212,9 +1221,9 @@ app.controller('newTestsuiteCtrl', ['$scope', '$http', '$location', '$route', '$
                     "Details": {
                         "Name": $scope.testsuitename,
                         "Title": $scope.testsuitetitle,
-                        "Engineer": $scope.cfg.engineer,
-                        "Date": ChildCtrl.baseCtrl.getDate(),
-                        "Time": ChildCtrl.baseCtrl.getTime(),
+                        "Engineer": $scope.newEng,
+                        "Date": $scope.newDate,
+                        "Time": $scope.newTime,
                         "type": {
                             "_exectype": $scope.exectype,
                             "_Max_Attempts": $scope.maxAttempts,
