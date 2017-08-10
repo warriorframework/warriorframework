@@ -69,7 +69,7 @@ WAR-1364 - Fixed the demo project to contain path to the correct demo suite.
 3. Procedure to get a specific version of Warrior
 =================================================
 
-1. Clone warrior main
+1. Clone warriorframework
 
 $ git clone https://github.com/warriorframework/warriorframework.git
 
