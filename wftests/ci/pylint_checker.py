@@ -19,7 +19,11 @@ def process_file_list(input_file, rc_file):
         ignore = ignore[0][7:].replace('\n', '').split(',')
 
     result = [x for x in filelist if all([y not in x for y in ignore])]
-    print "The following files will be tested with Pylint:\n", "\n".join(result), "\n"
+    if result:
+        print "The following files will be tested with Pylint:\n", "\n".join(result), "\n"
+    else:
+        print "No file requires pylint check, exiting"
+        exit(0)
     return result
 
 def pylint(file_list):
@@ -86,9 +90,6 @@ def main():
     """
     if len(sys.argv) > 4:
         file_list = process_file_list(sys.argv[1], sys.argv[2])
-        if not file_list:
-            print "No file requires pylint check, exiting"
-            exit(0)
 
         print "target branch:", sys.argv[3], "\nsource branch:", sys.argv[4]
         subprocess.check_output("git checkout {}".format(sys.argv[3]), shell=True)
