@@ -48,11 +48,11 @@ def pylint(file_list):
     return file_score
 
 def report(branch_file_score):
-    print "\n\n\n!---------- Detail score for this pull request ----------!\n"
+    print "\n\n\n!---------- Detail score for branch {} ----------!\n".format(sys.argv[4])
     for k, v in branch_file_score.items():
         print k, "\n", v[1]
 
-    print "\n\n\n!---------- Summary score for this pull request ----------!\n"
+    print "\n\n\n!---------- Summary score for branch {} ----------!\n".format(sys.argv[4])
     for k, v in branch_file_score.items():
         print k, v[0]
 
