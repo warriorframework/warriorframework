@@ -4,7 +4,6 @@ on pull request source branch and target branch
 """
 import sys
 import subprocess
-from pprint import pprint
 # from pylint import epylint as lint
 
 def process_file_list(input_file, rc_file):
@@ -24,6 +23,9 @@ def process_file_list(input_file, rc_file):
     return result
 
 def pylint(file_list):
+    """
+        Pylint files from file list
+    """
     file_score = {}
     for fi in file_list:
         print "linting", fi
@@ -41,34 +43,55 @@ def pylint(file_list):
             print fi, "doesn't get a Pylint score on this branch"
     return file_score
 
-def report(file_score, branch_file_score):
-    print "\n\n\n!---------- Detail score for this pull request ----------!\n\n\n"
+def report(branch_file_score):
+    print "\n\n\n!---------- Detail score for this pull request ----------!\n"
     for k, v in branch_file_score.items():
         # print k, "\n", v[1]
         pass
 
-    print "\n\n\n!---------- Summary score for this pull request ----------!\n\n\n"
+    print "\n\n\n!---------- Summary score for this pull request ----------!\n"
     for k, v in branch_file_score.items():
         print k, v[0]
+
+def judge(branch_file_score):
+    print "\n\n\n!---------- Judgement Time ----------!\n"
+    status = True
+    for k, v in branch_file_score.items():
+        # print k, v[0]
+        score = v[0].split("/")[0]
+        if float(score) < 5:
+            status = False
+            print k, "failed with a score lower than 5"
+
+        if "previous" in v[0]:
+            improvement = float(v[0].split(",")[1][:-1])
+            if improvement < -0.1:
+                status = False
+                print k, "failed with a decreasing score"
+    return status
 
 def main():
     """
         main function to process logic
     """
     if len(sys.argv) > 4:
-        file_score = {}
         file_list = process_file_list(sys.argv[1], sys.argv[2])
 
         print "target branch:", sys.argv[3], "\nsource branch:", sys.argv[4]
         subprocess.check_output("git checkout {}".format(sys.argv[3]), shell=True)
         print "\nRunning pylint on", sys.argv[3]
-        file_score = pylint(file_list)
+        pylint(file_list)
 
         subprocess.check_output("git checkout {}".format(sys.argv[4]), shell=True)
         print "\nRunning pylint on", sys.argv[4]
         branch_file_score = pylint(file_list)
 
-        report(file_score, branch_file_score)
+        report(branch_file_score)
+        status = judge(branch_file_score)
+        if status:
+            exit(0)
+        else:
+            exit(1)
     else:
         print "Missing arguments, require filenames, pylintrc_file, target_branch, source_branch"
 
