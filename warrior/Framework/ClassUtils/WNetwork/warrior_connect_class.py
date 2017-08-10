@@ -11,8 +11,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-""" Module to handle SSH/Telnet session operations """
-
 import os
 import sys
 import time
@@ -23,7 +21,9 @@ from Framework.Utils.print_Utils import print_info, print_debug,\
  print_exception, print_error
 from Framework.Utils.testcase_Utils import pNote
 from WarriorCore.Classes.war_cli_class import WarriorCliClass
-from Framework.Utils.cli_Utils import cmdprinter, pexpect_spawn_with_env
+from Framework.Utils.cli_Utils import cmdprinter
+
+""" Module to handle SSH/Telnet session operations """
 
 
 class WarriorConnect(object):
@@ -418,8 +418,7 @@ class PexpectConnect(object):
         if WarriorCliClass.cmdprint:
             pNote("connectSSH: :CMD: %s" % command)
             return None, ""
-        child = pexpect_spawn_with_env(self.pexpect, command, timeout=int(self.timeout),
-                                       escape=self.escape, env={"TERM": "dumb"})
+        child = self.pexpect_spawn_with_env(command, env={"TERM": "dumb"})
 
         child.logfile = sys.stdout
 
@@ -465,8 +464,7 @@ class PexpectConnect(object):
                     if flag is True:
                         pNote("Initial timeout occur, "
                               "sending custom_keystroke")
-                        Utils.cli_Utils._send_cmd_by_type(child,
-                                                          custom_keystroke)
+                        self._send_cmd_by_type(child, custom_keystroke)
                         flag = False
                         continue
                     pNote("Connection timed out: {0}, expected prompt: {1} "
@@ -505,8 +503,7 @@ class PexpectConnect(object):
         command = command + str(conn_options)
         print_debug("connectTelnet cmd = %s" % command)
 
-        child = pexpect_spawn_with_env(self.pexpect, command, timeout=int(self.timeout),
-                                       escape=self.escape, env={"TERM": "dumb"})
+        child = self.pexpect_spawn_with_env(command, env={"TERM": "dumb"})
 
         try:
             child.logfile = open(self.logfile, "a")
@@ -542,8 +539,7 @@ class PexpectConnect(object):
                     if flag is True:
                         pNote("Initial timeout occur, "
                               "sending custom_keystroke")
-                        Utils.cli_Utils._send_cmd_by_type(child,
-                                                          custom_keystroke)
+                        self._send_cmd_by_type(child, custom_keystroke)
                         flag = False
                         continue
                     pNote("Connection timed out: {0}, expected prompt: {1} "
@@ -611,7 +607,7 @@ class PexpectConnect(object):
         if boolprompt == 0:
             start_time = Utils.datetime_utils.get_current_timestamp()
             pNote("[{0}] Sending Command: {1}".format(start_time, command))
-            Utils.cli_Utils._send_cmd_by_type(self.target_host, command)
+            self._send_cmd_by_type(self.target_host, command)
             try:
                 while True:
                     result = self.target_host.expect([end_prompt,
@@ -677,3 +673,24 @@ class PexpectConnect(object):
                                                                    end_time)
                     pNote("Command Duration: {0} sec".format(duration))
         return status, response
+
+    def pexpect_spawn_with_env(self, command, env=None):
+        """ spawn a pexpect object with environment variable """
+
+        if env is None:
+            env = {}
+        if str(self.escape).lower() == "yes" or str(self.escape).lower() == "true":
+            child = self.pexpect.spawn(command, timeout=int(self.timeout), env=env)
+        else:
+            child = self.pexpect.spawn(command, timeout=int(self.timeout))
+        return child
+
+    @staticmethod
+    def _send_cmd_by_type(session_object, command):
+        """ Determine the command type and send accordingly """
+
+        if command.startswith("wctrl:"):
+            command = command.split("wctrl:")[1]
+            session_object.sendcontrol(command)
+        else:
+            session_object.sendline(command)

@@ -17,10 +17,10 @@ import time
 import re
 import Tools
 import Framework.ClassUtils
-from Framework.Utils import datetime_utils, data_Utils, xml_Utils
+from Framework.Utils import data_Utils, xml_Utils
 from Framework.Utils.data_Utils import get_object_from_datarepository
 from Framework.Utils.print_Utils import print_debug, print_info,\
- print_error, print_exception, print_warning
+ print_error, print_warning
 from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.list_Utils import get_list_by_separating_strings
 from Framework.ClassUtils.WNetwork.loging import ThreadedLog
@@ -38,6 +38,7 @@ except ImportError:
                "their own custom libraries for cli interaction \n")
 
 """ Api for cli related operations """
+
 
 def cmdprinter(cmdfunc):
     """decorator"""
@@ -62,18 +63,6 @@ def cmdprinter(cmdfunc):
             result = cmdfunc(*args, **kwargs)
         return result
     return inner
-
-def pexpect_spawn_with_env(pexpect_obj, command, timeout, escape=False, env=None):
-    """
-        spawn a pexpect object with environment variable
-    """
-    if env is None:
-        env = {}
-    if str(escape).lower() == "yes" or str(escape).lower() == "true":
-        child = pexpect_obj.spawn(command, timeout=int(timeout), env=env)
-    else:
-        child = pexpect_obj.spawn(command, timeout=int(timeout))
-    return child
 
 
 def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=60,
@@ -192,27 +181,26 @@ def disconnect(child):
 
     return child
 
+
 @cmdprinter
-def send_command_and_get_response(sessionobj, prompt1, prompt2, command):
+def send_command_and_get_response(session_object, start_prompt, end_prompt, command):
     """"Sends a command to a terminal expects a completion prompt
     If completion prompt was found, returns the response of the command """
-    response = ""
-    try:
-        boolprompt = sessionobj.expect(prompt1)
-    except Exception as exception:
-        print_info("Could not find the prompt "+prompt1)
-        print_exception(exception)
 
-    if boolprompt == 0:
-        sessionobj.sendline(command)
-        try:
-            sessionobj.expect(prompt2)
-        except Exception as exception:
-            print_info("Could not find the prompt "+prompt2)
-            print_exception(exception)
-        else:
-            response = sessionobj.before
+    print_warning("This method is obsolete and will be deprecated soon. Please"
+                  " use 'send_command' method of 'PexpectConnect' class "
+                  "in 'warrior/Framework/ClassUtils/WNetwork/warrior_connect_class.py'")
+
+    if isinstance(session_object, WNetwork.warrior_connect_class.WarriorConnect):
+        _, response = session_object.send_command(start_prompt, end_prompt, command)
+    else:
+        response = ""
+        print_warning("Unable to send the command since the session_object is not an "
+                      "instance of warrior_connect_class, status will be marked as ERROR. "
+                      "Please use warrior_connect_class for session establishment.")
+
     return response
+
 
 def smart_analyze(prompt, testdatafile=None):
     """
@@ -255,6 +243,7 @@ def smart_analyze(prompt, testdatafile=None):
 
     return con_settings_dir + sys_elem.find("testdata").text
 
+
 def send_smart_cmd(connect_testdata, session_object, tag_value, call_system_name, pre_tag):
     """
         The beacons of Gondor are lit
@@ -283,6 +272,7 @@ def send_smart_cmd(connect_testdata, session_object, tag_value, call_system_name
         print_info("**********smart analysis finished**********")
     else:
         print_error()
+
 
 def smart_action(datafile, call_system_name, raw_prompt, session_object, tag_value, connect_testdata=None):
     """
@@ -313,6 +303,7 @@ def smart_action(datafile, call_system_name, raw_prompt, session_object, tag_val
         return connect_testdata
     return None
 
+
 def get_connection_port(conn_type, inpdict):
     """Gets the port for ssh or telnet connections
     1. ssh :
@@ -331,16 +322,18 @@ def get_connection_port(conn_type, inpdict):
 
     return inpdict
 
+
 @cmdprinter
 def send_command(session_object, start_prompt, end_prompt, command,
                  timeout=60):
     """
-    Send an command to pexpect session object and resturns the status of the command sent
+    Sends command to warrior_connect_class session object(pexpect/paramiko)
+    and returns the status of the command sent.
     - Checks for the availability of the start_prompt.
     - if start prompt was available sends the command
-    - if failure response is not None and failure response fond in
+    - if failure response is not None and failure response found in
     response then returns False.
-    - else if failure repsonse was not found
+    - else if failure response was not found
     and end prompt also not found returns False.
     - else if failure response was not found and end prompt found,
     then returns true.
@@ -349,78 +342,15 @@ def send_command(session_object, start_prompt, end_prompt, command,
                   " use 'send_command' method of 'PexpectConnect' class "
                   "in 'warrior/Framework/ClassUtils/WNetwork/warrior_connect_class.py'")
 
-    tmout = {None: 60, "":60, "none":60}.get(timeout, str(timeout).lower())
-    session_object.timeout = int(tmout)
-    pNote("Command timeout: {0}".format(session_object.timeout))
-    response = ""
-    msg = ""
-    end_time = False
-    status = False
-    cmd_timedout = False
-    #time_format = "%Y-%b-%d %H:%M:%S"
-    try:
-        boolprompt = session_object.expect(start_prompt)
-    except Exception as exception:
-        pNote("Could not find the start_prompt '{0}'!! exiting!!".format(str(start_prompt)), "error")
-        boolprompt = -1
-    if boolprompt == 0:
-        start_time = datetime_utils.get_current_timestamp()
-        pNote("[{0}] Sending Command: {1}".format(start_time, command))
-        _send_cmd_by_type(session_object, command)
-        try:
-            while True:
-                result = session_object.expect([end_prompt, pexpect.EOF, pexpect.TIMEOUT]) if end_prompt\
-                else -1
-                end_time = datetime_utils.get_current_timestamp()
-                if result == 0:
-                    curr_time = datetime_utils.get_current_timestamp()
-                    msg1 = "[{0}] Command completed successfully".format(end_time)
-                    msg2 = "[{0}] Found end prompt '{1}' after command had timed out".format(curr_time, end_prompt)
-                    status = {True:"ERROR", False:True}.get(cmd_timedout)
-                    msg = {True:msg2, False:msg1}.get(cmd_timedout)
-                    break
-                elif result == -1:
-                    pNote("[{0}] end prompt not provided".format(end_time), "error")
-                    status = "ERROR"
-                    break
-                elif result == 1:
-                    msg = "[{0}] EOF encountered".format(end_time)
-                    status = "ERROR"
-                    break
-                elif result == 2:
-                    tmsg1 = "[{0}] Command timed out, command will be marked as error".format(end_time)
-                    tmsg2 = "Will wait 60 more seconds to get end prompt '{0}'".format(end_prompt)
-                    tmsg3 = "Irrespective of whether end prompt is received or not command will "\
-                           "be marked as error because command had timed out once."
-                    if not cmd_timedout:
-                        session_object.timeout = 1
-                        pNote(tmsg1, "debug")
-                        pNote(tmsg2, "debug")
-                        pNote(tmsg3, "debug")
-                        tstamp = datetime_utils.get_current_timestamp()
-                    cmd_timedout = True
-                    status = "ERROR"
-                    tdelta = datetime_utils.get_time_delta(tstamp)
-                    if int(tdelta) >= 60:
-                        msg = "[{0}] Did not find end prompt '{1}' even after 60 seconds post"\
-                              "command time out".format(datetime_utils.get_current_timestamp(),
-                                                        end_prompt)
-                        break
-                    else:
-                        continue
-        except Exception as exception:
-            print_exception(exception)
-        else:
-            response = session_object.before
-            response = str(response) + str(session_object.after)
-            if session_object.env is not None and 'TERM' in session_object.env and session_object.env['TERM'] == 'dumb': 
-                escape_seq = re.compile(r'(\x9B|\x1B\[)[0-?]*[ -\/]*[@-~]')
-                response = escape_seq.sub('', response)
-            pNote("Response:\n{0}\n".format(response))
-            pNote(msg, "debug")
-            if status is True:
-                duration = datetime_utils.get_time_delta(start_time, end_time)
-                pNote("Command Duration: {0} sec".format(duration))
+    if isinstance(session_object, WNetwork.warrior_connect_class.WarriorConnect):
+        status, response = session_object.send_command(start_prompt, end_prompt,
+                                                       command, timeout)
+    else:
+        status, response = "ERROR", ""
+        print_warning("Unable to send the command since the session_object is not an "
+                      "instance of warrior_connect_class, status will be marked as ERROR. "
+                      "Please use warrior_connect_class for session establishment.")
+
     return status, response
 
 
@@ -553,6 +483,7 @@ def send_commands_from_testdata(testdatafile, obj_session, **args):
             finalresult = finalresult and result
         responses_dict[key]=response_dict
     return finalresult, responses_dict
+
 
 @cmdprinter
 def _send_cmd(obj_session, **kwargs):
@@ -880,6 +811,7 @@ def _get_obj_session(details_dict, obj_session, kw_system_name, index):
 
     return value, kw_system_name, details_dict
 
+
 @cmdprinter
 def _send_command_retrials(obj_session, details_dict, index, **kwargs):
     """ Sends a command to a session, if a user provided pattern
@@ -949,17 +881,6 @@ def _get_match_status(retry_onmatch, response):
                   "of the command".format(retry_onmatch))
             status = False
     return status
-
-
-def _send_cmd_by_type(session_object, command):
-    """Determine the command type and
-    send accordingly """
-
-    if command.startswith("wctrl:"):
-        command = command.split("wctrl:")[1]
-        session_object.sendcontrol(command)
-    else:
-        session_object.sendline(command)
 
 
 ##################
