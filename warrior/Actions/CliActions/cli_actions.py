@@ -505,8 +505,8 @@ class CliActions(object):
 
                     # execute smart action to produce user report
                     smart_result = Utils.cli_Utils.smart_action(
-                     self.datafile, call_system_name, conn_string,
-                     war_conn_object.session_object, "connect")
+                        self.datafile, call_system_name, conn_string,
+                        war_conn_object.session_object, "connect")
                     if smart_result is not None:
                         output_dict[session_id + "_system"] = smart_result
 
