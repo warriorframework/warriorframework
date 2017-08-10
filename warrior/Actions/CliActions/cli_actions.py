@@ -190,7 +190,9 @@ class CliActions(object):
                    "session_name={1}".format(system_name, session_name)
             msg2 = "Disconnection of system_name={0}, "\
                    "session_name={1} Failed".format(system_name, session_name)
-            if isinstance(war_conn_object, WarriorConnect) and \
+            if WarriorCliClass.mock or WarriorCliClass.sim:
+                result = True
+            elif isinstance(war_conn_object, WarriorConnect) and \
                war_conn_object.conn_type in ["SSH", "TELNET", "SSH_NESTED"]:
                 # execute smart action to produce user report
                 connect_testdata = \
@@ -204,8 +206,6 @@ class CliActions(object):
 
                 war_conn_object.disconnect()
                 result = False if war_conn_object.isalive() else True
-            elif WarriorCliClass.mock or WarriorCliClass.sim:
-                result = True
             else:
                 pNote("session does not exist", "warning")
                 result = False
@@ -363,7 +363,7 @@ class CliActions(object):
                         output_dict[session_id + "_system"] = smart_result
 
                 elif WarriorCliClass.mock or WarriorCliClass.sim:
-                    output_dict[session_id] = session_object
+                    output_dict[session_id] = war_conn_object
                     output_dict[session_id + "_connstring"] = conn_string
                     output_dict[session_id + "_td_response"] = {}
                     result = True

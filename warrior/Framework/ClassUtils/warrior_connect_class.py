@@ -23,7 +23,8 @@ from Framework.Utils.print_Utils import print_info, print_debug,\
  print_exception, print_error
 from Framework.Utils.testcase_Utils import pNote
 from WarriorCore.Classes.war_cli_class import WarriorCliClass
-from Framework.Utils.cli_Utils import cmdprinter, pexpect_spawn_with_env
+from Framework.Utils.cli_Utils import pexpect_spawn_with_env
+from WarriorCore.Classes.warmock_class import mocked
 
 
 class WarriorConnect(object):
@@ -84,7 +85,7 @@ class WarriorConnect(object):
             else:
                 self.session_object.disconnect()
 
-    @cmdprinter
+    @mocked
     def send_command(self, start_prompt, end_prompt, command,
                      timeout=60):
         """ Sends the command to ssh/telnet session """
@@ -233,6 +234,7 @@ class ParamikoConnect(object):
         else:
             self.paramiko = paramiko
 
+    @mocked
     def connect_ssh(self):
         """
         Initiates SSH connection to target system using paramiko module.
@@ -299,6 +301,7 @@ class ParamikoConnect(object):
         if self.conn_type and self.conn_type.upper() == "NESTED_SSH":
             self.via_host.close()
 
+    @mocked
     def send_command(self, command, get_pty=False, *args, **kwargs):
         """ Execute the command on the remote host
 
@@ -390,6 +393,7 @@ class PexpectConnect(object):
         else:
             self.pexpect = pexpect
 
+    @mocked
     def connect_ssh(self):
         """
         Initiates SSH connection via a specific port. Creates log file.
@@ -413,9 +417,6 @@ class PexpectConnect(object):
                                                   self.ip, conn_options)
         # command = ('ssh -p '+ port + ' ' + username + '@' + ip)
         print_debug("connectSSH: cmd = %s" % command)
-        if WarriorCliClass.cmdprint:
-            pNote("connectSSH: :CMD: %s" % command)
-            return None, ""
         child = pexpect_spawn_with_env(self.pexpect, command, timeout=int(self.timeout),
                                        escape=self.escape, env={"TERM": "dumb"})
 
@@ -483,6 +484,7 @@ class PexpectConnect(object):
         except Exception as exception:
             print_exception(exception)
 
+    @mocked
     def connect_telnet(self):
         """
         Initiates Telnet connection via a specific port. Creates log file.
@@ -575,7 +577,7 @@ class PexpectConnect(object):
             time.sleep(2)
             self.target_host.close()
 
-    @cmdprinter
+    @mocked
     def send_command(self, start_prompt, end_prompt, command,
                      timeout=60, *args, **kwargs):
         """
