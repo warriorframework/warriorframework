@@ -93,48 +93,6 @@ def get_project_details(project_filepath, res_startdir, logs_startdir, data_repo
 
     return project_repository
 
-
-def get_testsuite_list(project_filepath):
-    """Takes the location of any Project.xml file as input
-    Returns a list of all the Testsuite elements present in the Project"""
-
-    testsuite_list_new = []
-    root = Utils.xml_Utils.getRoot(project_filepath)
-    testsuites = root.find('Testsuites')
-    if testsuites is None:
-        print_info('Testsuite is empty: tag <Testsuites> not "\
-                   "found in the input file ')
-    else:
-        testsuite_list = testsuites.findall('Testsuite')
-        for ts in testsuite_list:
-            runmode, value = common_execution_utils.\
-                get_runmode_from_xmlfile(ts)
-            retry_type, _, _, retry_value, _ = common_execution_utils.\
-                get_retry_from_xmlfile(ts)
-            if runmode is not None and value > 0:
-                # more than one suite in suite list, insert new suite
-                go_next = len(testsuite_list_new) + value + 1
-                for i in range(0, value):
-                    copy_ts = copy.deepcopy(ts)
-                    copy_ts.find("runmode").set("value", go_next)
-                    copy_ts.find("runmode").set("attempt", i+1)
-                    testsuite_list_new.append(copy_ts)
-            if retry_type is not None and retry_value > 0:
-                if len(testsuite_list) > 1:
-                    go_next = len(testsuite_list_new) + retry_value + 1
-                    if runmode is not None:
-                        get_runmode = ts.find('runmode')
-                        ts.remove(get_runmode)
-                    for i in range(0, retry_value):
-                        copy_ts = copy.deepcopy(ts)
-                        copy_ts.find("retry").set("count", go_next)
-                        copy_ts.find("retry").set("attempt", i+1)
-                        testsuite_list_new.append(copy_ts)
-            if retry_type is None and runmode is None:
-                testsuite_list_new.append(ts)
-        return testsuite_list_new
-
-
 def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs_startdir,
                     data_repository):
     """
@@ -166,8 +124,7 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
     project_repository = get_project_details(project_filepath, res_startdir, logs_startdir,
                                              data_repository)
     project_repository['project_title'] = project_title
-    testsuite_list = get_testsuite_list(project_filepath)
-
+    testsuite_list = common_execution_utils.get_step_list(project_filepath, "Testsuites", "Testsuite")
     # project_resultfile = project_repository['project_resultfile']
 
     project_name = project_repository['project_name']

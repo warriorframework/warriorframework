@@ -124,66 +124,6 @@ def report_suite_requirements(suite_repository, testsuite_filepath):
         for req_id in req_id_list:
             ts_junit_object.add_requirement(req_id, suite_repository["wt_ts_timestamp"])
 
-
-def get_testcase_list(testsuite_filepath):
-    """Takes the location of any Testsuite xml file as input
-    Returns a list of all the Tescase elements present in the Testsuite
-
-    Arguments:
-    1. testsuite_filepath    = full path of the Testsuite xml file
-    """
-
-    testcase_list = []
-    root = Utils.xml_Utils.getRoot(testsuite_filepath)
-    testcases = root.find('Testcases')
-    if testcases is None:
-        print_info('Testsuite is empty: tag <Testcases> not found in the input Testsuite xml file ')
-    else:
-        testcase_list = []
-        new_testcase_list = testcases.findall('Testcase')
-        # execute tc multiple times
-        for _, tc in enumerate(new_testcase_list):
-            runmode, value = common_execution_utils.get_runmode_from_xmlfile(tc)
-            retry_type, _, _, retry_value, _ = common_execution_utils.get_retry_from_xmlfile(tc)
-            if runmode is not None and value > 0:
-                # more than one step in step list, insert new step
-                if len(new_testcase_list) > 0:
-                    go_next = len(testcase_list) + value + 1
-                    for i in range(0, value):
-                        copy_tc = copy.deepcopy(tc)
-                        copy_tc.find("runmode").set("value", go_next)
-                        copy_tc.find("runmode").set("attempt", i+1)
-                        testcase_list.append(copy_tc)
-                # only one step in step list, append new step
-                else:
-                    for i in range(0, value):
-                        copy_tc = copy.deepcopy(tc)
-                        copy_tc.find("runmode").set("attempt", i+1)
-                        testcase_list.append(tc)
-            if retry_type is not None and retry_value > 0:
-                if len(new_testcase_list) > 1:
-                    go_next = len(testcase_list) + retry_value + 1
-                    if runmode is not None:
-                        get_runmode = tc.find('runmode')
-                        tc.remove(get_runmode)
-                    for i in range(0, retry_value):
-                        copy_tc = copy.deepcopy(tc)
-                        copy_tc.find("retry").set("count", go_next)
-                        copy_tc.find("retry").set("attempt", i+1)
-                        testcase_list.append(copy_tc)
-                else:
-                    if runmode is not None:
-                        get_runmode = tc.find('runmode')
-                        tc.remove(get_runmode)
-                    for i in range(0, retry_value):
-                        copy_tc = copy.deepcopy(tc)
-                        copy_tc.find("retry").set("attempt", i+1)
-                        testcase_list.append(copy_tc)
-            if retry_type is None and runmode is None:
-                testcase_list.append(tc)
-        return testcase_list
-
-
 def report_testsuite_result(suite_repository, suite_status):
     """Reports the result of the testsuite executed
     Arguments:
@@ -235,7 +175,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
     # goto_tc = False
     suite_repository = get_suite_details(testsuite_filepath, data_repository,
                                          from_project, res_startdir, logs_startdir)
-    testcase_list = get_testcase_list(testsuite_filepath)
+    testcase_list = common_execution_utils.get_step_list(testsuite_filepath, "Testcases", "Testcase")
     execution_type = suite_repository['suite_exectype'].upper()
     no_of_tests = str(len(testcase_list))
 

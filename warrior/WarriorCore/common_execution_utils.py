@@ -12,8 +12,75 @@ limitations under the License.
 '''
 
 """Module that contains common utilities required for execution """
-from Framework.Utils.print_Utils import print_warning
+import copy
 
+from Framework.Utils.print_Utils import print_warning
+import Framework.Utils as Utils
+
+def get_step_list(filepath, step_tag, sub_step_tag):
+    """
+    Takes the location of any Testcase xml file as input
+    finds a list of all the step elements present in the Testcase
+    Parse the step object,
+    1. Retrieve the runmode and it corresponding value.
+    Based on runmode and value append the list.
+    2. Retrieve the retry and it corresponding value.
+    Based on runmode and value append the list.
+
+    :Arguments:
+        1. testcase_filepath    = full path of the Testcase/suite/project xml file
+        2. type = Whether its a suite/case/project
+
+    """
+    step_list_with_rmt_retry = []
+    root = Utils.xml_Utils.getRoot(filepath)
+    Steps = root.find(step_tag)
+    if Steps is None:
+        print_warning("The file: '{}' has no Steps "
+                      "to be executed".format(filepath))
+    else:
+        step_list = Steps.findall(sub_step_tag)
+        # iterate all steps to get the runmode and retry details
+        for index, step in enumerate(step_list):
+            runmode, value = get_runmode_from_xmlfile(step)
+            retry_type, _, _, retry_value, _ = get_retry_from_xmlfile(step)
+            if runmode is not None and value > 0:
+                # more than one step in step list, insert new step
+                if len(step_list) > 1:
+                    go_next = len(step_list_with_rmt_retry) + value + 1
+                    for i in range(0, value):
+                        copy_step = copy.deepcopy(step)
+                        copy_step.find("runmode").set("value", go_next)
+                        copy_step.find("runmode").set("attempt", i + 1)
+                        step_list_with_rmt_retry.append(copy_step)
+                # only one step in step list, append new step
+                else:
+                    for i in range(0, value):
+                        copy_step = copy.deepcopy(step)
+                        copy_step.find("runmode").set("attempt", i + 1)
+                        step_list_with_rmt_retry.append(copy_step)
+            if retry_type is not None and retry_value > 0:
+                if len(step_list) > 1:
+                    go_next = len(step_list_with_rmt_retry) + retry_value + 1
+                    if runmode is not None:
+                        get_runmode = step.find('runmode')
+                        step.remove(get_runmode)
+                    for i in range(0, retry_value):
+                        copy_step = copy.deepcopy(step)
+                        copy_step.find("retry").set("count", go_next)
+                        copy_step.find("retry").set("attempt", i + 1)
+                        step_list_with_rmt_retry.append(copy_step)
+                else:
+                    if runmode is not None:
+                        get_runmode = step.find('runmode')
+                        step.remove(get_runmode)
+                    for i in range(0, retry_value):
+                        copy_step = copy.deepcopy(step)
+                        copy_step.find("retry").set("attempt", i + 1)
+                        step_list_with_rmt_retry.append(copy_step)
+            if retry_type is None and runmode is None:
+                step_list_with_rmt_retry.append(step)
+    return step_list_with_rmt_retry
 
 def get_runmode_from_xmlfile(element):
     """Get 'runmode:type' & 'runmode:value' of a step/testcase from the
