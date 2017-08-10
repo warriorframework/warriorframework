@@ -23,13 +23,16 @@ from Framework.Utils.data_Utils import get_object_from_datarepository,\
  get_session_id, get_credentials
 from Framework.Utils.file_Utils import getAbsPath, get_modified_files,\
  get_file_from_remote_server
-from plugins.plugin_robot_wrapper.bin.utils import robot_wrapper_utils
+from plugins.robot_wrapper_plugin.bin.utils import robot_wrapper_utils
 
 
 class RobotWrapperActions(object):
     """ RobotWrapperActions class which has methods(keywords) related to Robot Framework """
 
     def __init__(self):
+        """
+        constructor for RobotWrapperActions
+        """
         self.resultfile = config_Utils.resultfile
         self.datafile = config_Utils.datafile
         self.logsdir = config_Utils.logsdir
