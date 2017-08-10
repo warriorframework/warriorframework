@@ -15,7 +15,7 @@ import time
 import os
 import platform
 import re
-from Framework.Utils.print_Utils import print_info
+from Framework.Utils.print_Utils import print_info, print_notype
 from Framework.Utils import file_Utils
 from Framework.Utils.testcase_Utils import pNote
 
@@ -23,16 +23,15 @@ from Framework.Utils.testcase_Utils import pNote
 def warrior_banner():
     """This prints banner of warrior. The font is standard
     """
-
-    print " __        ___    ____  ____  ___ ___  ____  "
+    print_notype("  __        ___    ____  ____  ___ ___  ____  ")
     time.sleep(0.10)
-    print " \ \      / / \  |  _ \|  _ \|_ _/ _ \|  _ \  "
+    print_notype(r"  \ \      / / \  |  _ \|  _ \|_ _/ _ \|  _ \  ")
     time.sleep(0.10)
-    print "  \ \ /\ / / _ \ | |_) | |_) || | | | | |_) |  "
+    print_notype(r"   \ \ /\ / / _ \ | |_) | |_) || | | | | |_) |  ")
     time.sleep(0.10)
-    print "   \ V  V / ___ \|  _ <|  _ < | | |_| |  _ <   "
+    print_notype(r"    \ V  V / ___ \|  _ <|  _ < | | |_| |  _ <   ")
     time.sleep(0.10)
-    print "    \_/\_/_/   \_\_| \_\_| \_\___\___/|_| \_\  "
+    print_notype(r"     \_/\_/_/   \_\_| \_\_| \_\___\___/|_| \_\  ")
     print "\n"
 
 def warrior_framework_details():
