@@ -28,15 +28,6 @@ from WarriorCore.Classes.war_cli_class import WarriorCliClass
 from Framework.ClassUtils import database_utils_class
 from Framework.ClassUtils import WNetwork
 
-try:
-    import pexpect
-except ImportError:
-    print_info("{0}: pexpect module is not installed".format(os.path.abspath(__file__)))
-    print_info("Warrior framework by default uses pexpect for all cli related activites")
-    print_info("All default methods/functions that use cli will fail"
-               "without pexpect module. Users can however create"
-               "their own custom libraries for cli interaction \n")
-
 """ Api for cli related operations """
 
 
@@ -498,17 +489,11 @@ def _send_cmd(obj_session, **kwargs):
         cmd_timeout = kwargs.get('cmd_timeout', None)
         result, response = obj_session.send_command(startprompt, endprompt,
                                                     command, cmd_timeout)
-    # below block is for backward compatibility - should be removed when we
-    # take out send_command method from this file
-    elif isinstance(obj_session, pexpect.spawn):
-        startprompt = kwargs.get('startprompt', ".*")
-        endprompt = kwargs.get('endprompt', None)
-        cmd_timeout = kwargs.get('cmd_timeout', None)
-        result, response = send_command(obj_session, startprompt, endprompt,
-                                        command, cmd_timeout)
     elif isinstance(obj_session, Framework.ClassUtils.ssh_utils_class.SSHComm):
         result, response = obj_session.get_response(command)
         print_info(response)
+    else:
+        print_warning('session object type is not supported')
     return result, response
 
 
