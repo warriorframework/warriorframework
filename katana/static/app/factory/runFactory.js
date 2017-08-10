@@ -19,6 +19,7 @@ app.factory('runFactory', ['$http', '$routeParams', '$q', function($http, $route
             $http.post('/execute/', pathjson)
                 .success(function(data, status, headers, config) {
                     deferred.resolve(data);
+								executeApi && executeApi.init( pathjson );
                 })
                 .error(function(data, status, headers, config) {
                     deferred.reject("error while saving xml: " + status + ' ' + JSON.stringify(headers));

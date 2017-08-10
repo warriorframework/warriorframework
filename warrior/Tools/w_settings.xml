@@ -16,4 +16,5 @@
         <receiver></receiver> <!-- Optional, use receiver's email such as FNC.User@fnc.fujitsu.com -->
         <subject></subject> <!-- Optional, use this as subject line such as WARRIOR , additional test case execution results Pass/Fail and Test Execution File shall be appended to this -->
     </Setting>
+		<Setting location="" name="katana"></Setting>  
 </Default>
