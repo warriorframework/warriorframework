@@ -71,7 +71,7 @@ def judge(branch_file_score):
 def custom_rules(file_list):
     for fi in file_list:
         try:
-            output = subprocess.check_output('python wftests/ci/custom_rules.py {}'.format('fi'), shell=True)
+            output = subprocess.check_output('python wftests/ci/custom_rules.py {}'.format(fi), shell=True)
         except subprocess.CalledProcessError as e:
             output = e.output
 
