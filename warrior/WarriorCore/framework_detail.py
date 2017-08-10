@@ -32,7 +32,6 @@ def warrior_banner():
     print_notype(r"    \ V  V / ___ \|  _ <|  _ < | | |_| |  _ <   ")
     time.sleep(0.10)
     print_notype(r"     \_/\_/_/   \_\_| \_\_| \_\___\___/|_| \_\  ")
-    print "\n"
 
 def warrior_framework_details():
     """This gets framework details such the executing framework path, release
