@@ -86,6 +86,9 @@ def main():
     """
     if len(sys.argv) > 4:
         file_list = process_file_list(sys.argv[1], sys.argv[2])
+        if not file_list:
+            print "No file requires pylint check, exiting"
+            exit(0)
 
         print "target branch:", sys.argv[3], "\nsource branch:", sys.argv[4]
         subprocess.check_output("git checkout {}".format(sys.argv[3]), shell=True)
