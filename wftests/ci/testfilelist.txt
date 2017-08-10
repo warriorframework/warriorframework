@@ -1,3 +1,0 @@
-.travis.yml
-wftests/ci/pylint.sh
-wftests/ci/pylint_checker.py
