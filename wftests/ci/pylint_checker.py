@@ -69,13 +69,16 @@ def judge(branch_file_score):
     return status
 
 def custom_rules(file_list):
+    status = True
     for fi in file_list:
         try:
             output = subprocess.check_output('python wftests/ci/custom_rules.py {}'.format(fi), shell=True)
         except subprocess.CalledProcessError as e:
             output = e.output
+            status = False
 
         print output
+    return status
 
 def main():
     """
@@ -97,7 +100,7 @@ def main():
         report(branch_file_score)
         print "\n\n\n!---------- Judging score for branch {} ----------!\n".format(sys.argv[4])
         status = judge(branch_file_score)
-        custom_rules(file_list)
+        status &= custom_rules(file_list)
         if status:
             exit(0)
         else:
