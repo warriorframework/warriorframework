@@ -14,13 +14,10 @@ limitations under the License.
 """This file is used to define the framwork notype and retrieve the release,\
    version from licence or release notes.
 """
-from datetime import datetime, timedelta
 import time
 import os
-import sys
+import platform 
 import re  
-import platform
-import subprocess
 from Framework.Utils.print_Utils import print_info, print_notype
 from Framework.Utils import file_Utils
 from Framework.Utils.testcase_Utils import pNote
@@ -69,6 +66,7 @@ def warrior_framework_details():
         print_info('The Warrior framework used is {0}'.format(version_file_path))
         print_info('The Warrior framework Release is{0}'.format(release))
         print_info('The Warrior framework version is{0}'.format(version))
+        print_info('The Warrior framework is running on python version {0}'.format(platform.python_version()))
         pNote("========================== WARRIOR FRAMEWORK DETAILS ==========================", 'notype')
 
     #Sleep for the user to view the console for a second on the framework detail
