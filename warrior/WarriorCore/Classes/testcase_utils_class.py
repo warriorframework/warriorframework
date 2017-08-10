@@ -211,17 +211,10 @@ class TestcaseUtils(object):
         if write_locn is not None:
             doc = ET.SubElement(write_locn, "Note")
             doc.text = txt
-<<<<<<< HEAD
-            self.print_output() 
-        #The below elif bypasses the else below. As we may want to\ 
-        #print items (banners) before we have a handle to write 
-        elif print_type=="notype":
-=======
             self.print_output()
         # The below elif is bypasses the else below. As we may want to
         # print items (banners) before we have a handle to write
         elif print_type == "notype":
->>>>>>> develop
             pass
 
         elif print_type not in print_util_types:
