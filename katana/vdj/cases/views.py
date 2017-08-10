@@ -16,7 +16,14 @@ import xml.dom.minidom
 path_to_demo="/home/khusain/Projects/xml-edit/warriorframework/katana/vdj/cases/"
 
 def index(request):
-    return HttpResponse("Hello, world. You're at the polls index.")
+   #return HttpResponse("Hello, world. You're at the polls index.")
+   	template = loader.get_template("cases/index.html")
+	context = { 
+		'myfile': 'tp.xml',
+		'docSpec': 'projectSpec'
+		
+	}
+	return HttpResponse(template.render(context, request))
 
 
 def getJSONfile(request):
