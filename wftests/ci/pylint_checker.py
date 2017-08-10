@@ -70,6 +70,9 @@ def judge(branch_file_score):
             if improvement < -0.1:
                 status = False
                 print k, "failed with a decreasing score"
+
+        if float(score) >= 5 and "previous" in v[0] and improvement >= -0.1:
+            print k, "pass"
     return status
 
 def custom_rules(file_list):
@@ -102,8 +105,11 @@ def main():
         branch_file_score = pylint(file_list)
 
         report(branch_file_score)
+
         print "\n\n\n!---------- Judging score for branch {} ----------!\n".format(sys.argv[4])
         status = judge(branch_file_score)
+
+        print "\n\n\n!---------- Custom Rules Checker for branch {} ----------!\n".format(sys.argv[4])
         status &= custom_rules(file_list)
         if status:
             exit(0)
