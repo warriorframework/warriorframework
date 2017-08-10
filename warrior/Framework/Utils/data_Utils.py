@@ -24,11 +24,8 @@ from Framework.ClassUtils.testdata_class import TestData, TestDataIterations
 from Framework.Utils.xml_Utils import get_attributevalue_from_directchildnode as av_fromdc
 from Framework.Utils.string_Utils import sub_from_varconfigfile
 from Framework.ClassUtils import database_utils_class
-<<<<<<< HEAD
 from WarriorCore.Classes.warmock_class import mocked
-=======
 from __builtin__ import str
->>>>>>> develop
 
 cmd_params = OrderedDict([("command_list", "send"),
                           ("sys_list", "sys"),
@@ -346,12 +343,6 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
     for testdata in root.findall("testdata"):
         # use only test data blocks that are marked to execute
         exec_flag = get_exec_flag(testdata, title, row)
-<<<<<<< HEAD
-        if testdata.get("execute") == "yes" and exec_flag:
-            testdata_key = "{0}{1}".format(testdata.get('title', ""), \
-                                         _get_row(testdata))
-            details_dict = _get_cmd_details(testdata, global_obj, system_name, varconfigfile)
-=======
         exec_text = testdata.get("execute").strip()
         execute_req = string_Utils.conv_str_to_bool(exec_text)
         if  execute_req and exec_flag:
@@ -359,7 +350,6 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
                                          _get_row(testdata))
             details_dict = _get_cmd_details(testdata, global_obj, system_name,
                                             varconfigfile, var_sub=var_sub)
->>>>>>> develop
             start_pat = _get_pattern_list(testdata, global_obj)
             end_pat = _get_pattern_list(testdata, global_obj, pattern="end")
             details_dict = sub_from_env_var(details_dict, start_pat, end_pat)
@@ -391,11 +381,7 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
             details_dict = td_obj.varsub_varconfig_substitutions\
             (details_dict, vc_file=varconfigfile, var_sub=None, start_pat=start_pat, end_pat=end_pat)
             testdata_dict[testdata_key] = details_dict
-<<<<<<< HEAD
-=======
             found = 1
->>>>>>> develop
-
         else:
             not_found += 1
 
@@ -443,14 +429,9 @@ def _get_mapping_details(global_obj, vfylist):
             map_list.append(None)
     return (vfylist, map_list)
 
-<<<<<<< HEAD
 @mocked
-def _get_cmd_details(testdata, global_obj, system_name, varconfigfile):
-=======
-
 def _get_cmd_details(testdata, global_obj, system_name,
                      varconfigfile, var_sub=None):
->>>>>>> develop
     """Get the command details from testdata file
     as a details dictionary"""
     details_dict = {}
