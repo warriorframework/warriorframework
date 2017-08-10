@@ -48,6 +48,9 @@ def pylint(file_list):
     return file_score
 
 def report(branch_file_score):
+    """
+        print out pylint result for each file
+    """
     print "\n\n\n!---------- Detail score for branch {} ----------!\n".format(sys.argv[4])
     for k, v in branch_file_score.items():
         print k, "\n", v[1]
@@ -57,6 +60,9 @@ def report(branch_file_score):
         print k, v[0]
 
 def judge(branch_file_score):
+    """
+        Check the score and difference for each file
+    """
     status = True
     for k, v in branch_file_score.items():
         # print k, v[0]
@@ -76,6 +82,9 @@ def judge(branch_file_score):
     return status
 
 def custom_rules(file_list):
+    """
+        Invoke custom rules checker on each file
+    """
     status = True
     for fi in file_list:
         try:
