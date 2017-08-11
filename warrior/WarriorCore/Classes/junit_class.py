@@ -235,9 +235,14 @@ class Junit(object):
 
     def _junit_to_html(self, junit_file, print_summary=True):
         """ Convert junit file to html"""
-        html_result_obj = WarriorHtmlResults(junit_file)
-        html_result_obj.html_from_junit()
-        html_result_obj.output_html(print_summary)
+        if not hasattr(self, 'html_result_obj'):
+            self.html_result_obj = WarriorHtmlResults(junit_file)
+        self.html_result_obj.generate_html(junit_file, None)
+
+    def remove_html_obj(self):
+        """checks and removes html_results_obj from junit object usecase in parralel execution"""
+        if hasattr(self, 'html_result_obj'):
+            del self.html_result_obj
 
     def output_junit(self, path, print_summary=True):
         """output the actual file
