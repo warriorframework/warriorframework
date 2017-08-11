@@ -5,13 +5,14 @@ pip install pylint
 cd ../
 git clone https://github.com/warriorframework/warriorframework.git pylint_warrior
 cd pylint_warrior
-git checkout develop
+git checkout "${TRAVIS_BRANCH}"
 git checkout "${TRAVIS_PULL_REQUEST_BRANCH}"
-git merge --no-edit develop
+echo "Merging ${TRAVIS_BRANCH} into ${TRAVIS_PULL_REQUEST_BRANCH}"
+git merge --no-edit "${TRAVIS_BRANCH}"
 
 git branch
 # Displaying what .py files have changed
-filelist=$(git --no-pager diff develop --name-only "${TRAVIS_PULL_REQUEST_BRANCH}" | grep -v 'OSS' | grep -v 'conf.py' | grep -v "custom_rules.py" | grep '.py$')
+filelist=$(git --no-pager diff "${TRAVIS_BRANCH}" --name-only "${TRAVIS_PULL_REQUEST_BRANCH}" | grep -v 'OSS' | grep -v 'conf.py' | grep -v "custom_rules.py" | grep '.py$')
 if [[ "$filelist" ]]; then
     echo "List of .py files that have changed in this commit"
     echo "$filelist"
@@ -20,8 +21,8 @@ else
     exit 0;
 fi
 
-git checkout develop
-# Do pylint on develop and the latest commit, output result to pylint_result.txt
+git checkout "${TRAVIS_BRANCH}"
+# Do pylint on target branch and the latest commit, output result to pylint_result.txt
 echo "$filelist" | xargs -L 1 -I {} pylint --rcfile=.pylintrc {} || true
 git checkout "${TRAVIS_PULL_REQUEST_BRANCH}"
 echo "$filelist"
