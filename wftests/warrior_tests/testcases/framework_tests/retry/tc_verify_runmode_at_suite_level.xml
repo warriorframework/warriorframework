@@ -1,0 +1,59 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+                <Name>tc_verify_runmode_at_suite_level</Name>
+                <Title>To verify runmode tags at suite level</Title>
+                <Datatype>Custom</Datatype>
+                <default_onError action="next"/>
+                <Logsdir>../../Execution</Logsdir>
+                <Resultsdir>../../Execution</Resultsdir>
+                <InputDataFile>No_Data</InputDataFile>
+                <Date>2017-04-20</Date>
+                <Time>16:20</Time>
+                <Engineer>Annalakshmi</Engineer>
+        </Details>
+        <Requirements>
+                <Requirement/>
+        </Requirements>
+        <Steps>
+                <step Driver="common_driver" Keyword="verify_data" TS="1">
+                        <Arguments>
+                                <argument name="expected" value="1"/>
+                                <argument name="object_key" value="ts_rup_count"/>
+                                <argument name="type" value="int"/>
+                                <argument name="comparison" value="eq"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>connect_ssh</Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
+                <step Driver="common_driver" Keyword="verify_data" TS="2">
+                        <Arguments>
+                                <argument name="expected" value="2"/>
+                                <argument name="object_key" value="ts_ruf_count"/>
+                                <argument name="type" value="int"/>
+                                <argument name="comparison" value="eq"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>connect_ssh</Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
+                <step Driver="common_driver" Keyword="verify_data" TS="3">
+                        <Arguments>
+                                <argument name="expected" value="2"/>
+                                <argument name="object_key" value="ts_rmt_count"/>
+                                <argument name="type" value="int"/>
+                                <argument name="comparison" value="eq"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>connect_ssh</Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
+        </Steps>
+ </Testcase>
