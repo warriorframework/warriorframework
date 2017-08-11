@@ -1,0 +1,9 @@
+{% extends "./baseListFile.html" %}
+
+{% block content %}
+	{{title}}
+	{% for xx in listOfFiles %}
+		<li> <a href="./editCase/?fname={{xx}}" target="_blank">{{ xx }}</a> </li>
+	{% endfor %}
+
+{% endblock %}

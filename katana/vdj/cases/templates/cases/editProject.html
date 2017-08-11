@@ -1,35 +1,32 @@
-<!DOCTYPE html>
-{% load static %}
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>Document</title>
+{% extends "./baseListFile.html" %}
 
-<script type="text/javascript" src="{% static "./jquery-3.2.1.js" %}"></script>
-<script type="text/javascript" src="{% static "./xonomy/xonomy.js" %}"></script>
-<link type="text/css" rel="stylesheet" href="{% static "./xonomy/xonomy.css" %}"/>
-<script type="text/javascript" src="{% static "./testProject_docSpec.js" %}"></script>
-<script type="text/javascript" src="{% static "./testSuite_docSpec.js" %}"></script>
-<script type="text/javascript" src="{% static "./testCase_docSpec.js" %}"></script>
+{% block content %}
+	 {{title}}
+Editing:{{ myfile }}
+Using: {{ docSpec }}
+	<div class="btn-group" role="group">   
+		<button class="btn btn-secondary" onclick="start()">Refresh</button>
+		<button class="btn btn-secondary">Load</button>
+		<button class="btn btn-secondary">Save</button>
+	</div>
+         
+<div class="container">
+    <div id="editor" class="col-md-8" >  </div>    
+</div>
+
 <script type="text/javascript">
 function start() {
-  var Connect = new XMLHttpRequest();
-  // Define which file to open and
-  // send the request.
-  Connect.open("GET", "http://localhost:8000/cases/getXMLfile/?fname={{ myfile }}", false);
-  Connect.setRequestHeader("Content-Type", "text/xml");
-  Connect.send(null);
-  var xml = Connect.responseXML;// Place the response in an XML document.
- 
-var docSpec = {{ docSpec }};
-var editor=document.getElementById("editor");
-//Xonomy.setMode('laic')
-Xonomy.render(xml, editor, docSpec);
+	var Connect = new XMLHttpRequest();
+	Connect.open("GET", "http://localhost:8000/cases/getXMLfile/?fname={{ myfile }}", false);
+	Connect.setRequestHeader("Content-Type", "text/xml");
+	Connect.send(null);
+	var xml = Connect.responseXML;// Place the response in an XML document.
+	 
+	var xdocSpec = {{ docSpec }};
+	
+	var editor=document.getElementById("editor");
+	Xonomy.setMode('laic')
+	Xonomy.render(xml, editor, xdocSpec);
 }
 </script>
-</head>
-<body onload="start()">
-<p><button>New File</button> <button>Save to Disk </button><button>Reload</button> <p>
-<div id="editor" style="float: left;"  width="75%"></div>
-The editor goes here.... for {{ myfile }}
-</body>
+{% endblock %}

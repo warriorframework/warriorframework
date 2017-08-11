@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 
 <head>
@@ -8,16 +9,22 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>About Page</title>
+    <title>{{ title }}</title>
    <!-- Bootstrap core CSS locally 
     <link href="{% static  'css/bootstrap.min.css' %}"rel="stylesheet">
 
     <link href="{% static css/font-awesome.min.css %)" rel="stylesheet" type="text/css">
     -->
 <script type="text/javascript" src="{% static "./jquery-3.2.1.js" %}"></script>
-<script type="text/javascript" src="{% static "./xonomy/xonomy.js" %}"></script>
+<script type="text/javascript" src="{% static "./vendor/tether/tether.min.js" %}"></script>
+
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+<script type="text/javascript" src="{% static "./xonomy/xonomy.js" %}"></script>
+<link type="text/css" rel="stylesheet" href="{% static "./xonomy/xonomy.css" %}"/>
+<script type="text/javascript" src="{% static "./testCase_docSpec.js" %}"></script>
+<script type="text/javascript" src="{% static "./testProject_docSpec.js" %}"></script>
+<script type="text/javascript" src="{% static "./testSuite_docSpec.js" %}"></script>
 
 
     <!-- Custom styles for this template -->
@@ -38,7 +45,7 @@
 
 </head>
 
-<body>
+<body onload="start()">
 
     <!-- Navigation -->
     <nav class="navbar fixed-top navbar-toggleable-md navbar-inverse bg-inverse">
@@ -46,7 +53,7 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="container">
-            <a class="navbar-brand" href="index.html">Start Bootstrap</a>
+            <a class="navbar-brand" href="index.html">Warrior Framework</a>
             <div class="collapse navbar-collapse" id="navbarExample">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
@@ -101,114 +108,35 @@
     <div class="container">
 
         <!-- Page Heading/Breadcrumbs -->
-        <h1 class="mt-4 mb-3">About <small>Subheading</small></h1>
+        <h1 class="mt-4 mb-3">List of Files</small></h1>
 
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 <a href="index.html">Home</a>
             </li>
-            <li class="breadcrumb-item active">About</li>
+            <li class="breadcrumb-item active">Lists</li>
         </ol>
 
-        <!-- Intro Content -->
-        <div class="row">
-            <div class="col-lg-6">
-                <img class="img-fluid rounded mb-4" src="http://placehold.it/750x450" alt="">
-            </div>
-            <div class="col-lg-6">
-                <h2>About Modern Business</h2>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sed voluptate nihil eum consectetur similique? Consectetur, quod, incidunt, harum nisi dolores delectus reprehenderit voluptatem perferendis dicta dolorem non blanditiis ex fugiat.</p>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Saepe, magni, aperiam vitae illum voluptatum aut sequi impedit non velit ab ea pariatur sint quidem corporis eveniet. Odit, temporibus reprehenderit dolorum!</p>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et, consequuntur, modi mollitia corporis ipsa voluptate corrupti eum ratione ex ea praesentium quibusdam? Aut, in eum facere corrupti necessitatibus perspiciatis quis?</p>
-            </div>
-        </div>
-        <!-- /.row -->
+        
 
         <!-- Team Members -->
-        <h2>Our Team</h2>
+        {% block content %}
 
-        <div class="row">
-            <div class="col-lg-4 mb-4">
-                <div class="card h-100 text-center">
-                    <img class="card-img-top img-fluid" src="http://placehold.it/750x450" alt="">
-                    <div class="card-block">
-                        <h4 class="card-title">Team Member</h4>
-                        <h6 class="card-subtitle mb-2 text-muted">Position</h6>
-                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Possimus aut mollitia eum ipsum fugiat odio officiis odit.</p>
-                    </div>
-                    <div class="card-footer">
-                        <a href="#">name@example.com</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 mb-4">
-                <div class="card h-100 text-center">
-                    <img class="card-img-top img-fluid" src="http://placehold.it/750x450" alt="">
-                    <div class="card-block">
-                        <h4 class="card-title">Team Member</h4>
-                        <h6 class="card-subtitle mb-2 text-muted">Position</h6>
-                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Possimus aut mollitia eum ipsum fugiat odio officiis odit.</p>
-                    </div>
-                    <div class="card-footer">
-                        <a href="#">name@example.com</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 mb-4">
-                <div class="card h-100 text-center">
-                    <img class="card-img-top img-fluid" src="http://placehold.it/750x450" alt="">
-                    <div class="card-block">
-                        <h4 class="card-title">Team Member</h4>
-                        <h6 class="card-subtitle mb-2 text-muted">Position</h6>
-                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Possimus aut mollitia eum ipsum fugiat odio officiis odit.</p>
-                    </div>
-                    <div class="card-footer">
-                        <a href="#">name@example.com</a>
-                    </div>
-                </div>
-            </div>
-        </div>
+        {% endblock %}
         <!-- /.row -->
-
-        <!-- Our Customers -->
-        <h2>Our Customers</h2>
-        <div class="row">
-            <div class="col-lg-2 col-sm-4 mb-4">
-                <img class="img-fluid" src="http://placehold.it/500x300" alt="">
-            </div>
-            <div class="col-lg-2 col-sm-4 mb-4">
-                <img class="img-fluid" src="http://placehold.it/500x300" alt="">
-            </div>
-            <div class="col-lg-2 col-sm-4 mb-4">
-                <img class="img-fluid" src="http://placehold.it/500x300" alt="">
-            </div>
-            <div class="col-lg-2 col-sm-4 mb-4">
-                <img class="img-fluid" src="http://placehold.it/500x300" alt="">
-            </div>
-            <div class="col-lg-2 col-sm-4 mb-4">
-                <img class="img-fluid" src="http://placehold.it/500x300" alt="">
-            </div>
-            <div class="col-lg-2 col-sm-4 mb-4">
-                <img class="img-fluid" src="http://placehold.it/500x300" alt="">
-            </div>
-        </div>
-        <!-- /.row -->
-
     </div>
     <!-- /.container -->
 
     <!-- Footer -->
     <footer class="py-5 bg-inverse">
         <div class="container">
-            <p class="m-0 text-center text-white">Copyright &copy; Your Website 2017</p>
+            <p class="m-0 text-center text-white">Copyright &copy; Fujistsu 2017</p>
         </div>
         <!-- /.container -->
     </footer>
 
     <!-- Bootstrap core JavaScript -->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/tether/tether.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+
 
 </body>
 
