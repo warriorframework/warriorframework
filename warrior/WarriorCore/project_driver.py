@@ -197,6 +197,7 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
         execution_type = "sequential_suites"
 
     if execution_type.upper() == 'PARALLEL_SUITES':
+        pj_junit_object.remove_html_obj()
         data_repository["war_parallel"] = True
         print_info("Executing suites in parallel")
         project_status = parallel_testsuite_driver.main(testsuite_list, project_repository,
