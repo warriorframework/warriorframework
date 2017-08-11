@@ -23,6 +23,7 @@ class FileActions(object):
     """
 
     def __init__(self):
+        """Constructor for FileActions Class"""
         self.resultfile = Utils.config_Utils.resultfile
         self.datafile = Utils.config_Utils.datafile
         self.logsdir = Utils.config_Utils.logsdir
