@@ -160,7 +160,7 @@ def disconnect_telnet(child):
 
 def disconnect(child):
     """
-    - Disconnects a pexpect session
+    - Disconnects warrior_connect_class session object(pexpect/paramiko)
     - Returns session object(same child)
     """
     print_warning("This method is obsolete and will be deprecated soon. Please"
@@ -397,14 +397,14 @@ def send_commands_from_testdata(testdatafile, obj_session, **args):
     """
     - Parses the testdata file and gets the command details
     for rows marked execute=yes and row=str_rownum.
-    - Sends the obtained commands to the pexpect session (obj_Session).
+    - Sends the obtained commands to the warrior_connect_class session object(obj_Session).
     - If the commands have verification attribute set,
     then verifies the verification text for presence/absence as defined
     in the respective found attribute in the testdatfile.
 
     :Arguments:
         1. testdatafile = the xml file where command details are available
-        2. obj_session = pexpect session object
+        2. obj_session = warrior_connect_class session object(pexpect/paramiko)
         3. logfile = logfile of the pexpect session object.
         4. varconfigfile=  xml file from which the values will be taken for subtitution
         5. var_sub(string) = the pattern [var_sub] in the testdata commands,

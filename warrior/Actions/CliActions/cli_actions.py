@@ -198,7 +198,8 @@ class CliActions(object):
                 if connect_testdata is not None and \
                    connect_testdata is not False:
                     Utils.cli_Utils.smart_action(
-                     self.datafile, call_system_name, "", war_conn_object,
+                     self.datafile, call_system_name, "",
+                     war_conn_object.session_object,
                      "disconnect", connect_testdata)
 
                 war_conn_object.disconnect()
@@ -349,8 +350,6 @@ class CliActions(object):
                           .format(system_name, subsystem_name, session_name))
 
                     # execute smart action to produce user report
-                    # To be implemented - modify send command to support
-                    # war_conn_object in smart_action
                     smart_result = Utils.cli_Utils.smart_action(
                      self.datafile, call_system_name, conn_string,
                      war_conn_object.session_object, "connect")
