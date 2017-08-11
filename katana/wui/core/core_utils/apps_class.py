@@ -1,8 +1,6 @@
-import os
-
 from utils.json_utils import read_json_data
+from wui.core.core_utils.app_info_class import AppInformation
 from wui.core.core_utils.core_utils import get_app_path_from_name
-from utils.directory_traversal_utils import get_abs_path, get_parent_directory
 
 
 class App:
@@ -27,8 +25,17 @@ class Apps:
 
     def get_config_paths(self, data):
         """ sets paths array to paths of json files"""
-        for app1 in data['available_apps']:
-            for app2 in data['settings_installed_apps']:
-                if app1 == app2:
-                    self.paths.append(get_app_path_from_name(app1, data['config_file_name'],
-                                                             data['base_directory']))
+        available_apps = set(data["available_apps"])
+        settings_apps = set(data["settings_apps"])
+
+        installed_apps = available_apps.intersection(settings_apps)
+
+        for app in installed_apps:
+            self.paths.append(get_app_path_from_name(app, data['config_file_name'],
+                                                     data['base_directory']))
+
+        extra_app_dirs = available_apps.union(settings_apps) - settings_apps
+        for app in extra_app_dirs:
+            logs = "--Warning-- {0} package is available for installation, but has not been " \
+                  "installed.".format(app)
+            AppInformation.log_obj.append_log(logs)

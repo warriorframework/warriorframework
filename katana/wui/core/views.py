@@ -13,12 +13,10 @@ limitations under the License.
 
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-import os
 from django.shortcuts import render
 from django.views import View
-from utils.directory_traversal_utils import get_abs_path, get_parent_directory
-from wui.core.core_utils.core_index_class_utils import CoreIndex
-from wui.core.core_utils.apps_class import Apps
+
+from wui.core.apps import AppInformation
 
 
 class CoreView(View):
@@ -39,25 +37,6 @@ class CoreView(View):
         """
 
         template = 'core/index.html'
-
-        base_directory = get_parent_directory(os.path.dirname(os.path.realpath(__file__)), 2)
-        config_file_name = "wf_config.json"
-        settings_file_path = get_abs_path(os.path.join("wui", "settings.py"), base_directory)
-        config_details_dict = {"icon": "", "color": ""}
-
-        core_index_obj = CoreIndex(base_directory, settings_file_path=settings_file_path)
-
-        available_apps = core_index_obj.get_available_apps()
-        # print available_apps
-
-        settings_installed_apps = core_index_obj.get_apps_from_settings_file()
-        # print settings_installed_apps
-
-        app_obj = Apps()
-        apps = app_obj.set_apps({'base_directory': base_directory,
-                                 'config_file_name': config_file_name,
-                                 'config_details_dict': config_details_dict,
-                                 'available_apps': available_apps,
-                                 'settings_installed_apps': settings_installed_apps})
+        apps = AppInformation.information.apps
 
         return render(request, template, {"apps": apps})

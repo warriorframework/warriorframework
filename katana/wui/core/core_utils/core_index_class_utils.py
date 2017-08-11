@@ -1,5 +1,7 @@
 import os
 
+from django.apps import apps
+
 from utils.directory_traversal_utils import get_sub_folders
 from utils.file_utils import readlines_from_file
 from utils.string_utils import remove_trailing_characters_from_list
@@ -20,6 +22,8 @@ class CoreIndex():
         self.available_apps = []
         self.settings_file_abs_path = settings_file_path
         self.settings_installed_apps = []
+        self.user_apps = "apps"
+        self.native_apps = "native"
 
     def get_available_apps(self):
         """
@@ -30,14 +34,13 @@ class CoreIndex():
 
         """
 
-        self.available_apps.extend(_get_user_defined_apps(os.path.join(self.base_directory, "apps"),
-                                                          _get_package_name("apps")))
-        self.available_apps.extend(_get_default_apps(os.path.join(self.base_directory, "native"),
-                                                     _get_package_name("native")))
+        self.available_apps.extend(_get_apps(os.path.join(self.base_directory, self.user_apps),
+                                             _get_package_name(self.user_apps)))
+        self.available_apps.extend(_get_apps(os.path.join(self.base_directory, self.native_apps),
+                                             _get_package_name(self.native_apps)))
         return self.available_apps
 
-    def get_apps_from_settings_file(self, start="INSTALLED_APPS = [", end="]\n",
-                                    starts_with="django.", formatting_list=None):
+    def get_apps_from_settings_file(self):
         """
         This function gets a list of installed apps from the settings.py file
 
@@ -46,45 +49,25 @@ class CoreIndex():
 
         """
 
-        if formatting_list is None:
-            formatting_list = [" ", "\n", ",", "'"]
-        apps_list = readlines_from_file(self.settings_file_abs_path, start=start, end=end)
-        formatted_apps_list = remove_trailing_characters_from_list(apps_list, formatting_list)
-
-        for i in range(0, len(formatted_apps_list)):
-            if not formatted_apps_list[i].startswith(starts_with):
-                self.settings_installed_apps.append(formatted_apps_list[i])
+        for app in apps.get_app_configs():
+            if not app.name.startswith('django.contrib.') and app.name != 'wui.core':
+                self.settings_installed_apps.append(app.name)
 
         return self.settings_installed_apps
 
 
-def _get_user_defined_apps(apps_directory_path, apps_package_name):
+def _get_apps(apps_directory_path, apps_package_name):
     """
-    This function gets all the directories inside the "/katana/apps" directory
+    This function gets all the app directories inside the "/katana/apps" and "katana/native"
+    directories
 
     Returns:
-        self.user_defined_apps: list of user defined apps
+        apps_list: list of app paths
 
     """
     apps_list = []
     apps_sub_dir = get_sub_folders(apps_directory_path)
     for i in range(0, len(apps_sub_dir)):
         apps_sub_dir[i] = apps_package_name + apps_sub_dir[i]
-    apps_list.extend(apps_sub_dir)
-    return apps_list
-
-
-def _get_default_apps(default_directory_path, default_package_name):
-    """
-    This function gets all the directories inside the "/katana/native" directory
-
-    Returns:
-        self.default_apps: list of default apps
-
-    """
-    apps_list = []
-    apps_sub_dir = get_sub_folders(default_directory_path)
-    for i in range(0, len(apps_sub_dir)):
-        apps_sub_dir[i] = default_package_name + apps_sub_dir[i]
     apps_list.extend(apps_sub_dir)
     return apps_list
