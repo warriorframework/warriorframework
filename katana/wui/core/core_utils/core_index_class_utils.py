@@ -1,10 +1,6 @@
 import os
-
 from django.apps import apps
-
 from utils.directory_traversal_utils import get_sub_folders
-from utils.file_utils import readlines_from_file
-from utils.string_utils import remove_trailing_characters_from_list
 from wui.core.core_utils.core_utils import _get_package_name
 
 

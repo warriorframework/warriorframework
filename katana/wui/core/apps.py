@@ -17,12 +17,15 @@ class CoreConfig(AppConfig):
     verbose_name = "Core Katana"
 
     def ready(self):
+        """
+        The ready function is trigger only on events like server start up and server reload
+        """
         # print "***************You are in Core Katana App Config Class***************"
 
         base_directory = get_parent_directory(os.path.dirname(os.path.realpath(__file__)), 2)
 
         logs_dir = "logs"
-        log_file = "logs - {0}".format(get_current_datetime_stamp())
+        log_file = "logs - {0}.txt".format(get_current_datetime_stamp())
         AppInformation.log_obj = ErrorLog(os.path.join(base_directory, logs_dir, log_file))
 
         config_file_name = "wf_config.json"

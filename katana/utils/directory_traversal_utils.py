@@ -1,6 +1,8 @@
 import glob
 import os
 
+from wui.core.core_utils.app_info_class import AppInformation
+
 
 def get_sub_dirs_and_files(path):
     """
@@ -73,7 +75,7 @@ def get_abs_path(relative_path, base_path=None):
     path = os.path.join(base_path.strip(), relative_path.strip())
 
     if not os.path.exists(path):
-        print "An Error Occurred: {0} does not exist".format(path)
+        AppInformation.log_obj.append_log("An Error Occurred: {0} does not exist".format(path))
         path = None
 
     return path

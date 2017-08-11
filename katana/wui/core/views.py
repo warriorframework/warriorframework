@@ -15,7 +15,6 @@ limitations under the License.
 from __future__ import unicode_literals
 from django.shortcuts import render
 from django.views import View
-
 from wui.core.apps import AppInformation
 
 
@@ -37,6 +36,7 @@ class CoreView(View):
         """
 
         template = 'core/index.html'
-        apps = AppInformation.information.apps
+        # writing pending logs to the log file
+        AppInformation.log_obj.flush()
 
-        return render(request, template, {"apps": apps})
+        return render(request, template, {"apps": AppInformation.information.apps})

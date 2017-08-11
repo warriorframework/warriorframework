@@ -1,3 +1,6 @@
+from wui.core.core_utils.app_info_class import AppInformation
+
+
 def readlines_from_file(path, start=None, end=None):
     """
     This function uses the readlines() method to read a file.
@@ -18,7 +21,7 @@ def readlines_from_file(path, start=None, end=None):
         with open(path, "r") as f:
             data = f.readlines()
     except IOError:
-        print "{0} does not exist".format(path)
+        AppInformation.log_obj.append_log("--Error-- {0} does not exist".format(path))
     else:
         output_list = []
 
