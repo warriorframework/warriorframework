@@ -41,13 +41,13 @@ def math_decision(exec_condition, exec_cond_var, operator):
             Else False
     """
     operator = operator.lower()
-    if operator == "greater_equal":
+    if operator == "ge":
         return True if get_object_from_datarepository(exec_condition) >= exec_cond_var else False
-    elif operator == "greater":
+    elif operator == "gt":
         return True if get_object_from_datarepository(exec_condition) > exec_cond_var else False
-    elif operator == "smaller_equal":
+    elif operator == "le":
         return True if get_object_from_datarepository(exec_condition) <= exec_cond_var else False
-    elif operator == "smaller":
+    elif operator == "lt":
         return True if get_object_from_datarepository(exec_condition) < exec_cond_var else False
 
     pNote("Unknown error occur when deciding value, please check condition value of the step",
@@ -69,17 +69,17 @@ def logical_decision(exec_condition, exec_cond_var, operator="equal"):
     if type(get_object_from_datarepository(exec_condition)) != type(exec_cond_var):
         pNote("Comparing different type of value, please check the conditional value type", "ERROR")
         status = False
-    elif operator in ["greater_equal", "greater", "smaller_equal", "smaller"] and\
+    elif operator in ["ge", "gt", "le", "lt"] and\
          not isinstance(exec_condition, int) and not isinstance(exec_condition, float):
         pNote("Comparing non-numerical value using numerical operator,"\
             "please check value and operator type", "ERROR")
         status = False
 
-    if status and operator == "equal":
+    if status and operator == "eq":
         result = True if get_object_from_datarepository(exec_condition) == exec_cond_var else False
-    elif status and operator == "not_equal":
+    elif status and operator == "ne":
         result = True if get_object_from_datarepository(exec_condition) != exec_cond_var else False
-    elif status and operator in ["greater_equal", "greater", "smaller_equal", "smaller"]:
+    elif status and operator in ["ge", "gt", "le", "lt"]:
         result = math_decision(exec_condition, exec_cond_var, operator)
     else:
         pNote("Execution condition failed for expected value: {} , operator: {}, actual value: {}"\
@@ -103,9 +103,9 @@ def rule_parser(rule):
         else_action = rule.get("Elsevalue")
 
     # Check for math operator
-    support_operators = ["greater_equal", "greater", "smaller_equal",
-                         "smaller", "equal", "not_equal"]
-    operator = rule.get("Operator", "equal")
+    support_operators = ["ge", "gt", "le",
+                         "lt", "eq", "ne"]
+    operator = rule.get("Operator", "eq")
     if operator is not None and operator.lower() not in support_operators:
         pNote("Invaid Operator value, please use the following: {}".format(support_operators))
         operator = None
