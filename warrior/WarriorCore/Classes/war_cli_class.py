@@ -335,7 +335,7 @@ class WarriorCliClass(object):
 
         parser.add_argument('-jobid', action='store', nargs='?',
                             help="create a property in test junit files which name is "\
-                            "resultlocation and value http://pharlap.tx.fnc.fujitsu.com/share/logs/<jobid>")
+                            "resultlocation and value is <job_url<url>> + <jobid>")
 
         parser.add_argument('-encrypt', action='store', nargs='*', dest="encrypt", help="encrypt data string")
 

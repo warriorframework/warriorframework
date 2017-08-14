@@ -13,7 +13,9 @@ limitations under the License.
 import os
 import re
 import sys
+import Tools
 from Framework.Utils import file_Utils
+from Framework.Utils.data_Utils import get_credentials
 from WarriorCore.Classes import war_cli_class
 from Framework.Utils.print_Utils import print_error, print_info
 import Framework.Utils.encryption_utils as Encrypt
@@ -115,7 +117,14 @@ def decide_overwrite_var(namespace):
         print_error("outputdir shouldn't be used with resultdir or logdir")
         exit(1)
     if namespace.jobid:
-        overwrite['jobid'] = "http://pharlap.tx.fnc.fujitsu.com/share/logs/"+str(namespace.jobid)
+        settings_xml = Tools.__path__[0] + os.sep + 'w_settings.xml'
+        job_url = get_credentials(settings_xml, 'job_url',['url'], 'Setting')
+        if job_url['url'] is not None :
+            url = job_url['url']
+        else:
+            print_info("jobid is specified but no job url found in w_settings")
+            print_info("Using jobid only in JUnit file")
+        overwrite['jobid'] = url + str(namespace.jobid)
     return overwrite
 
 
