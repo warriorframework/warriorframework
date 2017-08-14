@@ -92,9 +92,6 @@ def custom_rules(file_list):
         except subprocess.CalledProcessError as e:
             output = e.output
             status = False
-            if "No such file" in output:
-                output = "Custom rules can't find file {}".format(fi)
-                status = True
 
         print output
     return status
