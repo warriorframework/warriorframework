@@ -96,20 +96,20 @@ def decide_overwrite_var(namespace):
     """
     overwrite = {}
     if namespace.datafile:
-        if namespace.datafile[0] != os.sep: 
+        if namespace.datafile[0] != os.sep:
             namespace.datafile = os.getcwd() + os.sep + namespace.datafile
         overwrite['ow_datafile'] = namespace.datafile
 
     if namespace.resultdir:
-        if namespace.resultdir[0] != os.sep: 
+        if namespace.resultdir[0] != os.sep:
             namespace.resultdir = os.getcwd() + os.sep + namespace.resultdir
         overwrite['ow_resultdir'] = namespace.resultdir
     if namespace.logdir:
-        if namespace.logdir[0] != os.sep: 
+        if namespace.logdir[0] != os.sep:
             namespace.logdir = os.getcwd() + os.sep + namespace.logdir
         overwrite['ow_logdir'] = namespace.logdir
     if namespace.outputdir:
-        if namespace.outputdir[0] != os.sep: 
+        if namespace.outputdir[0] != os.sep:
             namespace.outputdir = os.getcwd() + os.sep + namespace.outputdir
         overwrite['ow_resultdir'] = namespace.outputdir
         overwrite['ow_logdir'] = namespace.outputdir
@@ -119,7 +119,7 @@ def decide_overwrite_var(namespace):
     if namespace.jobid:
         settings_xml = Tools.__path__[0] + os.sep + 'w_settings.xml'
         job_url = get_credentials(settings_xml, 'job_url', ['url'], 'Setting')
-        if job_url['url'] is not None :
+        if job_url['url'] is not None:
             url = job_url['url']
         else:
             print_info("jobid is specified but no job url found in w_settings")
