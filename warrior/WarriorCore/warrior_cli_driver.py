@@ -118,7 +118,7 @@ def decide_overwrite_var(namespace):
         exit(1)
     if namespace.jobid:
         settings_xml = Tools.__path__[0] + os.sep + 'w_settings.xml'
-        job_url = get_credentials(settings_xml, 'job_url',['url'], 'Setting')
+        job_url = get_credentials(settings_xml, 'job_url', ['url'], 'Setting')
         if job_url['url'] is not None :
             url = job_url['url']
         else:
