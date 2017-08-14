@@ -10,10 +10,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
-"""Utility to send email using smtp"""
-
+#Utility to send email using smtp
 # Import smtplib for the actual sending function
+
 import smtplib
 import os
 from os.path import basename
@@ -47,7 +46,7 @@ def set_params_send_email(addsubject, data_repository, files, mail_on):
                 (3) every_failure
     """
     body = ""
-    if type(data_repository) is list:
+    if isinstance(data_repository, list):
         for body_elem in data_repository:
             body += body_elem+"\n"
     else:
@@ -135,7 +134,8 @@ def compose_send_email(exec_type, abs_filepath, logs_dir, results_dir, result,
     # Temporary fix - HTML file can not be attached since it will be generated
     # only after the completion of the warrior execution. Creating html result
     # file at runtime will solve this.
-    if mail_on == "per_execution":
+    # KH. 2017-07-27
+    if mail_on in ["per_execution", "first_failure", "every_failure"]:
         files = {report_attachment}
     else:
         files = {}

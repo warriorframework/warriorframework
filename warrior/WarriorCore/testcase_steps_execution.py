@@ -134,6 +134,8 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
             Utils.config_Utils.set_resultfile(kw_resultfile)
             Utils.testcase_Utils.pKeyword(keyword, step.get('Driver'))
             Utils.testcase_Utils.reportStatus('Skip')
+
+            step_description = Utils.testcase_Utils.get_description_from_xmlfile(step)
             kw_resultfile_list.append(kw_resultfile)
             data_repository['wt_junit_object'].update_count("skipped", "1", "tc",
                                                             data_repository['wt_tc_timestamp'])
@@ -141,12 +143,14 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
                                                             data_repository['wt_tc_timestamp'])
             kw_start_time = Utils.datetime_utils.get_current_timestamp()
             step_impact = Utils.testcase_Utils.get_impact_from_xmlfile(step)
+
             impact_dict = {"IMPACT":"Impact", "NOIMPACT":"No Impact"}
-            data_repository['wt_junit_object'].add_keyword_result(
-                data_repository['wt_tc_timestamp'], step_num, keyword,
-                "SKIPPED", kw_start_time, "0", "skipped",
-                impact_dict.get(step_impact.upper()), "N/A")
+            data_repository['wt_junit_object'].\
+                add_keyword_result(data_repository['wt_tc_timestamp'], step_num, keyword, "SKIPPED",
+                                   kw_start_time, "0", "skipped",
+                                   impact_dict.get(step_impact.upper()), "N/A", step_description)
             data_repository['step_{}_result'.format(step_num)] = "SKIPPED"
+
             continue
 
         step_status_list.append(step_status)
@@ -169,19 +173,24 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
                 or str(step_status).upper() == "EXCEPTION":
                     goto_stepnum = onerror_driver.main(step, default_error_action, default_error_value)
                     if goto_stepnum in ['ABORT', 'ABORT_AS_ERROR']: break
+
         elif retry_type is not None:
             if retry_type.upper() == 'IF':
                 try:
                     if data_repository[retry_cond] == retry_cond_value:
                         condition_met = True
                         pNote("Wait for {0}sec before retrying".format(retry_interval))
-                        pNote("The given condition '{0}' matches the expected value '{1}'".format(data_repository[retry_cond], retry_cond_value))
+                        pNote("The given condition '{0}' matches the expected "
+                              "value '{1}'".format(data_repository[retry_cond], retry_cond_value))
                         time.sleep(int(retry_interval))
                     else:
                         condition_met = False
-                        print_warning("The condition value '{0}' does not match with the expected value '{1}'".format(data_repository[retry_cond], retry_cond_value))
+                        print_warning("The condition value '{0}' does not match with the "
+                                      "expected value '{1}'".format(data_repository[retry_cond],
+                                                                    retry_cond_value))
                 except KeyError:
-                    print_warning("The given condition '{0}' do not exists in the data repository".format(retry_cond_value))
+                    print_warning("The given condition '{0}' do not exists in "
+                                  "the data repository".format(retry_cond_value))
                     condition_met = False
                 if condition_met == False:
                     goto_stepnum = str(retry_value)
@@ -191,7 +200,9 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
                         if data_repository[retry_cond] != retry_cond_value:
                             condition_met = True
                             pNote("Wait for {0}sec before retrying".format(retry_interval))
-                            pNote("The condition value '{0}' does not match with the expected value '{1}'".format(data_repository[retry_cond], retry_cond_value))
+                            pNote("The condition value '{0}' does not match with the expected "
+                                  "value '{1}'".format(data_repository[retry_cond],
+                                                       retry_cond_value))
                             time.sleep(int(retry_interval))
                         else:
                             condition_met = False
@@ -199,7 +210,9 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
                         condition_met = False
                         print_warning("The given condition '{0}' is not there in the data repository".format(retry_cond_value))
                     if condition_met == False:
-                        pNote("The given condition '{0}' matched with the value '{1}'".format(data_repository[retry_cond], retry_cond_value))
+                        pNote("The given condition '{0}' matched with the "
+                              "value '{1}'".format(data_repository[retry_cond],
+                                                   retry_cond_value))
                         goto_stepnum = str(retry_value)
         else:
             if step_status is False or str(step_status).upper() == "ERROR" \
@@ -220,10 +233,12 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
         except Exception, e:
             print_error(traceback.format_exc())
 
+
     else:
         return  step_status_list, kw_resultfile_list, step_impact_list
 
+
 def main(step_list, data_repository, system_name=None, parallel=False, queue=False):
     """ Executes a testcase """
-    steps_execution_status     = execute_steps(step_list, data_repository, system_name, parallel, queue)
+    steps_execution_status = execute_steps(step_list, data_repository, system_name, parallel, queue)
     return steps_execution_status
