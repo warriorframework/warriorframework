@@ -371,3 +371,4 @@ class WSnmp(object):
             testcase_Utils.pNote("ADD SNMP Community Failed", "error")
             result = False
         return result
+
