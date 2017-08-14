@@ -59,6 +59,8 @@ class BrowserManagement(object):
         browser_name = browser_name
         browser = self._make_browser(browser_name, desired_capabilities,
                                      profile_dir, webdriver_remote_url)
+        print_info("The Selenium Webdriver version is '{0}'".format(webdriver.__version__))
+        print_info("The Browser '{0}' version is '{1}'".format(browser_name, browser.capabilities['version']))
         return browser
 
     def close_browser(self, browser_instance=None):
