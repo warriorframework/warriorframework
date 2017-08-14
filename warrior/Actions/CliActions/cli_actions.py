@@ -11,17 +11,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-"""This is the cli_actions module that has all cli related keywords """
 
 import Framework.Utils as Utils
 from Framework.Utils import cli_Utils
 from Framework.Utils.print_Utils import print_warning
 from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.data_Utils import getSystemData,\
-get_session_id, get_credentials, get_object_from_datarepository
+ get_session_id, get_credentials, get_object_from_datarepository
 from Framework.Utils.encryption_utils import decrypt
 from WarriorCore.Classes.war_cli_class import WarriorCliClass
 from Framework.ClassUtils.WNetwork.warrior_connect_class import WarriorConnect
+
+"""This is the cli_actions module that has all cli related keywords """
 
 
 class CliActions(object):

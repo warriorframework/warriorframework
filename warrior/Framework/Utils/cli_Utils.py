@@ -222,13 +222,16 @@ def smart_analyze(prompt, testdatafile=None):
     con_settings = con_settings_dir + "connect_settings.xml"
 
     if system_name is not None:
-        sys_elem = xml_Utils.getElementWithTagAttribValueMatch(con_settings, "system", "name", system_name.text)
+        sys_elem = xml_Utils.getElementWithTagAttribValueMatch(con_settings, "system",
+                                                               "name", system_name.text)
         if sys_elem is None or sys_elem.find("testdata") is None:
             return None
     else:
-        system_list = xml_Utils.getElementListWithSpecificXpath(con_settings, "system[search_string]")
+        system_list = xml_Utils.getElementListWithSpecificXpath(con_settings,
+                                                                "system[search_string]")
         for sys_elem in system_list:
-            if sys_elem.find("search_string").text in prompt and sys_elem.find("testdata") is not None:
+            if sys_elem.find("search_string").text in prompt and \
+             sys_elem.find("testdata") is not None:
                 return con_settings_dir + sys_elem.find("testdata").text
         return None
 
@@ -250,22 +253,26 @@ def send_smart_cmd(connect_testdata, session_object, tag_value, call_system_name
         :param pre_tag:
             Distinguish if it is a connect smart action or disconnect smart action
     """
-    if xml_Utils.getElementWithTagAttribValueMatch(connect_testdata, "testdata", "title", tag_value) is not None:
-        print_info("**********The following command are sent as part of the smart analysis**********")
+    if xml_Utils.getElementWithTagAttribValueMatch(connect_testdata, "testdata",
+                                                   "title", tag_value) is not None:
+        print_info("**********The following command are sent as part of "
+                   "the smart analysis**********")
         main_log = session_object.logfile
         if pre_tag:
             smart_log = main_log.name.replace(".log", "pre_.log")
         else:
             smart_log = main_log.name.replace(".log", "post_.log")
         session_object.logfile = open(smart_log, "a")
-        send_commands_from_testdata(connect_testdata, session_object, title=tag_value, system_name=call_system_name)
+        send_commands_from_testdata(connect_testdata, session_object, title=tag_value,
+                                    system_name=call_system_name)
         session_object.logfile = main_log
         print_info("**********smart analysis finished**********")
     else:
         print_error()
 
 
-def smart_action(datafile, call_system_name, raw_prompt, session_object, tag_value, connect_testdata=None):
+def smart_action(datafile, call_system_name, raw_prompt, session_object, tag_value,
+                 connect_testdata=None):
     """
         entry function for sending smart command
         :param datafile:
@@ -430,7 +437,8 @@ def send_commands_from_testdata(testdatafile, obj_session, **args):
         system_name = system_name + "." + session_name
     testdata_dict = data_Utils.get_command_details_from_testdata(testdatafile, varconfigfile,
                                                                  var_sub=var_sub, title=title,
-                                                                 row=row, system_name=system_name, datafile=datafile)
+                                                                 row=row, system_name=system_name,
+                                                                 datafile=datafile)
     finalresult = True if len(testdata_dict) > 0 else False
     for key, details_dict in testdata_dict.iteritems():
         response_dict = {}
@@ -456,9 +464,11 @@ def send_commands_from_testdata(testdatafile, obj_session, **args):
                 _get_obj_session(details_dict, obj_session,
                                  system_name, index=i)
             if new_obj_session:
-                result, response = _send_cmd_get_status(new_obj_session, details_dict, index=i, system_name=system_name)
+                result, response = _send_cmd_get_status(new_obj_session, details_dict, index=i,
+                                                        system_name=system_name)
                 result, response = _send_command_retrials(new_obj_session, details_dict, index=i,
-                                                          result=result, response=response, system_name=system_name)
+                                                          result=result, response=response,
+                                                          system_name=system_name)
                 response_dict = _get_response_dict(details_dict, i, response,
                                                    response_dict)
                 print_debug("<<<")
@@ -512,15 +522,18 @@ def _get_response_dict(details_dict, index, response, response_dict):
             # if the requested pattern not found return empty string
             reobj=re.search(resp_pat_req, response)
             response=reobj.group(0) if reobj is not None else ""
-            pNote("User has requested saving response. Response pattern required by user is : {0}".format(resp_pat_req))
-            pNote("Portion of response saved to the data repository with key: {0}, value: {1}".format(resp_ref, response))
+            pNote("User has requested saving response. Response pattern required by user is : "
+                  "{0}".format(resp_pat_req))
+            pNote("Portion of response saved to the data repository with key: "
+                  "{0}, value: {1}".format(resp_ref, response))
     else:
         response=""
     response_dict[resp_ref]=response
     return response_dict
 
 
-def start_threads(started_thread_for_system, thread_instance_list, same_system, unique_log_verify_list, system_name):
+def start_threads(started_thread_for_system, thread_instance_list, same_system,
+                  unique_log_verify_list, system_name):
     """ This function iterates over unique_log_verify_list which consists of unique values
     gotten from monitor attributes and verify_on attributes
 
@@ -555,21 +568,25 @@ def start_threads(started_thread_for_system, thread_instance_list, same_system, 
             if unique_log_verify_list[i]:
                 temp_list = unique_log_verify_list[i].split(".")
                 if len(temp_list)>1:
-                    unique_log_verify_list[i] = data_Utils.get_session_id(temp_list[0], temp_list[1])
+                    unique_log_verify_list[i] = data_Utils.get_session_id(temp_list[0],
+                                                                          temp_list[1])
                 else:
                     unique_log_verify_list[i] = data_Utils.get_session_id(temp_list[0])
                 datarep_obj = get_object_from_datarepository(unique_log_verify_list[i])
                 if datarep_obj is False:
-                    print_info("{0} does not exist in data repository".format(unique_log_verify_list[i]))
+                    print_info("{0} does not exist in data "
+                               "repository".format(unique_log_verify_list[i]))
                 else:
                     try:
                         new_thread = ThreadedLog()
                         new_thread.start_thread(datarep_obj)
-                        print_info("Collecting response from: {0}".format(unique_log_verify_list[i]))
+                        print_info("Collecting response from: "
+                                   "{0}".format(unique_log_verify_list[i]))
                         started_thread_for_system.append(unique_log_verify_list[i])
                         thread_instance_list.append(new_thread)
                     except:
-                        print_info("Unable to collect response from: {0}".format(unique_log_verify_list[i]))
+                        print_info("Unable to collect response from: "
+                                   "{0}".format(unique_log_verify_list[i]))
     return started_thread_for_system, thread_instance_list, same_system
 
 
@@ -631,7 +648,8 @@ def get_unique_log_and_verify_list(log_list, verify_on_list, system_name):
     comma_sep_verify_names = []
     if verify_on_list is not None and verify_on_list is not "" and verify_on_list is not False:
         for i in range(0, len(verify_on_list)):
-            if verify_on_list[i] is not None and verify_on_list[i] is not "" and verify_on_list[i] is not False:
+            if verify_on_list[i] is not None and verify_on_list[i] is not "" \
+             and verify_on_list[i] is not False:
                 temp_list = verify_on_list[i].split(",")
                 for j in range(0, len(temp_list)):
                     comma_sep_verify_names.append(temp_list[j].strip())
@@ -828,7 +846,7 @@ def _send_command_retrials(obj_session, details_dict, index, **kwargs):
         pNote("Retry onmatch: {0}".format(print_onmatch))
         count = 0
         while count < int(retry_count):
-            if result == False or result == 'ERROR':
+            if result is False or result == 'ERROR':
                 match_status = _get_match_status(retry_onmatch, response)
                 if match_status:
                     count = count + 1
@@ -837,12 +855,13 @@ def _send_command_retrials(obj_session, details_dict, index, **kwargs):
                     pNote("Wait for {0}sec (retry_timer) before sending"\
                                " the command again".format(retry_timer))
                     time.sleep(int(retry_timer))
-                    result, response = _send_cmd_get_status(obj_session, details_dict, index, system_name=kwargs.get("system_name"))
+                    result, response = _send_cmd_get_status(obj_session, details_dict, index,
+                                                            system_name=kwargs.get("system_name"))
                     command_status = {True: "PASS", False:"FAIL", "ERROR":"ERROR"}.get(result)
                     pNote("RETRIAL ATTEMPT:{0} STATUS:{1}".format(count, command_status))
                 else:
                     break
-            elif result == True:
+            elif result is True:
                 break
     return result, response
 
@@ -851,18 +870,18 @@ def _get_match_status(retry_onmatch, response):
     """ """
     status = True
     if retry_onmatch:
-        pNote("Command will be executed again if "\
+        pNote("Command will be executed again if "
               "the pattern {0} is present in the "
-              "response of the previous execution of the command"\
+              "response of the previous execution of the command"
               .format(retry_onmatch))
         match_object = re.search(retry_onmatch, response)
         if match_object:
-            pNote("Found the pattern '{0}' "\
-                  "in the response of the previous execution "\
+            pNote("Found the pattern '{0}' "
+                  "in the response of the previous execution "
                   "of the command".format(retry_onmatch))
         else:
-            pNote("Did not find the pattern '{0}' "\
-                  "in the response of the previous execution "\
+            pNote("Did not find the pattern '{0}' "
+                  "in the response of the previous execution "
                   "of the command".format(retry_onmatch))
             status = False
     return status
