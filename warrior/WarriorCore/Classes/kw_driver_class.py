@@ -223,7 +223,6 @@ class KeywordOperations(object):
 
     def execute_function_for_keyword(self):
         """Executes a function for a keyword"""
-        Utils.config_Utils.set_datarepository(self.data_repository)
         kwargs, kw_status = self.get_argument_as_keywords()
 
         if kw_status:
