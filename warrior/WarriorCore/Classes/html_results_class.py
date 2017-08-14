@@ -35,7 +35,7 @@ class LineResult:
 
     def get_info(self, line):
         """gets info for line"""
-        inf_obj = line.get("info") if line.get("info") else ' '
+        inf_obj = line.get("info") if line.get("info") else ''
         info = json.dumps(inf_obj)
         info = info.replace('}"', ',').replace('"{', '').replace("'", "").replace('"', '')
         return info
@@ -176,7 +176,7 @@ class WarriorHtmlResults:
         if givenPath:
             self.givenPath = givenPath
 
-        self.set_line_objs() 
+        self.set_line_objs()
         html = ''
         for item in self.lineObjs:
             html += item.html
@@ -191,6 +191,9 @@ class WarriorHtmlResults:
 
         katana = katana_interface_class.KatanaInterface()
         katana.send_file(self.get_path(), 'updatehtmlResult')
+
+        if is_final is True:
+            katana.end_comunication()
 
         self.lineObjs = []
         print_info("++++ Results Summary ++++")

@@ -25,5 +25,9 @@ class KatanaInterface:
         if self.katanaLocation != '':
             jsonObj = {'fileUrl': fileLocation, 'toCall': toCall}
             requests.post(self.katanaLocation, json=jsonObj)
+
+    def end_comunication(self):
+        if self.katanaLocation != '':
+            jsonObj = {}
             jsonObj['toCall'] = 'setLocation'
             requests.post(self.katanaLocation, json=jsonObj)

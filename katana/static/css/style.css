@@ -2276,9 +2276,11 @@ b.text-danger > br {
 }
 
 .htmlResults .nav th:nth-child(9){
-    flex-grow: .3;
-    padding-right: 56px;
+
+    padding-right: 0px;
     min-width: 140px;
+    flex-grow: .4;
+   
 }
 .htmlResults .nav th:nth-child(4) {
     flex-grow: .4;
@@ -2288,7 +2290,7 @@ b.text-danger > br {
     flex-grow: .4;
 }
 .htmlResults td[rowspan]:nth-child(9){
-    flex-grow: .3;
+    flex-grow: .4;
     padding-right: 60px;
     min-width: 140px;
 }
@@ -2331,7 +2333,7 @@ b.text-danger > br {
 .htmlResults tr[name] td:not([rowspan]):nth-last-child(6):hover ~ td:not([rowspan]), .htmlResults tr[name] td:not([rowspan]):nth-last-child(6):hover {
     display: block;
     z-index: 1 !important;
-    background: #585858 !important;
+    background: #2578c1 !important;
     color: white !important;
     height: 80px !important;
     -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.28);
@@ -2360,7 +2362,7 @@ position: absolute;
     z-index: 1;
     padding-right: 17px;
     color: white;
-    background: #444444;
+    background: #3699ff;
     -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.28);
     -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.28);
     box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.28);
@@ -2370,7 +2372,13 @@ position: absolute;
     height: 40px;
     line-height: 40px;
     font-weight: 400;
-		position: relative;
+    position: relative;
+    font-size: 14px;
+    height: 40px;
+    line-height: 40px;
+    font-weight: 400;
+    position: relative;
+    text-align: center;
 }
 .htmlResults td[rowspan] {
     flex-grow: 1;
@@ -2427,6 +2435,7 @@ td {}
     position: relative;
     text-overflow: ellipsis;
     padding: 0 10px;
+    font-size: 12px;
 }
 
 .htmlResults table#t1 {
@@ -2485,7 +2494,7 @@ td {}
 
 .htmlResults tr[name="TestcaseRecord"].active ~ tr[name="KeywordRecord"] {
     display: flex;
-    background: #585858;
+    background: #2578c1;
     color: white;
 }
 .htmlResults tr[name="TestcaseRecord"].active ~ tr[name="TestcaseRecord"] ~ tr[name="KeywordRecord"] {display: none;}
@@ -2494,7 +2503,7 @@ td {}
     -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.28);
     -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.28);
     box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.28);
-    background: #444444 !important;
+    background: #3699ff !important;
     color: white;
 }
 
@@ -2522,13 +2531,13 @@ td {}
     color: inherit;
 }
 
-.htmlResults td[rowspan]:nth-child(3):hover{
+.htmlResults td[rowspan]:nth-child(3):hover, .htmlResults td[rowspan]:nth-child(4):hover{
     overflow: visible;
 }
 
-.htmlResults td[rowspan]:nth-child(3):hover div:not(:empty) {
+.htmlResults td[rowspan]:nth-child(3):hover div:not(:empty), .htmlResults td[rowspan]:nth-child(4):hover div:not(:empty) {
     position: absolute;
-    background: #444444;
+    background: #3699ff;
     z-index: 1;
     left: 0;
     top: 0;
@@ -2576,7 +2585,7 @@ td {}
 .htmlResults .filterBar {
 		width: 100%;
     z-index: 0;
-    background: #5d5d5d;
+    background: #2578c1;
     height: 40px;
     top: 40px;
     position: absolute;
@@ -2623,7 +2632,7 @@ td {}
 }
 .htmlResults tr.hover {
     overflow: visible !important;
-    background: #444444 !important;
+    background: #3699ff !important;
     color: white;
 }
 
@@ -2632,7 +2641,7 @@ td {}
 }
 .htmlResults .hoverConainer > tr {
 		border: none;
-    background: #5d5d5d !important;
+    background: #2578c1 !important;
     color: white;
 }
 .htmlResults span.useData {
@@ -2651,7 +2660,7 @@ td {}
     position: relative;
     padding: 0;
     border: none;
-    background: #313131;
+    background: #2578c1;
     border-radius: 0;
 }
 .popup .close {
@@ -2772,4 +2781,15 @@ td {}
     line-height: 30px;
     padding: 0 5px;
     color: #504d4d;
+}
+[name="HeadingRow"] {
+    position: absolute !important;
+    top: -40px;
+    left: 0;
+    color: white;
+    background: #3699ff;
+    width: 100%;
+}
+.popup .loading:after {
+    background: rgba(255, 255, 255, 0.41);
 }
