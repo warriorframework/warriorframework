@@ -19,8 +19,10 @@ class Apps:
         """ call this to build Apps array and make app objects """
         self.get_config_paths(data)
         for url in self.paths:
-            app = App(read_json_data(url))
-            self.apps.append(app)
+            json_data = read_json_data(url)
+            if json_data is not None:
+                app = App(json_data)
+                self.apps.append(app)
         return self.apps
 
     def get_config_paths(self, data):

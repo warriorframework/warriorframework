@@ -22,8 +22,7 @@ class ErrorLog:
         self.flush()
         print logs
         logs = "{2}-- {0} --{2} {1}".format(get_current_timestamp(), logs, "\n")
-        with open(self.log_file, "a") as f:
-            f.write(logs)
+        self.flush(logs)
 
     def append_log(self, logs):
         """
@@ -34,10 +33,12 @@ class ErrorLog:
         print logs
         self.pending_logs += "{2}-- {0} --{2} {1}".format(get_current_timestamp(), logs, "\n")
 
-    def flush(self):
+    def flush(self, logs=None):
         """
         This function flushes pending logs into the log file
         """
+        if logs is None:
+            logs = self.pending_logs
         with open(self.log_file, "a") as f:
-            f.write(self.pending_logs)
+            f.write(logs)
         self.pending_logs = ""
