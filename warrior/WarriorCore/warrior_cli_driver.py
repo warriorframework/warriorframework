@@ -124,6 +124,7 @@ def decide_overwrite_var(namespace):
         else:
             print_info("jobid is specified but no job url found in w_settings")
             print_info("Using jobid only in JUnit file")
+            url = ""
         overwrite['jobid'] = url + str(namespace.jobid)
     return overwrite
 
