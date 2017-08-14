@@ -168,8 +168,8 @@ class CommonSnmpActions(object):
                            '{0}_errstatus'.format(system_name):errstatus,
                            '{0}_errindex'.format(system_name):errindex,
                            '{0}_result'.format(system_name):result,
-                           '{}_custom_mib_paths'.format(system_name):__custom_mib_paths,
-                           '{}_load_mib_modules'.format(system_name):load_mib_modules
+                           '{0}_custom_mib_paths'.format(system_name):__custom_mib_paths,
+                           '{0}_load_mib_modules'.format(system_name):load_mib_modules
                            }
             if result != []:
                 status = True
@@ -311,8 +311,8 @@ class CommonSnmpActions(object):
                            '{0}_errstatus'.format(system_name):errstatus,
                            '{0}_errindex'.format(system_name):errindex,
                            '{0}_result'.format(system_name):result,
-                           '{}_custom_mib_paths'.format(system_name):__custom_mib_paths,
-                           '{}_load_mib_modules'.format(system_name):load_mib_modules}
+                           '{0}_custom_mib_paths'.format(system_name):__custom_mib_paths,
+                           '{0}_load_mib_modules'.format(system_name):load_mib_modules}
             if result != []:
                 status = True
                 testcase_Utils.pNote("Successfully executed SNMP GET-NEXT "
@@ -453,8 +453,8 @@ class CommonSnmpActions(object):
                            '{0}_errstatus'.format(system_name):errstatus,
                            '{0}_errindex'.format(system_name):errindex,
                            '{0}_result'.format(system_name):result,
-                           '{}_custom_mib_paths'.format(system_name):__custom_mib_paths,
-                           '{}_load_mib_modules'.format(system_name):load_mib_modules
+                           '{0}_custom_mib_paths'.format(system_name):__custom_mib_paths,
+                           '{0}_load_mib_modules'.format(system_name):load_mib_modules
                            }
 
             if result != []:
@@ -609,8 +609,8 @@ class CommonSnmpActions(object):
                            '{0}_errstatus'.format(system_name):errstatus,
                            '{0}_errindex'.format(system_name):errindex,
                            '{0}_result'.format(system_name):result,
-                           '{}_custom_mib_paths'.format(system_name):__custom_mib_paths,
-                           '{}_load_mib_modules'.format(system_name):load_mib_modules}
+                           '{0}_custom_mib_paths'.format(system_name):__custom_mib_paths,
+                           '{0}_load_mib_modules'.format(system_name):load_mib_modules}
 
             if result != []:
                 status = True
@@ -623,8 +623,8 @@ class CommonSnmpActions(object):
             testcase_Utils.pNote("SNMP BULK GET command Failed!\n{}".format(excep), "error")
 
         Utils.testcase_Utils.report_substep_status(status)
-
         return status, output_dict
+
 
     def verify_snmp_action(self, system_name, snmp_result, mib_string=None
                            ):
@@ -740,6 +740,7 @@ class CommonSnmpActions(object):
         Utils.testcase_Utils.report_substep_status(status)
         return status
 
+
     def add_snmp_community(self, port, community_string):
         """
         Add the SNMP community string
@@ -751,7 +752,8 @@ class CommonSnmpActions(object):
         status = ws.add_community(port, community_string)
         Utils.testcase_Utils.report_substep_status(status)
         return status
-        
+
+
     def start_trap_listener(self, system_name, 
                            custom_mib_path=None,
                            load_mib_module='SNMPv2-MIB,SNMP-COMMUNITY-MIB'
@@ -805,7 +807,7 @@ class CommonSnmpActions(object):
         snmp_param_dic = Utils.data_Utils.get_credentials(self.datafile,
                                                           system_name,
                                                           snmp_parameters)
-        
+
         ip = snmp_param_dic.get('ip')
         port = snmp_param_dic.get('snmp_trap_port')
         community = snmp_param_dic.get('community', None)
@@ -815,7 +817,7 @@ class CommonSnmpActions(object):
         authkey = snmp_param_dic.get('authkey', None)
         authProtocol = snmp_param_dic.get('authProtocol', None)
         privProtocol = snmp_param_dic.get('privProtocol', None)
-        
+
         engine = ws.get_asyncoredispatcher(port)
 
         ntfrcv.NotificationReceiver(engine, ws.trap_decoder)
@@ -915,6 +917,7 @@ class CommonSnmpActions(object):
         Utils.testcase_Utils.report_substep_status(status)
         return status
 
+
     def show_received_traps(self, system_name):
         """
         Retrieve the captured SNMP Trap messages and show them in the console.
@@ -952,6 +955,7 @@ class CommonSnmpActions(object):
         Utils.testcase_Utils.report_substep_status(status)
         return status
 
+
     def browse_mib(self, mib_filepath, mib_filename, browse='yes'):
         """
         Browse the MIB File/single or multiple
@@ -987,3 +991,4 @@ class CommonSnmpActions(object):
                 break
         Utils.testcase_Utils.report_substep_status(status)
         return status
+
