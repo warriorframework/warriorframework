@@ -25,6 +25,7 @@ class WarriorCliClass(object):
     """Handle the command line input for warrior"""
     cmdprint = False
     def __init__(self):
+        """empty constructor"""
         return None
 
     @classmethod
