@@ -97,7 +97,7 @@ def print_error(message, *args):
 
 def print_exception(exception):
     """Print details of an exception to the console """
-    print '\n'
+    print_info('\n')
     print_error("!!! *** Exception occurred during execution *** !!!")
     print_error("Exception Name: {0}".format(exception.__class__.__name__))
     print_error("Exception trace back: \n \t{0}".format(traceback.format_exc()))

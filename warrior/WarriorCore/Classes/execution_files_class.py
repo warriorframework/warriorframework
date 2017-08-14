@@ -249,7 +249,7 @@ class ExecFilesClass(object):
 
         if str(datafile).strip().upper() != 'NO_DATA' and datafile is not False:
             if not file_Utils.fileExists(datafile):
-                print '\n'
+                print_info('\n')
                 print_error("!!! *** InputDataFile does not exist in provided path:"\
                             "{0} *** !!!".format(datafile))
         return datafile

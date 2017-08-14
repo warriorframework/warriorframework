@@ -12,6 +12,7 @@ limitations under the License.
 '''
 from collections import OrderedDict
 from Framework.Utils.testcase_Utils import pNote
+from Framework.Utils.print_Utils import print_error, print_info, print_warning
 # For function/method that only be mocked in trialmode (not sim mode), put name here
 VERIFY_ONLY = ["verify_cmd_response", "verify_inorder_cmd_response"]
 
@@ -32,6 +33,9 @@ def mocked(func):
         Decorator function that route function to mocked function
     """
     def inner(*args, **kwargs):
+        """
+            Call corresponding mock method
+        """
         from WarriorCore.Classes.war_cli_class import WarriorCliClass
         if (not WarriorCliClass.mock and not WarriorCliClass.sim) or\
              (WarriorCliClass.sim and func.__name__ in VERIFY_ONLY):
@@ -70,10 +74,10 @@ def mocked(func):
             if func_name in dir(func_module):
                 function = getattr(func_module, func_name)
             else:
-                print "Cannot locate {} in {}".format(func_name, dir(func_module))
+                print_warning("Cannot locate {} in {}".format(func_name, dir(func_module)))
                 function = func
         else:
-            print "Cannot locate {} in {}".format(func_module, dir(MockUtils))
+            print_warning("Cannot locate {} in {}".format(func_module, dir(MockUtils)))
             function = func
         return function(*args, **kwargs)
     return inner
@@ -113,6 +117,7 @@ class MockUtils(object):
         This class contains all the mocked Utils
     """
     def __init__(self):
+        """"""
         return None
 
     class cli_Utils():
@@ -216,7 +221,7 @@ class MockUtils(object):
             """
                 This function is called in another mocked function
             """
-            print "Mocked data_Utils.get_td_vs"
+            print_info("Mocked data_Utils.get_td_vs")
             return None, None
 
         @staticmethod
@@ -333,10 +338,16 @@ class MockUtils(object):
 
         @classmethod
         def _send_cmd_by_type(cls, *args, **kwargs):
+            """
+                mocked command
+            """
             pNote(":CMD: %s"%(args[3]))
 
         @classmethod
         def _send_command_retrials(cls, *args, **kwargs):
+            """
+                mocked command
+            """
             pNote("_send_command_retrials shouldn't be called in this mode")
             return True, ""
 

@@ -34,6 +34,9 @@ print_error, print_exception, print_sub, print_notype
 class TestcaseUtils(object):
     """testcase utils class"""
     def __init__(self):
+        """
+            set default value
+        """
         #self.resultfile = config_Utils.resultfile
         self.root = None
         self.current_pointer = None
