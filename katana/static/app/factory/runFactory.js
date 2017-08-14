@@ -1,4 +1,4 @@
-/*
+	/*
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
@@ -10,22 +10,34 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 */
-
 app.factory('runFactory', ['$http', '$routeParams', '$q', function($http, $routeParams, $q) {
-    return {
-        executeFiles: function(pathjson) {
-            var deferred = $q.defer();
-	    $http.defaults.headers.post["Content-Type"] = "application/text";
-            $http.post('/execute/', pathjson)
-                .success(function(data, status, headers, config) {
-                    deferred.resolve(data);
-								executeApi && executeApi.init( pathjson );
-                })
-                .error(function(data, status, headers, config) {
-                    deferred.reject("error while saving xml: " + status + ' ' + JSON.stringify(headers));
-                })
-            return deferred.promise;
-        }
+  return {
+    executeFiles: function(pathjson) {
+      var deferred = $q.defer();
+      $http.defaults.headers.post["Content-Type"] = "application/text";
+      var extention = '&' + pathjson.split(/&(.+)/)[1];
+      var paths = pathjson.split(',');
+			
+        
+			var poster = function( p, maxi ){
+				if( p < maxi ){
+				var path = paths[p].split('&')[0].replace('filenames=', '');
 
-    };
+				$http.post('/execute/', 'filenames=' + path + extention)
+				.success(function(data, status, headers, config) {
+					deferred.resolve(data);
+					executeApi && executeApi.init(path, poster, p, maxi);
+
+				})
+				.error(function(data, status, headers, config) {
+					deferred.reject("error while saving xml: " + status + ' ' + JSON.stringify(headers));
+				})
+			}
+			};
+			poster( 0, paths.length);	
+			return deferred.promise;
+			
+		}
+
+  };
 }]);

@@ -636,12 +636,12 @@ var executeApi = {
   tally: 0,
   currentTimeout: '',
 
-  init: function(pathjson) {
+  init: function(pathjson, callback, p, maxi) {
     executeApi.paths = pathjson ? pathjson : executeApi.paths;
     executeApi.count = pathjson ? executeApi.getCount(pathjson) : executeApi.count;
     htmlpopupContent = popupController.open().find('.page-content');
     htmlpopupContent.addClass('htmlResults');
-    executeApi.getHtml();
+    executeApi.getHtml( callback, p, maxi );
   },
 
   getCount(paths) {
@@ -649,7 +649,7 @@ var executeApi = {
     return count;
   },
 
-  getHtml: function() {
+  getHtml: function( callback, p, maxi  ) {
     $.ajax({
       url: location.origin + '/get_html_results',
       dataType: 'text'
@@ -660,7 +660,7 @@ var executeApi = {
 
         if ($html.find('.complete').length == 0)
           executeApi.currentTimeout = window.setTimeout(function() {
-            executeApi.getHtml();
+            executeApi.getHtml( callback, p, maxi );
           }, 1000);
         else {
           if (executeApi.count > executeApi.tally) {
@@ -670,12 +670,14 @@ var executeApi = {
             executeApi.tally = 0;
           $html.find('table').removeClass('loading');
           window.clearTimeout(executeApi.currentTimeout);
+          p++;
+	  callback( p, maxi);
         }
         executeApi.setHtml($html, htmlpopupContent);
 
       } else
         setTimeout(function() {
-          executeApi.getHtml();
+          executeApi.getHtml( callback, p, maxi );
         }, 400);
     });
   },
