@@ -2,6 +2,8 @@
 from __future__ import unicode_literals
 import os
 import fcntl
+from time import sleep
+
 from django.apps import AppConfig
 from utils.date_time_stamp_utils import get_current_datetime_stamp
 from utils.directory_traversal_utils import get_parent_directory, get_abs_path
@@ -36,6 +38,7 @@ class CoreConfig(AppConfig):
                 try:
                     fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
                 except IOError:
+                    sleep(1)
                     pass
                 else:
                     status = False
@@ -44,8 +47,8 @@ class CoreConfig(AppConfig):
                     os.remove(dummy_path)
         else:
             f = open(dummy_path, 'w')
-            f.write(file_path)
             fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            f.write(file_path)
 
         AppInformation.log_obj = ErrorLog(file_path)
 
