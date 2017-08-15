@@ -32,6 +32,12 @@ var katana = {
 		});
 	},	
 	
+	getObj: function( objString, itter ){
+		var objs = objString.split('.');
+		if( objs.length > itter )
+			katana.getObj( objString, itter );
+	},
+	
   methodCaller: function( toCall, $elem, prevElem ){
 		var func = eval( toCall );
 		if( typeof func !== 'function' ){
@@ -64,10 +70,13 @@ var katana = {
 	
 	tabAdded: function( activeTab, prevElem ){
 		
-		var autoInit = activeTab.hasClass('auto-init') ? activeTab : activeTab.find('.auto-init').length > 0 ? activeTab.find('.auto-init') : "";
+		var autoInit = activeTab.find('[auto-init]');
+		autoInit = activeTab.attr('auto-init') ? autoInit.add( activeTab )  : autoInit;
 
-		if( autoInit && autoInit != "")
-			katana.methodCaller( 'katana.' + autoInit.attr('auto-init'), autoInit, prevElem );
+		autoInit.each( function(){
+			$elem = this;
+			katana.methodCaller( $elem.attr('auto-init'), $elem, prevElem );
+		});
 	},
 	
 	switchTab: function( uid ){
@@ -192,7 +201,6 @@ var katana = {
 		},
 						
 	},
-////////////////////////////////////////////TEMPLATEAPI will eventualy be fazed out
 	templateAPI:{
 			load: function( url ){
 				var $elem = this;
@@ -203,6 +211,7 @@ var katana = {
 						url: url,
 						dataType: 'text'
 					}).done(function( data ) {
+						$elem.attr('jsURL') && katana.templateAPI.importJS( $elem.attr('jsURL') );
 						container.append( katana.templateAPI.preProcess( data ) );
 					});
 				});
@@ -212,8 +221,13 @@ var katana = {
 			 data = data.replace( /{{.*}}/g, '' ).replace( /ng-click/g, 'katana-click' ).replace( /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
 			 return data;
 		 },
-		
+		 
+		 importJS: function( jsURL ){
+			 $.getScript( jsURL, function() {
+				 
+			 });
+		 },
 	},
-///////////////////////////////////////////Methods named by template
+
 	
 };
