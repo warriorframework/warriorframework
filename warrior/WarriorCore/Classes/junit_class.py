@@ -237,10 +237,7 @@ class Junit(object):
         """ Convert junit file to html"""
         if not hasattr(self, 'html_result_obj'):
             self.html_result_obj = WarriorHtmlResults(junit_file)
-        if print_summary is True:
-            self.html_result_obj.generate_html(junit_file, None, True)
-        else:
-            self.html_result_obj.generate_html(junit_file, None, False)
+        self.html_result_obj.generate_html(junit_file, None, print_summary)
 
     def remove_html_obj(self):
         """checks and removes html_results_obj from junit object usecase in parralel execution"""

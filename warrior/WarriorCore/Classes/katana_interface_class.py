@@ -6,6 +6,7 @@ try:
     has_requests = True
 except ImportError:
     has_requests = False
+    print("warrior can not communicate with katana please install requests and try again")
 
 __author__ = 'Keenan Jabri'
 

@@ -83,18 +83,18 @@ class KWarrior():
     def __init__(self):
         self.setLocation()
 
-    def updatehtmlResult( self, jsonObj ):
+    def updatehtmlResult(self, jsonObj):
         path = jsonObj['fileUrl']
         self.htmlResults = open( path, 'r').read()
         return self.htmlResults
 
-    def getWarriorPath( self ):
+    def getWarriorPath(self):
         cfg = readconfig()
         return cfg['pythonsrcdir']
 
-    def setLocation( self, jsonObj='' ):
+    def setLocation(self, jsonObj=''):
         path = self.getWarriorPath() + '/Tools/w_settings.xml'
-        settingsXml = minidom.parse( path )
+        settingsXml = minidom.parse(path)
         settingElems = settingsXml.getElementsByTagName('Setting')
         for i in settingElems:
             if i.attributes['name'].value == 'katana':
@@ -115,8 +115,8 @@ class KWarrior():
 @route('/warrior_request', method='POST')
 def warrior_request():
     jsonObj = request.json
-    method = getattr( warriorInterface, jsonObj['toCall'] )
-    method( jsonObj )
+    method = getattr(warriorInterface, jsonObj['toCall'])
+    method(jsonObj)
 
 
 @route('/get_html_results')
