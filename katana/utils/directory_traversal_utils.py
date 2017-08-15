@@ -75,7 +75,7 @@ def get_abs_path(relative_path, base_path=None):
     path = os.path.join(base_path.strip(), relative_path.strip())
 
     if not os.path.exists(path):
-        AppInformation.log_obj.append_log("An Error Occurred: {0} does not exist".format(path))
+        AppInformation.log_obj.write_log("An Error Occurred: {0} does not exist".format(path))
         path = None
 
     return path
