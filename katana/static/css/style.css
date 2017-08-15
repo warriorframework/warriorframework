@@ -2771,8 +2771,8 @@ td {}
     height: 100%;
     flex-grow: 1;
     max-width: 190px;
-    background: #e8e8e8;
-    border: solid 1px #e2e2e2;
+    background: #daecff;
+    border: solid 1px #b5b5b5;
     margin: 0 1px;
     border-bottom: none;
     overflow: hidden;
@@ -2792,4 +2792,23 @@ td {}
 }
 .popup .loading:after {
     background: rgba(255, 255, 255, 0.41);
+}
+
+
+.EXCEPTION {
+    color: #4ccbff;
+}
+
+.FAIL {
+    color: #ff3c3c;
+}
+
+.ERROR {
+    color: #ff9100;
+}
+.PASS {
+    color: #43ff43;
+}
+.SKIPPED{
+		color: #4ccbff;
 }
