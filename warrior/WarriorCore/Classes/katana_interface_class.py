@@ -1,7 +1,12 @@
 from xml.dom import minidom
-import requests
 import os
 import json
+try:
+    import requests
+    has_requests = True
+except ImportError:
+    has_requests = False
+    raise ImportError('requests not included katana Interface will not work')
 
 __author__ = 'Keenan Jabri'
 
@@ -10,7 +15,8 @@ class KatanaInterface:
     katanaLocation = ''
 
     def __init__(self):
-        self.get_location()
+        if has_requests:
+            self.get_location()
 
     def get_location(self):
         l_dir = os.path.dirname(__file__)
