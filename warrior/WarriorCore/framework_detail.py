@@ -60,7 +60,7 @@ def warrior_framework_details():
         pNote("========================== WARRIOR FRAMEWORK DETAILS ==========================",
               'notype')
         print_info('The Warrior framework used is {0}'.format(version_file_path))
-        print_info('The Warrior framework Release is{0d}'.format(release))
+        print_info('The Warrior framework Release is{0}'.format(release))
         print_info('The Warrior framework version is{0}'.format(version))
         print_info('The Warrior framework running on python version: {0} with OS: {1}'.
                    format(platform.python_version(), platform.platform()))
