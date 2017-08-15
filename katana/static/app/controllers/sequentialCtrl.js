@@ -554,6 +554,7 @@ var popupController = {
   close: function(popup) {
     popup.data('tabIndex').remove();
     popup.addClass('removeing');
+		window.clearTimeout(executeApi.currentTimeout);
     setTimeout(function() {
       popup.remove();
     }, 300);
