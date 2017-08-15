@@ -1,1 +1,19 @@
-{"temp" : "data"}
+{
+"dir": "Warriorspace",
+"children": [
+{"dir": "Testcases",
+"file": [ "Testcase_Template.xml" ],"children": [
+{"dir": "Demo_Cases",
+"file": [ "Demo_Warrior_Rest_Automation_Capabilities.xml", "Demo_Test_Of_Inventory_Management_System.xml", "Demo_Warrior_Web_Automation_With_Selenium.xml" ],"children": []},{"dir": "Samples",
+"file": [ "NetConf_Sample.xml", "CLI_Sample.xml", "Network_Utils_Sample.xml", "Rest_Sample.xml", "SNMP_Sample.xml" ],"children": []}]},{"dir": "Suites",
+"file": [ "Suite_Template.xml", "demo_suite.xml" ],"children": []},{"dir": "Config_files",
+"file": [ "Config_File_Readme.txt" ],"children": [
+{"dir": "Demo_Config_Files",
+"file": [ "Demo_Inventory_Mgt_Testdata.xml", "Demo_Selenium_Config.json" ],"children": []},{"dir": "Samples",
+"file": [ "Variable_Sample.xml", "Set_ENV_Variable_Sample.json", "CLI_Test_Data_Sample.xml", "Netconf_Sample.xml" ],"children": []}]},{"dir": "Projects",
+"file": [ "demo_project.xml", "Project_Template.xml" ],"children": []},{"dir": "Execution",
+"file": [ "Execution_readme.txt" ],"children": []},{"dir": "Data",
+"file": [ "Input_data_File_Template.xml", "Input_Data_File_Readme.txt" ],"children": [
+{"dir": "Samples",
+"file": [ "Network_Util_Data_Sample.xml", "netconf_Data_sample.xml", "SNMP_Data_Sample.xml", "Rest_Data_Sample.xml", "CLI_Data_Sample.xml" ],"children": []},{"dir": "Demo_Input_Data_Files",
+"file": [ "Demo_Rest_Datafile.xml", "Demo_Datafile_For_Inventory_Mgt.xml", "Demo_Selenium_Data.xml" ],"children": []}]}]}

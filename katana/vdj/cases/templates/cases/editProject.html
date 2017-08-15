@@ -1,5 +1,5 @@
 {% extends "./baseListFile.html" %}
-
+{% load jsonify %}
 {% block content %}
 	 {{title}}
 Editing:{{ myfile }}
@@ -9,6 +9,43 @@ Using: {{ docSpec }}
 		<button class="btn btn-secondary">Load</button>
 		<button class="btn btn-secondary">Save</button>
 	</div>
+
+<h2>Details</h2>
+<div class="form-group">
+		<div class="row">
+			<label class="col-md-2 text-right" for="projectName">Name*:</label>
+			<input class="col-md-4 text-right" type="text" id="projectName" name="projectName" value="{{projectName}}"/>
+			<label class="col-md-2 text-right" for="projectTitle"">Title*:</label>
+			<input class="col-md-4 text-right" type="text" id="projectTitle" name="projectTitle" value="{{projectTitle}}" />
+		</div>
+		<div class="row">
+			<label class="col-md-2 text-right" for="projectEngineer">Engineer*:</label>
+			<input class="col-md-4 text-right" type="text" id="projectEngineer" name="projectEngineer" value="{{projectEngineer}}" />
+			
+			<label class="col-md-2 text-right" for="projectDate">Last Updated:</label>
+			<input class="col-md-4 text-right" type="text" id="projectDate" name="projectDate" value="{{projectDate}}" />
+		</div>
+		<div class="row">
+			<label class="col-md-2 text-right" for="defaultOnError">defaultOnError:</label>
+			<input class="col-md-4 text-right" type="text" id="defaultOnError" name="defaultOnError" value="{{projectdefaultOnError}}"/>
+			<label class="col-md-2 text-right" for="projectDatatype">Data Type:</label>
+			<select class="col-md-4 text-right" type="text" id="projectDatatype" name="projectDatatype" value="{{projectDatatype}}" >
+				<option value="Custom">Custom</option>
+				<option value="Hybrid">Hybrid</option>
+				<option value="Iterative">Iterative</option>
+			</select>
+		</div>
+
+</div>
+
+<div>
+	<h2>TestSuites</h2>
+	<button id="addSuite" class="btn btn-secondary" onclick="addSuiteToProject()">Add</button>
+	
+	<ol id="listOfTestSuitesForProject">
+		
+	</ol>
+</div>
          
 <div class="container">
     <div id="editor" class="col-md-8" >  </div>    
@@ -17,16 +54,62 @@ Using: {{ docSpec }}
 <script type="text/javascript">
 function start() {
 	var Connect = new XMLHttpRequest();
-	Connect.open("GET", "http://localhost:8000/cases/getXMLfile/?fname={{ myfile }}", false);
+	Connect.open("GET", "http://localhost:8000/projects/getXMLfile/?fname={{ myfile }}", false);
 	Connect.setRequestHeader("Content-Type", "text/xml");
 	Connect.send(null);
 	var xml = Connect.responseXML;// Place the response in an XML document.
 	 
 	var xdocSpec = {{ docSpec }};
 	
-	var editor=document.getElementById("editor");
-	Xonomy.setMode('laic')
-	Xonomy.render(xml, editor, xdocSpec);
+	//var editor=document.getElementById("editor");
+	//Xonomy.setMode('laic')
+	//Xonomy.render(xml, editor, xdocSpec);
+
+	var listOfTestSuites=[];
+	var jsonTestSuites = {{projectSuites|jsonify }};
+
+	mapJsonToUi(jsonTestSuites);
+
 }
+
+function mapJsonToUi(data){
+	var items = []; 
+	//alert("Length"+Object.keys(data));
+	// This gives me ONE object - The root for test suites
+	var xdata = data['Testsuite'];
+	items.push('<tr>');
+	items.push('<th>path</th>');
+	items.push('<th>Execute</th>');
+	items.push('<th>Rule Condition</th>');
+	items.push('<th>value</th>');
+	items.push('<th>Else</th>');
+	items.push('<th>ElseValue</th>');	
+	items.push('<th>OnError</th>');
+	items.push('<th>Value</th>');
+	items.push('<th>impact</th>');
+	
+	items.push('</tr></th>');
+	console.log("xdata =" + xdata);
+	for (var s=0; s<Object.keys(xdata).length; s++ ) {
+		var oneSuite = xdata[s];
+		console.log(oneSuite['path']);
+		items.push('<tr/>');
+		items.push("<td>"+oneSuite['path']+"</td>");
+		items.push("<td>"+oneSuite['Execute']['@ExecType']+"</td>");
+		items.push("<td>"+oneSuite['Execute']['Rule']['@Condition']+"</td>");
+		items.push("<td>"+oneSuite['Execute']['Rule']['@Condvalue']+"</td>");
+		items.push("<td>"+oneSuite['Execute']['Rule']['@Else']+"</td>");
+		items.push("<td>"+oneSuite['Execute']['Rule']['@Elsevalue']+"</td>");
+		items.push("<td>"+oneSuite['onError']['@action']+"</td>");
+		items.push("<td>"+oneSuite['onError']['@value']+"</td>");
+		items.push("<td>"+oneSuite['impact']+"</td>");
+		items.push("<td><input type=\"button\" value=\"Delete\"/></td>");
+	}
+	$('<table />', { border: "1", html: items.join("")}).appendTo("#listOfTestSuitesForProject");
+}  // end of function 
+
+
+
+
 </script>
 {% endblock %}

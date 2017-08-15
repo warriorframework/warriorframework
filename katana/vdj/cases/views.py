@@ -7,11 +7,17 @@ from django.conf import settings
 	
 
 # Create your views here.
-import os, glob
+import os, glob, copy, json
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
 from xml.sax.saxutils import escape, unescape
 import xml.dom.minidom 
+import xmltodict 
+from django.core.serializers import serialize
+from django.db.models.query import QuerySet
+import simplejson
+from django.template import Library
+
 
 path_to_demo="/home/khusain/Projects/xml-edit/warriorframework/katana/vdj/cases/"
 
@@ -78,13 +84,51 @@ def getXMLfile(request):
 def editProject(request):
 	template = loader.get_template("cases/editProject.html")
 	filename = request.GET.get('fname')
+
+	xml_r = {}
+	xml_r["Project"] = {}
+	xml_r["Project"]["Details"] = {}
+	xml_r["Project"]["Details"]["Name"] = ""
+	xml_r["Project"]["Details"]["Title"] = ""
+	xml_r["Project"]["Details"]["Category"] = ""
+	xml_r["Project"]["Details"]["Date"] = ""
+	xml_r["Project"]["Details"]["Time"] = ""
+	xml_r["Project"]["Details"]["Datatype"] = ""
+	xml_r["Project"]["Details"]["defaultOnError"] = ""
+	xml_r["Project"]["Testsuites"] = ""
+	
+	
+	with open(filename) as fd1:
+		xml_d = xmltodict.parse(fd1.read());
+
+	# Map the input to the response collector
+	for xstr in ["Name", "Title", "Category", "Date", "Time", "Engineer", \
+		"Datatype", "default_onError"]:
+		xml_r["Project"]["Details"][xstr] = xml_d["Project"]["Details"].get(xstr,"")
+
+	try:
+		xml_r['Project']['Testsuites'] = copy.copy(xml_d['Project']['Testsuites']);
+	except:
+		xml_r["Project"]["Testsuites"] = ""
+
+
 	context = { 
 		'myfile': filename,
-		'docSpec': 'projectSpec'
-		
-	}
-	print "EDIT PROJECT ", template.render(context,request)
-	
+		'docSpec': 'projectSpec',
+		'projectName': xml_r["Project"]["Details"]["Name"],
+		'projectTitle': xml_r["Project"]["Details"]["Title"],
+		'projectEngineer': xml_r["Project"]["Details"]["Engineer"],
+		'projectCategory': xml_r["Project"]["Details"]["Category"],
+		'projectDate': xml_r["Project"]["Details"]["Date"],
+		'projectTime': xml_r["Project"]["Details"]["Time"],
+		'projectdefault_onError': xml_r["Project"]["Details"]["default_onError"],
+		'projectSuites': xml_r['Project']['Testsuites']
+		}
+	# 
+	# I have to add json objects for every test suite.
+	# 
+
+
 	return HttpResponse(template.render(context, request))
 
 def editSuite(request):
@@ -97,13 +141,66 @@ def editSuite(request):
 	return HttpResponse(template.render(context, request))
 
 def editCase(request):
-	template = loader.get_template("cases/editProject.html")
+	""" 
+	Map XML to jquery UI elements for Test case. 
+	"""
+	template = loader.get_template("cases/editCase.html")
 	filename = request.GET.get('fname')
+
+	# Open the XML file and get it's dictionary...
+	# Make exceptions for missing or badly formatted files. 
 	
+	# Set up defaults for an xml_r object
+
+	xml_r = {}
+	xml_r["Testcase"] = {}
+	xml_r["Testcase"]["Details"] = {}
+	xml_r["Testcase"]["Details"]["Name"] = ""
+	xml_r["Testcase"]["Details"]["Title"] = ""
+	xml_r["Testcase"]["Details"]["Category"] = ""
+	xml_r["Testcase"]["Details"]["Date"] = ""
+	xml_r["Testcase"]["Details"]["Time"] = ""
+	xml_r["Testcase"]["Details"]["State"] = ""
+	xml_r["Testcase"]["Details"]["InputDataFile"] = ""
+	xml_r["Testcase"]["Details"]["Datatype"] = ""
+	xml_r["Testcase"]["Details"]["defaultOnError"] = ""
+	xml_r["Testcase"]["Details"]["Logsdir"] = ""
+	xml_r["Testcase"]["Details"]["Resultsdir"] = ""
+	xml_r["Testcase"]["Details"]["ExpectedResults"] = ""
+	xml_r["Testcase"]["Requirements"] = {} 
+	xml_r["Testcase"]["Steps"] = {} 
+	
+	
+	with open(filename) as fd1:
+		xml_d = xmltodict.parse(fd1.read());
+
+	# Map the input to the response collector
+	for xstr in ["Name", "Title", "Category", "Date", "Time", "InputDataFile", "Engineer", \
+		"Datatype", "default_onError", "Logsdir", "Resultsdir", "ExpectedResults"]:
+		xml_r["Testcase"]["Details"][xstr] = xml_d["Testcase"]["Details"].get(xstr,"")
+
+	caseStateOptions_str = ['New','Draft','In Review','Released']
+
+
 	context = { 
 		'myfile': filename,
-		'docSpec': 'caseSpec'
+		'docSpec': 'caseSpec',
+		'caseName': xml_r["Testcase"]["Details"]["Name"],
+		'caseTitle': xml_r["Testcase"]["Details"]["Title"],
+		'caseEngineer': xml_r["Testcase"]["Details"]["Engineer"],
+		'caseCategory': xml_r["Testcase"]["Details"]["Category"],
+		'caseDate': xml_r["Testcase"]["Details"]["Date"],
+		'caseTime': xml_r["Testcase"]["Details"]["Time"],
+		'caseState': xml_r["Testcase"]["Details"]["State"],
+		'caseStateOptions': caseStateOptions_str, 
+		'caseDatatype': xml_r["Testcase"]["Details"]["Datatype"],
+		'caseInputDataFile': xml_r["Testcase"]["Details"]["InputDataFile"],
+		'casedefault_onError': xml_r["Testcase"]["Details"]["default_onError"],
+		'caseLogsdir': xml_r["Testcase"]["Details"]["Logsdir"],
+		'caseResultsdir': xml_r["Testcase"]["Details"]["Resultsdir"],
+		'caseExpectedResults': xml_r["Testcase"]["Details"]["ExpectedResults"]
 	}
+
 	return HttpResponse(template.render(context, request))
 
 

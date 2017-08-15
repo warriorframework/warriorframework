@@ -1,0 +1,112 @@
+{% extends "./baseListFile.html" %}
+
+{% block content %}
+{{title}}
+Editing:{{ myfile }}
+Using: {{ docSpec }}
+<p> 
+
+<h2>Details</h2>
+<div class="form-group">
+		<div class="row">
+			<label class="col-md-2 text-right" for="caseName">Name*:</label>
+			<input class="col-md-4 text-right" type="text" id="caseName" name="caseName" value="{{caseName}}"/>
+			<label class="col-md-2 text-right" for="caseTitle"">Title*:</label>
+			<input class="col-md-4 text-right" type="text" id="caseTitle" name="caseTitle" value="{{caseTitle}}" />
+		</div>
+		<div class="row">
+			<label class="col-md-2 text-right" for="caseCategory">Category:</label>
+			<input class="col-md-4 text-right" type="text" id="caseCategory" name="caseCategory" value="{{caseCategory}}"  />
+			<label class="col-md-2 text-right" for="caseState">State:</label>
+			<select class="col-md-4 text-right" type="text" id="caseState" name="caseState" value="{{caseState}}" >
+				{% for x in caseStateOptions %}
+					<option id="{{x}}">{{x}}</option>
+				{% endfor %}
+			</select>
+		</div>
+		<div class="row">
+			<label class="col-md-2 text-right" for="caseEngineer">Engineer*:</label>
+			<input class="col-md-4 text-right" type="text" id="caseEngineer" name="caseEngineer" value="{{caseEngineer}}" />
+			<label class="col-md-2 text-right" for="caseDate">Last Updated:</label>
+			<input class="col-md-4 text-right" type="text" id="caseDate" name="caseDate" value="{{caseDate}}" />
+		</div>
+		<div class="row">
+			<label class="col-md-2 text-right" for="defaultOnError">defaultOnError:</label>
+			<input class="col-md-4 text-right" type="text" id="defaultOnError" name="defaultOnError" value="{{casedefaultOnError}}"/>
+			<label class="col-md-2 text-right" for="caseDatatype">Data Type:</label>
+			<select class="col-md-4 text-right" type="text" id="caseDatatype" name="caseDatatype" value="{{caseDatatype}}" >
+				<option value="Custom">Custom</option>
+				<option value="Hybrid">Hybrid</option>
+				<option value="Iterative">Iterative</option>
+			</select>
+		</div>
+		<div class="row">
+			
+			<input class="col-md-2 text-right" type="checkbox" id="ck_dataPath" name="ck_dataPath" value="Y">Use DataPath</input>
+			<label class="col-md-2 text-right" for="logsDir">Logs Dir:</label>
+			
+			<input class="col-md-4 text-right" type="text" id="dataPath" name="dataPath" value="{{caseInputDataFile}}" />
+		</div>
+		<div class="row">
+			<label class="col-md-2 text-right" for="resultsDir">Results Dir:</label>
+			<input class="col-md-4 text-right" type="text" id="resultsDir" name="resultsDir" value="{{caseResultsdir}}" />
+		</div>
+		<div class="row">
+			<label class="col-md-2 text-right" for="logsDir">Logs Dir:</label>
+			<input class="col-md-4 text-right" type="text" id="logsDir" name="logsDir" value="{{caseLogsdir}}"/>
+			<label class="col-md-2 text-right" for="expectedDir">Expected Results Dir:</label>
+			<input class="col-md-4 text-right" type="text" id="expectedDir" name="expectedDir" value="{{caseExpectedResults}}"/>
+		</div>
+</div>
+
+<div>
+	<h2>Requirements</h2>
+	<input type="text" name="newRequirement" />
+	<button id="addRequirementButton" class="btn btn-secondary" onclick="addRequirement()">Add</button>
+	<ol id='listOfRequirements'>
+
+	</ol>
+
+</div>
+
+<div>
+	<h2>Steps</h2>
+		<input type="text" name="newStepForCase" />
+	<button id="addStepButton" class="btn btn-secondary" onclick="addStepToCase()">Add</button>
+	<ol id='listOfCaseSteps'>
+
+	</ol>
+</div>
+
+
+ 	<div class="btn-group" role="group">   
+		<button class="btn btn-secondary" onclick="start()">Refresh</button>
+		<button class="btn btn-secondary">Load</button>
+		<button class="btn btn-secondary">Save</button>
+	</div>        
+<div class="container">
+    <div id="editor" class="col-md-8" >  </div>    
+</div>
+
+
+
+<script type="text/javascript">
+function start() {
+	var Connect = new XMLHttpRequest();
+	Connect.open("GET", "http://localhost:8000/cases/getXMLfile/?fname={{ myfile }}", false);
+	Connect.setRequestHeader("Content-Type", "text/xml");
+	Connect.send(null);
+	var xml = Connect.responseXML;// Place the response in an XML document.
+	 
+	var xdocSpec = {{ docSpec }};
+	
+	var editor=document.getElementById("editor");
+	Xonomy.setMode('laic')
+	Xonomy.render(xml, editor, xdocSpec);
+	// Once Xonomy is gone... leave the rest. 
+	$("#caseDate").datetimepicker('show');
+	
+
+}
+</script>
+{% endblock %}

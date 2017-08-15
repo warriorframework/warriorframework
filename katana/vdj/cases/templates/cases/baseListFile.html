@@ -14,14 +14,22 @@
     <link href="{% static  'css/bootstrap.min.css' %}"rel="stylesheet">
 
     <link href="{% static css/font-awesome.min.css %)" rel="stylesheet" type="text/css">
-    -->
+    
 <script type="text/javascript" src="{% static "./jquery-3.2.1.js" %}"></script>
-<script type="text/javascript" src="{% static "./vendor/tether/tether.min.js" %}"></script>
+-->
 
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script type="text/javascript" src="{% static "./vendor/tether/tether.min.js" %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.4/build/jquery.datetimepicker.full.min.js"></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+
+
 <script type="text/javascript" src="{% static "./xonomy/xonomy.js" %}"></script>
 <link type="text/css" rel="stylesheet" href="{% static "./xonomy/xonomy.css" %}"/>
+<script type="text/javascript" src="{% static "./doRequirements.js" %}"></script>
+<script type="text/javascript" src="{% static "./doCaseHandling.js" %}"></script>
 <script type="text/javascript" src="{% static "./testCase_docSpec.js" %}"></script>
 <script type="text/javascript" src="{% static "./testProject_docSpec.js" %}"></script>
 <script type="text/javascript" src="{% static "./testSuite_docSpec.js" %}"></script>
@@ -117,7 +125,8 @@
             <li class="breadcrumb-item active">Lists</li>
         </ol>
 
-        
+       
+
 
         <!-- Team Members -->
         {% block content %}
@@ -136,7 +145,11 @@
     </footer>
 
     <!-- Bootstrap core JavaScript -->
-
+  <script>
+  $( function() {
+    $( "#caseDate" ).datetimepicker();
+  } );
+  </script>
 
 </body>
 

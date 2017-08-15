@@ -66,8 +66,20 @@ var projectSpec = {
 				"Elsevalue": {
 						asker: Xonomy.askString
 					}
-			}
-		},
+				}
+			},
+		"runmode": {
+			attributes: {
+					"type": {
+						asker: Xonomy.askOpenPicklist,
+						askerParameter: [ "rmt","stop" ]
+					}, 
+					"value": {
+						asker: Xonomy.askString,
+						askerParameter:  ""
+					}
+				}
+			},
 		"onError": {
 			menu: [{
 				caption: "Add @label=\"something\"",
