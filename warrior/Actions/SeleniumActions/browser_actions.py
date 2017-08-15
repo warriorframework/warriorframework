@@ -184,25 +184,24 @@ class browser_actions(object):
                 browser_inst = self.browser_object.open_browser(
                     browser_details["type"], webdriver_remote_url)
                 if browser_inst:
-                    browser_fullname = "{0}_{1}".format(system_name, browser_details["browser_name"])
+                    browser_fullname = "{0}_{1}".format(system_name,
+                                                        browser_details["browser_name"])
                     output_dict[browser_fullname] = browser_inst
                     url = browser_details["url"]
                     if url is not None:
                         urlschema = urlparse(url)
-                        if  urlschema.scheme:
-                            result, url = self.browser_object.check_url(url)
+                        if urlschema.scheme:
+                            status, url = self.browser_object.check_url(url)
                             result = self.browser_object.go_to(url, browser_inst)
                         else:
                             status = False
-                            pNote("Scheme in your URL:{0} is missing, it could be http/ftp/file"
-                                  " etc".format(url), "error")
+                            pNote("Protocol scheme in your URL: \'{0}\' is missing, protocol could"
+                                  "be http/ftp/file".format(url), "error")
                     else:
                         result = True
                 else:
-                    pNote("could not open browser on system={0}, "
-                          "name={1}".format(system_name,
-                                            browser_details["browser_name"]),
-                          "error")
+                    pNote("could not open browser on system={0}, name={1}".format
+                          (system_name, browser_details["browser_name"]), "error")
                     result = False
                 status = status and result
             browser_details = {}

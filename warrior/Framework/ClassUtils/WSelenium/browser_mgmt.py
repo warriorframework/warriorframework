@@ -180,7 +180,7 @@ class BrowserManagement(object):
     def check_url(self, url):
         """To check whether the user provided url is valid or not.
            Returns:
-                    1. status(bool)= True / False.(Whether the url is a valid public url as per urllib2)
+                    1. status(bool)= True / False.(Whether the url can be reached)
                     2. url : The actual url itself
         """
         status = True
@@ -188,15 +188,19 @@ class BrowserManagement(object):
             url_open = urllib2.urlopen(url)
             get_status_code = url_open.code
             pattern = re.compile('^2[0-9][0-9]$')
-            if not pattern.match(str(get_status_code)):
+            if not pattern.match(str(get_status_code)) and get_status_code is not None:
                 print_info("The Status code for url : {} is {}".format(url, get_status_code))
                 status = False
         except urllib2.HTTPError as http_error:
-            print_warning("URLError: {} reason: ({}) status code: {}".format(url, http_error.reason, http_error.code))
+            print_warning("URLError: {} reason: ({}) status code: {}".format
+                          (url, http_error.reason, http_error.code))
             status = False
         except urllib2.URLError as url_err:
             status = False
             print_warning("URLError: {} reason: ({})".format(url, url_err.reason))
+        except Exception, err:
+            print_warning("Exception: {0}".format(err))
+            status = False
         return status, url
 
     def go_to(self, url, browser_instance=None):
@@ -208,8 +212,8 @@ class BrowserManagement(object):
                 browser_instance.get(url)
             else:
                 self.current_browser.get(url)
-        except Exception as exception:
-            print_exception(exception)
+        except Exception, err:
+            print_error(err)
             status = False
             print_error("Unable to Navigate to URL:'%s'" % url)
         return status
@@ -222,7 +226,7 @@ class BrowserManagement(object):
             self.current_browser.refresh()
 
     def hard_reload_page(self, browser_instance=None):
-        """Simulates Refreshing/Reloading the page by using F5 """
+        """Simulates Refreshing/Reloading the page just as users using F5 """
         if browser_instance is None:
             self.current_browser.refresh()
 
