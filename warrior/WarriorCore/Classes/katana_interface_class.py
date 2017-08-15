@@ -6,7 +6,6 @@ try:
     has_requests = True
 except ImportError:
     has_requests = False
-    raise ImportError('requests not included katana Interface will not work')
 
 __author__ = 'Keenan Jabri'
 
