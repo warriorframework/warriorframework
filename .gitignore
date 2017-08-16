@@ -13,6 +13,7 @@ workspace.*
 # Directories     #
 ###################
 #/Warriorspace/Execution
+/katana/logs
 
 
 

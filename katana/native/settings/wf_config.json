@@ -1,0 +1,6 @@
+{
+  "icon": "cog",
+  "color": "blue",
+  "name" : "Settings",
+  "url" : "/katana/settings/"
+}
