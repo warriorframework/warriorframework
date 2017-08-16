@@ -20,46 +20,30 @@ function mapProjectJsonToUi(data){
 	var items = []; 
 	//alert("Length"+Object.keys(data));
 	// This gives me ONE object - The root for test suites
-	items.push('<thead class="thead-inverse"><tr>');
-	items.push('<th>path</th>');
-	items.push('<th>Execute</th>');
-	items.push('<th>Rule Condition</th>');
-	items.push('<th>value</th>');
-	items.push('<th>Else</th>');
-	items.push('<th>ElseValue</th>');	
-	items.push('<th>OnError</th>');
-	items.push('<th>Value</th>');
-	items.push('<th>impact</th>');
-	items.push('<th>Action</th>');
-	items.push('<th></th>');
-	items.push('<th></th>');
 	
 	var xdata = data['Testsuite'];
 	if (!jQuery.isArray(xdata)) xdata = [xdata];
-	items.push('</tr></thead>');
+	items.push('<div id="accordion_display" class="col-md-12">');
 	console.log("xdata =" + xdata);
 	$("#listOfTestSuitesForProject").html("");
 	for (var s=0; s<Object.keys(xdata).length; s++ ) {
 		var oneSuite = xdata[s];
 		console.log(oneSuite['path']);
-		items.push('<tr/>');
-		items.push("<td>"+oneSuite['path']+"</td>");
+		items.push('<h3>TestSuite '+s+"</h3>");
+		items.push('<div class="collapse">');
+
+		items.push('<label class="col-md-2 text-right" for="defaultOnError>'+oneSuite['path']+'</label><br>');
+		// -------------------------------------------------------------------------
+		// Validation and default assignments 
+		// Create empty elements with defaults if none found. ;-)
+		// -------------------------------------------------------------------------
 		if (! oneSuite['Execute']){
 			oneSuite['Execute'] = { "@ExecType": "Yes", 
 					"Rule": { "@Condition": "", "@Condvalue": "", "@Else": "next", "@Elsevalue": "" }
 				}; 
 		}
-		items.push("<td>"+oneSuite['Execute']['@ExecType']+"</td>");
-		if (oneSuite['Execute']['Rule']) {
-			items.push("<td>"+oneSuite['Execute']['Rule']['@Condition']+"</td>");
-			items.push("<td>"+oneSuite['Execute']['Rule']['@Condvalue']+"</td>");
-			items.push("<td>"+oneSuite['Execute']['Rule']['@Else']+"</td>");
-			items.push("<td>"+oneSuite['Execute']['Rule']['@Elsevalue']+"</td>");
-		} else { 
-			items.push("<td>undefined</td>");
-			items.push("<td>undefined</td>");
-			items.push("<td>undefined</td>");
-			items.push("<td>undefined</td>");
+		if (!oneSuite['Execute']['Rule']) {
+				oneSuite['Execute']['Rule'] = { "Rule": { "@Condition": "", "@Condvalue": "", "@Else": "next", "@Elsevalue": "" } };
 		}
 		if (! oneSuite['onError']) {
 			oneSuite['onError'] = { "@action": "next", "@value": "" };
@@ -72,23 +56,86 @@ function mapProjectJsonToUi(data){
 		}
 
 
-		items.push("<td>"+oneSuite['onError']['@action']+"</td>");
-		items.push("<td>"+oneSuite['onError']['@value']+"</td>");
-		items.push("<td>"+oneSuite['runmode']['@type']+"</td>");
-		items.push("<td>"+oneSuite['runmode']['@value']+"</td>");
+		items.push('<label class="col-md-2 text-right" >ExecType:</label>');
+		items.push('<select type="text" class="col-md-4 text-right" id="'+s+':"Execute-ExecType" value="'+oneSuite['Execute']['@ExecType']+'" >');
+		items.push('<option value="If">If</option>'); 
+		items.push('<option value="If Not">If Not</option>'); 
+		items.push('<option value="Yes">Yes</option>'); 
+		items.push('<option value="No">No</option>'); 
+		items.push('</select>'); 
+		items.push('<br><span class="label label-primary">Rules</span><br>');
 
-		items.push("<td>"+oneSuite['retry']['@type']+"</td>");
-		items.push("<td>"+oneSuite['retry']['@Condition']+"</td>");
-		items.push("<td>"+oneSuite['retry']['@Condvalue']+"</td>");
-		items.push("<td>"+oneSuite['retry']['@count']+"</td>");
-		items.push("<td>"+oneSuite['retry']['@interval']+"</td>");
 
-		items.push("<td>"+oneSuite['impact']+"</td>");
-		items.push("<td><input type=\"button\" value=\"Delete\"/></td>");
+
+		items.push('<label class="col-md-2 text-right" >Rule-Condition:</label>');
+		items.push('<input type="text" class="col-md-4 text-right" id="'+s+'-Execute-Rule-at-Condition" value="'+oneSuite['Execute']['Rule']['@Condition']+'" />');
+		items.push('<label class="col-md-2 text-right" f>Rule-Condvalue:</label>');
+		items.push('<input type="text" class="col-md-4 text-right" id="'+s+'-Execute-Rule-at-Condvalue" value="'+oneSuite['Execute']['Rule']['@Condvalue']+'" />');
+		items.push('<label class="col-md-2 text-right" >Rule-Else:</label>');
+		items.push('<input type="text" class="col-md-4 text-right" id="'+s+'-Execute-Rule-at-Else"  value="'+oneSuite['Execute']['Rule']['@Else']+'" />');
+		items.push('<label class="col-md-2 text-right" >Rule-at-Elsevalue:</label>');
+		items.push('<input type="text" class="col-md-4 text-right" id="'+s+'-Execute-Rule-at-Elsevalue"  value="'+oneSuite['Execute']['Rule']['@Elsevalue']+'" />');
+		items.push('<br><span class="label label-primary">OnError</span><br>');
+
+
+		items.push('<label class="col-md-2 text-right" >OnError-at-action:</label>');
+		items.push('<input type="text" class="col-md-4 text-right" id="'+s+'-onError-at-action" value="'+oneSuite['onError']['@action']+'" />');
+		items.push('<label class="col-md-2 text-right" >OnError-at-value:</label>');
+		items.push('<select type="text" class="col-md-4 text-right" id="'+s+'-onError-at-value" value="'+oneSuite['onError']['@value']+'" >');
+		items.push('<option value="next">next</option>'); 
+		items.push('<option value="abort">abort</option>'); 
+		items.push('<option value="abort_as_error">abort_as_error</option>'); 
+		items.push('<option value="goto">goto</option>'); 
+		items.push('</select>');
+
+
+		items.push('<br><span class="label label-primary">Run mode</span><br>');
+		items.push('<label class="col-md-2 text-right" >runmode-at-type:</label>');
+		items.push('<input type="text" class="col-md-4 text-right" id="'+s+'-runmode-at-type" value="'+oneSuite['runmode']['@type']+'" />');
+		items.push('<label class="col-md-2 text-right" >runmode-at-value:</label>');
+		items.push('<select type="text" class="col-md-4 text-right" id="'+s+'-runmode-at-value" value="'+oneSuite['runmode']['@value']+'" >');
+		items.push('<option value="RMT">RMT</option>'); 
+		items.push('<option value="RUF">RUF</option>'); 
+		items.push('<option value="RUP">RUP</option>'); 
+		items.push('</select>');
+
+		items.push('<br><span class="label label-primary">Retry</span><br>');
+		items.push('<label class="col-md-2 text-right" >retry-at-type:</label>');
+		items.push('<input type="text" class="col-md-4 text-right" id="'+s+'-retry-at-type" value="'+oneSuite['retry']['@type']+'" />');
+		items.push('<label class="col-md-2 text-right" >retry-at-Condition:</label>');
+		items.push('<input type="text" class="col-md-4 text-right" id="'+s+'-retry-at-Condition" value="'+oneSuite['retry']['@Condition']+'" />');
+		items.push('<label class="col-md-2 text-right" >retry-at-Condvalue:</label>');
+		items.push('<input type="text" class="col-md-4 text-right" id="'+s+'-retry-at-Condvalue" value="'+oneSuite['retry']['@Condvalue']+'" />');
+		items.push('<label class="col-md-2 text-right" >retry-at-count:</label>');
+		items.push('<input type="text" class="col-md-4 text-right" id="'+s+'-retry-at-count" value="'+oneSuite['retry']['@count']+'" />');
+		items.push('<label class="col-md-2 text-right" >retry-at-interval:</label>');
+		items.push('<input type="text" class="col-md-4 text-right" id="'+s+'-retry-at-interval" value="'+oneSuite['retry']['@interval']+'" />');
+		items.push('<br><span class="label label-primary">Impact</span><br>');
+
+		items.push('<label class="col-md-2 text-right" >impact</label>');
+		items.push('<select type="text" id="'+s+':"impact" value="'+oneSuite['impact']+'" >');
+		items.push('<option value="impact">impact</option>'); 
+		items.push('<option value="noimpact">noimpact</option>'); 
+		items.push('</select>');
+		items.push("<br>");
+
+		items.push("<input type=\"button\" value=\"Delete\"/>");
+
+		items.push("</div>");
+		
 
 	}
-	$('<table />', { class: "table table-sm table-hover" , html: items.join("")}).appendTo("#listOfTestSuitesForProject");
+	$('<div/>', { class: "col-md-12" , collapsible: "true" , html: items.join("")}).appendTo("#listOfTestSuitesForProject");
+	$("#accordion_display").accordion();
+	
 }  // end of function 
+
+function openAllSuites() {
+	// This function does not work at the moment. I have to debug it later. 
+	// Kamran
+	$('.collapse').collapse('show');
+	$("#accordion_display").collapse('show');
+}
 
 
 

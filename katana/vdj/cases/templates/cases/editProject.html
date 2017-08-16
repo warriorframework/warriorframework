@@ -35,12 +35,7 @@ Using: {{ docSpec }}
 
 <div>
 	<h2>TestSuites</h2>
-	<div class="btn-group col-md-8" role="group">   
-		<button id="addSuite" class="btn btn-secondary" onclick="addSuiteToProject()">Add</button>
-		<button class="btn btn-secondary" onclick="start()">Refresh</button>
-		<button class="btn btn-secondary">Load</button>
-		<button class="btn btn-secondary">Save</button>
-	</div>
+	
 </div>
          
 
@@ -49,7 +44,13 @@ Using: {{ docSpec }}
 	</div>
 
 <div class="container">
-    <div id="editor" class="col-md-8" >  </div>    
+    <div id="editor" class="col-md-12" >  </div>    
+    <div class="btn-group col-md-8" role="group">   
+		<button id="addSuite" class="btn btn-secondary" onclick="addSuiteToProject()">Add</button>
+		<button class="btn btn-secondary" onclick="start()">Refresh</button>
+		<button class="btn btn-secondary" onclick="openAllSuites()">Show All</button>
+		<button class="btn btn-secondary">Save</button>
+	</div>
 </div>
 
 <script type="text/javascript">
