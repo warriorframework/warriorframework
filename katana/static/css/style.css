@@ -357,7 +357,7 @@ form > div > div > label {
     background-color: #f5f5f5;
     border-radius: 6px;
     padding: 10px;
-    z-index: 15;
+    z-index: 3;
     margin-left: 10px;
 
     /* Position the tooltip */
@@ -383,7 +383,7 @@ form > div > div > label {
     color: white;
     border-radius: 6px;
     padding: 10px;
-    z-index: 30;
+    z-index: 15;
 
     /* Position the tooltip */
     position: absolute;
