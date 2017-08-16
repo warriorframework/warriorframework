@@ -29,7 +29,10 @@ def create_and_start_process_with_queue(target_module, args_dict, jobs_list, out
     # output_q wll be none,create a new q and use the
     # same q for all instances of process started
     if output_q is None:
-        output_q = multiprocessing.JoinableQueue()
+        #output_q = multiprocessing.JoinableQueue()
+        manager = multiprocessing.Manager()
+        output_q = manager.Queue()
+
     args_dict["output_q"] = output_q
 
     # now we need to convert the args_dict into
