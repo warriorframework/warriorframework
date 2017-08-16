@@ -4,7 +4,6 @@ on pull request source branch and target branch
 """
 import sys
 import subprocess
-# from pylint import epylint as lint
 
 def process_file_list(input_file, rc_file):
     """

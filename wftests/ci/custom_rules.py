@@ -26,13 +26,19 @@ def func_check(node, kw=False):
         check print statement - should use print_utils
         scan for class - class check
         scan for function - recursive function check
+        check if string use % to substitute value
     '''
     status = True
     have_return = False
     substep_count = 0
+    last_percent_str = -1
+    last_percent_line = -1
 
     # investigate everything in a function
-    for child in ast.walk(node):
+    # print node.name
+    # print [x.id for x in node.args.args]
+    # print node.args.defaults, "\n"
+    for index, child in enumerate(ast.walk(node)):
         if child != node and isinstance(child, ast.FunctionDef):
             # check for private method in action file
             if kw and child.name.startswith("_"):
@@ -55,6 +61,14 @@ def func_check(node, kw=False):
             substep_count += 1
         elif isinstance(child, ast.Attribute) and child.attr == 'report_substep_status':
             substep_count -= 1
+        elif isinstance(child, ast.Str) and "%" in child.s:
+            last_percent_str = index
+            last_percent_line = child.lineno
+        elif isinstance(child, ast.Mod):
+            # If a str is directly followed by a mod, it's a str value substitution
+            if index - last_percent_str == 1:
+                status = False
+                print "Please use {{}} instead of % to load value into string: {}".format(last_percent_line)
 
     if ast.get_docstring(node) is None:
         print node.name, "doesn't contain any docstring"
@@ -115,19 +129,7 @@ def main(kw=False):
         elif isinstance(child, ast.ClassDef):
             status &= class_check(child, kw)
         elif isinstance(child, ast.Expr):
-            license_text = \
-'''
-Copyright 2017, Fujitsu Network Communications, Inc.
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-'''
+            license_text = open("wftests/ci/license_in_code.txt").read()
             if child.value.s == license_text:
                 have_license = True
 
