@@ -554,7 +554,7 @@ var popupController = {
   close: function(popup) {
     popup.data('tabIndex').remove();
     popup.addClass('removeing');
-		window.clearTimeout(executeApi.currentTimeout);
+    window.clearTimeout(executeApi.currentTimeout);
     setTimeout(function() {
       popup.remove();
     }, 300);
@@ -651,9 +651,10 @@ var executeApi = {
     }).done(function(content) {
       if (content != '') {
         var $html = $('<div/>').append(content);
-        if ($html.find('.complete').length == 0) executeApi.currentTimeout = window.setTimeout(function() {
-          executeApi.getHtml(callback, p, maxi);
-        }, 1000);
+        if ($html.find('.complete').length == 0)
+          executeApi.currentTimeout = window.setTimeout(function() {
+            executeApi.getHtml(callback, p, maxi);
+          }, 1000);
         else {
           if (executeApi.count > executeApi.tally) {
             executeApi.tally++;
@@ -665,9 +666,10 @@ var executeApi = {
           callback(p, maxi);
         }
         executeApi.setHtml($html, htmlpopupContent);
-      } else setTimeout(function() {
-        executeApi.getHtml(callback, p, maxi);
-      }, 400);
+      } else
+        executeApi.currentTimeout = setTimeout(function() {
+          executeApi.getHtml(callback, p, maxi);
+        }, 400);
     });
   },
   setHtml: function($html, popup) {
