@@ -39,4 +39,6 @@ class CoreView(View):
         # writing pending logs to the log file
         # AppInformation.log_obj.flush()
 
+        print AppInformation.information.apps[0].data
+
         return render(request, template, {"apps": AppInformation.information.apps})
