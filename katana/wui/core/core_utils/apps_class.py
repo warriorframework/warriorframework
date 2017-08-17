@@ -30,8 +30,7 @@ class Apps:
                 app = App(json_data, get_parent_directory(url))
                 js_urls = get_paths_of_subfiles(join_path(app.path, app.static_file_dir))
                 for i in range(0, len(js_urls)):
-                    js_urls[i] = get_relative_path(js_urls[i],
-                                                   get_parent_directory(data["base_directory"]))
+                    js_urls[i] = get_relative_path(js_urls[i], app.path)
                 app.data["js_urls"] = js_urls
                 self.apps.append(app)
         return self.apps
