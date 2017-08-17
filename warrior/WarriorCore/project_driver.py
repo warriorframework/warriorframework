@@ -179,7 +179,7 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
     project_error_value = project_repository['def_on_error_value']
 
     pj_junit_object = junit_class.Junit(filename=project_name, timestamp=project_start_time,
-                                        name=project_name)
+                                        name=project_name, display="True")
 
     pj_junit_object.update_attr("resultsdir",
                                 project_repository['project_execution_dir'],
@@ -248,7 +248,7 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
             else:
                 msg = print_info('skipped testsuite: {0} '.format(testsuite_path))
                 testsuite_resultfile = '<testsuite errors="0" failures="0" name="{0}" '\
-                'skipped="0" tests="0" time="0" timestamp="{1}" > '
+                'skipped="0" tests="0" time="0" timestamp="{1}" > '\
                 '<skipped message="{2}"/> </testsuite>'.format(testsuite_name,
                                                                project_start_time,
                                                                msg)
@@ -274,7 +274,7 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
             msg = print_error("Test suite does not exist in "
                               "provided path: {0}".format(testsuite_path))
             testsuite_status = 'ERROR'
-            # testsuite_resultfile = '<testsuite errors="0" failures="0" name="{0}" '\
+            testsuite_resultfile = '<testsuite errors="0" failures="0" name="{0}" '\
             'skipped="0" tests="0" time="0" timestamp="{1}" > '\
             '<error message="{2}"/> </testsuite>'.format(testsuite_name, project_start_time, msg)
             # suite_junit_type = 'string'
@@ -301,7 +301,8 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
         string_status = {"TRUE": "PASS", "FALSE": "FAIL", "ERROR": "ERROR", "SKIP": "SKIP"}
 
         if str(testsuite_status).upper() in string_status.keys():
-            data_repository['testsuite_{}_result'.format(suite_cntr)] = string_status[str(testsuite_status).upper()]
+            data_repository['testsuite_{}_result'.format(suite_cntr)] = string_status\
+            [str(testsuite_status).upper()]
         else:
             print_error("unexpected testsuite status, default to exception")
             data_repository['testsuite_%d_result'%suite_cntr] = "ERROR"
@@ -346,7 +347,8 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
                     else:
                         condition_met = False
                         print_warning("The condition value '{0}' does not match with the expected "
-                                      "value '{1}'".format(data_repository[retry_cond], retry_cond_value))
+                                      "value '{1}'".format(data_repository[retry_cond],
+                                                           retry_cond_value))
                 except KeyError:
                     print_warning("The given condition '{0}' do not exists in "
                                   "the data repository".format(retry_cond_value))
