@@ -165,21 +165,21 @@ Also refer the python regex documentation https://docs.python.org/2/library/re.h
 		9.  :retry: 	(supported values= "y" or "n", default = "n")
 						when "y", retry sending a command if the command fails.
 
-			9.a) :retry_timer: (default=60 secs), when retry=y, this is the time interval(in secs) between subsequent re-trails.
-			9.b) :retry_count: (default=5), when retry=y, this is no of attempts to.
+				9.a) :retry_timer: (default=60 secs), when retry=y, this is the time interval(in secs) between subsequent re-trails.
+				9.b) :retry_count: (default=5), when retry=y, this is no of attempts to.
 						  if during one of the attempts the command passes, re trials will be passed.
 
-			9.c) :retry_onmatch: a text or a regular expression.
+				9.c) :retry_onmatch: a text or a regular expression.
 							 if provided and retry=y, re-trials will be attempted only when the response of the
 							 command has the provided text/regular expression.
 
-		10. :	a):resp_req: 		(supported values ="n") save the response in the framework's data repository
+		10. :resp_req: 		(supported values ="n") save the response in the framework's data repository
 							this feature is always enabled, user can turn it off by providing "n"
 
-				b):resp_pat_req: 	(text or regular expression) to save only a particular text or regular expression
+				a):resp_pat_req: 	(text or regular expression) to save only a particular text or regular expression
 							from the response
 
-				c):resp_ref:  	(text, default=position of command in the testdata block) a user provided refernce text
+				b):resp_ref:  	(text, default=position of command in the testdata block) a user provided refernce text
 							for the response of this command
 							The responses will be saved in the framework's data repository using this text as key.
 							If user does not provide resp_ref, framework automatically assigns this value based on the
