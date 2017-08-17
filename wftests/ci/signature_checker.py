@@ -14,6 +14,7 @@ limitations under the License.
 """
 Use ast module to check custom rules enforced by warrior dev team
 """
+import sys
 import ast
 
 def iter_func(node):
@@ -21,64 +22,63 @@ def iter_func(node):
         Return all arguments and default values of the current function
         Also if it has inner functions, store it in a sub-dict
     '''
-    status = True
-
+    result = {"args":[x.id for x in node.args.args], "def_value":node.args.defaults}
     # investigate everything in a function
-    # print node.name
-    # print [x.id for x in node.args.args]
-    # print node.args.defaults, "\n"
-    for index, child in enumerate(ast.walk(node)):
+    for child in ast.walk(node):
         if child != node and isinstance(child, ast.FunctionDef):
             # check for private method in action file
-            if kw and child.name.startswith("_"):
-                print node.name, child.name, "should move to utils"
-                status = False
-            tmp_status = func_check(child, kw)
-            status &= tmp_status
+            tmp = iter_func(child)
+            if "funcs" in result:
+                result["funcs"].update(tmp)
+            else:
+                result["funcs"] = tmp
         elif child != node and isinstance(child, ast.ClassDef):
-            tmp_status = class_check(child, kw)
-            status &= tmp_status
+            tmp = iter_class(child)
+            if "classes" in result:
+                result["classes"].update(tmp)
+            else:
+                result["classes"] = tmp
 
-    return status
+    return {node.name:result}
 
 def iter_class(node):
     '''
         Return all functions and sub-class functions of the current class
     '''
-    status = True
+    result = {"funcs":{}}
 
     for child in ast.iter_child_nodes(node):
         if isinstance(child, ast.FunctionDef):
-            if kw and child.name.startswith("_") and child.name != "__init__":
-                print node.name, child.name, "should move to utils"
-                status = False
-            tmp_status = iter_func(child)
-            status &= tmp_status
+            tmp = iter_func(child)
+            result["funcs"].update(tmp)
         elif isinstance(child, ast.ClassDef):
-            tmp_status = iter_class(child)
-            status &= tmp_status
+            tmp = iter_class(child)
+            result.update(tmp)
 
-    return status
+    return {node.name:result}
 
 def main(file_name=None):
     """
         Read in filelist and build dictionary for all file and all functions inside each file
     """
     file_list = open(file_name).readlines()
+    file_list = [x[:-1] if x.endswith("\n") else x for x in file_list]
     signs = {}
     for f in file_list:
         if f not in signs:
             signs[f] = {}
-        root = ast.parse(f.read())
+        root = ast.parse(open(f).read())
         for child in ast.iter_child_nodes(root):
             if isinstance(child, ast.FunctionDef):
                 signs[f].update(iter_func(child))
             elif isinstance(child, ast.ClassDef):
                 signs[f].update(iter_class(child))
+    from pprint import pprint
+    pprint(signs)
     return signs
 
 if __name__ == "__main__":
-    if main():
+    if main(sys.argv[1]):
         print "PASS"
         exit(0)
     else:
