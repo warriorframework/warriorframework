@@ -8,15 +8,19 @@ function addCaseToSuite(){
 	// The UI is updated after the case is appended to the master 
 	// list of cases. 
 	//
-	var newTestSuite = {	
+	var newTestCase = {	
 		"path": "../suites/framework_tests/seq_par_execution/seq_ts_seq_tc.xml", 
 		"context" : "positive",
 		"run_type": "sequential_keywords",
 		"retry": {"@type": "if not", "@Condition": "testsuite_1_result", "@Condvalue": "PASS", "@count": "6", "@interval": "0"}, 
 		"onError": { "@action": "next", "@value": "" }, 
 		"impact": "impact" };
+	// The javascript json feauture where an array of 1 is really the object itself
+	if (!jQuery.isArray(jsonTestCases['Testcase'])) {
+		jsonTestCases['Testcase'] = [jsonTestCases['Testcase']];
+		}
 
-	jsonTestCases['Testcase'].push(newTestSuite);
+	jsonTestCases['Testcase'].push(newTestCase);
 	mapSuiteJsonToUi(jsonTestCases);
 }
 
@@ -129,7 +133,7 @@ function mapSuiteJsonToUi(data){
 		items.push("<input type=\"button\" value=\"Delete\" id='"+bid+"'>"+bid+"</input>");
 
 		$(document).on('click','#'+bid,function(  ) {
-			alert(this.id);
+			//alert(this.id);
 			var names = this.id.split('-');
 			var sid = parseInt(names[1]);
 			removeTestCase(sid,xdata);
@@ -141,21 +145,16 @@ function mapSuiteJsonToUi(data){
 	}
 	$('<div/>', { class: "col-md-12" , collapsible: "true" , html: items.join("")}).appendTo("#listOfTestCasesForSuite");
 	$("#accordion_suite_display").accordion();
-	
-			
 }  // end of function 
 
 
 function removeTestCase( sid,xdata ){
-			//delete jsonTestCases[sid];   		// Remove the item 
-
 			jsonTestCases['Testcase'].splice(sid,1);
-			//delete xdata[sid];
 			console.log("Removing test cases "+sid+" now " + Object.keys(jsonTestCases).length);
-	
 			mapSuiteJsonToUi(jsonTestCases);	// Send in the modified array
-alert("Refresh");
 }
+
+
 //#listOfTestCasesForSuite
 function openAllCases() {
 	// This function does not work at the moment. I have to debug it later. 

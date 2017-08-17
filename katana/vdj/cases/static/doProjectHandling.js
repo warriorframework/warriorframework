@@ -12,6 +12,10 @@ function addSuiteToProject(){
 		"retry": {"@type": "if not", "@Condition": "testsuite_1_result", "@Condvalue": "PASS", "@count": "6", "@interval": "0"}, 
 	"onError": { "@action": "next", "@value": "" }, "impact": "impact" };
 
+	if (!jQuery.isArray(jsonTestSuites['Testsuite'])) {
+		jsonTestSuites['Testsuite'] = [jsonTestSuites['Testsuite']];
+		}
+
 	jsonTestSuites['Testsuite'].push(newTestSuite);
 	mapProjectJsonToUi(jsonTestSuites);
 }
@@ -118,17 +122,28 @@ function mapProjectJsonToUi(data){
 		items.push('<option value="noimpact">noimpact</option>'); 
 		items.push('</select>');
 		items.push("<br>");
-
-		items.push("<input type=\"button\" value=\"Delete\"/>");
-
+		var bid = "deleteTestSuite-"+s;
+		items.push("<input type=\"button\" value=\"Delete\" id='"+bid+"'>"+bid+"/>");
+		$('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
+		$(document).on('click','#'+bid,function(  ) {
+			//alert(this.id);
+			var names = this.id.split('-');
+			var sid = parseInt(names[1]);
+			removeTestSuite(sid,xdata);
+		});
 		items.push("</div>");
-		
-
 	}
 	$('<div/>', { class: "col-md-12" , collapsible: "true" , html: items.join("")}).appendTo("#listOfTestSuitesForProject");
 	$("#accordion_display").accordion();
-	
 }  // end of function 
+
+// Removes a test suite by its ID and refresh the page. 
+function removeTestSuite( sid,xdata ){
+			jsonTestSuites['Testsuite'].splice(sid,1);
+			console.log("Removing test suites "+sid+" now " + Object.keys(jsonTestSuites).length);
+			mapProjectJsonToUi(jsonTestSuites);	// Send in the modified array
+}
+
 
 function openAllSuites() {
 	// This function does not work at the moment. I have to debug it later. 

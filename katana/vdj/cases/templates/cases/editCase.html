@@ -11,7 +11,7 @@ Using: {{ docSpec }}
 		<div class="row">
 			<label class="col-md-2 text-right" for="caseName">Name*:</label>
 			<input class="col-md-4 text-right" type="text" id="caseName" name="caseName" value="{{caseName}}"/>
-			<label class="col-md-2 text-right" for="caseTitle"">Title*:</label>
+			<label class="col-md-2 text-right" for="caseTitle">Title*:</label>
 			<input class="col-md-4 text-right" type="text" id="caseTitle" name="caseTitle" value="{{caseTitle}}" />
 		</div>
 		<div class="row">
@@ -61,30 +61,22 @@ Using: {{ docSpec }}
 
 <div>
 	<h2>Requirements</h2>
-	<input type="text" name="newRequirement" />
-	<button id="addRequirementButton" class="btn btn-secondary" onclick="addRequirement()">Add</button>
-	<ol id='listOfRequirements'>
+	<input type="text" id="newRequirementText" />
+	<button id="addRequirementButton" class="btn btn-secondary" onclick="addRequirementToCase()">Add</button>
+	<div id='listOfRequirements' class="col-md-12">
 
-	</ol>
+	</div>
 
 </div>
 
-<div>
-		<input type="text" name="newStepForCase" />
-	<button id="addStepButton" class="btn btn-secondary" onclick="addStepToCase()">Add</button>
-	<ol id='listOfCaseSteps'>
-
-	</ol>
-</div>
-
-
- 	  
+	  
 <div class="container">
    <h2>Steps</h2>
 	 <div id="listOfTestCasesForSuite" class="col-md-12" >  </div>    
 </div>
 
 <div class="btn-group" role="group">   
+		<button id="addStep" class="btn btn-secondary" onclick="addStepToCase()">Add</button>
 		<button class="btn btn-secondary" onclick="start()">Refresh</button>
 		<button class="btn btn-secondary">Load</button>
 		<button class="btn btn-secondary">Save</button>
@@ -109,7 +101,9 @@ function start() {
 
 	*/
 	jsonTestCases = {{caseSteps|jsonify }};
+	jsonRequirements = {{caseRequirements|jsonify}}
 	mapCaseJsonToUi(jsonTestCases);
+	mapRequirementsToUI(jsonRequirements);
 
 }
 </script>
