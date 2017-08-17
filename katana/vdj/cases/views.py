@@ -82,6 +82,9 @@ def getXMLfile(request):
 	return HttpResponse( open(filename).read(), content_type='text/xml')
 
 def editProject(request):
+	"""
+	Set up JSON object for editing a project file. 
+	"""
 	template = loader.get_template("cases/editProject.html")
 	filename = request.GET.get('fname')
 
@@ -122,7 +125,8 @@ def editProject(request):
 		'projectDate': xml_r["Project"]["Details"]["Date"],
 		'projectTime': xml_r["Project"]["Details"]["Time"],
 		'projectdefault_onError': xml_r["Project"]["Details"]["default_onError"],
-		'projectSuites': xml_r['Project']['Testsuites']
+		'projectSuites': xml_r['Project']['Testsuites'],
+		'fulljson': xml_r
 		}
 	# 
 	# I have to add json objects for every test suite.
@@ -132,17 +136,65 @@ def editProject(request):
 	return HttpResponse(template.render(context, request))
 
 def editSuite(request):
-	template = loader.get_template("cases/editProject.html")
+	"""
+	Set up JSON object for editing a suites file. 
+	"""
+	template = loader.get_template("cases/editSuite.html")
 	filename = request.GET.get('fname')
+	
+	xml_r = {}
+	xml_r["TestSuite"] = {}
+	xml_r["TestSuite"]["Details"] = {}
+	xml_r["TestSuite"]["Details"]["Name"] = ""
+	xml_r["TestSuite"]["Details"]["Title"] = ""
+	xml_r["TestSuite"]["Details"]["Engineer"] = ""
+	xml_r["TestSuite"]["Details"]["Date"] = ""
+	xml_r["TestSuite"]["Details"]["Time"] = ""
+	xml_r["TestSuite"]["Details"]["type"] = { }
+	xml_r["TestSuite"]["Details"]["type"]['\@exectype'] = u"sequential_testcases"
+	xml_r["TestSuite"]["Details"]["default_onError"] = {}
+	xml_r["TestSuite"]["Details"]["default_onError"]['@action']= ""
+	xml_r["TestSuite"]["Testsuites"] = ""
+	
+	
+	with open(filename) as fd1:
+		xml_d = xmltodict.parse(fd1.read());
+
+	# Map the input to the response collector
+	for xstr in ["Name", "Title", "Category", "Date", "Time", "Engineer", \
+		"Datatype", "type",  "default_onError"]:
+		xml_r["TestSuite"]["Details"][xstr] = xml_d["TestSuite"]["Details"].get(xstr,"")
+
+	try:
+		xml_r['TestSuite']['Testcases'] = copy.deepcopy(xml_d['TestSuite']['Testcases']);
+	except:
+		xml_r["TestSuite"]["Testcases"] = {}
+
+
 	context = { 
 		'myfile': filename,
-		'docSpec': 'suiteSpec'
-	}
+		'docSpec': 'projectSpec',
+		'suiteName': xml_r["TestSuite"]["Details"]["Name"],
+		'suiteTitle': xml_r["TestSuite"]["Details"]["Title"],
+		'suiteEngineer': xml_r["TestSuite"]["Details"]["Engineer"],
+		'suiteCategory': xml_r["TestSuite"]["Details"]["Category"],
+		'suiteDate': xml_r["TestSuite"]["Details"]["Date"],
+		'suiteTime': xml_r["TestSuite"]["Details"]["Time"],
+		'suiteType': xml_r["TestSuite"]["Details"]["type"],
+		'suitedefault_onError': xml_r["TestSuite"]["Details"]["default_onError"],
+		'suiteCases': xml_r['TestSuite']['Testcases'],
+		'fulljson': xml_r,
+		'suiteResults': ""
+		}
+	# 
+	# I have to add json objects for every test suite.
+	# 
+
 	return HttpResponse(template.render(context, request))
 
 def editCase(request):
 	""" 
-	Map XML to jquery UI elements for Test case. 
+	Set up JSON object for editing a suites file. 
 	"""
 	template = loader.get_template("cases/editCase.html")
 	filename = request.GET.get('fname')
@@ -181,6 +233,15 @@ def editCase(request):
 
 	caseStateOptions_str = ['New','Draft','In Review','Released']
 
+	try:
+		xml_r['Testcase']['Steps'] = copy.deepcopy(xml_d['Testcase']['Steps']);
+	except:
+		xml_r["Testcase"]["Steps"] = {}
+
+	try:
+		xml_r['Testcase']['Requirements'] = copy.deepcopy(xml_d['Testcase']['Requirements']);
+	except:
+		xml_r["Testcase"]["Requirements"] = {}
 
 	context = { 
 		'myfile': filename,
@@ -198,7 +259,10 @@ def editCase(request):
 		'casedefault_onError': xml_r["Testcase"]["Details"]["default_onError"],
 		'caseLogsdir': xml_r["Testcase"]["Details"]["Logsdir"],
 		'caseResultsdir': xml_r["Testcase"]["Details"]["Resultsdir"],
-		'caseExpectedResults': xml_r["Testcase"]["Details"]["ExpectedResults"]
+		'caseExpectedResults': xml_r["Testcase"]["Details"]["ExpectedResults"],
+		'caseSteps': xml_r["Testcase"]["Steps"],
+		'caseRequirements': xml_r['Testcase']['Requirements'],
+		'fulljson': xml_r['Testcase']
 	}
 
 	return HttpResponse(template.render(context, request))

@@ -1,5 +1,5 @@
 {% extends "./baseListFile.html" %}
-
+{% load jsonify %}
 {% block content %}
 {{title}}
 Editing:{{ myfile }}
@@ -70,7 +70,6 @@ Using: {{ docSpec }}
 </div>
 
 <div>
-	<h2>Steps</h2>
 		<input type="text" name="newStepForCase" />
 	<button id="addStepButton" class="btn btn-secondary" onclick="addStepToCase()">Add</button>
 	<ol id='listOfCaseSteps'>
@@ -79,19 +78,21 @@ Using: {{ docSpec }}
 </div>
 
 
- 	<div class="btn-group" role="group">   
+ 	  
+<div class="container">
+   <h2>Steps</h2>
+	 <div id="listOfTestCasesForSuite" class="col-md-12" >  </div>    
+</div>
+
+<div class="btn-group" role="group">   
 		<button class="btn btn-secondary" onclick="start()">Refresh</button>
 		<button class="btn btn-secondary">Load</button>
 		<button class="btn btn-secondary">Save</button>
-	</div>        
-<div class="container">
-    <div id="editor" class="col-md-8" >  </div>    
-</div>
-
-
+	</div>      
 
 <script type="text/javascript">
 function start() {
+	/*
 	var Connect = new XMLHttpRequest();
 	Connect.open("GET", "http://localhost:8000/cases/getXMLfile/?fname={{ myfile }}", false);
 	Connect.setRequestHeader("Content-Type", "text/xml");
@@ -105,7 +106,10 @@ function start() {
 	Xonomy.render(xml, editor, xdocSpec);
 	// Once Xonomy is gone... leave the rest. 
 	$("#caseDate").datetimepicker('show');
-	
+
+	*/
+	jsonTestCases = {{caseSteps|jsonify }};
+	mapCaseJsonToUi(jsonTestCases);
 
 }
 </script>
