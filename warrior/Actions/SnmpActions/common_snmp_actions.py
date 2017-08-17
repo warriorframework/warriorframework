@@ -16,7 +16,7 @@ Implementation of the standard SNMP protocol commands for SNMP v1 and v2c and V3
 and IPv6 support added.
 SNMP v3 Trap and Inform support added. 
 """
-import os, re
+import os, re, ast
 import Framework.Utils as Utils
 from Framework.Utils.print_Utils import print_exception
 from Framework.ClassUtils.snmp_utlity_class import WSnmp as ws
@@ -46,7 +46,6 @@ class CommonSnmpActions(object):
         self.filename = Utils.config_Utils.filename
         self.logfile = Utils.config_Utils.logfile
         self.snmpver = {'1':'0', '2':'1', '2c':'1', '3':'2'}
-        self.boolval = {"True":True, "False":False}
 
 
     def snmp_get(self, snmp_ver, system_name, mib_name=None,
@@ -445,7 +444,7 @@ class CommonSnmpActions(object):
             errindication, errstatus, errindex,\
             result = cmdgen.nextCmd(auth_data,
                                     transport,
-                                    oid, lexicographicMode=self.boolval[lexicographicMode],
+                                    oid, lexicographicMode=ast.literal_eval(lexicographicMode.capitalize()),
                                     ignoreNonIncreasingOid=True, maxRows=50000,
                                     lookupNames=True, lookupValues=True)
             output_dict = {
@@ -595,7 +594,7 @@ class CommonSnmpActions(object):
                                     int(nonrepeaters), int(maxrepetitions), oid,
                                     lookupNames=True,
                                     lookupValues=True,
-                                    lexicographicMode=self.boolval[lexicographicMode],
+                                    lexicographicMode=ast.literal_eval(lexicographicMode.capitalize()),
                                     maxRows=int(maxrepetitions)
                                     )
             # nonrepeaters(1)(int): One MIB variable is requested in response
@@ -795,7 +794,6 @@ class CommonSnmpActions(object):
                              the type of encryption protocol which is used.
                              supported usmNoPrivProtocol(default),
                              usmDESPrivProtocol, usm3DESEDEPrivProtocol, usmAesCfb128Protocol
-             
         Return: True or False
         """
         status = True
