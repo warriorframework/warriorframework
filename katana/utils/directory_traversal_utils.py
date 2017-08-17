@@ -157,8 +157,28 @@ def join_path(path, *paths):
     return os.path.join(path, *paths)
 
 
-def get_relative_path(start_directory, path):
-    relpath = os.path.relpath(start_directory, path)
-    if not relpath.startswith(".."):
-        relpath = os.sep + relpath
+def get_relative_path(path, start_directory):
+    """
+    This is a wrapper function for the os.path.relpath
+
+    Args:
+        path: Absolute path to the file/dir to which the relatove path needs to be calculated.
+        start_directory: The absolute path to the starting directory
+
+    Returns:
+         rel_path: A relative path from start_directory
+
+    """
+    if start_directory == "":
+        AppInformation.log_obj.write_log("-- Error -- start_directory is empty.")
+        relpath = path
+    else:
+        try:
+            relpath = os.path.relpath(path, start_directory)
+        except Exception as e:
+            AppInformation.log_obj.write_log("-- Error -- {0}".format(e))
+            relpath = None
+        else:
+            if not relpath.startswith(".") and not relpath.startswith(os.sep):
+                relpath = os.sep + relpath
     return relpath
