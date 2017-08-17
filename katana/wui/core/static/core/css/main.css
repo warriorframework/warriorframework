@@ -46,7 +46,7 @@ h1 {
     /* max-width: 1400px; */
     /* margin: 0 auto; */
     position: absolute;
-    background: white;
+
     right: 0;
     width: calc(100% - 250px);
     top: 50px;
@@ -358,7 +358,6 @@ span.close:before {content: 'X';}
     width: 100%;
     /* max-width: 1200px; */
     margin: 0;
-    padding: 16px;
     position: relative;
 }
 
@@ -369,7 +368,7 @@ span.close:before {content: 'X';}
     transform: translateZ(0);
     -webkit-transition: max-width 0.2s ease, -webkit-transform 0.2s ease;
     transition: max-width 0.2s ease, transform 0.2s ease;
-    
+
 }
 .nav .tab.active[uid="launchpad"] {
     max-width: 200px;
@@ -424,35 +423,21 @@ span.close:before {content: 'X';}
 }
 
 input {
-    width: 100%;
-    padding: 10px;
-    border: solid 1px #c5c5c5;
-    font-family: inherit;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-bottom: solid 1px #c5c5c5;
+  font-family: inherit;
 }
-
-.form-group {
-    padding: 9px;
-    /* border: solid 1px #f3f3f3; */
-    /* margin: 6px; */
-    position: relative;
-    display: flex !important;
-    flex-wrap: wrap;
+.feild {
+    padding: 5px 0;
 }
 
 .mandatory-field {
     color: rgb(214, 48, 48);
 }
 
-.form-group label {
-    font-weight: 500;
-    font-size: 16px;
-    display: block;
-    margin-bottom: 7px;
-    padding-left: 19px;
-    display: block;
-    width: 100%;
-    text-align: left;
-}
+
 
 select {
     width: 100%;
@@ -798,7 +783,7 @@ ul.fileSystem.loaded {
 
 ul.fileSystem {
     opacity: 0;
-		-webkit-transition: all .3s ease;	
+		-webkit-transition: all .3s ease;
     transition: all .3s ease;
 }
 li.create.fa.fa-plus {
@@ -959,4 +944,93 @@ div#launchpad.page.hidden .tabs {
 }
 .fileSystem > .file:hover, .fileSystem > .folder:hover {
     background: rgba(239, 239, 239, 0.94) !important;
+}
+.feild-block {
+    display: block;
+    position: relative;
+    padding: 10px;
+}
+
+.feild-block .title {
+  position: relative;
+  border: none;
+  font-size: 22px;
+  padding: 10px 0;
+  font-weight: 300;
+}
+
+.two-rows {
+    display: block;
+    padding: 0;
+    margin: 0;
+    position: relative;
+    width: 100%;
+}
+
+.two-rows > div {
+    display: inline-block;
+    width: 49%;
+    margin: 0;
+    vertical-align: top;
+}
+.page .page + .page-content {
+    display: none;
+}
+
+.page-content .tool-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    text-align: right;
+    width: 100%;
+    height: 40px;
+    z-index: 9;
+    \: cover;
+    background: rgba(255, 255, 255, 0.9);
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.19);
+    -moz-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.19);
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.19);
+    padding: 0 2px;
+}
+
+.tool-bar .button {
+  margin: 5px 5px 0px 2px;
+  background: rgba(255, 255, 255, 0.48);
+  border: solid #d2d2d2 1px;
+  color: #333;
+  width: 80px;
+  text-align: center;
+}
+
+.tool-bar .button:hover {
+    background: #efefef;
+}
+
+.tool-bar .button.close:hover {
+    background: #ff8e8e;
+}
+
+.tool-bar .button.save:hover {
+    background: #ceffce;
+}
+
+.page-content-inner {
+    height: 100%;
+    overflow-y: auto;
+}
+
+.tool-bar + .page-content-inner {
+    height: calc( 100% - 40px );
+    top: 40px;
+}
+.settings {
+    width: 100%;
+    height: 100%;
+    display: block;
+    background-image: url(/static/core/images/image.jpg);
+    background-size: cover;
+}
+.removing {
+    opacity: 0;
+    transition: all .2s ease;
 }

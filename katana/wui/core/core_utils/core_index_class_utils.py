@@ -4,7 +4,7 @@ from utils.directory_traversal_utils import get_sub_folders
 from wui.core.core_utils.core_utils import _get_package_name
 
 
-class CoreIndex():
+class CoreIndex:
 
     def __init__(self, base_directory, settings_file_path=None):
         """
