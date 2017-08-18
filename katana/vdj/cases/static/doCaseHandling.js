@@ -2,31 +2,6 @@ var jsonCaseSteps = [];
 var jsonCaseRequirements = []; 
 
 
-function addStepToCase(){
-
-	// Add an entry to the jsonTestSuites....
-	var newCaseStep = {
-		"step": { "@Driver": "demo_driver", "@Keyword": "" , "@TS": "0" },
-		"Arguments" : { },
-		"onError": { "@action" : "next" } ,
-		"iteration_type": { "@type" : "" } ,
-		"Description":" ",
-		"Execute": { "@ExecType": "Yes",
-			"Rule": {"@Condition": "","@Condvalue": "","@Else": "next", "@Elsevalue": "" }
-		}, 
-		"context": "positive", 
-		"impact" : "impact",
-		"rmt" : {} ,
-		"retry": {"@type": "if not", "@Condition": "testsuite_1_result", "@Condvalue": "PASS", "@count": "6", "@interval": "0"}, 
-	 };
-	if (!jQuery.isArray(jsonCaseSteps['Steps'])) {
-		jsonCaseSteps['Steps'] = [jsonCaseSteps['Steps']];
-		}
-
-	jsonCaseSteps['Steps'].push(newCaseStep);
-	mapCaseJsonToUi(jsonCaseSteps);
-}
-
 function addRequirementToCase(){
 	var xstr = $('#newRequirementText').val();
 	if (xstr.length < 1){
@@ -176,7 +151,7 @@ function mapCaseJsonToUi(data){
 			items.push('<label class="col-md-1 text-right">Value</label>');
 			items.push('<input type="text" class="col-md-4 text-right" value="'+arguments[xarg]['@value']+'"/>');
 			bid = "deleteArgument-"+ xarg;
-			items.push("<input type=\"button\" class=\"col-md-2\" value=\"Delete\" id='"+bid+"'/>");
+			items.push('<input type="button" class="col-md-2" value="Delete" id="'+bid+'"/>');
 
 			$('#'+bid).off('click');   //unbind and bind are deprecated. 
 			$(document).on('click','#'+bid,function(  ) {
@@ -272,13 +247,13 @@ function mapCaseJsonToUi(data){
 		
 		
 		var bid = "deleteTestStep-"+s;
-		items.push("<input type=\"button\" value=\"Delete\" id='"+bid+"'>"+bid+"/>");
+		items.push('<input type="button" value="Delete" id="'+bid+'"/>');
 		$('#'+bid).off('click');   //unbind and bind are deprecated. 
 		$(document).on('click','#'+bid,function(  ) {
-			//alert(this.id);
+			alert(this.id);
 			var names = this.id.split('-');
 			var sid = parseInt(names[1]);
-			removeTestStep(sid,xdata);
+			removeTestStep(sid,xdata,data);
 		});
 		items.push("</div>");
 		
@@ -288,10 +263,36 @@ function mapCaseJsonToUi(data){
 	$("#accordion_case_display").accordion();
 	
 }  // end of function 
+
+
 // Removes a test suite by its ID and refresh the page. 
-function removeTestStep( sid,xdata ){
-			jsonCaseSteps['Steps'].splice(sid,1);
-			console.log("Removing test step "+sid+" now " + Object.keys(jsonCaseSteps.length));
-			mapProjectJsonToUi(jsonCaseSteps);	// Send in the modified array
+function removeTestStep( sid,xdata,jj ){
+			jsonCaseSteps['step'].splice(sid,1);
+			console.log("Removing test cases "+sid+" now " + Object.keys(jsonCaseSteps).length);
+			mapCaseJsonToUi(jsonCaseSteps);
 }
 
+
+function addStepToCase(){
+	// Add an entry to the jsonTestSuites....
+	var newCaseStep = {
+		"step": { "@Driver": "demo_driver", "@Keyword": "" , "@TS": "0" },
+		"Arguments" : { },
+		"onError": { "@action" : "next" } ,
+		"iteration_type": { "@type" : "" } ,
+		"Description":" ",
+		"Execute": { "@ExecType": "Yes",
+			"Rule": {"@Condition": "","@Condvalue": "","@Else": "next", "@Elsevalue": "" }
+		}, 
+		"context": "positive", 
+		"impact" : "impact",
+		"rmt" : {} ,
+		"retry": {"@type": "if not", "@Condition": "testsuite_1_result", "@Condvalue": "PASS", "@count": "6", "@interval": "0"}, 
+	 };
+	if (!jQuery.isArray(jsonCaseSteps['step'])) {
+		jsonCaseSteps['step'] = [jsonCaseSteps['step']];
+		}
+
+	jsonCaseSteps['step'].push(newCaseStep);
+	mapCaseJsonToUi(jsonCaseSteps);
+}

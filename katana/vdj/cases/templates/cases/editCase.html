@@ -100,9 +100,9 @@ function start() {
 	$("#caseDate").datetimepicker('show');
 
 	*/
-	jsonTestCases = {{caseSteps|jsonify }};
+	jsonCaseSteps = {{caseSteps|jsonify }};
 	jsonRequirements = {{caseRequirements|jsonify}}
-	mapCaseJsonToUi(jsonTestCases);
+	mapCaseJsonToUi(jsonCaseSteps);
 	mapRequirementsToUI(jsonRequirements);
 
 }
