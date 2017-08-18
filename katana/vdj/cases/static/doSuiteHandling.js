@@ -1,5 +1,14 @@
 
+
+var jsonSuiteObject = [];
 var jsonTestCases=[];
+
+
+function mapFullSuiteJson(myobject) {
+	jsonSuiteObject = myobject; 
+	jsonTestCases = jsonSuiteObject['Testcases'];
+	mapSuiteJsonToUi(jsonTestCases);
+}
 
 
 function addCaseToSuite(){
@@ -91,7 +100,15 @@ function mapSuiteJsonToUi(data){
 		items.push('<option value="abort_as_error">abort_as_error</option>'); 
 		items.push('<option value="goto">goto</option>'); 
 		items.push('</select>');
+		if (!oneCase['gotovalue']) { 
+			oneCase['gotovalue'] = ""; 
+		}
+		items.push('<div class="gotocase-div" ><br>');
+		items.push('<label class="col-md-2 text-right" >OnError-gotocase:</label>');
+		items.push('<input type="text" class="col-md-4 text-right" id="'+s+':"-gotocase" value="'+oneCase['gotovalue']+'" />');
+		items.push('</div>');
 
+		
 		/*
 		items.push('<br><span class="label label-primary">Run mode</span><br>');
 		items.push('<label class="col-md-2 text-right" >runmode-at-type:</label>');
@@ -145,6 +162,20 @@ function mapSuiteJsonToUi(data){
 	}
 	$('<div/>', { class: "col-md-12" , collapsible: "true" , html: items.join("")}).appendTo("#listOfTestCasesForSuite");
 	$("#accordion_suite_display").accordion();
+	// The page is rendered. Now we can link up the UI to handlers. 
+
+	// Now set up handlers 
+	for (var s=0; s<Object.keys(xdata).length; s++ ) {
+		var oneCase = xdata[s];
+		$('#'+s+'-onError-at-action').change(function() { 
+			if (this.value == 'goto') { 
+				$(".gotocase-div").show();
+			} else { 
+				$(".gotocase-div").hide();
+			}
+		});
+	}
+
 }  // end of function 
 
 

@@ -1,6 +1,12 @@
 
 var jsonTestSuites=[];
+var jsonProjectObject = []; 
 
+function mapFullProjectJson(myobject){
+	jsonProjectObject = myobject; 
+	jsonTestSuites = myobject['Testsuites'];   
+	mapProjectJsonToUi(jsonTestSuites);
+} 
 
 function addSuiteToProject(){
 

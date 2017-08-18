@@ -22,7 +22,7 @@ from django.template import Library
 path_to_demo="/home/khusain/Projects/xml-edit/warriorframework/katana/vdj/cases/"
 
 def index(request):
-	template = loader.get_template("cases/index.html")
+	template = loader.get_template("cases/index2.html")
 	context = { 
 		'myfile': 'tp.xml',
 		'docSpec': 'projectSpec'
@@ -126,7 +126,7 @@ def editProject(request):
 		'projectTime': xml_r["Project"]["Details"]["Time"],
 		'projectdefault_onError': xml_r["Project"]["Details"]["default_onError"],
 		'projectSuites': xml_r['Project']['Testsuites'],
-		'fulljson': xml_r
+		'fulljson': xml_r['Project']
 		}
 	# 
 	# I have to add json objects for every test suite.
@@ -183,7 +183,7 @@ def editSuite(request):
 		'suiteType': xml_r["TestSuite"]["Details"]["type"],
 		'suitedefault_onError': xml_r["TestSuite"]["Details"]["default_onError"],
 		'suiteCases': xml_r['TestSuite']['Testcases'],
-		'fulljson': xml_r,
+		'fulljson': xml_r['TestSuite'],
 		'suiteResults': ""
 		}
 	# 

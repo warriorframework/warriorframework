@@ -1,0 +1,11 @@
+{% extends "./baseListFile.html" %}
+{% load jsonify %}
+{% block content %}
+{{title}}
+    <script>
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+    </script>
+{% endblock %}

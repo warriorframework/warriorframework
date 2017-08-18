@@ -83,7 +83,8 @@ function start() {
 	//Xonomy.render(xml, editor, xdocSpec);
 
 	jsonTestCases = {{suiteCases|jsonify }};
-	mapSuiteJsonToUi(jsonTestCases);
+	jsonSuiteObject = {{fulljson|jsonify}};
+	mapFullSuiteJson(jsonSuiteObject);
 }
 </script>
 {% endblock %}

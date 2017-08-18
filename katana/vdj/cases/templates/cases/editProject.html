@@ -73,8 +73,8 @@ function start() {
 	//Xonomy.setMode('laic')
 	//Xonomy.render(xml, editor, xdocSpec);
 
-	jsonTestSuites = {{projectSuites|jsonify }};
-	mapProjectJsonToUi(jsonTestSuites);
+	jsonProjectObject =   {{fulljson|jsonify}};
+	mapFullProjectJson(jsonProjectObject);
 }
 </script>
 {% endblock %}
