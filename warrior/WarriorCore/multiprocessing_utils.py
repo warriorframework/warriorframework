@@ -29,9 +29,8 @@ def create_and_start_process_with_queue(target_module, args_dict, jobs_list, out
     # output_q wll be none,create a new q and use the
     # same q for all instances of process started
     if output_q is None:
-        #output_q = multiprocessing.JoinableQueue()
-        manager = multiprocessing.Manager()
-        output_q = manager.Queue()
+        # output_q = multiprocessing.JoinableQueue()
+        output_q = multiprocessing.Manager().Queue()
 
     args_dict["output_q"] = output_q
 
@@ -120,7 +119,8 @@ def update_tc_junit_resultfile(tc_junit_obj, kw_junit_list, tc_timestamp):
                 for tc_part in kw_junit_obj.root.iter('testcase'):
                     # make sure we are obtaining only the wanted keywords
                     if (tc_part.get('timestamp') == tc_timestamp):
-                        # add keyword element to testcase, add property result to properties, update count
+                        # add keyword element to testcase, add property result
+                        # to properties, update count
                         for result in tc_part.find('properties').iter('property'):
                             if result.get('type') == "keyword":
                                 master_tc.find('properties').append(result)
