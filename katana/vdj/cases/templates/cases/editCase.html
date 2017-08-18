@@ -99,11 +99,14 @@ function start() {
 	// Once Xonomy is gone... leave the rest. 
 	$("#caseDate").datetimepicker('show');
 
+	
+	
 	*/
-	jsonCaseSteps = {{caseSteps|jsonify }};
-	jsonRequirements = {{caseRequirements|jsonify}}
-	mapCaseJsonToUi(jsonCaseSteps);
-	mapRequirementsToUI(jsonRequirements);
+
+	jsonCaseObject = {{fulljson|jsonify}};
+	mapFullCaseJson(jsonCaseObject);
+	//mapCaseJsonToUi(jsonCaseSteps);
+	//mapRequirementsToUI(jsonCaseRequirements);
 
 }
 </script>

@@ -1,5 +1,39 @@
-var jsonCaseSteps = []; 
-var jsonCaseRequirements = []; 
+
+
+
+var jsonCaseObject = [];
+var jsonCaseDetails = [];         
+var jsonCaseSteps = [];           // This is the JSON model for the UI step components 
+var jsonCaseRequirements = []; 	  // This is the JSON model for the UI requirements
+
+function mapFullCaseJson(myobject){
+	jsonCaseObject = myobject;    // Redundant 
+	jsonCaseSteps  = jsonCaseObject["Steps"];
+	jsonCaseRequirements = jsonCaseObject['Requirements'];
+	jsonCaseDetails = jsonCaseObject['Details'];
+	mapCaseJsonToUi(jsonCaseSteps);
+	mapRequirementsToUI(jsonCaseRequirements);
+
+
+	// Must define handlers inside this function ... 
+
+	$('#caseDatatype').change(function(e){	
+		jsonCaseDetails['Datatype'] = this.value; 
+		$(".iteration-div").hide();
+		$(".arguments-div").show();
+
+		if (this.value == 'Custom') {
+			$(".arguments-div").hide();
+		} 
+		// Iterative tag is show only for Hybird. 
+		if (this.value == 'Hybrid') {
+			$(".iteration-div").show();
+		}
+		//mapCaseJsonToUi(jsonCaseSteps);
+	});
+
+}
+
 
 
 function addRequirementToCase(){
@@ -27,7 +61,7 @@ function removeRequirement( sid,xdata ){
 			// Future: Add exception handling here for other actions when deleting 
 			// one item here. 
 			jsonCaseRequirements['Requirement'].splice(sid,1);
-			console.log("Removing requirement "+sid+" now " + Object.keys(jsonCaseRequirements.length));
+			console.log("Removing requirement "+sid+" now " + Object.keys(jsonCaseRequirements).length);
 			mapRequirementsToUI(jsonCaseRequirements);	// Send in the modified array
 }
 
@@ -42,11 +76,14 @@ function mapRequirementsToUI(data) {
 	items.push('<div id="accordion_requirement_display" class="col-md-12">');
 	//console.log("xdata =" + xdata);
 	$("#listOfRequirements").html("");
+
 	for (var s=0; s<Object.keys(xdata).length; s++ ) {
-		var oneCaseStep = xdata[s];     //console.log(oneCaseStep['path']);
+		var oneReqStep = xdata[s];     //console.log(oneCaseStep['path']);
+		if (oneReqStep == null) continue; 
 		items.push('<h3>Requirement'+s+"</h3>");  // Perhaps a class here?
 		items.push('<div class="collapse">');     // for the accordion 
-		items.push('<p> Some things here for the requirements <br>');  // TBD
+		if (!oneReqStep['Requirement']) { oneReqStep['Requirement'] = "not set"; }
+		items.push('<p>'+oneReqStep['Requirement']);  // TBD
 		var bid = "deleteRequirement-"+s;
 		items.push("<input type=\"button\" value=\"Delete\" id='"+bid+"'/>");
 		$('#'+bid).off('click');
@@ -66,16 +103,16 @@ function mapRequirementsToUI(data) {
 }
 
 
-function addOneArgument( sid, arguments ) {
+function addOneArgument( sid ) {
 	var xx = { 'Requirement': { "@name": "" , "@value": " " } };
-	//arguments.push(xx);
+	jsonCaseSteps['step'][sid]['Arguments']['argument'].push(xx);
 	mapCaseJsonToUi(jsonCaseSteps);
-
 }
 
-function removeOneArgument( sid, arguments) {
+function removeOneArgument( sid, aid) {
 
 	//delete arguements[sid];
+	jsonCaseSteps['step'][sid]['Arguments']['argument'].splice(aid,1);
 	
 	mapCaseJsonToUi(jsonCaseSteps);
 }
@@ -94,7 +131,7 @@ function mapCaseJsonToUi(data){
 	for (var s=0; s<Object.keys(xdata).length; s++ ) {  // for s in xdata
 		var oneCaseStep = xdata[s];             // for each step in case
 		//console.log(oneCaseStep['path']);
-		items.push('<h3>TestStep '+s+"</h3>");   // Perhaps a 1 numbered array?
+		items.push('<h3>Step '+s+"</h3>");   // Perhaps a 1 numbered array?
 		items.push('<div class="collapse">');    // for the accordion
 		items.push('<label class="col-md-2 text-right" for="defaultOnError>'+oneCaseStep['path']+'</label><br>');
 		// -------------------------------------------------------------------------
@@ -128,42 +165,52 @@ function mapCaseJsonToUi(data){
 		items.push('<input type="text" class="col-md-4 text-right" id="'+s+'-Step-TS" value="'+oneCaseStep['@TS']+'" />');
 		
 		//
-		// Arguments to be defined here. TODO 
+		// Arguments to be defined here 
+		//
 		//
 		items.push('<br><label class="col-md-2 text-right" >Arguments:</label><br>');
-		bid = "addArgument-"+s;
-			
-		items.push('<input type="button" class="col-md-2" value="Add" id="'+bid+'"/>');
-		var arguments = oneCaseStep['Arguments']['argument'];
-
+		bid = "addArgument-"+s;	
+		items.push('<input type="button" class="col-md-2" value="Add Argument" id="'+bid+'"/>');
+		//
+		// Add the ability to add an argument to a specific test case.
+		//
 		$('#'+bid).off('click');   //unbind and bind are deprecated. 
 		$(document).on('click','#'+bid,function(  ) {
-			alert(this.id);
 			var names = this.id.split('-');
 			var sid = parseInt(names[1]);
-			addOneArgument(sid,oneCaseStep['Arguments']['argument']);
+			addOneArgument(sid);
 			});
-
+		// Show arguments for each step in the UI div tag. 
+		var arguments = oneCaseStep['Arguments']['argument'];
 		for (xarg in arguments) {
 			items.push('<br>');
+
+			if (arguments[xarg]['@name'] == 'system_name') {
+				items.push('<div class="arguments-div">');
+			}
 			items.push('<label class="col-md-1 text-right">Name</label>');
 			items.push('<input type="text" class="col-md-4 text-right" value="'+arguments[xarg]['@name']+'"/>');
 			items.push('<label class="col-md-1 text-right">Value</label>');
 			items.push('<input type="text" class="col-md-4 text-right" value="'+arguments[xarg]['@value']+'"/>');
-			bid = "deleteArgument-"+ xarg;
+			
+			bid = "deleteArgument-"+ s + "-" + xarg;
 			items.push('<input type="button" class="col-md-2" value="Delete" id="'+bid+'"/>');
 
 			$('#'+bid).off('click');   //unbind and bind are deprecated. 
 			$(document).on('click','#'+bid,function(  ) {
-			alert(this.id);
-			var names = this.id.split('-');
-			var sid = parseInt(names[1]);
-			removeOneArgument(sid,oneCaseStep['Arguments']);
-		});
+				var names = this.id.split('-');
+				var sid = parseInt(names[1]);
+				var aid = parseInt(names[2]);
+				removeOneArgument(sid,aid);
+				});
+			if (arguments[xarg]['@name'] == 'system_name') {
+					items.push('</div>');
+				}
 
-		}
+			}
+
 		items.push('<br>');
-			
+		
 
 		//
 		//
@@ -179,9 +226,10 @@ function mapCaseJsonToUi(data){
 
 		items.push('<label class="col-md-2 text-right" >Description:</label>');
 		items.push('<input type="text" class="col-md-4 text-right" id="'+s+'-Step-Description" value="'+oneCaseStep['Description']+'" />');
+		items.push('<div class="iteration-div">');
 		items.push('<label class="col-md-2 text-right" >Iteration Type:</label>');
 		items.push('<input type="text" class="col-md-4 text-right" id="'+s+'-onError-at-action" value="'+oneCaseStep['onError']['@action']+'" />');
-
+		items.push('</div>');
 
 		items.push('<br><span class="label label-primary">Execution</span><br>');
 
@@ -253,7 +301,7 @@ function mapCaseJsonToUi(data){
 			alert(this.id);
 			var names = this.id.split('-');
 			var sid = parseInt(names[1]);
-			removeTestStep(sid,xdata,data);
+			removeTestStep(sid);
 		});
 		items.push("</div>");
 		
@@ -261,12 +309,20 @@ function mapCaseJsonToUi(data){
 	}
 	$('<div/>', { class: "col-md-12" , collapsible: "true" , html: items.join("")}).appendTo("#listOfTestCasesForSuite");
 	$("#accordion_case_display").accordion();
+
+	///  Special cases ... 
+	if (jsonCaseDetails['Datatype'] == 'Custom') {
+		$(".arguments-div").hide();
+	} else {
+
+		$(".arguments-div").show();
+	}
 	
 }  // end of function 
 
 
 // Removes a test suite by its ID and refresh the page. 
-function removeTestStep( sid,xdata,jj ){
+function removeTestStep( sid ){
 			jsonCaseSteps['step'].splice(sid,1);
 			console.log("Removing test cases "+sid+" now " + Object.keys(jsonCaseSteps).length);
 			mapCaseJsonToUi(jsonCaseSteps);
