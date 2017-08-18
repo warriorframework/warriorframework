@@ -49,7 +49,8 @@ class browser_actions(object):
                        url=None, ip=None, remote=None, element_config_file=None,
                        element_tag=None):
         """
-        This will launch a browser.
+        The Keyword would launch a browser and Navigate to the url, if provided by the user.
+        The keyword does not validate the url provided by the user.
 
         :Datafile Usage:
 
@@ -191,7 +192,6 @@ class browser_actions(object):
                     if url is not None:
                         urlschema = urlparse(url)
                         if urlschema.scheme:
-                            status, url = self.browser_object.check_url(url)
                             result = self.browser_object.go_to(url, browser_inst)
                         else:
                             status = False
