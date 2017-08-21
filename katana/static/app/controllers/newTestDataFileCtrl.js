@@ -35,9 +35,9 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
         $scope.resp_req_list = ["", "n"];
         $scope.inorder_list = ["", "y"];
         $scope.repeat_list = ["", "y"];
-        $scope.found_list = ["yes", "no"];
+        $scope.found_list = ["y", "n", "yes", "no"];
         $scope.iter_type_list = ["per_cmd", "per_td_block"];
-        $scope.execute_list = ["yes", "no"];
+        $scope.execute_list = ["y", "n", "yes", "no"];
         $scope.copy_global_ver_list = [];
         $scope.copy_global_combo_list = [];
         $scope.copy_entire_td_list = [];
@@ -273,7 +273,37 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
                         $scope.jsonData.data.testdata[i][$scope.td_verification_tag_names[i][j]] = $scope.td_verification_tag_attributes[i][j];
                     }
                 }
+							  fileFactory.checkfileexistwithsubdir(filename, 'testdatafile', $scope.subdirs)
+                    .then(
+                        function(data) {
+                            console.log(data);
+                            var fileExist = data.response;
+                            if (fileExist == 'y') {
+                                sweetAlert({
+                                    title: "File " + filename + " already exists. Do you want to overwrite it?",
+                                    closeOnConfirm: false,
+                                    confirmButtonColor: '#3b3131',
+                                    confirmButtonText: "Yes!",
+                                    showCancelButton: true,
+                                    cancelButtonText: "Nope.",
+                                    type: "warning"
+                                },
+                                function(isConfirm){
+                                    if (isConfirm) {
+                                       return true;
+                                    }
+                                    else {
+                                        return false;
+                                    }
+                                });
 
+                            } else {
+                                return true;
+                            }
+                        },
+                        function(data) {
+                            alert(data);
+                        });
             
             }
         };
@@ -330,6 +360,7 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
                         function(data) {
                             alert(data);
                         });
+																				 };
 				window.save = save;
         $scope.spanClick = function(){
         };
@@ -350,7 +381,7 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
             $scope.jsonData.data.testdata.push({
                 "_title": "",
                 "_row": "",
-                "_execute": "yes",
+                "_execute": "y",
                 "_monitor": "",
                 "_iter_type": "per_cmd",
                 "command": [
@@ -460,7 +491,7 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
             $scope.individualTDVerificationTag[index].push(true);
             $scope.td_verification_tag_names[index].push("");
             $scope.td_verification_tag_attributes[index].push({
-                            "_found": "yes",
+                            "_found": "y",
                             "_search": "",
                             "_verify_on": ""
                         });
@@ -809,7 +840,7 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
             $scope.individualCPVerificationTag.push(true);
             $scope.cp_verification_tag_names.push("");
             $scope.cp_verification_tag_attributes.push({
-                            "_found": "yes",
+                            "_found": "y",
                             "_search": "",
                             "_verify_on": ""
                         });
@@ -1246,7 +1277,7 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
                                 else{
                                     $scope.cp_verification_tag_names.push(key);
                                     if(!$scope.jsonData.data.global.verifications[key].hasOwnProperty("_found")){
-                                        $scope.jsonData.data.global.verifications[key]._found = "yes";
+                                        $scope.jsonData.data.global.verifications[key]._found = "y";
                                     }
 
                                     for(i=0; i<$scope.found_list.length; i++){
@@ -1296,7 +1327,7 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
                                 $scope.jsonData.data.testdata[i]._row = "";
                             }
                             if(!$scope.jsonData.data.testdata[i].hasOwnProperty("_execute")){
-                                $scope.jsonData.data.testdata[i]._execute = "yes";
+                                $scope.jsonData.data.testdata[i]._execute = "y";
                             }
 
                             for(j=0; j<$scope.execute_list.length; j++){
@@ -1441,7 +1472,7 @@ app.controller('newTestDataFileCtrl', ['$scope', '$http', '$controller', '$locat
                                         $scope.showTDVerificationTags[$scope.showTDVerificationTags.length - 1] = false;
                                         $scope.td_verification_tag_names[i].push(key);
                                         if(!$scope.jsonData.data.testdata[i][key].hasOwnProperty("_found")){
-                                            $scope.jsonData.data.testdata[i][key]._found = "yes";
+                                            $scope.jsonData.data.testdata[i][key]._found = "y";
                                         }
 
                                         for(j=0; j<$scope.found_list.length; j++){

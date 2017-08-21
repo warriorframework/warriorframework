@@ -6,7 +6,6 @@ Subpackages
 
 .. toctree::
 
-    Framework.ClassUtils.TL1Parser
     Framework.ClassUtils.WNetwork
     Framework.ClassUtils.WSelenium
 

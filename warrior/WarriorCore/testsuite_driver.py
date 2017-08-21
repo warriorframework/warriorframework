@@ -204,7 +204,8 @@ def report_testsuite_result(suite_repository, suite_status):
 def print_suite_details_to_console(suite_repository, testsuite_filepath, junit_resultfile):
     """Prints the testsuite details to console """
 
-    print_info( "\n\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$  TESTSUITE-DETAILS  $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
+    print_info("\n\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$  TESTSUITE-DETAILS  $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
+
     print_info("Executing testsuite '{0}'".format(suite_repository['suite_name'].strip()))
     print_info("Title: {0}".format(suite_repository['suite_title'].strip()))
     print_info("Results directory: %s" % suite_repository['suite_execution_dir'])
@@ -255,12 +256,16 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
     data_repository["suite_exectype"] = "iterative" if execution_type == "ITERATIVE_SEQUENTIAL" or \
     execution_type == "ITERATIVE_PARALLEL" else execution_type
 
+    ts_junit_display = "True"
+    pj_junit_display = "False"
     if "wt_junit_object" in data_repository:
         ts_junit_object = data_repository["wt_junit_object"]
+
     else:
         ts_junit_object = junit_class.Junit(filename=suite_name, timestamp=suite_timestamp,
                                             name="customProject_independant_testcase_execution",
-                                            display="False")
+                                            display=pj_junit_display)
+
         if "jobid" in data_repository:
             ts_junit_object.add_jobid(data_repository["jobid"])
             del data_repository["jobid"]
@@ -270,6 +275,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
                                      name=suite_name, timestamp=suite_timestamp,
                                      suite_location=suite_repository['testsuite_filepath'],
                                      title=suite_repository['suite_title'],
+                                     display=ts_junit_display,
                                      **ts_junit_object.init_arg())
 
     # Adding resultsdir as attributes to testsuite_tag in the junit result file
@@ -289,9 +295,9 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
     testsuite_utils.pSuite_root(junit_resultfile)
 
     testsuite_utils.pSuite_testsuite(junit_resultfile, suite_name,
-                                    errors='0', skipped='0',
-                                    tests=no_of_tests, failures='0',
-                                    time='0', timestamp=suite_timestamp)
+                                     errors='0', skipped='0',
+                                     tests=no_of_tests, failures='0',
+                                     time='0', timestamp=suite_timestamp)
     testsuite_utils.pSuite_property(junit_resultfile, 'title', suite_repository['suite_title'])
     testsuite_utils.pSuite_property(junit_resultfile, 'location', testsuite_filepath)
     if "jobid" in data_repository:
@@ -301,7 +307,12 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
 
     print_suite_details_to_console(suite_repository, testsuite_filepath, junit_resultfile)
 
+
+    data_repository["war_parallel"] = False
+
     if execution_type.upper() == 'PARALLEL_TESTCASES':
+        ts_junit_object.remove_html_obj()
+        data_repository["war_parallel"] = True
         print_info("Executing testcases in parallel")
         test_suite_status = parallel_testcase_driver.main(testcase_list, suite_repository,
                                                           data_repository, from_project,
@@ -350,10 +361,11 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
                 break
 
     elif execution_type.upper() == 'RUN_MULTIPLE':
-        Max_Attempts = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath, 'Details', 'type',
-                                                                    'Max_Attempts')
-        Number_Attempts = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath, 'Details',
-                                                                       'type', 'Number_Attempts')
+        Max_Attempts = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath, 'Details',
+                                                                    'type', 'Max_Attempts')
+        Number_Attempts = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath,
+                                                                        'Details', 'type',
+                                                                        'Number_Attempts')
 
         if Max_Attempts == "":
             execution_value = Number_Attempts
@@ -375,9 +387,10 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
 
     elif execution_type.upper() == "ITERATIVE_SEQUENTIAL":
 		# if execution type is iterative sequential call WarriorCore.Classes.iterative_testsuite
-        # class and 
+        # class and
 		# execute the testcases in iterative sequential fashion on the systems
         print_info("Iterative sequential suite")
+
         iter_seq_ts_obj = IterativeTestsuite(testcase_list, suite_repository,
                                              data_repository, from_project,
                                              auto_defects)
@@ -385,11 +398,14 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
 
     elif execution_type.upper() == "ITERATIVE_PARALLEL":
 		# if execution type is iterative parallel call WarriorCore.Classes.iterative_testsuite
-        # class and 
+        # class and
 		# execute the testcases in iterative parallel fashion on the systems
+        ts_junit_object.remove_html_obj()
         print_info("Iterative parallel suite")
-        iter_seq_ts_obj = IterativeTestsuite(testcase_list, suite_repository, data_repository,
-                                             from_project, auto_defects)
+        data_repository["war_parallel"] = True
+        iter_seq_ts_obj = IterativeTestsuite(testcase_list, suite_repository,
+                                             data_repository, from_project, auto_defects)
+
         test_suite_status = iter_seq_ts_obj.execute_iterative_parallel()
 
     else:
