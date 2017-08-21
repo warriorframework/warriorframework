@@ -555,10 +555,20 @@ def get_dict_with_versions():
 
     1. versions (dict) = Dictionary with name as Key and version as value
     """
-    versions = {'jira': '1.0.3', 'lxml': '3.3.3', 'ncclient': '0.4.6',
-                'paramiko': '1.16.0', 'pexpect': '4.2', 'pysnmp': '4.3.2',
-                'requests': '2.9.1', 'selenium': '2.48.0', 'xlrd': '1.0.0',
-                'cloudshell-automation-api':'7.1.0.34'}
+    versions = {'jira': '', 'lxml': '', 'ncclient': '',
+                'paramiko': '', 'pexpect': '', 'pysnmp': '',
+                'requests': '', 'selenium': '', 'xlrd': '',
+                'cloudshell-automation-api': ''}
+
+    with open('../requirements.txt', 'r') as f:
+        for line in f:
+            dependancy_list = line.split("=")
+            if len(dependancy_list) == 3:
+                versions[dependancy_list[0]] = dependancy_list[2].rstrip()
+            elif len(dependancy_list) == 2:
+                versions[dependancy_list[0][:-1]] = dependancy_list[1].rstrip()
+            else:
+                print_error("Please do not alter requirements.txt")
     return versions
 
 
