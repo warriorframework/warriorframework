@@ -226,6 +226,7 @@ class BrowserManagement(object):
             self.current_browser.refresh()
 
     def hard_reload_page(self, browser_instance=None):
+        """Simulates Refreshing/Reloading the page just as users using F5 """
         if browser_instance is None:
             self.current_browser.refresh()
 
@@ -234,6 +235,7 @@ class BrowserManagement(object):
         sleep(1)
 
     def open_tab(self, browser_instance=None, url=None, browser_type="firefox"):
+        """Opens a new tab in the browser"""
         if browser_instance is None:
             browser_instance = self.current_browser
 
@@ -251,6 +253,7 @@ class BrowserManagement(object):
             sleep(1)
     
     def switch_tab(self, browser_instance=None, tab_number=None, browser_type="firefox"):
+        """Switching to different tabs in a browser with unique tab_number"""
         status = True
         if browser_instance is None:
             browser_instance = self.current_browser
@@ -308,6 +311,7 @@ class BrowserManagement(object):
         return status
 
     def close_tab(self, browser_instance=None, tab_number=None, browser_type="firefox"):
+        """Closing tabs in a browser with unique tab_number"""
         if browser_instance is None:
             browser_instance = self.current_browser
 
@@ -364,6 +368,7 @@ class BrowserManagement(object):
         return status
 
     def delete_all_cookies_in_browser(self, browser_instance=None):
+        """Delete the cookies for a particular browser instance"""
         status = True
         if browser_instance is None:
             browser_instance = self.current_browser
@@ -376,6 +381,7 @@ class BrowserManagement(object):
         return status
 
     def delete_a_specific_cookie(self, browser_instance=None, cookie_name=None):
+        """Delete a specific cookie on a specific browser instance"""
         status = True
         if browser_instance is None:
             browser_instance = self.current_browser
