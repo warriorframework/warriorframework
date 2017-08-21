@@ -15,15 +15,13 @@ import sys
 import os
 import shutil
 import time
-import copy
-import WarriorCore.testsuite_driver as testsuite_driver
-import WarriorCore.onerror_driver as onerror_driver
 import traceback
+
 import exec_type_driver
 import Framework.Utils as Utils
 from Framework.Utils.print_Utils import print_info, print_error, print_debug, print_warning
 from WarriorCore.Classes import execution_files_class, junit_class
-from WarriorCore import testsuite_utils, common_execution_utils
+from WarriorCore import testsuite_utils, common_execution_utils, onerror_driver, testsuite_driver
 from Framework.Utils.testcase_Utils import pNote
 
 # !/usr/bin/python
@@ -124,7 +122,8 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
     project_repository = get_project_details(project_filepath, res_startdir, logs_startdir,
                                              data_repository)
     project_repository['project_title'] = project_title
-    testsuite_list = common_execution_utils.get_step_list(project_filepath, "Testsuites", "Testsuite")
+    testsuite_list = common_execution_utils.get_step_list(project_filepath,
+                                                          "Testsuites", "Testsuite")
     # project_resultfile = project_repository['project_resultfile']
 
     project_name = project_repository['project_name']

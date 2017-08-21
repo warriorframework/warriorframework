@@ -34,12 +34,12 @@ def get_step_list(filepath, step_tag, sub_step_tag):
     """
     step_list_with_rmt_retry = []
     root = Utils.xml_Utils.getRoot(filepath)
-    Steps = root.find(step_tag)
-    if Steps is None:
-        print_warning("The file: '{}' has no Steps "
+    steps = root.find(step_tag)
+    if steps is None:
+        print_warning("The file: '{}' has no steps "
                       "to be executed".format(filepath))
     else:
-        step_list = Steps.findall(sub_step_tag)
+        step_list = steps.findall(sub_step_tag)
         # iterate all steps to get the runmode and retry details
         for index, step in enumerate(step_list):
             runmode, value = get_runmode_from_xmlfile(step)
@@ -139,17 +139,18 @@ def get_retry_from_xmlfile(element):
                           .format(retry_type))
             return (None, None, None, 5, 5)
         if (retry_cond is None) or (retry_cond_value is None):
-            print_warning("Atleast one of the value provided for 'retry_cond/retry_cond_value' is None.")
+            print_warning("Atleast one of the value provided "
+                          "for 'retry_cond/retry_cond_value' is None.")
             return (None, None, None, 5, 5)
-        retry_interval=str(retry_interval)
+        retry_interval = str(retry_interval)
         retry_value = str(retry_value)
-        if retry_interval.isdigit() == False:
+        if retry_interval.isdigit() is False:
             retry_interval = 5
             print_warning("The value provided for "\
                           "retry:retry_interval is not valid, "\
                           "using default value 5 for execution")
         retry_interval = int(retry_interval)
-        if retry_value.isdigit() == False:
+        if retry_value.isdigit() is False:
             retry_value = 5
             print_warning("The value provided for "\
                           "retry:retry_value is not valid, "\

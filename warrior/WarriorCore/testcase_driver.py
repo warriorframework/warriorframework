@@ -20,15 +20,14 @@ import sys
 import os
 import time
 import shutil
-import copy
+
 from WarriorCore.defects_driver import DefectsDriver
-from WarriorCore import custom_sequential_kw_driver, custom_parallel_kw_driver
 from WarriorCore import iterative_sequential_kw_driver, iterative_parallel_kw_driver,\
-common_execution_utils, framework_detail
+common_execution_utils, framework_detail, custom_sequential_kw_driver, custom_parallel_kw_driver
 from WarriorCore.Classes import execution_files_class, junit_class, hybrid_driver_class
 import Framework.Utils as Utils
 from Framework.Utils.testcase_Utils import convertLogic
-from Framework.Utils.print_Utils import print_notype, print_info, print_warning, print_error,\
+from Framework.Utils.print_Utils import print_info, print_warning, print_error,\
     print_debug, print_exception
 import Framework.Utils.email_utils as email
 
@@ -241,7 +240,8 @@ def report_testcase_result(tc_status, data_repository):
             get_step_value = value.attrib.values()
             step_num = ','.join(get_step_value)
             if fail_count == 1:
-                print_info("++++++++++++++++++++++++ Summary of Failed Keywords ++++++++++++++++++++++++")
+                print_info("++++++++++++++++++++++++ Summary of Failed Keywords "
+                           "++++++++++++++++++++++++")
                 print_info("{0:15} {1:45} {2:10}".format('StepNumber', 'KeywordName', 'Status'))
                 print_info("{0:15} {1:45} {2:10}".format(str(step_num), str(kw_name),
                                                          str(kw_status)))
@@ -316,14 +316,16 @@ def get_system_list(datafile, node_req=False, iter_req=False):
 def print_testcase_details_to_console(testcase_filepath, data_repository):
     """Prints the testcase details to the console """
     framework_detail.warrior_framework_details()
-    print_info("\n===============================  TC-DETAILS  ==================================================")
+    print_info("\n===============================  TC-DETAILS  "
+               "===================================")
     print_info("Title: %s" % data_repository['wt_title'])
     print_info("Results directory: %s" % data_repository['wt_resultsdir'])
     print_info("Logs directory: %s" % data_repository['wt_logsdir'])
     print_info("Defects directory: {0}".format(data_repository["wt_defectsdir"]))
     print_info("Datafile: %s" % data_repository['wt_datafile'])
     report_testcase_requirements(testcase_filepath)
-    print_info("================================================================================================")
+    print_info("==============================================="
+               "===================================")
     time.sleep(2)
 
 
@@ -511,8 +513,9 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                         "negative".format(tc_status))
             tc_status = not tc_status
 
-    if tc_status == False and tc_onError_action and tc_onError_action.upper() == 'ABORT_AS_ERROR':
-        print_info("Testcase status will be marked as ERROR as onError action is set to 'abort_as_error'")
+    if tc_status is False and tc_onError_action and tc_onError_action.upper() == 'ABORT_AS_ERROR':
+        print_info("Testcase status will be marked as ERROR as onError "
+                   "action is set to 'abort_as_error'")
         tc_status = "ERROR"
     defectsdir = data_repository['wt_defectsdir']
     check_and_create_defects(tc_status, auto_defects, data_repository, tc_junit_object)
@@ -547,7 +550,8 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
         tc_junit_object.update_attr("status", str(tc_status), "ts",
                                     data_repository['wt_ts_timestamp'])
         tc_junit_object.update_attr("status", str(tc_status), "pj", "not appicable")
-        tc_junit_object.update_attr("time", str(tc_duration), "ts", data_repository['wt_ts_timestamp'])
+        tc_junit_object.update_attr("time", str(tc_duration), "ts",
+                                    data_repository['wt_ts_timestamp'])
         tc_junit_object.update_attr("time", str(tc_duration), "pj", "not appicable")
 
         tc_junit_object.output_junit(data_repository['wt_resultsdir'])
@@ -661,7 +665,8 @@ def main(testcase_filepath, data_repository = {}, tc_context='POSITIVE',
             tc_status = False
 
     else:
-        print_error("Testcase xml file does not exist in provided path: {0}".format(testcase_filepath))
+        print_error("Testcase xml file does not exist in provided path: {0}"
+                    .format(testcase_filepath))
         tc_status = False
         if tc_parallel:
             queue.put(('ERROR', str(testcase_filepath), 'IMPACT', '0'))

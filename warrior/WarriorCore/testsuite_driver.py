@@ -18,11 +18,8 @@ import os
 import time
 import traceback
 import shutil
-import copy
 
 import sequential_testcase_driver
-import testcase_driver
-import onerror_driver
 import parallel_testcase_driver
 from WarriorCore.Classes import execution_files_class, junit_class
 from WarriorCore.Classes.iterative_testsuite_class import IterativeTestsuite
@@ -137,14 +134,16 @@ def report_testsuite_result(suite_repository, suite_status):
                     'ERROR': 'FAIL'}.get(str(suite_status).upper())
     print_info("Testsuite:{0}  STATUS:{1}".format(suite_repository['suite_name'], suite_status))
     testsuite_utils.pSuite_report_suite_result(suite_resultfile)
-    print_info("\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ END OF TEST SUITE $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+    print_info("\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ END OF TEST SUITE $$$$$$$$"
+               "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
     return suite_status
 
 
-def print_suite_details_to_console(suite_repository, testsuite_filepath, junit_resultfile):
+def print_suite_details_to_console(suite_repository, testsuite_filepath):
     """Prints the testsuite details to console """
 
-    print_info("\n\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$  TESTSUITE-DETAILS  $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
+    print_info("\n\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$  TESTSUITE-DETAILS  $$$$$$$$$$$"
+               "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
 
     print_info("Executing testsuite '{0}'".format(suite_repository['suite_name'].strip()))
     print_info("Title: {0}".format(suite_repository['suite_title'].strip()))
@@ -176,7 +175,8 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
     # goto_tc = False
     suite_repository = get_suite_details(testsuite_filepath, data_repository,
                                          from_project, res_startdir, logs_startdir)
-    testcase_list = common_execution_utils.get_step_list(testsuite_filepath, "Testcases", "Testcase")
+    testcase_list = common_execution_utils.get_step_list(testsuite_filepath,
+                                                         "Testcases", "Testcase")
     execution_type = suite_repository['suite_exectype'].upper()
     no_of_tests = str(len(testcase_list))
 
@@ -245,7 +245,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
                                         data_repository["jobid"])
         # del data_repository["jobid"]
 
-    print_suite_details_to_console(suite_repository, testsuite_filepath, junit_resultfile)
+    print_suite_details_to_console(suite_repository, testsuite_filepath)
     #find runmode type(RMT/RUP/RUF) and its value at suite global level
     root = Utils.xml_Utils.getRoot(testsuite_filepath)
     suite_global = root.find('Details')
@@ -355,7 +355,8 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
     #The below ELIF is to preserve backward compatibility. The new logic is available/
     #with execution_type == 'SEQUENTIAL_TESTCASES'
     elif execution_type.upper() == 'RUN_MULTIPLE' and runmode is None:
-        execution_value = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath, 'Details', 'type', 'Number_Attempts')
+        execution_value = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath, 'Details'
+                                                                       , 'type', 'Number_Attempts')
         print_info("Execution type: {0}, Max Attempts: {1}".format(execution_type, execution_value))
 
         i = 0
@@ -402,7 +403,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
     hms = Utils.datetime_utils.get_hms_for_seconds(suite_duration)
     print_info("Testsuite duration= {0}".format(hms))
     testsuite_utils.update_suite_duration(str(suite_duration))
-    if test_suite_status == False and ts_onError_action and\
+    if test_suite_status is False and ts_onError_action and\
         ts_onError_action.upper() == 'ABORT_AS_ERROR':
         print_info("Testsuite status will be marked as ERROR as onError action is set"
                    "to 'abort_as_error'")
