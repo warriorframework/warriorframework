@@ -19,8 +19,8 @@ import Framework.Utils as Utils
 
 def get_step_list(filepath, step_tag, sub_step_tag):
     """
-    Takes the location of any Testcase xml file as input
-    finds a list of all the step elements present in the Testcase
+    Takes the location of Testcase /Suite/Project xml file as input
+    finds a list of all the step elements present in the file
     Parse the step object,
     1. Retrieve the runmode and it corresponding value.
     Based on runmode and value append the list.
@@ -28,8 +28,9 @@ def get_step_list(filepath, step_tag, sub_step_tag):
     Based on runmode and value append the list.
 
     :Arguments:
-        1. testcase_filepath    = full path of the Testcase/suite/project xml file
-        2. type = Whether its a suite/case/project
+        1. filepath    = full path of the Testcase/suite/project xml file
+        2. step_tag = xml tag for group of step in the file
+        3. sub_step_tag = xml tag for each step in the file
 
     """
     step_list_with_rmt_retry = []
