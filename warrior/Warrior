@@ -138,6 +138,7 @@ def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
             db_obj.close_connection()
     return status
 
+
 if __name__ == '__main__':
 
     (FILEPATH, mockrun, AUTO_DEFECTS, version, CSE_EXEC, IRON_CLAW, JIRAPROJ,
