@@ -26,6 +26,73 @@ function addSuiteToProject(){
 	mapProjectJsonToUi(jsonTestSuites);
 }
 
+function mapUiToProjectJson() {
+	var collector = jsonProjectObject;   // Use the global object. 
+	
+	jsonProjectObject['Details']['Name'] = $('#projectName').val();
+	jsonProjectObject['Details']['Title'] = $('#projectTitle').val();
+	jsonProjectObject['Details']['Engineer'] = $('#projectEngineer').val();
+	jsonProjectObject['Details']['Title'] = $('#projectTitle').val();
+	jsonProjectObject['Details']['Date'] = $('#projectDate').val();
+	//jsonProjectObject['Details']['Time'] = $('#projectTime').val();
+	jsonProjectObject['Details']['defaultOnError'] = $('#defaultOnError').val();
+	jsonProjectObject['Details']['Datatype'] = $('#projectDatatype').val();
+
+	// Now walk the DOM ..
+
+	var xdata = jsonProjectObject['Testsuites']['Testsuite'];
+	for (var s=0; s<Object.keys(xdata).length; s++ ) {
+		var oneSuite = xdata[s];
+		id = '#'+s+"-Execute-Rule-at-Condition";
+		oneSuite['Execute']['Rule']['@Condition'] = $(id).val();
+		id = '#'+s+"-Execute-Rule-at-Condvalue";
+		oneSuite['Execute']['Rule']['@Condvalue'] = $(id).val();
+		id = '#'+s+"-Execute-Rule-at-Else";
+		oneSuite['Execute']['Rule']['@Else'] = $(id).val();
+		id = '#'+s+"-Execute-Rule-at-Elsevalue";
+		oneSuite['Execute']['Rule']['@Elsevalue'] = $(id).val();
+
+		id = '#'+s+"-onError-at-action";
+		oneSuite['onError']['@action'] = $(id).val();
+		id = '#'+s+"-onError-at-value option:selected";
+		oneSuite['onError']['@value'] = $(id).val();
+
+		id = '#'+s+"-runmode-at-value";
+		oneSuite['runmode']['@value'] = $(id).val();
+		id = '#'+s+"-runmode-at-value option:selected";
+		oneSuite['runmode']['@value'] = $(id).val();
+
+
+		id = '#'+s+"-retry-at-type";
+		oneSuite['retry']['@type'] = $(id).val();
+		id = '#'+s+"-retryat-Condition";
+		oneSuite['retry']['@Condition'] = $(id).val();
+		id = '#'+s+"-retry-at-Condvalue";
+		oneSuite['retry']['@Condvalue'] = $(id).val();
+		id = '#'+s+"-retry-at-count";
+		oneSuite['retry']['@count'] = $(id).val();
+		id = '#'+s+"-retry-at-interval";
+		oneSuite['retry']['@interval'] = $(id).val();
+
+
+	}
+	//$.ajaxSetup({ headers:{ 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }        });
+	//{ data : {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value}, ]
+	//$.post("../getProjectDataBack", JSON.stringify(jsonProjectObject), null, "json"); 
+	var url = "../getProjectDataBack";
+	$.ajax({
+    url : url,
+    type: "POST",
+    
+    data : JSON.stringify(jsonProjectObject), 
+    dataType : "json",
+    success: function( data ){
+        alert("Sent");
+    	}
+	});
+
+}
+
 function mapProjectJsonToUi(data){
 	var items = []; 
 	//alert("Length"+Object.keys(data));
@@ -67,7 +134,7 @@ function mapProjectJsonToUi(data){
 
 
 		items.push('<label class="col-md-2 text-right" >ExecType:</label>');
-		items.push('<select type="text" class="col-md-4 text-right" id="'+s+':"Execute-ExecType" value="'+oneSuite['Execute']['@ExecType']+'" >');
+		items.push('<select type="text" class="col-md-4 text-right" c value="'+oneSuite['Execute']['@ExecType']+'" >');
 		items.push('<option value="If">If</option>'); 
 		items.push('<option value="If Not">If Not</option>'); 
 		items.push('<option value="Yes">Yes</option>'); 

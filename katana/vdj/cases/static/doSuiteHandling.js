@@ -41,7 +41,7 @@ function mapSuiteJsonToUi(data){
 	//
 	var xdata = data['Testcase'];
 	if (!jQuery.isArray(xdata)) xdata = [xdata];
-	items.push('<div id="accordion_suite_display" class="col-md-12">');
+	
 	//console.log("data=" + data);
 	//console.log("xdata =" + xdata);
 	$("#listOfTestCasesForSuite").html("");
@@ -160,10 +160,11 @@ function mapSuiteJsonToUi(data){
 		
 
 	}
+	// This ends the accordion display div 
 	$('<div/>', { class: "col-md-12" , collapsible: "true" , html: items.join("")}).appendTo("#listOfTestCasesForSuite");
 	$("#accordion_suite_display").accordion();
 	// The page is rendered. Now we can link up the UI to handlers. 
-
+	
 	// Now set up handlers 
 	for (var s=0; s<Object.keys(xdata).length; s++ ) {
 		var oneCase = xdata[s];

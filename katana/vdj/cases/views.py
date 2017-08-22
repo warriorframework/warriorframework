@@ -7,7 +7,7 @@ from django.conf import settings
 	
 
 # Create your views here.
-import os, glob, copy, json
+import os, sys, glob, copy, json
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
 from xml.sax.saxutils import escape, unescape
@@ -20,6 +20,8 @@ from django.template import Library
 
 
 path_to_demo="/home/khusain/Projects/xml-edit/warriorframework/katana/vdj/cases/"
+path_to_testcases='/home/khusain/Projects/xml-edit/warriorframework/wftests/warrior_tests/';
+path_to_productdrivers='/home/khusain/Projects/xml-edit/warriorframework/warrior/ProductDrivers/'
 
 def index(request):
 	template = loader.get_template("cases/index2.html")
@@ -35,7 +37,7 @@ def listAllCases(request):
 	template = loader.get_template("cases/listAllCases.html")
 	#filename = request.GET.get('fname')
 	# files = next(os.walk('/home/khusain/Projects/xml-edit/warriorframework/wftests/warrior_tests/testcases'))[2]
-	fpath = '/home/khusain/Projects/xml-edit/warriorframework/wftests/warrior_tests/testcases';
+	fpath = path_to_tescases + 'testcases';
 	#files = [ os.path.join(fpath,x) for x in (os.walk(fpath))[2]]
 
 	files = glob.glob(fpath+"*/*/*.xml")+glob.glob(fpath+"*/*/*/*.xml")
@@ -48,7 +50,7 @@ def listAllCases(request):
 
 def listAllSuites(request):
 	template = loader.get_template("cases/listAllSuites.html")
-	fpath = '/home/khusain/Projects/xml-edit/warriorframework/wftests/warrior_tests/suites';
+	fpath = path_to_testcases +'suites';
 	files = glob.glob(fpath+"*/*/*.xml")
 	context = { 
 		'title' : 'List of Suites',	
@@ -59,7 +61,7 @@ def listAllSuites(request):
 
 def listAllProjects(request):
 	template = loader.get_template("cases/listAllProjects.html")
-	fpath = '/home/khusain/Projects/xml-edit/warriorframework/wftests/warrior_tests/projects';
+	fpath = path_to_testcases + 'projects';
 	files = glob.glob(fpath+"*/*.xml")
 	context = { 
 		'title' : 'List of Projects',	
@@ -68,6 +70,19 @@ def listAllProjects(request):
 	}
 	return HttpResponse(template.render(context, request))
 
+def getDocStringForDriver(request):
+
+	driver 	= request.GET.get('driver');
+	keyword = request.GET.get('keyword');
+	fpath = path_to_productdrivers + driver + ".py";
+	#Make 
+
+	print sys.path
+	print keyword
+	print driver
+	print fpath
+
+	return HttpResponse( open(fpath).read(), content_type='plain/text')
 
 
 def getJSONfile(request):
@@ -80,6 +95,12 @@ def getXMLfile(request):
 	filename = request.GET.get('fname')
 	print "---------------filename ", filename
 	return HttpResponse( open(filename).read(), content_type='text/xml')
+
+
+def getProjectDataBack(request):
+	
+	print "Got something back in request";
+	
 
 def editProject(request):
 	"""

@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-
+    <meta name="csrf-token" content="{{ csrf_token }}" 
     <title>{{ title }}</title>
    <!-- Bootstrap core CSS locally 
     <link href="{% static  'css/bootstrap.min.css' %}"rel="stylesheet">
@@ -34,7 +34,7 @@
 <script type="text/javascript" src="{% static "./xonomy/xonomy.js" %}"></script>
 <link type="text/css" rel="stylesheet" href="{% static "./xonomy/xonomy.css" %}"/>
 <!-- <link type="text/css" rel="stylesheet" href="{% static "./css/modern-business.css" %}"/> -->
-<link type="text/css" rel="stylesheet" href="{% static "./css/simle-sidebar.css" %}"/>
+<link type="text/css" rel="stylesheet" href="{% static "./css/simple-sidebar.css" %}"/>
 <script type="text/javascript" src="{% static "./doRequirements.js" %}"></script>
 <script type="text/javascript" src="{% static "./doCaseHandling.js" %}"></script>
 <script type="text/javascript" src="{% static "./doSuiteHandling.js" %}"></script>
@@ -44,6 +44,11 @@
 <script type="text/javascript" src="{% static "./testProject_docSpec.js" %}"></script>
 <script type="text/javascript" src="{% static "./testSuite_docSpec.js" %}"></script>
 
+{% csrf_token %}
+<script type="text/javascript">
+// using jQuery
+var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+</script>
 
     <!-- Custom styles for this template 
     <link href="{% static "./css/modern-business.css" %}" rel="stylesheet">
@@ -104,18 +109,34 @@
 
     <!-- Page Content -->
     <div class="container">
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
 
         <!-- Team Members -->
+        <a href="#menu-toggle" class="btn btn-secondary" id="menu-toggle">Toggle Menu</a>
         {% block content %}
 
         {% endblock %}
         <!-- /.row -->
     </div>
+    </div>
+    </div>
     <!-- /.container -->
 
     </div>
     <!-- /#wrapper -->
+    <script>
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
 
+    $("body").bind("ajaxSend", function(elm, xhr, s){
+   if (s.type == "POST") {
+      xhr.setRequestHeader('X-CSRF-Token', csrftoken);
+   }
+    });
+    </script>
     <!-- Footer -->
 
     <!-- Bootstrap core JavaScript -->
