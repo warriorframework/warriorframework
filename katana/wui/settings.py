@@ -33,6 +33,8 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'wui.core',
     'native.settings',
+    'native.appstore',
+    'apps.userapp',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

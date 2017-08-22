@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>App Store</title>
+        {% load staticfiles %}
+        <link rel="stylesheet" type="text/css" href="{% static 'appstore/css/main.css' %}" />
+        <script type="text/javascript" src="{% static 'appstore/js/appstore.js' %}"></script>
+        <script type="text/javascript" src="{% static 'core/js/jquery.min.js' %}"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+
+    <body>
+    {% csrf_token %}
+            <h1>&nbsp;My Apps</h1>
+            <br>
+
+
+            {% for app in data %}
+                <i class="fa fa-{{ app.data.icon }}"></i>
+
+                <span>{{ app.data.name }}</span>
+                {% if app.app_type != "native" %}
+                <button class="button" katana-click="appstore.uninstallAnApp" app_details="{{ app.path }}">Uninstall</button>
+                {% endif %}
+
+                <button class="button">Installed</button>
+
+                <br>
+
+            <hr class="hr-shadow">
+            {% endfor %}
+    </body>
+
+</html>
