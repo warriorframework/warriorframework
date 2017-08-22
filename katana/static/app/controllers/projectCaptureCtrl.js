@@ -36,6 +36,97 @@ app.controller('projectCapCtrl', ['$scope', '$http', '$routeParams', '$controlle
         $scope.suiteEditor = false;
         $scope.suiteBeingEdited = "None";
 
+
+    function readConfig() {
+    $http.get('/readconfig')
+        .success(function(data, status, headers, config) {
+            $scope.cfg = data;
+            $scope.orig.pythonsrcdir = $scope.cfg.pythonsrcdir;
+        })
+        .error(function(data, status, headers, config) {
+            alert("Error fetching config data. ", status, headers);
+        });
+    }
+
+    readConfig();
+
+    $scope.cfg = {};
+    $scope.path = "";
+    $scope.pathUG = "";
+    $scope.osFinder="";
+    $scope.default_paths = {
+        "pythonsrcdir": "Warrior"
+    };
+
+    $scope.orig = {
+
+        pythonsrcdir: ""
+
+    };
+
+    $scope.loadXmlProj = function(check) {
+
+        checkNew = check.split('..')[1];      
+        $scope.osFinder = location.hostname;
+        
+        if($scope.osFinder == "localhost"  || $scope.osFinder == "0.0"){
+
+            $scope.pathUG = $scope.cfg.pythonsrcdir + "/Warriorspace" + checkNew;
+
+            $scope.pathUrl= $scope.pathUG.replace(/\\/g, "/");
+
+            $scope.checkPath = "file://"+$scope.pathUrl;
+
+            var s = $scope.checkPath;
+            var i = s.indexOf("/");
+             if (i != -1) {
+                 $scope.newPath = s.substring(i, s.length);
+             }
+
+            guideSplit();
+            fileFactory.winXmlProj($scope.pathXml)
+                .then(
+                     function(data) {
+                     });
+                                            
+         }
+
+         else {
+
+           $scope.pathUG = $scope.cfg.pythonsrcdir + "/Warriorspace" + checkNew;
+
+            var s = $scope.pathUG;
+            var i = s.indexOf("/");
+            if (i != -1) {
+                    $scope.newPath = s.substring(i, s.length);
+                  }
+            guideSplit();
+
+                fileFactory.linuxXmlProj($scope.pathXml)
+                .then(
+                     function(data) {
+                     })
+         }
+     
+      };
+
+    function guideSplit(){
+      
+        var array = [];
+        if($scope.newPath.indexOf("\\")>= 0) {
+            array = $scope.newPath.split("\\");
+        }
+        else {
+            array = $scope.newPath.split("/");
+        }
+        var path = "";
+        for(var i=0; i<=array.length-1; i++){
+            path = path + array[i] + ">"
+        }
+        $scope.pathXml = path.replace(/\>$/, '');
+              
+    }
+
         fileFactory.readstatesfile()
             .then(
                 function(data) {

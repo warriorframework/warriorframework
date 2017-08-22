@@ -155,6 +155,33 @@ app.factory('fileFactory', ['$http', '$routeParams', '$q', function($http, $rout
                         deferred.reject("Error reading tootip file : " + status + ' ' + JSON.stringify(headers));
                 });
             return deferred.promise;
+        },
+
+        winXmlProj: function(path) {
+            
+            var deferred = $q.defer();
+            $http.get('/newWinXmlProj/' + path)
+                .success(function(data, status, headers, config) {
+                    
+                    deferred.resolve(data);
+                })
+                .error(function(data, status, headers, config) {
+                    deferred.reject("Could not retrieve file paths: " + status + ' ' + JSON.stringify(headers));
+                });
+            return deferred.promise;
+        },
+
+        linuxXmlProj: function(path) {
+     
+            var deferred = $q.defer();
+            $http.get('/newLinuxXmlProj/' + path)
+                .success(function(data, status, headers, config) {
+                    deferred.resolve(data);
+                })
+                .error(function(data, status, headers, config) {
+                    deferred.reject("Could not retrieve file paths: " + status + ' ' + JSON.stringify(headers));
+                });
+            return deferred.promise;
         }
 
         };
