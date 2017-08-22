@@ -15,7 +15,7 @@ from django.http import HttpResponse, JsonResponse
 from django.template import loader, RequestContext
 from xml.sax.saxutils import escape, unescape
 import xml.dom.minidom 
-import xmltodict 
+import xmltodict , dicttoxml
 from django.core.serializers import serialize
 from django.db.models.query import QuerySet
 import simplejson
@@ -110,9 +110,19 @@ def getXMLfile(request):
 def getProjectDataBack(request):
 	print "-----~!!!!!=="
 	print "Got something back in request";
-	print request.POST.get('fname');
-	print request.POST;
+	#response = request.readlines();   # Get the JSON response 
 	template = loader.get_template("cases/editProject.html")
+	#ijs = unescape(json.dumps( request.body ))
+	#print ijs
+	print request.POST.keys()
+
+	#ijs = '{"Project": %s } ' % request.POST.get(u'Project')
+	ijs = request.POST.get(u'Project')
+	print ijs
+	dd = json.loads(ijs) 
+	print dd 
+	xx = dicttoxml.dicttoxml(dd,attr_type=False , custom_root="Project")
+	print xx
 	context = {}; 
 	return HttpResponse(template.render(context, request))
 	#return  editProject(request)

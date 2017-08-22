@@ -81,7 +81,8 @@ function mapUiToProjectJson() {
 	var filename = jsonProjectObject['filename'];
 	//$.ajaxSetup({ headers:{ 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }        });
 	//{ data : {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value}, ]
-	//$.post("../getProjectDataBack", JSON.stringify(jsonProjectObject), null, "json"); 
+	//$.post("../getProjectDataBack", JSON.stringify(jsonProjectObject), null, "json");
+	//'data': JSON.stringify(jsonProjectObject),  
 	var url = "../getProjectDataBack";
 	var csrftoken = $("[name='csrfmiddlewaretoken']").val();
 	//var csrftoken = Cookies.get('csrftoken');
@@ -94,36 +95,21 @@ function mapUiToProjectJson() {
 	});
 
 
+
+
+
 	$.ajax({
     url : url,
     type: "POST",
-    data : {
-     		'fname': filename,
-   
-    		'data': JSON.stringify(jsonProjectObject), 	
+    data : { 'Project':   JSON.stringify(jsonProjectObject),  		
     	},
     headers: {'X-CSRFToken':csrftoken},
-    contentType: 'application/json',
+    //contentType: 'application/json',
     success: function( data ){
         alert("Sent");
     	}
 	});
 
-}
-function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = jQuery.trim(cookies[i]);
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
 }
 
 
