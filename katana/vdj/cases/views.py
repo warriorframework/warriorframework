@@ -3,13 +3,16 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_protect, csrf_exempt
+from django.template.context_processors import csrf
+
 from django.conf import settings
 	
 
 # Create your views here.
 import os, sys, glob, copy, json
 from django.http import HttpResponse, JsonResponse
-from django.template import loader
+from django.template import loader, RequestContext
 from xml.sax.saxutils import escape, unescape
 import xml.dom.minidom 
 import xmltodict 
@@ -37,7 +40,7 @@ def listAllCases(request):
 	template = loader.get_template("cases/listAllCases.html")
 	#filename = request.GET.get('fname')
 	# files = next(os.walk('/home/khusain/Projects/xml-edit/warriorframework/wftests/warrior_tests/testcases'))[2]
-	fpath = path_to_tescases + 'testcases';
+	fpath = path_to_testcases + 'testcases';
 	#files = [ os.path.join(fpath,x) for x in (os.walk(fpath))[2]]
 
 	files = glob.glob(fpath+"*/*/*.xml")+glob.glob(fpath+"*/*/*/*.xml")
@@ -58,6 +61,8 @@ def listAllSuites(request):
 		'listOfFiles': files	
 	}
 	return HttpResponse(template.render(context, request))
+	
+
 
 def listAllProjects(request):
 	template = loader.get_template("cases/listAllProjects.html")
@@ -68,7 +73,9 @@ def listAllProjects(request):
 		'docSpec': 'projectSpec',
 		'listOfFiles': files	
 	}
+	context.update(csrf(request))
 	return HttpResponse(template.render(context, request))
+	#return render_to_response("cases/listAllProjects.html", context, context_instance=RequestContext(request))
 
 def getDocStringForDriver(request):
 
@@ -97,10 +104,19 @@ def getXMLfile(request):
 	return HttpResponse( open(filename).read(), content_type='text/xml')
 
 
+
+
+
 def getProjectDataBack(request):
-	
+	print "-----~!!!!!=="
 	print "Got something back in request";
-	
+	print request.POST.get('fname');
+	print request.POST;
+	template = loader.get_template("cases/editProject.html")
+	context = {}; 
+	return HttpResponse(template.render(context, request))
+	#return  editProject(request)
+
 
 def editProject(request):
 	"""
@@ -120,7 +136,7 @@ def editProject(request):
 	xml_r["Project"]["Details"]["Datatype"] = ""
 	xml_r["Project"]["Details"]["defaultOnError"] = ""
 	xml_r["Project"]["Testsuites"] = ""
-	
+	xml_r['Project']['filename'] = filename;
 	
 	with open(filename) as fd1:
 		xml_d = xmltodict.parse(fd1.read());

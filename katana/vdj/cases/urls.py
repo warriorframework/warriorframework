@@ -4,7 +4,7 @@ from . import views
 
 urlpatterns = [
             url(r'^$', views.index, name='index'),
-            url(r'index2.html', views.index, name='index'),
+            url(r'index*.html', views.index, name='index'),
             url(r'editProject', views.editProject, name='editProject'),
             url(r'editSuite', views.editSuite, name='editSuite'),
             url(r'editCase', views.editCase, name='editCase'),
