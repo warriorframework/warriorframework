@@ -20,7 +20,7 @@
 
                 <span>{{ app.data.name }}</span>
                 {% if app.app_type != "native" %}
-                <button class="button" katana-click="appstore.uninstallAnApp" app_details="{{ app.path }}">Uninstall</button>
+                <button class="button" katana-click="appstore.uninstallAnApp" app_path="{{ app.path }}" app_type="{{ app.app_type }}">Uninstall</button>
                 {% endif %}
 
                 <button class="button">Installed</button>

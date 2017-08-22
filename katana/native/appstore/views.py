@@ -12,9 +12,12 @@ limitations under the License.
 """
 
 from __future__ import unicode_literals
+
+from os import getcwd
 from django.shortcuts import render
 from django.views import View
 from native.appstore.appstore_utils.uninstaller import Uninstaller
+from utils.directory_traversal_utils import get_parent_directory
 from wui.core.core_utils.app_info_class import AppInformation
 
 
@@ -30,7 +33,8 @@ class AppStoreView(View):
 
 
 def uninstall_an_app(request):
-    app_details = request.POST.get("app_details", None)
-    uninstaller_obj = Uninstaller()
-    uninstaller_obj.uninstall(app_details)
+    app_path = request.POST.get("app_path", None)
+    app_type = request.POST.get("app_type", None)
+    uninstaller_obj = Uninstaller(get_parent_directory(getcwd()), app_path, app_type)
+    uninstaller_obj.uninstall()
     return render(request, AppStoreView.template, {"data": AppInformation.information.apps})

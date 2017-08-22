@@ -2,14 +2,15 @@ var appstore = {
 
     uninstallAnApp: function(){
         var $elem = $(this);
-        var app_details = $elem.attr('app_details');
+        var app_path = $elem.attr('app_path');
+        var app_type = $elem.attr('app_type');
         $.ajax({
             headers: {
                 'X-CSRFToken': appstore.getCookie('csrftoken')
             },
             type: 'POST',
             url: 'appstore/uninstall_an_app/',
-            data: {"app_details": app_details},
+            data: {"app_path": app_path, "app_type": app_type},
         });
     },
 
