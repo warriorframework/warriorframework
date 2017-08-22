@@ -154,7 +154,11 @@ def join_path(path, *paths):
     Returns:
         Joined path
     """
-    return os.path.join(path, *paths)
+    joined_path = os.path.join(path, *paths)
+    if os.path.exists(joined_path):
+        return joined_path
+    else:
+        return False
 
 
 def get_relative_path(path, start_directory):
