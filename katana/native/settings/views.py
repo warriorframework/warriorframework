@@ -15,9 +15,13 @@ limitations under the License.
 from __future__ import unicode_literals
 
 from django.shortcuts import render
-
+from native.settings.settings import Settings
 # Create your views here.
 
+controls = Settings()
 
 def index(request):
-    return render(request, 'configuration/index.html', {"data": "This is the Configuration page"})
+    return render(request, 'settings/index.html', {"data": controls.get_location()})
+
+def general_settings( request ):
+    return render(request, 'settings/general.html', {"settings": controls.get_general()})

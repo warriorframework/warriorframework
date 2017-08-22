@@ -14,7 +14,6 @@ class App:
         self.path = path
         self.static_file_dir = join_path("static", get_dir_from_path(self.path))
 
-
 class Apps:
 
     def __init__(self):

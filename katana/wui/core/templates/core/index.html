@@ -2,18 +2,18 @@
 		<head>
 				<meta charset="utf-8">
 				<meta name="viewport" content="width=device-width, initial-scale=1">
-				 {% load staticfiles %} 
+				 {% load staticfiles %}
 				<script src="{% static 'core/js/jquery.min.js' %}"></script>
 				<script src="{% static 'core/js/main.js' %}"></script>
 				<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-				
+
                 <link rel="stylesheet" type="text/css" href="{% static 'core/css/main.css' %}" />
 		</head>
 		<body>
-				
+
 			<div class="view activeView">
 				<div class="header"><h1>WARRIOR</h1></div>
-				<div class="nav"><div class="nav-inner"><div class="tab active" uid="launchpad" katana-click="switchTab">Launch Pad</div>
+				<div class="nav"><div class="nav-inner"><div class="tab active" uid="launchpad" katana-click="katana.switchTab">Launch Pad</div>
 					</div></div>
 				<div class="page" id="launchpad">
 					<div class="page-content">
@@ -22,20 +22,19 @@
 
 
 							{% for app in apps %}
-							{{ app.json_data }}
-								<div class="tab {{ app.data.color }}" katana-click="templateAPI.load" url="{{ app.data.url }}"><i class="fa fa-{{ app.data.icon }}"></i><span>{{ app.data.name }}</span></div>
+								<div class="tab {{ app.data.color }}" katana-click="katana.templateAPI.load" url="{{ app.data.url }}" jsUrls=" {% for url in app.data.js_urls %} {{ url }},{% endfor %}"><i class="fa fa-{{ app.data.icon }}"></i><span>{{ app.data.name }}</span></div>
 							{% endfor %}
 						</div>
 					</div>
 				</div>
 			</div>
-		  
-		  	
+
+
 			<script type="text/template" id="blankPage">
 			  <div class="page">
 				<div class="page-content">
 					<div class="page-content-inner">
-					
+
 					</div>
 				</div>
 			  </div>
@@ -44,16 +43,16 @@
 				<div class="page auto-init" auto-init="fileNav.init">
 					<div class="page-content">
 						<ul class="fileSystem">
-							<li class="toggleListView fa fa-list-ul" katana-click="fileNav.listViewToggle"></li>
-							<li class="create fa fa-plus" katana-click="templateAPI.load"></li>
-							<li class="search-nav fa fa-list-ul" katana-click="fileNav.searchNav"><input type="text" name="search"></li>
+							<li class="toggleListView fa fa-list-ul" katana-click="katana.fileNav.listViewToggle"></li>
+							<li class="create fa fa-plus" katana-click="katana.templateAPI.load"></li>
+							<li class="search-nav fa fa-list-ul" katana-click="katana.fileNav.searchNav"><input type="text" name="search"></li>
 							<li class="directory">
 								<ul>
-									<li katana-click="fileNav.moveDirectory"></li>
+									<li katana-click="katana.fileNav.moveDirectory"></li>
 								</ul>
 							</li>
-							<li class="folder fa fa-folder-o" katana-click="fileNav.openFolder"><span></span></li>
-							<li class="file fa fa-file" katana-click="fileNav.openFile"><span></span></li>
+							<li class="folder fa fa-folder-o" katana-click="katana.fileNav.openFolder"><span></span></li>
+							<li class="file fa fa-file" katana-click="katana.fileNav.openFile"><span></span></li>
 						</ul>
 					</div>
 				</div>
@@ -62,10 +61,10 @@
 				<div class="popupContainer">
 					<div class="popup">
 							<div class="title">popUp</div>
-							<span class="close" katana-click="closePopup"></span>
+							<span class="close" katana-click="katana.closePopup"></span>
 							<div class="page-content"></div>
 					</div>
-					<div class="overlay" katana-click="closePopup"></div>
+					<div class="overlay" katana-click="katana.closePopup"></div>
 				</div>
 			</script>
 			<script>
@@ -73,4 +72,3 @@
 			</script>
 		</body>
 </html>
-
