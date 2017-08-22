@@ -120,7 +120,6 @@ def get_paths_of_subfiles(parent_dir, extension=re.compile("\..*")):
         file_path: Returns a list of paths to sub-files inside the parent_dir
 
     """
-    print parent_dir
     file_paths = []
     sub_files_and_folders = get_sub_dirs_and_files(parent_dir, abs_path=True)
     for sub_file in sub_files_and_folders["files"]:
@@ -128,7 +127,6 @@ def get_paths_of_subfiles(parent_dir, extension=re.compile("\..*")):
             file_paths.append(sub_file)
     for sub_folder in sub_files_and_folders["folders"]:
         file_paths.extend(get_paths_of_subfiles(sub_folder, extension=extension))
-    print file_paths
     return file_paths
 
 
