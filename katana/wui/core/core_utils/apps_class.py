@@ -29,12 +29,11 @@ class Apps:
             json_data = read_json_data(url)
             if json_data is not None:
                 app = App(json_data, get_parent_directory(url))
-                if app.static_file_dir:
-                    js_urls = get_paths_of_subfiles(join_path(app.path, app.static_file_dir, "js"),
-                                                    extension=compile_regex("^\.js$"))
-                    for i in range(0, len(js_urls)):
-                        js_urls[i] = get_relative_path(js_urls[i], app.path)
-                    app.data["js_urls"] = js_urls
+                js_urls = get_paths_of_subfiles(join_path(app.path, app.static_file_dir, "js"),
+                                                extension=compile_regex("^\.js$"))
+                for i in range(0, len(js_urls)):
+                    js_urls[i] = get_relative_path(js_urls[i], app.path)
+                app.data["js_urls"] = js_urls
                 self.apps.append(app)
         return self.apps
 
