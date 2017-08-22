@@ -13,7 +13,6 @@ limitations under the License.
 
 
 """SNMP utility module using the python PYSNMP module"""
-#!/usr/bin/env python
 
 import os
 import re, sys, time
@@ -129,6 +128,10 @@ class WSnmp(object):
             self.privProtocol = cmdgen.usm3DESEDEPrivProtocol
         if self.privProtocol == "usmDESPrivProtocol":
             self.privProtocol = cmdgen.usmDESPrivProtocol
+        if not self.privProtocol:
+            self.privProtocol = cmdgen.usmNoPrivProtocol
+        if not self.authProtocol:
+            self.authProtocol = cmdgen.usmNoAuthProtocol
         return cmdgen.UsmUserData(userName=self.userName,
                                   authKey=self.authKey, privKey=self.privKey,
                                   authProtocol=self.authProtocol,
