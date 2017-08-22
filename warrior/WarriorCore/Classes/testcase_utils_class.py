@@ -107,7 +107,7 @@ class TestcaseUtils(object):
 
         self.p_testcase()
         self.gkeywordloop = self.gkeywordloop+1
-        print_info("\n********************* Keyword: %s *********************\n" % keyword_txt)
+        print "\n********************* Keyword: %s *********************\n" % keyword_txt
         self.gkeyword[self.gkeywordloop] = ET.SubElement(self.root, "Keyword")
         self.current_pointer = self.gkeyword[self.gkeywordloop]
         name = ET.SubElement(self.gkeyword[self.gkeywordloop], "Name")
