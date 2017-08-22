@@ -63,6 +63,7 @@ def cmdprinter(cmdfunc):
         return result
     return inner
 
+
 def pexpect_spawn_with_env(pexpect_obj, command, timeout, escape=False, env=None):
     """
         spawn a pexpect object with environment variable
