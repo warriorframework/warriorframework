@@ -99,8 +99,8 @@ def execute_parallel_testsuites(testsuite_list, project_repository, data_reposit
     # parallel suites generate multiple suite junit result files
     # each files log the result for one suite and not integrated
     # update project junit result file with individual suite result files
-    data_repository['wt_junit_object'] = \
-        update_pj_junit_resultfile(data_repository['wt_junit_object'], ts_junit_list)
+    data_repository['wt_junit_object'] = update_pj_junit_resultfile(
+     data_repository['wt_junit_object'], ts_junit_list)
 
     project_status = Utils.testcase_Utils.compute_status_using_impact(ts_status_list,
                                                                       ts_impact_list)
