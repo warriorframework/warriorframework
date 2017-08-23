@@ -1,0 +1,59 @@
+{  "Project": 
+	{    "Testsuites": 
+		{      "Testsuite": 
+			[        
+			{   "impact": "impact",           
+				"Execute": {            "@ExecType": "Yes",             
+						"Rule": {              
+							"@Elsevalue": "",               
+							"@Condvalue": "",               
+							"@Condition": "",               
+							"@Else": "next"            
+							}          
+					},           
+					"retry": {            
+							"@Condvalue": "",             
+							"@interval": "",             
+							"@count": "",             
+							"@type": "next"          
+							},
+		           "onError": {            
+		           			"@action": "next",             "@value": "next"          }, 
+		            "runmode": {  "@type": "next",             "@value": "RMT"          },           "path": "../suites/framework_tests/cond_var/pass.xml"        
+		    }, 
+
+
+	        {          
+	        	"impact": "noimpact",           "Execute": {            "@ExecType": "If",             "Rule": {              "@Elsevalue": "",               "@Condvalue": "PASS",               "@Condition": "testsuite_1_result",               "@Else": "abort"            }          },           "retry": {            "@Condvalue": "",             "@interval": "",             "@count": "",             "@type": "next"          },           "onError": {            "@action": "next",             "@value": "next"          },           "runmode": {            "@type": "next",             "@value": "RMT"          },           "path": "../suites/framework_tests/cond_var/fail.xml"        
+	        },         
+	        {          
+	        	"impact": "noimpact",           "Execute": {            "@ExecType": "If",             "Rule": {              "@Elsevalue": "",               "@Condvalue": "FAIL",               "@Condition": "testsuite_2_result",               "@Else": "abort"            }          },           "retry": {            "@Condvalue": "",             "@interval": "",             "@count": "",             "@type": "next"          },           "onError": {            "@action": "next",             "@value": "next"          },           "runmode": {            "@type": "next",             "@value": "RMT"          },           "path": "../suites/framework_tests/cond_var/error.xml"        
+
+	        },         
+
+			{          
+	        		"impact": "impact",           "Execute": {            "@ExecType": "If",             "Rule": {              "@Elsevalue": "",               "@Condvalue": "ERROR",               "@Condition": "testsuite_3_result",               "@Else": "abort"            }          },           "retry": {            "@Condvalue": "",             "@interval": "",             "@count": "",             "@type": "next"          },           "onError": {            "@action": "next",             "@value": "next"          },           "runmode": {            "@type": "next",             "@value": "RMT"          },           "path": "../suites/framework_tests/cond_var/pass.xml"        },         
+	        {          "impact": "impact",           "Execute": {            "@ExecType": "No",             "Rule": {              "@Elsevalue": "",               "@Condvalue": "",               "@Condition": "",               "@Else": "next"            }          },           "retry": {            "@Condvalue": "",             "@interval": "",             "@count": "",             "@type": "next"          },           "onError": {            "@action": "next",             "@value": "next"          },           "runmode": {            "@type": "next",             "@value": "RMT"          },           "path": "../suites/framework_tests/cond_var/pass.xml"        },         {          "impact": "noimpact",           "Execute": {            "@ExecType": "If",             "Rule": {              "@Elsevalue": "",               "@Condvalue": "SKIP",               "@Condition": "testsuite_5_result",               "@Else": "abort"            }          },           "retry": {            "@Condvalue": "",             "@interval": "",             "@count": "",             "@type": "next"          },           "onError": {            "@action": "next",             "@value": "next"          },           "runmode": {            "@type": "next",             "@value": "RMT"          },           "path": "../suites/framework_tests/cond_var/fail.xml"        },         
+	        {          "impact": "impact",           "Execute": {            "@ExecType": "If Not",             "Rule": {              "@Elsevalue": "",               "@Condvalue": "PASS",               "@Condition": "testsuite_6_result",               "@Else": "abort"            }          },           "retry": {            "@Condvalue": "",             "@interval": "",             "@count": "",             "@type": "next"          },           "onError": {            "@action": "next",             "@value": "next"          },           "runmode": {            "@type": "next",             "@value": "RMT"          },           "path": "../suites/framework_tests/cond_var/pass.xml"        },        
+	         {          "impact": "impact",           "Execute": {            "@ExecType": "If Not",             "Rule": {              "@Elsevalue": "",               "@Condvalue": "FAIL",               "@Condition": "testsuite_7_result",               "@Else": "next"            }          },           "retry": {            "@Condvalue": "",             "@interval": "",             "@count": "",             "@type": "next"          },           "onError": {            "@action": "next",             "@value": "next"          },           "runmode": {            "@type": "next",             "@value": "RMT"          },           "path": "../suites/framework_tests/cond_var/pass.xml"        },         
+	         {          "impact": "noimpact",           "Execute": {            "@ExecType": "If Not",             "Rule": {              "@Elsevalue": "",               "@Condvalue": "ERROR",               "@Condition": "testsuite_8_result",               "@Else": "abort"            }          },           "retry": {            "@Condvalue": "",             "@interval": "",             "@count": "",             "@type": "next"          },           "onError": {            "@action": "next",             "@value": "next"          },           "runmode": {            "@type": "next",             "@value": "RMT"          },           "path": "../suites/framework_tests/cond_var/error.xml"        },         
+	         {          "impact": "impact",           "Execute": {            "@ExecType": "If Not",             "Rule": {              "@Elsevalue": "",               "@Condvalue": "SKIP",               "@Condition": "testsuite_9_result",               "@Else": "abort"            }          },           "retry": {            "@Condvalue": "",             "@interval": "",             "@count": "",             "@type": "next"          },           "onError": {            "@action": "next",             "@value": "next"          },           "runmode": {            "@type": "next",             "@value": "RMT"          },           "path": "../suites/framework_tests/cond_var/pass.xml"        }      
+	        ]    
+	        },
+
+
+		     "Details": 
+		     {      
+		     	"Category": "",       "Name": "cond_var",       
+		     	"Title": "Project for testing conditional execution",       
+		     	"Datatype": "Custom",       
+		     	"defaultOnError": "",       
+		     	"Time": "10:59:51",       
+		     	"Date": "08/23/2016",       
+		     	"default_onError": {        "@action": "next"      },       
+		     	"Engineer": "Ka Hei Chan"    
+		     	},     
+
+		     "filename": "/home/khusain/Projects/xml-edit/warriorframework/wftests/warrior_tests/projects/pj_cond_var.xml"  
+		     }
+}

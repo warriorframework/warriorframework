@@ -11,16 +11,17 @@ from django.conf import settings
 
 # Create your views here.
 import os, sys, glob, copy, json
+from collections import OrderedDict
 from django.http import HttpResponse, JsonResponse
 from django.template import loader, RequestContext
 from xml.sax.saxutils import escape, unescape
 import xml.dom.minidom 
-import xmltodict , dicttoxml
+#import xmltodict , dicttoxml
 from django.core.serializers import serialize
 from django.db.models.query import QuerySet
-import simplejson
 from django.template import Library
-
+from xmljson import badgerfish as bf
+from xml.etree.ElementTree import fromstring, tostring
 
 path_to_demo="/home/khusain/Projects/xml-edit/warriorframework/katana/vdj/cases/"
 path_to_testcases='/home/khusain/Projects/xml-edit/warriorframework/wftests/warrior_tests/';
@@ -103,29 +104,26 @@ def getXMLfile(request):
 	print "---------------filename ", filename
 	return HttpResponse( open(filename).read(), content_type='text/xml')
 
-
-
-
-
 def getProjectDataBack(request):
-	print "-----~!!!!!=="
 	print "Got something back in request";
 	#response = request.readlines();   # Get the JSON response 
 	template = loader.get_template("cases/editProject.html")
-	#ijs = unescape(json.dumps( request.body ))
-	#print ijs
-	print request.POST.keys()
+	
+	ijs = '{"Project": %s } ' % request.POST.get(u'Project')
+	dd = json.loads(ijs)  # , indent=2,separators=(',', ': ')) 
+	print dd
+	result = bf.etree(dd)
+	print result
+	print DumpTree(result )
+	
 
-	#ijs = '{"Project": %s } ' % request.POST.get(u'Project')
-	ijs = request.POST.get(u'Project')
-	print ijs
-	dd = json.loads(ijs) 
-	print dd 
-	xx = dicttoxml.dicttoxml(dd,attr_type=False , custom_root="Project")
-	print xx
-	context = {}; 
-	return HttpResponse(template.render(context, request))
+
+	#return HttpResponse(template.render(context, request))
 	#return  editProject(request)
+
+
+DOCTYPE = '<?xml version="1.0" encoding="UTF-8"?>'
+XMLNS = 'http://docs.openstack.org/identity/api/v2.0'
 
 
 def editProject(request):
@@ -135,26 +133,31 @@ def editProject(request):
 	template = loader.get_template("cases/editProject.html")
 	filename = request.GET.get('fname')
 
-	xml_r = {}
+	# Create Mandatory empty object.
+	xml_r = {} ; 
 	xml_r["Project"] = {}
 	xml_r["Project"]["Details"] = {}
-	xml_r["Project"]["Details"]["Name"] = ""
-	xml_r["Project"]["Details"]["Title"] = ""
-	xml_r["Project"]["Details"]["Category"] = ""
-	xml_r["Project"]["Details"]["Date"] = ""
-	xml_r["Project"]["Details"]["Time"] = ""
-	xml_r["Project"]["Details"]["Datatype"] = ""
-	xml_r["Project"]["Details"]["defaultOnError"] = ""
+	xml_r["Project"]["Details"]["Name"] = OrderedDict([('$', '')])
+	xml_r["Project"]["Details"]["Title"] = OrderedDict([('$', '')])
+	xml_r["Project"]["Details"]["Category"] = OrderedDict([('$', '')])
+	xml_r["Project"]["Details"]["Date"] = OrderedDict([('$', '')])
+	xml_r["Project"]["Details"]["Time"] = OrderedDict([('$', '')])
+	xml_r["Project"]["Details"]["Datatype"] = OrderedDict([('$', '')])
+	xml_r["Project"]["Details"]["Engineer"] = OrderedDict([('$', '')])
+	xml_r["Project"]["Details"]["default_onError"] = OrderedDict([('$', '')])
 	xml_r["Project"]["Testsuites"] = ""
 	xml_r['Project']['filename'] = filename;
-	
-	with open(filename) as fd1:
-		xml_d = xmltodict.parse(fd1.read());
+
+	xlines = open(filename).read()
+	xml_d = bf.data(fromstring(xlines)); # xmltodict.parse(fd1.read());
 
 	# Map the input to the response collector
 	for xstr in ["Name", "Title", "Category", "Date", "Time", "Engineer", \
 		"Datatype", "default_onError"]:
-		xml_r["Project"]["Details"][xstr] = xml_d["Project"]["Details"].get(xstr,"")
+		try:
+			xml_r["Project"]["Details"][xstr]["$"] = xml_d["Project"]["Details"][xstr].get("$","")
+		except: 
+			pass
 
 	try:
 		xml_r['Project']['Testsuites'] = copy.copy(xml_d['Project']['Testsuites']);
@@ -165,14 +168,13 @@ def editProject(request):
 	context = { 
 		'myfile': filename,
 		'docSpec': 'projectSpec',
-		'projectName': xml_r["Project"]["Details"]["Name"],
-		'projectTitle': xml_r["Project"]["Details"]["Title"],
-		'projectEngineer': xml_r["Project"]["Details"]["Engineer"],
-		'projectCategory': xml_r["Project"]["Details"]["Category"],
-		'projectDate': xml_r["Project"]["Details"]["Date"],
-		'projectTime': xml_r["Project"]["Details"]["Time"],
+		'projectName': xml_r["Project"]["Details"]["Name"]["$"],
+		'projectTitle': xml_r["Project"]["Details"]["Title"]["$"],
+		'projectEngineer': xml_r["Project"]["Details"]["Engineer"]["$"],
+		'projectCategory': xml_r["Project"]["Details"]["Category"]["$"],
+		'projectDate': xml_r["Project"]["Details"]["Date"]["$"],
+		'projectTime': xml_r["Project"]["Details"]["Time"]["$"],
 		'projectdefault_onError': xml_r["Project"]["Details"]["default_onError"],
-		'projectSuites': xml_r['Project']['Testsuites'],
 		'fulljson': xml_r['Project']
 		}
 	# 
@@ -313,5 +315,4 @@ def editCase(request):
 	}
 
 	return HttpResponse(template.render(context, request))
-
 

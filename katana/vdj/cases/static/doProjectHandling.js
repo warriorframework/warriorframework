@@ -4,13 +4,12 @@ var jsonProjectObject = [];
 
 function mapFullProjectJson(myobject){
 	jsonProjectObject = myobject; 
-	jsonTestSuites = myobject['Testsuites']; 
+	jsonTestSuites = jsonProjectObject['Testsuites']; 
 	mapProjectJsonToUi(jsonTestSuites);
 } 
 
 function addSuiteToProject(){
 
-	// Add an entry to the jsonTestSuites....
 	var newTestSuite = {	"path": "../suites/framework_tests/seq_par_execution/seq_ts_seq_tc.xml", 
 	"Execute": { "@ExecType": "Yes",
 			"Rule": {"@Condition": "","@Condvalue": "","@Else": "next", "@Elsevalue": "" }
@@ -27,7 +26,6 @@ function addSuiteToProject(){
 }
 
 function mapUiToProjectJson() {
-	var collector = jsonProjectObject;   // Use the global object. 
 	
 	jsonProjectObject['Details']['Name'] = $('#projectName').val();
 	jsonProjectObject['Details']['Title'] = $('#projectTitle').val();
@@ -57,12 +55,13 @@ function mapUiToProjectJson() {
 		id = '#'+s+"-onError-at-value option:selected";
 		oneSuite['onError']['@value'] = $(id).val();
 
+		oneSuite['runmode'] = {}
 		id = '#'+s+"-runmode-at-value";
 		oneSuite['runmode']['@value'] = $(id).val();
 		id = '#'+s+"-runmode-at-value option:selected";
 		oneSuite['runmode']['@value'] = $(id).val();
 
-
+		oneSuite['retry'] = {}
 		id = '#'+s+"-retry-at-type";
 		oneSuite['retry']['@type'] = $(id).val();
 		id = '#'+s+"-retryat-Condition";
@@ -73,20 +72,16 @@ function mapUiToProjectJson() {
 		oneSuite['retry']['@count'] = $(id).val();
 		id = '#'+s+"-retry-at-interval";
 		oneSuite['retry']['@interval'] = $(id).val();
-
+		
 
 	}
-
+	// Now you have collected the user components...
 
 	var filename = jsonProjectObject['filename'];
-	//$.ajaxSetup({ headers:{ 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }        });
-	//{ data : {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value}, ]
-	//$.post("../getProjectDataBack", JSON.stringify(jsonProjectObject), null, "json");
-	//'data': JSON.stringify(jsonProjectObject),  
+
+
 	var url = "../getProjectDataBack";
 	var csrftoken = $("[name='csrfmiddlewaretoken']").val();
-	//var csrftoken = Cookies.get('csrftoken');
-	//var csrftoken = Cookies.get('csrftoken');
 
 	$.ajaxSetup({
 			function(xhr, settings) {
@@ -94,14 +89,20 @@ function mapUiToProjectJson() {
     	}
 	});
 
+	var jj = new json() ; 
+	var mystring =  JSON.stringify(jsonProjectObject);
+	var topNode  = { 'Project' : jsonProjectObject};
 
 
 
+
+	var ns = jj.translate.toXML(topNode);
+	return 
 
 	$.ajax({
     url : url,
     type: "POST",
-    data : { 'Project':   JSON.stringify(jsonProjectObject),  		
+    data : { 'Project': mystring ,  		
     	},
     headers: {'X-CSRFToken':csrftoken},
     //contentType: 'application/json',
@@ -116,8 +117,6 @@ function mapUiToProjectJson() {
 
 function mapProjectJsonToUi(data){
 	var items = []; 
-	//alert("Length"+Object.keys(data));
-	// This gives me ONE object - The root for test suites
 	
 	var xdata = data['Testsuite'];
 	if (!jQuery.isArray(xdata)) xdata = [xdata];
@@ -208,10 +207,10 @@ function mapProjectJsonToUi(data){
 		items.push('<input type="text" class="col-md-4 text-right" id="'+s+'-retry-at-count" value="'+oneSuite['retry']['@count']+'" />');
 		items.push('<label class="col-md-2 text-right" >retry-at-interval:</label>');
 		items.push('<input type="text" class="col-md-4 text-right" id="'+s+'-retry-at-interval" value="'+oneSuite['retry']['@interval']+'" />');
-		items.push('<br><span class="label label-primary">Impact</span><br>');
+		items.push('<br>');
 
 		items.push('<label class="col-md-2 text-right" >impact</label>');
-		items.push('<select type="text" id="'+s+':"impact" value="'+oneSuite['impact']+'" >');
+		items.push('<select type="text" id="'+s+':"impact" value="'+oneSuite['impact']['$']+'" >');
 		items.push('<option value="impact">impact</option>'); 
 		items.push('<option value="noimpact">noimpact</option>'); 
 		items.push('</select>');
