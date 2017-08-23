@@ -428,6 +428,7 @@ input {
   border: none;
   border-bottom: solid 1px #c5c5c5;
   font-family: inherit;
+  color: #333;
 }
 .feild {
     padding: 5px 0;
@@ -918,10 +919,10 @@ div#launchpad.page.hidden {
 div#launchpad.page.hidden .page-content {top: 0;height: 100%;}
 
 div#launchpad.page.hidden .tab {
-    width: 40%;
-    padding-bottom: 40%;
-    border-radius: 10px;
-    margin: 3%;
+  width: 44%;
+  padding-bottom: 44%;
+  border-radius: 10px;
+  margin: 3%;
 }
 
 div#launchpad.page.hidden .tab i {
@@ -939,8 +940,9 @@ div#launchpad.page.hidden .tab span {
 }
 
 div#launchpad.page.hidden .tabs {
-    text-align: center;
-    padding-top: 13px;
+  text-align: left;
+  padding-top: 13px;
+  width: 90%;
 }
 .fileSystem > .file:hover, .fileSystem > .folder:hover {
     background: rgba(239, 239, 239, 0.94) !important;
@@ -955,7 +957,7 @@ div#launchpad.page.hidden .tabs {
   position: relative;
   border: none;
   font-size: 22px;
-  padding: 10px 0;
+  padding: 0px 0 12px 0;
   font-weight: 300;
 }
 
@@ -1024,13 +1026,35 @@ div#launchpad.page.hidden .tabs {
     top: 40px;
 }
 .settings {
-    width: 100%;
-    height: 100%;
-    display: block;
-    background-image: url(/static/core/images/image.jpg);
-    background-size: cover;
+  width: 100%;
+  height: 100%;
+  display: block;
+
+  max-width: 1400px;
+  margin: 0 auto;
+  padding-top: 38px;
 }
 .removing {
     opacity: 0;
     transition: all .2s ease;
+}
+.csrf-container {
+    display: none;
+}
+.hidden{
+  display: none;
+}
+.feild-block .sub-title {
+    position: absolute;
+    top: 40px;
+    left: 11px;
+    font-size: 14px;
+    color: #616161;
+}
+.page-content-inner.limited-styles {
+    background: transparent;
+}
+
+.limited-styles-true {
+    display: none;
 }

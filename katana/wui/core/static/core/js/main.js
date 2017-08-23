@@ -3,7 +3,6 @@ var katana = {
 	$activeTab: null,
 	$view: null,
 	$prevTab: null,
-	templatesDir: '/assets/app/partials/',
 
 	initApp: function(){
 		katana.loadView();
@@ -230,7 +229,7 @@ var katana = {
 	},
 
 	templateAPI:{
-			load: function( url, jsURL ){
+			load: function( url, jsURL, limitedStyles ){
 				var $elem = this;
 				var url = url ? url : $elem.attr('url');
 				var jsURL = $elem.attr('jsurls').split(',');
@@ -242,6 +241,7 @@ var katana = {
 							dataType: 'text'
 						}).done(function( data ) {
 							container.append( katana.templateAPI.preProcess( data ) );
+							limitedStyles || container.find('.limited-styles-true').length && container.addClass('limited-styles');
 							katana.tabAdded( container, this );
 						});
 					});
@@ -249,7 +249,7 @@ var katana = {
 
 			},
 
-			subAppLoad: function( url ){
+			subAppLoad: function( url, limitedStyles ){
 				var $elem = this;
 				var url = url ? url : $elem.attr('url');
 
@@ -259,6 +259,7 @@ var katana = {
 						dataType: 'text'
 					}).done(function( data ) {
 						container.append( katana.templateAPI.preProcess( data ) );
+						limitedStyles || container.find('.limited-styles-true').length && container.addClass('limited-styles');
 						container.find('.tool-bar') && container.find('.tool-bar').prependTo(container.parent());
 						katana.subAppAdded( container, this );
 					});
@@ -266,8 +267,40 @@ var katana = {
 			},
 
 		 preProcess: function( data ){
-			 data = data.replace( /{{.*}}/g, '' ).replace( /ng-click/g, 'katana-click' ).replace( /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+			 data = data.replace( /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
 			 return data;
+		 },
+
+		 post: function( url, csrf, toSend, callBack ){
+			 var $elem = this;
+			 var toSend = toSend ? toSend : $elem.find('input:not([name="csrfmiddlewaretoken"])').serializeArray();
+			 var url = url ? url : $elem.attr('post-url');
+			 var csrf = csrf ? csrf : $elem.find('.csrf-container > input').val();
+
+			 $.ajaxSetup({
+			    beforeSend: function(xhr, settings) {
+		        if (!this.crossDomain)
+		        	xhr.setRequestHeader("X-CSRFToken", csrf);
+			    }
+				});
+			 $.ajax({
+				 url: url,
+				 type : "POST",
+				 data : { data: toSend }
+			 }).done(function( data ) {
+				 callBack && callBack( data );
+			 });
+		 },
+
+		 trigger: function( url, callBack ){
+			 var $elem = this;
+			 var url = url ? url : $elem.attr('trigger-url');
+			 $.ajax({
+				 url: url,
+				 dataType: 'text'
+			 }).done(function( data ) {
+				 callBack && callBack( data );
+			 });
 		 },
 
 		 importJS: function( jsURL, callBack, i ){
