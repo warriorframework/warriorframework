@@ -2,7 +2,7 @@
 
 from __future__ import unicode_literals
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.template.context_processors import csrf
 
@@ -10,7 +10,7 @@ from django.conf import settings
 	
 
 # Create your views here.
-import os, sys, glob, copy, json
+import os, sys, glob, copy 
 from collections import OrderedDict
 from django.http import HttpResponse, JsonResponse
 from django.template import loader, RequestContext
@@ -22,6 +22,7 @@ from django.db.models.query import QuerySet
 from django.template import Library
 from xmljson import badgerfish as bf
 from xml.etree.ElementTree import fromstring, tostring
+import xml.etree.ElementTree
 
 path_to_demo="/home/khusain/Projects/xml-edit/warriorframework/katana/vdj/cases/"
 path_to_testcases='/home/khusain/Projects/xml-edit/warriorframework/wftests/warrior_tests/';
@@ -107,19 +108,24 @@ def getXMLfile(request):
 def getProjectDataBack(request):
 	print "Got something back in request";
 	#response = request.readlines();   # Get the JSON response 
-	template = loader.get_template("cases/editProject.html")
+	template = loader.get_template("cases/editProject.html")  # get another one?
 	
-	ijs = '{"Project": %s } ' % request.POST.get(u'Project')
-	dd = json.loads(ijs)  # , indent=2,separators=(',', ': ')) 
-	print dd
-	result = bf.etree(dd)
-	print result
-	print DumpTree(result )
+	ijs = request.POST.get(u'Project')  # This is a json string 
+	print ijs
+	#ijs = ijs.replace("u'","'")  <-- does not work!
+	#dd = json.loads(ijs)  # , indent=2,separators=(',', ': ')) 
+	#print dd
+
+	print "--------------TREE----------------"
+
+	#print tostring(ijs)
+	#result = bf.etree(tostring(ijs))
+	#print dir(result)
+	#print xml.etree.ElementTree.tostring(result)  # This throws an exception 
 	
-
-
 	#return HttpResponse(template.render(context, request))
 	#return  editProject(request)
+	return redirect(request.META['HTTP_REFERER'])
 
 
 DOCTYPE = '<?xml version="1.0" encoding="UTF-8"?>'
@@ -146,7 +152,7 @@ def editProject(request):
 	xml_r["Project"]["Details"]["Engineer"] = OrderedDict([('$', '')])
 	xml_r["Project"]["Details"]["default_onError"] = OrderedDict([('$', '')])
 	xml_r["Project"]["Testsuites"] = ""
-	xml_r['Project']['filename'] = filename;
+	xml_r['Project']['filename'] = OrderedDict([('$', filename)]);
 
 	xlines = open(filename).read()
 	xml_d = bf.data(fromstring(xlines)); # xmltodict.parse(fd1.read());
@@ -206,13 +212,16 @@ def editSuite(request):
 	xml_r["TestSuite"]["Testsuites"] = ""
 	
 	
-	with open(filename) as fd1:
-		xml_d = xmltodict.parse(fd1.read());
+	xlines = open(filename).read()
+	xml_d = bf.data(fromstring(xlines)); # xmltodict.parse(fd1.read());
 
 	# Map the input to the response collector
 	for xstr in ["Name", "Title", "Category", "Date", "Time", "Engineer", \
 		"Datatype", "type",  "default_onError"]:
-		xml_r["TestSuite"]["Details"][xstr] = xml_d["TestSuite"]["Details"].get(xstr,"")
+		try: 
+			xml_r["TestSuite"]["Details"][xstr] = copy.copy(xml_d["TestSuite"]["Details"].get(xstr,""))
+		except:
+			pass
 
 	try:
 		xml_r['TestSuite']['Testcases'] = copy.deepcopy(xml_d['TestSuite']['Testcases']);
@@ -223,14 +232,14 @@ def editSuite(request):
 	context = { 
 		'myfile': filename,
 		'docSpec': 'projectSpec',
-		'suiteName': xml_r["TestSuite"]["Details"]["Name"],
-		'suiteTitle': xml_r["TestSuite"]["Details"]["Title"],
-		'suiteEngineer': xml_r["TestSuite"]["Details"]["Engineer"],
-		'suiteCategory': xml_r["TestSuite"]["Details"]["Category"],
-		'suiteDate': xml_r["TestSuite"]["Details"]["Date"],
-		'suiteTime': xml_r["TestSuite"]["Details"]["Time"],
-		'suiteType': xml_r["TestSuite"]["Details"]["type"],
-		'suitedefault_onError': xml_r["TestSuite"]["Details"]["default_onError"],
+		'suiteName': xml_r["TestSuite"]["Details"]["Name"]["$"],
+		'suiteTitle': xml_r["TestSuite"]["Details"]["Title"]["$"],
+		'suiteEngineer': xml_r["TestSuite"]["Details"]["Engineer"]["$"],
+		'suiteCategory': xml_r["TestSuite"]["Details"]["Category"]["$"],
+		'suiteDate': xml_r["TestSuite"]["Details"]["Date"]["$"],
+		'suiteTime': xml_r["TestSuite"]["Details"]["Time"]["$"],
+		'suiteType': xml_r["TestSuite"]["Details"]["type"]["$"],
+		'suitedefault_onError': xml_r["TestSuite"]["Details"]["default_onError"]["$"],
 		'suiteCases': xml_r['TestSuite']['Testcases'],
 		'fulljson': xml_r['TestSuite'],
 		'suiteResults': ""
@@ -272,13 +281,16 @@ def editCase(request):
 	xml_r["Testcase"]["Steps"] = {} 
 	
 	
-	with open(filename) as fd1:
-		xml_d = xmltodict.parse(fd1.read());
+	xlines = open(filename).read()
+	xml_d = bf.data(fromstring(xlines)); # xmltodict.parse(fd1.read());
 
 	# Map the input to the response collector
 	for xstr in ["Name", "Title", "Category", "Date", "Time", "InputDataFile", "Engineer", \
 		"Datatype", "default_onError", "Logsdir", "Resultsdir", "ExpectedResults"]:
-		xml_r["Testcase"]["Details"][xstr] = xml_d["Testcase"]["Details"].get(xstr,"")
+		try:
+			xml_r["Testcase"]["Details"][xstr] = copy.copy(xml_d["Testcase"]["Details"].get(xstr,{"$",""}))
+		except:
+			pass
 
 	caseStateOptions_str = ['New','Draft','In Review','Released']
 
@@ -295,20 +307,20 @@ def editCase(request):
 	context = { 
 		'myfile': filename,
 		'docSpec': 'caseSpec',
-		'caseName': xml_r["Testcase"]["Details"]["Name"],
-		'caseTitle': xml_r["Testcase"]["Details"]["Title"],
-		'caseEngineer': xml_r["Testcase"]["Details"]["Engineer"],
-		'caseCategory': xml_r["Testcase"]["Details"]["Category"],
-		'caseDate': xml_r["Testcase"]["Details"]["Date"],
-		'caseTime': xml_r["Testcase"]["Details"]["Time"],
-		'caseState': xml_r["Testcase"]["Details"]["State"],
+		'caseName': xml_r["Testcase"]["Details"]["Name"]["$"],
+		'caseTitle': xml_r["Testcase"]["Details"]["Title"]["$"],
+		'caseEngineer': xml_r["Testcase"]["Details"]["Engineer"]["$"],
+		'caseCategory': xml_r["Testcase"]["Details"]["Category"]["$"],
+		'caseDate': xml_r["Testcase"]["Details"]["Date"]["$"],
+		'caseTime': xml_r["Testcase"]["Details"]["Time"]["$"],
+		'caseState': xml_r["Testcase"]["Details"]["State"]["$"],
 		'caseStateOptions': caseStateOptions_str, 
-		'caseDatatype': xml_r["Testcase"]["Details"]["Datatype"],
-		'caseInputDataFile': xml_r["Testcase"]["Details"]["InputDataFile"],
+		'caseDatatype': xml_r["Testcase"]["Details"]["Datatype"]["$"],
+		'caseInputDataFile': xml_r["Testcase"]["Details"]["InputDataFile"]["$"],
 		'casedefault_onError': xml_r["Testcase"]["Details"]["default_onError"],
-		'caseLogsdir': xml_r["Testcase"]["Details"]["Logsdir"],
-		'caseResultsdir': xml_r["Testcase"]["Details"]["Resultsdir"],
-		'caseExpectedResults': xml_r["Testcase"]["Details"]["ExpectedResults"],
+		'caseLogsdir': xml_r["Testcase"]["Details"]["Logsdir"]["$"],
+		'caseResultsdir': xml_r["Testcase"]["Details"]["Resultsdir"]["$"],
+		'caseExpectedResults': xml_r["Testcase"]["Details"]["ExpectedResults"]["$"],
 		'caseSteps': xml_r["Testcase"]["Steps"],
 		'caseRequirements': xml_r['Testcase']['Requirements'],
 		'fulljson': xml_r['Testcase']

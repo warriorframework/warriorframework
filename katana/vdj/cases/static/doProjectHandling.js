@@ -27,20 +27,25 @@ function addSuiteToProject(){
 
 function mapUiToProjectJson() {
 	
-	jsonProjectObject['Details']['Name'] = $('#projectName').val();
-	jsonProjectObject['Details']['Title'] = $('#projectTitle').val();
-	jsonProjectObject['Details']['Engineer'] = $('#projectEngineer').val();
-	jsonProjectObject['Details']['Title'] = $('#projectTitle').val();
-	jsonProjectObject['Details']['Date'] = $('#projectDate').val();
+	jsonProjectObject['Details']['Name']['$'] = $('#projectName').val();
+	jsonProjectObject['Details']['Title']['$'] = $('#projectTitle').val();
+	jsonProjectObject['Details']['Engineer']['$'] = $('#projectEngineer').val();
+	jsonProjectObject['Details']['Title']['$'] = $('#projectTitle').val();
+	jsonProjectObject['Details']['Date']['$'] = $('#projectDate').val();
 	//jsonProjectObject['Details']['Time'] = $('#projectTime').val();
-	jsonProjectObject['Details']['defaultOnError'] = $('#defaultOnError').val();
-	jsonProjectObject['Details']['Datatype'] = $('#projectDatatype').val();
+	jsonProjectObject['Details']['default_onError']['$'] = $('#defaultOnError').val();
+	jsonProjectObject['Details']['Datatype']['$'] = $('#projectDatatype').val();
 
 	// Now walk the DOM ..
 
 	var xdata = jsonProjectObject['Testsuites']['Testsuite'];
 	for (var s=0; s<Object.keys(xdata).length; s++ ) {
 		var oneSuite = xdata[s];
+
+		oneSuite['Execute']['$'] = ""
+		id = '#'+s+"-Execute-at-ExecType";
+		oneSuite['Execute']['@ExecType']['$'] = ""; 
+
 		id = '#'+s+"-Execute-Rule-at-Condition";
 		oneSuite['Execute']['Rule']['@Condition'] = $(id).val();
 		id = '#'+s+"-Execute-Rule-at-Condvalue";
@@ -49,6 +54,8 @@ function mapUiToProjectJson() {
 		oneSuite['Execute']['Rule']['@Else'] = $(id).val();
 		id = '#'+s+"-Execute-Rule-at-Elsevalue";
 		oneSuite['Execute']['Rule']['@Elsevalue'] = $(id).val();
+
+		oneSuite['onError']['$'] = "";
 
 		id = '#'+s+"-onError-at-action";
 		oneSuite['onError']['@action'] = $(id).val();
@@ -60,6 +67,8 @@ function mapUiToProjectJson() {
 		oneSuite['runmode']['@value'] = $(id).val();
 		id = '#'+s+"-runmode-at-value option:selected";
 		oneSuite['runmode']['@value'] = $(id).val();
+		oneSuite['runmode']['$'] = "";
+		oneSuite['retry']['$'] = "";
 
 		oneSuite['retry'] = {}
 		id = '#'+s+"-retry-at-type";
@@ -77,9 +86,6 @@ function mapUiToProjectJson() {
 	}
 	// Now you have collected the user components...
 
-	var filename = jsonProjectObject['filename'];
-
-
 	var url = "../getProjectDataBack";
 	var csrftoken = $("[name='csrfmiddlewaretoken']").val();
 
@@ -89,20 +95,19 @@ function mapUiToProjectJson() {
     	}
 	});
 
-	var jj = new json() ; 
-	var mystring =  JSON.stringify(jsonProjectObject);
 	var topNode  = { 'Project' : jsonProjectObject};
-
-
-
-
+	var jj = new json() ; 
+	// var mystring =  JSON.stringify(jsonProjectObject);
 	var ns = jj.translate.toXML(topNode);
-	return 
+
+	//alert(ns);
 
 	$.ajax({
     url : url,
     type: "POST",
-    data : { 'Project': mystring ,  		
+    data : { 
+    	//'json': JSON.stringify(topNode),
+    	'Project': ns
     	},
     headers: {'X-CSRFToken':csrftoken},
     //contentType: 'application/json',
@@ -139,6 +144,9 @@ function mapProjectJsonToUi(data){
 					"Rule": { "@Condition": "", "@Condvalue": "", "@Else": "next", "@Elsevalue": "" }
 				}; 
 		}
+		if (! oneSuite['Execute']['@ExecType']){
+				oneSuite['Execute']['@ExecType'] = "Yes";
+		}
 		if (!oneSuite['Execute']['Rule']) {
 				oneSuite['Execute']['Rule'] = { "Rule": { "@Condition": "", "@Condvalue": "", "@Else": "next", "@Elsevalue": "" } };
 		}
@@ -154,7 +162,7 @@ function mapProjectJsonToUi(data){
 
 
 		items.push('<label class="col-md-2 text-right" >ExecType:</label>');
-		items.push('<select type="text" class="col-md-4 text-right" c value="'+oneSuite['Execute']['@ExecType']+'" >');
+		items.push('<select type="text" class="col-md-4 text-right"id="'+s+'-Execute-at-ExecType"  value="'+oneSuite['Execute']['@ExecType']+'" >');
 		items.push('<option value="If">If</option>'); 
 		items.push('<option value="If Not">If Not</option>'); 
 		items.push('<option value="Yes">Yes</option>'); 
