@@ -568,7 +568,6 @@ def send_commands_from_testdata(testdatafile, obj_session, **args):
                                                                  row=row, system_name=system_name, datafile=datafile)
     finalresult = True if len(testdata_dict) > 0 else False
     for key, details_dict in testdata_dict.iteritems():
-        details_dict["title_row"] = key
         response_dict = {}
         responses_dict[key]=""
         command_list = details_dict["command_list"]
@@ -596,6 +595,10 @@ def send_commands_from_testdata(testdatafile, obj_session, **args):
                                                           result=result, response=response, system_name=system_name)
                 response_dict = _get_response_dict(details_dict, i, response,
                                                    response_dict)
+                if response_dict.values() is not None:
+                    sessid = system_name + "_td_response"
+                    for keys, values in response_dict.items():
+                        pNote("Portion of response saved to the data repository with key: {0}.{1}.{2}, value: {3}".format(sessid, key, keys, values))
                 print_debug("<<<")
             else:
                 finalresult = "ERROR"
@@ -650,11 +653,9 @@ def _get_response_dict(details_dict, index, response, response_dict):
     if not resp_req=="n":
         if resp_pat_req is not None:
             # if the requested pattern not found return empty string
-            title_row = details_dict["title_row"]
             reobj=re.search(resp_pat_req, response)
             response=reobj.group(0) if reobj is not None else ""
             pNote("User has requested saving response. Response pattern required by user is : {0}".format(resp_pat_req))
-            pNote("Portion of response saved to the data repository with key: {0}.{1}, value: {2}".format(title_row, resp_ref, response))
     else:
         response=""
     response_dict[resp_ref]=response
