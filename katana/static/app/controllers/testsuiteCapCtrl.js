@@ -59,84 +59,38 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
 
     readConfig();
 
-    $scope.cfg = {};
-    $scope.path = "";
-    $scope.pathUG = "";
-    $scope.osFinder="";
-    $scope.default_paths = {
-        "pythonsrcdir": "Warrior"
-    };
 
-    $scope.orig = {
+   $scope.loadFile = function(filepath) {
+    
+       dirCheck=filepath.split("/").reverse()[1];
 
-        pythonsrcdir: ""
-
-    };
-
-    $scope.loadXml = function(check) {
-
-        checkNew = check.split('..')[1];      
-        $scope.osFinder = location.hostname;
+        if(dirCheck=="Testcases"){
         
-        if($scope.osFinder == "localhost"  || $scope.osFinder == "0.0"){
+          url = filepath.split('..')[1];      
+          splitDir = url.split('/Testcases')[1]; 
+          finalUrl = "#/testcase"+splitDir+"/none";
+          window.open(finalUrl);
 
-            $scope.pathUG = $scope.cfg.pythonsrcdir + "/Warriorspace" + checkNew;
+       }
 
-            $scope.pathUrl= $scope.pathUG.replace(/\\/g, "/");
+        else{
+          
+          splitPath=filepath.split("/").pop(-1); 
+          splitter= splitPath+"/";
+          checkDir=filepath.split("Testcases/")[1].split(splitPath)[0]; 
+          splitDir=filepath.split(checkDir)[0]; 
+          frameUrl=splitDir+splitter+checkDir;
+          frameUrl = frameUrl.split('..')[1]; 
+          splitter = frameUrl.split('/Testcases')[1];
+          finalUrl = "#/testcase"+splitter;
+          window.open(finalUrl);
 
-            $scope.checkPath = "file://"+$scope.pathUrl;
+        }
 
-            var s = $scope.checkPath;
-            var i = s.indexOf("/");
-             if (i != -1) {
-                 $scope.newPath = s.substring(i, s.length);
-             }
-
-            guideSplit();
-            fileFactory.winXml($scope.pathXml)
-                .then(
-                     function(data) {
-                     });
-                                            
-         }
-
-         else {
-
-           $scope.pathUG = $scope.cfg.pythonsrcdir + "/Warriorspace" + checkNew;
-
-            var s = $scope.pathUG;
-            var i = s.indexOf("/");
-            if (i != -1) {
-                    $scope.newPath = s.substring(i, s.length);
-                  }
-            guideSplit();
-
-                fileFactory.linuxXml($scope.pathXml)
-                .then(
-                     function(data) {
-                     })
-         }
      
       };
-
-    function guideSplit(){
       
-        var array = [];
-        if($scope.newPath.indexOf("\\")>= 0) {
-            array = $scope.newPath.split("\\");
-        }
-        else {
-            array = $scope.newPath.split("/");
-        }
-        var path = "";
-        for(var i=0; i<=array.length-1; i++){
-            path = path + array[i] + ">"
-        }
-        $scope.pathXml = path.replace(/\>$/, '');
-              
-    }
-
-        function get_folders_names(json_dir_data){
+       function get_folders_names(json_dir_data){
             var dir = json_dir_data["dir"];
             var files = json_dir_data["file"];
             $scope.table = $scope.table + "<li>";

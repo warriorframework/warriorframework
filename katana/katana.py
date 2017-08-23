@@ -80,16 +80,6 @@ def katana():
     template_lookup = [current_file_dir, "{0}{1}{2}{1}".format(current_file_dir, os.sep, 'views')]
     return template('index', template_lookup=template_lookup)
 
-@route('/newWinXml/:path')
-def newWinXml(path):
-    path = path.replace(">", os.sep)
-    path = "file:" + path
-    webbrowser.open_new_tab(path)
-
-@route('/newLinuxXml/:path')
-def newLinuxXml(path):
-    path = path.replace(">", os.sep)
-    webbrowser.open_new_tab(path)
 
 @route('/readconfig')
 def readconfig():
