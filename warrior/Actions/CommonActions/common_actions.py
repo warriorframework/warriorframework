@@ -10,26 +10,23 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from __builtin__ import list
+
+
+"""common_actions module where keywords common to all products are developed"""
 import time
 import json
-import os
 import Framework.Utils as Utils
-from Framework.Utils import data_Utils
+import os
 from Framework.Utils.print_Utils import print_info, print_error
 from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.data_Utils import get_object_from_datarepository, update_datarepository
 from Framework.Utils.file_Utils import getAbsPath
-"""common_actions module where keywords common to all products are developed"""
 
 
 class CommonActions(object):
-    """class CommonActions having methods (keywords) that are common for all the products
-    """
+    """class CommonActions having methods (keywords) that are common for all the products"""
 
     def __init__(self):
-        """Setting log, result data files
-        """
         self.resultfile = Utils.config_Utils.resultfile
         self.datafile = Utils.config_Utils.datafile
         self.logsdir = Utils.config_Utils.logsdir
@@ -66,8 +63,7 @@ class CommonActions(object):
             1. system_name = system name in the datafile
         :Returns:
             1. status (boolean)
-            2. system_type (dict element): name=system_type, value=type of the
-                system_name (string).
+            2. system_type (dict element): name=system_type, value=type of the system_name (string).
         """
 
         WDesc = "Find the system type from datafile"
@@ -107,11 +103,11 @@ class CommonActions(object):
         result = Utils.data_Utils.get_object_from_datarepository(object_key)
         if result is not None and result is not False:
             if resp_pat == result[resp_ref]:
-                pNote("Found resp_pat={0} for resp_ref={1} in the data "
+                pNote("Found resp_pat={0} for resp_ref={1} in the data "\
                       "repository".format(resp_pat, resp_ref))
             else:
                 status = False
-                pNote("NOT found resp_pat={0} for resp_ref={1} in the data "
+                pNote("NOT found resp_pat={0} for resp_ref={1} in the data "\
                       "repository!!".format(resp_pat, resp_ref), "warning")
         Utils.testcase_Utils.report_substep_status(status)
         return status
@@ -127,10 +123,6 @@ class CommonActions(object):
             type = type of datavalue (string/int/float)
         """
         def get_dict_to_update(var, val):
-            """prepare the dictionary from dot separated variable for storing in data repository
-            e.g., a.b.c = val
-            would return {a: {b: {c: val}}}
-            """
             dic = {}
             if '.' in var:
                 [key, value] = var.split('.', 1)
@@ -196,8 +188,7 @@ class CommonActions(object):
         """
         status = False
         if not any([var_key, var_value, filepath]):
-            print_error('Either Provide values to arguments "var_key" & '
-                        '"var_value" or to argument "filepath"')
+            print_error('Either Provide values to arguments \"var_key\" & \"var_value\" or to argument \"filepath\"')
 
         if var_key is not None and var_value is not None:
             os.environ[var_key] = var_value
@@ -208,7 +199,7 @@ class CommonActions(object):
         if filepath is not None:
             testcasefile_path = get_object_from_datarepository('wt_testcase_filepath')
             try:
-                filepath = getAbsPath(filepath, os.path.dirname(testcasefile_path))
+                filepath=getAbsPath(filepath, os.path.dirname(testcasefile_path))
                 with open(filepath, "r") as json_handle:
                     get_json = json.load(json_handle)
                     if jsonkey in get_json:
@@ -221,7 +212,7 @@ class CommonActions(object):
                                 status = True
                     else:
                         print_error('The {0} file is missing the key '
-                                    '"environmental_variables", please refer to '
+                                    '\"environmental_variables\", please refer to '
                                     'the Samples in Config_files'.format(filepath))
                         status = False
             except ValueError:
@@ -237,59 +228,4 @@ class CommonActions(object):
 
         return status
 
-    def get_values_from_datafile(self, system_name, strvar, langs, states,
-                                 currencys, ramspace, configfile, intvar,
-                                 file_config):
-        """get the values from datafile
-        :Argument:
-            1. system_name = system name in the datafile
-            2. strvar = string variable
-            3. langs = list variable (should get from data file using wtag)
-            4. states = tuple variable
-            5. currencys = dict variable
-            6. ramspace = boolean variable
-            7. configfile = file variable
-            8. intvar = int variable
-            9. file_config = file variable
-        """
-        def check_type(var, varname, datatype):
-            """check that vars are of correct datatype
-            """
-            vartype = type(var)
-            if vartype is not datatype:
-                print_error('{} is expected to be {} type, but found to be of '
-                            '{} type'.format(varname, datatype, vartype))
-                return False
-            return True
-        wdesc = "get values from datafile"
-        status = True
-        Utils.testcase_Utils.pStep(wdesc)
-        Utils.testcase_Utils.pNote(self.datafile)
-        Utils.testcase_Utils.pNote(system_name)
-        tc_filepath = os.path.dirname(get_object_from_datarepository(
-                                            'wt_testcase_filepath'))
-        status = status and check_type(strvar, "strvar", str)
-        status = status and check_type(langs, "langs", list)
-        status = status and check_type(states, "states", tuple)
-        status = status and check_type(currencys, "currencys", dict)
-        status = status and check_type(ramspace, "ramspace", bool)
-        try:
-            if file_config.startswith('tag'):
-                file_config = data_Utils.resolve_argument_value_to_get_tag_value(
-                                        self.datafile, system_name, file_config)
-            if not os.path.isabs(configfile):
-                configfile = getAbsPath(configfile, tc_filepath)
-            if not os.path.isabs(file_config):
-                file_config = getAbsPath(file_config, tc_filepath)
-        except AttributeError:
-            print_error('configfile and file_config are expected to be files')
-            print_error('type of configfile is {}'.format(type(configfile)))
-            print_error('type of file_config is {}'.format(type(file_config)))
-            status = False
-        if type(intvar) is str and intvar.startswith('tag'):
-            intvar = data_Utils.resolve_argument_value_to_get_tag_value(
-                                    self.datafile, system_name, intvar)
-        else:
-            status = status and check_type(intvar, "intvar", int)
 
-        return status

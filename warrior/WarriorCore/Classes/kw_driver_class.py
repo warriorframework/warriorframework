@@ -165,8 +165,9 @@ class KeywordOperations(object):
         var = arg
         if not hasattr(self, 'tag_dict'):
             self.tag_dict = data_Utils.get_credentials(datafile, system)
+            arg = arg.strip()
         if isinstance(arg, basestring) and arg.startswith("wtag"):
-            var = arg.split("=")[1]
+            var = arg.split("=")[1].strip()
         if var in self.tag_dict:
             value = self.tag_dict[var]
             # substitute environment/datarepo variables in the value and return
