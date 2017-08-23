@@ -1,6 +1,10 @@
 import glob
 import os
 import re
+
+import errno
+import shutil
+
 from wui.core.core_utils.app_info_class import AppInformation
 
 
@@ -66,13 +70,14 @@ def get_sub_files(path, abs_path=False):
     return only_files
 
 
-def get_abs_path(relative_path, base_path=None):
+def get_abs_path(relative_path, base_path=None, silence_error=False):
     """
     Gets the absolute path from the given relative_path and base_path
     Args:
         relative_path: relative path to the file/directory
         base_path: absolute path from where the relative path should be traced. If not provided, the
                    current working directory path will be used.
+        silence_error: Setting this to True would not verify if the directory exists
 
     Returns:
         path: absolute path derived from relative_path and base_path
@@ -83,7 +88,7 @@ def get_abs_path(relative_path, base_path=None):
 
     path = os.path.join(base_path.strip(), relative_path.strip())
 
-    if not os.path.exists(path):
+    if not silence_error and not os.path.exists(path):
         AppInformation.log_obj.write_log("An Error Occurred: {0} does not exist".format(path))
         path = None
 
@@ -182,3 +187,24 @@ def get_relative_path(path, start_directory):
             if not relpath.startswith(".") and not relpath.startswith(os.sep):
                 relpath = os.sep + relpath
     return relpath
+
+
+def create_dir(path):
+    output = path
+    try:
+        os.makedirs(path)
+    except OSError as exception:
+        if exception.errno != errno.EEXIST:
+            output = False
+            print "-- A Error Occurred -- {0}".format(exception)
+    return output
+
+
+def delete_dir(src):
+    output = True
+    try:
+        shutil.rmtree(src)
+    except Exception as e:
+        print e
+        output = False
+    return output

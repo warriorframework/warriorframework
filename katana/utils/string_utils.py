@@ -55,3 +55,7 @@ def remove_trailing_characters_from_list(element_list, char_list):
         for el in char_list:
             element_list[i] = element_list[i].strip(el)
     return element_list
+
+
+def replace_char(input_str, old, new, count=None):
+    return input_str.replace(old=old, new=new, count=count)
