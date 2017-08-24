@@ -3,7 +3,7 @@
 <!-- To read full documentation for this file, please refer to user_generated/config_sample.xml -->
 
 <data>
-    <warhorn name="Warhorn">
+    <warhorn name="Warhorn" dependency_filepath="Provide filepath, where version details for packages below are defined. By default the versions defined in requirements.txt at the base directory would be used">
         <dependency name="jira" install="no" user="no"/>
         <dependency name="lxml" install="yes" user="no"/>
         <dependency name="ncclient" install="no" user="no"/>

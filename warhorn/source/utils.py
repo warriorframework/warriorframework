@@ -431,7 +431,7 @@ def verify_python_version(str_version, regex_str, logfile, print_log_name):
                     "version of Python (2.7.0 or above in the 2.7 family).",
                     logfile, print_log_name)
         setDone(1)
-        getDone()
+        getDone(logfile, print_log_name)
     else:
         print_info("Python version satisfies requirements.", logfile,
                    print_log_name)
@@ -547,21 +547,6 @@ def get_relative_path(*args):
         path = os.path.join(path, arg)
     return path
 
-
-def get_dict_with_versions():
-    """ This function carries the name and version of the depndencies
-
-    :Returns:
-
-    1. versions (dict) = Dictionary with name as Key and version as value
-    """
-    versions = {'jira': '1.0.3', 'lxml': '3.3.3', 'ncclient': '0.4.6',
-                'paramiko': '1.16.0', 'pexpect': '4.2', 'pysnmp': '4.3.2',
-                'requests': '2.9.1', 'selenium': '2.48.0', 'xlrd': '1.0.0',
-                'cloudshell-automation-api':'7.1.0.34'}
-    return versions
-
-
 def install_depen(dependency, dependency_name, logfile, print_log_name,
                   user=None):
     """ This function checks if a dependency was installed. If not,
@@ -617,6 +602,22 @@ def install_depen(dependency, dependency_name, logfile, print_log_name,
                         logfile, print_log_name)
             setDone(1)
 
+def package_version(package, filepath):
+    """
+    For each package finds the details in the filepath.
+
+    :return:
+    version_package : Package and its version details.
+    filepath : The filepath from where version_package is derived.
+    """
+    version_package = False
+    if not os.path.exists(filepath):
+        filepath = "../requirements.txt"
+    with open(filepath, 'r') as requirements:
+        for line in requirements:
+            if package in line:
+                version_package = line
+    return version_package, os.path.abspath(filepath)
 
 def get_dependencies(logfile, print_log_name, config_file_name):
     """ Function gets called from setup.py
@@ -644,6 +645,7 @@ def get_dependencies(logfile, print_log_name, config_file_name):
 
     """
     node = get_node(config_file_name, 'warhorn')
+    dependency_filepath = node.attrib['dependency_filepath']
     if node is False:
         print_error("Warhorn tag not found! Proceeding with the installation "
                     "without installing any of the recommended "
@@ -651,42 +653,32 @@ def get_dependencies(logfile, print_log_name, config_file_name):
         setDone(1)
     else:
         dependencies = get_firstlevel_children(node, "dependency")
-        versions = get_dict_with_versions()
         for dependency in dependencies:
+            pip_what, filepath = package_version(dependency.attrib["name"], dependency_filepath)
             if 'install' in dependency.attrib:
-                if dependency.attrib["install"] == "yes":
-                    print_info("Warhorn will try to install " +
-                               dependency.attrib["name"] +
-                               " as it was set to 'yes' in the .xml file",
-                               logfile, print_log_name)
-                    if ('user' in dependency.attrib and
-                            dependency.attrib["user"] == "yes"):
-                        install_depen(dependency.attrib["name"] + "==" +
-                                      versions.get(dependency.attrib["name"]),
-                                      dependency.attrib["name"], logfile,
+                if dependency.attrib["install"] == "yes" and pip_what:
+                    print_info("Warhorn will try to install " + dependency.attrib["name"] +
+                               " as it was set to 'yes' in the .xml file", logfile, print_log_name)
+                    if ('user' in dependency.attrib and dependency.attrib["user"] == "yes"):
+                        install_depen(pip_what, dependency.attrib["name"], logfile,
                                       print_log_name, True)
                     else:
-                        install_depen(dependency.attrib["name"] + "==" +
-                                      versions.get(dependency.attrib["name"]),
-                                      dependency.attrib["name"], logfile,
-                                      print_log_name)
+                        install_depen(pip_what, dependency.attrib["name"], logfile, print_log_name)
                 elif dependency.attrib["install"] == "no":
-                    print_info("Warhorn will not install " +
-                               dependency.attrib["name"] +
-                               " as it was set to 'no' in the .xml file.",
-                               logfile, print_log_name)
+                    print_info("Warhorn will not install " + dependency.attrib["name"] +
+                               " as it was set to 'no' in the .xml file.", logfile, print_log_name)
+                elif dependency.attrib["install"] == "yes" and not pip_what:
+                    print_error("The {0} file doesn't have valid version for package:"
+                                .format(filepath) +
+                                dependency.attrib["name"], logfile, print_log_name)
                 else:
-                    print_error("Warhorn will not install " +
-                                dependency.attrib["name"] +
-                                " as the 'install' attribute in the .xml file "
-                                "was left blank.",
+                    print_error("Warhorn will not install " + dependency.attrib["name"] +
+                                " as the 'install' attribute in the .xml file was left blank.",
                                 logfile, print_log_name)
                     setDone(1)
             else:
-                print_error("Warhorn will not install " +
-                            dependency.attrib["name"] +
-                            " as the 'install' attribute was not found.",
-                            logfile, print_log_name)
+                print_error("Warhorn will not install " + dependency.attrib["name"] +
+                            " as the 'install' attribute was not found.", logfile, print_log_name)
                 setDone(1)
 
 
@@ -739,9 +731,9 @@ def setDone(value):
     DONE = value
 
 
-def getDone():
+def getDone(logfile, print_log_name):
     """This function prints the exit value of warhorn"""
-    print "DONE " + str(DONE)
+    print_info("DONE " + str(DONE), logfile, print_log_name)
     sys.exit(DONE)
 
 
