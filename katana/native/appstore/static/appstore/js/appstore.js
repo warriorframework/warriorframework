@@ -11,7 +11,9 @@ var appstore = {
             type: 'POST',
             url: 'appstore/uninstall_an_app/',
             data: {"app_path": app_path, "app_type": app_type},
-        });
+        }).done(function(data) {
+            setTimeout(function(){location.reload();}, 1000);
+		});
     },
 
     getCookie: function(name) {

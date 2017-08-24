@@ -36,5 +36,5 @@ def uninstall_an_app(request):
     app_path = request.POST.get("app_path", None)
     app_type = request.POST.get("app_type", None)
     uninstaller_obj = Uninstaller(get_parent_directory(getcwd()), app_path, app_type)
-    uninstaller_obj.uninstall()
+    output = uninstaller_obj.uninstall()
     return render(request, AppStoreView.template, {"data": AppInformation.information.apps})

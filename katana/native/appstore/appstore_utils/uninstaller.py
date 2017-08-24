@@ -28,13 +28,13 @@ class Uninstaller:
         output = self.__copy_app_to_cache()
 
         if output:
-            output = output and self.__remove_app_from_settings()
-
-        if output:
             output = output and self.__remove_app_from_urls()
 
         if output:
             output = output and self.__delete_app_dirs()
+
+        if output:
+            output = output and self.__remove_app_from_settings()
 
         if not output:
             self.__recover_app()
@@ -112,10 +112,12 @@ class Uninstaller:
         data = readlines_from_file(self.urls_file)
 
         urls_data = ""
-        for line in data:
-            for url in self.include_urls:
+        for url in self.include_urls:
+            urls_data = ""
+            for line in data:
                 if url not in line:
                     urls_data += line
+            data = urls_data
         output = write_to_file(self.urls_file, urls_data)
         return output
 
