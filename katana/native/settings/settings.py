@@ -21,9 +21,7 @@ class Settings:
 
         if request.method == 'POST':
             elem_file.remove(email_xml_obj)
-            print('tuz', elem_file)
             val = xmltodict.unparse({ 'Setting' : json.loads(request.POST.get('data')) }, pretty = True)
-            print('tyz', xml_controler.fromstring(val))
             elem_file.append(xml_controler.fromstring(val) )
             with open(w_settings,'w') as f:
                 f.write(xml_controler.tostring(elem_file))
@@ -31,8 +29,23 @@ class Settings:
             xmldoc = xmltodict.parse(email_string)
             return xmldoc
 
-    def set_general(self):
-        pass
+    def jira_setting_handler(self, request):
+        jira_config = self.navigator.get_warrior_dir() + '/Tools/Jira/jira_config.xml'
+        elem_file = xml_controler.parse(jira_config)
+        elem_file = elem_file.getroot()
+        print xml_controler.tostring(elem_file)
+        xml_string = xml_controler.tostring(elem_file)
+        if request.method == 'POST':
+            pass
+        else:
+            xmldoc = xmltodict.parse(xml_string)
+            for system in xmldoc['jira']['system']:
+                for k, v in system.items():
+                    if k == 'issue_type':
+                        v = json.dumps(v)
+                        print 'khrrrrrrrrrrrrrrrrrraaaaaaaaaa', v
+            print xmldoc
+            return xmldoc
 
     def secret_handler(self, request):
         keyDoc = self.navigator.get_warrior_dir() + '/Tools/admin/secret.key'

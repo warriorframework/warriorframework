@@ -1,7 +1,7 @@
 var katana = {
 	staticContent: 10,
 	$activeTab: null,
-	$view: null,
+	$view: 'null',
 	$prevTab: null,
 
 	initApp: function(){
@@ -101,7 +101,7 @@ var katana = {
 			autoInit = activeTab.attr('auto-init') ? autoInit.add( activeTab ) : autoInit;
 			autoInit.each( function(){
 				$elem = $(this);
-				katana.methodCaller( $elem.attr('auto-init'), $elem, prevElem );
+				katana.methodCaller( $elem.attr('auto-init').replace('@', ''), $elem, prevElem );
 			});
 		},
 
@@ -122,17 +122,132 @@ var katana = {
 		tab.remove();
 	},
 
-	generatePopup: function ( title, data ) {
-		var popup = $( $( '#popupTemplate' ).html() ).appendTo( katana.$view );
-		popup.addClass( 'active' ).append( data );
+	popupController: {
+	  body: '',
+	  template: $('<div class="popup"><div class="navbar"><div class="title"></div><div class="min"></div><div class="close"></div></div><div class="page-content"></div></div>'),
+	  tabTemplate: $('<div class="popup-tab-bar"><div class="tab"></div></div>'),
+
+	  open: function(content, title, callBack) {
+			this.body = katana.$view;
+	    var popup = this.template.clone().appendTo(katana.popupController.body);
+	    content && popup.find('.page-content').append(content);
+	    katana.popupController.initEvents(popup);
+	    katana.popupController.createTab(popup);
+	    title && katana.popupController.setTitle(popup, title);
+			callBack && callBack( popup );
+	    return popup;
+	  },
+
+	  setTitle: function(popup, title) {
+	    popup.find('.title').text(title);
+	    popup.data('tabIndex').text(title);
+	  },
+
+	  createTab: function(popup) {
+	    if (!katana.popupController.tabBar) {
+	      katana.popupController.tabBar = katana.popupController.tabTemplate.clone().appendTo(katana.popupController.body);
+	      katana.popupController.tabBar.find('.tab').remove();
+	    }
+	    var tab = katana.popupController.tabTemplate.find('.tab').first().clone().appendTo(katana.popupController.tabBar);
+	    popup.data('tabIndex', tab);
+	    tab.on('click', function() {
+	      katana.popupController.openWindow(popup);
+	    });
+	  },
+
+	  openWindow: function(popup) {
+	    var activePopup = katana.popupController.body.find('.popup.active');
+	    if (activePopup.get(0) != popup.get(0)) {
+	      activePopup.removeClass('active');
+	      popup.removeClass('removeing hidden').addClass('active');
+	    }
+	  },
+
+	  close: function(popup) {
+	    popup.data('tabIndex').remove();
+	    popup.addClass('removeing');
+	    setTimeout(function() {
+	      popup.remove();
+	    }, 300);
+	  },
+
+	  updateActiveWindow: function(popup) {
+	    var activePopup = katana.popupController.body.find('.popup.active');
+	    if (activePopup.get(0) != popup.get(0)) {
+	      activePopup.removeClass('active');
+	      popup.addClass('active');
+	    }
+	  },
+
+	  min: function(popup) {
+	    popup.addClass('removeing');
+	    setTimeout(function() {
+	      popup.addClass('hidden').removeClass('active');
+	    }, 300);
+	  },
+
+	  initEvents: function(popup) {
+	    var pressed = false;
+	    var xoffset = 0;
+	    var yoffset = 0;
+	    var x, y;
+	    var startPointx = 0;
+	    var startPointy = 0;
+	    var $elem;
+	    popup.find('.navbar .title').on('mousedown', function(e) {
+	      e.stopPropagation();
+	      e.preventDefault();
+	      katana.popupController.updateActiveWindow(popup);
+	      $elem = $(this).closest('.popup');
+	      pressed = true;
+	      xoffset = e.pageX;
+	      yoffset = e.pageY;
+	      $elem.removeClass('leftJustify').removeClass('rightJustify');
+	      katana.popupController.body.addClass('no-select');
+	      katana.popupController.body.on('mousemove', function(j) {
+	        if (pressed) {
+	          x = (j.pageX - xoffset + startPointx);
+	          y = (j.pageY - yoffset + startPointy);
+	          $elem.css('transform', 'translate3d( ' + x + 'px, ' + y + 'px,0 )');
+	        }
+	      });
+	      katana.popupController.body.one('mouseup', function() {
+	        katana.popupController.body.off('mousemove');
+	        startPointx = x;
+	        startPointy = y;
+	        pressed = false;
+	        katana.popupController.body.removeClass('no-select');
+	        if ($elem.offset().left < 0) {
+	          $elem.removeClass('rightJustify').addClass('leftJustify');
+	          startPointx = 0;
+	          startPointy = 0;
+	        } else if ($elem.offset().left > $(this).width() - $elem.width()) {
+	          $elem.removeClass('leftJustify').addClass('rightJustify');
+	          startPoinx = $(this).width() - $elem.width();
+	          startPointy = 0;
+	        }
+	      });
+	    });
+	    popup.find('.close').one('click', function(e) {
+	      katana.popupController.close(popup);
+	      e.stopPropagation();
+	      e.preventDefault();
+	    });
+	    popup.on('click', function() {
+	      katana.popupController.updateActiveWindow(popup);
+	    });
+	    popup.find('.min').on('click', function(e) {
+	      katana.popupController.min(popup);
+	      e.stopPropagation();
+	      e.preventDefault();
+	    });
+	  }
+
 	},
 
-	closePopup: function ( popup ) {
-		popup = popup ? popup : katana.$view.find( '.popupContainer.active' );
-		popup.removeClass( 'active' );
-		setTimeout(function () {
-			popup.remove();
-		}, 300);
+	toggleActive: function(){
+		var $elem = $(this);
+		$elem.toggleClass('active');
 	},
 
 	fileNav:{

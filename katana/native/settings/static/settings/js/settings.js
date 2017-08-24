@@ -41,5 +41,30 @@ var settings = {
 				console.log('saved', data);
 			} );
 		}
-	}
+	},
+
+	jira: {
+		boolHandler: function( $elem ){
+			var button = $elem.closest('.feild-block').find('.relative-tool-bar [title="' + $elem.attr('key') + '"]');
+			$elem.val() == 'true' && button.addClass('active');
+			$elem.closest('.feild').remove();
+		},
+
+		default: function(){
+			settings.jira.boolHandler( $(this) );
+		},
+
+		append_log: function(){
+			settings.jira.boolHandler( $(this) );
+		},
+
+		issue_type: function(){
+			
+		},
+
+		addIssueType: function(){
+
+		},
+
+	},
 };

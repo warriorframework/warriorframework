@@ -28,3 +28,6 @@ def email_setting_handler( request ):
 
 def secret_handler( request ):
     return render(request, 'settings/secret.html', {"secret": controls.secret_handler(request)})
+
+def jira_setting_handler( request ):
+    return render(request, 'settings/jira_setting_handler.html', {"jira": controls.jira_setting_handler(request)})
