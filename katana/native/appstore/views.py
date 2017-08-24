@@ -16,6 +16,8 @@ from __future__ import unicode_literals
 from os import getcwd
 from django.shortcuts import render
 from django.views import View
+
+from native.appstore.appstore_utils.installer import Installer
 from native.appstore.appstore_utils.uninstaller import Uninstaller
 from utils.directory_traversal_utils import get_parent_directory
 from wui.core.core_utils.app_info_class import AppInformation
@@ -37,4 +39,11 @@ def uninstall_an_app(request):
     app_type = request.POST.get("app_type", None)
     uninstaller_obj = Uninstaller(get_parent_directory(getcwd()), app_path, app_type)
     output = uninstaller_obj.uninstall()
+    return render(request, AppStoreView.template, {"data": AppInformation.information.apps})
+
+
+def install_an_app(request):
+    app_path = request.POST.get("app_path", None)
+    installer_obj = Installer(get_parent_directory(getcwd()), app_path)
+    installer_obj.install()
     return render(request, AppStoreView.template, {"data": AppInformation.information.apps})

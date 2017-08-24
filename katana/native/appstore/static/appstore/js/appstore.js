@@ -16,6 +16,19 @@ var appstore = {
 		});
     },
 
+    installAnApp: function(){
+        var elem = document.getElementById('install_app_path');
+        var app_path = elem.value;
+        $.ajax({
+            headers: {
+                'X-CSRFToken': appstore.getCookie('csrftoken')
+            },
+            type: 'POST',
+            url: 'appstore/install_an_app/',
+            data: {"app_path": app_path},
+        });
+    },
+
     getCookie: function(name) {
         var cookieValue = null;
         if (document.cookie && document.cookie != '') {

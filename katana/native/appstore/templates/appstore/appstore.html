@@ -11,24 +11,29 @@
 
     <body>
     {% csrf_token %}
-            <h1>&nbsp;My Apps</h1>
+
+        <h1>&nbsp;Install App</h1>
+        <br>
+        <input id="install_app_path" name="install_app_path" placeholder="Path to the App" value="">
+        <button class="button" katana-click="appstore.installAnApp">Install</button>
+        <h1>&nbsp;My Apps</h1>
+        <br>
+
+
+        {% for app in data %}
+            <i class="fa fa-{{ app.data.icon }}"></i>
+
+            <span>{{ app.data.name }}</span>
+            {% if app.app_type != "native" %}
+            <button class="button" katana-click="appstore.uninstallAnApp" app_path="{{ app.path }}" app_type="{{ app.app_type }}">Uninstall</button>
+            {% endif %}
+
+            <button class="button">Installed</button>
+
             <br>
 
-
-            {% for app in data %}
-                <i class="fa fa-{{ app.data.icon }}"></i>
-
-                <span>{{ app.data.name }}</span>
-                {% if app.app_type != "native" %}
-                <button class="button" katana-click="appstore.uninstallAnApp" app_path="{{ app.path }}" app_type="{{ app.app_type }}">Uninstall</button>
-                {% endif %}
-
-                <button class="button">Installed</button>
-
-                <br>
-
-            <hr class="hr-shadow">
-            {% endfor %}
+        <hr class="hr-shadow">
+        {% endfor %}
     </body>
 
 </html>
