@@ -326,6 +326,7 @@ function mapCaseJsonToUi(data){
 			});
 		// Show arguments for each step in the UI div tag. 
 		var arguments = oneCaseStep['Arguments']['argument'];
+		var ta = 0; 
 		for (xarg in arguments) {
 			items.push('<br>');
 
@@ -337,7 +338,7 @@ function mapCaseJsonToUi(data){
 			items.push('<label class="text-right col-md-1">Value</label>');
 			items.push('<input type="text" class="text-right" value="'+arguments[xarg]['@value']+'"/>');
 			
-			bid = "deleteArgument-"+ s + "-" + xarg;
+			var bid = "deleteArgument-"+ s + "-" + ta;
 			items.push('<input type="button" class="btn-danger" value="Delete" id="'+bid+'"/>');
 
 			$('#'+bid).off('click');   //unbind and bind are deprecated. 
@@ -350,7 +351,7 @@ function mapCaseJsonToUi(data){
 			if (arguments[xarg]['@name'] == 'system_name') {
 					items.push('</div>');
 				}
-
+			ta  = ta + 1; 
 			}
 
 		items.push('<hr><br>');
@@ -478,18 +479,18 @@ function removeTestStep( sid ){
 function addStepToCase(){
 	// Add an entry to the jsonTestSuites....
 	var newCaseStep = {
-		"step": { "@Driver": "demo_driver", "@Keyword": "" , "@TS": "0" },
+		"step": {  "$": "", "@Driver": "demo_driver", "@Keyword": "" , "@TS": "0" },
 		"Arguments" : { },
-		"onError": { "@action" : "next" } ,
-		"iteration_type": { "@type" : "" } ,
-		"Description":" ",
-		"Execute": { "@ExecType": "Yes",
-			"Rule": {"@Condition": "","@Condvalue": "","@Else": "next", "@Elsevalue": "" }
+		"onError": {  "$": "", "@action" : "next" } ,
+		"iteration_type": { "$": "",  "@type" : "" } ,
+		"Description": { "$": " "} ,
+		"Execute": {  "$": "", "@ExecType": "Yes",
+			"Rule": { "$": "", "@Condition": "","@Condvalue": "","@Else": "next", "@Elsevalue": "" }
 		}, 
-		"context": "positive", 
-		"impact" : "impact",
-		"rmt" : {} ,
-		"retry": {"@type": "if not", "@Condition": "testsuite_1_result", "@Condvalue": "PASS", "@count": "6", "@interval": "0"}, 
+		"context": { "$": "positive"}, 
+		"impact" : { "$": "impact"},
+		"rmt" : {  "$": " "} ,
+		"retry": { "$": "", "@type": "if not", "@Condition": "testsuite_1_result", "@Condvalue": "PASS", "@count": "6", "@interval": "0"}, 
 	 };
 	if (!jQuery.isArray(jsonCaseSteps['step'])) {
 		jsonCaseSteps['step'] = [jsonCaseSteps['step']];
