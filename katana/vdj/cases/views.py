@@ -287,18 +287,18 @@ def editCase(request):
 	xml_r = {}
 	xml_r["Testcase"] = {}
 	xml_r["Testcase"]["Details"] = {}
-	xml_r["Testcase"]["Details"]["Name"] = ""
-	xml_r["Testcase"]["Details"]["Title"] = ""
-	xml_r["Testcase"]["Details"]["Category"] = ""
-	xml_r["Testcase"]["Details"]["Date"] = ""
-	xml_r["Testcase"]["Details"]["Time"] = ""
-	xml_r["Testcase"]["Details"]["State"] = ""
-	xml_r["Testcase"]["Details"]["InputDataFile"] = ""
-	xml_r["Testcase"]["Details"]["Datatype"] = ""
-	xml_r["Testcase"]["Details"]["defaultOnError"] = ""
-	xml_r["Testcase"]["Details"]["Logsdir"] = ""
-	xml_r["Testcase"]["Details"]["Resultsdir"] = ""
-	xml_r["Testcase"]["Details"]["ExpectedResults"] = ""
+	xml_r["Testcase"]["Details"]["Name"] = { "$": ""}
+	xml_r["Testcase"]["Details"]["Title"] = { "$": ""}
+	xml_r["Testcase"]["Details"]["Category"] = { "$": ""}
+	xml_r["Testcase"]["Details"]["Date"] = { "$": ""}
+	xml_r["Testcase"]["Details"]["Time"] = { "$": ""}
+	xml_r["Testcase"]["Details"]["State"] = { "$": ""}
+	xml_r["Testcase"]["Details"]["InputDataFile"] = { "$": ""}
+	xml_r["Testcase"]["Details"]["Datatype"] = { "$": ""}
+	xml_r["Testcase"]["Details"]["default_onError"] = { "$": ""}
+	xml_r["Testcase"]["Details"]["Logsdir"] = { "$": ""}
+	xml_r["Testcase"]["Details"]["Resultsdir"] = { "$": ""}
+	xml_r["Testcase"]["Details"]["ExpectedResults"] = 	{ "$": ""}
 	xml_r["Testcase"]["Requirements"] = {} 
 	xml_r["Testcase"]["Steps"] = {} 
 	
@@ -310,7 +310,8 @@ def editCase(request):
 	for xstr in ["Name", "Title", "Category", "Date", "Time", "InputDataFile", "Engineer", \
 		"Datatype", "default_onError", "Logsdir", "Resultsdir", "ExpectedResults"]:
 		try:
-			xml_r["Testcase"]["Details"][xstr] = copy.copy(xml_d["Testcase"]["Details"].get(xstr,{"$",""}))
+			xml_r["Testcase"]["Details"][xstr] = copy.copy(xml_d["Testcase"]["Details"].get(xstr, { "$": ""}))
+			if not xml_r["Testcase"]["Details"][xstr].has_key('$'): xml_r["Testcase"]["Details"][xstr]["$"]="";
 		except:
 			pass
 

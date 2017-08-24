@@ -70,21 +70,26 @@ Using: {{ docSpec }}
 </div>
 
 	  
-<div class="container">
+<div class="container-fluid">
    <h2>Steps</h2>
-	 <div id="listOfTestCasesForSuite" class="col-md-12" >  </div>    
+ 	<div class="row">
+	 <div id="listOfTestStepsForCase" class="col-md-6" >  </div> 
+	 <div id="sourceFileText" color="red" class="col-md-6" >  FILL </div>    
+
+	</div>
+
 </div>
 
 <div class="btn-group" role="group">   
-		<button id="addStep" class="btn btn-secondary" onclick="addStepToCase()">Add</button>
-		<button class="btn btn-secondary" onclick="start()">Refresh</button>
+		<button id="addStep" class="btn btn-primary" onclick="addStepToCase()">Add</button>
+		<button class="btn btn-primary" onclick="start()">Refresh</button>
 		<button class="btn btn-secondary">Load</button>
-		<button class="btn btn-secondary">Save</button>
+		<button class="btn btn-success">Save</button>
 	</div>      
 	<div>
 	<input class="col-md-12 text-right" type="text" id="my_file_to_save" name="my_file_to_save" value="{{myfile}}"/>
 	</div>			
-\
+
 <script type="text/javascript">
 function start() {
 	/*

@@ -227,7 +227,7 @@ function mapProjectJsonToUi(data){
 		items.push('</select>');
 		items.push("<br>");
 		bid = "deleteTestSuite-"+s;
-		items.push("<input type=\"button\" value=\"Delete\" id='"+bid+"'>"+bid+"/>");
+		items.push('<input type="button" class="btn-danger" value="Delete" id="'+bid+'"/>');
 		$('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 		$(document).on('click','#'+bid,function(  ) {
 			//alert(this.id);

@@ -85,7 +85,7 @@ function mapRequirementsToUI(data) {
 		if (!oneReqStep['Requirement']) { oneReqStep['Requirement'] = "not set"; }
 		items.push('<p>'+oneReqStep['Requirement']);  // TBD
 		var bid = "deleteRequirement-"+s;
-		items.push("<input type=\"button\" value=\"Delete\" id='"+bid+"'/>");
+		items.push("<input type=\"button\" class=\"btn-danger\" value=\"Delete\" id='"+bid+"'/>");
 		$('#'+bid).off('click');
 		$(document).on('click','#'+bid,function(  ) {
 			var names = this.id.split('-');  // Get the ID from the object you are deleting 
@@ -261,7 +261,7 @@ function mapCaseJsonToUi(data){
 	items.push('<div class="container"><div class="row">'); 
 	items.push('<div id="accordion_case_display"  >');
 	//console.log("xdata =" + xdata);
-	$("#listOfTestCasesForSuite").html("");      // Start with clean slate
+	$("#listOfTestStepsForCase").html("");      // Start with clean slate
 	for (var s=0; s<Object.keys(xdata).length; s++ ) {  // for s in xdata
 		var oneCaseStep = xdata[s];             // for each step in case
 		//console.log(oneCaseStep['path']);
@@ -314,7 +314,7 @@ function mapCaseJsonToUi(data){
 		//
 		items.push('<br><label class="col-md-1 text-right" >Arguments:</label>');
 		bid = "addArgument-"+s;	
-		items.push('<input type="button"  value="Add Argument" id="'+bid+'"/>');
+		items.push('<input type="button" class="btn-primary" value="Add Argument" id="'+bid+'"/>');
 		//
 		// Add the ability to add an argument to a specific test case.
 		//
@@ -332,13 +332,13 @@ function mapCaseJsonToUi(data){
 			if (arguments[xarg]['@name'] == 'system_name') {
 				items.push('<div class="arguments-div">');
 			}
-			items.push('<label class="text-right">Name</label>');
+			items.push('<label class="text-right col-md-1">Name</label>');
 			items.push('<input type="text" class="text-right" value="'+arguments[xarg]['@name']+'"/>');
-			items.push('<label class="text-right">Value</label>');
+			items.push('<label class="text-right col-md-1">Value</label>');
 			items.push('<input type="text" class="text-right" value="'+arguments[xarg]['@value']+'"/>');
 			
 			bid = "deleteArgument-"+ s + "-" + xarg;
-			items.push('<input type="button" class="col-md-1" value="Delete" id="'+bid+'"/>');
+			items.push('<input type="button" class="btn-danger" value="Delete" id="'+bid+'"/>');
 
 			$('#'+bid).off('click');   //unbind and bind are deprecated. 
 			$(document).on('click','#'+bid,function(  ) {
@@ -358,27 +358,27 @@ function mapCaseJsonToUi(data){
 
 		//
 		//
-		items.push('<label class="col-md-1 text-right" >OnError-at-action:</label>');
-		items.push('<input type="text" class="col-md-2 text-right" id="'+s+'-onError-at-action" value="'+oneCaseStep['onError']['@action']+'" />');
-		items.push('<label class="col-md-1 text-right" >OnError-at-value:</label>');
-		items.push('<select type="text" class="col-md-2 text-right" id="'+s+'-onError-at-value" value="'+oneCaseStep['onError']['@value']+'" >');
+		items.push('<label class="text-right" >OnError-at-action:</label>');
+		items.push('<input type="text" class="text-right" id="'+s+'-onError-at-action" value="'+oneCaseStep['onError']['@action']+'" />');
+		items.push('<label class="text-right" >OnError-at-value:</label>');
+		items.push('<select type="text" class="text-right" id="'+s+'-onError-at-value" value="'+oneCaseStep['onError']['@value']+'" >');
 		items.push('<option value="next">next</option>'); 
 		items.push('<option value="abort">abort</option>'); 
 		items.push('<option value="abort_as_error">abort_as_error</option>'); 
 		items.push('<option value="goto">goto</option>'); 
 		items.push('</select>');
 
-		items.push('<label class="col-md-1 text-right" >Description:</label>');
-		items.push('<input type="text" class="col-md-2 text-right" id="'+s+'-Step-Description" value="'+oneCaseStep['Description']+'" />');
+		items.push('<label class="text-right" >Description:</label>');
+		items.push('<input type="text" class="text-right" id="'+s+'-Step-Description" value="'+oneCaseStep['Description']+'" />');
 		items.push('<div class="iteration-div">');
-		items.push('<label class="col-md-1 text-right" >Iteration Type:</label>');
-		items.push('<input type="text" class="col-md-2 text-right" id="'+s+'-onError-at-action" value="'+oneCaseStep['onError']['@action']+'" />');
+		items.push('<label class="text-right" >Iteration Type:</label>');
+		items.push('<input type="text" class="text-right" id="'+s+'-onError-at-action" value="'+oneCaseStep['onError']['@action']+'" />');
 		items.push('</div>');
 
 		items.push('<br><span class="label label-primary">Execution</span><br>');
 
-		items.push('<label class="col-md-1 text-right" >ExecType:</label>');
-		items.push('<select type="text" class="col-md-2 text-right" id="'+s+':"Execute-ExecType" value="'+oneCaseStep['step']['@ExecType']+'" >');
+		items.push('<label class="text-right" >ExecType:</label>');
+		items.push('<select type="text" class="text-right" id="'+s+':"Execute-ExecType" value="'+oneCaseStep['step']['@ExecType']+'" >');
 		items.push('<option value="If">If</option>'); 
 		items.push('<option value="If Not">If Not</option>'); 
 		items.push('<option value="Yes">Yes</option>'); 
@@ -386,21 +386,21 @@ function mapCaseJsonToUi(data){
 		items.push('</select>'); 
 		items.push('<br><span class="label label-primary">Rules</span><br>');
 
-		items.push('<label class="col-md-1 text-right" >Rule-Condition:</label>');
-		items.push('<input type="text" class="col-md-2 text-right" id="'+s+'-Execute-Rule-at-Condition" value="'+oneCaseStep['step']['Rule']['@Condition']+'" />');
-		items.push('<label class="col-md-1 text-right" f>Rule-Condvalue:</label>');
-		items.push('<input type="text" class="col-md-2 text-right" id="'+s+'-Execute-Rule-at-Condvalue" value="'+oneCaseStep['step']['Rule']['@Condvalue']+'" />');
-		items.push('<label class="col-md-1 text-right" >Rule-Else:</label>');
-		items.push('<input type="text" class="col-md-2 text-right" id="'+s+'-Execute-Rule-at-Else"  value="'+oneCaseStep['step']['Rule']['@Else']+'" />');
-		items.push('<label class="col-md-1 text-right" >Rule-at-Elsevalue:</label>');
-		items.push('<input type="text" class="col-md-2 text-right" id="'+s+'-Execute-Rule-at-Elsevalue"  value="'+oneCaseStep['step']['Rule']['@Elsevalue']+'" />');
+		items.push('<label class="text-right" >Rule-Condition:</label>');
+		items.push('<input type="text" class="text-right" id="'+s+'-Execute-Rule-at-Condition" value="'+oneCaseStep['step']['Rule']['@Condition']+'" />');
+		items.push('<label class="text-right" f>Rule-Condvalue:</label>');
+		items.push('<input type="text" class="text-right" id="'+s+'-Execute-Rule-at-Condvalue" value="'+oneCaseStep['step']['Rule']['@Condvalue']+'" />');
+		items.push('<label class="text-right" >Rule-Else:</label>');
+		items.push('<input type="text" class="text-right" id="'+s+'-Execute-Rule-at-Else"  value="'+oneCaseStep['step']['Rule']['@Else']+'" />');
+		items.push('<label class="text-right" >Rule-at-Elsevalue:</label>');
+		items.push('<input type="text" class="text-right" id="'+s+'-Execute-Rule-at-Elsevalue"  value="'+oneCaseStep['step']['Rule']['@Elsevalue']+'" />');
 		items.push('<br><span class="label label-primary">OnError</span><br>');
 
-		items.push('<label class="col-md-1 text-right" >Context:</label>');
-		items.push('<input type="text" class="col-md-2 text-right" id="'+s+'-context" value="'+oneCaseStep['context']+'" />');
+		items.push('<label class="text-right" >Context:</label>');
+		items.push('<input type="text" class="text-right" id="'+s+'-context" value="'+oneCaseStep['context']['$']+'" />');
 
-		items.push('<label class="col-md-1 text-right" >Context:</label>');
-		items.push('<input type="text" class="col-md-2 text-right" id="'+s+'-rmt" value="'+oneCaseStep['rmt']+'" />');
+		items.push('<label class="col-md-2 text-right" >Context:</label>');
+		items.push('<input type="text" class="text-right" id="'+s+'-rmt" value="'+oneCaseStep['rmt']+'" />');
 
 		/*
 		** Keep these around for reference. 
@@ -430,7 +430,7 @@ function mapCaseJsonToUi(data){
 		items.push('<br><span class="label label-primary">Impact</span><br>');
 		*/
 
-		items.push('<label class="col-md-1 text-right" >impact</label>');
+		items.push('<label class="text-right" >impact</label>');
 		items.push('<select type="text" id="'+s+':"impact" value="'+oneCaseStep['impact']+'" >');
 		items.push('<option value="impact">impact</option>'); 
 		items.push('<option value="noimpact">noimpact</option>'); 
@@ -439,7 +439,7 @@ function mapCaseJsonToUi(data){
 		
 		
 		var bid = "deleteTestStep-"+s;
-		items.push('<input type="button" value="Delete" id="'+bid+'"/>');
+		items.push('<input type="button" class="btn-danger" value="Delete Step" id="'+bid+'"/>');
 		$('#'+bid).off('click');   //unbind and bind are deprecated. 
 		$(document).on('click','#'+bid,function(  ) {
 			alert(this.id);
@@ -451,8 +451,8 @@ function mapCaseJsonToUi(data){
 		
 
 	}
-	items.push('</div><div col="col-md-6"><label id="fileContents">'+oneCaseStep['@Driver']+'</label></div></div>'); 
-	$('<div/>', { class: "col-md-6" , collapsible: "true" , html: items.join("")}).appendTo("#listOfTestCasesForSuite");
+	items.push('</div>'); // 
+	$('<div/>', { class: "col-md-12" , collapsible: "true" , html: items.join("")}).appendTo("#listOfTestStepsForCase");
 	$("#accordion_case_display").accordion();
 	
 	if (jsonCaseDetails['Datatype'] == 'Custom') {

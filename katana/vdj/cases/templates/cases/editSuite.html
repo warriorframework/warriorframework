@@ -48,13 +48,14 @@ Using: {{ docSpec }}
 </div>
          
 <div class="container">
-	<div class="col-md-12" id="listOfTestCasesForSuite" > </div>
-  	
+	<div class="col-md-6" id="listOfTestCasesForSuite" > </div>
+	<div col="col-md-6"><label id="fileContents"></label>div>
+
     <div class="btn-group col-md-8" role="group">   
-		<button id="addSuite" class="btn btn-secondary" onclick="addCaseToSuite()">Add</button>
-		<button class="btn btn-secondary" onclick="start()">Refresh</button>
-		<button class="btn btn-secondary" onclick="openAllSuites()">Show All</button>
-		<button class="btn btn-secondary" onclick="mapUiToSuiteJson()">Save</button>
+		<button id="addSuite" class="btn btn-primary" onclick="addCaseToSuite()">Add</button>
+		<button class="btn btn-primary" onclick="start()">Refresh</button>
+		<button class="btn btn-primary" onclick="openAllSuites()">Show All</button>
+		<button class="btn btn-success" onclick="mapUiToSuiteJson()">Save</button>
 	</div>
 
 </div>
