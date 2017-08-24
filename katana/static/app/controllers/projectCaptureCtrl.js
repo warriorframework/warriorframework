@@ -36,6 +36,36 @@ app.controller('projectCapCtrl', ['$scope', '$http', '$routeParams', '$controlle
         $scope.suiteEditor = false;
         $scope.suiteBeingEdited = "None";
 
+    $scope.loadFile = function(filepath) {
+    
+       dirCheck=filepath.split("/").reverse()[1];
+
+        if(dirCheck=="Suites"){
+
+          url = filepath.split('..')[1];      
+          splitDir = url.split('/Suites')[1]; 
+          finalUrl = "#/testsuite"+splitDir+"/none";
+          window.open(finalUrl);
+
+       }
+
+        else{
+          
+          splitPath = filepath.split("/").pop(-1); 
+          splitter = splitPath+"/";
+          checkDir = filepath.split("Suites/")[1].split(splitPath)[0]; 
+          splitDir = filepath.split(checkDir)[0]; 
+          frameUrl = splitDir+splitter+checkDir;
+          frameUrl = frameUrl.split('..')[1]; 
+          splitter = frameUrl.split('/Suites')[1];
+          finalUrlDir = "#/testsuite"+splitter;
+          window.open(finalUrlDir);
+
+        }
+
+     
+      };
+
         fileFactory.readstatesfile()
             .then(
                 function(data) {

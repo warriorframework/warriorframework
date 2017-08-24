@@ -868,8 +868,8 @@
                                  <td class="text-right">
                                     {{ $index + 1 }}
                                 </td>
-                                <td style="word-break: break-all">
-                                <a href="" target="_blank" ng-click="loadFile(testcases[$index].path)" >                           {{testcases[$index].path}}
+                                <td style="word-break: break-all;cursor:pointer">
+                               <a ng-click="loadFile(testcases[$index].path);" >                           {{testcases[$index].path}}
                                 </a>
                                 </td>
                                 <td>{{testcases[$index].context}}</td>
@@ -2257,7 +2257,10 @@
                                  <td class="text-right">
                                     {{ $index + 1 }}
                                 </td>
-                                <td style="word-break: break-all">{{testcases[$index].path}}</td>
+                                 <td style="word-break: break-all;cursor:pointer;">
+                                <a ng-click="loadFile(testcases[$index].path)" >                           {{testcases[$index].path}}
+                                </a>
+                                </td>
                                 <td>{{testcases[$index].context}}</td>
                                 <td ng-show="exectypeCap != 'iterative_sequential' && exectypeCap != 'iterative_parallel'" style="word-break: break-all">{{testcases[$index].InputDataFile}}</td>
                                 <td>

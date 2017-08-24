@@ -45,51 +45,36 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
         $scope.testcaseEditor = false;
         $scope.testcaseBeingEdited = "None";
 
-    
-    function readConfig() {
-        $http.get('/readconfig')
-            .success(function(data, status, headers, config) {
-                $scope.cfg = data;
-                $scope.orig.pythonsrcdir = $scope.cfg.pythonsrcdir;
-            })
-            .error(function(data, status, headers, config) {
-                alert("Error fetching config data. ", status, headers);
-            });
-    }
 
-    readConfig();
+     $scope.loadFile = function(filepath) {
+   
+         dirCheck=filepath.split("/").reverse()[1];
 
-
-   $scope.loadFile = function(filepath) {
-    
-       dirCheck=filepath.split("/").reverse()[1];
-
-        if(dirCheck=="Testcases"){
-        
+         if(dirCheck=="Testcases"){
+          
           url = filepath.split('..')[1];      
           splitDir = url.split('/Testcases')[1]; 
           finalUrl = "#/testcase"+splitDir+"/none";
           window.open(finalUrl);
-
-       }
+ 
+         }
 
         else{
-          
-          splitPath=filepath.split("/").pop(-1); 
-          splitter= splitPath+"/";
-          checkDir=filepath.split("Testcases/")[1].split(splitPath)[0]; 
-          splitDir=filepath.split(checkDir)[0]; 
-          frameUrl=splitDir+splitter+checkDir;
+
+          splitPath = filepath.split("/").pop(-1); 
+          splitter = splitPath+"/";
+          checkDir = filepath.split("Testcases/")[1].split(splitPath)[0]; 
+          splitDir = filepath.split(checkDir)[0]; 
+          frameUrl = splitDir+splitter+checkDir;
           frameUrl = frameUrl.split('..')[1]; 
           splitter = frameUrl.split('/Testcases')[1];
-          finalUrl = "#/testcase"+splitter;
-          window.open(finalUrl);
+          finalUrlDir = "#/testcase"+splitter;
+          window.open(finalUrlDir);
 
         }
 
-     
       };
-      
+
        function get_folders_names(json_dir_data){
             var dir = json_dir_data["dir"];
             var files = json_dir_data["file"];

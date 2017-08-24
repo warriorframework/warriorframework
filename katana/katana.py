@@ -22,7 +22,6 @@ import threading
 import xml.etree.ElementTree
 from os.path import expanduser
 from xml.dom.minidom import parseString
-import webbrowser 
 
 import docstrings
 from bottle import route, run, static_file, template, redirect, post, request, \
