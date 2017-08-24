@@ -109,7 +109,6 @@ def getProjectDataBack(request):
 	print "Got something back in request";
 	#response = request.readlines();   # Get the JSON response 
 	template = loader.get_template("cases/editProject.html")  # get another one?
-	
 	ijs = request.POST.get(u'Project')  # This is a json string 
 	print ijs
 	#ijs = ijs.replace("u'","'")  <-- does not work!
@@ -117,20 +116,12 @@ def getProjectDataBack(request):
 	#print dd
 
 	print "--------------TREE----------------"
-
-	#print tostring(ijs)
-	#result = bf.etree(tostring(ijs))
-	#print dir(result)
-	#print xml.etree.ElementTree.tostring(result)  # This throws an exception 
-	
-	#return HttpResponse(template.render(context, request))
-	#return  editProject(request)
+	fname = request.POST.get(u'filetosave')
+	print "save to ", fname 
+	fd = open(fname,'w');
+	fd.write(ijs);
+	fd.close();
 	return redirect(request.META['HTTP_REFERER'])
-
-
-DOCTYPE = '<?xml version="1.0" encoding="UTF-8"?>'
-XMLNS = 'http://docs.openstack.org/identity/api/v2.0'
-
 
 def editProject(request):
 	"""
@@ -190,6 +181,21 @@ def editProject(request):
 
 	return HttpResponse(template.render(context, request))
 
+
+def getSuiteDataBack(request):
+	print "Got something back in request";
+	#response = request.readlines();   # Get the JSON response 
+	ijs = request.POST.get(u'Suite')  # This is a json string 
+	print ijs
+	print "--------------TREE----------------"
+	fname = request.POST.get(u'filetosave')
+	print "save to ", fname 
+	fd = open(fname,'w');
+	fd.write(ijs);
+	fd.close();
+	return redirect(request.META['HTTP_REFERER'])
+
+
 def editSuite(request):
 	"""
 	Set up JSON object for editing a suites file. 
@@ -200,15 +206,16 @@ def editSuite(request):
 	xml_r = {}
 	xml_r["TestSuite"] = {}
 	xml_r["TestSuite"]["Details"] = {}
-	xml_r["TestSuite"]["Details"]["Name"] = ""
-	xml_r["TestSuite"]["Details"]["Title"] = ""
-	xml_r["TestSuite"]["Details"]["Engineer"] = ""
-	xml_r["TestSuite"]["Details"]["Date"] = ""
-	xml_r["TestSuite"]["Details"]["Time"] = ""
+	xml_r["TestSuite"]["Details"]["Name"] = { "$": ""}
+	xml_r["TestSuite"]["Details"]["Title"] = { "$": ""}
+	xml_r["TestSuite"]["Details"]["Engineer"] = { "$": ""}
+	xml_r["TestSuite"]["Details"]["Date"] = { "$": ""}
+	xml_r["TestSuite"]["Details"]["Time"] = { "$": ""}
 	xml_r["TestSuite"]["Details"]["type"] = { }
 	xml_r["TestSuite"]["Details"]["type"]['\@exectype'] = u"sequential_testcases"
 	xml_r["TestSuite"]["Details"]["default_onError"] = {}
-	xml_r["TestSuite"]["Details"]["default_onError"]['@action']= ""
+	xml_r["TestSuite"]["Details"]["default_onError"]["$"] = "" 
+	xml_r["TestSuite"]["Details"]["default_onError"]['@action']= { "$": ""}
 	xml_r["TestSuite"]["Testsuites"] = ""
 	
 	
@@ -228,18 +235,18 @@ def editSuite(request):
 	except:
 		xml_r["TestSuite"]["Testcases"] = {}
 
-
+	xml_r["TestSuite"]["Details"]["default_onError"]["$"] = "" 
 	context = { 
 		'myfile': filename,
 		'docSpec': 'projectSpec',
 		'suiteName': xml_r["TestSuite"]["Details"]["Name"]["$"],
 		'suiteTitle': xml_r["TestSuite"]["Details"]["Title"]["$"],
 		'suiteEngineer': xml_r["TestSuite"]["Details"]["Engineer"]["$"],
-		'suiteCategory': xml_r["TestSuite"]["Details"]["Category"]["$"],
+		#'suiteCategory': xml_r["TestSuite"]["Details"]["Category"]["$"],
 		'suiteDate': xml_r["TestSuite"]["Details"]["Date"]["$"],
 		'suiteTime': xml_r["TestSuite"]["Details"]["Time"]["$"],
-		'suiteType': xml_r["TestSuite"]["Details"]["type"]["$"],
-		'suitedefault_onError': xml_r["TestSuite"]["Details"]["default_onError"]["$"],
+		#'suiteType': xml_r["TestSuite"]["Details"]["type"]["$"],
+		'suitedefault_onError':xml_r["TestSuite"]["Details"]["default_onError"]["$"] ,
 		'suiteCases': xml_r['TestSuite']['Testcases'],
 		'fulljson': xml_r['TestSuite'],
 		'suiteResults': ""
@@ -249,6 +256,21 @@ def editSuite(request):
 	# 
 
 	return HttpResponse(template.render(context, request))
+
+
+def getCaseDataBack(request):
+	print "Got something back in request";
+	#response = request.readlines();   # Get the JSON response 
+	ijs = request.POST.get(u'Testcase')  # This is a json string 
+	print ijs
+	print "--------------TREE----------------"
+	fname = request.POST.get(u'filetosave')
+	print "save to ", fname 
+	fd = open(fname,'w');
+	fd.write(ijs);
+	fd.close();
+	return redirect(request.META['HTTP_REFERER'])
+
 
 def editCase(request):
 	""" 

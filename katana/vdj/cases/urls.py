@@ -14,5 +14,8 @@ urlpatterns = [
             url(r'listAllSuites', views.listAllSuites, name='listAllSuites'),
             url(r'listAllProjects', views.listAllProjects, name='listAllProjects'),
             url(r'getDocStringForDriver',views.getDocStringForDriver, name='getDocStringForDriver'),
-            url(r'getProjectDataBack',views.getProjectDataBack, name='getProjectDataBack')
+            url(r'getProjectDataBack',views.getProjectDataBack, name='getProjectDataBack'),
+            url(r'getSuiteDataBack',views.getSuiteDataBack, name='getSuiteDataBack'),
+            url(r'getCaseDataBack',views.getCaseDataBack, name='getCaseDataBack')
+            
             ]

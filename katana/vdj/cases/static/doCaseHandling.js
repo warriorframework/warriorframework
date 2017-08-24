@@ -117,6 +117,138 @@ function removeOneArgument( sid, aid) {
 	mapCaseJsonToUi(jsonCaseSteps);
 }
 
+
+function mapUiToCaseJson() {
+	
+	jsonCaseObject['Details']['Name']['$'] = $('#caseName').val();
+	jsonCaseObject['Details']['Title']['$'] = $('#caseTitle').val();
+	jsonCaseObject['Details']['Category']['$'] = $('#caseCategory').val();
+	jsonCaseObject['Details']['State']['$'] = $('#caseState').val();
+	jsonCaseObject['Details']['Engineer']['$'] = $('#caseEngineer').val();
+	jsonCaseObject['Details']['Title']['$'] = $('#caseTitle').val();
+	jsonCaseObject['Details']['Date']['$'] = $('#caseDate').val();
+	//jsonCaseObject['Details']['Time'] = $('#suiteTime').val();
+	jsonCaseObject['Details']['default_onError']['$'] = $('#default_onError').val();
+	jsonCaseObject['Details']['Datatype']['$'] = $('#caseDatatype').val();
+	jsonCaseObject['dataPath'] = { "$" : $('#caseInputDataFile').val()};
+	jsonCaseObject['resultsDir'] = { "$" : $('#caseResultsDir').val()};
+	jsonCaseObject['logsDir'] = { "$" : $('#caseLogsDir').val()};
+	jsonCaseObject['expectedDir'] = { "$" : $('#caseExpectedResults').val()};
+	
+
+	jsonCaseObject['SaveToFile'] = { "$" : $('#my_file_to_save').val()};
+	// Now walk the DOM ..
+
+
+	jsonCaseObject['Requirements'] = { "$" : "" , "Requirement" : [] };
+	var rdata = jsonCaseObject['Steps']['step'];
+	for (var s=0; s<Object.keys(rdata).length; s++ ) {
+		var oneReqStep = rdata[s];
+		sx = { "Requirement" :  { '$' :  oneReqStep['Requirement'] } }
+		jsonCaseObject['Requirements']['Requirement'].append(sx); 
+
+	}
+
+	var xdata = jsonCaseObject['Steps']['step'];
+	for (var s=0; s<Object.keys(xdata).length; s++ ) {
+		var oneCase = xdata[s];
+
+		id = '#'+s+"-path";
+		oneCase['path']={};
+		oneCase['path']['$'] = $(id).val();
+		id = '#'+s+"-context";
+		oneCase['context']={};
+		oneCase['context']['$'] = $(id).val();
+		id = '#'+s+"-runtype";
+		oneCase['runtype']={};
+		oneCase['runtype']['$'] = $(id).val();
+
+		oneCase['onError']={};
+		oneCase['onError']['$'] = "";
+		id = '#'+s+"-onError-at-action";
+		oneCase['onError']['@action'] = $(id).val();
+		id = '#'+s+"-onError-at-value option:selected";
+		oneCase['onError']['@value'] = $(id).val();
+
+		oneCase['Execute']={"$":"", '@ExecType': {} };
+		id = '#'+s+"-Execute-at-ExecType";
+		oneCase['Execute']['@ExecType']['$'] = ""; 
+
+		id = '#'+s+"-Execute-Rule-at-Condition";
+		oneCase['Execute']['Rule']['@Condition'] = $(id).val();
+		id = '#'+s+"-Execute-Rule-at-Condvalue";
+		oneCase['Execute']['Rule']['@Condvalue'] = $(id).val();
+		id = '#'+s+"-Execute-Rule-at-Else";
+		oneCase['Execute']['Rule']['@Else'] = $(id).val();
+		id = '#'+s+"-Execute-Rule-at-Elsevalue";
+		oneCase['Execute']['Rule']['@Elsevalue'] = $(id).val();
+
+		oneCase['retry'] = {}
+		oneCase['retry']['$'] = "";
+		id = '#'+s+"-retry-at-type";
+		oneCase['retry']['@type'] = $(id).val();
+		id = '#'+s+"-retryat-Condition";
+		oneCase['retry']['@Condition'] = $(id).val();
+		id = '#'+s+"-retry-at-Condvalue";
+		oneCase['retry']['@Condvalue'] = $(id).val();
+		id = '#'+s+"-retry-at-count";
+		oneCase['retry']['@count'] = $(id).val();
+		id = '#'+s+"-retry-at-interval";
+		oneSuite['retry']['@interval'] = $(id).val();
+		id = '#'+s+"-runtype";
+		oneCase['runtype']['$'] = $(id).val();
+
+
+
+		oneCase['Arguments'] = { "$": "", 'argument': [] }
+		var arguments = oneCase['Arguments']['argument'];
+		for (xarg in arguments) {
+
+			sx = { 'Argument' : { "$": '' ,
+				'@name' : arguments[xarg]['@name'],
+				'@value' : arguments[xarg]['@value']
+				}
+			};
+				oneCase['Arguments']['argument'].append(sx);
+			
+		}
+	}
+	// Now you have collected the user components...
+
+	var url = "../getCaseDataBack";
+	var csrftoken = $("[name='csrfmiddlewaretoken']").val();
+
+	$.ajaxSetup({
+			function(xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken)
+    	}
+	});
+
+	var topNode  = { 'Testcase' : jsonCaseObject};
+	var jj = new json() ; 
+	// var mystring =  JSON.stringify(jsonCaseObject);
+	var ns = jj.translate.toXML(topNode);
+
+	//alert(ns);
+
+	$.ajax({
+    url : url,
+    type: "POST",
+    data : { 
+    	'json': JSON.stringify(topNode),
+    	'Testcase': ns,
+    	'filetosave': $('#my_file_to_save').val()
+    	},
+    headers: {'X-CSRFToken':csrftoken},
+    //contentType: 'application/json',
+    success: function( data ){
+        alert("Sent");
+    	}
+	});
+
+}
+
+
 function mapCaseJsonToUi(data){
 	//
 	// This gives me ONE object - The root for test cases

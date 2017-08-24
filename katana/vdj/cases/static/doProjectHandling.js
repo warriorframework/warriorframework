@@ -36,6 +36,8 @@ function mapUiToProjectJson() {
 	jsonProjectObject['Details']['default_onError']['$'] = $('#defaultOnError').val();
 	jsonProjectObject['Details']['Datatype']['$'] = $('#projectDatatype').val();
 
+
+	jsonProjectObject['SaveToFile'] = { "$" : $('#my_file_to_save').val()};
 	// Now walk the DOM ..
 
 	var xdata = jsonProjectObject['Testsuites']['Testsuite'];
@@ -106,8 +108,9 @@ function mapUiToProjectJson() {
     url : url,
     type: "POST",
     data : { 
-    	//'json': JSON.stringify(topNode),
-    	'Project': ns
+    	'json': JSON.stringify(topNode),
+    	'Project': ns,
+    	'filetosave': $('#my_file_to_save').val()
     	},
     headers: {'X-CSRFToken':csrftoken},
     //contentType: 'application/json',
@@ -223,7 +226,7 @@ function mapProjectJsonToUi(data){
 		items.push('<option value="noimpact">noimpact</option>'); 
 		items.push('</select>');
 		items.push("<br>");
-		var bid = "deleteTestSuite-"+s;
+		bid = "deleteTestSuite-"+s;
 		items.push("<input type=\"button\" value=\"Delete\" id='"+bid+"'>"+bid+"/>");
 		$('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 		$(document).on('click','#'+bid,function(  ) {
