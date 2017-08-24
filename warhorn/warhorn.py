@@ -1078,11 +1078,16 @@ def activate_virtualenv(node, destination, logfile, print_log_name):
     ve_dest = destination + ve_name
     print_info("ve_name: "+ve_name, logfile, print_log_name)
     print_info("destination: "+ve_dest, logfile, print_log_name)
-    venv_cmd = os.path.expanduser(ve_loc)
-    subprocess.call([venv_cmd, "--system-site-packages", ve_dest])
-    venv_file = "{}/bin/activate_this.py".format(ve_dest)
-    execfile(venv_file, dict(__file__=venv_file))
-    return True
+    try:
+        venv_cmd = os.path.expanduser(ve_loc)
+        subprocess.check_call([venv_cmd, "--system-site-packages", ve_dest])
+        venv_file = "{}/bin/activate_this.py".format(ve_dest)
+        execfile(venv_file, dict(__file__=venv_file))
+        return True
+    except Exception as e:
+        print_error("Activating virtual env at {} resulted in exception {}".format(
+                                                ve_dest, e), logfile, print_log_name)
+        return False
 
 
 def replace_tools_from_product_repo(node_list, **kwargs):
@@ -1184,7 +1189,7 @@ def assemble_warrior():
     node = get_node(config_file_name, 'virtualenv')
     if node is not False and get_attribute_value(node, 'activate') == 'yes':
         if get_attribute_value(node, 'install') == 'yes':
-            install_depen('virtualenv==15.1.0', 'virtualenv', logfile, print_log_name)
+            install_depen('virtualenv', 'virtualenv', logfile, print_log_name)
         war_tag = get_node(config_file_name, 'warriorframework')
         if war_tag is False:
             print_error("warriorframework is a mandatory repo. Please add and rerun",
