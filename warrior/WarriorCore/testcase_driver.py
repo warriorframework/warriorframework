@@ -112,7 +112,8 @@ def get_testcase_details(testcase_filepath, data_repository, jiraproj):
     # Fourth priority for data files given in the Testcase file##
     else:
         datafile, data_type = efile_obj.get_data_files()
-
+    #To check the whether data file is a well formed xml file.
+    Utils.xml_Utils.getRoot(datafile)
     # tc_execution_dir = Utils.file_Utils.createDir_addtimestamp(execution_dir, nameonly)
     # datafile, data_type = get_testcase_datafile(testcase_filepath)
     # resultfile, resultsdir = get_testcase_resultfile(testcase_filepath, tc_execution_dir,

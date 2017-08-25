@@ -84,8 +84,13 @@ def get_tree_from_file(filepath):
     return tree
 
 def getRoot(filename):
-    tree = ElementTree.parse(filename)
-    root = tree.getroot()
+    try:
+        tree = ElementTree.parse(filename)
+        root = tree.getroot()
+    except ElementTree.ParseError, msg:
+        print_error("The xml file: {0} is {1}".format(filename, msg))
+        print_info("DONE 1")
+        sys.exit(0)
     return root
 
 def convert_element_to_string(element):
