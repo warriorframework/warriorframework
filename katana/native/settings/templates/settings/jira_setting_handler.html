@@ -1,0 +1,29 @@
+<body>
+<div class="tool-bar"><div katana-click="settings.closeSetting" class="button close">Close</div><div katana-click="settings.emailSettings.save" class="button save">Save</div></div>
+<div class="flex-rows to-save" auto-init="settings.emailSettings.init" post-url="settings/email_setting_handler">
+  <div class="title">Jira Settings</div>
+  {% for system in jira.jira.system %}
+    <div class="feild-block">
+      {% for k, v in system.items%}
+        {% if k == '@name' %}
+          <div key="{{ k }}" class="title">{{ v }}</div>
+        {% endif %}
+      {% endfor %}
+      <div class="relative-tool-bar"><i title="@default" katana-click="katana.toggleActive" class="fa fa-toggle-on"></i><i katana-click="katana.toggleActive" title="append_log" class="fa fa-toggle-on"></i><i katana-click="settings.jira.addIssueType" title="issue_type" class="fa fa-plus"></i></div>
+      <div class="to-scroll">
+        {% for k, v in system.items%}
+          {% if k != '@name' %}
+            <div class="feild"><label>{{ k }}</label><input auto-init="settings.jira.{{ k }}" key="{{ k }}" type="text" {% if v  %} value="{{ v }}" {% endif %} placeholder="{{ k }}"></div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  {% endfor %}
+  <div class="csrf-container">{% csrf_token %}</div>
+  <script type="text/template" id="issue_type">
+    <div class="pocket-feilds">
+      <div class="feild"><label></label><input key="" type="text" value="" placeholder=""></div>
+    </div>
+  </script>
+</div>
+</body>

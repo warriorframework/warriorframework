@@ -15,9 +15,19 @@ limitations under the License.
 from __future__ import unicode_literals
 
 from django.shortcuts import render
-
+from native.settings.settings import Settings
 # Create your views here.
 
+controls = Settings()
 
 def index(request):
-    return render(request, 'configuration/index.html', {"data": "This is the Configuration page"})
+    return render(request, 'settings/index.html', {"data": controls.get_location()})
+
+def email_setting_handler( request ):
+    return render(request, 'settings/email_setting_handler.html', {"setting": controls.email_setting_handler(request)})
+
+def secret_handler( request ):
+    return render(request, 'settings/secret.html', {"secret": controls.secret_handler(request)})
+
+def jira_setting_handler( request ):
+    return render(request, 'settings/jira_setting_handler.html', {"jira": controls.jira_setting_handler(request)})
