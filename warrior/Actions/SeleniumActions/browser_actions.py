@@ -290,9 +290,9 @@ class browser_actions(object):
 
     def browser_launch_and_maximize(self, system_name, browser_name="all", type="firefox",
                                     url=None, ip=None, remote=None, element_config_file=None,
-                                    element_tag=None):
+                                    element_tag=None, maximize='yes'):
         """
-        This will launch a browser and maximize it.
+        This will launch a browser and maximize the browser window if it is set.
 
         :Datafile Usage:
 
@@ -327,7 +327,7 @@ class browser_actions(object):
 
                       Eg: <type>firefox</type>
 
-            5. browser_name = This <browser_name> tag is a child og the
+            5. browser_name = This <browser_name> tag is a child tag the
                               <browser> tag in the data file. Each browser
                               instance should have a unique name. This name can
                               be added here
@@ -364,6 +364,12 @@ class browser_actions(object):
                              FOR TEST CASE
                              Eg: <argument name="element_tag" value="json_name_1">
 
+            9. maximize    = If this element tag is set to 'yes', the browser would get maximized
+                             when it is launched. If it is set to "no", it would only launch the
+                             browser without maximizing it. It defaults to 'yes'.
+                             FOR TEST CASE
+                             Eg: <argument name="maximize" value="yes">
+
         :Arguments:
 
             1. system_name(str) = the system name.
@@ -378,6 +384,8 @@ class browser_actions(object):
                                            locators
             8. element_tag (str) = particular element in the json fie which
                                    contains relevant information to that element
+            9. maximize(str) = 'yes' or 'no' to indicate whether you want to maximize
+                               the browser or not.
 
         :Returns:
 
@@ -435,14 +443,17 @@ class browser_actions(object):
                         if result == True:
                             result = self.browser_object.go_to(url,
                                                                browser_inst)
-                            status = self.browser_object.\
-                                max_browser_return_status(output_dict[browser_fullname], system_name,
-                                                          browser_details["browser_name"])
+                            if browser_details["maximize"] == 'yes':
+                                status = self.browser_object.\
+                                    max_browser_return_status(output_dict[browser_fullname],
+                                                              system_name,
+                                                              browser_details["browser_name"])
                         else:
                             result = True
-                            status = self.browser_object.\
-                                max_browser_return_status(output_dict[browser_fullname], system_name,
-                                                          browser_details["browser_name"])
+                            if browser_details["maximize"] == 'yes':
+                                status = self.browser_object.\
+                                    max_browser_return_status(output_dict[browser_fullname], system_name,
+                                                              browser_details["browser_name"])
             browser_details = {}
         Utils.testcase_Utils.report_substep_status(status)
         if output_dict[browser_fullname]:
