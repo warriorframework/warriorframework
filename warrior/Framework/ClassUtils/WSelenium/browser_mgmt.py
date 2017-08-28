@@ -203,6 +203,7 @@ class BrowserManagement(object):
         return status, url
 
     def max_browser_return_status(self, browser, system_name, browser_name):
+        """ To maximize browser window """
         if browser:
             status = self.maximize_browser_window(browser)
         else:
@@ -233,6 +234,7 @@ class BrowserManagement(object):
             self.current_browser.refresh()
 
     def hard_reload_page(self, browser_instance=None):
+        """ To reload the browser window"""
         if browser_instance is None:
             self.current_browser.refresh()
 
@@ -241,6 +243,7 @@ class BrowserManagement(object):
         sleep(1)
 
     def open_tab(self, browser_instance=None, url=None, browser_type="firefox"):
+        """ To open a tab """
         if browser_instance is None:
             browser_instance = self.current_browser
 
@@ -256,12 +259,13 @@ class BrowserManagement(object):
         if url is not None:
             self.go_to(url, browser_instance)
             sleep(1)
-    
+
     def switch_tab(self, browser_instance=None, tab_number=None, browser_type="firefox"):
+        """ To switch between tabs """
         status = True
         if browser_instance is None:
             browser_instance = self.current_browser
-        
+
         if tab_number is not None:
             try:
                 tab_number = int(tab_number)
@@ -315,6 +319,7 @@ class BrowserManagement(object):
         return status
 
     def close_tab(self, browser_instance=None, tab_number=None, browser_type="firefox"):
+        """ To close the tab """
         if browser_instance is None:
             browser_instance = self.current_browser
 
@@ -371,6 +376,7 @@ class BrowserManagement(object):
         return status
 
     def delete_all_cookies_in_browser(self, browser_instance=None):
+        """ To delete all the cookies in browser """
         status = True
         if browser_instance is None:
             browser_instance = self.current_browser
@@ -383,6 +389,7 @@ class BrowserManagement(object):
         return status
 
     def delete_a_specific_cookie(self, browser_instance=None, cookie_name=None):
+        """ To delete the specific cookie in browser """
         status = True
         if browser_instance is None:
             browser_instance = self.current_browser

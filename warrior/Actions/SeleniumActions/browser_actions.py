@@ -182,7 +182,8 @@ class browser_actions(object):
                 browser_inst = self.browser_object.open_browser(
                     browser_details["type"], webdriver_remote_url)
                 if browser_inst:
-                    browser_fullname = "{0}_{1}".format(system_name, browser_details["browser_name"])
+                    browser_fullname = "{0}_{1}".format(system_name,
+                                                        browser_details["browser_name"])
                     output_dict[browser_fullname] = browser_inst
                     if "url" in browser_details and browser_details["url"]\
                             is not None:
@@ -458,7 +459,7 @@ class browser_actions(object):
         Utils.testcase_Utils.report_substep_status(status)
         if output_dict[browser_fullname]:
             selenium_Utils.save_screenshot_onerror(status, output_dict[browser_fullname])
-        return status,  output_dict
+        return status, output_dict
 
 
     def navigate_to_url(self, system_name, type="firefox", browser_name="all",
@@ -570,7 +571,9 @@ class browser_actions(object):
                 browser_details = selenium_Utils. \
                     get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     self.browser_object.go_to(browser_details["url"],
                                               current_browser)
@@ -656,7 +659,9 @@ class browser_actions(object):
                 browser_details = selenium_Utils. \
                     get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     self.browser_object.go_forward(current_browser)
                 else:
@@ -741,7 +746,9 @@ class browser_actions(object):
                 browser_details = selenium_Utils. \
                     get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     self.browser_object.go_back(current_browser)
                 else:
@@ -826,7 +833,9 @@ class browser_actions(object):
                 browser_details = selenium_Utils. \
                     get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     self.browser_object.reload_page(current_browser)
                 else:
@@ -911,7 +920,9 @@ class browser_actions(object):
                 browser_details = selenium_Utils. \
                     get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     self.browser_object.hard_reload_page(current_browser)
                 else:
@@ -996,7 +1007,9 @@ class browser_actions(object):
                 browser_details = selenium_Utils. \
                     get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     self.browser_object.close_browser(current_browser)
                 else:
@@ -1133,7 +1146,9 @@ class browser_actions(object):
                 browser_details = selenium_Utils. \
                     get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     self.browser_object.set_window_size(int(browser_details["xsize"]), int(browser_details["ysize"]),
                                                         current_browser)
@@ -1271,7 +1286,9 @@ class browser_actions(object):
                 browser_details = selenium_Utils. \
                     get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     self.browser_object.set_window_position(int(browser_details["xpos"]),
                                                             int(browser_details["ypos"]),
@@ -1397,7 +1414,9 @@ class browser_actions(object):
                 browser_details = selenium_Utils. \
                     get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     self.browser_object.open_tab(current_browser,
                                                  browser_details["url"],
@@ -1530,7 +1549,9 @@ class browser_actions(object):
                 browser_details = selenium_Utils. \
                     get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     status = self.browser_object.\
                         switch_tab(current_browser,
@@ -1664,7 +1685,9 @@ class browser_actions(object):
                 browser_details = selenium_Utils. \
                     get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     status = self.browser_object.\
                         close_tab(current_browser,
@@ -1789,7 +1812,9 @@ class browser_actions(object):
                 browser_details = selenium_Utils. \
                     get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     width, height = self.browser_object.\
                         get_window_size(current_browser)
@@ -1914,7 +1939,9 @@ class browser_actions(object):
                 browser_details = selenium_Utils. \
                     get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     x, y = self.browser_object.\
                         get_window_position(current_browser)
@@ -1933,7 +1960,7 @@ class browser_actions(object):
         return status
 
     def save_screenshot(self, system_name, type="firefox", directory=None,
-                        filename =None, browser_name="all",
+                        filename=None, browser_name="all",
                         element_config_file=None, element_tag=None):
         """
         This keyword will save a screenshot of the current browser window.
@@ -2059,7 +2086,9 @@ class browser_actions(object):
                 browser_details = selenium_Utils. \
                     get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     if directory is not None:
                         status = self.browser_object.\
@@ -2190,7 +2219,9 @@ class browser_actions(object):
                 browser_details = selenium_Utils. \
                     get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     status = self.browser_object.delete_all_cookies_in_browser(current_browser)
                 else:
@@ -2320,7 +2351,9 @@ class browser_actions(object):
                 browser_details = selenium_Utils. \
                     get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
                     status = self.browser_object.delete_a_specific_cookie(current_browser, browser_details["cookie_name"])
                 else:
