@@ -1,6 +1,10 @@
 
 from utils.navigator_util import Navigator
-import xmltodict, json, xml.etree.ElementTree as xml_controler
+import json, xml.etree.ElementTree as xml_controler
+try:
+    import xmltodict
+except ImportError:
+        print('please install xmltodict')
 
 class Settings:
 
