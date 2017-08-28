@@ -59,7 +59,20 @@ var settings = {
 		},
 
 		issue_type: function(){
-			
+			var $elem = this;
+			var data = JSON.parse($elem.val());
+			var template = $($elem.closest('.to-save').find('#issue_type').html());
+			var feildContainer = $elem.closest('.feild-block');
+			$elem.closest('.feild').remove();
+			$.each( data, function(){
+			    settings.jira.buildSubForms( this, template, feildContainer );
+			});
+		},
+
+		buildSubForms: function( objs, template, feildContainer ){
+			$.each( Object.keys(this), function(){
+				
+			});
 		},
 
 		addIssueType: function(){

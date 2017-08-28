@@ -33,7 +33,6 @@ class Settings:
         jira_config = self.navigator.get_warrior_dir() + '/Tools/Jira/jira_config.xml'
         elem_file = xml_controler.parse(jira_config)
         elem_file = elem_file.getroot()
-        print xml_controler.tostring(elem_file)
         xml_string = xml_controler.tostring(elem_file)
         if request.method == 'POST':
             pass
@@ -43,8 +42,7 @@ class Settings:
                 for k, v in system.items():
                     if k == 'issue_type':
                         v = json.dumps(v)
-                        print 'khrrrrrrrrrrrrrrrrrraaaaaaaaaa', v
-            print xmldoc
+                        system[k] = v
             return xmldoc
 
     def secret_handler(self, request):

@@ -382,7 +382,7 @@ var katana = {
 			},
 
 		 preProcess: function( data ){
-			 data = data.replace( /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+			 //data = data.replace( /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
 			 return data;
 		 },
 

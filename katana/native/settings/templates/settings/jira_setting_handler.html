@@ -2,7 +2,7 @@
 <div class="tool-bar"><div katana-click="settings.closeSetting" class="button close">Close</div><div katana-click="settings.emailSettings.save" class="button save">Save</div></div>
 <div class="flex-rows to-save" auto-init="settings.emailSettings.init" post-url="settings/email_setting_handler">
   <div class="title">Jira Settings</div>
-    {% for system in jira.jira.system %}
+  {% for system in jira.jira.system %}
     <div class="feild-block">
       {% for k, v in system.items%}
         {% if k == '@name' %}
@@ -18,7 +18,12 @@
         {% endfor %}
       </div>
     </div>
-        {% endfor %}
+  {% endfor %}
   <div class="csrf-container">{% csrf_token %}</div>
+  <script type="text/template" id="issue_type">
+    <div class="pocket-feilds">
+      <div class="feild"><label></label><input key="" type="text" value="" placeholder=""></div>
+    </div>
+  </script>
 </div>
 </body>
