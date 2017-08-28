@@ -19,9 +19,9 @@ class Installer:
         self.wf_config_file = join_path(self.path_to_app, "wf_config.json")
         self.app_name = get_dir_from_path(self.path_to_app)
         self.pkg_in_settings = "apps.{0}".format(self.app_name)
+        self.urls_inclusions = []
 
     def install(self):
-        print "Here"
         output = self.__validate_app()
 
         if output:
@@ -52,6 +52,7 @@ class Installer:
         output = True
         if os.path.exists(self.wf_config_file):
             data = read_json_data(self.wf_config_file)
+            print data
             if data is not None:
                 # validate the key "app"
                 # validate if the include in the wf_config checks out (maps to the correct file)
@@ -60,11 +61,14 @@ class Installer:
                         for app_details in data["app"]:
                             if output:
                                 output = self.__verify_app_details(app_details)
+                            else:
+                                break
 
                     else:
                         output = self.__verify_app_details(data["app"])
                 else:
-                    print False
+                    print "-- An Error Occurred -- wf_config.json is not in the correct format."
+                    output = False
 
                 # validate databases if any
                 if "database" in data:
@@ -75,11 +79,13 @@ class Installer:
                     else:
                         output = self.__verify_db_details(data["database"])
             else:
+                print "-- An Error Occurred -- wf_config.json is not in the correct format."
                 output = False
 
             if output:
                 output = self.__validate_static_directory()
         else:
+            print "-- An Error Occurred -- wf_config.json does not exist."
             output = False
         return output
 
@@ -89,8 +95,15 @@ class Installer:
             print "-- An Error Occurred -- wf_config.json file is not formatted correctly"
             output = False
         else:
-            path_urls = app_details["include"].replace(".", os.sep)
-            path_to_urls_abs = get_abs_path(self.path_to_app, path_urls)
+            self.urls_inclusions.append("url(r'^" + app_details["url"] +
+                                        "', include('" + app_details["include"] + "')),")
+            path_dir = app_details["include"].split(".")
+            path_urls = ""
+            for d in range(2, len(path_dir)):
+                path_urls += os.sep + path_dir[d]
+            path_urls = path_urls.strip(os.sep)
+            path_urls += ".py"
+            path_to_urls_abs = join_path(self.path_to_app, path_urls)
             if not os.path.isfile(path_to_urls_abs):
                 output = False
         return output
@@ -133,30 +146,60 @@ class Installer:
         return output
 
     def __add_app_directory(self):
-        output = copy_dir(self.path_to_app, self.app_directory)
+        output = copy_dir(self.path_to_app, join_path(self.app_directory, self.app_name))
         if not output:
             print "-- An Error Occurred -- App could not be copied into warriorframework"
         return output
 
     def __edit_urls_py(self):
+        checker = "RedirectView.as_view(url='/katana/')"
 
-        return False
+        data = readlines_from_file(self.urls_file)
+        index = -1
+        for i in range(0, len(data)):
+            if checker in data[i]:
+                index = i+1
+                break
+        white_space = data[index].split("url")
+        for i in range(0, len(self.urls_inclusions)):
+            self.urls_inclusions[i] = white_space[0] + self.urls_inclusions[i] + "\n"
+
+        u_data = data[:index]
+        u_data.extend(self.urls_inclusions)
+        u_data.extend(data[index:])
+
+        urls_data = ""
+        for line in u_data:
+            urls_data += line
+        output = write_to_file(self.urls_file, urls_data)
+        return output
 
     def __edit_settings_py(self):
-        output = False
-        data = readlines_from_file(self.settings_file, start="INSTALLED_APPS = [", end="]")
-        sf_data = []
-        for line in data:
+        data = readlines_from_file(self.settings_file)
+        index = -1
+        for i in range(0, len(data)):
+            if "wui.core" in data[i]:
+                index = i
+                break
+
+        white_space = data[index].split("'")
+
+        self.pkg_in_settings = white_space[0] + "'" + self.pkg_in_settings + "',\n"
+        sf_data = data[:index]
+        sf_data.append(self.pkg_in_settings)
+        sf_data.extend(data[index:])
+
+        for line in sf_data:
             print line
 
-        """settings_data = ""
+        settings_data = ""
         for line in sf_data:
             settings_data += line
 
-        output = write_to_file(self.settings_file, settings_data)"""
+        output = write_to_file(self.settings_file, settings_data)
         return output
 
     def __revert_installation(self):
-        # check at which point the instalation failed
+        # check at which point the installation failed
         # revert all the necessary changes
         return False

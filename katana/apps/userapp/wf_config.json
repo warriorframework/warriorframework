@@ -1,7 +1,0 @@
-{
-  "icon": "pie-chart",
-  "color": "tan",
-  "name" : "User App",
-  "url" : "/katana/userapp/",
-  "app" : [{"name" : "User App", "url" : "/katana/userapp/", "include": "apps.userapp.urls"}] 
-}
