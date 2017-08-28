@@ -89,7 +89,7 @@ def get_abs_path(relative_path, base_path=None, silence_error=False):
     path = os.path.join(base_path.strip(), relative_path.strip())
 
     if not silence_error and not os.path.exists(path):
-        AppInformation.log_obj.write_log("An Error Occurred: {0} does not exist".format(path))
+        print "An Error Occurred: {0} does not exist".format(path)
         path = None
 
     return path
@@ -175,13 +175,13 @@ def get_relative_path(path, start_directory):
 
     """
     if start_directory == "":
-        AppInformation.log_obj.write_log("-- Error -- start_directory is empty.")
+        print "-- Error -- start_directory is empty."
         relpath = path
     else:
         try:
             relpath = os.path.relpath(path, start_directory)
         except Exception as e:
-            AppInformation.log_obj.write_log("-- Error -- {0}".format(e))
+            print "-- Error -- {0}".format(e)
             relpath = None
         else:
             if not relpath.startswith(".") and not relpath.startswith(os.sep):

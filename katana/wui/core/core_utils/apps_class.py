@@ -52,6 +52,5 @@ class Apps:
 
         extra_app_dirs = available_apps.union(settings_apps) - settings_apps
         for app in extra_app_dirs:
-            logs = "--Warning-- {0} package is available for installation, but has not been " \
+            print "--Warning-- {0} package is available for installation, but has not been " \
                   "installed.".format(app)
-            AppInformation.log_obj.write_log(logs)
