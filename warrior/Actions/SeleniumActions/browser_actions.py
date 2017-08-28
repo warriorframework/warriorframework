@@ -438,17 +438,17 @@ class browser_actions(object):
                 if browser_inst:
                     browser_fullname = "{0}_{1}".format(system_name, browser_details["browser_name"])
                     output_dict[browser_fullname] = browser_inst
+                    if browser_details["maximize"] == 'yes':
+                        status = self.browser_object.\
+                                    max_browser_return_status(output_dict[browser_fullname],
+                                                              system_name,
+                                                              browser_details["browser_name"])
                     if "url" in browser_details and browser_details["url"]\
                             is not None:
                         result, url = self.browser_object.check_url(browser_details["url"])
                         if result == True:
                             result = self.browser_object.go_to(url,
                                                                browser_inst)
-                            if browser_details["maximize"] == 'yes':
-                                status = self.browser_object.\
-                                    max_browser_return_status(output_dict[browser_fullname],
-                                                              system_name,
-                                                              browser_details["browser_name"])
                         else:
                             result = True
                             if browser_details["maximize"] == 'yes':
