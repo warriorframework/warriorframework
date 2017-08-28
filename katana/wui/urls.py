@@ -21,7 +21,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^katana/', include('wui.core.urls')),
     url(r'^$', RedirectView.as_view(url='/katana/')),
+    url(r'^/katana/userapp/', include('apps.userapp.urls')),
     url(r'^katana/settings/', include('native.settings.urls')),
     url(r'^katana/appstore/', include('native.appstore.urls')),
-    url(r'^katana/userapp/', include('apps.userapp.urls')),
 ]
