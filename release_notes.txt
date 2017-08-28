@@ -1,5 +1,6 @@
 Release: Ninja
-Version: 3.2.0
+Version: warrior-3.3.0
+
 ===================
 1: Release details
 ===================
@@ -8,73 +9,98 @@ This is release Ninja of Warrior Test Automation Framework
 -------------------------------
 1.1: List of available releases
 -------------------------------
-1. Ninja = warrior-3.2.0 to current
+
+1. Ninja = warrior-3.1.0 to current
+
 
 ==================
 2. Version Details
 ==================
-You are on Release Ninja, Version 3.2.0 of Warrior Framework.
+You are on Release Ninja, Version warrior-3.3.0 of Warrior Framework.
 Procedure to get a specific version is available in section-3 of this document.
+
 +++++++++++++++++++++++++++++++++
 2.1. Change log for this release
 +++++++++++++++++++++++++++++++++
--------------
-New features:
--------------
-[WAR-1157] - Generate JUnit file after each step
-[WAR-1052] - Design and implement architecture for Plugins
-[WAR-1047] - As a user, I need a plugin to execute Robot testcases
-[WAR-1005] - Katana: While saving a new testcase if the user doe not have write permissions notify a appropriate error in the UI
-[WAR-970] - OSS: generate docs for our new repo structure.
-[WAR-897] - As a user i need the ability to make nested ssh connections
-[WAR-1154] - Katana : User permission error notification while saving.
+
+-----------
+New Feature
+-----------
+
+WAR-1108 - HTML Results File will be available for viewing even when execution is stopped midway. This is supported only for sequential Executions.
+WAR-575 - Environment Variables are now supported in REST URLs provided in the Warrior Data File.
+WAR-815 - Support for the Run Mode functionality added in Suites inside the Project.
+
+------------
+Improvements
+------------
+
+WAR-725 - Added Keywords to automate the testing of the Iterative Suite.
+WAR-868 - Added Keywords for File related utilities.
+WAR-890 - The default spawn terminal Color Code enhanced for better prompt-catching
+WAR-898 - Consolidated Keywords that are used for Framework testing into a single Actions Directory
+WAR-1024 - Project, Suite, Case, and Step Description is now available in the JUNIT result file.
+WAR-1288 - HTML Results File now being attached to the emails sent on first_failure and every_failure
+WAR-1315 - Pylint Configuration File moved to root of the repo
+WAR-1320 - Support for relative path for Warrior CLI parameters like logsdir, outputdir, and resultdir added.
+WAR-1323 - Modified the send_command(CLI) Keyword to use new WarriorConnect class
+WAR-1360 - Changed the name of Robot wrapper plugin from plugin_robot_wrapper to robot_wrapper_plugin
+WAR-1370 - Removed html object from junit before parallel execution to prohibit queue overflow
+
 ---------
-Bugfixes:
+Bug Fixes
 ---------
-[WAR-1300] - Existing Warrior Test cases created using version 2.5 are failing when ran with Warrior version 3.1.1
-[WAR-1204] - pylint job on Travis fail to calculate result
-[WAR-1203] - Run-init script execution fails with ENV variable 'ENV.NE1.MAIN.DIP_PORT' not found on Warrior latest 3.1.0
-[WAR-1197] - Katana : Insert New Step hides the first saved Step.
-[WAR-1193] - Katana : Testcase Screen - 'Goto' not showing up its input field.
-[WAR-1170] - Katana: Input data file information getting saved as the <IDF> tag instead of the <InputDataFile>Tag
-[WAR-1037] - Execution summary results are not getting printed correctly at the end of warrior execution
--------------
-Improvements:
--------------
-[WAR-1309] - Change pylint diff branch from master to develop
-[WAR-1188] - Automate part of the code review process using pylint custom checker
-[WAR-1161] - Change directory names in Tools to be uniform i.e. all lower case
+
+WAR-1150 - Fixed cookies parameter in Warrior REST Actions
+WAR-1195 - Fixed failure when the verify_on attribute value in the CLI-data file is missing or empty.
+WAR-1286 - Fixed error causing the 'Engineer' & 'Last updated' fields to rmain updated in the Suite Tab in Katana.
+WAR-1287 - Fixed error causing the 'Engineer' & 'Last updated' fields to rmain updated in the Project Tab in Katana.
+WAR-1297 - Fixed multiple Environment Variable Keyword to work if a URL has more that on environment variable
+WAR-1298 - Fixed error that causes opening and closing an existing CLI-data file in katana to reset the 'found' and 'execute' attribute values to default.
+WAR-1299 - Fixed issue that overrode the IDF file pointed in the command line and instead used IDF mapped in the Suite
+WAR-1306 - Fixed issue that could not resolve the variable configuration file given the data file pointed via the command line.
+WAR-1319 - Fixed issue that caused the Case details to not be printed out as part of Warrior execution summary
+WAR-1335 - Fixed issue that cause a race condition while writing junit file at the same time during parallel execution
+WAR-1357 - Fixed issue that caused duplicate entries for steps in the JUnit file
+WAR-1359 - Fixed missing step-level arguments and argument-values in the JUint File
+WAR-1364 - Fixed the demo project to contain path to the correct demo suite.
+
 =================================================
-3. Procedure to get a specific version of Warrior 
+3. Procedure to get a specific version of Warrior
 =================================================
+
 1. Clone warriorframework
+
 $ git clone https://github.com/warriorframework/warriorframework.git
 
 2. go to warriorframework directory
+
 $cd warriorframework
 
 3. To check the list of versions available, execute "git tag --list" command
+
 $ git tag --list
-3.0
-3.1
-3.2
-3.3
-3.4
+warior-3.1.0
+warior-3.1.1
+warior-3.2.0
+warior-3.3.0
 $
 
 3. To Check the current version you are at, execute "git branch" command
+
 $ git branch
 * master
 $
 
 - * indicates the active version.
 - In the above example master is the active version.
-- If the active version is master it means you are using a version of warrior framework that is under development. It is 
-not a stable tested version.
+- If the active version is master it means you are not using a standard release version of warrior framework and hence it may
+not be a stable tested version.
 
 4. To switch to a specific version from master, execute 'git checkout <version_name>' command.
-$ git checkout 3.4
-Note: checking out '3.4'.
+
+$ git checkout warrior-3.3.0
+Note: checking out 'warrior-3.3.0'.
 
 You are in 'detached HEAD' state. You can look around, make experimental
 changes and commit them, and you can discard any commits you make in this
@@ -89,30 +115,33 @@ HEAD is now at 146313d... reduce command timeout, wait after timeout=60
 $
 
 5. Execute git branch command to verify the active version.
+
 $ git branch
-* (HEAD detached at 3.4)
+* (HEAD detached at warrior-3.3.0)
 master
-$ 
+$
 
 - * indicates the active version.
 
-6. Switch from one version to another (current=3.4, switch to 3.3)
-$ git checkout 3.3
+6. Switch from one version to another (current=warrior-3.3.0, switch to warrior-3.2.0)
+
+$ git checkout warrior-3.2.0
 Previous HEAD position was 146313d... reduce command timeout, wait after timeout=60
 HEAD is now at ecb6373... WAR-180, handle nd prompt on timeout
-$ 
+$
 $ git branch
-* (HEAD detached at 3.3)
+* (HEAD detached at warrior-3.2.0)
 master
 $
 
 7. Switch to master branch again.
+
 $ git checkout master
 Previous HEAD position was ecb6373... WAR-180, handle nd prompt on timeout
 Switched to branch 'master'
 Your branch is up-to-date with 'origin/master'.
-$ 
-$ 
+$
+$
 $ git branch
 * master
 $
