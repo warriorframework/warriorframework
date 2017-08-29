@@ -4,31 +4,49 @@
 </head>
 {% load staticfiles %}
 <script src="{% static 'core/js/jquery.min.js' %}"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script src="{% static 'wdf_edit/js/main.js' %}"></script>
 <body>
     <div id="main_info">
-    {% for system in data.system %}
-        {% if system.ip %}
-            <p>{{ system.ip }}</p>
-        {% elif "@ip" in system.subsystem %}
-            {% for k, v in system.subsystem.items %}
-                {% if k == "ip" %}
-                    <p>{{ v }}</p>
-                {% endif %}
-            {% endfor %}
-        {% else %}
-            {% for subsys in system.subsystem %}
-                {% for k, v in subsys.items %}
-                    {% if k == "ip" or k == "@ip" %}
-                        <p>{{ v }}</p>
+    <!-- <div class="csrf-container">{% csrf_token %}</div> -->
+
+    
+    <form action="/katana/wdf/post" method="post">
+        <div class="csrf-container">{% csrf_token %}</div>
+        <div class="row">
+        {% for system in data.system %}
+            {% if system.ip %}
+                <div class="col-sm-12"><label>{{ system.name }}</label></div>
+                {% for k, v in system.items %}
+                    {% if k != "name" %}
+                        <div class="col-sm-3">{{ k }}</div><div class="col-sm-9"><input name="{{ system.name }}.{{ k }}" value="{{ v }}"></input></div>
                     {% endif %}
                 {% endfor %}
-            {% endfor %}
-        {% endif %}
+            {% elif "ip" in system.subsystem %}
+                <div class="col-sm-12"><label>{{ system.subsystem.name }}</label></div>
+                {% for k, v in system.subsystem.items %}
+                    {% if k != "name" %}
+                        <div class="col-sm-3">{{ k }}</div><div class="col-sm-9"><input name="{{ system.name }}.{{ system.subsystem.name }}.{{ k }}" value="{{ v }}"></input></div>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                {% for subsys in system.subsystem %}
+                    <div class="col-sm-12"><label>{{ subsys.name }}</label></div>
+                    {% for k, v in subsys.items %}
+                        {% if k != "name" %}
+                            <div class="col-sm-3">{{ k }}</div><div class="col-sm-9"><input name="{{ system.name }}.{{ subsys.name }}.{{ k }}" value="{{ v }}"></input></div>
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+            {% endif %}
 
-    {% endfor %}
+        {% endfor %}
+        </div>
+        <input type="submit" value="Submit">
+    </form>
+
     </div>
-    <button id="save" onclick="submit()">Save</button>
-    <p>This is something</p>
+    <!-- <button id="save"">Save</button> -->
 </body>
 </html>
