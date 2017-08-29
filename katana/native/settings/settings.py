@@ -1,4 +1,3 @@
-
 from utils.navigator_util import Navigator
 import json, xml.etree.ElementTree as xml_controler
 try:
