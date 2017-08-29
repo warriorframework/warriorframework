@@ -1841,3 +1841,138 @@ td {}
     margin-bottom: 10px;
     margin-top: 5px;
 }
+
+
+
+/* execution app related styles starts*/
+.execution.btn{
+  padding: 13px;
+  display: inline-block;
+  background: None;
+  color: None;
+  border: None;
+  opacity: 0%;
+}
+
+ .execution.btn:hover{
+  background-color: #ddd;
+
+}
+
+.execution.panel-container{
+  display: flex;
+  flex-direction: row;
+  border: 1px solid silver;
+  overflow: hidden;
+  height: 100%;
+  /* avoid browser level touch actions */
+  xtouch-action: none;
+}
+
+.execution.panels-heading{
+  padding: 10px;
+  border: 1px solid #dedede;
+  /*border-bottom: 1px solid #dedede;
+  border-top-left-radius: 1px solid #dedede;
+  border-top-right-radius: 1px solid #dedede;*/
+
+}
+
+.execution.panel-splitter {
+  flex: 0 0 auto;
+  width: 10px;
+  /* need to add a slider image to the bg*/
+  background:  center center no-repeat #eee;
+  height: 100%;
+  /*cursor: col-resize;*/
+}
+
+.execution.layout-panel{
+  /*flex: 1 1 auto;*/
+  /* resizable */
+  width: 75%;
+  height: 100%;
+  /*background: #838383;*/
+  border: 1px solid #dedede;
+  background: #fff;
+  color: black;
+  /*resize: horizontal;*/
+  overflow: auto;
+
+}
+
+.execution.selections-panel {
+  /*flex: 1 1 auto;*/
+  /* resizable */
+  width: 25%;
+  height: 100%;
+  background: #fff;
+  color: black;
+  overflow: auto;
+
+}
+
+.execution.layout-group{
+  padding-left: 0;
+  margin-bottom: 20px;
+}
+
+
+.execution.layout-group-item {
+  position: relative;
+  display: block;
+  padding: 10px 15px;
+  margin-bottom: -1px;
+  background-color: #fff;
+  /*border: 1px solid #ddd;*/
+}
+
+.execution.selection-group{
+  padding-left: 0;
+  margin-bottom: 20px;
+  min-height: 20px;
+  overflow-y:auto;
+}
+
+.execution.selection-group-item {
+  position: relative;
+  display: block;
+  padding: 10px 15px;
+  margin-bottom: -1px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  min-height: 0px;
+}
+
+.execution.selections-handle {
+	cursor: move;
+	cursor: -webkit-grabbing;
+
+}
+
+.ghost {
+  opacity: .7;
+  background: #36b3ed;
+}
+
+#execution_items i {
+  /*-webkit-transition: opacity .2s;
+  transition: opacity .2s;
+  opacity: 0;*/
+  display: block;
+  cursor: pointer;
+  color: #c00;
+  top: 10px;
+  right: 40px;
+  position: absolute;
+  font-style: normal;
+}
+
+.execution.drop-area {
+  /*width: 45em;*/
+  padding: 15px;
+  /*border: 1px solid #333;*/
+  background: #fff;;
+}
+
+/* execution app related styles starts*/

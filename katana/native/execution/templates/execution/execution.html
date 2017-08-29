@@ -1,0 +1,126 @@
+<body>
+  <div class="csrf-container">{% csrf_token %}  </div>
+  <div class="tool-bar">
+    <button type="button" name="execution-options-btn" id="execution-options-btn"  class="execution btn" >
+      <i class="fa fa-cogs"></i>
+    </button>
+    <button type="button" name="execution-execute-btn" id="execution-execute-btn"  class="execution btn" katana-click="execution.executeWarrior">
+      <i class="fa fa-play"></i>
+    </button>
+    <button type="button" name="execution-execute-btn" id="execution-execute-btn"  class="execution btn">
+      <i class="fa fa-tv"></i>
+    </button>
+
+  </div>
+
+  <div class="page-content-inner">
+
+      <div class="execution panel-container">
+          <div class="execution layout-panel">
+            <div class="execution panels-heading">Layouts</div>
+                <ul id="layout_items" class="execution layout-group-item" auto-init="execution.createLayoutSort">
+                  <li class="execution selection-group-item" data-flocn="/path/to/tc2" >TC1</li>
+                  <li class="execution selection-group-item" data-flocn="/path/to/tc3" >TC2</li>
+                  <li class="execution selection-group-item" data-flocn="/path/to/tc5" >TC3</li>
+                  <li class="execution selection-group-item" data-flocn="/path/to/tc6" >TC4</li>
+                </ul>
+          </div>
+          <div class="execution panel-splitter">
+          </div>
+          <div class="execution selections-panel" id="execution-selections-panel" >
+            <div class="execution panels-heading" id="execution-selections-panel-heading"> Selections </div>
+                  <ul id="execution_items" class="execution selection-group-item" auto-init="execution.createSelectionsSort">
+                  </ul>
+
+            </div>
+          </div>
+
+  </div>
+
+
+<!--
+  <li class="execution selection-group-item" name="execution_item" >
+    <span class="execution selections-handle">::</span>
+    <label>Option 1</label>
+    <i class="js-remove" > x </i>
+  </li>
+  <li class="execution selection-group-item" name="execution_item">
+    <span class="execution selections-handle">::</span>
+    <i class="js-remove" > x </i>
+    <label >Option 2</label>
+  </li>
+  <li class="execution selection-group-item" name="execution_item">
+    <span class="execution selections-handle">::</span>
+    <label>Option 3</label>
+    <i class="js-remove" > x </i>
+  </li> -->
+
+  <!--
+  <div class="execution panel-splitter">
+  </div>
+-->
+
+  <!-- <div class="execution selection-group-item" id="layout-item" name="layout-item" data-flocn="tc1.xml" >
+    <label> TC 1 </label>
+  </div>
+
+  <div class="execution layout-group-item" id="layout-item" name="layout-item" data-flocn="tc2.xml" >
+    <label> TC 2 </label>
+  </div>
+
+  <div class="execution layout-group-item" id="layout-item" name="layout-item" data-flocn="tc3.xml" >
+    <label> TC 3 </label>
+  </div> -->
+  <!-- <div class="execution selection-group-item" id="execution-item-01" name="execution-item" data-flocn="tc1.xml" >
+    <label> <span class="execution selections-handle">::</span> Option 1  </label>
+    <i class="js-remove" > x </i>
+
+  </div>
+
+  <div class="execution selection-group-item" id="execution-item-02" name="execution-item" data-flocn="tc2.xml" >
+    <label> <span class="execution selections-handle">::</span> Option 2 </label>
+    <i class="js-remove" > x </i>
+
+  </div>
+
+  <div class="execution selection-group-item" id="execution-item-03" name="execution-item" data-flocn="tc3.xml" >
+    <label> <span class="execution selections-handle">::</span> Option 3 </label>
+    <i class="js-remove" > x </i>
+  </div> -->
+
+
+
+<!--
+    <form class="form-group" >
+      Resultsdir:<input type="text" name="Resultsdir" value="" placeholder="enter path to override results">
+      Logsdir:<input type="text" name="Resultsdir" value="" placeholder="enter path to override results">
+      Datafile:<input type="text" name="Resultsdir" value="" placeholder="enter path to override results">
+    </form>
+-->
+    <!--
+    <div id="exec-select" class="wui accordion" katana-click="execution.selectAutomation" > Select you automation</div>
+
+    <svg id="exec-select-svg" class="wui svg" height="500" style="display:None">
+      <rect x="0" y="0" width="50" height="50" fill="None"
+      stroke="blue" stroke-width="2"/>
+      <circle cx="25" cy="25" r="25" fill="purple" />
+    </svg>
+  -->
+
+<!-- commenting out the panel under the accordion as we are going to explore
+svg to display dataa. The below div shall be deleted later if svg is confirmed to be used
+
+    <div id="exec-select-panel" class="panel" style="display:None;">
+        <p>Testcases suites and projects will be displayed here</p>
+    </div>
+-->
+<!--
+      <div id="exec-options" class="wui accordion"  katana-click="execution.execOptions" > Execution Options </div>
+      <div id="exec-options-panel" class="panel" style="display:None;" >
+          <p>Configure Execution Options here</p>
+      </div>
+-->
+  </div>
+
+
+</body>
