@@ -23,12 +23,12 @@ from Framework.Utils.testcase_Utils import pNote
 from WarriorCore.Classes.war_cli_class import WarriorCliClass
 from Framework.Utils.cli_Utils import cmdprinter
 
-""" Module to handle SSH/Telnet session operations """
+""" Module for performing CLI operations """
 
 
-class WarriorConnect(object):
+class WarriorCli(object):
     """
-    Class to handle SSH/Telnet operations.f
+    Class to handle CLI operations.
     Supported conn_type values : SSH, TELNET, SSH_NESTED
     """
 
@@ -173,6 +173,19 @@ class WarriorConnect(object):
         # elif self.conn_type == "SSH_NESTED":
         #    # paramiko accepts timeout value in seconds
         #    self.session_object.timeout = value * 60
+
+    @staticmethod
+    def pexpect_spawn_with_env(pexpect_obj, command, timeout, escape=False,
+                               env=None):
+
+        """ spawn a pexpect object with environment variable """
+        if env is None:
+            env = {}
+        if str(escape).lower() == "yes" or str(escape).lower() == "true":
+            child = pexpect_obj.spawn(command, timeout=int(timeout), env=env)
+        else:
+            child = pexpect_obj.spawn(command, timeout=int(timeout))
+        return child
 
 
 class ParamikoConnect(object):
@@ -418,7 +431,9 @@ class PexpectConnect(object):
         if WarriorCliClass.cmdprint:
             pNote("connectSSH: :CMD: %s" % command)
             return None, ""
-        child = self.pexpect_spawn_with_env(command, env={"TERM": "dumb"})
+        child = WarriorCli.pexpect_spawn_with_env(self.pexpect, command,
+                                                  self.timeout,
+                                                  env={"TERM": "dumb"})
 
         child.logfile = sys.stdout
 
@@ -503,7 +518,9 @@ class PexpectConnect(object):
         command = command + str(conn_options)
         print_debug("connectTelnet cmd = %s" % command)
 
-        child = self.pexpect_spawn_with_env(command, env={"TERM": "dumb"})
+        child = WarriorCli.pexpect_spawn_with_env(self.pexpect, command,
+                                                  self.timeout,
+                                                  env={"TERM": "dumb"})
 
         try:
             child.logfile = open(self.logfile, "a")
@@ -673,17 +690,6 @@ class PexpectConnect(object):
                                                                    end_time)
                     pNote("Command Duration: {0} sec".format(duration))
         return status, response
-
-    def pexpect_spawn_with_env(self, command, env=None):
-        """ spawn a pexpect object with environment variable """
-
-        if env is None:
-            env = {}
-        if str(self.escape).lower() == "yes" or str(self.escape).lower() == "true":
-            child = self.pexpect.spawn(command, timeout=int(self.timeout), env=env)
-        else:
-            child = self.pexpect.spawn(command, timeout=int(self.timeout))
-        return child
 
     @staticmethod
     def _send_cmd_by_type(session_object, command):

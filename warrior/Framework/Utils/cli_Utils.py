@@ -56,6 +56,16 @@ def cmdprinter(cmdfunc):
     return inner
 
 
+def pexpect_spawn_with_env(pexpect_obj, command, timeout, escape=False, env=None):
+    """ spawn a pexpect object with environment variable """
+
+    wc_obj = WNetwork.warrior_cli_class.WarriorCli()
+    child = wc_obj.pexpect_spawn_with_env(pexpect_obj, command, timeout,
+                                          escape=False, env=None)
+
+    return child
+
+
 def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=60,
                 prompt=".*(%|#|\$)", conn_options="", custom_keystroke="", escape="", **kwargs):
     """
@@ -94,7 +104,7 @@ def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=6
     credentials['custom_keystroke'] = custom_keystroke
     credentials['escape'] = escape
 
-    wc_obj = WNetwork.warrior_connect_class.WarriorConnect()
+    wc_obj = WNetwork.warrior_cli_class.WarriorCli()
     wc_obj.connect(credentials)
 
     return wc_obj, wc_obj.conn_string
@@ -140,7 +150,7 @@ def connect_telnet(ip, port="23", username="", password="",
     credentials['custom_keystroke'] = custom_keystroke
     credentials['escape'] = escape
 
-    wc_obj = WNetwork.warrior_connect_class.WarriorConnect()
+    wc_obj = WNetwork.warrior_cli_class.WarriorCli()
     wc_obj.connect(credentials)
 
     return wc_obj, wc_obj.conn_string
@@ -152,7 +162,7 @@ def disconnect_telnet(child):
                   " use 'disconnect_telnet' method of 'PexpectConnect' class "
                   "in 'warrior/Framework/ClassUtils/WNetwork/warrior_connect_class.py'")
 
-    if isinstance(child, WNetwork.warrior_connect_class.WarriorConnect):
+    if isinstance(child, WNetwork.warrior_cli_class.WarriorCli):
         child.disconnect()
 
     return child
@@ -167,7 +177,7 @@ def disconnect(child):
                   " use 'disconnect' method of 'PexpectConnect' class "
                   "in 'warrior/Framework/ClassUtils/WNetwork/warrior_connect_class.py'")
 
-    if isinstance(child, WNetwork.warrior_connect_class.WarriorConnect):
+    if isinstance(child, WNetwork.warrior_cli_class.WarriorCli):
         child.disconnect()
 
     return child
@@ -182,7 +192,7 @@ def send_command_and_get_response(session_object, start_prompt, end_prompt, comm
                   " use 'send_command' method of 'PexpectConnect' class "
                   "in 'warrior/Framework/ClassUtils/WNetwork/warrior_connect_class.py'")
 
-    if isinstance(session_object, WNetwork.warrior_connect_class.WarriorConnect):
+    if isinstance(session_object, WNetwork.warrior_cli_class.WarriorCli):
         _, response = session_object.send_command(start_prompt, end_prompt, command)
     else:
         response = ""
@@ -340,7 +350,7 @@ def send_command(session_object, start_prompt, end_prompt, command,
                   " use 'send_command' method of 'PexpectConnect' class "
                   "in 'warrior/Framework/ClassUtils/WNetwork/warrior_connect_class.py'")
 
-    if isinstance(session_object, WNetwork.warrior_connect_class.WarriorConnect):
+    if isinstance(session_object, WNetwork.warrior_cli_class.WarriorCli):
         status, response = session_object.send_command(start_prompt, end_prompt,
                                                        command, timeout)
     else:
@@ -493,7 +503,7 @@ def _send_cmd(obj_session, **kwargs):
     response = ""
     command = kwargs.get('command')
     if isinstance(obj_session,
-                  WNetwork.warrior_connect_class.WarriorConnect):
+                  WNetwork.warrior_cli_class.WarriorCli):
         startprompt = kwargs.get('startprompt', ".*")
         endprompt = kwargs.get('endprompt', None)
         cmd_timeout = kwargs.get('cmd_timeout', None)

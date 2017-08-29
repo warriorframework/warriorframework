@@ -20,7 +20,7 @@ from Framework.Utils.data_Utils import getSystemData,\
  get_session_id, get_credentials, get_object_from_datarepository
 from Framework.Utils.encryption_utils import decrypt
 from WarriorCore.Classes.war_cli_class import WarriorCliClass
-from Framework.ClassUtils.WNetwork.warrior_connect_class import WarriorConnect
+from Framework.ClassUtils.WNetwork.warrior_cli_class import WarriorCli
 
 """This is the cli_actions module that has all cli related keywords """
 
@@ -190,7 +190,7 @@ class CliActions(object):
                    "session_name={1} Failed".format(system_name, session_name)
             if WarriorCliClass.cmdprint:
                 result = True
-            if isinstance(war_conn_object, WarriorConnect) and \
+            if isinstance(war_conn_object, WarriorCli) and \
                war_conn_object.conn_type in ["SSH", "TELNET", "SSH_NESTED"]:
                 # execute smart action to produce user report
                 connect_testdata = \
@@ -332,9 +332,9 @@ class CliActions(object):
                 else:
                     credentials['conn_type'] = "SSH"
 
-                # Create an object for WarriorConnect class and use it to
+                # Create an object for WarriorCli class and use it to
                 # establish ssh sessions
-                war_conn_object = WarriorConnect()
+                war_conn_object = WarriorCli()
                 war_conn_object.connect(credentials)
                 conn_string = war_conn_object.conn_string
 
@@ -476,9 +476,9 @@ class CliActions(object):
                     credentials['ip'] = credentials[ip_type]
                 credentials['conn_type'] = "TELNET"
 
-                # Create an object for WarriorConnect class and use it to
+                # Create an object for WarriorCli class and use it to
                 # establish telnet sessions
-                war_conn_object = WarriorConnect()
+                war_conn_object = WarriorCli()
                 war_conn_object.connect(credentials)
                 conn_string = war_conn_object.conn_string
 
@@ -544,7 +544,7 @@ class CliActions(object):
 
         session_id = Utils.data_Utils.get_session_id(system_name, session_name)
         session_object = Utils.data_Utils.get_object_from_datarepository(session_id)
-        if session_object and isinstance(session_object, WarriorConnect):
+        if session_object and isinstance(session_object, WarriorCli):
             command_status, _ = session_object.send_command(start_prompt, end_prompt,
                                                             command, int_timeout)
         else:
