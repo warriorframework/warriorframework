@@ -11,19 +11,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import sys
 import json
+import sys
 import difflib
 import os
+
+import file_Utils
 import os.path
+
 from xml.dom import minidom
 from xml.etree import ElementTree
 from xml.etree.ElementTree import tostring
 from Framework.OSS import xmltodict
-from print_Utils import print_debug, print_info, print_error, print_warning,\
-print_exception
-import file_Utils
-import json
+from print_Utils import print_debug, print_info, print_error, print_warning, print_exception
 from collections import OrderedDict
 
 try:
@@ -35,17 +35,18 @@ except ImportError as err:
 def create_subelement(parent, tag, attrib):
     """Creates a subelement with given tag
     and attributes under the parent element """
-
     subelement = ElementTree.SubElement(parent, tag, attrib)
     return subelement
 
 def getValuebyTag (filename, tag):
+    """Get the value from the tag name from the xml file"""
     doc = minidom.parse(filename)
     itemlist = doc.getElementsByTagName(tag)[0].toxml()
     itemvalue = itemlist.replace('<' + tag + '>', '').replace('</' + tag + '>', '')
     return itemvalue
 
 def getValuebyAttribute (filename, attribute, tag):
+    """Get the value of the attribute in a tag from the xml file"""
     doc = minidom.parse(filename)
     itemlist = doc.getElementsByTagName(tag)[0].toxml()
     return itemlist.attributes[attribute].value
@@ -67,6 +68,7 @@ def get_last_child(node):
     return element
 
 def getNodeCount(filename, node):
+    """Get the Number of subnodes under the node specified in the xml file"""
     with open (filename, 'rt') as f:
         tree = ElementTree.parse(f)
     count = 0
@@ -75,7 +77,7 @@ def getNodeCount(filename, node):
     return count
 
 def get_tree_from_file(filepath):
-
+    """ Get the tree from the xml file"""
     if file_Utils.fileExists(filepath):
             tree = ElementTree.parse(filepath)
     else:
@@ -84,6 +86,7 @@ def get_tree_from_file(filepath):
     return tree
 
 def getRoot(filename):
+    """ Get the Root of the xml file"""
     try:
         tree = ElementTree.parse(filename)
         root = tree.getroot()
@@ -95,11 +98,11 @@ def getRoot(filename):
 
 def convert_element_to_string(element):
     """Converts the provided xml element to string """
-
     string = tostring(element)
     return string
 
 def getNodeValuebyAttribute (filename, node, attribute):
+    """ Get Node value from the Attribute from the xml fle"""
     value = None
     root = getRoot (filename)
     element = root.find(node)
@@ -111,6 +114,7 @@ def getNodeValuebyAttribute (filename, node, attribute):
 #         return value
 
 def nodeExists (filename, node):
+    """Find whether the Node exists in the xml file"""
     count = getNodeCount (filename, node)
     status = False
     if count > 0:
