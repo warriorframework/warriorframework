@@ -47,10 +47,11 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
 
 
      $scope.loadFile = function(filepath) {
+
          dirCheck=filepath.split("/").reverse()[1];
          if(dirCheck=="Testcases"){
-          url = filepath.split('..')[1];      
-          splitDir = url.split('/Testcases')[1]; 
+         // url = filepath.split('..')[1];      
+          splitDir = filepath.split('/Testcases')[1]; 
           finalUrl = "#/testcase"+splitDir+"/none";
           window.open(finalUrl);
          }
@@ -60,7 +61,7 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
           checkDir = filepath.split("Testcases/")[1].split(splitPath)[0]; 
           splitDir = filepath.split(checkDir)[0]; 
           frameUrl = splitDir+splitter+checkDir;
-          frameUrl = frameUrl.split('..')[1]; 
+         // frameUrl = frameUrl.split('..')[1]; 
           splitter = frameUrl.split('/Testcases')[1];
           finalUrlDir = "#/testcase"+splitter;
           window.open(finalUrlDir);
@@ -69,10 +70,12 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
 
 
     $scope.loadDataFile = function(filepath) {
+      
+
      var dirCheck=filepath.split("/").reverse()[1];
         if(dirCheck=="Data"){
-         var url = filepath.split('..')[1];      
-         var splitDir = url.split('/Data')[1]; 
+        // var url = filepath.split('..')[1];      
+         var splitDir = filepath.split('/Data')[1]; 
          var finalUrl = "#/datafile"+splitDir+"/none";
           window.open(finalUrl);
        }
@@ -82,7 +85,7 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
           var checkDir = filepath.split("Data/")[1].split(splitPath)[0]; 
           var splitDir = filepath.split(checkDir)[0]; 
           var frameUrl = splitDir+splitter+checkDir;
-          frameUrl = frameUrl.split('..')[1]; 
+         // frameUrl = frameUrl.split('..')[1]; 
           splitter = frameUrl.split('/Data')[1];
           var finalUrlDir = "#/datafile"+splitter;
           window.open(finalUrlDir);
