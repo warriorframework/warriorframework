@@ -426,10 +426,14 @@ span.close:before {content: 'X';}
 input {
   width: 100%;
   padding: 10px;
-  border: none;
-  border-bottom: solid 1px #c5c5c5;
+  border: solid 1px #dcdcdc;
   font-family: inherit;
   color: #333;
+  background: #f9f9f9;
+  margin-top: 4px;
+}
+input:focus {
+    background: #efefef;
 }
 .feild {
     padding: 5px 0;
@@ -1080,6 +1084,7 @@ div#launchpad.page.hidden .tabs {
     flex-basis: 0;
     height: 100%;
     overflow: hidden;
+    padding-right: 0px;
 }
 .feild-block .relative-tool-bar {
     position: absolute;
@@ -1120,6 +1125,7 @@ div#launchpad.page.hidden .tabs {
 .feild-block .title + .relative-tool-bar + .to-scroll {
     height: calc( 100% - 42px );
     padding-top: 10px;
+    padding-right: 10px;
 }
 .fa-toggle-on {
     -webkit-transform: scaleX(-1);
@@ -1813,4 +1819,25 @@ td {}
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+}
+.pocket-feilds .feild {
+    padding-left: 30px;
+}
+
+.pocket-feilds .feild:first-child {
+    padding-left: 0;
+}
+.pocket-feilds .close {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+}
+
+.pocket-feilds {
+    position: relative;
+    background: #ffffff;
+    padding: 7px;
+    border: 1px solid gainsboro;
+    margin-bottom: 10px;
+    margin-top: 5px;
 }
