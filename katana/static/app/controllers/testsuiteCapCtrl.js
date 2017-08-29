@@ -47,20 +47,14 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
 
 
      $scope.loadFile = function(filepath) {
-   
          dirCheck=filepath.split("/").reverse()[1];
-
          if(dirCheck=="Testcases"){
-          
           url = filepath.split('..')[1];      
           splitDir = url.split('/Testcases')[1]; 
           finalUrl = "#/testcase"+splitDir+"/none";
           window.open(finalUrl);
- 
          }
-
         else{
-
           splitPath = filepath.split("/").pop(-1); 
           splitter = splitPath+"/";
           checkDir = filepath.split("Testcases/")[1].split(splitPath)[0]; 
@@ -70,10 +64,30 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
           splitter = frameUrl.split('/Testcases')[1];
           finalUrlDir = "#/testcase"+splitter;
           window.open(finalUrlDir);
-
         }
-
       };
+
+
+    $scope.loadDataFile = function(filepath) {
+     var dirCheck=filepath.split("/").reverse()[1];
+        if(dirCheck=="Data"){
+         var url = filepath.split('..')[1];      
+         var splitDir = url.split('/Data')[1]; 
+         var finalUrl = "#/datafile"+splitDir+"/none";
+          window.open(finalUrl);
+       }
+        else{
+          var splitPath = filepath.split("/").pop(-1); 
+          var splitter = splitPath+"/";
+          var checkDir = filepath.split("Data/")[1].split(splitPath)[0]; 
+          var splitDir = filepath.split(checkDir)[0]; 
+          var frameUrl = splitDir+splitter+checkDir;
+          frameUrl = frameUrl.split('..')[1]; 
+          splitter = frameUrl.split('/Data')[1];
+          var finalUrlDir = "#/datafile"+splitter;
+          window.open(finalUrlDir);
+        }
+     };
 
        function get_folders_names(json_dir_data){
             var dir = json_dir_data["dir"];

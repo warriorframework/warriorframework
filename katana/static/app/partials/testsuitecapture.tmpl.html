@@ -700,7 +700,9 @@
                     <input type="text" class="form-control" id="IDF"
                            ng-change="idf_monitorPathBtnValue()"
                            placeholder="Location of the Input Data File"
-                           ng-model="suitemodel.TestSuite.Details.InputDataFile">
+                           ng-model="suitemodel.TestSuite.Details.InputDataFile"
+                           ng-click="loadDataFile(suitemodel.TestSuite.Details.InputDataFile)"
+                           style="cursor:pointer;">
                 </div>
                 <div class="col-sm-1">
                     <input type="button" ng-click="idf_toggleModal()"
@@ -873,7 +875,7 @@
                                 </a>
                                 </td>
                                 <td>{{testcases[$index].context}}</td>
-                                <td ng-show="exectypeCap != 'iterative_sequential' && exectypeCap != 'iterative_parallel'" style="word-break: break-all">{{testcases[$index].InputDataFile}}</td>
+                                <td ng-show="exectypeCap != 'iterative_sequential' && exectypeCap != 'iterative_parallel'" style="word-break: break-all;cursor:pointer;"><a ng-click="loadDataFile(testcases[$index].InputDataFile)">{{testcases[$index].InputDataFile}}</a></td>
                                 <td>
                                     Type = {{ testcases[$index].Execute._ExecType }}<br>
                                     <div ng-if="testcases[$index].Execute._ExecType == 'If' || testcases[$index].Execute._ExecType == 'If Not'">
@@ -1210,7 +1212,9 @@
                                        id="datafile_path"
                                        ng-change="td_df_monitorPathBtnValue($index)"
                                        ng-model='testcases[$index].InputDataFile'
-                                       placeholder="Datafile file path">
+                                       placeholder="Datafile file path"
+                                       ng-click="loadDataFile(testcases[$index].InputDataFile)"
+                                       style="cursor:pointer;">
                             </div>
                             <div class="col-sm-1">
                                 <input type="button"
@@ -2262,7 +2266,8 @@
                                 </a>
                                 </td>
                                 <td>{{testcases[$index].context}}</td>
-                                <td ng-show="exectypeCap != 'iterative_sequential' && exectypeCap != 'iterative_parallel'" style="word-break: break-all">{{testcases[$index].InputDataFile}}</td>
+                                <td ng-show="exectypeCap != 'iterative_sequential' && exectypeCap != 'iterative_parallel'" style="word-break: break-all;cursor:pointer;"><a ng-click="loadDataFile(testcases[$index].InputDataFile)">{{testcases[$index].InputDataFile}}
+                                </a></td>
                                 <td>
                                     Type = {{ testcases[$index].Execute._ExecType }}<br>
                                     <div ng-if="testcases[$index].Execute._ExecType == 'If' || testcases[$index].Execute._ExecType == 'If Not'">

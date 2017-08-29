@@ -49,6 +49,29 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
 
         readConfig();
 
+
+     $scope.loadFile = function(filepath) {
+     var dirCheck=filepath.split("/").reverse()[1];
+        if(dirCheck=="Data"){
+         var url = filepath.split('..')[1];      
+         var splitDir = url.split('/Data')[1]; 
+         var finalUrl = "#/datafile"+splitDir+"/none";
+          window.open(finalUrl);
+       }
+        else{
+          var splitPath = filepath.split("/").pop(-1); 
+          var splitter = splitPath+"/";
+          var checkDir = filepath.split("Data/")[1].split(splitPath)[0]; 
+          var splitDir = filepath.split(checkDir)[0]; 
+          var frameUrl = splitDir+splitter+checkDir;
+          frameUrl = frameUrl.split('..')[1]; 
+          splitter = frameUrl.split('/Data')[1];
+          var finalUrlDir = "#/datafile"+splitter;
+          window.open(finalUrlDir);
+        }
+     };
+
+
         function get_folders_names(json_dir_data){
             var dir = json_dir_data["dir"];
             var files = json_dir_data["file"];
