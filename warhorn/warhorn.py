@@ -366,11 +366,9 @@ def clone_warrior_and_tools(base_path, current_dir, repo_root, **kwargs):
                 # Getting latest tag
                 latest_tag, check = get_latest_tag(path, current_dir)
                 if latest_tag == "master" and check == 1:
-                    print_error("Warhorn could not determine if there were "
-                                "any tags in " + repo_name + " to checkout. "
-                                + repo_name +" would be set to the default "
-                                             "(master) branch.",
-                                logfile, print_log_name)
+                    print_error("Warhorn could not determine if there were any tags in {0} to "
+                                "checkout. {0} would be set to the default (master) branch"
+                                ".".format(repo_name), logfile, print_log_name)
                     setDone(1)
                 elif latest_tag == "master" and check == 0:
                     print_info("No tags were found in " + repo_name +
@@ -656,7 +654,7 @@ def clone_drivers(base_path, current_dir, **kwargs):
         repositories = get_firstlevel_children(node, "repository")
         for repository in repositories:
             if ('url' not in repository.attrib and 'label' not in repository.attrib and
-                'all_drivers' not in repository.attrib and 'clone' not in repository.attrib):
+                    'all_drivers' not in repository.attrib and 'clone' not in repository.attrib):
                 continue
             url = get_attribute_value(repository, "url")
             name = get_repository_name(url)
@@ -863,16 +861,19 @@ def clone_warriorspace(base_path, current_dir, **kwargs):
                     else:
                         destination = os.path.join(base_path, 'warrior', 'Warriorspace')
                     dummy, root_repo_folder_list = get_subfiles(path)
-                    try:
-                        overwrite_files(os.path.join(path,
-                                                     root_repo_folder_list[1]),
-                                        destination, overwrite,
-                                        logfile, print_log_name)
-                    except:
-                        print_error("Could not copy Warriorspace files from " + name + " into "
-                                    "warriorframework", logfile, print_log_name)
+                    if 'Warriorspace' not in root_repo_folder_list:
+                        print_error('COuld not find Warriorspace under the root of the repository')
                         setDone(1)
+                    else:
 
+                        try:
+                            overwrite_files(os.path.join(path, 'Warriorspace'),
+                                            destination, overwrite,
+                                            logfile, print_log_name)
+                        except:
+                            print_error("Could not copy Warriorspace files from " + name +
+                                        " into warriorframework", logfile, print_log_name)
+                            setDone(1)
             # folder inside the temp folder that had the initial clone of the
             # repository get deleted here. This is done for every iteration
             # because if user wants to clone another repository with the same
@@ -1187,7 +1188,7 @@ def assemble_warrior():
     check_basic_requirements(logfile, config_file_name, console_log_name,
                              print_log_name, python_executable)
     node = get_node(config_file_name, 'virtualenv')
-    if node is not False and get_attribute_value(node, 'activate') == 'yes':
+    if node is not False and get_attribute_value(node, 'name') != '':
         if get_attribute_value(node, 'install') == 'yes':
             install_depen('virtualenv', 'virtualenv', logfile, print_log_name)
         war_tag = get_node(config_file_name, 'warriorframework')
