@@ -596,9 +596,11 @@ def send_commands_from_testdata(testdatafile, obj_session, **args):
                 response_dict = _get_response_dict(details_dict, i, response,
                                                    response_dict)
                 if response_dict.values() is not None:
-                    sessid = system_name + "_td_response"
-                    for keys, values in response_dict.items():
-                        pNote("Portion of response saved to the data repository with key: {0}.{1}.{2}, value: {3}".format(sessid, key, keys, values))
+                    session_name = details_dict["session_list"][i]
+                    session_id = data_Utils.get_session_id(system_name, session_name) + "_td_response"
+                    for k, v in response_dict.items():
+                        pNote("Portion of response saved to the data repository with key: "
+                              "{0}.{1}.{2}, value: {3}".format(session_id, key, k, v))
                 print_debug("<<<")
             else:
                 finalresult = "ERROR"
