@@ -37,7 +37,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'native.settings',
     'native.appstore',
-    'apps.userapp',
     'wui.core',
 ]
 

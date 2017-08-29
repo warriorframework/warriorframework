@@ -52,6 +52,7 @@ def copy_dir(src, dest):
             shutil.copy(src, dest)
         else:
             output = False
+            print "YooHoo"
             print "-- An Error Occurred -- {0}".format(e)
     return output
 

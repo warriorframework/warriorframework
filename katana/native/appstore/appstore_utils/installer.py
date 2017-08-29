@@ -3,7 +3,7 @@ import os
 import re
 
 from utils.directory_traversal_utils import join_path, get_dir_from_path, get_abs_path, \
-    get_sub_dirs_and_files, get_paths_of_subfiles
+    get_sub_dirs_and_files, get_paths_of_subfiles, get_sub_folders
 from utils.file_utils import copy_dir, readlines_from_file, write_to_file
 from utils.json_utils import read_json_data
 
@@ -13,10 +13,13 @@ class Installer:
     def __init__(self, base_directory, path_to_app):
         self.base_directory = base_directory
         self.app_directory = join_path(self.base_directory, "katana", "apps")
+        self.plugin_directory = join_path(self.base_directory, "warrior", "plugins")
         self.settings_file = join_path(self.base_directory, "katana", "wui", "settings.py")
         self.urls_file = join_path(self.base_directory, "katana", "wui", "urls.py")
         self.app_name = get_dir_from_path(path_to_app)
         self.path_to_app = join_path(path_to_app, "warriorframework", "katana", "apps", self.app_name)
+        self.path_to_plugin_dir = join_path(path_to_app, "warriorframework", "warrior", "plugins")
+        self.plugins_paths = get_sub_folders(self.path_to_plugin_dir, abs_path=True)
         self.wf_config_file = join_path(self.path_to_app, "wf_config.json")
         self.pkg_in_settings = "apps.{0}".format(self.app_name)
         self.urls_inclusions = []
@@ -26,6 +29,9 @@ class Installer:
 
         if output:
             output = self.__add_app_directory()
+
+        if output:
+            output = self.__add_plugins()
 
         if output:
             output = self.__edit_settings_py()
@@ -145,6 +151,14 @@ class Installer:
                             output = False
         return output
 
+    def __add_plugins(self):
+        output = True
+        for plugin in self.plugins_paths:
+            if output:
+                plugin_name = get_dir_from_path(plugin)
+                output = copy_dir(plugin, join_path(self.plugin_directory, plugin_name))
+        return output
+
     def __add_app_directory(self):
         output = copy_dir(self.path_to_app, join_path(self.app_directory, self.app_name))
         if not output:
@@ -188,9 +202,6 @@ class Installer:
         sf_data = data[:index]
         sf_data.append(self.pkg_in_settings)
         sf_data.extend(data[index:])
-
-        for line in sf_data:
-            print line
 
         settings_data = ""
         for line in sf_data:
