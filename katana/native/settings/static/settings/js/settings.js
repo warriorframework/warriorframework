@@ -11,28 +11,6 @@ var settings = {
 			console.log('test auto init of app');
 			settings.emailSettings.generalBody = $(this);
 		},
-
-		toJSON: function(){
-			var body = settings.emailSettings.generalBody;
-			var jsonObj = [];
-			body.find('.feild-block').each( function(){
-				var $elem = $(this);
-				var tempObj = {};
-				tempObj[ $elem.find('[key="@name"]').attr('key') ] = $elem.find('[key="@name"]').text();
-				$elem.find('input').each( function() {
-					var sub$elem = $(this);
-					tempObj[ sub$elem.attr('key') ] = sub$elem.val();
-				});
-				jsonObj.push(tempObj);
-			});
-			return JSON.stringify(jsonObj);
-		},
-
-		save: function(){
-			katana.templateAPI.post.call( katana.$activeTab.find('.to-save'), null, null, settings.emailSettings.toJSON(), function( data ) {
-				console.log('saved', data);
-			});
-		}
 	},
 
 	encrypetion: {
@@ -61,23 +39,34 @@ var settings = {
 		issue_type: function(){
 			var $elem = this;
 			var data = JSON.parse($elem.val());
-			var template = $($elem.closest('.to-save').find('#issue_type').html());
-			var feildContainer = $elem.closest('.feild-block');
-			$elem.closest('.feild').remove();
+			data = Array.isArray(data) ? data : [ data ];
+			var feildContainer = $elem.closest('.feild-block > .to-scroll');
 			$.each( data, function(){
-			    settings.jira.buildSubForms( this, template, feildContainer );
+			    settings.jira.buildSubForms( this, $elem );
+			});
+			$elem.closest('.feild').remove();
+		},
+
+		buildSubForms: function( objs, $elem ){
+			var container = settings.jira.addIssueType( $elem );
+			$.each( Object.keys(objs), function(){
+				container.find('[key=' + this + ']').val( objs[this] );
 			});
 		},
 
-		buildSubForms: function( objs, template, feildContainer ){
-			$.each( Object.keys(this), function(){
-				
-			});
-		},
-
-		addIssueType: function(){
+		addIssueType: function( $elem ){
+			$elem = $elem ? $elem : this;
+			var $template = $($elem.closest('.to-save').find('#issue_type').html());
+			var feildContainer = $elem.closest('.feild-block').find('.to-scroll');
+			return $template.clone().appendTo(feildContainer);
 
 		},
 
+	},
+
+	save: function(){
+		katana.templateAPI.post.call( katana.$activeTab.find('.to-save'), null, null, katana.toJSON(), function( data ) {
+			console.log('saved', data);
+		});
 	},
 };

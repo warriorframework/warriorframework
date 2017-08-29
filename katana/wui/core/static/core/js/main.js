@@ -122,6 +122,10 @@ var katana = {
 		tab.remove();
 	},
 
+	closePocketFeilds: function(){
+		this.closest('.pocket-feilds').remove();
+	},
+
 	popupController: {
 	  body: '',
 	  template: $('<div class="popup"><div class="navbar"><div class="title"></div><div class="min"></div><div class="close"></div></div><div class="page-content"></div></div>'),
@@ -243,6 +247,37 @@ var katana = {
 	    });
 	  }
 
+	},
+	
+	toJSON: function(){
+		var body = katana.$activeTab.find('.to-save');
+		var jsonObj = [];
+		body.find('.feild-block').each( function(){
+			var $elem = $(this);
+			var tempObj = {};
+			tempObj[ $elem.find('[key="@name"]').attr('key') ] = $elem.find('[key="@name"]').text();
+			$elem.find('input, select').each( function() {
+				var sub$elem = $(this);
+				if( !sub$elem.closest('.pocket-feilds').length )
+					tempObj[ sub$elem.attr('key') ] = sub$elem.val();
+			});
+			$elem.find('.pocket-feilds').each( function() {
+				var sub$elem = $(this);
+				var key = sub$elem.attr('key');
+				var temp = {};
+				sub$elem.find('input, select').each( function(){
+					var input = $(this);
+					temp[ input.attr('key') ] = input.val();
+				});
+			 tempObj[ key ] ? tempObj[ key ].push(temp) : tempObj[ key ] = [temp];
+			});
+			$elem.find('.relative-tool-bar > .bool').each(function() {
+				var sub$elem = $(this);
+				sub$elem.hasClass('active') ? tempObj[ sub$elem.attr('key') ] = 'true' : '';
+			});
+			jsonObj.push(tempObj);
+		});
+		return JSON.stringify(jsonObj);
 	},
 
 	toggleActive: function(){

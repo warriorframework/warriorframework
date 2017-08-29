@@ -3,8 +3,8 @@ from utils.navigator_util import Navigator
 import json, xml.etree.ElementTree as xml_controler
 try:
     import xmltodict
-except ImportError:
-        print('please install xmltodict')
+except ImportError:
+    print('please install xmltodict')
 
 class Settings:
 
@@ -39,7 +39,9 @@ class Settings:
         elem_file = elem_file.getroot()
         xml_string = xml_controler.tostring(elem_file)
         if request.method == 'POST':
-            pass
+            val = xmltodict.unparse( {'jira' : { 'system' : json.loads(request.POST.get('data')) }}, pretty = True)
+            with open(jira_config,'w') as f:
+                f.write(val)
         else:
             xmldoc = xmltodict.parse(xml_string)
             for system in xmldoc['jira']['system']:
