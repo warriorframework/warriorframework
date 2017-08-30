@@ -39,6 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'wui.core',
     'native.settings',
+    'native.projects',
+    'native.suites',
+    'native.cases',
+    'jsonify',
     'native.wdf_edit',
 ]
 
