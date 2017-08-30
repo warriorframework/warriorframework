@@ -1,0 +1,16 @@
+<body>
+<div class="tool-bar"><div katana-click="settings.closeSetting" class="button close">Close</div><div katana-click="settings.save" class="button save">Save</div></div>
+<div class="two-rows to-save" auto-init="settings.emailSettings.init" post-url="settings/email_setting_handler">
+    <div class="feild-block">
+      <div class="title">Email Settings</div>
+      {% for k, v in setting.Setting.items%}
+        {% if k == '@name' %}
+          <div key="{{ k }}" class="sub-title">{{ v }}</div>
+        {% else %}
+          <div class="feild"><label>{{ k }}</label><input key="{{ k }}" type="text" {% if v  %} value="{{ v }}" {% endif %} placeholder="{{ k }}"></div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  <div class="csrf-container">{% csrf_token %}</div>
+</div>
+</body>
