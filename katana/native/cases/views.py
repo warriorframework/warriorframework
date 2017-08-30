@@ -154,6 +154,7 @@ def editCase(request):
 
 	return HttpResponse(template.render(context, request))
 
+<<<<<<< HEAD
 =======
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
@@ -306,3 +307,17 @@ def jira_setting_handler( request ):
 >>>>>>> 1589a90... Saving back of Projects and Suites in new UI
 =======
 >>>>>>> eb38c2d... Added Cases too
+=======
+def getCaseDataBack(request):
+	print "Got something back in request";
+	#response = request.readlines();   # Get the JSON response 
+	ijs = request.POST.get(u'Testcase')  # This is a xml string  
+	print ijs
+	print "--------------TREE----------------"
+	fname = request.POST.get(u'filetosave')
+	print "save to ", fname 
+	fd = open(fname,'w');
+	fd.write(ijs);
+	fd.close();
+	return redirect(request.META['HTTP_REFERER'])
+>>>>>>> dcc412c... Added save xml features to all three apps

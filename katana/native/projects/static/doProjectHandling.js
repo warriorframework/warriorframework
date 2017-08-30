@@ -136,8 +136,9 @@ function mapUiToProjectJson() {
 
 	}
 	// Now you have collected the user components...
-
-	var url = "../getProjectDataBack";
+	//alert("Here..");
+	var url = "./projects/getProjectDataBack";
+	//alert(url); 
 	var csrftoken = $("[name='csrfmiddlewaretoken']").val();
 
 	$.ajaxSetup({
@@ -145,13 +146,13 @@ function mapUiToProjectJson() {
             xhr.setRequestHeader("X-CSRFToken", csrftoken)
     	}
 	});
-
+	alert(url);
 	var topNode  = { 'Project' : jsonProjectObject};
 	var jj = new json() ; 
 	// var mystring =  JSON.stringify(jsonProjectObject);
 	var ns = jj.translate.toXML(topNode);
 
-	//alert(ns);
+	alert(ns);
 
 	$.ajax({
     url : url,

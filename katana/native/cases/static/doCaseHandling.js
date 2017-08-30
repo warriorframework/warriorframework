@@ -272,7 +272,7 @@ function mapCaseJsonToUi(data){
 	if (!jQuery.isArray(xdata)) xdata = [xdata]; // convert singleton to array
 
 	items.push('<div class="container"><div class="row">'); 
-	items.push('<div id="accordion_case_display"  >');
+	items.push('<div id="accordion_case_display" class="col-6"  >');
 	//console.log("xdata =" + xdata);
 	$("#listOfTestStepsForCase").html("");      // Start with clean slate
 	for (var s=0; s<Object.keys(xdata).length; s++ ) {  // for s in xdata
@@ -444,8 +444,8 @@ function mapCaseJsonToUi(data){
 		items.push('<br><span class="label label-primary">Impact</span><br>');
 		*/
 
-		items.push('<label class="text-right" >impact</label>');
-		items.push('<select type="text" id="'+s+':"impact" value="'+oneCaseStep['impact']+'" >');
+		items.push('<label class="col-1 text-right" >impact</label>');
+		items.push('<select class="col-6" type="text" id="'+s+':"impact" value="'+oneCaseStep['impact']+'" >');
 		items.push('<option value="impact">impact</option>'); 
 		items.push('<option value="noimpact">noimpact</option>'); 
 		items.push('</select>');
@@ -453,7 +453,7 @@ function mapCaseJsonToUi(data){
 		
 		
 		var bid = "deleteTestStep-"+s;
-		items.push('<input type="button" class="btn-danger" value="Delete Step" id="'+bid+'"/>');
+		items.push('<input type="button" class="col-2 btn-danger" value="Delete Step" id="'+bid+'"/>');
 		$('#'+bid).off('click');   //unbind and bind are deprecated. 
 		$(document).on('click','#'+bid,function(  ) {
 			alert(this.id);
@@ -466,7 +466,7 @@ function mapCaseJsonToUi(data){
 
 	}
 	items.push('</div>'); // 
-	$('<div/>', { class: "col-md-12" , collapsible: "true" , html: items.join("")}).appendTo("#listOfTestStepsForCase");
+	$('<div/>', { class: "col-12" , collapsible: "true" , html: items.join("")}).appendTo("#listOfTestStepsForCase");
 	$("#accordion_case_display").accordion();
 	
 	if (jsonCaseDetails['Datatype'] == 'Custom') {

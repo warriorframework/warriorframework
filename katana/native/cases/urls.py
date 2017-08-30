@@ -7,6 +7,7 @@ urlpatterns = [
 <<<<<<< HEAD
 <<<<<<< HEAD
  	url(r'editCase', views.editCase , name='editCase'),
+    url(r'getCaseDataBack', views.getCaseDataBack , name='getCaseDataBack'),
     
 =======
     url(r'^email_setting_handler', views.email_setting_handler, name='email_setting_handler'),

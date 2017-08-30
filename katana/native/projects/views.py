@@ -132,16 +132,35 @@ def editProject(request):
 	return HttpResponse(template.render(context, request))
 
 
+import HTMLParser
 
 
-def email_setting_handler( request ):
-	pass
-    #return render(request, 'settings/email_setting_handler.html', {"setting": controls.email_setting_handler(request)})
 
-def secret_handler( request ): 
-	pass
-    #return render(request, 'settings/secret.html', {"secret": controls.secret_handler(request)})
+def getProjectDataBack(request):
+	print "Got something back in request";
+	#response = request.readlines();   # Get the JSON response 
+	#template = loader.get_template("cases/editProject.html")  # get another one?
+	fname = request.POST.get(u'filetosave')
+	ijs = request.POST.get(u'json')  # This is a json string 
+	#
+	# This produces xml of the form : <key name="@value">RMT</key><key name="$"></key>
+	# 
+	# Obviously will not work for us. 
+	#
+	print ijs
+	xjs = dicttoxml.dicttoxml(eval(ijs), attr_type=False)
+	print xjs  # This is a string... evaluate it? 
+	html = HTMLParser.HTMLParser()
+	print html.unescape(xjs)
 
-def jira_setting_handler( request ): 
-	pass
-    #return render(request, 'settings/jira_setting_handler.html', {"jira": controls.jira_setting_handler(request)})
+
+	print " Now the Javascript code output ...."
+
+
+	#print "--------------TREE----------------"
+	print request.POST.get(u'Project') 
+	print "save to ", fname 
+	fd = open(fname,'w');
+	fd.write(ijs);
+	fd.close();
+	return redirect(request.META['HTTP_REFERER'])
