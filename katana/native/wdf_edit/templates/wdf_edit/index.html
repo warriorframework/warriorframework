@@ -10,49 +10,55 @@
 <body>
     <div id="main_info">
     <!-- <div class="csrf-container">{% csrf_token %}</div> -->
+    <button id="add">add system</button>
+    <!-- <button id="two-col">2 columns</button> -->
+    <button id="submit">submit</button>
 
-    <form action="/katana/wdf/post" method="post">
         <div class="csrf-container">{% csrf_token %}</div>
-        <div class="row" id="main_row">
+        <form id="big-box">
         {% for system in data.system %}
             {% if system.ip %}
-                <div class="col-sm-12" id="{{ system.name }}-control-box"><label>{{ system.name }}</label>
-                {% for k, v in system.items %}
-                    {% if k != "name" %}
-                        <div class="col-sm-3">{{ k }}</div>
-                        <div class="col-sm-9"><input name="{{ system.name }}.{{ k }}" value="{{ v }}"></input></div>
-                    {% endif %}
-                {% endfor %}
-                <button id="{{ system.name }}-toggle" class="toggle" type="button">Toggle</button>
+                <div id="{{ system.name }}-control-box" class="control-box"><label>{{ system.name }}</label>
+                    {% for k, v in system.items %}
+                        <div class="row">
+                        {% if k != "name" %}
+                            <div class="col-md-3">{{ k }}</div>
+                            <div class="col-md-9"><input name="{{ system.name }}.{{ k }}" value="{{ v }}"></input></div>
+                        {% endif %}
+                        </div>
+                    {% endfor %}
+                    <p><button id="{{ system.name }}-toggle" class="toggle" type="button">Toggle</button></p>
                 </div>
             {% elif "ip" in system.subsystem %}
-                <div class="col-sm-12" id="{{ system.name }}.{{ system.subsystem.name }}-control-box"><label>{{ system.name }}.{{ system.subsystem.name }}</label>
-                {% for k, v in system.subsystem.items %}
-                    {% if k != "name" %}
-                        <div class="col-sm-3">{{ k }}</div>
-                        <div class="col-sm-9"><input name="{{ system.name }}.{{ system.subsystem.name }}.{{ k }}" value="{{ v }}"></input></div>
-                    {% endif %}
-                {% endfor %}
-                <button id="{{ system.name }}.{{ system.subsystem.name }}-toggle" class="toggle" type="button">Toggle</button>
+                <div id="{{ system.name }}.{{ system.subsystem.name }}-control-box" class="control-box"><label>{{ system.name }}.{{ system.subsystem.name }}</label>
+                    {% for k, v in system.subsystem.items %}
+                        <div class="row">
+                        {% if k != "name" %}
+                            <div class="col-md-3">{{ k }}</div>
+                            <div class="col-md-9"><input name="{{ system.name }}.{{ system.subsystem.name }}.{{ k }}" value="{{ v }}"></input></div>
+                        {% endif %}
+                        </div>
+                    {% endfor %}
+                    <p><button id="{{ system.name }}.{{ system.subsystem.name }}-toggle" class="toggle" type="button">Toggle</button></p>
                 </div>
             {% elif system.subsystem %}
+                <label>{{ system.name }}</label>
                 {% for subsys in system.subsystem %}
-                    <div class="col-sm-12" id="{{ system.name }}.{{ subsys.name }}-control-box"><label>{{ system.name }}.{{ subsys.name }}</label>
-                    {% for k, v in subsys.items %}
-                        {% if k != "name" %}
-                            <div class="col-sm-3">{{ k }}</div>
-                            <div class="col-sm-9"><input name="{{ system.name }}.{{ subsys.name }}.{{ k }}" value="{{ v }}"></input></div>
-                        {% endif %}
-                    {% endfor %}
-                    <button id="{{ system.name }}.{{ subsys.name }}-toggle" class="toggle" type="button">Toggle</button>
+                    <div id="{{ system.name }}.{{ subsys.name }}-control-box" class="control-box"><label>{{ system.name }}.{{ subsys.name }}</label>
+                        {% for k, v in subsys.items %}
+                            <div class="row">
+                            {% if k != "name" %}
+                                <div class="col-md-3">{{ k }}</div>
+                                <div class="col-md-9"><input name="{{ system.name }}.{{ subsys.name }}.{{ k }}" value="{{ v }}"></input></div>
+                            {% endif %}
+                            </div>
+                        {% endfor %}
+                        <p><button id="{{ system.name }}.{{ subsys.name }}-toggle" class="toggle" type="button">Toggle</button></p>
                     </div>
                 {% endfor %}
             {% endif %}
         {% endfor %}
-        </div>
-        <input id="submit" type="submit" value="Submit">
-    </form>
-    <button id="add">add system</button>
+        </form>
 
     </div>
     <!-- <button id="save"">Save</button> -->

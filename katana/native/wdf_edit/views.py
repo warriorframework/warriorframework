@@ -2,7 +2,8 @@
 from __future__ import unicode_literals
 
 import json, xmltodict
-from xml.etree.ElementTree import Element, tostring, fromstring, parse
+from HTMLParser import HTMLParser
+from xml.etree.ElementTree import parse
 from pprint import pprint
 
 from django.shortcuts import render
@@ -38,13 +39,32 @@ def index(request):
                     del sys[k]
                 elif k == "#text":
                     del sys[k]
-    print(json.dumps(data, indent=4))
+    # print(json.dumps(data, indent=4))
 
     return render(request, 'wdf_edit/index.html', {"data": data["credentials"]})
 
 def get_json(request):
     return JsonResponse(xmltodict.parse(open('/home/ka/Desktop/warrior_fnc_tests/warrior_tests/data/cli_tests/cli_def_Data.xml').read()))
 
+def raw_parser(data):
+    result = {}
+    for k, v in data.items():
+        parts = k.split(".")
+        if parts[0] not in result:
+            result[parts[0]] = {}
+        cur = result[parts[0]]
+        for part in parts[1:-1]:
+            if part not in cur:
+                cur[part] = {}
+            cur = cur[part]
+        cur.update({parts[-1]:v})
+    print json.dumps(result, indent=4)
+    return result
+
+
 def on_post(request):
-    print(json.dumps(request.POST, indent=4))
+    data = request.POST
+    print json.dumps(data, indent=4)
+    data = raw_parser(data)
+    print xmltodict.unparse({"systems":data})
     return render(request, 'wdf_edit/result.html', {"data": json.dumps(request.POST, indent=4)})
