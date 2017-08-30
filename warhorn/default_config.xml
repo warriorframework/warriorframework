@@ -17,14 +17,14 @@
     </warhorn>
 
 	<warriorframework url="https://github.com/warriorframework/warriorframework.git"
-                      destination="" label="" clean_install="yes" clone="no">
+                      destination="" label="" overwrite="yes" clone="no">
 	</warriorframework>
 
     <!--
 
     Fill this out with the details of the repository that you want to clone
 
-    <tools url="http://repository/one/url.git" label="branch-name" clone="yes">
+    <tools url="http://repository/one/url.git" label="branch-name" overwrite="yes" clone="yes">
     </tools>
 
     -->

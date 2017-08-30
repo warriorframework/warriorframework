@@ -158,6 +158,8 @@ def overwrite_files(path, destination, overwrite, logfile, print_log_name):
 
     """
     sub_files, sub_folders = get_subfiles(path)
+    sub_files = filter(lambda f: not f.startswith('.'), sub_files)
+    sub_folders = filter(lambda f: not f.startswith('.'), sub_folders)
     for sub_folder in sub_folders:
         if sub_folder != "Execution":
             create_dir(os.path.join(destination, sub_folder))
@@ -305,30 +307,7 @@ def clone_warrior_and_tools(base_path, current_dir, repo_root, **kwargs):
         else:
             return
 
-        # Getting the clean_install attribute value
-    if 'clean_install' in node.attrib:
-        clean_install = get_attribute_value(node, "clean_install")
-    else:
-        # backward compatibility
-        clean_install = get_attribute_value(node, "clean_install_warrior")
     label = get_attribute_value(node, "label")
-
-    if clean_install == "yes":
-        # Deleting exising repo is clean_install is set to 'yes'
-        if os.path.exists(path):
-            print_info("Deleting existing " + repo_name,
-                       logfile, print_log_name)
-            try:
-                delete_directory(path, logfile, print_log_name)
-            except:
-                print_error("Warhorn was unable to delete existing "
-                            + repo_name + ". " + repo_name +
-                            " will be pulled.", logfile, print_log_name)
-                setDone(1)
-            else:
-                print_info("Existing " + repo_name + " deleted successfully",
-                           logfile, print_log_name)
-
     if os.path.exists(path):
         # Pulling repo if path exists
         print_info("Pulling " + repo_name + ".", logfile, print_log_name)
@@ -400,7 +379,16 @@ def clone_warrior_and_tools(base_path, current_dir, repo_root, **kwargs):
                                               console_log_name=console_log_name,
                                               print_log_name=print_log_name)
                 getDone()
-
+    overwrite = kwargs.get("overwrite")
+    dest_dir = os.path.join(base_path, "warrior/Tools/"+repo_name)
+    if not os.path.exists(dest_dir):
+        os.makedirs(dest_dir)
+    try:
+        overwrite_files(path, dest_dir, overwrite, logfile, print_log_name)
+    except:
+        print_error("Could not copy Tools files from {} into warriorframework".format(repo_name),
+                    logfile, print_log_name)
+        setDone(1)
 
 def remove_extra_drivers(drivers, path):
     """ This function basically compares the drivers that have been cloned
@@ -1050,6 +1038,7 @@ def check_if_tools_should_be_cloned(node, p_node, base_path, current_dir,
     config_file_name = kwargs.get("config_file_name")
     console_log_name = kwargs.get("console_log_name")
     print_log_name = kwargs.get("print_log_name")
+    overwrite = kwargs.get("overwrite")
     clone = get_attribute_value(node, "clone")
     url = get_attribute_value(node, "url")
     repo_root = get_repository_name(url)
@@ -1058,7 +1047,7 @@ def check_if_tools_should_be_cloned(node, p_node, base_path, current_dir,
                                 config_file_name=config_file_name,
                                 console_log_name=console_log_name,
                                 print_log_name=print_log_name,
-                                repo_name=p_node)
+                                repo_name=p_node, overwrite=overwrite)
     else:
         print_info("Warhorn will not install "
                    + p_node +
@@ -1076,6 +1065,7 @@ def clone_major_repositories(p_node, **kwargs):
     config_file_name = kwargs.get("config_file_name")
     console_log_name = kwargs.get("console_log_name")
     print_log_name = kwargs.get("print_log_name")
+    overwrite = kwargs.get("overwrite")
     base_path, node = get_base_path(p_node, logfile=logfile,
                                     config_file_name=config_file_name,
                                     console_log_name=console_log_name,
@@ -1086,7 +1076,8 @@ def clone_major_repositories(p_node, **kwargs):
                                         logfile=logfile,
                                         config_file_name=config_file_name,
                                         console_log_name=console_log_name,
-                                        print_log_name=print_log_name)
+                                        print_log_name=print_log_name,
+                                        overwrite=overwrite)
 
 
 def get_base_path(node_name="warriorframework", **kwargs):
