@@ -714,6 +714,27 @@ app.controller('newTestsuiteCtrl', ['$scope', '$http', '$location', '$route', '$
             $scope.testcases[$scope.testcaseBeingEdited].impact = $scope.testcases[$scope.testcaseToBeCopied - 1].impact;
         };
 
+    $scope.addCase = function (index) {
+        if($scope.testcaseEditor){
+            swal({
+                title: "You have a Case open in the Case editor that should be saved before editing a new Case.",
+                text: "Please save that Case.",
+                type: "warning",
+                confirmButtonText: "Ok",
+                closeOnConfirm: true,
+                confirmButtonColor: '#3b3131'
+            });
+        }
+        else {
+            $scope.testcaseToBeCopied = "None";
+            $scope.testcase_numbers = [];
+            for(var i=0; i<$scope.testcases.length; i++){
+                $scope.testcase_numbers.push(i+1);
+            }
+            openTestcaseCap(index);
+        }
+    };
+
         $scope.saveTestcaseCap = function(index){
             var re = /^[0-9]*$/;
             var flag = true;

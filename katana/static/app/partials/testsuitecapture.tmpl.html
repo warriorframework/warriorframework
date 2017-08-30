@@ -859,6 +859,7 @@
                                 <th class='text-muted'>Run Mode</th>
                                 <th class='text-muted'>On Error</th>
                                 <th class='text-muted'>Impact</th>
+                                <th class='text-muted'>Insert</th>
                                 <th class='text-muted'>Edit</th>
                                 <th class='text-muted'>Delete</th>
                             </tr>
@@ -897,6 +898,40 @@
                                     <span ng-show="testcases[$index].onError._value != ''">Step # {{ testcases[$index].onError._value }}</span>
                                 </td>
                                 <td>{{testcases[$index].impact}}</td>
+                        <td ng-click='addCase($index)' class='text-center' style='vertical-align:middle'>
+                            <div class="tooltip-on-left-dark-big">
+                                <span class="glyphicon glyphicon-import" aria-hidden="true"></span>
+                                <span class="tooltip-content text-left">
+                                    <div ng-if="testsuiteTooltip.insertcase.tooltip != ''">
+                                        <i class="fa fa-rocket" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{testsuiteTooltip.insertcase.tooltip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="testsuiteTooltip.insertcase.protip != ''">
+                                        <br>
+                                        <i class="fa fa-bolt" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{testsuiteTooltip.insertcase.protip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="testsuiteTooltip.insertcase.bantip != ''">
+                                        <br>
+                                        <i class="fa fa-ban" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{testsuiteTooltip.insertcase.bantip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="testsuiteTooltip.insertcase.snowflake != ''">
+                                        <br>
+                                        <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{testsuiteTooltip.insertcase.snowflake}}
+                                        <br>
+                                    </div>
+                                </span>
+                            </div>
+                        </td>
                                 <td ng-click="editTestcase($index)">
                                     <div class="tooltip-on-left-dark-big">
                                         <span class="fa fa-pencil-square-o" aria-hidden="true"></span>
@@ -2245,6 +2280,7 @@
                                 <th class='text-muted'>Run Mode</th>
                                 <th class='text-muted'>On Error</th>
                                 <th class='text-muted'>Impact</th>
+                                <th class='text-muted'>Insert</th>
                                 <th class='text-muted'>Edit</th>
                                 <th class='text-muted'>Delete</th>
                             </tr>
@@ -2283,6 +2319,40 @@
                                     <span ng-show="testcases[$index].onError._value != ''">Step # {{ testcases[$index].onError._value }}</span>
                                 </td>
                                 <td>{{testcases[$index].impact}}</td>
+                                 <td ng-click='addCase($index)' class='text-center' style='vertical-align:middle'>
+                            <div class="tooltip-on-left-dark-big">
+                                <span class="glyphicon glyphicon-import" aria-hidden="true"></span>
+                                <span class="tooltip-content text-left">
+                                    <div ng-if="testsuiteTooltip.insertcase.tooltip != ''">
+                                        <i class="fa fa-rocket" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{testsuiteTooltip.insertcase.tooltip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="testsuiteTooltip.insertcase.protip != ''">
+                                        <br>
+                                        <i class="fa fa-bolt" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{testsuiteTooltip.insertcase.protip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="testsuiteTooltip.insertcase.bantip != ''">
+                                        <br>
+                                        <i class="fa fa-ban" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{testsuiteTooltip.insertcase.bantip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="testsuiteTooltip.insertcase.snowflake != ''">
+                                        <br>
+                                        <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{testsuiteTooltip.insertcase.snowflake}}
+                                        <br>
+                                    </div>
+                                </span>
+                            </div>
+                        </td>
                                 <td ng-click="editTestcase($index)">
                                     <div class="tooltip-on-left-dark-big">
                                         <span class="fa fa-pencil-square-o" aria-hidden="true"></span>
