@@ -11,6 +11,7 @@ limitations under the License.
 
 """
 
+<<<<<<< HEAD
 
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
@@ -152,3 +153,25 @@ def editCase(request):
 
 	return HttpResponse(template.render(context, request))
 
+=======
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
+from django.shortcuts import render
+from native.settings.settings import Settings
+# Create your views here.
+
+controls = Settings()
+
+def index(request):
+    return render(request, 'settings/index.html', {"data": controls.get_location()})
+
+def email_setting_handler( request ):
+    return render(request, 'settings/email_setting_handler.html', {"setting": controls.email_setting_handler(request)})
+
+def secret_handler( request ):
+    return render(request, 'settings/secret.html', {"secret": controls.secret_handler(request)})
+
+def jira_setting_handler( request ):
+    return render(request, 'settings/jira_setting_handler.html', {"jira": controls.jira_setting_handler(request)})
+>>>>>>> 1589a90... Saving back of Projects and Suites in new UI
