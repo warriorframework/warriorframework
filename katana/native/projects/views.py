@@ -43,6 +43,7 @@ path_to_productdrivers='/home/khusain/Projects/xml-edit/warriorframework/warrior
 navigator = Navigator();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 def old_index(request):
     return render(request, 'settings/index.html', {"data": controls.get_location()})
@@ -51,6 +52,8 @@ def old_index(request):
 ## List all your projects ...
 ##
 >>>>>>> 1589a90... Saving back of Projects and Suites in new UI
+=======
+>>>>>>> eb38c2d... Added Cases too
 def index(request):
 	path_to_testcases = navigator.get_warrior_dir() + "/../wftests/warrior_tests/"
 	template = loader.get_template("./listAllProjects.html")

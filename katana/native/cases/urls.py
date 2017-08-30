@@ -5,6 +5,7 @@ from . import views
 urlpatterns = [
     url(r'^$', views.index, name='index'),
 <<<<<<< HEAD
+<<<<<<< HEAD
  	url(r'editCase', views.editCase , name='editCase'),
     
 =======
@@ -12,4 +13,8 @@ urlpatterns = [
     url(r'^secret_handler', views.secret_handler, name='secret_handler'),
     url(r'^jira_setting_handler', views.jira_setting_handler, name='jira_setting_handler'),
 >>>>>>> 1589a90... Saving back of Projects and Suites in new UI
+=======
+ 	url(r'editCase', views.editCase , name='editCase'),
+    
+>>>>>>> eb38c2d... Added Cases too
 ]
