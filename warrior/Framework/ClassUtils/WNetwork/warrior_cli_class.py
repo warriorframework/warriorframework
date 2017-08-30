@@ -36,7 +36,6 @@ class WarriorCli(object):
         """ Constructor """
         self.conn_type = None
         self.session_object = None
-        self.conn_string = ""
         self.status = None
 
     def connect(self, credentials):
@@ -73,16 +72,111 @@ class WarriorCli(object):
         else:
             print_info("Connection type : {} is not "
                        "supported".format(self.conn_type))
-            self.session_object, self.conn_string = None, ""
+            self.session_object, self.session_object.conn_string = None, ""
 
-    def disconnect(self):
-        """ To close SSH/Telnet session """
+    def connect_ssh(self, ip, port="22", username="", password="",
+                    logfile=None, timeout=60, prompt=".*(%|#|\$)",
+                    conn_options="", custom_keystroke="", escape=""):
+        """
+        - Initiates SSH connection via a specific port. Creates log file.
+        :Arguments:
+            1. ip = destination ip
+            2. port(string) = telnet port
+            3. username(string) = username
+            4. password(string) = password
+            5. logfile(string) = logfile name
+            6. timeout(int) = timeout duration
+            7. prompt(string) = destination prompt
+            8. conn_options(string) = extra arguments that will be used when
+                                      sending the ssh/telnet command
+            9. custom_keystroke(string) = keystroke(to be given after initial
+                                          timeout)
+            10. escape(string) = true/false(to set TERM as dump)
+        :Returns:
+            1. session_object(pexpect session object)
+            2. conn_string(pre and post login message)
+        """
+
+        credentials = {}
+        credentials['ip'] = ip
+        credentials['port'] = port
+        credentials['username'] = username
+        credentials['password'] = password
+        credentials['logfile'] = logfile
+        credentials['timeout'] = timeout
+        credentials['prompt'] = prompt
+        credentials['conn_options'] = conn_options
+        credentials['custom_keystroke'] = custom_keystroke
+        credentials['escape'] = escape
+
+        self.session_object = PexpectConnect(credentials)
+        self.session_object.connect_ssh()
+
+        return self.session_object.target_host, self.session_object.conn_string
+
+    def connect_telnet(self, ip, port="23", username="", password="",
+                       logfile=None, timeout=60, prompt=".*(%|#|\$)",
+                       conn_options="", custom_keystroke="", escape=""):
+        """
+        Initiates Telnet connection via a specific port. Creates log file.
+        :Arguments:
+            1. ip = destination ip
+            2. port(string) = telnet port
+            3. username(string) = username
+            4. password(string) = password
+            5. logfile(string) = logfile name
+            6. timeout(int) = timeout duration
+            7. prompt(string) = destination prompt
+            8. conn_options(string) = extra arguments that will be used when
+                                      sending the ssh/telnet command
+            9. custom_keystroke(string) = keystroke(to be given after initial
+                                          timeout)
+            10. escape(string) = true/false(to set TERM as dump)
+        :Returns:
+            1. session_object(pexpect session object)
+            2. conn_string(pre and post login message)
+        """
+
+        credentials = {}
+        credentials['ip'] = ip
+        credentials['port'] = port
+        credentials['username'] = username
+        credentials['password'] = password
+        credentials['logfile'] = logfile
+        credentials['timeout'] = timeout
+        credentials['prompt'] = prompt
+        credentials['conn_options'] = conn_options
+        credentials['custom_keystroke'] = custom_keystroke
+        credentials['escape'] = escape
+
+        self.session_object = PexpectConnect(credentials)
+        self.session_object.connect_telnet()
+
+        return self.session_object.target_host, self.session_object.conn_string
+
+    def disconnect(self, child=None, nested=False):
+        """ To close SSH session """
+
+        if child is not None:
+            if nested is False:
+                self.session_object = PexpectConnect({'conn_type': 'SSH'})
+            else:
+                self.session_object = ParamikoConnect({'conn_type':
+                                                       'SSH_NESTED'})
+            self.session_object.target_host = child
 
         if self.session_object:
-            if self.conn_type == "TELNET":
-                self.session_object.disconnect_telnet()
-            else:
-                self.session_object.disconnect()
+            self.session_object.disconnect()
+
+    def disconnect_telnet(self, child=None):
+        """ To close Telnet session """
+
+        if child is not None:
+            self.session_object = PexpectConnect({'conn_type': 'TELNET'})
+            self.session_object.target_host = child
+
+        if self.session_object:
+            self.session_object.disconnect_telnet()
 
     @cmdprinter
     def send_command(self, start_prompt, end_prompt, command,
@@ -190,7 +284,7 @@ class WarriorCli(object):
 
 class ParamikoConnect(object):
     """ Class to handle SSH operations using Paramiko module """
-    def __init__(self, credentials):
+    def __init__(self, credentials={}):
         """ Constructor
 
         :Arguments
@@ -356,7 +450,7 @@ class ParamikoConnect(object):
 class PexpectConnect(object):
     """ Class to handle SSH operations using Pexpect module """
 
-    def __init__(self, credentials):
+    def __init__(self, credentials={}):
         """ Constructor
 
         :Arguments

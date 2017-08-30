@@ -336,11 +336,11 @@ class CliActions(object):
                 # establish ssh sessions
                 war_conn_object = WarriorCli()
                 war_conn_object.connect(credentials)
-                conn_string = war_conn_object.conn_string
 
                 if war_conn_object.conn_type in ["SSH", "SSH_NESTED"] and \
                    war_conn_object.session_object is not None and \
                    war_conn_object.status is True:
+                    conn_string = war_conn_object.session_object.conn_string
                     output_dict[session_id] = war_conn_object
                     output_dict[session_id + "_connstring"] = \
                         conn_string.replace("\r\n", "")
@@ -480,12 +480,11 @@ class CliActions(object):
                 # establish telnet sessions
                 war_conn_object = WarriorCli()
                 war_conn_object.connect(credentials)
-                conn_string = war_conn_object.conn_string
 
                 if war_conn_object.conn_type == "TELNET" \
                    and war_conn_object.session_object is not None and \
                    war_conn_object.status is True:
-
+                    conn_string = war_conn_object.session_object.conn_string
                     output_dict[session_id] = war_conn_object
                     output_dict[session_id + "_connstring"] = \
                         conn_string.replace("\r\n", "")

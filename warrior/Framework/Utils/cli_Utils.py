@@ -28,6 +28,15 @@ from WarriorCore.Classes.war_cli_class import WarriorCliClass
 from Framework.ClassUtils import database_utils_class
 from Framework.ClassUtils import WNetwork
 
+try:
+    import pexpect
+except ImportError:
+    print_info("{0}: pexpect module is not installed".format(os.path.abspath(__file__)))
+    print_info("Warrior framework by default uses pexpect for all cli related activites")
+    print_info("All default methods/functions that use cli will fail"
+               "without pexpect module. Users can however create"
+               "their own custom libraries for cli interaction \n")
+
 """ Api for cli related operations """
 
 
@@ -69,7 +78,7 @@ def pexpect_spawn_with_env(pexpect_obj, command, timeout, escape=False, env=None
 def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=60,
                 prompt=".*(%|#|\$)", conn_options="", custom_keystroke="", escape="", **kwargs):
     """
-    - Initiates SSH connection via a specific port. Creates log file.
+    Initiates SSH connection via a specific port. Creates log file.
     :Arguments:
         1. ip = destination ip
         2. port(string) = telnet port
@@ -84,30 +93,26 @@ def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=6
         10. escape(string) = true/false(to set TERM as dump)
 
     :Returns:
-        1. warrior_connect_class object
+        1. session_object(pexpect session object)
         2. conn_string(pre and post login message)
     """
     print_warning("This method is obsolete and will be deprecated soon. Please"
                   " use 'connect_ssh' method of 'PexpectConnect' class "
-                  "in 'warrior/Framework/ClassUtils/WNetwork/warrior_connect_class.py'")
-
-    credentials = {}
-    credentials['conn_type'] = 'ssh'
-    credentials['ip'] = ip
-    credentials['port'] = port
-    credentials['username'] = username
-    credentials['password'] = password
-    credentials['logfile'] = logfile
-    credentials['timeout'] = timeout
-    credentials['prompt'] = prompt
-    credentials['conn_options'] = conn_options
-    credentials['custom_keystroke'] = custom_keystroke
-    credentials['escape'] = escape
+                  "in 'warrior/Framework/ClassUtils/WNetwork/warrior_cli_class.py'")
 
     wc_obj = WNetwork.warrior_cli_class.WarriorCli()
-    wc_obj.connect(credentials)
+    wc_obj.connect_ssh(ip=ip, port=port, username=username, password=password, logfile=logfile,
+                       timeout=timeout, prompt=prompt, conn_options=conn_options,
+                       custom_keystroke=custom_keystroke, escape=escape)
 
-    return wc_obj, wc_obj.conn_string
+    if wc_obj.session_object:
+        session_object = wc_obj.session_object.target_host
+        conn_string = wc_obj.session_object.conn_string
+    else:
+        session_object = None
+        conn_string = ""
+
+    return session_object, conn_string
 
 
 def connect_telnet(ip, port="23", username="", password="",
@@ -130,55 +135,57 @@ def connect_telnet(ip, port="23", username="", password="",
         10. escape(string) = true/false(to set TERM as dump)
 
     :Returns:
-        1. warrior_connect_class object
+        1. session_object(pexpect session object)
         2. conn_string(pre and post login message)
     """
     print_warning("This method is obsolete and will be deprecated soon. Please"
                   " use 'connect_telnet' method of 'PexpectConnect' class "
-                  "in 'warrior/Framework/ClassUtils/WNetwork/warrior_connect_class.py'")
-
-    credentials = {}
-    credentials['conn_type'] = 'telnet'
-    credentials['ip'] = ip
-    credentials['port'] = port
-    credentials['username'] = username
-    credentials['password'] = password
-    credentials['logfile'] = logfile
-    credentials['timeout'] = timeout
-    credentials['prompt'] = prompt
-    credentials['conn_options'] = conn_options
-    credentials['custom_keystroke'] = custom_keystroke
-    credentials['escape'] = escape
+                  "in 'warrior/Framework/ClassUtils/WNetwork/warrior_cli_class.py'")
 
     wc_obj = WNetwork.warrior_cli_class.WarriorCli()
-    wc_obj.connect(credentials)
+    wc_obj.connect_telnet(ip=ip, port=port, username=username, password=password, logfile=logfile,
+                          timeout=timeout, prompt=prompt, conn_options=conn_options,
+                          custom_keystroke=custom_keystroke, escape=escape)
 
-    return wc_obj, wc_obj.conn_string
+    if wc_obj.session_object:
+        session_object = wc_obj.session_object.target_host
+        conn_string = wc_obj.session_object.conn_string
+    else:
+        session_object = None
+        conn_string = ""
+
+    return session_object, conn_string
 
 
 def disconnect_telnet(child):
     """Disconnects a telnet session """
     print_warning("This method is obsolete and will be deprecated soon. Please"
                   " use 'disconnect_telnet' method of 'PexpectConnect' class "
-                  "in 'warrior/Framework/ClassUtils/WNetwork/warrior_connect_class.py'")
+                  "in 'warrior/Framework/ClassUtils/WNetwork/warrior_cli_class.py'")
 
     if isinstance(child, WNetwork.warrior_cli_class.WarriorCli):
         child.disconnect()
+    elif isinstance(child, pexpect.spawn):
+        wc_obj = WNetwork.warrior_cli_class.WarriorCli()
+        wc_obj.disconnect(child)
 
     return child
 
 
 def disconnect(child):
     """
-    - Disconnects warrior_connect_class session object(pexpect/paramiko)
+    - Disconnects warrior_cli_class session object(pexpect/paramiko)
     - Returns session object(same child)
     """
     print_warning("This method is obsolete and will be deprecated soon. Please"
                   " use 'disconnect' method of 'PexpectConnect' class "
-                  "in 'warrior/Framework/ClassUtils/WNetwork/warrior_connect_class.py'")
+                  "in 'warrior/Framework/ClassUtils/WNetwork/warrior_cli_class.py'")
 
     if isinstance(child, WNetwork.warrior_cli_class.WarriorCli):
         child.disconnect()
+    elif isinstance(child, pexpect.spawn):
+        wc_obj = WNetwork.warrior_cli_class.WarriorCli()
+        wc_obj.disconnect(child)
 
     return child
 
@@ -190,15 +197,15 @@ def send_command_and_get_response(session_object, start_prompt, end_prompt, comm
 
     print_warning("This method is obsolete and will be deprecated soon. Please"
                   " use 'send_command' method of 'PexpectConnect' class "
-                  "in 'warrior/Framework/ClassUtils/WNetwork/warrior_connect_class.py'")
+                  "in 'warrior/Framework/ClassUtils/WNetwork/warrior_cli_class.py'")
 
     if isinstance(session_object, WNetwork.warrior_cli_class.WarriorCli):
         _, response = session_object.send_command(start_prompt, end_prompt, command)
     else:
         response = ""
         print_warning("Unable to send the command since the session_object is not an "
-                      "instance of warrior_connect_class, status will be marked as ERROR. "
-                      "Please use warrior_connect_class for session establishment.")
+                      "instance of warrior_cli_class, status will be marked as ERROR. "
+                      "Please use warrior_cli_class for session establishment.")
 
     return response
 
@@ -335,7 +342,7 @@ def get_connection_port(conn_type, inpdict):
 def send_command(session_object, start_prompt, end_prompt, command,
                  timeout=60):
     """
-    Sends command to warrior_connect_class session object(pexpect/paramiko)
+    Sends command to warrior_cli_class session object(pexpect/paramiko)
     and returns the status of the command sent.
     - Checks for the availability of the start_prompt.
     - if start prompt was available sends the command
@@ -348,7 +355,7 @@ def send_command(session_object, start_prompt, end_prompt, command,
     """
     print_warning("This method is obsolete and will be deprecated soon. Please"
                   " use 'send_command' method of 'PexpectConnect' class "
-                  "in 'warrior/Framework/ClassUtils/WNetwork/warrior_connect_class.py'")
+                  "in 'warrior/Framework/ClassUtils/WNetwork/warrior_cli_class.py'")
 
     if isinstance(session_object, WNetwork.warrior_cli_class.WarriorCli):
         status, response = session_object.send_command(start_prompt, end_prompt,
@@ -356,8 +363,8 @@ def send_command(session_object, start_prompt, end_prompt, command,
     else:
         status, response = "ERROR", ""
         print_warning("Unable to send the command since the session_object is not an "
-                      "instance of warrior_connect_class, status will be marked as ERROR. "
-                      "Please use warrior_connect_class for session establishment.")
+                      "instance of warrior_cli_class, status will be marked as ERROR. "
+                      "Please use warrior_cli_class for session establishment.")
 
     return status, response
 
@@ -414,14 +421,14 @@ def send_commands_from_testdata(testdatafile, obj_session, **args):
     """
     - Parses the testdata file and gets the command details
     for rows marked execute=yes and row=str_rownum.
-    - Sends the obtained commands to the warrior_connect_class session object(obj_Session).
+    - Sends the obtained commands to the warrior_cli_class session object(obj_Session).
     - If the commands have verification attribute set,
     then verifies the verification text for presence/absence as defined
     in the respective found attribute in the testdatfile.
 
     :Arguments:
         1. testdatafile = the xml file where command details are available
-        2. obj_session = warrior_connect_class session object(pexpect/paramiko)
+        2. obj_session = warrior_cli_class session object(pexpect/paramiko)
         3. logfile = logfile of the pexpect session object.
         4. varconfigfile=  xml file from which the values will be taken for subtitution
         5. var_sub(string) = the pattern [var_sub] in the testdata commands,
