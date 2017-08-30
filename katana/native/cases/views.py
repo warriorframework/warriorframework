@@ -51,28 +51,21 @@ def index(request):
 	allfiles = {}
 	files = glob.glob(fpath+"*/*/*.xml")
 	for fn in files: 
-		dn,fpb = os.path.split(fn)
-		fpf = os.path.split(dn)[1]
+		fpf,fpb = os.path.split(fn)
 		if not allfiles.has_key(fpf): allfiles[fpf] = []
 		allfiles[fpf].append( { 'full': fn, 'display': fpb})
 	files = glob.glob(fpath+"*/*/*/*.xml")
 	for fn in files: 
-		dn,fpb = os.path.split(fn)
-		fpf = os.path.split(dn)[1]
+		fpf,fpb = os.path.split(fn)
 		if not allfiles.has_key(fpf): allfiles[fpf] = []
 		allfiles[fpf].append( { 'full': fn, 'display': fpb})
-
-	alldirs = { } 
-	for fn in allfiles.keys():
-		dn = os.path.split(fn)[1]
-		alldirs[dn] = fn
 
 	context = { 
 		'title' : 'List of Cases',	
 		'docSpec': 'caseSpec',
 		'listOfFiles': files	,
 		'displayList' : allfiles, 
-		'displayDirs' : alldirs
+		'displayDirs' : allfiles.keys()
 	}
 	return HttpResponse(template.render(context, request))
 
