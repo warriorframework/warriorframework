@@ -58,13 +58,13 @@ def raw_parser(data):
                 cur[part] = {}
             cur = cur[part]
         cur.update({parts[-1]:v})
-    print json.dumps(result, indent=4)
+    # print json.dumps(result, indent=4)
     return result
 
 
 def on_post(request):
     data = request.POST
-    print json.dumps(data, indent=4)
+    # print json.dumps(data, indent=4)
     data = raw_parser(data)
     print xmltodict.unparse({"systems":data})
     return render(request, 'wdf_edit/result.html', {"data": json.dumps(request.POST, indent=4)})
