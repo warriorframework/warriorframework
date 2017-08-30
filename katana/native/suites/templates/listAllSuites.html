@@ -6,7 +6,11 @@
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <<<<<<< HEAD
+<<<<<<< HEAD
 <<<<<<< Updated upstream
+=======
+<!-- link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" -->
+>>>>>>> 706c2ce... Backup changes
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <<<<<<< HEAD
 =======
@@ -14,10 +18,13 @@
 <!-- <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"> --> 
 <link rel="stylesheet" href="{% static './jquery-ui-1.12.1.custom/jquery-ui.css' %}">
 <link rel="stylesheet" href="{% static './table.css' %}">
+<<<<<<< HEAD
 >>>>>>> Stashed changes
 =======
 <link rel="stylesheet" href="{% static './jquery-ui-1.12.1.custom/jquery-ui.css' %}">
 >>>>>>> dcc412c... Added save xml features to all three apps
+=======
+>>>>>>> 706c2ce... Backup changes
 <script type="text/javascript" src="{% static "./badgerfish.js" %}"></script>
 <script type="text/javascript" src="{% static "./json.js" %}"></script>
 <script type="text/javascript" src="{% static "./xmlparser.js" %}"></script>
@@ -40,7 +47,7 @@
 <!--
 <div class="tool-bar"><div katana-click="settings.closeSetting" class="button close">Close</div><div katana-click="settings.save" class="button save">Save</div></div>
 <div class="flex-rows to-save" auto-init="settings.emailSettings.init" post-url="settings/jira_setting_handler">
--->
+
 <div class="csrf-container">{% csrf_token %}</div>
 <div class="relative-tool-bar">
 <i title="@default" key="@default" katana-click="katana.toggleActive" class="bool fa fa-toggle-on"></i>
@@ -49,7 +56,7 @@
 <i katana-click="settings.jira.addBlock" title="Add Block" class="fa fa-plus-circle"></i>
 <i katana-click="settings.jira.deleteBlock" title="Delete Block" class="fa fa-times"></i>
 </div>
-
+-->
 <div class="page-content">
 
 <<<<<<< HEAD
@@ -59,15 +66,18 @@
 
 >>>>>>> 1589a90... Saving back of Projects and Suites in new UI
 	{% for dr in myfiles %}
-			Dir: {{ dr.dirpath }}
-			<ul>
+			<table class="table table-striped table-bordered">
+			<tr><th>{{ dr.dirpath }}</th> </tr>
 			{% for xy in dr.files %}
-	
-			<li class="linkToSuite" href="./suites/editSuite/?fname={{dr.path}}/{{xy}}" >{{ xy }}
-			</li>
-		
+				<tr><td>
+				<div class="linkToSuite blue" href="./suites/editSuite/?fname={{dr.path}}/{{xy}}" >{{ xy }}
+				</div>
+					</td>
+				</tr>
 			{% endfor %}	
-			</ul>
+			</table>
+
+		
 	{% endfor %}
 
 		<div id="mySuite">
