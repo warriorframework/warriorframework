@@ -152,3 +152,15 @@ def editCase(request):
 
 	return HttpResponse(template.render(context, request))
 
+def getCaseDataBack(request):
+	print "Got something back in request";
+	#response = request.readlines();   # Get the JSON response 
+	ijs = request.POST.get(u'Testcase')  # This is a xml string  
+	print ijs
+	print "--------------TREE----------------"
+	fname = request.POST.get(u'filetosave')
+	print "save to ", fname 
+	fd = open(fname,'w');
+	fd.write(ijs);
+	fd.close();
+	return redirect(request.META['HTTP_REFERER'])
