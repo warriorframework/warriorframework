@@ -73,11 +73,8 @@ function mapRequirementsToUI(data) {
 	var items = [];                  // placeholder for HTML elements. 
 	var xdata = data['Requirement']; // One level below the requirements ...
 	if (!jQuery.isArray(xdata)) xdata = [xdata]; // Convert singleton to array.
-<<<<<<< HEAD
 	items.push('<div id="accordion_requirement_display" >');
-=======
-	items.push('<div id="accordion_requirement_display" class="col-md-12">');
->>>>>>> eb38c2d... Added Cases too
+	//items.push('<div id="accordion_requirement_display" class="col-md-12">');
 	//console.log("xdata =" + xdata);
 	$("#listOfRequirements").html("");
 
@@ -101,11 +98,8 @@ function mapRequirementsToUI(data) {
 	}
 	items.push("</div>");  // End of Accordion widget.
 
-<<<<<<< HEAD
-	$('<div/>', {  collapsible: "true" , html: items.join("")}).appendTo("#listOfRequirements");
-=======
+	//$('<div/>', {  collapsible: "true" , html: items.join("")}).appendTo("#listOfRequirements");
 	$('<div/>', { class: "col-md-12" , collapsible: "true" , html: items.join("")}).appendTo("#listOfRequirements");
->>>>>>> eb38c2d... Added Cases too
 	$("#accordion_requirement_display").accordion();
 
 }
