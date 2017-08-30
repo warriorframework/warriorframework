@@ -3,13 +3,14 @@
 {% load jsonify %}
 
 
+
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script type="text/javascript" src="{% static "./badgerfish.js" %}"></script>
 <script type="text/javascript" src="{% static "./json.js" %}"></script>
 <script type="text/javascript" src="{% static "./xmlparser.js" %}"></script>
-<script type="text/javascript" src="{% static "./doSuiteHandling.js" %}"></script>
+<script type="text/javascript" src="{% static "./doCaseHandling.js" %}"></script>
 <script> 
 
 </script>
@@ -28,21 +29,16 @@
 </div>
 
 <div class="page-content">
-
-
-	{% for dr in myfiles %}
-			Dir: {{ dr.dirpath }}
-			<ul>
-			{% for xy in dr.files %}
-	
-			<li class="linkToSuite" href="./suites/editSuite/?fname={{dr.path}}/{{xy}}" >{{ xy }}
-			</li>
-		
-			{% endfor %}	
-			</ul>
+	{{title}}
+	{% for xx in listOfFiles %}
+		<li> <div class="linkToCase" href="./cases/editCase/?fname={{xx}}" target="_blank">{{ xx }}</div> </li>
 	{% endfor %}
+	{% for xx in displayDirs %}
+		{{ xx}}
+	{% endfor %}
+	
 
-		<div id="mySuite">
+		<div id="myCase">
 
 		</div>
 
@@ -50,11 +46,10 @@
 </body>
 
 <script> 
-
-$(".linkToSuite").click(function() { 
+$(".linkToCase").click(function() { 
 
 	var thePage = $(this).attr('href');
-	$('#mySuite').load(thePage);
+	$('#myCase').load(thePage);
 });
 
 </script>

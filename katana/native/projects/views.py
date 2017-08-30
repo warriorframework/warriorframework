@@ -42,12 +42,6 @@ path_to_testcases='/home/khusain/Projects/xml-edit/warriorframework/wftests/warr
 path_to_productdrivers='/home/khusain/Projects/xml-edit/warriorframework/warrior/ProductDrivers/'
 navigator = Navigator();
 
-def old_index(request):
-    return render(request, 'settings/index.html', {"data": controls.get_location()})
-
-## MUST MOVE TO CLASS !!!!
-## List all your projects ...
-##
 def index(request):
 	path_to_testcases = navigator.get_warrior_dir() + "/../wftests/warrior_tests/"
 	template = loader.get_template("./listAllProjects.html")
