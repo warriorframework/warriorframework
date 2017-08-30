@@ -146,24 +146,24 @@ function mapUiToProjectJson() {
             xhr.setRequestHeader("X-CSRFToken", csrftoken)
     	}
 	});
-	alert(url);
+	
 	var topNode  = { 'Project' : jsonProjectObject};
 	var jj = new json() ; 
 	// var mystring =  JSON.stringify(jsonProjectObject);
 	var ns = jj.translate.toXML(topNode);
-
+	alert("HELLO");
 	alert(ns);
 
 	$.ajax({
-    url : url,
-    type: "POST",
-    data : { 
-    	'json': JSON.stringify(topNode),
-    	'Project': ns,
-    	'filetosave': $('#my_file_to_save').val()
-    	},
-    headers: {'X-CSRFToken':csrftoken},
-    //contentType: 'application/json',
+	    url : url,
+	    type: "POST",
+	    data : { 
+	    	'json': JSON.stringify(topNode),
+	    	'Project': ns,
+	    	'filetosave': $('#my_file_to_save').val()
+	    	},
+	    headers: {'X-CSRFToken':csrftoken},
+    
     success: function( data ){
         alert("Sent");
     	}

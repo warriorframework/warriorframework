@@ -19,7 +19,7 @@
 <!--
 <div class="tool-bar"><div katana-click="settings.closeSetting" class="button close">Close</div><div katana-click="settings.save" class="button save">Save</div></div>
 <div class="flex-rows to-save" auto-init="settings.emailSettings.init" post-url="settings/jira_setting_handler">
--->
+
 <div class="csrf-container">{% csrf_token %}</div>
 <div class="relative-tool-bar">
 <i title="@default" key="@default" katana-click="katana.toggleActive" class="bool fa fa-toggle-on"></i>
@@ -28,8 +28,8 @@
 <i katana-click="settings.jira.addBlock" title="Add Block" class="fa fa-plus-circle"></i>
 <i katana-click="settings.jira.deleteBlock" title="Delete Block" class="fa fa-times"></i>
 </div>
+-->
 
-<div class="page-content">
     <h2>List of Projects</h2>
 	{% for xx in listOfFiles %}
 		<table>
@@ -45,14 +45,17 @@
 <hr>
 </div>
 
-</div>
-</body>
 
 <script> 
 $(".linkToProject").click(function() { 
 
 	var thePage = $(this).attr('href');
 	$('#myProject').load(thePage);
+	//katana.templateAPI.load( thePage, ' , ' , null) ;
+	//alert(katana.$activeTab) ;
+
 });
 
 </script>
+
+</body>

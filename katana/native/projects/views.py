@@ -142,19 +142,17 @@ def getProjectDataBack(request):
 	# Obviously will not work for us. 
 	#
 	print ijs
-	xjs = dicttoxml.dicttoxml(eval(ijs), attr_type=False)
-	print xjs  # This is a string... evaluate it? 
-	html = HTMLParser.HTMLParser()
-	print html.unescape(xjs)
-
-
-	print " Now the Javascript code output ...."
+	#xjs = dicttoxml.dicttoxml(eval(ijs), attr_type=False)
+	#print xjs  # This is a string... evaluate it? 
+	#html = HTMLParser.HTMLParser()
+	#print html.unescape(xjs)
+	#print " Now the Javascript code output ...."
 
 
 	#print "--------------TREE----------------"
-	print request.POST.get(u'Project') 
+	xml = request.POST.get(u'Project') 
 	print "save to ", fname 
 	fd = open(fname,'w');
-	fd.write(ijs);
+	fd.write(xml);
 	fd.close();
 	return redirect(request.META['HTTP_REFERER'])
