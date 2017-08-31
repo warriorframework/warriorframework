@@ -46,9 +46,11 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
         $scope.testcaseBeingEdited = "None";
 
 
-     $scope.loadFile = function(filepath) {
 
-         dirCheck=filepath.split("/").reverse()[1];
+//To Load the Case File from Suite 
+//Works for base Directory as well as Subdirectories
+     $scope.loadFile = function(filepath) {
+        dirCheck=filepath.split("/").reverse()[1];
          if(dirCheck=="Testcases"){
          // url = filepath.split('..')[1];      
           splitDir = filepath.split('/Testcases')[1]; 
@@ -69,10 +71,11 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
       };
 
 
+    
+//To Load the InputData File from Suite 
+//Works for base Directory as well as Subdirectories
     $scope.loadDataFile = function(filepath) {
-      
-
-     var dirCheck=filepath.split("/").reverse()[1];
+      var dirCheck=filepath.split("/").reverse()[1];
         if(dirCheck=="Data"){
         // var url = filepath.split('..')[1];      
          var splitDir = filepath.split('/Data')[1]; 

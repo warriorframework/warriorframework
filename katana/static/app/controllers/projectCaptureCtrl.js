@@ -36,21 +36,17 @@ app.controller('projectCapCtrl', ['$scope', '$http', '$routeParams', '$controlle
         $scope.suiteEditor = false;
         $scope.suiteBeingEdited = "None";
 
+//To Load the Suite File from Project 
+//Works for base Directory as well as Subdirectories
     $scope.loadFile = function(filepath) {
-    
-       dirCheck=filepath.split("/").reverse()[1];
-
+      dirCheck=filepath.split("/").reverse()[1];
         if(dirCheck=="Suites"){
-
           url = filepath.split('..')[1];      
           splitDir = url.split('/Suites')[1]; 
           finalUrl = "#/testsuite"+splitDir+"/none";
           window.open(finalUrl);
-
        }
-
         else{
-          
           splitPath = filepath.split("/").pop(-1); 
           splitter = splitPath+"/";
           checkDir = filepath.split("Suites/")[1].split(splitPath)[0]; 
@@ -60,11 +56,8 @@ app.controller('projectCapCtrl', ['$scope', '$http', '$routeParams', '$controlle
           splitter = frameUrl.split('/Suites')[1];
           finalUrlDir = "#/testsuite"+splitter;
           window.open(finalUrlDir);
-
         }
-
-     
-      };
+     };
 
         fileFactory.readstatesfile()
             .then(

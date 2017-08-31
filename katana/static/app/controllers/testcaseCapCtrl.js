@@ -50,6 +50,8 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
         readConfig();
 
 
+//To Load the InputData File from Testcase 
+//Works for base Directory as well as Subdirectories
       $scope.loadFile = function(filepath) {
           var dirCheck=filepath.split("/").reverse()[1];
         if(dirCheck=="Data"){
