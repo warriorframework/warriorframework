@@ -153,45 +153,25 @@ class WarriorCli(object):
 
         return self.conn_obj.target_host, self.conn_obj.conn_string
 
-    def disconnect(self, child=None, childType='pexpect'):
+    def disconnect(self):
         """
         Disconnects pexpect/paramiko session
-        :Arguments:
-            1. child = pexpect/paramiko object
-            2. childType = pexpect/paramiko
         """
 
-        if child is not None:
-            if childType.upper() == "PARAMIKO":
-                self.conn_obj = ParamikoConnect({'conn_type': 'SSH_NESTED'})
-            else:
-                self.conn_obj = PexpectConnect({'conn_type': 'SSH'})
-            self.conn_obj.target_host = child
-
-        if self.conn_obj:
+        if self.conn_obj and self.conn_obj.target_host:
             self.conn_obj.disconnect()
 
-        return child
-
-    def disconnect_telnet(self, child=None):
+    def disconnect_telnet(self):
         """
         Disconnects pexpect telnet session
-        :Arguments:
-            1. child = pexpect/paramiko object
         """
 
-        if child is not None:
-            self.conn_obj = PexpectConnect({'conn_type': 'TELNET'})
-            self.conn_obj.target_host = child
-
-        if self.conn_obj:
+        if self.conn_obj and self.conn_obj.target_host:
             self.conn_obj.disconnect_telnet()
-
-        return child
 
     @cmdprinter
     def send_command(self, start_prompt, end_prompt, command,
-                     timeout=60, child=None, childType="pexpect"):
+                     timeout=60):
         """ Sends the command to ssh/telnet session
         :Arguments:
             1. start_prompt(string) = expected start prompt
@@ -208,14 +188,7 @@ class WarriorCli(object):
         status = False
         response = ""
 
-        if child is not None:
-            if childType.upper() == "PARAMIKO":
-                self.conn_obj = ParamikoConnect()
-            else:
-                self.conn_obj = PexpectConnect()
-            self.conn_obj.target_host = child
-
-        if self.conn_obj:
+        if self.conn_obj and self.conn_obj.target_host:
             status, response = self.conn_obj.send_command(
              start_prompt=start_prompt, end_prompt=end_prompt,
              command=command, timeout=timeout)

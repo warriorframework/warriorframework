@@ -160,7 +160,9 @@ def disconnect_telnet(child):
         child = child.disconnect_telnet()
     elif isinstance(child, pexpect.spawn):
         wc_obj = WNetwork.warrior_cli_class.WarriorCli()
-        child = wc_obj.disconnect_telnet(child=child)
+        wc_obj.conn_obj = WNetwork.warrior_cli_class.PexpectConnect()
+        wc_obj.conn_obj.target_host = child
+        wc_obj.disconnect_telnet()
 
     return child
 
@@ -178,8 +180,9 @@ def disconnect(child):
         child = child.disconnect()
     elif isinstance(child, pexpect.spawn):
         wc_obj = WNetwork.warrior_cli_class.WarriorCli()
-        wc_obj.conn_obj = WNetwork.warrior_cli_class.WarriorCli()
-        child = wc_obj.disconnect(child=child)
+        wc_obj.conn_obj = WNetwork.warrior_cli_class.PexpectConnect()
+        wc_obj.conn_obj.target_host = child
+        wc_obj.disconnect()
 
     return child
 
@@ -197,8 +200,9 @@ def send_command_and_get_response(session_object, start_prompt, end_prompt, comm
         _, response = session_object.send_command(start_prompt, end_prompt, command)
     elif isinstance(session_object, pexpect.spawn):
         wc_obj = WNetwork.warrior_cli_class.WarriorCli()
-        _, response = wc_obj.send_command(start_prompt, end_prompt, command,
-                                          child=session_object)
+        wc_obj.conn_obj = WNetwork.warrior_cli_class.PexpectConnect()
+        wc_obj.conn_obj.target_host = session_object
+        _, response = wc_obj.send_command(start_prompt, end_prompt, command)
     else:
         response = ""
         print_warning("Unable to send the command since the session_object is not an "
@@ -360,8 +364,9 @@ def send_command(session_object, start_prompt, end_prompt, command,
                                                        command, timeout)
     elif isinstance(session_object, pexpect.spawn):
         wc_obj = WNetwork.warrior_cli_class.WarriorCli()
-        status, response = wc_obj.send_command(start_prompt, end_prompt, command,
-                                               timeout, child=session_object)
+        wc_obj.conn_obj = WNetwork.warrior_cli_class.PexpectConnect()
+        wc_obj.conn_obj.target_host = session_object
+        status, response = wc_obj.send_command(start_prompt, end_prompt, command, timeout)
     else:
         status, response = "ERROR", ""
         print_warning("Unable to send the command since the session_object is not an "
