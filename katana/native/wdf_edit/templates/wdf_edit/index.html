@@ -15,12 +15,12 @@
                         <button id="{{ system.name }}-add-tag" katana-click="wdf.addtag" type="button">Add Tag</button>
                     </div></div>
                     <div class="row"><div class="col-md-12">
-                        <input name="{{ forloop.counter }}@system_name" value="{{ system.name }}"/>
+                        <label>System name:</label><input name="{{ forloop.counter }}@system_name" value="{{ system.name }}"/>
                     </div></div>
                     {% for k, v in system.items %}
                         <div class="row" id="content">
                         {% if k != "name" %}
-                            <div class="col-md-3">{{ k }}</div>
+                            <div class="col-md-3"><label>{{ k }}</label></div>
                             <div class="col-md-9"><input name="{{ forloop.parentloop.counter }}.{{ k }}" value="{{ v }}"></input></div>
                         {% endif %}
                         </div>
@@ -32,14 +32,15 @@
                         <button id="{{ system.name }}.{{ system.subsystem.name }}-toggle" katana-click="wdf.toggle" type="button">Toggle</button>
                         <button id="{{ system.name }}.{{ system.subsystem.name }}-add-tag" katana-click="wdf.addtag" type="button">Add Tag</button>
                     </div></div>
-                    <div class="row"><div class="col-md-12">
-                        <input name="{{ forloop.counter }}@system_name" value="{{ system.name }}"/>
-                        <input name="{{ forloop.counter }}@subsystem_name" value="{{ system.subsystem.name }}"/>
+                    <div class="row"><div class="col-md-6">
+                        <label>System name:</label><input name="{{ forloop.counter }}@system_name" value="{{ system.name }}"/>
+                    </div><div class="col-md-6">
+                        <label>Subsystem name:</label><input name="{{ forloop.counter }}@subsystem_name" value="{{ system.subsystem.name }}"/>
                     </div></div>
                     {% for k, v in system.subsystem.items %}
                         <div class="row" id="content">
                         {% if k != "name" %}
-                            <div class="col-md-3">{{ k }}</div>
+                            <div class="col-md-3"><label>{{ k }}</label></div>
                             <div class="col-md-9"><input name="{{ forloop.parentloop.counter }}.{{ k }}" value="{{ v }}"></input></div>
                         {% endif %}
                         </div>
@@ -52,14 +53,15 @@
                             <button id="{{ system.name }}.{{ subsys.name }}-toggle" katana-click="wdf.toggle" type="button">Toggle</button>
                             <button id="{{ system.name }}.{{ subsys.name }}-add-tag" katana-click="wdf.addtag" type="button">Add Tag</button>
                         </div></div>
-                        <div class="row"><div class="col-md-12">
-                            <input name="{{ forloop.parentloop.counter }}-{{ forloop.counter }}@system_name" value="{{ system.name }}"/>
-                            <input name="{{ forloop.parentloop.counter }}-{{ forloop.counter }}@subsystem_name" value="{{ subsys.name }}"/>
+                        <div class="row"><div class="col-md-6">
+                            <label>System name:</label><input name="{{ forloop.parentloop.counter }}-{{ forloop.counter }}@system_name" value="{{ system.name }}"/>
+                        </div><div class="col-md-6">
+                            <label>Subsystem name:</label><input name="{{ forloop.parentloop.counter }}-{{ forloop.counter }}@subsystem_name" value="{{ subsys.name }}"/>
                         </div></div>
                         {% for k, v in subsys.items %}
                             <div class="row" id="content">
                             {% if k != "name" %}
-                                <div class="col-md-3">{{ k }}</div>
+                                <div class="col-md-3"><label>{{ k }}</label></div>
                                 <div class="col-md-9"><input name="{{ forloop.parentloop.parentloop.counter }}-{{ forloop.parentloop.counter }}-{{ forloop.counter }}.{{ k }}" value="{{ v }}"></input></div>
                             {% endif %}
                             </div>

@@ -413,12 +413,6 @@ span.close:before {content: 'X';}
     background: #03a9f4;
 }
 
-.row {
-    width: 49%;
-    display: inline-block;
-    vertical-align: top;
-}
-
 .page-content-inner > .row {
     width: 100%;
 }
