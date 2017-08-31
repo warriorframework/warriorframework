@@ -101,16 +101,9 @@ def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=6
                   "in 'warrior/Framework/ClassUtils/WNetwork/warrior_cli_class.py'")
 
     wc_obj = WNetwork.warrior_cli_class.WarriorCli()
-    wc_obj.connect_ssh(ip=ip, port=port, username=username, password=password, logfile=logfile,
-                       timeout=timeout, prompt=prompt, conn_options=conn_options,
-                       custom_keystroke=custom_keystroke, escape=escape)
-
-    if wc_obj.session_object:
-        session_object = wc_obj.session_object.target_host
-        conn_string = wc_obj.session_object.conn_string
-    else:
-        session_object = None
-        conn_string = ""
+    session_object, conn_string = wc_obj.connect_ssh(
+     ip=ip, port=port, username=username, password=password, logfile=logfile, timeout=timeout,
+     prompt=prompt, conn_options=conn_options, custom_keystroke=custom_keystroke, escape=escape)
 
     return session_object, conn_string
 
@@ -143,13 +136,13 @@ def connect_telnet(ip, port="23", username="", password="",
                   "in 'warrior/Framework/ClassUtils/WNetwork/warrior_cli_class.py'")
 
     wc_obj = WNetwork.warrior_cli_class.WarriorCli()
-    wc_obj.connect_telnet(ip=ip, port=port, username=username, password=password, logfile=logfile,
-                          timeout=timeout, prompt=prompt, conn_options=conn_options,
-                          custom_keystroke=custom_keystroke, escape=escape)
+    session_object, conn_string = wc_obj.connect_telnet(
+     ip=ip, port=port, username=username, password=password, logfile=logfile, timeout=timeout,
+     prompt=prompt, conn_options=conn_options, custom_keystroke=custom_keystroke, escape=escape)
 
-    if wc_obj.session_object:
-        session_object = wc_obj.session_object.target_host
-        conn_string = wc_obj.session_object.conn_string
+    if wc_obj.conn_obj:
+        session_object = wc_obj.conn_obj.target_host
+        conn_string = wc_obj.conn_obj.conn_string
     else:
         session_object = None
         conn_string = ""
@@ -164,10 +157,10 @@ def disconnect_telnet(child):
                   "in 'warrior/Framework/ClassUtils/WNetwork/warrior_cli_class.py'")
 
     if isinstance(child, WNetwork.warrior_cli_class.WarriorCli):
-        child.disconnect()
+        child = child.disconnect_telnet()
     elif isinstance(child, pexpect.spawn):
         wc_obj = WNetwork.warrior_cli_class.WarriorCli()
-        wc_obj.disconnect_telnet(child=child)
+        child = wc_obj.disconnect_telnet(child=child)
 
     return child
 
@@ -182,10 +175,11 @@ def disconnect(child):
                   "in 'warrior/Framework/ClassUtils/WNetwork/warrior_cli_class.py'")
 
     if isinstance(child, WNetwork.warrior_cli_class.WarriorCli):
-        child.disconnect()
+        child = child.disconnect()
     elif isinstance(child, pexpect.spawn):
         wc_obj = WNetwork.warrior_cli_class.WarriorCli()
-        wc_obj.disconnect(child=child)
+        wc_obj.conn_obj = WNetwork.warrior_cli_class.WarriorCli()
+        child = wc_obj.disconnect(child=child)
 
     return child
 
@@ -911,6 +905,18 @@ def _get_match_status(retry_onmatch, response):
             status = False
     return status
 
+
+def _send_cmd_by_type(session_object, command):
+    """Determine the command type and
+    send accordingly """
+
+    if command.startswith("wctrl:"):
+        command = command.split("wctrl:")[1]
+        session_object.sendcontrol(command)
+    else:
+        session_object.sendline(command)
+    wc_obj = WNetwork.warrior_cli_class.WarriorCli()
+    wc_obj._send_cmd_by_type(session_object, command)
 
 ##################
 # Uses telnet_Utils.Tnet_Comm object as input

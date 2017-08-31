@@ -29,17 +29,16 @@ from Framework.Utils.cli_Utils import cmdprinter
 class WarriorCli(object):
     """
     Class to handle CLI operations.
-    Supported conn_type values : SSH, TELNET, SSH_NESTED
     """
 
     def __init__(self):
         """ Constructor """
-        self.conn_type = None
-        self.session_object = None
+        self.conn_obj = None
         self.status = None
 
     def connect(self, credentials):
         """ To create SSH/Telnet connections using pexpect/paramiko modules.
+        Supported conn_type values : SSH, TELNET, SSH_NESTED
         :Arguments:
             1. credentials = refer constructor method arguments of
                              ParamikoConnect & PexpectConnect classes
@@ -47,32 +46,32 @@ class WarriorCli(object):
 
         self.status = False
         if 'conn_type' in credentials:
-            self.conn_type = credentials['conn_type'].upper()
+            conn_type = credentials['conn_type'].upper()
 
-        if self.conn_type in ["SSH", "TELNET"]:
-            self.session_object = PexpectConnect(credentials)
+        if conn_type in ["SSH", "TELNET"]:
+            self.conn_obj = PexpectConnect(credentials)
             # pexpect will be used for establishing session
-            if self.conn_type == "SSH":
-                self.session_object.connect_ssh()
+            if conn_type == "SSH":
+                self.conn_obj.connect_ssh()
             else:
-                self.session_object.connect_telnet()
+                self.conn_obj.connect_telnet()
             # change the status to True if the session creation is successful
             import pexpect
-            if isinstance(self.session_object.target_host, pexpect.spawn):
+            if isinstance(self.conn_obj.target_host, pexpect.spawn):
                 self.status = True
-        elif self.conn_type == "SSH_NESTED":
+        elif conn_type == "SSH_NESTED":
             # paramiko will be used for establishing session
-            self.session_object = ParamikoConnect(credentials)
-            self.session_object.connect_ssh()
+            self.conn_obj = ParamikoConnect(credentials)
+            self.conn_obj.connect_ssh()
             # change the status to True if the session creation is successful
             import paramiko
-            if isinstance(self.session_object.target_host,
+            if isinstance(self.conn_obj.target_host,
                           paramiko.client.SSHClient):
                 self.status = True
         else:
             print_info("Connection type : {} is not "
-                       "supported".format(self.conn_type))
-            self.session_object, self.session_object.conn_string = None, ""
+                       "supported".format(conn_type))
+            self.conn_obj, self.conn_obj.conn_string = None, ""
 
     def connect_ssh(self, ip, port="22", username="", password="",
                     logfile=None, timeout=60, prompt=".*(%|#|\$)",
@@ -109,10 +108,10 @@ class WarriorCli(object):
         credentials['custom_keystroke'] = custom_keystroke
         credentials['escape'] = escape
 
-        self.session_object = PexpectConnect(credentials)
-        self.session_object.connect_ssh()
+        self.conn_obj = PexpectConnect(credentials)
+        self.conn_obj.connect_ssh()
 
-        return self.session_object.target_host, self.session_object.conn_string
+        return self.conn_obj.target_host, self.conn_obj.conn_string
 
     def connect_telnet(self, ip, port="23", username="", password="",
                        logfile=None, timeout=60, prompt=".*(%|#|\$)",
@@ -149,10 +148,10 @@ class WarriorCli(object):
         credentials['custom_keystroke'] = custom_keystroke
         credentials['escape'] = escape
 
-        self.session_object = PexpectConnect(credentials)
-        self.session_object.connect_telnet()
+        self.conn_obj = PexpectConnect(credentials)
+        self.conn_obj.connect_telnet()
 
-        return self.session_object.target_host, self.session_object.conn_string
+        return self.conn_obj.target_host, self.conn_obj.conn_string
 
     def disconnect(self, child=None, childType='pexpect'):
         """
@@ -164,14 +163,15 @@ class WarriorCli(object):
 
         if child is not None:
             if childType.upper() == "PARAMIKO":
-                self.session_object = ParamikoConnect({'conn_type':
-                                                       'SSH_NESTED'})
+                self.conn_obj = ParamikoConnect({'conn_type': 'SSH_NESTED'})
             else:
-                self.session_object = PexpectConnect({'conn_type': 'SSH'})
-            self.session_object.target_host = child
+                self.conn_obj = PexpectConnect({'conn_type': 'SSH'})
+            self.conn_obj.target_host = child
 
-        if self.session_object:
-            self.session_object.disconnect()
+        if self.conn_obj:
+            self.conn_obj.disconnect()
+
+        return child
 
     def disconnect_telnet(self, child=None):
         """
@@ -181,11 +181,13 @@ class WarriorCli(object):
         """
 
         if child is not None:
-            self.session_object = PexpectConnect({'conn_type': 'TELNET'})
-            self.session_object.target_host = child
+            self.conn_obj = PexpectConnect({'conn_type': 'TELNET'})
+            self.conn_obj.target_host = child
 
-        if self.session_object:
-            self.session_object.disconnect_telnet()
+        if self.conn_obj:
+            self.conn_obj.disconnect_telnet()
+
+        return child
 
     @cmdprinter
     def send_command(self, start_prompt, end_prompt, command,
@@ -208,15 +210,15 @@ class WarriorCli(object):
 
         if child is not None:
             if childType.upper() == "PARAMIKO":
-                self.session_object = ParamikoConnect()
+                self.conn_obj = ParamikoConnect()
             else:
-                self.session_object = PexpectConnect()
-            self.session_object.target_host = child
+                self.conn_obj = PexpectConnect()
+            self.conn_obj.target_host = child
 
-        if self.session_object:
-            status, response = self.session_object.\
-             send_command(start_prompt=start_prompt, end_prompt=end_prompt,
-                          command=command, timeout=timeout)
+        if self.conn_obj:
+            status, response = self.conn_obj.send_command(
+             start_prompt=start_prompt, end_prompt=end_prompt,
+             command=command, timeout=timeout)
 
         return status, response
 
@@ -227,14 +229,14 @@ class WarriorCli(object):
             True if alive else False
         """
 
-        if self.session_object:
-            target_host = self.session_object.target_host
+        if self.conn_obj:
+            target_host = self.conn_obj.target_host
         else:
             target_host = False
 
         if target_host:
             # for paramiko
-            if self.conn_type == "SSH_NESTED":
+            if self.conn_obj.conn_type == "SSH_NESTED":
                 if target_host.get_transport():
                     status = target_host.get_transport().is_active()
                 else:
@@ -257,11 +259,11 @@ class WarriorCli(object):
         """
 
         try:
-            if self.session_object:
-                if self.conn_type == "SSH_NESTED":
-                    read_string = self.session_object.channel.recv(size)
+            if self.conn_obj and self.conn_obj.target_host:
+                if self.conn_obj.conn_type == "SSH_NESTED":
+                    read_string = self.conn_obj.channel.recv(size)
                 else:
-                    read_string = self.session_object.target_host.\
+                    read_string = self.conn_obj.target_host.\
                      read_nonblocking(size, timeout)
             else:
                 read_string = ""
@@ -275,13 +277,15 @@ class WarriorCli(object):
         """ Get session timeout(mins) value of pexpect/paramiko session  """
 
         timeout = None
-        if self.conn_type in ["SSH", "TELNET"]:
-            timeout = self.session_object.target_host.timeout
-        # elif self.conn_type == "SSH_NESTED":
-        #    timeout = self.session_object.timeout
-        #    # paramiko timeout value will be in seconds, convert it to mins
-        #    if timeout:
-        #        timeout = timeout/60
+        if self.conn_obj and self.conn_obj.target_host:
+            if self.conn_obj.conn_type in ["SSH", "TELNET"]:
+                timeout = self.conn_obj.target_host.timeout
+            # elif self.conn_obj.conn_type == "SSH_NESTED":
+            #    timeout = self.conn_obj.timeout
+            #    # paramiko timeout value will be in seconds,
+            #    # convert it to mins
+            #    if timeout:
+            #        timeout = timeout/60
 
         return timeout
 
@@ -289,11 +293,12 @@ class WarriorCli(object):
     def timeout(self, value):
         """ Set session timeout value(mins) for pexpect/paramiko session """
 
-        if self.conn_type in ["SSH", "TELNET"]:
-            self.session_object.target_host.timeout = value
-        # elif self.conn_type == "SSH_NESTED":
-        #    # paramiko accepts timeout value in seconds
-        #    self.session_object.timeout = value * 60
+        if self.conn_obj and self.conn_obj.target_host:
+            if self.conn_obj.conn_type in ["SSH", "TELNET"]:
+                self.conn_obj.target_host.timeout = value
+                # elif self.conn_obj.conn_type == "SSH_NESTED":
+                #    # paramiko accepts timeout value in seconds
+                #    self.conn_obj.timeout = value * 60
 
     @staticmethod
     def pexpect_spawn_with_env(pexpect_obj, command, timeout, escape=False,
@@ -307,6 +312,17 @@ class WarriorCli(object):
         else:
             child = pexpect_obj.spawn(command, timeout=int(timeout))
         return child
+
+    @staticmethod
+    def _send_cmd_by_type(session_object, command):
+        """Determine the command type and
+        send accordingly """
+
+        if command.startswith("wctrl:"):
+            command = command.split("wctrl:")[1]
+            session_object.sendcontrol(command)
+        else:
+            session_object.sendline(command)
 
 
 class ParamikoConnect(object):
@@ -327,6 +343,7 @@ class ParamikoConnect(object):
                 9. via_username(string) = intermediate_system username
                 10. via_password(string) = intermediate_system password
                 11. via_timeout = wait for response in intermediate_system
+                12. conn_type = session type(ssh/ssh_nested/telnet)
          """
 
         self.paramiko = None
@@ -336,6 +353,8 @@ class ParamikoConnect(object):
         self.target_host = None
         self.channel = None
         self.conn_type = credentials.get('conn_type')
+        if self.conn_type:
+            self.conn_type = self.conn_type.upper()
         self.ip = credentials.get('ip')
         self.port = credentials.get('port')
         if self.port is not None:
@@ -345,7 +364,7 @@ class ParamikoConnect(object):
         self.logfile = credentials.get('logfile')
         self.timeout = credentials.get('timeout', 60)
 
-        if self.conn_type and self.conn_type.upper() == "SSH_NESTED":
+        if self.conn_type == "SSH_NESTED":
             self.via_ip = credentials.get('via_ip')
             self.via_port = credentials.get('via_port')
             if self.via_port is not None:
@@ -381,7 +400,7 @@ class ParamikoConnect(object):
         self.port = self.port if self.port else "22"
         try:
             # for nested SSH session
-            if self.conn_type and self.conn_type.upper() == "SSH_NESTED":
+            if self.conn_type == "SSH_NESTED":
                 pNote("Nested SSH connection is requested, first connecting to"
                       " intermediate system - {}".format(self.via_ip))
                 self.via_host = self.paramiko.SSHClient()
@@ -430,7 +449,7 @@ class ParamikoConnect(object):
         self.channel.close()
         self.target_host.close()
         # for nested ssh session
-        if self.conn_type and self.conn_type.upper() == "NESTED_SSH":
+        if self.conn_type == "NESTED_SSH":
             self.via_host.close()
 
     def send_command(self, command, get_pty=False, *args, **kwargs):
@@ -494,6 +513,7 @@ class PexpectConnect(object):
                                       after initial timeout)
                 10. escape(string) = true/false(to escape color codes by
                                      setting TERM as dump)
+                11. conn_type = session type(ssh/telnet)
          """
 
         self.pexpect = None
@@ -502,6 +522,9 @@ class PexpectConnect(object):
         self.response = ""
         self.target_host = None
         self.channel = None
+        self.conn_type = credentials.get('conn_type')
+        if self.conn_type:
+            self.conn_type = self.conn_type.upper()
         self.ip = credentials.get('ip')
         self.port = credentials.get('port')
         self.username = credentials.get('username', '')
@@ -600,7 +623,7 @@ class PexpectConnect(object):
                     if flag is True:
                         pNote("Initial timeout occur, "
                               "sending custom_keystroke")
-                        self._send_cmd_by_type(child, custom_keystroke)
+                        WarriorCli._send_cmd_by_type(child, custom_keystroke)
                         flag = False
                         continue
                     pNote("Connection timed out: {0}, expected prompt: {1} "
@@ -677,7 +700,7 @@ class PexpectConnect(object):
                     if flag is True:
                         pNote("Initial timeout occur, "
                               "sending custom_keystroke")
-                        self._send_cmd_by_type(child, custom_keystroke)
+                        WarriorCli._send_cmd_by_type(child, custom_keystroke)
                         flag = False
                         continue
                     pNote("Connection timed out: {0}, expected prompt: {1} "
@@ -745,7 +768,7 @@ class PexpectConnect(object):
         if boolprompt == 0:
             start_time = Utils.datetime_utils.get_current_timestamp()
             pNote("[{0}] Sending Command: {1}".format(start_time, command))
-            self._send_cmd_by_type(self.target_host, command)
+            WarriorCli._send_cmd_by_type(self.target_host, command)
             try:
                 while True:
                     result = self.target_host.expect([end_prompt,
@@ -811,13 +834,3 @@ class PexpectConnect(object):
                                                                    end_time)
                     pNote("Command Duration: {0} sec".format(duration))
         return status, response
-
-    @staticmethod
-    def _send_cmd_by_type(session_object, command):
-        """ Determine the command type and send accordingly """
-
-        if command.startswith("wctrl:"):
-            command = command.split("wctrl:")[1]
-            session_object.sendcontrol(command)
-        else:
-            session_object.sendline(command)

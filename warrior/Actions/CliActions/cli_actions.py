@@ -183,15 +183,16 @@ class CliActions(object):
             Utils.testcase_Utils.pNote(system_name)
             Utils.testcase_Utils.pNote(self.datafile)
             session_id = get_session_id(call_system_name, session_name)
-            war_conn_object = Utils.data_Utils.get_object_from_datarepository(session_id)
+            wc_obj = Utils.data_Utils.get_object_from_datarepository(session_id)
             msg1 = "Disconnect successful for system_name={0}, "\
                    "session_name={1}".format(system_name, session_name)
             msg2 = "Disconnection of system_name={0}, "\
                    "session_name={1} Failed".format(system_name, session_name)
             if WarriorCliClass.cmdprint:
                 result = True
-            if isinstance(war_conn_object, WarriorCli) and \
-               war_conn_object.conn_type in ["SSH", "TELNET", "SSH_NESTED"]:
+            if isinstance(wc_obj, WarriorCli) and \
+               wc_obj.conn_obj is not None and \
+               wc_obj.conn_obj.conn_type in ["SSH", "TELNET", "SSH_NESTED"]:
                 # execute smart action to produce user report
                 connect_testdata = \
                  Utils.data_Utils.get_object_from_datarepository(
@@ -200,11 +201,11 @@ class CliActions(object):
                    connect_testdata is not False:
                     Utils.cli_Utils.smart_action(
                      self.datafile, call_system_name, "",
-                     war_conn_object.session_object,
+                     wc_obj.conn_obj.target_host,
                      "disconnect", connect_testdata)
 
-                war_conn_object.disconnect()
-                result = False if war_conn_object.isalive() else True
+                wc_obj.disconnect()
+                result = False if wc_obj.isalive() else True
             else:
                 pNote("session does not exist", "warning")
                 result = False
@@ -334,14 +335,14 @@ class CliActions(object):
 
                 # Create an object for WarriorCli class and use it to
                 # establish ssh sessions
-                war_conn_object = WarriorCli()
-                war_conn_object.connect(credentials)
+                wc_obj = WarriorCli()
+                wc_obj.connect(credentials)
 
-                if war_conn_object.conn_type in ["SSH", "SSH_NESTED"] and \
-                   war_conn_object.session_object is not None and \
-                   war_conn_object.status is True:
-                    conn_string = war_conn_object.session_object.conn_string
-                    output_dict[session_id] = war_conn_object
+                if wc_obj.conn_obj is not None and \
+                   wc_obj.conn_obj.conn_type in ["SSH", "SSH_NESTED"] and \
+                   wc_obj.status is True:
+                    conn_string = wc_obj.conn_obj.conn_string
+                    output_dict[session_id] = wc_obj
                     output_dict[session_id + "_connstring"] = \
                         conn_string.replace("\r\n", "")
                     output_dict[session_id + "_td_response"] = {}
@@ -353,7 +354,7 @@ class CliActions(object):
                     # execute smart action to produce user report
                     smart_result = Utils.cli_Utils.smart_action(
                      self.datafile, call_system_name, conn_string,
-                     war_conn_object.session_object, "connect")
+                     wc_obj.conn_obj.target_host, "connect")
                     if smart_result is not None:
                         output_dict[session_id + "_system"] = smart_result
 
@@ -478,14 +479,14 @@ class CliActions(object):
 
                 # Create an object for WarriorCli class and use it to
                 # establish telnet sessions
-                war_conn_object = WarriorCli()
-                war_conn_object.connect(credentials)
+                wc_obj = WarriorCli()
+                wc_obj.connect(credentials)
 
-                if war_conn_object.conn_type == "TELNET" \
-                   and war_conn_object.session_object is not None and \
-                   war_conn_object.status is True:
-                    conn_string = war_conn_object.session_object.conn_string
-                    output_dict[session_id] = war_conn_object
+                if wc_obj.conn_obj is not None and \
+                   wc_obj.conn_obj.conn_type == "TELNET" and \
+                   wc_obj.status is True:
+                    conn_string = wc_obj.conn_obj.conn_string
+                    output_dict[session_id] = wc_obj
                     output_dict[session_id + "_connstring"] = \
                         conn_string.replace("\r\n", "")
                     output_dict[session_id + "_td_response"] = {}
@@ -497,7 +498,7 @@ class CliActions(object):
                     # execute smart action to produce user report
                     smart_result = Utils.cli_Utils.smart_action(
                      self.datafile, call_system_name, conn_string,
-                     war_conn_object.session_object, "connect")
+                     wc_obj.conn_obj.target_host, "connect")
                     if smart_result is not None:
                         output_dict[session_id + "_system"] = smart_result
 
