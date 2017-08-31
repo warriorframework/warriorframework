@@ -6,6 +6,10 @@ th, td {
   padding: 0.25rem;
   text-align: left;
   border: 1px solid #ccc;
+  overflow: hidden;
+  table-layout:fixed;
+  width:20px;
+  overflow:hidden;
 }
 tbody tr:nth-child(odd) {
   background: #eee;

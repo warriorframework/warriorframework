@@ -22,6 +22,7 @@ if (typeof jsonAllProjectPages === 'undefined') {
 	//alert("Already there...");
 }
 
+
 //alert(jsonProjectID);
 //jsonAllProjectPages[jsonProjectID] = [] 
 var jsonProjectObject = []; // =  jsonAllProjectPages[jsonProjectID];
@@ -50,9 +51,8 @@ function mapFullProjectJson(myobjectID){
 	console.log(typeof(jsonAllProjectPages[myobjectID]));
 	jsonProjectObject =  jsonAllProjectPages[myobjectID]; 
 	jsonTestSuites = jsonProjectObject['Testsuites']; 
-	alert('Mapping-->' +  jsonTestSuites);
-	
 	mapProjectJsonToUi(jsonTestSuites);
+	
 } 
 
 
@@ -192,7 +192,76 @@ function mapUiToProjectJson() {
 
 }
 
+function createSuitesTable(data) {
+	var items = []; 
+	var xdata = data['Testsuite'];
+	if (!jQuery.isArray(xdata)) xdata = [xdata];
+	//items.push('<ul id="suite_table_display"  >'); 
 
+	items.push('<table id="suite_table_display" class="table" >');
+	items.push('<thead>');
+	items.push('<tr id="suiteRow"><th>Num</th><th>Suite</th><th>Execute</th><th>OnError</th><th>Impact</th></tr>');
+	items.push('</thead>');
+	items.push('<tbody>');
+	katana.$activeTab.find("#tableOfTestSuitesForProject").html("");
+	for (var s=0; s<Object.keys(xdata).length; s++ ) {
+		var oneSuite = xdata[s];
+		fillSuiteDefaults(oneSuite);
+		console.log(oneSuite['path']);
+		
+		items.push('<tr><td>'+s+'</td>');
+		items.push('<td>'+oneSuite['path']['$']+'</td>');
+		items.push('<td>Type='+oneSuite['Execute']['@ExecType']+'<br>');
+		items.push('Condition='+oneSuite['Execute']['Rule']['@Condition']+'<br>');
+		items.push('Condvalue='+oneSuite['Execute']['Rule']['@Condvalue']+'<br>');
+		items.push('Else='+oneSuite['Execute']['Rule']['@Else']+'<br>');
+		items.push('Elsevalue='+oneSuite['Execute']['Rule']['@Elsevalue']+'<br>');
+		items.push('</td>');
+		items.push('<td>'+oneSuite['onError']['@action']+'</td>');
+		items.push('<td>'+oneSuite['impact']['$']+'</td>');
+		items.push('</tr>');
+
+
+
+	}
+	items.push('</tbody>');
+	
+	items.push('</table>');
+	//items.push('</ul>');
+	
+	//$('<div/>', {  collapsible: "true" , html: items.join("")}).appendTo(katana.$activeTab.find("#tableOfTestSuitesForProject"));
+	katana.$activeTab.find("#tableOfTestSuitesForProject").html( items.join(""));
+	katana.$activeTab.find('#suite_table_display tbody').sortable();
+	katana.$activeTab.find('#suite_table_display').on('click',"td",   function() { 
+		alert($(this).text());
+	});
+
+}
+
+function fillSuiteDefaults(oneSuite){
+
+		if (! oneSuite['Execute']){
+			oneSuite['Execute'] = { "@ExecType": "Yes", 
+					"Rule": { "@Condition": "", "@Condvalue": "", "@Else": "next", "@Elsevalue": "" }
+				}; 
+		}
+		if (! oneSuite['Execute']['@ExecType']){
+				oneSuite['Execute']['@ExecType'] = "Yes";
+		}
+		if (!oneSuite['Execute']['Rule']) {
+				oneSuite['Execute']['Rule'] = { "Rule": { "@Condition": "", "@Condvalue": "", "@Else": "next", "@Elsevalue": "" } };
+		}
+		if (! oneSuite['onError']) {
+			oneSuite['onError'] = { "@action": "next", "@value": "" };
+		}
+		if (! oneSuite['runmode']) {
+			oneSuite['runmode'] = { "@type": "next", "@value": "" };
+		}
+		if (! oneSuite['retry']) {
+			oneSuite['retry'] = { "@type": "next", "@Condition": "", "@Condvalue": "", "@count": "" , "@interval": ""};
+		}
+
+}
 /*
 // Shows the global project data holder in the UI.
 
@@ -206,9 +275,11 @@ Two global variables are heavily used when this function is called;
 */
 function mapProjectJsonToUi(data){
 	var items = []; 
-	alert("Suites ");
 	var xdata = data['Testsuite'];
 	if (!jQuery.isArray(xdata)) xdata = [xdata];
+
+	createSuitesTable(data);
+
 	items.push('<div id="accordion_display" class="col-md-12">');
 	console.log("xdata =" + xdata);
 	katana.$activeTab.find("#listOfTestSuitesForProject").html("");
@@ -246,8 +317,8 @@ function mapProjectJsonToUi(data){
 		}
 
 
-		items.push('<label class="col-md-2 text-right" >ExecType:</label>');
-		items.push('<select type="text" class="col-md-4 text-right"id="'+s+'-Execute-at-ExecType"  value="'+oneSuite['Execute']['@ExecType']+'" >');
+		items.push('<label class=" text-right" >ExecType:</label>');
+		items.push('<select type="text" class="text-right"id="'+s+'-Execute-at-ExecType"  value="'+oneSuite['Execute']['@ExecType']+'" >');
 		items.push('<option value="If">If</option>'); 
 		items.push('<option value="If Not">If Not</option>'); 
 		items.push('<option value="Yes">Yes</option>'); 
@@ -321,7 +392,8 @@ function mapProjectJsonToUi(data){
 		});
 		items.push("</div>");
 	}
-	$('<div/>', { class: "col-md-12" , collapsible: "true" , html: items.join("")}).appendTo(katana.$activeTab.find("#listOfTestSuitesForProject"));
+	//$('<div/>', {  collapsible: "true" , html: items.join("")}).appendTo(katana.$activeTab.find("#listOfTestSuitesForProject"));
+	katana.$activeTab.find("#listOfTestSuitesForProject").html( items.join(""));
 	katana.$activeTab.find("#accordion_display").accordion();
 }  // end of function 
 

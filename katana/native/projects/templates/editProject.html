@@ -3,18 +3,19 @@
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <link rel="stylesheet" href="{% static './jquery-ui-1.12.1.custom/jquery-ui.css' %}">
-<link rel="stylesheet" href="{% static './table.css' %}">
 
+<link rel="stylesheet" href="{% static './table.css' %}">
 <body>
 <script type="text/javascript" src="{% static "./badgerfish.js" %}"></script>
 <script type="text/javascript" src="{% static "./json.js" %}"></script>
 <script type="text/javascript" src="{% static "./xmlparser.js" %}"></script>
 <script type="text/javascript" src="{% static "./doProjectHandling.js" %}"></script>
 
+ 
 
 	Editing:{{ myfile }}
 	<h2>Details</h2>
-	<div class="form-group">
+	<div class="form-group col-md-8">
 			<div class="field">
 				<label for="projectName">Name*:</label>
 				<input type="text" id="projectName" name="projectName" value="{{projectName}}"/>
@@ -50,7 +51,11 @@
 	<div>
 		<h2>TestSuites</h2>
 	</div>
-	<div class="col-md-12" id="listOfTestSuitesForProject">{{fulljson|jsonify}}</div>
+
+		<div  id="tableOfTestSuitesForProject"  class="col-md-12"> </div>
+		<div  id="listOfTestSuitesForProject" class="col-md-12" >{{fulljson|jsonify}}</div>
+	
+
 	<div class="container">
 	    <div id="editor" class="col-md-12" >  </div>    
 	    <div class="btn-group col-md-8" role="group">   
