@@ -65,9 +65,10 @@ class Navigator:
         
         """
                
-        layout = {'text': os.path.basename(start_dir_path)}
-        if os.path.isdir(start_dir_path):        
-            layout['li_attr'] = {'data-path': start_dir_path}
+        base_name = os.path.basename(start_dir_path)
+        layout = {'text': base_name}
+        layout['li_attr'] = {'data-path': start_dir_path}
+        if os.path.isdir(start_dir_path):   
             layout['icon'] = dir_icon if dir_icon else ""        
             layout['children'] = [self.get_dir_tree_json(os.path.join(start_dir_path, x))\
                                   for x in os.listdir(start_dir_path)]
