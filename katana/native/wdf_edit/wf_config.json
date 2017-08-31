@@ -1,6 +1,6 @@
 {
   "icon": "cog",
   "color": "blue",
-  "name" : "Settings",
+  "name" : "WDFeditor",
   "url" : "/katana/wdf/"
 }
