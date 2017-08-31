@@ -64,7 +64,7 @@ def raw_parser(data):
 
 def on_post(request):
     data = request.POST
-    # print json.dumps(data, indent=4)
+    print json.dumps(sorted(data.items()), indent=4)
     data = raw_parser(data)
     print xmltodict.unparse({"systems":data})
     return render(request, 'wdf_edit/result.html', {"data": json.dumps(request.POST, indent=4)})

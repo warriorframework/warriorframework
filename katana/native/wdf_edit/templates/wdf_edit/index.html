@@ -1,38 +1,36 @@
 <body>
 {% load staticfiles %}
-    <script src="{% static 'core/js/jquery.min.js' %}"></script>
-    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="{% static 'wdf_edit/js/main.js' %}"></script>
-    <div id="main_info">
-    <!-- <div class="csrf-container">{% csrf_token %}</div> -->
+    <div id="main_info" style="padding:25px">
     <button id="add">add system</button>
-    <!-- <button id="two-col">2 columns</button> -->
     <button id="submit">submit</button>
 
         <div class="csrf-container">{% csrf_token %}</div>
         <form id="big-box">
         {% for system in data.system %}
             {% if system.ip %}
-                <div id="{{ system.name }}-control-box" class="control-box"><label>{{ system.name }}</label>
+                <div id="{{ forloop.counter }}-control-box" class="control-box">
                     <p><button id="{{ system.name }}-toggle" class="toggle" type="button">Toggle</button></p>
+                    <div class="row"><input name="{{ forloop.counter }}@system_name" value="{{ system.name }}"/></div>
                     {% for k, v in system.items %}
                         <div class="row">
                         {% if k != "name" %}
                             <div class="col-md-3">{{ k }}</div>
-                            <div class="col-md-9"><input name="{{ system.name }}.{{ k }}" value="{{ v }}"></input></div>
+                            <div class="col-md-9"><input name="{{ forloop.parentloop.counter }}.{{ k }}" value="{{ v }}"></input></div>
                         {% endif %}
                         </div>
                     {% endfor %}
                 </div>
             {% elif "ip" in system.subsystem %}
-                <div id="{{ system.name }}.{{ system.subsystem.name }}-control-box" class="control-box"><label>{{ system.name }}.{{ system.subsystem.name }}</label>
+                <div id="{{ forloop.counter }}-control-box" class="control-box">
                     <p><button id="{{ system.name }}.{{ system.subsystem.name }}-toggle" class="toggle" type="button">Toggle</button></p>
+                    <div class="row"><input name="{{ forloop.counter }}@system_name" value="{{ system.name }}"/>
+                    <input name="{{ forloop.counter }}@subsystem_name" value="{{ system.subsystem.name }}"/></div>
                     {% for k, v in system.subsystem.items %}
                         <div class="row">
                         {% if k != "name" %}
                             <div class="col-md-3">{{ k }}</div>
-                            <div class="col-md-9"><input name="{{ system.name }}.{{ system.subsystem.name }}.{{ k }}" value="{{ v }}"></input></div>
+                            <div class="col-md-9"><input name="{{ forloop.parentloop.counter }}.{{ k }}" value="{{ v }}"></input></div>
                         {% endif %}
                         </div>
                     {% endfor %}
@@ -40,13 +38,15 @@
             {% elif system.subsystem %}
                 <label>{{ system.name }}</label>
                 {% for subsys in system.subsystem %}
-                    <div id="{{ system.name }}.{{ subsys.name }}-control-box" class="control-box"><label>{{ system.name }}.{{ subsys.name }}</label>
+                    <div id="{{ forloop.parentloop.counter }}-{{ forloop.counter }}-control-box" class="control-box">
                         <p><button id="{{ system.name }}.{{ subsys.name }}-toggle" class="toggle" type="button">Toggle</button></p>
+                        <div class="row"><input name="{{ forloop.parentloop.counter }}-{{ forloop.counter }}@system_name" value="{{ system.name }}"/>
+                        <input name="{{ forloop.parentloop.counter }}-{{ forloop.counter }}@subsystem_name" value="{{ subsys.name }}"/></div>
                         {% for k, v in subsys.items %}
                             <div class="row">
                             {% if k != "name" %}
                                 <div class="col-md-3">{{ k }}</div>
-                                <div class="col-md-9"><input name="{{ system.name }}.{{ subsys.name }}.{{ k }}" value="{{ v }}"></input></div>
+                                <div class="col-md-9"><input name="{{ forloop.parentloop.parentloop.counter }}-{{ forloop.parentloop.counter }}-{{ forloop.counter }}.{{ k }}" value="{{ v }}"></input></div>
                             {% endif %}
                             </div>
                         {% endfor %}
@@ -57,5 +57,13 @@
         </form>
 
     </div>
-    <!-- <button id="save"">Save</button> -->
+    <script type="text/template" id="system_template">
+        <div id="template-system">
+            <p><button id="template-system-toggle" class="toggle" type="button">Toggle</button></p>
+            <div class="row">
+                <div class="col-md-3"><input name="template-system.tag" value="tag_name"></input></div>
+                <div class="col-md-9"><input name="template-system.value" value="value"></input></div>
+            </div>
+        </div>
+    </script>
 </body>
