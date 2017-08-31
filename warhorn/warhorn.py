@@ -959,8 +959,8 @@ def delete_temp_files_and_folders(base_path="", current_dir="", **kwargs):
         shutil.copyfile(print_log_name, os.path.join(path, os.path.basename(os.path.normpath(print_log_name))))
         shutil.copyfile(console_log_name, os.path.join(path, os.path.basename(os.path.normpath(console_log_name))))
     except:
-        print "Unable to copy config/print_log/console_log file to " \
-        "correct location", logfile, print_log_name
+        print_info("Unable to copy config/print_log/console_log file to "
+                   "correct location", logfile, print_log_name)
 
     # log files deleted from the original directory.
     os.remove(print_log_name)
