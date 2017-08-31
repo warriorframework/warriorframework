@@ -915,11 +915,6 @@ def _send_cmd_by_type(session_object, command):
     """Determine the command type and
     send accordingly """
 
-    if command.startswith("wctrl:"):
-        command = command.split("wctrl:")[1]
-        session_object.sendcontrol(command)
-    else:
-        session_object.sendline(command)
     wc_obj = WNetwork.warrior_cli_class.WarriorCli()
     wc_obj._send_cmd_by_type(session_object, command)
 
