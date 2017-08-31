@@ -1,0 +1,7 @@
+{
+  "icon": "diamond",
+  "color": "red",
+  "name" : "New App",
+  "url" : "/katana/newapp/",
+  "app" : [{"name" : "New App", "url" : "/katana/newapp/", "include": "apps.new_app.urls"}] 
+}

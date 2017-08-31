@@ -23,6 +23,8 @@ class Uninstaller:
         self.include_urls = self.__get_urls_info()
         self.valid_app_types = {"apps"}
         self.cache_dir = create_dir(join_path(self.base_directory, "katana", ".data", self.app_name))
+        self.settings_backup = []
+        self.urls_backup = []
 
     def uninstall(self):
         output = self.__copy_app_to_cache()
@@ -37,7 +39,8 @@ class Uninstaller:
             output = output and self.__remove_app_from_settings()
 
         if not output:
-            self.__recover_app()
+            if self.__recover_app():
+                print "App successfully recovered."
 
         output = self.__delete_cache_dir()
 
@@ -128,7 +131,17 @@ class Uninstaller:
         return output
 
     def __recover_app(self):
-        print ""
+        if len(self.settings_backup) > 0:
+            settings_data = ""
+            for line in self.settings_backup:
+                settings_data += line
+            write_to_file(self.settings_file, settings_data)
+
+        if len(self.urls_backup) > 0:
+            urls_data = ""
+            for line in self.urls_backup:
+                urls_data += line
+            write_to_file(self.urls_file, urls_data)
 
     def __delete_cache_dir(self):
         output = delete_dir(get_parent_directory(self.cache_dir))

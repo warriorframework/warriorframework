@@ -1,0 +1,7 @@
+{
+  "icon": "coffee",
+  "color": "green",
+  "name" : "Brand New App",
+  "url" : "/katana/brand_new_app/",
+  "app" : [{"name" : "Brand New App", "url" : "/katana/brand_new_app/", "include": "apps.brand_new_app.urls"}] 
+}

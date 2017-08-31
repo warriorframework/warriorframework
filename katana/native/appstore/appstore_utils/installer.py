@@ -3,7 +3,7 @@ import os
 import re
 
 from utils.directory_traversal_utils import join_path, get_dir_from_path, get_abs_path, \
-    get_sub_dirs_and_files, get_paths_of_subfiles, get_sub_folders
+    get_sub_dirs_and_files, get_paths_of_subfiles, get_sub_folders, delete_dir
 from utils.file_utils import copy_dir, readlines_from_file, write_to_file
 from utils.json_utils import read_json_data
 
@@ -16,13 +16,17 @@ class Installer:
         self.plugin_directory = join_path(self.base_directory, "warrior", "plugins")
         self.settings_file = join_path(self.base_directory, "katana", "wui", "settings.py")
         self.urls_file = join_path(self.base_directory, "katana", "wui", "urls.py")
+
         self.app_name = get_dir_from_path(path_to_app)
         self.path_to_app = join_path(path_to_app, "warriorframework", "katana", "apps", self.app_name)
         self.path_to_plugin_dir = join_path(path_to_app, "warriorframework", "warrior", "plugins")
-        self.plugins_paths = get_sub_folders(self.path_to_plugin_dir, abs_path=True)
         self.wf_config_file = join_path(self.path_to_app, "wf_config.json")
+
+        self.plugins_paths = get_sub_folders(self.path_to_plugin_dir, abs_path=True)
         self.pkg_in_settings = "apps.{0}".format(self.app_name)
         self.urls_inclusions = []
+        self.settings_backup = []
+        self.urls_backup = []
 
     def install(self):
         output = self.__validate_app()
@@ -40,7 +44,8 @@ class Installer:
             output = self.__edit_urls_py()
 
         if not output:
-            self.__revert_installation()
+            if self.__revert_installation():
+                print "App installation successfully reverted."
 
         return output
 
@@ -58,10 +63,7 @@ class Installer:
         output = True
         if os.path.exists(self.wf_config_file):
             data = read_json_data(self.wf_config_file)
-            print data
             if data is not None:
-                # validate the key "app"
-                # validate if the include in the wf_config checks out (maps to the correct file)
                 if "app" in data:
                     if isinstance(data["app"], list):
                         for app_details in data["app"]:
@@ -98,7 +100,7 @@ class Installer:
     def __verify_app_details(self, app_details):
         output = True
         if "name" not in app_details or "url" not in app_details or "include" not in app_details:
-            print "-- An Error Occurred -- wf_config.json file is not formatted correctly"
+            print "-- An Error Occurred -- wf_config.json file is not in the correct format."
             output = False
         else:
             self.urls_inclusions.append("url(r'^" + app_details["url"] +
@@ -111,6 +113,7 @@ class Installer:
             path_urls += ".py"
             path_to_urls_abs = join_path(self.path_to_app, path_urls)
             if not os.path.isfile(path_to_urls_abs):
+                print "-- An Error Occurred -- Package {0} does not exist.".format(app_details["include"])
                 output = False
         return output
 
@@ -127,6 +130,8 @@ class Installer:
         if os.path.isdir(join_path(self.path_to_app, "static")):
             subs = get_sub_dirs_and_files(join_path(self.path_to_app, "static"))
             if len(subs["files"]) > 0:
+                print "--An Error Occurred -- static directory does not follow the required " \
+                      "directory structure."
                 output = False
             else:
                 if not os.path.isdir(join_path(self.path_to_app, "static", self.app_name)):
@@ -161,14 +166,13 @@ class Installer:
 
     def __add_app_directory(self):
         output = copy_dir(self.path_to_app, join_path(self.app_directory, self.app_name))
-        if not output:
-            print "-- An Error Occurred -- App could not be copied into warriorframework"
         return output
 
     def __edit_urls_py(self):
         checker = "RedirectView.as_view(url='/katana/')"
 
         data = readlines_from_file(self.urls_file)
+        self.urls_backup = data
         index = -1
         for i in range(0, len(data)):
             if checker in data[i]:
@@ -190,6 +194,7 @@ class Installer:
 
     def __edit_settings_py(self):
         data = readlines_from_file(self.settings_file)
+        self.settings_backup = data
         index = -1
         for i in range(0, len(data)):
             if "wui.core" in data[i]:
@@ -211,6 +216,31 @@ class Installer:
         return output
 
     def __revert_installation(self):
-        # check at which point the installation failed
-        # revert all the necessary changes
-        return False
+        output = True
+        if len(self.urls_backup) > 0:
+            urls_data = ""
+            for line in self.urls_backup:
+                urls_data += line
+
+            output = write_to_file(self.urls_file, urls_data)
+
+        if len(self.settings_backup) > 0:
+            settings_data = ""
+            for line in self.settings_backup:
+                settings_data += line
+
+            output = write_to_file(self.settings_file, settings_data)
+
+        path_to_app = join_path(self.app_directory, self.app_name)
+        if os.path.exists(path_to_app):
+            output = delete_dir(path_to_app)
+
+        if output:
+            for plugin in self.plugins_paths:
+                if output:
+                    plugin_name = get_dir_from_path(plugin)
+                    path_to_plugin = join_path(self.plugin_directory, plugin_name)
+                    if os.path.exists(path_to_plugin):
+                        output = delete_dir(path_to_plugin)
+
+        return output

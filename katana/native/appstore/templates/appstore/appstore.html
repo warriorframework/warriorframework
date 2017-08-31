@@ -3,10 +3,8 @@
     <head>
         <title>App Store</title>
         {% load staticfiles %}
-        <link rel="stylesheet" type="text/css" href="{% static 'appstore/css/main.css' %}" />
         <script type="text/javascript" src="{% static 'appstore/js/appstore.js' %}"></script>
         <script type="text/javascript" src="{% static 'core/js/jquery.min.js' %}"></script>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     </head>
 
     <body>
@@ -14,13 +12,22 @@
 
         <h1>&nbsp;Install App</h1>
         <br>
-        <input id="install_app_path" name="install_app_path" placeholder="Path to the App" value="">
+
+        <div id="pop-up-file-info">
+            {% include 'appstore/popup.html' %}
+        </div>
+
+        <button class="button" katana-click="appstore.loadConfig">Load Configuration</button>
+        <div id="new-app-info">
+            {% include 'appstore/load_config.html' %}
+        </div>
+        <button class="button" katana-click="appstore.addAnotherApp">Add</button>
         <button class="button" katana-click="appstore.installAnApp">Install</button>
         <h1>&nbsp;My Apps</h1>
         <br>
 
 
-        {% for app in data %}
+        {% for app in data.app%}
             <i class="fa fa-{{ app.data.icon }}"></i>
 
             <span>{{ app.data.name }}</span>
