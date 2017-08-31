@@ -1,9 +1,5 @@
 from utils.navigator_util import Navigator
-import json, xml.etree.ElementTree as xml_controler
-try:
-    import xmltodict
-except ImportError:
-    print('please install xmltodict')
+import xmltodict, json, xml.etree.ElementTree as xml_controler
 
 class Settings:
 
@@ -33,7 +29,7 @@ class Settings:
             return xmldoc
 
     def jira_setting_handler(self, request):
-        jira_config = self.navigator.get_warrior_dir() + '/Tools/Jira/jira_config.xml'
+        jira_config = self.navigator.get_warrior_dir() + '/Tools/jira/jira_config.xml'
         elem_file = xml_controler.parse(jira_config)
         elem_file = elem_file.getroot()
         xml_string = xml_controler.tostring(elem_file)

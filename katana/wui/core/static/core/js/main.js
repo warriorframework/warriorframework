@@ -11,7 +11,7 @@ var katana = {
 
 	loadView: function(){
 		katana.setView();
-		katana.initClickHandler();
+		katana.initEventHandlers();
 	},
 
 	setView: function() {
@@ -22,11 +22,17 @@ var katana = {
 		katana.$activeTab = $( document.body ).find( '.page' );
 	},
 
-	initClickHandler: function(){
+	initEventHandlers: function(){
 		katana.$view.on( 'click', '[katana-click]', function( e ){
 			$elem = $(this);
 			e.stopPropagation();
 			var toCall = $elem.attr( 'katana-click' ).replace( /\(.*?\)/, '' );
+			katana.methodCaller( toCall, $elem );
+		});
+		katana.$view.on( 'keyup', '[katana-change]', function( e ){
+			$elem = $(this);
+			e.stopPropagation();
+			var toCall = $elem.attr( 'katana-change' ).replace( /\(.*?\)/, '' );
 			katana.methodCaller( toCall, $elem );
 		});
 	},
@@ -90,10 +96,12 @@ var katana = {
 
 	tabAdded: function( activeTab, prevElem ){
 		katana.refreshAutoInit( activeTab, prevElem );
+		katana.$view.trigger('tabAdded');
 	},
 
 	subAppAdded: function( activeTab, prevElem ){
 		katana.refreshAutoInit( activeTab, prevElem );
+		katana.$view.trigger('subAppAdded');
 	},
 
 	refreshAutoInit: function( activeTab, prevElem ){
@@ -122,8 +130,8 @@ var katana = {
 		tab.remove();
 	},
 
-	closePocketFeilds: function(){
-		this.closest('.pocket-feilds').remove();
+	closePocketFields: function(){
+		this.closest('.pocket-fields').remove();
 	},
 
 	popupController: {
@@ -252,16 +260,16 @@ var katana = {
 	toJSON: function(){
 		var body = katana.$activeTab.find('.to-save');
 		var jsonObj = [];
-		body.find('.feild-block').each( function(){
+		body.find('.field-block').each( function(){
 			var $elem = $(this);
 			var tempObj = {};
 			tempObj[ $elem.find('[key="@name"]').attr('key') ] = $elem.find('[key="@name"]').text();
 			$elem.find('input, select').each( function() {
 				var sub$elem = $(this);
-				if( !sub$elem.closest('.pocket-feilds').length )
+				if( !sub$elem.closest('.pocket-fields').length )
 					tempObj[ sub$elem.attr('key') ] = sub$elem.val();
 			});
-			$elem.find('.pocket-feilds').each( function() {
+			$elem.find('.pocket-fields').each( function() {
 				var sub$elem = $(this);
 				var key = sub$elem.attr('key');
 				var temp = {};
