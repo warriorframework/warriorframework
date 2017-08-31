@@ -1,10 +1,11 @@
-
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 from utils.navigator_util import Navigator
 import json, xml.etree.ElementTree as xml_controler
 try:
     import xmltodict
-except ImportError:
-        print('please install xmltodict')
+except ImportError:
+    print "Please install xmltodict"
 
 class Settings:
 
