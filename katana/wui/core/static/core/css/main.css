@@ -927,7 +927,7 @@ div#launchpad.page.hidden .tab {
   width: 44%;
   padding-bottom: 44%;
   border-radius: 10px;
-  margin: 3%;
+  margin: calc(3% - 2px);
 }
 
 div#launchpad.page.hidden .tab i {
@@ -1840,4 +1840,29 @@ td {}
     border: 1px solid gainsboro;
     margin-bottom: 10px;
     margin-top: 5px;
+}
+
+
+
+
+/*bootstrap overrides*/
+label {
+    margin-bottom: 0;
+}
+
+button, input, optgroup, select, textarea {
+    font-size: 12px;
+    line-height: initial;
+}
+
+.header h1 {
+    font-size: 30px;
+    line-height: inherit;
+    font-weight: 600;
+}
+
+.close {float: none;font-size: inherit;font-weight: inherit;line-height: inherit;color: inherit;text-shadow: none;opacity: 1;}
+
+.tool-bar .button {
+    padding: 2px;
 }

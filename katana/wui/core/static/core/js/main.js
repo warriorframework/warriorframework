@@ -90,10 +90,12 @@ var katana = {
 
 	tabAdded: function( activeTab, prevElem ){
 		katana.refreshAutoInit( activeTab, prevElem );
+		katana.$view.trigger('tabAdded');
 	},
 
 	subAppAdded: function( activeTab, prevElem ){
 		katana.refreshAutoInit( activeTab, prevElem );
+		katana.$view.trigger('subAppAdded');
 	},
 
 	refreshAutoInit: function( activeTab, prevElem ){
