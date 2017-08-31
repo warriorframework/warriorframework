@@ -14,11 +14,19 @@ It is expected to work with the editProject.html file and the calls to editProje
 the views.py python for Django. 
 
 */
+if (typeof jsonAllProjectPages === 'undefined') {
+ //alert("Creating all jsonAllProjectPages");
+ 
+ jsonAllProjectPages = { };
+} else {
+	//alert("Already there...");
+}
 
-
-var jsonTestSuites=[];
-var jsonProjectObject = []; 
-
+//alert(jsonProjectID);
+//jsonAllProjectPages[jsonProjectID] = [] 
+var jsonProjectObject = []; // =  jsonAllProjectPages[jsonProjectID];
+//alert(jsonAllProjectPages[jsonProjectID] );
+var jsonTestSuites = [];
 
 // Sets up the global project data holder for the UI. 
 // This is called from the correspoding HTML file onLoad event 
@@ -30,11 +38,23 @@ var jsonProjectObject = [];
 //    the jsonProjectObject
 //
 //
-function mapFullProjectJson(myobject){
-	jsonProjectObject = myobject; 
+
+function mapFullProjectJson(myobjectID){
+	var sdata = katana.$activeTab.find("#listOfTestSuitesForProject").text();
+	var jdata = sdata.replace(/'/g, '"');
+	console.log('Mapping data ... ' + typeof(sdata) + ' is [' + sdata + "] " + sdata.length);  // This jdata is a string ....
+	//console.log(jdata);                  // I show it as such. 
+	jsonAllProjectPages[myobjectID] = JSON.parse(sdata); 
+	//jsonAllProjectPages[myobjectID] = JSON.parse(jdata); 
+	//alert(JSON.parse(sdata));
+	console.log(typeof(jsonAllProjectPages[myobjectID]));
+	jsonProjectObject =  jsonAllProjectPages[myobjectID]; 
 	jsonTestSuites = jsonProjectObject['Testsuites']; 
+	alert('Mapping-->' +  jsonTestSuites);
+	
 	mapProjectJsonToUi(jsonTestSuites);
 } 
+
 
 
 // 
@@ -74,15 +94,15 @@ Two global variables are heavily used when this function is called;
 */
 function mapUiToProjectJson() {
 	
-	jsonProjectObject['Details']['Name']['$'] = $('#projectName').val();
-	jsonProjectObject['Details']['Title']['$'] = $('#projectTitle').val();
-	jsonProjectObject['Details']['Engineer']['$'] = $('#projectEngineer').val();
-	jsonProjectObject['Details']['Title']['$'] = $('#projectTitle').val();
-	jsonProjectObject['Details']['Date']['$'] = $('#projectDate').val();
+	jsonProjectObject['Details']['Name']['$'] = katana.$activeTab.find('#projectName').val();
+	jsonProjectObject['Details']['Title']['$'] = katana.$activeTab.find('#projectTitle').val();
+	jsonProjectObject['Details']['Engineer']['$'] = katana.$activeTab.find('#projectEngineer').val();
+	jsonProjectObject['Details']['Title']['$'] = katana.$activeTab.find('#projectTitle').val();
+	jsonProjectObject['Details']['Date']['$'] = katana.$activeTab.find('#projectDate').val();
 	//jsonProjectObject['Details']['Time'] = $('#projectTime').val();
-	jsonProjectObject['Details']['default_onError']['$'] = $('#defaultOnError').val();
-	jsonProjectObject['Details']['Datatype']['$'] = $('#projectDatatype').val();
-	jsonProjectObject['SaveToFile'] = { "$" : $('#my_file_to_save').val()};
+	jsonProjectObject['Details']['default_onError']['$'] = katana.$activeTab.find('#defaultOnError').val();
+	jsonProjectObject['Details']['Datatype']['$'] = katana.$activeTab.find('#projectDatatype').val();
+	jsonProjectObject['SaveToFile'] = { "$" : katana.$activeTab.find('#my_file_to_save').val()};
 	// Now walk the DOM ..
 	// Create dynamic ID values based on the Suite's location in the UI. 
 
@@ -90,6 +110,7 @@ function mapUiToProjectJson() {
 	// visual display to reflect the movements of the order of objects on display 
 	// That would require a refresh after a drop anyway. 
 	var xdata = jsonProjectObject['Testsuites']['Testsuite'];
+
 	for (var s=0; s<Object.keys(xdata).length; s++ ) {
 		var oneSuite = xdata[s];
 
@@ -98,40 +119,40 @@ function mapUiToProjectJson() {
 		oneSuite['Execute']['@ExecType']['$'] = ""; 
 
 		id = '#'+s+"-Execute-Rule-at-Condition";
-		oneSuite['Execute']['Rule']['@Condition'] = $(id).val();
+		oneSuite['Execute']['Rule']['@Condition'] = katana.$activeTab.find(id).val();
 		id = '#'+s+"-Execute-Rule-at-Condvalue";
-		oneSuite['Execute']['Rule']['@Condvalue'] = $(id).val();
+		oneSuite['Execute']['Rule']['@Condvalue'] = katana.$activeTab.find(id).val();
 		id = '#'+s+"-Execute-Rule-at-Else";
-		oneSuite['Execute']['Rule']['@Else'] = $(id).val();
+		oneSuite['Execute']['Rule']['@Else'] = katana.$activeTab.find(id).val();
 		id = '#'+s+"-Execute-Rule-at-Elsevalue";
-		oneSuite['Execute']['Rule']['@Elsevalue'] = $(id).val();
+		oneSuite['Execute']['Rule']['@Elsevalue'] = katana.$activeTab.find(id).val();
 
 		oneSuite['onError']['$'] = "";
 
 		id = '#'+s+"-onError-at-action";
-		oneSuite['onError']['@action'] = $(id).val();
+		oneSuite['onError']['@action'] = katana.$activeTab.find(id).val();
 		id = '#'+s+"-onError-at-value option:selected";
-		oneSuite['onError']['@value'] = $(id).val();
+		oneSuite['onError']['@value'] = katana.$activeTab.find(id).val();
 
 		oneSuite['runmode'] = {}
 		id = '#'+s+"-runmode-at-value";
-		oneSuite['runmode']['@value'] = $(id).val();
+		oneSuite['runmode']['@value'] = katana.$activeTab.find(id).val();
 		id = '#'+s+"-runmode-at-value option:selected";
-		oneSuite['runmode']['@value'] = $(id).val();
+		oneSuite['runmode']['@value'] = katana.$activeTab.find(id).val();
 		oneSuite['runmode']['$'] = "";
 		oneSuite['retry']['$'] = "";
 
 		oneSuite['retry'] = {}
 		id = '#'+s+"-retry-at-type";
-		oneSuite['retry']['@type'] = $(id).val();
+		oneSuite['retry']['@type'] =  katana.$activeTab.find(id).val();
 		id = '#'+s+"-retryat-Condition";
-		oneSuite['retry']['@Condition'] = $(id).val();
+		oneSuite['retry']['@Condition'] =  katana.$activeTab.find(id).val();
 		id = '#'+s+"-retry-at-Condvalue";
-		oneSuite['retry']['@Condvalue'] = $(id).val();
+		oneSuite['retry']['@Condvalue'] =  katana.$activeTab.find(id).val();
 		id = '#'+s+"-retry-at-count";
-		oneSuite['retry']['@count'] = $(id).val();
+		oneSuite['retry']['@count'] =  katana.$activeTab.find(id).val();
 		id = '#'+s+"-retry-at-interval";
-		oneSuite['retry']['@interval'] = $(id).val();
+		oneSuite['retry']['@interval'] =  katana.$activeTab.find(id).val();
 		
 
 	}
@@ -185,12 +206,13 @@ Two global variables are heavily used when this function is called;
 */
 function mapProjectJsonToUi(data){
 	var items = []; 
-	
+	alert("Suites ");
 	var xdata = data['Testsuite'];
 	if (!jQuery.isArray(xdata)) xdata = [xdata];
 	items.push('<div id="accordion_display" class="col-md-12">');
 	console.log("xdata =" + xdata);
-	$("#listOfTestSuitesForProject").html("");
+	katana.$activeTab.find("#listOfTestSuitesForProject").html("");
+
 	for (var s=0; s<Object.keys(xdata).length; s++ ) {
 		var oneSuite = xdata[s];
 		console.log(oneSuite['path']);
@@ -299,8 +321,8 @@ function mapProjectJsonToUi(data){
 		});
 		items.push("</div>");
 	}
-	$('<div/>', { class: "col-md-12" , collapsible: "true" , html: items.join("")}).appendTo("#listOfTestSuitesForProject");
-	$("#accordion_display").accordion();
+	$('<div/>', { class: "col-md-12" , collapsible: "true" , html: items.join("")}).appendTo(katana.$activeTab.find("#listOfTestSuitesForProject"));
+	katana.$activeTab.find("#accordion_display").accordion();
 }  // end of function 
 
 // Removes a test suite by its ID and refresh the page. 

@@ -58,13 +58,13 @@ var katana = {
 		var uid = uid ? uid : this.attr('uid') ? this.attr('uid') : false;
 		if( uid )
 			{
-				var newTab = $( $( '#' + 'blankPage' ).html() ).insertAfter( katana.$activeTab );
-				var count = '-' + ($('[id^=' + uid + ']' ).length + 1);
+				var newTab = $( $( '#' + uid ).html() ).insertAfter( katana.$activeTab );
+				var count = '-' + $('[id^=' + uid + ']' ).length;
 				uid = uid + count;
 				newTab.attr('id', uid );
 				var temp = katana.$view.find('.nav .tab').first();
 				var created = temp.clone().insertAfter( temp );
-				created.attr( 'uid', uid ).text( this && this.hasClass('tab') ? this.find('span').text() + count : uid ).append('<i class="fa fa-times" katana-click="katana.closeTab"></i>');
+				created.attr( 'uid', uid ).text( this.hasClass('tab') ? this.find('span').text() + count : uid ).append('<i class="fa fa-times" katana-click="katana.closeTab"></i>');
 				katana.switchTab.call( created, uid );
 				callBack && callBack( newTab.find('.page-content-inner') );
 			}
@@ -248,7 +248,7 @@ var katana = {
 	  }
 
 	},
-
+	
 	toJSON: function(){
 		var body = katana.$activeTab.find('.to-save');
 		var jsonObj = [];
@@ -379,32 +379,24 @@ var katana = {
 	},
 
 	templateAPI:{
-			load: function( url, jsURL, limitedStyles, tabTitle ){
+			load: function( url, jsURL, limitedStyles ){
 				var $elem = this;
-			  url = url ? url : $elem ? $elem.attr('url') : '';
-				tabTitle = tabTitle ? tabTitle : 'Tab';
-				if( $elem != katana.templateAPI ){
-					var jsURL = $elem.attr('jsurls').split(',');
-					jsURL.pop();
-					katana.templateAPI.importJS( jsURL, function(){
-						katana.templateAPI.tabRequst( $elem, tabTitle, url, limitedStyles );
-					});
-				}
-				else
-					katana.templateAPI.tabRequst( katana.$activeTab, tabTitle, url, limitedStyles );
-			},
-
-			tabRequst: function( $elem, tabTitle, url, limitedStyles ){
-				katana.openTab.call( $elem, tabTitle, function( container ){
-					$.ajax({
-						url: url,
-						dataType: 'text'
-					}).done(function( data ) {
-						container.append( katana.templateAPI.preProcess( data ) );
-						limitedStyles || container.find('.limited-styles-true').length && container.addClass('limited-styles');
-						katana.tabAdded( container, this );
+				var url = url ? url : $elem.attr('url');
+				var jsURL = $elem.attr('jsurls').split(',');
+				jsURL.pop();
+				katana.templateAPI.importJS( jsURL, function(){
+					katana.openTab.call( $elem, 'blankPage', function( container ){
+						$.ajax({
+							url: url,
+							dataType: 'text'
+						}).done(function( data ) {
+							container.append( katana.templateAPI.preProcess( data ) );
+							limitedStyles || container.find('.limited-styles-true').length && container.addClass('limited-styles');
+							katana.tabAdded( container, this );
+						});
 					});
 				});
+
 			},
 
 			subAppLoad: function( url, limitedStyles ){
@@ -430,7 +422,7 @@ var katana = {
 		 },
 
 		 post: function( url, csrf, toSend, callBack ){
-			 var $elem = this ? this : katana.$activeTab;
+			 var $elem = this;
 			 var toSend = toSend ? toSend : $elem.find('input:not([name="csrfmiddlewaretoken"])').serializeArray();
 			 var url = url ? url : $elem.attr('post-url');
 			 var csrf = csrf ? csrf : $elem.find('.csrf-container > input').val();
@@ -451,7 +443,7 @@ var katana = {
 		 },
 
 		 trigger: function( url, callBack ){
-			 var $elem = this ? this : katana.$activeTab;
+			 var $elem = this;
 			 var url = url ? url : $elem.attr('trigger-url');
 			 $.ajax({
 				 url: url,

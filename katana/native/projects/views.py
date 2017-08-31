@@ -141,7 +141,7 @@ def getProjectDataBack(request):
 	# 
 	# Obviously will not work for us. 
 	#
-	print ijs
+	#print ijs
 	#xjs = dicttoxml.dicttoxml(eval(ijs), attr_type=False)
 	#print xjs  # This is a string... evaluate it? 
 	#html = HTMLParser.HTMLParser()

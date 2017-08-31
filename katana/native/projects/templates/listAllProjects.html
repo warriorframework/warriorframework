@@ -12,50 +12,38 @@
 <script type="text/javascript" src="{% static "./json.js" %}"></script>
 <script type="text/javascript" src="{% static "./xmlparser.js" %}"></script>
 <script type="text/javascript" src="{% static "./doProjectHandling.js" %}"></script>
-<script> 
-
-</script>
-<body onload="start()">
-<!--
-<div class="tool-bar"><div katana-click="settings.closeSetting" class="button close">Close</div><div katana-click="settings.save" class="button save">Save</div></div>
-<div class="flex-rows to-save" auto-init="settings.emailSettings.init" post-url="settings/jira_setting_handler">
-
-<div class="csrf-container">{% csrf_token %}</div>
-<div class="relative-tool-bar">
-<i title="@default" key="@default" katana-click="katana.toggleActive" class="bool fa fa-toggle-on"></i>
-<i katana-click="katana.toggleActive" key="append_log" title="append_log" class="bool fa fa-toggle-on"></i>
-<i katana-click="settings.jira.addIssueType" title="Add Issue Type" class="fa fa-plus"></i>
-<i katana-click="settings.jira.addBlock" title="Add Block" class="fa fa-plus-circle"></i>
-<i katana-click="settings.jira.deleteBlock" title="Delete Block" class="fa fa-times"></i>
-</div>
--->
 
     <h2>List of Projects</h2>
 	{% for xx in listOfFiles %}
 		<table>
 		<tr><td>
-		<div class="linkToProject" href="./projects/editProject/?fname={{xx}}" >
-		{{xx}}</div></td></tr>
+		<div class="linkToProject" href="./projects/editProject/?fname={{xx}}" fname="{{xx}}">{{xx}}</div></td></tr>
 		</table>
 	{% endfor %}
 	<br>
 
 <div id="myProject">
-
-<hr>
 </div>
 
 
 <script> 
 $(".linkToProject").click(function() { 
-
 	var thePage = $(this).attr('href');
-	$('#myProject').load(thePage);
-	//katana.templateAPI.load( thePage, ' , ' , null) ;
+	var theID   = $(this).attr('fname');
+	katana.$activeTab.find('#myProject').load(thePage, function(response) { 
+		jsonProjectID = theID;    //ke this an ID 
+		console.log("my ID = " + jsonProjectID);
+		//jsonAllProjectPages[jsonProjectID] =  {{fulljson|jsonify}};
+		//console.log("my data = " +jsonAllProjectPages[jsonProjectID]);
+		//jsonProjectObject =  jsonAllProjectPages[jsonProjectID];
+		//mapFullProjectJson(jsonProjectObject);
+		mapFullProjectJson(jsonProjectID);	
+	});
+
+	
+	katana.templateAPI.load( thePage, null, null, 'title') ;
 	//alert(katana.$activeTab) ;
 
 });
-
 </script>
 
-</body>
