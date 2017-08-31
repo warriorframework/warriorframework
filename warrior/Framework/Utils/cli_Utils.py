@@ -167,7 +167,7 @@ def disconnect_telnet(child):
         child.disconnect()
     elif isinstance(child, pexpect.spawn):
         wc_obj = WNetwork.warrior_cli_class.WarriorCli()
-        wc_obj.disconnect(child)
+        wc_obj.disconnect_telnet(child=child)
 
     return child
 
@@ -185,7 +185,7 @@ def disconnect(child):
         child.disconnect()
     elif isinstance(child, pexpect.spawn):
         wc_obj = WNetwork.warrior_cli_class.WarriorCli()
-        wc_obj.disconnect(child)
+        wc_obj.disconnect(child=child)
 
     return child
 
@@ -201,6 +201,10 @@ def send_command_and_get_response(session_object, start_prompt, end_prompt, comm
 
     if isinstance(session_object, WNetwork.warrior_cli_class.WarriorCli):
         _, response = session_object.send_command(start_prompt, end_prompt, command)
+    elif isinstance(session_object, pexpect.spawn):
+        wc_obj = WNetwork.warrior_cli_class.WarriorCli()
+        _, response = wc_obj.send_command(start_prompt, end_prompt, command,
+                                          child=session_object)
     else:
         response = ""
         print_warning("Unable to send the command since the session_object is not an "
@@ -360,6 +364,10 @@ def send_command(session_object, start_prompt, end_prompt, command,
     if isinstance(session_object, WNetwork.warrior_cli_class.WarriorCli):
         status, response = session_object.send_command(start_prompt, end_prompt,
                                                        command, timeout)
+    elif isinstance(session_object, pexpect.spawn):
+        wc_obj = WNetwork.warrior_cli_class.WarriorCli()
+        status, response = wc_obj.send_command(start_prompt, end_prompt, command,
+                                               timeout, child=session_object)
     else:
         status, response = "ERROR", ""
         print_warning("Unable to send the command since the session_object is not an "

@@ -154,22 +154,31 @@ class WarriorCli(object):
 
         return self.session_object.target_host, self.session_object.conn_string
 
-    def disconnect(self, child=None, nested=False):
-        """ To close SSH session """
+    def disconnect(self, child=None, childType='pexpect'):
+        """
+        Disconnects pexpect/paramiko session
+        :Arguments:
+            1. child = pexpect/paramiko object
+            2. childType = pexpect/paramiko
+        """
 
         if child is not None:
-            if nested is False:
-                self.session_object = PexpectConnect({'conn_type': 'SSH'})
-            else:
+            if childType.upper() == "PARAMIKO":
                 self.session_object = ParamikoConnect({'conn_type':
                                                        'SSH_NESTED'})
+            else:
+                self.session_object = PexpectConnect({'conn_type': 'SSH'})
             self.session_object.target_host = child
 
         if self.session_object:
             self.session_object.disconnect()
 
     def disconnect_telnet(self, child=None):
-        """ To close Telnet session """
+        """
+        Disconnects pexpect telnet session
+        :Arguments:
+            1. child = pexpect/paramiko object
+        """
 
         if child is not None:
             self.session_object = PexpectConnect({'conn_type': 'TELNET'})
@@ -180,11 +189,29 @@ class WarriorCli(object):
 
     @cmdprinter
     def send_command(self, start_prompt, end_prompt, command,
-                     timeout=60):
-        """ Sends the command to ssh/telnet session """
+                     timeout=60, child=None, childType="pexpect"):
+        """ Sends the command to ssh/telnet session
+        :Arguments:
+            1. start_prompt(string) = expected start prompt
+            2. end_prompt(string) = expected end prompt
+            3. command(string) = command to be executed
+            4. timeout(int) = timeout to wait for the end prompt
+            5. child = pexpect/paramiko object
+            6. childType = pexpect/paramiko
+        :Returns:
+            1. status(boolean)
+            2. response - command execution response
+        """
 
         status = False
-        response = None
+        response = ""
+
+        if child is not None:
+            if childType.upper() == "PARAMIKO":
+                self.session_object = ParamikoConnect()
+            else:
+                self.session_object = PexpectConnect()
+            self.session_object.target_host = child
 
         if self.session_object:
             status, response = self.session_object.\
