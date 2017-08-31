@@ -76,18 +76,18 @@
     <script type="text/template" id="system_template">
         <label>New System</label>
         <div id="template-system">
-            <p>
+            <div class="row"><div class="col-md-12">
                 <button id="template-system-toggle" katana-click="wdf.toggle" type="button">Toggle</button>
                 <button id="template-system-add-tag" katana-click="wdf.addtag" type="button">Add Tag</button>
-            </p>
-            <div class="row">
+            </div></div>
+            <div class="row" id="content">
                 <div class="col-md-3"><input name="template-system.tag" value="tag_name"></input></div>
                 <div class="col-md-9"><input name="template-system.value" value="value"></input></div>
             </div>
         </div>
     </script>
     <script type="text/template" id="tag_template">
-        <div class="row">
+        <div class="row" id="content">
             <div class="col-md-3"><input name="template-tag.tag" value="tag_name"></input></div>
             <div class="col-md-9"><input name="template-tag.value" value="value"></input></div>
         </div>

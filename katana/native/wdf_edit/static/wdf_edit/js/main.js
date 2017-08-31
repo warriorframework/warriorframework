@@ -26,6 +26,6 @@ var wdf = {
     },
 
     addtag: function(){
-        $(this).parent().parent().last(".row").after($($("#tag_template").html()));
+        $(this).parent().parent().parent().append($($("#tag_template").html()));
     },
 }
