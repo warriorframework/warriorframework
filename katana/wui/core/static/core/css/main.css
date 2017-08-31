@@ -435,7 +435,7 @@ input {
 input:focus {
     background: #efefef;
 }
-.feild {
+.field {
     padding: 5px 0;
 }
 
@@ -952,13 +952,13 @@ div#launchpad.page.hidden .tabs {
 .fileSystem > .file:hover, .fileSystem > .folder:hover {
     background: rgba(239, 239, 239, 0.94) !important;
 }
-.feild-block {
+.field-block {
     display: block;
     position: relative;
     padding: 10px;
 }
 
-.feild-block .title {
+.field-block .title {
   position: relative;
   border: none;
   font-size: 22px;
@@ -1060,7 +1060,7 @@ div#launchpad.page.hidden .tabs {
 .hidden{
   display: none;
 }
-.feild-block .sub-title {
+.field-block .sub-title {
     position: absolute;
     top: 40px;
     left: 11px;
@@ -1086,7 +1086,7 @@ div#launchpad.page.hidden .tabs {
     overflow: hidden;
     padding-right: 0px;
 }
-.feild-block .relative-tool-bar {
+.field-block .relative-tool-bar {
     position: absolute;
     top: 0;
     left: 0;
@@ -1101,18 +1101,18 @@ div#launchpad.page.hidden .tabs {
     text-align: right;
 }
 
-.feild-block .relative-tool-bar + .title {
+.field-block .relative-tool-bar + .title {
     margin-bottom: 0;
     padding-bottom: 0px;
     padding-top: 12px;
 }
 
-.feild-block .title + .relative-tool-bar {
+.field-block .title + .relative-tool-bar {
     height: 60px;
     /* padding: 0 10px; */
 }
 
-.feild-block .relative-tool-bar i {
+.field-block .relative-tool-bar i {
     font-size: 18px;
     line-height: 30px;
     margin: 0;
@@ -1122,7 +1122,7 @@ div#launchpad.page.hidden .tabs {
     text-align: center;
 }
 
-.feild-block .title + .relative-tool-bar + .to-scroll {
+.field-block .title + .relative-tool-bar + .to-scroll {
     height: calc( 100% - 42px );
     padding-top: 10px;
     padding-right: 10px;
@@ -1135,7 +1135,7 @@ i.active {
     color: #03a9f4 !important;
     transform: none !important;
 }
-.feild-block .relative-tool-bar i:hover {
+.field-block .relative-tool-bar i:hover {
     color: #03a9f4 !important;
 }
 
@@ -1820,20 +1820,20 @@ td {}
       text-overflow: ellipsis;
       white-space: nowrap;
 }
-.pocket-feilds .feild {
+.pocket-fields .field {
     padding-left: 30px;
 }
 
-.pocket-feilds .feild:first-child {
+.pocket-fields .field:first-child {
     padding-left: 0;
 }
-.pocket-feilds .close {
+.pocket-fields .close {
     position: absolute;
     top: 5px;
     right: 10px;
 }
 
-.pocket-feilds {
+.pocket-fields {
     position: relative;
     background: #ffffff;
     padding: 7px;
