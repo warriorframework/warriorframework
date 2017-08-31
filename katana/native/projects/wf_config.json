@@ -1,6 +1,6 @@
 {
-  "icon": "cubes",
-  "color": "green",
+  "icon": "cog",
+  "color": "blue",
   "name" : "Projects",
   "url" : "/katana/projects/"
 }

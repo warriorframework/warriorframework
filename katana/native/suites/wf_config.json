@@ -1,6 +1,6 @@
 {
-  "icon": "map",
-  "color": "green",
+  "icon": "cog",
+  "color": "blue",
   "name" : "Suites",
   "url" : "/katana/suites/"
 }

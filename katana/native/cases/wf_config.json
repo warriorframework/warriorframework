@@ -1,6 +1,6 @@
 {
-  "icon": "briefcase",
-  "color": "green",
+  "icon": "cog",
+  "color": "blue",
   "name" : "Cases",
   "url" : "/katana/cases/"
 }

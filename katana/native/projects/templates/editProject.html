@@ -15,29 +15,36 @@
 	Editing:{{ myfile }}
 	<h2>Details</h2>
 	<div class="form-group">
-			<div class="row">
+			<div class="field">
 				<label for="projectName">Name*:</label>
 				<input type="text" id="projectName" name="projectName" value="{{projectName}}"/>
+			</div>
+			<div class="field">	
 				<label for="projectTitle">Title*:</label>
 				<input  type="text" id="projectTitle" name="projectTitle" value="{{projectTitle}}" />
 			</div>
-			<div class="row">
-				<label class="col-md-2 text-right" for="projectEngineer">Engineer*:</label>
-				<input class="col-md-4 text-right" type="text" id="projectEngineer" name="projectEngineer" value="{{projectEngineer}}" />
-				
-				<label class="col-md-2 text-right" for="projectDate">Last Updated:</label>
-				<input class="col-md-4 text-right" type="text" id="projectDate" name="projectDate" value="{{projectDate}}" />
+			<div class="field">
+				<label class="text-right" for="projectEngineer">Engineer*:</label>
+				<input class="text-right" type="text" id="projectEngineer" name="projectEngineer" value="{{projectEngineer}}" />
 			</div>
-			<div class="row">
-				<label class="col-md-2 text-right" for="defaultOnError">defaultOnError:</label>
-				<input class="col-md-4 text-right" type="text" id="defaultOnError" name="defaultOnError" value="{{projectdefaultOnError}}"/>
-				<label class="col-md-2 text-right" for="projectDatatype">Data Type:</label>
-				<select class="col-md-4 text-right" type="text" id="projectDatatype" name="projectDatatype" value="{{projectDatatype}}" >
+			<div class="field">	
+				
+				<label class="text-right" for="projectDate">Last Updated:</label>
+				<input class="text-right" type="text" id="projectDate" name="projectDate" value="{{projectDate}}" />
+			</div>
+			<div class="field">
+				<label class="text-right" for="defaultOnError">defaultOnError:</label>
+				<input class="text-right" type="text" id="defaultOnError" name="defaultOnError" value="{{projectdefaultOnError}}"/>
+			</div>
+			<div class="field">	
+				<label class=" text-right" for="projectDatatype">Data Type:</label>
+				<select class="text-right" type="text" id="projectDatatype" name="projectDatatype" value="{{projectDatatype}}" >
 					<option value="Custom">Custom</option>
 					<option value="Hybrid">Hybrid</option>
 					<option value="Iterative">Iterative</option>
 				</select>
 			</div>
+		</div>
 	</div>
 
 	<div>
