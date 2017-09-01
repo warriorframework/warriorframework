@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from utils.navigator_util import Navigator
 import json, xml.etree.ElementTree as xml_controler
+from utils.navigator_util import Navigator
+
 try:
     import xmltodict
 except ImportError:
     print "Please install xmltodict"
+import xmltodict, json, xml.etree.ElementTree as xml_controler
 
 class Settings:
 
@@ -35,12 +37,14 @@ class Settings:
             return xmldoc
 
     def jira_setting_handler(self, request):
-        jira_config = self.navigator.get_warrior_dir() + '/Tools/Jira/jira_config.xml'
+        jira_config = self.navigator.get_warrior_dir() + '/Tools/jira/jira_config.xml'
         elem_file = xml_controler.parse(jira_config)
         elem_file = elem_file.getroot()
         xml_string = xml_controler.tostring(elem_file)
         if request.method == 'POST':
-            pass
+            val = xmltodict.unparse( {'jira' : { 'system' : json.loads(request.POST.get('data')) }}, pretty = True)
+            with open(jira_config,'w') as f:
+                f.write(val)
         else:
             xmldoc = xmltodict.parse(xml_string)
             for system in xmldoc['jira']['system']:
