@@ -21,8 +21,9 @@ var wdf = {
 
 
     add: function(){
-        console.log($("#system_template").html());
-        $("#big-box").append($($("#system_template").html()));
+        var $tmp = $("#system_template");
+        console.log($tmp.html());
+        // $("#big-box").append($($("#system_template").html()));
     },
 
     addtag: function(){
