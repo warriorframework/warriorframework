@@ -13,19 +13,10 @@ limitations under the License.
 
 
 import os
-import time
-import re
-import Tools
 import Framework.ClassUtils
-from Framework.Utils import data_Utils, xml_Utils
-from Framework.Utils.data_Utils import get_object_from_datarepository
-from Framework.Utils.print_Utils import print_debug, print_info,\
- print_error, print_warning
+from Framework.Utils.print_Utils import print_info, print_warning
 from Framework.Utils.testcase_Utils import pNote
-from Framework.Utils.list_Utils import get_list_by_separating_strings
-from Framework.ClassUtils.WNetwork.loging import ThreadedLog
 from WarriorCore.Classes.war_cli_class import WarriorCliClass
-from Framework.ClassUtils import database_utils_class
 from Framework.ClassUtils import WNetwork
 
 try:
@@ -47,18 +38,18 @@ def cmdprinter(cmdfunc):
         if WarriorCliClass.cmdprint:
             result = (True, "")
             if cmdfunc.__name__ == "_send_cmd_get_status":
-                pNote(":CMD: %s"%(args[1]["command_list"][kwargs['index']]))
+                pNote(":CMD: %s" % (args[1]["command_list"][kwargs['index']]))
             elif cmdfunc.__name__ == "_send_command_retrials":
                 pass
             elif cmdfunc.__name__ == "send_command":
-                pNote(":CMD: %s"%(args[3]))
+                pNote(":CMD: %s" % (args[3]))
             elif cmdfunc.__name__ == "send_command_and_get_response":
-                pNote(":CMD: %s"%(args[3]))
+                pNote(":CMD: %s" % (args[3]))
                 result = ""
             elif cmdfunc.__name__ == "_send_cmd":
-                pNote(":CMD: %s"%(kwargs['command']))
+                pNote(":CMD: %s" % (kwargs['command']))
             else:
-                pNote(":CMD: %s"%(args[3]))
+                pNote(":CMD: %s" % (args[3]))
         else:
             result = cmdfunc(*args, **kwargs)
         return result
