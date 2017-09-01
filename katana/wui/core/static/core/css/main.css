@@ -305,23 +305,15 @@ span.close:before {content: 'X';}
 }
 
 .install-app-icons .tab{
-    margin: 0 auto;
-    width: 5vw;
-    height: 5vw;
-    display: block;
-    position: relative;
+    width: 5em;
+    height: 5em;
     padding: 5px 0;
 }
 
 .install-app-icons .tab > i {
-    font-size: 3vw;
+    font-size: 2.5em;
     display: block;
-    text-align: center;
     position: absolute;
-    margin: 0 auto;
-    left: 0;
-    right: 0;
-    transform: translateY(-50%);
 }
 
 .tab.red {
