@@ -12,16 +12,22 @@ limitations under the License.
 '''
 
 import os
+import re
 import sys
 import time
 import subprocess
 
+import Tools
 from Framework import Utils
 from Framework.Utils.print_Utils import print_info, print_debug,\
  print_exception, print_error
 from Framework.Utils.testcase_Utils import pNote
 from WarriorCore.Classes.war_cli_class import WarriorCliClass
 from Framework.Utils.cli_Utils import cmdprinter
+from Framework.ClassUtils import database_utils_class
+from Framework.ClassUtils.WNetwork.loging import ThreadedLog
+from Framework.Utils.list_Utils import get_list_by_separating_strings
+
 
 """ Module for performing CLI operations """
 
@@ -195,6 +201,504 @@ class WarriorCli(object):
 
         return status, response
 
+    def send_commands_from_testdata(self, testdatafile, **args):
+        """
+        - Parses the testdata file and gets the command details
+        for rows marked execute=yes and row=str_rownum.
+        - Sends the obtained commands to the warrior_cli_class
+          session object(obj_Session).
+        - If the commands have verification attribute set,
+        then verifies the verification text for presence/absence as defined
+        in the respective found attribute in the testdatfile.
+
+        :Arguments:
+            1. testdatafile = the xml file where command details are available
+            2. logfile = logfile of the pexpect session object.
+            3. varconfigfile = xml file from which the values will be taken
+                               for substitution
+            4. var_sub(string) = the pattern [var_sub] in the testdata
+                                 commands, start_prompt, end_prompt,
+                                 verification search will substituted
+                                 with this value.
+            5. args = Optional filter to specify title/rownum
+        :Returns:
+            1. finalresult = boolean
+        """
+        responses_dict = {}
+        varconfigfile = args.get('varconfigfile', None)
+        datafile = args.get("datafile", None)
+        var_sub = args.get('var_sub', None)
+        title = args.get('title', None)
+        row = args.get('row', None)
+        if WarriorCliClass.cmdprint:
+            pNote("**************{}**************".format('Title: ' + title))
+            if row:
+                pNote("**************{}**************".format('Row: ' + row))
+        system_name = args.get("system_name")
+        session_name = args.get("session_name")
+        if session_name is not None:
+            system_name = system_name + "." + session_name
+        testdata_dict = Utils.data_Utils.get_command_details_from_testdata(
+         testdatafile, varconfigfile, var_sub=var_sub, title=title, row=row,
+         system_name=system_name, datafile=datafile)
+        finalresult = True if len(testdata_dict) > 0 else False
+        for key, details_dict in testdata_dict.iteritems():
+            response_dict = {}
+            responses_dict[key] = ""
+            command_list = details_dict["command_list"]
+            stepdesc = "Send the following commands: "
+            pNote(stepdesc)
+            n = 0
+            for commands in command_list:
+                pNote("Command #{0}\t: {1}".format((n+1), commands))
+                n = n + 1
+            intsize = len(command_list)
+            if intsize == 0:
+                finalresult = False
+
+            # Send Commands
+            for i in range(0, intsize):
+                print_info("")
+                print_debug(">>>")
+                command = details_dict["command_list"][i]
+                pNote("Command #{0}\t: {1}".format(str(i+1), command))
+                new_obj_session, system_name, details_dict = \
+                    self._get_obj_session(details_dict, system_name, index=i)
+                if new_obj_session:
+                    original_session = self.conn_obj.target_host
+                    self.conn_obj.target_host = new_obj_session
+                    result, response = self._send_cmd_get_status(
+                     details_dict, index=i, system_name=system_name)
+                    result, response = self._send_command_retrials(
+                     details_dict, index=i, result=result, response=response,
+                     system_name=system_name)
+                    response_dict = self._get_response_dict(
+                     details_dict, i, response, response_dict)
+                    print_debug("<<<")
+                    self.conn_obj.target_host = original_session
+                else:
+                    finalresult = "ERROR"
+                    pNote("COMMAND STATUS:{0}".format(finalresult))
+                    print_debug("<<<")
+                    continue
+
+                if result == "ERROR" or finalresult == "ERROR":
+                    result = "ERROR"
+                    finalresult = "ERROR"
+                finalresult = finalresult and result
+            responses_dict[key] = response_dict
+        return finalresult, responses_dict
+
+    @cmdprinter
+    def _send_cmd(self, **kwargs):
+        """method to send command based on the type of object """
+
+        result = False
+        response = ""
+        if self.conn_obj and self.conn_obj.target_host:
+            command = kwargs.get('command')
+            startprompt = kwargs.get('startprompt', ".*")
+            endprompt = kwargs.get('endprompt', None)
+            cmd_timeout = kwargs.get('cmd_timeout', None)
+            result, response = self.conn_obj.send_command(startprompt,
+                                                          endprompt, command,
+                                                          cmd_timeout)
+        return result, response
+
+    @staticmethod
+    def _get_response_dict(details_dict, index, response, response_dict):
+        """Get the response dict for a command. """
+        resp_ref = details_dict["resp_ref_list"][index]
+        resp_req = details_dict["resp_req_list"][index]
+        resp_pat_req = details_dict["resp_pat_req_list"][index]
+
+        resp_req = {None: 'y', '': 'y',
+                    'no': 'n', 'n': 'n'}.get(str(resp_req).lower(), 'y')
+        resp_ref = {None: index+1, '': index+1}.get(resp_ref, str(resp_ref))
+        if not resp_req == "n":
+            if resp_pat_req is not None:
+                # if the requested pattern not found return empty string
+                reobj = re.search(resp_pat_req, response)
+                response = reobj.group(0) if reobj is not None else ""
+                pNote("User has requested saving response. Response pattern "
+                      "required by user is : {0}".format(resp_pat_req))
+                pNote("Portion of response saved to the data repository with "
+                      "key: {0}, value: {1}".format(resp_ref, response))
+        else:
+            response = ""
+        response_dict[resp_ref] = response
+        return response_dict
+
+    def start_threads(self, started_thread_for_system, thread_instance_list,
+                      same_system, unique_log_verify_list, system_name):
+        """This function iterates over unique_log_verify_list which consists of
+         unique values gotten from monitor attributes and verify_on attributes
+
+        If a system_name has a * against it, it indicates that the system is
+        the same as the one on which the testcase is running. Thread would not
+        be started for that system.
+
+        :Returns:
+        started_thread_for_system (list[str]) = Stores the system names for
+        which threads were succesfully created
+
+        thread_instance_list (list[str]) = stores the instances of thread
+        created for corresponding system in the started_thread_for_system list,
+
+        same_system (list[str]) = stores the system name which was the same as
+        the system on which the TC is running without the trailing *,
+        """
+        started_thread_for_system = []
+        thread_instance_list = []
+        same_system = []
+        for i in range(0, len(unique_log_verify_list)):
+            if unique_log_verify_list[i] == system_name:
+                temp_list = unique_log_verify_list[i].split(".")
+                if len(temp_list) > 1:
+                    unique_log_verify_list[i] = \
+                     Utils.data_Utils.get_session_id(temp_list[0],
+                                                     temp_list[1])
+                else:
+                    unique_log_verify_list[i] = \
+                     Utils.data_Utils.get_session_id(temp_list[0])
+                same_system.append(unique_log_verify_list[i])
+            else:
+                if unique_log_verify_list[i]:
+                    temp_list = unique_log_verify_list[i].split(".")
+                    if len(temp_list) > 1:
+                        unique_log_verify_list[i] = \
+                         Utils.data_Utils.get_session_id(temp_list[0],
+                                                         temp_list[1])
+                    else:
+                        unique_log_verify_list[i] = \
+                         Utils.data_Utils.get_session_id(temp_list[0])
+                    datarep_obj = self.get_object_from_datarepository(
+                     unique_log_verify_list[i])
+                    if datarep_obj is False:
+                        print_info("{0} does not exist in data repository"
+                                   .format(unique_log_verify_list[i]))
+                    else:
+                        try:
+                            new_thread = ThreadedLog()
+                            new_thread.start_thread(datarep_obj)
+                            print_info("Collecting response from: "
+                                       "{0}".format(unique_log_verify_list[i]))
+                            started_thread_for_system.append(
+                             unique_log_verify_list[i])
+                            thread_instance_list.append(new_thread)
+                        except:
+                            print_info("Unable to collect response from: "
+                                       "{0}".format(unique_log_verify_list[i]))
+        return started_thread_for_system, thread_instance_list, same_system
+
+    @staticmethod
+    def get_response_dict(started_thread_for_system, thread_instance_list,
+                          same_system, response):
+        """
+        This function iterates over thread_instance_list and gets the data that
+        the threads have stored in its data variable. Updates remote_resp_dict
+        with the system name and the corresponding data collected.
+
+        The system names in same_system also get stored in the remote_resp_dict
+        but their value is the same as the response that was obtained through
+        the _send_cmd function
+
+        :Returns:
+
+        remote_resp_dict (dict) with collected logs as value to the
+        system_name key
+        """
+        remote_resp_dict = {}
+        for i in range(0, len(same_system)):
+            remote_resp_dict[same_system[i]] = response
+
+        for i in range(0, len(started_thread_for_system)):
+            data = thread_instance_list[i].data
+            thread_instance_list[i].stop_thread()
+            pNote("\n\n++++++++++++++++++++++++ RESPONSE FROM SYSTEM: {0} "
+                  "++++++++++++++++++++\n\n".format(
+                    started_thread_for_system[i]))
+            pNote(data)
+            pNote("\n\n++++++++++++++++++++++++ END OF DATA FROM SYSTEM: {0} "
+                  "++++++++++++++++++++\n\n".format(
+                   started_thread_for_system[i]))
+            remote_resp_dict[started_thread_for_system[i]] = data
+
+        if len(started_thread_for_system) > 0:
+            print_info("Waiting for maximum of 30 seconds to stop collecting "
+                       "logs from verify_on system(s)")
+
+        for i in range(0, len(started_thread_for_system)):
+            thread_instance_list[i].join_thread(timeout=30, retry=3)
+            if thread_instance_list[i].thread_status() is True:
+                print_error("Unable to stop collecting logs from {0}."
+                            "Please check below message for all "
+                            "exception trace that occurred: "
+                            "\n{1}".format(started_thread_for_system[i],
+                                           thread_instance_list[i].
+                                           stop_thread_err_msg))
+        return remote_resp_dict
+
+    @staticmethod
+    def get_unique_log_and_verify_list(log_list, verify_on_list, system_name):
+        """This function loops through the log_list and the verify_on_list and
+        returns a unique list containing unique sustem names fromboth the lists
+        """
+        final_list = []
+        if log_list is not None and log_list != "" and log_list is not False:
+            comma_sep_log_names = log_list.split(",")
+            for i in range(0, len(comma_sep_log_names)):
+                comma_sep_log_names[i] = comma_sep_log_names[i].strip()
+        else:
+            comma_sep_log_names = []
+
+        comma_sep_verify_names = []
+        if verify_on_list is not None and verify_on_list != "" and \
+           verify_on_list is not False:
+            for i in range(0, len(verify_on_list)):
+                if verify_on_list[i] is not None and verify_on_list[i] != "" \
+                 and verify_on_list[i] is not False:
+                    temp_list = verify_on_list[i].split(",")
+                    for j in range(0, len(temp_list)):
+                        comma_sep_verify_names.append(temp_list[j].strip())
+                else:
+                    comma_sep_verify_names.append([])
+        else:
+            comma_sep_verify_names = []
+
+        for i in range(0, len(comma_sep_log_names)):
+            if comma_sep_log_names[i] not in final_list:
+                final_list.append(comma_sep_log_names[i])
+
+        for i in range(0, len(comma_sep_verify_names)):
+            if comma_sep_verify_names[i] == "":
+                comma_sep_verify_names[i] = system_name
+            if comma_sep_verify_names[i] not in final_list:
+                final_list.append(comma_sep_verify_names[i])
+        return final_list
+
+    @cmdprinter
+    def _send_cmd_get_status(self, details_dict, index, system_name=None):
+        """Sends a command, verifies the response and returns
+        status of the command """
+        command = details_dict["command_list"][index]
+        startprompt = details_dict["startprompt_list"][index]
+        endprompt = details_dict["endprompt_list"][index]
+        verify_list = details_dict["verify_list"][index]
+        cmd_timeout = details_dict["timeout_list"][index]
+        verify_text_list = details_dict["verify_text_list"][index]
+        verify_context_list = details_dict["verify_context_list"][index]
+        sleeptime = details_dict["sleeptime_list"][index]
+        resp_ref = details_dict["resp_ref_list"][index]
+        resp_req = details_dict["resp_req_list"][index]
+        resp_pat_req = details_dict["resp_pat_req_list"][index]
+        verify_on_list = details_dict["verify_on_list"][index]
+        log_list = details_dict["log_list"][index]
+        inorder_search = details_dict["inorder_search_list"][index]
+        varconfigfile = details_dict["vc_file_list"][index]
+        operator = details_dict["operator_list"][index]
+        cond_value = details_dict["cond_value_list"][index]
+        cond_type = details_dict["cond_type_list"][index]
+        unique_log_verify_list = self.get_unique_log_and_verify_list(
+         log_list, verify_on_list, system_name)
+
+        startprompt = {None: ".*", "": ".*"}.get(startprompt, str(startprompt))
+        resp_req = {None: 'y', '': 'y',
+                    'no': 'n', 'n': 'n'}.get(str(resp_req).lower(), 'y')
+        resp_ref = {None: index+1, '': index+1}.get(resp_ref, str(resp_ref))
+        resp_pat_req = {None: ""}.get(resp_pat_req, str(resp_pat_req))
+        sleeptime = {None: 0, "": 0, "none": 0, False: 0, "false": 0}.get(
+                                    str(sleeptime).lower(), str(sleeptime))
+        sleeptime = int(sleeptime)
+
+        if inorder_search is not None and \
+           inorder_search.lower().startswith("y"):
+            inorder_search = True
+        else:
+            inorder_search = False
+
+        pNote("Startprompt\t: {0}".format(startprompt))
+        pNote("Endprompt\t: {0}".format(endprompt))
+        pNote("Sleeptime\t: {0}".format(sleeptime))
+        pNote("Response required: {0}".format(resp_req))
+        pNote("Response reference: {0}".format(resp_ref))
+        pNote("Response pattern required: {0}".format(resp_pat_req))
+
+        if not command:
+            pNote("Received a boolean False or None type instead of a string "
+                  "command, Command not provided or Variable substitution for "
+                  "the command could have gone wrong", "error")
+            pNote("Skipping execution of this command, result will be marked "
+                  "as error", "debug")
+            result = 'ERROR'
+            response = ''
+        else:
+            started_thread_for_system, thread_instance_list, same_system = \
+                self.start_threads([], [], [], unique_log_verify_list,
+                                   system_name)
+
+            result, response = self._send_cmd(startprompt=startprompt,
+                                              endprompt=endprompt,
+                                              command=command,
+                                              cmd_timeout=cmd_timeout)
+
+        if sleeptime > 0:
+            pNote("Sleep time of '{0} seconds' requested post command "
+                  "execution".format(sleeptime))
+            time.sleep(sleeptime)
+
+        try:
+            remote_resp_dict = self.get_response_dict(
+             started_thread_for_system, thread_instance_list, same_system,
+             response)
+        except NameError:
+            remote_resp_dict = self.get_response_dict([], [], [], response)
+
+        verify_on_list_as_list = get_list_by_separating_strings(
+         verify_on_list, ",", system_name)
+        if result and result is not 'ERROR':
+            if verify_text_list is not None and verify_list is not None:
+                verify_group = (operator, cond_value, cond_type)
+                if inorder_search is True and len(verify_text_list) > 1:
+                    result = Utils.data_Utils.verify_resp_inorder(
+                     verify_text_list, verify_context_list, command,
+                     response, varconfigfile, verify_on_list_as_list,
+                     verify_list, remote_resp_dict, verify_group)
+                else:
+                    result = Utils.data_Utils.verify_resp_across_sys(
+                     verify_text_list, verify_context_list, command,
+                     response, varconfigfile, verify_on_list_as_list,
+                     verify_list, remote_resp_dict, endprompt, verify_group)
+        command_status = {True: "PASS", False: "FAIL", "ERROR": "ERROR"}.get(
+                                                                        result)
+        pNote("COMMAND STATUS:{0}".format(command_status))
+
+        return result, response
+
+    def _get_obj_session(self, details_dict, kw_system_name, index):
+        """If system name is provided in testdata file
+        get the session of that system name and use it or
+        use the current obj_session"""
+
+        value = False
+        kw_system_nameonly, _ = Utils.data_Utils.split_system_subsystem(
+         kw_system_name)
+        td_sys = details_dict["sys_list"][index]
+        # To get the session name if it is provided as part of sys tag in td
+        td_sys_split = td_sys.split('.') if isinstance(td_sys, str) else []
+        if len(td_sys_split) == 2:
+            td_sys = td_sys_split[0]
+            session = td_sys_split[1]
+        else:
+            session = details_dict["session_list"][index]
+
+        td_sys = td_sys.strip() if isinstance(td_sys, str) else td_sys
+        td_sys = {None: False, False: False, "": False}.get(td_sys, td_sys)
+        session = session.strip() if isinstance(session, str) else session
+        session = {None: None, False: None, "": None}.get(session, session)
+        if td_sys:
+            system_name = kw_system_nameonly + td_sys if \
+             td_sys.startswith("[") and td_sys.endswith("]") else td_sys
+            session_id = Utils.data_Utils.get_session_id(system_name, session)
+            obj_session = Utils.data_Utils.get_object_from_datarepository(
+             session_id)
+            if not obj_session:
+                pNote("Could not find a valid connection for system_name={}, "
+                      "session_name={}".format(system_name, session), "error")
+                value = False
+            else:
+                value = obj_session
+        else:
+            # print obj_session
+            value = self.conn_obj.target_host
+            system_name = kw_system_name
+
+        pNote("System name\t: {0}".format(system_name))
+
+        if details_dict["sys_list"][index] is not None:
+            kw_system_name = details_dict["sys_list"][index]
+
+        return value, kw_system_name, details_dict
+
+    @cmdprinter
+    def _send_command_retrials(self, details_dict, index, **kwargs):
+        """ Sends a command to a session, if a user provided pattern
+        is found in the command response then tries to resend the command
+        multiple times.
+        retry_timer = time interval between subsequent retries
+        retry_onmatch = the pattern to be matched in the response
+                        in order to retry the command.
+        retry_count = no of times to retry.
+        """
+        retry = details_dict["retry_list"][index]
+        retry = {None: 'n', '': 'n', 'none': 'n'}.get(str(retry).lower(),
+                                                      retry)
+        result = kwargs.get('result')
+        response = kwargs.get('response')
+        if retry == 'y' and (result is False or result == 'ERROR'):
+            retry_timer = details_dict["retry_timer_list"][index]
+            retry_onmatch = details_dict["retry_onmatch_list"][index]
+            retry_count = details_dict["retry_count_list"][index]
+            retry_timer = {None: 60, "": 60, "none": 60}.get(
+             str(retry_timer).lower(), retry_timer)
+            retry_count = {None: 5, "": 5, "none": 5}.get(
+             str(retry_count).lower(), retry_count)
+            print_info("")
+            pNote("Retry was requested for the command")
+            pNote("Command re-trials will begin since the most recent "
+                  "command status was FAIL or ERROR")
+            pNote("Retry count\t: {0}".format(retry_count))
+            pNote("Retry timer\t: {0}".format(retry_timer))
+            retry_onmatch = {None: False, "": False}.get(retry_onmatch,
+                                                         str(retry_onmatch))
+            print_onmatch = {False: ""}.get(retry_onmatch, str(retry_onmatch))
+            pNote("Retry onmatch: {0}".format(print_onmatch))
+            count = 0
+            while count < int(retry_count):
+                if result is False or result == 'ERROR':
+                    match_status = self._get_match_status(retry_onmatch,
+                                                          response)
+                    if match_status:
+                        count = count + 1
+                        print_info("")
+                        pNote("RETRIAL ATTEMPT:{0}".format(count))
+                        pNote("Wait for {0}sec (retry_timer) before sending"
+                              " the command again".format(retry_timer))
+                        time.sleep(int(retry_timer))
+                        result, response = self._send_cmd_get_status(
+                         details_dict, index,
+                         system_name=kwargs.get("system_name"))
+                        command_status = {True: "PASS", False: "FAIL",
+                                          "ERROR": "ERROR"}.get(result)
+                        pNote("RETRIAL ATTEMPT:{0} STATUS:{1}".format(
+                         count, command_status))
+                    else:
+                        break
+                elif result is True:
+                    break
+        return result, response
+
+    @staticmethod
+    def _get_match_status(retry_onmatch, response):
+        """ Searchs retry_onmatch value in response """
+        status = True
+        if retry_onmatch:
+            pNote("Command will be executed again if "
+                  "the pattern {0} is present in the "
+                  "response of the previous execution of the command"
+                  .format(retry_onmatch))
+            match_object = re.search(retry_onmatch, response)
+            if match_object:
+                pNote("Found the pattern '{0}' "
+                      "in the response of the previous execution "
+                      "of the command".format(retry_onmatch))
+            else:
+                pNote("Did not find the pattern '{0}' "
+                      "in the response of the previous execution "
+                      "of the command".format(retry_onmatch))
+                status = False
+        return status
+
     def isalive(self):
         """
         Returns whether the paramiko/pexpect session is alive or not
@@ -296,6 +800,193 @@ class WarriorCli(object):
             session_object.sendcontrol(command)
         else:
             session_object.sendline(command)
+
+    @staticmethod
+    def smart_analyze(prompt, testdatafile=None):
+        """
+            retrieve the correspond smart testdata file for smart cmd
+            from either Tools/connection or testcase testdata file
+            :param prompt:
+                The string that will be analyzed in order to find the
+                device system
+            :param testdatafile:
+                optional arg to provide a pre-defined device system in the
+                test datafile
+            :return:
+                the smart datafile that contains the smart cmd to be sent
+        """
+        system_name = None
+
+        if testdatafile is not None:
+            # when the testdatafile is a dictionary - this happens only when
+            # the testdatafile is taken from database server
+            if isinstance(testdatafile, dict):
+                db_td_obj = database_utils_class.\
+                 create_database_connection('dataservers',
+                                            testdatafile.get('td_system'))
+                root = db_td_obj.get_tdblock_as_xmlobj(testdatafile)
+                db_td_obj.close_connection()
+            else:
+                root = Utils.xml_Utils.getRoot(testdatafile)
+            system_name = Utils.data_Utils._get_global_var(root, "system_name")
+
+        con_settings_dir = Tools.__path__[0] + os.sep + 'connection' + os.sep
+        con_settings = con_settings_dir + "connect_settings.xml"
+
+        if system_name is not None:
+            sys_elem = Utils.xml_Utils.getElementWithTagAttribValueMatch(
+               con_settings, "system", "name", system_name.text)
+            if sys_elem is None or sys_elem.find("testdata") is None:
+                return None
+        else:
+            system_list = Utils.xml_Utils.getElementListWithSpecificXpath(
+               con_settings, "system[search_string]")
+            for sys_elem in system_list:
+                if sys_elem.find("search_string").text in prompt and \
+                 sys_elem.find("testdata") is not None:
+                    return con_settings_dir + sys_elem.find("testdata").text
+            return None
+
+        return con_settings_dir + sys_elem.find("testdata").text
+
+    def send_smart_cmd(self, connect_testdata, session_object, tag_value,
+                       call_system_name, pre_tag):
+        """
+            The beacons of Gondor are lit
+            send out the smart command
+            :param connect_testdata:
+                the smart testdata file that contains the smart cmd
+            :param session_object:
+                use this pexpect object to send out command
+            :param tag_value:
+                specify the testdata block of commands that get sent out
+            :param call_system_name:
+                in order to get passed the substitutions, a system name must
+                be provided
+            :param pre_tag:
+                Distinguish if it is a connect smart action or disconnect
+                smart action
+        """
+        if Utils.xml_Utils.getElementWithTagAttribValueMatch(connect_testdata,
+           "testdata", "title", tag_value) is not None:
+            print_info("**********The following command are sent as part of "
+                       "the smart analysis**********")
+            main_log = session_object.logfile
+            if pre_tag:
+                smart_log = main_log.name.replace(".log", "pre_.log")
+            else:
+                smart_log = main_log.name.replace(".log", "post_.log")
+            session_object.logfile = open(smart_log, "a")
+            self.send_commands_from_testdata(connect_testdata, session_object,
+                                             title=tag_value,
+                                             system_name=call_system_name)
+            session_object.logfile = main_log
+            print_info("**********smart analysis finished**********")
+        else:
+            print_error()
+
+    def smart_action(self, datafile, call_system_name, raw_prompt,
+                     session_object, tag_value, connect_testdata=None):
+        """
+            entry function for sending smart command
+            :param datafile:
+                the testcase datafile
+            :param call_system_name:
+                in order to get passed the substitutions, a system name must
+                be provided
+            :param raw_prompt:
+                The string that will be analyzed in order to find the device
+                system
+            :param session_object:
+                use this pexpect object to send out command
+            :param tag_value:
+                specify the testdata block of commands that get sent out
+            :param connect_testdata:
+                the smart testdata file that contains the smart cmd,
+                optional in here
+            :return:
+                the smart testdata file that contains the smart cmd
+        """
+        testdata, _ = Utils.data_Utils.get_td_vc(datafile, call_system_name,
+                                                 None, None)
+        pre_tag = False
+        if connect_testdata is None:
+            connect_testdata = self.smart_analyze(raw_prompt, testdata)
+            pre_tag = True
+
+        if connect_testdata is not None:
+            self.send_smart_cmd(connect_testdata, session_object, tag_value,
+                                call_system_name, pre_tag)
+            return connect_testdata
+        return None
+
+    @staticmethod
+    def get_connection_port(conn_type, inpdict):
+        """Gets the port for ssh or telnet connections
+        1. ssh :
+            - looks if ssh_port is present in  inpdict.
+            - if not checks for conn_port
+            - if both not present returns None
+        """
+        if inpdict:
+            conn_string = "{0}_port".format(conn_type)
+            if conn_string in inpdict and inpdict[conn_string] is not False\
+               and inpdict[conn_string] is not None:
+                inpdict["port"] = inpdict["{0}_port".format(conn_type)]
+            elif "conn_port" in inpdict and inpdict["conn_port"] is not False\
+                 and inpdict["conn_port"] is not None:
+                inpdict["port"] = inpdict["conn_port"]
+
+        return inpdict
+
+    @staticmethod
+    def sendPing(hostname, count, fname):
+        """Sends a ping command
+        :Arguments:
+            1. count(string) = no of pings to be sent
+            2. src_iface(string) = source interface from whihc ping messages
+                                    are to be sent.
+            3. destip(string) = the destination ip address to ping.
+            4. fname = logfile to log ping response.
+        :Returns:
+            status = boolean
+        """
+        status = False
+        command = "ping -c " + count + " " + hostname + " >>" + fname
+        print_debug("sendPing, cmd = '%s'" % command)
+
+        response = os.system(command)
+        if response == 0:
+            print_debug("hostname : '%s' is up " % hostname)
+            status = True
+        print_debug("hostname : '%s' is down " % hostname)
+        return status
+
+    @staticmethod
+    def sendSourcePing(count, src_iface, destip, fname):
+        """Sends a source based ping command
+        i.e. if multiple interfaces are configured and available,
+        sends pings from the src_iface provided
+        :Arguments:
+            1. count(string) = no of pings to be sent
+            2. src_iface(string) = source interface from whihc ping messages
+                                    are to be sent.
+            3. destip(string) = the destination ip address to ping.
+            4. fname = logfile to log ping response.
+        :Returns:
+            status = boolean
+        """
+        status = False
+        command = "ping -c " + count + " -I " + src_iface + " " + \
+            destip + " >>" + fname
+        print_debug("command, cmd = '%s'" % command)
+
+        response = os.system(command)
+        if response == 0:
+            print_debug("hostname : '%s' is up " % destip)
+            status = True
+        print_debug("hostname : '%s' is down " % destip)
+        return status
 
 
 class ParamikoConnect(object):
