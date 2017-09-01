@@ -365,13 +365,7 @@ span.close:before {content: 'X';}
 }
 .page-content-inner {
     background: white;
-    position: absolute;
-    top: 0;
-    left: 0;
     width: 100%;
-    /* max-width: 1200px; */
-    margin: 0;
-    position: relative;
 }
 
 .nav .tab[uid="launchpad"] {
@@ -423,12 +417,6 @@ span.close:before {content: 'X';}
 
 .page.blue {
     background: #03a9f4;
-}
-
-.row {
-    width: 49%;
-    display: inline-block;
-    vertical-align: top;
 }
 
 .page-content-inner > .row {
@@ -541,13 +529,6 @@ h4 > b {
 .form-group label:only-child{
     margin: 0;
     padding: 0;
-    display: none;
-}
-
-hr {
-    /* color: red; */
-    /* background: red; */
-    /* border: none; */
     display: none;
 }
 
