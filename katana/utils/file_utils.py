@@ -25,7 +25,7 @@ def readlines_from_file(path, start=None, end=None):
         with open(path, "r") as f:
             data = f.readlines()
     except IOError:
-        AppInformation.log_obj.write_log("--Error-- {0} does not exist".format(path))
+        print "--Error-- {0} does not exist".format(path)
     else:
         output_list = []
 

@@ -1,6 +1,4 @@
-var appstore = {
-
-    config_loaded: false,
+var wapp_management = {
 
     uninstallAnApp: function(){
         var $elem = $(this);
@@ -8,10 +6,10 @@ var appstore = {
         var app_type = $elem.attr('app_type');
         $.ajax({
             headers: {
-                'X-CSRFToken': appstore.getCookie('csrftoken')
+                'X-CSRFToken': wapp_management.getCookie('csrftoken')
             },
             type: 'POST',
-            url: 'appstore/uninstall_an_app/',
+            url: 'wapp_management/uninstall_an_app/',
             data: {"app_path": app_path, "app_type": app_type},
         }).done(function(data) {
             setTimeout(function(){location.reload();}, 1500);
@@ -43,10 +41,10 @@ var appstore = {
 
                     $.ajax({
                         headers: {
-                            'X-CSRFToken': appstore.getCookie('csrftoken')
+                            'X-CSRFToken': wapp_management.getCookie('csrftoken')
                         },
                         type: 'POST',
-                        url: 'appstore/create_config/',
+                        url: 'wapp_management/create_config/',
                         data: {"app_paths": app_paths, "filename":  filename},
                     }).done(function(data) {
                         setTimeout(function(){location.reload();}, 1500);
@@ -72,10 +70,10 @@ var appstore = {
 
             $.ajax({
                 headers: {
-                    'X-CSRFToken': appstore.getCookie('csrftoken')
+                    'X-CSRFToken': wapp_management.getCookie('csrftoken')
                 },
                 type: 'POST',
-                url: 'appstore/install_an_app/',
+                url: 'wapp_management/install_an_app/',
                 data: {"app_paths": app_paths},
             }).done(function(data) {
                 setTimeout(function(){location.reload();}, 1500);
@@ -86,10 +84,10 @@ var appstore = {
 
         $.ajax({
             headers: {
-                'X-CSRFToken': appstore.getCookie('csrftoken')
+                'X-CSRFToken': wapp_management.getCookie('csrftoken')
             },
             type: 'POST',
-            url: 'appstore/create_config/',
+            url: 'wapp_management/create_config/',
             data: {"app_paths": app_paths},
         }).done(function(data) {
             setTimeout(function(){location.reload();}, 1500);
@@ -99,7 +97,7 @@ var appstore = {
     loadConfig: function(){
         $.ajax({
             type: 'GET',
-            url: 'appstore/load_configs/',
+            url: 'wapp_management/load_configs/',
         }).done(function(data) {
             config_loaded = true;
             $('#pop-up-file-info').html(data);
@@ -119,7 +117,7 @@ var appstore = {
 
         $.ajax({
             type: 'GET',
-            url: 'appstore/open_config?config_name=' + $checked,
+            url: 'wapp_management/open_config?config_name=' + $checked,
         }).done(function(data) {
             alert(data)
             $('#new-app-info').html(data);

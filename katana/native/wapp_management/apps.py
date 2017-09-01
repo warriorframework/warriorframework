@@ -4,5 +4,5 @@ from __future__ import unicode_literals
 from django.apps import AppConfig
 
 
-class AppstoreConfig(AppConfig):
-    name = 'AppStore'
+class WappManagementConfig(AppConfig):
+    name = 'Wapp Management'

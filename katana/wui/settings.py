@@ -36,7 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'native.settings',
-    'native.appstore',
+    'native.wapp_management',
     'apps.userapp',
     'apps.new_app',
     'apps.brand_new_app',

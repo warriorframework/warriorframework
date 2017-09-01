@@ -25,5 +25,5 @@ urlpatterns = [
     url(r'^/katana/newapp/', include('apps.new_app.urls')),
     url(r'^/katana/userapp/', include('apps.userapp.urls')),
     url(r'^katana/settings/', include('native.settings.urls')),
-    url(r'^katana/appstore/', include('native.appstore.urls')),
+    url(r'^katana/wapp_management/', include('native.wapp_management.urls')),
 ]

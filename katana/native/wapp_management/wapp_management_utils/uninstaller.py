@@ -1,5 +1,6 @@
 from os import sep, path
-from utils.directory_traversal_utils import get_abs_path, join_path, get_dir_from_path, create_dir, \
+
+from utils.directory_traversal_utils import get_dir_from_path, join_path, get_abs_path, create_dir, \
     delete_dir, get_parent_directory
 from utils.file_utils import copy_dir, readlines_from_file, write_to_file
 from utils.json_utils import read_json_data

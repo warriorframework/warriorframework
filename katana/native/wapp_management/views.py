@@ -17,22 +17,22 @@ import os
 
 from django.shortcuts import render
 from django.views import View
-from native.appstore.appstore_utils.installer import Installer
-from native.appstore.appstore_utils.uninstaller import Uninstaller
-from utils.directory_traversal_utils import get_parent_directory, join_path, get_sub_files
-from wui.core.core_utils.app_info_class import AppInformation
 import xml.etree.cElementTree as ET
+from native.wapp_management.wapp_management_utils.installer import Installer
+from native.wapp_management.wapp_management_utils.uninstaller import Uninstaller
+from utils.directory_traversal_utils import join_path, get_sub_files, get_parent_directory
+from wui.core.core_utils.app_info_class import AppInformation
 
 
-class AppStoreView(View):
+class WappManagementView(View):
 
-    template = 'appstore/appstore.html'
+    template = 'wapp_management/wapp_management.html'
 
     def get(self, request):
         """
         Get Request Method
         """
-        return render(request, AppStoreView.template, {"data": {"app": AppInformation.information.apps}})
+        return render(request, WappManagementView.template, {"data": {"app": AppInformation.information.apps}})
 
 
 def uninstall_an_app(request):
@@ -40,7 +40,7 @@ def uninstall_an_app(request):
     app_type = request.POST.get("app_type", None)
     uninstaller_obj = Uninstaller(get_parent_directory(os.getcwd()), app_path, app_type)
     output = uninstaller_obj.uninstall()
-    return render(request, AppStoreView.template, {"data": {"app": AppInformation.information.apps}})
+    return render(request, WappManagementView.template, {"data": {"app": AppInformation.information.apps}})
 
 
 def install_an_app(request):
@@ -48,7 +48,7 @@ def install_an_app(request):
     for app_path in app_paths:
         installer_obj = Installer(get_parent_directory(os.getcwd()), app_path)
         output = installer_obj.install()
-    return render(request, AppStoreView.template, {"data": {"app": AppInformation.information.apps}})
+    return render(request, WappManagementView.template, {"data": {"app": AppInformation.information.apps}})
 
 
 class AppInstallConfig(View):
@@ -64,27 +64,27 @@ class AppInstallConfig(View):
                 ET.SubElement(app, "filepath").text = app_path
             else:
                 ET.SubElement(app, "repository").text = app_path
-        fpath = join_path(os.getcwd(), "native", "appstore", ".config", "{0}.xml".format(filename))
+        fpath = join_path(os.getcwd(), "native", "wapp_management", ".config", "{0}.xml".format(filename))
         xml_str = ET.tostring(root, encoding='utf8', method='xml')
         with open(fpath, "w") as f:
             f.write(xml_str)
-        return render(request, AppStoreView.template, {"data": {"app": AppInformation.information.apps}})
+        return render(request, WappManagementView.template, {"data": {"app": AppInformation.information.apps}})
 
 
 def load_configs(request):
-    config_path = join_path(os.getcwd(), "native", "appstore", ".config")
+    config_path = join_path(os.getcwd(), "native", "wapp_management", ".config")
     files = get_sub_files(config_path)
     config_files = []
     for subfile in files:
         filename, file_extension = os.path.splitext(subfile)
         if file_extension == ".xml":
             config_files.append(filename)
-    return render(request, 'appstore/popup.html', {"data": {"config_files": {"names": config_files}}})
+    return render(request, 'wapp_management/popup.html', {"data": {"config_files": {"names": config_files}}})
 
 
 def open_config(request):
     config_name = request.GET['config_name']
-    config_path = join_path(os.getcwd(), "native", "appstore", ".config", "{0}.xml".format(config_name))
+    config_path = join_path(os.getcwd(), "native", "wapp_management", ".config", "{0}.xml".format(config_name))
     info = []
     with open(config_path, 'r') as f:
         data = f.read()
@@ -98,5 +98,5 @@ def open_config(request):
             node = app.find('repository', None)
             text = node.text
         info.append(text)
-    return render(request, 'appstore/load_config.html', {"data": {"app": AppInformation.information.apps,
+    return render(request, 'wapp_management/load_config.html', {"data": {"app": AppInformation.information.apps,
                                                                   "config_files": {"info": info}}})

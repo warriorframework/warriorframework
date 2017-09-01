@@ -1,9 +1,8 @@
 import os
-
 import re
 
-from utils.directory_traversal_utils import join_path, get_dir_from_path, get_abs_path, \
-    get_sub_dirs_and_files, get_paths_of_subfiles, get_sub_folders, delete_dir
+from utils.directory_traversal_utils import join_path, get_dir_from_path, get_sub_folders, \
+    get_sub_dirs_and_files, get_paths_of_subfiles, delete_dir
 from utils.file_utils import copy_dir, readlines_from_file, write_to_file
 from utils.json_utils import read_json_data
 
