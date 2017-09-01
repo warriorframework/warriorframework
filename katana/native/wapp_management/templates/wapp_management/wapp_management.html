@@ -11,25 +11,18 @@
 <body>
     {% csrf_token %}
 
-    <h1>&nbsp;Install App</h1>
-    <br>
-
-    <div id="pop-up-file-info">
-        {% include 'wapp_management/popup.html' %}
-    </div>
-
-    <button class="button" katana-click="wapp_management.loadConfig">Load Configuration</button>
-    <div id="new-app-info">
-        {% include 'wapp_management/load_config.html' %}
-    </div>
-    <button class="button" katana-click="wapp_management.addAnotherApp">Add</button>
-    <button class="button" katana-click="wapp_management.installAnApp">Install</button>
     <h1>&nbsp;My Apps</h1>
     <br>
 
 
     {% for app in data.app%}
-    <i class="fa fa-{{ app.data.icon }}"></i>
+    <div class="install-app-icons">
+        <div class="tab">
+            <i class="fa fa-{{ app.data.icon }}"></i>
+        </div>
+    </div>
+
+
 
     <span>{{ app.data.name }}</span>
     {% if app.app_type != "native" %}
@@ -43,7 +36,23 @@
     <br>
 
     <hr class="hr-shadow">
+
     {% endfor %}
+
+    <h1>&nbsp;Install App</h1>
+    <br>
+
+    <div id="pop-up-file-info">
+        {% include 'wapp_management/popup.html' %}
+    </div>
+
+    <button class="button" katana-click="wapp_management.loadConfig">Load Configuration</button>
+    <div id="new-app-info">
+        {% include 'wapp_management/load_config.html' %}
+    </div>
+    <button class="button" katana-click="wapp_management.addAnotherApp">Add</button>
+    <button class="button" katana-click="wapp_management.installAnApp">Install</button>
+
 
 
 </body>
