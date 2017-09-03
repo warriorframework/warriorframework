@@ -96,7 +96,7 @@ def get_testcase_details(testcase_filepath, data_repository, jiraproj):
        By this feature we allow the user to run the same testcases, with
        different data files with out actually changing the testcase.
     """
-
+    #import pdb; pdb.set_trace()
     # First priority for data files given through CLI##
     if data_repository.has_key('ow_datafile'):
         datafile = data_repository['ow_datafile']
@@ -113,7 +113,7 @@ def get_testcase_details(testcase_filepath, data_repository, jiraproj):
     else:
         datafile, data_type = efile_obj.get_data_files()
     #To check the whether data file is a well formed xml file.
-    if datafile:
+    if datafile and datafile is not "NO_DATA":
         Utils.xml_Utils.getRoot(datafile)
     # tc_execution_dir = Utils.file_Utils.createDir_addtimestamp(execution_dir, nameonly)
     # datafile, data_type = get_testcase_datafile(testcase_filepath)
