@@ -1,0 +1,39 @@
+<body>
+  <div class='page-content-inner'>
+  <div class="csrf-container">{% csrf_token %} </div>
+  <div class='execution results-tab'>
+      <button class='tablinks' id='console-logs-button' katana-click="execution.resultsViewer.switchTabs" data-content="console-logs-content">
+        <label>Console Logs</label>
+      </button>
+      <button class='tablinks' id='html-results-button' katana-click="execution.resultsViewer.switchTabs" data-content="html-results-content">
+        <label>Html Results</label>
+      </button>
+  </div>
+
+  <div id="console-logs-content" class="execution tab-content">
+    <h3>London</h3>
+    <p>London is the capital city of England.</p>
+  </div>
+
+  <div id="html-results-content" class="execution tab-content">
+    <h3>Paris</h3>
+    <p>Paris is the capital of France.</p>
+  </div>
+
+  <script>
+  // function openCity(evt, cityName) {
+      // var i, tabcontent, tablinks;
+      // tabcontent = document.getElementsByClassName("execution tab-content");
+      // for (i = 0; i < tabcontent.length; i++) {
+      //     tabcontent[i].style.display = "none";
+      // }
+      // tablinks = document.getElementsByClassName("tablinks");
+      // for (i = 0; i < tablinks.length; i++) {
+      //     tablinks[i].className = tablinks[i].className.replace(" active", "");
+      // }
+      // document.getElementById(cityName).style.display = "block";
+      // evt.currentTarget.className += " active";
+  // }
+  </script>
+
+</body>
