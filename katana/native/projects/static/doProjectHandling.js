@@ -50,6 +50,7 @@ function mapFullProjectJson(myobjectID){
 	//console.log('Mapping data ... ' + typeof(sdata) + ' is [' + sdata + "] " + sdata.length);  // This jdata is a string ....
 	activePageID = getRandomID();                 
 	var sdata = katana.$activeTab.find("#listOfTestSuitesForProject").text();
+	katana.$activeTab.find("#listOfTestSuitesForProject").hide();
 	var jdata = sdata.replace(/'/g, '"');
 	console.log('Mapping data ... ' + typeof(sdata) + ' is [' + sdata + "] " + sdata.length);  // This jdata is a string ....
 	//console.log(jdata);                  // I show it as such. 
@@ -458,6 +459,7 @@ function mapProjectJsonToUi(data){
 	var items = []; 
 	var xdata = data['Testsuite'];
 	if (!jQuery.isArray(xdata)) xdata = [xdata]; 
+
 	createSuitesTable(xdata);
 	createSuiteEditTable(xdata);
 }  // end of function 

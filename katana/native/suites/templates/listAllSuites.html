@@ -22,43 +22,49 @@
 
 </script>
 <body>
-<!--
-<div class="tool-bar"><div katana-click="settings.closeSetting" class="button close">Close</div><div katana-click="settings.save" class="button save">Save</div></div>
-<div class="flex-rows to-save" auto-init="settings.emailSettings.init" post-url="settings/jira_setting_handler">
 
-<div class="csrf-container">{% csrf_token %}</div>
-<div class="relative-tool-bar">
-<i title="@default" key="@default" katana-click="katana.toggleActive" class="bool fa fa-toggle-on"></i>
-<i katana-click="katana.toggleActive" key="append_log" title="append_log" class="bool fa fa-toggle-on"></i>
-<i katana-click="settings.jira.addIssueType" title="Add Issue Type" class="fa fa-plus"></i>
-<i katana-click="settings.jira.addBlock" title="Add Block" class="fa fa-plus-circle"></i>
-<i katana-click="settings.jira.deleteBlock" title="Delete Block" class="fa fa-times"></i>
-</div>
--->
-<div class="page-content">
 
+Hello
 <h2>List of Suites</h2>
 	
-	{% for dr in myfiles %}
-			<table class="table table-striped table-bordered">
-			<tr><th>{{ dr.dirpath }}</th> </tr>
-			{% for xy in dr.files %}
+
+	
+		<div id="mySuite">
+	
+		{% for listing in myfiles %}
+		<br>
+
+			
+			{% for kdr, vdr in listing.items %}
+			
+			<table >
+			{% if kdr == "dirpath" %}
+				<tr><th>{{ vdr }}</th> </tr>
+			{% endif %}
+			{% endfor %}
+
+
+			{% for kdr, vdr in listing.items %}
+			{% if kdr == 'files' %}
+				{% for xy in vdr %}
 				<tr><td>
 				<div class="linkToSuite blue" href="./suites/editSuite/?fname={{dr.path}}/{{xy}}" >{{ xy }}
 				</div>
 					</td>
 				</tr>
-			{% endfor %}	
-			</table>
-
+				{% endfor %}
+			{% endif %}	
+			
+			{% endfor %}
+		</table>
+	
 		
-	{% endfor %}
+		{% endfor %}
 
-		<div id="mySuite">
 
 		</div>
 
-</div>
+
 </body>
 
 <script> 

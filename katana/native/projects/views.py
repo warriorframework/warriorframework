@@ -136,17 +136,6 @@ def getProjectDataBack(request):
 	#template = loader.get_template("cases/editProject.html")  # get another one?
 	fname = request.POST.get(u'filetosave')
 	ijs = request.POST.get(u'json')  # This is a json string 
-	#
-	# This produces xml of the form : <key name="@value">RMT</key><key name="$"></key>
-	# 
-	# Obviously will not work for us. 
-	#
-	#print ijs
-	#xjs = dicttoxml.dicttoxml(eval(ijs), attr_type=False)
-	#print xjs  # This is a string... evaluate it? 
-	#html = HTMLParser.HTMLParser()
-	#print html.unescape(xjs)
-	#print " Now the Javascript code output ...."
 
 
 	#print "--------------TREE----------------"

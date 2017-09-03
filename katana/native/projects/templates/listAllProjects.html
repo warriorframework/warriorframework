@@ -55,32 +55,13 @@
 $(".linkToProject").click(function() { 
 
 	var $elem = $(this);
-
 	var thePage = $elem.attr('href');
 	var theID   = $elem.attr('fname');
-
-	/*
-	katana.$activeTab.find('#myProject').load(thePage, function(response) { 
-		jsonProjectID = theID;    //ke this an ID 
-		console.log("my ID = " + jsonProjectID);
-		//jsonAllProjectPages[jsonProjectID] =  {{fulljson|jsonify}};
-		//console.log("my data = " +jsonAllProjectPages[jsonProjectID]);
-		//jsonProjectObject =  jsonAllProjectPages[jsonProjectID];
-		//mapFullProjectJson(jsonProjectObject);
-		mapFullProjectJson(jsonProjectID);	
-	});
-    */
-    // instead of on
     katana.$view.one('tabAdded', function(){
    		mapFullProjectJson(theID);
     });
 	//
 	katana.templateAPI.load( thePage, null, null, 'title') ;
-	//alert(katana.$activeTab) ;
-
-
-
-
 
 });
 </script>
