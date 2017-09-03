@@ -52,23 +52,26 @@
 		<h2>TestSuites</h2>
 	</div>
 
-		<div  id="tableOfTestSuitesForProject"  class="col-md-12"> </div>
-		<div  id="listOfTestSuitesForProject" class="col-md-12" >{{fulljson|jsonify}}</div>
-	
+		<div id="tableOfTestSuitesForProject"  class="col-md-12" />
+	<div>
+		<h2>Edit Test Suite</h2>
+	</div>
+		<div id="editTestSuiteEntry" class="form-group col-md-8" />
 
 	<div class="container">
 	    <div id="editor" class="col-md-12" >  </div>    
 	    <div class="btn-group col-md-8" role="group">   
 	    	{% csrf_token %}
 			<button id="addSuite" class="btn btn-primary" onclick="addSuiteToProject()">Add</button>
-			<button class="btn btn-primary" onclick="start()">Refresh</button>
-			<button class="btn btn-primary" onclick="openAllSuites()">Show All</button>
-			<button class="btn btn-success" onclick="mapUiToProjectJson()">Save</button>
+			<button class="btn btn-primary" onclick="start()">Reload Project</button>
+			<button class="btn btn-success" onclick="mapUiToProjectJson()">Save Project</button>
 		</div>
 
 		<div>
 		<input class="col-md-12 text-right" type="text" id="my_file_to_save" name="my_file_to_save" value="{{myfile}}"/>
 		</div>			
 	</div>
+
+	<div id="listOfTestSuitesForProject">{{fulljson|jsonify}}</div>
 
 </body>
