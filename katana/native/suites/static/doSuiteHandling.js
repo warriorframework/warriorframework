@@ -358,8 +358,11 @@ function createRequirementsTable(rdata){
 	for (var s=0; s<Object.keys(rdata).length; s++ ) {
 		var oneReq = rdata[s];
 		items.push('<tr><td>'+s+'</td>');
-		items.push('<td>'+oneReq['$']+'</td>');
-		var bid = "deleteRequirement-"+s+"-id"+getRandomID();
+		//items.push('<td>'+oneReq['$']+'</td>');
+		var bid = "textRequirement-"+s+"-id"+activePageID;	
+		items.push('<td><input type="text" value="'+oneReq['$']+'" id="'+bid+'"/></td>');
+		
+		bid = "deleteRequirement-"+s+"-id"+getRandomID();
 		//alert(bid);
 		items.push('<td><input type="button" class="btn-danger" value="Delete" id="'+bid+'"/></td>');
 		katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
@@ -374,8 +377,15 @@ function createRequirementsTable(rdata){
 		$(document).on('click','#'+bid,function(  ) {
 			var names = this.id.split('-');
 			var sid = parseInt(names[1]);
-			console.log("xdata --> "+ xdata);
-			//mapSuiteCaseToUI(sid,xdata);
+			console.log("xdata --> "+ rdata);  // Get this value and update your json. 
+			var txtIn = katana.$activeTab.find("#textRequirement-"+sid+"-id"+activePageID).val();
+			console.log(katana.$activeTab.find("#textRequirement-"+sid+"-id"+activePageID));
+			console.log(sid);
+			console.log(jsonSuiteObject['Requirements'][sid])
+			jsonSuiteObject['Requirements'][sid]['$'] = txtIn;
+
+			createRequirementsTable(jsonSuiteObject['Requirements']);	
+			event.stopPropagation();
 			//This is where you load in the edit form and display this row in detail. 
 		});
 	}
