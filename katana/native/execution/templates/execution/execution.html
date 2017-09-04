@@ -12,12 +12,27 @@
                 <button type="button" name="execution_load_layout_btn" id="execution_load_layout_btn" class="execution btn" katana-click="execution.layoutViewer.loadWs" >
                       <i class="fa fa-refresh"></i>
                 </button>
+                <button type="button" name="execution_load_layout_btn" id="configure_layout_btn" class="execution btn"  katana-click="execution.layoutViewer.configureLayout">
+                      <i class="fa fa-edit"></i>
+                </button>
                 <label>Layouts</label>
             </div>
 
             <div id="execution_layout_container"  data-startdir="{{defaults.start_dir}}" >
             </div>
-
+            <dialog  id="configure_layout_dialog" >
+              <form method="dialog" id="configure_layout_form">
+                <section>
+                  <div class="close fa fa-times" katana-click="execution.layoutViewer.close_configuration_dialog"></div>
+                  <div class="feild"><label>Warriorspace</label><input name="warriorspace" key="type" type="text" value="" placeholder="Enter the path to your warriorspace directory"></div>
+                  <div class="feild"><label>Select Layout Style</label><input name="select_layout_style" key="pass" type="text" value="" placeholder="Select your layout style"></div>
+                </section>
+                <menu>
+                  <button id="clear" type="reset">Clear</button>
+                  <button type="submit" katana-click="execution.layoutViewer.setStartDir">Confirm</button>
+                </menu>
+              </form>
+            </dialog>
         </div>
 
 

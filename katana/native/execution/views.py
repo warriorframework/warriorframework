@@ -55,6 +55,9 @@ class Execution(object):
         Index page for exeution app
         """
         execution_settings_dict = json.loads(open(self.execution_settings_json).read())
+        start_dir = self.default_ws if execution_settings_dict['defaults']['start_dir'] == 'default' \
+        else execution_settings_dict['defaults']['start_dir']
+        execution_settings_dict['defaults']['start_dir'] = start_dir
         index_template = os.path.join(self.templates_dir, 'execution.html')
         return render(request, index_template, execution_settings_dict)
     
@@ -79,7 +82,7 @@ class Execution(object):
         
         # harcode a warrior command to test
         demo_case = "/home/sradhakr/workspace/war-1359/warriorframework/warrior/Warriorspace/Testcases/Demo_Cases/Demo_Test_Of_Inventory_Management_System.xml"
-        warrior_cmd = '{0} {1} {2}'.format('python', '/home/sradhakr/workspace/war-1359/warriorframework/warrior/Warrior', demo_case )
+        warrior_cmd = '{0} {1} {2}'.format('python', '/home/sradhakr/workspace/war-1359/warriorframework/warrior/Warrior', execution_file_list_string )
      
         args = warrior_cmd.split(" ")
         stream_warrior_output(args)
@@ -94,58 +97,11 @@ class Execution(object):
         """
         print request.GET
         data_dict = json.loads(request.GET.get('data'))
-        ws_dir = self.default_ws if data_dict['start_dir'] == 'default' else data_dict['start_dir']      
+        ws_dir = data_dict['start_dir']      
         layout = self.nav.get_dir_tree_json(ws_dir)
         return JsonResponse(layout)
 
-# 
-# def get_dir_tree(dir_path, dir_icon=None, file_icon='jstree-file'):
-#     """
-#     """
-#     
-#     
-#     layout = {'text': os.path.basename(dir_path)}
-#     if os.path.isdir(dir_path):        
-#         layout['li_attr'] = {'data-path': dir_path}
-#         layout['icon'] = dir_icon if dir_icon else ""        
-#         layout['children'] = [get_dir_tree(os.path.join(dir_path, x)) for x in os.listdir(dir_path)]
-#     else:
-#         layout['icon'] = file_icon
-#     return layout
-#         
-    
 
-
-# def index(request, execution_file_list):
-#     index_template = os.path.join(templates_dir, 'execution', 'execution.html')
-#     return render(request, index_template)
-# 
-# 
-# def execute_warrior(request):
-#     """
-#     index view for execution page
-#     """
-#      
-#     results_dict = {}
-#     execution_template = os.path.join(templates_dir, 'execution.html')
-#     demo_case = "/home/sradhakr/workspace/war-1359/warriorframework/warrior/Warriorspace/Testcases/Demo_Cases/Demo_Test_Of_Inventory_Management_System.xml"
-#     pj = '/home/sradhakr/workspace/war-1359/warriorframework/wftests/warrior_tests/projects/pj_cond_var.xml'
-#      
-#     warrior_cmd = '{0} {1} {2}'.format('python', '/home/sradhakr/workspace/war-1359/warriorframework/warrior/Warrior', demo_case )
-#      
-#     args = warrior_cmd.split(" ")
-#     #oput = subprocess.Popen(args, stdout=subprocess.PIPE, universal_newlines=True)
-#     #console_logs = oput.stdout.readlines()
-#  
-#     #stream_warrior_output(args)
-#      
-#     #console_logs = []     
-#     #results_dict['console_logs'] = console_logs
-#        
-#     #return render(request, execution_template, results_dict)
-#     return StreamingHttpResponse(stream_warrior_output(args))
-#      
-# 
 def stream_warrior_output(args):
      
     output = subprocess.Popen(args, stdout=subprocess.PIPE, universal_newlines=True)

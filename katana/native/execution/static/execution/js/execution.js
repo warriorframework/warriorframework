@@ -31,12 +31,10 @@ var execution = {
 				convert the attributes node name map to an array*/
 				var attributes_node_map = execution_layout_container[0].attributes;
 				attr_node_list = Array.prototype.slice.call(attributes_node_map);
-				console.log(attr_node_list);
 				for (var i = 0; i < attr_node_list.length; i++ ){
 					var retain_list = ['id', 'data-startdir'];
 					attr_name = attr_node_list[i].name
 					if ($.inArray(attr_name, retain_list) == -1){
-						console.log(attr_name);
 						execution_layout_container.removeAttr(attr_name);
 					}
 				}
@@ -51,6 +49,38 @@ var execution = {
 					},
 				})
 			},
+
+			configureLayout: function(){
+				console.log("configure_layout");
+				dialog = katana.$activeTab.find('#configure_layout_dialog');
+				dialog.show();
+
+
+			},
+
+			close_configuration_dialog: function(){
+				console.log('closing configuration dialog');
+				dialog = katana.$activeTab.find('#configure_layout_dialog');
+				dialog.hide();
+			},
+
+			setStartDir: function(){
+				console.log("setting start dir");
+				var execution_layout_container = katana.$activeTab.find('#execution_layout_container');
+				var $inputs = $(katana.$activeTab.find('#configure_layout_form :input'));
+				console.log($inputs);
+				var values = {}
+				for (var i = 0; i < $inputs.length; i++ ){
+					values[$inputs[i].name] = $inputs[i].value;
+				}
+				console.log(values);
+
+				execution_layout_container.attr('data-startdir', values['warriorspace']);
+				dialog.hide();
+
+
+			},
+
 
 	},
 
@@ -82,8 +112,8 @@ var execution = {
 		sort: false,
 	})
 	},
-
-	createSelectionsSort: function(){Sortable.create(execution_items, {
+	//execution_items
+	createSelectionsSort: function(){Sortable.create(katana.$activeTab.find('#execution_items')[0], {
 		group: {
 			name: 'execution_items',
 			put: ['layout_items'],
@@ -195,7 +225,8 @@ var execution = {
 
 		executeWarrior: function(console_div){
 			var execution_file_list = [];
-			items = document.getElementsByName('execution_item');
+			// items = document.getElementsByName('execution_item');
+			items = katana.$activeTab.find('[name="execution_item"]')
 			for (var i=0; i < items.length; i++){
 				execution_file_list.push(items[i].dataset.path);
 			}
@@ -234,13 +265,6 @@ var execution = {
 		},
 
 	},
-
-
-
-
-
-
-
 
 
 
