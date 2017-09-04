@@ -48,7 +48,7 @@ Hello
 			{% if kdr == 'files' %}
 				{% for xy in vdr %}
 				<tr><td>
-				<div class="linkToSuite blue" href="./suites/editSuite/?fname={{dr.path}}/{{xy}}" >{{ xy }}
+				<div class="linkToSuite blue" href="./suites/editSuite/?fname={{dr.path}}/{{xy}}" fname="{{dr.path}}/{{xy}}">{{ xy }}
 				</div>
 					</td>
 				</tr>
@@ -71,8 +71,17 @@ Hello
 
 $(".linkToSuite").click(function() { 
 
-	var thePage = $(this).attr('href');
-	$('#mySuite').load(thePage);
+	
+	var $elem = $(this);
+	var thePage = $elem.attr('href');
+	var theID   = $elem.attr('fname');
+    katana.$view.one('tabAdded', function(){
+   		mapFullSuiteJson(theID);
+    });
+	//
+	katana.templateAPI.load( thePage, null, null, 'title') ;
+
+
 });
 
 

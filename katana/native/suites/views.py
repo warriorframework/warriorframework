@@ -93,7 +93,7 @@ def editSuite(request):
 	Set up JSON object for editing a Suite file. 
 	"""
 	path_to_testcases = navigator.get_warrior_dir() + "/../wftests/warrior_tests/"
-	template = loader.get_template("cases/editSuite.html")
+	template = loader.get_template("./editSuite.html")
 	filename = request.GET.get('fname')
 	
 	xml_r = {}
@@ -104,8 +104,11 @@ def editSuite(request):
 	xml_r["TestSuite"]["Details"]["Engineer"] = { "$": ""}
 	xml_r["TestSuite"]["Details"]["Date"] = { "$": ""}
 	xml_r["TestSuite"]["Details"]["Time"] = { "$": ""}
-	xml_r["TestSuite"]["Details"]["type"] = { }
-	xml_r["TestSuite"]["Details"]["type"]['\@exectype'] = u"sequential_testcases"
+	xml_r["TestSuite"]["Details"]["type"] = { "$": "" }
+	xml_r["TestSuite"]["Details"]["Logsdir"] = { "$": "" }
+	xml_r["TestSuite"]["Details"]["Resultsdir"] = { "$": "" }
+	xml_r["TestSuite"]["Details"]["InputDataFile"] = { "$": "" }
+	xml_r["TestSuite"]["Details"]["type"]["@exectype"] = "sequential_testcases"
 	xml_r["TestSuite"]["Details"]["default_onError"] = {}
 	xml_r["TestSuite"]["Details"]["default_onError"]["$"] = "" 
 	xml_r["TestSuite"]["Details"]["default_onError"]['@action']= { "$": ""}
@@ -117,7 +120,7 @@ def editSuite(request):
 
 	# Map the input to the response collector
 	for xstr in ["Name", "Title", "Category", "Date", "Time", "Engineer", \
-		"Datatype", "type",  "default_onError"]:
+		"Datatype",  "default_onError"]:
 		try: 
 			xml_r["TestSuite"]["Details"][xstr] = copy.copy(xml_d["TestSuite"]["Details"].get(xstr,""))
 		except:
@@ -128,21 +131,32 @@ def editSuite(request):
 	except:
 		xml_r["TestSuite"]["Testcases"] = {}
 
+	try:
+		xml_r["TestSuite"]["Details"]["type"]['@exectype'] = copy.deepcopy(xml_d["TestSuite"]["Details"]["type"]['@exectype']);
+	except:
+		xml_r["TestSuite"]["Details"]["type"]['@exectype'] = "sequential_testcases"
+
 	xml_r["TestSuite"]["Details"]["default_onError"]["$"] = "" 
+
 	context = { 
 		'myfile': filename,
 		'docSpec': 'projectSpec',
 		'suiteName': xml_r["TestSuite"]["Details"]["Name"]["$"],
 		'suiteTitle': xml_r["TestSuite"]["Details"]["Title"]["$"],
+		'suiteDatatype': xml_r["TestSuite"]["Details"]["type"]["@exectype"],
 		'suiteEngineer': xml_r["TestSuite"]["Details"]["Engineer"]["$"],
-		#'suiteCategory': xml_r["TestSuite"]["Details"]["Category"]["$"],
+		'suiteLogsdir': xml_r["TestSuite"]["Details"]["Logsdir"]["$"],
+		'suiteResultsdir': xml_r["TestSuite"]["Details"]["Resultsdir"]["$"],
+		'suiteInputDataFile': xml_r["TestSuite"]["Details"]["InputDataFile"]["$"],
+		'suiteEngineer': xml_r["TestSuite"]["Details"]["Engineer"]["$"],
+		'suiteDatatype': xml_r["TestSuite"]["Details"]["type"]["@exectype"],
 		'suiteDate': xml_r["TestSuite"]["Details"]["Date"]["$"],
 		'suiteTime': xml_r["TestSuite"]["Details"]["Time"]["$"],
 		#'suiteType': xml_r["TestSuite"]["Details"]["type"]["$"],
 		'suitedefault_onError':xml_r["TestSuite"]["Details"]["default_onError"]["$"] ,
 		'suiteCases': xml_r['TestSuite']['Testcases'],
 		'fulljson': xml_r['TestSuite'],
-		'suiteResults': ""
+		'suiteResults': "",
 		}
 	# 
 	# I have to add json objects for every test suite.
