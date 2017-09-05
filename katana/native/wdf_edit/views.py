@@ -18,9 +18,11 @@ def index(request):
     else:
         data = xmltodict.parse(open('/home/ka/Desktop/warrior_fnc_tests/warrior_tests/data/cli_tests/cli_def_Data.xml').read())
 
-    if type(data["credentials"]["system"]) != list:
-        data["credentials"]["system"] = [data["credentials"]["system"]]
-    for sys in data["credentials"]["system"]:
+    root = data.keys()[0]
+
+    if type(data[root]["system"]) != list:
+        data[root]["system"] = [data[root]["system"]]
+    for sys in data[root]["system"]:
         sys["name"] = sys["@name"]
         del sys["@name"]
         if "subsystem" in sys:
