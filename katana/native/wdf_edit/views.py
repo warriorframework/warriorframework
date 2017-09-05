@@ -56,7 +56,8 @@ def get_json(request):
 
 def get_jstree_dir(request):
     data = Navigator().get_dir_tree_json("/home/ka/Desktop/warrior_fnc_tests/warrior_tests/data/")
-    print json.dumps(data, indent=4)
+    data["text"] = "/home/ka/Desktop/warrior_fnc_tests/warrior_tests/data/"
+    # print json.dumps(data, indent=4)
     return JsonResponse(data)
 
 def file_list(request):

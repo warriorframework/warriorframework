@@ -34,10 +34,13 @@
               data: {"path": data["node"]["li_attr"]["data-path"]},
               success: function(data){
                   console.log("Sent");
-                  $(".page-content-inner").replaceWith(data);
+                  $("#jstree").replaceWith(data);
+                  katana.refreshAutoInit($("#system_template"));
+                  katana.refreshAutoInit($("#tag_template"));
                   console.log("loaded");
               }
           });
+          // katana.templateAPI.post("wdf/index", csrftoken, {"path": data["node"]["li_attr"]["data-path"]});
         }
       });
     });
