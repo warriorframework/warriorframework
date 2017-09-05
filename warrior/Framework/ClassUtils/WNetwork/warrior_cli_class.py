@@ -196,8 +196,8 @@ class WarriorCli(object):
 
         if self.conn_obj and self.conn_obj.target_host:
             status, response = self.conn_obj.send_command(
-             start_prompt=start_prompt, end_prompt=end_prompt,
-             command=command, timeout=timeout)
+             command=command, start_prompt=start_prompt,
+             end_prompt=end_prompt, timeout=timeout)
 
         return status, response
 
@@ -265,17 +265,14 @@ class WarriorCli(object):
                 new_obj_session, system_name, details_dict = \
                     self._get_obj_session(details_dict, system_name, index=i)
                 if new_obj_session:
-                    original_session = self.conn_obj.target_host
-                    self.conn_obj.target_host = new_obj_session
-                    result, response = self._send_cmd_get_status(
+                    result, response = new_obj_session._send_cmd_get_status(
                      details_dict, index=i, system_name=system_name)
-                    result, response = self._send_command_retrials(
+                    result, response = new_obj_session._send_command_retrials(
                      details_dict, index=i, result=result, response=response,
                      system_name=system_name)
-                    response_dict = self._get_response_dict(
+                    response_dict = new_obj_session._get_response_dict(
                      details_dict, i, response, response_dict)
                     print_debug("<<<")
-                    self.conn_obj.target_host = original_session
                 else:
                     finalresult = "ERROR"
                     pNote("COMMAND STATUS:{0}".format(finalresult))
@@ -300,8 +297,8 @@ class WarriorCli(object):
             startprompt = kwargs.get('startprompt', ".*")
             endprompt = kwargs.get('endprompt', None)
             cmd_timeout = kwargs.get('cmd_timeout', None)
-            result, response = self.conn_obj.send_command(startprompt,
-                                                          endprompt, command,
+            result, response = self.conn_obj.send_command(command, startprompt,
+                                                          endprompt,
                                                           cmd_timeout)
         return result, response
 
@@ -610,7 +607,7 @@ class WarriorCli(object):
                 value = obj_session
         else:
             # print obj_session
-            value = self.conn_obj.target_host
+            value = self
             system_name = kw_system_name
 
         pNote("System name\t: {0}".format(system_name))
@@ -1399,7 +1396,7 @@ class PexpectConnect(object):
             self.target_host.close()
 
     @cmdprinter
-    def send_command(self, start_prompt, end_prompt, command,
+    def send_command(self, command, start_prompt, end_prompt,
                      timeout=60, *args, **kwargs):
         """
         Send an command to pexpect session object and returns
