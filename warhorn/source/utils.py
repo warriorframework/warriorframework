@@ -608,16 +608,14 @@ def package_version(package, filepath):
 
     :return:
     version_package : Package and its version details.
-    filepath : The filepath from where version_package is derived.
+
     """
     version_package = False
-    if not os.path.exists(filepath):
-        filepath = "../requirements.txt"
     with open(filepath, 'r') as requirements:
         for line in requirements:
             if package in line:
                 version_package = line
-    return version_package, os.path.abspath(filepath)
+    return version_package
 
 def get_dependencies(logfile, print_log_name, config_file_name):
     """ Function gets called from setup.py
@@ -646,6 +644,9 @@ def get_dependencies(logfile, print_log_name, config_file_name):
     """
     node = get_node(config_file_name, 'warhorn')
     dependency_filepath = node.attrib['dependency_filepath']
+    if not os.path.exists(dependency_filepath):
+        dependency_filepath = "../requirements.txt"
+    dependency_filepath = os.path.abspath(dependency_filepath)
     if node is False:
         print_error("Warhorn tag not found! Proceeding with the installation "
                     "without installing any of the recommended "
@@ -654,7 +655,7 @@ def get_dependencies(logfile, print_log_name, config_file_name):
     else:
         dependencies = get_firstlevel_children(node, "dependency")
         for dependency in dependencies:
-            pip_what, filepath = package_version(dependency.attrib["name"], dependency_filepath)
+            pip_what = package_version(dependency.attrib["name"], dependency_filepath)
             if 'install' in dependency.attrib:
                 if dependency.attrib["install"] == "yes" and pip_what:
                     print_info("Warhorn will try to install " + dependency.attrib["name"] +
@@ -669,7 +670,7 @@ def get_dependencies(logfile, print_log_name, config_file_name):
                                " as it was set to 'no' in the .xml file.", logfile, print_log_name)
                 elif dependency.attrib["install"] == "yes" and not pip_what:
                     print_error("The {0} file doesn't have valid version for package:"
-                                .format(filepath) +
+                                .format(dependency_filepath) +
                                 dependency.attrib["name"], logfile, print_log_name)
                 else:
                     print_error("Warhorn will not install " + dependency.attrib["name"] +
