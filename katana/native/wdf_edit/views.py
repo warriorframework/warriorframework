@@ -53,8 +53,8 @@ def index(request):
 
     return render(request, 'wdf_edit/index.html', {"data": data["credentials"]})
 
-def get_json(request):
-    return JsonResponse(xmltodict.parse(open('/home/ka/Desktop/warrior_fnc_tests/warrior_tests/data/cli_tests/cli_def_Data.xml').read()))
+# def get_json(request):
+#     return JsonResponse(xmltodict.parse(open('/home/ka/Desktop/warrior_fnc_tests/warrior_tests/data/cli_tests/cli_def_Data.xml').read()))
 
 def get_jstree_dir(request):
     data = Navigator().get_dir_tree_json("/home/ka/Desktop/warrior_fnc_tests/warrior_tests/data/")
@@ -80,10 +80,10 @@ def raw_parser(data):
     # print json.dumps(result, indent=4)
     return result
 
-
 def on_post(request):
     data = request.POST
     print json.dumps(sorted(data.items()), indent=4)
     data = raw_parser(data)
     print xmltodict.unparse({"systems":data})
-    return render(request, 'wdf_edit/result.html', {"data": json.dumps(request.POST, indent=4)})
+    # return render(request, 'wdf_edit/result.html', {"data": json.dumps(request.POST, indent=4)})
+    return render(request, 'wdf_edit/file_list.html', {})

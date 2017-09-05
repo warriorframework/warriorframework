@@ -1,49 +1,12 @@
-<body>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
-  <!-- 3 setup a container element -->
-  <!-- 4 include the jQuery library -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
-  <!-- 5 include the minified jstree source -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+<div id="main_info">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+    <!-- 3 setup a container element -->
+    <!-- 4 include the jQuery library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
+    <!-- 5 include the minified jstree source -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
 
-  <div id="jstree">
-  </div>
-  <div class="csrf-container">{% csrf_token %}</div>
-
-  <script type="application/javascript">
-    $(document).ready(function(){
-      $.ajax({
-          url: "wdf/gettree",
-          type: "GET",
-          dataType: "json",
-          success: function(data){
-              $("#jstree").jstree({'core':{'data':[data]}});
-          }
-      });
-
-      $('#jstree').on("select_node.jstree", function (e, data) {
-        console.log("select_node");
-        console.log(data);
-        if (data["node"]["icon"] == "jstree-file") {
-          console.log(data["node"]["li_attr"]["data-path"]);
-          var csrftoken = $("[name='csrfmiddlewaretoken']").val();
-          $.ajax({
-              url: "wdf/index",
-              type: "POST",
-              headers: {'X-CSRFToken':csrftoken},
-              data: {"path": data["node"]["li_attr"]["data-path"]},
-              success: function(data){
-                  console.log("Sent");
-                  $("#jstree").replaceWith(data);
-                  katana.refreshAutoInit($("#system_template"));
-                  katana.refreshAutoInit($("#tag_template"));
-                  console.log("loaded");
-              }
-          });
-          // katana.templateAPI.post("wdf/index", csrftoken, {"path": data["node"]["li_attr"]["data-path"]});
-        }
-      });
-    });
-  </script>
-
-</body>
+    <div id="jstree" auto-init="wdf.build_tree">
+    </div>
+    <div class="csrf-container">{% csrf_token %}</div>
+</div>
