@@ -42,4 +42,16 @@ var wdf = {
     hide: function(){
         $(this).hide();
     }
+
+    load_js: function(){
+        $.ajax({
+            url: "katana/wdf/gettree",
+            type: "GET",
+            dataType: "json",
+            success: function(data){
+                console.log(data);
+                $(this).jstree({'core':{'data':[data]}});
+            }
+        });
+    },
 }

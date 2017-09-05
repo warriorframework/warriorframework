@@ -5,6 +5,7 @@ import json, xmltodict
 from HTMLParser import HTMLParser
 from xml.etree.ElementTree import parse
 from pprint import pprint
+from utils.navigator_util import Navigator
 
 from django.shortcuts import render
 from django.http import JsonResponse
@@ -45,6 +46,12 @@ def index(request):
 
 def get_json(request):
     return JsonResponse(xmltodict.parse(open('/home/ka/Desktop/warrior_fnc_tests/warrior_tests/data/cli_tests/cli_def_Data.xml').read()))
+
+def get_jstree_dir(request):
+    return JsonResponse(Navigator().get_dir_tree_json("/home/ka/Desktop/warrior_fnc_tests/warrior_tests/data/"))
+
+def file_list(request):
+    return render(request, 'wdf_edit/file_list.html', {})
 
 def raw_parser(data):
     result = {}
