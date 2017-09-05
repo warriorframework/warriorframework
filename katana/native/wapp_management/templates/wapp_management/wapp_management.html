@@ -14,38 +14,7 @@
     <h1>&nbsp;My Apps</h1>
     <br>
 
-
-    <div class="container-fluid">
-        {% for app in data.app%}
-        <div class="row">
-            <div class="col-sm-1 install-app-icons">
-                <div class="tab {{app.data.color}}">
-                    <i class="fa fa-{{ app.data.icon }}"></i>
-                </div>
-            </div>
-            <div class="col-sm-2">
-                {{ app.data.name }}
-            </div>
-            <div class="col-sm-7">
-
-            </div>
-            <div class="col-sm-1">
-
-                <button class="button">Installed</button>
-            </div>
-            <div class="col-sm-1">
-                {% if app.app_type != "native" %}
-                <button class="button" katana-click="wapp_management.uninstallAnApp" app_path="{{ app.path }}"
-                        app_type="{{ app.app_type }}">Uninstall
-                </button>
-                {% endif %}
-            </div>
-        </div>
-        <hr>
-        {% endfor %}
-    </div>
-
-
+    {% include 'wapp_management/installed_apps.html' %}
 
     <h1>&nbsp;Install App</h1>
     <br>

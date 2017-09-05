@@ -307,13 +307,10 @@ span.close:before {content: 'X';}
 .install-app-icons .tab{
     width: 5em;
     height: 5em;
-    padding: 5px 0;
 }
 
 .install-app-icons .tab > i {
     font-size: 2.5em;
-    display: block;
-    position: absolute;
 }
 
 .tab.red {

@@ -58,13 +58,13 @@ class AppInstallConfig(View):
         filename = request.POST.get("filename")
 
         root = ET.Element("data")
-        app = ET.SubElement(root, "app")
         for app_path in app_paths:
+            app = ET.SubElement(root, "app")
             if os.path.exists(app_path):
                 ET.SubElement(app, "filepath").text = app_path
             else:
                 ET.SubElement(app, "repository").text = app_path
-        fpath = join_path(os.getcwd(), "native", "wapp_management", ".config", "{0}.xml".format(filename))
+        fpath = join_path(os.getcwd(), "native", "wapp_management", ".data", "{0}.xml".format(filename))
         xml_str = ET.tostring(root, encoding='utf8', method='xml')
         with open(fpath, "w") as f:
             f.write(xml_str)
@@ -72,7 +72,7 @@ class AppInstallConfig(View):
 
 
 def load_configs(request):
-    config_path = join_path(os.getcwd(), "native", "wapp_management", ".config")
+    config_path = join_path(os.getcwd(), "native", "wapp_management", ".data")
     files = get_sub_files(config_path)
     config_files = []
     for subfile in files:
@@ -84,7 +84,7 @@ def load_configs(request):
 
 def open_config(request):
     config_name = request.GET['config_name']
-    config_path = join_path(os.getcwd(), "native", "wapp_management", ".config", "{0}.xml".format(config_name))
+    config_path = join_path(os.getcwd(), "native", "wapp_management", ".data", "{0}.xml".format(config_name))
     info = []
     with open(config_path, 'r') as f:
         data = f.read()

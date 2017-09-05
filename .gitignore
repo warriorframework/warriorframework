@@ -14,7 +14,7 @@ workspace.*
 ###################
 #/Warriorspace/Execution
 /katana/logs
-/katana/native/wapp_management/.config
+/katana/native/wapp_management/.data
 
 
 # Created by .ignore support plugin (hsz.mobi) #

@@ -10,35 +10,43 @@ var wapp_management = {
             },
             type: 'POST',
             url: 'wapp_management/uninstall_an_app/',
-            data: {"app_path": app_path, "app_type": app_type},
+            data: {"app_path": app_path, "app_type": app_type}
         }).done(function(data) {
             setTimeout(function(){location.reload();}, 1500);
 		});
     },
 
     installAnApp: function(){
-
-        if(!config_loaded){
+            var $elements = $("#new-app-info :input");
+            var app_paths = []
+            var path = "";
+            for(var i=0 ; i<$elements.length; i++){
+                path = $elements[i].value.trim();
+                if(path == ""){
+                    alert("Field cannot be emptya");
+                    return;
+                }
+                else {
+                    app_paths.push(path)
+                }
+            }
             r = confirm("Do you want to save this configuration?")
             if(r){
                 var filename = prompt("Please enter a name for the configuration.");
                 if ( filename == null ||  filename == ""){
                     alert("Configuration not saved.")
+                    $.ajax({
+                        headers: {
+                            'X-CSRFToken': wapp_management.getCookie('csrftoken')
+                        },
+                        type: 'POST',
+                        url: 'wapp_management/install_an_app/',
+                        data: {"app_paths": app_paths},
+                    }).done(function(data) {
+                        setTimeout(function(){location.reload();}, 1500);
+                    });
                 }
                 else {
-                    var $elements = $("#new-app-info :input");
-                    var app_paths = []
-                    var path = "";
-                    for(var i=0 ; i<$elements.length; i++){
-                        path = $elements[i].value.trim();
-                        if(path == ""){
-                            alert("Field cannot be empty");
-                        }
-                        else {
-                            app_paths.push(path)
-                        }
-                    }
-
                     $.ajax({
                         headers: {
                             'X-CSRFToken': wapp_management.getCookie('csrftoken')
@@ -47,51 +55,33 @@ var wapp_management = {
                         url: 'wapp_management/create_config/',
                         data: {"app_paths": app_paths, "filename":  filename},
                     }).done(function(data) {
-                        setTimeout(function(){location.reload();}, 1500);
+                        $.ajax({
+                            headers: {
+                                'X-CSRFToken': wapp_management.getCookie('csrftoken')
+                            },
+                            type: 'POST',
+                            url: 'wapp_management/install_an_app/',
+                            data: {"app_paths": app_paths},
+                        }).done(function(data) {
+                            setTimeout(function(){location.reload();}, 1500);
+                        });
                     });
                     alert("Configuration Saved: " +  filename)
                 }
             }
-        }
-        else {
-
-            var $elements = $("#new-app-info :input");
-            var app_paths = []
-            var path = "";
-            for(var i=0 ; i<$elements.length; i++){
-                path = $elements[i].value.trim();
-                if(path == ""){
-                    alert("Field cannot be empty");
-                }
-                else {
-                    app_paths.push(path)
-                }
+            else{
+                $.ajax({
+                    headers: {
+                        'X-CSRFToken': wapp_management.getCookie('csrftoken')
+                    },
+                    type: 'POST',
+                    url: 'wapp_management/install_an_app/',
+                    data: {"app_paths": app_paths},
+                }).done(function(data) {
+                    setTimeout(function(){location.reload();}, 1500);
+                });
             }
 
-            $.ajax({
-                headers: {
-                    'X-CSRFToken': wapp_management.getCookie('csrftoken')
-                },
-                type: 'POST',
-                url: 'wapp_management/install_an_app/',
-                data: {"app_paths": app_paths},
-            }).done(function(data) {
-                setTimeout(function(){location.reload();}, 1500);
-            });
-        }
-
-        /**
-
-        $.ajax({
-            headers: {
-                'X-CSRFToken': wapp_management.getCookie('csrftoken')
-            },
-            type: 'POST',
-            url: 'wapp_management/create_config/',
-            data: {"app_paths": app_paths},
-        }).done(function(data) {
-            setTimeout(function(){location.reload();}, 1500);
-		});**/
     },
 
     loadConfig: function(){
@@ -99,7 +89,6 @@ var wapp_management = {
             type: 'GET',
             url: 'wapp_management/load_configs/',
         }).done(function(data) {
-            config_loaded = true;
             $('#pop-up-file-info').html(data);
 		});
     },
@@ -119,7 +108,6 @@ var wapp_management = {
             type: 'GET',
             url: 'wapp_management/open_config?config_name=' + $checked,
         }).done(function(data) {
-            alert(data)
             $('#new-app-info').html(data);
 		});
     },
