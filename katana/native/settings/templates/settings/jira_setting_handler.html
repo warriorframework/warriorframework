@@ -6,7 +6,7 @@
     <div class="field-block">
       {% for k, v in system.items%}
         {% if k == '@name' %}
-          <div key="{{ k }}" class="title">{{ v }}</div>
+          <div class="title"><input key="{{ k }}" type="text" value="{{ v }}" placeholder="Title"></div>
         {% endif %}
       {% endfor %}
       <div class="relative-tool-bar"><i title="@default" key="@default" katana-click="katana.toggleActive" class="bool fa fa-toggle-on"></i><i katana-click="katana.toggleActive" key="append_log" title="append_log" class="bool fa fa-toggle-on"></i><i katana-click="settings.jira.addIssueType" title="Add Issue Type" class="fa fa-plus"></i><i katana-click="settings.jira.addBlock" title="Add Block" class="fa fa-plus-circle"></i><i katana-click="settings.jira.deleteBlock" title="Delete Block" class="fa fa-times"></i></div>

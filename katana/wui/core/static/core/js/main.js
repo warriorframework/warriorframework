@@ -134,6 +134,23 @@ var katana = {
 		this.closest('.pocket-fields').remove();
 	},
 
+	openDialog: function( data, title, buttons, callBack ){
+		var dialog = $('<div class="dialog-container"><div class="dialog"><div class="title">' + (title ? title : '') + '</div><div class="page-content">' + (data ? data : '') + '</div></div><div class="overlay"></div></div>');
+		buttons && dialog.find('.dialog').append('<div class="button-bar"><div class="button confirm">Confirm</div><div class="button">Cancel</div></div>');
+		dialog.prependTo( katana.$view );
+		dialog.find('.button').one('click', function(){
+			katana.closeDialog( dialog, ($(this).hasClass('confirm') && callBack) );
+		});
+		dialog.find('.overlay').one('click', function(){
+			katana.closeDialog(dialog);
+		});
+	},
+
+	closeDialog: function( dialog, callBack ){
+		dialog.remove();
+		callBack && callBack();
+	},
+
 	popupController: {
 	  body: '',
 	  template: $('<div class="popup"><div class="navbar"><div class="title"></div><div class="min"></div><div class="close"></div></div><div class="page-content"></div></div>'),
@@ -263,7 +280,7 @@ var katana = {
 		body.find('.field-block').each( function(){
 			var $elem = $(this);
 			var tempObj = {};
-			tempObj[ $elem.find('[key="@name"]').attr('key') ] = $elem.find('[key="@name"]').text();
+			tempObj[ $elem.find('[key="@name"]').attr('key') ] = $elem.find('[key="@name"]').hasClass('.title') ? $elem.find('[key="@name"]').text() : $elem.find('[key="@name"]').val();
 			$elem.find('input, select').each( function() {
 				var sub$elem = $(this);
 				if( !sub$elem.closest('.pocket-fields').length )
