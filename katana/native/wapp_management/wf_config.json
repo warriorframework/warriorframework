@@ -1,5 +1,5 @@
 {
-  "icon": "play-circle",
+  "icon": "wrench",
   "color": "red",
   "name" : "Wapp Management",
   "url" : "/katana/wapp_management/"

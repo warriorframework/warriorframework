@@ -2,7 +2,6 @@ from utils.directory_traversal_utils import get_parent_directory, get_dir_from_p
     get_paths_of_subfiles, get_relative_path
 from utils.json_utils import read_json_data
 from utils.regex_utils import compile_regex
-from wui.core.core_utils.app_info_class import AppInformation
 from wui.core.core_utils.core_utils import get_app_path_from_name
 
 
@@ -14,6 +13,7 @@ class App:
         self.path = get_relative_path(path, base_directory)
         self.static_file_dir = join_path("static", get_dir_from_path(path))
         self.app_type = get_dir_from_path(get_parent_directory(path))
+        self.app_dir_name = get_dir_from_path(path)
 
 
 class Apps:

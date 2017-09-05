@@ -12,7 +12,7 @@ var wapp_management = {
             url: 'wapp_management/uninstall_an_app/',
             data: {"app_path": app_path, "app_type": app_type}
         }).done(function(data) {
-            setTimeout(function(){location.reload();}, 1500);
+            $('#installed_apps_div').html(data)
 		});
     },
 
@@ -43,7 +43,7 @@ var wapp_management = {
                         url: 'wapp_management/install_an_app/',
                         data: {"app_paths": app_paths},
                     }).done(function(data) {
-                        setTimeout(function(){location.reload();}, 1500);
+                        $('#installed_apps_div').html(data)
                     });
                 }
                 else {
@@ -63,7 +63,7 @@ var wapp_management = {
                             url: 'wapp_management/install_an_app/',
                             data: {"app_paths": app_paths},
                         }).done(function(data) {
-                            setTimeout(function(){location.reload();}, 1500);
+                            $('#installed_apps_div').html(data)
                         });
                     });
                     alert("Configuration Saved: " +  filename)
@@ -78,7 +78,7 @@ var wapp_management = {
                     url: 'wapp_management/install_an_app/',
                     data: {"app_paths": app_paths},
                 }).done(function(data) {
-                    setTimeout(function(){location.reload();}, 1500);
+                    $('#installed_apps_div').html(data)
                 });
             }
 

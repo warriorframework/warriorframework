@@ -15,6 +15,7 @@ from __future__ import unicode_literals
 
 import os
 
+import copy
 from django.shortcuts import render
 from django.views import View
 import xml.etree.cElementTree as ET
@@ -40,7 +41,19 @@ def uninstall_an_app(request):
     app_type = request.POST.get("app_type", None)
     uninstaller_obj = Uninstaller(get_parent_directory(os.getcwd()), app_path, app_type)
     output = uninstaller_obj.uninstall()
-    return render(request, WappManagementView.template, {"data": {"app": AppInformation.information.apps}})
+    if output:
+        temp = []
+        index = -1
+        for i in range(0, len(AppInformation.information.apps)):
+            if AppInformation.information.apps[i].path == app_path:
+                index = i
+                break
+        temp.extend(AppInformation.information.apps[:index])
+        temp.extend(AppInformation.information.apps[index+1:])
+        AppInformation.information.apps = copy.deepcopy(temp)
+    for app in AppInformation.information.apps:
+        print app.path
+    return render(request, 'wapp_management/installed_apps.html', {"data": {"app": AppInformation.information.apps}})
 
 
 def install_an_app(request):
@@ -48,7 +61,7 @@ def install_an_app(request):
     for app_path in app_paths:
         installer_obj = Installer(get_parent_directory(os.getcwd()), app_path)
         output = installer_obj.install()
-    return render(request, WappManagementView.template, {"data": {"app": AppInformation.information.apps}})
+    return render(request, 'wapp_management/installed_apps.html', {"data": {"app": AppInformation.information.apps}})
 
 
 class AppInstallConfig(View):
