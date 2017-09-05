@@ -1,7 +1,7 @@
 var settings = {
 
 	closeSetting: function(){
-		katana.closeSubApp();
+		katana.openDialog( 'Are you sure you would like to close this page?', 'Confirm', true, katana.closeSubApp );
 	},
 
 	emailSettings: {
@@ -62,6 +62,15 @@ var settings = {
 
 		},
 
+		deleteBlock: function(){
+			this.closest('.field-block').remove();
+		},
+
+		addBlock: function(){
+			var $elem = this;
+			var feildBlock = $elem.closest('.field-block');
+			feildBlock.clone().insertAfter( feildBlock );
+		}
 	},
 
 	save: function(){
