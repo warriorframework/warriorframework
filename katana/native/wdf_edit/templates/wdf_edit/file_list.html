@@ -1,13 +1,46 @@
 <body>
-  <link rel="stylesheet" href="dist/themes/default/style.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
   <!-- 3 setup a container element -->
   <!-- 4 include the jQuery library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
   <!-- 5 include the minified jstree source -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
 
-  <div id="jstree" auto-init="wdf.load_js">
+  <div id="jstree">
   </div>
-  <button>demo button</button>
+  <div class="csrf-container">{% csrf_token %}</div>
+
+  <script type="application/javascript">
+    $(document).ready(function(){
+      $.ajax({
+          url: "wdf/gettree",
+          type: "GET",
+          dataType: "json",
+          success: function(data){
+              $("#jstree").jstree({'core':{'data':[data]}});
+          }
+      });
+
+      $('#jstree').on("select_node.jstree", function (e, data) {
+        console.log("select_node");
+        console.log(data);
+        if (data["node"]["icon"] == "jstree-file") {
+          console.log(data["node"]["li_attr"]["data-path"]);
+          var csrftoken = $("[name='csrfmiddlewaretoken']").val();
+          $.ajax({
+              url: "wdf/index",
+              type: "POST",
+              headers: {'X-CSRFToken':csrftoken},
+              data: {"path": data["node"]["li_attr"]["data-path"]},
+              success: function(data){
+                  console.log("Sent");
+                  $(".page-content-inner").replaceWith(data);
+                  console.log("loaded");
+              }
+          });
+        }
+      });
+    });
+  </script>
 
 </body>

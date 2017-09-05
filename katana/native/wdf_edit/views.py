@@ -12,7 +12,14 @@ from django.http import JsonResponse
 
 # Create your views here.
 def index(request):
-    data = xmltodict.parse(open('/home/ka/Desktop/warrior_fnc_tests/warrior_tests/data/cli_tests/cli_def_Data.xml').read())
+    if request.method == "POST":
+        data = request.POST
+        data = xmltodict.parse(open(data["path"]).read())
+    else:
+        data = xmltodict.parse(open('/home/ka/Desktop/warrior_fnc_tests/warrior_tests/data/cli_tests/cli_def_Data.xml').read())
+
+    if type(data["credentials"]["system"]) != list:
+        data["credentials"]["system"] = [data["credentials"]["system"]]
     for sys in data["credentials"]["system"]:
         sys["name"] = sys["@name"]
         del sys["@name"]
@@ -48,7 +55,9 @@ def get_json(request):
     return JsonResponse(xmltodict.parse(open('/home/ka/Desktop/warrior_fnc_tests/warrior_tests/data/cli_tests/cli_def_Data.xml').read()))
 
 def get_jstree_dir(request):
-    return JsonResponse(Navigator().get_dir_tree_json("/home/ka/Desktop/warrior_fnc_tests/warrior_tests/data/"))
+    data = Navigator().get_dir_tree_json("/home/ka/Desktop/warrior_fnc_tests/warrior_tests/data/")
+    print json.dumps(data, indent=4)
+    return JsonResponse(data)
 
 def file_list(request):
     return render(request, 'wdf_edit/file_list.html', {})
