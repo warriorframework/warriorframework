@@ -72,7 +72,7 @@ def index(request):
 			for fn in files: 
 				fullname = dirpath + os.sep + fn
 				if os.path.isfile(fullname) and os.path.splitext(fullname)[1] == ".xml":
-					myfiles[k]['files'].append(fullname)
+					myfiles[k]['files'].append( { "filename": fn, "fullname" : fullname, 'displayName': os.path.split(fullname)[1]})
 		k = k + 1
 	print myfiles
 

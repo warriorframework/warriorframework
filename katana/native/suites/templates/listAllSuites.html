@@ -48,7 +48,7 @@ Hello
 			{% if kdr == 'files' %}
 				{% for xy in vdr %}
 				<tr><td>
-				<div class="linkToSuite blue" href="./suites/editSuite/?fname={{dr.path}}/{{xy}}" fname="{{dr.path}}/{{xy}}">{{ xy }}
+				<div class="linkToSuite blue" href="./suites/editSuite/?fname={{xy.fullname}}" fname="{{xy.fullname}}">{{ xy.displayName }}
 				</div>
 					</td>
 				</tr>
@@ -79,7 +79,7 @@ $(".linkToSuite").click(function() {
    		mapFullSuiteJson(theID);
     });
 	//
-	katana.templateAPI.load( thePage, null, null, 'title') ;
+	katana.templateAPI.load( thePage, null, null, 'suite') ;
 
 
 });

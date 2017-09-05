@@ -23,13 +23,13 @@ if (typeof jsonAllSuitePages === 'undefined') {
 }
 var jsonSuiteObject = []; 
 var jsonTestcases = [];			// for all Cases
-var activePageID = getRandomID();   // for the page ID 
+var activePageID = getRandomSuiteID();   // for the page ID 
 
 
 /// -------------------------------------------------------------------------------
 // 
 /// -------------------------------------------------------------------------------
-function getRandomID() {
+function getRandomSuiteID() {
   min = Math.ceil(1);
   max = Math.floor(2000);
   return Math.floor(Math.random() * (max - min)) + min;
@@ -48,7 +48,7 @@ function getRandomID() {
 /// -------------------------------------------------------------------------------
 function mapFullSuiteJson(myobjectID){
 	//console.log('Mapping data ... ' + typeof(sdata) + ' is [' + sdata + "] " + sdata.length);  // This jdata is a string ....
-	activePageID = getRandomID();                 
+	activePageID = getRandomSuiteID();                 
 	var sdata = katana.$activeTab.find("#listOfTestcasesForSuite").text();
 	katana.$activeTab.find("#listOfTestcasesForSuite").hide();
 	var jdata = sdata.replace(/'/g, '"');
@@ -255,7 +255,7 @@ function createCaseEditTable(xdata) {
 	
 	// Now create the buttons to save the data. 
 
-	var bid = "editTestcase-"+activePageID+"-id"+getRandomID();;
+	var bid = "editTestcase-"+activePageID+"-id"+getRandomSuiteID();;
 	items.push('<td><input type="button" class="btn" value="Save Changes" id="'+bid+'"/></td>');
 	katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 	$(document).on('click','#'+bid,function(  ) {
@@ -296,7 +296,7 @@ function createCasesTable(xdata) {
 		items.push('<td>'+oneCase['onError']['@action']+'</td>');
 		items.push('<td>'+oneCase['impact']['$']+'</td>');
 
-		var bid = "deleteTestcase-"+s+"-id"+getRandomID();
+		var bid = "deleteTestcase-"+s+"-id"+getRandomSuiteID();
 		//alert(bid);
 		items.push('<td><input type="button" class="btn-danger" value="Delete" id="'+bid+'"/></td>');
 		katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
@@ -305,7 +305,7 @@ function createCasesTable(xdata) {
 			var sid = parseInt(names[1]);
 			removeTestcase(sid,xdata);
 		});
-		bid = "editTestcase-"+s+"-id"+getRandomID();;
+		bid = "editTestcase-"+s+"-id"+getRandomSuiteID();;
 		items.push('<td><input type="button" class="btn" value="Edit" id="'+bid+'"/></td>');
 		katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 		$(document).on('click','#'+bid,function(  ) {
@@ -362,7 +362,7 @@ function createRequirementsTable(rdata){
 		var bid = "textRequirement-"+s+"-id"+activePageID;	
 		items.push('<td><input type="text" value="'+oneReq['$']+'" id="'+bid+'"/></td>');
 		
-		bid = "deleteRequirement-"+s+"-id"+getRandomID();
+		bid = "deleteRequirement-"+s+"-id"+getRandomSuiteID();
 		//alert(bid);
 		items.push('<td><input type="button" class="btn-danger" value="Delete" id="'+bid+'"/></td>');
 		katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
@@ -371,7 +371,7 @@ function createRequirementsTable(rdata){
 			var sid = parseInt(names[1]);
 			//removeTestcase(sid,xdata);
 		});
-		bid = "editRequirement-"+s+"-id"+getRandomID();;
+		bid = "editRequirement-"+s+"-id"+getRandomSuiteID();;
 		items.push('<td><input type="button" class="btn" value="Save" id="'+bid+'"/></td>');
 		katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 		$(document).on('click','#'+bid,function(  ) {
@@ -392,7 +392,7 @@ function createRequirementsTable(rdata){
 	items.push('</tbody>');
 	items.push('</table>');
 
-	bid = "addRequirement-"+getRandomID();
+	bid = "addRequirement-"+getRandomSuiteID();
 	items.push('<td><input type="button" class="btn" value="Add Requirement" id="'+bid+'"/></td>');
 	katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 	$(document).on('click','#'+bid,function( event  ) {
