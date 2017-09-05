@@ -8,10 +8,10 @@ var execution = {
 			- Has functions related to viewing or changing the layout in execution app.
 			*/
 
+
 			loadWs: function(){
 				console.log('loading warriorspace');
 				var dataToSend = JSON.stringify({'start_dir': katana.$activeTab.find('#execution_layout_container').attr('data-startdir')});
-
 				var url = 'execution/getWs';
 		    var dataType = 'json';
 				execution.layoutViewer.clearTree();
@@ -50,41 +50,93 @@ var execution = {
 				})
 			},
 
+
+			initConfig: function(){
+				console.log('init');
+				var execution_layout_container =  katana.$activeTab.find('#execution_layout_container');
+				var startdir = $(execution_layout_container).attr('data-startdir');
+				var dialog = katana.$activeTab.find('#configure_layout_dialog');
+				var ws = dialog.find('[name="warriorspace"]');
+
+				ws.val(startdir);
+				ws.attr('value', startdir);
+				return {'ws': ws, 'dialog': dialog};
+			},
+
 			configureLayout: function(){
-				console.log("configure_layout");
-				dialog = katana.$activeTab.find('#configure_layout_dialog');
-				dialog.show();
+				var elems = execution.layoutViewer.initConfig();
+				var ws = elems['ws'];
 
+				// on keyup of warriospace field, if field is empty disable confirm else enable confirm
+				ws.keyup(function(){execution.layoutViewer.enableDisableConfirm(ws.val().length ===0 ? 'disable' : 'enable');})
+				ws.change(function(){execution.layoutViewer.enableDisableConfirm(ws.val().length ===0 ? 'disable' : 'enable');})
 
+				// if value of ws is empty then disable submit buttom this is a safety measure
+				execution.layoutViewer.enableDisableConfirm(ws.val().length ===0 ? 'disable' : 'enable');
+				execution.layoutViewer.showHideDialog('show');
 			},
 
 			close_configuration_dialog: function(){
 				console.log('closing configuration dialog');
-				dialog = katana.$activeTab.find('#configure_layout_dialog');
-				dialog.hide();
+				execution.layoutViewer.showHideDialog('hide');
 			},
 
-			setStartDir: function(){
+			confirm: function(){
 				console.log("setting start dir");
 				var execution_layout_container = katana.$activeTab.find('#execution_layout_container');
 				var $inputs = $(katana.$activeTab.find('#configure_layout_form :input'));
-				console.log($inputs);
 				var values = {}
 				for (var i = 0; i < $inputs.length; i++ ){
 					values[$inputs[i].name] = $inputs[i].value;
 				}
-				console.log(values);
-
 				execution_layout_container.attr('data-startdir', values['warriorspace']);
-				dialog.hide();
+				execution.layoutViewer.showHideDialog('hide');
+				execution.layoutViewer.loadWs();
+			},
 
+			clear: function(){
+				console.log("clearing configuration");
+				execution.layoutViewer.enableDisableConfirm('disable');
+				var elems = execution.layoutViewer.initConfig();
+				var ws = elems['ws'];
+				execution.layoutViewer.enableDisableConfirm(ws.attr('value').length ===0 ? 'disable' : 'enable');
+			},
 
+			enableDisableConfirm: function(val){
+				var dialog = katana.$activeTab.find('#configure_layout_dialog');
+				var state = true ? val == 'disable' : false ;
+				btn = dialog.find('[name="configure_layout_confirm"]');
+				btn.prop('disabled', state);
+			},
+
+			showHideDialog: function(val){
+				var dialog = katana.$activeTab.find('#configure_layout_dialog');
+				var panel_container = katana.$activeTab.find('.execution.panel-container')
+				if (val == 'hide'){
+					panel_container.removeClass('is-blurred');
+					panel_container.css('pointer-events', 'auto');
+					dialog.hide();
+				}
+				else {
+					panel_container.addClass('is-blurred');
+					panel_container.css('pointer-events', 'none');
+					dialog.show();
+				}
 			},
 
 
 	},
 
 
+
+	selectionViewer: {
+
+		erase: function(){
+			ul_elem = katana.$activeTab.find('#execution_items');
+			ul_elem.empty();
+		},
+
+	},
 
 	add_selected: function(){
 		var arr = new Array();
@@ -104,14 +156,7 @@ var execution = {
 	},
 
 
-	createLayoutSort: function(){Sortable.create(layout_items, {
-		group: {
-			name: 'layout_items',
-			pull: 'clone',
-		},
-		sort: false,
-	})
-	},
+
 	//execution_items
 	createSelectionsSort: function(){Sortable.create(katana.$activeTab.find('#execution_items')[0], {
 		group: {

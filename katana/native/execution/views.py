@@ -85,10 +85,10 @@ class Execution(object):
         warrior_cmd = '{0} {1} {2}'.format('python', '/home/sradhakr/workspace/war-1359/warriorframework/warrior/Warrior', execution_file_list_string )
      
         args = warrior_cmd.split(" ")
-        stream_warrior_output(args)
+        #stream_warrior_output(args)
         print "warrior command is :", warrior_cmd
         
-        return StreamingHttpResponse(stream_warrior_output(args))
+        return StreamingHttpResponse(stream_warrior_output(args, warrior_cmd))
         
         
     def get_ws(self, request):
@@ -102,17 +102,20 @@ class Execution(object):
         return JsonResponse(layout)
 
 
-def stream_warrior_output(args):
+def stream_warrior_output(args, cmd):
      
     output = subprocess.Popen(args, stdout=subprocess.PIPE, universal_newlines=True)
-     
+    first_poll = True
+    
     while output.poll() is None:
         line = output.stdout.readline()
+        if first_poll:
+            line = "<strong>Executing Command: <em>{0} </em></strong><br><br>".format(cmd) + line
+            first_poll = False  
         # Yield this line to be used by streaming http response
         yield line + '<br>'
         if line.startswith('-I- DONE'):
             print "line starts with DONE"
             break 
-         
-    time.sleep(10)
+    #time.sleep(10)
     return

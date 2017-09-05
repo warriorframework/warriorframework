@@ -1,58 +1,68 @@
 <body>
   <div class="csrf-container">{% csrf_token %} </div>
-  <div class="tool-bar"></div>
-
-<div class="page-content-inner">
-    <div class="execution panel-container" auto-init="execution.layoutViewer.loadWs">
-        <div class="execution layout-panel">
-            <div class="execution panels-heading">
-                <button type="button" name="execution-execute-btn" id="execution-execute-btn" class="execution btn" katana-click="execution.add_selected">
-                    <i class="fa fa-hand-o-right"></i>
-                </button>
-                <button type="button" name="execution_load_layout_btn" id="execution_load_layout_btn" class="execution btn" katana-click="execution.layoutViewer.loadWs" >
-                      <i class="fa fa-refresh"></i>
-                </button>
-                <button type="button" name="execution_load_layout_btn" id="configure_layout_btn" class="execution btn"  katana-click="execution.layoutViewer.configureLayout">
-                      <i class="fa fa-edit"></i>
-                </button>
-                <label>Layouts</label>
-            </div>
-
-            <div id="execution_layout_container"  data-startdir="{{defaults.start_dir}}" >
-            </div>
-            <dialog  id="configure_layout_dialog" >
-              <form method="dialog" id="configure_layout_form">
-                <section>
-                  <div class="close fa fa-times" katana-click="execution.layoutViewer.close_configuration_dialog"></div>
-                  <div class="feild"><label>Warriorspace</label><input name="warriorspace" key="type" type="text" value="" placeholder="Enter the path to your warriorspace directory"></div>
-                  <div class="feild"><label>Select Layout Style</label><input name="select_layout_style" key="pass" type="text" value="" placeholder="Select your layout style"></div>
-                </section>
-                <menu>
-                  <button id="clear" type="reset">Clear</button>
-                  <button type="submit" katana-click="execution.layoutViewer.setStartDir">Confirm</button>
-                </menu>
-              </form>
-            </dialog>
-        </div>
+  <div class="page-content-inner">
+      <div class="execution panel-container" auto-init="execution.layoutViewer.loadWs">
+                <div class="execution layout-panel">
+                        <div class="execution panels-heading">
+                          <button type="button" name="execution-execute-btn" id="execution-execute-btn" class="execution btn" katana-click="execution.add_selected">
+                              <i class="fa fa-hand-o-right"></i>
+                          </button>
+                          <button type="button" name="execution_load_layout_btn" id="execution_load_layout_btn" class="execution btn" katana-click="execution.layoutViewer.loadWs" >
+                                <i class="fa fa-refresh"></i>
+                          </button>
+                          <button type="button" name="execution_load_layout_btn" id="configure_layout_btn" class="execution btn"  katana-click="execution.layoutViewer.configureLayout">
+                                <i class="fa fa-edit"></i>
+                          </button>
+                          <label>Layouts</label>
+                        </div>
+                        <div class="execution panels-body">
+                          <div id="execution_layout_container"  data-startdir="{{defaults.start_dir}}" ></div>
+                        </div>
+                </div>
 
 
-        <div class="execution panel-splitter"></div>
+                <div class="execution panel-splitter"></div>
+
+                <div class="execution selections-panel" id="execution-selections-panel">
+                        <div class="execution panels-heading" id="execution-selections-panel-heading">
+                              <button type="button" name="execution-execute-btn" id="execution-execute-btn" class="execution btn" katana-click="execution.resultsViewer.openExecution">
+                                    <i class="fa fa-play"></i>
+                              </button>
+                              <button type="button" name="execution-execute-btn" id="execution-execute-btn" class="execution btn" >
+                                    <i class="fa fa-edit"></i>
+                              </button>
+                              <button type="button" name="execution-execute-btn" id="execution-execute-btn" class="execution btn" katana-click="execution.selectionViewer.erase">
+                                    <i class="fa fa-eraser"></i>
+                              </button>
+
+                                <label>Selections</label>
+                        </div>
+                        <div class="execution panels-body">
+                          <ul id="execution_items" auto-init="execution.createSelectionsSort"></ul>
+                        </div>
+                </div>
+
+      </div>
 
 
-        <div class="execution selections-panel" id="execution-selections-panel">
-            <div class="execution panels-heading" id="execution-selections-panel-heading">
-              <button type="button" name="execution-execute-btn" id="execution-execute-btn" class="execution btn" >
-                    <i class="fa fa-navicon"></i>
-              </button>
-                <button type="button" name="execution-execute-btn" id="execution-execute-btn" class="execution btn" katana-click="execution.resultsViewer.openExecution">
-                      <i class="fa fa-play"></i>
-                </button>
-                <label>Selections</label>
-            </div>
-            <ul id="execution_items" class="execution selection-group-item" auto-init="execution.createSelectionsSort"></ul>
-        </div>
-    </div>
-</div>
 
-</div>
+  </div>
+
+  <dialog  id="configure_layout_dialog" class="execution dialog" >
+    <form method="dialog" id="configure_layout_form">
+      <section>
+        <!-- <div class="close" katana-click="execution.layoutViewer.close_configuration_dialog">&times</div> -->
+        <a href="#close" title="Close" class="execution dialog-close" katana-click="execution.layoutViewer.close_configuration_dialog">X</a>
+        <div class="feild"><label>Warriorspace</label><input name="warriorspace" key="type" type="text" value="" placeholder="Enter the path to your warriorspace directory" required></div>
+        <div class="feild"><label>Select Layout Style</label><input name="select_layout_style" key="pass" type="text" value="" placeholder="Select your layout style"></div>
+      </section>
+      <menu>
+        <button id="clear" type="reset" katana-click="execution.layoutViewer.clear">Reset</button>
+        <button name="configure_layout_confirm" type="submit" katana-click="execution.layoutViewer.confirm">Confirm</button>
+      </menu>
+    </form>
+  </dialog>
+
+
+
 </body>
