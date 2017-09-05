@@ -369,8 +369,9 @@ class WarriorCli(object):
                     else:
                         unique_log_verify_list[i] = \
                          Utils.data_Utils.get_session_id(temp_list[0])
-                    datarep_obj = self.get_object_from_datarepository(
-                     unique_log_verify_list[i])
+                    datarep_obj = \
+                        Utils.data_Utils.get_object_from_datarepository(
+                         unique_log_verify_list[i])
                     if datarep_obj is False:
                         print_info("{0} does not exist in data repository"
                                    .format(unique_log_verify_list[i]))
