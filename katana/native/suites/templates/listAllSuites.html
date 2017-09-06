@@ -30,44 +30,40 @@ Hello
 
 	
 		<div id="mySuite">
-	
-		{% for listing in myfiles %}
-		<br>
 
-			
-			{% for kdr, vdr in listing.items %}
-			
-			<table >
-			{% if kdr == "dirpath" %}
-				<tr><th>{{ vdr }}</th> </tr>
-			{% endif %}
-			{% endfor %}
-
-
-			{% for kdr, vdr in listing.items %}
-			{% if kdr == 'files' %}
-				{% for xy in vdr %}
-				<tr><td>
-				<div class="linkToSuite blue" href="./suites/editSuite/?fname={{xy.fullname}}" fname="{{xy.fullname}}">{{ xy.displayName }}
-				</div>
-					</td>
-				</tr>
-				{% endfor %}
-			{% endif %}	
-			
-			{% endfor %}
-		</table>
-	
-		
-		{% endfor %}
 
 
 		</div>
-
+<div id="mySuiteTree"></div>
+<div id="mmm" >{{treejs|jsonify}}</div>
 
 </body>
 
 <script> 
+var sdata= katana.$activeTab.find('#mmm').text();
+console.log(sdata);
+var jdata = { 'core' : { 'data' : [ JSON.parse(sdata)]}};
+
+//
+katana.$activeTab.find('#mySuiteTree').on("select_node.jstree", function (e, data) { 
+      var thePage = data.node.li_attr['data-path'];
+      console.log(thePage);
+      katana.$view.one('tabAdded', function(){
+      mapFullSuiteJson(thePage);
+  });
+  var xref="./suites/editSuite/?fname=" + thePage; 
+  katana.templateAPI.load(xref, null, null, 'Suite') ;
+
+
+});
+
+//
+katana.$activeTab.find('#mySuiteTree').jstree(jdata); 
+
+
+
+
+katana.$activeTab.find('#mmm').hide();
 
 $(".linkToSuite").click(function() { 
 

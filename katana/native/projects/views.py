@@ -71,6 +71,7 @@ def index(request):
 
 	tt = navigator.get_dir_tree_json(fpath)
 	tt['state']= { 'opened': True };
+	print tt
 	context = { 
 		'title' : 'List of Projects',	
 		'docSpec': 'projectSpec',

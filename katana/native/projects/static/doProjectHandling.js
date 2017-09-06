@@ -381,7 +381,6 @@ function createSuitesTable(xdata) {
 		}
 		console.log(oneSuite);
 		fillSuiteDefaults(s,xdata);
-		
 		console.log(oneSuite);
 		console.log(oneSuite['path']);
 		

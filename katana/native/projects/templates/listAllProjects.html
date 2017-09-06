@@ -31,7 +31,7 @@
 
 function startNewProject() {
   var xref="./projects/editProject/fname=NEW" ;
-  katana.templateAPI.load(xref, null, null, 'title') ;
+  katana.templateAPI.load(xref, null, null, 'NEW') ;
 }
 
 
@@ -49,7 +49,7 @@ katana.$activeTab.find('#myProjectTree').on("select_node.jstree", function (e, d
   //
 
   var xref="./projects/editProject/?fname=" + thePage; 
-  katana.templateAPI.load(xref, null, null, 'title') ;
+  katana.templateAPI.load(xref, null, null, 'Edit Project') ;
 
 
 });

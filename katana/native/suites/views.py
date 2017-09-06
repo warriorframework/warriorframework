@@ -58,29 +58,39 @@ def index(request):
 	
 
 	myfiles = []
+	jtree = { 'text': "Suites",  'state': { 'opened': True }, 'children' : []}
+
+	#jtree = [] 
+	jdata = jtree['children']
 	dirs = os.listdir(fpath);
 	k = 0
 	for dr in dirs:
 		dirpath = fpath + os.sep + dr
 
 		if os.path.isdir(dirpath):
-			
+			jdata.append({ 'text': dirpath ,  "icon" : "jstree-file", 'state': { 'opened': True }, 'children' : []  })
+	
 			myfiles.append({ 'dirpath': dirpath, 'files' : [] })
 			files = os.listdir(dirpath)
-			print dirpath
-			print files
+			#print dirpath
+			#print files
 			for fn in files: 
 				fullname = dirpath + os.sep + fn
 				if os.path.isfile(fullname) and os.path.splitext(fullname)[1] == ".xml":
 					myfiles[k]['files'].append( { "filename": fn, "fullname" : fullname, 'displayName': os.path.split(fullname)[1]})
+					tt = { 'text': os.path.split(fullname)[1], 
+					       'li_attr': { 'data-path': fullname }, 
+					       'icon' : 'jstree-file'}
+					jdata[k]['children'].append(tt)
 		k = k + 1
-	print myfiles
+	print jtree
 
 
 	context = { 
 		'title' : 'List of Suites',	
 		'docSpec': 'SuiteSpec',
-		'myfiles': myfiles	
+		'myfiles': myfiles, 
+		'treejs'  : jtree 
 	}
 	context.update(csrf(request))
 	return HttpResponse(template.render(context, request))
