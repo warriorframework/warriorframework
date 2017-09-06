@@ -57,13 +57,17 @@ h1 {
     /* border-top: solid 7px #404040; */
 }
 .button {
-    padding: 5px;
-    display: inline-block;
-    background: grey;
-    color: white;
-    border-radius: 2px;
+  padding: 2px 5px;
+  display: inline-block;
+  color: #333;
+  border-radius: 2px;
+  border: solid 1px #dedede;
+  margin: 0 3px;
+  cursor: pointer;
 }
-
+.button:hover {
+    background: #eaeaea;
+}
 .header h1 {
     font-family: serif;
     color: #404040;
@@ -109,9 +113,50 @@ h1 {
     color: #333;
     background: white;
     box-sizing: border-box;
-    border-bottom: solid 1px grey;
+    border-bottom: solid 1px #d8d8d8;
+}
+.dialog-container {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 99999;
+}
+.dialog {
+  position: absolute;
+  height: 200px;
+  width: 350px;
+  background: white;
+  z-index: 9999999;
+  top: calc(50% - 200px);
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.28);
+  -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.28);
+  box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.28);
+  animation: popup-in .3s ease;
 }
 
+.dialog .page-content {
+    width: 100%;
+    top: 40px;
+    height: calc(100% - 80px);
+    padding: 10px;
+}
+
+.dialog .button-bar {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    text-align: right;
+    padding: 4px;
+}
+
+.button:hover {
+    background: #eaeaea;
+}
 span.close {
     right: 0;
     position: absolute;
@@ -413,15 +458,6 @@ span.close:before {content: 'X';}
     background: #03a9f4;
 }
 
-.row {
-    width: 49%;
-    display: inline-block;
-    vertical-align: top;
-}
-
-.page-content-inner > .row {
-    width: 100%;
-}
 
 input {
   width: 100%;
@@ -435,7 +471,7 @@ input {
 input:focus {
     background: #efefef;
 }
-.feild {
+.field {
     padding: 5px 0;
 }
 
@@ -796,20 +832,7 @@ li.create.fa.fa-plus {
     top: 25px;
     left: 65px;
 }
-.row.no-gutter {
-    width: 100%;
-}
 
-.row.no-gutter .row {
-    width: 100%;
-}
-.col-sm-2 {
-    flex-grow: 1;
-}
-
-.col-sm-4 {
-    flex-grow: 2;
-}
 
 .table {
     width: 100%;
@@ -927,7 +950,7 @@ div#launchpad.page.hidden .tab {
   width: 44%;
   padding-bottom: 44%;
   border-radius: 10px;
-  margin: 3%;
+  margin: calc(3% - 2px);
 }
 
 div#launchpad.page.hidden .tab i {
@@ -952,13 +975,13 @@ div#launchpad.page.hidden .tabs {
 .fileSystem > .file:hover, .fileSystem > .folder:hover {
     background: rgba(239, 239, 239, 0.94) !important;
 }
-.feild-block {
+.field-block {
     display: block;
     position: relative;
     padding: 10px;
 }
 
-.feild-block .title {
+.field-block .title {
   position: relative;
   border: none;
   font-size: 22px;
@@ -1060,7 +1083,7 @@ div#launchpad.page.hidden .tabs {
 .hidden{
   display: none;
 }
-.feild-block .sub-title {
+.field-block .sub-title {
     position: absolute;
     top: 40px;
     left: 11px;
@@ -1076,8 +1099,17 @@ div#launchpad.page.hidden .tabs {
 }
 .flex-rows {
     display: flex;
+    height: 100%;
 }
-
+.field-block .title > input {
+    position: relative;
+    border: none;
+    font-size: 22px;
+    font-weight: 300;
+    height: 39px;
+    padding: 0;
+    background-color: transparent;
+}
 .flex-rows > div {
     min-width: 300px;
     flex-grow: 1;
@@ -1086,7 +1118,7 @@ div#launchpad.page.hidden .tabs {
     overflow: hidden;
     padding-right: 0px;
 }
-.feild-block .relative-tool-bar {
+.field-block .relative-tool-bar {
     position: absolute;
     top: 0;
     left: 0;
@@ -1101,18 +1133,18 @@ div#launchpad.page.hidden .tabs {
     text-align: right;
 }
 
-.feild-block .relative-tool-bar + .title {
+.field-block .relative-tool-bar + .title {
     margin-bottom: 0;
     padding-bottom: 0px;
     padding-top: 12px;
 }
 
-.feild-block .title + .relative-tool-bar {
+.field-block .title + .relative-tool-bar {
     height: 60px;
     /* padding: 0 10px; */
 }
 
-.feild-block .relative-tool-bar i {
+.field-block .relative-tool-bar i {
     font-size: 18px;
     line-height: 30px;
     margin: 0;
@@ -1122,7 +1154,7 @@ div#launchpad.page.hidden .tabs {
     text-align: center;
 }
 
-.feild-block .title + .relative-tool-bar + .to-scroll {
+.field-block .title + .relative-tool-bar + .to-scroll {
     height: calc( 100% - 42px );
     padding-top: 10px;
     padding-right: 10px;
@@ -1135,7 +1167,7 @@ i.active {
     color: #03a9f4 !important;
     transform: none !important;
 }
-.feild-block .relative-tool-bar i:hover {
+.field-block .relative-tool-bar i:hover {
     color: #03a9f4 !important;
 }
 
@@ -1389,14 +1421,6 @@ position: absolute;
 .htmlResults td:not([rowspan]){font-size: 0;position: absolute;display: none;right: 0;}
 
 .htmlResults td[rowspan]:last-child {}
-
-
-
-* {
-    box-sizing: border-box;
-    font-family: sans-serif;
-    -webkit-font-smoothing: antialiased;
-}
 
 td {}
 
@@ -1820,20 +1844,20 @@ td {}
       text-overflow: ellipsis;
       white-space: nowrap;
 }
-.pocket-feilds .feild {
-    padding-left: 30px;
+.pocket-fields .field {
+    padding-left: 0px;
 }
 
-.pocket-feilds .feild:first-child {
+.pocket-fields .field:first-child {
     padding-left: 0;
 }
-.pocket-feilds .close {
+.pocket-fields .close {
     position: absolute;
     top: 5px;
     right: 10px;
 }
 
-.pocket-feilds {
+.pocket-fields {
     position: relative;
     background: #ffffff;
     padding: 7px;
@@ -1841,6 +1865,7 @@ td {}
     margin-bottom: 10px;
     margin-top: 5px;
 }
+
 
 
 
@@ -2037,4 +2062,53 @@ td {}
 .is-blurred {
   filter: blur(3px);
   -webkit-filter: blur(3px);
+}
+
+.page-content-inner:empty:before {
+  content: '';
+  border: 8px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 8px solid #dc3545;
+  width: 80px;
+  height: 80px;
+  -webkit-animation: spin 2s ease-in-out infinite;
+  animation: spin 2s ease-in-out infinite;
+  position: absolute;
+  top: 40%;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+}
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
+
+/*bootstrap overrides*/
+label {
+    margin-bottom: 0;
+}
+
+button, input, optgroup, select, textarea {
+    font-size: 12px;
+    line-height: initial;
+}
+
+.header h1 {
+    font-size: 30px;
+    line-height: inherit;
+    font-weight: 600;
+}
+
+.close {float: none;font-size: inherit;font-weight: inherit;line-height: inherit;color: inherit;text-shadow: none;opacity: 1;}
+
+.tool-bar .button {
+    padding: 2px;
 }

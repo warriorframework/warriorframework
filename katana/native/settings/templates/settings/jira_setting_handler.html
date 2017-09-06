@@ -3,17 +3,17 @@
 <div class="flex-rows to-save" auto-init="settings.emailSettings.init" post-url="settings/jira_setting_handler">
   <div class="title">Jira Settings</div>
   {% for system in jira.jira.system %}
-    <div class="feild-block">
+    <div class="field-block">
       {% for k, v in system.items%}
         {% if k == '@name' %}
-          <div key="{{ k }}" class="title">{{ v }}</div>
+          <div class="title"><input key="{{ k }}" type="text" value="{{ v }}" placeholder="Title"></div>
         {% endif %}
       {% endfor %}
       <div class="relative-tool-bar"><i title="@default" key="@default" katana-click="katana.toggleActive" class="bool fa fa-toggle-on"></i><i katana-click="katana.toggleActive" key="append_log" title="append_log" class="bool fa fa-toggle-on"></i><i katana-click="settings.jira.addIssueType" title="Add Issue Type" class="fa fa-plus"></i><i katana-click="settings.jira.addBlock" title="Add Block" class="fa fa-plus-circle"></i><i katana-click="settings.jira.deleteBlock" title="Delete Block" class="fa fa-times"></i></div>
       <div class="to-scroll">
         {% for k, v in system.items%}
           {% if k != '@name' %}
-            <div class="feild"><label>{{ k }}</label><input auto-init="settings.jira.{{ k }}" key="{{ k }}" type="text" {% if v  %} value="{{ v }}" {% endif %} placeholder="{{ k }}"></div>
+            <div class="field"><label>{{ k }}</label><input auto-init="settings.jira.{{ k }}" key="{{ k }}" type="text" {% if v  %} value="{{ v }}" {% endif %} placeholder="{{ k }}"></div>
           {% endif %}
         {% endfor %}
       </div>
@@ -21,13 +21,13 @@
   {% endfor %}
   <div class="csrf-container">{% csrf_token %}</div>
   <script type="text/template" id="issue_type">
-    <div class="pocket-feilds" key="issue_type">
-      <div class="feild"><label>type</label><input key="type" type="text" value="" placeholder=""></div>
-      <div class="feild"><label>pass</label><input key="pass" type="text" value="" placeholder=""></div>
-      <div class="feild"><label>fail</label><input key="fail" type="text" value="" placeholder=""></div>
-      <div class="feild"><label>error</label><input key="error" type="text" value="" placeholder=""></div>
-      <div class="feild"><label>skip</label><input key="skip" type="text" value="" placeholder=""></div>
-      <div class="close fa fa-times" katana-click="katana.closePocketFeilds"></div>
+    <div class="pocket-fields" key="issue_type">
+      <div class="field"><label>type</label><input key="type" type="text" value="" placeholder=""></div>
+      <div class="field"><label>pass</label><input key="pass" type="text" value="" placeholder=""></div>
+      <div class="field"><label>fail</label><input key="fail" type="text" value="" placeholder=""></div>
+      <div class="field"><label>error</label><input key="error" type="text" value="" placeholder=""></div>
+      <div class="field"><label>skip</label><input key="skip" type="text" value="" placeholder=""></div>
+      <div class="close fa fa-times" katana-click="katana.closePocketFields"></div>
     </div>
   </script>
 </div>

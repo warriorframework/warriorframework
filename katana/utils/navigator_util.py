@@ -27,7 +27,6 @@ class Navigator(object):
         """returns back the parent of given_dir and allows a user to run multipule times"""
         pass
 
-
     def get_dir_tree_json(self, start_dir_path, dir_icon=None, file_icon='jstree-file', fl=False):
         """
         Takes an absolute path to a directory(start_dir_path)  as input and creates a
@@ -35,7 +34,9 @@ class Navigator(object):
         
         This json tree can be consumed as it is by the jstree library hence the default icons
         are mapped to jstree icons.
-        
+
+        By default the first node in the tree will be opened
+
         
         Eg of how the json tree will look like 
         { 
@@ -79,7 +80,3 @@ class Navigator(object):
         else:
             layout['icon'] = file_icon
         return layout
-    
-    
-    
-    

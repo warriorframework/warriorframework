@@ -1,7 +1,7 @@
 var settings = {
 
 	closeSetting: function(){
-		katana.closeSubApp();
+		katana.openDialog( 'Are you sure you would like to close this page?', 'Confirm', true, katana.closeSubApp );
 	},
 
 	emailSettings: {
@@ -23,9 +23,9 @@ var settings = {
 
 	jira: {
 		boolHandler: function( $elem ){
-			var button = $elem.closest('.feild-block').find('.relative-tool-bar [title="' + $elem.attr('key') + '"]');
+			var button = $elem.closest('.field-block').find('.relative-tool-bar [title="' + $elem.attr('key') + '"]');
 			$elem.val() == 'true' && button.addClass('active');
-			$elem.closest('.feild').remove();
+			$elem.closest('.field').remove();
 		},
 
 		default: function(){
@@ -40,11 +40,11 @@ var settings = {
 			var $elem = this;
 			var data = JSON.parse($elem.val());
 			data = Array.isArray(data) ? data : [ data ];
-			var feildContainer = $elem.closest('.feild-block > .to-scroll');
+			var fieldContainer = $elem.closest('.field-block > .to-scroll');
 			$.each( data, function(){
 			    settings.jira.buildSubForms( this, $elem );
 			});
-			$elem.closest('.feild').remove();
+			$elem.closest('.field').remove();
 		},
 
 		buildSubForms: function( objs, $elem ){
@@ -57,11 +57,20 @@ var settings = {
 		addIssueType: function( $elem ){
 			$elem = $elem ? $elem : this;
 			var $template = $($elem.closest('.to-save').find('#issue_type').html());
-			var feildContainer = $elem.closest('.feild-block').find('.to-scroll');
-			return $template.clone().appendTo(feildContainer);
+			var fieldContainer = $elem.closest('.field-block').find('.to-scroll');
+			return $template.clone().appendTo(fieldContainer);
 
 		},
 
+		deleteBlock: function(){
+			this.closest('.field-block').remove();
+		},
+
+		addBlock: function(){
+			var $elem = this;
+			var feildBlock = $elem.closest('.field-block');
+			feildBlock.clone().insertAfter( feildBlock );
+		}
 	},
 
 	save: function(){
