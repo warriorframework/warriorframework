@@ -482,6 +482,43 @@ var katana = {
 			 });
 		 },
 
+		 get: function( url, csrf, toSend, dataType, successCallBack ){
+
+			 // intialize values for url, csrf, dataType, toSend
+			 var $elem = this ? this : katana.$activeTab;
+			 var toSend = toSend ? toSend : $elem.find('input:not([name="csrfmiddlewaretoken"])').serializeArray();
+			 var url = url ? url : $elem.attr('get-url');
+			 var csrf = csrf ? csrf : $elem.find('.csrf-container > input').val();
+			 var dataType = dataType ? dataType : 'text'
+
+			 // setup csrf token in xhr header
+			 $.ajaxSetup({
+			    beforeSend: function(xhr, settings) {
+		        if (!this.crossDomain)
+		        	xhr.setRequestHeader("X-CSRFToken", csrf);
+			    }
+				});
+
+			 // make an ajax get call using the intialized variables,
+			 // on sucess the data is sent to success cal back function if one was provided
+			 $.ajax({
+				 url: url,
+				 type: "GET",
+				 dataType: dataType,
+				 data: { data: toSend },
+				 success: function(data){
+					 console.log('success');
+					 successCallBack && successCallBack(data);
+				 },
+				 error: function(xhr, textStatus, error){
+					 console.log('some error');
+			     console.log(xhr.statusText);
+			     console.log(textStatus);
+			     console.log(error);
+				 },
+			});
+		 },
+		 
 		 trigger: function( url, callBack ){
 			 var $elem = this ? this : katana.$activeTab;
 			 var url = url ? url : $elem.attr('trigger-url');
