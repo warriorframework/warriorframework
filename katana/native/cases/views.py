@@ -40,38 +40,43 @@ navigator = Navigator();
 def index(request):
 	path_to_testcases = navigator.get_warrior_dir() + "/../wftests/warrior_tests/"
 	template = loader.get_template("listAllCases.html")
-	#filename = request.GET.get('fname')
-	# files = next(os.walk('/home/khusain/Projects/xml-edit/warriorframework/wftests/warrior_tests/testcases'))[2]
 	fpath = path_to_testcases + 'testcases';
 	#files = [ os.path.join(fpath,x) for x in (os.walk(fpath))[2]]
 
-	files = glob.glob(fpath+"*/*/*.xml")+glob.glob(fpath+"*/*/*/*.xml")
+	jtree = navigator.get_dir_tree_json(fpath)
+	jtree['state']= { 'opened': True };
 
-	allfiles = {}
-	files = glob.glob(fpath+"*/*/*.xml")
-	for fn in files: 
-		dn,fpb = os.path.split(fn)
-		fpf = os.path.split(dn)[1]
-		if not allfiles.has_key(fpf): allfiles[fpf] = []
-		allfiles[fpf].append( { 'full': fn, 'display': fpb})
-	files = glob.glob(fpath+"*/*/*/*.xml")
-	for fn in files: 
-		dn,fpb = os.path.split(fn)
-		fpf = os.path.split(dn)[1]
-		if not allfiles.has_key(fpf): allfiles[fpf] = []
-		allfiles[fpf].append( { 'full': fn, 'display': fpb})
 
-	alldirs = { } 
-	for fn in allfiles.keys():
-		dn = os.path.split(fn)[1]
-		alldirs[dn] = fn
+	# files = glob.glob(fpath+"*/*/*.xml")+glob.glob(fpath+"*/*/*/*.xml")
+	# allfiles = {}
+	# files = glob.glob(fpath+"*/*/*.xml")
+	
+	# for fn in files: 
+	# 	dn,fpb = os.path.split(fn)
+	# 	fpf = os.path.split(dn)[1]
+	# 	if not allfiles.has_key(fpf): allfiles[fpf] = []
+	# 	allfiles[fpf].append( { 'full': fn, 'display': fpb})
+		
+	# files = glob.glob(fpath+"*/*/*/*.xml")
+	# for fn in files: 
+	# 	dn,fpb = os.path.split(fn)
+	# 	fpf = os.path.split(dn)[1]
+	# 	if not allfiles.has_key(fpf): allfiles[fpf] = []
+	# 	allfiles[fpf].append( { 'full': fn, 'display': fpb})
+
+	# alldirs = { } 
+	# for fn in allfiles.keys():
+	# 	dn = os.path.split(fn)[1]
+	# 	alldirs[dn] = fn
 
 	context = { 
 		'title' : 'List of Cases',	
-		'docSpec': 'caseSpec',
-		'listOfFiles': files	,
-		'displayList' : allfiles, 
-		'displayDirs' : alldirs
+		'dirpath' : path_to_testcases,
+		#'docSpec': 'caseSpec',
+		#'listOfFiles': files	,
+		# 'displayList' : allfiles, 
+		# 'displayDirs' : alldirs,
+		'treejs': jtree,
 	}
 	return HttpResponse(template.render(context, request))
 

@@ -9,7 +9,7 @@ Date:
 The functions in this module are designed specifically for handling Suite XML files
 for the warrior framework. 
 
-It is expected to work with the editSuite.html file and the calls to editSuite in 
+It is expected to work with the editCase.html file and the calls in 
 the views.py python for Django. 
 /// -------------------------------------------------------------------------------
 

@@ -15,9 +15,7 @@
 
 
 <h2>Details</h2>
-<div class="class="form-group col-md-8">
-
-
+<div class="form-group col-md-6">
 			<div class="field">
 				<label >Name*:</label>
 				<input type="text" id="suiteName"  value="{{suiteName}}"/>
@@ -63,38 +61,30 @@
 				<label >InputDataFile:</label>
 				<input type="text" id="suiteResults"  value="{{suiteInputDataFile}}"/>
 			</div>
-
-</div>
-
-<div>
-	<h2>Test Cases For Suite</h2>
 	
 </div>
-<div class="row">
-		<div id="tableOfTestcasesForSuite"  class="col-md-6" />
-			<div class="col-md-6" id="tableOfTestcasesForSuite" > </div>
-</div>
-	<div>
-		<h2>Edit Test Suite</h2>
-	</div>
-	    <div class="btn-group col-md-8" role="group">   
-			<button id="addSuite" class="btn btn-primary" onclick="addCaseToSuite()">Add</button>
-			<button class="btn btn-primary" onclick="start()">Refresh</button>
-			<button class="btn btn-primary" onclick="openAllSuites()">Show All</button>
-			<button class="btn btn-success" onclick="mapUiToSuiteJson()">Save</button>
+<div class="col-md-12"></div>
+		<div class="row">
+			<div id="tableOfTestcasesForSuite" class="col-md-6" ></div>
+		    <div class="btn-group col-md-3" role="group">   
+				<button id="addSuite" class="btn btn-primary" onclick="addCaseToSuite()">Add Case To Suite</button>
+				<button class="btn btn-primary" onclick="start()">Discard Changes</button>
+				<button class="btn btn-success" onclick="mapUiToSuiteJson()">Save Changes to Disk</button>
+			</div>
+			<div id="editTestcaseEntry"        class="col-md-3" ></div>
 		</div>
-	</div>
-	<div id="editTestcaseEntry" class="form-group col-md-8" />
-
-<div class="row">
-
-	<div id="tableOfTestRequirements"  class="col-md-6" />
-	<div class="col-md-6"><label id="fileContents"></label><div>
-
+		<div class="row">
+		<div id="tableOfTestRequirements"  class="col-md-3" ></div>	
+		</div>
+		
 </div>
-Editing:{{ myfile }}
+		
 <div>
-	<input class="col-md-12 text-right" type="text" id="my_file_to_save" name="my_file_to_save" value="{{myfile}}"/>
+	<input class="col-md-4 text-right" type="text" id="my_file_to_save" name="my_file_to_save" value="{{savefilename}}"/>
 </div>	
+	<div id="tableOfFileContents"  class="col-md-6">fileContents</label></div>
 	<div id="listOfTestcasesForSuite">{{fulljson|jsonify}}</div>
+	<div id="savefilepath">{{savefilepath}}</div>
+	Editing:{{ myfile }}
+
 </body>

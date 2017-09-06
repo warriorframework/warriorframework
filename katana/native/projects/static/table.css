@@ -2,15 +2,18 @@ table {
   border-collapse: collapse;
   width: 100%;
 }
+tbody { 
+  overflow-y: scroll;
+ }
+
 th, td {
   padding: 0.25rem;
   text-align: left;
   border: 1px solid #ccc;
-  overflow: hidden;
   table-layout:fixed;
-  width:20px;
-  overflow:hidden;
+  /* width:20px; */
 }
 tbody tr:nth-child(odd) {
-  background: #eee;
+  background: #aaa;
+
 }

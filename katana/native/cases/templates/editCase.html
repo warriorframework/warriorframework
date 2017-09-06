@@ -94,11 +94,12 @@
 <div class="container-fluid">
 
    <h2>Steps</h2>
-  	 <div id="tableOfTestStepsForCase"  class="col-md-12" />
-     <div id="sourceFileText" color="red" class="col-3" >  FILL </div>    
-     <div id="listOfTestStepsForCase"  > {{fulljson|jsonify}} </div> 
-
+  	 <div id="tableOfTestStepsForCase"  class="col-md-6" />
+	<div id="editTestCaseEntry" class="form-group col-md-6" />
+     <div id="sourceFileText" color="red" class="col-md-6" >  FILL </div>    
+   
 </div>
+<div id="listOfTestStepsForCase"  > {{fulljson|jsonify}} </div> 
 
 <div class="btn-group" role="group">   
 		<button id="addStep" class="btn btn-primary" onclick="addStepToCase()">Add</button>

@@ -111,7 +111,6 @@ def editProject(request):
 	xml_r['Project']['filename'] = OrderedDict([('$', filename)]);
 
 	if filename != 'NEW':
-
 		xlines = open(filename.strip()).read()
 		xml_d = bf.data(fromstring(xlines)); # xmltodict.parse(fd1.read());
 
@@ -127,9 +126,13 @@ def editProject(request):
 			xml_r['Project']['Testsuites'] = copy.copy(xml_d['Project']['Testsuites']);
 		except:
 			xml_r["Project"]["Testsuites"] = []
+	else:
+		filename = "new.xml"
 
-
+ 
 	context = { 
+		'savefilename': os.path.split(filename)[1], 
+		'savefilepath': path_to_testcases,
 		'myfile': filename,
 		'docSpec': 'projectSpec',
 		'projectName': xml_r["Project"]["Details"]["Name"]["$"],

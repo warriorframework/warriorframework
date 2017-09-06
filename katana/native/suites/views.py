@@ -66,14 +66,10 @@ def index(request):
 	k = 0
 	for dr in dirs:
 		dirpath = fpath + os.sep + dr
-
 		if os.path.isdir(dirpath):
 			jdata.append({ 'text': dirpath ,  "icon" : "jstree-file", 'state': { 'opened': True }, 'children' : []  })
-	
 			myfiles.append({ 'dirpath': dirpath, 'files' : [] })
 			files = os.listdir(dirpath)
-			#print dirpath
-			#print files
 			for fn in files: 
 				fullname = dirpath + os.sep + fn
 				if os.path.isfile(fullname) and os.path.splitext(fullname)[1] == ".xml":
@@ -90,6 +86,7 @@ def index(request):
 		'title' : 'List of Suites',	
 		'docSpec': 'SuiteSpec',
 		'myfiles': myfiles, 
+		'basedir': path_to_testcases,
 		'treejs'  : jtree 
 	}
 	context.update(csrf(request))

@@ -42,7 +42,7 @@
 		items.push('</select>');
 
 
-		items.push('<br><span class="label label-primary">Run mode</span><br>');
+		items.push('<label class="col-md-2 text-right" >Run mode:</label>');
 		items.push('<label class="col-md-2 text-right" >runmode-at-type:</label>');
 		items.push('<input type="text" class="col-md-4 text-right" id="'+s+'-runmode-at-type" value="'+oneSuite['runmode']['@type']+'" />');
 		items.push('<label class="col-md-2 text-right" >runmode-at-value:</label>');
@@ -52,7 +52,6 @@
 		items.push('<option value="RUP">RUP</option>'); 
 		items.push('</select>');
 
-		items.push('<br><span class="label label-primary">Retry</span><br>');
 		items.push('<label class="col-md-2 text-right" >retry-at-type:</label>');
 		items.push('<input type="text" class="col-md-4 text-right" id="'+s+'-retry-at-type" value="'+oneSuite['retry']['@type']+'" />');
 		items.push('<label class="col-md-2 text-right" >retry-at-Condition:</label>');

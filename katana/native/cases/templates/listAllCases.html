@@ -29,22 +29,35 @@
 
 
 	<h2>{{title}}</h2>
-	{% for xd,fns in displayList.items %}
-			<table><tr><th>{{xd}}/</th></tr>
-			{% for xx in fns %}
-				<tr><td>
-				<div class="linkToCase" href="./cases/editCase/?fname={{xx.full}}">{{ xx.display }}
-				
-				</div> </td></tr>
-			{% endfor %}
-			<table>
-	{% endfor %}
+
 	
 
-
+<div id="myCaseTree"></div>
+<div id="mmm" >{{treejs|jsonify}}</div>
 
 
 <script> 
+var sdata= katana.$activeTab.find('#mmm').text();
+console.log(sdata);
+var jdata = { 'core' : { 'data' : [ JSON.parse(sdata)]}};
+
+//
+katana.$activeTab.find('#myCaseTree').on("select_node.jstree", function (e, data) { 
+      var thePage = data.node.li_attr['data-path'];
+      console.log(thePage);
+      katana.$view.one('tabAdded', function(){
+     mapFullCaseJson(thePage);
+  });
+  var xref="./cases/editCase/?fname=" + thePage; 
+  katana.templateAPI.load(xref, null, null, 'Suite') ;
+});
+
+//
+
+katana.$activeTab.find('#myCaseTree').jstree(jdata); 
+katana.$activeTab.find('#mmm').hide();
+
+
 $(".linkToCase").click(function() { 
 
 

@@ -249,7 +249,7 @@ function mapUiToProjectJson() {
 	    data : { 
 	    	'json': JSON.stringify(topNode),
 	    	'Project': ns,
-	    	'filetosave': $('#my_file_to_save').val()
+	    	'filetosave': katana.$activeTab.find('#filesavepath').text() + "/" + $('#my_file_to_save').val()
 	    	},
 	    headers: {'X-CSRFToken':csrftoken},
     
@@ -277,7 +277,7 @@ function createSuiteEditTable(xdata) {
 	items.push('<label >Path*:</label>');
 	items.push('<input type="text" id="suitePath'+activePageID+'" value=""/>');
 	items.push('</div>');
-	items.push('<div class="field">');
+	items.push('<div class="field col-md-3">');
 	items.push('<label class=" text-right" >ExecType:</label>');
 	items.push('<select type="text" class="text-right" id="Execute-at-ExecType'+activePageID+'"" value="" >');
 	items.push('<option value="If">If</option> ');
@@ -319,7 +319,7 @@ function createSuiteEditTable(xdata) {
 	items.push('</div>');
 		
 	items.push('	<div class="field col-md-3">');
-	items.push('	<br><span class="label label-primary">Run mode</span><br>');
+	items.push('	<label class="text-right" >Run mode:</label>');
 	items.push('	<label class="text-right" >runmode type:</label>');
 	items.push('	<input type="text" class="text-right" id="runmode-at-type"'+activePageID + ' value="" />');
 	items.push('	<label class="text-right" >runmode value:</label>');
@@ -353,7 +353,7 @@ function createSuiteEditTable(xdata) {
 		});
 
 	katana.$activeTab.find("#editTestSuiteEntry").html( items.join(""));
-	
+	//katana.$activeTab.find("#editTestSuiteEntry").setAttribute( "style","overflow-y:auto");
 }
 
 
@@ -397,15 +397,16 @@ function createSuitesTable(xdata) {
 
 		var bid = "deleteTestSuite-"+s+"-id"+getRandomID();
 		//alert(bid);
-		items.push('<td><input type="button" class="btn-danger" value="Delete" id="'+bid+'"/></td>');
+		items.push('<td><input type="button" title="Delete" class="ui-icon ui-icon-trash ui-button-icon-only" value="X" id="'+bid+'"/>');
 		katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 		$(document).on('click','#'+bid,function( ) {
+
 			var names = this.id.split('-');
 			var sid = parseInt(names[1]);
 			removeTestSuite(sid,xdata);
 		});
 		bid = "editTestSuite-"+s+"-id"+getRandomID();;
-		items.push('<td><input type="button" class="btn" value="Edit" id="'+bid+'"/></td>');
+		items.push('<input type="button" title="Edit" class="ui-icon ui-icon-pencil ui-button-icon-only" value="Edit" id="'+bid+'"/></td>');
 		katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 		$(document).on('click','#'+bid,function(  ) {
 			var names = this.id.split('-');
@@ -424,7 +425,7 @@ function createSuitesTable(xdata) {
 	katana.$activeTab.find('#suite_table_display tbody').sortable();
 	katana.$activeTab.find('#suite_table_display').on('click',"td",   function() { 
 	});
-
+	//katana.$activeTab.find("#tableOfTestSuitesForProject").setAttribute( "style","overflow-y:scroll");
 }
 
 function fillSuiteDefaults(s, data){

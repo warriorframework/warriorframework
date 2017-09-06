@@ -59,26 +59,9 @@ katana.$activeTab.find('#mySuiteTree').on("select_node.jstree", function (e, dat
 
 //
 katana.$activeTab.find('#mySuiteTree').jstree(jdata); 
-
-
-
-
 katana.$activeTab.find('#mmm').hide();
 
-$(".linkToSuite").click(function() { 
 
-	
-	var $elem = $(this);
-	var thePage = $elem.attr('href');
-	var theID   = $elem.attr('fname');
-    katana.$view.one('tabAdded', function(){
-   		mapFullSuiteJson(theID);
-    });
-	//
-	katana.templateAPI.load( thePage, null, null, 'suite') ;
-
-
-});
 
 
 </script>

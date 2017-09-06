@@ -27,6 +27,7 @@
 <div id="mmm" >{{treejs|jsonify}}</div>
 
 
+
 <script> 
 
 function startNewProject() {
@@ -49,7 +50,7 @@ katana.$activeTab.find('#myProjectTree').on("select_node.jstree", function (e, d
   //
 
   var xref="./projects/editProject/?fname=" + thePage; 
-  katana.templateAPI.load(xref, null, null, 'Edit Project') ;
+  katana.templateAPI.load(xref, null, null, 'Project') ;
 
 
 });
