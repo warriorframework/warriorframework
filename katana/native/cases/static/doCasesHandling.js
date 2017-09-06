@@ -194,7 +194,7 @@ function mapCaseJsonToUi(data){
 	$("#listOfTestStepsForCase").html("");      // Start with clean slate
 	items.push('<table id="Step_table_display" class="table" >');
 	items.push('<thead>');
-	items.push('<tr id="StepRow"><th>Step</th><th>Arguments</th>\
+	items.push('<tr id="StepRow"><th>#</th><th>Step</th><th>Arguments</th>\
 		<th>Description</th><th>OnError</th><th>Execute</th><th>Other</th><th/><th/></tr>');
 	items.push('</thead>');
 	items.push('<tbody>');
@@ -209,7 +209,7 @@ function mapCaseJsonToUi(data){
 		fillStepDefaults(oneCaseStep);
 		// Now create HTML elements for the relevant items - 
 
-		var outstr = oneCaseStep['@Driver'] + "<br>" + oneCaseStep['@Keyword'] + "<br>" +oneCaseStep['@TS'] ;
+		var outstr = "Driver="+oneCaseStep['@Driver'] + "<br>Keyword=" + oneCaseStep['@Keyword'] + "<br>TS=" +oneCaseStep['@TS'] ;
 		items.push('<td>'+outstr+'</td>'); 
 
 		// Show arguments for each step in the UI div tag. 
@@ -244,7 +244,7 @@ function mapCaseJsonToUi(data){
 		*/
 		items.push('<td>'+outstr+'</td>'); 
 	
-		outstr =  oneCaseStep['Description'];
+		outstr =  oneCaseStep['Description']['$'];
 		items.push('<td>'+outstr+'</td>'); 
 
 		outstr = "Action=" + oneCaseStep['onError']['@action'] + "<br>" +
@@ -261,7 +261,7 @@ function mapCaseJsonToUi(data){
 			"<br>Impact=" + oneCaseStep['impact'];
 		items.push('<td>'+outstr+'</td>'); 
 		var bid = "deleteTestStep-"+s+"-id-"+getRandomCaseID();
-		items.push('<td><input type="button" class="btn-danger" value="Delete Step" id="'+bid+'"/></td>');
+		items.push('<td><input type="button" class="btn-danger" value="X" id="'+bid+'"/>');
 		$('#'+bid).off('c<td>lick');   //unbind and bind are deprecated. 
 		$(document).on('click','#'+bid,function(  ) {
 			alert(this.id);
@@ -271,7 +271,7 @@ function mapCaseJsonToUi(data){
 		});
 
 		bid = "editTestStep-"+s+"-id-"+getRandomCaseID();
-		items.push('<td><input type="button" class="btn" value="Edit Step" id="'+bid+'"/></td>');
+		items.push('<input type="button" class="btn" value="E" id="'+bid+'"/></td>');
 		$('#'+bid).off('c<td>lick');   //unbind and bind are deprecated. 
 		$(document).on('click','#'+bid,function(  ) {
 			alert(this.id);

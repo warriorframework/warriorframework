@@ -167,6 +167,8 @@ def getProjectDataBack(request):
 	fpath = path_to_testcases + 'projects';
 
 	#print "--------------TREE----------------"
+	if fname.find(".xml") < 2: fname = fname + ".xml"
+	
 	xml = request.POST.get(u'Project') 
 	print "save to ", fpath + os.sep + fname 
 	fd = open(fpath + os.sep + fname,'w');

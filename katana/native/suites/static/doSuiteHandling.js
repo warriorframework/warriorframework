@@ -25,6 +25,7 @@ var jsonSuiteObject = [];
 var jsonTestcases = [];			// for all Cases
 var activePageID = getRandomSuiteID();   // for the page ID 
 var mySuiteKeywordsArray = ["path","context","runtype","impact", "runmode"];
+var mySuite_UI_Array = [ 'CasePath', 'CaseContext', 'CaseRuntype', 'CaseImpact', 'CaseRunmode'];
 	
 
 /// -------------------------------------------------------------------------------
@@ -53,6 +54,8 @@ function mapFullSuiteJson(myobjectID){
 
 	var sdata = katana.$activeTab.find("#listOfTestcasesForSuite").text();
 	katana.$activeTab.find("#listOfTestcasesForSuite").hide();
+	katana.$activeTab.find("#savefilepath").hide();
+
 	var jdata = sdata.replace(/'/g, '"');
 	console.log('Mapping data ... ' + typeof(sdata) + ' is [' + sdata + "] " + sdata.length);  // This jdata is a string ....
 	jsonAllSuitePages[myobjectID] = JSON.parse(sdata); 
@@ -112,7 +115,9 @@ function mapSuiteCaseToUI(s,xdata) {
 	var myStringArray = mySuiteKeywordsArray; 
 	var arrayLength = mySuiteKeywordsArray.length;
 	for (var xi = 0; xi < arrayLength; xi++) {
-			katana.$activeTab.find(myStringArray[xi]+activePageID).val(oneCase[myStringArray[xi]]['$']); 
+		console.log("Fill "+ mySuite_UI_Array[xi]+activePageID);
+			var xxx = "#"+mySuite_UI_Array[xi]+activePageID;
+			katana.$activeTab.find(xxx).val(oneCase[myStringArray[xi]]['$']); 
 		}
 
 	if (! oneCase['onError']) {
@@ -136,28 +141,31 @@ function mapSuiteCaseToUI(s,xdata) {
 function mapUItoSuiteCase(xdata){
 
 		
-	var s = parseInt(katana.$activeTab.find(s+':"CaseRowToEdit"'+activePageID).val());
+	var s = parseInt(katana.$activeTab.find("#CaseRowToEdit"+activePageID).val());
 	var oneCase = xdata[s];
-	var id = katana.$activeTab.find("CaseRowToEdit"+activePageID).val();
+	var id = katana.$activeTab.find("#CaseRowToEdit"+activePageID).val();
 
 	if (s != id) {
 		alert('Setting for '+s+" instead of " + id); 
 	}
 
-		id = 'CaseImpact'+activePageID
+		id = '#CaseImpact'+activePageID
 		oneCase['impact']['$'] = katana.$activeTab.find(id).val();
 
-		id = 'CasePath'+activePageID		
+		id = '#CasePath'+activePageID		
 		oneCase['path']['$'] = katana.$activeTab.find(id).val();
 
-		id = 'CaseContext'+activePageID
+		id = '#CaseContext'+activePageID
 		oneCase['context']['$'] = katana.$activeTab.find(id).val();
 
-		id = 'CaseRuntype'+activePageID
+		id = '#CaseRuntype'+activePageID
 		oneCase['runtype']['$'] = katana.$activeTab.find(id).val();
 
+		id = '#CaseRunmode'+activePageID
+		oneCase['runmode']['$'] = katana.$activeTab.find(id).val();
 
-		id = "onError-at-action"+activePageID
+
+		id = "#onError-at-action"+activePageID
 		oneCase['onError']['@action'] = katana.$activeTab.find(id).val();
 
 
@@ -185,7 +193,7 @@ function mapUiToSuiteJson() {
 	jsonSuiteObject['Details']['Datatype']['@exectype'] = katana.$activeTab.find('#suiteDatatype').val();
 	jsonSuiteObject['SaveToFile'] = { "$" : katana.$activeTab.find('#my_file_to_save').val()};
 
-	var url = "./Suites/getSuiteDataBack";
+	var url = "./suites/getSuiteDataBack";
 	var csrftoken = $("[name='csrfmiddlewaretoken']").val();
 
 	$.ajaxSetup({
@@ -207,6 +215,7 @@ function mapUiToSuiteJson() {
 	    	'json': JSON.stringify(topNode),
 	    	'Suite': ns,
 	    	'filetosave': $('#my_file_to_save').val()
+	    	
 	    	},
 	    headers: {'X-CSRFToken':csrftoken},
     
@@ -244,6 +253,11 @@ function createCaseEditTable(xdata) {
 	items.push('<input type="text" id="CaseRuntype'+activePageID+'" value=""/>');
 	items.push('</div>');
 	items.push('<div class="field">');
+	items.push('<label >Run Mode:</label>');
+	items.push('<input type="text" id="CaseRunmode'+activePageID+'" value=""/>');
+	items.push('</div>');
+
+	items.push('<div class="field">');
 	items.push('<label >Impact:</label>');
 	items.push('<input type="text" id="CaseImpact'+activePageID+'" value=""/>');
 	items.push('</div>');
@@ -267,6 +281,7 @@ function createCaseEditTable(xdata) {
 	$(document).on('click','#'+bid,function(  ) {
 			//var names = this.id.split('-');
 			//var sid = parseInt(names[1]);
+			alert("Mapping UI to SuiteCase");
 			mapUItoSuiteCase(xdata);
 			
 		});
@@ -324,6 +339,7 @@ function createCasesTable(xdata) {
 			var names = this.id.split('-');
 			var sid = parseInt(names[1]);
 			console.log("xdata --> "+ xdata);
+			alert("mapSuiteCaseToUI");
 			mapSuiteCaseToUI(sid,xdata);
 			//This is where you load in the edit form and display this row in detail. 
 		});

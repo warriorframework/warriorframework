@@ -78,8 +78,9 @@ def index(request):
 					       'li_attr': { 'data-path': fullname }, 
 					       'icon' : 'jstree-file'}
 					jdata[k]['children'].append(tt)
+
 		k = k + 1
-	print jtree
+	#print jtree
 
 
 	context = { 
@@ -123,7 +124,7 @@ def editSuite(request):
 	
 	if filename == 'NEW':
 		xml_d = copy.deepcopy(xml_r);
-		
+
 	else:
 		xlines = open(filename).read()
 		xml_d = bf.data(fromstring(xlines)); # xmltodict.parse(fd1.read());
@@ -149,7 +150,7 @@ def editSuite(request):
 	xml_r["TestSuite"]["Details"]["default_onError"]["$"] = "" 
 
 	context = { 
-		'savefilename': os.path.split(filename)[1],
+		'savefilename': "save_" + os.path.split(filename)[1],
 		'savefilepath': os.path.split(filename)[0],
 		'myfile': filename,
 		'docSpec': 'projectSpec',
@@ -182,17 +183,18 @@ def editSuite(request):
 
 
 def getSuiteDataBack(request):
-	print "Got something back in request";
-	#response = request.readlines();   # Get the JSON response 
-	#template = loader.get_template("cases/editSuite.html")  # get another one?
+	#print "Got something back in request";
+	path_to_testcases = navigator.get_warrior_dir() + "/../wftests/warrior_tests/"
+	fpath = path_to_testcases + 'suites/user';
 	fname = request.POST.get(u'filetosave')
 	#ijs = request.POST.get(u'json')  # This is a json string 
-
-
+	
 	#print "--------------TREE----------------"
 	xml = request.POST.get(u'Suite') 
-	print "save to ", fname 
-	fd = open(fname,'w');
+
+	if fname.find(".xml") < 2: fname = fname + ".xml"
+	print "save to ", fpath + os.sep + fname 
+	fd = open(fpath + os.sep + fname,'w');
 	fd.write(xml);
 	fd.close();
 	return redirect(request.META['HTTP_REFERER'])

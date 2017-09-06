@@ -12,7 +12,7 @@
 <script type="text/javascript" src="{% static "./xmlparser.js" %}"></script>
 <script type="text/javascript" src="{% static "./doSuiteHandling.js" %}"></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-
+{% csrf_token %}
 <h2>Details</h2>
 <div class="form-group col-md-6">
 			<div class="field">
@@ -83,6 +83,6 @@
 	<div id="tableOfFileContents"  class="col-md-6">fileContents</label></div>
 	<div id="listOfTestcasesForSuite">{{fulljson|jsonify}}</div>
 	<div id="savefilepath">{{savefilepath}}</div>
-	Editing:{{ myfile }}
+	
 
 </body>
