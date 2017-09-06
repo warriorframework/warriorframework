@@ -17,14 +17,14 @@ import copy
 from Framework.Utils.print_Utils import print_warning
 import Framework.Utils as Utils
 
-def copy_step(step_list, step, value, go_next, mode, tag):
-    """From a Step_list, append the number of times the step needs to be repeated based on
-    Runmode or retry
+def append_step_list(step_list, step, value, go_next, mode, tag):
+    """From Step_list, append the number of times the step needs to be repeated based on
+    Runmode or Retry
     Arguments:
         step_list = Ordered list of steps to be executed
         step = Current step
         value = The value associated with attempts in runmode/retry
-        go_next = The value of goto
+        go_next = The value of go_next com
         mode = Runmode or Retry
         tag = In runmode it is attempt, in retry it is count
 
@@ -59,8 +59,7 @@ def get_step_list(filepath, step_tag, sub_step_tag):
     root = Utils.xml_Utils.getRoot(filepath)
     step_tag = root.find(step_tag)
     if step_tag is None:
-        print_warning("The file: '{}' has no steps "
-                      "to be executed".format(filepath))
+        print_warning("The file: '{}' has no steps to be executed".format(filepath))
     else:
         step_list = step_tag.findall(sub_step_tag)
         # iterate all steps to get the runmode and retry details
@@ -70,28 +69,29 @@ def get_step_list(filepath, step_tag, sub_step_tag):
             if runmode is not None and value > 0:
                 if len(step_list) > 1:
                     go_next = len(step_list_with_rmt_retry) + value + 1
-                    step_list_with_rmt_retry = copy_step(step_list_with_rmt_retry, step, value,
+                    step_list_with_rmt_retry = append_step_list(step_list_with_rmt_retry, step, value,
                                                          go_next, mode = "runmode", tag = "value")
-                # only one step in step list, append new step
                 else:
                     go_next = len(step_list_with_rmt_retry) + value + 1
-                    step_list_with_rmt_retry = copy_step(step_list_with_rmt_retry, step, value,
+                    step_list_with_rmt_retry = append_step_list(step_list_with_rmt_retry, step, value,
                                                          go_next, mode = "runmode", tag = "value")
             if retry_type is not None and value > 0:
                 if len(step_list) > 1:
-                    go_next = len(step_list_with_rmt_retry) + value + 1
+                    go_next = len(step_list_with_rmt_retry) + retry_value + 1
                     if runmode is not None:
                         get_runmode = step.find('runmode')
                         step.remove(get_runmode)
-                    step_list_with_rmt_retry = copy_step(step_list_with_rmt_retry, step, value,
-                                                         go_next, mode = "retry_type", tag = "count")
+                    step_list_with_rmt_retry = append_step_list(step_list_with_rmt_retry, step,
+                                                         retry_value, go_next, mode = "retry",
+                                                         tag = "count")
                 else:
-                    go_next = len(step_list_with_rmt_retry) + value + 1
+                    go_next = len(step_list_with_rmt_retry) + retry_value + 1
                     if runmode is not None:
                         get_runmode = step.find('runmode')
                         step.remove(get_runmode)
-                    step_list_with_rmt_retry = copy_step(step_list_with_rmt_retry, step, value,
-                                                         go_next, mode = "retry_type", tag = "count")
+                    step_list_with_rmt_retry = append_step_list(step_list_with_rmt_retry, step,
+                                                         retry_value, go_next, mode = "retry",
+                                                         tag = "count")
             if retry_type is None and runmode is None:
                 step_list_with_rmt_retry.append(step)
     return step_list_with_rmt_retry
