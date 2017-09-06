@@ -11,7 +11,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-"""Module that contains common utilities required for execution """
+###Module that contains common utilities required for execution ###
 import copy
 
 from Framework.Utils.print_Utils import print_warning
@@ -69,12 +69,14 @@ def get_step_list(filepath, step_tag, sub_step_tag):
             if runmode is not None and value > 0:
                 if len(step_list) > 1:
                     go_next = len(step_list_with_rmt_retry) + value + 1
-                    step_list_with_rmt_retry = append_step_list(step_list_with_rmt_retry, step, value,
-                                                         go_next, mode = "runmode", tag = "value")
+                    step_list_with_rmt_retry = append_step_list(step_list_with_rmt_retry, step,
+                                                                value, go_next, mode="runmode",
+                                                                tag="value")
                 else:
                     go_next = len(step_list_with_rmt_retry) + value + 1
-                    step_list_with_rmt_retry = append_step_list(step_list_with_rmt_retry, step, value,
-                                                         go_next, mode = "runmode", tag = "value")
+                    step_list_with_rmt_retry = append_step_list(step_list_with_rmt_retry, step,
+                                                                value, go_next, mode="runmode",
+                                                                tag="value")
             if retry_type is not None and value > 0:
                 if len(step_list) > 1:
                     go_next = len(step_list_with_rmt_retry) + retry_value + 1
@@ -82,16 +84,16 @@ def get_step_list(filepath, step_tag, sub_step_tag):
                         get_runmode = step.find('runmode')
                         step.remove(get_runmode)
                     step_list_with_rmt_retry = append_step_list(step_list_with_rmt_retry, step,
-                                                         retry_value, go_next, mode = "retry",
-                                                         tag = "count")
+                                                                retry_value, go_next, mode="retry",
+                                                                tag="count")
                 else:
                     go_next = len(step_list_with_rmt_retry) + retry_value + 1
                     if runmode is not None:
                         get_runmode = step.find('runmode')
                         step.remove(get_runmode)
                     step_list_with_rmt_retry = append_step_list(step_list_with_rmt_retry, step,
-                                                         retry_value, go_next, mode = "retry",
-                                                         tag = "count")
+                                                                retry_value, go_next, mode="retry",
+                                                                tag="count")
             if retry_type is None and runmode is None:
                 step_list_with_rmt_retry.append(step)
     return step_list_with_rmt_retry
