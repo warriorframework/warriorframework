@@ -162,10 +162,14 @@ def getProjectDataBack(request):
 	ijs = request.POST.get(u'json')  # This is a json string 
 
 
+	navigator = Navigator();
+	path_to_testcases = navigator.get_warrior_dir() + "/../wftests/warrior_tests/"
+	fpath = path_to_testcases + 'projects';
+
 	#print "--------------TREE----------------"
 	xml = request.POST.get(u'Project') 
-	print "save to ", fname 
-	fd = open(fname,'w');
+	print "save to ", fpath + os.sep + fname 
+	fd = open(fpath + os.sep + fname,'w');
 	fd.write(xml);
 	fd.close();
 	return redirect(request.META['HTTP_REFERER'])

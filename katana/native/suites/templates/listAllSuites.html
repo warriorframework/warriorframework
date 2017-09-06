@@ -29,11 +29,11 @@ Hello
 	
 
 	
-		<div id="mySuite">
+		<div id="mySuite">		</div>
 
-
-
-		</div>
+  <div class="btn-group" role="group">   
+      <button id="addNewCase" class="btn btn-success" onclick="startNewSuite()">Add New Suite</button>
+  </div>
 <div id="mySuiteTree"></div>
 <div id="mmm" >{{treejs|jsonify}}</div>
 
@@ -44,17 +44,20 @@ var sdata= katana.$activeTab.find('#mmm').text();
 console.log(sdata);
 var jdata = { 'core' : { 'data' : [ JSON.parse(sdata)]}};
 
+function startNewSuite() {
+  var xref="./suites/editSuite/?fname=NEW" ;
+  katana.templateAPI.load(xref, null, null, 'NEW') ;
+}
 //
 katana.$activeTab.find('#mySuiteTree').on("select_node.jstree", function (e, data) { 
       var thePage = data.node.li_attr['data-path'];
       console.log(thePage);
       katana.$view.one('tabAdded', function(){
+        
       mapFullSuiteJson(thePage);
   });
   var xref="./suites/editSuite/?fname=" + thePage; 
   katana.templateAPI.load(xref, null, null, 'Suite') ;
-
-
 });
 
 //

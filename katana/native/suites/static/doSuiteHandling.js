@@ -24,7 +24,8 @@ if (typeof jsonAllSuitePages === 'undefined') {
 var jsonSuiteObject = []; 
 var jsonTestcases = [];			// for all Cases
 var activePageID = getRandomSuiteID();   // for the page ID 
-
+var mySuiteKeywordsArray = ["path","context","runtype","impact", "runmode"];
+	
 
 /// -------------------------------------------------------------------------------
 // 
@@ -48,7 +49,8 @@ function getRandomSuiteID() {
 /// -------------------------------------------------------------------------------
 function mapFullSuiteJson(myobjectID){
 	//console.log('Mapping data ... ' + typeof(sdata) + ' is [' + sdata + "] " + sdata.length);  // This jdata is a string ....
-	activePageID = getRandomSuiteID();                 
+	activePageID = getRandomSuiteID();   
+
 	var sdata = katana.$activeTab.find("#listOfTestcasesForSuite").text();
 	katana.$activeTab.find("#listOfTestcasesForSuite").hide();
 	var jdata = sdata.replace(/'/g, '"');
@@ -75,7 +77,7 @@ function addCaseToSuite(){
 		"Arguments": { "Argument" : { "$": "" }, },
 		"onError" : { "$": ""},
 		"onError": { "@action": "next", "@value": "" }, 
-		
+		"ExecType": { "@ExecType": "Yes"},
 		"context": { "$": ""},
 		"impact": { "$": "impact"}
 		};
@@ -107,17 +109,21 @@ function mapSuiteCaseToUI(s,xdata) {
 	console.log(katana.$activeTab.find("#CaseRowToEdit"+activePageID).val());
 	//katana.$activeTab.find("CasePath"+activePageID).val(oneCase['path']['$']);
 	
-	var myStringArray = ["path","context","runtype","impact"];
-	var arrayLength = myStringArray.length;
+	var myStringArray = mySuiteKeywordsArray; 
+	var arrayLength = mySuiteKeywordsArray.length;
 	for (var xi = 0; xi < arrayLength; xi++) {
-			katana.$activeTab.find("#impact"+activePageID).val(oneCase[myStringArray[xi]]['$']); 
+			katana.$activeTab.find(myStringArray[xi]+activePageID).val(oneCase[myStringArray[xi]]['$']); 
 		}
 
 	if (! oneCase['onError']) {
 			oneCase['onError'] = { "@action": "next", "@value": "" };
 		}
-		
 
+	if (! oneCase['Execute']) {
+			oneCase['Execute'] = { "@ExecType": "Yes", "@value": "" };
+		}
+
+	
 }
 
 
@@ -192,7 +198,7 @@ function mapUiToSuiteJson() {
 	var jj = new json() ; 
 	var ns = jj.translate.toXML(topNode);
 	
-	alert(ns);
+	//alert(ns);
 
 	$.ajax({
 	    url : url,
@@ -205,7 +211,7 @@ function mapUiToSuiteJson() {
 	    headers: {'X-CSRFToken':csrftoken},
     
     success: function( data ){
-        alert("Sent");
+        alert("Saved it");
     	}
 	});
 
@@ -256,7 +262,7 @@ function createCaseEditTable(xdata) {
 	// Now create the buttons to save the data. 
 
 	var bid = "editTestcase-"+activePageID+"-id"+getRandomSuiteID();;
-	items.push('<td><input type="button" class="btn" value="Save Changes" id="'+bid+'"/></td>');
+	items.push('<td><input type="button" class="btn" value="Save Changes To Test Case" id="'+bid+'"/></td>');
 	katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 	$(document).on('click','#'+bid,function(  ) {
 			//var names = this.id.split('-');
@@ -290,9 +296,13 @@ function createCasesTable(xdata) {
 		console.log(oneCase['path']);
 		
 		items.push('<tr><td>'+s+'</td>');
+		
 		items.push('<td>'+oneCase['path']['$']+'</td>');
-		items.push('<td>Context='+oneCase['context']['$']+",<br>"+oneCase['runtype']['$']+'</td>');
-		//items.push('<td>'+oneCase['runtype']['$']+'</td>');
+		items.push('<td>'+oneCase['context']['$']+'</td>');
+		//items.push('<td>'+oneCase['datafile']['$']+'</td>');
+
+		items.push('<td>'+oneCase['runtype']['$']+'</td>');
+		items.push('<td>'+oneCase['runmode']['$']+'</td>');
 		items.push('<td>'+oneCase['onError']['@action']+'</td>');
 		items.push('<td>'+oneCase['impact']['$']+'</td>');
 
@@ -332,18 +342,26 @@ function createCasesTable(xdata) {
 
 function fillCaseDefaults(s, data){
 		oneCase = data[s]
-
-		var myStringArray = ["path","context","runtype","impact"];
+		console.log(data);
+		if (oneCase == null) {
+			data[s] = {} ;
+			oneCase = data[s];
+		}
+		var myStringArray = mySuiteKeywordsArray; // ["path","context","runtype","impact", "runmode"];
 		var arrayLength = myStringArray.length;
 		for (var xi = 0; xi < arrayLength; xi++) {
    				if (! oneCase[myStringArray[xi]]){
-						oneCase[myStringArray[xi]] = { "$": ""};
+						oneCase[myStringArray[xi]] = { "$": myStringArray[xi]};
+					}
+   				if (! oneCase[myStringArray[xi]]["$"]){
+						oneCase[myStringArray[xi]]["$"] = myStringArray[xi];
 					}
 		}
 
 		if (! oneCase['onError']) {
 			oneCase['onError'] = { "@action": "next", "@value": "" };
 		}
+		oneCase['Execute'] = { "@ExecType": "Yes", "@value": "" };
 		
 }
 

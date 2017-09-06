@@ -241,7 +241,7 @@ function mapUiToProjectJson() {
 	// var mystring =  JSON.stringify(jsonProjectObject);
 	var ns = jj.translate.toXML(topNode);
 	
-	alert(ns);
+	//alert(ns);
 
 	$.ajax({
 	    url : url,
@@ -254,7 +254,7 @@ function mapUiToProjectJson() {
 	    headers: {'X-CSRFToken':csrftoken},
     
     success: function( data ){
-        alert("Sent");
+        alert("Saved "+katana.$activeTab.find('#filesavepath').text() );
     	}
 	});
 
@@ -375,6 +375,7 @@ function createSuitesTable(xdata) {
 	katana.$activeTab.find("#tableOfTestSuitesForProject").html("");
 	for (var s=0; s<Object.keys(xdata).length; s++ ) {
 		var oneSuite = xdata[s];
+		console.log(xdata);
 		if (oneSuite == null) {
 			xdata[s] = {} ;
 			oneSuite = xdata[s];
@@ -436,8 +437,16 @@ function fillSuiteDefaults(s, data){
 		if (!oneSuite['path']) {
 			oneSuite['path'] = { '$': "New"};
 		}
+
 		if (!oneSuite['path']['$']) {
 			oneSuite['path']['$'] =  "New";
+		}
+
+		if (!oneSuite['impact']) {
+			oneSuite['impact'] = { '$': "New"};
+		}
+		if (!oneSuite['impact']['$']) {
+			oneSuite['impact']['$'] =  "impact";
 		}
 
 		if (! oneSuite['Execute']){

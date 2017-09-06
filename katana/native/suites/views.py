@@ -121,9 +121,12 @@ def editSuite(request):
 	xml_r["TestSuite"]["Details"]["default_onError"]['@action']= { "$": ""}
 	xml_r["TestSuite"]["Testsuites"] = ""
 	
-	
-	xlines = open(filename).read()
-	xml_d = bf.data(fromstring(xlines)); # xmltodict.parse(fd1.read());
+	if filename == 'NEW':
+		xml_d = copy.deepcopy(xml_r);
+		
+	else:
+		xlines = open(filename).read()
+		xml_d = bf.data(fromstring(xlines)); # xmltodict.parse(fd1.read());
 
 	# Map the input to the response collector
 	for xstr in ["Name", "Title", "Category", "Date", "Time", "Engineer", \
@@ -146,6 +149,8 @@ def editSuite(request):
 	xml_r["TestSuite"]["Details"]["default_onError"]["$"] = "" 
 
 	context = { 
+		'savefilename': os.path.split(filename)[1],
+		'savefilepath': os.path.split(filename)[0],
 		'myfile': filename,
 		'docSpec': 'projectSpec',
 		'suiteName': xml_r["TestSuite"]["Details"]["Name"]["$"],

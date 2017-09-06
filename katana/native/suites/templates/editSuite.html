@@ -11,8 +11,7 @@
 <script type="text/javascript" src="{% static "./json.js" %}"></script>
 <script type="text/javascript" src="{% static "./xmlparser.js" %}"></script>
 <script type="text/javascript" src="{% static "./doSuiteHandling.js" %}"></script>
- 
-
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
 <h2>Details</h2>
 <div class="form-group col-md-6">
@@ -63,20 +62,19 @@
 			</div>
 	
 </div>
-<div class="col-md-12"></div>
+<div class="container-fluid"></div>
 		<div class="row">
 			<div id="tableOfTestcasesForSuite" class="col-md-6" ></div>
-		    <div class="btn-group col-md-3" role="group">   
+			<div id="editTestcaseEntry"        class="col-md-3" ></div>
+			<div id="tableOfTestRequirements"  class="col-md-3" ></div>	
+		</div>
+		<div class="row">
+			<div class="btn-group col-md-6" role="group">   
 				<button id="addSuite" class="btn btn-primary" onclick="addCaseToSuite()">Add Case To Suite</button>
 				<button class="btn btn-primary" onclick="start()">Discard Changes</button>
 				<button class="btn btn-success" onclick="mapUiToSuiteJson()">Save Changes to Disk</button>
 			</div>
-			<div id="editTestcaseEntry"        class="col-md-3" ></div>
 		</div>
-		<div class="row">
-		<div id="tableOfTestRequirements"  class="col-md-3" ></div>	
-		</div>
-		
 </div>
 		
 <div>
