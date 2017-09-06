@@ -2,5 +2,7 @@
   "icon": "wrench",
   "color": "red",
   "name" : "Wapp Management",
+  "developer": "Warrior Framework",
+  "description": "Manage your wapps with this wapp manager.",
   "url" : "/katana/wapp_management/"
 }

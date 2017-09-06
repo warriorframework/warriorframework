@@ -3,5 +3,7 @@
   "color": "tan",
   "name" : "User App",
   "url" : "/katana/userapp/",
+  "developer": "Company2",
+  "description": "This is just a user app, and it is a really dumb app.",
   "app" : [{"name" : "User App", "url" : "/katana/userapp/", "include": "apps.userapp.urls"}] 
 }

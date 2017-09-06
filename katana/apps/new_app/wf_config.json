@@ -3,5 +3,7 @@
   "color": "red",
   "name" : "New App",
   "url" : "/katana/newapp/",
+  "developer": "Company1",
+  "description": "This is just a new app, so much fancy about this.",
   "app" : [{"name" : "New App", "url" : "/katana/newapp/", "include": "apps.new_app.urls"}] 
 }
