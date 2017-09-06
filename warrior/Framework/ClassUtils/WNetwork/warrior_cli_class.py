@@ -196,8 +196,8 @@ class WarriorCli(object):
 
         if self.conn_obj and self.conn_obj.target_host:
             status, response = self.conn_obj.send_command(
-             command=command, start_prompt=start_prompt,
-             end_prompt=end_prompt, timeout=timeout)
+                command=command, start_prompt=start_prompt,
+                end_prompt=end_prompt, timeout=timeout)
 
         return status, response
 
@@ -239,8 +239,8 @@ class WarriorCli(object):
         if session_name is not None:
             system_name = system_name + "." + session_name
         testdata_dict = Utils.data_Utils.get_command_details_from_testdata(
-         testdatafile, varconfigfile, var_sub=var_sub, title=title, row=row,
-         system_name=system_name, datafile=datafile)
+            testdatafile, varconfigfile, var_sub=var_sub, title=title, row=row,
+            system_name=system_name, datafile=datafile)
         finalresult = True if len(testdata_dict) > 0 else False
         for key, details_dict in testdata_dict.iteritems():
             response_dict = {}
@@ -266,12 +266,12 @@ class WarriorCli(object):
                     self._get_obj_session(details_dict, system_name, index=i)
                 if new_obj_session:
                     result, response = new_obj_session._send_cmd_get_status(
-                     details_dict, index=i, system_name=system_name)
+                        details_dict, index=i, system_name=system_name)
                     result, response = new_obj_session._send_command_retrials(
-                     details_dict, index=i, result=result, response=response,
-                     system_name=system_name)
+                        details_dict, index=i, result=result,
+                        response=response, system_name=system_name)
                     response_dict = new_obj_session._get_response_dict(
-                     details_dict, i, response, response_dict)
+                        details_dict, i, response, response_dict)
                     print_debug("<<<")
                 else:
                     finalresult = "ERROR"
@@ -326,7 +326,8 @@ class WarriorCli(object):
         response_dict[resp_ref] = response
         return response_dict
 
-    def start_threads(self, started_thread_for_system, thread_instance_list,
+    @staticmethod
+    def start_threads(started_thread_for_system, thread_instance_list,
                       same_system, unique_log_verify_list, system_name):
         """This function iterates over unique_log_verify_list which consists of
          unique values gotten from monitor attributes and verify_on attributes
@@ -371,7 +372,7 @@ class WarriorCli(object):
                          Utils.data_Utils.get_session_id(temp_list[0])
                     datarep_obj = \
                         Utils.data_Utils.get_object_from_datarepository(
-                         unique_log_verify_list[i])
+                            unique_log_verify_list[i])
                     if datarep_obj is False:
                         print_info("{0} does not exist in data repository"
                                    .format(unique_log_verify_list[i]))
@@ -382,7 +383,7 @@ class WarriorCli(object):
                             print_info("Collecting response from: "
                                        "{0}".format(unique_log_verify_list[i]))
                             started_thread_for_system.append(
-                             unique_log_verify_list[i])
+                                unique_log_verify_list[i])
                             thread_instance_list.append(new_thread)
                         except:
                             print_info("Unable to collect response from: "
@@ -415,11 +416,11 @@ class WarriorCli(object):
             thread_instance_list[i].stop_thread()
             pNote("\n\n++++++++++++++++++++++++ RESPONSE FROM SYSTEM: {0} "
                   "++++++++++++++++++++\n\n".format(
-                    started_thread_for_system[i]))
+                      started_thread_for_system[i]))
             pNote(data)
             pNote("\n\n++++++++++++++++++++++++ END OF DATA FROM SYSTEM: {0} "
                   "++++++++++++++++++++\n\n".format(
-                   started_thread_for_system[i]))
+                      started_thread_for_system[i]))
             remote_resp_dict[started_thread_for_system[i]] = data
 
         if len(started_thread_for_system) > 0:
@@ -498,7 +499,7 @@ class WarriorCli(object):
         cond_value = details_dict["cond_value_list"][index]
         cond_type = details_dict["cond_type_list"][index]
         unique_log_verify_list = self.get_unique_log_and_verify_list(
-         log_list, verify_on_list, system_name)
+            log_list, verify_on_list, system_name)
 
         startprompt = {None: ".*", "": ".*"}.get(startprompt, str(startprompt))
         resp_req = {None: 'y', '': 'y',
@@ -506,7 +507,7 @@ class WarriorCli(object):
         resp_ref = {None: index+1, '': index+1}.get(resp_ref, str(resp_ref))
         resp_pat_req = {None: ""}.get(resp_pat_req, str(resp_pat_req))
         sleeptime = {None: 0, "": 0, "none": 0, False: 0, "false": 0}.get(
-                                    str(sleeptime).lower(), str(sleeptime))
+            str(sleeptime).lower(), str(sleeptime))
         sleeptime = int(sleeptime)
 
         if inorder_search is not None and \
@@ -547,28 +548,28 @@ class WarriorCli(object):
 
         try:
             remote_resp_dict = self.get_response_dict(
-             started_thread_for_system, thread_instance_list, same_system,
-             response)
+                started_thread_for_system, thread_instance_list, same_system,
+                response)
         except NameError:
             remote_resp_dict = self.get_response_dict([], [], [], response)
 
         verify_on_list_as_list = get_list_by_separating_strings(
-         verify_on_list, ",", system_name)
+            verify_on_list, ",", system_name)
         if result and result is not 'ERROR':
             if verify_text_list is not None and verify_list is not None:
                 verify_group = (operator, cond_value, cond_type)
                 if inorder_search is True and len(verify_text_list) > 1:
                     result = Utils.data_Utils.verify_resp_inorder(
-                     verify_text_list, verify_context_list, command,
-                     response, varconfigfile, verify_on_list_as_list,
-                     verify_list, remote_resp_dict, verify_group)
+                        verify_text_list, verify_context_list, command,
+                        response, varconfigfile, verify_on_list_as_list,
+                        verify_list, remote_resp_dict, verify_group)
                 else:
                     result = Utils.data_Utils.verify_resp_across_sys(
-                     verify_text_list, verify_context_list, command,
-                     response, varconfigfile, verify_on_list_as_list,
-                     verify_list, remote_resp_dict, endprompt, verify_group)
+                        verify_text_list, verify_context_list, command,
+                        response, varconfigfile, verify_on_list_as_list,
+                        verify_list, remote_resp_dict, endprompt, verify_group)
         command_status = {True: "PASS", False: "FAIL", "ERROR": "ERROR"}.get(
-                                                                        result)
+            result)
         pNote("COMMAND STATUS:{0}".format(command_status))
 
         return result, response
@@ -580,7 +581,7 @@ class WarriorCli(object):
 
         value = False
         kw_system_nameonly, _ = Utils.data_Utils.split_system_subsystem(
-         kw_system_name)
+            kw_system_name)
         td_sys = details_dict["sys_list"][index]
         # To get the session name if it is provided as part of sys tag in td
         td_sys_split = td_sys.split('.') if isinstance(td_sys, str) else []
@@ -599,7 +600,7 @@ class WarriorCli(object):
              td_sys.startswith("[") and td_sys.endswith("]") else td_sys
             session_id = Utils.data_Utils.get_session_id(system_name, session)
             obj_session = Utils.data_Utils.get_object_from_datarepository(
-             session_id)
+                session_id)
             if not obj_session:
                 pNote("Could not find a valid connection for system_name={}, "
                       "session_name={}".format(system_name, session), "error")
@@ -638,9 +639,9 @@ class WarriorCli(object):
             retry_onmatch = details_dict["retry_onmatch_list"][index]
             retry_count = details_dict["retry_count_list"][index]
             retry_timer = {None: 60, "": 60, "none": 60}.get(
-             str(retry_timer).lower(), retry_timer)
+                str(retry_timer).lower(), retry_timer)
             retry_count = {None: 5, "": 5, "none": 5}.get(
-             str(retry_count).lower(), retry_count)
+                str(retry_count).lower(), retry_count)
             print_info("")
             pNote("Retry was requested for the command")
             pNote("Command re-trials will begin since the most recent "
@@ -664,12 +665,12 @@ class WarriorCli(object):
                               " the command again".format(retry_timer))
                         time.sleep(int(retry_timer))
                         result, response = self._send_cmd_get_status(
-                         details_dict, index,
-                         system_name=kwargs.get("system_name"))
+                            details_dict, index,
+                            system_name=kwargs.get("system_name"))
                         command_status = {True: "PASS", False: "FAIL",
                                           "ERROR": "ERROR"}.get(result)
                         pNote("RETRIAL ATTEMPT:{0} STATUS:{1}".format(
-                         count, command_status))
+                            count, command_status))
                     else:
                         break
                 elif result is True:
@@ -833,12 +834,12 @@ class WarriorCli(object):
 
         if system_name is not None:
             sys_elem = Utils.xml_Utils.getElementWithTagAttribValueMatch(
-               con_settings, "system", "name", system_name.text)
+                con_settings, "system", "name", system_name.text)
             if sys_elem is None or sys_elem.find("testdata") is None:
                 return None
         else:
             system_list = Utils.xml_Utils.getElementListWithSpecificXpath(
-               con_settings, "system[search_string]")
+                con_settings, "system[search_string]")
             for sys_elem in system_list:
                 if sys_elem.find("search_string").text in prompt and \
                  sys_elem.find("testdata") is not None:
@@ -865,8 +866,8 @@ class WarriorCli(object):
                 Distinguish if it is a connect smart action or disconnect
                 smart action
         """
-        if Utils.xml_Utils.getElementWithTagAttribValueMatch(connect_testdata,
-           "testdata", "title", tag_value) is not None:
+        if Utils.xml_Utils.getElementWithTagAttribValueMatch(
+           connect_testdata, "testdata", "title", tag_value) is not None:
             print_info("**********The following command are sent as part of "
                        "the smart analysis**********")
             main_log = session_object.logfile
@@ -1067,7 +1068,7 @@ class ParamikoConnect(object):
                       " intermediate system - {}".format(self.via_ip))
                 self.via_host = self.paramiko.SSHClient()
                 self.via_host.set_missing_host_key_policy(
-                 self.paramiko.AutoAddPolicy())
+                    self.paramiko.AutoAddPolicy())
                 self.via_host.connect(self.via_ip, port=self.via_port,
                                       username=self.via_username,
                                       password=self.via_password,
@@ -1079,7 +1080,7 @@ class ParamikoConnect(object):
                 local_addr = ('127.0.0.1', 22)
 
                 self.via_channel = self.via_transport.open_channel(
-                 "direct-tcpip", dest_addr, local_addr)
+                    "direct-tcpip", dest_addr, local_addr)
                 pNote("Connection to intermediate system - {} "
                       "is successful".format(self.via_ip))
             else:
@@ -1087,7 +1088,7 @@ class ParamikoConnect(object):
 
             self.target_host = self.paramiko.SSHClient()
             self.target_host.set_missing_host_key_policy(
-             self.paramiko.AutoAddPolicy())
+                self.paramiko.AutoAddPolicy())
 
             self.target_host.connect(self.ip, port=self.port,
                                      username=self.username,

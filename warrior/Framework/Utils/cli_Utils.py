@@ -13,11 +13,10 @@ limitations under the License.
 
 
 import os
-import Framework.ClassUtils
 from Framework.Utils.print_Utils import print_info, print_warning
 from Framework.Utils.testcase_Utils import pNote
 from WarriorCore.Classes.war_cli_class import WarriorCliClass
-from Framework.ClassUtils import WNetwork
+from Framework.ClassUtils import WNetwork, ssh_utils_class
 
 try:
     import pexpect
@@ -93,8 +92,8 @@ def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=6
 
     wc_obj = WNetwork.warrior_cli_class.WarriorCli()
     session_object, conn_string = wc_obj.connect_ssh(
-     ip=ip, port=port, username=username, password=password, logfile=logfile, timeout=timeout,
-     prompt=prompt, conn_options=conn_options, custom_keystroke=custom_keystroke, escape=escape)
+        ip=ip, port=port, username=username, password=password, logfile=logfile, timeout=timeout,
+        prompt=prompt, conn_options=conn_options, custom_keystroke=custom_keystroke, escape=escape)
 
     return session_object, conn_string
 
@@ -128,15 +127,8 @@ def connect_telnet(ip, port="23", username="", password="",
 
     wc_obj = WNetwork.warrior_cli_class.WarriorCli()
     session_object, conn_string = wc_obj.connect_telnet(
-     ip=ip, port=port, username=username, password=password, logfile=logfile, timeout=timeout,
-     prompt=prompt, conn_options=conn_options, custom_keystroke=custom_keystroke, escape=escape)
-
-    if wc_obj.conn_obj:
-        session_object = wc_obj.conn_obj.target_host
-        conn_string = wc_obj.conn_obj.conn_string
-    else:
-        session_object = None
-        conn_string = ""
+        ip=ip, port=port, username=username, password=password, logfile=logfile, timeout=timeout,
+        prompt=prompt, conn_options=conn_options, custom_keystroke=custom_keystroke, escape=escape)
 
     return session_object, conn_string
 
@@ -394,7 +386,7 @@ def _send_cmd(obj_session, **kwargs):
         wc_obj.conn_obj = WNetwork.warrior_cli_class.PexpectConnect()
         wc_obj.conn_obj.target_host = obj_session
         result, response = wc_obj._send_cmd(**kwargs)
-    elif isinstance(obj_session, Framework.ClassUtils.ssh_utils_class.SSHComm):
+    elif isinstance(obj_session, ssh_utils_class.SSHComm):
         command = kwargs.get('command')
         result, response = obj_session.get_response(command)
         print_info(response)
@@ -498,13 +490,13 @@ def _get_obj_session(details_dict, obj_session, kw_system_name, index):
     use the current obj_session"""
     if isinstance(obj_session, WNetwork.warrior_cli_class.WarriorCli):
         value, kw_system_name, details_dict = obj_session._get_obj_session(
-          details_dict, kw_system_name, index)
+            details_dict, kw_system_name, index)
     else:
         wc_obj = WNetwork.warrior_cli_class.WarriorCli()
         wc_obj.conn_obj = WNetwork.warrior_cli_class.PexpectConnect()
         wc_obj.conn_obj.target_host = obj_session
         value, kw_system_name, details_dict = wc_obj._get_obj_session(
-          details_dict, kw_system_name, index)
+            details_dict, kw_system_name, index)
 
     return value, kw_system_name, details_dict
 
@@ -521,13 +513,13 @@ def _send_command_retrials(obj_session, details_dict, index, **kwargs):
     """
     if isinstance(obj_session, WNetwork.warrior_cli_class.WarriorCli):
         result, response = obj_session._send_command_retrials(
-         details_dict, index, **kwargs)
+            details_dict, index, **kwargs)
     else:
         wc_obj = WNetwork.warrior_cli_class.WarriorCli()
         wc_obj.conn_obj = WNetwork.warrior_cli_class.PexpectConnect()
         wc_obj.conn_obj.target_host = obj_session
         result, response, details_dict = wc_obj._send_command_retrials(
-          details_dict, index, **kwargs)
+            details_dict, index, **kwargs)
 
     return result, response
 
