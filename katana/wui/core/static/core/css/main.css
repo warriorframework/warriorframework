@@ -1923,3 +1923,11 @@ button, input, optgroup, select, textarea {
     right: 0;
     margin: 0 auto;
 }
+
+.wdf-add-child {
+    position: absolute;
+    top: 10%;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+}

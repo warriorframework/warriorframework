@@ -30,24 +30,35 @@ var wdf = {
     },
 
 
-    add: function(){
+    addSystem: function(){
         // Add a system
         var $tmp = katana.$activeTab.find("#system_template").clone();
         $tmp.find("#template-system").prop("id", katana.$activeTab.find(".control-box").length-1+"-control-box")
         $tmp.find("[name='template-system-name']").prop("name", katana.$activeTab.find(".control-box").length-1+"-system_name");
-        $tmp.find("[name='template-system.tag']").prop("name", katana.$activeTab.find(".control-box").length-1+"-1-key");
-        $tmp.find("[name='template-system.value']").prop("name", katana.$activeTab.find(".control-box").length-1+"-1-value");
+        $tmp.find("[name='template-system.tag']").prop("name", katana.$activeTab.find(".control-box").length-1+"-1-1-key");
+        $tmp.find("[name='template-system.value']").prop("name", katana.$activeTab.find(".control-box").length-1+"-1-1-value");
         katana.$activeTab.find("#big-box").append($($tmp.html()));
     },
 
-    addtag: function(){
+    addTag: function(){
         var $tmp = katana.$activeTab.find("#tag_template").clone();
         // go to control box level
         var $target = $(this).parent().parent().parent();
         var $id = $target.attr("id").substring(0, $target.attr("id").length-11);
-        $tmp.find("[name='template-tag.tag']").prop("name", $id+($target.children("#content").length+1)+"-key");
-        $tmp.find("[name='template-tag.value']").prop("name", $id+($target.children("#content").length+1)+"-value");
+        $tmp.find("[name='template-tag.tag']").prop("name", $id+($target.children("#content").length+1)+"-1-key");
+        $tmp.find("[name='template-tag.value']").prop("name", $id+($target.children("#content").length+1)+"-1-value");
         $target.append($($tmp.html()));
+    },
+
+    addChild: function(){
+        var $tmp = katana.$activeTab.find("#child_tag_template").clone();
+        // go to control box level
+        var $target = $(this).parent().parent();
+        var $id = $target.find("[name*='-key']").attr("name").substring(0, $target.find("[name*='-key']").attr("name").length-4);
+        alert($id.split("-"));
+        // $tmp.find("[name='template-tag.tag']").prop("name", $id+($target.children("#content").length+1)+"-1-key");
+        // $tmp.find("[name='template-tag.value']").prop("name", $id+($target.children("#content").length+1)+"-1-value");
+        // $target.append($($tmp.html()));
     },
 
     addSubSystem: function(){
@@ -58,8 +69,8 @@ var wdf = {
         $tmp.find("[name='template-system-name']").attr("value", $target.find('[name*="system_name"]').attr("value"));
         $tmp.find("[name='template-system-name']").prop("name", $system_id+"-"+($subsystem_count+1)+"-system_name");
         $tmp.find("[name='template-subsystem-name']").prop("name", $system_id+"-"+($subsystem_count+1)+"-subsystem_name");
-        $tmp.find("[name='template-tag.tag']").prop("name", $system_id+"-"+($subsystem_count+1)+"-"+($target.children("#content").length+1)+"-key");
-        $tmp.find("[name='template-tag.value']").prop("name", $system_id+"-"+($subsystem_count+1)+"-"+($target.children("#content").length+1)+"-value");
+        $tmp.find("[name='template-tag.tag']").prop("name", $system_id+"-"+($subsystem_count+1)+"-"+($target.children("#content").length+1)+"-1-key");
+        $tmp.find("[name='template-tag.value']").prop("name", $system_id+"-"+($subsystem_count+1)+"-"+($target.children("#content").length+1)+"-1-value");
         $target.append($($tmp.html()));
     },
 
@@ -93,6 +104,7 @@ var wdf = {
                         katana.$activeTab.find("#main_info").replaceWith(data);
                         katana.refreshAutoInit(katana.$activeTab.find("#system_template"));
                         katana.refreshAutoInit(katana.$activeTab.find("#tag_template"));
+                        katana.refreshAutoInit(katana.$activeTab.find("#child_tag_template"));
                         katana.refreshAutoInit(katana.$activeTab.find("#subsystem_template"));
                         // console.log("loaded");
                     }
