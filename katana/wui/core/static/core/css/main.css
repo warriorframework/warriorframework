@@ -1846,115 +1846,84 @@ td {}
 
 /* execution app related styles starts*/
 .execution.btn{
-  padding: 13px;
+  padding: 5px;
   display: inline-block;
+  float: right;
   background: None;
   color: None;
   border: None;
   opacity: 0%;
 }
-
- .execution.btn:hover{
+.execution.btn:hover{
   background-color: #ddd;
-
 }
-
 .execution.panel-container{
   display: flex;
   flex-direction: row;
   border: 1px solid silver;
   overflow: hidden;
-  height: 100%;
-  /* avoid browser level touch actions */
-  xtouch-action: none;
+  height: 90%;
 }
 
+.execution.layout-panel{
+  width: 60%;
+  height: 100%;
+  display: block;
+  border: 1px solid #dedede;
+  background: #fff;
+  color: black;
+  overflow: hidden;
+}
 .execution.panels-heading{
   padding: 10px;
-  border: 1px solid #dedede;
-  /*border-bottom: 1px solid #dedede;
-  border-top-left-radius: 1px solid #dedede;
-  border-top-right-radius: 1px solid #dedede;*/
-
+  border-bottom: 1px solid #dedede;
+  position: relative;
+  background-color: rgb(95, 161, 226);
+  color: white;
+  /*rgba(76, 156, 239, 0.75);*/
 }
+
+.execution.panels-body{
+  overflow: auto;
+  height: 90%;
+  display: block;
+  position: relative;
+}
+.execution.selections-panel {
+  width: 40%;
+  height: 100%;
+  background: #fff;
+  color: black;
+  overflow: hidden;
+}
+
 
 .execution.panel-splitter {
   flex: 0 0 auto;
   width: 10px;
-  /* need to add a slider image to the bg*/
   background:  center center no-repeat #eee;
   height: 100%;
-  /*cursor: col-resize;*/
-}
-
-.execution.layout-panel{
-  /*flex: 1 1 auto;*/
-  /* resizable */
-  width: 75%;
-  height: 100%;
-  /*background: #838383;*/
-  border: 1px solid #dedede;
-  background: #fff;
-  color: black;
-  /*resize: horizontal;*/
-  overflow: auto;
-
-}
-
-.execution.selections-panel {
-  /*flex: 1 1 auto;*/
-  /* resizable */
-  width: 25%;
-  height: 100%;
-  background: #fff;
-  color: black;
-  overflow: auto;
-
-}
-
-.execution.layout-group{
-  padding-left: 0;
-  margin-bottom: 20px;
-}
-
-
-.execution.layout-group-item {
-  position: relative;
-  display: block;
-  padding: 10px 15px;
-  margin-bottom: -1px;
-  background-color: #fff;
-  /*border: 1px solid #ddd;*/
-}
-
-.execution.selection-group{
-  padding-left: 0;
-  margin-bottom: 20px;
-  min-height: 20px;
-  overflow-y:auto;
 }
 
 .execution.selection-group-item {
   position: relative;
   display: block;
-  padding: 10px 15px;
+  padding: 10px 10px;
   margin-bottom: -1px;
-  background-color: #fff;
-  border: 1px solid #ddd;
+  background-color: rgb(183, 214, 247);
+  border: 2px solid #ddd;
+  border-radius: 5px;
   min-height: 0px;
+  width: 95%;
 }
-
 .execution.selections-handle {
 	cursor: move;
 	cursor: -webkit-grabbing;
-
 }
-
 .ghost {
   opacity: .7;
   background: #36b3ed;
 }
-
 #execution_items i {
   /*-webkit-transition: opacity .2s;
   transition: opacity .2s;
@@ -1964,15 +1933,108 @@ td {}
   color: #c00;
   top: 10px;
   right: 40px;
-  position: absolute;
+  /*position: absolute;*/
+  float:right;
   font-style: normal;
 }
 
-.execution.drop-area {
-  /*width: 45em;*/
-  padding: 15px;
-  /*border: 1px solid #333;*/
-  background: #fff;;
+.execution.results-tab {
+    height: 18px;
+    width: 100%;
+    color: #6b6b6b;
+    background: #f1f1f1;
+    padding-bottom: 4%;
+
+  }
+.execution.results-tab  button {
+      background-color: inherit;
+      float: left;
+      border: 1px solid #ddd;
+      outline: none;
+      cursor: pointer;
+      padding: 10px 16px;
+      transition: 0.3s;
+      font-size: 17px;
+      font-family: Lato;
+  }
+.execution.results-tab button:hover {
+      background-color: #ddd;
+  }
+.execution.results-tab button.active {
+      background-color: #6b6b6b ;
+      color: white;
+  }
+/* Style the tab content */
+.execution.tab-content {
+    display: none;
+    padding: 6px 12px;
+    -webkit-animation: fadeEffect 1s;
+    animation: fadeEffect 1s;
+    font-family: Corbel;
+    /*overflow: auto;*/
+}
+.execution.dialog {
+    display: block;
+    position: absolute;
+    z-index: 99999;
+    -webkit-transition: opacity 400ms ease-in;
+  	-moz-transition: opacity 400ms ease-in;
+  	transition: opacity 400ms ease-in;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    -webkit-animation: fadeEffect 1s;
+
+    min-width: 40%;
+    min-height: 25%;
+    height: -webkit-fit-content;
+    weight: -webkit-fit-content;
+    color: black;
+    margin: auto;
+    /*background:#b3f2f9;*/
+    background-color: rgba(47, 95, 145, 0.80);
+
+    top: 40%;
+    bottom: 60%;
 }
 
+
+.execution.dialog:not([open]) {
+    display: none;
+}
+
+.execution.dialog-close {
+	background: #606061;
+	color: #FFFFFF;
+	line-height: 25px;
+	position: absolute;
+	right: -12px;
+	text-align: center;
+	top: -10px;
+	width: 24px;
+	text-decoration: none;
+	font-weight: bold;
+	-webkit-border-radius: 12px;
+	-moz-border-radius: 12px;
+	border-radius: 12px;
+	-moz-box-shadow: 1px 1px 3px #000;
+	-webkit-box-shadow: 1px 1px 3px #000;
+	box-shadow: 1px 1px 3px #000;
+}
+
+.execution.dialog-close:hover { background: red; }
+
+/* Fade in tabs */
+@-webkit-keyframes fadeEffect {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+@keyframes fadeEffect {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
 /* execution app related styles starts*/
+.is-blurred {
+  filter: blur(3px);
+  -webkit-filter: blur(3px);
+}

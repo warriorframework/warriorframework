@@ -28,7 +28,7 @@ class Navigator(object):
         pass
 
 
-    def get_dir_tree_json(self, start_dir_path, dir_icon=None, file_icon='jstree-file'):
+    def get_dir_tree_json(self, start_dir_path, dir_icon=None, file_icon='jstree-file', fl=False):
         """
         Takes an absolute path to a directory(start_dir_path)  as input and creates a
         json tree having the start_dir as the root. 
@@ -68,9 +68,13 @@ class Navigator(object):
         base_name = os.path.basename(start_dir_path)
         layout = {'text': base_name}
         layout['li_attr'] = {'data-path': start_dir_path}
+        if not fl:
+            layout["state"] = {"opened" : 'true' }                
+            fl = 'false'
         if os.path.isdir(start_dir_path):   
-            layout['icon'] = dir_icon if dir_icon else ""        
-            layout['children'] = [self.get_dir_tree_json(os.path.join(start_dir_path, x))\
+            layout['icon'] = dir_icon if dir_icon else ""            
+
+            layout['children'] = [self.get_dir_tree_json(os.path.join(start_dir_path, x), fl=fl)\
                                   for x in os.listdir(start_dir_path)]
         else:
             layout['icon'] = file_icon
