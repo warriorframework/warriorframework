@@ -297,7 +297,7 @@ Also refer the python regex documentation https://docs.python.org/2/library/re.h
 		<command verify="v1,v2,v3" start=".*" end="qemux86-64>" sleep="2" timeout="20"  send="set complete-on-space false " monitor="v1, v6"/>
 
 		<!-- command with rsp_req=n i.e. resp of this command will not be saved in framework's data repository -->
-		<command verify="v1,v2,v3" sleep="2" timeout="20"  send="set paginate false " resp_req="n" monitor=""/> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		<command verify="v1,v2,v3" sleep="2" timeout="20"  send="set paginate false " resp_req="n" monitor=""/> 
 
 		<!-- Command showing dotted notation representation of variable config, here the value of card will be
 		obtained from the variable config file by parsing the variable config file as follows network1->ne1->shelf1->slot1
