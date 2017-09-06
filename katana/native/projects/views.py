@@ -34,13 +34,14 @@ from django.template import Library
 from xmljson import badgerfish as bf
 from xml.etree.ElementTree import fromstring, tostring
 import xml.etree.ElementTree
+#from katana.utils.navigator_util import get_dir_tree_json
 
 from utils.navigator_util import Navigator
 
 path_to_demo="/home/khusain/Projects/xml-edit/warriorframework/katana/vdj/cases/"
 path_to_testcases='/home/khusain/Projects/xml-edit/warriorframework/wftests/warrior_tests/';
 path_to_productdrivers='/home/khusain/Projects/xml-edit/warriorframework/warrior/ProductDrivers/'
-navigator = Navigator();
+
 
 def old_index(request):
     return render(request, 'settings/index.html', {"data": controls.get_location()})
@@ -49,21 +50,36 @@ def old_index(request):
 ## List all your projects ...
 ##
 def index(request):
+	navigator = Navigator();
 	path_to_testcases = navigator.get_warrior_dir() + "/../wftests/warrior_tests/"
 	template = loader.get_template("./listAllProjects.html")
 	fpath = path_to_testcases + 'projects';
 	files = glob.glob(fpath+"*/*.xml")
 	print path_to_testcases
 	print fpath
-	print files 
 
+	#tt = { 'text': 'Projects', "icon" : "jstree-file",  
+	#		'state': { 'opened': True },
+	#		'children' : [] }
+
+	#for fn in files: 
+	#		item = { "text": fn, "icon" : "jstree-file", 
+	#			"li_attr" : { 'data-path': fn} , 
+	#			}
+	#		tt['children'].append(item);
+
+
+	tt = navigator.get_dir_tree_json(fpath)
+	tt['state']= { 'opened': True };
 	context = { 
 		'title' : 'List of Projects',	
 		'docSpec': 'projectSpec',
+		'treejs'  : tt, 
 		'listOfFiles': files	
 	}
 	context.update(csrf(request))
 	return HttpResponse(template.render(context, request))
+
 
 ## MUST MOVE TO CLASS !!!!
 ## List all your project as editable UI.
@@ -72,10 +88,12 @@ def editProject(request):
 	"""
 	Set up JSON object for editing a project file. 
 	"""
+	navigator = Navigator();
 	path_to_testcases = navigator.get_warrior_dir() + "/../wftests/warrior_tests/"
 	template = loader.get_template("./editProject.html")
-	filename = request.GET.get('fname')
+	filename = request.GET.get('fname','NEW')
 
+	
 	# Create Mandatory empty object.
 	xml_r = {} ; 
 	xml_r["Project"] = {}
@@ -88,24 +106,26 @@ def editProject(request):
 	xml_r["Project"]["Details"]["Datatype"] = OrderedDict([('$', '')])
 	xml_r["Project"]["Details"]["Engineer"] = OrderedDict([('$', '')])
 	xml_r["Project"]["Details"]["default_onError"] = OrderedDict([('$', '')])
-	xml_r["Project"]["Testsuites"] = ""
+	xml_r["Project"]["Testsuites"] = []
 	xml_r['Project']['filename'] = OrderedDict([('$', filename)]);
 
-	xlines = open(filename.strip()).read()
-	xml_d = bf.data(fromstring(xlines)); # xmltodict.parse(fd1.read());
+	if filename != 'NEW':
 
-	# Map the input to the response collector
-	for xstr in ["Name", "Title", "Category", "Date", "Time", "Engineer", \
-		"Datatype", "default_onError"]:
+		xlines = open(filename.strip()).read()
+		xml_d = bf.data(fromstring(xlines)); # xmltodict.parse(fd1.read());
+
+		# Map the input to the response collector
+		for xstr in ["Name", "Title", "Category", "Date", "Time", "Engineer", \
+			"Datatype", "default_onError"]:
+			try:
+				xml_r["Project"]["Details"][xstr]["$"] = xml_d["Project"]["Details"][xstr].get("$","")
+			except: 
+				pass
+
 		try:
-			xml_r["Project"]["Details"][xstr]["$"] = xml_d["Project"]["Details"][xstr].get("$","")
-		except: 
-			pass
-
-	try:
-		xml_r['Project']['Testsuites'] = copy.copy(xml_d['Project']['Testsuites']);
-	except:
-		xml_r["Project"]["Testsuites"] = ""
+			xml_r['Project']['Testsuites'] = copy.copy(xml_d['Project']['Testsuites']);
+		except:
+			xml_r["Project"]["Testsuites"] = []
 
 
 	context = { 

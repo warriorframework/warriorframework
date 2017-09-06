@@ -10,34 +10,34 @@
 <script type="text/javascript" src="{% static "./json.js" %}"></script>
 <script type="text/javascript" src="{% static "./xmlparser.js" %}"></script>
 <script type="text/javascript" src="{% static "./doProjectHandling.js" %}"></script>
-
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
  
 
 	Editing:{{ myfile }}
 	<h2>Details</h2>
-	<div class="form-group col-md-8">
-			<div class="field">
+	<div class="form-group col-md-12">
+			<div class="field col-md-4">
 				<label for="projectName">Name*:</label>
 				<input type="text" id="projectName" name="projectName" value="{{projectName}}"/>
 			</div>
-			<div class="field">	
+			<div class="field col-md-4">	
 				<label for="projectTitle">Title*:</label>
 				<input  type="text" id="projectTitle" name="projectTitle" value="{{projectTitle}}" />
 			</div>
-			<div class="field">
+			<div class="field col-md-4">
 				<label class="text-right" for="projectEngineer">Engineer*:</label>
 				<input class="text-right" type="text" id="projectEngineer" name="projectEngineer" value="{{projectEngineer}}" />
 			</div>
-			<div class="field">	
+			<div class="field col-md-4">	
 				
 				<label class="text-right" for="projectDate">Last Updated:</label>
 				<input class="text-right" type="text" id="projectDate" name="projectDate" value="{{projectDate}}" />
 			</div>
-			<div class="field">
+			<div class="field col-md-4">
 				<label class="text-right" for="defaultOnError">defaultOnError:</label>
 				<input class="text-right" type="text" id="defaultOnError" name="defaultOnError" value="{{projectdefaultOnError}}"/>
 			</div>
-			<div class="field">	
+			<div class="field col-md-4">	
 				<label class=" text-right" for="projectDatatype">Data Type:</label>
 				<select class="text-right" type="text" id="projectDatatype" name="projectDatatype" value="{{projectDatatype}}" >
 					<option value="Custom">Custom</option>
@@ -48,15 +48,13 @@
 		</div>
 	</div>
 
-	<div>
-		<h2>TestSuites</h2>
+
+	
+	<div class="row">
+	<div id="tableOfTestSuitesForProject"  class="col-md-6" />
+		<div id="editTestSuiteEntry" class="form-group col-md-6" />
 	</div>
 
-		<div id="tableOfTestSuitesForProject"  class="col-md-12" />
-	<div>
-		<h2>Edit Test Suite</h2>
-	</div>
-		<div id="editTestSuiteEntry" class="form-group col-md-8" />
 
 	<div class="container">
 	    <div id="editor" class="col-md-12" >  </div>    

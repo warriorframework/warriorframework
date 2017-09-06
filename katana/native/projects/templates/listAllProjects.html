@@ -15,54 +15,44 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
 
     <h2>List of Projects</h2>
-	{% for xx in listOfFiles %}
-		<table>
-		<tr><td>
-		<div class="linkToProject" href="./projects/editProject/?fname={{xx}}" fname="{{xx}}">{{xx}}</div>
-		</td></tr>
-		</table>
-	{% endfor %}
-	<br>
 
 <div id="myProject">
-</div>
 
 
-<div id="myProjectTree">
 </div>
+      <div class="btn-group" role="group">   
+      <button id="addSuite" class="btn btn-success" onclick="startNewProject()">Add New Project</button>
+      </div>
+<div id="myProjectTree"></div>
+<div id="mmm" >{{treejs|jsonify}}</div>
 
 
 <script> 
-/*
-	$('#myProjectTree').jstree({ 'core' : {
-    'data' : [
-       'Simple root node',
-       {
-         'text' : 'Root node 2',
-         'state' : {
-           'opened' : true,
-           'selected' : true
-         },
-         'children' : [
-           { 'text' : 'Child 1' },
-           'Child 2'
-         ]
-      }
-    ]
-	} });
-*/
 
-$(".linkToProject").click(function() { 
+function startNewProject() {
+  var xref="./projects/editProject/fname=NEW" ;
+  katana.templateAPI.load(xref, null, null, 'title') ;
+}
 
-	var $elem = $(this);
-	var thePage = $elem.attr('href');
-	var theID   = $elem.attr('fname');
-    katana.$view.one('tabAdded', function(){
-   		mapFullProjectJson(theID);
-    });
-	//
-	katana.templateAPI.load( thePage, null, null, 'title') ;
+
+katana.$activeTab.find('#mmm').hide();
+var sdata= katana.$activeTab.find('#mmm').text();
+console.log(sdata);
+var jdata = { 'core' : { 'data' : [ JSON.parse(sdata)]}};
+
+katana.$activeTab.find('#myProjectTree').jstree(jdata); 
+katana.$activeTab.find('#myProjectTree').on("select_node.jstree", function (e, data) { 
+      var thePage = data.node.li_attr['data-path'];
+      katana.$view.one('tabAdded', function(){
+      mapFullProjectJson(thePage);
+  });
+  //
+
+  var xref="./projects/editProject/?fname=" + thePage; 
+  katana.templateAPI.load(xref, null, null, 'title') ;
+
 
 });
+
 </script>
 

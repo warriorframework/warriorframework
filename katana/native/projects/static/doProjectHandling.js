@@ -268,12 +268,12 @@ function createSuiteEditTable(xdata) {
 	katana.$activeTab.find("#editTestSuiteEntry").html( "");
 	var items = []; 
 	
-	items.push('<div class="field">'); 
+	items.push('<div class="field col-md-3" >'); 
 	items.push('<label >Row Id</label>');
 	items.push('<input type="text" id="suiteRowToEdit'+activePageID+'" value=""/>');
 	items.push('</div>');			
 
-	items.push('<div class="field">');
+	items.push('<div class="field col-md-3">');
 	items.push('<label >Path*:</label>');
 	items.push('<input type="text" id="suitePath'+activePageID+'" value=""/>');
 	items.push('</div>');
@@ -287,30 +287,30 @@ function createSuiteEditTable(xdata) {
 	items.push('</select>');
 	items.push('</div>');
 			
-	items.push('<div class="field">');
+	items.push('<div class="field col-md-3">');
 	items.push('<label for="executeRuleAtCondition">Rule Condition:</label>');
 	items.push('<input type="text" id="executeRuleAtCondition'+activePageID+'" value=""/>');
 	items.push('</div>');			
-	items.push('<div class="field">');
+	items.push('<div class="field col-md-3">');
 	items.push('<label for="executeRuleAtCondvalue">Rule Condition Value:</label>');
 	items.push('<input type="text" id="executeRuleAtCondvalue'+activePageID+'" value=""/>');
 	items.push('</div>');			
-	items.push('<div class="field">');
+	items.push('<div class="field col-md-3">');
 	items.push('<label for="executeRuleAtElse">Rule Else:</label>');
 	items.push('<input type="text" id="executeRuleAtElse'+activePageID+'" value=""  />');
 	items.push('</div>	');		
-	items.push('<div class="field">');
+	items.push('<div class="field col-md-3">');
 	items.push('<label for="executeRuleAtElsevalue">Rule Else Value:</label>');
 	items.push('<input type="text" id="executeRuleAtElsevalue'+activePageID+'" value="" />');
 	items.push('</div>');
-	items.push('<div class="field">');
+	items.push('<div class="field col-md-3">');
 	items.push('<label for="onError-at-action">On Error*:</label>');
 	items.push('<input type="text" id="onError-at-action'+activePageID+'" value=""/>');
 	items.push('</div>');
 
-	items.push('<div class="field">');
+	items.push('<div class="field col-md-3">');
 	items.push('<label class="col-md-2 text-right" >On Error value:</label>');
-	items.push('<select type="text" class="col-md-4 text-right" id="onError-at-value'+activePageID+'" value="" >');
+	items.push('<select type="text" class="text-right" id="onError-at-value'+activePageID+'" value="" >');
 	items.push('<option value="next">next</option>');
 	items.push('<option value="abort">abort</option>');
 	items.push('<option value="abort_as_error">abort_as_error</option>');
@@ -318,20 +318,20 @@ function createSuiteEditTable(xdata) {
 	items.push('</select>');
 	items.push('</div>');
 		
-	items.push('	<div class="field">');
+	items.push('	<div class="field col-md-3">');
 	items.push('	<br><span class="label label-primary">Run mode</span><br>');
-	items.push('	<label class="col-md-2 text-right" >runmode type:</label>');
-	items.push('	<input type="text" class="col-md-4 text-right" id="runmode-at-type"'+activePageID + ' value="" />');
-	items.push('	<label class="col-md-2 text-right" >runmode value:</label>');
-	items.push('	<select type="text" class="col-md-4 text-right" id="runmode-at-value'+activePageID+'" value="" >');
+	items.push('	<label class="text-right" >runmode type:</label>');
+	items.push('	<input type="text" class="text-right" id="runmode-at-type"'+activePageID + ' value="" />');
+	items.push('	<label class="text-right" >runmode value:</label>');
+	items.push('	<select type="text" class="text-right" id="runmode-at-value'+activePageID+'" value="" >');
 	items.push('	<option value="RMT">RMT</option> ');
 	items.push('	<option value="RUF">RUF</option> ');
 	items.push('	<option value="RUP">RUP</option> ');
 	items.push('	</select>');
 	items.push('		</div>');
 
-	items.push('	<div class="field">');
-	items.push('		<label class="col-md-2 text-right" >impact</label>');
+	items.push('	<div class="field col-md-3">');
+	items.push('		<label class="text-right" >impact</label>');
 	items.push('			<select type="text" id="impact"'+activePageID + ' value="" >');
 	items.push('			<option value="impact">impact</option> ');
 	items.push('			<option value="noimpact">noimpact</option> ');
@@ -342,13 +342,14 @@ function createSuiteEditTable(xdata) {
 	// Now create the buttons to save the data. 
 
 	var bid = "editTestSuite-"+activePageID+"-id"+getRandomID();;
-	items.push('<td><input type="button" class="btn" value="Edit" id="'+bid+'"/></td>');
+	items.push('<td><input type="button" class="btn col-md-3" value="Save Changes" id="'+bid+'"/></td>');
 	katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 	$(document).on('click','#'+bid,function(  ) {
 			//var names = this.id.split('-');
 			//var sid = parseInt(names[1]);
 			mapUItoProjectSuite(xdata);
-			
+			console.log("....** scrollIntoView ** ")
+			katana.$activeTab.find("#editTestSuiteHeader").scrollIntoView();
 		});
 
 	katana.$activeTab.find("#editTestSuiteEntry").html( items.join(""));
@@ -374,10 +375,17 @@ function createSuitesTable(xdata) {
 	katana.$activeTab.find("#tableOfTestSuitesForProject").html("");
 	for (var s=0; s<Object.keys(xdata).length; s++ ) {
 		var oneSuite = xdata[s];
+		if (oneSuite == null) {
+			xdata[s] = {} ;
+			oneSuite = xdata[s];
+		}
+		console.log(oneSuite);
 		fillSuiteDefaults(s,xdata);
+		
+		console.log(oneSuite);
 		console.log(oneSuite['path']);
 		
-		items.push('<tr><td>'+s+'</td>');
+		items.push('<tr><td class="col-md-1">'+s+'</td>');
 		items.push('<td>'+oneSuite['path']['$']+'</td>');
 		items.push('<td>Type='+oneSuite['Execute']['@ExecType']+'<br>');
 		items.push('Condition='+oneSuite['Execute']['Rule']['@Condition']+'<br>');
@@ -421,7 +429,17 @@ function createSuitesTable(xdata) {
 }
 
 function fillSuiteDefaults(s, data){
+		if(data[s] == null) {
+			data[s] = {} ;
+		}    
 		oneSuite = data[s]
+		if (!oneSuite['path']) {
+			oneSuite['path'] = { '$': "New"};
+		}
+		if (!oneSuite['path']['$']) {
+			oneSuite['path']['$'] =  "New";
+		}
+
 		if (! oneSuite['Execute']){
 			oneSuite['Execute'] = { "@ExecType": "Yes", 
 					"Rule": { "@Condition": "", "@Condvalue": "", "@Else": "next", "@Elsevalue": "" }
