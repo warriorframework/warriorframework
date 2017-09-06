@@ -40,44 +40,6 @@ class WarriorCli(object):
     def __init__(self):
         """ Constructor """
         self.conn_obj = None
-        self.status = None
-
-    def connect(self, credentials):
-        """ To create SSH/Telnet connections using pexpect/paramiko modules.
-        Supported conn_type values : SSH, TELNET, SSH_NESTED
-        :Arguments:
-            1. credentials = refer constructor method arguments of
-                             ParamikoConnect & PexpectConnect classes
-         """
-
-        self.status = False
-        if 'conn_type' in credentials:
-            conn_type = credentials['conn_type'].upper()
-
-        if conn_type in ["SSH", "TELNET"]:
-            self.conn_obj = PexpectConnect(credentials)
-            # pexpect will be used for establishing session
-            if conn_type == "SSH":
-                self.conn_obj.connect_ssh()
-            else:
-                self.conn_obj.connect_telnet()
-            # change the status to True if the session creation is successful
-            import pexpect
-            if isinstance(self.conn_obj.target_host, pexpect.spawn):
-                self.status = True
-        elif conn_type == "SSH_NESTED":
-            # paramiko will be used for establishing session
-            self.conn_obj = ParamikoConnect(credentials)
-            self.conn_obj.connect_ssh()
-            # change the status to True if the session creation is successful
-            import paramiko
-            if isinstance(self.conn_obj.target_host,
-                          paramiko.client.SSHClient):
-                self.status = True
-        else:
-            print_info("Connection type : {} is not "
-                       "supported".format(conn_type))
-            self.conn_obj, self.conn_obj.conn_string = None, ""
 
     def connect_ssh(self, ip, port="22", username="", password="",
                     logfile=None, timeout=60, prompt=".*(%|#|\$)",

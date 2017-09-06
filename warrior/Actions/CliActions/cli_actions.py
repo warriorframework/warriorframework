@@ -190,9 +190,8 @@ class CliActions(object):
                    "session_name={1} Failed".format(system_name, session_name)
             if WarriorCliClass.cmdprint:
                 result = True
-            if isinstance(wc_obj, WarriorCli) and \
-               wc_obj.conn_obj is not None and \
-               wc_obj.conn_obj.conn_type in ["SSH", "TELNET", "SSH_NESTED"]:
+            if isinstance(wc_obj, WarriorCli) and wc_obj.conn_obj is not None \
+               and wc_obj.conn_obj.target_host is not None:
                 # execute smart action to produce user report
                 connect_testdata = \
                  Utils.data_Utils.get_object_from_datarepository(
@@ -336,11 +335,16 @@ class CliActions(object):
                 # Create an object for WarriorCli class and use it to
                 # establish ssh sessions
                 wc_obj = WarriorCli()
-                wc_obj.connect(credentials)
+                if credentials['conn_type'] == "SSH_NESTED":
+                    from Framework.ClassUtils.WNetwork.warrior_cli_class import ParamikoConnect
+                    wc_obj.conn_obj = ParamikoConnect(credentials)
+                else:
+                    from Framework.ClassUtils.WNetwork.warrior_cli_class import PexpectConnect
+                    wc_obj.conn_obj = PexpectConnect(credentials)
+                wc_obj.conn_obj.connect_ssh()
 
                 if wc_obj.conn_obj is not None and \
-                   wc_obj.conn_obj.conn_type in ["SSH", "SSH_NESTED"] and \
-                   wc_obj.status is True:
+                   wc_obj.conn_obj.target_host is not None:
                     conn_string = wc_obj.conn_obj.conn_string
                     output_dict[session_id] = wc_obj
                     output_dict[session_id + "_connstring"] = \
@@ -480,11 +484,12 @@ class CliActions(object):
                 # Create an object for WarriorCli class and use it to
                 # establish telnet sessions
                 wc_obj = WarriorCli()
-                wc_obj.connect(credentials)
+                from Framework.ClassUtils.WNetwork.warrior_cli_class import PexpectConnect
+                wc_obj.conn_obj = PexpectConnect(credentials)
+                wc_obj.conn_obj.connect_telnet()
 
                 if wc_obj.conn_obj is not None and \
-                   wc_obj.conn_obj.conn_type == "TELNET" and \
-                   wc_obj.status is True:
+                   wc_obj.conn_obj.target_host is not None:
                     conn_string = wc_obj.conn_obj.conn_string
                     output_dict[session_id] = wc_obj
                     output_dict[session_id + "_connstring"] = \
