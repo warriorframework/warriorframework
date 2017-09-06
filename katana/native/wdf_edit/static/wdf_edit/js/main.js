@@ -8,6 +8,14 @@ var wdf = {
         $(this).parent().parent().empty();
     },
 
+    deleteChildTag: function(){
+        $target = $(this).parent().parent().find("[name*='key']");
+        if ($target.prop("name").indexOf("deleted") == -1) {
+            $target.prop("name", "deleted-"+$target.prop("name"));
+            $(this).parent().parent().hide();
+        }
+    },
+
     deleteSystem: function(){
         $(this).parent().parent().parent().empty();
     },
@@ -54,11 +62,12 @@ var wdf = {
         var $tmp = katana.$activeTab.find("#child_tag_template").clone();
         // go to control box level
         var $target = $(this).parent().parent();
-        var $id = $target.find("[name*='-key']").attr("name").substring(0, $target.find("[name*='-key']").attr("name").length-4);
-        alert($id.split("-"));
-        // $tmp.find("[name='template-tag.tag']").prop("name", $id+($target.children("#content").length+1)+"-1-key");
-        // $tmp.find("[name='template-tag.value']").prop("name", $id+($target.children("#content").length+1)+"-1-value");
-        // $target.append($($tmp.html()));
+        var $raw_id = $target.find("[name*='-key']").attr("name").substring(0, $target.find("[name*='-key']").attr("name").length-4);
+        var $id = $raw_id.split("-").slice(0,-1).join("-");
+        var $new_id = $target.parent().find("[name*='"+$id+"']").length/2+1;
+        $tmp.find("[name='template-tag.tag']").prop("name", $id+"-"+$new_id+"-key");
+        $tmp.find("[name='template-tag.value']").prop("name", $id+"-"+$new_id+"-value");
+        $target.parent().find("[name*='"+$id+"']:last").parent().parent().after($($tmp.html()));
     },
 
     addSubSystem: function(){
