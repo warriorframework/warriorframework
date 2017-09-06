@@ -6,6 +6,7 @@ from HTMLParser import HTMLParser
 from xml.etree.ElementTree import parse
 from pprint import pprint
 from utils.navigator_util import Navigator
+from collections import OrderedDict
 
 from django.shortcuts import render
 from django.http import JsonResponse
@@ -77,7 +78,31 @@ def raw_parser(data):
     #             cur[part] = {}
     #         cur = cur[part]
     #     cur.update({parts[-1]:v})
-    # print json.dumps(result, indent=4)
+    system_keys = [x for x in data.keys() if x.endswith("-system_name")]
+    for name in system_keys:
+        # Prepare all system to save data
+        sys_name = name.replace("-system_name", "").split("-")[0]
+        subsys_name = name.replace("-system_name", "").split("-")[1]
+        if sys_name in result:
+            result[sys_name][subsys_name] = {"system_name":data[name]}
+        else:
+            result[sys_name] = {subsys_name: {"system_name":data[name]}}
+        current_sys = result[sys_name][subsys_name]
+        if sys_name+"-"+subsys_name+"-subsystem_name" in data:
+            current_sys.update({"subsystem_name":data[sys_name+"-"+subsys_name+"-subsystem_name"]})
+
+        tags_keys = [x for x in data.keys() if x.startswith(sys_name + "-" + subsys_name + "-") and x.endswith("key")]
+        # Parse data
+        for k in tags_keys:
+            parsed_k = k.split("-")
+            sys_name, subsys_name, tag_ind, child_tag_ind = parsed_k[:4]
+
+            if tag_ind in current_sys:
+                current_sys[tag_ind][child_tag_ind] = (data[k], data[k[:-4]+"-value"])
+            else:
+                current_sys[tag_ind] = {child_tag_ind: (data[k], data[k[:-4]+"-value"])}
+
+    print json.dumps(result, indent=4)
     return result
 
 def on_post(request):
