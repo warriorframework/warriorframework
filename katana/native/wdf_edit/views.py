@@ -67,16 +67,16 @@ def file_list(request):
 
 def raw_parser(data):
     result = {}
-    for k, v in data.items():
-        parts = k.split(".")
-        if parts[0] not in result:
-            result[parts[0]] = {}
-        cur = result[parts[0]]
-        for part in parts[1:-1]:
-            if part not in cur:
-                cur[part] = {}
-            cur = cur[part]
-        cur.update({parts[-1]:v})
+    # for k, v in data.items():
+    #     parts = k.split(".")
+    #     if parts[0] not in result:
+    #         result[parts[0]] = {}
+    #     cur = result[parts[0]]
+    #     for part in parts[1:-1]:
+    #         if part not in cur:
+    #             cur[part] = {}
+    #         cur = cur[part]
+    #     cur.update({parts[-1]:v})
     # print json.dumps(result, indent=4)
     return result
 
