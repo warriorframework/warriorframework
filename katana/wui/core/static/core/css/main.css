@@ -2049,16 +2049,18 @@ td {}
 .execution.dialog-close:hover { background: red; }
 
 /* Fade in tabs */
+@keyframes fadeEffect {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
 @-webkit-keyframes fadeEffect {
     from {opacity: 0;}
     to {opacity: 1;}
 }
 
-@keyframes fadeEffect {
-    from {opacity: 0;}
-    to {opacity: 1;}
-}
-/* execution app related styles starts*/
+
+/* execution app related styles ends*/
+
 .is-blurred {
   filter: blur(3px);
   -webkit-filter: blur(3px);
