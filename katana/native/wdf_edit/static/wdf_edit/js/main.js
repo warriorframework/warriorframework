@@ -42,7 +42,7 @@ var wdf = {
         // Add a system
         var $tmp = katana.$activeTab.find("#system_template").clone();
         $tmp.find("#template-system").prop("id", katana.$activeTab.find(".control-box").length-1+"-control-box")
-        $tmp.find("[name='template-system-name']").prop("name", katana.$activeTab.find(".control-box").length-1+"-system_name");
+        $tmp.find("[name='template-system-name']").prop("name", katana.$activeTab.find(".control-box").length-1+"-1-system_name");
         $tmp.find("[name='template-system.tag']").prop("name", katana.$activeTab.find(".control-box").length-1+"-1-1-key");
         $tmp.find("[name='template-system.value']").prop("name", katana.$activeTab.find(".control-box").length-1+"-1-1-value");
         katana.$activeTab.find("#big-box").append($($tmp.html()));
@@ -74,7 +74,8 @@ var wdf = {
         var $tmp = katana.$activeTab.find("#subsystem_template").clone();
         var $target = $(this).parent().parent().parent();
         var $system_id = $target.attr("id").split("-")[0];
-        var $subsystem_count = $target.attr("id").split("-")[1];
+        var $subsystem_count = $target.parent().find("[id^='"+$system_id+"-']").length;
+        $tmp.find("#template-subsystem").prop("id", $system_id+"-"+($subsystem_count+1)+"-control-box");
         $tmp.find("[name='template-system-name']").attr("value", $target.find('[name*="system_name"]').attr("value"));
         $tmp.find("[name='template-system-name']").prop("name", $system_id+"-"+($subsystem_count+1)+"-system_name");
         $tmp.find("[name='template-subsystem-name']").prop("name", $system_id+"-"+($subsystem_count+1)+"-subsystem_name");
