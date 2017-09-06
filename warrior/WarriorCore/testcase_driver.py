@@ -28,8 +28,10 @@ common_execution_utils, framework_detail
 from WarriorCore.Classes import execution_files_class, junit_class, hybrid_driver_class
 import Framework.Utils as Utils
 from Framework.Utils.testcase_Utils import convertLogic
-from Framework.Utils.print_Utils import print_notype, print_info,print_warning, print_error, print_debug, print_exception
+from Framework.Utils.print_Utils import print_notype, print_info, print_warning, print_error,\
+    print_debug, print_exception
 import Framework.Utils.email_utils as email
+
 
 def get_testcase_details(testcase_filepath, data_repository, jiraproj):
     """Gets all the details of the Testcase
@@ -38,14 +40,15 @@ def get_testcase_details(testcase_filepath, data_repository, jiraproj):
     by user assigns default values.
     """
 
-    name = Utils.xml_Utils.getChildTextbyParentTag (testcase_filepath, 'Details', 'Name')
-    title = Utils.xml_Utils.getChildTextbyParentTag (testcase_filepath, 'Details', 'Title')
-    category = Utils.xml_Utils.getChildTextbyParentTag (testcase_filepath, 'Details', 'Category')
+    name = Utils.xml_Utils.getChildTextbyParentTag(testcase_filepath, 'Details', 'Name')
+    title = Utils.xml_Utils.getChildTextbyParentTag(testcase_filepath, 'Details', 'Title')
+    category = Utils.xml_Utils.getChildTextbyParentTag(testcase_filepath, 'Details', 'Category')
     def_on_error_action = Utils.testcase_Utils.get_defonerror_fromxml_file(testcase_filepath)
-    def_on_error_value = Utils.xml_Utils.getChildAttributebyParentTag (testcase_filepath, 'Details', 'default_onError', 'value')
-    filename = os.path.basename (testcase_filepath)
+    def_on_error_value = Utils.xml_Utils.getChildAttributebyParentTag(testcase_filepath, 'Details',
+                                                                      'default_onError', 'value')
+    filename = os.path.basename(testcase_filepath)
     filedir = os.path.dirname(testcase_filepath)
-    nameonly = Utils.file_Utils.getNameOnly (filename)
+    nameonly = Utils.file_Utils.getNameOnly(filename)
     operating_system = sys.platform
 
     if name is None or name is False:
@@ -61,7 +64,7 @@ def get_testcase_details(testcase_filepath, data_repository, jiraproj):
         title = "None"
     else:
         title = str(title).strip()
-    
+
     if def_on_error_value is None or def_on_error_value is False:
         def_on_error_value = None
 
@@ -71,7 +74,6 @@ def get_testcase_details(testcase_filepath, data_repository, jiraproj):
         else:
             data_repository['wt_results_execdir'] = None
 
-
     if not data_repository.has_key('wt_logs_execdir'):
         if data_repository.has_key('ow_logdir'):
             data_repository['wt_logs_execdir'] = data_repository['ow_logdir']
@@ -80,53 +82,52 @@ def get_testcase_details(testcase_filepath, data_repository, jiraproj):
 
     res_startdir = data_repository['wt_results_execdir']
     logs_startdir = data_repository['wt_logs_execdir']
-    
-    efile_obj = execution_files_class.ExecFilesClass(testcase_filepath, "tc", res_startdir, logs_startdir)
+
+    efile_obj = execution_files_class.ExecFilesClass(testcase_filepath, "tc", res_startdir,
+                                                     logs_startdir)
     resultfile = efile_obj.resultfile
     resultsdir = efile_obj.resultsdir
     logfile = efile_obj.logfile
     logsdir = efile_obj.logsdir
     defectsdir = efile_obj.get_defect_files()
 
-
-
-
-    """Data files can be passed on to a test by four methods, below are the 
-       four methods and its priority in order. 
+    """Data files can be passed on to a test by four methods, below are the
+       four methods and its priority in order.
        By this feature we allow the user to run the same testcases, with
        different data files with out actually changing the testcase.
-    """ 
+    """
 
-    ##First priority for data files given through CLI##
+    # First priority for data files given through CLI##
     if data_repository.has_key('ow_datafile'):
         datafile = data_repository['ow_datafile']
         data_type = efile_obj.check_get_datatype(datafile)
-    ##Second priority for data files given in the Test suite step##
+    # Second priority for data files given in the Test suite step##
     elif data_repository.has_key(testcase_filepath):
         datafile = data_repository[testcase_filepath]
         data_type = efile_obj.check_get_datatype(datafile)
-    ##Third priority for data files given in the Test Suite globally##
+    # Third priority for data files given in the Test Suite globally##
     elif data_repository.has_key('suite_data_file'):
         datafile = data_repository['suite_data_file']
         data_type = efile_obj.check_get_datatype(datafile)
-    ##Fourth priority for data files given in the Testcase file##
+    # Fourth priority for data files given in the Testcase file##
     else:
         datafile, data_type = efile_obj.get_data_files()
 
     # tc_execution_dir = Utils.file_Utils.createDir_addtimestamp(execution_dir, nameonly)
     # datafile, data_type = get_testcase_datafile(testcase_filepath)
-    # resultfile, resultsdir = get_testcase_resultfile(testcase_filepath, tc_execution_dir, nameonly)
+    # resultfile, resultsdir = get_testcase_resultfile(testcase_filepath, tc_execution_dir,
+    # nameonly)
     # logfile, logsdir = get_testcase_logfile(testcase_filepath, tc_execution_dir, nameonly)
     # defectsdir = get_testcase_defectsdir(testcase_filepath, tc_execution_dir, nameonly)
     kw_results_dir = Utils.file_Utils.createDir(resultsdir, 'Keyword_Results')
     console_logfile = Utils.file_Utils.getCustomLogFile(filename, logsdir, 'consoleLogs')
 
     Utils.config_Utils.debug_file(console_logfile)
-    #objLogFile = Utils.testcase_Utils.pOpen(logfile)
+    # objLogFile = Utils.testcase_Utils.pOpen(logfile)
 
     to_strip_list = [name, title, category, datafile, data_type, logsdir, resultsdir, defectsdir]
     stripped_list = Utils.string_Utils.strip_white_spaces(to_strip_list)
-    
+
     name = stripped_list[0]
     title = stripped_list[1]
     category = stripped_list[2]
@@ -149,15 +150,15 @@ def get_testcase_details(testcase_filepath, data_repository, jiraproj):
     data_repository['wt_logsdir'] = logsdir
     data_repository['wt_kw_results_dir'] = kw_results_dir
     data_repository['wt_defectsdir'] = defectsdir
-    #data_repository['wt_logfile'] = objLogFile
+    # data_repository['wt_logfile'] = objLogFile
     data_repository['wt_operating_system'] = operating_system.upper()
     data_repository['wt_def_on_error_action'] = def_on_error_action.upper()
     data_repository['wt_def_on_error_value'] = def_on_error_value
-   
+
     # For custom jira project name
     if not data_repository.has_key('jiraproj'):
         data_repository['jiraproj'] = jiraproj
-    
+
     # write resultfile, logsdir, datafile, filename, logfile to config file
     Utils.config_Utils.set_resultfile(resultfile)
     Utils.config_Utils.set_datafile(datafile)
@@ -165,7 +166,7 @@ def get_testcase_details(testcase_filepath, data_repository, jiraproj):
     Utils.config_Utils.set_filename(filename)
     Utils.config_Utils.set_logfile(logfile)
     Utils.config_Utils.set_testcase_path(filedir)
- 
+
     # write TC details to result file
     Utils.testcase_Utils.pTestcase()
     Utils.testcase_Utils.pCustomTag("Title", title)
@@ -176,13 +177,11 @@ def get_testcase_details(testcase_filepath, data_repository, jiraproj):
     Utils.testcase_Utils.pCustomTag("Resultfile", resultfile)
     Utils.testcase_Utils.pCustomTag("Operating_System", operating_system)
 
-    
     # copying testcase xml file to execution directory of this testcase
-    exec_dir =  os.path.dirname(data_repository['wt_resultsdir'])
+    exec_dir = os.path.dirname(data_repository['wt_resultsdir'])
     shutil.copy2(testcase_filepath, exec_dir)
 
     return data_repository
-
 
 
 def report_testcase_requirements(testcase_filepath):
@@ -193,13 +192,17 @@ def report_testcase_requirements(testcase_filepath):
         for req_id in req_id_list:
             Utils.testcase_Utils.pReportRequirements(req_id)
 
+
 def junit_requirements(testcase_filepath, tc_junit_object, timestamp):
+    """ Takes the location of any Testcase xml file as input and add a new requirement when
+    called"""
+
     req_id_list = Utils.testcase_Utils.get_requirement_id_list(testcase_filepath)
     if req_id_list is not None:
         for req_id in req_id_list:
             tc_junit_object.add_requirement(req_id, timestamp)
 
-    
+
 def get_steps_list(testcase_filepath):
     """Takes the location of any Testcase xml file as input
     Returns a list of all the step elements present in the Testcase
@@ -208,7 +211,7 @@ def get_steps_list(testcase_filepath):
         1. testcase_filepath    = full path of the Testcase xml file
     """
     step_list = []
-    root = Utils.xml_Utils.getRoot(testcase_filepath)   
+    root = Utils.xml_Utils.getRoot(testcase_filepath)
     Steps = root.find('Steps')
     if Steps is None:
         print_warning("Case: '{}' has no Steps/Keywords "
@@ -216,8 +219,8 @@ def get_steps_list(testcase_filepath):
     else:
         step_list = []
         new_step_list = Steps.findall('step')
-        #execute step multiple times
-        for index, step in enumerate(new_step_list):
+        # execute step multiple times
+        for _, step in enumerate(new_step_list):
             runmode, value = common_execution_utils.get_runmode_from_xmlfile(step)
             retry_type, _, _, retry_value, _ = common_execution_utils.get_retry_from_xmlfile(step)
             if runmode is not None and value > 0:
@@ -241,6 +244,7 @@ def get_steps_list(testcase_filepath):
                 step_list.append(step)
         return step_list
 
+
 def compute_testcase_status(step_status, tc_status):
     """Compute the status of the testcase based on the step_status and the impact value of the step
 
@@ -255,6 +259,7 @@ def compute_testcase_status(step_status, tc_status):
     else:
         return tc_status and step_status
 
+
 def report_testcase_result(tc_status, data_repository):
     """Report the testcase result to the result file
 
@@ -263,8 +268,11 @@ def report_testcase_result(tc_status, data_repository):
         2. data_repository (dict) = data_repository of the executed  testcase
     """
     print_info("\n**** Testcase Result ***")
-    print_info("TESTCASE:{0}  STATUS:{1}".format(data_repository['wt_name'], convertLogic(tc_status)))
-    print("\n")
+
+    print_info("TESTCASE:{0}  STATUS:{1}".format(data_repository['wt_name'],
+                                                 convertLogic(tc_status)))
+
+    print_info("\n")
     Utils.testcase_Utils.pTestResult(tc_status, data_repository['wt_resultfile'])
     root = Utils.xml_Utils.getRoot(data_repository['wt_resultfile'])
     fail_count = 0
@@ -278,10 +286,13 @@ def report_testcase_result(tc_status, data_repository):
             if fail_count == 1:
                 print_info("++++++++++++++++++++++++ Summary of Failed Keywords ++++++++++++++++++++++++")
                 print_info("{0:15} {1:45} {2:10}".format('StepNumber', 'KeywordName', 'Status'))
-                print_info("{0:15} {1:45} {2:10}".format(str(step_num), str(kw_name), str(kw_status)))
+                print_info("{0:15} {1:45} {2:10}".format(str(step_num), str(kw_name),
+                                                         str(kw_status)))
             elif fail_count > 1:
-                print_info("{0:15} {1:45} {2:10}".format(str(step_num), str(kw_name), str(kw_status)))
+                print_info("{0:15} {1:45} {2:10}".format(str(step_num), str(kw_name),
+                                                         str(kw_status)))
     print_info("=================== END OF TESTCASE ===========================")
+
 
 def get_system_list(datafile, node_req=False, iter_req=False):
     """Get the list of systems from the datafile
@@ -315,23 +326,25 @@ def get_system_list(datafile, node_req=False, iter_req=False):
     else:
         systems = temp_systems
     for system in systems:
-        #check if the system has subsystem or not.
+        # check if the system has subsystem or not.
         subsystems = system.findall('subsystem')
         if subsystems != []:
             first_subsystem = True
             for subsystem in subsystems:
-                #if the system has subsystem, find the default subsystem for the system and use it to execute the keyword.
+                # if the system has subsystem, find the default subsystem for the system and use it
+                # to execute the keyword.
                 default = subsystem.get('default')
                 if default == "yes":
                     subsystem_name = subsystem.get('name')
                     system_name = system.get('name') + '[' + subsystem_name + ']'
                     break
-                #if none of the subsystems have default="yes" then the default subsystem will be the first subsystem under the system.
+                # if none of the subsystems have default="yes" then the default subsystem will be
+                # the first subsystem under the system.
                 elif first_subsystem == True:
                     subsystem_name = subsystem.get('name')
                     system_name = system.get('name') + '[' + subsystem_name + ']'
                     first_subsystem = False
-        #if there is no subsystem use the system.
+        # if there is no subsystem use the system.
         else:
             system_name = system.get('name')
             system_node = system
@@ -342,9 +355,10 @@ def get_system_list(datafile, node_req=False, iter_req=False):
     else:
         return system_list
 
+
 def print_testcase_details_to_console(testcase_filepath, data_repository):
     """Prints the testcase details to the console """
-    framework_detail.warrior_framework_details() 
+    framework_detail.warrior_framework_details()
     print_info("\n===============================  TC-DETAILS  ==================================================")
     print_info("Title: %s" % data_repository['wt_title'])
     print_info("Results directory: %s" % data_repository['wt_resultsdir'])
@@ -355,9 +369,11 @@ def print_testcase_details_to_console(testcase_filepath, data_repository):
     print_info("================================================================================================")
     time.sleep(2)
 
+
 def create_defects(auto_defects, data_repository):
     """Creates the defects json files for the testcase executed
-    If auto_defects = True create bugs in jira for the associated project provided in jira config file
+    If auto_defects = True create bugs in jira for the associated project provided in jira
+    config file
     """
     defect_obj = DefectsDriver(data_repository)
     json_status = defect_obj.create_failing_kw_json()
@@ -367,8 +383,8 @@ def create_defects(auto_defects, data_repository):
             print_info("auto-create defects ")
             defects_json_list = defect_obj.get_defect_json_list()
             if len(defects_json_list) == 0:
-                print_warning("No defect json files found in defects"\
-                              "directory '{0}' of this testcase".format(data_repository['wt_defectsdir']))
+                print_warning("No defect json files found in defects directory '{0}' of this "
+                              "testcase".format(data_repository['wt_defectsdir']))
             elif len(defects_json_list) > 0:
                 connect = defect_obj.connect_warrior_jira()
                 if connect is True:
@@ -376,16 +392,18 @@ def create_defects(auto_defects, data_repository):
         else:
             print_info("auto-create defects was Not requested")
 
+
 def check_and_create_defects(tc_status, auto_defects, data_repository, tc_junit_object):
     """Check tc_status and create defects if tc_status is fail/error/exception
     update testcase junit with error/failures accordingly """
 
     if tc_status is True:
-        pass    
+        pass
     elif tc_status is False:
         create_defects(auto_defects, data_repository)
     elif tc_status == 'EXCEPTION' or tc_status == 'ERROR':
         create_defects(auto_defects, data_repository)
+
 
 def execute_testcase(testcase_filepath, data_repository, tc_context,
                      runtype, tc_parallel, queue, auto_defects, suite, jiraproj,
@@ -398,9 +416,9 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
 
     :Arguments:
         1. testcase_filepath (string) = the full path of the testcase xml file
-        2. execution_dir (string) = the full path of the directory under which the 
+        2. execution_dir (string) = the full path of the directory under which the
                                     testcase execution directory will be created
-                                    (the results, logs for this testcase will be 
+                                    (the results, logs for this testcase will be
                                     stored in this testcase execution directory.)
     """
 
@@ -415,33 +433,42 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
 
     # These lines are for creating testcase junit file
     from_ts = False
+    pj_junit_display = 'False'
     if not 'wt_junit_object' in data_repository:
         # not from testsuite
-        tc_junit_object = junit_class.Junit(filename=data_repository['wt_name'], timestamp=tc_timestamp,
-                                            name="customProject_independant_testcase_execution", display="False")
+        tc_junit_object = junit_class.Junit(filename=data_repository['wt_name'],
+                                            timestamp=tc_timestamp,
+                                            name="customProject_independant_testcase_execution",
+                                            display=pj_junit_display)
         if "jobid" in data_repository:
             tc_junit_object.add_jobid(data_repository["jobid"])
             del data_repository["jobid"]
-        tc_junit_object.create_testcase(location=data_repository['wt_filedir'], timestamp=tc_timestamp,
-                                        ts_timestamp=tc_timestamp, name=data_repository['wt_name'],
-                                        testcasefile_path=data_repository['wt_testcase_filepath'],
-                                        display="False")
+        tc_junit_object.create_testcase(location=data_repository['wt_filedir'],
+                                        timestamp=tc_timestamp,
+                                        ts_timestamp=tc_timestamp,
+                                        name=data_repository['wt_name'],
+                                        testcasefile_path=data_repository['wt_testcase_filepath'])
         junit_requirements(testcase_filepath, tc_junit_object, tc_timestamp)
         data_repository['wt_ts_timestamp'] = tc_timestamp
     else:
         tc_junit_object = data_repository['wt_junit_object']
-        tc_junit_object.create_testcase(location="from testsuite", timestamp=tc_timestamp, ts_timestamp=data_repository['wt_ts_timestamp'], classname=data_repository['wt_suite_name'], name=data_repository['wt_name'], testcasefile_path=data_repository['wt_testcase_filepath'])
+        tc_junit_object.create_testcase(location="from testsuite", timestamp=tc_timestamp,
+                                        ts_timestamp=data_repository['wt_ts_timestamp'],
+                                        classname=data_repository['wt_suite_name'],
+                                        name=data_repository['wt_name'],
+                                        testcasefile_path=data_repository['wt_testcase_filepath'])
         from_ts = True
         junit_requirements(testcase_filepath, tc_junit_object, data_repository['wt_ts_timestamp'])
     data_repository['wt_tc_timestamp'] = tc_timestamp
+    data_repository['tc_parallel'] = tc_parallel
     data_type = data_repository['wt_data_type']
+    if not from_ts:
+        data_repository["war_parallel"] = False
 
     # Adding resultsdir, logsdir, title as attributes to testcase_tag in the junit result file
     # Need to remove these after making resultsdir, logsdir as part of properties tag in testcase
     tc_junit_object.add_property("resultsdir", os.path.dirname(data_repository['wt_resultsdir']),
-                                "tc", tc_timestamp)
-    tc_junit_object.add_property("logsdir", os.path.dirname(data_repository['wt_logsdir']),
-                                "tc", tc_timestamp)
+                                 "tc", tc_timestamp)
     tc_junit_object.update_attr("title", data_repository['wt_title'], "tc", tc_timestamp)
 
     data_repository['wt_junit_object'] = tc_junit_object
@@ -469,6 +496,8 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                                        data_repository, step_list)
         elif data_type.upper() == 'CUSTOM' and \
                 runtype.upper() == 'PARALLEL_KEYWORDS':
+            tc_junit_object.remove_html_obj()
+            data_repository["war_parallel"] = True
             tc_status = execute_custom(data_type, runtype,
                                        custom_parallel_kw_driver,
                                        data_repository, step_list)
@@ -490,6 +519,8 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                  step_list, data_repository, tc_status, system_list)
         elif data_type.upper() == 'ITERATIVE' and \
                 runtype.upper() == 'PARALLEL_KEYWORDS':
+            tc_junit_object.remove_html_obj()
+            data_repository["war_parallel"] = True
             print_info("iterative parallel")
             system_list = get_system_list(data_repository['wt_datafile'],
                                           iter_req=True) \
@@ -520,16 +551,17 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
 
     if tc_context.upper() == 'NEGATIVE':
         if all([tc_status != 'EXCEPTION', tc_status != 'ERROR']):
-            print_debug("Test case status is: '{0}', flip status as context is negative".format(tc_status))
+            print_debug("Test case status is: '{0}', flip status as context is "
+                        "negative".format(tc_status))
             tc_status = not tc_status
 
     if tc_status == False and tc_onError_action and tc_onError_action.upper() == 'ABORT_AS_ERROR':
         print_info("Testcase status will be marked as ERROR as onError action is set to 'abort_as_error'")
         tc_status = "ERROR"
-
+    defectsdir = data_repository['wt_defectsdir']
     check_and_create_defects(tc_status, auto_defects, data_repository, tc_junit_object)
-    
-    print("\n")
+
+    print_info("\n")
     tc_end_time = Utils.datetime_utils.get_current_timestamp()
     print_info("[{0}] Testcase execution completed".format(tc_end_time))
     tc_duration = Utils.datetime_utils.get_time_delta(tc_start_time)
@@ -540,8 +572,10 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
     tc_junit_object.update_count("tests", "1", "ts", data_repository['wt_ts_timestamp'])
     tc_junit_object.update_count("tests", "1", "pj", "not appicable")
     tc_junit_object.update_attr("status", str(tc_status), "tc", tc_timestamp)
-    tc_junit_object.update_attr("time", str(tc_duration), "tc", tc_timestamp)
+    tc_junit_object.update_attr("time", str(tc_duration), "tc", tc_timestamp)    
     tc_junit_object.add_testcase_message(tc_timestamp, tc_status)
+    if str(tc_status).upper() in ["FALSE", "ERROR", "EXCEPTION"]:
+        tc_junit_object.update_attr("defects", defectsdir, "tc", tc_timestamp)
 
     # Adding resultsdir, logsdir, title as attributes to testcase_tag in the junit result file
     # Need to remove these after making resultsdir, logsdir as part of properties tag in testcase
@@ -554,7 +588,8 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
     if not from_ts:
         tc_junit_object.update_count(tc_status, "1", "pj", "not appicable")
         tc_junit_object.update_count("suites", "1", "pj", "not appicable")
-        tc_junit_object.update_attr("status", str(tc_status), "ts", data_repository['wt_ts_timestamp'])
+        tc_junit_object.update_attr("status", str(tc_status), "ts",
+                                    data_repository['wt_ts_timestamp'])
         tc_junit_object.update_attr("status", str(tc_status), "pj", "not appicable")
         tc_junit_object.update_attr("time", str(tc_duration), "ts", data_repository['wt_ts_timestamp'])
         tc_junit_object.update_attr("time", str(tc_duration), "pj", "not appicable")
@@ -563,7 +598,8 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
 
         # Save JUnit/HTML results of the Case in MongoDB server
         if data_repository.get("db_obj") is not False:
-            tc_junit_xml =  data_repository['wt_resultsdir'] + os.sep +tc_junit_object.filename+"_junit.xml"
+            tc_junit_xml = data_repository['wt_resultsdir'] + os.sep +\
+                tc_junit_object.filename + "_junit.xml"
             data_repository.get("db_obj").add_html_result_to_mongodb(tc_junit_xml)
     else:
         # send an email on TC failure(no need to send an email here when
@@ -587,20 +623,21 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                  'wt_testcase_filepath'], data_repository['wt_logsdir'],
                  data_repository['wt_resultsdir'], tc_status, email_setting)
 
-        if 'wp_results_execdir' in data_repository:
-            # Create and replace existing Project junit file for each case
-            tc_junit_object.output_junit(data_repository['wp_results_execdir'],
-                                         print_summary=False)
-        else:
-            # Create and replace existing Suite junit file for each case
-            tc_junit_object.output_junit(data_repository['wt_results_execdir'],
-                                         print_summary=False)
+        if not tc_parallel and not data_repository["war_parallel"]:
+            if 'wp_results_execdir' in data_repository:
+                # Create and replace existing Project junit file for each case
+                tc_junit_object.output_junit(data_repository['wp_results_execdir'],
+                                             print_summary=False)
+            else:
+                # Create and replace existing Suite junit file for each case
+                tc_junit_object.output_junit(data_repository['wt_results_execdir'],
+                                             print_summary=False)
 
     if tc_parallel:
-        tc_impact   =  data_repository['wt_tc_impact']
-        if tc_impact.upper() == 'IMPACT': 
+        tc_impact = data_repository['wt_tc_impact']
+        if tc_impact.upper() == 'IMPACT':
             msg = "Status of the executed test case impacts Testsuite result"
-        elif tc_impact.upper() == 'NOIMPACT': 
+        elif tc_impact.upper() == 'NOIMPACT':
             msg = "Status of the executed test case does not impact Teststuie result"
         print_debug(msg)
         tc_name = Utils.file_Utils.getFileName(testcase_filepath)
@@ -621,9 +658,10 @@ def execute_custom(datatype, runtype, driver, data_repository, step_list):
     """
     print_info("{0} {1}".format(datatype, runtype))
     tc_status = False
-    if data_repository.has_key("suite_exectype") and data_repository["suite_exectype"].upper() == "ITERATIVE":
-        print_info("Testsuite execute type=iterative but the testcase datatype=custom. "\
-                   "All testcases in a iterative testsuite should have datatype=iterative, "\
+    if data_repository.has_key("suite_exectype") and\
+        data_repository["suite_exectype"].upper() == "ITERATIVE":
+        print_info("Testsuite execute type=iterative but the testcase datatype=custom. "
+                   "All testcases in a iterative testsuite should have datatype=iterative, "
                    "Hence this testcase will be marked as failure.")
     elif runtype.upper() == 'SEQUENTIAL_KEYWORDS' or runtype.upper() == 'PARALLEL_KEYWORDS':
         tc_status = driver.main(step_list, data_repository, tc_status, system_name=None)
@@ -656,22 +694,22 @@ def main(testcase_filepath, data_repository = {}, tc_context='POSITIVE',
     """ Executes a testcase """
     tc_start_time = Utils.datetime_utils.get_current_timestamp()
     if Utils.file_Utils.fileExists(testcase_filepath):
-           
+
         try:
-            tc_status, data_repository = execute_testcase(testcase_filepath, 
-                                         data_repository, tc_context, runtype,
-                                         tc_parallel, queue, auto_defects, suite,
-                                         jiraproj, tc_onError_action, iter_ts_sys)
+            tc_status, data_repository = execute_testcase(testcase_filepath,
+                                                          data_repository, tc_context, runtype,
+                                                          tc_parallel, queue, auto_defects, suite,
+                                                          jiraproj, tc_onError_action, iter_ts_sys)
         except Exception as exception:
             print_exception(exception)
             tc_status = False
 
-    else: 
+    else:
         print_error("Testcase xml file does not exist in provided path: {0}".format(testcase_filepath))
         tc_status = False
         if tc_parallel:
             queue.put(('ERROR', str(testcase_filepath), 'IMPACT', '0'))
-            
+
     tc_duration = Utils.datetime_utils.get_time_delta(tc_start_time)
 
     return tc_status, tc_duration, data_repository
