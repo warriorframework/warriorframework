@@ -30,6 +30,9 @@ class DemoActions(object):
     related to actions used in demo KW """
 
     def __init__(self):
+        """
+        constructor
+        """
         self.resultfile = Utils.config_Utils.resultfile
         self.datafile = Utils.config_Utils.datafile
         self.logsdir = Utils.config_Utils.logsdir
@@ -94,7 +97,7 @@ class DemoActions(object):
             pNote("system={0}".format(call_system_name))
             #Demo Framework testdata capability
             testdatafile = file_Utils.getAbsPath(credentials["testdata"], os.path.dirname(self.datafile))
-            add_info = Utils.xml_Utils.getElementWithTagAttribValueMatch(testdatafile,
+            add_info = Utils.xml_Utils.getElementWithTagAttribValueMatch(testdatafile, \
                        'add_info', 'name', 'testdata')
             if add_info is not None:
                 info_text = Utils.xml_Utils.get_text_from_direct_child(add_info, 'info')
@@ -136,12 +139,12 @@ class DemoActions(object):
             subsystem_name = subsystem_list[i] if subsystem_list != None else None
             call_system_name = system_name if subsystem_name is None \
             else "{0}[{1}]".format(system_name, subsystem_name)
-            credentials = get_credentials(self.datafile, call_system_name,
+            credentials = get_credentials(self.datafile, call_system_name, \
                                 ['calibration', 'user', 'location', 'testdata'])
             pNote("system={0}".format(call_system_name))
             #Demo Framework testdata capability
             testdatafile = file_Utils.getAbsPath(credentials["testdata"], os.path.dirname(self.datafile))
-            add_info = Utils.xml_Utils.getElementWithTagAttribValueMatch(testdatafile,
+            add_info = Utils.xml_Utils.getElementWithTagAttribValueMatch(testdatafile, \
                        'add_info', 'name', 'testdata')
             if add_info is not None:
                 info_text = Utils.xml_Utils.get_text_from_direct_child(add_info, 'info')
@@ -174,7 +177,7 @@ class DemoActions(object):
         """
         # print "desired_status: " + desired_status
 
-        print "Please use the one in ci_regression_actions"
+        print_error("Please use the one in ci_regression_actions")
         if desired_status == "pass":
             return True
         elif desired_status == "fail":
@@ -183,13 +186,15 @@ class DemoActions(object):
             raise Exception("This is raised in demo_actions.local_data_test")
 
     def create_jira_issue(self, server_url, username, password, issue_summary, issue_description, project_key, issue_type='Bug'):
-
+        """
+            connect to jira server and create an issue under a specific project
+        """
         status = True
         output_dict = {}
         wdesc = "Creates a JIRA issue"
         pSubStep(wdesc)
-        issue_summary=issue_summary.replace('"', " ")
-        issue_description=issue_description.replace('"', "-")
+        issue_summary = issue_summary.replace('"', " ")
+        issue_description = issue_description.replace('"', "-")
         fetchuri = server_url
         postdata_url=fetchuri+'/rest/api/2/issue/'
         postdata = """
@@ -208,10 +213,10 @@ class DemoActions(object):
         }
         """
         credential_handler=urllib2.HTTPPasswordMgrWithDefaultRealm()
-        credential_handler.add_password(None,postdata_url,username,password)
+        credential_handler.add_password(None, postdata_url, username, password)
         auth = urllib2.HTTPBasicAuthHandler(credential_handler)
-        userpassword=username+":"+password
-        password=base64.b64encode(userpassword)
+        userpassword = username + ":" + password
+        password = base64.b64encode(userpassword)
         #Create an Authentication handler
         opener = urllib2.build_opener(auth)
         urllib2.install_opener(opener)
@@ -221,14 +226,14 @@ class DemoActions(object):
         request=urllib2.Request(str(postdata_url),postdata,headers)
         try:
             handler = urllib2.urlopen(request)
-            extension=json.loads(handler.read())
+            extension = json.loads(handler.read())
             issue_id = str(extension['key'])
             pNote("JIRA Issue Created. Issue-Id: {0}".format(issue_id))
             output_dict["issue_id"] = issue_id
         except Exception as e:
             status = False
-            pNote("Problem creating JIRA issue.","error")
-            pNote("JIRA Error Code: ({0})".format(e),"error")
+            pNote("Problem creating JIRA issue." , "error")
+            pNote("JIRA Error Code: ({0})".format(e) , "error")
 
         Utils.data_Utils.update_datarepository(output_dict)
         Utils.testcase_Utils.report_substep_status(status)

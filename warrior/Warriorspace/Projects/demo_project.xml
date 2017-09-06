@@ -11,7 +11,7 @@
         </Details>
         <Testsuites>
                 <Testsuite>
-                        <path>../Suites/Demo_Suite.xml</path>
+                        <path>../Suites/demo_suite.xml</path>
                         <onError action="abort" value=""/>
                         <impact>impact</impact>
                         <Execute ExecType="Yes">
