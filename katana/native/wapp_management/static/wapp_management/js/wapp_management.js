@@ -133,5 +133,16 @@ var wapp_management = {
             }
         }
         return cookieValue;
+    },
+
+    goToElement: function(){
+        var $elem = $(this);
+        var $elem_link = $elem.attr('elem-link');
+
+        var $target = $('#' + $elem_link);
+        console.log($target);
+
+        /* need to scroll to $target here */
+
     }
 }

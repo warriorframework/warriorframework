@@ -1,62 +1,27 @@
-<div class="container-fluid">
-    {% for app in data.app%}
-    <div class="row">
-        <div class="col-sm-1 install-app-icons">
-            <div class="tab {{app.data.color}}">
-                <i class="fa fa-{{ app.data.icon }}"></i>
-            </div>
-        </div>
-        <div class="col-sm-2">
-            {{ app.data.name }}
-        </div>
-        <div class="col-sm-7">
-
-        </div>
-        <div class="col-sm-1">
-
-            <button class="button">Installed</button>
-        </div>
-        <div class="col-sm-1">
-            {% if app.app_type != "native" %}
-            <button class="button" katana-click="wapp_management.uninstallAnApp" app_path="{{ app.path }}"
-                    app_type="{{ app.app_type }}">Uninstall
-            </button>
-            {% endif %}
-        </div>
-    </div>
-    <hr>
-    {% endfor %}
-</div>
-
-
-<div class="container-fluid" style="padding: 5vw;">
-    <div class="row">
+<div class="container-fluid" style="padding: 5rem">
+	<div class="row">
         {% for app in data.app%}
-            <div style="height: 180px; width: 350px; padding: 10px;">
-                <div style="width: 100%; height: 100%; background-color: #e5e4e2">
-                    <div class="text-center" style="width: 48.48%; height: 100%; float: left; padding: 2.1vw;">
-                        <i class="fa fa-{{ app.data.icon }} fa-5x" style="color: {{app.data.color}};"></i>
-                    </div>
-                    <div style="width: 51.52%; height: 100%; float: left;">
-                        <div style="width: 100%; height: 20%; padding: 0.2vw;">
-                            <div style="width: 100%; height: 100%;">
-                                <h5 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ app.data.name }}</h5>
-                            </div>
-                        </div>
-                        <div style="width: 100%; height: 20%; padding: 0.2vw;">
-                            <div style="width: 100%; height: 100%;">
-                                <h6 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ app.data.developer }}</h6>
-                            </div>
-                        </div>
-                        <div style="width: 100%; height: 40%; padding: 0.2vw;">
-                            <div style="width: 100%; height: 100%;">
-                                <h6 style="overflow: hidden; text-overflow: ellipsis;">{{ app.data.description }}</h6>
-                            </div>
-                        </div>
-                        <div style="width: 100%; height: 20%; background-color: tan; padding: 0.2vw;"></div>
-                    </div>
+        <div style="width: 26rem; height: 28rem; padding: 2rem;">
+            <div class="card" style="width: 22rem; height: 24rem;">
+                <div class="card-body text-center">
+                    <i class="fa fa-{{ app.data.icon }} fa-5x {{app.data.color}}" style="line-height:inherit!important;"></i>
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">{{ app.data.name }}</h4>
+                    <h6 class="card-subtitle mb-2 text-muted">By {{ app.data.developer }}</h6>
+                    <p class="card-text">{{ app.data.description }}</p>
+                </div>
+                 <div class="card-body">
+                    <button katana-click="katana.templateAPI.load" url="{{ app.data.url }}"
+                            jsUrls=" {% for url in app.data.js_urls %} {{ url }},{% endfor %}"
+                            class="btn btn-primary">OPEN</button>
+                     {% if app.app_type != "native" %}
+                        <button class="btn btn-success" katana-click="wapp_management.uninstallAnApp"
+                                app_path="{{ app.path }}" app_type="{{ app.app_type }}">UNINSTALL</button>
+                     {% endif %}
                 </div>
             </div>
+        </div>
         {% endfor %}
-    </div>
+	</div>
 </div>

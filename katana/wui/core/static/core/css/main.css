@@ -387,6 +387,36 @@ span.close:before {content: 'X';}
 .tab.green {
     color: #3b7a4c;
 }
+
+.red {
+    color: #903c3c;
+}
+.grey {
+    color: #6b6b6b;
+}
+
+.tab.lightblue {
+    color: #108c82;
+}
+
+.tan {
+    color: #987150;
+}
+
+.yellow {
+    color: #b0a658;
+}
+.blue {
+    color: #3b5f82;
+}
+
+.orange {
+    color: #853b19;
+}
+
+.green {
+    color: #3b7a4c;
+}
 .page-content .tab:hover {
     opacity: .9;
     -webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.22);
@@ -559,8 +589,6 @@ textarea {
 h4 {
     font-size: 26px;
     font-weight: 300;
-    padding: 0 9px;
-    margin: 28px 0px 0px 0px;
 }
 
 h4 > b {
@@ -1911,3 +1939,12 @@ button, input, optgroup, select, textarea {
 .tool-bar .button {
     padding: 2px;
 }
+
+.tool-bar-links {
+    text-decoration: underline;
+    cursor: pointer;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+

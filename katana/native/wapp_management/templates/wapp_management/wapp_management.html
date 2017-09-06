@@ -4,33 +4,52 @@
     <title>App Store</title>
     {% load staticfiles %}
     <script type="text/javascript" src="{% static 'wapp_management/js/wapp_management.js' %}"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
 <body>
     {% csrf_token %}
 
-    <h1>&nbsp;My Apps</h1>
-    <br>
-
-    <div id="installed_apps_div">
-        {% include 'wapp_management/installed_apps.html' %}
+    <div class="tool-bar">
+        <div class="row text-center" style="height: 100%; padding: 0.5rem 0 0 0;">
+            <div class="col-md-9"></div>
+            <div class="col-md-1 tool-bar-links" katana-click="wapp_management.goToElement" elem-link="installed_apps">Installed Apps</div>
+            <div class="col-md-2 tool-bar-links" katana-click="wapp_management.goToElement" elem-link="app_installation">Install New Apps</div>
+        </div>
     </div>
 
-    <h1>&nbsp;Install App</h1>
-    <br>
+    <section id="installed_apps">
+        <div style="width: 100%; height: 5rem; padding: 4rem 0 0 5.5rem;">
+            <h1>&nbsp;Installed Apps</h1>
+        </div>
 
-    <div id="pop-up-file-info">
-        {% include 'wapp_management/popup.html' %}
-    </div>
 
-    <button class="button" katana-click="wapp_management.loadConfig">Load Configuration</button>
-    <div id="new-app-info">
-        {% include 'wapp_management/load_config.html' %}
-    </div>
-    <button class="button" katana-click="wapp_management.addAnotherApp">Add</button>
-    <button class="button" katana-click="wapp_management.installAnApp">Install</button>
+        <div id="installed_apps_div">
+            {% include 'wapp_management/installed_apps.html' %}
+        </div>
+    </section>
+
+    <hr>
+
+    <section id="app_installation">
+        <div style="width: 100%; height: 5rem; padding: 4rem 0 0 5.5rem;">
+            <h1>&nbsp;Installed Apps</h1>
+        </div>
+
+        <div id="app_installation_div">
+            <div id="pop-up-file-info">
+                <!--{% include 'wapp_management/popup.html' %}-->
+                <button class="button" katana-click="wapp_management.loadConfig">Load Configuration</button>
+            </div>
+
+            <div id="new-app-info">
+                {% include 'wapp_management/load_config.html' %}
+                <button class="button" katana-click="wapp_management.addAnotherApp">Add</button>
+                <button class="button" katana-click="wapp_management.installAnApp">Install</button>
+            </div>
+        </div>
+
+    </section>
 
 
 
