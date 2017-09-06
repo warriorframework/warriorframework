@@ -193,9 +193,10 @@ class WarriorCli(object):
         title = args.get('title', None)
         row = args.get('row', None)
         if WarriorCliClass.cmdprint:
-            pNote("**************{}**************".format('Title: ' + title))
+            if title:
+                pNote("*************{}*************".format('Title: ' + title))
             if row:
-                pNote("**************{}**************".format('Row: ' + row))
+                pNote("*************{}*************".format('Row: ' + row))
         system_name = args.get("system_name")
         session_name = args.get("session_name")
         if session_name is not None:
