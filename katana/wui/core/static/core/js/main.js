@@ -511,14 +511,13 @@ var katana = {
 					 successCallBack && successCallBack(data);
 				 },
 				 error: function(xhr, textStatus, error){
-					 console.log('some error');
-			     console.log(xhr.statusText);
+					 console.log(xhr.statusText);
 			     console.log(textStatus);
 			     console.log(error);
 				 },
 			});
 		 },
-		 
+
 		 trigger: function( url, callBack ){
 			 var $elem = this ? this : katana.$activeTab;
 			 var url = url ? url : $elem.attr('trigger-url');
