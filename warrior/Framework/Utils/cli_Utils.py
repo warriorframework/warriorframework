@@ -170,7 +170,6 @@ def disconnect(child):
     return child
 
 
-@cmdprinter
 def send_command_and_get_response(session_object, start_prompt, end_prompt, command):
     """"Sends a command to a terminal expects a completion prompt
     If completion prompt was found, returns the response of the command """
@@ -270,7 +269,6 @@ def get_connection_port(conn_type, inpdict):
     return inpdict
 
 
-@cmdprinter
 def send_command(session_object, start_prompt, end_prompt, command,
                  timeout=60):
     """
@@ -375,7 +373,6 @@ def send_commands_from_testdata(testdatafile, obj_session, **args):
     return finalresult, responses_dict
 
 
-@cmdprinter
 def _send_cmd(obj_session, **kwargs):
     """method to send command based on the type of object """
 
@@ -467,7 +464,6 @@ def get_unique_log_and_verify_list(log_list, verify_on_list, system_name):
     return final_list
 
 
-@cmdprinter
 def _send_cmd_get_status(obj_session, details_dict, index, system_name=None):
     """Sends a command, verifies the response and returns
     status of the command """
@@ -501,7 +497,6 @@ def _get_obj_session(details_dict, obj_session, kw_system_name, index):
     return value, kw_system_name, details_dict
 
 
-@cmdprinter
 def _send_command_retrials(obj_session, details_dict, index, **kwargs):
     """ Sends a command to a session, if a user provided pattern
     is found in the command response then tries to resend the command multiple
