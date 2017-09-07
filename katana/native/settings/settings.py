@@ -9,6 +9,27 @@ class Settings:
     def get_location(self):
         pass
 
+    def general_setting_handler(self, request):
+        json_file = self.navigator.get_katana_dir() + '/config.json'
+        if request.method == 'POST':
+            with open(json_file,'w') as f:
+                f.write(json.dumps(json.loads(request.POST.get('data'))[0], sort_keys=True, indent=4, separators=(',', ': ')))
+        else:
+            with open(json_file,'r') as f:
+                json_data = json.load(f)
+            return json_data
+
+    def profile_setting_handler(self, request):
+        json_file = self.navigator.get_katana_dir() + '/user_profile.json'
+        if request.method == 'POST':
+            with open(json_file,'w') as f:
+                f.write(json.dumps(json.loads(request.POST.get('data'))[0], sort_keys=True, indent=4, separators=(',', ': ')))
+        else:
+            with open(json_file,'r') as f:
+                json_data = json.load(f)
+            print 'tuz', json_data
+            return json_data
+
     def email_setting_handler(self, request):
         w_settings = self.navigator.get_warrior_dir() + '/Tools/w_settings.xml'
         elem_file = xml_controler.parse(w_settings)
