@@ -179,6 +179,16 @@ var wapp_management = {
         var $target = $('#' + $elem_link);
         console.log($target);
 
+        $all_links = $('.tool-bar-links')
+        console.log($all_links);
+
+        for(var i=0; i<$all_links.length; i++){
+            var temp = $($all_links[i]).attr("elem-link")
+            var $temp = $('#' + temp);
+            $temp.hide();
+        }
+
+        $target.show();
         /* need to scroll to $target here */
 
     },
@@ -222,7 +232,9 @@ var wapp_management = {
 
 $(document).ready(function() {
 
-    wapp_management.hideAndShowCardOne();
+    $('#app_installation').hide();
+
+    //wapp_management.hideAndShowCardOne();
 
     /*var typingTimer;
     var doneTypingInterval = 1000;
