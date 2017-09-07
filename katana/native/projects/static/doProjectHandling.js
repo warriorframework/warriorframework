@@ -268,16 +268,16 @@ function createSuiteEditTable(xdata) {
 	katana.$activeTab.find("#editTestSuiteEntry").html( "");
 	var items = []; 
 	
-	items.push('<div class="field col-md-3" >'); 
+	items.push('<div class="field " >'); 
 	items.push('<label >Row Id</label>');
 	items.push('<input type="text" id="suiteRowToEdit'+activePageID+'" value=""/>');
 	items.push('</div>');			
 
-	items.push('<div class="field col-md-3">');
+	items.push('<div class="field ">');
 	items.push('<label >Path*:</label>');
 	items.push('<input type="text" id="suitePath'+activePageID+'" value=""/>');
 	items.push('</div>');
-	items.push('<div class="field col-md-3">');
+	items.push('<div class="field ">');
 	items.push('<label class=" text-right" >ExecType:</label>');
 	items.push('<select type="text" class="text-right" id="Execute-at-ExecType'+activePageID+'"" value="" >');
 	items.push('<option value="If">If</option> ');
@@ -287,28 +287,28 @@ function createSuiteEditTable(xdata) {
 	items.push('</select>');
 	items.push('</div>');
 			
-	items.push('<div class="field col-md-3">');
+	items.push('<div class="field ">');
 	items.push('<label for="executeRuleAtCondition">Rule Condition:</label>');
 	items.push('<input type="text" id="executeRuleAtCondition'+activePageID+'" value=""/>');
 	items.push('</div>');			
-	items.push('<div class="field col-md-3">');
+	items.push('<div class="field ">');
 	items.push('<label for="executeRuleAtCondvalue">Rule Condition Value:</label>');
 	items.push('<input type="text" id="executeRuleAtCondvalue'+activePageID+'" value=""/>');
 	items.push('</div>');			
-	items.push('<div class="field col-md-3">');
+	items.push('<div class="field ">');
 	items.push('<label for="executeRuleAtElse">Rule Else:</label>');
 	items.push('<input type="text" id="executeRuleAtElse'+activePageID+'" value=""  />');
 	items.push('</div>	');		
-	items.push('<div class="field col-md-3">');
+	items.push('<div class="field ">');
 	items.push('<label for="executeRuleAtElsevalue">Rule Else Value:</label>');
 	items.push('<input type="text" id="executeRuleAtElsevalue'+activePageID+'" value="" />');
 	items.push('</div>');
-	items.push('<div class="field col-md-3">');
+	items.push('<div class="field ">');
 	items.push('<label for="onError-at-action">On Error*:</label>');
 	items.push('<input type="text" id="onError-at-action'+activePageID+'" value=""/>');
 	items.push('</div>');
 
-	items.push('<div class="field col-md-3">');
+	items.push('<div class="field ">');
 	items.push('<label class="col-md-2 text-right" >On Error value:</label>');
 	items.push('<select type="text" class="text-right" id="onError-at-value'+activePageID+'" value="" >');
 	items.push('<option value="next">next</option>');
@@ -318,7 +318,7 @@ function createSuiteEditTable(xdata) {
 	items.push('</select>');
 	items.push('</div>');
 		
-	items.push('	<div class="field col-md-3">');
+	items.push('	<div class="field ">');
 	items.push('	<label class="text-right" >Run mode:</label>');
 	items.push('	<label class="text-right" >runmode type:</label>');
 	items.push('	<input type="text" class="text-right" id="runmode-at-type"'+activePageID + ' value="" />');
@@ -330,7 +330,7 @@ function createSuiteEditTable(xdata) {
 	items.push('	</select>');
 	items.push('		</div>');
 
-	items.push('	<div class="field col-md-3">');
+	items.push('	<div class="field ">');
 	items.push('		<label class="text-right" >impact</label>');
 	items.push('			<select type="text" id="impact"'+activePageID + ' value="" >');
 	items.push('			<option value="impact">impact</option> ');

@@ -466,14 +466,14 @@ function createEditStepPage(xdata) {
 	/// Yes, a for loop would be better. 
 	var rows = [ 'StepRowToEdit', 'StepDriver', 'StepKeyword', 'StepTS', 'StepDescription ','StepContext' ] ;
 	for (rw in rows) {
-		items.push('<div class="field col-md-3">'); 
+		items.push('<div class="field">'); 
 		var nm = rows[rw].slice(4,rows[rw].length);
 		items.push('<label >'+nm+'</label>');
 		items.push('<input type="text" id="'+rows[rw]+activePageID+'" value=""/>');
 		items.push('</div>')
 	}
 
-	items.push('<div class="field col-md-3">');
+	items.push('<div class="field">');
 	items.push('<label class=" text-right" >ExecType:</label>');
 	items.push('<select type="text" class="text-right" id="Execute-at-ExecType'+activePageID+'" value="" >');
 	items.push('<option value="If">If</option> ');
@@ -483,7 +483,7 @@ function createEditStepPage(xdata) {
 	items.push('</select>');
 	items.push('</div>');
 
-	items.push('<div class="field col-md-3">');
+	items.push('<div class="field">');
 	items.push('<label class="col-md-2 text-right" >On Error Action </label>');
 	items.push('<select type="text" class="text-right" id="SteponError-at-action'+activePageID+'" value="" >');
 	items.push('<option value="next">next</option>');
@@ -492,7 +492,7 @@ function createEditStepPage(xdata) {
 	items.push('<option value="goto">goto</option>');
 	items.push('</select>');
 	items.push('</div>');
-	items.push('<div class="field col-md-3">');
+	items.push('<div class="field">');
 	items.push('<label class="col-md-2 text-right" >On Error Value </label>');
 	items.push('<select type="text" class="text-right" id="SteponError-at-value'+activePageID+'" value="" >');
 	items.push('<option value="next">next</option>');
@@ -502,7 +502,7 @@ function createEditStepPage(xdata) {
 	items.push('</select>');
 	items.push('</div>');
 
-	items.push('	<div class="field col-md-3">');
+	items.push('	<div class="field">');
 	items.push('	<label class="text-right" >Run mode:</label>');
 	items.push('	<label class="text-right" >runmode type:</label>');
 	items.push('	<input type="text" class="text-right" id="runmode-at-type"'+activePageID + ' value="" />');
@@ -513,7 +513,7 @@ function createEditStepPage(xdata) {
 	items.push('	<option value="RUP">RUP</option> ');
 	items.push('	</select>');
 	items.push('		</div>');
-	items.push('	<div class="field col-md-3">');
+	items.push('	<div class="field">');
 	items.push('		<label class="text-right" >impact</label>');
 	items.push('			<select type="text" id="StepImpact"'+activePageID + ' value="" >');
 	items.push('			<option value="impact">impact</option> ');

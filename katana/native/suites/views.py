@@ -49,12 +49,13 @@ def old_index(request):
 ## List all your Suites ...
 ##
 def index(request):
-	path_to_testcases = navigator.get_warrior_dir() + "/../wftests/warrior_tests/"
+	navigator = Navigator();
+	path_to_config = navigator.get_katana_dir() + os.sep + "config.json"
+	config = json.loads(open(path_to_config).read())
+	fpath = config['testsuitedir']
 	template = loader.get_template("./listAllSuites.html")
-	fpath = path_to_testcases + 'suites';
-	#files = glob.glob(fpath+"*/*.xml")
-	print path_to_testcases
-	print fpath
+
+
 	
 
 	myfiles = []
@@ -100,7 +101,13 @@ def editSuite(request):
 	"""
 	Set up JSON object for editing a Suite file. 
 	"""
-	path_to_testcases = navigator.get_warrior_dir() + "/../wftests/warrior_tests/"
+	navigator = Navigator();
+	path_to_config = navigator.get_katana_dir() + os.sep + "config.json"
+	config = json.loads(open(path_to_config).read())
+	fpath = config['testsuitedir']
+	
+
+
 	template = loader.get_template("./editSuite.html")
 	filename = request.GET.get('fname')
 	
@@ -184,8 +191,12 @@ def editSuite(request):
 
 def getSuiteDataBack(request):
 	#print "Got something back in request";
-	path_to_testcases = navigator.get_warrior_dir() + "/../wftests/warrior_tests/"
-	fpath = path_to_testcases + 'suites/user';
+
+	navigator = Navigator();
+	path_to_config = navigator.get_katana_dir() + os.sep + "config.json"
+	config = json.loads(open(path_to_config).read())
+	fpath = config['testsuitedir']
+
 	fname = request.POST.get(u'filetosave')
 	#ijs = request.POST.get(u'json')  # This is a json string 
 	

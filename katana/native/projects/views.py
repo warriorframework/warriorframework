@@ -34,6 +34,7 @@ from django.template import Library
 from xmljson import badgerfish as bf
 from xml.etree.ElementTree import fromstring, tostring
 import xml.etree.ElementTree
+import json
 #from katana.utils.navigator_util import get_dir_tree_json
 
 from utils.navigator_util import Navigator
@@ -51,11 +52,12 @@ def old_index(request):
 ##
 def index(request):
 	navigator = Navigator();
-	path_to_testcases = navigator.get_warrior_dir() + "/../wftests/warrior_tests/"
+	path_to_config = navigator.get_katana_dir() + os.sep + "config.json"
+	config = json.loads(open(path_to_config).read())
+	fpath = config['projdir']
 	template = loader.get_template("./listAllProjects.html")
-	fpath = path_to_testcases + 'projects';
 	files = glob.glob(fpath+"*/*.xml")
-	print path_to_testcases
+
 	print fpath
 
 	#tt = { 'text': 'Projects', "icon" : "jstree-file",  
@@ -90,7 +92,10 @@ def editProject(request):
 	Set up JSON object for editing a project file. 
 	"""
 	navigator = Navigator();
-	path_to_testcases = navigator.get_warrior_dir() + "/../wftests/warrior_tests/"
+	path_to_config = navigator.get_katana_dir() + os.sep + "config.json"
+	config = json.loads(open(path_to_config).read())
+	fpath = config['projdir']
+
 	template = loader.get_template("./editProject.html")
 	filename = request.GET.get('fname','NEW')
 
@@ -156,15 +161,16 @@ import HTMLParser
 
 def getProjectDataBack(request):
 	print "Got something back in request";
+	navigator = Navigator();
+	path_to_config = navigator.get_katana_dir() + os.sep + "config.json"
+	config = json.loads(open(path_to_config).read())
+	fpath = config['projdir']
 	#response = request.readlines();   # Get the JSON response 
 	#template = loader.get_template("cases/editProject.html")  # get another one?
 	fname = request.POST.get(u'filetosave')
 	ijs = request.POST.get(u'json')  # This is a json string 
 
 
-	navigator = Navigator();
-	path_to_testcases = navigator.get_warrior_dir() + "/../wftests/warrior_tests/"
-	fpath = path_to_testcases + 'projects';
 
 	#print "--------------TREE----------------"
 	if fname.find(".xml") < 2: fname = fname + ".xml"

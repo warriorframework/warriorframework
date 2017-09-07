@@ -38,9 +38,11 @@ navigator = Navigator();
 #
 
 def index(request):
-	path_to_testcases = navigator.get_warrior_dir() + "/../wftests/warrior_tests/"
+	path_to_config_file = navigator.get_katana_dir() + os.sep + "config.json"
+	x= json.loads(open(path_to_config_file).read());
+	path_to_testcases = x['xmldir'];
 	template = loader.get_template("listAllCases.html")
-	fpath = path_to_testcases + 'testcases';
+	fpath = path_to_testcases ;
 	#files = [ os.path.join(fpath,x) for x in (os.walk(fpath))[2]]
 
 	jtree = navigator.get_dir_tree_json(fpath)
@@ -85,8 +87,9 @@ def editCase(request):
 	""" 
 	Set up JSON object for editing a suites file. 
 	"""
-	path_to_testcases = navigator.get_warrior_dir() + "/../wftests/warrior_tests/"
-	
+	path_to_config_file = navigator.get_katana_dir() + os.sep + "config.json"
+	x= json.loads(open(path_to_config_file).read());
+	path_to_testcases = x['xmldir'];
 	template = loader.get_template("editCase.html")
 	filename = request.GET.get('fname')
 
@@ -173,8 +176,14 @@ def editCase(request):
 	return HttpResponse(template.render(context, request))
 
 def getCaseDataBack(request):
-	path_to_testcases = navigator.get_warrior_dir() + "/../wftests/warrior_tests/testcases"
 	
+
+	path_to_config_file = navigator.get_katana_dir() + os.sep + "config.json"
+	x= json.loads(open(path_to_config_file).read());
+	path_to_testcases = x['xmldir'];
+
+	print "-" * 20
+	print path_to_testcases; 
 	#response = request.readlines();   # Get the JSON response 
 	ijs = request.POST.get(u'Testcase')  # This is a xml string  
 	print ijs
