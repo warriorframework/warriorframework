@@ -409,7 +409,12 @@ class PexpectConnect(object):
         # delete -o StrictHostKeyChecking=no and put them in conn_options
         if not conn_options or conn_options is None:
             conn_options = ""
-        command = 'ssh -p {0} {1}@{2} {3}'.format(self.port, self.username,
+        if not self.username:
+            self.username = ""
+            print_info("Username not provided, taking {0} as Username" .format(os.getlogin()))
+        else:
+            self.username += '@'
+        command = 'ssh -p {0} {1}{2} {3}'.format(self.port, self.username,
                                                   self.ip, conn_options)
         # command = ('ssh -p '+ port + ' ' + username + '@' + ip)
         print_debug("connectSSH: cmd = %s" % command)
