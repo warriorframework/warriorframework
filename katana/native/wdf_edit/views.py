@@ -20,7 +20,6 @@ def index(request):
         data = xmltodict.parse(open('/home/ka/Desktop/warrior_fnc_tests/warrior_tests/data/cli_tests/cli_def_Data.xml').read())
 
     root = data.keys()[0]
-    print json.dumps(data, indent=4)
 
     if type(data[root]["system"]) != list:
         data[root]["system"] = [data[root]["system"]]
