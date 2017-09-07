@@ -49,7 +49,13 @@ function mapFullCaseJson(myobjectID){
 	mapCaseJsonToUi(jsonCaseSteps);
 	//mapRequirementsToUI(jsonCaseRequirements);
 	createRequirementsTable(jsonCaseRequirements);
-	createEditStepPage(jsonCaseObject);
+	
+	katana.$activeTab.find('#editCaseStep').off('click');  // unbind is deprecated - debounces the click event. 
+	$(document).on('click','#editCaseStep',function(  ) {
+			mapUItoTestStep(xdata);
+			//createCasesTable(xdata);  //Refresh the screen.
+		});
+
 
 	// Must define handlers inside this function ... 
 
@@ -253,7 +259,7 @@ function mapCaseJsonToUi(data){
 		
 		$('#'+bid).off('click');   //unbind and bind are deprecated. 
 		$(document).on('click','#'+bid,function(  ) {
-			alert(this.id);
+			//alert(this.id);
 			var names = this.id.split('-');
 			var sid = parseInt(names[1]);
 			removeTestStep(sid);
@@ -301,16 +307,21 @@ function removeTestStep( sid ){
 
 function mapTestStepToUI(sid, xdata) {
 	// body...
-	katana.$activeTab.find("#StepRowToEdit"+activePageID).val(sid);
-	katana.$activeTab.find("#StepDriver"+activePageID).val(oneCaseStep['step'][ "@Driver"]);
-	katana.$activeTab.find("#StepKeyword"+activePageID).val(oneCaseStep['step'][ "@Keyword"]);
-	katana.$activeTab.find("#StepTS"+activePageID).val(oneCaseStep['step'][ "@TS"]);
-	katana.$activeTab.find("#StepDescription"+activePageID).val(oneCaseStep["Description"]["$"]);
-	katana.$activeTab.find("#StepContext"+activePageID).val(oneCaseStep["context"]['$']);
-	katana.$activeTab.find("#SteponError-at-action"+activePageID).val(oneCaseStep['onError']["@action"]);
-	katana.$activeTab.find("#SteponError-at-value"+activePageID).val(oneCaseStep['onError']["@value"]);
-	katana.$activeTab.find("#runmode-at-type"+activePageID).val(oneCaseStep["runmode"]["@type"]);
-	katana.$activeTab.find("#StepImpact"+activePageID).val(oneCaseStep["impact"]);
+	console.log("Calling mapTestStepToUI "+ sid);
+	console.log("Calling mapTestStepToUI "+ xdata);
+	
+	katana.$activeTab.find("#StepRowToEdit").val(sid);
+	oneCaseStep = xdata[sid]
+	console.log(oneCaseStep);
+	katana.$activeTab.find("#StepDriver").val(oneCaseStep['step'][ "@Driver"]);
+	katana.$activeTab.find("#StepKeyword").val(oneCaseStep['step'][ "@Keyword"]);
+	katana.$activeTab.find("#StepTS").val(oneCaseStep['step'][ "@TS"]);
+	katana.$activeTab.find("#StepDescription").val(oneCaseStep["Description"]["$"]);
+	katana.$activeTab.find("#StepContext").val(oneCaseStep["context"]['$']);
+	katana.$activeTab.find("#SteponError-at-action").val(oneCaseStep['onError']["@action"]);
+	katana.$activeTab.find("#SteponError-at-value").val(oneCaseStep['onError']["@value"]);
+	katana.$activeTab.find("#runmode-at-type").val(oneCaseStep["runmode"]["@type"]);
+	katana.$activeTab.find("#StepImpact").val(oneCaseStep["impact"]);
 	var a_items = [] ;
 
 	for (var i =0; i < oneCaseStep['Arguments'].length; i++)
@@ -318,29 +329,29 @@ function mapTestStepToUI(sid, xdata) {
 		varg = oneCaseStep[i];
 		a_items.push(""+varg['@name']+"="+varg['@value']);
 	}	
-	katana.$activeTab.find("#arguments-textarea-"+activePageID).html( a_items.join("\n"));
+	katana.$activeTab.find("#arguments-textarea").html( a_items.join("\n"));
 }
 
 // When the edit button is clicked, map step to the UI. 
 function mapUItoTestStep(xdata) {
-	var sid = ParseInt(katana.$activeTab.find("#StepRowToEdit"+activePageID).val());	
+	var sid = ParseInt(katana.$activeTab.find("#StepRowToEdit").val());	
 
 	// Validate whether sid 
 	oneCaseStep = xdata[sid];
 	fillStepDefaults(oneCaseStep);  // Takes care of missing values.... 
-	oneCaseStep['step'][ "@Driver"] = katana.$activeTab.find("#StepDriver"+activePageID).val();
-	oneCaseStep['step'][ "@Keyword"] = katana.$activeTab.find("#StepKeyword"+activePageID).val();
-	oneCaseStep['step'][ "@TS"] = katana.$activeTab.find("#StepTS"+activePageID).val();
-	oneCaseStep["Description"] = { "$" : katana.$activeTab.find("#StepDescription"+activePageID).val()};
-	oneCaseStep["context"] = { "$" : katana.$activeTab.find("#StepContext"+activePageID).val()};
-	oneCaseStep["Execute"]["@ExecType"]= katana.$activeTab.find("#Execute-at-ExecType"+activePageID).val();		
-	oneCaseStep['onError'][ "@action"] = katana.$activeTab.find("#SteponError-at-action"+activePageID).val();
-	oneCaseStep['onError'][ "@value"] = katana.$activeTab.find("#SteponError-at-value"+activePageID).val();
-	oneCaseStep["runmode"] = { "@type" : katana.$activeTab.find("#runmode-at-type"+activePageID).val()};
-	oneCaseStep["impact"] = { "$" : katana.$activeTab.find("#StepImpact"+activePageID).val()};
+	oneCaseStep['step'][ "@Driver"] = katana.$activeTab.find("#StepDriver").val();
+	oneCaseStep['step'][ "@Keyword"] = katana.$activeTab.find("#StepKeyword").val();
+	oneCaseStep['step'][ "@TS"] = katana.$activeTab.find("#StepTS").val();
+	oneCaseStep["Description"] = { "$" : katana.$activeTab.find("#StepDescription").val()};
+	oneCaseStep["context"] = { "$" : katana.$activeTab.find("#StepContext").val()};
+	oneCaseStep["Execute"]["@ExecType"]= katana.$activeTab.find("#Execute-at-ExecType").val();		
+	oneCaseStep['onError'][ "@action"] = katana.$activeTab.find("#SteponError-at-action").val();
+	oneCaseStep['onError'][ "@value"] = katana.$activeTab.find("#SteponError-at-value").val();
+	oneCaseStep["runmode"] = { "@type" : katana.$activeTab.find("#runmode-at-type").val()};
+	oneCaseStep["impact"] = { "$" : katana.$activeTab.find("#StepImpact").val()};
 	// Now draw the table again....
 
-	var a_str = katana.$activeTab.find("#arguments-textarea-"+activePageID).text();
+	var a_str = katana.$activeTab.find("#arguments-textarea").text();
 	a_items = a_str.split("\n");
 	oneCaseStep["Arguments"] = [];
 	//
@@ -353,7 +364,7 @@ function mapUItoTestStep(xdata) {
 			oneCaseStep["Arguments"].push({ "argument" : { "@name": nm, "@value": vl }})
 		}
 	}
-	createEditStepPage(xdata);
+	
 }
 
 function addStepToCase(){
@@ -399,7 +410,7 @@ function createRequirementsTable(rdata){
 		var oneReq = rdata[s];
 		items.push('<tr><td>'+s+'</td>');
 		//items.push('<td>'+oneReq['$']+'</td>');
-		var bid = "textRequirement-"+s+"-id"+activePageID;	
+		var bid = "textRequirement-"+s+"-id";	
 		if (!jQuery.isArray(oneReq)) oneReq = { '$': oneReq } ; 
 		items.push('<td><input type="text" value="'+oneReq['$'] +'" id="'+bid+'"/></td>');
 		
@@ -423,8 +434,8 @@ function createRequirementsTable(rdata){
 			var names = this.id.split('-');
 			var sid = parseInt(names[1]);
 			console.log("xdata --> "+ rdata);  // Get this value and update your json. 
-			var txtIn = katana.$activeTab.find("#textRequirement-"+sid+"-id"+activePageID).val();
-			console.log(katana.$activeTab.find("#textRequirement-"+sid+"-id"+activePageID));
+			var txtIn = katana.$activeTab.find("#textRequirement-"+sid+"-id").val();
+			console.log(katana.$activeTab.find("#textRequirement-"+sid+"-id"));
 			console.log(sid);
 			console.log(jsonCaseObject['Requirements'][sid])
 			jsonCaseObject['Requirements'][sid]['$'] = txtIn;
@@ -460,78 +471,6 @@ function createRequirementsTable(rdata){
 }
 
 function createEditStepPage(xdata) {
-	katana.$activeTab.find("#editCaseStepEntry").html( "");
-	var items = []; 
-	
-	/// Yes, a for loop would be better. 
-	var rows = [ 'StepRowToEdit', 'StepDriver', 'StepKeyword', 'StepTS', 'StepDescription ','StepContext' ] ;
-	for (rw in rows) {
-		items.push('<div class="field">'); 
-		var nm = rows[rw].slice(4,rows[rw].length);
-		items.push('<label >'+nm+'</label>');
-		items.push('<input type="text" id="'+rows[rw]+activePageID+'" value=""/>');
-		items.push('</div>')
-	}
-
-	items.push('<div class="field">');
-	items.push('<label class=" text-right" >ExecType:</label>');
-	items.push('<select type="text" class="text-right" id="Execute-at-ExecType'+activePageID+'" value="" >');
-	items.push('<option value="If">If</option> ');
-	items.push('<option value="If Not">If Not</option> ');
-	items.push('<option value="Yes">Yes</option> ');
-	items.push('<option value="No">No</option> ');
-	items.push('</select>');
-	items.push('</div>');
-
-	items.push('<div class="field">');
-	items.push('<label class="col-md-2 text-right" >On Error Action </label>');
-	items.push('<select type="text" class="text-right" id="SteponError-at-action'+activePageID+'" value="" >');
-	items.push('<option value="next">next</option>');
-	items.push('<option value="abort">abort</option>');
-	items.push('<option value="abort_as_error">abort_as_error</option>');
-	items.push('<option value="goto">goto</option>');
-	items.push('</select>');
-	items.push('</div>');
-	items.push('<div class="field">');
-	items.push('<label class="col-md-2 text-right" >On Error Value </label>');
-	items.push('<select type="text" class="text-right" id="SteponError-at-value'+activePageID+'" value="" >');
-	items.push('<option value="next">next</option>');
-	items.push('<option value="abort">abort</option>');
-	items.push('<option value="abort_as_error">abort_as_error</option>');
-	items.push('<option value="goto">goto</option>');
-	items.push('</select>');
-	items.push('</div>');
-
-	items.push('	<div class="field">');
-	items.push('	<label class="text-right" >Run mode:</label>');
-	items.push('	<label class="text-right" >runmode type:</label>');
-	items.push('	<input type="text" class="text-right" id="runmode-at-type"'+activePageID + ' value="" />');
-	items.push('	<label class="text-right" >runmode value:</label>');
-	items.push('	<select type="text" class="text-right" id="runmode-at-value'+activePageID+'" value="" >');
-	items.push('	<option value="RMT">RMT</option> ');
-	items.push('	<option value="RUF">RUF</option> ');
-	items.push('	<option value="RUP">RUP</option> ');
-	items.push('	</select>');
-	items.push('		</div>');
-	items.push('	<div class="field">');
-	items.push('		<label class="text-right" >impact</label>');
-	items.push('			<select type="text" id="StepImpact"'+activePageID + ' value="" >');
-	items.push('			<option value="impact">impact</option> ');
-	items.push('			<option value="noimpact">noimpact</option> ');
-	items.push('			</select>');
-	items.push('			<br>');
-	items.push('		</div>');
 
 
-	var bid = "editCaseStep-"+activePageID+"-id"+getRandomCaseID();;
-	items.push('<td><input type="button" class="btn" value="Save Changes To Test Step" id="'+bid+'"/></td>');
-	katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
-	$(document).on('click','#'+bid,function(  ) {
-			mapUItoTestStep(xdata);
-			//createCasesTable(xdata);  //Refresh the screen.
-			alert("Ouch");
-		});
-
-	items.push('<textarea id="arguments-textarea-"'+activePageID+'"> </textarea>'); 
-	katana.$activeTab.find("#editCaseStepEntry").html( items.join(""));
 }

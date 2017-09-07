@@ -46,16 +46,15 @@ function getRandomID() {
 //
 /// -------------------------------------------------------------------------------
 function mapFullProjectJson(myobjectID){
-	//console.log('Mapping data ... ' + typeof(sdata) + ' is [' + sdata + "] " + sdata.length);  // This jdata is a string ....
 	var sdata = katana.$activeTab.find("#listOfTestSuitesForProject").text();
 	katana.$activeTab.find("#listOfTestSuitesForProject").hide();
+	katana.$activeTab.find('#savefilepath').hide();  // To remove later...
+
 	var jdata = sdata.replace(/'/g, '"');
 	console.log('Mapping data ... ' + typeof(sdata) + ' is [' + sdata + "] " + sdata.length);  // This jdata is a string ....
 	//console.log(jdata);                  // I show it as such. 
 	jsonAllProjectPages[myobjectID] = JSON.parse(sdata); 
-	//jsonAllProjectPages[myobjectID] = JSON.parse(jdata); 
-	//alert(JSON.parse(sdata));
-	console.log(typeof(jsonAllProjectPages[myobjectID]));
+	//console.log(typeof(jsonAllProjectPages[myobjectID]));
 	jsonProjectObject =  jsonAllProjectPages[myobjectID]; 
 	jsonTestSuites = jsonProjectObject['Testsuites']; 
 	mapProjectJsonToUi(jsonTestSuites);  // This is where the table and edit form is created. 
@@ -69,12 +68,27 @@ function mapFullProjectJson(myobjectID){
 // no default value, a null value is inserted for the keyword
 /// -------------------------------------------------------------------------------
 function addSuiteToProject(){
-	var newTestSuite = {	"path": "../suites/framework_tests/seq_par_execution/seq_ts_seq_tc.xml", 
-	"Execute": { "@ExecType": "Yes",
+	var newTestSuite = {	
+		"path": "../suites/framework_tests/seq_par_execution/seq_ts_seq_tc.xml", 
+		"Execute": { "@ExecType": "Yes",
 			"Rule": {"@Condition": "","@Condvalue": "","@Else": "next", "@Elsevalue": "" }
-		}, "runmode": {"@type": "ruf", "@value": "2"},
-		"retry": {"@type": "if not", "@Condition": "testsuite_1_result", "@Condvalue": "PASS", "@count": "6", "@interval": "0"}, 
-	"onError": { "@action": "next", "@value": "" }, "impact": "impact" };
+		}, 
+		"runmode": {
+			"@type": "ruf", "@value": "2"
+		},
+		"retry": {
+			"@type": "if not", 
+			"@Condition": 
+			"testsuite_1_result", 
+			"@Condvalue": "PASS", 
+			"@count": "6", 
+			"@interval": "0"
+		}, 
+		"onError": { 
+			"@action": "next",
+			 "@value": "" }, 
+		"impact": "impact" 
+		};
 
 	if (!jQuery.isArray(jsonTestSuites['Testsuite'])) {
 		jsonTestSuites['Testsuite'] = [jsonTestSuites['Testsuite']];
@@ -93,8 +107,6 @@ function mapProjectSuiteToUI(s,xdata) {
 	console.log(s);
 	var oneSuite = xdata[s];
 	console.log(oneSuite);
-
-	console.log(oneSuite['path']['$']);
 	katana.$activeTab.find("#suiteRowToEdit").val(s); 
 	//console.log(katana.$activeTab.find("#suiteRowToEdit").val());
 	//katana.$activeTab.find("suitePath").val(oneSuite['path']['$']);
@@ -124,7 +136,7 @@ function mapProjectSuiteToUI(s,xdata) {
 function mapUItoProjectSuite(xdata){
 
 		
-	var s = parseInt(katana.$activeTab.find("suiteRowToEdit").val());
+	var s = parseInt(katana.$activeTab.find("#suiteRowToEdit").val());
 	var oneSuite = xdata[s];
 
 	oneSuite['path']['$'] = katana.$activeTab.find("#suitePath").val(); 
@@ -158,7 +170,6 @@ function mapUiToProjectJson() {
 	jsonProjectObject['Details']['Engineer']['$'] = katana.$activeTab.find('#projectEngineer').val();
 	jsonProjectObject['Details']['Title']['$'] = katana.$activeTab.find('#projectTitle').val();
 	jsonProjectObject['Details']['Date']['$'] = katana.$activeTab.find('#projectDate').val();
-	//jsonProjectObject['Details']['Time'] = $('#projectTime').val();
 	jsonProjectObject['Details']['default_onError']['$'] = katana.$activeTab.find('#defaultOnError').val();
 	jsonProjectObject['Details']['Datatype']['$'] = katana.$activeTab.find('#projectDatatype').val();
 	jsonProjectObject['SaveToFile'] = { "$" : katana.$activeTab.find('#my_file_to_save').val()};
@@ -254,17 +265,6 @@ function mapUiToProjectJson() {
 
 }
 
-//
-function createSuiteEditTable(xdata) {
-
-
-	katana.$activeTab.find('#saveChangesToRow').off('click');  // unbind is deprecated - debounces the click event. 
-	$(document).on('click','#saveChangesToRow',function(  ) {
-			mapUItoProjectSuite(xdata);
-			console.log("....** scrollIntoView ** ")
-
-		});
-}
 
 
 //
@@ -398,7 +398,12 @@ function mapProjectJsonToUi(data){
 	if (!jQuery.isArray(xdata)) xdata = [xdata]; 
 
 	createSuitesTable(xdata);
-	createSuiteEditTable(xdata);
+	katana.$activeTab.find('#saveChangesToRow').off('click');  // unbind is deprecated - debounces the click event. 
+	$(document).on('click','#saveChangesToRow',function(  ) {
+			console.log(xdata);
+			mapUItoProjectSuite(xdata);
+		});
+
 }  // end of function 
 
 // Removes a test suite by its ID and refresh the page. 

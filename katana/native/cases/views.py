@@ -27,7 +27,7 @@ from django.template import Library
 from xmljson import badgerfish as bf
 from xml.etree.ElementTree import fromstring, tostring
 import xml.etree.ElementTree
-
+import json
 from utils.navigator_util import Navigator
 
 path_to_demo="/home/khusain/Projects/xml-edit/warriorframework/katana/vdj/cases/"

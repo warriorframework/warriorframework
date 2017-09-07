@@ -39,10 +39,6 @@ import json
 
 from utils.navigator_util import Navigator
 
-path_to_demo="/home/khusain/Projects/xml-edit/warriorframework/katana/vdj/cases/"
-path_to_testcases='/home/khusain/Projects/xml-edit/warriorframework/wftests/warrior_tests/';
-path_to_productdrivers='/home/khusain/Projects/xml-edit/warriorframework/warrior/ProductDrivers/'
-
 
 def old_index(request):
     return render(request, 'settings/index.html', {"data": controls.get_location()})

@@ -23,20 +23,17 @@ if (typeof jsonAllSuitePages === 'undefined') {
 }
 var jsonSuiteObject = []; 
 var jsonTestcases = [];			// for all Cases
-var activePageID = getRandomSuiteID();   // for the page ID 
 var mySuiteKeywordsArray = ["path","context","runtype","impact", "runmode"];
 var mySuite_UI_Array = [ 'CasePath', 'CaseContext', 'CaseRuntype', 'CaseImpact', 'CaseRunmode'];
 	
 
-/// -------------------------------------------------------------------------------
-// 
-/// -------------------------------------------------------------------------------
 function getRandomSuiteID() {
   min = Math.ceil(1);
-  max = Math.floor(2000);
+  max = Math.floor(4000);
   return Math.floor(Math.random() * (max - min)) + min;
   
 }
+
 /// -------------------------------------------------------------------------------
 // Sets up the global Suite data holder for the UI. 
 // This is called from the correspoding HTML file onLoad event 
@@ -50,8 +47,7 @@ function getRandomSuiteID() {
 /// -------------------------------------------------------------------------------
 function mapFullSuiteJson(myobjectID){
 	//console.log('Mapping data ... ' + typeof(sdata) + ' is [' + sdata + "] " + sdata.length);  // This jdata is a string ....
-	activePageID = getRandomSuiteID();   
-
+	
 	var sdata = katana.$activeTab.find("#listOfTestcasesForSuite").text();
 	katana.$activeTab.find("#listOfTestcasesForSuite").hide();
 	katana.$activeTab.find("#savefilepath").hide();
@@ -94,7 +90,7 @@ function addCaseToSuite(){
 		}
 
 	jsonTestcases['Testcase'].push(newTestcase);
-	mapSuiteJsonToUi(jsonTestcases);
+	createCasesTable(jsonTestcases['Testcase']);
 }
 
 
@@ -106,17 +102,16 @@ function mapSuiteCaseToUI(s,xdata) {
 	console.log(s);
 	var oneCase = xdata[s];
 	console.log(oneCase);
-	console.log(activePageID);
 	console.log(oneCase['path']['$']);
-	katana.$activeTab.find("#CaseRowToEdit"+activePageID).val(s); 
-	console.log(katana.$activeTab.find("#CaseRowToEdit"+activePageID).val());
-	//katana.$activeTab.find("CasePath"+activePageID).val(oneCase['path']['$']);
+	katana.$activeTab.find("#CaseRowToEdit").val(s); 
+	console.log(katana.$activeTab.find("#CaseRowToEdit").val());
+	//katana.$activeTab.find("CasePath").val(oneCase['path']['$']);
 	
 	var myStringArray = mySuiteKeywordsArray; 
 	var arrayLength = mySuiteKeywordsArray.length;
 	for (var xi = 0; xi < arrayLength; xi++) {
-		console.log("Fill "+ mySuite_UI_Array[xi]+activePageID);
-			var xxx = "#"+mySuite_UI_Array[xi]+activePageID;
+		console.log("Fill "+ mySuite_UI_Array[xi]);
+			var xxx = "#"+mySuite_UI_Array[xi];
 			katana.$activeTab.find(xxx).val(oneCase[myStringArray[xi]]['$']); 
 		}
 
@@ -141,31 +136,27 @@ function mapSuiteCaseToUI(s,xdata) {
 function mapUItoSuiteCase(xdata){
 
 		
-	var s = parseInt(katana.$activeTab.find("#CaseRowToEdit"+activePageID).val());
+	var s = parseInt(katana.$activeTab.find("#CaseRowToEdit").val());
 	var oneCase = xdata[s];
-	var id = katana.$activeTab.find("#CaseRowToEdit"+activePageID).val();
+	var id = s; // katana.$activeTab.find("#CaseRowToEdit").val();
 
-	if (s != id) {
-		alert('Setting for '+s+" instead of " + id); 
-	}
-
-		id = '#CaseImpact'+activePageID
+		id = '#CaseImpact'
 		oneCase['impact']['$'] = katana.$activeTab.find(id).val();
 
-		id = '#CasePath'+activePageID		
+		id = '#CasePath'		
 		oneCase['path']['$'] = katana.$activeTab.find(id).val();
 
-		id = '#CaseContext'+activePageID
+		id = '#CaseContext'
 		oneCase['context']['$'] = katana.$activeTab.find(id).val();
 
-		id = '#CaseRuntype'+activePageID
+		id = '#CaseRuntype'
 		oneCase['runtype']['$'] = katana.$activeTab.find(id).val();
 
-		id = '#CaseRunmode'+activePageID
+		id = '#CaseRunmode'
 		oneCase['runmode']['$'] = katana.$activeTab.find(id).val();
 
 
-		id = "#onError-at-action"+activePageID
+		id = "#onError-at-action"
 		oneCase['onError']['@action'] = katana.$activeTab.find(id).val();
 
 
@@ -227,66 +218,8 @@ function mapUiToSuiteJson() {
 
 }
 
-//
-// Creates the display table for the test suite. 
-function createCaseEditTable(xdata) {
-	//var xdata = data['Testcase'];   // Just in case 
-	//if (!jQuery.isArray(xdata)) xdata = [xdata];
-	
-	katana.$activeTab.find("#editTestcaseEntry").html( "");
-	var items = []; 
-	
-	items.push('<div class="field">'); 
-	items.push('<label >Row Id</label>');
-	items.push('<input type="text" id="CaseRowToEdit'+activePageID+'" value=""/>');
-	items.push('</div>');			
 
-	items.push('<div class="field">');
-	items.push('<label >Path*:</label>');
-	items.push('<input type="text" id="CasePath'+activePageID+'" value=""/>');
-	items.push('</div>');
-	items.push('<div class="field">');
-	items.push('<label >Context:</label>');
-	items.push('<input type="text" id="CaseContext'+activePageID+'" value=""/>');
-	items.push('</div>');
-	items.push('<div class="field">');
-	items.push('<label >Run Type:</label>');
-	items.push('<input type="text" id="CaseRuntype'+activePageID+'" value=""/>');
-	items.push('</div>');
-	items.push('<div class="field">');
-	items.push('<label >Run Mode:</label>');
-	items.push('<input type="text" id="CaseRunmode'+activePageID+'" value=""/>');
-	items.push('</div>');
 
-	items.push('<div class="field">');
-	items.push('<label >Impact:</label>');
-	items.push('<input type="text" id="CaseImpact'+activePageID+'" value=""/>');
-	items.push('</div>');
-
-	items.push('<div class="field">');
-	items.push('<label class="col-md-2 text-right" >On Error action:</label>');
-	items.push('<select type="text" class="col-md-4 text-right" id="onError-at-action'+activePageID+'" value="" >');
-	items.push('<option value="next">next</option>');
-	items.push('<option value="abort">abort</option>');
-	items.push('<option value="abort_as_error">abort_as_error</option>');
-	items.push('<option value="goto">goto</option>');
-	items.push('</select>');
-	items.push('</div>');
-		
-	
-	// Now create the buttons to save the data. 
-
-	var bid = "editTestcase-"+activePageID+"-id"+getRandomSuiteID();;
-	items.push('<td><input type="button" class="btn" value="Save Changes To Test Case" id="'+bid+'"/></td>');
-	katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
-	$(document).on('click','#'+bid,function(  ) {
-			mapUItoSuiteCase(xdata);
-			createCasesTable(xdata);  //Refresh the screen.
-		});
-
-	katana.$activeTab.find("#editTestcaseEntry").html( items.join(""));
-	
-}
 //
 // This creates the table for viewing data in a sortable view. 
 // 
@@ -306,7 +239,6 @@ function createCasesTable(xdata) {
 
 		console.log(oneCase);
 		fillCaseDefaults(s,xdata);
-		console.log(oneCase['path']);
 		
 		items.push('<tr><td>'+s+'</td>');
 		
@@ -319,9 +251,7 @@ function createCasesTable(xdata) {
 		items.push('<td>'+oneCase['onError']['@action']+'</td>');
 		items.push('<td>'+oneCase['impact']['$']+'</td>');
 
-		var bid = "deleteTestcase-"+s+"-id"+getRandomSuiteID();
-		//alert(bid);
-		//items.push('<td><input type="button" class="btn-danger" value="Delete" id="'+bid+'"/></td>');
+		var bid = "deleteTestcase-"+s+"-id"+getRandomSuiteID();;
 		items.push('<td><input type="button" title="Delete" class="ui-icon ui-icon-trash ui-button-icon-only" value="X" id="'+bid+'"/>');
 		katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 		$(document).on('click','#'+bid,function( ) {
@@ -329,7 +259,7 @@ function createCasesTable(xdata) {
 			var sid = parseInt(names[1]);
 			removeTestcase(sid,xdata);
 		});
-		bid = "editTestcase-"+s+"-id"+getRandomSuiteID();;
+		bid = "editTestcase-"+s+"-id"+getRandomSuiteID();
 		//items.push('<td><input type="button" class="btn" value="Edit" id="'+bid+'"/></td>');
 		items.push('<input type="button" title="Edit" class="ui-icon ui-icon-pencil ui-button-icon-only" value="Edit" id="'+bid+'"/></td>');
 		katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
@@ -337,7 +267,7 @@ function createCasesTable(xdata) {
 			var names = this.id.split('-');
 			var sid = parseInt(names[1]);
 			console.log("xdata --> "+ xdata);
-			alert("mapSuiteCaseToUI");
+			//alert("mapSuiteCaseToUI");
 			mapSuiteCaseToUI(sid,xdata);
 			//This is where you load in the edit form and display this row in detail. 
 		});
@@ -386,38 +316,43 @@ function createRequirementsTable(rdata){
 	
 	items.push('<table id="Case_table_display" class="table" >');
 	items.push('<thead>');
-	items.push('<tr id="ReqRow"><th>Num</th><th>Requirement</th><th/><th/></tr>');
+	items.push('<tr id="ReqRow"><th>Num</th><th>Name</th><th>Value</th><th/><th/></tr>');
 	items.push('</thead>');
 	items.push('<tbody>');
 	for (var s=0; s<Object.keys(rdata).length; s++ ) {
 		var oneReq = rdata[s];
 		items.push('<tr><td>'+s+'</td>');
 		//items.push('<td>'+oneReq['$']+'</td>');
-		var bid = "textRequirement-"+s+"-id"+activePageID;	
-		items.push('<td><input type="text" value="'+oneReq['$']+'" id="'+bid+'"/></td>');
+		var bid = "textRequirement-name-"+s+"-id";	
+		items.push('<td><input type="text" value="'+oneReq['@name']+'" id="'+bid+'"/></td>');
+		bid = "textRequirement-value-"+s+"-id";	
+		items.push('<td><input type="text" value="'+oneReq['@value']+'" id="'+bid+'"/></td>');
 		
-		bid = "deleteRequirement-"+s+"-id"+getRandomSuiteID();
-		//alert(bid);
-		items.push('<td><input type="button" class="btn-danger" value="Delete" id="'+bid+'"/></td>');
+		bid = "deleteRequirement-"+s+"-id";
+		items.push('<td><input type="button" class="ui-icon ui-icon-trash ui-button-icon-only"  value="Delete" id="'+bid+'"/></td>');
 		katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
-		$(document).on('click','#'+bid,function( ) {
+		$(document).on('click','#'+bid,null);  // unbind is deprecated - debounces the click event. 
+		$(document).on('click','#'+bid,function( event ) {
 			var names = this.id.split('-');
 			var sid = parseInt(names[1]);
-			//removeTestcase(sid,xdata);
+			console.log("Remove " + sid + " " + this.id +" from " + rdata); 
+			//removeRequirement(sid,rdata);
+			jsonSuiteObject['Requirements'].splice(sid,1);
+			createRequirementsTable(jsonSuiteObject['Requirements']);	
+			return false;
 		});
-		bid = "editRequirement-"+s+"-id"+getRandomSuiteID();;
-		items.push('<td><input type="button" class="btn" value="Save" id="'+bid+'"/></td>');
+		bid = "editRequirement-"+s+"-id";$(document)
+		items.push('<td><input type="button" class="ui-icon ui-icon-pencil ui-button-icon-only" value="Edit" id="'+bid+'"/></td>');
 		katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 		$(document).on('click','#'+bid,function(  ) {
 			var names = this.id.split('-');
 			var sid = parseInt(names[1]);
 			console.log("xdata --> "+ rdata);  // Get this value and update your json. 
-			var txtIn = katana.$activeTab.find("#textRequirement-"+sid+"-id"+activePageID).val();
-			console.log(katana.$activeTab.find("#textRequirement-"+sid+"-id"+activePageID));
-			console.log(sid);
+			var txtNm = katana.$activeTab.find("#textRequirement-name-"+sid+"-id").val();
+			var txtVl = katana.$activeTab.find("#textRequirement-value-"+sid+"-id").val();
+			console.log("Editing ..." + sid);
 			console.log(jsonSuiteObject['Requirements'][sid])
-			jsonSuiteObject['Requirements'][sid]['$'] = txtIn;
-
+			jsonSuiteObject['Requirements'][sid]  = { "@name": txtNm, "@value": txtVl};
 			createRequirementsTable(jsonSuiteObject['Requirements']);	
 			event.stopPropagation();
 			//This is where you load in the edit form and display this row in detail. 
@@ -426,28 +361,18 @@ function createRequirementsTable(rdata){
 	items.push('</tbody>');
 	items.push('</table>');
 
-	bid = "addRequirement-"+getRandomSuiteID();
-	items.push('<td><input type="button" class="btn" value="Add Requirement" id="'+bid+'"/></td>');
-	katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
-	$(document).on('click','#'+bid,function( event  ) {
-			var names = this.id.split('-');
-			var sid = parseInt(names[1]);
-			console.log("Add Requirement... ");
-			if (!jsonSuiteObject['Requirements']) jsonSuiteObject['Requirements'] = [];
-			rdata = jsonSuiteObject['Requirements'];
-			rdata.push({"Requirement" : { "$": ""},});
-			console.log(jsonSuiteObject);
-			createRequirementsTable(jsonSuiteObject['Requirements']);	
-			event.stopPropagation();
-		});
-
 	katana.$activeTab.find("#tableOfTestRequirements").html( items.join(""));
 	katana.$activeTab.find('#Case_table_display tbody').sortable();
-	katana.$activeTab.find('#Case_table_display').on('click',"td",   function() { 
-	});
+	
 
 }
 
+
+function removeRequirement(s,rdata){
+	console.log(rdata);
+	rdata.splice(s,1);
+			
+}
 /*
 // Shows the global Suite data holder in the UI.
 
@@ -470,8 +395,29 @@ function mapSuiteJsonToUi(data){
 
 	createCasesTable(xdata);
 	createRequirementsTable(rdata);
-	createCaseEditTable(xdata);
+	katana.$activeTab.find('#editTestcase').off('click');  // unbind is deprecated - debounces the click event. 
+	$(document).on('click','#editTestcase',function() {
+			mapUItoSuiteCase(xdata);
+			createCasesTable(xdata);  //Refresh the screen.
+		});
+
 }  // end of function 
+
+
+
+
+function addRequirementToSuite() {
+
+			console.log("Add Requirement... ");
+			if (!jsonSuiteObject['Requirements']) jsonSuiteObject['Requirements'] = [];
+			rdata = jsonSuiteObject['Requirements'];
+			rdata.push({"Requirement" : { "@name": "", "@value": ""},});
+			console.log(jsonSuiteObject);
+			createRequirementsTable(jsonSuiteObject['Requirements']);	
+			//event.stopPropagation();
+
+}
+
 
 // Removes a test Case by its ID and refresh the page. 
 function removeTestcase( sid,xdata ){
