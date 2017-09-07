@@ -280,9 +280,6 @@ function createCaseEditTable(xdata) {
 	items.push('<td><input type="button" class="btn" value="Save Changes To Test Case" id="'+bid+'"/></td>');
 	katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 	$(document).on('click','#'+bid,function(  ) {
-			//var names = this.id.split('-');
-			//var sid = parseInt(names[1]);
-			alert("Mapping UI to SuiteCase");
 			mapUItoSuiteCase(xdata);
 			createCasesTable(xdata);  //Refresh the screen.
 		});

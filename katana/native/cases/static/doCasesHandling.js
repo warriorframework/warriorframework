@@ -38,6 +38,7 @@ function mapFullCaseJson(myobjectID){
 	console.log("HELLO");
 	var sdata = katana.$activeTab.find("#listOfTestStepsForCase").text();
 	katana.$activeTab.find("#listOfTestcasesForSuite").hide();
+	katana.$activeTab.find('#savesubdir').hide();
 	var jdata = sdata.replace(/'/g, '"');
 	jsonAllCasePages[myobjectID] = JSON.parse(sdata);               
 	jsonCaseObject = jsonAllCasePages[myobjectID]
@@ -111,14 +112,14 @@ function mapUiToCaseJson() {
 	for (var s=0; s<Object.keys(rdata).length; s++ ) {
 		var oneReqStep = rdata[s];
 		sx = { "Requirement" :  { '$' :  oneReqStep['Requirement'] } }
-		jsonCaseObject['Requirements']['Requirement'].append(sx); 
+		jsonCaseObject['Requirements']['Requirement'].push(sx); 
 
 	}
 
 	
 	// Now you have collected the user components...
 
-	var url = "../getCaseDataBack";
+	var url = "./cases/getCaseDataBack";
 	var csrftoken = $("[name='csrfmiddlewaretoken']").val();
 
 	$.ajaxSetup({
@@ -132,7 +133,7 @@ function mapUiToCaseJson() {
 	// var mystring =  JSON.stringify(jsonCaseObject);
 	var ns = jj.translate.toXML(topNode);
 
-	//alert(ns);
+	alert(ns);
 
 	$.ajax({
     url : url,
@@ -140,7 +141,8 @@ function mapUiToCaseJson() {
     data : { 
     	'json': JSON.stringify(topNode),
     	'Testcase': ns,
-    	'filetosave': $('#my_file_to_save').val()
+    	'filetosave': katana.$activeTab.find('#my_file_to_save').val(),
+    	'savesubdir': katana.$activeTab.find('#savesubdir').text(),
     	},
     headers: {'X-CSRFToken':csrftoken},
     //contentType: 'application/json',
@@ -226,22 +228,7 @@ function mapCaseJsonToUi(data){
 			}
 		outstr = out_array.join("");
 		console.log("LOOK"+outstr);
-		/*
 
-			var bid = "deleteArgumentText-"+ s + "-" + ta;
-			items.push('<div><input type="text" value="'+xstr+'" id="'+bid+'" />');
-			bid = "deleteArgument-"+ s + "-" + ta + "-" + getRandomCaseID();
-			items.push('<input type="button" class="btn-danger" value="Delete Me" id="'+bid+'"/></div>');
-
-			$('#'+bid).off('click');   //unbind and bind are deprecated. 
-			$(document).on('click','#'+bid,function(  ) {
-				var names = this.id.split('-');
-				var sid = parseInt(names[1]);
-				var aid = parseInt(names[2]);
-				removeOneArgument(sid,aid);
-				});
-
-		*/
 		items.push('<td>'+outstr+'</td>'); 
 	
 		outstr =  oneCaseStep['Description']['$'];
@@ -261,8 +248,10 @@ function mapCaseJsonToUi(data){
 			"<br>Impact=" + oneCaseStep['impact'];
 		items.push('<td>'+outstr+'</td>'); 
 		var bid = "deleteTestStep-"+s+"-id-"+getRandomCaseID();
-		items.push('<td><input type="button" class="btn-danger" value="X" id="'+bid+'"/>');
-		$('#'+bid).off('c<td>lick');   //unbind and bind are deprecated. 
+		//items.push('<td><input type="button" class="btn-danger" value="X" id="'+bid+'"/>');
+		items.push('<td><input type="button" title="Delete" class="ui-icon ui-icon-trash ui-button-icon-only" value="X" id="'+bid+'"/>');
+		
+		$('#'+bid).off('click');   //unbind and bind are deprecated. 
 		$(document).on('click','#'+bid,function(  ) {
 			alert(this.id);
 			var names = this.id.split('-');
@@ -271,7 +260,7 @@ function mapCaseJsonToUi(data){
 		});
 
 		bid = "editTestStep-"+s+"-id-"+getRandomCaseID();
-		items.push('<input type="button" class="btn" value="E" id="'+bid+'"/></td>');
+		items.push('<input type="button" title="Edit" class="ui-icon ui-icon-pencil ui-button-icon-only" value="Edit" id="'+bid+'"/></td>');
 		$('#'+bid).off('c<td>lick');   //unbind and bind are deprecated. 
 		$(document).on('click','#'+bid,function(  ) {
 			alert(this.id);
@@ -327,6 +316,9 @@ function addStepToCase(){
 		"rmt" : {  "$": " "} ,
 		"retry": { "$": "", "@type": "if not", "@Condition": "testsuite_1_result", "@Condvalue": "PASS", "@count": "6", "@interval": "0"}, 
 	 };
+	if (!jsonCaseSteps['step']) {
+		jsonCaseSteps['step'] = [];
+		}
 	if (!jQuery.isArray(jsonCaseSteps['step'])) {
 		jsonCaseSteps['step'] = [jsonCaseSteps['step']];
 		}
@@ -357,7 +349,9 @@ function createRequirementsTable(rdata){
 		
 		bid = "deleteRequirement-"+s+"-id"+getRandomCaseID();
 		//alert(bid);
-		items.push('<td><input type="button" class="btn-danger" value="Delete" id="'+bid+'"/></td>');
+		//items.push('<td><input type="button" class="btn-danger" value="Delete" id="'+bid+'"/></td>');
+		items.push('<td><input type="button" title="Delete" class="ui-icon ui-icon-trash ui-button-icon-only" value="X" id="'+bid+'"/>');
+		
 		katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 		$(document).on('click','#'+bid,function( ) {
 			var names = this.id.split('-');
@@ -365,7 +359,9 @@ function createRequirementsTable(rdata){
 			//removeTestcase(sid,xdata);
 		});
 		bid = "editRequirement-"+s+"-id"+getRandomCaseID();;
-		items.push('<td><input type="button" class="btn" value="Save" id="'+bid+'"/></td>');
+		//items.push('<td><input type="button" class="btn" value="Save" id="'+bid+'"/></td>');
+		items.push('<input type="button" title="Edit" class="ui-icon ui-icon-pencil ui-button-icon-only" value="Edit" id="'+bid+'"/></td>');
+		
 		katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 		$(document).on('click','#'+bid,function(  ) {
 			var names = this.id.split('-');
@@ -386,7 +382,7 @@ function createRequirementsTable(rdata){
 	items.push('</table>');
 
 	bid = "addRequirement-"+getRandomCaseID();
-	items.push('<td><input type="button" class="btn" value="Add Requirement" id="'+bid+'"/></td>');
+	items.push('<div><input type="button" class="btn" value="Add Requirement" id="'+bid+'"/></div>');
 	katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 	$(document).on('click','#'+bid,function( event  ) {
 			var names = this.id.split('-');

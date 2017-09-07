@@ -104,12 +104,12 @@
 <div id="listOfTestStepsForCase"  > {{fulljson|jsonify}} </div> 
 
 <div class="btn-group" role="group">   
-		<button id="addStep" class="btn btn-primary" onclick="addStepToCase()">Add</button>
-		<button class="btn btn-primary" onclick="start()">Refresh</button>
-		<button class="btn btn-secondary">Load</button>
-		<button class="btn btn-success">Save</button>
+		<button id="addStep" class="btn btn-primary" onclick="addStepToCase()">Add Step To Case</button>
+		<button class="btn btn-primary" onclick="start()">Discard Changes</button>
+		
+		<button class="btn btn-success" onclick="mapUiToCaseJson()">Save Changes To Disk</button>
 	</div>      
 	<div>
-	<input class="col-md-12 text-right" type="text" id="my_file_to_save" name="my_file_to_save" value="{{myfile}}"/>
+	<input class="col-md-12 text-right" type="text" id="my_file_to_save" name="my_file_to_save" value="{{savefilename}}"/>
 	</div>			
-
+	<div id="savesubdir">{{savesubdir}}</div>

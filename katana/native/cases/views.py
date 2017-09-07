@@ -114,10 +114,17 @@ def editCase(request):
 	xml_r["Testcase"]["Requirements"] = {} 
 	xml_r["Testcase"]["Steps"] = {} 
 	
-	
-	xlines = open(filename).read()
-	xml_d = bf.data(fromstring(xlines)); # xmltodict.parse(fd1.read());
 
+	if filename == 'NEW':
+		subdir = 'user'
+		filename = 'new.xml'
+		fn = 'new.xml'
+		xml_d = copy.deepcopy(xml_r)
+	else: 
+		xlines = open(filename).read()
+		xml_d = bf.data(fromstring(xlines)); # xmltodict.parse(fd1.read());
+		subdir = os.path.split(os.path.split(filename)[0])[1]
+		fn = 'save_' + os.path.split(filename)[1]
 	# Map the input to the response collector
 	for xstr in ["Name", "Title", "Category", "Date", "Time", "InputDataFile", "Engineer", \
 		"Datatype", "default_onError", "Logsdir", "Resultsdir", "ExpectedResults"]:
@@ -141,6 +148,8 @@ def editCase(request):
 
 	context = { 
 		'myfile': filename,
+		'savefilename': fn,
+		'savesubdir': subdir,
 		'docSpec': 'caseSpec',
 		'caseName': xml_r["Testcase"]["Details"]["Name"]["$"],
 		'caseTitle': xml_r["Testcase"]["Details"]["Title"]["$"],
@@ -164,12 +173,15 @@ def editCase(request):
 	return HttpResponse(template.render(context, request))
 
 def getCaseDataBack(request):
-	print "Got something back in request";
+	path_to_testcases = navigator.get_warrior_dir() + "/../wftests/warrior_tests/testcases"
+	
 	#response = request.readlines();   # Get the JSON response 
 	ijs = request.POST.get(u'Testcase')  # This is a xml string  
 	print ijs
 	print "--------------TREE----------------"
-	fname = request.POST.get(u'filetosave')
+	fn = request.POST.get(u'filetosave')
+	sb = request.POST.get(u'savesubdir')
+	fname = path_to_testcases + os.sep + sb + os.sep + fn;  
 	print "save to ", fname 
 	fd = open(fname,'w');
 	fd.write(ijs);

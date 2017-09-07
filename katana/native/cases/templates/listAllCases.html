@@ -45,6 +45,12 @@ var jdata = { 'core' : { 'data' : [ JSON.parse(sdata)]}};
 katana.$activeTab.find('#myCaseTree').on("select_node.jstree", function (e, data) { 
       var thePage = data.node.li_attr['data-path'];
       console.log(thePage);
+
+      // If there is no XML extension return immediately
+      var extn = thePage.indexOf(".xml");
+      if (extn < 4){
+      	return;
+      }
       katana.$view.one('tabAdded', function(){
      mapFullCaseJson(thePage);
   });
