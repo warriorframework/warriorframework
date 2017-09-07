@@ -31,7 +31,9 @@
 	<h2>{{title}}</h2>
 
 	
-
+  <div class="btn-group" role="group">   
+      <button id="addNewCase" class="btn btn-success" onclick="startNewCase()">Add New Testcase</button>
+  </div>
 <div id="myCaseTree"></div>
 <div id="mmm" >{{treejs|jsonify}}</div>
 
@@ -41,6 +43,10 @@ var sdata= katana.$activeTab.find('#mmm').text();
 console.log(sdata);
 var jdata = { 'core' : { 'data' : [ JSON.parse(sdata)]}};
 
+function startNewCase() {
+var xref="./cases/editCase/?fname=NEW"; 
+  katana.templateAPI.load(xref, null, null, 'Case') ;;
+}
 //
 katana.$activeTab.find('#myCaseTree').on("select_node.jstree", function (e, data) { 
       var thePage = data.node.li_attr['data-path'];
@@ -55,7 +61,7 @@ katana.$activeTab.find('#myCaseTree').on("select_node.jstree", function (e, data
      mapFullCaseJson(thePage);
   });
   var xref="./cases/editCase/?fname=" + thePage; 
-  katana.templateAPI.load(xref, null, null, 'Suite') ;
+  katana.templateAPI.load(xref, null, null, 'Case') ;
 });
 
 //

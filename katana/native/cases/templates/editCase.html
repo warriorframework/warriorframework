@@ -26,11 +26,11 @@
 				<input type="text" id="caseName"  value="{{caseName}}"/>
 			</div>
 			<div class="field">
-				<label >Name*:</label>
+				<label >Title*:</label>
 				<input type="text" id="caseTitle"  value="{{caseTitle}}"/>
 			</div>
 			<div class="field">
-				<label >Name*:</label>
+				<label >Category*:</label>
 				<input type="text" id="caseCategory"  value="{{caseCategory}}"/>
 			</div>
 			<div class="field">
@@ -97,9 +97,6 @@
 
    <h2>Steps</h2>
   	 <div id="tableOfTestStepsForCase"  class="col-md-6" />
-	<div id="editTestCaseEntry" class="form-group col-md-6" />
-     <div id="sourceFileText" color="red" class="col-md-6" >  FILL </div>    
-   
 </div>
 <div id="listOfTestStepsForCase"  > {{fulljson|jsonify}} </div> 
 
@@ -108,7 +105,15 @@
 		<button class="btn btn-primary" onclick="start()">Discard Changes</button>
 		
 		<button class="btn btn-success" onclick="mapUiToCaseJson()">Save Changes To Disk</button>
-	</div>      
+	</div>   
+   <h2>Edit Steps</h2>
+  <div class="container-fluid">
+	<div id="editCaseStepEntry" class="form-group col-md-6" > EDIT </div>
+     <div id="sourceFileText" color="red" class="col-md-6" > The source code for the driver will go here from navigator object. </div>   
+
+    </div> 
+ 
+
 	<div>
 	<input class="col-md-12 text-right" type="text" id="my_file_to_save" name="my_file_to_save" value="{{savefilename}}"/>
 	</div>			

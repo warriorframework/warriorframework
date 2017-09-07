@@ -49,7 +49,7 @@ function mapFullCaseJson(myobjectID){
 	mapCaseJsonToUi(jsonCaseSteps);
 	//mapRequirementsToUI(jsonCaseRequirements);
 	createRequirementsTable(jsonCaseRequirements);
-
+	createEditStepPage(jsonCaseObject);
 
 	// Must define handlers inside this function ... 
 
@@ -266,7 +266,7 @@ function mapCaseJsonToUi(data){
 			alert(this.id);
 			var names = this.id.split('-');
 			var sid = parseInt(names[1]);
-			removeTestStep(sid);
+			editTestStep(sid);
 		});
 		items.push('</tr>');
 
@@ -398,7 +398,75 @@ function createRequirementsTable(rdata){
 
 	katana.$activeTab.find("#tableOfTestRequirements").html( items.join(""));
 	katana.$activeTab.find('#Case_table_display tbody').sortable();
-	katana.$activeTab.find('#Case_table_display').on('click',"td",   function() { 
-	});
+	//katana.$activeTab.find('#Case_table_display').on('click',"td",   function() { 
+	//});
 
+}
+
+function createEditStepPage(xdata) {
+	katana.$activeTab.find("#editCaseStepEntry").html( "");
+	var items = []; 
+	
+	/// Yes, a for loop would be better. 
+	var rows = [ 'StepRowToEdit', 'StepDriver', 'StepKeyword', 'StepTS', 'StepDescription ','StepContext' ] ;
+	for (rw in rows) {
+		items.push('<div class="field col-md-3">'); 
+		var nm = rows[rw].slice(4,rows[rw].length);
+		items.push('<label >'+nm+'</label>');
+		items.push('<input type="text" id="'+rows[rw]+activePageID+'" value=""/>');
+		items.push('</div>')
+	}
+
+	items.push('<div class="field col-md-3">');
+	items.push('<label class=" text-right" >ExecType:</label>');
+	items.push('<select type="text" class="text-right" id="Execute-at-ExecType'+activePageID+'"" value="" >');
+	items.push('<option value="If">If</option> ');
+	items.push('<option value="If Not">If Not</option> ');
+	items.push('<option value="Yes">Yes</option> ');
+	items.push('<option value="No">No</option> ');
+	items.push('</select>');
+	items.push('</div>');
+
+	items.push('<div class="field col-md-3">');
+	items.push('<label class="col-md-2 text-right" >On Error </label>');
+	items.push('<select type="text" class="text-right" id="SteponError'+activePageID+'" value="" >');
+	items.push('<option value="next">next</option>');
+	items.push('<option value="abort">abort</option>');
+	items.push('<option value="abort_as_error">abort_as_error</option>');
+	items.push('<option value="goto">goto</option>');
+	items.push('</select>');
+	items.push('</div>');
+
+	items.push('	<div class="field col-md-3">');
+	items.push('	<label class="text-right" >Run mode:</label>');
+	items.push('	<label class="text-right" >runmode type:</label>');
+	items.push('	<input type="text" class="text-right" id="runmode-at-type"'+activePageID + ' value="" />');
+	items.push('	<label class="text-right" >runmode value:</label>');
+	items.push('	<select type="text" class="text-right" id="runmode-at-value'+activePageID+'" value="" >');
+	items.push('	<option value="RMT">RMT</option> ');
+	items.push('	<option value="RUF">RUF</option> ');
+	items.push('	<option value="RUP">RUP</option> ');
+	items.push('	</select>');
+	items.push('		</div>');
+	items.push('	<div class="field col-md-3">');
+	items.push('		<label class="text-right" >impact</label>');
+	items.push('			<select type="text" id="StepImpact"'+activePageID + ' value="" >');
+	items.push('			<option value="impact">impact</option> ');
+	items.push('			<option value="noimpact">noimpact</option> ');
+	items.push('			</select>');
+	items.push('			<br>');
+	items.push('		</div>');
+
+
+	var bid = "editCaseStep-"+activePageID+"-id"+getRandomCaseID();;
+	items.push('<td><input type="button" class="btn" value="Save Changes To Test Step" id="'+bid+'"/></td>');
+	katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
+	$(document).on('click','#'+bid,function(  ) {
+			//mapUItoSuiteCase(xdata);
+			//createCasesTable(xdata);  //Refresh the screen.
+			alert("Ouch");
+		});
+
+
+	katana.$activeTab.find("#editCaseStepEntry").html( items.join(""));
 }

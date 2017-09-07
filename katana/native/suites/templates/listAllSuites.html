@@ -45,8 +45,8 @@ console.log(sdata);
 var jdata = { 'core' : { 'data' : [ JSON.parse(sdata)]}};
 
 function startNewSuite() {
-  var xref="./suites/editSuite/?fname=NEW" ;
-  katana.templateAPI.load(xref, null, null, 'NEW') ;
+    var xref="./suites/editSuite/?fname=NEW"; 
+  katana.templateAPI.load(xref, null, null, 'Suite') ;
 }
 //
 katana.$activeTab.find('#mySuiteTree').on("select_node.jstree", function (e, data) { 
