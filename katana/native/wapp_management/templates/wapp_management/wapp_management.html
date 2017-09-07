@@ -33,7 +33,7 @@
 
     <section id="app_installation">
         <div style="width: 100%; height: 10rem; padding: 4rem 0 0 5.5rem;">
-            <h1>&nbsp;Installed Apps</h1>
+            <h1>&nbsp;Install New Apps</h1>
         </div>
 
         <div id="app_installation_div">
@@ -46,7 +46,17 @@
                             <p class="card-text">This is some text explaining what the button would do</p>
                         </div>
                         <div class="card-body">
-                            <button class="btn btn-primary" katana-click="wapp_management.addAnotherApp">Add</button>
+                            <div id="form-for-paths"></div>
+                            <br>
+                            <button class="btn btn-primary" katana-click="wapp_management.addAnotherApp" input_num="1">Add</button>
+                        </div>
+                        <div id="rest-of-the-card-1" class="card-body">
+                            <p class="card-text">You can save the configuration above.</p>
+                            <button class="btn btn-primary">Save Configuration</button>
+                        </div>
+                        <div id="rest-of-the-card-2" class="card-body">
+                            <p class="card-text">You can Install the apps here</p>
+                            <button class="btn btn-primary" katana-click="wapp_management.installAnApp">Install Apps</button>
                         </div>
                     </div>
                     <div class="card" style="width: 100%;">
@@ -61,23 +71,9 @@
                     </div>
                 </div>
             </div>
-
-
-            <!--<div id="pop-up-file-info">
-                {% include 'wapp_management/popup.html' %}
-
-            </div>
-
-            <div id="new-app-info">
-                {% include 'wapp_management/load_config.html' %}
-
-                <button class="button" katana-click="wapp_management.installAnApp">Install</button>
-            </div>-->
         </div>
 
     </section>
-
-
 
 </body>
 

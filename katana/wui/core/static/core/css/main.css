@@ -530,7 +530,6 @@ select {
 }
 
 .input-group > * {
-    flex-grow: 1;
     white-space: nowrap;
     /* max-height: 39px; */
 }
