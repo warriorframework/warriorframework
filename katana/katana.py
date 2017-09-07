@@ -99,14 +99,20 @@ def searchkw():
     This method returns the ActionFile Path of the selected Driver.
     """
     value = parseString("".join(request.body))
-    indented_xml = "".join(value.toprettyxml(newl='\n'))
-    corrected_xml = remove_extra_newlines_char_xml(indented_xml)
-    tree = xml.etree.ElementTree.fromstring(corrected_xml)
+    tree = get_correct_xml_and_root_element(value)
     driver_name = tree.text
     driver_file = gpysrcdir + '/ProductDrivers/' + driver_name + ".py"
     actiondir_new = mkactiondirs(driver_file)
     py_files = mkactionpyfiles(actiondir_new)
     return py_files
+
+
+def get_correct_xml_and_root_element(value):
+    """ To get the correct xml format from Katana UI and to get it's root element """
+    indented_xml = "".join(value.toprettyxml(newl='\n'))
+    corrected_xml = remove_extra_newlines_char_xml(indented_xml)
+    tree = xml.etree.ElementTree.fromstring(corrected_xml)
+    return tree
 
 
 @route('/parsexmlobj', method='POST')
@@ -125,9 +131,7 @@ def parsexmlobj():
     doc_string_value = []
     kw_list_1 = []
     xmlobj = parseString("".join(request.body))
-    indented_xml = "".join(xmlobj.toprettyxml(newl='\n'))
-    corrected_xml = remove_extra_newlines_char_xml(indented_xml)
-    tree = xml.etree.ElementTree.fromstring(corrected_xml)
+    tree = get_correct_xml_and_root_element(xmlobj)
 
     WrapperName = tree[0][0].text
     ActionFile = tree[0][2].text.strip()
