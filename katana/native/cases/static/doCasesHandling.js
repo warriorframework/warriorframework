@@ -266,7 +266,7 @@ function mapCaseJsonToUi(data){
 			alert(this.id);
 			var names = this.id.split('-');
 			var sid = parseInt(names[1]);
-			editTestStep(sid);
+			mapTestStepToUI(sid,xdata);
 		});
 		items.push('</tr>');
 
@@ -299,12 +299,68 @@ function removeTestStep( sid ){
 			mapCaseJsonToUi(jsonCaseSteps);
 }
 
+function mapTestStepToUI(sid, xdata) {
+	// body...
+	katana.$activeTab.find("#StepRowToEdit"+activePageID).val(sid);
+	katana.$activeTab.find("#StepDriver"+activePageID).val(oneCaseStep['step'][ "@Driver"]);
+	katana.$activeTab.find("#StepKeyword"+activePageID).val(oneCaseStep['step'][ "@Keyword"]);
+	katana.$activeTab.find("#StepTS"+activePageID).val(oneCaseStep['step'][ "@TS"]);
+	katana.$activeTab.find("#StepDescription"+activePageID).val(oneCaseStep["Description"]["$"]);
+	katana.$activeTab.find("#StepContext"+activePageID).val(oneCaseStep["context"]['$']);
+	katana.$activeTab.find("#SteponError-at-action"+activePageID).val(oneCaseStep['onError']["@action"]);
+	katana.$activeTab.find("#SteponError-at-value"+activePageID).val(oneCaseStep['onError']["@value"]);
+	katana.$activeTab.find("#runmode-at-type"+activePageID).val(oneCaseStep["runmode"]["@type"]);
+	katana.$activeTab.find("#StepImpact"+activePageID).val(oneCaseStep["impact"]);
+	var a_items = [] ;
+
+	for (var i =0; i < oneCaseStep['Arguments'].length; i++)
+	{
+		varg = oneCaseStep[i];
+		a_items.push(""+varg['@name']+"="+varg['@value']);
+	}	
+	katana.$activeTab.find("#arguments-textarea-"+activePageID).html( a_items.join("\n"));
+}
+
+// When the edit button is clicked, map step to the UI. 
+function mapUItoTestStep(xdata) {
+	var sid = ParseInt(katana.$activeTab.find("#StepRowToEdit"+activePageID).val());	
+
+	// Validate whether sid 
+	oneCaseStep = xdata[sid];
+	fillStepDefaults(oneCaseStep);  // Takes care of missing values.... 
+	oneCaseStep['step'][ "@Driver"] = katana.$activeTab.find("#StepDriver"+activePageID).val();
+	oneCaseStep['step'][ "@Keyword"] = katana.$activeTab.find("#StepKeyword"+activePageID).val();
+	oneCaseStep['step'][ "@TS"] = katana.$activeTab.find("#StepTS"+activePageID).val();
+	oneCaseStep["Description"] = { "$" : katana.$activeTab.find("#StepDescription"+activePageID).val();
+	oneCaseStep["context"] = { "$" : katana.$activeTab.find("#StepContext"+activePageID).val();
+	oneCaseStep["Execute"]["@ExecType"]= katana.$activeTab.find("#Execute-at-ExecType"+activePageID).val();		
+	oneCaseStep['onError'][ "@action"] = katana.$activeTab.find("#SteponError-at-action"+activePageID).val();
+	oneCaseStep['onError'][ "@value"] = katana.$activeTab.find("#SteponError-at-value"+activePageID).val();
+	oneCaseStep["runmode"] = { "@type" : katana.$activeTab.find("#runmode-at-type"+activePageID).val();
+	oneCaseStep["impact"] = { "$" : katana.$activeTab.find("#StepImpact"+activePageID).val();
+	// Now draw the table again....
+
+	var a_str = katana.$activeTab.find("#arguments-textarea-"+activePageID).text();
+	a_items = a_str.split("\n");
+	oneCaseStep["Arguments"] = [];
+	//
+	for (var i =0; i < a_items.length; i++) {
+	
+			if (varg.length > 2) {
+			v_items = varg.split("");
+			nm = varg[0];
+			vl = varg[1];
+			oneCaseStep["Arguments"].push({ "argument" : { "@name": nm, "@value": vl }})
+		}
+	}
+	createEditStepPage(xdata);
+}
 
 function addStepToCase(){
 	// Add an entry to the jsonTestSuites....
 	var newCaseStep = {
 		"step": {  "$": "", "@Driver": "demo_driver", "@Keyword": "" , "@TS": "0" },
-		"Arguments" : { },
+		"Arguments" : { 'Argument': { '$': "" } },
 		"onError": {  "$": "", "@action" : "next" } ,
 		"iteration_type": { "$": "",  "@type" : "" } ,
 		"Description": { "$": " "} ,
@@ -356,7 +412,7 @@ function createRequirementsTable(rdata){
 		$(document).on('click','#'+bid,function( ) {
 			var names = this.id.split('-');
 			var sid = parseInt(names[1]);
-			//removeTestcase(sid,xdata);
+			//mapUI(sid,xdata);
 		});
 		bid = "editRequirement-"+s+"-id"+getRandomCaseID();;
 		//items.push('<td><input type="button" class="btn" value="Save" id="'+bid+'"/></td>');
@@ -419,7 +475,7 @@ function createEditStepPage(xdata) {
 
 	items.push('<div class="field col-md-3">');
 	items.push('<label class=" text-right" >ExecType:</label>');
-	items.push('<select type="text" class="text-right" id="Execute-at-ExecType'+activePageID+'"" value="" >');
+	items.push('<select type="text" class="text-right" id="Execute-at-ExecType'+activePageID+'" value="" >');
 	items.push('<option value="If">If</option> ');
 	items.push('<option value="If Not">If Not</option> ');
 	items.push('<option value="Yes">Yes</option> ');
@@ -428,8 +484,17 @@ function createEditStepPage(xdata) {
 	items.push('</div>');
 
 	items.push('<div class="field col-md-3">');
-	items.push('<label class="col-md-2 text-right" >On Error </label>');
-	items.push('<select type="text" class="text-right" id="SteponError'+activePageID+'" value="" >');
+	items.push('<label class="col-md-2 text-right" >On Error Action </label>');
+	items.push('<select type="text" class="text-right" id="SteponError-at-action'+activePageID+'" value="" >');
+	items.push('<option value="next">next</option>');
+	items.push('<option value="abort">abort</option>');
+	items.push('<option value="abort_as_error">abort_as_error</option>');
+	items.push('<option value="goto">goto</option>');
+	items.push('</select>');
+	items.push('</div>');
+	items.push('<div class="field col-md-3">');
+	items.push('<label class="col-md-2 text-right" >On Error Value </label>');
+	items.push('<select type="text" class="text-right" id="SteponError-at-value'+activePageID+'" value="" >');
 	items.push('<option value="next">next</option>');
 	items.push('<option value="abort">abort</option>');
 	items.push('<option value="abort_as_error">abort_as_error</option>');
@@ -462,11 +527,11 @@ function createEditStepPage(xdata) {
 	items.push('<td><input type="button" class="btn" value="Save Changes To Test Step" id="'+bid+'"/></td>');
 	katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 	$(document).on('click','#'+bid,function(  ) {
-			//mapUItoSuiteCase(xdata);
+			mapUItoTestStep(xdata);
 			//createCasesTable(xdata);  //Refresh the screen.
 			alert("Ouch");
 		});
 
-
+	items.push('<textarea id="arguments-textarea-"'+activePageID+'"> </textarea>'); 
 	katana.$activeTab.find("#editCaseStepEntry").html( items.join(""));
 }
