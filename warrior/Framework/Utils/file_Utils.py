@@ -28,9 +28,8 @@ try:
 except Exception:
     print_info("{0}: {1} module is not installed".format(os.path.abspath(__file__), mod))
 
-
-# Return the last line of a file
-def findLastString (filename, searchterm):
+def findLastString(filename, searchterm):
+    """ Return the last line of a file"""
     fd = open (filename, "r")
     linenum = -1
     for i, line in enumerate (fd, 1):
@@ -38,8 +37,8 @@ def findLastString (filename, searchterm):
             linenum = i
     return linenum
 
-# search file for text, return True or False
-def searchFile (filename, searchterm):
+def searchFile(filename, searchterm):
+    """ search file for text, return True or False"""
     fd = open (filename, 'r')
     data = fd.read()
     test = data.find(searchterm)
@@ -47,8 +46,8 @@ def searchFile (filename, searchterm):
         return False
     return True
 
-#Start search after a certain text in a file
-def searchaftertext (filename, startterm, searchterm):
+def searchaftertext(filename, startterm, searchterm):
+    """Start search after a certain text in a file"""
     #print startterm
     #print searchterm
     startline = findLastString (filename, startterm)
@@ -57,29 +56,40 @@ def searchaftertext (filename, startterm, searchterm):
         return True
     return False
 
-# check if file exists
 def fileExists(fname):
+    """ check if file exists"""
     filestatus = os.path.isfile(fname)
     return filestatus
 
-# check if directory exists
 def dirExists(path):
+    """ check if directory exists"""
     dirstatus = os.path.isdir(path)
     return dirstatus
 
-# check if path exists , does not care if it is file or directory
 def pathExists(path):
+    """ check if path exists , does not care if it is file or directory"""
     pathstatus = os.path.exists(path)
     return pathstatus
 
-# check if file exists and delete it
 def delFile(fname):
+    """ check if file exists and delete it"""
     if fileExists(fname):
         filestatus = os.remove(fname)
     return filestatus
 
+def delFolder(path):
+    """ check if folder exists and delete it with its content"""
+    status = False
+    if dirExists(path):
+        try:
+            shutil.rmtree(path)
+            status = True
+        except OSError:
+            print_error("Cannot remove folder {}".format(path))
+    return status
+
 # Return time and date
-def getDateTime (time_format=None):
+def getDateTime(time_format=None):
     """Returns the current year-month-date_hour-minute-second """
     if time_format is None:
         timestamp = datetime.datetime.now().strftime("%y-%m-%d_%H-%M-%S-%f")
@@ -87,12 +97,12 @@ def getDateTime (time_format=None):
         timestamp = datetime.datetime.now().strftime(time_format)
     return timestamp
 
-# Will return the file path of file_Utils
-def getCurrentFilePath ():
+def getCurrentFilePath():
+    """Will return the file path of file_Utils"""
     return sys.path[0]
 
-# Will return the file name of file_Utils. Copy into file needed.
-def getCurrentFileName ():
+def getCurrentFileName():
+    """ Will return the file name of file_Utils. Copy into file needed."""
     return os.path.basename (__file__)
 
 def getDirName(filepath):
@@ -100,16 +110,15 @@ def getDirName(filepath):
     return os.path.dirname(filepath)
 
 
-def getXMLDataFile (filename, path):
+def getXMLDataFile(filename, path):
     """Get the xml Datafile for '.py' testcases """
-
     path = path.replace ('Testcases','Data')
     filename = filename.replace(".py", "")
-    print path + os.sep + filename + os.sep + filename + '.xml'
+    print_info(path + os.sep + filename + os.sep + filename + '.xml')
     return path + os.sep + filename + os.sep + filename + '.xml'
 
-# method for old directory structure, delete later if not required
-def createDirForPyTc (filename, path, dirname):
+def createDirForPyTc(filename, path, dirname):
+    """ method for old directory structure, delete later if not required"""
     path = path.replace ('Testcases',dirname)
     filename = filename.replace(".py", "")
     dirpath = path + os.sep + filename
@@ -127,7 +136,6 @@ def createDir(path, dirname):
         1. path     = (string) full path of an existing directory where a new directory need to be created
         2. dirname  = (string) name of the new directory to be created
     """
-
     if dirExists(path):
         dirpath = path + os.sep + dirname
         if dirExists(dirpath):
@@ -197,7 +205,7 @@ def createDir_addtimestamp(path, dirname):
 # Testcases, Logs, Results directory are at the same level
 # Creates a new sub-directory under the Results/Logs directory with the dirname provided
 #===============================================================================
-# def createDirForXmlTc (filename, path, dirname):
+# def createDirForXmlTc(filename, path, dirname):
 #     path = path.replace ('Testcases',dirname)
 #     filename = filename.replace(".xml", "")
 #     dirpath = path + os.sep + filename
@@ -209,12 +217,13 @@ def createDir_addtimestamp(path, dirname):
 #     #print_info("A new directory created for this TC: '%s'" % dirpath)
 #     return dirpath
 
-def getFileName (path):
+def getFileName(path):
+    """get the file name part from a absolute path"""
     fname = os.path.split(path)[1]
     return fname
 
 # to be deleted
-# def getFile (filename, path, dirname):
+# def getFile(filename, path, dirname):
 #     dirpath = createDir (filename, path, dirname)
 #     path_split = dirpath.split('/')
 #     fname = path_split[-1]
@@ -230,7 +239,7 @@ def getFileName (path):
 # Create a results/logs file for an xml based test case
 # Assumption: directory structure = Result, Logs, Testcases at same level
 # #===============================================================================
-# def getFileForXmlTc (filename, path, dirname):
+# def getFileForXmlTc(filename, path, dirname):
 #     dirpath = createDirForXmlTc (path, dirname)
 #     path_split = dirpath.split('/')
 #     fname = path_split[-1]
@@ -253,16 +262,19 @@ def get_extension_from_path(path):
         extn = ""
     return extn
 
-def getExtension (dirname):
+def getExtension(dirname):
+    """get extension of a path"""
     extension = dirname[:3]
     return extension
 
 def getNameOnly(filename):
+    """get file name without extension from a path"""
     nameonly = filename.split('.')[0]
     return nameonly
 
 
 def get_file_from_remote_server(remote_ip, remote_uname, remote_passwd, src, dest, logfile=None):
+    """ use scp to get file from remote server """
     child = pexpect.spawn('scp -r %s@%s:%s %s' % (remote_uname, remote_ip, src, dest ))
     try:
         child.logfile = open(logfile, "a")
@@ -279,6 +291,7 @@ def get_file_from_remote_server(remote_ip, remote_uname, remote_passwd, src, des
         return True
 
 def put_file_to_remote_server(remote_ip, remote_uname, remote_passwd, src, dest, logfile=None):
+    """ use scp to put file from remote server """
     cmd = 'scp %s %s@%s:%s' % (dest, remote_uname, remote_ip, src)
     print_info("Running cmd: %s" % cmd)
     child = pexpect.spawn(cmd)
@@ -300,14 +313,15 @@ def put_file_to_remote_server(remote_ip, remote_uname, remote_passwd, src, dest,
         print_error("Import error, error : '%s'" % str(e))
         return False
 
-def incrementFilename (filename, increment):
+def incrementFilename(filename, increment):
+    """ add count to filename """
     fname = filename.split('.')
     finalname= fname[0]+'_'+increment+'.'+fname[1]
     return finalname
 
 
 # to be deleted
-# def getDataFile (filename, path):# to be deleted once get_testcase_datafile is implemented
+# def getDataFile(filename, path):# to be deleted once get_testcase_datafile is implemented
 #     nameonly = getNameOnly(filename)
 #     fullpath = path + os.sep + 'Data' + os.sep + nameonly + '_MainData' + '.xml'
 #
@@ -315,7 +329,8 @@ def incrementFilename (filename, increment):
 #     return fullpath
 
 
-def getCustomLogFile (filename, path, custom, ext='.log'):
+def getCustomLogFile(filename, path, custom, ext='.log'):
+    """ append filename of log file with custom string """
     nameonly = getNameOnly(filename)
 
     fullpath = path + os.sep + nameonly + "_" + custom+ ext
@@ -326,8 +341,8 @@ def getCustomLogFile (filename, path, custom, ext='.log'):
     return fullpath
 
 
-# Replace the extention of the file
-def getNewExtension (filename, extension):
+def getNewExtension(filename, extension):
+    """ Replace the extention of the file"""
     nameonly = os.path.splitext(filename)
     fullpath = nameonly[0] + '.' + extension
     if fileExists(fullpath):
@@ -336,7 +351,7 @@ def getNewExtension (filename, extension):
 
 
 def addTimeDate(path):
-
+    """ add time and date to a path (file/dir)"""
     if fileExists(path) or dirExists(path) :
         time.sleep(2)
         ftime       = getDateTime()
@@ -344,27 +359,29 @@ def addTimeDate(path):
 
     return path
 
-def deleteLastLine (filename):
+def deleteLastLine(filename):
+    """ delete the last line of a file"""
     lines = open(filename, 'r').readlines()
-    del lines[1]
+    del lines[-1]
     open(filename, 'w').writelines(lines)
 
-# Takes a file name as input and deletes the first line
-def deleteFirstLine (filename):
+def deleteFirstLine(filename):
+    """ Takes a file name as input and deletes the first line"""
     lines = open(filename, 'r').readlines()
     del lines[0]
     open(filename, 'w').writelines(lines)
 
-def deleteLinesFromFrist(filename):
-    open(filename,'r')
+def deleteLinesFromFirst(filename):
+    """ Takes a file name as input and deletes the first line"""
+    deleteFirstLine(filename)
 
 
 def deletLinesFromLast(filename):
-    open(filename,'r')
+    """ delete the last line of a file"""
+    deleteLastLine(filename)
 
-    # Searches existing file for text and creates new file without the lines containing the text.
-    # sradhakr - changed the name from deleteFileLines to deleteMatchingFileLines
-def deleteMatchingFileLines (origfile, newfile, arrValues):
+def deleteMatchingFileLines(origfile, newfile, arrValues):
+    """ Searches existing file for text and creates new file without the lines containing the text."""
     fin  = open(origfile, 'r')
     fout = open(newfile, 'w')
     for line in fin:
@@ -375,18 +392,16 @@ def deleteMatchingFileLines (origfile, newfile, arrValues):
             fout.write(line)
     fout.close()
 
-#===============================================================================
-# Opens a file and deletes all the lines until a matching line is encoutered
 
-# filename = location of the file from which lines are to be deleted
-# match = the line to be matched with, this is the entire line given in string format
-# startfrom   = 'first' (default), starts the search begining form the first line of the file
-#                                  and deletes all the lines until matching line is reached
-#             = 'last', starts the search begining form the last line of the file moving upwards
-#                       and deletes all the lines until matching line is reached
-#===============================================================================
-
-def deleteLinesUntilMatch (filename, match, startfrom='first'):
+def deleteLinesUntilMatch(filename, match, startfrom='first'):
+    """ Opens a file and deletes all the lines until a matching line is encoutered
+            
+                # filename = location of the file from which lines are to be deleted
+                # match = the line to be matched with, this is the entire line given in string format
+                # startfrom   = 'first' (default), starts the search begining form the first line of the file
+                #                                  and deletes all the lines until matching line is reached
+                #             = 'last', starts the search begining form the last line of the file moving upwards
+                #                       and deletes all the lines until matching line is reached"""
     lines= open(filename, 'r').readlines()
     linesReverse = list(reversed(lines))
 
@@ -405,21 +420,19 @@ def deleteLinesUntilMatch (filename, match, startfrom='first'):
 
 
 def copyFileContents(srcfile, dstfile):
+    """ copy file from src to dst using append method"""
     lines=open(srcfile,'r').readlines()
     open(dstfile, 'a').writelines(lines)
 
-#========================================================================
-# This function opens a file, searches for the start and end strings and writes  the lines in between start and end string into a new file (start, end inluded)
-# srcfile = source file which has the data to be parsed
-# dstfile = destination file to which the captured data is to be written
-# start = starting string to be serached for
-# end = ending string to be searched for
-# no_of_searches = denotes the number of times the file has to be searched for the start and end strings
-#                    supported values = any interger greater than 0
-#                                     = EOF | eof searches the entire file
-#========================================================================
-
-def getLinesBetweenMatchingLines (srcfile, dstfile, start, end, no_of_search=1):
+def getLinesBetweenMatchingLines(srcfile, dstfile, start, end, no_of_search=1):
+    """ This function opens a file, searches for the start and end strings and writes  the lines in between start and end string into a new file (start, end inluded)
+        # srcfile = source file which has the data to be parsed
+        # dstfile = destination file to which the captured data is to be written
+        # start = starting string to be serached for
+        # end = ending string to be searched for
+        # no_of_searches = denotes the number of times the file has to be searched for the start and end strings
+        #                    supported values = any interger greater than 0
+        #                                     = EOF | eof searches the entire file"""
     lines = open(srcfile,'r').readlines()
     #print_info ("lines:%s"% lines)
     i=0
@@ -428,7 +441,7 @@ def getLinesBetweenMatchingLines (srcfile, dstfile, start, end, no_of_search=1):
     if no_of_search == 0:
         print_error ("no of searches should be a non-zero number")
         return False
-    while (i<len(lines)):
+    while(i<len(lines)):
         #print lines[i]
 
         printable_only = filter(lambda x:x in string.printable, lines[i])
@@ -449,36 +462,32 @@ def getLinesBetweenMatchingLines (srcfile, dstfile, start, end, no_of_search=1):
         if no_of_search == 'EOF' or no_of_search == 'eof' or iteration < no_of_search: i+=1
         elif no_of_search==iteration: break
 
-    if len(resultantList)==0 : print "no match found in the file"
+    if len(resultantList)==0 :
+        print_error("no match found in the file")
     open(dstfile,'w+').writelines(resultantList)
 
 
-
-#===============================================================================
-# Searches for a sub-directory with provided name under a directory. If it does
-# not exist creates a new sub-directory
-# Now under this newly created directory creates file with  sub-directory name and
-# provided extension.If a file with the same name already exists # adds data and
-# time-stamp to the filename .
-# Returns the filename thus created to the calling function
-#
-# Arguments:
-# subdir    = name of the directory and the file to be created under an existing directory
-# dir       = an existing directory
-# ext       = extension for the newly created filename
-#
-# Note: This function does not open the result file, it only creates a name for the file.
-# The file with the created name has to be opened seperately
-#
-#===============================================================================
-
 def getSubDirFile(subdir, existing_dir, ext):
+    """ Searches for a sub-directory with provided name under a directory. If it does
+    # not exist creates a new sub-directory
+    # Now under this newly created directory creates file with  sub-directory name and
+    # provided extension.If a file with the same name already exists # adds data and
+    # time-stamp to the filename .
+    # Returns the filename thus created to the calling function
+    #
+    # Arguments:
+    # subdir    = name of the directory and the file to be created under an existing directory
+    # dir       = an existing directory
+    # ext       = extension for the newly created filename
+    #
+    # Note: This function does not open the result file, it only creates a name for the file.
+    # The file with the created name has to be opened seperately
+    """
     path        = createDir_addtimestamp(existing_dir, subdir )
     fullpath    = path + os.sep + subdir + '.' + ext
     if fileExists(fullpath):
         fullpath = addTimeDate(fullpath)
     return fullpath
-
 
 
 def create_execution_directory(filepath):
@@ -499,11 +508,10 @@ def create_execution_directory(filepath):
 
 
 def create_zipdir(zipname, path, extn='zip'):
-
+    """zip the path and output to same level"""
     output_filepath = path + os.sep + zipname
     zip_file_path = shutil.make_archive(output_filepath, extn, path)
     return zip_file_path
-
 
 
 def getAbsPath(relative_path, start_directory="."):
@@ -532,7 +540,7 @@ def getAbsPath(relative_path, start_directory="."):
             value = path
         except Exception, err:
             print_error("{0} file does not exist in provided path".format(relative_path))
-            print(err)
+            print_error(err)
     return value
 
 
@@ -547,6 +555,7 @@ def get_parent_dir(path, child):
         path = get_parent_dir(path, child)
     return path
 
+
 def check_extension_get_absolute_path(relative_path, start_directory, list_extn=[".json", ".xml", ".txt"]):
     """
     This is wrapper function that gets and verifies extention of a file path
@@ -560,6 +569,7 @@ def check_extension_get_absolute_path(relative_path, start_directory, list_extn=
         value = relative_path
     return value
 
+
 def get_absolute_path_from_start_directory(relative_path, start_directory, extension=".json"):
     """
     DEPRECATED IN 2.9
@@ -571,6 +581,7 @@ def get_absolute_path_from_start_directory(relative_path, start_directory, exten
     """
     print_error("This function is deprecated in 2.9, use check_extension_get_absolute_path or getAbspath instead")
     return check_extension_get_absolute_path(relative_path, start_directory, extension)
+
 
 def get_absolute_path_of_directory(relative_path_of_dir, start_directory):
     """
@@ -590,6 +601,18 @@ def get_absolute_path_of_directory(relative_path_of_dir, start_directory):
 # ==============================================================================
 # File Operations
 # ==============================================================================
+
+
+def log_result(oper, result):
+    """the methods in file_actions class use this to log the result of
+    its operation
+    """
+    resmsg = "completed successfully" if result else "failed"
+    msg = "file {} operation {}".format(oper, resmsg)
+    if result:
+        print_info(msg)
+    else:
+        print_error(msg)
 
 
 def open_file(newfile, mode):

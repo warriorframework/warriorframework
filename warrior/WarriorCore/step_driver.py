@@ -12,15 +12,16 @@ limitations under the License.
 '''
 
 
-"""step driver module"""
-import os
-import time
+# step driver module
+
 import traceback
+import os
 import exec_type_driver
 from WarriorCore.Classes.argument_datatype_class import ArgumentDatatype
 import Framework.Utils as Utils
+from Framework.Utils import file_Utils
 from Framework.Utils.print_Utils import print_info, print_debug, print_error, print_exception
-from WarriorCore import onerror_driver
+# from WarriorCore import onerror_driver
 
 
 def get_arguments(step):
@@ -57,7 +58,7 @@ def send_keyword_to_productdriver(driver_name, plugin_name, keyword,
     try:
         if plugin_name is not None:
             import_name = ".".join(["plugins", plugin_name, "bin",
-                                    plugin_name[7:]+'_driver'])
+                                    plugin_name[:-7]+'_driver'])
         else:
             import_name = "ProductDrivers.{0}".format(driver_name)
         driver_call = __import__(import_name, fromlist=[driver_name])
@@ -98,16 +99,19 @@ def get_step_console_log(filename, logsdir, console_name):
     return console_logfile
 
 
-def execute_step(step, step_num, data_repository, system_name, parallel, queue):
+def execute_step(step, step_num, data_repository, system_name, kw_parallel, queue):
     """ Executes a step from the testcase xml file
         - Parses a step from the testcase xml file
         - Get the values of Driver, Keyword, impactsTcResult
-        - If the step has arguments, get all the arguments and store them as key/value pairs in args_repository
+        - If the step has arguments, get all the arguments and store them as key/value pairs in
+          args_repository
         - Sends the Keyword, data_repository, args_repository to the respective Driver.
-        - Reports the status of the keyword executed (obtained as return value from the respective Driver)
+        - Reports the status of the keyword executed (obtained as return value from the respective
+          Driver)
 
     Arguments:
-    1. step            = (xml element) xml element with tag <step> containing the details of the step to be executed like (Driver, Keyword, Arguments, Impact etc..)
+    1. step            = (xml element) xml element with tag <step> containing the details of the
+                         step to be executed like (Driver, Keyword, Arguments, Impact etc..)
     2. step_num        = (int) step number being executed
     3. data_repository = (dict) data_repository of the testcase
     """
@@ -119,10 +123,13 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
     context = Utils.testcase_Utils.get_context_from_xmlfile(step)
     step_impact = Utils.testcase_Utils.get_impact_from_xmlfile(step)
     step_description = Utils.testcase_Utils.get_description_from_xmlfile(step)
+    parallel = kw_parallel
 
     if parallel is True:
-        step_console_log = get_step_console_log(data_repository['wt_filename'], data_repository['wt_logsdir'],
-                                                'step-{0}_{1}_consoleLogs'.format(step_num, keyword))
+        step_console_log = get_step_console_log(data_repository['wt_filename'],
+                                                data_repository['wt_logsdir'],
+                                                'step-{0}_{1}_consoleLogs'.format(step_num,
+                                                                                  keyword))
 
     data_repository['step_num'] = step_num
     data_repository['wt_driver'] = driver
@@ -133,7 +140,7 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
     data_repository['wt_step_description'] = step_description
 
     kw_resultfile = get_keyword_resultfile(
-        data_repository, system_name,  step_num, keyword)
+        data_repository, system_name, step_num, keyword)
     Utils.config_Utils.set_resultfile(kw_resultfile)
     # print keyword to result file
     Utils.testcase_Utils.pKeyword(keyword, driver)
@@ -163,7 +170,7 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
                                       data_repository, args_repository)
         keyword_status = data_repository['step-%s_status' % step_num]
         Utils.testcase_Utils.update_step_num(str(step_num))
-        if context.upper() == 'NEGATIVE' and type(keyword_status) == bool:
+        if context.upper() == 'NEGATIVE' and isinstance(keyword_status, bool):
             print_debug("Keyword status = {0}, Flip status as context is Negative".format(
                 keyword_status))
             keyword_status = not keyword_status
@@ -174,7 +181,7 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
         exec_type_onerror = True
         print_debug("Action is {0}".format(action))
 
-    print("\n")
+    print_info("\n")
     print_info("*** Keyword status ***")
     step_goto_value = False
     step_onError_action = Utils.xml_Utils.get_attributevalue_from_directchildnode(
@@ -185,14 +192,15 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
                 step, 'onError', 'value')
     testcase_error_action = data_repository['wt_def_on_error_action']
     step_onError_action = step_onError_action if step_onError_action else testcase_error_action
-    if step_onError_action.upper() == "GOTO" and step_goto_value == False:
+    if step_onError_action.upper() == "GOTO" and step_goto_value is False:
         step_goto_value = data_repository['wt_def_on_error_value']
     onerror = step_onError_action.upper()
     if step_goto_value is not False and step_goto_value is not None:
         onerror = onerror + " step " + step_goto_value
-    if keyword_status == False and step_onError_action and step_onError_action.upper() == 'ABORT_AS_ERROR':
-        print_info(
-            "Keyword status will be marked as ERROR as onError action is set to 'abort_as_error'")
+    if keyword_status is False and step_onError_action and\
+            step_onError_action.upper() == 'ABORT_AS_ERROR':
+        print_info("Keyword status will be marked as ERROR as onError action is set to"
+                   "'abort_as_error'")
         keyword_status = "ERROR"
     Utils.testcase_Utils.reportKeywordStatus(keyword_status, keyword)
     print_info("step number: {0}".format(step_num))
@@ -221,7 +229,7 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
             data_repository['step-%s_exception' % step_num]
         Utils.testcase_Utils.pNote_level(msg, "debug", "kw", ptc=False)
     # time.sleep(1)
-    print("\n")
+    print_info("\n")
     kw_end_time = Utils.datetime_utils.get_current_timestamp()
     kw_duration = Utils.datetime_utils.get_time_delta(kw_start_time)
     hms = Utils.datetime_utils.get_hms_for_seconds(kw_duration)
@@ -231,68 +239,60 @@ def execute_step(step, step_num, data_repository, system_name, parallel, queue):
     impact_dict = {"IMPACT": "Impact", "NOIMPACT": "No Impact"}
     tc_timestamp = data_repository['wt_tc_timestamp']
     impact = impact_dict.get(step_impact.upper())
+
+    tc_resultsdir = data_repository['wt_resultsdir']
+    tc_name = data_repository['wt_name']
+
     add_keyword_result(tc_junit_object, tc_timestamp, step_num, keyword,
                        keyword_status, kw_start_time, kw_duration,
-                       kw_resultfile, impact, onerror)
-
-    # Get the type of the file being executed by Warrior: Case/Suite/Project
-    war_file_type = data_repository.get('war_file_type')
-    if war_file_type == "Case":
-        # Create and replace existing Case junit file for each step
-        tc_junit_object.output_junit(data_repository['wt_resultsdir'],
-                                     print_summary=False)
-    elif war_file_type == "Suite":
-        # Create and replace existing Suite junit file for each step
-        tc_junit_object.output_junit(data_repository['wt_results_execdir'],
-                                     print_summary=False)
-    elif war_file_type == "Project":
-        # Create and replace existing Project junit file for each step
-        tc_junit_object.output_junit(data_repository['wp_results_execdir'],
-                                     print_summary=False)
-
-    # Get the type of the file being executed by Warrior: Case/Suite/Project
-    war_file_type = data_repository.get('war_file_type')
-    if war_file_type == "Case":
-        # Create and replace existing Case junit file for each step
-        tc_junit_object.output_junit(data_repository['wt_resultsdir'],
-                                     print_summary=False)
-    elif war_file_type == "Suite":
-        # Create and replace existing Suite junit file for each step
-        tc_junit_object.output_junit(data_repository['wt_results_execdir'],
-                                     print_summary=False)
-    elif war_file_type == "Project":
-        # Create and replace existing Project junit file for each step
-        tc_junit_object.output_junit(data_repository['wp_results_execdir'],
-                                     print_summary=False)
+                       kw_resultfile, impact, onerror, step_description,
+                       info=str(args_repository), tc_name=tc_name,
+                       tc_resultsdir=tc_resultsdir)
 
     if parallel is True:
         # put result into multiprocessing queue and later retrieve in
         # corresponding driver
         queue.put((keyword_status, kw_resultfile,
                    step_impact.upper(), tc_junit_object))
-    else:
-        return keyword_status, kw_resultfile, step_impact, exec_type_onerror
+    elif not data_repository['war_parallel']:
+        # Get the type of the file being executed by Warrior: Case/Suite/Project
+        war_file_type = data_repository.get('war_file_type')
+        if war_file_type == "Case":
+            # Create and replace existing Case junit file for each step
+            tc_junit_object.output_junit(data_repository['wt_resultsdir'],
+                                         print_summary=False)
+        elif war_file_type == "Suite":
+            # Create and replace existing Suite junit file for each step
+            tc_junit_object.output_junit(data_repository['wt_results_execdir'],
+                                         print_summary=False)
+        elif war_file_type == "Project":
+            # Create and replace existing Project junit file for each step
+            tc_junit_object.output_junit(data_repository['wp_results_execdir'],
+                                         print_summary=False)
+    return keyword_status, kw_resultfile, step_impact, exec_type_onerror
 
 
 def add_keyword_result(tc_junit_object, tc_timestamp, step_num, keyword,
                        keyword_status, kw_start_time, kw_duration,
-                       kw_resultfile, impact, onerror):
+                       kw_resultfile, impact, onerror, step_description,
+                       info="", tc_name="", tc_resultsdir=""):
     """ Add keyword results into junit object """
-
     tc_junit_object.add_keyword_result(tc_timestamp, step_num, keyword,
                                        str(keyword_status), kw_start_time,
                                        kw_duration, kw_resultfile,
-                                       impact, onerror)
+                                       impact, onerror, step_description, info=info,
+                                       tc_name=tc_name, tc_resultsdir=tc_resultsdir)
 
     tc_junit_object.update_count(str(keyword_status), "1", "tc", tc_timestamp)
     tc_junit_object.update_count("keywords", "1", "tc", tc_timestamp)
 
 
-def main(step, step_num, data_repository, system_name, parallel=False, queue=None):
+
+def main(step, step_num, data_repository, system_name, kw_parallel=False, queue=None):
     """Get a step, executes it and returns the result """
     try:
         step_status = execute_step(step, step_num,
-                                   data_repository, system_name, parallel, queue)
+                                   data_repository, system_name, kw_parallel, queue)
     except Exception:
         step_status = False, [], data_repository['wt_step_impact'], False
         print_error('unexpected error: {0}'.format(traceback.format_exc()))
