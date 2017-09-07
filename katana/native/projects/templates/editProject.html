@@ -1,10 +1,6 @@
 {% load static %}
 {% load jsonify %}
-<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<link rel="stylesheet" href="{% static './jquery-ui-1.12.1.custom/jquery-ui.css' %}">
 
-<link rel="stylesheet" href="{% static './table.css' %}">
 <body>
 <script type="text/javascript" src="{% static "./badgerfish.js" %}"></script>
 <script type="text/javascript" src="{% static "./json.js" %}"></script>
@@ -16,7 +12,7 @@
 
 	Editing:{{ myfile }}
 	<h2>Details</h2>
-	<div class="form-group col-md-12">
+	<div class="form-group col-md-12 row">
 			<div class="field col-md-4">
 				<label for="projectName">Name*:</label>
 				<input type="text" id="projectName" name="projectName" value="{{projectName}}"/>
@@ -51,9 +47,9 @@
 
 
 	
-	<div class="container-fluid">
-	<div id="tableOfTestSuitesForProject"  class="col-md-6" />
-		<div id="editTestSuiteEntry" class="form-group col-md-6" />
+	<div class="container-fluid row">
+	<div id="tableOfTestSuitesForProject"  class="col-md-8" />
+		<div id="editTestSuiteEntry" class="form-group col-md-4" />
 	</div>
 
 
@@ -64,10 +60,7 @@
 			<button id="addSuite" class="btn btn-primary" onclick="addSuiteToProject()">Add Case to Suite</button>
 			<button class="btn btn-primary" onclick="start()">Discard Changes</button>
 			<button class="btn btn-success" onclick="mapUiToProjectJson()">Save Changes to Disk</button>
-		</div>
-
-		<div>
-		<input class="col-md-12 text-right" type="text" id="my_file_to_save" name="my_file_to_save" value="{{savefilename}}"/>
+			<input class="col-md-4 text-right" type="text" id="my_file_to_save" name="my_file_to_save" value="{{savefilename}}"/>
 		</div>			
 	</div>
 

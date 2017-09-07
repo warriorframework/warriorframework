@@ -1,22 +1,19 @@
 var settings = {
 
 	closeSetting: function(){
-		katana.openDialog( 'Are you sure you would like to close this page?', 'Confirm', true, katana.closeSubApp );
-	},
-
-	emailSettings: {
-		generalBody: '',
-
-		init: function () {
-			console.log('test auto init of app');
-			settings.emailSettings.generalBody = $(this);
-		},
+		if( this.parent().find('.saved').length )
+			katana.closeSubApp();
+		else
+			katana.openDialog( 'Are you sure you would like to close this page?', 'Confirm', true, katana.closeSubApp );
 	},
 
 	encrypetion: {
 		save: function(){
+			var $elem = this;
+			$elem.addClass('loading');
 			katana.templateAPI.post.call( katana.$activeTab.find('.to-save'), null, null, null, function( data ){
 				console.log('saved', data);
+				$elem.removeClass('loading').addClass('saved');
 			} );
 		}
 	},
@@ -73,9 +70,19 @@ var settings = {
 		}
 	},
 
+	changeDetection: function(){
+		var $elem = this;
+		$elem.on('change', 'input, select', function(){
+			$elem.closest('.page-content').find('.saved').removeClass('saved');
+		});
+	},
+
 	save: function(){
+		var $elem = this;
+		$elem.addClass('loading');
 		katana.templateAPI.post.call( katana.$activeTab.find('.to-save'), null, null, katana.toJSON(), function( data ) {
 			console.log('saved', data);
+			$elem.removeClass('loading').addClass('saved');
 		});
 	},
 };
