@@ -193,6 +193,7 @@ function mapUiToSuiteJson() {
 	jsonSuiteObject['Details']['Datatype']['@exectype'] = katana.$activeTab.find('#suiteDatatype').val();
 	jsonSuiteObject['SaveToFile'] = { "$" : katana.$activeTab.find('#my_file_to_save').val()};
 
+	console.log(jsonSuiteObject['Testcases']);
 	var url = "./suites/getSuiteDataBack";
 	var csrftoken = $("[name='csrfmiddlewaretoken']").val();
 
@@ -283,7 +284,7 @@ function createCaseEditTable(xdata) {
 			//var sid = parseInt(names[1]);
 			alert("Mapping UI to SuiteCase");
 			mapUItoSuiteCase(xdata);
-			
+			createCasesTable(xdata);  //Refresh the screen.
 		});
 
 	katana.$activeTab.find("#editTestcaseEntry").html( items.join(""));

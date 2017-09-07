@@ -10,6 +10,20 @@
 <runmode>runmode</runmode>
 <Execute ExecType="Yes" value="" />
 </Testcase>
+<Testcase>
+<Step Driver="" keyword="" TS="1" />
+<Arguments>
+<Argument />
+</Arguments>
+<onError action="next" value="" />
+<ExecType ExecType="Yes" />
+<context>context</context>
+<impact>impact</impact>
+<path>pathTOKAMRANOFSfdf</path>
+<runtype>runtype</runtype>
+<runmode>runmode</runmode>
+<Execute ExecType="Yes" value="" />
+</Testcase>
 </Testcases>
 <Details>
 <Logsdir />
