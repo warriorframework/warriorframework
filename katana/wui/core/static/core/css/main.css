@@ -1923,8 +1923,8 @@ button, input, optgroup, select, textarea {
 
 .wdf-label {
     position: absolute;
-    top: 30%;
-    left: 0;
+    top: 25%;
+    left: 20px;
     right: 0;
     margin: 0 auto;
 }
