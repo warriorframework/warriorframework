@@ -331,13 +331,13 @@ function mapUItoTestStep(xdata) {
 	oneCaseStep['step'][ "@Driver"] = katana.$activeTab.find("#StepDriver"+activePageID).val();
 	oneCaseStep['step'][ "@Keyword"] = katana.$activeTab.find("#StepKeyword"+activePageID).val();
 	oneCaseStep['step'][ "@TS"] = katana.$activeTab.find("#StepTS"+activePageID).val();
-	oneCaseStep["Description"] = { "$" : katana.$activeTab.find("#StepDescription"+activePageID).val();
-	oneCaseStep["context"] = { "$" : katana.$activeTab.find("#StepContext"+activePageID).val();
+	oneCaseStep["Description"] = { "$" : katana.$activeTab.find("#StepDescription"+activePageID).val()};
+	oneCaseStep["context"] = { "$" : katana.$activeTab.find("#StepContext"+activePageID).val()};
 	oneCaseStep["Execute"]["@ExecType"]= katana.$activeTab.find("#Execute-at-ExecType"+activePageID).val();		
 	oneCaseStep['onError'][ "@action"] = katana.$activeTab.find("#SteponError-at-action"+activePageID).val();
 	oneCaseStep['onError'][ "@value"] = katana.$activeTab.find("#SteponError-at-value"+activePageID).val();
-	oneCaseStep["runmode"] = { "@type" : katana.$activeTab.find("#runmode-at-type"+activePageID).val();
-	oneCaseStep["impact"] = { "$" : katana.$activeTab.find("#StepImpact"+activePageID).val();
+	oneCaseStep["runmode"] = { "@type" : katana.$activeTab.find("#runmode-at-type"+activePageID).val()};
+	oneCaseStep["impact"] = { "$" : katana.$activeTab.find("#StepImpact"+activePageID).val()};
 	// Now draw the table again....
 
 	var a_str = katana.$activeTab.find("#arguments-textarea-"+activePageID).text();
