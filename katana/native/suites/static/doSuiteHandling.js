@@ -206,8 +206,8 @@ function mapUiToSuiteJson() {
 	    data : { 
 	    	'json': JSON.stringify(topNode),
 	    	'Suite': ns,
-	    	'filetosave': $('#my_file_to_save').val()
-	    	
+	    	'filetosave': $('#my_file_to_save').val(),
+	    	'savefilepath': katana.$activeTab.find('#savefilepath').text()
 	    	},
 	    headers: {'X-CSRFToken':csrftoken},
     

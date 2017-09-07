@@ -198,13 +198,14 @@ def getSuiteDataBack(request):
 	fpath = config['testsuitedir']
 
 	fname = request.POST.get(u'filetosave')
+	ufpath = request.POST.get(u'savefilepath')
 	#ijs = request.POST.get(u'json')  # This is a json string 
 	
 	#print "--------------TREE----------------"
 	xml = request.POST.get(u'Suite') 
 
 	if fname.find(".xml") < 2: fname = fname + ".xml"
-	print "save to ", fpath + os.sep + fname 
+	print "save to ", ufpath + os.sep + fname 
 	fd = open(fpath + os.sep + fname,'w');
 	fd.write(xml);
 	fd.close();

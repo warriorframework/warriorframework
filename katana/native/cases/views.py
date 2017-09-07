@@ -119,14 +119,14 @@ def editCase(request):
 	
 
 	if filename == 'NEW':
-		subdir = 'user'
+		subdir = path_to_testcases 
 		filename = 'new.xml'
 		fn = 'new.xml'
 		xml_d = copy.deepcopy(xml_r)
 	else: 
 		xlines = open(filename).read()
 		xml_d = bf.data(fromstring(xlines)); # xmltodict.parse(fd1.read());
-		subdir = os.path.split(os.path.split(filename)[0])[1]
+		subdir = os.path.split(filename)[0]
 		fn = 'save_' + os.path.split(filename)[1]
 	# Map the input to the response collector
 	for xstr in ["Name", "Title", "Category", "Date", "Time", "InputDataFile", "Engineer", \
@@ -190,8 +190,10 @@ def getCaseDataBack(request):
 	print "--------------TREE----------------"
 	fn = request.POST.get(u'filetosave')
 	sb = request.POST.get(u'savesubdir')
-	fname = path_to_testcases + os.sep + sb + os.sep + fn;  
-	print "save to ", fname 
+	fname = sb + os.sep + fn;  
+	print "save case to ", fname 
+	print "components ", fn
+	print "sb = ", sb
 	fd = open(fname,'w');
 	fd.write(ijs);
 	fd.close();

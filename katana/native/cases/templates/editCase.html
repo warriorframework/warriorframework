@@ -14,78 +14,81 @@
 <p> 
 
 <h2>Details</h2>
-<div class="form-group">
 
-			<div class="field">
-				<label >Name*:</label>
-				<input type="text" id="caseName"  value="{{caseName}}"/>
-			</div>
-			<div class="field">
-				<label >Title*:</label>
-				<input type="text" id="caseTitle"  value="{{caseTitle}}"/>
-			</div>
-			<div class="field">
-				<label >Category*:</label>
-				<input type="text" id="caseCategory"  value="{{caseCategory}}"/>
-			</div>
-			<div class="field">
-				<label >State Options:</label>
-				<select class="col-4 text-right" type="text" id="caseState" name="caseState" value="{{caseState}}" >
-				{% for x in caseStateOptions %}
-					<option id="{{x}}">{{x}}</option>
-				{% endfor %}
-			</select>
-			</div>
-			<div class="field">
-				<label >Engineer:</label>
-				<input type="text" id="caseEngineer"  value="{{caseEngineer}}"/>
-			</div>
-			<div class="field">
-				<label >Date:</label>
-				<input type="text" id="caseDate"  value="{{caseDate}}"/>
-			</div>
-			<div class="field">
-				<label class=" text-right" for="default_onError">Default On Error:</label>
-				<select class="text-right" type="text" id="default_onError" name="default_onError" value="{{default_onError}}" >
-					<option value="next">Custom</option>
-					<option value="abort">Hybrid</option>
-					<option value="abort_as_error">Iterative</option>
-					<option value="goto">Iterative</option>
+<div class="row">
+	<div class="form-group col-md-4">
+
+				<div class="field">
+					<label >Name*:</label>
+					<input type="text" id="caseName"  value="{{caseName}}"/>
+				</div>
+				<div class="field">
+					<label >Title*:</label>
+					<input type="text" id="caseTitle"  value="{{caseTitle}}"/>
+				</div>
+				<div class="field">
+					<label >Category*:</label>
+					<input type="text" id="caseCategory"  value="{{caseCategory}}"/>
+				</div>
+				<div class="field">
+					<label >State Options:</label>
+					<select class="col-4 text-right" type="text" id="caseState" name="caseState" value="{{caseState}}" >
+					{% for x in caseStateOptions %}
+						<option id="{{x}}">{{x}}</option>
+					{% endfor %}
 				</select>
-			
-			</div>
-			<div>
-			<label class="col-2 text-right" for="caseDatatype">Data Type:</label>
-			<select class="col-4 text-right" type="text" id="caseDatatype" name="caseDatatype" value="{{caseDatatype}}" >
-				<option value="Custom">Custom</option>
-				<option value="Hybrid">Hybrid</option>
-				<option value="Iterative">Iterative</option>
-			</select>
-			</div>
-			<input class="col-2 text-right" type="checkbox" id="ck_dataPath" name="ck_dataPath" value="Y">Use DataPath</input>
-			<div class="field">
-				<label >Data Path:</label>
-				<input type="text" id="caseResultsdir"  value="{{caseResultsdir}}"/>
-			</div>
-			<div class="field">
-				<label >Results*:</label>
-				<input type="text" id="caseExpectedResults"  value="{{caseExpectedResults}}"/>
-			</div>
-			<div class="field">
-				<label >Logs:</label>
-				<input type="text" id="caseLogsdir"  value="{{caseLogsdir}}"/>
-			</div>
-			<div class="field">
-				<label >InputDataFile:</label>
-				<input type="text" id="caseInputDataFile"  value="{{caseInputDataFile}}"/>
-			</div>
-
+				</div>
+				<div class="field">
+					<label >Engineer:</label>
+					<input type="text" id="caseEngineer"  value="{{caseEngineer}}"/>
+				</div>
+				<div class="field">
+					<label >Date:</label>
+					<input type="text" id="caseDate"  value="{{caseDate}}"/>
+				</div>
+				<div class="field">
+					<label class=" text-right" for="default_onError">Default On Error:</label>
+					<select class="text-right" type="text" id="default_onError" name="default_onError" value="{{default_onError}}" >
+						<option value="next">Custom</option>
+						<option value="abort">Hybrid</option>
+						<option value="abort_as_error">Iterative</option>
+						<option value="goto">Iterative</option>
+					</select>
+				
+				</div>
+				<div>
+				<label class="col-2 text-right" for="caseDatatype">Data Type:</label>
+				<select class="col-4 text-right" type="text" id="caseDatatype" name="caseDatatype" value="{{caseDatatype}}" >
+					<option value="Custom">Custom</option>
+					<option value="Hybrid">Hybrid</option>
+					<option value="Iterative">Iterative</option>
+				</select>
+				</div>
+				<input class="col-2 text-right" type="checkbox" id="ck_dataPath" name="ck_dataPath" value="Y">Use DataPath</input>
+				<div class="field">
+					<label >Data Path:</label>
+					<input type="text" id="caseResultsdir"  value="{{caseResultsdir}}"/>
+				</div>
+				<div class="field">
+					<label >Results*:</label>
+					<input type="text" id="caseExpectedResults"  value="{{caseExpectedResults}}"/>
+				</div>
+				<div class="field">
+					<label >Logs:</label>
+					<input type="text" id="caseLogsdir"  value="{{caseLogsdir}}"/>
+				</div>
+				<div class="field">
+					<label >InputDataFile:</label>
+					<input type="text" id="caseInputDataFile"  value="{{caseInputDataFile}}"/>
+				</div>
+	</div>
+	<div class="form-group col-md-4">
+		<h2>Requirements</h2>
+		<div id="tableOfCaseRequirements"></div>
+	</div>
 </div>
 
-<div>
-	<h2>Requirements</h2>
-	<div id="tableOfCaseRequirements"></div>
-</div>
+
 
 	  
 <div class="container-fluid">
