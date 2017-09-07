@@ -20,31 +20,13 @@ var wdf = {
         $(this).parent().parent().parent().empty();
     },
 
-    submit: function(){
-        var csrftoken = $("[name='csrfmiddlewaretoken']").val();
-
-        $.ajax({
-            url : "/katana/wdf/post",
-            type: "POST",
-            data : katana.$activeTab.find("#big-box").serializeArray(),
-            headers: {'X-CSRFToken':csrftoken},
-            //contentType: 'application/json',
-            success: function(data){
-                // load the tree
-                katana.$activeTab.find("#main_info").replaceWith(data);
-                katana.refreshAutoInit(katana.$activeTab.find("#jstree"));
-            }
-        }); 
-    },
-
-
     addSystem: function(){
         // Add a system
         var $tmp = katana.$activeTab.find("#system_template").clone();
         $tmp.find("#template-system").prop("id", katana.$activeTab.find(".control-box").length-1+"-control-box")
         $tmp.find("[name='template-system-name']").prop("name", katana.$activeTab.find(".control-box").length-1+"-1-system_name");
-        $tmp.find("[name='template-system.tag']").prop("name", katana.$activeTab.find(".control-box").length-1+"-1-1-key");
-        $tmp.find("[name='template-system.value']").prop("name", katana.$activeTab.find(".control-box").length-1+"-1-1-value");
+        $tmp.find("[name='template-system.tag']").prop("name", katana.$activeTab.find(".control-box").length-1+"-1-1-1-key");
+        $tmp.find("[name='template-system.value']").prop("name", katana.$activeTab.find(".control-box").length-1+"-1-1-1-value");
         katana.$activeTab.find("#big-box").append($($tmp.html()));
     },
 
@@ -88,6 +70,22 @@ var wdf = {
         $(this).hide();
     },
 
+    newFile: function(){
+        $.ajax({
+            url: "wdf/index",
+            type: "GET",
+            success: function(data){
+                // console.log(data);
+                katana.$activeTab.find("#main_info").replaceWith(data);
+                katana.refreshAutoInit(katana.$activeTab.find("#system_template"));
+                katana.refreshAutoInit(katana.$activeTab.find("#tag_template"));
+                katana.refreshAutoInit(katana.$activeTab.find("#child_tag_template"));
+                katana.refreshAutoInit(katana.$activeTab.find("#subsystem_template"));
+                // console.log("loaded");
+            }
+        });
+    },
+
     build_tree: function(){
         $.ajax({
             url: "wdf/gettree",
@@ -122,7 +120,23 @@ var wdf = {
               // katana.templateAPI.post("wdf/index", csrftoken, {"path": data["node"]["li_attr"]["data-path"]});
             }
         });
-    }
+    },
 
+    submit: function(){
+        var csrftoken = $("[name='csrfmiddlewaretoken']").val();
+
+        $.ajax({
+            url : "/katana/wdf/post",
+            type: "POST",
+            data : katana.$activeTab.find("#big-box").serializeArray(),
+            headers: {'X-CSRFToken':csrftoken},
+            //contentType: 'application/json',
+            success: function(data){
+                // load the tree
+                katana.$activeTab.find("#main_info").replaceWith(data);
+                katana.refreshAutoInit(katana.$activeTab.find("#jstree"));
+            }
+        }); 
+    },
 
 }

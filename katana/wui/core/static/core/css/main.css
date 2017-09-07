@@ -1916,7 +1916,12 @@ button, input, optgroup, select, textarea {
     padding: 2px;
 }
 
-.wdf-delete {
+.wdf-button {
+    position: absolute;
+    top: 10%;
+}
+
+.wdf-label {
     position: absolute;
     top: 30%;
     left: 0;
@@ -1924,10 +1929,6 @@ button, input, optgroup, select, textarea {
     margin: 0 auto;
 }
 
-.wdf-add-child {
-    position: absolute;
-    top: 10%;
-    left: 0;
-    right: 0;
-    margin: 0 auto;
+hr.wdf-hr{
+    display: block;
 }

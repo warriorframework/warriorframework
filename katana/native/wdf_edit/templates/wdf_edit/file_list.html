@@ -1,12 +1,11 @@
-<div id="main_info">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
-    <!-- 3 setup a container element -->
-    <!-- 4 include the jQuery library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
-    <!-- 5 include the minified jstree source -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+<body>
+	<div id="main_info">
+	    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+	    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
 
-    <div id="jstree" auto-init="wdf.build_tree">
-    </div>
-    <div class="csrf-container">{% csrf_token %}</div>
-</div>
+	    <div id="jstree" auto-init="wdf.build_tree">
+	    </div>
+	    <button katana-click="wdf.newFile" class="btn">New Data File</button>
+	    <div class="csrf-container">{% csrf_token %}</div>
+	</div>
+</body>

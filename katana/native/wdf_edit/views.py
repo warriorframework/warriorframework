@@ -15,9 +15,10 @@ from django.http import JsonResponse
 def index(request):
     if request.method == "POST":
         data = request.POST
+        filepath = data["path"]
         data = xmltodict.parse(open(data["path"]).read())
     else:
-        data = xmltodict.parse(open('/home/ka/Desktop/warrior_fnc_tests/warrior_tests/data/cli_tests/cli_def_Data.xml').read())
+        return render(request, 'wdf_edit/index.html', {"data": {"system": []}, "filepath": ""})
 
     root = data.keys()[0]
 
@@ -52,7 +53,7 @@ def index(request):
                     del sys[k]
     print(json.dumps(data, indent=4))
 
-    return render(request, 'wdf_edit/index.html', {"data": data["credentials"]})
+    return render(request, 'wdf_edit/index.html', {"data": data["credentials"], "filepath": filepath})
 
 # def get_json(request):
 #     return JsonResponse(xmltodict.parse(open('/home/ka/Desktop/warrior_fnc_tests/warrior_tests/data/cli_tests/cli_def_Data.xml').read()))
@@ -124,9 +125,13 @@ def build_xml_dict(data):
                 current_sys = result[-1]
                 current_sys["@name"] = subsys["system_name"]
             else:
+                # There is a subsystem inside the current system
                 if locate_system(result, subsys["system_name"]) > -1:
                     # The system already exist in result
-                    result[locate_system(result, subsys["system_name"])]["subsystem"].append(OrderedDict())
+                    if "subsystem" in result[locate_system(result, subsys["system_name"])]:
+                        result[locate_system(result, subsys["system_name"])]["subsystem"].append(OrderedDict())
+                    else:
+                        result[locate_system(result, subsys["system_name"])]["subsystem"] = [OrderedDict()]
                     current_sys = result[locate_system(result, subsys["system_name"])]["subsystem"][-1]
                     current_sys["@name"] = subsys["subsystem_name"]
                     current_sys["subsystem"] = []
@@ -175,6 +180,7 @@ def build_xml_dict(data):
 
 def on_post(request):
     data = request.POST
+    filepath = data["filepath"]
     # print json.dumps(sorted(data.items()), indent=4)
     data = raw_parser(data)
     data = build_xml_dict(data)
@@ -182,5 +188,6 @@ def on_post(request):
 
     from xml.dom.minidom import parseString as miniparse
     print miniparse(xmltodict.unparse(data)).toprettyxml()
+    print "Filepath:", filepath
     # return render(request, 'wdf_edit/result.html', {"data": json.dumps(request.POST, indent=4)})
     return render(request, 'wdf_edit/file_list.html', {})

@@ -1,19 +1,23 @@
 <div id="main_info" class="container">
-    <div class="row"><div class="col-md-12">
-        <button id="add" katana-click="wdf.addSystem">add system</button>
-        <button id="submit" katana-click="wdf.submit">submit</button>
-    </div></div>
-
     <div class="csrf-container">{% csrf_token %}</div>
     <form id="big-box">
+
+    <div class="row">
+        <div class="col-md-1"><label class="wdf-label">Filepath:</label></div>
+        <div class="col-md-8"><input name="filepath" value="{{ filepath }}"/></div>
+        <div class="col-md-2"><button class="wdf-button btn" type="button" id="add" katana-click="wdf.addSystem">Add system</button></div>
+        <div class="col-md-1"><button class="wdf-button btn" type="button" id="submit" katana-click="wdf.submit">submit</button></div>
+    </div>
+
     {% for system in data.system %}
         {% if system.ip %}
+            <hr class="wdf-hr"/>
             <div id="{{ forloop.counter }}-1-control-box" class="control-box">
                 <div class="row"><div class="col-md-12">
-                    <button katana-click="wdf.toggle" type="button">Toggle</button>
-                    <button katana-click="wdf.addTag" type="button">Add Tag</button>
-                    <button katana-click="wdf.addSubSystem" type="button">Add Subsystem</button>
-                    <button katana-click="wdf.deleteSystem" type="button">Delete System</button>
+                    <button katana-click="wdf.toggle" class="wdf-button btn" type="button">Toggle</button>
+                    <button katana-click="wdf.addTag" class="wdf-button btn" type="button">Add tag</button>
+                    <button katana-click="wdf.addSubSystem" class="wdf-button btn" type="button">Add subsystem</button>
+                    <button katana-click="wdf.deleteSystem" class="wdf-button btn" type="button">Delete System</button>
                 </div></div>
                 <div class="row"><div class="col-md-12">
                     <label>System name:</label><input name="{{ forloop.counter }}-1-system_name" value="{{ system.name }}"/>
@@ -21,21 +25,22 @@
                 {% for k, v in system.items %}
                     {% if k != "name" %}
                         <div class="row" id="content">
-                            <div class="col-md-1"><button type="button" class="wdf-add-child" katana-click="wdf.addChild">Add Child Tag</button></div>
-                            <div class="col-md-1"><button type="button" class="wdf-delete" katana-click="wdf.deleteTag">Delete</button></div>
-                            <div class="col-md-3"><input name="{{ forloop.parentloop.counter }}-1-{{ forloop.counter }}-1-key" value="{{ k }}"></input></div>
-                            <div class="col-md-7"><input name="{{ forloop.parentloop.counter }}-1-{{ forloop.counter }}-1-value" value="{{ v }}"></input></div>
+                            <div class="col-md-1"><button type="button" class="wdf-button btn" katana-click="wdf.addChild">⤷</button></div>
+                            <div class="col-md-1"><button type="button" class="wdf-button btn" katana-click="wdf.deleteTag">-</button></div>
+                            <div class="col-md-3"><input name="{{ forloop.parentloop.counter }}-1-{{ forloop.counter }}-1-key" value="{{ k }}"/></div>
+                            <div class="col-md-7"><input name="{{ forloop.parentloop.counter }}-1-{{ forloop.counter }}-1-value" value="{{ v }}"/></div>
                         </div>
                     {% endif %}
                 {% endfor %}
             </div>
         {% elif "ip" in system.subsystem %}
+            <hr class="wdf-hr"/>
             <div id="{{ forloop.counter }}-1-control-box" class="control-box">
                 <div class="row"><div class="col-md-12">
-                    <button katana-click="wdf.toggle" type="button">Toggle</button>
-                    <button katana-click="wdf.addTag" type="button">Add Tag</button>
-                    <button katana-click="wdf.addSubSystem" type="button">Add Subsystem</button>
-                    <button katana-click="wdf.deleteSystem" type="button">Delete Subsystem</button>
+                    <button katana-click="wdf.toggle" class="wdf-button btn" type="button">Toggle</button>
+                    <button katana-click="wdf.addTag" class="wdf-button btn" type="button">Add tag</button>
+                    <button katana-click="wdf.addSubSystem" class="wdf-button btn" type="button">Add subsystem</button>
+                    <button katana-click="wdf.deleteSystem" class="wdf-button btn" type="button">Delete subsystem</button>
                 </div></div>
                 <div class="row"><div class="col-md-6">
                     <label>System name:</label><input name="{{ forloop.counter }}-1-system_name" value="{{ system.name }}"/>
@@ -45,21 +50,23 @@
                 {% for k, v in system.subsystem.items %}
                     {% if k != "name" %}
                         <div class="row" id="content">
-                            <div class="col-md-1"><button>Delete</button></div>
-                            <div class="col-md-3"><input name="{{ forloop.parentloop.counter }}-1-{{ forloop.counter }}-1-key" value="{{ k }}"></input></div>
-                            <div class="col-md-8"><input name="{{ forloop.parentloop.counter }}-1-{{ forloop.counter }}-1-value" value="{{ v }}"></input></div>
+                            <div class="col-md-1"><button type="button" class="wdf-button btn" katana-click="wdf.addChild">⤷</button></div>
+                            <div class="col-md-1"><button type="button" class="wdf-button btn" katana-click="wdf.deleteTag">-</button></div>
+                            <div class="col-md-3"><input name="{{ forloop.parentloop.counter }}-1-{{ forloop.counter }}-1-key" value="{{ k }}"/></div>
+                            <div class="col-md-7"><input name="{{ forloop.parentloop.counter }}-1-{{ forloop.counter }}-1-value" value="{{ v }}"/></div>
                         </div>
                     {% endif %}
                 {% endfor %}
             </div>
         {% elif system.subsystem %}
             {% for subsys in system.subsystem %}
+                <hr class="wdf-hr"/>
                 <div id="{{ forloop.parentloop.counter }}-{{ forloop.counter }}-control-box" class="control-box">
                     <div class="row"><div class="col-md-12">
-                        <button katana-click="wdf.toggle" type="button">Toggle</button>
-                        <button katana-click="wdf.addTag" type="button">Add Tag</button>
-                        <button katana-click="wdf.addSubSystem" type="button">Add Subsystem</button>
-                        <button katana-click="wdf.deleteSystem" type="button">Delete Subsystem</button>
+                        <button katana-click="wdf.toggle" class="wdf-button btn" type="button">Toggle</button>
+                        <button katana-click="wdf.addTag" class="wdf-button btn" type="button">Add tag</button>
+                        <button katana-click="wdf.addSubSystem" class="wdf-button btn" type="button">Add subsystem</button>
+                        <button katana-click="wdf.deleteSystem" class="wdf-button btn" type="button">Delete subsystem</button>
                     </div></div>
                     <div class="row"><div class="col-md-6">
                         <label>System name:</label><input name="{{ forloop.parentloop.counter }}-{{ forloop.counter }}-system_name" value="{{ system.name }}"/>
@@ -69,9 +76,10 @@
                     {% for k, v in subsys.items %}
                         {% if k != "name" %}
                             <div class="row" id="content">
-                            <div class="col-md-1"><button>Delete</button></div>
-                                <div class="col-md-3"><input name="{{ forloop.parentloop.parentloop.counter }}-{{ forloop.parentloop.counter }}-{{ forloop.counter }}-1-key" value="{{ k }}"></input></div>
-                                <div class="col-md-8"><input name="{{ forloop.parentloop.parentloop.counter }}-{{ forloop.parentloop.counter }}-{{ forloop.counter }}-1-value" value="{{ v }}"></input></div>
+                                <div class="col-md-1"><button type="button" class="wdf-button btn" katana-click="wdf.addChild">⤷</button></div>
+                                <div class="col-md-1"><button type="button" class="wdf-button btn" katana-click="wdf.deleteTag">-</button></div>
+                                <div class="col-md-3"><input name="{{ forloop.parentloop.parentloop.counter }}-{{ forloop.parentloop.counter }}-{{ forloop.counter }}-1-key" value="{{ k }}"/></div>
+                                <div class="col-md-7"><input name="{{ forloop.parentloop.parentloop.counter }}-{{ forloop.parentloop.counter }}-{{ forloop.counter }}-1-value" value="{{ v }}"/></div>
                             </div>
                         {% endif %}
                     {% endfor %}
@@ -84,47 +92,33 @@
 </div>
 
 <div id="system_template" auto-init="wdf.hide">
+    <hr class="wdf-hr"/>
     <div id="template-system" class="control-box">
         <div class="row"><div class="col-md-12">
-            <button katana-click="wdf.toggle" type="button">Toggle</button>
-            <button katana-click="wdf.addTag" type="button">Add Tag</button>
-            <button katana-click="wdf.addSubSystem" type="button">Add Subsystem</button>
-            <button katana-click="wdf.deleteSystem" type="button">Delete System</button>
+            <button katana-click="wdf.toggle" class="wdf-button btn" type="button">Toggle</button>
+            <button katana-click="wdf.addTag" class="wdf-button btn" type="button">Add tag</button>
+            <button katana-click="wdf.addSubSystem" class="wdf-button btn" type="button">Add subsystem</button>
+            <button katana-click="wdf.deleteSystem" class="wdf-button btn" type="button">Delete System</button>
         </div></div>
         <div class="row"><div class="col-md-12">
             <label>System name:</label><input name="template-system-name" value=""/>
         </div></div>
         <div class="row" id="content">
-            <div class="col-md-1"><button class="wdf-delete" katana-click="wdf.deleteTag" type="button">Delete</button></div>
-            <div class="col-md-3"><input name="template-system.tag" value="tag_name"></input></div>
-            <div class="col-md-8"><input name="template-system.value" value="value"></input></div>
+            <div class="col-md-1"><button class="wdf-button btn" katana-click="wdf.addChild" type="button">⤷</button></div>
+            <div class="col-md-1"><button class="wdf-button btn" katana-click="wdf.deleteTag" type="button">-</button></div>
+            <div class="col-md-3"><input name="template-system.tag" value="tag_name"/></div>
+            <div class="col-md-7"><input name="template-system.value" value="value"/></div>
         </div>
     </div>
 </div>
 
-<div id="tag_template" auto-init="wdf.hide">
-    <div class="row" id="content">
-        <div class="col-md-1"><button class="wdf-delete" katana-click="wdf.deleteTag" type="button">Delete</button></div>
-        <div class="col-md-3"><input name="template-tag.tag" value="tag_name"></input></div>
-        <div class="col-md-8"><input name="template-tag.value" value="value"></input></div>
-    </div>
-</div>
-
-<div id="child_tag_template" auto-init="wdf.hide">
-    <div class="row" id="subcontent">
-        <div class="col-md-1"/>
-        <div class="col-md-1"><button class="wdf-delete" katana-click="wdf.deleteChildTag" type="button">Delete</button></div>
-        <div class="col-md-3"><input name="template-tag.tag" value="tag_name"></input></div>
-        <div class="col-md-7"><input name="template-tag.value" value="value"></input></div>
-    </div>
-</div>
-
 <div id="subsystem_template" auto-init="wdf.hide">
+    <hr class="wdf-hr"/>
     <div id="template-subsystem" class="control-box">
         <div class="row"><div class="col-md-12">
-            <button katana-click="wdf.toggle" type="button" type="button">Toggle</button>
-            <button katana-click="wdf.addTag" type="button" type="button">Add Tag</button>
-            <button katana-click="wdf.deleteSystem" type="button" type="button">Delete Subsystem</button>
+            <button katana-click="wdf.toggle" class="wdf-button btn" type="button">Toggle</button>
+            <button katana-click="wdf.addTag" class="wdf-button btn" type="button">Add tag</button>
+            <button katana-click="wdf.deleteSystem" class="wdf-button btn" type="button">Delete subsystem</button>
         </div></div>
         <div class="row"><div class="col-md-6">
             <label>System name:</label><input name="template-system-name" value=""/>
@@ -132,9 +126,28 @@
             <label>Subsystem name:</label><input name="template-subsystem-name" value=""/>
         </div></div>
         <div class="row" id="content">
-            <div class="col-md-1"><button class="wdf-delete" katana-click="wdf.deleteTag" type="button">Delete</button></div>
-            <div class="col-md-3"><input name="template-subsystem.tag" value="tag_name"></input></div>
-            <div class="col-md-8"><input name="template-subsystem.value" value="value"></input></div>
+            <div class="col-md-1"><button class="wdf-button btn" katana-click="wdf.addChild" type="button">⤷</button></div>
+            <div class="col-md-1"><button class="wdf-button btn" katana-click="wdf.deleteTag" type="button">-</button></div>
+            <div class="col-md-3"><input name="template-subsystem.tag" value="tag_name"/></div>
+            <div class="col-md-7"><input name="template-subsystem.value" value="value"/></div>
         </div>
+    </div>
+</div>
+
+<div id="tag_template" auto-init="wdf.hide">
+    <div class="row" id="content">
+        <div class="col-md-1"><button class="wdf-button btn" katana-click="wdf.addChild" type="button">⤷</button></div>
+        <div class="col-md-1"><button class="wdf-button btn" katana-click="wdf.deleteTag" type="button">-</button></div>
+        <div class="col-md-3"><input name="template-tag.tag" value="tag_name"/></div>
+        <div class="col-md-7"><input name="template-tag.value" value="value"/></div>
+    </div>
+</div>
+
+<div id="child_tag_template" auto-init="wdf.hide">
+    <div class="row" id="subcontent">
+        <div class="col-md-1"/>
+        <div class="col-md-1"><button class="wdf-button btn" katana-click="wdf.deleteChildTag" type="button">-</button></div>
+        <div class="col-md-3"><input name="template-tag.tag" value="tag_name"/></div>
+        <div class="col-md-7"><input name="template-tag.value" value="value"/></div>
     </div>
 </div>
