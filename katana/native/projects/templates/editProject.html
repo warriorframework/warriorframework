@@ -9,8 +9,6 @@
 <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 -->
  
-
-	Editing:{{ myfile }}
 	<h2>Details</h2>
 	<div class="form-group col-md-12 row">
 			<div class="field col-md-4">
@@ -48,8 +46,79 @@
 
 	
 	<div class="container-fluid row">
-	<div id="tableOfTestSuitesForProject"  class="col-md-8" />
-		<div id="editTestSuiteEntry" class="form-group col-md-4" />
+		<div id="tableOfTestSuitesForProject"  class="col-md-8" />
+		<div id="editTestSuiteEntry" class="form-group col-md-4">
+				<div class="field " > 
+				<label >Row Id</label>
+				<input type="text" id="suiteRowToEdit" value=""/>
+				</div>			
+				<div class="field ">
+				<label >Path*:</label>
+				<input type="text" id="suitePath" value=""/>
+				</div>
+				<div class="field ">
+				<label class=" text-right" >ExecType:</label>
+				<select type="text" class="text-right" id="Execute-at-ExecType" value="" >
+				<option value="If">If</option> 
+				<option value="If Not">If Not</option> 
+				<option value="Yes">Yes</option> 
+				<option value="No">No</option> 
+				</select>
+				</div>
+						
+				<div class="field ">
+				<label for="executeRuleAtCondition">Rule Condition:</label>
+				<input type="text" id="executeRuleAtCondition" value=""/>
+				</div>			
+				<div class="field ">
+				<label for="executeRuleAtCondvalue">Rule Condition Value:</label>
+				<input type="text" id="executeRuleAtCondvalue" value=""/>
+				</div>			
+				<div class="field ">
+				<label for="executeRuleAtElse">Rule Else:</label>
+				<input type="text" id="executeRuleAtElse" value=""  />
+				</div>			
+				<div class="field ">
+				<label for="executeRuleAtElsevalue">Rule Else Value:</label>
+				<input type="text" id="executeRuleAtElsevalue" value="" />
+				</div>
+				<div class="field ">
+				<label for="onError-at-action">On Error*:</label>
+				<input type="text" id="onError-at-action" value=""/>
+				</div>
+
+				<div class="field ">
+				<label class="col-md-2 text-right" >On Error value:</label>
+				<select type="text" class="text-right" id="onError-at-value" value="" >
+				<option value="next">next</option>
+				<option value="abort">abort</option>
+				<option value="abort_as_error">abort_as_error</option>
+				<option value="goto">goto</option>
+				</select>
+				</div>
+					
+					<div class="field ">
+					<label class="text-right" >Run mode:</label>
+					<label class="text-right" >runmode type:</label>
+					<input type="text" class="text-right" id="runmode-at-type" value="" />
+					<label class="text-right" >runmode value:</label>
+					<select type="text" class="text-right" id="runmode-at-value" value="" >
+					<option value="RMT">RMT</option> 
+					<option value="RUF">RUF</option> 
+					<option value="RUP">RUP</option> 
+					</select>
+						</div>
+					<div class="field ">
+						<label class="text-right" >impact</label>
+							<select type="text" id="impact" value="" >
+							<option value="impact">impact</option> 
+							<option value="noimpact">noimpact</option> 
+							</select>
+							<br>
+						</div>
+					<input type="button" class="btn col-md-3" value="Save Changes" id="saveChangesToRow"/>
+					</div>
+
 	</div>
 
 

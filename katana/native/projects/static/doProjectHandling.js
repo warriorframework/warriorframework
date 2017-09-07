@@ -23,7 +23,6 @@ if (typeof jsonAllProjectPages === 'undefined') {
 }
 var jsonProjectObject = []; 
 var jsonTestSuites = [];			// for all Suites
-var activePageID = getRandomID();   // for the page ID 
 
 
 /// -------------------------------------------------------------------------------
@@ -48,7 +47,6 @@ function getRandomID() {
 /// -------------------------------------------------------------------------------
 function mapFullProjectJson(myobjectID){
 	//console.log('Mapping data ... ' + typeof(sdata) + ' is [' + sdata + "] " + sdata.length);  // This jdata is a string ....
-	activePageID = getRandomID();                 
 	var sdata = katana.$activeTab.find("#listOfTestSuitesForProject").text();
 	katana.$activeTab.find("#listOfTestSuitesForProject").hide();
 	var jdata = sdata.replace(/'/g, '"');
@@ -95,23 +93,23 @@ function mapProjectSuiteToUI(s,xdata) {
 	console.log(s);
 	var oneSuite = xdata[s];
 	console.log(oneSuite);
-	console.log(activePageID);
+
 	console.log(oneSuite['path']['$']);
-	katana.$activeTab.find("#suiteRowToEdit"+activePageID).val(s); 
-	console.log(katana.$activeTab.find("#suiteRowToEdit"+activePageID).val());
-	//katana.$activeTab.find("suitePath"+activePageID).val(oneSuite['path']['$']);
-	katana.$activeTab.find("#suitePath"+activePageID).val(oneSuite['path']['$']);
-	katana.$activeTab.find("#Execute-at-ExecType"+activePageID).val(oneSuite['Execute']['@ExecType']); 
-	katana.$activeTab.find("#executeRuleAtCondition"+activePageID).val(oneSuite['Execute']['Rule']['@Condition']); 
-	katana.$activeTab.find("#executeRuleAtCondvalue"+activePageID).val(oneSuite['Execute']['Rule']['@Condvalue']); 
-	katana.$activeTab.find("#executeRuleAtElse"+activePageID).val(oneSuite['Execute']['Rule']['@Else']['$']); 
-	katana.$activeTab.find("#executeRuleAtElsevalue"+activePageID).val(oneSuite['Execute']['Rule']['@Elsevalue']); 
+	katana.$activeTab.find("#suiteRowToEdit").val(s); 
+	//console.log(katana.$activeTab.find("#suiteRowToEdit").val());
+	//katana.$activeTab.find("suitePath").val(oneSuite['path']['$']);
+	katana.$activeTab.find("#suitePath").val(oneSuite['path']['$']);
+	katana.$activeTab.find("#Execute-at-ExecType").val(oneSuite['Execute']['@ExecType']); 
+	katana.$activeTab.find("#executeRuleAtCondition").val(oneSuite['Execute']['Rule']['@Condition']); 
+	katana.$activeTab.find("#executeRuleAtCondvalue").val(oneSuite['Execute']['Rule']['@Condvalue']); 
+	katana.$activeTab.find("#executeRuleAtElse").val(oneSuite['Execute']['Rule']['@Else']['$']); 
+	katana.$activeTab.find("#executeRuleAtElsevalue").val(oneSuite['Execute']['Rule']['@Elsevalue']); 
 	
-	katana.$activeTab.find("#onError-at-action"+activePageID).val(oneSuite['onError']['@action']); 
-	katana.$activeTab.find("#onError-at-value"+activePageID).val(oneSuite['onError']['@value']); 
-	katana.$activeTab.find("#onError-at-type"+activePageID).val(oneSuite['runmode']['@type']); 
-	katana.$activeTab.find("#onError-at-value"+activePageID).val(oneSuite['runmode']['@value']); 
-	katana.$activeTab.find("#impact"+activePageID).val(oneSuite['impact']['$']); 
+	katana.$activeTab.find("#onError-at-action").val(oneSuite['onError']['@action']); 
+	katana.$activeTab.find("#onError-at-value").val(oneSuite['onError']['@value']); 
+	katana.$activeTab.find("#onError-at-type").val(oneSuite['runmode']['@type']); 
+	katana.$activeTab.find("#onError-at-value").val(oneSuite['runmode']['@value']); 
+	katana.$activeTab.find("#impact").val(oneSuite['impact']['$']); 
 	
 
 }
@@ -126,24 +124,20 @@ function mapProjectSuiteToUI(s,xdata) {
 function mapUItoProjectSuite(xdata){
 
 		
-	var s = parseInt(katana.$activeTab.find(s+':"suiteRowToEdit"'+activePageID).val());
+	var s = parseInt(katana.$activeTab.find("suiteRowToEdit").val());
 	var oneSuite = xdata[s];
-	var id = katana.$activeTab.find("suiteRowToEdit"+activePageID).val();
 
-	if (s != id) {
-		alert('Setting for '+s+" instead of " + id); 
-	}
-	oneSuite['path']['$'] = katana.$activeTab.find("#suitePath"+activePageID).val(); 
-	oneSuite['Execute']['@ExecType'] = katana.$activeTab.find("#Execute-at-ExecType"+activePageID).val(); 
-	oneSuite['Execute']['Rule']['@Condition']= katana.$activeTab.find("#executeRuleAtCondition"+activePageID).val(); 
-	oneSuite['Execute']['Rule']['@Condvalue'] = katana.$activeTab.find("#executeRuleAtCondvalue"+activePageID).val(); 
-	oneSuite['Execute']['Rule']['@Else']['$'] = katana.$activeTab.find("#executeRuleAtElse"+activePageID).val(); 
-	oneSuite['Execute']['Rule']['@Elsevalue'] = katana.$activeTab.find("#executeRuleAtElsevalue"+activePageID).val(); 
-	oneSuite['impact']['$'] = katana.$activeTab.find("#impact"+activePageID).val(); 
-	oneSuite['onError']['@action'] = katana.$activeTab.find("#onError-at-action"+activePageID).val(); 
-	oneSuite['onError']['@value'] = katana.$activeTab.find("#onError-at-value"+activePageID).val(); 
-	oneSuite['runmode']['@type'] = katana.$activeTab.find("#onError-at-type"+activePageID).val(); 
-	oneSuite['runmode']['@value'] = katana.$activeTab.find("#onError-at-value"+activePageID).val(); 
+	oneSuite['path']['$'] = katana.$activeTab.find("#suitePath").val(); 
+	oneSuite['Execute']['@ExecType'] = katana.$activeTab.find("#Execute-at-ExecType").val(); 
+	oneSuite['Execute']['Rule']['@Condition']= katana.$activeTab.find("#executeRuleAtCondition").val(); 
+	oneSuite['Execute']['Rule']['@Condvalue'] = katana.$activeTab.find("#executeRuleAtCondvalue").val(); 
+	oneSuite['Execute']['Rule']['@Else']['$'] = katana.$activeTab.find("#executeRuleAtElse").val(); 
+	oneSuite['Execute']['Rule']['@Elsevalue'] = katana.$activeTab.find("#executeRuleAtElsevalue").val(); 
+	oneSuite['impact']['$'] = katana.$activeTab.find("#impact").val(); 
+	oneSuite['onError']['@action'] = katana.$activeTab.find("#onError-at-action").val(); 
+	oneSuite['onError']['@value'] = katana.$activeTab.find("#onError-at-value").val(); 
+	oneSuite['runmode']['@type'] = katana.$activeTab.find("#onError-at-type").val(); 
+	oneSuite['runmode']['@value'] = katana.$activeTab.find("#onError-at-value").val(); 
 }
 
 /*
@@ -262,98 +256,14 @@ function mapUiToProjectJson() {
 
 //
 function createSuiteEditTable(xdata) {
-	//var xdata = data['Testsuite'];   // Just in case 
-	//if (!jQuery.isArray(xdata)) xdata = [xdata];
-	
-	katana.$activeTab.find("#editTestSuiteEntry").html( "");
-	var items = []; 
-	
-	items.push('<div class="field " >'); 
-	items.push('<label >Row Id</label>');
-	items.push('<input type="text" id="suiteRowToEdit'+activePageID+'" value=""/>');
-	items.push('</div>');			
 
-	items.push('<div class="field ">');
-	items.push('<label >Path*:</label>');
-	items.push('<input type="text" id="suitePath'+activePageID+'" value=""/>');
-	items.push('</div>');
-	items.push('<div class="field ">');
-	items.push('<label class=" text-right" >ExecType:</label>');
-	items.push('<select type="text" class="text-right" id="Execute-at-ExecType'+activePageID+'"" value="" >');
-	items.push('<option value="If">If</option> ');
-	items.push('<option value="If Not">If Not</option> ');
-	items.push('<option value="Yes">Yes</option> ');
-	items.push('<option value="No">No</option> ');
-	items.push('</select>');
-	items.push('</div>');
-			
-	items.push('<div class="field ">');
-	items.push('<label for="executeRuleAtCondition">Rule Condition:</label>');
-	items.push('<input type="text" id="executeRuleAtCondition'+activePageID+'" value=""/>');
-	items.push('</div>');			
-	items.push('<div class="field ">');
-	items.push('<label for="executeRuleAtCondvalue">Rule Condition Value:</label>');
-	items.push('<input type="text" id="executeRuleAtCondvalue'+activePageID+'" value=""/>');
-	items.push('</div>');			
-	items.push('<div class="field ">');
-	items.push('<label for="executeRuleAtElse">Rule Else:</label>');
-	items.push('<input type="text" id="executeRuleAtElse'+activePageID+'" value=""  />');
-	items.push('</div>	');		
-	items.push('<div class="field ">');
-	items.push('<label for="executeRuleAtElsevalue">Rule Else Value:</label>');
-	items.push('<input type="text" id="executeRuleAtElsevalue'+activePageID+'" value="" />');
-	items.push('</div>');
-	items.push('<div class="field ">');
-	items.push('<label for="onError-at-action">On Error*:</label>');
-	items.push('<input type="text" id="onError-at-action'+activePageID+'" value=""/>');
-	items.push('</div>');
 
-	items.push('<div class="field ">');
-	items.push('<label class="col-md-2 text-right" >On Error value:</label>');
-	items.push('<select type="text" class="text-right" id="onError-at-value'+activePageID+'" value="" >');
-	items.push('<option value="next">next</option>');
-	items.push('<option value="abort">abort</option>');
-	items.push('<option value="abort_as_error">abort_as_error</option>');
-	items.push('<option value="goto">goto</option>');
-	items.push('</select>');
-	items.push('</div>');
-		
-	items.push('	<div class="field ">');
-	items.push('	<label class="text-right" >Run mode:</label>');
-	items.push('	<label class="text-right" >runmode type:</label>');
-	items.push('	<input type="text" class="text-right" id="runmode-at-type"'+activePageID + ' value="" />');
-	items.push('	<label class="text-right" >runmode value:</label>');
-	items.push('	<select type="text" class="text-right" id="runmode-at-value'+activePageID+'" value="" >');
-	items.push('	<option value="RMT">RMT</option> ');
-	items.push('	<option value="RUF">RUF</option> ');
-	items.push('	<option value="RUP">RUP</option> ');
-	items.push('	</select>');
-	items.push('		</div>');
-
-	items.push('	<div class="field ">');
-	items.push('		<label class="text-right" >impact</label>');
-	items.push('			<select type="text" id="impact"'+activePageID + ' value="" >');
-	items.push('			<option value="impact">impact</option> ');
-	items.push('			<option value="noimpact">noimpact</option> ');
-	items.push('			</select>');
-	items.push('			<br>');
-	items.push('		</div>');
-
-	// Now create the buttons to save the data. 
-
-	var bid = "editTestSuite-"+activePageID+"-id"+getRandomID();;
-	items.push('<td><input type="button" class="btn col-md-3" value="Save Changes" id="'+bid+'"/></td>');
-	katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
-	$(document).on('click','#'+bid,function(  ) {
-			//var names = this.id.split('-');
-			//var sid = parseInt(names[1]);
+	katana.$activeTab.find('#saveChangesToRow').off('click');  // unbind is deprecated - debounces the click event. 
+	$(document).on('click','#saveChangesToRow',function(  ) {
 			mapUItoProjectSuite(xdata);
 			console.log("....** scrollIntoView ** ")
-			katana.$activeTab.find("#editTestSuiteHeader").scrollIntoView();
-		});
 
-	katana.$activeTab.find("#editTestSuiteEntry").html( items.join(""));
-	//katana.$activeTab.find("#editTestSuiteEntry").setAttribute( "style","overflow-y:auto");
+		});
 }
 
 
