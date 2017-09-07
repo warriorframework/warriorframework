@@ -114,8 +114,12 @@ def locate_system(data, name):
 
 def build_xml_dict(data):
     result = []
-    for sys_key, sys in data.items():
-        for subsys_key, subsys in sys.items():
+    sys_keys = [str(y) for y in sorted([int(x) for x in data.keys()])]
+    for sys_key in sys_keys:
+        sys = data[sys_key]
+        subsys_keys = [str(y) for y in sorted([int(x) for x in sys.keys()])]
+        for subsys_key in subsys_keys:
+            subsys = sys[subsys_key]
             if "subsystem_name" not in subsys:
                 result.append(OrderedDict())
                 current_sys = result[-1]
