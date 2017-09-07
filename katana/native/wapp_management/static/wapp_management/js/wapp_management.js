@@ -39,21 +39,50 @@ var wapp_management = {
                 app_paths.push(path)
             }
         }
+
+        var save_config = $(this).attr('save_config');
+
+        if(save_config == "yes"){
+            file_saved = wapp_management.saveConfig(app_paths);
+        }
+        else {
+            wapp_management.setSaveConfigAttr("yes");
+        }
+
+        $.ajax({
+                headers: {
+                    'X-CSRFToken': wapp_management.getCookie('csrftoken')
+                },
+                type: 'POST',
+                url: 'wapp_management/install_an_app/',
+                data: {"app_paths": app_paths},
+            }).done(function(data) {
+                $('#installed_apps_div').html(data)
+            });
+    },
+
+    saveConfig: function(app_paths){
+        if(app_paths === undefined){
+            var $elements = $("input[id*='app_path_for_config']")
+            var app_paths = []
+            var path = "";
+            for(var i=0 ; i<$elements.length; i++){
+                path = $elements[i].value.trim();
+                if(path == ""){
+                    alert("Field cannot be empty");
+                    return;
+                }
+                else {
+                    app_paths.push(path)
+                }
+            }
+        }
         r = confirm("Do you want to save this configuration?")
         if(r){
             var filename = prompt("Please enter a name for the configuration.");
-            if ( filename == null ||  filename == ""){
+            if (filename == null ||  filename == ""){
                 alert("Configuration not saved.")
-                $.ajax({
-                    headers: {
-                        'X-CSRFToken': wapp_management.getCookie('csrftoken')
-                    },
-                    type: 'POST',
-                    url: 'wapp_management/install_an_app/',
-                    data: {"app_paths": app_paths},
-                }).done(function(data) {
-                    $('#installed_apps_div').html(data)
-                });
+                return false;
             }
             else {
                 $.ajax({
@@ -64,33 +93,21 @@ var wapp_management = {
                     url: 'wapp_management/create_config/',
                     data: {"app_paths": app_paths, "filename":  filename},
                 }).done(function(data) {
-                    $.ajax({
-                        headers: {
-                            'X-CSRFToken': wapp_management.getCookie('csrftoken')
-                        },
-                        type: 'POST',
-                        url: 'wapp_management/install_an_app/',
-                        data: {"app_paths": app_paths},
-                    }).done(function(data) {
-                        $('#installed_apps_div').html(data)
-                    });
+                    alert("Configuration Saved: " +  filename)
+                    wapp_management.setSaveConfigAttr("no");
+                    return true;
                 });
-                alert("Configuration Saved: " +  filename)
             }
         }
-        else{
-            $.ajax({
-                headers: {
-                    'X-CSRFToken': wapp_management.getCookie('csrftoken')
-                },
-                type: 'POST',
-                url: 'wapp_management/install_an_app/',
-                data: {"app_paths": app_paths},
-            }).done(function(data) {
-                $('#installed_apps_div').html(data)
-            });
+        else {
+            alert("Configuration not saved.")
+            return false;
         }
+    },
 
+    setSaveConfigAttr: function(value){
+        $install_btn = $('button[katana-click="wapp_management.installAnApp"]');
+        $install_btn.attr('save_config', value);
     },
 
     loadConfig: function(){
@@ -116,6 +133,7 @@ var wapp_management = {
         $parent.append($elem[0]);
         console.log($parent);
         wapp_management.hideAndShowCardOne();
+        wapp_management.setSaveConfigAttr("yes");
     },
 
     openConfig: function(){
@@ -196,6 +214,7 @@ var wapp_management = {
         }
         $parent.html(appending_html);
         wapp_management.hideAndShowCardOne();
+        wapp_management.setSaveConfigAttr("yes");
 
     }
 };

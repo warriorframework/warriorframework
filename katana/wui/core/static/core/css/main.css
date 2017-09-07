@@ -1940,10 +1940,24 @@ button, input, optgroup, select, textarea {
 }
 
 .tool-bar-links {
-    text-decoration: underline;
     cursor: pointer;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    padding-top: 0.5rem;
 }
 
+
+.card-title-custom {
+    padding-bottom: 0.25rem;
+}
+
+
+.card-text-custom {
+        margin-bottom: 0;
+        max-height: 3.45rem;
+}
+
+div .tool-bar-links:hover{
+    background-color: #e5e4e2;
+}
