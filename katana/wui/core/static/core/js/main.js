@@ -29,7 +29,7 @@ var katana = {
 			var toCall = $elem.attr( 'katana-click' ).replace( /\(.*?\)/, '' );
 			katana.methodCaller( toCall, $elem );
 		});
-		katana.$view.on( 'keyup', '[katana-change]', function( e ){
+		katana.$view.on( 'change', '[katana-change]', function( e ){
 			$elem = $(this);
 			e.stopPropagation();
 			var toCall = $elem.attr( 'katana-change' ).replace( /\(.*?\)/, '' );
@@ -281,7 +281,7 @@ var katana = {
 			var $elem = $(this);
 			var tempObj = {};
 			tempObj[ $elem.find('[key="@name"]').attr('key') ] = $elem.find('[key="@name"]').hasClass('.title') ? $elem.find('[key="@name"]').text() : $elem.find('[key="@name"]').val();
-			$elem.find('input, select').each( function() {
+			$elem.find('input[key], select[key]').each( function() {
 				var sub$elem = $(this);
 				if( !sub$elem.closest('.pocket-fields').length )
 					tempObj[ sub$elem.attr('key') ] = sub$elem.val();

@@ -473,6 +473,8 @@ input:focus {
 }
 .field {
     padding: 5px 0;
+    max-width: 800px;
+    margin: 0 auto;
 }
 
 .mandatory-field {
@@ -1929,7 +1931,36 @@ td {}
 .button.save.saved {
     font-size: 0;
 }
+.center {
+    text-align: center;
+    margin: 0 auto;
+    display: block;
+}
 
+.image + input {
+    display: none;
+}
+
+.profile-image.large {
+    width: 100px;
+    height: 100px;
+    background: #a7a7a7;
+    text-align: center;
+    margin: 0 auto;
+    margin-top: 20px;
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.25);
+    -moz-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.25);
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.25);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.profile-image .image {
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+}
 
 /*bootstrap overrides*/
 label {

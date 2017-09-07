@@ -18,6 +18,33 @@ var settings = {
 		}
 	},
 
+	profile:{
+		init: function(){
+			settings.changeDetection.call(this);
+			this.find('.profile-image').insertAfter( this.find('.field-block .title'));
+		},
+
+		selectProfileImage: function(){
+			var $elem = this;
+			$elem.parent().find('input').click();
+		},
+
+		encodeImage: function(){
+			var $elem = this;
+			var element = this.get(0);
+			var file = element.files[0];
+			var reader = new FileReader();
+			reader.onloadend = function() {
+			 var result = reader.result;
+			 var toplevel = $elem.parent();
+			 toplevel.find('input[name="image"]').val(result);
+			 toplevel.find('.image').css('background-image', 'url(' + result + ')');
+			}
+			reader.readAsDataURL(file);
+		},
+
+	},
+
 	jira: {
 		boolHandler: function( $elem ){
 			var button = $elem.closest('.field-block').find('.relative-tool-bar [title="' + $elem.attr('key') + '"]');
