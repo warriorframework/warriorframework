@@ -22,7 +22,6 @@ import inspect
 import importlib
 import io
 import subprocess
-import xml.etree.ElementTree as ET
 import threading
 import xml.etree.ElementTree
 from os.path import expanduser
@@ -93,6 +92,7 @@ def readconfig():
     cfg = json.loads("".join(lines))
     return cfg
 
+
 @route('/searchkw', method='POST')
 def searchkw():
     """
@@ -101,13 +101,8 @@ def searchkw():
     value = parseString("".join(request.body))
     indented_xml = "".join(value.toprettyxml(newl='\n'))
     corrected_xml = remove_extra_newlines_char_xml(indented_xml)
-    corrected_xml = corrected_xml
-    with open('obj.txt', 'w') as f:
-        f.write(corrected_xml)
-    tree = ET.parse('obj.txt')
-    root = tree.getroot()
-    driver_name = root.text
-    global gpysrcdir
+    tree = xml.etree.ElementTree.fromstring(corrected_xml)
+    driver_name = tree.text
     driver_file = gpysrcdir + '/ProductDrivers/' + driver_name + ".py"
     actiondir_new = mkactiondirs(driver_file)
     py_files = mkactionpyfiles(actiondir_new)
@@ -132,20 +127,13 @@ def parsexmlobj():
     xmlobj = parseString("".join(request.body))
     indented_xml = "".join(xmlobj.toprettyxml(newl='\n'))
     corrected_xml = remove_extra_newlines_char_xml(indented_xml)
-    with open('output.txt', 'w') as f:
-        f.write(corrected_xml)
-    tree = ET.parse('output.txt')
-    root = tree.getroot()
-    WrapperName = getChildTextbyParentTag('output.txt',
-                                          'Details',
-                                          'WrapperName')
+    tree = xml.etree.ElementTree.fromstring(corrected_xml)
 
-    ActionFile = getChildTextbyParentTag('output.txt', 'Details', 'ActionFile')
-    Description = getChildTextbyParentTag('output.txt', 'Details',
-                                          'Description')
+    WrapperName = tree[0][0].text
+    ActionFile = tree[0][2].text.strip()
+    Description = tree[0][3].text
 
     # To check if the user provided wrapper keyword name already exists in action file
-    ActionFile = ActionFile.strip()
     with open(ActionFile, 'r') as files:
         for line in files:
             line = line.split()
@@ -157,11 +145,9 @@ def parsexmlobj():
         checkval = "yes"
     else:
         checkval = "no"
-        Subkeyword = root.find('Subkeyword')
+        Subkeyword = tree.find('Subkeyword')
         subkw_list = Subkeyword.findall('Skw')
-        count = 0
         for values in subkw_list:
-            global gpysrcdir
             subkw_list_attrib = values.attrib
             driver = subkw_list_attrib.get('Driver')
             kw_list = subkw_list_attrib.get('Keyword')
@@ -202,7 +188,6 @@ def parsexmlobj():
             Arguments = values.find('Arguments')
             if Arguments is not None:
                 argument_list = Arguments.findall('argument')
-                len_arg_list = len(argument_list)
                 if len(argument_list) == 1:
                     for argument in argument_list:
                         argument_name = argument.get('name')
@@ -212,7 +197,6 @@ def parsexmlobj():
                                 arg_value = argument.text
                             arg_name = argument_name + "=" + "\"" + arg_value + "\""
                             kw_list_1.append("{0}.{1}({2})".format(class_list, kw_list, arg_name))
-                            count += 1
                             doc_string_value.append("The keyword {0} in Driver {1} has a defined "
                                                     "arguments {2} You must want to send other "
                                                     "values through data file".format(kw_list,
@@ -221,7 +205,6 @@ def parsexmlobj():
                         else:
                             arg_name = ""
                             kw_list_1.append("{0}.{1}({2})".format(class_list, kw_list, arg_name))
-                            count += 1
                     doc_string_value.append("The keyword {0} in Driver {1} has a defined "
                                             "arguments {2} You must want to send other values"
                                             " through data file".format(kw_list, driver, arg_name))
@@ -234,13 +217,10 @@ def parsexmlobj():
                                 arg_value = argument.text
                             arg_list = argument_name + "=" + "\'" + arg_value + "\',"
                             arg_name_list += arg_list
-                            count += 1
-                    if len_arg_list == count:
-                        kw_list_1.append("{0}.{1}({2})".format(class_list, kw_list, arg_name_list))
+                    kw_list_1.append("{0}.{1}({2})".format(class_list, kw_list, arg_name_list))
                     doc_string_value.append("The keyword {0} in Driver {1} has a defined arguments "
                                             "{2} You must want to send other values through data "
                                             "file".format(kw_list, driver, arg_name_list))
-                    count = 0
                     arg_name_list = ""
         sum_val = 1
         for _, new in enumerate(doc_string_value):
@@ -271,28 +251,6 @@ def parsexmlobj():
                 f2.write('\n' + "    " + line)
         f2.close()
     return checkval
-
-
-def getChildTextbyParentTag(datafile, pnode, cnode):
-    """
-    Seraches XML file for the first parent. Finds the child node and returns its text
-    datafile = xml file searched
-    pnode = parent node
-    cnode = child node
-    """
-    value = False
-    tree = ET.parse(datafile)
-    root = tree.getroot()
-    node = root.find(pnode)
-    if node is not None:
-        child = node.find(cnode)
-        if child is not None:
-            value = child.text
-            return value
-        else:
-            return value
-    else:
-        return value
 
 
 @route('/readdeftagsfile')
