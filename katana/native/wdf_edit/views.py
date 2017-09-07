@@ -20,6 +20,7 @@ def index(request):
         data = xmltodict.parse(open('/home/ka/Desktop/warrior_fnc_tests/warrior_tests/data/cli_tests/cli_def_Data.xml').read())
 
     root = data.keys()[0]
+    print json.dumps(data, indent=4)
 
     if type(data[root]["system"]) != list:
         data[root]["system"] = [data[root]["system"]]
@@ -105,10 +106,51 @@ def raw_parser(data):
     print json.dumps(result, indent=4)
     return result
 
+def locate_system(data, name):
+    for ind, sys in enumerate(data):
+        if sys["@name"] == name:
+            return ind
+    return -1
+
+def build_xml_dict(data):
+    result = []
+    for sys_key, sys in data.items():
+        for subsys_key, subsys in sys.items():
+            if "subsystem_name" not in subsys:
+                result.append(OrderedDict())
+                current_sys = result[-1]
+                current_sys["@name"] = subsys["system_name"]
+            else:
+                if locate_system(result, subsys["system_name"]) > -1:
+                    # The system already exist in result
+                    result[locate_system(result, subsys["system_name"])]["subsystem"].append(OrderedDict())
+                    current_sys = result[locate_system(result, subsys["system_name"])]["subsystem"][-1]
+                    current_sys["@name"] = subsys["subsystem_name"]
+                    current_sys["subsystem"] = []
+                else:
+                    # The system doesn't exist in result
+                    result.append(OrderedDict({"@name": subsys["system_name"], "subsystem":[]}))
+                    result[-1]["subsystem"].append(OrderedDict())
+                    current_sys = result[-1]["subsystem"][-1]
+                    current_sys["@name"] = subsys["subsystem_name"]
+
+            tag_keys = [str(y) for y in sorted([int(x) for x in subsys.keys() if x.isdigit()])]
+            for tag_key in tag_keys:
+                if len(subsys[tag_key]) == 1:
+                    # no child tag
+                    current_sys[subsys[tag_key]["1"][0]] = subsys[tag_key]["1"][1]
+
+    print json.dumps(result, indent=4)
+    return result
+
 def on_post(request):
     data = request.POST
-    print json.dumps(sorted(data.items()), indent=4)
+    # print json.dumps(sorted(data.items()), indent=4)
     data = raw_parser(data)
-    print xmltodict.unparse({"systems":data})
+    data = build_xml_dict(data)
+    data = {"credentials":{"system":data}}
+
+    from xml.dom.minidom import parseString as miniparse
+    print miniparse(xmltodict.unparse(data)).toprettyxml()
     # return render(request, 'wdf_edit/result.html', {"data": json.dumps(request.POST, indent=4)})
     return render(request, 'wdf_edit/file_list.html', {})
