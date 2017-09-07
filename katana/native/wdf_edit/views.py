@@ -142,6 +142,10 @@ def build_xml_dict(data):
                 if len(subsys[tag_key]) == 1:
                     # no child tag
                     current_sys[subsys[tag_key]["1"][0]] = subsys[tag_key]["1"][1]
+                else:
+                    subtag_keys = [str(y) for y in sorted([int(x) for x in subsys[tag_key].keys() if x.isdigit()])]
+                    for subtag_key in subtag_keys:
+                        current_sys[subsys[tag_key][subtag_key][0]] = subsys[tag_key][subtag_key][1]
 
     print json.dumps(result, indent=4)
     return result
