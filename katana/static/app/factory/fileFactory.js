@@ -155,6 +155,31 @@ app.factory('fileFactory', ['$http', '$routeParams', '$q', function($http, $rout
                         deferred.reject("Error reading tootip file : " + status + ' ' + JSON.stringify(headers));
                 });
             return deferred.promise;
+        },
+        getSystems: function(path) {
+     
+            var deferred = $q.defer();
+            $http.get('/datafilepath/' + path)
+                .success(function(data, status, headers, config) {
+                    deferred.resolve(data);
+                })
+                .error(function(data, status, headers, config) {
+                    deferred.reject("Could not retrieve file paths: " + status + ' ' + JSON.stringify(headers));
+                });
+            return deferred.promise;
+        },
+
+        getSubsys: function(path,name) {
+               
+            var deferred = $q.defer();
+            $http.get('/sysName/' + path + '/' + name)
+                .success(function(data, status, headers, config) {
+                    deferred.resolve(data);
+                })
+                .error(function(data, status, headers, config) {
+                    deferred.reject("Could not retrieve file paths: " + status + ' ' + JSON.stringify(headers));
+                });
+            return deferred.promise;
         }
 
         };

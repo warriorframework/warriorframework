@@ -39,6 +39,14 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
         $scope.earlier_li = [];
         $scope.btnValue = "Path";
         $scope.showModal = {visible: false};
+        $scope.sysList = [];
+        $scope.subSysList = [];
+        $scope.hideSubsys = true;
+        $scope.hideText = true;
+        $scope.hideopt = true;
+        $scope.sysVal = '';
+        $scope.sysAllVal = '';
+        $scope.subSysValueNew = '';
 
         function readConfig(){
             getConfigFactory.readconfig()
@@ -948,6 +956,7 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
     };
 
     $scope.startStepEdit = function (edtype, val, index) {
+        $scope.hideSubsys = true;
         if($scope.showStepEdit){
             swal({
                 title: "You have a Step open in the step editor that should be saved before creating a new Step.",
@@ -961,7 +970,145 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
         else {
             startStepCap(edtype, val, index);
         }
+
+        $scope.sysFields();
     };
+
+
+
+    $scope.showVal = function (subSysValue) {
+
+    $scope.subSysValueNew=subSysValue;
+       
+    };
+
+    $scope.sysFields = function () {
+          // alert($scope.model.Testcase.Details.InputDataFile);
+          $scope.urlCheck();
+
+
+             fileFactory.getSystems($scope.pathXml)
+                .then(function (data) {
+                    $scope.sysList.push(data);
+                   
+                   var xx = JSON.stringify($scope.sysList);
+                 
+                        var count = (xx.match(/,/g) || []).length;
+                    
+                        for (var i=0;i<count;i++){
+                            var temp = xx.split(',')[i];
+                            
+                            if(i==0){
+                            temp = temp.split('[\"')[1];
+                          
+                            }
+
+                            $scope.sysList.push(temp);
+
+
+                        }
+                    },
+                function (msg) {
+                alert(msg);
+            });
+                            $scope.sysList = '';
+
+                            $scope.sysList = [];
+
+        };
+
+
+    
+    $scope.showSubsys = function (sysValue) {
+
+            $scope.sysVal = sysValue;
+
+            $scope.hideSubsys = false;
+
+$scope.urlCheck();
+
+fileFactory.getSubsys(sysValue,$scope.pathXml)
+                .then(function (data) {
+                    //alert("func");
+                    $scope.subSysList.push(data);
+                  
+
+                    var xx = JSON.stringify($scope.subSysList);
+                 
+                        var count = (xx.match(/,/g) || []).length;
+                    
+                        for (var i=0;i<count;i++){
+                            var temp = xx.split(',')[i];
+                            
+                            if(i==0){
+                            temp = temp.split('[\"')[1];
+                          
+                            }
+                            $scope.subSysList.push(temp);
+                            //alert("list :::" + $scope.subSysList);
+
+                           if($scope.subSysList=="Not Applicable,,Not Applicable"){
+                           // alert("qqq");
+                            $scope.hideText = false;
+                            $scope.hideDrp = true;
+                           }
+                           else{
+                           // alert("www");
+                            $scope.hideDrp = false;
+                            $scope.hideText = true;
+                           }
+
+
+                        }
+
+                    },
+                function (msg) {
+                alert(msg);
+            });
+                $scope.subSysList = '';
+
+               $scope.subSysList = [];
+
+        };
+
+        $scope.urlCheck = function () {
+
+             var filename = $scope.model.Testcase.Details.InputDataFile;
+
+            var checkNew = filename.split('..')[1];  
+
+            $scope.pathUG = $scope.cfg.pythonsrcdir + "/Warriorspace" + checkNew;
+            $scope.pathUrl= $scope.pathUG.replace(/\\/g, "/");
+
+            var s = $scope.pathUrl;
+                        var i = s.indexOf("/");
+                         if (i != -1) {
+                             $scope.newPath = s.substring(i, s.length);
+                         }    
+
+             guideSplit();
+             return $scope.pathXml;
+
+        };
+
+        function guideSplit(){
+      
+        var array = [];
+        if($scope.newPath.indexOf("\\")>= 0) {
+            array = $scope.newPath.split("\\");
+        }
+        else {
+            array = $scope.newPath.split("/");
+        }
+        var path = "";
+        for(var i=0; i<=array.length-1; i++){
+            path = path + array[i] + ">"
+        }
+        $scope.pathXml = path.replace(/\>$/, '');
+              
+    }
+
+
 
         function startStepCap(edtype, val, index){
             $scope.step_numbers = [];

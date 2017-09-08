@@ -1841,6 +1841,77 @@
                                    There are no editable values for this function / keyword.
                                </b>
                            </div>
+
+                          <div ng-repeat="arg in xml.arglist"
+                                ng-if='status.keyword != "" && xml.arglist.length > 0 && arg == "system_name"' >
+                                
+                                <div class="form-group mArgs">
+                                   <label for="arg{{$index}}"
+                                          class="col-sm-5 control-label text-info breakword"
+                                          style="color: black">
+                                       {{arg}}
+                                   </label>
+                                   <label for="arg{{$index}}"
+                                          class="col-sm-5 control-label text-info ellipsis-the-overflow-arg"
+                                          style="color: black">
+                                       {{arg}}
+                                   </label>
+                                <div class="col-sm-7">
+                                      <!--  <input type="text"
+                                              class="form-control"
+                                              id="arg{{$index}}"
+                                              ng-model='xml.mapargs[arg]'
+                                              placeholder="1"> <br/> -->
+
+                                    <select class='form-control hideopt'
+                                        id='arg{{$index}}'
+                                        ng-model="xml.mapargs[arg]" 
+                                        ng-change="showSubsys(xml.mapargs[arg])"
+                                        ng-options="res as res for res in sysList">
+                                         <option value=''> 222 Select System Name</option>
+                                     </select>
+
+                                   </div>
+                             </div>
+                     
+                           </div>
+
+                           <div ng-hide="hideSubsys">
+                                
+                                <div class="form-group mArgs">
+                                   <label for="arg{{$index}}"
+                                          class="col-sm-5 control-label text-info breakword"
+                                          style="color: black">
+                                Subsystem Name
+
+                                   </label>
+                                   <label for="arg{{$index}}"
+                                          class="col-sm-5 control-label text-info ellipsis-the-overflow-arg"
+                                          style="color: black">
+                                Subsystem Name
+
+                                   </label> 
+                                  <div class="col-sm-7">
+                                        <input type="text"
+                                              class="form-control"
+                                              id="argsub{{$index}}"
+                                              disabled
+                                              ng-hide="hideText"
+                                              placeholder="Subsystem Not Available"> 
+
+                                    <select class='form-control hideopt'
+                                            id='arg{{$index}}'
+                                            ng-model="xml.mapargs[arg]" 
+                                            ng-change="showVal(xml.mapargs[arg])"
+                                            ng-hide="hideDrp"
+                                            ng-options="res as res for res in subSysList">
+                                    <option value=''> 111 Select Subsystem Name</option>
+                                    </select>
+                                   </div> 
+                                </div>
+
+                           </div>
+
                            <div ng-repeat="arg in xml.arglist"
                                 ng-if='status.keyword != "" && xml.arglist.length > 0 && arg != "self"'>
                                <div class="form-group mArgs">
