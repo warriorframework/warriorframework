@@ -432,6 +432,7 @@ var katana = {
 					}).done(function( data ) {
 						container.append( katana.templateAPI.preProcess( data ) );
 						limitedStyles || container.find('.limited-styles-true').length && container.addClass('limited-styles');
+						container.find('.tool-bar') && container.find('.tool-bar').prependTo(container.parent());
 						katana.tabAdded( container, this );
 						callBack && callBack( container );
 					});
