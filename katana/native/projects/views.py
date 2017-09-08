@@ -26,17 +26,14 @@ from collections import OrderedDict
 from django.http import HttpResponse, JsonResponse
 from django.template import loader, RequestContext
 from xml.sax.saxutils import escape, unescape
-import xml.dom.minidom 
-import xmltodict , dicttoxml
+
 from django.core.serializers import serialize
 from django.db.models.query import QuerySet
 from django.template import Library
-from xmljson import badgerfish as bf
-from xml.etree.ElementTree import fromstring, tostring
-import xml.etree.ElementTree
+
 import json
 #from katana.utils.navigator_util import get_dir_tree_json
-
+import xmltodict
 from utils.navigator_util import Navigator
 
 
@@ -100,27 +97,28 @@ def editProject(request):
 	xml_r = {} ; 
 	xml_r["Project"] = {}
 	xml_r["Project"]["Details"] = {}
-	xml_r["Project"]["Details"]["Name"] = OrderedDict([('$', '')])
-	xml_r["Project"]["Details"]["Title"] = OrderedDict([('$', '')])
-	xml_r["Project"]["Details"]["Category"] = OrderedDict([('$', '')])
-	xml_r["Project"]["Details"]["State"] = OrderedDict([('$', 'New')])
-	xml_r["Project"]["Details"]["Date"] = OrderedDict([('$', '')])
-	xml_r["Project"]["Details"]["Time"] = OrderedDict([('$', '')])
-	xml_r["Project"]["Details"]["Datatype"] = OrderedDict([('$', '')])
-	xml_r["Project"]["Details"]["Engineer"] = OrderedDict([('$', '')])
-	xml_r["Project"]["Details"]["default_onError"] = OrderedDict([('$', '')])
+	xml_r["Project"]["Details"]["Name"] = "" # ""
+	xml_r["Project"]["Details"]["Title"] = "" #OrderedDict([('$', '')])
+	xml_r["Project"]["Details"]["Category"] = "" #OrderedDict([('$', '')])
+	xml_r["Project"]["Details"]["State"] = "" #OrderedDict([('$', 'New')])
+	xml_r["Project"]["Details"]["Date"] = "" #OrderedDict([('$', '')])
+	xml_r["Project"]["Details"]["Time"] = "" #OrderedDict([('$', '')])
+	xml_r["Project"]["Details"]["Datatype"] = "" #OrderedDict([('$', '')])
+	xml_r["Project"]["Details"]["Engineer"] = "" #OrderedDict([('$', '')])
+	xml_r["Project"]["Details"]["default_onError"] = "" #OrderedDict([('$', '')])
 	xml_r["Project"]["Testsuites"] = []
-	xml_r['Project']['filename'] = OrderedDict([('$', filename)]);
+	xml_r['Project']['filename'] = "" #OrderedDict([('$', filename)]);
 
 	if filename != 'NEW':
 		xlines = open(filename.strip()).read()
-		xml_d = bf.data(fromstring(xlines)); # xmltodict.parse(fd1.read());
+		#xml_d = bf.data(fromstring(xlines)); #
+		xml_d = xmltodict.parse(xlines);
 
 		# Map the input to the response collector
 		for xstr in ["Name", "Title", "Category", "Date", "Time", "Engineer", \
 			"Datatype", "default_onError"]:
 			try:
-				xml_r["Project"]["Details"][xstr]["$"] = xml_d["Project"]["Details"][xstr].get("$","")
+				xml_r["Project"]["Details"][xstr]= xml_d["Project"]["Details"][xstr];
 			except: 
 				pass
 
@@ -137,13 +135,13 @@ def editProject(request):
 		'savefilepath': fpath,
 		'myfile': filename,
 		'docSpec': 'projectSpec',
-		'projectName': xml_r["Project"]["Details"]["Name"]["$"],
-		'projectTitle': xml_r["Project"]["Details"]["Title"]["$"],
-		'projectState': xml_r["Project"]["Details"]["State"]["$"],
-		'projectEngineer': xml_r["Project"]["Details"]["Engineer"]["$"],
-		'projectCategory': xml_r["Project"]["Details"]["Category"]["$"],
-		'projectDate': xml_r["Project"]["Details"]["Date"]["$"],
-		'projectTime': xml_r["Project"]["Details"]["Time"]["$"],
+		'projectName': xml_r["Project"]["Details"]["Name"],
+		'projectTitle': xml_r["Project"]["Details"]["Title"],
+		'projectState': xml_r["Project"]["Details"]["State"],
+		'projectEngineer': xml_r["Project"]["Details"]["Engineer"],
+		'projectCategory': xml_r["Project"]["Details"]["Category"],
+		'projectDate': xml_r["Project"]["Details"]["Date"],
+		'projectTime': xml_r["Project"]["Details"]["Time"],
 		'projectdefault_onError': xml_r["Project"]["Details"]["default_onError"],
 		'fulljson': xml_r['Project']
 		}
@@ -163,17 +161,17 @@ def getProjectDataBack(request):
 	path_to_config = navigator.get_katana_dir() + os.sep + "config.json"
 	config = json.loads(open(path_to_config).read())
 	fpath = config['projdir']
-	#response = request.readlines();   # Get the JSON response 
-	#template = loader.get_template("cases/editProject.html")  # get another one?
 	fname = request.POST.get(u'filetosave')
 	ijs = request.POST.get(u'json')  # This is a json string 
-
 	print ijs;
-
 	#print "--------------TREE----------------"
 	if fname.find(".xml") < 2: fname = fname + ".xml"
-	
-	xml = request.POST.get(u'Project') 
+
+	#fd = open(fpath + os.sep + fname+ ".json",'w');
+	#fd.write(ijs);
+	#fd.close();
+ 	
+	xml = xmltodict.unparse(json.loads(ijs), pretty=True)
 	print "save to ", fpath + os.sep + fname 
 	fd = open(fpath + os.sep + fname,'w');
 	fd.write(xml);

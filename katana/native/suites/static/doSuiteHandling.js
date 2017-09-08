@@ -73,12 +73,12 @@ function mapFullSuiteJson(myobjectID){
 function addCaseToSuite(){
 	var newTestcase = {	
 		"Step" : { "@Driver": "", "@keyword": "", "@TS": "1" },
-		"Arguments": { "Argument" : { "$": "" }, },
-		"onError" : { "$": ""},
+		"Arguments": { "Argument" :  "" },
+		"onError" :  "",
 		"onError": { "@action": "next", "@value": "" }, 
 		"ExecType": { "@ExecType": "Yes"},
-		"context": { "$": ""},
-		"impact": { "$": "impact"}
+		"context": "",
+		"impact": ""
 		};
 	
 		//"path": "../Cases/framework_tests/seq_par_execution/seq_ts_seq_tc.xml", 
@@ -102,17 +102,17 @@ function mapSuiteCaseToUI(s,xdata) {
 	console.log(s);
 	var oneCase = xdata[s];
 	console.log(oneCase);
-	console.log(oneCase['path']['$']);
+	console.log(oneCase['path']);
 	katana.$activeTab.find("#CaseRowToEdit").val(s); 
 	console.log(katana.$activeTab.find("#CaseRowToEdit").val());
-	//katana.$activeTab.find("CasePath").val(oneCase['path']['$']);
+	//katana.$activeTab.find("CasePath").val(oneCase['path']);
 	
 	var myStringArray = mySuiteKeywordsArray; 
 	var arrayLength = mySuiteKeywordsArray.length;
 	for (var xi = 0; xi < arrayLength; xi++) {
 		console.log("Fill "+ mySuite_UI_Array[xi]);
 			var xxx = "#"+mySuite_UI_Array[xi];
-			katana.$activeTab.find(xxx).val(oneCase[myStringArray[xi]]['$']); 
+			katana.$activeTab.find(xxx).val(oneCase[myStringArray[xi]]); 
 		}
 
 	if (! oneCase['onError']) {
@@ -141,19 +141,19 @@ function mapUItoSuiteCase(xdata){
 	var id = s; // katana.$activeTab.find("#CaseRowToEdit").val();
 
 		id = '#CaseImpact'
-		oneCase['impact']['$'] = katana.$activeTab.find(id).val();
+		oneCase['impact'] = katana.$activeTab.find(id).val();
 
 		id = '#CasePath'		
-		oneCase['path']['$'] = katana.$activeTab.find(id).val();
+		oneCase['path'] = katana.$activeTab.find(id).val();
 
 		id = '#CaseContext'
-		oneCase['context']['$'] = katana.$activeTab.find(id).val();
+		oneCase['context'] = katana.$activeTab.find(id).val();
 
 		id = '#CaseRuntype'
-		oneCase['runtype']['$'] = katana.$activeTab.find(id).val();
+		oneCase['runtype'] = katana.$activeTab.find(id).val();
 
 		id = '#CaseRunmode'
-		oneCase['runmode']['$'] = katana.$activeTab.find(id).val();
+		oneCase['runmode'] = katana.$activeTab.find(id).val();
 
 
 		id = "#onError-at-action"
@@ -175,14 +175,14 @@ Two global variables are heavily used when this function is called;
 */
 function mapUiToSuiteJson() {
 	
-	jsonSuiteObject['Details']['Name']['$'] = katana.$activeTab.find('#suiteName').val();
-	jsonSuiteObject['Details']['Title']['$'] = katana.$activeTab.find('#suiteTitle').val();
-	jsonSuiteObject['Details']['Engineer']['$'] = katana.$activeTab.find('#suiteEngineer').val();
-	jsonSuiteObject['Details']['Resultsdir']['$'] = katana.$activeTab.find('#suiteResults').val();
-	jsonSuiteObject['Details']['Date']['$'] = katana.$activeTab.find('#suiteDate').val();
-	jsonSuiteObject['Details']['default_onError']['$'] = katana.$activeTab.find('#defaultOnError').val();
+	jsonSuiteObject['Details']['Name'] = katana.$activeTab.find('#suiteName').val();
+	jsonSuiteObject['Details']['Title'] = katana.$activeTab.find('#suiteTitle').val();
+	jsonSuiteObject['Details']['Engineer'] = katana.$activeTab.find('#suiteEngineer').val();
+	jsonSuiteObject['Details']['Resultsdir'] = katana.$activeTab.find('#suiteResults').val();
+	jsonSuiteObject['Details']['Date'] = katana.$activeTab.find('#suiteDate').val();
+	jsonSuiteObject['Details']['default_onError'] = katana.$activeTab.find('#defaultOnError').val();
 	jsonSuiteObject['Details']['Datatype']['@exectype'] = katana.$activeTab.find('#suiteDatatype').val();
-	jsonSuiteObject['SaveToFile'] = { "$" : katana.$activeTab.find('#my_file_to_save').val()};
+	jsonSuiteObject['SaveToFile'] = katana.$activeTab.find('#my_file_to_save').val();
 
 	console.log(jsonSuiteObject['Testcases']);
 	var url = "./suites/getSuiteDataBack";
@@ -195,8 +195,7 @@ function mapUiToSuiteJson() {
 	});
 	
 	var topNode  = { 'Suite' : jsonSuiteObject};
-	var jj = new json() ; 
-	var ns = jj.translate.toXML(topNode);
+
 	
 	//alert(ns);
 
@@ -205,7 +204,7 @@ function mapUiToSuiteJson() {
 	    type: "POST",
 	    data : { 
 	    	'json': JSON.stringify(topNode),
-	    	'Suite': ns,
+	    	
 	    	'filetosave': $('#my_file_to_save').val(),
 	    	'savefilepath': katana.$activeTab.find('#savefilepath').text()
 	    	},
@@ -242,14 +241,14 @@ function createCasesTable(xdata) {
 		
 		items.push('<tr><td>'+s+'</td>');
 		
-		items.push('<td>'+oneCase['path']['$']+'</td>');
-		items.push('<td>'+oneCase['context']['$']+'</td>');
-		//items.push('<td>'+oneCase['datafile']['$']+'</td>');
+		items.push('<td>'+oneCase['path']+'</td>');
+		items.push('<td>'+oneCase['context']+'</td>');
+		//items.push('<td>'+oneCase['datafile']+'</td>');
 
-		items.push('<td>'+oneCase['runtype']['$']+'</td>');
-		items.push('<td>'+oneCase['runmode']['$']+'</td>');
+		items.push('<td>'+oneCase['runtype']+'</td>');
+		items.push('<td>'+oneCase['runmode']+'</td>');
 		items.push('<td>'+oneCase['onError']['@action']+'</td>');
-		items.push('<td>'+oneCase['impact']['$']+'</td>');
+		items.push('<td>'+oneCase['impact']+'</td>');
 
 		var bid = "deleteTestcase-"+s+"-id"+getRandomSuiteID();;
 		items.push('<td><input type="button" title="Delete" class="ui-icon ui-icon-trash ui-button-icon-only" value="X" id="'+bid+'"/>');
@@ -295,11 +294,9 @@ function fillCaseDefaults(s, data){
 		var arrayLength = myStringArray.length;
 		for (var xi = 0; xi < arrayLength; xi++) {
    				if (! oneCase[myStringArray[xi]]){
-						oneCase[myStringArray[xi]] = { "$": myStringArray[xi]};
+						oneCase[myStringArray[xi]] = myStringArray[xi];
 					}
-   				if (! oneCase[myStringArray[xi]]["$"]){
-						oneCase[myStringArray[xi]]["$"] = myStringArray[xi];
-					}
+   				
 		}
 
 		if (! oneCase['onError']) {
@@ -322,7 +319,7 @@ function createRequirementsTable(rdata){
 	for (var s=0; s<Object.keys(rdata).length; s++ ) {
 		var oneReq = rdata[s];
 		items.push('<tr><td>'+str(ParseInt(s)+1)+'</td>');
-		//items.push('<td>'+oneReq['$']+'</td>');
+		//items.push('<td>'+oneReq+'</td>');
 		var bid = "textRequirement-name-"+s+"-id";	
 		items.push('<td><input type="text" value="'+oneReq['@name']+'" id="'+bid+'"/></td>');
 		bid = "textRequirement-value-"+s+"-id";	

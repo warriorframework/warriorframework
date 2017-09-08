@@ -31,9 +31,6 @@ import xmltodict , dicttoxml
 from django.core.serializers import serialize
 from django.db.models.query import QuerySet
 from django.template import Library
-from xmljson import badgerfish as bf
-from xml.etree.ElementTree import fromstring, tostring
-import xml.etree.ElementTree
 import json
 from utils.navigator_util import Navigator
 
@@ -54,9 +51,6 @@ def index(request):
 	config = json.loads(open(path_to_config).read())
 	fpath = config['testsuitedir']
 	template = loader.get_template("./listAllSuites.html")
-
-
-	
 
 	myfiles = []
 	jtree = { 'text': "Suites",  'state': { 'opened': True }, 'children' : []}
@@ -105,8 +99,6 @@ def editSuite(request):
 	path_to_config = navigator.get_katana_dir() + os.sep + "config.json"
 	config = json.loads(open(path_to_config).read())
 	fpath = config['testsuitedir']
-	
-
 
 	template = loader.get_template("./editSuite.html")
 	filename = request.GET.get('fname')
@@ -114,19 +106,19 @@ def editSuite(request):
 	xml_r = {}
 	xml_r["TestSuite"] = {}
 	xml_r["TestSuite"]["Details"] = {}
-	xml_r["TestSuite"]["Details"]["Name"] = { "$": ""}
-	xml_r["TestSuite"]["Details"]["Title"] = { "$": ""}
-	xml_r["TestSuite"]["Details"]["Engineer"] = { "$": ""}
-	xml_r["TestSuite"]["Details"]["Date"] = { "$": ""}
-	xml_r["TestSuite"]["Details"]["Time"] = { "$": ""}
-	xml_r["TestSuite"]["Details"]["type"] = { "$": "" }
-	xml_r["TestSuite"]["Details"]["Logsdir"] = { "$": "" }
-	xml_r["TestSuite"]["Details"]["Resultsdir"] = { "$": "" }
-	xml_r["TestSuite"]["Details"]["InputDataFile"] = { "$": "" }
+	xml_r["TestSuite"]["Details"]["Name"] = ""
+	xml_r["TestSuite"]["Details"]["Title"] = ""
+	xml_r["TestSuite"]["Details"]["Engineer"] = ""
+	xml_r["TestSuite"]["Details"]["Date"] = ""
+	xml_r["TestSuite"]["Details"]["Time"] = ""
+	xml_r["TestSuite"]["Details"]["type"] = { }
+	xml_r["TestSuite"]["Details"]["Logsdir"] = ""
+	xml_r["TestSuite"]["Details"]["Resultsdir"] = ""
+	xml_r["TestSuite"]["Details"]["InputDataFile"] = ""
 	xml_r["TestSuite"]["Details"]["type"]["@exectype"] = "sequential_testcases"
 	xml_r["TestSuite"]["Details"]["default_onError"] = {}
-	xml_r["TestSuite"]["Details"]["default_onError"]["$"] = "" 
-	xml_r["TestSuite"]["Details"]["default_onError"]['@action']= { "$": ""}
+	xml_r["TestSuite"]["Details"]["default_onError"]['@action']= ""
+	xml_r["TestSuite"]["Details"]["default_onError"]['@value']= ""
 	xml_r["TestSuite"]["Testsuites"] = ""
 	
 	if filename == 'NEW':
@@ -134,7 +126,7 @@ def editSuite(request):
 
 	else:
 		xlines = open(filename).read()
-		xml_d = bf.data(fromstring(xlines)); # xmltodict.parse(fd1.read());
+		xml_d = xmltodict.parse(xlines);
 
 	# Map the input to the response collector
 	for xstr in ["Name", "Title", "Category", "Date", "Time", "Engineer", \
@@ -154,26 +146,26 @@ def editSuite(request):
 	except:
 		xml_r["TestSuite"]["Details"]["type"]['@exectype'] = "sequential_testcases"
 
-	xml_r["TestSuite"]["Details"]["default_onError"]["$"] = "" 
+	xml_r["TestSuite"]["Details"]["default_onError"] = "" 
 
 	context = { 
 		'savefilename': "save_" + os.path.split(filename)[1],
 		'savefilepath': os.path.split(filename)[0],
 		'myfile': filename,
 		'docSpec': 'projectSpec',
-		'suiteName': xml_r["TestSuite"]["Details"]["Name"]["$"],
-		'suiteTitle': xml_r["TestSuite"]["Details"]["Title"]["$"],
+		'suiteName': xml_r["TestSuite"]["Details"]["Name"],
+		'suiteTitle': xml_r["TestSuite"]["Details"]["Title"],
 		'suiteDatatype': xml_r["TestSuite"]["Details"]["type"]["@exectype"],
-		'suiteEngineer': xml_r["TestSuite"]["Details"]["Engineer"]["$"],
-		'suiteLogsdir': xml_r["TestSuite"]["Details"]["Logsdir"]["$"],
-		'suiteResultsdir': xml_r["TestSuite"]["Details"]["Resultsdir"]["$"],
-		'suiteInputDataFile': xml_r["TestSuite"]["Details"]["InputDataFile"]["$"],
-		'suiteEngineer': xml_r["TestSuite"]["Details"]["Engineer"]["$"],
+		'suiteEngineer': xml_r["TestSuite"]["Details"]["Engineer"],
+		'suiteLogsdir': xml_r["TestSuite"]["Details"]["Logsdir"],
+		'suiteResultsdir': xml_r["TestSuite"]["Details"]["Resultsdir"],
+		'suiteInputDataFile': xml_r["TestSuite"]["Details"]["InputDataFile"],
+		'suiteEngineer': xml_r["TestSuite"]["Details"]["Engineer"],
 		'suiteDatatype': xml_r["TestSuite"]["Details"]["type"]["@exectype"],
-		'suiteDate': xml_r["TestSuite"]["Details"]["Date"]["$"],
-		'suiteTime': xml_r["TestSuite"]["Details"]["Time"]["$"],
-		#'suiteType': xml_r["TestSuite"]["Details"]["type"]["$"],
-		'suitedefault_onError':xml_r["TestSuite"]["Details"]["default_onError"]["$"] ,
+		'suiteDate': xml_r["TestSuite"]["Details"]["Date"],
+		'suiteTime': xml_r["TestSuite"]["Details"]["Time"],
+		#'suiteType': xml_r["TestSuite"]["Details"]["type"],
+		'suitedefault_onError':xml_r["TestSuite"]["Details"]["default_onError"] ,
 		'suiteCases': xml_r['TestSuite']['Testcases'],
 		'fulljson': xml_r['TestSuite'],
 		'suiteResults': "",
@@ -202,8 +194,12 @@ def getSuiteDataBack(request):
 	#ijs = request.POST.get(u'json')  # This is a json string 
 	
 	#print "--------------TREE----------------"
-	xml = request.POST.get(u'Suite') 
-
+	#xml = request.POST.get(u'Suite') 
+	ijs = request.POST.get(u'json')  # This is a json string 
+	print ijs;
+	xml = xmltodict.unparse(json.loads(ijs), pretty=True)
+	
+	#print "---
 	if fname.find(".xml") < 2: fname = fname + ".xml"
 	print "save to ", ufpath + os.sep + fname 
 	fd = open(fpath + os.sep + fname,'w');

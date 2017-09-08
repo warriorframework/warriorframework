@@ -82,40 +82,28 @@ function mapFullCaseJson(myobjectID){
 
 function mapUiToCaseJson() {
 	
-	jsonCaseObject['Details']['Name']['$'] = katana.$activeTab.find('#caseName').val();
-	jsonCaseObject['Details']['Title']['$'] = katana.$activeTab.find('#caseTitle').val();
-	jsonCaseObject['Details']['Category']['$'] = katana.$activeTab.find('#caseCategory').val();
-	jsonCaseObject['Details']['State']['$'] = katana.$activeTab.find('#caseState').val();
-	jsonCaseObject['Details']['Engineer']['$'] = katana.$activeTab.find('#caseEngineer').val();
-	jsonCaseObject['Details']['Title']['$'] = katana.$activeTab.find('#caseTitle').val();
-	jsonCaseObject['Details']['Date']['$'] = katana.$activeTab.find('#caseDate').val();
+	jsonCaseObject['Details']['Name'] = katana.$activeTab.find('#caseName').val();
+	jsonCaseObject['Details']['Title'] = katana.$activeTab.find('#caseTitle').val();
+	jsonCaseObject['Details']['Category'] = katana.$activeTab.find('#caseCategory').val();
+	jsonCaseObject['Details']['State'] = katana.$activeTab.find('#caseState').val();
+	jsonCaseObject['Details']['Engineer'] = katana.$activeTab.find('#caseEngineer').val();
+	jsonCaseObject['Details']['Title'] = katana.$activeTab.find('#caseTitle').val();
+	jsonCaseObject['Details']['Date'] = katana.$activeTab.find('#caseDate').val();
 	//jsonCaseObject['Details']['Time'] = $('#suiteTime').val();
-	jsonCaseObject['Details']['default_onError']['$'] = katana.$activeTab.find('#default_onError').val();
-	jsonCaseObject['Details']['Datatype']['$'] = katana.$activeTab.find('#caseDatatype').val();
-	jsonCaseObject['dataPath'] = { "$" : katana.$activeTab.find('#caseInputDataFile').val()};
-	jsonCaseObject['resultsDir'] = { "$" : katana.$activeTab.find('#caseResultsDir').val()};
-	jsonCaseObject['logsDir'] = { "$" : katana.$activeTab.find('#caseLogsDir').val()};
-	jsonCaseObject['expectedDir'] = { "$" : katana.$activeTab.find('#caseExpectedResults').val()};
-	
-
-	jsonCaseObject['SaveToFile'] = { "$" : katana.$activeTab.find('#my_file_to_save').val()};
-	// Now walk the DOM ..
-
+	jsonCaseObject['Details']['default_onError'] = katana.$activeTab.find('#default_onError').val();
+	jsonCaseObject['Details']['Datatype'] = katana.$activeTab.find('#caseDatatype').val();
+	jsonCaseObject['dataPath'] =  katana.$activeTab.find('#caseInputDataFile').val();
+	jsonCaseObject['resultsDir'] =  katana.$activeTab.find('#caseResultsDir').val();
+	jsonCaseObject['logsDir'] =  katana.$activeTab.find('#caseLogsDir').val();
+	jsonCaseObject['expectedDir'] =  katana.$activeTab.find('#caseExpectedResults').val();
+	jsonCaseObject['SaveToFile'] =  katana.$activeTab.find('#my_file_to_save').val();
 
 	if (!jsonCaseObject['Requirements']) {
 		jsonCaseObject['Requirements'] = []; 
 	}
 
 
-	/*
-	var rdata = jsonCaseObject['Requirements'];
-	var slen  = Object.keys(rdata).length;
-	for (var s=0; s<slen; s++ ) {
-		var oneReqStep = rdata[s];
-		sx = { "Requirement" :  { '$' :  oneReqStep['Requirement'] } }
-		jsonCaseObject['Requirements'].push(sx); 
-	}
-	*/
+
 	
 	// Now you have collected the user components...
 
@@ -129,18 +117,13 @@ function mapUiToCaseJson() {
 	});
 
 	var topNode  = { 'Testcase' : jsonCaseObject};
-	var jj = new json() ; 
-	// var mystring =  JSON.stringify(jsonCaseObject);
-	var ns = jj.translate.toXML(topNode);
-
-	alert(ns);
 
 	$.ajax({
     url : url,
     type: "POST",
     data : { 
     	'json': JSON.stringify(topNode),
-    	'Testcase': ns,
+    	
     	'filetosave': katana.$activeTab.find('#my_file_to_save').val(),
     	'savesubdir': katana.$activeTab.find('#savesubdir').text(),
     	},
@@ -195,7 +178,7 @@ function mapCaseJsonToUi(data){
 
 
 	//console.log("xdata =" + xdata);
-	$("#listOfTestStepsForCase").html("");      // Start with clean slate
+	katana.$activeTab.find("#listOfTestStepsForCase").html("");      // Start with clean slate
 	items.push('<table id="Step_table_display" class="table" >');
 	items.push('<thead>');
 	items.push('<tr id="StepRow"><th>#</th><th>Step</th><th>Arguments</th>\
@@ -232,7 +215,7 @@ function mapCaseJsonToUi(data){
 
 		items.push('<td>'+outstr+'</td>'); 
 	
-		outstr =  oneCaseStep['Description']['$'];
+		outstr =  oneCaseStep['Description'];
 		items.push('<td>'+outstr+'</td>'); 
 
 		outstr = "Action=" + oneCaseStep['onError']['@action'] + "<br>" +
@@ -245,7 +228,7 @@ function mapCaseJsonToUi(data){
 
 		items.push('<td>'+outstr+'</td>'); 
 
-		outstr = "RMT=" + oneCaseStep['rmt'] + "<br>Context=" + oneCaseStep['context']['$'] +
+		outstr = "RMT=" + oneCaseStep['rmt'] + "<br>Context=" + oneCaseStep['context'] +
 			"<br>Impact=" + oneCaseStep['impact'];
 		items.push('<td>'+outstr+'</td>'); 
 		var bid = "deleteTestStep-"+s+"-id-"+getRandomCaseID();
@@ -311,8 +294,8 @@ function mapTestStepToUI(sid, xdata) {
 	katana.$activeTab.find("#StepDriver").val(oneCaseStep['step'][ "@Driver"]);
 	katana.$activeTab.find("#StepKeyword").val(oneCaseStep['step'][ "@Keyword"]);
 	katana.$activeTab.find("#StepTS").val(oneCaseStep['step'][ "@TS"]);
-	katana.$activeTab.find("#StepDescription").val(oneCaseStep["Description"]["$"]);
-	katana.$activeTab.find("#StepContext").val(oneCaseStep["context"]['$']);
+	katana.$activeTab.find("#StepDescription").val(oneCaseStep["Description"]);
+	katana.$activeTab.find("#StepContext").val(oneCaseStep["context"]);
 	katana.$activeTab.find("#SteponError-at-action").val(oneCaseStep['onError']["@action"]);
 	katana.$activeTab.find("#SteponError-at-value").val(oneCaseStep['onError']["@value"]);
 	katana.$activeTab.find("#runmode-at-type").val(oneCaseStep["runmode"]["@type"]);
@@ -392,13 +375,13 @@ function mapUItoTestStep(xdata) {
 	oneCaseStep['step'][ "@Driver"] = katana.$activeTab.find("#StepDriver").val();
 	oneCaseStep['step'][ "@Keyword"] = katana.$activeTab.find("#StepKeyword").val();
 	oneCaseStep['step'][ "@TS"] = katana.$activeTab.find("#StepTS").val();
-	oneCaseStep["Description"] = { "$" : katana.$activeTab.find("#StepDescription").val()};
-	oneCaseStep["context"] = { "$" : katana.$activeTab.find("#StepContext").val()};
+	oneCaseStep["Description"] =  katana.$activeTab.find("#StepDescription").val();
+	oneCaseStep["context"] =  katana.$activeTab.find("#StepContext").val();
 	oneCaseStep["Execute"]["@ExecType"]= katana.$activeTab.find("#Execute-at-ExecType").val();		
 	oneCaseStep['onError'][ "@action"] = katana.$activeTab.find("#SteponError-at-action").val();
 	oneCaseStep['onError'][ "@value"] = katana.$activeTab.find("#SteponError-at-value").val();
 	oneCaseStep["runmode"] = { "@type" : katana.$activeTab.find("#runmode-at-type").val()};
-	oneCaseStep["impact"] = { "$" : katana.$activeTab.find("#StepImpact").val()};
+	oneCaseStep["impact"] =  katana.$activeTab.find("#StepImpact").val();
 	// Now draw the table again....
 	/*
 	var a_str = katana.$activeTab.find("#arguments-textarea").text();
@@ -420,18 +403,18 @@ function mapUItoTestStep(xdata) {
 function addStepToCase(){
 	// Add an entry to the jsonTestSuites....
 	var newCaseStep = {
-		"step": {  "$": "", "@Driver": "demo_driver", "@Keyword": "" , "@TS": "0" },
-		"Arguments" : { 'Argument': { '$': "" } },
-		"onError": {  "$": "", "@action" : "next" } ,
-		"iteration_type": { "$": "",  "@type" : "" } ,
-		"Description": { "$": " "} ,
-		"Execute": {  "$": "", "@ExecType": "Yes",
-			"Rule": { "$": "", "@Condition": "","@Condvalue": "","@Else": "next", "@Elsevalue": "" }
+		"step": {  "@Driver": "demo_driver", "@Keyword": "" , "@TS": "0" },
+		"Arguments" : { 'Argument': ""  },
+		"onError": {  "@action" : "next", "@value" : "" } ,
+		"iteration_type": {   "@type" : "" } ,
+		"Description":"",
+		"Execute": {   "@ExecType": "Yes",
+			"Rule": {   "@Condition": "","@Condvalue": "","@Else": "next", "@Elsevalue": "" }
 		}, 
-		"context": { "$": "positive"}, 
-		"impact" : { "$": "impact"},
-		"rmt" : {  "$": " "} ,
-		"retry": { "$": "", "@type": "if not", "@Condition": "testsuite_1_result", "@Condvalue": "PASS", "@count": "6", "@interval": "0"}, 
+		"context": "positive", 
+		"impact" :  "impact",
+		"rmt" :  " " ,
+		"retry": { "@type": "if not", "@Condition": "testsuite_1_result", "@Condvalue": "PASS", "@count": "6", "@interval": "0"}, 
 	 };
 	if (!jsonCaseSteps['step']) {
 		jsonCaseSteps['step'] = [];
@@ -464,7 +447,7 @@ function createRequirementsTable(i_data){
 				console.log(oneReq);
 				items.push('<tr><td>'+s+'</td>');
 				var bid = "textRequirement-"+s+"-id";	
-				items.push('<td><input type="text" value="'+oneReq['$'] +'" id="'+bid+'"/></td>');
+				items.push('<td><input type="text" value="'+oneReq +'" id="'+bid+'"/></td>');
 				
 				bid = "deleteRequirement-"+s+"-id"+getRandomCaseID();
 				items.push('<td><input type="button" title="Delete" class="ui-icon ui-icon-trash ui-button-icon-only" value="X" id="'+bid+'"/>');
@@ -489,7 +472,7 @@ function createRequirementsTable(i_data){
 					console.log(katana.$activeTab.find("#textRequirement-"+sid+"-id").val());
 					console.log(sid);
 					console.log(rdata[sid])
-					rdata[sid]['$'] = txtIn;
+					rdata[sid] = txtIn;
 					createRequirementsTable(i_data);	
 					event.stopPropagation();
 					//This is where you load in the edit form and display this row in detail. 
@@ -512,7 +495,7 @@ function createRequirementsTable(i_data){
 			}
 			rdata = jsonCaseObject['Requirements']['Requirement'];
 			
-			rdata.push({ "$": ""});
+			rdata.push( "" );
 			console.log(jsonCaseObject);
 			createRequirementsTable(jsonCaseObject['Requirements']);	
 			event.stopPropagation();

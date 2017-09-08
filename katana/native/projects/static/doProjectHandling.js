@@ -112,9 +112,7 @@ function mapProjectSuiteToUI(s,xdata) {
 	var oneSuite = xdata[s];
 	console.log(oneSuite);
 	katana.$activeTab.find("#suiteRowToEdit").val(s); 
-	//console.log(katana.$activeTab.find("#suiteRowToEdit").val());
-	//katana.$activeTab.find("suitePath").val(oneSuite['path']['$']);
-	katana.$activeTab.find("#suitePath").val(oneSuite['path']['$']);
+	katana.$activeTab.find("#suitePath").val(oneSuite['path']);
 	katana.$activeTab.find("#Execute-at-ExecType").val(oneSuite['Execute']['@ExecType']); 
 	katana.$activeTab.find("#executeRuleAtCondition").val(oneSuite['Execute']['Rule']['@Condition']); 
 	katana.$activeTab.find("#executeRuleAtCondvalue").val(oneSuite['Execute']['Rule']['@Condvalue']); 
@@ -125,7 +123,7 @@ function mapProjectSuiteToUI(s,xdata) {
 	katana.$activeTab.find("#onError-at-value").val(oneSuite['onError']['@value']); 
 	katana.$activeTab.find("#onError-at-type").val(oneSuite['runmode']['@type']); 
 	katana.$activeTab.find("#onError-at-value").val(oneSuite['runmode']['@value']); 
-	katana.$activeTab.find("#impact").val(oneSuite['impact']['$']); 
+	katana.$activeTab.find("#impact").val(oneSuite['impact']); 
 	
 
 }
@@ -143,13 +141,15 @@ function mapUItoProjectSuite(xdata){
 	var s = parseInt(katana.$activeTab.find("#suiteRowToEdit").val());
 	var oneSuite = xdata[s];
 
-	oneSuite['path']['$'] = katana.$activeTab.find("#suitePath").val(); 
+	oneSuite['path'] = katana.$activeTab.find("#suitePath").val(); 
+	oneSuite['Execute'] = {}
 	oneSuite['Execute']['@ExecType'] = katana.$activeTab.find("#Execute-at-ExecType").val(); 
+	oneSuite['Execute']['Rule'] = {}
 	oneSuite['Execute']['Rule']['@Condition']= katana.$activeTab.find("#executeRuleAtCondition").val(); 
 	oneSuite['Execute']['Rule']['@Condvalue'] = katana.$activeTab.find("#executeRuleAtCondvalue").val(); 
 	oneSuite['Execute']['Rule']['@Else'] = katana.$activeTab.find("#executeRuleAtElse").val(); 
 	oneSuite['Execute']['Rule']['@Elsevalue'] = katana.$activeTab.find("#executeRuleAtElsevalue").val(); 
-	oneSuite['impact']['$'] = katana.$activeTab.find("#impact").val(); 
+	oneSuite['impact'] = katana.$activeTab.find("#impact").val(); 
 	oneSuite['onError']['@action'] = katana.$activeTab.find("#onError-at-action").val(); 
 	oneSuite['onError']['@value'] = katana.$activeTab.find("#onError-at-value").val(); 
 	oneSuite['runmode']['@type'] = katana.$activeTab.find("#onError-at-type").val(); 
@@ -169,14 +169,14 @@ Two global variables are heavily used when this function is called;
 */
 function mapUiToProjectJson() {
 	
-	jsonProjectObject['Details']['Name']['$'] = katana.$activeTab.find('#projectName').val();
-	jsonProjectObject['Details']['Title']['$'] = katana.$activeTab.find('#projectTitle').val();
-	jsonProjectObject['Details']['Engineer']['$'] = katana.$activeTab.find('#projectEngineer').val();
-	jsonProjectObject['Details']['State']['$'] = katana.$activeTab.find('#projectState').val();
-	jsonProjectObject['Details']['Date']['$'] = katana.$activeTab.find('#projectDate').val();
-	jsonProjectObject['Details']['default_onError']['$'] = katana.$activeTab.find('#defaultOnError').val();
-	jsonProjectObject['Details']['Datatype']['$'] = katana.$activeTab.find('#projectDatatype').val();
-	jsonProjectObject['SaveToFile'] = { "$" : katana.$activeTab.find('#my_file_to_save').val()};
+	jsonProjectObject['Details']['Name'] = katana.$activeTab.find('#projectName').val();
+	jsonProjectObject['Details']['Title'] = katana.$activeTab.find('#projectTitle').val();
+	jsonProjectObject['Details']['Engineer'] = katana.$activeTab.find('#projectEngineer').val();
+	jsonProjectObject['Details']['State'] = katana.$activeTab.find('#projectState').val();
+	jsonProjectObject['Details']['Date'] = katana.$activeTab.find('#projectDate').val();
+	jsonProjectObject['Details']['default_onError'] = katana.$activeTab.find('#defaultOnError').val();
+	jsonProjectObject['Details']['Datatype'] = katana.$activeTab.find('#projectDatatype').val();
+	jsonProjectObject['SaveToFile'] = katana.$activeTab.find('#my_file_to_save').val();
 	//
 	// Now walk the DOM ..
 	// Create dynamic ID values based on the Suite's location in the UI. 
@@ -184,59 +184,8 @@ function mapUiToProjectJson() {
 	// Note that if we implement drag and drop we'll have to re-index the entire 
 	// visual display to reflect the movements of the order of objects on display 
 	// That would require a refresh after a drop anyway. 
-	var xdata = jsonProjectObject['Testsuites']['Testsuite'];
-
-
-
-	for (var s=0; s<Object.keys(xdata).length; s++ ) {
-		var oneSuite = xdata[s];
-
-		oneSuite['Execute']['$'] = ""
-		id = '#'+s+"-Suite-ID";
-		oneSuite['Execute']['@ExecType']['$'] = ""; 
-
-		id = '#'+s+"-Execute-Rule-at-Condition";
-		oneSuite['Execute']['Rule']['@Condition'] = katana.$activeTab.find(id).val();
-		id = '#'+s+"-Execute-Rule-at-Condvalue";
-		oneSuite['Execute']['Rule']['@Condvalue'] = katana.$activeTab.find(id).val();
-		id = '#'+s+"-Execute-Rule-at-Else";
-		oneSuite['Execute']['Rule']['@Else'] = katana.$activeTab.find(id).val();
-		id = '#'+s+"-Execute-Rule-at-Elsevalue";
-		oneSuite['Execute']['Rule']['@Elsevalue'] = katana.$activeTab.find(id).val();
-
-		oneSuite['onError']['$'] = "";
-
-		id = '#'+s+"-onError-at-action";
-		oneSuite['onError']['@action'] = katana.$activeTab.find(id).val();
-		id = '#'+s+"-onError-at-value option:selected";
-		oneSuite['onError']['@value'] = katana.$activeTab.find(id).val();
-
-		oneSuite['runmode'] = {}
-		id = '#'+s+"-runmode-at-value";
-		oneSuite['runmode']['@value'] = katana.$activeTab.find(id).val();
-		id = '#'+s+"-runmode-at-value option:selected";
-		oneSuite['runmode']['@value'] = katana.$activeTab.find(id).val();
-		oneSuite['runmode']['$'] = "";
-		oneSuite['retry']['$'] = "";
-
-		oneSuite['retry'] = {}
-		id = '#'+s+"-retry-at-type";
-		oneSuite['retry']['@type'] =  katana.$activeTab.find(id).val();
-		id = '#'+s+"-retryat-Condition";
-		oneSuite['retry']['@Condition'] =  katana.$activeTab.find(id).val();
-		id = '#'+s+"-retry-at-Condvalue";
-		oneSuite['retry']['@Condvalue'] =  katana.$activeTab.find(id).val();
-		id = '#'+s+"-retry-at-count";
-		oneSuite['retry']['@count'] =  katana.$activeTab.find(id).val();
-		id = '#'+s+"-retry-at-interval";
-		oneSuite['retry']['@interval'] =  katana.$activeTab.find(id).val();
-		
-
-	}
-	// Now you have collected the user components...
-	//alert("Here..");
+	//;
 	var url = "./projects/getProjectDataBack";
-	//alert(url); 
 	var csrftoken = $("[name='csrfmiddlewaretoken']").val();
 
 	$.ajaxSetup({
@@ -246,18 +195,14 @@ function mapUiToProjectJson() {
 	});
 	
 	var topNode  = { 'Project' : jsonProjectObject};
-	var jj = new json() ; 
-	// var mystring =  JSON.stringify(jsonProjectObject);
-	var ns = jj.translate.toXML(topNode);
-	
-	//alert(ns);
+
 
 	$.ajax({
 	    url : url,
 	    type: "POST",
 	    data : { 
 	    	'json': JSON.stringify(topNode),
-	    	'Project': ns,
+	    	//'Project': ns,
 	    	'filetosave': katana.$activeTab.find('#filesavepath').text() + "/" + $('#my_file_to_save').val()
 	    	},
 	    headers: {'X-CSRFToken':csrftoken},
@@ -300,7 +245,7 @@ function createSuitesTable(xdata) {
 		console.log(oneSuite['path']);
 		
 		items.push('<tr><td class="col-md-1">'+(parseInt(s)+1)+'</td>');
-		items.push('<td>'+oneSuite['path']['$']+'</td>');
+		items.push('<td>'+oneSuite['path']+'</td>');
 		items.push('<td>Type='+oneSuite['Execute']['@ExecType']+'<br>');
 		items.push('Condition='+oneSuite['Execute']['Rule']['@Condition']+'<br>');
 		items.push('Condvalue='+oneSuite['Execute']['Rule']['@Condvalue']+'<br>');
@@ -308,7 +253,7 @@ function createSuitesTable(xdata) {
 		items.push('Elsevalue='+oneSuite['Execute']['Rule']['@Elsevalue']+'<br>');
 		items.push('</td>');
 		items.push('<td>'+oneSuite['onError']['@action']+'</td>');
-		items.push('<td>'+oneSuite['impact']['$']+'</td>');
+		items.push('<td>'+oneSuite['impact']+'</td>');
 
 		var bid = "deleteTestSuite-"+s+"-id"+getRandomID();
 		//alert(bid);
@@ -361,19 +306,17 @@ function fillSuiteDefaults(s, data){
 			data[s] = {} ;
 		}    
 		oneSuite = data[s]
-		if (!oneSuite['path']) {
-			oneSuite['path'] = { '$': "New"};
-		}
 
-		if (!oneSuite['path']['$']) {
-			oneSuite['path']['$'] =  "New";
+
+		if (!oneSuite['path']) {
+			oneSuite['path'] =  "New";
 		}
 
 		if (!oneSuite['impact']) {
-			oneSuite['impact'] = { '$': "New"};
+			oneSuite['impact'] = "New";
 		}
-		if (!oneSuite['impact']['$']) {
-			oneSuite['impact']['$'] =  "impact";
+		if (!oneSuite['impact']) {
+			oneSuite['impact'] =  "impact";
 		}
 
 		if (! oneSuite['Execute']){
