@@ -509,6 +509,8 @@ input:focus {
 }
 .field {
     padding: 5px 0;
+    max-width: 800px;
+    margin: 0 auto;
 }
 
 .mandatory-field {
@@ -1905,6 +1907,31 @@ td {}
   right: 0;
   margin: 0 auto;
 }
+.loading:before{
+  content: '';
+  border: 8px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 8px solid #dc3545;
+  width: 80px;
+  height: 80px;
+  -webkit-animation: spin 2s ease-in-out infinite;
+  animation: spin 2s ease-in-out infinite;
+  position: absolute;
+  top: 40%;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+}
+.save.loading:before{
+  width: 24px;
+  height: 24px;
+  border: 4px solid #c5c5c5;
+  border-top: 4px solid #28a745;
+  top: 3px;
+}
+.save.loading{
+  font: 0;
+}
 @-webkit-keyframes spin {
   0% { -webkit-transform: rotate(0deg); }
   100% { -webkit-transform: rotate(360deg); }
@@ -1914,8 +1941,51 @@ td {}
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+.button.saved:before {
+    content: "\f058";
+    font: normal normal normal 14px/1 FontAwesome;
+    color: #23ea23;
+    line-height: 25px;
+    font-size: 22px;
+}
 
+.button {
+    position: relative;
+}
 
+.button.save.saved {
+    font-size: 0;
+}
+.center {
+    text-align: center;
+    margin: 0 auto;
+    display: block;
+}
+
+.image + input {
+    display: none;
+}
+
+.profile-image.large {
+    width: 100px;
+    height: 100px;
+    background: #a7a7a7;
+    text-align: center;
+    margin: 0 auto;
+    margin-top: 20px;
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.25);
+    -moz-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.25);
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.25);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.profile-image .image {
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+}
 
 /*bootstrap overrides*/
 label {
@@ -1937,6 +2007,8 @@ button, input, optgroup, select, textarea {
 
 .tool-bar .button {
     padding: 2px;
+    height: 32px;
+    vertical-align: top;
 }
 
 .tool-bar-links {

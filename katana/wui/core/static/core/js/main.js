@@ -29,7 +29,7 @@ var katana = {
 			var toCall = $elem.attr( 'katana-click' ).replace( /\(.*?\)/, '' );
 			katana.methodCaller( toCall, $elem );
 		});
-		katana.$view.on( 'keyup', '[katana-change]', function( e ){
+		katana.$view.on( 'change', '[katana-change]', function( e ){
 			$elem = $(this);
 			e.stopPropagation();
 			var toCall = $elem.attr( 'katana-change' ).replace( /\(.*?\)/, '' );
@@ -281,7 +281,7 @@ var katana = {
 			var $elem = $(this);
 			var tempObj = {};
 			tempObj[ $elem.find('[key="@name"]').attr('key') ] = $elem.find('[key="@name"]').hasClass('.title') ? $elem.find('[key="@name"]').text() : $elem.find('[key="@name"]').val();
-			$elem.find('input, select').each( function() {
+			$elem.find('input[key], select[key]').each( function() {
 				var sub$elem = $(this);
 				if( !sub$elem.closest('.pocket-fields').length )
 					tempObj[ sub$elem.attr('key') ] = sub$elem.val();
@@ -480,6 +480,42 @@ var katana = {
 			 }).done(function( data ) {
 				 callBack && callBack( data );
 			 });
+		 },
+
+		 get: function( url, csrf, toSend, dataType, successCallBack ){
+
+			 // intialize values for url, csrf, dataType, toSend
+			 var $elem = this ? this : katana.$activeTab;
+			 var toSend = toSend ? toSend : $elem.find('input:not([name="csrfmiddlewaretoken"])').serializeArray();
+			 var url = url ? url : $elem.attr('get-url');
+			 var csrf = csrf ? csrf : $elem.find('.csrf-container > input').val();
+			 var dataType = dataType ? dataType : 'text'
+
+			 // setup csrf token in xhr header
+			 $.ajaxSetup({
+			    beforeSend: function(xhr, settings) {
+		        if (!this.crossDomain)
+		        	xhr.setRequestHeader("X-CSRFToken", csrf);
+			    }
+				});
+
+			 // make an ajax get call using the intialized variables,
+			 // on sucess the data is sent to success cal back function if one was provided
+			 $.ajax({
+				 url: url,
+				 type: "GET",
+				 dataType: dataType,
+				 data: { data: toSend },
+				 success: function(data){
+					 console.log('success');
+					 successCallBack && successCallBack(data);
+				 },
+				 error: function(xhr, textStatus, error){
+					 console.log(xhr.statusText);
+			     console.log(textStatus);
+			     console.log(error);
+				 },
+			});
 		 },
 
 		 trigger: function( url, callBack ){
