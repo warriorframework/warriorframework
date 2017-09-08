@@ -1999,6 +1999,10 @@ button, input, optgroup, select, textarea {
     margin: 0 auto;
 }
 
+.wdf-input {
+    font-size: 16px;
+}
+
 hr.wdf-hr{
     display: block;
 }

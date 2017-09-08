@@ -5,7 +5,9 @@ var wdf = {
     },
 
     deleteTag: function(){
-        $(this).parent().parent().empty();
+        $target=$(this).parent().parent();
+        $target.removeClass("animated fadeIn").addClass("animated bounceOutLeft");
+        setTimeout(function(){$target.empty()}, 600);
     },
 
     deleteChildTag: function(){
@@ -17,7 +19,10 @@ var wdf = {
     },
 
     deleteSystem: function(){
-        $(this).parent().parent().parent().empty();
+        $target=$(this).parent().parent().parent();
+        $target.removeClass("animated fadeIn");
+        $target.addClass("animated bounceOutLeft");
+        setTimeout(function(){$target.empty()}, 600);
     },
 
     addSystem: function(){
