@@ -187,6 +187,8 @@ def getCaseDataBack(request):
 	#response = request.readlines();   # Get the JSON response 
 	ijs = request.POST.get(u'Testcase')  # This is a xml string  
 	print ijs
+
+	print request.POST.get(u'json')
 	print "--------------TREE----------------"
 	fn = request.POST.get(u'filetosave')
 	sb = request.POST.get(u'savesubdir')

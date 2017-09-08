@@ -321,7 +321,7 @@ function createRequirementsTable(rdata){
 	items.push('<tbody>');
 	for (var s=0; s<Object.keys(rdata).length; s++ ) {
 		var oneReq = rdata[s];
-		items.push('<tr><td>'+s+'</td>');
+		items.push('<tr><td>'+str(ParseInt(s)+1)+'</td>');
 		//items.push('<td>'+oneReq['$']+'</td>');
 		var bid = "textRequirement-name-"+s+"-id";	
 		items.push('<td><input type="text" value="'+oneReq['@name']+'" id="'+bid+'"/></td>');

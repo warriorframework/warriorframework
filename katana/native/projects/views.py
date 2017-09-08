@@ -103,6 +103,7 @@ def editProject(request):
 	xml_r["Project"]["Details"]["Name"] = OrderedDict([('$', '')])
 	xml_r["Project"]["Details"]["Title"] = OrderedDict([('$', '')])
 	xml_r["Project"]["Details"]["Category"] = OrderedDict([('$', '')])
+	xml_r["Project"]["Details"]["State"] = OrderedDict([('$', 'New')])
 	xml_r["Project"]["Details"]["Date"] = OrderedDict([('$', '')])
 	xml_r["Project"]["Details"]["Time"] = OrderedDict([('$', '')])
 	xml_r["Project"]["Details"]["Datatype"] = OrderedDict([('$', '')])
@@ -133,11 +134,12 @@ def editProject(request):
  
 	context = { 
 		'savefilename': os.path.split(filename)[1], 
-		'savefilepath': path_to_testcases,
+		'savefilepath': fpath,
 		'myfile': filename,
 		'docSpec': 'projectSpec',
 		'projectName': xml_r["Project"]["Details"]["Name"]["$"],
 		'projectTitle': xml_r["Project"]["Details"]["Title"]["$"],
+		'projectState': xml_r["Project"]["Details"]["State"]["$"],
 		'projectEngineer': xml_r["Project"]["Details"]["Engineer"]["$"],
 		'projectCategory': xml_r["Project"]["Details"]["Category"]["$"],
 		'projectDate': xml_r["Project"]["Details"]["Date"]["$"],
@@ -166,7 +168,7 @@ def getProjectDataBack(request):
 	fname = request.POST.get(u'filetosave')
 	ijs = request.POST.get(u'json')  # This is a json string 
 
-
+	print ijs;
 
 	#print "--------------TREE----------------"
 	if fname.find(".xml") < 2: fname = fname + ".xml"

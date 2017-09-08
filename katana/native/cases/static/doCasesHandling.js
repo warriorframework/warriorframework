@@ -524,8 +524,3 @@ function createRequirementsTable(i_data){
 	//});
 
 }
-
-function createEditStepPage(xdata) {
-
-
-}

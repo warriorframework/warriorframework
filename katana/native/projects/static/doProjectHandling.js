@@ -67,8 +67,8 @@ function mapFullProjectJson(myobjectID){
 // array. Default values are used to fill in a complete structure. If there is 
 // no default value, a null value is inserted for the keyword
 /// -------------------------------------------------------------------------------
-function addSuiteToProject(){
-	var newTestSuite = {	
+function makeNewSuite() { 
+		var newTestSuite = {	
 		"path": "../suites/framework_tests/seq_par_execution/seq_ts_seq_tc.xml", 
 		"Execute": { "@ExecType": "Yes",
 			"Rule": {"@Condition": "","@Condvalue": "","@Else": "next", "@Elsevalue": "" }
@@ -89,7 +89,11 @@ function addSuiteToProject(){
 			 "@value": "" }, 
 		"impact": "impact" 
 		};
+		return newTestSuite;
+}
 
+function addSuiteToProject(){
+	var newTestSuite = makeNewSuite();
 	if (!jQuery.isArray(jsonTestSuites['Testsuite'])) {
 		jsonTestSuites['Testsuite'] = [jsonTestSuites['Testsuite']];
 		}
@@ -114,7 +118,7 @@ function mapProjectSuiteToUI(s,xdata) {
 	katana.$activeTab.find("#Execute-at-ExecType").val(oneSuite['Execute']['@ExecType']); 
 	katana.$activeTab.find("#executeRuleAtCondition").val(oneSuite['Execute']['Rule']['@Condition']); 
 	katana.$activeTab.find("#executeRuleAtCondvalue").val(oneSuite['Execute']['Rule']['@Condvalue']); 
-	katana.$activeTab.find("#executeRuleAtElse").val(oneSuite['Execute']['Rule']['@Else']['$']); 
+	katana.$activeTab.find("#executeRuleAtElse").val(oneSuite['Execute']['Rule']['@Else']); 
 	katana.$activeTab.find("#executeRuleAtElsevalue").val(oneSuite['Execute']['Rule']['@Elsevalue']); 
 	
 	katana.$activeTab.find("#onError-at-action").val(oneSuite['onError']['@action']); 
@@ -143,7 +147,7 @@ function mapUItoProjectSuite(xdata){
 	oneSuite['Execute']['@ExecType'] = katana.$activeTab.find("#Execute-at-ExecType").val(); 
 	oneSuite['Execute']['Rule']['@Condition']= katana.$activeTab.find("#executeRuleAtCondition").val(); 
 	oneSuite['Execute']['Rule']['@Condvalue'] = katana.$activeTab.find("#executeRuleAtCondvalue").val(); 
-	oneSuite['Execute']['Rule']['@Else']['$'] = katana.$activeTab.find("#executeRuleAtElse").val(); 
+	oneSuite['Execute']['Rule']['@Else'] = katana.$activeTab.find("#executeRuleAtElse").val(); 
 	oneSuite['Execute']['Rule']['@Elsevalue'] = katana.$activeTab.find("#executeRuleAtElsevalue").val(); 
 	oneSuite['impact']['$'] = katana.$activeTab.find("#impact").val(); 
 	oneSuite['onError']['@action'] = katana.$activeTab.find("#onError-at-action").val(); 
@@ -168,7 +172,7 @@ function mapUiToProjectJson() {
 	jsonProjectObject['Details']['Name']['$'] = katana.$activeTab.find('#projectName').val();
 	jsonProjectObject['Details']['Title']['$'] = katana.$activeTab.find('#projectTitle').val();
 	jsonProjectObject['Details']['Engineer']['$'] = katana.$activeTab.find('#projectEngineer').val();
-	jsonProjectObject['Details']['Title']['$'] = katana.$activeTab.find('#projectTitle').val();
+	jsonProjectObject['Details']['State']['$'] = katana.$activeTab.find('#projectState').val();
 	jsonProjectObject['Details']['Date']['$'] = katana.$activeTab.find('#projectDate').val();
 	jsonProjectObject['Details']['default_onError']['$'] = katana.$activeTab.find('#defaultOnError').val();
 	jsonProjectObject['Details']['Datatype']['$'] = katana.$activeTab.find('#projectDatatype').val();
@@ -295,7 +299,7 @@ function createSuitesTable(xdata) {
 		console.log(oneSuite);
 		console.log(oneSuite['path']);
 		
-		items.push('<tr><td class="col-md-1">'+s+'</td>');
+		items.push('<tr><td class="col-md-1">'+(parseInt(s)+1)+'</td>');
 		items.push('<td>'+oneSuite['path']['$']+'</td>');
 		items.push('<td>Type='+oneSuite['Execute']['@ExecType']+'<br>');
 		items.push('Condition='+oneSuite['Execute']['Rule']['@Condition']+'<br>');
@@ -317,7 +321,7 @@ function createSuitesTable(xdata) {
 			removeTestSuite(sid,xdata);
 		});
 		bid = "editTestSuite-"+s+"-id"+getRandomID();;
-		items.push('<input type="button" title="Edit" class="ui-icon ui-icon-pencil ui-button-icon-only" value="Edit" id="'+bid+'"/></td>');
+		items.push('<input type="button" title="Edit" class="ui-icon ui-icon-pencil ui-button-icon-only" value="Edit" id="'+bid+'"/>');
 		katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 		$(document).on('click','#'+bid,function(  ) {
 			var names = this.id.split('-');
@@ -326,6 +330,19 @@ function createSuitesTable(xdata) {
 			mapProjectSuiteToUI(sid,xdata);
 			//This is where you load in the edit form and display this row in detail. 
 		});
+
+		bid = "InsertTestSuite-"+s+"-id"+getRandomID();;
+		items.push('<input type="button" title="Insert" class="ui-icon ui-icon-pencil ui-button-icon-only" value="Insert" id="'+bid+'"/></td>');
+		katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
+		$(document).on('click','#'+bid,function(  ) {
+			var names = this.id.split('-');
+			var sid = parseInt(names[1]);
+			console.log("xdata --> "+ xdata);
+			insertTestSuite(sid,xdata);
+			mapProjectSuiteToUI(sid,xdata);
+			//This is where you load in the edit form and display this row in detail. 
+		});
+
 
 		items.push('</tr>');
 	}
@@ -406,9 +423,18 @@ function mapProjectJsonToUi(data){
 
 }  // end of function 
 
+
+
 // Removes a test suite by its ID and refresh the page. 
 function removeTestSuite( sid,xdata ){
 	jsonTestSuites['Testsuite'].splice(sid,1);
+	console.log("Removing test suites "+sid+" now " + Object.keys(jsonTestSuites).length);
+	mapProjectJsonToUi(jsonTestSuites);	// Send in the modified array
+}
+// Removes a test suite by its ID and refresh the page. 
+function insertTestSuite( sid,xdata ){
+	var newTestSuite = makeNewSuite();	
+	jsonTestSuites['Testsuite'].splice(sid,0,newTestSuite);
 	console.log("Removing test suites "+sid+" now " + Object.keys(jsonTestSuites).length);
 	mapProjectJsonToUi(jsonTestSuites);	// Send in the modified array
 }
