@@ -1961,3 +1961,7 @@ button, input, optgroup, select, textarea {
 div .tool-bar-links:hover{
     background-color: #e5e4e2;
 }
+
+div .tool-bar-links:active{
+    background-color: #e5e4e2;
+}
