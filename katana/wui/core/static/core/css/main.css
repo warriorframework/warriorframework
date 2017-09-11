@@ -431,7 +431,12 @@ span.close:before {content: 'X';}
 }
 .page-content-inner {
     background: white;
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
+    margin: 0;
+    positive: relative;
 }
 
 .nav .tab[uid="launchpad"] {
