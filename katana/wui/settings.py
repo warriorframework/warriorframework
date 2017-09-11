@@ -43,8 +43,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'wui.core',
-    'native.settings',
     'native.wdf_edit',
 ]
 
