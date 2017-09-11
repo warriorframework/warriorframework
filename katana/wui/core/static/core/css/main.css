@@ -506,6 +506,7 @@ input {
   background: #f9f9f9;
   margin-top: 4px;
 }
+
 input:focus {
     background: #efefef;
 }
@@ -1471,8 +1472,6 @@ position: absolute;
 
 .htmlResults td[rowspan]:last-child {}
 
-td {}
-
 .htmlResults td > div {
     overflow: hidden;
     position: relative;
@@ -1952,7 +1951,7 @@ td {}
   top: 3px;
 }
 .save.loading{
-  font: 0;
+    
 }
 @-webkit-keyframes spin {
   0% { -webkit-transform: rotate(0deg); }
@@ -2153,4 +2152,24 @@ div .tool-bar-links:hover{
 
 div .tool-bar-links:active{
     background-color: #e5e4e2;
+
+.wdf-button {
+    position: absolute;
+    top: 10%;
+}
+
+.wdf-label {
+    position: absolute;
+    top: 25%;
+    left: 20px;
+    right: 0;
+    margin: 0 auto;
+}
+
+.wdf-input {
+    font-size: 16px;
+}
+
+hr.wdf-hr{
+    display: block;
 }

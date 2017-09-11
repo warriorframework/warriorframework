@@ -1,0 +1,66 @@
+
+{% load static %}
+{% load jsonify %}
+
+
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<!-- link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" -->
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+
+<!-- link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" -->
+<!-- <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"> --> 
+<link rel="stylesheet" href="{% static './jquery-ui-1.12.1.custom/jquery-ui.css' %}">
+<link rel="stylesheet" href="{% static './table.css' %}">
+
+<script type="text/javascript" src="{% static "./badgerfish.js" %}"></script>
+<script type="text/javascript" src="{% static "./json.js" %}"></script>
+<script type="text/javascript" src="{% static "./xmlparser.js" %}"></script>
+<script type="text/javascript" src="{% static "./doSuiteHandling.js" %}"></script>
+
+</script>
+<body>
+
+
+<h2>List of Suites</h2>		
+  <div id="mySuite">		</div>
+
+  <div class="btn-group" role="group">   
+      <button id="addNewCase" class="btn btn-success" onclick="startNewSuite()">Add New Suite</button>
+  </div>
+<div id="mySuiteTree"></div>
+<div id="mmm" >{{treejs|jsonify}}</div>
+
+</body>
+
+<script> 
+var sdata= katana.$activeTab.find('#mmm').text();
+console.log(sdata);
+var jdata = { 'core' : { 'data' : [ JSON.parse(sdata)]}};
+
+function startNewSuite() {
+    var xref="./suites/editSuite/?fname=NEW"; 
+  katana.templateAPI.load(xref, null, null, 'Suite') ;
+}
+//
+katana.$activeTab.find('#mySuiteTree').on("select_node.jstree", function (e, data) { 
+      var thePage = data.node.li_attr['data-path'];
+      console.log(thePage);
+      katana.$view.one('tabAdded', function(){
+        
+      mapFullSuiteJson(thePage);
+  });
+  var xref="./suites/editSuite/?fname=" + thePage; 
+  katana.templateAPI.load(xref, null, null, 'Suite') ;
+});
+
+//
+katana.$activeTab.find('#mySuiteTree').jstree(jdata); 
+katana.$activeTab.find('#mmm').hide();
+
+
+
+
+</script>

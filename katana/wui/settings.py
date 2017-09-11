@@ -29,18 +29,21 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'wui.core',
     'native.settings',
     'native.wapp_management',
-    'apps.userapp',
-    'apps.new_app',
-    'apps.brand_new_app',
-    'wui.core',
+    'native.settings',
+    'native.projects',
+    'native.suites',
+    'native.cases',
+    'native.wdf_edit',
 ]
 
 MIDDLEWARE = [

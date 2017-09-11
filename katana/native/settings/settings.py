@@ -22,6 +22,7 @@ class Settings:
         if request.method == 'POST':
             with open(json_file,'w') as f:
                 f.write(json.dumps(json.loads(request.POST.get('data'))[0], sort_keys=True, indent=4, separators=(',', ': ')))
+
         else:
             with open(json_file,'r') as f:
                 json_data = json.load(f)
@@ -36,6 +37,7 @@ class Settings:
             with open(json_file,'r') as f:
                 json_data = json.load(f)
             print 'tuz', json_data
+
             return json_data
 
     def email_setting_handler(self, request):
