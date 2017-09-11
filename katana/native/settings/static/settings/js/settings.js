@@ -32,13 +32,16 @@ var settings = {
 		encodeImage: function(){
 			var $elem = this;
 			var element = this.get(0);
+			var toplevel = $elem.parent();
 			var file = element.files[0];
+			var preview = toplevel.find('.image');
 			var reader = new FileReader();
+			preview.addClass('loading');
 			reader.onloadend = function() {
 			 var result = reader.result;
-			 var toplevel = $elem.parent();
 			 toplevel.find('input[name="image"]').val(result);
-			 toplevel.find('.image').css('background-image', 'url(' + result + ')');
+			 preview.css('background-image', 'url(' + result + ')');
+			 preview.removeClass('loading');
 			}
 			reader.readAsDataURL(file);
 		},
@@ -58,6 +61,11 @@ var settings = {
 
 		append_log: function(){
 			settings.jira.boolHandler( $(this) );
+		},
+
+		defaultClick: function(){
+			this.closest('.page-content').find('[key="@default"]').not( this ).removeClass('active');
+			katana.toggleActive.call(this);
 		},
 
 		issue_type: function(){

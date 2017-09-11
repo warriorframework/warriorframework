@@ -16,15 +16,25 @@
 		<body>
 
 			<div class="view activeView">
-				<div class="header"><h1>WARRIOR</h1></div>
-				<div class="nav"><div class="nav-inner"><div class="tab active" uid="launchpad" katana-click="katana.switchTab">Launch Pad</div>
-					</div></div>
+				<div class="header">
+					<h1>WARRIOR</h1>
+					<div class="quick-user" katana-click="katana.toggleActive" ><div class="profile-image image" style="background-image: url({{ userData.Base64image }})"></div><span class="username">{{ userData.Username }}</span>
+						<div class="hidden-menu">
+							<ul>
+								<li katana-click="katana.openProfile" url="/katana/settings/" jsurls="/static/settings/js/settings.js,">Profile Settings <i class="fa fa-user"></i></li>
+								<li katana-click="katana.aboutUs">About <i class="fa fa-info"></i></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="nav">
+					<div class="nav-inner">
+						<div class="tab active" uid="launchpad" katana-click="katana.switchTab">Launch Pad</div>
+					</div>
+				</div>
 				<div class="page" id="launchpad">
 					<div class="page-content">
 						<div class="tabs">
-
-
-
 							{% for app in apps %}
 								<div class="tab {{ app.data.color }}" katana-click="katana.templateAPI.load" url="{{ app.data.url }}" jsUrls=" {% for url in app.data.js_urls %} {{ url }},{% endfor %}"><i class="fa fa-{{ app.data.icon }}"></i><span>{{ app.data.name }}</span></div>
 							{% endfor %}

@@ -310,6 +310,14 @@ var katana = {
 		$elem.toggleClass('active');
 	},
 
+	openProfile: function(){
+		var $elem = this;
+		$elem.closest('.active').removeClass('active');
+		katana.templateAPI.load.call( $elem, null, null, null, 'Profile-Settings', function(){
+			katana.templateAPI.subAppLoad( '/katana/settings/profile_setting_handler' );
+		});
+	},
+
 	fileNav:{
 		folderTemp: '',
 		fileTemp: '',
