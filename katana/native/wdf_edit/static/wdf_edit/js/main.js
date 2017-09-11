@@ -5,16 +5,35 @@ var wdf = {
     },
 
     deleteTag: function(){
-        $target=$(this).parent().parent();
-        $target.removeClass("animated fadeIn").addClass("animated bounceOutLeft");
-        setTimeout(function(){$target.empty()}, 600);
+        // 
+        $target = $(this).parent().parent();
+        $raw_id = $target.find("[name*='-key']").attr("name").substring(0, $target.find("[name*='-key']").attr("name").length-4);
+        $id = $raw_id.split("-").slice(0,-1).join("-");
+
+        $children = $target.parent().find("[name*='"+$id+"']");
+        for (var i=0; i<$children.length; i++) {
+            if ($($children.get(i)).prop("name").indexOf("key") !== -1) {
+                $child = $($children.get(i)).parent().parent();
+                $child.removeClass("animated fadeIn");
+                $child.addClass("animated bounceOutLeft");
+                setTimeout((function(tmp){return function(){tmp.hide();}})($child), 600);
+            }
+        }
+  
+        $target.removeClass("animated fadeIn");
+        $target.addClass("animated bounceOutLeft");
+        setTimeout(function(){$target.empty();}, 600);
     },
 
     deleteChildTag: function(){
         $target = $(this).parent().parent().find("[name*='key']");
+        $hide_target = $target.parent().parent();
         if ($target.prop("name").indexOf("deleted") == -1) {
             $target.prop("name", "deleted-"+$target.prop("name"));
-            $(this).parent().parent().hide();
+            $hide_target.removeClass("animated fadeIn");
+            $hide_target.addClass("animated bounceOutLeft");
+            setTimeout(function(){$hide_target.parent().parent().hide()}, 600);
+            
         }
     },
 
@@ -26,7 +45,7 @@ var wdf = {
     },
 
     addSystem: function(){
-        // Add a system
+        // Add a systeml
         var $tmp = katana.$activeTab.find("#system_template").clone();
         $tmp.find("#template-system").prop("id", katana.$activeTab.find(".control-box").length-1+"-control-box")
         $tmp.find("[name='template-system-name']").prop("name", katana.$activeTab.find(".control-box").length-1+"-1-system_name");
