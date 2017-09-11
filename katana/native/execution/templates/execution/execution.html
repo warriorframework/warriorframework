@@ -1,0 +1,73 @@
+<body>
+      <div class="csrf-container">{% csrf_token %} </div>
+      <div id="execution-container" class="execution exec-container">
+                  <div class="execution layout-panel"  auto-init="execution.layoutViewer.loadWs">
+                          <div class="execution panels-heading">
+                            <label>Layouts</label>
+                            <i title="configure" class="fa fa-edit" id="configure_layout_btn" katana-click="execution.layoutViewer.configureLayout"></i>
+                            <i title="refresh" class="fa fa-refresh" id="execution_load_layout_btn" katana-click="execution.layoutViewer.loadWs"></i>
+                            <i title="copy to selections area" class="fa fa-arrow-right" id="execution-execute-btn" katana-click="execution.selectionViewer.add_selected"></i>
+                          </div>
+                          <div class="execution panels-body">
+                            <div id="execution_layout_container"  data-startdir="{{defaults.start_dir}}" ></div>
+                          </div>
+                  </div>
+
+                  <div class="execution selections-panel" id="execution-selections-panel">
+                          <div class="execution panels-heading" id="execution-selections-panel-heading">
+                                <label>Selections</label>
+                                <i title="erase" class="fa fa-eraser" id="execution-erase-btn" katana-click="execution.selectionViewer.erase"></i>
+                                <i title="execute" class="fa fa-play" id="execution-execute-btn" katana-click="execution.resultsViewer.openExecution" ></i>
+                          </div>
+                          <div class="execution panels-body">
+                            <ul id="execution_items" class="execution selection-items" auto-init="execution.selectionViewer.createSelectionsSort"></ul>
+                          </div>
+                  </div>
+                  <div class="execution cmd-options-panel" id="cmd-options-panel" auto-init="execution.cmdOptions.init">
+                          <div class="execution panels-heading" id="cmd-options-panel-heading">
+                                <label>Command Options</label>
+
+                          </div>
+
+                          <div class="execution cmd-options-slider" id="cmd-options-slider">
+                            <i title="" name="left" class="fa fa-chevron-left" katana-click="execution.cmdOptions.moveIconsLeft"></i>
+                            <div class='execution cmd-icons'>
+                              <i title="configure" class="jira-32 " ></i>
+                              <i title="execute" class="fa fa-database icon-wrapper" ></i>
+                              <i title="execute" class="date-time-32 "></i>
+                              <i title="execute" class="edit-32" ></i>
+                              <i title="execute" class="fa fa-bars icon-wrapper" ></i>
+
+                            </div>
+                            <i title="" name="right" class="fa fa-chevron-right" katana-click="execution.cmdOptions.moveIconsRight" ></i>
+                          </div>
+
+                          <div class="execution panels-body">
+                          </div>
+
+                  </div>
+
+        </div>
+
+
+
+   <div class="">
+
+   </div>
+   <dialog  id="configure_layout_dialog" class="execution dialog " >
+    <form method="dialog" id="configure_layout_form">
+      <section>
+          <!-- <i class="fa fa-times"></i> -->
+        <a href="#close" title="Close" class="execution dialog-close" katana-click="execution.layoutViewer.close_configuration_dialog">X</a>
+        <div class="feild"><label>Warriorspace</label><input name="warriorspace" key="type" type="text" value="" placeholder="Enter the path to your warriorspace directory" required></div>
+        <!-- <div class="feild"><label>Select Layout Style</label><input name="select_layout_style" key="pass" type="text" value="" placeholder="Select your layout style"></div> -->
+      </section>
+      <menu>
+        <button id="clear" type="reset" katana-click="execution.layoutViewer.clear">Reset</button>
+        <button name="configure_layout_confirm" type="submit" katana-click="execution.layoutViewer.confirm">Confirm</button>
+      </menu>
+    </form>
+  </dialog>
+
+
+</body>
