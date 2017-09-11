@@ -103,6 +103,9 @@
 		<button class="btn btn-primary" onclick="start()">Discard Changes</button>
 		
 		<button class="btn btn-success" onclick="mapUiToCaseJson()">Save Changes To Disk</button>
+
+	<input class="text-right" type="text" id="my_file_to_save" name="my_file_to_save" value="{{savefilename}}"/>
+	
 	</div>   
    <h2>Edit Steps</h2>
   <div class="container-fluid">
@@ -113,10 +116,10 @@
 		<input type="text" id="StepRowToEdit" value=""/>
 		</div>
 		<div class="field"> <label >Driver</label>
-		<input type="text" id="StepDriver" value=""/>
+		<select type="text" id="StepDriver" value=""/>
 		</div>
 		<div class="field"> <label >Keyword</label>
-		<input type="text" id="StepKeyword" value=""/>
+		<select type="text" id="StepKeyword" value=""/>
 		</div>
 		<div class="field"> <label >TS</label>
 		<input type="text" id="StepTS" value=""/>
@@ -187,7 +190,5 @@
     </div> 
  
 
-	<div>
-	<input class="col-md-12 text-right" type="text" id="my_file_to_save" name="my_file_to_save" value="{{savefilename}}"/>
-	</div>			
+	
 	<div id="savesubdir">{{savesubdir}}</div>

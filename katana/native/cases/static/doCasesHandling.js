@@ -247,7 +247,7 @@ function mapCaseJsonToUi(data){
 		items.push('<input type="button" title="Edit" class="ui-icon ui-icon-pencil ui-button-icon-only" value="Edit" id="'+bid+'"/></td>');
 		$('#'+bid).off('c<td>lick');   //unbind and bind are deprecated. 
 		$(document).on('click','#'+bid,function(  ) {
-			alert(this.id);
+			//alert(this.id);
 			var names = this.id.split('-');
 			var sid = parseInt(names[1]);
 			mapTestStepToUI(sid,xdata);
@@ -262,6 +262,9 @@ function mapCaseJsonToUi(data){
 	katana.$activeTab.find('#Step_table_display tbody').sortable();
 	katana.$activeTab.find('#Step_table_display').on('click',"td",   function() { 
 	});
+
+
+	// Based on the options
 
 	/*
 	if (jsonCaseDetails['Datatype'] == 'Custom') {
@@ -343,6 +346,21 @@ function mapTestStepToUI(sid, xdata) {
 			});
 	console.log(a_items);
 	katana.$activeTab.find("#arguments-textarea").html( a_items.join("\n"));
+
+	var opts = jQuery.getJSON("./cases/getListOfActions").done(function(data) { 
+			//	console.log(data['actions']);
+			var a_items = data['actions'];
+			katana.$activeTab.find("#StepDriver").empty();
+			for (var x =0; x < a_items.length; x++) {
+				katana.$activeTab.find("#StepDriver").append($('<option>',{ value: a_items[x],  text: a_items[x]}));
+			}
+
+	});
+	console.log("Returning actions");
+	console.log(opts);
+	console.log("Returned actions");
+
+
 }
 
 function saveOneArgument( sid, aid, xdata) {

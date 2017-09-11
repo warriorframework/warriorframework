@@ -79,6 +79,19 @@ def index(request):
 	return HttpResponse(template.render(context, request))
 
 
+def getListOfActions(request):
+	print "Returning ... actions ...."
+	return JsonResponse({'actions': [ "actionA", "actionB", "actionC"]})
+
+
+def getListOfKeywords(request):
+
+	return JsonResponse({'keywords': [ "keywords_A", "keywords_B", "keywords_C"]})
+
+
+
+
+
 def editCase(request):
 	""" 
 	Set up JSON object for editing a suites file. 
