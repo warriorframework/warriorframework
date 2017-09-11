@@ -241,7 +241,10 @@ def parsexmlobj():
             sum_val += 1
             if sum_val > len(subkw_list):
                 break
-        for line in io.open('kw_seq_template', 'r'):# Replacing kw_seq_template with the respective
+
+        template_dir, template_dir_1 = get_relative_path_for_kw_seq_temp()
+
+        for line in io.open(template_dir, 'r'):# Replacing kw_seq_template with the respective
             # details and placing it in user provided action file
             with open(ActionFile, 'a+') as f2:
                 line = line.replace('$new_line', '\n')
@@ -260,12 +263,27 @@ def parsexmlobj():
             for _, val in enumerate(object_list_new):
                 val = val.decode('utf-8')
                 f2.write('\n' + "        " + val)
-            for line in io.open('kw_seq_temp', 'r'):# Replacing kw_seq_temp with the import lines
+            for line in io.open(template_dir_1, 'r'):# Replacing kw_seq_temp with the import lines
                 # and object list which is already been created and placing it in user provided
                 # action file
                 f2.write('\n' + "    " + line)
         f2.close()
     return checkval
+
+
+def get_relative_path_for_kw_seq_temp():
+    """ To get the absolute path of keyword sequencing template"""
+    katana_exe = sys.argv[0]
+    katana_py_file = katana_exe.split('/')
+    if len(katana_py_file) > 1:
+        katana_py_file = katana_py_file[:-1]
+        katana_py_file = '/'.join(katana_py_file)
+        template_dir = os.getcwd() + '/' + katana_py_file + '/kw_seq_template'
+        template_dir_1 = os.getcwd() + '/' + katana_py_file + '/kw_seq_temp'
+    else:
+        template_dir = 'kw_seq_template'
+        template_dir_1 = 'kw_seq_temp'
+    return template_dir, template_dir_1
 
 
 def get_method_name(line):
