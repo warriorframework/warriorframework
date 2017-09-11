@@ -37,9 +37,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'native.settings',
     'native.wapp_management',
-    'apps.userapp',
-    'apps.new_app',
-    'apps.brand_new_app',
     'wui.core',
 ]
 

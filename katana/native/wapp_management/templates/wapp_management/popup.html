@@ -1,7 +1,0 @@
-{% for file in data.config_files.names%}
-    <input type="radio" name="file_{{forloop.counter}}" value="{{file}}" katana-click="wapp_management.storeValue"> {{file}}<br>
-{% endfor %}
-
-{% if data.config_files.names%}
-    <button class="button" id="open_config" katana-click="wapp_management.openConfig" choice="{{file.data.value}}">Open Config</button>
-{% endif %}

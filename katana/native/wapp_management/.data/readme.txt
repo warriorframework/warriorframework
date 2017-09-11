@@ -1,1 +1,0 @@
-his file stores configurations for app installations
