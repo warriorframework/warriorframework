@@ -29,7 +29,7 @@ var katana = {
 			var toCall = $elem.attr( 'katana-click' ).replace( /\(.*?\)/, '' );
 			katana.methodCaller( toCall, $elem );
 		});
-		katana.$view.on( 'keyup', '[katana-change]', function( e ){
+		katana.$view.on( 'change', '[katana-change]', function( e ){
 			$elem = $(this);
 			e.stopPropagation();
 			var toCall = $elem.attr( 'katana-change' ).replace( /\(.*?\)/, '' );
@@ -281,7 +281,7 @@ var katana = {
 			var $elem = $(this);
 			var tempObj = {};
 			tempObj[ $elem.find('[key="@name"]').attr('key') ] = $elem.find('[key="@name"]').hasClass('.title') ? $elem.find('[key="@name"]').text() : $elem.find('[key="@name"]').val();
-			$elem.find('input, select').each( function() {
+			$elem.find('input[key], select[key]').each( function() {
 				var sub$elem = $(this);
 				if( !sub$elem.closest('.pocket-fields').length )
 					tempObj[ sub$elem.attr('key') ] = sub$elem.val();
@@ -308,6 +308,14 @@ var katana = {
 	toggleActive: function(){
 		var $elem = $(this);
 		$elem.toggleClass('active');
+	},
+
+	openProfile: function(){
+		var $elem = this;
+		$elem.closest('.active').removeClass('active');
+		katana.templateAPI.load.call( $elem, null, null, null, 'Profile-Settings', function(){
+			katana.templateAPI.subAppLoad( '/katana/settings/profile_setting_handler' );
+		});
 	},
 
 	fileNav:{
@@ -432,6 +440,7 @@ var katana = {
 					}).done(function( data ) {
 						container.append( katana.templateAPI.preProcess( data ) );
 						limitedStyles || container.find('.limited-styles-true').length && container.addClass('limited-styles');
+						container.find('.tool-bar') && container.find('.tool-bar').prependTo(container.parent());
 						katana.tabAdded( container, this );
 						callBack && callBack( container );
 					});

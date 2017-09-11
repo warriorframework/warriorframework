@@ -18,6 +18,36 @@ var settings = {
 		}
 	},
 
+	profile:{
+		init: function(){
+			settings.changeDetection.call(this);
+			this.find('.profile-image').insertAfter( this.find('.field-block .title'));
+		},
+
+		selectProfileImage: function(){
+			var $elem = this;
+			$elem.parent().find('input').click();
+		},
+
+		encodeImage: function(){
+			var $elem = this;
+			var element = this.get(0);
+			var toplevel = $elem.parent();
+			var file = element.files[0];
+			var preview = toplevel.find('.image');
+			var reader = new FileReader();
+			preview.addClass('loading');
+			reader.onloadend = function() {
+			 var result = reader.result;
+			 toplevel.find('input[name="image"]').val(result);
+			 preview.css('background-image', 'url(' + result + ')');
+			 preview.removeClass('loading');
+			}
+			reader.readAsDataURL(file);
+		},
+
+	},
+
 	jira: {
 		boolHandler: function( $elem ){
 			var button = $elem.closest('.field-block').find('.relative-tool-bar [title="' + $elem.attr('key') + '"]');
@@ -31,6 +61,11 @@ var settings = {
 
 		append_log: function(){
 			settings.jira.boolHandler( $(this) );
+		},
+
+		defaultClick: function(){
+			this.closest('.page-content').find('[key="@default"]').not( this ).removeClass('active');
+			katana.toggleActive.call(this);
 		},
 
 		issue_type: function(){

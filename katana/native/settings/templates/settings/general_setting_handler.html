@@ -1,8 +1,10 @@
 <body>
 <div class="tool-bar"><div katana-click="settings.closeSetting" class="button close">Close</div><div katana-click="settings.save" class="button save saved">Save</div></div>
-<div class="two-rows to-save" auto-init="settings.changeDetection" post-url="settings/general_setting_handler">
+
+<div class="flex-rows to-save" auto-init="settings.changeDetection" post-url="settings/general_setting_handler">
     <div class="field-block">
-      <div class="title">general Settings</div>
+      <div class="title center">general Settings</div>
+
       {% for k, v in data.items%}
           <div class="field"><label>{{ k }}</label><input key="{{ k }}" type="text" {% if v  %} value="{{ v }}" {% endif %} placeholder="{{ k }}"></div>
       {% endfor %}
