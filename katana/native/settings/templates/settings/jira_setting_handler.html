@@ -9,7 +9,7 @@
           <div class="title"><input key="{{ k }}" type="text" value="{{ v }}" placeholder="Title"></div>
         {% endif %}
       {% endfor %}
-      <div class="relative-tool-bar"><i title="@default" key="@default" katana-click="katana.toggleActive" class="bool fa fa-toggle-on"></i><i katana-click="katana.toggleActive" key="append_log" title="append_log" class="bool fa fa-toggle-on"></i><i katana-click="settings.jira.addIssueType" title="Add Issue Type" class="fa fa-plus"></i><i katana-click="settings.jira.addBlock" title="Add Block" class="fa fa-plus-circle"></i><i katana-click="settings.jira.deleteBlock" title="Delete Block" class="fa fa-times"></i></div>
+      <div class="relative-tool-bar"><i title="Make Default" key="@default" katana-click="settings.jira.defaultClick" class="bool fa fa-toggle-on"></i><i katana-click="katana.toggleActive" key="append_log" title="Append Log" class="bool fa fa-toggle-on"></i><i katana-click="settings.jira.addIssueType" title="Add Issue Type" class="fa fa-plus"></i><i katana-click="settings.jira.addBlock" title="Add New System" class="fa fa-plus-circle"></i><i katana-click="settings.jira.deleteBlock" title="Delete System" class="fa fa-times"></i></div>
       <div class="to-scroll">
         {% for k, v in system.items%}
           {% if k != '@name' %}
@@ -22,6 +22,7 @@
   <div class="csrf-container">{% csrf_token %}</div>
   <script type="text/template" id="issue_type">
     <div class="pocket-fields" key="issue_type">
+      <div class="title">Issue Type</div>
       <div class="field"><label>type</label><input key="type" type="text" value="" placeholder=""></div>
       <div class="field"><label>pass</label><input key="pass" type="text" value="" placeholder=""></div>
       <div class="field"><label>fail</label><input key="fail" type="text" value="" placeholder=""></div>

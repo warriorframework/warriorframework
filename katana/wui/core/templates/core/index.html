@@ -16,9 +16,22 @@
 		<body>
 
 			<div class="view activeView">
-				<div class="header"><h1>WARRIOR</h1></div>
-				<div class="nav"><div class="nav-inner"><div class="tab active" uid="launchpad" katana-click="katana.switchTab">Launch Pad</div>
-					</div></div>
+				<div class="header">
+					<h1>WARRIOR</h1>
+					<div class="quick-user" katana-click="katana.toggleActive" ><div class="profile-image image" style="background-image: url({{ userData.Base64image }})"></div><span class="username">{{ userData.Username }}</span>
+						<div class="hidden-menu">
+							<ul>
+								<li katana-click="katana.openProfile" url="/katana/settings/" jsurls="/static/settings/js/settings.js,">Profile Settings <i class="fa fa-user"></i></li>
+								<li katana-click="katana.aboutUs">About <i class="fa fa-info"></i></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="nav">
+					<div class="nav-inner">
+						<div class="tab active" uid="launchpad" katana-click="katana.switchTab">Launch Pad</div>
+					</div>
+				</div>
 				<div class="page" id="launchpad">
 					<div class="page-content">
 						<div class="tabs">

@@ -310,6 +310,14 @@ var katana = {
 		$elem.toggleClass('active');
 	},
 
+	openProfile: function(){
+		var $elem = this;
+		$elem.closest('.active').removeClass('active');
+		katana.templateAPI.load.call( $elem, null, null, null, 'Profile-Settings', function(){
+			katana.templateAPI.subAppLoad( '/katana/settings/profile_setting_handler' );
+		});
+	},
+
 	fileNav:{
 		folderTemp: '',
 		fileTemp: '',
@@ -432,6 +440,7 @@ var katana = {
 					}).done(function( data ) {
 						container.append( katana.templateAPI.preProcess( data ) );
 						limitedStyles || container.find('.limited-styles-true').length && container.addClass('limited-styles');
+						container.find('.tool-bar') && container.find('.tool-bar').prependTo(container.parent());
 						katana.tabAdded( container, this );
 						callBack && callBack( container );
 					});
