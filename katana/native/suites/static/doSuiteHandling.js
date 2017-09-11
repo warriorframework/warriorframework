@@ -251,7 +251,7 @@ function createCasesTable(xdata) {
 		items.push('<td>'+oneCase['impact']+'</td>');
 
 		var bid = "deleteTestcase-"+s+"-id"+getRandomSuiteID();;
-		items.push('<td><input type="button" title="Delete" class="ui-icon ui-icon-trash ui-button-icon-only" value="X" id="'+bid+'"/>');
+		items.push('<td><i type="button" title="Delete" class="fa fa-eraser" value="X" id="'+bid+'"/>');
 		katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 		$(document).on('click','#'+bid,function( ) {
 			var names = this.id.split('-');
@@ -260,7 +260,7 @@ function createCasesTable(xdata) {
 		});
 		bid = "editTestcase-"+s+"-id"+getRandomSuiteID();
 		//items.push('<td><input type="button" class="btn" value="Edit" id="'+bid+'"/></td>');
-		items.push('<input type="button" title="Edit" class="ui-icon ui-icon-pencil ui-button-icon-only" value="Edit" id="'+bid+'"/></td>');
+		items.push('<i type="button" title="Edit" class="fa fa-pencil" value="Edit" id="'+bid+'"/></td>');
 		katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 		$(document).on('click','#'+bid,function(  ) {
 			var names = this.id.split('-');
@@ -316,19 +316,21 @@ function createRequirementsTable(rdata){
 	items.push('<tr id="ReqRow"><th>Num</th><th>Name</th><th>Value</th><th/><th/></tr>');
 	items.push('</thead>');
 	items.push('<tbody>');
+	console.log(rdata);
 	for (var s=0; s<Object.keys(rdata).length; s++ ) {
 		var oneReq = rdata[s];
-		items.push('<tr><td>'+str(ParseInt(s)+1)+'</td>');
+		var idnumber = s + 1
+		items.push('<tr><td>'+idnumber+'</td>');
 		//items.push('<td>'+oneReq+'</td>');
 		var bid = "textRequirement-name-"+s+"-id";	
 		items.push('<td><input type="text" value="'+oneReq['@name']+'" id="'+bid+'"/></td>');
 		bid = "textRequirement-value-"+s+"-id";	
 		items.push('<td><input type="text" value="'+oneReq['@value']+'" id="'+bid+'"/></td>');
-		
+		console.log("Line 328 or so"); 
 		bid = "deleteRequirement-"+s+"-id";
-		items.push('<td><input type="button" class="ui-icon ui-icon-trash ui-button-icon-only"  value="Delete" id="'+bid+'"/></td>');
+		console.log("Line 328 or so "+bid); 
+		items.push('<td><i  type="button" class="fa fa-eraser"  value="Delete" id="'+bid+'"/></td>');
 		katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
-		$(document).on('click','#'+bid,null);  // unbind is deprecated - debounces the click event. 
 		$(document).on('click','#'+bid,function( event ) {
 			var names = this.id.split('-');
 			var sid = parseInt(names[1]);
@@ -338,8 +340,11 @@ function createRequirementsTable(rdata){
 			createRequirementsTable(jsonSuiteObject['Requirements']);	
 			return false;
 		});
+
+				console.log("Line 344 or so"); 
+
 		bid = "editRequirement-"+s+"-id";$(document)
-		items.push('<td><input type="button" class="ui-icon ui-icon-pencil ui-button-icon-only" value="Edit" id="'+bid+'"/></td>');
+		items.push('<td><i type="button" class="fa fa-pencil" value="Edit" id="'+bid+'"/></td>');
 		katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 		$(document).on('click','#'+bid,function(  ) {
 			var names = this.id.split('-');

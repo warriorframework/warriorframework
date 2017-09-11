@@ -27,16 +27,13 @@ from django.http import HttpResponse, JsonResponse
 from django.template import loader, RequestContext
 from xml.sax.saxutils import escape, unescape
 import xml.dom.minidom 
-import xmltodict , dicttoxml
+import xmltodict 
 from django.core.serializers import serialize
 from django.db.models.query import QuerySet
 from django.template import Library
 import json
 from utils.navigator_util import Navigator
 
-path_to_demo="/home/khusain/Suites/xml-edit/warriorframework/katana/vdj/cases/"
-path_to_testcases='/home/khusain/Suites/xml-edit/warriorframework/wftests/warrior_tests/';
-path_to_productdrivers='/home/khusain/Suites/xml-edit/warriorframework/warrior/ProductDrivers/'
 navigator = Navigator();
 
 def old_index(request):

@@ -276,7 +276,7 @@ function mapCaseJsonToUi(data){
 		items.push('<td>'+outstr+'</td>'); 
 		var bid = "deleteTestStep-"+s+"-id-"+getRandomCaseID();
 		//items.push('<td><input type="button" class="btn-danger" value="X" id="'+bid+'"/>');
-		items.push('<td><input type="button" title="Delete" class="ui-icon ui-icon-trash ui-button-icon-only" value="X" id="'+bid+'"/>');
+		items.push('<td><i type="button" title="Delete" class="fa fa-eraser" value="X" id="'+bid+'"/>');
 		
 		$('#'+bid).off('click');   //unbind and bind are deprecated. 
 		$(document).on('click','#'+bid,function(  ) {
@@ -287,7 +287,7 @@ function mapCaseJsonToUi(data){
 		});
 
 		bid = "editTestStep-"+s+"-id-"+getRandomCaseID();
-		items.push('<input type="button" title="Edit" class="ui-icon ui-icon-pencil ui-button-icon-only" value="Edit" id="'+bid+'"/></td>');
+		items.push('<i type="button" title="Edit" class="fa fa-pencil" value="Edit" id="'+bid+'"/></td>');
 		$('#'+bid).off('c<td>lick');   //unbind and bind are deprecated. 
 		$(document).on('click','#'+bid,function(  ) {
 			//alert(this.id);
@@ -361,7 +361,7 @@ function mapTestStepToUI(sid, xdata) {
 			a_items.push('<label>Value</label><input type="text" argid="caseArgValue-'+ta+'" value="'+[xarg]["@value"]+'"/>');
 			// Now a button to edit or delete ... 
 			bid = "deleteCaseArg-"+sid+"-"+ta+"-id"+getRandomCaseID();;
-			a_items.push('<td><input type="button" title="Delete" class="ui-icon ui-icon-trash ui-button-icon-only" value="X" id="'+bid+'"/>');
+			a_items.push('<td><i  type="button" title="Delete" class="fa fa-eraser" value="X" id="'+bid+'"/>');
 			katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 			$(document).on('click','#'+bid,function( ) {
 				var names = this.id.split('-');
@@ -370,7 +370,7 @@ function mapTestStepToUI(sid, xdata) {
 				removeOneArgument(sid,aid,xdata);
 			});
 			bid = "saveCaseArg-"+sid+"-"+ta+"-id"+getRandomCaseID();;
-			a_items.push('<td><input type="button" title="Save Argument Change" class="ui-icon ui-icon-pencil ui-button-icon-only" value="Save" id="'+bid+'"/>');
+			a_items.push('<td><i  type="button" title="Save Argument Change" class="fa fa-pencil" value="Save" id="'+bid+'"/>');
 			katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 			$(document).on('click','#'+bid,function( ) {
 				var names = this.id.split('-');
@@ -384,7 +384,7 @@ function mapTestStepToUI(sid, xdata) {
 	}
 	//  -------- 
 	bid = "addCaseArg-"+sid+"-id"+getRandomCaseID();;
-	a_items.push('<td><input type="button" title="Add Argument" class="ui-icon ui-icon-trash ui-button-icon-only" value="Add Argument" id="'+bid+'"/>');
+	a_items.push('<td><i type="button" title="Add Argument" class="fa fa=plus" value="Add Argument" id="'+bid+'"/>');
 	katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 	$(document).on('click','#'+bid,function( ) {
 				var names = this.id.split('-');
@@ -533,7 +533,7 @@ function createRequirementsTable(i_data){
 				items.push('<td><input type="text" value="'+oneReq +'" id="'+bid+'"/></td>');
 				
 				bid = "deleteRequirement-"+s+"-id"+getRandomCaseID();
-				items.push('<td><input type="button" title="Delete" class="ui-icon ui-icon-trash ui-button-icon-only" value="X" id="'+bid+'"/>');
+				items.push('<td><i type="button" title="Delete" class="fa fa-eraser" value="X" id="'+bid+'"/>');
 				
 				katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 				$(document).on('click','#'+bid,function( ) {
@@ -544,7 +544,7 @@ function createRequirementsTable(i_data){
 				});
 				bid = "editRequirement-"+s+"-id"+getRandomCaseID();;
 				//items.push('<td><input type="button" class="btn" value="Save" id="'+bid+'"/></td>');
-				items.push('<input type="button" title="Edit" class="ui-icon ui-icon-pencil ui-button-icon-only" value="Edit" id="'+bid+'"/></td>');
+				items.push('<i type="button" title="Edit" class="fa fa-pencil" value="Edit" id="'+bid+'"/></td>');
 				
 				katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 				$(document).on('click','#'+bid,function() {
