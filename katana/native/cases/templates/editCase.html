@@ -5,9 +5,7 @@
 
 
 <body>
-<script type="text/javascript" src="{% static "./badgerfish.js" %}"></script>
-<script type="text/javascript" src="{% static "./json.js" %}"></script>
-<script type="text/javascript" src="{% static "./xmlparser.js" %}"></script>
+
 <script type="text/javascript" src="{% static "./doCasesHandling.js" %}"></script>
 
 
@@ -104,8 +102,8 @@
 
    <h2>Edit Steps</h2>
  <div class="container-fluid">
-  	<div id="sourceFileText" class="col-md-6" > Source file </div> 
-	<div id="editCaseStepEntry" class="col-md-6"> 
+ <div class="row">
+  	<div id="editCaseStepEntry" class="col-md-6"> 
 		<div class="field"> <label >Row</label>
 		<input type="text" id="StepRowToEdit" value=""/>
 		</div>
@@ -171,11 +169,17 @@
 			<option value="impact">impact</option> 
 			<option value="noimpact">noimpact</option> 
 			</select>
-		</div>
-			Arguments:
-		<div id="arguments-textarea"> </div>
-</div>
+		</div>	
+
+	</div>
+	<div id="sourceFileText" class="col-md-6" > Source file </div> 
 	
+</div>
+ <div class="row">
+Arguments:
+<div id="arguments-textarea" class="col-md-6"> </div>
+</div>
+</div>	
 	<div>
 	<input type="button" class="btn" value="Save Changes To Test Step" id="editCaseStep"/>
     </div> 

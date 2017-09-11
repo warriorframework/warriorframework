@@ -24,9 +24,6 @@ import xmltodict
 import json
 from utils.navigator_util import Navigator
 
-path_to_demo="/home/khusain/Suites/xml-edit/warriorframework/katana/vdj/cases/"
-path_to_testcases='/home/khusain/Suites/xml-edit/warriorframework/wftests/warrior_tests/';
-path_to_productdrivers='/home/khusain/Suites/xml-edit/warriorframework/warrior/ProductDrivers/'
 navigator = Navigator();
 
 def old_index(request):
@@ -72,7 +69,7 @@ def index(request):
 		'title' : 'List of Suites',	
 		'docSpec': 'SuiteSpec',
 		'myfiles': myfiles, 
-		'basedir': path_to_testcases,
+		'basedir': fpath,
 		'treejs'  : jtree 
 	}
 	context.update(csrf(request))
