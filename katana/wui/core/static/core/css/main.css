@@ -271,7 +271,6 @@ span.close:before {content: 'X';}
     white-space: nowrap;
     bottom: 0px;
     left: 0;
-    background: rgba(0,0,0,0.28);
     /* box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.28); */
     /* border-top: 1px solid #dedede; */
     /* border-right: 1px solid #dedede; */
