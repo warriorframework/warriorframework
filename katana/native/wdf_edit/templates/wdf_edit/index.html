@@ -23,7 +23,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-2"><label class="wdf-label">System name:</label></div>
-                    <div class="col-md-10"><input class="wdf-input" name="{{ forloop.counter }}-1-system_name" value="{{ system.name }}"/></div>
+                    <div class="col-md-10"><input class="wdf-input" name="{{ forloop.counter }}-1-system_name" value="{{ system|get_item:'name' }}"/></div>
                 </div>
                 {% for k, v in system.items %}
                     {% if k != "name" %}

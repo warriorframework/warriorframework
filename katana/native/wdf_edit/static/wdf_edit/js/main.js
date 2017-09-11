@@ -5,18 +5,20 @@ var wdf = {
     },
 
     deleteTag: function(){
-        // 
+        // empty tag and all of its child tags
         $target = $(this).parent().parent();
         $raw_id = $target.find("[name*='-key']").attr("name").substring(0, $target.find("[name*='-key']").attr("name").length-4);
         $id = $raw_id.split("-").slice(0,-1).join("-");
 
+        // loop through all child tag and hide them
         $children = $target.parent().find("[name*='"+$id+"']");
         for (var i=0; i<$children.length; i++) {
             if ($($children.get(i)).prop("name").indexOf("key") !== -1) {
                 $child = $($children.get(i)).parent().parent();
                 $child.removeClass("animated fadeIn");
                 $child.addClass("animated bounceOutLeft");
-                setTimeout((function(tmp){return function(){tmp.hide();}})($child), 600);
+                // closure
+                setTimeout((function(tmp){return function(){tmp.empty();}})($child), 600);
             }
         }
   
@@ -26,6 +28,7 @@ var wdf = {
     },
 
     deleteChildTag: function(){
+        // hide a specific child tag
         $target = $(this).parent().parent().find("[name*='key']");
         $hide_target = $target.parent().parent();
         if ($target.prop("name").indexOf("deleted") == -1) {
@@ -38,6 +41,7 @@ var wdf = {
     },
 
     deleteSystem: function(){
+        // empty the whole system
         $target=$(this).parent().parent().parent();
         $target.removeClass("animated fadeIn");
         $target.addClass("animated bounceOutLeft");
@@ -45,7 +49,7 @@ var wdf = {
     },
 
     addSystem: function(){
-        // Add a systeml
+        // Add a system
         var $tmp = katana.$activeTab.find("#system_template").clone();
         $tmp.find("#template-system").prop("id", katana.$activeTab.find(".control-box").length-1+"-control-box")
         $tmp.find("[name='template-system-name']").prop("name", katana.$activeTab.find(".control-box").length-1+"-1-system_name");
@@ -95,6 +99,7 @@ var wdf = {
     },
 
     newFile: function(){
+        // send a get request to request a empty page
         $.ajax({
             url: "wdf/index",
             type: "GET",
@@ -111,6 +116,7 @@ var wdf = {
     },
 
     build_tree: function(){
+        // get the file system tree from jstree library
         $.ajax({
             url: "wdf/gettree",
             type: "GET",
@@ -120,6 +126,7 @@ var wdf = {
             }
         });
 
+        // change the tree with actual editor page
         katana.$activeTab.find('#jstree').on("select_node.jstree", function (e, data) {
             // console.log("select_node");
             // console.log(data);
@@ -147,6 +154,7 @@ var wdf = {
     },
 
     submit: function(){
+        // save all the input fields and post it to server
         var csrftoken = $("[name='csrfmiddlewaretoken']").val();
 
         $.ajax({
