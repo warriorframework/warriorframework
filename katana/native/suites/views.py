@@ -79,7 +79,7 @@ def index(request):
 		'title' : 'List of Suites',	
 		'docSpec': 'SuiteSpec',
 		'myfiles': myfiles, 
-		'basedir': path_to_testcases,
+		'basedir': fpath,
 		'treejs'  : jtree 
 	}
 	context.update(csrf(request))
