@@ -1,4 +1,3 @@
-<?xml version="1.0" ?>
 <Default>
     <Setting name="def_dir">
         <Logsdir></Logsdir> <!--Optional, uses default, support absolute path, relative path and environment variable(${ENV.DEF_LOGSDIR})-->
@@ -16,4 +15,7 @@
         <receiver></receiver> <!-- Optional, use receiver's email such as FNC.User@fnc.fujitsu.com -->
         <subject></subject> <!-- Optional, use this as subject line such as WARRIOR , additional test case execution results Pass/Fail and Test Execution File shall be appended to this -->
     </Setting>
+
+
+    <Setting location="http://localhost:5000/katana" name="katana" />
 </Default>

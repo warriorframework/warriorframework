@@ -1,7 +1,7 @@
 
 import os
 
-class Navigator:
+class Navigator(object):
 
     def __init__(self):
         pass
@@ -34,9 +34,9 @@ class Navigator:
         
         This json tree can be consumed as it is by the jstree library hence the default icons
         are mapped to jstree icons.
-        
+
         By default the first node in the tree will be opened
-        
+
         
         Eg of how the json tree will look like 
         { 

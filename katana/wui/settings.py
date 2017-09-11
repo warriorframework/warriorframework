@@ -43,7 +43,9 @@ INSTALLED_APPS = [
     'native.projects',
     'native.suites',
     'native.cases',
+    'native.execution',
     'native.wdf_edit',
+
 ]
 
 MIDDLEWARE = [
