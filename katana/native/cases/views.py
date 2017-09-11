@@ -31,7 +31,7 @@ path_to_demo="/home/khusain/Projects/xml-edit/warriorframework/katana/vdj/cases/
 path_to_testcases='/home/khusain/Projects/xml-edit/warriorframework/wftests/warrior_tests/';
 path_to_productdrivers='/home/khusain/Projects/xml-edit/warriorframework/warrior/ProductDrivers/'
 navigator = Navigator();
-
+jsonDetails = None; 
 #
 
 def index(request):
@@ -78,18 +78,62 @@ def index(request):
 	}
 	return HttpResponse(template.render(context, request))
 
+import glob
+from katana_utils import *
+import scanfiles
+
+
+
 
 def getListOfActions(request):
-	print "Returning ... actions ...."
-	return JsonResponse({'actions': [ "actionA", "actionB", "actionC"]})
+	path_to_src_python_file = navigator.get_katana_dir() + os.sep + "config.json"
+	x= json.loads(open(path_to_src_python_file).read());
+	path_to_pythonsrc = x['pythonsrcdir'];                 
+	jsr = scanfiles.fetch_action_file_names(path_to_pythonsrc,'driver','all');
+
+	actions = [ os.path.basename(fn)[:-3] for fn in jsr['ProductDrivers']];
+	details = py_file_details(path_to_pythonsrc);
+	jsonDetails = copy.copy(details)
+	print details
+	return JsonResponse({'actions': actions , 'filesinfo' : details })
 
 
 def getListOfKeywords(request):
+	if 1: 
+			path_to_src_python_file = navigator.get_katana_dir() + os.sep + "config.json"
+			x= json.loads(open(path_to_src_python_file).read());
+			path_to_pythonsrc = x['pythonsrcdir']; 
+			details = py_file_details(path_to_pythonsrc);
+			
+	driver = request.GET.get('driver');
+	print dir(details);
+	print driver
+	#print details[driver][0]
+	print len(details[driver][0])
+	responseBack = { 'keywords': [] }
+	for item in details[driver][0]: 
+		print item
+		responseBack['keywords'].append(item['fn']);
+	return JsonResponse(responseBack)
 
-	return JsonResponse({'keywords': [ "keywords_A", "keywords_B", "keywords_C"]})
 
+def getListOfComments(request):
+	if 1: 
+			path_to_src_python_file = navigator.get_katana_dir() + os.sep + "config.json"
+			x= json.loads(open(path_to_src_python_file).read());
+			path_to_pythonsrc = x['pythonsrcdir']; 
+			details = py_file_details(path_to_pythonsrc);
+			
+	driver  = request.GET.get('driver');
+	keyword = request.GET.get('keyword');
+	responseBack = { 'fields': [] }
+	
+	for item in details[driver][0]: 
+		if item['fn'] == keyword: 
+			print item
+			responseBack['fields'].append(item);
 
-
+	return JsonResponse(responseBack)
 
 
 def editCase(request):

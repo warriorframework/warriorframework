@@ -1,6 +1,6 @@
 import os
 import os.path 
-import re
+import re, glob, json, docstrings
 #gpysrcdir = pathname(cfg['pythonsrcdir'])
 gpysrcdir = "/home/khusain/warriorframework/warrior/"
 
@@ -116,13 +116,14 @@ def fetch_comments(sa):
     return res
 
 
-def py_file_details():  # changed
+def py_file_details(gpysrcdir):  # changed
     print gpysrcdir
-    cfg = readconfig()
-    print cfg
+    #cfg = readconfig()
+    #print cfg
     # gpysrcdir = fetchpath('pythonsrcdir')
     # gpysrcdir = pathname(cfg['pythonsrcdir'])
-    gpysrcdir = cfg['pythonsrcdir']
+    #gpysrcdir = cfg['pythonsrcdir']
+
     print ">>> source directory:", gpysrcdir
 
     pyfiles_list = glob.glob(

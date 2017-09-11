@@ -8,5 +8,6 @@ urlpatterns = [
     url(r'getCaseDataBack', views.getCaseDataBack , name='getCaseDataBack'),
  	url(r'getListOfActions', views.getListOfActions , name='getListOfActions'),
  	url(r'getListOfKeywords', views.getListOfKeywords , name='getListOfKeywords'),
+ 	url(r'getListOfComments', views.getListOfComments , name='getListOfComments'),
  	
 ]

@@ -32,10 +32,10 @@ var jsonCaseDetails = [];
 var jsonCaseSteps = [];           
 var jsonCaseRequirements = []; 	  // This is the JSON model for the UI requirements
 var activePageID = getRandomCaseID();   // for the page ID 
+var jsonFilesInfo = null; 
 
 function mapFullCaseJson(myobjectID){
 	activePageID = getRandomCaseID();
-	console.log("HELLO");
 	var sdata = katana.$activeTab.find("#listOfTestStepsForCase").text();
 	katana.$activeTab.find("#listOfTestcasesForSuite").hide();
 	katana.$activeTab.find('#savesubdir').hide();
@@ -56,6 +56,49 @@ function mapFullCaseJson(myobjectID){
 			mapUItoTestStep(xdata);
 			//createCasesTable(xdata);  //Refresh the screen.
 		});
+
+
+	katana.$activeTab.find("#StepDriver").on('change',function() {
+		sid  = katana.$activeTab.find("#StepDriver").attr('theSid');   // 
+		var oneCaseStep = jsonCaseSteps['step'][sid];
+		console.log(oneCaseStep);
+		//console.log("------");
+		console.log(katana.$activeTab.find("#StepDriver").val());
+
+		var driver = katana.$activeTab.find("#StepDriver").val();
+		var opts = jQuery.getJSON("./cases/getListOfKeywords/?driver="+driver).done(function(data) {
+ 			katana.$activeTab.find("#StepKeyword").empty();
+ 			a_items = opts.responseJSON['keywords'];
+ 			console.log(opts);
+ 			console.log(a_items);
+ 			for (let x of a_items) {
+ 				katana.$activeTab.find("#StepKeyword").append($('<option>',{ value: x,  text: x }));
+ 			}
+ 		});
+	});
+
+
+	katana.$activeTab.find("#StepKeyword").on('change',function() {
+		sid  = katana.$activeTab.find("#StepKeyword").attr('theSid');   // 
+		var oneCaseStep = jsonCaseSteps['step'][sid];
+		console.log(oneCaseStep);
+		//console.log("------");
+		console.log(katana.$activeTab.find("#StepKeyword").val());
+
+		var keyword = katana.$activeTab.find("#StepKeyword").val();  // 
+		var driver  = katana.$activeTab.find("#StepDriver").val();   // 
+		var opts = jQuery.getJSON("./cases/getListOfComments/?driver="+driver+"&keyword="+keyword).done(function(data) {
+ 			a_items = opts.responseJSON['fields'];
+ 			console.log(opts);
+ 			console.log(a_items);
+ 			// fill in the form....
+ 			out_array = a_items[0]['comment'];
+ 			console.log(out_array);
+ 			var outstr = out_array.join("<br>");
+ 			katana.$activeTab.find("#sourceFileText").html(outstr);
+
+ 		});
+	});
 
 
 	// Must define handlers inside this function ... 
@@ -296,6 +339,10 @@ function mapTestStepToUI(sid, xdata) {
 	console.log(oneCaseStep);
 	katana.$activeTab.find("#StepDriver").val(oneCaseStep['step'][ "@Driver"]);
 	katana.$activeTab.find("#StepKeyword").val(oneCaseStep['step'][ "@Keyword"]);
+	
+	katana.$activeTab.find("#StepDriver").attr('theSid',sid);  // Track the object you are on. 
+
+
 	katana.$activeTab.find("#StepTS").val(oneCaseStep['step'][ "@TS"]);
 	katana.$activeTab.find("#StepDescription").val(oneCaseStep["Description"]);
 	katana.$activeTab.find("#StepContext").val(oneCaseStep["context"]);
@@ -335,7 +382,7 @@ function mapTestStepToUI(sid, xdata) {
 
 			ta += 1
 	}
-
+	//  -------- 
 	bid = "addCaseArg-"+sid+"-id"+getRandomCaseID();;
 	a_items.push('<td><input type="button" title="Add Argument" class="ui-icon ui-icon-trash ui-button-icon-only" value="Add Argument" id="'+bid+'"/>');
 	katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
@@ -344,22 +391,40 @@ function mapTestStepToUI(sid, xdata) {
 				var sid = parseInt(names[1]);
 				addOneArgument(sid,xdata);
 			});
-	console.log(a_items);
+	//console.log(a_items);
 	katana.$activeTab.find("#arguments-textarea").html( a_items.join("\n"));
 
-	var opts = jQuery.getJSON("./cases/getListOfActions").done(function(data) { 
-			//	console.log(data['actions']);
-			var a_items = data['actions'];
-			katana.$activeTab.find("#StepDriver").empty();
-			for (var x =0; x < a_items.length; x++) {
+
+	// Load in the actions names. 
+	var opts = jQuery.getJSON("./cases/getListOfActions").done(function(data) { 		 
+	var a_items = data['actions'];			 
+	katana.$activeTab.find("#StepDriver").empty();  // Empty all the options....
+	for (var x =0; x < a_items.length; x++) {
 				katana.$activeTab.find("#StepDriver").append($('<option>',{ value: a_items[x],  text: a_items[x]}));
 			}
-
+			sid  = katana.$activeTab.find("#StepDriver").attr('theSid');
+			var oneCaseStep = jsonCaseSteps['step'][sid];
+			katana.$activeTab.find("#StepKeyword").attr('theSid', sid);
+			katana.$activeTab.find("#StepDriver").val(oneCaseStep["@Driver"]);
+			console.log(data['filesinfo'])
+			jsonFilesInfo = data['filesinfo'];
+			var keyword = oneCaseStep["@Driver"]; 
+			katana.$activeTab.find("#StepKeyword").empty();  // Empty all the options....
+			var k_items = data['filesinfo'][keyword][0];
+			console.log("k-items=" + k_items);
+			console.log(k_items.length);
+			for (var ki =0; ki < k_items.length; ki++) {
+				console.log(k_items[ki]);
+				var v = k_items[ki]['fn']; 
+				console.log(v);
+				katana.$activeTab.find("#StepKeyword").append($('<option>',{ value:v,  text: v}));
+			
+			}
+			katana.$activeTab.find("#StepKeyword").val(oneCaseStep['step'][ "@Keyword"]);
 	});
-	console.log("Returning actions");
-	console.log(opts);
-	console.log("Returned actions");
-
+	//console.log("Returning actions");
+	//console.log(opts);
+	//console.log("Returned actions");
 
 }
 
@@ -462,7 +527,7 @@ function createRequirementsTable(i_data){
 			
 			for (var s=0; s<Object.keys(rdata).length; s++ ) {
 				var oneReq = rdata[s];
-				console.log(oneReq);
+				//console.log(oneReq);
 				items.push('<tr><td>'+s+'</td>');
 				var bid = "textRequirement-"+s+"-id";	
 				items.push('<td><input type="text" value="'+oneReq +'" id="'+bid+'"/></td>');
@@ -488,7 +553,7 @@ function createRequirementsTable(i_data){
 					console.log("xdata --> "+ rdata);  // Get this value and update your json. 
 					var txtIn = katana.$activeTab.find("#textRequirement-"+sid+"-id").val();
 					console.log(katana.$activeTab.find("#textRequirement-"+sid+"-id").val());
-					console.log(sid);
+					//console.log(sid);
 					console.log(rdata[sid])
 					rdata[sid] = txtIn;
 					createRequirementsTable(i_data);	
