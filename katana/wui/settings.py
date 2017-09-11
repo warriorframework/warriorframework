@@ -43,7 +43,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'native.execution',
     'native.wdf_edit',
+
 ]
 
 MIDDLEWARE = [

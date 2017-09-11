@@ -14,6 +14,7 @@ limitations under the License.
 
 import os
 import sys
+from  utils import warrior_interface_utils
 
 if __name__ == "__main__":
 
@@ -57,5 +58,12 @@ if __name__ == "__main__":
             else:
                 port = args[i+1]
             break
-
+    
+    # below two lines are to write katana url information to w_settings file
+    katana_url = "http://localhost:{0}/katana".format(port)
+    warrior_interface_utils.set_katana_location(katana_url)
+    
     os.system("{0} {1} {2} {3}".format(command, filepath, runserver, port))
+    
+    
+    
