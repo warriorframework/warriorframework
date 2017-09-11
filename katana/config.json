@@ -1,11 +1,11 @@
 {
     "engineer": "",
     "idfdir": "",
-    "projdir": "",
+    "projdir": "/home/khusain/Projects/forDemo/warriorframework/wftests/warrior_tests/projects",
     "pythonpath": "",
-    "pythonsrcdir": "",
+    "pythonsrcdir": "/home/khusain/Projects/forDemo/warriorframework/warrior",
     "testdata": "",
-    "testsuitedir": "",
+    "testsuitedir": "/home/khusain/Projects/forDemo/warriorframework/wftests/warrior_tests/suites",
     "warhorn_config": "",
-    "xmldir": ""
+    "xmldir": "/home/khusain/Projects/forDemo/warriorframework/wftests/warrior_tests/testcases"
 }

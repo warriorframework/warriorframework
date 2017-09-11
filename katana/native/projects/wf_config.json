@@ -1,6 +1,10 @@
 {
-  "icon": "book",
-  "color": "blue",
+
+  "icon": "cubes",
+  "color": "orange",
   "name" : "Projects",
-  "url" : "/katana/projects/"
+  "url" : "/katana/projects/",
+  "developer": "Warrior Framework",
+  "description": "Edit your Projects with this App",
+  "app" : [{"name" : "Projects", "url" : "/katana/projects/", "include": "native.projects.urls"}]
 }

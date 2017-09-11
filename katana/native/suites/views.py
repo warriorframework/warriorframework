@@ -13,24 +13,14 @@ limitations under the License.
 
 # -*- coding: utf-8 -*-
 #from __future__ import unicode_literals
-
-
-from native.settings.settings import Settings
 # Create your views here.
 
 from django.shortcuts import render, redirect
-from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.template.context_processors import csrf
 import os, sys, glob, copy 
-from collections import OrderedDict
-from django.http import HttpResponse, JsonResponse
-from django.template import loader, RequestContext
-from xml.sax.saxutils import escape, unescape
-import xml.dom.minidom 
-import xmltodict 
-from django.core.serializers import serialize
-from django.db.models.query import QuerySet
-from django.template import Library
+from django.http import HttpResponse
+from django.template import loader
+import xmltodict
 import json
 from utils.navigator_util import Navigator
 
