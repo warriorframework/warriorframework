@@ -27,12 +27,10 @@ from django.template import Library
 import json
 from utils.navigator_util import Navigator
 
-path_to_demo="/home/khusain/Projects/xml-edit/warriorframework/katana/vdj/cases/"
-path_to_testcases='/home/khusain/Projects/xml-edit/warriorframework/wftests/warrior_tests/';
-path_to_productdrivers='/home/khusain/Projects/xml-edit/warriorframework/warrior/ProductDrivers/'
+#path_to_demo="/home/khusain/Projects/xml-edit/warriorframework/katana/vdj/cases/"
+#path_to_testcases='/home/khusain/Projects/xml-edit/warriorframework/wftests/warrior_tests/';
+#path_to_productdrivers='/home/khusain/Projects/xml-edit/warriorframework/warrior/ProductDrivers/'
 navigator = Navigator();
-jsonDetails = None; 
-#
 
 def index(request):
 	path_to_config_file = navigator.get_katana_dir() + os.sep + "config.json"
@@ -93,7 +91,6 @@ def getListOfActions(request):
 
 	actions = [ os.path.basename(fn)[:-3] for fn in jsr['ProductDrivers']];
 	details = py_file_details(path_to_pythonsrc);
-	jsonDetails = copy.copy(details)
 	print details
 	return JsonResponse({'actions': actions , 'filesinfo' : details })
 
