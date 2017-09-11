@@ -1,6 +1,9 @@
 {
-  "icon": "cog",
-  "color": "blue",
+  "icon": "cube",
+  "color": "tan",
   "name" : "Suites",
-  "url" : "/katana/suites/"
+  "url" : "/katana/suites/",
+  "developer": "Warrior Framework",
+  "description": "Edit your suites using this App.",
+  "app" : [{"name" : "Suites", "url" : "/katana/suites/", "include": "native.suites.urls"}]
 }

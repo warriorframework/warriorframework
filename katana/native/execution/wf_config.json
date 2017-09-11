@@ -1,0 +1,9 @@
+{
+  "icon": "play-circle",
+  "color": "blue",
+  "name" : "Execution",
+  "url" : "/katana/execution/",
+  "developer": "Warrior Framework",
+  "description": "Execute Warrior using this App",
+  "app" : [{"name" : "Execution", "url" : "/katana/execution/", "include": "native.execution.urls"}]
+}

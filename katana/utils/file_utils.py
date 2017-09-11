@@ -1,3 +1,7 @@
+import shutil
+
+import errno
+
 from wui.core.core_utils.app_info_class import AppInformation
 
 
@@ -21,7 +25,7 @@ def readlines_from_file(path, start=None, end=None):
         with open(path, "r") as f:
             data = f.readlines()
     except IOError:
-        AppInformation.log_obj.write_log("--Error-- {0} does not exist".format(path))
+        print "--Error-- {0} does not exist".format(path)
     else:
         output_list = []
 
@@ -37,3 +41,27 @@ def readlines_from_file(path, start=None, end=None):
             return output_list
 
     return data
+
+
+def copy_dir(src, dest):
+    output = True
+    try:
+        shutil.copytree(src, dest)
+    except OSError as e:
+        if e.errno == errno.ENOTDIR:
+            shutil.copy(src, dest)
+        else:
+            output = False
+            print "-- An Error Occurred -- {0}".format(e)
+    return output
+
+
+def write_to_file(path, data):
+    output = True
+    try:
+        with open(path, 'w') as f:
+            f.write(data)
+    except Exception as e:
+        print "-- An Error Occurred -- {0}".format(e)
+        output = False
+    return output
