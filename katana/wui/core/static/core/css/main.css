@@ -271,7 +271,6 @@ span.close:before {content: 'X';}
     white-space: nowrap;
     bottom: 0px;
     left: 0;
-    rgba(0,0,0,0.28);
     /* box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.28); */
     /* border-top: 1px solid #dedede; */
     /* border-right: 1px solid #dedede; */
@@ -455,6 +454,9 @@ span.close:before {content: 'X';}
     background: #03a9f4;
 }
 
+.page-content-inner > .row {
+    width: 100%;
+}
 
 input {
   width: 100%;
@@ -465,6 +467,7 @@ input {
   background: #f9f9f9;
   margin-top: 4px;
 }
+
 input:focus {
     background: #efefef;
 }
@@ -661,7 +664,7 @@ input[type="checkbox"]:checked + label:before {
 content: "\f00c";
 }
 li.folder, li.file {
-    width: 40%; */
+    width: 40%;
     height: 0;
     padding-bottom: 12.6%;
     width: 12.6%;
@@ -1440,8 +1443,6 @@ position: absolute;
 
 .htmlResults td[rowspan]:last-child {}
 
-td {}
-
 .htmlResults td > div {
     overflow: hidden;
     position: relative;
@@ -1921,7 +1922,7 @@ td {}
   top: 3px;
 }
 .save.loading{
-  font: 0;
+    
 }
 @-webkit-keyframes spin {
   0% { -webkit-transform: rotate(0deg); }
@@ -2095,4 +2096,25 @@ button, input, optgroup, select, textarea {
     padding: 2px;
     height: 32px;
     vertical-align: top;
+}
+
+.wdf-button {
+    position: absolute;
+    top: 10%;
+}
+
+.wdf-label {
+    position: absolute;
+    top: 25%;
+    left: 20px;
+    right: 0;
+    margin: 0 auto;
+}
+
+.wdf-input {
+    font-size: 16px;
+}
+
+hr.wdf-hr{
+    display: block;
 }

@@ -1,4 +1,3 @@
-
 from utils.navigator_util import Navigator
 import xmltodict, json, xml.etree.ElementTree as xml_controler
 

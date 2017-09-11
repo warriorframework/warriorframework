@@ -33,9 +33,9 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'wui.core',
     'native.settings',
-    'native.projects', 
+    'native.projects',
     'native.suites',
-    'native.cases', 
+    'native.cases',
     'jsonify',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'native.wdf_edit',
 ]
 
 MIDDLEWARE = [
