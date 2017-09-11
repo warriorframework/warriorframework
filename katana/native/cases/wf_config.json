@@ -1,11 +1,6 @@
 {
-<<<<<<< HEAD
-  "icon": "briefcase",
-  "color": "blue",
-=======
   "icon": "square",
   "color": "red",
->>>>>>> origin/katana-apps-demo
   "name" : "Cases",
   "url" : "/katana/cases/",
   "developer": "Warrior Framework",
