@@ -15,10 +15,21 @@ limitations under the License.
 from __future__ import unicode_literals
 from django.shortcuts import render
 from django.views import View
+import json
+from utils.navigator_util import Navigator
 from wui.core.apps import AppInformation
 
 
 class CoreView(View):
+    
+    def __init__(self):
+        self.navigator = Navigator()
+
+    def get_user_data(self):
+        json_file = self.navigator.get_katana_dir() + '/user_profile.json'
+        with open(json_file,'r') as f:
+            json_data = json.load(f)
+        return json_data
 
     def get(self, request):
         """
@@ -39,4 +50,4 @@ class CoreView(View):
         # writing pending logs to the log file
         # AppInformation.log_obj.flush()
 
-        return render(request, template, {"apps": AppInformation.information.apps})
+        return render(request, template, {"apps": AppInformation.information.apps, "userData": self.get_user_data()})
