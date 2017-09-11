@@ -2,5 +2,8 @@
   "icon": "cog",
   "color": "blue",
   "name" : "Settings",
-  "url" : "/katana/settings/"
+  "developer": "Warrior Framework",
+  "description": "Lets you manage your Warrior settings",
+  "url" : "/katana/settings/",
+  "app" : [{"name" : "Wapp Management", "url" : "/katana/wapp_management/", "include": "native.wapp_management.urls"}]
 }

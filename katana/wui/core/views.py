@@ -47,7 +47,5 @@ class CoreView(View):
         """
 
         template = 'core/index.html'
-        # writing pending logs to the log file
-        # AppInformation.log_obj.flush()
 
         return render(request, template, {"apps": AppInformation.information.apps, "userData": self.get_user_data()})

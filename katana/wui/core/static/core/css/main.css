@@ -342,6 +342,15 @@ span.close:before {content: 'X';}
     padding: 30px 0;
 }
 
+.install-app-icons .tab{
+    width: 5em;
+    height: 5em;
+}
+
+.install-app-icons .tab > i {
+    font-size: 2.5em;
+}
+
 .tab.red {
     color: #903c3c;
 }
@@ -371,6 +380,36 @@ span.close:before {content: 'X';}
 .tab.green {
     color: #3b7a4c;
 }
+
+.red {
+    color: #903c3c;
+}
+.grey {
+    color: #6b6b6b;
+}
+
+.tab.lightblue {
+    color: #108c82;
+}
+
+.tan {
+    color: #987150;
+}
+
+.yellow {
+    color: #b0a658;
+}
+.blue {
+    color: #3b5f82;
+}
+
+.orange {
+    color: #853b19;
+}
+
+.green {
+    color: #3b7a4c;
+}
 .page-content .tab:hover {
     opacity: .9;
     -webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.22);
@@ -395,9 +434,8 @@ span.close:before {content: 'X';}
     top: 0;
     left: 0;
     width: 100%;
-    /* max-width: 1200px; */
     margin: 0;
-    position: relative;
+    positive: relative;
 }
 
 .nav .tab[uid="launchpad"] {
@@ -496,7 +534,6 @@ select {
 }
 
 .input-group > * {
-    flex-grow: 1;
     white-space: nowrap;
     /* max-height: 39px; */
 }
@@ -555,8 +592,6 @@ textarea {
 h4 {
     font-size: 26px;
     font-weight: 300;
-    padding: 0 9px;
-    margin: 28px 0px 0px 0px;
 }
 
 h4 > b {
@@ -567,13 +602,6 @@ h4 > b {
 .form-group label:only-child{
     margin: 0;
     padding: 0;
-    display: none;
-}
-
-hr {
-    /* color: red; */
-    /* background: red; */
-    /* border: none; */
     display: none;
 }
 
@@ -2096,6 +2124,33 @@ button, input, optgroup, select, textarea {
     height: 32px;
     vertical-align: top;
 }
+
+.tool-bar-links {
+    cursor: pointer;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding-top: 0.5rem;
+}
+
+
+.card-title-custom {
+    padding-bottom: 0.25rem;
+}
+
+
+.card-text-custom {
+        margin-bottom: 0;
+        max-height: 3.45rem;
+}
+
+div .tool-bar-links:hover{
+    background-color: #e5e4e2;
+}
+
+div .tool-bar-links:active{
+    background-color: #e5e4e2;
+    }
 
 .icon-wrapper{
     border-radius: 100%;
