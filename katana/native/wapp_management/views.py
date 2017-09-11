@@ -119,5 +119,4 @@ def open_config(request):
             node = app.find('repository', None)
             text = node.text
         info.append(text)
-    return render(request, 'wapp_management/load_config.html', {"data": {"app": AppInformation.information.apps,
-                                                                  "config_files": {"info": info}}})
+    return render(request, 'wapp_management/config_details.html', {"preference_details": info})

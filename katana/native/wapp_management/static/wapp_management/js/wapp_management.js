@@ -229,13 +229,20 @@ var wapp_management = {
     },
 
     getPreferenceDetails: function(){
+        var $elem = $(this);
+        var $attribute = $elem.attr('id');
+
+        alert($attribute);
+
         if(jQuery.isEmptyObject($.wapp_management_globals.preference_details)){
-            //server request here
+            $.ajax({
+                type: 'GET',
+                url: 'wapp_management/open_config?config_name=' + $attribute,
+            }).done(function(data) {
+                $('#config-details').html(data);
+            });
         }
         else{
-            var $elem = $(this);
-            var $attribute = $elem.attr('id');
-
             if(!($attribute in $.wapp_management_globals.preference_details)){
                 //server request here
             }
