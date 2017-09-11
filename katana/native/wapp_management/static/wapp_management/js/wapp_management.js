@@ -226,13 +226,36 @@ var wapp_management = {
         wapp_management.hideAndShowCardOne();
         wapp_management.setSaveConfigAttr("yes");
 
-    }
+    },
+
+    getPreferenceDetails: function(){
+        if(jQuery.isEmptyObject($.wapp_management_globals.preference_details)){
+            //server request here
+        }
+        else{
+            var $elem = $(this);
+            var $attribute = $elem.attr('id');
+
+            if(!($attribute in $.wapp_management_globals.preference_details)){
+                //server request here
+            }
+            else {
+
+            }
+        }
+    },
+
 };
 
 
 $(document).ready(function() {
 
     $('#app_installation').hide();
+    $('#preferences').hide();
+
+    $.wapp_management_globals = new Object();
+    $.wapp_management_globals.preference_details = {};
+
 
     //wapp_management.hideAndShowCardOne();
 
