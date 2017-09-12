@@ -171,4 +171,18 @@ var wdf = {
         }); 
     },
 
+    cancel: function(){
+        // save all the input fields and post it to server
+
+        $.ajax({
+            url : "/katana/wdf/",
+            type: "GET",
+            //contentType: 'application/json',
+            success: function(data){
+                // load the tree
+                katana.$activeTab.find("#main_info").replaceWith(data);
+                katana.refreshAutoInit(katana.$activeTab.find("#jstree"));
+            }
+        }); 
+    },
 }
