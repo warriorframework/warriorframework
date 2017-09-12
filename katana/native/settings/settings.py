@@ -36,7 +36,6 @@ class Settings:
         else:
             with open(json_file,'r') as f:
                 json_data = json.load(f)
-            print 'tuz', json_data
 
             return json_data
 
