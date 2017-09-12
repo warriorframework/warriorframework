@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import json, xmltodict
-from HTMLParser import HTMLParser
-from xml.etree.ElementTree import parse
-from pprint import pprint
+import json, xmltodict, os
 from utils.navigator_util import Navigator
 from collections import OrderedDict
 from django.template.defaulttags import register
@@ -65,8 +62,9 @@ def get_item(dictionary, key):
 #     return JsonResponse(xmltodict.parse(open('/home/ka/Desktop/warrior_fnc_tests/warrior_tests/data/cli_tests/cli_def_Data.xml').read()))
 
 def get_jstree_dir(request):
-    data = Navigator().get_dir_tree_json("/home/ka/Desktop/warrior_fnc_tests/warrior_tests/data/")
-    data["text"] = "/home/ka/Desktop/warrior_fnc_tests/warrior_tests/data/"
+    config = json.load(open(Navigator().get_katana_dir() + os.sep + "config.json"))
+    data = Navigator().get_dir_tree_json(config["idfdir"])
+    data["text"] = config["idfdir"]
     # print json.dumps(data, indent=4)
     return JsonResponse(data)
 
