@@ -52,13 +52,6 @@ def index(request):
 
     return render(request, 'wdf_edit/index.html', {"data": data["credentials"], "filepath": filepath})
 
-@register.filter
-def get_item(dictionary, key):
-    """
-        Allow django template to access dict with key with special character
-    """
-    return dictionary.get(key)
-
 # def get_json(request):
 #     return JsonResponse(xmltodict.parse(open('/home/ka/Desktop/warrior_fnc_tests/warrior_tests/data/cli_tests/cli_def_Data.xml').read()))
 
