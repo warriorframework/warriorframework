@@ -222,16 +222,17 @@ function mapCaseJsonToUi(data){
 
 	//console.log("xdata =" + xdata);
 	katana.$activeTab.find("#listOfTestStepsForCase").html("");      // Start with clean slate
-	items.push('<table id="Step_table_display" class="table" >');
+	items.push('<table id="Step_table_display" >');
 	items.push('<thead>');
 	items.push('<tr id="StepRow"><th>#</th><th>Step</th><th>Arguments</th>\
-		<th>Description</th><th>OnError</th><th>Execute</th><th>Other</th><th/><th/></tr>');
+		<th>Description</th><th>OnError</th><th>Execute</th><th>Other</th></tr>');
 	items.push('</thead>');
-	items.push('<tbody>');
+	items.push('<tbody><tr></tr>');
 	for (var s=0; s<Object.keys(xdata).length; s++ ) {  // for s in xdata
 		var oneCaseStep = xdata[s];             // for each step in case
 		//console.log(oneCaseStep['path']);
-		items.push('<tr><td>'+s+'</td>');        // ID 
+		var showID = parseInt(s)+1;
+		items.push('<tr><td>'+showID+'</td>');        // ID 
 		// -------------------------------------------------------------------------
 		// Validation and default assignments 
 		// Create empty elements with defaults if none found. ;-)
@@ -276,7 +277,7 @@ function mapCaseJsonToUi(data){
 		items.push('<td>'+outstr+'</td>'); 
 		var bid = "deleteTestStep-"+s+"-id-"+getRandomCaseID();
 		//items.push('<td><input type="button" class="btn-danger" value="X" id="'+bid+'"/>');
-		items.push('<td><i type="button" title="Delete" class="fa fa-eraser" value="X" id="'+bid+'"/>');
+		items.push('<td><i type="button" title="Delete" class="fa fa-eraser fa-2x" value="X" id="'+bid+'"/>');
 		
 		$('#'+bid).off('click');   //unbind and bind are deprecated. 
 		$(document).on('click','#'+bid,function(  ) {
@@ -287,7 +288,7 @@ function mapCaseJsonToUi(data){
 		});
 
 		bid = "editTestStep-"+s+"-id-"+getRandomCaseID();
-		items.push('<i type="button" title="Edit" class="fa fa-pencil" value="Edit" id="'+bid+'"/></td>');
+		items.push('<i type="button" title="Edit" class="fa fa-pencil fa-2x" value="Edit" id="'+bid+'"/></td>');
 		$('#'+bid).off('c<td>lick');   //unbind and bind are deprecated. 
 		$(document).on('click','#'+bid,function(  ) {
 			//alert(this.id);
@@ -303,10 +304,17 @@ function mapCaseJsonToUi(data){
 	items.push('</table>'); // 
 	katana.$activeTab.find("#listOfTestStepsForCase").html( items.join(""));
 	katana.$activeTab.find('#Step_table_display tbody').sortable();
+	/*
+	katana.$activeTab.find('#Step_table_display').bootstrapTable({
+		columns: [ { title: 'ID' } , { title: 'Step'}, { title: 'Arguments'}, { title: 'Description'},
+		 { title: 'On Error'}, { title: 'Other '} ] 
+	});
 	katana.$activeTab.find('#Step_table_display').on('click',"td",   function() { 
 	});
-
-
+	katana.$activeTab.find('#Step_table_display').bootstrapTable('resetView'); 
+	
+*/
+	
 	// Based on the options
 
 	/*
@@ -384,7 +392,7 @@ function mapTestStepToUI(sid, xdata) {
 	}
 	//  -------- 
 	bid = "addCaseArg-"+sid+"-id"+getRandomCaseID();;
-	a_items.push('<td><i type="button" title="Add Argument" class="fa fa=plus" value="Add Argument" id="'+bid+'"/>');
+	a_items.push('<td><i type="button" title="Add Argument" class="fa fa=plus fa-2x" value="Add Argument" id="'+bid+'"/>');
 	katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 	$(document).on('click','#'+bid,function( ) {
 				var names = this.id.split('-');
@@ -450,7 +458,7 @@ function removeOneArgument( sid, aid, xdata ) {
 
 // When the edit button is clicked, map step to the UI. 
 function mapUItoTestStep(xdata) {
-	var sid = ParseInt(katana.$activeTab.find("#StepRowToEdit").val());	
+	var sid = parseInt(katana.$activeTab.find("#StepRowToEdit").val());	
 
 	// Validate whether sid 
 	oneCaseStep = xdata[sid];
@@ -517,7 +525,7 @@ function createRequirementsTable(i_data){
 	katana.$activeTab.find("#tableOfCaseRequirements").html("");  // This is a blank div. 
 	items.push('<table id="Requirements_table_display" class="table" >');
 	items.push('<thead>');
-	items.push('<tr id="ReqRow"><th>Num</th><th>Requirement</th><th/><th/></tr>');
+	items.push('<tr><th>Num</th><th>Requirement</th><th/><th/><th/><th/></tr>');
 	items.push('</thead>');
 	items.push('<tbody>');
 	console.log("createRequirementsTable");
@@ -533,7 +541,7 @@ function createRequirementsTable(i_data){
 				items.push('<td><input type="text" value="'+oneReq +'" id="'+bid+'"/></td>');
 				
 				bid = "deleteRequirement-"+s+"-id"+getRandomCaseID();
-				items.push('<td><i type="button" title="Delete" class="fa fa-eraser" value="X" id="'+bid+'"/>');
+				items.push('<td><i type="button" title="Delete" class="fa fa-eraser fa-2x" value="X" id="'+bid+'"/>');
 				
 				katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 				$(document).on('click','#'+bid,function( ) {
@@ -544,7 +552,7 @@ function createRequirementsTable(i_data){
 				});
 				bid = "editRequirement-"+s+"-id"+getRandomCaseID();;
 				//items.push('<td><input type="button" class="btn" value="Save" id="'+bid+'"/></td>');
-				items.push('<i type="button" title="Edit" class="fa fa-pencil" value="Edit" id="'+bid+'"/></td>');
+				items.push('<i type="button" title="Edit" class="fa fa-pencil fa-2x" value="Edit" id="'+bid+'"/></td>');
 				
 				katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 				$(document).on('click','#'+bid,function() {
