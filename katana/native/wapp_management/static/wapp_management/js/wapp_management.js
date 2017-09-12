@@ -172,19 +172,28 @@ var wapp_management = {
         return cookieValue;
     },
 
-    goToElement: function(){
-        var $elem = $(this);
-        var $elem_link = $elem.attr('elem-link');
+    goToElement: function(target){
 
-        var $target = $('#' + $elem_link);
+        var $currentPage = katana.$activeTab;
+
+        if(target == undefined){
+            var $elem = $(this);
+            var $elem_link = $elem.attr('elem-link');
+
+            var $target = $currentPage.find("#" + $elem_link);
+        }
+        else{
+            $target = target;
+        }
+
         console.log($target);
 
-        $all_links = $('.tool-bar-links')
+        $all_links = $currentPage.find('.tool-bar-links')
         console.log($all_links);
 
         for(var i=0; i<$all_links.length; i++){
             var temp = $($all_links[i]).attr("elem-link")
-            var $temp = $('#' + temp);
+            var $temp = $currentPage.find('#' + temp);
             $temp.hide();
         }
 
@@ -194,14 +203,17 @@ var wapp_management = {
     },
 
     hideAndShowCardOne: function(){
-        var $form_for_paths = $('#form-for-paths');
+
+        var $currentPage = katana.$activeTab;
+
+        var $form_for_paths = $currentPage.find('#form-for-paths');
         if($form_for_paths.children().length == 0){
-            $('#rest-of-the-card-1').hide()
-            $('#rest-of-the-card-2').hide()
+            $currentPage.find('#rest-of-the-card-1').hide()
+            $currentPage.find('#rest-of-the-card-2').hide()
         }
         else{
-            $('#rest-of-the-card-1').show()
-            $('#rest-of-the-card-2').show()
+            $currentPage.find('#rest-of-the-card-1').show()
+            $currentPage.find('#rest-of-the-card-2').show()
         }
     },
 
@@ -232,70 +244,55 @@ var wapp_management = {
         var $elem = $(this);
         var $attribute = $elem.attr('id');
 
-        alert($attribute);
-
         if(jQuery.isEmptyObject($.wapp_management_globals.preference_details)){
-            $.ajax({
-                type: 'GET',
-                url: 'wapp_management/open_config?config_name=' + $attribute,
-            }).done(function(data) {
-                $('#config-details').html(data);
-            });
+            wapp_management.getPreferenceFile($attribute);
         }
         else{
+            console.log($.wapp_management_globals.preference_details);
             if(!($attribute in $.wapp_management_globals.preference_details)){
-                //server request here
+                wapp_management.getPreferenceFile($attribute);
             }
             else {
-
+                wapp_management.setPreferenceDetails($('#config-details-' + $attribute), $.wapp_management_globals.preference_details[$attribute]);
             }
         }
     },
 
+    getPreferenceFile: function(attribute){
+        $.ajax({
+            type: 'GET',
+            url: 'wapp_management/open_config?config_name=' + attribute,
+        }).done(function(data) {
+            $.wapp_management_globals.preference_details[attribute] = data;
+            wapp_management.setPreferenceDetails( $('#config-details-' + attribute), data)
+        });
+    },
+
+    setPreferenceDetails: function(target, data){
+        var $elements = $("div[id^='config-details-']");
+        for(var i=0; i<$elements.length; i++){
+            var temp = $($elements[i]).html('');
+        }
+        target.html(data);
+    },
+
+    initFunction: function(){
+
+        var $currentPage = katana.$activeTab;
+
+        wapp_management.goToElement($currentPage.find('#installed_apps'));
+        wapp_management.hideAndShowCardOne();
+
+
+        $.wapp_management_globals = new Object();
+        $.wapp_management_globals.preference_details = {};
+
+
+    },
+
+    createNewPref: function(){
+        var $currentPage = katana.$activeTab;
+        wapp_management.goToElement($currentPage.find('#app_installation'));
+    }
+
 };
-
-
-$(document).ready(function() {
-
-    $('#app_installation').hide();
-    $('#preferences').hide();
-
-    $.wapp_management_globals = new Object();
-    $.wapp_management_globals.preference_details = {};
-
-
-    //wapp_management.hideAndShowCardOne();
-
-    /*var typingTimer;
-    var doneTypingInterval = 1000;
-    var $elements = $("[id*='#app_path_for_config']");
-
-    $app_path_for_config.on('keyup', function () {
-      clearTimeout(typingTimer);
-      typingTimer = setTimeout(doneTyping, doneTypingInterval);
-    });
-
-    $app_path_for_config.on('keydown', function () {
-          clearTimeout(typingTimer);
-          $status_div = $('#status-div');
-          $status_div.html('<i class="fa fa-spinner fa-pulse fa-fw yellow"></i>')
-    });
-
-    function doneTyping () {
-        var $status_div = $('#status-div');
-        var value = $app_path_for_config.val();
-        var value_list = value.split(".");
-        var ext = value_list[value_list.length-1]
-        if (ext == "git"){
-            $status_div.html(' <i class="fa fa-check-circle green">&nbsp;.git</i>')
-        }
-        else if (ext == "zip") {
-            $status_div.html('<i class="fa fa-check-circle green">&nbsp;.zip</i>')
-        }
-        else {
-            $status_div.html('<i class="fa fa-check-circle green">&nbsp;directory</i>')
-        }
-        //$status_div.html('<i class="fa fa-times-circle red">&nbsp; Input has to be either a .zip, .git, or a directory path</i>')
-    }*/
-
-});

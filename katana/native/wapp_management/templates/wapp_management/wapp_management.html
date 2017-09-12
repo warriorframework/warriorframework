@@ -18,9 +18,12 @@
         </div>
     </div>
 
-    {% include 'wapp_management/installed_apps_section.html' %}
-    {% include 'wapp_management/custom_app_install_section.html' %}
-    {% include 'wapp_management/preferences_section.html' %}
+    <div class="auto-init" auto-init="wapp_management.initFunction">
+
+        {% include 'wapp_management/installed_apps_section.html' %}
+        {% include 'wapp_management/custom_app_install_section.html' %}
+        {% include 'wapp_management/preferences_section.html' %}
+    </div>
 
 </body>
 
