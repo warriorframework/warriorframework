@@ -7,6 +7,7 @@ from xml.etree.ElementTree import parse
 from pprint import pprint
 from utils.navigator_util import Navigator
 from collections import OrderedDict
+from django.template.defaulttags import register
 
 from django.shortcuts import render
 from django.http import JsonResponse
@@ -25,13 +26,11 @@ def index(request):
     if type(data[root]["system"]) != list:
         data[root]["system"] = [data[root]["system"]]
     for sys in data[root]["system"]:
-        sys["name"] = sys["@name"]
-        del sys["@name"]
         if "subsystem" in sys:
             if type(sys["subsystem"]) == list:
                 for subsys in sys["subsystem"]:
                     for k, v in subsys.items():
-                        if k.startswith("@"):
+                        if k.startswith("@") and k != "@name":
                             subsys[k[1:]] = v
                             del subsys[k]
                         elif k == "#text":
@@ -39,14 +38,14 @@ def index(request):
             else:
                 subsys = sys["subsystem"]
                 for k, v in subsys.items():
-                    if k.startswith("@"):
+                    if k.startswith("@") and k != "@name":
                         subsys[k[1:]] = v
                         del subsys[k]
                     elif k == "#text":
                         del subsys[k]
         else:
             for k, v in sys.items():
-                if k.startswith("@"):
+                if k.startswith("@") and k != "@name":
                     sys[k[1:]] = v
                     del sys[k]
                 elif k == "#text":
@@ -55,9 +54,11 @@ def index(request):
 
     return render(request, 'wdf_edit/index.html', {"data": data["credentials"], "filepath": filepath})
 
-from django.template.defaulttags import register
 @register.filter
 def get_item(dictionary, key):
+    """
+        Allow django template to access dict with key with special character
+    """
     return dictionary.get(key)
 
 # def get_json(request):
