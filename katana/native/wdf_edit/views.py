@@ -5,7 +5,6 @@ import json, xmltodict, os
 from utils.navigator_util import Navigator
 from utils.json_utils import read_json_data
 from collections import OrderedDict
-from django.template.defaulttags import register
 
 from django.shortcuts import render
 from django.http import JsonResponse
