@@ -38,7 +38,7 @@ var wdf = {
             // $hide_target.removeClass("animated fadeIn");
             // $hide_target.addClass("animated bounceOutLeft");
             // setTimeout(function(){$hide_target.parent().parent().hide()}, 600);
-            $hide_target.parent().parent().hide();
+            $hide_target.hide();
             
         }
     },
