@@ -1,6 +1,6 @@
 import json
 from wui.core.core_utils.app_info_class import AppInformation
-
+from django.template.defaulttags import register
 
 def read_json_data(file_path):
     """
@@ -21,3 +21,10 @@ def read_json_data(file_path):
     except Exception as e:
         print "An Error Occurred: {0}".format(e)
     return data
+
+@register.filter
+def get_item(data, key):
+    """
+        Allow django template to access dict with key with special character
+    """
+    return data.get(key)

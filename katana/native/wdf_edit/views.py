@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import json, xmltodict
-from HTMLParser import HTMLParser
-from xml.etree.ElementTree import parse
-from pprint import pprint
+import json, xmltodict, os
 from utils.navigator_util import Navigator
+from utils.json_utils import read_json_data
 from collections import OrderedDict
 
 from django.shortcuts import render
@@ -25,13 +23,11 @@ def index(request):
     if type(data[root]["system"]) != list:
         data[root]["system"] = [data[root]["system"]]
     for sys in data[root]["system"]:
-        sys["name"] = sys["@name"]
-        del sys["@name"]
         if "subsystem" in sys:
             if type(sys["subsystem"]) == list:
                 for subsys in sys["subsystem"]:
                     for k, v in subsys.items():
-                        if k.startswith("@"):
+                        if k.startswith("@") and k != "@name":
                             subsys[k[1:]] = v
                             del subsys[k]
                         elif k == "#text":
@@ -39,14 +35,14 @@ def index(request):
             else:
                 subsys = sys["subsystem"]
                 for k, v in subsys.items():
-                    if k.startswith("@"):
+                    if k.startswith("@") and k != "@name":
                         subsys[k[1:]] = v
                         del subsys[k]
                     elif k == "#text":
                         del subsys[k]
         else:
             for k, v in sys.items():
-                if k.startswith("@"):
+                if k.startswith("@") and k != "@name":
                     sys[k[1:]] = v
                     del sys[k]
                 elif k == "#text":
@@ -55,17 +51,13 @@ def index(request):
 
     return render(request, 'wdf_edit/index.html', {"data": data["credentials"], "filepath": filepath})
 
-from django.template.defaulttags import register
-@register.filter
-def get_item(dictionary, key):
-    return dictionary.get(key)
-
 # def get_json(request):
 #     return JsonResponse(xmltodict.parse(open('/home/ka/Desktop/warrior_fnc_tests/warrior_tests/data/cli_tests/cli_def_Data.xml').read()))
 
 def get_jstree_dir(request):
-    data = Navigator().get_dir_tree_json("/home/ka/Desktop/warrior_fnc_tests/warrior_tests/data/")
-    data["text"] = "/home/ka/Desktop/warrior_fnc_tests/warrior_tests/data/"
+    config = read_json_data(Navigator().get_katana_dir() + os.sep + "config.json")
+    data = Navigator().get_dir_tree_json(config["idfdir"])
+    data["text"] = config["idfdir"]
     # print json.dumps(data, indent=4)
     return JsonResponse(data)
 
