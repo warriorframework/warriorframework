@@ -15,16 +15,18 @@ var wdf = {
         for (var i=0; i<$children.length; i++) {
             if ($($children.get(i)).prop("name").indexOf("key") !== -1) {
                 $child = $($children.get(i)).parent().parent();
-                $child.removeClass("animated fadeIn");
-                $child.addClass("animated bounceOutLeft");
+                // $child.removeClass("animated fadeIn");
+                // $child.addClass("animated bounceOutLeft");
                 // closure
-                setTimeout((function(tmp){return function(){tmp.empty();}})($child), 600);
+                // setTimeout((function(tmp){return function(){tmp.empty();}})($child), 600);
+                $child.empty();
             }
         }
   
-        $target.removeClass("animated fadeIn");
-        $target.addClass("animated bounceOutLeft");
-        setTimeout(function(){$target.empty();}, 600);
+        // $target.removeClass("animated fadeIn");
+        // $target.addClass("animated bounceOutLeft");
+        // setTimeout(function(){$target.empty();}, 600);
+        $target.empty();
     },
 
     deleteChildTag: function(){
@@ -33,9 +35,10 @@ var wdf = {
         $hide_target = $target.parent().parent();
         if ($target.prop("name").indexOf("deleted") == -1) {
             $target.prop("name", "deleted-"+$target.prop("name"));
-            $hide_target.removeClass("animated fadeIn");
-            $hide_target.addClass("animated bounceOutLeft");
-            setTimeout(function(){$hide_target.parent().parent().hide()}, 600);
+            // $hide_target.removeClass("animated fadeIn");
+            // $hide_target.addClass("animated bounceOutLeft");
+            // setTimeout(function(){$hide_target.parent().parent().hide()}, 600);
+            $hide_target.parent().parent().hide();
             
         }
     },
@@ -43,9 +46,10 @@ var wdf = {
     deleteSystem: function(){
         // empty the whole system
         $target=$(this).parent().parent().parent();
-        $target.removeClass("animated fadeIn");
-        $target.addClass("animated bounceOutLeft");
-        setTimeout(function(){$target.empty()}, 600);
+        // $target.removeClass("animated fadeIn");
+        // $target.addClass("animated bounceOutLeft");
+        // setTimeout(function(){$target.empty()}, 600);
+        $target.empty();
     },
 
     addSystem: function(){
@@ -171,4 +175,18 @@ var wdf = {
         }); 
     },
 
+    cancel: function(){
+        // save all the input fields and post it to server
+
+        $.ajax({
+            url : "/katana/wdf/",
+            type: "GET",
+            //contentType: 'application/json',
+            success: function(data){
+                // load the tree
+                katana.$activeTab.find("#main_info").replaceWith(data);
+                katana.refreshAutoInit(katana.$activeTab.find("#jstree"));
+            }
+        }); 
+    },
 }
