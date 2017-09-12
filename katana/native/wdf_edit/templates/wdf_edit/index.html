@@ -1,10 +1,10 @@
 <div id="main_info" class="container">
     {% load static %}
-    <link rel="stylesheet" href="{% static 'wdf_edit/css/animate.min.css' %}">
+    <!-- <link rel="stylesheet" href="{% static 'wdf_edit/css/animate.min.css' %}"> -->
     <div class="csrf-container">{% csrf_token %}</div>
     <form id="big-box">
 
-    <div class="row animated lightSpeedIn">
+    <div class="row">
         <div class="col-md-1"><label class="wdf-label">Filepath:</label></div>
         <div class="col-md-8"><input class="wdf-input" name="filepath" value="{{ filepath }}"/></div>
         <div class="col-md-1"><button class="wdf-button btn" type="button" id="add" katana-click="wdf.addSystem">Add block</button></div>
@@ -28,7 +28,7 @@
                 </div>
                 {% for k, v in system.items %}
                     {% if k != "@name" %}
-                        <div class="row animated fadeIn" id="content">
+                        <div class="row" id="content">
                             <div class="col-md-1"><button type="button" class="wdf-button btn" katana-click="wdf.addChild">More info</button></div>
                             <div class="col-md-1"><button type="button" class="wdf-button btn" katana-click="wdf.deleteTag">Delete</button></div>
                             <div class="col-md-3"><input class="wdf-input" name="{{ forloop.parentloop.counter }}-1-{{ forloop.counter }}-1-key" value="{{ k }}"/></div>
@@ -56,7 +56,7 @@
                 </div>
                 {% for k, v in system.subsystem.items %}
                     {% if k != "@name" %}
-                        <div class="row animated fadeIn" id="content">
+                        <div class="row" id="content">
                             <div class="col-md-1"><button type="button" class="wdf-button btn" katana-click="wdf.addChild">More info</button></div>
                             <div class="col-md-1"><button type="button" class="wdf-button btn" katana-click="wdf.deleteTag">Delete</button></div>
                             <div class="col-md-3"><input class="wdf-input" name="{{ forloop.parentloop.counter }}-1-{{ forloop.counter }}-1-key" value="{{ k }}"/></div>
@@ -85,7 +85,7 @@
                     </div>
                     {% for k, v in subsys.items %}
                         {% if k != "@name" %}
-                            <div class="row animated fadeIn" id="content">
+                            <div class="row" id="content">
                                 <div class="col-md-1"><button type="button" class="wdf-button btn" katana-click="wdf.addChild">More info</button></div>
                                 <div class="col-md-1"><button type="button" class="wdf-button btn" katana-click="wdf.deleteTag">Delete</button></div>
                                 <div class="col-md-3"><input class="wdf-input" name="{{ forloop.parentloop.parentloop.counter }}-{{ forloop.parentloop.counter }}-{{ forloop.counter }}-1-key" value="{{ k }}"/></div>
@@ -102,7 +102,7 @@
 </div>
 
 <div id="system_template" auto-init="wdf.hide">
-    <div id="template-system" class="control-box animated fadeIn">
+    <div id="template-system" class="control-box">
         <hr class="wdf-hr"/>
         <div class="row">
             <div class="col-md-2"><button katana-click="wdf.toggle" class="btn btn-block" type="button">Show/Hide block</button></div>
@@ -114,7 +114,7 @@
             <div class="col-md-2"><label class="wdf-label">System name:</label></div>
             <div class="col-md-10"><input class="wdf-input" name="template-system-name" value=""/></div>
         </div>
-        <div class="row animated fadeIn" id="content">
+        <div class="row" id="content">
             <div class="col-md-1"><button class="wdf-button btn" katana-click="wdf.addChild" type="button">More info</button></div>
             <div class="col-md-1"><button class="wdf-button btn" katana-click="wdf.deleteTag" type="button">Delete</button></div>
             <div class="col-md-3"><input class="wdf-input" name="template-system.tag" value="tag_name"/></div>
@@ -124,7 +124,7 @@
 </div>
 
 <div id="subsystem_template" auto-init="wdf.hide">
-    <div id="template-subsystem" class="control-box animated fadeIn">
+    <div id="template-subsystem" class="control-box">
         <hr class="wdf-hr"/>
         <div class="row">
             <div class="col-md-2"><button katana-click="wdf.toggle" class="btn btn-block" type="button">Show/Hide block</button></div>
@@ -139,7 +139,7 @@
             <div class="col-md-2"><label class="wdf-label">Subsystem name:</label></div>
             <div class="col-md-10"><input class="wdf-input" name="template-subsystem-name" value=""/></div>
         </div>
-        <div class="row animated fadeIn" id="content">
+        <div class="row" id="content">
             <div class="col-md-1"><button class="wdf-button btn" katana-click="wdf.addChild" type="button">More info</button></div>
             <div class="col-md-1"><button class="wdf-button btn" katana-click="wdf.deleteTag" type="button">Delete</button></div>
             <div class="col-md-3"><input class="wdf-input" name="template-subsystem.tag" value="tag_name"/></div>
@@ -149,7 +149,7 @@
 </div>
 
 <div id="tag_template" auto-init="wdf.hide">
-    <div class="row animated fadeIn" id="content">
+    <div class="row" id="content">
         <div class="col-md-1"><button class="wdf-button btn" katana-click="wdf.addChild" type="button">More info</button></div>
         <div class="col-md-1"><button class="wdf-button btn" katana-click="wdf.deleteTag" type="button">Delete</button></div>
         <div class="col-md-3"><input class="wdf-input" name="template-tag.tag" value="tag_name"/></div>
@@ -158,7 +158,7 @@
 </div>
 
 <div id="child_tag_template" auto-init="wdf.hide">
-    <div class="row animated fadeIn" id="subcontent">
+    <div class="row" id="subcontent">
         <div class="col-md-1"/>
         <div class="col-md-1"><button class="wdf-button btn" katana-click="wdf.deleteChildTag" type="button">Delete</button></div>
         <div class="col-md-3"><input class="wdf-input" name="template-tag.tag" value="tag_name"/></div>
