@@ -36,9 +36,9 @@ var jsonFilesInfo = null;
 
 function mapFullCaseJson(myobjectID){
 	activePageID = getRandomCaseID();
-	var sdata = katana.$activeTab.find("#listOfTestStepsForCase").text();
-	katana.$activeTab.find("#listOfTestcasesForSuite").hide();
+	katana.$activeTab.find("#listOfTestStepsForCase").hide();
 	katana.$activeTab.find('#savesubdir').hide();
+	var sdata = katana.$activeTab.find("#listOfTestStepsForCase").text();
 	var jdata = sdata.replace(/'/g, '"');
 	jsonAllCasePages[myobjectID] = JSON.parse(sdata);               
 	jsonCaseObject = jsonAllCasePages[myobjectID]
@@ -55,7 +55,6 @@ function mapFullCaseJson(myobjectID){
 	katana.$activeTab.find('#editCaseStep').off('click');  // unbind is deprecated - debounces the click event. 
 	$(document).on('click','#editCaseStep',function(  ) {
 			mapUItoTestStep();
-			//createCasesTable(xdata);  //Refresh the screen.
 			katana.$activeTab.find("#editCaseStepDiv").hide();
 			mapCaseJsonToUi(jsonCaseSteps);
 		});
@@ -149,11 +148,14 @@ function mapUiToCaseJson() {
 		jsonCaseObject['Requirements'] = []; 
 	}
 
-
-
-	
+	saveUItoRequirements();  // Save Requirements table. 
 	// Now you have collected the user components...
+} 
 
+
+// Saves the UI to memory and sends to server. 
+function writeUItoCaseJSON() {
+	mapUiToCaseJson();
 	var url = "./cases/getCaseDataBack";
 	var csrftoken = $("[name='csrfmiddlewaretoken']").val();
 
@@ -169,8 +171,7 @@ function mapUiToCaseJson() {
     url : url,
     type: "POST",
     data : { 
-    	'json': JSON.stringify(topNode),
-    	
+    	'json': JSON.stringify(topNode),	
     	'filetosave': katana.$activeTab.find('#my_file_to_save').val(),
     	'savesubdir': katana.$activeTab.find('#savesubdir').text(),
     	},
@@ -180,7 +181,6 @@ function mapUiToCaseJson() {
         alert("Sent");
     	}
 	});
-
 }
 
 function fillStepDefaults(oneCaseStep) {
@@ -225,7 +225,7 @@ function mapCaseJsonToUi(data){
 
 
 	//console.log("xdata =" + xdata);
-	katana.$activeTab.find("#listOfTestStepsForCase").html("");      // Start with clean slate
+	katana.$activeTab.find("#tableOfTestStepsForCase").html("");      // Start with clean slate
 	items.push('<table id="Step_table_display" >');
 	items.push('<thead>');
 	items.push('<tr id="StepRow"><th>#</th><th>Step</th><th>Arguments</th>\
@@ -242,14 +242,10 @@ function mapCaseJsonToUi(data){
 		// Create empty elements with defaults if none found. ;-)
 		// -------------------------------------------------------------------------
 		fillStepDefaults(oneCaseStep);
-		// Now create HTML elements for the relevant items - 
-
 		var outstr = "Driver="+oneCaseStep['@Driver'] + "<br>Keyword=" + oneCaseStep['@Keyword'] + "<br>TS=" +oneCaseStep['@TS'] ;
 		items.push('<td>'+outstr+'</td>'); 
-
 		// Show arguments for each step in the UI div tag. 
 		var arguments = oneCaseStep['Arguments']['argument'];
-
 		var out_array = [] 
 		var ta = 0; 
 		for (xarg in arguments) {
@@ -320,7 +316,7 @@ function mapCaseJsonToUi(data){
 
 	items.push('</tbody>');
 	items.push('</table>'); // 
-	katana.$activeTab.find("#listOfTestStepsForCase").html( items.join(""));
+	katana.$activeTab.find("#tableOfTestStepsForCase").html( items.join(""));
 	katana.$activeTab.find('#Step_table_display tbody').sortable();
 	/*
 	katana.$activeTab.find('#Step_table_display').bootstrapTable({
@@ -510,7 +506,6 @@ function removeOneArgument( sid, aid, xdata ) {
 // When the edit button is clicked, map step to the UI. 
 function mapUItoTestStep(xdata) {
 	var sid = parseInt(katana.$activeTab.find("#StepRowToEdit").val());	
-	var sid = parseInt(katana.$activeTab.find("#StepRowToEdit").val());	
 	console.log(jsonCaseSteps);
 		
 	// Validate whether sid 
@@ -529,18 +524,13 @@ function mapUItoTestStep(xdata) {
 	oneCaseStep['onError'][ "@value"] = katana.$activeTab.find("#SteponError-at-value").val();
 	oneCaseStep["runmode"] = { "@type" : katana.$activeTab.find("#runmode-at-type").val()};
 	oneCaseStep["impact"] =  katana.$activeTab.find("#StepImpact").val();
-	// Now draw the table again....
+	
+	// save requirements.... This belongs in the save test case routine...
 
-	// save requirements....
-	rdata= jsonCaseRequirements['Requirement'];
-	rlen = Object.keys(rdata).length;
-	console.log("Number of Requirements = " + rlen );
-	console.log(rdata);
-	for (var s=0; s<Object.keys(rdata).length; s++ ) {
-				console.log("Requirements before save "+rdata[s]);
-				rdata[s] = katana.$activeTab.find("#textRequirement-"+s+"-id").val();
-				console.log("Requirements after save "+rdata[s]);
-		}
+
+
+
+	
 	/*
 	var a_str = katana.$activeTab.find("#arguments-textarea").text();
 	a_items = a_str.split("\n");
@@ -557,6 +547,9 @@ function mapUItoTestStep(xdata) {
 	*/
 	
 }
+
+
+
 
 function createNewStep(){
 	var newCaseStep = {
@@ -589,7 +582,19 @@ function addStepToCase(){
 	mapCaseJsonToUi(jsonCaseSteps);
 }
 
+// Save UI Requirements to JSON table. 
+function saveUItoRequirements( ){
+	rdata= jsonCaseRequirements['Requirement'];
+	rlen = Object.keys(rdata).length;
+	console.log("Number of Requirements = " + rlen );
+	console.log(rdata);
+	for (var s=0; s<Object.keys(rdata).length; s++ ) {
+				console.log("Requirements before save "+rdata[s]);
+				rdata[s] = katana.$activeTab.find("#textRequirement-"+s+"-id").val();
+				console.log("Requirements after save "+rdata[s]);
+		}
 
+}
 
 function createRequirementsTable(i_data){
 	var items =[]; 
