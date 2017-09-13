@@ -1,4 +1,19 @@
 var wdf = {
+    search_and_hide: function(){
+        $systems = $(".control-box");
+        console.log($systems);
+        $.each($systems, function(ind, sys) {
+            if (! $(sys).attr("id").startsWith("template")) {
+                $sys = $(sys);
+                $subsystem_id = $sys.attr("id").split("-").slice(1,2);
+                // if it has tags
+                if ($sys.find("#content").length > 0 && $subsystem_id != "1") {
+                    $sys.find("[katana-click='wdf.addSubSystem']").hide();
+                }
+            }
+        });
+    },
+
     toggle: function(){
         // hide all the div with id content under control-box
         $target = $(this).closest(".control-box");
@@ -9,8 +24,9 @@ var wdf = {
     deleteTag: function(){
         // empty tag and all of its child tags
         $target = $(this).closest(".control-box");
+
+        // When delete the last tag, shows addSubSystem icon
         if ($target.find("#content:has(div)").length == 1) {
-            alert("You delete the last tag");
             $target.find("[katana-click='wdf.addSubSystem']").show();
         }
 
@@ -53,6 +69,8 @@ var wdf = {
     deleteSystem: function(){
         // empty the whole system
         $target=$(this).closest(".control-box");
+
+        // When delete the 2nd last system, show add tag icon on main system
         var $system_id = $target.attr("id").split("-").slice(0,1);
         var $subsystem_id = $target.attr("id").split("-").slice(1,2);
         if ($target.parent().find("[id^='"+$system_id+"-']:not(:empty)").length == 2) {
@@ -179,6 +197,7 @@ var wdf = {
                         katana.refreshAutoInit(katana.$activeTab.find("#tag_template"));
                         katana.refreshAutoInit(katana.$activeTab.find("#child_tag_template"));
                         katana.refreshAutoInit(katana.$activeTab.find("#subsystem_template"));
+                        wdf.search_and_hide();
                         // console.log("loaded");
                     }
                 });
