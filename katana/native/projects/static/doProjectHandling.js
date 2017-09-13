@@ -69,7 +69,7 @@ function mapFullProjectJson(myobjectID){
 /// -------------------------------------------------------------------------------
 function makeNewSuite() { 
 		var newTestSuite = {	
-		"path": "../suites/framework_tests/seq_par_execution/seq_ts_seq_tc.xml", 
+		"path": "path/to/suite", 
 		"Execute": { "@ExecType": "Yes",
 			"Rule": {"@Condition": "","@Condvalue": "","@Else": "next", "@Elsevalue": "" }
 		}, 
@@ -244,7 +244,8 @@ function createSuitesTable(xdata) {
 		console.log(oneSuite);
 		console.log(oneSuite['path']);
 		
-		items.push('<tr><td class="col-md-1">'+(parseInt(s)+1)+'</td>');
+		items.push('<tr data-sid="'+s+'">');
+		items.push('<td class="col-md-1">'+(parseInt(s)+1)+'</td>');
 		items.push('<td>'+oneSuite['path']+'</td>');
 		items.push('<td>Type='+oneSuite['Execute']['@ExecType']+'<br>');
 		items.push('Condition='+oneSuite['Execute']['Rule']['@Condition']+'<br>');
@@ -257,7 +258,7 @@ function createSuitesTable(xdata) {
 
 		var bid = "deleteTestSuite-"+s+"-id"+getRandomID();
 		//alert(bid);
-		items.push('<td><i type="button" title="Delete" class="fa fa-eraser fa-2x" value="X" id="'+bid+'"/>');
+		items.push('<td><i  title="Delete" class="fa fa-eraser" value="X" id="'+bid+'"/>');
 		katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 		$(document).on('click','#'+bid,function( ) {
 
@@ -266,7 +267,7 @@ function createSuitesTable(xdata) {
 			removeTestSuite(sid,xdata);
 		});
 		bid = "editTestSuite-"+s+"-id"+getRandomID();;
-		items.push('<i type="button" title="Edit" class="fa fa-pencil fa-2x" value="Edit" id="'+bid+'"/>');
+		items.push('<i  title="Edit" class="fa fa-pencil" title="Edit" id="'+bid+'"/>');
 		katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 		$(document).on('click','#'+bid,function(  ) {
 			var names = this.id.split('-');
@@ -277,7 +278,7 @@ function createSuitesTable(xdata) {
 		});
 
 		bid = "InsertTestSuite-"+s+"-id"+getRandomID();;
-		items.push('<i type="button" title="Insert" class="fa fa-magic fa-2x" value="Insert" id="'+bid+'"/></td>');
+		items.push('<i  title="Insert" class="fa fa-plus" value="Insert" id="'+bid+'"/></td>');
 		katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 		$(document).on('click','#'+bid,function(  ) {
 			var names = this.id.split('-');
@@ -295,10 +296,35 @@ function createSuitesTable(xdata) {
 	items.push('</table>');
 
 	katana.$activeTab.find("#tableOfTestSuitesForProject").html( items.join(""));
-	katana.$activeTab.find('#suite_table_display tbody').sortable();
+	katana.$activeTab.find('#suite_table_display tbody').sortable( { stop: testProjectSortEventHandler});
 	katana.$activeTab.find('#suite_table_display').on('click',"td",   function() { 
 	});
 	//katana.$activeTab.find("#tableOfTestSuitesForProject").setAttribute( "style","overflow-y:scroll");
+}
+
+var testProjectSortEventHandler = function(event, ui ) {
+	var listSuites = katana.$activeTab.find('#suite_table_display tbody').children(); 
+	console.log(listSuites);
+	console.log(jsonProjectObject["Testsuites"] );
+	var oldSuitesteps = jsonProjectObject["Testsuites"]['Testsuite'];
+	var newSuitesteps = new Array(listSuites.length);
+	console.log("List of ... "+listSuites.length);
+	for (xi=0; xi < listSuites.length; xi++) {
+		var xtr = listSuites[xi];
+		var ni  = xtr.getAttribute("data-sid");
+		console.log(xi + " => " + ni);
+		newSuitesteps[ni] = oldSuitesteps[xi];
+	}
+
+	
+	console.log(jsonProjectObject);
+	jsonProjectObject["Testsuites"]['Testsuite']= newSuitesteps;
+	console.log(jsonProjectObject["Testsuites"] );
+	
+
+	jsonTestSuites = jsonProjectObject['Testsuites'] 
+	mapProjectJsonToUi(jsonTestSuites);
+
 }
 
 function fillSuiteDefaults(s, data){

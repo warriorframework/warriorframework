@@ -4,12 +4,12 @@ table {
 }
 tbody { 
   overflow-y: scroll;
+  overflow-x: scroll;
  }
 
 th, td {
-  padding: 0.25rem;
   text-align: left;
-  border: 1px solid #ccc;
+  border: 2px solid #000;
   table-layout:fixed;
   /* width:20px; */
 }

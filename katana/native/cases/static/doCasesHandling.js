@@ -277,7 +277,7 @@ function mapCaseJsonToUi(data){
 		items.push('<td>'+outstr+'</td>'); 
 		var bid = "deleteTestStep-"+s+"-id-"+getRandomCaseID();
 		//items.push('<td><input type="button" class="btn-danger" value="X" id="'+bid+'"/>');
-		items.push('<td><button class="btn btn-danger" title="Delete"  value="X" id="'+bid+'"><i class="fa fa-times"/></button>');
+		items.push('<td><i class="fa fa-eraser" title="Delete"  value="X" id="'+bid+'" />');
 		
 		$('#'+bid).off('click');   //unbind and bind are deprecated. 
 		$(document).on('click','#'+bid,function(  ) {
@@ -289,8 +289,7 @@ function mapCaseJsonToUi(data){
 
 		bid = "editTestStep-"+s+"-id-"+getRandomCaseID();
 		//items.push('<i type="button" title="Edit" class="fa fa-pencil fa-2x" value="Edit" id="'+bid+'"/></td>');
-		items.push('<button class="btn btn-danger" title="Edit"  value="X" id="'+bid+'"><i class="fa fa-edit  fa-2x"/></button>');
-		
+		items.push('<i  title="Edit" class="fa fa-pencil" title="Edit" id="'+bid+'"/>');
 		$('#'+bid).off('c<td>lick');   //unbind and bind are deprecated. 
 		$(document).on('click','#'+bid,function(  ) {
 			//alert(this.id);
@@ -300,8 +299,7 @@ function mapCaseJsonToUi(data){
 		}); 
 
 		bid = "addTestStepAbove-"+s+"-id-"+getRandomCaseID();
-		//items.push('<i type="button" title="Edit" class="fa fa-pencil fa-2x" value="Edit" id="'+bid+'"/></td>');
-		items.push('<button class="btn btn-danger" title="Add Step Above"  value="X" id="'+bid+'"><i class="fa fa-plus fa-2x"/></button>');
+		items.push('<i  title="Insert" class="fa fa-plus" value="Insert" id="'+bid+'"/></td>');
 		
 		$('#'+bid).off('c<td>lick');   //unbind and bind are deprecated. 
 		$(document).on('click','#'+bid,function(  ) {
@@ -414,7 +412,7 @@ function mapTestStepToUI(sid, xdata) {
 			a_items.push('<label>Value</label><input type="text" argid="caseArgValue-'+ta+'" value="'+arguments[xarg]["@value"]+'"/>');
 			// Now a button to edit or delete ... 
 			bid = "deleteCaseArg-"+sid+"-"+ta+"-id"+getRandomCaseID();;
-			a_items.push('<td><i  type="button" title="Delete" class="fa fa-eraser fa-2x" value="X" id="'+bid+'"/>');
+			a_items.push('<td><i title="Delete" class="fa fa-eraser" value="X" id="'+bid+'"/>');
 			katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 			$(document).on('click','#'+bid,function( ) {
 				var names = this.id.split('-');
@@ -423,13 +421,22 @@ function mapTestStepToUI(sid, xdata) {
 				removeOneArgument(sid,aid,xdata);
 			});
 			bid = "saveCaseArg-"+sid+"-"+ta+"-id"+getRandomCaseID();;
-			a_items.push('<td><i  type="button" title="Save Argument Change" class="fa fa-pencil fa-2x" value="Save" id="'+bid+'"/>');
+			a_items.push('<td><i  title="Save Argument Change" class="fa fa-pencil" value="Save" id="'+bid+'"/>');
 			katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 			$(document).on('click','#'+bid,function( ) {
 				var names = this.id.split('-');
 				var sid = parseInt(names[1]);
 				var aid = parseInt(names[2]);
 				saveOneArgument(sid,aid,xdata);
+			});
+			bid = "insertCaseArg-"+sid+"-"+ta+"-id"+getRandomCaseID();;
+			a_items.push('<td><i  title="Insert one" class="fa fa-plus" value="Save" id="'+bid+'"/>');
+			katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
+			$(document).on('click','#'+bid,function( ) {
+				var names = this.id.split('-');
+				var sid = parseInt(names[1]);
+				var aid = parseInt(names[2]);
+				insertOneArgument(sid,aid,xdata);
 			});
 
 
@@ -509,6 +516,15 @@ function addOneArgument( sid , xdata ) {
 	//mapCaseJsonToUi(jsonCaseSteps);
 	mapTestStepToUI(sid, xdata);
 }
+
+
+function insertOneArgument( sid , aid,  xdata ) {
+	var xx = { "@name": "" , "@value": " " };
+	jsonCaseSteps['step'][sid]['Arguments']['argument'].splice(aid,0,xx);
+	//mapCaseJsonToUi(jsonCaseSteps);
+	mapTestStepToUI(sid, xdata);
+}
+
 
 function removeOneArgument( sid, aid, xdata ) {
 	jsonCaseSteps['step'][sid]['Arguments']['argument'].splice(aid,1);	
@@ -682,7 +698,7 @@ function createRequirementsTable(i_data){
 		});
 	
 	katana.$activeTab.find("#tableOfCaseRequirements").html( items.join(""));
-	katana.$activeTab.find('#Requirements_table_display tbody').sortable();
+	//katana.$activeTab.find('#Requirements_table_display tbody').sortable();
 	//katana.$activeTab.find('#Case_table_display').on('click',"td",   function() { 
 	//});
 
