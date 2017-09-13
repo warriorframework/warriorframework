@@ -231,12 +231,12 @@ function mapCaseJsonToUi(data){
 	items.push('<tr id="StepRow"><th>#</th><th>Step</th><th>Arguments</th>\
 		<th>Description</th><th>OnError</th><th>Execute</th><th>Other</th></tr>');
 	items.push('</thead>');
-	items.push('<tbody><tr></tr>');
+	items.push('<tbody>');
 	for (var s=0; s<Object.keys(xdata).length; s++ ) {  // for s in xdata
 		var oneCaseStep = xdata[s];             // for each step in case
 		//console.log(oneCaseStep['path']);
 		var showID = parseInt(s)+1;
-		items.push('<tr><td>'+showID+'</td>');        // ID 
+		items.push('<tr data-sid="'+s+'"><td>'+showID+'</td>');        // ID 
 		// -------------------------------------------------------------------------
 		// Validation and default assignments 
 		// Create empty elements with defaults if none found. ;-)
@@ -317,17 +317,7 @@ function mapCaseJsonToUi(data){
 	items.push('</tbody>');
 	items.push('</table>'); // 
 	katana.$activeTab.find("#tableOfTestStepsForCase").html( items.join(""));
-	katana.$activeTab.find('#Step_table_display tbody').sortable();
-	/*
-	katana.$activeTab.find('#Step_table_display').bootstrapTable({
-		columns: [ { title: 'ID' } , { title: 'Step'}, { title: 'Arguments'}, { title: 'Description'},
-		 { title: 'On Error'}, { title: 'Other '} ] 
-	});
-	katana.$activeTab.find('#Step_table_display').on('click',"td",   function() { 
-	});
-	katana.$activeTab.find('#Step_table_display').bootstrapTable('resetView'); 
-	
-*/
+	katana.$activeTab.find('#Step_table_display tbody').sortable( { stop: testCaseSortEventHandler});
 	
 	// Based on the options
 
@@ -344,11 +334,34 @@ function mapCaseJsonToUi(data){
 }  // end of function 
 
 
+
+var testCaseSortEventHandler = function(event, ui ) {
+
+	var listItems = [] ; 
+	var listCases = katana.$activeTab.find('#Step_table_display tbody').children(); 
+	console.log(listCases);
+
+	var oldCaseSteps = jsonCaseObject["Steps"]['step'];
+	var newCaseSteps = new Array(listCases.length);
+		
+	for (xi=0; xi < listCases.length; xi++) {
+		var xtr = listCases[xi];
+		var ni  = xtr.getAttribute("data-sid");
+		console.log(xi + " => " + ni);
+		newCaseSteps[ni] = oldCaseSteps[xi];
+	}
+
+	jsonCaseObject["Steps"]['step'] = newCaseSteps;
+	jsonCaseSteps  = jsonCaseObject["Steps"]
+	mapCaseJsonToUi(jsonCaseSteps);
+	
+};
+
 // Removes a test suite by its ID and refresh the page. 
 function removeTestStep( sid ){
-			jsonCaseSteps['step'].splice(sid,1);
-			console.log("Removing test cases "+sid+" now " + Object.keys(jsonCaseSteps).length);
-			mapCaseJsonToUi(jsonCaseSteps);
+		jsonCaseSteps['step'].splice(sid,1);
+		console.log("Removing test cases "+sid+" now " + Object.keys(jsonCaseSteps).length);
+		mapCaseJsonToUi(jsonCaseSteps);
 }
 
 function addTestStepAboveToUI(sid,xdata) {
