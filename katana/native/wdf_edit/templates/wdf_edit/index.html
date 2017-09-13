@@ -26,6 +26,7 @@
                     <div class="col-md-2"><label class="wdf-label">System name:</label></div>
                     <div class="col-md-10"><input class="wdf-input" name="{{ forloop.counter }}-1-system_name" value="{{ system|get_item:'@name' }}"/></div>
                 </div>
+                {% with system|remove_name as system %}
                 {% for k, v in system.items %}
                     {% if v|is_dict == "true" %}
                         <div class="row" id="content">
@@ -51,6 +52,7 @@
                         </div>
                     {% endif %}
                 {% endfor %}
+                {% endwith %}
             </div>
         {% elif "ip" in system.subsystem %}
             <div id="{{ forloop.counter }}-1-control-box" class="control-box">
@@ -69,6 +71,7 @@
                     <div class="col-md-2"><label class="wdf-label">Subsystem name:</label></div>
                     <div class="col-md-10"><input class="wdf-input" name="{{ forloop.counter }}-1-subsystem_name" value="{{ system.subsystem|get_item:'@name' }}"/></div>
                 </div>
+                {% with system.subsystem|remove_name as system.subsystem %}
                 {% for k, v in system.subsystem.items %}
                     {% if v|is_dict == "true" %}
                         <div class="row" id="content">
@@ -94,6 +97,7 @@
                         </div>
                     {% endif %}
                 {% endfor %}
+                {% endwith %}
             </div>
         {% elif system.subsystem %}
             {% for subsys in system.subsystem %}
@@ -113,6 +117,7 @@
                         <div class="col-md-2"><label class="wdf-label">Subsystem name:</label></div>
                         <div class="col-md-10"><input class="wdf-input" name="{{ forloop.parentloop.counter }}-{{ forloop.counter }}-subsystem_name" value="{{ subsys|get_item:'@name' }}"/></div>
                     </div>
+                    {% with subsys|remove_name as subsys %}
                     {% for k, v in subsys.items %}
                         {% if v|is_dict == "true" %}
                             <div class="row" id="content">
@@ -138,6 +143,7 @@
                             </div>
                         {% endif %}
                     {% endfor %}
+                    {% endwith %}
                 </div>
             {% endfor %}
         {% endif %}

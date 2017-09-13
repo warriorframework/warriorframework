@@ -67,13 +67,16 @@ var wdf = {
         var $tmp = katana.$activeTab.find("#tag_template").clone();
         // go to control box level
         var $target = $(this).closest(".control-box");
-        if ($target.parent().find("[id^='"+$target.attr("id").split("-").slice(0,1)+"-']").length > 1) {
+        var $system_id = $target.attr("id").split("-").slice(0,1)
+        var $subsystem_id = $target.attr("id").split("-").slice(1,2)
+        if ($target.parent().find("[id^='"+$system_id+"-']").length > 1 && $subsystem_id == "1") {
             alert("Please only add tag in subsystem");
+        } else {
+            var $id = $target.attr("id").substring(0, $target.attr("id").length-11);
+            $tmp.find("[name='template-tag.tag']").prop("name", $id+($target.children("#content").length+1)+"-1-key");
+            $tmp.find("[name='template-tag.value']").prop("name", $id+($target.children("#content").length+1)+"-1-value");
+            $target.append($($tmp.html()));
         }
-        var $id = $target.attr("id").substring(0, $target.attr("id").length-11);
-        $tmp.find("[name='template-tag.tag']").prop("name", $id+($target.children("#content").length+1)+"-1-key");
-        $tmp.find("[name='template-tag.value']").prop("name", $id+($target.children("#content").length+1)+"-1-value");
-        $target.append($($tmp.html()));
     },
 
     addChild: function(){
@@ -89,17 +92,24 @@ var wdf = {
     },
 
     addSubSystem: function(){
-        var $tmp = katana.$activeTab.find("#subsystem_template").clone();
         var $target = $(this).closest(".control-box");
-        var $system_id = $target.attr("id").split("-")[0];
-        var $subsystem_count = $target.parent().find("[id^='"+$system_id+"-']").length;
-        $tmp.find("#template-subsystem").prop("id", $system_id+"-"+($subsystem_count+1)+"-control-box");
-        $tmp.find("[name='template-system-name']").attr("value", $target.find('[name*="system_name"]').attr("value"));
-        $tmp.find("[name='template-system-name']").prop("name", $system_id+"-"+($subsystem_count+1)+"-system_name");
-        $tmp.find("[name='template-subsystem-name']").prop("name", $system_id+"-"+($subsystem_count+1)+"-subsystem_name");
-        $tmp.find("[name='template-tag.tag']").prop("name", $system_id+"-"+($subsystem_count+1)+"-"+($target.children("#content").length+1)+"-1-key");
-        $tmp.find("[name='template-tag.value']").prop("name", $system_id+"-"+($subsystem_count+1)+"-"+($target.children("#content").length+1)+"-1-value");
-        $target.after($($tmp.html()));
+        var $subsystem_id = $target.attr("id").split("-").slice(1,2)
+        if ($subsystem_id != "1") {
+            alert("Please only add subsystem under top level system");
+        } else if ($subsystem_id == "1" && $target.find("#content:has(div)").length > 0){
+            alert("Please only add subsystem when top level system doesn't have tag");
+        } else {
+            var $tmp = katana.$activeTab.find("#subsystem_template").clone();
+            var $system_id = $target.attr("id").split("-")[0];
+            var $subsystem_count = $target.parent().find("[id^='"+$system_id+"-']").length;
+            $tmp.find("#template-subsystem").prop("id", $system_id+"-"+($subsystem_count+1)+"-control-box");
+            $tmp.find("[name='template-system-name']").attr("value", $target.find('[name*="system_name"]').attr("value"));
+            $tmp.find("[name='template-system-name']").prop("name", $system_id+"-"+($subsystem_count+1)+"-system_name");
+            $tmp.find("[name='template-subsystem-name']").prop("name", $system_id+"-"+($subsystem_count+1)+"-subsystem_name");
+            $tmp.find("[name='template-subsystem.tag']").prop("name", $system_id+"-"+($subsystem_count+1)+"-"+($target.children("#content").length+1)+"-1-key");
+            $tmp.find("[name='template-subsystem.value']").prop("name", $system_id+"-"+($subsystem_count+1)+"-"+($target.children("#content").length+1)+"-1-value");
+            $target.after($($tmp.html()));
+        }
     },
 
     hide: function(){

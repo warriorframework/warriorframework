@@ -5,6 +5,7 @@ import json, xmltodict, os
 from utils.navigator_util import Navigator
 from utils.json_utils import read_json_data
 from collections import OrderedDict
+from django.template.defaulttags import register
 
 from django.shortcuts import render
 from django.http import JsonResponse
@@ -63,6 +64,14 @@ def get_jstree_dir(request):
 
 def file_list(request):
     return render(request, 'wdf_edit/file_list.html', {})
+
+@register.filter
+def remove_name(data):
+    """
+        remove the @name key from dict
+    """
+    del data["@name"]
+    return data
 
 def raw_parser(data):
     """
