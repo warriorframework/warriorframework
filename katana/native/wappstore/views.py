@@ -16,7 +16,8 @@ class WappStoreView(View):
         Get Request Method
         """
 
-        banner = "Thank you for visiting the Wapp Store. We are still working at building this " \
-                 "awesome store for you! Please return in a few days for more information!"
+        banner = "Thank you for visiting the Wapp Store."
+        data = "We are still working on building this awesome store for you and we will let you " \
+               "know as soon as it is ready!"
 
-        return render(request, WappStoreView.template, {"data": banner})
+        return render(request, WappStoreView.template, {"banner": banner, "data": data})
