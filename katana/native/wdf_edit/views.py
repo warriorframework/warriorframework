@@ -178,7 +178,7 @@ def build_xml_dict(data):
 def on_post(request):
     data = request.POST
     filepath = data["filepath"]
-    # print json.dumps(sorted(data.items()), indent=4)
+    print json.dumps(data.items(), indent=4)
     data = raw_parser(data)
     data = build_xml_dict(data)
     data = {"credentials":{"system":data}}

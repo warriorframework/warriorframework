@@ -65,7 +65,7 @@ var wdf = {
     addTag: function(){
         var $tmp = katana.$activeTab.find("#tag_template").clone();
         // go to control box level
-        var $target = $(this).parent().parent().parent();
+        var $target = $(this).closest(".control-box");
         var $id = $target.attr("id").substring(0, $target.attr("id").length-11);
         $tmp.find("[name='template-tag.tag']").prop("name", $id+($target.children("#content").length+1)+"-1-key");
         $tmp.find("[name='template-tag.value']").prop("name", $id+($target.children("#content").length+1)+"-1-value");
@@ -75,7 +75,7 @@ var wdf = {
     addChild: function(){
         var $tmp = katana.$activeTab.find("#child_tag_template").clone();
         // go to control box level
-        var $target = $(this).parent().parent();
+        var $target = $(this).closest("#content");
         var $raw_id = $target.find("[name*='-key']").attr("name").substring(0, $target.find("[name*='-key']").attr("name").length-4);
         var $id = $raw_id.split("-").slice(0,-1).join("-");
         var $new_id = $target.parent().find("[name*='"+$id+"']").length/2+1;
