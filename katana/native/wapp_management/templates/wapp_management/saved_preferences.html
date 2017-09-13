@@ -1,14 +1,12 @@
 <div id="saved_preferences">
     {% if data.preferences %}
-    <div class="custom-controls-stacked">
+    <div id="config-file-div">
         {% for preference in data.preferences %}
-            <label id="{{preference}}" class="custom-control custom-radio" katana-click="wapp_management.getPreferenceDetails">
-                <input id="radio1" name="radio-stacked" type="radio" class="custom-control-input">
-                <span class="custom-control-indicator"></span>
-                <span class="custom-control-description">{{preference}}</span>
-            </label>
-            <div id="config-details-{{preference}}">
-                {% include 'wapp_management/config_details.html'  %}
+            <div class="card">
+                <div class="card-header" style="background-color: #98afc7" id="{{preference}}" katana-click="wapp_management.getPreferenceDetails">{{preference}}</div>
+                <div id="config-details-{{preference}}" class="card-block" style="background-color: #e5e4e2">
+                    {% include 'wapp_management/config_details.html'  %}
+                </div>
             </div>
         {% endfor %}
     </div>

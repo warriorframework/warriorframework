@@ -1,7 +1,25 @@
-{% for xyz in preference_details %}
+{% for detail in preference_details %}
     <div class="row">
-        <div class="col-sm-5">
-            <input class="form-control" value="{{xyz}}">
+        <div class="col-sm-1 text-center" style="padding-top: 0.5rem;">
+            {% if detail.type == "repository" %}
+                <label>Repository:</label>
+            {% elif detail.type == "zip" %}
+                <label>ZIP:</label>
+            {% else %}
+                <label>File Path:</label>
+            {% endif %}
         </div>
+        {% if detail.needs_update %}
+        <div class="col-sm-5">
+            <input class="form-control" style="border: 1px solid red" value="{{detail.name}}">
+            <div>
+                <h6 class="text-muted">This information may be outdated. Please update it.</h6>
+            </div>
+        </div>
+        {% else %}
+            <div class="col-sm-5">
+                <input class="form-control"value="{{detail.name}}">
+            </div>
+        {% endif %}
     </div>
 {% endfor %}

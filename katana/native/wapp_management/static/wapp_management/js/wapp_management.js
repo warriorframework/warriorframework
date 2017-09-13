@@ -26,7 +26,10 @@ var wapp_management = {
 
     installAnApp: function(){
 
-        var $elements = $("input[id*='app_path_for_config']")
+        var $currentPage = katana.$activeTab;
+
+
+        var $elements = $currentPage.find("input[id*='app_path_for_config']")
         var app_paths = []
         var path = "";
         for(var i=0 ; i<$elements.length; i++){
@@ -57,8 +60,40 @@ var wapp_management = {
                 url: 'wapp_management/install_an_app/',
                 data: {"app_paths": app_paths},
             }).done(function(data) {
-                $('#installed_apps_div').html(data)
+                alert("Apps have been installed!");
+                $currentPage.find('#form-for-paths').html('');
+                wapp_management.addAnotherApp(1);
+                $currentPage.find('#installed_apps_div').html(data)
             });
+    },
+
+    getFileName: function(){
+        var $browsedInput = $(this);
+        var $filepath = $browsedInput.val().split("\\");
+        var $filename = $filepath[$filepath.length - 1];
+
+        var temp_array = $filename.split(".")
+        var extension = temp_array[temp_array.length - 1]
+
+        if(extension !== "zip"){
+            alert("Please select a .zip file.");
+            return;
+        }
+
+        var $browserInputId = $browsedInput.attr('id');
+        var $currentPage = katana.$activeTab;
+        var $fileInput = $currentPage.find('input[id="' + $browserInputId + '"]')
+
+        var temp = $browserInputId.split("_");
+        var $loop_num = temp[temp.length - 1];
+
+        var $displayInput = $currentPage.find('input[id="app_path_for_config_' + $loop_num + '"]')
+
+        $displayInput.val($filename);
+
+        var selectedFile = $browsedInput[0].files[0];
+        $.wapp_management_globals.app_path_details[$filename] = selectedFile;
+
     },
 
     saveConfig: function(app_paths){
@@ -119,15 +154,40 @@ var wapp_management = {
 		});
     },
 
-    addAnotherApp: function(){
-        var $current = $(this);
-        var $loop_num = $current.attr('input_num');
-        $current.attr("input_num", (parseInt($loop_num)+1).toString());
+    addAnotherApp: function(loop_num){
+        if(loop_num == undefined){
+            var $current = $(this);
+            var $loop_num = $current.attr('input_num');
+            $current.attr("input_num", (parseInt($loop_num)+1).toString());
+        }
+        else{
+            $loop_num = loop_num;
+        }
+
         var $parent = document.getElementById("form-for-paths");
-        var $elem = $('<div class="row" id="row_for_' + $loop_num +
-        '"><div class="col-sm-5"><input class="form-control" id="app_path_for_config_'
-        + $loop_num + '"></div><div class="col-sm-1" style="padding: 0.3rem 0 0 0;"><button class="btn btn-default">&nbsp;&nbsp;Browse...&nbsp;&nbsp;</button></div><div class="col-sm-1" style="padding: 0.3rem 0 0 0;"><button class="btn btn-default" katana-click="wapp_management.deleteAppPath" app_path_index="'
-        + $loop_num +'">&nbsp;&nbsp;Delete&nbsp;&nbsp;</button></div></div>');
+        var html_content = '<div class="row" id="row_for_' + $loop_num + '">' +
+                                '<div class="col-sm-5">' +
+                                    '<input class="form-control" id="app_path_for_config_' + $loop_num + '">' +
+                                '</div>' +
+                                '<div class="col-sm-1" style="padding: 0.2rem 0.5rem 0 0.5rem;">' +
+                                    '<label style="width: 100%;">' +
+                                        '<span class="btn btn-info btn-block">' +
+                                            '<input type="file" accept=".zip" ' +
+                                                    'katana-change="wapp_management.getFileName" ' +
+                                                    'id="file_path_' + $loop_num + '" hidden> ' +
+                                            'Browse' +
+                                        '</span>' +
+                                    '</label>' +
+                                '</div>' +
+                                '<div class="col-sm-1" style="padding: 0.2rem 0.5rem 0 0.5rem;">' +
+                                    '<button class="btn btn-danger btn-block" ' +
+                                             'katana-click="wapp_management.deleteAppPath" ' +
+                                             'app_path_index="' + $loop_num + '">' +
+                                        'Delete' +
+                                    '</button>' +
+                                '</div>' +
+                            '</div>'
+        var $elem = $(html_content);
 
         /* <div class="col-sm-3" id="status-div" style="padding: 0.8rem 0 0 0.5rem "></div> */
         $parent.append($elem[0]);
@@ -241,7 +301,17 @@ var wapp_management = {
     },
 
     getPreferenceDetails: function(){
+
+        var $currentPage = katana.$activeTab;
+
+        var $parentDiv = $currentPage.find('#config-file-div');
+        var $childDiv = $parentDiv.find('div .card-header');
+        for(var i=0; i<$childDiv.length; i++){
+            $($childDiv[i]).css("background-color", "#98afc7")
+        }
+
         var $elem = $(this);
+        $elem.css("background-color", "#C7B097")
         var $attribute = $elem.attr('id');
 
         if(jQuery.isEmptyObject($.wapp_management_globals.preference_details)){
@@ -253,7 +323,7 @@ var wapp_management = {
                 wapp_management.getPreferenceFile($attribute);
             }
             else {
-                wapp_management.setPreferenceDetails($('#config-details-' + $attribute), $.wapp_management_globals.preference_details[$attribute]);
+                wapp_management.setPreferenceDetails($currentPage.find('#config-details-' + $attribute), $.wapp_management_globals.preference_details[$attribute]);
             }
         }
     },
@@ -286,6 +356,9 @@ var wapp_management = {
 
         $.wapp_management_globals = new Object();
         $.wapp_management_globals.preference_details = {};
+        $.wapp_management_globals.app_path_details = {};
+
+        wapp_management.addAnotherApp(1);
 
 
     },

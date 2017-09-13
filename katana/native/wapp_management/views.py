@@ -40,7 +40,6 @@ class WappManagementView(View):
             filename, file_extension = os.path.splitext(subfile)
             if file_extension == ".xml":
                 preferences.append(filename)
-        print preferences
         return render(request, WappManagementView.template, {"data": {"app": AppInformation.information.apps, "preferences": preferences}})
 
 
@@ -105,18 +104,43 @@ def load_configs(request):
 
 def open_config(request):
     config_name = request.GET['config_name']
-    config_path = join_path(os.getcwd(), "native", "wapp_management", ".data", "{0}.xml".format(config_name))
+    data_dir = join_path(os.getcwd(), "native", "wapp_management", ".data")
+    config_path = join_path(data_dir, "{0}.xml".format(config_name))
+
+    config_file_data_dir = join_path(data_dir, config_name)
+
     info = []
     with open(config_path, 'r') as f:
         data = f.read()
     tree = ET.ElementTree(ET.fromstring(data))
     apps = tree.findall('app')
     for app in apps:
-        if app.find('filepath', None) is not None:
-            node = app.find('filepath', None)
+        temp = {}
+        if app.find('zip', None) is not None:
+            node = app.find('zip', None)
+            type_of_app = "zip"
             text = node.text
-        else:
+            if not os.path.exists(join_path(config_file_data_dir, text)):
+                needs_update = True
+            else:
+                needs_update = False
+        elif app.find('repository', None) is not None:
             node = app.find('repository', None)
+            type_of_app = "repository"
             text = node.text
-        info.append(text)
+            needs_update = False
+        else:
+            node = app.find('filepath', None)
+            type_of_app = "filepath"
+            text = node.text
+            if not os.path.exists(text):
+                needs_update = True
+            else:
+                needs_update = False
+        temp["name"] = text
+        temp["type"] = type_of_app
+        temp["needs_update"] = needs_update
+
+        info.append(temp)
+        print info
     return render(request, 'wapp_management/config_details.html', {"preference_details": info})
