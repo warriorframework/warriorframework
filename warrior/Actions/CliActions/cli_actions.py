@@ -14,7 +14,7 @@ limitations under the License.
 """This is the cli_actions module that has all cli related keywords """
 
 import Framework.Utils as Utils
-from Framework.Utils import cli_Utils
+from Framework.Utils import cli_Utils, data_Utils
 from Framework.Utils.print_Utils import print_warning
 from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.data_Utils import getSystemData,\
@@ -820,10 +820,54 @@ class CliActions(object):
                                                                   session_name=session_name,
                                                                   datafile=self.datafile)
 
-        td_resp_dict = get_object_from_datarepository(str(session_id)+"_td_response")
-        if not WarriorCliClass.cmdprint:
-            td_resp_dict.update(resp_dict)
+        temp_testdata_dict = data_Utils.get_command_details_from_testdata(testdata, varconfigfile,
+                                                                 var_sub=var_sub, title=title,
+                                                                 row=row_num, system_name=system_name, datafile=self.datafile)
+        td_sys_list = []
+        td_session_list = []
+        temp_session_id = ''
+        td_resp_dict = {}
 
+        #Fetching the system name and session name from details dict if available,
+        #else takes from test case.
+        for key, temp_details_dict in temp_testdata_dict.iteritems():
+            for i in temp_details_dict["sys_list"]:
+                if i is None or i is '' :
+                    td_sys_list.append(system_name)
+                else:
+                    if i.startswith('['):
+                        td_sys_list.append(system_name)
+                    else:
+                        td_sys_list.append(i)
+            for k in temp_details_dict["session_list"]:
+                if k is None or k is '':
+                    td_session_list.append(session_name)
+                else:
+                    td_session_list.append(k)
+
+        for key, temp_resp_dict in resp_dict.iteritems():
+            for count, value in enumerate(temp_resp_dict):
+                #if session name given along with system name then it is split and saved respectively.
+                temp_list = td_sys_list[count].split('.',1)
+                if len(temp_list) > 1:
+                    temp_sess_name = temp_list[1]
+                else:
+                    temp_sess_name = td_session_list[count]
+                temp_session_id = Utils.data_Utils.get_session_id(temp_list[0], temp_sess_name)
+                td_resp_dict = get_object_from_datarepository(str(temp_session_id)+"_td_response")
+                #fetches the title and row value, checks if already available in td_resp_dict and updates
+                #the response ref and its value to td_resp_dict else updates the dict key and then
+                #updates the response ref and its value to td_resp_dict
+                dict_key = {key :{}}
+                if key not in td_resp_dict.keys():
+                    td_resp_dict.update(dict_key)
+                    resp_key_value_dict = {value: temp_resp_dict[value]}
+                    if not WarriorCliClass.cmdprint:
+                        td_resp_dict[key].update(resp_key_value_dict)
+                else:
+                    resp_key_value_dict = {value: temp_resp_dict[value]}
+                    if not WarriorCliClass.cmdprint:
+                        td_resp_dict[key].update(resp_key_value_dict)
 
         Utils.testcase_Utils.report_substep_status(status)
         return  status, td_resp_dict
