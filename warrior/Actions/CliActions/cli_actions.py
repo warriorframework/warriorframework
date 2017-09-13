@@ -822,7 +822,8 @@ class CliActions(object):
 
         temp_testdata_dict = data_Utils.get_command_details_from_testdata(testdata, varconfigfile,
                                                                  var_sub=var_sub, title=title,
-                                                                 row=row_num, system_name=system_name, datafile=self.datafile)
+                                                                 row=row_num, system_name=system_name,
+                                                                 datafile=self.datafile)
         td_sys_list = []
         td_session_list = []
         temp_session_id = ''
@@ -832,7 +833,7 @@ class CliActions(object):
         #else takes from test case.
         for key, temp_details_dict in temp_testdata_dict.iteritems():
             for i in temp_details_dict["sys_list"]:
-                if i is None or i is '' :
+                if i is None or i is '':
                     td_sys_list.append(system_name)
                 else:
                     if i.startswith('['):
@@ -848,16 +849,16 @@ class CliActions(object):
         for key, temp_resp_dict in resp_dict.iteritems():
             for count, value in enumerate(temp_resp_dict):
                 #if session name given along with system name then it is split and saved respectively.
-                temp_list = td_sys_list[count].split('.',1)
+                temp_list = td_sys_list[count].split('.', 1)
                 if len(temp_list) > 1:
                     temp_sess_name = temp_list[1]
                 else:
                     temp_sess_name = td_session_list[count]
                 temp_session_id = Utils.data_Utils.get_session_id(temp_list[0], temp_sess_name)
                 td_resp_dict = get_object_from_datarepository(str(temp_session_id)+"_td_response")
-                #fetches the title and row value, checks if already available in td_resp_dict and updates
-                #the response ref and its value to td_resp_dict else updates the dict key and then
-                #updates the response ref and its value to td_resp_dict
+                #fetches the title and row value, checks if already available in td_resp_dict
+                #and updates the response ref and its value to td_resp_dict else updates the dict key
+                #and then updates the response ref and its value to td_resp_dict
                 dict_key = {key :{}}
                 if key not in td_resp_dict.keys():
                     td_resp_dict.update(dict_key)
@@ -940,15 +941,15 @@ class CliActions(object):
             If both tag and attribute is provided the attribute will be used.
 
             1. ip = IP address of the system.\
-            
+
                 Default value for ip type is ip, it can take any type of ip's
                 to connect to (like ipv4, ipv6, dns etc)
-                
+
                 Users can provide tag/attribute for any ip_type under the system
                 in the input datafile and specify the tag/attribute name
                 as the value for ip_type argument, then the connection will be 
                 established using that value.
-             
+
             2. username = username for the  session.
             3. password = password for the  session.
             4. timeout = use if you want to set timeout while connecting,\
@@ -980,7 +981,7 @@ class CliActions(object):
 
         output_dict = {}
         status = True
-        
+
         root = Utils.xml_Utils.getRoot(self.datafile)
         systems = root.findall('system')
         system_list = []
