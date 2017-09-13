@@ -7,9 +7,9 @@
     <div class="row">
         <div class="col-md-1"><label class="wdf-label">Filepath:</label></div>
         <div class="col-md-8"><input class="wdf-input" name="filepath" value="{{ filepath }}"/></div>
-        <div class="col-md-1"><button class="wdf-button btn" type="button" id="add" katana-click="wdf.addSystem">Add block</button></div>
-        <div class="col-md-1"><button class="wdf-button btn" type="button" id="cancel" katana-click="wdf.cancel">Cancel</button></div>
-        <div class="col-md-1"><button class="wdf-button btn" type="button" id="submit" katana-click="wdf.submit">Submit</button></div>
+        <div class="col-md-1"><i class="fa fa-plus-square fa-3x i-info" title="Add new system at the end" katana-click="wdf.addSystem"/></div>
+        <div class="col-md-1"><i class="fa fa-times fa-3x i-danger" title="Disregard change and close" katana-click="wdf.cancel"/></div>
+        <div class="col-md-1"><i class="fa fa-save fa-3x i-success" title="Save change and submit" katana-click="wdf.submit"/></div>
     </div>
 
     {% for system in data.system %}
@@ -17,34 +17,51 @@
             <div id="{{ forloop.counter }}-1-control-box" class="control-box">
                 <hr class="wdf-hr"/>
                 <div class="row">
-                    <div class="col-md-2"><button katana-click="wdf.toggle" class="btn btn-block" type="button">Show/Hide block</button></div>
-                    <div class="col-md-2"><button katana-click="wdf.addTag" class="btn btn-block" type="button">Add info</button></div>
-                    <div class="col-md-2"><button katana-click="wdf.addSubSystem" class="btn btn-block" type="button">Add inner block</button></div>
-                    <div class="col-md-2"><button katana-click="wdf.deleteSystem" class="btn btn-block" type="button">Delete block</button></div>
+                    <div class="col-md-2"><i class="fa fa-toggle-down fa-2x i-info" katana-click="wdf.toggle" title="Show/Hide block"/></div>
+                    <div class="col-md-1 text-center"><i class="fa fa-plus-square fa-2x i-info" katana-click="wdf.addTag" title="Add info"/></div>
+                    <div class="col-md-1 text-center"><i class="fa fa-caret-right fa-2x i-info" katana-click="wdf.addSubSystem" title="Add inner block"/></div>
+                    <div class="col-md-1 text-center"><i class="fa fa-trash fa-2x i-danger" katana-click="wdf.deleteSystem" title="Delete block"/></div>
                 </div>
                 <div class="row">
                     <div class="col-md-2"><label class="wdf-label">System name:</label></div>
                     <div class="col-md-10"><input class="wdf-input" name="{{ forloop.counter }}-1-system_name" value="{{ system|get_item:'@name' }}"/></div>
                 </div>
+                {% with system|remove_name as system %}
                 {% for k, v in system.items %}
-                    {% if k != "@name" %}
+                    {% if v|is_dict == "true" %}
                         <div class="row" id="content">
-                            <div class="col-md-1"><button type="button" class="wdf-button btn" katana-click="wdf.addChild">More info</button></div>
-                            <div class="col-md-1"><button type="button" class="wdf-button btn" katana-click="wdf.deleteTag">Delete</button></div>
+                            <div class="col-md-1"><i class="fa fa-angle-right fa-2x i-info" katana-click="wdf.addChild" title="Add child info"/></div>
+                            <div class="col-md-1"><i class="fa fa-trash fa-2x i-danger" katana-click="wdf.deleteTag" title="Delete info and its child info"/></div>
+                            <div class="col-md-3"><input class="wdf-input" name="{{ forloop.parentloop.counter }}-1-{{ forloop.counter }}-0-key" value="{{ k }}"/></div>
+                            <div class="col-md-7"><input class="wdf-input" name="{{ forloop.parentloop.counter }}-1-{{ forloop.counter }}-0-value" value=""/></div>
+                        </div>
+                        {% for child_k, child_v in v.items %}
+                            <div class="row" id="subcontent">
+                                <div class="col-md-1"></div>
+                                <div class="col-md-1"><i class="fa fa-trash fa-2x i-danger" katana-click="wdf.deleteChildTag" title="Delete tag and its child tags"/></div>
+                                <div class="col-md-3"><input class="wdf-input" name="{{ forloop.parentloop.parentloop.counter }}-1-{{ forloop.parentloop.counter }}-{{ forloop.counter }}-key" value="{{ child_k }}"/></div>
+                                <div class="col-md-7"><input class="wdf-input" name="{{ forloop.parentloop.parentloop.counter }}-1-{{ forloop.parentloop.counter }}-{{ forloop.counter }}-value" value="{{ child_v }}"/></div>
+                            </div>
+                        {% endfor %}
+                    {% elif k != "@name" %}
+                        <div class="row" id="content">
+                            <div class="col-md-1"><i class="fa fa-angle-right fa-2x i-info" katana-click="wdf.addChild" title="Add child info"/></div>
+                            <div class="col-md-1"><i class="fa fa-trash fa-2x i-danger" katana-click="wdf.deleteTag" title="Delete info and its child info"/></div>
                             <div class="col-md-3"><input class="wdf-input" name="{{ forloop.parentloop.counter }}-1-{{ forloop.counter }}-1-key" value="{{ k }}"/></div>
                             <div class="col-md-7"><input class="wdf-input" name="{{ forloop.parentloop.counter }}-1-{{ forloop.counter }}-1-value" value="{{ v }}"/></div>
                         </div>
                     {% endif %}
                 {% endfor %}
+                {% endwith %}
             </div>
         {% elif "ip" in system.subsystem %}
             <div id="{{ forloop.counter }}-1-control-box" class="control-box">
                 <hr class="wdf-hr"/>
                 <div class="row">
-                    <div class="col-md-2"><button katana-click="wdf.toggle" class="btn btn-block" type="button">Show/Hide block</button></div>
-                    <div class="col-md-2"><button katana-click="wdf.addTag" class="btn btn-block" type="button">Add info</button></div>
-                    <div class="col-md-2"><button katana-click="wdf.addSubSystem" class="btn btn-block" type="button">Add inner block</button></div>
-                    <div class="col-md-2"><button katana-click="wdf.deleteSystem" class="btn btn-block" type="button">Delete block</button></div>
+                    <div class="col-md-2"><i class="fa fa-toggle-down fa-2x i-info" katana-click="wdf.toggle" title="Show/Hide block"/></div>
+                    <div class="col-md-1 text-center"><i class="fa fa-plus-square fa-2x i-info" katana-click="wdf.addTag" title="Add info"/></div>
+                    <div class="col-md-1 text-center"><i class="fa fa-caret-right fa-2x i-info" katana-click="wdf.addSubSystem" title="Add inner block"/></div>
+                    <div class="col-md-1 text-center"><i class="fa fa-trash fa-2x i-danger" katana-click="wdf.deleteSystem" title="Delete block"/></div>
                 </div>
                 <div class="row">
                     <div class="col-md-2"><label class="wdf-label">System name:</label></div>
@@ -54,26 +71,43 @@
                     <div class="col-md-2"><label class="wdf-label">Subsystem name:</label></div>
                     <div class="col-md-10"><input class="wdf-input" name="{{ forloop.counter }}-1-subsystem_name" value="{{ system.subsystem|get_item:'@name' }}"/></div>
                 </div>
+                {% with system.subsystem|remove_name as system.subsystem %}
                 {% for k, v in system.subsystem.items %}
-                    {% if k != "@name" %}
+                    {% if v|is_dict == "true" %}
                         <div class="row" id="content">
-                            <div class="col-md-1"><button type="button" class="wdf-button btn" katana-click="wdf.addChild">More info</button></div>
-                            <div class="col-md-1"><button type="button" class="wdf-button btn" katana-click="wdf.deleteTag">Delete</button></div>
+                            <div class="col-md-1"><i class="fa fa-angle-right fa-2x i-info" katana-click="wdf.addChild" title="Add child info"/></div>
+                            <div class="col-md-1"><i class="fa fa-trash fa-2x i-danger" katana-click="wdf.deleteTag" title="Delete info and its child info"/></div>
+                            <div class="col-md-3"><input class="wdf-input" name="{{ forloop.parentloop.counter }}-1-{{ forloop.counter }}-0-key" value="{{ k }}"/></div>
+                            <div class="col-md-7"><input class="wdf-input" name="{{ forloop.parentloop.counter }}-1-{{ forloop.counter }}-0-value" value=""/></div>
+                        </div>
+                        {% for child_k, child_v in v.items %}
+                            <div class="row" id="subcontent">
+                                <div class="col-md-1"></div>
+                                <div class="col-md-1"><i class="fa fa-trash fa-2x i-danger" katana-click="wdf.deleteChildTag" title="Delete tag and its child tags"/></div>
+                                <div class="col-md-3"><input class="wdf-input" name="{{ forloop.parentloop.parentloop.counter }}-1-{{ forloop.parentloop.counter }}-{{ forloop.counter }}-key" value="{{ child_k }}"/></div>
+                                <div class="col-md-7"><input class="wdf-input" name="{{ forloop.parentloop.parentloop.counter }}-1-{{ forloop.parentloop.counter }}-{{ forloop.counter }}-value" value="{{ child_v }}"/></div>
+                            </div>
+                        {% endfor %}
+                    {% elif k != "@name" %}
+                        <div class="row" id="content">
+                            <div class="col-md-1"><i class="fa fa-angle-right fa-2x i-info" katana-click="wdf.addChild" title="Add child info"/></div>
+                            <div class="col-md-1"><i class="fa fa-trash fa-2x i-danger" katana-click="wdf.deleteTag" title="Delete info and its child info"/></div>
                             <div class="col-md-3"><input class="wdf-input" name="{{ forloop.parentloop.counter }}-1-{{ forloop.counter }}-1-key" value="{{ k }}"/></div>
                             <div class="col-md-7"><input class="wdf-input" name="{{ forloop.parentloop.counter }}-1-{{ forloop.counter }}-1-value" value="{{ v }}"/></div>
                         </div>
                     {% endif %}
                 {% endfor %}
+                {% endwith %}
             </div>
         {% elif system.subsystem %}
             {% for subsys in system.subsystem %}
                 <div id="{{ forloop.parentloop.counter }}-{{ forloop.counter }}-control-box" class="control-box">
                     <hr class="wdf-hr"/>
                     <div class="row">
-                        <div class="col-md-2"><button katana-click="wdf.toggle" class="btn btn-block" type="button">Show/Hide block</button></div>
-                        <div class="col-md-2"><button katana-click="wdf.addTag" class="btn btn-block" type="button">Add info</button></div>
-                        <div class="col-md-2"><button katana-click="wdf.addSubSystem" class="btn btn-block" type="button">Add inner block</button></div>
-                        <div class="col-md-2"><button katana-click="wdf.deleteSystem" class="btn btn-block" type="button">Delete block</button></div>
+                        <div class="col-md-2"><i class="fa fa-toggle-down fa-2x i-info" katana-click="wdf.toggle" title="Show/Hide block"/></div>
+                        <div class="col-md-1 text-center"><i class="fa fa-plus-square fa-2x i-info" katana-click="wdf.addTag" title="Add info"/></div>
+                        <div class="col-md-1 text-center"><i class="fa fa-caret-right fa-2x i-info" katana-click="wdf.addSubSystem" title="Add inner block"/></div>
+                        <div class="col-md-1 text-center"><i class="fa fa-trash fa-2x i-danger" katana-click="wdf.deleteSystem" title="Delete block"/></div>
                     </div>
                     <div class="row">
                         <div class="col-md-2"><label class="wdf-label">System name:</label></div>
@@ -83,40 +117,55 @@
                         <div class="col-md-2"><label class="wdf-label">Subsystem name:</label></div>
                         <div class="col-md-10"><input class="wdf-input" name="{{ forloop.parentloop.counter }}-{{ forloop.counter }}-subsystem_name" value="{{ subsys|get_item:'@name' }}"/></div>
                     </div>
+                    {% with subsys|remove_name as subsys %}
                     {% for k, v in subsys.items %}
-                        {% if k != "@name" %}
+                        {% if v|is_dict == "true" %}
                             <div class="row" id="content">
-                                <div class="col-md-1"><button type="button" class="wdf-button btn" katana-click="wdf.addChild">More info</button></div>
-                                <div class="col-md-1"><button type="button" class="wdf-button btn" katana-click="wdf.deleteTag">Delete</button></div>
+                                <div class="col-md-1"><i class="fa fa-angle-right fa-2x i-info" katana-click="wdf.addChild" title="Add child info"/></div>
+                                <div class="col-md-1"><i class="fa fa-trash fa-2x i-danger" katana-click="wdf.deleteTag" title="Delete info and its child info"/></div>
+                                <div class="col-md-3"><input class="wdf-input" name="{{ forloop.parentloop.parentloop.counter }}-{{ forloop.parentloop.counter }}-{{ forloop.counter }}-0-key" value="{{ k }}"/></div>
+                                <div class="col-md-7"><input class="wdf-input" name="{{ forloop.parentloop.parentloop.counter }}-{{ forloop.parentloop.counter }}-{{ forloop.counter }}-0-value" value=""/></div>
+                            </div>
+                            {% for child_k, child_v in v.items %}
+                                <div class="row" id="subcontent">
+                                    <div class="col-md-1"></div>
+                                    <div class="col-md-1"><i class="fa fa-trash fa-2x i-danger" katana-click="wdf.deleteChildTag" title="Delete tag and its child tags"/></div>
+                                    <div class="col-md-3"><input class="wdf-input" name="{{ forloop.parentloop.parentloop.parentloop.counter }}-{{ forloop.parentloop.parentloop.counter }}-{{ forloop.parentloop.counter }}-{{ forloop.counter }}-key" value="{{ child_k }}"/></div>
+                                    <div class="col-md-7"><input class="wdf-input" name="{{ forloop.parentloop.parentloop.parentloop.counter }}-{{ forloop.parentloop.parentloop.counter }}-{{ forloop.parentloop.counter }}-{{ forloop.counter }}-value" value="{{ child_v }}"/></div>
+                                </div>
+                            {% endfor %}
+                        {% elif k != "@name" %}
+                            <div class="row" id="content">
+                                <div class="col-md-1"><i class="fa fa-angle-right fa-2x i-info" katana-click="wdf.addChild" title="Add child info"/></div>
+                                <div class="col-md-1"><i class="fa fa-trash fa-2x i-danger" katana-click="wdf.deleteTag" title="Delete info and its child info"/></div>
                                 <div class="col-md-3"><input class="wdf-input" name="{{ forloop.parentloop.parentloop.counter }}-{{ forloop.parentloop.counter }}-{{ forloop.counter }}-1-key" value="{{ k }}"/></div>
                                 <div class="col-md-7"><input class="wdf-input" name="{{ forloop.parentloop.parentloop.counter }}-{{ forloop.parentloop.counter }}-{{ forloop.counter }}-1-value" value="{{ v }}"/></div>
                             </div>
                         {% endif %}
                     {% endfor %}
+                    {% endwith %}
                 </div>
             {% endfor %}
         {% endif %}
     {% endfor %}
     </form>
 
-</div>
-
 <div id="system_template" auto-init="wdf.hide">
     <div id="template-system" class="control-box">
         <hr class="wdf-hr"/>
         <div class="row">
-            <div class="col-md-2"><button katana-click="wdf.toggle" class="btn btn-block" type="button">Show/Hide block</button></div>
-            <div class="col-md-2"><button katana-click="wdf.addTag" class="btn btn-block" type="button">Add info</button></div>
-            <div class="col-md-2"><button katana-click="wdf.addSubSystem" class="btn btn-block" type="button">Add inner block</button></div>
-            <div class="col-md-2"><button katana-click="wdf.deleteSystem" class="btn btn-block" type="button">Delete block</button></div>
+            <div class="col-md-2"><i class="fa fa-toggle-down fa-2x i-info" katana-click="wdf.toggle" title="Show/Hide block"/></div>
+            <div class="col-md-1 text-center"><i class="fa fa-plus-square fa-2x i-info" katana-click="wdf.addTag" title="Add info"/></div>
+            <div class="col-md-1 text-center"><i class="fa fa-caret-right fa-2x i-info" katana-click="wdf.addSubSystem" title="Add inner block"/></div>
+            <div class="col-md-1 text-center"><i class="fa fa-trash fa-2x i-danger" katana-click="wdf.deleteSystem" title="Delete block"/></div>
         </div>
         <div class="row">
             <div class="col-md-2"><label class="wdf-label">System name:</label></div>
             <div class="col-md-10"><input class="wdf-input" name="template-system-name" value=""/></div>
         </div>
         <div class="row" id="content">
-            <div class="col-md-1"><button class="wdf-button btn" katana-click="wdf.addChild" type="button">More info</button></div>
-            <div class="col-md-1"><button class="wdf-button btn" katana-click="wdf.deleteTag" type="button">Delete</button></div>
+            <div class="col-md-1"><i class="fa fa-angle-right fa-2x i-info" katana-click="wdf.addChild" title="Add child info"/></div>
+            <div class="col-md-1"><i class="fa fa-trash fa-2x i-danger" katana-click="wdf.deleteTag" title="Delete info and its child info"/></div>
             <div class="col-md-3"><input class="wdf-input" name="template-system.tag" value="tag_name"/></div>
             <div class="col-md-7"><input class="wdf-input" name="template-system.value" value="value"/></div>
         </div>
@@ -127,9 +176,10 @@
     <div id="template-subsystem" class="control-box">
         <hr class="wdf-hr"/>
         <div class="row">
-            <div class="col-md-2"><button katana-click="wdf.toggle" class="btn btn-block" type="button">Show/Hide block</button></div>
-            <div class="col-md-2"><button katana-click="wdf.addTag" class="btn btn-block" type="button">Add info</button></div>
-            <div class="col-md-2"><button katana-click="wdf.deleteSystem" class="btn btn-block" type="button">Delete block</button></div>
+            <div class="col-md-2"><i class="fa fa-toggle-down fa-2x i-info" katana-click="wdf.toggle" title="Show/Hide block"/></div>
+            <div class="col-md-1 text-center"><i class="fa fa-plus-square fa-2x i-info" katana-click="wdf.addTag" title="Add info"/></div>
+            <div class="col-md-1 text-center"><i class="fa fa-caret-right fa-2x i-info" katana-click="wdf.addSubSystem" title="Add inner block"/></div>
+            <div class="col-md-1 text-center"><i class="fa fa-trash fa-2x i-danger" katana-click="wdf.deleteSystem" title="Delete block"/></div>
         </div>
         <div class="row">
             <div class="col-md-2"><label class="wdf-label">System name:</label></div>
@@ -140,8 +190,8 @@
             <div class="col-md-10"><input class="wdf-input" name="template-subsystem-name" value=""/></div>
         </div>
         <div class="row" id="content">
-            <div class="col-md-1"><button class="wdf-button btn" katana-click="wdf.addChild" type="button">More info</button></div>
-            <div class="col-md-1"><button class="wdf-button btn" katana-click="wdf.deleteTag" type="button">Delete</button></div>
+            <div class="col-md-1"><i class="fa fa-angle-right fa-2x i-info" katana-click="wdf.addChild" title="Add child info"/></div>
+            <div class="col-md-1"><i class="fa fa-trash fa-2x i-danger" katana-click="wdf.deleteTag" title="Delete info and its child info"/></div>
             <div class="col-md-3"><input class="wdf-input" name="template-subsystem.tag" value="tag_name"/></div>
             <div class="col-md-7"><input class="wdf-input" name="template-subsystem.value" value="value"/></div>
         </div>
@@ -150,8 +200,8 @@
 
 <div id="tag_template" auto-init="wdf.hide">
     <div class="row" id="content">
-        <div class="col-md-1"><button class="wdf-button btn" katana-click="wdf.addChild" type="button">More info</button></div>
-        <div class="col-md-1"><button class="wdf-button btn" katana-click="wdf.deleteTag" type="button">Delete</button></div>
+        <div class="col-md-1"><i class="fa fa-angle-right fa-2x i-info" katana-click="wdf.addChild" title="Add child info"/></div>
+        <div class="col-md-1"><i class="fa fa-trash fa-2x i-danger" katana-click="wdf.deleteTag" title="Delete info and its child info"/></div>
         <div class="col-md-3"><input class="wdf-input" name="template-tag.tag" value="tag_name"/></div>
         <div class="col-md-7"><input class="wdf-input" name="template-tag.value" value="value"/></div>
     </div>
@@ -160,8 +210,10 @@
 <div id="child_tag_template" auto-init="wdf.hide">
     <div class="row" id="subcontent">
         <div class="col-md-1"/>
-        <div class="col-md-1"><button class="wdf-button btn" katana-click="wdf.deleteChildTag" type="button">Delete</button></div>
+        <div class="col-md-1"><i class="fa fa-trash fa-2x i-danger" katana-click="wdf.deleteChildTag" title="Delete info and its child info"/></div>
         <div class="col-md-3"><input class="wdf-input" name="template-tag.tag" value="tag_name"/></div>
         <div class="col-md-7"><input class="wdf-input" name="template-tag.value" value="value"/></div>
     </div>
+</div>
+
 </div>
