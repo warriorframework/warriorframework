@@ -300,6 +300,20 @@ function createSuitesTable(xdata) {
 	katana.$activeTab.find('#suite_table_display').on('click',"td",   function() { 
 	});
 	//katana.$activeTab.find("#tableOfTestSuitesForProject").setAttribute( "style","overflow-y:scroll");
+
+ 	 katana.$activeTab.find('table#suite_table_display thead tr th').each(function(index) {
+    		var thisWidth = $(this).width();
+    		if ( index == 0 ) { thisWidth = 40; }
+    		console.log(thisWidth + "  "+ index);
+    		var elem = this; 
+    		$(this).css('width',40);
+    		katana.$activeTab.find('table#suite_table_display tbody tr td').each(function(xindex) {	
+    				$(this).css('width',40);
+    		});
+  	});
+
+
+
 }
 
 var testProjectSortEventHandler = function(event, ui ) {

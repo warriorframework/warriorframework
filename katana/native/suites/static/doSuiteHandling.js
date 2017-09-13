@@ -303,6 +303,17 @@ function createCasesTable(xdata) {
 	katana.$activeTab.find('#Case_table_display tbody').sortable( { stop: testSuiteSortEventHandler});
 	//katana.$activeTab.find('#Case_table_display').on('click',"td",   function() { 
 	//});
+ 	 katana.$activeTab.find('table#Case_table_display thead tr th').each(function(index) {
+    		var thisWidth = $(this).width();
+    		if ( index == 0 ) { thisWidth = 40; }
+    		console.log(thisWidth + "  "+ index);
+    		var elem = this; 
+    		katana.$activeTab.find('table#Case_table_display tbody tr td').each(function(xindex) {	
+    				$(this).css('width',40);
+    		});
+  	});
+
+
 
 }
 

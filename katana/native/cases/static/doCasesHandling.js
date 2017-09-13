@@ -318,8 +318,17 @@ function mapCaseJsonToUi(data){
 	katana.$activeTab.find('#Step_table_display tbody').sortable( { stop: testCaseSortEventHandler});
 	
 	// Based on the options
+ 	katana.$activeTab.find('table#Step_table_display thead tr th').each(function(index) {
+    		var thisWidth = $(this).width();
+    		if ( index == 0 ) { thisWidth = 40; }
+    		console.log(thisWidth + "  "+ index);
+    		var elem = this; 
+    		katana.$activeTab.find('table#Step_table_display tbody tr td').each(function(xindex) {	
+    				$(this).css('width',40);
+    		});
+  	});
 
-	/*
+  	/*
 	if (jsonCaseDetails['Datatype'] == 'Custom') {
 		$(".arguments-div").hide();
 	} else {
@@ -408,8 +417,9 @@ function mapTestStepToUI(sid, xdata) {
 	var ta = 0; 
 	for (xarg in arguments) {
 			console.log(arguments[xarg]);
-			a_items.push('<label>Name</label><input type="text" argid="caseArgName-'+ta+'" value="'+arguments[xarg]["@name"]+'"/>');
-			a_items.push('<label>Value</label><input type="text" argid="caseArgValue-'+ta+'" value="'+arguments[xarg]["@value"]+'"/>');
+			a_items.push('<div class="row">');
+			a_items.push('<label class="col-md-2">Name</label><input class="col-md-2" type="text" argid="caseArgName-'+ta+'" value="'+arguments[xarg]["@name"]+'"/>');
+			a_items.push('<label class="col-md-2">Value</label><input class="col-md-2" type="text" argid="caseArgValue-'+ta+'" value="'+arguments[xarg]["@value"]+'"/>');
 			// Now a button to edit or delete ... 
 			bid = "deleteCaseArg-"+sid+"-"+ta+"-id"+getRandomCaseID();;
 			a_items.push('<td><i title="Delete" class="fa fa-eraser" value="X" id="'+bid+'"/>');
@@ -438,9 +448,9 @@ function mapTestStepToUI(sid, xdata) {
 				var aid = parseInt(names[2]);
 				insertOneArgument(sid,aid,xdata);
 			});
-
-
 			ta += 1
+			a_items.push('</div>');
+			
 	}
 	//  -------- 
 
@@ -630,7 +640,7 @@ function createRequirementsTable(i_data){
 	katana.$activeTab.find("#tableOfCaseRequirements").html("");  // This is a blank div. 
 	items.push('<table id="Requirements_table_display" class="table" >');
 	items.push('<thead>');
-	items.push('<tr><th>Num</th><th>Requirement</th><th/><th/><th/><th/></tr>');
+	items.push('<tr><th>Num</th><th>Requirement</th><th/></tr>');
 	items.push('</thead>');
 	items.push('<tbody>');
 	console.log("createRequirementsTable");
@@ -647,7 +657,7 @@ function createRequirementsTable(i_data){
 				items.push('<td><input type="text" value="'+oneReq +'" id="'+bid+'"/></td>');
 				
 				bid = "deleteRequirement-"+s+"-id"+getRandomCaseID();
-				items.push('<td><i type="button" title="Delete" class="fa fa-eraser fa-2x" value="X" id="'+bid+'"/>');
+				items.push('<td><i  title="Delete" class="fa fa-eraser" value="X" id="'+bid+'"/>');
 				
 				katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 				$(document).on('click','#'+bid,function( ) {
@@ -658,7 +668,7 @@ function createRequirementsTable(i_data){
 				});
 				bid = "editRequirement-"+s+"-id"+getRandomCaseID();;
 				//items.push('<td><input type="button" class="btn" value="Save" id="'+bid+'"/></td>');
-				items.push('<i type="button" title="Edit" class="fa fa-pencil fa-2x" value="Edit" id="'+bid+'"/></td>');	
+				items.push('<i  title="Edit" class="fa fa-pencil" value="Edit" id="'+bid+'"/></td>');	
 				katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 				$(document).on('click','#'+bid,function() {
 					var names = this.id.split('-');
