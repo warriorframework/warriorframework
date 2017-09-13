@@ -595,12 +595,24 @@ def send_commands_from_testdata(testdatafile, obj_session, **args):
                                                           result=result, response=response, system_name=system_name)
                 response_dict = _get_response_dict(details_dict, i, response,
                                                    response_dict)
-                if response_dict.values() is not None:
-                    session_name = details_dict["session_list"][i]
-                    session_id = data_Utils.get_session_id(system_name, session_name) + "_td_response"
+                sys_name = ses_name = ''
+                if response_dict.values()[i] is not None:
+                    if details_dict["sys_list"][i] is '' or details_dict["sys_list"][i] is None:
+                        sys_name = system_name
+                    else:
+                        sys_name = details_dict["sys_list"][i]
+                    if details_dict["session_list"][i] is '' or details_dict["session_list"][i] is None:
+                        session_name = args.get("session_name")
+                        ses_name = session_name
+                    else:
+                        ses_name = details_dict["session_list"][i]
+
+                    session_id = data_Utils.get_session_id(sys_name, ses_name) + "_td_response"
                     for k, v in response_dict.items():
-                        pNote("Portion of response saved to the data repository with key: "
-                              "{0}.{1}.{2}, value: {3}".format(session_id, key, k, v))
+                        if k is response_dict.keys()[i]:
+                            pNote("Portion of response saved to the data repository with key: "
+                                  "{0}.{1}.{2}, value: {3}"
+                                  .format(session_id, key,response_dict.keys()[i], response_dict.values()[i]))
                 print_debug("<<<")
             else:
                 finalresult = "ERROR"
