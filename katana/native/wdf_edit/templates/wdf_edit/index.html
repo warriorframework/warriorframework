@@ -7,9 +7,9 @@
     <div class="row">
         <div class="col-md-1"><label class="wdf-label">Filepath:</label></div>
         <div class="col-md-8"><input class="wdf-input" name="filepath" value="{{ filepath }}"/></div>
-        <div class="col-md-1"><button class="wdf-button btn" type="button" id="add" katana-click="wdf.addSystem">Add block</button></div>
-        <div class="col-md-1"><button class="wdf-button btn" type="button" id="cancel" katana-click="wdf.cancel">Cancel</button></div>
-        <div class="col-md-1"><button class="wdf-button btn" type="button" id="submit" katana-click="wdf.submit">Submit</button></div>
+        <div class="col-md-1"><i class="fa fa-plus-square fa-3x" id="add" katana-click="wdf.addSystem"/></div>
+        <div class="col-md-1"><i class="fa fa-times fa-3x" id="cancel" katana-click="wdf.cancel"/></div>
+        <div class="col-md-1"><i class="fa fa-save fa-3x" id="submit" katana-click="wdf.submit"/></div>
     </div>
 
     {% for system in data.system %}

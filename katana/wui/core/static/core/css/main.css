@@ -2389,10 +2389,12 @@ div .tool-bar-links:active {
 }
 /* execution app related styles ends*/
 
+/* wdf editor app related styles starts */
 .wdf-button {
     position: absolute;
     top: 15%;
 }
+
 .wdf-label {
     position: absolute;
     top: 25%;
@@ -2400,12 +2402,21 @@ div .tool-bar-links:active {
     right: 0;
     margin: 0 auto;
 }
+
 .wdf-input {
     font-size: 16px;
 }
-hr.wdf-hr {
+
+.wdf-hr {
     display: block;
 }
+
+.i-success:hover {
+
+}
+
+/* wdf editor app related styles ends */
+
 .execution.exec-container {
     border: none;
 }
