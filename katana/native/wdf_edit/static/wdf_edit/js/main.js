@@ -1,7 +1,9 @@
 var wdf = {
     toggle: function(){
         // hide all the div with id content under control-box
-        $(this).parent().parent().parent().children("#content").toggle();
+        $target = $(this).closest(".control-box");
+        $target.children("#content").toggle();
+        $target.children("#subcontent").toggle();
     },
 
     deleteTag: function(){
@@ -39,13 +41,12 @@ var wdf = {
             // $hide_target.addClass("animated bounceOutLeft");
             // setTimeout(function(){$hide_target.parent().parent().hide()}, 600);
             $hide_target.hide();
-            
         }
     },
 
     deleteSystem: function(){
         // empty the whole system
-        $target=$(this).parent().parent().parent();
+        $target=$(this).closest(".control-box");
         // $target.removeClass("animated fadeIn");
         // $target.addClass("animated bounceOutLeft");
         // setTimeout(function(){$target.empty()}, 600);
@@ -66,6 +67,9 @@ var wdf = {
         var $tmp = katana.$activeTab.find("#tag_template").clone();
         // go to control box level
         var $target = $(this).closest(".control-box");
+        if ($target.parent().find("[id^='"+$target.attr("id").split("-").slice(0,1)+"-']").length > 1) {
+            alert("Please only add tag in subsystem");
+        }
         var $id = $target.attr("id").substring(0, $target.attr("id").length-11);
         $tmp.find("[name='template-tag.tag']").prop("name", $id+($target.children("#content").length+1)+"-1-key");
         $tmp.find("[name='template-tag.value']").prop("name", $id+($target.children("#content").length+1)+"-1-value");
@@ -86,7 +90,7 @@ var wdf = {
 
     addSubSystem: function(){
         var $tmp = katana.$activeTab.find("#subsystem_template").clone();
-        var $target = $(this).parent().parent().parent();
+        var $target = $(this).closest(".control-box");
         var $system_id = $target.attr("id").split("-")[0];
         var $subsystem_count = $target.parent().find("[id^='"+$system_id+"-']").length;
         $tmp.find("#template-subsystem").prop("id", $system_id+"-"+($subsystem_count+1)+"-control-box");
@@ -95,7 +99,7 @@ var wdf = {
         $tmp.find("[name='template-subsystem-name']").prop("name", $system_id+"-"+($subsystem_count+1)+"-subsystem_name");
         $tmp.find("[name='template-tag.tag']").prop("name", $system_id+"-"+($subsystem_count+1)+"-"+($target.children("#content").length+1)+"-1-key");
         $tmp.find("[name='template-tag.value']").prop("name", $system_id+"-"+($subsystem_count+1)+"-"+($target.children("#content").length+1)+"-1-value");
-        $target.append($($tmp.html()));
+        $target.after($($tmp.html()));
     },
 
     hide: function(){
