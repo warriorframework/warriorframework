@@ -2412,7 +2412,15 @@ div .tool-bar-links:active {
 }
 
 .i-success:hover {
+    color: #00ad31;
+}
 
+.i-info:hover {
+    color: #03a9f4;
+}
+
+.i-danger:hover {
+    color: #dc3545;
 }
 
 /* wdf editor app related styles ends */
