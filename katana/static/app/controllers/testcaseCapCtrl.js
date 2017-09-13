@@ -13,7 +13,7 @@ limitations under the License.
 
 app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location', '$anchorScroll', 'TestcaseFactory', 'fileFactory', 'getConfigFactory', 'subdirs',
     function ($scope, $routeParams, $http, $location, $anchorScroll, TestcaseFactory, fileFactory, getConfigFactory, subdirs) {
-
+alert("qwqwqwq");
     'use strict';
 
     $scope.step_numbers = [];

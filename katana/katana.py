@@ -96,7 +96,7 @@ def datafilepath(path):
     system = root.findall('system')
     for val in system:
         system_name_list.append(val.get('name') + ',')
-        """
+    """
         sub_system = val.findall('subsystem')
         if sub_system:
             for values in sub_system:
