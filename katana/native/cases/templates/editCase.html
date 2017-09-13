@@ -92,17 +92,20 @@
 </div>
 
 <div class="btn-group" role="group">   
-	<button id="addStep" class="btn btn-primary" onclick="addStepToCase()">Add Step To Case</button>
-	<button class="btn btn-primary" onclick="start()">Discard Changes</button>
+	<button id="addStep" class="btn btn-success" onclick="addStepToCase()">Add Step To Case</button>
+	<button class="btn btn-danger" onclick="start()">Discard Changes</button>
 	<button class="btn btn-success" onclick="mapUiToCaseJson()">Save Changes To Disk</button>
+	<label >Save file to </label>
 	<input class="text-right" type="text" id="my_file_to_save" name="my_file_to_save" value="{{savefilename}}"/>
+	
 </div>   
 
 
-   <h2>Edit Steps</h2>
- <div class="container-fluid">
+ 
+ <div class="container-fluid" id="editCaseStepDiv" name="editCaseStepDiv">
+ <h3>Edit Steps</h3>
  <div class="row">
-  	<div id="editCaseStepEntry" class="col-md-6"> 
+  	<div id="editCaseStepEntry" class="col-md-4"> 
 		<div class="field"> <label >Row</label>
 		<input type="text" id="StepRowToEdit" value=""/>
 		</div>
@@ -169,23 +172,23 @@
 			<option value="noimpact">noimpact</option> 
 			</select>
 		</div>	
+		Arguments:
+			<div id="arguments-textarea" /> 
+			<input type="button" class="btn btn-success" value="Save Changes To Test Step" id="editCaseStep"/>
+		</div>
+		
+	<div id="sourceFileText" class="col-md-8" style='overflow:auto; width:400px;height:400px;'> Source file </div> 
+		</div>
+</div>
+<div class="row">
 
-	</div>
-	<div id="sourceFileText" class="col-md-6" > Source file </div> 
-	
-</div>
- <div class="row">
-Arguments:
-<div id="arguments-textarea" class="col-md-6"> </div>
-</div>
-</div>	
-	<div>
-	<input type="button" class="btn" value="Save Changes To Test Step" id="editCaseStep"/>
-    </div> 
+
+   
 	<div id="listOfTestStepsForCase"  > {{fulljson|jsonify}} </div> 
 	<div id="savesubdir">{{savesubdir}}</div>
 
 
+</div>	
 
 
 </script>

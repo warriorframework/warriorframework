@@ -251,7 +251,7 @@ function createCasesTable(xdata) {
 		items.push('<td>'+oneCase['impact']+'</td>');
 
 		var bid = "deleteTestcase-"+s+"-id"+getRandomSuiteID();;
-		items.push('<td><i type="button" title="Delete" class="fa fa-eraser" value="X" id="'+bid+'"/>');
+		items.push('<td><i type="button" title="Delete" class="fa fa-eraser fa-2x" value="X" id="'+bid+'"/>');
 		katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 		$(document).on('click','#'+bid,function( ) {
 			var names = this.id.split('-');
@@ -260,7 +260,7 @@ function createCasesTable(xdata) {
 		});
 		bid = "editTestcase-"+s+"-id"+getRandomSuiteID();
 		//items.push('<td><input type="button" class="btn" value="Edit" id="'+bid+'"/></td>');
-		items.push('<i type="button" title="Edit" class="fa fa-pencil" value="Edit" id="'+bid+'"/></td>');
+		items.push('<i type="button" title="Edit" class="fa fa-pencil fa-2x" value="Edit" id="'+bid+'"/></td>');
 		katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 		$(document).on('click','#'+bid,function(  ) {
 			var names = this.id.split('-');
@@ -278,6 +278,9 @@ function createCasesTable(xdata) {
 
 	katana.$activeTab.find("#tableOfTestcasesForSuite").html( items.join(""));
 	katana.$activeTab.find('#Case_table_display tbody').sortable();
+
+	var xx = katana.popupController.open(items.join(""),"Edit...", function() { });
+	katana.popupController.openWindow(xx);
 	//katana.$activeTab.find('#Case_table_display').on('click',"td",   function() { 
 	//});
 
@@ -329,7 +332,7 @@ function createRequirementsTable(rdata){
 		console.log("Line 328 or so"); 
 		bid = "deleteRequirement-"+s+"-id";
 		console.log("Line 328 or so "+bid); 
-		items.push('<td><i  type="button" class="fa fa-eraser"  value="Delete" id="'+bid+'"/></td>');
+		items.push('<td><i  type="button" class="fa fa-eraser fa-2x"  value="Delete" id="'+bid+'"/></td>');
 		katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 		$(document).on('click','#'+bid,function( event ) {
 			var names = this.id.split('-');
@@ -344,7 +347,7 @@ function createRequirementsTable(rdata){
 				console.log("Line 344 or so"); 
 
 		bid = "editRequirement-"+s+"-id";$(document)
-		items.push('<td><i type="button" class="fa fa-pencil" value="Edit" id="'+bid+'"/></td>');
+		items.push('<td><i type="button" class="fa fa-pencil fa-2x" value="Edit" id="'+bid+'"/></td>');
 		katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 		$(document).on('click','#'+bid,function(  ) {
 			var names = this.id.split('-');

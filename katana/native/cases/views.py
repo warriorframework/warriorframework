@@ -26,11 +26,16 @@ from django.db.models.query import QuerySet
 from django.template import Library
 import json
 from utils.navigator_util import Navigator
+from katana_utils import *
+import scanfiles
 
-#path_to_demo="/home/khusain/Projects/xml-edit/warriorframework/katana/vdj/cases/"
-#path_to_testcases='/home/khusain/Projects/xml-edit/warriorframework/wftests/warrior_tests/';
-#path_to_productdrivers='/home/khusain/Projects/xml-edit/warriorframework/warrior/ProductDrivers/'
+
 navigator = Navigator();
+path_to_src_python_file = navigator.get_katana_dir() + os.sep + "config.json"
+All_case_action_details = py_file_details(json.loads(open(path_to_src_python_file).read())['pythonsrcdir']);
+			
+
+
 
 def index(request):
 	path_to_config_file = navigator.get_katana_dir() + os.sep + "config.json"
@@ -42,65 +47,50 @@ def index(request):
 	jtree = navigator.get_dir_tree_json(fpath)
 	jtree['state']= { 'opened': True };
 
-
-	# files = glob.glob(fpath+"*/*/*.xml")+glob.glob(fpath+"*/*/*/*.xml")
-	# allfiles = {}
-	# files = glob.glob(fpath+"*/*/*.xml")
-	
-	# for fn in files: 
-	# 	dn,fpb = os.path.split(fn)
-	# 	fpf = os.path.split(dn)[1]
-	# 	if not allfiles.has_key(fpf): allfiles[fpf] = []
-	# 	allfiles[fpf].append( { 'full': fn, 'display': fpb})
-		
-	# files = glob.glob(fpath+"*/*/*/*.xml")
-	# for fn in files: 
-	# 	dn,fpb = os.path.split(fn)
-	# 	fpf = os.path.split(dn)[1]
-	# 	if not allfiles.has_key(fpf): allfiles[fpf] = []
-	# 	allfiles[fpf].append( { 'full': fn, 'display': fpb})
-
-	# alldirs = { } 
-	# for fn in allfiles.keys():
-	# 	dn = os.path.split(fn)[1]
-	# 	alldirs[dn] = fn
-
 	context = { 
 		'title' : 'List of Cases',	
 		'dirpath' : path_to_testcases,
-		#'docSpec': 'caseSpec',
-		#'listOfFiles': files	,
-		# 'displayList' : allfiles, 
-		# 'displayDirs' : alldirs,
 		'treejs': jtree,
 	}
 	return HttpResponse(template.render(context, request))
 
-import glob
-from katana_utils import *
-import scanfiles
 
 
 
-
+##
+## This is very costly imho. 
+##
+## If we keep this information on file on disk then we'll be left behind 
+## if more actions/keywords are added to the dispalys. 
+## On the other hand getting this information on every call is absurd. 
+## However, the spaghetti code in the py_file_details is too hairy to untangle
+## before the demo and is left alone. 
+##
 def getListOfActions(request):
-	path_to_src_python_file = navigator.get_katana_dir() + os.sep + "config.json"
-	x= json.loads(open(path_to_src_python_file).read());
-	path_to_pythonsrc = x['pythonsrcdir'];                 
+	"""
+	Returns a list of all the actions and their details using config.json.
+	"""
+	path_to_pythonsrc = json.loads(open(path_to_src_python_file).read())['pythonsrcdir'] ;                 
 	jsr = scanfiles.fetch_action_file_names(path_to_pythonsrc,'driver','all');
-
 	actions = [ os.path.basename(fn)[:-3] for fn in jsr['ProductDrivers']];
-	details = py_file_details(path_to_pythonsrc);
-	print details
-	return JsonResponse({'actions': actions , 'filesinfo' : details })
+	return JsonResponse({'actions': actions , 'filesinfo' : All_case_action_details })
 
 
+##
+## If we keep this information on file on disk then we'll be left behind 
+## if more actions/keywords are added to the dispalys. 
+## On the other hand getting this information on every call is absurd. 
+## However, the spaghetti code in the py_file_details is too hairy to untangle
+## before the demo and is left alone. 
+##
 def getListOfKeywords(request):
-	if 1: 
+	if 0: 
 			path_to_src_python_file = navigator.get_katana_dir() + os.sep + "config.json"
 			x= json.loads(open(path_to_src_python_file).read());
 			path_to_pythonsrc = x['pythonsrcdir']; 
 			details = py_file_details(path_to_pythonsrc);
+	else:
+			details = All_case_action_details;
 			
 	driver = request.GET.get('driver');
 	print dir(details);
@@ -113,13 +103,26 @@ def getListOfKeywords(request):
 		responseBack['keywords'].append(item['fn']);
 	return JsonResponse(responseBack)
 
-
+##
+## This is very costly imho. 
+##
+## If we keep this information on file on disk then we'll be left behind 
+## if more actions/keywords are added to the dispalys. 
+## On the other hand getting this information on every call is absurd. 
+## However, the spaghetti code in the py_file_details is too hairy to untangle
+## before the demo and is left alone. 
+##
 def getListOfComments(request):
-	if 1: 
+	"""
+	Return infomration about the driver and keyword in the incoming POST request.
+	"""
+	if 0: 
 			path_to_src_python_file = navigator.get_katana_dir() + os.sep + "config.json"
 			x= json.loads(open(path_to_src_python_file).read());
 			path_to_pythonsrc = x['pythonsrcdir']; 
 			details = py_file_details(path_to_pythonsrc);
+	else:
+			details = All_case_action_details;
 			
 	driver  = request.GET.get('driver');
 	keyword = request.GET.get('keyword');
@@ -227,24 +230,22 @@ def editCase(request):
 	return HttpResponse(template.render(context, request))
 
 def getCaseDataBack(request):
-	
-
+	"""
+	Return edited case data back as JSON and a file name to write to.
+	Use the config.json file to get the path to the testcases directory and
+	the savesubdir parameter to save to the (sub)directory under the main 
+	directory. 
+	"""
 	path_to_config_file = navigator.get_katana_dir() + os.sep + "config.json"
 	x= json.loads(open(path_to_config_file).read());
 	path_to_testcases = x['xmldir'];
-
-	print "-" * 20
-	print path_to_testcases; 
 	ijs = request.POST.get(u'json')
-	print "--------------TREE----------------"
 	fn = request.POST.get(u'filetosave')
 	sb = request.POST.get(u'savesubdir')
 	fname = sb + os.sep + fn;  
 	print "save case to ", fname 
-	print "components ", fn
-	print "sb = ", sb
-	xml = xmltodict.unparse(json.loads(ijs), pretty=True)
-	
+ 
+	xml = xmltodict.unparse(json.loads(ijs), pretty=True)	
 	fd = open(fname,'w');
 	fd.write(xml);
 	fd.close();
