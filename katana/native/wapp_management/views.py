@@ -110,6 +110,7 @@ def open_config(request):
     config_file_data_dir = join_path(data_dir, config_name)
 
     info = []
+    show_install_btn = True
     with open(config_path, 'r') as f:
         data = f.read()
     tree = ET.ElementTree(ET.fromstring(data))
@@ -121,6 +122,7 @@ def open_config(request):
             type_of_app = "zip"
             text = node.text
             if not os.path.exists(join_path(config_file_data_dir, text)):
+                show_install_btn = False
                 needs_update = True
             else:
                 needs_update = False
@@ -134,6 +136,7 @@ def open_config(request):
             type_of_app = "filepath"
             text = node.text
             if not os.path.exists(text):
+                show_install_btn = False
                 needs_update = True
             else:
                 needs_update = False
@@ -142,6 +145,7 @@ def open_config(request):
         temp["needs_update"] = needs_update
 
         info.append(temp)
-        print info
+
     return render(request, 'wapp_management/config_details.html', {"config_name": config_name,
-                                                                   "preference_details": info})
+                                                                   "preference_details": info,
+                                                                   "show_install_btn": show_install_btn})

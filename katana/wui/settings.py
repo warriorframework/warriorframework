@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'jsonify',
     'apps.userapp',
     'apps.new_app',
+    'apps.brand_new_app',
     'wui.core',
     'native.wapp_management',
     'native.wappstore',

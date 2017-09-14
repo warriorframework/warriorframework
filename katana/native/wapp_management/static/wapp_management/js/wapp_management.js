@@ -154,7 +154,9 @@ var wapp_management = {
 		});
     },
 
-    addAnotherApp: function(loop_num){
+    addAnotherApp: function(loop_num, input_value){
+
+        var $currentPage = katana.$activeTab;
         if(loop_num == undefined){
             var $current = $(this);
             var $loop_num = $current.attr('input_num');
@@ -164,10 +166,15 @@ var wapp_management = {
             $loop_num = loop_num;
         }
 
-        var $parent = document.getElementById("form-for-paths");
+        var $parent = $currentPage.find("#form-for-paths");
+
+        if(input_value == undefined){
+            input_value = "";
+        }
+
         var html_content = '<div class="row" id="row_for_' + $loop_num + '">' +
                                 '<div class="col-sm-5">' +
-                                    '<input class="form-control" id="app_path_for_config_' + $loop_num + '">' +
+                                    '<input class="form-control" id="app_path_for_config_' + $loop_num + '" value="' + input_value + '">' +
                                 '</div>' +
                                 '<div class="col-sm-1" style="padding: 0.2rem 0.5rem 0 0.5rem;">' +
                                     '<label style="width: 100%;">' +
@@ -187,11 +194,9 @@ var wapp_management = {
                                     '</button>' +
                                 '</div>' +
                             '</div>'
-        var $elem = $(html_content);
 
         /* <div class="col-sm-3" id="status-div" style="padding: 0.8rem 0 0 0.5rem "></div> */
-        $parent.append($elem[0]);
-        console.log($parent);
+        $parent.append(html_content);
         wapp_management.hideAndShowCardOne();
         wapp_management.setSaveConfigAttr("yes");
     },
@@ -245,10 +250,7 @@ var wapp_management = {
             $target = target;
         }
 
-        console.log($target);
-
         $all_links = $currentPage.find('.tool-bar-links')
-        console.log($all_links);
 
         for(var i=0; i<$all_links.length; i++){
             var temp = $($all_links[i]).attr("elem-link")
@@ -317,7 +319,6 @@ var wapp_management = {
             wapp_management.getPreferenceFile($attribute);
         }
         else{
-            console.log($.wapp_management_globals.preference_details);
             if(!($attribute in $.wapp_management_globals.preference_details)){
                 wapp_management.getPreferenceFile($attribute);
             }
@@ -367,10 +368,12 @@ var wapp_management = {
         wapp_management.goToElement($currentPage.find('#app_installation'));
     },
 
-    editConfig: function() {
+    editConfig: function(config_name) {
 
-        var $elem = $(this);
-        var config_name = $elem.attr("config_name");
+        if(config_name == undefined){
+            var $elem = $(this);
+            config_name = $elem.attr("config_name");
+        }
 
         var $currentPage = katana.$activeTab;
 
@@ -378,9 +381,29 @@ var wapp_management = {
         var $childDiv = $parentDiv.find('#' + config_name);
         $childDiv.css("background-color", "#98afc7");
         var $siblings = $childDiv.siblings();
-        $siblings.html("");
+        var $disabledInputs = $siblings.find('input:disabled')
+
+
+        var $parent = $currentPage.find("#form-for-paths");
+        $parent.html('');
+
+        for(var i=0; i<$disabledInputs.length; i++){
+            wapp_management.addAnotherApp(1, $($disabledInputs[i]).val())
+        }
+
+        $siblings.html('');
 
         delete $.wapp_management_globals.preference_details[config_name];
+
+    },
+
+    installAppsFromConfig: function() {
+        var $elem = $(this);
+        var config_name = $elem.attr("config_name");
+
+        wapp_management.editConfig(config_name);
+
+        wapp_management.installAnApp();
 
     }
 
