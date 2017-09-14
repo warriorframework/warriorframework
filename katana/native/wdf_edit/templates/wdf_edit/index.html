@@ -198,6 +198,7 @@
     </div>
 
     <div class="col-md-3 wdf-scroll">
+    <hr class="wdf-hr"/>
     {% for system in data_read.system %}
         {% if system.ip %}
             <div><button class="btn" katana-click="wdf.jump_to" linkto="#{{ forloop.counter }}-1-control-box" type="button"><i class="fa fa-desktop"/> {{ system|get_item:'@name' }}</button></div>
