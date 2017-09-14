@@ -213,7 +213,6 @@ var wapp_management = {
         var $value = $elem.val()
 
         var $attach = $("#open_config")
-        var $attach = $("#open_config")
         $attach.attr("choice", $value);
     },
 
@@ -366,6 +365,23 @@ var wapp_management = {
     createNewPref: function(){
         var $currentPage = katana.$activeTab;
         wapp_management.goToElement($currentPage.find('#app_installation'));
+    },
+
+    editConfig: function() {
+
+        var $elem = $(this);
+        var config_name = $elem.attr("config_name");
+
+        var $currentPage = katana.$activeTab;
+
+        var $parentDiv = $currentPage.find('#config-file-div');
+        var $childDiv = $parentDiv.find('#' + config_name);
+        $childDiv.css("background-color", "#98afc7");
+        var $siblings = $childDiv.siblings();
+        $siblings.html("");
+
+        delete $.wapp_management_globals.preference_details[config_name];
+
     }
 
 };

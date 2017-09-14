@@ -143,4 +143,5 @@ def open_config(request):
 
         info.append(temp)
         print info
-    return render(request, 'wapp_management/config_details.html', {"preference_details": info})
+    return render(request, 'wapp_management/config_details.html', {"config_name": config_name,
+                                                                   "preference_details": info})

@@ -1,25 +1,35 @@
+{% if preference_details %}
+<br>
 {% for detail in preference_details %}
     <div class="row">
-        <div class="col-sm-1 text-center" style="padding-top: 0.5rem;">
+        <div class="col-sm-2 text-center" style="padding-top: 0.5rem;">
             {% if detail.type == "repository" %}
-                <label>Repository:</label>
+                <label>Git Repository:</label>
             {% elif detail.type == "zip" %}
-                <label>ZIP:</label>
+                <label>Zipped File:</label>
             {% else %}
-                <label>File Path:</label>
+                <label>Directory Path:</label>
             {% endif %}
         </div>
         {% if detail.needs_update %}
         <div class="col-sm-5">
-            <input class="form-control" style="border: 1px solid red" value="{{detail.name}}">
-            <div>
-                <h6 class="text-muted">This information may be outdated. Please update it.</h6>
-            </div>
+            <input class="form-control" style="border: 1px solid red" value="{{detail.name}}" disabled>
+
+            <h6 class="text-muted">This information may be outdated. Please update it.</h6>
         </div>
         {% else %}
             <div class="col-sm-5">
-                <input class="form-control"value="{{detail.name}}">
+                <input class="form-control" value="{{detail.name}}" disabled>
             </div>
         {% endif %}
     </div>
 {% endfor %}
+    <br>
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-2">
+            <button class="btn btn-info" katana-click="wapp_management.editConfig" config_name="{{config_name}}">Edit Configuration</button>
+        </div>
+    </div>
+<br>
+{% endif %}
