@@ -89,7 +89,7 @@ var wdf = {
         $tmp.find("[name='template-system-name']").prop("name", katana.$activeTab.find(".control-box").length-1+"-1-system_name");
         $tmp.find("[name='template-system.tag']").prop("name", katana.$activeTab.find(".control-box").length-1+"-1-1-1-key");
         $tmp.find("[name='template-system.value']").prop("name", katana.$activeTab.find(".control-box").length-1+"-1-1-1-value");
-        katana.$activeTab.find("#big-box").append($($tmp.html()));
+        katana.$activeTab.find("#wdf-editor-col").append($($tmp.html()));
     },
 
     addTag: function(){
@@ -213,7 +213,7 @@ var wdf = {
         $.ajax({
             url : "/katana/wdf/post",
             type: "POST",
-            data : katana.$activeTab.find("#big-box").serializeArray(),
+            data : katana.$activeTab.find("#wdf-editor-col").serializeArray(),
             headers: {'X-CSRFToken':csrftoken},
             //contentType: 'application/json',
             success: function(data){
