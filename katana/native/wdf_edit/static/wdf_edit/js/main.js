@@ -1,7 +1,6 @@
 var wdf = {
     search_and_hide: function(){
         $systems = $(".control-box");
-        console.log($systems);
         $.each($systems, function(ind, sys) {
             if (! $(sys).attr("id").startsWith("template")) {
                 $sys = $(sys);
@@ -175,6 +174,7 @@ var wdf = {
             dataType: "json",
             success: function(data){
                 katana.$activeTab.find("#jstree").jstree({'core':{'data':[data]}});
+                katana.$activeTab.find('#jstree').jstree().hide_dots();
             }
         });
 
@@ -237,5 +237,9 @@ var wdf = {
                 katana.refreshAutoInit(katana.$activeTab.find("#jstree"));
             }
         }); 
+    },
+
+    jump_to: function(){
+        katana.$activeTab.find($(this).attr("linkto")).get(0).scrollIntoView(true);
     },
 }

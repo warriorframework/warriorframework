@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import json, xmltodict, os
+import json, xmltodict, os, copy
 from utils.navigator_util import Navigator
 from utils.json_utils import read_json_data
 from collections import OrderedDict
@@ -50,7 +50,8 @@ def index(request):
                     del sys[k]
     print(json.dumps(data, indent=4))
 
-    return render(request, 'wdf_edit/index.html', {"data": data["credentials"], "filepath": filepath})
+    ref_dict = copy.deepcopy(data["credentials"])
+    return render(request, 'wdf_edit/index.html', {"data": data["credentials"], "data_read": ref_dict, "filepath": filepath})
 
 # def get_json(request):
 #     return JsonResponse(xmltodict.parse(open('/home/ka/Desktop/warrior_fnc_tests/warrior_tests/data/cli_tests/cli_def_Data.xml').read()))

@@ -2404,11 +2404,20 @@ div .tool-bar-links:active {
 }
 
 .wdf-input {
-    font-size: 16px;
+    /*font-size: 16px;*/
 }
 
 .wdf-hr {
     display: block;
+}
+
+.wdf-container {
+    padding: 1%;
+}
+
+.wdf-scroll {
+    overflow: auto;
+    height: 82vh;
 }
 
 .i-success:hover {

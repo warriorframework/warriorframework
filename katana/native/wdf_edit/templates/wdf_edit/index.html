@@ -1,4 +1,4 @@
-<div id="main_info" class="container">
+<div id="main_info" class="wdf-container">
     {% load static %}
     <!-- <link rel="stylesheet" href="{% static 'wdf_edit/css/animate.min.css' %}"> -->
     <div class="csrf-container">{% csrf_token %}</div>
@@ -7,18 +7,20 @@
         <div class="row">
             <div class="col-md-1"><label class="wdf-label">Filepath:</label></div>
             <div class="col-md-8"><input class="wdf-input" name="filepath" value="{{ filepath }}"/></div>
-            <div class="col-md-1"><i class="fa fa-plus-square fa-3x i-info" title="Add new system at the end" katana-click="wdf.addSystem"/></div>
+            <div class="col-md-1"><i class="fa fa-plus fa-3x i-info" title="Add new system at the end" katana-click="wdf.addSystem"/></div>
             <div class="col-md-1"><i class="fa fa-times fa-3x i-danger" title="Disregard change and close" katana-click="wdf.cancel"/></div>
             <div class="col-md-1"><i class="fa fa-save fa-3x i-success" title="Save change and submit" katana-click="wdf.submit"/></div>
         </div>
 
+    <div class="row">
+    <div class="col-md-9 wdf-scroll" id="wdf-editor-col">
     {% for system in data.system %}
         {% if system.ip %}
             <div id="{{ forloop.counter }}-1-control-box" class="control-box">
                 <hr class="wdf-hr"/>
                 <div class="row">
                     <div class="col-md-2"><i class="fa fa-toggle-down fa-2x i-info" katana-click="wdf.toggle" title="Show/Hide block"/></div>
-                    <div class="col-md-1 text-center"><i class="fa fa-plus-square fa-2x i-info" katana-click="wdf.addTag" title="Add info"/></div>
+                    <div class="col-md-1 text-center"><i class="fa fa-plus fa-2x i-info" katana-click="wdf.addTag" title="Add info"/></div>
                     <div class="col-md-1 text-center"><i class="fa fa-caret-right fa-2x i-info" katana-click="wdf.addSubSystem" title="Add inner block"/></div>
                     <div class="col-md-1 text-center"><i class="fa fa-trash fa-2x i-danger" katana-click="wdf.deleteSystem" title="Delete block"/></div>
                 </div>
@@ -59,7 +61,7 @@
                 <hr class="wdf-hr"/>
                 <div class="row">
                     <div class="col-md-2"><i class="fa fa-toggle-down fa-2x i-info" katana-click="wdf.toggle" title="Show/Hide block"/></div>
-                    <div class="col-md-1 text-center"><i class="fa fa-plus-square fa-2x i-info" katana-click="wdf.addTag" title="Add info"/></div>
+                    <div class="col-md-1 text-center"><i class="fa fa-plus fa-2x i-info" katana-click="wdf.addTag" title="Add info"/></div>
                     <div class="col-md-1 text-center"><i class="fa fa-caret-right fa-2x i-info" katana-click="wdf.addSubSystem" title="Add inner block"/></div>
                     <div class="col-md-1 text-center"><i class="fa fa-trash fa-2x i-danger" katana-click="wdf.deleteSystem" title="Delete block"/></div>
                 </div>
@@ -105,7 +107,7 @@
                     <hr class="wdf-hr"/>
                     <div class="row">
                         <div class="col-md-2"><i class="fa fa-toggle-down fa-2x i-info" katana-click="wdf.toggle" title="Show/Hide block"/></div>
-                        <div class="col-md-1 text-center"><i class="fa fa-plus-square fa-2x i-info" katana-click="wdf.addTag" title="Add info"/></div>
+                        <div class="col-md-1 text-center"><i class="fa fa-plus fa-2x i-info" katana-click="wdf.addTag" title="Add info"/></div>
                         <div class="col-md-1 text-center"><i class="fa fa-caret-right fa-2x i-info" katana-click="wdf.addSubSystem" title="Add inner block"/></div>
                         <div class="col-md-1 text-center"><i class="fa fa-trash fa-2x i-danger" katana-click="wdf.deleteSystem" title="Delete block"/></div>
                     </div>
@@ -149,13 +151,28 @@
         {% endif %}
     {% endfor %}
     </form>
+    </div>
+
+    <div class="col-md-3 wdf-scroll">
+    {% for system in data_read.system %}
+        {% if system.ip %}
+            <div><button katana-click="wdf.jump_to" type="button" linkto="#{{ forloop.counter }}-1-control-box">{{ system|get_item:'@name' }}</button></div>
+        {% elif "ip" in system.subsystem %}
+            <div><button katana-click="wdf.jump_to" type="button" linkto="#{{ forloop.counter }}-1-control-box">{{ system|get_item:'@name' }} - {{ system.subsystem|get_item:'@name' }}</button></div>
+        {% elif system.subsystem %}
+            {% for subsys in system.subsystem %}
+                <div><button katana-click="wdf.jump_to" type="button" linkto="#{{ forloop.parentloop.counter }}-{{ forloop.counter }}-control-box">{{ system|get_item:'@name' }} - {{ subsys|get_item:'@name' }}</button></div>
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
+    </div></div>
 
     <div id="system_template" auto-init="wdf.hide">
         <div id="template-system" class="control-box">
             <hr class="wdf-hr"/>
             <div class="row">
                 <div class="col-md-2"><i class="fa fa-toggle-down fa-2x i-info" katana-click="wdf.toggle" title="Show/Hide block"/></div>
-                <div class="col-md-1 text-center"><i class="fa fa-plus-square fa-2x i-info" katana-click="wdf.addTag" title="Add info"/></div>
+                <div class="col-md-1 text-center"><i class="fa fa-plus fa-2x i-info" katana-click="wdf.addTag" title="Add info"/></div>
                 <div class="col-md-1 text-center"><i class="fa fa-caret-right fa-2x i-info" katana-click="wdf.addSubSystem" title="Add inner block"/></div>
                 <div class="col-md-1 text-center"><i class="fa fa-trash fa-2x i-danger" katana-click="wdf.deleteSystem" title="Delete block"/></div>
             </div>
@@ -177,7 +194,7 @@
             <hr class="wdf-hr"/>
             <div class="row">
                 <div class="col-md-2"><i class="fa fa-toggle-down fa-2x i-info" katana-click="wdf.toggle" title="Show/Hide block"/></div>
-                <div class="col-md-1 text-center"><i class="fa fa-plus-square fa-2x i-info" katana-click="wdf.addTag" title="Add info"/></div>
+                <div class="col-md-1 text-center"><i class="fa fa-plus fa-2x i-info" katana-click="wdf.addTag" title="Add info"/></div>
                 <div class="col-md-1 text-center"><i class="fa fa-caret-right fa-2x i-info" katana-click="wdf.addSubSystem" title="Add inner block"/></div>
                 <div class="col-md-1 text-center"><i class="fa fa-trash fa-2x i-danger" katana-click="wdf.deleteSystem" title="Delete block"/></div>
             </div>
