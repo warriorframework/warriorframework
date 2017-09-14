@@ -299,7 +299,12 @@ function mapCaseJsonToUi(data){
 			var sid = parseInt(names[1]);
 			mapTestStepToUI(sid,xdata);
 			katana.$activeTab.find("#editCaseStepDiv").show();
+
 			/*
+
+			katana.$activeTab.find("#editCaseStepDiv").dialog();
+			
+
 			katana.popupController.open(katana.$activeTab.find("#editCaseStepDiv").html(),"Edit...", function(popup) {
 			console.log(popup);
 			console.log("Mapped "+sid);
@@ -412,11 +417,17 @@ function mapTestStepToUI(sid, xdata) {
 	katana.$activeTab.find("#StepRowToEdit").val(sid);
 	oneCaseStep = xdata[sid]
 	console.log(oneCaseStep);
-	katana.$activeTab.find("#StepDriver").val(oneCaseStep['step'][ "@Driver"]);
-	katana.$activeTab.find("#StepKeyword").val(oneCaseStep['step'][ "@Keyword"]);
-	console.log("Assigning SID to StepDriver");
-	
-	katana.$activeTab.find("#StepTS").val(oneCaseStep['step'][ "@TS"]);
+	katana.$activeTab.find("#StepDriver").val(oneCaseStep[ "@Driver"]);
+	katana.$activeTab.find("#StepKeyword").val(oneCaseStep[ "@Keyword"]);
+	console.log("LOOK~");
+	console.log(oneCaseStep["@Driver"]);
+	console.log(oneCaseStep["@Keyword"]);
+	console.log(oneCaseStep["@TS"]);
+	console.log(oneCaseStep['step']);
+	console.log(oneCaseStep['step'][ "@Driver"]);
+	console.log(oneCaseStep['step'][ "@Keyword"]);
+	console.log(oneCaseStep['step'][ "@TS"]);
+	katana.$activeTab.find("#StepTS").val(oneCaseStep["@TS"]);
 	katana.$activeTab.find("#StepDescription").val(oneCaseStep["Description"]);
 	katana.$activeTab.find("#StepContext").val(oneCaseStep["context"]);
 	katana.$activeTab.find("#SteponError-at-action").val(oneCaseStep['onError']["@action"]);
@@ -507,7 +518,7 @@ function mapTestStepToUI(sid, xdata) {
 				katana.$activeTab.find("#StepKeyword").append($('<option>',{ value:v,  text: v}));
 			
 			}
-			katana.$activeTab.find("#StepKeyword").val(oneCaseStep['step'][ "@Keyword"]);
+			katana.$activeTab.find("#StepKeyword").val(oneCaseStep[ "@Keyword"]);
 	});	
 }
 
@@ -526,6 +537,8 @@ function saveOneArgument( sid, aid, xdata) {
 
 function addOneArgument( sid , xdata ) {
 	var xx = { "@name": "" , "@value": " " };
+	console.log("sid =" + sid);
+	console.log(xdata);
 	jsonCaseSteps['step'][sid]['Arguments']['argument'].push(xx);
 	//mapCaseJsonToUi(jsonCaseSteps);
 	mapTestStepToUI(sid, xdata);
@@ -557,9 +570,9 @@ function mapUItoTestStep(xdata) {
 	console.log(xdata);
 	oneCaseStep = xdata[sid];
 	fillStepDefaults(oneCaseStep);  // Takes care of missing values.... 
-	oneCaseStep['step'][ "@Driver"] = katana.$activeTab.find("#StepDriver").val();
-	oneCaseStep['step'][ "@Keyword"] = katana.$activeTab.find("#StepKeyword").val();
-	oneCaseStep['step'][ "@TS"] = katana.$activeTab.find("#StepTS").val();
+	oneCaseStep["@Driver"] = katana.$activeTab.find("#StepDriver").val();
+	oneCaseStep["@Keyword"] = katana.$activeTab.find("#StepKeyword").val();
+	oneCaseStep["@TS"] = katana.$activeTab.find("#StepTS").val();
 	oneCaseStep["Description"] =  katana.$activeTab.find("#StepDescription").val();
 	oneCaseStep["context"] =  katana.$activeTab.find("#StepContext").val();
 	oneCaseStep["Execute"]["@ExecType"]= katana.$activeTab.find("#Execute-at-ExecType").val();		
