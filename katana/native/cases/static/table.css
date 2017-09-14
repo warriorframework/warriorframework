@@ -1,12 +1,19 @@
-table {
+.configuration_table table {
   border-collapse: collapse;
 }
-th, td {
+.configuration_table td {
   text-align: left;
-  border: 1px solid #200;
+  border: 1px solid #00D;
   overflow: scroll;
  
 }
-tbody tr:nth-child(odd) {
+
+.configuration_table th {
+  text-align: left;
+  border: 0px ;
+  overflow: scroll;
+ 
+}
+.configuration_table tbody tr:nth-child(odd) {
   background: #eee;
 }

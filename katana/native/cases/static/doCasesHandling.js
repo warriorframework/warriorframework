@@ -28,7 +28,7 @@ if (typeof jsonAllCasePages === 'undefined') {
 }
 
 var jsonCaseObject = [];
-var jsonCaseDetails = [];         
+var jsonCaseDetails = [];         // A pointer to the Details   
 var jsonCaseSteps = [];           
 var jsonCaseRequirements = []; 	  // This is the JSON model for the UI requirements
 var activePageID = getRandomCaseID();   // for the page ID 
@@ -61,6 +61,7 @@ function mapFullCaseJson(myobjectID){
 
 
 	katana.$activeTab.find("#StepDriver").on('change',function() {
+		alert("Ouch");
 		sid  = katana.$activeTab.find("#StepDriver").attr('theSid');   // 
 		var oneCaseStep = jsonCaseSteps['step'][sid];
 		console.log(oneCaseStep);
@@ -226,7 +227,7 @@ function mapCaseJsonToUi(data){
 
 	//console.log("xdata =" + xdata);
 	katana.$activeTab.find("#tableOfTestStepsForCase").html("");      // Start with clean slate
-	items.push('<table id="Step_table_display" >');
+	items.push('<table class="configuration_table" id="Step_table_display" >');
 	items.push('<thead>');
 	items.push('<tr id="StepRow"><th>#</th><th>Step</th><th>Arguments</th>\
 		<th>Description</th><th>OnError</th><th>Execute</th><th>Other</th></tr>');
@@ -291,11 +292,20 @@ function mapCaseJsonToUi(data){
 		//items.push('<i type="button" title="Edit" class="fa fa-pencil fa-2x" value="Edit" id="'+bid+'"/></td>');
 		items.push('<i  title="Edit" class="fa fa-pencil" title="Edit" id="'+bid+'"/>');
 		$('#'+bid).off('c<td>lick');   //unbind and bind are deprecated. 
+		$('#'+bid).attr('theSid', s);  //Set tthe name
 		$(document).on('click','#'+bid,function(  ) {
 			//alert(this.id);
 			var names = this.id.split('-');
 			var sid = parseInt(names[1]);
 			mapTestStepToUI(sid,xdata);
+			katana.$activeTab.find("#editCaseStepDiv").show();
+			/*
+			katana.popupController.open(katana.$activeTab.find("#editCaseStepDiv").html(),"Edit...", function(popup) {
+			console.log(popup);
+			console.log("Mapped "+sid);
+			mapTestStepToUI(sid,xdata);
+		 	});
+		 	*/
 		}); 
 
 		bid = "addTestStepAbove-"+s+"-id-"+getRandomCaseID();
@@ -318,16 +328,20 @@ function mapCaseJsonToUi(data){
 	katana.$activeTab.find('#Step_table_display tbody').sortable( { stop: testCaseSortEventHandler});
 	
 	// Based on the options
+	/*
  	katana.$activeTab.find('table#Step_table_display thead tr th').each(function(index) {
     		var thisWidth = $(this).width();
     		if ( index == 0 ) { thisWidth = 40; }
     		console.log(thisWidth + "  "+ index);
-    		var elem = this; 
     		katana.$activeTab.find('table#Step_table_display tbody tr td').each(function(xindex) {	
-    				$(this).css('width',40);
+    				if ( index == 0 ) { 
+    					$(this).css('width',thisWidth);
+    				 }
+
+    				
     		});
   	});
-
+	*/
   	/*
 	if (jsonCaseDetails['Datatype'] == 'Custom') {
 		$(".arguments-div").hide();
@@ -393,15 +407,15 @@ function addTestStepAboveToUI(sid,xdata) {
 function mapTestStepToUI(sid, xdata) {
 	// body...
 	console.log("Calling mapTestStepToUI "+ sid);
-	console.log("Calling mapTestStepToUI "+ xdata);
+	console.log(xdata);
 	katana.$activeTab.find("#editCaseStepDiv").show();
 	katana.$activeTab.find("#StepRowToEdit").val(sid);
 	oneCaseStep = xdata[sid]
 	console.log(oneCaseStep);
 	katana.$activeTab.find("#StepDriver").val(oneCaseStep['step'][ "@Driver"]);
 	katana.$activeTab.find("#StepKeyword").val(oneCaseStep['step'][ "@Keyword"]);
+	console.log("Assigning SID to StepDriver");
 	
-	katana.$activeTab.find("#StepDriver").attr('theSid',sid);  // Track the object you are on. 
 	katana.$activeTab.find("#StepTS").val(oneCaseStep['step'][ "@TS"]);
 	katana.$activeTab.find("#StepDescription").val(oneCaseStep["Description"]);
 	katana.$activeTab.find("#StepContext").val(oneCaseStep["context"]);
@@ -416,7 +430,7 @@ function mapTestStepToUI(sid, xdata) {
 
 	var ta = 0; 
 	for (xarg in arguments) {
-			console.log(arguments[xarg]);
+			//console.log(arguments[xarg]);
 			a_items.push('<div class="row">');
 			a_items.push('<label class="col-md-2">Name</label><input class="col-md-2" type="text" argid="caseArgName-'+ta+'" value="'+arguments[xarg]["@name"]+'"/>');
 			a_items.push('<label class="col-md-2">Value</label><input class="col-md-2" type="text" argid="caseArgValue-'+ta+'" value="'+arguments[xarg]["@value"]+'"/>');
@@ -465,28 +479,26 @@ function mapTestStepToUI(sid, xdata) {
 	//console.log(a_items);
 	katana.$activeTab.find("#arguments-textarea").html( a_items.join("\n"));
 
-
 	// Load in the actions names. 
 	var opts = jQuery.getJSON("./cases/getListOfActions").done(function(data) { 		 
-	var a_items = data['actions'];			 
-	katana.$activeTab.find("#StepDriver").empty();  // Empty all the options....
-	for (var x =0; x < a_items.length; x++) {
-				katana.$activeTab.find("#StepDriver").append($('<option>',{ value: a_items[x],  text: a_items[x]}));
-			}
-			sid  = katana.$activeTab.find("#StepDriver").attr('theSid');
-			console.log(jsonCaseSteps);
+			var a_items = data['actions'];			 
+			katana.$activeTab.find("#StepDriver").empty();  // Empty all the options....
+			for (var x =0; x < a_items.length; x++) {
+						console.log(a_items[x]);
+						katana.$activeTab.find("#StepDriver").append($('<option>',{ value: a_items[x],  text: a_items[x]}));
+					}
+					
+			console.log(sid);
 			console.log(jsonCaseSteps['step']);
-
 			var oneCaseStep = jsonCaseSteps['step'][sid];
 			console.log(oneCaseStep);
-			katana.$activeTab.find("#StepKeyword").attr('theSid', sid);
 			katana.$activeTab.find("#StepDriver").val(oneCaseStep["@Driver"]);
-			//console.log(data['filesinfo'])
+			console.log(data['filesinfo'])
 			jsonFilesInfo = data['filesinfo'];
 			var keyword = oneCaseStep["@Driver"]; 
 			katana.$activeTab.find("#StepKeyword").empty();  // Empty all the options....
 			var k_items = data['filesinfo'][keyword][0];
-			console.log("k-items=" + k_items);
+			console.log(k_items);
 			console.log(k_items.length);
 			for (var ki =0; ki < k_items.length; ki++) {
 				//console.log(k_items[ki]);
@@ -496,15 +508,7 @@ function mapTestStepToUI(sid, xdata) {
 			
 			}
 			katana.$activeTab.find("#StepKeyword").val(oneCaseStep['step'][ "@Keyword"]);
-	});
-	//console.log("Returning actions");
-	//console.log(opts);
-	//console.log("Returned actions");
-	window.location.href = "#editCaseStepDiv";
-
-	//katana.popupController.openWindow(items.join(""),"Edit...", function() { });
-	//history.replaceState(null,null,loc);
-	
+	});	
 }
 
 function saveOneArgument( sid, aid, xdata) {
@@ -638,7 +642,7 @@ function saveUItoRequirements( ){
 function createRequirementsTable(i_data){
 	var items =[]; 
 	katana.$activeTab.find("#tableOfCaseRequirements").html("");  // This is a blank div. 
-	items.push('<table id="Requirements_table_display" class="table" >');
+	items.push('<table id="Requirements_table_display" class="configuration_table" >');
 	items.push('<thead>');
 	items.push('<tr><th>Num</th><th>Requirement</th><th/></tr>');
 	items.push('</thead>');
@@ -673,11 +677,11 @@ function createRequirementsTable(i_data){
 				$(document).on('click','#'+bid,function() {
 					var names = this.id.split('-');
 					var sid = parseInt(names[1]);
-					console.log("xdata --> "+ rdata);  // Get this value and update your json. 
+					//console.log("xdata --> "+ rdata);  // Get this value and update your json. 
 					var txtIn = katana.$activeTab.find("#textRequirement-"+sid+"-id").val();
 					console.log(katana.$activeTab.find("#textRequirement-"+sid+"-id").val());
 					//console.log(sid);
-					console.log(rdata[sid])
+					//console.log(rdata[sid])
 					rdata[sid] = txtIn;
 					createRequirementsTable(i_data);	
 					event.stopPropagation();
@@ -693,8 +697,8 @@ function createRequirementsTable(i_data){
 	$(document).on('click','#'+bid,function( event  ) {
 			var names = this.id.split('-');
 			var sid = parseInt(names[1]);
-			console.log("Add Requirement... ");
-			console.log(jsonCaseObject['Requirements']);
+			//console.log("Add Requirement... ");
+			//console.log(jsonCaseObject['Requirements']);
 			if (!jsonCaseObject['Requirements']) jsonCaseObject['Requirements']= { 'Requirement' : [] }
 			if (!jQuery.isArray(jsonCaseObject['Requirements']['Requirement'])) {
 				jsonCaseObject['Requirements']['Requirement'] = []
