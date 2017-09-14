@@ -20,7 +20,7 @@ var wapp_management = {
             });
         }
         else {
-            alert("Whew! Uninstall suspended.")
+            katana.openDialog("Uninstall suspended.", "Whew!")
         }
     },
 

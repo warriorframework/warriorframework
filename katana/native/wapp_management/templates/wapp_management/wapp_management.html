@@ -7,6 +7,19 @@
 <body>
     {% csrf_token %}
 
+    <style>
+        .centered {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  -o-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+}
+    </style>
+
     <div class="tool-bar">
         <div class="row text-center" style="height: 100%; padding-left:0.9rem;">
             <div class="col-md-2 tool-bar-links" katana-click="wapp_management.goToElement" elem-link="installed_apps">Installed Apps</div>
@@ -18,6 +31,24 @@
 
         {% include 'wapp_management/installed_apps_section.html' %}
         {% include 'wapp_management/custom_app_install_section.html' %}
+
+
+            <div class="col-sm-5 centered">
+                <div class="alert alert-warning">
+                    <div class="row text-center">
+                        <div class="col">
+                            <strong>Holy guacamole!</strong> You should check in on some of those fields below.
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <button class="btn btn-danger">
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
     </div>
 
 </body>
