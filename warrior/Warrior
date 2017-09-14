@@ -17,6 +17,7 @@ if sys.version_info < (2, 7):
     sys.exit(0)
 try:
     import os
+    import glob
     import shutil
     import Framework.Utils.email_utils as email
     import Framework.Utils as Utils
@@ -48,6 +49,77 @@ def update_jira_by_id(jiraproj, jiraid, exec_dir, status):
     else:
         print_info("jiraid not provided, will not update jira issue")
 
+def avg_time_calculate(abs_filepath, default_repo):
+    """ To print the Estimated Runtime for the Project/Suite/Testcase is
+    calculated using the previous junit file runtime values """
+
+    fname = abs_filepath.split('/')[-1].split('.')[0]
+    junit_fname = fname + "_junit.xml"
+    file_type = Utils.xml_Utils.getRoot(abs_filepath).tag
+    total = count = 0
+
+    if not default_repo.has_key('ow_resultdir'):
+        result_path = Utils.xml_Utils.getChildTextbyParentTag(abs_filepath,
+                                                               'Details',
+							       'Resultsdir')
+
+        if result_path is None or result_path is False:
+            file_path = abs_filepath.split('warriorframework/')[0]
+            exec_filepath = file_path + \
+                          "warriorframework/warrior/Warriorspace/Execution"
+
+        else:
+            file_path = abs_filepath.split(fname)[0]
+            exec_filepath = file_path + "Execution"
+
+        if file_type == "Project" or file_type == "TestSuite":
+            junit_file = exec_filepath + "/**/" + junit_fname
+            if os.path.exists(exec_filepath):
+                for filename in glob.iglob(junit_file):
+                    fd = open (filename, 'r')
+                    data = fd.read()
+                    a = data.split('time=')[1].split('\"')[1]
+                    print type(a)
+                    count += 1
+                    total += float(a)
+
+        elif file_type == "Testcase":
+            junit_file = exec_filepath + "/**/Results/" + junit_fname
+            if os.path.exists(exec_filepath):
+                for filename in glob.iglob(junit_file):
+                    fd = open (filename, 'r')
+                    data = fd.read()
+                    a = data.split('time=')[1].split('\"')[1]
+                    count += 1
+                    total += float(a)
+    else:
+        result_path = default_repo.get("ow_resultdir")
+        exec_filepath = os.getcwd() + "/" + result_path
+
+        if file_type == "Project" or file_type == "TestSuite":
+            junit_file = exec_filepath + "/**/" + junit_fname
+            if os.path.exists(exec_filepath):
+                for filename in glob.iglob(junit_file):
+                    fd = open (filename, 'r')
+                    data = fd.read()
+                    a = data.split('time=')[1].split('\"')[1]
+                    count += 1
+                    total += float(a)
+
+        elif file_type == "Testcase":
+            junit_file = exec_filepath + "/**/Results/" + junit_fname
+            if os.path.exists(exec_filepath):
+                for filename in glob.iglob(junit_file):
+                    fd = open (filename, 'r')
+                    data = fd.read()
+                    a = data.split('time=')[1].split('\"')[1]
+                    count += 1
+                    total += float(a)
+
+    if count is not 0:
+        avg = total/count
+        time_format = Utils.datetime_utils.get_hms_for_seconds(avg)
+        print "The Estimated Runtime is : ", time_format
 
 def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
          jiraproj, overwrite, jiraid, dbsystem):
@@ -88,7 +160,7 @@ def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
                         default_repo = overwrite
                     else:
                         default_repo = {}
-
+                    avg_time_calculate(abs_filepath, default_repo)
                     if db_obj is not False and db_obj.status is True:
                         default_repo.update({'db_obj': db_obj})
                     else:
