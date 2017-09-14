@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env /local/python/2.7.8/bin/python2.7
 '''
 Copyright 2017, Fujitsu Network Communications, Inc.
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,8 @@ try:
     import Framework.Utils as Utils
     from Framework.Utils.print_Utils import print_error, print_info
     from WarriorCore import warrior_cli_driver, testcase_driver, testsuite_driver, project_driver
-    from WarriorCore import ironclaw_driver, mockrun_driver, framework_detail
+    from WarriorCore import ironclaw_driver, mockrun_driver, framework_detail, testsuite_utils
+    from WarriorCore import progress_bar
     from WarriorCore.Classes.jira_rest_class import Jira
     from Framework.ClassUtils import database_utils_class
 except:
@@ -48,6 +49,16 @@ def update_jira_by_id(jiraproj, jiraid, exec_dir, status):
     else:
         print_info("jiraid not provided, will not update jira issue")
 
+def count(node, node_name, file_path):
+    root = Utils.xml_Utils.getRoot(file_path)
+    node = root.find(node)
+
+    if node is None:
+        print ""
+    else:
+        node_value = node.findall(node_name)
+        node_count = len(node_value)
+    return node_count, node_value
 
 def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
          jiraproj, overwrite, jiraid, dbsystem):
@@ -93,7 +104,81 @@ def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
                         default_repo.update({'db_obj': db_obj})
                     else:
                         default_repo.update({'db_obj': False})
+                    file_type = Utils.xml_Utils.getRoot(abs_filepath).tag
+                    file_path = abs_filepath
+                    step_count = 0
 
+                    if file_type == "Project":
+                        print "Project"
+                        suite_node = "Testsuites"
+                        suite_node_name = "Testsuite"
+                        suite_count, suite_value = count(suite_node, suite_node_name, file_path)
+                        for i in suite_value:
+                            ts_rel_path = testsuite_utils.get_path_from_xmlfile(i)
+                            dir_file_path = os.path.dirname(file_path)
+                            ts_abs_filepath = Utils.file_Utils.getAbsPath(ts_rel_path, dir_file_path)
+
+                            case_node = "Testcases"
+                            case_node_name = "Testcase"
+                            root = Utils.xml_Utils.getRoot(ts_abs_filepath)
+                            case_node = root.find(case_node)
+                            if case_node is None:
+                               print ""
+                            else:
+                                case_value = case_node.findall(case_node_name)
+                                case_count = len(case_value)
+                            for j in case_value:
+                                tc_rel_path = testsuite_utils.get_path_from_xmlfile(j)
+                                dir_file_path = os.path.dirname(ts_abs_filepath)
+                                tc_abs_filepath = Utils.file_Utils.getAbsPath(tc_rel_path, dir_file_path)
+
+                                step_node = "Steps"
+                                step_node_name = "step"
+                                root = Utils.xml_Utils.getRoot(tc_abs_filepath)
+                                step_node = root.find(step_node)
+                                if step_node is None:
+                                    print ""
+                                else:
+                                    step_value = step_node.findall(step_node_name)
+                                    step_count_1 = len(step_value)
+                                    step_count = step_count + step_count_1
+                                    default_repo['step_count']= step_count
+
+                    if file_type == "TestSuite":
+                        case_node = "Testcases"
+                        case_node_name = "Testcase"
+                        root = Utils.xml_Utils.getRoot(file_path)
+                        case_node = root.find(case_node)
+                        if case_node is None:
+                            print ""
+                        else:
+                            case_value = case_node.findall(case_node_name)
+                            case_count = len(case_value)
+                            step_count = 0
+                        for i in case_value:
+
+                            tc_rel_path = testsuite_utils.get_path_from_xmlfile(i)
+                            dir_file_path = os.path.dirname(file_path)
+                            tc_abs_filepath = Utils.file_Utils.getAbsPath(tc_rel_path, dir_file_path)
+
+                            step_node = "Steps"
+                            step_node_name = "step"
+                            root = Utils.xml_Utils.getRoot(tc_abs_filepath)
+                            step_node = root.find(step_node)
+                            if step_node is None:
+                                print ""
+                            else:
+                                step_value = step_node.findall(step_node_name)
+                                step_count_1 = len(step_value)
+                                step_count = step_count + step_count_1
+                                default_repo['step_count']= step_count
+
+                    if file_type == "Testcase":
+                        step_node = "Steps"
+                        step_node_name = "step"
+                        step_count, step_value = count(step_node, step_node_name, file_path)
+                        default_repo['step_count']= step_count
+                    progress_bar.progress = progress_bar.ProgressBar(step_count)
                     if mockrun:
                         result = mockrun_driver.main(abs_filepath, len(parameter_list))
                     elif Utils.xml_Utils.getRoot(abs_filepath).tag == 'Testcase':
