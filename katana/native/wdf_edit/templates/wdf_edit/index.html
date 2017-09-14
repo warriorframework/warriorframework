@@ -2,15 +2,15 @@
     {% load static %}
     <!-- <link rel="stylesheet" href="{% static 'wdf_edit/css/animate.min.css' %}"> -->
     <div class="csrf-container">{% csrf_token %}</div>
-    <form id="big-box">
 
-    <div class="row">
-        <div class="col-md-1"><label class="wdf-label">Filepath:</label></div>
-        <div class="col-md-8"><input class="wdf-input" name="filepath" value="{{ filepath }}"/></div>
-        <div class="col-md-1"><i class="fa fa-plus-square fa-3x i-info" title="Add new system at the end" katana-click="wdf.addSystem"/></div>
-        <div class="col-md-1"><i class="fa fa-times fa-3x i-danger" title="Disregard change and close" katana-click="wdf.cancel"/></div>
-        <div class="col-md-1"><i class="fa fa-save fa-3x i-success" title="Save change and submit" katana-click="wdf.submit"/></div>
-    </div>
+    <form id="big-box">
+        <div class="row">
+            <div class="col-md-1"><label class="wdf-label">Filepath:</label></div>
+            <div class="col-md-8"><input class="wdf-input" name="filepath" value="{{ filepath }}"/></div>
+            <div class="col-md-1"><i class="fa fa-plus-square fa-3x i-info" title="Add new system at the end" katana-click="wdf.addSystem"/></div>
+            <div class="col-md-1"><i class="fa fa-times fa-3x i-danger" title="Disregard change and close" katana-click="wdf.cancel"/></div>
+            <div class="col-md-1"><i class="fa fa-save fa-3x i-success" title="Save change and submit" katana-click="wdf.submit"/></div>
+        </div>
 
     {% for system in data.system %}
         {% if system.ip %}
@@ -150,70 +150,81 @@
     {% endfor %}
     </form>
 
-<div id="system_template" auto-init="wdf.hide">
-    <div id="template-system" class="control-box">
-        <hr class="wdf-hr"/>
-        <div class="row">
-            <div class="col-md-2"><i class="fa fa-toggle-down fa-2x i-info" katana-click="wdf.toggle" title="Show/Hide block"/></div>
-            <div class="col-md-1 text-center"><i class="fa fa-plus-square fa-2x i-info" katana-click="wdf.addTag" title="Add info"/></div>
-            <div class="col-md-1 text-center"><i class="fa fa-caret-right fa-2x i-info" katana-click="wdf.addSubSystem" title="Add inner block"/></div>
-            <div class="col-md-1 text-center"><i class="fa fa-trash fa-2x i-danger" katana-click="wdf.deleteSystem" title="Delete block"/></div>
+    <div id="system_template" auto-init="wdf.hide">
+        <div id="template-system" class="control-box">
+            <hr class="wdf-hr"/>
+            <div class="row">
+                <div class="col-md-2"><i class="fa fa-toggle-down fa-2x i-info" katana-click="wdf.toggle" title="Show/Hide block"/></div>
+                <div class="col-md-1 text-center"><i class="fa fa-plus-square fa-2x i-info" katana-click="wdf.addTag" title="Add info"/></div>
+                <div class="col-md-1 text-center"><i class="fa fa-caret-right fa-2x i-info" katana-click="wdf.addSubSystem" title="Add inner block"/></div>
+                <div class="col-md-1 text-center"><i class="fa fa-trash fa-2x i-danger" katana-click="wdf.deleteSystem" title="Delete block"/></div>
+            </div>
+            <div class="row">
+                <div class="col-md-2"><label class="wdf-label">System name:</label></div>
+                <div class="col-md-10"><input class="wdf-input" name="template-system-name" value=""/></div>
+            </div>
+            <div class="row" id="content">
+                <div class="col-md-1"><i class="fa fa-angle-right fa-2x i-info" katana-click="wdf.addChild" title="Add child info"/></div>
+                <div class="col-md-1"><i class="fa fa-trash fa-2x i-danger" katana-click="wdf.deleteTag" title="Delete info and its child info"/></div>
+                <div class="col-md-3"><input class="wdf-input" name="template-system.tag" value="tag_name"/></div>
+                <div class="col-md-7"><input class="wdf-input" name="template-system.value" value="value"/></div>
+            </div>
         </div>
-        <div class="row">
-            <div class="col-md-2"><label class="wdf-label">System name:</label></div>
-            <div class="col-md-10"><input class="wdf-input" name="template-system-name" value=""/></div>
+    </div>
+
+    <div id="subsystem_template" auto-init="wdf.hide">
+        <div id="template-subsystem" class="control-box">
+            <hr class="wdf-hr"/>
+            <div class="row">
+                <div class="col-md-2"><i class="fa fa-toggle-down fa-2x i-info" katana-click="wdf.toggle" title="Show/Hide block"/></div>
+                <div class="col-md-1 text-center"><i class="fa fa-plus-square fa-2x i-info" katana-click="wdf.addTag" title="Add info"/></div>
+                <div class="col-md-1 text-center"><i class="fa fa-caret-right fa-2x i-info" katana-click="wdf.addSubSystem" title="Add inner block"/></div>
+                <div class="col-md-1 text-center"><i class="fa fa-trash fa-2x i-danger" katana-click="wdf.deleteSystem" title="Delete block"/></div>
+            </div>
+            <div class="row">
+                <div class="col-md-2"><label class="wdf-label">System name:</label></div>
+                <div class="col-md-10"><input class="wdf-input" name="template-system-name" value=""/></div>
+            </div>
+            <div class="row">
+                <div class="col-md-2"><label class="wdf-label">Subsystem name:</label></div>
+                <div class="col-md-10"><input class="wdf-input" name="template-subsystem-name" value=""/></div>
+            </div>
+            <div class="row" id="content">
+                <div class="col-md-1"><i class="fa fa-angle-right fa-2x i-info" katana-click="wdf.addChild" title="Add child info"/></div>
+                <div class="col-md-1"><i class="fa fa-trash fa-2x i-danger" katana-click="wdf.deleteTag" title="Delete info and its child info"/></div>
+                <div class="col-md-3"><input class="wdf-input" name="template-subsystem.tag" value="tag_name"/></div>
+                <div class="col-md-7"><input class="wdf-input" name="template-subsystem.value" value="value"/></div>
+            </div>
         </div>
+    </div>
+
+    <div id="tag_template" auto-init="wdf.hide">
         <div class="row" id="content">
             <div class="col-md-1"><i class="fa fa-angle-right fa-2x i-info" katana-click="wdf.addChild" title="Add child info"/></div>
             <div class="col-md-1"><i class="fa fa-trash fa-2x i-danger" katana-click="wdf.deleteTag" title="Delete info and its child info"/></div>
-            <div class="col-md-3"><input class="wdf-input" name="template-system.tag" value="tag_name"/></div>
-            <div class="col-md-7"><input class="wdf-input" name="template-system.value" value="value"/></div>
+            <div class="col-md-3"><input class="wdf-input" name="template-tag.tag" list="bowser"/></div>
+            <div class="col-md-7"><input class="wdf-input" name="template-tag.value" list="boo"/></div>
         </div>
     </div>
-</div>
 
-<div id="subsystem_template" auto-init="wdf.hide">
-    <div id="template-subsystem" class="control-box">
-        <hr class="wdf-hr"/>
-        <div class="row">
-            <div class="col-md-2"><i class="fa fa-toggle-down fa-2x i-info" katana-click="wdf.toggle" title="Show/Hide block"/></div>
-            <div class="col-md-1 text-center"><i class="fa fa-plus-square fa-2x i-info" katana-click="wdf.addTag" title="Add info"/></div>
-            <div class="col-md-1 text-center"><i class="fa fa-caret-right fa-2x i-info" katana-click="wdf.addSubSystem" title="Add inner block"/></div>
-            <div class="col-md-1 text-center"><i class="fa fa-trash fa-2x i-danger" katana-click="wdf.deleteSystem" title="Delete block"/></div>
-        </div>
-        <div class="row">
-            <div class="col-md-2"><label class="wdf-label">System name:</label></div>
-            <div class="col-md-10"><input class="wdf-input" name="template-system-name" value=""/></div>
-        </div>
-        <div class="row">
-            <div class="col-md-2"><label class="wdf-label">Subsystem name:</label></div>
-            <div class="col-md-10"><input class="wdf-input" name="template-subsystem-name" value=""/></div>
-        </div>
-        <div class="row" id="content">
-            <div class="col-md-1"><i class="fa fa-angle-right fa-2x i-info" katana-click="wdf.addChild" title="Add child info"/></div>
-            <div class="col-md-1"><i class="fa fa-trash fa-2x i-danger" katana-click="wdf.deleteTag" title="Delete info and its child info"/></div>
-            <div class="col-md-3"><input class="wdf-input" name="template-subsystem.tag" value="tag_name"/></div>
-            <div class="col-md-7"><input class="wdf-input" name="template-subsystem.value" value="value"/></div>
+    <div id="child_tag_template" auto-init="wdf.hide">
+        <div class="row" id="subcontent">
+            <div class="col-md-1"/>
+            <div class="col-md-1"><i class="fa fa-trash fa-2x i-danger" katana-click="wdf.deleteChildTag" title="Delete info and its child info"/></div>
+            <div class="col-md-3"><input class="wdf-input" name="template-tag.tag" value="tag_name"/></div>
+            <div class="col-md-7"><input class="wdf-input" name="template-tag.value" value="value"/></div>
         </div>
     </div>
-</div>
 
-<div id="tag_template" auto-init="wdf.hide">
-    <div class="row" id="content">
-        <div class="col-md-1"><i class="fa fa-angle-right fa-2x i-info" katana-click="wdf.addChild" title="Add child info"/></div>
-        <div class="col-md-1"><i class="fa fa-trash fa-2x i-danger" katana-click="wdf.deleteTag" title="Delete info and its child info"/></div>
-        <div class="col-md-3"><input class="wdf-input" name="template-tag.tag" value="tag_name"/></div>
-        <div class="col-md-7"><input class="wdf-input" name="template-tag.value" value="value"/></div>
-    </div>
-</div>
+    <datalist id="bowser">
+        <option value="Mario"/>
+        <option value="Luigi"/>
+        <option value="Link"/>
+    </datalist>
 
-<div id="child_tag_template" auto-init="wdf.hide">
-    <div class="row" id="subcontent">
-        <div class="col-md-1"/>
-        <div class="col-md-1"><i class="fa fa-trash fa-2x i-danger" katana-click="wdf.deleteChildTag" title="Delete info and its child info"/></div>
-        <div class="col-md-3"><input class="wdf-input" name="template-tag.tag" value="tag_name"/></div>
-        <div class="col-md-7"><input class="wdf-input" name="template-tag.value" value="value"/></div>
-    </div>
-</div>
-
+    <datalist id="boo">
+        <option value="Toad"/>
+        <option value="Peach"/>
+        <option value="Yoshi"/>
+    </datalist>
 </div>
