@@ -1,6 +1,7 @@
 import json
 from wui.core.core_utils.app_info_class import AppInformation
 from django.template.defaulttags import register
+from collections import OrderedDict
 
 def read_json_data(file_path):
     """
@@ -28,3 +29,7 @@ def get_item(data, key):
         Allow django template to access dict with key with special character
     """
     return data.get(key)
+
+@register.filter
+def is_dict(data):
+    return "true" if type(data) == OrderedDict else "false"

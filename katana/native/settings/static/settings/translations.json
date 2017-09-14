@@ -1,0 +1,14 @@
+{
+  "data": [
+    {
+      "key": "@mail_on",
+      "toolTip": "does somthing on mail on",
+      "translateTo": "Mail On"
+    },
+    {
+      "key": "smtp_host",
+      "toolTip": "info about host server",
+      "translateTo": "host server"
+    }
+  ]
+}

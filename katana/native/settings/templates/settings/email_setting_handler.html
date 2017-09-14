@@ -6,12 +6,13 @@
       <div class="title center">Email Settings</div>
       {% for k, v in setting.Setting.items%}
         {% if k == '@name' %}
-          <div key="{{ k }}" class="hidden">{{ v }}</div>
+          <input key="{{ k }}" type="hidden"  value="{{ v }}">
         {% else %}
           <div class="field"><label>{{ k }}</label><input key="{{ k }}" type="text" {% if v  %} value="{{ v }}" {% endif %} placeholder="{{ k }}"></div>
         {% endif %}
       {% endfor %}
     </div>
   <div class="csrf-container">{% csrf_token %}</div>
+  <div class="translator" url="{% load staticfiles %} {% static 'settings/translations.json'  %}"></div>
 </div>
 </body>

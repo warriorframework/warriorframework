@@ -274,6 +274,18 @@ var katana = {
 
 	},
 
+	translate: function( url, container ){
+		$.getJSON( url, function( jsonObj ) {
+			$.each( jsonObj.data, function(){
+				var $elem = container.find( 'input[key="' + this.key  + '"], select[key="' + this.key  + '"]' );
+				$elem.attr( 'placeholder', this.translateTo );
+				$elem.attr( 'title', this.toolTip );
+				$elem.parent().find('label') && $elem.parent().find('label').text( this.translateTo );
+			});
+
+		});
+	},
+
 	toJSON: function(){
 		var body = katana.$activeTab.find('.to-save');
 		var jsonObj = [];
@@ -466,7 +478,8 @@ var katana = {
 			},
 
 		 preProcess: function( data ){
-			 //data = data.replace( /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+			 data = $(data);
+			 data.find('.translator').length && katana.translate( data.find('.translator').attr('url'), data );
 			 return data;
 		 },
 
