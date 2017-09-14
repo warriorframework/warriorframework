@@ -436,8 +436,7 @@ class BrowserManagement(object):
         """Create an instance of firefox browser"""
         try:
             if webdriver_remote_url:
-                browser = \
-                    self._create_remote_web_driver(
+                browser = self._create_remote_web_driver(
                         webdriver.DesiredCapabilities.FIREFOX,
                         webdriver_remote_url, desired_capabilites,
                         profile_dir)
@@ -454,9 +453,9 @@ class BrowserManagement(object):
             return browser
         except WebDriverException as e:
             if "executable needs to be in PATH" in str(e):
-                print_info("Please provide path for geckodriver executable")
+                print_error("Please provide path for geckodriver executable")
             elif "Expected browser binary location" in str(e):
-                print_info("Please provide path of firefox executable")
+                print_error("Please provide path of firefox executable")
 
     def _make_chrome(self, webdriver_remote_url, desired_capabilities,
                      profile_dir, binary, gecko_path):
@@ -484,7 +483,7 @@ class BrowserManagement(object):
             return browser
         except WebDriverException as e:
             if "executable needs to be in PATH" in str(e):
-                print_info("Please provide path for chrome driver executable")
+                print_error("Please provide path for chrome driver executable")
 
     def _create_remote_web_driver(self, capabilities_type, webdriver_remote_url,
                                   desired_capabilities=None, profile=None):

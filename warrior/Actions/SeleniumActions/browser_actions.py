@@ -202,10 +202,13 @@ class browser_actions(object):
                 if type == "firefox":
                     ff_profile = self.browser_object.\
                         set_firefoxprofile(proxy_ip, proxy_port)
-                browser_inst = self.browser_object.open_browser(
-                    browser_details["type"], webdriver_remote_url,
-                    binary=binary, gecko_path=gecko_path,
-                    profile_dir=ff_profile)
+                if binary != "" and gecko_path != "":
+                    browser_inst = self.browser_object.open_browser(
+                        browser_details["type"], webdriver_remote_url,
+                        binary=binary, gecko_path=gecko_path,
+                        profile_dir=ff_profile)
+                else:
+                    pNote("Please provide valid path for binary/geckodriver")
                 if browser_inst:
                     browser_fullname = "{0}_{1}".format(system_name, browser_details["browser_name"])
                     output_dict[browser_fullname] = browser_inst
