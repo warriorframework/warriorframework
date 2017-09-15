@@ -23,7 +23,7 @@ import Framework.ClassUtils
 from Framework.Utils import datetime_utils, data_Utils, xml_Utils
 from Framework.Utils.data_Utils import get_object_from_datarepository
 from Framework.Utils.print_Utils import print_debug, print_info,\
-print_error, print_exception
+print_error, print_warning, print_exception
 from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.list_Utils import get_list_by_separating_strings
 from Framework.ClassUtils.WNetwork.loging import ThreadedLog
@@ -568,7 +568,7 @@ def send_commands_from_testdata(testdatafile, obj_session, **args):
                 result, response = _send_cmd_get_status(new_obj_session, details_dict, index=i, system_name=system_name)
                 result, response = _send_command_retrials(new_obj_session, details_dict, index=i,
                                                           result=result, response=response, system_name=system_name)
-                response_dict = _get_response_dict(details_dict, i, response,
+                result, response_dict = _get_response_dict(details_dict, i, response,
                                                    response_dict)
                 print_debug("<<<")
             else:
@@ -603,25 +603,75 @@ def _send_cmd(obj_session, **kwargs):
 
 def _get_response_dict(details_dict, index, response, response_dict):
     """Get the response dict for a command. """
+    def print_warn_msg(keyvars, numpats):
+        """ print a warning message if the number of vars to be stored with
+        the patterns does not match with the number of patterns
+        """
+        warn_msg = ("The number of variables to store is {0} than the patterns.\n"
+                    "The number of keys({1}) is {2} which is {0} than number of patterns {3}")
+        lessormore = "less" if len(keyvars) < numpats else "more"
+        print_warning(warn_msg.format(lessormore, ", ".join(keyvars), len(keyvars), numpats))
     resp_ref = details_dict["resp_ref_list"][index]
     resp_req = details_dict["resp_req_list"][index]
     resp_pat_req = details_dict["resp_pat_req_list"][index]
+    resp_keys = details_dict["resp_key_list"][index]
+    inorder = details_dict["inorder_resp_ref_list"][index]
+    status = True
+    if inorder is not None and inorder.lower().startswith("n"):
+        inorder = False
+    else:
+        inorder = True
 
     resp_req = {None:'y', '':'y',
                 'no':'n', 'n':'n'}.get(str(resp_req).lower(), 'y')
     resp_ref = {None:index+1, '':index+1 }.get(resp_ref, str(resp_ref))
     #response_key=resp_ref_list[i] if resp_ref_list[i] else i+1
     if not resp_req=="n":
+        save_msg1 = "User has requested saving response"
+        save_msg2 = "Response pattern required by user is : {0}"
+        save_msg3 = "Portion of response saved to the data repository with key: {0}, value: {1}"
         if resp_pat_req is not None:
             # if the requested pattern not found return empty string
             reobj=re.search(resp_pat_req, response)
             response=reobj.group(0) if reobj is not None else ""
-            pNote("User has requested saving response. Response pattern required by user is : {0}".format(resp_pat_req))
-            pNote("Portion of response saved to the data repository with key: {0}, value: {1}".format(resp_ref, response))
+            response_dict[resp_ref] = response
+            pNote(save_msg1+'.')
+            pNote(save_msg2.format(resp_pat_req))
+            pNote(save_msg3.format(resp_ref, response))
+        elif resp_keys is not None:
+            keys = resp_ref.split(',')
+            patterns = [k.get("resp_pattern_req") for k in resp_keys]
+            if len(keys) != len(patterns):
+                print_warn_msg(keys, len(patterns))
+            if inorder:
+                pNote(save_msg1+' inorder.')
+                cpatterns = map(lambda s: "({})".format(s), patterns)
+                pattern = ".*".join(cpatterns)
+                if pattern.endswith(".*(.*)"):
+                    # remove .* pattern from above
+                    pattern = pattern[:-6]+pattern[-4:]
+                reobj = re.search(pattern, response)
+                if reobj:
+                    grps = reobj.groups()
+                    response_dict.update(dict(zip(keys, grps)))
+                    pNote(save_msg2.format(pattern))
+                    map(lambda x: pNote(save_msg3.format(*x)), zip(keys, grps))
+                else:
+                    print_error("inorder search of patterns in response failed")
+                    print_error("Expected: '{}'".format(pattern))
+                    print_error("But Found: '{}'".format(response))
+                    status = False
+            else:
+                pNote(save_msg1+' separately.')
+                for key, pattern in zip(keys, patterns):
+                    reobj = re.search(pattern, response)
+                    presponse = reobj.group(0) if reobj is not None else ""
+                    response_dict[key] = presponse
+                    pNote(save_msg2.format(pattern))
+                    pNote(save_msg3.format(key, presponse))
     else:
-        response=""
-    response_dict[resp_ref]=response
-    return response_dict
+        response_dict[resp_ref] = ""
+    return status, response_dict
 
 
 def start_threads(started_thread_for_system, thread_instance_list, same_system, unique_log_verify_list, system_name):
