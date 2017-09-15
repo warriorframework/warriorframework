@@ -2395,6 +2395,12 @@ div .tool-bar-links:active {
     top: 15%;
 }
 
+.wdf-wide-button {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+}
+
 .wdf-label {
     position: absolute;
     top: 25%;
@@ -2417,7 +2423,17 @@ div .tool-bar-links:active {
 
 .wdf-scroll {
     overflow: auto;
-    height: 82vh;
+    height: 83vh;
+}
+
+.wdf-lg-col {
+    width: 57%;
+    float: left;
+}
+
+.wdf-sm-col {
+    width: 35%;
+    float: left;
 }
 
 .i-success:hover {

@@ -29,7 +29,7 @@ var wdf = {
             $target.find("[katana-click='wdf.addSubSystem']").show();
         }
 
-        $target = $(this).parent().parent();
+        $target = $(this).closest(".row");
         $raw_id = $target.find("[name*='-key']").attr("name").substring(0, $target.find("[name*='-key']").attr("name").length-4);
         $id = $raw_id.split("-").slice(0,-1).join("-");
 
@@ -37,7 +37,7 @@ var wdf = {
         $children = $target.parent().find("[name*='"+$id+"-']");
         for (var i=0; i<$children.length; i++) {
             if ($($children.get(i)).prop("name").indexOf("key") !== -1) {
-                $child = $($children.get(i)).parent().parent();
+                $child = $($children.get(i)).closest(".row");
                 // $child.removeClass("animated fadeIn");
                 // $child.addClass("animated bounceOutLeft");
                 // closure
@@ -55,6 +55,9 @@ var wdf = {
     deleteChildTag: function(){
         // hide a specific child tag
         $target = $(this).parent().parent().find("[name*='key']");
+        $id = $target.attr("name").split("-").slice(0,3).join("-")+"-1-key";
+        $parent_tag = $target.closest(".control-box").find("[name='"+$id+"']").parent();
+        
         $hide_target = $target.parent().parent();
         if ($target.prop("name").indexOf("deleted") == -1) {
             $target.prop("name", "deleted-"+$target.prop("name"));
@@ -62,6 +65,14 @@ var wdf = {
             // $hide_target.addClass("animated bounceOutLeft");
             // setTimeout(function(){$hide_target.parent().parent().hide()}, 600);
             $hide_target.hide();
+
+            if (parseInt($parent_tag.attr("child_count")) == 1) {
+                $parent_tag.removeClass("col-md-10");
+                $parent_tag.addClass("col-md-3");
+                $parent_tag.next().show();
+            } else {
+                $parent_tag.attr("child_count", parseInt($parent_tag.attr("child_count"))-1);
+            }
         }
     },
 
@@ -119,6 +130,20 @@ var wdf = {
         $tmp.find("[name='template-tag.tag']").prop("name", $id+"-"+$new_id+"-key");
         $tmp.find("[name='template-tag.value']").prop("name", $id+"-"+$new_id+"-value");
         $target.parent().find("[name*='"+$id+"']:last").parent().parent().after($($tmp.html()));
+
+        $input = $target.parent().find("[name*='"+$id+"']:first").parent();
+        if ($input.hasClass("col-md-3")) {
+            $input.removeClass("col-md-3");
+            $input.addClass("col-md-10");
+            $input.next().find("input").prop("value", "");
+            $input.next().hide();
+        }
+
+        if ($input.attr("child_count")) {
+            $input.attr("child_count", parseInt($input.attr("child_count"))+1);
+        } else {
+            $input.attr("child_count", 1);
+        }
     },
 
     addSubSystem: function(){
@@ -213,7 +238,7 @@ var wdf = {
         $.ajax({
             url : "/katana/wdf/post",
             type: "POST",
-            data : katana.$activeTab.find("#wdf-editor-col").serializeArray(),
+            data : katana.$activeTab.find("#big-box").serializeArray(),
             headers: {'X-CSRFToken':csrftoken},
             //contentType: 'application/json',
             success: function(data){
@@ -240,6 +265,9 @@ var wdf = {
     },
 
     jump_to: function(){
-        katana.$activeTab.find($(this).attr("linkto")).get(0).scrollIntoView(true);
+        $target = katana.$activeTab.find($(this).attr("linkto"))
+        $target.get(0).scrollIntoView(true);
+        $target.find("input").css("background-color", "#ecff91");
+        setTimeout(function(){$target.find("input").css("background-color", "");}, 500);
     },
 }
