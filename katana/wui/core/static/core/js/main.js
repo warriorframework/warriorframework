@@ -286,6 +286,206 @@ var katana = {
         });
     },
 
+    openAlert: function(data, callBack_on_accept, callBack_on_dismiss){
+	    /*
+	    data = {
+	        "alert_type": "primary/secondary/success/danger/warning/info(default)/light/dark",
+	        "heading": "This is the heading of the alert.",
+	        "sub_heading": "false (by default), This is alert sub-heading",
+	        "text": "This is text of the alert.",
+	        "timer": "false (by default), 500, 1000, etc",
+	        "show_accept_btn": "true (by default), false",
+	        "accept_btn_text": "Ok (by default), Save, etc",
+	        "show_cancel_btn": "true (by default), false",
+	        "cancel_btn_text": "Cancel (by default), No, etc",
+	    }
+	    <div class="overlay">
+            <div class="col-sm-5 centered">
+                <div class="alert alert-data.alert_type" role="alert">
+                    <div class="col" style="float: right;">
+                        <i class="fa fa-times" style="float: right;"></i>
+                    </div>
+                    <h4 class="alert-heading">Heading</h4>
+                    <p>Sub-Heading</p>
+                    <hr>
+                    <p class="mb-0">Text</p>
+                    <hr>
+                    <div class="col" style="text-align: right;">
+                    {% if show_accept_btn %}
+                        <button class="btn btn-success">accept_btn_text</button>
+                    {% endif %}
+                    {% if show_cancel_btn %}
+                        <button class="btn btn-danger">cancel_btn_text</button>
+                    {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+	    */
+
+	    if(callBack_on_accept == undefined){
+	        callBack_on_accept = false;
+	    }
+
+	    if(callBack_on_dismiss == undefined){
+	        callBack_on_dismiss = false;
+	    }
+
+	    data = katana.validateAlertData(data, katana.createAlertElement, katana.displayAlert,
+	                                    callBack_on_accept, callBack_on_dismiss);
+
+	},
+
+	acceptAlert: function(callBack_on_accept){
+	    var $body = $('body');
+	    $alertElement = $body.find('div .overlay');
+	    $alertElement.remove();
+	    if(callBack_on_accept) {
+	        callBack_on_accept()
+	    };
+	},
+
+	dismissAlert: function(callBack_on_dismiss){
+	    var $body = $('body');
+	    $alertElement = $body.find('div .overlay');
+	    $alertElement.remove();
+
+	    if(callBack_on_dismiss) {
+	        callBack_on_dismiss();
+	    }
+	},
+
+	displayAlert: function(data, alert_box, callBack_on_accept, callBack_on_dismiss){
+
+	    $(alert_box).prependTo(katana.$view);
+
+	    var $body = $('body');
+
+	    $body.find('#cancel_alert').one('click', function(){
+
+	        katana.dismissAlert(callBack_on_dismiss);
+	    });
+
+	    $body.find('#accept_alert').one('click', function(){
+	        katana.acceptAlert(callBack_on_accept);
+	    });
+
+	    if(data.timer){
+	        setTimeout(function(){katana.dismissAlert()}, data.timer);
+	    }
+
+	},
+
+	createAlertElement: function(data, callBack, callBack_on_accept, callBack_on_dismiss){
+	    var accept_btn_text = "";
+
+	    if(data.show_accept_btn){
+	        accept_btn_text = '<button class="btn btn-success" id="accept_alert">' + data.accept_btn_text + '</button>'
+	    }
+
+	    var cancel_btn_text = "";
+
+	    if(data.show_cancel_btn){
+	        cancel_btn_text = '<button class="btn btn-danger" id="cancel_alert">' + data.cancel_btn_text + '</button>'
+	    }
+
+	    var buttons = "";
+	    var add_break = "<br>";
+
+	    if(data.show_accept_btn || data.show_cancel_btn){
+	        buttons = '<hr>' +
+	                  '<div class="col" style="text-align: right;">' +
+                            accept_btn_text + cancel_btn_text +
+                      '</div>'
+
+            add_break = "";
+	    }
+
+	    var sub_heading = "";
+
+	    if(data.sub_heading){
+	        sub_heading = '<p>' + data.sub_heading + '</p>';
+	    }
+
+	    var $alert_box = '<div class="overlay">' +
+	                        '<div class="col-sm-5 centered">' +
+	                            '<div class="alert alert-' + data.alert_type + '" role="alert">' +
+	                                '<div class="col" style="float: right;">' +
+	                                    '<i katana-click="katana.dismissAlert" class="fa fa-times" style="float: right;"></i>' +
+	                                '</div>' +
+	                                '<h4 class="alert-heading">' + data.heading + '</h4>' + sub_heading +
+	                                '<hr>' +
+	                                '<p class="mb-0">' + data.text + '</p>' + add_break +
+	                                buttons +
+	                            '</div>' +
+	                        '</div>' +
+	                    '</div>'
+
+	    callBack(data, $alert_box, callBack_on_accept, callBack_on_dismiss);
+	},
+
+	validateAlertData: function(data, callBack, secondCallBack, callBack_on_accept, callBack_on_dismiss){
+
+	    var allowed_alert_types = ["primary", "secondary", "success", "danger", "warning",
+	                              "info", "light", "dark"];
+	    var corresponding_headings = { "primary": "Hi There!", "secondary": "Hello!",
+	                                   "success": "Success!", "danger": "Oops!",
+	                                   "warning": "Warning!", "info": "Heads Up!",
+	                                   "light": "Hi There!", "dark": "Hello!"}
+
+	    if (!("alert_type" in data)){
+	        data["alert_type"] = "info";
+	    }
+	    else {
+	        if(allowed_alert_types.includes(data.alert_type.toLowerCase())){
+	            data.alert_type = data.alert_type.toLowerCase();
+	        }
+	        else {
+	            data.alert_type = "info";
+	        }
+	    }
+
+	    if ("heading" in data){
+	        if(!data.heading) {
+	            data.heading = corresponding_headings[data.alert_type]
+	        }
+	    }
+	    else{
+	        data.heading = corresponding_headings[data.alert_type]
+	    }
+
+	    if (!("sub_heading" in data)){
+	        data["sub_heading"] = false;
+	    }
+
+	    if(!("text") in data){
+	        data["text"] = "";
+	    }
+
+	    if(!("timer") in data){
+	        data["timer"] = false;
+	    }
+
+	    if(!("show_accept_btn" in data)){
+	        data["show_accept_btn"] = true;
+	    }
+
+	    if(!("accept_btn_text" in data)){
+            data["accept_btn_text"] = "Ok"
+        }
+
+        if(!("show_cancel_btn" in data)){
+	        data["show_cancel_btn"] = true;
+	    }
+
+	    if(!("cancel_btn_text" in data)){
+            data["cancel_btn_text"] = "Cancel"
+        }
+
+        callBack(data, secondCallBack, callBack_on_accept, callBack_on_dismiss);
+
+	},
+
     toJSON: function(){
         var body = katana.$activeTab.find('.to-save');
         var jsonObj = [];
