@@ -721,6 +721,7 @@ app.controller('newDataFileCtrl', ['$scope', '$http', '$controller', '$location'
                 .then(
                     function(data) {
                         console.log(data);
+                        $location.path('/datafiles');
                     },
                     function(data) {
                         alert(data);
@@ -731,7 +732,7 @@ app.controller('newDataFileCtrl', ['$scope', '$http', '$controller', '$location'
                 type: "success",
                 timer: 1250
             });
-            $location.path('/datafiles');
+
         }
 
         $scope.setSystemInfo = function(identifier, index, event){

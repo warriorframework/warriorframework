@@ -26,5 +26,13 @@
 			<onError action="next"/>
 			<impact>impact</impact>
 		</Testcase>
+		<Testcase>
+			<path>../../testcases/rest_functional_tests/rest_variable_substitution.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>impact</impact>
+		</Testcase>
+		
 	</Testcases>
 </TestSuite>
