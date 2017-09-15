@@ -15,9 +15,9 @@ limitations under the License.
 
 import os
 import sys
-import pwd
 import time
 import subprocess
+import getpass
 
 from Framework import Utils
 from Framework.Utils.print_Utils import print_info, print_debug,\
@@ -412,7 +412,7 @@ class PexpectConnect(object):
             conn_options = ""
         if not self.username:
             self.username = ""
-            print_info("Username not provided, taking {0} as Username" .format(pwd.getpwuid(os.geteuid()).pw_name))
+            print_info("Username not provided, taking {0} as Username" .format(getpass.getuser()))
         else:
             self.username += '@'
         command = 'ssh -p {0} {1}{2} {3}'.format(self.port, self.username,
