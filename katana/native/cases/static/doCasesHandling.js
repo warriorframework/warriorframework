@@ -317,14 +317,11 @@ function mapCaseJsonToUi(data){
 			//alert(this.id);
 			var names = this.id.split('-');
 			var sid = parseInt(names[1]);
-			mapTestStepToUI(sid,xdata);
+			//mapTestStepToUI(sid,xdata);
 			//katana.$activeTab.find("#editCaseStepDiv").show();
 			//katana.$activeTab.find('#tableOfTestStepsForCase').removeClass();
 			//katana.$activeTab.find('#tableOfTestStepsForCase').addClass('col-md-8');
-
 			var ooo = katana.$activeTab.find("#editCaseStepDiv").html();
-
-
 			console.log("lllll Before the POPUP LLLLLLL")
 			console.log(ooo);
 			// Here is the code to start the HTML only - no js
@@ -496,6 +493,22 @@ function setupPopupDialog(sid,xdata, popup) {
  			}
  		});
 	});
+
+	popup.find("#StepKeyword").on('change',function() {
+		sid  = popup.find("#StepKeyword").attr('theSid');   // 
+		var oneCaseStep = jsonCaseSteps['step'][sid];
+		var keyword = popup.find("#StepKeyword").attr('value');  // 
+		var driver  = popup.find("#StepDriver").attr('value');   // 
+		var opts = jQuery.getJSON("./cases/getListOfComments/?driver="+driver+"&keyword="+keyword).done(function(data) {
+ 			a_items = opts.responseJSON['fields'];
+ 			out_array = a_items[0]['comment'];
+ 			var outstr = out_array.join("<br>");
+ 			console.log(outstr);
+ 			popup.find("#sourceFileText").html(outstr);
+
+ 		});
+	});
+
 
 }
 

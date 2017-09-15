@@ -80,52 +80,56 @@
 
 </div>
 <!-- Menu bar here --> 
-<div class="row">   
-	<button id="addStep" class="btn btn-success" onclick="addStepToCase()">Add Step To Case</button>
-	<button class="btn btn-danger" onclick="start()">Discard Changes</button>
-	<button class="btn btn-success" onclick="mapUiToCaseJson()">Save Case To Memory</button>
-	<button class="btn btn-success" onclick="writeUiToCaseJSON()">Write Changes To Disk</button>
-	<label class="col-md-2 text-righ"t >Save file to </label>
-	<input class="text-right col-md-4" type="text" id="my_file_to_save" name="my_file_to_save" value="{{savefilename}}"/>
-</div>   
-	  
+<div class="container-fluid">
+
+	<div class="row">   
+		<button id="addStep" class="btn btn-success" onclick="addStepToCase()">Add Step To Case</button>
+		<button class="btn btn-danger" onclick="start()">Discard Changes</button>
+		<button class="btn btn-success" onclick="mapUiToCaseJson()">Save Case To Memory</button>
+		<button class="btn btn-success" onclick="writeUiToCaseJSON()">Write Changes To Disk</button>
+		<label class="col-md-2 text-righ"t >Save file to </label>
+		<input class="text-right col-md-4" type="text" id="my_file_to_save" name="my_file_to_save" value="{{savefilename}}"/>
+	</div>   
+</div>	  
 <div class="container-fluid">
 	<div class="row">
 		<div id="tableOfTestStepsForCase"  class="col-md-12" ></div>
-		<div class="col-md-3" id="editCaseStepDiv" name="editCaseStepDiv" >
-	 		<div class="container-fluid"  >
-		 
-		 	<div class="row">
-		  		<div id="editCaseStepEntry" > 
-				<div class="field"> <label >Row</label>
-				<input type="text" id="StepRowToEdit" value=""/>
-				</div>
-				<div class="field"> <label >Driver</label>
-				<select type="text" id="StepDriver" value=""/>
-				</div>
-				<div class="field"> <label >Keyword</label>
-				<select type="text" id="StepKeyword" value=""/>
-				</div>
-				<div class="field"> <label >TS</label>
-				<input type="text" id="StepTS" value=""/>
-				</div>
-				<div class="field"> <label >Description</label>
-				<input type="text" id="StepDescription" value=""/>
-				</div>
-				<div class="field"> <label >Context</label>
-				<input type="text" id="StepContext" value=""/>
-				</div>
+		</div>
+</div>
 
-				<div class="field">
+<div class="container-fluid">
+	<div class="row" id="editCaseStepDiv" >
+	 		<div class="container-fluid"  >
+		 	<div class="row">
+
+		  		<div id="editCaseStepEntry" class="col-md-3" > 
+					<div class="field"> <label >Row</label>
+					<input type="text" id="StepRowToEdit" value=""/>
+					</div>
+					<div class="field"> <label >Driver</label>
+					<select type="text" id="StepDriver" value=""/>
+					</div>
+					<div class="field"> <label >Keyword</label>
+					<select type="text" id="StepKeyword" value=""/>
+					</div>
+					<div class="field"> <label >TS</label>
+					<input type="text" id="StepTS" value=""/>
+					</div>
+					<div class="field"> <label >Description</label>
+					<input type="text" id="StepDescription" value=""/>
+					</div>
+					<div class="field"> <label >Context</label>
+					<input type="text" id="StepContext" value=""/>
+					</div>
+					<div class="field">
 					<label class=" text-right" >ExecType:</label>
 					<select type="text" class="text-right" id="Execute-at-ExecType" value="" >
 					<option value="If">If</option> 
 					<option value="If Not">If Not</option> 
 					<option value="Yes">Yes</option> 
 					<option value="No">No</option> 
-					</select>
-				</div>
-
+					</select>	
+					</div>
 				<div class="field">
 					<label class="col-md-2 text-right" >On Error Action </label>
 					<select type="text" class="text-right" id="SteponError-at-action" value="" >
@@ -163,21 +167,28 @@
 					<option value="noimpact">noimpact</option> 
 					</select>
 				</div>	
-				Arguments:
-					<div id="arguments-textarea" /> 
+				
+					<div id="arguments-textarea" > 
 					<input type="button" class="btn btn-success" value="Save Changes To Test Step" id="editCaseStep"/>
 					<input type="button" class="btn btn-danger" value="Ignore Changes" id="editCaseStepClose"/>
-				</div>
+					</div>
 				
-				<div id="sourceFileText" class="col-md-8" style='overflow:auto; width:400px;height:400px;'> Source file </div> 
+			
+
 				</div>
-			</div>
+				<div id="sourceFileText" class="col-md-9" style='overflow:auto; width:400px;height:400px;'> Source file </div> 
+			
+
+							
+				</div>
 			</div>	
 		</div>
-		</div>
-</div>
-<div class="row">   
 
+	</div>
+
+<div class="container-fluid">
+
+<div class="row">   
 	<div class=" col-md-4">
 		<h2>Requirements</h2>
 		<div id="tableOfCaseRequirements"></div>
@@ -186,3 +197,4 @@
 	<div id="savesubdir">{{savesubdir}}</div>
 </div>	
 
+</div>	
