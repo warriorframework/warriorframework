@@ -267,7 +267,9 @@ var wdf = {
     jump_to: function(){
         $target = katana.$activeTab.find($(this).attr("linkto"))
         $target.get(0).scrollIntoView(true);
-        $target.find("input").css("background-color", "#ecff91");
-        setTimeout(function(){$target.find("input").css("background-color", "");}, 500);
+        // $target.find("input").css("background-color", "#ecff91");
+        // setTimeout(function(){$target.find("input").css("background-color", "");}, 500);
+        $target.find("input").addClass("wdf-highlight");
+        setTimeout(function(){$target.find("input").removeClass("wdf-highlight")}, 1000);
     },
 }

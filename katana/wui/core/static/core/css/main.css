@@ -2431,9 +2431,36 @@ div .tool-bar-links:active {
     float: left;
 }
 
+.wdf-lg-col > .btn {
+    padding: 8px;
+}
+
 .wdf-sm-col {
     width: 35%;
     float: left;
+}
+
+@-webkit-keyframes wdf-highlight {
+    from {
+        background-color: #ecff91;
+    }
+    to {
+        background-color: inherit;
+    }
+}
+
+@keyframes wdf-highlight {
+    from {
+        background-color: #ecff91;
+    }
+    to {
+        background-color: inherit;
+    }
+}
+
+.wdf-highlight {
+    -webkit-animation: -webkit-wdf-highlight 1s ease;
+    animation: wdf-highlight 1s ease;
 }
 
 .i-success:hover {
