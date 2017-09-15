@@ -16,11 +16,26 @@ var wapp_management = {
                 data: {"app_path": app_path, "app_type": app_type}
             }).done(function(data) {
                 $('#installed_apps_div').html(data)
-                alert(app_name + " has been uninstalled.")
+                data = {
+                        "alert_type": "success",
+                        "text": app_name + " has been uninstalled.",
+                        "timer": 1500,
+                        "show_accept_btn": false,
+                        "show_cancel_btn": false
+                        }
+                katana.openAlert(data);
             });
         }
         else {
-            katana.openDialog("Uninstall suspended.", "Whew!")
+            data = {
+                    "alert_type": "info",
+                    "heading": "Whew!",
+                    "text": "Uninstall Suspended",
+                    "timer": 1500,
+                    "show_accept_btn": false,
+                    "show_cancel_btn": false
+                    }
+            katana.openAlert(data);
         }
     },
 
@@ -35,7 +50,14 @@ var wapp_management = {
         for(var i=0 ; i<$elements.length; i++){
             path = $elements[i].value.trim();
             if(path == ""){
-                alert("Field cannot be empty");
+                data = {
+                    "alert_type": "danger",
+                    "heading": "App Information Field Is Empty.",
+                    "text": "Field Cannot Be Empty",
+                    "show_accept_btn": true,
+                    "show_cancel_btn": false
+                    }
+                katana.openAlert(data);
                 return;
             }
             else {
@@ -60,7 +82,13 @@ var wapp_management = {
                 url: 'wapp_management/install_an_app/',
                 data: {"app_paths": app_paths},
             }).done(function(data) {
-                alert("Apps have been installed!");
+                data = {
+                    "alert_type": "success",
+                    "text": "Apps have been installed!",
+                    "show_accept_btn": true,
+                    "show_cancel_btn": false
+                    }
+                katana.openAlert(data);
                 $currentPage.find('#form-for-paths').html('');
                 wapp_management.addAnotherApp(1);
                 $currentPage.find('#installed_apps_div').html(data)
@@ -76,7 +104,13 @@ var wapp_management = {
         var extension = temp_array[temp_array.length - 1]
 
         if(extension !== "zip"){
-            alert("Please select a .zip file.");
+            data = {
+                    "alert_type": "warning",
+                    "text": "Please select a .zip file",
+                    "show_accept_btn": true,
+                    "show_cancel_btn": false
+                    }
+            katana.openAlert(data);
             return;
         }
 
@@ -104,7 +138,14 @@ var wapp_management = {
             for(var i=0 ; i<$elements.length; i++){
                 path = $elements[i].value.trim();
                 if(path == ""){
-                    alert("Field cannot be empty");
+                    data = {
+                            "alert_type": "danger",
+                            "heading": "App Information Field is Empty.",
+                            "text": "Field cannot be empty.",
+                            "show_accept_btn": true,
+                            "show_cancel_btn": false
+                            }
+                    katana.openAlert(data);
                     return;
                 }
                 else {
@@ -112,32 +153,62 @@ var wapp_management = {
                 }
             }
         }
-        r = confirm("Do you want to save this configuration?")
-        if(r){
-            var filename = prompt("Please enter a name for the configuration.");
-            if (filename == null ||  filename == ""){
-                alert("Configuration not saved.")
-                return false;
-            }
-            else {
-                $.ajax({
-                    headers: {
-                        'X-CSRFToken': wapp_management.getCookie('csrftoken')
-                    },
-                    type: 'POST',
-                    url: 'wapp_management/create_config/',
-                    data: {"app_paths": app_paths, "filename":  filename},
-                }).done(function(data) {
-                    alert("Configuration Saved: " +  filename)
-                    wapp_management.setSaveConfigAttr("no");
-                    return true;
-                });
-            }
-        }
-        else {
-            alert("Configuration not saved.")
+        data = {
+                "alert_type": "info",
+                "text": "Do you want to save this configuration?",
+                "show_accept_btn": true,
+                "accept_btn_text": "Yes",
+                "show_cancel_btn": true,
+                "cancel_btn_text": "No"
+                }
+        katana.openAlert(data, function(){
+
+
+        var filename = prompt("Please enter a name for the configuration.");
+        if (filename == null ||  filename == ""){
+            data = {
+                    "text": "Configuration not saved.",
+                    "timer": 1250,
+                    "show_accept_btn": false,
+                    "show_cancel_btn": false
+                    }
+            katana.openAlert(data);
             return false;
         }
+        else {
+            $.ajax({
+                headers: {
+                    'X-CSRFToken': wapp_management.getCookie('csrftoken')
+                },
+                type: 'POST',
+                url: 'wapp_management/create_config/',
+                data: {"app_paths": app_paths, "filename":  filename},
+            }).done(function(data) {
+                data = {
+                        "alert_type": "success",
+                        "text": "Configuration Saved: " +  filename,
+                        "timer": 1250,
+                        "show_accept_btn": false,
+                        "show_cancel_btn": false
+                        }
+                katana.openAlert(data);
+                wapp_management.setSaveConfigAttr("no");
+                return true;
+            });
+        }
+
+        }, function(){
+
+            data = {
+                    "text": "Configuration not saved.",
+                    "timer": 1250,
+                    "show_accept_btn": false,
+                    "show_cancel_btn": false
+                    }
+            katana.openAlert(data);
+            return false;
+
+        });
     },
 
     setSaveConfigAttr: function(value){
@@ -392,6 +463,10 @@ var wapp_management = {
         }
 
         $siblings.html('');
+
+        setTimeout(function(){
+            $currentPage.find('.page-content-inner').scrollTop(0);
+        }, 100);
 
         delete $.wapp_management_globals.preference_details[config_name];
 
