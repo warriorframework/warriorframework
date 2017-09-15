@@ -242,7 +242,7 @@ function mapCaseJsonToUi(data){
 
 	//console.log("xdata =" + xdata);
 	katana.$activeTab.find("#tableOfTestStepsForCase").html("");      // Start with clean slate
-	items.push('<table class="configuration_table" id="Step_table_display"  width="100%" >');
+	items.push('<table class="configuration_table table-striped" id="Step_table_display"  width="100%" >');
 	items.push('<thead>');
 	items.push('<tr id="StepRow"><th>#</th><th>Step</th><th>Arguments</th>\
 		<th>Description</th><th>OnError</th><th>Execute</th><th>Other</th></tr>');
