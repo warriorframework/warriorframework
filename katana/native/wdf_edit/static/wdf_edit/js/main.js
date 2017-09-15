@@ -4,9 +4,21 @@ var wdf = {
         $.each($systems, function(ind, sys) {
             if (! $(sys).attr("id").startsWith("template")) {
                 $sys = $(sys);
+                $system_id = $sys.attr("id").split("-").slice(0,1);
                 $subsystem_id = $sys.attr("id").split("-").slice(1,2);
                 // if it has tags
                 if ($sys.find("#content").length > 0 && $subsystem_id != "1") {
+                    $sys.find("[katana-click='wdf.addSubSystem']").hide();
+                } else if ($sys.find("#content").length > 0 && $subsystem_id == "1") {
+                    // var $count = 0;
+                    // $.each($systems, function(sub_ind, sub_sys) {
+                    //     if ($(sub_sys).attr("id").startsWith($system_id+"-")) {
+                    //         $count = $count + 1;
+                    //     }
+                    // });
+                    // if ($count > 1) {
+                    //     $sys.find("[katana-click='wdf.addSubSystem']").hide();
+                    // }
                     $sys.find("[katana-click='wdf.addSubSystem']").hide();
                 }
             }
@@ -23,9 +35,11 @@ var wdf = {
     deleteTag: function(){
         // empty tag and all of its child tags
         $target = $(this).closest(".control-box");
+        var $system_id = $target.attr("id").split("-").slice(0,1);
+        var $subsystem_id = $target.attr("id").split("-").slice(1,2);
 
         // When delete the last tag, shows addSubSystem icon
-        if ($target.find("#content:has(div)").length == 1) {
+        if ($target.find("#content:has(div)").length == 1 && $subsystem_id == "1") {
             $target.find("[katana-click='wdf.addSubSystem']").show();
         }
 
@@ -164,6 +178,7 @@ var wdf = {
             $tmp.find("[name='template-subsystem-name']").prop("name", $system_id+"-"+($subsystem_count+1)+"-subsystem_name");
             $tmp.find("[name='template-subsystem.tag']").prop("name", $system_id+"-"+($subsystem_count+1)+"-"+($target.children("#content").length+1)+"-1-key");
             $tmp.find("[name='template-subsystem.value']").prop("name", $system_id+"-"+($subsystem_count+1)+"-"+($target.children("#content").length+1)+"-1-value");
+            $tmp.find("[katana-click='wdf.addSubSystem']").hide()
             $target.after($($tmp.html()));
 
             $target.parent().find("[id^='"+$system_id+"-1']").find("[katana-click='wdf.addTag']").hide()
@@ -269,7 +284,8 @@ var wdf = {
         $target.get(0).scrollIntoView(true);
         // $target.find("input").css("background-color", "#ecff91");
         // setTimeout(function(){$target.find("input").css("background-color", "");}, 500);
-        $target.find("input").addClass("wdf-highlight");
-        setTimeout(function(){$target.find("input").removeClass("wdf-highlight")}, 1000);
+        katana.quickAnimation($target.find("input"), "wdf-highlight", 1000);
+        // $target.find("input").addClass("wdf-highlight");
+        // setTimeout(function(){$target.find("input").removeClass("wdf-highlight")}, 1000);
     },
 }
