@@ -290,27 +290,24 @@ function mapCaseJsonToUi(data){
 
 		bid = "editTestStep-"+s+"-id-"+getRandomCaseID();
 		//items.push('<i type="button" title="Edit" class="fa fa-pencil fa-2x" value="Edit" id="'+bid+'"/></td>');
-		items.push('<i  title="Edit" class="fa fa-pencil" title="Edit" id="'+bid+'"/>');
-		$('#'+bid).off('c<td>lick');   //unbind and bind are deprecated. 
+		items.push('<i  title="Edit" class="fa fa-pencil"  id="'+bid+'"/>');
+		$('#'+bid).off('click');   //unbind and bind are deprecated. 
 		$('#'+bid).attr('theSid', s);  //Set tthe name
+
+
 		$(document).on('click','#'+bid,function(  ) {
 			//alert(this.id);
 			var names = this.id.split('-');
 			var sid = parseInt(names[1]);
 			mapTestStepToUI(sid,xdata);
 			katana.$activeTab.find("#editCaseStepDiv").show();
+			// Here is the code to start the HTML only - no js
+			//katana.popupController.open(katana.$activeTab.find("#editCaseStepDiv").html(),"Edit...", function(popup) {
+			//console.log(popup);  // Merely returns the div tag
+			///mapTestStepToUI(sid,xdata); // no workee. 
 
-			/*
-
-			katana.$activeTab.find("#editCaseStepDiv").dialog();
-			
-
-			katana.popupController.open(katana.$activeTab.find("#editCaseStepDiv").html(),"Edit...", function(popup) {
-			console.log(popup);
-			console.log("Mapped "+sid);
-			mapTestStepToUI(sid,xdata);
-		 	});
-		 	*/
+		 	//});
+		 	
 		}); 
 
 		bid = "addTestStepAbove-"+s+"-id-"+getRandomCaseID();

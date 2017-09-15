@@ -3,17 +3,39 @@
 }
 .configuration_table td {
   text-align: left;
-  border: 1px solid #00D;
-  overflow: scroll;
+  overflow: auto;
  
 }
 
 .configuration_table th {
   text-align: left;
   border: 0px ;
-  overflow: scroll;
- 
+
 }
-.configuration_table tbody tr:nth-child(odd) {
-  background: #eee;
+
+.configuration_table {}
+.configuration_table th{
+    height: 35px;
+    line-height: 35px;
+    text-align: center;
+    vertical-align: top;
+    font-weight: 400;
+    color: #FFF;
+    background-color: #577BA0;
+}
+.configuration_table tr th:nth-child(1), .configuration_table tr td:nth-child(1) {
+    flex-grow: .3;
+
+}
+.configuration_table tr th:last-child, .configuration_table tr td:last-child {
+    flex-grow: .5;
+    font-size: 18px;
+}
+.configuration_table i{
+    padding: 4px;
+    font-size: 16px;
+}
+
+.popup {
+	background: #fff;
 }

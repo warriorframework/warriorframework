@@ -1,19 +1,41 @@
-table {
+.configuration_table table {
   border-collapse: collapse;
-  width: 100%;
 }
-tbody { 
-  overflow-y: scroll;
-  overflow-x: scroll;
- }
-
-th, td {
+.configuration_table td {
   text-align: left;
-  border: 2px solid #000;
-  table-layout:fixed;
-  /* width:20px; */
+  overflow: auto;
+ 
 }
-tbody tr:nth-child(odd) {
-  background: #aaa;
 
+.configuration_table th {
+  text-align: left;
+  border: 0px ;
+
+}
+
+.configuration_table {}
+.configuration_table th{
+    height: 35px;
+    line-height: 35px;
+    text-align: center;
+    vertical-align: top;
+    font-weight: 400;
+    color: #FFF;
+    background-color: #577BA0;
+}
+.configuration_table tr th:nth-child(1), .configuration_table tr td:nth-child(1) {
+    flex-grow: .3;
+
+}
+.configuration_table tr th:last-child, .configuration_table tr td:last-child {
+    flex-grow: .5;
+    font-size: 18px;
+}
+.configuration_table i{
+    padding: 4px;
+    font-size: 16px;
+}
+
+.popup {
+	background: #fff;
 }
