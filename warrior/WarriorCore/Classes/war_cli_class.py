@@ -17,7 +17,6 @@ import argparse
 import xml.etree.ElementTree as ET
 import datetime, time
 import os
-import sys
 import Framework.Utils as Utils
 from Framework.Utils.print_Utils import print_error, print_info
 import WarriorCore.Classes.manual_defect_class as manual_defect_class
