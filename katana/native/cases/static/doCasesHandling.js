@@ -144,7 +144,21 @@ function mapFullCaseJson(myobjectID){
 
 
 function mapUiToCaseJson() {
-	
+
+	if ( katana.$activeTab.find('#caseName').attr('value').length < 1) {
+		alert("Please specific a case name ");
+		return;
+	}
+
+	if ( katana.$activeTab.find('#caseTitle').attr('value').length < 1) {
+		alert("Please specific a Title ");
+		return;
+	}
+	if ( katana.$activeTab.find('#caseEngineer').attr('value').length < 1) {
+		alert("Please specific an Engineer name ");
+		return;
+	}
+
 	jsonCaseObject['Details']['Name'] = katana.$activeTab.find('#caseName').attr('value');
 	jsonCaseObject['Details']['Title'] = katana.$activeTab.find('#caseTitle').attr('value');
 	jsonCaseObject['Details']['Category'] = katana.$activeTab.find('#caseCategory').attr('value');

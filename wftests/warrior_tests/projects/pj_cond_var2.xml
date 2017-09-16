@@ -1,117 +1,117 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project>
-<Testsuites>
-<Testsuite>
-<path>../suites/framework_tests/cond_var/pass.xml</path>
-<Execute ExecType="Yes">
-<Rule Condvalue="null" Elsevalue="null" Condition="null" Else="next" />
-</Execute>
-<onError action="next" value="next" />
-<impact>impact</impact>
-<runmode value="RMT" />
-<retry type="next" Condition="undefined" Condvalue="" count="" interval="" />
-</Testsuite>
-<Testsuite>
-<path>../suites/framework_tests/cond_var/fail.xml</path>
-<Execute ExecType="If">
-<Rule Condvalue="PASS" Elsevalue="null" Condition="testsuite_1_result" Else="abort" />
-</Execute>
-<onError action="next" value="next" />
-<impact>noimpact</impact>
-<runmode value="RMT" />
-<retry type="next" Condition="undefined" Condvalue="" count="" interval="" />
-</Testsuite>
-<Testsuite>
-<path>../suites/framework_tests/cond_var/error.xml</path>
-<Execute ExecType="If">
-<Rule Condvalue="FAIL" Elsevalue="null" Condition="testsuite_2_result" Else="abort" />
-</Execute>
-<onError action="next" value="next" />
-<impact>noimpact</impact>
-<runmode value="RMT" />
-<retry type="next" Condition="undefined" Condvalue="" count="" interval="" />
-</Testsuite>
-<Testsuite>
-<path>../suites/framework_tests/cond_var/pass.xml</path>
-<Execute ExecType="If">
-<Rule Condvalue="ERROR" Elsevalue="null" Condition="testsuite_3_result" Else="abort" />
-</Execute>
-<onError action="next" value="next" />
-<impact>impact</impact>
-<runmode value="RMT" />
-<retry type="next" Condition="undefined" Condvalue="" count="" interval="" />
-</Testsuite>
-<Testsuite>
-<path>../suites/framework_tests/cond_var/pass.xml</path>
-<Execute ExecType="No">
-<Rule Condvalue="null" Elsevalue="null" Condition="null" Else="next" />
-</Execute>
-<onError action="next" value="next" />
-<impact>impact</impact>
-<runmode value="RMT" />
-<retry type="next" Condition="undefined" Condvalue="" count="" interval="" />
-</Testsuite>
-<Testsuite>
-<path>../suites/framework_tests/cond_var/fail.xml</path>
-<Execute ExecType="If">
-<Rule Condvalue="SKIP" Elsevalue="null" Condition="testsuite_5_result" Else="abort" />
-</Execute>
-<onError action="next" value="next" />
-<impact>noimpact</impact>
-<runmode value="RMT" />
-<retry type="next" Condition="undefined" Condvalue="" count="" interval="" />
-</Testsuite>
-<Testsuite>
-<path>../suites/framework_tests/cond_var/pass.xml</path>
-<Execute ExecType="If Not">
-<Rule Condvalue="PASS" Elsevalue="null" Condition="testsuite_6_result" Else="abort" />
-</Execute>
-<onError action="next" value="next" />
-<impact>impact</impact>
-<runmode value="RMT" />
-<retry type="next" Condition="undefined" Condvalue="" count="" interval="" />
-</Testsuite>
-<Testsuite>
-<path>../suites/framework_tests/cond_var/pass.xml</path>
-<Execute ExecType="If Not">
-<Rule Condvalue="FAIL" Elsevalue="null" Condition="testsuite_7_result" Else="next" />
-</Execute>
-<onError action="next" value="next" />
-<impact>impact</impact>
-<runmode value="RMT" />
-<retry type="next" Condition="undefined" Condvalue="" count="" interval="" />
-</Testsuite>
-<Testsuite>
-<path>../suites/framework_tests/cond_var/error.xml</path>
-<Execute ExecType="If Not">
-<Rule Condvalue="ERROR" Elsevalue="null" Condition="testsuite_8_result" Else="abort" />
-</Execute>
-<onError action="next" value="next" />
-<impact>noimpact</impact>
-<runmode value="RMT" />
-<retry type="next" Condition="undefined" Condvalue="" count="" interval="" />
-</Testsuite>
-<Testsuite>
-<path>../suites/framework_tests/cond_var/pass.xml</path>
-<Execute ExecType="If Not">
-<Rule Condvalue="SKIP" Elsevalue="null" Condition="testsuite_9_result" Else="abort" />
-</Execute>
-<onError action="next" value="next" />
-<impact>impact</impact>
-<runmode value="RMT" />
-<retry type="next" Condition="undefined" Condvalue="" count="" interval="" />
-</Testsuite>
-</Testsuites>
-<Details>
-<Category />
-<Name>cond_var</Name>
-<Title>Project for testing conditional execution</Title>
-<Datatype>Custom</Datatype>
-<Time>10:59:51</Time>
-<Date>08/23/2016</Date>
-<default_onError />
-<Engineer>Ka Hei Chan</Engineer>
-</Details>
-<filename>/home/khusain/Projects/forDemo/warriorframework/warrior/../wftests/warrior_tests/projects/pj_cond_var.xml</filename>
-<SaveToFile>/home/khusain/Projects/forDemo/warriorframework/warrior/../wftests/warrior_tests/projects/pj_cond_var2.xml</SaveToFile>
+	<Testsuites>
+		<Testsuite>
+			<impact>impact</impact>
+			<Execute ExecType="Yes">
+				<Rule Elsevalue="null" Condvalue="null" Condition="null" Else="next"></Rule>
+			</Execute>
+			<retry Condvalue="" interval="" count="" type="next" Condition="undefined"></retry>
+			<onError action="next" value="next"></onError>
+			<runmode value="RMT"></runmode>
+			<path>../suites/framework_tests/cond_var/pass.xml</path>
+		</Testsuite>
+		<Testsuite>
+			<impact>noimpact</impact>
+			<Execute ExecType="If">
+				<Rule Elsevalue="null" Condvalue="PASS" Condition="testsuite_1_result" Else="abort"></Rule>
+			</Execute>
+			<retry Condvalue="" interval="" count="" type="next" Condition="undefined"></retry>
+			<onError action="next" value="next"></onError>
+			<runmode value="RMT"></runmode>
+			<path>../suites/framework_tests/cond_var/fail.xml</path>
+		</Testsuite>
+		<Testsuite>
+			<impact>noimpact</impact>
+			<Execute ExecType="If">
+				<Rule Elsevalue="null" Condvalue="FAIL" Condition="testsuite_2_result" Else="abort"></Rule>
+			</Execute>
+			<retry Condvalue="" interval="" count="" type="next" Condition="undefined"></retry>
+			<onError action="next" value="next"></onError>
+			<runmode value="RMT"></runmode>
+			<path>../suites/framework_tests/cond_var/error.xml</path>
+		</Testsuite>
+		<Testsuite>
+			<impact>impact</impact>
+			<Execute ExecType="If">
+				<Rule Elsevalue="null" Condvalue="ERROR" Condition="testsuite_3_result" Else="abort"></Rule>
+			</Execute>
+			<retry Condvalue="" interval="" count="" type="next" Condition="undefined"></retry>
+			<onError action="next" value="next"></onError>
+			<runmode value="RMT"></runmode>
+			<path>../suites/framework_tests/cond_var/pass.xml</path>
+		</Testsuite>
+		<Testsuite>
+			<impact>impact</impact>
+			<Execute ExecType="No">
+				<Rule Elsevalue="null" Condvalue="null" Condition="null" Else="next"></Rule>
+			</Execute>
+			<retry Condvalue="" interval="" count="" type="next" Condition="undefined"></retry>
+			<onError action="next" value="next"></onError>
+			<runmode value="RMT"></runmode>
+			<path>../suites/framework_tests/cond_var/pass.xml</path>
+		</Testsuite>
+		<Testsuite>
+			<impact>noimpact</impact>
+			<Execute ExecType="If">
+				<Rule Elsevalue="null" Condvalue="SKIP" Condition="testsuite_5_result" Else="abort"></Rule>
+			</Execute>
+			<retry Condvalue="" interval="" count="" type="next" Condition="undefined"></retry>
+			<onError action="next" value="next"></onError>
+			<runmode value="RMT"></runmode>
+			<path>../suites/framework_tests/cond_var/fail.xml</path>
+		</Testsuite>
+		<Testsuite>
+			<impact>impact</impact>
+			<Execute ExecType="If Not">
+				<Rule Elsevalue="null" Condvalue="PASS" Condition="testsuite_6_result" Else="abort"></Rule>
+			</Execute>
+			<retry Condvalue="" interval="" count="" type="next" Condition="undefined"></retry>
+			<onError action="next" value="next"></onError>
+			<runmode value="RMT"></runmode>
+			<path>../suites/framework_tests/cond_var/pass.xml</path>
+		</Testsuite>
+		<Testsuite>
+			<impact>impact</impact>
+			<Execute ExecType="If Not">
+				<Rule Elsevalue="null" Condvalue="FAIL" Condition="testsuite_7_result" Else="next"></Rule>
+			</Execute>
+			<retry Condvalue="" interval="" count="" type="next" Condition="undefined"></retry>
+			<onError action="next" value="next"></onError>
+			<runmode value="RMT"></runmode>
+			<path>../suites/framework_tests/cond_var/pass.xml</path>
+		</Testsuite>
+		<Testsuite>
+			<impact>noimpact</impact>
+			<Execute ExecType="If Not">
+				<Rule Elsevalue="null" Condvalue="ERROR" Condition="testsuite_8_result" Else="abort"></Rule>
+			</Execute>
+			<retry Condvalue="" interval="" count="" type="next" Condition="undefined"></retry>
+			<onError action="next" value="next"></onError>
+			<runmode value="RMT"></runmode>
+			<path>../suites/framework_tests/cond_var/error.xml</path>
+		</Testsuite>
+		<Testsuite>
+			<impact>impact</impact>
+			<Execute ExecType="If Not">
+				<Rule Elsevalue="null" Condvalue="SKIP" Condition="testsuite_9_result" Else="abort"></Rule>
+			</Execute>
+			<retry Condvalue="" interval="" count="" type="next" Condition="undefined"></retry>
+			<onError action="next" value="next"></onError>
+			<runmode value="RMT"></runmode>
+			<path>../suites/framework_tests/cond_var/pass.xml</path>
+		</Testsuite>
+	</Testsuites>
+	<SaveToFile>pj_cond_var2.xml</SaveToFile>
+	<Details>
+		<Category></Category>
+		<Name>cond_var</Name>
+		<Title>Project for testing conditional execution</Title>
+		<Datatype>Custom</Datatype>
+		<State>New</State>
+		<Time>10:59:51</Time>
+		<Date>08/23/2016</Date>
+		<Engineer>Ka Hei Chan</Engineer>
+	</Details>
+	<filename></filename>
 </Project>
