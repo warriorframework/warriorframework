@@ -290,7 +290,7 @@ function createSuitesTable(xdata) {
 			removeTestSuite(sid,xdata);
 		});
 		bid = "editTestSuite-"+s+"-id"+getRandomID();;
-		items.push('<i  title="Edit" class="edit-32" title="Edit" id="'+bid+'"/>');
+		items.push('<i  title="Edit" class="edit-item-32" title="Edit" id="'+bid+'"/>');
 		katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 		$(document).on('click','#'+bid,function(  ) {
 			var names = this.id.split('-');

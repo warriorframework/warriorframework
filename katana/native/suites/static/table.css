@@ -1,5 +1,14 @@
+.input_padding { 
+padding-right: 15px;
+padding-left: 15px;
+ }
+
+
+.configuration_table {}
+
 .configuration_table table {
   border-collapse: collapse;
+
 }
 .configuration_table td {
   text-align: left;
@@ -7,13 +16,6 @@
  
 }
 
-.configuration_table th {
-  text-align: left;
-  border: 0px ;
-
-}
-
-.configuration_table {}
 .configuration_table th{
     height: 35px;
     line-height: 35px;
@@ -27,6 +29,11 @@
     flex-grow: .3;
 
 }
+
+.configuration_table tr th:nth-child(2), .configuration_table tr td:last-child {
+    flex-grow: 1.3;
+    font-size: 18px;
+}
 .configuration_table tr th:last-child, .configuration_table tr td:last-child {
     flex-grow: .5;
     font-size: 18px;
@@ -37,11 +44,19 @@
 }
 
 .popup {
-	background: #fff;
+    background: #fff;
 }
 
 .delete-item-32 {
     background: url('/static/core/images/icons/delete-item-32.ico') no-repeat;
+    height: 32px;
+    width: 32px;
+    display: inline-flex;
+}
+
+
+.edit-item-32 {
+    background: url('/static/core/images/icons/edit-item-32.ico') no-repeat;
     height: 32px;
     width: 32px;
     display: inline-flex;

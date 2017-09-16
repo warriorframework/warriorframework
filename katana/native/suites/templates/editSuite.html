@@ -1,7 +1,4 @@
 
-
-
-
 {% load static %}
 {% load jsonify %}
 
@@ -11,57 +8,87 @@
 
 {% csrf_token %}
 <h2>Details</h2>
-<div class="form-group col-md-6">
-			<div class="field">
-				<label >Name*:</label>
-				<input type="text" id="suiteName"  value="{{suiteName}}"/>
-			</div>
-			<div class="field">
-				<label >Title*:</label>
-				<input type="text" id="suiteTitle"  value="{{suiteTitle}}"/>
-			</div>
-			<div class="field">
-				<label >Name*:</label>
-				<input type="text" id="suiteEngineer"  value="{{suiteEngineer}}"/>
-			</div>
-
-			<div class="field">
-				<label >Date*:</label>
-				<input type="text" id="suiteDate"  value="{{suiteDate}}"/>
-			</div>
-			<div class="field">	
-				<label class=" text-right" for="default_onError">Default On Error:</label>
-				<select class="text-right" type="text" id="default_onError" name="default_onError" value="{{default_onError}}" >
-					<option value="next">Next</option>
-					<option value="abort">Abort</option>
-					<option value="abort_as_error">Abort As Error</option>
-					<option value="goto">Goto</option>
-				</select>
-			</div>
-			<div class="field">	
-				<label class=" text-right" >Data Type:</label>
-				<select class="text-right" type="text" id="suiteDatatype"  value="{{suiteDatatype}}" >
-					<option value="sequential_testcases">Custom</option>
-					<option value="parallel_testcases">Hybrid</option>
-				</select>
-			</div>
-			<div class="field">
-				<label >Results*:</label>
-				<input type="text" id="suiteResults"  value="{{suiteResultsdir}}"/>
-			</div>
-			<div class="field">
-				<label >Logs:</label>
-				<input type="text" id="suiteResults"  value="{{suiteLogsdir}}"/>
-			</div>
-			<div class="field">
-				<label >InputDataFile:</label>
-				<input type="text" id="suiteResults"  value="{{suiteInputDataFile}}"/>
-			</div>
-			
-</div>
-<div class="container-fluid"></div>
+<div class="container-fluid">
+<div class="row">
+	<div class="col-md-6">
 		<div class="row">
-			<div id="tableOfTestcasesForSuite" class="col-md-6" style='overflow:auto;' ></div>
+				<div class="field">
+					<label >Name*:</label>
+					<input type="text" id="suiteName"  value="{{suiteName}}"/>
+				</div>
+				<div class="field">
+					<label >Title*:</label>
+					<input type="text" id="suiteTitle"  value="{{suiteTitle}}"/>
+				</div>
+				<div class="field">
+					<label >Name*:</label>
+					<input type="text" id="suiteEngineer"  value="{{suiteEngineer}}"/>
+				</div>
+		</div>
+		<div class="row">
+				<div class="field">
+					<label >Date*:</label>
+					<input type="text" id="suiteDate"  value="{{suiteDate}}"/>
+				</div>
+				<div class="field">	
+					<label class=" text-right" for="default_onError">Default On Error:</label>
+					<select class="text-right" type="text" id="default_onError" name="default_onError" value="{{default_onError}}" >
+						<option value="next">Next</option>
+						<option value="abort">Abort</option>
+						<option value="abort_as_error">Abort As Error</option>
+						<option value="goto">Goto</option>
+					</select>
+				</div>
+				<div class="field">	
+					<label class=" text-right" >Data Type:</label>
+					<select class="text-right" type="text" id="suiteDatatype"  value="{{suiteDatatype}}" >
+						<option value="sequential_testcases">Custom</option>
+						<option value="parallel_testcases">Hybrid</option>
+					</select>
+				</div>
+			</div>
+			<div class="row">
+				<div class="field">
+					<label >Results*:</label>
+					<input type="text" id="suiteResults"  value="{{suiteResultsdir}}"/>
+				</div>
+				<div class="field">
+					<label >Logs:</label>
+					<input type="text" id="suiteResults"  value="{{suiteLogsdir}}"/>
+				</div>
+				<div class="field">
+					<label >InputDataFile:</label>
+					<input type="text" id="suiteResults"  value="{{suiteInputDataFile}}"/>
+				</div>
+			</div>	
+	</div>
+	
+
+	<div class="col-md-3" >
+		<div id="tableOfTestRequirements" ></div>
+		<input type="button" class="btn" value="Add Requirement" katana-click="addRequirementToSuite"
+				id="addRequirementEntry"></input>
+	</div>
+
+
+
+	</div>
+</div>
+
+
+<div class="container-fluid">
+
+		<div class="row">
+			<div class="btn-group col-md-6" role="group">   
+				<button id="addSuite" class="btn btn-primary" onclick="addCaseToSuite()">Add Case To Suite</button>
+				
+				<button class="btn btn-success" onclick="mapUiToSuiteJson()">Save Changes to: </button>
+				<input class="col-md-4 text-right" type="text" id="my_file_to_save" name="my_file_to_save" value="{{savefilename}}"/>
+			</div>
+		</div>
+
+		<div class="row">
+			<div id="tableOfTestcasesForSuite" class="col-md-9" style='overflow:auto;' ></div>
 			<div id="editTestcaseEntry"        class="col-md-3" >
 				
 
@@ -124,27 +151,15 @@
 					</div>		
 					<input type="button" class="btn" value="Save Changes To Test Case" id="editTestcase"/>
 				</div>
-				<div class="col-md-3" >
-					<div id="tableOfTestRequirements"  />
-					<input type="button" class="btn" value="Add Requirement" 
-							katana-click="addRequirementToSuite"
-							id="addRequirementEntry"/>
-					
-				</div>	
+
 							
 
 		</div>
-		<div class="row">
-			<div class="btn-group col-md-6" role="group">   
-				<button id="addSuite" class="btn btn-primary" onclick="addCaseToSuite()">Add Case To Suite</button>
-				<button class="btn btn-primary" onclick="start()">Discard Changes</button>
-				<button class="btn btn-success" onclick="mapUiToSuiteJson()">Save Changes to Disk</button>
-			</div>
-		</div>
+
 </div>
 		
 <div>
-	<input class="col-md-4 text-right" type="text" id="my_file_to_save" name="my_file_to_save" value="{{savefilename}}"/>
+	
 </div>	
 	<div id="tableOfFileContents"  class="col-md-6">fileContents</label></div>
 	<div id="listOfTestcasesForSuite">{{fulljson|jsonify}}</div>
