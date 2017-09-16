@@ -127,12 +127,13 @@ def editProject(request):
 		except:
 			xml_r["Project"]["Testsuites"] = []
 	else:
-		filename = "new.xml"
+		filename = path_to_config + os.sep + "new.xml"
 
  
 	context = { 
 		'savefilename': os.path.split(filename)[1], 
 		'savefilepath': fpath,
+		'fullpathname': filename, 
 		'myfile': filename,
 		'docSpec': 'projectSpec',
 		'projectName': xml_r["Project"]["Details"]["Name"],

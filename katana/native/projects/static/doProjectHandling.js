@@ -60,8 +60,12 @@ function mapFullProjectJson(myobjectID){
 	mapProjectJsonToUi(jsonTestSuites);  // This is where the table and edit form is created. 
 } 
 
+function resetUIfromFile() {
+  var thePage = katana.$activeTab.find('#fullpathname').text();
+  var xref="./projects/editProject/?fname=" + thePage; 
 
-
+  katana.templateAPI.load(xref, null, null, 'Project') ;
+}
 /// -------------------------------------------------------------------------------
 // Dynamically create a new TestSuite object and append to the jsonTestSuites 
 // array. Default values are used to fill in a complete structure. If there is 
@@ -136,11 +140,14 @@ function mapProjectSuiteToUI(s,xdata) {
 // row number from the table.
 /// -------------------------------------------------------------------------------
 function mapUItoProjectSuite(xdata){
+	if (katana.$activeTab.find("#suitePath").val().length < 1) {
+		alert("Please specify a suite path name");
+		return
+	}
 
 		
 	var s = parseInt(katana.$activeTab.find("#suiteRowToEdit").val());
 	var oneSuite = xdata[s];
-
 	oneSuite['path'] = katana.$activeTab.find("#suitePath").val(); 
 	oneSuite['Execute'] = {}
 	oneSuite['Execute']['@ExecType'] = katana.$activeTab.find("#Execute-at-ExecType").val(); 
@@ -168,6 +175,22 @@ Two global variables are heavily used when this function is called;
 
 */
 function mapUiToProjectJson() {
+
+	if (katana.$activeTab.find('#projectName').val().length < 1) {
+		alert("Please Specify a Project Name ");
+		return; 
+	}
+
+	if (katana.$activeTab.find('#projectTitle').val().length < 1) {
+		alert("Please Specify a Project Title ");
+		return; 
+	}
+
+	if (katana.$activeTab.find('#projectEngineer ').val().length < 1) {
+		alert("Please Specify a Project Engineer  ");
+		return; 
+	}
+
 	
 	jsonProjectObject['Details']['Name'] = katana.$activeTab.find('#projectName').val();
 	jsonProjectObject['Details']['Title'] = katana.$activeTab.find('#projectTitle').val();
@@ -225,7 +248,7 @@ function createSuitesTable(xdata) {
 	//if (!jQuery.isArray(xdata)) xdata = [xdata];
 	//items.push('<ul id="suite_table_display"  >'); 
 
-	items.push('<table id="suite_table_display" class="table" >');
+	items.push('<table id="suite_table_display" class="configuration_table" width="100%">');
 	items.push('<thead>');
 	items.push('<tr id="suiteRow"><th>Num</th><th>Suite</th><th>Execute</th><th>OnError</th><th>Impact</th><th/><th/></tr>');
 	items.push('</thead>');
@@ -258,7 +281,7 @@ function createSuitesTable(xdata) {
 
 		var bid = "deleteTestSuite-"+s+"-id"+getRandomID();
 		//alert(bid);
-		items.push('<td><i  title="Delete" class="fa fa-eraser" value="X" id="'+bid+'"/>');
+		items.push('<td><i  title="Delete" class="delete-item-32" value="X" id="'+bid+'"/>');
 		katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 		$(document).on('click','#'+bid,function( ) {
 
@@ -267,7 +290,7 @@ function createSuitesTable(xdata) {
 			removeTestSuite(sid,xdata);
 		});
 		bid = "editTestSuite-"+s+"-id"+getRandomID();;
-		items.push('<i  title="Edit" class="fa fa-pencil" title="Edit" id="'+bid+'"/>');
+		items.push('<i  title="Edit" class="edit-32" title="Edit" id="'+bid+'"/>');
 		katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 		$(document).on('click','#'+bid,function(  ) {
 			var names = this.id.split('-');
@@ -278,7 +301,7 @@ function createSuitesTable(xdata) {
 		});
 
 		bid = "InsertTestSuite-"+s+"-id"+getRandomID();;
-		items.push('<i  title="Insert" class="fa fa-plus" value="Insert" id="'+bid+'"/></td>');
+		items.push('<i  title="Insert" class="add-item-32" value="Insert" id="'+bid+'"/></td>');
 		katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 		$(document).on('click','#'+bid,function(  ) {
 			var names = this.id.split('-');
@@ -300,18 +323,6 @@ function createSuitesTable(xdata) {
 	katana.$activeTab.find('#suite_table_display').on('click',"td",   function() { 
 	});
 	//katana.$activeTab.find("#tableOfTestSuitesForProject").setAttribute( "style","overflow-y:scroll");
-
- 	 katana.$activeTab.find('table#suite_table_display thead tr th').each(function(index) {
-    		var thisWidth = $(this).width();
-    		if ( index == 0 ) { thisWidth = 40; }
-    		console.log(thisWidth + "  "+ index);
-    		var elem = this; 
-    		$(this).css('width',40);
-    		katana.$activeTab.find('table#suite_table_display tbody tr td').each(function(xindex) {	
-    				$(this).css('width',40);
-    		});
-  	});
-
 
 
 }

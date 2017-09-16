@@ -2,32 +2,32 @@
 {% load jsonify %}
 
 <body>
-<link rel="stylesheet" href="{% static "./table.css" %}"> 
+<link rel="stylesheet" href="{% static "./table.css" %}" > 
 <script type="text/javascript" src="{% static "./doProjectHandling.js" %}" />
 <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 -->
  
 	<h2>Details</h2>
-	<div class="form-group col-md-12 row">
-			<div class="field col-md-3">
+	<div class="col-md-12 row">
+			<div class="field col-md-3 input_padding">
 				<label for="projectName">Name*:</label>
 				<input type="text" id="projectName" name="projectName" value="{{projectName}}"/>
 			</div>
-			<div class="field col-md-3">	
+			<div class="field col-md-3 input_padding">	
 				<label for="projectTitle">Title*:</label>
 				<input  type="text" id="projectTitle" name="projectTitle" value="{{projectTitle}}" />
 			</div>
-			<div class="field col-md-3">
+			<div class="field col-md-3 input_padding">
 				<label class="text-right">Engineer*:</label>
 				<input class="text-right" type="text" id="projectEngineer" name="projectEngineer" value="{{projectEngineer}}" />
 			</div>
-			<div class="field col-md-3">	
+			<div class="field col-md-3 input_padding">	
 				
 				<label class="text-right">Last Updated:</label>
 				<input class="text-right" type="text" id="projectDate" name="projectDate" value="{{projectDate}}" />
 			</div>
 
-			<div class="field col-md-3">
+			<div class="field col-md-2 input_padding">
 				<label class="text-right">State:</label>
 				<select class="text-right" type="text" id="projectState" name="projectState" value="{{projectState}}" >
 					<option value="New">New</option>
@@ -36,7 +36,7 @@
 					<option value="Add">Add Another</option>
 				</select>
 			</div>
-			<div class="field col-md-3">
+			<div class="field col-md-2 input_padding">
 				<label class="text-right">defaultOnError:</label>
 				<select class="text-right" type="text" id="default_onError" name="default_onError" value="{{projectdefaultOnError}}" >
 					<option value="next">Next</option>
@@ -45,7 +45,7 @@
 					<option value="goto">Goto</option>
 				</select>
 			</div>
-			<div class="field col-md-3">	
+			<div class="field col-md-2 input_padding">	
 				<label class=" text-right" for="projectDatatype">Data Type:</label>
 				<select class="text-right" type="text" id="projectDatatype" name="projectDatatype" value="{{projectDatatype}}" >
 					<option value="Custom">Custom</option>
@@ -57,6 +57,17 @@
 		</div>
 	</div>
 
+
+	<div class="container">
+	    <div id="editor" class="col-md-12" >  </div>    
+	    <div class="btn-group col-md-8" role="group">   
+	    	{% csrf_token %}
+			<button id="addSuite" class="btn btn-primary" onclick="addSuiteToProject()">Add Case to Suite</button>
+			<!-- <button class="btn btn-primary" onclick="resetUIfromFile()">Discard Changes</button>  -->
+			<button class="btn btn-success" onclick="mapUiToProjectJson()">Save Changes to : </button>
+			<input class="col-md-4 text-right" type="text" id="my_file_to_save" name="my_file_to_save" value="{{savefilename}}"/>
+		</div>			
+	</div>
 
 	
 	<div class="container-fluid row">
@@ -162,17 +173,7 @@
 	</div>
 
 
-	<div class="container">
-	    <div id="editor" class="col-md-12" >  </div>    
-	    <div class="btn-group col-md-8" role="group">   
-	    	{% csrf_token %}
-			<button id="addSuite" class="btn btn-primary" onclick="addSuiteToProject()">Add Case to Suite</button>
-			<button class="btn btn-primary" onclick="start()">Discard Changes</button>
-			<button class="btn btn-success" onclick="mapUiToProjectJson()">Save Changes to Disk</button>
-			<input class="col-md-4 text-right" type="text" id="my_file_to_save" name="my_file_to_save" value="{{savefilename}}"/>
-		</div>			
-	</div>
-
 	<div id="listOfTestSuitesForProject">{{fulljson|jsonify}}</div>
 	<div id="savefilepath">{{savefilepath}}</div>
+	<div id="fullpathname">{{fullpathname}}</div>
 </body>

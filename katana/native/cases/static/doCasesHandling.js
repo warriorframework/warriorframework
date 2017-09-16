@@ -322,9 +322,9 @@ function mapCaseJsonToUi(data){
 			//katana.$activeTab.find("#editCaseStepDiv").show();
 			//katana.$activeTab.find('#tableOfTestStepsForCase').removeClass();
 			//katana.$activeTab.find('#tableOfTestStepsForCase').addClass('col-md-8');
-			var ooo = katana.$activeTab.find("#editCaseStepDiv").html();
-			console.log("lllll Before the POPUP LLLLLLL")
-			console.log(ooo);
+			//var ooo = katana.$activeTab.find("#editCaseStepDiv").html();
+			//console.log("lllll Before the POPUP LLLLLLL")
+			//console.log(ooo);
 			// Here is the code to start the HTML only - no js
 			katana.popupController.open(katana.$activeTab.find("#editCaseStepDiv").html(),"Edit..." + sid, function(popup) {
 
@@ -482,10 +482,10 @@ function setupPopupDialog(sid,xdata,popup) {
 	popup.find('#addOneArgument').on('click',function( ) {
 				var names = this.id.split('-');
 				var sid = parseInt(names[1]);
-				addOneArgument(sid,xdata);
+				addOneArgument(sid,xdata, popup);
 			});
 	
-
+	/*
 	var opts = jQuery.getJSON("./cases/getListOfComments/?driver="+driver+"&keyword="+keyword).done(function(data) {
  			a_items = opts.responseJSON['fields'];
  			out_array = a_items[0]['comment'];
@@ -495,7 +495,7 @@ function setupPopupDialog(sid,xdata,popup) {
  			popup.find("#sourceFileText").html(outstr);
 
  		});
-
+	*/
 	popup.find("#StepDriver").on('change',function() {
 		alert("Ouch");
 		sid  = popup.find("#StepDriver").attr('theSid');   // 
@@ -521,13 +521,14 @@ function setupPopupDialog(sid,xdata,popup) {
 		var oneCaseStep = jsonCaseSteps['step'][sid];
 		var keyword = popup.find("#StepKeyword").attr('value');  // 
 		var driver  = popup.find("#StepDriver").attr('value');   // 
-		jQuery.getJSON("./cases/getListOfComments/?driver="+driver+"&keyword="+keyword).done(function(data) {
- 			a_items = opts.responseJSON['fields'];
+		var xopts = jQuery.getJSON("./cases/getListOfComments/?driver="+driver+"&keyword="+keyword).done(function(data) {
+ 			a_items = xopts.responseJSON['fields'];
  			out_array = a_items[0]['comment'];
  			var outstr = out_array.join("<br>");
- 			console.log(outstr);
- 			popup.find("#sourceFileText").html(""); 
- 			popup.find("#sourceFileText").html(outstr);
+ 			var hhh = popup.find("#sourceFileText");
+ 			console.log(hhh);
+ 			popup.find("#sourceCaseFileText").html(""); 
+ 			popup.find("#sourceCaseFileText").html(outstr);
 
  		});
 	});
@@ -535,11 +536,11 @@ function setupPopupDialog(sid,xdata,popup) {
 	popup.find('#saveEditCaseStep').on('click',function(  ) {
 			mapUItoTestStep(sid,xdata,popup);	
 			mapCaseJsonToUi(jsonCaseSteps);	
-			katana.popupController.close();
+			//katana.popupController.popupClose();
 		});
 
 	popup.find('#editCaseStepClose').on('click',function(  ) {
-			katana.popupController.close();
+			katana.popupController.popupclose();
 		});
 
 
@@ -593,6 +594,32 @@ function addTestStepAboveToUI(sid,xdata) {
 	mapCaseJsonToUi(jsonCaseSteps);		
 }
 
+
+function redrawArguments(oneCaseStep,popup) {
+	var arguments = oneCaseStep['Arguments']['argument'];
+	var ta = 0; 
+	a_items = [ ] ;
+	for (xarg in arguments) {
+			//console.log(arguments[xarg]);
+			a_items.push('<div class="row">');
+			a_items.push('<label class="col-md-2">Name</label><input  type="text" argid="caseArgName-'+ta+'" value="'+arguments[xarg]["@name"]+'"/>');
+			a_items.push('<label class="col-md-2">Value</label><input  type="text" argid="caseArgValue-'+ta+'" value="'+arguments[xarg]["@value"]+'"/>');
+			// Now a button to edit or delete ... 
+			bid = "deleteCaseArg-"+sid+"-"+ta+"-id"
+			a_items.push('<td><i title="Delete" class="fa fa-erase" value="X" id="'+bid+'"/>');
+			
+			bid = "saveCaseArg-"+sid+"-"+ta+"-id"
+			a_items.push('<td><i  title="Save Argument Change" class="fa fa-pencil" value="Save" id="'+bid+'"/>');
+
+			bid = "insertCaseArg-"+sid+"-"+ta+"-id";
+			a_items.push('<td><i  title="Insert one" class="fa fa-plus" value="Save" id="'+bid+'"/>');
+			
+			ta += 1
+			a_items.push('</div>');
+			
+	}
+	popup.find("#arguments-textarea").html( a_items.join("\n"));
+}
 
 function mapTestStepToUI(sid, xdata) {
 	// body...
@@ -719,16 +746,19 @@ function saveOneArgument( sid, aid, xdata) {
 	console.log(katana.$activeTab.find('[argid=caseArgValue-'+aid+']'));
 	console.log(katana.$activeTab.find('[argid=caseArgValue-'+aid+']'));
 	console.log(obj);
-	mapTestStepToUI(sid, xdata);
+	//mapTestStepToUI(sid, xdata);
 }
 
-function addOneArgument( sid , xdata ) {
+function addOneArgument( sid , xdata, popup ) {
 	var xx = { "@name": "" , "@value": " " };
 	console.log("sid =" + sid);
 	console.log(xdata);
 	jsonCaseSteps['step'][sid]['Arguments']['argument'].push(xx);
 	//mapCaseJsonToUi(jsonCaseSteps);
-	mapTestStepToUI(sid, xdata);
+	//mapTestStepToUI(sid, xdata);
+	oneCaseStep = jsonCaseSteps['step'][sid];
+	// I have to refresh the popup! 
+	redrawArguments(oneCaseStep,popup);
 }
 
 
@@ -736,14 +766,14 @@ function insertOneArgument( sid , aid,  xdata ) {
 	var xx = { "@name": "" , "@value": " " };
 	jsonCaseSteps['step'][sid]['Arguments']['argument'].splice(aid,0,xx);
 	//mapCaseJsonToUi(jsonCaseSteps);
-	mapTestStepToUI(sid, xdata);
+	//mapTestStepToUI(sid, xdata);
 }
 
 
 function removeOneArgument( sid, aid, xdata ) {
 	jsonCaseSteps['step'][sid]['Arguments']['argument'].splice(aid,1);	
 	//mapCaseJsonToUi(jsonCaseSteps);
-	mapTestStepToUI(sid, xdata);
+	//mapTestStepToUI(sid, xdata);
 }
 
 // When the edit button is clicked, map step to the UI. 
