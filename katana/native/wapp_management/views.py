@@ -88,7 +88,16 @@ class AppInstallConfig(View):
         xml_str = ET.tostring(root, encoding='utf8', method='xml')
         with open(fpath, "w") as f:
             f.write(xml_str)
-        return render(request, WappManagementView.template, {"data": {"app": AppInformation.information.apps}})
+
+        config_path = join_path(os.getcwd(), "native", "wapp_management", ".data")
+        files = get_sub_files(config_path)
+        preferences = []
+        for subfile in files:
+            filename, file_extension = os.path.splitext(subfile)
+            if file_extension == ".xml":
+                preferences.append(filename)
+
+        return render(request, 'wapp_management/saved_preferences.html', {"data": {"preferences": preferences}})
 
 
 def load_configs(request):

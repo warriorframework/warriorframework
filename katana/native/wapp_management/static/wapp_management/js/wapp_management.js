@@ -137,8 +137,9 @@ var wapp_management = {
     },
 
     saveConfig: function(app_paths){
+        var $currentPage = katana.$activeTab;
         if(app_paths === undefined){
-            var $elements = $("input[id*='app_path_for_config']")
+            var $elements = $currentPage.find("input[id*='app_path_for_config']");
             var app_paths = []
             var path = "";
             for(var i=0 ; i<$elements.length; i++){
@@ -195,6 +196,8 @@ var wapp_management = {
                         "show_cancel_btn": false
                     });
                     wapp_management.setSaveConfigAttr("no");
+                    var $saved_preferences = $currentPage.find('#saved-preferences');
+                    $saved_preferences.html(data);
                     return true;
                 });
             },
@@ -473,7 +476,7 @@ var wapp_management = {
         $parent.html('');
 
         for(var i=0; i<$disabledInputs.length; i++){
-            wapp_management.addAnotherApp(1, $($disabledInputs[i]).val())
+            wapp_management.addAnotherApp((i+1), $($disabledInputs[i]).val())
         }
 
         $siblings.html('');
