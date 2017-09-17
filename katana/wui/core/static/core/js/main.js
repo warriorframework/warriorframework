@@ -298,6 +298,7 @@ var katana = {
 	        "accept_btn_text": "Ok (by default), Save, etc",
 	        "show_cancel_btn": "true (by default), false",
 	        "cancel_btn_text": "Cancel (by default), No, etc",
+	        "prompt": "false (by default), true"
 	    }
 
 	    <div class="overlay">
@@ -338,13 +339,43 @@ var katana = {
 
 	},
 
-	acceptAlert: function(callBack_on_accept){
+	changeBorderColor: function(borderColor){
+	    if(borderColor == undefined){
+	        borderColor = "white";
+	    }
 	    var $body = $('body');
-	    $alertElement = $body.find('div .overlay');
-	    $alertElement.remove();
-	    if(callBack_on_accept) {
-	        callBack_on_accept()
-	    };
+	    var $prompt = $body.find('#alert-box-prompt');
+	    $prompt.css("border-color", borderColor)
+	},
+
+	acceptAlert: function(callBack_on_accept){
+
+	    var $body = $('body');
+	    var $alertElement = $body.find('div .overlay');
+	    var $prompt = $body.find('#alert-box-prompt');
+
+	    var inputValue = false;
+
+	    if(prompt != undefined){
+	        inputValue = $prompt.val()
+	    }
+
+	    if(inputValue == ""){
+	        katana.changeBorderColor("red");
+	    }
+	    else{
+
+	        $alertElement.remove();
+	        if(callBack_on_accept) {
+                if(!inputValue){
+                    callBack_on_accept();
+                }
+                else{
+                    callBack_on_accept(inputValue);
+                }
+
+            };
+	    }
 	},
 
 	dismissAlert: function(callBack_on_dismiss){
@@ -363,12 +394,17 @@ var katana = {
 
 	    var $body = $('body');
 
-	    $body.find('#cancel_alert').one('click', function(){
+	    $body.find('#cancel-alert').one('click', function(){
 
 	        katana.dismissAlert(callBack_on_dismiss);
 	    });
 
-	    $body.find('#accept_alert').one('click', function(){
+	    $body.find('#cancel-alert-icon').one('click', function(){
+
+	        katana.dismissAlert(callBack_on_dismiss);
+	    });
+
+	    $body.find('#accept-alert').on('click', function(){
 	        katana.acceptAlert(callBack_on_accept);
 	    });
 
@@ -382,13 +418,13 @@ var katana = {
 	    var accept_btn_text = "";
 
 	    if(data.show_accept_btn){
-	        accept_btn_text = '<button class="btn btn-success" id="accept_alert">' + data.accept_btn_text + '</button>'
+	        accept_btn_text = '<button class="btn btn-success" id="accept-alert">' + data.accept_btn_text + '</button>'
 	    }
 
 	    var cancel_btn_text = "";
 
 	    if(data.show_cancel_btn){
-	        cancel_btn_text = '<button class="btn btn-danger" id="cancel_alert">' + data.cancel_btn_text + '</button>'
+	        cancel_btn_text = '<button class="btn btn-danger" id="cancel-alert">' + data.cancel_btn_text + '</button>'
 	    }
 
 	    var buttons = "";
@@ -409,15 +445,21 @@ var katana = {
 	        sub_heading = '<p>' + data.sub_heading + '</p>';
 	    }
 
+	    var prompt = ""
+
+	    if(data.prompt) {
+	        prompt = "<div><input id='alert-box-prompt' katana-change='katana.changeBorderColor' value=''></div>"
+	    }
+
 	    var $alert_box = '<div class="overlay">' +
 	                        '<div class="col-sm-5 centered">' +
 	                            '<div class="alert alert-' + data.alert_type + '" role="alert">' +
 	                                '<div class="col" style="float: right;">' +
-	                                    '<i katana-click="katana.dismissAlert" class="fa fa-times" style="float: right;"></i>' +
+	                                    '<i id="cancel-alert-icon" class="fa fa-times" style="float: right;"></i>' +
 	                                '</div>' +
 	                                '<h4 class="alert-heading">' + data.heading + '</h4>' + sub_heading +
 	                                '<hr>' +
-	                                '<p class="mb-0">' + data.text + '</p>' + add_break +
+	                                '<p class="mb-0">' + data.text + '</p>' + prompt + add_break +
 	                                buttons +
 	                            '</div>' +
 	                        '</div>' +
@@ -482,6 +524,10 @@ var katana = {
 
 	    if(!("cancel_btn_text" in data)){
             data["cancel_btn_text"] = "Cancel"
+        }
+
+        if(!("prompt" in data)){
+            data["prompt"] = false;
         }
 
         callBack(data, secondCallBack, callBack_on_accept, callBack_on_dismiss);

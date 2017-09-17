@@ -5,8 +5,18 @@ var wapp_management = {
         var app_path = $elem.attr('app_path');
         var app_type = $elem.attr('app_type');
         var app_name = $elem.attr('app_name');
-        r = confirm("This would delete all the files associated with the App. Are you sure you want to uninstall " + app_name + "?")
-        if (r){
+
+        katana.openAlert({
+            "alert_type": "warning",
+            "sub_heading": "This would delete all the files associated with the App.",
+            "text": "Are you sure you want to uninstall " + app_name + "?",
+            "show_accept_btn": true,
+            "accept_btn_text": "Yes",
+            "show_cancel_btn": true,
+            "cancel_btn_text": "No"
+        },
+
+        function(){
             $.ajax({
                 headers: {
                     'X-CSRFToken': wapp_management.getCookie('csrftoken')
@@ -16,27 +26,26 @@ var wapp_management = {
                 data: {"app_path": app_path, "app_type": app_type}
             }).done(function(data) {
                 $('#installed_apps_div').html(data)
-                data = {
-                        "alert_type": "success",
-                        "text": app_name + " has been uninstalled.",
-                        "timer": 1500,
-                        "show_accept_btn": false,
-                        "show_cancel_btn": false
-                        }
-                katana.openAlert(data);
-            });
-        }
-        else {
-            data = {
-                    "alert_type": "info",
-                    "heading": "Whew!",
-                    "text": "Uninstall Suspended",
+                katana.openAlert({
+                    "alert_type": "success",
+                    "text": app_name + " has been uninstalled.",
                     "timer": 1500,
                     "show_accept_btn": false,
                     "show_cancel_btn": false
-                    }
-            katana.openAlert(data);
-        }
+                });
+            });
+        },
+
+        function(){
+            katana.openAlert({
+                "alert_type": "info",
+                "heading": "Whew!",
+                "text": "Uninstall Suspended",
+                "timer": 1500,
+                "show_accept_btn": false,
+                "show_cancel_btn": false
+            });
+        });
     },
 
     installAnApp: function(){
@@ -50,14 +59,13 @@ var wapp_management = {
         for(var i=0 ; i<$elements.length; i++){
             path = $elements[i].value.trim();
             if(path == ""){
-                data = {
+                katana.openAlert({
                     "alert_type": "danger",
                     "heading": "App Information Field Is Empty.",
                     "text": "Field Cannot Be Empty",
                     "show_accept_btn": true,
                     "show_cancel_btn": false
-                    }
-                katana.openAlert(data);
+                 });
                 return;
             }
             else {
@@ -82,13 +90,12 @@ var wapp_management = {
                 url: 'wapp_management/install_an_app/',
                 data: {"app_paths": app_paths},
             }).done(function(data) {
-                data = {
+                katana.openAlert({
                     "alert_type": "success",
                     "text": "Apps have been installed!",
                     "show_accept_btn": true,
                     "show_cancel_btn": false
-                    }
-                katana.openAlert(data);
+                });
                 $currentPage.find('#form-for-paths').html('');
                 wapp_management.addAnotherApp(1);
                 $currentPage.find('#installed_apps_div').html(data)
@@ -104,13 +111,12 @@ var wapp_management = {
         var extension = temp_array[temp_array.length - 1]
 
         if(extension !== "zip"){
-            data = {
-                    "alert_type": "warning",
-                    "text": "Please select a .zip file",
-                    "show_accept_btn": true,
-                    "show_cancel_btn": false
-                    }
-            katana.openAlert(data);
+            katana.openAlert({
+                "alert_type": "warning",
+                "text": "Please select a .zip file",
+                "show_accept_btn": true,
+                "show_cancel_btn": false
+            });
             return;
         }
 
@@ -138,14 +144,13 @@ var wapp_management = {
             for(var i=0 ; i<$elements.length; i++){
                 path = $elements[i].value.trim();
                 if(path == ""){
-                    data = {
-                            "alert_type": "danger",
-                            "heading": "App Information Field is Empty.",
-                            "text": "Field cannot be empty.",
-                            "show_accept_btn": true,
-                            "show_cancel_btn": false
-                            }
-                    katana.openAlert(data);
+                    katana.openAlert({
+                        "alert_type": "danger",
+                        "heading": "App Information Field is Empty.",
+                        "text": "Field cannot be empty.",
+                        "show_accept_btn": true,
+                        "show_cancel_btn": false
+                    });
                     return;
                 }
                 else {
@@ -153,59 +158,68 @@ var wapp_management = {
                 }
             }
         }
-        data = {
-                "alert_type": "info",
-                "text": "Do you want to save this configuration?",
+        katana.openAlert({
+            "alert_type": "info",
+            "text": "Do you want to save this configuration?",
+            "show_accept_btn": true,
+            "accept_btn_text": "Yes",
+            "show_cancel_btn": true,
+            "cancel_btn_text": "No"
+        },
+
+        function(){
+
+            katana.openAlert({
+                "alert_type": "light",
+                "text": "Please enter a name for the configuration.",
                 "show_accept_btn": true,
-                "accept_btn_text": "Yes",
                 "show_cancel_btn": true,
-                "cancel_btn_text": "No"
-                }
-        katana.openAlert(data, function(){
+                "prompt": true
+            },
 
+            function(inputValue){
 
-        var filename = prompt("Please enter a name for the configuration.");
-        if (filename == null ||  filename == ""){
-            data = {
-                    "text": "Configuration not saved.",
-                    "timer": 1250,
-                    "show_accept_btn": false,
-                    "show_cancel_btn": false
-                    }
-            katana.openAlert(data);
-            return false;
-        }
-        else {
-            $.ajax({
-                headers: {
-                    'X-CSRFToken': wapp_management.getCookie('csrftoken')
-                },
-                type: 'POST',
-                url: 'wapp_management/create_config/',
-                data: {"app_paths": app_paths, "filename":  filename},
-            }).done(function(data) {
-                data = {
+                $.ajax({
+                    headers: {
+                        'X-CSRFToken': wapp_management.getCookie('csrftoken')
+                    },
+                    type: 'POST',
+                    url: 'wapp_management/create_config/',
+                    data: {"app_paths": app_paths, "filename":  inputValue},
+                }).done(function(data) {
+                    katana.openAlert({
                         "alert_type": "success",
-                        "text": "Configuration Saved: " +  filename,
+                        "text": "Configuration Saved: " +  inputValue,
                         "timer": 1250,
                         "show_accept_btn": false,
                         "show_cancel_btn": false
-                        }
-                katana.openAlert(data);
-                wapp_management.setSaveConfigAttr("no");
-                return true;
-            });
-        }
+                    });
+                    wapp_management.setSaveConfigAttr("no");
+                    return true;
+                });
+            },
 
-        }, function(){
-
-            data = {
+            function(){
+                katana.openAlert({
                     "text": "Configuration not saved.",
                     "timer": 1250,
                     "show_accept_btn": false,
                     "show_cancel_btn": false
-                    }
-            katana.openAlert(data);
+                });
+                return false;
+
+            })
+
+        },
+
+        function(){
+
+            katana.openAlert({
+                "text": "Configuration not saved.",
+                "timer": 1250,
+                "show_accept_btn": false,
+                "show_cancel_btn": false
+            });
             return false;
 
         });
