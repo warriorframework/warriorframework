@@ -46,6 +46,23 @@ var settings = {
 			reader.readAsDataURL(file);
 		},
 
+		save: function(){
+			settings.save.call(this);
+			var bgImage = this.closest('.page').find('input[key="bgImage"]').val() ? this.closest('.page').find('input[key="bgImage"]').val() : '';
+			var profileImage = this.closest('.page').find('input[key="Base64image"]').val() ? this.closest('.page').find('input[key="Base64image"]').val() : '';
+		  if(bgImage != "")
+				$('#bg-style').html('.page{ background-image: url(' + bgImage + ')}');
+			else
+		 		$('#bg-style').html('');
+
+		  katana.$view.find('.quick-user .profile-image').css('background-image', 'url(' + profileImage + ')');
+		},
+
+		clearImage: function(){
+			var topLevel = this.closest('.profile-image');
+			topLevel.find('.image').css('background-image', 'none');
+			topLevel.find('input').val('');
+		}
 	},
 
 	jira: {
