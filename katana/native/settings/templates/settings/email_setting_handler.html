@@ -2,7 +2,7 @@
 <div class="tool-bar"><div katana-click="settings.closeSetting" class="button close">Close</div><div katana-click="settings.save" class="button save saved">Save</div></div>
 
 <div class="flex-rows to-save" auto-init="settings.changeDetection" post-url="settings/email_setting_handler">
-    <div class="field-block">
+    <div class="field-block to-scroll">
       <div class="title center">Email Settings</div>
       {% for k, v in setting.Setting.items%}
         {% if k == '@name' %}

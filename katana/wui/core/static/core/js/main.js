@@ -164,10 +164,11 @@ var katana = {
 	  template: $('<div class="popup"><div class="navbar"><div class="title"></div><div class="min"></div><div class="close"></div></div><div class="page-content"></div></div>'),
 	  tabTemplate: $('<div class="popup-tab-bar"><div class="tab"></div></div>'),
 
-	  open: function(content, title, callBack) {
+	  open: function( content, title, callBack, size ) {
 			this.body = katana.$view;
 	    var popup = this.template.clone().appendTo(katana.popupController.body);
 	    content && popup.find('.page-content').append(content);
+			size && popup.addClass(size);
 	    katana.popupController.initEvents(popup);
 	    katana.popupController.createTab(popup);
 	    title && katana.popupController.setTitle(popup, title);
