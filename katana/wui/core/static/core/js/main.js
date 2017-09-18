@@ -36,6 +36,8 @@ var katana = {
             katana.methodCaller( toCall, $elem );
         });
     },
+  
+  
 
     getObj: function( objString, itter, obj ){
         var objs = objString.split('.');
@@ -132,9 +134,7 @@ var katana = {
 
     closePocketFields: function(){
         this.closest('.pocket-fields').remove();
-    },
-
-    openDialog: function( data, title, buttons, callBack ){
+  : function( data, title, buttons, callBack ){
         var dialog = $('<div class="dialog-container"><div class="dialog"><div class="title">' + (title ? title : '') + '</div><div class="page-content">' + (data ? data : '') + '</div></div><div class="overlay"></div></div>');
         buttons && dialog.find('.dialog').append('<div class="button-bar"><div class="button confirm">Confirm</div><div class="button">Cancel</div></div>');
         dialog.prependTo( katana.$view );
@@ -609,216 +609,216 @@ var katana = {
             var level = level ? level : parseInt(this.attr('level')) + 1;
             var fileSystem = this.closest('.fileSystem');
             var directory = fileSystem.find('.directory ul');
-            var objs = fileSystem.data();
+            var objs = fileSystem.data
 ////////////////////////////////////////////////////////////////////////will clean up the not's
-            fileSystem.find('li').not('.directory').not('.toggleListView').not('.create').remove();
-            directory.empty();
+			fileSystem.find('li').not('.directory').not('.toggleListView').not('.create').remove();
+			directory.empty();
 
-            $.each( objs, function(i){
-                    var elem = objs[i];
-                    if( level == elem.level )
-                    {
-                        if( elem.type == "filenames")
-                            katana.fileNav.fileTemp.clone().appendTo( fileSystem ).attr( 'link', elem.link && elem.link ).find('span').text( elem.name );
-                        else if( elem.type == "foldernames" )
-                            katana.fileNav.folderTemp.clone().insertAfter( fileSystem.find('.directory') ).attr( 'level', elem.level ).find('span').text( elem.name );
-                    }
-                    if( level > elem.level && elem.type == 'foldernames')
-                        directory.append( katana.fileNav.dirTemp.clone().attr( 'level', elem.level ).text( elem.name ) );
-                });
-        },
+			$.each( objs, function(i){
+					var elem = objs[i];
+					if( level == elem.level )
+					{
+						if( elem.type == "filenames")
+							katana.fileNav.fileTemp.clone().appendTo( fileSystem ).attr( 'link', elem.link && elem.link ).find('span').text( elem.name );
+						else if( elem.type == "foldernames" )
+							katana.fileNav.folderTemp.clone().insertAfter( fileSystem.find('.directory') ).attr( 'level', elem.level ).find('span').text( elem.name );
+					}
+					if( level > elem.level && elem.type == 'foldernames')
+						directory.append( katana.fileNav.dirTemp.clone().attr( 'level', elem.level ).text( elem.name ) );
+				});
+		},
 
-        openFolder: function(){
-            katana.fileNav.moveDirectory.call( this, (parseInt(this.attr('level')) + 1) );
-        },
+		openFolder: function(){
+			katana.fileNav.moveDirectory.call( this, (parseInt(this.attr('level')) + 1) );
+		},
 
-        openFile: function(){
+		openFile: function(){
 
 
-        },
+		},
 
-        listViewToggle: function(){
-            this.closest('.page').toggleClass('list-view');
-        },
+		listViewToggle: function(){
+			this.closest('.page').toggleClass('list-view');
+		},
 ////////////////////////////////////////////////////////////////getFolder can be optimised to a single server hit, but will requere changes in katana.py
-        getFolder: function( dir, type, folder, objs, isFirst, callBack ){
-            var folder = folder ? folder : "none";
-            var subDir = true;
-            var objs = objs ? objs : [{ type: 'foldernames', name: 'home', level: 0 }];
-            var level = 1;
+		getFolder: function( dir, type, folder, objs, isFirst, callBack ){
+			var folder = folder ? folder : "none";
+			var subDir = true;
+			var objs = objs ? objs : [{ type: 'foldernames', name: 'home', level: 0 }];
+			var level = 1;
 
-            if( isFirst )
-                katana.fileNav.getFolder( dir, 'filenames', folder, objs, false, callBack );
+			if( isFirst )
+				katana.fileNav.getFolder( dir, 'filenames', folder, objs, false, callBack );
 
-            $.get( '/' + dir + type + '/' + folder, function( data ){
-                data = JSON.parse( data );
-                if( data.length > 0 && type == 'foldernames' ){
-                    var index = objs.findIndex( x => x.name == folder );
-                    level = index != -1 ? objs[index].level + 1 : 1;
-                    for(var j = 0; data.length > j; j++){
-                        objs.push({ type: type, name: data[j], level: level });
+			$.get( '/' + dir + type + '/' + folder, function( data ){
+				data = JSON.parse( data );
+				if( data.length > 0 && type == 'foldernames' ){
+					var index = objs.findIndex( x => x.name == folder );
+					level = index != -1 ? objs[index].level + 1 : 1;
+					for(var j = 0; data.length > j; j++){
+						objs.push({ type: type, name: data[j], level: level });
 
-                        katana.fileNav.getFolder( dir, 'filenames', data[j], objs, false, callBack );
-                        katana.fileNav.getFolder( dir, 'foldernames', data[j], objs, false, callBack );
-                    }
-                }
-                else if( data.length > 0 ){
+						katana.fileNav.getFolder( dir, 'filenames', data[j], objs, false, callBack );
+						katana.fileNav.getFolder( dir, 'foldernames', data[j], objs, false, callBack );
+					}
+				}
+				else if( data.length > 0 ){
 
-                    var index = objs.findIndex( x => x.name == folder );
-                    level = index != -1 ? objs[index].level + 1 : 1;
-                    for(var j = 0; data.length > j; j++){
-                        objs.push({ type: type, name: data[j], level: level });
-                    }
-                }
-                else if( data.length == 0 && type == 'foldernames' ){
-                    callBack( objs );
-                }
-            });
+					var index = objs.findIndex( x => x.name == folder );
+					level = index != -1 ? objs[index].level + 1 : 1;
+					for(var j = 0; data.length > j; j++){
+						objs.push({ type: type, name: data[j], level: level });
+					}
+				}
+				else if( data.length == 0 && type == 'foldernames' ){
+					callBack( objs );
+				}
+			});
 
-        },
+		},
 
-    },
+	},
 
-    templateAPI:{
-            load: function( url, jsURL, limitedStyles, tabTitle, callBack ){
-                var $elem = this;
-              url = url ? url : $elem ? $elem.attr('url') : '';
-                tabTitle = tabTitle ? tabTitle : 'Tab';
-                if( $elem != katana.templateAPI ){
-                    var jsURL = $elem.attr('jsurls').split(',');
-                    if( jsURL.length > 0 ){
-                        jsURL.pop();
-                        katana.templateAPI.importJS( jsURL, function(){
-                            katana.templateAPI.tabRequst( $elem, tabTitle, url, limitedStyles, callBack );
-                        });
-                    }
-                    else {
-                        katana.templateAPI.tabRequst( $elem, tabTitle, url, limitedStyles, callBack );
-                    }
-                }
-                else
-                    katana.templateAPI.tabRequst( katana.$activeTab, tabTitle, url, limitedStyles, callBack );
-            },
+	templateAPI:{
+			load: function( url, jsURL, limitedStyles, tabTitle, callBack ){
+				var $elem = this;
+			  url = url ? url : $elem ? $elem.attr('url') : '';
+				tabTitle = tabTitle ? tabTitle : 'Tab';
+				if( $elem != katana.templateAPI ){
+					var jsURL = $elem.attr('jsurls').split(',');
+					if( jsURL.length > 0 ){
+						jsURL.pop();
+						katana.templateAPI.importJS( jsURL, function(){
+							katana.templateAPI.tabRequst( $elem, tabTitle, url, limitedStyles, callBack );
+						});
+					}
+					else {
+						katana.templateAPI.tabRequst( $elem, tabTitle, url, limitedStyles, callBack );
+					}
+				}
+				else
+					katana.templateAPI.tabRequst( katana.$activeTab, tabTitle, url, limitedStyles, callBack );
+			},
 
-            tabRequst: function( $elem, tabTitle, url, limitedStyles, callBack ){
-                katana.openTab.call( $elem, tabTitle, function( container ){
-                    $.ajax({
-                        url: url,
-                        dataType: 'text'
-                    }).done(function( data ) {
-                        container.append( katana.templateAPI.preProcess( data ) );
-                        limitedStyles || container.find('.limited-styles-true').length && container.addClass('limited-styles');
-                        container.find('.tool-bar') && container.find('.tool-bar').prependTo(container.parent());
-                        katana.tabAdded( container, this );
-                        callBack && callBack( container );
-                    });
-                });
-            },
+			tabRequst: function( $elem, tabTitle, url, limitedStyles, callBack ){
+				katana.openTab.call( $elem, tabTitle, function( container ){
+					$.ajax({
+						url: url,
+						dataType: 'text'
+					}).done(function( data ) {
+						container.append( katana.templateAPI.preProcess( data ) );
+						limitedStyles || container.find('.limited-styles-true').length && container.addClass('limited-styles');
+						container.find('.tool-bar') && container.find('.tool-bar').prependTo(container.parent());
+						katana.tabAdded( container, this );
+						callBack && callBack( container );
+					});
+				});
+			},
 
-            subAppLoad: function( url, limitedStyles, callBack ){
-                var $elem = this;
-                var url = url ? url : $elem.attr('url');
+			subAppLoad: function( url, limitedStyles, callBack ){
+				var $elem = this;
+				var url = url ? url : $elem.attr('url');
 
-                katana.subApp.call( $elem, 'blankPage', function( container ){
-                    $.ajax({
-                        url: url,
-                        dataType: 'text'
-                    }).done(function( data ) {
-                        container.append( katana.templateAPI.preProcess( data ) );
-                        limitedStyles || container.find('.limited-styles-true').length && container.addClass('limited-styles');
-                        container.find('.tool-bar') && container.find('.tool-bar').prependTo(container.parent());
-                        katana.subAppAdded( container, this );
-                        callBack && callBack( container );
-                    });
-                });
-            },
+				katana.subApp.call( $elem, 'blankPage', function( container ){
+					$.ajax({
+						url: url,
+						dataType: 'text'
+					}).done(function( data ) {
+						container.append( katana.templateAPI.preProcess( data ) );
+						limitedStyles || container.find('.limited-styles-true').length && container.addClass('limited-styles');
+						container.find('.tool-bar') && container.find('.tool-bar').prependTo(container.parent());
+						katana.subAppAdded( container, this );
+						callBack && callBack( container );
+					});
+				});
+			},
 
-         preProcess: function( data ){
-             data = $(data);
-             data.find('.translator').length && katana.translate( data.find('.translator').attr('url'), data );
-             return data;
-         },
+		 preProcess: function( data ){
+			 data = $(data);
+			 data.find('.translator').length && katana.translate( data.find('.translator').attr('url'), data );
+			 return data;
+		 },
 
-         post: function( url, csrf, toSend, callBack ){
-             var $elem = this ? this : katana.$activeTab;
-             var toSend = toSend ? toSend : $elem.find('input:not([name="csrfmiddlewaretoken"])').serializeArray();
-             var url = url ? url : $elem.attr('post-url');
-             var csrf = csrf ? csrf : $elem.find('.csrf-container > input').val();
+		 post: function( url, csrf, toSend, callBack ){
+			 var $elem = this ? this : katana.$activeTab;
+			 var toSend = toSend ? toSend : $elem.find('input:not([name="csrfmiddlewaretoken"])').serializeArray();
+			 var url = url ? url : $elem.attr('post-url');
+			 var csrf = csrf ? csrf : $elem.find('.csrf-container > input').val();
 
-             $.ajaxSetup({
-                beforeSend: function(xhr, settings) {
-                if (!this.crossDomain)
-                    xhr.setRequestHeader("X-CSRFToken", csrf);
-                }
-                });
-             $.ajax({
-                 url: url,
-                 type : "POST",
-                 data : { data: toSend }
-             }).done(function( data ) {
-                 callBack && callBack( data );
-             });
-         },
+			 $.ajaxSetup({
+			    beforeSend: function(xhr, settings) {
+		        if (!this.crossDomain)
+		        	xhr.setRequestHeader("X-CSRFToken", csrf);
+			    }
+				});
+			 $.ajax({
+				 url: url,
+				 type : "POST",
+				 data : { data: toSend }
+			 }).done(function( data ) {
+				 callBack && callBack( data );
+			 });
+		 },
 
-         get: function( url, csrf, toSend, dataType, successCallBack ){
+		 get: function( url, csrf, toSend, dataType, successCallBack ){
 
-             // intialize values for url, csrf, dataType, toSend
-             var $elem = this ? this : katana.$activeTab;
-             var toSend = toSend ? toSend : $elem.find('input:not([name="csrfmiddlewaretoken"])').serializeArray();
-             var url = url ? url : $elem.attr('get-url');
-             var csrf = csrf ? csrf : $elem.find('.csrf-container > input').val();
-             var dataType = dataType ? dataType : 'text'
+			 // intialize values for url, csrf, dataType, toSend
+			 var $elem = this ? this : katana.$activeTab;
+			 var toSend = toSend ? toSend : $elem.find('input:not([name="csrfmiddlewaretoken"])').serializeArray();
+			 var url = url ? url : $elem.attr('get-url');
+			 var csrf = csrf ? csrf : $elem.find('.csrf-container > input').val();
+			 var dataType = dataType ? dataType : 'text'
 
-             // setup csrf token in xhr header
-             $.ajaxSetup({
-                beforeSend: function(xhr, settings) {
-                if (!this.crossDomain)
-                    xhr.setRequestHeader("X-CSRFToken", csrf);
-                }
-                });
+			 // setup csrf token in xhr header
+			 $.ajaxSetup({
+			    beforeSend: function(xhr, settings) {
+		        if (!this.crossDomain)
+		        	xhr.setRequestHeader("X-CSRFToken", csrf);
+			    }
+				});
 
-             // make an ajax get call using the intialized variables,
-             // on sucess the data is sent to success cal back function if one was provided
-             $.ajax({
-                 url: url,
-                 type: "GET",
-                 dataType: dataType,
-                 data: { data: toSend },
-                 success: function(data){
-                     console.log('success');
-                     successCallBack && successCallBack(data);
-                 },
-                 error: function(xhr, textStatus, error){
-                     console.log(xhr.statusText);
-                 console.log(textStatus);
-                 console.log(error);
-                 },
-            });
-         },
+			 // make an ajax get call using the intialized variables,
+			 // on sucess the data is sent to success cal back function if one was provided
+			 $.ajax({
+				 url: url,
+				 type: "GET",
+				 dataType: dataType,
+				 data: { data: toSend },
+				 success: function(data){
+					 console.log('success');
+					 successCallBack && successCallBack(data);
+				 },
+				 error: function(xhr, textStatus, error){
+					 console.log(xhr.statusText);
+			     console.log(textStatus);
+			     console.log(error);
+				 },
+			});
+		 },
 
-         trigger: function( url, callBack ){
-             var $elem = this ? this : katana.$activeTab;
-             var url = url ? url : $elem.attr('trigger-url');
-             $.ajax({
-                 url: url,
-                 dataType: 'text'
-             }).done(function( data ) {
-                 callBack && callBack( data );
-             });
-         },
+		 trigger: function( url, callBack ){
+			 var $elem = this ? this : katana.$activeTab;
+			 var url = url ? url : $elem.attr('trigger-url');
+			 $.ajax({
+				 url: url,
+				 dataType: 'text'
+			 }).done(function( data ) {
+				 callBack && callBack( data );
+			 });
+		 },
 
-         importJS: function( jsURL, callBack, i ){
-            var i = i ? i : 0;
-            $.getScript( jsURL[i], function() {
-                i++;
-                if( jsURL.length > i )
-                    katana.templateAPI.importJS( jsURL, callBack, i );
-                else
-                    callBack && callBack();
-            });
-        },
+		 importJS: function( jsURL, callBack, i ){
+		 	var i = i ? i : 0;
+			$.getScript( jsURL[i], function() {
+				i++;
+				if( jsURL.length > i )
+					katana.templateAPI.importJS( jsURL, callBack, i );
+				else
+					callBack && callBack();
+			});
+		},
 
-    },
+	},
 ///////////////////////////////////////////Methods named by template
 
 };
