@@ -231,25 +231,41 @@ var wdf = {
             var $tmp = katana.$activeTab.find("#subsystem_template").clone();
             var $system_id = $target.attr("id").split("-")[0];
             var $subsystem_count = $target.parent().find("[id^='"+$system_id+"-']").length;
-            var $tmp_id = $system_id+"-"+($subsystem_count+1)+"-control-box"
-            $tmp.find("#template-subsystem").prop("id", $tmp_id);
-            $tmp.find("[name='template-system-name']").attr("value", $target.find('[name*="system_name"]').attr("value"));
-            $tmp.find("[name='template-system-name']").prop("name", $system_id+"-"+($subsystem_count+1)+"-system_name");
-            $tmp.find("[name='template-subsystem-name']").prop("name", $system_id+"-"+($subsystem_count+1)+"-subsystem_name");
-            $tmp.find("[name='template-subsystem.tag']").prop("name", $system_id+"-"+($subsystem_count+1)+"-"+($target.children("#content").length+1)+"-1-key");
-            $tmp.find("[name='template-subsystem.value']").prop("name", $system_id+"-"+($subsystem_count+1)+"-"+($target.children("#content").length+1)+"-1-value");
-            $tmp.find("[katana-click='wdf.addSubSystem']").hide()
-            $("#"+$system_id+"-"+$subsystem_count+"-control-box").after($($tmp.html()));
+            console.log("#"+$system_id+"-1-subsystem_name");
+            if ($("[name='"+$system_id+"-1-subsystem_name']").length == 0) {
+                // no subsystem structure
+                var $tmp_id = $system_id+"-"+$subsystem_count+"-control-box"
+                $tmp.find("#template-subsystem").prop("id", $tmp_id);
+                $tmp.find("[name='template-system-name']").attr("value", $target.find('[name*="system_name"]').attr("value"));
+                $tmp.find("[name='template-system-name']").prop("name", $system_id+"-"+$subsystem_count+"-system_name");
+                $tmp.find("[name='template-subsystem-name']").prop("name", $system_id+"-"+$subsystem_count+"-subsystem_name");
+                $tmp.find("[name='template-subsystem.tag']").prop("name", $system_id+"-"+$subsystem_count+"-"+($target.children("#content").length+1)+"-1-key");
+                $tmp.find("[name='template-subsystem.value']").prop("name", $system_id+"-"+$subsystem_count+"-"+($target.children("#content").length+1)+"-1-value");
+                $tmp.find("[katana-click='wdf.addSubSystem']").hide()
+                $("#"+$system_id+"-"+$subsystem_count+"-control-box").replaceWith($($tmp.html()));
+            } else {
+                // already has subsystem structure
+                var $tmp_id = $system_id+"-"+($subsystem_count+1)+"-control-box"
+                $tmp.find("#template-subsystem").prop("id", $tmp_id);
+                $tmp.find("[name='template-system-name']").attr("value", $target.find('[name*="system_name"]').attr("value"));
+                $tmp.find("[name='template-system-name']").prop("name", $system_id+"-"+($subsystem_count+1)+"-system_name");
+                $tmp.find("[name='template-subsystem-name']").prop("name", $system_id+"-"+($subsystem_count+1)+"-subsystem_name");
+                $tmp.find("[name='template-subsystem.tag']").prop("name", $system_id+"-"+($subsystem_count+1)+"-"+($target.children("#content").length+1)+"-1-key");
+                $tmp.find("[name='template-subsystem.value']").prop("name", $system_id+"-"+($subsystem_count+1)+"-"+($target.children("#content").length+1)+"-1-value");
+                $tmp.find("[katana-click='wdf.addSubSystem']").hide()
+                $("#"+$system_id+"-"+$subsystem_count+"-control-box").after($($tmp.html()));
+
+                var $tmp = katana.$activeTab.find("#navigator_button_template").clone();
+                $tmp.find("#template-button-box").prop("id", $system_id+"-"+($subsystem_count+1)+"-button-box");
+                $tmp.find("[linkto='template-nav.linkto']").attr("linkto", "#"+$system_id+"-"+($subsystem_count+1)+"-control-box");
+                katana.$activeTab.find("#"+$system_id+"-"+($subsystem_count)+"-button-box").after($($tmp.html()));
+            }
 
             $("#"+$tmp_id).get(0).scrollIntoView(true);
             katana.quickAnimation($("#"+$tmp_id).find("input"), "wdf-highlight", 1000);
 
             $target.parent().find("[id^='"+$system_id+"-1']").find("[katana-click='wdf.addTag']").hide()
 
-            var $tmp = katana.$activeTab.find("#navigator_button_template").clone();
-            $tmp.find("#template-button-box").prop("id", $system_id+"-"+($subsystem_count+1)+"-button-box");
-            $tmp.find("[linkto='template-nav.linkto']").attr("linkto", "#"+$system_id+"-"+($subsystem_count+1)+"-control-box");
-            katana.$activeTab.find("#"+$system_id+"-"+($subsystem_count)+"-button-box").after($($tmp.html()));
         }
     },
 
