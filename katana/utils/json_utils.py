@@ -36,3 +36,7 @@ def get_item(data, key):
 @register.filter
 def is_dict(data):
     return "true" if type(data) == OrderedDict or type(data) == dict else "false"
+
+@register.filter
+def get_length(data):
+    return len(data)
