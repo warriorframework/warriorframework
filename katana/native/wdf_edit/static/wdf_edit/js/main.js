@@ -155,6 +155,32 @@ var wdf = {
         }
     },
 
+    sysDefaultCheck: function(){
+        if ($(this).prop("checked")) {
+            $boxes = $(".wdf-sys-checkbox:checked");
+            if ($boxes.length > 1) {
+                $.each($boxes, function(ind, box){
+                    $(box).prop("checked", false);
+                });
+            }
+            $(this).prop("checked", true);
+        }
+    },
+
+    subsysDefaultCheck: function(){
+        var $system_id = $(this).attr("name").split("-").slice(0,1);
+        var $subsystem_id = $(this).attr("name").split("-").slice(1,2);
+        if ($(this).prop("checked")) {
+            $boxes = $("[id^='"+$system_id+"'][id$='-control-box']").find(".wdf-subsys-checkbox:checked");
+            if ($boxes.length > 1) {
+                $.each($boxes, function(ind, box){
+                    $(box).prop("checked", false);
+                });
+            }
+            $(this).prop("checked", true);
+        }
+    },
+
     addSystem: function(){
         // Add a system
         var $tmp = katana.$activeTab.find("#system_template").clone();

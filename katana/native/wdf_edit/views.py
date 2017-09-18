@@ -97,6 +97,11 @@ def raw_parser(data):
         if sys_name+"-"+subsys_name+"-subsystem_name" in data:
             current_sys.update({"subsystem_name":data[sys_name+"-"+subsys_name+"-subsystem_name"]})
 
+        if sys_name+"-"+subsys_name+"-default" in data:
+            current_sys.update({"default": True})
+        if sys_name+"-"+subsys_name+"-default-subsys" in data:
+            current_sys.update({"default-subsys": True})
+
         tags_keys = [x for x in data.keys() if x.startswith(sys_name + "-" + subsys_name + "-") and x.endswith("key")]
         # Parse data
         for k in tags_keys:
@@ -137,6 +142,8 @@ def build_xml_dict(data):
                 result.append(OrderedDict())
                 current_sys = result[-1]
                 current_sys["@name"] = subsys["system_name"]
+                if "default" in subsys:
+                    current_sys["@default"] = "yes"
             else:
                 # There is a subsystem inside the current system
                 if locate_system(result, subsys["system_name"]) > -1:
@@ -154,6 +161,11 @@ def build_xml_dict(data):
                     result[-1]["subsystem"].append(OrderedDict())
                     current_sys = result[-1]["subsystem"][-1]
                     current_sys["@name"] = subsys["subsystem_name"]
+                if "default" in subsys:
+                    result[locate_system(result, subsys["system_name"])]["@default"] = "yes"
+                if "default-subsys" in subsys:
+                    current_sys["@default"] = "yes"
+
 
     # Second half is to build all tags and values inside the current_sys
             # subsys contains all the tags and values

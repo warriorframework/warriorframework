@@ -41,7 +41,7 @@
                 <div class="row">
                     <div class="col-md-2"><label class="wdf-label">System name:</label></div>
                     <div class="col-md-9"><input class="wdf-input" name="{{ forloop.counter }}-1-system_name" katana-change="wdf.sysNameChange" value="{{ system|get_item:'@name' }}"/></div>
-                    <div class="col-md-1"><input name="{{ forloop.counter }}-1-default"/></div>
+                    <div class="col-md-1"><input type="checkbox" class="wdf-sys-checkbox" katana-click="wdf.sysDefaultCheck" name="{{ forloop.counter }}-1-default"/><label>Default</label></div>
                 </div>
                 {% with system|remove_name as system %}
                 {% for k, v in system.items %}
@@ -98,11 +98,12 @@
                 <div class="row">
                     <div class="col-md-2"><label class="wdf-label">System name:</label></div>
                     <div class="col-md-9"><input class="wdf-input" name="{{ forloop.counter }}-1-system_name" katana-change="wdf.sysNameChange" value="{{ system|get_item:'@name' }}"/></div>
-                    <div class="col-md-1"><input name="{{ forloop.counter }}-1-default"/></div>
+                    <div class="col-md-1"><input type="checkbox" class="wdf-sys-checkbox" katana-click="wdf.sysDefaultCheck" name="{{ forloop.counter }}-1-default"/><label>Default</label></div>
                 </div>
                 <div class="row">
                     <div class="col-md-2"><label class="wdf-label">Subsystem name:</label></div>
-                    <div class="col-md-10"><input class="wdf-input" name="{{ forloop.counter }}-1-subsystem_name" katana-change="wdf.subSysNameChange" value="{{ system.subsystem|get_item:'@name' }}"/></div>
+                    <div class="col-md-9"><input class="wdf-input" name="{{ forloop.counter }}-1-subsystem_name" katana-change="wdf.subSysNameChange" value="{{ system.subsystem|get_item:'@name' }}"/></div>
+                    <div class="col-md-1"><input type="checkbox" class="wdf-subsys-checkbox" katana-click="wdf.subsysDefaultCheck" name="{{ forloop.counter }}-1-default-subsys"/><label>Default</label></div>
                 </div>
                 {% with system.subsystem|remove_name as system.subsystem %}
                 {% for k, v in system.subsystem.items %}
@@ -160,11 +161,12 @@
                     <div class="row">
                         <div class="col-md-2"><label class="wdf-label">System name:</label></div>
                         <div class="col-md-9"><input class="wdf-input" name="{{ forloop.parentloop.counter }}-{{ forloop.counter }}-system_name" katana-change="wdf.sysNameChange" value="{{ system|get_item:'@name' }}"/></div>
-                        <div class="col-md-1"><input name="{{ forloop.counter }}-1-default"/></div>
+                        <div class="col-md-1"><input type="checkbox" class="wdf-sys-checkbox" katana-click="wdf.sysDefaultCheck" name="{{ forloop.parentloop.counter }}-{{ forloop.counter }}-default"/><label>Default</label></div>
                     </div>
                     <div class="row">
                         <div class="col-md-2"><label class="wdf-label">Subsystem name:</label></div>
-                        <div class="col-md-10"><input class="wdf-input" name="{{ forloop.parentloop.counter }}-{{ forloop.counter }}-subsystem_name" katana-change="wdf.subSysNameChange" value="{{ subsys|get_item:'@name' }}"/></div>
+                        <div class="col-md-9"><input class="wdf-input" name="{{ forloop.parentloop.counter }}-{{ forloop.counter }}-subsystem_name" katana-change="wdf.subSysNameChange" value="{{ subsys|get_item:'@name' }}"/></div>
+                        <div class="col-md-1"><input type="checkbox" class="wdf-subsys-checkbox" katana-click="wdf.subsysDefaultCheck" name="{{ forloop.parentloop.counter }}-{{ forloop.counter }}-default-subsys"/><label>Default</label></div>
                     </div>
                     {% with subsys|remove_name as subsys %}
                     {% for k, v in subsys.items %}
@@ -245,7 +247,8 @@
             </div>
             <div class="row">
                 <div class="col-md-2"><label class="wdf-label">System name:</label></div>
-                <div class="col-md-10"><input class="wdf-input" name="template-system-name" katana-change="wdf.sysNameChange" value=""/></div>
+                <div class="col-md-9"><input class="wdf-input" name="template-system-name" katana-change="wdf.sysNameChange" value=""/></div>
+                <div class="col-md-1"><input type="checkbox" class="wdf-sys-checkbox" katana-click="wdf.sysDefaultCheck" name="template-system-default"/><label>Default</label></div>
             </div>
             <div class="row" id="content">
                 <div class="col-md-2">
@@ -269,11 +272,13 @@
             </div>
             <div class="row">
                 <div class="col-md-2"><label class="wdf-label">System name:</label></div>
-                <div class="col-md-10"><input class="wdf-input" name="template-system-name" katana-change="wdf.sysNameChange" value=""/></div>
+                <div class="col-md-9"><input class="wdf-input" name="template-system-name" katana-change="wdf.sysNameChange" value=""/></div>
+                <div class="col-md-1"><input type="checkbox" class="wdf-sys-checkbox" katana-click="wdf.sysDefaultCheck" name="template-system-default"/><label>Default</label></div>
             </div>
             <div class="row">
                 <div class="col-md-2"><label class="wdf-label">Subsystem name:</label></div>
-                <div class="col-md-10"><input class="wdf-input" name="template-subsystem-name" katana-change="wdf.subSysNameChange" value=""/></div>
+                <div class="col-md-9"><input class="wdf-input" name="template-subsystem-name" katana-change="wdf.subSysNameChange" value=""/></div>
+                <div class="col-md-1"><input type="checkbox" class="wdf-subsys-checkbox" katana-click="wdf.subsysDefaultCheck" name="template-subsystem-default"/><label>Default</label></div>
             </div>
             <div class="row" id="content">
                 <div class="col-md-2">
