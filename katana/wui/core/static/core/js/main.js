@@ -331,6 +331,14 @@ var katana = {
 		});
 	},
 
+    quickAnimation: function($elem, className, duration){
+        // provided by Keenan
+        $elem.addClass(className);
+        setTimeout(function(){
+            $elem.removeClass(className);
+        }, duration);
+    }, 
+
 	fileNav:{
 		folderTemp: '',
 		fileTemp: '',
