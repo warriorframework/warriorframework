@@ -135,15 +135,23 @@ var katana = {
 	},
 
 	openDialog: function( data, title, buttons, callBack ){
-		var dialog = $('<div class="dialog-container"><div class="dialog"><div class="title">' + (title ? title : '') + '</div><div class="page-content">' + (data ? data : '') + '</div></div><div class="overlay"></div></div>');
-		buttons && dialog.find('.dialog').append('<div class="button-bar"><div class="button confirm">Confirm</div><div class="button">Cancel</div></div>');
-		dialog.prependTo( katana.$view );
-		dialog.find('.button').one('click', function(){
-			katana.closeDialog( dialog, ($(this).hasClass('confirm') && callBack) );
-		});
-		dialog.find('.overlay').one('click', function(){
-			katana.closeDialog(dialog);
-		});
+	    var final_title = title ? title : '';
+	    var final_data = data ? data : '';
+
+	    var alert_data = {"heading": final_title, "text": final_data};
+
+	    if(buttons){
+	        alert_data["accept_btn_text"] = "Confirm";
+	        alert_data["cancel_btn_text"] = "Cancel";
+	    }
+	    else{
+	        alert_data["show_accept_btn"] = false;
+	        alert_data["show_cancel_btn"] = false;
+	    }
+
+	    alert_data["alert_type"] = "light";
+
+	    katana.openAlert(alert_data, callBack);
 	},
 
 	closeDialog: function( dialog, callBack ){

@@ -134,6 +134,11 @@ var wapp_management = {
         var selectedFile = $browsedInput[0].files[0];
         $.wapp_management_globals.app_path_details[$filename] = selectedFile;
 
+        var fd = new FormData();
+        fd.append("files[]", selectedFile);
+
+        wapp_management.validateData({"type": "zip", "value": $filename, "zip_contents": fd}, $displayInput)
+
     },
 
     saveConfig: function(app_paths){
@@ -262,7 +267,8 @@ var wapp_management = {
 
         var html_content = '<div class="row" id="row_for_' + $loop_num + '">' +
                                 '<div class="col-sm-5">' +
-                                    '<input class="form-control" id="app_path_for_config_' + $loop_num + '" value="' + input_value + '">' +
+                                    '<input class="form-control" id="app_path_for_config_' +
+                                    $loop_num + '" value="' + input_value + '" katana-change="wapp_management.validateInput">' +
                                 '</div>' +
                                 '<div class="col-sm-1" style="padding: 0.2rem 0.5rem 0 0.5rem;">' +
                                     '<label style="width: 100%;">' +
@@ -347,7 +353,6 @@ var wapp_management = {
         }
 
         $target.show();
-        /* need to scroll to $target here */
 
     },
 
@@ -475,8 +480,12 @@ var wapp_management = {
         var $parent = $currentPage.find("#form-for-paths");
         $parent.html('');
 
+        var elem_value = false;
+
         for(var i=0; i<$disabledInputs.length; i++){
-            wapp_management.addAnotherApp((i+1), $($disabledInputs[i]).val())
+            elem_value = $($disabledInputs[i]).val()
+            wapp_management.addAnotherApp((i+1), elem_value)
+            wapp_management.validateInput(elem_value, config_name, $($disabledInputs[i]))
         }
 
         $siblings.html('');
@@ -497,6 +506,68 @@ var wapp_management = {
 
         wapp_management.installAnApp();
 
+    },
+
+    validateInput: function(elem_value, dir_name, elem){
+        if(elem_value == undefined){
+            var $elem = $(this);
+            elem_value = $elem.val();
+            dir_name = false;
+        }
+        else {
+            $elem = elem
+        }
+
+        if(elem_value.match(".git$")){
+            wapp_management.validateData({"type": "repository", "value": elem_value}, $elem)
+        }
+        else if(elem_value.match(".zip$")){
+            wapp_management.validateData({"type": "zip", "value": elem_value, "dir_name": dir_name}, $elem)
+        }
+        else{
+            wapp_management.validateData({"type": "filepath", "value": elem_value}, $elem)
+        }
+
+
+    },
+
+    validateData: function(data, $elem){
+        if("zip_contents" in data){
+            $.ajax({
+                headers: {
+                    'X-CSRFToken': wapp_management.getCookie('csrftoken'),
+                    processData: false,
+                    contentType: 'multipart/form-data',
+                },
+                type: 'POST',
+                url: 'wapp_management/validate_app_path/',
+                data: data,
+                traditional: true,
+                }).done(function(data){
+                    wapp_management.changeBorderColor(data.valid, $elem)
+                });
+        }
+        else{
+            $.ajax({
+                headers: {
+                    'X-CSRFToken': wapp_management.getCookie('csrftoken')
+                },
+                type: 'POST',
+                url: 'wapp_management/validate_app_path/',
+                data: data
+            }).done(function(data) {
+                wapp_management.changeBorderColor(data.valid, $elem)
+            });
+        }
+    },
+
+    changeBorderColor: function(valid){
+        if(!valid){
+            $elem.css("border-color", "red")
+        }
+        else {
+            $elem.css("border-color", "#dcdcdc")
+        }
     }
 
 };
