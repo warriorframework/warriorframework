@@ -1,25 +1,16 @@
 
 var execution = {
 
-	closeDialog: function(){
-		var panel_container = katana.$activeTab.find('.execution.exec-container');
-		var dialog = katana.$activeTab.find('.execution.dialog_container');
-		panel_container.removeClass('is-blurred');
-		panel_container.css('pointer-events', 'auto');
-		dialog.hide();
-	},
-
-
-	resetForm: function(form){
-		//reset a form , takes in jquery form element as input as input
-		form[0].reset();
-	},
 
 	layoutViewer: {
+
 			/* layoutViewer:
 			- Has functions related to viewing or changing the layout in execution app.
 			*/
+
+
 			loadWs: function(){
+				console.log('loading warriorspace');
 				var dataToSend = JSON.stringify({'start_dir': katana.$activeTab.find('#execution_layout_container').attr('data-startdir')});
 				var url = 'execution/getWs';
 		    var dataType = 'json';
@@ -29,6 +20,7 @@ var execution = {
 
 
 			clearTree: function(){
+				console.log('clearing existing layout')
 				execution_layout_container = katana.$activeTab.find('#execution_layout_container');
 
 				//remove all contents of execution layout container
@@ -49,6 +41,8 @@ var execution = {
 			},
 
 			buildTree: function(data){
+				console.log('building layout');
+				console.log(data);
 				katana.$activeTab.find('#execution_layout_container').jstree({
 					'core': {
 						'data': [data],
@@ -59,6 +53,7 @@ var execution = {
 
 
 			initConfig: function(){
+				console.log('init');
 				var execution_layout_container =  katana.$activeTab.find('#execution_layout_container');
 				var startdir = $(execution_layout_container).attr('data-startdir');
 				var dialog = katana.$activeTab.find('#configure_layout_dialog');
@@ -83,10 +78,12 @@ var execution = {
 			},
 
 			close_configuration_dialog: function(){
+				console.log('closing configuration dialog');
 				execution.layoutViewer.showHideDialog('hide');
 			},
 
 			confirm: function(){
+				console.log("setting start dir");
 				var execution_layout_container = katana.$activeTab.find('#execution_layout_container');
 				var $inputs = $(katana.$activeTab.find('#configure_layout_form :input'));
 				var values = {}
@@ -99,6 +96,7 @@ var execution = {
 			},
 
 			clear: function(){
+				console.log("clearing configuration");
 				execution.layoutViewer.enableDisableConfirm('disable');
 				var elems = execution.layoutViewer.initConfig();
 				var ws = elems['ws'];
@@ -148,7 +146,7 @@ var execution = {
 				var text = tree_el['text'];
 				var data_path = tree_el['li_attr']['data-path'];
 				var html = 	"<li class='execution selection-group-item' name='execution_item' data-path='"+ data_path  +  "' >" +
-										"<span class='execution selections-handle' style='float:pull-left;'> </span>" +
+										"<span class='execution selections-handle' style='float:pull-left;'> :: </span>" +
 										"<label>" + text +"</label>" + "<i class='fa fa-times js-remove' ></i>" + "</li>"
 				ul_elem = katana.$activeTab.find('#execution_items');
 
@@ -178,7 +176,7 @@ var execution = {
 		},
 
 		onAdd: function (evt){
-			// console.log('Added:', evt.item, 'From:', evt.from );
+			console.log('Added:', evt.item, 'From:', evt.from );
 			var added_el = evt.item;
 			var label_text = added_el.innerText;
 
@@ -211,39 +209,50 @@ var execution = {
 	},
 
 
+	cmdOptions: {
+		icon_num : 1,
 
-
-
-
-
-
-	resultsViewer: {
-
-		execution_list : '',
-
-		execute: function(){
-				execution.resultsViewer.execution_list = [];
-				var items = katana.$activeTab.find('[name="execution_item"]');
-				if(items.length === 0){
-					alert("Select atleast one item to execute form the Layout and copy it to the Selections.");
-				}else{
-					for (var i=0; i < items.length; i++){
-						execution.resultsViewer.execution_list.push(items[i].dataset.path);
-					}
-					execution.resultsViewer.openExecution();
-				}
+		init: function(){
+			execution.cmdOptions.displayIcons(execution.cmdOptions.icon_num);
 		},
 
-		openExecution: function(){
+		moveIconsRight: function(){
+			execution.cmdOptions.displayIcons(execution.cmdOptions.icon_num += 4);
+		},
+		moveIconsLeft: function(){
+			execution.cmdOptions.displayIcons(execution.cmdOptions.icon_num += -4);
+		},
+		displayIcons: function(n){
+			console.log("entering: ", execution.cmdOptions.icon_num );
+			var icons = katana.$activeTab.find(".execution.cmd-icons").children();
+			console.log(icons.length);
+			var reduction_val =  (icons.length %2 == 0) ? 1 : 0
+			if (n > icons.length) {execution.cmdOptions.icon_num = 1;}
+			if (n < 1) {execution.cmdOptions.icon_num = icons.length - reduction_val;}
+			for(i=0; i < icons.length; i++) {
+				$(icons[i]).hide();
+			}
+			console.log("leaving: ", execution.cmdOptions.icon_num );
+			$(icons[execution.cmdOptions.icon_num-1]).show();
+			$(icons[execution.cmdOptions.icon_num]).show();
+			$(icons[execution.cmdOptions.icon_num+1]).show();
+			$(icons[execution.cmdOptions.icon_num+2]).show();
+		},
+
+
+
+	},
+
+	resultsViewer: {
+		openExecution: function(openExecutionPopup){
 					// open pop up
 					// find page-content and add page-content inner to it
-
-
 					$.ajax({
 						url: "execution/getResultsIndex",
 						dataType : 'html',
 						type : 'GET',
 						success : function(data){
+								console.log('loaded results html skeleton to popup successfully');
 								execution.resultsViewer.openExecutionPopup(data);
 							},
 						error : function(xhr,errmsg,err) {
@@ -294,18 +303,15 @@ var execution = {
 
 
 		executeWarrior: function(console_div){
-			var execution_file_list = execution.resultsViewer.execution_list;
+			var execution_file_list = [];
 			// items = document.getElementsByName('execution_item');
-			// items = katana.$activeTab.find('[name="execution_item"]')
-			// for (var i=0; i < items.length; i++){
-			// 	execution_file_list.push(items[i].dataset.path);
-			// }
-			// console.log('execution_file_list', execution_file_list);
+			items = katana.$activeTab.find('[name="execution_item"]')
+			for (var i=0; i < items.length; i++){
+				execution_file_list.push(items[i].dataset.path);
+			}
+			console.log('execution_file_list', execution_file_list);
 			var url = 'execution/executeWarrior'
-			var cmdOptions = cmdBuilder.cmdCreator.getCmd(execution_file_list);
-			console.log('coooooo:', cmdOptions);
-			var data_to_send = JSON.stringify({"execution_file_list": execution_file_list, 'cmd_string':cmdOptions});
-
+			var data_to_send = JSON.stringify({"execution_file_list": execution_file_list});
 
 			//data_to_send = {"execution_file_list":["/path/to/tc2","/path/to/tc2"]}'
 			//katana.templateAPI.post.call(katana.$activeTab, url, null, data);
@@ -346,13 +352,6 @@ var execution = {
 
 	 },
 };
-
-
-
-
-
-/* Below are methods imported from old katana for html results display*/
-
 
 
 var htmlResultsApi = {

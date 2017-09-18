@@ -231,7 +231,6 @@ var wdf = {
             var $tmp = katana.$activeTab.find("#subsystem_template").clone();
             var $system_id = $target.attr("id").split("-")[0];
             var $subsystem_count = $target.parent().find("[id^='"+$system_id+"-']").length;
-            console.log("#"+$system_id+"-1-subsystem_name");
             if ($("[name='"+$system_id+"-1-subsystem_name']").length == 0) {
                 // no subsystem structure
                 var $tmp_id = $system_id+"-"+$subsystem_count+"-control-box"
@@ -359,7 +358,6 @@ var wdf = {
 
     jump_to: function(){
         $target = katana.$activeTab.find($(this).attr("linkto"));
-        console.log($target);
         $target.get(0).scrollIntoView(true);
         // $target.find("input").css("background-color", "#ecff91");
         // setTimeout(function(){$target.find("input").css("background-color", "");}, 500);
