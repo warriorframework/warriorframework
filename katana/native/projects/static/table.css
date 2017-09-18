@@ -19,7 +19,7 @@ padding-left: 15px;
 .configuration_table th{
     height: 35px;
     line-height: 35px;
-    text-align: center;
+    text-align: left;
     vertical-align: top;
     font-weight: 400;
     color: #FFF;
@@ -30,14 +30,20 @@ padding-left: 15px;
 
 }
 
-.configuration_table tr th:nth-child(2), .configuration_table tr td:last-child {
-    flex-grow: 1.3;
+.configuration_table tr th:nth-child(2), .configuration_table tr td:nth-child(2) {
+    flex-grow: 4;
     font-size: 18px;
 }
+.configuration_table tr th:nth-child(3), .configuration_table tr td:nth-child(3){
+    flex-grow: 1.5;
+    font-size: 18px;
+}
+
 .configuration_table tr th:last-child, .configuration_table tr td:last-child {
-    flex-grow: .8;
+    flex-grow: .5;
     font-size: 18px;
 }
+
 .configuration_table i{
     padding: 4px;
     font-size: 16px;

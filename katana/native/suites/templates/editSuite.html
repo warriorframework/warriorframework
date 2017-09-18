@@ -7,10 +7,22 @@
 <script type="text/javascript" src="{% static "./doSuiteHandling.js" %}"></script>
 
 {% csrf_token %}
+<div class="tool-bar">
+	
+			<input type="button" class="btn" value="Add Requirement" katana-click="addRequirementToSuite"
+				id="addRequirementEntry"></input>
+
+			<button id="addSuite" class="btn btn-primary" onclick="addCaseToSuite()">Add Case To Suite</button>
+				
+				<button class="btn btn-success" onclick="mapUiToSuiteJson()">Save Changes to: </button>
+				<input class="col-md-4 text-right" type="text" id="my_file_to_save" name="my_file_to_save" value="{{suiteName}}.xml"/>
+	
+</div>
+
 <h2>Details</h2>
 <div class="container-fluid">
 <div class="row">
-	<div class="col-md-6">
+	<div class="col-md-8">
 		<div class="row">
 				<div class="field">
 					<label >Name*:</label>
@@ -62,16 +74,7 @@
 				</div>
 			</div>	
 	</div>
-	
-
-	<div class="col-md-3" >
-		<div id="tableOfTestRequirements" ></div>
-		<input type="button" class="btn" value="Add Requirement" katana-click="addRequirementToSuite"
-				id="addRequirementEntry"></input>
-	</div>
-
-
-
+	<div id="tableOfTestRequirements" class="col-md-4"></div>
 	</div>
 </div>
 
@@ -80,16 +83,12 @@
 
 		<div class="row">
 			<div class="btn-group col-md-6" role="group">   
-				<button id="addSuite" class="btn btn-primary" onclick="addCaseToSuite()">Add Case To Suite</button>
-				
-				<button class="btn btn-success" onclick="mapUiToSuiteJson()">Save Changes to: </button>
-				<input class="col-md-4 text-right" type="text" id="my_file_to_save" name="my_file_to_save" value="{{savefilename}}"/>
-			</div>
+		</div>
 		</div>
 
 		<div class="row">
-			<div id="tableOfTestcasesForSuite" class="col-md-9" style='overflow:auto;' ></div>
-			<div id="editTestcaseEntry"        class="col-md-3" >
+			<div id="tableOfTestcasesForSuite" class="col-md-12" style='overflow:auto;' ></div>
+			<div id="editTestcaseEntry"        class="col-md-3 hidden" >
 				
 
 					<div class="field"> 
@@ -104,7 +103,7 @@
 
 					<div class="field">
 					<label >Context:</label>
-					<select type="text" class="col-md-4 text-right" id="CaseContext" value="positive" >
+					<select type="text" class="text-right" id="CaseContext" value="positive" >
 					<option value="positive">positive</option>
 					<option value="negative">negative</option>
 					</select>
@@ -112,7 +111,7 @@
 					</div>
 					<div class="field">
 					<label >Run Type:</label>
-					<select type="text" class="col-md-4 text-right" id="CaseRuntype" value="sequential_keywords" >
+					<select type="text" class="text-right" id="CaseRuntype" value="sequential_keywords" >
 					<option value="sequential_keywords">sequential_keywords</option>
 					<option value="parallel_keywords">parallel_keywords</option>
 					</select>
@@ -122,7 +121,7 @@
 					<div class="field">
 					<label >Run Mode:</label>
 					
-					<select type="text" class="col-md-4 text-right" id="CaseRunmode" value="RMT" >
+					<select type="text" class="text-right" id="CaseRunmode" value="RMT" >
 					<option value="RMT">RMT</option>
 					<option value="RUF">RUF</option>
 					<option value="RUP">RUP</option>
@@ -133,7 +132,7 @@
 					<div class="field">
 					<label >Impact:</label>
 
-					<select type="text" class="col-md-4 text-right" id="CaseImpact" value="impact" >
+					<select type="text" class="text-right" id="CaseImpact" value="impact" >
 					<option value="impact">impact</option>
 					<option value="noimpact">noimpact</option>
 					</select>
@@ -141,28 +140,24 @@
 					</div>
 
 					<div class="field">
-					<label class="col-md-2 text-right" >On Error action:</label>
-					<select type="text" class="col-md-4 text-right" id="onError-at-action" value="" >
+					<label class="text-right" >On Error action:</label>
+					<select type="text" class="text-right" id="onError-at-action" value="" >
 					<option value="next">next</option>
 					<option value="abort">abort</option>
 					<option value="abort_as_error">abort_as_error</option>
 					<option value="goto">goto</option>
 					</select>
 					</div>		
-					<input type="button" class="btn" value="Save Changes To Test Case" id="editTestcase"/>
+					<button class="center button save" id="editTestcase" katana-click="saveSuitesCaseUI">"Save Changes </button>
 				</div>
-
-							
 
 		</div>
 
 </div>
-		
-<div>
+
 	
 </div>	
 	<div id="tableOfFileContents"  class="col-md-6">fileContents</label></div>
 	<div id="listOfTestcasesForSuite">{{fulljson|jsonify}}</div>
 	<div id="savefilepath">{{savefilepath}}</div>
-	
 </body>

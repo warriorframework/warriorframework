@@ -105,7 +105,7 @@ function insertCaseToSuite(sid){
 	createCasesTable(jsonTestcases['Testcase']);
 }
 
-function mapSuiteCaseToUI(s,xdata) {
+function mapSuiteCaseToUI(s,xdata,popup) {
 
 	// This is called from an event handler ... 
 	console.log(xdata);
@@ -113,8 +113,8 @@ function mapSuiteCaseToUI(s,xdata) {
 	var oneCase = xdata[s];
 	console.log(oneCase);
 	console.log(oneCase['path']);
-	katana.$activeTab.find("#CaseRowToEdit").val(s); 
-	console.log(katana.$activeTab.find("#CaseRowToEdit").val());
+	popup.find("#CaseRowToEdit").val(s); 
+	console.log(popup.find("#CaseRowToEdit").val());
 	//katana.$activeTab.find("CasePath").val(oneCase['path']);
 	
 	var myStringArray = mySuiteKeywordsArray; 
@@ -122,7 +122,7 @@ function mapSuiteCaseToUI(s,xdata) {
 	for (var xi = 0; xi < arrayLength; xi++) {
 		console.log("Fill "+ mySuite_UI_Array[xi]);
 			var xxx = "#"+mySuite_UI_Array[xi];
-			katana.$activeTab.find(xxx).val(oneCase[myStringArray[xi]]); 
+			popup.find(xxx).val(oneCase[myStringArray[xi]]); 
 		}
 
 	if (! oneCase['onError']) {
@@ -143,10 +143,10 @@ function mapSuiteCaseToUI(s,xdata) {
 // Note that this function is calld from an event handler which catches the 
 // row number from the table.
 /// -------------------------------------------------------------------------------
-function mapUItoSuiteCase(xdata){
+function mapUItoSuiteCase(popup,xdata){
 
 		
-	var s = parseInt(katana.$activeTab.find("#CaseRowToEdit").val());
+	var s = parseInt(popup.find("#CaseRowToEdit").val());
 	console.log(xdata);
 	console.log(s);
 	var oneCase = xdata[s];
@@ -154,24 +154,22 @@ function mapUItoSuiteCase(xdata){
 	console.log(oneCase);
 	
 		id = '#CaseImpact'
-		oneCase['impact'] = katana.$activeTab.find(id).val();
+		oneCase['impact'] = popup.find(id).val();
 
 		id = '#CasePath'		
-		oneCase['path'] = katana.$activeTab.find(id).val();
+		oneCase['path'] = popup.find(id).val();
 
 		id = '#CaseContext'
-		oneCase['context'] = katana.$activeTab.find(id).val();
+		oneCase['context'] = popup.find(id).val();
 
 		id = '#CaseRuntype'
-		oneCase['runtype'] = katana.$activeTab.find(id).val();
+		oneCase['runtype'] = popup.find(id).val();
 
 		id = '#CaseRunmode'
-		oneCase['runmode'] = katana.$activeTab.find(id).val();
-
+		oneCase['runmode'] = popup.find(id).val();
 
 		id = "#onError-at-action"
-		oneCase['onError']['@action'] = katana.$activeTab.find(id).val();
-
+		oneCase['onError']['@action'] = popup.find(id).val();
 
 	
 }
@@ -287,7 +285,7 @@ function createCasesTable(xdata) {
 			var sid = parseInt(names[1]);
 			removeTestcase(sid,xdata);
 		});
-		bid = "editTestcase-"+s+"-id"+getRandomSuiteID();
+		bid = "editTestcaseRow-"+s+"-id"+getRandomSuiteID();
 		//items.push('<td><input type="button" class="btn" value="Edit" id="'+bid+'"/></td>');
 		items.push('<i title="Edit" class="edit-item-32" title="Edit" id="'+bid+'"/> ');
 		katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
@@ -296,7 +294,10 @@ function createCasesTable(xdata) {
 			var sid = parseInt(names[1]);
 			console.log("xdata --> "+ xdata);
 			//alert("mapSuiteCaseToUI");
-			mapSuiteCaseToUI(sid,xdata);
+			katana.popupController.open(katana.$activeTab.find("#editTestCaseEntry").html(),"Edit..." + sid, function(popup) {
+				mapSuiteCaseToUI(sid,xdata,popup);
+			});
+			
 			//This is where you load in the edit form and display this row in detail. 
 		});
 		bid = "insertTestcase-"+s+"-id"+getRandomSuiteID();
@@ -308,7 +309,7 @@ function createCasesTable(xdata) {
 			var sid = parseInt(names[1]);
 			console.log("xdata --> "+ xdata);
 			insertCaseToSuite(sid);
-			mapSuiteCaseToUI(sid,xdata);
+			//mapSuiteCaseToUI(sid,xdata);
 			//This is where you load in the edit form and display this row in detail. 
 		});
 		items.push('</tr>');
@@ -478,14 +479,20 @@ function mapSuiteJsonToUi(data){
 	createCasesTable(xdata);
 	createRequirementsTable(rdata);
 	katana.$activeTab.find('#editTestcase').off('click');  // unbind is deprecated - debounces the click event. 
-	$(document).on('click','#editTestcase',function() {
-			mapUItoSuiteCase(xdata);
-			createCasesTable(xdata);  //Refresh the screen.
+	katana.$activeTab.find('#editTestcase').on('click',function() {
+
 		});
 
 }  // end of function 
 
-
+function saveSuitesCaseUI() {
+		var xdata = jsonTestcases['Testcase'];
+		var popup = $(this).closest('.popup');
+		mapUItoSuiteCase(popup,xdata);
+		createCasesTable(xdata);  //Refresh the screen.
+		console.log('Closing');
+		katana.popupController.close(popup);
+}
 function insertRequirementToSuite( sid) {
 
 			console.log("Add Requirement... ");

@@ -106,7 +106,24 @@ function addSuiteToProject(){
 	mapProjectJsonToUi(jsonTestSuites);
 }
 
+function setupProjectPopupDialog(s,xdata,popup) {
+	console.log(s);
+	var oneSuite = xdata[s];
+	console.log(oneSuite);
+	popup.find("#suiteRowToEdit").val(s); 
+	popup.find("#suitePath").val(oneSuite['path']);
+	popup.find("#Execute-at-ExecType").val(oneSuite['Execute']['@ExecType']); 
+	popup.find("#executeRuleAtCondition").val(oneSuite['Execute']['Rule']['@Condition']); 
+	popup.find("#executeRuleAtCondvalue").val(oneSuite['Execute']['Rule']['@Condvalue']); 
+	popup.find("#executeRuleAtElse").val(oneSuite['Execute']['Rule']['@Else']); 
+	popup.find("#executeRuleAtElsevalue").val(oneSuite['Execute']['Rule']['@Elsevalue']); 
+	popup.find("#onError-at-action").val(oneSuite['onError']['@action']); 
+	popup.find("#onError-at-value").val(oneSuite['onError']['@value']); 
+	popup.find("#onError-at-type").val(oneSuite['runmode']['@type']); 
+	popup.find("#onError-at-value").val(oneSuite['runmode']['@value']); 
+	popup.find("#impact").val(oneSuite['impact']); 
 
+}
 
 function mapProjectSuiteToUI(s,xdata) {
 
@@ -139,28 +156,28 @@ function mapProjectSuiteToUI(s,xdata) {
 // Note that this function is calld from an event handler which catches the 
 // row number from the table.
 /// -------------------------------------------------------------------------------
-function mapUItoProjectSuite(xdata){
-	if (katana.$activeTab.find("#suitePath").val().length < 1) {
+function mapUItoProjectSuite(popup, xdata){
+	if (popup.find("#suitePath").val().length < 1) {
 		alert("Please specify a suite path name");
 		return
 	}
 
-		
-	var s = parseInt(katana.$activeTab.find("#suiteRowToEdit").val());
+	var s = parseInt(popup.find("#suiteRowToEdit").val());
 	var oneSuite = xdata[s];
-	oneSuite['path'] = katana.$activeTab.find("#suitePath").val(); 
+	oneSuite['path'] = popup.find("#suitePath").val(); 
 	oneSuite['Execute'] = {}
-	oneSuite['Execute']['@ExecType'] = katana.$activeTab.find("#Execute-at-ExecType").val(); 
+	oneSuite['Execute']['@ExecType'] = popup.find("#Execute-at-ExecType").val(); 
 	oneSuite['Execute']['Rule'] = {}
-	oneSuite['Execute']['Rule']['@Condition']= katana.$activeTab.find("#executeRuleAtCondition").val(); 
-	oneSuite['Execute']['Rule']['@Condvalue'] = katana.$activeTab.find("#executeRuleAtCondvalue").val(); 
-	oneSuite['Execute']['Rule']['@Else'] = katana.$activeTab.find("#executeRuleAtElse").val(); 
-	oneSuite['Execute']['Rule']['@Elsevalue'] = katana.$activeTab.find("#executeRuleAtElsevalue").val(); 
-	oneSuite['impact'] = katana.$activeTab.find("#impact").val(); 
-	oneSuite['onError']['@action'] = katana.$activeTab.find("#onError-at-action").val(); 
-	oneSuite['onError']['@value'] = katana.$activeTab.find("#onError-at-value").val(); 
-	oneSuite['runmode']['@type'] = katana.$activeTab.find("#onError-at-type").val(); 
-	oneSuite['runmode']['@value'] = katana.$activeTab.find("#onError-at-value").val(); 
+	oneSuite['Execute']['Rule']['@Condition']= popup.find("#executeRuleAtCondition").val(); 
+	oneSuite['Execute']['Rule']['@Condvalue'] = popup.find("#executeRuleAtCondvalue").val(); 
+	oneSuite['Execute']['Rule']['@Else'] = popup.find("#executeRuleAtElse").val(); 
+	oneSuite['Execute']['Rule']['@Elsevalue'] = popup.find("#executeRuleAtElsevalue").val(); 
+	oneSuite['impact'] = popup.find("#impact").val(); 
+	oneSuite['onError']['@action'] = popup.find("#onError-at-action").val(); 
+	oneSuite['onError']['@value'] = popup.find("#onError-at-value").val(); 
+	oneSuite['runmode']['@type'] = popup.find("#onError-at-type").val(); 
+	oneSuite['runmode']['@value'] = popup.find("#onError-at-value").val(); 
+	console.log("Saving", oneSuite);
 }
 
 /*
@@ -250,7 +267,7 @@ function createSuitesTable(xdata) {
 
 	items.push('<table id="suite_table_display" class="configuration_table" width="100%">');
 	items.push('<thead>');
-	items.push('<tr id="suiteRow"><th>Num</th><th>Suite</th><th>Execute</th><th>OnError</th><th>Impact</th><th/><th/></tr>');
+	items.push('<tr id="suiteRow"><th>Num</th><th>Suite</th><th>Execute</th><th>OnError</th><th>Impact</th><th/></tr>');
 	items.push('</thead>');
 	items.push('<tbody>');
 
@@ -268,7 +285,7 @@ function createSuitesTable(xdata) {
 		console.log(oneSuite['path']);
 		
 		items.push('<tr data-sid="'+s+'">');
-		items.push('<td class="col-md-1">'+(parseInt(s)+1)+'</td>');
+		items.push('<td>'+(parseInt(s)+1)+'</td>');
 		items.push('<td>'+oneSuite['path']+'</td>');
 		items.push('<td>Type='+oneSuite['Execute']['@ExecType']+'<br>');
 		items.push('Condition='+oneSuite['Execute']['Rule']['@Condition']+'<br>');
@@ -295,8 +312,12 @@ function createSuitesTable(xdata) {
 		$(document).on('click','#'+bid,function(  ) {
 			var names = this.id.split('-');
 			var sid = parseInt(names[1]);
-			console.log("xdata --> "+ xdata);
-			mapProjectSuiteToUI(sid,xdata);
+			console.log("xdata --> ", xdata);
+			//mapProjectSuiteToUI(sid,xdata);
+
+			katana.popupController.open(katana.$activeTab.find("#editTestSuiteEntry").html(),"Edit..." + sid, function(popup) {
+				setupProjectPopupDialog(sid,xdata,popup);
+			});
 			//This is where you load in the edit form and display this row in detail. 
 		});
 
@@ -308,7 +329,7 @@ function createSuitesTable(xdata) {
 			var sid = parseInt(names[1]);
 			console.log("xdata --> "+ xdata);
 			insertTestSuite(sid,xdata);
-			mapProjectSuiteToUI(sid,xdata);
+			//mapProjectSuiteToUI(sid,xdata);
 			//This is where you load in the edit form and display this row in detail. 
 		});
 
@@ -410,9 +431,11 @@ function mapProjectJsonToUi(data){
 
 	createSuitesTable(xdata);
 	katana.$activeTab.find('#saveChangesToRow').off('click');  // unbind is deprecated - debounces the click event. 
-	$(document).on('click','#saveChangesToRow',function(  ) {
-			console.log(xdata);
-			mapUItoProjectSuite(xdata);
+	$(document).on('click','#saveChangesToRow',function() {
+			var popup = $(this).closest('.popup');
+			mapUItoProjectSuite( popup, xdata );
+			katana.popupController.close(popup);
+			mapProjectJsonToUi(jsonTestSuites);
 		});
 
 }  // end of function 

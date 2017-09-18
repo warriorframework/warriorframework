@@ -1,7 +1,10 @@
 {% load static %}
 {% load jsonify %}
 
-
+<body> 
+<div class="tool-bar">
+<button id="addSuite" class="btn btn-success" onclick="startNewProject()">Add New Project</button>
+</div>
 <script type="text/javascript" src="{% static "./doProjectHandling.js" %}"></script>
 
     <h2>List of Projects</h2>
@@ -10,9 +13,8 @@
 
 
 </div>
-      <div class="btn-group" role="group">   
-      <button id="addSuite" class="btn btn-success" onclick="startNewProject()">Add New Project</button>
-      </div>
+
+ 
 <div id="myProjectTree"></div>
 <div id="mmm" >{{treejs|jsonify}}</div>
 
@@ -42,3 +44,4 @@ katana.$activeTab.find('#myProjectTree').on("select_node.jstree", function (e, d
 
 </script>
 
+</body>

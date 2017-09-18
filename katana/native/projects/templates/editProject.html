@@ -6,6 +6,13 @@
 <script type="text/javascript" src="{% static "./doProjectHandling.js" %}" />
 <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 -->
+<div class="tool-bar">
+	    	{% csrf_token %}
+			<button id="addSuite" class="btn btn-primary" onclick="addSuiteToProject()">Add Case to Suite</button>
+			<!-- <button class="btn btn-primary" onclick="resetUIfromFile()">Discard Changes</button>  -->
+			<button class="btn btn-success save" onclick="mapUiToProjectJson()">Save Changes to : </button>
+			<input class="col-md-4 text-right" type="text" id="my_file_to_save" name="my_file_to_save" value="{{projectName}}.xml"/>
+</div>
  
 	<h2>Details</h2>
 	<div class="col-md-12 row">
@@ -27,7 +34,7 @@
 				<input class="text-right" type="text" id="projectDate" name="projectDate" value="{{projectDate}}" />
 			</div>
 
-			<div class="field col-md-2 input_padding">
+			<div class="field col-md-3 input_padding">
 				<label class="text-right">State:</label>
 				<select class="text-right" type="text" id="projectState" name="projectState" value="{{projectState}}" >
 					<option value="New">New</option>
@@ -36,7 +43,7 @@
 					<option value="Add">Add Another</option>
 				</select>
 			</div>
-			<div class="field col-md-2 input_padding">
+			<div class="field col-md-3 input_padding">
 				<label class="text-right">defaultOnError:</label>
 				<select class="text-right" type="text" id="default_onError" name="default_onError" value="{{projectdefaultOnError}}" >
 					<option value="next">Next</option>
@@ -45,7 +52,14 @@
 					<option value="goto">Goto</option>
 				</select>
 			</div>
-			<div class="field col-md-2 input_padding">	
+
+			<div class="field col-md-3">
+				<label class="text-right">Go To:</label>
+				<input class="text-right" type="text" id="default_onError_goto" name="default_onError_goto" value="{{projectdefaultOnError}}" >
+				</input>
+
+			</div>
+			<div class="field col-md-3 input_padding">	
 				<label class=" text-right" for="projectDatatype">Data Type:</label>
 				<select class="text-right" type="text" id="projectDatatype" name="projectDatatype" value="{{projectDatatype}}" >
 					<option value="Custom">Custom</option>
@@ -55,24 +69,10 @@
 			</div>
 			<!-- <button value="Hello" onClick="prompt('eatme','no')" >ddd</button> -->
 		</div>
-	</div>
-
-
-	<div class="container">
-	    <div id="editor" class="col-md-12" >  </div>    
-	    <div class="btn-group col-md-8" role="group">   
-	    	{% csrf_token %}
-			<button id="addSuite" class="btn btn-primary" onclick="addSuiteToProject()">Add Case to Suite</button>
-			<!-- <button class="btn btn-primary" onclick="resetUIfromFile()">Discard Changes</button>  -->
-			<button class="btn btn-success" onclick="mapUiToProjectJson()">Save Changes to : </button>
-			<input class="col-md-4 text-right" type="text" id="my_file_to_save" name="my_file_to_save" value="{{savefilename}}"/>
-		</div>			
-	</div>
-
-	
+	</div>	
 	<div class="container-fluid row">
-		<div id="tableOfTestSuitesForProject"  class="col-md-8" />
-		<div id="editTestSuiteEntry" class="form-group col-md-3">
+		<div id="tableOfTestSuitesForProject"  class="col-md-12" />
+		<div id="editTestSuiteEntry" class="form-group col-md-3 hidden">
 				<div class="field " > 
 				<label >Row Id</label>
 				<input type="text" id="suiteRowToEdit" value=""/>
@@ -148,27 +148,27 @@
 				</select>
 				</div>
 					
-					<div class="field ">
-					<label class="text-right" >Run mode:</label>
-					<label class="text-right" >runmode type:</label>
-					<input type="text" class="text-right" id="runmode-at-type" value="" />
-					<label class="text-right" >runmode value:</label>
-					<select type="text" class="text-right" id="runmode-at-value" value="" >
-					<option value="RMT">RMT</option> 
-					<option value="RUF">RUF</option> 
-					<option value="RUP">RUP</option> 
+			<div class="field ">
+			<label class="text-right" >Run mode:</label>
+			<label class="text-right" >runmode type:</label>
+			<input type="text" class="text-right" id="runmode-at-type" value="" />
+			<label class="text-right" >runmode value:</label>
+			<select type="text" class="text-right" id="runmode-at-value" value="" >
+			<option value="RMT">RMT</option> 
+			<option value="RUF">RUF</option> 
+			<option value="RUP">RUP</option> 
+			</select>
+			</div>
+			<div class="field ">
+				<label class="text-right" >impact</label>
+					<select type="text" id="impact" value="" >
+					<option value="impact">impact</option> 
+					<option value="noimpact">noimpact</option> 
 					</select>
-					</div>
-					<div class="field ">
-						<label class="text-right" >impact</label>
-							<select type="text" id="impact" value="" >
-							<option value="impact">impact</option> 
-							<option value="noimpact">noimpact</option> 
-							</select>
-							<br>
-						</div>
-					<input type="button" class="btn col-md-3" value="Save Changes" id="saveChangesToRow"/>
-					</div>
+					<br>
+				</div>
+			<input type="button" class="btn col-md-3 center" value="Save Changes" id="saveChangesToRow"/>
+			</div>
 
 	</div>
 

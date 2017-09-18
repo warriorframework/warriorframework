@@ -5,14 +5,14 @@
 
 
 <body>
-
+<div class="tool-bar">   
+      <button id="addNewCase" class="btn btn-success" onclick="startNewSuite()">Add New Suite</button>
+  </div>
 
 <h2>List of Suites</h2>		
   <div id="mySuite">		</div>
 
-  <div class="btn-group" role="group">   
-      <button id="addNewCase" class="btn btn-success" onclick="startNewSuite()">Add New Suite</button>
-  </div>
+  
 <div id="mySuiteTree"></div>
 <div id="mmm" >{{treejs|jsonify}}</div>
 
