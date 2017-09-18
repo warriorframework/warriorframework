@@ -2521,6 +2521,7 @@ div .tool-bar-links:active {
     display: block;
     width: 100%;
     max-width: 100%;
+    text-align: left;
 }
 
 .wdf-label {
@@ -2583,6 +2584,14 @@ div .tool-bar-links:active {
 .wdf-highlight {
     -webkit-animation: -webkit-wdf-highlight 1s ease;
     animation: wdf-highlight 1s ease;
+}
+
+.wdf-tall-label {
+    padding-bottom: 5px;
+}
+
+.wdf-pad {
+    padding: 10px;
 }
 
 .i-success:hover {

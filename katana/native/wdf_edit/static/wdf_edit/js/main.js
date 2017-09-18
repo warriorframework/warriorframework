@@ -25,6 +25,15 @@ var wdf = {
         });
     },
 
+    hide_template: function(){
+        katana.refreshAutoInit(katana.$activeTab.find("#system_template"));
+        katana.refreshAutoInit(katana.$activeTab.find("#tag_template"));
+        katana.refreshAutoInit(katana.$activeTab.find("#child_tag_template"));
+        katana.refreshAutoInit(katana.$activeTab.find("#subsystem_template"));
+        katana.refreshAutoInit(katana.$activeTab.find("#navigator_template"));
+        katana.refreshAutoInit(katana.$activeTab.find("#navigator_button_template"));
+    },
+
     toggle: function(){
         // hide all the div with id content under control-box
         $target = $(this).closest(".control-box");
@@ -105,16 +114,33 @@ var wdf = {
         // $target.addClass("animated bounceOutLeft");
         // setTimeout(function(){$target.empty()}, 600);
         $target.empty();
+
+        $target=$("[linkto='#"+$system_id+"-"+$subsystem_id+"-control-box']");
+        $label=$target.closest(".wdf-pad");
+        if ( $label.find(".btn").length == 1) {
+            $label.remove();
+        } else {
+            $target.parent().remove();
+        }
     },
 
     addSystem: function(){
         // Add a system
         var $tmp = katana.$activeTab.find("#system_template").clone();
-        $tmp.find("#template-system").prop("id", katana.$activeTab.find(".control-box").length-1+"-1-control-box")
+        $tmp.find("#template-system").prop("id", katana.$activeTab.find(".control-box").length-1+"-1-control-box");
         $tmp.find("[name='template-system-name']").prop("name", katana.$activeTab.find(".control-box").length-1+"-1-system_name");
         $tmp.find("[name='template-system.tag']").prop("name", katana.$activeTab.find(".control-box").length-1+"-1-1-1-key");
         $tmp.find("[name='template-system.value']").prop("name", katana.$activeTab.find(".control-box").length-1+"-1-1-1-value");
         katana.$activeTab.find("#wdf-editor-col").append($($tmp.html()));
+
+        var $tmp = katana.$activeTab.find("#navigator_template").clone();
+        $tmp.find("#template-nav-label").text("New system");
+        $tmp.find("#template-nav-label").prop("id", katana.$activeTab.find(".control-box").length-1+"-1-ref-label");
+        $tmp.find("#template-button-box").prop("id", katana.$activeTab.find(".control-box").length-1+"-1-button-box");
+        $tmp.find("[linkto='template-nav.linkto']").text("New system");
+        var $length = katana.$activeTab.find(".control-box").length-2;
+        $tmp.find("[linkto='template-nav.linkto']").attr("linkto", "#"+$length+"-1-control-box");
+        katana.$activeTab.find("#wdf-navigator").append($($tmp.html()));
     },
 
     addTag: function(){
@@ -179,9 +205,15 @@ var wdf = {
             $tmp.find("[name='template-subsystem.tag']").prop("name", $system_id+"-"+($subsystem_count+1)+"-"+($target.children("#content").length+1)+"-1-key");
             $tmp.find("[name='template-subsystem.value']").prop("name", $system_id+"-"+($subsystem_count+1)+"-"+($target.children("#content").length+1)+"-1-value");
             $tmp.find("[katana-click='wdf.addSubSystem']").hide()
-            $target.after($($tmp.html()));
+            $("#"+$system_id+"-"+$subsystem_count+"-control-box").after($($tmp.html()));
 
             $target.parent().find("[id^='"+$system_id+"-1']").find("[katana-click='wdf.addTag']").hide()
+
+            var $tmp = katana.$activeTab.find("#navigator_button_template").clone();
+            $tmp.find("#template-button-box").prop("id", $system_id+"-"+$subsystem_id+"-button-box");
+            $tmp.find("[linkto='template-nav.linkto']").text("New system");
+            $tmp.find("[linkto='template-nav.linkto']").attr("linkto", "#"+$system_id+"-"+($subsystem_count+1)+"-control-box");
+            katana.$activeTab.find("#"+$system_id+"-"+$subsystem_id+"-button-box").append($($tmp.html()));
         }
     },
 
@@ -197,10 +229,7 @@ var wdf = {
             success: function(data){
                 // console.log(data);
                 katana.$activeTab.find("#main_info").replaceWith(data);
-                katana.refreshAutoInit(katana.$activeTab.find("#system_template"));
-                katana.refreshAutoInit(katana.$activeTab.find("#tag_template"));
-                katana.refreshAutoInit(katana.$activeTab.find("#child_tag_template"));
-                katana.refreshAutoInit(katana.$activeTab.find("#subsystem_template"));
+                wdf.hide_template();
                 // console.log("loaded");
             }
         });
@@ -233,10 +262,7 @@ var wdf = {
                     success: function(data){
                         // console.log(data);
                         katana.$activeTab.find("#main_info").replaceWith(data);
-                        katana.refreshAutoInit(katana.$activeTab.find("#system_template"));
-                        katana.refreshAutoInit(katana.$activeTab.find("#tag_template"));
-                        katana.refreshAutoInit(katana.$activeTab.find("#child_tag_template"));
-                        katana.refreshAutoInit(katana.$activeTab.find("#subsystem_template"));
+                        wdf.hide_template();
                         wdf.search_and_hide();
                         // console.log("loaded");
                     }
@@ -280,7 +306,8 @@ var wdf = {
     },
 
     jump_to: function(){
-        $target = katana.$activeTab.find($(this).attr("linkto"))
+        $target = katana.$activeTab.find($(this).attr("linkto"));
+        console.log($target);
         $target.get(0).scrollIntoView(true);
         // $target.find("input").css("background-color", "#ecff91");
         // setTimeout(function(){$target.find("input").css("background-color", "");}, 500);

@@ -28,8 +28,11 @@ def get_item(data, key):
     """
         Allow django template to access dict with key with special character
     """
-    return data.get(key)
+    if type(data) == OrderedDict or type(data) == dict :
+        return data.get(key)
+    else:
+        return ""
 
 @register.filter
 def is_dict(data):
-    return "true" if type(data) == OrderedDict else "false"
+    return "true" if type(data) == OrderedDict or type(data) == dict else "false"

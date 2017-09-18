@@ -35,7 +35,7 @@ def index(request):
                             del subsys[k]
             else:
                 subsys = sys["subsystem"]
-                for k, v in subsys.items():
+                for k, v in sys["subsystem"].items():
                     if k.startswith("@") and k != "@name":
                         subsys[k[1:]] = v
                         del subsys[k]
@@ -48,10 +48,10 @@ def index(request):
                     del sys[k]
                 elif k == "#text":
                     del sys[k]
-    print(json.dumps(data, indent=4))
+    print(json.dumps(data[root], indent=4))
 
-    ref_dict = copy.deepcopy(data["credentials"])
-    return render(request, 'wdf_edit/index.html', {"data": data["credentials"], "data_read": ref_dict, "filepath": filepath})
+    ref_dict = copy.deepcopy(data[root])
+    return render(request, 'wdf_edit/index.html', {"data": data[root], "data_read": ref_dict, "filepath": filepath, "desc":data[root].get("description", "")})
 
 # def get_json(request):
 #     return JsonResponse(xmltodict.parse(open('/home/ka/Desktop/warrior_fnc_tests/warrior_tests/data/cli_tests/cli_def_Data.xml').read()))
@@ -71,7 +71,8 @@ def remove_name(data):
     """
         remove the @name key from dict
     """
-    del data["@name"]
+    if type(data) == dict or type(data) == OrderedDict:
+        del data["@name"]
     return data
 
 def raw_parser(data):
@@ -81,6 +82,8 @@ def raw_parser(data):
         the last level contains the tag and value inside a list
     """
     result = {}
+    if "description" in data:
+        result["description"] = data["description"]
     system_keys = [x for x in data.keys() if x.endswith("-system_name")]
     for name in system_keys:
         # Prepare all system to save data
@@ -120,7 +123,10 @@ def build_xml_dict(data):
         output the dicttoxml format dict
     """
     result = []
+    desc = ""
     # First half is to build the system and subsystem tag in the result dict
+    if "description" in data:
+        desc = data.pop("description")
     sys_keys = [str(y) for y in sorted([int(x) for x in data.keys()])]
     for sys_key in sys_keys:
         sys = data[sys_key]
@@ -183,18 +189,21 @@ def build_xml_dict(data):
                             current_childtags.update({tmp_key:[subsys[tag_key][subtag_key][1]]})
 
     print json.dumps(result, indent=4)
-    return result
+    return result, desc
 
 def on_post(request):
     data = request.POST
     filepath = data["filepath"]
     print json.dumps(data.items(), indent=4)
     data = raw_parser(data)
-    data = build_xml_dict(data)
-    data = {"credentials":{"system":data}}
+    data, desc = build_xml_dict(data)
+    result = {"credentials":OrderedDict()}
+    if desc:
+        result["credentials"]["description"] = desc
+    result["credentials"]["system"] = data
 
     from xml.dom.minidom import parseString as miniparse
-    print miniparse(xmltodict.unparse(data)).toprettyxml()
+    print miniparse(xmltodict.unparse(result)).toprettyxml()
     print "Filepath:", filepath
     # return render(request, 'wdf_edit/result.html', {"data": json.dumps(request.POST, indent=4)})
     return render(request, 'wdf_edit/file_list.html', {})
