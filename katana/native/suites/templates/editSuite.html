@@ -11,9 +11,9 @@
 	
 			<input type="button" class="btn" value="Add Requirement" katana-click="addRequirementToSuite"
 				id="addRequirementEntry"></input>
-
+	<!--
 			<button id="addSuite" class="btn btn-primary" onclick="addCaseToSuite()">Add Case To Suite</button>
-				
+		-->		
 				<button class="btn btn-success" onclick="mapUiToSuiteJson()">Save Changes to: </button>
 				<input class="col-md-4 text-right" type="text" id="my_file_to_save" name="my_file_to_save" value="{{suiteName}}.xml"/>
 	
@@ -40,7 +40,7 @@
 		<div class="row">
 				<div class="field">
 					<label >Date*:</label>
-					<input type="text" id="suiteDate"  value="{{suiteDate}}"/>
+					<input type="text" id="suiteDate"  value="{{suiteDate}} {{suiteTime}}"/>
 				</div>
 				<div class="field">	
 					<label class=" text-right" for="default_onError">Default On Error:</label>
@@ -91,7 +91,7 @@
 			<div id="editTestcaseEntry"        class="col-md-3 hidden" >
 				
 
-					<div class="field"> 
+					<div class="field hidden"> 
 					<label >Row Id</label>
 					<input type="text" id="CaseRowToEdit"value=""/>
 					</div>			

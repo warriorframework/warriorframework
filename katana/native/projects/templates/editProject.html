@@ -8,8 +8,9 @@
 -->
 <div class="tool-bar">
 	    	{% csrf_token %}
-			<button id="addSuite" class="btn btn-primary" onclick="addSuiteToProject()">Add Case to Suite</button>
-			<!-- <button class="btn btn-primary" onclick="resetUIfromFile()">Discard Changes</button>  -->
+	    	<!--
+			<button id="addSuite" class="btn btn-primary" onclick="addSuiteToProject()">Add Suite To Project</button>
+			 <button class="btn btn-primary" onclick="resetUIfromFile()">Discard Changes</button>  -->
 			<button class="btn btn-success save" onclick="mapUiToProjectJson()">Save Changes to : </button>
 			<input class="col-md-4 text-right" type="text" id="my_file_to_save" name="my_file_to_save" value="{{projectName}}.xml"/>
 </div>
@@ -31,7 +32,7 @@
 			<div class="field col-md-3 input_padding">	
 				
 				<label class="text-right">Last Updated:</label>
-				<input class="text-right" type="text" id="projectDate" name="projectDate" value="{{projectDate}}" />
+				<input class="text-right" type="text" id="projectDate" name="projectDate" value="{{projectDate}} {{projectTime}}" />
 			</div>
 
 			<div class="field col-md-3 input_padding">
@@ -73,7 +74,7 @@
 	<div class="container-fluid row">
 		<div id="tableOfTestSuitesForProject"  class="col-md-12" />
 		<div id="editTestSuiteEntry" class="form-group col-md-3 hidden">
-				<div class="field " > 
+				<div class="field hidden" > 
 				<label >Row Id</label>
 				<input type="text" id="suiteRowToEdit" value=""/>
 				</div>			
