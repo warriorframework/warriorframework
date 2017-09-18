@@ -416,7 +416,7 @@ class PexpectConnect(object):
         else:
             self.username += '@'
         command = 'ssh -p {0} {1}{2} {3}'.format(self.port, self.username,
-                                                  self.ip, conn_options)
+                                                 self.ip, conn_options)
         # command = ('ssh -p '+ port + ' ' + username + '@' + ip)
         print_debug("connectSSH: cmd = %s" % command)
         if WarriorCliClass.cmdprint:
