@@ -54,89 +54,31 @@ function mapFullCaseJson(myobjectID){
 	mapCaseJsonToUi(jsonCaseSteps);
 	//mapRequirementsToUI(jsonCaseRequirements);
 	createRequirementsTable(jsonCaseRequirements);
-	/*
-	katana.$activeTab.find('#saveEditCaseStep').off('click');  // unbind is deprecated - debounces the click event. 
-	$(document).on('click','#saveEditCaseStep',function(  ) {
-			mapUItoTestStep();
-			//k//atana.$activeTab.find("#editCaseStepDiv").hide();
-			//katana.$activeTab.find("#tableOfTestStepsForCase").removeClass();
-			//katana.$activeTab.find("#tableOfTestStepsForCase").addClass('col-md-12');
-			//katana.$activeTab.find("#tableOfTestStepsForCase").style.width='100%';
-			//katana.$activeTab.find("#tableOfTestStepsForCase").show();
-			mapCaseJsonToUi(jsonCaseSteps);	
-		});
-	katana.$activeTab.find('#editCaseStepClose').off('click');  // unbind is deprecated - debounces the click event. 
-	$(document).on('click','#editCaseStepClose',function(  ) {
-			katana.$activeTab.find("#editCaseStepDiv").hide();
-			katana.$activeTab.find("#tableOfTestStepsForCase").removeClass();
-			katana.$activeTab.find("#tableOfTestStepsForCase").addClass('col-md-12');
-			katana.$activeTab.find("#tableOfTestStepsForCase").style.width='100%';
-			katana.$activeTab.find("#tableOfTestStepsForCase").show();
-			mapCaseJsonToUi(jsonCaseSteps);	
-		});
 
-	katana.$activeTab.find("#StepDriver").on('change',function() {
-		alert("Ouch");
-		sid  = katana.$activeTab.find("#StepDriver").attr('theSid');   // 
-		var oneCaseStep = jsonCaseSteps['step'][sid];
-		console.log(oneCaseStep);
-		//console.log("------");
-		console.log(katana.$activeTab.find("#StepDriver").attr('value'));
 
-		var driver = katana.$activeTab.find("#StepDriver").attr('value');
-		var opts = jQuery.getJSON("./cases/getListOfKeywords/?driver="+driver).done(function(data) {
- 			katana.$activeTab.find("#StepKeyword").empty();
- 			a_items = opts.responseJSON['keywords'];
- 			console.log(opts);
- 			console.log(a_items);
- 			for (let x of a_items) {
- 				katana.$activeTab.find("#StepKeyword").append($('<option>',{ value: x,  text: x }));
- 			}
- 		});
+	katana.$activeTab.find('#ck_dataPath').on('click', function() {
+       	if (! katana.$activeTab.find('#caseDatatype').attr("disabled")) {
+       
+			katana.$activeTab.find('#caseDatatype').attr("disabled", "disabled");
+			katana.$activeTab.find('#caseDatatype_lbl').attr("disabled", "disabled");
+			katana.$activeTab.find('#caseResultsDir').attr("disabled", "disabled");
+ 			katana.$activeTab.find('#caseResultsDir_lbl').attr("disabled", "disabled");
+ 			katana.$activeTab.find('#caseResultsDir').hide();
+ 			katana.$activeTab.find('#caseResultsDir_lbl').hide();
+ 
+   		 } else {
+        //  This resizes the display~
+			katana.$activeTab.find('#caseDatatype').removeAttr("disabled");
+			katana.$activeTab.find('#caseDatatype_lbl').removeAttr("disabled");
+			katana.$activeTab.find('#caseResultsDir').removeAttr("disabled");
+			katana.$activeTab.find('#caseResultsDir_lbl').removeAttr("disabled");
+			katana.$activeTab.find('#caseResultsDir').show();
+ 			katana.$activeTab.find('#caseResultsDir_lbl').show();
+ 
+     	}
 	});
 
 
-	katana.$activeTab.find("#StepKeyword").on('change',function() {
-		sid  = katana.$activeTab.find("#StepKeyword").attr('theSid');   // 
-		var oneCaseStep = jsonCaseSteps['step'][sid];
-		console.log(oneCaseStep);
-		//console.log("------");
-		console.log(katana.$activeTab.find("#StepKeyword").attr('value'));
-
-		var keyword = katana.$activeTab.find("#StepKeyword").attr('value');  // 
-		var driver  = katana.$activeTab.find("#StepDriver").attr('value');   // 
-		var opts = jQuery.getJSON("./cases/getListOfComments/?driver="+driver+"&keyword="+keyword).done(function(data) {
- 			a_items = opts.responseJSON['fields'];
- 			console.log(opts);
- 			console.log(a_items);
- 			// fill in the form....
- 			out_array = a_items[0]['comment'];
- 			//console.log(out_array);
- 			var outstr = out_array.join("<br>");
- 			katana.$activeTab.find("#sourceFileText").html(outstr);
-
- 		});
-	});
-
-
-	// Must define handlers inside this function ... 
-
-	$('#caseDatatype').change(function(e){	
-		jsonCaseDetails['Datatype'] = this.value; 
-		katana.$activeTab.find(".iteration-div").hide();
-		katana.$activeTab.find("#arguments-textarea").show();
-
-
-		if (this.value == 'Custom') {
-			katana.$activeTab.find("#arguments-textarea").hide();
-		} 
-		// Iterative tag is show only for Hybird. 
-		if (this.value == 'Hybrid') {
-			katana.$activeTab.find(".iteration-div").show();
-		}
-		//mapCaseJsonToUi(jsonCaseSteps);
-	});
-	*/
 
 }
 
@@ -260,7 +202,7 @@ function mapCaseJsonToUi(data){
 	items.push('<table class="configuration_table table-striped" id="Step_table_display"  width="100%" >');
 	items.push('<thead>');
 	items.push('<tr id="StepRow"><th>#</th><th>Driver</th><th>Keyword</th><th>Description</th><th>Arguments</th>\
-		<th>OnError</th><th>Execute</th><th>Run Mode</th><th>Impact</th><th>Other</th></tr>');
+		<th>OnError</th><th>Execute</th><th>Run Mode</th><th>Context</th><th>Impact</th><th>Other</th></tr>');
 	items.push('</thead>');
 	items.push('<tbody>');
 	for (var s=0; s<Object.keys(xdata).length; s++ ) {  // for s in xdata
@@ -297,17 +239,20 @@ function mapCaseJsonToUi(data){
 		items.push('<td>'+outstr+'</td>'); 
 	
 
-		outstr = "Action=" + oneCaseStep['onError']['@action'] + "<br>" +
-			"Value=" + oneCaseStep['onError']['@value']+"<br>" +  
-			"ExecType=" + oneCaseStep['step']['@ExecType'] + "<br>" + 
+		outstr = oneCaseStep['onError']['@action'] 
+			//"Value=" + oneCaseStep['onError']['@value']+"<br>"; 
+		items.push('<td>'+oneCaseStep['onError']['@action'] +'</td>'); 
+	
+
+		outstr = "ExecType=" + oneCaseStep['step']['@ExecType'] + "<br>" + 
 			"Condition="+oneCaseStep['step']['Rule']['@Condition']+ "<br>" + 
 			"Condvalue="+oneCaseStep['step']['Rule']['@Condvalue']+ "<br>" + 
 			"Else="+oneCaseStep['step']['Rule']['@Else']+ "<br>" +
 			"Elsevalue="+oneCaseStep['step']['Rule']['@Elsevalue'];
 
 		items.push('<td>'+outstr+'</td>'); 
-		outstr = oneCaseStep['rmt'] + "<br>Context=" + oneCaseStep['context']; 
-		items.push('<td>'+outstr+'</td>');
+		items.push('<td>'+oneCaseStep['rmt']+'</td>');
+		items.push('<td>'+oneCaseStep['context']+'</td>');
 		items.push('<td>'+oneCaseStep['impact']+'</td>'); 
 		var bid = "deleteTestStep-"+s+"-id-"+getRandomCaseID();
 		//items.push('<td><input type="button" class="btn-danger" value="X" id="'+bid+'"/>');
@@ -321,35 +266,11 @@ function mapCaseJsonToUi(data){
 			removeTestStep(sid);
 		});
 
-		bid = "editTestStep-"+s+"-id-"+getRandomCaseID();
-		//items.push('<i type="button" title="Edit" class="edit-item-32" value="Edit" id="'+bid+'"/></td>');
-		items.push('<i  title="Edit" class="edit-item-32"  id="'+bid+'"/>');
-		$('#'+bid).off('click');   //unbind and bind are deprecated. 
-		$('#'+bid).attr('theSid', s);  //Set tthe name
 
 
-		$(document).on('click','#'+bid,function(  ) {
-			//alert(this.id);
-			var names = this.id.split('-');
-			var sid = parseInt(names[1]);
-			//mapTestStepToUI(sid,xdata);
-			//katana.$activeTab.find("#editCaseStepDiv").show();
-			//katana.$activeTab.find('#tableOfTestStepsForCase').removeClass();
-			//katana.$activeTab.find('#tableOfTestStepsForCase').addClass('col-md-8');
-			//var ooo = katana.$activeTab.find("#editCaseStepDiv").html();
-			//console.log("lllll Before the POPUP LLLLLLL")
-			//console.log(ooo);
-			// Here is the code to start the HTML only - no js
-			katana.popupController.open(katana.$activeTab.find("#editCaseStepDiv").html(),"Edit..." + sid, function(popup) {
-
-				setupPopupDialog(sid,xdata,popup);
-				//mapTestStepToUI(sid,xdata); // no workee. 
-			});
-		 	
-		}); 
 
 		bid = "addTestStepAbove-"+s+"-id-"+getRandomCaseID();
-		items.push('<i  title="Insert" class="add-item-32" value="Insert" id="'+bid+'"/></td>');
+		items.push('<i  title="Insert" class="add-item-32" value="Insert" id="'+bid+'"/>');
 		
 		$('#'+bid).off('c<td>lick');   //unbind and bind are deprecated. 
 		$(document).on('click','#'+bid,function(  ) {
@@ -358,6 +279,23 @@ function mapCaseJsonToUi(data){
 			var sid = parseInt(names[1]);
 			addTestStepAboveToUI(sid,xdata);
 		});
+
+
+		bid = "editTestStep-"+s+"-id-"+getRandomCaseID();
+		items.push('<i title="Edit"  class="edit-item-32" theSid="'+s+'" value="Edit/Save"  id="'+bid+'"></i></td>');
+		$('#'+bid).off('click');   //unbind and bind are deprecated. 
+		$('#'+bid).attr('theSid', s);  //Set tthe name
+		katana.$activeTab.on('click','#'+bid,function() {
+			//alert(this.id);
+			var names = this.id.split('-');
+			var sid = parseInt(names[1]);
+			katana.popupController.open(katana.$activeTab.find("#editCaseStepDiv").html(),"Edit..." + sid, function(popup) {
+				setupPopupDialog(sid,xdata,popup);
+			});
+		 }); 
+
+
+
 		items.push('</tr>');
 
 	}
@@ -395,6 +333,37 @@ function mapCaseJsonToUi(data){
 }  // end of function 
 
 
+
+function 	makePopupArguments(popup,  oneCaseStep) {
+	var a_items = [] ;
+	var xstr;
+	var bid;
+	var arguments = oneCaseStep['Arguments']['argument'];
+	var ta = 0; 
+	var sid = parseInt(popup.find("#StepRowToEdit").attr('value'));	
+	
+	for (xarg in arguments) {
+			//console.log(arguments[xarg]);
+			a_items.push('<div class="row">');
+			a_items.push('<label class="col-md-2">Name</label><input  type="text" argid="caseArgName-'+ta+'" value="'+arguments[xarg]["@name"]+'"/>');
+			a_items.push('<label class="col-md-2">Value</label><input  type="text" argid="caseArgValue-'+ta+'" value="'+arguments[xarg]["@value"]+'"/>');
+			// Now a button to edit or delete ... 
+			bid = "deleteCaseArg-"+sid+"-"+ta+"-id"
+			a_items.push('<td><i title="Delete" class="fa fa-eraser" value="X" id="'+bid+'"/>');
+			
+			bid = "saveCaseArg-"+sid+"-"+ta+"-id"
+			a_items.push('<td><i  title="Save Argument Change" class="fa fa-pencil" value="Save" id="'+bid+'"/>');
+
+			bid = "insertCaseArg-"+sid+"-"+ta+"-id";
+			a_items.push('<td><i  title="Insert one" class="fa fa-plus" value="Save" id="'+bid+'"/>');
+			
+			ta += 1
+			a_items.push('</div>');
+		
+	}
+	popup.find("#arguments-textarea").html( a_items.join("\n"));	
+}
+
 function setupPopupDialog(sid,xdata,popup) {
 	console.log(popup);  // Merely returns the div tag
 	var dd_driver = popup.find('#StepDriver');
@@ -406,7 +375,8 @@ function setupPopupDialog(sid,xdata,popup) {
 	console.log("---- oneCase ---- ");
 	console.log(oneCaseStep["@Driver"]);
  	console.log(oneCaseStep);
-	
+	popup.attr("caseStep", oneCaseStep);
+	popup.attr("sid", sid);
 	jQuery.getJSON("./cases/getListOfActions").done(function(data) {
 			a_items = data['actions'];
 			console.log("a_items ");
@@ -415,13 +385,21 @@ function setupPopupDialog(sid,xdata,popup) {
 			for (var x =0; x < a_items.length; x++) {
 					dd_driver.append($('<option>',{ value: a_items[x],  text: a_items[x]}));
 				}
-			console.log(dd_driver.html());
+			//console.log(dd_driver.html());
+			popup.find('#StepDriver').val(oneCaseStep["@Driver"]);
 	});
-	console.log(xdata);
+	//console.log(xdata);
+	console.log(oneCaseStep);
 	popup.find("#StepRowToEdit").attr("value",sid);
 
-	popup.find("#StepDriver").attr("value",oneCaseStep[ "@Driver"]);
-	popup.find("#StepKeyword").attr("value",oneCaseStep[ "@Keyword"]);
+	//popup.find("#StepDriver").attr("value",oneCaseStep[ "@Driver"]);
+	popup.find("#StepDriver").val(oneCaseStep[ "@Driver"]);
+	console.log(popup.find("#StepDriver").val());
+	//popup.find("#StepKeyword").attr("value",oneCaseStep[ "@Keyword"]);
+	popup.find("#StepKeyword").val(oneCaseStep[ "@Keyword"]);
+
+	
+	//alert("Keyword = "+keyword+" driver = "+ driver + " values = "+ popup.find("#StepDriver").val(oneCaseStep[ "@Driver"]));
 	popup.find("#StepTS").attr("value",oneCaseStep["@TS"]);
 	popup.find("#StepDescription").attr("value",oneCaseStep["Description"]);
 	popup.find("#StepContext").attr("value",oneCaseStep["context"]);
@@ -429,39 +407,12 @@ function setupPopupDialog(sid,xdata,popup) {
 	popup.find("#SteponError-at-value").attr("value",oneCaseStep['onError']["@value"]);
 	popup.find("#runmode-at-type").attr("value",oneCaseStep["runmode"]["@type"]);
 	popup.find("#StepImpact").attr("value",oneCaseStep["impact"]);
-	var a_items = [] ;
-	var xstr;
-	var bid;
-	var arguments = oneCaseStep['Arguments']['argument'];
-
-	var ta = 0; 
-	for (xarg in arguments) {
-			//console.log(arguments[xarg]);
-			a_items.push('<div class="row">');
-			a_items.push('<label class="col-md-2">Name</label><input  type="text" argid="caseArgName-'+ta+'" value="'+arguments[xarg]["@name"]+'"/>');
-			a_items.push('<label class="col-md-2">Value</label><input  type="text" argid="caseArgValue-'+ta+'" value="'+arguments[xarg]["@value"]+'"/>');
-			// Now a button to edit or delete ... 
-			bid = "deleteCaseArg-"+sid+"-"+ta+"-id"
-			a_items.push('<td><i title="Delete" class="fa fa-erase" value="X" id="'+bid+'"/>');
-			
-			bid = "saveCaseArg-"+sid+"-"+ta+"-id"
-			a_items.push('<td><i  title="Save Argument Change" class="fa fa-pencil" value="Save" id="'+bid+'"/>');
-
-			bid = "insertCaseArg-"+sid+"-"+ta+"-id";
-			a_items.push('<td><i  title="Insert one" class="fa fa-plus" value="Save" id="'+bid+'"/>');
-			
-			ta += 1
-			a_items.push('</div>');
-			
-	}
-	//  -------- 
-
 	
-	//popup.find('#'+bid).off('click'); 
-	//console.log(a_items);
-	popup.find("#arguments-textarea").html( a_items.join("\n"));	
 
-	console.log(popup);
+	//katana.popupController.updateActiveWindow(popup);
+
+	makePopupArguments(popup, oneCaseStep);
+
 	// Now  set the callbacks once the DOM has new HTML elements in it.
 	var arguments = oneCaseStep['Arguments']['argument'];
 
@@ -473,14 +424,14 @@ function setupPopupDialog(sid,xdata,popup) {
 				var names = this.id.split('-');
 				var sid = parseInt(names[1]);
 				var aid = parseInt(names[2]);
-				removeOneArgument(sid,aid,xdata);
+				removeOneArgument(sid,aid,popup);
 			});
 			bid = "saveCaseArg-"+sid+"-"+ta+"-id"
 			popup.find('#'+bid).on('click',function( ) {
 				var names = this.id.split('-');
 				var sid = parseInt(names[1]);
 				var aid = parseInt(names[2]);
-				saveOneArgument(sid,aid,xdata);
+				saveOneArgument(sid,aid,popup);
 			});
 
 			bid = "insertCaseArg-"+sid+"-"+ta+"-id";
@@ -488,40 +439,47 @@ function setupPopupDialog(sid,xdata,popup) {
 				var names = this.id.split('-');
 				var sid = parseInt(names[1]);
 				var aid = parseInt(names[2]);
-				insertOneArgument(sid,aid,xdata);
+				insertOneArgument(sid,aid,popup);
 			});
 			ta += 1
 	}
 	
-	popup.find('#addOneArgument').on('click',function( ) {
-				var names = this.id.split('-');
-				var sid = parseInt(names[1]);
+	popup.find('#appendArgument').on('click',function( ) {
+				alert("add One Argument");
+				var sid = popup.find('#StepRowToEdit').attr('value');
+				var xdata =  popup.find('#StepRowToEdit').attr('xdata');
 				addOneArgument(sid,xdata, popup);
 			});
 	
-	/*
+	// Fill in the value based on keyword and action 
 	var opts = jQuery.getJSON("./cases/getListOfComments/?driver="+driver+"&keyword="+keyword).done(function(data) {
- 			a_items = opts.responseJSON['fields'];
+ 			a_items = data['fields'];
+ 			console.log(a_items);
+
  			out_array = a_items[0]['comment'];
  			var outstr = out_array.join("<br>");
  			console.log(outstr);
+
  			popup.find("#sourceFileText").html(""); 
  			popup.find("#sourceFileText").html(outstr);
 
+ 			popup.find("#sourceFileText").addClass("willnotrender");
+ 			
+ 			popup.find("#sourceFileText").removeClass("willnotrender");
+ 			
  		});
-	*/
+	
 	popup.find("#StepDriver").on('change',function() {
-		alert("Ouch");
-		sid  = popup.find("#StepDriver").attr('theSid');   // 
+			sid  = popup.find("#StepDriver").attr('theSid');   // 
 		var oneCaseStep = jsonCaseSteps['step'][sid];
 		console.log(oneCaseStep);
 		//console.log("------");
-		console.log(popup.find("#StepDriver").attr('value'));
+		console.log(popup.find("#StepDriver").val());
 
-		var driver =popup.find("#StepDriver").attr('value');
+		var driver =popup.find("#StepDriver").val();
 		var xopts = jQuery.getJSON("./cases/getListOfKeywords/?driver="+driver).done(function(data) {
  			popup.find("#StepKeyword").empty();
- 			a_items = xopts.responseJSON['keywords'];
+ 			a_items = data['keywords'];
  			console.log(xopts);
  			console.log(a_items);
  			for (let x of a_items) {
@@ -533,30 +491,40 @@ function setupPopupDialog(sid,xdata,popup) {
 	popup.find("#StepKeyword").on('change',function() {
 		sid  = popup.find("#StepKeyword").attr('theSid');   // 
 		var oneCaseStep = jsonCaseSteps['step'][sid];
-		var keyword = popup.find("#StepKeyword").attr('value');  // 
-		var driver  = popup.find("#StepDriver").attr('value');   // 
+		var keyword = popup.find("#StepKeyword").val();  // 
+		var driver  = popup.find("#StepDriver").val();   // 
 		var xopts = jQuery.getJSON("./cases/getListOfComments/?driver="+driver+"&keyword="+keyword).done(function(data) {
- 			a_items = xopts.responseJSON['fields'];
+ 			console.log(data);
+
+ 			a_items = data['fields'];
+ 			console.log(a_items);
  			out_array = a_items[0]['comment'];
  			var outstr = out_array.join("<br>");
- 			var hhh = popup.find("#sourceFileText");
- 			console.log(hhh);
- 			popup.find("#sourceCaseFileText").html(""); 
- 			popup.find("#sourceCaseFileText").html(outstr);
-
+ 			var hhh = popup.find("#sourceCaseFileText");
+ 			//console.log('hello', hhh, keyword, driver);
+	
+ 			hhh.empty(); 
+ 			hhh.append(outstr);
+ 			
  		});
 	});
 
 	popup.find('#saveEditCaseStep').on('click',function(  ) {
+
+			var sid = parseInt(popup.find("#StepRowToEdit").attr('value'));	
+		
 			mapUItoTestStep(sid,xdata,popup);	
-			mapCaseJsonToUi(jsonCaseSteps);	
-			//katana.popupController.popupClose();
+			//katana.popupController.close();  <-- NO
+			//katana.popupController.closePopup(); <-- No
+			//katana.popupController.close(popup); <--- Yes. 
+			mapCaseJsonToUi(jsonCaseSteps);
+		
 		});
 
 	popup.find('#editCaseStepClose').on('click',function(  ) {
-			katana.popupController.popupclose();
+			katana.popupController.close(popup);
+			mapCaseJsonToUi(jsonCaseSteps);
 		});
-
 
 }
 
@@ -609,146 +577,11 @@ function addTestStepAboveToUI(sid,xdata) {
 }
 
 
-function redrawArguments(oneCaseStep,popup) {
-	var arguments = oneCaseStep['Arguments']['argument'];
-	var ta = 0; 
-	a_items = [ ] ;
-	for (xarg in arguments) {
-			//console.log(arguments[xarg]);
-			a_items.push('<div class="row">');
-			a_items.push('<label class="col-md-2">Name</label><input  type="text" argid="caseArgName-'+ta+'" value="'+arguments[xarg]["@name"]+'"/>');
-			a_items.push('<label class="col-md-2">Value</label><input  type="text" argid="caseArgValue-'+ta+'" value="'+arguments[xarg]["@value"]+'"/>');
-			// Now a button to edit or delete ... 
-			bid = "deleteCaseArg-"+sid+"-"+ta+"-id"
-			a_items.push('<td><i title="Delete" class="fa fa-erase" value="X" id="'+bid+'"/>');
-			
-			bid = "saveCaseArg-"+sid+"-"+ta+"-id"
-			a_items.push('<td><i  title="Save Argument Change" class="fa fa-pencil" value="Save" id="'+bid+'"/>');
-
-			bid = "insertCaseArg-"+sid+"-"+ta+"-id";
-			a_items.push('<td><i  title="Insert one" class="fa fa-plus" value="Save" id="'+bid+'"/>');
-			
-			ta += 1
-			a_items.push('</div>');
-			
-	}
-	popup.find("#arguments-textarea").html( a_items.join("\n"));
-}
-
-function mapTestStepToUI(sid, xdata) {
-	// body...
-	console.log("Calling mapTestStepToUI "+ sid);
-	console.log(xdata);
-
-	katana.$activeTab.find("#editCaseStepDiv").show();
-	// TODO: -- ma
-	//katana.$activeTab.find("#StepRowToEdit").val(sid); // attr("sid");
-	katana.$activeTab.find("#StepRowToEdit").attr("value",sid);
-	oneCaseStep = xdata[sid]
-	console.log(oneCaseStep);
-	katana.$activeTab.find("#StepDriver").attr("value",oneCaseStep[ "@Driver"]);
-	katana.$activeTab.find("#StepKeyword").attr("value",oneCaseStep[ "@Keyword"]);
-	console.log("LOOK~");
-	console.log(oneCaseStep["@Driver"]);
-	console.log(oneCaseStep["@Keyword"]);
-	console.log(oneCaseStep["@TS"]);
-	console.log(oneCaseStep['step']);
-	console.log(oneCaseStep['step'][ "@Driver"]);
-	console.log(oneCaseStep['step'][ "@Keyword"]);
-	console.log(oneCaseStep['step'][ "@TS"]);
-	katana.$activeTab.find("#StepTS").attr("value",oneCaseStep["@TS"]);
-	katana.$activeTab.find("#StepDescription").attr("value",oneCaseStep["Description"]);
-	katana.$activeTab.find("#StepContext").attr("value",oneCaseStep["context"]);
-	katana.$activeTab.find("#SteponError-at-action").attr("value",oneCaseStep['onError']["@action"]);
-	katana.$activeTab.find("#SteponError-at-value").attr("value",oneCaseStep['onError']["@value"]);
-	katana.$activeTab.find("#runmode-at-type").attr("value",oneCaseStep["runmode"]["@type"]);
-	katana.$activeTab.find("#StepImpact").attr("value",oneCaseStep["impact"]);
-	var a_items = [] ;
-	var xstr;
-	var bid;
+function redrawArguments(sid, oneCaseStep,popup) {
 	var arguments = oneCaseStep['Arguments']['argument'];
 
-	var ta = 0; 
-	for (xarg in arguments) {
-			//console.log(arguments[xarg]);
-			a_items.push('<div class="row">');
-			a_items.push('<label class="col-md-2">Name</label><input class="col-md-2" type="text" argid="caseArgName-'+ta+'" value="'+arguments[xarg]["@name"]+'"/>');
-			a_items.push('<label class="col-md-2">Value</label><input class="col-md-2" type="text" argid="caseArgValue-'+ta+'" value="'+arguments[xarg]["@value"]+'"/>');
-			// Now a button to edit or delete ... 
-			bid = "deleteCaseArg-"+sid+"-"+ta+"-id"+getRandomCaseID();;
-			a_items.push('<td><i title="Delete" class="delete-item-32" value="X" id="'+bid+'"/>');
-			katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
-			$(document).on('click','#'+bid,function( ) {
-				var names = this.id.split('-');
-				var sid = parseInt(names[1]);
-				var aid = parseInt(names[2]);
-				removeOneArgument(sid,aid,xdata);
-			});
-			bid = "saveCaseArg-"+sid+"-"+ta+"-id"+getRandomCaseID();;
-			a_items.push('<td><i  title="Save Argument Change" class="edit-item-32" value="Save" id="'+bid+'"/>');
-			katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
-			$(document).on('click','#'+bid,function( ) {
-				var names = this.id.split('-');
-				var sid = parseInt(names[1]);
-				var aid = parseInt(names[2]);
-				saveOneArgument(sid,aid,xdata);
-			});
-			bid = "insertCaseArg-"+sid+"-"+ta+"-id"+getRandomCaseID();;
-			a_items.push('<td><i  title="Insert one" class="add-item-32" value="Save" id="'+bid+'"/>');
-			katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
-			$(document).on('click','#'+bid,function( ) {
-				var names = this.id.split('-');
-				var sid = parseInt(names[1]);
-				var aid = parseInt(names[2]);
-				insertOneArgument(sid,aid,xdata);
-			});
-			ta += 1
-			a_items.push('</div>');
-			
-	}
-	//  -------- 
+	makePopupArguments(popup, oneCaseStep);
 
-	bid = "addCaseArg-"+sid+"-id"+getRandomCaseID();;
-	a_items.push('<td><i type="button" title="Add Argument" class="add-item-32" value="Add Argument" id="'+bid+'"/>');
-	katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
-	$(document).on('click','#'+bid,function( ) {
-				var names = this.id.split('-');
-				var sid = parseInt(names[1]);
-				addOneArgument(sid,xdata);
-			});
-	//console.log(a_items);
-	katana.$activeTab.find("#arguments-textarea").html( a_items.join("\n"));
-
-	// Load in the actions names. 
-	var opts = jQuery.getJSON("./cases/getListOfActions").done(function(data) { 		 
-			var a_items = data['actions'];			 
-			katana.$activeTab.find("#StepDriver").empty();  // Empty all the options....
-			for (var x =0; x < a_items.length; x++) {
-						console.log(a_items[x]);
-						katana.$activeTab.find("#StepDriver").append($('<option>',{ value: a_items[x],  text: a_items[x]}));
-					}
-					
-			console.log(sid);
-			console.log(jsonCaseSteps['step']);
-			var oneCaseStep = jsonCaseSteps['step'][sid];
-			console.log(oneCaseStep);
-			katana.$activeTab.find("#StepDriver").attr("value",oneCaseStep["@Driver"]);
-			console.log(data['filesinfo'])
-			jsonFilesInfo = data['filesinfo'];
-			var keyword = oneCaseStep["@Driver"]; 
-			katana.$activeTab.find("#StepKeyword").empty();  // Empty all the options....
-			var k_items = data['filesinfo'][keyword][0];
-			console.log(k_items);
-			console.log(k_items.length);
-			for (var ki =0; ki < k_items.length; ki++) {
-				//console.log(k_items[ki]);
-				var v = k_items[ki]['fn']; 
-				//console.log(v);
-				katana.$activeTab.find("#StepKeyword").append($('<option>',{ value:v,  text: v}));
-			
-			}
-			katana.$activeTab.find("#StepKeyword").attr('value',oneCaseStep[ "@Keyword"]);
-	});	
 }
 
 function saveOneArgument( sid, aid, xdata) {
@@ -764,54 +597,60 @@ function saveOneArgument( sid, aid, xdata) {
 }
 
 function addOneArgument( sid , xdata, popup ) {
-	var xx = { "@name": "" , "@value": " " };
+	var xx = { "@name": "New" , "@value": "New" };
 	console.log("sid =" + sid);
 	console.log(xdata);
+	console.log(popup);
 	jsonCaseSteps['step'][sid]['Arguments']['argument'].push(xx);
-	//mapCaseJsonToUi(jsonCaseSteps);
-	//mapTestStepToUI(sid, xdata);
 	oneCaseStep = jsonCaseSteps['step'][sid];
-	// I have to refresh the popup! 
-	redrawArguments(oneCaseStep,popup);
+	redrawArguments(sid, oneCaseStep,popup);
 }
 
 
-function insertOneArgument( sid , aid,  xdata ) {
+function insertOneArgument( sid , aid,  popup ) {
 	var xx = { "@name": "" , "@value": " " };
+	console.log("sid =" + sid);
+	console.log("aid =" + aid);
+	console.log(popup);
 	jsonCaseSteps['step'][sid]['Arguments']['argument'].splice(aid,0,xx);
-	//mapCaseJsonToUi(jsonCaseSteps);
-	//mapTestStepToUI(sid, xdata);
+	oneCaseStep = jsonCaseSteps['step'][sid];
+	redrawArguments(sid, oneCaseStep,popup);
 }
 
 
-function removeOneArgument( sid, aid, xdata ) {
+function removeOneArgument( sid, aid, popup ) {
 	jsonCaseSteps['step'][sid]['Arguments']['argument'].splice(aid,1);	
-	//mapCaseJsonToUi(jsonCaseSteps);
-	//mapTestStepToUI(sid, xdata);
+	console.log("sid =" + sid);
+	console.log("aid =" + aid);
+	console.log(popup);
+	oneCaseStep = jsonCaseSteps['step'][sid];
+	redrawArguments(sid, oneCaseStep,popup);
 }
 
 // When the edit button is clicked, map step to the UI. 
-function mapUItoTestStep(xdata) {
-	var sid = parseInt(katana.$activeTab.find("#StepRowToEdit").attr('value'));	
+function mapUItoTestStep(sid,xdata,popup) {
+	//var sid = parseInt(katana.$activeTab.find("#StepRowToEdit").attr('value'));	
 	console.log(jsonCaseSteps);
 		
 	// Validate whether sid 
 	var xdata = jsonCaseSteps['step'];
-		
-	console.log(xdata);
-	oneCaseStep = xdata[sid];
-	fillStepDefaults(oneCaseStep);  // Takes care of missing values.... 
-	oneCaseStep["@Driver"] = katana.$activeTab.find("#StepDriver").attr('value');
-	oneCaseStep["@Keyword"] = katana.$activeTab.find("#StepKeyword").attr('value');
-	oneCaseStep["@TS"] = katana.$activeTab.find("#StepTS").attr('value');
-	oneCaseStep["Description"] =  katana.$activeTab.find("#StepDescription").attr('value');
-	oneCaseStep["context"] =  katana.$activeTab.find("#StepContext").attr('value');
-	oneCaseStep["Execute"]["@ExecType"]= katana.$activeTab.find("#Execute-at-ExecType").attr('value');		
-	oneCaseStep['onError'][ "@action"] = katana.$activeTab.find("#SteponError-at-action").attr('value');
-	oneCaseStep['onError'][ "@value"] = katana.$activeTab.find("#SteponError-at-value").attr('value');
-	oneCaseStep["runmode"] = { "@type" : katana.$activeTab.find("#runmode-at-type").attr('value')};
-	oneCaseStep["impact"] =  katana.$activeTab.find("#StepImpact").attr('value');
 
+	console.log(xdata);
+	console.log(sid);
+	oneCaseStep = xdata[sid];
+	//fillStepDefaults(oneCaseStep);  // Takes care of missing values.... 
+	oneCaseStep["@Driver"] = popup.find("#StepDriver").val();
+	oneCaseStep["@Keyword"] = popup.find("#StepKeyword").val();
+	oneCaseStep["@TS"] =popup.find("#StepTS").val();
+	oneCaseStep["Description"] = popup.find("#StepDescription").val();
+	oneCaseStep["context"] =  popup.find("#StepContext").val();
+	oneCaseStep["Execute"]["@ExecType"]= popup.find("#Execute-at-ExecType").val();		
+	oneCaseStep['onError'][ "@action"] = popup.find("#SteponError-at-action").val();
+	oneCaseStep['onError'][ "@value"] = popup.find("#SteponError-at-value").val();
+	oneCaseStep["runmode"] = { "@type" : popup.find("#runmode-at-type").val()};
+	oneCaseStep["impact"] =  popup.find("#StepImpact").val();
+	// Now all the arguments have 
+	console.log("after saving ",oneCaseStep);
 }
 
 
@@ -829,11 +668,15 @@ function createNewStep(){
 		}, 
 		"context": "positive", 
 		"impact" :  "impact",
-		"rmt" :  " " ,
+		"rmt" :  "standard" ,
 		"retry": { "@type": "if not", "@Condition": "testsuite_1_result", "@Condvalue": "PASS", "@count": "6", "@interval": "0"}, 
 	 };
 	 return newCaseStep;
 }
+
+
+
+
 
 function addStepToCase(){
 	// Add an entry to the jsonTestSuites....

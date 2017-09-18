@@ -95,11 +95,10 @@ def getListOfKeywords(request):
 	driver = request.GET.get('driver');
 	print dir(details);
 	print driver
-	#print details[driver][0]
 	print len(details[driver][0])
 	responseBack = { 'keywords': [] }
 	for item in details[driver][0]: 
-		print item
+		print item['fn']
 		responseBack['keywords'].append(item['fn']);
 	return JsonResponse(responseBack)
 
@@ -128,9 +127,13 @@ def getListOfComments(request):
 	keyword = request.GET.get('keyword');
 	responseBack = { 'fields': [] }
 	
+	print driver, " ", keyword;
+
+
 	for item in details[driver][0]: 
+		print item['fn']
 		if item['fn'] == keyword: 
-			print item
+			print item.keys();
 			responseBack['fields'].append(item);
 
 	return JsonResponse(responseBack)

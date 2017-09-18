@@ -11,42 +11,51 @@
 
 <div class="col-md-12">
 	<div class="row ">
-			<div class="field">
+			<div class="field col-md-3">
 				<label >Name*:</label>
 				<input type="text" id="caseName"  value="{{caseName}}"/>
 			</div>
-			<div class="field">
+			<div class="field col-md-3">
 				<label >Title*:</label>
 				<input type="text" id="caseTitle"  value="{{caseTitle}}"/>
 			</div>
-			<div class="field">
+			<div class="field col-md-3">
 				<label >Category*:</label>
 				<input type="text" id="caseCategory"  value="{{caseCategory}}"/>
 			</div>
 
-				<div class="field">
-					<label >Results*:</label>
-					<input type="text" id="caseExpectedResults"  value="{{caseExpectedResults}}"/>
-				</div>
-				<div class="field">
+			<div class="field col-md-3">
+				<label >Results*:</label>
+				<input type="text" id="caseExpectedResults"  value="{{caseExpectedResults}}"/>
+			</div>
+	</div>
+
+	<div class="row ">
+	
+			<div class="field col-md-3">
 					<label >Logs:</label>
 					<input type="text" id="caseLogsdir"  value="{{caseLogsdir}}"/>
 				</div>
-				<div class="field">
+				<div class="field col-md-3">
 					<label >InputDataFile:</label>
 					<input type="text" id="caseInputDataFile"  value="{{caseInputDataFile}}"/>
 				</div>		
-		</div>
-		<div class="row">
-			<div class="field">
+	
+		
+			<div class="field col-md-3">
 				<label >Engineer:</label>
 				<input type="text" id="caseEngineer"  value="{{caseEngineer}}"/>
 			</div>
-			<div class="field">
+			<div class="field col-md-3">
 				<label >Date:</label>
 				<input type="text" id="caseDate"  value="{{caseDate}}"/>
 			</div>
-			<div class="field">
+		</div>
+
+
+
+	<div class="row ">
+			<div class="field col-md-3">
 				<label class=" text-right" for="default_onError">Default On Error:</label>
 				<select class="text-right" type="text" id="default_onError" name="default_onError" value="{{default_onError}}" >
 					<option value="next">Custom</option>
@@ -56,19 +65,33 @@
 					</select>
 			</div>
 	
-			<div class="field">
-				<label class="text-right" for="caseDatatype">Data Type:</label>
+			<div class="field  col-md-3">
+				<input type="checkbox"  id="ck_dataPath" name="ck_dataPath" value="No Data Path" >
+				<label class="text-right" >No Data Path</label>
+			</div>
+	
+			<div class="field col-md-3">	
+				<label class="text-right" id="caseDatatype_lbl" >Data Type:</label>
 				<select class="text-right" type="text" id="caseDatatype" name="caseDatatype" value="{{caseDatatype}}" >
 					<option value="Custom">Custom</option>
 					<option value="Hybrid">Hybrid</option>
 					<option value="Iterative">Iterative</option>
 					</select>
+					<label class="text-right" id="caseResultsdir_lbl" >Results Dir:</label>
 			</div>
-			<div class="field">
-				<input type="checkbox" class="col-md-2 text-right" id="ck_dataPath" name="ck_dataPath" value="Y">
+
+			<div class="field">	
+				<label class="text-right"  >Results Dir</label>
+				
 				<input type="text" id="caseResultsdir"  value="{{caseResultsdir}}">
 			</div>
-			<div class="field">
+
+		</div>
+
+
+
+	<div class="row ">
+			<div class="field col-md-3">
 				<label >State Options:</label>
 				<select class="col-4 text-right" type="text" id="caseState" name="caseState" value="{{caseState}}" >
 				{% for x in caseStateOptions %}
@@ -84,7 +107,6 @@
 
 	<div class="row">   
 		<button id="addStep" class="btn btn-success" onclick="addStepToCase()">Add Step To Case</button>
-		<button class="btn btn-danger" onclick="start()">Discard Changes</button>
 		<button class="btn btn-success" onclick="mapUiToCaseJson()">Save Case To Memory</button>
 		<button class="btn btn-success" onclick="writeUiToCaseJSON()">Write Changes To Disk</button>
 		<label class="col-md-2 text-righ"t >Save file to </label>
@@ -170,7 +192,7 @@
 				
 					<div id="arguments-textarea" > </div>
 					<div>
-					<input type="button" class="btn btn-success" value="Add An Argument" id="addOneArgument"/>
+					<input type="button" class="btn btn-success" value="Append Argument" id="appendArgument"/>
 					<input type="button" class="btn btn-success" value="Save Changes To Test Step" id="saveEditCaseStep"/>
 					<input type="button" class="btn btn-danger" value="Ignore Changes" id="editCaseStepClose"/>
 					</div>

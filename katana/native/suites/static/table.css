@@ -68,3 +68,7 @@ padding-left: 15px;
     width: 32px;
     display: inline-flex;
 }
+
+.willnotrender { 
+   transform: translateZ(0); 
+}
