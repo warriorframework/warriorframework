@@ -189,6 +189,7 @@ var wdf = {
         $tmp.find("[name='template-system-name']").prop("name", katana.$activeTab.find(".control-box").length-1+"-1-system_name");
         $tmp.find("[name='template-system.tag']").prop("name", katana.$activeTab.find(".control-box").length-1+"-1-1-1-key");
         $tmp.find("[name='template-system.value']").prop("name", katana.$activeTab.find(".control-box").length-1+"-1-1-1-value");
+        $tmp.find("[name='template-system-default']").prop("name", katana.$activeTab.find(".control-box").length-1+"-1-default");
         katana.$activeTab.find("#wdf-editor-col").append($($tmp.html()));
 
         $("#"+$tmp_id).get(0).scrollIntoView(true);
@@ -266,6 +267,8 @@ var wdf = {
                 $tmp.find("[name='template-subsystem-name']").prop("name", $system_id+"-"+$subsystem_count+"-subsystem_name");
                 $tmp.find("[name='template-subsystem.tag']").prop("name", $system_id+"-"+$subsystem_count+"-"+($target.children("#content").length+1)+"-1-key");
                 $tmp.find("[name='template-subsystem.value']").prop("name", $system_id+"-"+$subsystem_count+"-"+($target.children("#content").length+1)+"-1-value");
+                $tmp.find("[name='template-system-default']").prop("name", $system_id+"-"+$subsystem_count+"-default");
+                $tmp.find("[name='template-subsystem-default']").prop("name", $system_id+"-"+$subsystem_count+"-default-subsys");
                 $tmp.find("[katana-click='wdf.addSubSystem']").hide()
                 $("#"+$system_id+"-"+$subsystem_count+"-control-box").replaceWith($($tmp.html()));
             } else {
@@ -277,6 +280,8 @@ var wdf = {
                 $tmp.find("[name='template-subsystem-name']").prop("name", $system_id+"-"+($subsystem_count+1)+"-subsystem_name");
                 $tmp.find("[name='template-subsystem.tag']").prop("name", $system_id+"-"+($subsystem_count+1)+"-"+($target.children("#content").length+1)+"-1-key");
                 $tmp.find("[name='template-subsystem.value']").prop("name", $system_id+"-"+($subsystem_count+1)+"-"+($target.children("#content").length+1)+"-1-value");
+                $tmp.find("[name='template-system-default']").prop("name", $system_id+"-"+$subsystem_count+"-default");
+                $tmp.find("[name='template-subsystem-default']").prop("name", $system_id+"-"+$subsystem_count+"-default-subsys");
                 $tmp.find("[katana-click='wdf.addSubSystem']").hide()
                 $("#"+$system_id+"-"+$subsystem_count+"-control-box").after($($tmp.html()));
 
