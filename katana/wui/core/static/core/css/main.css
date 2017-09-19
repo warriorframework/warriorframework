@@ -2454,10 +2454,19 @@ div .tool-bar-links:active {
 }
 /* execution app related styles ends*/
 
+-/* wdf editor app related styles starts */
 .wdf-button {
     position: absolute;
     top: 10%;
 }
+
+.wdf-wide-button {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    text-align: left;
+}
+
 .wdf-label {
     position: absolute;
     top: 25%;
@@ -2466,14 +2475,73 @@ div .tool-bar-links:active {
     margin: 0 auto;
 }
 .wdf-input {
-    font-size: 16px;
+    /*font-size: 16px;*/
 }
+
 hr.wdf-hr {
     display: block;
 }
+
+.wdf-container {
+    padding: 1%;
+}
+
+.wdf-scroll {
+    overflow: auto;
+    height: 83vh;
+}
+
+.wdf-lg-col {
+    width: 57%;
+    float: left;
+}
+
+.wdf-lg-col > .btn {
+    padding: 8px;
+}
+
+.wdf-sm-col {
+    width: 35%;
+    float: left;
+}
+
+@-webkit-keyframes wdf-highlight {
+    from {
+        background-color: #ecff91;
+    }
+    to {
+        background-color: inherit;
+    }
+}
+
+@keyframes wdf-highlight {
+    from {
+        background-color: #ecff91;
+    }
+    to {
+        background-color: inherit;
+    }
+}
+
+.wdf-highlight {
+    -webkit-animation: -webkit-wdf-highlight 1s ease;
+    animation: wdf-highlight 1s ease;
+}
+
+.wdf-tall-label {
+    padding-bottom: 5px;
+}
+
+.wdf-pad {
+    padding: 10px;
+}
+
+/* wdf editor app related styles ends */
+
 .execution.exec-container {
     border: none;
 }
+
 .execution.layout-panel {
     border: none;
     margin: 0;

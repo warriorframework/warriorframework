@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import json, xmltodict
-from HTMLParser import HTMLParser
-from xml.etree.ElementTree import parse
-from pprint import pprint
+import json, xmltodict, os, copy
 from utils.navigator_util import Navigator
+from utils.json_utils import read_json_data
 from collections import OrderedDict
+from django.template.defaulttags import register
 
 from django.shortcuts import render
 from django.http import JsonResponse
@@ -25,52 +24,56 @@ def index(request):
     if type(data[root]["system"]) != list:
         data[root]["system"] = [data[root]["system"]]
     for sys in data[root]["system"]:
-        sys["name"] = sys["@name"]
-        del sys["@name"]
         if "subsystem" in sys:
             if type(sys["subsystem"]) == list:
                 for subsys in sys["subsystem"]:
                     for k, v in subsys.items():
-                        if k.startswith("@"):
+                        if k.startswith("@") and k != "@name":
                             subsys[k[1:]] = v
                             del subsys[k]
                         elif k == "#text":
                             del subsys[k]
             else:
                 subsys = sys["subsystem"]
-                for k, v in subsys.items():
-                    if k.startswith("@"):
+                for k, v in sys["subsystem"].items():
+                    if k.startswith("@") and k != "@name":
                         subsys[k[1:]] = v
                         del subsys[k]
                     elif k == "#text":
                         del subsys[k]
         else:
             for k, v in sys.items():
-                if k.startswith("@"):
+                if k.startswith("@") and k != "@name":
                     sys[k[1:]] = v
                     del sys[k]
                 elif k == "#text":
                     del sys[k]
-    print(json.dumps(data, indent=4))
+    print(json.dumps(data[root], indent=4))
 
-    return render(request, 'wdf_edit/index.html', {"data": data["credentials"], "filepath": filepath})
-
-from django.template.defaulttags import register
-@register.filter
-def get_item(dictionary, key):
-    return dictionary.get(key)
+    ref_dict = copy.deepcopy(data[root])
+    return render(request, 'wdf_edit/index.html', {"data": data[root], "data_read": ref_dict, "filepath": filepath, "desc":data[root].get("description", "")})
 
 # def get_json(request):
 #     return JsonResponse(xmltodict.parse(open('/home/ka/Desktop/warrior_fnc_tests/warrior_tests/data/cli_tests/cli_def_Data.xml').read()))
 
 def get_jstree_dir(request):
-    data = Navigator().get_dir_tree_json("/home/ka/Desktop/warrior_fnc_tests/warrior_tests/data/")
-    data["text"] = "/home/ka/Desktop/warrior_fnc_tests/warrior_tests/data/"
+    config = read_json_data(Navigator().get_katana_dir() + os.sep + "config.json")
+    data = Navigator().get_dir_tree_json(config["idfdir"])
+    data["text"] = config["idfdir"]
     # print json.dumps(data, indent=4)
     return JsonResponse(data)
 
 def file_list(request):
     return render(request, 'wdf_edit/file_list.html', {})
+
+@register.filter
+def remove_name(data):
+    """
+        remove the @name key from dict
+    """
+    if type(data) == dict or type(data) == OrderedDict:
+        del data["@name"]
+    return data
 
 def raw_parser(data):
     """
@@ -79,6 +82,8 @@ def raw_parser(data):
         the last level contains the tag and value inside a list
     """
     result = {}
+    if "description" in data:
+        result["description"] = data["description"]
     system_keys = [x for x in data.keys() if x.endswith("-system_name")]
     for name in system_keys:
         # Prepare all system to save data
@@ -91,6 +96,11 @@ def raw_parser(data):
         current_sys = result[sys_name][subsys_name]
         if sys_name+"-"+subsys_name+"-subsystem_name" in data:
             current_sys.update({"subsystem_name":data[sys_name+"-"+subsys_name+"-subsystem_name"]})
+
+        if sys_name+"-"+subsys_name+"-default" in data:
+            current_sys.update({"default": True})
+        if sys_name+"-"+subsys_name+"-default-subsys" in data:
+            current_sys.update({"default-subsys": True})
 
         tags_keys = [x for x in data.keys() if x.startswith(sys_name + "-" + subsys_name + "-") and x.endswith("key")]
         # Parse data
@@ -118,7 +128,10 @@ def build_xml_dict(data):
         output the dicttoxml format dict
     """
     result = []
+    desc = ""
     # First half is to build the system and subsystem tag in the result dict
+    if "description" in data:
+        desc = data.pop("description")
     sys_keys = [str(y) for y in sorted([int(x) for x in data.keys()])]
     for sys_key in sys_keys:
         sys = data[sys_key]
@@ -129,6 +142,8 @@ def build_xml_dict(data):
                 result.append(OrderedDict())
                 current_sys = result[-1]
                 current_sys["@name"] = subsys["system_name"]
+                if "default" in subsys:
+                    current_sys["@default"] = "yes"
             else:
                 # There is a subsystem inside the current system
                 if locate_system(result, subsys["system_name"]) > -1:
@@ -146,6 +161,11 @@ def build_xml_dict(data):
                     result[-1]["subsystem"].append(OrderedDict())
                     current_sys = result[-1]["subsystem"][-1]
                     current_sys["@name"] = subsys["subsystem_name"]
+                if "default" in subsys:
+                    result[locate_system(result, subsys["system_name"])]["@default"] = "yes"
+                if "default-subsys" in subsys:
+                    current_sys["@default"] = "yes"
+
 
     # Second half is to build all tags and values inside the current_sys
             # subsys contains all the tags and values
@@ -181,18 +201,21 @@ def build_xml_dict(data):
                             current_childtags.update({tmp_key:[subsys[tag_key][subtag_key][1]]})
 
     print json.dumps(result, indent=4)
-    return result
+    return result, desc
 
 def on_post(request):
     data = request.POST
     filepath = data["filepath"]
-    # print json.dumps(sorted(data.items()), indent=4)
+    print json.dumps(data.items(), indent=4)
     data = raw_parser(data)
-    data = build_xml_dict(data)
-    data = {"credentials":{"system":data}}
+    data, desc = build_xml_dict(data)
+    result = {"credentials":OrderedDict()}
+    if desc:
+        result["credentials"]["description"] = desc
+    result["credentials"]["system"] = data
 
     from xml.dom.minidom import parseString as miniparse
-    print miniparse(xmltodict.unparse(data)).toprettyxml()
+    print miniparse(xmltodict.unparse(result)).toprettyxml()
     print "Filepath:", filepath
     # return render(request, 'wdf_edit/result.html', {"data": json.dumps(request.POST, indent=4)})
     return render(request, 'wdf_edit/file_list.html', {})
