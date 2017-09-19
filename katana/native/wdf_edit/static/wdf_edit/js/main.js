@@ -22,7 +22,7 @@ var wdf = {
                     // if ($count > 1) {
                     //     $sys.find("[katana-click='wdf.addSubSystem']").hide();
                     // }
-                    $sys.find("[katana-click='wdf.addSubSystem']").hide();
+                    // $sys.find("[katana-click='wdf.addSubSystem']").hide();
                 }
             }
         });
@@ -253,15 +253,17 @@ var wdf = {
                 $tmp.find("[name='template-system-name']").prop("name", $system_id+"-"+$subsystem_count+"-system_name");
 
                 $tmp.find("[name='template-subsystem-name']").prop("name", $system_id+"-"+$subsystem_count+"-subsystem_name");
-                $tmp.find("[name='template-subsystem.tag']").prop("name", $system_id+"-"+$subsystem_count+"-"+($target.children("#content").length+1)+"-1-key");
-                $tmp.find("[name='template-subsystem.value']").prop("name", $system_id+"-"+$subsystem_count+"-"+($target.children("#content").length+1)+"-1-value");
+                $tmp.find("#content").remove();
 
                 $tmp.find("[name='template-system-default']").prop("name", $system_id+"-"+$subsystem_count+"-default");
                 $tmp.find("[name='template-subsystem-default']").prop("name", $system_id+"-"+$subsystem_count+"-default-subsys");
-                $tmp.find("[katana-click='wdf.addSubSystem']").hide()
 
                 // Replace the current system with a system with subsystem tag
+                var $tags = $target.find(".field-inline");
                 $("#"+$system_id+"-"+$subsystem_count+"-control-box").replaceWith($($tmp.html()));
+                $.each($tags, function(ind, tag){
+                    $("#"+$system_id+"-"+$subsystem_count+"-control-box").append($(tag));
+                });
             } else {
                 // already has subsystem structure
                 var $tmp_id = $system_id+"-"+($subsystem_count+1)+"-control-box"
@@ -292,7 +294,7 @@ var wdf = {
             $("#"+$tmp_id).get(0).scrollIntoView(true);
             katana.quickAnimation($("#"+$tmp_id).find("input"), "wdf-highlight", 1000);
 
-            $target.parent().find("[id^='"+$system_id+"-1']").find("[katana-click='wdf.addTag']").hide()
+            // $target.parent().find("[id^='"+$system_id+"-1']").find("[katana-click='wdf.addTag']").hide()
         }
     },
 

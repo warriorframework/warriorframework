@@ -223,7 +223,7 @@
                     <input type="checkbox" class="wdf-sys-checkbox" katana-click="wdf.sysDefaultCheck" name="template-system-default" title="Default"/><label>Default</label>
                 </div>
                 <div class="field title-block">
-                    <input class="wdf-input" name="template-system-name" placeholder="System name" katana-change="wdf.sysNameChange" value=""/>
+                    <input class="wdf-input" name="template-system-name" placeholder="System Name" katana-change="wdf.sysNameChange" value=""/>
                 </div>
                 <i katana-click="wdf.toggle" class="fa fa-toggle-down" title="Hide/Show"/>
                 <i katana-click="wdf.addTag" class="fa fa-plus" title="Add Data"/>
@@ -235,8 +235,8 @@
                     <i katana-click="wdf.addChild" class="fa fa-plus" title=" Sub Data"/>
                     <i katana-click="wdf.deleteTag" class="fa fa-trash i-danger" title="Data"/>
                 </label>
-                <input class="wdf-input" name="template-system.tag" value="tag_name" list="most_used_tags"/>
-                <input class="wdf-input" name="template-system.value" value="value"/>
+                <input class="wdf-input" name="template-system.tag" placeholder="Data key" list="most_used_tags"/>
+                <input class="wdf-input" name="template-system.value" placeholder="Data value"/>
             </div>
         </div>
     </div>
@@ -248,7 +248,7 @@
                     <input type="checkbox" class="wdf-sys-checkbox" katana-click="wdf.sysDefaultCheck" name="template-system-default" title="Default"/><label>Default</label>
                 </div>
                 <div class="field title-block">
-                    <input class="wdf-input" name="template-system-name" placeholder="System name" katana-change="wdf.sysNameChange" value=""/>
+                    <input class="wdf-input" name="template-system-name" placeholder="System Name" katana-change="wdf.sysNameChange" value=""/>
                 </div>
                 <i katana-click="wdf.toggle" class="fa fa-toggle-down" title="Hide/Show"/>
                 <i katana-click="wdf.addTag" class="fa fa-plus" title="Add Data"/>
@@ -258,15 +258,15 @@
             <div class="field-inline">
                 <input type="checkbox" class="wdf-subsys-checkbox" katana-click="wdf.subsysDefaultCheck" name="template-subsystem-default"/>
                 <label class="wdf-label">Subsystem name:</label>
-                <input class="wdf-input" name="template-subsystem-name" katana-change="wdf.subSysNameChange" value=""/>
+                <input class="wdf-input" name="template-subsystem-name" placeholder="Subsystem Name" katana-change="wdf.subSysNameChange" value=""/>
             </div>
             <div class="field-inline dual-input" id="content">
                 <label>
                     <i katana-click="wdf.addChild" class="fa fa-plus" title=" Sub Data"/>
                     <i katana-click="wdf.deleteTag" class="fa fa-trash i-danger" title="Data"/>
                 </label>
-                <input class="wdf-input" name="template-subsystem.tag" value="tag_name" list="most_used_tags"/>
-                <input class="wdf-input" name="template-subsystem.value" value="value"/>
+                <input class="wdf-input" name="template-subsystem.tag" placeholder="Data key" list="most_used_tags"/>
+                <input class="wdf-input" name="template-subsystem.value" placeholder="Data value"/>
             </div>
         </div>
     </div>
@@ -277,8 +277,8 @@
                 <i katana-click="wdf.addChild" class="fa fa-plus" title=" Sub Data"/>
                 <i katana-click="wdf.deleteTag" class="fa fa-trash i-danger" title="Data"/>
             </label>
-            <input class="wdf-input" name="template-tag.tag" list="most_used_tags"/>
-            <input class="wdf-input" name="template-tag.value"/>
+            <input class="wdf-input" name="template-tag.tag" placeholder="Data key" list="most_used_tags"/>
+            <input class="wdf-input" name="template-tag.value" placeholder="Data value"/>
         </div>
     </div>
 
@@ -287,8 +287,8 @@
             <label>
                 <i katana-click="wdf.deleteChildTag" class="fa fa-trash i-danger" title="Sub Data"/>
             </label>
-            <input class="wdf-input" name="template-tag.tag" value="tag_name" list="most_used_tags"/>
-            <input class="wdf-input" name="template-tag.value" value="value"/>
+            <input class="wdf-input" name="template-tag.tag" placeholder="Data key" list="most_used_tags"/>
+            <input class="wdf-input" name="template-tag.value" placeholder="Data value"/>
         </div>
     </div>
 
