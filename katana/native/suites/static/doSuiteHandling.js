@@ -432,16 +432,13 @@ function createSuiteRequirementsTable(rdata){
 			createSuiteRequirementsTable(jsonSuiteObject['Requirements']);	
 			return false;
 		});
-
-				console.log("Line 344 or so"); 
-
 		bid = "editRequirement-"+s+"-id"+getRandomSuiteID();
 		items.push('<i class="edit-item-32" title="Save Edit" id="'+bid+'"/>');
 		katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 		$(document).on('click','#'+bid,function(  ) {
 			var names = this.id.split('-');
 			var sid = parseInt(names[1]);
-			console.log("xdata --> "+ rdata);  // Get this value and update your json. 
+			//console.log("xdata --> "+ rdata);  // Get this value and update your json. 
 			var txtNm = katana.$activeTab.find("#textRequirement-name-"+sid+"-id").val();
 			//var txtVl = katana.$activeTab.find("#textRequirement-value-"+sid+"-id").val();
 			var txtVl = '';
@@ -470,7 +467,6 @@ function createSuiteRequirementsTable(rdata){
 	}
 	items.push('</tbody>');
 	items.push('</table>');
-
 	katana.$activeTab.find("#tableOfTestRequirements").html( items.join(""));
 	//katana.$activeTab.find('#tableOfTestRequirements').sortable();
 	
@@ -510,8 +506,9 @@ function mapSuiteJsonToUi(data){
 
 		});
 
-}  // end of function 
+}  
 
+// Saves your suite to disk. 
 function saveSuitesCaseUI() {
 		var xdata = jsonTestcases['Testcase'];
 		var popup = $(this).closest('.popup');
@@ -542,8 +539,6 @@ function addRequirementToSuite() {
 			rdata.push({"Requirement" : { "@name": "", "@value": ""},});
 			console.log(jsonSuiteObject);
 			createSuiteRequirementsTable(jsonSuiteObject['Requirements']);	
-			//event.stopPropagation();
-
 }
 
 

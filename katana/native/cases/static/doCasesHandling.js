@@ -700,14 +700,13 @@ function createRequirementsTable(i_data){
 	katana.$activeTab.find("#tableOfCaseRequirements").html("");  // This is a blank div. 
 	items.push('<table id="Requirements_table_display" class="configuration_table" >');
 	items.push('<thead>');
-	items.push('<tr><th>Num</th><th>Requirement</th><th/></tr>');
+	items.push('<tr><th>#</th><th>Requirement</th></tr>');
 	items.push('</thead>');
 	items.push('<tbody>');
 	console.log("createRequirementsTable");
 	console.log(i_data);
 	if (i_data['Requirement']) {
 			rdata= i_data['Requirement'];
-			
 			for (var s=0; s<Object.keys(rdata).length; s++ ) {
 				var oneReq = rdata[s];
 				var oneID = parseInt(s) + 1; 
@@ -747,29 +746,23 @@ function createRequirementsTable(i_data){
 			items.push('</tbody>');
 			items.push('</table>');
 		}
-	bid = "addRequirement-"+getRandomCaseID();
-	items.push('<div><input type="button" class="btn btn-success" value="Add Requirement" id="'+bid+'"/></div>');
-	katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
-	$(document).on('click','#'+bid,function( event  ) {
-			var names = this.id.split('-');
-			var sid = parseInt(names[1]);
-			//console.log("Add Requirement... ");
-			//console.log(jsonCaseObject['Requirements']);
+	katana.$activeTab.find("#tableOfCaseRequirements").html(items.join(""));  // This is a blank div. 
+	
+
+	
+}
+
+
+function addRequirementToCase() {
+
 			if (!jsonCaseObject['Requirements']) jsonCaseObject['Requirements']= { 'Requirement' : [] }
 			if (!jQuery.isArray(jsonCaseObject['Requirements']['Requirement'])) {
 				jsonCaseObject['Requirements']['Requirement'] = []
 			}
 			rdata = jsonCaseObject['Requirements']['Requirement'];
-			
 			rdata.push( "" );
 			console.log(jsonCaseObject);
 			createRequirementsTable(jsonCaseObject['Requirements']);	
-			event.stopPropagation();
-		});
+			
+		}
 	
-	katana.$activeTab.find("#tableOfCaseRequirements").html( items.join(""));
-	//katana.$activeTab.find('#Requirements_table_display tbody').sortable();
-	//katana.$activeTab.find('#Case_table_display').on('click',"td",   function() { 
-	//});
-
-}
