@@ -1,0 +1,56 @@
+<?xml version="1.0" ?>
+<TestSuite>
+        <Details>
+                <Name>seq_ts_seq_tc</Name>
+                <Title>Testcase running sequential tc with sequential</Title>
+                <Engineer>ka</Engineer>
+                <Date>05/23/2017</Date>
+                <Time>14:11:26</Time>
+                <type exectype="sequential_testcases"/>
+                <State/>
+                <default_onError action="next"/>
+                <Resultsdir/>
+                <IDF/>
+        </Details>
+        <Requirements>
+                <Requirement/>
+        </Requirements>
+        <Testcases>
+                <Testcase>
+                        <path>../../../testcases/framework_tests/par_seq_execution/seq_ts_seq_tc_1.xml</path>
+                        <context>positive</context>
+                        <InputDataFile/>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next" value=""/>
+                        <runmode type="Standard" value=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                        <impact>impact</impact>
+                </Testcase>
+                <Testcase>
+                        <path>../../../testcases/framework_tests/par_seq_execution/seq_ts_seq_tc_2.xml</path>
+                        <context>positive</context>
+                        <InputDataFile/>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next" value=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                        <runmode type="Standard" value=""/>
+                        <impact>impact</impact>
+                </Testcase>
+                <Testcase>
+                        <path>../../../testcases/framework_tests/par_seq_execution/seq_ts_seq_tc_3.xml</path>
+                        <context>positive</context>
+                        <InputDataFile/>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next" value=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                        <runmode type="Standard" value=""/>
+                        <impact>impact</impact>
+                </Testcase>
+        </Testcases>
+</TestSuite>

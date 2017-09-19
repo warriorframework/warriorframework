@@ -14,7 +14,6 @@ limitations under the License.
 app.controller('newProjectCtrl', ['$scope', '$http', '$controller', '$location', '$route', 'saveasProjectFactory', 'fileFactory', 'subdirs',
     function($scope, $http, $controller, $location, $route, saveasProjectFactory, fileFactory, subdirs) {
 
-
         $scope.subdirs = subdirs;
         $scope.defaultProjectActions = ['next', 'abort', 'abort_as_error', 'goto'];
         $scope.newProjecttooltips = {};
@@ -35,6 +34,9 @@ app.controller('newProjectCtrl', ['$scope', '$http', '$controller', '$location',
         $scope.suite_numbers = [];
         $scope.suiteEditor = true;
         $scope.suiteBeingEdited = "None";
+        $scope.newDate = '';
+        $scope.newTime = '';
+        $scope.newEng = '';
 
         $scope.ExecuteTypes = ['Yes', 'If', 'If Not', 'No'];
         $scope.FirstExecuteTypes = ['Yes', 'No'];
@@ -45,6 +47,9 @@ app.controller('newProjectCtrl', ['$scope', '$http', '$controller', '$location',
         var ChildCtrl=this;
         ChildCtrl.baseCtrl = $controller('baseChariotCtrl',{ $scope: $scope, $http: $http });
         ChildCtrl.baseCtrl.readConfig();
+
+        $scope.newDate = ChildCtrl.baseCtrl.getDate();
+        $scope.newTime = ChildCtrl.baseCtrl.getTime();
 
         $scope.updateConditionList = function(param){
             for(var i=0; i<$scope.suites.length; i++){
@@ -133,6 +138,7 @@ app.controller('newProjectCtrl', ['$scope', '$http', '$controller', '$location',
         fileFactory.readtooltipfile('project')
             .then(
                 function(data) {
+                    $scope.newEng = $scope.cfg.engineer;
                     console.log(data);
                     $scope.newProjecttooltips = data;
                 },
@@ -789,10 +795,10 @@ app.controller('newProjectCtrl', ['$scope', '$http', '$controller', '$location',
                     "Details": {
                         "Name": $scope.projectName,
                         "Title": $scope.projectTitle,
-                        "Engineer": $scope.cfg.engineer,
+                        "Engineer": $scope.newEng,
                         "State": $scope.State,
-                        "Date": ChildCtrl.baseCtrl.getDate(),
-                        "Time": ChildCtrl.baseCtrl.getTime(),
+                        "Date": $scope.newDate,
+                        "Time": $scope.newTime,
                         "default_onError": {
                             "_action": $scope.defaultProjectAction,
                             "_value": $scope.gotoStep
@@ -810,16 +816,17 @@ app.controller('newProjectCtrl', ['$scope', '$http', '$controller', '$location',
                 .then(
                     function(data) {
                         console.log(data);
+                        if ($scope.savecreateProject == true) {
+                            // $route.reload();
+                        }  else {
+                            $location.path('/projects');
+                        }
                     },
                     function(data) {
                         alert(data);
                     });
 
-            if ($scope.savecreateProject == true) {
-                $route.reload();
-            }  else {
-                $location.path('/projects');
-            }
+
         }
     }
 ]);
