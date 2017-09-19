@@ -82,7 +82,7 @@ function mapFullCaseJson(myobjectID){
      	}
 	});
 
-
+	fillCaseDefaultGoto();
 
 }
 
@@ -129,6 +129,28 @@ function mapUiToCaseJson() {
 	// Now you have collected the user components...
 } 
 
+
+var fillCaseDefaultGoto = function() {
+
+	var gotoStep = katana.$activeTab.find('#default_onError').val();
+	console.log("Step ", gotoStep);
+	var defgoto = katana.$activeTab.find('#default_onError_goto'); 
+		defgoto.hide();
+
+	if (gotoStep.trim() == 'goto'.trim()) { 
+		defgoto.show();
+	} else {
+		defgoto.hide();
+		
+	}
+
+	defgoto.empty(); 
+	var xdata = jsonCaseObject["Steps"]['step']; // ['Testcase']; 
+	console.log("Step....",Object.keys(xdata).length, xdata);
+	for (var s=0; s<Object.keys(xdata).length; s++ ) {
+		defgoto.append($('<option>',{ value: s,  text: s}));
+	}
+}
 
 // Saves the UI to memory and sends to server. 
 function writeUitoCaseJSON() {
@@ -232,9 +254,14 @@ function mapCaseJsonToUi(data){
 		var out_array = [] 
 		var ta = 0; 
 		for (xarg in arguments) {
-			var xstr =  arguments[xarg]['@name']+" = "+arguments[xarg]['@value'] + "<br>";
-			//console.log(xstr);
-			out_array.push(xstr); 
+
+			var argvalue = arguments[xarg]['@value'];
+			console.log("argvalue", argvalue);
+			if (argvalue.length > 1) {
+				var xstr =  arguments[xarg]['@name']+" = "+arguments[xarg]['@value'] + "<br>";
+				//console.log(xstr);
+				out_array.push(xstr); 
+				}
 			ta  = ta + 1; 
 			}
 		outstr = out_array.join("");
@@ -309,8 +336,10 @@ function mapCaseJsonToUi(data){
 	katana.$activeTab.find("#tableOfTestStepsForCase").html( items.join(""));
 	katana.$activeTab.find('#Step_table_display tbody').sortable( { stop: testCaseSortEventHandler});
 	
+	fillCaseDefaultGoto();
+	katana.$activeTab.find('#default_onError').on('change',fillCaseDefaultGoto );
 
-  	/*
+	/*
 	if (jsonCaseDetails['Datatype'] == 'Custom') {
 		$(".arguments-div").hide();
 	} else {
@@ -352,7 +381,38 @@ function 	makePopupArguments(popup,  oneCaseStep) {
 		
 	}
 	popup.find("#arguments-textarea").html( a_items.join("\n"));	
+
+	fillCaseStepDefaultGoto(popup);
+	popup.find('#SteponError-at-action').on('change', function(){ 
+			var popup = $(this).closest('.popup');
+			fillCaseStepDefaultGoto(popup);
+	});
+
 }
+
+var fillCaseStepDefaultGoto = function(popup) {
+
+	var gotoStep =popup.find('#SteponError-at-action').val();
+	console.log("Step ", gotoStep);
+	var defgoto = popup.find('#SteponError-at-value'); 
+		defgoto.hide();
+
+	if (gotoStep.trim() == 'goto'.trim()) { 
+		defgoto.show();
+	} else {
+		defgoto.hide();
+		
+	}
+	//var sid = popup.find('#CaseRowToEdit').val();
+	defgoto.empty(); 
+	var xdata = jsonCaseObject["Steps"]['step']; // ['Testcase']; 
+	console.log("Step....",Object.keys(xdata).length, xdata);
+	for (var s=0; s<Object.keys(xdata).length; s++ ) {
+		defgoto.append($('<option>',{ value: s,  text: s}));
+	}
+}
+
+
 
 function setupPopupDialog(sid,xdata,popup) {
 	console.log(popup);  // Merely returns the div tag
@@ -698,7 +758,7 @@ function saveUItoRequirements( ){
 function createRequirementsTable(i_data){
 	var items =[]; 
 	katana.$activeTab.find("#tableOfCaseRequirements").html("");  // This is a blank div. 
-	items.push('<table id="Requirements_table_display" class="configuration_table" >');
+	items.push('<table id="Requirements_table_display" class="configuration_table" width="100%" >');
 	items.push('<thead>');
 	items.push('<tr><th>#</th><th>Requirement</th></tr>');
 	items.push('</thead>');
