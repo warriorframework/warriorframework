@@ -45,6 +45,13 @@ var wdf = {
         $target = $(this).closest(".control-box");
         $target.children("#content").toggle();
         $target.children("#subcontent").toggle();
+        if ($(this).hasClass("fa-toggle-down")) {
+            $(this).removeClass("fa-toggle-down");
+            $(this).addClass("fa-toggle-up");
+        } else if ($(this).hasClass("fa-toggle-up")) {
+            $(this).removeClass("fa-toggle-up");
+            $(this).addClass("fa-toggle-down");
+        }
     },
 
     sysNameChange: function(){
