@@ -35,12 +35,12 @@ padding-left: 15px;
     font-size: 18px;
 }
 .configuration_table tr th:nth-child(3), .configuration_table tr td:nth-child(3){
-    flex-grow: 1.5;
+    flex-grow: 2.5;
     font-size: 18px;
 }
 
 .configuration_table tr th:last-child, .configuration_table tr td:last-child {
-    flex-grow: .5;
+    flex-grow: .9;
     font-size: 18px;
 }
 

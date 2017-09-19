@@ -169,10 +169,12 @@ function mapUItoSuiteCase(popup,xdata){
 		id = '#CaseRunmode'
 		oneCase['runmode'] = popup.find(id).val();
 
-		id = "#onError-at-action"
+		id = "#caseonError-at-action"
 		oneCase['onError']['@action'] = popup.find(id).val();
 
-	
+		id = "#caseonError-at-value"
+		oneCase['onError']['@value'] = popup.find(id).val();
+
 }
 
 /*
@@ -208,8 +210,8 @@ function mapUiToSuiteJson() {
 	jsonSuiteObject['Details']['Engineer'] = katana.$activeTab.find('#suiteEngineer').val();
 	jsonSuiteObject['Details']['Resultsdir'] = katana.$activeTab.find('#suiteResults').val();
 	jsonSuiteObject['Details']['Date'] = katana.$activeTab.find('#suiteDate').val();
-	jsonSuiteObject['Details']['default_onError'] = { '@value': '', '@name' : ''};
-	jsonSuiteObject['Details']['default_onError']['@name'] = katana.$activeTab.find('#defaultOnError').val();
+	jsonSuiteObject['Details']['default_onError'] = { '@value': '', '@action' : ''};
+	jsonSuiteObject['Details']['default_onError']['@action'] = katana.$activeTab.find('#defaultOnError').val();
 	jsonSuiteObject['Details']['default_onError']['@value'] = katana.$activeTab.find('#defaultOnError_goto').val();
 	jsonSuiteObject['Details']['Datatype']['@exectype'] = katana.$activeTab.find('#suiteDatatype').val();
 	jsonSuiteObject['SaveToFile'] = katana.$activeTab.find('#my_file_to_save').val();
@@ -398,13 +400,13 @@ function fillCaseDefaults(s, data){
 }
 
 
-function createRequirementsTable(rdata){
+function createSuiteRequirementsTable(rdata){
 	var items =[]; 
 	katana.$activeTab.find("#tableOfTestRequirements").html("");
 	
 	items.push('<table id="Case_table_display" class="configuration_table" width="100%" >');
 	items.push('<thead>');
-	items.push('<tr id="ReqRow"><th>Num</th><th>Name</th><th>Value</th><th/><th/></tr>');
+	items.push('<tr id="ReqRow"><th>#</th><th>Requirement</th><th/><th/></tr>');
 	items.push('</thead>');
 	items.push('<tbody>');
 	console.log(rdata);
@@ -416,8 +418,8 @@ function createRequirementsTable(rdata){
 		var bid = "textRequirement-name-"+s+"-id";	
 		items.push('<td><input type="text" value="'+oneReq['@name']+'" id="'+bid+'"/></td>');
 		bid = "textRequirement-value-"+s+"-id";	
-		items.push('<td><input type="text" value="'+oneReq['@value']+'" id="'+bid+'"/></td>');
-		console.log("Line 328 or so"); 
+		//items.push('<td><input type="text" value="'+oneReq['@value']+'" id="'+bid+'"/></td>');
+		//console.log("Line 328 or so"); 
 		bid = "deleteRequirement-"+s+"-id"+getRandomSuiteID();
 		console.log("Line 328 or so "+bid); 
 		items.push('<td><i  class="delete-item-32"  title="Delete" id="'+bid+'"/>');
@@ -427,7 +429,7 @@ function createRequirementsTable(rdata){
 			var sid = parseInt(names[1]);
 			console.log("Remove " + sid + " " + this.id +" from " + rdata); 
 			jsonSuiteObject['Requirements'].splice(sid,1);
-			createRequirementsTable(jsonSuiteObject['Requirements']);	
+			createSuiteRequirementsTable(jsonSuiteObject['Requirements']);	
 			return false;
 		});
 
@@ -441,11 +443,12 @@ function createRequirementsTable(rdata){
 			var sid = parseInt(names[1]);
 			console.log("xdata --> "+ rdata);  // Get this value and update your json. 
 			var txtNm = katana.$activeTab.find("#textRequirement-name-"+sid+"-id").val();
-			var txtVl = katana.$activeTab.find("#textRequirement-value-"+sid+"-id").val();
+			//var txtVl = katana.$activeTab.find("#textRequirement-value-"+sid+"-id").val();
+			var txtVl = '';
 			console.log("Editing ..." + sid);
 			console.log(jsonSuiteObject['Requirements'][sid])
 			jsonSuiteObject['Requirements'][sid]  = { "@name": txtNm, "@value": txtVl};
-			createRequirementsTable(jsonSuiteObject['Requirements']);	
+			createSuiteRequirementsTable(jsonSuiteObject['Requirements']);	
 			event.stopPropagation();
 			//This is where you load in the edit form and display this row in detail. 
 		});
@@ -459,7 +462,7 @@ function createRequirementsTable(rdata){
 			console.log("Insert" + sid + " " + this.id +" from " + rdata); 
 			insertRequirementToSuite(sid);
 
-			createRequirementsTable(jsonSuiteObject['Requirements']);	
+			createSuiteRequirementsTable(jsonSuiteObject['Requirements']);	
 			return false;
 		});
 
@@ -501,7 +504,7 @@ function mapSuiteJsonToUi(data){
 	if (!jQuery.isArray(rdata)) rdata = [rdata]; 
 
 	createCasesTable(xdata);
-	createRequirementsTable(rdata);
+	createSuiteRequirementsTable(rdata);
 	katana.$activeTab.find('#editTestcase').off('click');  // unbind is deprecated - debounces the click event. 
 	katana.$activeTab.find('#editTestcase').on('click',function() {
 
@@ -526,7 +529,7 @@ function insertRequirementToSuite( sid) {
 			var newReq = {"Requirement" : { "@name": "", "@value": ""},};
 			rdata.splice(sid - 1, 0, newReq); 
 			console.log(jsonSuiteObject);
-			createRequirementsTable(jsonSuiteObject['Requirements']);	
+			createSuiteRequirementsTable(jsonSuiteObject['Requirements']);	
 			//event.stopPropagation();
 
 }
@@ -538,7 +541,7 @@ function addRequirementToSuite() {
 			rdata = jsonSuiteObject['Requirements'];
 			rdata.push({"Requirement" : { "@name": "", "@value": ""},});
 			console.log(jsonSuiteObject);
-			createRequirementsTable(jsonSuiteObject['Requirements']);	
+			createSuiteRequirementsTable(jsonSuiteObject['Requirements']);	
 			//event.stopPropagation();
 
 }
