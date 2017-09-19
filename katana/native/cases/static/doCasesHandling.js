@@ -257,12 +257,14 @@ function mapCaseJsonToUi(data){
 
 			var argvalue = arguments[xarg]['@value'];
 			console.log("argvalue", argvalue);
-			if (argvalue.length > 1) {
-				var xstr =  arguments[xarg]['@name']+" = "+arguments[xarg]['@value'] + "<br>";
-				//console.log(xstr);
-				out_array.push(xstr); 
+				if (argvalue) {
+				if (argvalue.length > 1) {
+					var xstr =  arguments[xarg]['@name']+" = "+arguments[xarg]['@value'] + "<br>";
+					//console.log(xstr);
+					out_array.push(xstr); 
+					}
+				ta  = ta + 1; 
 				}
-			ta  = ta + 1; 
 			}
 		outstr = out_array.join("");
 		//console.log("Arguments --> "+outstr);
@@ -381,7 +383,9 @@ function 	makePopupArguments(popup,  oneCaseStep) {
 		
 	}
 	popup.find("#arguments-textarea").html( a_items.join("\n"));	
-
+	if (!jQuery.isArray(jsonCaseSteps['step'])) {
+		jsonCaseSteps['step'] = [jsonCaseSteps['step']];
+		}
 	fillCaseStepDefaultGoto(popup);
 	popup.find('#SteponError-at-action').on('change', function(){ 
 			var popup = $(this).closest('.popup');
@@ -495,7 +499,7 @@ function setupPopupDialog(sid,xdata,popup) {
 	}
 	
 	popup.find('#appendArgument').on('click',function( ) {
-				alert("add One Argument");
+				//lert("add One Argument");
 				var sid = popup.find('#StepRowToEdit').attr('value');
 				var xdata =  popup.find('#StepRowToEdit').attr('xdata');
 				addOneArgument(sid,xdata, popup);
@@ -648,9 +652,10 @@ function saveOneArgument( sid, aid, xdata) {
 
 function addOneArgument( sid , xdata, popup ) {
 	var xx = { "@name": "New" , "@value": "New" };
-	console.log("sid =" + sid);
-	console.log(xdata);
-	console.log(popup);
+
+
+	console.log("sid = ", sid, jsonCaseSteps, jsonCaseSteps['step'][sid]['Arguments'] );
+	
 	jsonCaseSteps['step'][sid]['Arguments']['argument'].push(xx);
 	oneCaseStep = jsonCaseSteps['step'][sid];
 	redrawArguments(sid, oneCaseStep,popup);
@@ -662,6 +667,11 @@ function insertOneArgument( sid , aid,  popup ) {
 	console.log("sid =" + sid);
 	console.log("aid =" + aid);
 	console.log(popup);
+if (!jsonCaseSteps['step'][sid]['Arguments']) {
+		jsonCaseSteps['step'][sid]['Arguments'] = { 'argument' : []};
+		//jsonCaseSteps['step'][sid]['Arguments']['argument'] = [] ;
+	}
+
 	jsonCaseSteps['step'][sid]['Arguments']['argument'].splice(aid,0,xx);
 	oneCaseStep = jsonCaseSteps['step'][sid];
 	redrawArguments(sid, oneCaseStep,popup);
@@ -669,10 +679,12 @@ function insertOneArgument( sid , aid,  popup ) {
 
 
 function removeOneArgument( sid, aid, popup ) {
-	jsonCaseSteps['step'][sid]['Arguments']['argument'].splice(aid,1);	
-	console.log("sid =" + sid);
-	console.log("aid =" + aid);
-	console.log(popup);
+	if (jsonCaseSteps['step'][sid]['Arguments']) { 
+		jsonCaseSteps['step'][sid]['Arguments']['argument'].splice(aid,1);	
+		console.log("sid =" + sid);
+		console.log("aid =" + aid);
+		console.log(popup);
+		}
 	oneCaseStep = jsonCaseSteps['step'][sid];
 	redrawArguments(sid, oneCaseStep,popup);
 }
@@ -709,7 +721,7 @@ function mapUItoTestStep(sid,xdata,popup) {
 function createNewStep(){
 	var newCaseStep = {
 		"step": {  "@Driver": "demo_driver", "@Keyword": "" , "@TS": "0" },
-		"Arguments" : { 'Argument': ""  },
+		"Arguments" : { 'Argument': [] },
 		"onError": {  "@action" : "next", "@value" : "" } ,
 		"iteration_type": {   "@type" : "" } ,
 		"Description":"",
