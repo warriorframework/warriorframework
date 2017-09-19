@@ -16,7 +16,9 @@ import os
 import copy
 import shutil
 import zipfile
-from django.http import JsonResponse, HttpResponseRedirect
+
+import binascii
+from django.http import JsonResponse, HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
 from django.views import View
 import xml.etree.cElementTree as ET
@@ -170,7 +172,11 @@ def open_config(request):
 def validate_app_path(request):
     output = False
 
-    detail_type = request.POST["type"]
+    myDict = dict(request.POST.iterlists())
+
+    print request.POST
+
+    """detail_type = request.POST["type"]
     detail_info = request.POST["value"]
     detail_dir = False
     if "dir_name" in request.POST:
@@ -206,7 +212,7 @@ def validate_app_path(request):
                 # copy them over into the temp directory
         if output:
             app_validator_obj = AppValidator(app_path)
-            output = app_validator_obj.is_valid()
+            output = app_validator_obj.is_valid()"""
 
     return JsonResponse({"valid": output})
 
@@ -222,10 +228,8 @@ def upload_file(request):
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             handle_uploaded_file(request.FILES['docfile'])
-            print request.path
             request.path = '/katana/'
-            print request.path
-            return render(request, 'wapp_management/wapp_management.html', {"form": form})
+            return HttpResponse()
     else:
         form = UploadFileForm()
-    return render(request, 'wapp_management/wapp_management.html', {"form": form})
+        return HttpResponse()

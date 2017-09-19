@@ -135,6 +135,15 @@ var wapp_management = {
         console.log(selectedFile);
         $.wapp_management_globals.app_path_details[$filename] = selectedFile;
 
+        var fd = new FormData();
+        fd.append("file", selectedFile);
+        $.ajax({method: 'POST', url: 'wapp_management/validate_app_path/',
+        data: fd, headers: {'Content-Type': undefined, 'X-CSRFToken': wapp_management.getCookie('csrftoken')},
+        cache: false, processData: false})
+        .done(function(data) {
+            alert(data)
+        });
+
 
         //wapp_management.validateData(selectedFile, $displayInput)
 
@@ -267,7 +276,7 @@ var wapp_management = {
         var html_content = '<div class="row" id="row_for_' + $loop_num + '">' +
                                 '<div class="col-sm-5">' +
                                     '<input class="form-control" id="app_path_for_config_' +
-                                    $loop_num + '" value="' + input_value + '" katana-change="wapp_management.validateInput">' +
+                                    $loop_num + '" value="' + input_value + '" katana-change="wapp_management.validateInput" style="border-color: #dcdcdc">' +
                                 '</div>' +
                                 '<div class="col-sm-1" style="padding: 0.2rem 0.5rem 0 0.5rem;">' +
                                     '<label style="width: 100%;">' +
@@ -546,13 +555,14 @@ var wapp_management = {
 
     changeBorderColor: function(valid){
         if(!valid){
-            $elem.css("border-color", "red")
+            $elem.css("border-color", "rgb(255, 0 , 0)");
+            wapp_management.disableSaveAndInstall();
         }
         else {
-            $elem.css("border-color", "#dcdcdc")
+        console.log($elem);
+            $elem.css("border-color", "#dcdcdc");
+            wapp_management.disableSaveAndInstall();
         }
-
-        wapp_management.disableSaveAndInstall();
     },
 
     disableSaveAndInstall: function(){
@@ -566,7 +576,7 @@ var wapp_management = {
         for(var i=0; i<$configInputs.length; i++){
         console.log($configInputs[i]);
         console.log($($configInputs[i]).css("border-color"));
-            if($($configInputs[i]).css("border-color") == "rgb(220, 220, 220)"){
+            if($($configInputs[i]).css("border-color") == "rgb(255, 0, 0)"){
                 $saveConfigBtn.prop("disabled", true);
                 $installAppsBtn.prop("disabled", true);
                 flag = false;

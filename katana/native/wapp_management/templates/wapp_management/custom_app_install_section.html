@@ -3,10 +3,10 @@
         <h1>&nbsp;Install Custom Apps</h1>
     </div>
 
-    <!--<form id="saveZipFile" enctype="multipart/form-data" action="{% url 'upload_file' %}" method="post">{% csrf_token %}
+    <form id="saveZipFile" enctype="multipart/form-data" action="" method="post">{% csrf_token %}{{ form.as_p }}
         <input type="file" name="docfile" id="docfile">
         <input type="submit" id="upload-button" value="Upload" katana-click="wapp_management.saveZipFile">
-    </form>-->
+    </form>
 
     <div id="app_installation_div">
         <div class="container-fluid">
