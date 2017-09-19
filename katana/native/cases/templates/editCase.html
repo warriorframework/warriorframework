@@ -75,31 +75,6 @@
 				</select>
 					
 			</div>
-	
-			<div class="field  col-md-3">
-				<input type="checkbox"  id="ck_dataPath" name="ck_dataPath" value="No Data Path" >
-				<label class="text-right" >No Data Path</label>
-			</div>
-	
-			<div class="field col-md-3">	
-				<label class="text-right" id="caseDatatype_lbl" >Data Type:</label>
-				<select class="text-right" type="text" id="caseDatatype" name="caseDatatype" value="{{caseDatatype}}" >
-					<option value="Custom">Custom</option>
-					<option value="Hybrid">Hybrid</option>
-					<option value="Iterative">Iterative</option>
-					</select>
-					<label class="text-right" id="caseResultsdir_lbl" >Results Dir:</label>
-			</div>
-
-			<div class="field">	
-				<label class="text-right"  >Results Dir</label>
-				
-				<input type="text" id="caseResultsdir"  value="{{caseResultsdir}}">
-			</div>
-
-		</div>
-
-	<div class="row ">
 			<div class="field col-md-3">
 				<label >Case State:</label>
 				<select class="col-4 text-right" type="text" id="caseState" name="caseState" value="{{caseState}}" >
@@ -108,6 +83,26 @@
 				{% endfor %}
 				</select>
 			</div>		
+			<div class="field  col-md-3">
+				<input type="checkbox"  id="ck_dataPath" name="ck_dataPath" value="No Data Path" >
+				<label class="text-right" >No Data Path</label>	
+				<label class="text-right" id="caseDatatype_lbl" >Data Type:</label>
+				<select class="text-right" type="text" id="caseDatatype" name="caseDatatype" value="{{caseDatatype}}" >
+					<option value="Custom">Custom</option>
+					<option value="Hybrid">Hybrid</option>
+					<option value="Iterative">Iterative</option>
+					</select>
+			</div>
+
+			<div class="field">	
+				<label class="text-right"  >Results Dir</label>
+				<input type="text" id="caseResultsdir"  value="{{caseResultsdir}}">
+			</div>
+
+		</div>
+
+	<div class="row ">
+			
 		</div>
 	</div>
    
