@@ -64,11 +64,8 @@ var wdf = {
 
         // find the button that links to the current system
         // Change the label and button text
-        $target = $("[linkto='#"+$system_id+"-"+$subsystem_id+"-control-box']");
-        $target.closest(".wdf-pad").find("label").text(" "+$(this).prop("value"));
-        if ($("[name='"+$system_id+"-"+$subsystem_id+"-subsystem_name']").length == 0) {
-            $target.find("span").text(" "+$(this).prop("value"));
-        }
+        $target = $("[id$='system-box']").find("[linkto='#"+$system_id+"-1-control-box']");
+        $target.find("span").text(" "+$(this).prop("value"));
 
         // Change other system name input field under the same system
         $value = $(this).prop("value");
@@ -86,7 +83,7 @@ var wdf = {
         var $system_id = $target.attr("name").split("-").slice(0,1);
         var $subsystem_id = $target.attr("name").split("-").slice(1,2);
 
-        $target = $("[linkto='#"+$system_id+"-"+$subsystem_id+"-control-box']");
+        $target = $("[id$='button-box']").find("[linkto='#"+$system_id+"-"+$subsystem_id+"-control-box']");
         $value = $(this).prop("value");
         $target.find("span").text(" "+$value);
     },
@@ -232,8 +229,7 @@ var wdf = {
         var $tmp = katana.$activeTab.find("#navigator_template").clone();
         // length-2 as we just attached a new system into the view
         var $tmp_id = katana.$activeTab.find(".control-box").length-2;
-        $tmp.find("#template-nav-label").prop("id", $tmp_id+"-1-ref-label");
-        $tmp.find("#template-button-box").prop("id", $tmp_id+"-1-button-box");
+        $tmp.find("#template-system-box").prop("id", $tmp_id+"-1-system-box");
         $tmp.find("[linkto='template-nav.linkto']").attr("linkto", "#"+$tmp_id+"-1-control-box");
         katana.$activeTab.find("#wdf-navigator").append($($tmp.html()));
     },
@@ -271,6 +267,13 @@ var wdf = {
                 $.each($tags, function(ind, tag){
                     $("#"+$system_id+"-"+$subsystem_count+"-control-box").append($(tag));
                 });
+
+                // Add new subsystem to the nav bar
+                var $tmp = katana.$activeTab.find("#navigator_button_template").clone();
+                $tmp.find("#template-button-box").prop("id", $system_id+"-"+$subsystem_count+"-button-box");
+                $tmp.find("[linkto='template-nav.linkto']").attr("linkto", "#"+$system_id+"-"+$subsystem_count+"-control-box");
+                // Add button after the last subsystem under the same system
+                katana.$activeTab.find("#"+$system_id+"-1-system-box").after($($tmp.html()));
             } else {
                 // already has subsystem structure
                 var $tmp_id = $system_id+"-"+($subsystem_count+1)+"-control-box"
