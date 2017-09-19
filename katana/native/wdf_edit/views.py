@@ -12,6 +12,10 @@ from django.http import JsonResponse
 
 # Create your views here.
 def index(request):
+    """
+        Read an xml file and return the editor page with xml content in it
+    """
+    # Check to open new/existing file
     if request.method == "POST":
         data = request.POST
         filepath = data["path"]
@@ -19,8 +23,10 @@ def index(request):
     else:
         return render(request, 'wdf_edit/index.html', {"data": {"system": []}, "filepath": ""})
 
+    # xml should only has 1 root
     root = data.keys()[0]
 
+    # handle attributes
     if type(data[root]["system"]) != list:
         data[root]["system"] = [data[root]["system"]]
     for sys in data[root]["system"]:
@@ -28,7 +34,7 @@ def index(request):
             if type(sys["subsystem"]) == list:
                 for subsys in sys["subsystem"]:
                     for k, v in subsys.items():
-                        if k.startswith("@") and k != "@name":
+                        if k.startswith("@") and k != "@name" and k != "@default":
                             subsys[k[1:]] = v
                             del subsys[k]
                         elif k == "#text":
@@ -36,14 +42,14 @@ def index(request):
             else:
                 subsys = sys["subsystem"]
                 for k, v in sys["subsystem"].items():
-                    if k.startswith("@") and k != "@name":
+                    if k.startswith("@") and k != "@name" and k != "@default":
                         subsys[k[1:]] = v
                         del subsys[k]
                     elif k == "#text":
                         del subsys[k]
         else:
             for k, v in sys.items():
-                if k.startswith("@") and k != "@name":
+                if k.startswith("@") and k != "@name" and k != "@default":
                     sys[k[1:]] = v
                     del sys[k]
                 elif k == "#text":
@@ -53,10 +59,10 @@ def index(request):
     ref_dict = copy.deepcopy(data[root])
     return render(request, 'wdf_edit/index.html', {"data": data[root], "data_read": ref_dict, "filepath": filepath, "desc":data[root].get("description", "")})
 
-# def get_json(request):
-#     return JsonResponse(xmltodict.parse(open('/home/ka/Desktop/warrior_fnc_tests/warrior_tests/data/cli_tests/cli_def_Data.xml').read()))
-
 def get_jstree_dir(request):
+    """
+        Prepare the json for jstree to use
+    """
     config = read_json_data(Navigator().get_katana_dir() + os.sep + "config.json")
     data = Navigator().get_dir_tree_json(config["idfdir"])
     data["text"] = config["idfdir"]
@@ -69,19 +75,25 @@ def file_list(request):
 @register.filter
 def remove_name(data):
     """
-        remove the @name key from dict
+        remove @name and @default key from dict
     """
     if type(data) == dict or type(data) == OrderedDict:
-        del data["@name"]
+        if "@name" in data:
+            del data["@name"]
+        if "@default" in data:
+            del data["@default"]
     return data
+
+# Separation for functions used before/after saving the edited xml
 
 def raw_parser(data):
     """
-        Read the html form data in systemid-subsystemid-tagid-childtagid format
+        Read the html form data in systemId-subsystemId-tagId-childtagId format
         output a nested dict with 4 level
         the last level contains the tag and value inside a list
     """
     result = {}
+    # handle description
     if "description" in data:
         result["description"] = data["description"]
     system_keys = [x for x in data.keys() if x.endswith("-system_name")]
@@ -93,10 +105,13 @@ def raw_parser(data):
             result[sys_name][subsys_name] = {"system_name":data[name]}
         else:
             result[sys_name] = {subsys_name: {"system_name":data[name]}}
+
+        # Put subsystem name into system if it exists
         current_sys = result[sys_name][subsys_name]
         if sys_name+"-"+subsys_name+"-subsystem_name" in data:
             current_sys.update({"subsystem_name":data[sys_name+"-"+subsys_name+"-subsystem_name"]})
 
+        # Put default info into system and subsys
         if sys_name+"-"+subsys_name+"-default" in data:
             current_sys.update({"default": True})
         if sys_name+"-"+subsys_name+"-default-subsys" in data:
@@ -117,6 +132,9 @@ def raw_parser(data):
     return result
 
 def locate_system(data, name):
+    """
+        Find the index of system with specific name
+    """
     for ind, sys in enumerate(data):
         if sys["@name"] == name:
             return ind
@@ -129,7 +147,7 @@ def build_xml_dict(data):
     """
     result = []
     desc = ""
-    # First half is to build the system and subsystem tag in the result dict
+    # First half of this function is to build the system and subsystem tag in the result dict
     if "description" in data:
         desc = data.pop("description")
     sys_keys = [str(y) for y in sorted([int(x) for x in data.keys()])]
@@ -139,6 +157,7 @@ def build_xml_dict(data):
         for subsys_key in subsys_keys:
             subsys = sys[subsys_key]
             if "subsystem_name" not in subsys:
+                # The system doesn't have subsystem
                 result.append(OrderedDict())
                 current_sys = result[-1]
                 current_sys["@name"] = subsys["system_name"]
@@ -147,8 +166,9 @@ def build_xml_dict(data):
             else:
                 # There is a subsystem inside the current system
                 if locate_system(result, subsys["system_name"]) > -1:
-                    # The system already exist in result
+                    # The system already exist in the temp result dict
                     if "subsystem" in result[locate_system(result, subsys["system_name"])]:
+                        # There are other subsystems saved under this system
                         result[locate_system(result, subsys["system_name"])]["subsystem"].append(OrderedDict())
                     else:
                         result[locate_system(result, subsys["system_name"])]["subsystem"] = [OrderedDict()]
@@ -156,7 +176,7 @@ def build_xml_dict(data):
                     current_sys["@name"] = subsys["subsystem_name"]
                     current_sys["subsystem"] = []
                 else:
-                    # The system doesn't exist in result
+                    # The system doesn't exist in the temp result dict
                     result.append(OrderedDict({"@name": subsys["system_name"], "subsystem":[]}))
                     result[-1]["subsystem"].append(OrderedDict())
                     current_sys = result[-1]["subsystem"][-1]
@@ -166,22 +186,21 @@ def build_xml_dict(data):
                 if "default-subsys" in subsys:
                     current_sys["@default"] = "yes"
 
-
     # Second half is to build all tags and values inside the current_sys
-            # subsys contains all the tags and values
-            # current_sys will fill with tags and values
+            # subsys is the raw data, contains all the tags and values in indices format
+            # current_sys will fill with tags as keys and values
             tag_keys = [str(y) for y in sorted([int(x) for x in subsys.keys() if x.isdigit()])]
             for tag_key in tag_keys:
                 if len(subsys[tag_key]) == 1:
-                    # no child tag
+                    # raw data doesn't have child tag
                     if subsys[tag_key]["1"][0] not in current_sys:
                         current_sys[subsys[tag_key]["1"][0]] = [subsys[tag_key]["1"][1]]
                     else:
                         current_sys[subsys[tag_key]["1"][0]].append(subsys[tag_key]["1"][1])
                 else:
-                    # have child tag(s)
+                    # raw data have child tag(s)
                     subtag_keys = [str(y) for y in sorted([int(x) for x in subsys[tag_key].keys() if x.isdigit()])]
-                    # subtag first will be the tag name, which values are child tags
+                    # first subtag will be the tag name, which values are child tags
                     subtag_first = subsys[tag_key][subtag_keys[0]][0]
                     if subtag_first not in current_sys:
                         current_sys[subtag_first] = [OrderedDict()]
@@ -193,6 +212,7 @@ def build_xml_dict(data):
                     # loop through the remaining child tags
                     for subtag_key in subtag_keys[1:]:
                         tmp_key = subsys[tag_key][subtag_key][0]
+                        # check if tmp_key exists in the current_childtags
                         tmp_index = next((i for i, v in enumerate(current_childtags.keys()) if tmp_key in v), None)
                         if tmp_index is not None:
                             # current_childtags[tmp_index] is the dict that shared the same tag name
@@ -204,6 +224,9 @@ def build_xml_dict(data):
     return result, desc
 
 def on_post(request):
+    """
+        Main function that handles a post request with edited xml data
+    """
     data = request.POST
     filepath = data["filepath"]
     print json.dumps(data.items(), indent=4)
