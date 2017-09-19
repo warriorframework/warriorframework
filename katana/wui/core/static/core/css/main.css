@@ -2681,6 +2681,10 @@ div#wdf-navigator
     padding-bottom: 5px;
 }
 
+.wdf-subsys-nav {
+    padding-left: 25px;
+}
+
 .control-box {
     padding: 10px;
     margin-bottom: 12px;

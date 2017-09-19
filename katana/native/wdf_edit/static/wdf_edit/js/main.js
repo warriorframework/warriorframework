@@ -170,10 +170,11 @@ var wdf = {
         $target.empty();
 
         // Update the nav bar
-        $target=katana.$activeTab.find("[linkto='#"+$system_id+"-"+$subsystem_id+"-control-box']");
-        $label=$target.closest(".wdf-pad");
-        if ( $label.find(".btn").length == 1) {
-            $label.remove();
+        $target=katana.$activeTab.find("[id$='button-box']").find("[linkto='#"+$system_id+"-"+$subsystem_id+"-control-box']");
+        $target_sys=$target.closest(".wdf-pad");
+        // only 1 subsys remains, 1 btn for sys and 1 btn for subsys
+        if ($target_sys.find(".btn").length == 2) {
+            $target_sys.remove();
         } else {
             $target.parent().remove();
         }
