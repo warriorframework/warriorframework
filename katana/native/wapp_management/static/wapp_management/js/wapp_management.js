@@ -132,12 +132,11 @@ var wapp_management = {
         $displayInput.val($filename);
 
         var selectedFile = $browsedInput[0].files[0];
+        console.log(selectedFile);
         $.wapp_management_globals.app_path_details[$filename] = selectedFile;
 
-        var fd = new FormData();
-        fd.append("files[]", selectedFile);
 
-        wapp_management.validateData({"type": "zip", "value": $filename, "zip_contents": fd}, $displayInput)
+        //wapp_management.validateData(selectedFile, $displayInput)
 
     },
 
@@ -532,33 +531,17 @@ var wapp_management = {
     },
 
     validateData: function(data, $elem){
-        if("zip_contents" in data){
-            $.ajax({
-                headers: {
-                    'X-CSRFToken': wapp_management.getCookie('csrftoken'),
-                    processData: false,
-                    contentType: 'multipart/form-data',
-                },
-                type: 'POST',
-                url: 'wapp_management/validate_app_path/',
-                data: data,
-                traditional: true,
-                }).done(function(data){
-                    wapp_management.changeBorderColor(data.valid, $elem)
-                });
-        }
-        else{
-            $.ajax({
-                headers: {
-                    'X-CSRFToken': wapp_management.getCookie('csrftoken')
-                },
-                type: 'POST',
-                url: 'wapp_management/validate_app_path/',
-                data: data
-            }).done(function(data) {
-                wapp_management.changeBorderColor(data.valid, $elem)
-            });
-        }
+        $.ajax({
+            headers: {
+                'X-CSRFToken': wapp_management.getCookie('csrftoken')
+            },
+            type: 'POST',
+            url: 'wapp_management/validate_app_path/',
+            data: data
+        }).done(function(data) {
+            wapp_management.changeBorderColor(data.valid, $elem)
+        });
+
     },
 
     changeBorderColor: function(valid){
@@ -567,6 +550,32 @@ var wapp_management = {
         }
         else {
             $elem.css("border-color", "#dcdcdc")
+        }
+
+        wapp_management.disableSaveAndInstall();
+    },
+
+    disableSaveAndInstall: function(){
+        $currentPage = katana.$activeTab;
+        var $saveConfigBtn = $currentPage.find('[katana-click="wapp_management.saveConfig"]');
+        console.log($saveConfigBtn)
+        var $installAppsBtn = $currentPage.find('[katana-click="wapp_management.installAnApp"]');
+        console.log($installAppsBtn)
+        var $configInputs = $currentPage.find('[id^="app_path_for_config_"]')
+        var flag = true;
+        for(var i=0; i<$configInputs.length; i++){
+        console.log($configInputs[i]);
+        console.log($($configInputs[i]).css("border-color"));
+            if($($configInputs[i]).css("border-color") == "rgb(220, 220, 220)"){
+                $saveConfigBtn.prop("disabled", true);
+                $installAppsBtn.prop("disabled", true);
+                flag = false;
+                break;
+            }
+        }
+        if(flag){
+            $saveConfigBtn.prop("disabled", false);
+            $installAppsBtn.prop("disabled", false);
         }
     }
 

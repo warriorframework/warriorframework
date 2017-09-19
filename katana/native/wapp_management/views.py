@@ -16,10 +16,12 @@ import os
 import copy
 import shutil
 import zipfile
-from django.http import JsonResponse
-from django.shortcuts import render
+from django.http import JsonResponse, HttpResponseRedirect
+from django.shortcuts import render, redirect
 from django.views import View
 import xml.etree.cElementTree as ET
+
+from native.wapp_management.forms import UploadFileForm
 from native.wapp_management.wapp_management_utils.app_validator import AppValidator
 from native.wapp_management.wapp_management_utils.installer import Installer
 from native.wapp_management.wapp_management_utils.uninstaller import Uninstaller
@@ -188,7 +190,7 @@ def validate_app_path(request):
         elif detail_type == "filepath":
             dir_name = get_dir_from_path(detail_info)
             app_path = join_path(temp_for_val_path, dir_name)
-            copy_dir(detail_info, join_path(temp_for_val_path, dir_name))
+            output = copy_dir(detail_info, join_path(temp_for_val_path, dir_name))
         else:
             if detail_dir:
                 shutil.copyfile(join_path(data_dir, detail_dir, detail_info), join_path(temp_for_val_path, detail_info))
@@ -202,7 +204,28 @@ def validate_app_path(request):
                 print request.POST
                 # get the contents of the zip file
                 # copy them over into the temp directory
-        app_validator_obj = AppValidator(app_path)
-        output = app_validator_obj.is_valid()
+        if output:
+            app_validator_obj = AppValidator(app_path)
+            output = app_validator_obj.is_valid()
 
     return JsonResponse({"valid": output})
+
+
+def handle_uploaded_file(f):
+    with open('/home/sanika/warriorframework/katana/native/wapp_management/.data/userapp.zip', 'wb+') as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
+
+
+def upload_file(request):
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            handle_uploaded_file(request.FILES['docfile'])
+            print request.path
+            request.path = '/katana/'
+            print request.path
+            return render(request, 'wapp_management/wapp_management.html', {"form": form})
+    else:
+        form = UploadFileForm()
+    return render(request, 'wapp_management/wapp_management.html', {"form": form})
