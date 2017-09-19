@@ -133,8 +133,13 @@ function mapSuiteCaseToUI(s,xdata,popup) {
 	if (! oneCase['Execute']) {
 			oneCase['Execute'] = { "@ExecType": "Yes", "@value": "" };
 		}
+	fillSuiteCaseDefaultGoto(popup);
+	popup.find('#caseonError-at-action').on('change', function(){ 
+			var popup = $(this).closest('.popup');
+			fillSuiteCaseDefaultGoto(popup);
+	});
 
-	
+		
 }
 
 
@@ -263,6 +268,28 @@ var fillSuiteDefaultGoto = function() {
 		
 	}
 
+	defgoto.empty(); 
+	var xdata = jsonSuiteObject["Testcases"]; // ['Testcase'];
+	if (!jQuery.isArray(xdata)) xdata = [xdata]; 
+	for (var s=0; s<Object.keys(xdata).length; s++ ) {
+		defgoto.append($('<option>',{ value: s,  text: s}));
+	}
+}
+
+var fillSuiteCaseDefaultGoto = function(popup) {
+
+	var gotoStep =popup.find('#caseonError-at-action').val();
+	console.log("Step ", gotoStep);
+	var defgoto = popup.find('#caseonError-at-value'); 
+		defgoto.hide();
+
+	if (gotoStep.trim() == 'goto'.trim()) { 
+		defgoto.show();
+	} else {
+		defgoto.hide();
+		
+	}
+	//var sid = popup.find('#CaseRowToEdit').val();
 	defgoto.empty(); 
 	var xdata = jsonSuiteObject["Testcases"]; // ['Testcase'];
 	if (!jQuery.isArray(xdata)) xdata = [xdata]; 
