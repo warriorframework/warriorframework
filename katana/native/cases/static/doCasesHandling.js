@@ -655,7 +655,9 @@ function addOneArgument( sid , xdata, popup ) {
 
 
 	console.log("sid = ", sid, jsonCaseSteps, jsonCaseSteps['step'][sid]['Arguments'] );
-	
+	if (! jQuery.isArray(jsonCaseSteps['step'][sid]['Arguments']['argument']))  {
+		jsonCaseSteps['step'][sid]['Arguments']['argument'] = [ jsonCaseSteps['step'][sid]['Arguments']['argument'] ];
+	}
 	jsonCaseSteps['step'][sid]['Arguments']['argument'].push(xx);
 	oneCaseStep = jsonCaseSteps['step'][sid];
 	redrawArguments(sid, oneCaseStep,popup);
@@ -667,11 +669,9 @@ function insertOneArgument( sid , aid,  popup ) {
 	console.log("sid =" + sid);
 	console.log("aid =" + aid);
 	console.log(popup);
-if (!jsonCaseSteps['step'][sid]['Arguments']) {
-		jsonCaseSteps['step'][sid]['Arguments'] = { 'argument' : []};
-		//jsonCaseSteps['step'][sid]['Arguments']['argument'] = [] ;
+	if (! jQuery.isArray(jsonCaseSteps['step'][sid]['Arguments']['argument']))  {
+		jsonCaseSteps['step'][sid]['Arguments']['argument'] = [ jsonCaseSteps['step'][sid]['Arguments']['argument'] ];
 	}
-
 	jsonCaseSteps['step'][sid]['Arguments']['argument'].splice(aid,0,xx);
 	oneCaseStep = jsonCaseSteps['step'][sid];
 	redrawArguments(sid, oneCaseStep,popup);
