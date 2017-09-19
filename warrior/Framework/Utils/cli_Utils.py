@@ -23,7 +23,7 @@ import Framework.ClassUtils
 from Framework.Utils import datetime_utils, data_Utils, xml_Utils
 from Framework.Utils.data_Utils import get_object_from_datarepository
 from Framework.Utils.print_Utils import print_debug, print_info,\
-print_error, print_warning, print_exception
+print_error, print_exception, print_warning
 from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.list_Utils import get_list_by_separating_strings
 from Framework.ClassUtils.WNetwork.loging import ThreadedLog
