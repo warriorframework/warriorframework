@@ -10,7 +10,7 @@
                     <div class="field"><input class="wdf-input" placeholder="Filepath:" name="filepath" value="{{ filepath }}"/></div>
                 </div>
                 <div class="to-expand">
-                    <div class="field"><input class="wdf-input" placeholder="Description:" name="description" value="{{ desc }}"/></div>
+                    <div class="field"><input class="wdf-input" placeholder="Description" name="description" value="{{ desc }}"/></div>
                 </div>
             </div>
             <div class="buttons col-md-3">
@@ -34,8 +34,8 @@
                             </div>
                             <i katana-click="wdf.toggle" class="fa fa-toggle-up" title="Hide/Show"/>
                             <i katana-click="wdf.addTag" class="fa fa-plus" title="Add Data"/>
-                            <i katana-click="wdf.addSubSystem" class="fa fa-plus" title="Add Sub-System"/>
-                            <i katana-click="wdf.deleteSystem" class="fa fa-trash" title="Delete Sub-System"/>
+                            <i katana-click="wdf.addSubSystem" class="fa fa-plus-square" title="Add Subsystem"/>
+                            <i katana-click="wdf.deleteSystem" class="fa fa-trash" title="Delete Subsystem"/>
                         </div>
                         {% with system|remove_name as system %}
                         {% for k, v in system.items %}
@@ -81,8 +81,8 @@
                             </div>
                             <i katana-click="wdf.toggle" class="fa fa-toggle-up" title="Hide/Show"/>
                             <i katana-click="wdf.addTag" class="fa fa-plus" title="Add Data"/>
-                            <i katana-click="wdf.addSubSystem" class="fa fa-plus" title="Add Sub-System"/>
-                            <i katana-click="wdf.deleteSystem" class="fa fa-trash" title="Delete Sub-System"/>
+                            <i katana-click="wdf.addSubSystem" class="fa fa-plus-square" title="Add Subsystem"/>
+                            <i katana-click="wdf.deleteSystem" class="fa fa-trash" title="Delete Subsystem"/>
                         </div>
                         <div class="field-inline">
                             <input type="checkbox" class="wdf-subsys-checkbox" katana-click="wdf.subsysDefaultCheck" name="{{ forloop.counter }}-1-default-subsys"/>
@@ -134,8 +134,8 @@
                                 </div>
                                 <i katana-click="wdf.toggle" class="fa fa-toggle-up" title="Hide/Show"/>
                                 <i katana-click="wdf.addTag" class="fa fa-plus" title="Add Data"/>
-                                <i katana-click="wdf.addSubSystem" class="fa fa-plus" title="Add Sub-System"/>
-                                <i katana-click="wdf.deleteSystem" class="fa fa-trash" title="Delete Sub-System"/>
+                                <i katana-click="wdf.addSubSystem" class="fa fa-plus-square" title="Add Subsystem"/>
+                                <i katana-click="wdf.deleteSystem" class="fa fa-trash" title="Delete Subsystem"/>
                             </div>
                             <div class="field-inline">
                                 <input type="checkbox" class="wdf-subsys-checkbox" katana-click="wdf.subsysDefaultCheck" name="{{ forloop.parentloop.counter }}-{{ forloop.counter }}-default-subsys"/>
@@ -230,8 +230,8 @@
                 </div>
                 <i katana-click="wdf.toggle" class="fa fa-toggle-up" title="Hide/Show"/>
                 <i katana-click="wdf.addTag" class="fa fa-plus" title="Add Data"/>
-                <i katana-click="wdf.addSubSystem" class="fa fa-plus" title="Add Sub-System"/>
-                <i katana-click="wdf.deleteSystem" class="fa fa-trash" title="Delete Sub-System"/>
+                <i katana-click="wdf.addSubSystem" class="fa fa-plus-square" title="Add Subsystem"/>
+                <i katana-click="wdf.deleteSystem" class="fa fa-trash" title="Delete Subsystem"/>
             </div>
             <div class="field-inline dual-input" id="content">
                 <label>
@@ -255,8 +255,8 @@
                 </div>
                 <i katana-click="wdf.toggle" class="fa fa-toggle-up" title="Hide/Show"/>
                 <i katana-click="wdf.addTag" class="fa fa-plus" title="Add Data"/>
-                <i katana-click="wdf.addSubSystem" class="fa fa-plus" title="Add Sub-System"/>
-                <i katana-click="wdf.deleteSystem" class="fa fa-trash" title="Delete Sub-System"/>
+                <i katana-click="wdf.addSubSystem" class="fa fa-plus-square" title="Add Subsystem"/>
+                <i katana-click="wdf.deleteSystem" class="fa fa-trash" title="Delete Subsystem"/>
             </div>
             <div class="field-inline">
                 <input type="checkbox" class="wdf-subsys-checkbox" katana-click="wdf.subsysDefaultCheck" name="template-subsystem-default"/>
@@ -290,8 +290,8 @@
             <label>
                 <i katana-click="wdf.deleteChildTag" class="fa fa-trash i-danger" title="Sub Data"/>
             </label>
-            <input class="wdf-input" name="template-tag.tag" placeholder="Data key" list="most_used_tags"/>
-            <input class="wdf-input" name="template-tag.value" placeholder="Data value"/>
+            <input class="wdf-input" name="template-tag.tag" placeholder="Sub Data key" list="most_used_tags"/>
+            <input class="wdf-input" name="template-tag.value" placeholder="Sub Data value"/>
         </div>
     </div>
 
