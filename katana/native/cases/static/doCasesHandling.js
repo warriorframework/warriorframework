@@ -148,7 +148,7 @@ var fillCaseDefaultGoto = function() {
 	var xdata = jsonCaseObject["Steps"]['step']; // ['Testcase']; 
 	console.log("Step....",Object.keys(xdata).length, xdata);
 	for (var s=0; s<Object.keys(xdata).length; s++ ) {
-		defgoto.append($('<option>',{ value: s,  text: s}));
+		defgoto.append($('<option>',{ value: s,  text: s+1}));
 	}
 }
 
@@ -412,7 +412,7 @@ var fillCaseStepDefaultGoto = function(popup) {
 	var xdata = jsonCaseObject["Steps"]['step']; // ['Testcase']; 
 	console.log("Step....",Object.keys(xdata).length, xdata);
 	for (var s=0; s<Object.keys(xdata).length; s++ ) {
-		defgoto.append($('<option>',{ value: s,  text: s}));
+		defgoto.append($('<option>',{ value: s,  text: s+1}));
 	}
 }
 

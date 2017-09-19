@@ -58,6 +58,8 @@ function mapFullProjectJson(myobjectID){
 	jsonProjectObject =  jsonAllProjectPages[myobjectID]; 
 	jsonTestSuites = jsonProjectObject['Testsuites']; 
 	mapProjectJsonToUi(jsonTestSuites);  // This is where the table and edit form is created. 
+	fillProjectDefaultGoto();
+	console.log("Adding defaults ");
 	katana.$activeTab.find('#default_onError').on('change',fillProjectDefaultGoto );
 
 } 
@@ -106,7 +108,32 @@ function addSuiteToProject(){
 
 	jsonTestSuites['Testsuite'].push(newTestSuite);
 	mapProjectJsonToUi(jsonTestSuites);
+
 }
+
+
+var fillProjectSuitePopupDefaultGoto = function(popup) {
+
+	var gotoStep =popup.find('#default_onError').val();
+	console.log("Step ", gotoStep);
+	var defgoto = popup.find('#default_onError_goto'); 
+		defgoto.hide();
+
+	if (gotoStep.trim() == 'goto'.trim()) { 
+		defgoto.show();
+	} else {
+		defgoto.hide();
+		
+	}
+	//var sid = popup.find('#CaseRowToEdit').val();
+	defgoto.empty(); 
+	var xdata = jsonProjectObject['Testsuites']; 
+	if (!jQuery.isArray(xdata)) xdata = [xdata]; 
+	for (var s=0; s<Object.keys(xdata).length; s++ ) {
+		defgoto.append($('<option>',{ value: s,  text: s}));
+	}
+}
+
 
 function setupProjectPopupDialog(s,xdata,popup) {
 	console.log(s);
@@ -124,6 +151,12 @@ function setupProjectPopupDialog(s,xdata,popup) {
 	popup.find("#onError-at-type").val(oneSuite['runmode']['@type']); 
 	popup.find("#onError-at-value").val(oneSuite['runmode']['@value']); 
 	popup.find("#impact").val(oneSuite['impact']); 
+
+	popup.find('#onError-at-action').on('change', function(){ 
+			var popup = $(this).closest('.popup');
+			fillProjectSuitePopupDefaultGoto(popup);
+	});
+
 
 }
 
@@ -147,10 +180,49 @@ function mapProjectSuiteToUI(s,xdata) {
 	katana.$activeTab.find("#onError-at-type").val(oneSuite['runmode']['@type']); 
 	katana.$activeTab.find("#onError-at-value").val(oneSuite['runmode']['@value']); 
 	katana.$activeTab.find("#impact").val(oneSuite['impact']); 
-	
+	fillProjectDefaultGoto();
 
 }
 
+var fillProjectDefaultGoto = function() {
+	
+	var gotoStep = katana.$activeTab.find('#default_onError').val();
+	console.log("Step ", gotoStep);
+	var defgoto = katana.$activeTab.find('#default_onError_goto'); 
+	
+	if (gotoStep.trim() == 'goto'.trim()) { 
+		defgoto.show();
+	} else {
+		defgoto.hide();
+		
+	}
+	var listSuites = katana.$activeTab.find('#tableOfTestSuitesForProject tbody').children(); 
+	defgoto.empty(); 
+	for (xi=0; xi < listSuites.length; xi++) {
+		defgoto.append($('<option>',{ value: xi,  text: xi+1}));
+	}
+}
+var fillProjectSuitePopupDefaultGoto = function(popup) {
+
+	var gotoStep =popup.find('#onError-at-action').val();
+	console.log("Step ", gotoStep);
+	var defgoto = popup.find('#onError-at-value'); 
+		defgoto.hide();
+
+	if (gotoStep.trim() == 'goto'.trim()) { 
+		defgoto.show();
+	} else {
+		defgoto.hide();
+		
+	}
+	//var sid = popup.find('#CaseRowToEdit').val();
+	defgoto.empty(); 
+	var xdata = jsonProjectObject['Testsuites'] // ['Testcase'];
+	if (!jQuery.isArray(xdata)) xdata = [xdata]; 
+	for (var s=0; s<Object.keys(xdata).length; s++ ) {
+		defgoto.append($('<option>',{ value: s,  text: s+1}));
+	}
+}
 
 /// -------------------------------------------------------------------------------
 // This function is called to map the currently edited project suite to 
@@ -348,34 +420,16 @@ function createSuitesTable(xdata) {
 	});
 	//katana.$activeTab.find("#tableOfTestSuitesForProject").setAttribute( "style","overflow-y:scroll");
 	fillProjectDefaultGoto();
+	katana.$activeTab.find('#default_onError').on('change',fillProjectDefaultGoto );
+
 
 }
 
 
-var fillProjectDefaultGoto = function() {
 
-	var gotoStep = katana.$activeTab.find('#default_onError').val();
-	console.log("Step ", gotoStep);
-	var defgoto = katana.$activeTab.find('#default_onError_goto'); 
-	
-	if (gotoStep.trim() == 'goto'.trim()) { 
-		defgoto.show();
-	} else {
-		defgoto.hide();
-		
-	}
-
-	var listSuites = katana.$activeTab.find('#suite_table_display tbody').children(); 
-	defgoto.empty(); 
-	for (xi=0; xi < listSuites.length; xi++) {
-		var xtr = listSuites[xi];
-		var ni  = xtr.getAttribute("data-sid");	
-		defgoto.append($('<option>',{ value: ni,  text: ni}));
-	}
-}
 
 var testProjectSortEventHandler = function(event, ui ) {
-	var listSuites = katana.$activeTab.find('#suite_table_display tbody').children(); 
+	var listSuites = katana.$activeTab.find('#tableOfTestSuitesForProject tbody').children(); 
 	console.log(listSuites);
 	console.log(jsonProjectObject["Testsuites"] );
 	var oldSuitesteps = jsonProjectObject["Testsuites"]['Testsuite'];
@@ -462,8 +516,9 @@ function mapProjectJsonToUi(data){
 			mapUItoProjectSuite( popup, xdata );
 			katana.popupController.close(popup);
 			mapProjectJsonToUi(jsonTestSuites);
-		});
 
+		});
+	fillProjectDefaultGoto();
 }  // end of function 
 
 
