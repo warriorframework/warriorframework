@@ -73,6 +73,7 @@ def getListOfActions(request):
 	path_to_pythonsrc = json.loads(open(path_to_src_python_file).read())['pythonsrcdir'] ;                 
 	jsr = scanfiles.fetch_action_file_names(path_to_pythonsrc,'driver','all');
 	actions = [ os.path.basename(fn)[:-3] for fn in jsr['ProductDrivers']];
+	actions.insert(0,"To_Be_Developed")
 	return JsonResponse({'actions': actions , 'filesinfo' : All_case_action_details })
 
 
@@ -91,15 +92,18 @@ def getListOfKeywords(request):
 			details = py_file_details(path_to_pythonsrc);
 	else:
 			details = All_case_action_details;
-			
+
+	responseBack = { 'keywords': ["To_Be_Developed",] }
 	driver = request.GET.get('driver');
-	print dir(details);
-	print driver
-	print len(details[driver][0])
-	responseBack = { 'keywords': [] }
-	for item in details[driver][0]: 
-		print item['fn']
-		responseBack['keywords'].append(item['fn']);
+		
+	if driver != "To_Be_Developed":
+			
+		print dir(details);
+		print driver
+		print len(details[driver][0])	
+		for item in details[driver][0]: 
+			print item['fn']
+			responseBack['keywords'].append(item['fn']);
 	return JsonResponse(responseBack)
 
 ##
