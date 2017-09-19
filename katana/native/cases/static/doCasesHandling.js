@@ -309,21 +309,7 @@ function mapCaseJsonToUi(data){
 	katana.$activeTab.find("#tableOfTestStepsForCase").html( items.join(""));
 	katana.$activeTab.find('#Step_table_display tbody').sortable( { stop: testCaseSortEventHandler});
 	
-	// Based on the options
-	/*
- 	katana.$activeTab.find('table#Step_table_display thead tr th').each(function(index) {
-    		var thisWidth = $(this).width();
-    		if ( index == 0 ) { thisWidth = 40; }
-    		console.log(thisWidth + "  "+ index);
-    		katana.$activeTab.find('table#Step_table_display tbody tr td').each(function(xindex) {	
-    				if ( index == 0 ) { 
-    					$(this).css('width',thisWidth);
-    				 }
 
-    				
-    		});
-  	});
-	*/
   	/*
 	if (jsonCaseDetails['Datatype'] == 'Custom') {
 		$(".arguments-div").hide();
@@ -332,7 +318,7 @@ function mapCaseJsonToUi(data){
 		$(".arguments-div").show();
 	}
 	*/
-	//$('#fileName').html("");
+	
 	
 }  // end of function 
 
