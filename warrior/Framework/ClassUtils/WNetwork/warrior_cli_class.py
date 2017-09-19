@@ -225,14 +225,14 @@ class WarriorCli(object):
                 print_debug(">>>")
                 command = details_dict["command_list"][i]
                 pNote("Command #{0}\t: {1}".format(str(i+1), command))
-                new_obj_session, system_name, details_dict = \
+                new_obj_session, td_sys, details_dict = \
                     self._get_obj_session(details_dict, system_name, index=i)
                 if new_obj_session:
                     result, response = new_obj_session._send_cmd_get_status(
-                        details_dict, index=i, system_name=system_name)
+                        details_dict, index=i, system_name=td_sys)
                     result, response = new_obj_session._send_command_retrials(
                         details_dict, index=i, result=result,
-                        response=response, system_name=system_name)
+                        response=response, system_name=td_sys)
                     response_dict = new_obj_session._get_response_dict(
                         details_dict, i, response, response_dict)
                     print_debug("<<<")
