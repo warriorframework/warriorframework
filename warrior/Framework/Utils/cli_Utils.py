@@ -568,8 +568,9 @@ def send_commands_from_testdata(testdatafile, obj_session, **args):
                 result, response = _send_cmd_get_status(new_obj_session, details_dict, index=i, system_name=system_name)
                 result, response = _send_command_retrials(new_obj_session, details_dict, index=i,
                                                           result=result, response=response, system_name=system_name)
-                result, response_dict = _get_response_dict(details_dict, i, response,
-                                                   response_dict)
+                resp_result, response_dict = _get_response_dict(details_dict, i, response,
+                                                                response_dict)
+                result = result and resp_result
                 print_debug("<<<")
             else:
                 finalresult = "ERROR"
