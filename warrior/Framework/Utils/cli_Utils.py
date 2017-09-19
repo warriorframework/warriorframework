@@ -171,7 +171,7 @@ def disconnect(child):
     return child
 
 
-def send_command_and_get_response(session_object, start_prompt, end_prompt, command):
+def send_command_and_get_response(sessionobj, prompt1, prompt2, command):
     """"Sends a command to a terminal expects a completion prompt
     If completion prompt was found, returns the response of the command """
 
@@ -179,17 +179,17 @@ def send_command_and_get_response(session_object, start_prompt, end_prompt, comm
                   " use 'send_command' method of 'PexpectConnect' class "
                   "in 'warrior/Framework/ClassUtils/WNetwork/warrior_cli_class.py'")
 
-    if isinstance(session_object, WNetwork.warrior_cli_class.WarriorCli):
-        _, response = session_object.send_command(start_prompt, end_prompt, command)
-    elif isinstance(session_object, pexpect.spawn):
+    if isinstance(sessionobj, WNetwork.warrior_cli_class.WarriorCli):
+        _, response = sessionobj.send_command(prompt1, prompt2, command)
+    elif isinstance(sessionobj, pexpect.spawn):
         wc_obj = WNetwork.warrior_cli_class.WarriorCli()
         wc_obj.conn_obj = WNetwork.warrior_cli_class.PexpectConnect()
-        wc_obj.conn_obj.target_host = session_object
-        _, response = wc_obj.send_command(start_prompt, end_prompt, command)
+        wc_obj.conn_obj.target_host = sessionobj
+        _, response = wc_obj.send_command(prompt1, prompt2, command)
     else:
         response = ""
-        print_warning("Unable to send the command since the session_object is not an "
-                      "instance of warrior_cli_class, status will be marked as ERROR. "
+        print_warning("Unable to send the command since the sessionobj is not "
+                      "supported by warrior_cli_class, status will be marked as ERROR."
                       "Please use warrior_cli_class for session establishment.")
 
     return response
