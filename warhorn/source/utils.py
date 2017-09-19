@@ -655,20 +655,20 @@ def get_dependencies(logfile, print_log_name, config_file_name):
     else:
         dependencies = get_firstlevel_children(node, "dependency")
         for dependency in dependencies:
-            pip_what = package_version(dependency.attrib["name"], dependency_filepath)
+            pip_package = package_version(dependency.attrib["name"], dependency_filepath)
             if 'install' in dependency.attrib:
-                if dependency.attrib["install"] == "yes" and pip_what:
+                if dependency.attrib["install"] == "yes" and pip_package:
                     print_info("Warhorn will try to install " + dependency.attrib["name"] +
                                " as it was set to 'yes' in the .xml file", logfile, print_log_name)
                     if ('user' in dependency.attrib and dependency.attrib["user"] == "yes"):
-                        install_depen(pip_what, dependency.attrib["name"], logfile,
+                        install_depen(pip_package, dependency.attrib["name"], logfile,
                                       print_log_name, True)
                     else:
-                        install_depen(pip_what, dependency.attrib["name"], logfile, print_log_name)
+                        install_depen(pip_package, dependency.attrib["name"], logfile, print_log_name)
                 elif dependency.attrib["install"] == "no":
                     print_info("Warhorn will not install " + dependency.attrib["name"] +
                                " as it was set to 'no' in the .xml file.", logfile, print_log_name)
-                elif dependency.attrib["install"] == "yes" and not pip_what:
+                elif dependency.attrib["install"] == "yes" and not pip_package:
                     print_error("The {0} file doesn't have valid version for package:"
                                 .format(dependency_filepath) +
                                 dependency.attrib["name"], logfile, print_log_name)
