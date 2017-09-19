@@ -44,12 +44,15 @@
 				</div>
 				<div class="field">	
 					<label class=" text-right" for="default_onError">Default On Error:</label>
-					<select class="text-right" type="text" id="default_onError" name="default_onError" value="{{default_onError}}" >
+					<select class="text-right" type="text" id="default_onError" name="default_onError" value="{{suitedefault_onError}}" >
 						<option value="next">Next</option>
 						<option value="abort">Abort</option>
 						<option value="abort_as_error">Abort As Error</option>
 						<option value="goto">Goto</option>
 					</select>
+					<select class="text-right" type="text" id="default_onError_goto" name="default_onError_goto" value="{{suitedefault_onError_goto}}" >
+					</select>
+					
 				</div>
 				<div class="field">	
 					<label class=" text-right" >Data Type:</label>
@@ -157,7 +160,7 @@
 
 	
 </div>	
-	<div id="tableOfFileContents"  class="col-md-6">fileContents</label></div>
-	<div id="listOfTestcasesForSuite">{{fulljson|jsonify}}</div>
-	<div id="savefilepath">{{savefilepath}}</div>
+	<div id="tableOfFileContents"  class="hidden">fileContents</label></div>
+	<div id="listOfTestcasesForSuite" class="hidden">{{fulljson|jsonify}}</div>
+	<div id="savefilepath" class="hidden">{{savefilepath}}</div>
 </body>

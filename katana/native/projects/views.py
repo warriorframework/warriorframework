@@ -105,7 +105,7 @@ def editProject(request):
 	xml_r["Project"]["Details"]["Time"] = "" #OrderedDict([('$', '')])
 	xml_r["Project"]["Details"]["Datatype"] = "" #OrderedDict([('$', '')])
 	xml_r["Project"]["Details"]["Engineer"] = "" #OrderedDict([('$', '')])
-	xml_r["Project"]["Details"]["default_onError"] = "" #OrderedDict([('$', '')])
+	xml_r["Project"]["Details"]["default_onError"] = { '@action': '', '@value': ''} #OrderedDict([('$', '')])
 	xml_r["Project"]["Testsuites"] = []
 	xml_r['Project']['filename'] = "" #OrderedDict([('$', filename)]);
 
@@ -116,7 +116,7 @@ def editProject(request):
 
 		# Map the input to the response collector
 		for xstr in ["Name", "Title", "Category", "Date", "Time", "Engineer", \
-			"Datatype", "default_onError"]:
+			"Datatype"]:
 			try:
 				xml_r["Project"]["Details"][xstr]= xml_d["Project"]["Details"][xstr];
 			except: 
@@ -143,7 +143,8 @@ def editProject(request):
 		'projectCategory': xml_r["Project"]["Details"]["Category"],
 		'projectDate': xml_r["Project"]["Details"]["Date"],
 		'projectTime': xml_r["Project"]["Details"]["Time"],
-		'projectdefault_onError': xml_r["Project"]["Details"]["default_onError"],
+		'projectdefault_onError': xml_r["Project"]["Details"]["default_onError"].get('@action'),
+		'projectdefault_onError_goto': xml_r["Project"]["Details"]["default_onError"]['@value'],
 		'fulljson': xml_r['Project']
 		}
 	# 

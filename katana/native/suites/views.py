@@ -133,7 +133,7 @@ def editSuite(request):
 	except:
 		xml_r["TestSuite"]["Details"]["type"]['@exectype'] = "sequential_testcases"
 
-	xml_r["TestSuite"]["Details"]["default_onError"] = "" 
+	#xml_r["TestSuite"]["Details"]["default_onError"] = "" 
 
 	context = { 
 		'savefilename': "save_" + os.path.split(filename)[1],
@@ -152,7 +152,9 @@ def editSuite(request):
 		'suiteDate': xml_r["TestSuite"]["Details"]["Date"],
 		'suiteTime': xml_r["TestSuite"]["Details"]["Time"],
 		#'suiteType': xml_r["TestSuite"]["Details"]["type"],
-		'suitedefault_onError':xml_r["TestSuite"]["Details"]["default_onError"] ,
+		'suitedefault_onError':xml_r["TestSuite"]["Details"]["default_onError"]['@action'],
+		'suitedefault_onError_goto':xml_r["TestSuite"]["Details"]["default_onError"].get('@value',''),
+		
 		'suiteCases': xml_r['TestSuite']['Testcases'],
 		'fulljson': xml_r['TestSuite'],
 		'suiteResults': "",

@@ -61,6 +61,7 @@ function mapFullSuiteJson(myobjectID){
 	jsonSuiteObject =  jsonAllSuitePages[myobjectID]; 
 	jsonTestcases = jsonSuiteObject['Testcases']; 
 	mapSuiteJsonToUi(jsonTestcases);  // This is where the table and edit form is created. 
+	katana.$activeTab.find('#default_onError').on('change',fillSuiteDefaultGoto );
 } 
 
 function createNewCaseForSuite() {
@@ -207,7 +208,9 @@ function mapUiToSuiteJson() {
 	jsonSuiteObject['Details']['Engineer'] = katana.$activeTab.find('#suiteEngineer').val();
 	jsonSuiteObject['Details']['Resultsdir'] = katana.$activeTab.find('#suiteResults').val();
 	jsonSuiteObject['Details']['Date'] = katana.$activeTab.find('#suiteDate').val();
-	jsonSuiteObject['Details']['default_onError'] = katana.$activeTab.find('#defaultOnError').val();
+	jsonSuiteObject['Details']['default_onError'] = { '@value': '', '@name' : ''};
+	jsonSuiteObject['Details']['default_onError']['@name'] = katana.$activeTab.find('#defaultOnError').val();
+	jsonSuiteObject['Details']['default_onError']['@value'] = katana.$activeTab.find('#defaultOnError_goto').val();
 	jsonSuiteObject['Details']['Datatype']['@exectype'] = katana.$activeTab.find('#suiteDatatype').val();
 	jsonSuiteObject['SaveToFile'] = katana.$activeTab.find('#my_file_to_save').val();
 
@@ -244,6 +247,27 @@ function mapUiToSuiteJson() {
 
 }
 
+var fillSuiteDefaultGoto = function() {
+
+	var gotoStep = katana.$activeTab.find('#default_onError').val();
+	console.log("Step ", gotoStep);
+	var defgoto = katana.$activeTab.find('#default_onError_goto'); 
+		defgoto.hide();
+
+	if (gotoStep.trim() == 'goto'.trim()) { 
+		defgoto.show();
+	} else {
+		defgoto.hide();
+		
+	}
+
+	defgoto.empty(); 
+	var xdata = jsonSuiteObject["Testcases"]; // ['Testcase'];
+	if (!jQuery.isArray(xdata)) xdata = [xdata]; 
+	for (var s=0; s<Object.keys(xdata).length; s++ ) {
+		defgoto.append($('<option>',{ value: s,  text: s}));
+	}
+}
 
 
 //
@@ -320,7 +344,7 @@ function createCasesTable(xdata) {
 	katana.$activeTab.find('#Case_table_display tbody').sortable( { stop: testSuiteSortEventHandler});
 	//katana.$activeTab.find('#Case_table_display').on('click',"td",   function() { 
 	//});
-
+	fillSuiteDefaultGoto();
 
 
 }

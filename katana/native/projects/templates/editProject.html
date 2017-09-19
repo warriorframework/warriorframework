@@ -46,7 +46,7 @@
 			</div>
 			<div class="field col-md-3 input_padding">
 				<label class="text-right">defaultOnError:</label>
-				<select class="text-right" type="text" id="default_onError" name="default_onError" value="{{projectdefaultOnError}}" >
+				<select class="text-right" type="text" id="default_onError" name="default_onError" katana_click="fillProjectDefaultGoto" value="{{projectdefaultOnError}}" >
 					<option value="next">Next</option>
 					<option value="abort">Abort</option>
 					<option value="abort_as_error">Abort As Error</option>
@@ -56,8 +56,8 @@
 
 			<div class="field col-md-3">
 				<label class="text-right">Go To:</label>
-				<input class="text-right" type="text" id="default_onError_goto" name="default_onError_goto" value="{{projectdefaultOnError}}" >
-				</input>
+				<select class="text-right" type="text" id="default_onError_goto" name="default_onError_goto" value="{{projectdefaultOnError_goto}}" >
+				</select>
 
 			</div>
 			<div class="field col-md-3 input_padding">	
@@ -174,7 +174,7 @@
 	</div>
 
 
-	<div id="listOfTestSuitesForProject">{{fulljson|jsonify}}</div>
-	<div id="savefilepath">{{savefilepath}}</div>
-	<div id="fullpathname">{{fullpathname}}</div>
+	<div id="listOfTestSuitesForProject" class="hidden">{{fulljson|jsonify}}</div>
+	<div id="savefilepath" class="hidden">{{savefilepath}}</div>
+	<div id="fullpathname" class="hidden">{{fullpathname}}</div>
 </body>

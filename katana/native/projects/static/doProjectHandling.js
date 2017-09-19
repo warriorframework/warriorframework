@@ -58,6 +58,8 @@ function mapFullProjectJson(myobjectID){
 	jsonProjectObject =  jsonAllProjectPages[myobjectID]; 
 	jsonTestSuites = jsonProjectObject['Testsuites']; 
 	mapProjectJsonToUi(jsonTestSuites);  // This is where the table and edit form is created. 
+	katana.$activeTab.find('#default_onError').on('change',fillProjectDefaultGoto );
+
 } 
 
 function resetUIfromFile() {
@@ -214,7 +216,8 @@ function mapUiToProjectJson() {
 	jsonProjectObject['Details']['Engineer'] = katana.$activeTab.find('#projectEngineer').val();
 	jsonProjectObject['Details']['State'] = katana.$activeTab.find('#projectState').val();
 	jsonProjectObject['Details']['Date'] = katana.$activeTab.find('#projectDate').val();
-	jsonProjectObject['Details']['default_onError'] = katana.$activeTab.find('#defaultOnError').val();
+	jsonProjectObject['Details']['default_onError']['@action'] = katana.$activeTab.find('#default_onError').val();
+	jsonProjectObject['Details']['default_onError']['@value'] = katana.$activeTab.find('#default_onError_goto').val();
 	jsonProjectObject['Details']['Datatype'] = katana.$activeTab.find('#projectDatatype').val();
 	jsonProjectObject['SaveToFile'] = katana.$activeTab.find('#my_file_to_save').val();
 	//
@@ -344,8 +347,31 @@ function createSuitesTable(xdata) {
 	katana.$activeTab.find('#suite_table_display').on('click',"td",   function() { 
 	});
 	//katana.$activeTab.find("#tableOfTestSuitesForProject").setAttribute( "style","overflow-y:scroll");
+	fillProjectDefaultGoto();
+
+}
 
 
+var fillProjectDefaultGoto = function() {
+
+	var gotoStep = katana.$activeTab.find('#default_onError').val();
+	console.log("Step ", gotoStep);
+	var defgoto = katana.$activeTab.find('#default_onError_goto'); 
+	
+	if (gotoStep.trim() == 'goto'.trim()) { 
+		defgoto.show();
+	} else {
+		defgoto.hide();
+		
+	}
+
+	var listSuites = katana.$activeTab.find('#suite_table_display tbody').children(); 
+	defgoto.empty(); 
+	for (xi=0; xi < listSuites.length; xi++) {
+		var xtr = listSuites[xi];
+		var ni  = xtr.getAttribute("data-sid");	
+		defgoto.append($('<option>',{ value: ni,  text: ni}));
+	}
 }
 
 var testProjectSortEventHandler = function(event, ui ) {
