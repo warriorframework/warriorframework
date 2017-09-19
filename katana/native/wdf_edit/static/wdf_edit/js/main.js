@@ -1,5 +1,8 @@
 var wdf = {
     search_and_hide: function(){
+        /*
+            Scan the systems and hide the addsubsystem button if there are tags in it
+        */
         $systems = $(".control-box");
         $.each($systems, function(ind, sys) {
             if (! $(sys).attr("id").startsWith("template")) {
@@ -26,6 +29,9 @@ var wdf = {
     },
 
     hide_template: function(){
+        /*
+            Hide the templates
+        */
         katana.refreshAutoInit(katana.$activeTab.find("#system_template"));
         katana.refreshAutoInit(katana.$activeTab.find("#tag_template"));
         katana.refreshAutoInit(katana.$activeTab.find("#child_tag_template"));
@@ -42,16 +48,22 @@ var wdf = {
     },
 
     sysNameChange: function(){
+        /*
+            Synchronize name change between input field and nav bar
+        */
         $target = $(this);
         var $system_id = $target.attr("name").split("-").slice(0,1);
         var $subsystem_id = $target.attr("name").split("-").slice(1,2);
 
+        // find the button that links to the current system
+        // Change the label and button text
         $target = $("[linkto='#"+$system_id+"-"+$subsystem_id+"-control-box']");
         $target.closest(".wdf-pad").find("label").text(" "+$(this).prop("value"));
         if ($("[name='"+$system_id+"-"+$subsystem_id+"-subsystem_name']").length == 0) {
             $target.find("span").text(" "+$(this).prop("value"));
         }
 
+        // Change other system name input field under the same system
         $value = $(this).prop("value");
         $systems = $("[name^='"+$system_id+"'][name$='-system_name']");
         $.each($systems, function(ind, sys){
@@ -60,6 +72,9 @@ var wdf = {
     },
 
     subSysNameChange: function(){
+        /*
+            Synchronize name change between input field and nav bar
+        */
         $target = $(this);
         var $system_id = $target.attr("name").split("-").slice(0,1);
         var $subsystem_id = $target.attr("name").split("-").slice(1,2);
@@ -80,6 +95,7 @@ var wdf = {
             $target.find("[katana-click='wdf.addSubSystem']").show();
         }
 
+        // Get the id that represented the tag
         $target = $(this).closest(".row");
         $raw_id = $target.find("[name*='-key']").attr("name").substring(0, $target.find("[name*='-key']").attr("name").length-4);
         $id = $raw_id.split("-").slice(0,-1).join("-");
@@ -105,6 +121,8 @@ var wdf = {
 
     deleteChildTag: function(){
         // hide a specific child tag
+
+        // Find the parent tag, can either starts with -0-key or -1- key
         $target = $(this).parent().parent().find("[name*='key']");
         $id = $target.attr("name").split("-").slice(0,3).join("-")+"-0-key";
         $parent_tag = $target.closest(".control-box").find("[name='"+$id+"']").parent();
@@ -121,6 +139,7 @@ var wdf = {
             // setTimeout(function(){$hide_target.parent().parent().hide()}, 600);
             $hide_target.hide();
 
+            // If deleting the last child tag, makes the parent tag become a regular tag again
             if (parseInt($parent_tag.attr("child_count")) == 1) {
                 $parent_tag.removeClass("col-md-10");
                 $parent_tag.addClass("col-md-3");
@@ -131,12 +150,12 @@ var wdf = {
     },
 
     deleteSystem: function(){
-        // empty the whole system
+        // empty the whole system, same function works on subsystem and system
         $target=$(this).closest(".control-box");
-
-        // When delete the 2nd last system, show add tag icon on main system
         var $system_id = $target.attr("id").split("-").slice(0,1);
         var $subsystem_id = $target.attr("id").split("-").slice(1,2);
+
+        // When delete the 2nd last system, show add tag icon on main system
         if ($target.parent().find("[id^='"+$system_id+"-']:not(:empty)").length == 2) {
             // alert("You delete the last subsystem");
             $target.parent().find("[id^='"+$system_id+"-1-']").find("[katana-click='wdf.addTag']").show()
@@ -146,6 +165,7 @@ var wdf = {
         // setTimeout(function(){$target.empty()}, 600);
         $target.empty();
 
+        // Update the nav bar
         $target=$("[linkto='#"+$system_id+"-"+$subsystem_id+"-control-box']");
         $label=$target.closest(".wdf-pad");
         if ( $label.find(".btn").length == 1) {
@@ -156,6 +176,7 @@ var wdf = {
     },
 
     sysDefaultCheck: function(){
+        // Check the current sys checkbox and uncheck other sys checkbox
         if ($(this).prop("checked")) {
             $boxes = $(".wdf-sys-checkbox:checked");
             if ($boxes.length > 1) {
@@ -168,6 +189,7 @@ var wdf = {
     },
 
     subsysDefaultCheck: function(){
+        // Check the current subsys checkbox and uncheck other subsys checkbox under the same sys
         var $system_id = $(this).attr("name").split("-").slice(0,1);
         var $subsystem_id = $(this).attr("name").split("-").slice(1,2);
         if ($(this).prop("checked")) {
@@ -184,66 +206,29 @@ var wdf = {
     addSystem: function(){
         // Add a system
         var $tmp = katana.$activeTab.find("#system_template").clone();
-        var $tmp_id = katana.$activeTab.find(".control-box").length-1+"-1-control-box";
-        $tmp.find("#template-system").prop("id", $tmp_id);
-        $tmp.find("[name='template-system-name']").prop("name", katana.$activeTab.find(".control-box").length-1+"-1-system_name");
-        $tmp.find("[name='template-system.tag']").prop("name", katana.$activeTab.find(".control-box").length-1+"-1-1-1-key");
-        $tmp.find("[name='template-system.value']").prop("name", katana.$activeTab.find(".control-box").length-1+"-1-1-1-value");
-        $tmp.find("[name='template-system-default']").prop("name", katana.$activeTab.find(".control-box").length-1+"-1-default");
+        // length-1 is because there are a template sys and template subsys with class control-box in it
+        // the new system needs to have actual sys count + 1, which is the same as length-1
+        var $tmp_id = katana.$activeTab.find(".control-box").length-1;
+
+        // Replace template content with real content
+        $tmp.find("#template-system").prop("id", $tmp_id+"-1-control-box");
+        $tmp.find("[name='template-system-name']").prop("name", $tmp_id+"-1-system_name");
+        $tmp.find("[name='template-system-default']").prop("name", $tmp_id+"-1-default");
+        $tmp.find("[name='template-system.tag']").prop("name", $tmp_id+"-1-1-1-key");
+        $tmp.find("[name='template-system.value']").prop("name", $tmp_id+"-1-1-1-value");
         katana.$activeTab.find("#wdf-editor-col").append($($tmp.html()));
 
-        $("#"+$tmp_id).get(0).scrollIntoView(true);
-        katana.quickAnimation($("#"+$tmp_id).find("input"), "wdf-highlight", 1000);
+        $("#"+$tmp_id+"-1-control-box").get(0).scrollIntoView(true);
+        katana.quickAnimation($("#"+$tmp_id+"-1-control-box").find("input"), "wdf-highlight", 1000);
 
+        // Create button in nav bar
         var $tmp = katana.$activeTab.find("#navigator_template").clone();
-        $tmp.find("#template-nav-label").prop("id", katana.$activeTab.find(".control-box").length-2+"-1-ref-label");
-        $tmp.find("#template-button-box").prop("id", katana.$activeTab.find(".control-box").length-2+"-1-button-box");
-        var $length = katana.$activeTab.find(".control-box").length-2;
-        $tmp.find("[linkto='template-nav.linkto']").attr("linkto", "#"+$length+"-1-control-box");
+        // length-2 as we just attached a new system into the view
+        var $tmp_id = katana.$activeTab.find(".control-box").length-2;
+        $tmp.find("#template-nav-label").prop("id", $tmp_id+"-1-ref-label");
+        $tmp.find("#template-button-box").prop("id", $tmp_id+"-1-button-box");
+        $tmp.find("[linkto='template-nav.linkto']").attr("linkto", "#"+$$tmp_id+"-1-control-box");
         katana.$activeTab.find("#wdf-navigator").append($($tmp.html()));
-    },
-
-    addTag: function(){
-        var $tmp = katana.$activeTab.find("#tag_template").clone();
-        // go to control box level
-        var $target = $(this).closest(".control-box");
-        var $system_id = $target.attr("id").split("-").slice(0,1);
-        var $subsystem_id = $target.attr("id").split("-").slice(1,2);
-        if ($target.parent().find("[id^='"+$system_id+"-']").length > 1 && $subsystem_id == "1") {
-            alert("Please only add tag in subsystem");
-        } else {
-            var $id = $target.attr("id").substring(0, $target.attr("id").length-11);
-            $tmp.find("[name='template-tag.tag']").prop("name", $id+($target.children("#content").length+1)+"-1-key");
-            $tmp.find("[name='template-tag.value']").prop("name", $id+($target.children("#content").length+1)+"-1-value");
-            $target.append($($tmp.html()));
-        }
-        $target.find("[katana-click='wdf.addSubSystem']").hide();
-    },
-
-    addChild: function(){
-        var $tmp = katana.$activeTab.find("#child_tag_template").clone();
-        // go to control box level
-        var $target = $(this).closest("#content");
-        var $raw_id = $target.find("[name*='-key']").attr("name").substring(0, $target.find("[name*='-key']").attr("name").length-4);
-        var $id = $raw_id.split("-").slice(0,-1).join("-");
-        var $new_id = $target.parent().find("[name*='"+$id+"']").length/2+1;
-        $tmp.find("[name='template-tag.tag']").prop("name", $id+"-"+$new_id+"-key");
-        $tmp.find("[name='template-tag.value']").prop("name", $id+"-"+$new_id+"-value");
-        $target.parent().find("[name*='"+$id+"']:last").parent().parent().after($($tmp.html()));
-
-        $input = $target.parent().find("[name*='"+$id+"']:first").parent();
-        if ($input.hasClass("col-md-3")) {
-            $input.removeClass("col-md-3");
-            $input.addClass("col-md-10");
-            $input.next().find("input").prop("value", "");
-            $input.next().hide();
-        }
-
-        if ($input.attr("child_count")) {
-            $input.attr("child_count", parseInt($input.attr("child_count"))+1);
-        } else {
-            $input.attr("child_count", 1);
-        }
     },
 
     addSubSystem: function(){
@@ -296,6 +281,49 @@ var wdf = {
 
             $target.parent().find("[id^='"+$system_id+"-1']").find("[katana-click='wdf.addTag']").hide()
 
+        }
+    },
+
+    addTag: function(){
+        var $tmp = katana.$activeTab.find("#tag_template").clone();
+        // go to control box level
+        var $target = $(this).closest(".control-box");
+        var $system_id = $target.attr("id").split("-").slice(0,1);
+        var $subsystem_id = $target.attr("id").split("-").slice(1,2);
+        if ($target.parent().find("[id^='"+$system_id+"-']").length > 1 && $subsystem_id == "1") {
+            alert("Please only add tag in subsystem");
+        } else {
+            var $id = $target.attr("id").substring(0, $target.attr("id").length-11);
+            $tmp.find("[name='template-tag.tag']").prop("name", $id+($target.children("#content").length+1)+"-1-key");
+            $tmp.find("[name='template-tag.value']").prop("name", $id+($target.children("#content").length+1)+"-1-value");
+            $target.append($($tmp.html()));
+        }
+        $target.find("[katana-click='wdf.addSubSystem']").hide();
+    },
+
+    addChild: function(){
+        var $tmp = katana.$activeTab.find("#child_tag_template").clone();
+        // go to control box level
+        var $target = $(this).closest("#content");
+        var $raw_id = $target.find("[name*='-key']").attr("name").substring(0, $target.find("[name*='-key']").attr("name").length-4);
+        var $id = $raw_id.split("-").slice(0,-1).join("-");
+        var $new_id = $target.parent().find("[name*='"+$id+"']").length/2+1;
+        $tmp.find("[name='template-tag.tag']").prop("name", $id+"-"+$new_id+"-key");
+        $tmp.find("[name='template-tag.value']").prop("name", $id+"-"+$new_id+"-value");
+        $target.parent().find("[name*='"+$id+"']:last").parent().parent().after($($tmp.html()));
+
+        $input = $target.parent().find("[name*='"+$id+"']:first").parent();
+        if ($input.hasClass("col-md-3")) {
+            $input.removeClass("col-md-3");
+            $input.addClass("col-md-10");
+            $input.next().find("input").prop("value", "");
+            $input.next().hide();
+        }
+
+        if ($input.attr("child_count")) {
+            $input.attr("child_count", parseInt($input.attr("child_count"))+1);
+        } else {
+            $input.attr("child_count", 1);
         }
     },
 
