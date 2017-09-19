@@ -1,11 +1,11 @@
 {
-    "engineer": "keenan",
+    "engineer": "",
     "idfdir": "",
-    "projdir": "/home/keen/Desktop/demo/warriorframework/wftests/warrior_tests/projects",
+    "projdir": "/home/khusain/Projects/forDemo/warriorframework/wftests/warrior_tests/projects",
     "pythonpath": "",
-    "pythonsrcdir": "/home/keen/Desktop/demo/warriorframework/warrior",
+    "pythonsrcdir": "/home/khusain/Projects/forDemo/warriorframework/warrior",
     "testdata": "",
-    "testsuitedir": "/home/keen/Desktop/demo/warriorframework/wftests/warrior_tests/suites",
+    "testsuitedir": "/home/khusain/Projects/forDemo/warriorframework/wftests/warrior_tests/suites",
     "warhorn_config": "",
-    "xmldir": "/home/keen/Desktop/demo/warriorframework/wftests/warrior_tests/testcases"
+    "xmldir": "/home/khusain/Projects/forDemo/warriorframework/wftests/warrior_tests/testcases"
 }

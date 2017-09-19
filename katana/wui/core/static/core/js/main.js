@@ -579,6 +579,14 @@ var katana = {
 		$elem.toggleClass('active');
 	},
 
+	expand: function(){
+		var topLevel = this.parent();
+		if( topLevel.find('.expanded') && topLevel.find('.expanded') != this ){
+			 topLevel.find('.expanded').removeClass('expanded');
+			this.addClass('expanded');
+	  }
+	},
+
 	openProfile: function(){
 		var $elem = this;
 		$elem.closest('.active').removeClass('active');
@@ -586,6 +594,14 @@ var katana = {
 			katana.templateAPI.subAppLoad( '/katana/settings/profile_setting_handler' );
 		});
 	},
+
+    quickAnimation: function($elem, className, duration){
+        // provided by Keenan
+        $elem.addClass(className);
+        setTimeout(function(){
+            $elem.removeClass(className);
+        }, duration);
+    },
 
 	fileNav:{
 		folderTemp: '',
