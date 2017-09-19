@@ -3,6 +3,7 @@ var cmdBuilder ={
   cmdOptionsViewer: {
     icon_num : 1,
     activeDialog: '',
+    activeForm: '',
 
     init: function(){
       cmdBuilder.cmdOptionsViewer.displayIcons(cmdBuilder.cmdOptionsViewer.icon_num);
@@ -28,13 +29,66 @@ var cmdBuilder ={
       $(icons[cmdBuilder.cmdOptionsViewer.icon_num+2]).show();
     },
 
-    showOptions: function(){
-      var elem = $(this);
-      var toShow = katana.$activeTab.find('#' + elem.attr('data-showId'));
-      var form = toShow.find('form');
-      cmdBuilder.cmdOptionsViewer.showHideDialog(toShow, 'show', form);
+    openCmdOptionsDialog: function(){
+      var cmdOptionsDialog = katana.$activeTab.find('.cmd-options-dialog-container');
+      cmdBuilder.cmdOptionsViewer.showHideDialog(cmdOptionsDialog, 'show');
     },
+    closeCmdOptionsDialog: function(){
+      var cmdOptionsDialog = katana.$activeTab.find('.cmd-options-dialog-container');
+      cmdBuilder.cmdOptionsViewer.showHideDialog(cmdOptionsDialog, 'hide');
+  	},
+    // showOptions: function(){
+    //   // to be removed
+    //   var elem = $(this);
+    //   var toShow = katana.$activeTab.find('#' + elem.attr('data-showId'));
+    //   var form = toShow.find('form');
+    //   cmdBuilder.cmdOptionsViewer.showHideDialog(toShow, 'show', form);
+    // },
+    openOptionsForm: function(){
+      var elem = $(this);
+      var closest_dialog = katana.$activeTab.find('.cmd-options-dialog-container');
+      var form = closest_dialog.find('#' + elem.attr('data-showId'));
+      cmdBuilder.cmdOptionsViewer.hideAllQnForms();
+      cmdBuilder.cmdOptionsViewer.showHideQnForm(form, 'show');
 
+
+
+    },
+    // closeActiveOptionsForm: function(){
+    //   var elem = $(this);
+    //   var form = elem.closest('form');
+    //   cmdBuilder.cmdOptionsViewer.showHideQnForm(form, 'hide');
+    // },
+    hideAllQnForms: function(){
+      var formsContainer = katana.$activeTab.find('.cmd-options-dialog-container');
+      var formList = formsContainer.find('form');
+      $.each(formList, function(index, form){
+        $(form).hide();
+      });
+
+    },
+    showHideQnForm: function(form, val, initForm){
+      var panel_container = katana.$activeTab.find('.execution.exec-container')
+      if(!initForm){
+        var initForm = true;
+      }
+      if (val == 'hide'){
+        form.hide();
+        cmdBuilder.cmdOptionsViewer.activeForm = '';
+      }
+      else {
+        // execution.resetForm(form);
+        if(form) {
+          if(initForm){
+            questionaire.init(form);
+            form.data('questionaireObject', questionaire);
+            questionaire.showQuestion(0);
+          }
+          form.show();
+          cmdBuilder.cmdOptionsViewer.activeForm = form;
+        }
+      }
+      },
     showHideDialog: function(dialog, val, form){
       var panel_container = katana.$activeTab.find('.execution.exec-container')
       if (val == 'hide'){
@@ -47,27 +101,13 @@ var cmdBuilder ={
         panel_container.addClass('is-blurred');
         panel_container.css('pointer-events', 'none');
         dialog.show();
+        // dialog.data('cmdObject', cmdBuilder.cmdCreator);
         // execution.resetForm(form);
-        questionaire.init(form);
+        if(form) {questionaire.init(form);}
         cmdBuilder.cmdOptionsViewer.activeDialog = dialog;
       }
       },
 
-    //   resetFields: function(){
-    //     // use this to reset fields on a button click, also resets radio buttons
-    //     elem = $(this);
-    //     /* By default resets the radio buttons of the given form*/
-    //     var form_id = elem.attr('form');
-    //     var form = elem.closest('.page-content').find('#'+form_id);
-    //     form_parent = form.parent();
-    //     radio_btns = form_parent.find("input[type='radio']");
-    //     for(i=0; i < radio_btns.length; i++) {
-    //       $(radio_btns[i]).prop('checked', false);
-    //     }
-    //     $(form)[0].reset();
-    //     questionaire.clearQnAttr(['data-displayed']);
-    //   },
-    //
 
 
     },
@@ -81,51 +121,68 @@ var cmdBuilder ={
 
         updateCmdObject: function(rxItem){
           // iterate over the command object and see if the item already exists
+          var cmdObject = $(this)[0];
           var rxItemName = Object.keys(rxItem)[0];
           var rxItemCmd = rxItem[rxItemName];
           var updated = 0;
-          $.each(cmdBuilder.cmdCreator.cmdArray, function(index, item){
+          $.each(cmdObject.cmdArray, function(index, item){
             if (rxItemName in item){
               item[rxItemName] = rxItemCmd;
               updated += 1
             }
+            console.log(cmdObject);
           });
 
           // if the recieved item does not exist already add it to the cmd Array
           if (updated ===0){
-            cmdBuilder.cmdCreator.cmdArray.push(rxItem);
+            cmdObject.cmdArray.push(rxItem);
           };
+
         },
         clearCmdObject: function(){
-          cmdBuilder.cmdCreator.cmdArray = [];
+          var cmdObject = $(this)[0];
+          cmdObject.cmdArray = [];
         },
         formCmdString: function(fileList){
+          var cmdObject = $(this)[0];
           cmdString = '';
           var fileString = fileList.join(' ');
-          var cmdArray = cmdBuilder.cmdCreator.cmdArray;
+          var cmdArray = cmdObject.cmdArray;
 
-          $.each(cmdArray, function(index, item){
-            itemCmd = item[ Object.keys(item)[0]];
-            cmdString += itemCmd + " ";
+          $.each(cmdArray, function(index, optionArray){
+            optionName = Object.keys(optionArray)[0];
+            optionCmd = optionArray[ optionName];
+            if (optionName === 'customOptions'){
+              if(optionCmd){
+                cmdString = optionCmd + " ";
+                return false;
+              }
+            }else{
+              cmdString += optionCmd + " ";
+            }
+
           });
-          cmdBuilder.cmdCreator.currentCmd = cmdString + ' ' + fileString;
-          console.log(cmdBuilder.cmdCreator.currentCmd);
+          cmdObject.currentCmd = cmdString + ' ' + fileString;
         },
 
         getCmd: function(fileList){
-          cmdBuilder.cmdCreator.formCmdString(fileList);
-          return cmdBuilder.cmdCreator.currentCmd;
+          var cmdObject = $(this)[0];
+          cmdObject.formCmdString(fileList);
+          return cmdObject.currentCmd;
         },
       },
 
       cmdOptions:{
         submitJiraOptions: function(){
+          var cmdBuilderElement = katana.$activeTab.find(".cmd-options-dialog-container");
+          var cmdCreatorObject = cmdBuilderElement.data('cmdCreatorObject');
+          var qnObject = katana.$activeTab.find('#jira-options-form').data('questionaireObject');
           jiraCmdObject = {'jiraOptions': ''};
           jiraCmd='';
-          var jira_ad_radio = questionaire.form.find("#jira-ad-yes");
-          var jira_id_radio = questionaire.form.find("#jira-id-yes");
-          var jira_proj_val = questionaire.form.find("#jira-project-value").val();
-          var jira_id_val = questionaire.form.find("#jira-id-value").val();
+          var jira_ad_radio = katana.$activeTab.find("#jira-ad-yes");
+          var jira_id_radio = katana.$activeTab.find("#jira-id-yes");
+          var jira_proj_val = katana.$activeTab.find("#jira-project-value").val();
+          var jira_id_val = katana.$activeTab.find("#jira-id-value").val();
 
           // check if jira ad is checked
           if ($(jira_ad_radio).is(':checked')){
@@ -137,21 +194,24 @@ var cmdBuilder ={
             }
           }
           jiraCmdObject['jiraOptions'] = jiraCmd;
-          cmdBuilder.cmdCreator.updateCmdObject(jiraCmdObject);
-          execution.closeDialog();
+          cmdCreatorObject.updateCmdObject(jiraCmdObject);
+          qnObject.form.hide();
           },
 
         submitCaseOptions: function(){
+          var cmdBuilderElement = katana.$activeTab.find(".cmd-options-dialog-container");
+          var cmdCreatorObject = cmdBuilderElement.data('cmdCreatorObject');
+          var qnObject = katana.$activeTab.find('#case-options-form').data('questionaireObject');
           cmdObject = {'caseOptions': ''};
           cmd='';
-          var case_ruf_radio = questionaire.form.find("#case-ruf");
-          var case_rmt_radio = questionaire.form.find("#case-rmt");
-          var case_seq_radio = questionaire.form.find("#case-sequence");
-          var case_par_radio = questionaire.form.find("#case-parallel");
-          var kw_seq_radio = questionaire.form.find("#kw-sequence");
-          var kw_par_radio = questionaire.form.find("#kw-parallel");
-          var case_ruf_val = questionaire.form.find("#case-ruf-value").val();
-          var case_rmt_val = questionaire.form.find("#case-rmt-value").val();
+          var case_ruf_radio = katana.$activeTab.find("#case-ruf");
+          var case_rmt_radio = katana.$activeTab.find("#case-rmt");
+          var case_seq_radio = katana.$activeTab.find("#case-sequence");
+          var case_par_radio = katana.$activeTab.find("#case-parallel");
+          var kw_seq_radio = katana.$activeTab.find("#kw-sequence");
+          var kw_par_radio = katana.$activeTab.find("#kw-parallel");
+          var case_ruf_val = katana.$activeTab.find("#case-ruf-value").val();
+          var case_rmt_val = katana.$activeTab.find("#case-rmt-value").val();
 
           // check if jira ad is checked
           if ($(case_ruf_radio).is(':checked')){
@@ -165,53 +225,64 @@ var cmdBuilder ={
           }else if($(case_par_radio).is(':checked') & $(kw_seq_radio).is(':checked')){
             cmd += '-tcparallel' + ' ' + '-kwsequential' + '';
           }else if($(case_par_radio).is(':checked') & $(kw_par_radio).is(':checked')){
-            cmd += '-tcparallel' + ' ' + '-kwparallel' + '';
+            cmd += '-tcparallel' + ' ' + '-kwparallel' + ' ';
           }
           cmdObject['caseOptions'] = cmd;
-          cmdBuilder.cmdCreator.updateCmdObject(cmdObject);
-          execution.closeDialog();
-          // console.log(cmdObject);
+          cmdCreatorObject.updateCmdObject(cmdObject);
+          qnObject.form.hide();
           },
         submitDataBaseOptions: function(){
-          var status = cmdBuilder.cmdOptions.validateDataBaseOptions(questionaire.form);
+          var cmdBuilderElement = katana.$activeTab.find(".cmd-options-dialog-container");
+          var cmdCreatorObject = cmdBuilderElement.data('cmdCreatorObject');
+          var qnObject = katana.$activeTab.find('#dataBase-options-form').data('questionaireObject');
+
+          var status = cmdBuilder.cmdOptions.validateDataBaseOptions(qnObject.form);
           if(status){
             cmdObject = {'dataBaseOptions': ''};
             cmd='';
-            var db_val = questionaire.form.find("#db-value").val();
+            var db_val = katana.$activeTab.find("#db-value").val();
 
             // check if jira ad is checked
             if (db_val){
               cmd += '-dbsystem' + ' ' + db_val;
             }
             cmdObject['dataBaseOptions'] = cmd;
-            cmdBuilder.cmdCreator.updateCmdObject(cmdObject);
-            execution.closeDialog();
+            cmdCreatorObject.updateCmdObject(cmdObject);
+            qnObject.form.hide();
             }
+
           },
         submitSchedulingOptions: function(){
-          var status = cmdBuilder.cmdOptions.validateSchedulingOptions(questionaire.form);
+          var cmdBuilderElement = katana.$activeTab.find(".cmd-options-dialog-container");
+          var cmdCreatorObject = cmdBuilderElement.data('cmdCreatorObject');
+          var qnObject = katana.$activeTab.find('#schedule-options-form').data('questionaireObject');
+
+          var status = cmdBuilder.cmdOptions.validateSchedulingOptions(qnObject.form);
           if(status){
               cmdObject = {'schedulingOptions': ''};
               cmd='';
-              var date_val = questionaire.form.find("#schedule-date-value").val();
-              var time_val = questionaire.form.find("#schedule-time-value").val();
+              var date_val = katana.$activeTab.find("#schedule-date-value").val();
+              var time_val = katana.$activeTab.find("#schedule-time-value").val();
               var date_time = (date_val + '-' + time_val).replace(/-/g, '\-');
-              console.log(date_time);
               // check if jira ad is checked
               if (date_time){
                 cmd += '-schedule' + ' ' + date_time;
               }
               cmdObject['schedulingOptions'] = cmd;
-              cmdBuilder.cmdCreator.updateCmdObject(cmdObject);
-              execution.closeDialog();
+              cmdCreatorObject.updateCmdObject(cmdObject);
+              qnObject.form.hide();
             }
           },
         submitCustomOptions: function(form){
-          var customCmd = questionaire.form.find('#custom-options-value').val();
+          var cmdBuilderElement = katana.$activeTab.find(".cmd-options-dialog-container");
+          var cmdCreatorObject = cmdBuilderElement.data('cmdCreatorObject');
+          var qnObject = katana.$activeTab.find('#custom-options-form').data('questionaireObject');
+
+          var customCmd = katana.$activeTab.find('#custom-options-value').val();
           cmdObject = {'customOptions': customCmd};
-          cmdBuilder.cmdCreator.clearCmdObject();
-          cmdBuilder.cmdCreator.updateCmdObject(cmdObject);
-          execution.closeDialog();
+          // cmdBuilder.cmdCreator.clearCmdObject();
+          cmdCreatorObject.updateCmdObject(cmdObject);
+          qnObject.form.hide();
           },
         vaidateJiraAdNext: function(form){
           var status = true;
@@ -294,6 +365,7 @@ var cmdBuilder ={
           var status = true;
           var txt1 = form.find('#schedule-date-value');
           var txt2 = form.find('#schedule-time-value');
+
           status &= cmdBuilder.cmdOptions.validateTextNotEmpty([txt1, txt2]);
           if(! status){setTimeout(function() { alert("Enter values for highlighted fields"); }, 250);}
           return status;
@@ -322,7 +394,14 @@ var cmdBuilder ={
           });
           return status
         },
-
+        clearOptions: function(form){
+          var name = form.attr('name');
+          var cmdBuilderElement = katana.$activeTab.find(".cmd-options-dialog-container");
+          var cmdCreatorObject = cmdBuilderElement.data('cmdCreatorObject');
+          cmdObject = {};
+          cmdObject[name] = ""
+          cmdCreatorObject.updateCmdObject(cmdObject);
+        }
 
     },
 
