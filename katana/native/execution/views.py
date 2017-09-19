@@ -81,24 +81,17 @@ class Execution(object):
         """      
         global warrior_interface
         warrior_interface = WarriorInterface()
-        print "in execute warrior"
-        print request.GET
-        print "=================="
+
         data_dict = json.loads(request.GET.get('data'))
         execution_file_list = data_dict['execution_file_list']
-        execution_file_list_string = " ".join(execution_file_list)
-        
-#         print "execution_file_list: ", execution_file_list_string
-        #warrior_cmd = "{0} {1} {2}".format('python', 'warrior', execution_file_list_string)
-        
-        warrior_cmd = '{0} {1} {2}'.format('python', self.warrior, execution_file_list_string )
-     
-        args = warrior_cmd.split(" ")
-#         print "warrior command is :", warrior_cmd
-        
+        cmd_string = data_dict['cmd_string']
+           
+        warrior_cmd = '{0} {1} {2}'.format('python', self.warrior, cmd_string )
+        args = warrior_cmd.split()
+   
+   
         return StreamingHttpResponse(stream_warrior_output(args, warrior_cmd, execution_file_list))
-        
-        
+           
     def get_ws(self, request):
         """
         return the dir tree json for warriorspace
@@ -143,8 +136,9 @@ def get_html_results(request):
 
 
 def stream_warrior_output(args, cmd, file_list):
-     
-    output = subprocess.Popen(args, stdout=subprocess.PIPE, universal_newlines=True)
+
+    output = subprocess.Popen(str(cmd), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
+#     output = subprocess.Popen('date', shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
     first_poll = True
     
     file_li_string = ""

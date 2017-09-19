@@ -135,15 +135,23 @@ var katana = {
 	},
 
 	openDialog: function( data, title, buttons, callBack ){
-		var dialog = $('<div class="dialog-container"><div class="dialog"><div class="title">' + (title ? title : '') + '</div><div class="page-content">' + (data ? data : '') + '</div></div><div class="overlay"></div></div>');
-		buttons && dialog.find('.dialog').append('<div class="button-bar"><div class="button confirm">Confirm</div><div class="button">Cancel</div></div>');
-		dialog.prependTo( katana.$view );
-		dialog.find('.button').one('click', function(){
-			katana.closeDialog( dialog, ($(this).hasClass('confirm') && callBack) );
-		});
-		dialog.find('.overlay').one('click', function(){
-			katana.closeDialog(dialog);
-		});
+	    var final_title = title ? title : '';
+	    var final_data = data ? data : '';
+
+	    var alert_data = {"heading": final_title, "text": final_data};
+
+	    if(buttons){
+	        alert_data["accept_btn_text"] = "Confirm";
+	        alert_data["cancel_btn_text"] = "Cancel";
+	    }
+	    else{
+	        alert_data["show_accept_btn"] = false;
+	        alert_data["show_cancel_btn"] = false;
+	    }
+
+	    alert_data["alert_type"] = "light";
+
+	    katana.openAlert(alert_data, callBack);
 	},
 
 	closeDialog: function( dialog, callBack ){
@@ -156,10 +164,11 @@ var katana = {
 	  template: $('<div class="popup"><div class="navbar"><div class="title"></div><div class="min"></div><div class="close"></div></div><div class="page-content"></div></div>'),
 	  tabTemplate: $('<div class="popup-tab-bar"><div class="tab"></div></div>'),
 
-	  open: function(content, title, callBack) {
+	  open: function( content, title, callBack, size ) {
 			this.body = katana.$view;
 	    var popup = this.template.clone().appendTo(katana.popupController.body);
 	    content && popup.find('.page-content').append(content);
+			size && popup.addClass(size);
 	    katana.popupController.initEvents(popup);
 	    katana.popupController.createTab(popup);
 	    title && katana.popupController.setTitle(popup, title);
@@ -286,6 +295,254 @@ var katana = {
 		});
 	},
 
+	openAlert: function(data, callBack_on_accept, callBack_on_dismiss){
+	    /*
+	    data = {
+	        "alert_type": "primary/secondary/success/danger/warning/info(default)/light/dark",
+	        "heading": "This is the heading of the alert.",
+	        "sub_heading": "false (by default), This is alert sub-heading",
+	        "text": "This is text of the alert.",
+	        "timer": "false (by default), 500, 1000, etc",
+	        "show_accept_btn": "true (by default), false",
+	        "accept_btn_text": "Ok (by default), Save, etc",
+	        "show_cancel_btn": "true (by default), false",
+	        "cancel_btn_text": "Cancel (by default), No, etc",
+	        "prompt": "false (by default), true"
+	    }
+
+	    <div class="overlay">
+            <div class="col-sm-5 centered">
+                <div class="alert alert-data.alert_type" role="alert">
+                    <div class="col" style="float: right;">
+                        <i class="fa fa-times" style="float: right;"></i>
+                    </div>
+                    <h4 class="alert-heading">Heading</h4>
+                    <p>Sub-Heading</p>
+                    <hr>
+                    <p class="mb-0">Text</p>
+                    <hr>
+                    <div class="col" style="text-align: right;">
+                    {% if show_accept_btn %}
+                        <button class="btn btn-success">accept_btn_text</button>
+                    {% endif %}
+                    {% if show_cancel_btn %}
+                        <button class="btn btn-danger">cancel_btn_text</button>
+                    {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+	    */
+
+	    if(callBack_on_accept == undefined){
+	        callBack_on_accept = false;
+	    }
+
+	    if(callBack_on_dismiss == undefined){
+	        callBack_on_dismiss = false;
+	    }
+
+	    data = katana.validateAlertData(data, katana.createAlertElement, katana.displayAlert,
+	                                    callBack_on_accept, callBack_on_dismiss);
+
+	},
+
+	changeBorderColor: function(borderColor){
+	    if(borderColor == undefined){
+	        borderColor = "white";
+	    }
+	    var $body = $('body');
+	    var $prompt = $body.find('#alert-box-prompt');
+	    $prompt.css("border-color", borderColor)
+	},
+
+	acceptAlert: function(callBack_on_accept){
+
+	    var $body = $('body');
+	    var $alertElement = $body.find('div .overlay');
+	    var $prompt = $body.find('#alert-box-prompt');
+
+	    var inputValue = false;
+
+	    if(prompt != undefined){
+	        inputValue = $prompt.val()
+	    }
+
+	    if(inputValue == ""){
+	        katana.changeBorderColor("red");
+	    }
+	    else{
+
+	        $alertElement.remove();
+	        if(callBack_on_accept) {
+                if(!inputValue){
+                    callBack_on_accept();
+                }
+                else{
+                    callBack_on_accept(inputValue);
+                }
+
+            };
+	    }
+	},
+
+	dismissAlert: function(callBack_on_dismiss){
+	    var $body = $('body');
+	    $alertElement = $body.find('div .overlay');
+	    $alertElement.remove();
+
+	    if(callBack_on_dismiss) {
+	        callBack_on_dismiss();
+	    }
+	},
+
+	displayAlert: function(data, alert_box, callBack_on_accept, callBack_on_dismiss){
+
+	    $(alert_box).prependTo(katana.$view);
+
+	    var $body = $('body');
+
+	    $body.find('#cancel-alert').one('click', function(){
+
+	        katana.dismissAlert(callBack_on_dismiss);
+	    });
+
+	    $body.find('#cancel-alert-icon').one('click', function(){
+
+	        katana.dismissAlert(callBack_on_dismiss);
+	    });
+
+	    $body.find('#accept-alert').on('click', function(){
+	        katana.acceptAlert(callBack_on_accept);
+	    });
+
+	    if(data.timer){
+	        setTimeout(function(){katana.dismissAlert()}, data.timer);
+	    }
+
+	},
+
+	createAlertElement: function(data, callBack, callBack_on_accept, callBack_on_dismiss){
+	    var accept_btn_text = "";
+
+	    if(data.show_accept_btn){
+	        accept_btn_text = '<button class="btn btn-success" id="accept-alert">' + data.accept_btn_text + '</button>'
+	    }
+
+	    var cancel_btn_text = "";
+
+	    if(data.show_cancel_btn){
+	        cancel_btn_text = '<button class="btn btn-danger" id="cancel-alert">' + data.cancel_btn_text + '</button>'
+	    }
+
+	    var buttons = "";
+	    var add_break = "<br>";
+
+	    if(data.show_accept_btn || data.show_cancel_btn){
+	        buttons = '<hr>' +
+	                  '<div class="col" style="text-align: right;">' +
+                            accept_btn_text + cancel_btn_text +
+                      '</div>'
+
+            add_break = "";
+	    }
+
+	    var sub_heading = "";
+
+	    if(data.sub_heading){
+	        sub_heading = '<p>' + data.sub_heading + '</p>';
+	    }
+
+	    var prompt = ""
+
+	    if(data.prompt) {
+	        prompt = "<div><input id='alert-box-prompt' katana-change='katana.changeBorderColor' value=''></div>"
+	    }
+
+	    var $alert_box = '<div class="overlay">' +
+	                        '<div class="col-sm-5 centered">' +
+	                            '<div class="alert alert-' + data.alert_type + '" role="alert">' +
+	                                '<div class="col" style="float: right;">' +
+	                                    '<i id="cancel-alert-icon" class="fa fa-times" style="float: right;"></i>' +
+	                                '</div>' +
+	                                '<h4 class="alert-heading">' + data.heading + '</h4>' + sub_heading +
+	                                '<hr>' +
+	                                '<p class="mb-0">' + data.text + '</p>' + prompt + add_break +
+	                                buttons +
+	                            '</div>' +
+	                        '</div>' +
+	                    '</div>'
+
+	    callBack(data, $alert_box, callBack_on_accept, callBack_on_dismiss);
+	},
+
+	validateAlertData: function(data, callBack, secondCallBack, callBack_on_accept, callBack_on_dismiss){
+
+	    var allowed_alert_types = ["primary", "secondary", "success", "danger", "warning",
+	                              "info", "light", "dark"];
+	    var corresponding_headings = { "primary": "Hi There!", "secondary": "Hello!",
+	                                   "success": "Success!", "danger": "Oops!",
+	                                   "warning": "Warning!", "info": "Heads Up!",
+	                                   "light": "Hi There!", "dark": "Hello!"}
+
+	    if (!("alert_type" in data)){
+	        data["alert_type"] = "info";
+	    }
+	    else {
+	        if(allowed_alert_types.includes(data.alert_type.toLowerCase())){
+	            data.alert_type = data.alert_type.toLowerCase();
+	        }
+	        else {
+	            data.alert_type = "info";
+	        }
+	    }
+
+	    if ("heading" in data){
+	        if(!data.heading) {
+	            data.heading = corresponding_headings[data.alert_type]
+	        }
+	    }
+	    else{
+	        data.heading = corresponding_headings[data.alert_type]
+	    }
+
+	    if (!("sub_heading" in data)){
+	        data["sub_heading"] = false;
+	    }
+
+	    if(!("text") in data){
+	        data["text"] = "";
+	    }
+
+	    if(!("timer") in data){
+	        data["timer"] = false;
+	    }
+
+	    if(!("show_accept_btn" in data)){
+	        data["show_accept_btn"] = true;
+	    }
+
+	    if(!("accept_btn_text" in data)){
+            data["accept_btn_text"] = "Ok"
+        }
+
+        if(!("show_cancel_btn" in data)){
+	        data["show_cancel_btn"] = true;
+	    }
+
+	    if(!("cancel_btn_text" in data)){
+            data["cancel_btn_text"] = "Cancel"
+        }
+
+        if(!("prompt" in data)){
+            data["prompt"] = false;
+        }
+
+        callBack(data, secondCallBack, callBack_on_accept, callBack_on_dismiss);
+
+	},
+
 	toJSON: function(){
 		var body = katana.$activeTab.find('.to-save');
 		var jsonObj = [];
@@ -329,6 +586,14 @@ var katana = {
 			katana.templateAPI.subAppLoad( '/katana/settings/profile_setting_handler' );
 		});
 	},
+
+    quickAnimation: function($elem, className, duration){
+        // provided by Keenan
+        $elem.addClass(className);
+        setTimeout(function(){
+            $elem.removeClass(className);
+        }, duration);
+    }, 
 
 	fileNav:{
 		folderTemp: '',

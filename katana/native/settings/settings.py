@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-import json, xml.etree.ElementTree as xml_controler
+import json, os, xml.etree.ElementTree as xml_controler
 from utils.navigator_util import Navigator
 
 try:
@@ -16,6 +16,25 @@ class Settings:
 
     def get_location(self):
         pass
+
+    def smart_analysis_handler(self, request):
+        mainDict = json.loads('{ "main": {}, "files": [] }')
+        mainFile = self.navigator.get_warrior_dir() + '/Tools/connection/connect_settings.xml'
+        subfiles = [name for name in os.listdir(self.navigator.get_warrior_dir() + '/Tools/connection/configs') if name.endswith(".xml")]
+        with open( mainFile,'r') as f:
+            mainDict['main'] = xmltodict.parse(f)['credentials']
+        for file in subfiles:
+            with open( self.navigator.get_warrior_dir() + '/Tools/connection/configs/' + file,'r') as f:
+                data = xmltodict.parse(f)['data']
+                for testdata in data['testdata']:
+                    for k, v in testdata.items():
+                        if k == 'command':
+                            v = json.dumps(v)
+                            testdata[k] = v
+                mainDict['files'].append( data )
+
+        print mainDict
+        return mainDict
 
     def general_setting_handler(self, request):
         json_file = self.navigator.get_katana_dir() + '/config.json'
