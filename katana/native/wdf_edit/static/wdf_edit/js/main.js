@@ -88,6 +88,17 @@ var wdf = {
         $target.find("span").text(" "+$value);
     },
 
+    validateKey: function(){
+        $(this).prop("value", $(this).val());
+        $(this).css("background", "#f9f9f9");
+        if ($(this).prop("value").indexOf(" ") != -1) {
+            alert("Data key cannot contain whitespace");
+            $(this).focus()
+            // katana.quickAnimation($(this), "wdf-highlight", 1000);
+            $(this).css("background", "#ecff91");
+        }
+    },
+
     deleteTag: function(){
         // empty tag and all of its child tags
         $target = $(this).closest(".control-box");
@@ -414,19 +425,32 @@ var wdf = {
     submit: function(){
         // save all the input fields and post it to server
         var csrftoken = katana.$activeTab.find("[name='csrfmiddlewaretoken']").val();
-
-        $.ajax({
-            url : "/katana/wdf/post",
-            type: "POST",
-            data : katana.$activeTab.find("#big-box").serializeArray(),
-            headers: {'X-CSRFToken':csrftoken},
-            //contentType: 'application/json',
-            success: function(data){
-                // load the tree
-                katana.$activeTab.find("#main_info").replaceWith(data);
-                katana.refreshAutoInit(katana.$activeTab.find("#jstree"));
+        var data = katana.$activeTab.find("#big-box").find("input[name$='-key']");
+        var valid = true;
+        $.each(data, function(ind, ele){
+            console.log($(ele).val().length);
+            if ($(ele).val().length == 0 || $(ele).val().indexOf(" ") != -1) {
+                $(ele).css("background", "#ecff91");
+                valid = false;
             }
-        }); 
+        });
+
+        if (valid) {
+            $.ajax({
+                url : "/katana/wdf/post",
+                type: "POST",
+                data : katana.$activeTab.find("#big-box").serializeArray(),
+                headers: {'X-CSRFToken':csrftoken},
+                //contentType: 'application/json',
+                success: function(data){
+                    // load the tree
+                    katana.$activeTab.find("#main_info").replaceWith(data);
+                    katana.refreshAutoInit(katana.$activeTab.find("#jstree"));
+                }
+            }); 
+        } else {
+            alert("Invalid data key found (empty/has space), please edit the highlighed data key");
+        }
     },
 
     cancel: function(){

@@ -45,7 +45,7 @@
                                         <i katana-click="wdf.addChild" class="fa fa-plus" title=" Sub Data"/>
                                         <i katana-click="wdf.deleteTag" class="fa fa-trash i-danger" title="Data"/>
                                     </label>
-                                    <input child_count="{{ v|get_length }}" class="wdf-input" name="{{ forloop.parentloop.counter }}-1-{{ forloop.counter }}-0-key" value="{{ k }}" list="most_used_tags"/>
+                                    <input child_count="{{ v|get_length }}" class="wdf-input" name="{{ forloop.parentloop.counter }}-1-{{ forloop.counter }}-0-key" katana-change="wdf.validateKey" value="{{ k }}" list="most_used_tags"/>
                                     <input style="display: none;" class="wdf-input" name="{{ forloop.parentloop.counter }}-1-{{ forloop.counter }}-0-value" value=""/>
                                 </div>
                                 {% for child_k, child_v in v.items %}
@@ -53,7 +53,7 @@
                                     <label>
                                         <i katana-click="wdf.deleteChildTag" class="fa fa-trash i-danger" title="Sub Data"/>
                                     </label>
-                                    <input class="wdf-input" name="{{ forloop.parentloop.parentloop.counter }}-1-{{ forloop.parentloop.counter }}-{{ forloop.counter }}-key" value="{{ child_k }}" list="most_used_tags"/>
+                                    <input class="wdf-input" name="{{ forloop.parentloop.parentloop.counter }}-1-{{ forloop.parentloop.counter }}-{{ forloop.counter }}-key" katana-change="wdf.validateKey" value="{{ child_k }}" list="most_used_tags"/>
                                     <input class="wdf-input" name="{{ forloop.parentloop.parentloop.counter }}-1-{{ forloop.parentloop.counter }}-{{ forloop.counter }}-value" value="{{ child_v }}"/>
                                 </div>
                                 {% endfor %}
@@ -63,7 +63,7 @@
                                         <i katana-click="wdf.addChild" class="fa fa-plus" title=" Sub Data"/>
                                         <i katana-click="wdf.deleteTag" class="fa fa-trash i-danger" title="Data"/>
                                     </label>
-                                    <input class="wdf-input" name="{{ forloop.parentloop.counter }}-1-{{ forloop.counter }}-1-key" value="{{ k }}" list="most_used_tags"/>
+                                    <input class="wdf-input" name="{{ forloop.parentloop.counter }}-1-{{ forloop.counter }}-1-key" katana-change="wdf.validateKey" value="{{ k }}" list="most_used_tags"/>
                                     <input class="wdf-input" name="{{ forloop.parentloop.counter }}-1-{{ forloop.counter }}-1-value" value="{{ v }}"/>
                                 </div>
                             {% endif %}
@@ -97,7 +97,7 @@
                                         <i katana-click="wdf.addChild" class="fa fa-plus" title=" Sub Data"/>
                                         <i katana-click="wdf.deleteTag" class="fa fa-trash i-danger" title="Data"/>
                                     </label>
-                                    <input child_count="{{ v|get_length }}" class="wdf-input" name="{{ forloop.parentloop.counter }}-1-{{ forloop.counter }}-0-key" value="{{ k }}" list="most_used_tags"/>
+                                    <input child_count="{{ v|get_length }}" class="wdf-input" name="{{ forloop.parentloop.counter }}-1-{{ forloop.counter }}-0-key" katana-change="wdf.validateKey" value="{{ k }}" list="most_used_tags"/>
                                     <input style="display: none;" class="wdf-input" name="{{ forloop.parentloop.counter }}-1-{{ forloop.counter }}-0-value" value=""/>
                                 </div>
                                 {% for child_k, child_v in v.items %}
@@ -105,7 +105,7 @@
                                         <label>
                                             <i katana-click="wdf.deleteChildTag" class="fa fa-trash i-danger" title="Sub Data"/>
                                         </label>
-                                        <input class="wdf-input" name="{{ forloop.parentloop.parentloop.counter }}-1-{{ forloop.parentloop.counter }}-{{ forloop.counter }}-key" value="{{ child_k }}" list="most_used_tags"/>
+                                        <input class="wdf-input" name="{{ forloop.parentloop.parentloop.counter }}-1-{{ forloop.parentloop.counter }}-{{ forloop.counter }}-key" katana-change="wdf.validateKey" value="{{ child_k }}" list="most_used_tags"/>
                                         <input class="wdf-input" name="{{ forloop.parentloop.parentloop.counter }}-1-{{ forloop.parentloop.counter }}-{{ forloop.counter }}-value" value="{{ child_v }}"/>
                                     </div>
                                 {% endfor %}
@@ -115,7 +115,7 @@
                                         <i katana-click="wdf.addChild" class="fa fa-plus" title=" Sub Data"/>
                                         <i katana-click="wdf.deleteTag" class="fa fa-trash i-danger" title="Data"/>
                                     </label>
-                                    <input class="wdf-input" name="{{ forloop.parentloop.counter }}-1-{{ forloop.counter }}-1-key" value="{{ k }}" list="most_used_tags"/>
+                                    <input class="wdf-input" name="{{ forloop.parentloop.counter }}-1-{{ forloop.counter }}-1-key" katana-change="wdf.validateKey" value="{{ k }}" list="most_used_tags"/>
                                     <input class="wdf-input" name="{{ forloop.parentloop.counter }}-1-{{ forloop.counter }}-1-value" value="{{ v }}"/>
                                 </div>
                             {% endif %}
@@ -165,7 +165,7 @@
                                             <i katana-click="wdf.addChild" class="fa fa-plus" title=" Sub Data"/>
                                             <i katana-click="wdf.deleteTag" class="fa fa-trash i-danger" title="Data"/>
                                         </label>
-                                        <input child_count="{{ v|get_length }}" class="wdf-input" name="{{ forloop.parentloop.parentloop.counter }}-{{ forloop.parentloop.counter }}-{{ forloop.counter }}-0-key" value="{{ k }}" list="most_used_tags"/>
+                                        <input child_count="{{ v|get_length }}" class="wdf-input" name="{{ forloop.parentloop.parentloop.counter }}-{{ forloop.parentloop.counter }}-{{ forloop.counter }}-0-key" katana-change="wdf.validateKey" value="{{ k }}" list="most_used_tags"/>
                                         <input style="display: none;" class="wdf-input" name="{{ forloop.parentloop.parentloop.counter }}-{{ forloop.parentloop.counter }}-{{ forloop.counter }}-0-value" value=""/>
                                     </div>
                                     {% for child_k, child_v in v.items %}
@@ -173,7 +173,7 @@
                                             <label>
                                                 <i katana-click="wdf.deleteChildTag" class="fa fa-trash i-danger" title="Sub Data"/>
                                             </label>
-                                            <input class="wdf-input" name="{{ forloop.parentloop.parentloop.parentloop.counter }}-{{ forloop.parentloop.parentloop.counter }}-{{ forloop.parentloop.counter }}-{{ forloop.counter }}-key" value="{{ child_k }}" list="most_used_tags"/>
+                                            <input class="wdf-input" name="{{ forloop.parentloop.parentloop.parentloop.counter }}-{{ forloop.parentloop.parentloop.counter }}-{{ forloop.parentloop.counter }}-{{ forloop.counter }}-key" katana-change="wdf.validateKey" value="{{ child_k }}" list="most_used_tags"/>
                                             <input class="wdf-input" name="{{ forloop.parentloop.parentloop.parentloop.counter }}-{{ forloop.parentloop.parentloop.counter }}-{{ forloop.parentloop.counter }}-{{ forloop.counter }}-value" value="{{ child_v }}"/>
                                         </div>
                                     {% endfor %}
@@ -183,7 +183,7 @@
                                             <i katana-click="wdf.addChild" class="fa fa-plus" title=" Sub Data"/>
                                             <i katana-click="wdf.deleteTag" class="fa fa-trash i-danger" title="Data"/>
                                         </label>
-                                        <input class="wdf-input" name="{{ forloop.parentloop.parentloop.counter }}-{{ forloop.parentloop.counter }}-{{ forloop.counter }}-1-key" value="{{ k }}" list="most_used_tags"/>
+                                        <input class="wdf-input" name="{{ forloop.parentloop.parentloop.counter }}-{{ forloop.parentloop.counter }}-{{ forloop.counter }}-1-key" katana-change="wdf.validateKey" value="{{ k }}" list="most_used_tags"/>
                                         <input class="wdf-input" name="{{ forloop.parentloop.parentloop.counter }}-{{ forloop.parentloop.counter }}-{{ forloop.counter }}-1-value" value="{{ v }}"/>
                                     </div>
                                 {% endif %}
@@ -253,7 +253,7 @@
                     <i katana-click="wdf.addChild" class="fa fa-plus" title=" Sub Data"/>
                     <i katana-click="wdf.deleteTag" class="fa fa-trash i-danger" title="Data"/>
                 </label>
-                <input class="wdf-input" name="template-system.tag" placeholder="Data key" list="most_used_tags"/>
+                <input class="wdf-input" name="template-system.tag" katana-change="wdf.validateKey" placeholder="Data key" list="most_used_tags"/>
                 <input class="wdf-input" name="template-system.value" placeholder="Data value"/>
             </div>
         </div>
@@ -283,7 +283,7 @@
                     <i katana-click="wdf.addChild" class="fa fa-plus" title=" Sub Data"/>
                     <i katana-click="wdf.deleteTag" class="fa fa-trash i-danger" title="Data"/>
                 </label>
-                <input class="wdf-input" name="template-subsystem.tag" placeholder="Data key" list="most_used_tags"/>
+                <input class="wdf-input" name="template-subsystem.tag" katana-change="wdf.validateKey" placeholder="Data key" list="most_used_tags"/>
                 <input class="wdf-input" name="template-subsystem.value" placeholder="Data value"/>
             </div>
         </div>
@@ -295,7 +295,7 @@
                 <i katana-click="wdf.addChild" class="fa fa-plus" title=" Sub Data"/>
                 <i katana-click="wdf.deleteTag" class="fa fa-trash i-danger" title="Data"/>
             </label>
-            <input class="wdf-input" name="template-tag.tag" placeholder="Data key" list="most_used_tags"/>
+            <input class="wdf-input" name="template-tag.tag" katana-change="wdf.validateKey" placeholder="Data key" list="most_used_tags"/>
             <input class="wdf-input" name="template-tag.value" placeholder="Data value"/>
         </div>
     </div>
@@ -305,7 +305,7 @@
             <label>
                 <i katana-click="wdf.deleteChildTag" class="fa fa-trash i-danger" title="Sub Data"/>
             </label>
-            <input class="wdf-input" name="template-tag.tag" placeholder="Sub Data key" list="most_used_tags"/>
+            <input class="wdf-input" name="template-tag.tag" katana-change="wdf.validateKey" placeholder="Sub Data key" list="most_used_tags"/>
             <input class="wdf-input" name="template-tag.value" placeholder="Sub Data value"/>
         </div>
     </div>
