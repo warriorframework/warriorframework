@@ -105,7 +105,11 @@ def main(kw=False):
         scan for class - class check
         scan for function - function check
     """
-    f = open(sys.argv[1])
+    try:
+        f = open(sys.argv[1])
+    except IOError:
+        print "Can't find {}".format(sys.argv[1])
+        exit(0)
     print "\n", sys.argv[1]
     if "Actions/" in sys.argv:
         kw = True
