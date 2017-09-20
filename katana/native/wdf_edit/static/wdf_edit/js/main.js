@@ -59,8 +59,13 @@ var wdf = {
             Synchronize name change between input field and nav bar
         */
         $target = $(this);
+        $target.prop("value", $target.val());
         var $system_id = $target.attr("name").split("-").slice(0,1);
         var $subsystem_id = $target.attr("name").split("-").slice(1,2);
+
+        if ($target.val().length != 0) {
+            $target.css("background", "none");
+        }
 
         // find the button that links to the current system
         // Change the label and button text
@@ -428,9 +433,25 @@ var wdf = {
         var data = katana.$activeTab.find("#big-box").find("input[name$='-key']");
         var valid = true;
         $.each(data, function(ind, ele){
-            console.log($(ele).val().length);
             if ($(ele).val().length == 0 || $(ele).val().indexOf(" ") != -1) {
                 $(ele).css("background", "#ecff91");
+                valid = false;
+            }
+        });
+
+        var data = katana.$activeTab.find("#big-box").find("input[name$='-subsystem_name']");
+        $.each(data, function(ind, ele){
+            if ($(ele).val().length == 0 || $(ele).val().indexOf(" ") != -1) {
+                $(ele).css("background", "#ecff91");
+                valid = false;
+            }
+        });
+
+        var data = katana.$activeTab.find("#big-box").find("input[name$='-system_name']");
+        $.each(data, function(ind, ele){
+            if ($(ele).val().length == 0 || $(ele).val().indexOf(" ") != -1) {
+                $(ele).focus();
+                $(ele).css("background", "#00ffff");
                 valid = false;
             }
         });
@@ -449,7 +470,7 @@ var wdf = {
                 }
             }); 
         } else {
-            alert("Invalid data key found (empty/has space), please edit the highlighed data key");
+            alert("Invalid name found (empty/has space), please edit the highlighed input box");
         }
     },
 

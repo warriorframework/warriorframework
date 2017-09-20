@@ -2703,6 +2703,11 @@ div#wdf-navigator
     animation: wdf-highlight 1s ease;
 }
 
+.wdf-warning {
+    background: #ecff91;
+    background-color: #ecff91;
+}
+
 .wdf-tall-label {
     padding-bottom: 5px;
 }
