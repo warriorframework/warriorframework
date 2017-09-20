@@ -2562,6 +2562,7 @@ div .tool-bar-links:active {
     width: 100%;
     max-width: 100%;
     text-align: left;
+    color: #636363;
 }
 
 hr.wdf-hr {
@@ -2682,11 +2683,16 @@ div#wdf-navigator
 }
 
 .wdf-sys-nav {
-    padding-top: 3px;
+    padding-top: 5px;
 }
 
 .wdf-subsys-nav {
-    padding-left: 25px;
+    padding-top: 5px;
+    padding-left: 50px;
+}
+
+.wdf-span {
+    padding-left: 5px;
 }
 
 .control-box {
