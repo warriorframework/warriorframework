@@ -242,5 +242,7 @@ def on_post(request):
     from xml.dom.minidom import parseString as miniparse
     print miniparse(xmltodict.unparse(result)).toprettyxml()
     print "Filepath:", filepath
+    f = open(filepath, "w")
+    f.write(miniparse(xmltodict.unparse(result)).toprettyxml())
     # return render(request, 'wdf_edit/result.html', {"data": json.dumps(request.POST, indent=4)})
     return render(request, 'wdf_edit/file_list.html', {})
