@@ -3016,3 +3016,53 @@ input[type="checkbox"] + label {
 .quick-user > i:hover {
     background: rgba(0, 0, 0, 0.1);
 }
+
+
+.file-explorer {
+    width: 450px;
+    height: 550px;
+    background-color: white;
+    border-radius: 5px;
+}
+
+.file-explorer-header{
+    height:15%;
+    width: 100%;
+    border-radius: 5px 5px 0 0;
+    border-style: solid;
+    border-color: white white #dcdcdc white;
+    padding: 22px 10px;
+}
+
+.file-explorer-body{
+    height:70%;
+    width: 100%;
+    padding: 10px;
+}
+
+.file-explorer-footer{
+    height:15%;
+    width: 100%;
+    border-radius: 0 0 5px 5px;
+    border-style: solid;
+    border-color: #dcdcdc white white white;
+    padding: 20px 10px;
+}
+
+.full-size {
+    width: 100%;
+    height: 100%;
+    /*background-color: red;*/
+}
+
+.up-btn-bar {
+    width: 100%;
+    height: 12%;
+    padding: 2px 5px;
+}
+
+.directory-data-div {
+    width: 100%;
+    height: 88%;
+    padding: 5px;
+}

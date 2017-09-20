@@ -13,9 +13,13 @@ limitations under the License.
 
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
 import json
+
+from utils.directory_traversal_utils import get_parent_directory, join_path
 from utils.navigator_util import Navigator
 from wui.core.apps import AppInformation
 
@@ -49,3 +53,13 @@ class CoreView(View):
         template = 'core/index.html'
 
         return render(request, template, {"apps": AppInformation.information.apps, "userData": self.get_user_data()})
+
+
+def get_file_explorer_data(request):
+    nav_obj = Navigator()
+    if "path" in request.GET:
+        start_dir = get_parent_directory(request.GET["path"])
+    else:
+        start_dir = join_path(nav_obj.get_warrior_dir(), "Warriorspace")
+    output = nav_obj.get_dir_tree_json(start_dir_path=start_dir)
+    return JsonResponse(output)
