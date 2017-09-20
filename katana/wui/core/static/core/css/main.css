@@ -2681,6 +2681,10 @@ div#wdf-navigator
     padding-bottom: 5px;
 }
 
+.wdf-sys-nav {
+    padding-top: 3px;
+}
+
 .wdf-subsys-nav {
     padding-left: 25px;
 }
