@@ -496,6 +496,9 @@ input {
 input:focus {
     background: #efefef;
 }
+input[type=radio]{
+  width: 15px;
+}
 .field {
     padding: 5px 0;
     max-width: 800px;
