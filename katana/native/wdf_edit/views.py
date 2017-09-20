@@ -21,7 +21,9 @@ def index(request):
         filepath = data["path"]
         data = xmltodict.parse(open(data["path"]).read())
     else:
-        return render(request, 'wdf_edit/index.html', {"data": {"system": []}, "filepath": ""})
+        sample_data = {"system": [{"@name": "Example system", "Example key": "Example value"}]}
+        ref_dict = copy.deepcopy(sample_data)
+        return render(request, 'wdf_edit/index.html', {"data": sample_data, "data_read": ref_dict, "filepath": ""})
 
     # xml should only has 1 root
     root = data.keys()[0]
