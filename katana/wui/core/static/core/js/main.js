@@ -836,6 +836,101 @@ var katana = {
 		},
 
 	},
+
+
+	openFileExplorer(heading, callBack_on_accept, callBack_on_dismiss){
+	    if(!heading || heading == "" || heading == undefined){
+	        heading = "Select a file"
+	    }
+
+	    if(callBack_on_accept == undefined){
+	        callBack_on_accept = false;
+	    }
+
+	    if(callBack_on_dismiss == undefined){
+	        callBack_on_dismiss = false;
+	    }
+
+	    $.ajax({
+                headers: {
+                    'X-CSRFToken': wapp_management.getCookie('csrftoken')
+                },
+                type: 'GET',
+                url: 'core/get_file_explorer_data/',
+            }).done(function(data) {
+                console.log(data);
+                var explorer_modal_html = '<div class="overlay">' +
+                                              '<div class="centered file-explorer">' +
+                                                   '<div class="file-explorer-header">' +
+                                                       '<div class="full-size" style="vertical-align: middle;">' +
+                                                            '<h4>' + heading + '</h4>' +
+                                                       '</div>' +
+                                                   '</div>' +
+                                                   '<div class="file-explorer-body">' +
+                                                       '<div class="up-btn-bar">' +
+                                                            '<button id="explorer-up" class="btn btn-info">...</button>' +
+                                                       '</div>' +
+                                                       '<div class="directory-data-div to-scroll">' +
+                                                           '<div id="directory-data" class="full-size jstree jstrre-1 jstree-default">' +
+                                                           '</div>' +
+                                                       '</div>' +
+                                                   '</div>' +
+                                                   '<div class="file-explorer-footer">' +
+                                                       '<div class="full-size text-center">' +
+                                                            '<button id="explorer-accept" class="btn btn-success">OK</button>' +
+                                                            '<button id="explorer-dismiss" class="btn btn-success">Cancel</button>' +
+                                                       '</div>' +
+                                                   '</div>' +
+                                              '</div>' +
+                                         '</div>'
+                console.log(explorer_modal_html);
+                var $currentPage = katana.$activeTab;
+                console.log($currentPage);
+                var $tabContent = $currentPage.find('.page-content-inner');
+                console.log($tabContent);
+                $(explorer_modal_html).prependTo($tabContent);
+
+                $tabContent.find('#explorer-accept').one('click', function(){
+
+                    katana.acceptFileExplorer(callBack_on_accept);
+                });
+
+                $tabContent.find('#explorer-dismiss').one('click', function(){
+
+                    katana.dismissFileExplorer(callBack_on_dismiss);
+                });
+
+                $tabContent.find('#explorer-up').one('click', function(){
+
+                    katana.upFileExplorer();
+                });
+            });
+
+	},
+
+	acceptFileExplorer: function(callBack){
+	    var $currentPage = katana.$activeTab;
+	    $fileExplorerElement = $currentPage.find('div .overlay');
+	    $fileExplorerElement.remove();
+
+	    if(callBack){
+	        callBack();
+	    }
+	},
+
+	dismissFileExplorer: function(callBack){
+	    var $currentPage = katana.$activeTab;
+	    $fileExplorerElement = $currentPage.find('div .overlay');
+	    $fileExplorerElement.remove();
+
+	    if(callBack){
+	        callBack();
+	    }
+	},
+
+	upFileExplorer: function(callBack){
+	    alert("Up");
+	},
 ///////////////////////////////////////////Methods named by template
 
 };

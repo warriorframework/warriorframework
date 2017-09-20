@@ -279,14 +279,11 @@ var wapp_management = {
                                     $loop_num + '" value="' + input_value + '" katana-change="wapp_management.validateInput" style="border-color: #dcdcdc">' +
                                 '</div>' +
                                 '<div class="col-sm-1" style="padding: 0.2rem 0.5rem 0 0.5rem;">' +
-                                    '<label style="width: 100%;">' +
-                                        '<span class="btn btn-info btn-block">' +
-                                            '<input type="file" accept=".zip" ' +
-                                                    'katana-change="wapp_management.getFileName" ' +
-                                                    'id="file_path_' + $loop_num + '" hidden> ' +
+                                        '<button class="btn btn-info btn-block"' +
+                                               'katana-click="wapp_management.openFileExplorer" ' +
+                                               'id="fe_browser_' + $loop_num + '">' +
                                             'Browse' +
-                                        '</span>' +
-                                    '</label>' +
+                                        '</button>' +
                                 '</div>' +
                                 '<div class="col-sm-1" style="padding: 0.2rem 0.5rem 0 0.5rem;">' +
                                     '<button class="btn btn-danger btn-block" ' +
@@ -587,6 +584,10 @@ var wapp_management = {
             $saveConfigBtn.prop("disabled", false);
             $installAppsBtn.prop("disabled", false);
         }
+    },
+
+    openFileExplorer: function(){
+        katana.openFileExplorer("Select a directory or a .zip file", function(){alert("OK")}, function(){alert("Cancel")});
     }
 
 };
