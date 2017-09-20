@@ -2260,6 +2260,14 @@ div .tool-bar-links:active {
 }
 
 
+.empty {
+    border: 1px solid red;
+}
+.disabled{
+  background: rgba(150, 150, 150, 0.25) !important;
+  color:white !important;
+}
+
 /* execution app related styles starts*/
 .execution.exec-container{
   display: flex;
@@ -2355,78 +2363,110 @@ div .tool-bar-links:active {
   padding: 0px 10px;
 }
 .execution.selection-group-item {
-    /*position: relative;*/
+  display:inline-block;
+  height: 40px;
+  line-height: 40px;
+  position: relative;
+  margin: 3px 0px;
+  background-color: rgba(235, 242, 250, 1);
+  border: none;
+  border-radius: 1px;
+  -webkit-box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.20);
+  -moz-box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.20);
+  box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.20);
+  color: #464646;
+  width: 100%;
 
-    display: inline-block;
-    padding: 8px 8px;
-    background-color: #f9f9f9;
-    border: 2px solid #d6d1d1;
-    border-radius: 5px;
-    width: 95%;
-    /*min-height: px;*/
-
-    justify-content: center;
-    align-items: center;
 }
 .execution.selections-handle {
-    cursor: move;
-    cursor: -webkit-grabbing;
+  width: 40px;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  line-height: 40px;
+  padding: 0;
+  margin: 0;
+  float: none !important;
+  text-align: center;
+  cursor: -webkit-grabbing;
+}
+.selections-handle:before {
+    font-size: 14px;
+    content: "\f0c9";
+    font-family: FontAwesome;
 }
 .ghost {
-    opacity: .7;
-    background: #36b3ed;
+  opacity: .7;
+  background: #36b3ed;
 }
-#execution_items label {
-    width: 90%;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-    padding-left: 2px;
-    vertical-align: bottom
+#execution_items label{
+  width: calc(100% - 80px);
+  height: 40px;
+  position: absolute;
+  top: 0;
+  left: 40px;
+  line-height: 40px;
+  padding: 0;
+  margin: 0;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow:hidden;
+  vertical-align: bottom
 }
+
 #execution_items i {
-    display: block;
-    cursor: pointer;
-    color: #5a5a5a;
-    top: 10px;
-    right: 40px;
-    float: right;
-    font-style: normal;
+  width: 40px;
+  height: 100%;
+  position: absolute;
+  top: 0px !important;
+  right: 0 !important;
+  line-height: 40px;
+  padding: 0;
+  margin: 0;
+  float: none !important;
+  text-align: center;
+  display: block;
+  cursor: pointer;
+  color: #5a5a5a;
+  font-style: normal;
 }
 #execution_items i:hover {
-    color: #c00 !important;
+  color: #c00 !important;
 }
 .execution.results-tab {
     height: 40px;
     width: 100%;
-    color: #ffffff;
-    background: rgb(115, 165, 196);
+    color: #6b6b6b;
+    background: rgba(115, 165, 196, 1);
+    /*rgb(115, 165, 196);*/
     /*padding-bottom: 4%;*/
+
     padding: 0;
 }
-.execution.results-tab button {
-    background-color: inherit;
-    float: left;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    padding: 18px 16px;
-    transition: 0.3s;
-    font-size: 17px;
-    /*font-family: Lato;*/
-    height: 100%;
-    line-height: 10px;
-    color: white;
-}
+.execution.results-tab  button {
+      background-color: inherit;
+      float: left;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      padding: 18px 16px;
+      transition: 0.3s;
+      font-size: 17px;
+      /*font-family: Lato;*/
+      height:100%;
+      line-height: 10px;
+      color:white;
+  }
 .execution.results-tab button:hover {
-    background-color: #ddd;
-}
+      background-color: #ddd;
+  }
 .execution.results-tab button.active {
-    background-color: white;
-    color: black;
-}
+      background-color: white ;
+      color: black;
+  }
 /* Style the tab content */
-
 .execution.tab-content {
     display: none;
     padding: 2px 2px;
@@ -2438,7 +2478,7 @@ div .tool-bar-links:active {
     display: block;
     position: absolute;
     z-index: 99999;
-    top: 40%;
+    top: 30%%;
     bottom: 60%;
     min-width: 40%;
     min-height: 10%;
@@ -2449,53 +2489,88 @@ div .tool-bar-links:active {
     border-radius: 2px;
     -webkit-animation: fadeEffect 1s;
     color: black;
-    background-color: rgb(159, 184, 196);
+    background-color: rgb(115, 165, 196);
     -webkit-transition: opacity 400ms ease-in;
-    -moz-transition: opacity 400ms ease-in;
-    transition: opacity 400ms ease-in;
+  	-moz-transition: opacity 400ms ease-in;
+  	transition: opacity 400ms ease-in;
+}
+.execution.dialog_container {
+    display: block;
+    position: absolute;
+    z-index: 999999;
+    top: 25%;
+    bottom: 60%;
+    min-width: 50%;
+    min-height: 10%;
+    margin-left: 25%;
+    height: 400px;
+    width: -webkit-fit-content;
+    border: 1px solid #dedede;
+    border-radius: 2px;
+    -webkit-animation: fadeEffect 1s;
+    color: black;
+    /*background: white;*/
+    -webkit-transition: opacity 400ms ease-in;
+  	-moz-transition: opacity 400ms ease-in;
+  	transition: opacity 400ms ease-in;
+}
+.execution.dialog_content {
+    width: 100%;
+    margin-top: 40px;
+    height: calc(100% - 80px);
+    padding: 10px 10px;
+    overflow: auto;
+    background: white;
+}
+.execution.dialog_container:not([open]) {
+    display: none;
 }
 .execution.dialog:not([open]) {
     display: none;
 }
-.execution.dialog-close {
-    background: #606061;
-    color: #FFFFFF;
-    line-height: 25px;
-    position: absolute;
-    right: -5px;
-    text-align: center;
-    top: -5px;
-    width: 24px;
-    text-decoration: none;
-    font-weight: bold;
-    -webkit-border-radius: 12px;
-    -moz-border-radius: 12px;
-    border-radius: 12px;
-    -moz-box-shadow: 1px 1px 3px #000;
-    -webkit-box-shadow: 1px 1px 3px #000;
-    box-shadow: 1px 1px 3px #000;
-}
-.execution.dialog-close:hover {
-    background: red;
-}
-/* Fade in tabs */
 
+.execution.dialog-close {
+	background: #606061;
+	color: #FFFFFF;
+	line-height: 25px;
+	position: absolute;
+	right: -5px;
+	text-align: center;
+	top: -5px;
+	width: 24px;
+	text-decoration: none;
+	font-weight: bold;
+	-webkit-border-radius: 12px;
+	-moz-border-radius: 12px;
+	border-radius: 12px;
+	-moz-box-shadow: 1px 1px 3px #000;
+	-webkit-box-shadow: 1px 1px 3px #000;
+	box-shadow: 1px 1px 3px #000;
+}
+
+.execution.dialog-close:hover { background: red; }
+
+.execution.dialog_button_bar{
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  text-align: right;
+  height: 40px;
+  border-top: 1px solid #dedede;
+}
+
+
+/* Fade in tabs */
 @-webkit-keyframes fadeEffect {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+    from {opacity: 0;}
+    to {opacity: 1;}
 }
+
 @keyframes fadeEffect {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+    from {opacity: 0;}
+    to {opacity: 1;}
 }
+
 .is-blurred {
   filter: blur(3px);
   -webkit-filter: blur(3px);
@@ -2518,6 +2593,10 @@ div .tool-bar-links:active {
   height: 32px;
   text-align: center;
 }
+
+
+
+
 /*Execution questionaire related styles ends*/
 
 /* Execution cmd options dialog styles start*/
@@ -2689,6 +2768,8 @@ div .tool-bar-links:active {
   padding: 5px;
   width:50%;
 }
+
+
 
 /* execution app related styles ends*/
 
