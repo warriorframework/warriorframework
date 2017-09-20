@@ -468,6 +468,7 @@ var wapp_management = {
     },
 
     validateData: function(data, $elem){
+        var $currentPage = katana.$activeTab;
         $.ajax({
             headers: {
                 'X-CSRFToken': wapp_management.getCookie('csrftoken')
@@ -476,40 +477,29 @@ var wapp_management = {
             url: 'wapp_management/validate_app_path/',
             data: data
         }).done(function(data) {
-            wapp_management.changeBorderColor(data.valid, $elem)
+            if(!data["valid"]){
+                $elem.css("border-color", "red");
+                $elem.attr("valid-data", false);
+            }
+            else{
+                $elem.css("border-color", "#dcdcdc");
+                $elem.attr("valid-data", true);
+            }
+            var $displayInputs = $currentPage.find('[id^="app_path_for_config_"]')
+
+            $currentPage.find('#rest-of-the-card-1').show()
+            $currentPage.find('#rest-of-the-card-2').show()
+
+            for(var i=0; i<$displayInputs.length; i++){
+                if($($displayInputs[i]).attr("valid-data") == "false"){
+                    $currentPage.find('#rest-of-the-card-1').hide()
+                    $currentPage.find('#rest-of-the-card-2').hide()
+                    break;
+                }
+            }
+
         });
 
-    },
-
-    changeBorderColor: function(valid){
-        if(!valid){
-            $elem.css("border-color", "rgb(255, 0 , 0)");
-            wapp_management.disableSaveAndInstall();
-        }
-        else {
-            $elem.css("border-color", "#dcdcdc");
-            wapp_management.disableSaveAndInstall();
-        }
-    },
-
-    disableSaveAndInstall: function(){
-        $currentPage = katana.$activeTab;
-        var $saveConfigBtn = $currentPage.find('[katana-click="wapp_management.saveConfig"]');
-        var $installAppsBtn = $currentPage.find('[katana-click="wapp_management.installAnApp"]');
-        var $configInputs = $currentPage.find('[id^="app_path_for_config_"]')
-        var flag = true;
-        for(var i=0; i<$configInputs.length; i++){
-            if($($configInputs[i]).css("border-color") == "rgb(255, 0, 0)"){
-                $saveConfigBtn.prop("disabled", true);
-                $installAppsBtn.prop("disabled", true);
-                flag = false;
-                break;
-            }
-        }
-        if(flag){
-            $saveConfigBtn.prop("disabled", false);
-            $installAppsBtn.prop("disabled", false);
-        }
     },
 
     openFileExplorer: function(){
