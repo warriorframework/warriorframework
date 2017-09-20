@@ -496,6 +496,9 @@ input {
 input:focus {
     background: #efefef;
 }
+input[type=radio]{
+  width: 15px;
+}
 .field {
     padding: 5px 0;
     max-width: 800px;
@@ -2610,7 +2613,7 @@ div .tool-bar-links:active {
     min-width: 70%;
     height: 600px;
     width: -webkit-fit-content;
-    border: 1px solid #dedede;
+    border: 1px solid #9c9c9c;
     border-radius: 2px;
     -webkit-animation: fadeEffect 1s;
     color: black;
