@@ -34,15 +34,19 @@ var jsonCaseRequirements = []; 	  // This is the JSON model for the UI requireme
 var activePageID = getRandomCaseID();   // for the page ID 
 var jsonFilesInfo = null; 
 
-function mapFullCaseJson(myobjectID){
+function mapFullCaseJson(myobjectID, where){
 	activePageID = getRandomCaseID();
-	katana.$activeTab.find("#listOfTestStepsForCase").hide();
-	katana.$activeTab.find('#savesubdir').hide();
-	var sdata = katana.$activeTab.find("#listOfTestStepsForCase").text();
+	//katana.$activeTab.find("#listOfTestStepsForCase").hide();
+	//katana.$activeTab.find('#savesubdir').hide();
+	console.log("Picking up from ", where);
+	var sdata = katana.$activeTab.find(where).text();
+	console.log("sdata", sdata);
 	var jdata = sdata.replace(/'/g, '"');
-	jsonAllCasePages[myobjectID] = JSON.parse(sdata);               
+	jsonAllCasePages[myobjectID] = JSON.parse(sdata);  
+	console.log("Incoming data", myobjectID, jdata);  
 	jsonCaseObject = jsonAllCasePages[myobjectID]
 	jsonCaseSteps  = jsonCaseObject["Steps"];
+	console.log("Steps --> ", jsonCaseSteps);
 	jsonCaseRequirements = jsonCaseObject['Requirements'];
 	//if (!jQuery.isArray(jsonCaseRequirements)) jsonCaseObject['Requirements'] = []; 
 	jsonCaseRequirements = jsonCaseObject['Requirements'];
@@ -51,6 +55,7 @@ function mapFullCaseJson(myobjectID){
 	katana.$activeTab.find("#tableOfTestStepsForCase").removeClass();
 	katana.$activeTab.find("#tableOfTestStepsForCase").addClass('col-md-12');
 	katana.$activeTab.find("#tableOfTestStepsForCase").show();
+	console.log("Here", jsonCaseObject, jsonCaseSteps);
 	mapCaseJsonToUi(jsonCaseSteps);
 	//mapRequirementsToUI(jsonCaseRequirements);
 	createRequirementsTable(jsonCaseRequirements);
@@ -610,6 +615,21 @@ function removeTestStep( sid ){
 		jsonCaseSteps['step'].splice(sid,1);
 		console.log("Removing test cases "+sid+" now " + Object.keys(jsonCaseSteps).length);
 		mapCaseJsonToUi(jsonCaseSteps);
+}
+
+
+function addNewTestStepToUI() {
+	var newObj = createNewStep();
+
+	if (!jsonCaseSteps['step']) {
+		jsonCaseSteps['step'] = [];
+		}
+	if (!jQuery.isArray(jsonCaseSteps['step'])) {
+		jsonCaseSteps['step'] = [jsonCaseSteps['step']];
+		}
+
+	jsonCaseSteps['step'].append(newObj);  // Don't delete anything
+	mapCaseJsonToUi(jsonCaseSteps);		
 }
 
 function addTestStepAboveToUI(sid,xdata) {

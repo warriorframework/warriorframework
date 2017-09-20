@@ -8,14 +8,11 @@
 <script type="text/javascript" src="{% static "./doCasesHandling.js" %}"></script>
 
 <div class="tool-bar">
-		<!--<button id="addStep" class="btn btn-success" onclick="addStepToCase()">Add Step To Case</button>  -->
+		<button id="addStep" class="btn btn-success" onclick="addNewTestStepToUI()">Add Step To Case</button> 
 		<button class="btn btn-success" onclick="addRequirementToCase()">Add Requirement</button>
-		<button class="btn btn-success" onclick="mapUiToCaseJson()">Save Case To Memory</button>
 		<button class="btn btn-success" onclick="writeUiToCaseJSON()">Write Changes To Disk</button>
 		<label class="col-md-2 text-righ"t >Save file to </label>
 		<input class="text-right col-md-4" type="text" id="my_file_to_save" name="my_file_to_save" value="{{savefilename}}"/>
-   
-
 </div>
 <div class="container-fluid">
 <div class="row">
@@ -111,20 +108,21 @@
 		<div id="tableOfCaseRequirements"></div>
 	</div>
 
-	<div id="listOfTestStepsForCase"  > {{fulljson|jsonify}} </div> 
-	<div id="savesubdir">{{savesubdir}}</div>
+	<div id="listOfTestStepsForCase" class="hidden" > {{fulljson|jsonify}} </div> 
+	<div id="savesubdir" class="hidden">{{savesubdir}}</div>
+	<div id="emptyTestCaseData" class="hidden" > {{emptyTestCase|jsonify}} </div> 
 	</div>	
 <!-- Menu bar here --> 
 </div>
   
 <div class="container-fluid">
 	<div class="row">
-		<div id="tableOfTestStepsForCase"  class="col-md-12" ></div>
+		<div id="tableOfTestStepsForCase"  class="col-md-12 " ></div>
 		</div>
 </div>
 
 <div class="container-fluid">
-	<div class="row" id="editCaseStepDiv" >
+	<div class="row" id="editCaseStepDiv" class="hidden" >
 	 		<div class="container-fluid"  >
 		 	<div class="row">
 

@@ -1,0 +1,235 @@
+diff --git a/katana/native/cases/static/doCasesHandling.js b/katana/native/cases/static/doCasesHandling.js
+index 4843ec7..0b1936c 100644
+--- a/katana/native/cases/static/doCasesHandling.js
++++ b/katana/native/cases/static/doCasesHandling.js
+@@ -34,15 +34,17 @@ var jsonCaseRequirements = []; 	  // This is the JSON model for the UI requireme
+ var activePageID = getRandomCaseID();   // for the page ID 
+ var jsonFilesInfo = null; 
+ 
+-function mapFullCaseJson(myobjectID){
++function mapFullCaseJson(myobjectID, jsdata){
+ 	activePageID = getRandomCaseID();
+ 	katana.$activeTab.find("#listOfTestStepsForCase").hide();
+ 	katana.$activeTab.find('#savesubdir').hide();
+-	var sdata = katana.$activeTab.find("#listOfTestStepsForCase").text();
+-	var jdata = sdata.replace(/'/g, '"');
+-	jsonAllCasePages[myobjectID] = JSON.parse(sdata);               
++	//var jdata = sdata.replace(/'/g, '"');
++	//jsonAllCasePages[myobjectID] = JSON.parse(sdata);  
++	console.log("Incoming data", myobjectID, jsdata);  
++	jsonAllCasePages[myobjectID] = jsdata;             
+ 	jsonCaseObject = jsonAllCasePages[myobjectID]
+ 	jsonCaseSteps  = jsonCaseObject["Steps"];
++	console.log("Steps --> ", jsonCaseSteps);
+ 	jsonCaseRequirements = jsonCaseObject['Requirements'];
+ 	//if (!jQuery.isArray(jsonCaseRequirements)) jsonCaseObject['Requirements'] = []; 
+ 	jsonCaseRequirements = jsonCaseObject['Requirements'];
+@@ -51,6 +53,7 @@ function mapFullCaseJson(myobjectID){
+ 	katana.$activeTab.find("#tableOfTestStepsForCase").removeClass();
+ 	katana.$activeTab.find("#tableOfTestStepsForCase").addClass('col-md-12');
+ 	katana.$activeTab.find("#tableOfTestStepsForCase").show();
++	console.log("Here", jsonCaseObject, jsonCaseSteps);
+ 	mapCaseJsonToUi(jsonCaseSteps);
+ 	//mapRequirementsToUI(jsonCaseRequirements);
+ 	createRequirementsTable(jsonCaseRequirements);
+@@ -612,6 +615,21 @@ function removeTestStep( sid ){
+ 		mapCaseJsonToUi(jsonCaseSteps);
+ }
+ 
++
++function addNewTestStepToUI() {
++	var newObj = createNewStep();
++
++	if (!jsonCaseSteps['step']) {
++		jsonCaseSteps['step'] = [];
++		}
++	if (!jQuery.isArray(jsonCaseSteps['step'])) {
++		jsonCaseSteps['step'] = [jsonCaseSteps['step']];
++		}
++
++	jsonCaseSteps['step'].append(newObj);  // Don't delete anything
++	mapCaseJsonToUi(jsonCaseSteps);		
++}
++
+ function addTestStepAboveToUI(sid,xdata) {
+ 	var newObj = createNewStep();
+ 	if (sid < 1) { 
+diff --git a/katana/native/cases/templates/editCase.html b/katana/native/cases/templates/editCase.html
+index c0384b8..70635ad 100644
+--- a/katana/native/cases/templates/editCase.html
++++ b/katana/native/cases/templates/editCase.html
+@@ -8,14 +8,11 @@
+ <script type="text/javascript" src="{% static "./doCasesHandling.js" %}"></script>
+ 
+ <div class="tool-bar">
+-		<!--<button id="addStep" class="btn btn-success" onclick="addStepToCase()">Add Step To Case</button>  -->
++		<button id="addStep" class="btn btn-success" onclick="addNewTestStepToUI()">Add Step To Case</button> 
+ 		<button class="btn btn-success" onclick="addRequirementToCase()">Add Requirement</button>
+-		<button class="btn btn-success" onclick="mapUiToCaseJson()">Save Case To Memory</button>
+ 		<button class="btn btn-success" onclick="writeUiToCaseJSON()">Write Changes To Disk</button>
+ 		<label class="col-md-2 text-righ"t >Save file to </label>
+ 		<input class="text-right col-md-4" type="text" id="my_file_to_save" name="my_file_to_save" value="{{savefilename}}"/>
+-   
+-
+ </div>
+ <div class="container-fluid">
+ <div class="row">
+@@ -111,20 +108,20 @@
+ 		<div id="tableOfCaseRequirements"></div>
+ 	</div>
+ 
+-	<div id="listOfTestStepsForCase"  > {{fulljson|jsonify}} </div> 
+-	<div id="savesubdir">{{savesubdir}}</div>
++	<div id="listOfTestStepsForCase" class="hidden" > {{fulljson|jsonify}} </div> 
++	<div id="savesubdir" class="hidden">{{savesubdir}}</div>
+ 	</div>	
+ <!-- Menu bar here --> 
+ </div>
+   
+ <div class="container-fluid">
+ 	<div class="row">
+-		<div id="tableOfTestStepsForCase"  class="col-md-12" ></div>
++		<div id="tableOfTestStepsForCase"  class="col-md-12 " ></div>
+ 		</div>
+ </div>
+ 
+ <div class="container-fluid">
+-	<div class="row" id="editCaseStepDiv" >
++	<div class="row" id="editCaseStepDiv" class="hidden" >
+ 	 		<div class="container-fluid"  >
+ 		 	<div class="row">
+ 
+diff --git a/katana/native/cases/templates/listAllCases.html b/katana/native/cases/templates/listAllCases.html
+index f23f3f5..2cbf5f8 100644
+--- a/katana/native/cases/templates/listAllCases.html
++++ b/katana/native/cases/templates/listAllCases.html
+@@ -21,16 +21,70 @@
+ 	<h2>{{title}}</h2>
+ 
+ <div id="myCaseTree"></div>
+-<div id="mmm" >{{treejs|jsonify}}</div>
++<div id="mmm" class="hidden">{{treejs|jsonify}}</div>
++
+ 
+ 
+ <script> 
++var edata={
++  "Testcase": {
++    "Details": {
++      "Name": "set_env_variable",
++      "Title": "set_env_variable",
++      "default_onError": { "-action": "next" },
++      "Date": "2017-05-14",
++      "Time": "23:02",
++      "InputDataFile": "No_Data",
++      "Engineer": "Warrior_Test",
++      "Category": "Regression",
++      "State": "Released"
++    },
++    "Requirements": {
++      "Requirement": [
++        "Demo-requirement-001",
++        "Demo-requirement-002",
++        "Demo-requirement-003"
++      ]
++    },
++    "Steps": {
++      "step": {
++        "-Driver": "common_driver",
++        "-Keyword": "set_env_var",
++        "-TS": "1",
++        "Arguments": {
++          "argument": [
++            {
++              "-name": "var_key",
++              "-value": "check3"
++            },
++            {
++              "-name": "var_value",
++              "-value": "3"
++            }
++          ]
++        },
++        "Description": [
++          "Regression for existing support, setting one ENV variable",
++          "compare values"
++        ],
++        "onError": { "-action": "next" },
++        "Execute": { "-ExecType": "Yes" },
++        "context": "positive",
++        "impact": "impact"
++      }
++    }
++  }
++}  ;
++
+ var sdata= katana.$activeTab.find('#mmm').text();
+ console.log(sdata);
+ var jdata = { 'core' : { 'data' : [ JSON.parse(sdata)]}};
+-
++//var sdata = katana.$activeTab.find("#listOfTestStepsForCase").text();
++  
+ function startNewCase() {
+-var xref="./cases/editCase/?fname=NEW"; 
++  var xref="./cases/editCase/?fname=NEW"; 
++  console.log(edata);
++  mapFullCaseJson("NEW",edata);
+   katana.templateAPI.load(xref, null, null, 'Case') ;;
+ }
+ //
+@@ -44,7 +98,9 @@ katana.$activeTab.find('#myCaseTree').on("select_node.jstree", function (e, data
+       	return;
+       }
+       katana.$view.one('tabAdded', function(){
+-     mapFullCaseJson(thePage);
++      var jdata = sdata.replace(/'/g, '"');
++      var jsdata = JSON.parse(jdata)
++     mapFullCaseJson(thePage,jsdata);
+   });
+   var xref="./cases/editCase/?fname=" + thePage; 
+   katana.templateAPI.load(xref, null, null, 'Case') ;
+diff --git a/katana/native/projects/templates/listAllProjects.html b/katana/native/projects/templates/listAllProjects.html
+index 9520df7..c7dbb9b 100644
+--- a/katana/native/projects/templates/listAllProjects.html
++++ b/katana/native/projects/templates/listAllProjects.html
+@@ -20,7 +20,7 @@
+ 
+ <script> 
+ function startNewProject() {
+-  var xref="./projects/editProject/fname=NEW" ;
++  var xref="./projects/editProject/?fname=NEW" ;
+   katana.templateAPI.load(xref, null, null, 'NEW') ;
+ }
+ //-------------------------------------  [ ] 
+diff --git a/warrior/Tools/w_settings.xml b/warrior/Tools/w_settings.xml
+index 88ca30d..4c42fb6 100755
+--- a/warrior/Tools/w_settings.xml
++++ b/warrior/Tools/w_settings.xml
+@@ -1,19 +1,14 @@
+ <Default>
+     <Setting name="def_dir">
+-        <Logsdir></Logsdir> <!--Optional, uses default, support absolute path, relative path and environment variable(${ENV.DEF_LOGSDIR})-->
+-        <Resultsdir></Resultsdir> <!--Optional, uses default, support absolute path, relative path and environment variable(${ENV.DEF_RESULTSDIR})-->
++        <Logsdir /> 
++        <Resultsdir /> 
+     </Setting>
+-    <Setting name="mail_to" mail_on="">
+-    <!-- 'mail_on' attribute is to specify 'when to send an email'. Supported values are 'per_execution, first_failure & every_failure'.
+-            1. per_execution(default) - to send an email after the end of case/suite/project execution
+-            2. first_failure - to send an email as soon as the first failure occurs during suite/project execution
+-            3. every_failure - to send an email whenever a case fails during suite/project execution
+-         When 'mail_on attribute' is not given or left empty, default value will be used for sending email.
+-         It also accepts comma separated values, example mail_on="per_execution, first_failure" -->
+-        <smtp_host></smtp_host> <!-- Optional, use FNC smtp host smtp.fnc.fujitsu.com to notify test case execution results -->
+-        <sender></sender> <!-- Optional, use sender's email such as Warrior_PBO@fnc.fujitsu.com -->
+-        <receiver></receiver> <!-- Optional, use receiver's email such as FNC.User@fnc.fujitsu.com -->
+-        <subject></subject> <!-- Optional, use this as subject line such as WARRIOR , additional test case execution results Pass/Fail and Test Execution File shall be appended to this -->
++    <Setting mail_on="" name="mail_to">
++    
++        <smtp_host /> 
++        <sender /> 
++        <receiver /> 
++        <subject /> 
+     </Setting>
+ 
+ 

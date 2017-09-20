@@ -178,6 +178,59 @@ def editCase(request):
 	xml_r["Testcase"]["Steps"] = {} 
 	
 
+	edata={
+  "Testcase": {
+    "Details": {
+      "Name": "set_env_variable",
+      "Title": "set_env_variable",
+      "default_onError": { "@action": "next" },
+      "Date": "2017-05-14",
+      "Time": "23:02",
+      "InputDataFile": "No_Data",
+      "Engineer": "Warrior_Test",
+      "Category": "Regression",
+      "State": "Released"
+    },
+    "Requirements": {
+      "Requirement": [
+        "Demo-requirement-001",
+        "Demo-requirement-002",
+        "Demo-requirement-003"
+      ]
+    },
+    "Steps": {
+      "step": {
+        "@Driver": "common_driver",
+        "@Keyword": "set_env_var",
+        "@TS": "1",
+        "Arguments": {
+          "argument": [
+            {
+              "@name": "var_key",
+              "@value": "check3"
+            },
+            {
+              "@name": "var_value",
+              "@value": "3"
+            }
+          ]
+        },
+        "Description": [
+          "Regression for existing support, setting one ENV variable",
+          "compare values"
+        ],
+        "onError": { "@action": "next" },
+        "Execute": { "@ExecType": "Yes" },
+        "context": "positive",
+        "impact": "impact"
+      }
+    }
+  }
+}  ;
+
+	#edata = copy.copy(xml_r);
+
+
 	if filename == 'NEW':
 		subdir = path_to_testcases 
 		filename = 'new.xml'
@@ -231,6 +284,7 @@ def editCase(request):
 		'caseExpectedResults': xml_r["Testcase"]["Details"]["ExpectedResults"],
 		'caseSteps': xml_r["Testcase"]["Steps"],
 		'caseRequirements': xml_r['Testcase']['Requirements'],
+		'emptyTestCase': edata['Testcase'],
 		'fulljson': xml_r['Testcase']
 	}
 
