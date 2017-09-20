@@ -289,15 +289,15 @@ var cmdBuilder ={
           var ad_yes_radio = form.find('#jira-ad-yes');
           var ad_no_radio =  form.find('#jira-ad-no');
           var jira_proj_value = form.find('#jira-project-value');
-
+          var jira_proj_label = katana.$activeTab.find("label[for='jira-project-value']").text();
           btnValid = cmdBuilder.cmdOptions.validateRadioBtns([ad_yes_radio, ad_no_radio]);
-          if(!btnValid){alert('select atleast one option');}
-
-          textValid = cmdBuilder.cmdOptions.validateTextNotEmpty([jira_proj_value]);
-          if(! textValid){setTimeout(function() { alert("Enter values for highlighted fields"); }, 250);}
-
-          status = status &  btnValid & textValid
-
+          if(!btnValid){cmdBuilder.cmdOptions.alertNoSelection();}
+          resultArray = cmdBuilder.cmdOptions.validateTextNotEmpty([jira_proj_value]);
+          if(! resultArray['status']){setTimeout(function(){
+            cmdBuilder.cmdOptions.alertTextMissing(resultArray['failedList']);
+            }, 250);
+          }
+          status = status &  btnValid & resultArray['status'];
           return status;
         },
         vaidateJiraIdNext: function(form){
@@ -308,10 +308,13 @@ var cmdBuilder ={
           var jira_id_value = form.find('#jira-id-value');
 
           btnValid = cmdBuilder.cmdOptions.validateRadioBtns([id_yes_radio, id_no_radio]);
-          if(! btnValid){alert('select atleast one option');}
-          textValid = cmdBuilder.cmdOptions.validateTextNotEmpty([jira_proj_value, jira_id_value]);
-          if(! textValid){setTimeout(function() { alert("Enter values for highlighted fields"); }, 250);}
-          status = status &  btnValid & textValid;
+          if(!btnValid){cmdBuilder.cmdOptions.alertNoSelection();}
+          resultArray = cmdBuilder.cmdOptions.validateTextNotEmpty([jira_proj_value, jira_id_value]);
+          if(! resultArray['status']){setTimeout(function(){
+            cmdBuilder.cmdOptions.alertTextMissing(resultArray['failedList']);
+            }, 250);
+          }
+          status = status &  btnValid & resultArray['status'];
           return status;
         },
 
@@ -320,7 +323,7 @@ var cmdBuilder ={
           var once_radio = form.find('#case-once');
           var multi_radio =  form.find('#case-multi');
           status &= cmdBuilder.cmdOptions.validateRadioBtns([once_radio, multi_radio]);
-          if(! status){alert('select atleast one option');}
+          if(! status){cmdBuilder.cmdOptions.alertNoSelection();}
           return status;
         },
         validateMultiMode: function(form){
@@ -331,10 +334,13 @@ var cmdBuilder ={
           var text2 = form.find('#case-ruf-value');
 
           btnValid = cmdBuilder.cmdOptions.validateRadioBtns([btn1, btn2]);
-          if(! btnValid){alert('select atleast one option');}
-          textValid = cmdBuilder.cmdOptions.validateTextNotEmpty([text1, text2]);
-          if(! textValid){setTimeout(function() { alert("Enter values for highlighted fields"); }, 250);}
-          status = status &  btnValid & textValid;
+          if(! btnValid){cmdBuilder.cmdOptions.alertNoSelection();}
+          resultArray = cmdBuilder.cmdOptions.validateTextNotEmpty([text1, text2]);
+          if(! resultArray['status']){setTimeout(function(){
+            cmdBuilder.cmdOptions.alertTextMissing(resultArray['failedList']);
+            }, 250);
+          }
+          status = status &  btnValid & resultArray['status'];
           return status;
 
         },
@@ -343,7 +349,7 @@ var cmdBuilder ={
           var btn1 = form.find('#case-sequence');
           var btn2 =  form.find('#case-parallel');
           status &= cmdBuilder.cmdOptions.validateRadioBtns([btn1, btn2]);
-          if(! status){alert('select atleast one option');}
+          if(! status){cmdBuilder.cmdOptions.alertNoSelection();}
           return status;
         },
         validateKwMode: function(form){
@@ -351,24 +357,30 @@ var cmdBuilder ={
           var btn1 = form.find('#kw-sequence');
           var btn2 =  form.find('#kw-parallel');
           status &= cmdBuilder.cmdOptions.validateRadioBtns([btn1, btn2]);
-          if(! status){alert('select atleast one option');}
+          if(! status){cmdBuilder.cmdOptions.alertNoSelection();}
           return status;
         },
         validateDataBaseOptions: function(form){
           var status = true;
           var txt1 = form.find('#db-value');
-          status &= cmdBuilder.cmdOptions.validateTextNotEmpty([txt1]);
-          if(! status){setTimeout(function() { alert("Enter values for highlighted fields"); }, 250);}
-          return status;
+          resultArray = cmdBuilder.cmdOptions.validateTextNotEmpty([txt1]);
+          if(! resultArray['status']){setTimeout(function(){
+            cmdBuilder.cmdOptions.alertTextMissing(resultArray['failedList']);
+            }, 250);
+          }
+          return resultArray['status'];
         },
         validateSchedulingOptions: function(form){
           var status = true;
           var txt1 = form.find('#schedule-date-value');
           var txt2 = form.find('#schedule-time-value');
 
-          status &= cmdBuilder.cmdOptions.validateTextNotEmpty([txt1, txt2]);
-          if(! status){setTimeout(function() { alert("Enter values for highlighted fields"); }, 250);}
-          return status;
+          resultArray = cmdBuilder.cmdOptions.validateTextNotEmpty([txt1, txt2]);
+          if(! resultArray['status']){setTimeout(function(){
+            cmdBuilder.cmdOptions.alertTextMissing(resultArray['failedList']);
+            }, 250);
+          }
+          return resultArray['status'];
         },
         validateRadioBtns: function(radioBtnList){
           // raise an alert if atleast on of the radio button is not selected.
@@ -383,16 +395,40 @@ var cmdBuilder ={
         validateTextNotEmpty: function(textFieldList){
           // raise an alert if the text field is empty
           var status = true;
+          var returnArray = {};
+          failedList = [];
           $.each(textFieldList, function(index, item){
             if (item.is(':visible') & !item.val()){
               item.addClass('empty');
               status &= false
+              failedList.push(item);
             }else{
               item.removeClass('empty');
               status &= true;
             }
           });
-          return status
+          returnArray['status'] = status;
+          returnArray['failedList'] = failedList;
+          return returnArray;
+        },
+        alertNoSelection: function(){
+          katana.openAlert({'alert_type': 'warning',
+                            'heading': 'Warning!',
+                            'text': 'Select atleast one option',
+                            }
+                          );
+        },
+        alertTextMissing: function(textElementList){
+          labelList = [];
+          $.each(textElementList, function(index, item){
+            itemLabel = katana.$activeTab.find("label[for='"+item.attr('id')+"']").html();
+            labelList.push(itemLabel);
+          });
+          katana.openAlert({'alert_type': 'warning',
+                            'heading': 'Warning!',
+                            'text': 'Enter values for: '+labelList.join(','),
+                            }
+                          );
         },
         clearOptions: function(form){
           var name = form.attr('name');
