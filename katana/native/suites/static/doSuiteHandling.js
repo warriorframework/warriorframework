@@ -307,7 +307,7 @@ function createCasesTable(xdata) {
 
 	items.push('<table id="Case_table_display" class="configuration_table" width="100%">');
 	items.push('<thead>');
-	items.push('<tr id="CaseRow"><th>Num</th><th>Path</th><th>context</th><th>OnError</th><th>Impact</th><th/><th/></tr>');
+	items.push('<tr id="CaseRow"><th>Num</th><th>Path</th><th>context</th><th>Run Type</th><th>Mode</th><th>OnError</th><th>Impact</th><th/><th/></tr>');
 	items.push('</thead>');
 	items.push('<tbody>');
 

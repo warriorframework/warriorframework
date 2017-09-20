@@ -1,17 +1,5 @@
-.configuration_table table {
-  border-collapse: collapse;
-}
-.configuration_table td {
-  text-align: left;
-  overflow: auto;
- 
-}
 
-.configuration_table th {
-  text-align: left;
-  border: 0px ;
 
-}
 
 .configuration_table {}
 .configuration_table th{
@@ -21,15 +9,16 @@
     vertical-align: top;
     font-weight: 400;
     color: #FFF;
+
     background-color: #577BA0;
-}
-.configuration_table tr th:nth-child(1), .configuration_table tr td:nth-child(1) {
-    flex-grow: .3;
 
 }
-.configuration_table tr th:last-child, .configuration_table tr td:last-child {
-    flex-grow: .5;
-    font-size: 18px;
+
+.configuration_table td {
+  text-align: left;
+  overflow: hidden;
+ 
+
 }
 .configuration_table i{
     padding: 4px;
@@ -61,14 +50,24 @@
     display: inline-flex;
 }
 
-.configuration_table tr th:nth-child(2), .configuration_table tr td:nth-child(2) {
-    flex-grow: 3;
 
-.configuration_table tr th:nth-child(4), .configuration_table tr td:nth-child(4) {
-    flex-grow: 3;
+.configuration_table tr th:nth-child(1), .configuration_table tr td:nth-child(1) {
+    flex-grow: .3;
+
 }
 
+.configuration_table tr th:nth-child(2), .configuration_table tr td:nth-child(2) {
+    flex-grow: 2;
+}
 
 .configuration_table tr th:nth-child(3), .configuration_table tr td:nth-child(3) {
-    flex-grow: 2;
+    flex-grow: 1;
+}
+.configuration_table tr th:nth-child(4), .configuration_table tr td:nth-child(4) {
+    flex-grow: 1;
+}
+
+.configuration_table tr th:last-child, .configuration_table tr td:last-child {
+    flex-grow: .5;
+    font-size: 18px;
 }

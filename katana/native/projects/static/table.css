@@ -13,7 +13,6 @@ padding-left: 15px;
 .configuration_table td {
   text-align: left;
   overflow: auto;
- 
 }
 
 .configuration_table th{
@@ -35,6 +34,7 @@ padding-left: 15px;
     font-size: 18px;
 }
 .configuration_table tr th:nth-child(3), .configuration_table tr td:nth-child(3){
+    justify-content: left;
     flex-grow: 2.5;
     font-size: 18px;
 }

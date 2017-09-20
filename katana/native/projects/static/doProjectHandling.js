@@ -380,7 +380,9 @@ function createSuitesTable(xdata) {
 		
 		items.push('<tr data-sid="'+s+'">');
 		items.push('<td>'+(parseInt(s)+1)+'</td>');
-		items.push('<td>'+oneSuite['path']+'</td>');
+		// Make this a link... 
+		items.push('<td onclick="showSuiteFromProject('+"'"+oneSuite['path']+"'"+')">'+oneSuite['path']+'</td>');
+
 		items.push('<td>Type='+oneSuite['Execute']['@ExecType']+'<br>');
 		items.push('Condition='+oneSuite['Execute']['Rule']['@Condition']+'<br>');
 		items.push('Condvalue='+oneSuite['Execute']['Rule']['@Condvalue']+'<br>');
@@ -444,8 +446,14 @@ function createSuitesTable(xdata) {
 
 }
 
-
-
+function showSuiteFromProject(fname) {
+  var xref="./suites/editSuite/?fname="+fname; 
+  console.log("Calling suite ", fname, xref);
+    katana.$view.one('tabAdded', function(){
+        mapFullSuiteJson(fname);
+    });
+  katana.templateAPI.load(xref, null, null, 'suite') ;;
+}
 
 var testProjectSortEventHandler = function(event, ui ) {
 	var listSuites = katana.$activeTab.find('#tableOfTestSuitesForProject tbody').children(); 

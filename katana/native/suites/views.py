@@ -75,6 +75,18 @@ def index(request):
 		'basedir': fpath,
 		'treejs'  : jtree 
 	}
+
+	tt = navigator.get_dir_tree_json(fpath)
+	tt['state']= { 'opened': True };
+	
+
+	context = { 
+		'title' : 'List of Suites',	
+		'docSpec': 'SuiteSpec',
+		'myfiles': myfiles, 
+		'basedir': fpath,
+		'treejs'  : tt 
+	}
 	context.update(csrf(request))
 	return HttpResponse(template.render(context, request))
 
@@ -87,12 +99,18 @@ def editSuite(request):
 	"""
 	navigator = Navigator();
 	path_to_config = navigator.get_katana_dir() + os.sep + "config.json"
+
 	config = json.loads(open(path_to_config).read())
 	fpath = config['testsuitedir']
 
 	template = loader.get_template("./editSuite.html")
 	filename = request.GET.get('fname')
-	
+	print "Asked for ", filename
+	if filename.find("..") == 0: 
+		filename = fpath + os.sep + filename
+	print "Attempting to read ...", filename 
+
+
 	xml_r = {}
 	xml_r["TestSuite"] = {}
 	xml_r["TestSuite"]["Details"] = {}
