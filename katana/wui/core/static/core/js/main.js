@@ -70,7 +70,7 @@ var katana = {
 				newTab.attr('id', uid );
 				var temp = katana.$view.find('.nav .tab').first();
 				var created = temp.clone().insertAfter( temp );
-				created.attr( 'uid', uid ).text( this && this.hasClass('tab') ? this.find('span').text() + count : uid ).append('<i class="fa fa-times" katana-click="katana.closeTab"></i>');
+				created.attr( 'uid', uid ).text( this && $(this).hasClass('tab') ? this.find('span').text() + count : uid ).append('<i class="fa fa-times" katana-click="katana.closeTab"></i>');
 				katana.switchTab.call( created, uid );
 				callBack && callBack( newTab.find('.page-content-inner') );
 			}
@@ -715,6 +715,24 @@ var katana = {
 				}
 				else
 					katana.templateAPI.tabRequst( katana.$activeTab, tabTitle, url, limitedStyles, callBack );
+			},
+
+			postTabRequest: function( tabTitle, url, input_data, limitedStyles, callBack ){
+                var csrftoken = katana.$activeTab.find("[name='csrfmiddlewaretoken']").val();
+				katana.openTab.call( katana.templateAPI, tabTitle, function( container ){
+					$.ajax({
+						url: url,
+						type: "POST",
+						data: input_data,
+                    	headers: {'X-CSRFToken':csrftoken},
+					}).done(function( data ) {
+						container.append( katana.templateAPI.preProcess( data ) );
+						limitedStyles || container.find('.limited-styles-true').length && container.addClass('limited-styles');
+						container.find('.tool-bar') && container.find('.tool-bar').prependTo(container.parent());
+						katana.tabAdded( container, katana.templateAPI );
+						callBack && callBack( container );
+					});
+				});
 			},
 
 			tabRequst: function( $elem, tabTitle, url, limitedStyles, callBack ){
