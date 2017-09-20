@@ -887,11 +887,15 @@ var katana = {
                 var $tabContent = $currentPage.find('.page-content-inner');
                 $(explorer_modal_html).prependTo($tabContent);
 
-                $tabContent.find('#directory-data').jstree({
+                $directoryData = $tabContent.find('#directory-data');
+
+                $directoryData.jstree({
                     "core": {
                         "data": [data]
                     }
                 });
+
+                $directoryData.jstree().hide_dots();
 
                 $tabContent.find('#explorer-accept').on('click', function(){
 
@@ -967,6 +971,8 @@ var katana = {
                         "data": [data]
                     }
                 });
+
+                $directoryData.jstree().hide_dots();
 
                 $tabContent.find('#explorer-up').off('click');
 

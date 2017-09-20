@@ -513,7 +513,7 @@ var wapp_management = {
 
     },
 
-    validateInput: function(elem_value, dir_name, elem){
+    validateInput: function(elem_value, elem){
         if(elem_value == undefined){
             var $elem = $(this);
             elem_value = $elem.val();
@@ -527,7 +527,7 @@ var wapp_management = {
             wapp_management.validateData({"type": "repository", "value": elem_value}, $elem)
         }
         else if(elem_value.match(".zip$")){
-            wapp_management.validateData({"type": "zip", "value": elem_value, "dir_name": dir_name}, $elem)
+            wapp_management.validateData({"type": "zip", "value": elem_value}, $elem)
         }
         else{
             wapp_management.validateData({"type": "filepath", "value": elem_value}, $elem)
@@ -598,6 +598,8 @@ var wapp_management = {
         katana.openFileExplorer("Select a directory or a .zip file",
             function(selectedValue){
                 $displayInput.attr("value", selectedValue);
+
+                wapp_management.validateInput(selectedValue, $displayInput)
              });
     }
 

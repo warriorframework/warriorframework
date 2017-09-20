@@ -19,7 +19,7 @@ from django.shortcuts import render
 from django.views import View
 import json
 
-from utils.directory_traversal_utils import get_parent_directory
+from utils.directory_traversal_utils import get_parent_directory, join_path
 from utils.navigator_util import Navigator
 from wui.core.apps import AppInformation
 
@@ -59,6 +59,6 @@ def get_file_explorer_data(request):
     if "path" in request.GET:
         start_dir = get_parent_directory(request.GET["path"])
     else:
-        start_dir = "/home/sanika/warriorframework/warrior/Warriorspace"
+        start_dir = get_parent_directory(nav_obj.get_warrior_dir(), 2)
     output = nav_obj.get_dir_tree_json(start_dir_path=start_dir)
     return JsonResponse(output)

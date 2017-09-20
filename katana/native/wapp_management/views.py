@@ -37,7 +37,7 @@ from wui.core.core_utils.app_info_class import AppInformation
 class WappManagementView(View):
 
     template = 'wapp_management/wapp_management.html'
-    dot_data_directory =  join_path(os.getcwd(), "native", "wapp_management", ".data")
+    dot_data_directory = join_path(os.getcwd(), "native", "wapp_management", ".data")
 
     def get(self, request):
         """
@@ -171,54 +171,52 @@ def open_config(request):
 
 def validate_app_path(request):
     output = False
+    dot_data_dir = ""
 
-    myDict = dict(request.POST.iterlists())
+    """myDict = dict(request.POST.iterlists())
+    print request.POST"""
 
     print request.POST
 
-    """detail_type = request.POST["type"]
-    detail_info = request.POST["value"]
-    detail_dir = False
-    if "dir_name" in request.POST:
-        detail_dir = request.POST["dir_name"]
+    detail_type = request.POST.get("type", None)
+    detail_info = request.POST.get("value", None)
+    temp_dir_path = join_path(dot_data_dir, "temp")
+    app_path = False
 
-    data_dir = join_path(os.getcwd(), "native", "wapp_management", ".data")
-    temp_for_val_path = join_path(os.getcwd(), "native", "wapp_management", ".data", "temp_for_validation")
-    if os.path.exists(temp_for_val_path):
-        shutil.rmtree(temp_for_val_path)
-    temp_for_validation = create_dir(temp_for_val_path)
+    print detail_type
+    print detail_info
 
-    if temp_for_validation:
+    if os.path.exists(temp_dir_path):
+        shutil.rmtree(temp_dir_path)
+    if create_dir(temp_dir_path):
         if detail_type == "repository":
-            repo_name = get_repository_name(detail_info)
-            app_path = join_path(temp_for_val_path, repo_name)
-            os.system("git clone {0} {1}".format(detail_info, join_path(temp_for_val_path, repo_name)))
+            repo_name = get_repository_name(detail_type)
+            os.system("git clone {0} {1}".format(detail_info, dot_data_dir))
+            app_path = join_path(temp_dir_path, repo_name)
+        elif detail_type == "zip":
+            temp = detail_info.split(os.sep)
+            temp = temp[len(temp)-1]
+            shutil.copyfile(detail_info, join_path(temp_dir_path, temp))
+            zip_ref = zipfile.ZipFile(join_path(temp_dir_path, temp), 'r')
+            zip_ref.extractall(temp_dir_path)
+            zip_ref.close()
+            app_path = join_path(temp_dir_path, temp)
         elif detail_type == "filepath":
-            dir_name = get_dir_from_path(detail_info)
-            app_path = join_path(temp_for_val_path, dir_name)
-            output = copy_dir(detail_info, join_path(temp_for_val_path, dir_name))
+            filename = get_dir_from_path(detail_info)
+            copy_dir(detail_info, join_path(temp_dir_path, filename))
+            app_path = join_path(temp_dir_path, filename)
         else:
-            if detail_dir:
-                shutil.copyfile(join_path(data_dir, detail_dir, detail_info), join_path(temp_for_val_path, detail_info))
-                zip_ref = zipfile.ZipFile(join_path(temp_for_val_path, detail_info), 'r')
-                zip_ref.extractall(temp_for_val_path)
-                zip_ref.close()
-                app_path = join_path(temp_for_val_path, detail_info[:-4])
-            else:
-                app_path = "abcd"
-                print request.FILES
-                print request.POST
-                # get the contents of the zip file
-                # copy them over into the temp directory
-        if output:
+            print "-- An Error Occurred -- Type of validation not given."
+        if app_path:
             app_validator_obj = AppValidator(app_path)
-            output = app_validator_obj.is_valid()"""
-
+            output = app_validator_obj.is_valid()
+    else:
+        print "-- An Error Occurred -- Could not create temporary directory."
     return JsonResponse({"valid": output})
 
 
-def handle_uploaded_file(f):
-    with open('/home/sanika/warriorframework/katana/native/wapp_management/.data/userapp.zip', 'wb+') as destination:
+"""def handle_uploaded_file(f):
+    with open(path, 'wb+') as destination:
         for chunk in f.chunks():
             destination.write(chunk)
 
@@ -232,4 +230,4 @@ def upload_file(request):
             return HttpResponse()
     else:
         form = UploadFileForm()
-        return HttpResponse()
+        return HttpResponse()"""
