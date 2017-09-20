@@ -16,9 +16,14 @@ def index(request):
         Read an xml file and return the editor page with xml content in it
     """
     # Check to open new/existing file
+    config = read_json_data(Navigator().get_katana_dir() + os.sep + "config.json")
+    wdfdir = config["idfdir"]
+
     if request.method == "POST":
         data = request.POST
         filepath = data["path"]
+        filepath = filepath.replace(wdfdir, "")
+        filepath = filepath[1:] if filepath.startswith(os.sep) else filepath
         data = xmltodict.parse(open(data["path"]).read())
     else:
         sample_data = {"system": [{"@name": "Example system", "Example key": "Example value"}]}
@@ -241,6 +246,10 @@ def on_post(request):
 
     from xml.dom.minidom import parseString as miniparse
     print miniparse(xmltodict.unparse(result)).toprettyxml()
+
+    config = read_json_data(Navigator().get_katana_dir() + os.sep + "config.json")
+    wdfdir = config["idfdir"]
+    filepath = os.path.join(wdfdir, filepath)
     print "Filepath:", filepath
     f = open(filepath, "w")
     f.write(miniparse(xmltodict.unparse(result)).toprettyxml())
