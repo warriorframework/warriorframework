@@ -258,7 +258,7 @@ var fillSuiteDefaultGoto = function() {
 
 	var gotoStep = katana.$activeTab.find('#default_onError').val();
 	console.log("Step ", gotoStep);
-	var defgoto = katana.$activeTab.find('#default_onError_goto'); 
+	var defgoto = katana.$activeTab.find('#suite_default_onError_goto'); 
 		defgoto.hide();
 
 	if (gotoStep.trim() == 'goto'.trim()) { 
@@ -525,10 +525,10 @@ function mapSuiteJsonToUi(data){
 
 	createCasesTable(xdata);
 	createSuiteRequirementsTable(rdata);
-	katana.$activeTab.find('#editTestcase').off('click');  // unbind is deprecated - debounces the click event. 
-	katana.$activeTab.find('#editTestcase').on('click',function() {
+	//	katana.$activeTab.find('#editTestcase').off('click');  // unbind is deprecated - debounces the click event. 
+	//	katana.$activeTab.find('#editTestcase').on('click',function() {
 
-		});
+	//		});
 
 }  
 

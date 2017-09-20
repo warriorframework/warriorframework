@@ -148,15 +148,37 @@ function setupProjectPopupDialog(s,xdata,popup) {
 	popup.find("#executeRuleAtElsevalue").val(oneSuite['Execute']['Rule']['@Elsevalue']); 
 	popup.find("#onError-at-action").val(oneSuite['onError']['@action']); 
 	popup.find("#onError-at-value").val(oneSuite['onError']['@value']); 
-	popup.find("#onError-at-type").val(oneSuite['runmode']['@type']); 
-	popup.find("#onError-at-value").val(oneSuite['runmode']['@value']); 
+	popup.find("#runmode-at-type").val(oneSuite['runmode']['@type']); 
+	popup.find("#runmode-at-value").val(oneSuite['runmode']['@value']); 
 	popup.find("#impact").val(oneSuite['impact']); 
-
+	fillProjectSuitePopupDefaultGoto(popup);
 	popup.find('#onError-at-action').on('change', function(){ 
 			var popup = $(this).closest('.popup');
 			fillProjectSuitePopupDefaultGoto(popup);
 	});
 
+
+	popup.find("#runmode-at-type").on('change', function() {
+		var popup = $(this).closest('.popup');
+		var sid = popup.find("#suiteRowToEdit").val();
+		console.log(jsonProjectObject['Testsuites'], sid); 
+		var oneSuite = jsonProjectObject['Testsuites']['Testsuite'][sid];
+		console.log(oneSuite);
+		console.log("Runmode in popup ", oneSuite, oneSuite['runmode']['@type'] );
+	//alert(this.value);
+		oneSuite['runmode']['@type'] = this.value; 
+		popup.find("#runmode-at-value").show();
+		if (oneSuite['runmode']['@type'] == 'standard') {
+		popup.find("#runmode-at-value").hide();
+		}
+		
+	});
+	popup.find("#runmode-at-value").show();
+	if (oneSuite['runmode']['@type'] == 'standard') {
+		
+		popup.find("#runmode-at-value").hide();
+
+	}
 
 }
 
@@ -177,8 +199,8 @@ function mapProjectSuiteToUI(s,xdata) {
 	
 	katana.$activeTab.find("#onError-at-action").val(oneSuite['onError']['@action']); 
 	katana.$activeTab.find("#onError-at-value").val(oneSuite['onError']['@value']); 
-	katana.$activeTab.find("#onError-at-type").val(oneSuite['runmode']['@type']); 
-	katana.$activeTab.find("#onError-at-value").val(oneSuite['runmode']['@value']); 
+	katana.$activeTab.find("#runmode-at-type").val(oneSuite['runmode']['@type']); 
+	katana.$activeTab.find("#runmode-at-value").val(oneSuite['runmode']['@value']); 
 	katana.$activeTab.find("#impact").val(oneSuite['impact']); 
 	fillProjectDefaultGoto();
 
@@ -207,14 +229,11 @@ var fillProjectSuitePopupDefaultGoto = function(popup) {
 	var gotoStep =popup.find('#onError-at-action').val();
 	console.log("Step ", gotoStep);
 	var defgoto = popup.find('#onError-at-value'); 
-		defgoto.hide();
+	defgoto.hide();
 
 	if (gotoStep.trim() == 'goto'.trim()) { 
 		defgoto.show();
-	} else {
-		defgoto.hide();
-		
-	}
+	} 
 	//var sid = popup.find('#CaseRowToEdit').val();
 	defgoto.empty(); 
 	var xdata = jsonProjectObject['Testsuites'] // ['Testcase'];
@@ -249,8 +268,8 @@ function mapUItoProjectSuite(popup, xdata){
 	oneSuite['impact'] = popup.find("#impact").val(); 
 	oneSuite['onError']['@action'] = popup.find("#onError-at-action").val(); 
 	oneSuite['onError']['@value'] = popup.find("#onError-at-value").val(); 
-	oneSuite['runmode']['@type'] = popup.find("#onError-at-type").val(); 
-	oneSuite['runmode']['@value'] = popup.find("#onError-at-value").val(); 
+	oneSuite['runmode']['@type'] = popup.find("#runmode-at-type").val(); 
+	oneSuite['runmode']['@value'] = popup.find("#rumode-at-value").val(); 
 	console.log("Saving", oneSuite);
 }
 
@@ -442,12 +461,10 @@ var testProjectSortEventHandler = function(event, ui ) {
 		newSuitesteps[ni] = oldSuitesteps[xi];
 	}
 
-	
 	console.log(jsonProjectObject);
 	jsonProjectObject["Testsuites"]['Testsuite']= newSuitesteps;
 	console.log(jsonProjectObject["Testsuites"] );
 	
-
 	jsonTestSuites = jsonProjectObject['Testsuites'] 
 	mapProjectJsonToUi(jsonTestSuites);
 
@@ -486,7 +503,7 @@ function fillSuiteDefaults(s, data){
 			oneSuite['onError'] = { "@action": "next", "@value": "" };
 		}
 		if (! oneSuite['runmode']) {
-			oneSuite['runmode'] = { "@type": "next", "@value": "" };
+			oneSuite['runmode'] = { "@type": "standard", "@value": "" };
 		}
 		if (! oneSuite['retry']) {
 			oneSuite['retry'] = { "@type": "next", "@Condition": "", "@Condvalue": "", "@count": "" , "@interval": ""};
