@@ -11,5 +11,4 @@ urlpatterns = [
     url(r'^load_configs/$', views.load_configs, name='load_configs'),
     url(r'^open_config/$', views.open_config, name='open_config'),
     url(r'^validate_app_path/$', views.validate_app_path, name='validate_app_path'),
-    url(r'^upload_file/$', views.upload_file, name='upload_file'),
 ]

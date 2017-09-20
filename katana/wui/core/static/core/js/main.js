@@ -858,7 +858,6 @@ var katana = {
                 type: 'GET',
                 url: 'get_file_explorer_data/',
             }).done(function(data) {
-                console.log(data);
                 var explorer_modal_html = '<div class="overlay">' +
                                               '<div class="centered file-explorer">' +
                                                    '<div class="file-explorer-header">' +
@@ -955,7 +954,6 @@ var katana = {
                 url: 'get_file_explorer_data/',
                 data: {"path": currentPath}
             }).done(function(data) {
-                console.log(data);
                 var $currentPage = katana.$activeTab;
                 var $tabContent = $currentPage.find('.page-content-inner');
                 var $directoryDataDiv = $currentPage.find('.directory-data-div');

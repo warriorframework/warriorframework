@@ -102,53 +102,6 @@ var wapp_management = {
             });
     },
 
-    getFileName: function(){
-        var $browsedInput = $(this);
-        var $filepath = $browsedInput.val().split("\\");
-        var $filename = $filepath[$filepath.length - 1];
-
-        var temp_array = $filename.split(".")
-        var extension = temp_array[temp_array.length - 1]
-
-        if(extension !== "zip"){
-            katana.openAlert({
-                "alert_type": "warning",
-                "text": "Please select a .zip file",
-                "show_accept_btn": true,
-                "show_cancel_btn": false
-            });
-            return;
-        }
-
-        var $browserInputId = $browsedInput.attr('id');
-        var $currentPage = katana.$activeTab;
-        var $fileInput = $currentPage.find('input[id="' + $browserInputId + '"]')
-
-        var temp = $browserInputId.split("_");
-        var $loop_num = temp[temp.length - 1];
-
-        var $displayInput = $currentPage.find('input[id="app_path_for_config_' + $loop_num + '"]')
-
-        $displayInput.val($filename);
-
-        var selectedFile = $browsedInput[0].files[0];
-        console.log(selectedFile);
-        $.wapp_management_globals.app_path_details[$filename] = selectedFile;
-
-        var fd = new FormData();
-        fd.append("file", selectedFile);
-        $.ajax({method: 'POST', url: 'wapp_management/validate_app_path/',
-        data: fd, headers: {'Content-Type': undefined, 'X-CSRFToken': wapp_management.getCookie('csrftoken')},
-        cache: false, processData: false})
-        .done(function(data) {
-            alert(data)
-        });
-
-
-        //wapp_management.validateData(selectedFile, $displayInput)
-
-    },
-
     saveConfig: function(app_paths){
         var $currentPage = katana.$activeTab;
         if(app_paths === undefined){
@@ -246,15 +199,6 @@ var wapp_management = {
         $install_btn.attr('save_config', value);
     },
 
-    loadConfig: function(){
-        $.ajax({
-            type: 'GET',
-            url: 'wapp_management/load_configs/',
-        }).done(function(data) {
-            $('#pop-up-file-info').html(data);
-		});
-    },
-
     addAnotherApp: function(loop_num, input_value){
 
         var $currentPage = katana.$activeTab;
@@ -310,14 +254,6 @@ var wapp_management = {
         }).done(function(data) {
             $('#new-app-info').html(data);
 		});
-    },
-
-    storeValue: function(){
-        var $elem = $(this);
-        var $value = $elem.val()
-
-        var $attach = $("#open_config")
-        $attach.attr("choice", $value);
     },
 
     getCookie: function(name) {
@@ -461,11 +397,6 @@ var wapp_management = {
 
     },
 
-    createNewPref: function(){
-        var $currentPage = katana.$activeTab;
-        wapp_management.goToElement($currentPage.find('#app_installation'));
-    },
-
     editConfig: function(config_name) {
 
         if(config_name == undefined){
@@ -556,7 +487,6 @@ var wapp_management = {
             wapp_management.disableSaveAndInstall();
         }
         else {
-        console.log($elem);
             $elem.css("border-color", "#dcdcdc");
             wapp_management.disableSaveAndInstall();
         }
@@ -565,14 +495,10 @@ var wapp_management = {
     disableSaveAndInstall: function(){
         $currentPage = katana.$activeTab;
         var $saveConfigBtn = $currentPage.find('[katana-click="wapp_management.saveConfig"]');
-        console.log($saveConfigBtn)
         var $installAppsBtn = $currentPage.find('[katana-click="wapp_management.installAnApp"]');
-        console.log($installAppsBtn)
         var $configInputs = $currentPage.find('[id^="app_path_for_config_"]')
         var flag = true;
         for(var i=0; i<$configInputs.length; i++){
-        console.log($configInputs[i]);
-        console.log($($configInputs[i]).css("border-color"));
             if($($configInputs[i]).css("border-color") == "rgb(255, 0, 0)"){
                 $saveConfigBtn.prop("disabled", true);
                 $installAppsBtn.prop("disabled", true);
@@ -598,7 +524,7 @@ var wapp_management = {
         katana.openFileExplorer("Select a directory or a .zip file",
             function(selectedValue){
                 $displayInput.attr("value", selectedValue);
-
+                $displayInput.val(selectedValue);
                 wapp_management.validateInput(selectedValue, $displayInput)
              });
     }

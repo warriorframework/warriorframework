@@ -171,63 +171,44 @@ def open_config(request):
 
 def validate_app_path(request):
     output = False
-    dot_data_dir = ""
-
-    """myDict = dict(request.POST.iterlists())
-    print request.POST"""
-
-    print request.POST
-
     detail_type = request.POST.get("type", None)
     detail_info = request.POST.get("value", None)
+    dot_data_dir = join_path(os.getcwd(), "native", "wapp_management", ".data")
     temp_dir_path = join_path(dot_data_dir, "temp")
     app_path = False
-
-    print detail_type
-    print detail_info
 
     if os.path.exists(temp_dir_path):
         shutil.rmtree(temp_dir_path)
     if create_dir(temp_dir_path):
         if detail_type == "repository":
-            repo_name = get_repository_name(detail_type)
-            os.system("git clone {0} {1}".format(detail_info, dot_data_dir))
+            repo_name = get_repository_name(detail_info)
+            os.system("git clone {0} {1}".format(detail_info, join_path(temp_dir_path, repo_name)))
             app_path = join_path(temp_dir_path, repo_name)
         elif detail_type == "zip":
-            temp = detail_info.split(os.sep)
-            temp = temp[len(temp)-1]
-            shutil.copyfile(detail_info, join_path(temp_dir_path, temp))
-            zip_ref = zipfile.ZipFile(join_path(temp_dir_path, temp), 'r')
-            zip_ref.extractall(temp_dir_path)
-            zip_ref.close()
-            app_path = join_path(temp_dir_path, temp)
+            if os.path.exists(detail_info):
+                temp = detail_info.split(os.sep)
+                temp = temp[len(temp)-1]
+                shutil.copyfile(detail_info, join_path(temp_dir_path, temp))
+                zip_ref = zipfile.ZipFile(join_path(temp_dir_path, temp), 'r')
+                zip_ref.extractall(temp_dir_path)
+                zip_ref.close()
+                app_path = join_path(temp_dir_path, temp[:-4])
+            else:
+                print "-- An Error Occurred -- {0} does not exist".format(detail_info)
         elif detail_type == "filepath":
-            filename = get_dir_from_path(detail_info)
-            copy_dir(detail_info, join_path(temp_dir_path, filename))
-            app_path = join_path(temp_dir_path, filename)
+            if os.path.isdir(detail_info):
+                filename = get_dir_from_path(detail_info)
+                copy_dir(detail_info, join_path(temp_dir_path, filename))
+                app_path = join_path(temp_dir_path, filename)
+            else:
+                print "-- An Error Occurred -- {0} does not exist or is not a directory".format(detail_info)
         else:
             print "-- An Error Occurred -- Type of validation not given."
         if app_path:
             app_validator_obj = AppValidator(app_path)
             output = app_validator_obj.is_valid()
+            shutil.rmtree(temp_dir_path)
     else:
         print "-- An Error Occurred -- Could not create temporary directory."
     return JsonResponse({"valid": output})
 
-
-"""def handle_uploaded_file(f):
-    with open(path, 'wb+') as destination:
-        for chunk in f.chunks():
-            destination.write(chunk)
-
-
-def upload_file(request):
-    if request.method == 'POST':
-        form = UploadFileForm(request.POST, request.FILES)
-        if form.is_valid():
-            handle_uploaded_file(request.FILES['docfile'])
-            request.path = '/katana/'
-            return HttpResponse()
-    else:
-        form = UploadFileForm()
-        return HttpResponse()"""
