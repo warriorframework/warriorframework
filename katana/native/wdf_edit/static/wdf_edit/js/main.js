@@ -297,7 +297,7 @@ var wdf = {
                 $tmp.find("[katana-click='wdf.addSubSystem']").hide()
 
                 $tmp.find(".sub-tool-bar").addClass("wdf-indent");
-                $tmp.find(".sub-tool-bar").find("div").
+                $tmp.find(".sub-tool-bar").find("div").hide();
 
                 // Add new subsystem after the last subsystem
                 katana.$activeTab.find("#"+$system_id+"-"+$subsystem_count+"-control-box").after($($tmp.html()));
