@@ -1,8 +1,6 @@
 {% load static %}
 {% load jsonify %}
 
-
-
 <body>
 <link rel="stylesheet" href="{% static "./ztable.css" %}"> 
 <script type="text/javascript" src="{% static "./doCasesHandling.js" %}"></script>
@@ -10,7 +8,7 @@
 <div class="tool-bar">
 		<button id="addStep" class="btn btn-success" onclick="addNewTestStepToUI()">Add Step To Case</button> 
 		<button class="btn btn-success" onclick="addRequirementToCase()">Add Requirement</button>
-		<button class="btn btn-success" onclick="writeUiToCaseJSON()">Write Changes To Disk</button>
+		<button class="btn btn-success" onclick="sendCaseToServer()">Write Changes To Disk</button>
 		<label class="col-md-2 text-righ"t >Save file to </label>
 		<input class="text-right col-md-4" type="text" id="my_file_to_save" name="my_file_to_save" value="{{savefilename}}"/>
 </div>

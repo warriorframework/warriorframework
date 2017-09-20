@@ -30,7 +30,6 @@ if (typeof jsonAllCasePages === 'undefined') {
 var jsonCaseObject = [];
 var jsonCaseDetails = [];         // A pointer to the Details   
 var jsonCaseSteps = [];           
-var jsonCaseRequirements = []; 	  // This is the JSON model for the UI requirements
 var activePageID = getRandomCaseID();   // for the page ID 
 var jsonFilesInfo = null; 
 
@@ -47,9 +46,7 @@ function mapFullCaseJson(myobjectID, where){
 	jsonCaseObject = jsonAllCasePages[myobjectID]
 	jsonCaseSteps  = jsonCaseObject["Steps"];
 	console.log("Steps --> ", jsonCaseSteps);
-	jsonCaseRequirements = jsonCaseObject['Requirements'];
-	//if (!jQuery.isArray(jsonCaseRequirements)) jsonCaseObject['Requirements'] = []; 
-	jsonCaseRequirements = jsonCaseObject['Requirements'];
+
 	jsonCaseDetails = jsonCaseObject['Details'];
 	katana.$activeTab.find("#editCaseStepDiv").hide();
 	katana.$activeTab.find("#tableOfTestStepsForCase").removeClass();
@@ -57,8 +54,7 @@ function mapFullCaseJson(myobjectID, where){
 	katana.$activeTab.find("#tableOfTestStepsForCase").show();
 	console.log("Here", jsonCaseObject, jsonCaseSteps);
 	mapCaseJsonToUi(jsonCaseSteps);
-	//mapRequirementsToUI(jsonCaseRequirements);
-	createRequirementsTable(jsonCaseRequirements);
+	createRequirementsTable();
 
 	//$('#myform :checkbox').change(function()
 	katana.$activeTab.find('#ck_dataPath').change(function() {
@@ -130,7 +126,7 @@ function mapUiToCaseJson() {
 		jsonCaseObject['Requirements'] = []; 
 	}
 
-	saveUItoRequirements();  // Save Requirements table. 
+	//saveUItoRequirements();  // Save Requirements table. 
 	// Now you have collected the user components...
 } 
 
@@ -158,7 +154,7 @@ var fillCaseDefaultGoto = function() {
 }
 
 // Saves the UI to memory and sends to server. 
-function writeUitoCaseJSON() {
+var sendCaseToServer = function () {
 	mapUiToCaseJson();
 	var url = "./cases/getCaseDataBack";
 	var csrftoken = $("[name='csrfmiddlewaretoken']").attr('value');
@@ -305,12 +301,10 @@ function mapCaseJsonToUi(data){
 		});
 
 
-
-
 		bid = "addTestStepAbove-"+s+"-id-"+getRandomCaseID();
 		items.push('<i  title="Insert" class="add-item-32" value="Insert" id="'+bid+'"/>');
 		
-		$('#'+bid).off('c<td>lick');   //unbind and bind are deprecated. 
+		$('#'+bid).off('<td>click');   //unbind and bind are deprecated. 
 		$(document).on('click','#'+bid,function(  ) {
 			//alert(this.id);
 			var names = this.id.split('-');
@@ -775,7 +769,7 @@ function addStepToCase(){
 
 // Save UI Requirements to JSON table. 
 function saveUItoRequirements( ){
-	rdata= jsonCaseRequirements['Requirement'];
+	rdata= jsonCaseObject['Requirements']['Requirement'];
 	rlen = Object.keys(rdata).length;
 	console.log("Number of Requirements = " + rlen );
 	console.log(rdata);
@@ -787,74 +781,91 @@ function saveUItoRequirements( ){
 
 }
 
-function createRequirementsTable(i_data){
+function createRequirementsTable(){
 	var items =[]; 
 	katana.$activeTab.find("#tableOfCaseRequirements").html("");  // This is a blank div. 
 	items.push('<table id="Requirements_table_display" class="configuration_table" width="100%" >');
 	items.push('<thead>');
-	items.push('<tr><th>#</th><th>Requirement</th></tr>');
+	items.push('<tr id="ReqRow><th>#</th><th>Requirement</th></tr>');
 	items.push('</thead>');
 	items.push('<tbody>');
 	console.log("createRequirementsTable");
-	console.log(i_data);
-	if (i_data['Requirement']) {
-			rdata= i_data['Requirement'];
-			for (var s=0; s<Object.keys(rdata).length; s++ ) {
+	adjustRequirementsTable();
+	rdata = jsonCaseObject['Requirements']['Requirement'];
+	console.log(rdata, Object.keys(rdata).length, jsonCaseObject, jsonCaseObject['Requirements']['Requirement']);
+					
+	for (var s=0; s<Object.keys(rdata).length; s++ ) {
 				var oneReq = rdata[s];
-				var oneID = parseInt(s) + 1; 
-				//console.log(oneReq);
-				items.push('<tr><td>'+oneID+'</td>');
-				var bid = "textRequirement-"+s+"-id";	
-				items.push('<td><input type="text" value="'+oneReq +'" id="'+bid+'"/></td>');
+				console.log("oneReq", oneReq);
+				var idnumber = parseInt(s) + 1; 
+				items.push('<tr data-sid=""><td>'+idnumber+'</td>');
+				var bid = "textRequirement-name-"+s+"-id";	
 				
+				items.push('<td><input type="text" value="'+oneReq+'" id="'+bid+'"/></td>');
+		
 				bid = "deleteRequirement-"+s+"-id"+getRandomCaseID();
-				items.push('<td><i  title="Delete" class="delete-item-32" value="X" id="'+bid+'"/>');
-				
+				items.push('<td><i  class="delete-item-32"  title="Delete" id="'+bid+'"/>');
 				katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
-				$(document).on('click','#'+bid,function( ) {
+				$(document).on('click','#'+bid,function( event ) {
 					var names = this.id.split('-');
 					var sid = parseInt(names[1]);
+					console.log("Remove " + sid + " " + this.id +" from " + rdata); 
+					adjustRequirementsTable();
+					rdata = jsonCaseObject['Requirements']['Requirement'];
 					rdata.slice(sid,1); 
 					createRequirementsTable(i_data);
+					return false;
 				});
-				bid = "editRequirement-"+s+"-id"+getRandomCaseID();;
-				//items.push('<td><input type="button" class="btn" value="Save" id="'+bid+'"/></td>');
-				items.push('<i  title="Edit" class="edit-item-32" value="Edit" id="'+bid+'"/></td>');	
+				bid = "editRequirement-"+s+"-id"+getRandomCaseID();
+				var tbid = "textRequirement-name-"+s+"-id";	
+				items.push('<i class="edit-item-32" title="Save Edit" id="'+bid+'"  txtId="'+tbid+'"/>');
 				katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 				$(document).on('click','#'+bid,function() {
 					var names = this.id.split('-');
+					console.log("Test text idd" , katana.$activeTab.find('[txtId]'));
 					var sid = parseInt(names[1]);
-					//console.log("xdata --> "+ rdata);  // Get this value and update your json. 
-					var txtIn = katana.$activeTab.find("#textRequirement-"+sid+"-id").attr('value');
-					console.log(katana.$activeTab.find("#textRequirement-"+sid+"-id").attr('value'));
-					//console.log(sid);
-					//console.log(rdata[sid])
-					rdata[sid] = txtIn;
-					createRequirementsTable(i_data);	
-					event.stopPropagation();
-					//This is where you load in the edit form and display this row in detail. 
+					var txtVl = katana.$activeTab.find("#textRequirement-name-"+sid+"-id").val();
+					console.log("Editing ..." + sid, txtVl);
+					adjustRequirementsTable();
+					rdata = jsonCaseObject['Requirements']['Requirement'];
+					rdata[sid] = txtVl;
+					createRequirementsTable();	
 				});
-			}
-			items.push('</tbody>');
-			items.push('</table>');
-		}
-	katana.$activeTab.find("#tableOfCaseRequirements").html(items.join(""));  // This is a blank div. 
-	
 
+			bid = "insertRequirement-"+s+"-id"+getRandomCaseID();
+			items.push('<i class="add-item-32"  title="Insert" id="'+bid+'"/></td>');
+			katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
+			$(document).on('click','#'+bid,function( event ) {
+				var names = this.id.split('-');
+				var sid = parseInt(names[1]);
+				console.log("Insert" + sid + " " + this.id +" from " + rdata); 
+				adjustRequirementsTable();
+				jsonCaseObject['Requirements']['Requirement'].splice(sid - 1, 0, "");
+				createRequirementsTable();	
+				return false;
+			});
+		}
 	
+	items.push('</tbody>');
+	items.push('</table>');
+		
+	katana.$activeTab.find("#tableOfCaseRequirements").html(items.join(""));  //
+}
+
+function adjustRequirementsTable(){
+	if (!jsonCaseObject['Requirements']) jsonCaseObject['Requirements'] =  { 'Requirement': [] } ;
+	if (!jQuery.isArray(jsonCaseObject['Requirements']['Requirement'])) {
+			jsonCaseObject['Requirements']['Requirement'] = [jsonCaseObject['Requirements']['Requirement']];
+	}
 }
 
 
 function addRequirementToCase() {
-
-			if (!jsonCaseObject['Requirements']) jsonCaseObject['Requirements']= { 'Requirement' : [] }
-			if (!jQuery.isArray(jsonCaseObject['Requirements']['Requirement'])) {
-				jsonCaseObject['Requirements']['Requirement'] = []
-			}
+			adjustRequirementsTable();
 			rdata = jsonCaseObject['Requirements']['Requirement'];
+			//var newReq = {"Requirement" :  ""};
 			rdata.push( "" );
 			console.log(jsonCaseObject);
-			createRequirementsTable(jsonCaseObject['Requirements']);	
-			
+			createRequirementsTable();	
 		}
 	

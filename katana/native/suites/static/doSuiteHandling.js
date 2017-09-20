@@ -444,9 +444,6 @@ function createSuiteRequirementsTable(rdata){
 		//items.push('<td>'+oneReq+'</td>');
 		var bid = "textRequirement-name-"+s+"-id";	
 		items.push('<td><input type="text" value="'+oneReq['@name']+'" id="'+bid+'"/></td>');
-		bid = "textRequirement-value-"+s+"-id";	
-		//items.push('<td><input type="text" value="'+oneReq['@value']+'" id="'+bid+'"/></td>');
-		//console.log("Line 328 or so"); 
 		bid = "deleteRequirement-"+s+"-id"+getRandomSuiteID();
 		console.log("Line 328 or so "+bid); 
 		items.push('<td><i  class="delete-item-32"  title="Delete" id="'+bid+'"/>');
