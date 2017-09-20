@@ -31,8 +31,11 @@ function startNewSuite() {
 katana.$activeTab.find('#mySuiteTree').on("select_node.jstree", function (e, data) { 
       var thePage = data.node.li_attr['data-path'];
       console.log(thePage);
+      var extn = thePage.indexOf(".xml");
+      if (extn < 4){
+        return;
+      }
       katana.$view.one('tabAdded', function(){
-        
       mapFullSuiteJson(thePage);
   });
   var xref="./suites/editSuite/?fname=" + thePage; 

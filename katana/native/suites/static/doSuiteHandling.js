@@ -232,10 +232,6 @@ function mapUiToSuiteJson() {
 	});
 	
 	var topNode  = { 'Suite' : jsonSuiteObject};
-
-	
-	//alert(ns);
-
 	$.ajax({
 	    url : url,
 	    type: "POST",
@@ -321,10 +317,11 @@ function createCasesTable(xdata) {
 		var showID = parseInt(s)+ 1; 
 		items.push('<tr data-sid="'+s+'"><td>'+showID+'</td>');
 		
-		items.push('<td>'+oneCase['path']+'</td>');
-		items.push('<td>'+oneCase['context']+'</td>');
+		//items.push('<td>'+oneCase['path']+'</td>');
 		//items.push('<td>'+oneCase['datafile']+'</td>');
-
+		items.push('<td onclick="showCaseFromSuite('+"'"+oneCase['path']+"'"+')">'+oneCase['path']+'</td>');
+		items.push('<td>'+oneCase['context']+'</td>');
+		
 		items.push('<td>'+oneCase['runtype']+'</td>');
 		items.push('<td>'+oneCase['runmode']+'</td>');
 		items.push('<td>'+oneCase['onError']['@action']+'</td>');
@@ -378,7 +375,14 @@ function createCasesTable(xdata) {
 
 }
 
-
+function showCaseFromSuite(fname) {
+  var xref="./cases/editCase/?fname="+fname; 
+  console.log("Calling case ", fname, xref);
+    katana.$view.one('tabAdded', function(){
+         mapFullCaseJson(fname,'#listOfTestStepsForCase');
+    });
+  katana.templateAPI.load(xref, null, null, 'suite') ;;
+}
 //
 var testSuiteSortEventHandler = function(event, ui ) {
 	var listItems = [] ; 

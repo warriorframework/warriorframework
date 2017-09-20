@@ -205,6 +205,9 @@ function fillStepDefaults(oneCaseStep) {
 		if (! oneCaseStep['Arguments']) {
 			oneCaseStep['Arguments'] = { 'argument': [] }
 		}
+		if (! oneCaseStep['InputDataFile']) {
+			oneCaseStep['InputDataFile'] = "";
+		}
 
 }
 
@@ -460,6 +463,7 @@ function setupPopupDialog(sid,xdata,popup) {
 	popup.find("#SteponError-at-value").attr("value",oneCaseStep['onError']["@value"]);
 	popup.find("#runmode-at-type").attr("value",oneCaseStep["runmode"]["@type"]);
 	popup.find("#StepImpact").attr("value",oneCaseStep["impact"]);
+	popup.find("#StepInputDataFile").attr("value",oneCaseStep["InputDataFile"]);
 	
 
 	//katana.popupController.updateActiveWindow(popup);
@@ -725,6 +729,8 @@ function mapUItoTestStep(sid,xdata,popup) {
 	oneCaseStep['onError'][ "@value"] = popup.find("#SteponError-at-value").val();
 	oneCaseStep["runmode"] = { "@type" : popup.find("#runmode-at-type").val()};
 	oneCaseStep["impact"] =  popup.find("#StepImpact").val();
+	oneCaseStep["InputDataFile"] =  popup.find("#StepInputDataFile").val();
+
 	// Now all the arguments have 
 	console.log("after saving ",oneCaseStep);
 }
@@ -745,6 +751,7 @@ function createNewStep(){
 		"context": "positive", 
 		"impact" :  "impact",
 		"rmt" :  "standard" ,
+		"InputDataFile" : "", 
 		"retry": { "@type": "if not", "@Condition": "testsuite_1_result", "@Condvalue": "PASS", "@count": "6", "@interval": "0"}, 
 	 };
 	 return newCaseStep;
