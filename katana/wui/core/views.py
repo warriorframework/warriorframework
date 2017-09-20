@@ -18,6 +18,8 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
 import json
+
+from utils.directory_traversal_utils import get_parent_directory
 from utils.navigator_util import Navigator
 from wui.core.apps import AppInformation
 
@@ -52,7 +54,11 @@ class CoreView(View):
 
         return render(request, template, {"apps": AppInformation.information.apps, "userData": self.get_user_data()})
 
-    def get_file_explorer_data(self, request):
+def get_file_explorer_data(request):
+    nav_obj = Navigator()
+    if "path" in request.GET:
+        start_dir = get_parent_directory(request.GET["path"])
+    else:
         start_dir = "/home/sanika/warriorframework/warrior/Warriorspace"
-        output = {}
-        return JsonResponse(output)
+    output = nav_obj.get_dir_tree_json(start_dir_path=start_dir)
+    return JsonResponse(output)

@@ -587,7 +587,18 @@ var wapp_management = {
     },
 
     openFileExplorer: function(){
-        katana.openFileExplorer("Select a directory or a .zip file", function(){alert("OK")}, function(){alert("Cancel")});
+        var $currentPage = katana.$activeTab;
+
+        var $elemClicked = $(this);
+        var elemId = $elemClicked.attr("id");
+        var temp = elemId.split("_");
+        var loop_num = temp[temp.length-1]
+
+        var $displayInput = $currentPage.find("#app_path_for_config_" + loop_num)
+        katana.openFileExplorer("Select a directory or a .zip file",
+            function(selectedValue){
+                $displayInput.attr("value", selectedValue);
+             });
     }
 
 };
