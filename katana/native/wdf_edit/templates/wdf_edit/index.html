@@ -85,7 +85,7 @@
                             <i katana-click="wdf.deleteSystem" class="fa fa-trash" title="Delete Subsystem"/>
                         </div>
                         <div class="field-inline">
-                            <input type="checkbox" class="wdf-subsys-checkbox" katana-click="wdf.subsysDefaultCheck" name="{{ forloop.counter }}-1-default-subsys"/>
+                            <input type="checkbox" class="wdf-subsys-checkbox" katana-click="wdf.subsysDefaultCheck" name="{{ forloop.counter }}-1-default-subsys" title="Default Subsystem"/>
                             <label class="wdf-label">Subsystem name:</label>
                             <input class="wdf-input" name="{{ forloop.counter }}-1-subsystem_name" katana-change="wdf.subSysNameChange" value="{{ system.subsystem|get_item:'@name' }}"/>
                         </div>
@@ -125,20 +125,35 @@
                 {% elif system.subsystem %}
                     {% for subsys in system.subsystem %}
                         <div id="{{ forloop.parentloop.counter }}-{{ forloop.counter }}-control-box" class="control-box">
-                            <div class="sub-tool-bar">
-                                <div class="field">
-                                    <input type="checkbox" class="wdf-sys-checkbox" katana-click="wdf.sysDefaultCheck" name="{{ forloop.parentloop.counter }}-{{ forloop.counter }}-default" title="Default"/><label>Default</label>
+                            {% if forloop.counter == 1 %}
+                                <div class="sub-tool-bar">
+                                    <div class="field">
+                                        <input type="checkbox" class="wdf-sys-checkbox" katana-click="wdf.sysDefaultCheck" name="{{ forloop.parentloop.counter }}-{{ forloop.counter }}-default" title="Default"/><label>Default</label>
+                                    </div>
+                                    <div class="field title-block">
+                                        <input class="wdf-input" name="{{ forloop.parentloop.counter }}-{{ forloop.counter }}-system_name" placeholder="System name" katana-change="wdf.sysNameChange" value="{{ system|get_item:'@name' }}"/>
+                                    </div>
+                                    <i katana-click="wdf.toggle" class="fa fa-toggle-up" title="Hide/Show"/>
+                                    <i katana-click="wdf.addTag" class="fa fa-plus" title="Add Data"/>
+                                    <i katana-click="wdf.addSubSystem" class="fa fa-plus-square" title="Add Subsystem"/>
+                                    <i katana-click="wdf.deleteSystem" class="fa fa-trash" title="Delete Subsystem"/>
                                 </div>
-                                <div class="field title-block">
-                                    <input class="wdf-input" name="{{ forloop.parentloop.counter }}-{{ forloop.counter }}-system_name" placeholder="System name" katana-change="wdf.sysNameChange" value="{{ system|get_item:'@name' }}"/>
+                            {% else %}
+                                <div class="sub-tool-bar wdf-indent">
+                                    <div class="field" style="display: none;">
+                                            <input type="checkbox" class="wdf-sys-checkbox" katana-click="wdf.sysDefaultCheck" name="{{ forloop.parentloop.counter }}-{{ forloop.counter }}-default" title="Default"/><label>Default</label>
+                                    </div>
+                                    <div class="field title-block" style="display: none;">
+                                        <input class="wdf-input" name="{{ forloop.parentloop.counter }}-{{ forloop.counter }}-system_name" placeholder="System name" katana-change="wdf.sysNameChange" value="{{ system|get_item:'@name' }}"/>
+                                    </div>
+                                    <i katana-click="wdf.toggle" class="fa fa-toggle-up" title="Hide/Show"/>
+                                    <i katana-click="wdf.addTag" class="fa fa-plus" title="Add Data"/>
+                                    <i katana-click="wdf.addSubSystem" class="fa fa-plus-square" title="Add Subsystem"/>
+                                    <i katana-click="wdf.deleteSystem" class="fa fa-trash" title="Delete Subsystem"/>
                                 </div>
-                                <i katana-click="wdf.toggle" class="fa fa-toggle-up" title="Hide/Show"/>
-                                <i katana-click="wdf.addTag" class="fa fa-plus" title="Add Data"/>
-                                <i katana-click="wdf.addSubSystem" class="fa fa-plus-square" title="Add Subsystem"/>
-                                <i katana-click="wdf.deleteSystem" class="fa fa-trash" title="Delete Subsystem"/>
-                            </div>
+                            {% endif %}
                             <div class="field-inline">
-                                <input type="checkbox" class="wdf-subsys-checkbox" katana-click="wdf.subsysDefaultCheck" name="{{ forloop.parentloop.counter }}-{{ forloop.counter }}-default-subsys"/>
+                                <input type="checkbox" class="wdf-subsys-checkbox" katana-click="wdf.subsysDefaultCheck" name="{{ forloop.parentloop.counter }}-{{ forloop.counter }}-default-subsys" title="Default Subsystem"/>
                                 <label class="wdf-label">Subsystem name:</label>
                                 <input class="wdf-input" name="{{ forloop.parentloop.counter }}-{{ forloop.counter }}-subsystem_name" katana-change="wdf.subSysNameChange" value="{{ subsys|get_item:'@name' }}"/>
                             </div>
@@ -189,26 +204,26 @@
                     {% if system.ip %}
                         <div class="wdf-pad">
                             <div id="{{ forloop.counter }}-1-system-box" class="wdf-sys-nav">
-                                <button class="btn wdf-wide-button" katana-click="wdf.jump_to" linkto="#{{ forloop.counter }}-1-control-box" type="button"><i class="fa fa-cloud"/><span class="wdf-span"> {{ system|get_item:'@name' }}</span></button>
+                                <button class="btn wdf-wide-button" katana-click="wdf.jump_to" linkto="#{{ forloop.counter }}-1-control-box" type="button"><i class="fa fa-server"/><span class="wdf-span"> {{ system|get_item:'@name' }}</span></button>
                             </div>
                         </div>
                     {% elif "ip" in system.subsystem %}
                         <div class="wdf-pad">
                             <div id="{{ forloop.counter }}-1-system-box" class="wdf-sys-nav">
-                                <button class="btn wdf-wide-button" katana-click="wdf.jump_to" linkto="#{{ forloop.counter }}-1-control-box" type="button"><i class="fa fa-cloud"/><span class="wdf-span"> {{ system|get_item:'@name' }}</span></button>
+                                <button class="btn wdf-wide-button" katana-click="wdf.jump_to" linkto="#{{ forloop.counter }}-1-control-box" type="button"><i class="fa fa-server"/><span class="wdf-span"> {{ system|get_item:'@name' }}</span></button>
                             </div>
                             <div id="{{ forloop.counter }}-1-button-box" class="wdf-subsys-nav">
-                                <button class="btn wdf-wide-button" katana-click="wdf.jump_to" linkto="#{{ forloop.counter }}-1-control-box" type="button"><i class="fa fa-desktop"/><span class="wdf-span"> {{ system.subsystem|get_item:'@name' }}</span></button>
+                                <button class="btn wdf-wide-button" katana-click="wdf.jump_to" linkto="#{{ forloop.counter }}-1-control-box" type="button"><i class="fa fa-terminal"/><span class="wdf-span"> {{ system.subsystem|get_item:'@name' }}</span></button>
                             </div>
                         </div>
                     {% elif system.subsystem %}
                         <div class="wdf-pad">
                             <div id="{{ forloop.counter }}-1-system-box" class="wdf-sys-nav">
-                                <button class="btn wdf-wide-button" katana-click="wdf.jump_to" linkto="#{{ forloop.counter }}-1-control-box" type="button"><i class="fa fa-cloud"/><span class="wdf-span"> {{ system|get_item:'@name' }}</span></button>
+                                <button class="btn wdf-wide-button" katana-click="wdf.jump_to" linkto="#{{ forloop.counter }}-1-control-box" type="button"><i class="fa fa-server"/><span class="wdf-span"> {{ system|get_item:'@name' }}</span></button>
                             </div>
                             {% for subsys in system.subsystem %}
                                 <div id="{{ forloop.parentloop.counter }}-{{ forloop.counter }}-button-box" class="wdf-subsys-nav">
-                                    <button class="btn wdf-wide-button" katana-click="wdf.jump_to" linkto="#{{ forloop.parentloop.counter }}-{{ forloop.counter }}-control-box" type="button"><i class="fa fa-desktop"/><span class="wdf-span"> {{ subsys|get_item:'@name' }}</span></button>
+                                    <button class="btn wdf-wide-button" katana-click="wdf.jump_to" linkto="#{{ forloop.parentloop.counter }}-{{ forloop.counter }}-control-box" type="button"><i class="fa fa-terminal"/><span class="wdf-span"> {{ subsys|get_item:'@name' }}</span></button>
                                 </div>
                             {% endfor %}
                         </div>
@@ -259,7 +274,7 @@
                 <i katana-click="wdf.deleteSystem" class="fa fa-trash" title="Delete Subsystem"/>
             </div>
             <div class="field-inline">
-                <input type="checkbox" class="wdf-subsys-checkbox" katana-click="wdf.subsysDefaultCheck" name="template-subsystem-default"/>
+                <input type="checkbox" class="wdf-subsys-checkbox" katana-click="wdf.subsysDefaultCheck" name="template-subsystem-default" title="Default Subsystem"/>
                 <label class="wdf-label">Subsystem name:</label>
                 <input class="wdf-input" name="template-subsystem-name" placeholder="Subsystem Name" katana-change="wdf.subSysNameChange" value=""/>
             </div>
@@ -298,7 +313,7 @@
     <div id="navigator_template" auto-init="wdf.hide">
         <div class="wdf-pad">
             <div id="template-system-box">
-                <button class="btn wdf-wide-button" katana-click="wdf.jump_to" linkto="template-nav.linkto" type="button"><i class="fa fa-cloud"/><span class="wdf-span"> New System</span></button>
+                <button class="btn wdf-wide-button" katana-click="wdf.jump_to" linkto="template-nav.linkto" type="button"><i class="fa fa-server"/><span class="wdf-span"> New System</span></button>
             </div>
         </div>
     </div>
@@ -306,7 +321,7 @@
     <div id="navigator_button_template" auto-init="wdf.hide">
         <div id="template-button-box" class="wdf-subsys-nav">
             <button class="btn wdf-wide-button" katana-click="wdf.jump_to" linkto="template-nav.linkto" type="button">
-                <i class="fa fa-desktop"/><span class="wdf-span"> New Subsystem</span>
+                <i class="fa fa-terminal"/><span class="wdf-span"> New Subsystem</span>
             </button>
         </div>
     </div>

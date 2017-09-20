@@ -164,6 +164,12 @@ var wdf = {
             // alert("You delete the last subsystem");
             $target.parent().find("[id^='"+$system_id+"-1-']").find("[katana-click='wdf.addTag']").show()
         }
+
+        if ($target.parent().find("[id^='"+$system_id+"-']:not(:empty)").length > 1 && !($target.find(".sub-tool-bar").hasClass("wdf-indent"))) {
+            $target.next().find(".sub-tool-bar").removeClass("wdf-indent");
+            $target.next().find(".sub-tool-bar").find("div").show();
+        }
+
         // $target.removeClass("animated fadeIn");
         // $target.addClass("animated bounceOutLeft");
         // setTimeout(function(){$target.empty()}, 600);
@@ -290,6 +296,9 @@ var wdf = {
                 $tmp.find("[name='template-subsystem-default']").prop("name", $system_id+"-"+($subsystem_count+1)+"-default-subsys");
                 $tmp.find("[katana-click='wdf.addSubSystem']").hide()
 
+                $tmp.find(".sub-tool-bar").addClass("wdf-indent");
+                $tmp.find(".sub-tool-bar").find("div").
+
                 // Add new subsystem after the last subsystem
                 katana.$activeTab.find("#"+$system_id+"-"+$subsystem_count+"-control-box").after($($tmp.html()));
 
@@ -316,14 +325,10 @@ var wdf = {
         var $system_id = $target.attr("id").split("-").slice(0,1);
         var $subsystem_id = $target.attr("id").split("-").slice(1,2);
 
-        if ($target.parent().find("[id^='"+$system_id+"-'][id$='-control-box']").length > 1 && $subsystem_id == "1") {
-            alert("Please only add tag in subsystem");
-        } else {
-            var $id = $system_id+"-"+$subsystem_id+"-";
-            $tmp.find("[name='template-tag.tag']").prop("name", $id+($target.children("#content").length+1)+"-1-key");
-            $tmp.find("[name='template-tag.value']").prop("name", $id+($target.children("#content").length+1)+"-1-value");
-            $target.append($($tmp.html()));
-        }
+        var $id = $system_id+"-"+$subsystem_id+"-";
+        $tmp.find("[name='template-tag.tag']").prop("name", $id+($target.children("#content").length+1)+"-1-key");
+        $tmp.find("[name='template-tag.value']").prop("name", $id+($target.children("#content").length+1)+"-1-value");
+        $target.append($($tmp.html()));
     },
 
     addChild: function(){

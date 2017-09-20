@@ -2562,7 +2562,17 @@ div .tool-bar-links:active {
     width: 100%;
     max-width: 100%;
     text-align: left;
-    color: #636363;
+    background-color: #f9f9f9;
+    border: none;
+}
+
+.wdf-sys-nav {
+    padding-top: 3px;
+}
+
+.wdf-subsys-nav {
+    padding-top: 3px;
+    padding-left: 25px;
 }
 
 hr.wdf-hr {
@@ -2591,6 +2601,13 @@ hr.wdf-hr {
     width: 35%;
     float: left;
 }
+
+.wdf-indent {
+    width: calc(100% - 229px) !important;
+    margin-left: 214px !important;
+    background: #cccccc !important;
+}
+
 .sub-tool-bar .button{
     margin-top: 4px;
 }
@@ -2635,6 +2652,10 @@ div#wdf-editor-col {
     transition: all .1s ease;
 }
 
+#wdf-navigator {
+    padding-left: 5px;
+    padding-right: 5px;
+}
 
 div#wdf-navigator
  .btn:hover {
@@ -2654,6 +2675,10 @@ div#wdf-navigator
     margin-right: 0;
 }
 
+.wdf-pad .fa {
+    color: #4ea4e0;
+    font-size: 20px;
+}
 
 @-webkit-keyframes wdf-highlight {
     from {
@@ -2682,17 +2707,12 @@ div#wdf-navigator
     padding-bottom: 5px;
 }
 
-.wdf-sys-nav {
-    padding-top: 5px;
-}
-
-.wdf-subsys-nav {
-    padding-top: 5px;
-    padding-left: 50px;
-}
-
 .wdf-span {
     padding-left: 5px;
+}
+
+.wdf-label {
+    border: 0px !important;
 }
 
 .control-box {
