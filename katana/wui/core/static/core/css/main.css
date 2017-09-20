@@ -177,12 +177,8 @@ span.close {
     text-align: center;
     line-height: 40px;
 }
-
 span.close:before {
     content: 'X';
-}
-span.close:hover {
-  color: #c00 !important;
 }
 .popupContainer .overlay {
     width: 100%;
@@ -497,10 +493,6 @@ input {
     background: #f9f9f9;
     margin-top: 4px;
 }
-input[type=radio]{
-  width: 15px;
-}
-
 input:focus {
     background: #efefef;
 }
@@ -662,8 +654,8 @@ input[type="checkbox"] {
     position: absolute;
     top: 0;
     left: 0;
-    height: 30px;
-    width: 30px;
+    height: 30px !important;
+    width: 30px !important;
     z-index: 1;
     opacity: 0;
     cursor: pointer;
@@ -1027,7 +1019,7 @@ div#launchpad.page.hidden .tabs {
 .page .page + .page-content {
     display: none;
 }
-.page-content .tool-bar {
+.page-content .tool-bar, .page-content .sub-tool-bar {
     position: absolute;
     top: 0;
     left: 0;
@@ -1035,14 +1027,26 @@ div#launchpad.page.hidden .tabs {
     width: 100%;
     height: 40px;
     z-index: 9;
-    background: #73a5c4;
+    background: #4ea4e0;
     color: white;
     -webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.19);
     -moz-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.19);
     box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.19);
     padding: 0 2px;
 }
-.tool-bar .button {
+.indent {
+    width: calc(100% - 100px) !important;
+    margin-left: 100px !important;
+}
+.sub-tool-bar + .to-scroll {
+    overflow: auto !important;
+    position: absolute;
+    top: 40px;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 40px);
+}
+.tool-bar .button, .sub-tool-bar .button {
     margin: 5px 5px 0px 2px;
     background: rgb(244, 244, 244);
     border: solid #d2d2d2 1px;
@@ -1050,7 +1054,40 @@ div#launchpad.page.hidden .tabs {
     width: 80px;
     text-align: center;
 }
-.tool-bar .button:hover {
+
+.expandable-container {
+    display: flex;
+    padding: 0;
+}
+
+.to-expand {
+    flex-basis: 0;
+    flex-grow: 1;
+    margin: 0 2px;
+    height: 100%;
+    position: relative;
+}
+
+.sub-tool-bar .field {
+    padding: 0;
+    height: 90%;
+    padding-top: 4px;
+    max-width: none;
+}
+.to-expand{
+  -webkit-transition: all .3s ease;
+  transition: all .3s ease;
+}
+.expanded {
+    flex-grow: 3 !important;
+}
+.sub-tool-bar input {
+    padding: 0 5px;
+    height: 100%;
+    margin: 0;
+    border: none;
+}
+.tool-bar .button:hover, .sub-tool-bar .button:hover {
     background: #efefef;
 }
 .tool-bar .button.close:hover {
@@ -2116,11 +2153,63 @@ textarea {
     text-shadow: none;
     opacity: 1;
 }
-.tool-bar .button {
+.tool-bar .button, .sub-tool-bar .button {
     padding: 2px;
     height: 32px;
     vertical-align: top;
 }
+.buttons.col-md-3 {
+    width: 300px;
+    flex: none;
+    padding: 0;
+    max-width: none;
+    text-align: center;
+}
+.field-inline {
+    padding: 0;
+    margin: 0 auto;
+    height: 40px;
+    position: relative;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.field-inline > label {
+    width: 200px;
+    display: inline-block;
+    border: solid 1px gainsboro;
+    border-right: none;
+    height: 100%;
+    line-height: 40px;
+    padding: 0;
+    background: white;
+    text-align: right;
+    /* position: relative; */
+    padding-right: 5px;
+    margin-right: -3px;
+    margin-left: 3px;
+}
+
+.field-inline > input {
+    width: calc(100% - 207px);
+    display: inline-block;
+    height: 100%;
+    line-height: 40px;
+    vertical-align: top;
+    margin: 0 !important;
+}
+
+.field-inline  input[type="checkbox"], .field-inline input[type="checkbox"] + label:before{top: 7px; left: 10px;}
+.expandable-container.col-sm-9 {
+    width: calc(100% - 300px);
+    flex: none;
+    max-width: none;
+}
+.sub-tool-bar > i {
+    line-height: 40px;
+    margin: 0 6px;
+}
+
 .tool-bar-links {
     cursor: pointer;
     overflow: hidden;
@@ -2170,13 +2259,6 @@ div .tool-bar-links:active {
     display: inline-flex;
 }
 
-.empty {
-    border: 1px solid red;
-}
-.disabled{
-  background: rgba(150, 150, 150, 0.25) !important;
-  color:white !important;
-}
 
 /* execution app related styles starts*/
 .execution.exec-container{
@@ -2273,110 +2355,78 @@ div .tool-bar-links:active {
   padding: 0px 10px;
 }
 .execution.selection-group-item {
-  display:inline-block;
-  height: 40px;
-  line-height: 40px;
-  position: relative;
-  margin: 3px 0px;
-  background-color: rgba(235, 242, 250, 1);
-  border: none;
-  border-radius: 1px;
-  -webkit-box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.20);
-  -moz-box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.20);
-  box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.20);
-  color: #464646;
-  width: 100%;
+    /*position: relative;*/
 
+    display: inline-block;
+    padding: 8px 8px;
+    background-color: #f9f9f9;
+    border: 2px solid #d6d1d1;
+    border-radius: 5px;
+    width: 95%;
+    /*min-height: px;*/
+
+    justify-content: center;
+    align-items: center;
 }
 .execution.selections-handle {
-  width: 40px;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  line-height: 40px;
-  padding: 0;
-  margin: 0;
-  float: none !important;
-  text-align: center;
-  cursor: -webkit-grabbing;
-}
-.selections-handle:before {
-    font-size: 14px;
-    content: "\f0c9";
-    font-family: FontAwesome;
+    cursor: move;
+    cursor: -webkit-grabbing;
 }
 .ghost {
-  opacity: .7;
-  background: #36b3ed;
+    opacity: .7;
+    background: #36b3ed;
 }
-#execution_items label{
-  width: calc(100% - 80px);
-  height: 40px;
-  position: absolute;
-  top: 0;
-  left: 40px;
-  line-height: 40px;
-  padding: 0;
-  margin: 0;
-
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow:hidden;
-  vertical-align: bottom
+#execution_items label {
+    width: 90%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    padding-left: 2px;
+    vertical-align: bottom
 }
-
 #execution_items i {
-  width: 40px;
-  height: 100%;
-  position: absolute;
-  top: 0px !important;
-  right: 0 !important;
-  line-height: 40px;
-  padding: 0;
-  margin: 0;
-  float: none !important;
-  text-align: center;
-  display: block;
-  cursor: pointer;
-  color: #5a5a5a;
-  font-style: normal;
+    display: block;
+    cursor: pointer;
+    color: #5a5a5a;
+    top: 10px;
+    right: 40px;
+    float: right;
+    font-style: normal;
 }
 #execution_items i:hover {
-  color: #c00 !important;
+    color: #c00 !important;
 }
 .execution.results-tab {
     height: 40px;
     width: 100%;
-    color: #6b6b6b;
-    background: rgba(115, 165, 196, 1);
-    /*rgb(115, 165, 196);*/
+    color: #ffffff;
+    background: rgb(115, 165, 196);
     /*padding-bottom: 4%;*/
-
     padding: 0;
 }
-.execution.results-tab  button {
-      background-color: inherit;
-      float: left;
-      border: none;
-      outline: none;
-      cursor: pointer;
-      padding: 18px 16px;
-      transition: 0.3s;
-      font-size: 17px;
-      /*font-family: Lato;*/
-      height:100%;
-      line-height: 10px;
-      color:white;
-  }
+.execution.results-tab button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 18px 16px;
+    transition: 0.3s;
+    font-size: 17px;
+    /*font-family: Lato;*/
+    height: 100%;
+    line-height: 10px;
+    color: white;
+}
 .execution.results-tab button:hover {
-      background-color: #ddd;
-  }
+    background-color: #ddd;
+}
 .execution.results-tab button.active {
-      background-color: white ;
-      color: black;
-  }
+    background-color: white;
+    color: black;
+}
 /* Style the tab content */
+
 .execution.tab-content {
     display: none;
     padding: 2px 2px;
@@ -2388,7 +2438,7 @@ div .tool-bar-links:active {
     display: block;
     position: absolute;
     z-index: 99999;
-    top: 30%%;
+    top: 40%;
     bottom: 60%;
     min-width: 40%;
     min-height: 10%;
@@ -2399,88 +2449,53 @@ div .tool-bar-links:active {
     border-radius: 2px;
     -webkit-animation: fadeEffect 1s;
     color: black;
-    background-color: rgb(115, 165, 196);
+    background-color: rgb(159, 184, 196);
     -webkit-transition: opacity 400ms ease-in;
-  	-moz-transition: opacity 400ms ease-in;
-  	transition: opacity 400ms ease-in;
-}
-.execution.dialog_container {
-    display: block;
-    position: absolute;
-    z-index: 999999;
-    top: 25%;
-    bottom: 60%;
-    min-width: 50%;
-    min-height: 10%;
-    margin-left: 25%;
-    height: 400px;
-    width: -webkit-fit-content;
-    border: 1px solid #dedede;
-    border-radius: 2px;
-    -webkit-animation: fadeEffect 1s;
-    color: black;
-    /*background: white;*/
-    -webkit-transition: opacity 400ms ease-in;
-  	-moz-transition: opacity 400ms ease-in;
-  	transition: opacity 400ms ease-in;
-}
-.execution.dialog_content {
-    width: 100%;
-    margin-top: 40px;
-    height: calc(100% - 80px);
-    padding: 10px 10px;
-    overflow: auto;
-    background: white;
-}
-.execution.dialog_container:not([open]) {
-    display: none;
+    -moz-transition: opacity 400ms ease-in;
+    transition: opacity 400ms ease-in;
 }
 .execution.dialog:not([open]) {
     display: none;
 }
-
 .execution.dialog-close {
-	background: #606061;
-	color: #FFFFFF;
-	line-height: 25px;
-	position: absolute;
-	right: -5px;
-	text-align: center;
-	top: -5px;
-	width: 24px;
-	text-decoration: none;
-	font-weight: bold;
-	-webkit-border-radius: 12px;
-	-moz-border-radius: 12px;
-	border-radius: 12px;
-	-moz-box-shadow: 1px 1px 3px #000;
-	-webkit-box-shadow: 1px 1px 3px #000;
-	box-shadow: 1px 1px 3px #000;
+    background: #606061;
+    color: #FFFFFF;
+    line-height: 25px;
+    position: absolute;
+    right: -5px;
+    text-align: center;
+    top: -5px;
+    width: 24px;
+    text-decoration: none;
+    font-weight: bold;
+    -webkit-border-radius: 12px;
+    -moz-border-radius: 12px;
+    border-radius: 12px;
+    -moz-box-shadow: 1px 1px 3px #000;
+    -webkit-box-shadow: 1px 1px 3px #000;
+    box-shadow: 1px 1px 3px #000;
 }
-
-.execution.dialog-close:hover { background: red; }
-
-.execution.dialog_button_bar{
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  text-align: right;
-  height: 40px;
-  border-top: 1px solid #dedede;
+.execution.dialog-close:hover {
+    background: red;
 }
-
-
 /* Fade in tabs */
+
 @-webkit-keyframes fadeEffect {
-    from {opacity: 0;}
-    to {opacity: 1;}
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
-
 @keyframes fadeEffect {
-    from {opacity: 0;}
-    to {opacity: 1;}
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
-
 .is-blurred {
   filter: blur(3px);
   -webkit-filter: blur(3px);
@@ -2503,10 +2518,6 @@ div .tool-bar-links:active {
   height: 32px;
   text-align: center;
 }
-
-
-
-
 /*Execution questionaire related styles ends*/
 
 /* Execution cmd options dialog styles start*/
@@ -2679,8 +2690,6 @@ div .tool-bar-links:active {
   width:50%;
 }
 
-
-
 /* execution app related styles ends*/
 
 -/* wdf editor app related styles starts */
@@ -2694,17 +2703,6 @@ div .tool-bar-links:active {
     width: 100%;
     max-width: 100%;
     text-align: left;
-}
-
-.wdf-label {
-    position: absolute;
-    top: 25%;
-    left: 20px;
-    right: 0;
-    margin: 0 auto;
-}
-.wdf-input {
-    /*font-size: 16px;*/
 }
 
 hr.wdf-hr {
@@ -2733,6 +2731,68 @@ hr.wdf-hr {
     width: 35%;
     float: left;
 }
+.sub-tool-bar .button{
+    margin-top: 4px;
+}
+.side-navigator {
+    position: relative;
+    position: sticky;
+    top: 0;
+    right: 0;
+    height: 80%;
+    background: #dcdcdc;
+    -ms-flex: 0 0 25%;
+    /* flex: 0 0 20%; */
+    /* max-width: 20%; */
+    flex: none;
+    max-width: none;
+    width: 300px;
+    margin-left: 30px;
+    margin-top: 15px;
+    -webkit-box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.22);
+    -moz-box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.22);
+    box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.22);
+    transition: all .1s ease;
+    padding: 18px;
+}
+.side-navigator .to-scroll {
+    padding: 5px 28px;
+}
+div#wdf-editor-col {
+    flex: none;
+    max-width: none;
+    width: calc(100% - 360px);
+    height: auto;
+    overflow: visible;
+    background: white;
+    margin-top: 15px;
+    padding: 0;
+    margin-left: 15px;
+    /* -webkit-box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.22); */
+    -moz-box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.22);
+    /* box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.22); */
+    transition: all .1s ease;
+}
+
+
+div#wdf-navigator
+ .btn:hover {
+    background: #eaeaea;
+}
+
+.wdf-container {
+    padding: 0;
+}
+
+.wdf-pad {
+    padding: 0;
+}
+
+.wdf-container .row {
+    margin-left: 0;
+    margin-right: 0;
+}
+
 
 @-webkit-keyframes wdf-highlight {
     from {
@@ -2760,21 +2820,63 @@ hr.wdf-hr {
 .wdf-tall-label {
     padding-bottom: 5px;
 }
-
-.wdf-pad {
+.control-box {
     padding: 10px;
+    margin-bottom: 12px;
+    -webkit-box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.22);
+    -moz-box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.22);
+    box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.22);
+    padding-top: 45px;
+    position: relative;
+}
+.sub-tool-bar > .field {
+    width: 40px;
+    overflow: hidden;
+    margin: 0;
+    position: absolute;
+    left: 7px;
+    top: 3px;
+    text-align: -webkit-left;
+    font-size: 0;
 }
 
+.sub-tool-bar > .field.title-block {
+    left: 45px;
+    top: 0;
+    width: calc(100% - 200px);
+    margin: 0;
+    /* padding: 0; */
+    overflow: hidden;
+    position: absolute;
+    display: block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: none;
+    color: white;
+}
+
+.sub-tool-bar > .field.title-block
+ > input, .sub-tool-bar > .field.title-block
+ > input::placeholder{
+    background: transparent;
+    color: white;
+    font-size: 20px;
+}
+
+.sub-tool-bar input[type="checkbox"] + label:before {
+    border-color: white;
+}
+
+.control-box:empty {
+    display: none;
+}
 /* wdf editor app related styles ends */
-
-
-
 
 
 .translator{
   display: none;
 }
-.
+
 .jstree-default .jstree-anchor,
 .jstree-default .jstree-animated,
 .jstree-default .jstree-wholerow {
@@ -2793,6 +2895,32 @@ hr.wdf-hr {
 }
 input[type="checkbox"] + label {
     padding-left: 35px;
+}
+.field-inline.dual-input > input {
+    width: calc(50% - 105px);
+}
+
+.field-inline.dual-input > input:last-child {
+    margin-left: 5px;
+}
+
+.field-inline.dual-input > label {
+    margin-right: 0px;
+    margin-left: 0;
+    border: none;
+}
+
+.field-inline.dual-input > label > i {
+    line-height: 40px;
+    width: 40px;
+    text-align: center;
+    display: inline-block;
+    color: #636363;
+}
+.wdf-container .sub-tool-bar .title {
+    background: transparent;
+    text-align: left;
+    color: white;
 }
 .quick-user > i {
     font-size: 24px;
