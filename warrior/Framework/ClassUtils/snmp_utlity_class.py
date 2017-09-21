@@ -58,7 +58,7 @@ class WSnmp(object):
     data_repo={}
     snmpEngine = {}
     mibViewController = None
-    __authProtocol = {'usmHMACMD5AuthProtocol':config.usmHMACMD5AuthProtocol, 
+    authProtocol = {'usmHMACMD5AuthProtocol':config.usmHMACMD5AuthProtocol, 
                         'usmHMACSHAAuthProtocol':config.usmHMACSHAAuthProtocol,
                         'usmAesCfb128Protocol':config.usmAesCfb128Protocol,
                         'usmAesCfb256Protocol':config.usmAesCfb256Protocol,
@@ -205,12 +205,12 @@ class WSnmp(object):
         Dispatcher will never finish as job#1 never reaches zero
         :return:None
         """
-        __snmpEngine = cls.get_asyncoredispatcher(port)
+        snmpEngine = cls.get_asyncoredispatcher(port)
         try:
             # Dispatcher will never finish as job#1 never reaches zero
-            __snmpEngine.transportDispatcher.runDispatcher()
+            snmpEngine.transportDispatcher.runDispatcher()
         except:
-            __snmpEngine.transportDispatcher.closeDispatcher()
+            snmpEngine.transportDispatcher.closeDispatcher()
             raise
 
     @classmethod
@@ -225,7 +225,7 @@ class WSnmp(object):
         mibBuilder = builder.MibBuilder()
         custom_mib_path = cls.data_repo.get("custom_mib_path")
         load_mib_module = cls.data_repo.get("load_mib_module")
-        __custom_mib_paths = []
+        temp_custom_mib_paths = []
         if custom_mib_path and load_mib_module:
             custom_mib_paths = custom_mib_path.split(',')
             for paths in custom_mib_paths:
@@ -239,20 +239,20 @@ class WSnmp(object):
                     paths = paths.replace('browse', 'raw')
                 if 'http' in paths and 'browse' in paths:
                     paths = paths.replace('browse', 'raw')
-                __custom_mib_paths.append(paths)
+                temp_custom_mib_paths.append(paths)
             if os.name == 'posix' and '/usr/share/snmp/' not in custom_mib_path:
-                __custom_mib_paths.append('/usr/share/snmp/')
+                temp_custom_mib_paths.append('/usr/share/snmp/')
             try:
-                compiler.addMibCompiler(mibBuilder, sources=__custom_mib_paths)
+                compiler.addMibCompiler(mibBuilder, sources=temp_custom_mib_paths)
                 cls.mibViewController = view.MibViewController(mibBuilder)
                 mibs=load_mib_module.split(",")
                 mibBuilder.loadModules(*mibs)
             except error.MibNotFoundError as excep:
                 testcase_Utils.pNote("{} Mib Not Found!".format(excep), "Error")
-        __snmpEngine = cls.get_asyncoredispatcher(port)
-        config.addTransport(__snmpEngine, udp.domainName,
+        snmpEngine = cls.get_asyncoredispatcher(port)
+        config.addTransport(snmpEngine, udp.domainName,
                             udp.UdpTransport().openServerMode(('0.0.0.0', int(port))))
-        __snmpEngine.transportDispatcher.jobStarted(1) 
+        snmpEngine.transportDispatcher.jobStarted(1) 
 
     @classmethod 
     def close_trap_listner_job(cls, port):
@@ -261,10 +261,10 @@ class WSnmp(object):
         :param transportDispatcher:
         :return:None
         """
-        __snmpEngine = cls.get_asyncoredispatcher(port)
-        __snmpEngine.transportDispatcher.jobFinished(1)
+        snmpEngine = cls.get_asyncoredispatcher(port)
+        snmpEngine.transportDispatcher.jobFinished(1)
         try :
-            __snmpEngine.transportDispatcher.unregisterTransport(udp.domainName)
+            snmpEngine.transportDispatcher.unregisterTransport(udp.domainName)
         except:
             testcase_Utils.pNote("Can not unregister udp Transport domain",
                                  'warning')
@@ -304,9 +304,9 @@ class WSnmp(object):
             oid = op_list[0].strip()
             value = op_list[1].strip()
             decoded_msg.append((oid, value))
-        __decoded_msg = cls.data_repo.get("snmp_trap_messages_{}".format(transportAddress))
-        __decoded_msg.append(decoded_msg)
-        cls.data_repo.update({"snmp_trap_messages_{}".format(transportAddress):__decoded_msg})
+        temp_decoded_msg = cls.data_repo.get("snmp_trap_messages_{}".format(transportAddress))
+        temp_decoded_msg.append(decoded_msg)
+        cls.data_repo.update({"snmp_trap_messages_{}".format(transportAddress):temp_decoded_msg})
 
     @staticmethod
     def get_first_node_name(mib_filepath, mib_filename):
@@ -340,13 +340,13 @@ class WSnmp(object):
         :return: Treu or False
         """
         result = True
-        __snmpEngine = cls.get_asyncoredispatcher(port)
+        snmpEngine = cls.get_asyncoredispatcher(port)
         #debug.setLogger(debug.Debug('all'))
         try:
-            authprotocol = cls.__authProtocol.get(authProtocol, None)
-            privprotocol =  cls.__authProtocol.get(privProtocol, None)
+            authprotocol = cls.authProtocol.get(authProtocol, None)
+            privprotocol =  cls.authProtocol.get(privProtocol, None)
             config.addV3User(
-                snmpEngine=__snmpEngine, userName=username,
+                snmpEngine=snmpEngine, userName=username,
                 authProtocol = authprotocol, authKey=authkey,
                 privProtocol = privprotocol, privKey=privkey,
                 securityEngineId = v2c.OctetString(hexValue=securityengineid)
@@ -365,10 +365,10 @@ class WSnmp(object):
         :param community: SNMP community string, default is 'public'
         :return:
         """
-        __snmpEngine = cls.get_asyncoredispatcher(port)
+        snmpEngine = cls.get_asyncoredispatcher(port)
         result = True
         try:
-            config.addV1System(__snmpEngine, community, community)
+            config.addV1System(snmpEngine, community, community)
             testcase_Utils.pNote("Added SNMP Community {}".format(community))
         except:
             testcase_Utils.pNote("ADD SNMP Community Failed", "error")
