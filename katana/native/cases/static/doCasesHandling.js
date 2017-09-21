@@ -649,7 +649,8 @@ function addNewTestStepToUI() {
 		jsonCaseSteps['step'] = [jsonCaseSteps['step']];
 		}
 
-	jsonCaseSteps['step'].append(newObj);  // Don't delete anything
+	console.log("Adding new step", jsonCaseSteps,jsonCaseSteps['step']);
+	jsonCaseSteps['step'].push(newObj);  // Don't delete anything
 	mapCaseJsonToUi(jsonCaseSteps);		
 }
 
@@ -828,7 +829,7 @@ function createRequirementsTable(){
 	katana.$activeTab.find("#tableOfCaseRequirements").html("");  // This is a blank div. 
 	items.push('<table id="Requirements_table_display" class="configuration_table  striped" width="100%" >');
 	items.push('<thead>');
-	items.push('<tr id="ReqRow><th>#</th><th>Requirement</th></tr>');
+	items.push('<tr id="ReqRow"><th>#</th><th>Requirement</th><th/><th/></tr>');
 	items.push('</thead>');
 	items.push('<tbody>');
 	console.log("createRequirementsTable");
@@ -851,11 +852,11 @@ function createRequirementsTable(){
 				$(document).on('click','#'+bid,function( event ) {
 					var names = this.id.split('-');
 					var sid = parseInt(names[1]);
-					console.log("Remove " + sid + " " + this.id +" from " + rdata); 
+					console.log("Remove ",sid ,this.id ," from " , rdata); 
 					adjustRequirementsTable();
 					rdata = jsonCaseObject['Requirements']['Requirement'];
-					rdata.slice(sid,1); 
-					createRequirementsTable(i_data);
+					rdata.splice(sid,1); 
+					createRequirementsTable();
 					return false;
 				});
 				bid = "editRequirement-"+s+"-id"+getRandomCaseID();
