@@ -133,7 +133,7 @@ class CommonSnmpActions(object):
         port = snmp_param_dic.get('snmp_port')
 
         output_dict = {}
-        __custom_mib_paths = None
+        temp_custom_mib_paths = None
 
         wsnmp = ws(communityname, self.snmpver.get(snmp_ver), ipaddr, port, snmp_timeout,
                    userName, authKey, privKey,authProtocol,
@@ -148,7 +148,7 @@ class CommonSnmpActions(object):
         else:    #for ipv4
             transport = wsnmp.udptransporttarget()
         if custom_mib_paths:
-            __custom_mib_paths = snmp_utils.split_mib_path(custom_mib_paths)
+            temp_custom_mib_paths = snmp_utils.split_mib_path(custom_mib_paths)
 
         if oid_string == None and mib_name == None:
             testcase_Utils.pNote("Please provide OID or MIB Information!", "error")
@@ -156,7 +156,7 @@ class CommonSnmpActions(object):
             oid = tuple([int(e) if e.isdigit() else e for e in oid_string.split('.')])
         else:
             if custom_mib_paths:
-                oid = wsnmp.mibvariable(mib_name, mib_index, mib_value).addAsn1MibSource(*__custom_mib_paths)
+                oid = wsnmp.mibvariable(mib_name, mib_index, mib_value).addAsn1MibSource(*temp_custom_mib_paths)
             else:
                 oid = wsnmp.mibvariable(mib_name, mib_index, mib_value)
         try:
@@ -167,7 +167,7 @@ class CommonSnmpActions(object):
                            '{0}_errstatus'.format(system_name):errstatus,
                            '{0}_errindex'.format(system_name):errindex,
                            '{0}_result'.format(system_name):result,
-                           '{0}_custom_mib_paths'.format(system_name):__custom_mib_paths,
+                           '{0}_custom_mib_paths'.format(system_name):temp_custom_mib_paths,
                            '{0}_load_mib_modules'.format(system_name):load_mib_modules
                            }
             if result != []:
@@ -272,7 +272,7 @@ class CommonSnmpActions(object):
         port = snmp_param_dic.get('snmp_port')
 
         output_dict = {}
-        __custom_mib_paths = None
+        temp_custom_mib_paths = None
         wsnmp = ws(communityname, self.snmpver.get(snmp_ver), ipaddr, port, snmp_timeout,
                    userName, authKey, privKey,authProtocol,
                    privProtocol)
@@ -287,7 +287,7 @@ class CommonSnmpActions(object):
         else:    #for ipv4
             transport = wsnmp.udptransporttarget()
         if custom_mib_paths:
-            __custom_mib_paths = snmp_utils.split_mib_path(custom_mib_paths)
+            temp_custom_mib_paths = snmp_utils.split_mib_path(custom_mib_paths)
         if oid_string == None and mib_name == None:
             testcase_Utils.pNote("Please provide OID or MIB Information!", "error")
 
@@ -295,7 +295,7 @@ class CommonSnmpActions(object):
             oid = tuple([int(e) if e.isdigit() else e for e in oid_string.split('.')])
         else:
             if custom_mib_paths:
-                oid = wsnmp.mibvariable(mib_name, mib_index, mib_value).addAsn1MibSource(*__custom_mib_paths)
+                oid = wsnmp.mibvariable(mib_name, mib_index, mib_value).addAsn1MibSource(*temp_custom_mib_paths)
             else:
                 oid = wsnmp.mibvariable(mib_name, mib_index, mib_value)
         try:
@@ -310,7 +310,7 @@ class CommonSnmpActions(object):
                            '{0}_errstatus'.format(system_name):errstatus,
                            '{0}_errindex'.format(system_name):errindex,
                            '{0}_result'.format(system_name):result,
-                           '{0}_custom_mib_paths'.format(system_name):__custom_mib_paths,
+                           '{0}_custom_mib_paths'.format(system_name):temp_custom_mib_paths,
                            '{0}_load_mib_modules'.format(system_name):load_mib_modules}
             if result != []:
                 status = True
@@ -414,7 +414,7 @@ class CommonSnmpActions(object):
         port = snmp_param_dic.get('snmp_port')
 
         output_dict = {}
-        __custom_mib_paths = None
+        temp_custom_mib_paths = None
         wsnmp = ws(communityname, self.snmpver.get(snmp_ver), ipaddr, port, snmp_timeout,
                    userName, authKey, privKey,authProtocol,
                    privProtocol)
@@ -432,12 +432,12 @@ class CommonSnmpActions(object):
         if oid_string == None and mib_name == None:
             testcase_Utils.pNote("Please provide OID or MIB Information!", "error")
         if custom_mib_paths:
-            __custom_mib_paths = snmp_utils.split_mib_path(custom_mib_paths)
+            temp_custom_mib_paths = snmp_utils.split_mib_path(custom_mib_paths)
         if oid_string: #OID String is optional
             oid = tuple([int(e) if e.isdigit() else e for e in oid_string.split('.')])
         else:
             if custom_mib_paths:
-                oid = wsnmp.mibvariable(mib_name, mib_index).addAsn1MibSource(*__custom_mib_paths)
+                oid = wsnmp.mibvariable(mib_name, mib_index).addAsn1MibSource(*temp_custom_mib_paths)
             else:
                 oid = wsnmp.mibvariable(mib_name, mib_index)
         try:
@@ -452,7 +452,7 @@ class CommonSnmpActions(object):
                            '{0}_errstatus'.format(system_name):errstatus,
                            '{0}_errindex'.format(system_name):errindex,
                            '{0}_result'.format(system_name):result,
-                           '{0}_custom_mib_paths'.format(system_name):__custom_mib_paths,
+                           '{0}_custom_mib_paths'.format(system_name):temp_custom_mib_paths,
                            '{0}_load_mib_modules'.format(system_name):load_mib_modules
                            }
 
@@ -559,7 +559,7 @@ class CommonSnmpActions(object):
         port = snmp_param_dic.get('snmp_port')
 
         output_dict = {}
-        __custom_mib_paths = None
+        temp_custom_mib_paths = None
 
         wsnmp = ws(communityname, self.snmpver.get(snmp_ver), ipaddr, port, snmp_timeout,
                    userName, authKey, privKey,authProtocol,
@@ -575,7 +575,7 @@ class CommonSnmpActions(object):
         else:    #for ipv4
             transport = wsnmp.udptransporttarget()
         if custom_mib_paths:
-            __custom_mib_paths = snmp_utils.split_mib_path(custom_mib_paths)
+            temp_custom_mib_paths = snmp_utils.split_mib_path(custom_mib_paths)
         if oid_string == None and mib_name == None:
             testcase_Utils.pNote("Please provide OID or MIB Information!", "error")
 
@@ -584,7 +584,7 @@ class CommonSnmpActions(object):
                          else e for e in oid_string.split('.')])
         else:
             if custom_mib_paths:
-                oid = wsnmp.mibvariable(mib_name, mib_index, mib_value).addAsn1MibSource(*__custom_mib_paths)
+                oid = wsnmp.mibvariable(mib_name, mib_index, mib_value).addAsn1MibSource(*temp_custom_mib_paths)
             else:
                 oid = wsnmp.mibvariable(mib_name, mib_index, mib_value)
         try:
@@ -608,7 +608,7 @@ class CommonSnmpActions(object):
                            '{0}_errstatus'.format(system_name):errstatus,
                            '{0}_errindex'.format(system_name):errindex,
                            '{0}_result'.format(system_name):result,
-                           '{0}_custom_mib_paths'.format(system_name):__custom_mib_paths,
+                           '{0}_custom_mib_paths'.format(system_name):temp_custom_mib_paths,
                            '{0}_load_mib_modules'.format(system_name):load_mib_modules}
 
             if result != []:
@@ -821,21 +821,21 @@ class CommonSnmpActions(object):
         ntfrcv.NotificationReceiver(engine, ws.trap_decoder)
         ws.data_repo.update({"custom_mib_path":custom_mib_path,
                         "load_mib_module":load_mib_module})
-        _trap_listner_job = Thread(target=ws.create_trap_listner_job, args=(port, ))
-        _trap_listner_job_start = Thread(target=ws.start_trap_listner_job, args=(port,))
-        _trap_listner_job.daemon = True
-        _trap_listner_job_start.daemon = True
-        _trap_listner_job.start()
+        trap_listner_job = Thread(target=ws.create_trap_listner_job, args=(port, ))
+        trap_listner_job_start = Thread(target=ws.start_trap_listner_job, args=(port,))
+        trap_listner_job.daemon = True
+        trap_listner_job_start.daemon = True
+        trap_listner_job.start()
         if community:
-            __status = ws.add_community(port, community)
-            status = status and __status
+            stats = ws.add_community(port, community)
+            status = status and stats
         if username and securityEngineId:
-            __status = self.add_snmp_v3_user(port, username, securityEngineId,
+            stats = self.add_snmp_v3_user(port, username, securityEngineId,
                                                 authkey, privkey,
                                                 authProtocol, privProtocol)
-            status = status and __status
+            status = status and stats
         sleep(1)
-        _trap_listner_job_start.start()
+        trap_listner_job_start.start()
         sleep(2)
         Utils.testcase_Utils.report_substep_status(status)
         return status
@@ -856,10 +856,10 @@ class CommonSnmpActions(object):
                                                           snmp_parameters)
         ip = snmp_param_dic.get('ip')
         port = snmp_param_dic.get('snmp_trap_port')
-        _stop_list = Thread(target=ws.close_trap_listner_job, args=(port,))
-        _stop_list.daemon = True
-        _stop_list.start()
-        _stop_list.join()
+        stop_list = Thread(target=ws.close_trap_listner_job, args=(port,))
+        stop_list.daemon = True
+        stop_list.start()
+        stop_list.join()
         Utils.testcase_Utils.report_substep_status(status)
         return status
 
@@ -874,7 +874,7 @@ class CommonSnmpActions(object):
             oid_string and value as a pair. Default value 'no'
         :return: Binary True or False
         """
-        __status = []
+        stats = []
         status = False
         wdesc = "Validate the Received Trap Messages from {}".format(system_name)
         Utils.testcase_Utils.pSubStep(wdesc)
@@ -884,28 +884,28 @@ class CommonSnmpActions(object):
                                                           snmp_parameters)
         agent_ip = snmp_param_dic.get('ip')
         port = snmp_param_dic.get('snmp_trap_port')
-        __op_trap = ws.data_repo.get("snmp_trap_messages_{}".format(agent_ip))
-        if __op_trap:
-            testcase_Utils.pNote("Total No# {} of Trap message(s) Received from {}".format(len(__op_trap), agent_ip))
-            for __list in __op_trap:
-                for __items in __list[4:]:
+        op_trap = ws.data_repo.get("snmp_trap_messages_{}".format(agent_ip))
+        if op_trap:
+            testcase_Utils.pNote("Total No# {} of Trap message(s) Received from {}".format(len(op_trap), agent_ip))
+            for temp_list in op_trap:
+                for items in temp_list[4:]:
                     if match_oid_op_value_pair.lower() == "no":
-                        if value and value in __items[1]:
-                            testcase_Utils.pNote("Value# {} is present in: \n# {} = {}".format(value, __items[0], __items[1]))
-                            __status.append(True)
+                        if value and value in items[1]:
+                            testcase_Utils.pNote("Value# {} is present in: \n# {} = {}".format(value, items[0], items[1]))
+                            stats.append(True)
                             break
                     elif oid_string and value:
-                        if oid_string in __items[0] and value in __items[1]:
-                            testcase_Utils.pNote("OID #{} and Value #{} is present in: \n# {} = {}".format(oid_string, value, __items[0], __items[1]))
-                            __status.append(True)
+                        if oid_string in items[0] and value in items[1]:
+                            testcase_Utils.pNote("OID #{} and Value #{} is present in: \n# {} = {}".format(oid_string, value, items[0], items[1]))
+                            stats.append(True)
                             break
-                    if True in __status:
+                    if True in stats:
                         break
-                if True in __status:
+                if True in stats:
                     break
         else:
             testcase_Utils.pNote("No Trap Received!", "error")
-        if True in __status:
+        if True in stats:
             status = True
         else:
             if value and oid_string:
@@ -933,20 +933,20 @@ class CommonSnmpActions(object):
         agent_ip = snmp_param_dic.get('ip')
         port = snmp_param_dic.get('snmp_trap_port')
         sleep(5)
-        __op_trap = ws.data_repo.get("snmp_trap_messages_{}".format(agent_ip))
-        if __op_trap:
-            testcase_Utils.pNote("Total No# {} of Trap message(s) Received from {}".format(len(__op_trap), agent_ip))
-            for __list in __op_trap:
-                __ticks = __list[0].get("time_stamp")
-                __contextengineid = __list[1].get("contextEngineId")
-                __snmpver = __list[2].get("SNMPVER")
-                __securityname = __list[3].get("securityName")
+        op_trap = ws.data_repo.get("snmp_trap_messages_{}".format(agent_ip))
+        if op_trap:
+            testcase_Utils.pNote("Total No# {} of Trap message(s) Received from {}".format(len(op_trap), agent_ip))
+            for temp_list in op_trap:
+                ticks = temp_list[0].get("time_stamp")
+                contextengineid = temp_list[1].get("contextEngineId")
+                snmpver = temp_list[2].get("SNMPVER")
+                securityname = temp_list[3].get("securityName")
                 testcase_Utils.pNote(" --------->>Notification message(Time Stamp:{})<<------- \n From: {}:\n "
                                      "contextEngineId :{}\n SNMPVER :{}\n securityName: {}"
-                                     .format(__ticks, agent_ip, __contextengineid, __snmpver, __securityname))
+                                     .format(ticks, agent_ip, contextengineid, snmpver, securityname))
                 testcase_Utils.pNote("--------------")
-                for __items in __list[4:]:
-                    testcase_Utils.pNote("{} = {}".format(__items[0], __items[1]))
+                for items in temp_list[4:]:
+                    testcase_Utils.pNote("{} = {}".format(items[0], items[1]))
         else:
             testcase_Utils.pNote("No Trap Received from {}!".format(agent_ip), "error")
             status = False
@@ -967,7 +967,7 @@ class CommonSnmpActions(object):
         wdesc = "Browse the MIB File"
         Utils.testcase_Utils.pSubStep(wdesc)
         oid, label, suffix, mibView, mibBuilder = ws.get_first_node_name(mib_filepath, mib_filename)
-        __modName, nodeDesc, suffix = mibView.getNodeLocation(oid)
+        temp_modName, nodeDesc, suffix = mibView.getNodeLocation(oid)
         while 1:
             try:
                 modName, nodeDesc, suffix = mibView.getNodeLocation(oid)
