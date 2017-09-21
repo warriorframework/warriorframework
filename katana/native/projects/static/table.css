@@ -74,3 +74,11 @@ padding-left: 15px;
     width: 32px;
     display: inline-flex;
 }
+
+
+.duplicate-item-32 {
+    background: url('/static/core/images/icons/duplicate-item-32.ico') no-repeat;
+    height: 32px;
+    width: 32px;
+    display: inline-flex;
+}

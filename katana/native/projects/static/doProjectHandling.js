@@ -368,15 +368,15 @@ function createSuitesTable(xdata) {
 	katana.$activeTab.find("#tableOfTestSuitesForProject").html("");
 	for (var s=0; s<Object.keys(xdata).length; s++ ) {
 		var oneSuite = xdata[s];
-		console.log(xdata);
+		//console.log(xdata);
 		if (oneSuite == null) {
 			xdata[s] = {} ;
 			oneSuite = xdata[s];
 		}
-		console.log(oneSuite);
+		//console.log(oneSuite);
 		fillSuiteDefaults(s,xdata);
-		console.log(oneSuite);
-		console.log(oneSuite['path']);
+		//console.log(oneSuite);
+		//console.log(oneSuite['path']);
 		
 		items.push('<tr data-sid="'+s+'">');
 		items.push('<td>'+(parseInt(s)+1)+'</td>');
@@ -418,17 +418,28 @@ function createSuitesTable(xdata) {
 		});
 
 		bid = "InsertTestSuite-"+s+"-id"+getRandomID();;
-		items.push('<i  title="Insert" class="add-item-32" value="Insert" id="'+bid+'"/></td>');
+		items.push('<i  title="Insert" class="add-item-32" value="Insert" id="'+bid+'"/>');
 		katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 		$(document).on('click','#'+bid,function(  ) {
 			var names = this.id.split('-');
 			var sid = parseInt(names[1]);
 			console.log("xdata --> "+ xdata);
-			insertTestSuite(sid,xdata);
+			insertTestSuite(sid,xdata,0);
 			//mapProjectSuiteToUI(sid,xdata);
 			//This is where you load in the edit form and display this row in detail. 
 		});
 
+		bid = "DuplicateTestSuite-"+s+"-id"+getRandomID();;
+		items.push('<i  title="Duplicate" class="duplicate-item-32" value="Duplicate" id="'+bid+'"/></td>');
+		katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
+		$(document).on('click','#'+bid,function(  ) {
+			var names = this.id.split('-');
+			var sid = parseInt(names[1]);
+			console.log("xdata --> "+ xdata);
+			insertTestSuite(sid,xdata,1);
+			//mapProjectSuiteToUI(sid,xdata);
+			//This is where you load in the edit form and display this row in detail. 
+		});
 
 		items.push('</tr>');
 	}
@@ -478,6 +489,11 @@ var testProjectSortEventHandler = function(event, ui ) {
 
 }
 
+function copyTestSuite(src,dst) { 
+	var dst = jQuery.extend(true, {}, src); 
+	return dst; 
+}
+
 function fillSuiteDefaults(s, data){
 		if(data[s] == null) {
 			data[s] = {} ;
@@ -489,9 +505,6 @@ function fillSuiteDefaults(s, data){
 			oneSuite['path'] =  "New";
 		}
 
-		if (!oneSuite['impact']) {
-			oneSuite['impact'] = "New";
-		}
 		if (!oneSuite['impact']) {
 			oneSuite['impact'] =  "impact";
 		}
@@ -555,9 +568,12 @@ function removeTestSuite( sid,xdata ){
 	mapProjectJsonToUi(jsonTestSuites);	// Send in the modified array
 }
 // Removes a test suite by its ID and refresh the page. 
-function insertTestSuite( sid,xdata ){
+function insertTestSuite( sid,xdata, copy ){
 	var newTestSuite = makeNewSuite();	
+	if (copy == 1) {
+			newTestSuite = jQuery.extend(true, {}, xdata[sid]); 
+	}
 	jsonTestSuites['Testsuite'].splice(sid,0,newTestSuite);
-	console.log("Removing test suites "+sid+" now " + Object.keys(jsonTestSuites).length);
+	console.log("insertining test suites at"+sid+" now " + Object.keys(jsonTestSuites).length);
 	mapProjectJsonToUi(jsonTestSuites);	// Send in the modified array
 }
