@@ -79,3 +79,6 @@
     flex-grow: .5;
     font-size: 18px;
 }
+
+
+.configuration_table tr:nth-child(even){background-color: #f2f2ff}

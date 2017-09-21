@@ -82,3 +82,5 @@ padding-left: 15px;
     width: 32px;
     display: inline-flex;
 }
+
+.configuration_table tr:nth-child(even){background-color: #f2f2ff}

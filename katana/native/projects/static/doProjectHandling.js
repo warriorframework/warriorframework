@@ -381,7 +381,7 @@ function mapUiToProjectJson() {
 // 
 function createSuitesTable(xdata) {
 	var items = []; 
-	items.push('<table id="suite_table_display" class="configuration_table" width="100%">');
+	items.push('<table id="suite_table_display" class="configuration_table striped" width="100%">');
 	items.push('<thead>');
 	items.push('<tr id="suiteRow"><th>Num</th><th>Suite</th><th>Execute</th><th>OnError</th><th>Impact</th><th/></tr>');
 	items.push('</thead>');
