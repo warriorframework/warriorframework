@@ -209,7 +209,7 @@ function mapProjectSuiteToUI(s,xdata) {
 var fillProjectDefaultGoto = function() {
 	
 	var gotoStep = katana.$activeTab.find('#default_onError').val();
-	console.log("Step ", gotoStep);
+//	console.log("Step ", gotoStep);
 	var defgoto = katana.$activeTab.find('#default_onError_goto'); 
 	
 	if (gotoStep.trim() == 'goto'.trim()) { 
@@ -227,7 +227,7 @@ var fillProjectDefaultGoto = function() {
 var fillProjectSuitePopupDefaultGoto = function(popup) {
 
 	var gotoStep =popup.find('#onError-at-action').val();
-	console.log("Step ", gotoStep);
+	//console.log("Step ", gotoStep);
 	var defgoto = popup.find('#onError-at-value'); 
 	defgoto.hide();
 

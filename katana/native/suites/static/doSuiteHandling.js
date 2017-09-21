@@ -97,11 +97,14 @@ function addCaseToSuite(){
 	createCasesTable(jsonTestcases['Testcase']);
 }
 
-function insertCaseToSuite(sid){
+function insertCaseToSuite(sid, copy){
 	var newTestcase =createNewCaseForSuite();	
 	if (!jQuery.isArray(jsonTestcases['Testcase'])) {
 		jsonTestcases['Testcase'] = [jsonTestcases['Testcase']];
 		}
+	if (copy == 1) {
+		newTestcase = jQuery.extend(true, {}, jsonTestcases['Testcase'][sid]); 
+	}
 	jsonTestcases['Testcase'].splice(sid,0,newTestcase);
 	createCasesTable(jsonTestcases['Testcase']);
 }
@@ -352,16 +355,25 @@ function createCasesTable(xdata) {
 		});
 		bid = "insertTestcase-"+s+"-id"+getRandomSuiteID();
 		//items.push('<td><input type="button" class="btn" value="Edit" id="'+bid+'"/></td>');
-		items.push('<i title="Edit" class="add-item-32" title="Insert New Case" id="'+bid+'"/></td>');
+		items.push('<i title="Edit" class="add-item-32" title="Insert New Case" id="'+bid+'"/>');
 		katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 		$(document).on('click','#'+bid,function(  ) {
 			var names = this.id.split('-');
 			var sid = parseInt(names[1]);
 			console.log("xdata --> "+ xdata);
-			insertCaseToSuite(sid);
-			//mapSuiteCaseToUI(sid,xdata);
-			//This is where you load in the edit form and display this row in detail. 
+			insertCaseToSuite(sid,0);
 		});
+		bid = "dupTestcase-"+s+"-id"+getRandomSuiteID();
+		//items.push('<td><input type="button" class="btn" value="Edit" id="'+bid+'"/></td>');
+		items.push('<i title="Edit" class="duplicate-item-32" title="Duplicate New Case" id="'+bid+'"/></td>');
+		katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
+		$(document).on('click','#'+bid,function(  ) {
+			var names = this.id.split('-');
+			var sid = parseInt(names[1]);
+			console.log("xdata --> "+ xdata);
+			insertCaseToSuite(sid,1);
+		});
+
 		items.push('</tr>');
 	}
 	items.push('</tbody>');

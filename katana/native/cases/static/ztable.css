@@ -28,7 +28,7 @@
 
 }
 .configuration_table tr th:last-child, .configuration_table tr td:last-child {
-    flex-grow: .9;
+    flex-grow: 1.1;
     font-size: 18px;
 }
 .configuration_table i{

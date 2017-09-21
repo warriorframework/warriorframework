@@ -304,20 +304,8 @@ function mapCaseJsonToUi(data){
 		});
 
 
-		bid = "addTestStepAbove-"+s+"-id-"+getRandomCaseID();
-		items.push('<i  title="Insert" class="add-item-32" value="Insert" id="'+bid+'"/>');
-		
-		$('#'+bid).off('<td>click');   //unbind and bind are deprecated. 
-		$(document).on('click','#'+bid,function(  ) {
-			//alert(this.id);
-			var names = this.id.split('-');
-			var sid = parseInt(names[1]);
-			addTestStepAboveToUI(sid,xdata);
-		});
-
-
 		bid = "editTestStep-"+s+"-id-"+getRandomCaseID();
-		items.push('<i title="Edit"  class="edit-item-32" theSid="'+s+'" value="Edit/Save"  id="'+bid+'"></i></td>');
+		items.push('<i title="Edit"  class="edit-item-32" theSid="'+s+'" value="Edit/Save"  id="'+bid+'"></i>');
 		$('#'+bid).off('click');   //unbind and bind are deprecated. 
 		$('#'+bid).attr('theSid', s);  //Set tthe name
 		katana.$activeTab.on('click','#'+bid,function() {
@@ -328,6 +316,28 @@ function mapCaseJsonToUi(data){
 				setupPopupDialog(sid,xdata,popup);
 			});
 		 }); 
+
+		bid = "addTestStepAbove-"+s+"-id-"+getRandomCaseID();
+		items.push('<i  title="Insert" class="add-item-32" value="Insert" id="'+bid+'"/>');
+		
+		$('#'+bid).off('<td>click');   //unbind and bind are deprecated. 
+		$(document).on('click','#'+bid,function(  ) {
+			//alert(this.id);
+			var names = this.id.split('-');
+			var sid = parseInt(names[1]);
+			addTestStepAboveToUI(sid,xdata,0);
+		});
+
+		bid = "dupTestStepAbove-"+s+"-id-"+getRandomCaseID();
+		items.push('<i  title="Duplicate" class="duplicate-item-32" value="Duplicate" id="'+bid+'"/></td>');
+		
+		$('#'+bid).off('<td>click');   //unbind and bind are deprecated. 
+		$(document).on('click','#'+bid,function(  ) {
+			//alert(this.id);
+			var names = this.id.split('-');
+			var sid = parseInt(names[1]);
+			addTestStepAboveToUI(sid,xdata,1);
+		});
 
 
 
@@ -630,8 +640,10 @@ function addNewTestStepToUI() {
 	mapCaseJsonToUi(jsonCaseSteps);		
 }
 
-function addTestStepAboveToUI(sid,xdata) {
+function addTestStepAboveToUI(sid,xdata,copy) {
 	var newObj = createNewStep();
+
+
 	if (sid < 1) { 
 		sid = 0 ;
 	} else {
@@ -644,6 +656,10 @@ function addTestStepAboveToUI(sid,xdata) {
 		jsonCaseSteps['step'] = [jsonCaseSteps['step']];
 		}
 
+	if (copy == 1){
+		newObj = jQuery.extend(true, {}, jsonCaseSteps['step'][sid]); 
+
+	}
 	jsonCaseSteps['step'].splice(sid,0,newObj);  // Don't delete anything
 	mapCaseJsonToUi(jsonCaseSteps);		
 }
