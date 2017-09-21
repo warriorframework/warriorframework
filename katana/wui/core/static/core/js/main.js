@@ -857,14 +857,14 @@ var katana = {
 
 	fileExplorerAPI: {
 
-	    openFileExplorer: function(heading, start_directory, callBack_on_accept, callBack_on_dismiss){
+	    openFileExplorer: function(heading, start_directory, csrftoken, callBack_on_accept, callBack_on_dismiss){
             if(!heading || heading == "" || heading == undefined){
                 heading = "Select a file"
             }
             if(start_directory == undefined || start_directory == ""){
                 start_directory = false;
             }
-            katana.templateAPI.post('get_file_explorer_data/', wapp_management.getCookie('csrftoken'), {"path": start_directory},
+            katana.templateAPI.post('get_file_explorer_data/', csrftoken, {"path": start_directory},
                 function(data) {
                     var explorer_modal_html = $($('#file-explorer-template').html())
                     var $fileExplorerHeading = explorer_modal_html.find('#file-explorer-heading');
@@ -895,7 +895,7 @@ var katana = {
                         katana.fileExplorerAPI.dismissFileExplorer(callBack_on_dismiss);
                     });
                     $tabContent.find('#explorer-up').on('click', function(){
-                        katana.fileExplorerAPI.upFileExplorer(data.li_attr["data-path"]);
+                        katana.fileExplorerAPI.upFileExplorer(data.li_attr["data-path"], csrftoken);
                     });
 
                 })
@@ -921,8 +921,8 @@ var katana = {
             callBack && callBack();
         },
 
-        upFileExplorer: function(currentPath){
-            katana.templateAPI.post('get_file_explorer_data/', wapp_management.getCookie('csrftoken'), {"path": currentPath},
+        upFileExplorer: function(currentPath, csrftoken){
+            katana.templateAPI.post('get_file_explorer_data/', csrftoken, {"path": currentPath},
                 function(data) {
                     var $currentPage = katana.$activeTab;
                     var $tabContent = $currentPage.find('.page-content-inner');
@@ -947,7 +947,7 @@ var katana = {
                     $directoryData.jstree().hide_dots();
                     $tabContent.find('#explorer-up').off('click');
                     $tabContent.find('#explorer-up').on('click', function(){
-                        katana.fileExplorerAPI.upFileExplorer(data.li_attr["data-path"]);
+                        katana.fileExplorerAPI.upFileExplorer(data.li_attr["data-path"], csrftoken);
                     });
                 });
         },
