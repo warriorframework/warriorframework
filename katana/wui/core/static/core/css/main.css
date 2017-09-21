@@ -177,12 +177,8 @@ span.close {
     text-align: center;
     line-height: 40px;
 }
-
 span.close:before {
     content: 'X';
-}
-span.close:hover {
-  color: #c00 !important;
 }
 .popupContainer .overlay {
     width: 100%;
@@ -497,12 +493,11 @@ input {
     background: #f9f9f9;
     margin-top: 4px;
 }
-input[type=radio]{
-  width: 15px;
-}
-
 input:focus {
     background: #efefef;
+}
+input[type=radio]{
+  width: 15px;
 }
 .field {
     padding: 5px 0;
@@ -662,8 +657,8 @@ input[type="checkbox"] {
     position: absolute;
     top: 0;
     left: 0;
-    height: 30px;
-    width: 30px;
+    height: 30px !important;
+    width: 30px !important;
     z-index: 1;
     opacity: 0;
     cursor: pointer;
@@ -1027,7 +1022,7 @@ div#launchpad.page.hidden .tabs {
 .page .page + .page-content {
     display: none;
 }
-.page-content .tool-bar {
+.page-content .tool-bar, .page-content .sub-tool-bar {
     position: absolute;
     top: 0;
     left: 0;
@@ -1035,14 +1030,26 @@ div#launchpad.page.hidden .tabs {
     width: 100%;
     height: 40px;
     z-index: 9;
-    background: #73a5c4;
+    background: #4ea4e0;
     color: white;
     -webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.19);
     -moz-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.19);
     box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.19);
     padding: 0 2px;
 }
-.tool-bar .button {
+.indent {
+    width: calc(100% - 100px) !important;
+    margin-left: 100px !important;
+}
+.sub-tool-bar + .to-scroll {
+    overflow: auto !important;
+    position: absolute;
+    top: 40px;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 40px);
+}
+.tool-bar .button, .sub-tool-bar .button {
     margin: 5px 5px 0px 2px;
     background: rgb(244, 244, 244);
     border: solid #d2d2d2 1px;
@@ -1050,7 +1057,40 @@ div#launchpad.page.hidden .tabs {
     width: 80px;
     text-align: center;
 }
-.tool-bar .button:hover {
+
+.expandable-container {
+    display: flex;
+    padding: 0;
+}
+
+.to-expand {
+    flex-basis: 0;
+    flex-grow: 1;
+    margin: 0 2px;
+    height: 100%;
+    position: relative;
+}
+
+.sub-tool-bar .field {
+    padding: 0;
+    height: 90%;
+    padding-top: 4px;
+    max-width: none;
+}
+.to-expand{
+  -webkit-transition: all .3s ease;
+  transition: all .3s ease;
+}
+.expanded {
+    flex-grow: 3 !important;
+}
+.sub-tool-bar input {
+    padding: 0 5px;
+    height: 100%;
+    margin: 0;
+    border: none;
+}
+.tool-bar .button:hover, .sub-tool-bar .button:hover {
     background: #efefef;
 }
 .tool-bar .button.close:hover {
@@ -2116,11 +2156,63 @@ textarea {
     text-shadow: none;
     opacity: 1;
 }
-.tool-bar .button {
+.tool-bar .button, .sub-tool-bar .button {
     padding: 2px;
     height: 32px;
     vertical-align: top;
 }
+.buttons.col-md-3 {
+    width: 300px;
+    flex: none;
+    padding: 0;
+    max-width: none;
+    text-align: center;
+}
+.field-inline {
+    padding: 0;
+    margin: 0 auto;
+    height: 40px;
+    position: relative;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.field-inline > label {
+    width: 200px;
+    display: inline-block;
+    border: solid 1px gainsboro;
+    border-right: none;
+    height: 100%;
+    line-height: 40px;
+    padding: 0;
+    background: white;
+    text-align: right;
+    /* position: relative; */
+    padding-right: 5px;
+    margin-right: -3px;
+    margin-left: 3px;
+}
+
+.field-inline > input {
+    width: calc(100% - 207px);
+    display: inline-block;
+    height: 100%;
+    line-height: 40px;
+    vertical-align: top;
+    margin: 0 !important;
+}
+
+.field-inline  input[type="checkbox"], .field-inline input[type="checkbox"] + label:before{top: 7px; left: 10px;}
+.expandable-container.col-sm-9 {
+    width: calc(100% - 300px);
+    flex: none;
+    max-width: none;
+}
+.sub-tool-bar > i {
+    line-height: 40px;
+    margin: 0 6px;
+}
+
 .tool-bar-links {
     cursor: pointer;
     overflow: hidden;
@@ -2144,16 +2236,7 @@ div .tool-bar-links:hover {
 div .tool-bar-links:active {
     background-color: #e5e4e2;
 }
-.icon-wrapper {
-    border-radius: 100%;
-    /*border: 1px solid #fff;*/
-    vertical-align: middle;
-    text-align: center;
-    height: 32px;
-    width: 32px;
-    font-size: 20px;
 
-}
 .jira-32 {
     background: url('/static/core/images/icons/jira-32.ico') no-repeat;
     height: 32px;
@@ -2179,6 +2262,7 @@ div .tool-bar-links:active {
     display: inline-flex;
 }
 
+
 .empty {
     border: 1px solid red;
 }
@@ -2203,22 +2287,20 @@ div .tool-bar-links:active {
   background: #fff;
   color: black;
   overflow: hidden;
-  border: 1px solid #dedede;
+  /* border: 1px solid #dedede; */
   border-top:none;
-  margin:none;
+  margin: 0;
 }
-
 .execution.selections-panel {
   display:flex;
   flex-direction: column;
-  width:calc(40% - 4px);
-  height: calc(1000% - 4px);
+  width: calc(40% - -4px);
+  height: calc(100% - 4px);
   background: #fff;
   color: black;
   overflow: hidden;
-  border: 1px solid #dedede;
-  border-top:none;
-  margin:none;
+  border-left: solid 1px #ebf2fa;
+  margin: 0;
 }
 .execution.cmd-options-panel {
   width:calc(40% - 4px);
@@ -2232,27 +2314,33 @@ div .tool-bar-links:active {
 .execution.panels-heading{
   height: 40px;
   width: 100%;
-  border-bottom: 1px solid #dedede;
+  /* border-bottom: 1px solid #dedede; */
   position: relative;
-  background-color: #73a5c4;
+  background-color: #4ea4e0;
+  /*#73a5c4;*/
   color: white;
   display: flex;
   align-items: center;
   justify-content: flex-end;
 }
-.execution.panels-heading i{
+.execution.panels-heading-icon{
+  display: flex;
+  flex-direction: column;
   font-size: 18px;
-  line-height: 30px;
   margin: 0;
   color: white;
+  /*#5a5a5a;*/
   padding: 0px 4px;
   width: 32px;
   height: 32px;
   text-align: center;
+  vertical-align: middle;
+  justify-content: center;
 }
-.execution.panels-heading i:hover{
-  color: #03a9f4 !important;
+.execution.panels-heading-icon:hover{
+  color: black !important;
 }
+
 .execution.panels-heading label{
   margin-right:auto;
   padding-left: 10px;
@@ -2270,61 +2358,6 @@ div .tool-bar-links:active {
   height: calc(100% - 70px);
   margin-top: 15px;
   /*margin-bottom: 5px;*/
-}
-.execution.cmd-options-slider{
-  display: flex;
-  flex-direction: row;
-  /*margin-top: 2px;*/
-  height: 50px;
-  width: 100%;
-  border-bottom: 1px solid #dedede;
-  background-color: #ececec;
-  color: black;
-  align-items: center;
-  justify-content: center;
-  vertical-align: middle;
-  opacity:0.75;
-}
-.execution.cmd-options-slider i{
-  color: black;
-  /*border: 1px solid #dedede;*/
-  line-height: 25px;
-  /*text-align: center;*/
-}
-.execution.cmd-options-slider i:hover{
-  color: #03a9f4 !important;
-}
-.execution.cmd-options-slider i[name='right']{
-  margin-left: auto;
-  padding:0;
-}
-.execution.cmd-options-slider i[name='left']{
-  margin-right: auto;
-  padding:0;
-}
-.execution.cmd-icons{
-  display: inline;
-  background-color: #ececec;
-  color: black;
-  align-items: center;
-  justify-content: center;
-  white-space: nowrap;
-  width:90%;
-  vertical-align: middle;
-}
-.execution.cmd-icons i{
-  display:inline-flex;
-  /*width: calc(50% - 2px);*/
-  margin-left: 9%;
-  margin-right: 9%;
-  /*padding-right:2px;
-  padding-left:2px;*/
-  background-color: #ececec;
-  color: black;
-  justify-content: center;
-  vertical-align: middle;
-  align-items: center;
-
 }
 .execution.selection-items{
   height:90%;
@@ -2408,10 +2441,9 @@ div .tool-bar-links:active {
     height: 40px;
     width: 100%;
     color: #6b6b6b;
-    background: rgba(115, 165, 196, 1);
+    background: rgb(78, 164, 224);
     /*rgb(115, 165, 196);*/
     /*padding-bottom: 4%;*/
-
     padding: 0;
 }
 .execution.results-tab  button {
@@ -2579,14 +2611,16 @@ div .tool-bar-links:active {
     min-width: 70%;
     height: 600px;
     width: -webkit-fit-content;
-    border: 1px solid #dedede;
     border-radius: 2px;
     -webkit-animation: fadeEffect 1s;
     color: black;
     background: white;
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.28);
+    -moz-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.28);
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.28);
     -webkit-transition: opacity 400ms ease-in;
-  	-moz-transition: opacity 400ms ease-in;
-  	transition: opacity 400ms ease-in;
+    -moz-transition: opacity 400ms ease-in;
+    transition: opacity 400ms ease-in;
 }
 .execution.cmd-options-dialog-container:not([open]) {
     display: none;
@@ -2597,8 +2631,8 @@ div .tool-bar-links:active {
 }
 .execution.cmd-options-dialog-container > .title{
   color: white;
-  background: rgba(35, 131, 195, 0.8);
-  border: 1px solid #dedede;
+  background: rgba(35, 131, 195, 0.95);
+  border: none;
 }
 .execution .title i{
   float: right;
@@ -2611,9 +2645,8 @@ div .tool-bar-links:active {
     width: 100%;
     margin-top: 40px;
     height: calc(100% - 80px);
-    padding: 2px 2px;
+    padding: 0;
     overflow: hidden;
-
 }
 
 .execution.cmd-options-menu {
@@ -2622,33 +2655,57 @@ div .tool-bar-links:active {
     /* margin-top: 2px; */
     height: 100px;
     width: 100%;
-    border-bottom: 1px solid #dedede;
-    background-color: rgba(115, 165, 196, .2);
-    color: black;
+    background-color: #4ea4e0;
+    color: white;
     align-items: center;
     justify-content: center;
     vertical-align: middle;
     /*opacity: 0.75;*/
 }
-.execution.cmd-options-icons{
-  display: inline;
+.execution.cmd-options-icons-bar{
+  display: inline-flex;
   background-color: transparent;
   color: black;
   align-items: center;
   justify-content: center;
   white-space: nowrap;
   width:90%;
+  height: 95%;
   vertical-align: middle;
 }
-.execution.cmd-options-icons i{
-  display:inline-flex;
-  /*width: calc(50% - 2px);*/
-  margin-left: 6%;
-  margin-right: 6%;
-  /*padding-right:2px;
-  padding-left:2px;*/
-  /*background: transparent;*/
+.execution.cmd-options-icon{
+  display: flex;
+  flex-direction: column;
+  background-color: transparent;
   color: black;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  width: 90%;
+  height: 100%;
+  vertical-align: middle;
+  padding: 5px;
+}
+.execution.cmd-options-icon:hover{
+  background: rgba(8, 8, 8, 0.05);
+}
+.execution.cmd-options-icon-wrapper {
+    height: 32px;
+    width: 32px;
+    font-size: 27px;
+}
+.execution.cmd-options-icon.red{
+  color: #903c3c;
+}
+.execution.cmd-options-icon.green{
+  color:  #3b7a4c;
+}
+.execution.cmd-options-icon span{
+  color: white;
+}
+.execution.cmd-options-icon i{
+  display:inline-flex;
+  padding: 20px;
   justify-content: center;
   vertical-align: middle;
   align-items: center;
@@ -2712,19 +2769,6 @@ div .tool-bar-links:active {
   padding: 5px;
   width:50%;
 }
-/*.execution.cmd-options-data  input[type='text']{
-  width: 50%;
-}
-.execution.cmd-options-data  label{
-  width: 100%;
-}*/
-/*.execution.questionaire{
-  display:none;
-}*/
-
-
-/* Execution cmd options dialog styles ends*/
-
 
 
 
@@ -2741,17 +2785,6 @@ div .tool-bar-links:active {
     width: 100%;
     max-width: 100%;
     text-align: left;
-}
-
-.wdf-label {
-    position: absolute;
-    top: 25%;
-    left: 20px;
-    right: 0;
-    margin: 0 auto;
-}
-.wdf-input {
-    /*font-size: 16px;*/
 }
 
 hr.wdf-hr {
@@ -2780,6 +2813,68 @@ hr.wdf-hr {
     width: 35%;
     float: left;
 }
+.sub-tool-bar .button{
+    margin-top: 4px;
+}
+.side-navigator {
+    position: relative;
+    position: sticky;
+    top: 0;
+    right: 0;
+    height: 80%;
+    background: #dcdcdc;
+    -ms-flex: 0 0 25%;
+    /* flex: 0 0 20%; */
+    /* max-width: 20%; */
+    flex: none;
+    max-width: none;
+    width: 300px;
+    margin-left: 30px;
+    margin-top: 15px;
+    -webkit-box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.22);
+    -moz-box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.22);
+    box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.22);
+    transition: all .1s ease;
+    padding: 18px;
+}
+.side-navigator .to-scroll {
+    padding: 5px 28px;
+}
+div#wdf-editor-col {
+    flex: none;
+    max-width: none;
+    width: calc(100% - 360px);
+    height: auto;
+    overflow: visible;
+    background: white;
+    margin-top: 15px;
+    padding: 0;
+    margin-left: 15px;
+    /* -webkit-box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.22); */
+    -moz-box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.22);
+    /* box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.22); */
+    transition: all .1s ease;
+}
+
+
+div#wdf-navigator
+ .btn:hover {
+    background: #eaeaea;
+}
+
+.wdf-container {
+    padding: 0;
+}
+
+.wdf-pad {
+    padding: 0;
+}
+
+.wdf-container .row {
+    margin-left: 0;
+    margin-right: 0;
+}
+
 
 @-webkit-keyframes wdf-highlight {
     from {
@@ -2807,21 +2902,63 @@ hr.wdf-hr {
 .wdf-tall-label {
     padding-bottom: 5px;
 }
-
-.wdf-pad {
+.control-box {
     padding: 10px;
+    margin-bottom: 12px;
+    -webkit-box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.22);
+    -moz-box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.22);
+    box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.22);
+    padding-top: 45px;
+    position: relative;
+}
+.sub-tool-bar > .field {
+    width: 40px;
+    overflow: hidden;
+    margin: 0;
+    position: absolute;
+    left: 7px;
+    top: 3px;
+    text-align: -webkit-left;
+    font-size: 0;
 }
 
+.sub-tool-bar > .field.title-block {
+    left: 45px;
+    top: 0;
+    width: calc(100% - 200px);
+    margin: 0;
+    /* padding: 0; */
+    overflow: hidden;
+    position: absolute;
+    display: block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: none;
+    color: white;
+}
+
+.sub-tool-bar > .field.title-block
+ > input, .sub-tool-bar > .field.title-block
+ > input::placeholder{
+    background: transparent;
+    color: white;
+    font-size: 20px;
+}
+
+.sub-tool-bar input[type="checkbox"] + label:before {
+    border-color: white;
+}
+
+.control-box:empty {
+    display: none;
+}
 /* wdf editor app related styles ends */
-
-
-
 
 
 .translator{
   display: none;
 }
-.
+
 .jstree-default .jstree-anchor,
 .jstree-default .jstree-animated,
 .jstree-default .jstree-wholerow {
@@ -2840,6 +2977,36 @@ hr.wdf-hr {
 }
 input[type="checkbox"] + label {
     padding-left: 35px;
+}
+.field-inline.dual-input > input {
+    width: calc(50% - 105px);
+}
+
+.field-inline.dual-input > input:last-child {
+    margin-left: 5px;
+}
+
+.field-inline.dual-input > label {
+    margin-right: 0px;
+    margin-left: 0;
+    border: none;
+}
+
+.field-inline.dual-input > label > i {
+    line-height: 40px;
+    width: 40px;
+    text-align: center;
+    display: inline-block;
+    color: #636363;
+}
+.wdf-container .sub-tool-bar .title {
+    background: transparent;
+    text-align: left;
+    color: white;
+}
+.add:before {
+    content: "\f067";
+    font: normal normal normal 14px/1 FontAwesome;
 }
 .quick-user > i {
     font-size: 24px;
