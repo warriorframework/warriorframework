@@ -61,6 +61,16 @@ function mapFullProjectJson(myobjectID){
 	fillProjectDefaultGoto();
 	console.log("Adding defaults ");
 	katana.$activeTab.find('#default_onError').on('change',fillProjectDefaultGoto );
+	katana.$activeTab.find('#Execute-at-ExecType').on('change',function() { 
+		if (this.value == 'If' || this.value == 'If Not')
+		{
+			katana.$activeTab.find('.rule-condition').hide();
+		} else {
+			katana.$activeTab.find('.rule-condition').show();
+	
+		}
+	});
+
 
 } 
 
@@ -156,8 +166,13 @@ function setupProjectPopupDialog(s,xdata,popup) {
 			var popup = $(this).closest('.popup');
 			fillProjectSuitePopupDefaultGoto(popup);
 	});
-
-
+	popup.find('.rule-condition').hide();
+	if (oneSuite["Execute"]['@ExecType']) {
+		console.log("FOUND EXECT TYPE ",oneSuite["Execute"]['@ExecType'] )
+		if (oneSuite["Execute"]['@ExecType'] == 'If' || oneSuite["Execute"]['@ExecType'] == 'If Not') {
+			popup.find('.rule-condition').show();
+		}	
+	}
 	popup.find("#runmode-at-type").on('change', function() {
 		var popup = $(this).closest('.popup');
 		var sid = popup.find("#suiteRowToEdit").val();
@@ -179,6 +194,18 @@ function setupProjectPopupDialog(s,xdata,popup) {
 		popup.find("#runmode-at-value").hide();
 
 	}
+
+
+	popup.find("#Execute-at-ExecType").on('change',function() {
+			if (this.value == 'If' || this.value == 'If Not') {
+				popup.find('.rule-condition').show();			
+			} else {
+				popup.find('.rule-condition').hide();
+				
+			}
+
+		});
+
 
 }
 
@@ -355,10 +382,6 @@ function mapUiToProjectJson() {
 // 
 function createSuitesTable(xdata) {
 	var items = []; 
-	//var xdata = data['Testsuite'];
-	//if (!jQuery.isArray(xdata)) xdata = [xdata];
-	//items.push('<ul id="suite_table_display"  >'); 
-
 	items.push('<table id="suite_table_display" class="configuration_table" width="100%">');
 	items.push('<thead>');
 	items.push('<tr id="suiteRow"><th>Num</th><th>Suite</th><th>Execute</th><th>OnError</th><th>Impact</th><th/></tr>');
@@ -380,14 +403,16 @@ function createSuitesTable(xdata) {
 		
 		items.push('<tr data-sid="'+s+'">');
 		items.push('<td>'+(parseInt(s)+1)+'</td>');
-		// Make this a link... 
 		items.push('<td onclick="showSuiteFromProject('+"'"+oneSuite['path']+"'"+')">'+oneSuite['path']+'</td>');
-
 		items.push('<td>Type='+oneSuite['Execute']['@ExecType']+'<br>');
-		items.push('Condition='+oneSuite['Execute']['Rule']['@Condition']+'<br>');
-		items.push('Condvalue='+oneSuite['Execute']['Rule']['@Condvalue']+'<br>');
-		items.push('Else='+oneSuite['Execute']['Rule']['@Else']+'<br>');
-		items.push('Elsevalue='+oneSuite['Execute']['Rule']['@Elsevalue']+'<br>');
+
+		if (oneSuite['Execute']['@ExecType'] == 'If' || oneSuite['Execute']['@ExecType'] == 'If Not') {
+			items.push('Condition='+oneSuite['Execute']['Rule']['@Condition']+'<br>');
+			items.push('Condvalue='+oneSuite['Execute']['Rule']['@Condvalue']+'<br>');
+			items.push('Else='+oneSuite['Execute']['Rule']['@Else']+'<br>');
+			items.push('Elsevalue='+oneSuite['Execute']['Rule']['@Elsevalue']+'<br>');
+		}
+
 		items.push('</td>');
 		items.push('<td>'+oneSuite['onError']['@action']+'</td>');
 		items.push('<td>'+oneSuite['impact']+'</td>');
@@ -453,8 +478,6 @@ function createSuitesTable(xdata) {
 	//katana.$activeTab.find("#tableOfTestSuitesForProject").setAttribute( "style","overflow-y:scroll");
 	fillProjectDefaultGoto();
 	katana.$activeTab.find('#default_onError').on('change',fillProjectDefaultGoto );
-
-
 }
 
 function showSuiteFromProject(fname) {

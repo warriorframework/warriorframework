@@ -90,19 +90,20 @@
 				<label class=" text-right" >ExecType:</label>
 				<select type="text" class="text-right" id="Execute-at-ExecType" value="" >
 				<option value="Yes">Yes</option> 
-				<!-- <option value="If Not">If Not</option> 				<option value="Yes">Yes</option> -->
+				<option value="If">If</option> 
+				<option value="If Not">If Not</option> 				
 				<option value="No">No</option> 
 				</select>
 				</div>
-				<div class="hidden">		
+				<div >		
 						<div class="field ">
-						<label for="executeRuleAtCondition">Rule Condition:</label>
-						<input type="text" id="executeRuleAtCondition" value=""/>
+						<label class="rule-condition" >Rule Condition:</label>
+						<input type="text" class="rule-condition" id="executeRuleAtCondition" value=""/>
 						</div>			
 
 						<div class="field ">
-						<label for="executeRuleAtCondvalue">Rule Condition Value:</label>
-						<select type="text" class="text-right" id="executeRuleAtCondvalue" value="" >
+						<label  class="rule-condition" >Rule Condition Value:</label>
+						<select type="text" class="rule-condition text-right" id="executeRuleAtCondvalue" value="" >
 						<option value="PASS">PASS</option> 
 						<option value="FAIL">FAIL</option> 
 						<option value="ERROR">ERROR</option> 
@@ -110,21 +111,23 @@
 						</select>
 						</div>	
 
-						<div class="field ">
-						<label >Rule Else:</label>
-						<input type="text" id="executeRuleAtElse" value=""  />
-						</div>			
-						<div class="field ">
-						<label >Rule Else Value:</label>
+					<div class="field ">
+					<label class="rule-condition" >Rule Else:</label>
 						
-						<select type="text" class="text-right" id="executeRuleAtElsevalue" value="" >
+						<select type="text" class="rule-condition text-right" id="executeRuleAtElse"  value="" >
 						<option value="next">next</option>
-						<option value="abort">abort</option>
 						<option value="abort_as_error">abort_as_error</option>
 						<option value="goto">goto</option>
 						</select>
+					</div>
+						<div class="field ">
+						<label class="rule-condition" >Rule Else Value:</label>
+						<input class="rule-condition" type="text" id="executeRuleAtElsevalue"  value=""  />
+						</div>			
+						<div class="field ">
+						</div>			
+				
 
-						</div>
 				</div>
 				
 				<div class="field ">

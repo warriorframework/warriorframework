@@ -279,14 +279,15 @@ function mapCaseJsonToUi(data){
 		outstr = oneCaseStep['onError']['@action'] 
 			//"Value=" + oneCaseStep['onError']['@value']+"<br>"; 
 		items.push('<td>'+oneCaseStep['onError']['@action'] +'</td>'); 
-	
-
-		outstr = "ExecType=" + oneCaseStep['step']['@ExecType'] + "<br>" + 
-			"Condition="+oneCaseStep['step']['Rule']['@Condition']+ "<br>" + 
+		outstr = "ExecType=" + oneCaseStep['step']['@ExecType'] + "<br>";
+		if (oneCaseStep['step']['@ExecType'] == 'If' || oneCaseStep['step']['@ExecType'] == 'If Not') {
+			outstr = outstr + "Condition="+oneCaseStep['step']['Rule']['@Condition']+ "<br>" + 
 			"Condvalue="+oneCaseStep['step']['Rule']['@Condvalue']+ "<br>" + 
 			"Else="+oneCaseStep['step']['Rule']['@Else']+ "<br>" +
 			"Elsevalue="+oneCaseStep['step']['Rule']['@Elsevalue'];
-
+		}
+		 
+			
 		items.push('<td>'+outstr+'</td>'); 
 		items.push('<td>'+oneCaseStep['rmt']+'</td>');
 		items.push('<td>'+oneCaseStep['context']+'</td>');
@@ -474,8 +475,22 @@ function setupPopupDialog(sid,xdata,popup) {
 	popup.find("#runmode-at-type").attr("value",oneCaseStep["runmode"]["@type"]);
 	popup.find("#StepImpact").attr("value",oneCaseStep["impact"]);
 	popup.find("#StepInputDataFile").attr("value",oneCaseStep["InputDataFile"]);
-	
-
+	popup.find('.rule-condition').hide();
+	if (oneCaseStep["Execute"]['@ExecType']) {
+		console.log("FOUND EXECT TYPE ",oneCaseStep["Execute"]['@ExecType'] )
+		popup.find('#Execute-at-ExecType').attr('value',oneCaseStep["Execute"]['@ExecType']);
+		popup.find('#Execute-at-ExecType').val(oneCaseStep["Execute"]['@ExecType']);
+		if (oneCaseStep["Execute"]['@ExecType'] == 'If' || oneCaseStep["Execute"]['@ExecType'] == 'If Not') {
+			popup.find('.rule-condition').show();
+		}
+		
+	}
+	if (oneCaseStep["Execute"]['Rule']) {
+		popup.find('#executeRuleAtCondition').attr('value',oneCaseStep["Execute"]['Rule']['@Condition']);
+		popup.find('#executeRuleAtCondvalue').attr('value',oneCaseStep["Execute"]['Rule']['@Condvalue']);
+		popup.find('#executeRuleAtElse').attr('value',oneCaseStep["Execute"]['Rule']['@Else']);
+		popup.find('#executeRuleAtElsevalue').attr('value',oneCaseStep["Execute"]['Rule']['@Elsevalue']);
+	}
 	//katana.popupController.updateActiveWindow(popup);
 
 	makePopupArguments(popup, oneCaseStep);
@@ -530,8 +545,7 @@ function setupPopupDialog(sid,xdata,popup) {
  			popup.find("#sourceFileText").html(""); 
  			popup.find("#sourceFileText").html(outstr);
 
- 			popup.find("#sourceFileText").addClass("willnotrender");
- 			
+ 			popup.find("#sourceFileText").addClass("willnotrender");	
  			popup.find("#sourceFileText").removeClass("willnotrender");
  			
  		});
@@ -554,6 +568,20 @@ function setupPopupDialog(sid,xdata,popup) {
  			}
  		});
 	});
+
+
+		popup.find("#Execute-at-ExecType").on('change',function() {
+			if (this.value == 'If' || this.value == 'If Not') {
+				popup.find('.rule-condition').show();			
+			} else {
+				popup.find('.rule-condition').hide();
+				
+			}
+
+		});
+
+
+
 
 	popup.find("#StepKeyword").on('change',function() {
 		sid  = popup.find("#StepKeyword").attr('theSid');   // 
@@ -742,7 +770,13 @@ function mapUItoTestStep(sid,xdata,popup) {
 	oneCaseStep["@TS"] =popup.find("#StepTS").val();
 	oneCaseStep["Description"] = popup.find("#StepDescription").val();
 	oneCaseStep["context"] =  popup.find("#StepContext").val();
-	oneCaseStep["Execute"]["@ExecType"]= popup.find("#Execute-at-ExecType").val();		
+	oneCaseStep["Execute"] = { '@ExecType': '' , 'Rule': {} }
+	oneCaseStep["Execute"]["@ExecType"] = popup.find("#Execute-at-ExecType").val();	
+	//oneCaseStep["Execute"]["@ExecType"]['Rule'] = {} 
+	oneCaseStep["Execute"]['Rule']['@Condition'] = popup.find("#executeRuleAtCondition").val();	
+	oneCaseStep["Execute"]['Rule']['@Condvalue'] = popup.find("#executeRuleAtCondvalue").val();	
+	oneCaseStep["Execute"]['Rule']['@Else'] = popup.find("#executeRuleAtElse").val();	
+	oneCaseStep["Execute"]['Rule']['@Elsevalue'] = popup.find("#executeRuleAtElsevalue").val();	
 	oneCaseStep['onError'][ "@action"] = popup.find("#SteponError-at-action").val();
 	oneCaseStep['onError'][ "@value"] = popup.find("#SteponError-at-value").val();
 	oneCaseStep["runmode"] = { "@type" : popup.find("#runmode-at-type").val()};
