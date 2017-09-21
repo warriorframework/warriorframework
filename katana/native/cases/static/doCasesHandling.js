@@ -478,8 +478,6 @@ function setupPopupDialog(sid,xdata,popup) {
 	popup.find('.rule-condition').hide();
 	if (oneCaseStep["Execute"]['@ExecType']) {
 		console.log("FOUND EXECT TYPE ",oneCaseStep["Execute"]['@ExecType'] )
-		popup.find('#Execute-at-ExecType').attr('value',oneCaseStep["Execute"]['@ExecType']);
-		popup.find('#Execute-at-ExecType').val(oneCaseStep["Execute"]['@ExecType']);
 		if (oneCaseStep["Execute"]['@ExecType'] == 'If' || oneCaseStep["Execute"]['@ExecType'] == 'If Not') {
 			popup.find('.rule-condition').show();
 		}

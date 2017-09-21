@@ -203,7 +203,6 @@ function setupProjectPopupDialog(s,xdata,popup) {
 				popup.find('.rule-condition').hide();
 				
 			}
-
 		});
 
 

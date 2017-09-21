@@ -67,18 +67,25 @@
 					</select>
 				</div>
 			</div>
+
 			<div class="row">
 				<div class="field col-md-3">
 					<label >Results*:</label>
 					<input type="text" id="suiteResults"  value="{{suiteResultsdir}}"/>
 				</div>
+				
 				<div class="field col-md-3">
-					<label >Logs:</label>
-					<input type="text" id="suiteResults"  value="{{suiteLogsdir}}"/>
+					<label >Input Data File:</label>
+					<input type="text" id="suiteResults"  value="{{suiteInputDataFile}}"/>
 				</div>
 				<div class="field col-md-3">
-					<label >InputDataFile:</label>
-					<input type="text" id="suiteResults"  value="{{suiteInputDataFile}}"/>
+					<label class=" text-right" >Type:</label>
+					<select class="text-right" type="text" id="suiteState"  value="{{suiteState}}" >
+						<option value="New">New</option>
+						<option value="In Review">In Review</option>
+						<option value="Released">Released</option>
+						<option value="Add Another">Add Another</option>
+					</select>
 				</div>
 			</div>	
 	</div>

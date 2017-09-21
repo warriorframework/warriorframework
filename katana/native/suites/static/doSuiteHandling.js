@@ -62,16 +62,29 @@ function mapFullSuiteJson(myobjectID){
 	jsonTestcases = jsonSuiteObject['Testcases']; 
 	mapSuiteJsonToUi(jsonTestcases);  // This is where the table and edit form is created. 
 	katana.$activeTab.find('#default_onError').on('change',fillSuiteDefaultGoto );
+	katana.$activeTab.find('#suiteState').on('change',fillSuiteState );
+	
 } 
 
-function createNewCaseForSuite() {
+function fillSuiteState(){
+	var state = this.value; 
+	if (state == 'Add Another') {
+		var name = prompt("Please Enter New State");
+		if (name) {
+		katana.$activeTab.find('#suiteState').append($("<option></option>").attr("value", name).text(name));
+		}
+	}
 
+}
+
+
+function createNewCaseForSuite() {
 		var newTestcase = {	
 		"Step" : { "@Driver": "", "@keyword": "", "@TS": "1" },
 		"Arguments": { "Argument" :  "" },
 		"onError" :  "",
 		"onError": { "@action": "next", "@value": "" }, 
-		"ExecType": { "@ExecType": "Yes"},
+		"ExecType": { "@ExecType": "Yes", "Rule" : {} },
 		"context": "",
 		"impact": ""
 		};
@@ -84,11 +97,7 @@ function createNewCaseForSuite() {
 // no default value, a null value is inserted for the keyword
 /// -------------------------------------------------------------------------------
 function addCaseToSuite(){
-	var newTestcase =createNewCaseForSuite();
-		//"path": "../Cases/framework_tests/seq_par_execution/seq_ts_seq_tc.xml", 
-	 	//"runmode": {"@type": "ruf", "@value": "2"},
-		//"retry": {"@type": "if not", "@Condition": "testCase_1_result", "@Condvalue": "PASS", "@count": "6", "@interval": "0"}, 
-	
+	var newTestcase =createNewCaseForSuite();	
 	if (!jQuery.isArray(jsonTestcases['Testcase'])) {
 		jsonTestcases['Testcase'] = [jsonTestcases['Testcase']];
 		}
@@ -134,14 +143,42 @@ function mapSuiteCaseToUI(s,xdata,popup) {
 		}
 
 	if (! oneCase['Execute']) {
-			oneCase['Execute'] = { "@ExecType": "Yes", "@value": "" };
+			oneCase['Execute'] = { "@ExecType": "Yes", "Rule" : {} };
 		}
+	if (! oneCase['Execute']['@ExecType']) {
+			oneCase['Execute'] = { "@ExecType": "Yes", "Rule" : {} };
+		}
+
+	if (! oneCase['Execute']['Rule']) {
+			oneCase['Execute']['Rule'] = { '@Condition' : '', '@Condvalue' : '', '@Else': 'abort', '@Elsevalue':'' };
+		}	
+	popup.find("#Execute-at-ExecType").val(oneCase['Execute']['@ExecType']); 
+	popup.find("#executeRuleAtCondition").val(oneCase['Execute']['Rule']['@Condition']); 
+	popup.find("#executeRuleAtCondvalue").val(oneCase['Execute']['Rule']['@Condvalue']); 
+	popup.find("#executeRuleAtElse").val(oneCase['Execute']['Rule']['@Else']); 
+	popup.find("#executeRuleAtElsevalue").val(oneCase['Execute']['Rule']['@Elsevalue']); 
+
 	fillSuiteCaseDefaultGoto(popup);
 	popup.find('#caseonError-at-action').on('change', function(){ 
 			var popup = $(this).closest('.popup');
 			fillSuiteCaseDefaultGoto(popup);
 	});
 
+	popup.find('.rule-condition').hide();
+	if (oneCase["Execute"]['@ExecType']) {
+		console.log("FOUND EXECT TYPE ",oneCase["Execute"]['@ExecType'] )
+		if (oneCase["Execute"]['@ExecType'] == 'If' || oneCase["Execute"]['@ExecType'] == 'If Not') {
+			popup.find('.rule-condition').show();
+		}	
+	}
+	popup.find("#Execute-at-ExecType").on('change',function() {
+			if (this.value == 'If' || this.value == 'If Not') {
+				popup.find('.rule-condition').show();			
+			} else {
+				popup.find('.rule-condition').hide();
+				
+			}
+		});
 		
 }
 
@@ -162,26 +199,21 @@ function mapUItoSuiteCase(popup,xdata){
 	var id = s; // katana.$activeTab.find("#CaseRowToEdit").val();
 	console.log(oneCase);
 	
-		id = '#CaseImpact'
-		oneCase['impact'] = popup.find(id).val();
+	oneCase['impact'] = popup.find('#CaseImpact').val();
+	oneCase['path'] = popup.find('#CasePath').val();
+	oneCase['context'] = popup.find('#CaseContext').val();
+	oneCase['runtype'] = popup.find('#CaseRuntype').val();
+	oneCase['runmode'] = popup.find('#CaseRunmode').val();
+	oneCase['onError']['@action'] = popup.find("#caseonError-at-action").val();
+	oneCase['onError']['@value'] = popup.find("#caseonError-at-value").val();
 
-		id = '#CasePath'		
-		oneCase['path'] = popup.find(id).val();
-
-		id = '#CaseContext'
-		oneCase['context'] = popup.find(id).val();
-
-		id = '#CaseRuntype'
-		oneCase['runtype'] = popup.find(id).val();
-
-		id = '#CaseRunmode'
-		oneCase['runmode'] = popup.find(id).val();
-
-		id = "#caseonError-at-action"
-		oneCase['onError']['@action'] = popup.find(id).val();
-
-		id = "#caseonError-at-value"
-		oneCase['onError']['@value'] = popup.find(id).val();
+	oneCase['Execute'] = {}
+	oneCase['Execute']['@ExecType'] = popup.find("#Execute-at-ExecType").val(); 
+	oneCase['Execute']['Rule'] = {}
+	oneCase['Execute']['Rule']['@Condition']= popup.find("#executeRuleAtCondition").val(); 
+	oneCase['Execute']['Rule']['@Condvalue'] = popup.find("#executeRuleAtCondvalue").val(); 
+	oneCase['Execute']['Rule']['@Else'] = popup.find("#executeRuleAtElse").val(); 
+	oneCase['Execute']['Rule']['@Elsevalue'] = popup.find("#executeRuleAtElsevalue").val(); 
 
 }
 
@@ -256,7 +288,7 @@ function mapUiToSuiteJson() {
 var fillSuiteDefaultGoto = function() {
 
 	var gotoStep = katana.$activeTab.find('#default_onError').val();
-	console.log("Step ", gotoStep);
+	//console.log("Step ", gotoStep);
 	var defgoto = katana.$activeTab.find('#suite_default_onError_goto'); 
 		defgoto.hide();
 
@@ -278,9 +310,8 @@ var fillSuiteDefaultGoto = function() {
 var fillSuiteCaseDefaultGoto = function(popup) {
 
 	var gotoStep =popup.find('#caseonError-at-action').val();
-	console.log("Step ", gotoStep);
 	var defgoto = popup.find('#caseonError-at-value'); 
-		defgoto.hide();
+	defgoto.hide();
 
 	if (gotoStep.trim() == 'goto'.trim()) { 
 		defgoto.show();
@@ -310,12 +341,12 @@ function createCasesTable(xdata) {
 	items.push('</thead>');
 	items.push('<tbody>');
 
-	console.log(xdata);
+	//console.log(xdata);
 	katana.$activeTab.find("#tableOfTestcasesForSuite").html("");
 	for (var s=0; s<Object.keys(xdata).length; s++ ) {
 		var oneCase = xdata[s];
 
-		console.log(oneCase);
+		//console.log(oneCase);
 		fillCaseDefaults(s,xdata);
 		var showID = parseInt(s)+ 1; 
 		items.push('<tr data-sid="'+s+'"><td>'+showID+'</td>');
@@ -345,7 +376,7 @@ function createCasesTable(xdata) {
 		$(document).on('click','#'+bid,function(  ) {
 			var names = this.id.split('-');
 			var sid = parseInt(names[1]);
-			console.log("xdata --> "+ xdata);
+			// console.log("xdata --> "+ xdata);
 			//alert("mapSuiteCaseToUI");
 			katana.popupController.open(katana.$activeTab.find("#editTestCaseEntry").html(),"Edit..." + sid, function(popup) {
 				mapSuiteCaseToUI(sid,xdata,popup);
@@ -360,7 +391,7 @@ function createCasesTable(xdata) {
 		$(document).on('click','#'+bid,function(  ) {
 			var names = this.id.split('-');
 			var sid = parseInt(names[1]);
-			console.log("xdata --> "+ xdata);
+			// console.log("xdata --> "+ xdata);
 			insertCaseToSuite(sid,0);
 		});
 		bid = "dupTestcase-"+s+"-id"+getRandomSuiteID();
@@ -370,7 +401,7 @@ function createCasesTable(xdata) {
 		$(document).on('click','#'+bid,function(  ) {
 			var names = this.id.split('-');
 			var sid = parseInt(names[1]);
-			console.log("xdata --> "+ xdata);
+			// console.log("xdata --> "+ xdata);
 			insertCaseToSuite(sid,1);
 		});
 
@@ -389,7 +420,7 @@ function createCasesTable(xdata) {
 
 function showCaseFromSuite(fname) {
   var xref="./cases/editCase/?fname="+fname; 
-  console.log("Calling case ", fname, xref);
+  //console.log("Calling case ", fname, xref);
     katana.$view.one('tabAdded', function(){
          mapFullCaseJson(fname,'#listOfTestStepsForCase');
     });
@@ -441,7 +472,7 @@ function fillCaseDefaults(s, data){
 		if (! oneCase['onError']) {
 			oneCase['onError'] = { "@action": "next", "@value": "" };
 		}
-		oneCase['Execute'] = { "@ExecType": "Yes", "@value": "" };
+		oneCase['Execute'] = { "@ExecType": "Yes", "Rule": { "@Condition": "", "@Condvalue": "", "@Else": "next", "@Elsevalue": "" } };
 		
 }
 

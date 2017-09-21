@@ -121,6 +121,7 @@ def editSuite(request):
 	xml_r["TestSuite"]["Details"]["Time"] = ""
 	xml_r["TestSuite"]["Details"]["type"] = { }
 	xml_r["TestSuite"]["Details"]["Logsdir"] = ""
+	xml_r["TestSuite"]["Details"]["State"] = "New"
 	xml_r["TestSuite"]["Details"]["Resultsdir"] = ""
 	xml_r["TestSuite"]["Details"]["InputDataFile"] = ""
 	xml_r["TestSuite"]["Details"]["type"]["@exectype"] = "sequential_testcases"
@@ -172,6 +173,7 @@ def editSuite(request):
 		'suiteDatatype': xml_r["TestSuite"]["Details"]["type"]["@exectype"],
 		'suiteDate': xml_r["TestSuite"]["Details"]["Date"],
 		'suiteTime': xml_r["TestSuite"]["Details"]["Time"],
+		'suiteState': xml_r["TestSuite"]["Details"]["State"],
 		#'suiteType': xml_r["TestSuite"]["Details"]["type"],
 		'suitedefault_onError':xml_r["TestSuite"]["Details"]["default_onError"]['@action'],
 		'suitedefault_onError_goto':xml_r["TestSuite"]["Details"]["default_onError"].get('@value',''),
