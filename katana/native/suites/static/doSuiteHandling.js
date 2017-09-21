@@ -400,10 +400,13 @@ var testSuiteSortEventHandler = function(event, ui ) {
 	var listItems = [] ; 
 	var listCases = katana.$activeTab.find('#Case_table_display tbody').children(); 
 	console.log(listCases);
+		if (listCases.length < 2) {
+	 return; 
+	}
 
 	var oldCaseSteps = jsonSuiteObject["Testcases"]['Testcase'];
 	var newCaseSteps = new Array(listCases.length);
-		
+
 	for (xi=0; xi < listCases.length; xi++) {
 		var xtr = listCases[xi];
 		var ni  = xtr.getAttribute("data-sid");

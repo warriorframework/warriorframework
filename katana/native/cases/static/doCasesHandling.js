@@ -601,7 +601,9 @@ var testCaseSortEventHandler = function(event, ui ) {
 	var listItems = [] ; 
 	var listCases = katana.$activeTab.find('#Step_table_display tbody').children(); 
 	console.log(listCases);
-
+	if (listCases.length < 2) {
+	 return; 
+	}
 	var oldCaseSteps = jsonCaseObject["Steps"]['step'];
 	var newCaseSteps = new Array(listCases.length);
 		

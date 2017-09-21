@@ -469,6 +469,9 @@ function showSuiteFromProject(fname) {
 var testProjectSortEventHandler = function(event, ui ) {
 	var listSuites = katana.$activeTab.find('#tableOfTestSuitesForProject tbody').children(); 
 	console.log(listSuites);
+			if (listSuites.length < 2) {
+	 return; 
+	}
 	console.log(jsonProjectObject["Testsuites"] );
 	var oldSuitesteps = jsonProjectObject["Testsuites"]['Testsuite'];
 	var newSuitesteps = new Array(listSuites.length);
