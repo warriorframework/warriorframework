@@ -58,29 +58,14 @@ function mapFullCaseJson(myobjectID, where){
 
 	//$('#myform :checkbox').change(function()
 	katana.$activeTab.find('#ck_dataPath').change(function() {
-       	if (! katana.$activeTab.find('#caseDatatype').attr("disabled")) {
-       
-			katana.$activeTab.find('#caseDatatype').attr("disabled", "disabled");
-			katana.$activeTab.find('#caseDatatype_lbl').attr("disabled", "disabled");
-			katana.$activeTab.find('#caseDatatype').hide();
-			katana.$activeTab.find('#caseDatatype_lbl').hide();
-			katana.$activeTab.find('#caseResultsDir').attr("disabled", "disabled");
- 			katana.$activeTab.find('#caseResultsDir_lbl').attr("disabled", "disabled");
- 			katana.$activeTab.find('#caseResultsDir').hide();
- 			katana.$activeTab.find('#caseResultsDir_lbl').hide();
- 
-   		 } else {
-        //  This resizes the display~
-			katana.$activeTab.find('#caseDatatype').removeAttr("disabled");
-			katana.$activeTab.find('#caseDatatype_lbl').removeAttr("disabled");
-			katana.$activeTab.find('#caseDatatype').show();
-			katana.$activeTab.find('#caseDatatype_lbl').show();
-			katana.$activeTab.find('#caseResultsDir').removeAttr("disabled");
-			katana.$activeTab.find('#caseResultsDir_lbl').removeAttr("disabled");
-			katana.$activeTab.find('#caseResultsDir').show();
- 			katana.$activeTab.find('#caseResultsDir_lbl').show();
- 
-     	}
+		if (this.checked) {
+			katana.$activeTab.find('.case-results-dir').hide();
+		} else {
+			katana.$activeTab.find('.case-results-dir').show();
+		}
+
+
+  
 	});
 
 	fillCaseDefaultGoto();

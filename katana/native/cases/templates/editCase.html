@@ -80,9 +80,9 @@
 			</div>		
 			<div class="field  col-md-3">
 				<input type="checkbox"  id="ck_dataPath" name="ck_dataPath" value="No Data Path" >
-				<label class="text-right" >No Data Path</label>	
-				<label class="text-right" id="caseDatatype_lbl" >Data Type:</label>
-				<select class="text-right" type="text" id="caseDatatype" name="caseDatatype" value="{{caseDatatype}}" >
+				
+				<label class="text-right " id="caseDatatype_lbl" >Data Type:</label>
+				<select class="text-right  case-results-dir" type="text" id="caseDatatype" name="caseDatatype" value="{{caseDatatype}}" >
 					<option value="Custom">Custom</option>
 					<option value="Hybrid">Hybrid</option>
 					<option value="Iterative">Iterative</option>
@@ -90,8 +90,8 @@
 			</div>
 
 			<div class="field">	
-				<label class="text-right"  >Results Dir</label>
-				<input type="text" id="caseResultsdir"  value="{{caseResultsdir}}">
+				<label class="text-right  case-results-dir"  >Results Dir</label>
+				<input class="text-right  case-results-dir" type="text" id="caseResultsdir"  value="{{caseResultsdir}}">
 			</div>
 
 		</div>
