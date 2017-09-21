@@ -856,7 +856,18 @@ var katana = {
                     $(explorer_modal_html).prependTo($tabContent);
                     $directoryData = $tabContent.find('#directory-data');
                     $directoryData.jstree({
-                        "core": {"data": [data]}
+                        "core": { "data": [data]},
+                        "plugins": ["search", "sort"],
+                        "sort": function (a, b) {
+                                    var nodeA = this.get_node(a);
+                                    var nodeB = this.get_node(b);
+                                    var lengthA = nodeA.children.length;
+                                    var lengthB = nodeB.children.length;
+                                    if ((lengthA == 0 && lengthB == 0) || (lengthA > 0 && lengthB > 0))
+                                        return this.get_text(a).toLowerCase() > this.get_text(b).toLowerCase() ? 1 : -1;
+                                    else
+                                        return lengthA > lengthB ? -1 : 1;
+                            }
                     });
                     $directoryData.jstree().hide_dots();
                     $tabContent.find('#explorer-accept').on('click', function(){
@@ -902,9 +913,18 @@ var katana = {
                     $directoryDataDiv.append("<div id='directory-data' class='full-size'></div>")
                     var $directoryData = $currentPage.find('#directory-data');
                     $directoryData.jstree({
-                        "core": {
-                            "data": [data]
-                        }
+                        "core": { "data": [data] },
+                        "plugins": ["search", "sort"],
+                        "sort": function (a, b) {
+                                    var nodeA = this.get_node(a);
+                                    var nodeB = this.get_node(b);
+                                    var lengthA = nodeA.children.length;
+                                    var lengthB = nodeB.children.length;
+                                    if ((lengthA == 0 && lengthB == 0) || (lengthA > 0 && lengthB > 0))
+                                        return this.get_text(a).toLowerCase() > this.get_text(b).toLowerCase() ? 1 : -1;
+                                    else
+                                        return lengthA > lengthB ? -1 : 1;
+                            }
                     });
                     $directoryData.jstree().hide_dots();
                     $tabContent.find('#explorer-up').off('click');
