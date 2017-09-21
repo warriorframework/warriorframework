@@ -72,11 +72,19 @@ class Navigator(object):
         if not fl:
             layout["state"] = {"opened" : 'true' }                
             fl = 'false'
-        if os.path.isdir(start_dir_path):   
-            layout['icon'] = dir_icon if dir_icon else ""            
-
-            layout['children'] = [self.get_dir_tree_json(os.path.join(start_dir_path, x), fl=fl)\
-                                  for x in os.listdir(start_dir_path)]
+        if os.path.isdir(start_dir_path):
+            for x in os.listdir(start_dir_path):
+                try:
+                    children = self.get_dir_tree_json(os.path.join(start_dir_path, x), fl=fl)
+                except IOError:
+                    pass
+                except Exception as e:
+                    print "-- An Error Occurred -- {0}".format(e)
+                else:
+                    if "children" in layout:
+                        layout['children'].append(children)
+                    else:
+                        layout['children'] = [children]
         else:
             layout['icon'] = file_icon
         return layout
