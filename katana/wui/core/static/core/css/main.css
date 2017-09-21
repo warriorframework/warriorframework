@@ -2839,7 +2839,7 @@ hr.wdf-hr {
 .side-navigator {
     position: relative;
     position: sticky;
-    top: 0;
+    top: 4px;
     right: 0;
     height: 100%;
     background: #dcdcdc;
