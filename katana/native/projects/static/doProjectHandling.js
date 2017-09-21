@@ -297,7 +297,48 @@ function mapUItoProjectSuite(popup, xdata){
 	oneSuite['runmode']['@type'] = popup.find("#runmode-at-type").val(); 
 	oneSuite['runmode']['@value'] = popup.find("#rumode-at-value").val(); 
 	console.log("Saving", oneSuite);
+};
+
+
+function prefixFromAbs(pathToBase, pathToFile) {
+	var stack = []; 
+    var upem  = [];
+	var bf = pathToBase.split('/');
+	var rf = pathToFile.split('/');
+	for (var i=0;i< rf.length; i++) {
+		if (rf[i] == bf[i]) { 
+			stack.push(bf[i]);
+		} else {
+			break;
+		}
+	}
+	var tlen = rf.length - stack.length; 
+    var blen = stack.length;
+	for (var k=0;k < tlen-1; k++) {
+		upem.push("..");
+	}
+	return upem.join("/") + "/" + bf.splice(blen).join('/') + "/" +  rf[rf.length - 1];
 }
+
+function getResultsDirForProject() {
+      var callback_on_accept = function(selectedValue) { 
+      		console.log(selectedValue);
+      		// Convert to relative path.
+      		var pathToBase = katana.$activeTab.find('#savefilepath').text();
+      		console.log("File path ==", pathToBase);
+      		var nf = prefixFromAbs(pathToBase, selectedValue);
+      		katana.$activeTab.find("#projectResultsDir").attr("value", nf);
+      		katana.$activeTab.find("#projectResultsDir").attr("fullpath", selectedValue);
+
+            };
+      var callback_on_dismiss =  function(){ 
+      		console.log("Dismissed");
+	 };
+     katana.fileExplorerAPI.openFileExplorer("Select a file", false , $("[name='csrfmiddlewaretoken']").val(), callback_on_accept, callback_on_dismiss);
+
+};
+ 
+
 
 /*
 Collects data into the global project data holder from the UI 
@@ -368,11 +409,13 @@ function mapUiToProjectJson() {
 	    headers: {'X-CSRFToken':csrftoken},
     
     success: function( data ){
-        alert("Saved "+katana.$activeTab.find('#filesavepath').text() );
+        alert("Saved "+katana.$activeTab.find('#filesavepath').text() + "/" + $('#my_file_to_save').val());
     	}
 	});
 
 }
+
+
 
 
 

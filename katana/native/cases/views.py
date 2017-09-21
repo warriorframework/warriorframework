@@ -274,6 +274,7 @@ def editCase(request):
 		'myfile': filename,
 		'savefilename': fn,
 		'savesubdir': subdir,
+		'savefilepath': path_to_testcases,
 		'docSpec': 'caseSpec',
 		'caseName': xml_r["Testcase"]["Details"]["Name"],
 		'caseTitle': xml_r["Testcase"]["Details"]["Title"],

@@ -42,7 +42,10 @@
 					<input type="text" id="caseLogsdir"  value="{{caseLogsdir}}"/>
 				</div>
 				<div class="field col-md-3">
-					<label >InputDataFile:</label>
+					<label >Warrior Data File:</label>
+					<button class="btn btn-info" onclick="getResultsDirForCase('#caseInputDataFile')">...</button>
+					<button class="btn btn-info" onclick="start_wdfEditor('#caseInputDataFile')">WDF</button>
+					
 					<input type="text" id="caseInputDataFile"  value="{{caseInputDataFile}}"/>
 				</div>		
 	
@@ -108,6 +111,7 @@
 
 	<div id="listOfTestStepsForCase" class="hidden" > {{fulljson|jsonify}} </div> 
 	<div id="savesubdir" class="hidden">{{savesubdir}}</div>
+	<div id="savefilepath" class="hidden">{{savefilepath}}</div>
 	<div id="emptyTestCaseData" class="hidden" > {{emptyTestCase|jsonify}} </div> 
 	</div>	
 <!-- Menu bar here --> 
@@ -218,7 +222,9 @@
 				
 
 				<div class="field col-md-3">
-					<label >Input Data File:</label>
+					<label >Warrior Data File:</label>
+					<button class="btn btn-info" onclick="getResultsDirForCaseStep('#StepInputDataFile')">...</button>
+					
 					<input type="text" id="StepInputDataFile"  value=""/>
 				</div>		
 	

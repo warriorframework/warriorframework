@@ -59,6 +59,7 @@ function mapFullSuiteJson(myobjectID){
 	//alert(JSON.parse(sdata));
 	console.log(typeof(jsonAllSuitePages[myobjectID]));
 	jsonSuiteObject =  jsonAllSuitePages[myobjectID]; 
+	if (!jsonSuiteObject['Requirements']) jsonSuiteObject['Requirements'] = [];
 	jsonTestcases = jsonSuiteObject['Testcases']; 
 	mapSuiteJsonToUi(jsonTestcases);  // This is where the table and edit form is created. 
 	katana.$activeTab.find('#default_onError').on('change',fillSuiteDefaultGoto );
@@ -256,6 +257,8 @@ function mapUiToSuiteJson() {
 	jsonSuiteObject['Details']['Datatype']['@exectype'] = katana.$activeTab.find('#suiteDatatype').val();
 	jsonSuiteObject['SaveToFile'] = katana.$activeTab.find('#my_file_to_save').val();
 
+
+	console.log(jsonSuiteObject);
 	console.log(jsonSuiteObject['Testcases']);
 	var url = "./suites/getSuiteDataBack";
 	var csrftoken = $("[name='csrfmiddlewaretoken']").val();
@@ -266,7 +269,8 @@ function mapUiToSuiteJson() {
     	}
 	});
 	
-	var topNode  = { 'Suite' : jsonSuiteObject};
+	var topNode = { 'TestSuite' : jsonSuiteObject};
+	//var topNode = 
 	$.ajax({
 	    url : url,
 	    type: "POST",
@@ -279,11 +283,51 @@ function mapUiToSuiteJson() {
 	    headers: {'X-CSRFToken':csrftoken},
     
     success: function( data ){
-        alert("Saved it");
+        alert("Saved " + katana.$activeTab.find('#savefilepath').text());
     	}
 	});
 
 }
+
+
+
+function getResultsDirForSuite(tag) {
+      var callback_on_accept = function(selectedValue) { 
+      		console.log(selectedValue);
+      		// Convert to relative path.
+      		var pathToBase = katana.$activeTab.find('#savefilepath').text();
+      		console.log("File path ==", pathToBase);
+      		var nf = prefixFromAbs(pathToBase, selectedValue);
+      		katana.$activeTab.find(tag).attr("value", nf);
+      		katana.$activeTab.find(tag).attr("fullpath", selectedValue);
+
+            };
+      var callback_on_dismiss =  function(){ 
+      		console.log("Dismissed");
+	 };
+     katana.fileExplorerAPI.openFileExplorer("Select a file", false , $("[name='csrfmiddlewaretoken']").val(), callback_on_accept, callback_on_dismiss);
+};
+
+function prefixFromAbs(pathToBase, pathToFile) {
+	var stack = []; 
+    var upem  = [];
+	var bf = pathToBase.split('/');
+	var rf = pathToFile.split('/');
+	for (var i=0;i< rf.length; i++) {
+		if (rf[i] == bf[i]) { 
+			stack.push(bf[i]);
+		} else {
+			break;
+		}
+	}
+	var tlen = rf.length - stack.length; 
+    var blen = stack.length;
+	for (var k=0;k < tlen-1; k++) {
+		upem.push("..");
+	}
+	return upem.join("/") + "/" + bf.splice(blen).join('/') + "/" +  rf[rf.length - 1];
+}
+
 
 var fillSuiteDefaultGoto = function() {
 

@@ -74,8 +74,10 @@
 				</div>
 				
 				<div class="field col-md-3">
-					<label >Input Data File:</label>
-					<input type="text" id="suiteResults"  value="{{suiteInputDataFile}}"/>
+					<label >Warrior Data File:</label>
+					<button class="btn btn-info" onclick="getResultsDirForSuite('#suiteInputDataFile')">...</button>
+					
+					<input type="text" id="suiteInputDataFile"  value="{{suiteInputDataFile}}"/>
 				</div>
 				<div class="field col-md-3">
 					<label class=" text-right" >Type:</label>
@@ -189,7 +191,8 @@
 				
 
 					<div class="field col-md-3">
-					<label >Input Data File:</label>
+					<label >Warrior Data File:</label>
+					<button class="btn btn-info" onclick="getResultsDirForSuite('#StepInputDataFile')">...</button>
 					<input type="text" id="StepInputDataFile"  value=""/>
 					</div>		
 	

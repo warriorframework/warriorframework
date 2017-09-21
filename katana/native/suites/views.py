@@ -125,9 +125,9 @@ def editSuite(request):
 	xml_r["TestSuite"]["Details"]["Resultsdir"] = ""
 	xml_r["TestSuite"]["Details"]["InputDataFile"] = ""
 	xml_r["TestSuite"]["Details"]["type"]["@exectype"] = "sequential_testcases"
-	xml_r["TestSuite"]["Details"]["default_onError"] = {}
-	xml_r["TestSuite"]["Details"]["default_onError"]['@action']= ""
-	xml_r["TestSuite"]["Details"]["default_onError"]['@value']= ""
+	xml_r["TestSuite"]["Details"]["onError"] = {}
+	xml_r["TestSuite"]["Details"]["onError"]['@action']= ""
+	xml_r["TestSuite"]["Details"]["onError"]['@value']= ""
 	xml_r["TestSuite"]["Testsuites"] = ""
 	
 	if filename == 'NEW':
@@ -138,12 +138,14 @@ def editSuite(request):
 		xml_d = xmltodict.parse(xlines);
 
 	# Map the input to the response collector
-	for xstr in ["Name", "Title", "Category", "Date", "Time", "Engineer", \
-		"Datatype",  "default_onError"]:
+	for xstr in ["Name", "Title", "Category", "Date", "Time", "Engineer", "Datatype"]:
 		try: 
 			xml_r["TestSuite"]["Details"][xstr] = copy.copy(xml_d["TestSuite"]["Details"].get(xstr,""))
 		except:
 			pass
+
+	print xml_d["TestSuite"]['Details']
+
 
 	try:
 		xml_r['TestSuite']['Testcases'] = copy.deepcopy(xml_d['TestSuite']['Testcases']);
@@ -175,9 +177,8 @@ def editSuite(request):
 		'suiteTime': xml_r["TestSuite"]["Details"]["Time"],
 		'suiteState': xml_r["TestSuite"]["Details"]["State"],
 		#'suiteType': xml_r["TestSuite"]["Details"]["type"],
-		'suitedefault_onError':xml_r["TestSuite"]["Details"]["default_onError"]['@action'],
-		'suitedefault_onError_goto':xml_r["TestSuite"]["Details"]["default_onError"].get('@value',''),
-		
+		'suitedefault_onError':xml_r["TestSuite"]["Details"]["onError"].get('@action',""),
+		'suitedefault_onError_goto':xml_r["TestSuite"]["Details"]["onError"].get('@value',''),
 		'suiteCases': xml_r['TestSuite']['Testcases'],
 		'fulljson': xml_r['TestSuite'],
 		'suiteResults': "",

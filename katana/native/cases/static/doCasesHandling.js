@@ -115,6 +115,62 @@ function mapUiToCaseJson() {
 	// Now you have collected the user components...
 } 
 
+function start_wdfEditor(tag) { 
+	var filename = katana.$activeTab.find(tag).attr("fullpath");
+	xref="wdf/?path="+filename;
+	katana.templateAPI.load(xref, null, null, 'suite') ;;
+	// $.ajax({
+ //                    url: "wdf/index",
+ //                    type: "POST",
+ //                    headers: {'X-CSRFToken':csrftoken},
+ //                    data: {"path": filename},
+ //                    success: function(data){
+ //                        // data is a django rendered template
+ //                    }
+ //                });
+
+
+}
+
+
+function getResultsDirForCase(tag) {
+      var callback_on_accept = function(selectedValue) { 
+      		console.log(selectedValue);
+      		// Convert to relative path.
+      		var pathToBase = katana.$activeTab.find('#savefilepath').text();
+      		console.log("File path ==", pathToBase);
+      		var nf = katana.fileExplorerAPI.prefixFromAbs(pathToBase, selectedValue);
+      		katana.$activeTab.find(tag).attr("value", nf);
+      		katana.$activeTab.find(tag).attr("fullpath", selectedValue);
+
+            };
+      var callback_on_dismiss =  function(){ 
+      		console.log("Dismissed");
+	 };
+     katana.fileExplorerAPI.openFileExplorer("Select a file", false , $("[name='csrfmiddlewaretoken']").val(), callback_on_accept, callback_on_dismiss);
+};
+
+
+function getResultsDirForCaseStep(tag) {
+      var callback_on_accept = function(selectedValue) { 
+      		console.log(selectedValue);
+      		var popup = katana.$activeTab.find("#editCaseStepDiv").attr('popup-id');
+
+      		// Convert to relative path.
+      		var pathToBase = katana.$activeTab.find('#savefilepath').text();
+      		console.log("File path ==", pathToBase);
+      		var nf = katana.fileExplorerAPI.prefixFromAbs(pathToBase, selectedValue);
+      		popup.find(tag).attr("value", nf);
+      		popup.find(tag).attr("fullpath", selectedValue);
+
+            };
+      var callback_on_dismiss =  function(){ 
+      		console.log("Dismissed");
+	 };
+     katana.fileExplorerAPI.openFileExplorer("Select a file", false , $("[name='csrfmiddlewaretoken']").val(), callback_on_accept, callback_on_dismiss);
+};
+
+				
 
 var fillCaseDefaultGoto = function() {
 
@@ -299,6 +355,7 @@ function mapCaseJsonToUi(data){
 			var names = this.id.split('-');
 			var sid = parseInt(names[1]);
 			katana.popupController.open(katana.$activeTab.find("#editCaseStepDiv").html(),"Edit..." + sid, function(popup) {
+				katana.$activeTab.find("#editCaseStepDiv").attr('popup-id',popup);
 				setupPopupDialog(sid,xdata,popup);
 			});
 		 }); 
