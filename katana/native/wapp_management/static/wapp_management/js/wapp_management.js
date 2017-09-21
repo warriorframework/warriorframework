@@ -76,33 +76,34 @@ var wapp_management = {
         var save_config = $(this).attr('save_config');
 
         if(save_config == "yes"){
-            file_saved = wapp_management.saveConfig(app_paths);
+            file_saved = wapp_management.saveConfig(app_paths,
+                function(){
+                    $.ajax({
+                        headers: {
+                            'X-CSRFToken': wapp_management.getCookie('csrftoken')
+                        },
+                        type: 'POST',
+                        url: 'wapp_management/install_an_app/',
+                        data: {"app_paths": app_paths},
+                    }).done(function(data) {
+                        katana.openAlert({
+                            "alert_type": "success",
+                            "text": "Apps have been installed!",
+                            "show_accept_btn": true,
+                            "show_cancel_btn": false
+                        });
+                        $currentPage.find('#form-for-paths').html('');
+                        wapp_management.addAnotherApp(1);
+                        $currentPage.find('#installed_apps_div').html(data)
+                    });
+                });
         }
         else {
             wapp_management.setSaveConfigAttr("yes");
         }
-
-        $.ajax({
-                headers: {
-                    'X-CSRFToken': wapp_management.getCookie('csrftoken')
-                },
-                type: 'POST',
-                url: 'wapp_management/install_an_app/',
-                data: {"app_paths": app_paths},
-            }).done(function(data) {
-                katana.openAlert({
-                    "alert_type": "success",
-                    "text": "Apps have been installed!",
-                    "show_accept_btn": true,
-                    "show_cancel_btn": false
-                });
-                $currentPage.find('#form-for-paths').html('');
-                wapp_management.addAnotherApp(1);
-                $currentPage.find('#installed_apps_div').html(data)
-            });
     },
 
-    saveConfig: function(app_paths){
+    saveConfig: function(app_paths, callback){
         var $currentPage = katana.$activeTab;
         if(app_paths === undefined){
             var $elements = $currentPage.find("input[id*='app_path_for_config']");
@@ -164,7 +165,7 @@ var wapp_management = {
                     wapp_management.setSaveConfigAttr("no");
                     var $saved_preferences = $currentPage.find('#saved-preferences');
                     $saved_preferences.html(data);
-                    return true;
+                    callback && callback()
                 });
             },
 
@@ -175,7 +176,7 @@ var wapp_management = {
                     "show_accept_btn": false,
                     "show_cancel_btn": false
                 });
-                return false;
+                callback && callback()
 
             })
 
@@ -189,7 +190,7 @@ var wapp_management = {
                 "show_accept_btn": false,
                 "show_cancel_btn": false
             });
-            return false;
+            callback && callback()
 
         });
     },
@@ -511,7 +512,7 @@ var wapp_management = {
         var loop_num = temp[temp.length-1]
 
         var $displayInput = $currentPage.find("#app_path_for_config_" + loop_num)
-        katana.openFileExplorer("Select a directory or a .zip file",
+        katana.fileExplorerAPI.openFileExplorer("Select a directory or a .zip file", false,
             function(selectedValue){
                 $displayInput.attr("value", selectedValue);
                 $displayInput.val(selectedValue);
