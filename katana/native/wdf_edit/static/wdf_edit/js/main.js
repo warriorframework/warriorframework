@@ -32,6 +32,7 @@ var wdf = {
         /*
             Hide the templates
         */
+        katana.$activeTab.find(".tool-bar").remove();
         katana.refreshAutoInit(katana.$activeTab.find("#system_template"));
         katana.refreshAutoInit(katana.$activeTab.find("#tag_template"));
         katana.refreshAutoInit(katana.$activeTab.find("#child_tag_template"));
@@ -484,6 +485,8 @@ var wdf = {
             success: function(data){
                 // load the tree
                 katana.$activeTab.find("#main_info").replaceWith(data);
+                var $toolbar = katana.$activeTab.find(".tool-bar");
+                katana.$activeTab.find(".page-content").prepend($toolbar);
                 katana.refreshAutoInit(katana.$activeTab.find("#jstree"));
             }
         }); 
