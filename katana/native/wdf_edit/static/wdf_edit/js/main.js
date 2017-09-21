@@ -398,12 +398,12 @@ var wdf = {
             type: "GET",
             dataType: "json",
             success: function(data){
-                if (data.hasOwnProperty("children")) {
-                    katana.$activeTab.find("#jstree").jstree({'core':{'data':[data]}});
-                    katana.$activeTab.find('#jstree').jstree().hide_dots();
-                } else {
+                if (! data.hasOwnProperty("children")) {
                     alert("Data file directory is not set up, please add idr directory in Settings - General Settings");
+                    data["text"] = "Data file directory is not set up, please add idr directory in Settings - General Settings"
                 }
+                katana.$activeTab.find("#jstree").jstree({'core':{'data':[data]}});
+                katana.$activeTab.find('#jstree').jstree().hide_dots();
             }
         });
 
