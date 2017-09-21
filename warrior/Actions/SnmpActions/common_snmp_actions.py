@@ -25,7 +25,6 @@ from threading import Thread
 from time import sleep
 import Queue
 try:
-    from pysnmp.smi import builder, view, compiler, error
     from pysnmp.entity.rfc3413 import ntfrcv
     from pysnmp.smi import builder, view, compiler, rfc1902, error
 except ImportError:
