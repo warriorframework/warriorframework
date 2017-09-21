@@ -117,18 +117,12 @@ function mapUiToCaseJson() {
 
 function start_wdfEditor(tag) { 
 	var filename = katana.$activeTab.find(tag).attr("fullpath");
-	xref="wdf/?path="+filename;
-	katana.templateAPI.load(xref, null, null, 'suite') ;;
-	// $.ajax({
- //                    url: "wdf/index",
- //                    type: "POST",
- //                    headers: {'X-CSRFToken':csrftoken},
- //                    data: {"path": filename},
- //                    success: function(data){
- //                        // data is a django rendered template
- //                    }
- //                });
+	dd = { 'path' : filename}; 
+	katana.templateAPI.postTabRequest("WDF", "/katana/wdf/index", dd);
 
+	//xref="wdf/?path="+filename;
+	//katana.templateAPI.load(xref, null, null, 'suite') ;;
+	
 
 }
 
