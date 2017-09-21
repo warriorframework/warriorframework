@@ -294,7 +294,7 @@ function mapCaseJsonToUi(data){
 		items.push('<td>'+oneCaseStep['impact']+'</td>'); 
 		var bid = "deleteTestStep-"+s+"-id-"+getRandomCaseID();
 		//items.push('<td><input type="button" class="btn-danger" value="X" id="'+bid+'"/>');
-		items.push('<td><i class="delete-item-32" title="Delete"  value="X" id="'+bid+'" />');
+		items.push('<td><i class="fa fa-trash" title="Delete"  value="X" id="'+bid+'" />');
 		
 		$('#'+bid).off('click');   //unbind and bind are deprecated. 
 		$(document).on('click','#'+bid,function(  ) {
@@ -306,7 +306,7 @@ function mapCaseJsonToUi(data){
 
 
 		bid = "editTestStep-"+s+"-id-"+getRandomCaseID();
-		items.push('<i title="Edit"  class="edit-item-32" theSid="'+s+'" value="Edit/Save"  id="'+bid+'"></i>');
+		items.push('<i title="Edit"  class="fa fa-pencil" theSid="'+s+'" value="Edit/Save"  id="'+bid+'"></i>');
 		$('#'+bid).off('click');   //unbind and bind are deprecated. 
 		$('#'+bid).attr('theSid', s);  //Set tthe name
 		katana.$activeTab.on('click','#'+bid,function() {
@@ -319,7 +319,7 @@ function mapCaseJsonToUi(data){
 		 }); 
 
 		bid = "addTestStepAbove-"+s+"-id-"+getRandomCaseID();
-		items.push('<i  title="Insert" class="add-item-32" value="Insert" id="'+bid+'"/>');
+		items.push('<i  title="Insert" class="fa fa-plus" value="Insert" id="'+bid+'"/>');
 		
 		$('#'+bid).off('<td>click');   //unbind and bind are deprecated. 
 		$(document).on('click','#'+bid,function(  ) {
@@ -330,7 +330,7 @@ function mapCaseJsonToUi(data){
 		});
 
 		bid = "dupTestStepAbove-"+s+"-id-"+getRandomCaseID();
-		items.push('<i  title="Duplicate" class="duplicate-item-32" value="Duplicate" id="'+bid+'"/></td>');
+		items.push('<i  title="Duplicate" class="fa fa-cc" value="Duplicate" id="'+bid+'"/></td>');
 		
 		$('#'+bid).off('<td>click');   //unbind and bind are deprecated. 
 		$(document).on('click','#'+bid,function(  ) {
@@ -861,7 +861,7 @@ function createRequirementsTable(){
 				items.push('<td><input type="text" value="'+oneReq+'" id="'+bid+'"/></td>');
 		
 				bid = "deleteRequirement-"+s+"-id"+getRandomCaseID();
-				items.push('<td><i  class="delete-item-32"  title="Delete" id="'+bid+'"/>');
+				items.push('<td><i  class="fa fa-trash"  title="Delete" id="'+bid+'"/>');
 				katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 				$(document).on('click','#'+bid,function( event ) {
 					var names = this.id.split('-');
@@ -875,7 +875,7 @@ function createRequirementsTable(){
 				});
 				bid = "editRequirement-"+s+"-id"+getRandomCaseID();
 				var tbid = "textRequirement-name-"+s+"-id";	
-				items.push('<i class="edit-item-32" title="Save Edit" id="'+bid+'"  txtId="'+tbid+'"/>');
+				items.push('<i class="fa fa-pencil" title="Save Edit" id="'+bid+'"  txtId="'+tbid+'"/>');
 				katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 				$(document).on('click','#'+bid,function() {
 					var names = this.id.split('-');
@@ -890,7 +890,7 @@ function createRequirementsTable(){
 				});
 
 			bid = "insertRequirement-"+s+"-id"+getRandomCaseID();
-			items.push('<i class="add-item-32"  title="Insert" id="'+bid+'"/></td>');
+			items.push('<i class="fa fa-plus"  title="Insert" id="'+bid+'"/></td>');
 			katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 			$(document).on('click','#'+bid,function( event ) {
 				var names = this.id.split('-');
