@@ -1220,7 +1220,7 @@ i.active {
     height: 90%;
     margin: 0 auto;
     position: fixed;
-    z-index: 999999;
+    z-index: 999;
     top: 5%;
     left: 0;
     right: 0;
@@ -1251,7 +1251,7 @@ i.active {
 }
 .overlay {
     background: rgba(128, 128, 128, 0.51);
-    z-index: 9;
+    z-index: 1000;
     position: fixed;
     height: 100%;
     width: 100%;

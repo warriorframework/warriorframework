@@ -51,8 +51,6 @@ var wapp_management = {
     installAnApp: function(){
 
         var $currentPage = katana.$activeTab;
-
-
         var $elements = $currentPage.find("input[id*='app_path_for_config']")
         var app_paths = []
         var path = "";
@@ -76,7 +74,7 @@ var wapp_management = {
         var save_config = $(this).attr('save_config');
 
         if(save_config == "yes"){
-            file_saved = wapp_management.saveConfig(app_paths,
+            wapp_management.saveConfig(app_paths,
                 function(){
                     $.ajax({
                         headers: {
@@ -158,26 +156,26 @@ var wapp_management = {
                     katana.openAlert({
                         "alert_type": "success",
                         "text": "Configuration Saved: " +  inputValue,
-                        "timer": 1250,
-                        "show_accept_btn": false,
+                        "show_accept_btn": true,
                         "show_cancel_btn": false
+                    },
+                    function(callback){
+                        wapp_management.setSaveConfigAttr("no");
+                        var $saved_preferences = $currentPage.find('#saved-preferences');
+                        $saved_preferences.html(data);
+                        callback && callback();
                     });
-                    wapp_management.setSaveConfigAttr("no");
-                    var $saved_preferences = $currentPage.find('#saved-preferences');
-                    $saved_preferences.html(data);
-                    callback && callback()
                 });
             },
 
             function(){
                 katana.openAlert({
                     "text": "Configuration not saved.",
-                    "timer": 1250,
-                    "show_accept_btn": false,
+                    "show_accept_btn": true,
                     "show_cancel_btn": false
+                }, function(callback){
+                    callback && callback();
                 });
-                callback && callback()
-
             })
 
         },
@@ -358,7 +356,8 @@ var wapp_management = {
                 wapp_management.getPreferenceFile($attribute);
             }
             else {
-                wapp_management.setPreferenceDetails($currentPage.find('#config-details-' + $attribute), $.wapp_management_globals.preference_details[$attribute]);
+                wapp_management.setPreferenceDetails($currentPage.find('#config-details-' + $attribute),
+                                                     $.wapp_management_globals.preference_details[$attribute]);
             }
         }
     },
@@ -512,7 +511,7 @@ var wapp_management = {
         var loop_num = temp[temp.length-1]
 
         var $displayInput = $currentPage.find("#app_path_for_config_" + loop_num)
-        katana.fileExplorerAPI.openFileExplorer("Select a directory or a .zip file", false,
+        katana.fileExplorerAPI.openFileExplorer("Select a directory or a .zip file", false, wapp_management.getCookie('csrftoken'),
             function(selectedValue){
                 $displayInput.attr("value", selectedValue);
                 $displayInput.val(selectedValue);

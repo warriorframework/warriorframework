@@ -6,6 +6,7 @@ from utils.directory_traversal_utils import join_path, get_dir_from_path, get_su
     get_relative_path
 from utils.file_utils import copy_dir, readlines_from_file, write_to_file
 from utils.json_utils import read_json_data
+from utils.navigator_util import Navigator
 from utils.regex_utils import compile_regex
 from wui.core.core_utils.app_info_class import AppInformation
 from wui.core.core_utils.apps_class import App
