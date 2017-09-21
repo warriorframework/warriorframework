@@ -25,7 +25,7 @@ def split_mib_path(custom_mib_paths):
     custom_mib_paths: comma separated mib paths as a string
     Return: Updated custom_mib_paths as a list
     """
-    __custom_mib_paths = []
+    temp_custom_mib_paths = []
     custom_mib_paths = custom_mib_paths.split(',')
     for paths in custom_mib_paths:
         if 'http' in paths and '@mib@' not in paths:
@@ -35,9 +35,9 @@ def split_mib_path(custom_mib_paths):
                 paths = paths+'@mib@'
         if 'http' in paths and 'browse' in paths:
             paths = paths.replace('browse', 'raw')
-        __custom_mib_paths.append(paths)
-    __custom_mib_paths.append('/usr/share/snmp/mibs')
-    return __custom_mib_paths
+        temp_custom_mib_paths.append(paths)
+    temp_custom_mib_paths.append('/usr/share/snmp/mibs')
+    return temp_custom_mib_paths
 
 def translate_mib(custom_mib_paths, load_mib_modules, name, val):
     """
@@ -56,26 +56,26 @@ def translate_mib(custom_mib_paths, load_mib_modules, name, val):
         except error.MibNotFoundError as excep:
             testcase_Utils.pNote(" {} Mib Not Found!".format(excep), "Error")
     if custom_mib_paths and load_mib_modules:
-        __type = val.__class__.__name__
+        temp_type = val.__class__.__name__
         output = rfc1902.ObjectType(rfc1902.ObjectIdentity(name), val).resolveWithMib(mibViewController).prettyPrint()
         op_list = output.split(" = ")
         name = op_list[0].strip()
-        __val = op_list[1].strip()
-        if __type == "Integer":
+        t_val = op_list[1].strip()
+        if temp_type == "Integer":
             testcase_Utils.pNote('%s = %s(%s): %s' %
-                         (name, __type,val.prettyPrint(),
-                          __val))
+                         (name, temp_type,val.prettyPrint(),
+                          t_val))
         else:
-            if __val == '': #For empty String
+            if t_val == '': #For empty String
                 testcase_Utils.pNote('%s = %s: ""' %
-                         (name, __type))
+                         (name, temp_type))
             else:
                 testcase_Utils.pNote('%s = %s: %s' %
-                         (name, __type, __val))
-        return name, __val
+                         (name, temp_type, t_val))
+        return name, t_val
     else:
         testcase_Utils.pNote('%s = %s: %s' %
-                         (name.prettyPrint(), __type,
+                         (name.prettyPrint(), temp_type,
                           val.prettyPrint()))
         return name.prettyPrint(), val.prettyPrint()
 
