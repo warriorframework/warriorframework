@@ -854,6 +854,105 @@ var katana = {
 		},
 
 	},
+
+	fileExplorerAPI: {
+
+	    openFileExplorer: function(heading, start_directory, callBack_on_accept, callBack_on_dismiss){
+            if(!heading || heading == "" || heading == undefined){
+                heading = "Select a file"
+            }
+            if(start_directory == undefined || start_directory == ""){
+                start_directory = false;
+            }
+            katana.templateAPI.post('get_file_explorer_data/', wapp_management.getCookie('csrftoken'), {"path": start_directory},
+                function(data) {
+                    var explorer_modal_html = $($('#file-explorer-template').html())
+                    var $fileExplorerHeading = explorer_modal_html.find('#file-explorer-heading');
+                    $fileExplorerHeading.text(heading);
+                    var $currentPage = katana.$activeTab;
+                    var $tabContent = $currentPage.find('.page-content-inner');
+                    $(explorer_modal_html).prependTo($tabContent);
+                    $directoryData = $tabContent.find('#directory-data');
+                    $directoryData.jstree({
+                        "core": { "data": [data]},
+                        "plugins": ["search", "sort"],
+                        "sort": function (a, b) {
+                                    var nodeA = this.get_node(a);
+                                    var nodeB = this.get_node(b);
+                                    var lengthA = nodeA.children.length;
+                                    var lengthB = nodeB.children.length;
+                                    if ((lengthA == 0 && lengthB == 0) || (lengthA > 0 && lengthB > 0))
+                                        return this.get_text(a).toLowerCase() > this.get_text(b).toLowerCase() ? 1 : -1;
+                                    else
+                                        return lengthA > lengthB ? -1 : 1;
+                            }
+                    });
+                    $directoryData.jstree().hide_dots();
+                    $tabContent.find('#explorer-accept').on('click', function(){
+                        katana.fileExplorerAPI.acceptFileExplorer(callBack_on_accept);
+                    });
+                    $tabContent.find('#explorer-dismiss').on('click', function(){
+                        katana.fileExplorerAPI.dismissFileExplorer(callBack_on_dismiss);
+                    });
+                    $tabContent.find('#explorer-up').on('click', function(){
+                        katana.fileExplorerAPI.upFileExplorer(data.li_attr["data-path"]);
+                    });
+
+                })
+        },
+
+        acceptFileExplorer: function(callBack){
+            var $currentPage = katana.$activeTab;
+            $fileExplorerElement = $currentPage.find('div .overlay');
+            $selectedValue = $fileExplorerElement.find('[aria-selected=true]')
+            var data_path = $selectedValue.attr("data-path");
+            if(data_path == undefined){
+                alert("Nothing selected");
+                return;
+            }
+            $fileExplorerElement.remove();
+            callBack && callBack(data_path);
+        },
+
+        dismissFileExplorer: function(callBack){
+            var $currentPage = katana.$activeTab;
+            $fileExplorerElement = $currentPage.find('div .overlay');
+            $fileExplorerElement.remove();
+            callBack && callBack();
+        },
+
+        upFileExplorer: function(currentPath){
+            katana.templateAPI.post('get_file_explorer_data/', wapp_management.getCookie('csrftoken'), {"path": currentPath},
+                function(data) {
+                    var $currentPage = katana.$activeTab;
+                    var $tabContent = $currentPage.find('.page-content-inner');
+                    var $directoryDataDiv = $currentPage.find('.directory-data-div');
+                    $directoryDataDiv.html("");
+                    $directoryDataDiv.append("<div id='directory-data' class='full-size'></div>")
+                    var $directoryData = $currentPage.find('#directory-data');
+                    $directoryData.jstree({
+                        "core": { "data": [data] },
+                        "plugins": ["search", "sort"],
+                        "sort": function (a, b) {
+                                    var nodeA = this.get_node(a);
+                                    var nodeB = this.get_node(b);
+                                    var lengthA = nodeA.children.length;
+                                    var lengthB = nodeB.children.length;
+                                    if ((lengthA == 0 && lengthB == 0) || (lengthA > 0 && lengthB > 0))
+                                        return this.get_text(a).toLowerCase() > this.get_text(b).toLowerCase() ? 1 : -1;
+                                    else
+                                        return lengthA > lengthB ? -1 : 1;
+                            }
+                    });
+                    $directoryData.jstree().hide_dots();
+                    $tabContent.find('#explorer-up').off('click');
+                    $tabContent.find('#explorer-up').on('click', function(){
+                        katana.fileExplorerAPI.upFileExplorer(data.li_attr["data-path"]);
+                    });
+                });
+        },
+
+	},
 ///////////////////////////////////////////Methods named by template
 
 };
