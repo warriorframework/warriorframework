@@ -764,7 +764,7 @@ class CommonSnmpActions(object):
             system_name: SNMP Agents system name from the data file.
             custom_mib_path: User can provide multiple MIB source path seperated by comma (',')
                       Source path can be url or just absolute directory path. Refer bellow example.
-                      e.g. 'http://rtx-swtl-git.fnc.net.local/projects/TYREPO/repos/fujitsu_base_yang_repo/browse/src/util/snmp/@mib@, /data/users/sbhattac/MIBS/FNC'.
+                      e.g. 'http://<URL>/@mib@, /data/users/MIBS/'.
                       For URL it supports http, file, https, ftp and sftp.
                       Use @mib@ placeholder token in URL location to refer.
             load_mib_module: User can provide the MIBS(name) need to be loaded from the path "custom_mib_path".
