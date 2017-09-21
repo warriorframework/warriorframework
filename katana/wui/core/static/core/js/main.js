@@ -837,148 +837,83 @@ var katana = {
 
 	},
 
-	openFileExplorer(heading, callBack_on_accept, callBack_on_dismiss){
-	    if(!heading || heading == "" || heading == undefined){
-	        heading = "Select a file"
-	    }
+	fileExplorerAPI: {
 
-	    if(callBack_on_accept == undefined){
-	        callBack_on_accept = false;
-	    }
+	    openFileExplorer: function(heading, start_directory, callBack_on_accept, callBack_on_dismiss){
+            if(!heading || heading == "" || heading == undefined){
+                heading = "Select a file"
+            }
+            if(start_directory == undefined || start_directory == ""){
+                start_directory = false;
+            }
+            katana.templateAPI.post('get_file_explorer_data/', wapp_management.getCookie('csrftoken'), {"path": start_directory},
+                function(data) {
+                    var explorer_modal_html = $($('#file-explorer-template').html())
+                    var $fileExplorerHeading = explorer_modal_html.find('#file-explorer-heading');
+                    $fileExplorerHeading.text(heading);
+                    var $currentPage = katana.$activeTab;
+                    var $tabContent = $currentPage.find('.page-content-inner');
+                    $(explorer_modal_html).prependTo($tabContent);
+                    $directoryData = $tabContent.find('#directory-data');
+                    $directoryData.jstree({
+                        "core": {"data": [data]}
+                    });
+                    $directoryData.jstree().hide_dots();
+                    $tabContent.find('#explorer-accept').on('click', function(){
+                        katana.fileExplorerAPI.acceptFileExplorer(callBack_on_accept);
+                    });
+                    $tabContent.find('#explorer-dismiss').on('click', function(){
+                        katana.fileExplorerAPI.dismissFileExplorer(callBack_on_dismiss);
+                    });
+                    $tabContent.find('#explorer-up').on('click', function(){
+                        katana.fileExplorerAPI.upFileExplorer(data.li_attr["data-path"]);
+                    });
 
-	    if(callBack_on_dismiss == undefined){
-	        callBack_on_dismiss = false;
-	    }
+                })
+        },
 
-	    $.ajax({
-                headers: {
-                    'X-CSRFToken': wapp_management.getCookie('csrftoken')
-                },
-                type: 'GET',
-                url: 'get_file_explorer_data/',
-            }).done(function(data) {
-                var explorer_modal_html = '<div class="overlay">' +
-                                              '<div class="centered file-explorer">' +
-                                                   '<div class="file-explorer-header">' +
-                                                       '<div class="full-size" style="vertical-align: middle;">' +
-                                                            '<h4>' + heading + '</h4>' +
-                                                       '</div>' +
-                                                   '</div>' +
-                                                   '<div class="file-explorer-body">' +
-                                                       '<div class="up-btn-bar">' +
-                                                            '<button id="explorer-up" class="btn btn-info">...</button>' +
-                                                       '</div>' +
-                                                       '<div class="directory-data-div to-scroll">' +
-                                                           '<div id="directory-data" class="full-size">' +
-                                                           '</div>' +
-                                                       '</div>' +
-                                                   '</div>' +
-                                                   '<div class="file-explorer-footer">' +
-                                                       '<div class="full-size text-center">' +
-                                                            '<button id="explorer-accept" class="btn btn-success">OK</button>' +
-                                                            '<button id="explorer-dismiss" class="btn btn-success">Cancel</button>' +
-                                                       '</div>' +
-                                                   '</div>' +
-                                              '</div>' +
-                                         '</div>'
-                var $currentPage = katana.$activeTab;
-                var $tabContent = $currentPage.find('.page-content-inner');
-                $(explorer_modal_html).prependTo($tabContent);
+        acceptFileExplorer: function(callBack){
+            var $currentPage = katana.$activeTab;
+            $fileExplorerElement = $currentPage.find('div .overlay');
+            $selectedValue = $fileExplorerElement.find('[aria-selected=true]')
+            var data_path = $selectedValue.attr("data-path");
+            if(data_path == undefined){
+                alert("Nothing selected");
+                return;
+            }
+            $fileExplorerElement.remove();
+            callBack && callBack(data_path);
+        },
 
-                $directoryData = $tabContent.find('#directory-data');
+        dismissFileExplorer: function(callBack){
+            var $currentPage = katana.$activeTab;
+            $fileExplorerElement = $currentPage.find('div .overlay');
+            $fileExplorerElement.remove();
+            callBack && callBack();
+        },
 
-                $directoryData.jstree({
-                    "core": {
-                        "data": [data]
-                    }
+        upFileExplorer: function(currentPath){
+            katana.templateAPI.post('get_file_explorer_data/', wapp_management.getCookie('csrftoken'), {"path": currentPath},
+                function(data) {
+                    var $currentPage = katana.$activeTab;
+                    var $tabContent = $currentPage.find('.page-content-inner');
+                    var $directoryDataDiv = $currentPage.find('.directory-data-div');
+                    $directoryDataDiv.html("");
+                    $directoryDataDiv.append("<div id='directory-data' class='full-size'></div>")
+                    var $directoryData = $currentPage.find('#directory-data');
+                    $directoryData.jstree({
+                        "core": {
+                            "data": [data]
+                        }
+                    });
+                    $directoryData.jstree().hide_dots();
+                    $tabContent.find('#explorer-up').off('click');
+                    $tabContent.find('#explorer-up').on('click', function(){
+                        katana.fileExplorerAPI.upFileExplorer(data.li_attr["data-path"]);
+                    });
                 });
+        },
 
-                $directoryData.jstree().hide_dots();
-
-                $tabContent.find('#explorer-accept').on('click', function(){
-
-                    katana.acceptFileExplorer(callBack_on_accept);
-                });
-
-                $tabContent.find('#explorer-dismiss').on('click', function(){
-
-                    katana.dismissFileExplorer(callBack_on_dismiss);
-                });
-
-                $tabContent.find('#explorer-up').on('click', function(){
-
-                    katana.upFileExplorer(data.li_attr["data-path"]);
-                });
-
-            });
-
-	},
-
-	acceptFileExplorer: function(callBack){
-	    var $currentPage = katana.$activeTab;
-	    $fileExplorerElement = $currentPage.find('div .overlay');
-
-	    $selectedValue = $fileExplorerElement.find('[aria-selected=true]')
-
-	    var data_path = $selectedValue.attr("data-path");
-
-	    if(data_path == undefined){
-	        alert("Nothing selected");
-	        return;
-	    }
-
-	    $fileExplorerElement.remove();
-
-	    if(callBack){
-	        callBack(data_path);
-	    }
-	},
-
-	dismissFileExplorer: function(callBack){
-	    var $currentPage = katana.$activeTab;
-	    $fileExplorerElement = $currentPage.find('div .overlay');
-	    $fileExplorerElement.remove();
-
-	    if(callBack){
-	        callBack();
-	    }
-	},
-
-	upFileExplorer: function(currentPath){
-	    $.ajax({
-                headers: {
-                    'X-CSRFToken': wapp_management.getCookie('csrftoken')
-                },
-                type: 'GET',
-                url: 'get_file_explorer_data/',
-                data: {"path": currentPath}
-            }).done(function(data) {
-                var $currentPage = katana.$activeTab;
-                var $tabContent = $currentPage.find('.page-content-inner');
-                var $directoryDataDiv = $currentPage.find('.directory-data-div');
-
-                $directoryDataDiv.html("");
-
-                $directoryDataDiv.append("<div id='directory-data' class='full-size'></div>")
-
-                var $directoryData = $currentPage.find('#directory-data');
-
-                $directoryData.jstree({
-                    "core": {
-                        "data": [data]
-                    }
-                });
-
-                $directoryData.jstree().hide_dots();
-
-                $tabContent.find('#explorer-up').off('click');
-
-                $tabContent.find('#explorer-up').on('click', function(){
-
-                    katana.upFileExplorer(data.li_attr["data-path"]);
-                });
-
-            });
 	},
 ///////////////////////////////////////////Methods named by template
 
