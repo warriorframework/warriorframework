@@ -886,17 +886,21 @@ def clone_warriorspace(base_path, current_dir, **kwargs):
                         destination = os.path.join(base_path,
                                                'warrior', 'Warriorspace')
                     dummy, root_repo_folder_list = get_subfiles(path)
-                    try:
-                        overwrite_files(os.path.join(path,
-                                                     root_repo_folder_list[1]),
-                                        destination, overwrite,
-                                        logfile, print_log_name)
-                    except:
-                        print_error("Could not copy Warriorspace files from "
-                                    + name + " into warriorframework", logfile,
-                                    print_log_name)
+                    if not 'Warriorspace' in root_repo_folder_list:
+                        print_error('COuld not find Warriorspace under the root of the repository')
                         setDone(1)
+                    else:
 
+                        try:
+                            overwrite_files(os.path.join(path,
+                                                         'Warriorspace'),
+                                            destination, overwrite,
+                                            logfile, print_log_name)
+                        except:
+                            print_error("Could not copy Warriorspace files from "
+                                        + name + " into warriorframework", logfile,
+                                        print_log_name)
+                            setDone(1)
             # folder inside the temp folder that had the initial clone of the
             # repository get deleted here. This is done for every iteration
             # because if user wants to clone another repository with the same

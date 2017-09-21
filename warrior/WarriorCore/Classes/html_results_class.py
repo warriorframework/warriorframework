@@ -21,9 +21,6 @@ from Framework.Utils.print_Utils import print_info
 from Framework.Utils.xml_Utils import getElementWithTagAttribValueMatch
 import katana_interface_class
 
-
-
-
 class LineResult:
     """Class that generates html result line items"""
     data = {}
@@ -98,7 +95,6 @@ class LineResult:
                     if elem != 'static' and elem != 'dynamic':
                         top_level += '<td rowspan="2"><div>' + (
                             self.data[elem] if self.data[elem] else '') + '</div></td>'
-
             self.html = '<tr name="' + self.data['nameAttr'] + '">' + top_level + '</tr>' + top_level_next
 
 
@@ -197,7 +193,6 @@ class WarriorHtmlResults:
 
         if is_final is True:
             katana.end_comunication()
-
         self.lineObjs = []
         print_info("++++ Results Summary ++++")
         print_info("Open the Results summary file given below in a browser to "

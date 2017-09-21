@@ -18,7 +18,7 @@
 		<Requirement/>
 	</Requirements>
 	<Steps>
-		<step Driver="demo_driver" Keyword="local_data_test" TS="1">
+		<step Driver="ci_regression_driver" Keyword="local_data_test" TS="1">
 			<Arguments>
 				<argument name="desired_status" value="pass"/>
 			</Arguments>
@@ -30,7 +30,7 @@
 			<impact>impact</impact>
 			<rmt/>
 		</step>
-		<step Driver="demo_driver" Keyword="local_data_test" TS="2">
+		<step Driver="ci_regression_driver" Keyword="local_data_test" TS="2">
 			<Arguments>
 				<argument name="desired_status" value="fail"/>
 			</Arguments>
@@ -44,7 +44,7 @@
 			<impact>noimpact</impact>
 			<rmt/>
 		</step>
-		<step Driver="demo_driver" Keyword="local_data_test" TS="3">
+		<step Driver="ci_regression_driver" Keyword="local_data_test" TS="3">
 			<Arguments>
 				<argument name="desired_status" value="ABORT"/>
 			</Arguments>
@@ -58,7 +58,7 @@
 			<impact>noimpact</impact>
 			<rmt/>
 		</step>
-		<step Driver="demo_driver" Keyword="local_data_test" TS="4">
+		<step Driver="ci_regression_driver" Keyword="local_data_test" TS="4">
 			<Arguments>
 				<argument name="desired_status" value="pass"/>
 			</Arguments>
@@ -72,7 +72,7 @@
 			<impact>impact</impact>
 			<rmt/>
 		</step>
-		<step Driver="demo_driver" Keyword="local_data_test" TS="5">
+		<step Driver="ci_regression_driver" Keyword="local_data_test" TS="5">
 			<Arguments>
 				<argument/>
 			</Arguments>
@@ -84,7 +84,7 @@
 			<impact>impact</impact>
 			<rmt/>
 		</step>
-		<step Driver="demo_driver" Keyword="local_data_test" TS="6">
+		<step Driver="ci_regression_driver" Keyword="local_data_test" TS="6">
 			<Arguments>
 				<argument name="desired_status" value="fail"/>
 			</Arguments>
@@ -98,7 +98,7 @@
 			<impact>noimpact</impact>
 			<rmt/>
 		</step>
-		<step Driver="demo_driver" Keyword="local_data_test" TS="7">
+		<step Driver="ci_regression_driver" Keyword="local_data_test" TS="7">
 			<Arguments>
 				<argument name="desired_status" value="pass"/>
 			</Arguments>
@@ -112,7 +112,7 @@
 			<impact>impact</impact>
 			<rmt/>
 		</step>
-		<step Driver="demo_driver" Keyword="local_data_test" TS="8">
+		<step Driver="ci_regression_driver" Keyword="local_data_test" TS="8">
 			<Arguments>
 				<argument name="desired_status" value="pass"/>
 			</Arguments>
@@ -126,7 +126,7 @@
 			<impact>impact</impact>
 			<rmt/>
 		</step>
-		<step Driver="demo_driver" Keyword="local_data_test" TS="9">
+		<step Driver="ci_regression_driver" Keyword="local_data_test" TS="9">
 			<Arguments>
 				<argument name="desired_status" value="ABORT"/>
 			</Arguments>
@@ -140,7 +140,7 @@
 			<impact>noimpact</impact>
 			<rmt/>
 		</step>
-		<step Driver="demo_driver" Keyword="local_data_test" TS="10">
+		<step Driver="ci_regression_driver" Keyword="local_data_test" TS="10">
 			<Arguments>
 				<argument name="desired_status" value="pass"/>
 			</Arguments>
