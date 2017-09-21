@@ -1,0 +1,2395 @@
+<div class='col-md-12'>
+    <h4 class='text-muted nav-font' style="color:rgb(0, 0, 0)">
+        <b>Katana Suite Editor</b>
+    </h4>
+    <hr/>
+
+    <div class="row">
+        <div class="form-group">
+            <label class="col-sm-1 control-label text-uppercase mandatory-field">Details</label>
+        </div>
+    </div>
+
+    <form action="" method="post" class="form-horizontal" role="form">
+        <div class="row">
+            <div class="form-group">
+                <label for="Name" class="col-sm-2 control-label mandatory-field ellipsis-the-overflow">Name</label>
+                <div class="tooltip-on-right align-fa-icon-after-label">
+                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                    <span class="tooltip-content">
+                        <div ng-if="newtestsuiteTooltip.name.tooltip != ''">
+                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                            &nbsp;
+                            {{newtestsuiteTooltip.name.tooltip}}
+                            <br>
+                        </div>
+                        <div ng-if="newtestsuiteTooltip.name.protip != ''">
+                            <br>
+                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                            &nbsp;
+                            {{newtestsuiteTooltip.name.protip}}
+                            <br>
+                        </div>
+                        <div ng-if="newtestsuiteTooltip.name.bantip != ''">
+                            <br>
+                            <i class="fa fa-ban" aria-hidden="true"></i>
+                            &nbsp;
+                            {{newtestsuiteTooltip.name.bantip}}
+                            <br>
+                        </div>
+                        <div ng-if="newtestsuiteTooltip.name.snowflake != ''">
+                            <br>
+                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                            &nbsp;
+                            {{newtestsuiteTooltip.name.snowflake}}
+                            <br>
+                        </div>
+                    </span>
+                </div>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="Name"
+                           placeholder="Suite name" autofocus
+                           ng-model='testsuitename'>
+                </div>
+                <div class="col-sm-1 align-fa-icon-after-input">
+                    <div class="tooltip-on-right">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                             <div ng-if="newtestsuiteTooltip.name.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{newtestsuiteTooltip.name.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="newtestsuiteTooltip.name.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{newtestsuiteTooltip.name.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="newtestsuiteTooltip.name.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{newtestsuiteTooltip.name.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="newtestsuiteTooltip.name.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{newtestsuiteTooltip.name.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group">
+                <label for="Title" class="col-sm-2 control-label mandatory-field ellipsis-the-overflow">Suite Title</label>
+                <div class="tooltip-on-right align-fa-icon-after-label">
+                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                    <span class="tooltip-content">
+                        <div ng-if="newtestsuiteTooltip.title.tooltip != ''">
+                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                            &nbsp;
+                            {{newtestsuiteTooltip.title.tooltip}}
+                            <br>
+                        </div>
+                        <div ng-if="newtestsuiteTooltip.title.protip != ''">
+                            <br>
+                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                            &nbsp;
+                            {{newtestsuiteTooltip.title.protip}}
+                            <br>
+                        </div>
+                        <div ng-if="newtestsuiteTooltip.title.bantip != ''">
+                            <br>
+                            <i class="fa fa-ban" aria-hidden="true"></i>
+                            &nbsp;
+                            {{newtestsuiteTooltip.title.bantip}}
+                            <br>
+                        </div>
+                        <div ng-if="newtestsuiteTooltip.title.snowflake != ''">
+                            <br>
+                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                            &nbsp;
+                            {{newtestsuiteTooltip.title.snowflake}}
+                            <br>
+                        </div>
+                    </span>
+                </div>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="Title"
+                           ng-model='testsuitetitle'
+                           placeholder="Title or Description of this Suite">
+                </div>
+                <div class="col-sm-1 align-fa-icon-after-input">
+                    <div class="tooltip-on-right">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                             <div ng-if="newtestsuiteTooltip.title.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{newtestsuiteTooltip.title.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="newtestsuiteTooltip.title.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{newtestsuiteTooltip.title.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="newtestsuiteTooltip.title.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{newtestsuiteTooltip.title.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="newtestsuiteTooltip.title.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{newtestsuiteTooltip.title.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group">
+                <label for="Type" class="col-sm-2 control-label mandatory-field ellipsis-the-overflow">Type</label>
+                <div class="tooltip-on-right align-fa-icon-after-label">
+                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                    <span class="tooltip-content">
+                        <div ng-if="newtestsuiteTooltip.type.tooltip != ''">
+                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                            &nbsp;
+                            {{newtestsuiteTooltip.type.tooltip}}
+                            <br>
+                        </div>
+                        <div ng-if="newtestsuiteTooltip.type.protip != ''">
+                            <br>
+                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                            &nbsp;
+                            {{newtestsuiteTooltip.type.protip}}
+                            <br>
+                        </div>
+                        <div ng-if="newtestsuiteTooltip.type.bantip != ''">
+                            <br>
+                            <i class="fa fa-ban" aria-hidden="true"></i>
+                            &nbsp;
+                            {{newtestsuiteTooltip.type.bantip}}
+                            <br>
+                        </div>
+                        <div ng-if="newtestsuiteTooltip.type.snowflake != ''">
+                            <br>
+                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                            &nbsp;
+                            {{newtestsuiteTooltip.type.snowflake}}
+                            <br>
+                        </div>
+                    </span>
+                </div>
+                <div class="col-sm-3">
+                    <select class="form-control" ng-model="exectype" id="Type"
+                            ng-options="defaultExec for defaultExec in defaultExectypes"></select>
+                </div>
+                <div class="col-sm-3" ng-show="isMaxFailAttempSelected() || isMaxPassAttempSelected() || isNumAttempSelected()">
+                    <input type="text" class="form-control" ng-model="maxAttempts"
+                           ng-show="isMaxFailAttempSelected()"
+                           placeholder="enter the max attempts">
+                    <input type="text" class="form-control" ng-model="maxAttempts"
+                           ng-show="isMaxPassAttempSelected()"
+                           placeholder="enter the max attempts">
+                    <input type="text" class="form-control" ng-model="numAttempts"
+                           ng-show="isNumAttempSelected()"
+                           placeholder="enter the number of attempts">
+                </div>
+                <div class="col-sm-1 align-fa-icon-after-input">
+                    <div class="tooltip-on-right">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                            <div ng-if="newtestsuiteTooltip.type.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{newtestsuiteTooltip.type.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="newtestsuiteTooltip.type.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{newtestsuiteTooltip.type.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="newtestsuiteTooltip.type.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{newtestsuiteTooltip.type.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="newtestsuiteTooltip.type.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{newtestsuiteTooltip.type.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group">
+                <label for="SuiteState" class="col-sm-2 control-label ellipsis-the-overflow">Suite State</label>
+                <div class="tooltip-on-right align-fa-icon-after-label">
+                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                    <span class="tooltip-content">
+                        <div ng-if="newtestsuiteTooltip.suitestate.tooltip != ''">
+                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                            &nbsp;
+                            {{newtestsuiteTooltip.suitestate.tooltip}}
+                            <br>
+                        </div>
+                        <div ng-if="newtestsuiteTooltip.suitestate.protip != ''">
+                            <br>
+                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                            &nbsp;
+                            {{newtestsuiteTooltip.suitestate.protip}}
+                            <br>
+                        </div>
+                        <div ng-if="newtestsuiteTooltip.suitestate.bantip != ''">
+                            <br>
+                            <i class="fa fa-ban" aria-hidden="true"></i>
+                            &nbsp;
+                            {{newtestsuiteTooltip.suitestate.bantip}}
+                            <br>
+                        </div>
+                        <div ng-if="newtestsuiteTooltip.suitestate.snowflake != ''">
+                            <br>
+                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                            &nbsp;
+                            {{newtestsuiteTooltip.suitestate.snowflake}}
+                            <br>
+                        </div>
+                    </span>
+                </div>
+                <div class="col-sm-3">
+                    <select id="SuiteState" ng-change="checkStateIfNone(State)"
+                            class="form-control" ng-model="State"
+                            ng-options="o for o in suitestates"></select>
+                </div>
+                <div class="col-sm-2" ng-show="isAddAnotherSelectedSuite()">
+                    <input type="text" class="form-control"
+                           placeholder="Specify a new Suite State"
+                           ng-change="getNewStateValue(new_state)"
+                           ng-model="new_state">
+                </div>
+                <div class="col-sm-1" ng-show="isAddAnotherSelectedSuite()">
+                    <input type="button" class="btn btn-default form-control ellipsis-the-overflow"
+                           value="Done"
+                           ng-click="saveNewlyAddedState()"
+                           style="color:rgb(214, 48, 48)">
+                </div>
+                <div class="col-sm-1 align-fa-icon-after-input">
+                    <div class="tooltip-on-right">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                            <div ng-if="newtestsuiteTooltip.suitestate.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{newtestsuiteTooltip.suitestate.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="newtestsuiteTooltip.suitestate.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{newtestsuiteTooltip.suitestate.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="newtestsuiteTooltip.suitestate.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{newtestsuiteTooltip.suitestate.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="newtestsuiteTooltip.suitestate.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{newtestsuiteTooltip.suitestate.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group">
+                <label for="Engineer" class="col-sm-2 control-label ellipsis-the-overflow">Engineer</label>
+                <div class="tooltip-on-right align-fa-icon-after-label">
+                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                    <span class="tooltip-content">
+                        <div ng-if="newtestsuiteTooltip.engineer.tooltip != ''">
+                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                            &nbsp;
+                            {{newtestsuiteTooltip.engineer.tooltip}}
+                            <br>
+                        </div>
+                        <div ng-if="newtestsuiteTooltip.engineer.protip != ''">
+                            <br>
+                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                            &nbsp;
+                            {{newtestsuiteTooltip.engineer.protip}}
+                            <br>
+                        </div>
+                        <div ng-if="newtestsuiteTooltip.engineer.bantip != ''">
+                            <br>
+                            <i class="fa fa-ban" aria-hidden="true"></i>
+                            &nbsp;
+                            {{newtestsuiteTooltip.engineer.bantip}}
+                            <br>
+                        </div>
+                        <div ng-if="newtestsuiteTooltip.engineer.snowflake != ''">
+                            <br>
+                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                            &nbsp;
+                            {{newtestsuiteTooltip.engineer.snowflake}}
+                            <br>
+                        </div>
+                    </span>
+                </div>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" required
+                           id="Engineer"
+                           ng-model='newEng'
+                           placeholder="Who created/edited this Suite definition">
+                </div>
+                <div class="col-sm-1 align-fa-icon-after-input">
+                    <div class="tooltip-on-right">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                            <div ng-if="newtestsuiteTooltip.engineer.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{newtestsuiteTooltip.engineer.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="newtestsuiteTooltip.engineer.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{newtestsuiteTooltip.engineer.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="newtestsuiteTooltip.engineer.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{newtestsuiteTooltip.engineer.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="newtestsuiteTooltip.engineer.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{newtestsuiteTooltip.engineer.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group">
+                <label for="Date" class="col-sm-2 control-label ellipsis-the-overflow">Last updated</label>
+                <div class="tooltip-on-right align-fa-icon-after-label">
+                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                    <span class="tooltip-content">
+                        <div ng-if="newtestsuiteTooltip.time.tooltip != ''">
+                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                            &nbsp;
+                            {{newtestsuiteTooltip.time.tooltip}}
+                            <br>
+                        </div>
+                        <div ng-if="newtestsuiteTooltip.time.protip != ''">
+                            <br>
+                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                            &nbsp;
+                            {{newtestsuiteTooltip.time.protip}}
+                            <br>
+                        </div>
+                        <div ng-if="newtestsuiteTooltip.time.bantip != ''">
+                            <br>
+                            <i class="fa fa-ban" aria-hidden="true"></i>
+                            &nbsp;
+                            {{newtestsuiteTooltip.time.bantip}}
+                            <br>
+                        </div>
+                        <div ng-if="newtestsuiteTooltip.time.snowflake != ''">
+                            <br>
+                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                            &nbsp;
+                            {{newtestsuiteTooltip.time.snowflake}}
+                            <br>
+                        </div>
+                    </span>
+                </div>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control"
+                           id="Date"
+                           ng-model='newDate'
+                           placeholder="Creation/updated date" disabled>
+                </div>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control disabled"
+                           id="Time"
+                           ng-model='newTime'
+                           placeholder="Creation/updated time" disabled>
+                </div>
+                <div class="col-sm-1 align-fa-icon-after-input">
+                    <div class="tooltip-on-right">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                            <div ng-if="newtestsuiteTooltip.time.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{newtestsuiteTooltip.time.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="newtestsuiteTooltip.time.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{newtestsuiteTooltip.time.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="newtestsuiteTooltip.time.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{newtestsuiteTooltip.time.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="newtestsuiteTooltip.time.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{newtestsuiteTooltip.time.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group">
+                <label for="Name" class="col-sm-2 control-label mandatory-field ellipsis-the-overflow">Default On Error</label>
+                <div class="tooltip-on-right align-fa-icon-after-label">
+                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                    <span class="tooltip-content">
+                        <div ng-if="newtestsuiteTooltip.defaultError.tooltip != ''">
+                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                            &nbsp;
+                            {{newtestsuiteTooltip.defaultError.tooltip}}
+                            <br>
+                        </div>
+                        <div ng-if="newtestsuiteTooltip.defaultError.protip != ''">
+                            <br>
+                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                            &nbsp;
+                            {{newtestsuiteTooltip.defaultError.protip}}
+                            <br>
+                        </div>
+                        <div ng-if="newtestsuiteTooltip.defaultError.bantip != ''">
+                            <br>
+                            <i class="fa fa-ban" aria-hidden="true"></i>
+                            &nbsp;
+                            {{newtestsuiteTooltip.defaultError.bantip}}
+                            <br>
+                        </div>
+                        <div ng-if="newtestsuiteTooltip.defaultError.snowflake != ''">
+                            <br>
+                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                            &nbsp;
+                            {{newtestsuiteTooltip.defaultError.snowflake}}
+                            <br>
+                        </div>
+                    </span>
+                </div>
+                <div class="col-sm-3">
+                    <select class="form-control" ng-model="defaultSuiteAction"
+                            ng-options="defaultAction for defaultAction in defaultSuiteActions">
+                    </select>
+                </div>
+                <div class="col-sm-3" ng-show="isGotoSelectedSuite()">
+                    <input type="text" class="form-control"
+                           ng-model="gotovalueSuite"
+                           placeholder="Enter the Case to goto">
+                </div>
+                <div class="col-sm-1 align-fa-icon-after-input">
+                    <div class="tooltip-on-right">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                            <div ng-if="newtestsuiteTooltip.defaultError.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{newtestsuiteTooltip.defaultError.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="newtestsuiteTooltip.defaultError.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{newtestsuiteTooltip.defaultError.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="newtestsuiteTooltip.defaultError.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{newtestsuiteTooltip.defaultError.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="newtestsuiteTooltip.defaultError.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{newtestsuiteTooltip.defaultError.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group">
+                <label for="ResultsdirSuite" class="col-sm-2 control-label ellipsis-the-overflow">Results Directory</label>
+                <div class="tooltip-on-right align-fa-icon-after-label">
+                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                    <span class="tooltip-content">
+                        <div ng-if="newtestsuiteTooltip.directory.tooltip != ''">
+                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                            &nbsp;
+                            {{newtestsuiteTooltip.directory.tooltip}}
+                            <br>
+                        </div>
+                        <div ng-if="newtestsuiteTooltip.directory.protip != ''">
+                            <br>
+                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                            &nbsp;
+                            {{newtestsuiteTooltip.directory.protip}}
+                            <br>
+                        </div>
+                        <div ng-if="newtestsuiteTooltip.directory.bantip != ''">
+                            <br>
+                            <i class="fa fa-ban" aria-hidden="true"></i>
+                            &nbsp;
+                            {{newtestsuiteTooltip.directory.bantip}}
+                            <br>
+                        </div>
+                        <div ng-if="newtestsuiteTooltip.directory.snowflake != ''">
+                            <br>
+                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                            &nbsp;
+                            {{newtestsuiteTooltip.directory.snowflake}}
+                            <br>
+                        </div>
+                    </span>
+                </div>
+                <div class="col-sm-6">
+                    <b>
+                        <input type="text" class="form-control"
+                               ng-model="resultsdirSuite" id="ResultsdirSuite">
+                    </b>
+                </div>
+                <div class="col-sm-1 align-fa-icon-after-input">
+                    <div class="tooltip-on-right">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                            <div ng-if="newtestsuiteTooltip.directory.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{newtestsuiteTooltip.directory.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="newtestsuiteTooltip.directory.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{newtestsuiteTooltip.directory.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="newtestsuiteTooltip.directory.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{newtestsuiteTooltip.directory.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="newtestsuiteTooltip.directory.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{newtestsuiteTooltip.directory.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group">
+                <label for="IDF" class="col-sm-2 control-label ellipsis-the-overflow">Input Data File</label>
+                <div class="tooltip-on-right align-fa-icon-after-label">
+                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                    <span class="tooltip-content">
+                        <div ng-if="newtestsuiteTooltip.inputDataFile.tooltip != ''">
+                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                            &nbsp;
+                            {{newtestsuiteTooltip.inputDataFile.tooltip}}
+                            <br>
+                        </div>
+                        <div ng-if="newtestsuiteTooltip.inputDataFile.protip != ''">
+                            <br>
+                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                            &nbsp;
+                            {{newtestsuiteTooltip.inputDataFile.protip}}
+                            <br>
+                        </div>
+                        <div ng-if="newtestsuiteTooltip.inputDataFile.bantip != ''">
+                            <br>
+                            <i class="fa fa-ban" aria-hidden="true"></i>
+                            &nbsp;
+                            {{newtestsuiteTooltip.inputDataFile.bantip}}
+                            <br>
+                        </div>
+                        <div ng-if="newtestsuiteTooltip.inputDataFile.snowflake != ''">
+                            <br>
+                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                            &nbsp;
+                            {{newtestsuiteTooltip.inputDataFile.snowflake}}
+                            <br>
+                        </div>
+                    </span>
+                </div>
+                <div class="col-sm-5">
+                    <input type="text" class="form-control" ng-model="IDFSuite" id="IDF"
+                           ng-change="idf_monitorPathBtnValue()"
+                           placeholder="Location of the Input Data File">
+                </div>
+                <div class="col-sm-1">
+                    <input type="button" ng-click="idf_toggleModal()"
+                           class="btn btn-default form-control ellipsis-the-overflow"
+                           ng-value="idf_btnValue">
+                </div>
+                <modal title="Select an Input Data File" show-modal="idf_showModal">
+                    <form-idf role="form">
+                        <div class="form-group" style="padding: 5%">
+                            <div id="idf_tree_div"
+                                 ng-click="idf_getPaths($event)"></div>
+                        </div>
+                        <input type="button" value="Submit" class="btn btn-default"
+                               ng-click="idf_storePaths()">
+                    </form-idf>
+                </modal>
+                <div class="col-sm-1 align-fa-icon-after-input">
+                    <div class="tooltip-on-right">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                            <div ng-if="newtestsuiteTooltip.inputDataFile.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{newtestsuiteTooltip.inputDataFile.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="newtestsuiteTooltip.inputDataFile.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{newtestsuiteTooltip.inputDataFile.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="newtestsuiteTooltip.inputDataFile.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{newtestsuiteTooltip.inputDataFile.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="newtestsuiteTooltip.inputDataFile.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{newtestsuiteTooltip.inputDataFile.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr/>
+
+        <div class="row" style="padding-left:1em">
+            <div class="form-group">
+                <label class="col-sm-1 control-label text-uppercase mandatory-field">Requirements</label>
+            </div>
+        </div>
+
+        <div class="row" style="padding-left:1em">
+            <div class="form-group">
+                <div class="col-sm-6">
+                    <table class='table table-bordered table-condensed table-striped table-hover col-sm-offset-4'>
+                        <tr ng-repeat='req in suitereqs track by $index'>
+                            <td>{{req}}</td>
+                            <td style="text-align:center" ng-click='editReq($index)' class='col-sm-1'>
+                                <span class="fa fa-pencil-square-o" aria-hidden="true"></span>
+                            </td>
+                            <td style="text-align:center" ng-click='delReq($index)' class='col-sm-1'>
+                                <span class="fa fa-times-circle-o" aria-hidden="true"></span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" ng-show="showReqEditor">
+            <div class="form-group">
+                <div class="col-sm-5 col-sm-offset-2">
+                    <input type="text" class="form-control"
+                           id="reqeditor"
+                           style='width:100%'
+                           ng-model='newReq'
+                           placeholder="Add Requirement here">
+                </div>
+                <div class="col-sm-2">
+                    <button style="color:rgb(214, 48, 48)" type="button"
+                            class="btn btn-default" ng-click="addReq()">OK</button>
+                    <button type="button" class="btn btn-default" ng-click="cancelReq()">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group">
+                <div class="col-sm-6 col-sm-offset-2">
+                    <button style="color:rgb(214, 48, 48)" type="button"
+                            class="btn btn-default" ng-click="showRequirementEditor()">
+                        Add Requirement
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!--<div class="row">
+            <div class="form-group">
+                <label for="Requirement" class="col-sm-2 control-label">Requirements</label>
+                <div class="col-sm-6">
+                    <table class="table table-bordered">
+                        <tbody>
+                        <tr ng-repeat="req in suitereqs track by $index">
+                            <td style="cursor:pointer">
+                                <input type="text" class="form-control"
+                                       ng-model="suitereqs[$index]"
+                                       title={{newtestsuiteTooltip.requirement}}
+                                       placeholder="Requirement">
+                            </td>
+                            <td>
+                                <input style="color:rgb(0, 0, 0)" type="button"
+                                       class="btn btn-default" value="delete"
+                                       ng-click="deleteSuiteReqField($index)">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <input style="color:rgb(214, 48, 48)" type="button"
+                           value="Add More" ng-click="appendSuiteReqFields()"
+                           class="btn btn-default">
+                </div>
+            </div>
+        </div>-->
+        <!-- TESTCASES SECTION -->
+        <hr/>
+        <div class="form-group">
+            <div class="row">
+                <div class="form-group">
+                    <label class="col-sm-1 control-label text-uppercase mandatory-field">Cases</label>
+                </div>
+            </div>
+
+            <br>
+
+            <div class="form-group" ng-show="showTable && testcaseBeingEdited != 0">
+                <div class="col-sm-12">
+                    <table class='table table-bordered table-condensed table-hover'>
+                        <thead>
+                            <tr>
+                                <th class='text-muted text-right'>#</th>
+                                <th class='text-muted'>Path</th>
+                                <th class='text-muted'>Context</th>
+                                <th class='text-muted' ng-show="exectype != 'iterative_parallel' && exectype != 'iterative_sequential'">Data File</th>
+                                <th class='text-muted'>Execute Type</th>
+                                <th class='text-muted'>Run Type</th>
+                                <th class='text-muted'>Run Mode</th>
+                                <th class='text-muted'>On Error</th>
+                                <th class='text-muted'>Impact</th>
+                                <th class='text-muted'>Edit</th>
+                                <th class='text-muted'>Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="testcase in testcases track by $index" ng-hide="$index >= testcaseBeingEdited">
+                                 <td class="text-right">
+                                    {{ $index + 1 }}
+                                </td>
+                                <td style="word-break: break-all">{{testcases[$index].path}}</td>
+                                <td>{{testcases[$index].context}}</td>
+                                <td ng-show="exectype != 'iterative_parallel' && exectype != 'iterative_sequential'" style="word-break: break-all">{{testcases[$index].InputDataFile}}</td>
+                                <td>
+                                    Type = {{ testcases[$index].Execute._ExecType }}<br>
+                                    <div ng-if="testcases[$index].Execute._ExecType == 'If' || testcases[$index].Execute._ExecType == 'If Not'">
+                                        Condition = {{ testcases[$index].Execute.Rule._Condition}}
+                                        <br>
+                                        Condition value = {{ testcases[$index].Execute.Rule._Condvalue}}
+                                        <br>
+                                        Else = {{ testcases[$index].Execute.Rule._Else }}<br>
+                                        <div ng-if="testcases[$index].Execute.Rule._Else == 'goto'">
+                                            Else value = {{ testcases[$index].Execute.Rule._Elsevalue}}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>{{testcases[$index].runtype}}</td>
+                                <td>
+                                    <div ng-show="testcases[$index].runmode._type == 'RMT' || testcases[$index].runmode._type == 'RUP' || testcases[$index].runmode._type == 'RUF'">
+                                        {{ testcases[$index].runmode._type }} = {{testcases[$index].runmode._value}}
+                                    </div>
+                                    <div ng-show="testcases[$index].runmode._type == 'Standard'">
+                                        {{ testcases[$index].runmode._type }}
+                                    </div>
+                                </td>
+                                <td>{{testcases[$index].onError._action}}
+                                    <span ng-show="testcases[$index].onError._value != ''">Step # {{ testcases[$index].onError._value }}</span>
+                                </td>
+                                <td>{{testcases[$index].impact}}</td>
+                                <td ng-click="editTestcase($index)">
+                                    <div class="tooltip-on-left-dark-big">
+                                        <span class="fa fa-pencil-square-o" aria-hidden="true"></span>
+                                        <span class="tooltip-content text-left">
+                                            <div ng-if="newtestsuiteTooltip.editTC.tooltip != ''">
+                                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{newtestsuiteTooltip.editTC.tooltip}}
+                                                <br>
+                                            </div>
+                                            <div ng-if="newtestsuiteTooltip.editTC.protip != ''">
+                                                <br>
+                                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{newtestsuiteTooltip.editTC.protip}}
+                                                <br>
+                                            </div>
+                                            <div ng-if="newtestsuiteTooltip.editTC.bantip != ''">
+                                                <br>
+                                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{newtestsuiteTooltip.editTC.bantip}}
+                                                <br>
+                                            </div>
+                                            <div ng-if="newtestsuiteTooltip.editTC.snowflake != ''">
+                                                <br>
+                                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{newtestsuiteTooltip.editTC.snowflake}}
+                                                <br>
+                                            </div>
+                                        </span>
+                                    </div>
+                                </td>
+                                <td ng-click="deleteTestcase($index)">
+                                    <div class="tooltip-on-left-dark-big">
+                                        <span class="fa fa-times-circle-o" aria-hidden="true"></span>
+                                        <span class="tooltip-content text-left">
+                                            <div ng-if="newtestsuiteTooltip.deleteTC.tooltip != ''">
+                                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{newtestsuiteTooltip.deleteTC.tooltip}}
+                                                <br>
+                                            </div>
+                                            <div ng-if="newtestsuiteTooltip.deleteTC.protip != ''">
+                                                <br>
+                                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{newtestsuiteTooltip.deleteTC.protip}}
+                                                <br>
+                                            </div>
+                                            <div ng-if="newtestsuiteTooltip.deleteTC.bantip != ''">
+                                                <br>
+                                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{newtestsuiteTooltip.deleteTC.bantip}}
+                                                <br>
+                                            </div>
+                                            <div ng-if="newtestsuiteTooltip.deleteTC.snowflake != ''">
+                                                <br>
+                                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{newtestsuiteTooltip.deleteTC.snowflake}}
+                                                <br>
+                                            </div>
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="col-sm-12">
+
+                <br>
+                <div class="row" ng-show="testcase_numbers.length > 0">
+                    <div class="form-group">
+                        <label for="CopyTC" class="col-sm-2 control-label ellipsis-the-overflow"> Copy Case #</label>
+                        <div class="col-sm-1">
+                            <select class="form-control"
+                                    id="CopyTC"
+                                    ng-model='testcaseToBeCopied'
+                                    ng-options="tcno as tcno for tcno in testcase_numbers"></select>
+                        </div>
+                        <div class="col-sm-1">
+                            <input type="button" class="btn btn-default form-control ellipsis-the-overflow" value="Go!" ng-click="copyTestCase()">
+                        </div>
+                        <div class="col-sm-1">
+                            <input type="button" class="btn btn-default form-control ellipsis-the-overflow" value="Save Case" ng-click="saveTestcaseCap(testcaseBeingEdited)">
+                        </div>
+                    </div>
+                </div>
+
+                <div ng-repeat="testcase in testcases track by $index" ng-show="!showSavedSuite[$index]">
+                    <div class="row">
+                        <div class="form-group">
+                            <label for="Path" class="col-sm-2 control-label mandatory-field ellipsis-the-overflow"> Case {{ $index + 1 }} Path</label>
+                            <div class="tooltip-on-right align-fa-icon-after-label">
+                                <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                <span class="tooltip-content">
+                                    <div ng-if="newtestsuiteTooltip.path.tooltip != ''">
+                                        <i class="fa fa-rocket" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.path.tooltip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.path.protip != ''">
+                                        <br>
+                                        <i class="fa fa-bolt" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.path.protip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.path.bantip != ''">
+                                        <br>
+                                        <i class="fa fa-ban" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.path.bantip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.path.snowflake != ''">
+                                        <br>
+                                        <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.path.snowflake}}
+                                        <br>
+                                    </div>
+                                </span>
+                            </div>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control" id="Path"
+                                       ng-change="monitorPathBtnValue($index)"
+                                       ng-model='testcases[$index].path'
+                                       placeholder="Case file path">
+                            </div>
+                            <div class="col-sm-1">
+                                <input type="button" ng-click="toggleModal($index)"
+                                       class="btn btn-default form-control ellipsis-the-overflow"
+                                       ng-value="btnValue[$index]" >
+                            </div>
+                            <modal title="Select a Case"
+                                   show-modal="showModal[$index]">
+                                <form role="form">
+                                    <div class="form-group" style="padding: 5%">
+                                        <div id="{{'tree_div-' + $index}}"
+                                             ng-click="getPaths($event, $index)"></div>
+                                    </div>
+                                    <input type="button" value="Submit"
+                                           class="btn btn-default"
+                                           ng-click="storePaths($index)">
+                                </form>
+                            </modal>
+                            <div class="col-sm-1 align-fa-icon-after-input">
+                                <div class="tooltip-on-right">
+                                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                    <span class="tooltip-content">
+                                        <div ng-if="newtestsuiteTooltip.path.tooltip != ''">
+                                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.path.tooltip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.path.protip != ''">
+                                            <br>
+                                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.path.protip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.path.bantip != ''">
+                                            <br>
+                                            <i class="fa fa-ban" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.path.bantip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.path.snowflake != ''">
+                                            <br>
+                                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.path.snowflake}}
+                                            <br>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group">
+                            <label for="keyword" class="col-sm-2 control-label">Context</label>
+                            <div class="tooltip-on-right align-fa-icon-after-label">
+                                <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                <span class="tooltip-content">
+                                    <div ng-if="newtestsuiteTooltip.context.tooltip != ''">
+                                        <i class="fa fa-rocket" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.context.tooltip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.context.protip != ''">
+                                        <br>
+                                        <i class="fa fa-bolt" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.context.protip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.context.bantip != ''">
+                                        <br>
+                                        <i class="fa fa-ban" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.context.bantip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.context.snowflake != ''">
+                                        <br>
+                                        <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.context.snowflake}}
+                                        <br>
+                                    </div>
+                                </span>
+                            </div>
+                            <div class="col-sm-6">
+                                <select class="form-control" id="keyword"
+                                        ng-model='testcases[$index].context'
+                                        ng-init="testcases[$index].context = defaultContext"
+                                        ng-options="type for type in defaultContexts"></select>
+                            </div>
+                            <div class="col-sm-1 align-fa-icon-after-input">
+                                <div class="tooltip-on-right">
+                                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                    <span class="tooltip-content">
+                                        <div ng-if="newtestsuiteTooltip.context.tooltip != ''">
+                                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.context.tooltip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.context.protip != ''">
+                                            <br>
+                                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.context.protip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.context.bantip != ''">
+                                            <br>
+                                            <i class="fa fa-ban" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.context.bantip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.context.snowflake != ''">
+                                            <br>
+                                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.context.snowflake}}
+                                            <br>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" ng-show="exectype != 'iterative_parallel' && exectype != 'iterative_sequential'">
+                        <div class="form-group">
+                            <label for="datafile_path" class="col-sm-2 control-label ellipsis-the-overflow">Data File</label>
+                            <div class="tooltip-on-right align-fa-icon-after-label">
+                                <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                <span class="tooltip-content">
+                                    <div ng-if="newtestsuiteTooltip.InputDataFile.tooltip != ''">
+                                        <i class="fa fa-rocket" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.InputDataFile.tooltip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.InputDataFile.protip != ''">
+                                        <br>
+                                        <i class="fa fa-bolt" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.InputDataFile.protip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.InputDataFile.bantip != ''">
+                                        <br>
+                                        <i class="fa fa-ban" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.InputDataFile.bantip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.InputDataFile.snowflake != ''">
+                                        <br>
+                                        <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.InputDataFile.snowflake}}
+                                        <br>
+                                    </div>
+                                </span>
+                            </div>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control"
+                                       id="datafile_path"
+                                       ng-change="td_df_monitorPathBtnValue($index)"
+                                       ng-model='testcases[$index].InputDataFile'
+                                       placeholder="Datafile file path">
+                            </div>
+                            <div class="col-sm-1">
+                                <input type="button"
+                                       ng-click="td_df_toggleModal($index)"
+                                       class="btn btn-default form-control ellipsis-the-overflow"
+                                       ng-value="td_df_btnValue[$index]">
+                            </div>
+                            <modal title="Select an Input Data File"
+                                   show-modal="td_df_showModal[$index]">
+                                <form role="form">
+                                    <div class="form-group" style="padding: 5%">
+                                        <div id="{{'td_df_tree_div-' + $index}}"
+                                             ng-click="td_df_getPaths($event, $index)"></div>
+                                    </div>
+                                    <input type="button" value="Submit"
+                                           class="btn btn-default"
+                                           ng-click="td_df_storePaths($index)">
+                                </form>
+                            </modal>
+                            <div class="col-sm-1 align-fa-icon-after-input">
+                                <div class="tooltip-on-right">
+                                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                    <span class="tooltip-content">
+                                        <div ng-if="newtestsuiteTooltip.InputDataFile.tooltip != ''">
+                                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.InputDataFile.tooltip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.InputDataFile.protip != ''">
+                                            <br>
+                                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.InputDataFile.protip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.InputDataFile.bantip != ''">
+                                            <br>
+                                            <i class="fa fa-ban" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.InputDataFile.bantip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.InputDataFile.snowflake != ''">
+                                            <br>
+                                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.InputDataFile.snowflake}}
+                                            <br>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" ng-show="!condition_list[$index].length && exectype != 'parallel_testcases'">
+                        <div class="form-group">
+                            <label for="executetype0" class="col-sm-2 control-label ellipsis-the-overflow">Execute Type</label>
+                            <div class="tooltip-on-right align-fa-icon-after-label">
+                                <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                <span class="tooltip-content">
+                                    <div ng-if="newtestsuiteTooltip.executeType_zero.tooltip != ''">
+                                        <i class="fa fa-rocket" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.executeType_zero.tooltip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.executeType_zero.protip != ''">
+                                        <br>
+                                        <i class="fa fa-bolt" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.executeType_zero.protip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.executeType_zero.bantip != ''">
+                                        <br>
+                                        <i class="fa fa-ban" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.executeType_zero.bantip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.executeType_zero.snowflake != ''">
+                                        <br>
+                                        <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.executeType_zero.snowflake}}
+                                        <br>
+                                    </div>
+                                </span>
+                            </div>
+                            <div class="col-sm-6">
+                                <select class="form-control"
+                                        ng-model='testcases[$index].Execute._ExecType'
+                                        id="executetype0"
+                                        ng-options="type for type in FirstExecuteTypes"
+                                        ng-change="updateConditionList($index)"></select>
+                            </div>
+                            <div class="col-sm-1 align-fa-icon-after-input">
+                                <div class="tooltip-on-right">
+                                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                    <span class="tooltip-content">
+                                        <div ng-if="newtestsuiteTooltip.executeType_zero.tooltip != ''">
+                                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.executeType_zero.tooltip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.executeType_zero.protip != ''">
+                                            <br>
+                                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.executeType_zero.protip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.executeType_zero.bantip != ''">
+                                            <br>
+                                            <i class="fa fa-ban" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.executeType_zero.bantip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.executeType_zero.snowflake != ''">
+                                            <br>
+                                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.executeType_zero.snowflake}}
+                                            <br>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" ng-show="condition_list[$index].length && exectype != 'parallel_testcases'">
+                        <div class="form-group">
+                            <label for="executetype" class="col-sm-2 control-label ellipsis-the-overflow">Execute Type</label>
+                            <div class="tooltip-on-right align-fa-icon-after-label">
+                                <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                <span class="tooltip-content">
+                                    <div ng-if="newtestsuiteTooltip.executeType_nonzero.tooltip != ''">
+                                        <i class="fa fa-rocket" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.executeType_nonzero.tooltip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.executeType_nonzero.protip != ''">
+                                        <br>
+                                        <i class="fa fa-bolt" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.executeType_nonzero.protip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.executeType_nonzero.bantip != ''">
+                                        <br>
+                                        <i class="fa fa-ban" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.executeType_nonzero.bantip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.executeType_nonzero.snowflake != ''">
+                                        <br>
+                                        <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.executeType_nonzero.snowflake}}
+                                        <br>
+                                    </div>
+                                </span>
+                            </div>
+                            <div class="col-sm-6">
+                                <select class="form-control"
+                                        ng-model='testcases[$index].Execute._ExecType'
+                                        id="executetype"
+                                        ng-options="type for type in ExecuteTypes"
+                                        ng-change="updateConditionList($index)"></select>
+                            </div>
+                            <div class="col-sm-1 align-fa-icon-after-input">
+                                <div class="tooltip-on-right">
+                                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                    <span class="tooltip-content">
+                                        <div ng-if="newtestsuiteTooltip.executeType_nonzero.tooltip != ''">
+                                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.executeType_nonzero.tooltip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.executeType_nonzero.protip != ''">
+                                            <br>
+                                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.executeType_nonzero.protip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.executeType_nonzero.bantip != ''">
+                                            <br>
+                                            <i class="fa fa-ban" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.executeType_nonzero.bantip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.executeType_nonzero.snowflake != ''">
+                                            <br>
+                                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.executeType_nonzero.snowflake}}
+                                            <br>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group" ng-show="exectype != 'parallel_testcases' && testcases[$index].Execute._ExecType == 'If' || testcases[$index].Execute._ExecType == 'If Not'">
+                            <label for="ruleCond" class="col-sm-2 control-label mandatory-field ellipsis-the-overflow">Condition</label>
+                            <div class="tooltip-on-right align-fa-icon-after-label">
+                                <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                <span class="tooltip-content">
+                                    <div ng-if="newtestsuiteTooltip.condition.tooltip != ''">
+                                        <i class="fa fa-rocket" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.condition.tooltip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.condition.protip != ''">
+                                        <br>
+                                        <i class="fa fa-bolt" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.condition.protip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.condition.bantip != ''">
+                                        <br>
+                                        <i class="fa fa-ban" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.condition.bantip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.condition.snowflake != ''">
+                                        <br>
+                                        <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.condition.snowflake}}
+                                        <br>
+                                    </div>
+                                </span>
+                            </div>
+                            <div class="col-sm-4">
+                                <select class="form-control"
+                                        ng-model='testcases[$index].Execute.Rule._Condition'
+                                        id="ruleCond"
+                                        ng-options="type for type in condition_list[$index]"></select>
+                            </div>
+                            <script type="text/javascript">
+                                $(document).ready(function () {
+                                    $('[data-toggle="popover"]').popover();
+                                });
+                            </script><!-- Dirty fix. Oops -->
+                            <div class="col-sm-2">
+                                <button type="button"
+                                        class="btn btn-default form-control ellipsis-the-overflow"
+                                        data-toggle="popover"
+                                        data-trigger="focus"
+                                        data-placement="right"
+                                        title="Cases"
+                                        data-content="{{popoverContentList[$index]}}"
+                                        data-html="true">View Available Cases
+                                </button>
+                            </div>
+                            <div class="col-sm-1 align-fa-icon-after-input">
+                                <div class="tooltip-on-right">
+                                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                    <span class="tooltip-content">
+                                        <div ng-if="newtestsuiteTooltip.condition.tooltip != ''">
+                                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.condition.tooltip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.condition.protip != ''">
+                                            <br>
+                                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.condition.protip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.condition.bantip != ''">
+                                            <br>
+                                            <i class="fa fa-ban" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.condition.bantip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.condition.snowflake != ''">
+                                            <br>
+                                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.condition.snowflake}}
+                                            <br>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group"
+                             ng-show="exectype != 'parallel_testcases' && testcases[$index].Execute._ExecType == 'If' || testcases[$index].Execute._ExecType == 'If Not'">
+                            <label for="ruleCondValue" class="col-sm-2 control-label mandatory-field ellipsis-the-overflow">Condition Value</label>
+                            <div class="tooltip-on-right align-fa-icon-after-label">
+                                <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                <span class="tooltip-content">
+                                    <div ng-if="newtestsuiteTooltip.conditionValue.tooltip != ''">
+                                        <i class="fa fa-rocket" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.conditionValue.tooltip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.conditionValue.protip != ''">
+                                        <br>
+                                        <i class="fa fa-bolt" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.conditionValue.protip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.conditionValue.bantip != ''">
+                                        <br>
+                                        <i class="fa fa-ban" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.conditionValue.bantip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.conditionValue.snowflake != ''">
+                                        <br>
+                                        <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.conditionValue.snowflake}}
+                                        <br>
+                                    </div>
+                                </span>
+                            </div>
+                            <div class="col-sm-6">
+                                <select class="form-control"
+                                        ng-model='testcases[$index].Execute.Rule._Condvalue'
+                                        id="ruleCondValue"
+                                        ng-options="type for type in ConditionValueTypes"></select>
+                            </div>
+                            <div class="col-sm-1 align-fa-icon-after-input">
+                                <div class="tooltip-on-right">
+                                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                        <span class="tooltip-content">
+                                        <div ng-if="newtestsuiteTooltip.conditionValue.tooltip != ''">
+                                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.conditionValue.tooltip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.conditionValue.protip != ''">
+                                            <br>
+                                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.conditionValue.protip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.conditionValue.bantip != ''">
+                                            <br>
+                                            <i class="fa fa-ban" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.conditionValue.bantip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.conditionValue.snowflake != ''">
+                                            <br>
+                                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.conditionValue.snowflake}}
+                                            <br>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group"
+                             ng-show="exectype != 'parallel_testcases' && testcases[$index].Execute._ExecType == 'If' || testcases[$index].Execute._ExecType == 'If Not'">
+                            <label for="ruleElse" class="col-sm-2 control-label mandatory-field ellipsis-the-overflow">Else</label>
+                            <div class="tooltip-on-right align-fa-icon-after-label">
+                                <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                <span class="tooltip-content">
+                                    <div ng-if="newtestsuiteTooltip.else.tooltip != ''">
+                                        <i class="fa fa-rocket" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.else.tooltip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.else.protip != ''">
+                                        <br>
+                                        <i class="fa fa-bolt" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.else.protip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.else.bantip != ''">
+                                        <br>
+                                        <i class="fa fa-ban" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.else.bantip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.else.snowflake != ''">
+                                        <br>
+                                        <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.else.snowflake}}
+                                        <br>
+                                    </div>
+                                </span>
+                            </div>
+                            <div class="col-sm-6">
+                                <select class="form-control"
+                                        ng-model='testcases[$index].Execute.Rule._Else'
+                                        id="ruleElse"
+                                        ng-options="type for type in ruleElseTypes"></select>
+                            </div>
+                            <div class="col-sm-1 align-fa-icon-after-input">
+                                <div class="tooltip-on-right">
+                                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                    <span class="tooltip-content">
+                                        <div ng-if="newtestsuiteTooltip.else.tooltip != ''">
+                                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.else.tooltip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.else.protip != ''">
+                                            <br>
+                                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.else.protip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.else.bantip != ''">
+                                            <br>
+                                            <i class="fa fa-ban" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.else.bantip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.else.snowflake != ''">
+                                            <br>
+                                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.else.snowflake}}
+                                            <br>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group"
+                             ng-show="exectype != 'parallel_testcases' && testcases[$index].Execute.Rule._Else == 'goto' && (testcases[$index].Execute._ExecType == 'If' || testcases[$index].Execute._ExecType == 'If Not')">
+                            <label for="ruleElseValue" class="col-sm-2 control-label mandatory-field ellipsis-the-overflow">Else Value</label>
+                            <div class="tooltip-on-right align-fa-icon-after-label">
+                                <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                <span class="tooltip-content">
+                                    <div ng-if="newtestsuiteTooltip.else.tooltip != ''">
+                                        <i class="fa fa-rocket" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.else.tooltip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.else.protip != ''">
+                                        <br>
+                                        <i class="fa fa-bolt" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.else.protip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.else.bantip != ''">
+                                        <br>
+                                        <i class="fa fa-ban" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.else.bantip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.else.snowflake != ''">
+                                        <br>
+                                        <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.else.snowflake}}
+                                        <br>
+                                    </div>
+                                </span>
+                            </div>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control"
+                                       ng-model='testcases[$index].Execute.Rule._Elsevalue'
+                                       id="ruleElseValue">
+                            </div>
+                            <div class="col-sm-1 align-fa-icon-after-input">
+                                <div class="tooltip-on-right">
+                                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                    <span class="tooltip-content">
+                                        <div ng-if="newtestsuiteTooltip.else.tooltip != ''">
+                                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.else.tooltip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.else.protip != ''">
+                                            <br>
+                                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.else.protip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.else.bantip != ''">
+                                            <br>
+                                            <i class="fa fa-ban" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.else.bantip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.else.snowflake != ''">
+                                            <br>
+                                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.else.snowflake}}
+                                            <br>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group">
+                            <label for="keyword" class="col-sm-2 control-label ellipsis-the-overflow">Run type</label>
+                            <div class="tooltip-on-right align-fa-icon-after-label">
+                                <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                <span class="tooltip-content">
+                                    <div ng-if="newtestsuiteTooltip.runType.tooltip != ''">
+                                        <i class="fa fa-rocket" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.runType.tooltip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.runType.protip != ''">
+                                        <br>
+                                        <i class="fa fa-bolt" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.runType.protip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.runType.bantip != ''">
+                                        <br>
+                                        <i class="fa fa-ban" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.runType.bantip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.runType.snowflake != ''">
+                                        <br>
+                                        <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.runType.snowflake}}
+                                        <br>
+                                    </div>
+                                </span>
+                            </div>
+                            <div class="col-sm-6">
+                                <select class="form-control"
+                                        ng-model='testcases[$index].runtype'
+                                        ng-init="testcases[$index].runtype = defaultRuntypes[0]"
+                                        ng-options="type for type in defaultRuntypes"></select>
+                            </div>
+                            <div class="col-sm-1 align-fa-icon-after-input">
+                                <div class="tooltip-on-right">
+                                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                    <span class="tooltip-content">
+                                        <div ng-if="newtestsuiteTooltip.runType.tooltip != ''">
+                                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.runType.tooltip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.runType.protip != ''">
+                                            <br>
+                                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.runType.protip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.runType.bantip != ''">
+                                            <br>
+                                            <i class="fa fa-ban" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.runType.bantip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.runType.snowflake != ''">
+                                            <br>
+                                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.runType.snowflake}}
+                                            <br>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group">
+                            <label for="runmode_type" class="col-sm-2 control-label ellipsis-the-overflow">Run Mode</label>
+                            <div class="tooltip-on-right align-fa-icon-after-label">
+                                <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                <span class="tooltip-content">
+                                    <div ng-if="newtestsuiteTooltip.runmode.tooltip != ''">
+                                        <i class="fa fa-rocket" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.runmode.tooltip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.runmode.protip != ''">
+                                        <br>
+                                        <i class="fa fa-bolt" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.runmode.protip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.runmode.bantip != ''">
+                                        <br>
+                                        <i class="fa fa-ban" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.runmode.bantip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.runmode.snowflake != ''">
+                                        <br>
+                                        <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.runmode.snowflake}}
+                                        <br>
+                                    </div>
+                                </span>
+                            </div>
+                            <div class="col-sm-6">
+                                <select type="text" class="form-control"
+                                        id="runmode_type"
+                                        ng-model='testcases[$index].runmode._type'
+                                        ng-options="o for o in runmodes"></select>
+                            </div>
+                            <div class="col-sm-1 align-fa-icon-after-input">
+                                <div class="tooltip-on-right">
+                                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                    <span class="tooltip-content">
+                                        <div ng-if="newtestsuiteTooltip.runmode.tooltip != ''">
+                                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.runmode.tooltip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.runmode.protip != ''">
+                                            <br>
+                                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.runmode.protip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.runmode.bantip != ''">
+                                            <br>
+                                            <i class="fa fa-ban" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.runmode.bantip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.runmode.snowflake != ''">
+                                            <br>
+                                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.runmode.snowflake}}
+                                            <br>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" ng-show="testcases[$index].runmode._type == 'RUP' || testcases[$index].runmode._type == 'RUF' || testcases[$index].runmode._type == 'RMT'">
+                        <div class="form-group">
+                            <label for="runmode_value" class="col-sm-2 control-label mandatory-field ellipsis-the-overflow">Value</label>
+                            <div class="tooltip-on-right align-fa-icon-after-label">
+                                <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                <span class="tooltip-content">
+                                    <div ng-if="newtestsuiteTooltip.runmode_value.tooltip != ''">
+                                        <i class="fa fa-rocket" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.runmode_value.tooltip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.runmode_value.protip != ''">
+                                        <br>
+                                        <i class="fa fa-bolt" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.runmode_value.protip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.runmode_value.bantip != ''">
+                                        <br>
+                                        <i class="fa fa-ban" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.runmode_value.bantip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.runmode_value.snowflake != ''">
+                                        <br>
+                                        <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.runmode_value.snowflake}}
+                                        <br>
+                                    </div>
+                                </span>
+                            </div>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control"
+                                       id="runmode_value"
+                                       ng-model='testcases[$index].runmode._value'>
+                            </div>
+                            <div class="col-sm-1 align-fa-icon-after-input">
+                                <div class="tooltip-on-right">
+                                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                    <span class="tooltip-content">
+                                        <div ng-if="newtestsuiteTooltip.runmode_value.tooltip != ''">
+                                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.runmode_value.tooltip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.runmode_value.protip != ''">
+                                            <br>
+                                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.runmode_value.protip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.runmode_value.bantip != ''">
+                                            <br>
+                                            <i class="fa fa-ban" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.runmode_value.bantip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.runmode_value.snowflake != ''">
+                                            <br>
+                                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.runmode_value.snowflake}}
+                                            <br>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group">
+                            <label for="Title" class="col-sm-2 control-label ellipsis-the-overflow">On Error Action</label>
+                            <div class="tooltip-on-right align-fa-icon-after-label">
+                                <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                <span class="tooltip-content">
+                                    <div ng-if="newtestsuiteTooltip.onErrorAction.tooltip != ''">
+                                        <i class="fa fa-rocket" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.onErrorAction.tooltip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.onErrorAction.protip != ''">
+                                        <br>
+                                        <i class="fa fa-bolt" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.onErrorAction.protip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.onErrorAction.bantip != ''">
+                                        <br>
+                                        <i class="fa fa-ban" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.onErrorAction.bantip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.onErrorAction.snowflake != ''">
+                                        <br>
+                                        <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.onErrorAction.snowflake}}
+                                        <br>
+                                    </div>
+                                </span>
+                            </div>
+                            <div class="col-sm-6">
+                                <select class="form-control"
+                                        ng-model="testcases[$index].onError._action"
+                                        ng-options="defaultAction for defaultAction in defaultCaseActions"></select>
+                            </div>
+                            <div class="col-sm-1 align-fa-icon-after-input">
+                                <div class="tooltip-on-right">
+                                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                    <span class="tooltip-content">
+                                        <div ng-if="newtestsuiteTooltip.onErrorAction.tooltip != ''">
+                                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.onErrorAction.tooltip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.onErrorAction.protip != ''">
+                                            <br>
+                                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.onErrorAction.protip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.onErrorAction.bantip != ''">
+                                            <br>
+                                            <i class="fa fa-ban" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.onErrorAction.bantip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.onErrorAction.snowflake != ''">
+                                            <br>
+                                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.onErrorAction.snowflake}}
+                                            <br>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" ng-show="isGotoSelectedTestcase(testcases[$index].onError._action)">
+                        <div class="form-group">
+                            <label for="Title" class="col-sm-2 control-label mandatory-field ellipsis-the-overflow">Go To Step #</label>
+                            <div class="tooltip-on-right align-fa-icon-after-label">
+                                <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                <span class="tooltip-content">
+                                    <div ng-if="newtestsuiteTooltip.goto.tooltip != ''">
+                                        <i class="fa fa-rocket" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.goto.tooltip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.goto.protip != ''">
+                                        <br>
+                                        <i class="fa fa-bolt" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.goto.protip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.goto.bantip != ''">
+                                        <br>
+                                        <i class="fa fa-ban" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.goto.bantip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.goto.snowflake != ''">
+                                        <br>
+                                        <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.goto.snowflake}}
+                                        <br>
+                                    </div>
+                                </span>
+                            </div>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control"
+                                       ng-model="testcases[$index].onError._value"
+                                       placeholder="enter the testcase to goto">
+                            </div>
+                            <div class="col-sm-1 align-fa-icon-after-input">
+                                <div class="tooltip-on-right">
+                                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                    <span class="tooltip-content">
+                                        <div ng-if="newtestsuiteTooltip.goto.tooltip != ''">
+                                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.goto.tooltip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.goto.protip != ''">
+                                            <br>
+                                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.goto.protip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.goto.bantip != ''">
+                                            <br>
+                                            <i class="fa fa-ban" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.goto.bantip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.goto.snowflake != ''">
+                                            <br>
+                                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.goto.snowflake}}
+                                            <br>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group">
+                            <label for="Impact" class="col-sm-2 control-label ellipsis-the-overflow">Impact on Failure</label>
+                            <div class="tooltip-on-right align-fa-icon-after-label">
+                                <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                <span class="tooltip-content">
+                                    <div ng-if="newtestsuiteTooltip.impact.tooltip != ''">
+                                        <i class="fa fa-rocket" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.impact.tooltip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.impact.protip != ''">
+                                        <br>
+                                        <i class="fa fa-bolt" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.impact.protip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.impact.bantip != ''">
+                                        <br>
+                                        <i class="fa fa-ban" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.impact.bantip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="newtestsuiteTooltip.impact.snowflake != ''">
+                                        <br>
+                                        <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{newtestsuiteTooltip.impact.snowflake}}
+                                        <br>
+                                    </div>
+                                </span>
+                            </div>
+                            <div class="col-sm-6">
+                                    <select class="form-control"
+                                            ng-model="testcases[$index].impact"
+                                            id="Impact"
+                                            ng-options="o for o in impact_list">
+                                    </select>
+                            </div>
+                            <div class="col-sm-1 align-fa-icon-after-input">
+                                <div class="tooltip-on-right">
+                                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                    <span class="tooltip-content">
+                                        <div ng-if="newtestsuiteTooltip.impact.tooltip != ''">
+                                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.impact.tooltip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.impact.protip != ''">
+                                            <br>
+                                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.impact.protip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.impact.bantip != ''">
+                                            <br>
+                                            <i class="fa fa-ban" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.impact.bantip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="newtestsuiteTooltip.impact.snowflake != ''">
+                                            <br>
+                                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{newtestsuiteTooltip.impact.snowflake}}
+                                            <br>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-sm-6 col-sm-offset-2">
+                                <input type="button" class="btn btn-default"
+                                       value="Save Case"
+                                       ng-click="saveTestcaseCap($index)">
+                                <input type="button"
+                                       class="btn btn-default"
+                                       value="Delete Case"
+                                       ng-click="deleteTestcase($index)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <br>
+
+                </div>
+
+                <hr/>
+
+            </div>
+
+            <div class="form-group" ng-show="showTable && (testcaseBeingEdited != 'None') && (testcaseBeingEdited != (testcases.length - 1))">
+                <div class="col-sm-12">
+                    <table class='table table-bordered table-condensed table-hover'>
+                        <thead>
+                            <tr>
+                                <th class='text-muted text-right'>#</th>
+                                <th class='text-muted'>Path</th>
+                                <th class='text-muted'>Context</th>
+                                <th class='text-muted' ng-show="exectype != 'iterative_parallel' && exectype != 'iterative_sequential'">Data File</th>
+                                <th class='text-muted'>Execute Type</th>
+                                <th class='text-muted'>Run Type</th>
+                                <th class='text-muted'>Run Mode</th>
+                                <th class='text-muted'>On Error</th>
+                                <th class='text-muted'>Impact</th>
+                                <th class='text-muted'>Edit</th>
+                                <th class='text-muted'>Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="testcase in testcases track by $index" ng-show="$index > testcaseBeingEdited">
+                                 <td class="text-right">
+                                    {{ $index + 1 }}
+                                </td>
+                                <td style="word-break: break-all">{{testcases[$index].path}}</td>
+                                <td>{{testcases[$index].context}}</td>
+                                <td ng-show="exectype != 'iterative_parallel' && exectype != 'iterative_sequential'" style="word-break: break-all">{{testcases[$index].InputDataFile}}</td>
+                                <td>
+                                    Type = {{ testcases[$index].Execute._ExecType }}<br>
+                                    <div ng-if="testcases[$index].Execute._ExecType == 'If' || testcases[$index].Execute._ExecType == 'If Not'">
+                                        Condition = {{ testcases[$index].Execute.Rule._Condition}}
+                                        <br>
+                                        Condition value = {{ testcases[$index].Execute.Rule._Condvalue}}
+                                        <br>
+                                        Else = {{ testcases[$index].Execute.Rule._Else }}<br>
+                                        <div ng-if="testcases[$index].Execute.Rule._Else == 'goto'">
+                                            Else value = {{ testcases[$index].Execute.Rule._Elsevalue}}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>{{testcases[$index].runtype}}</td>
+                                <td>
+                                    <div ng-show="testcases[$index].runmode._type == 'RMT' || testcases[$index].runmode._type == 'RUP' || testcases[$index].runmode._type == 'RUF'">
+                                        {{ testcases[$index].runmode._type }} = {{testcases[$index].runmode._value}}
+                                    </div>
+                                    <div ng-show="testcases[$index].runmode._type == 'Standard'">
+                                        {{ testcases[$index].runmode._type }}
+                                    </div>
+                                </td>
+                                <td>{{testcases[$index].onError._action}}
+                                    <span ng-show="testcases[$index].onError._value != ''">Step # {{ testcases[$index].onError._value }}</span>
+                                </td>
+                                <td>{{testcases[$index].impact}}</td>
+                                <td ng-click="editTestcase($index)">
+                                    <div class="tooltip-on-left-dark-big">
+                                        <span class="fa fa-pencil-square-o" aria-hidden="true"></span>
+                                        <span class="tooltip-content text-left">
+                                            <div ng-if="newtestsuiteTooltip.editTC.tooltip != ''">
+                                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{newtestsuiteTooltip.editTC.tooltip}}
+                                                <br>
+                                            </div>
+                                            <div ng-if="newtestsuiteTooltip.editTC.protip != ''">
+                                                <br>
+                                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{newtestsuiteTooltip.editTC.protip}}
+                                                <br>
+                                            </div>
+                                            <div ng-if="newtestsuiteTooltip.editTC.bantip != ''">
+                                                <br>
+                                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{newtestsuiteTooltip.editTC.bantip}}
+                                                <br>
+                                            </div>
+                                            <div ng-if="newtestsuiteTooltip.editTC.snowflake != ''">
+                                                <br>
+                                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{newtestsuiteTooltip.editTC.snowflake}}
+                                                <br>
+                                            </div>
+                                        </span>
+                                    </div>
+                                </td>
+                                <td ng-click="deleteTestcase($index)">
+                                    <div class="tooltip-on-left-dark-big">
+                                        <span class="fa fa-times-circle-o" aria-hidden="true"></span>
+                                        <span class="tooltip-content text-left">
+                                            <div ng-if="newtestsuiteTooltip.deleteTC.tooltip != ''">
+                                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{newtestsuiteTooltip.deleteTC.tooltip}}
+                                                <br>
+                                            </div>
+                                            <div ng-if="newtestsuiteTooltip.deleteTC.protip != ''">
+                                                <br>
+                                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{newtestsuiteTooltip.deleteTC.protip}}
+                                                <br>
+                                            </div>
+                                            <div ng-if="newtestsuiteTooltip.deleteTC.bantip != ''">
+                                                <br>
+                                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{newtestsuiteTooltip.deleteTC.bantip}}
+                                                <br>
+                                            </div>
+                                            <div ng-if="newtestsuiteTooltip.deleteTC.snowflake != ''">
+                                                <br>
+                                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                                &nbsp;
+                                                {{newtestsuiteTooltip.deleteTC.snowflake}}
+                                                <br>
+                                            </div>
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-sm-6 col-sm-offset-2">
+                        <input type="button" class="btn btn-default"
+                               value="Add Another Case"
+                               ng-click="insertTestcaseCap(testcases.length - 1)">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div class="form-group">
+                <div class="col-sm-10 col-sm-offset-3">
+                    <input type="checkbox" ng-model="savecreateTestsuite"/><span>&nbsp;Create another&nbsp;</span>
+                    <input style="color:rgb(214, 48, 48)" type="button"
+                           class="btn btn-default" value="Save"
+                           ng-click="saveTestsuite()"/>
+                    <input type="button" class="btn btn-default" value="Cancel"
+                           ng-click="cancelSuite()"/>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
