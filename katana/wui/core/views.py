@@ -54,11 +54,12 @@ class CoreView(View):
 
         return render(request, template, {"apps": AppInformation.information.apps, "userData": self.get_user_data()})
 
+
 def get_file_explorer_data(request):
     nav_obj = Navigator()
-    if "path" in request.GET:
-        start_dir = get_parent_directory(request.GET["path"])
+    if "data[path]" in request.POST and request.POST["data[path]"] != "false":
+        start_dir = get_parent_directory(request.POST["data[path]"])
     else:
-        start_dir = get_parent_directory(nav_obj.get_warrior_dir(), 2)
+        start_dir = join_path(nav_obj.get_warrior_dir(), "Warriorspace")
     output = nav_obj.get_dir_tree_json(start_dir_path=start_dir)
     return JsonResponse(output)

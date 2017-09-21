@@ -231,7 +231,11 @@ var execution = {
 				execution.resultsViewer.execution_list = [];
 				var items = katana.$activeTab.find('[name="execution_item"]');
 				if(items.length === 0){
-					alert("Select atleast one item to execute form the Layout and copy it to the Selections.");
+					katana.openAlert({'alert_type': 'warning', 
+														'heading': 'Selections is Empty',
+														'text':'Select atleast one item to execute form the Layout and copy it to the Selections.'}
+													);
+					// alert("Select atleast one item to execute form the Layout and copy it to the Selections.");
 				}else{
 					for (var i=0; i < items.length; i++){
 						execution.resultsViewer.execution_list.push(items[i].dataset.path);

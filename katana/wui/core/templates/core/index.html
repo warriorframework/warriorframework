@@ -88,6 +88,31 @@
 					<div class="overlay" katana-click="katana.closePopup"></div>
 				</div>
 			</script>
+			<script type="text/template" id="file-explorer-template">
+				<div class="overlay">
+					<div class="centered file-explorer">
+						<div class="file-explorer-header">
+							<div class="full-size">
+								<h4 id="file-explorer-heading"></h4>
+							</div>
+						</div>
+						<div class="file-explorer-body">
+							<div class="up-btn-bar">
+								<button id="explorer-up" class="btn btn-info">...</button>
+							</div>
+							<div class="directory-data-div to-scroll">
+								<div id="directory-data" class="full-size"></div>
+							</div>
+						</div>
+						<div class="file-explorer-footer">
+							<div class="full-size text-center">
+								<button id="explorer-accept" class="btn btn-success">OK</button>
+								<button id="explorer-dismiss" class="btn btn-success">Cancel</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</script>
 			<script>
 				katana.initApp();
 			</script>

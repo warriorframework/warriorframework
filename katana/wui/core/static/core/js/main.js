@@ -70,7 +70,7 @@ var katana = {
 				newTab.attr('id', uid );
 				var temp = katana.$view.find('.nav .tab').first();
 				var created = temp.clone().insertAfter( temp );
-				created.attr( 'uid', uid ).text( this && this.hasClass('tab') ? this.find('span').text() + count : uid ).append('<i class="fa fa-times" katana-click="katana.closeTab"></i>');
+				created.attr( 'uid', uid ).text( this && $(this).hasClass('tab') ? this.find('span').text() + count : uid ).append('<i class="fa fa-times" katana-click="katana.closeTab"></i>');
 				katana.switchTab.call( created, uid );
 				callBack && callBack( newTab.find('.page-content-inner') );
 			}
@@ -717,6 +717,24 @@ var katana = {
 					katana.templateAPI.tabRequst( katana.$activeTab, tabTitle, url, limitedStyles, callBack );
 			},
 
+			postTabRequest: function( tabTitle, url, input_data, limitedStyles, callBack ){
+                var csrftoken = katana.$activeTab.find("[name='csrfmiddlewaretoken']").val();
+				katana.openTab.call( katana.templateAPI, tabTitle, function( container ){
+					$.ajax({
+						url: url,
+						type: "POST",
+						data: input_data,
+                    	headers: {'X-CSRFToken':csrftoken},
+					}).done(function( data ) {
+						container.append( katana.templateAPI.preProcess( data ) );
+						limitedStyles || container.find('.limited-styles-true').length && container.addClass('limited-styles');
+						container.find('.tool-bar') && container.find('.tool-bar').prependTo(container.parent());
+						katana.tabAdded( container, katana.templateAPI );
+						callBack && callBack( container );
+					});
+				});
+			},
+
 			tabRequst: function( $elem, tabTitle, url, limitedStyles, callBack ){
 				katana.openTab.call( $elem, tabTitle, function( container ){
 					$.ajax({
@@ -837,149 +855,103 @@ var katana = {
 
 	},
 
+	fileExplorerAPI: {
 
-	openFileExplorer(heading, callBack_on_accept, callBack_on_dismiss){
-	    if(!heading || heading == "" || heading == undefined){
-	        heading = "Select a file"
-	    }
+	    openFileExplorer: function(heading, start_directory, callBack_on_accept, callBack_on_dismiss){
+            if(!heading || heading == "" || heading == undefined){
+                heading = "Select a file"
+            }
+            if(start_directory == undefined || start_directory == ""){
+                start_directory = false;
+            }
+            katana.templateAPI.post('get_file_explorer_data/', wapp_management.getCookie('csrftoken'), {"path": start_directory},
+                function(data) {
+                    var explorer_modal_html = $($('#file-explorer-template').html())
+                    var $fileExplorerHeading = explorer_modal_html.find('#file-explorer-heading');
+                    $fileExplorerHeading.text(heading);
+                    var $currentPage = katana.$activeTab;
+                    var $tabContent = $currentPage.find('.page-content-inner');
+                    $(explorer_modal_html).prependTo($tabContent);
+                    $directoryData = $tabContent.find('#directory-data');
+                    $directoryData.jstree({
+                        "core": { "data": [data]},
+                        "plugins": ["search", "sort"],
+                        "sort": function (a, b) {
+                                    var nodeA = this.get_node(a);
+                                    var nodeB = this.get_node(b);
+                                    var lengthA = nodeA.children.length;
+                                    var lengthB = nodeB.children.length;
+                                    if ((lengthA == 0 && lengthB == 0) || (lengthA > 0 && lengthB > 0))
+                                        return this.get_text(a).toLowerCase() > this.get_text(b).toLowerCase() ? 1 : -1;
+                                    else
+                                        return lengthA > lengthB ? -1 : 1;
+                            }
+                    });
+                    $directoryData.jstree().hide_dots();
+                    $tabContent.find('#explorer-accept').on('click', function(){
+                        katana.fileExplorerAPI.acceptFileExplorer(callBack_on_accept);
+                    });
+                    $tabContent.find('#explorer-dismiss').on('click', function(){
+                        katana.fileExplorerAPI.dismissFileExplorer(callBack_on_dismiss);
+                    });
+                    $tabContent.find('#explorer-up').on('click', function(){
+                        katana.fileExplorerAPI.upFileExplorer(data.li_attr["data-path"]);
+                    });
 
-	    if(callBack_on_accept == undefined){
-	        callBack_on_accept = false;
-	    }
+                })
+        },
 
-	    if(callBack_on_dismiss == undefined){
-	        callBack_on_dismiss = false;
-	    }
+        acceptFileExplorer: function(callBack){
+            var $currentPage = katana.$activeTab;
+            $fileExplorerElement = $currentPage.find('div .overlay');
+            $selectedValue = $fileExplorerElement.find('[aria-selected=true]')
+            var data_path = $selectedValue.attr("data-path");
+            if(data_path == undefined){
+                alert("Nothing selected");
+                return;
+            }
+            $fileExplorerElement.remove();
+            callBack && callBack(data_path);
+        },
 
-	    $.ajax({
-                headers: {
-                    'X-CSRFToken': wapp_management.getCookie('csrftoken')
-                },
-                type: 'GET',
-                url: 'get_file_explorer_data/',
-            }).done(function(data) {
-                var explorer_modal_html = '<div class="overlay">' +
-                                              '<div class="centered file-explorer">' +
-                                                   '<div class="file-explorer-header">' +
-                                                       '<div class="full-size" style="vertical-align: middle;">' +
-                                                            '<h4>' + heading + '</h4>' +
-                                                       '</div>' +
-                                                   '</div>' +
-                                                   '<div class="file-explorer-body">' +
-                                                       '<div class="up-btn-bar">' +
-                                                            '<button id="explorer-up" class="btn btn-info">...</button>' +
-                                                       '</div>' +
-                                                       '<div class="directory-data-div to-scroll">' +
-                                                           '<div id="directory-data" class="full-size">' +
-                                                           '</div>' +
-                                                       '</div>' +
-                                                   '</div>' +
-                                                   '<div class="file-explorer-footer">' +
-                                                       '<div class="full-size text-center">' +
-                                                            '<button id="explorer-accept" class="btn btn-success">OK</button>' +
-                                                            '<button id="explorer-dismiss" class="btn btn-success">Cancel</button>' +
-                                                       '</div>' +
-                                                   '</div>' +
-                                              '</div>' +
-                                         '</div>'
-                var $currentPage = katana.$activeTab;
-                var $tabContent = $currentPage.find('.page-content-inner');
-                $(explorer_modal_html).prependTo($tabContent);
+        dismissFileExplorer: function(callBack){
+            var $currentPage = katana.$activeTab;
+            $fileExplorerElement = $currentPage.find('div .overlay');
+            $fileExplorerElement.remove();
+            callBack && callBack();
+        },
 
-                $directoryData = $tabContent.find('#directory-data');
-
-                $directoryData.jstree({
-                    "core": {
-                        "data": [data]
-                    }
+        upFileExplorer: function(currentPath){
+            katana.templateAPI.post('get_file_explorer_data/', wapp_management.getCookie('csrftoken'), {"path": currentPath},
+                function(data) {
+                    var $currentPage = katana.$activeTab;
+                    var $tabContent = $currentPage.find('.page-content-inner');
+                    var $directoryDataDiv = $currentPage.find('.directory-data-div');
+                    $directoryDataDiv.html("");
+                    $directoryDataDiv.append("<div id='directory-data' class='full-size'></div>")
+                    var $directoryData = $currentPage.find('#directory-data');
+                    $directoryData.jstree({
+                        "core": { "data": [data] },
+                        "plugins": ["search", "sort"],
+                        "sort": function (a, b) {
+                                    var nodeA = this.get_node(a);
+                                    var nodeB = this.get_node(b);
+                                    var lengthA = nodeA.children.length;
+                                    var lengthB = nodeB.children.length;
+                                    if ((lengthA == 0 && lengthB == 0) || (lengthA > 0 && lengthB > 0))
+                                        return this.get_text(a).toLowerCase() > this.get_text(b).toLowerCase() ? 1 : -1;
+                                    else
+                                        return lengthA > lengthB ? -1 : 1;
+                            }
+                    });
+                    $directoryData.jstree().hide_dots();
+                    $tabContent.find('#explorer-up').off('click');
+                    $tabContent.find('#explorer-up').on('click', function(){
+                        katana.fileExplorerAPI.upFileExplorer(data.li_attr["data-path"]);
+                    });
                 });
+        },
 
-                $directoryData.jstree().hide_dots();
-
-                $tabContent.find('#explorer-accept').on('click', function(){
-
-                    katana.acceptFileExplorer(callBack_on_accept);
-                });
-
-                $tabContent.find('#explorer-dismiss').on('click', function(){
-
-                    katana.dismissFileExplorer(callBack_on_dismiss);
-                });
-
-                $tabContent.find('#explorer-up').on('click', function(){
-
-                    katana.upFileExplorer(data.li_attr["data-path"]);
-                });
-
-            });
-
-	},
-
-	acceptFileExplorer: function(callBack){
-	    var $currentPage = katana.$activeTab;
-	    $fileExplorerElement = $currentPage.find('div .overlay');
-
-	    $selectedValue = $fileExplorerElement.find('[aria-selected=true]')
-
-	    var data_path = $selectedValue.attr("data-path");
-
-	    if(data_path == undefined){
-	        alert("Nothing selected");
-	        return;
-	    }
-
-	    $fileExplorerElement.remove();
-
-	    if(callBack){
-	        callBack(data_path);
-	    }
-	},
-
-	dismissFileExplorer: function(callBack){
-	    var $currentPage = katana.$activeTab;
-	    $fileExplorerElement = $currentPage.find('div .overlay');
-	    $fileExplorerElement.remove();
-
-	    if(callBack){
-	        callBack();
-	    }
-	},
-
-	upFileExplorer: function(currentPath){
-	    $.ajax({
-                headers: {
-                    'X-CSRFToken': wapp_management.getCookie('csrftoken')
-                },
-                type: 'GET',
-                url: 'get_file_explorer_data/',
-                data: {"path": currentPath}
-            }).done(function(data) {
-                var $currentPage = katana.$activeTab;
-                var $tabContent = $currentPage.find('.page-content-inner');
-                var $directoryDataDiv = $currentPage.find('.directory-data-div');
-
-                $directoryDataDiv.html("");
-
-                $directoryDataDiv.append("<div id='directory-data' class='full-size'></div>")
-
-                var $directoryData = $currentPage.find('#directory-data');
-
-                $directoryData.jstree({
-                    "core": {
-                        "data": [data]
-                    }
-                });
-
-                $directoryData.jstree().hide_dots();
-
-                $tabContent.find('#explorer-up').off('click');
-
-                $tabContent.find('#explorer-up').on('click', function(){
-
-                    katana.upFileExplorer(data.li_attr["data-path"]);
-                });
-
-            });
 	},
 ///////////////////////////////////////////Methods named by template
 

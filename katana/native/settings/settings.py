@@ -18,23 +18,16 @@ class Settings:
         pass
 
     def smart_analysis_handler(self, request):
-        mainDict = json.loads('{ "main": {}, "files": [] }')
         mainFile = self.navigator.get_warrior_dir() + '/Tools/connection/connect_settings.xml'
-        subfiles = [name for name in os.listdir(self.navigator.get_warrior_dir() + '/Tools/connection/configs') if name.endswith(".xml")]
-        with open( mainFile,'r') as f:
-            mainDict['main'] = xmltodict.parse(f)['credentials']
-        for file in subfiles:
-            with open( self.navigator.get_warrior_dir() + '/Tools/connection/configs/' + file,'r') as f:
-                data = xmltodict.parse(f)['data']
-                for testdata in data['testdata']:
-                    for k, v in testdata.items():
-                        if k == 'command':
-                            v = json.dumps(v)
-                            testdata[k] = v
-                mainDict['files'].append( data )
+        if request.method == 'POST':
+            val = xmltodict.unparse( {'credentials' : { 'system' : json.loads(request.POST.get('data')) }}, pretty = True)
+            with open(mainFile,'w') as f:
+                f.write(val)
+        else:
+            with open( mainFile,'r') as f:
+                mainDict = xmltodict.parse(f)['credentials']
 
-        print mainDict
-        return mainDict
+            return mainDict
 
     def general_setting_handler(self, request):
         json_file = self.navigator.get_katana_dir() + '/config.json'
