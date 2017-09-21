@@ -51,8 +51,8 @@ def translate_mib(custom_mib_paths, load_mib_modules, name, val):
             mibBuilder = builder.MibBuilder()
             compiler.addMibCompiler(mibBuilder, sources=custom_mib_paths)
             mibViewController = view.MibViewController(mibBuilder)
-            __load_mib_modules = load_mib_modules.split(',')
-            mibBuilder.loadModules(*__load_mib_modules)
+            temp_load_mib_modules = load_mib_modules.split(',')
+            mibBuilder.loadModules(*temp_load_mib_modules)
         except error.MibNotFoundError as excep:
             testcase_Utils.pNote(" {} Mib Not Found!".format(excep), "Error")
     if custom_mib_paths and load_mib_modules:
