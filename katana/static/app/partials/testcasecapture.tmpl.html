@@ -1,3 +1,13 @@
+<style>
+select.hideopt > option[value="0"] {
+    display: none;
+}
+
+select > option:first-child{
+    display: none;
+}
+ 
+</style>
 <div class='col-md-12'>
     <h4>
         <b>Katana Case Editor</b>
@@ -1200,12 +1210,19 @@
                         <td>
                             <div ng-if=" step.Arguments.argument.length !== undefined  ">
                                 <div ng-repeat='arg in step.Arguments.argument' ng-show="arg._name !== ''">
-                                    <div ng-show="arg._value !== ''">
+                                    <div ng-show="arg._value !== '' && arg._name != 'undefined'">
+                                        <!-- <div ng-repeat="res in subSysValueNew track by [$index]"> -->
                                         {{ $index + 1 }}. {{ arg._name}} = {{arg._value }}
+                                        <!-- <span>[</span>{{res}}<span>]</span> -->
+                                        <!-- </div> -->
+
+                                    </div>
+                                    <div ng-show="arg._name == 'undefined'">
+                                        {{ $index + 1 }}. subsystem_name = {{arg._value }}
                                     </div>
                                     <div ng-show="arg._value == ''">
                                         {{ $index + 1 }}. {{ arg._name}}
-                                    </div>
+                                    </div> 
                                 </div>
                             </div>
                             <div ng-if=" step.Arguments.argument._name !== undefined && step.Arguments.argument._name !== ''">
@@ -1857,18 +1874,18 @@
                                        {{arg}}
                                    </label>
                                 <div class="col-sm-7">
-                                      <!--  <input type="text"
+                                    <input type="text"
                                               class="form-control"
                                               id="arg{{$index}}"
                                               ng-model='xml.mapargs[arg]'
-                                              placeholder="1"> <br/> -->
+                                              placeholder="" ng-hide="hideTxtBox">  
 
                                     <select class='form-control hideopt'
                                         id='arg{{$index}}'
                                         ng-model="xml.mapargs[arg]" 
                                         ng-change="showSubsys(xml.mapargs[arg])"
-                                        ng-options="res as res for res in sysList">
-                                         <option value=''> 222 Select System Name</option>
+                                        ng-options="res as res for res in sysList" ng-hide="hideDropDwn">
+                                         <option value=''>Select System Name</option>
                                      </select>
 
                                    </div>
@@ -1877,7 +1894,7 @@
                            </div>
 
                            <div ng-hide="hideSubsys">
-                                
+                                 
                                 <div class="form-group mArgs">
                                    <label for="arg{{$index}}"
                                           class="col-sm-5 control-label text-info breakword"
@@ -1894,26 +1911,24 @@
                                   <div class="col-sm-7">
                                         <input type="text"
                                               class="form-control"
-                                              id="argsub{{$index}}"
-                                              disabled
+                                              id="arg{{$index}}"
+                                              ng-model='xml.mapargs[arg]'
                                               ng-hide="hideText"
-                                              placeholder="Subsystem Not Available"> 
+                                              placeholder=""> 
 
                                     <select class='form-control hideopt'
                                             id='arg{{$index}}'
                                             ng-model="xml.mapargs[arg]" 
-                                            ng-change="showVal(xml.mapargs[arg])"
-                                            ng-hide="hideDrp"
-                                            ng-options="res as res for res in subSysList">
-                                    <option value=''> 111 Select Subsystem Name</option>
+                                            ng-options="res as res for res in subSysList" ng-hide="hideDrop">
+                                    <option value=''>Select Subsystem Name</option>
                                     </select>
                                    </div> 
+                                
                                 </div>
-
                            </div>
 
                            <div ng-repeat="arg in xml.arglist"
-                                ng-if='status.keyword != "" && xml.arglist.length > 0 && arg != "self"'>
+                                ng-if='status.keyword != "" && xml.arglist.length > 0 && arg != "self" && arg != "system_name"'>
                                <div class="form-group mArgs">
                                    <label for="arg{{$index}}"
                                           class="col-sm-5 control-label text-info breakword"
@@ -3039,14 +3054,21 @@
                         </td>
 
                         <td>
-                            <div ng-if=" step.Arguments.argument.length !== undefined  ">
+                        
+                           <div ng-if=" step.Arguments.argument.length !== undefined  ">
                                 <div ng-repeat='arg in step.Arguments.argument' ng-show="arg._name !== ''">
-                                    <div ng-show="arg._value !== ''">
+                                    <div ng-show="arg._value !== '' && arg._name != 'undefined'">
+                                        <!-- <div ng-repeat="res in subSysValueNew track by [$index]"> -->
                                         {{ $index + 1 }}. {{ arg._name}} = {{arg._value }}
+                                        <!-- <span>[</span>{{res}}<span>]</span> -->
+                                        <!-- </div> -->
+                                    </div>
+                                    <div ng-show="arg._name == 'undefined'">
+                                        {{ $index + 1 }}. subsystem_name = {{arg._value }}
                                     </div>
                                     <div ng-show="arg._value == ''">
                                         {{ $index + 1 }}. {{ arg._name}}
-                                    </div>
+                                    </div> 
                                 </div>
                             </div>
                             <div ng-if=" step.Arguments.argument._name !== undefined && step.Arguments.argument._name !== ''">

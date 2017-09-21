@@ -13,18 +13,18 @@ limitations under the License.
 
 app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location', '$anchorScroll', 'TestcaseFactory', 'fileFactory', 'getConfigFactory', 'subdirs',
     function ($scope, $routeParams, $http, $location, $anchorScroll, TestcaseFactory, fileFactory, getConfigFactory, subdirs) {
-alert("qwqwqwq");
+
     'use strict';
 
-    $scope.step_numbers = [];
+        $scope.step_numbers = [];
         $scope.stepToBeCopied = "None";
         $scope.stepBeingEdited = "None";
         $scope.subdirs = subdirs;
         $scope.xml = {};
-    $scope.xml.file = '';
-    $scope.xml.json = '';
-    $scope.xml.pycs = {};
-    $scope.xml.args = {};
+        $scope.xml.file = '';
+        $scope.xml.json = '';
+        $scope.xml.pycs = {};
+        $scope.xml.args = {};
         $scope.original_iter_types = [];
     // $scope.xml.capargs = [];        // where the arguments are captured in the form.
         $scope.step_onerror = "next";
@@ -46,7 +46,11 @@ alert("qwqwqwq");
         $scope.hideopt = true;
         $scope.sysVal = '';
         $scope.sysAllVal = '';
-        $scope.subSysValueNew = '';
+        $scope.subSysValueNew = [];
+        $scope.hideTxtBox = true;
+        $scope.hideDropDwn = false;
+        $scope.hideDrop = false;
+        
 
         function readConfig(){
             getConfigFactory.readconfig()
@@ -250,7 +254,7 @@ alert("qwqwqwq");
             $scope.status.kwCheckbox = $scope.status.driverCheckbox;
             $scope.status.drivername = "";
             $scope.driverSelected($scope.status.drivername);
-        };
+         };
 
         $scope.addNewTcstate = function(){
             if ($scope.new_state === undefined || $scope.new_state === ""){
@@ -288,6 +292,8 @@ alert("qwqwqwq");
         };
 
         $scope.copyStep = function(){
+
+            $scope.hideSubsys = false;
 
             if($scope.stepToBeCopied == "None"){
                 swal({
@@ -956,7 +962,21 @@ alert("qwqwqwq");
     };
 
     $scope.startStepEdit = function (edtype, val, index) {
+
+        var IDFPath = $scope.model.Testcase.Details.InputDataFile;
+        if(IDFPath == ''){
+             sweetAlert({
+                        title: "Input Data File path is not specified. So System & Subsystem name cannot be fetched.",
+                        text: "Kindly provide the path and then click on 'New step' button if auto-population needed.",
+                        closeOnConfirm: true,
+                        confirmButtonColor: '#3b3131',
+                        confirmButtonText: "Ok",
+                        type: "info"
+            });
+        }
+
         $scope.hideSubsys = true;
+
         if($scope.showStepEdit){
             swal({
                 title: "You have a Step open in the step editor that should be saved before creating a new Step.",
@@ -974,109 +994,70 @@ alert("qwqwqwq");
         $scope.sysFields();
     };
 
-
-
-    $scope.showVal = function (subSysValue) {
-
-    $scope.subSysValueNew=subSysValue;
-       
-    };
-
     $scope.sysFields = function () {
-          // alert($scope.model.Testcase.Details.InputDataFile);
           $scope.urlCheck();
-
-
              fileFactory.getSystems($scope.pathXml)
                 .then(function (data) {
                     $scope.sysList.push(data);
-                   
                    var xx = JSON.stringify($scope.sysList);
-                 
                         var count = (xx.match(/,/g) || []).length;
-                    
                         for (var i=0;i<count;i++){
                             var temp = xx.split(',')[i];
-                            
                             if(i==0){
                             temp = temp.split('[\"')[1];
-                          
                             }
-
                             $scope.sysList.push(temp);
-
-
                         }
                     },
                 function (msg) {
                 alert(msg);
             });
-                            $scope.sysList = '';
-
-                            $scope.sysList = [];
-
+                $scope.sysList = '';
+                $scope.sysList = [];
         };
 
-
-    
     $scope.showSubsys = function (sysValue) {
-
             $scope.sysVal = sysValue;
-
             $scope.hideSubsys = false;
-
-$scope.urlCheck();
-
-fileFactory.getSubsys(sysValue,$scope.pathXml)
+            $scope.urlCheck();
+        fileFactory.getSubsys(sysValue,$scope.pathXml)
                 .then(function (data) {
-                    //alert("func");
-                    $scope.subSysList.push(data);
-                  
-
-                    var xx = JSON.stringify($scope.subSysList);
-                 
-                        var count = (xx.match(/,/g) || []).length;
-                    
-                        for (var i=0;i<count;i++){
+                   $scope.subSysList.push(data);
+                      var xx = JSON.stringify($scope.subSysList);
+                      var count = (xx.match(/,/g) || []).length;
+                         for (var i=0;i<count;i++){
                             var temp = xx.split(',')[i];
-                            
                             if(i==0){
                             temp = temp.split('[\"')[1];
-                          
                             }
                             $scope.subSysList.push(temp);
-                            //alert("list :::" + $scope.subSysList);
-
-                           if($scope.subSysList=="Not Applicable,,Not Applicable"){
-                           // alert("qqq");
-                            $scope.hideText = false;
-                            $scope.hideDrp = true;
+                            if($scope.subSysList=="Not Applicable,,Not Applicable"){
+                            $scope.subSysList = "--";
                            }
-                           else{
-                           // alert("www");
-                            $scope.hideDrp = false;
-                            $scope.hideText = true;
-                           }
-
-
                         }
-
                     },
                 function (msg) {
                 alert(msg);
             });
-                $scope.subSysList = '';
-
+               $scope.subSysList = '';
                $scope.subSysList = [];
-
         };
 
         $scope.urlCheck = function () {
-
              var filename = $scope.model.Testcase.Details.InputDataFile;
-
+              if(filename == '' || filename == undefined){
+                  $scope.hideSubsys  = true;
+                $scope.hideTxtBox = false;
+                $scope.hideDropDwn = true;
+                 $scope.hideDrop = true;
+                $scope.hideText = false;
+                }
+                else{
+                $scope.hideTxtBox = true;
+                $scope.hideDropDwn = false;
+                $scope.hideDrop = false;
+                $scope.hideText = true;
             var checkNew = filename.split('..')[1];  
-
             $scope.pathUG = $scope.cfg.pythonsrcdir + "/Warriorspace" + checkNew;
             $scope.pathUrl= $scope.pathUG.replace(/\\/g, "/");
 
@@ -1085,30 +1066,25 @@ fileFactory.getSubsys(sysValue,$scope.pathXml)
                          if (i != -1) {
                              $scope.newPath = s.substring(i, s.length);
                          }    
-
              guideSplit();
              return $scope.pathXml;
-
+         }
         };
 
         function guideSplit(){
-      
-        var array = [];
-        if($scope.newPath.indexOf("\\")>= 0) {
-            array = $scope.newPath.split("\\");
-        }
-        else {
-            array = $scope.newPath.split("/");
-        }
-        var path = "";
-        for(var i=0; i<=array.length-1; i++){
-            path = path + array[i] + ">"
-        }
-        $scope.pathXml = path.replace(/\>$/, '');
-              
+            var array = [];
+            if($scope.newPath.indexOf("\\")>= 0) {
+                array = $scope.newPath.split("\\");
+            }
+            else {
+                array = $scope.newPath.split("/");
+            }
+            var path = "";
+            for(var i=0; i<=array.length-1; i++){
+                path = path + array[i] + ">"
+            }
+            $scope.pathXml = path.replace(/\>$/, '');
     }
-
-
 
         function startStepCap(edtype, val, index){
             $scope.step_numbers = [];
@@ -1142,6 +1118,7 @@ fileFactory.getSubsys(sysValue,$scope.pathXml)
         };
 
     $scope.addStep = function (index) {
+        $scope.hideSubsys = true;
         if($scope.showStepEdit){
             swal({
                 title: "You have a Step open in the step editor that should be saved before editing a new Step.",
@@ -1167,6 +1144,7 @@ fileFactory.getSubsys(sysValue,$scope.pathXml)
             }
             $scope.insertStep = true;
         }
+         $scope.sysFields();
     };
 
     $scope.reqStepEdTypeAsString = function () {
@@ -1176,7 +1154,7 @@ fileFactory.getSubsys(sysValue,$scope.pathXml)
     // Allow Edit op for the Step at the given index within the Steps array.
     // Event handler when the driver name is selected in the Step Grid.
     $scope.editStep = function (drivername, index) {
-
+        $scope.hideSubsys  = false;
         if($scope.showStepEdit){
             swal({
                 title: "You have a Step open in the step editor that should be saved before editing a new Step.",
@@ -1190,7 +1168,11 @@ fileFactory.getSubsys(sysValue,$scope.pathXml)
         else {
             openStepCap(drivername, index);
         }
-    };
+        if($scope.model.Testcase.Details.Name !=''){ 
+               $scope.sysFields();           
+        }
+        
+       };
 
         function openStepCap(drivername, index){
             $scope.stepBeingEdited = index;
@@ -1531,6 +1513,7 @@ fileFactory.getSubsys(sysValue,$scope.pathXml)
 
     /* Called when Save Step is clicked. */
     $scope.saveArguments = function () {
+
         var driver = $.trim($scope.status.drivername) || '',
             keyword = $.trim($scope.status.keyword) || '';
         if(!$scope.status.driverCheckbox && !$scope.status.kwCheckbox){

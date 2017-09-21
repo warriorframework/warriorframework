@@ -164,7 +164,7 @@ app.factory('fileFactory', ['$http', '$routeParams', '$q', function($http, $rout
                     deferred.resolve(data);
                 })
                 .error(function(data, status, headers, config) {
-                    deferred.reject("Could not retrieve file paths: " + status + ' ' + JSON.stringify(headers));
+                    //deferred.reject("Could not retrieve file paths: " + status + ' ' + JSON.stringify(headers));
                 });
             return deferred.promise;
         },
@@ -177,7 +177,7 @@ app.factory('fileFactory', ['$http', '$routeParams', '$q', function($http, $rout
                     deferred.resolve(data);
                 })
                 .error(function(data, status, headers, config) {
-                    deferred.reject("Could not retrieve file paths: " + status + ' ' + JSON.stringify(headers));
+                    //deferred.reject("Could not retrieve file paths: " + status + ' ' + JSON.stringify(headers));
                 });
             return deferred.promise;
         }
