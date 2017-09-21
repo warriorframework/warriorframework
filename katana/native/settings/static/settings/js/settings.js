@@ -67,9 +67,13 @@ var settings = {
 
 	jira: {
 		boolHandler: function( $elem ){
-			var button = $elem.closest('.field-block').find('.relative-tool-bar [title="' + $elem.attr('key') + '"]');
+			var button = $elem.closest('.field-block').find('.relative-tool-bar [key="' + $elem.attr('key') + '"]');
 			$elem.val() == 'true' && button.addClass('active');
 			$elem.closest('.field').remove();
+		},
+
+		password: function(){
+			this.attr('type', 'password');
 		},
 
 		default: function(){
@@ -122,6 +126,11 @@ var settings = {
 		}
 	},
 
+	addSystem: function(){
+		var page = this.closest('.page-content');
+		page.find('.to-save').append( page.find('#block-template').html() );
+	},
+
 	changeDetection: function(){
 		var $elem = this;
 		$elem.on('change', 'input, select', function(){
@@ -131,7 +140,7 @@ var settings = {
 
 	save: function(){
 		var $elem = this;
-		$elem.addClass('loading');
+		$elem.removeClass('saved').addClass('loading');
 		katana.templateAPI.post.call( katana.$activeTab.find('.to-save'), null, null, katana.toJSON(), function( data ) {
 			console.log('saved', data);
 			$elem.removeClass('loading').addClass('saved');
