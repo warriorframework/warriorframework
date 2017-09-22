@@ -1,4 +1,6 @@
 from django.conf.urls import url
+from django.views.generic import RedirectView
+
 from . import views
 
 urlpatterns = [
@@ -8,4 +10,5 @@ urlpatterns = [
     url(r'^create_config/$', views.AppInstallConfig.as_view(), name='create_config'),
     url(r'^load_configs/$', views.load_configs, name='load_configs'),
     url(r'^open_config/$', views.open_config, name='open_config'),
+    url(r'^validate_app_path/$', views.validate_app_path, name='validate_app_path'),
 ]
