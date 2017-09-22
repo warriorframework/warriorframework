@@ -291,16 +291,17 @@ function mapUiToSuiteJson() {
 
 
 
-function getResultsDirForSuite(tag) {
+function getResultsDirForSuiteRow() {
       var callback_on_accept = function(selectedValue) { 
       		console.log(selectedValue);
       		// Convert to relative path.
+      		var sid = katana.$activeTab.attr('suite-case-row');
       		var pathToBase = katana.$activeTab.find('#savefilepath').text();
       		console.log("File path ==", pathToBase);
       		var nf = prefixFromAbs(pathToBase, selectedValue);
-      		katana.$activeTab.find(tag).attr("value", nf);
-      		katana.$activeTab.find(tag).attr("fullpath", selectedValue);
-
+      		jsonTestcases['Testcase'][sid]['path'] = nf;
+      		console.log("Path set to ",nf," for ", sid);
+      		createCasesTable(jsonTestcases['Testcase']);
             };
       var callback_on_dismiss =  function(){ 
       		console.log("Dismissed");
@@ -381,7 +382,7 @@ function createCasesTable(xdata) {
 
 	items.push('<table id="Case_table_display" class="configuration_table" width="100%">');
 	items.push('<thead>');
-	items.push('<tr id="CaseRow"><th>Num</th><th>Path</th><th>context</th><th>Run Type</th><th>Mode</th><th>OnError</th><th>Impact</th><th/><th/></tr>');
+	items.push('<tr id="CaseRow"><th>Num</th><th>Path</th><th></th><th>context</th><th>Run Type</th><th>Mode</th><th>OnError</th><th>Impact</th><th/><th/></tr>');
 	items.push('</thead>');
 	items.push('<tbody>');
 
@@ -397,15 +398,25 @@ function createCasesTable(xdata) {
 		
 		//items.push('<td>'+oneCase['path']+'</td>');
 		//items.push('<td>'+oneCase['datafile']+'</td>');
+		
+		var bid = "fileTestcase-"+s+"-id"+getRandomSuiteID();
+		items.push('<td><i title="ChangeFile" class="fa fa-envelope-open" id="'+bid+'"/></td>');
+		katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
+		$(document).on('click','#'+bid,function() {
+			var names = this.id.split('-');
+			var sid = parseInt(names[1]);
+			katana.$activeTab.attr('suite-case-row',sid);
+			getResultsDirForSuiteRow();
+		});
 		items.push('<td onclick="showCaseFromSuite('+"'"+oneCase['path']+"'"+')">'+oneCase['path']+'</td>');
 		items.push('<td>'+oneCase['context']+'</td>');
-		
+
 		items.push('<td>'+oneCase['runtype']+'</td>');
 		items.push('<td>'+oneCase['runmode']+'</td>');
 		items.push('<td>'+oneCase['onError']['@action']+'</td>');
 		items.push('<td>'+oneCase['impact']+'</td>');
 
-		var bid = "deleteTestcase-"+s+"-id"+getRandomSuiteID();
+		bid = "deleteTestcase-"+s+"-id"+getRandomSuiteID();
 		items.push('<td><i title="Delete" class="fa fa-trash" id="'+bid+'"/>');
 		katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 		$(document).on('click','#'+bid,function( ) {

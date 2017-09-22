@@ -493,8 +493,19 @@ function createSuitesTable(xdata) {
 		
 		items.push('<tr data-sid="'+s+'">');
 		items.push('<td>'+(parseInt(s)+1)+'</td>');
-		var tbid = "textTestSuiteFile-"+s+"-id"+getRandomID();;
-		
+		var tbid = "textTestSuiteFile-"+s+"-id"+getRandomID();
+
+		var bid = "fileSuitecase-"+s+"-id"+getRandomID();
+		items.push('<td><i title="ChangeFile" class="fa fa-envelope-open" id="'+bid+'"/></td>');
+		katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
+		$(document).on('click','#'+bid,function() {
+			var names = this.id.split('-');
+			var sid = parseInt(names[1]);
+			katana.$activeTab.attr('project-suite-row',sid);
+			getResultsDirForProjectRow();
+			
+		});
+
 		items.push('<td id="'+tbid+'" onclick="showSuiteFromProject('+"'"+oneSuite['path']+"'"+')">'+oneSuite['path']+'</td>');
 		items.push('<td>Type='+oneSuite['Execute']['@ExecType']+'<br>');
 
@@ -529,8 +540,9 @@ function createSuitesTable(xdata) {
 			//mapProjectSuiteToUI(sid,xdata);
 
 			katana.popupController.open(katana.$activeTab.find("#editTestSuiteEntry").html(),"Edit..." + sid, function(popup) {
-				katana.$activeTab.find("#editTestSuiteEntry").attr('popup-id', JSON.stringify(popup));
-				console.log('Popup 531' );
+				katana.$activeTab.find("#editTestSuiteEntry").attr('popup-id', popup);
+				console.log('Popup 531', popup );
+				console,log(katana.$activeTab.find("#editTestSuiteEntry"));
 
 				
 				setupProjectPopupDialog(sid,xdata,popup);
@@ -575,6 +587,27 @@ function createSuitesTable(xdata) {
 	fillProjectDefaultGoto();
 	katana.$activeTab.find('#default_onError').on('change',fillProjectDefaultGoto );
 }
+
+
+function getResultsDirForProjectRow() {
+      var callback_on_accept = function(selectedValue) { 
+      		console.log(selectedValue);
+      		// Convert to relative path.
+      		var sid = katana.$activeTab.attr('project-suite-row');
+      		var pathToBase = katana.$activeTab.find('#savefilepath').text();
+      		console.log("File path ==", pathToBase);
+      		var nf = prefixFromAbs(pathToBase, selectedValue);
+      		jsonTestSuites['Testsuite'][sid]['path'] = nf;
+      		console.log("Path set to ",nf," for ", sid);
+      		console.log(jsonTestSuites);
+      		createSuitesTable(jsonTestSuites['Testsuite']);
+            };
+      var callback_on_dismiss =  function(){ 
+      		console.log("Dismissed");
+	 };
+     katana.fileExplorerAPI.openFileExplorer("Select a file", false , $("[name='csrfmiddlewaretoken']").val(), false, callback_on_accept, callback_on_dismiss);
+};
+
 
 function showSuiteFromProject(fname) {
   var xref="./suites/editSuite/?fname="+fname; 
