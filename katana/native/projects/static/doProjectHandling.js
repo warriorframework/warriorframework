@@ -320,6 +320,54 @@ function prefixFromAbs(pathToBase, pathToFile) {
 	return upem.join("/") + "/" + bf.splice(blen).join('/') + "/" +  rf[rf.length - 1];
 }
 
+
+function getSuiteDataFileForProject(tag) {
+      var callback_on_accept = function(selectedValue) { 
+      		console.log(selectedValue);
+      		// Convert to relative path.
+      		var pathToBase = katana.$activeTab.find('#savefilepath').text();
+      		console.log("File path ==", pathToBase);
+      		//var nf = katana.fileExplorerAPI.prefixFromAbs(pathToBase, selectedValue);
+      		var nf = prefixFromAbs(pathToBase, selectedValue);
+      		katana.$activeTab.find(tag).attr("value", nf);
+      		katana.$activeTab.find(tag).attr("fullpath", selectedValue);
+            };
+      var callback_on_dismiss =  function(){ 
+      		console.log("Dismissed");
+	 };
+     katana.fileExplorerAPI.openFileExplorer("Select a file", false , $("[name='csrfmiddlewaretoken']").val(), false, callback_on_accept, callback_on_dismiss);
+};
+
+function getSuiteDataForProject() {
+	  var popup = JSON.parse(katana.$activeTab.find("#editTestSuiteEntry").attr('popup-id'));
+	  console.log("Popup 343...", popup);
+	  console.log('The string is', katana.$activeTab.find("#editTestSuiteEntry").attr('popup-id'));
+	  popup = $(this).closest('.popup');
+	  console.log("Popup 346...", popup);
+	 	
+	  var tag = popup.find('#suitePath');
+      var callback_on_accept = function(selectedValue) { 
+      		console.log(selectedValue);
+      		var popup = JSON.parse(katana.$activeTab.find("#editTestSuiteEntry").attr('popup-id'));
+	 		var tag = popup.find('#suitePath');
+	 		console.log(tag);
+      		// Convert to relative path.
+      		var pathToBase = katana.$activeTab.find('#savefilepath').text();
+      		// var nf = katana.fileExplorerAPI.prefixFromAbs(pathToBase, selectedValue);
+      		var nf = prefixFromAbs(pathToBase, selectedValue);
+      		console.log("File path ==", pathToBase, nf);
+      		popup.find("#suitePath").val(nf);
+      		//katana.$activeTab.find("#suitePath").val(nf);
+      		tag.attr("value", nf);
+      		tag.attr("fullpath", selectedValue);
+            };
+      var callback_on_dismiss =  function(){ 
+      		console.log("Dismissed");
+	 };
+     katana.fileExplorerAPI.openFileExplorer("Select a file", false , $("[name='csrfmiddlewaretoken']").val(), false, callback_on_accept, callback_on_dismiss);
+};
+
+
 function getResultsDirForProject() {
       var callback_on_accept = function(selectedValue) { 
       		console.log(selectedValue);
@@ -334,7 +382,7 @@ function getResultsDirForProject() {
       var callback_on_dismiss =  function(){ 
       		console.log("Dismissed");
 	 };
-     katana.fileExplorerAPI.openFileExplorer("Select a file", false , $("[name='csrfmiddlewaretoken']").val(), callback_on_accept, callback_on_dismiss);
+     katana.fileExplorerAPI.openFileExplorer("Select a file", false , $("[name='csrfmiddlewaretoken']").val(), false, callback_on_accept, callback_on_dismiss);
 
 };
  
@@ -445,7 +493,9 @@ function createSuitesTable(xdata) {
 		
 		items.push('<tr data-sid="'+s+'">');
 		items.push('<td>'+(parseInt(s)+1)+'</td>');
-		items.push('<td onclick="showSuiteFromProject('+"'"+oneSuite['path']+"'"+')">'+oneSuite['path']+'</td>');
+		var tbid = "textTestSuiteFile-"+s+"-id"+getRandomID();;
+		
+		items.push('<td id="'+tbid+'" onclick="showSuiteFromProject('+"'"+oneSuite['path']+"'"+')">'+oneSuite['path']+'</td>');
 		items.push('<td>Type='+oneSuite['Execute']['@ExecType']+'<br>');
 
 		if (oneSuite['Execute']['@ExecType'] == 'If' || oneSuite['Execute']['@ExecType'] == 'If Not') {
@@ -479,6 +529,10 @@ function createSuitesTable(xdata) {
 			//mapProjectSuiteToUI(sid,xdata);
 
 			katana.popupController.open(katana.$activeTab.find("#editTestSuiteEntry").html(),"Edit..." + sid, function(popup) {
+				katana.$activeTab.find("#editTestSuiteEntry").attr('popup-id', JSON.stringify(popup));
+				console.log('Popup 531' );
+
+				
 				setupProjectPopupDialog(sid,xdata,popup);
 			});
 			//This is where you load in the edit form and display this row in detail. 

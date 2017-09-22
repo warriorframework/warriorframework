@@ -133,7 +133,9 @@ def getListOfComments(request):
 	
 	print driver, " ", keyword;
 
-
+	if driver == "To_Be_Developed":
+		return JsonResponse(responseBack)
+	
 	for item in details[driver][0]: 
 		print item['fn']
 		if item['fn'] == keyword: 
@@ -191,8 +193,8 @@ def editCase(request):
       "Name": "set_env_variable",
       "Title": "set_env_variable",
       "default_onError": { "@action": "next" },
-      "Date": "2017-05-14",
-      "Time": "23:02",
+      "Date": "2017-01-01",
+      "Time": "23:00",
       "InputDataFile": "No_Data",
       "Engineer": "Warrior_Test",
       "Category": "Regression",
@@ -252,9 +254,9 @@ def editCase(request):
 	for xstr in ["Name", "Title", "Category", "Date", "Time", "InputDataFile", "Engineer", \
 		"Datatype", "default_onError", "Logsdir", "Resultsdir", "ExpectedResults"]:
 		try:
-			if not xml_r["Testcase"]["Details"].has_key(xstr): xml_r["Testcase"]["Details"][xstr]="";
-			xml_r["Testcase"]["Details"][xstr] = copy.copy(xml_d["Testcase"]["Details"].get(xstr, ""))
-			
+			if not xml_r["Testcase"]["Details"].has_key(xstr): 
+				xml_r["Testcase"]["Details"][xstr]="";
+			xml_r["Testcase"]["Details"][xstr] = copy.copy(xml_d["Testcase"]["Details"].get(xstr,""))
 		except:
 			pass
 

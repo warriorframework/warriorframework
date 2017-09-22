@@ -305,7 +305,7 @@ function getResultsDirForSuite(tag) {
       var callback_on_dismiss =  function(){ 
       		console.log("Dismissed");
 	 };
-     katana.fileExplorerAPI.openFileExplorer("Select a file", false , $("[name='csrfmiddlewaretoken']").val(), callback_on_accept, callback_on_dismiss);
+     katana.fileExplorerAPI.openFileExplorer("Select a file", false , $("[name='csrfmiddlewaretoken']").val(), false, callback_on_accept, callback_on_dismiss);
 };
 
 function prefixFromAbs(pathToBase, pathToFile) {

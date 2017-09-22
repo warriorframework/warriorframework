@@ -40,41 +40,6 @@ def index(request):
 	template = loader.get_template("./listAllSuites.html")
 
 	myfiles = []
-	jtree = { 'text': "Suites",  'state': { 'opened': True }, 'children' : []}
-
-	#jtree = [] 
-	jdata = jtree['children']
-	dirs = os.listdir(fpath);
-	k = 0
-	for dr in dirs:
-		dirpath = fpath + os.sep + dr
-		if os.path.isdir(dirpath):
-			jdata.append({ 'text': dirpath ,  "icon" : "jstree-file", 'state': { 'opened': True }, 'children' : []  })
-			myfiles.append({ 'dirpath': dirpath, 'files' : [] })
-			files = os.listdir(dirpath)
-			for fn in files: 
-				fullname = dirpath + os.sep + fn
-				if os.path.isfile(fullname) and os.path.splitext(fullname)[1] == ".xml":
-					try:
-						myfiles[k]['files'].append( { "filename": fn, "fullname" : fullname, 'displayName': os.path.split(fullname)[1]})
-						tt = { 'text': os.path.split(fullname)[1], 
-						       'li_attr': { 'data-path': fullname }, 
-						       'icon' : 'jstree-file'}
-						jdata[k]['children'].append(tt)
-					except:
-						pass
-
-		k = k + 1
-	#print jtree
-
-
-	context = { 
-		'title' : 'List of Suites',	
-		'docSpec': 'SuiteSpec',
-		'myfiles': myfiles, 
-		'basedir': fpath,
-		'treejs'  : jtree 
-	}
 
 	tt = navigator.get_dir_tree_json(fpath)
 	tt['state']= { 'opened': True };

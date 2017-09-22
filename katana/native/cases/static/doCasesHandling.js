@@ -131,7 +131,17 @@ function absToPrefix(pathToBase, pathToFile) {
     var upem  = [];
     var bf = pathToBase.split('/');
 	var rf = pathToFile.split('/');
-
+	var nrf = pathToFile.split('/');
+	
+	for (var i=0;i< rf.length; i++) {
+		if (rf[i] == "..")  { 
+			stack.pop();
+			nrf = nrf.splice(0,1);
+		} else {
+			break;
+		}
+	}
+	return stack.join('/') + '/' + nrf.join('/');
 }
 
 function prefixFromAbs(pathToBase, pathToFile) {
@@ -169,7 +179,7 @@ function getResultsDirForCase(tag) {
       var callback_on_dismiss =  function(){ 
       		console.log("Dismissed");
 	 };
-     katana.fileExplorerAPI.openFileExplorer("Select a file", false , $("[name='csrfmiddlewaretoken']").val(), callback_on_accept, callback_on_dismiss);
+     katana.fileExplorerAPI.openFileExplorer("Select a file", false , $("[name='csrfmiddlewaretoken']").val(), false, callback_on_accept, callback_on_dismiss);
 };
 
 
@@ -191,7 +201,8 @@ function getResultsDirForCaseStep(tag) {
       var callback_on_dismiss =  function(){ 
       		console.log("Dismissed");
 	 };
-     katana.fileExplorerAPI.openFileExplorer("Select a file", false , $("[name='csrfmiddlewaretoken']").val(), callback_on_accept, callback_on_dismiss);
+	 //var popup = katana.$activeTab.find("#editCaseStepDiv").attr('popup-id');
+     katana.fileExplorerAPI.openFileExplorer("Select a file", false , $("[name='csrfmiddlewaretoken']").val(), false, callback_on_accept, callback_on_dismiss);
 };
 
 				
@@ -922,6 +933,11 @@ function createRequirementsTable(){
 				var oneReq = rdata[s];
 				console.log("oneReq", oneReq);
 				var idnumber = parseInt(s) + 1; 
+
+				if (oneReq == null) {
+					oneReq = '';
+				}
+
 				items.push('<tr data-sid=""><td>'+idnumber+'</td>');
 				var bid = "textRequirement-name-"+s+"-id";	
 				
