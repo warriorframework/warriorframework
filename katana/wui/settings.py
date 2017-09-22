@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'jsonify',
     'wui.core',
     'native.wapp_management',
+    'native.wappstore',
     'native.settings',
     'native.projects',
     'native.suites',

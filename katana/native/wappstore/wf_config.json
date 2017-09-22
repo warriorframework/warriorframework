@@ -1,0 +1,9 @@
+{
+  "icon": "gamepad",
+  "color": "green",
+  "name" : "Wapp Store",
+  "developer": "Warrior Framework",
+  "description": "This is the Official Warrior App Store",
+  "url" : "/katana/wappstore/",
+  "app" : [{"name" : "Wapp Store", "url" : "/katana/wappstore/", "include": "native.wappstore.urls"}]
+}

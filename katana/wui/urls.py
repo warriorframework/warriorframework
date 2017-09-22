@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^$', RedirectView.as_view(url='/katana/')),
     url(r'^katana/settings/', include('native.settings.urls')),
     url(r'^katana/wapp_management/', include('native.wapp_management.urls')),
+    url(r'^katana/wappstore/', include('native.wappstore.urls')),
     url(r'^katana/wdf/', include('native.wdf_edit.urls')),
     url(r'^katana/projects/', include('native.projects.urls')),
     url(r'^katana/suites/', include('native.suites.urls')),
