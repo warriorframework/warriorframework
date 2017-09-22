@@ -8,7 +8,9 @@
 
 <script type="text/javascript" src="{% static "./doCasesHandling.js" %}"></script>
 
-
+<div class="tool-bar">
+ <button id="addNewCase" class="btn btn-success" onclick="startNewCase()">Add New Testcase</button>
+</div>
 <!--
 <div class="tool-bar"><div katana-click="settings.closeSetting" class="button close">Close</div><div katana-click="settings.save" class="button save">Save</div></div>
 <div class="flex-rows to-save" auto-init="settings.emailSettings.init" post-url="settings/jira_setting_handler">
@@ -18,21 +20,73 @@
 
 	<h2>{{title}}</h2>
 
-	
-  <div class="btn-group" role="group">   
-      <button id="addNewCase" class="btn btn-success" onclick="startNewCase()">Add New Testcase</button>
-  </div>
 <div id="myCaseTree"></div>
-<div id="mmm" >{{treejs|jsonify}}</div>
+<div id="mmm" class="hidden">{{treejs|jsonify}}</div>
+
 
 
 <script> 
+var edata={
+  "Testcase": {
+    "Details": {
+      "Name": "set_env_variable",
+      "Title": "set_env_variable",
+      "default_onError": { "-action": "next" },
+      "Date": "2017-05-14",
+      "Time": "23:02",
+      "InputDataFile": "No_Data",
+      "Engineer": "Warrior_Test",
+      "Category": "Regression",
+      "State": "Released"
+    },
+    "Requirements": {
+      "Requirement": [
+        "Demo-requirement-001",
+        "Demo-requirement-002",
+        "Demo-requirement-003"
+      ]
+    },
+    "Steps": {
+      "step": {
+        "-Driver": "common_driver",
+        "-Keyword": "set_env_var",
+        "-TS": "1",
+        "Arguments": {
+          "argument": [
+            {
+              "-name": "var_key",
+              "-value": "check3"
+            },
+            {
+              "-name": "var_value",
+              "-value": "3"
+            }
+          ]
+        },
+        "Description": [
+          "Regression for existing support, setting one ENV variable",
+          "compare values"
+        ],
+        "onError": { "-action": "next" },
+        "Execute": { "-ExecType": "Yes" },
+        "context": "positive",
+        "impact": "impact"
+      }
+    }
+  }
+}  ;
+
 var sdata= katana.$activeTab.find('#mmm').text();
 console.log(sdata);
 var jdata = { 'core' : { 'data' : [ JSON.parse(sdata)]}};
-
+//var sdata = katana.$activeTab.find("#listOfTestStepsForCase").text();
+  
 function startNewCase() {
-var xref="./cases/editCase/?fname=NEW"; 
+  var xref="./cases/editCase/?fname=NEW"; 
+  //console.log(edata);
+    katana.$view.one('tabAdded', function(){
+        mapFullCaseJson("NEW",'#emptyTestCaseData');
+    });
   katana.templateAPI.load(xref, null, null, 'Case') ;;
 }
 //
@@ -46,14 +100,15 @@ katana.$activeTab.find('#myCaseTree').on("select_node.jstree", function (e, data
       	return;
       }
       katana.$view.one('tabAdded', function(){
-     mapFullCaseJson(thePage);
+      //var jdata = sdata.replace(/'/g, '"');
+      //var jsdata = JSON.parse(jdata)
+     mapFullCaseJson(thePage,'#listOfTestStepsForCase');
   });
   var xref="./cases/editCase/?fname=" + thePage; 
   katana.templateAPI.load(xref, null, null, 'Case') ;
 });
 
-//
-
+// Create the tree and hide the json. 
 katana.$activeTab.find('#myCaseTree').jstree(jdata); 
 katana.$activeTab.find('#mmm').hide();
 
