@@ -40,37 +40,17 @@ def index(request):
 	template = loader.get_template("./listAllSuites.html")
 
 	myfiles = []
-	jtree = { 'text': "Suites",  'state': { 'opened': True }, 'children' : []}
 
-	#jtree = [] 
-	jdata = jtree['children']
-	dirs = os.listdir(fpath);
-	k = 0
-	for dr in dirs:
-		dirpath = fpath + os.sep + dr
-		if os.path.isdir(dirpath):
-			jdata.append({ 'text': dirpath ,  "icon" : "jstree-file", 'state': { 'opened': True }, 'children' : []  })
-			myfiles.append({ 'dirpath': dirpath, 'files' : [] })
-			files = os.listdir(dirpath)
-			for fn in files: 
-				fullname = dirpath + os.sep + fn
-				if os.path.isfile(fullname) and os.path.splitext(fullname)[1] == ".xml":
-					myfiles[k]['files'].append( { "filename": fn, "fullname" : fullname, 'displayName': os.path.split(fullname)[1]})
-					tt = { 'text': os.path.split(fullname)[1], 
-					       'li_attr': { 'data-path': fullname }, 
-					       'icon' : 'jstree-file'}
-					jdata[k]['children'].append(tt)
-
-		k = k + 1
-	#print jtree
-
+	tt = navigator.get_dir_tree_json(fpath)
+	tt['state']= { 'opened': True };
+	
 
 	context = { 
 		'title' : 'List of Suites',	
 		'docSpec': 'SuiteSpec',
 		'myfiles': myfiles, 
 		'basedir': fpath,
-		'treejs'  : jtree 
+		'treejs'  : tt 
 	}
 	context.update(csrf(request))
 	return HttpResponse(template.render(context, request))
@@ -84,12 +64,18 @@ def editSuite(request):
 	"""
 	navigator = Navigator();
 	path_to_config = navigator.get_katana_dir() + os.sep + "config.json"
+
 	config = json.loads(open(path_to_config).read())
 	fpath = config['testsuitedir']
 
 	template = loader.get_template("./editSuite.html")
 	filename = request.GET.get('fname')
-	
+	print "Asked for ", filename
+	if filename.find("..") == 0: 
+		filename = fpath + os.sep + filename
+	print "Attempting to read ...", filename 
+
+
 	xml_r = {}
 	xml_r["TestSuite"] = {}
 	xml_r["TestSuite"]["Details"] = {}
@@ -100,12 +86,13 @@ def editSuite(request):
 	xml_r["TestSuite"]["Details"]["Time"] = ""
 	xml_r["TestSuite"]["Details"]["type"] = { }
 	xml_r["TestSuite"]["Details"]["Logsdir"] = ""
+	xml_r["TestSuite"]["Details"]["State"] = "New"
 	xml_r["TestSuite"]["Details"]["Resultsdir"] = ""
 	xml_r["TestSuite"]["Details"]["InputDataFile"] = ""
 	xml_r["TestSuite"]["Details"]["type"]["@exectype"] = "sequential_testcases"
-	xml_r["TestSuite"]["Details"]["default_onError"] = {}
-	xml_r["TestSuite"]["Details"]["default_onError"]['@action']= ""
-	xml_r["TestSuite"]["Details"]["default_onError"]['@value']= ""
+	xml_r["TestSuite"]["Details"]["onError"] = {}
+	xml_r["TestSuite"]["Details"]["onError"]['@action']= ""
+	xml_r["TestSuite"]["Details"]["onError"]['@value']= ""
 	xml_r["TestSuite"]["Testsuites"] = ""
 	
 	if filename == 'NEW':
@@ -116,12 +103,14 @@ def editSuite(request):
 		xml_d = xmltodict.parse(xlines);
 
 	# Map the input to the response collector
-	for xstr in ["Name", "Title", "Category", "Date", "Time", "Engineer", \
-		"Datatype",  "default_onError"]:
+	for xstr in ["Name", "Title", "Category", "Date", "Time", "Engineer", "Datatype"]:
 		try: 
 			xml_r["TestSuite"]["Details"][xstr] = copy.copy(xml_d["TestSuite"]["Details"].get(xstr,""))
 		except:
 			pass
+
+	print xml_d["TestSuite"]['Details']
+
 
 	try:
 		xml_r['TestSuite']['Testcases'] = copy.deepcopy(xml_d['TestSuite']['Testcases']);
@@ -133,7 +122,7 @@ def editSuite(request):
 	except:
 		xml_r["TestSuite"]["Details"]["type"]['@exectype'] = "sequential_testcases"
 
-	xml_r["TestSuite"]["Details"]["default_onError"] = "" 
+	#xml_r["TestSuite"]["Details"]["default_onError"] = "" 
 
 	context = { 
 		'savefilename': "save_" + os.path.split(filename)[1],
@@ -151,8 +140,10 @@ def editSuite(request):
 		'suiteDatatype': xml_r["TestSuite"]["Details"]["type"]["@exectype"],
 		'suiteDate': xml_r["TestSuite"]["Details"]["Date"],
 		'suiteTime': xml_r["TestSuite"]["Details"]["Time"],
+		'suiteState': xml_r["TestSuite"]["Details"]["State"],
 		#'suiteType': xml_r["TestSuite"]["Details"]["type"],
-		'suitedefault_onError':xml_r["TestSuite"]["Details"]["default_onError"] ,
+		'suitedefault_onError':xml_r["TestSuite"]["Details"]["onError"].get('@action',""),
+		'suitedefault_onError_goto':xml_r["TestSuite"]["Details"]["onError"].get('@value',''),
 		'suiteCases': xml_r['TestSuite']['Testcases'],
 		'fulljson': xml_r['TestSuite'],
 		'suiteResults': "",
