@@ -289,7 +289,7 @@ var katana = {
 				var $elem = container.find( 'input[key="' + this.key  + '"], select[key="' + this.key  + '"]' );
 				$elem.attr( 'placeholder', this.translateTo );
 				$elem.attr( 'title', this.toolTip );
-				$elem.parent().find('label') && $elem.parent().find('label').text( this.translateTo );
+				$elem.parent().find('> label') && $elem.parent().find('> label').text( this.translateTo );
 			});
 
 		});
@@ -577,6 +577,31 @@ var katana = {
 	toggleActive: function(){
 		var $elem = $(this);
 		$elem.toggleClass('active');
+	},
+
+	toggleActiveGlobal: function(){
+		var $elem = $(this);
+		$elem.addClass('active');
+		katana.$view.one('click', function(){
+				$elem.removeClass('active');
+		});
+	},
+
+	multiSelect: function( $elem, $elemToReplace ){
+		$elem = $elem ? $elem : this;
+		$elemToReplace = $elemToReplace ? $elemToReplace : $elem.find('.multi-select');
+		if( $elem.attr('type') == 'checkbox' ){
+			var checkStatus = $elem.get(0).checked;
+			var input = $elem.parent().parent().closest('.field').find('> input');
+			value = checkStatus ? (input.val() + $elem.val() + ', ') : (input.val().replace( $elem.val() + ', ', '' ));
+			console.log('test', checkStatus, value, $elem, input, $elem.val());
+			input.val( value );
+			$elem.parent().parent().siblings('.dropdown-placeholder').text(value);
+		}
+		else{
+			$($elem.find('#multi-select').html()).insertAfter($elemToReplace);
+			$elemToReplace.attr('type', 'hidden');
+		}
 	},
 
 	expand: function(){
