@@ -126,6 +126,33 @@ function start_wdfEditor(tag) {
 
 }
 
+function absToPrefix(pathToBase, pathToFile) {
+	var stack = []; 
+    var upem  = [];
+    var bf = pathToBase.split('/');
+	var rf = pathToFile.split('/');
+
+}
+
+function prefixFromAbs(pathToBase, pathToFile) {
+	var stack = []; 
+    var upem  = [];
+	var bf = pathToBase.split('/');
+	var rf = pathToFile.split('/');
+	for (var i=0;i< rf.length; i++) {
+		if (rf[i] == bf[i]) { 
+			stack.push(bf[i]);
+		} else {
+			break;
+		}
+	}
+	var tlen = rf.length - stack.length; 
+    var blen = stack.length;
+	for (var k=0;k < tlen-1; k++) {
+		upem.push("..");
+	}
+	return upem.join("/") + "/" + bf.splice(blen).join('/') + "/" +  rf[rf.length - 1];
+}
 
 function getResultsDirForCase(tag) {
       var callback_on_accept = function(selectedValue) { 
@@ -133,7 +160,8 @@ function getResultsDirForCase(tag) {
       		// Convert to relative path.
       		var pathToBase = katana.$activeTab.find('#savefilepath').text();
       		console.log("File path ==", pathToBase);
-      		var nf = katana.fileExplorerAPI.prefixFromAbs(pathToBase, selectedValue);
+      		//var nf = katana.fileExplorerAPI.prefixFromAbs(pathToBase, selectedValue);
+      		var nf = prefixFromAbs(pathToBase, selectedValue);
       		katana.$activeTab.find(tag).attr("value", nf);
       		katana.$activeTab.find(tag).attr("fullpath", selectedValue);
 
@@ -153,7 +181,9 @@ function getResultsDirForCaseStep(tag) {
       		// Convert to relative path.
       		var pathToBase = katana.$activeTab.find('#savefilepath').text();
       		console.log("File path ==", pathToBase);
-      		var nf = katana.fileExplorerAPI.prefixFromAbs(pathToBase, selectedValue);
+      		// var nf = katana.fileExplorerAPI.prefixFromAbs(pathToBase, selectedValue);
+      		var nf = prefixFromAbs(pathToBase, selectedValue);
+      		
       		popup.find(tag).attr("value", nf);
       		popup.find(tag).attr("fullpath", selectedValue);
 
