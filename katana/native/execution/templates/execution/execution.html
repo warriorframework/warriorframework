@@ -42,6 +42,25 @@
         </div>
 
 <!-- new cmd options dialog -->
+<div  id="configure_layout_dialog" class="execution cmd-options-dialog-container small " >
+      <div class="title"><label>Layout Settings</label> <i class="fa fa-times" katana-click="execution.layoutViewer.close_configuration_dialog" ></i> </div>
+      <form method="dialog" id="configure_layout_form">
+      <div class="execution cmd-options-dialog-content">
+
+           <div class="execution cmd-options-qn questionaire-qn" name="configure-layout-warriorspace-data" id="configure-layout-warriorspace-data">
+           <section>
+             <div class="feild"><label>Warriorspace</label><input name="warriorspace" key="type" type="text" value="" placeholder="Enter the path to your warriorspace directory" required></div>
+             <!-- <div class="feild"><label>Select Layout Style</label><input name="select_layout_style" key="pass" type="text" value="" placeholder="Select your layout style"></div> -->
+           </section>
+         </div>
+             <div class="execution cmd-options-qns-button-bar">
+               <div class="execution  execution-button" id="clear" type="reset" katana-click="execution.layoutViewer.clear">Reset</div>
+               <div class="execution  execution-button" name="configure_layout_confirm" type="submit" katana-click="execution.layoutViewer.confirm">Confirm</div>
+             </div>
+
+      </div>
+  </form>
+</div>
 
 <div class="execution cmd-options-dialog-container" id="cmd-options-forms-container" name="cmd-options-forms-container" data-cmdCreatorObject="" auto-init="execution.setCmdCreatorObject">
       <div class="title"><label>Command Options</label> <i class="fa fa-times" katana-click="cmdBuilder.cmdOptionsViewer.closeCmdOptionsDialog" ></i> </div>
@@ -237,20 +256,6 @@
 
 </div>
 
-<dialog  id="configure_layout_dialog" class="execution dialog " >
- <form method="dialog" id="configure_layout_form">
-   <section>
-       <!-- <i class="fa fa-times"></i> -->
-     <a href="#close" title="Close" class="execution dialog-close" katana-click="execution.layoutViewer.close_configuration_dialog">X</a>
-     <div class="feild"><label>Warriorspace</label><input name="warriorspace" key="type" type="text" value="" placeholder="Enter the path to your warriorspace directory" required></div>
-     <!-- <div class="feild"><label>Select Layout Style</label><input name="select_layout_style" key="pass" type="text" value="" placeholder="Select your layout style"></div> -->
-   </section>
-   <menu>
-     <button id="clear" type="reset" katana-click="execution.layoutViewer.clear">Reset</button>
-     <button name="configure_layout_confirm" type="submit" katana-click="execution.layoutViewer.confirm">Confirm</button>
-   </menu>
- </form>
-</dialog>
 
 
 </body>
