@@ -2622,6 +2622,12 @@ div .tool-bar-links:active {
     -moz-transition: opacity 400ms ease-in;
     transition: opacity 400ms ease-in;
 }
+.execution.cmd-options-dialog-container.small {
+    left:25%;
+    min-width: 50%;
+    height: 250px;
+
+}
 .execution.cmd-options-dialog-container:not([open]) {
     display: none;
 }
@@ -2770,7 +2776,9 @@ div .tool-bar-links:active {
   width:50%;
 }
 
-
+#configure-layout-warriorspace-data {
+  margin-top:30px;
+}
 
 /* execution app related styles ends*/
 
