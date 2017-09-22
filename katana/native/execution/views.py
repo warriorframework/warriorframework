@@ -164,6 +164,7 @@ def stream_warrior_output(args, cmd, file_list):
         yield line + '</br>'
         if line.startswith('-I- DONE'):
             print "line starts with DONE"
+            warrior_interface.set_eoc()
             break 
-    #time.sleep(10)
+    warrior_interface.set_eoc()
     return

@@ -231,7 +231,7 @@ var execution = {
 				execution.resultsViewer.execution_list = [];
 				var items = katana.$activeTab.find('[name="execution_item"]');
 				if(items.length === 0){
-					katana.openAlert({'alert_type': 'warning', 
+					katana.openAlert({'alert_type': 'warning',
 														'heading': 'Selections is Empty',
 														'text':'Select atleast one item to execute form the Layout and copy it to the Selections.'}
 													);
@@ -403,13 +403,13 @@ var htmlResultsApi = {
 					var $html = $('<div/>').append(data);
 					console.log($html);
 
-					if ($html.find('.complete').length == 0){
-						console.log('did not find complete, try again')
+					if ($html.find('.eoc').length == 0){
+						console.log('did not find eoc, try again')
 						htmlResultsApi.currentTimeout = window.setTimeout(function(){
 							htmlResultsApi.getHtml(html_div);
 						}, 1000);
 					} else{
-						console.log('clearing timeout')
+						console.log('found eoc clearing timeout')
 						window.clearTimeout(htmlResultsApi.currentTimeout);
 					}
 					console.log('setting html')
