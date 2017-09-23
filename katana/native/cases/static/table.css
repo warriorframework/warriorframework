@@ -46,8 +46,6 @@
 
 }
 
-
-
 .case_configuration_table tr th:nth-child(3), .case_configuration_table tr td:nth-child(3) {
     flex-grow: 2;
 }

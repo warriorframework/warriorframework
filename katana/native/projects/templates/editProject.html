@@ -1,5 +1,5 @@
 {% load static %}
-{% load jsonify %}
+
 
 <body>
 <link rel="stylesheet" href="{% static "./table.css" %}" > 
@@ -175,7 +175,7 @@
 	</div>
 
 
-	<div id="listOfTestSuitesForProject" class="hidden">{{fulljson|jsonify}}</div>
+	<div id="listOfTestSuitesForProject" class="hidden">{{fulljson}}</div>
 	<div id="savefilepath" class="hidden">{{savefilepath}}</div>
 	<div id="fullpathname" class="hidden">{{fullpathname}}</div>
 </body>

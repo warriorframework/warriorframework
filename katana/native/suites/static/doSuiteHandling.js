@@ -384,7 +384,7 @@ var fillSuiteCaseDefaultGoto = function(popup) {
 function createCasesTable(xdata) {
 	var items = []; 
 
-	items.push('<table id="Case_table_display" class="configuration_table" width="100%">');
+	items.push('<table id="Case_table_display" class="suite_configuration_table" width="100%">');
 	items.push('<thead>');
 	items.push('<tr id="CaseRow"><th>Num</th><th>Path</th><th></th><th>context</th><th>Run Type</th><th>Mode</th><th>OnError</th><th>Impact</th><th/><th/></tr>');
 	items.push('</thead>');
@@ -540,7 +540,7 @@ function createSuiteRequirementsTable(rdata){
 	var items =[]; 
 	katana.$activeTab.find("#tableOfTestRequirements").html("");
 	
-	items.push('<table id="Case_Req_table_display" class="configuration_table  striped" width="100%" >');
+	items.push('<table id="Case_Req_table_display" class="suite_configuration_table  striped" width="100%" >');
 	items.push('<thead>');
 	items.push('<tr id="ReqRow"><th>#</th><th>Requirement</th><th/><th/></tr>');
 	items.push('</thead>');

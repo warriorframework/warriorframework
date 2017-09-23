@@ -53,16 +53,6 @@ def index(request):
 
 	print fpath
 
-	#tt = { 'text': 'Projects', "icon" : "jstree-file",  
-	#		'state': { 'opened': True },
-	#		'children' : [] }
-
-	#for fn in files: 
-	#		item = { "text": fn, "icon" : "jstree-file", 
-	#			"li_attr" : { 'data-path': fn} , 
-	#			}
-	#		tt['children'].append(item);
-
 
 	tt = navigator.get_dir_tree_json(fpath)
 	tt['state']= { 'opened': True };
@@ -76,6 +66,15 @@ def index(request):
 	context.update(csrf(request))
 	return HttpResponse(template.render(context, request))
 
+
+def getProjectListTree(request):
+	path_to_config_file = navigator.get_katana_dir() + os.sep + "config.json"
+	x= json.loads(open(path_to_config_file).read());
+	fpath = x['projdir'];
+	template = loader.get_template("listAllCases.html")
+	jtree = navigator.get_dir_tree_json(fpath)
+	jtree['state']= { 'opened': True };
+	return JsonResponse({'treejs': jtree })
 
 ## MUST MOVE TO CLASS !!!!
 ## List all your project as editable UI.
@@ -113,7 +112,7 @@ def editProject(request):
 	if filename != 'NEW':
 		xlines = open(filename.strip()).read()
 		#xml_d = bf.data(fromstring(xlines)); #
-		xml_d = xmltodict.parse(xlines);
+		xml_d = xmltodict.parse(xlines, dict_constructor=dict);
 
 		# Map the input to the response collector
 		for xstr in ["Name", "Title", "Category", "Date", "Time", "Engineer", \
@@ -130,7 +129,11 @@ def editProject(request):
 	else:
 		filename = path_to_config + os.sep + "new.xml"
 
- 
+ 	fulljsonstring = str(json.loads(json.dumps(xml_r['Project'])));
+ 	print fulljsonstring;
+	fulljsonstring = fulljsonstring.replace('u"',"'").replace("u'",'"').replace("'",'"');
+	fulljsonstring = fulljsonstring.replace('None','""')
+
 	context = { 
 		'savefilename': os.path.split(filename)[1], 
 		'savefilepath': fpath,
@@ -148,7 +151,8 @@ def editProject(request):
 		
 		'projectdefault_onError': xml_r["Project"]["Details"]["default_onError"].get('@action'),
 		'projectdefault_onError_goto': xml_r["Project"]["Details"]["default_onError"]['@value'],
-		'fulljson': xml_r['Project']
+		#'fulljson': xml_r['Project']
+		'fulljson': fulljsonstring,
 		}
 	# 
 	# I have to add json objects for every test suite.

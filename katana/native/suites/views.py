@@ -100,7 +100,7 @@ def editSuite(request):
 
 	else:
 		xlines = open(filename).read()
-		xml_d = xmltodict.parse(xlines);
+		xml_d = xmltodict.parse(xlines, dict_constructor=dict);
 
 	# Map the input to the response collector
 	for xstr in ["Name", "Title", "Category", "Date", "Time", "Engineer", "Datatype"]:
@@ -124,6 +124,10 @@ def editSuite(request):
 
 	#xml_r["TestSuite"]["Details"]["default_onError"] = "" 
 
+	fulljsonstring = str(json.loads(json.dumps(xml_r['TestSuite'])));
+	fulljsonstring = fulljsonstring.replace('u"',"'").replace("u'",'"').replace("'",'"');
+	fulljsonstring = fulljsonstring.replace('None','""')
+
 	context = { 
 		'savefilename': "save_" + os.path.split(filename)[1],
 		'savefilepath': os.path.split(filename)[0],
@@ -145,7 +149,9 @@ def editSuite(request):
 		'suitedefault_onError':xml_r["TestSuite"]["Details"]["onError"].get('@action',""),
 		'suitedefault_onError_goto':xml_r["TestSuite"]["Details"]["onError"].get('@value',''),
 		'suiteCases': xml_r['TestSuite']['Testcases'],
-		'fulljson': xml_r['TestSuite'],
+		#'fulljson': xml_r['TestSuite'],
+
+		'fulljson': fulljsonstring,
 		'suiteResults': "",
 		}
 	# 

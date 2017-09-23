@@ -1,6 +1,6 @@
 
 {% load static %}
-{% load jsonify %}
+
 
 <body>
 <link rel="stylesheet" href="{% static "./ztable.css" %}"> 
@@ -228,6 +228,6 @@
 	
 </div>	
 	<div id="tableOfFileContents"  class="hidden">fileContents</label></div>
-	<div id="listOfTestcasesForSuite" class="hidden">{{fulljson|jsonify}}</div>
+	<div id="listOfTestcasesForSuite" class="hidden">{{fulljson}}</div>
 	<div id="savefilepath" class="hidden">{{savefilepath}}</div>
 </body>
