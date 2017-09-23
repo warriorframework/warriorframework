@@ -33,11 +33,23 @@ var jsonCaseSteps = [];
 var activePageID = getRandomCaseID();   // for the page ID 
 var jsonFilesInfo = null; 
 
+// This function is called when the page loads. 
+//
+
+
+
 function mapFullCaseJson(myobjectID, where){
 	activePageID = getRandomCaseID();
 	//katana.$activeTab.find("#listOfTestStepsForCase").hide();
 	//katana.$activeTab.find('#savesubdir').hide();
 	console.log("Picking up from ", where);
+	var myfile = katana.$activeTab.find('#xmlfilename').text();
+     
+		jQuery.getJSON("./cases/getJSONcaseDataBack/?fname="+myfile).done(function(data) {
+			a_items = data['fulljson'];
+			console.log("from views.py call=", a_items);
+			});
+
 	var sdata = katana.$activeTab.find(where).text();
 	console.log("sdata", sdata);
 	var jdata = sdata.replace(/'/g, '"');
@@ -53,7 +65,27 @@ function mapFullCaseJson(myobjectID, where){
 	katana.$activeTab.find("#tableOfTestStepsForCase").addClass('col-md-12');
 	katana.$activeTab.find("#tableOfTestStepsForCase").show();
 	console.log("Here", jsonCaseObject, jsonCaseSteps);
+
+	 		
+
+
+
+	// fix null arguments: 
+	for (vs in jsonCaseSteps['step']) {
+		var oneCaseStep = jsonCaseSteps['step'][vs];
+		var arguments = oneCaseStep['Arguments']['argument'];
+
+		for (xarg in arguments) {
+			if (!arguments[xarg]) {
+				oneCaseStep['Arguments']['argument'][xarg] = { '@name': "", '@value': '' };
+
+			}
+			}
+	}
+
 	mapCaseJsonToUi(jsonCaseSteps);
+	console.log("Here 2", jsonCaseObject, jsonCaseSteps);
+
 	createRequirementsTable();
 
 	//$('#myform :checkbox').change(function()
@@ -168,10 +200,10 @@ function getResultsDirForCase(tag) {
       var callback_on_accept = function(selectedValue) { 
       		console.log(selectedValue);
       		// Convert to relative path.
-      		var pathToBase = katana.$activeTab.find('#savefilepath').text();
-      		console.log("File path ==", pathToBase);
+      		var savefilepath = katana.$activeTab.find('#savefilepath').text();
+      		console.log("File path ==", savefilepath);
       		//var nf = katana.fileExplorerAPI.prefixFromAbs(pathToBase, selectedValue);
-      		var nf = prefixFromAbs(pathToBase, selectedValue);
+      		var nf = prefixFromAbs(savefilepath, selectedValue);
       		katana.$activeTab.find(tag).attr("value", nf);
       		katana.$activeTab.find(tag).attr("fullpath", selectedValue);
 
@@ -305,7 +337,7 @@ function mapCaseJsonToUi(data){
 
 	//console.log("xdata =" + xdata);
 	katana.$activeTab.find("#tableOfTestStepsForCase").html("");      // Start with clean slate
-	items.push('<table class="configuration_table table-striped" id="Step_table_display"  width="100%" >');
+	items.push('<table class="case_configuration_table table-striped" id="Step_table_display"  width="100%" >');
 	items.push('<thead>');
 	items.push('<tr id="StepRow"><th>#</th><th>Driver</th><th>Keyword</th><th>Description</th><th>Arguments</th>\
 		<th>OnError</th><th>Execute</th><th>Run Mode</th><th>Context</th><th>Impact</th><th>Other</th></tr>');
@@ -335,6 +367,9 @@ function mapCaseJsonToUi(data){
 		var ta = 0; 
 		for (xarg in arguments) {
 
+			if (!arguments[xarg]) {
+				continue;
+			}
 			var argvalue = arguments[xarg]['@value'];
 			console.log("argvalue", argvalue);
 				if (argvalue) {
@@ -355,12 +390,12 @@ function mapCaseJsonToUi(data){
 		outstr = oneCaseStep['onError']['@action'] 
 			//"Value=" + oneCaseStep['onError']['@value']+"<br>"; 
 		items.push('<td>'+oneCaseStep['onError']['@action'] +'</td>'); 
-		outstr = "ExecType=" + oneCaseStep['step']['@ExecType'] + "<br>";
-		if (oneCaseStep['step']['@ExecType'] == 'If' || oneCaseStep['step']['@ExecType'] == 'If Not') {
-			outstr = outstr + "Condition="+oneCaseStep['step']['Rule']['@Condition']+ "<br>" + 
-			"Condvalue="+oneCaseStep['step']['Rule']['@Condvalue']+ "<br>" + 
-			"Else="+oneCaseStep['step']['Rule']['@Else']+ "<br>" +
-			"Elsevalue="+oneCaseStep['step']['Rule']['@Elsevalue'];
+		outstr = "ExecType=" + oneCaseStep['Execute']['@ExecType'] + "<br>";
+		if (oneCaseStep['Execute']['@ExecType'] == 'If' || oneCaseStep['Execute']['@ExecType'] == 'If Not') {
+			outstr = outstr + "Condition="+oneCaseStep['Execute']['Rule']['@Condition']+ "<br>" + 
+			"Condvalue="+oneCaseStep['Execute']['Rule']['@Condvalue']+ "<br>" + 
+			"Else="+oneCaseStep['Execute']['Rule']['@Else']+ "<br>" +
+			"Elsevalue="+oneCaseStep['Execute']['Rule']['@Elsevalue'];
 		}
 		 
 			
@@ -456,6 +491,7 @@ function 	makePopupArguments(popup,  oneCaseStep) {
 	for (xarg in arguments) {
 			//console.log(arguments[xarg]);
 			a_items.push('<div class="row">');
+
 			a_items.push('<label class="col-md-2">Name</label><input  type="text" argid="caseArgName-'+ta+'" value="'+arguments[xarg]["@name"]+'"/>');
 			a_items.push('<label class="col-md-2">Value</label><input  type="text" argid="caseArgValue-'+ta+'" value="'+arguments[xarg]["@value"]+'"/>');
 			// Now a button to edit or delete ... 
@@ -919,7 +955,7 @@ function saveUItoRequirements( ){
 function createRequirementsTable(){
 	var items =[]; 
 	katana.$activeTab.find("#tableOfCaseRequirements").html("");  // This is a blank div. 
-	items.push('<table id="Requirements_table_display" class="configuration_table  striped" width="100%" >');
+	items.push('<table id="Requirements_table_display" class="case_configuration_table  striped" width="100%" >');
 	items.push('<thead>');
 	items.push('<tr id="ReqRow"><th>#</th><th>Requirement</th><th/><th/></tr>');
 	items.push('</thead>');

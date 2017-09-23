@@ -9,5 +9,9 @@ urlpatterns = [
  	url(r'getListOfActions', views.getListOfActions , name='getListOfActions'),
  	url(r'getListOfKeywords', views.getListOfKeywords , name='getListOfKeywords'),
  	url(r'getListOfComments', views.getListOfComments , name='getListOfComments'),
- 	
+ 	url(r'getJSONcaseDataBack', views.getJSONcaseDataBack , name='getJSONcaseDataBack'),
+	url(r'getCaseListTree', views.getCaseListTree , name='getCaseListTree'),
+
+
 ]
+ 	 	

@@ -1,7 +1,7 @@
-{% load static %} {% load jsonify %}
+{% load static %} 
 
 <body>
-    <link rel="stylesheet" href="{% static "./ztable.css" %}">
+    <link rel="stylesheet" href="{% static "./table.css" %}">
     <script type="text/javascript" src="{% static "./doCasesHandling.js" %}"></script>
     <div class="tool-bar">
         <button id="addStep" class="btn btn-success" onclick="addNewTestStepToUI()">Add Step To Case</button>
@@ -104,10 +104,11 @@
             <div class="col-md-3">
                 <div id="tableOfCaseRequirements"></div>
             </div>
-            <div id="listOfTestStepsForCase" class="hidden"> {{fulljson|jsonify}} </div>
-            <div id="savesubdir" class="hidden">{{savesubdir}}</div>
-            <div id="savefilepath" class="hidden">{{savefilepath}}</div>
-            <div id="emptyTestCaseData" class="hidden"> {{emptyTestCase|jsonify}} </div>
+            <div id="savesubdir" class="hidden">{{savesubdir}}</div>   
+            <div id="savefilepath" class="hidden">{{savefilepath}}</div>  <!-- Used for absolute path resolution -->
+            <div id="xmlfilename" class="hidden" >{{myfile}}</div>
+            <div id="emptyTestCaseData" class="hidden"> {{emptyTestCase}} </div>
+            <div id="listOfTestStepsForCase" class="hidden"> {{fulljsonstring}} </div> 
         </div>
         <div class="container-fluid">
             <div class="row">

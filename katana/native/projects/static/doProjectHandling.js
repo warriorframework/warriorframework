@@ -496,7 +496,7 @@ function createSuitesTable(xdata) {
 		var tbid = "textTestSuiteFile-"+s+"-id"+getRandomID();
 
 		var bid = "fileSuitecase-"+s+"-id"+getRandomID();
-		items.push('<td><i title="ChangeFile" class="fa fa-envelope-open" id="'+bid+'"/></td>');
+		items.push('<td><i title="ChangeFile" class="fa fa-folder-open" id="'+bid+'"/></td>');
 		katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 		$(document).on('click','#'+bid,function() {
 			var names = this.id.split('-');

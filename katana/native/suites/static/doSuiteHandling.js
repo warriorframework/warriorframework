@@ -170,6 +170,10 @@ function mapSuiteCaseToUI(s,xdata,popup) {
 		console.log("FOUND EXECT TYPE ",oneCase["Execute"]['@ExecType'] )
 		if (oneCase["Execute"]['@ExecType'] == 'If' || oneCase["Execute"]['@ExecType'] == 'If Not') {
 			popup.find('.rule-condition').show();
+		} else {
+		console.log("FOUND EXECT TYPE as  ",oneCase["Execute"]['@ExecType'] )
+		
+
 		}	
 	}
 	popup.find("#Execute-at-ExecType").on('change',function() {
@@ -400,7 +404,7 @@ function createCasesTable(xdata) {
 		//items.push('<td>'+oneCase['datafile']+'</td>');
 		
 		var bid = "fileTestcase-"+s+"-id"+getRandomSuiteID();
-		items.push('<td><i title="ChangeFile" class="fa fa-envelope-open" id="'+bid+'"/></td>');
+		items.push('<td><i title="ChangeFile" class="fa fa-folder-open" id="'+bid+'"/></td>');
 		katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 		$(document).on('click','#'+bid,function() {
 			var names = this.id.split('-');
