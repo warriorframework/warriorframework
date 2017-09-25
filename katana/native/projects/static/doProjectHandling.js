@@ -34,6 +34,11 @@ function getRandomID() {
   return Math.floor(Math.random() * (max - min)) + min;
   
 }
+
+function jsUcfirst(string) 
+{
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
 /// -------------------------------------------------------------------------------
 // Sets up the global project data holder for the UI. 
 // This is called from the correspoding HTML file onLoad event 
@@ -151,7 +156,7 @@ function setupProjectPopupDialog(s,xdata,popup) {
 	console.log(oneSuite);
 	popup.find("#suiteRowToEdit").val(s); 
 	popup.find("#suitePath").val(oneSuite['path']);
-	popup.find("#Execute-at-ExecType").val(oneSuite['Execute']['@ExecType']); 
+	popup.find("#Execute-at-ExecType").val(jsUcfirst(oneSuite['Execute']['@ExecType'])); 
 	popup.find("#executeRuleAtCondition").val(oneSuite['Execute']['Rule']['@Condition']); 
 	popup.find("#executeRuleAtCondvalue").val(oneSuite['Execute']['Rule']['@Condvalue']); 
 	popup.find("#executeRuleAtElse").val(oneSuite['Execute']['Rule']['@Else']); 
@@ -206,6 +211,8 @@ function setupProjectPopupDialog(s,xdata,popup) {
 
 
 }
+
+
 
 function mapProjectSuiteToUI(s,xdata) {
 
@@ -469,7 +476,7 @@ function createSuitesTable(xdata) {
 	var items = []; 
 	items.push('<table id="suite_table_display" class="project_configuration_table striped" width="100%">');
 	items.push('<thead>');
-	items.push('<tr id="suiteRow"><th>Num</th><th>Suite</th><th>Execute</th><th>OnError</th><th>Impact</th><th/></tr>');
+	items.push('<tr id="suiteRow"><th>Num</th><th/><th>Suite</th><th>Execute</th><th>OnError</th><th>Impact</th><th/></tr>');
 	items.push('</thead>');
 	items.push('<tbody>');
 
@@ -500,6 +507,8 @@ function createSuitesTable(xdata) {
 			getResultsDirForProjectRow();
 			
 		});
+
+		oneSuite['Execute']['@ExecType'] = jsUcfirst(oneSuite['Execute']['@ExecType']); 
 
 		items.push('<td id="'+tbid+'" onclick="showSuiteFromProject('+"'"+oneSuite['path']+"'"+')">'+oneSuite['path']+'</td>');
 		items.push('<td>Type='+oneSuite['Execute']['@ExecType']+'<br>');

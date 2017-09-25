@@ -26,7 +26,10 @@ if (typeof jsonAllCasePages === 'undefined') {
 } else {
 	//alert("Already there...");
 }
-
+function jsUcfirst(string) 
+{
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
 var jsonCaseObject = [];
 var jsonCaseDetails = [];         // A pointer to the Details   
 var jsonCaseSteps = [];           
@@ -56,7 +59,12 @@ function mapFullCaseJson(myobjectID, where){
 	jsonAllCasePages[myobjectID] = JSON.parse(sdata);  
 	console.log("Incoming data", myobjectID, jdata);  
 	jsonCaseObject = jsonAllCasePages[myobjectID]
+	if (!jQuery.isArray(jsonCaseObject["Steps"]['step'])) {
+
+		jsonCaseObject["Steps"]['step'] = [ jsonCaseObject["Steps"]['step']];
+	}
 	jsonCaseSteps  = jsonCaseObject["Steps"];
+	
 	console.log("Steps --> ", jsonCaseSteps);
 
 	jsonCaseDetails = jsonCaseObject['Details'];
@@ -66,21 +74,24 @@ function mapFullCaseJson(myobjectID, where){
 	katana.$activeTab.find("#tableOfTestStepsForCase").show();
 	console.log("Here", jsonCaseObject, jsonCaseSteps);
 
-	 		
-
-
 
 	// fix null arguments: 
 	for (vs in jsonCaseSteps['step']) {
 		var oneCaseStep = jsonCaseSteps['step'][vs];
+		console.log("Arguments", oneCaseStep, vs, jsonCaseSteps['step']);
+		if (!oneCaseStep['Arguments']) {
+			oneCaseStep['Arguments'] = { 'argument': [] }; 
+		}
+		if (!oneCaseStep['Arguments']['argument']) {
+			oneCaseStep['Arguments']['argument'] = []; 
+		}
 		var arguments = oneCaseStep['Arguments']['argument'];
-
 		for (xarg in arguments) {
 			if (!arguments[xarg]) {
 				oneCaseStep['Arguments']['argument'][xarg] = { '@name': "", '@value': '' };
 
 			}
-			}
+		}
 	}
 
 	mapCaseJsonToUi(jsonCaseSteps);
@@ -390,6 +401,9 @@ function mapCaseJsonToUi(data){
 		outstr = oneCaseStep['onError']['@action'] 
 			//"Value=" + oneCaseStep['onError']['@value']+"<br>"; 
 		items.push('<td>'+oneCaseStep['onError']['@action'] +'</td>'); 
+
+		oneCaseStep['Execute']['@ExecType'] = jsUcfirst( oneCaseStep['Execute']['@ExecType']);
+
 		outstr = "ExecType=" + oneCaseStep['Execute']['@ExecType'] + "<br>";
 		if (oneCaseStep['Execute']['@ExecType'] == 'If' || oneCaseStep['Execute']['@ExecType'] == 'If Not') {
 			outstr = outstr + "Condition="+oneCaseStep['Execute']['Rule']['@Condition']+ "<br>" + 
@@ -400,7 +414,7 @@ function mapCaseJsonToUi(data){
 		 
 			
 		items.push('<td>'+outstr+'</td>'); 
-		items.push('<td>'+oneCaseStep['rmt']+'</td>');
+		items.push('<td>'+oneCaseStep['runmode']['@type']+'</td>');
 		items.push('<td>'+oneCaseStep['context']+'</td>');
 		items.push('<td>'+oneCaseStep['impact']+'</td>'); 
 		var bid = "deleteTestStep-"+s+"-id-"+getRandomCaseID();
@@ -585,7 +599,8 @@ function setupPopupDialog(sid,xdata,popup) {
 	popup.find("#StepContext").attr("value",oneCaseStep["context"]);
 	popup.find("#SteponError-at-action").attr("value",oneCaseStep['onError']["@action"]);
 	popup.find("#SteponError-at-value").attr("value",oneCaseStep['onError']["@value"]);
-	popup.find("#runmode-at-type").attr("value",oneCaseStep["runmode"]["@type"]);
+	popup.find("#runmode-at-type").attr("type",oneCaseStep["runmode"]["@type"]);
+	popup.find("#runmode-at-value").attr("value",oneCaseStep["runmode"]["@value"]);
 	popup.find("#StepImpact").attr("value",oneCaseStep["impact"]);
 	popup.find("#StepInputDataFile").attr("value",oneCaseStep["InputDataFile"]);
 	popup.find('.rule-condition').hide();
@@ -891,7 +906,7 @@ function mapUItoTestStep(sid,xdata,popup) {
 	oneCaseStep["Execute"]['Rule']['@Elsevalue'] = popup.find("#executeRuleAtElsevalue").val();	
 	oneCaseStep['onError'][ "@action"] = popup.find("#SteponError-at-action").val();
 	oneCaseStep['onError'][ "@value"] = popup.find("#SteponError-at-value").val();
-	oneCaseStep["runmode"] = { "@type" : popup.find("#runmode-at-type").val()};
+	oneCaseStep["runmode"] = { "@type" : popup.find("#runmode-at-type").val(),  "@value" : popup.find("#runmode-at-value").val()   };
 	oneCaseStep["impact"] =  popup.find("#StepImpact").val();
 	oneCaseStep["InputDataFile"] =  popup.find("#StepInputDataFile").val();
 

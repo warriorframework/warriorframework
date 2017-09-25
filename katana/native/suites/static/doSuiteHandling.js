@@ -25,7 +25,11 @@ var jsonSuiteObject = [];
 var jsonTestcases = [];			// for all Cases
 var mySuiteKeywordsArray = ["path","context","runtype","impact"];
 var mySuite_UI_Array = [ 'CasePath', 'CaseContext', 'CaseRuntype', 'CaseImpact'];
-	
+
+function jsUcfirst(string) 
+{
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}	
 
 function getRandomSuiteID() {
   min = Math.ceil(1);
