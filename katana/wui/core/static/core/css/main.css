@@ -43,6 +43,7 @@ h1 {
 	background-color: #404040;
 	background-image: url(/static/core/images/image.jpg);
 	background-size: cover;
+  background-position: center;
 	height: 100%;
 	position: absolute;
 	top: 0;
@@ -1278,7 +1279,7 @@ div#launchpad.page.hidden .tabs {
 	display: block;
 	max-width: 1400px;
 	margin: 0 auto;
-	padding-top: 0px;
+	padding-top: 30px;
 }
 
 .removing {

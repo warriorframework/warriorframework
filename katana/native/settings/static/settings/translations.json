@@ -58,7 +58,7 @@
     {
       "key": "testdata",
       "toolTip": "path to CLI Data Files",
-      "translateTo": "Location of CLI Data Files"
+      "translateTo": "Location of CLI Data File"
     },
     {
       "key": "lastName",
@@ -120,11 +120,6 @@
       "key": "search_string",
       "toolTip": "String or regexp used to identify the system",
       "translateTo": "Identification Criteria"
-    },
-    {
-      "key": "testdata",
-      "toolTip": "Location of file containing the commands to execute on the system.",
-      "translateTo": "CLI Data File"
     },
     {
       "key": "engineer",

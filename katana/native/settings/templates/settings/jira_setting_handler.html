@@ -12,7 +12,7 @@
       <div class="to-scroll">
         {% for k, v in system.items%}
           {% if k != '@name' %}
-            <div class="field"><label>{{ k }}</label><input auto-init="settings.jira.{{ k }}" key="{{ k }}" type="text" {% if v  %} value="{{ v }}" {% endif %} placeholder="{{ k }}"></div>
+            <div class="field"><label>{{ k }}</label><input auto-init="settings.jira.{{ k }}" key="{{ k }}" type="text" {% if v  %} value="{{ v }}" {% endif %} placeholder="System Name"></div>
           {% endif %}
         {% endfor %}
       </div>
@@ -33,7 +33,7 @@
   </script>
   <script type="text/template" id="block-template">
     <div class="field-block">
-      <div class="title"><input key="@name" type="text" value="@name" placeholder="Name"></div>
+      <div class="title"><input key="@name" type="text" value="" placeholder="System Name"></div>
       <div class="relative-tool-bar"><i title="Make Default" key="@default" katana-click="settings.jira.defaultClick" class="bool fa fa-toggle-on"></i><i katana-click="katana.toggleActive" key="append_log" title="Append Log" class="bool fa fa-toggle-on"></i><i katana-click="settings.jira.addIssueType" title="Add Issue Type" class="fa fa-plus"></i><i katana-click="settings.jira.addBlock" title="Add New System" class="fa fa-plus-circle"></i><i katana-click="settings.jira.deleteBlock" title="Delete System" class="fa fa-times"></i></div>
       <div class="to-scroll">
         <div class="field"><label>Username</label><input key="username" type="text" placeholder="Username" title="username to be used in connection with the JIRA project above"></div>
