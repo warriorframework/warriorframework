@@ -1,5 +1,6 @@
 
 import os
+from directory_traversal_utils import get_parent_directory
 
 class Navigator(object):
 
@@ -8,12 +9,12 @@ class Navigator(object):
 
     def get_katana_dir(self):
         """will get katanas main directory"""
-        katana_dir = os.path.dirname(os.getcwd()) + os.sep + 'katana' + os.sep
+        katana_dir = get_parent_directory(__file__, 3) + os.sep + 'katana' + os.sep
         return katana_dir
 
     def get_warrior_dir(self):
         """will get warriors main directory"""
-        warrior_dir = os.path.dirname(os.getcwd()) + os.sep + 'warrior' + os.sep
+        warrior_dir = get_parent_directory(__file__, 3) + os.sep + 'warrior' + os.sep
         return warrior_dir
 
     def search_folder_name(self, folder_name, given_dir):
