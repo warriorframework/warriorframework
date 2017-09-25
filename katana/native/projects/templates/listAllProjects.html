@@ -1,7 +1,10 @@
 {% load static %}
 {% load jsonify %}
 
-
+<body> 
+<div class="tool-bar">
+<button id="addSuite" class="btn btn-success" onclick="startNewProject()">Add New Project</button>
+</div>
 <script type="text/javascript" src="{% static "./doProjectHandling.js" %}"></script>
 
     <h2>List of Projects</h2>
@@ -10,15 +13,14 @@
 
 
 </div>
-      <div class="btn-group" role="group">   
-      <button id="addSuite" class="btn btn-success" onclick="startNewProject()">Add New Project</button>
-      </div>
+
+ 
 <div id="myProjectTree"></div>
 <div id="mmm" >{{treejs|jsonify}}</div>
 
 <script> 
 function startNewProject() {
-  var xref="./projects/editProject/fname=NEW" ;
+  var xref="./projects/editProject/?fname=NEW" ;
   katana.templateAPI.load(xref, null, null, 'NEW') ;
 }
 //-------------------------------------  [ ] 
@@ -30,14 +32,20 @@ var jdata = { 'core' : { 'data' : [ JSON.parse(sdata)]}};
 katana.$activeTab.find('#myProjectTree').jstree(jdata); 
 katana.$activeTab.find('#myProjectTree').on("select_node.jstree", function (e, data) { 
       var thePage = data.node.li_attr['data-path'];
+      var extn = thePage.indexOf(".xml");
+      if (extn < 4){
+        return;
+      }
       katana.$view.one('tabAdded', function(){
       mapFullProjectJson(thePage);
   });
   //
 
   var xref="./projects/editProject/?fname=" + thePage; 
+
   katana.templateAPI.load(xref, null, null, 'Project') ;
 });
 
 </script>
 
+</body>

@@ -506,7 +506,7 @@ var wapp_management = {
         var loop_num = temp[temp.length-1]
 
         var $displayInput = $currentPage.find("#app_path_for_config_" + loop_num)
-        katana.fileExplorerAPI.openFileExplorer("Select a directory or a .zip file", false, wapp_management.getCookie('csrftoken'),
+        katana.fileExplorerAPI.openFileExplorer("Select a directory or a .zip file", false, wapp_management.getCookie('csrftoken'), false,
             function(selectedValue){
                 $displayInput.attr("value", selectedValue);
                 $displayInput.val(selectedValue);

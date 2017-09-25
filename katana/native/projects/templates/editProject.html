@@ -1,33 +1,40 @@
 {% load static %}
-{% load jsonify %}
+
 
 <body>
-
-<script type="text/javascript" src="{% static "./doProjectHandling.js" %}"></script>
+<link rel="stylesheet" href="{% static "./project_table.css" %}" > 
+<script type="text/javascript" src="{% static "./doProjectHandling.js" %}" />
 <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 -->
- 
-	<h2>Details</h2>
-	<div class="form-group col-md-12 row">
-			<div class="field col-md-3">
+<div class="tool-bar">
+	    	{% csrf_token %}
+	    	
+			<button id="addSuite" class="btn btn-primary" onclick="addSuiteToProject()">Add Suite To Project</button>-->
+			<!-- <button class="btn btn-primary" onclick="resetUIfromFile()">Discard Changes</button>  -->
+			<button class="btn btn-success save" onclick="mapUiToProjectJson()">Save Changes to : </button>
+			<input class="col-md-4 text-right" type="text" id="my_file_to_save" name="my_file_to_save" value="{{projectName}}.xml"/>
+</div>
+
+	<div class="col-md-12 row">
+			<div class="field col-md-3 input_padding">
 				<label for="projectName">Name*:</label>
-				<input type="text" id="projectName" name="projectName" value="{{projectName}}"/>
+				<input type="text-right" type="text" id="projectName" name="projectName" value="{{projectName}}"/>
 			</div>
-			<div class="field col-md-3">	
-				<label for="projectTitle">Title*:</label>
-				<input  type="text" id="projectTitle" name="projectTitle" value="{{projectTitle}}" />
+			<div class="field col-md-3 input_padding">	
+				<label for="projectTitle">Project Title*:</label>
+				<input  type="text-right" type="text" id="projectTitle" name="projectTitle" value="{{projectTitle}}" />
 			</div>
-			<div class="field col-md-3">
+			<div class="field col-md-3 input_padding">
 				<label class="text-right">Engineer*:</label>
 				<input class="text-right" type="text" id="projectEngineer" name="projectEngineer" value="{{projectEngineer}}" />
 			</div>
-			<div class="field col-md-3">	
+			<div class="field col-md-3 input_padding">	
 				
 				<label class="text-right">Last Updated:</label>
-				<input class="text-right" type="text" id="projectDate" name="projectDate" value="{{projectDate}}" />
+				<input class="text-right" type="text" id="projectDate" name="projectDate" value="{{projectDate}} {{projectTime}}" />
 			</div>
 
-			<div class="field col-md-3">
+			<div class="field col-md-3 input_padding">
 				<label class="text-right">State:</label>
 				<select class="text-right" type="text" id="projectState" name="projectState" value="{{projectState}}" >
 					<option value="New">New</option>
@@ -36,86 +43,96 @@
 					<option value="Add">Add Another</option>
 				</select>
 			</div>
-			<div class="field col-md-3">
+			<div class="field col-md-3 input_padding">
 				<label class="text-right">defaultOnError:</label>
-				<select class="text-right" type="text" id="default_onError" name="default_onError" value="{{projectdefaultOnError}}" >
+				<select class="text-right" type="text" id="default_onError" name="default_onError"  value="{{projectdefaultOnError}}" >
 					<option value="next">Next</option>
 					<option value="abort">Abort</option>
 					<option value="abort_as_error">Abort As Error</option>
 					<option value="goto">Goto</option>
 				</select>
+				<select class="text-right" type="text" id="default_onError_goto" name="default_onError_goto" value="{{projectdefaultOnError_goto}}" >
+				</select>
+
 			</div>
-			<div class="field col-md-3">	
-				<label class=" text-right" for="projectDatatype">Data Type:</label>
-				<select class="text-right" type="text" id="projectDatatype" name="projectDatatype" value="{{projectDatatype}}" >
+			<div class="field col-md-3 input_padding ">	
+			
+				<label class="hidden text-right" for="projectDatatype">Data Type:</label>
+				<select class="hidden text-right" type="text" id="projectDatatype" name="projectDatatype" value="{{projectDatatype}}" >
 					<option value="Custom">Custom</option>
 					<option value="Hybrid">Hybrid</option>
 					<option value="Iterative">Iterative</option>
 				</select>
+			
 			</div>
+			<div class="field col-md-3 input_padding">	
+				
+				<label class="text-right">Results Dir:</label>
+				<button class="btn btn-info" onclick="getResultsDirForProject()">...</button>
+				<div class="" id="fileNames"></div>
+				<input class="text-right" type="text" id="projectResultsDir" name="projectResultsDir" value="{{resultsDir}}" />
+			</div>
+
 			<!-- <button value="Hello" onClick="prompt('eatme','no')" >ddd</button> -->
 		</div>
-	</div>
-
-
-	
+	</div>	
 	<div class="container-fluid row">
-		<div id="tableOfTestSuitesForProject"  class="col-md-8" />
-		<div id="editTestSuiteEntry" class="form-group col-md-3">
-				<div class="field " > 
+		<div id="tableOfTestSuitesForProject"  class="col-md-12" />
+		<div id="editTestSuiteEntry" class="form-group col-md-3 hidden">
+				<div class="field hidden" > 
 				<label >Row Id</label>
 				<input type="text" id="suiteRowToEdit" value=""/>
 				</div>			
 				<div class="field ">
 				<label >Path*:</label>
+
+				<button class="btn btn-info hidden" text-id="suitePath" onclick="getSuiteDataForProject()">...</button>
 				<input type="text" id="suitePath" value=""/>
 				</div>
 				<div class="field ">
 				<label class=" text-right" >ExecType:</label>
 				<select type="text" class="text-right" id="Execute-at-ExecType" value="" >
-				<option value="If">If</option> 
-				<option value="If Not">If Not</option> 
 				<option value="Yes">Yes</option> 
+				<option value="If">If</option> 
+				<option value="If Not">If Not</option> 				
 				<option value="No">No</option> 
 				</select>
 				</div>
-						
+				<div >		
 				<div class="field ">
-				<label for="executeRuleAtCondition">Rule Condition:</label>
-				<input type="text" id="executeRuleAtCondition" value=""/>
-				<select type="text" class="text-right" id="executeRuleAtCondition" value="" >
-				<option value="1">1</option> 
-				</select>
-	
+				<label class="rule-condition" >Rule Condition:</label>
+				<input type="text" class="rule-condition" id="executeRuleAtCondition" value=""/>
 				</div>			
+
 				<div class="field ">
-				<label for="executeRuleAtCondvalue">Rule Condition Value:</label>
-				<select type="text" class="text-right" id="executeRuleAtCondvalue" value="" >
+				<label  class="rule-condition" >Rule Condition Value:</label>
+				<select type="text" class="rule-condition text-right" id="executeRuleAtCondvalue" value="" >
 				<option value="PASS">PASS</option> 
 				<option value="FAIL">FAIL</option> 
 				<option value="ERROR">ERROR</option> 
 				<option value="SKIP">SKIP</option> 
 				</select>
-	
+				</div>	
 
-
-
-				</div>			
-				<div class="field ">
-				<label >Rule Else:</label>
-				<input type="text" id="executeRuleAtElse" value=""  />
-				</div>			
-				<div class="field ">
-				<label >Rule Else Value:</label>
+					<div class="field ">
+					<label class="rule-condition" >Rule Else:</label>
+						
+						<select type="text" class="rule-condition text-right" id="executeRuleAtElse"  value="" >
+						<option value="next">next</option>
+						<option value="abort_as_error">abort_as_error</option>
+						<option value="goto">goto</option>
+						</select>
+					</div>
+						<div class="field ">
+						<label class="rule-condition" >Rule Else Value:</label>
+						<input class="rule-condition" type="text" id="executeRuleAtElsevalue"  value=""  />
+						</div>			
+						<div class="field ">
+						</div>			
 				
-				<select type="text" class="text-right" id="executeRuleAtElsevalue" value="" >
-				<option value="next">next</option>
-				<option value="abort">abort</option>
-				<option value="abort_as_error">abort_as_error</option>
-				<option value="goto">goto</option>
-				</select>
 
 				</div>
+				
 				<div class="field ">
 				<label for="onError-at-action">On Error Action*:</label>
 				
@@ -128,51 +145,37 @@
 				</div>
 
 				<div class="field ">
-				<label class="col-md-2 text-right" >On Error value:</label>
+
 				<select type="text" class="text-right" id="onError-at-value" value="" >
-				<option value="next">next</option>
-				<option value="abort">abort</option>
-				<option value="abort_as_error">abort_as_error</option>
-				<option value="goto">goto</option>
 				</select>
 				</div>
 					
-					<div class="field ">
-					<label class="text-right" >Run mode:</label>
-					<label class="text-right" >runmode type:</label>
-					<input type="text" class="text-right" id="runmode-at-type" value="" />
-					<label class="text-right" >runmode value:</label>
-					<select type="text" class="text-right" id="runmode-at-value" value="" >
+			<div class="field ">
+			<label class="text-right" >Run mode:</label>
+			<select type="text" class="text-right" id="runmode-at-type" value="standard" >
+				<option value="standard">standard</option>
 					<option value="RMT">RMT</option> 
-					<option value="RUF">RUF</option> 
-					<option value="RUP">RUP</option> 
+				<option value="RUF">RUF</option> 
+				<option value="RUP">RUP</option> 
+			</select>
+			<input type="text" class="text-right" id="runmode-at-value" value="" />
+			
+			</div>
+			<div class="field ">
+				<label class="text-right" >impact</label>
+					<select type="text" id="impact" value="" >
+					<option value="impact">impact</option> 
+					<option value="noimpact">noimpact</option> 
 					</select>
-					</div>
-					<div class="field ">
-						<label class="text-right" >impact</label>
-							<select type="text" id="impact" value="" >
-							<option value="impact">impact</option> 
-							<option value="noimpact">noimpact</option> 
-							</select>
-							<br>
-						</div>
-					<input type="button" class="btn col-md-3" value="Save Changes" id="saveChangesToRow"/>
-					</div>
+					<br>
+				</div>
+			<input type="button" class="btn col-md-3 center" value="Save Changes" id="saveChangesToRow"/>
+			</div>
 
 	</div>
 
 
-	<div class="container">
-	    <div id="editor" class="col-md-12" >  </div>    
-	    <div class="btn-group col-md-8" role="group">   
-	    	{% csrf_token %}
-			<button id="addSuite" class="btn btn-primary" onclick="addSuiteToProject()">Add Case to Suite</button>
-			<button class="btn btn-primary" onclick="start()">Discard Changes</button>
-			<button class="btn btn-success" onclick="mapUiToProjectJson()">Save Changes to Disk</button>
-			<input class="col-md-4 text-right" type="text" id="my_file_to_save" name="my_file_to_save" value="{{savefilename}}"/>
-		</div>			
-	</div>
-
-	<div id="listOfTestSuitesForProject">{{fulljson|jsonify}}</div>
-	<div id="savefilepath">{{savefilepath}}</div>
+	<div id="listOfTestSuitesForProject" class="hidden">{{fulljson}}</div>
+	<div id="savefilepath" class="hidden">{{savefilepath}}</div>
+	<div id="fullpathname" class="hidden">{{fullpathname}}</div>
 </body>

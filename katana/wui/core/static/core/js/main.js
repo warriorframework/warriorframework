@@ -289,7 +289,7 @@ var katana = {
 				var $elem = container.find( 'input[key="' + this.key  + '"], select[key="' + this.key  + '"]' );
 				$elem.attr( 'placeholder', this.translateTo );
 				$elem.attr( 'title', this.toolTip );
-				$elem.parent().find('label') && $elem.parent().find('label').text( this.translateTo );
+				$elem.parent().find('> label') && $elem.parent().find('> label').text( this.translateTo );
 			});
 
 		});
@@ -579,6 +579,31 @@ var katana = {
 		$elem.toggleClass('active');
 	},
 
+	toggleActiveGlobal: function(){
+		var $elem = $(this);
+		$elem.addClass('active');
+		katana.$view.one('click', function(){
+				$elem.removeClass('active');
+		});
+	},
+
+	multiSelect: function( $elem, $elemToReplace ){
+		$elem = $elem ? $elem : this;
+		$elemToReplace = $elemToReplace ? $elemToReplace : $elem.find('.multi-select');
+		if( $elem.attr('type') == 'checkbox' ){
+			var checkStatus = $elem.get(0).checked;
+			var input = $elem.parent().parent().closest('.field').find('> input');
+			value = checkStatus ? (input.val() + $elem.val() + ', ') : (input.val().replace( $elem.val() + ', ', '' ));
+			console.log('test', checkStatus, value, $elem, input, $elem.val());
+			input.val( value );
+			$elem.parent().parent().siblings('.dropdown-placeholder').text(value);
+		}
+		else{
+			$($elem.find('#multi-select').html()).insertAfter($elemToReplace);
+			$elemToReplace.attr('type', 'hidden');
+		}
+	},
+
 	expand: function(){
 		var topLevel = this.parent();
 		if( topLevel.find('.expanded') && topLevel.find('.expanded') != this ){
@@ -857,20 +882,26 @@ var katana = {
 
 	fileExplorerAPI: {
 
-	    openFileExplorer: function(heading, start_directory, csrftoken, callBack_on_accept, callBack_on_dismiss){
+	    openFileExplorer: function(heading, start_directory, csrftoken, parent, callBack_on_accept, callBack_on_dismiss){
             if(!heading || heading == "" || heading == undefined){
                 heading = "Select a file"
             }
             if(start_directory == undefined || start_directory == ""){
                 start_directory = false;
             }
+            if(!parent || parent == "" || parent == undefined){
+                var $currentPage = katana.$activeTab;
+                var $tabContent = $currentPage.find('.page-content-inner');
+            }
+            else {
+                $tabeContent = parent;
+            }
             katana.templateAPI.post('get_file_explorer_data/', csrftoken, {"path": start_directory},
                 function(data) {
                     var explorer_modal_html = $($('#file-explorer-template').html())
                     var $fileExplorerHeading = explorer_modal_html.find('#file-explorer-heading');
                     $fileExplorerHeading.text(heading);
-                    var $currentPage = katana.$activeTab;
-                    var $tabContent = $currentPage.find('.page-content-inner');
+
                     $(explorer_modal_html).prependTo($tabContent);
                     $directoryData = $tabContent.find('#directory-data');
                     $directoryData.jstree({
@@ -895,7 +926,7 @@ var katana = {
                         katana.fileExplorerAPI.dismissFileExplorer(callBack_on_dismiss);
                     });
                     $tabContent.find('#explorer-up').on('click', function(){
-                        katana.fileExplorerAPI.upFileExplorer(data.li_attr["data-path"], csrftoken);
+                        katana.fileExplorerAPI.upFileExplorer(data.li_attr["data-path"], csrftoken, parent);
                     });
 
                 })
@@ -921,12 +952,18 @@ var katana = {
             callBack && callBack();
         },
 
-        upFileExplorer: function(currentPath, csrftoken){
+        upFileExplorer: function(currentPath, csrftoken, parent){
+            if(!parent || parent == undefined || parent == ""){
+                var $currentPage = katana.$activeTab;
+                var $tabContent = $currentPage.find('.page-content-inner');
+            }
+            else {
+                $tabContent = parent;
+            }
             katana.templateAPI.post('get_file_explorer_data/', csrftoken, {"path": currentPath},
                 function(data) {
-                    var $currentPage = katana.$activeTab;
-                    var $tabContent = $currentPage.find('.page-content-inner');
-                    var $directoryDataDiv = $currentPage.find('.directory-data-div');
+
+                    var $directoryDataDiv = $tabContent.find('.directory-data-div');
                     $directoryDataDiv.html("");
                     $directoryDataDiv.append("<div id='directory-data' class='full-size'></div>")
                     var $directoryData = $currentPage.find('#directory-data');
@@ -947,7 +984,7 @@ var katana = {
                     $directoryData.jstree().hide_dots();
                     $tabContent.find('#explorer-up').off('click');
                     $tabContent.find('#explorer-up').on('click', function(){
-                        katana.fileExplorerAPI.upFileExplorer(data.li_attr["data-path"], csrftoken);
+                        katana.fileExplorerAPI.upFileExplorer(data.li_attr["data-path"], csrftoken, parent);
                     });
                 });
         },

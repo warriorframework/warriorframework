@@ -3,12 +3,12 @@
 
 <div class="flex-rows to-save" auto-init="settings.changeDetection" post-url="settings/general_setting_handler">
     <div class="field-block to-scroll">
-      <div class="title center">general Settings</div>
-
+      <div class="title center">General Settings</div>
       {% for k, v in data.items%}
           <div class="field"><label>{{ k }}</label><input key="{{ k }}" type="text" {% if v  %} value="{{ v }}" {% endif %} placeholder="{{ k }}"></div>
       {% endfor %}
     </div>
   <div class="csrf-container">{% csrf_token %}</div>
+  <div class="translator" url="{% load staticfiles %} {% static 'settings/translations.json'  %}"></div>
 </div>
 </body>

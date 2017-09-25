@@ -21,7 +21,8 @@ var settings = {
 	profile:{
 		init: function(){
 			settings.changeDetection.call(this);
-			this.find('.profile-image').insertAfter( this.find('.field-block .title'));
+		  this.find('.profile-image').insertAfter( this.find('.field-block .title'));
+			this.find('[key="lastName"], [key="firstName"]').closest('.field').insertAfter( this.find('.profile-image:last') );
 		},
 
 		selectProfileImage: function(){
@@ -62,6 +63,18 @@ var settings = {
 			var topLevel = this.closest('.profile-image');
 			topLevel.find('.image').css('background-image', 'none');
 			topLevel.find('input').val('');
+		}
+
+	},
+
+	mail: {
+ 		init: function(){
+			settings.changeDetection.call( this );
+			settings.mail.changeFrequency(this);
+		},
+
+		changeFrequency: function( $elem ){
+			katana.multiSelect( $elem, $elem.find('[key="@mail_on"]') );
 		}
 	},
 

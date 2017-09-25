@@ -53,16 +53,6 @@ def index(request):
 
 	print fpath
 
-	#tt = { 'text': 'Projects', "icon" : "jstree-file",  
-	#		'state': { 'opened': True },
-	#		'children' : [] }
-
-	#for fn in files: 
-	#		item = { "text": fn, "icon" : "jstree-file", 
-	#			"li_attr" : { 'data-path': fn} , 
-	#			}
-	#		tt['children'].append(item);
-
 
 	tt = navigator.get_dir_tree_json(fpath)
 	tt['state']= { 'opened': True };
@@ -76,6 +66,15 @@ def index(request):
 	context.update(csrf(request))
 	return HttpResponse(template.render(context, request))
 
+
+def getProjectListTree(request):
+	path_to_config_file = navigator.get_katana_dir() + os.sep + "config.json"
+	x= json.loads(open(path_to_config_file).read());
+	fpath = x['projdir'];
+	template = loader.get_template("listAllCases.html")
+	jtree = navigator.get_dir_tree_json(fpath)
+	jtree['state']= { 'opened': True };
+	return JsonResponse({'treejs': jtree })
 
 ## MUST MOVE TO CLASS !!!!
 ## List all your project as editable UI.
@@ -105,18 +104,19 @@ def editProject(request):
 	xml_r["Project"]["Details"]["Time"] = "" #OrderedDict([('$', '')])
 	xml_r["Project"]["Details"]["Datatype"] = "" #OrderedDict([('$', '')])
 	xml_r["Project"]["Details"]["Engineer"] = "" #OrderedDict([('$', '')])
-	xml_r["Project"]["Details"]["default_onError"] = "" #OrderedDict([('$', '')])
+	xml_r["Project"]["Details"]["ResultsDir"] = "" #OrderedDict([('$', '')])
+	xml_r["Project"]["Details"]["default_onError"] = { '@action': '', '@value': ''} #OrderedDict([('$', '')])
 	xml_r["Project"]["Testsuites"] = []
 	xml_r['Project']['filename'] = "" #OrderedDict([('$', filename)]);
 
 	if filename != 'NEW':
 		xlines = open(filename.strip()).read()
 		#xml_d = bf.data(fromstring(xlines)); #
-		xml_d = xmltodict.parse(xlines);
+		xml_d = xmltodict.parse(xlines, dict_constructor=dict);
 
 		# Map the input to the response collector
 		for xstr in ["Name", "Title", "Category", "Date", "Time", "Engineer", \
-			"Datatype", "default_onError"]:
+			"Datatype", "ResultsDir"]:
 			try:
 				xml_r["Project"]["Details"][xstr]= xml_d["Project"]["Details"][xstr];
 			except: 
@@ -127,12 +127,17 @@ def editProject(request):
 		except:
 			xml_r["Project"]["Testsuites"] = []
 	else:
-		filename = "new.xml"
+		filename = path_to_config + os.sep + "new.xml"
 
- 
+ 	fulljsonstring = str(json.loads(json.dumps(xml_r['Project'])));
+ 	print fulljsonstring;
+	fulljsonstring = fulljsonstring.replace('u"',"'").replace("u'",'"').replace("'",'"');
+	fulljsonstring = fulljsonstring.replace('None','""')
+
 	context = { 
 		'savefilename': os.path.split(filename)[1], 
 		'savefilepath': fpath,
+		'fullpathname': filename, 
 		'myfile': filename,
 		'docSpec': 'projectSpec',
 		'projectName': xml_r["Project"]["Details"]["Name"],
@@ -142,8 +147,12 @@ def editProject(request):
 		'projectCategory': xml_r["Project"]["Details"]["Category"],
 		'projectDate': xml_r["Project"]["Details"]["Date"],
 		'projectTime': xml_r["Project"]["Details"]["Time"],
-		'projectdefault_onError': xml_r["Project"]["Details"]["default_onError"],
-		'fulljson': xml_r['Project']
+		'resultsDir': xml_r["Project"]["Details"]["ResultsDir"],
+		
+		'projectdefault_onError': xml_r["Project"]["Details"]["default_onError"].get('@action'),
+		'projectdefault_onError_goto': xml_r["Project"]["Details"]["default_onError"]['@value'],
+		#'fulljson': xml_r['Project']
+		'fulljson': fulljsonstring,
 		}
 	# 
 	# I have to add json objects for every test suite.

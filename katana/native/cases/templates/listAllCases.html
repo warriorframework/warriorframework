@@ -8,7 +8,9 @@
 
 <script type="text/javascript" src="{% static "./doCasesHandling.js" %}"></script>
 
-
+<div class="tool-bar">
+ <button id="addNewCase" class="btn btn-success" onclick="cases.startNewCase()">Add New Testcase</button>
+</div>
 <!--
 <div class="tool-bar"><div katana-click="settings.closeSetting" class="button close">Close</div><div katana-click="settings.save" class="button save">Save</div></div>
 <div class="flex-rows to-save" auto-init="settings.emailSettings.init" post-url="settings/jira_setting_handler">
@@ -16,51 +18,12 @@
 <div class="csrf-container">{% csrf_token %}</div>
 
 
-	<h2>{{title}}</h2>
-
-	
-  <div class="btn-group" role="group">   
-      <button id="addNewCase" class="btn btn-success" onclick="startNewCase()">Add New Testcase</button>
-  </div>
+<h2>{{title}}</h2>
 <div id="myCaseTree"></div>
-<div id="mmm" >{{treejs|jsonify}}</div>
-
+<div id="mmm" class="hidden">{{treejs|jsonify}}</div>
 
 <script> 
-var sdata= katana.$activeTab.find('#mmm').text();
-console.log(sdata);
-var jdata = { 'core' : { 'data' : [ JSON.parse(sdata)]}};
-
-function startNewCase() {
-var xref="./cases/editCase/?fname=NEW"; 
-  katana.templateAPI.load(xref, null, null, 'Case') ;;
-}
-//
-katana.$activeTab.find('#myCaseTree').on("select_node.jstree", function (e, data) { 
-      var thePage = data.node.li_attr['data-path'];
-      console.log(thePage);
-
-      // If there is no XML extension return immediately
-      var extn = thePage.indexOf(".xml");
-      if (extn < 4){
-      	return;
-      }
-      katana.$view.one('tabAdded', function(){
-     mapFullCaseJson(thePage);
-  });
-  var xref="./cases/editCase/?fname=" + thePage; 
-  katana.templateAPI.load(xref, null, null, 'Case') ;
-});
-
-//
-
-katana.$activeTab.find('#myCaseTree').jstree(jdata); 
-katana.$activeTab.find('#mmm').hide();
-
-
 $(".linkToCase").click(function() { 
-
-
 	var $elem = $(this);
 	var thePage = $elem.attr('href');
 	var theID   = $elem.attr('fname');
@@ -69,8 +32,8 @@ $(".linkToCase").click(function() {
     });
 	//
 	katana.templateAPI.load( thePage, null, null, 'case') ;
-
 });
-
+cases.displayTreeOfCases();
 </script>
 </body>
+
