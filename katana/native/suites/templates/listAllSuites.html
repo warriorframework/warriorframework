@@ -1,0 +1,56 @@
+
+{% load static %}
+{% load jsonify %}
+<script type="text/javascript" src="{% static "./doSuiteHandling.js" %}"></script>
+
+
+<body>
+<div class="tool-bar">   
+      <button id="addNewCase" class="btn btn-success" onclick="startNewSuite()">Add New Suite</button>
+  </div>
+
+<h2>List of Suites</h2>		
+  <div id="mySuite">		</div>
+
+  
+<div id="mySuiteTree"></div>
+<div id="mmm" >{{treejs|jsonify}}</div>
+
+</body>
+
+<script> 
+var sdata= katana.$activeTab.find('#mmm').text();
+console.log(sdata);
+var jdata = { 'core' : { 'data' : [ JSON.parse(sdata)]}};
+
+function startNewSuite() {
+  var xref="./suites/editSuite/?fname=NEW"; 
+  katana.templateAPI.load(xref, null, null, 'SuiteNew') ;
+   // When do I n
+   katana.$view.one('tabAdded', function(){
+      mapFullSuiteJson("NEW");
+  });
+}
+//
+katana.$activeTab.find('#mySuiteTree').on("select_node.jstree", function (e, data) { 
+      var thePage = data.node.li_attr['data-path'];
+      console.log(thePage);
+      var extn = thePage.indexOf(".xml");
+      if (extn < 4){
+        return;
+      }
+      katana.$view.one('tabAdded', function(){
+      mapFullSuiteJson(thePage);
+  });
+  var xref="./suites/editSuite/?fname=" + thePage; 
+  katana.templateAPI.load(xref, null, null, 'Suite') ;
+});
+
+//
+katana.$activeTab.find('#mySuiteTree').jstree(jdata); 
+katana.$activeTab.find('#mmm').hide();
+
+
+
+
+</script>
