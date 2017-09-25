@@ -5,14 +5,14 @@ cd ../
 git clone https://github.com/warriorframework/warriorframework.git pylint_warrior
 cd pylint_warrior
 
-if [[ "${TRAVIS_PULL_REQUEST_BRANCH}" == "master" ]]; then
+if [[ "${TRAVIS_BRANCH}" == "master" ]]; then
     echo "Pull request shouldn't merge to master"
     exit 1
 fi
 
 git checkout "${TRAVIS_BRANCH}"
 git checkout "${TRAVIS_PULL_REQUEST_BRANCH}"
-echo "Merging ${TRAVIS_BRANCH} into ${TRAVIS_PULL_REQUEST_BRANCH}"
+echo "Merging ${TRAVIS_PULL_REQUEST_BRANCH} into ${TRAVIS_BRANCH}"
 git merge --no-edit "${TRAVIS_BRANCH}"
 git add .
 
