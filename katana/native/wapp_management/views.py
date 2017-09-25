@@ -236,7 +236,7 @@ def validate_app_path(request):
         if app_path:
             app_validator_obj = AppValidator(app_path)
             output = app_validator_obj.is_valid()
-            shutil.rmtree(temp_dir_path)
+            #shutil.rmtree(temp_dir_path)
     else:
         print "-- An Error Occurred -- Could not create temporary directory."
     return JsonResponse({"valid": output})

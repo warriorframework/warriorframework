@@ -109,7 +109,11 @@ class Installer:
             print "-- An Error Occurred -- wf_config.json file is not in the correct format."
             output = False
         else:
-            self.urls_inclusions.append("url(r'^" + app_details["url"] +
+            if app_details["url"].startswith("/"):
+                app_url = app_details["url"][1:]
+            else:
+                app_url = app_details["url"]
+            self.urls_inclusions.append("url(r'^" + app_url+
                                         "', include('" + app_details["include"] + "')),")
             path_dir = app_details["include"].split(".")
             path_urls = ""
@@ -189,6 +193,7 @@ class Installer:
             self.urls_inclusions[i] = white_space[0] + self.urls_inclusions[i] + "\n"
 
         u_data = data[:index]
+        print self.urls_inclusions
         u_data.extend(self.urls_inclusions)
         u_data.extend(data[index:])
 
