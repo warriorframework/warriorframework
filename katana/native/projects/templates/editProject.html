@@ -2,7 +2,7 @@
 
 
 <body>
-<link rel="stylesheet" href="{% static "./table.css" %}" > 
+<link rel="stylesheet" href="{% static "./project_table.css" %}" > 
 <script type="text/javascript" src="{% static "./doProjectHandling.js" %}" />
 <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 -->
@@ -86,7 +86,7 @@
 				<div class="field ">
 				<label >Path*:</label>
 
-				<button class="btn btn-info" text-id="suitePath" onclick="getSuiteDataForProject()">...</button>
+				<button class="btn btn-info hidden" text-id="suitePath" onclick="getSuiteDataForProject()">...</button>
 				<input type="text" id="suitePath" value=""/>
 				</div>
 				<div class="field ">
@@ -99,20 +99,20 @@
 				</select>
 				</div>
 				<div >		
-						<div class="field ">
-						<label class="rule-condition" >Rule Condition:</label>
-						<input type="text" class="rule-condition" id="executeRuleAtCondition" value=""/>
-						</div>			
+				<div class="field ">
+				<label class="rule-condition" >Rule Condition:</label>
+				<input type="text" class="rule-condition" id="executeRuleAtCondition" value=""/>
+				</div>			
 
-						<div class="field ">
-						<label  class="rule-condition" >Rule Condition Value:</label>
-						<select type="text" class="rule-condition text-right" id="executeRuleAtCondvalue" value="" >
-						<option value="PASS">PASS</option> 
-						<option value="FAIL">FAIL</option> 
-						<option value="ERROR">ERROR</option> 
-						<option value="SKIP">SKIP</option> 
-						</select>
-						</div>	
+				<div class="field ">
+				<label  class="rule-condition" >Rule Condition Value:</label>
+				<select type="text" class="rule-condition text-right" id="executeRuleAtCondvalue" value="" >
+				<option value="PASS">PASS</option> 
+				<option value="FAIL">FAIL</option> 
+				<option value="ERROR">ERROR</option> 
+				<option value="SKIP">SKIP</option> 
+				</select>
+				</div>	
 
 					<div class="field ">
 					<label class="rule-condition" >Rule Else:</label>

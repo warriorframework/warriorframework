@@ -955,7 +955,7 @@ function saveUItoRequirements( ){
 function createRequirementsTable(){
 	var items =[]; 
 	katana.$activeTab.find("#tableOfCaseRequirements").html("");  // This is a blank div. 
-	items.push('<table id="Requirements_table_display" class="case_configuration_table  striped" width="100%" >');
+	items.push('<table id="Requirements_table_display" class="case_req_configuration_table  striped" width="100%" >');
 	items.push('<thead>');
 	items.push('<tr id="ReqRow"><th>#</th><th>Requirement</th><th/><th/></tr>');
 	items.push('</thead>');

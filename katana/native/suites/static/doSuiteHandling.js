@@ -23,8 +23,8 @@ if (typeof jsonAllSuitePages === 'undefined') {
 }
 var jsonSuiteObject = []; 
 var jsonTestcases = [];			// for all Cases
-var mySuiteKeywordsArray = ["path","context","runtype","impact", "runmode"];
-var mySuite_UI_Array = [ 'CasePath', 'CaseContext', 'CaseRuntype', 'CaseImpact', 'CaseRunmode'];
+var mySuiteKeywordsArray = ["path","context","runtype","impact"];
+var mySuite_UI_Array = [ 'CasePath', 'CaseContext', 'CaseRuntype', 'CaseImpact'];
 	
 
 function getRandomSuiteID() {
@@ -130,7 +130,7 @@ function mapSuiteCaseToUI(s,xdata,popup) {
 	popup.find("#CaseRowToEdit").val(s); 
 	console.log(popup.find("#CaseRowToEdit").val());
 	//katana.$activeTab.find("CasePath").val(oneCase['path']);
-	
+	popup.attr('oneCase', s);
 	var myStringArray = mySuiteKeywordsArray; 
 	var arrayLength = mySuiteKeywordsArray.length;
 	for (var xi = 0; xi < arrayLength; xi++) {
@@ -164,6 +164,12 @@ function mapSuiteCaseToUI(s,xdata,popup) {
 			var popup = $(this).closest('.popup');
 			fillSuiteCaseDefaultGoto(popup);
 	});
+	console.log("FOUND Run mode  TYPE ",oneCase["runmode"]['@type'] )
+	popup.find('.runmode_condition').show();
+	if (oneCase["runmode"]['@type'] === 'Standard') {
+		console.log("Hiding... ",oneCase["runmode"]['@type']  )
+		popup.find('.runmode_condition').hide();
+	}
 
 	popup.find('.rule-condition').hide();
 	if (oneCase["Execute"]['@ExecType']) {
@@ -172,8 +178,6 @@ function mapSuiteCaseToUI(s,xdata,popup) {
 			popup.find('.rule-condition').show();
 		} else {
 		console.log("FOUND EXECT TYPE as  ",oneCase["Execute"]['@ExecType'] )
-		
-
 		}	
 	}
 	popup.find("#Execute-at-ExecType").on('change',function() {
@@ -184,7 +188,20 @@ function mapSuiteCaseToUI(s,xdata,popup) {
 				
 			}
 		});
-		
+	
+	popup.find("#CaseRunmode").on('change',function() {
+
+			console.log("this value = ", this.value);
+			if ( this.value === 'Standard') {
+				popup.find('.runmode_condition').hide();	
+				console.log("HIDING");		
+			} else {
+				popup.find('.runmode_condition').show();
+				console.log("SHOWING");	
+			}
+		});
+
+
 }
 
 
@@ -194,9 +211,7 @@ function mapSuiteCaseToUI(s,xdata,popup) {
 // Note that this function is calld from an event handler which catches the 
 // row number from the table.
 /// -------------------------------------------------------------------------------
-function mapUItoSuiteCase(popup,xdata){
-
-		
+function mapUItoSuiteCase(popup,xdata){	
 	var s = parseInt(popup.find("#CaseRowToEdit").val());
 	console.log(xdata);
 	console.log(s);
@@ -208,7 +223,11 @@ function mapUItoSuiteCase(popup,xdata){
 	oneCase['path'] = popup.find('#CasePath').val();
 	oneCase['context'] = popup.find('#CaseContext').val();
 	oneCase['runtype'] = popup.find('#CaseRuntype').val();
-	oneCase['runmode'] = popup.find('#CaseRunmode').val();
+	
+	oneCase['runmode'] = { '@type' : "" , '@value' : ""};
+	oneCase['runmode']['@type'] = popup.find('#CaseRunmode').val();
+	oneCase['runmode']['@value'] = popup.find('#caseRunmodeAtValue').val();
+
 	oneCase['onError']['@action'] = popup.find("#caseonError-at-action").val();
 	oneCase['onError']['@value'] = popup.find("#caseonError-at-value").val();
 
@@ -386,7 +405,7 @@ function createCasesTable(xdata) {
 
 	items.push('<table id="Case_table_display" class="suite_configuration_table" width="100%">');
 	items.push('<thead>');
-	items.push('<tr id="CaseRow"><th>Num</th><th>Path</th><th></th><th>context</th><th>Run Type</th><th>Mode</th><th>OnError</th><th>Impact</th><th/><th/></tr>');
+	items.push('<tr id="CaseRow"><th>Num</th><th></th><th>Path</th><th></th><th>context</th><th>Run Type</th><th>Mode</th><th>OnError</th><th>Impact</th><th/><th/></tr>');
 	items.push('</thead>');
 	items.push('<tbody>');
 
@@ -416,7 +435,11 @@ function createCasesTable(xdata) {
 		items.push('<td>'+oneCase['context']+'</td>');
 
 		items.push('<td>'+oneCase['runtype']+'</td>');
-		items.push('<td>'+oneCase['runmode']+'</td>');
+		items.push('<td>'+oneCase['runmode']['@type']);
+		if (oneCase['runmode']['@type'] != 'Standard') {
+			items.push('<br>'+oneCase['runmode']['@value']);
+		}
+		items.push('</td>');
 		items.push('<td>'+oneCase['onError']['@action']+'</td>');
 		items.push('<td>'+oneCase['impact']+'</td>');
 
@@ -519,7 +542,7 @@ function fillCaseDefaults(s, data){
 			data[s] = {} ;
 			oneCase = data[s];
 		}
-		var myStringArray = mySuiteKeywordsArray; // ["path","context","runtype","impact", "runmode"];
+		var myStringArray = mySuiteKeywordsArray; // ["path","context","runtype","impact", ];
 		var arrayLength = myStringArray.length;
 		for (var xi = 0; xi < arrayLength; xi++) {
    				if (! oneCase[myStringArray[xi]]){
@@ -540,7 +563,7 @@ function createSuiteRequirementsTable(rdata){
 	var items =[]; 
 	katana.$activeTab.find("#tableOfTestRequirements").html("");
 	
-	items.push('<table id="Case_Req_table_display" class="suite_configuration_table  striped" width="100%" >');
+	items.push('<table id="Case_Req_table_display" class="suite_req_configuration_table  striped" width="100%" >');
 	items.push('<thead>');
 	items.push('<tr id="ReqRow"><th>#</th><th>Requirement</th><th/><th/></tr>');
 	items.push('</thead>');

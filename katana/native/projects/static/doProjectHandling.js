@@ -183,13 +183,13 @@ function setupProjectPopupDialog(s,xdata,popup) {
 	//alert(this.value);
 		oneSuite['runmode']['@type'] = this.value; 
 		popup.find("#runmode-at-value").show();
-		if (oneSuite['runmode']['@type'] == 'standard') {
+		if (oneSuite['runmode']['@type'] == 'Standard') {
 		popup.find("#runmode-at-value").hide();
 		}
 		
 	});
 	popup.find("#runmode-at-value").show();
-	if (oneSuite['runmode']['@type'] == 'standard') {
+	if (oneSuite['runmode']['@type'] == 'Standard') {
 		
 		popup.find("#runmode-at-value").hide();
 
@@ -201,7 +201,6 @@ function setupProjectPopupDialog(s,xdata,popup) {
 				popup.find('.rule-condition').show();			
 			} else {
 				popup.find('.rule-condition').hide();
-				
 			}
 		});
 
@@ -463,10 +462,6 @@ function mapUiToProjectJson() {
 
 }
 
-
-
-
-
 //
 // This creates the table for viewing data in a sortable view. 
 // 
@@ -542,9 +537,7 @@ function createSuitesTable(xdata) {
 			katana.popupController.open(katana.$activeTab.find("#editTestSuiteEntry").html(),"Edit..." + sid, function(popup) {
 				katana.$activeTab.find("#editTestSuiteEntry").attr('popup-id', popup);
 				console.log('Popup 531', popup );
-				console,log(katana.$activeTab.find("#editTestSuiteEntry"));
-
-				
+				console.log(katana.$activeTab.find("#editTestSuiteEntry"));
 				setupProjectPopupDialog(sid,xdata,popup);
 			});
 			//This is where you load in the edit form and display this row in detail. 
@@ -679,7 +672,7 @@ function fillSuiteDefaults(s, data){
 			oneSuite['onError'] = { "@action": "next", "@value": "" };
 		}
 		if (! oneSuite['runmode']) {
-			oneSuite['runmode'] = { "@type": "standard", "@value": "" };
+			oneSuite['runmode'] = { "@type": "Standard", "@value": "" };
 		}
 		if (! oneSuite['retry']) {
 			oneSuite['retry'] = { "@type": "next", "@Condition": "", "@Condvalue": "", "@count": "" , "@interval": ""};

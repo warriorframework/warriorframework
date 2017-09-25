@@ -1,8 +1,7 @@
 {% load static %} 
 
 <body>
-    <link rel="stylesheet" href="{% static "./table.css" %}">
-    <script type="text/javascript" src="{% static "./doCasesHandling.js" %}"></script>
+    <link rel="stylesheet" href="{% static "./case_tables.css" %}">
     <div class="tool-bar">
         <button id="addStep" class="btn btn-success" onclick="addNewTestStepToUI()">Add Step To Case</button>
         <button class="btn btn-success" onclick="addRequirementToCase()">Add Requirement</button>
@@ -231,4 +230,6 @@
         </div>
     </div>
     </div>
+    <script type="text/javascript" src="{% static "./doCasesHandling.js" %}"></script>
+    
 </body>

@@ -224,10 +224,14 @@ def editCase(request):
 	# Set up defaults for an xml_r object
 
 	print "Asked for ", filename
+	print "Path to cases ", path_to_testcases
 	if filename.find("..") == 0: 
 		f = filename.find('testcases')
-
-		filename = os.path.dirname(path_to_testcases) + os.sep + filename[f:]
+		print "f == ", f, filename 
+		if f > -1: 
+			filename = os.path.dirname(path_to_testcases) + os.sep + filename[f:]
+		else: 
+			filename = path_to_testcases + os.sep + filename
 	print "Attempting to read ...", filename 
 
 	xml_r = {}
