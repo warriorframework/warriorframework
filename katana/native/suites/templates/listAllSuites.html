@@ -24,8 +24,12 @@ console.log(sdata);
 var jdata = { 'core' : { 'data' : [ JSON.parse(sdata)]}};
 
 function startNewSuite() {
-    var xref="./suites/editSuite/?fname=NEW"; 
-  katana.templateAPI.load(xref, null, null, 'Suite') ;
+  var xref="./suites/editSuite/?fname=NEW"; 
+  katana.templateAPI.load(xref, null, null, 'SuiteNew') ;
+   // When do I n
+   katana.$view.one('tabAdded', function(){
+      mapFullSuiteJson("NEW");
+  });
 }
 //
 katana.$activeTab.find('#mySuiteTree').on("select_node.jstree", function (e, data) { 

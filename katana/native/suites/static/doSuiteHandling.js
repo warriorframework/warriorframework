@@ -85,10 +85,12 @@ function fillSuiteState(){
 
 function createNewCaseForSuite() {
 		var newTestcase = {	
+		'path' : "",
 		"Step" : { "@Driver": "", "@keyword": "", "@TS": "1" },
 		"Arguments": { "Argument" :  "" },
 		"onError" :  "",
 		"onError": { "@action": "next", "@value": "" }, 
+		"runmode": { "@type": "Standard", "@value": "" }, 
 		"ExecType": { "@ExecType": "Yes", "Rule" : {} },
 		"context": "",
 		"impact": ""
@@ -103,10 +105,13 @@ function createNewCaseForSuite() {
 /// -------------------------------------------------------------------------------
 function addCaseToSuite(){
 	var newTestcase =createNewCaseForSuite();	
+	jsonTestcases = jsonSuiteObject['Testcases']; 
+	console.log(jsonSuiteObject);
+	console.log(jsonTestcases);
 	if (!jQuery.isArray(jsonTestcases['Testcase'])) {
 		jsonTestcases['Testcase'] = [jsonTestcases['Testcase']];
 		}
-
+	console.log(jsonTestcases);
 	jsonTestcases['Testcase'].push(newTestcase);
 	createCasesTable(jsonTestcases['Testcase']);
 }
@@ -418,7 +423,7 @@ function createCasesTable(xdata) {
 	for (var s=0; s<Object.keys(xdata).length; s++ ) {
 		var oneCase = xdata[s];
 
-		//console.log(oneCase);
+		console.log(oneCase);
 		fillCaseDefaults(s,xdata);
 		var showID = parseInt(s)+ 1; 
 		items.push('<tr data-sid="'+s+'"><td>'+showID+'</td>');

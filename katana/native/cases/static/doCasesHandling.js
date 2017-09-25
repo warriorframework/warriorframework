@@ -14,6 +14,8 @@ the views.py python for Django.
 /// -------------------------------------------------------------------------------
 
 */
+
+// This function is required to uniquely identify an element on activeTab. 
 function getRandomCaseID() {
   min = Math.ceil(1);
   max = Math.floor(4000);
@@ -21,50 +23,47 @@ function getRandomCaseID() {
   
 }
 
+// Belongs in main.js 
 if (typeof jsonAllCasePages === 'undefined') {
  jsonAllCasePages = { };
 } else {
 	//alert("Already there...");
 }
+
+// Uppercase first character of keywords to handle yes and Yes; impact and Impact, etc. 
+// Belongs in main.js
 function jsUcfirst(string) 
 {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
+
+
+
+// For this app. 
 var jsonCaseObject = [];
-var jsonCaseDetails = [];         // A pointer to the Details   
-var jsonCaseSteps = [];           
+var jsonCaseDetails = [];        		// A pointer to the Details   
+var jsonCaseSteps = [];           		// 
 var activePageID = getRandomCaseID();   // for the page ID 
 var jsonFilesInfo = null; 
-
-// This function is called when the page loads. 
 //
-
-
-
+// This function is called when the page loads in cases.js . 
+//
 function mapFullCaseJson(myobjectID, where){
 	activePageID = getRandomCaseID();
-	//katana.$activeTab.find("#listOfTestStepsForCase").hide();
-	//katana.$activeTab.find('#savesubdir').hide();
-	console.log("Picking up from ", where);
 	var myfile = katana.$activeTab.find('#xmlfilename').text();
-     
-		jQuery.getJSON("./cases/getJSONcaseDataBack/?fname="+myfile).done(function(data) {
+	jQuery.getJSON("./cases/getJSONcaseDataBack/?fname="+myfile).done(function(data) {
 			a_items = data['fulljson'];
 			console.log("from views.py call=", a_items);
 			});
-
-	var sdata = katana.$activeTab.find(where).text();
-	console.log("sdata", sdata);
-	var jdata = sdata.replace(/'/g, '"');
-	jsonAllCasePages[myobjectID] = JSON.parse(sdata);  
+	var sdata = katana.$activeTab.find(where).text();  // Get JSON data from server. 
+	var jdata = sdata.replace(/'/g, '"');              // Fix any discrepancies in quotes 
+	jsonAllCasePages[myobjectID] = JSON.parse(sdata);  // Keep unique JSON for this page. 
 	console.log("Incoming data", myobjectID, jdata);  
 	jsonCaseObject = jsonAllCasePages[myobjectID]
 	if (!jQuery.isArray(jsonCaseObject["Steps"]['step'])) {
-
 		jsonCaseObject["Steps"]['step'] = [ jsonCaseObject["Steps"]['step']];
 	}
 	jsonCaseSteps  = jsonCaseObject["Steps"];
-	
 	console.log("Steps --> ", jsonCaseSteps);
 
 	jsonCaseDetails = jsonCaseObject['Details'];
@@ -141,7 +140,6 @@ function mapUiToCaseJson() {
 	jsonCaseObject['Details']['Engineer'] = katana.$activeTab.find('#caseEngineer').attr('value');
 	jsonCaseObject['Details']['Title'] = katana.$activeTab.find('#caseTitle').attr('value');
 	jsonCaseObject['Details']['Date'] = katana.$activeTab.find('#caseDate').attr('value');
-	//jsonCaseObject['Details']['Time'] = $('#suiteTime').attr('value');
 	jsonCaseObject['Details']['default_onError'] = katana.$activeTab.find('#default_onError').attr('value');
 	jsonCaseObject['Details']['Datatype'] = katana.$activeTab.find('#caseDatatype').attr('value');
 	jsonCaseObject['dataPath'] =  katana.$activeTab.find('#caseInputDataFile').attr('value');
@@ -153,22 +151,20 @@ function mapUiToCaseJson() {
 	if (!jsonCaseObject['Requirements']) {
 		jsonCaseObject['Requirements'] = []; 
 	}
-
-	//saveUItoRequirements();  // Save Requirements table. 
+ 
 	// Now you have collected the user components...
 } 
 
+// Start the WDF editor. 
 function start_wdfEditor(tag) { 
 	var filename = katana.$activeTab.find(tag).attr("fullpath");
 	dd = { 'path' : filename}; 
 	katana.templateAPI.postTabRequest("WDF", "/katana/wdf/index", dd);
-
-	//xref="wdf/?path="+filename;
-	//katana.templateAPI.load(xref, null, null, 'suite') ;;
-	
-
 }
 
+// Belongs in main.js when ok. 
+// Converts an absolute path to one that is relative to pathToBase 
+//
 function absToPrefix(pathToBase, pathToFile) {
 	var stack = []; 
     var upem  = [];
@@ -186,7 +182,9 @@ function absToPrefix(pathToBase, pathToFile) {
 	}
 	return stack.join('/') + '/' + nrf.join('/');
 }
-
+// Belongs in main.js when ok. 
+// Converts a path that is relative to pathToBase into an absolute path with .. constructs. 
+//
 function prefixFromAbs(pathToBase, pathToFile) {
 	var stack = []; 
     var upem  = [];
@@ -207,6 +205,7 @@ function prefixFromAbs(pathToBase, pathToFile) {
 	return upem.join("/") + "/" + bf.splice(blen).join('/') + "/" +  rf[rf.length - 1];
 }
 
+// Get Results directory from the case on the main page.
 function getResultsDirForCase(tag) {
       var callback_on_accept = function(selectedValue) { 
       		console.log(selectedValue);
@@ -226,6 +225,8 @@ function getResultsDirForCase(tag) {
 };
 
 
+// Get Results directory from the case on a popup dialog
+// The dialog is shown BELOW the popup. BUG. 
 function getResultsDirForCaseStep(tag) {
       var callback_on_accept = function(selectedValue) { 
       		console.log(selectedValue);
@@ -249,9 +250,9 @@ function getResultsDirForCaseStep(tag) {
 };
 
 				
-
+// Fills in the drop down based on the number of steps you have 
+// in the case. 
 var fillCaseDefaultGoto = function() {
-
 	var gotoStep = katana.$activeTab.find('#default_onError').val();
 	console.log("Step ", gotoStep);
 	var defgoto = katana.$activeTab.find('#default_onError_goto'); 
@@ -272,7 +273,7 @@ var fillCaseDefaultGoto = function() {
 	}
 }
 
-// Saves the UI to memory and sends to server. 
+// Saves the UI to memory and sends to server as a POST request
 var sendCaseToServer = function () {
 	mapUiToCaseJson();
 	var url = "./cases/getCaseDataBack";
@@ -302,6 +303,8 @@ var sendCaseToServer = function () {
 	});
 }
 
+// Case steps that are incomplete in an XML file can cause havoc on the UI. 
+// Fill in defaults for missing fields. 
 function fillStepDefaults(oneCaseStep) {
 
 		if (! oneCaseStep['step']){
@@ -331,10 +334,8 @@ function fillStepDefaults(oneCaseStep) {
 }
 
 /*
-
 Maps the data from a Testcase object to the UI. 
 The UI currently uses jQuery and Bootstrap to display the data.
-
 */
 function mapCaseJsonToUi(data){
 	//
@@ -364,13 +365,10 @@ function mapCaseJsonToUi(data){
 		// Create empty elements with defaults if none found. ;-)
 		// -------------------------------------------------------------------------
 		fillStepDefaults(oneCaseStep);
-	
 		items.push('<td>'+oneCaseStep['@Driver'] +'</td>'); 
-		var outstr; // = oneCaseStep['@Keyword'] + "<br>TS=" +oneCaseStep['@TS'] ;
+		var outstr; 
 		items.push('<td>'+oneCaseStep['@Keyword'] + "<br>TS=" +oneCaseStep['@TS']+'</td>'); 
-	// Show arguments for each step in the UI div tag. 
-
-			outstr =  oneCaseStep['Description'];
+		outstr =  oneCaseStep['Description'];
 		items.push('<td>'+outstr+'</td>'); 
 
 		var arguments = oneCaseStep['Arguments']['argument'];
@@ -394,16 +392,11 @@ function mapCaseJsonToUi(data){
 			}
 		outstr = out_array.join("");
 		//console.log("Arguments --> "+outstr);
-
 		items.push('<td>'+outstr+'</td>'); 
-	
-
 		outstr = oneCaseStep['onError']['@action'] 
 			//"Value=" + oneCaseStep['onError']['@value']+"<br>"; 
 		items.push('<td>'+oneCaseStep['onError']['@action'] +'</td>'); 
-
 		oneCaseStep['Execute']['@ExecType'] = jsUcfirst( oneCaseStep['Execute']['@ExecType']);
-
 		outstr = "ExecType=" + oneCaseStep['Execute']['@ExecType'] + "<br>";
 		if (oneCaseStep['Execute']['@ExecType'] == 'If' || oneCaseStep['Execute']['@ExecType'] == 'If Not') {
 			outstr = outstr + "Condition="+oneCaseStep['Execute']['Rule']['@Condition']+ "<br>" + 
@@ -465,9 +458,6 @@ function mapCaseJsonToUi(data){
 			var sid = parseInt(names[1]);
 			addTestStepAboveToUI(sid,xdata,1);
 		});
-
-
-
 		items.push('</tr>');
 
 	}
@@ -489,7 +479,6 @@ function mapCaseJsonToUi(data){
 	}
 	*/
 	
-	
 }  // end of function 
 
 
@@ -505,7 +494,6 @@ function 	makePopupArguments(popup,  oneCaseStep) {
 	for (xarg in arguments) {
 			//console.log(arguments[xarg]);
 			a_items.push('<div class="row">');
-
 			a_items.push('<label class="col-md-2">Name</label><input  type="text" argid="caseArgName-'+ta+'" value="'+arguments[xarg]["@name"]+'"/>');
 			a_items.push('<label class="col-md-2">Value</label><input  type="text" argid="caseArgValue-'+ta+'" value="'+arguments[xarg]["@value"]+'"/>');
 			// Now a button to edit or delete ... 
@@ -534,6 +522,8 @@ function 	makePopupArguments(popup,  oneCaseStep) {
 
 }
 
+
+// Fill in default GoTo steps for a popup window for a case step. 
 var fillCaseStepDefaultGoto = function(popup) {
 
 	var gotoStep =popup.find('#SteponError-at-action').val();
@@ -557,7 +547,7 @@ var fillCaseStepDefaultGoto = function(popup) {
 }
 
 
-
+// Show a popup dialog with items from a case.
 function setupPopupDialog(sid,xdata,popup) {
 	console.log(popup);  // Merely returns the div tag
 	var dd_driver = popup.find('#StepDriver');
@@ -696,17 +686,24 @@ function setupPopupDialog(sid,xdata,popup) {
 	});
 
 
-		popup.find("#Execute-at-ExecType").on('change',function() {
-			if (this.value == 'If' || this.value == 'If Not') {
-				popup.find('.rule-condition').show();			
-			} else {
-				popup.find('.rule-condition').hide();
-				
-			}
+	popup.find("#Execute-at-ExecType").on('change',function() {
+		if (this.value == 'If' || this.value == 'If Not') {
+			popup.find('.rule-condition').show();			
+		} else {
+			popup.find('.rule-condition').hide();
+			
+		}
+	});
 
-		});
 
-
+	popup.find("#runmode-at-value").on('change',function() {
+		if (this.value == 'Standard' ) {
+			popup.find('.runmode-value').hide();			
+		} else {
+			popup.find('.runmode-value').show();
+			
+		}
+	});
 
 
 	popup.find("#StepKeyword").on('change',function() {
@@ -749,7 +746,8 @@ function setupPopupDialog(sid,xdata,popup) {
 
 }
 
-
+// For sorting the test case steps table. 
+// Renumbers the IDs on the table and redraws it. 
 var testCaseSortEventHandler = function(event, ui ) {
 
 	var listItems = [] ; 
@@ -781,7 +779,7 @@ function removeTestStep( sid ){
 		mapCaseJsonToUi(jsonCaseSteps);
 }
 
-
+// Create a fresh step at the end of the table.
 function addNewTestStepToUI() {
 	var newObj = createNewStep();
 
@@ -797,6 +795,7 @@ function addNewTestStepToUI() {
 	mapCaseJsonToUi(jsonCaseSteps);		
 }
 
+// Inserts a new test step 
 function addTestStepAboveToUI(sid,xdata,copy) {
 	var newObj = createNewStep();
 
@@ -821,18 +820,16 @@ function addTestStepAboveToUI(sid,xdata,copy) {
 	mapCaseJsonToUi(jsonCaseSteps);		
 }
 
-
+// for a popup 
 function redrawArguments(sid, oneCaseStep,popup) {
 	var arguments = oneCaseStep['Arguments']['argument'];
-
 	makePopupArguments(popup, oneCaseStep);
-
 }
+
 
 function saveOneArgument( sid, aid, xdata) {
 	var obj = jsonCaseSteps['step'][sid]['Arguments']['argument'][aid]; 	
 	obj['@name'] = katana.$activeTab.find('[argid=caseArgName-'+aid+']').attr('value');
-	//obj['@value'] = katana.$activeTab.find('#caseArgValue-'+aid).attr('value');
 	obj['@value'] = katana.$activeTab.find('[argid=caseArgValue-'+aid+']').attr('value');
 	console.log("Saving..arguments-div "+ sid + " aid = "+ aid);
 	console.log(katana.$activeTab.find('[argid=caseArgValue-'+aid+']'));
@@ -843,8 +840,6 @@ function saveOneArgument( sid, aid, xdata) {
 
 function addOneArgument( sid , xdata, popup ) {
 	var xx = { "@name": "New" , "@value": "New" };
-
-
 	console.log("sid = ", sid, jsonCaseSteps, jsonCaseSteps['step'][sid]['Arguments'] );
 	if (! jQuery.isArray(jsonCaseSteps['step'][sid]['Arguments']['argument']))  {
 		jsonCaseSteps['step'][sid]['Arguments']['argument'] = [ jsonCaseSteps['step'][sid]['Arguments']['argument'] ];
@@ -929,9 +924,9 @@ function createNewStep(){
 		}, 
 		"context": "positive", 
 		"impact" :  "impact",
-		"rmt" :  "standard" ,
+		"runmode" : { '@type': 'Standard', '@value': ""},
 		"InputDataFile" : "", 
-		"retry": { "@type": "if not", "@Condition": "testsuite_1_result", "@Condvalue": "PASS", "@count": "6", "@interval": "0"}, 
+		"retry": { "@type": "If", "@Condition": "", "@Condvalue": "", "@count": "0", "@interval": "0"}, 
 	 };
 	 return newCaseStep;
 }

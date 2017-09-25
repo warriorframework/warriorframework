@@ -93,7 +93,8 @@ def editSuite(request):
 	xml_r["TestSuite"]["Details"]["onError"] = {}
 	xml_r["TestSuite"]["Details"]["onError"]['@action']= ""
 	xml_r["TestSuite"]["Details"]["onError"]['@value']= ""
-	xml_r["TestSuite"]["Testsuites"] = ""
+
+	xml_r["TestSuite"]["Testcases"] = { 'Testcase' :[] }
 	
 	if filename == 'NEW':
 		xml_d = copy.deepcopy(xml_r);
@@ -115,7 +116,7 @@ def editSuite(request):
 	try:
 		xml_r['TestSuite']['Testcases'] = copy.deepcopy(xml_d['TestSuite']['Testcases']);
 	except:
-		xml_r["TestSuite"]["Testcases"] = {}
+		xml_r["TestSuite"]["Testcases"] =  { 'Testcase': [] }
 
 	try:
 		xml_r["TestSuite"]["Details"]["type"]['@exectype'] = copy.deepcopy(xml_d["TestSuite"]["Details"]["type"]['@exectype']);
@@ -150,7 +151,6 @@ def editSuite(request):
 		'suitedefault_onError_goto':xml_r["TestSuite"]["Details"]["onError"].get('@value',''),
 		'suiteCases': xml_r['TestSuite']['Testcases'],
 		#'fulljson': xml_r['TestSuite'],
-
 		'fulljson': fulljsonstring,
 		'suiteResults': "",
 		}

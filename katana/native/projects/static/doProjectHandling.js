@@ -509,7 +509,6 @@ function createSuitesTable(xdata) {
 		});
 
 		oneSuite['Execute']['@ExecType'] = jsUcfirst(oneSuite['Execute']['@ExecType']); 
-
 		items.push('<td id="'+tbid+'" onclick="showSuiteFromProject('+"'"+oneSuite['path']+"'"+')">'+oneSuite['path']+'</td>');
 		items.push('<td>Type='+oneSuite['Execute']['@ExecType']+'<br>');
 
