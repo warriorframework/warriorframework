@@ -436,8 +436,20 @@ var wapp_management = {
 
     installAppsFromConfig: function() {
         var $elem = $(this);
-        var config_name = $elem.attr("config_name");
-        wapp_management.editConfig(config_name, wapp_management.installAnApp());
+        var configName = $elem.attr("config_name")
+        var $currentPage = katana.$activeTab;
+        var $tempConfigDetails = $currentPage.find("#config-details-" + configName);
+        var $disabledInputs = $tempConfigDetails.find('input:disabled')
+        var app_paths = [];
+
+        for(var i=0; i<$disabledInputs.length; i++){
+            app_paths.push($($disabledInputs[i]).val());
+        }
+        wapp_management.sendInstallInfo(app_paths);
+
+        $parent = $currentPage.find("#" + configName);
+        $parent.css("background-color", "#98afc7");
+        $tempConfigDetails.html("");
     },
 
     validateInput: function(elem_value, elem, config_name){
