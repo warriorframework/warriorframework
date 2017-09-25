@@ -2,7 +2,7 @@
 <br>
 {% for detail in preference_details %}
     <div class="row">
-        <div class="col-sm-2 text-center" style="padding-top: 0.5rem;">
+        <div class="col-sm-2 text-center wapp-management-config-padding">
             {% if detail.type == "repository" %}
                 <label>Git Repository:</label>
             {% elif detail.type == "zip" %}
@@ -13,7 +13,7 @@
         </div>
         {% if detail.needs_update %}
         <div class="col-sm-5">
-            <input class="form-control" style="border: 1px solid red" value="{{detail.name}}" disabled>
+            <input class="form-control wapp-management-error-border" value="{{detail.name}}" disabled>
 
             <h6 class="text-muted">This information may be outdated. Please update it.</h6>
         </div>

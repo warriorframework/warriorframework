@@ -1,15 +1,15 @@
 <div class="container-fluid" style="padding: 0 5rem 5rem 5rem;">
 	<div class="row">
         {% for app in data.app%}
-        <div style="width: 20rem; height: 26rem; padding: 2rem;">
-            <div class="card" style="width: 16rem; height: 22rem;">
+        <div class="wapp-management-outer-card">
+            <div class="card wapp-management-custom-card">
                 <div class="card-body text-center">
-                    <i class="fa fa-{{ app.data.icon }} fa-3x {{app.data.color}}" style="line-height:inherit!important;"></i>
+                    <i class="fa fa-{{ app.data.icon }} fa-3x {{app.data.color}} wapp-management-card-icon"></i>
                 </div>
                 <div class="card-body">
-                    <h4 class="card-title-custom" style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">{{ app.data.name }}</h4>
-                    <h6 class="card-subtitle mb-2 text-muted" style="overflow: hidden; text-overflow: ellipsis;">By {{ app.data.developer }}</h6>
-                    <p class="card-text-custom" style="overflow: hidden; text-overflow: fade(100%);">{{ app.data.description }}</p>
+                    <h4 class="card-title-custom wapp-management-overflow-nowrap">{{ app.data.name }}</h4>
+                    <h6 class="card-subtitle mb-2 text-muted wapp-management-overflow-wrap">By {{ app.data.developer }}</h6>
+                    <p class="card-text-custom wapp-management-overflow-fade">{{ app.data.description }}</p>
                 </div>
                  <div class="card-body">
                     <button katana-click="katana.templateAPI.load" url="{{ app.data.url }}"
