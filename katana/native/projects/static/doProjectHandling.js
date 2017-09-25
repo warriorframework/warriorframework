@@ -34,6 +34,11 @@ function getRandomID() {
   return Math.floor(Math.random() * (max - min)) + min;
   
 }
+
+function jsUcfirst(string) 
+{
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
 /// -------------------------------------------------------------------------------
 // Sets up the global project data holder for the UI. 
 // This is called from the correspoding HTML file onLoad event 
@@ -151,7 +156,7 @@ function setupProjectPopupDialog(s,xdata,popup) {
 	console.log(oneSuite);
 	popup.find("#suiteRowToEdit").val(s); 
 	popup.find("#suitePath").val(oneSuite['path']);
-	popup.find("#Execute-at-ExecType").val(oneSuite['Execute']['@ExecType']); 
+	popup.find("#Execute-at-ExecType").val(jsUcfirst(oneSuite['Execute']['@ExecType'])); 
 	popup.find("#executeRuleAtCondition").val(oneSuite['Execute']['Rule']['@Condition']); 
 	popup.find("#executeRuleAtCondvalue").val(oneSuite['Execute']['Rule']['@Condvalue']); 
 	popup.find("#executeRuleAtElse").val(oneSuite['Execute']['Rule']['@Else']); 
@@ -183,13 +188,13 @@ function setupProjectPopupDialog(s,xdata,popup) {
 	//alert(this.value);
 		oneSuite['runmode']['@type'] = this.value; 
 		popup.find("#runmode-at-value").show();
-		if (oneSuite['runmode']['@type'] == 'standard') {
+		if (oneSuite['runmode']['@type'] == 'Standard') {
 		popup.find("#runmode-at-value").hide();
 		}
 		
 	});
 	popup.find("#runmode-at-value").show();
-	if (oneSuite['runmode']['@type'] == 'standard') {
+	if (oneSuite['runmode']['@type'] == 'Standard') {
 		
 		popup.find("#runmode-at-value").hide();
 
@@ -201,12 +206,13 @@ function setupProjectPopupDialog(s,xdata,popup) {
 				popup.find('.rule-condition').show();			
 			} else {
 				popup.find('.rule-condition').hide();
-				
 			}
 		});
 
 
 }
+
+
 
 function mapProjectSuiteToUI(s,xdata) {
 
@@ -463,18 +469,14 @@ function mapUiToProjectJson() {
 
 }
 
-
-
-
-
 //
 // This creates the table for viewing data in a sortable view. 
 // 
 function createSuitesTable(xdata) {
 	var items = []; 
-	items.push('<table id="suite_table_display" class="configuration_table striped" width="100%">');
+	items.push('<table id="suite_table_display" class="project_configuration_table striped" width="100%">');
 	items.push('<thead>');
-	items.push('<tr id="suiteRow"><th>Num</th><th>Suite</th><th>Execute</th><th>OnError</th><th>Impact</th><th/></tr>');
+	items.push('<tr id="suiteRow"><th>Num</th><th/><th>Suite</th><th>Execute</th><th>OnError</th><th>Impact</th><th/></tr>');
 	items.push('</thead>');
 	items.push('<tbody>');
 
@@ -496,7 +498,7 @@ function createSuitesTable(xdata) {
 		var tbid = "textTestSuiteFile-"+s+"-id"+getRandomID();
 
 		var bid = "fileSuitecase-"+s+"-id"+getRandomID();
-		items.push('<td><i title="ChangeFile" class="fa fa-envelope-open" id="'+bid+'"/></td>');
+		items.push('<td><i title="ChangeFile" class="fa fa-folder-open" id="'+bid+'"/></td>');
 		katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
 		$(document).on('click','#'+bid,function() {
 			var names = this.id.split('-');
@@ -506,6 +508,7 @@ function createSuitesTable(xdata) {
 			
 		});
 
+		oneSuite['Execute']['@ExecType'] = jsUcfirst(oneSuite['Execute']['@ExecType']); 
 		items.push('<td id="'+tbid+'" onclick="showSuiteFromProject('+"'"+oneSuite['path']+"'"+')">'+oneSuite['path']+'</td>');
 		items.push('<td>Type='+oneSuite['Execute']['@ExecType']+'<br>');
 
@@ -542,9 +545,7 @@ function createSuitesTable(xdata) {
 			katana.popupController.open(katana.$activeTab.find("#editTestSuiteEntry").html(),"Edit..." + sid, function(popup) {
 				katana.$activeTab.find("#editTestSuiteEntry").attr('popup-id', popup);
 				console.log('Popup 531', popup );
-				console,log(katana.$activeTab.find("#editTestSuiteEntry"));
-
-				
+				console.log(katana.$activeTab.find("#editTestSuiteEntry"));
 				setupProjectPopupDialog(sid,xdata,popup);
 			});
 			//This is where you load in the edit form and display this row in detail. 
@@ -679,7 +680,7 @@ function fillSuiteDefaults(s, data){
 			oneSuite['onError'] = { "@action": "next", "@value": "" };
 		}
 		if (! oneSuite['runmode']) {
-			oneSuite['runmode'] = { "@type": "standard", "@value": "" };
+			oneSuite['runmode'] = { "@type": "Standard", "@value": "" };
 		}
 		if (! oneSuite['retry']) {
 			oneSuite['retry'] = { "@type": "next", "@Condition": "", "@Condvalue": "", "@count": "" , "@interval": ""};

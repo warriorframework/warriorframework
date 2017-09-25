@@ -93,14 +93,15 @@ def editSuite(request):
 	xml_r["TestSuite"]["Details"]["onError"] = {}
 	xml_r["TestSuite"]["Details"]["onError"]['@action']= ""
 	xml_r["TestSuite"]["Details"]["onError"]['@value']= ""
-	xml_r["TestSuite"]["Testsuites"] = ""
+
+	xml_r["TestSuite"]["Testcases"] = { 'Testcase' :[] }
 	
 	if filename == 'NEW':
 		xml_d = copy.deepcopy(xml_r);
 
 	else:
 		xlines = open(filename).read()
-		xml_d = xmltodict.parse(xlines);
+		xml_d = xmltodict.parse(xlines, dict_constructor=dict);
 
 	# Map the input to the response collector
 	for xstr in ["Name", "Title", "Category", "Date", "Time", "Engineer", "Datatype"]:
@@ -115,7 +116,7 @@ def editSuite(request):
 	try:
 		xml_r['TestSuite']['Testcases'] = copy.deepcopy(xml_d['TestSuite']['Testcases']);
 	except:
-		xml_r["TestSuite"]["Testcases"] = {}
+		xml_r["TestSuite"]["Testcases"] =  { 'Testcase': [] }
 
 	try:
 		xml_r["TestSuite"]["Details"]["type"]['@exectype'] = copy.deepcopy(xml_d["TestSuite"]["Details"]["type"]['@exectype']);
@@ -123,6 +124,10 @@ def editSuite(request):
 		xml_r["TestSuite"]["Details"]["type"]['@exectype'] = "sequential_testcases"
 
 	#xml_r["TestSuite"]["Details"]["default_onError"] = "" 
+
+	fulljsonstring = str(json.loads(json.dumps(xml_r['TestSuite'])));
+	fulljsonstring = fulljsonstring.replace('u"',"'").replace("u'",'"').replace("'",'"');
+	fulljsonstring = fulljsonstring.replace('None','""')
 
 	context = { 
 		'savefilename': "save_" + os.path.split(filename)[1],
@@ -145,7 +150,8 @@ def editSuite(request):
 		'suitedefault_onError':xml_r["TestSuite"]["Details"]["onError"].get('@action',""),
 		'suitedefault_onError_goto':xml_r["TestSuite"]["Details"]["onError"].get('@value',''),
 		'suiteCases': xml_r['TestSuite']['Testcases'],
-		'fulljson': xml_r['TestSuite'],
+		#'fulljson': xml_r['TestSuite'],
+		'fulljson': fulljsonstring,
 		'suiteResults': "",
 		}
 	# 

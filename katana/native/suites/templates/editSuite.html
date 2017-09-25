@@ -1,10 +1,9 @@
 
 {% load static %}
-{% load jsonify %}
+
 
 <body>
-<link rel="stylesheet" href="{% static "./ztable.css" %}"> 
-<script type="text/javascript" src="{% static "./doSuiteHandling.js" %}"></script>
+<link rel="stylesheet" href="{% static "./suite_table.css" %}"> 
 
 {% csrf_token %}
 <div class="tool-bar">
@@ -75,7 +74,7 @@
 				
 				<div class="field col-md-3">
 					<label >Warrior Data File:</label>
-					<button class="btn btn-info" onclick="getResultsDirForSuite('#suiteInputDataFile')">...</button>
+					<button class="btn btn-info hidden" onclick="getResultsDirForSuite('#suiteInputDataFile')">...</button>
 					
 					<input type="text" id="suiteInputDataFile"  value="{{suiteInputDataFile}}"/>
 				</div>
@@ -137,13 +136,13 @@
 					<div class="field">
 					<label >Run Mode:</label>
 					
-					<select type="text" class="text-right" id="CaseRunmode" value="standard" >
-					<option value="standard">standard</option>
+					<select type="text" class="text-right" id="CaseRunmode" value="Standard" >
+					<option value="Standard">Standard</option>
 					<option value="RMT">RMT</option>
 					<option value="RUF">RUF</option>
 					<option value="RUP">RUP</option>
 					</select>
-
+					<input type="text" class="runmode_condition" id="runmodeAtValue" value=""/>	
 					</div>
 
 
@@ -228,6 +227,8 @@
 	
 </div>	
 	<div id="tableOfFileContents"  class="hidden">fileContents</label></div>
-	<div id="listOfTestcasesForSuite" class="hidden">{{fulljson|jsonify}}</div>
+	<div id="listOfTestcasesForSuite" class="hidden">{{fulljson}}</div>
 	<div id="savefilepath" class="hidden">{{savefilepath}}</div>
+<script type="text/javascript" src="{% static "./doSuiteHandling.js" %}"></script>
+
 </body>

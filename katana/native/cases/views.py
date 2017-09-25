@@ -33,9 +33,7 @@ import scanfiles
 navigator = Navigator();
 path_to_src_python_file = navigator.get_katana_dir() + os.sep + "config.json"
 All_case_action_details = py_file_details(json.loads(open(path_to_src_python_file).read())['pythonsrcdir']);
-			
-
-
+		
 
 def index(request):
 	path_to_config_file = navigator.get_katana_dir() + os.sep + "config.json"
@@ -48,14 +46,21 @@ def index(request):
 	jtree['state']= { 'opened': True };
 
 	context = { 
-		'title' : 'List of Cases',	
+		'title' 	: 'List of Cases',	
 		'dirpath' : path_to_testcases,
 		'treejs': jtree,
 	}
 	return HttpResponse(template.render(context, request))
 
-
-
+def getCaseListTree(request):
+	path_to_config_file = navigator.get_katana_dir() + os.sep + "config.json"
+	x= json.loads(open(path_to_config_file).read());
+	path_to_testcases = x['xmldir'];
+	template = loader.get_template("listAllCases.html")
+	fpath = path_to_testcases ;
+	jtree = navigator.get_dir_tree_json(fpath)
+	jtree['state']= { 'opened': True };
+	return JsonResponse({'treejs': jtree })
 
 ##
 ## This is very costly imho. 
@@ -133,8 +138,14 @@ def getListOfComments(request):
 	
 	print driver, " ", keyword;
 
-	if driver == "To_Be_Developed":
+	if driver == "To_Be_Developed" :
 		return JsonResponse(responseBack)
+
+	try:
+		items = details[driver]
+	except:
+		return JsonResponse(responseBack)
+
 	
 	for item in details[driver][0]: 
 		print item['fn']
@@ -144,6 +155,58 @@ def getListOfComments(request):
 
 	return JsonResponse(responseBack)
 
+def getEmpty():
+	edata={
+		  "Testcase": {
+		    "Details": {
+		      "Name": "set_env_variable",
+		      "Title": "set_env_variable",
+		      "default_onError": { "@action": "next" },
+		      "Date": "2017-01-01",
+		      "Time": "23:00",
+		      "InputDataFile": "No_Data",
+		      "Engineer": "Warrior_Test",
+		      "Category": "Regression",
+		      "State": "Released"
+		    },
+		    "Requirements": {
+		      "Requirement": [
+		        "Demo-requirement-001",
+		        "Demo-requirement-002",
+		        "Demo-requirement-003"
+		      ]
+		    },
+		    "Steps": {
+		      "step": {
+		        "@Driver": "common_driver",
+		        "@Keyword": "set_env_var",
+		        "@TS": "1",
+		        "Arguments": {
+		          "argument": [
+		            {
+		              "@name": "var_key",
+		              "@value": "check3"
+		            },
+		            {
+		              "@name": "var_value",
+		              "@value": "3"
+		            }
+		          ]
+		        },
+		        "Description": [
+		          "Regression for existing support, setting one ENV variable",
+		          "compare values"
+		        ],
+		        "onError": { "@action": "next" },
+		        "Execute": { "@ExecType": "Yes" },
+		        "context": "positive",
+		        "impact": "impact"
+		      }
+		    }
+		  }
+		}  ;
+
+	return edata; 
 
 def editCase(request):
 	""" 
@@ -161,10 +224,14 @@ def editCase(request):
 	# Set up defaults for an xml_r object
 
 	print "Asked for ", filename
+	print "Path to cases ", path_to_testcases
 	if filename.find("..") == 0: 
 		f = filename.find('testcases')
-
-		filename = os.path.dirname(path_to_testcases) + os.sep + filename[f:]
+		print "f == ", f, filename 
+		if f > -1: 
+			filename = os.path.dirname(path_to_testcases) + os.sep + filename[f:]
+		else: 
+			filename = path_to_testcases + os.sep + filename
 	print "Attempting to read ...", filename 
 
 	xml_r = {}
@@ -187,58 +254,7 @@ def editCase(request):
 	xml_r["Testcase"]["Steps"] = {} 
 	
 
-	edata={
-  "Testcase": {
-    "Details": {
-      "Name": "set_env_variable",
-      "Title": "set_env_variable",
-      "default_onError": { "@action": "next" },
-      "Date": "2017-01-01",
-      "Time": "23:00",
-      "InputDataFile": "No_Data",
-      "Engineer": "Warrior_Test",
-      "Category": "Regression",
-      "State": "Released"
-    },
-    "Requirements": {
-      "Requirement": [
-        "Demo-requirement-001",
-        "Demo-requirement-002",
-        "Demo-requirement-003"
-      ]
-    },
-    "Steps": {
-      "step": {
-        "@Driver": "common_driver",
-        "@Keyword": "set_env_var",
-        "@TS": "1",
-        "Arguments": {
-          "argument": [
-            {
-              "@name": "var_key",
-              "@value": "check3"
-            },
-            {
-              "@name": "var_value",
-              "@value": "3"
-            }
-          ]
-        },
-        "Description": [
-          "Regression for existing support, setting one ENV variable",
-          "compare values"
-        ],
-        "onError": { "@action": "next" },
-        "Execute": { "@ExecType": "Yes" },
-        "context": "positive",
-        "impact": "impact"
-      }
-    }
-  }
-}  ;
-
-	#edata = copy.copy(xml_r);
-
+	edata = getEmpty()
 
 	if filename == 'NEW':
 		subdir = path_to_testcases 
@@ -247,11 +263,21 @@ def editCase(request):
 		xml_d = copy.deepcopy(xml_r)
 	else: 
 		xlines = open(filename).read()
-		xml_d = xmltodict.parse(xlines);
+		xml_d = xmltodict.parse(xlines, dict_constructor=dict);
 		subdir = os.path.split(filename)[0]
 		fn = 'save_' + os.path.split(filename)[1]
+
+	fulljsonstring = str(json.loads(json.dumps(xml_d['Testcase'])));
+	fulljsonstring = fulljsonstring.replace('u"',"'").replace("u'",'"').replace("'",'"');
+	fulljsonstring = fulljsonstring.replace('None','""')
+
+	emptyCaseString = str(json.loads(json.dumps(edata['Testcase'])));
+	emptyCaseString = emptyCaseString .replace('u"',"'").replace("u'",'"').replace("'",'"');
+	emptyCaseString = emptyCaseString .replace('None','""')
+
+
 	# Map the input to the response collector
-	for xstr in ["Name", "Title", "Category", "Date", "Time", "InputDataFile", "Engineer", \
+	for xstr in ["Name", "Title", "Category", "Date", "Time", "InputDataFile dict_constructor=dict", "Engineer", \
 		"Datatype", "default_onError", "Logsdir", "Resultsdir", "ExpectedResults"]:
 		try:
 			if not xml_r["Testcase"]["Details"].has_key(xstr): 
@@ -277,6 +303,7 @@ def editCase(request):
 		'savefilename': fn,
 		'savesubdir': subdir,
 		'savefilepath': path_to_testcases,
+		'fulljsonstring': fulljsonstring,
 		'docSpec': 'caseSpec',
 		'caseName': xml_r["Testcase"]["Details"]["Name"],
 		'caseTitle': xml_r["Testcase"]["Details"]["Title"],
@@ -294,11 +321,28 @@ def editCase(request):
 		'caseExpectedResults': xml_r["Testcase"]["Details"]["ExpectedResults"],
 		'caseSteps': xml_r["Testcase"]["Steps"],
 		'caseRequirements': xml_r['Testcase']['Requirements'],
-		'emptyTestCase': edata['Testcase'],
+		'emptyTestCase': emptyCaseString, 
 		'fulljson': xml_r['Testcase']
 	}
 
 	return HttpResponse(template.render(context, request))
+
+
+def getJSONcaseDataBack(request):
+	path_to_config_file = navigator.get_katana_dir() + os.sep + "config.json"   
+	x= json.loads(open(path_to_config_file).read());
+	path_to_testcases = x['xmldir'];
+	filename = request.GET.get('fname')
+	print "Getting data for ", filename;
+	try:
+		xml_d = xmltodict.parse(open(filename).read());
+	except:
+		xml_d = getEmpty();
+
+	j_data = json.loads(json.dumps(xml_d))
+	responseBack = { 'fulljson': j_data , 'fname': filename }
+	return JsonResponse(responseBack)
+
 
 def getCaseDataBack(request):
 	"""
