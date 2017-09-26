@@ -188,7 +188,9 @@ class WarriorHtmlResults:
 
         if is_final is True:
             html += '<div class="complete"></div>'
-        
+        elem_file = open(self.get_path(), 'w')
+        elem_file.write(html)
+        elem_file.close()
         livehtmllocn = data_Utils.get_object_from_datarepository('livehtmllocn')
         livehtmlfile = open(livehtmllocn, 'w')
         livehtmlfile.write(html)
