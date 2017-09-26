@@ -16,6 +16,8 @@ import os
 import time
 import json
 import subprocess
+from xml.etree import ElementTree
+
 from django.http import StreamingHttpResponse, JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
@@ -51,8 +53,7 @@ class Execution(object):
         self.warrior = os.path.join(self.wf_dir, 'warrior', 'Warrior')
         self.default_ws = os.path.join(self.wf_dir, 'warrior', 'Warriorspace')
         self.templates_dir = os.path.join(templates_dir, 'execution')
-        
-        
+        self.jira_settings_file = os.path.join(self.wf_dir, 'warrior', 'Tools', 'jira', 'jira_config.xml')        
         self.execution_settings_json = os.path.join(templates_dir, 'execution', 'execution_settings.json')
         
 
@@ -61,11 +62,15 @@ class Execution(object):
         """
         Index page for exeution app
         """
-        execution_settings_dict = json.loads(open(self.execution_settings_json).read())
+        execution_settings_dict = update_jira_proj_list(self.jira_settings_file, self.execution_settings_json)
+        #json.loads(open(self.execution_settings_json).read())
         start_dir = self.default_ws if execution_settings_dict['defaults']['start_dir'] == 'default' \
         else execution_settings_dict['defaults']['start_dir']
         execution_settings_dict['defaults']['start_dir'] = start_dir
-        index_template = os.path.join(self.templates_dir, 'execution.html')
+        index_template = os.path.join(self.templates_dir, 'execution.html')        
+        
+        
+        
         return render(request, index_template, execution_settings_dict)
     
     
@@ -102,6 +107,12 @@ class Execution(object):
         return JsonResponse(layout)
 
 
+    def get_jira_proj_list(self, request):
+        """
+        """
+        
+        return render(request, results_template) 
+
 
 @csrf_exempt
 def update_html_results(request):
@@ -112,11 +123,8 @@ def update_html_results(request):
     data_dict =  request.POST.dict()
     file_path = data_dict['file_path']
     global warrior_interface
-#     print warrior_interface
     html = warrior_interface.update_html_result(file_path)
-#     print "================printing html to screen==============="
-#     print warrior_interface.htmlResults
-#     
+
     return HttpResponse( "<h1>update html results</h1>")
 
 def get_html_results(request):
@@ -126,11 +134,9 @@ def get_html_results(request):
 
 
     global warrior_interface
-#     print warrior_interface
     if warrior_interface is not "":
         print "================printing html to screen==============="
         data =  warrior_interface.htmlResults
-#         print data
     
     return HttpResponse( data)
 
@@ -138,7 +144,6 @@ def get_html_results(request):
 def stream_warrior_output(args, cmd, file_list):
 
     output = subprocess.Popen(str(cmd), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
-#     output = subprocess.Popen('date', shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
     first_poll = True
     
     file_li_string = ""
@@ -168,3 +173,49 @@ def stream_warrior_output(args, cmd, file_list):
             break 
     warrior_interface.set_eoc()
     return
+
+
+def update_jira_proj_list(jira_settings_file, exec_settings_json):
+    """
+    get the dict of jira settings by parsing the jira settings file
+    """
+    
+    execution_settings_dict = json.loads(open(exec_settings_json).read())
+    def_jira_proj = ""
+    jira_proj_list = []
+ 
+    node = ElementTree.parse(jira_settings_file).getroot()
+    proj_node_list = node.findall('system')
+    def_set = False
+    for proj in proj_node_list:
+        opdict = {}
+        opdict['name'] = proj.get('name')
+        if not def_set:
+            if str(proj.get('default')).lower() == 'true':
+                def_jira_proj = proj.get('name')
+                def_set = True
+        jira_proj_list.append(opdict)
+    
+    execution_settings_dict['jira_proj'] = jira_proj_list
+    execution_settings_dict['defaults']['jira_proj'] = def_jira_proj
+    
+    with open(exec_settings_json, 'w') as fp:
+        json.dump(execution_settings_dict, fp)
+        
+    return execution_settings_dict
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
+    
+    
+    
+    
+

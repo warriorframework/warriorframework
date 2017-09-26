@@ -20,7 +20,21 @@ var execution = {
 		elem.data('cmdCreatorObject', cmdBuilder.cmdCreator);
 	},
 
-
+	openExplorer: function(){
+		var dialog = katana.$activeTab.find('#configure_layout_dialog');
+		var ws = dialog.find('[name="warriorspace"]');
+		var dir = ws.attr('value');
+		var csrf = katana.$activeTab.find('.csrf-container > input').val();
+		katana.fileExplorerAPI.openFileExplorer('Select a directory', dir, csrf, null, execution.setWs);
+	},
+	setWs: function(dirPath){
+		var dialog = katana.$activeTab.find('#configure_layout_dialog');
+		var ws = dialog.find('[name="warriorspace"]');
+		ws.val(dirPath);
+		ws.attr('value', dirPath);
+		return {'ws': ws, 'dialog': dialog};
+	},
+	
 	layoutViewer: {
 			/* layoutViewer:
 			- Has functions related to viewing or changing the layout in execution app.
@@ -67,12 +81,8 @@ var execution = {
 			initConfig: function(){
 				var execution_layout_container =  katana.$activeTab.find('#execution_layout_container');
 				var startdir = $(execution_layout_container).attr('data-startdir');
-				var dialog = katana.$activeTab.find('#configure_layout_dialog');
-				var ws = dialog.find('[name="warriorspace"]');
-
-				ws.val(startdir);
-				ws.attr('value', startdir);
-				return {'ws': ws, 'dialog': dialog};
+				var elems = execution.setWs(startdir);
+				return elems;
 			},
 
 			configureLayout: function(){
@@ -313,14 +323,11 @@ var execution = {
 			// console.log('execution_file_list', execution_file_list);
 			cmdOptions = ' ';
 			var url = 'execution/executeWarrior'
-			var cmdBuilderElement = katana.$activeTab.find("#cmd-options-forms-container");
+			var cmdBuilderElement = katana.$activeTab.find("#cmd-options-dialog");
 			var cmdCreatorObject = cmdBuilderElement.data('cmdCreatorObject');
 			if (cmdCreatorObject){
 				var cmdOptions = cmdCreatorObject.getCmd(execution_file_list);
-				console.log('cmdOptions', cmdOptions);
 			}
-			console.log("cmdObject", cmdCreatorObject);
-			console.log('coooooo:', cmdOptions);
 
 			var data_to_send = JSON.stringify({"execution_file_list": execution_file_list, 'cmd_string':cmdOptions});
 
