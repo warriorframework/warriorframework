@@ -2,16 +2,15 @@
 
 <body>
     <link rel="stylesheet" href="{% static "./case_tables.css" %}">
-    <script type="text/javascript" src="{% static "./casesApp.js" %}"></script>
     <div class="tool-bar">
         <i id="addStep" class="btn btn-success" katana-click="caseApp.addNewTestStepToUI">Add Step To Case</i>
         <i class="btn btn-success" katana-click="caseApp.addRequirementToCase">Add Requirement</i>
         <i class="btn btn-success" katana-click="caseApp.sendCaseToServer">Write Changes To Disk</i>
-       	<i class="btn btn-success" katana-click="cases.foobar">dd</i>
+       
         <label class="col-md-2 text-righ" t>Save file to </label>
         <input class="text-right col-md-4" type="text" id="my_file_to_save" name="my_file_to_save" value="{{savefilename}}" />
     </div>
-    <div class="container-fluid">
+    <div class="container-fluid" auto-init="caseApp.init">
         <div class="row">
             <div class="col-md-9">
                 <div class="row ">

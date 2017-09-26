@@ -64,12 +64,16 @@ function jsUcfirst(string)
 }
 
 var caseApp = {
-
+	 usablePopup: null,
 	 jsonCaseObject : [],
 	 jsonCaseDetails : [],        		// A pointer to the Details   
 	 jsonCaseSteps : [],          		// A pointer to the Steps object
 
-	
+	init: function () {
+
+		console.log("Autoinit called for case app", this);
+
+	},
 //
 // This function is called when the page loads in cases.js . 
 //
@@ -439,7 +443,6 @@ The UI currently uses jQuery and Bootstrap to display the data.
 	var names = this.attr('key').split('-');
 	var sid = parseInt(names[1]);
 	katana.popupController.open(katana.$activeTab.find("#editCaseStepDiv").html(),"Edit..." + sid, function(popup) {
-		var popup = $(this).closest('.popup');
 		katana.$activeTab.find("#editCaseStepDiv").attr('popup-id',popup);
 		caseApp.setupPopupDialog(sid,caseApp.jsonCaseSteps['step'] ,popup);
 	});
