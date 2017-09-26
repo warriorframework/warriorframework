@@ -655,7 +655,7 @@ def _send_cmd(obj_session, **kwargs):
     return result, response
 
 
-def _get_response_dict(details_dict, index, response, response_dict, resp_list_item = ''):
+def _get_response_dict(details_dict, index, response, response_dict, resp_list_item = []):
     """Get the response dict for a command. """
     resp_ref = details_dict["resp_ref_list"][index]
     resp_req = details_dict["resp_req_list"][index]
