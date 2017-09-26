@@ -31,10 +31,6 @@
     font-size: 16px;
 }
 
-.popup {
-	background: #fff;
-}
-
 .case-configuration-table tr:nth-child(even){background-color: #f2f2ff}
 
 .case-configuration-table tr th:nth-child(1), .case-configuration-table tr td:nth-child(1) {
