@@ -42,6 +42,17 @@ path_to_src_python_file = navigator.get_katana_dir() + os.sep + "config.json"
 def old_index(request):
     return render(request, 'settings/index.html', {"data": controls.get_location()})
 
+def getEmpty():
+	edata={"Project": 
+			{"Testsuites": 
+			{"Testsuite": 
+				[{"onError": {"@action": "goto", "@value": "3"}, "path": "../../Warriorspace/Suites/Suite1.xml"}, 
+				{"onError": {"@action": "abort"}, "path": "../../Warriorspace/Suites/Suite2.xml"},
+				 {"path": "../../Warriorspace/Suites/Suite3.xml"}, {"onError": {"@action": "next"}, 
+				 "path": "../../Warriorspace/Suites/Suite4.xml"}]}, "Details": {"default_onError": {"@action": "next", "@value": ""}, 
+				 "Title": "Project Title or Description", "Resultsdir": "", "Name": "Project Name", "Engineer": "Engineer"}}}
+	return edata;
+
 
 def getJSONProjectData(request):
 	path_to_config_file = navigator.get_katana_dir() + os.sep + "config.json"   

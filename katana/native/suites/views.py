@@ -77,6 +77,28 @@ def index(request):
 	context.update(csrf(request))
 	return HttpResponse(template.render(context, request))
 
+
+def getEmpty():
+	edata = {"TestSuite": 
+		{"Testcases": 
+			{"Testcase": 
+				[{"impact": "impact",
+				  "Execute": {"@ExecType": "yes", "Rule": {"@Elsevalue": "", "@Condvalue": "", "@Condition": "", "@Else": "next"}},
+				 "InputDataFile": "", "onError": {"@action": "next", "@value": ""}, 
+				 "runmode": {"@type": "Standard", "@value": ""}, "context": "positive", "runtype": "sequential_keywords", "path": "../Cases/.xml"}, 
+				 {"impact": "impact", "Execute": {"@ExecType": "Yes", "Rule": {"@Elsevalue": "", "@Condvalue": "", "@Condition": "", "@Else": "next"}}, 
+				 "InputDataFile": "", "onError": {"@action": "next", "@value": ""}, 
+				 "runmode": {"@type": "Standard", "@value": ""}, "context": "positive", "runtype": "sequential_keywords", "path": "../Cases/tc_disconnect.xml"}]}, 
+				 "Requirements": {"Requirement": ["Requirement-demo-001", "Requirement-demo-002"]}, "Details": {"Name": "Name Here", "Title": "Title", 
+				 "Resultsdir": "", 
+				 "State": "Released", 
+				 "Time": "23:37:23", 
+				 "Date": "03/01/2017", 
+				 "default_onError": {"@action": "next"}, 
+				 "type": {"@exectype": "sequential_testcases", "@Number_Attempts": "", "@Max_Attempts": ""}, "Engineer": "Engineer"}}};
+	return edata;
+
+
 ## MUST MOVE TO CLASS !!!!
 ## List all your Suite as editable UI.
 ##
@@ -118,9 +140,8 @@ def editSuite(request):
 
 	xml_r["TestSuite"]["Testcases"] = { 'Testcase' :[] }
 	
-	if filename == 'NEW':
+	if filename.upper() == 'NEW':
 		xml_d = copy.deepcopy(xml_r);
-
 	else:
 		xlines = open(filename).read()
 		xml_d = xmltodict.parse(xlines, dict_constructor=dict);
