@@ -36,12 +36,7 @@ function prefixFromAbs(pathToBase, pathToFile) {
 	return upem.join("/") + "/" + bf.splice(blen).join('/') + "/" +  rf[rf.length - 1];
 }
 
-function getRandomID() {
-  min = Math.ceil(1);
-  max = Math.floor(2000);
-  return Math.floor(Math.random() * (max - min)) + min;
-  
-}
+
 function jsUcfirst(string) 
 {
       return string.toLowerCase();
@@ -521,9 +516,9 @@ Two global variables are heavily used when this function is called;
 		
 		items.push('<tr data-sid="'+s+'">');
 		items.push('<td>'+(parseInt(s)+1)+'</td>');
-		var tbid = "textTestSuiteFile-"+s+"-id"+getRandomID();
+		var tbid = "textTestSuiteFile-"+s+"-id";
 
-		var bid = "fileSuitecase-"+s+"-id"+getRandomID();
+		var bid = "fileSuitecase-"+s+"-id";
 		items.push('<td><i title="ChangeFile" class="fa fa-folder-open" key="'+bid+'" katana-click="projectApp.getFileForSuite" /></td>');
 		
 		oneSuite['Execute']['@ExecType'] = jsUcfirst(oneSuite['Execute']['@ExecType']); 
@@ -544,14 +539,14 @@ Two global variables are heavily used when this function is called;
 		var bid = "deleteTestSuite-"+s+"-id";
 		items.push('<td><i  title="Delete" class="fa fa-trash" value="X" key="'+bid+'" katana-click="projectApp.deleteTestSuiteCB"/>');
 
-		bid = "editTestSuite-"+s+"-id"+getRandomID();;
+		bid = "editTestSuite-"+s+"-id";
 		items.push('<i  title="Edit" class="fa fa-pencil" title="Edit" key="'+bid+'" katana-click="projectApp.editTestSuiteCB"/>');
 
 
-		bid = "InsertTestSuite-"+s+"-id"+getRandomID();;
+		bid = "InsertTestSuite-"+s+"-id"
 		items.push('<i  title="Insert" class="fa fa-plus" value="Insert" key="'+bid+'" katana-click="projectApp.insertTestSuiteCB"/>');
 
-		bid = "DuplicateTestSuite-"+s+"-id"+getRandomID();;
+		bid = "DuplicateTestSuite-"+s+"-id"
 		items.push('<i  title="Duplicate" class="fa fa-cc" value="Duplicate" key="'+bid+'" katana-click="projectApp.duplicateTestSuiteCB"/></td>');
 
 		items.push('</tr>');
