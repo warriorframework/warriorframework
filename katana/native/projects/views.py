@@ -36,9 +36,38 @@ import json
 import xmltodict
 from utils.navigator_util import Navigator
 
+navigator = Navigator();
+path_to_src_python_file = navigator.get_katana_dir() + os.sep + "config.json"
 
 def old_index(request):
     return render(request, 'settings/index.html', {"data": controls.get_location()})
+
+def getEmpty():
+	edata={"Project": 
+			{"Testsuites": 
+			{"Testsuite": 
+				[{"onError": {"@action": "goto", "@value": "3"}, "path": "../../Warriorspace/Suites/Suite1.xml"}, 
+				{"onError": {"@action": "abort"}, "path": "../../Warriorspace/Suites/Suite2.xml"},
+				 {"path": "../../Warriorspace/Suites/Suite3.xml"}, {"onError": {"@action": "next"}, 
+				 "path": "../../Warriorspace/Suites/Suite4.xml"}]}, "Details": {"default_onError": {"@action": "next", "@value": ""}, 
+				 "Title": "Project Title or Description", "Resultsdir": "", "Name": "Project Name", "Engineer": "Engineer"}}}
+	return edata;
+
+
+def getJSONProjectData(request):
+	path_to_config_file = navigator.get_katana_dir() + os.sep + "config.json"   
+	x= json.loads(open(path_to_config_file).read());
+	path_to_testcases = x['projdir'];
+	filename = request.GET.get('fname')
+	print "Getting data for ", filename;
+	try:
+		xml_d = xmltodict.parse(open(filename).read());
+	except:
+		xml_d = getEmpty();
+
+	j_data = json.loads(json.dumps(xml_d))
+	responseBack = { 'fulljson': j_data , 'fname': filename }
+	return JsonResponse(responseBack)
 
 ## MUST MOVE TO CLASS !!!!
 ## List all your projects ...
@@ -51,16 +80,18 @@ def index(request):
 	template = loader.get_template("./listAllProjects.html")
 	files = glob.glob(fpath+"*/*.xml")
 
-	print fpath
-
-
 	tt = navigator.get_dir_tree_json(fpath)
 	tt['state']= { 'opened': True };
 	print tt
+
+	fulljsonstring = str(json.loads(json.dumps(tt)));
+	fulljsonstring = fulljsonstring.replace('u"',"'").replace("u'",'"').replace("'",'"');
+	fulljsonstring = fulljsonstring.replace('None','""')
+
 	context = { 
 		'title' : 'List of Projects',	
 		'docSpec': 'projectSpec',
-		'treejs'  : tt, 
+		'treejs'  : fulljsonstring, 
 		'listOfFiles': files	
 	}
 	context.update(csrf(request))
@@ -158,9 +189,6 @@ def editProject(request):
 	# I have to add json objects for every test suite.
 	# 
 	return HttpResponse(template.render(context, request))
-
-
-import HTMLParser
 
 
 

@@ -1,15 +1,10 @@
 
 {% load static %}
-{% load jsonify %}
-
-
 
 <body>
 
-<script type="text/javascript" src="{% static "./doCasesHandling.js" %}"></script>
-
 <div class="tool-bar">
- <button id="addNewCase" class="btn btn-success" onclick="cases.startNewCase()">Add New Testcase</button>
+<button id="addNewCase" class="btn btn-success" onclick="cases.startNewCase()">Add New Testcase</button>
 </div>
 <!--
 <div class="tool-bar"><div katana-click="settings.closeSetting" class="button close">Close</div><div katana-click="settings.save" class="button save">Save</div></div>
@@ -20,15 +15,16 @@
 
 <h2>{{title}}</h2>
 <div id="myCaseTree"></div>
-<div id="mmm" class="hidden">{{treejs|jsonify}}</div>
+<div id="mmm" class="hidden">{{treejs}}</div>
 
 <script> 
+
 $(".linkToCase").click(function() { 
 	var $elem = $(this);
 	var thePage = $elem.attr('href');
 	var theID   = $elem.attr('fname');
     katana.$view.one('tabAdded', function(){
-   		mapFullCaseJson(theID);
+   		caseApp.mapFullCaseJson(theID);
     });
 	//
 	katana.templateAPI.load( thePage, null, null, 'case') ;

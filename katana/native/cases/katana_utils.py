@@ -2,7 +2,10 @@ import os
 import os.path 
 import re, glob, json, docstrings
 #gpysrcdir = pathname(cfg['pythonsrcdir'])
-gpysrcdir = "/home/khusain/warriorframework/warrior/"
+gpysrcdir = "/home/khusain/Projects/forDemo/warriorframework/warrior"
+
+def setPythonSrcDir(fpath):
+    gpysrcdir = fpath; 
 
 def mkactiondirs(driverpath):  # changed
     '''Given a directory name `drivername`, return its action python file name.'''
@@ -30,7 +33,8 @@ def mkactiondirs(driverpath):  # changed
                 else:
                     path = pkg.replace('.', os.sep)
                     actions_dirpath = gpysrcdir + os.sep + 'Actions' + os.sep + path
-                    print actions_dirpath
+                print "GPYSRC", gpysrcdir
+                print "Actions dirpath ", actions_dirpath
                 if os.path.isdir(actions_dirpath):
                     actions_dirpath_list.append(actions_dirpath)
                 else:
@@ -144,10 +148,10 @@ def py_file_details(gpysrcdir):  # changed
     drivers_fpath = sorted([df for df in pyfiles])
     # print 'drivers', json.dumps(drivers)
     # print 'drivers_fpath', json.dumps(drivers_fpath)
-    print "\n*****pyfiles : \n\n", pyfiles
+    #print "\n*****pyfiles : \n\n", pyfiles
     print "\n***** drivers nameonly: \n\n", driver_nameonly
-    print "\n***** drivers: \n\n", drivers
-    print "\n***** drivers fullpath: \n\n", drivers_fpath
+    #print "\n***** drivers: \n\n", drivers
+    #print "\n***** drivers fullpath: \n\n", drivers_fpath
 
     # actiondirs = []
     # for path in drivers_fpath:
@@ -155,9 +159,9 @@ def py_file_details(gpysrcdir):  # changed
     #         actiondirs.append(directory)
     actiondirs = map(mkactiondirs, drivers_fpath)
     print "\n\n drivers: \n\n", json.dumps(drivers_fpath, indent=2)
-    print '\n\nactiondirs: \n\n', json.dumps(actiondirs, indent=2)
+    #print '\n\nactiondirs: \n\n', json.dumps(actiondirs, indent=2)
 
     actionpyfiles = map(mkactionpyfiles, actiondirs)
     drivercomments = fetch_comments(zip(drivers, actionpyfiles))
-    # print 'driver:docs\n', json.dumps(drivercomments, indent=2)
+    print 'driver:docs\n', json.dumps(drivercomments, indent=2)
     return drivercomments

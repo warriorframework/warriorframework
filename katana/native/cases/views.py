@@ -33,7 +33,7 @@ import scanfiles
 navigator = Navigator();
 path_to_src_python_file = navigator.get_katana_dir() + os.sep + "config.json"
 All_case_action_details = py_file_details(json.loads(open(path_to_src_python_file).read())['pythonsrcdir']);
-		
+setPythonSrcDir(All_case_action_details);
 
 def index(request):
 	path_to_config_file = navigator.get_katana_dir() + os.sep + "config.json"
@@ -122,7 +122,7 @@ def getListOfKeywords(request):
 ##
 def getListOfComments(request):
 	"""
-	Return infomration about the driver and keyword in the incoming POST request.
+	Return information about the driver and keyword in the incoming POST request.
 	"""
 	if 0: 
 			path_to_src_python_file = navigator.get_katana_dir() + os.sep + "config.json"
@@ -136,7 +136,7 @@ def getListOfComments(request):
 	keyword = request.GET.get('keyword');
 	responseBack = { 'fields': [] }
 	
-	print driver, " ", keyword;
+	print "LOOOK::-->",  driver, " ", keyword;
 
 	if driver == "To_Be_Developed" :
 		return JsonResponse(responseBack)
@@ -145,14 +145,17 @@ def getListOfComments(request):
 		items = details[driver]
 	except:
 		return JsonResponse(responseBack)
-
-	
-	for item in details[driver][0]: 
-		print item['fn']
-		if item['fn'] == keyword: 
-			print item.keys();
-			responseBack['fields'].append(item);
-
+	print "inputs = ", driver,  keyword
+	print "items == ", items;
+	try: 
+		for item in details[driver][0]: 
+			print "fn ==> ", item['fn'], driver, keyword
+			if item['fn'] == keyword: 
+				print item.keys();
+				responseBack['fields'].append(item);
+				break;
+	except:
+		print details[driver]
 	return JsonResponse(responseBack)
 
 def getEmpty():

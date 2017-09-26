@@ -25,7 +25,7 @@
 			      katana.$view.one('tabAdded', function(){
 			      //var jdata = sdata.replace(/'/g, '"');
 			      //var jsdata = JSON.parse(jdata)
-			     mapFullCaseJson(thePage,'#listOfTestStepsForCase');
+			     caseApp.mapFullCaseJson(thePage,'#listOfTestStepsForCase');
 				  });
 				  var xref="./cases/editCase/?fname=" + thePage; 
 				  katana.templateAPI.load(xref, null, null, 'Case') ;
@@ -39,19 +39,4 @@
 		katana.closeSubApp();
 	},
 
-	emailCases: {
-		generalBody: '',
-
-		init: function () {
-			console.log('test auto init of app');
-			Cases.emailCases.generalBody = $(this);
-		},
-	},
-
-
-	save: function(){
-		katana.templateAPI.post.call( katana.$activeTab.find('.to-save'), null, null, katana.toJSON(), function( data ) {
-			console.log('saved', data);
-		});
-	},
 };

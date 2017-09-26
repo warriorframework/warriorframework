@@ -15,13 +15,7 @@ the views.py python for Django.
 
 */
 
-// This function is required to uniquely identify an element on activeTab. 
-function getRandomCaseID() {
-  min = Math.ceil(1);
-  max = Math.floor(4000);
-  return Math.floor(Math.random() * (max - min)) + min;
-  
-}
+
 
 // Belongs in main.js 
 if (typeof jsonAllCasePages === 'undefined') {
@@ -42,14 +36,11 @@ function jsUcfirst(string)
 // For this app. 
 var jsonCaseObject = [];
 var jsonCaseDetails = [];        		// A pointer to the Details   
-var jsonCaseSteps = [];           		// 
-var activePageID = getRandomCaseID();   // for the page ID 
-var jsonFilesInfo = null; 
+var jsonCaseSteps = [];           		// A pointer to the Steps object
 //
 // This function is called when the page loads in cases.js . 
 //
 function mapFullCaseJson(myobjectID, where){
-	activePageID = getRandomCaseID();
 	var myfile = katana.$activeTab.find('#xmlfilename').text();
 	jQuery.getJSON("./cases/getJSONcaseDataBack/?fname="+myfile).done(function(data) {
 			a_items = data['fulljson'];
@@ -410,55 +401,17 @@ function mapCaseJsonToUi(data){
 		items.push('<td>'+oneCaseStep['runmode']['@type']+'</td>');
 		items.push('<td>'+oneCaseStep['context']+'</td>');
 		items.push('<td>'+oneCaseStep['impact']+'</td>'); 
-		var bid = "deleteTestStep-"+s+"-id-"+getRandomCaseID();
-		//items.push('<td><input type="button" class="btn-danger" value="X" id="'+bid+'"/>');
-		items.push('<td><i class="fa fa-trash" title="Delete"  value="X" id="'+bid+'" />');
-		
-		$('#'+bid).off('click');   //unbind and bind are deprecated. 
-		$(document).on('click','#'+bid,function(  ) {
-			//alert(this.id);
-			var names = this.id.split('-');
-			var sid = parseInt(names[1]);
-			removeTestStep(sid);
-		});
+		var bid = "deleteTestStep-"+s+"-id-"
+		items.push('<td><i title="Delete" class="fa fa-trash" theSid="'+s+'" id="'+bid+'" katana-click="deleteCaseFromLine()" key="'+bid+'"/>');
 
+		bid = "editTestStep-"+s+"-id-";
+		items.push('<i title="Edit" class="fa fa-pencil" theSid="'+s+'" value="Edit/Save" id="'+bid+'" katana-click="editCaseFromLine()" key="'+bid+'"/>');
 
-		bid = "editTestStep-"+s+"-id-"+getRandomCaseID();
-		items.push('<i title="Edit"  class="fa fa-pencil" theSid="'+s+'" value="Edit/Save"  id="'+bid+'"></i>');
-		$('#'+bid).off('click');   //unbind and bind are deprecated. 
-		$('#'+bid).attr('theSid', s);  //Set tthe name
-		katana.$activeTab.on('click','#'+bid,function() {
-			//alert(this.id);
-			var names = this.id.split('-');
-			var sid = parseInt(names[1]);
-			katana.popupController.open(katana.$activeTab.find("#editCaseStepDiv").html(),"Edit..." + sid, function(popup) {
-				katana.$activeTab.find("#editCaseStepDiv").attr('popup-id',popup);
-				setupPopupDialog(sid,xdata,popup);
-			});
-		 }); 
+		bid = "addTestStepAbove-"+s+"-id-";
+		items.push('<i title="Insert" class="fa fa-plus" theSid="'+s+'" value="Insert" id="'+bid+'" katana-click="addCaseFromLine()" key="'+bid+'"/>');
 
-		bid = "addTestStepAbove-"+s+"-id-"+getRandomCaseID();
-		items.push('<i  title="Insert" class="fa fa-plus" value="Insert" id="'+bid+'"/>');
-		
-		$('#'+bid).off('<td>click');   //unbind and bind are deprecated. 
-		$(document).on('click','#'+bid,function(  ) {
-			//alert(this.id);
-			var names = this.id.split('-');
-			var sid = parseInt(names[1]);
-			addTestStepAboveToUI(sid,xdata,0);
-		});
-
-		bid = "dupTestStepAbove-"+s+"-id-"+getRandomCaseID();
-		items.push('<i  title="Duplicate" class="fa fa-cc" value="Duplicate" id="'+bid+'"/></td>');
-		
-		$('#'+bid).off('<td>click');   //unbind and bind are deprecated. 
-		$(document).on('click','#'+bid,function(  ) {
-			//alert(this.id);
-			var names = this.id.split('-');
-			var sid = parseInt(names[1]);
-			addTestStepAboveToUI(sid,xdata,1);
-		});
-		items.push('</tr>');
+		bid = "dupTestStepAbove-"+s+"-id-";
+		items.push('<i title="Insert" class="fa fa-copy" theSid="'+s+'" value="Duplicate" id="'+bid+'" katana-click="duplicateCaseFromLine()" key="'+bid+'"/>');
 
 	}
 
@@ -481,7 +434,33 @@ function mapCaseJsonToUi(data){
 	
 }  // end of function 
 
+var deleteCaseFromLine = function() {
+	var names = this.attr('key').split('-');
+	var sid = parseInt(names[1]);
+	removeTestStep(sid);
+};
 
+var editCaseFromLine = function() { 
+	var names = this.attr('key').split('-');
+	var sid = parseInt(names[1]);
+	katana.popupController.open(katana.$activeTab.find("#editCaseStepDiv").html(),"Edit..." + sid, function(popup) {
+		var popup = $(this).closest('.popup');
+		katana.$activeTab.find("#editCaseStepDiv").attr('popup-id',popup);
+		setupPopupDialog(sid,jsonCaseSteps['step'] ,popup);
+	});
+};
+
+var addCaseFromLine = function() {
+	var names = this.attr('key').split('-');
+	var sid = parseInt(names[1]);
+	addTestStepAboveToUI(sid,jsonCaseSteps['step'],0);
+};
+
+var duplicateCaseFromLine = function() { 
+	var names = this.attr('key').split('-');
+	var sid = parseInt(names[1]);
+	addTestStepAboveToUI(sid,jsonCaseSteps['step'],1);
+};
 
 function 	makePopupArguments(popup,  oneCaseStep) {
 	var a_items = [] ;
@@ -515,7 +494,7 @@ function 	makePopupArguments(popup,  oneCaseStep) {
 		jsonCaseSteps['step'] = [jsonCaseSteps['step']];
 		}
 	fillCaseStepDefaultGoto(popup);
-	popup.find('#SteponError-at-action').on('change', function(){ 
+		popup.find('#SteponError-at-action').on('change', function(){ 
 			var popup = $(this).closest('.popup');
 			fillCaseStepDefaultGoto(popup);
 	});
@@ -527,16 +506,18 @@ function 	makePopupArguments(popup,  oneCaseStep) {
 var fillCaseStepDefaultGoto = function(popup) {
 
 	var gotoStep =popup.find('#SteponError-at-action').val();
-	console.log("Step ", gotoStep);
+	console.log("Step ", gotoStep, popup.find('#SteponError-at-action'));
 	var defgoto = popup.find('#SteponError-at-value'); 
-		defgoto.hide();
+	defgoto.hide();
 
-	if (gotoStep.trim() == 'goto'.trim()) { 
-		defgoto.show();
-	} else {
-		defgoto.hide();
+	// if (gotoStep.trim() == 'goto'()) { 
+	// 	defgoto.show();
+	// } else {
+	// 	defgoto.hide();
 		
-	}
+	// }
+
+
 	//var sid = popup.find('#CaseRowToEdit').val();
 	defgoto.empty(); 
 	var xdata = jsonCaseObject["Steps"]['step']; // ['Testcase']; 
@@ -652,7 +633,8 @@ function setupPopupDialog(sid,xdata,popup) {
 	// Fill in the value based on keyword and action 
 	var opts = jQuery.getJSON("./cases/getListOfComments/?driver="+driver+"&keyword="+keyword).done(function(data) {
  			a_items = data['fields'];
- 			console.log(a_items);
+
+ 			console.log(data, a_items);
 
  			out_array = a_items[0]['comment'];
  			var outstr = out_array.join("<br>");
@@ -745,6 +727,41 @@ function setupPopupDialog(sid,xdata,popup) {
 		});
 
 }
+//
+
+var insertRequirementIntoLine = function() {
+	var names = this.attr('key').split('-');
+	var sid = parseInt(names[1]);
+	console.log("Insert" + sid + " " + this.id +" from " + rdata); 
+	adjustRequirementsTable();
+	jsonCaseObject['Requirements']['Requirement'].splice(sid - 1, 0, "");
+	createRequirementsTable();	
+}
+			
+var saveRequirementToLine = function(){
+
+	var names = this.attr('key').split('-');
+	console.log("Test text idd" , katana.$activeTab.find('[txtId]'));
+	var sid = parseInt(names[1]);
+	var txtVl = katana.$activeTab.find("#textRequirement-name-"+sid+"-id").val();
+	console.log("Editing ..." + sid, txtVl);
+	adjustRequirementsTable();
+	rdata = jsonCaseObject['Requirements']['Requirement'];
+	rdata[sid] = txtVl;
+	createRequirementsTable();	
+}
+
+var deleteOneRequirementToLine = function() {
+	var names = this.attr('key').split('-');
+	var sid = parseInt(names[1]);
+	console.log("Remove ",sid ,this.id ," from " , rdata); 
+	adjustRequirementsTable();
+	rdata = jsonCaseObject['Requirements']['Requirement'];
+	rdata.splice(sid,1); 
+	createRequirementsTable();
+}
+
+
 
 // For sorting the test case steps table. 
 // Renumbers the IDs on the table and redraws it. 
@@ -984,52 +1001,19 @@ function createRequirementsTable(){
 					oneReq = '';
 				}
 
-				items.push('<tr data-sid=""><td>'+idnumber+'</td>');
-				var bid = "textRequirement-name-"+s+"-id";	
+			items.push('<tr data-sid=""><td>'+idnumber+'</td>');
+			var bid = "textRequirement-name-"+s+"-id";	
 				
-				items.push('<td><input type="text" value="'+oneReq+'" id="'+bid+'"/></td>');
+			items.push('<td><input type="text" value="'+oneReq+'" id="'+bid+'"/></td>');
 		
-				bid = "deleteRequirement-"+s+"-id"+getRandomCaseID();
-				items.push('<td><i  class="fa fa-trash"  title="Delete" id="'+bid+'"/>');
-				katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
-				$(document).on('click','#'+bid,function( event ) {
-					var names = this.id.split('-');
-					var sid = parseInt(names[1]);
-					console.log("Remove ",sid ,this.id ," from " , rdata); 
-					adjustRequirementsTable();
-					rdata = jsonCaseObject['Requirements']['Requirement'];
-					rdata.splice(sid,1); 
-					createRequirementsTable();
-					return false;
-				});
-				bid = "editRequirement-"+s+"-id"+getRandomCaseID();
-				var tbid = "textRequirement-name-"+s+"-id";	
-				items.push('<i class="fa fa-pencil" title="Save Edit" id="'+bid+'"  txtId="'+tbid+'"/>');
-				katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
-				$(document).on('click','#'+bid,function() {
-					var names = this.id.split('-');
-					console.log("Test text idd" , katana.$activeTab.find('[txtId]'));
-					var sid = parseInt(names[1]);
-					var txtVl = katana.$activeTab.find("#textRequirement-name-"+sid+"-id").val();
-					console.log("Editing ..." + sid, txtVl);
-					adjustRequirementsTable();
-					rdata = jsonCaseObject['Requirements']['Requirement'];
-					rdata[sid] = txtVl;
-					createRequirementsTable();	
-				});
+			bid = "deleteRequirement-"+s+"-id";
+			items.push('<td><i  class="fa fa-trash"  title="Delete" id="'+bid+'" katana-click="deleteOneRequirementToLine()" key="'+bid+'"/>');
+			bid = "saveOneRequirement-"+s+"-id";
+			var tbid = "textRequirement-name-"+s+"-id";	
+			items.push('<i class="fa fa-pencil" title="Save Edit" id="'+bid+'" txtId="'+tbid+'" katana-click="saveRequirementToLine()" key="'+bid+'"/>');
+			bid = "insertRequirement-"+s+"-id";
+			items.push('<i class="fa fa-plus"  title="Insert" id="'+bid+'" katana-click="insertRequirementIntoLine()" key="'+bid+'"/></td>');
 
-			bid = "insertRequirement-"+s+"-id"+getRandomCaseID();
-			items.push('<i class="fa fa-plus"  title="Insert" id="'+bid+'"/></td>');
-			katana.$activeTab.find('#'+bid).off('click');  // unbind is deprecated - debounces the click event. 
-			$(document).on('click','#'+bid,function( event ) {
-				var names = this.id.split('-');
-				var sid = parseInt(names[1]);
-				console.log("Insert" + sid + " " + this.id +" from " + rdata); 
-				adjustRequirementsTable();
-				jsonCaseObject['Requirements']['Requirement'].splice(sid - 1, 0, "");
-				createRequirementsTable();	
-				return false;
-			});
 		}
 	
 	items.push('</tbody>');

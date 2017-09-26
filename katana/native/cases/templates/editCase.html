@@ -3,13 +3,14 @@
 <body>
     <link rel="stylesheet" href="{% static "./case_tables.css" %}">
     <div class="tool-bar">
-        <button id="addStep" class="btn btn-success" onclick="addNewTestStepToUI()">Add Step To Case</button>
-        <button class="btn btn-success" onclick="addRequirementToCase()">Add Requirement</button>
-        <button class="btn btn-success" onclick="sendCaseToServer()">Write Changes To Disk</button>
+        <i id="addStep" class="btn btn-success" katana-click="caseApp.addNewTestStepToUI">Add Step To Case</i>
+        <i class="btn btn-success" katana-click="caseApp.addRequirementToCase">Add Requirement</i>
+        <i class="btn btn-success" katana-click="caseApp.sendCaseToServer">Write Changes To Disk</i>
+       
         <label class="col-md-2 text-righ" t>Save file to </label>
         <input class="text-right col-md-4" type="text" id="my_file_to_save" name="my_file_to_save" value="{{savefilename}}" />
     </div>
-    <div class="container-fluid">
+    <div class="container-fluid" auto-init="caseApp.init">
         <div class="row">
             <div class="col-md-9">
                 <div class="row ">
@@ -54,8 +55,8 @@
                         <div class="btn-group col-md-12">
                         <input type="text" id="caseInputDataFile" value="{{caseInputDataFile}}" />
                         
-                        <button class="btn btn-info" onclick="getResultsDirForCase('#caseInputDataFile')">...</button>
-                        <button class="btn btn-info" onclick="start_wdfEditor('#caseInputDataFile')">WDF</button>
+                        <button class="btn btn-info" katana-click="caseApp.getResultsDirForCase">...</button>
+                        <button class="btn btn-info" katana-click="caseApp.start_wdfEditor()">WDF</button>
                         </div>
                     </div>
 
@@ -95,7 +96,7 @@
                         <label class="text-right " id="caseDatatype_lbl">Results Directory:</label>
                         <div class="btn-group col-md-12">
                         <input class="text-right " type="text" id="caseResultsdir" value="{{caseResultsdir}}">
-                        <button class="btn btn-success r" onclick="getResultsDirForCase('#caseResultsdir')">...</button>
+                        <!--<button class="btn btn-success r" katana-click="caseApp.getResultsDirForCase('#caseResultsdir')">...</button>-->
                         </div>
                     </div>
                 </div>
@@ -210,14 +211,14 @@
                             </div>
                             <div class="field col-md-3">
                                 <label>Warrior Data File:</label>
-                                <button class="btn btn-info" onclick="getResultsDirForCaseStep('#StepInputDataFile')">...</button>
+                                 <button class="btn btn-info" katana-click="caseApp.getResultsDirForCaseStep">...</button>
                                 <input type="text" id="StepInputDataFile" value="" />
                             </div>
                             <div id="arguments-textarea"> </div>
                             <div>
-                                <input type="button" class="btn btn-success" value="Append Argument" id="appendArgument" />
-                                <input type="button" class="btn btn-success" value="Save Changes To Test Step" id="saveEditCaseStep" />
-                                <input type="button" class="btn btn-danger" value="Ignore Changes" id="editCaseStepClose" />
+                                <button class="btn btn-success" id="appendArgument" katana-click="caseApp.appendPopupArgument">Append Argument </button>
+                                <button class="btn btn-success" id="saveEditCaseStep" katana-click="caseApp.saveTestCaseChanges">Save Changes To Test Step </button>
+                               
                             </div>
                         </div>
                         <div id="sourceCaseFileText" class="col-md-8" style='overflow:auto;'> Source file </div>
@@ -229,6 +230,6 @@
         </div>
     </div>
     </div>
-    <script type="text/javascript" src="{% static "./doCasesHandling.js" %}"></script>
+
     
 </body>
