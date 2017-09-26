@@ -1,12 +1,9 @@
 
 {% load static %}
-{% load jsonify %}
-
-
 
 <body>
 
-<script type="text/javascript" src="{% static "./doCasesHandling.js" %}"></script>
+<script type="text/javascript" src="{% static "./casesApp.js" %}"></script>
 
 <div class="tool-bar">
  <button id="addNewCase" class="btn btn-success" onclick="cases.startNewCase()">Add New Testcase</button>
@@ -20,15 +17,16 @@
 
 <h2>{{title}}</h2>
 <div id="myCaseTree"></div>
-<div id="mmm" class="hidden">{{treejs|jsonify}}</div>
+<div id="mmm" class="hidden">{{treejs}}</div>
 
 <script> 
+
 $(".linkToCase").click(function() { 
 	var $elem = $(this);
 	var thePage = $elem.attr('href');
 	var theID   = $elem.attr('fname');
     katana.$view.one('tabAdded', function(){
-   		mapFullCaseJson(theID);
+   		caseApp.mapFullCaseJson(theID);
     });
 	//
 	katana.templateAPI.load( thePage, null, null, 'case') ;
