@@ -50,7 +50,7 @@ def update_jira_by_id(jiraproj, jiraid, exec_dir, status):
 
 
 def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
-         jiraproj, overwrite, jiraid, dbsystem):
+         jiraproj, overwrite, jiraid, dbsystem, livehtmllocn):
     """Parses the input parameters (i.e. sys.argv)
         If the input parameter is an xml file:
             - check if file exists, if exists
@@ -94,8 +94,17 @@ def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
                     else:
                         default_repo.update({'db_obj': False})
 
+                    #pdate livehtmllocn to default repo
+                    if livehtmllocn:
+                        default_repo.update({'livehtmllocn': livehtmllocn})
+
                     if mockrun:
                         result = mockrun_driver.main(abs_filepath, len(parameter_list))
+                        
+                    
+                    
+
+                    
                     elif Utils.xml_Utils.getRoot(abs_filepath).tag == 'Testcase':
                         default_repo['war_file_type'] = "Case"
                         result, tc_duration, data_repository = testcase_driver.main(
@@ -141,15 +150,18 @@ def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
 if __name__ == '__main__':
 
     (FILEPATH, mockrun, AUTO_DEFECTS, version, CSE_EXEC, IRON_CLAW, JIRAPROJ,
-     OVERWRITE, JIRAID, DBSYSTEM) = warrior_cli_driver.main(sys.argv[1:])
+     OVERWRITE, JIRAID, DBSYSTEM, LIVEHTMLLOCN) = warrior_cli_driver.main(sys.argv[1:])
+
     if version:
         framework_detail.warrior_framework_details()
         sys.exit(0)
     if not CSE_EXEC and len(FILEPATH) == 0:
         print_error("Provide at least one xml file to execute")
     status = main(FILEPATH, mockrun, AUTO_DEFECTS, CSE_EXEC, IRON_CLAW,
-                  JIRAPROJ, OVERWRITE, JIRAID, DBSYSTEM)
+                  JIRAPROJ, OVERWRITE, JIRAID, DBSYSTEM, LIVEHTMLLOCN)
     status = {"true": True, "pass": True}.get(str(status).lower())
+    # add code to send div finished using katana interface class
+    
     if status is True:
         print_info("DONE 0")
         sys.exit(0)
