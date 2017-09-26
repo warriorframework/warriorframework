@@ -42,29 +42,30 @@
         </div>
 
 <!-- new cmd options dialog -->
-<div  id="configure_layout_dialog" class="execution cmd-options-dialog-container small " >
+<div  class="execution dialog-container small" id="configure_layout_dialog" >
       <div class="title"><label>Layout Settings</label> <i class="fa fa-times" katana-click="execution.layoutViewer.close_configuration_dialog" ></i> </div>
-      <form method="dialog" id="configure_layout_form">
-      <div class="execution cmd-options-dialog-content">
-
-           <div class="execution cmd-options-qn questionaire-qn" name="configure-layout-warriorspace-data" id="configure-layout-warriorspace-data">
-           <section>
-             <div class="feild"><label>Warriorspace</label><input name="warriorspace" key="type" type="text" value="" placeholder="Enter the path to your warriorspace directory" required></div>
-             <!-- <div class="feild"><label>Select Layout Style</label><input name="select_layout_style" key="pass" type="text" value="" placeholder="Select your layout style"></div> -->
-           </section>
-         </div>
+      <form  id="configure_layout_form">
+      <div class="execution dialog-content">
+           <div class="execution configure-layout-data" name="configure-layout-warriorspace-data" id="configure-layout-warriorspace-data">
+             	<div class="feild execution configure-layout-data-ws">
+	             	<label>Warriorspace</label>
+	             	<input name="warriorspace" key="type" type="text" value="" placeholder="Enter the path to your warriorspace directory" required>
+             	</div>
+				<div class="execution  execution-button browse" id="browse-ws"  katana-click="execution.openExplorer">Browse</div> 
+         	</div>
              <div class="execution cmd-options-qns-button-bar">
+             	   
                <div class="execution  execution-button" id="clear" type="reset" katana-click="execution.layoutViewer.clear">Reset</div>
-               <div class="execution  execution-button" name="configure_layout_confirm" type="submit" katana-click="execution.layoutViewer.confirm">Confirm</div>
+               <div class="execution  execution-button" name="configure_layout_confirm" type="submit" katana-click="execution.layoutViewer.confirm">Save</div>
              </div>
 
       </div>
   </form>
 </div>
 
-<div class="execution cmd-options-dialog-container" id="cmd-options-forms-container" name="cmd-options-forms-container" data-cmdCreatorObject="" auto-init="execution.setCmdCreatorObject">
+<div class="execution dialog-container" id="cmd-options-dialog"  data-cmdCreatorObject="" auto-init="execution.setCmdCreatorObject">
       <div class="title"><label>Command Options</label> <i class="fa fa-times" katana-click="cmdBuilder.cmdOptionsViewer.closeCmdOptionsDialog" ></i> </div>
-      <div class="execution cmd-options-dialog-content">
+      <div class="execution dialog-content">
             <div class="execution cmd-options-menu" id="cmd-options-slider">
               <!-- <i title="" name="left" class="fa fa-chevron-left" katana-click="cmdBuilder.cmdOptionsViewer.moveIconsLeft"></i> -->
               <div class='execution cmd-options-icons-bar'>
@@ -117,13 +118,30 @@
                           <label for="jira-id-no">no</label>
                         </div>
                   </div>
-                  <div class="execution cmd-options-qn questionaire-qn" name="qnComplete" data-broughtBy='' ><label>Completed!! Hit Submit to confirm</label></div>
+                  <div class="execution cmd-options-qn questionaire-qn" name="qnComplete" data-broughtBy='' ><label>Completed!! Hit Save to confirm.</label></div>
 
                   <div class="execution cmd-options-data questionaire-data" name="jira-project-data" id="jira-project-data">
                       <div class="feild" >
                         <label for="jira-project-value">Jira Project Name</label>
-                        <input id="jira-project-value" name="jira-project-value" key="type" type="text" value="" placeholder="Enter Jira Project Name from settings -> Jira settings" required>
-                      </div>
+                        <!-- <input list="jira-project-value" id="jira_proj_list" type="text"> -->
+                        <select id="jira-project-value" name="jira-project-value" key="Select a Jira Project" placeholder="Select a Jira Project ">
+                       		{% if not defaults.jira_proj.strip %}
+                       			<option value="" placeholder="Select a Jira Project" selected></option>
+                       		{% endif %}
+                         	{%for proj in jira_proj%}                        		
+                         		{% ifequal proj.name defaults.jira_proj %}
+                         			<option value="{{proj.name}}" selected>{{proj.name}}</option>
+                         		{% else %}
+                         			<option value="{{proj.name}}" >{{proj.name}}</option>
+                         		{% endifequal %}
+                         	{% endfor %} 
+<!--                        
+                         	<option value='proj1' >proj1</option>
+                         	<option value='proj2' >proj2</option>
+-->
+                        </select>
+<!--                         <input id="jira-project-value" name="jira-project-value" key="type" type="text" value="" placeholder="Enter Jira Project Name from settings -> Jira settings" required>
+ -->                      </div>
                   </div>
                   <div class="execution cmd-options-data questionaire-data" name="jira-id-data" id="jira-id-data">
                       <div class="feild">
@@ -135,7 +153,7 @@
                     <div class="execution  execution-button " name="previous" katana-click="questionaire.onPrevious">Previous</div>
                     <div class="execution  execution-button " name="next" katana-click="questionaire.onNext">next</div>
                     <div class="execution  execution-button " name="reset" katana-click='questionaire.startOver' form='jira-options-form' data-callBack='cmdBuilder.cmdOptions.clearOptions'>Reset</div>
-                    <div class="execution  execution-button " name="submit" katana-click='questionaire.submitQuestionaire' data-callBack='cmdBuilder.cmdOptions.submitJiraOptions'>Submit</div>
+                    <div class="execution  execution-button " name="submit" katana-click='questionaire.submitQuestionaire' data-callBack='cmdBuilder.cmdOptions.submitJiraOptions'>Save</div>
                   </div>
             </form>
 
@@ -187,7 +205,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="execution cmd-options-qn questionaire-qn" name="qnComplete" ><label>Completed!! Hit ok to confirm or cancel to discard</label></div>
+                    <div class="execution cmd-options-qn questionaire-qn" name="qnComplete" ><label>Completed!! Hit Save to confirm.</label></div>
 
                     <div class="execution cmd-options-data questionaire-data" name="case-rmt-value-data" id="case-rmt-value-data">
                       <div class="feild">
@@ -205,7 +223,7 @@
                     <div class="execution  execution-button" name="previous" katana-click="questionaire.onPrevious">Previous</div>
                     <div class="execution  execution-button" name="next" katana-click="questionaire.onNext">next</div>
                     <div class="execution  execution-button" name="reset" katana-click='questionaire.startOver' form='case-options-form' data-callBack='cmdBuilder.cmdOptions.clearOptions'>Reset</div>
-                    <div class="execution  execution-button" name="submit" katana-click='questionaire.submitQuestionaire' data-callBack='cmdBuilder.cmdOptions.submitCaseOptions'>Submit</div>
+                    <div class="execution  execution-button" name="submit" katana-click='questionaire.submitQuestionaire' data-callBack='cmdBuilder.cmdOptions.submitCaseOptions'>Save</div>
                   </div>
             </form>
             <form id="dataBase-options-form" name='dataBaseOptions' class="execution cmd-options-qns questionaire" data-questionaireObject="">
@@ -218,7 +236,7 @@
                   </div>
                   <div class="execution cmd-options-qns-button-bar">
                     <div class="execution  execution-button" name="reset" katana-click='questionaire.startOver' form='dataBase-options-form' data-callBack='cmdBuilder.cmdOptions.clearOptions'>Reset</div>
-                    <div class="execution  execution-button" name="submit" katana-click='questionaire.submitQuestionaire' data-callBack='cmdBuilder.cmdOptions.submitDataBaseOptions'>Submit</div>
+                    <div class="execution  execution-button" name="submit" katana-click='questionaire.submitQuestionaire' data-callBack='cmdBuilder.cmdOptions.submitDataBaseOptions'>Save</div>
                   </div>
             </form>
             <form id="schedule-options-form" name='schedulingOptions' class="execution cmd-options-qns questionaire" data-questionaireObject="">
@@ -235,7 +253,7 @@
                   </div>
                   <div class="execution cmd-options-qns-button-bar">
                     <div class="execution  execution-button" name="reset" katana-click='questionaire.startOver' form='dataBase-options-form' data-callBack='cmdBuilder.cmdOptions.clearOptions'>Reset</div>
-                    <div class="execution  execution-button" name="submit" katana-click='questionaire.submitQuestionaire' data-callBack='cmdBuilder.cmdOptions.submitSchedulingOptions'>Submit</div>
+                    <div class="execution  execution-button" name="submit" katana-click='questionaire.submitQuestionaire' data-callBack='cmdBuilder.cmdOptions.submitSchedulingOptions'>Save</div>
                   </div>
             </form>
             <form id="custom-options-form" name='customOptions' class="execution cmd-options-qns questionaire" data-questionaireObject="">
@@ -248,7 +266,7 @@
                   </div>
                   <div class="execution cmd-options-qns-button-bar">
                     <div class="execution  execution-button" name="reset" katana-click='questionaire.startOver' form='dataBase-options-form' data-callBack='cmdBuilder.cmdOptions.clearOptions'>Reset</div>
-                    <div class="execution  execution-button" name="submit" katana-click='questionaire.submitQuestionaire' data-callBack='cmdBuilder.cmdOptions.submitCustomOptions'>Submit</div>
+                    <div class="execution  execution-button" name="submit" katana-click='questionaire.submitQuestionaire' data-callBack='cmdBuilder.cmdOptions.submitCustomOptions'>Save</div>
                   </div>
             </form>
 

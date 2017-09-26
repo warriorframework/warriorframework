@@ -30,11 +30,11 @@ var cmdBuilder ={
     },
 
     openCmdOptionsDialog: function(){
-      var cmdOptionsDialog = katana.$activeTab.find('.cmd-options-dialog-container');
+      var cmdOptionsDialog = katana.$activeTab.find('#cmd-options-dialog');
       cmdBuilder.cmdOptionsViewer.showHideDialog(cmdOptionsDialog, 'show');
     },
     closeCmdOptionsDialog: function(){
-      var cmdOptionsDialog = katana.$activeTab.find('.cmd-options-dialog-container');
+      var cmdOptionsDialog = katana.$activeTab.find('#cmd-options-dialog');
       cmdBuilder.cmdOptionsViewer.showHideDialog(cmdOptionsDialog, 'hide');
   	},
     // showOptions: function(){
@@ -46,7 +46,7 @@ var cmdBuilder ={
     // },
     openOptionsForm: function(){
       var elem = $(this);
-      var closest_dialog = katana.$activeTab.find('.cmd-options-dialog-container');
+      var closest_dialog = katana.$activeTab.find('#cmd-options-dialog');
       var form = closest_dialog.find('#' + elem.attr('data-showId'));
       cmdBuilder.cmdOptionsViewer.hideAllQnForms();
       cmdBuilder.cmdOptionsViewer.showHideQnForm(form, 'show');
@@ -60,7 +60,7 @@ var cmdBuilder ={
     //   cmdBuilder.cmdOptionsViewer.showHideQnForm(form, 'hide');
     // },
     hideAllQnForms: function(){
-      var formsContainer = katana.$activeTab.find('.cmd-options-dialog-container');
+      var formsContainer = katana.$activeTab.find('#cmd-options-dialog');
       var formList = formsContainer.find('form');
       $.each(formList, function(index, form){
         $(form).hide();
@@ -130,7 +130,6 @@ var cmdBuilder ={
               item[rxItemName] = rxItemCmd;
               updated += 1
             }
-            console.log(cmdObject);
           });
 
           // if the recieved item does not exist already add it to the cmd Array
@@ -174,16 +173,18 @@ var cmdBuilder ={
 
       cmdOptions:{
         submitJiraOptions: function(){
-          var cmdBuilderElement = katana.$activeTab.find(".cmd-options-dialog-container");
+          var cmdBuilderElement = katana.$activeTab.find("#cmd-options-dialog");
           var cmdCreatorObject = cmdBuilderElement.data('cmdCreatorObject');
           var qnObject = katana.$activeTab.find('#jira-options-form').data('questionaireObject');
           jiraCmdObject = {'jiraOptions': ''};
           jiraCmd='';
           var jira_ad_radio = katana.$activeTab.find("#jira-ad-yes");
           var jira_id_radio = katana.$activeTab.find("#jira-id-yes");
+          var jira_proj = katana.$activeTab.find("#jira-project-value");
           var jira_proj_val = katana.$activeTab.find("#jira-project-value").val();
           var jira_id_val = katana.$activeTab.find("#jira-id-value").val();
 
+          
           // check if jira ad is checked
           if ($(jira_ad_radio).is(':checked')){
             jiraCmd += '-ad' + ' ' + '-jiraproj' + ' ' + jira_proj_val;
@@ -199,7 +200,7 @@ var cmdBuilder ={
           },
 
         submitCaseOptions: function(){
-          var cmdBuilderElement = katana.$activeTab.find(".cmd-options-dialog-container");
+          var cmdBuilderElement = katana.$activeTab.find("#cmd-options-dialog");
           var cmdCreatorObject = cmdBuilderElement.data('cmdCreatorObject');
           var qnObject = katana.$activeTab.find('#case-options-form').data('questionaireObject');
           cmdObject = {'caseOptions': ''};
@@ -232,7 +233,7 @@ var cmdBuilder ={
           qnObject.form.hide();
           },
         submitDataBaseOptions: function(){
-          var cmdBuilderElement = katana.$activeTab.find(".cmd-options-dialog-container");
+          var cmdBuilderElement = katana.$activeTab.find("#cmd-options-dialog");
           var cmdCreatorObject = cmdBuilderElement.data('cmdCreatorObject');
           var qnObject = katana.$activeTab.find('#dataBase-options-form').data('questionaireObject');
 
@@ -253,7 +254,7 @@ var cmdBuilder ={
 
           },
         submitSchedulingOptions: function(){
-          var cmdBuilderElement = katana.$activeTab.find(".cmd-options-dialog-container");
+          var cmdBuilderElement = katana.$activeTab.find("#cmd-options-dialog");
           var cmdCreatorObject = cmdBuilderElement.data('cmdCreatorObject');
           var qnObject = katana.$activeTab.find('#schedule-options-form').data('questionaireObject');
 
@@ -274,7 +275,7 @@ var cmdBuilder ={
             }
           },
         submitCustomOptions: function(form){
-          var cmdBuilderElement = katana.$activeTab.find(".cmd-options-dialog-container");
+          var cmdBuilderElement = katana.$activeTab.find("#cmd-options-dialog");
           var cmdCreatorObject = cmdBuilderElement.data('cmdCreatorObject');
           var qnObject = katana.$activeTab.find('#custom-options-form').data('questionaireObject');
 
@@ -432,7 +433,7 @@ var cmdBuilder ={
         },
         clearOptions: function(form){
           var name = form.attr('name');
-          var cmdBuilderElement = katana.$activeTab.find(".cmd-options-dialog-container");
+          var cmdBuilderElement = katana.$activeTab.find("#cmd-options-dialog");
           var cmdCreatorObject = cmdBuilderElement.data('cmdCreatorObject');
           cmdObject = {};
           cmdObject[name] = ""

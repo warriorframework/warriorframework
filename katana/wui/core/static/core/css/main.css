@@ -2664,7 +2664,6 @@ div .tool-bar-links:active {
 	/*border: 1px solid silver;*/
 	overflow: auto;
 	height: 100%;
-	/*width: 100%;*/
 }
 
 .execution.layout-panel {
@@ -2882,88 +2881,6 @@ div .tool-bar-links:active {
 	font-family: Corbel;
 }
 
-.execution.dialog {
-	display: block;
-	position: absolute;
-	z-index: 99999;
-	top: 30%%;
-	bottom: 60%;
-	min-width: 40%;
-	min-height: 10%;
-	margin: auto;
-	height: -webkit-fit-content;
-	weight: -webkit-fit-content;
-	border: 1px solid #dedede;
-	border-radius: 2px;
-	-webkit-animation: fadeEffect 1s;
-	color: black;
-	background-color: rgb(115, 165, 196);
-	-webkit-transition: opacity 400ms ease-in;
-	-moz-transition: opacity 400ms ease-in;
-	transition: opacity 400ms ease-in;
-}
-
-.execution.dialog_container {
-	display: block;
-	position: absolute;
-	z-index: 999999;
-	top: 25%;
-	bottom: 60%;
-	min-width: 50%;
-	min-height: 10%;
-	margin-left: 25%;
-	height: 400px;
-	width: -webkit-fit-content;
-	border: 1px solid #dedede;
-	border-radius: 2px;
-	-webkit-animation: fadeEffect 1s;
-	color: black;
-	/*background: white;*/
-	-webkit-transition: opacity 400ms ease-in;
-	-moz-transition: opacity 400ms ease-in;
-	transition: opacity 400ms ease-in;
-}
-
-.execution.dialog_content {
-	width: 100%;
-	margin-top: 40px;
-	height: calc(100% - 80px);
-	padding: 10px 10px;
-	overflow: auto;
-	background: white;
-}
-
-.execution.dialog_container:not([open]) {
-	display: none;
-}
-
-.execution.dialog:not([open]) {
-	display: none;
-}
-
-.execution.dialog-close {
-	background: #606061;
-	color: #FFFFFF;
-	line-height: 25px;
-	position: absolute;
-	right: -5px;
-	text-align: center;
-	top: -5px;
-	width: 24px;
-	text-decoration: none;
-	font-weight: bold;
-	-webkit-border-radius: 12px;
-	-moz-border-radius: 12px;
-	border-radius: 12px;
-	-moz-box-shadow: 1px 1px 3px #000;
-	-webkit-box-shadow: 1px 1px 3px #000;
-	box-shadow: 1px 1px 3px #000;
-}
-
-.execution.dialog-close:hover {
-	background: red;
-}
-
 .execution.dialog_button_bar {
 	position: absolute;
 	bottom: 0;
@@ -3000,36 +2917,14 @@ div .tool-bar-links:active {
 }
 
 
-/*Execution questionaire related styles starts*/
-
-.execution.cmd-options-qns {
-	display: block;
-	width: 90%;
-	height: 90%;
-}
-
-.execution.cmd-options-qns i {
-	font-size: 18px;
-	line-height: 25px;
-	margin: 0;
-	color: #5a5a5a;
-	padding: 0px 4px;
-	width: 32px;
-	height: 32px;
-	text-align: center;
-}
-
-
-/*Execution questionaire related styles ends*/
-
 
 /* Execution cmd options dialog styles start*/
 
-.execution.cmd-options-dialog-container {
+.execution.dialog-container {
 	display: flex;
 	flex-direction: column;
 	position: absolute;
-	z-index: 555555;
+	z-index: 5;
 	top: 15%;
 	left: 15%;
 	min-width: 70%;
@@ -3046,17 +2941,23 @@ div .tool-bar-links:active {
 	-moz-transition: opacity 400ms ease-in;
 	transition: opacity 400ms ease-in;
 }
+.execution.dialog-container.small {
+    left:25%;
+    min-width: 50%;
+    height: 250px;
 
-.execution.cmd-options-dialog-container:not([open]) {
+}
+
+.execution.dialog-container:not([open]) {
 	display: none;
 }
 
-.execution.cmd-options-dialog-container:open {
+.execution.dialog-container:open {
 	display: flex;
 	flex-direction: column;
 }
 
-.execution.cmd-options-dialog-container>.title {
+.execution.dialog-container>.title {
 	color: white;
 	background: rgba(35, 131, 195, 0.95);
 	border: none;
@@ -3071,7 +2972,7 @@ div .tool-bar-links:active {
 	color: red;
 }
 
-.execution.cmd-options-dialog-content {
+.execution.dialog-content {
 	width: 100%;
 	margin-top: 40px;
 	height: calc(100% - 80px);
@@ -3149,6 +3050,19 @@ div .tool-bar-links:active {
 	align-items: center;
 }
 
+
+.execution.cmd-options-qns i {
+	font-size: 18px;
+	line-height: 25px;
+	margin: 0;
+	color: #5a5a5a;
+	padding: 0px 4px;
+	width: 32px;
+	height: 32px;
+	text-align: center;
+}
+
+
 .execution.cmd-options-qns {
 	display: none;
 	position: relative;
@@ -3159,12 +3073,6 @@ div .tool-bar-links:active {
 	overflow: auto;
 }
 
-
-/*.execution.cmd-options-qns > .title {
-
-  border-bottom: none;
-
-}*/
 
 .execution.cmd-options-qns-button-bar {
 	position: absolute;
@@ -3216,6 +3124,27 @@ div .tool-bar-links:active {
 	margin-top: 3px;
 	padding: 5px;
 	width: 50%;
+}
+
+.execution.configure-layout-data {
+  display:inline-block;
+  margin-top:30px;
+  width: 100%;
+  padding: 5px;
+  height: 40px;
+}
+.execution.configure-layout-data-ws{
+	display:inline-block;
+  	width: 75%;
+  	vertical-align: bottom;
+}
+
+
+.execution.execution-button.browse {
+	margin: 5px 5px 0px 2px;
+	padding: 5px 3px;
+	line-height: 1.5;
+	//-webkit-appearance: button;
 }
 
 
