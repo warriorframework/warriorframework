@@ -46,7 +46,7 @@ def old_index(request):
 def getJSONProjectData(request):
 	path_to_config_file = navigator.get_katana_dir() + os.sep + "config.json"   
 	x= json.loads(open(path_to_config_file).read());
-	path_to_testcases = x['xmldir'];
+	path_to_testcases = x['projdir'];
 	filename = request.GET.get('fname')
 	print "Getting data for ", filename;
 	try:

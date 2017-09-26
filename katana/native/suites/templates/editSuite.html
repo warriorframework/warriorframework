@@ -8,12 +8,12 @@
 {% csrf_token %}
 <div class="tool-bar">
 	
-			<input type="button" class="btn" value="Add Requirement" katana-click="addRequirementToSuite"
+			<input type="button" class="btn" value="Add Requirement" katana-click="suiteApp.addRequirementToSuite"
 				id="addRequirementEntry"></input>
 		
-			<button id="addSuite" class="btn btn-primary" onclick="addCaseToSuite()">Add Case To Suite</button>
+			<button id="addSuite" class="btn btn-primary" katana-click="suiteApp.addCaseToSuite()">Add Case To Suite</button>
 			
-				<button class="btn btn-success" onclick="mapUiToSuiteJson()">Save Changes to: </button>
+				<button class="btn btn-success" katana-click="mapUiToSuiteJson()">Save Changes to: </button>
 				<input class="col-md-4 text-right" type="text" id="my_file_to_save" name="my_file_to_save" value="{{suiteName}}.xml"/>
 	
 </div>
@@ -74,7 +74,7 @@
 				
 				<div class="field col-md-3">
 					<label >Warrior Data File:</label>
-					<button class="btn btn-info hidden" onclick="getResultsDirForSuite('#suiteInputDataFile')">...</button>
+					<button class="btn btn-info hidden" katana-click="suiteApp.getResultsDirForSuite('#suiteInputDataFile')">...</button>
 					
 					<input type="text" id="suiteInputDataFile"  value="{{suiteInputDataFile}}"/>
 				</div>
@@ -136,11 +136,11 @@
 					<div class="field">
 					<label >Run Mode:</label>
 					
-					<select type="text" class="text-right" id="CaseRunmode" value="Standard" >
-					<option value="Standard">Standard</option>
-					<option value="RMT">RMT</option>
-					<option value="RUF">RUF</option>
-					<option value="RUP">RUP</option>
+					<select type="text" class="text-right" id="CaseRunmode" value="standard" >
+					<option value="standard">Standard</option>
+					<option value="rmt">RMT</option>
+					<option value="ruf">RUF</option>
+					<option value="rup">RUP</option>
 					</select>
 					<input type="text" class="runmode_condition" id="runmodeAtValue" value=""/>	
 					</div>
@@ -149,10 +149,10 @@
 					<div class="field">
 					<label class=" text-right" >ExecType:</label>
 					<select type="text" class="text-right" id="Execute-at-ExecType" value="" >
-					<option value="Yes">Yes</option> 
-					<option value="No">No</option> 
-					<option value="If">If</option> 
-					<option value="If Not">If Not</option> 
+					<option value="yes">Yes</option> 
+					<option value="no">No</option> 
+					<option value="if">If</option> 
+					<option value="if not">If Not</option> 
 					</select>	
 					</div>
 
@@ -217,7 +217,7 @@
 					<select type="text" class="text-right" id="caseonError-at-value" value="" >
 					</select>
 					</div>		
-					<button class="center button save" id="editTestcase" katana-click="saveSuitesCaseUI">"Save Changes </button>
+					<button class="center button save" id="editTestcase" katana-click="suiteApp.saveSuitesCaseUI">"Save Changes </button>
 				</div>
 
 		</div>
@@ -229,6 +229,7 @@
 	<div id="tableOfFileContents"  class="hidden">fileContents</label></div>
 	<div id="listOfTestcasesForSuite" class="hidden">{{fulljson}}</div>
 	<div id="savefilepath" class="hidden">{{savefilepath}}</div>
-<script type="text/javascript" src="{% static "./doSuiteHandling.js" %}"></script>
+	<div id="fullpathname" class="hidden">{{fullpathname}}</div>
+
 
 </body>

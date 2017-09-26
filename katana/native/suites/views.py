@@ -18,7 +18,7 @@ limitations under the License.
 from django.shortcuts import render, redirect
 from django.template.context_processors import csrf
 import os, sys, glob, copy 
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.template import loader
 import xmltodict
 import json
@@ -29,9 +29,31 @@ navigator = Navigator();
 def old_index(request):
     return render(request, 'settings/index.html', {"data": controls.get_location()})
 
-## MUST MOVE TO CLASS !!!!
-## List all your Suites ...
-##
+
+def getSuiteListTree(request):
+	path_to_config_file = navigator.get_katana_dir() + os.sep + "config.json"
+	x= json.loads(open(path_to_config_file).read());
+	fpath = x['testsuitedir'];
+	template = loader.get_template("listAllSuites.html")
+	jtree = navigator.get_dir_tree_json(fpath)
+	jtree['state']= { 'opened': True };
+	return JsonResponse({'treejs': jtree })
+
+def getJSONSuiteData(request):
+	path_to_config_file = navigator.get_katana_dir() + os.sep + "config.json"   
+	x= json.loads(open(path_to_config_file).read());
+	path_to_testcases = x['testsuitedir'];
+	filename = request.GET.get('fname')
+	print "Getting data for ", filename;
+	try:
+		xml_d = xmltodict.parse(open(filename).read());
+	except:
+		xml_d = getEmpty();
+
+	j_data = json.loads(json.dumps(xml_d))
+	responseBack = { 'fulljson': j_data , 'fname': filename }
+	return JsonResponse(responseBack)
+
 def index(request):
 	navigator = Navigator();
 	path_to_config = navigator.get_katana_dir() + os.sep + "config.json"
@@ -132,7 +154,7 @@ def editSuite(request):
 	context = { 
 		'savefilename': "save_" + os.path.split(filename)[1],
 		'savefilepath': os.path.split(filename)[0],
-		'myfile': filename,
+		'fullpathname': filename,
 		'docSpec': 'projectSpec',
 		'suiteName': xml_r["TestSuite"]["Details"]["Name"],
 		'suiteTitle': xml_r["TestSuite"]["Details"]["Title"],
