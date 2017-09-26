@@ -3,8 +3,8 @@
 
 <body>
 <link rel="stylesheet" href="{% static "./project_table.css" %}" > 
-<script type="text/javascript" src="{% static "./doProjectHandling.js" %}" />
-<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<!-- <script type="text/javascript" src="{% static "./doProjectHandling.js" %}" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 -->
 <div class="tool-bar">
 	    	{% csrf_token %}
@@ -14,7 +14,7 @@
 			<button class="btn btn-success save" onclick="mapUiToProjectJson()">Save Changes to : </button>
 			<input class="col-md-4 text-right" type="text" id="my_file_to_save" name="my_file_to_save" value="{{projectName}}.xml"/>
 </div>
-
+<div auto-init="projectApp.mapFullProjectJson">
 	<div class="col-md-12 row">
 			<div class="field col-md-3 input_padding">
 				<label for="projectName">Name*:</label>
@@ -92,10 +92,10 @@
 				<div class="field ">
 				<label class=" text-right" >ExecType:</label>
 				<select type="text" class="text-right" id="Execute-at-ExecType" value="" >
-				<option value="Yes">Yes</option> 
-				<option value="If">If</option> 
-				<option value="If Not">If Not</option> 				
-				<option value="No">No</option> 
+				<option value="yes">Yes</option> 
+				<option value="if">If</option> 
+				<option value="if not">If Not</option> 				
+				<option value="no">No</option> 
 				</select>
 				</div>
 				<div >		
@@ -169,7 +169,7 @@
 					</select>
 					<br>
 				</div>
-			<input type="button" class="btn col-md-3 center" value="Save Changes" id="saveChangesToRow"/>
+			<button class="btn col-md-3 center" id="saveChangesToRow" katana-click="projectApp.saveChangesToRowCB">Save Changes</button>>
 			</div>
 
 	</div>
@@ -178,4 +178,5 @@
 	<div id="listOfTestSuitesForProject" class="hidden">{{fulljson}}</div>
 	<div id="savefilepath" class="hidden">{{savefilepath}}</div>
 	<div id="fullpathname" class="hidden">{{fullpathname}}</div>
+</div>
 </body>
