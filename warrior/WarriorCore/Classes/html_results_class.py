@@ -15,7 +15,7 @@ import os
 
 import json
 import Tools
-from Framework.Utils import xml_Utils, file_Utils
+from Framework.Utils import xml_Utils, file_Utils, data_Utils
 from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.print_Utils import print_info
 from Framework.Utils.xml_Utils import getElementWithTagAttribValueMatch
@@ -169,6 +169,37 @@ class WarriorHtmlResults:
             return '<div class="version">' + version + '</div>'
         else:
             return ''
+
+    def write_live_results(self, junitObj, givenPath, is_final):
+        """ build the html givenPath: added this feature in case of later down the line calling from outside junit
+        file ( no actual use as of now )
+        """
+        if junitObj:
+            self.junit_file = junitObj
+            self.junit_root = xml_Utils.getRoot(self.junit_file)
+        if givenPath:
+            self.givenPath = givenPath
+
+        self.set_line_objs()
+        html = ''
+        for item in self.lineObjs:
+            html += item.html
+        html = self.merge_html(html)
+
+        if is_final is True:
+            html += '<div class="complete"></div>'
+        
+        livehtmllocn = data_Utils.get_object_from_datarepository('livehtmllocn')
+        livehtmlfile = open(livehtmllocn, 'w')
+        livehtmlfile.write(html)
+        livehtmlfile.close()
+        
+        self.lineObjs = []
+        print_info("++++ Results Summary ++++")
+        print_info("Open the Results summary file given below in a browser to "
+                   "view results summary for this execution")
+        print_info("Results sumary file: {0}".format(self.get_path()))
+        print_info("+++++++++++++++++++++++++")
 
     def generate_html(self, junitObj, givenPath, is_final):
         """ build the html givenPath: added this feature in case of later down the line calling from outside junit

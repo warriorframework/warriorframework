@@ -10,6 +10,6 @@ urlpatterns = [
     url(r'executeWarrior', execution.execute_warrior),
     url(r'getResultsIndex', execution.get_results_index),
     url(r'getWs', execution.get_ws),
-    url(r'updateHtmlResult', exec_views.update_html_results),
-    url(r'getHtmlResult', exec_views.get_html_results),
+    url(r'getHtmlResult', execution.get_html_results),
+    url(r'deleteLiveHtmlFile', execution.delete_live_html_file),
 ]

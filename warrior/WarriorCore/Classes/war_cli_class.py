@@ -392,6 +392,13 @@ class WarriorCliClass(object):
                             "database server, database config file " \
                             "location = Tools/database/database_config.xml.")
 
+        parser.add_argument('-livehtmllocn', action='store', nargs='?',
+                            help=":livehtmllocn: locn of live html results file. "\
+                            "TO be used by Katana only " \
+                            "Will be set when katana executes warrior " \
+                            "UI will read live html results from this location" \
+                            "and display html results in a live fashion " )
+        
         namespace = parser.parse_args(arglist)
         if namespace.cmdprint:
             WarriorCliClass.cmdprint = True
