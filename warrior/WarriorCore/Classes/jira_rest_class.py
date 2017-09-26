@@ -222,7 +222,9 @@ class Jira(object):
 
     def upload_logfile_to_jira_issue(self, issue_id, logfile, attachment_name=None):
         """Function to attach logs to jira Ticket using JIRA rest API"""
-
+        
+        print_info("logfile is : {0}".format(logfile))
+        
         fetchuri = self.server
         postdata_url=fetchuri+'/rest/api/2/issue/'+issue_id+'/attachments'
         credential_handler=self.username+":"+self.password

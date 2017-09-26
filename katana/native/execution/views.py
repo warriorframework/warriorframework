@@ -25,15 +25,14 @@ from django.shortcuts import render
 import native
 from native.settings.settings import Settings
 from utils.navigator_util import Navigator
-from utils.warrior_interface_utils import WarriorInterface
-
+from utils import file_utils
 
 # Create your views here.
 
 controls = Settings()
 
 templates_dir = os.path.join(os.path.dirname(__file__), 'templates')
-warrior_interface = ''
+data_dir = os.path.join(os.path.dirname(__file__), '.data')
 
 
 
@@ -76,27 +75,43 @@ class Execution(object):
     
     def get_results_index(self, request):
         """
+        Render the results index html to the client
         """
+        fname = 'live_html_results'
+        path = data_dir
+        fpath = file_utils.get_new_filepath(fname, path, '.html')
+        html_file = open(fpath, 'w')
+        html_file.write('creating')
+        html_file.close()
+        
+        
+        result_setting = {'fpath': fpath}
         results_template = os.path.join(self.templates_dir, 'execution_results.html')
-        return render(request, results_template)
+        return render(request, results_template, result_setting)
     
-    
-    def execute_warrior(self, request):
-        """
-        """      
-        global warrior_interface
-        warrior_interface = WarriorInterface()
 
+    def get_html_results(self, request):
+        """
+        Update the html results by reading the live html results
+        file sent in the request
+        """
         data_dict = json.loads(request.GET.get('data'))
-        execution_file_list = data_dict['execution_file_list']
-        cmd_string = data_dict['cmd_string']
-           
-        warrior_cmd = '{0} {1} {2}'.format('python', self.warrior, cmd_string )
-        args = warrior_cmd.split()
-   
-   
-        return StreamingHttpResponse(stream_warrior_output(args, warrior_cmd, execution_file_list))
-           
+        fpath = data_dict['liveHtmlFpath']   
+    #         print data
+        with open(fpath) as htmlfile:
+            data = htmlfile.readlines()
+        return HttpResponse(data)
+
+    def delete_live_html_file(self, request):
+        """
+        Update the html results by reading the live html results
+        file sent in the request
+        """
+        data_dict = json.loads(request.GET.get('data'))
+        fpath = data_dict['liveHtmlFpath']   
+        os.remove(fpath)
+        return HttpResponse('success')
+
     def get_ws(self, request):
         """
         return the dir tree json for warriorspace
@@ -105,45 +120,38 @@ class Execution(object):
         ws_dir = data_dict['start_dir']      
         layout = self.nav.get_dir_tree_json(ws_dir)
         return JsonResponse(layout)
-
-
-    def get_jira_proj_list(self, request):
-        """
-        """
-        
-        return render(request, results_template) 
-
-
-@csrf_exempt
-def update_html_results(request):
-    """
-    update html results on recieving a post request from warrior
-    """
-
-    data_dict =  request.POST.dict()
-    file_path = data_dict['file_path']
-    global warrior_interface
-    html = warrior_interface.update_html_result(file_path)
-
-    return HttpResponse( "<h1>update html results</h1>")
-
-def get_html_results(request):
-    """
-    update html results on recieving a post request from warrior
-    """
-
-
-    global warrior_interface
-    if warrior_interface is not "":
-        print "================printing html to screen==============="
-        data =  warrior_interface.htmlResults
     
-    return HttpResponse( data)
+    def execute_warrior(self, request):
+        """
+        Execute warrior command and send console logs to the client in a
+        streaming fashion.
+        """      
+        data_dict = json.loads(request.GET.get('data'))
+        execution_file_list = data_dict['execution_file_list']
+        cmd_string = data_dict['cmd_string']
+        live_html_res_file = data_dict['liveHtmlFpath']
+         
+   
+        return StreamingHttpResponse(stream_warrior_output(self.warrior, cmd_string, execution_file_list, live_html_res_file))
+           
 
 
-def stream_warrior_output(args, cmd, file_list):
 
-    output = subprocess.Popen(str(cmd), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
+
+
+
+def stream_warrior_output(warrior_exe, cmd_string, file_list, live_html_res_file):
+    """
+    Start warrior execution and stream console logs output to client
+    """
+    
+    
+    print_cmd = '{0} {1} {2}'.format('python', warrior_exe, cmd_string )
+    warrior_cmd = '{0} {1} -livehtmllocn {2} {3}'.format('python', warrior_exe, live_html_res_file, cmd_string )
+
+    
+    output = subprocess.Popen(str(warrior_cmd), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
+#     output = subprocess.Popen('date', shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
     first_poll = True
     
     file_li_string = ""
@@ -153,13 +161,12 @@ def stream_warrior_output(args, cmd, file_list):
         
     
     file_list_html = "<ol>{0}</ol>".format(file_li_string)
-    cmd_string = "<h6><strong>Command: </strong></h6>{0}<br>".format(cmd)
+    cmd_string = "<h6><strong>Command: </strong></h6>{0}<br>".format(print_cmd)
     logs_heading = "<br><h6><strong>Logs</strong>:</h6>"
     init_string = "<br><h6><strong>Executing:</strong></h6>{0}"\
     .format(file_list_html) + cmd_string + logs_heading
                                                                                           
-    
-    
+        
     while output.poll() is None:
         line = output.stdout.readline()
         if first_poll:
@@ -168,12 +175,15 @@ def stream_warrior_output(args, cmd, file_list):
         # Yield this line to be used by streaming http response
         yield line + '</br>'
         if line.startswith('-I- DONE'):
-            print "line starts with DONE"
-            warrior_interface.set_eoc()
+            with open(live_html_res_file, 'a') as html_file:
+                html_file.write("<div class='eoc'></div>")
             break 
-    warrior_interface.set_eoc()
+    
+    # before returning set eoc div on the live html results file
+    with open(live_html_res_file, 'a') as html_file:
+        html_file.write("<div class='eoc'></div>")
+    
     return
-
 
 def update_jira_proj_list(jira_settings_file, exec_settings_json):
     """
