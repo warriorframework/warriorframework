@@ -33,7 +33,7 @@ import scanfiles
 navigator = Navigator();
 path_to_src_python_file = navigator.get_katana_dir() + os.sep + "config.json"
 All_case_action_details = py_file_details(json.loads(open(path_to_src_python_file).read())['pythonsrcdir']);
-		
+setPythonSrcDir(All_case_action_details);
 
 def index(request):
 	path_to_config_file = navigator.get_katana_dir() + os.sep + "config.json"

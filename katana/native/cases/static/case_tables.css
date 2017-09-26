@@ -44,13 +44,17 @@
     flex-grow: 2;
 }
 .case-configuration-table tr th:nth-child(3), .case-configuration-table tr td:nth-child(3) {
-    flex-grow: 3;
+    flex-grow: 2;
 }
 .case-configuration-table tr th:nth-child(4), .case-configuration-table tr td:nth-child(4) {
     flex-grow: 3;
 }
 .case-configuration-table tr th:nth-child(5), .case-configuration-table tr td:nth-child(5) {
     flex-grow: 3;
+}
+
+.case-configuration-table tr th:nth-child(6), .case-configuration-table tr td:nth-child(6) {
+    flex-grow: 2;
 }
 .case-configuration-table tr th:nth-child(7), .case-configuration-table tr td:nth-child(7) {
     flex-grow: 2;
