@@ -211,14 +211,14 @@
                             </div>
                             <div class="field col-md-3">
                                 <label>Warrior Data File:</label>
-                                <button class="btn btn-info" katana-click="caseApp.getResultsDirForCaseStep">...</button>
+                                <!-- <button class="btn btn-info" katana-click="caseApp.getResultsDirForCaseStep">...</button> -->
                                 <input type="text" id="StepInputDataFile" value="" />
                             </div>
                             <div id="arguments-textarea"> </div>
                             <div>
-                                <input type="button" class="btn btn-success" value="Append Argument" id="appendArgument" />
-                                <input type="button" class="btn btn-success" value="Save Changes To Test Step" id="saveEditCaseStep" />
-                                <input type="button" class="btn btn-danger" value="Ignore Changes" id="editCaseStepClose" />
+                                <button class="btn btn-success" id="appendArgument" katana-click="caseApp.appendPopupArgument">Append Argument </button>
+                                <button class="btn btn-success" id="saveEditCaseStep" katana-click="caseApp.saveTestCaseChanges">Save Changes To Test Step </button>
+                               
                             </div>
                         </div>
                         <div id="sourceCaseFileText" class="col-md-8" style='overflow:auto;'> Source file </div>
