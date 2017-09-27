@@ -290,19 +290,6 @@ var execution = {
 				executionObject.getHtml();
 
 
-
-				// execute warrior
-				// var livepath = executionObject.getLiveHtmlFpath();
-				// console.log('live: ', livepath);
-				// executionObject.setCmdOptions();
-				// executionObject.executeWarrior();
-
-				// console.log('object: ', executionObject);
-				// options = executionObject.setCmdOptions()
-				// console.log('setCmdOptions: ', options);
-
-
-
 			}
 			else{
 				console.log('error opening popup');
@@ -350,6 +337,9 @@ var execution = {
 			el.addClass('active');
 			content[0].style.display = 'block';
 
+		},
+		openLogs: function(){
+			console.log('open logs');
 		},
 		
 	},
