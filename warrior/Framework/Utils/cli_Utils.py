@@ -305,7 +305,8 @@ def smart_analyze(prompt, testdatafile=None):
     con_settings = con_settings_dir + "connect_settings.xml"
 
     if system_name is not None:
-        sys_elem = xml_Utils.getElementWithTagAttribValueMatch(con_settings, "system", "name", system_name.text)
+        sys_elem = xml_Utils.getElementWithTagAttribValueMatch(con_settings, "system", "name",
+                                                               system_name.text)
         if sys_elem is None or sys_elem.find("testdata") is None:
             return None
     else:
@@ -340,7 +341,8 @@ def send_smart_cmd(connect_testdata, session_object, tag_value, call_system_name
         else:
             smart_log = main_log.name.replace(".log", "post_.log")
         session_object.logfile = open(smart_log, "a")
-        send_commands_from_testdata(connect_testdata, session_object, title=tag_value, system_name=call_system_name)
+        send_commands_from_testdata(connect_testdata, session_object, title=tag_value,
+                                    system_name=call_system_name)
         session_object.logfile = main_log
         print("**********smart analysis finished**********")
     else:
@@ -565,7 +567,8 @@ def send_commands_from_testdata(testdatafile, obj_session, **args):
     system_name = args.get("system_name")
     testdata_dict = data_Utils.get_command_details_from_testdata(testdatafile, varconfigfile,
                                                                  var_sub=var_sub, title=title,
-                                                                 row=row, system_name=system_name, datafile=datafile)
+                                                                 row=row, system_name=system_name,
+                                                                 datafile=datafile)
     finalresult = True if len(testdata_dict) > 0 else False
     for key, details_dict in testdata_dict.iteritems():
         response_dict = {}
@@ -591,9 +594,11 @@ def send_commands_from_testdata(testdatafile, obj_session, **args):
             new_obj_session, details_dict = _get_obj_session(details_dict, obj_session, system_name,
                                                          index=i)
             if new_obj_session:
-                result, response = _send_cmd_get_status(new_obj_session, details_dict, index=i, system_name=system_name)
+                result, response = _send_cmd_get_status(new_obj_session, details_dict, index=i,
+                                                        system_name=system_name)
                 result, response = _send_command_retrials(new_obj_session, details_dict, index=i,
-                                                          result=result, response=response, system_name=system_name)
+                                                          result=result, response=response,
+                                                          system_name=system_name)
                 response_dict, resp_list_item = _get_response_dict(details_dict, i, response,
                                                    response_dict, resp_list_item)
                 sys_name = ses_name = ''
@@ -609,11 +614,9 @@ def send_commands_from_testdata(testdatafile, obj_session, **args):
                         ses_name = details_dict["session_list"][i]
 
                     session_id = data_Utils.get_session_id(sys_name, ses_name) + "_td_response"
-                    for k in resp_list_item:
-                        if k == resp_list_item[i]:
-                            pNote("Portion of response saved to the data repository with key: "
-                                  "{0}.{1}.{2}, value: {3}"
-                                  .format(session_id, key,k, response_dict[k]))
+                    pNote("Portion of response saved to the data repository with key: "
+                          "{0}.{1}.{2}, value: {3}"
+                          .format(session_id, key,resp_list_item[i], response_dict[resp_list_item[i]]))
                 print_debug("<<<")
             else:
                 finalresult = "ERROR"
@@ -670,7 +673,8 @@ def _get_response_dict(details_dict, index, response, response_dict, resp_list_i
             # if the requested pattern not found return empty string
             reobj=re.search(resp_pat_req, response)
             response=reobj.group(0) if reobj is not None else ""
-            pNote("User has requested saving response. Response pattern required by user is : {0}".format(resp_pat_req))
+            pNote("User has requested saving response. Response pattern required by user is : {0}"
+                  .format(resp_pat_req))
     else:
         response=""
     response_dict[resp_ref]=response
@@ -989,7 +993,8 @@ def _send_command_retrials(obj_session, details_dict, index, **kwargs):
                     pNote("Wait for {0}sec (retry_timer) before sending"\
                                " the command again".format(retry_timer))
                     time.sleep(int(retry_timer))
-                    result, response = _send_cmd_get_status(obj_session, details_dict, index, system_name=kwargs.get("system_name"))
+                    result, response = _send_cmd_get_status(obj_session, details_dict, index,
+                                                            system_name=kwargs.get("system_name"))
                     command_status = {True: "PASS", False:"FAIL", "ERROR":"ERROR"}.get(result)
                     pNote("RETRIAL ATTEMPT:{0} STATUS:{1}".format(count, command_status))
                 else:
