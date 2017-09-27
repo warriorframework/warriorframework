@@ -78,7 +78,6 @@ class Jira(object):
         except Exception as e:
             pNote("Problem checking JIRA issue.","error")
             pNote("JIRA Error Code: ({0})".format(e),"error")
-            exit(1)
 
     def update_jira_issue(self, jiraid, status):
         """
