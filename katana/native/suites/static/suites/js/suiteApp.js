@@ -312,8 +312,6 @@ Two global variables are heavily used when this function is called;
 		alert("Please specify a Suite Engineer");
 		return
 	}
-
-	
 	
 	suiteApp.jsonSuiteObject['Details']['Name'] = katana.$activeTab.find('#suiteName').val();
 	suiteApp.jsonSuiteObject['Details']['Title'] = katana.$activeTab.find('#suiteTitle').val();
@@ -323,10 +321,16 @@ Two global variables are heavily used when this function is called;
 	suiteApp.jsonSuiteObject['Details']['default_onError'] = { '@value': '', '@action' : ''};
 	suiteApp.jsonSuiteObject['Details']['default_onError']['@action'] = katana.$activeTab.find('#defaultOnError').val();
 	suiteApp.jsonSuiteObject['Details']['default_onError']['@value'] = katana.$activeTab.find('#defaultOnError_goto').val();
-	suiteApp.jsonSuiteObject['Details']['Datatype']['@exectype'] = katana.$activeTab.find('#suiteDatatype').val();
+	suiteApp.jsonSuiteObject['Details']['InputDataFile'] = katana.$activeTab.find('#suiteInputDataFile').val();
 	suiteApp.jsonSuiteObject['SaveToFile'] = katana.$activeTab.find('#my_file_to_save').val();
 
+	console.log("Saving ... ", suiteApp.jsonSuiteObject['Details']);
 
+	// Override the name 
+	var newname = katana.$activeTab.find('#my_file_to_save').val();
+	var nlen = newname.length - 4; 
+	suiteApp.jsonSuiteObject['Details']['Name'] = newname.slice(0,nlen); 
+	
 	console.log(suiteApp.jsonSuiteObject);
 	console.log(suiteApp.jsonSuiteObject['Testcases']);
 	var url = "./suites/getSuiteDataBack";
@@ -353,10 +357,45 @@ Two global variables are heavily used when this function is called;
     
     success: function( data ){
         alert("Saved " + katana.$activeTab.find('#savefilepath').text());
+        katana.$activeTab.find('#suiteName').val(suiteApp.jsonSuiteObject['Details']['Name']);
     	}
 	});
 
 },
+
+
+	 getInputDataForSuite: function () {
+      var callback_on_accept = function(selectedValue) { 
+      		console.log(selectedValue);
+      		var pathToBase = katana.$activeTab.find('#savefilepath').text();
+      		console.log("File path ==", pathToBase);
+      		var nf = prefixFromAbs(pathToBase, selectedValue);
+      		suiteApp.jsonSuiteObject['Details']['InputDataFile']= nf;
+      		console.log("Path set to ",nf);
+      		katana.$activeTab.find('#suiteInputDataFile').val(nf);
+            };
+      var callback_on_dismiss = function(){ 
+      		console.log("Dismissed");
+	 };
+     katana.fileExplorerAPI.openFileExplorer("Select a file", false , $("[name='csrfmiddlewaretoken']").val(), false, callback_on_accept, callback_on_dismiss);
+	},
+
+
+	getResultsDirForSuite: function () {
+      var callback_on_accept = function(selectedValue) { 
+      		console.log(selectedValue);
+      		var pathToBase = katana.$activeTab.find('#savefilepath').text();
+      		console.log("File path ==", pathToBase);
+      		var nf = prefixFromAbs(pathToBase, selectedValue);
+      		suiteApp.jsonSuiteObject['Details']['Resultsdir']= nf;
+      		console.log("Path set to ",nf);
+            katana.$activeTab.find('#suiteResults').val(nf);
+           };
+      var callback_on_dismiss = function(){ 
+      		console.log("Dismissed");
+	 };
+     katana.fileExplorerAPI.openFileExplorer("Select a file", false , $("[name='csrfmiddlewaretoken']").val(), false, callback_on_accept, callback_on_dismiss);
+	},
 
 	getResultsDirForSuiteRow: function () {
       var callback_on_accept = function(selectedValue) { 

@@ -147,7 +147,7 @@ def editSuite(request):
 		xml_d = xmltodict.parse(xlines, dict_constructor=dict);
 
 	# Map the input to the response collector
-	for xstr in ["Name", "Title", "Category", "Date", "Time", "Engineer", "Datatype"]:
+	for xstr in ["Name", "Title", "Category", "Date", "Time", "Engineer", "Datatype", 'Resultsdir', 'InputDataFile']:
 		try: 
 			xml_r["TestSuite"]["Details"][xstr] = copy.copy(xml_d["TestSuite"]["Details"].get(xstr,""))
 		except:

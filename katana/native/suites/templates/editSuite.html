@@ -8,13 +8,10 @@
 {% csrf_token %}
 <div class="tool-bar">
 	
-			<input type="button" class="btn" value="Add Requirement" katana-click="suiteApp.addRequirementToSuite"
-				id="addRequirementEntry"></input>
-		
-			<button id="addSuite" class="btn btn-primary" katana-click="suiteApp.addCaseToSuite()">Add Case To Suite</button>
-			
-				<button class="btn btn-success" katana-click="mapUiToSuiteJson()">Save Changes to: </button>
-				<input class="col-md-4 text-right" type="text" id="my_file_to_save" name="my_file_to_save" value="{{suiteName}}.xml"/>
+	<button class="btn" katana-click="suiteApp.addRequirementToSuite" id="addRequirementEntry">Add Requirement</button>
+	<button id="addSuite" class="btn btn-primary" katana-click="suiteApp.addCaseToSuite()">Add Case To Suite</button>
+	<button class="btn btn-success" katana-click="suiteApp.mapUiToSuiteJson">Save Changes to: </button>
+	<input class="col-md-4 text-right" type="text" id="my_file_to_save" name="my_file_to_save" value="{{suiteName}}.xml"/>
 	
 </div>
 
@@ -69,17 +66,17 @@
 			<div class="row">
 				<div class="field col-md-3">
 					<label >Results*:</label>
+					<button class="btn btn-info" katana-click="suiteApp.getResultsDirForSuite">...</button>
 					<input type="text" id="suiteResults"  value="{{suiteResultsdir}}"/>
 				</div>
 				
 				<div class="field col-md-3">
 					<label >Warrior Data File:</label>
-					<button class="btn btn-info hidden" katana-click="suiteApp.getResultsDirForSuite('#suiteInputDataFile')">...</button>
-					
+					<button class="btn btn-info" katana-click="suiteApp.getInputDataForSuite">...</button>
 					<input type="text" id="suiteInputDataFile"  value="{{suiteInputDataFile}}"/>
 				</div>
 				<div class="field col-md-3">
-					<label class=" text-right" >Type:</label>
+					<label class=" text-right" >State:</label>
 					<select class="text-right" type="text" id="suiteState"  value="{{suiteState}}" >
 						<option value="New">New</option>
 						<option value="In Review">In Review</option>
@@ -191,7 +188,7 @@
 
 					<div class="field col-md-3">
 					<label >Warrior Data File:</label>
-					<button class="btn btn-info" onclick="getResultsDirForSuite('#StepInputDataFile')">...</button>
+					<button class="btn btn-info" onclick="getResultsDirForSuiteRow">...</button>
 					<input type="text" id="StepInputDataFile"  value=""/>
 					</div>		
 	
