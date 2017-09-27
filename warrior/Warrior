@@ -42,9 +42,10 @@ def update_jira_by_id(jiraproj, jiraid, exec_dir, status):
     if jiraid is not False:
         jira_obj = Jira(jiraproj)
         if jira_obj.status is True:
-            if jira_obj.update_jira_issue(jiraid, status):
-                zip_file = shutil.make_archive(exec_dir, 'zip', exec_dir)
-                jira_obj.upload_logfile_to_jira_issue(jiraid, zip_file)
+            zip_file = shutil.make_archive(exec_dir, 'zip', exec_dir)
+            jira_obj.upload_logfile_to_jira_issue(jiraid, zip_file)
+            jira_obj.update_jira_issue(jiraid, status)
+            
     else:
         print_info("jiraid not provided, will not update jira issue")
 
