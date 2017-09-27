@@ -179,6 +179,7 @@ class BrowserManagement(object):
 
     def check_url(self, url):
         """To check whether the user provided url is valid or not.
+        Please note, this function internally opens the url to assert the validity of the url.
            Returns:
                     1. status(bool)= True / False.(Whether the url can be reached)
                     2. url : The actual url itself
@@ -202,6 +203,7 @@ class BrowserManagement(object):
             print_warning("Exception: {0}".format(err))
             status = False
         return status, url
+
 
     def go_to(self, url, browser_instance=None):
         """Navigates the active browser instance to the provided URL."""
