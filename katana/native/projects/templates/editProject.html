@@ -9,9 +9,9 @@
 <div class="tool-bar">
 	    	{% csrf_token %}
 	    	
-			<button id="addSuite" class="btn btn-primary" onclick="addSuiteToProject()">Add Suite To Project</button>-->
+			<button id="addSuite" class="btn btn-primary" katana-click="projectApp.addSuiteToProject">Add Suite To Project</button>-->
 			<!-- <button class="btn btn-primary" onclick="resetUIfromFile()">Discard Changes</button>  -->
-			<button class="btn btn-success save" onclick="mapUiToProjectJson()">Save Changes to : </button>
+			<button class="btn btn-success save" katana-click="projectApp.mapUiToProjectJson">Save Changes to : </button>
 			<input class="col-md-4 text-right" type="text" id="my_file_to_save" name="my_file_to_save" value="{{projectName}}.xml"/>
 </div>
 <div auto-init="projectApp.mapFullProjectJson">

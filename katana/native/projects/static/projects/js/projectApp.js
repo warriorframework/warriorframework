@@ -162,7 +162,7 @@ startNewProject : function() {
 		}
 
 	projectApp.jsonTestSuites['Testsuite'].push(newTestSuite);
-	projectApp.mapProjectJsonToUi(jsonTestSuites);
+	projectApp.mapProjectJsonToUi(projectApp.jsonTestSuites);
 
 	},
 
