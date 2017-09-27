@@ -186,7 +186,7 @@ def editSuite(request):
 		'suiteInputDataFile': xml_r["TestSuite"]["Details"]["InputDataFile"],
 		'suiteEngineer': xml_r["TestSuite"]["Details"]["Engineer"],
 		'suiteDatatype': xml_r["TestSuite"]["Details"]["type"]["@exectype"],
-		'suiteDate': xml_r["TestSuite"]["Details"]["Date"],
+		'suiteDate': xml_r["TestSuite"]["Details"]["Date"].split()[0],
 		'suiteTime': xml_r["TestSuite"]["Details"]["Time"],
 		'suiteState': xml_r["TestSuite"]["Details"]["State"],
 		#'suiteType': xml_r["TestSuite"]["Details"]["type"],

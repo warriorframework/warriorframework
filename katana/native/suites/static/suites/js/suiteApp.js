@@ -317,7 +317,8 @@ Two global variables are heavily used when this function is called;
 	suiteApp.jsonSuiteObject['Details']['Title'] = katana.$activeTab.find('#suiteTitle').val();
 	suiteApp.jsonSuiteObject['Details']['Engineer'] = katana.$activeTab.find('#suiteEngineer').val();
 	suiteApp.jsonSuiteObject['Details']['Resultsdir'] = katana.$activeTab.find('#suiteResults').val();
-	suiteApp.jsonSuiteObject['Details']['Date'] = katana.$activeTab.find('#suiteDate').val();
+	suiteApp.jsonSuiteObject['Details']['Date'] = katana.$activeTab.find('#suiteDate').val().split(' ')[0];
+	suiteApp.jsonSuiteObject['Details']['Time'] = katana.$activeTab.find('#suiteDate').val().split(' ')[1];
 	suiteApp.jsonSuiteObject['Details']['default_onError'] = { '@value': '', '@action' : ''};
 	suiteApp.jsonSuiteObject['Details']['default_onError']['@action'] = katana.$activeTab.find('#defaultOnError').val();
 	suiteApp.jsonSuiteObject['Details']['default_onError']['@value'] = katana.$activeTab.find('#defaultOnError_goto').val();
@@ -325,6 +326,7 @@ Two global variables are heavily used when this function is called;
 	suiteApp.jsonSuiteObject['SaveToFile'] = katana.$activeTab.find('#my_file_to_save').val();
 
 	console.log("Saving ... ", suiteApp.jsonSuiteObject['Details']);
+
 
 	// Override the name 
 	var newname = katana.$activeTab.find('#my_file_to_save').val();
@@ -480,7 +482,7 @@ Two global variables are heavily used when this function is called;
 		var showID = parseInt(s)+ 1; 
 		items.push('<tr data-sid="'+s+'"><td>'+showID+'</td>');
 		var bid = "fileTestcase-"+s+"-id";
-		items.push('<td><i title="ChangeFile" class="fa fa-folder-open" id="'+bid+'" katana-click="fileNewSuiteFromLine()" key="'+bid+'"/></td>');
+		items.push('<td><i title="ChangeFile" class="fa fa-folder-open" id="'+bid+'" katana-click="fileNewSuiteFromLine" key="'+bid+'"/></td>');
 		items.push('<td onclick="showCaseFromSuite('+"'"+oneCase['path']+"'"+')">'+oneCase['path']+'</td>');
 		items.push('<td>'+oneCase['context']+'</td>');
 		items.push('<td>'+oneCase['runtype']+'</td>');
