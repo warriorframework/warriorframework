@@ -28,6 +28,18 @@ var wdf = {
         });
     },
 
+    search_for_password: function(){
+        $inputs = katana.$activeTab.find("#content, #subcontent");
+        $.each($inputs, function(ind, row) {
+            $row = $(row);
+            $row_key = $row.find("[name$='-key']");
+            $row_value = $row.find("[name$='-value']");
+            if (typeof $row_key.attr("value") !== "undefined" && $row_key.attr("value").toLowerCase() == "password" ) {
+                $row_value.prop("type", "password");
+            }
+        });
+    },
+
     hide_template: function(){
         /*
             Hide the templates
@@ -102,6 +114,12 @@ var wdf = {
             $(this).focus()
             // katana.quickAnimation($(this), "wdf-highlight", 1000);
             $(this).css("background", "#ecff91");
+        }
+
+        if ($(this).val().toLowerCase() == "password") {
+            $(this).next().prop("type", "password");
+        } else {
+            $(this).next().removeAttr("type");
         }
     },
 
@@ -424,6 +442,7 @@ var wdf = {
                         katana.$activeTab.find("#main_info").replaceWith(data);
                         wdf.hide_template();
                         wdf.search_and_hide();
+                        wdf.search_for_password();
                         // console.log("loaded");
                     }
                 });
