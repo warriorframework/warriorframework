@@ -20,6 +20,11 @@ var execution = {
 		elem.data('cmdCreatorObject', cmdBuilder.cmdCreator);
 	},
 
+	cleanupDataLiveDir: function(){
+		// clean up the .data/live dir of the app on start up
+		katana.templateAPI.get.call(katana.$activeTab, 'execution/cleanupDataLiveDir', null, null, 'html');
+		
+	},
 
 	layoutViewer: {
 			/* layoutViewer:

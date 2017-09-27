@@ -16,6 +16,7 @@ import os
 import time
 import json
 import subprocess
+import shutil
 from xml.etree import ElementTree
 
 from django.http import StreamingHttpResponse, JsonResponse, HttpResponse
@@ -32,7 +33,7 @@ from utils import file_utils
 controls = Settings()
 
 templates_dir = os.path.join(os.path.dirname(__file__), 'templates')
-data_dir = os.path.join(os.path.dirname(__file__), '.data')
+data_live_dir = os.path.join(os.path.dirname(__file__), '.data', 'live')
 
 
 
@@ -78,7 +79,7 @@ class Execution(object):
         Render the results index html to the client
         """
         fname = 'live_html_results'
-        path = data_dir
+        path = data_live_dir
         fpath = file_utils.get_new_filepath(fname, path, '.html')
         html_file = open(fpath, 'w')
         html_file.write('creating')
@@ -107,10 +108,36 @@ class Execution(object):
         Update the html results by reading the live html results
         file sent in the request
         """
-        data_dict = json.loads(request.GET.get('data'))
-        fpath = data_dict['liveHtmlFpath']   
-        os.remove(fpath)
-        return HttpResponse('success')
+        status = 'success'
+        try:
+            data_dict = json.loads(request.GET.get('data'))
+            fpath = data_dict['liveHtmlFpath']   
+            os.remove(fpath)
+        except Exception as err:
+            print "error deleting file"
+            status = 'failure'
+            
+        return HttpResponse(status)
+
+    def cleanup_data_live_dir(self, request):
+        """
+        Update the html results by reading the live html results
+        file sent in the request
+        """
+        status = 'success'
+        try:
+            for item in os.listdir(data_live_dir):
+                path = os.path.join(data_live_dir, item)
+                if os.path.isfile(path):
+                    os.remove(path)
+                elif os.path.isdir(path):
+                     shutil.rmtree(path, 'ignore_errors')
+        except Exception as err:
+            print "error ceaning up dir {0}".format(data_live_dir)
+            status = 'failure'
+            
+        return HttpResponse(status)
+        
 
     def get_ws(self, request):
         """
