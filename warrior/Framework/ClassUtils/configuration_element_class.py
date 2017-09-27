@@ -187,8 +187,7 @@ class ConfigurationElement(object):
                 else:
                     result.append(var)
             return result
-        else:
-            return False
+        return False
 
     def __frange(self, x, y, jump=None):
         """
