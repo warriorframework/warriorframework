@@ -29,10 +29,12 @@ var wapp_management = {
                 katana.openAlert({
                     "alert_type": "success",
                     "text": app_name + " has been uninstalled.",
-                    "timer": 1500,
+                    "timer": 1250,
                     "show_accept_btn": false,
                     "show_cancel_btn": false
                 });
+                $tabs = $("body").find(".tabs");
+                $tabs.find('div[url*="' + app_path.split("/")[2] + '"]').remove();
             });
         },
 
@@ -41,7 +43,7 @@ var wapp_management = {
                 "alert_type": "info",
                 "heading": "Whew!",
                 "text": "Uninstall Suspended",
-                "timer": 1500,
+                "timer": 1250,
                 "show_accept_btn": false,
                 "show_cancel_btn": false
             });
@@ -49,12 +51,14 @@ var wapp_management = {
     },
 
     installAnApp: function(){
-
         var $currentPage = katana.$activeTab;
         var $elements = $currentPage.find("input[id*='app_path_for_config']")
+        console.log($elements);
         var app_paths = []
         var path = "";
         for(var i=0 ; i<$elements.length; i++){
+            console.log($elements[i]);
+            console.log($elements[i].value.trim());
             path = $elements[i].value.trim();
             if(path == ""){
                 katana.openAlert({
@@ -74,31 +78,41 @@ var wapp_management = {
         var save_config = $(this).attr('save_config');
 
         if(save_config == "yes"){
-            wapp_management.saveConfig(app_paths,
-                function(){
-                    $.ajax({
-                        headers: {
-                            'X-CSRFToken': wapp_management.getCookie('csrftoken')
-                        },
-                        type: 'POST',
-                        url: 'wapp_management/install_an_app/',
-                        data: {"app_paths": app_paths},
-                    }).done(function(data) {
-                        katana.openAlert({
-                            "alert_type": "success",
-                            "text": "Apps have been installed!",
-                            "show_accept_btn": true,
-                            "show_cancel_btn": false
-                        });
-                        $currentPage.find('#form-for-paths').html('');
-                        wapp_management.addAnotherApp(1);
-                        $currentPage.find('#installed_apps_div').html(data)
-                    });
-                });
+            wapp_management.saveConfig(app_paths);
         }
         else {
             wapp_management.setSaveConfigAttr("yes");
         }
+    },
+
+    sendInstallInfo: function(app_paths){
+        var $currentPage = katana.$activeTab;
+        $.ajax({
+            headers: {
+                'X-CSRFToken': wapp_management.getCookie('csrftoken')
+            },
+            type: 'POST',
+            url: 'wapp_management/install_an_app/',
+            data: {"app_paths": app_paths},
+        }).done(function(data) {
+            katana.openAlert({
+                "alert_type": "success",
+                "text": "Apps have been installed!",
+                "show_accept_btn": true,
+                "show_cancel_btn": false
+            });
+            $currentPage.find('#form-for-paths').html('');
+            wapp_management.addAnotherApp(1);
+
+            $tabs = $("body").find(".tabs");
+            $recently_installed_apps = $($(data)[2]).find('.tab');
+            for(var i=0; i<$recently_installed_apps.length; i++){
+                $tabs.append($recently_installed_apps[i]);
+            }
+
+            $currentPage.find('#installed_apps_div').html(data)
+            $currentPage.find("#recently-installed-apps").html("");
+        });
     },
 
     saveConfig: function(app_paths, callback){
@@ -144,7 +158,6 @@ var wapp_management = {
             },
 
             function(inputValue){
-
                 $.ajax({
                     headers: {
                         'X-CSRFToken': wapp_management.getCookie('csrftoken')
@@ -159,37 +172,33 @@ var wapp_management = {
                         "show_accept_btn": true,
                         "show_cancel_btn": false
                     },
-                    function(callback){
+                    function(){
                         wapp_management.setSaveConfigAttr("no");
                         var $saved_preferences = $currentPage.find('#saved-preferences');
                         $saved_preferences.html(data);
-                        callback && callback();
+                        wapp_management.sendInstallInfo(app_paths);
                     });
                 });
             },
-
             function(){
                 katana.openAlert({
                     "text": "Configuration not saved.",
                     "show_accept_btn": true,
                     "show_cancel_btn": false
-                }, function(callback){
-                    callback && callback();
+                }, function(){
+                    wapp_management.sendInstallInfo(app_paths);
                 });
             })
 
         },
-
         function(){
-
             katana.openAlert({
                 "text": "Configuration not saved.",
-                "timer": 1250,
-                "show_accept_btn": false,
+                "show_accept_btn": true,
                 "show_cancel_btn": false
+            }, function(){
+                wapp_management.sendInstallInfo(app_paths);
             });
-            callback && callback()
-
         });
     },
 
@@ -241,6 +250,7 @@ var wapp_management = {
         $parent.append(html_content);
         wapp_management.hideAndShowCardOne();
         wapp_management.setSaveConfigAttr("yes");
+
     },
 
     openConfig: function(){
@@ -397,7 +407,7 @@ var wapp_management = {
 
     },
 
-    editConfig: function(config_name) {
+    editConfig: function(config_name, callback) {
 
         if(config_name == undefined){
             var $elem = $(this);
@@ -421,7 +431,7 @@ var wapp_management = {
         for(var i=0; i<$disabledInputs.length; i++){
             elem_value = $($disabledInputs[i]).val()
             wapp_management.addAnotherApp((i+1), elem_value)
-            wapp_management.validateInput(elem_value, config_name, $($disabledInputs[i]))
+            wapp_management.validateInput(elem_value, $($disabledInputs[i]), config_name)
         }
 
         $siblings.html('');
@@ -436,15 +446,23 @@ var wapp_management = {
 
     installAppsFromConfig: function() {
         var $elem = $(this);
-        var config_name = $elem.attr("config_name");
+        var configName = $elem.attr("config_name")
+        var $currentPage = katana.$activeTab;
+        var $tempConfigDetails = $currentPage.find("#config-details-" + configName);
+        var $disabledInputs = $tempConfigDetails.find('input:disabled')
+        var app_paths = [];
 
-        wapp_management.editConfig(config_name);
+        for(var i=0; i<$disabledInputs.length; i++){
+            app_paths.push($($disabledInputs[i]).val());
+        }
+        wapp_management.sendInstallInfo(app_paths);
 
-        wapp_management.installAnApp();
-
+        $parent = $currentPage.find("#" + configName);
+        $parent.css("background-color", "#98afc7");
+        $tempConfigDetails.html("");
     },
 
-    validateInput: function(elem_value, elem){
+    validateInput: function(elem_value, elem, config_name){
         if(elem_value == undefined){
             var $elem = $(this);
             elem_value = $elem.val();
@@ -463,7 +481,6 @@ var wapp_management = {
         else{
             wapp_management.validateData({"type": "filepath", "value": elem_value}, $elem)
         }
-
 
     },
 
