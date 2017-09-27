@@ -6,7 +6,6 @@ from utils.directory_traversal_utils import join_path, get_dir_from_path, get_su
     get_relative_path
 from utils.file_utils import copy_dir, readlines_from_file, write_to_file
 from utils.json_utils import read_json_data
-from utils.navigator_util import Navigator
 from utils.regex_utils import compile_regex
 from wui.core.core_utils.app_info_class import AppInformation
 from wui.core.core_utils.apps_class import App
@@ -31,6 +30,7 @@ class Installer:
         self.urls_inclusions = []
         self.settings_backup = []
         self.urls_backup = []
+        self.config_data = None
 
     def install(self):
         output = self.__validate_app()
@@ -71,6 +71,7 @@ class Installer:
             data = read_json_data(self.wf_config_file)
             if data is not None:
                 if "app" in data:
+                    self.config_data = data
                     if isinstance(data["app"], list):
                         for app_details in data["app"]:
                             if output:
@@ -193,7 +194,6 @@ class Installer:
             self.urls_inclusions[i] = white_space[0] + self.urls_inclusions[i] + "\n"
 
         u_data = data[:index]
-        print self.urls_inclusions
         u_data.extend(self.urls_inclusions)
         u_data.extend(data[index:])
 
@@ -265,5 +265,6 @@ class Installer:
                                             extension=compile_regex("^\.js$"))
             for i in range(0, len(js_urls)):
                 js_urls[i] = get_relative_path(js_urls[i], app_path)
-            app.data["js_urls"] = js_urls
+                app.data["js_urls"] = js_urls
+                self.config_data["js_urls"] = js_urls
             AppInformation.information.apps.append(app)

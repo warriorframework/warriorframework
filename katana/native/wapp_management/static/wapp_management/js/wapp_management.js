@@ -33,6 +33,8 @@ var wapp_management = {
                     "show_accept_btn": false,
                     "show_cancel_btn": false
                 });
+                $tabs = $("body").find(".tabs");
+                $tabs.find('div[url*="' + app_path.split("/")[2] + '"]').remove();
             });
         },
 
@@ -101,7 +103,15 @@ var wapp_management = {
             });
             $currentPage.find('#form-for-paths').html('');
             wapp_management.addAnotherApp(1);
+
+            $tabs = $("body").find(".tabs");
+            $recently_installed_apps = $($(data)[2]).find('.tab');
+            for(var i=0; i<$recently_installed_apps.length; i++){
+                $tabs.append($recently_installed_apps[i]);
+            }
+
             $currentPage.find('#installed_apps_div').html(data)
+            $currentPage.find("#recently-installed-apps").html("");
         });
     },
 

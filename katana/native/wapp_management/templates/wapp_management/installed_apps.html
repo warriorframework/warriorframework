@@ -25,3 +25,13 @@
         {% endfor %}
 	</div>
 </div>
+
+<div id="recently-installed-apps" style="display: none">
+    {% for app_detail in config_data %}
+    <div class="tab {{app_detail.color}}" katana-click="katana.templateAPI.load"
+         url="{{app_detail.url}}" jsurls="{% for jsurl in app_detail.js_urls %} {{ jsurl }},{% endfor %}">
+        <i class="fa fa-{{ app_detail.icon }}"></i>
+        <span>{{ app_detail.name }}</span>
+    </div>
+    {% endfor %}
+</div>
