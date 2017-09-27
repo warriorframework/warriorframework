@@ -548,19 +548,34 @@ def get_relative_path(*args):
     return path
 
 
-def get_dict_with_versions():
-    """ This function carries the name and version of the depndencies
+def get_dict_with_versions(filepath, logfile, print_log_name):
+    """ This function reads the requirement.txt file at base directory and updates the version dict
+    with appropriate key(package) value(version)
 
     :Returns:
 
     1. versions (dict) = Dictionary with name as Key and version as value
+    for example:
+    a. if requirements.txt has jira<=1.1.1.1, warhorn will install jira with version 1.1.1.1
+    b. if requirements.txt has jira>=1.1.1.1, warhorn will install jira with version 1.1.1.1
+    c. if requirements.txt has jira==1.1.1.1, warhorn will install jira with version 1.1.1.1
+    d. if requirements.txt has jira<<1.1.1.1, warhorn wont install jira citing corruption in
+    requirements.txt file
     """
-    versions = {'jira': '1.0.3', 'lxml': '3.3.3', 'ncclient': '0.4.6',
-                'paramiko': '1.16.0', 'pexpect': '4.2', 'pysnmp': '4.3.2',
-                'requests': '2.9.1', 'selenium': '2.48.0', 'xlrd': '1.0.0',
-                'cloudshell-automation-api':'7.1.0.34'}
-    return versions
-
+    versions = {'jira': '', 'lxml': '', 'ncclient': '', 'paramiko': '', 'pexpect': '', 'pysnmp': '',
+                'requests': '', 'selenium': '', 'xlrd': '', 'cloudshell-automation-api': ''}
+    if not os.path.exists(filepath):
+        print_warning("The dependancy_filepath {0} does not exist, falling back to default file "
+                    "requirements.txt at base directory".format(filepath), logfile, print_log_name)
+        filepath = "../requirements.txt"
+    with open(filepath, 'r') as requirements:
+        for line in requirements:
+            dependency_list = line.split("=")
+            if len(dependency_list) == 3:
+                versions[dependency_list[0]] = dependency_list[2].rstrip()
+            elif len(dependency_list) == 2:
+                versions[dependency_list[0][:-1]] = dependency_list[1].rstrip()
+    return versions, os.path.abspath(filepath)
 
 def install_depen(dependency, dependency_name, logfile, print_log_name,
                   user=None):
@@ -641,9 +656,9 @@ def get_dependencies(logfile, print_log_name, config_file_name):
     1. install_reqs(list[str]) = a list of dependencies that the user
     has asked warhorn.py to install.
     install_reqs = [<dep_name>==<version>, <dep_name>==<version>]
-
     """
     node = get_node(config_file_name, 'warhorn')
+    dependency_filepath = node.attrib['dependency_filepath']
     if node is False:
         print_error("Warhorn tag not found! Proceeding with the installation "
                     "without installing any of the recommended "
@@ -651,35 +666,32 @@ def get_dependencies(logfile, print_log_name, config_file_name):
         setDone(1)
     else:
         dependencies = get_firstlevel_children(node, "dependency")
-        versions = get_dict_with_versions()
+        versions, valid_dependency_file = get_dict_with_versions(dependency_filepath, logfile, print_log_name)
         for dependency in dependencies:
             if 'install' in dependency.attrib:
-                if dependency.attrib["install"] == "yes":
-                    print_info("Warhorn will try to install " +
-                               dependency.attrib["name"] +
-                               " as it was set to 'yes' in the .xml file",
-                               logfile, print_log_name)
-                    if ('user' in dependency.attrib and
-                            dependency.attrib["user"] == "yes"):
+                if dependency.attrib["install"] == "yes" and \
+                        versions.get(dependency.attrib["name"]):
+                    print_info("Warhorn will try to install " + dependency.attrib["name"] +
+                               " as it was set to 'yes' in the .xml file", logfile, print_log_name)
+                    if 'user' in dependency.attrib and dependency.attrib["user"] == "yes":
                         install_depen(dependency.attrib["name"] + "==" +
                                       versions.get(dependency.attrib["name"]),
-                                      dependency.attrib["name"], logfile,
-                                      print_log_name, True)
+                                      dependency.attrib["name"], logfile, print_log_name, True)
                     else:
                         install_depen(dependency.attrib["name"] + "==" +
                                       versions.get(dependency.attrib["name"]),
                                       dependency.attrib["name"], logfile,
                                       print_log_name)
                 elif dependency.attrib["install"] == "no":
-                    print_info("Warhorn will not install " +
-                               dependency.attrib["name"] +
-                               " as it was set to 'no' in the .xml file.",
-                               logfile, print_log_name)
+                    print_info("Warhorn will not install " + dependency.attrib["name"] +
+                               " as it was set to 'no' in the .xml file.", logfile, print_log_name)
+                elif not versions.get(dependency.attrib["name"]):
+                    print_error("The {0} file doesn't have valid version for package:"
+                                .format(valid_dependency_file)+
+                                dependency.attrib["name"], logfile, print_log_name )
                 else:
-                    print_error("Warhorn will not install " +
-                                dependency.attrib["name"] +
-                                " as the 'install' attribute in the .xml file "
-                                "was left blank.",
+                    print_error("Warhorn will not install " + dependency.attrib["name"] +
+                                " as the 'install' attribute in the .xml file was left blank.",
                                 logfile, print_log_name)
                     setDone(1)
             else:
