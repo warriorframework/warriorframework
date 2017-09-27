@@ -831,24 +831,26 @@ class CliActions(object):
 
         #Fetching the system name and session name from details dict if available,
         #else takes from test case.
-        for key, temp_details_dict in temp_testdata_dict.iteritems():
+        for title_row, temp_details_dict in temp_testdata_dict.iteritems():
             for i in temp_details_dict["sys_list"]:
-                if i is None or i is '':
+                #If sys_list in None or if sys_tag in td file has only subsystem name, then it takes
+                #from the test case else fetches from the td file.
+                if i is None or i is '' or i.startswith('['):
                     td_sys_list.append(system_name)
                 else:
-                    if i.startswith('['):
-                        td_sys_list.append(system_name)
-                    else:
-                        td_sys_list.append(i)
+                    td_sys_list.append(i)
             for k in temp_details_dict["session_list"]:
+                #If session_name is not available in td file, it takes from test case else fetches
+                #fetches from td file.
                 if k is None or k is '':
                     td_session_list.append(session_name)
                 else:
                     td_session_list.append(k)
 
-        for key, temp_resp_dict in resp_dict.iteritems():
+        for title_row, temp_resp_dict in resp_dict.iteritems():
             for count, value in enumerate(temp_resp_dict):
-                #if session name given along with system name then it is split and saved respectively.
+                #if session name is given along with system name in td file, then it is split and
+                #saved respectively. (sys_name = sys1.session1)
                 temp_list = td_sys_list[count].split('.', 1)
                 if len(temp_list) > 1:
                     temp_sess_name = temp_list[1]
@@ -856,19 +858,22 @@ class CliActions(object):
                     temp_sess_name = td_session_list[count]
                 temp_session_id = Utils.data_Utils.get_session_id(temp_list[0], temp_sess_name)
                 td_resp_dict = get_object_from_datarepository(str(temp_session_id)+"_td_response")
-                #fetches the title and row value, checks if already available in td_resp_dict
-                #and updates the response ref and its value to td_resp_dict else updates the dict key
-                #and then updates the response ref and its value to td_resp_dict
-                dict_key = {key :{}}
-                if key not in td_resp_dict.keys():
-                    td_resp_dict.update(dict_key)
+
+                tr_dict = {title_row :{}}
+                #checks if title_row value is not in td_resp_dict
+                if title_row not in td_resp_dict.keys():
+                #if not available then it first updates the title_row value to td_resp_dict
+                    td_resp_dict.update(tr_dict)
+                    #after updating title_row value, it updates the resp_ref key and value
                     resp_key_value_dict = {value: temp_resp_dict[value]}
                     if not WarriorCliClass.cmdprint:
-                        td_resp_dict[key].update(resp_key_value_dict)
+                        td_resp_dict[title_row].update(resp_key_value_dict)
+                #if title_row value available in td_resp_dict,
+                #then it updates the resp_ref key and value to td_resp_dict
                 else:
                     resp_key_value_dict = {value: temp_resp_dict[value]}
                     if not WarriorCliClass.cmdprint:
-                        td_resp_dict[key].update(resp_key_value_dict)
+                        td_resp_dict[title_row].update(resp_key_value_dict)
 
         Utils.testcase_Utils.report_substep_status(status)
         return  status, td_resp_dict
