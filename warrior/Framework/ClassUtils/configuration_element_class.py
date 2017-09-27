@@ -73,7 +73,7 @@ class ConfigurationElement(object):
 
             if match is None:
                 clean_partial += return_value[:return_value.find(check) + len(check)]
-                return_value = return_value.replace(return_value[:return_value.find(check) + len(check)], '')
+                return_value = return_value.replace(return_value[:return_value.find(check) + len(check)], '', 1)
                 match = self.__find_match(return_value[:return_value.find(check) + len(check)])
                 if match is None:
                     return clean_partial + return_value
