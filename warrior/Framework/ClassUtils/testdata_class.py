@@ -491,7 +491,7 @@ class TestData(object):
                     pass
 
                 cmd_index += 1
-            
+
             old_cmd_index += 1
 
     @staticmethod
@@ -504,25 +504,24 @@ class TestData(object):
         """
         vfy_param_list = ["verify_text_list", "verify_context_list",
                           "verify_on_list", "verify_map_list", "operator_list",
-                          "cond_value_list", "cond_type_list"]
+                          "cond_value_list", "cond_type_list", "resp_key_list"]
     # vc_file_list = None if vc_file is None else details_dict["vc_file_list"]
         for param, _ in CMD_PARAMS.items():
-            if param not in vfy_param_list and param!="vc_file_list":
-                string_list = details_dict[param]
+            string_list = details_dict[param]
+            if param not in vfy_param_list and param != "vc_file_list":
                 td_sys_list = details_dict["sys_list"]
-                new_string_list = string_Utils.sub_from_wdf\
-                (datafile, string_list, td_sys_list, kw_system_name)
+                new_string_list = string_Utils.sub_from_wdf(datafile, string_list,
+                                                            td_sys_list, kw_system_name)
                 details_dict[param] = new_string_list
 
             elif param in vfy_param_list:
-                string_list = details_dict[param]
                 for i, sub_list in enumerate(string_list):
                     if sub_list is not None:
-                        new_sub_list = string_Utils.sub_from_wdf\
-                        (datafile, sub_list)
+                        new_sub_list = string_Utils.sub_from_wdf(datafile, sub_list)
                         string_list[i] = new_sub_list
                         details_dict[param] = string_list
         return details_dict
+
 
 class TestDataIterations(object):
     """
