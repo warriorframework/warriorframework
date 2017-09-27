@@ -572,7 +572,7 @@ def send_commands_from_testdata(testdatafile, obj_session, **args):
     finalresult = True if len(testdata_dict) > 0 else False
     for key, details_dict in testdata_dict.iteritems():
         response_dict = {}
-        resp_list_item = []
+        resp_key_list = []
         responses_dict[key]=""
         command_list = details_dict["command_list"]
         stepdesc = "Send the following commands: "
@@ -599,10 +599,10 @@ def send_commands_from_testdata(testdatafile, obj_session, **args):
                 result, response = _send_command_retrials(new_obj_session, details_dict, index=i,
                                                           result=result, response=response,
                                                           system_name=system_name)
-                response_dict, resp_list_item = _get_response_dict(details_dict, i, response,
-                                                   response_dict, resp_list_item)
+                response_dict, resp_key_list = _get_response_dict(details_dict, i, response,
+                                                   response_dict, resp_key_list)
                 sys_name = ses_name = ''
-                if response_dict.values()[i] is not None:
+                if response_dict[resp_key_list[i]] is not None:
                     if details_dict["sys_list"][i] == '' or details_dict["sys_list"][i] is None:
                         sys_name = system_name
                     else:
@@ -616,7 +616,7 @@ def send_commands_from_testdata(testdatafile, obj_session, **args):
                     session_id = data_Utils.get_session_id(sys_name, ses_name) + "_td_response"
                     pNote("Portion of response saved to the data repository with key: "
                           "{0}.{1}.{2}, value: {3}"
-                          .format(session_id, key,resp_list_item[i], response_dict[resp_list_item[i]]))
+                          .format(session_id, key,resp_key_list[i], response_dict[resp_key_list[i]]))
                 print_debug("<<<")
             else:
                 finalresult = "ERROR"
@@ -658,7 +658,7 @@ def _send_cmd(obj_session, **kwargs):
     return result, response
 
 
-def _get_response_dict(details_dict, index, response, response_dict, resp_list_item = []):
+def _get_response_dict(details_dict, index, response, response_dict, resp_key_list = []):
     """Get the response dict for a command. """
     resp_ref = details_dict["resp_ref_list"][index]
     resp_req = details_dict["resp_req_list"][index]
@@ -678,8 +678,8 @@ def _get_response_dict(details_dict, index, response, response_dict, resp_list_i
     else:
         response=""
     response_dict[resp_ref]=response
-    resp_list_item.append(resp_ref)
-    return response_dict, resp_list_item
+    resp_key_list.append(resp_ref)
+    return response_dict, resp_key_list
 
 
 def start_threads(started_thread_for_system, thread_instance_list, same_system, unique_log_verify_list, system_name):
