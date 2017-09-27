@@ -12,4 +12,5 @@ urlpatterns = [
     url(r'getWs', execution.get_ws),
     url(r'getHtmlResult', execution.get_html_results),
     url(r'deleteLiveHtmlFile', execution.delete_live_html_file),
+    url(r'cleanupDataLiveDir', execution.cleanup_data_live_dir),
 ]

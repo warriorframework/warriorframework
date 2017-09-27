@@ -1,6 +1,6 @@
 <body>
       <div class="csrf-container">{% csrf_token %} </div>
-      <div id="execution-container" class="execution exec-container">
+      <div id="execution-container" class="execution exec-container" auto-init="execution.cleanupDataLiveDir">
                   <div class="execution layout-panel"  auto-init="execution.layoutViewer.loadWs">
                           <div class="execution panels-heading">
                             <label>Layouts</label>
