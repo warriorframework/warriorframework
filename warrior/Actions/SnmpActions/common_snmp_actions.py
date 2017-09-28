@@ -302,7 +302,7 @@ class CommonSnmpActions(object):
             result = cmdgen.nextCmd(auth_data,
                                     transport, oid,
                                     ignoreNonIncreasingOid=True, maxRows=int(max_rows),
-                                    lookupNames=True, lookupValues=True)
+                                    lookupNames=True, lookupValues=True, lexicographicMode=True)
             #  maxRows=1 will control the mib walk
             output_dict = {
                            '{0}_errindication'.format(system_name):errindication,
