@@ -667,8 +667,9 @@ def _get_response_dict(details_dict, index, response, response_dict):
         """ print a warning message if the number of vars to be stored with
         the patterns does not match with the number of patterns
         """
-        warn_msg = ("The number of variables to store is {0} than the patterns.\n"
-                    "The number of keys({1}) is {2} which is {0} than number of patterns {3}")
+        warn_msg = ("The number of response reference keys to store is {0} than \nthe response "
+                    "reference patterns.\nThe number of response reference keys({1}) is {2}\n"
+                    "which is {0} than number of response reference patterns {3}")
         lessormore = "less" if len(keyvars) < numpats else "more"
         print_warning(warn_msg.format(lessormore, ", ".join(keyvars), len(keyvars), numpats))
     resp_ref = details_dict["resp_ref_list"][index]
