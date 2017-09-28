@@ -69,6 +69,7 @@ class ConfigurationElement(object):
             while match is not None:
                 return_value = return_value.replace(match.group(1), self.get_value(match.group(2)))
                 return_value = Utils.data_Utils.sub_from_env_var(return_value)
+                return_value = Utils.data_Utils.sub_from_data_repo(return_value)
                 match = self.__find_match(return_value[:return_value.find(check) + len(check)])
 
             if match is None:
