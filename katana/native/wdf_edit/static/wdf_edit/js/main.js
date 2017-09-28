@@ -28,6 +28,18 @@ var wdf = {
         });
     },
 
+    search_for_password: function(){
+        $inputs = katana.$activeTab.find("#content, #subcontent");
+        $inputs.each(function(ind, row) {
+            $row = $(row);
+            $row_key = $row.find("[name$='-key']");
+            $row_value = $row.find("[name$='-value']");
+            if (typeof $row_key.attr("value") !== "undefined" && $row_key.attr("value").toLowerCase() == "password" ) {
+                $row_value.prop("type", "password");
+            }
+        });
+    },
+
     hide_template: function(){
         /*
             Hide the templates
@@ -95,13 +107,20 @@ var wdf = {
     },
 
     validateKey: function(){
-        $(this).prop("value", $(this).val());
-        $(this).css("background", "#f9f9f9");
-        if ($(this).prop("value").indexOf(" ") != -1) {
+        $ele = $(this);
+        $ele.prop("value", $ele.val());
+        $ele.css("background", "#f9f9f9");
+        if ($ele.prop("value").indexOf(" ") != -1) {
             alert("Data key cannot contain whitespace");
-            $(this).focus()
+            $ele.focus()
             // katana.quickAnimation($(this), "wdf-highlight", 1000);
-            $(this).css("background", "#ecff91");
+            $ele.css("background", "#ecff91");
+        }
+
+        if ($ele.val().toLowerCase() == "password") {
+            $ele.next().prop("type", "password");
+        } else {
+            $ele.next().removeAttr("type");
         }
     },
 
@@ -424,6 +443,7 @@ var wdf = {
                         katana.$activeTab.find("#main_info").replaceWith(data);
                         wdf.hide_template();
                         wdf.search_and_hide();
+                        wdf.search_for_password();
                         // console.log("loaded");
                     }
                 });
