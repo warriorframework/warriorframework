@@ -476,7 +476,7 @@ class CommonSnmpActions(object):
                  privProtocol=None,
                  custom_mib_paths=None,
                  load_mib_modules=None,
-                 lexicographicMode=False):
+                 lexicographicMode="False"):
         """
         snmp_bulkget uses the SNMP BULKGET request to query for information on
         a network entity
