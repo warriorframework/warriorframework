@@ -11,8 +11,8 @@ limitations under the License.
 
 */
 
-app.controller('projectCapCtrl', ['$scope', '$http', '$routeParams', '$controller', '$location', '$timeout', 'fileFactory', 'saveasProjectFactory', 'getProjectFactory', 'setProjectFactory', 'subdirs',
-    function($scope, $http, $routeParams, $controller, $location, $timeout, fileFactory, saveasProjectFactory, getProjectFactory, setProjectFactory, subdirs) {
+app.controller('projectCapCtrl', ['$scope', '$http', '$routeParams', '$controller', '$location', '$timeout', 'fileFactory', 'saveasProjectFactory', 'getProjectFactory', 'setProjectFactory', 'getConfigFactory', 'subdirs',
+    function($scope, $http, $routeParams, $controller, $location, $timeout, fileFactory, saveasProjectFactory, getProjectFactory, setProjectFactory, getConfigFactory, subdirs) {
 
         $scope.subdirs = subdirs;
         $scope.xml = {};
@@ -36,27 +36,69 @@ app.controller('projectCapCtrl', ['$scope', '$http', '$routeParams', '$controlle
         $scope.suiteEditor = false;
         $scope.suiteBeingEdited = "None";
 
-//To Load the Suite File from Project 
+   function readConfig(){
+      getConfigFactory.readconfig()
+      .then(function (data) {
+         $scope.cfg = data;
+        });
+  }
+
+  readConfig();
+
+//To Load the InputData File from Suite 
 //Works for base Directory as well as Subdirectories
-    $scope.loadFile = function(filepath) {
-      dirCheck=filepath.split("/").reverse()[1];
-        if(dirCheck=="Suites"){
-          url = filepath.split('..')[1];      
-          splitDir = url.split('/Suites')[1]; 
-          finalUrl = "#/testsuite"+splitDir+"/none";
-          window.open(finalUrl);
-       }
-        else{
-          splitPath = filepath.split("/").pop(-1); 
-          splitter = splitPath+"/";
-          checkDir = filepath.split("Suites/")[1].split(splitPath)[0]; 
-          splitDir = filepath.split(checkDir)[0]; 
-          frameUrl = splitDir+splitter+checkDir;
-          frameUrl = frameUrl.split('..')[1]; 
-          splitter = frameUrl.split('/Suites')[1];
-          finalUrlDir = "#/testsuite"+splitter;
-          window.open(finalUrlDir);
+    $scope.loadFile = function(filepath) { 
+        var checkFlag = filepath.includes("..");                                         
+        if(checkFlag==true){                                                      //For files inside the Warrior directory
+           var dirCheck=filepath.split("/").reverse()[1];
+             if(dirCheck=="Suites"){                                           //Fetch Parent directory files
+                var splitDir = filepath.split('/Suites')[1]; 
+                var finalUrl = "#/testsuite"+splitDir+"/none";
+                window.open(finalUrl);    
+             }
+             else if(dirCheck=="suites"){
+                var splitDir = filepath.split('/suites')[1]; 
+                var finalUrl = "#/testsuite"+splitDir+"/none";
+                window.open(finalUrl);
+             }
+            else{                                                                 //Fetch subdirectory files
+                var splitPath = filepath.split("/").pop(-1); 
+                var splitter = splitPath+"/"; 
+                if(filepath.includes("Suites")==true){
+                var checkDir = filepath.split("Suites/")[1].split(splitPath)[0]; 
+                }
+                else{var checkDir = filepath.split("suites/")[1].split(splitPath)[0];}
+                checkDir = checkDir.slice(0, -1);
+                checkDir = checkDir.replace(/\//g,','); 
+                var finalUrlDir = "#/testsuite/"+splitter+checkDir;
+                window.open(finalUrlDir);
+            }
         }
+        else{                                                                     //For files outside the Warrior directory
+            var dataDir = $scope.cfg.testsuitedir;
+            var matchPath = filepath.includes(dataDir);
+            if(matchPath == true){
+              splitPath = filepath.split(dataDir)[1]; 
+              var fileName = splitPath.split("/").pop(-1); 
+              splitter = fileName+"/";
+              var checkDir = filepath.split(dataDir)[1].split(fileName)[0]; 
+              checkDir = checkDir.replace(/\//g,','); 
+              var finalUrlDir = "#/testsuite/"+splitter+checkDir;
+              window.open(finalUrlDir);
+          }
+            else{    
+            if(filepath != '') 
+                 {                                                        //Mismatched Config and selected path;   
+                sweetAlert({
+                    title: "Config Path mismatch with the selected path !",
+                    closeOnConfirm: true,
+                    confirmButtonColor: '#3b3131',
+                    confirmButtonText: "Ok",
+                    type: "info"
+                });
+            }
+          }
+        } 
      };
 
         fileFactory.readstatesfile()
