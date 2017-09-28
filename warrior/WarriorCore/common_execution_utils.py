@@ -49,17 +49,16 @@ def get_step_list(filepath, step_tag, sub_step_tag):
     Based on runmode and value append the list.
 
     :Arguments:
-        1. filepath    = full path of the Testcase/suite/project xml file
-        2. step_tag = xml tag for group of step in the file
+        1. filepath     = full path of the Testcase/suite/project xml file
+        2. step_tag     = xml tag for group of step in the file
         3. sub_step_tag = xml tag for each step in the file
 
     """
-
     step_list_with_rmt_retry = []
     root = Utils.xml_Utils.getRoot(filepath)
-    step_tag = root.find(step_tag)
-    if step_tag is None:
-        print_warning("The file: '{}' has no steps to be executed".format(filepath))
+    steps_exist = root.find(step_tag)
+    if steps_exist is None:
+        print_warning("The file: '{0}' has no {1} to be executed".format(filepath, step_tag))
     else:
         step_list = step_tag.findall(sub_step_tag)
         # iterate all steps to get the runmode and retry details
