@@ -195,7 +195,7 @@ class browser_actions(object):
                         if urlschema.scheme:
                             result = self.browser_object.go_to(url, browser_inst)
                         else:
-                            status = False
+                            result = False
                             pNote("Protocol scheme in your URL: \'{0}\' is missing, protocol could"
                                   "be http/ftp/file".format(url), "error")
                     else:
