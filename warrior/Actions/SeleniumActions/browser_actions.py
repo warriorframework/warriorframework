@@ -51,6 +51,7 @@ class browser_actions(object):
         """
         The Keyword would launch a browser and Navigate to the url, if provided by the user.
         The keyword does not validate the url provided by the user.
+        -----------------------------------------------------------
 
         :Datafile Usage:
 
@@ -368,6 +369,7 @@ class browser_actions(object):
                                            locators
             6. element_tag (str) = particular element in the json fie which
                                    contains relevant information to that element
+
 
         :Returns:
 
