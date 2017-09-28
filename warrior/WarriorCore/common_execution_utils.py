@@ -67,33 +67,18 @@ def get_step_list(filepath, step_tag, sub_step_tag):
             runmode, value = get_runmode_from_xmlfile(step)
             retry_type, _, _, retry_value, _ = get_retry_from_xmlfile(step)
             if runmode is not None and value > 0:
-                if len(step_list) > 1:
-                    go_next = len(step_list_with_rmt_retry) + value + 1
-                    step_list_with_rmt_retry = append_step_list(step_list_with_rmt_retry, step,
-                                                                value, go_next, mode="runmode",
-                                                                tag="value")
-                else:
-                    go_next = len(step_list_with_rmt_retry) + value + 1
-                    step_list_with_rmt_retry = append_step_list(step_list_with_rmt_retry, step,
-                                                                value, go_next, mode="runmode",
-                                                                tag="value")
+                go_next = len(step_list_with_rmt_retry) + value + 1
+                step_list_with_rmt_retry = append_step_list(step_list_with_rmt_retry, step,
+                                                            value, go_next, mode="runmode",
+                                                            tag="value")
             if retry_type is not None and value > 0:
-                if len(step_list) > 1:
-                    go_next = len(step_list_with_rmt_retry) + retry_value + 1
-                    if runmode is not None:
-                        get_runmode = step.find('runmode')
-                        step.remove(get_runmode)
-                    step_list_with_rmt_retry = append_step_list(step_list_with_rmt_retry, step,
-                                                                retry_value, go_next, mode="retry",
-                                                                tag="count")
-                else:
-                    go_next = len(step_list_with_rmt_retry) + retry_value + 1
-                    if runmode is not None:
-                        get_runmode = step.find('runmode')
-                        step.remove(get_runmode)
-                    step_list_with_rmt_retry = append_step_list(step_list_with_rmt_retry, step,
-                                                                retry_value, go_next, mode="retry",
-                                                                tag="count")
+                go_next = len(step_list_with_rmt_retry) + retry_value + 1
+                if runmode is not None:
+                    get_runmode = step.find('runmode')
+                    step.remove(get_runmode)
+                step_list_with_rmt_retry = append_step_list(step_list_with_rmt_retry, step,
+                                                            retry_value, go_next, mode="retry",
+                                                            tag="count")
             if retry_type is None and runmode is None:
                 step_list_with_rmt_retry.append(step)
     return step_list_with_rmt_retry
