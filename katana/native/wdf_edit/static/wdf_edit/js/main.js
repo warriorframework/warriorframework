@@ -30,7 +30,7 @@ var wdf = {
 
     search_for_password: function(){
         $inputs = katana.$activeTab.find("#content, #subcontent");
-        $.each($inputs, function(ind, row) {
+        $inputs.each(function(ind, row) {
             $row = $(row);
             $row_key = $row.find("[name$='-key']");
             $row_value = $row.find("[name$='-value']");
@@ -107,19 +107,20 @@ var wdf = {
     },
 
     validateKey: function(){
-        $(this).prop("value", $(this).val());
-        $(this).css("background", "#f9f9f9");
-        if ($(this).prop("value").indexOf(" ") != -1) {
+        $ele = $(this);
+        $ele.prop("value", $ele.val());
+        $ele.css("background", "#f9f9f9");
+        if ($ele.prop("value").indexOf(" ") != -1) {
             alert("Data key cannot contain whitespace");
-            $(this).focus()
+            $ele.focus()
             // katana.quickAnimation($(this), "wdf-highlight", 1000);
-            $(this).css("background", "#ecff91");
+            $ele.css("background", "#ecff91");
         }
 
-        if ($(this).val().toLowerCase() == "password") {
-            $(this).next().prop("type", "password");
+        if ($ele.val().toLowerCase() == "password") {
+            $ele.next().prop("type", "password");
         } else {
-            $(this).next().removeAttr("type");
+            $ele.next().removeAttr("type");
         }
     },
 
