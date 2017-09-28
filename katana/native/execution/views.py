@@ -55,6 +55,8 @@ class Execution(object):
         self.templates_dir = os.path.join(templates_dir, 'execution')
         self.jira_settings_file = os.path.join(self.wf_dir, 'warrior', 'Tools', 'jira', 'jira_config.xml')        
         self.execution_settings_json = os.path.join(templates_dir, 'execution', 'execution_settings.json')
+        self.config_json = os.path.join(self.katana_dir, 'config.json')
+        
         
 
     
@@ -157,9 +159,10 @@ class Execution(object):
         execution_file_list = data_dict['execution_file_list']
         cmd_string = data_dict['cmd_string']
         live_html_res_file = data_dict['liveHtmlFpath']
-         
-   
-        return StreamingHttpResponse(stream_warrior_output(self.warrior, cmd_string, execution_file_list, live_html_res_file))
+        config_json_dict = json.loads(open(self.config_json).read())
+        python_path = config_json_dict['pythonpath']
+
+        return StreamingHttpResponse(stream_warrior_output(self.warrior, cmd_string, execution_file_list, live_html_res_file, python_path))
            
 
 
@@ -167,14 +170,14 @@ class Execution(object):
 
 
 
-def stream_warrior_output(warrior_exe, cmd_string, file_list, live_html_res_file):
+def stream_warrior_output(warrior_exe, cmd_string, file_list, live_html_res_file, python_path=None):
     """
     Start warrior execution and stream console logs output to client
     """
+    pypath = python_path if python_path else 'python'
     
-    
-    print_cmd = '{0} {1} {2}'.format('python', warrior_exe, cmd_string )
-    warrior_cmd = '{0} {1} -livehtmllocn {2} {3}'.format('python', warrior_exe, live_html_res_file, cmd_string )
+    print_cmd = '{0} {1} {2}'.format(pypath, warrior_exe, cmd_string )
+    warrior_cmd = '{0} {1} -livehtmllocn {2} {3}'.format(pypath, warrior_exe, live_html_res_file, cmd_string )
 
     
     output = subprocess.Popen(str(warrior_cmd), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
