@@ -1,8 +1,8 @@
 <body>
-<div class="tool-bar"><div katana-click="settings.closeSetting" class="button close">Close</div><div katana-click="settings.profile.save" class="button save saved">Save</div></div>
+<div class="tool-bar"><div class="title">Profile Settings</div><div katana-click="settings.closeSetting" class="button close">Close</div><div katana-click="settings.profile.save" class="button save saved">Save</div></div>
 <div class="flex-rows to-save" auto-init="settings.profile.init" post-url="settings/profile_setting_handler">
     <div class="field-block large center to-scroll">
-      <div class="title center">Profile Settings</div>
+      <div class="title center"></div>
       {% for k, v in data.items%}
         {% if k == 'Base64image' or k == "bgImage" %}
           <div class="profile-image large">

@@ -124,24 +124,29 @@ var settings = {
 			$elem = $elem ? $elem : this;
 			var $template = $($elem.closest('.to-save').find('#issue_type').html());
 			var fieldContainer = $elem.closest('.field-block').find('.to-scroll');
+			$elem == this && fieldContainer.find('input:first').trigger('change');
 			return $template.clone().appendTo(fieldContainer);
 
 		},
 
 		deleteBlock: function(){
-			this.closest('.field-block').remove();
+			var fieldBlock = this.closest('.field-block');
+			fieldBlock.find('input').trigger('change');
+			fieldBlock.remove();
 		},
 
 		addBlock: function(){
 			var $elem = this;
 			var feildBlock = $elem.closest('.field-block');
+			feildBlock.find('input:first').trigger('change');
 			feildBlock.clone().insertAfter( feildBlock );
 		}
 	},
 
 	addSystem: function(){
 		var page = this.closest('.page-content');
-		page.find('.to-save').append( page.find('#block-template').html() );
+		var template = $(page.find('#block-template').html()).appendTo(page.find('.to-save'));
+		template.find('input:first').trigger('change');
 	},
 
 	changeDetection: function(){
