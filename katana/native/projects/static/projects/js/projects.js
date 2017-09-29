@@ -658,13 +658,14 @@ Two global variables are heavily used when this function is called;
 
 
 	showSuiteFromProject:function () {
-		var fname = katana.$activeTab.find('#showSuiteFromProject').attr('key');
+		//var fname = katana.$activeTab.find('#showSuiteFromProject').attr('key');
+		var fname = this.attr('key');
 	  	var xref="./suites/editSuite/?fname="+fname; 
 	  	console.log("Calling suite ", fname, xref);
 	    katana.$view.one('tabAdded', function(){
-	        projects.mapFullSuiteJson(fname);
+	        suites.mapFullSuiteJson(fname);
 	    });
-	  katana.templateAPI.load(xref, null, null, 'suite') ;;
+	  katana.templateAPI.load(xref, 'projects.js', null, 'suite') ;;
 	},
 
 	testProjectSortEventHandler : function(event, ui ) {

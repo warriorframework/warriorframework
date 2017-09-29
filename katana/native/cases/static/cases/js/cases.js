@@ -239,7 +239,7 @@ function jsUcfirst(string)
 	var tag = '#caseInputDataFile';
 	var filename = katana.$activeTab.find(tag).attr("fullpath");
 	dd = { 'path' : filename}; 
-	katana.templateAPI.postTabRequest("WDF", "/katana/wdf/index", dd);
+	katana.templateAPI.load( "/katana/wdf/index", null, null, "WDF", null, { type: 'POST', data:  dd}) ;
 	},
 
 	getFileSavePath: function () {

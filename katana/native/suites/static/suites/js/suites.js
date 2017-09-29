@@ -495,8 +495,8 @@ Two global variables are heavily used when this function is called;
 		var showID = parseInt(s)+ 1; 
 		items.push('<tr data-sid="'+s+'"><td>'+showID+'</td>');
 		var bid = "fileTestcase-"+s+"-id";
-		items.push('<td><i title="ChangeFile" class="fa fa-folder-open" id="'+bid+'" katana-click="fileNewSuiteFromLine" key="'+bid+'"/></td>');
-		items.push('<td onclick="showCaseFromSuite('+"'"+oneCase['path']+"'"+')">'+oneCase['path']+'</td>');
+		items.push('<td><i title="ChangeFile" class="fa fa-folder-open" id="'+bid+'" katana-click="suites.fileNewSuiteFromLine" key="'+bid+'"/></td>');
+		items.push('<td katana-click="suites.showCaseFromSuite" key="'+oneCase['path']+'"> '+oneCase['path']+'</td>');
 		items.push('<td>'+oneCase['context']+'</td>');
 		items.push('<td>'+oneCase['runtype']+'</td>');
 		items.push('<td>'+oneCase['runmode']['@type']);
@@ -562,13 +562,14 @@ Two global variables are heavily used when this function is called;
 	suites.getResultsDirForSuiteRow();
 },
 
-	showCaseFromSuite : function (fname) {
-  var xref="./cases/editCase/?fname="+fname; 
-  //console.log("Calling case ", fname, xref);
-    katana.$view.one('tabAdded', function(){
-         suites.mapFullCaseJson(fname,'#listOfTestStepsForCase');
-    });
-  katana.templateAPI.load(xref, null, null, 'suite') ;;
+	showCaseFromSuite : function () {
+		var fname = this.attr('key');
+		var xref="./cases/editCase/?fname="+fname; 
+	  	console.log("Calling case ", fname, xref);
+	    katana.$view.one('tabAdded', function(fname ){
+	         cases.mapFullCaseJson(fname,'#listOfTestStepsForCase');
+	    });
+  	katana.templateAPI.load(xref, "cases.js", null, 'suite') ;;
 },
 //
 	testSuiteSortEventHandler : function(event, ui ) {
