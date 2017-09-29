@@ -3,11 +3,33 @@
 <jira>
 
     <system name="warrior" >
-		<url>https://demojiraplat.atlassian.net/</url>
-		<username>admin</username>
-		<password>satmu1323*</password>
+		<url>http://rtx-swtl-jira.fnc.net.local</url>
+		<username>sradhakr</username>
+		<password></password>
 		<Assignee>Automatic</Assignee>
 		<project_key>WAR</project_key>
+    <append_log>no</append_log>
+    <issue_type>
+        <type>story</type>
+        <pass>RESOLVED</pass>
+        <fail>REOPENED</fail>
+        <error>REOPENED</error>
+        <skip></skip>
+    </issue_type>
+    <issue_type>
+        <type>task</type>
+        <pass>pass</pass>
+        <fail>fail</fail>
+        <error>error</error>
+        <skip>skip</skip>
+    </issue_type>
+    <issue_type>
+        <type>default</type>
+        <pass>pass</pass>
+        <fail>fail</fail>
+        <error>error</error>
+        <skip>skip</skip>
+    </issue_type>
 	</system>
 
     <system name="project1">
@@ -32,29 +54,7 @@
         <password>123456</password>
 		<Assignee>Automatic</Assignee>
         <project_key>WAR</project_key>
-        <append_log>true</append_log>
-        <issue_type>
-            <type>story</type>
-            <pass>pass</pass>
-            <fail>fail</fail>
-            <error>error</error>
-            <skip>skip</skip>
-        </issue_type>
-        <issue_type>
-            <type>task</type>
-            <pass>pass</pass>
-            <fail>fail</fail>
-            <error>error</error>
-            <skip>skip</skip>
-        </issue_type>
-        <issue_type>
-            <type>default</type>
-            <pass>pass</pass>
-            <fail>fail</fail>
-            <error>error</error>
-            <skip>skip</skip>
-        </issue_type>
-    </system>
-	
-</jira>
 
+    </system>
+
+</jira>

@@ -170,10 +170,10 @@ def editSuite(request):
 
 	fulljsonstring = str(json.loads(json.dumps(xml_r['TestSuite'])));
 	fulljsonstring = fulljsonstring.replace('u"',"'").replace("u'",'"').replace("'",'"');
-	fulljsonstring = fulljsonstring.replace('None','""')
+	fulljsonstring = fulljsonstring.replace('None','""').replace('""""','""')
 
 	context = { 
-		'savefilename': "save_" + os.path.split(filename)[1],
+		'savefilename': os.path.split(filename)[1],
 		'savefilepath': os.path.split(filename)[0],
 		'fullpathname': filename,
 		'docSpec': 'projectSpec',

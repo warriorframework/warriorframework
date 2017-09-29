@@ -36,7 +36,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'jsonify',
     'wui.core',
     'native.wapp_management',
     'native.settings',

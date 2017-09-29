@@ -197,8 +197,8 @@ def getEmpty():
 		          ]
 		        },
 		        "Description": [
-		          "Regression for existing support, setting one ENV variable",
-		          "compare values"
+		          "Description Line 1",
+		          "Description Line 2"
 		        ],
 		        "onError": { "@action": "next" },
 		        "Execute": { "@ExecType": "Yes" },
@@ -268,15 +268,15 @@ def editCase(request):
 		xlines = open(filename).read()
 		xml_d = xmltodict.parse(xlines, dict_constructor=dict);
 		subdir = os.path.split(filename)[0]
-		fn = 'save_' + os.path.split(filename)[1]
+		fn =  os.path.split(filename)[1]
 
 	fulljsonstring = str(json.loads(json.dumps(xml_d['Testcase'])));
 	fulljsonstring = fulljsonstring.replace('u"',"'").replace("u'",'"').replace("'",'"');
-	fulljsonstring = fulljsonstring.replace('None','""')
+	fulljsonstring = fulljsonstring.replace('None','""').replace('""""','""')
 
 	emptyCaseString = str(json.loads(json.dumps(edata['Testcase'])));
 	emptyCaseString = emptyCaseString .replace('u"',"'").replace("u'",'"').replace("'",'"');
-	emptyCaseString = emptyCaseString .replace('None','""')
+	emptyCaseString = emptyCaseString .replace('None','""').replace('""""','""')
 
 
 	# Map the input to the response collector

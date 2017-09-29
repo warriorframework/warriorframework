@@ -1,16 +1,15 @@
 {% load static %} 
 
-<body>
     <link rel="stylesheet" href="{% static "./case_tables.css" %}">
     <div class="tool-bar">
-        <i id="addStep" class="btn btn-success" katana-click="caseApp.addNewTestStepToUI">Add Step To Case</i>
-        <i class="btn btn-success" katana-click="caseApp.addRequirementToCase">Add Requirement</i>
-        <i class="btn btn-success" katana-click="caseApp.sendCaseToServer">Write Changes To Disk</i>
-       
+        <i id="addStep" class="btn btn-success" katana-click="cases.addNewTestStepToUI">Add Step To Case</i>
+        <i class="btn btn-success" katana-click="cases.addRequirementToCase">Add Requirement</i>
+        <i class="btn btn-success" katana-click="cases.sendCaseToServer">Write Changes To Disk</i>
+        <button id="addNewCase" class="btn btn-success" onclick="cases.startNewCase()">Add New Testcase</button>
         <label class="col-md-2 text-righ" t>Save file to </label>
         <input class="text-right col-md-4" type="text" id="my_file_to_save" name="my_file_to_save" value="{{savefilename}}" />
     </div>
-    <div class="container-fluid" auto-init="caseApp.init">
+    <div class="container-fluid" auto-init="cases.init">
         <div class="row">
             <div class="col-md-9">
                 <div class="row ">
@@ -55,8 +54,8 @@
                         <div class="btn-group col-md-12">
                         <input type="text" id="caseInputDataFile" value="{{caseInputDataFile}}" />
                         
-                        <button class="btn btn-info" katana-click="caseApp.getResultsDirForCase">...</button>
-                        <button class="btn btn-info" katana-click="caseApp.start_wdfEditor()">WDF</button>
+                        <button class="btn btn-info" katana-click="cases.getCaseInputDataFile">...</button>
+                        <button class="btn btn-info" katana-click="cases.start_wdfEditor">WDF</button>
                         </div>
                     </div>
 
@@ -96,7 +95,7 @@
                         <label class="text-right " id="caseDatatype_lbl">Results Directory:</label>
                         <div class="btn-group col-md-12">
                         <input class="text-right " type="text" id="caseResultsdir" value="{{caseResultsdir}}">
-                        <!--<button class="btn btn-success r" katana-click="caseApp.getResultsDirForCase('#caseResultsdir')">...</button>-->
+                        <!--<button class="btn btn-success r" katana-click="cases.getResultsDirForCase('#caseResultsdir')">...</button>-->
                         </div>
                     </div>
                 </div>
@@ -211,17 +210,25 @@
                             </div>
                             <div class="field col-md-3">
                                 <label>Warrior Data File:</label>
-                                 <button class="btn btn-info" katana-click="caseApp.getResultsDirForCaseStep">...</button>
+                                 <button class="btn btn-info" katana-click="cases.getStepInputDataFile">...</button>
                                 <input type="text" id="StepInputDataFile" value="" />
                             </div>
                             <div id="arguments-textarea"> </div>
                             <div>
-                                <button class="btn btn-success" id="appendArgument" katana-click="caseApp.appendPopupArgument">Append Argument </button>
-                                <button class="btn btn-success" id="saveEditCaseStep" katana-click="caseApp.saveTestCaseChanges">Save Changes To Test Step </button>
+                                <button class="btn btn-success" id="appendArgument" katana-click="cases.appendPopupArgument">Append Argument </button>
+                                <button class="btn btn-success" id="saveEditCaseStep" katana-click="cases.saveTestCaseChanges">Save Changes To Test Step </button>
                                
                             </div>
                         </div>
-                        <div id="sourceCaseFileText" class="col-md-8" style='overflow:auto;'> Source file </div>
+
+                         <div class="col-md-8">
+                            <div id="sourceCaseFileDef" class='case-signature'> Signature </div>
+                            <p>Source File</p>
+                            <pre id="sourceCaseFileText" class='case-scrollable-source-text' height="100%"> Source file </pre>
+                       
+
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -232,4 +239,3 @@
     </div>
 
     
-</body>

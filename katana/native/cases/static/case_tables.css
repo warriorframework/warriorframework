@@ -106,3 +106,14 @@
     flex-grow: 1.1;
     font-size: 18px;
 }
+
+.case-signature { 
+  border-style: dotted; 
+  border-width: 1px; 
+  font-style: italic;
+}
+
+.case-scrollable-source-text { 
+  overflow:auto;
+  background: '#bbb';
+ }
