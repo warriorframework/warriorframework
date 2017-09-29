@@ -37,6 +37,7 @@ def getSuiteListTree(request):
 	template = loader.get_template("listAllSuites.html")
 	jtree = navigator.get_dir_tree_json(fpath)
 	jtree['state']= { 'opened': True };
+	print jtree;
 	return JsonResponse({'treejs': jtree })
 
 def getJSONSuiteData(request):
@@ -186,7 +187,7 @@ def editSuite(request):
 		'suiteInputDataFile': xml_r["TestSuite"]["Details"]["InputDataFile"],
 		'suiteEngineer': xml_r["TestSuite"]["Details"]["Engineer"],
 		'suiteDatatype': xml_r["TestSuite"]["Details"]["type"]["@exectype"],
-		'suiteDate': xml_r["TestSuite"]["Details"]["Date"].split()[0],
+		'suiteDate': xml_r["TestSuite"]["Details"]["Date"],
 		'suiteTime': xml_r["TestSuite"]["Details"]["Time"],
 		'suiteState': xml_r["TestSuite"]["Details"]["State"],
 		#'suiteType': xml_r["TestSuite"]["Details"]["type"],

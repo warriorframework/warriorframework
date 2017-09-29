@@ -4,7 +4,8 @@
 <div id="OverwriteSuiteHere">
 <div class="csrf-container">{% csrf_token %}</div>
 <h2>List of Suites</h2>		
-  	<div id="mySuite" auto-init="suites.displayTreeOfSuites">		</div>
+  	<div id="mySuite" auto-init="suites.initSuiteTree">	</div>	
 	<div id="mySuiteTree"></div>
-<button " class="btn btn-success" katana-click="suites.startNewSuite">Add New Suite</button>
+<button class="btn btn-success" katana-click="suites.startNewSuite">Add New Suite</button>
+
 </div>

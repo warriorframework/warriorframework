@@ -96,8 +96,9 @@ function jsUcfirst(string)
 			   			console.log("starting ...", this);
 				  		projects.mapFullProjectJson(projects.thefile);
 				  });
+			   // katana.templateAPI.load(xref, null, null, 'Project') ;
+		
 			  });
-		 // katana.templateAPI.load(xref, null, null, 'Project') ;
 		 katana.$activeTab.find('#myProjectTree').jstree(jdata);
 		});
 
@@ -351,7 +352,10 @@ startNewProject : function() {
 /// -------------------------------------------------------------------------------
 	mapUItoProjectSuite: function(popup, xdata){
 	if (popup.find("#suitePath").val().length < 1) {
-		alert("Please specify a suite path name");
+		
+		data = { 'heading': "Error", 'text' : "Please specify a suite path name"}
+		katana.openAlert(data);
+	
 		return
 	}
 
@@ -451,18 +455,21 @@ Two global variables are heavily used when this function is called;
 	 mapUiToProjectJson: function() {
 
 	if (katana.$activeTab.find('#projectName').val().length < 1) {
-		alert("Please Specify a Project Name ");
+		data = { 'heading': "Error", 'text' : "Please specific a project name "}
+		katana.openAlert(data);
 		return; 
 	}
 
 	if (katana.$activeTab.find('#projectTitle').val().length < 1) {
-		alert("Please Specify a Project Title ");
+		data = { 'heading': "Error", 'text' : "Please specific a title "}
+		katana.openAlert(data);
 		return; 
 	}
 
 	if (katana.$activeTab.find('#projectEngineer ').val().length < 1) {
-		alert("Please Specify a Project Engineer  ");
-		return; 
+		data = { 'heading': "Error", 'text' : "Please specific a name for the engineer"}
+		katana.openAlert(data);
+		return
 	}
 
 	
@@ -506,7 +513,9 @@ Two global variables are heavily used when this function is called;
 	    headers: {'X-CSRFToken':csrftoken},
     
     success: function( data ){
-        alert("Saved "+katana.$activeTab.find('#filesavepath').text() + "/" + $('#my_file_to_save').val());
+    	var outstr = "Saved "+katana.$activeTab.find('#filesavepath').text() + "/" + $('#my_file_to_save').val();
+    	xdata = { 'heading': "Error", 'text' : outstr }
+		katana.openAlert(xdata);
     	}
 	});
 
@@ -516,22 +525,22 @@ Two global variables are heavily used when this function is called;
 // This creates the table for viewing data in a sortable view. 
 // 
 	createSuitesTable: function() {
-	var items = []; 
-	items.push('<table id="suite_table_display" class="project-configuration-table striped" width="100%">');
-	items.push('<thead>');
-	items.push('<tr id="suiteRow"><th>Num</th><th/><th>Suite</th><th>Execute</th><th>OnError</th><th>Impact</th><th/></tr>');
-	items.push('</thead>');
-	items.push('<tbody>');
-	console.log("Create suites for ", projects.jsonProjectObject); 
-	projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
-	console.log("Create suites for ", projects.jsonProjectObject['Testsuites']); 
-	
-	xdata = projects.jsonTestSuites['Testsuite'];
-	console.log("Create suites for ", xdata, projects.jsonTestSuites); 
-	katana.$activeTab.find("#tableOfTestSuitesForProject").html("");
-	for (var s=0; s<Object.keys(xdata).length; s++ ) {
-		var oneSuite = projects.jsonProjectObject['Testsuites']['Testsuite'][s];
-	
+		var items = []; 
+		items.push('<table id="suite_table_display" class="project-configuration-table striped" width="100%">');
+		items.push('<thead>');
+		items.push('<tr id="suiteRow"><th>Num</th><th/><th>Suite</th><th>Execute</th><th>OnError</th><th>Impact</th><th/></tr>');
+		items.push('</thead>');
+		items.push('<tbody>');
+		console.log("Create suites for ", projects.jsonProjectObject); 
+		projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
+		console.log("Create suites for ", projects.jsonProjectObject['Testsuites']); 
+		
+		xdata = projects.jsonTestSuites['Testsuite'];
+		console.log("Create suites for ", xdata, projects.jsonTestSuites); 
+		katana.$activeTab.find("#tableOfTestSuitesForProject").html("");
+		for (var s=0; s<Object.keys(xdata).length; s++ ) {
+			var oneSuite = projects.jsonProjectObject['Testsuites']['Testsuite'][s];
+		
 		//console.log(xdata);
 		if (oneSuite == null) {
 			projects.jsonProjectObject['Testsuites']['Testsuite'][s] = {} ;

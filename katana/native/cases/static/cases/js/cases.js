@@ -196,16 +196,19 @@ function jsUcfirst(string)
 	mapUiToCaseJson: function() {
 
 	if ( katana.$activeTab.find('#caseName').attr('value').length < 1) {
-		alert("Please specific a case name ");
+		data = { 'heading': "Error", 'text' : "Please specific a case name "}
+		katana.openAlert(data);
 		return;
 	}
 
 	if ( katana.$activeTab.find('#caseTitle').attr('value').length < 1) {
-		alert("Please specific a Title ");
+		data = { 'heading': "Error", 'text' : "Please specific a title "}
+		katana.openAlert(data);
 		return;
 	}
 	if ( katana.$activeTab.find('#caseEngineer').attr('value').length < 1) {
-		alert("Please specific an Engineer name ");
+		data = { 'heading': "Error", 'text' : "Please specific a name for the engineer"}
+		katana.openAlert(data);
 		return;
 	}
 
@@ -352,7 +355,10 @@ function jsUcfirst(string)
 	headers: {'X-CSRFToken':csrftoken},
 	//contentType: 'application/json',
 	success: function( data ){
-		alert("Sent");
+
+		xdata = { 'heading': "Sent", 'text' : "sent the file... "+data}
+		katana.openAlert(xdata);
+	
 		}
 	});
 },
