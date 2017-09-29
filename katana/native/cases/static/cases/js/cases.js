@@ -102,9 +102,9 @@ function jsUcfirst(string)
 			      if (extn < 4){
 			      	return;
 			      }
-			      katana.$view.one('tabAdded', function(){
-			      cases.mapFullCaseJson(thePage,'#listOfTestStepsForCase');
-				  });
+			   //    katana.$view.one('tabAdded', function(){
+			   	//    cases.mapFullCaseJson(thePage,'#listOfTestStepsForCase');
+				  // });
 				  var xref="./cases/editCase/?fname=" + thePage; 
 				  cases.thefile = thePage; 
 				  // Load the response here. ...	

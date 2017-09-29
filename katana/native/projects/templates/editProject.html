@@ -1,20 +1,18 @@
 {% load static %}
 
 
-<body>
+
 <link rel="stylesheet" href="{% static "./project_table.css" %}" > 
-<!-- <script type="text/javascript" src="{% static "./doProjectHandling.js" %}" />
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
--->
+
 <div class="tool-bar">
 	    	{% csrf_token %}
 	    	
-			<button id="addSuite" class="btn btn-primary" katana-click="projectApp.addSuiteToProject">Add Suite To Project</button>-->
+			<button id="addSuite" class="btn btn-primary" katana-click="projects.addSuiteToProject">Add Suite To Project</button>-->
 			<!-- <button class="btn btn-primary" onclick="resetUIfromFile()">Discard Changes</button>  -->
-			<button class="btn btn-success save" katana-click="projectApp.mapUiToProjectJson">Save Changes to : </button>
+			<button class="btn btn-success save" katana-click="projects.mapUiToProjectJson">Save Changes to : </button>
 			<input class="col-md-4 text-right" type="text" id="my_file_to_save" name="my_file_to_save" value="{{projectName}}.xml"/>
 </div>
-<div auto-init="projectApp.mapFullProjectJson">
+<div auto-init="projects.mapFullProjectJson">
 	<div class="col-md-12 row">
 			<div class="field col-md-3 input_padding">
 				<label for="projectName">Name*:</label>
@@ -68,7 +66,7 @@
 			<div class="field col-md-3 input_padding">	
 				
 				<label class="text-right">Results Dir:</label>
-				<button class="btn btn-info" onclick="projectApp.getResultsDirForProject()">...</button>
+				<button class="btn btn-info" onclick="projects.getResultsDirForProject()">...</button>
 				<div class="" id="fileNames"></div>
 				<input class="text-right" type="text" id="projectResultsDir" name="projectResultsDir" value="{{resultsDir}}" />
 			</div>
@@ -169,7 +167,7 @@
 					</select>
 					<br>
 				</div>
-			<button class="btn col-md-3 center" id="saveChangesToRow" katana-click="projectApp.saveChangesToRowCB">Save Changes</button>>
+			<button class="btn col-md-3 center" id="saveChangesToRow" katana-click="projects.saveChangesToRowCB">Save Changes</button>>
 			</div>
 
 	</div>
@@ -179,4 +177,4 @@
 	<div id="savefilepath" class="hidden">{{savefilepath}}</div>
 	<div id="fullpathname" class="hidden">{{fullpathname}}</div>
 </div>
-</body>
+

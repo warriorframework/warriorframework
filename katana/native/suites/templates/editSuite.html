@@ -8,9 +8,9 @@
 {% csrf_token %}
 <div class="tool-bar">
 	
-	<button class="btn" katana-click="suiteApp.addRequirementToSuite" id="addRequirementEntry">Add Requirement</button>
-	<button id="addSuite" class="btn btn-primary" katana-click="suiteApp.addCaseToSuite()">Add Case To Suite</button>
-	<button class="btn btn-success" katana-click="suiteApp.mapUiToSuiteJson">Save Changes to: </button>
+	<button class="btn" katana-click="suites.addRequirementToSuite" id="addRequirementEntry">Add Requirement</button>
+	<button id="addSuite" class="btn btn-primary" katana-click="suites.addCaseToSuite">Add Case To Suite</button>
+	<button class="btn btn-success" katana-click="suites.mapUiToSuiteJson">Save Changes to: </button>
 	<input class="col-md-4 text-right" type="text" id="my_file_to_save" name="my_file_to_save" value="{{suiteName}}.xml"/>
 	
 </div>
@@ -66,13 +66,13 @@
 			<div class="row">
 				<div class="field col-md-3">
 					<label >Results*:</label>
-					<button class="btn btn-info" katana-click="suiteApp.getResultsDirForSuite">...</button>
+					<button class="btn btn-info" katana-click="suites.getResultsDirForSuite">...</button>
 					<input type="text" id="suiteResults"  value="{{suiteResultsdir}}"/>
 				</div>
 				
 				<div class="field col-md-3">
 					<label >Warrior Data File:</label>
-					<button class="btn btn-info" katana-click="suiteApp.getInputDataForSuite">...</button>
+					<button class="btn btn-info" katana-click="suites.getInputDataForSuite">...</button>
 					<input type="text" id="suiteInputDataFile"  value="{{suiteInputDataFile}}"/>
 				</div>
 				<div class="field col-md-3">
@@ -214,7 +214,7 @@
 					<select type="text" class="text-right" id="caseonError-at-value" value="" >
 					</select>
 					</div>		
-					<button class="center button save" id="editTestcase" katana-click="suiteApp.saveSuitesCaseUI">"Save Changes </button>
+					<button class="center button save" id="editTestcase" katana-click="suites.saveSuitesCaseUI">"Save Changes </button>
 				</div>
 
 		</div>
