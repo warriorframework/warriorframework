@@ -29,6 +29,7 @@ class LineResult:
     html = ''
 
     def __init__(self):
+        """Constructor for class LineResult"""
         self.keys = ['type', 'name', 'info', 'timestamp', 'duration', 'status', 'impact', 'onerror', 'msc', 'static',
                      'dynamic']
 
@@ -40,11 +41,13 @@ class LineResult:
         return info
 
     def set_dynamic_content(self, line):
+        """sets content that is subjected to change"""
         self.data['dynamic'] = [line.get("keywords"), line.get("passes"), line.get("failures"), line.get("errors"),
                                 line.get("exceptions"), line.get("skipped")]
         self.data['timestamp'] = line.get("timestamp")
 
     def set_attributes(self, line, variant, stepcount):
+        """sets attributes"""
         if 'Keyword' not in variant and 'step' not in variant:
             stepcount = ''
         result_file = line.get("resultfile") if line.get("resultfile") else line.get("resultsdir") if line.get(
@@ -70,6 +73,7 @@ class LineResult:
                      }
 
     def set_html(self, line, variant, stepcount):
+        """sets the html code"""
         if self.html == '':
             self.set_attributes(line, variant, stepcount)
         self.set_dynamic_content(line)
