@@ -319,11 +319,46 @@ span.close:before {
 	/* border-right: 1px solid #dedede; */
 	overflow: hidden;
 }
+.field.required > label:before {
+    content: '\00b7';
+    font-size: 29px;
+    position: absolute;
+    top: 0;
+    left: -8px;
+    line-height: 22px;
+    color: #dc3545;
+}
+.file-explorer-launcher {
+    position: absolute;
+    bottom: 5px;
+    right: 0px;
+    height: 37px;
+    width: 40px;
+    background: rgba(0, 0, 0, 0.1);
+    text-align: center;
+    line-height: 37px;
+    font-size: 14px;
+    color: #4ea4e0;
+}
 
+.file-explorer-launcher:before {
+    content: "\f07c";
+    font-family: FontAwesome;
+}
 .nav .tab:last-child {
 	border-right: 1px solid #c1c1c1;
 }
-
+.tool-bar > .title {
+    display: inline-block;
+    width: auto;
+    background: transparent;
+    color: white;
+    font-variant: small-caps;
+    font-size: 18px;
+		position: absolute;
+		left: 0;
+		top: 0;
+}
 .tab.active {
 	background: rgb(255, 255, 255) !important;
 	color: #5e5e5e;
@@ -634,10 +669,10 @@ span.input-group-addon {
 }
 
 .btn {
-	background: white;
+	background: transparent;
 	box-shadow: none;
 	border: solid 1px #c5c5c5;
-	color: #474747;
+	color: #212529;
 	max-width: 200px;
 	cursor: pointer;
 	display: inline-block;
@@ -1279,7 +1314,7 @@ div#launchpad.page.hidden .tabs {
 	display: block;
 	max-width: 1400px;
 	margin: 0 auto;
-	padding-top: 30px;
+	padding: 30px;
 }
 
 .removing {
@@ -1440,10 +1475,10 @@ i.active {
 	background: rgba(128, 128, 128, 0.51);
 	z-index: 9;
 	position: fixed;
-	height: 100%;
+	height: calc(100% - 50px);
 	width: 100%;
-	top: 0;
 	left: 0;
+	top: 50px;
 }
 
 .popup .close:hover,
@@ -2919,6 +2954,8 @@ div .tool-bar-links:active {
 
 
 
+
+
 /* Execution cmd options dialog styles start*/
 
 .execution.dialog-container {
@@ -2942,11 +2979,10 @@ div .tool-bar-links:active {
 	-moz-transition: opacity 400ms ease-in;
 	transition: opacity 400ms ease-in;
 }
-.execution.dialog-container.small {
-    left:25%;
-    min-width: 50%;
-    height: 250px;
-
+.execution.dialog-container.small {		
+    left:25%;		
+    min-width: 50%;		
+    height: 250px;		
 }
 
 .execution.dialog-container:not([open]) {
@@ -3051,18 +3087,16 @@ div .tool-bar-links:active {
 	align-items: center;
 }
 
-
-.execution.cmd-options-qns i {
-	font-size: 18px;
-	line-height: 25px;
-	margin: 0;
-	color: #5a5a5a;
-	padding: 0px 4px;
-	width: 32px;
-	height: 32px;
-	text-align: center;
+.execution.cmd-options-qns i {		
+	font-size: 18px;		
+	line-height: 25px;		
+	margin: 0;		
+	color: #5a5a5a;		
+	padding: 0px 4px;		
+	width: 32px;		
+	height: 32px;		
+	text-align: center;		
 }
-
 
 .execution.cmd-options-qns {
 	display: none;
@@ -3073,6 +3107,8 @@ div .tool-bar-links:active {
 	border: 1px solid #dedede;
 	overflow: auto;
 }
+
+
 
 
 .execution.cmd-options-qns-button-bar {
@@ -3125,27 +3161,24 @@ div .tool-bar-links:active {
 	margin-top: 3px;
 	padding: 5px;
 	width: 50%;
-}
-
-.execution.configure-layout-data {
-  display:inline-block;
-  margin-top:30px;
-  width: 100%;
-  padding: 5px;
-  height: 40px;
-}
-.execution.configure-layout-data-ws{
-	display:inline-block;
-  	width: 75%;
-  	vertical-align: bottom;
-}
-
-
-.execution.execution-button.browse {
-	margin: 5px 5px 0px 2px;
-	padding: 5px 3px;
-	line-height: 1.5;
-	//-webkit-appearance: button;
+}		
+.execution.configure-layout-data {		
+  display:inline-block;		
+  margin-top:30px;		
+  width: 100%;		
+  padding: 5px;		
+  height: 40px;		
+}		
+.execution.configure-layout-data-ws{		
+	display:inline-block;		
+  	width: 75%;		
+  	vertical-align: bottom;		
+}		
+.execution.execution-button.browse {		
+	margin: 5px 5px 0px 2px;		
+	padding: 5px 3px;		
+	line-height: 1.5;		
+	//-webkit-appearance: button;		
 }
 
 
@@ -3389,14 +3422,16 @@ div#wdf-navigator .btn:hover {
 }
 
 .centered {
-	position: fixed;
+	position: absolute;
 	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	-webkit-transform: translate(-50%, -50%);
-	-moz-transform: translate(-50%, -50%);
-	-o-transform: translate(-50%, -50%);
-	-ms-transform: translate(-50%, -50%);
+	left: 0;
+	right: 0;
+	margin: 0 auto;
+	transform: translateY(-50%);
+	-webkit-transform: translateY(-50%);
+	-moz-transform: translateY(-50%);
+	-o-transform: translateY(-50%);
+	-ms-transform: translateY(-50%);
 }
 
 input[type="checkbox"]+label {
@@ -3448,34 +3483,49 @@ input[type="checkbox"]+label {
 }
 
 .file-explorer {
-	width: 450px;
-	height: 550px;
-	background-color: white;
-	border-radius: 5px;
+	width: 40%;
+	height: 80%;
+	background-color: transparent;
+	position: absolute;
+	-webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.28);
+	-moz-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.28);
+	box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.28);
+	top: 10%;
+	transform: none;
+  animation: popup-in .3s ease;
 }
 
 .file-explorer-header {
-	height: 15%;
+	height: 40px;
 	width: 100%;
-	border-radius: 5px 5px 0 0;
-	border-style: solid;
-	border-color: white white #dcdcdc white;
-	padding: 22px 10px;
+	background: rgba(35, 131, 195, 0.8);
+	color: white;
+	line-height: 40px;
+	border: none;
 }
-
+.btn {
+    padding: 2px 5px;
+    height: 32px;
+    vertical-align: top;
+    max-width: 200px;
+    min-width: 84px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 .file-explorer-body {
-	height: 70%;
+	height: calc(100% - 120px);
 	width: 100%;
-	padding: 10px;
+	/* padding: 10px; */
+	background: white;
 }
 
 .file-explorer-footer {
-	height: 15%;
+	height: 80px;
 	width: 100%;
-	border-radius: 0 0 5px 5px;
-	border-style: solid;
-	border-color: #dcdcdc white white white;
-	padding: 20px 10px;
+	background: white;
+	border-top: 1px solid #e4e4e4;
+	padding-top: 21px;
 }
 
 .full-size {
@@ -3486,8 +3536,9 @@ input[type="checkbox"]+label {
 
 .up-btn-bar {
 	width: 100%;
-	height: 12%;
-	padding: 2px 5px;
+	height: 35px;
+	background: #4ea4e0;
+	line-height: 40px;
 }
 
 .directory-data-div {
@@ -3495,7 +3546,30 @@ input[type="checkbox"]+label {
 	height: 88%;
 	padding: 5px;
 }
+#explorer-up {
+    font-size: 0;
+    /* border: none; */
+    height: 100%;
+    border: none;
+    border-radius: 0;
+    width: 35px;
+    color: white;
+    min-width: 0;
+}
 
+#explorer-up:before {
+    content: "\f062";
+    font: normal normal normal 14px/1 FontAwesome;
+}
+
+.file-explorer-header h4 {
+    line-height: 40px;
+    font-size: 20px;
+    font-weight: 500;
+    padding-left: 15px;
+}
+
+#explorer-up:hover {color: white;}
 
 .wapp-management-error-border{
     border: 1px solid red;
