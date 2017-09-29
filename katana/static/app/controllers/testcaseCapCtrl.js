@@ -1046,10 +1046,10 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
         $scope.urlCheck = function () {
              var filename = $scope.model.Testcase.Details.InputDataFile;
               if(filename == '' || filename == undefined){
-                  $scope.hideSubsys  = true;
+                $scope.hideSubsys  = true;
                 $scope.hideTxtBox = false;
                 $scope.hideDropDwn = true;
-                 $scope.hideDrop = true;
+                $scope.hideDrop = true;
                 $scope.hideText = false;
                 }
                 else{
@@ -1057,21 +1057,44 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
                 $scope.hideDropDwn = false;
                 $scope.hideDrop = false;
                 $scope.hideText = true;
-            var checkNew = filename.split('..')[1];  
-            $scope.pathUG = $scope.cfg.pythonsrcdir + "/Warriorspace" + checkNew;
-            $scope.pathUrl= $scope.pathUG.replace(/\\/g, "/");
-
-            var s = $scope.pathUrl;
+                if(filename.includes("./Data")==true){ 
+                        var checkNew = filename.split('/Data')[1];  
+                        $scope.pathUG = $scope.cfg.pythonsrcdir + "/Warriorspace/Data" + checkNew; 
+                        $scope.pathUrl= $scope.pathUG.replace(/\\/g, "/"); 
+                        var s = $scope.pathUrl;
                         var i = s.indexOf("/");
                          if (i != -1) {
                              $scope.newPath = s.substring(i, s.length);
                          }    
-             guideSplit();
-             return $scope.pathXml;
+                    URLSplit();
+                    return $scope.pathXml;
+                }
+                else if(filename.includes("./data")==true){ 
+                        var checkNew = filename.split('/data')[1];  
+                        $scope.pathUG = $scope.cfg.pythonsrcdir + "/Warriorspace/data" + checkNew; 
+                        $scope.pathUrl= $scope.pathUG.replace(/\\/g, "/"); 
+                        var s = $scope.pathUrl;
+                        var i = s.indexOf("/");
+                         if (i != -1) {
+                             $scope.newPath = s.substring(i, s.length);
+                         }    
+                    URLSplit();
+                    return $scope.pathXml;
+                }
+                else{ 
+                    swal({
+                        title: "Kindly provide the correct Relative path of Input data File ",
+                        closeOnConfirm: true,
+                        confirmButtonColor: '#3b3131',
+                        confirmButtonText: "Ok",
+                        type: "warning"
+                    });
+                }
+
          }
         };
 
-        function guideSplit(){
+        function URLSplit(){
             var array = [];
             if($scope.newPath.indexOf("\\")>= 0) {
                 array = $scope.newPath.split("\\");
