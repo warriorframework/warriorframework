@@ -334,7 +334,7 @@ class ConfigurationElement(object):
         for key in node.attrib:
             self.attributes[key] = node.attrib[key]
         self.attributes['xml_tag'] = node.tag
-        #self.attributes['xml_element'] = node
+        # self.attributes['xml_element'] = node
 
         for child in node:
             try:
@@ -345,8 +345,8 @@ class ConfigurationElement(object):
                 else:
                     self.children[child.attrib['name']].parse_tree(child)
             except KeyError:
-                print("No name attribute for node " + child.tag + ". Tree with root at node "
-                      + child.tag + " not parsed.")
+                print_error("No name attribute for node " + child.tag + ". Tree with root "
+                            "at node " + child.tag + " not parsed.")
 
     @staticmethod
     def __tabs(number):
