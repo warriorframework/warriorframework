@@ -2,7 +2,8 @@
   "data": [
     {
       "key": "@mail_on",
-      "translateTo": "Email Frequency"
+      "translateTo": "Email Frequency",
+      "required" : true
     },
     {
       "key": "smtp_host",
@@ -11,6 +12,16 @@
     {
       "key": "sender",
       "translateTo": "Sender’s Email Address"
+    },
+    {
+      "key": "Logsdir",
+      "toolTip": "Overwrite default log file location with your own custom location",
+      "translateTo": "Location of Log Files"
+    },
+    {
+      "key": "Resultsdir",
+      "toolTip": "Overwrite default result location with your own custom location",
+      "translateTo": "Location of Result Files"
     },
     {
       "key": "receiver",
