@@ -28,6 +28,7 @@ class ConfigurationElement(object):
     """
 
     def __init__(self, name='base', start_pat="${", end_pat="}"):
+        """ Constructor """
         self.name = name
         self.attributes = {}
         self.children = {}
@@ -378,4 +379,5 @@ class ConfigurationElement(object):
         return data
 
     def __str__(self):
+        """ Prints the string representation of the object """
         return self.print_me()
