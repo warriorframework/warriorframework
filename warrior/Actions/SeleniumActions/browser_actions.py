@@ -54,8 +54,12 @@ class browser_actions(object):
                        element_tag=None):
         """
         The Keyword would launch a browser and Navigate to the url, if provided by the user.
-        The keyword does not validate the url provided by the user.
-        -----------------------------------------------------------
+
+        --------------------------------------------------------------------------------------
+        This keyword does not validate the url provided by the user. Please use
+        navigate_to_url_with_verification instead of providing a url with this keyword if you
+        need to verify the navigation result.
+        --------------------------------------------------------------------------------------
 
         :Datafile Usage:
 
@@ -303,6 +307,11 @@ class browser_actions(object):
         """
         This will navigate the browser tab to given URL.
 
+        -----------------------------------------------------------------------------
+        This keyword does not validate the url provided by the user. Please use
+        navigate_to_url_with_verification if you need to verify the navigation result.
+        ------------------------------------------------------------------------------
+
         :Datafile Usage:
 
             Tags or attributes to be used in input datafile for the system or
@@ -424,7 +433,7 @@ class browser_actions(object):
 
     def navigate_to_url_with_verification(self, system_name, type="firefox", browser_name="all",
                                           url=None, element_config_file=None, element_tag=None,
-                                          expected_value=None, value_type=None, locator_type=None,
+                                          value_type=None, expected_value=None, locator_type=None,
                                           locator=None):
         """
         The webpage would be directed to the given URL and then whether the navigation was
@@ -489,6 +498,39 @@ class browser_actions(object):
                              FOR TEST CASE
                              Eg: <argument name="element_tag" value="json_name_1">
 
+            7.locator_type = This contains information about the type of
+                              locator that you want to use. Can be 'xpath',
+                              'id', 'css', 'link', 'tag','class', 'name'
+
+            8. locator = This contains the value of the locator. Something like
+                         "form", "nav-tags", "//[dh./dhh[yby]"
+
+            9. expected_value = This <expected_value> tag is a child og the
+                                <browser> tag in the data file. This tag would
+                                contain the the value you expect the browser to
+                                have. This can be either a  url, page title,
+                                page source, or page name
+
+                    Eg: <expected_value>http://www.google.com</expected_value>
+
+            10. value_type =This <value_type> tag is a child of the <browser>
+                            tag in the data file. This tag would contain the
+                            type of browser information that you want to verify.
+                            It can either be current_url, title, name, or
+                            page_source
+
+                            Eg: <value_type>title</value_type>
+
+            USING LOCATOR_TYPE & LOCATOR, VALUE_TYPE & EXPECTED_VALUE
+            =========================================================
+
+            Please provide either the locator type and locator or provide value_type and
+            expected_value for the verificationr to be performed successfully
+
+            Note: Even though, current_url is an acceptable value_type, it is not recommended that
+                  you use it since it can result in a false positive. Please use it only if you are
+                  sure that the verification would go through correctly.
+
         :Arguments:
 
             1. system_name(str) = the system name.
@@ -500,6 +542,13 @@ class browser_actions(object):
                                            locators
             6. element_tag (str) = particular element in the json fie which
                                    contains relevant information to that element
+            7. locator_type (str) = type of the locator - xpath, id, etc.
+            8. locator (str) = locator by which the element should be located.
+            9. expected_value (str) = The expected value of the information
+                                      retrieved from the web page.
+            10. value_type(str) = Type of page information that you wat to
+                                  verify: current_url, name, title, or
+                                  page_source
 
 
         :Returns:

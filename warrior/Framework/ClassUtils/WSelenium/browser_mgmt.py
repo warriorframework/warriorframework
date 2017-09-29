@@ -178,11 +178,14 @@ class BrowserManagement(object):
             self.current_browser.forward()
 
     def check_url(self, url):
-        """To check whether the user provided url is valid or not.
-        Please note, this function internally opens the url to assert the validity of the url.
-           Returns:
-                    1. status(bool)= True / False.(Whether the url can be reached)
-                    2. url : The actual url itself
+        """
+        To check whether the user provided url is valid or not.
+
+        DISCLAIMER: This function internally opens the url to assert the validity of the url.
+
+        Returns:
+            1. status(bool)= True / False.(Whether the url can be reached)
+            2. url : The actual url itself
         """
         status = True
         try:
