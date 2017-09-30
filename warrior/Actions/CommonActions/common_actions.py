@@ -196,11 +196,13 @@ class CommonActions(object):
         if overwrite == "NO" and os.getenv(var_key):
             print_info("Using ENV variable {0} set earlier with value '{1}'".format(var_key,
                                                                            os.getenv(var_key)))
-        if var_key is not None and var_value is not None and overwrite == "YES":
+        elif var_key is not None and var_value is not None and overwrite in ["YES", "NO"]:
             os.environ[var_key] = var_value
             if os.environ[var_key] == var_value:
                 print_info("Set ENV variable {0} with value '{1}'".format(var_key, var_value))
                 status = True
+        else:
+            print_error('The attribute overwrite can only accept values either yes or no')
         if filepath is not None:
             testcasefile_path = get_object_from_datarepository('wt_testcase_filepath')
             try:
@@ -214,7 +216,7 @@ class CommonActions(object):
                                 print_info('Using ENV variable {0} set earlier with value '
                                            '{1}'.format(var_key, os.getenv(var_key)))
                                 status = True
-                            elif overwrite == "YES":
+                            elif overwrite in ["YES", "NO"]:
                                 os.environ[var_key] = str(var_value)
                                 if os.environ[var_key] == var_value:
                                     print_info('Setting ENV variable {0} with value '
