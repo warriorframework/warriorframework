@@ -60,7 +60,7 @@ def get_step_list(filepath, step_tag, sub_step_tag):
     if steps_exist is None:
         print_warning("The file: '{0}' has no {1} to be executed".format(filepath, step_tag))
     else:
-        step_list = step_tag.findall(sub_step_tag)
+        step_list = steps_exist.findall(sub_step_tag)
         # iterate all steps to get the runmode and retry details
         for index, step in enumerate(step_list):
             runmode, value = get_runmode_from_xmlfile(step)
