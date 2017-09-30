@@ -193,10 +193,10 @@ class CommonActions(object):
         if not any([var_key, var_value, filepath]):
             print_error('Either Provide values to arguments \"var_key\" & \"var_value\" or to '
                         'argument \"filepath\"')
-        if overwrite is "NO" and os.getenv(var_key):
+        if overwrite == "NO" and os.getenv(var_key):
             print_info("Using ENV variable {0} set earlier with value '{1}'".format(var_key,
                                                                            os.getenv(var_key)))
-        if var_key is not None and var_value is not None and overwrite is "YES":
+        if var_key is not None and var_value is not None and overwrite == "YES":
             os.environ[var_key] = var_value
             if os.environ[var_key] == var_value:
                 print_info("Set ENV variable {0} with value '{1}'".format(var_key, var_value))
