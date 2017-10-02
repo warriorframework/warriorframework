@@ -299,7 +299,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
                                      tests=no_of_tests, failures='0',
                                      time='0', timestamp=suite_timestamp)
     testsuite_utils.pSuite_property(junit_resultfile, 'title', suite_repository['suite_title'])
-    testsuite_utils.pSuite_property(junit_resultfile, 'location', testsuite_filepath)
+    ts_junit_object.add_property('location', testsuite_filepath, "ts", suite_timestamp)
     if "jobid" in data_repository:
         testsuite_utils.pSuite_property(junit_resultfile, 'resultlocation',
                                         data_repository["jobid"])
