@@ -136,10 +136,12 @@ class Execution(object):
             contents = json.loads(open(logpath).read())
         
         if str(logtype.lower()) == 'console_logs':
-            contents = open(logpath).readlines()
+            contents = open(logpath).read()
+            contents = contents.replace('\n', '<br>')
         
         op_data['logfile_name'] = logfile_name
         op_data['contents'] = contents
+        
         
         return JsonResponse(op_data)
 
