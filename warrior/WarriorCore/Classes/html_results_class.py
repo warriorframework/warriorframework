@@ -49,7 +49,7 @@ class LineResult:
 
     def set_attributes(self, line, variant, stepcount):
         """sets attributes"""
-
+                        
         if 'Keyword' not in variant and 'step' not in variant:
             stepcount = ''
         result_path = line.get("resultsfile") if line.get("resultsfile") else line.get("resultsdir") if line.get("resultsdir") else ''
@@ -83,8 +83,12 @@ class LineResult:
         span_html = ""
         if variant == "Testcase":
             span_html =  logs_span
+            locn = line.get('testcasefile_path')
         elif variant =="Keyword":
             span_html = defects_span
+            locn =""
+        else:
+            locn = line.find('./properties/property[@name="location"]').get('value')
         
         
         
@@ -98,14 +102,16 @@ class LineResult:
                      'impact': line.get("impact"),
                      'onerror': line.get("onerror"),
                      'msc': span_html,
-                     'static': ['Count', 'Passed', 'Failed', 'Errors', 'Exceptions', 'Skipped']
-                    
+                     'static': ['Count', 'Passed', 'Failed', 'Errors', 'Exceptions', 'Skipped'],
+                     'locn': locn
                      
                      
                      }
 
     def set_html(self, line, variant, stepcount):
         """sets the html code"""
+        
+        
         if self.html == '':
             self.set_attributes(line, variant, stepcount)
         self.set_dynamic_content(line)
@@ -120,6 +126,11 @@ class LineResult:
                     elif elem == 'static':
                         for staticElem in self.data['static']:
                             top_level += '<td>' + (staticElem if staticElem else '') + '</td>'
+                    elif elem == 'name':
+                        div_html = '<div data-path="{0}", data-type="{1}", katana-click="execution.resultsViewer.openXmlInApp">'.format(self.data['locn'], self.data['type'])
+                        top_level += '<td rowspan="2">'+ div_html + (
+                            self.data[elem] if self.data[elem] else '') + '</div></td>'
+                    
                     else:
                         top_level += '<td rowspan="2"><div>' + (
                             self.data[elem] if self.data[elem] else '') + '</div></td>'
@@ -149,6 +160,9 @@ class WarriorHtmlResults:
 
     def create_line_result(self, line, variant):
         """ create new objs"""
+        
+        
+        
         temp = LineResult()
         temp.set_html(line, variant, self.steps)
         self.lineObjs.append(temp)

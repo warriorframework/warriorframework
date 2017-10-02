@@ -360,6 +360,30 @@ var execution = {
 			html = '<pre>' + popupContent + '</pre>'
 			popup = katana.popupController.open(html, popupName);
 		},
+		openXmlInApp: function(){
+			elem = $(this);
+			console.log(elem);
+			fpath = elem.attr('data-path');
+			ftype = elem.attr('data-type');
+			
+			if (ftype.toLowerCase() === 'case'){
+				var appName = 'Case';
+				var xref="./cases/editCase/?fname=" + fpath;
+			}else if (ftype.toLowerCase() === 'suite'){
+				var appName = 'Suite';
+				var xref="./suites/editSuite/?fname=" + fpath;
+			}else if (ftype.toLowerCase() === 'project'){
+				var appName = 'Project';
+				var xref="./projects/editProject/?fname=" + fpath;
+			}
+			
+			// open the app to edit the file
+			
+			katana.templateAPI.load(xref, null, null, appName) ;
+			
+
+		},
+		
 		
 		
 	},
