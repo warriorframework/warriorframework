@@ -4,9 +4,9 @@
 {% csrf_token %}
 <div class="tool-bar">
 	
-	<button class="btn" katana-click="suites.addRequirementToSuite" id="addRequirementEntry">Add Requirement</button>
-	<button id="addSuite" class="btn btn-primary" katana-click="suites.addCaseToSuite">Add Case To Suite</button>
-	<button class="btn btn-success" katana-click="suites.mapUiToSuiteJson">Save Changes to: </button>
+	<i class="button" katana-click="suites.addRequirementToSuite" id="addRequirementEntry">Add Requirement</i>
+	<i id="addSuite" class="button" katana-click="suites.addCaseToSuite">Add Case To Suite</i>
+	<i class="button" katana-click="suites.mapUiToSuiteJson">Save Changes to: </i>
 	<input class="col-md-4 text-right" type="text" id="my_file_to_save" name="my_file_to_save" value="{{suiteName}}.xml"/>
 	
 </div>

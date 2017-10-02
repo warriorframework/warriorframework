@@ -660,7 +660,7 @@ Two global variables are heavily used when this function is called;
 		//var fname = katana.$activeTab.find('#showSuiteFromProject').attr('key');
 		var fname = this.attr('skey');
 		var href='/katana/suites';
-		katana.templateAPI.load(href, '/static/suites/js/suites.js,', null, 'suite', function() { 
+		katana.templateAPI.load.call(this, href, '/static/suites/js/suites.js,', null, 'suite', function() { 
 				var xref="./suites/editSuite/?fname="+fname; 
 	    		katana.templateAPI.subAppLoad(xref,null,function(thisPage) {
 						suites.mapFullSuiteJson(fname);
@@ -668,8 +668,6 @@ Two global variables are heavily used when this function is called;
 
 		});
 	   
-	  //katana.templateAPI.load(xref, '/static/suites/js/suites.js,', null, 'suite') ; 
-
 
 	},
 

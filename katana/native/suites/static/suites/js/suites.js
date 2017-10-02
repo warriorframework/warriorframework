@@ -330,7 +330,14 @@ Two global variables are heavily used when this function is called;
 		katana.openAlert(data);
 		return
 	}
-	
+
+	// Add an XML to saved file name 
+	var xfname = katana.$activeTab.find('#suiteName').val();
+	if (xfname.indexOf(".xml") < 0) {
+		xfname = xfname + '.xml';
+	}
+	katana.$activeTab.find('#savefilepath').text(xfname);
+	katana.$activeTab.find('#my_file_to_save').val(xfname);
 	suites.jsonSuiteObject['Details']['Name'] = katana.$activeTab.find('#suiteName').val();
 	suites.jsonSuiteObject['Details']['Title'] = katana.$activeTab.find('#suiteTitle').val();
 	suites.jsonSuiteObject['Details']['Engineer'] = katana.$activeTab.find('#suiteEngineer').val();
@@ -369,15 +376,14 @@ Two global variables are heavily used when this function is called;
 	    type: "POST",
 	    data : { 
 	    	'json': JSON.stringify(topNode),
-	    	
-	    	'filetosave': $('#my_file_to_save').val(),
+	    	'filetosave': katana.$activeTab.find('#my_file_to_save').val(),
 	    	'savefilepath': katana.$activeTab.find('#savefilepath').text()
 	    	},
 	    headers: {'X-CSRFToken':csrftoken},
     
     success: function( data ){
-        var outstr = "Saved " + katana.$activeTab.find('#savefilepath').text();
-		xdata = { 'heading': "Error", 'text' : outstr}
+        var outstr = "Saved " + katana.$activeTab.find('#savefilepath').text() +katana.$activeTab.find('#my_file_to_save').val(); 
+		xdata = { 'heading': "Saved", 'text' : outstr}
 		katana.openAlert(xdata);
         katana.$activeTab.find('#suiteName').val(suites.jsonSuiteObject['Details']['Name']);
     	}
@@ -486,7 +492,7 @@ Two global variables are heavily used when this function is called;
 	createCasesTable: function(xdata) {
 	var items = []; 
 
-	items.push('<table id="Case_table_display" class="suite_configuration_table" width="100%">');
+	items.push('<table id="Case_table_display" class="suite-configuration-table" width="100%">');
 	items.push('<thead>');
 	items.push('<tr id="CaseRow"><th>Num</th><th></th><th>Path</th><th></th><th>context</th><th>Run Type</th><th>Mode</th><th>OnError</th><th>Impact</th><th/><th/></tr>');
 	items.push('</thead>');
@@ -503,7 +509,7 @@ Two global variables are heavily used when this function is called;
 		items.push('<tr data-sid="'+s+'"><td>'+showID+'</td>');
 		var bid = "fileTestcase-"+s+"-id";
 		items.push('<td><i title="ChangeFile" class="fa fa-folder-open" id="'+bid+'" katana-click="suites.fileNewSuiteFromLine" key="'+bid+'"/></td>');
-		items.push('<td katana-click="suites.showCaseFromSuite" key="'+oneCase['path']+'"> '+oneCase['path']+'</td>');
+		items.push('<td katana-click="suites.showCaseFromSuite" skey="'+oneCase['path']+'"> '+oneCase['path']+'</td>');
 		items.push('<td>'+oneCase['context']+'</td>');
 		items.push('<td>'+oneCase['runtype']+'</td>');
 		items.push('<td>'+oneCase['runmode']['@type']);
@@ -570,15 +576,18 @@ Two global variables are heavily used when this function is called;
 },
 
 	showCaseFromSuite : function () {
-		var fname = this.attr('key');
+		var fname = this.attr('skey');
 		var xref="./cases/editCase/?fname="+fname; 
 	  	console.log("Calling case ", fname, xref);
+		var href='/katana/cases';
+	  	katana.templateAPI.load.call(this, href, '/static/cases/js/cases.js,', null, 'case', function() { 
+				var xref="./cases/editCase/?fname="+fname; 
+	    		katana.templateAPI.subAppLoad(xref,null,function(thisPage) {
+						cases.mapFullCaseJson(fname,'#listOfTestStepsForCase');
+	    		});
 
-	    katana.$view.one('tabAdded', function(fname ){
-	         //cases.mapFullCaseJson(fname,'#listOfTestStepsForCase');
-	    });
-  	katana.templateAPI.load(xref, "cases.js", null, 'suite') ;;
-},
+		});
+	},
 //
 	testSuiteSortEventHandler : function(event, ui ) {
 	var listItems = [] ; 
@@ -633,7 +642,7 @@ Two global variables are heavily used when this function is called;
 	var items =[]; 
 	katana.$activeTab.find("#tableOfTestRequirements").html("");
 	
-	items.push('<table id="Case_Req_table_display" class="suite_req_configuration_table  striped" width="100%" >');
+	items.push('<table id="Case_Req_table_display" class="suite-req-configuration-table  striped" width="100%" >');
 	items.push('<thead>');
 	items.push('<tr id="ReqRow"><th>#</th><th>Requirement</th><th/><th/></tr>');
 	items.push('</thead>');
@@ -648,11 +657,11 @@ Two global variables are heavily used when this function is called;
 		items.push('<td><input type="text" value="'+oneReq['@name']+'" id="'+bid+'" /></td>');
 		bid = "deleteRequirement-"+s+"-id";
 		console.log("Line 328 or so "+bid); 
-		items.push('<td><i  class="fa fa-trash"  title="Delete" key="'+bid+'" katana-click="deleteRequirementCB"/>');
+		items.push('<td><i  class="fa fa-trash"  title="Delete" skey="'+bid+'" katana-click="suites.deleteRequirementCB"/>');
 		bid = "editRequirement-"+s+"-id";
-		items.push('<i class="fa fa-pencil" title="Save Edit" key="'+bid+'" katana-click="saveRequirementCB"/>');
+		items.push('<i class="fa fa-pencil" title="Save Edit" skey="'+bid+'" katana-click="suites.saveRequirementCB"/>');
 		bid = "insertRequirement-"+s+"-id";
-		items.push('<i class="fa fa-plus"  title="Insert" key="'+bid+'" katana-click="insertRequirementCB"/></td>');
+		items.push('<i class="fa fa-plus"  title="Insert" skey="'+bid+'" katana-click="suites.insertRequirementCB"/></td>');
 		
 	}
 	items.push('</tbody>');
@@ -664,7 +673,7 @@ Two global variables are heavily used when this function is called;
 
 
 	saveRequirementCB:function() {
-			var names = this.id.split('-');
+			var names = this.attr('skey').split('-');
 			var sid = parseInt(names[1]);
 			//console.log("xdata --> "+ rdata);  // Get this value and update your json. 
 			var txtNm = katana.$activeTab.find("#textRequirement-name-"+sid+"-id").val();
@@ -679,18 +688,18 @@ Two global variables are heavily used when this function is called;
 		},
 
 	deleteRequirementCB:	function() {
-			var names = this.attr('key').split('-');
+			var names = this.attr('skey').split('-');
 			var sid = parseInt(names[1]);
-			console.log("Remove " + sid + " " + this.id +" from " + rdata); 
+			console.log("Remove " + sid + " " + this.id ); 
 			suites.jsonSuiteObject['Requirements'].splice(sid,1);
 			suites.createSuiteRequirementsTable(suites.jsonSuiteObject['Requirements']);	
 			
 		},
 	
 	insertRequirementCB:function( ) {
-			var names = this.id.split('-');
+			var names = this.attr('skey').split('-');
 			var sid = parseInt(names[1]);
-			console.log("Insert" + sid + " " + this.id +" from " + rdata); 
+			console.log("Insert" + sid + " " + this.id ); 
 			suites.insertRequirementToSuite(sid);
 			suites.createSuiteRequirementsTable(suites.jsonSuiteObject['Requirements']);	
 		},

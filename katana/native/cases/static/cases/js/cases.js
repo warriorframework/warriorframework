@@ -100,8 +100,7 @@ function jsUcfirst(string)
 			      	return;
 			      }
 				  var xref="./cases/editCase/?fname=" + thePage; 
-				  cases.thefile = thePage; 
-				  // Load the response here. ...	
+				  cases.thefile = thePage;				  // Load the response here. ...	
 				  katana.$activeTab.find(".case-single-toolbar").hide()
 				  katana.templateAPI.subAppLoad(xref, null, function(thisPage) { 
 			   			cases.mapFullCaseJson(); // (cases.thefile, null);
@@ -324,29 +323,28 @@ function jsUcfirst(string)
 
 // Saves the UI to memory and sends to server as a POST request
 	sendCaseToServer: function () {
-	cases.mapUiToCaseJson();
-	var url = "./cases/getCaseDataBack";
-	var csrftoken = $("[name='csrfmiddlewaretoken']").attr('value');
+		cases.mapUiToCaseJson();
+		var url = "./cases/getCaseDataBack";
+		var csrftoken = $("[name='csrfmiddlewaretoken']").attr('value');
 
-	$.ajaxSetup({
-			function(xhr, settings) {
-			xhr.setRequestHeader("X-CSRFToken", csrftoken)
-		}
-	});
+		$.ajaxSetup({
+				function(xhr, settings) {
+				xhr.setRequestHeader("X-CSRFToken", csrftoken)
+			}
+		});
 
-	var topNode  = { 'Testcase' : cases.jsonCaseObject};
+		var topNode  = { 'Testcase' : cases.jsonCaseObject};
 
-	$.ajax({
-	url : url,
-	type: "POST",
-	data : { 
-		'json': JSON.stringify(topNode),	
-		'filetosave': katana.$activeTab.find('#my_file_to_save').attr('value'),
-		'savesubdir': katana.$activeTab.find('#savesubdir').text(),
-		},
-	headers: {'X-CSRFToken':csrftoken},
-	//contentType: 'application/json',
-	success: function( data ){
+		$.ajax({
+		url : url,
+		type: "POST",
+		data : { 
+			'json': JSON.stringify(topNode),	
+			'filetosave': katana.$activeTab.find('#my_file_to_save').attr('value'),
+			'savesubdir': katana.$activeTab.find('#savesubdir').text(),
+			},
+		headers: {'X-CSRFToken':csrftoken},
+		success: function( data ){
 
 		xdata = { 'heading': "Sent", 'text' : "sent the file... "+data}
 		katana.openAlert(xdata);
@@ -1091,7 +1089,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 	 createRequirementsTable: function(){
 	var items =[]; 
 	katana.$activeTab.find("#tableOfCaseRequirements").html("");  // This is a blank div. 
-	items.push('<table id="Requirements_table_display" class="case_req_configuration_table  striped" width="100%" >');
+	items.push('<table id="Requirements_table_display" class="case-req-configuration-table  striped" width="100%" >');
 	items.push('<thead>');
 	items.push('<tr id="ReqRow"><th>#</th><th>Requirement</th><th/><th/></tr>');
 	items.push('</thead>');

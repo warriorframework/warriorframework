@@ -3652,8 +3652,8 @@ input[type="checkbox"]+label {
 .project-configuration-table tr:nth-child(even){background-color: #f2f2ff}
 
 
-.suite_configuration_table {}
-.suite_configuration_table th{
+.suite-configuration-table {}
+.suite-configuration-table th{
     height: 35px;
     line-height: 35px;
     text-align: left; 
@@ -3663,43 +3663,43 @@ input[type="checkbox"]+label {
     background-color: #577BA0;
 }
 
-.suite_configuration_table td {
+.suite-configuration-table td {
   text-align: left;
   overflow: hidden;
 }
-.suite_configuration_table i{
+.suite-configuration-table i{
     padding: 4px;
     font-size: 16px;
 }
 
 
 
-.suite_configuration_table tr th:nth-child(1), .suite_configuration_table tr td:nth-child(1) {
+.suite-configuration-table tr th:nth-child(1), .suite-configuration-table tr td:nth-child(1) {
     flex-grow: .3;
 
 }
-.suite_configuration_table tr th:nth-child(2), .suite_configuration_table tr td:nth-child(2) {
+.suite-configuration-table tr th:nth-child(2), .suite-configuration-table tr td:nth-child(2) {
     flex-grow: .3;
 }
 
-.suite_configuration_table tr th:nth-child(3), .suite_configuration_table tr td:nth-child(3) {
+.suite-configuration-table tr th:nth-child(3), .suite-configuration-table tr td:nth-child(3) {
     flex-grow: 2;
 }
 
-.suite_configuration_table tr th:nth-child(4), .suite_configuration_table tr td:nth-child(4) {
+.suite-configuration-table tr th:nth-child(4), .suite-configuration-table tr td:nth-child(4) {
     flex-grow: 1;
 }
 
-.suite_configuration_table tr th:last-child, .suite_configuration_table tr td:last-child {
+.suite-configuration-table tr th:last-child, .suite-configuration-table tr td:last-child {
     flex-grow: .5;
     font-size: 18px;
 }
 
-.suite_configuration_table tr:nth-child(even){background-color: #f2f2ff}
+.suite-configuration-table tr:nth-child(even){background-color: #f2f2ff}
 
 
-.suite_req_configuration_table {}
-.suite_req_configuration_table th{
+.suite-req-configuration-table {}
+.suite-req-configuration-table th{
     height: 35px;
     line-height: 35px;
     text-align: left; 
@@ -3709,21 +3709,27 @@ input[type="checkbox"]+label {
     background-color: #577BA0;
 }
 
-.suite_req_configuration_table td {
+.suite-req-configuration-table td {
   text-align: left;
   overflow: hidden;
 }
-.suite_req_configuration_table i{
+.suite-req-configuration-table i{
     padding: 4px;
     font-size: 16px;
 }
 
 
-.suite_req_configuration_table tr th:nth-child(1), .suite_configuration_table tr td:nth-child(1) {
+.suite-req-configuration-table tr th:nth-child(1), .suite-req-configuration-table tr td:nth-child(1) {
     flex-grow: .3;
 
 }
-.suite_req_configuration_table tr th:last-child, .suite_configuration_table tr td:last-child {
+
+.suite-req-configuration-table tr th:nth-child(2), .suite-req-configuration-table tr td:nth-child(2) {
+    flex-grow: 3;
+
+}
+
+.suite-req-configuration-table tr th:last-child, .suite-req-configuration-table tr td:last-child {
     flex-grow: .5;
     font-size: 18px;
 }
@@ -3827,12 +3833,12 @@ input[type="checkbox"]+label {
 .case-req-configuration-table tr th:nth-child(1), .case-req-configuration-table tr td:nth-child(1) {
     flex-grow: .3;
 }
-.case-req-configuration-table tr th:nth-child(1), .case-req-configuration-table tr td:nth-child(1) {
-    flex-grow: .3;
+.case-req-configuration-table tr th:nth-child(2), .case-req-configuration-table tr td:nth-child(2) {
+    flex-grow: 3;
 }
 
 .case-req-configuration-table tr th:last-child, .case-req-configuration-table tr td:last-child {
-    flex-grow: 1.1;
+    flex-grow: 2;
     font-size: 18px;
 }
 
