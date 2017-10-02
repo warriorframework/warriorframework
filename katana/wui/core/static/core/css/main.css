@@ -3109,6 +3109,64 @@ input[type="checkbox"] + label {
     height: 88%;
     padding: 5px;
 }
+
+@import('katana/wui/core/static/core/css/main_projects.css');
+@import('katana/wui/core/static/core/css/main_suites.css');
+@import('katana/wui/core/static/core/css/main_cases.css');
+
+
+.project-configuration-table {}
+
+.project-configuration-table table {
+  border-collapse: collapse;
+
+}
+.project-configuration-table td {
+  text-align: left;
+  overflow: auto;
+}
+
+.project-configuration-table th{
+    height: 35px;
+    line-height: 35px;
+    text-align: left;
+    vertical-align: top;
+    font-weight: 400;
+    color: #FFF;
+    background-color: #577BA0;
+}
+.project-configuration-table tr th:nth-child(1), .project-configuration-table tr td:nth-child(1) {
+    flex-grow: .3;
+
+}
+
+.project-configuration-table tr th:nth-child(2), .project-configuration-table tr td:nth-child(2) {
+    flex-grow: .3; 
+    font-size: 18px;
+}
+.project-configuration-table tr th:nth-child(3), .project-configuration-table tr td:nth-child(3) {
+    flex-grow: 4; 
+    font-size: 18px;
+}
+.project-configuration-table tr th:nth-child(4), .project-configuration-table tr td:nth-child(4){
+    justify-content: left;
+    flex-grow: 2.5;
+    font-size: 18px;
+}
+
+.project-configuration-table tr th:last-child, .project-configuration-table tr td:last-child {
+    flex-grow: .9;
+    font-size: 18px;
+}
+
+.project-configuration-table i{
+    padding: 4px;
+    font-size: 16px;
+}
+
+.project-configuration-table tr:nth-child(even){background-color: #f2f2ff}
+
+
 .suite_configuration_table {}
 .suite_configuration_table th{
     height: 35px;
@@ -3129,9 +3187,6 @@ input[type="checkbox"] + label {
     font-size: 16px;
 }
 
-.popup {
-    background: #fff;
-}
 
 
 .suite_configuration_table tr th:nth-child(1), .suite_configuration_table tr td:nth-child(1) {
@@ -3187,6 +3242,7 @@ input[type="checkbox"] + label {
     flex-grow: .5;
     font-size: 18px;
 }
+
 
 .case-configuration-table {}
 .case-configuration-table table {
@@ -3306,53 +3362,3 @@ input[type="checkbox"] + label {
   background: '#bbb';
  }
 
-.project-configuration-table {}
-
-.project-configuration-table table {
-  border-collapse: collapse;
-
-}
-.project-configuration-table td {
-  text-align: left;
-  overflow: auto;
-}
-
-.project-configuration-table th{
-    height: 35px;
-    line-height: 35px;
-    text-align: left;
-    vertical-align: top;
-    font-weight: 400;
-    color: #FFF;
-    background-color: #577BA0;
-}
-.project-configuration-table tr th:nth-child(1), .project-configuration-table tr td:nth-child(1) {
-    flex-grow: .3;
-
-}
-
-.project-configuration-table tr th:nth-child(2), .project-configuration-table tr td:nth-child(2) {
-    flex-grow: .3; 
-    font-size: 18px;
-}
-.project-configuration-table tr th:nth-child(3), .project-configuration-table tr td:nth-child(3) {
-    flex-grow: 4; 
-    font-size: 18px;
-}
-.project-configuration-table tr th:nth-child(4), .project-configuration-table tr td:nth-child(4){
-    justify-content: left;
-    flex-grow: 2.5;
-    font-size: 18px;
-}
-
-.project-configuration-table tr th:last-child, .project-configuration-table tr td:last-child {
-    flex-grow: .9;
-    font-size: 18px;
-}
-
-.project-configuration-table i{
-    padding: 4px;
-    font-size: 16px;
-}
-
-.project-configuration-table tr:nth-child(even){background-color: #f2f2ff}

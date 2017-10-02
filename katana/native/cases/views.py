@@ -302,7 +302,7 @@ def editCase(request):
 		xml_r["Testcase"]["Requirements"] = {}
 
 	context = { 
-		'myfile': filename,
+		'fullpathname': filename,
 		'savefilename': fn,
 		'savesubdir': subdir,
 		'savefilepath': path_to_testcases,

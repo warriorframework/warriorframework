@@ -103,8 +103,12 @@ var suites= {
 //    the suites.jsonSuiteObject
 //
 /// -------------------------------------------------------------------------------
-	mapFullSuiteJson: function(myfile){
-	//var myfile = katana.$activeTab.find('#fullpathname').text();
+	mapFullSuiteJson: function(incomingFile){
+	var myfile = katana.$activeTab.find('#fullpathname').text();
+	if (incomingFile) {
+		myFile = incomingFile; 
+	}
+	
 	jQuery.getJSON("./suites/getJSONSuiteData/?fname="+myfile).done(function(data) {
 			var sdata = data['fulljson'];
 			console.log("from views.py call=", sdata);
@@ -567,7 +571,7 @@ Two global variables are heavily used when this function is called;
 		var xref="./cases/editCase/?fname="+fname; 
 	  	console.log("Calling case ", fname, xref);
 	    katana.$view.one('tabAdded', function(fname ){
-	         cases.mapFullCaseJson(fname,'#listOfTestStepsForCase');
+	         //cases.mapFullCaseJson(fname,'#listOfTestStepsForCase');
 	    });
   	katana.templateAPI.load(xref, "cases.js", null, 'suite') ;;
 },

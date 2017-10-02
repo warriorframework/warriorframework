@@ -73,9 +73,6 @@ function jsUcfirst(string)
 				var $elem = $(this);
 				var thePage = $elem.attr('href');
 				var theID   = $elem.attr('fname');
-			    // katana.$view.one('tabAdded', function(){
-			   	// 	cases.mapFullCaseJson(theID);
-			    // });
 				katana.templateAPI.load( thePage, null, null, 'case') ;
 			});
  	},
@@ -83,7 +80,7 @@ function jsUcfirst(string)
 	startNewCase: function() {
 	  var xref="./cases/editCase/?fname=NEW"; 
 	     katana.$view.one('tabAdded', function(){
-	        cases.mapFullCaseJson("NEW",'#emptyTestCaseData');
+	        cases.mapFullCaseJson(); // ("NEW",'#emptyTestCaseData');
 	    });
 	  katana.templateAPI.load(xref, null, null, 'Case') ;;
 	},
@@ -102,15 +99,12 @@ function jsUcfirst(string)
 			      if (extn < 4){
 			      	return;
 			      }
-			   //    katana.$view.one('tabAdded', function(){
-			   	//    cases.mapFullCaseJson(thePage,'#listOfTestStepsForCase');
-				  // });
 				  var xref="./cases/editCase/?fname=" + thePage; 
 				  cases.thefile = thePage; 
 				  // Load the response here. ...	
 				  	katana.$activeTab.find(".case-single-toolbar").hide()
 				  	katana.$activeTab.find("#OverwriteCaseHere").load(xref, function() {
-				  		cases.mapFullCaseJson(cases.thefile, null);
+				  		cases.mapFullCaseJson(); // (cases.thefile, null);
 				  });
 				  //katana.templateAPI.load(xref, null, null, 'Case') ;
 				});
@@ -134,13 +128,11 @@ function jsUcfirst(string)
 //
 // This function is called when the page loads in cases.js . 
 //
-	mapFullCaseJson: function(myobjectID, where){
-		var myfile = katana.$activeTab.find('#xmlfilename').text();
+	mapFullCaseJson: function(){
+		var myfile = katana.$activeTab.find('#fullpathname').text();
 		jQuery.getJSON("./cases/getJSONcaseDataBack/?fname="+myfile).done(function(data) {
 			a_items = data['fulljson']['Testcase'];
 			//console.log("from views.py call=", a_items);
-			//var sdata = katana.$activeTab.find(where).text();  // Get JSON data from server. 
-			//var jdata = sdata.replace(/'/g, '"');			   // Fix any discrepancies in quotes 
 			cases.jsonCaseObject = a_items; // JSON.parse(sdata); 
 			console.log("Incoming data",cases.jsonCaseObject, a_items); // instead of jdata.
 			if (!jQuery.isArray(cases.jsonCaseObject["Steps"]['step'])) {

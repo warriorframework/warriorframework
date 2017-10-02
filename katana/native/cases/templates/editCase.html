@@ -8,7 +8,9 @@
         <label class="col-md-2 text-righ" t>Save file to </label>
         <input class="text-right col-md-4" type="text" id="my_file_to_save" name="my_file_to_save" value="{{savefilename}}" />
     </div>
-    <div class="container-fluid" auto-init="cases.init">
+
+   <div auto-init="cases.mapFullCaseJson"> 
+    <div class="container-fluid" >
         <div class="row">
             <div class="col-md-9">
                 <div class="row ">
@@ -104,7 +106,7 @@
             </div>
             <div id="savesubdir" class="hidden">{{savesubdir}}</div>   
             <div id="savefilepath" class="hidden">{{savefilepath}}</div>  <!-- Used for absolute path resolution -->
-            <div id="xmlfilename" class="hidden" >{{myfile}}</div>
+            <div id="fullpathname" class="hidden" >{{fullpathname}}</div>
             <div id="emptyTestCaseData" class="hidden"> {{emptyTestCase}} </div>
             <div id="listOfTestStepsForCase" class="hidden"> {{fulljsonstring}} </div> 
         </div>

@@ -1,12 +1,11 @@
 {% load static %}
 
 
-
+{% csrf_token %}
+			
 
 <div class="tool-bar">
-	    	{% csrf_token %}
-	    	
-			<button id="addSuite" class="btn btn-primary" katana-click="projects.addSuiteToProject">Add Suite To Project</button>-->
+	    	<button id="addSuite" class="btn btn-primary" katana-click="projects.addSuiteToProject">Add Suite To Project</button>-->
 			<!-- <button class="btn btn-primary" onclick="resetUIfromFile()">Discard Changes</button>  -->
 			<button class="btn btn-success save" katana-click="projects.mapUiToProjectJson">Save Changes to : </button>
 			<input class="col-md-4 text-right" type="text" id="my_file_to_save" name="my_file_to_save" value="{{projectName}}.xml"/>

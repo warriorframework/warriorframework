@@ -663,9 +663,14 @@ Two global variables are heavily used when this function is called;
 	  	var xref="./suites/editSuite/?fname="+fname; 
 	  	console.log("Calling suite ", fname, xref);
 	    katana.$view.one('tabAdded', function(){
-	        suites.mapFullSuiteJson(fname);
+	    		//suites.mapFullSuiteJson(fname);
 	    });
-	  katana.templateAPI.load(xref, 'projects.js', null, 'suite') ;;
+	  katana.templateAPI.load(xref, '../../../../../suites/static/suites/js/suites.js', null, 'suite') ; 
+	  // native/projects/static/projects/js/projects.js
+	  // ../../../../../
+	  // sutiess/static/suites/js/suites.js
+
+
 	},
 
 	testProjectSortEventHandler : function(event, ui ) {
