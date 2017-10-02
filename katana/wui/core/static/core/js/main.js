@@ -731,7 +731,7 @@ var katana = {
 			  url = url ? url : $elem ? $elem.attr('url') : '';
 				tabTitle = tabTitle ? tabTitle : 'Tab';
 				if( $elem != katana.templateAPI ){
-					var jsURL = $elem.attr('jsurls').split(',');
+					var jsURL = jsURL ? jsURL.split(',') : $elem.attr('jsurls').split(',');
 					if( jsURL.length > 0 ){
 						jsURL.pop();
 						katana.templateAPI.importJS( jsURL, function(){
