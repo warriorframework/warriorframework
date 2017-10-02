@@ -20,11 +20,11 @@ def mkactiondirs(driverpath):  # changed
     elif len(actions_package_list) > 0:
         for package in actions_package_list:
             try:
-                print package
+                #print package
                 package = package.replace(' ', '')
                 pkg = re.sub('[\n\t' '\\\]', '', package)
-                print pkg
-                print package
+                #print pkg
+                #print package
                 if pkg == 'Actions':
                     actions_dirpath = gpysrcdir + os.sep + 'Actions'
                 elif pkg.startswith('Actions.'):
@@ -67,7 +67,7 @@ def get_action_dirlist(driverpath):  # changed
                 # print match_string
                 actions_package_list = match_string.split('[')[1].split(']')[
                     0].split(',')
-                print "\n action package list: ", actions_package_list
+                # print "\n action package list: ", actions_package_list
                 # for line in lines:
                 # if re.search(search, line):
                 # print "package_list found"
@@ -158,10 +158,10 @@ def py_file_details(gpysrcdir):  # changed
     #     for directory in mkactiondirs(path):
     #         actiondirs.append(directory)
     actiondirs = map(mkactiondirs, drivers_fpath)
-    print "\n\n drivers: \n\n", json.dumps(drivers_fpath, indent=2)
+    #print "\n\n drivers: \n\n", json.dumps(drivers_fpath, indent=2)
     #print '\n\nactiondirs: \n\n', json.dumps(actiondirs, indent=2)
 
     actionpyfiles = map(mkactionpyfiles, actiondirs)
     drivercomments = fetch_comments(zip(drivers, actionpyfiles))
-    print 'driver:docs\n', json.dumps(drivercomments, indent=2)
+    #print 'driver:docs\n', json.dumps(drivercomments, indent=2)
     return drivercomments

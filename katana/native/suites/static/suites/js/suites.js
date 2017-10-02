@@ -80,7 +80,9 @@ var suites= {
 		  		// });
 		  	  	suites.thefile = thePage; 
 		  		var xref="./suites/editSuite/?fname=" + thePage; 
-			  	katana.$activeTab.find("#OverwriteSuiteHere").load(xref, function() {
+			  	//katana.$activeTab.find("#OverwriteSuiteHere").load(xref, function() {
+			  		katana.templateAPI.subAppLoad(xref, null, function(thisPage) { 
+		
 			   			console.log("starting ...", this);
 				  		suites.mapFullSuiteJson(suites.thefile);
 				  });
@@ -224,6 +226,7 @@ var suites= {
 	});
 	console.log("FOUND Run mode  TYPE ",oneCase["runmode"]['@type'] )
 	popup.find('.runmode_condition').show();
+	oneCase["runmode"]['@type'] = oneCase["runmode"]['@type'].toLowerCase();
 	if (oneCase["runmode"]['@type'] === 'standard') {
 		console.log("Hiding... ",oneCase["runmode"]['@type']  )
 		popup.find('.runmode_condition').hide();
@@ -317,7 +320,7 @@ Two global variables are heavily used when this function is called;
 		return
 	}
 	if (katana.$activeTab.find("#suiteTitle").val().length < 1) {
-				data = { 'heading': "Error", 'text' : "Please specific a title "}
+		data = { 'heading': "Error", 'text' : "Please specific a title "}
 		katana.openAlert(data);
 		return
 	}
@@ -570,6 +573,7 @@ Two global variables are heavily used when this function is called;
 		var fname = this.attr('key');
 		var xref="./cases/editCase/?fname="+fname; 
 	  	console.log("Calling case ", fname, xref);
+
 	    katana.$view.one('tabAdded', function(fname ){
 	         //cases.mapFullCaseJson(fname,'#listOfTestStepsForCase');
 	    });

@@ -1,15 +1,15 @@
 {% load static %}
-
-
 {% csrf_token %}
 			
-
+<body>
 <div class="tool-bar">
 	    	<button id="addSuite" class="btn btn-primary" katana-click="projects.addSuiteToProject">Add Suite To Project</button>-->
 			<!-- <button class="btn btn-primary" onclick="resetUIfromFile()">Discard Changes</button>  -->
 			<button class="btn btn-success save" katana-click="projects.mapUiToProjectJson">Save Changes to : </button>
 			<input class="col-md-4 text-right" type="text" id="my_file_to_save" name="my_file_to_save" value="{{projectName}}.xml"/>
 </div>
+
+
 <div auto-init="projects.mapFullProjectJson">
 	<div class="col-md-12 row">
 			<div class="field col-md-3 input_padding">
@@ -25,7 +25,6 @@
 				<input class="text-right" type="text" id="projectEngineer" name="projectEngineer" value="{{projectEngineer}}" />
 			</div>
 			<div class="field col-md-3 input_padding">	
-				
 				<label class="text-right">Last Updated:</label>
 				<input class="text-right" type="text" id="projectDate" name="projectDate" value="{{projectDate}} {{projectTime}}" />
 			</div>
@@ -71,7 +70,7 @@
 
 			<!-- <button value="Hello" onClick="prompt('eatme','no')" >ddd</button> -->
 		</div>
-	</div>	
+	
 	<div class="container-fluid row">
 		<div id="tableOfTestSuitesForProject"  class="col-md-12" />
 		<div id="editTestSuiteEntry" class="form-group col-md-3 hidden">
@@ -169,10 +168,11 @@
 			</div>
 
 	</div>
-
+</div>
 
 	<div id="listOfTestSuitesForProject" class="hidden">{{fulljson}}</div>
 	<div id="savefilepath" class="hidden">{{savefilepath}}</div>
 	<div id="fullpathname" class="hidden">{{fullpathname}}</div>
-</div>
 
+</div>
+</body>

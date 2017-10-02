@@ -86,10 +86,10 @@ def getEmpty():
 				[{"impact": "impact",
 				  "Execute": {"@ExecType": "yes", "Rule": {"@Elsevalue": "", "@Condvalue": "", "@Condition": "", "@Else": "next"}},
 				 "InputDataFile": "", "onError": {"@action": "next", "@value": ""}, 
-				 "runmode": {"@type": "Standard", "@value": ""}, "context": "positive", "runtype": "sequential_keywords", "path": "../Cases/.xml"}, 
+				 "runmode": {"@type": "standard", "@value": ""}, "context": "positive", "runtype": "sequential_keywords", "path": "../Cases/EDITME.xml"}, 
 				 {"impact": "impact", "Execute": {"@ExecType": "Yes", "Rule": {"@Elsevalue": "", "@Condvalue": "", "@Condition": "", "@Else": "next"}}, 
 				 "InputDataFile": "", "onError": {"@action": "next", "@value": ""}, 
-				 "runmode": {"@type": "Standard", "@value": ""}, "context": "positive", "runtype": "sequential_keywords", "path": "../Cases/tc_disconnect.xml"}]}, 
+				 "runmode": {"@type": "standard", "@value": ""}, "context": "positive", "runtype": "sequential_keywords", "path": "../Cases/EDITME.xml"}]}, 
 				 "Requirements": {"Requirement": ["Requirement-demo-001", "Requirement-demo-002"]}, "Details": {"Name": "Name Here", "Title": "Title", 
 				 "Resultsdir": "", 
 				 "State": "Released", 
@@ -144,8 +144,15 @@ def editSuite(request):
 	if filename.upper() == 'NEW':
 		xml_d = copy.deepcopy(xml_r);
 	else:
-		xlines = open(filename).read()
-		xml_d = xmltodict.parse(xlines, dict_constructor=dict);
+		try:
+			xlines = open(filename).read()
+			xml_d = xmltodict.parse(xlines, dict_constructor=dict);
+		except:
+			xml_d = copy.deepcopy(xml_r);
+			basename = os.path.split(filename)[1];
+			basename = basename.replace('.xml','')
+			xml_d["TestSuite"]["Details"]['Name'] = basename
+			
 
 	# Map the input to the response collector
 	for xstr in ["Name", "Title", "Category", "Date", "Time", "Engineer", "Datatype", 'Resultsdir', 'InputDataFile']:

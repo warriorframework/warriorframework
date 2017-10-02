@@ -34,6 +34,8 @@ navigator = Navigator();
 path_to_src_python_file = navigator.get_katana_dir() + os.sep + "config.json"
 All_case_action_details = py_file_details(json.loads(open(path_to_src_python_file).read())['pythonsrcdir']);
 setPythonSrcDir(All_case_action_details);
+print os.getcwd()
+EMPTY_DATA = json.loads(json.dumps(xmltodict.parse(open("./native/cases/empty.xml").read(), process_namespaces=True)));
 
 def index(request):
 	path_to_config_file = navigator.get_katana_dir() + os.sep + "config.json"
@@ -158,58 +160,58 @@ def getListOfComments(request):
 		print details[driver]
 	return JsonResponse(responseBack)
 
-def getEmpty():
-	edata={
-		  "Testcase": {
-		    "Details": {
-		      "Name": "set_env_variable",
-		      "Title": "set_env_variable",
-		      "default_onError": { "@action": "next" },
-		      "Date": "2017-01-01",
-		      "Time": "23:00",
-		      "InputDataFile": "No_Data",
-		      "Engineer": "Warrior_Test",
-		      "Category": "Regression",
-		      "State": "Released"
-		    },
-		    "Requirements": {
-		      "Requirement": [
-		        "Demo-requirement-001",
-		        "Demo-requirement-002",
-		        "Demo-requirement-003"
-		      ]
-		    },
-		    "Steps": {
-		      "step": {
-		        "@Driver": "common_driver",
-		        "@Keyword": "set_env_var",
-		        "@TS": "1",
-		        "Arguments": {
-		          "argument": [
-		            {
-		              "@name": "var_key",
-		              "@value": "check3"
-		            },
-		            {
-		              "@name": "var_value",
-		              "@value": "3"
-		            }
-		          ]
-		        },
-		        "Description": [
-		          "Description Line 1",
-		          "Description Line 2"
-		        ],
-		        "onError": { "@action": "next" },
-		        "Execute": { "@ExecType": "Yes" },
-		        "context": "positive",
-		        "impact": "impact"
-		      }
-		    }
-		  }
-		}  ;
+# def getEmpty():
+# 	edata={
+# 		  "Testcase": {
+# 		    "Details": {
+# 		      "Name": "set_env_variable",
+# 		      "Title": "set_env_variable",
+# 		      "default_onError": { "@action": "next" },
+# 		      "Date": "2017-01-01",
+# 		      "Time": "23:00",
+# 		      "InputDataFile": "No_Data",
+# 		      "Engineer": "Warrior_Test",
+# 		      "Category": "Regression",
+# 		      "State": "Released"
+# 		    },
+# 		    "Requirements": {
+# 		      "Requirement": [
+# 		        "Demo-requirement-001",
+# 		        "Demo-requirement-002",
+# 		        "Demo-requirement-003"
+# 		      ]
+# 		    },
+# 		    "Steps": {
+# 		      "step": {
+# 		        "@Driver": "common_driver",
+# 		        "@Keyword": "set_env_var",
+# 		        "@TS": "1",
+# 		        "Arguments": {
+# 		          "argument": [
+# 		            {
+# 		              "@name": "var_key",
+# 		              "@value": "check3"
+# 		            },
+# 		            {
+# 		              "@name": "var_value",
+# 		              "@value": "3"
+# 		            }
+# 		          ]
+# 		        },
+# 		        "Description": [
+# 		          "Description Line 1",
+# 		          "Description Line 2"
+# 		        ],
+# 		        "onError": { "@action": "next" },
+# 		        "Execute": { "@ExecType": "Yes" },
+# 		        "context": "positive",
+# 		        "impact": "impact"
+# 		      }
+# 		    }
+# 		  }
+# 		}  ;
 
-	return edata; 
+# 	return edata; 
 
 def editCase(request):
 	""" 
@@ -257,7 +259,7 @@ def editCase(request):
 	xml_r["Testcase"]["Steps"] = {} 
 	
 
-	edata = getEmpty()
+	#edata = getEmpty()
 
 	if filename == 'NEW':
 		subdir = path_to_testcases 
@@ -274,7 +276,7 @@ def editCase(request):
 	fulljsonstring = fulljsonstring.replace('u"',"'").replace("u'",'"').replace("'",'"');
 	fulljsonstring = fulljsonstring.replace('None','""').replace('""""','""')
 
-	emptyCaseString = str(json.loads(json.dumps(edata['Testcase'])));
+	emptyCaseString = str(json.loads(json.dumps(EMPTY_DATA['Testcase'])));
 	emptyCaseString = emptyCaseString .replace('u"',"'").replace("u'",'"').replace("'",'"');
 	emptyCaseString = emptyCaseString .replace('None','""').replace('""""','""')
 
@@ -340,7 +342,7 @@ def getJSONcaseDataBack(request):
 	try:
 		xml_d = xmltodict.parse(open(filename).read());
 	except:
-		xml_d = getEmpty();
+		xml_d = EMPTY_DATA;
 
 	j_data = json.loads(json.dumps(xml_d))
 	responseBack = { 'fulljson': j_data , 'fname': filename }

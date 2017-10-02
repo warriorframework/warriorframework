@@ -45,7 +45,7 @@ function jsUcfirst(string)
 
  var projects = {
 
-	closeCase: function(){
+	closeProject: function(){
 		katana.closeSubApp();
 	},
 
@@ -91,13 +91,12 @@ function jsUcfirst(string)
 			  var xref="./projects/editProject/?fname=" + thePage; 
 			  projects.thefile = thePage;
 
-		  	 // console.log('THe page', thePage, xref);
-			  katana.$activeTab.find("#OverwriteProjectHere").load(xref, function() {
+		  
+			 	katana.templateAPI.subAppLoad(xref, null, function(thisPage) { 
 			   			console.log("starting ...", this);
 				  		projects.mapFullProjectJson(projects.thefile);
 				  });
 			   // katana.templateAPI.load(xref, null, null, 'Project') ;
-		
 			  });
 		 katana.$activeTab.find('#myProjectTree').jstree(jdata);
 		});
@@ -472,7 +471,8 @@ Two global variables are heavily used when this function is called;
 		return
 	}
 
-	
+	$('#my_file_to_save').val(katana.$activeTab.find('#projectName').val());
+
 	projects.jsonProjectObject['Details']['Name'] = katana.$activeTab.find('#projectName').val();
 	projects.jsonProjectObject['Details']['Title'] = katana.$activeTab.find('#projectTitle').val();
 	projects.jsonProjectObject['Details']['Engineer'] = katana.$activeTab.find('#projectEngineer').val();
@@ -507,14 +507,13 @@ Two global variables are heavily used when this function is called;
 	    type: "POST",
 	    data : { 
 	    	'json': JSON.stringify(topNode),
-	    	//'Project': ns,
 	    	'filetosave': katana.$activeTab.find('#filesavepath').text() + "/" + $('#my_file_to_save').val()
 	    	},
 	    headers: {'X-CSRFToken':csrftoken},
     
     success: function( data ){
     	var outstr = "Saved "+katana.$activeTab.find('#filesavepath').text() + "/" + $('#my_file_to_save').val();
-    	xdata = { 'heading': "Error", 'text' : outstr }
+    	xdata = { 'heading': "Saved", 'text' : outstr }
 		katana.openAlert(xdata);
     	}
 	});
@@ -559,7 +558,7 @@ Two global variables are heavily used when this function is called;
 		items.push('<td><i title="ChangeFile" class="fa fa-folder-open" key="'+bid+'" katana-click="projects.getFileForSuite" /></td>');
 		
 		oneSuite['Execute']['@ExecType'] = jsUcfirst(oneSuite['Execute']['@ExecType']); 
-		items.push('<td id="'+tbid+'" katana-click="projects.showSuiteFromProject" key="'+oneSuite['path']+'">'+oneSuite['path']+'</td>');
+		items.push('<td id="'+tbid+'" katana-click="projects.showSuiteFromProject" skey="'+oneSuite['path']+'">'+oneSuite['path']+'</td>');
 		items.push('<td>Type='+oneSuite['Execute']['@ExecType']+'<br>');
 
 		if (oneSuite['Execute']['@ExecType'] == 'if' || oneSuite['Execute']['@ExecType'] == 'if not') {
@@ -584,7 +583,7 @@ Two global variables are heavily used when this function is called;
 		items.push('<i  title="Insert" class="fa fa-plus" value="Insert" key="'+bid+'" katana-click="projects.insertTestSuiteCB"/>');
 
 		bid = "DuplicateTestSuite-"+s+"-id"
-		items.push('<i  title="Duplicate" class="fa fa-cc" value="Duplicate" key="'+bid+'" katana-click="projects.duplicateTestSuiteCB"/></td>');
+		items.push('<i  title="Duplicate" class="fa fa-copy" value="Duplicate" key="'+bid+'" katana-click="projects.duplicateTestSuiteCB"/></td>');
 
 		items.push('</tr>');
 		}
@@ -659,16 +658,17 @@ Two global variables are heavily used when this function is called;
 
 	showSuiteFromProject:function () {
 		//var fname = katana.$activeTab.find('#showSuiteFromProject').attr('key');
-		var fname = this.attr('key');
-	  	var xref="./suites/editSuite/?fname="+fname; 
-	  	console.log("Calling suite ", fname, xref);
-	    katana.$view.one('tabAdded', function(){
-	    		//suites.mapFullSuiteJson(fname);
-	    });
-	  katana.templateAPI.load(xref, '../../../../../suites/static/suites/js/suites.js', null, 'suite') ; 
-	  // native/projects/static/projects/js/projects.js
-	  // ../../../../../
-	  // sutiess/static/suites/js/suites.js
+		var fname = this.attr('skey');
+		var href='/katana/suites';
+		katana.templateAPI.load(href, '/static/suites/js/suites.js,', null, 'suite', function() { 
+				var xref="./suites/editSuite/?fname="+fname; 
+	    		katana.templateAPI.subAppLoad(xref,null,function(thisPage) {
+						suites.mapFullSuiteJson(fname);
+	    		});
+
+		});
+	   
+	  //katana.templateAPI.load(xref, '/static/suites/js/suites.js,', null, 'suite') ; 
 
 
 	},

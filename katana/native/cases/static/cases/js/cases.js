@@ -600,50 +600,96 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		console.log("---- oneCase ---- ", oneCaseStep["@Driver"], oneCaseStep[ "@Keyword"] , oneCaseStep);
 		popup.attr("caseStep", oneCaseStep);
 		popup.attr("sid", sid);
-		jQuery.getJSON("./cases/getListOfActions").done(function(data) {
-				a_items = data['actions'];
-				dd_driver.empty();  // Empty all the options....
-				for (var x =0; x < a_items.length; x++) {
-						dd_driver.append($('<option>',{ value: a_items[x],  text: a_items[x]}));
-					}
-				//console.log(dd_driver.html());
-				popup.find('#StepDriver').val(oneCaseStep["@Driver"]);
-				popup.find("#StepKeyword").val(oneCaseStep["@Keyword"]);
-				// Now set up the keywords
-				var driver = oneCaseStep[ "@Driver"]  ;
-				var keyword  = oneCaseStep[ "@Keyword"];
-				console.log("Collecting ...", driver, keyword);
+		//
+		// Check if you already have this keyword defined....
+		//
+		if (katana.$activeTab.data("data-comments"+driver+"-"+keyword)) {
+			a_items = katana.$activeTab.data("data-drivers");   // Get the list of cations 
+			console.log("a_items for drivers ", a_items);       
+			popup.find("#StepDriver").empty();  				// Empty all the options....
+			katana.$activeTab.attr("data-drivers", a_items);                     
+			for (var x =0; x < a_items.length; x++) {
+					popup.find("#StepDriver").append($('<option>',{ value: a_items[x],  text: a_items[x]}));
+				}
+			a_items = katana.$activeTab.data("data-keywords-"+driver);                      // keep list of keywords... 
+			popup.find('#StepDriver').val(oneCaseStep["@Driver"]);
+			popup.find("#StepKeyword").empty();
+	 		console.log(a_items);
+	 		for (let x of a_items) {
+	 			popup.find("#StepKeyword").append($('<option>',{ value: x,  text: x }));
+	 			}
+	 		popup.find("#StepKeyword").val(oneCaseStep["@Keyword"]);
+			a_items = katana.$activeTab.data("data-comments"+driver+"-"+keyword);
+		 	console.log("received", a_items);
+			out_array = a_items[0]['comment'];
+			var outstr = out_array.join("\n");
+			//console.log(outstr);
+			cases.lastPopup.find("#sourceCaseFileText").html(""); 
+			cases.lastPopup.find("#sourceCaseFileText").html(outstr);
+			cases.lastPopup.find("#sourceCaseFileDef").html(""); 
+			if (a_items[0]['def']) {
+ 				outstr = a_items[0]['def'];
+ 				console.log(outstr);
+				cases.lastPopup.find("#sourceCaseFileDef").html(outstr);	
+ 				}
+ 			console.log("Setting attributes",driver,keyword,a_items)
+			popup.find('#StepDriver').val(oneCaseStep["@Driver"]);
+			popup.find("#StepKeyword").val(oneCaseStep["@Keyword"]);
+		} else {
+			jQuery.getJSON("./cases/getListOfActions").done(function(data) {
+					//a_items = data['actions'];
+					var a_items = jQuery.extend( true, [], data['actions']);
+					console.log(a_items, data['actions']);
+	 				popup.find("#StepDriver").empty();  // Empty all the options....
+					katana.$activeTab.data("data-drivers", a_items);                      // keep list of actions... 
+					for (var x =0; x < a_items.length; x++) {
+							popup.find("#StepDriver").append($('<option>',{ value: a_items[x],  text: a_items[x]}));
+						}
+					//console.log(dd_driver.html());
+					popup.find('#StepDriver').val(oneCaseStep["@Driver"]);
+					popup.find("#StepKeyword").val(oneCaseStep["@Keyword"]);
+					// Now set up the keywords
+					var driver = oneCaseStep[ "@Driver"]  ;
+					var keyword  = oneCaseStep[ "@Keyword"];
+					console.log("Collecting ...", driver, keyword);
 
-				jQuery.getJSON("./cases/getListOfKeywords/?driver="+driver).done(function(data) {
- 						popup.find("#StepKeyword").empty();
- 						a_items = data['keywords'];
- 						console.log(a_items);
- 						for (let x of a_items) {
- 							popup.find("#StepKeyword").append($('<option>',{ value: x,  text: x }));
- 						}
- 					popup.find('#StepKeyword').val(oneCaseStep["@Keyword"]);
-				
-					jQuery.getJSON("./cases/getListOfComments/?driver="+driver+"&keyword="+keyword).done(function(data) {
-	 					a_items = data['fields'];
-		 				console.log("received", data, a_items);
-
-		 				out_array = a_items[0]['comment'];
-		 				var outstr = out_array.join("\n");
-		 				console.log(outstr);
-		 				cases.lastPopup.find("#sourceCaseFileText").html(""); 
-		 				cases.lastPopup.find("#sourceCaseFileText").html(outstr);
-		 				cases.lastPopup.find("#sourceCaseFileDef").html(""); 
-						if (a_items[0]['def']) {
-							
-			 				outstr = a_items[0]['def'];
-							cases.lastPopup.find("#sourceCaseFileDef").html(outstr);	
-			 				}
-
-					});
+					jQuery.getJSON("./cases/getListOfKeywords/?driver="+driver).done(function(data) {
+	 						popup.find("#StepKeyword").empty();
+	 						var driver = oneCaseStep[ "@Driver"]  ;
+	 						var a_items = jQuery.extend( true, [], data['keywords']);
+	 						katana.$activeTab.data("data-keywords-"+driver, a_items);                      // keep list of actions... 
+							console.log(a_items, driver, data['keywords']);
+	 						for (let x of a_items) {
+	 							popup.find("#StepKeyword").append($('<option>',{ value: x,  text: x }));
+	 						}
+	 					popup.find('#StepKeyword').val(oneCaseStep["@Keyword"]);
+					
+						jQuery.getJSON("./cases/getListOfComments/?driver="+driver+"&keyword="+keyword).done(function(data) {
+		 					var a_items = jQuery.extend( true, {}, data['fields']);
+	 						//a_items = data['fields'];
+			 				console.log("received", data, a_items);
+			 				out_array = a_items[0]['comment'];
+			 				var outstr = out_array.join("\n");
+			 				
+			 				cases.lastPopup.find("#sourceCaseFileText").html(""); 
+			 				cases.lastPopup.find("#sourceCaseFileText").html(outstr);
+			 				cases.lastPopup.find("#sourceCaseFileDef").html(""); 
+							if (a_items[0]['def']) {
+				 				outstr = a_items[0]['def'];
+				 				console.log(outstr);
+								cases.lastPopup.find("#sourceCaseFileDef").html(outstr);	
+				 				}
+				 			console.log("Setting attributes",driver,keyword,a_items)
+							katana.$activeTab.data("data-comments"+driver+"-"+keyword, a_items);
+						});
+				});
 			});
-		});
+		}
+
+
+
 		//console.log(xdata);
-		console.log(oneCaseStep);
+		console.log('oneCaseStep', oneCaseStep);
 		popup.find("#StepRowToEdit").attr("value",sid);
 
 		//popup.find("#StepDriver").attr("value",oneCaseStep[ "@Driver"]);
@@ -692,6 +738,11 @@ The UI currently uses jQuery and Bootstrap to display the data.
  			console.log(outstr);
  			popup.find("#sourceCaseFileText").html(""); 
  			popup.find("#sourceCaseFileText").html(outstr);
+ 			if (a_items[0]['def']) {
+ 				outstr = a_items[0]['def'];
+ 				console.log(outstr);
+				cases.lastPopup.find("#sourceCaseFileDef").html(outstr);	
+ 				}
  		});
 	
 	popup.find("#StepDriver").on('change',function() {
@@ -725,7 +776,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 
 
 	popup.find("#runmode-at-value").on('change',function() {
-		if (this.value == 'Standard' ) {
+		if (this.value == 'standard' ) {
 			popup.find('.runmode-value').hide();			
 		} else {
 			popup.find('.runmode-value').show();	
@@ -754,7 +805,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 
 	closeEditedCaseStep: function() {
 		// Close the popup contrller 
-			katana.popupController.close(popup);
+			katana.popupController.close();
 			cases.mapCaseJsonToUi(cases.jsonCaseSteps);
 	},
 
@@ -1001,7 +1052,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		}, 
 		"context": "positive", 
 		"impact" :  "impact",
-		"runmode" : { '@type': 'Standard', '@value': ""},
+		"runmode" : { '@type': 'standard', '@value': ""},
 		"InputDataFile" : "", 
 		"retry": { "@type": "If", "@Condition": "", "@Condvalue": "", "@count": "0", "@interval": "0"}, 
 	 };
