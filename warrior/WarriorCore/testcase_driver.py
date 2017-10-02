@@ -150,7 +150,7 @@ def get_testcase_details(testcase_filepath, data_repository, jiraproj):
     data_repository['wt_logsdir'] = logsdir
     data_repository['wt_kw_results_dir'] = kw_results_dir
     data_repository['wt_defectsdir'] = defectsdir
-    # data_repository['wt_logfile'] = objLogFile
+    data_repository['wt_console_logfile'] = console_logfile
     data_repository['wt_operating_system'] = operating_system.upper()
     data_repository['wt_def_on_error_action'] = def_on_error_action.upper()
     data_repository['wt_def_on_error_value'] = def_on_error_value
@@ -468,6 +468,8 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
     # Adding resultsdir, logsdir, title as attributes to testcase_tag in the junit result file
     # Need to remove these after making resultsdir, logsdir as part of properties tag in testcase
     tc_junit_object.add_property("resultsdir", os.path.dirname(data_repository['wt_resultsdir']),
+                                 "tc", tc_timestamp)
+    tc_junit_object.update_attr("console_logfile", data_repository['wt_console_logfile'],
                                  "tc", tc_timestamp)
     tc_junit_object.update_attr("title", data_repository['wt_title'], "tc", tc_timestamp)
 

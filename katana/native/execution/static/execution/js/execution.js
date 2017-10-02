@@ -1,19 +1,7 @@
 
 var execution = {
 
-	// closeDialog: function(){
-	// 	var panel_container = katana.$activeTab.find('.execution.exec-container');
-	// 	var dialog = katana.$activeTab.find('.execution.dialog_container');
-	// 	panel_container.removeClass('is-blurred');
-	// 	panel_container.css('pointer-events', 'auto');
-	// 	dialog.hide();
-	// },
-	//
-	//
-	// resetForm: function(form){
-	// 	//reset a form , takes in jquery form element as input as input
-	// 	form[0].reset();
-	// },
+
 
 	setCmdCreatorObject: function(){
 		var elem = $(this);
@@ -343,9 +331,36 @@ var execution = {
 			content[0].style.display = 'block';
 
 		},
-		openLogs: function(){
-			console.log('open logs');
+
+		openDefectsJson: function(){
+			elem = $(this);
+			console.log(elem)
+			logpath = elem.attr('data-logpath');
+			
+			//make a ajax call to get the contents of the json file
+			var data_to_send = JSON.stringify({'logpath': logpath, 'logtype': 'defects'});
+			katana.templateAPI.get.call(katana.$activeTab, 'execution/getLogFileContents', null, data_to_send, 'html', execution.resultsViewer.openDefectsJsonInPopup);
 		},
+		openConsoleLogFile: function(){
+			elem = $(this);
+			console.log(elem)
+			logpath = elem.attr('data-logpath');
+			
+			//make a ajax call to get the contents of the json file
+			var data_to_send = JSON.stringify({'logpath': logpath, 'logtype': 'console_logs'});
+			katana.templateAPI.get.call(katana.$activeTab, 'execution/getLogFileContents', null, data_to_send, 'html', execution.resultsViewer.openDefectsJsonInPopup);
+		},
+		openDefectsJsonInPopup: function(data){
+			console.log(data);
+			data = JSON.parse(data);
+			popupName = data.logfile_name;
+			popupContent = JSON.stringify(data.contents, undefined, 2);
+			console.log(popupName, popupContent);
+//			textArea = '<textarea id="myTextArea" cols=50 rows=10>' +popupContent + '</textarea>'
+			html = '<pre>' + popupContent + '</pre>'
+			popup = katana.popupController.open(html, popupName);
+		},
+		
 		
 	},
 

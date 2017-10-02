@@ -121,6 +121,28 @@ class Execution(object):
             
         return HttpResponse(status)
 
+    def get_logfile_contents(self, request):
+        """
+        Update the html results by reading the live html results
+        file sent in the request
+        """
+        data_dict = json.loads(request.GET.get('data'))
+        logpath = data_dict['logpath']
+        logtype = data_dict['logtype']
+        op_data = {}
+        logfile_name = logpath.split(os.sep)[-1]
+        
+        if str(logtype.lower()) == 'defects':
+            contents = json.loads(open(logpath).read())
+        
+        if str(logtype.lower()) == 'console_logs':
+            contents = open(logpath).readlines()
+        
+        op_data['logfile_name'] = logfile_name
+        op_data['contents'] = contents
+        
+        return JsonResponse(op_data)
+
     def cleanup_data_live_dir(self, request):
         """
         Update the html results by reading the live html results
