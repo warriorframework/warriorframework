@@ -102,9 +102,9 @@ function jsUcfirst(string)
 				  var xref="./cases/editCase/?fname=" + thePage; 
 				  cases.thefile = thePage; 
 				  // Load the response here. ...	
-				  	katana.$activeTab.find(".case-single-toolbar").hide()
-				  	katana.$activeTab.find("#OverwriteCaseHere").load(xref, function() {
-				  		cases.mapFullCaseJson(); // (cases.thefile, null);
+				  katana.$activeTab.find(".case-single-toolbar").hide()
+				  katana.templateAPI.subAppLoad(xref, null, function(thisPage) { 
+			   			cases.mapFullCaseJson(); // (cases.thefile, null);
 				  });
 				  //katana.templateAPI.load(xref, null, null, 'Case') ;
 				});

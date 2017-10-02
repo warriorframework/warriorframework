@@ -1,10 +1,10 @@
 {% load static %} 
 
     <div class="tool-bar">
-        <i id="addStep" class="btn btn-success" katana-click="cases.addNewTestStepToUI">Add Step To Case</i>
-        <i class="btn btn-success" katana-click="cases.addRequirementToCase">Add Requirement</i>
-        <i class="btn btn-success" katana-click="cases.sendCaseToServer">Write Changes To Disk</i>
-        <button id="addNewCase" class="btn btn-success" katana-click="cases.startNewCase">Add New Testcase</button>
+        <i id="addStep" class="button" katana-click="cases.addNewTestStepToUI">Add Step To Case</i>
+        <i class="button" katana-click="cases.addRequirementToCase">Add Requirement</i>
+        <i class="button" katana-click="cases.sendCaseToServer">Write Changes To Disk</i>
+        <button id="addNewCase" class="button" katana-click="cases.startNewCase">Add New Testcase</button>
         <label class="col-md-2 text-righ" t>Save file to </label>
         <input class="text-right col-md-4" type="text" id="my_file_to_save" name="my_file_to_save" value="{{savefilename}}" />
     </div>
