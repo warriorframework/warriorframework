@@ -1,0 +1,978 @@
+<!-- Instructions and description on using this testdata file.
+This is Warrior standard testdata file.
+The testdata file has a global section and multiple testdata sections.
+
+Certain attributes in this file accepts regular expression as input
+in such cases use the website https://regex101.com/#python to validate your regular expression.
+This is an interactive website that validates, provides suggestions on your regular expression
+
+Also refer the python regex documentation https://docs.python.org/2/library/re.html
+
+-->
+
+
+<data>
+	<!--
+	===================
+	I : Global section:
+	===================
+
+		This is the global section in testdata file, data that needs to be used repeatedly
+		in the testdata sections of the testdata file can be provided in this global section
+		Thereby avoiding the need to repeat the same data in multiple testdata sections.
+		- If a sepcific parameter if not provided in the testdata section.
+			- If global value is provided in the global section , the global value will be used
+			- If global value is not provided, the default values for the parameter will be used.
+	-->
+	<global>
+		<!--
+		=====================
+		I.a : command_params:
+		=====================
+
+			Global values for command data (i.e. command attributes) in the
+			testdata section can be provided in the command_params tag as shown below.
+			All attributes of the command except the command itself (i.e. send attribute)
+			can be assigned a global value by providing them in the command_params tag
+		-->
+		<command_params start="${prompt.start}" end="${prompt.end}" timeout="4" sleep="2">
+		</command_params>
+
+		<!--
+		====================
+		I.b : verifications:
+		====================
+
+			Global values for command verifications & verification combos can be provided in the verification section
+			as shown below
+		-->
+		<verifications>
+			<!-- Verification tag -->
+			<v6 found="no" search="ERROR"/>
+			<v7 found="no" search="Application Error"/>
+			<!-- Verification combo -->
+			<combo1 combo="v6,v7"/>
+			<combo2 combo="v1,v2,v3"/>
+		</verifications>
+
+		<!--
+		=====================
+		I.c : variable_pattern:
+		=====================
+
+			This is an optional tag
+			Global values for variable_pattern in the testdata section can be provided
+			in the variable_pattern tag as shown below.
+			The default start pattern is ${ and default end_pattern is }
+		-->
+		<variable_pattern start_pattern="{{{" end_pattern="}}}"/>
+	</global>
+
+
+
+	<!--
+	========================
+	II : Testdata sections:
+	========================
+
+		There can be multiple testdata sections in the testdata files
+		Each testdata is identified by a 'title' or 'row' or combination of title and row.
+		:execute: the execute tag can take values 'yes' or 'no'
+				  any testdata that is marked 'no' will not be executed.
+
+		1. Substituting Variables in the command or verifications other than environment or data repository.
+			- To substitute variables in a command, use the variable config file to provide the variables.
+			- In the testdata variable reference should be provided as dotted notation within a '${}' format.
+				Eg: ${network1.ne1.shelf1.card1.shelf} will traverse the variable config
+				to network1.ne1.shelf1.card1 and get the value for the attribute shelf.
+			- Sample variable config file is available in Warriorspace/Config_files/variable_config_sample.xml
+        2. Substituting Variables in the command or verifications with environment value.
+            - To substitute variables with environment value, use ${ENV.variable} notation
+                Eg: ${ENV.IPADDR} will get the value of environment variable IPADDR
+            - The variable IPADDR should already be an environment variable in the system
+        2. Substituting Variables in the command or verifications with data repository value.
+            - To substitute variables with data repository value, use ${REPO.variable} notation
+                Eg: ${REPO.IPADDR} will get the value of key IPADDR in the data repository
+            - The data repository should already have a key IPADDR with its corresponding value
+            - Here, you can also provide a nested key to get the value of nested elements
+                Eg: ${REPO.K1.K2.K3} will get the value of  key K3 within K2 within K1 in data repository
+            - The datarepository should be in the format - { ...
+                                                             K1: {...
+                                                                  K2: {...
+                                                                       K3: value
+                                                                       ...}
+                                                                    }
+                                                                }
+
+	-->
+
+	<testdata title="enter_config_mode" execute="yes" monitor="NE3" >
+		<!--
+		=================
+		II.a : command :
+		=================
+
+		The command tag is used to provide command and command related parameters.
+		1.  :send: The actual command that has to be sent
+			   		- variable is command should be referenced from the variable config file
+			   			in dot notations inside the pattern '${}', values for such variables will be
+			   			substituted from the variable config file of the respective system.
+			   		- the patterns [VAR_SUB] will be replaced by the var_sub
+			   			argument provided in the testcase steps.
+
+			1.a) sending control characters to the session:
+					In order to send control characters to the session like ctrl-x, ctrl-z etc..
+					Use the format "wctrl:char" in the command
+					Eg: to send ctrl-x to the session
+					send="wctrl:x"
+
+		2.  :sys: system/subsystem on which the command should be executed.
+			  		Connection to the system/subsystem shoul dhave been established earlier.
+			  		a. system = provide the system name directly
+				 		Eg:- "NE1", "server1"
+
+			  		b. system+subsystem = provide system+subsystem combination, only a single subsystem is supported
+			 			Eg: "NE1[cli]", sever1["interface1"]
+
+			  		c. subsystem only = to refer only a subsystem provide the subsystem name
+						enclosed by square brackets, In this case the system name provided in
+						the testcase keyword will be used.
+						Eg:- [cli], [dip], [interface1]
+
+		3.  :session: session name of the system or susbsystem to connect to.
+
+		4.  :start: (default=".*") starting prompt of the command.
+					using ".*" ignores the check for start prompts.
+					variable substitution is supported for this parameter.
+
+		5.  :end:	(mandatory) ending prompt of the command, the commad is considered to have completed
+					successfully if the end prompt is foudn in the command's response.
+					variable substitution is supported for this parameter.
+
+		6.  :timeout: 	(default=60 sec) time to wait to receive the end prompt.
+						If a command time's out
+						- command status will be marked as error.
+						- after timeout will wait for an additional 60 seconds to receive the end prompt, this is a
+						to provide an extra buffer to check if it is a intermittent delay or a long delay. Irrespective
+						of whether or not the end prompt is received during this extra time the command will be marked as error.
+
+		7.  :sleep:		(default=0 sec) time to wait(in secs) after completion of a command.
+
+		8.  :verify: 	(tags) provided the tag names containing verification details
+					 	If multiple verification are required for a command, provide tag names seperated by
+					 	commas Eg: "v1,v2,v3"
+
+		9.  :retry: 	(supported values= "y" or "n", default = "n")
+						when "y", retry sending a command if the command fails.
+
+		10. :retry_timer: (default=60 secs), when retry=y, this is the time interval(in secs) between subsequent re-trails.
+		11. :retry_count: (default=5), when retry=y, this is no of attempts to.
+						  if during one of the attempts the command passes, re trials will be passed.
+
+		12. :retry_onmatch: a text or a regular expression.
+							 if provided and retry=y, re-trials will be attempted only when the response of the
+							 command has the provided text/regular expression.
+
+		13. :resp_req: 		(supported values ="n") save the response in the framework's data repository
+							this feature is always enabled, user can turn it off by providing "n"
+
+		14. :resp_pat_req: 	(text or regular expression) to save only a particular text or regular expression
+							from the response
+
+		15. :resp_ref:  	(text, default=position of command in the testdata block) a user provided refernce text
+							for the response of this command
+							The responses will be saved in the framework's data repository using this text as key.
+							If user does not provide resp_ref, framework automatically assigns this value based on the
+							position of the command in the test data section.
+							i.e. if the command is the 2nd command in the test data then resp_ref="2" will be used and so on.
+
+		16. :monitor: 		(comma separated system names - Eg. NE1[cli].session, NE2, [dip] - where NE1, NE2 are the system names,
+							[cli], [dip] are the subsystem names and .session is the session name.) Responses from the
+							system names obtained from this parameter are printed out on the console. If this attribute is left empty, or
+							is not present, monitoring would take place on the systems mentioned in the monitor attribute in the
+							parent testdata tag. If even that tag is left empty, then monitoring takes place on the system on which
+							the keyword is getting executed.
+
+		17. :iter_type: 	This attribute allows the user to dictate how the commands in a testdata block be sent.
+							This attribute can take in two values: ‘per_td_block’ and ‘per_cmd’.
+
+							If an incorrect value is given or if the attribute is left empty, or is absent, then the
+							iter_type attribute would default to ‘per_cmd’. ‘per_cmd’ indicates the ‘normal’ pattern.
+							In this ‘normal’ or ‘per_cmd’ mode, The first command in a testdata block is taken, its variables are substituted,
+							for example, a command like ${network1.ne+.shelf+.cmd} ${network1.ne+.shelf+.option} would generate these
+							commands by getting the variable values from the variable_config files: [‘dir’, ‘dir’, ‘dir’](please refer to the
+							vc_iterations_per_td_block.xml). Now, these commands are sent one after the another.
+							The entire command is exhausted and then Warrior goes to the next command in the testdata block.
+
+							But setting the ‘iter_type’ to ‘per_td_block’ in the testdata tag, the user can send the command in this way:
+							Say, if there are three command tags in the testdata block and these commands,
+							after variable substitution, produce these command_substitutions:
+							Command1 = [‘cmd_1_vc_1’, ‘cmd_1_vc_2’, ‘cmd_1_vc_3’]
+							Command1 = [‘cmd_2_vc_1’, ‘cmd_2_vc_2’, ‘cmd_2_vc_3’, ‘cmd_2_vc_4’, ‘cmd_2_vc_5’]
+							Command1 = [‘cmd_3_vc_1’]
+							Now, instead of sending all command_substitutions generated by variable substitution of a single command together
+							and then moving to the next command, ‘per_td_block’, sends the commands this way:
+							First, the first command_substitution of the first command is sent, then the first command_substitution of the
+							second command is sent, then the first command_substitution of the third command is sent.
+							After all the first command_substitutions are exhausted, then the second command_substitution of the first command is sent.
+							This continues till al the commands are finished. So the commands would be sent in this order:
+							‘cmd_1_vc_1’,  ‘cmd_2_vc_1’, ‘cmd_3_vc_1’ , ‘cmd_1_vc_2’, ‘cmd_2_vc_2’, ‘cmd_1_vc_3’, ‘cmd_2_vc_3’, ‘cmd_2_vc_4’, ‘cmd_2_vc_5’
+
+		18.	:inorder:		(supported value = "y") In-order response verification will happen.
+							This feature is always disabled, user can turn it on by providing "y".
+							If enabled, command passes only when the received response order matches with the order given in the 'verify' tag
+
+		19.	:repeat:		(supported value = "y") when iter_type=‘per_td_block’ with repeat='y', corresponding command in testdata block
+							will be executed in each iteration. This feature is always disabled, user can turn it on by providing "y" and this
+							tag is applicable only for the testdata commands without any iteration pattern in it.
+
+
+		=============================================================
+		II.b How are responses saved to framework's data repository:
+		=============================================================
+			1. Whenever a connection is established using cli_driver connection keywords
+				(like connect/connect_ssh/connect_telnet) an empty test data response dictionary
+				will be created and saved in Framework's data repository.
+
+			2. Name of the test data response dictionary = session_id + "_td_response"
+				where session_id = system_name + subsystem_name + session_name.
+
+			3. When the commands from test data file are executed the command responses will be saved in the
+				test data response dictionary as explained in the below structure.
+
+					-  The test data response dictionary is a nested dictionary,
+
+					-  Each test data section is represented as a dictionary inside this test data response dictionary
+					with key=title+row
+
+					-  Commands and their responses are represented as key value pairs in the individual dictionaries representing
+					the respective test data sections as explained in point-b above.
+						key = resp_ref (user provided or default value, default value is the position of
+										the command in the test data section)
+						value = response of the command.
+
+					Eg:
+					system_name = NE1
+					subsystem_name = CLI
+					session_name = session1
+					testdata file has three testdata sections
+					section1: title=FirstSection, row=1, resp_ref for command#3="anchor"
+					section2: title=SecondSection, resp_ref for command#3="datetime"
+					section3: row=3
+
+					test data response dictionary name and structure
+					NE1CLIsession1_td_response{FirstSection1: {"1":"resp of cmd1", "2": "resp of cmd2", "anchor":"resp of cmd3"},
+											   SecondSection: {"1":"resp of cmd1", "2": "resp of cmd2", "datetime":"resp of cmd3"},
+											   3: {"1":"resp of cmd1", "2": "resp of cmd2", "3":"resp of cmd3"}
+												}
+
+			:How to retrieve responses from test data response dictionary:
+			(This is for keyword developers)
+				- Test data response for a system/subsystem can be retrieved by passing the name of
+				the test data response dictionary(refer II.B.2 above )to the data_Utils.get_object_from_data_repository
+				Eg: data_Utils.get_object_from_data_repository(NE1CLIsession1_td_response)
+
+				- Responses of specific commands can be retrieved form the test data response dictionary
+				structure of the testdata response dictionary is explained in II.b.3 above.
+
+		 -->
+		<command verify="v1,v2,v3" start=".*" end="qemux86-64>" sleep="2" timeout="20"  send="set complete-on-space false " monitor="v1, v6"/>
+
+		<!-- command with rsp_req=n i.e. resp of this command will not be saved in framework's data repository -->
+		<command verify="v1,v2,v3" sleep="2" timeout="20"  send="set paginate false " resp_req="n" monitor=""/>
+
+		<!-- Command showing dotted notation representation of variable config, here the value of card will be
+		obtained from the variable config file by parsing the variable config file as follows network1->ne1->shelf1->slot1
+		and the value of attribute card of slot1 will be replaced-->
+        <command verify="v1,v2,v3" send="show eqpt shelf ${network1.ne1.shelf1.slot1.card} pi"/>
+
+        <!-- Command showing retry, retry_onmatch, retry_timer,  retry_count, resp_pat_req, resp_ref  -->
+        <command verify="v1,v2,v3" send="show eqpt shelf ${network1.ne1.shelf1.id} pi" retry="y"
+        retry_onmatch="C1" retry_timer="6" retry_count="10" resp_pat_req="admin-state up" resp_ref="ref1"/>
+
+        <!-- Sending command to different systems/sub-systems  -->
+		<command sys="[cli]" verify="v1,v2,v3" sleep="2" timeout="20"  send="set paginate false " resp_req="n"/>
+		<command sys="[dip]" verify="v1,v2,v3" sleep="2" timeout="20"  send="set paginate false " resp_req="n"/>
+		<command sys="[cli]" session="1" verify="v1,v2,v3" sleep="2" timeout="20"  send="set paginate false " resp_req="n"/>
+		<command sys="NE1[cli]" verify="v1,v2,v3" sleep="2" timeout="20"  send="set paginate false " resp_req="n"/>
+		<command sys="NE2[dip]" verify="v1,v2,v3" sleep="2" timeout="20"  send="set paginate false " resp_req="n"/>
+		<command sys="NE3" verify="v1,v2,v3" sleep="2" timeout="20"  send="set paginate false " resp_req="n"/>
+
+		<!-- command with verification tag & verification combos -->
+		<command verify="combo1" sleep="2" timeout="20"  send="set paginate false "/>
+		<command verify="combo1,combo2" sleep="2" timeout="20"  send="set paginate false "/>
+		<command verify="v1,v2,v3,combo1" sleep="2" timeout="20"  send="set paginate false "/>
+
+		<!-- Command with inorder="y".
+		Command will pass only when the search tags are found in given order, i.e. v1 followed by v2 & v2 followed by v3
+		Command will fail (i) when at least any one of the tags is not present in the response, (ii) when the received
+		order doesn't match the expected order(eg. failes when recieved order = "v2,v3,v1") -->
+		<command verify="v1,v2,v3" inorder="y" send="set paginate false" />
+
+		<!--
+		========================
+		II.c : verification tags
+		=========================
+			The verifications of commands should be provided as tags shown below.
+			search: (text or regular expression) the text or regular expression to be searched for in the
+					commands response variable substitution is supported for this parameter.
+			:found: ("yes" or "no")
+					if yes searches for the presence of the search text/regexp in the response and if cond_value provided,
+						check if the matched regexp's first group satisfies the conditions provided as follows:
+						cond_type(match_string) operator cond_type(cond_value)
+						where match_string is the first group value that got matched
+					if no searches for the absence of the search text/regexp in the response or if cond_value provided,
+					    check if the condition is negation of the expression explained above
+
+		    :verify_on:	(comma separated system names - Eg. NE1[cli].session, NE2, [dip] - where NE1, NE2 are the system names,
+		    			[cli], [dip] are the subsystem names and .session is the session name.) The value in the :search: parameter
+		    			is compared to the Responses from the system names obtained from this parameter. If this tag is empty or if
+		    			it has not been included, the responses would be verified on the system on which the execution is being
+		    			performed.
+
+		    :cond_value: the value to be compared with. This is optional and if not provided the relational condition won't be checked
+		    :cond_type:  type of the cond_value and the match string to be compared. This can be one of str/int/float. If not provided
+		    			 str is attempted.
+		    :operator:   can be any of eq/ne/lt/le/gt/ge where refers to equality, not equality, less than, less than or equal to,
+		    			 greater than, greater than or equal to respectively. If not provided, equality is attempted.
+
+		 -->
+
+        <v1 found="no" search="Error: application communication failure" verify_on="NE2[dip], [cli]"/>
+        <v2 found="no" search="Error: application error" verify_on="[dip]"/>
+        <v3 found="no" search="Aborted: application communication failure" verify_on=""/>
+        <v4 found="yes" search=".*(\d+).*" cond_value="9000" cond_type="int" operator="lt"/> <!-- check if (\d+) satisfies < 9000 as int -->
+	</testdata>
+
+
+	<!--  A test data block to demonstrate  [VAR_SUB] feature
+
+			1. Passing variables to the keywords from the testcase or passing a node in variable config file as
+			a reference to the keyword
+
+				- There may be scenarios where you may want to pass a variable as argument to
+				your keyword in the testcase.
+				- The core cli keywords for sending commands using test data file
+				have an argument called var_sub. Provide the value of your variable as value to this argument.
+				- In the testdata mark the variable as [VAR_SUB], and all occurrences of
+				[VAR_SUB] will be replaced by the value provided to the var_sub argument in the  keyword.
+				Eg: first command in the below testdata with title="title-2"
+
+				- You can also provide the node in varconfig file as value to the var_sub argument in the keyword.
+				In this case the [VAR_SUB] will be substituted with the node reference provided and then the equivalent
+				value will be substituted from the varaiable config file.
+
+	**** Currently VAR_SUB is supported for command, prompts (start/end) and verify tag ****
+
+	-->
+
+
+	<testdata title="title-2" execute="yes">
+	<!--
+	set the admin state of the shelf, by passing  the value of admin state as a variable to the keyword in the testcase.
+	use driver=cli_driver, keyword=send_commands_by_testdata_title and provide values for the argument var_sub as
+	- In the the testcase step-1:  var_sub=up
+	- In the the testcase step-2:  var_sub=down
+	- So in step-1 the admin-state will be set to up , and in step-2 it will be set to down.
+	 -->
+
+		<command verify="v7" end="qemux86-64%" start=".*"
+		send="set eqpt shelf ${network1.ne1.shelf1.card1.shelf} admin-state [VAR_SUB]"/>
+
+        <!-- command showing "VAR_SUB" support in verify tag
+        - In the the testcase step-1:  var_sub="network1.ne1.shelf1"-->
+        <command verify="${[VAR_SUB].verify_tag" send="show eqpt shelf ${network1.ne1.shelf1.id} pi"/>
+
+	<!--
+	- Here i have defined the alarms as and their related data in the alarms
+		section of my variable config file (refer Warriorspace/Config_files/variable_config_sample.xml)
+	- I want to use a single testdata block and raise a particular alarm by providing the node in the
+		variable config file as reference to the keyword.
+	- The command to raise the alarm will use various data related to the alarm by reading
+		it form the variable config file using the node reference provided.
+
+	In the testcase step-1: var_sub = network1.ne1.alarms.los
+	so in the below command [VAR_SUB] will be replaced as follows
+	"$raise alarm ${network1.ne1.alarms.los.montype} ${network1.ne1.alarms.los.severity} ${network1.ne1.shelf1.slot1.port1.id}"
+
+	Next the dotted notations in side the pattern ${} will be substituted from variable config file,
+	so the command becomes
+	"$raise alarm LOS CR 1"
+
+
+	Similarly in step-2 of the same testcase use the same keyword with same title but provide var_sub=network1.ne1.alarms.lnkdwn
+	to raise a link down alarm.
+
+
+	 -->
+
+		<command verify="v1,v2,v3,v4" end="qemux86-64%" start=".*"
+		send="$raise alarm ${[VAR_SUB].montype} ${[VAR_SUB].severity} ${network1.ne1.shelf1.slot1.port1.id}"/>
+
+
+		<v7 found="yes" search="Commit complete"/>
+	</testdata>
+
+
+<!--
+	==============================================================
+	section-III : Iterating over a section of variable config file:
+	==============================================================
+
+	While sending commands there will be a need to iterate over a specific portion of your variable tree in the variable config files and
+	send the same command for different set of variables.
+
+	A typical example would be while dealing with provisioning of network devices, consider the variable
+	config file shown below.
+
+	Eg:
+		<network name="network1" id="NE1">
+		<ne name="ne1" id="NE1" >
+			<shelf name="shelf1" id="S1" type="main" model="hds" >
+				<card name="card1" id="C1" >
+					<port name="port1" id="P1" sfp="oc3ir1" ></port>
+					<port name="port2" id="P2" sfp="oc3sr1" ></port>
+				</card>
+				<card name="card2" id="1-1" >
+					<port name="port1" id="P1" sfp="oc12ir1" ></port>
+					<port name="port2" id="P2" sfp="oc12sr1" ></port>
+				</card>
+			</shelf>
+		</ne>
+		<ne name="ne2" id="NE2"/>
+			<shelf name="shelf10" id="S10" type="main" model="hds" >
+				<card name="card10" id="C1" >
+					<port name="port1" id="P1" sfp="1gesx" ></port>
+					<port name="port2" id="P2" sfp="1gesx" ></port>
+				</card>
+			</shelf>
+		</ne>
+	</network>
+
+	In the above example:
+	- There will be a single command to provision all the ports in your network, only the variables sfp vary from
+	one port to another.
+	- Number of ports can increase or decrease in the future based on configuration.
+	- Similarly for cards/slots/ne's etc...
+
+	The requirement here is to have a single testdata block which will have commands that iterate over the variable
+	config file and find the no of ne's/shelf's/cards/ports etc and automatically provision them.
+
+	This can be achieved by the use of iteration pattern in your commands, command related parameters, verification
+	searches, verification related parameters as explained below.
+
+
+	A test data block to achieve the above purpose is shown here.
+
+	<testdata execute="yes" title ="title-1"  >
+
+		<command  send="prov ne ${network1.ne+.id}"></command>
+		<command  send="prov shelf ${network1.ne+.shelf+.id}"></command>
+		<command  send="prov card ${network1.ne+.shelf+.card+.id}"></command>
+		<command  send="prov port ${network1.ne+.shelf+.card+.port+.id} ${network1.ne+.shelf+.card+.port+.sfp}"></command>
+		<command  send="prov port ${network1.ne1.shelf1.card1.port+.id} ${network1.ne1.shelf1.card1.port+.sfp}"></command>
+		<command  send="prov port ${[VAR_SUB].port+.id} ${network1.ne1.shelf1.card1.port+.sfp}"></command>
+	</testdata>
+
+	The the commands of the testdata shown above all the variables that have the plus symbol "+" are callled
+	iteration patterns, the iteration patterns have three parts in it.
+	1. the parent part
+	2. the iteration part
+	3. the variable
+
+	Eg: In command#3 of the testdata shown above, the iteration pattern is "network1.ne+.shelf+.id"
+	here
+	- "network1" is the parent portion
+	- "ne+.shelf+" is the iteration part
+	- "id" is the variable part
+
+	similarly in command#5 the values are "network1.ne1.shelf1.card1", "port+", "id" for parent, iteration,
+	variable respectively.
+
+
+	Naming rules:
+	------------
+	1. The parent portion should be the value of the "name" attribute of the node in the variable config file.
+	2. The iteration portion should be the value of the tag names provided in the variable config file,
+	these tag names should be available under the respective parent part of the iteration pattern so that
+	they can be iterated upon.
+
+	So the pattern "network1.ne+.shelf+.id" used in the command send="prov shelf ${network1.ne+.shelf+.id}"
+	means the command will be repeated for all shelves that are available under all ne's that are available under
+	network1
+	so the result will be two commands
+	prov  shelf S1
+	prov shelf S10
+
+	In the future if the no of shelves increases then the number of commands will also increase.
+
+
+	Support:
+	--------
+	1. Iteration pattern is supported in command, and all command related parameters subject to conditions
+	below.
+
+	2. Iteration pattern is supported in verification search and all verification related parameters subject
+	to conditions below.
+
+	3. VAR-SUB is supported in the variables that use iteration patterns.
+
+	Conditions:
+	------------
+	1. The can be multiple iteration patterns in the command to get values of different variables but
+	all of them should be the same except for the variable part.
+
+		i.e.
+		send="prov shelf ${network1.ne+.shelf+.id} ${network1.ne+.shelf+.type} ${network1.ne+.shelf+.mode}" is valid
+		send="prov shelf ${network1.ne+.shelf+.id} ${network1.ne+.type} ${network1.ne+.mode}" is not valid,
+		because mix of "network1.ne+.shelf+" and "network1.ne+" is not supported.
+
+	2. If the command related parameters like start/end/timeout etc have iteration patterns then it should be
+	same as the one used in the command (except for the variable part of the iteration pattern which can be different)
+
+	3. If the command does not have an iteration pattern then the command related parameters should not have
+	any iteration patterns.
+
+
+	4. The iteration pattern of verification search can be same or different than the one used in the command.
+
+	5. The can be multiple iteration patterns in the verification search to get values of different variables but
+	all of them should be the same except for the variable part. similar to point#1 for command
+
+	6. If the verification related parameters like found etc.. have an iteratino pattern then it should be
+	same as the one used in its  verification search (except for the variable part of the iteration
+	pattern which can be different)
+
+	7. If the verification search does not have an iteration pattern then the verification
+	 related parameters should not have any iteration patterns.
+
+
+	Non compliance to the above conditions will result in the command/verification search being marked as False and during
+	execution the command status will be ERROR.
+
+	Similarly if the provided iteration pattern (parent part or verification part) could not be found in the
+	variable config file then also the command will be marked as False and will resutl in command status = ERROR.
+
+	==============================================================================
+	Important note while using iteration pattern in command verification searches
+	==============================================================================
+
+	Users should be aware of the following designed behavior while using the iteration patterns in the command
+	and its verification search
+
+	1. If the iteration pattern used in the verification search is same as the one used in the command
+	(except for the variable part of the itreation pattern whihc is expected to change)
+	then there will be a one-to-one mapping of the command and its verification for the number of times the command is repeated.
+
+
+	Eg:
+	----------------
+	variable config:
+	----------------
+	<card name="card1" id="C1" >
+		<port name="port1" id="P1" sfp="oc3ir1" ></port>
+		<port name="port2" id="P2" sfp="oc3sr1" ></port>
+		<port name="port3" id="P3" sfp="oc48ir1" ></port>
+	</card>
+
+	---------
+	testdata:
+	---------
+	<command send = "prov port ${card1.port+.id} ${card1.port+.sfp}" verify="v1" />
+	<v1 search=" ${card1.port+.sfp}" found="yes" >
+
+	In the above case it is expected to provision all ports availble under the card1 and verify the repose has the
+	sfp value of that port, os it would result in 3 command and 1 verification per command as follows.
+
+	cmd#1 = prov port P1 oc3ir1  ; verificatin search = oc3ir1
+	cmd#2 = prov port P2 oc3sr1  ; verificatin search = oc3sr1
+	cmd#3 = prov port P3 oc48ir1  ; verificatin search = oc48ir1
+
+	2. If the iteration pattern used in the verification search is different from the one used in the command
+	(except for the variable part of the itreation pattern whihc is expected to change)
+	then there will be a one-to-many mapping of the command and its verification for the number of times the command is repeated.
+
+	Eg:
+	----------------
+	variable config:
+	----------------
+	<card name="card1" id="C1" >
+		<port name="port1" id="P1" sfp="oc3ir1" ></port>
+		<port name="port2" id="P2" sfp="oc3sr1" ></port>
+		<port name="port3" id="P3" sfp="oc48ir1" ></port>
+	</card>
+	<propeties name="port_properties" >
+		<property name="admin_state" value="admin up" />
+		<property name="link_state" value="link up" />
+		<property name="vend_id" value="finisar" />
+	</properties>
+
+	---------
+	testdata:
+	---------
+	<command send = "prov port ${card1.port+.id} ${card1.port+.sfp}" verify="v1" />
+	<v1 search=" ${port_properties.property+.value}" found="yes" >
+
+	Result:
+	cmd#1 = prov port P1 oc3ir1
+			verification search1 = admin up
+			verification search2 = link up
+			verification search3 = finisar
+	cmd#2 = prov port P2 oc3sr1
+			verification search1 = admin up
+			verification search2 = link up
+			verification search3 = finisar
+	cmd#3 = prov port P3 oc48ir1
+			verification search1 = admin up
+			verification search2 = link up
+			verification search3 = finisar
+
+	3. Mix of identical and non-identical iteration patterns in command and verification
+	Eg:
+	----------------
+	variable config:
+	----------------
+	<card name="card1" id="C1" >
+		<port name="port1" id="P1" sfp="oc3ir1" ></port>
+		<port name="port2" id="P2" sfp="oc3sr1" ></port>
+		<port name="port3" id="P3" sfp="oc48ir1" ></port>
+	</card>
+	<propeties name="port_properties" >
+		<property name="admin_state" value="admin up" />
+		<property name="link_state" value="link up" />
+		<property name="vend_id" value="finisar" />
+	</properties>
+
+	---------
+	testdata:
+	---------
+	<command send = "prov port ${card1.port+.id} ${card1.port+.sfp}" verify="v1,v2" />
+	<v1 search=" ${card1.port+.sfp}" found="yes" >
+	<v2 search=" ${port_properties.property+.value}" found="yes" >
+
+	Result:
+	cmd#1 = prov port P1 oc3ir1
+			verification search1 = oc3ir1
+			verification search2 = admin up
+			verification search3 = link up
+			verification search4 = finisar
+	cmd#2 = prov port P2 oc3sr1
+			verification search1 = oc3sr1
+			verification search2 = admin up
+			verification search3 = link up
+			verification search4 = finisar
+	cmd#3 = prov port P3 oc48ir1
+			verification search1 = oc48ir1
+			verification search2 = admin up
+			verification search3 = link up
+			verification search4 = finisar
+
+This Iteration can be done in two ways - per_cmd or per_td_block, refer section II.a - iter_type for more information.
+For more examples of testcase/datafile/testdata file/variable config file using iterations refer to
+per_cmd:
+	testcase = warrior_main/tests/cli_func_tests/Testcases/iter_range/tc_iteration.xml
+	datafile = warrior_main/tests/cli_func_tests/Data/data_iterations.xml
+	testdatafile = warrior_main/tests/cli_func_tests/Config_files/td_iterations.xml
+	varaiable config file = warrior_main/tests/cli_func_tests/Config_files/vc_iterations.xml
+per_td_block:
+	testcase = warrior_main/tests/cli_func_tests/Testcases/iter_range/tc_iteration_per_td_block.xml
+	datafile = warrior_main/tests/cli_func_tests/Data/data_iterations_per_td_block.xml
+	testdatafile = warrior_main/tests/cli_func_tests/Config_files/td_iterations_per_td_block.xml
+	varaiable config file = warrior_main/tests/cli_func_tests/Config_files/vc_iterations_per_td_block.xml
+-->
+
+<!--
+   ==============================================================
+   section-IV : list/range substitution over a section of variable config file:
+   ==============================================================
+
+   Usage:
+		User can use a single command to test different devices/test different settings. Just
+		need to provide the variables for the different parts
+		example:
+	-->
+	<testdata title="list_substitution_1" execute="yes">
+		<command  send="prov ne ${network1.ne1.shelf1.list}"></command>
+	</testdata>
+
+	<!--
+		<network name="network1" id="NE1">
+			<ne name="ne1" id="NE1" >
+	            <shelf name="shelf1" id="S1" type="main" model="hds" list="{10..5}" >
+                    <card name="card1" id="C1" >
+                        <port name="port1" id="P1" sfp="oc3ir1" ></port>
+                        <port name="port2" id="P2" sfp="oc3sr1" ></port>
+                    </card>
+	            </shelf>
+			ne>
+		</network>
+
+		will generate
+		prov ne 10
+		prov ne 9
+		prov ne 8
+		prov ne 7
+		prov ne 6
+		prov ne 5
+
+		another example:
+		using the same command but different data
+		<network name="network1" id="NE1">
+			<ne name="ne1" id="NE1" >
+				<shelf name="shelf1" id="S1" type="main" model="hds" list="{2,7,11,3,6,9}" >
+					<card name="card1" id="C1" >
+					              <port name="port1" id="P1" sfp="oc3ir1" ></port>
+					              <port name="port2" id="P2" sfp="oc3sr1" ></port>
+					</card>
+				</shelf>
+			</ne>
+		</network>
+
+		will generate
+		prov ne 2
+		prov ne 7
+		prov ne 11
+		prov ne 3
+		prov ne 6
+		prov ne 9
+
+		advanced example:
+		using the same command but different data
+		<network name="network1" id="NE1">
+			<ne name="ne1" id="NE1" >
+				<shelf name="shelf1" id="S1" type="main" model="hds" list="{1,2,3,4..6:0.5,7,8,9}" >
+					<card name="card1" id="C1" >
+					              <port name="port1" id="P1" sfp="oc3ir1" ></port>
+					              <port name="port2" id="P2" sfp="oc3sr1" ></port>
+					</card>
+				</shelf>
+			</ne>
+		</network>
+
+		will generate
+		prov ne 1
+		prov ne 2
+		prov ne 3
+		prov ne 4.0
+		prov ne 4.5
+		prov ne 5.0
+		prov ne 5.5
+		prov ne 6.0
+		prov ne 7
+		prov ne 8
+		prov ne 9
+
+
+   Naming rules:
+   		for list, the format will be list="{var1,var2,var3,var4}"
+		for range, the format will be list="{var1...var2}"
+		var1 and var2 must be real number (integer/float)
+		it will generate a list with value from var1 to var2 with an increment/decrement step of 1
+		for different step number, the format will be list="{var1...var2:var3}"
+		if var1 > var2, var3 must be negative
+		if var1 < var2, var3 must be positive
+
+		For same length lists substitution accross cmd text and verify texts
+		User can specify 1-1 or 1-many mapping between cmd and verify text
+		the format will be {v1,v2:m,v3,v4:m}
+		if v1,v2,v3,v4 all have same length list substitution as cmd
+		v1 and v3 will have 1-1 mapping
+		v2 and v4 will have 1-many mapping
+
+   Support:
+		currently this substitution only supports data in command and verify text
+
+		Mulitple variable substitution within one text is allowed as long as the all the variable is either
+		1. same length range/list
+		2. single element
+		so cmd_text_1 can have 2 list/range substitution as long as list1/range1 expand to same length
+
+		However, cmd text and verify texts can have different length list/range
+		For example, cmd text can expand to 3 texts
+		verify text 1 can expand to 5 texts
+		verify text 2 can expand to 7 texts
+		each cmd text will map to all verify texts variation if they have different length substituion
+		In the case of same length list, user can choose from 1-1 mapping or 1-many mapping
+
+   condition:
+		command substituted, verify text substituted
+	-->
+		<testdata title="list_substitution_2" execute="yes">
+			<command send="a ${v1.list}" verify="b,b"/>
+			<b found="no" search="${v1.list}"/>
+		</testdata>
+
+		<!--
+			in this case, command get v1.list substituted, verify text b,b also get v1.list substituted
+			in data file
+			<variable_set name="v1" list="{10..5}" />
+
+			command - verify text pair will be sent as
+			a 10 - 10,10
+			a 9 - 9,9
+			a 8 - 8,8
+			a 7 - 7,7
+			a 6 - 6,6
+			a 5 - 5,5
+
+			if command and verify text has different list substitution
+			and they are the same length, user can specify either 1-1 mapping or 1-many mapping
+
+			1-1 mapping (default for same length lists)
+	-->
+		<testdata title="list_substitution_3" execute="yes">
+			<command send="a ${v1.list}" verify="b"/>
+			<b found="no" search="${v2.list}"/>
+		</testdata>
+
+		<!--
+			in data file
+			<variable_set name="v1" list="{10..5}" />
+			<variable_set name="v2" list="{a,b,c,d,e,f}" />
+
+			command - verify text pair will be sent as
+			a 10 - a
+			a 9 - b
+			a 8 - c
+			a 7 - d
+			a 6 - e
+			a 5 - f
+
+			1-many mapping (for different length list, or for same length list with :m tag)
+	-->
+		<testdata title="list_substitution_4" execute="yes">
+			<command send="a ${v1.list}" verify="b"/>
+			<b found="no" search="${v2.list}"/>
+		</testdata>
+
+		<!--
+			in data file
+			<variable_set name="v1" list="{10..5}" />
+			<variable_set name="v2" list="{a,b,c,d,e}" />
+
+			command - verify text pair will be sent as
+			a 10 - a, b, c, d, e
+			a 9 - a, b, c, d, e
+			a 8 - a, b, c, d, e
+			a 7 - a, b, c, d, e
+			a 6 - a, b, c, d, e
+			a 5 - a, b, c, d, e
+
+	-->
+		<testdata title="list_substitution_5" execute="yes">
+			<command send="a ${v1.list}" verify="b:m"/>
+			<b found="no" search="${v2.list}"/>
+		</testdata>
+
+		<!--
+			in data file
+			<variable_set name="v1" list="{10..5}" />
+			<variable_set name="v2" list="{a,b,c,d,e,f}" />
+
+			command - verify text pair will be sent as
+			a 10 - a, b, c, d, e, f
+			a 9 - a, b, c, d, e, f
+			a 8 - a, b, c, d, e, f
+			a 7 - a, b, c, d, e, f
+			a 6 - a, b, c, d, e, f
+			a 5 - a, b, c, d, e, f
+
+		command substituted, verify text not substituted
+	-->
+		<testdata title="list_substitution_6" execute="yes">
+			<command send="a ${v1.list}" verify="b,b"/>
+			<b found="no" search="text"/>
+		</testdata>
+
+		<!--
+			in this case, only command get v1.list substituted
+			in data file
+			<variable_set name="v1" value="hi there" list="{10..5}" />
+
+			command - verify text pair will be sent as
+			a 10 - text,text
+			a 9 - text,text
+			a 8 - text,text
+			a 7 - text,text
+			a 6 - text,text
+			a 5 - text,text
+
+		command not substituted, verify text substituted
+	-->
+		<testdata title="list_substitution_8" execute="yes">
+			<command send="a b c" verify="b,c"/>
+			<b found="no" search="${v1.list}"/>
+		</testdata>
+
+		<!--
+			in this case, only verify text get v1.list substituted
+			in data file
+			<variable_set name="v1" value="hi there" list="{10..5}" />
+			<variable_set name="v1" value="hi there" list="{a,c,e}" />
+
+			command - verify text pair will be sent as
+			a b c - 10,9,8,7,6,5,a,c,e
+
+		command not substituted, verify not text substituted
+	-->
+		<testdata title="list_substitution_8" execute="yes">
+			<command send="a b c" verify="b,b"/>
+			<b found="no" search="a b c"/>
+		</testdata>
+
+		<!--
+			in this case, nothing get substituted
+			in data file
+			<variable_set name="v1" value="hi there" list="{10..5}" />
+
+			command - verify text pair will be sent as
+			a b c - a b c, a b c
+
+		=====================
+		IV.a : variable_pattern support:
+		=====================
+
+		User can define their own variable pattern other than ${}
+		if it is defined in a testdata block, the pattern will only affect the specific block
+		For example
+		-->
+		<testdata title="list_substitution_9" execute="yes" start_pattern="ddd" end_pattern="bbb">
+			<command send="a dddv1.listbbb" verify="b"/>
+			<b found="no" search="dddv2.listbbb"/>
+		</testdata>
+
+		<!--
+			in data file, the list will still have the same format {}
+			<variable_set name="v1" list="{10..5}" />
+			<variable_set name="v2" list="{a,b,c,d,e}" />
+
+			command - verify text pair will be sent as
+			a 10 - a, b, c, d, e
+			a 9 - a, b, c, d, e
+			a 8 - a, b, c, d, e
+			a 7 - a, b, c, d, e
+			a 6 - a, b, c, d, e
+			a 5 - a, b, c, d, e
+
+		==================================================
+		V : Repository variable substitution support:
+		==================================================
+
+		User can verify with the variable that is already stored in the data repository
+		For example
+		-->
+		<testdata title="test_repo_variables" execute="yes">
+			<command send="get repovars" verify="v1,v2"/>
+            <v1 found="yes" search="${REPO.key}"/>
+            <v2 found="yes" search="${REPO.key1.key2}"/>
+		</testdata>
+        <!--
+             here the repository should already have a key whose value needs to be matched here
+             for v1 verification
+             This also supports nested checking when the value from the repository is nested like
+             for v2 we are checking the value of key2 within key1 of Repository
+             i.e., Repository[key1][key2] value would be verified against the output
+
+-->
+
+</data>

@@ -1,9 +1,12 @@
 import shutil
 
 import errno
+import os
+import time
+
 
 from wui.core.core_utils.app_info_class import AppInformation
-
+from utils import date_time_stamp_utils as dtutils
 
 def readlines_from_file(path, start=None, end=None):
     """
@@ -65,3 +68,23 @@ def write_to_file(path, data):
         print "-- An Error Occurred -- {0}".format(e)
         output = False
     return output
+
+
+def get_new_filepath(filename, path, ext='.log'):
+    """ append filename of log file with custom string """
+
+    fullpath = path + os.sep + filename + ext
+
+
+    if os.path.isfile(fullpath):
+        fullpath = add_time_date (fullpath)
+    return fullpath
+
+def add_time_date(path):
+    """ add time and date to a path (file/dir)"""
+    if os.path.isfile(path):
+        time.sleep(1)
+        ftime = dtutils.get_current_datetime_stamp(time_format = "%y-%m-%d_%H-%M-%S-%f")
+        path = os.path.splitext(path)[0] + "_"+ftime + os.path.splitext(path)[1]
+
+    return path

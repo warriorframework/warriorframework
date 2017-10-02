@@ -30,6 +30,7 @@ class Installer:
         self.urls_inclusions = []
         self.settings_backup = []
         self.urls_backup = []
+        self.config_data = None
 
     def install(self):
         output = self.__validate_app()
@@ -70,6 +71,7 @@ class Installer:
             data = read_json_data(self.wf_config_file)
             if data is not None:
                 if "app" in data:
+                    self.config_data = data
                     if isinstance(data["app"], list):
                         for app_details in data["app"]:
                             if output:
@@ -108,7 +110,11 @@ class Installer:
             print "-- An Error Occurred -- wf_config.json file is not in the correct format."
             output = False
         else:
-            self.urls_inclusions.append("url(r'^" + app_details["url"] +
+            if app_details["url"].startswith("/"):
+                app_url = app_details["url"][1:]
+            else:
+                app_url = app_details["url"]
+            self.urls_inclusions.append("url(r'^" + app_url+
                                         "', include('" + app_details["include"] + "')),")
             path_dir = app_details["include"].split(".")
             path_urls = ""
@@ -259,5 +265,6 @@ class Installer:
                                             extension=compile_regex("^\.js$"))
             for i in range(0, len(js_urls)):
                 js_urls[i] = get_relative_path(js_urls[i], app_path)
-            app.data["js_urls"] = js_urls
+                app.data["js_urls"] = js_urls
+                self.config_data["js_urls"] = js_urls
             AppInformation.information.apps.append(app)

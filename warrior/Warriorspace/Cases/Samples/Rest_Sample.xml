@@ -1,0 +1,166 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+                <Name>Rest_Sample</Name>
+                <Title>Rest_Sample</Title>
+                <Engineer>Warrior_user</Engineer>
+                <Date>2017-03-17</Date>
+                <Time>21:43</Time>
+                <InputDataFile>../../Data/Samples/Rest_Data_Sample.xml</InputDataFile>
+                <Datatype>Custom</Datatype>
+                <default_onError action="next"/>
+                <Logsdir/>
+                <Resultsdir/>
+                <ExpectedResults>PASS</ExpectedResults>
+                <Category>Sample</Category>
+                <State>New</State>
+        </Details>
+        <Requirements>
+                <Requirement/>
+        </Requirements>
+        <Steps>
+                <step Driver="rest_driver" Keyword="perform_http_post" TS="1">
+                        <Arguments>
+                                <argument name="system_name" value="http_bin_1"/>
+                                <argument name="url" value="http://httpbin.org/post"/>
+                                <argument name="data" value="userId=1;id=1;title=Changed Post;body=New Comment"/>
+                                <argument name="json" value="{&quot;postId&quot;:1, &quot;comments&quot;:&quot;This is a new comment&quot;}"/>
+                                <argument name="cookies" value="cookie=cookie_name"/>
+                                <argument name="timeout" value="0.5, 0.75"/>
+                                <argument name="allow_redirects" value="yes"/>
+                                <argument name="expected_response" value="200, 302, 404"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>This step tests the POST capability of REST</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="rest_driver" Keyword="perform_http_get" TS="2">
+                        <Arguments>
+                                <argument name="system_name" value="http_bin_3"/>
+                                <argument name="timeout" value="5"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>This step tests the GET capability of REST</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="rest_driver" Keyword="perform_http_put" TS="3">
+                        <Arguments>
+                                <argument name="system_name" value="http_bin_2"/>
+                                <argument name="url" value="tag=url_1"/>
+                                <argument name="user" value="tag=user_1"/>
+                                <argument name="password" value="tag=password_1"/>
+                                <argument name="content_type" value="tag=content_type_1"/>
+                                <argument name="expected_response" value="tag=expected_response_1"/>
+                                <argument name="params" value="tag=params_1"/>
+                                <argument name="cookies" value="cookie=cookie_name"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>This step tests the PUT capability of REST</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="rest_driver" Keyword="perform_http_delete" TS="4">
+                        <Arguments>
+                                <argument name="system_name" value="http_bin_2"/>
+                                <argument name="url" value="tag=url_2"/>
+                                <argument name="user" value="tag=user_2"/>
+                                <argument name="password" value="tag=password_2"/>
+                                <argument name="content_type" value="tag=content_type_2"/>
+                                <argument name="expected_response" value="tag=expected_response_2"/>
+                                <argument name="params" value="tag=params_2"/>
+                                <argument name="timeout" value=""/>
+                                <argument name="cookies" value="cookie=cookie_name"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>This step tests the DELETE capability of REST</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="rest_driver" Keyword="perform_http_patch" TS="5">
+                        <Arguments>
+                                <argument name="system_name" value="http_bin_2"/>
+                                <argument name="url" value="tag=url_3"/>
+                                <argument name="user" value="tag=user_2"/>
+                                <argument name="password" value="tag=password_1"/>
+                                <argument name="content_type" value="tag=content_type_2"/>
+                                <argument name="expected_response" value="tag=expected_response_1"/>
+                                <argument name="params" value="tag=params_2"/>
+                                <argument name="timeout" value="5, 7, 6"/>
+                                <argument name="cookies" value="cookie=cookie_name"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>This step tests the PATCH capability of REST</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="rest_driver" Keyword="perform_http_head" TS="6">
+                        <Arguments>
+                                <argument name="system_name" value="http_bin_1"/>
+                                <argument name="url" value="http://httpbin.org/headers"/>
+                                <argument name="timeout" value="5, 6"/>
+                                <argument name="cookies" value="cookie=cookie_name"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>This step tests the HEAD capability of REST</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="rest_driver" Keyword="perform_http_options" TS="7">
+                        <Arguments>
+                                <argument name="system_name" value="http_bin_3"/>
+                                <argument name="allow_redirects" value="no"/>
+                                <argument name="expected_response" value="200"/>
+                                <argument name="timeout" value="5"/>
+                                <argument name="cookies" value="cookie=cookie_name"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>This step tests the OPTIONS capability of REST</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+        </Steps>
+</Testcase>

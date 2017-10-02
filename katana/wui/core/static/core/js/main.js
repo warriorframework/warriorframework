@@ -131,7 +131,9 @@ var katana = {
 	},
 
 	closePocketFields: function(){
-		this.closest('.pocket-fields').remove();
+		var $elem = this.closest('.pocket-fields');
+		$elem.find('input:first').trigger('change');
+		$elem.remove();
 	},
 
 	openDialog: function( data, title, buttons, callBack ){
@@ -287,9 +289,11 @@ var katana = {
 		$.getJSON( url, function( jsonObj ) {
 			$.each( jsonObj.data, function(){
 				var $elem = container.find( 'input[key="' + this.key  + '"], select[key="' + this.key  + '"]' );
+				var field = $elem.parent()
 				$elem.attr( 'placeholder', this.translateTo );
 				$elem.attr( 'title', this.toolTip );
-				$elem.parent().find('label') && $elem.parent().find('label').text( this.translateTo );
+				this.required && field.addClass('required');
+				field.find('> label') && field.find('> label').text( this.translateTo );
 			});
 
 		});
@@ -579,6 +583,31 @@ var katana = {
 		$elem.toggleClass('active');
 	},
 
+	toggleActiveGlobal: function(){
+		var $elem = $(this);
+		$elem.addClass('active');
+		katana.$view.one('click', function(){
+				$elem.removeClass('active');
+		});
+	},
+
+	multiSelect: function( $elem, $elemToReplace ){
+		$elem = $elem ? $elem : this;
+		$elemToReplace = $elemToReplace ? $elemToReplace : $elem.find('.multi-select');
+		if( $elem.attr('type') == 'checkbox' ){
+			var checkStatus = $elem.get(0).checked;
+			var input = $elem.parent().parent().closest('.field').find('> input');
+			value = checkStatus ? (input.val() + $elem.val() + ', ') : (input.val().replace( $elem.val() + ', ', '' ));
+			console.log('test', checkStatus, value, $elem, input, $elem.val());
+			input.val( value );
+			$elem.parent().parent().siblings('.dropdown-placeholder').text(value);
+		}
+		else{
+			$($elem.find('#multi-select').html()).insertAfter($elemToReplace);
+			$elemToReplace.attr('type', 'hidden');
+		}
+	},
+
 	expand: function(){
 		var topLevel = this.parent();
 		if( topLevel.find('.expanded') && topLevel.find('.expanded') != this ){
@@ -697,7 +726,7 @@ var katana = {
 	},
 
 	templateAPI:{
-			load: function( url, jsURL, limitedStyles, tabTitle, callBack ){
+			load: function( url, jsURL, limitedStyles, tabTitle, callBack, options ){
 				var $elem = this;
 			  url = url ? url : $elem ? $elem.attr('url') : '';
 				tabTitle = tabTitle ? tabTitle : 'Tab';
@@ -706,41 +735,23 @@ var katana = {
 					if( jsURL.length > 0 ){
 						jsURL.pop();
 						katana.templateAPI.importJS( jsURL, function(){
-							katana.templateAPI.tabRequst( $elem, tabTitle, url, limitedStyles, callBack );
+							katana.templateAPI.tabRequst( $elem, tabTitle, url, limitedStyles, callBack, options );
 						});
 					}
 					else {
-						katana.templateAPI.tabRequst( $elem, tabTitle, url, limitedStyles, callBack );
+						katana.templateAPI.tabRequst( $elem, tabTitle, url, limitedStyles, callBack, options );
 					}
 				}
 				else
-					katana.templateAPI.tabRequst( katana.$activeTab, tabTitle, url, limitedStyles, callBack );
+					katana.templateAPI.tabRequst( katana.$activeTab, tabTitle, url, limitedStyles, callBack, options );
 			},
 
-			postTabRequest: function( tabTitle, url, input_data, limitedStyles, callBack ){
-                var csrftoken = katana.$activeTab.find("[name='csrfmiddlewaretoken']").val();
-				katana.openTab.call( katana.templateAPI, tabTitle, function( container ){
-					$.ajax({
-						url: url,
-						type: "POST",
-						data: input_data,
-                    	headers: {'X-CSRFToken':csrftoken},
-					}).done(function( data ) {
-						container.append( katana.templateAPI.preProcess( data ) );
-						limitedStyles || container.find('.limited-styles-true').length && container.addClass('limited-styles');
-						container.find('.tool-bar') && container.find('.tool-bar').prependTo(container.parent());
-						katana.tabAdded( container, katana.templateAPI );
-						callBack && callBack( container );
-					});
-				});
-			},
+			tabRequst: function( $elem, tabTitle, url, limitedStyles, callBack, options ){
+				options = options ? options : {};
+				options['url'] = url;
 
-			tabRequst: function( $elem, tabTitle, url, limitedStyles, callBack ){
 				katana.openTab.call( $elem, tabTitle, function( container ){
-					$.ajax({
-						url: url,
-						dataType: 'text'
-					}).done(function( data ) {
+					$.ajax( options ).done(function( data ) {
 						container.append( katana.templateAPI.preProcess( data ) );
 						limitedStyles || container.find('.limited-styles-true').length && container.addClass('limited-styles');
 						container.find('.tool-bar') && container.find('.tool-bar').prependTo(container.parent());
@@ -750,15 +761,14 @@ var katana = {
 				});
 			},
 
-			subAppLoad: function( url, limitedStyles, callBack ){
+			subAppLoad: function( url, limitedStyles, callBack, options ){
 				var $elem = this;
 				var url = url ? url : $elem.attr('url');
+				options = options ? options : {};
+				options['url'] = url;
 
 				katana.subApp.call( $elem, 'blankPage', function( container ){
-					$.ajax({
-						url: url,
-						dataType: 'text'
-					}).done(function( data ) {
+					$.ajax( options ).done(function( data ) {
 						container.append( katana.templateAPI.preProcess( data ) );
 						limitedStyles || container.find('.limited-styles-true').length && container.addClass('limited-styles');
 						container.find('.tool-bar') && container.find('.tool-bar').prependTo(container.parent());
@@ -775,7 +785,7 @@ var katana = {
 		 },
 
 		 post: function( url, csrf, toSend, callBack ){
-			 var $elem = this ? this : katana.$activeTab;
+			 var $elem = this && this != katana.templateAPI ? this : katana.$activeTab;
 			 var toSend = toSend ? toSend : $elem.find('input:not([name="csrfmiddlewaretoken"])').serializeArray();
 			 var url = url ? url : $elem.attr('post-url');
 			 var csrf = csrf ? csrf : $elem.find('.csrf-container > input').val();
@@ -856,6 +866,14 @@ var katana = {
 	},
 
 	fileExplorerAPI: {
+
+			init: function(){
+				var $elem = this;
+				input = $elem.parent().find('input');
+				katana.fileExplorerAPI.openFileExplorer( null, null, null, null, function( str ){
+					input.val(str).trigger('change');
+				});
+			},
 
 	    openFileExplorer: function(heading, start_directory, csrftoken, parent, callBack_on_accept, callBack_on_dismiss){
             if(!heading || heading == "" || heading == undefined){

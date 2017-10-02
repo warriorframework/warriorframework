@@ -1,0 +1,351 @@
+<!--
+GLOSSARY
+
+** string pattern : This pattern basically accepts every alphabet,
+				number, and special character.
+				Multiple values are accepted only where specified.
+				Separator would be specified if multiple values are accepted.
+				Other restrictions would be specified
+
+
+** dictionary pattern : This pattern does not accept multiple
+				values for a single key.
+				Key-Value pairs are separated by ;
+				Key and the corresponding value is separated by =
+
+							key1=value1; key2=value2; key3=value3
+
+
+** dict-tuple pattern : This pattern accepts multiple values
+				for every key.
+				Key-Value pairs are separated by ,
+				Key and the corresponding value/s is/are separated by =
+				Values are separated by ;
+
+				key1=value1;value2;value3, key2=value4;value5;value6, key3=value6;value7
+
+
+** tuple pattern : This pattern accepts groups of elements.
+                   Groups are separated by commas
+                   Elements inside the group are separated by ;
+                   Groups are enclosed inside parenthesis
+                   Maximum number of elements inside a group: 2
+
+                   (element_11; element_12),(element_21; element_22),(element_31; element_32)
+
+
+** dict-in-tuple pattern : This pattern accepts groups of elements.
+                           Only in the 3rd position, a dictionary patten is accepted.
+                           Maximum number of elements inside a group: 3
+                           Maximum number of elements inside the dictionary patten: No restrictions
+                           The first two place do not accept dictionary pattern.
+                           Groups are separated by ,
+                           Groups are enclosed inside parenthesis
+                           The dictionary patten inside the group is also enclosed in a parenthesis
+                           Elements inside a group are separated by ;
+                           Dictionary pattern accepted in the third position follows the specified dictionary pattern
+
+                           (element_11;element_12;(key_11=value_11; key_12:value_12)),
+                           (element_21;element_22;(key_21=value_21)),
+                           (element_31;element_32;(key_31=value_31; key_32:value_32; key_33=value_33; key_34:value_34))
+
+-->
+<credentials>
+
+	<!--
+			Arguments accepted by all the keywords:
+
+			:system_name: Name of the system from the datafile
+
+				Pattern: String Pattern
+				Multiple Values: No
+				Max Numbers of Values Accepted: 1
+				Characters Accepted: All Characters
+				Other Restrictions: Should be valid system name from the datafile
+
+				eg: <argument name="system_name" value="http_system_1"/>
+
+			:url: Represents URL/ip address that is supposed to be tested
+
+				Pattern: String Pattern
+				Multiple Values: No
+				Max Numbers of Values Accepted: 1
+				Characters Accepted: All Characters
+
+				eg: <argument name="url" value="http://httpbin.org"/>
+
+			:params: Represents parameters that need to be sent along with the URL
+
+				Pattern: Dictionary Pattern
+				Multiple Values: As specified in Glossary
+				Separator: As specified in Glossary
+				Max Numbers of Values Accepted: No Restrictions
+				Characters Accepted: All Characters
+
+				eg: <argument name="params" value="postId=1; comments=5"/>
+
+			:data: Represents data to be posted. HTTP GET does NOT accept this argument.
+
+				Pattern: Dictionary Pattern
+				Multiple Values: As specified in Glossary
+				Separator: As specified in Glossary
+				Max Numbers of Values Accepted: No Restrictions
+				Characters Accepted: All Characters
+
+				OR
+
+				Pattern: String Pattern
+				Multiple Values: No
+				Max Numbers of Values Accepted: 1
+				Encoding: Unicode
+
+				OR
+
+				Pattern: String Pattern
+				Multiple Values: No
+				Max Numbers of Values Accepted: 1
+				Other Restrictions: Should be a valid file path
+
+				eg: <argument name="data" value="userId=1;id=1;title=Changed Post;body=New Comment"/>
+					<argument name="data" value="\u0075\u0073\u0065\u0072\u0049\u0064\u003d\u0031\u003b\u0069\u0064\u003d\u0031\u003b\u0074"/>
+					<argument name="data" value="path/to/file/containing/data/>
+
+			:json: Represents the JSON data that goes into the body of the request
+
+				Pattern: String Pattern
+				Multiple Values: No
+				Max Numbers of Values Accepted: 1
+				Characters Accepted: All Characters
+				Format: Valid JSON format
+
+				eg: <argument name="json" value="{'postId':'1', 'comments':'This is a new comment'}"/>
+
+			:headers: Represents the headers sent along with the request
+
+				Pattern: Dictionary Pattern
+				Multiple Values: As specified in Glossary
+				Separator: As specified in Glossary
+				Max Numbers of Values Accepted: No Restrictions
+				Characters Accepted: All Characters
+
+				eg: <argument name="headers" value="Content-Type=text; Date=04/21/2016; Allow=whatever_you_want_to_allow"/>
+
+			:cookies: Represents the cookies sent along with the request
+
+				Pattern: Dictionary Pattern
+				Multiple Values: As specified in Glossary
+				Separator: As specified in Glossary
+				Max Numbers of Values Accepted: No Restrictions
+				Characters Accepted: All Characters
+
+				OR
+
+				Pattern: String Pattern
+				Multiple Values: No
+				Max Numbers of Values Accepted: 1
+				Other Restrictions: Should be a valid file path
+
+				eg: <argument name="cookies" value="cookie=cookie_name"/>
+					<argument name="cookies" value="path/to/file/containing/cookie/details"/>
+
+			:files: Lets User accomplish multipart encoding upload
+
+				Pattern: string pattern
+				Multiple Values: Yes
+				Separator: ,
+				Max Numbers of Values Accepted: No Restrictions
+				Characters Accepted: All Characters
+
+				eg: <argument name="files" value="path_to_file1, path_to_file2, path_to_file3"/>
+
+				Pattern: dict-tuple pattern
+				Multiple Values: As specified in Glossary
+				Separator: As specified in Glossary
+				Max Numbers of Values Accepted: No Restrictions
+				Characters Accepted: All Characters
+
+				eg: <argument name="files" value="file_group_name=path_to_file1, path_to_file2, path_to_file4, path_to_file5"/>
+
+				Pattern: tuple pattern
+				Multiple Values: As specified in Glossary
+				Separators: As specified in Glossary
+				Max Numbers of Values inside a Group: As specified in Glossary
+				Max Numbers of Values Accepted: No Restrictions
+				Characters Accepted: All Characters
+
+				eg: <argument name="files" value="(path_to_file1;content_type),
+												  (path_to_file2;content_type),
+												  (path_to_file3;content_type)"/>
+
+				Pattern: dict-in-tuple pattern
+				Multiple Values: As specified in Glossary
+				Separators: As specified in Glossary
+				Max Numbers of Values Accepted: No Restrictions
+				Max Numbers of Values inside a Group: As specified in Glossary
+				Max Numbers of Values inside the Dictionary Pattern: No Restrictions
+				Max Numbers of Values Accepted: No Restrictions
+				Characters Accepted: All Characters
+
+
+				eg: <argument name="files" value="(path_to_file1;content_type;(custom_header_1=value1; custom_header_2:value2)),
+												  (path_to_file2;content_type;(custom_header_1=value1)),
+												  (path_to_file3;content_type;(custom_header_1=value1;
+												  							  custom_header_2=value2;
+												  							  custom_header_3=value3))"/>
+
+				eg: <argument name="files" value="(path_to_file1;content_type),
+												  path_to_file2,
+												  (path_to_file3;content_type;(custom_header_1=value1; custom_header_2=value2),
+												  (path_to_file4;content_type),
+												  (path_to_file5;content_type;(custom_header_1=value1;
+												  							  custom_header_2=value2;
+												  							  custom_header_3=value3)),
+												  path_to_file6, path_to_file_7"/>
+
+			:user: Represents the username that would be required for authentication.
+
+				Pattern: String Pattern
+				Multiple Values: No
+				Max Numbers of Values Accepted: 1
+				Characters Accepted: All Characters
+
+				eg: <argument name="user" value="Warrioruser"/>
+
+			:password: Represents the password that would be required for authentication.
+
+				Pattern: String Pattern
+				Multiple Values: No
+				Max Numbers of Values Accepted: 1
+				Characters Accepted: All Characters
+
+				eg: <argument name="password" value="password"/>
+
+			:timeout: Represents the time barrier in which the request should be completed
+					  If 2 values are given, the first value would be treated as a constraint for
+					  sending the request, the second would be treated as a constraint for
+					  receiving the response. If only one value is given, it would be treated as
+					  constraint for sending the request and receiving a response.
+
+				Pattern: String Pattern
+				Multiple Values: Yes
+				Separator: ,
+				Max Numbers of Values Accepted: 2
+				Characters Accepted: Numerical Characters - Int or Float
+
+				eg: <argument name="timeout" value="0.5, 0.75"/>
+					<argument name="timeout" value="0.6"/>
+
+			:allow_redirects: Allows or disallows redirection
+
+				Pattern: String Pattern
+				Multiple Values: No
+				Max Numbers of Values Accepted: 1
+				Characters Accepted: 'yes' and 'no'
+				Default: 'yes'
+
+				eg: <argument name="allow_redirects" value="yes"/>
+
+			:proxies: Allows the User to set up proxies for ip addresses
+
+				Pattern: Dictionary Pattern
+				Multiple Values: As specified in Glossary
+				Separator: As specified in Glossary
+				Max Numbers of Values Accepted: No Restrictions
+				Characters Accepted: All Characters
+
+				eg: <argument name="proxies" value="http=157.126.12.196:8081; https:157.126.12.144:80"/>
+
+			:verify: Allows user to enable or disable authentication
+
+				Pattern: String Pattern
+				Multiple Values: No
+				Max Numbers of Values Accepted: 1
+				Characters Accepted: 'yes' and 'no'
+				Default: 'yes'
+
+				OR
+
+				Pattern: String Pattern
+				Multiple Values: No
+				Max Numbers of Values Accepted: 1
+				Other Restrictions: Should be a valid file path to a .pem file
+
+				eg: <argument name="verify" value="path/to/CA_BUNDLE"/>
+					<argument name="verify" value="no"/>
+
+			:stream: Allows user to enable or disable immediate data downloading
+
+				Pattern: String Pattern
+				Multiple Values: No
+				Max Numbers of Values Accepted: 1
+				Characters Accepted: 'yes' and 'no'
+				Default: 'no'
+
+				eg: <argument name="stream" value="yes"/>
+
+			:cert: Allows user to send  his/her own certificate
+
+				Pattern: String Pattern
+				Multiple Values: Yes
+				Separator: ,
+				Max Numbers of Values Accepted: 2
+				Characters Accepted: All Characters
+
+				Other Restrictions:
+				Both the inputs should be valid file paths.
+				Input 1 should be a file path to the certificate file
+				If the file specified in Input 1 contains the key, Input 2 is not necessary
+				If the key is stored in a different file, Input 2 should contain the path to that file.
+
+				eg: <argument name="cert" value="path/to/certificate/file, path/to/key/file"/>
+					<argument name="cert" value="path/to/certificate/file/which/contains/the/key />
+
+			:expected_response: User specified expected response.
+
+				Pattern: String Pattern
+				Multiple Values: Yes
+				Separator: ,
+				Max Numbers of Values Accepted: No Restrictions
+				Characters Accepted: Numerical Characters - Integers only
+				Default: The entire 200 series of HTTP Responses
+
+				eg: <argument name="expected_response" value="200, 302, 404"/>
+					<argument name="expected_response" value="200"/>
+
+			-->
+
+	<system name="http_bin_1">
+		<url>http://httpbin.org</url>
+		<cookies>cookie</cookies>
+		<cookiejar>dict</cookiejar>
+	</system>
+
+	<system name="http_bin_2">
+		<url_1>http://httpbin.org/put</url_1>
+		<user_1>Warrioruser</user_1>
+		<password_1>536ett</password_1>
+		<content_type_1>text</content_type_1>
+		<expected_response_1>200</expected_response_1>
+		<params_1>{'key1': 'value1', 'key2': ['value2', 'value3']}</params_1>
+
+		<url_2>http://httpbin.org/delete</url_2>
+		<user_2>Warrioruser_new</user_2>
+		<password_2>hjcs212</password_2>
+		<content_type_2>text</content_type_2>
+		<expected_response_2/>
+		<params_2>{'key1': 'value1', 'key2': ['value2', 'value3']}</params_2>
+		<cookies type="cookiejar">cookie</cookies>
+
+		<url_3>http://httpbin.org/patch</url_3>
+	</system>
+
+	<system name="http_bin_3">
+		<url>http://httpbin.org/get</url>
+		<user>Warrioruser</user>
+		<password>536ett</password>
+		<content_type>text</content_type>
+		<expected_response>200</expected_response>
+		<params>{'key1': 'value1', 'key2': ['value2', 'value3']}</params>
+	</system>
+
+</credentials>

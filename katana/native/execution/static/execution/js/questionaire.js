@@ -164,7 +164,6 @@ var questionaire = {
   },
   getQnObject: function(elem){
     // gets the questionaire object associated to the form
-    console.log('getting object from dom');
     var closestForm = elem.closest('form');
     var qnObject = closestForm.data('questionaireObject');
     return qnObject;

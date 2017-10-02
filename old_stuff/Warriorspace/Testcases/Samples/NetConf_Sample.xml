@@ -1,0 +1,169 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+                <Name>Netconf_get_edit_close_sample</Name>
+                <Title>Netconf_get_edit_close_sample</Title>
+                <Engineer>Warrior_user</Engineer>
+                <Date>2017-03-17</Date>
+                <Time>21:50</Time>
+                <InputDataFile>../../Data/Samples/NetConf_Data_Sample.xml</InputDataFile>
+                <Datatype>Custom</Datatype>
+                <default_onError action="abort"/>
+                <Logsdir/>
+                <Resultsdir/>
+                <ExpectedResults/>
+                <Category>Sample</Category>
+                <State>Released</State>
+        </Details>
+        <Requirements>
+                <Requirement/>
+        </Requirements>
+        <Steps>
+                <step Driver="netconf_driver" Keyword="connect_netconf" TS="1">
+                        <Arguments>
+                                <argument name="system_name" value="ConfD"/>
+                        </Arguments>
+                        <onError action="abort"/>
+                        <Description>connect_netconf</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="netconf_driver" Keyword="get_config" TS="2">
+                        <Arguments>
+                                <argument name="datastore" value="candidate"/>
+                                <argument name="system_name" value="ConfD"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>get_config</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="netconf_driver" Keyword="edit_config" TS="3">
+                        <Arguments>
+                                <argument name="system_name" value="ConfD"/>
+                                <argument name="datastore" value="running"/>
+                                <argument name="config" value="myConfig"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>edit_config</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="netconf_driver" Keyword="edit_config" TS="4">
+                        <Arguments>
+                                <argument name="system_name" value="ConfD"/>
+                                <argument name="datastore" value="running"/>
+                                <argument name="config" value="myConfig1"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>edit_config</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="netconf_driver" Keyword="edit_config" TS="5">
+                        <Arguments>
+                                <argument name="system_name" value="ConfD"/>
+                                <argument name="datastore" value="running"/>
+                                <argument name="config" value="myConfigFile1"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>edit_config</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="netconf_driver" Keyword="edit_config" TS="6">
+                        <Arguments>
+                                <argument name="system_name" value="ConfD"/>
+                                <argument name="datastore" value="running"/>
+                                <argument name="config" value="myConfigFile2"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>edit_config</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="netconf_driver" Keyword="get_config" TS="7">
+                        <Arguments>
+                                <argument name="datastore" value="running"/>
+                                <argument name="system_name" value="ConfD"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>get_config</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="netconf_driver" Keyword="get_config" TS="8">
+                        <Arguments>
+                                <argument name="datastore" value="running"/>
+                                <argument name="system_name" value="ConfD"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>get_config</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="netconf_driver" Keyword="close_netconf" TS="9">
+                        <Arguments>
+                                <argument name="system_name" value="ConfD"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>close_netconf</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+                </step>
+        </Steps>
+</Testcase>

@@ -31,7 +31,11 @@ class WarriorInterface():
         self.htmlResults = open( path, 'r').read()
         return self.htmlResults
 
-
+    def set_eoc(self):
+        """
+        set end of communication string to the html results
+        """
+        self.htmlResults += "<div class='eoc'></div>"
 
 def write_tree_to_file(root, file_path):
     """

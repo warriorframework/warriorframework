@@ -1,11 +1,8 @@
 import glob
 import os
 import re
-
 import errno
 import shutil
-
-from wui.core.core_utils.app_info_class import AppInformation
 
 
 def get_sub_dirs_and_files(path, abs_path=False):

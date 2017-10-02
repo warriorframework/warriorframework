@@ -31,7 +31,7 @@ class CoreView(View):
 
     def get_user_data(self):
         json_file = self.navigator.get_katana_dir() + '/user_profile.json'
-        with open(json_file,'r') as f:
+        with open(json_file, 'r') as f:
             json_data = json.load(f)
         return json_data
 

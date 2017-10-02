@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<configuration>
+	<variable_set name="system_autop" true="true" false="false"/>
+	<variable_set name="admin_state" up="up" down="down" test="testing"/>
+	<variable_set name="interface_state" enable="enabled" disable="disabled"/>
+	<variable_set name="default_lambda" value="193.5"/>
+	<network name="network1">
+		<ne name ="ne1">
+			<shelf name="shelf1" id="1" type="main" verify_tag="v1,v2">
+				<slot name="slot1" id="1" card="ctc1">
+					<port name="port1" id="1" sfp="10gelr"/>
+					<port name="port2" id="2" sfp="10gelr"/>
+					<port name="port3" id="3" sfp="10gelr"/>
+				</slot>
+				
+				<slot name="slot2" id="2" type="ctc4">
+					<port name="port4" id="4" sfp="oc192sr1"/>
+					<port name="port15" id="15" sfp="oc192sr1"/>
+					<port name="port20" id="20" sfp="oc192sr1"/>
+				</slot>		
+			</shelf>
+			<shelf name="shelf2" id="2" type="trib">
+				<slot name="slot10" id="10" type="cms1">
+				</slot>
+			</shelf>
+
+			<alarms name ="alarms">			
+			</alarms>
+
+		</ne>
+	</network>
+</configuration>
+

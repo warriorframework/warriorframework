@@ -1,26 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>App Store</title>
-    {% load staticfiles %}
-    <script type="text/javascript" src="{% static 'wapp_management/js/wapp_management.js' %}"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Wapp Management</title>
 </head>
 
 <body>
-    {% csrf_token %}
+    <div class="csrf-container">{% csrf_token %}</div>
 
     <div class="tool-bar">
-        <div class="row text-center" style="height: 100%; padding-left:0.9rem;">
+        <div class="row text-center wapp-management-toolbar-child">
             <div class="col-md-2 tool-bar-links" katana-click="wapp_management.goToElement" elem-link="installed_apps">Installed Apps</div>
             <div class="col-md-2 tool-bar-links" katana-click="wapp_management.goToElement" elem-link="app_installation">Install Custom Apps</div>
-            <div class="col-md-2 tool-bar-links" katana-click="wapp_management.goToElement" elem-link="preferences">Preferences</div>
         </div>
     </div>
 
-    {% include 'wapp_management/installed_apps_section.html' %}
-    {% include 'wapp_management/custom_app_install_section.html' %}
-    {% include 'wapp_management/preferences_section.html' %}
+    <div class="auto-init" auto-init="wapp_management.initFunction">
+
+        {% include 'wapp_management/installed_apps_section.html' %}
+        {% include 'wapp_management/custom_app_install_section.html' %}
+
+    </div>
 
 </body>
 

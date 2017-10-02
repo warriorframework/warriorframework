@@ -1,0 +1,16 @@
+<Default>
+    <Setting name="def_dir">
+        <Logsdir /> 
+        <Resultsdir /> 
+    </Setting>
+    <Setting mail_on="" name="mail_to">
+    
+        <smtp_host /> 
+        <sender /> 
+        <receiver /> 
+        <subject /> 
+    </Setting>
+
+
+    <Setting location="http://localhost:5000/katana" name="katana" />
+</Default>

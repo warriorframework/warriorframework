@@ -1,0 +1,51 @@
+<Testcase>
+	<Details>
+		<Name>tc_vlan_provisioning</Name>
+		<Title>An automation case to provision vlan in fw9500</Title>
+		<Engineer>sathya</Engineer>
+		<Date>2017-03-27</Date>
+		<Time>12:56</Time>
+		<State>In Review</State>
+		<InputDataFile>../Data/data_fw9500.xml</InputDataFile>
+		<Datatype>Custom</Datatype>
+		<default_onError action="next"/>
+		<Logsdir/>
+		<Resultsdir/>
+		<ExpectedResults/>
+		<Category>fwcds</Category>
+	</Details>
+	<Requirements>
+		<Requirement/>
+	</Requirements>
+	<Steps>
+
+		<step Driver="fw9500_driver" Keyword="deprovision_vlan" TS="3" draft="no">
+					<Arguments>
+						<argument name="system_name" value="FW9500-NE1[tl1]"/>			</Arguments>
+			<onError action="next"/>
+			<Description>set unique TID for the NE</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="Yes">
+				<Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+			</Execute>
+			<context>positive</context>
+			<impact>impact</impact>
+			<runmode type="Standard" value=""/>
+			<Iteration_type type="Standard"/>
+		</step>
+		<step Driver="fw9500_driver" Keyword="deprovision_link_protection" TS="3" draft="no">
+					<Arguments>
+						<argument name="system_name" value="FW9500-NE1[tl1]"/>			</Arguments>
+			<onError action="next"/>
+			<Description>set unique TID for the NE</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="Yes">
+				<Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+			</Execute>
+			<context>positive</context>
+			<impact>impact</impact>
+			<runmode type="Standard" value=""/>
+			<Iteration_type type="Standard"/>
+		</step>
+		</Steps>
+</Testcase>

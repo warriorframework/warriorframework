@@ -15,7 +15,7 @@ import os
 
 import json
 import Tools
-from Framework.Utils import xml_Utils, file_Utils
+from Framework.Utils import xml_Utils, file_Utils, data_Utils
 from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.print_Utils import print_info
 from Framework.Utils.xml_Utils import getElementWithTagAttribValueMatch
@@ -49,11 +49,45 @@ class LineResult:
 
     def set_attributes(self, line, variant, stepcount):
         """sets attributes"""
+
         if 'Keyword' not in variant and 'step' not in variant:
             stepcount = ''
-        result_file = line.get("resultfile") if line.get("resultfile") else line.get("resultsdir") if line.get(
-            "resultsdir") else ''
+        result_path = line.get("resultsfile") if line.get("resultsfile") else line.get("resultsdir") if line.get("resultsdir") else ''
+        logs_path = line.get("console_logfile") if line.get("console_logfile") else ''
+#         defects_path = line.get("defects") if line.get("defects") else ''
         status_name = line.get("status") if line.get("status") else ''
+        
+        #onclick='return false;'
+        #katana-click='execution.resultsViewer.openLogs'
+        
+        # There won't be results link in html anymore as we decided we will not be linking xml files in our html results
+#         results_span = "<span style='padding-left:10px; padding-right: 10px;'>"\
+#                         "<a  name='results-link' href='{0}' target='_blank' onclick='return false;'>"\
+#                         "<i name='results-icon' class='fa fa-line-chart'  data-logPath='{0}' katana-click='execution.resultsViewer.openLogs'> </i>"\
+#                         "</a>"\
+#                         "</span>".format(result_path)
+        
+        # the link to logs should only be applied to a testcase and it will open the console logs of the testcase
+        logs_span = "<span style='padding-left:10px; padding-right: 10px;'>"\
+                    "<a  name='results-link' href='{0}' target='_blank' onclick='return false;'>"\
+                    "<i name='logs-icon' class='fa fa-book'  data-logPath='{0}' katana-click='execution.resultsViewer.openConsoleLogFile' > </i>"\
+                    "</a>"\
+                    "</span>".format(line.get("console_logfile")) if line.get("console_logfile") else ''
+
+        # link to defects will only be applied to a keyword and it will open the defects json file in a popup
+        defects_span = "<span style='padding-left:10px; padding-right: 10px;'>"\
+                        "<a name='bug-link' href='{0}' target='_blank' onclick='return false;'>"\
+                        "<i name='bug-icon' class='fa fa-bug'  data-logPath='{0}' katana-click='execution.resultsViewer.openDefectsJson'> </i>"\
+                        "</a>"\
+                        "</span>".format(line.get("defects"))  if line.get("defects") else ''
+        span_html = ""
+        if variant == "Testcase":
+            span_html =  logs_span
+        elif variant =="Keyword":
+            span_html = defects_span
+        
+        
+        
         self.data = {'nameAttr': variant + 'Record',
                      'type': variant.replace('Test', '').replace('Keyword', 'step ') + str(stepcount),
                      'name': line.get("name"),
@@ -63,14 +97,11 @@ class LineResult:
                      'status': '<span class=' + status_name + '>' + status_name + '</span>',
                      'impact': line.get("impact"),
                      'onerror': line.get("onerror"),
-                     'msc': '<span style="padding-left:10px; padding-right: 10px;"><a href="' + result_file
-                            + '"><i class="fa fa-line-chart"> </i></a></span>' + (
-                                '' if variant == 'Keyword' else '<span style="padding-left:10px; padding-right: 10px;"><a href="' + (
-                                    line.get("logsdir") if line.get(
-                                        "logsdir") else '') + '"><i class="fa fa-book"> </i></a></span>') + (
-                            '<span style="padding-left:10px; padding-right: 10px;"><a href="' + line.get("defects")
-                            + '"><i class="fa fa-bug"> </i></a></span>' if line.get("defects") else ''),
+                     'msc': span_html,
                      'static': ['Count', 'Passed', 'Failed', 'Errors', 'Exceptions', 'Skipped']
+                    
+                     
+                     
                      }
 
     def set_html(self, line, variant, stepcount):
@@ -169,6 +200,39 @@ class WarriorHtmlResults:
             return '<div class="version">' + version + '</div>'
         else:
             return ''
+
+    def write_live_results(self, junitObj, givenPath, is_final):
+        """ build the html givenPath: added this feature in case of later down the line calling from outside junit
+        file ( no actual use as of now )
+        """
+        if junitObj:
+            self.junit_file = junitObj
+            self.junit_root = xml_Utils.getRoot(self.junit_file)
+        if givenPath:
+            self.givenPath = givenPath
+
+        self.set_line_objs()
+        html = ''
+        for item in self.lineObjs:
+            html += item.html
+        html = self.merge_html(html)
+
+        if is_final is True:
+            html += '<div class="complete"></div>'
+        elem_file = open(self.get_path(), 'w')
+        elem_file.write(html)
+        elem_file.close()
+        livehtmllocn = data_Utils.get_object_from_datarepository('livehtmllocn')
+        livehtmlfile = open(livehtmllocn, 'w')
+        livehtmlfile.write(html)
+        livehtmlfile.close()
+        
+        self.lineObjs = []
+        print_info("++++ Results Summary ++++")
+        print_info("Open the Results summary file given below in a browser to "
+                   "view results summary for this execution")
+        print_info("Results sumary file: {0}".format(self.get_path()))
+        print_info("+++++++++++++++++++++++++")
 
     def generate_html(self, junitObj, givenPath, is_final):
         """ build the html givenPath: added this feature in case of later down the line calling from outside junit
