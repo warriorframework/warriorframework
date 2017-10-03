@@ -380,7 +380,7 @@ def clone_warrior_and_tools(base_path, current_dir, repo_root, **kwargs):
                                               print_log_name=print_log_name)
                 getDone()
     overwrite = kwargs.get("overwrite")
-    dest_dir = os.path.join(base_path, "warrior/Tools/"+repo_name)
+    dest_dir = os.path.join(base_path, "warrior", "Tools", repo_name)
     if not os.path.exists(dest_dir):
         os.makedirs(dest_dir)
     try:
