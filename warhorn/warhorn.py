@@ -1076,7 +1076,7 @@ def activate_virtualenv(node, destination, logfile, print_log_name):
     '''
     ve_name = get_attribute_value(node, 'name')
     ve_loc = get_attribute_value(node, 'location')
-    ve_dest = destination + ve_name
+    ve_dest = os.path.join(destination, ve_name)
     print_info("ve_name: "+ve_name, logfile, print_log_name)
     print_info("destination: "+ve_dest, logfile, print_log_name)
     try:
@@ -1198,7 +1198,7 @@ def assemble_warrior():
                         logfile, print_log_name)
             setDone(1)
             getDone(logfile, print_log_name)
-        dest = get_attribute_value(war_tag, 'destination')
+        dest = os.getcwd()
         virtualenv_activated = activate_virtualenv(node, dest, logfile, print_log_name)
 
     get_dependencies(logfile, print_log_name, config_file_name, virtualenv_activated)
