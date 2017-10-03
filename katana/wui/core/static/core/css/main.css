@@ -3632,3 +3632,32 @@ input[type="checkbox"]+label {
     height: 100%;
     padding-left:0.9rem;
 }
+.nav .tab span {
+    position: relative;
+    top: 0;
+    left: 0;
+    text-align: left;
+    color: inherit;
+}
+.jstree-default .jstree-themeicon:before {
+    content: "\f07c";
+    font-family: FontAwesome;
+    color: #4ea4e0;
+    font-style: normal;
+}
+[aria-expanded="false"] .jstree-themeicon:before {
+    content: "\f07b";
+    font-style: normal;
+    font-family: FontAwesome;
+    color: #4ea4e0;
+}
+.jstree-default .jstree-file,
+.jstree-default .jstree-themeicon {
+    background: none !important;
+}
+.jstree-default .jstree-file:before {
+    content: "\f0f6";
+    font-family: FontAwesome;
+    font-style: normal;
+    color: #4f606c;
+}

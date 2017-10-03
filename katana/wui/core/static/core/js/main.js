@@ -62,17 +62,20 @@ var katana = {
 
 	openTab: function( uid, callBack ){
 		var uid = uid ? uid : this.attr('uid') ? this.attr('uid') : false;
+
 		if( uid )
 			{
-				var newTab = $( $( '#' + 'blankPage' ).html() ).insertAfter( katana.$activeTab );
-				var count = '-' + ($('[id^=' + uid + ']' ).length + 1);
+				var newTab = $( $( '#blankPage' ).html() ).insertAfter( katana.$activeTab );
+				uid = (this && this.hasClass('tab') ? this.find('span').text() : uid).replace(/ /g,'');
+				var count = '-' + ($('[uid^=' + uid + ']' ).length + 1);
 				uid = uid + count;
 				newTab.attr('id', uid );
 				var temp = katana.$view.find('.nav .tab').first();
 				var created = temp.clone().insertAfter( temp );
-				created.attr( 'uid', uid ).text( this && $(this).hasClass('tab') ? this.find('span').text() + count : uid ).append('<i class="fa fa-times" katana-click="katana.closeTab"></i>');
+				created.attr( 'uid', uid ).append('<i class="fa fa-times" katana-click="katana.closeTab"></i>');
+				created.find('span').text( uid );
 				katana.switchTab.call( created, uid );
-				callBack && callBack( newTab.find('.page-content-inner') );
+				callBack && callBack( newTab.find('.page-content-inner'), created );
 			}
 	},
 
@@ -91,6 +94,7 @@ var katana = {
 		page.addClass('removing');
 		setTimeout(function () {
 			page.remove();
+			katana.tabMod( katana.$view.find('.nav .tab.active'), katana.$activeTab.find('.tab-template') );
 		}, 200);
 	},
 
@@ -122,9 +126,9 @@ var katana = {
 		katana.$activeTab = katana.$view.find( '#' + uid ).removeClass('hidden');
 	},
 
-  closeTab: function(){
+  closeTab: function( ignore ){
 		var tab = this.closest('.tab');
-		if( tab.hasClass('active') )
+		if( tab.hasClass('active') && !ignore )
 			katana.switchTab();
 		katana.$view.find( '#' +tab.attr('uid') ).remove();
 		tab.remove();
@@ -591,6 +595,34 @@ var katana = {
 		});
 	},
 
+	tabMod: function( tab, tabTemp ){
+		setTimeout(function(){
+		 var tempUID = 'a12410831987013878091870190';
+		 tab.attr('uid', tempUID);
+		 katana.$activeTab.attr('id', tempUID);
+		 var tabText = tabTemp.text().replace(/ /g,'');
+		 var tabParent = tab.parent();
+		 var tabRefrence = tabParent.find('[uid^="' + tabText + '"]');
+
+		 if( tabTemp.hasClass('only') && tabRefrence.length > 0 ){
+			 katana.closeTab.call( tab, true );
+			 katana.switchTab.call( tabRefrence, tabRefrence.attr('uid') );
+		 }
+		 else{
+			 var count = tabParent.find('[uid^=' + tabText + ']' ).length + 1;
+			 var tabName = tabText + '-' + count;
+			 while(tabParent.find('[uid=' + tabName + ']' ).length > 0)
+			 	{
+					count--;
+					tabName = tabText + '-' + count;
+				}
+			 katana.$activeTab.attr('id', tabName);
+			 tab.attr('uid', tabName);
+			 tab.find('span').text( tabName );
+		 }
+	 }, 5);
+	},
+
 	multiSelect: function( $elem, $elemToReplace ){
 		$elem = $elem ? $elem : this;
 		$elemToReplace = $elemToReplace ? $elemToReplace : $elem.find('.multi-select');
@@ -624,13 +656,12 @@ var katana = {
 		});
 	},
 
-    quickAnimation: function($elem, className, duration){
-        // provided by Keenan
-        $elem.addClass(className);
-        setTimeout(function(){
-            $elem.removeClass(className);
-        }, duration);
-    },
+  quickAnimation: function($elem, className, duration){
+    $elem.addClass(className);
+    setTimeout(function(){
+      $elem.removeClass(className);
+    }, duration);
+  },
 
 	fileNav:{
 		folderTemp: '',
@@ -750,9 +781,10 @@ var katana = {
 				options = options ? options : {};
 				options['url'] = url;
 
-				katana.openTab.call( $elem, tabTitle, function( container ){
+				katana.openTab.call( $elem, tabTitle, function( container, tab ){
 					$.ajax( options ).done(function( data ) {
 						container.append( katana.templateAPI.preProcess( data ) );
+						container.find('.tab-template').length && katana.tabMod( tab, container.find('.tab-template') );
 						limitedStyles || container.find('.limited-styles-true').length && container.addClass('limited-styles');
 						container.find('.tool-bar') && container.find('.tool-bar').prependTo(container.parent());
 						katana.tabAdded( container, this );
@@ -770,6 +802,7 @@ var katana = {
 				katana.subApp.call( $elem, 'blankPage', function( container ){
 					$.ajax( options ).done(function( data ) {
 						container.append( katana.templateAPI.preProcess( data ) );
+						container.find('.tab-template').length && katana.tabMod( katana.$view.find('.nav .tab.active'), container.find('.tab-template') );
 						limitedStyles || container.find('.limited-styles-true').length && container.addClass('limited-styles');
 						container.find('.tool-bar') && container.find('.tool-bar').prependTo(container.parent());
 						katana.subAppAdded( container, this );
