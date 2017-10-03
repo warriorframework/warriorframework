@@ -16,15 +16,15 @@
                 <div class="row ">
                     <div class="col">
                         <label>Name*:</label>
-                        <input type="text" id="caseName" value="{{caseName}}" />
+                        <input required type="text" id="caseName" value="{{caseName}}" />
                     </div>
                     <div class="col">
                         <label>Title*:</label>
-                        <input type="text" id="caseTitle" value="{{caseTitle}}" />
+                        <input required type="text" id="caseTitle" value="{{caseTitle}}" />
                     </div>
                     <div class="col">
                         <label>Category*:</label>
-                        <input type="text" id="caseCategory" value="{{caseCategory}}" />
+                        <input required type="text" id="caseCategory" value="{{caseCategory}}" />
                     </div>
                 </div>
                 <div class="row ">
@@ -55,7 +55,7 @@
                         <div class="btn-group col-md-12">
                         <input type="text" id="caseInputDataFile" value="{{caseInputDataFile}}" />
                         
-                        <button class="btn btn-info" katana-click="cases.getCaseInputDataFile">...</button>
+                        <button class="button" katana-click="cases.getCaseInputDataFile">...</button>
                         <button class="fa fa-pencil" katana-click="cases.start_wdfEditor">WDF</button>
                         </div>
                     </div>
@@ -96,7 +96,7 @@
                         <label class="text-right " id="caseDatatype_lbl">Results Directory:</label>
                         <div class="btn-group col-md-12">
                         <input class="text-right " type="text" id="caseResultsdir" value="{{caseResultsdir}}">
-                        <!--<button class="btn btn-success r" katana-click="cases.getResultsDirForCase('#caseResultsdir')">...</button>-->
+                        <button class="button" katana-click="cases.getResultsDirForCases">...</button>
                         </div>
                     </div>
                 </div>

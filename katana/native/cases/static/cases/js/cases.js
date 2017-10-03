@@ -340,6 +340,24 @@ function jsUcfirst(string)
 },
 
 
+	getResultsDirForCases: function() {
+		var callback_on_accept = function(selectedValue) { 
+			  		console.log(selectedValue);
+			  		var tag = '#caseResultsdir'
+			  		var savefilepath = katana.$activeTab.find('#savefilepath').text();
+			  		console.log("File path ==", savefilepath);
+			  		var nf = prefixFromAbs(savefilepath, selectedValue);
+			  		katana.$activeTab.find(tag).attr("value", nf);
+			  		katana.$activeTab.find(tag).attr("fullpath", selectedValue);
+					katana.$activeTab.find(tag).text(nf); // 
+					};
+		  var callback_on_dismiss =  function(){ 
+		  		console.log("Dismissed");
+		 };
+	katana.fileExplorerAPI.openFileExplorer("Select a file", false , $("[name='csrfmiddlewaretoken']").val(), false, callback_on_accept, callback_on_dismiss);
+
+	},
+
 	getStepInputDataFile: function() {
 		
 			var callback_on_accept = function(selectedValue) { 
