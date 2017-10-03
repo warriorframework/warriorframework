@@ -202,7 +202,7 @@ startNewProject : function() {
 		var defgoto = popup.find('#default_onError_goto'); 
 			defgoto.hide();
 
-		if (gotoStep.trim() == 'goto'.trim()) { 
+		if (gotoStep.trim() == 'goto') { 
 			defgoto.show();
 		} else {
 			defgoto.hide();
@@ -311,7 +311,7 @@ startNewProject : function() {
 		var gotoStep = katana.$activeTab.find('#default_onError').val();
 		var defgoto = katana.$activeTab.find('#default_onError_goto'); 
 		
-		if (gotoStep.trim() == 'goto'.trim()) { 
+		if (gotoStep.trim() == 'goto') { 
 			defgoto.show();
 		} else {
 			defgoto.hide();
@@ -429,7 +429,7 @@ getSuiteDataForProject: function () {
       		var nf = prefixFromAbs(pathToBase, selectedValue);
       		katana.$activeTab.find("#projectResultsDir").attr("value", nf);
       		katana.$activeTab.find("#projectResultsDir").attr("fullpath", selectedValue);
-
+      		katana.$activeTab.find("#projectResultsDir").val(nf);
             };
       var callback_on_dismiss =  function(){ 
       		console.log("Dismissed");
@@ -488,6 +488,7 @@ Two global variables are heavily used when this function is called;
 	projects.jsonProjectObject['Details']['default_onError']['@action'] = katana.$activeTab.find('#default_onError').val();
 	projects.jsonProjectObject['Details']['default_onError']['@value'] = katana.$activeTab.find('#default_onError_goto').val();
 	projects.jsonProjectObject['Details']['Datatype'] = katana.$activeTab.find('#projectDatatype').val();
+	projects.jsonProjectObject['Details']['ResultsDir'] = katana.$activeTab.find('#projectResultsDir').val();
 	
 		var date = new Date();
 	  
@@ -774,6 +775,16 @@ Two global variables are heavily used when this function is called;
 		if (!jQuery.isArray(projects.jsonTestSuites)){
 		 projects.jsonTestSuites = [projects.jsonTestSuites]; 
 		}
+
+
+		katana.$activeTab.find('#projectState').val(projects.jsonProjectObject['Details']['State']);
+		katana.$activeTab.find('#projectDate').val(projects.jsonProjectObject['Details']['Date'] + " " + projects.jsonProjectObject['Details']['Time'] );
+		katana.$activeTab.find('#default_onError').val(projects.jsonProjectObject['Details']['default_onError']['@action']);
+		katana.$activeTab.find('#default_onError_goto').val(projects.jsonProjectObject['Details']['default_onError']['@value']);
+		katana.$activeTab.find('#projectDatatype').val(projects.jsonProjectObject['Details']['Datatype']);
+		katana.$activeTab.find('#projectResultsDir').val(katana.$activeTab.find("#projectResultsDir").attr("value"));
+	
+
 		projects.createSuitesTable();
 		projects.fillProjectDefaultGoto();
 	},  // end of function 

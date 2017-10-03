@@ -366,7 +366,7 @@ function jsUcfirst(string)
 
 	defgoto.empty(); 
 	var xdata = cases.jsonCaseObject["Steps"]['step']; // ['Testcase']; 
-	console.log("Step....",Object.keys(xdata).length, xdata);
+	//console.log("Step....",Object.keys(xdata).length, xdata);
 	for (var s=0; s<Object.keys(xdata).length; s++ ) {
 		defgoto.append($('<option>',{ value: s,  text: s+1}));
 	}
@@ -379,7 +379,7 @@ function jsUcfirst(string)
 		}
 		var url = "./cases/getCaseDataBack";
 		var csrftoken = katana.$activeTab.find("[name='csrfmiddlewaretoken']").val();
-		console.log("sending case 2");
+		//console.log("sending case 2");
 		$.ajaxSetup({
 				function(xhr, settings) {
 				xhr.setRequestHeader("X-CSRFToken", csrftoken)
@@ -394,7 +394,7 @@ function jsUcfirst(string)
 		
 
 		var topNode  = { 'Testcase' : cases.jsonCaseObject};
-		console.log("sending case 3", xfname, cases.jsonCaseObject);
+		//console.log("sending case 3", xfname, cases.jsonCaseObject);
 		
 		$.ajax({
 		url : url,

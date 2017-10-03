@@ -135,9 +135,12 @@ def editSuite(request):
 	xml_r["TestSuite"]["Details"]["Resultsdir"] = ""
 	xml_r["TestSuite"]["Details"]["InputDataFile"] = ""
 	xml_r["TestSuite"]["Details"]["type"]["@exectype"] = "sequential_testcases"
-	xml_r["TestSuite"]["Details"]["onError"] = {}
-	xml_r["TestSuite"]["Details"]["onError"]['@action']= ""
-	xml_r["TestSuite"]["Details"]["onError"]['@value']= ""
+	xml_r["TestSuite"]["Details"]["type"]["@Number_Attempts"] = "0"
+	xml_r["TestSuite"]["Details"]["type"]["@Max_Attempts"] = "0"
+	
+	xml_r["TestSuite"]["Details"]["default_onError"] = {}
+	xml_r["TestSuite"]["Details"]["default_onError"]['@action']= ""
+	xml_r["TestSuite"]["Details"]["default_onError"]['@value']= ""
 
 	xml_r["TestSuite"]["Testcases"] = { 'Testcase' :[] }
 	
@@ -170,7 +173,7 @@ def editSuite(request):
 		xml_r["TestSuite"]["Testcases"] =  { 'Testcase': [] }
 
 	try:
-		xml_r["TestSuite"]["Details"]["type"]['@exectype'] = copy.deepcopy(xml_d["TestSuite"]["Details"]["type"]['@exectype']);
+		xml_r["TestSuite"]["Details"]["type"] = copy.deepcopy(xml_d["TestSuite"]["Details"]["type"]);
 	except:
 		xml_r["TestSuite"]["Details"]["type"]['@exectype'] = "sequential_testcases"
 
@@ -194,12 +197,14 @@ def editSuite(request):
 		'suiteInputDataFile': xml_r["TestSuite"]["Details"]["InputDataFile"],
 		'suiteEngineer': xml_r["TestSuite"]["Details"]["Engineer"],
 		'suiteDatatype': xml_r["TestSuite"]["Details"]["type"]["@exectype"],
+		'suite_num_attempts': xml_r["TestSuite"]["Details"]["type"].get("@Number_Attempts","0"),
+		'suite_max_attempts': xml_r["TestSuite"]["Details"]["type"].get("@Max_Attempts","0"),
 		'suiteDate': xml_r["TestSuite"]["Details"]["Date"],
 		'suiteTime': xml_r["TestSuite"]["Details"]["Time"],
 		'suiteState': xml_r["TestSuite"]["Details"]["State"],
 		#'suiteType': xml_r["TestSuite"]["Details"]["type"],
-		'suitedefault_onError':xml_r["TestSuite"]["Details"]["onError"].get('@action',""),
-		'suitedefault_onError_goto':xml_r["TestSuite"]["Details"]["onError"].get('@value',''),
+		'suitedefault_onError':xml_r["TestSuite"]["Details"]["default_onError"].get('@action',""),
+		'suitedefault_onError_goto':xml_r["TestSuite"]["Details"]["default_onError"].get('@value',''),
 		'suiteCases': xml_r['TestSuite']['Testcases'],
 		#'fulljson': xml_r['TestSuite'],
 		'fulljson': fulljsonstring,

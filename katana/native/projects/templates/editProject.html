@@ -40,13 +40,14 @@
 			</div>
 			<div class="field col-md-3 input_padding">
 				<label class="text-right">defaultOnError:</label>
-				<select class="text-right" type="text" id="default_onError" name="default_onError"  value="{{projectdefaultOnError}}" >
+				<select class="text-right" type="text" id="default_onError" name="default_onError"  value="{{projectdefault_onError}}" >
 					<option value="next">Next</option>
 					<option value="abort">Abort</option>
 					<option value="abort_as_error">Abort As Error</option>
 					<option value="goto">Goto</option>
 				</select>
-				<select class="text-right" type="text" id="default_onError_goto" name="default_onError_goto" value="{{projectdefaultOnError_goto}}" >
+				{{projectdefault_onError}}
+				<select class="text-right" type="text" id="default_onError_goto" name="default_onError_goto" value="{{projectdefault_onError_goto}}" >
 				</select>
 
 			</div>
@@ -63,7 +64,7 @@
 			<div class="field col-md-3 input_padding">	
 				
 				<label class="text-right">Results Dir:</label>
-				<button class="btn btn-info" onclick="projects.getResultsDirForProject">...</button>
+				<button class="btn btn-info" katana-click="projects.getResultsDirForProject">...</button>
 				<div class="" id="fileNames"></div>
 				<input class="text-right" type="text" id="projectResultsDir" name="projectResultsDir" value="{{resultsDir}}" />
 			</div>

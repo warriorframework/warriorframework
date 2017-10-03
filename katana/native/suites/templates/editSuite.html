@@ -35,13 +35,13 @@
 				</div>
 				<div class="field col-md-3">	
 					<label class=" text-right" for="default_onError">Default On Error:</label>
-					<select class="text-right" type="text" id="default_onError" name="default_onError" value="{{suitedefault_onError}}" >
+					<select class="text-right" type="text" id="default_onError" value="{{suitedefault_onError}}" >
 						<option value="next">Next</option>
 						<option value="abort">Abort</option>
 						<option value="abort_as_error">Abort As Error</option>
 						<option value="goto">Goto</option>
 					</select>
-					<select class="text-right" type="text" id="suite_default_onError_goto" name="default_onError_goto" value="{{suitedefault_onError_goto}}" >
+					<select class="text-right" type="text" id="default_onError_goto"  value="{{suitedefault_onError_goto}}" >
 					</select>
 					
 				</div>
@@ -56,6 +56,12 @@
 						<option value="RUP">Run Until Pass</option>
 						<option value="RMT">Run Multiple</option>
 					</select>
+					<span>Attempts:
+					<input class="col-md-1" type="text" id="data_type_num_attempts"  value="{{suite_number_attempts}}" >
+					</input> Max:
+					<input class="col-md-1" type="text" id="data_type_max_attempts"  value="{{suite_max_attempts}}" >
+					</input>
+					</span>
 				</div>
 			</div>
 

@@ -342,12 +342,16 @@ Two global variables are heavily used when this function is called;
 	suites.jsonSuiteObject['Details']['Title'] = katana.$activeTab.find('#suiteTitle').val();
 	suites.jsonSuiteObject['Details']['Engineer'] = katana.$activeTab.find('#suiteEngineer').val();
 	suites.jsonSuiteObject['Details']['Resultsdir'] = katana.$activeTab.find('#suiteResults').val();
-
+	suites.jsonSuiteObject['Details']['State'] = katana.$activeTab.find('#suiteState').val();
 	suites.jsonSuiteObject['Details']['default_onError'] = { '@value': '', '@action' : ''};
-	suites.jsonSuiteObject['Details']['default_onError']['@action'] = katana.$activeTab.find('#defaultOnError').val();
-	suites.jsonSuiteObject['Details']['default_onError']['@value'] = katana.$activeTab.find('#defaultOnError_goto').val();
+	suites.jsonSuiteObject['Details']['default_onError']['@action'] = katana.$activeTab.find('#default_OnError').val();
+	suites.jsonSuiteObject['Details']['default_onError']['@value'] = katana.$activeTab.find('#default_OnError_goto').val();
 	suites.jsonSuiteObject['Details']['InputDataFile'] = katana.$activeTab.find('#suiteInputDataFile').val();
 	suites.jsonSuiteObject['SaveToFile'] = katana.$activeTab.find('#my_file_to_save').val();
+
+	suites.jsonSuiteObject['Details']["type"]["@exectype"]= katana.$activeTab.find("#suiteDatatype").val();
+	suites.jsonSuiteObject['Details']["type"]['@Number_Attempts']= katana.$activeTab.find("#data_type_num_attempts").val();
+	suites.jsonSuiteObject['Details']["type"]['@Max_Attempts']= katana.$activeTab.find("#data_type_max_attempts").val();
 
 	console.log("Saving ... ", suites.jsonSuiteObject['Details']);
 	   var date = new Date();
@@ -460,10 +464,10 @@ Two global variables are heavily used when this function is called;
 
 	var gotoStep = katana.$activeTab.find('#default_onError').val();
 	//console.log("Step ", gotoStep);
-	var defgoto = katana.$activeTab.find('#suite_default_onError_goto'); 
+	var defgoto = katana.$activeTab.find('#default_onError_goto'); 
 		defgoto.hide();
 
-	if (gotoStep.trim() == 'goto'.trim()) { 
+	if (gotoStep.trim() == 'goto') { 
 		defgoto.show();
 	} else {
 		defgoto.hide();
@@ -484,7 +488,7 @@ Two global variables are heavily used when this function is called;
 	var defgoto = popup.find('#caseonError-at-value'); 
 	defgoto.hide();
 
-	if (gotoStep.trim() == 'goto'.trim()) { 
+	if (gotoStep.trim() == 'goto'()) { 
 		defgoto.show();
 	} else {
 		defgoto.hide();
