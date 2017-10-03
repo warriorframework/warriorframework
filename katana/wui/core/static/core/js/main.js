@@ -94,7 +94,7 @@ var katana = {
 		page.addClass('removing');
 		setTimeout(function () {
 			page.remove();
-			katana.tabMod( katana.$view.find('.nav .tab.active'), katana.$activeTab.find('.tab-template') );
+			katana.$activeTab.find('.tab-template').length && katana.tabMod( katana.$view.find('.nav .tab.active'), katana.$activeTab.find('.tab-template') );
 		}, 200);
 	},
 
