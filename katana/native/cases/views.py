@@ -303,6 +303,11 @@ def editCase(request):
 	except:
 		xml_r["Testcase"]["Requirements"] = {}
 
+
+
+	print "filename ", filename 
+	print "subdir ", subdir 
+	print "path to cases ", path_to_testcases
 	context = { 
 		'fullpathname': filename,
 		'savefilename': fn,
@@ -362,11 +367,19 @@ def getCaseDataBack(request):
 	ijs = request.POST.get(u'json')
 	fn = request.POST.get(u'filetosave')
 	sb = request.POST.get(u'savesubdir')
-	fname = sb + os.sep + fn;  
+	fname = sb + os.sep + fn; 
+	if fname.find(".xml") < 2: fname = fname + ".xml"
+	 
 	print "save case to ", fname 
  
 	xml = xmltodict.unparse(json.loads(ijs), pretty=True)	
 	fd = open(fname,'w');
 	fd.write(xml);
 	fd.close();
+
+
+
+
+
+
 	return redirect(request.META['HTTP_REFERER'])

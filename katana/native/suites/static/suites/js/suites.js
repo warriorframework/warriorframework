@@ -342,8 +342,7 @@ Two global variables are heavily used when this function is called;
 	suites.jsonSuiteObject['Details']['Title'] = katana.$activeTab.find('#suiteTitle').val();
 	suites.jsonSuiteObject['Details']['Engineer'] = katana.$activeTab.find('#suiteEngineer').val();
 	suites.jsonSuiteObject['Details']['Resultsdir'] = katana.$activeTab.find('#suiteResults').val();
-	suites.jsonSuiteObject['Details']['Date'] = katana.$activeTab.find('#suiteDate').val().split(' ')[0];
-	suites.jsonSuiteObject['Details']['Time'] = katana.$activeTab.find('#suiteDate').val().split(' ')[1];
+
 	suites.jsonSuiteObject['Details']['default_onError'] = { '@value': '', '@action' : ''};
 	suites.jsonSuiteObject['Details']['default_onError']['@action'] = katana.$activeTab.find('#defaultOnError').val();
 	suites.jsonSuiteObject['Details']['default_onError']['@value'] = katana.$activeTab.find('#defaultOnError_goto').val();
@@ -351,12 +350,24 @@ Two global variables are heavily used when this function is called;
 	suites.jsonSuiteObject['SaveToFile'] = katana.$activeTab.find('#my_file_to_save').val();
 
 	console.log("Saving ... ", suites.jsonSuiteObject['Details']);
+	   var date = new Date();
+	   var year = date.getFullYear();
+       var month = date.getMonth() + 1;// months are zero indexed
+       var day = date.getDate();
+       var hour = date.getHours();
+       var minute = date.getMinutes();
+       var hr =  hour % 12 || 12
 
+	suites.jsonSuiteObject['Details']['Date'] = month + "/" + day + "/" + year; 
+	suites.jsonSuiteObject['Details']['Time'] = hr + ":" + minute;
 
 	// Override the name 
-	var newname = katana.$activeTab.find('#my_file_to_save').val();
-	var nlen = newname.length - 4; 
-	suites.jsonSuiteObject['Details']['Name'] = newname.slice(0,nlen); 
+
+
+	var xfname = suites.jsonSuiteObject['Details']['Name'];
+	if (xfname.indexOf(".xml") < 2) {
+		xfname = xfname + ".xml";
+	}
 	
 	console.log(suites.jsonSuiteObject);
 	console.log(suites.jsonSuiteObject['Testcases']);
@@ -376,7 +387,7 @@ Two global variables are heavily used when this function is called;
 	    type: "POST",
 	    data : { 
 	    	'json': JSON.stringify(topNode),
-	    	'filetosave': katana.$activeTab.find('#my_file_to_save').val(),
+	    	'filetosave': xfname,
 	    	'savefilepath': katana.$activeTab.find('#savefilepath').text()
 	    	},
 	    headers: {'X-CSRFToken':csrftoken},
@@ -659,7 +670,7 @@ Two global variables are heavily used when this function is called;
 		console.log("Line 328 or so "+bid); 
 		items.push('<td><i  class="fa fa-trash"  title="Delete" skey="'+bid+'" katana-click="suites.deleteRequirementCB"/>');
 		bid = "editRequirement-"+s+"-id";
-		items.push('<i class="fa fa-pencil" title="Save Edit" skey="'+bid+'" katana-click="suites.saveRequirementCB"/>');
+		items.push('<i class="fa fa-floppy-o" title="Save Edit" skey="'+bid+'" katana-click="suites.saveRequirementCB"/>');
 		bid = "insertRequirement-"+s+"-id";
 		items.push('<i class="fa fa-plus"  title="Insert" skey="'+bid+'" katana-click="suites.insertRequirementCB"/></td>');
 		

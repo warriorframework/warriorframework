@@ -203,26 +203,71 @@ function jsUcfirst(string)
 		return;
 	}
 
-	cases.jsonCaseObject['Details']['Name'] = katana.$activeTab.find('#caseName').attr('value');
-	cases.jsonCaseObject['Details']['Title'] = katana.$activeTab.find('#caseTitle').attr('value');
-	cases.jsonCaseObject['Details']['Category'] = katana.$activeTab.find('#caseCategory').attr('value');
-	cases.jsonCaseObject['Details']['State'] = katana.$activeTab.find('#caseState').attr('value');
-	cases.jsonCaseObject['Details']['Engineer'] = katana.$activeTab.find('#caseEngineer').attr('value');
-	cases.jsonCaseObject['Details']['Title'] = katana.$activeTab.find('#caseTitle').attr('value');
-	cases.jsonCaseObject['Details']['Date'] = katana.$activeTab.find('#caseDate').attr('value');
-	cases.jsonCaseObject['Details']['default_onError'] = katana.$activeTab.find('#default_onError').attr('value');
-	cases.jsonCaseObject['Details']['Datatype'] = katana.$activeTab.find('#caseDatatype').attr('value');
-	cases.jsonCaseObject['dataPath'] =  katana.$activeTab.find('#caseInputDataFile').attr('value');
-	cases.jsonCaseObject['resultsDir'] =  katana.$activeTab.find('#caseResultsDir').attr('value');
-	cases.jsonCaseObject['logsDir'] =  katana.$activeTab.find('#caseLogsDir').attr('value');
-	cases.jsonCaseObject['expectedDir'] =  katana.$activeTab.find('#caseExpectedResults').attr('value');
-	cases.jsonCaseObject['SaveToFile'] =  katana.$activeTab.find('#my_file_to_save').attr('value');
+
+		var xfname = katana.$activeTab.find('#caseName').val();
+		if (xfname.indexOf(".xml") < 0) { 
+			xfname  = xfname + ".xml";
+		}
+
+
+	// cases.jsonCaseObject['Details']['Name'] = katana.$activeTab.find('#caseName').attr('value');
+	// cases.jsonCaseObject['Details']['Title'] = katana.$activeTab.find('#caseTitle').attr('value');
+	// cases.jsonCaseObject['Details']['Category'] = katana.$activeTab.find('#caseCategory').attr('value');
+	// cases.jsonCaseObject['Details']['State'] = katana.$activeTab.find('#caseState').attr('value');
+	// cases.jsonCaseObject['Details']['Engineer'] = katana.$activeTab.find('#caseEngineer').attr('value');
+	// cases.jsonCaseObject['Details']['Title'] = katana.$activeTab.find('#caseTitle').attr('value');
+	// cases.jsonCaseObject['Details']['Date'] = katana.$activeTab.find('#caseDate').attr('value');
+	cases.jsonCaseObject['Details']['Name'] = katana.$activeTab.find('#caseName').val();
+	cases.jsonCaseObject['Details']['Title'] = katana.$activeTab.find('#caseTitle').val();
+	cases.jsonCaseObject['Details']['Category'] = katana.$activeTab.find('#caseCategory').val();
+	cases.jsonCaseObject['Details']['State'] = katana.$activeTab.find('#caseState').val();
+	cases.jsonCaseObject['Details']['Engineer'] = katana.$activeTab.find('#caseEngineer').val();
+	cases.jsonCaseObject['Details']['Title'] = katana.$activeTab.find('#caseTitle').val();
+	cases.jsonCaseObject['Details']['Date'] = katana.$activeTab.find('#caseDate').val();
+
+	console.log("Attributes ", cases.jsonCaseObject);
+
+	// var items = cases.jsonCaseObject['Details']['Date'].split(' ');
+	// cases.jsonCaseObject['Details']['Date'] = items[0];
+	// if ( items.length > 1) { 	
+	// 	cases.jsonCaseObject['Details']['Time'] = items[1];
+	// } else { 
+	// 	cases.jsonCaseObject['Details']['Time'] = '00:00';
+
+	// }
+	var date = new Date();
+   	var year = date.getFullYear();
+   	var month = date.getMonth() + 1;// months are zero indexed
+   	var day = date.getDate();
+   	var hour = date.getHours();
+   	var minute = date.getMinutes();
+   	var hr =  hour % 12 || 12
+
+	cases.jsonCaseObject['Details']['Date'] = month + "/" + day + "/" + year; 
+	cases.jsonCaseObject['Details']['Time'] = hr + ":" + minute; 
+
+
+	// cases.jsonCaseObject['Details']['default_onError'] = katana.$activeTab.find('#default_onError').attr('value');
+	// cases.jsonCaseObject['Details']['Datatype'] = katana.$activeTab.find('#caseDatatype').attr('value');
+	// cases.jsonCaseObject['dataPath'] =  katana.$activeTab.find('#caseInputDataFile').attr('value');
+	// cases.jsonCaseObject['resultsDir'] =  katana.$activeTab.find('#caseResultsDir').attr('value');
+	// cases.jsonCaseObject['logsDir'] =  katana.$activeTab.find('#caseLogsDir').attr('value');
+	// cases.jsonCaseObject['expectedDir'] =  katana.$activeTab.find('#caseExpectedResults').attr('value');
+	cases.jsonCaseObject['Details']['default_onError'] = katana.$activeTab.find('#default_onError').val();
+	cases.jsonCaseObject['Details']['Datatype'] = katana.$activeTab.find('#caseDatatype').val();
+	cases.jsonCaseObject['dataPath'] =  katana.$activeTab.find('#caseInputDataFile').val();
+	cases.jsonCaseObject['resultsDir'] =  katana.$activeTab.find('#caseResultsDir').val();
+	cases.jsonCaseObject['logsDir'] =  katana.$activeTab.find('#caseLogsDir').val();
+	cases.jsonCaseObject['expectedDir'] =  katana.$activeTab.find('#caseExpectedResults').val();
+	
 
 	if (!cases.jsonCaseObject['Requirements']) {
 		cases.jsonCaseObject['Requirements'] = []; 
 	}
  
 	// Now you have collected the user components...
+
+	console.log("Finished ....");
 	} ,
 
 // Start the WDF editor. 
@@ -231,6 +276,9 @@ function jsUcfirst(string)
 	var filename = katana.$activeTab.find(tag).attr("fullpath");
 	dd = { 'path' : filename}; 
 	katana.templateAPI.load( "/katana/wdf/index", null, null, "WDF", null, { type: 'POST', data:  dd}) ;
+
+
+
 	},
 
 	getFileSavePath: function () {
@@ -325,31 +373,40 @@ function jsUcfirst(string)
 	sendCaseToServer: function () {
 		cases.mapUiToCaseJson();
 		var url = "./cases/getCaseDataBack";
-		var csrftoken = $("[name='csrfmiddlewaretoken']").attr('value');
-
+		var csrftoken = katana.$activeTab.find("[name='csrfmiddlewaretoken']").val();
+		console.log("sending case 2");
 		$.ajaxSetup({
 				function(xhr, settings) {
 				xhr.setRequestHeader("X-CSRFToken", csrftoken)
 			}
 		});
 
-		var topNode  = { 'Testcase' : cases.jsonCaseObject};
 
+		var xfname = katana.$activeTab.find('#caseName').val();
+		if (xfname.indexOf(".xml") < 0) { 
+			xfname  = xfname + ".xml";
+		}
+		
+
+		var topNode  = { 'Testcase' : cases.jsonCaseObject};
+		console.log("sending case 3", xfname, cases.jsonCaseObject);
+		
 		$.ajax({
 		url : url,
 		type: "POST",
 		data : { 
 			'json': JSON.stringify(topNode),	
-			'filetosave': katana.$activeTab.find('#my_file_to_save').attr('value'),
+			'filetosave': xfname,
 			'savesubdir': katana.$activeTab.find('#savesubdir').text(),
 			},
 		headers: {'X-CSRFToken':csrftoken},
 		success: function( data ){
-
-		xdata = { 'heading': "Sent", 'text' : "sent the file... "+data}
-		katana.openAlert(xdata);
+			// The following causes an exception
+			//xdata = { 'heading': "Sent", 'text' : "sent the file... "+data}
+			//katana.openAlert(xdata);
+			alert("Saved..."+data)
 	
-		}
+		},
 	});
 },
 

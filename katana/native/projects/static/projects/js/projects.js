@@ -468,12 +468,19 @@ Two global variables are heavily used when this function is called;
 	if (katana.$activeTab.find('#projectEngineer ').val().length < 1) {
 		data = { 'heading': "Error", 'text' : "Please specific a name for the engineer"}
 		katana.openAlert(data);
-		return
+		return;
 	}
 
-	$('#my_file_to_save').val(katana.$activeTab.find('#projectName').val());
-
 	projects.jsonProjectObject['Details']['Name'] = katana.$activeTab.find('#projectName').val();
+
+	// 
+	var xfname = katana.$activeTab.find('#projectName').val();
+	if (xfname.indexOf(".xml") < 2) {
+		xfname = xfname + ".xml";
+	}
+
+	console.log("Save to",xfname );
+	
 	projects.jsonProjectObject['Details']['Title'] = katana.$activeTab.find('#projectTitle').val();
 	projects.jsonProjectObject['Details']['Engineer'] = katana.$activeTab.find('#projectEngineer').val();
 	projects.jsonProjectObject['Details']['State'] = katana.$activeTab.find('#projectState').val();
@@ -481,7 +488,19 @@ Two global variables are heavily used when this function is called;
 	projects.jsonProjectObject['Details']['default_onError']['@action'] = katana.$activeTab.find('#default_onError').val();
 	projects.jsonProjectObject['Details']['default_onError']['@value'] = katana.$activeTab.find('#default_onError_goto').val();
 	projects.jsonProjectObject['Details']['Datatype'] = katana.$activeTab.find('#projectDatatype').val();
-	projects.jsonProjectObject['SaveToFile'] = katana.$activeTab.find('#my_file_to_save').val();
+	
+		var date = new Date();
+	  
+	   var year = date.getFullYear();
+       var month = date.getMonth() + 1;// months are zero indexed
+       var day = date.getDate();
+       var hour = date.getHours();
+       var minute = date.getMinutes();
+       var hr =  hour % 12 || 12
+
+	projects.jsonProjectObject['Details']['Date'] = month + "/" + day + "/" + year; 
+	projects.jsonProjectObject['Details']['Time'] = hr + ":" + minute; 
+	
 	//
 	// Now walk the DOM ..
 	// Create dynamic ID values based on the Suite's location in the UI. 
@@ -500,21 +519,22 @@ Two global variables are heavily used when this function is called;
 	});
 	
 	var topNode  = { 'Project' : projects.jsonProjectObject};
-
+	console.log("Save to",xfname , projects.jsonProjectObject);
 
 	$.ajax({
-	    url : url,
+		url:url,
 	    type: "POST",
 	    data : { 
 	    	'json': JSON.stringify(topNode),
-	    	'filetosave': katana.$activeTab.find('#filesavepath').text() + "/" + $('#my_file_to_save').val()
+	    	'filetosave': xfname
 	    	},
 	    headers: {'X-CSRFToken':csrftoken},
-    
+    	
     success: function( data ){
-    	var outstr = "Saved "+katana.$activeTab.find('#filesavepath').text() + "/" + $('#my_file_to_save').val();
-    	xdata = { 'heading': "Saved", 'text' : outstr }
-		katana.openAlert(xdata);
+    	//var outstr = "Saved "+katana.$activeTab.find('#filesavepath').text() + "/" + katana.$activeTab.find('#projectName').val();
+    	//xdata = { 'heading': "Saved", 'text' : outstr }
+		//katana.openAlert(xdata);
+		alert("Saved...");
     	}
 	});
 
@@ -666,9 +686,7 @@ Two global variables are heavily used when this function is called;
 						suites.mapFullSuiteJson(fname);
 	    		});
 
-		});
-	   
-
+		}); 
 	},
 
 	testProjectSortEventHandler : function(event, ui ) {

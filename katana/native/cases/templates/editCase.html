@@ -5,10 +5,10 @@
         <i id="addStep" class="button" katana-click="cases.addNewTestStepToUI">Add Step To Case</i>
         <i class="button" katana-click="cases.addRequirementToCase">Add Requirement</i>
         <i class="button" katana-click="cases.sendCaseToServer">Write Changes To Disk</i>
-         <label class="col-md-2 text-right" t>Save file to </label>
-        <input class="text-right col-md-4" type="text" id="my_file_to_save" name="my_file_to_save" value="{{savefilename}}" />
-    </div>
 
+        
+    </div>
+<div class="csrf-container">{% csrf_token %}</div>
    <div auto-init="cases.mapFullCaseJson"> 
     <div class="container-fluid" >
         <div class="row">

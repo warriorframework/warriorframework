@@ -3,10 +3,10 @@
 			
 
 <div class="tool-bar">
-	    	<i id="addSuite" class="button" katana-click="projects.addSuiteToProject">Add Suite To Project</i>-->
+	    	<i id="addSuite" class="button" katana-click="projects.addSuiteToProject">Add Suite To Project</i>
 			<!-- <button class="btn btn-primary" onclick="resetUIfromFile()">Discard Changes</button>  -->
-			<i class="button" katana-click="projects.mapUiToProjectJson">Save Changes to : </i>
-			<input class="col-md-4 text-right" type="text" id="my_file_to_save" name="my_file_to_save" value="{{projectName}}.xml"/>
+			<i class="button" katana-click="projects.mapUiToProjectJson">Save Changes to Disk </i>
+
 </div>
 
 
@@ -63,7 +63,7 @@
 			<div class="field col-md-3 input_padding">	
 				
 				<label class="text-right">Results Dir:</label>
-				<button class="btn btn-info" onclick="projects.getResultsDirForProject()">...</button>
+				<button class="btn btn-info" onclick="projects.getResultsDirForProject">...</button>
 				<div class="" id="fileNames"></div>
 				<input class="text-right" type="text" id="projectResultsDir" name="projectResultsDir" value="{{resultsDir}}" />
 			</div>
@@ -81,7 +81,7 @@
 				<div class="field ">
 				<label >Path*:</label>
 
-				<button class="btn btn-info hidden" text-id="suitePath" onclick="getSuiteDataForProject()">...</button>
+				<button class="btn btn-info hidden" text-id="suitePath" katana-click="projects.getSuiteDataForProject">...</button>
 				<input type="text" id="suitePath" value=""/>
 				</div>
 				<div class="field ">
