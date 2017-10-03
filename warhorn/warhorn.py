@@ -1088,6 +1088,8 @@ def activate_virtualenv(node, destination, logfile, print_log_name):
     except Exception as e:
         print_error("Activating virtual env at {} resulted in exception {}".format(
                                                 ve_dest, e), logfile, print_log_name)
+        print_error("Check {} is a proper virtualenv binary".format(ve_loc),
+                    logfile, print_log_name)
         setDone(1)
         return False
 
