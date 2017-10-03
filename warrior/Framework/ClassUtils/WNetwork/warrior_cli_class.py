@@ -27,6 +27,7 @@ from Framework.Utils.cli_Utils import cmdprinter
 from Framework.ClassUtils import database_utils_class
 from Framework.ClassUtils.WNetwork.loging import ThreadedLog
 from Framework.Utils.list_Utils import get_list_by_separating_strings
+from Framework.Utils.data_Utils import get_object_from_datarepository
 
 
 """ Module for performing CLI operations """
@@ -247,7 +248,59 @@ class WarriorCli(object):
                     finalresult = "ERROR"
                 finalresult = finalresult and result
             responses_dict[key] = response_dict
-        return finalresult, responses_dict
+
+        td_sys_list = []
+        td_session_list = []
+        td_session_id = ''
+        td_resp_dict = {}
+
+        # Fetching the system name and session name from details dict if available,
+        # else takes from test case.
+        if finalresult:
+            for i in details_dict["sys_list"]:
+                # If sys_list in None or if sys_tag in td file has only subsystem name, then it takes
+                # from the test case else fetches from the td file.
+                if i is None or i is '' or i.startswith('['):
+                    td_sys_list.append(system_name)
+                else:
+                    td_sys_list.append(i)
+            for k in details_dict["session_list"]:
+                # If session name not available it td file, it fetches from the test case.
+                if k is None or k is '':
+                    td_session_list.append(session_name)
+                else:
+                    td_session_list.append(k)
+
+            for title_row, temp_resp_dict in responses_dict.iteritems():
+                for count, value in enumerate(temp_resp_dict):
+                    # if session name is given along with system name in td file, then it is split and
+                    # saved respectively. (eg: sys_name = sys1.session1)
+                    temp_sys = td_sys_list[count].split('.', 1)
+                    if len(temp_sys) > 1:
+                        temp_sess_name = temp_sys[1]
+                    else:
+                        temp_sess_name = td_session_list[count]
+                    # session id is formed from the system name and session name.
+                    td_session_id = Utils.data_Utils.get_session_id(temp_sys[0], temp_sess_name)
+                    td_resp_dict = get_object_from_datarepository(str(td_session_id)+"_td_response")
+
+                    tr_dict = {title_row :{}}
+                    # checks if title_row value is not in td_resp_dict
+                    if title_row not in td_resp_dict.keys():
+                    # if not available then it first updates the title_row value to td_resp_dict
+                        td_resp_dict.update(tr_dict)
+                        # after updating title_row value, it updates the resp_ref key and value
+                        resp_key_value_dict = {value: temp_resp_dict[value]}
+                        if not WarriorCliClass.cmdprint:
+                            td_resp_dict[title_row].update(resp_key_value_dict)
+                    # if title_row value available in td_resp_dict,
+                    # then it updates the resp_ref key and value to td_resp_dict
+                    else:
+                        resp_key_value_dict = {value: temp_resp_dict[value]}
+                        if not WarriorCliClass.cmdprint:
+                            td_resp_dict[title_row].update(resp_key_value_dict)
+
+        return finalresult, responses_dict, td_resp_dict
 
     @cmdprinter
     def _send_cmd(self, **kwargs):

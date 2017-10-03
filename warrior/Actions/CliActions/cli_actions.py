@@ -822,18 +822,13 @@ class CliActions(object):
         #testdata = abspaths[0]
         #varconfigfile = abspaths[1]
         # td_resp_dict = {}
-        status, resp_dict = cli_Utils.send_commands_from_testdata(testdata, session_object,
+        status, resp_dict, td_resp_dict= cli_Utils.send_commands_from_testdata(testdata, session_object,
                                                                   varconfigfile=varconfigfile,
                                                                   var_sub=var_sub,
                                                                   title=title, row=row_num,
                                                                   system_name=system_name,
                                                                   session_name=session_name,
                                                                   datafile=self.datafile)
-
-        td_resp_dict = get_object_from_datarepository(str(session_id)+"_td_response")
-        if not WarriorCliClass.cmdprint:
-            td_resp_dict.update(resp_dict)
-
 
         Utils.testcase_Utils.report_substep_status(status)
         return  status, td_resp_dict
