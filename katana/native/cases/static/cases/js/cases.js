@@ -96,7 +96,7 @@ function jsUcfirst(string)
 
 
 	// Star editor. 
-	start_wdfEditor: function() { 
+	barelly_working_start_wdfEditor: function() { 
 	var tag = '#caseInputDataFile';
 	var filename = katana.$activeTab.find(tag).attr("fullpath");
 	dd = { 'path' : filename}; 
@@ -104,17 +104,17 @@ function jsUcfirst(string)
 
 	},
 
-	new_start_wdfEditor: function() { 
+	start_wdfEditor: function() { 
 		var tag = '#caseInputDataFile';
 		var filename = katana.$activeTab.find(tag).attr("fullpath");
 	
 		var xref='/katana/wdf/index'; 
 	  	console.log("Calling wdf",  xref);
 		var href='/katana/wdf';
-	  	katana.templateAPI.load.call(this, href, '/static/cases/js/cases.js,', null, 'case', function() { 
-				var xref="./cases/editCase/?fname="+fname; 
+	  	katana.templateAPI.load.call(this, href, '/static/wdf-edit/js/wdf-edit.js,', null, 'wdf', function() { 
+				var xref="/wdf/index"; 
 	    		katana.templateAPI.subAppLoad(xref,null,function(thisPage) {
-						cases.mapFullCaseJson(fname,'#listOfTestStepsForCase');
+						//cases.mapFullCaseJson(fname,'#listOfTestStepsForCase');
 	    		});
 
 		});
@@ -937,7 +937,8 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		var names = this.attr('key').split('-');
 		var sid = parseInt(names[1]);
 		cases.adjustRequirementsTable();
-		cases.jsonCaseObject['Requirements']['Requirement'].splice(sid - 1, 0, "");
+		console.log("Insert log in, ", sid);
+		cases.jsonCaseObject['Requirements']['Requirement'].splice(sid, 0, "");
 		cases.createRequirementsTable();	
 	},
 
