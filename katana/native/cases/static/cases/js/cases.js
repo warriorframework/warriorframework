@@ -95,29 +95,26 @@ function jsUcfirst(string)
 	},
 
 
-	// Star editor. 
-	barelly_working_start_wdfEditor: function() { 
-	var tag = '#caseInputDataFile';
-	var filename = katana.$activeTab.find(tag).attr("fullpath");
-	dd = { 'path' : filename}; 
-		katana.templateAPI.load( "/katana/wdf/index", null, null, "WDF", null, { type: 'POST', data:  dd}) ;
 
-	},
 
 	start_wdfEditor: function() { 
 		var tag = '#caseInputDataFile';
-		var filename = katana.$activeTab.find(tag).attr("fullpath");
-	
-		var xref='/katana/wdf/index'; 
-	  	console.log("Calling wdf",  xref);
-		var href='/katana/wdf';
-	  	katana.templateAPI.load.call(this, href, '/static/wdf-edit/js/wdf-edit.js,', null, 'wdf', function() { 
-				var xref="/wdf/index"; 
-	    		katana.templateAPI.subAppLoad(xref,null,function(thisPage) {
-						//cases.mapFullCaseJson(fname,'#listOfTestStepsForCase');
-	    		});
+		var filename = katana.$activeTab.find('#caseInputDataFile').attr("fullpath");
+		var csrftoken = $("[name='csrfmiddlewaretoken']").val();
+		//http://localhost:5000/katana/#
 
-		});
+		var href='/katana/wdf/index';
+		dd = { 'path' : filename}; 
+		pd = { type: 'POST',
+			   headers: {'X-CSRFToken':csrftoken},
+			   data:  dd};
+			  console.log("Pd = ", pd);
+	  	katana.templateAPI.load.call(this, href, '/static/wdf_edit/js/main.js,', null, 'wdf', function() { 
+				//var xref="/katana/wdf/index"; 
+	    		//katana.templateAPI.subAppLoad(xref,null,function(thisPage) {
+				console.log("loaded wdf");
+	    		//});
+		}, pd);
 	},
 
 
@@ -223,30 +220,28 @@ function jsUcfirst(string)
 
 	mapUiToCaseJson: function() {
 
-	if ( katana.$activeTab.find('#caseName').attr('value').length < 1) {
-		data = { 'heading': "Error", 'text' : "Please specific a case name "}
-		katana.openAlert(data);
-		return -1;
-	}
+		if ( katana.$activeTab.find('#caseName').attr('value').length < 1) {
+			data = { 'heading': "Error", 'text' : "Please specific a case name "}
+			katana.openAlert(data);
+			return -1;
+		}
 
-	if ( katana.$activeTab.find('#caseTitle').attr('value').length < 1) {
-		data = { 'heading': "Error", 'text' : "Please specific a title "}
-		katana.openAlert(data);
-		return -1;
-	}
-	if ( katana.$activeTab.find('#caseEngineer').attr('value').length < 1) {
-		data = { 'heading': "Error", 'text' : "Please specific a name for the engineer"}
-		katana.openAlert(data);
-		return -1;
-	}
-
-
-		var xfname = katana.$activeTab.find('#caseName').val();
-		if (xfname.indexOf(".xml") < 0) { 
-			xfname  = xfname + ".xml";
+		if ( katana.$activeTab.find('#caseTitle').attr('value').length < 1) {
+			data = { 'heading': "Error", 'text' : "Please specific a title "}
+			katana.openAlert(data);
+			return -1;
+		}
+		if ( katana.$activeTab.find('#caseEngineer').attr('value').length < 1) {
+			data = { 'heading': "Error", 'text' : "Please specific a name for the engineer"}
+			katana.openAlert(data);
+			return -1;
 		}
 
 
+			var xfname = katana.$activeTab.find('#caseName').val();
+			if (xfname.indexOf(".xml") < 0) { 
+				xfname  = xfname + ".xml";
+			}
 
 	cases.jsonCaseObject['Details']['Name'] = katana.$activeTab.find('#caseName').val();
 	cases.jsonCaseObject['Details']['Title'] = katana.$activeTab.find('#caseTitle').val();
@@ -279,7 +274,6 @@ function jsUcfirst(string)
 	cases.jsonCaseObject['Details']['Resultsdir'] =  katana.$activeTab.find('#caseResultsDir').val();
 	cases.jsonCaseObject['Details']['Logsdir'] =  katana.$activeTab.find('#caseLogsDir').val();
 	cases.jsonCaseObject['Details']['ExpectedResults'] =  katana.$activeTab.find('#caseExpectedResults').val();
-	
 
 	if (!cases.jsonCaseObject['Requirements']) {
 		cases.jsonCaseObject['Requirements'] = []; 
@@ -571,7 +565,17 @@ The UI currently uses jQuery and Bootstrap to display the data.
 	katana.$activeTab.find('#Step_table_display tbody').sortable( { stop: cases.testCaseSortEventHandler});
 	
 	cases.fillCaseDefaultGoto();
-	katana.$activeTab.find('#default_onError').on('change',cases.fillCaseDefaultGoto );
+	katana.$activeTab.find('#default_onError').on('change',cases.fillCaseDefaultGoto )
+
+
+	var tag = '#caseInputDataFile'
+	var xf = katana.$activeTab.find(tag).val() ;
+	var savefilepath = katana.$activeTab.find('#savesubdir').text();
+	var nf = absFromPrefix(savefilepath,xf);
+	katana.$activeTab.find(tag).attr("value", xf);			
+	katana.$activeTab.find(tag).attr("fullpath", nf);
+	console.log("File path ==", savefilepath, xf, nf);
+			
 
 	/*
 	if (cases.jsonCaseDetails['Datatype'] == 'Custom') {

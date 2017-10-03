@@ -18,9 +18,10 @@ def index(request):
     # Check to open new/existing file
     config = read_json_data(Navigator().get_katana_dir() + os.sep + "config.json")
     wdfdir = config["idfdir"]
-
     if request.method == "POST":
         data = request.POST
+        print data; 
+        print request.body,request.method
         filepath = data["path"]
         filepath = filepath.replace(wdfdir, "")
         filepath = filepath[1:] if filepath.startswith(os.sep) else filepath

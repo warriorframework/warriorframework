@@ -450,23 +450,24 @@ Two global variables are heavily used when this function is called;
 },
 
 
-	start_wdfEditor: function() { 
+		start_wdfEditor: function() { 
 		var tag = '#suiteInputDataFile';
 		var filename = katana.$activeTab.find(tag).attr("fullpath");
 		console.log("WDF editor opening...", filename); 
-		//katana.templateAPI.load( "/katana/wdf/index", null, null, "WDF", null, { type: 'POST', data:  dd});
 		var csrftoken = $("[name='csrfmiddlewaretoken']").val();
-
-		var xref="wdf/index"; 
-		dd = {  
-				url: xref,
-				type: 'POST', 
-				data: { 'path' : filename} ,
- 				headers: {'X-CSRFToken':csrftoken},
-			}; 
-	    katana.templateAPI.subAppLoad(xref,null,function(thisPage) {
-						//cases.mapFullCaseJson(fname,'#listOfTestStepsForCase');
-	    		}, dd);
+	
+		var href='/katana/wdf/index';
+		dd = { 'path' : filename}; 
+		pd = { type: 'POST',
+			   headers: {'X-CSRFToken':csrftoken},
+			   data:  dd};
+			  console.log("Pd = ", pd);
+	  		katana.templateAPI.load.call(this, href, '/static/wdf_edit/js/main.js,', null, 'wdf', function() { 
+				//var xref="/katana/wdf/index"; 
+	    		//katana.templateAPI.subAppLoad(xref,null,function(thisPage) {
+				console.log("loaded wdf");
+	    		//});
+		}, pd);
 
 	},
 

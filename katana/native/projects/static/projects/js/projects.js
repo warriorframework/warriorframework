@@ -423,7 +423,7 @@ startNewProject : function() {
      katana.fileExplorerAPI.openFileExplorer("Select a file", false , $("[name='csrfmiddlewaretoken']").val(), false, callback_on_accept, callback_on_dismiss);
 },
 
-getSuiteDataForProject: function () {
+	getSuiteDataForProject: function () {
 		  var popup = projects.lastPopup;
 		  var tag = popup.find('#suitePath');
 	      var callback_on_accept = function(selectedValue) { 
