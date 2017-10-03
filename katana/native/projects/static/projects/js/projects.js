@@ -16,6 +16,29 @@ the views.py python for Django.
 /// -------------------------------------------------------------------------------
 
 */
+function absFromPrefix(pathToBase, pathToFile) {
+	// Converts an absolute path to one that is relative to pathToBase 
+	// Input: 
+	// 		
+	var bf = pathToBase.split('/');
+	var rf = pathToFile.split('/');
+	var nrf = pathToFile.split('/');
+	console.log("Removing", nrf, bf);
+	
+	for (var i=0;i< rf.length; i++) {
+		if (rf[i] == "..")  { 
+			bf.pop();
+			nrf.splice(0,1);
+			console.log("Removing", nrf, bf);
+	
+		} else {
+			break;
+		}
+	}
+	return bf.join('/') + '/' + nrf.join('/');
+}
+
+
 function prefixFromAbs(pathToBase, pathToFile) {
 	var stack = []; 
     var upem  = [];
@@ -28,14 +51,18 @@ function prefixFromAbs(pathToBase, pathToFile) {
 			break;
 		}
 	}
-	var tlen = rf.length - stack.length; 
-    var blen = stack.length;
-	for (var k=0;k < tlen-1; k++) {
+	var tlen = bf.length - stack.length; 
+	var blen = stack.length;
+	console.log("bf=",bf);
+	console.log("rf=",rf);
+	console.log("prefixFromAbs", rf, tlen, blen, stack);
+    for (var k=0;k < tlen; k++) {
 		upem.push("..");
 	}
-	return upem.join("/") + "/" + bf.splice(blen).join('/') + "/" +  rf[rf.length - 1];
+	var tail = rf.splice(blen,rf.length);
+	console.log('tail=', tail);
+	return upem.join("/") + "/" +   tail.join('/');
 }
-
 
 function jsUcfirst(string) 
 {
