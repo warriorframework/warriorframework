@@ -30,7 +30,7 @@
     <virtualenv name="war_virtualenv" location="~/.local/bin/virtualenv" install="no" />
 
 	<warriorframework url="https://github.com/warriorframework/warriorframework.git"
-                      destination="" label="" clean_install="yes" clone="no">
+                      label="" clean_install="yes" clone="no">
 	</warriorframework>
 
     <!--
