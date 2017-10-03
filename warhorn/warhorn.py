@@ -983,7 +983,7 @@ def validate_base_path(base_path, repo_name="warrior", **kwargs):
                                           config_file_name=config_file_name,
                                           console_log_name=console_log_name,
                                           print_log_name=print_log_name)
-            getDone()
+            getDone(logfile, print_log_name)
         else:
             return None
     return base_path
@@ -1184,7 +1184,7 @@ def assemble_warrior():
                                       console_log_name=console_log_name,
                                       print_log_name=print_log_name)
         setDone(1)
-        getDone()
+        getDone(logfile, print_log_name)
 
     check_basic_requirements(logfile, config_file_name, console_log_name,
                              print_log_name, python_executable)
