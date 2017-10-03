@@ -1,0 +1,48 @@
+<?xml version="1.0" ?>
+<TestSuite>
+        <Details>
+                <Name>ts_fw9500_deprovisioning</Name>
+                <Title>An automation suite to deprovision FW9500 </Title>
+                <Engineer>sradhakr</Engineer>
+                <Date>03/17/2017</Date>
+                <Time>21:37:23</Time>
+                <type Max_Attempts="" Number_Attempts="" exectype="sequential_testcases"/>
+                <State>Released</State>
+                <default_onError action="next" />
+                <Resultsdir/>
+        </Details>
+        <Requirements>
+                <Requirement>Requirement-demo-001</Requirement>
+                <Requirement>Requirement-demo-002</Requirement>
+        </Requirements>
+        <Testcases>
+
+                <Testcase>
+                        <path>../Cases/tc_vlan_deprovisioning.xml</path>
+                        <context>positive</context>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next" value=""/>
+                        <impact>impact</impact>
+                        <InputDataFile/>
+                        <Execute ExecType="yes">
+                                <Rule Condition="step_1_result" Condvalue="PASS" Else="abort" />
+                        </Execute>
+                        <runmode type="Standard" value=""/>
+                </Testcase>
+                <Testcase>
+                        <path>../Cases/tc_eqpt_deprovisioning.xml</path>
+                        <context>positive</context>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next" value=""/>
+                        <impact>impact</impact>
+                        <InputDataFile/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                        <runmode type="Standard" value=""/>
+                </Testcase>
+
+
+
+        </Testcases>
+</TestSuite>

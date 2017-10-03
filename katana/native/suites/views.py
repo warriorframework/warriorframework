@@ -37,6 +37,7 @@ def getSuiteListTree(request):
 	template = loader.get_template("listAllSuites.html")
 	jtree = navigator.get_dir_tree_json(fpath)
 	jtree['state']= { 'opened': True };
+	print jtree;
 	return JsonResponse({'treejs': jtree })
 
 def getJSONSuiteData(request):
@@ -85,10 +86,10 @@ def getEmpty():
 				[{"impact": "impact",
 				  "Execute": {"@ExecType": "yes", "Rule": {"@Elsevalue": "", "@Condvalue": "", "@Condition": "", "@Else": "next"}},
 				 "InputDataFile": "", "onError": {"@action": "next", "@value": ""}, 
-				 "runmode": {"@type": "Standard", "@value": ""}, "context": "positive", "runtype": "sequential_keywords", "path": "../Cases/.xml"}, 
+				 "runmode": {"@type": "standard", "@value": ""}, "context": "positive", "runtype": "sequential_keywords", "path": "../Cases/EDITME.xml"}, 
 				 {"impact": "impact", "Execute": {"@ExecType": "Yes", "Rule": {"@Elsevalue": "", "@Condvalue": "", "@Condition": "", "@Else": "next"}}, 
 				 "InputDataFile": "", "onError": {"@action": "next", "@value": ""}, 
-				 "runmode": {"@type": "Standard", "@value": ""}, "context": "positive", "runtype": "sequential_keywords", "path": "../Cases/tc_disconnect.xml"}]}, 
+				 "runmode": {"@type": "standard", "@value": ""}, "context": "positive", "runtype": "sequential_keywords", "path": "../Cases/EDITME.xml"}]}, 
 				 "Requirements": {"Requirement": ["Requirement-demo-001", "Requirement-demo-002"]}, "Details": {"Name": "Name Here", "Title": "Title", 
 				 "Resultsdir": "", 
 				 "State": "Released", 
@@ -134,17 +135,27 @@ def editSuite(request):
 	xml_r["TestSuite"]["Details"]["Resultsdir"] = ""
 	xml_r["TestSuite"]["Details"]["InputDataFile"] = ""
 	xml_r["TestSuite"]["Details"]["type"]["@exectype"] = "sequential_testcases"
-	xml_r["TestSuite"]["Details"]["onError"] = {}
-	xml_r["TestSuite"]["Details"]["onError"]['@action']= ""
-	xml_r["TestSuite"]["Details"]["onError"]['@value']= ""
+	xml_r["TestSuite"]["Details"]["type"]["@Number_Attempts"] = "0"
+	xml_r["TestSuite"]["Details"]["type"]["@Max_Attempts"] = "0"
+	
+	xml_r["TestSuite"]["Details"]["default_onError"] = {}
+	xml_r["TestSuite"]["Details"]["default_onError"]['@action']= ""
+	xml_r["TestSuite"]["Details"]["default_onError"]['@value']= ""
 
 	xml_r["TestSuite"]["Testcases"] = { 'Testcase' :[] }
 	
 	if filename.upper() == 'NEW':
 		xml_d = copy.deepcopy(xml_r);
 	else:
-		xlines = open(filename).read()
-		xml_d = xmltodict.parse(xlines, dict_constructor=dict);
+		try:
+			xlines = open(filename).read()
+			xml_d = xmltodict.parse(xlines, dict_constructor=dict);
+		except:
+			xml_d = copy.deepcopy(xml_r);
+			basename = os.path.split(filename)[1];
+			basename = basename.replace('.xml','')
+			xml_d["TestSuite"]["Details"]['Name'] = basename
+			
 
 	# Map the input to the response collector
 	for xstr in ["Name", "Title", "Category", "Date", "Time", "Engineer", "Datatype", 'Resultsdir', 'InputDataFile']:
@@ -162,7 +173,7 @@ def editSuite(request):
 		xml_r["TestSuite"]["Testcases"] =  { 'Testcase': [] }
 
 	try:
-		xml_r["TestSuite"]["Details"]["type"]['@exectype'] = copy.deepcopy(xml_d["TestSuite"]["Details"]["type"]['@exectype']);
+		xml_r["TestSuite"]["Details"]["type"] = copy.deepcopy(xml_d["TestSuite"]["Details"]["type"]);
 	except:
 		xml_r["TestSuite"]["Details"]["type"]['@exectype'] = "sequential_testcases"
 
@@ -170,10 +181,10 @@ def editSuite(request):
 
 	fulljsonstring = str(json.loads(json.dumps(xml_r['TestSuite'])));
 	fulljsonstring = fulljsonstring.replace('u"',"'").replace("u'",'"').replace("'",'"');
-	fulljsonstring = fulljsonstring.replace('None','""')
+	fulljsonstring = fulljsonstring.replace('None','""').replace('""""','""')
 
 	context = { 
-		'savefilename': "save_" + os.path.split(filename)[1],
+		'savefilename': os.path.split(filename)[1],
 		'savefilepath': os.path.split(filename)[0],
 		'fullpathname': filename,
 		'docSpec': 'projectSpec',
@@ -186,12 +197,14 @@ def editSuite(request):
 		'suiteInputDataFile': xml_r["TestSuite"]["Details"]["InputDataFile"],
 		'suiteEngineer': xml_r["TestSuite"]["Details"]["Engineer"],
 		'suiteDatatype': xml_r["TestSuite"]["Details"]["type"]["@exectype"],
-		'suiteDate': xml_r["TestSuite"]["Details"]["Date"].split()[0],
+		'suite_num_attempts': xml_r["TestSuite"]["Details"]["type"].get("@Number_Attempts","0"),
+		'suite_max_attempts': xml_r["TestSuite"]["Details"]["type"].get("@Max_Attempts","0"),
+		'suiteDate': xml_r["TestSuite"]["Details"]["Date"],
 		'suiteTime': xml_r["TestSuite"]["Details"]["Time"],
 		'suiteState': xml_r["TestSuite"]["Details"]["State"],
 		#'suiteType': xml_r["TestSuite"]["Details"]["type"],
-		'suitedefault_onError':xml_r["TestSuite"]["Details"]["onError"].get('@action',""),
-		'suitedefault_onError_goto':xml_r["TestSuite"]["Details"]["onError"].get('@value',''),
+		'suitedefault_onError':xml_r["TestSuite"]["Details"]["default_onError"].get('@action',""),
+		'suitedefault_onError_goto':xml_r["TestSuite"]["Details"]["default_onError"].get('@value',''),
 		'suiteCases': xml_r['TestSuite']['Testcases'],
 		#'fulljson': xml_r['TestSuite'],
 		'fulljson': fulljsonstring,

@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<credentials>
+    <!--Below is the sample of how a smart analysis data block would work 
+        The smart analysis will look for each search_string in the connect/disconnect prompt
+        If it match a system, it will then send the command from the testdata file of that system -->
+    <!-- <system name="1finity">
+        <search_string>1FINITY</search_string>
+        <testdata>configs/1finity_command_data.xml</testdata>
+    </system>
+    <system name="ubuntu">
+        <search_string>Ubuntu 14.04</search_string>
+        <testdata>configs/ubuntu_command_data.xml</testdata>
+    </system> -->
+</credentials>

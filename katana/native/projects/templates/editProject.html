@@ -1,20 +1,16 @@
 {% load static %}
+{% csrf_token %}
+			
 
-
-<body>
-<link rel="stylesheet" href="{% static "./project_table.css" %}" > 
-<!-- <script type="text/javascript" src="{% static "./doProjectHandling.js" %}" />
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
--->
 <div class="tool-bar">
-	    	{% csrf_token %}
-	    	
-			<button id="addSuite" class="btn btn-primary" katana-click="projectApp.addSuiteToProject">Add Suite To Project</button>-->
+	    	<i id="addSuite" class="button" katana-click="projects.addSuiteToProject">Add Suite To Project</i>
 			<!-- <button class="btn btn-primary" onclick="resetUIfromFile()">Discard Changes</button>  -->
-			<button class="btn btn-success save" katana-click="projectApp.mapUiToProjectJson">Save Changes to : </button>
-			<input class="col-md-4 text-right" type="text" id="my_file_to_save" name="my_file_to_save" value="{{projectName}}.xml"/>
+			<i class="button" katana-click="projects.mapUiToProjectJson">Save Changes to Disk </i>
+
 </div>
-<div auto-init="projectApp.mapFullProjectJson">
+
+
+<div auto-init="projects.mapFullProjectJson">
 	<div class="col-md-12 row">
 			<div class="field col-md-3 input_padding">
 				<label for="projectName">Name*:</label>
@@ -29,7 +25,6 @@
 				<input class="text-right" type="text" id="projectEngineer" name="projectEngineer" value="{{projectEngineer}}" />
 			</div>
 			<div class="field col-md-3 input_padding">	
-				
 				<label class="text-right">Last Updated:</label>
 				<input class="text-right" type="text" id="projectDate" name="projectDate" value="{{projectDate}} {{projectTime}}" />
 			</div>
@@ -45,13 +40,14 @@
 			</div>
 			<div class="field col-md-3 input_padding">
 				<label class="text-right">defaultOnError:</label>
-				<select class="text-right" type="text" id="default_onError" name="default_onError"  value="{{projectdefaultOnError}}" >
+				<select class="text-right" type="text" id="default_onError" name="default_onError"  value="{{projectdefault_onError}}" >
 					<option value="next">Next</option>
 					<option value="abort">Abort</option>
 					<option value="abort_as_error">Abort As Error</option>
 					<option value="goto">Goto</option>
 				</select>
-				<select class="text-right" type="text" id="default_onError_goto" name="default_onError_goto" value="{{projectdefaultOnError_goto}}" >
+				{{projectdefault_onError}}
+				<select class="text-right" type="text" id="default_onError_goto" name="default_onError_goto" value="{{projectdefault_onError_goto}}" >
 				</select>
 
 			</div>
@@ -68,14 +64,14 @@
 			<div class="field col-md-3 input_padding">	
 				
 				<label class="text-right">Results Dir:</label>
-				<button class="btn btn-info" onclick="projectApp.getResultsDirForProject()">...</button>
+				<button class="btn btn-info" katana-click="projects.getResultsDirForProject">...</button>
 				<div class="" id="fileNames"></div>
 				<input class="text-right" type="text" id="projectResultsDir" name="projectResultsDir" value="{{resultsDir}}" />
 			</div>
 
 			<!-- <button value="Hello" onClick="prompt('eatme','no')" >ddd</button> -->
 		</div>
-	</div>	
+	
 	<div class="container-fluid row">
 		<div id="tableOfTestSuitesForProject"  class="col-md-12" />
 		<div id="editTestSuiteEntry" class="form-group col-md-3 hidden">
@@ -86,7 +82,7 @@
 				<div class="field ">
 				<label >Path*:</label>
 
-				<button class="btn btn-info hidden" text-id="suitePath" onclick="getSuiteDataForProject()">...</button>
+				<button class="btn btn-info hidden" text-id="suitePath" katana-click="projects.getSuiteDataForProject">...</button>
 				<input type="text" id="suitePath" value=""/>
 				</div>
 				<div class="field ">
@@ -169,14 +165,14 @@
 					</select>
 					<br>
 				</div>
-			<button class="btn col-md-3 center" id="saveChangesToRow" katana-click="projectApp.saveChangesToRowCB">Save Changes</button>>
+			<button class="btn col-md-3 center" id="saveChangesToRow" katana-click="projects.saveChangesToRowCB">Save Changes</button>>
 			</div>
 
 	</div>
-
+</div>
 
 	<div id="listOfTestSuitesForProject" class="hidden">{{fulljson}}</div>
 	<div id="savefilepath" class="hidden">{{savefilepath}}</div>
 	<div id="fullpathname" class="hidden">{{fullpathname}}</div>
+
 </div>
-</body>

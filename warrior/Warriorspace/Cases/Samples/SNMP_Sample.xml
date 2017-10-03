@@ -1,0 +1,963 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+                <Name>snmp_TRAP_GET_Version_2C</Name>
+                <Title>snmp_TRAP_GET_Version_2C</Title>
+                <Engineer>Warrior_user</Engineer>
+                <Date>2017-03-17</Date>
+                <Time>21:48</Time>
+                <InputDataFile>../../../Data/Sample/SNMP_Data_Sample.xml</InputDataFile>
+                <Datatype>Custom</Datatype>
+                <default_onError action="next"/>
+                <Logsdir/>
+                <Resultsdir/>
+                <ExpectedResults/>
+                <Category>SAMPLE</Category>
+                <State>New</State>
+        </Details>
+        <Requirements>
+                <Requirement/>
+        </Requirements>
+        <Steps>
+                <step Driver="cli_driver" Keyword="connect" TS="1">
+                        <Arguments>
+                                <argument name="system_name" value="NE1"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>connect_ssh</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="cli_driver" Keyword="send_commands_by_testdata_title" TS="2">
+                        <Arguments>
+                                <argument name="title" value="enter_config_new_mode"/>
+                                <argument name="system_name" value="NE1"/>
+                                <argument name="description" value="Entering into Config mode"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Entering into Config mode&quot;</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="cli_driver" Keyword="send_commands_by_testdata_title" TS="3">
+                        <Arguments>
+                                <argument name="title" value="config_snmp_public_community"/>
+                                <argument name="system_name" value="NE1"/>
+                                <argument name="description" value="Verify SNMP community configuration"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Verify SNMP community configuration&quot;</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="cli_driver" Keyword="connect" TS="4">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="prompt" value="prompt"/>
+                        </Arguments>
+                        <onError action="abort"/>
+                        <Description>Connecting to SNMP Server</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="snmp_get" TS="5">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="mib_index" value="sysDescr"/>
+                                <argument name="mib_value" value="0"/>
+                                <argument name="mib_name" value="SNMPv2-MIB"/>
+                                <argument name="snmp_ver" value="1"/>
+                                <argument name="communityname" value="public"/>
+                        </Arguments>
+                        <onError action="abort"/>
+                        <Description>Send SNMP Get for sysDescr</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="verify_snmp_action" TS="6">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="mib_string" value="SNMPv2-MIB::sysDescr.0"/>
+                                <argument name="snmp_result" value="Linux"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Verify SNMP Get for sysDescr</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="snmp_get" TS="7">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="mib_index" value="sysDescr"/>
+                                <argument name="mib_value" value="0"/>
+                                <argument name="mib_name" value="SNMPv2-MIB"/>
+                                <argument name="snmp_ver" value="1"/>
+                                <argument name="communityname" value="public"/>
+                        </Arguments>
+                        <onError action="abort"/>
+                        <Description>Send SNMP Get for sysDescr</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="verify_snmp_action" TS="8">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="mib_string" value="SNMPv2-MIB::sysDescr.0"/>
+                                <argument name="snmp_result" value="Linux"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Verify SNMP Get for sysDescr</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="snmp_get" TS="9">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="mib_index" value="sysObjectID"/>
+                                <argument name="mib_value" value="0"/>
+                                <argument name="mib_name" value="SNMPv2-MIB"/>
+                                <argument name="snmp_ver" value="1"/>
+                                <argument name="communityname" value="public"/>
+                        </Arguments>
+                        <onError action="abort"/>
+                        <Description>Send SNMP Get for sysObjectID</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="verify_snmp_action" TS="10">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="mib_string" value="SNMPv2-MIB::sysObjectID.0"/>
+                                <argument name="snmp_result" value="SNMPv2-SMI::enterprises.211.24.12"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Verify SNMP Get for sysObjectID</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="snmp_get" TS="11">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="mib_index" value="sysContact"/>
+                                <argument name="mib_value" value="0"/>
+                                <argument name="mib_name" value="SNMPv2-MIB"/>
+                                <argument name="snmp_ver" value="1"/>
+                                <argument name="communityname" value="public"/>
+                        </Arguments>
+                        <onError action="abort"/>
+                        <Description>Send SNMP Get for sysContact</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="verify_snmp_action" TS="12">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="mib_string" value="SNMPv2-MIB::sysContact.0"/>
+                                <argument name="snmp_result" value=""/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Verify SNMP Get for sysContact</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="snmp_get" TS="13">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="mib_index" value="sysName"/>
+                                <argument name="mib_value" value="0"/>
+                                <argument name="mib_name" value="SNMPv2-MIB"/>
+                                <argument name="snmp_ver" value="1"/>
+                                <argument name="communityname" value="public"/>
+                        </Arguments>
+                        <onError action="abort"/>
+                        <Description>Send SNMP Get for sysName</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="verify_snmp_action" TS="14">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="mib_string" value="SNMPv2-MIB::sysName.0"/>
+                                <argument name="snmp_result" value=""/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Verify SNMP Get for sysName</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="snmp_get" TS="15">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="mib_index" value="sysLocation"/>
+                                <argument name="mib_value" value="0"/>
+                                <argument name="mib_name" value="SNMPv2-MIB"/>
+                                <argument name="snmp_ver" value="1"/>
+                                <argument name="communityname" value="public"/>
+                        </Arguments>
+                        <onError action="abort"/>
+                        <Description>Send SNMP Get for sysLocation</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="verify_snmp_action" TS="16">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="mib_string" value="SNMPv2-MIB::sysLocation.0"/>
+                                <argument name="snmp_result" value=""/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Verify SNMP Get for sysLocation</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="snmp_get" TS="17">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="mib_index" value="sysServices"/>
+                                <argument name="mib_value" value="0"/>
+                                <argument name="mib_name" value="SNMPv2-MIB"/>
+                                <argument name="snmp_ver" value="1"/>
+                                <argument name="communityname" value="public"/>
+                        </Arguments>
+                        <onError action="abort"/>
+                        <Description>Send SNMP Get for sysServices</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="verify_snmp_action" TS="18">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="mib_string" value="SNMPv2-MIB::sysServices.0"/>
+                                <argument name="snmp_result" value="2"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Verify SNMP Get for sysServices</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="snmp_get" TS="19">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="mib_index" value="sysORLastChange"/>
+                                <argument name="mib_value" value="0"/>
+                                <argument name="mib_name" value="SNMPv2-MIB"/>
+                                <argument name="snmp_ver" value="1"/>
+                                <argument name="communityname" value="public"/>
+                        </Arguments>
+                        <onError action="abort"/>
+                        <Description>Send SNMP Get for sysORLastChange</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="verify_snmp_action" TS="20">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="mib_string" value="SNMPv2-MIB::sysORLastChange.0"/>
+                                <argument name="snmp_result" value=""/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Verify SNMP Get for sysORLastChange</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>negative</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="snmp_get" TS="21">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="mib_index" value="sysORID"/>
+                                <argument name="mib_value" value="1"/>
+                                <argument name="mib_name" value="SNMPv2-MIB"/>
+                                <argument name="snmp_ver" value="1"/>
+                                <argument name="communityname" value="public"/>
+                        </Arguments>
+                        <onError action="abort"/>
+                        <Description>Send SNMP Get for sysORID</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="verify_snmp_action" TS="22">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="mib_string" value="SNMPv2-MIB::sysORID.1"/>
+                                <argument name="snmp_result" value=""/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Verify SNMP Get for sysORID</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>negative</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="snmp_get" TS="23">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="mib_index" value="sysORDescr"/>
+                                <argument name="mib_value" value="1"/>
+                                <argument name="mib_name" value="SNMPv2-MIB"/>
+                                <argument name="snmp_ver" value="1"/>
+                                <argument name="communityname" value="public"/>
+                        </Arguments>
+                        <onError action="abort"/>
+                        <Description>Send SNMP Get for sysORDescr</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="verify_snmp_action" TS="24">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="mib_string" value="SNMPv2-MIB::sysORDescr.1"/>
+                                <argument name="snmp_result" value=""/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Verify SNMP Get for sysORDescr</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>negative</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="snmp_get" TS="25">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="mib_index" value="sysORUpTime"/>
+                                <argument name="mib_value" value="1"/>
+                                <argument name="mib_name" value="SNMPv2-MIB"/>
+                                <argument name="snmp_ver" value="1"/>
+                                <argument name="communityname" value="public"/>
+                        </Arguments>
+                        <onError action="abort"/>
+                        <Description>Send SNMP Get for sysORUpTime</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="verify_snmp_action" TS="26">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="mib_string" value="SNMPv2-MIB::sysORUpTime.1"/>
+                                <argument name="snmp_result" value=""/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Verify SNMP Get for sysORUpTime</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>negative</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="snmp_get" TS="27">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="mib_index" value="snmpInPkts"/>
+                                <argument name="mib_value" value="0"/>
+                                <argument name="mib_name" value="SNMPv2-MIB"/>
+                                <argument name="snmp_ver" value="1"/>
+                                <argument name="communityname" value="public"/>
+                        </Arguments>
+                        <onError action="abort"/>
+                        <Description>Send SNMP Get for snmpInPkts</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="verify_snmp_action" TS="28">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="mib_string" value="SNMPv2-MIB::snmpInPkts.0"/>
+                                <argument name="snmp_result" value=""/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Verify SNMP Get for snmpInPkts</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>negative</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="snmp_get" TS="29">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="mib_index" value="snmpInBadVersions"/>
+                                <argument name="mib_value" value="0"/>
+                                <argument name="mib_name" value="SNMPv2-MIB"/>
+                                <argument name="snmp_ver" value="1"/>
+                                <argument name="communityname" value="public"/>
+                        </Arguments>
+                        <onError action="abort"/>
+                        <Description>Send SNMP Get for snmpInBadVersions</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="verify_snmp_action" TS="30">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="mib_string" value="SNMPv2-MIB::snmpInBadVersions.0"/>
+                                <argument name="snmp_result" value=""/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Verify SNMP Get for snmpInBadVersions</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>negative</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="snmp_get" TS="31">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="mib_index" value="snmpInBadCommunityNames"/>
+                                <argument name="mib_value" value="0"/>
+                                <argument name="mib_name" value="SNMPv2-MIB"/>
+                                <argument name="snmp_ver" value="1"/>
+                                <argument name="communityname" value="public"/>
+                        </Arguments>
+                        <onError action="abort"/>
+                        <Description>Send SNMP Get for snmpInBadCommunityNames</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="verify_snmp_action" TS="32">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="mib_string" value="SNMPv2-MIB::snmpInBadCommunityNames.0"/>
+                                <argument name="snmp_result" value=""/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Verify SNMP Get for snmpInBadCommunityNames</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>negative</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="snmp_get" TS="33">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="mib_index" value="snmpInBadCommunityUses"/>
+                                <argument name="mib_value" value="0"/>
+                                <argument name="mib_name" value="SNMPv2-MIB"/>
+                                <argument name="snmp_ver" value="1"/>
+                                <argument name="communityname" value="public"/>
+                        </Arguments>
+                        <onError action="abort"/>
+                        <Description>Send SNMP Get for snmpInBadCommunityUses</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="verify_snmp_action" TS="34">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="mib_string" value="SNMPv2-MIB::snmpInBadCommunityUses.0"/>
+                                <argument name="snmp_result" value=""/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Verify SNMP Get for snmpInBadCommunityUses</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>negative</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="snmp_get" TS="35">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="mib_index" value="snmpInASNParseErrs"/>
+                                <argument name="mib_value" value="0"/>
+                                <argument name="mib_name" value="SNMPv2-MIB"/>
+                                <argument name="snmp_ver" value="1"/>
+                                <argument name="communityname" value="public"/>
+                        </Arguments>
+                        <onError action="abort"/>
+                        <Description>Send SNMP Get for snmpInASNParseErrs</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="verify_snmp_action" TS="36">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="mib_string" value="SNMPv2-MIB::snmpInASNParseErrs.0"/>
+                                <argument name="snmp_result" value=""/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Verify SNMP Get for snmpInASNParseErrs</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>negative</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="snmp_get" TS="37">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="mib_index" value="snmpEnableAuthenTraps"/>
+                                <argument name="mib_value" value="0"/>
+                                <argument name="mib_name" value="SNMPv2-MIB"/>
+                                <argument name="snmp_ver" value="1"/>
+                                <argument name="communityname" value="public"/>
+                        </Arguments>
+                        <onError action="abort"/>
+                        <Description>Send SNMP Get for snmpEnableAuthenTraps</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="verify_snmp_action" TS="38">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="mib_string" value="SNMPv2-MIB::snmpEnableAuthenTraps.0"/>
+                                <argument name="snmp_result" value=""/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Verify SNMP Get for snmpEnableAuthenTraps</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>negative</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="snmp_get" TS="39">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="mib_index" value="snmpSilentDrops"/>
+                                <argument name="mib_value" value="0"/>
+                                <argument name="mib_name" value="SNMPv2-MIB"/>
+                                <argument name="snmp_ver" value="1"/>
+                                <argument name="communityname" value="public"/>
+                        </Arguments>
+                        <onError action="abort"/>
+                        <Description>Send SNMP Get for snmpSilentDrops</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="verify_snmp_action" TS="40">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="mib_string" value="SNMPv2-MIB::snmpSilentDrops.0"/>
+                                <argument name="snmp_result" value=""/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Verify SNMP Get for snmpSilentDrops</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>negative</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="snmp_get" TS="41">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="mib_index" value="snmpProxyDrops"/>
+                                <argument name="mib_value" value="0"/>
+                                <argument name="mib_name" value="SNMPv2-MIB"/>
+                                <argument name="snmp_ver" value="1"/>
+                                <argument name="communityname" value="public"/>
+                        </Arguments>
+                        <onError action="abort"/>
+                        <Description>Send SNMP Get for snmpProxyDrops</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="verify_snmp_action" TS="42">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="mib_string" value="SNMPv2-MIB::snmpProxyDrops.0"/>
+                                <argument name="snmp_result" value="0"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Verify SNMP Get for snmpProxyDrops</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="snmp_get" TS="43">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="mib_index" value="snmpSetSerialNo"/>
+                                <argument name="mib_value" value="0"/>
+                                <argument name="mib_name" value="SNMPv2-MIB"/>
+                                <argument name="snmp_ver" value="1"/>
+                                <argument name="communityname" value="public"/>
+                        </Arguments>
+                        <onError action="abort"/>
+                        <Description>Send SNMP Get for snmpSetSerialNo</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="verify_snmp_action" TS="44">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="mib_string" value="SNMPv2-MIB::snmpSetSerialNo.0"/>
+                                <argument name="snmp_result" value=""/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Verify SNMP Get for snmpSetSerialNo</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>negative</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="snmp_get" TS="45">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="mib_index" value="sysDescr"/>
+                                <argument name="mib_value" value="1"/>
+                                <argument name="mib_name" value="SNMPv2-MIB"/>
+                                <argument name="snmp_ver" value="2"/>
+                                <argument name="communityname" value="public"/>
+                        </Arguments>
+                        <onError action="abort"/>
+                        <Description>Send SNMP Get for sysDescr</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="verify_snmp_action" TS="46">
+                        <Arguments>
+                                <argument name="system_name" value="SNMP-SERVER1"/>
+                                <argument name="mib_string" value="SNMPv2-MIB::sysDescr.1"/>
+                                <argument name="snmp_result" value="No Such Instance currently exists at this OID"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Verify SNMP Get for sysDescr</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="cli_driver" Keyword="send_commands_by_testdata_title" TS="47">
+                        <Arguments>
+                                <argument name="title" value="delete_snmp_public_community"/>
+                                <argument name="system_name" value="NE1"/>
+                                <argument name="description" value="Delete SNMP community"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Delete SNMP community&quot;</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="start_tarp_listener" TS="48">
+                        <Arguments>
+                                <argument name="system_name" value="NE1"/>
+                                <argument name="custom_mib_path" value="/home/pthangar/FNC/"/>
+                                <argument name="load_mib_module" value="FSS-COMMON-TC,FSS-COMMON-LOG,FSS-COMMON-SMI"/>
+                        </Arguments>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <onError action="next" value=""/>
+                        <Description/>
+                        <Iteration_type type="Standard"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="cli_driver" Keyword="send_commands_by_testdata_title" TS="49">
+                        <Arguments>
+                                <argument name="system_name" value="NE1"/>
+                                <argument name="title" value="FAN_Up_Down"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Linux EVENT-1 Turn on off FAN-1</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="show_received_traps" TS="50">
+                        <Arguments>
+                                <argument name="system_name" value="NE1"/>
+                        </Arguments>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <onError action="next" value=""/>
+                        <Description/>
+                        <Iteration_type type="Standard"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="validate_trap" TS="51">
+                        <Arguments>
+                                <argument name="system_name" value="NE1"/>
+                                <argument name="value" value="Administrative State Down:Type=AC00-F031"/>
+                                <argument name="oid_string" value="fssTrapDescription"/>
+                                <argument name="match_oid_op_value_pair" value="yes"/>
+                        </Arguments>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <onError action="next" value=""/>
+                        <Description/>
+                        <Iteration_type type="Standard"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="snmp_driver" Keyword="stop_trap_listener" TS="52">
+                        <Arguments>
+                                <argument name="system_name" value="NE1"/>
+                        </Arguments>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+
+                        <onError action="next" value=""/>
+                        <Description/>
+                        <Iteration_type type="Standard"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+        </Steps>
+</Testcase>
