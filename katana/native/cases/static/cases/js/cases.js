@@ -82,7 +82,17 @@ function jsUcfirst(string)
 	     katana.$view.one('tabAdded', function(){
 	        cases.mapFullCaseJson(); // ("NEW",'#emptyTestCaseData');
 	    });
-	  katana.templateAPI.load(xref, null, null, 'Case') ;;
+	  katana.templateAPI.load(xref, null, null, 'Case') ;
+	},
+
+
+	// Start the WDF editor. 
+	start_wdfEditor: function() { 
+	var tag = '#caseInputDataFile';
+	var filename = katana.$activeTab.find(tag).attr("fullpath");
+	dd = { 'path' : filename}; 
+		katana.templateAPI.load( "/katana/wdf/index", null, null, "WDF", null, { type: 'POST', data:  dd}) ;
+
 	},
 
 	displayTreeOfCases: function() {
@@ -189,18 +199,18 @@ function jsUcfirst(string)
 	if ( katana.$activeTab.find('#caseName').attr('value').length < 1) {
 		data = { 'heading': "Error", 'text' : "Please specific a case name "}
 		katana.openAlert(data);
-		return;
+		return -1;
 	}
 
 	if ( katana.$activeTab.find('#caseTitle').attr('value').length < 1) {
 		data = { 'heading': "Error", 'text' : "Please specific a title "}
 		katana.openAlert(data);
-		return;
+		return -1;
 	}
 	if ( katana.$activeTab.find('#caseEngineer').attr('value').length < 1) {
 		data = { 'heading': "Error", 'text' : "Please specific a name for the engineer"}
 		katana.openAlert(data);
-		return;
+		return -1;
 	}
 
 
@@ -241,10 +251,12 @@ function jsUcfirst(string)
    	var day = date.getDate();
    	var hour = date.getHours();
    	var minute = date.getMinutes();
-   	var hr =  hour % 12 || 12
-
+   	if (minute < 10) {
+       	minute = "0" + minute; 
+       }
+   	
 	cases.jsonCaseObject['Details']['Date'] = month + "/" + day + "/" + year; 
-	cases.jsonCaseObject['Details']['Time'] = hr + ":" + minute; 
+	cases.jsonCaseObject['Details']['Time'] = hour + ":" + minute; 
 
 
 	// cases.jsonCaseObject['Details']['default_onError'] = katana.$activeTab.find('#default_onError').attr('value');
@@ -267,19 +279,10 @@ function jsUcfirst(string)
  
 	// Now you have collected the user components...
 
-	console.log("Finished ....");
+	return 0;
 	} ,
 
-// Start the WDF editor. 
-	start_wdfEditor: function() { 
-	var tag = '#caseInputDataFile';
-	var filename = katana.$activeTab.find(tag).attr("fullpath");
-	dd = { 'path' : filename}; 
-	katana.templateAPI.load( "/katana/wdf/index", null, null, "WDF", null, { type: 'POST', data:  dd}) ;
 
-
-
-	},
 
 	getFileSavePath: function () {
 			var tag = '#caseName';
@@ -371,7 +374,9 @@ function jsUcfirst(string)
 
 // Saves the UI to memory and sends to server as a POST request
 	sendCaseToServer: function () {
-		cases.mapUiToCaseJson();
+		if ( cases.mapUiToCaseJson() < 0) { 
+			return; 
+		}
 		var url = "./cases/getCaseDataBack";
 		var csrftoken = katana.$activeTab.find("[name='csrfmiddlewaretoken']").val();
 		console.log("sending case 2");
@@ -404,7 +409,7 @@ function jsUcfirst(string)
 			// The following causes an exception
 			//xdata = { 'heading': "Sent", 'text' : "sent the file... "+data}
 			//katana.openAlert(xdata);
-			alert("Saved..."+data)
+			alert("Saved...");
 	
 		},
 	});

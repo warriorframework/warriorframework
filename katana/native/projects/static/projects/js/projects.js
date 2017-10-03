@@ -496,10 +496,13 @@ Two global variables are heavily used when this function is called;
        var day = date.getDate();
        var hour = date.getHours();
        var minute = date.getMinutes();
-       var hr =  hour % 12 || 12
+       if (minute < 10) {
+       	minute = "0" + minute; 
+       }
+     
 
 	projects.jsonProjectObject['Details']['Date'] = month + "/" + day + "/" + year; 
-	projects.jsonProjectObject['Details']['Time'] = hr + ":" + minute; 
+	projects.jsonProjectObject['Details']['Time'] = hour + ":" + minute; 
 	
 	//
 	// Now walk the DOM ..

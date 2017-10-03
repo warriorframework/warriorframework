@@ -356,10 +356,12 @@ Two global variables are heavily used when this function is called;
        var day = date.getDate();
        var hour = date.getHours();
        var minute = date.getMinutes();
-       var hr =  hour % 12 || 12
-
+       if (minute < 10) {
+       	minute = "0" + minute; 
+       }
+       
 	suites.jsonSuiteObject['Details']['Date'] = month + "/" + day + "/" + year; 
-	suites.jsonSuiteObject['Details']['Time'] = hr + ":" + minute;
+	suites.jsonSuiteObject['Details']['Time'] = hour + ":" + minute;
 
 	// Override the name 
 
