@@ -13,7 +13,7 @@ limitations under the License.
 
 
 import Framework.Utils as Utils
-from Framework.Utils import cli_Utils
+from Framework.Utils import cli_Utils, data_Utils
 from Framework.Utils.print_Utils import print_warning
 from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.data_Utils import getSystemData,\
@@ -830,10 +830,60 @@ class CliActions(object):
                                                                   session_name=session_name,
                                                                   datafile=self.datafile)
 
-        td_resp_dict = get_object_from_datarepository(str(session_id)+"_td_response")
-        if not WarriorCliClass.cmdprint:
-            td_resp_dict.update(resp_dict)
+        temp_testdata_dict = data_Utils.get_command_details_from_testdata(testdata, varconfigfile,
+                                                                 var_sub=var_sub, title=title,
+                                                                 row=row_num, system_name=system_name,
+                                                                 datafile=self.datafile)
+        td_sys_list = []
+        td_session_list = []
+        temp_session_id = ''
+        td_resp_dict = {}
 
+        #Fetching the system name and session name from details dict if available,
+        #else takes from test case.
+        for title_row, temp_details_dict in temp_testdata_dict.iteritems():
+            for i in temp_details_dict["sys_list"]:
+                #If sys_list in None or if sys_tag in td file has only subsystem name, then it takes
+                #from the test case else fetches from the td file.
+                if i is None or i is '' or i.startswith('['):
+                    td_sys_list.append(system_name)
+                else:
+                    td_sys_list.append(i)
+            for k in temp_details_dict["session_list"]:
+                #If session_name is not available in td file, it takes from test case else fetches
+                #fetches from td file.
+                if k is None or k is '':
+                    td_session_list.append(session_name)
+                else:
+                    td_session_list.append(k)
+
+        for title_row, temp_resp_dict in resp_dict.iteritems():
+            for count, value in enumerate(temp_resp_dict):
+                #if session name is given along with system name in td file, then it is split and
+                #saved respectively. (sys_name = sys1.session1)
+                temp_list = td_sys_list[count].split('.', 1)
+                if len(temp_list) > 1:
+                    temp_sess_name = temp_list[1]
+                else:
+                    temp_sess_name = td_session_list[count]
+                temp_session_id = Utils.data_Utils.get_session_id(temp_list[0], temp_sess_name)
+                td_resp_dict = get_object_from_datarepository(str(temp_session_id)+"_td_response")
+
+                tr_dict = {title_row :{}}
+                #checks if title_row value is not in td_resp_dict
+                if title_row not in td_resp_dict.keys():
+                #if not available then it first updates the title_row value to td_resp_dict
+                    td_resp_dict.update(tr_dict)
+                    #after updating title_row value, it updates the resp_ref key and value
+                    resp_key_value_dict = {value: temp_resp_dict[value]}
+                    if not WarriorCliClass.cmdprint:
+                        td_resp_dict[title_row].update(resp_key_value_dict)
+                #if title_row value available in td_resp_dict,
+                #then it updates the resp_ref key and value to td_resp_dict
+                else:
+                    resp_key_value_dict = {value: temp_resp_dict[value]}
+                    if not WarriorCliClass.cmdprint:
+                        td_resp_dict[title_row].update(resp_key_value_dict)
 
         Utils.testcase_Utils.report_substep_status(status)
         return  status, td_resp_dict
@@ -906,15 +956,15 @@ class CliActions(object):
             If both tag and attribute is provided the attribute will be used.
 
             1. ip = IP address of the system.\
-            
+
                 Default value for ip type is ip, it can take any type of ip's
                 to connect to (like ipv4, ipv6, dns etc)
-                
+
                 Users can provide tag/attribute for any ip_type under the system
                 in the input datafile and specify the tag/attribute name
                 as the value for ip_type argument, then the connection will be 
                 established using that value.
-             
+
             2. username = username for the  session.
             3. password = password for the  session.
             4. timeout = use if you want to set timeout while connecting,\
@@ -946,7 +996,7 @@ class CliActions(object):
 
         output_dict = {}
         status = True
-        
+
         root = Utils.xml_Utils.getRoot(self.datafile)
         systems = root.findall('system')
         system_list = []
