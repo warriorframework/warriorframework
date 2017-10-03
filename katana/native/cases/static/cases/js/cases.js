@@ -15,32 +15,36 @@ the views.py python for Django.
 
 */ 
 // Belongs in main.js when ok. 
-function absToPrefix(pathToBase, pathToFile) {
+
+// Belongs in main.js when ok. 
+// Converts a path that is relative to pathToBase into an absolute path with .. constructs. 
+//
+
+function absFromPrefix(pathToBase, pathToFile) {
 	// Converts an absolute path to one that is relative to pathToBase 
 	// Input: 
 	// 		
-	var stack = []; 
-	var upem  = [];
 	var bf = pathToBase.split('/');
 	var rf = pathToFile.split('/');
 	var nrf = pathToFile.split('/');
+	console.log("Removing", nrf, bf);
 	
 	for (var i=0;i< rf.length; i++) {
 		if (rf[i] == "..")  { 
-			stack.pop();
-			nrf = nrf.splice(0,1);
+			bf.pop();
+			nrf.splice(0,1);
+			console.log("Removing", nrf, bf);
+	
 		} else {
 			break;
 		}
 	}
-	return stack.join('/') + '/' + nrf.join('/');
+	return bf.join('/') + '/' + nrf.join('/');
 }
-// Belongs in main.js when ok. 
-// Converts a path that is relative to pathToBase into an absolute path with .. constructs. 
-//
+
 function prefixFromAbs(pathToBase, pathToFile) {
 	var stack = []; 
-	var upem  = [];
+    var upem  = [];
 	var bf = pathToBase.split('/');
 	var rf = pathToFile.split('/');
 	for (var i=0;i< rf.length; i++) {
@@ -50,12 +54,17 @@ function prefixFromAbs(pathToBase, pathToFile) {
 			break;
 		}
 	}
-	var tlen = rf.length - stack.length; 
+	var tlen = bf.length - stack.length; 
 	var blen = stack.length;
-	for (var k=0;k < tlen-1; k++) {
+	console.log("bf=",bf);
+	console.log("rf=",rf);
+	console.log("prefixFromAbs", rf, tlen, blen, stack);
+    for (var k=0;k < tlen; k++) {
 		upem.push("..");
 	}
-	return upem.join("/") + "/" + bf.splice(blen).join('/') + "/" +  rf[rf.length - 1];
+	var tail = rf.splice(blen,rf.length);
+	console.log('tail=', tail);
+	return upem.join("/") + "/" +   tail.join('/');
 }
 
 function jsUcfirst(string) 
@@ -86,7 +95,7 @@ function jsUcfirst(string)
 	},
 
 
-	// Start the WDF editor. 
+	// Star editor. 
 	start_wdfEditor: function() { 
 	var tag = '#caseInputDataFile';
 	var filename = katana.$activeTab.find(tag).attr("fullpath");
@@ -238,31 +247,16 @@ function jsUcfirst(string)
 		}
 
 
-	// cases.jsonCaseObject['Details']['Name'] = katana.$activeTab.find('#caseName').attr('value');
-	// cases.jsonCaseObject['Details']['Title'] = katana.$activeTab.find('#caseTitle').attr('value');
-	// cases.jsonCaseObject['Details']['Category'] = katana.$activeTab.find('#caseCategory').attr('value');
-	// cases.jsonCaseObject['Details']['State'] = katana.$activeTab.find('#caseState').attr('value');
-	// cases.jsonCaseObject['Details']['Engineer'] = katana.$activeTab.find('#caseEngineer').attr('value');
-	// cases.jsonCaseObject['Details']['Title'] = katana.$activeTab.find('#caseTitle').attr('value');
-	// cases.jsonCaseObject['Details']['Date'] = katana.$activeTab.find('#caseDate').attr('value');
+
 	cases.jsonCaseObject['Details']['Name'] = katana.$activeTab.find('#caseName').val();
 	cases.jsonCaseObject['Details']['Title'] = katana.$activeTab.find('#caseTitle').val();
 	cases.jsonCaseObject['Details']['Category'] = katana.$activeTab.find('#caseCategory').val();
 	cases.jsonCaseObject['Details']['State'] = katana.$activeTab.find('#caseState').val();
 	cases.jsonCaseObject['Details']['Engineer'] = katana.$activeTab.find('#caseEngineer').val();
 	cases.jsonCaseObject['Details']['Title'] = katana.$activeTab.find('#caseTitle').val();
-	cases.jsonCaseObject['Details']['Date'] = katana.$activeTab.find('#caseDate').val();
+	//cases.jsonCaseObject['Details']['Date'] = katana.$activeTab.find('#caseDate').val();
 
 	console.log("Attributes ", cases.jsonCaseObject);
-
-	// var items = cases.jsonCaseObject['Details']['Date'].split(' ');
-	// cases.jsonCaseObject['Details']['Date'] = items[0];
-	// if ( items.length > 1) { 	
-	// 	cases.jsonCaseObject['Details']['Time'] = items[1];
-	// } else { 
-	// 	cases.jsonCaseObject['Details']['Time'] = '00:00';
-
-	// }
 	var date = new Date();
    	var year = date.getFullYear();
    	var month = date.getMonth() + 1;// months are zero indexed
@@ -277,18 +271,14 @@ function jsUcfirst(string)
 	cases.jsonCaseObject['Details']['Time'] = hour + ":" + minute; 
 
 
-	// cases.jsonCaseObject['Details']['default_onError'] = katana.$activeTab.find('#default_onError').attr('value');
-	// cases.jsonCaseObject['Details']['Datatype'] = katana.$activeTab.find('#caseDatatype').attr('value');
-	// cases.jsonCaseObject['dataPath'] =  katana.$activeTab.find('#caseInputDataFile').attr('value');
-	// cases.jsonCaseObject['resultsDir'] =  katana.$activeTab.find('#caseResultsDir').attr('value');
-	// cases.jsonCaseObject['logsDir'] =  katana.$activeTab.find('#caseLogsDir').attr('value');
+
 	// cases.jsonCaseObject['expectedDir'] =  katana.$activeTab.find('#caseExpectedResults').attr('value');
 	cases.jsonCaseObject['Details']['default_onError'] = katana.$activeTab.find('#default_onError').val();
 	cases.jsonCaseObject['Details']['Datatype'] = katana.$activeTab.find('#caseDatatype').val();
-	cases.jsonCaseObject['dataPath'] =  katana.$activeTab.find('#caseInputDataFile').val();
-	cases.jsonCaseObject['resultsDir'] =  katana.$activeTab.find('#caseResultsDir').val();
-	cases.jsonCaseObject['logsDir'] =  katana.$activeTab.find('#caseLogsDir').val();
-	cases.jsonCaseObject['expectedDir'] =  katana.$activeTab.find('#caseExpectedResults').val();
+	cases.jsonCaseObject['Details']['InputDataFile'] =  katana.$activeTab.find('#caseInputDataFile').val();
+	cases.jsonCaseObject['Details']['Resultsdir'] =  katana.$activeTab.find('#caseResultsDir').val();
+	cases.jsonCaseObject['Details']['Logsdir'] =  katana.$activeTab.find('#caseLogsDir').val();
+	cases.jsonCaseObject['Details']['ExpectedResults'] =  katana.$activeTab.find('#caseExpectedResults').val();
 	
 
 	if (!cases.jsonCaseObject['Requirements']) {
@@ -306,7 +296,7 @@ function jsUcfirst(string)
 			var tag = '#caseName';
 			var callback_on_accept = function(selectedValue) { 
 	  		console.log(selectedValue);
-	  		var savefilepath = katana.$activeTab.find('#savefilepath').text();
+	  		var savefilepath = katana.$activeTab.find('#savesubdir').text();
 	  		console.log("File path ==", savefilepath);
 	  		var nf = prefixFromAbs(savefilepath, selectedValue);
 	  		katana.$activeTab.find(tag).attr("value", nf);
@@ -325,7 +315,7 @@ function jsUcfirst(string)
 			var callback_on_accept = function(selectedValue) { 
 	  		console.log(selectedValue);
 	  		var tag = '#caseInputDataFile'
-	  		var savefilepath = katana.$activeTab.find('#savefilepath').text();
+	  		var savefilepath = katana.$activeTab.find('#savesubdir').text();
 	  		
 	  		console.log("File path ==", savefilepath);
 	  		var nf = prefixFromAbs(savefilepath, selectedValue);
@@ -344,7 +334,7 @@ function jsUcfirst(string)
 		var callback_on_accept = function(selectedValue) { 
 			  		console.log(selectedValue);
 			  		var tag = '#caseResultsdir'
-			  		var savefilepath = katana.$activeTab.find('#savefilepath').text();
+			  		var savefilepath = katana.$activeTab.find('#savesubdir').text();
 			  		console.log("File path ==", savefilepath);
 			  		var nf = prefixFromAbs(savefilepath, selectedValue);
 			  		katana.$activeTab.find(tag).attr("value", nf);
@@ -364,7 +354,7 @@ function jsUcfirst(string)
 			  		var sid = katana.$activeTab.find("#editCaseStepDiv").attr('row-id');
 			  		console.log("Got this file" , selectedValue, names, sid);
 			  		var popup = katana.$activeTab.find("#editCaseStepDiv").attr('data-popup-id');
-			  		var savefilepath = katana.$activeTab.find('#savefilepath').text();  
+			  		var savefilepath = katana.$activeTab.find('#savesubdir').text();  
 			  		console.log("File path ==", savefilepath);
 					var nf = prefixFromAbs(savefilepath, selectedValue);
 					var oneCaseStep = cases.jsonCaseSteps['step'][sid];

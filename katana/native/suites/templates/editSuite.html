@@ -17,15 +17,15 @@
 		<div class="row">
 				<div class="field col-md-3">
 					<label >Name*:</label>
-					<input type="text" id="suiteName"  value="{{suiteName}}"/>
+					<input required type="text" id="suiteName"  value="{{suiteName}}"/>
 				</div>
 				<div class="field col-md-3">
 					<label >Title*:</label>
-					<input type="text" id="suiteTitle"  value="{{suiteTitle}}"/>
+					<input required type="text" id="suiteTitle"  value="{{suiteTitle}}"/>
 				</div>
 				<div class="field col-md-3">
 					<label >Engineer*:</label>
-					<input type="text" id="suiteEngineer"  value="{{suiteEngineer}}"/>
+					<input required type="text" id="suiteEngineer"  value="{{suiteEngineer}}"/>
 				</div>
 		</div>
 		<div class="row">
@@ -68,7 +68,7 @@
 			<div class="row">
 				<div class="field col-md-3">
 					<label >Results*:</label>
-					<button class="btn btn-info" katana-click="suites.getResultsDirForSuite">...</button>
+					<button class="button" katana-click="suites.getResultsDirForSuite">...</button>
 					<input type="text" id="suiteResults"  value="{{suiteResultsdir}}"/>
 				</div>
 				
@@ -191,7 +191,7 @@
 
 					<div class="field col-md-3">
 					<label >Warrior Data File:</label>
-					<button class="btn btn-info" onclick="getResultsDirForSuiteRow">...</button>
+					<button class="btn btn-info" katana-click="suites.getResultsDirForSuiteRow">...</button>
 					<input type="text" id="StepInputDataFile"  value=""/>
 					</div>		
 	

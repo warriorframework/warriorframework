@@ -23,6 +23,29 @@ function jsUcfirst(string)
 
 
 
+function absFromPrefix(pathToBase, pathToFile) {
+	// Converts an absolute path to one that is relative to pathToBase 
+	// Input: 
+	// 		
+	var bf = pathToBase.split('/');
+	var rf = pathToFile.split('/');
+	var nrf = pathToFile.split('/');
+	console.log("Removing", nrf, bf);
+	
+	for (var i=0;i< rf.length; i++) {
+		if (rf[i] == "..")  { 
+			bf.pop();
+			nrf.splice(0,1);
+			console.log("Removing", nrf, bf);
+	
+		} else {
+			break;
+		}
+	}
+	return bf.join('/') + '/' + nrf.join('/');
+}
+
+
 function prefixFromAbs(pathToBase, pathToFile) {
 	var stack = []; 
     var upem  = [];
@@ -35,15 +58,18 @@ function prefixFromAbs(pathToBase, pathToFile) {
 			break;
 		}
 	}
-	var tlen = rf.length - stack.length; 
-    var blen = stack.length;
-	for (var k=0;k < tlen-1; k++) {
+	var tlen = bf.length - stack.length; 
+	var blen = stack.length;
+	console.log("bf=",bf);
+	console.log("rf=",rf);
+	console.log("prefixFromAbs", rf, tlen, blen, stack);
+    for (var k=0;k < tlen; k++) {
 		upem.push("..");
 	}
-	return upem.join("/") + "/" + bf.splice(blen).join('/') + "/" +  rf[rf.length - 1];
+	var tail = rf.splice(blen,rf.length);
+	console.log('tail=', tail);
+	return upem.join("/") + "/" +   tail.join('/');
 }
-
-
 var suites= {
 
 	jsonSuiteObject : [],
@@ -425,14 +451,26 @@ Two global variables are heavily used when this function is called;
 
 
 	start_wdfEditor: function() { 
-	var tag = '#suiteInputDataFile';
-	var filename = katana.$activeTab.find(tag).attr("fullpath");
-	dd = { 'path' : filename}; 
-		katana.templateAPI.load( "/katana/wdf/index", null, null, "WDF", null, { type: 'POST', data:  dd}) ;
+		var tag = '#suiteInputDataFile';
+		var filename = katana.$activeTab.find(tag).attr("fullpath");
+		console.log("WDF editor opening...", filename); 
+		//katana.templateAPI.load( "/katana/wdf/index", null, null, "WDF", null, { type: 'POST', data:  dd});
+		var csrftoken = $("[name='csrfmiddlewaretoken']").val();
+
+		var xref="wdf/index"; 
+		dd = {  
+				url: xref,
+				type: 'POST', 
+				data: { 'path' : filename} ,
+ 				headers: {'X-CSRFToken':csrftoken},
+			}; 
+	    katana.templateAPI.subAppLoad(xref,null,function(thisPage) {
+						//cases.mapFullCaseJson(fname,'#listOfTestStepsForCase');
+	    		}, dd);
 
 	},
 
-	 getInputDataForSuite: function () {
+	getInputDataForSuite: function () {
       var callback_on_accept = function(selectedValue) { 
       		console.log(selectedValue);
       		var pathToBase = katana.$activeTab.find('#savefilepath').text();
@@ -701,7 +739,7 @@ Two global variables are heavily used when this function is called;
 		var bid = "textRequirement-name-"+s+"-id";	
 		items.push('<td><input type="text" value="'+oneReq['@name']+'" id="'+bid+'" /></td>');
 		bid = "deleteRequirement-"+s+"-id";
-		console.log("Line 328 or so "+bid); 
+		
 		items.push('<td><i  class="fa fa-trash"  title="Delete" skey="'+bid+'" katana-click="suites.deleteRequirementCB"/>');
 		bid = "editRequirement-"+s+"-id";
 		items.push('<i class="fa fa-floppy-o" title="Save Edit" skey="'+bid+'" katana-click="suites.saveRequirementCB"/>');
@@ -782,6 +820,20 @@ Two global variables are heavily used when this function is called;
 	if (!suites.jsonSuiteObject['Requirements']) suites.jsonSuiteObject['Requirements'] = [];
 	if (!jQuery.isArray(suites.jsonSuiteObject['Requirements'])) suites.jsonSuiteObject['Requirements'] = [suites.jsonSuiteObject['Requirements']]; 
 	suites.createCasesTable(suites.jsonTestcases['Testcase']);
+
+	// Resolve the relative path for the wdf editor to get full path. ..
+	if (!suites.jsonSuiteObject['InputDataFile']) {
+		var tag = '#suiteInputDataFile';
+		var nf = suites.jsonSuiteObject["Details"]['InputDataFile'];
+		var pathToBase = katana.$activeTab.find('#savefilepath').text();
+		var fpath = absFromPrefix(pathToBase, nf);
+		console.log("mapSuiteJsonToUi:", fpath, nf, pathToBase);
+		
+		katana.$activeTab.find(tag).val(nf);
+      	katana.$activeTab.find(tag).attr("value", nf);
+	  	katana.$activeTab.find(tag).attr("fullpath", fpath);
+	}
+
 
 		datatype = suites.jsonSuiteObject["Details"]["type"]["@exectype"];
 		datatype = datatype.toLowerCase(); 
