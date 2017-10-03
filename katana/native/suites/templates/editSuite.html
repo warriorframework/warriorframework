@@ -56,10 +56,10 @@
 						<option value="RUP">Run Until Pass</option>
 						<option value="RMT">Run Multiple</option>
 					</select>
-					<span>Attempts:
-					<input class="col-md-1" type="text" id="data_type_num_attempts"  value="{{suite_number_attempts}}" >
-					</input> Max:
-					<input class="col-md-1" type="text" id="data_type_max_attempts"  value="{{suite_max_attempts}}" >
+					<span>
+					<input  type="text" id="data_type_num_attempts"  value="{{suite_number_attempts}}" >
+					</input>
+					<input  type="text" id="data_type_max_attempts"  value="{{suite_max_attempts}}" >
 					</input>
 					</span>
 				</div>
@@ -74,7 +74,8 @@
 				
 				<div class="field col-md-3">
 					<label >Warrior Data File:</label>
-					<button class="btn btn-info" katana-click="suites.getInputDataForSuite">...</button>
+					<button class="button" katana-click="suites.getInputDataForSuite">...</button>
+					<button class="fa fa-pencil" katana-click="suites.start_wdfEditor">WDF</button>
 					<input type="text" id="suiteInputDataFile"  value="{{suiteInputDataFile}}"/>
 				</div>
 				<div class="field col-md-3">

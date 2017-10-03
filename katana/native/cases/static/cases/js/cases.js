@@ -95,6 +95,24 @@ function jsUcfirst(string)
 
 	},
 
+	new_start_wdfEditor: function() { 
+		var tag = '#caseInputDataFile';
+		var filename = katana.$activeTab.find(tag).attr("fullpath");
+	
+		var xref='/katana/wdf/index'; 
+	  	console.log("Calling wdf",  xref);
+		var href='/katana/wdf';
+	  	katana.templateAPI.load.call(this, href, '/static/cases/js/cases.js,', null, 'case', function() { 
+				var xref="./cases/editCase/?fname="+fname; 
+	    		katana.templateAPI.subAppLoad(xref,null,function(thisPage) {
+						cases.mapFullCaseJson(fname,'#listOfTestStepsForCase');
+	    		});
+
+		});
+	},
+
+
+
 	displayTreeOfCases: function() {
 			jQuery.getJSON("./cases/getCaseListTree").done(function(data) {
 				var sdata = data['treejs'];
@@ -914,6 +932,18 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		cases.jsonCaseObject['Requirements']['Requirement'].splice(sid - 1, 0, "");
 		cases.createRequirementsTable();	
 	},
+
+	saveAllRequirementsCB: function() { 
+		var slen = cases.jsonCaseObject['Requirements']['Requirement'].length;
+		console.log("slen=", slen);
+		for (var sid = 0; sid < slen; sid++ ) {
+			var txtVl = katana.$activeTab.find("#textRequirement-name-"+sid+"-id").val();
+			console.log("text ", txtVl);
+			cases.jsonCaseObject['Requirements']['Requirement'][sid]  = txtVl;
+		}
+		cases.createRequirementsTable();		
+
+	},
 			
 	saveRequirementToLine : function(){
 
@@ -1153,7 +1183,9 @@ The UI currently uses jQuery and Bootstrap to display the data.
 	katana.$activeTab.find("#tableOfCaseRequirements").html("");  // This is a blank div. 
 	items.push('<table id="Requirements_table_display" class="case-req-configuration-table  striped" width="100%" >');
 	items.push('<thead>');
-	items.push('<tr id="ReqRow"><th>#</th><th>Requirement</th><th/><th/></tr>');
+	items.push('<tr id="ReqRow"><th>#</th><th>Requirement</th><th>');
+	items.push('<i title="Save Edit" katana-click="cases.saveAllRequirementsCB">Save All</i>')
+	items.push('</th></tr>');
 	items.push('</thead>');
 	items.push('<tbody>');
 	console.log("createRequirementsTable");

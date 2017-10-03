@@ -120,8 +120,23 @@ var suites= {
 			suites.mapSuiteJsonToUi();  // This is where the table and edit form is created. 
 			katana.$activeTab.find('#default_onError').on('change',suites.fillSuiteDefaultGoto );
 			katana.$activeTab.find('#suiteState').on('change',suites.fillSuiteState );
+			katana.$activeTab.find('#suiteDatatype').on('change',suites.fillSuiteDataOptions);
 		});
 	} ,
+
+	fillSuiteDataOptions: function() { 
+		var datatype = this.value; 
+		datatype = datatype.toLowerCase(); 
+		katana.$activeTab.find('#data_type_max_attempts').hide();
+		katana.$activeTab.find('#data_type_num_attempts').hide();
+		if (datatype == 'ruf' || datatype=='rup') {
+			katana.$activeTab.find('#data_type_max_attempts').show();
+		}
+		if (datatype =='rmt'){
+			katana.$activeTab.find('#data_type_num_attempts').show();
+		}
+	},
+
 
 	fillSuiteState: function (){
 		var state = this.value; 
@@ -251,8 +266,8 @@ var suites= {
 		});
 	
 	popup.find("#CaseRunmode").on('change',function() {
-
-			if ( this.value === 'standard') {
+			var mode = this.value.toLowerCase();
+			if ( mode === 'standard') {
 				popup.find('.runmode_condition').hide();	
 					
 			} else {
@@ -409,6 +424,14 @@ Two global variables are heavily used when this function is called;
 },
 
 
+	start_wdfEditor: function() { 
+	var tag = '#suiteInputDataFile';
+	var filename = katana.$activeTab.find(tag).attr("fullpath");
+	dd = { 'path' : filename}; 
+		katana.templateAPI.load( "/katana/wdf/index", null, null, "WDF", null, { type: 'POST', data:  dd}) ;
+
+	},
+
 	 getInputDataForSuite: function () {
       var callback_on_accept = function(selectedValue) { 
       		console.log(selectedValue);
@@ -417,7 +440,10 @@ Two global variables are heavily used when this function is called;
       		var nf = prefixFromAbs(pathToBase, selectedValue);
       		suites.jsonSuiteObject['Details']['InputDataFile']= nf;
       		console.log("Path set to ",nf);
-      		katana.$activeTab.find('#suiteInputDataFile').val(nf);
+      		var tag = '#suiteInputDataFile';
+      		katana.$activeTab.find(tag).val(nf);
+      		katana.$activeTab.find(tag).attr("value", nf);
+	  		katana.$activeTab.find(tag).attr("fullpath", selectedValue);
             };
       var callback_on_dismiss = function(){ 
       		console.log("Dismissed");
@@ -511,7 +537,7 @@ Two global variables are heavily used when this function is called;
 
 	items.push('<table id="Case_table_display" class="suite-configuration-table" width="100%">');
 	items.push('<thead>');
-	items.push('<tr id="CaseRow"><th>Num</th><th></th><th>Path</th><th></th><th>context</th><th>Run Type</th><th>Mode</th><th>OnError</th><th>Impact</th><th/><th/></tr>');
+	items.push('<tr id="CaseRow"><th>Num</th><th></th><th>Path</th><th>context</th><th>Run Type</th><th>Mode</th><th>OnError</th><th>Impact</th><th/></tr>');
 	items.push('</thead>');
 	items.push('<tbody>');
 
@@ -531,7 +557,7 @@ Two global variables are heavily used when this function is called;
 		items.push('<td>'+oneCase['runtype']+'</td>');
 		items.push('<td>'+oneCase['runmode']['@type']);
 		if (oneCase['runmode']['@type'] != 'standard') {
-			items.push('<br>'+oneCase['runmode']['@value']);
+			items.push('<br>'+oneCase['runmode']['@value'].toLowerCase());
 		}
 		items.push('</td>');
 		items.push('<td>'+oneCase['onError']['@action']+'</td>');
@@ -565,7 +591,7 @@ Two global variables are heavily used when this function is called;
  deleteSuiteFromLine :function() {
 	var names = this.attr('key').split('-');
 	var sid = parseInt(names[1]);
-	suites.removeTestcase(sid,xdata);
+	suites.removeTestcase(sid);
 },
 
 	 duplicateNewSuiteIntoLine : function( ){
@@ -661,7 +687,9 @@ Two global variables are heavily used when this function is called;
 	
 	items.push('<table id="Case_Req_table_display" class="suite-req-configuration-table  striped" width="100%" >');
 	items.push('<thead>');
-	items.push('<tr id="ReqRow"><th>#</th><th>Requirement</th><th/><th/></tr>');
+	items.push('<tr id="ReqRow"><th>#</th><th>Requirement</th><th>')
+	items.push('<i title="Save Edit" katana-click="suites.saveAllRequirementsCB">Save All</i>')
+	items.push('</th></tr>');
 	items.push('</thead>');
 	items.push('<tbody>');
 	console.log(rdata);
@@ -687,6 +715,18 @@ Two global variables are heavily used when this function is called;
 	
 
 },
+
+	saveAllRequirementsCB: function() { 
+		var slen = suites.jsonSuiteObject['Requirements'].length;
+		console.log("slen=", slen);
+		for (var sid = 0; sid < slen; sid++ ) {
+			var txtNm = katana.$activeTab.find("#textRequirement-name-"+sid+"-id").val();
+			console.log("text ", txtNm);
+			suites.jsonSuiteObject['Requirements'][sid]  = { "@name": txtNm, "@value": ''}
+		}
+		suites.createSuiteRequirementsTable(suites.jsonSuiteObject['Requirements']);	
+
+	},
 
 
 	saveRequirementCB:function() {
@@ -743,6 +783,17 @@ Two global variables are heavily used when this function is called;
 	if (!jQuery.isArray(suites.jsonSuiteObject['Requirements'])) suites.jsonSuiteObject['Requirements'] = [suites.jsonSuiteObject['Requirements']]; 
 	suites.createCasesTable(suites.jsonTestcases['Testcase']);
 
+		datatype = suites.jsonSuiteObject["Details"]["type"]["@exectype"];
+		datatype = datatype.toLowerCase(); 
+		katana.$activeTab.find('#data_type_max_attempts').hide();
+		katana.$activeTab.find('#data_type_num_attempts').hide();
+		if (datatype == 'ruf' || datatype=='rup') {
+			katana.$activeTab.find('#data_type_max_attempts').show();
+		}
+		if (datatype =='rmt'){
+			katana.$activeTab.find('#data_type_num_attempts').show();
+		}
+
 	suites.createSuiteRequirementsTable(suites.jsonSuiteObject['Requirements']);
 },  
 
@@ -773,10 +824,10 @@ Two global variables are heavily used when this function is called;
 
 
 // Removes a test Case by its ID and refresh the page. 
-	removeTestcase : function(sid,xdata ){
+	removeTestcase : function(sid ){
 	suites.jsonTestcases['Testcase'].splice(sid,1);
 	console.log("Removing test Cases "+sid+" now " + Object.keys(suites.jsonTestcases).length);
-	sutieApp.mapSuiteJsonToUi();	// Send in the modified array
+	suites.mapSuiteJsonToUi();	// Send in the modified array
 },
 
 

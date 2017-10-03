@@ -3595,9 +3595,6 @@ input[type="checkbox"]+label {
     padding: 5px;
 }
 
-@import('katana/wui/core/static/core/css/main_projects.css');
-@import('katana/wui/core/static/core/css/main_suites.css');
-@import('katana/wui/core/static/core/css/main_cases.css');
 
 
 .project-configuration-table {}
@@ -3667,6 +3664,7 @@ input[type="checkbox"]+label {
   text-align: left;
   overflow: hidden;
 }
+
 .suite-configuration-table i{
     padding: 4px;
     font-size: 16px;
@@ -3690,8 +3688,17 @@ input[type="checkbox"]+label {
     flex-grow: 1;
 }
 
-.suite-configuration-table tr th:last-child, .suite-configuration-table tr td:last-child {
+
+.suite-configuration-table tr th:nth-child(7), .suite-configuration-table tr td:nth-child(7) {
     flex-grow: .5;
+}
+
+.suite-configuration-table tr th:nth-child(8), .suite-configuration-table tr td:nth-child(8) {
+    flex-grow: .5;
+}
+
+.suite-configuration-table tr th:last-child, .suite-configuration-table tr td:last-child {
+    flex-grow: .8;
     font-size: 18px;
 }
 
@@ -3730,7 +3737,7 @@ input[type="checkbox"]+label {
 }
 
 .suite-req-configuration-table tr th:last-child, .suite-req-configuration-table tr td:last-child {
-    flex-grow: .5;
+    flex-grow: 1;
     font-size: 18px;
 }
 
