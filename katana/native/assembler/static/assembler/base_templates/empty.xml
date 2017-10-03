@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+
+<data>
+    <warhorn>
+        <dependency name="jira" install="no" user="no"/>
+        <dependency name="lxml" install="no" user="no"/>
+        <dependency name="ncclient" install="no" user="no"/>
+        <dependency name="paramiko" install="no" user="no"/>
+        <dependency name="pexpect" install="no" user="no"/>
+        <dependency name="pysnmp" install="no" user="no"/>
+        <dependency name="requests" install="no" user="no"/>
+        <dependency name="selenium" install="no" user="no"/>
+        <dependency name="xlrd" install="no" user="no"/>
+        <dependency name="cloudshell-automation-api" install="no" user="no"/>
+    </warhorn>
+
+    <tools url="" label="" clone=""/>
+
+    <drivers>
+
+        <repository url="" clone="yes" label="" all_drivers="no">
+            <driver name="" clone="yes"/>
+        </repository>
+
+    </drivers>
+
+    <warriorspace>
+
+        <repository url="" overwrite="no" label="" clone="yes"/>
+
+    </warriorspace>
+</data>
