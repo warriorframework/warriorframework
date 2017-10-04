@@ -44,6 +44,7 @@ def index(request):
             if type(sys["subsystem"]) == list:
                 for subsys in sys["subsystem"]:
                     for k, v in subsys.items():
+                        subsys[k] = "" if subsys[k] is None else subsys[k]
                         if k.startswith("@") and k != "@name" and k != "@default":
                             subsys[k[1:]] = v
                             del subsys[k]
@@ -52,6 +53,7 @@ def index(request):
             else:
                 subsys = sys["subsystem"]
                 for k, v in sys["subsystem"].items():
+                    subsys[k] = "" if subsys[k] is None else subsys[k]
                     if k.startswith("@") and k != "@name" and k != "@default":
                         subsys[k[1:]] = v
                         del subsys[k]
@@ -59,6 +61,7 @@ def index(request):
                         del subsys[k]
         else:
             for k, v in sys.items():
+                sys[k] = "" if sys[k] is None else sys[k]
                 if k.startswith("@") and k != "@name" and k != "@default":
                     sys[k[1:]] = v
                     del sys[k]
