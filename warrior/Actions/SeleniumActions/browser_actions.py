@@ -958,8 +958,6 @@ class browser_actions(object):
                     status = False
             browser_details = {}
         Utils.testcase_Utils.report_substep_status(status)
-        if current_browser:
-            selenium_Utils.save_screenshot_onerror(status, current_browser)
         return status
 
     def set_window_size(self, system_name, xsize=None, ysize=None,
