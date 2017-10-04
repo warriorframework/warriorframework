@@ -654,7 +654,7 @@ def clone_drivers(base_path, current_dir, **kwargs):
     if internal_copy == "":
         destination = os.path.join(base_path, 'warrior')
     else:
-        destination = os.path.join(base_path, 'warrior_fw', 'warrior')
+        destination = os.path.join(base_path, 'warrior')
     node = get_node(config_file_name, "drivers")
     if node is False:
         print_error("Drivers tag not found. No drivers cloned.",
@@ -685,7 +685,7 @@ def clone_drivers(base_path, current_dir, **kwargs):
                 if internal_copy == "":
                     create_dir(os.path.join(base_path, 'temp'))
                 else:
-                    create_dir(os.path.join(base_path, 'warrior_fw', 'temp'))
+                    create_dir(os.path.join(base_path, 'temp'))
             except:
                 print_error("Warhorn does not have the required permissions "
                             "to clone " + name, logfile, print_log_name)
@@ -694,7 +694,7 @@ def clone_drivers(base_path, current_dir, **kwargs):
                 if internal_copy == "":
                     path = os.path.join(base_path, 'temp', name)
                 else:
-                    path = os.path.join(base_path, 'warrior_fw', 'temp', name)
+                    path = os.path.join(base_path, 'temp', name)
                 label = get_attribute_value(repository, "label")
 
                 # current_dir stores the path in which warhorn.py is running
@@ -704,7 +704,7 @@ def clone_drivers(base_path, current_dir, **kwargs):
                 if internal_copy == "":
                     os.chdir(os.path.join(base_path, 'temp'))
                 else:
-                    os.chdir(os.path.join(base_path, 'warrior_fw', 'temp'))
+                    os.chdir(os.path.join(base_path, 'temp'))
                 try:
                     subprocess.check_output(["git", "clone", url])
                 except:
@@ -742,7 +742,7 @@ def clone_drivers(base_path, current_dir, **kwargs):
                 if internal_copy == "":
                     tmp_path = os.path.join(base_path, 'temp', name)
                 else:
-                    tmp_path = os.path.join(base_path, 'warrior_fw',
+                    tmp_path = os.path.join(base_path,
                                                'temp', name)
                 if os.path.exists(tmp_path):
                     delete_directory(tmp_path, logfile, print_log_name)
@@ -830,7 +830,7 @@ def clone_warriorspace(base_path, current_dir, **kwargs):
                         create_dir(os.path.join(base_path,
                                             'warrior', 'temp'))
                     else:
-                        create_dir(os.path.join(base_path, 'warrior_fw',
+                        create_dir(os.path.join(base_path,
                                             'warrior', 'temp'))
                 except:
                     print_error("Warhorn does not have the required "
@@ -844,7 +844,7 @@ def clone_warriorspace(base_path, current_dir, **kwargs):
                         path = os.path.join(base_path, 'warrior',
                                         'temp', name)
                     else:
-                        path = os.path.join(base_path, 'warrior_fw', 'warrior',
+                        path = os.path.join(base_path, 'warrior',
                                         'temp', name)
 
 
@@ -859,7 +859,7 @@ def clone_warriorspace(base_path, current_dir, **kwargs):
                         os.chdir(os.path.join(base_path,
                                           'warrior', 'temp'))
                     else:
-                        os.chdir(os.path.join(base_path, 'warrior_fw',
+                        os.chdir(os.path.join(base_path,
                                           'warrior', 'temp'))
                     try:
                         subprocess.check_output(["git", "clone", url])
@@ -883,20 +883,24 @@ def clone_warriorspace(base_path, current_dir, **kwargs):
                         destination = os.path.join(base_path,
                                                'warrior', 'Warriorspace')
                     else:
-                        destination = os.path.join(base_path, 'warrior_fw',
+                        destination = os.path.join(base_path,
                                                'warrior', 'Warriorspace')
                     dummy, root_repo_folder_list = get_subfiles(path)
-                    try:
-                        overwrite_files(os.path.join(path,
-                                                     root_repo_folder_list[1]),
-                                        destination, overwrite,
-                                        logfile, print_log_name)
-                    except:
-                        print_error("Could not copy Warriorspace files from "
-                                    + name + " into warrior_fw", logfile,
-                                    print_log_name)
+                    if not 'Warriorspace' in root_repo_folder_list:
+                        print_error('COuld not find Warriorspace under the root of the repository')
                         setDone(1)
+                    else:
 
+                        try:
+                            overwrite_files(os.path.join(path,
+                                                         'Warriorspace'),
+                                            destination, overwrite,
+                                            logfile, print_log_name)
+                        except:
+                            print_error("Could not copy Warriorspace files from "
+                                        + name + " into warriorframework", logfile,
+                                        print_log_name)
+                            setDone(1)
             # folder inside the temp folder that had the initial clone of the
             # repository get deleted here. This is done for every iteration
             # because if user wants to clone another repository with the same
@@ -905,7 +909,7 @@ def clone_warriorspace(base_path, current_dir, **kwargs):
                 tmp_path = os.path.join(base_path,
                                            'warrior', 'temp', name)
             else:
-                tmp_path = os.path.join(base_path, 'warrior_fw',
+                tmp_path = os.path.join(base_path,
                                            'warrior', 'temp', name)
             if os.path.exists(tmp_path):
                 delete_directory(tmp_path, logfile, print_log_name)
@@ -940,10 +944,10 @@ def delete_temp_files_and_folders(base_path="", current_dir="", **kwargs):
                     os.path.join(base_path, 'temp'),
                     os.path.join(base_path, 'warrior', '.git')]
     else:
-        path_list = [os.path.join(base_path, 'warrior_fw',
+        path_list = [os.path.join(base_path,
                                            'warrior', 'temp'),
-                    os.path.join(base_path, 'warrior_fw', 'temp'),
-                    os.path.join(base_path, 'warrior_fw',
+                    os.path.join(base_path, 'temp'),
+                    os.path.join(base_path,
                                            'warrior', '.git')]
     if base_path != "":
         for path in path_list:
@@ -999,10 +1003,6 @@ def validate_base_path(base_path, repo_name="warrior", **kwargs):
     console_log_name = kwargs.get("console_log_name")
     print_log_name = kwargs.get("print_log_name")
     if base_path == "":
-        print_info("As the destination attribute had been left unspecified, "
-                   + repo_name
-                   + " has been cloned at the same level as warhorn",
-                   logfile, print_log_name)
         base_path = get_parent_dir(os.path.dirname(os.path.realpath(__file__)))
     try:
         create_dir(os.path.join(base_path, "temp"))
@@ -1089,7 +1089,7 @@ def clone_major_repositories(p_node, **kwargs):
                                         print_log_name=print_log_name)
 
 
-def get_base_path(node_name="warrior", **kwargs):
+def get_base_path(node_name="warriorframework", **kwargs):
     """This function returns the base_path - the path where the git repository
     is supposed to be cloned."""
     logfile = kwargs.get("logfile")
@@ -1097,23 +1097,9 @@ def get_base_path(node_name="warrior", **kwargs):
     print_log_name = kwargs.get("print_log_name")
     console_log_name = kwargs.get("console_log_name")
     node = get_node(config_file_name, node_name)
-    if node is False:
-        setDone(1)
-        if node_name == "warrior":
-            print_error("Warrior attribute cannot be found! The installation "
-                        "cannot proceed without Warrior!",
-                        logfile, print_log_name)
-            delete_temp_files_and_folders(logfile=logfile,
-                                          config_file_name=config_file_name,
-                                          console_log_name=console_log_name,
-                                          print_log_name=print_log_name)
-
-            getDone()
-        else:
-            print_error(node_name
-                        + " attribute cannot be found! Warhorn would skip "
-                        + node_name + " cloning!", logfile, print_log_name)
-    base_path = get_attribute_value(node, "destination")
+    base_path = ""
+    if node is not False:
+        base_path = get_attribute_value(node, "destination")
     base_path = validate_base_path(base_path, logfile=logfile,
                                    config_file_name=config_file_name,
                                    console_log_name=console_log_name,
@@ -1152,7 +1138,7 @@ def replace_tools_from_product_repo(node_list, **kwargs):
             warrior_tools_path = os.path.join(warrior_base_path,
                                               "warrior", "Tools")
         else:
-            warrior_tools_path = os.path.join(warrior_base_path, "warrior_fw",
+            warrior_tools_path = os.path.join(warrior_base_path,
                                               "warrior", "Tools")
         product_tools_path = os.path.join(tools_base_path, tools_root, "Tools")
         dir_util.copy_tree(product_tools_path, warrior_tools_path, update=1)
@@ -1223,13 +1209,16 @@ def assemble_warrior():
     node_list = remove_extra_list_elements(node_list, "warhorn", "drivers",
                                            "warriorspace")
     for node in node_list:
-        clone_major_repositories(node, logfile=logfile,
-                                 config_file_name=config_file_name,
-                                 console_log_name=console_log_name,
-                                 print_log_name=print_log_name)
+        if node == "warriorframework":
+            print_info("The ability to upgrade/downgrade wariorframework version would be available for use soon.", logfile, print_log_name)
+        else:
+            clone_major_repositories(node, logfile=logfile,
+                                     config_file_name=config_file_name,
+                                     console_log_name=console_log_name,
+                                     print_log_name=print_log_name)
 
     current_dir = os.path.dirname(os.path.realpath(__file__))
-    base_path, _ = get_base_path(logfile=logfile,
+    base_path, _ = get_base_path("warriorframework", logfile=logfile,
                                  config_file_name=config_file_name,
                                  console_log_name=console_log_name,
                                  print_log_name=print_log_name)

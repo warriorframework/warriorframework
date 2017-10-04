@@ -32,8 +32,15 @@ app.factory('TestcaseFactory', ['$http', '$routeParams', '$q', function($http, $
                     deferred.resolve(data);
                 })
                 .error(function(data, status, headers, config) {
-                    deferred.reject("Error while saving testcase xml: " + filename  + ' '
-                                    + status + ' ' + JSON.stringify(headers));
+                    sweetAlert({
+                        title: "Permission Denied.",
+                        closeOnConfirm: false,
+                        confirmButtonColor: '#3b3131',
+                        confirmButtonText: "Ok",
+                        text: "Please edit the directory permissions so that Katana can save this file.",
+                        type: "warning"
+                });
+
                 })
             return deferred.promise;
         }

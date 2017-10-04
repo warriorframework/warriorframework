@@ -11,8 +11,8 @@ limitations under the License.
 
 */
 
-app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$controller', '$timeout', '$location', 'fileFactory', 'getTestsuiteFactory', 'setTestsuiteFactory', 'saveasTestsuiteFactory', 'subdirs',
-    function($scope, $http, $routeParams, $controller, $timeout, $location, fileFactory, getTestsuiteFactory, setTestsuiteFactory, saveasTestsuiteFactory, subdirs) {
+app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$controller', '$timeout', '$location', 'fileFactory', 'getTestsuiteFactory', 'setTestsuiteFactory', 'saveasTestsuiteFactory', 'getConfigFactory', 'subdirs',
+    function($scope, $http, $routeParams, $controller, $timeout, $location, fileFactory, getTestsuiteFactory, setTestsuiteFactory, saveasTestsuiteFactory, getConfigFactory, subdirs) {
 
         $scope.subdirs = subdirs;
         $scope.xml = {};
@@ -45,7 +45,133 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
         $scope.testcaseEditor = false;
         $scope.testcaseBeingEdited = "None";
 
-        function get_folders_names(json_dir_data){
+      function readConfig(){
+          getConfigFactory.readconfig()
+          .then(function (data) {
+             $scope.cfg = data;
+            });
+      }
+
+      readConfig();
+
+
+//To Load the Case File from Suite 
+//Works for base Directory as well as Subdirectories
+     $scope.loadFile = function(filepath) {
+        var checkFlag = filepath.includes("..");                                         
+        if(checkFlag==true){                                                      //For files inside the Warrior directory
+             dirCheck=filepath.split("/").reverse()[1];
+             if(dirCheck=="Testcases"){                                           //Fetch Parent directory files
+                splitDir = filepath.split('/Testcases')[1]; 
+                finalUrl = "#/testcase"+splitDir+"/none";
+                window.open(finalUrl);
+             }
+             else if(dirCheck=="testcases"){
+                splitDir = filepath.split('/testcases')[1]; 
+                finalUrl = "#/testcase"+splitDir+"/none";
+                window.open(finalUrl);
+             }
+            else{                                                                 //Fetch subdirectory files
+                splitPath = filepath.split("/").pop(-1); 
+                splitter = splitPath+"/"; 
+                if(filepath.includes("Testcases")==true){
+                var checkDir = filepath.split("Testcases/")[1].split(splitPath)[0]; 
+                }
+                else{var checkDir = filepath.split("testcases/")[1].split(splitPath)[0];}  
+                   checkDir = checkDir.slice(0, -1);
+                   checkDir = checkDir.replace(/\//g,','); 
+                   finalUrlDir = "#/testcase/"+splitter+checkDir; 
+                   window.open(finalUrlDir);
+            }
+        }
+        else{                                                                     //For files outside the Warrior directory
+            testcaseDir = $scope.cfg.testsuitedir;
+            var matchPath = filepath.includes(testcaseDir);
+            if(matchPath == true){
+              splitPath = filepath.split(testcaseDir)[1]; 
+              fileName = splitPath.split("/").pop(-1); 
+              splitter = fileName+"/";
+              checkDir = filepath.split(testcaseDir)[1].split(fileName)[0]; 
+              checkDir = checkDir.slice(0, -1);
+              checkDir = checkDir.replace(/\//g,','); 
+              finalUrlDir = "#/testcase/"+splitter+checkDir; 
+              window.open(finalUrlDir);
+          }
+            else{ 
+            if(filepath != '') 
+                 {                                                                  //Mismatched Config and selected path;   
+                sweetAlert({
+                    title: "Config Path mismatch with the selected path !",
+                    closeOnConfirm: true,
+                    confirmButtonColor: '#3b3131',
+                    confirmButtonText: "Ok",
+                    type: "info"
+                });
+              }
+          }
+        }   
+      };
+
+
+    
+//To Load the InputData File from Suite 
+//Works for base Directory as well as Subdirectories
+    $scope.loadDataFile = function(filepath) {
+        var checkFlag = filepath.includes("..");                                         
+        if(checkFlag==true){                                                      //For files inside the Warrior directory
+             dirCheck=filepath.split("/").reverse()[1];
+             if(dirCheck=="Data"){                                           //Fetch Parent directory files
+                splitDir = filepath.split('/Data')[1]; 
+                finalUrl = "#/datafile"+splitDir+"/none";
+                window.open(finalUrl);
+             }
+             else if(dirCheck=="data"){
+                splitDir = filepath.split('/data')[1]; 
+                finalUrl = "#/datafile"+splitDir+"/none";
+                window.open(finalUrl);
+             }
+            else{                                                                 //Fetch subdirectory files
+                splitPath = filepath.split("/").pop(-1); 
+                splitter = splitPath+"/"; 
+                if(filepath.includes("Data")==true){
+                var checkDir = filepath.split("Data/")[1].split(splitPath)[0]; 
+                }
+                else{var checkDir = filepath.split("data/")[1].split(splitPath)[0];} 
+                      checkDir = checkDir.slice(0, -1);
+                      checkDir = checkDir.replace(/\//g,','); 
+                      finalUrlDir = "#/datafile/"+splitter+checkDir; 
+                      window.open(finalUrlDir);
+            }
+        }
+        else{                                                                     //For files outside the Warrior directory
+            dataDir = $scope.cfg.idfdir;
+            var matchPath = filepath.includes(dataDir);
+            if(matchPath == true){
+              splitPath = filepath.split(dataDir)[1]; 
+              fileName = splitPath.split("/").pop(-1); 
+              splitter = fileName+"/";
+              checkDir = filepath.split(dataDir)[1].split(fileName)[0]; 
+              checkDir = checkDir.slice(0, -1);
+              checkDir = checkDir.replace(/\//g,','); 
+              finalUrlDir = "#/datafile/"+splitter+checkDir; 
+              window.open(finalUrlDir);
+          }
+            else{ 
+            if(filepath != '') 
+                 {                                                                  //Mismatched Config and selected path;   
+                sweetAlert({
+                    title: "Config Path mismatch with the selected path !",
+                    closeOnConfirm: true,
+                    confirmButtonColor: '#3b3131',
+                    confirmButtonText: "Ok",
+                    type: "info"
+                });
+              }
+          }
+        } 
+     };
+
+       function get_folders_names(json_dir_data){
             var dir = json_dir_data["dir"];
             var files = json_dir_data["file"];
             $scope.table = $scope.table + "<li>";
@@ -276,7 +402,7 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
         };
 
         $scope.idf_monitorPathBtnValue = function(){
-            if($scope.suitemodel.TestSuite.Details.IDF === undefined || $scope.suitemodel.TestSuite.Details.IDF === ""){
+            if($scope.suitemodel.TestSuite.Details.InputDataFile === undefined || $scope.suitemodel.TestSuite.Details.InputDataFile === ""){
                 $scope.idf_btnValue = "Path";
             } else {
                 $scope.idf_btnValue = "Edit";
@@ -327,7 +453,7 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
             var idf_tc_folder_array = [];
             var idf_folder_index = -1;
             var idf_final_array = [];
-            $scope.suitemodel.TestSuite.Details.IDF = "";
+            $scope.suitemodel.TestSuite.Details.InputDataFile = "";
             if ($scope.cfg.idfdir.indexOf('/') === -1) {
                 idf_data_folder_array = $scope.cfg.idfdir.split("\\");
             }
@@ -373,10 +499,10 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
                 idf_final_array.push(idf_data_folder_array[i]);
             }
             for (i = 0; i < idf_final_array.length; i++) {
-                $scope.suitemodel.TestSuite.Details.IDF = $scope.suitemodel.TestSuite.Details.IDF + idf_final_array[i] + "/"
+                $scope.suitemodel.TestSuite.Details.InputDataFile = $scope.suitemodel.TestSuite.Details.InputDataFile + idf_final_array[i] + "/"
             }
-            if (!$scope.suitemodel.TestSuite.Details.IDF.match(/\.\.\/$/)) {
-                $scope.suitemodel.TestSuite.Details.IDF = $scope.suitemodel.TestSuite.Details.IDF.slice(0, -1);
+            if (!$scope.suitemodel.TestSuite.Details.InputDataFile.match(/\.\.\/$/)) {
+                $scope.suitemodel.TestSuite.Details.InputDataFile = $scope.suitemodel.TestSuite.Details.InputDataFile.slice(0, -1);
             }
             $scope.idf_btnValue = "Edit";
             $scope.idf_toggleModal();
@@ -485,6 +611,16 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
                         $scope.xml.suitejson = JSON.stringify(jsonObj, null, 2);
                         $scope.suitemodel = jsonObj;
                         console.log(JSON.stringify(jsonObj));
+
+                        if(!$scope.suitemodel.TestSuite.Details.hasOwnProperty("InputDataFile")){
+                            $scope.suitemodel.TestSuite.Details.InputDataFile = "";
+                        }
+                        if($scope.suitemodel.TestSuite.Details.hasOwnProperty("IDF")){
+                            $scope.suitemodel.TestSuite.Details.InputDataFile = $scope.suitemodel.TestSuite.Details["IDF"];
+                            delete $scope.suitemodel.TestSuite.Details["IDF"];
+                        }
+
+
                     },
                     function(data) {
                         alert(data);
@@ -1473,7 +1609,7 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
                                 "_value": $scope.suiteGotoStep
                             },
                             "Resultsdir": $scope.suitemodel.TestSuite.Details.Resultsdir,
-                            "IDF": $scope.suitemodel.TestSuite.Details.IDF
+                            "InputDataFile": $scope.suitemodel.TestSuite.Details.InputDataFile
                         },
                         "Requirements": {
                             "Requirement": $scope.suitereqs
@@ -1490,16 +1626,17 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
                     .then(
                         function(data) {
                             console.log(data);
+                            if ($scope.savecreateTestsuiteCap == true) {
+                                $location.path('/newtestsuite');
+                            }  else {
+                                $location.path('/testsuites');
+                            }
                         },
                         function(data) {
                             alert(data);
                         });
 
-                if ($scope.savecreateTestsuiteCap == true) {
-                    $location.path('/newtestsuite');
-                }  else {
-                    $location.path('/testsuites');
-                }
+
             }
 
             fileFactory.readdatafile()

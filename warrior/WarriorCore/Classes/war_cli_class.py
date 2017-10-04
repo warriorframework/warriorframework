@@ -25,6 +25,7 @@ class WarriorCliClass(object):
     """Handle the command line input for warrior"""
     cmdprint = False
     def __init__(self):
+        """empty constructor"""
         return None
 
     @classmethod
@@ -36,15 +37,15 @@ class WarriorCliClass(object):
                 target_time, '%Y-%m-%d-%H-%M-%S')
             current_time = datetime.datetime.now().replace(microsecond=0)
             if target_time >= current_time:
-                print 'warrior will sleep until ' + str(target_time)
-                print 'please do not close this window'
+                print_info('warrior will sleep until ' + str(target_time))
+                print_info('please do not close this window')
                 time.sleep((target_time-current_time).total_seconds())
-                print 'warrior is now awake'
+                print_info('warrior is now awake')
             else:
-                print 'Please enter a future time'
+                print_info('Please enter a future time')
                 exit(1)
         except ValueError:
-            print 'Please enter a legit time in yyyy-mm-dd-hh-mm-ss format'
+            print_error('Please enter a legit time in yyyy-mm-dd-hh-mm-ss format')
             exit(1)
 
     @classmethod
@@ -59,9 +60,9 @@ class WarriorCliClass(object):
                 if Utils.xml_Utils.getRoot(xmlfile_abspath).tag == 'Testcase':
                     result.append(xmlfile_abspath)
                 else:
-                    print xmlfile_abspath + " is not a valid testcase xml"
+                    print_info(xmlfile_abspath + " is not a valid testcase xml")
             else:
-                print xmlfile_abspath + " is not a xml file"
+                print_info(xmlfile_abspath + " is not a xml file")
         return result
 
     def check_tag(self, category_list, dirlist):
@@ -89,7 +90,7 @@ class WarriorCliClass(object):
                             if len(set(category_list) & set(cat_text)) > 0:
                                 result.append(xmlfile)
             else:
-                print folder, "is not a directory"
+                print_error(str(folder) + "is not a directory")
         print_info("Number of matching testcases: {0}".format(len(result)))
         return result
 
@@ -169,14 +170,14 @@ class WarriorCliClass(object):
                 suite.create_suite({"tc_type":tc_type, "kw_type":kw_type, "val":val})
                 filepath = suite.output_file()
             else:
-                print "None of the provided xml files are valid testcases"
+                print_error("None of the provided xml files are valid testcases")
                 exit(1)
         else:
-            print "**********\nWrong combination of CLI arguments,"\
-                " please choose only one testcase exec_type"\
-                " and one keyword exec_type, Warrior CLI commands"\
-                " does not support RMT and RUF with exec_type=parallel_keywords"\
-                "\n**********"
+            print_error("**********\nWrong combination of CLI arguments,"\
+                            " please choose only one testcase exec_type"\
+                            " and one keyword exec_type, Warrior CLI commands"\
+                            " does not support RMT and RUF with exec_type=parallel_keywords"\
+                            "\n**********")
             exit(1)
         return filepath
 
@@ -294,7 +295,7 @@ class WarriorCliClass(object):
                             "Default project:- Is the first proj marked default='true', "\
                             "in the jira config file. If no projects are marked default='true' "\
                             "it is first project in the jira config file."\
-                            "jira config file location = Tools/Jira/jira_config.xml.")
+                            "jira config file location = Tools/jira/jira_config.xml.")
 
         parser.add_argument('-ujd', action='store_true', default=False,
                             help=":upload jira defects: Manually upload "\
@@ -315,7 +316,7 @@ class WarriorCliClass(object):
                             "Used with -ad or -ujd. When provided with -ad or -jd jira bugs "\
                             "will be created against the "\
                             "provided project instead of default jira project."\
-                            "jira config file location = Tools/Jira/jira_config.xml.")
+                            "jira config file location = Tools/jira/jira_config.xml.")
 
         parser.add_argument('-datafile', action='store', nargs='?',
                             help="overwrite the path of datafile in execution "\
@@ -335,7 +336,7 @@ class WarriorCliClass(object):
 
         parser.add_argument('-jobid', action='store', nargs='?',
                             help="create a property in test junit files which name is "\
-                            "resultlocation and value http://pharlap.tx.fnc.fujitsu.com/share/logs/<jobid>")
+                            "resultlocation and value is <job_url<url>> + <jobid>")
 
         parser.add_argument('-encrypt', action='store', nargs='*', dest="encrypt", help="encrypt data string")
 
@@ -381,7 +382,7 @@ class WarriorCliClass(object):
                                  "encrypt command to create a secret key"\
                             "...")
 
-        # Update Jira issue based on input ID and detail
+        # Update jira issue based on input ID and detail
         parser.add_argument('-jiraid', action='store', default=False,
                             help="The issue that will be updated based on current execution result")
 
@@ -389,8 +390,8 @@ class WarriorCliClass(object):
                             help=":dbsystem: Represents the name of database "\
                             "server in the database config file, both html " \
                             "and xml results will be stored in this " \
-                            "database server. Database config file " \
-                            "location = Tools/Database/database_config.xml.")
+                            "database server, database config file " \
+                            "location = Tools/database/database_config.xml.")
 
         namespace = parser.parse_args(arglist)
         if namespace.cmdprint:

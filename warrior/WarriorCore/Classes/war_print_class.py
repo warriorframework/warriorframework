@@ -12,25 +12,35 @@ limitations under the License.
 '''
 
 """
-This class will trap trap stdout and redirects the message to logfile and stdout
+This class will trap stdout and redirects the message to logfile and stdout
 It takes console_logfile and write_to_stdout ( boolean flag) as arguments.
+
+!!! Important!!!
+DO NOT import any modules from warrior/Framework package that uses
+warrior/Framework/Utils/print_Utils.py at module level into this module
+as it will lead to cyclic imports.
 
 """
 import sys
 import re
 
+
 def print_main(message, print_type, color_message=None, *kwargs):
-    """The main print function will be called by other print functions """
+    """The main print function will be called by other print functions
+    """
     if color_message is not None:
         print_string = print_type + " " + str(color_message)
     elif color_message is None:
         print_string = print_type + " " + str(message)
     if len(kwargs) > 0:
-        print_string = (print_type+ " " + str(message) + str(kwargs))
-    #print print_string
+        print_string = (print_type + " " + str(message) + str(kwargs))
+    # print print_string
     sys.stdout.write(print_string + '\n')
     sys.stdout.flush()
+    from Framework.Utils.testcase_Utils import TCOBJ
+    TCOBJ.p_note_level(message, print_type)
     return print_string
+
 
 class RedirectPrint(object):
     """Class that has methods to redirect prints
@@ -42,8 +52,9 @@ class RedirectPrint(object):
         self.stdout = sys.stdout
 
     def get_file(self, console_logfile):
-        """If the console logfile is not None redirect sys.stdout to 
-        console logfile"""
+        """If the console logfile is not None redirect sys.stdout to
+        console logfile
+        """
         self.file = console_logfile
         if self.file is not None:
             sys.stdout = self
@@ -67,4 +78,3 @@ class RedirectPrint(object):
     def flush(self):
         """flush logfile """
         return self.stdout.flush()
-
