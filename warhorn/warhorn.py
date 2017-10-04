@@ -10,7 +10,7 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
+limitations under the License.
 '''
 
 """
@@ -114,7 +114,7 @@ def check_basic_requirements(logfile, config_file_name, console_log_name,
                                       console_log_name=console_log_name,
                                       print_log_name=print_log_name)
         setDone(1)
-        getDone()
+        getDone(logfile, print_log_name)
     else:
         print_info("Setuptools package is available.", logfile, print_log_name)
 
@@ -136,7 +136,7 @@ def check_basic_requirements(logfile, config_file_name, console_log_name,
                                       console_log_name=console_log_name,
                                       print_log_name=print_log_name)
         setDone(1)
-        getDone()
+        getDone(logfile, print_log_name)
 
 
 def overwrite_files(path, destination, overwrite, logfile, print_log_name):
@@ -212,19 +212,19 @@ def install_pip(logfile, print_log_name, python_executable):
                             "{0}".format(error), logfile, print_log_name)
                 print_info("Exiting Warhorn.", logfile, print_log_name)
                 setDone(1)
-                getDone()
+                getDone(logfile, print_log_name)
         print_info("Pip installed.", logfile, print_log_name)
     except IOError:
         print_error("Pip couldn't be installed! Seems like Warhorn does not "
                     "have write permissions.", logfile, print_log_name)
         setDone(1)
-        getDone()
+        getDone(logfile, print_log_name)
     except Exception as e:
         print_error("An error occured while installing pip: {0}".format(e),
                     logfile, print_log_name)
         print_info("Exiting Warhorn.", logfile, print_log_name)
         setDone(1)
-        getDone()
+        getDone(logfile, print_log_name)
 
 
 def print_out_checkout_status(label, check, current_tag, repo_name, **kwargs):
@@ -290,7 +290,7 @@ def clone_warrior_and_tools(base_path, current_dir, repo_root, **kwargs):
                                           config_file_name=config_file_name,
                                           console_log_name=console_log_name,
                                           print_log_name=print_log_name)
-            getDone()
+            getDone(logfile, print_log_name)
         else:
             return
     if not check_url_is_a_valid_repo(url, repo_name, logfile, print_log_name):
@@ -301,7 +301,7 @@ def clone_warrior_and_tools(base_path, current_dir, repo_root, **kwargs):
                                           config_file_name=config_file_name,
                                           console_log_name=console_log_name,
                                           print_log_name=print_log_name)
-            getDone()
+            getDone(logfile, print_log_name)
         else:
             return
 
@@ -399,7 +399,7 @@ def clone_warrior_and_tools(base_path, current_dir, repo_root, **kwargs):
                                               config_file_name=config_file_name,
                                               console_log_name=console_log_name,
                                               print_log_name=print_log_name)
-                getDone()
+                getDone(logfile, print_log_name)
 
 
 def remove_extra_drivers(drivers, path):
@@ -971,8 +971,8 @@ def delete_temp_files_and_folders(base_path="", current_dir="", **kwargs):
         shutil.copyfile(print_log_name, os.path.join(path, os.path.basename(os.path.normpath(print_log_name))))
         shutil.copyfile(console_log_name, os.path.join(path, os.path.basename(os.path.normpath(console_log_name))))
     except:
-        print "Unable to copy config/print_log/console_log file to " \
-        "correct location", logfile, print_log_name
+        print_warning("Unable to copy config/print_log/console_log file to " \
+        "correct location", logfile, print_log_name)
 
     # log files deleted from the original directory.
     os.remove(print_log_name)
@@ -1017,7 +1017,7 @@ def validate_base_path(base_path, repo_name="warrior", **kwargs):
                                           config_file_name=config_file_name,
                                           console_log_name=console_log_name,
                                           print_log_name=print_log_name)
-            getDone()
+            getDone(logfile, print_log_name)
         else:
             return None
     return base_path
@@ -1198,7 +1198,7 @@ def assemble_warrior():
                                       console_log_name=console_log_name,
                                       print_log_name=print_log_name)
         setDone(1)
-        getDone()
+        getDone(logfile, print_log_name)
 
     check_basic_requirements(logfile, config_file_name, console_log_name,
                              print_log_name, python_executable)
@@ -1242,7 +1242,7 @@ def assemble_warrior():
                                   print_log_name=print_log_name,
                                   dest=internal_copy)
 
-    getDone()
+    getDone(logfile, print_log_name)
 
 
 if __name__ == "__main__":

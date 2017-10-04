@@ -3,8 +3,8 @@
 <!-- To read full documentation for this file, please refer to user_generated/config_sample.xml -->
 
 <data>
-    <warhorn name="Warhorn">
-        <dependency name="jira" install="no" user="no"/>
+    <warhorn name="Warhorn" dependency_filepath="Provide filepath, where version details for packages below are defined. By default the versions defined in requirements.txt at the base directory would be used">
+        <dependency name="jira" install="yes" user=""/>
         <dependency name="lxml" install="yes" user="no"/>
         <dependency name="ncclient" install="no" user="no"/>
         <dependency name="paramiko" install="yes" user="no"/>
@@ -14,6 +14,7 @@
         <dependency name="selenium" install="yes" user="no"/>
         <dependency name="xlrd" install="no" user="no"/>
         <dependency name="cloudshell-automation-api" install="yes" user="no"/>
+        <dependency name="PyVirtualDisplay" install="yes" user="no"/>
     </warhorn>
 
 	<warriorframework url="https://github.com/warriorframework/warriorframework.git"

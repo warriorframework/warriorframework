@@ -10,7 +10,7 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License. 
+limitations under the License.
 '''
 
 """
@@ -48,9 +48,11 @@ def print_main(message, print_type, con_log, pr_log_name, color_message=None,
     pr_log = open(pr_log_name, "a")
     pr_log.write(print_string + "\n")
     pr_log.close()
-    if con_log is not None:
+    try:
         con_log.write(print_string + "\n")
         con_log.flush()
+    except ValueError:
+        print print_string + "\n"
     return print_string
 
 
