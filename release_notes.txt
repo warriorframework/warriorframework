@@ -31,6 +31,7 @@ New Features:
 [WAR-1003] - As a user, I want to know he python version on which Warrior is running
 [WAR-1053] - As a user, I want to be able to run Suites in a project in parallel
 [WAR-1069] - Selenium: As a user, I want to launch browser and maximize it in the same keyword
+[WAR-851] - WARHORN: As a user, I need an option to create virtual environment
 
 -------------
 Improvements:
