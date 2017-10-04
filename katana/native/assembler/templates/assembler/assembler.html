@@ -5,84 +5,10 @@
     <title>Assembler</title>
 </head>
 <body>
-
+    <div class="tool-bar"></div>
     <div class="csrf-container">{% csrf_token %}</div>
-
-    <div class="tool-bar">
-
+    <div auto-init="assembler.init">
+        {% include 'assembler/configFileDetails.html' %}
     </div>
-
-    {{xml_contents}}
-
-    <div>
-        {% for dependency in xml_contents.data.warhorn.dependency %}
-            {% for key, value in dependency.items %}
-                <div>
-                    <label>{{key}}</label>
-                    <input value="{{value}}">
-                </div>
-                <br>
-            {% endfor %}
-        {% endfor %}
-    </div>
-
-    <div>
-        <div>
-            <label>URL</label>
-            <input value="{{ xml_contents.data.tools}}">
-        </div>
-        <div>
-            <label>Label</label>
-            <input value="{{ xml_contents.data.tools}}">
-        </div>
-        <div>
-            <label>Clone</label>
-            <input value="{{ xml_contents.data.tools}}">
-        </div>
-    </div>
-
-    <div>
-        {% for kw_repo in  xml_contents.data.drivers.repository %}
-            <div>
-                <label>URL</label>
-                <input value="{{ kw_repo }}">
-            </div>
-            <div>
-                <label>Label</label>
-                <input value="{{ kw_repo }}">
-            </div>
-            <div>
-                <label>Clone</label>
-                <input value="{{ kw_repo }}">
-            </div>
-            <div>
-                <label>All Drivers</label>
-                <input value="{{ kw_repo }}">
-            </div>
-        {% endfor %}
-    </div>
-
-    <div>
-        {% for ws_repo in  xml_contents.data.warriorspace.repository %}
-            <div>
-                <label>URL</label>
-                <input value="{{ ws_repo }}">
-            </div>
-            <div>
-                <label>Label</label>
-                <input value="{{ ws_repo }}">
-            </div>
-            <div>
-                <label>Clone</label>
-                <input value="{{ ws_repo }}">
-            </div>
-            <div>
-                <label>Overwrite</label>
-                <input value="{{ ws_repo }}">
-            </div>
-        {% endfor %}
-    </div>
-
-
 </body>
 </html>
