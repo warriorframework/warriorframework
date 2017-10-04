@@ -24,7 +24,10 @@ def index(request):
         filepath = data["path"]
         filepath = filepath.replace(wdfdir, "")
         filepath = filepath[1:] if filepath.startswith(os.sep) else filepath
-        data = xmltodict.parse(open(data["path"]).read())
+        if os.path.isfile(data["path"]):
+            data = xmltodict.parse(open(data["path"]).read())
+        else:
+            return render(request, 'wdf_edit/failure.html')
     else:
         sample_data = {"system": [{"@name": "Example system", "Example key": "Example value"}]}
         ref_dict = copy.deepcopy(sample_data)

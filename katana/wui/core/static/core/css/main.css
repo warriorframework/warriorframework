@@ -3194,8 +3194,8 @@ div .tool-bar-links:active {
 
 .wdf-wide-button {
 	display: block;
-	width: 100%;
-	max-width: 100%;
+	width: 100% !important;
+	max-width: 100% !important;
 	text-align: left;
 	background-color: #f9f9f9;
 	border: none;
