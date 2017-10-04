@@ -285,13 +285,11 @@ class browser_actions(object):
                     status = False
             browser_details = {}
         Utils.testcase_Utils.report_substep_status(status)
-        if current_browser:
-            selenium_Utils.save_screenshot_onerror(status, current_browser)
         return status
 
     def browser_launch_and_maximize(self, system_name, browser_name="all", type="firefox",
                                     url=None, ip=None, remote=None, element_config_file=None,
-                                    element_tag=None, maximize='yes'):
+                                    element_tag=None):
         """
         This will launch a browser and maximize the browser window if it is set.
 
@@ -365,12 +363,6 @@ class browser_actions(object):
                              FOR TEST CASE
                              Eg: <argument name="element_tag" value="json_name_1">
 
-            9. maximize    = If this element tag is set to 'yes', the browser would get maximized
-                             when it is launched. If it is set to "no", it would only launch the
-                             browser without maximizing it. It defaults to 'yes'.
-                             FOR TEST CASE
-                             Eg: <argument name="maximize" value="yes">
-
         :Arguments:
 
             1. system_name(str) = the system name.
@@ -385,8 +377,6 @@ class browser_actions(object):
                                            locators
             8. element_tag (str) = particular element in the json fie which
                                    contains relevant information to that element
-            9. maximize(str) = 'yes' or 'no' to indicate whether you want to maximize
-                               the browser or not.
 
         :Returns:
 
@@ -395,72 +385,20 @@ class browser_actions(object):
                                    browser
 
         """
-        arguments = locals()
-        arguments.pop('self')
-        status = True
-        output_dict = {}
-        wdesc = "Opens browser instances"
+        wdesc = "Opens browser instances and maximizes them"
         pNote(wdesc)
         pSubStep(wdesc)
-        browser_details = {}
 
-        if ip is None:
-            ip = data_Utils.getSystemData(self.datafile, system_name, "ip")
-        if remote is None:
-            remote = data_Utils.getSystemData(self.datafile, system_name,
-                                              "remote")
+        status, output_dict = self.browser_launch(system_name=system_name, type=type,
+                                                  browser_name=browser_name, url=url, ip=ip,
+                                                  remote=remote,
+                                                  element_config_file=element_config_file,
+                                                  element_tag=element_tag)
+        if status:
+            for current_browser in output_dict:
+                self.browser_object.maximize_browser_window(output_dict[current_browser])
 
-        webdriver_remote_url = ip if str(remote).strip().lower() == "yes"\
-            else False
-
-        system = xml_Utils.getElementWithTagAttribValueMatch(self.datafile,
-                                                             "system",
-                                                             "name",
-                                                             system_name)
-        browser_list = system.findall("browser")
-        try:
-            browser_list.extend(system.find("browsers").findall("browser"))
-        except AttributeError:
-            pass
-
-        if not browser_list:
-            browser_list.append(1)
-            browser_details = arguments
-
-        for browser in browser_list:
-            arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
-            if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, datafile=self.datafile, **arguments)
-            if browser_details is not None:
-                browser_inst = self.browser_object.open_browser(browser_details["type"],
-                                                                webdriver_remote_url)
-                if browser_inst:
-                    browser_fullname = "{0}_{1}".format(system_name, browser_details["browser_name"])
-                    output_dict[browser_fullname] = browser_inst
-                    if browser_details["maximize"] == 'yes':
-                        status = self.browser_object.\
-                                    max_browser_return_status(output_dict[browser_fullname],
-                                                              system_name,
-                                                              browser_details["browser_name"])
-                    if "url" in browser_details and browser_details["url"]\
-                            is not None:
-                        result, url = self.browser_object.check_url(browser_details["url"])
-                        if result == True:
-                            result = self.browser_object.go_to(url,
-                                                               browser_inst)
-                        else:
-                            result = True
-                            if browser_details["maximize"] == 'yes':
-                                status = self.browser_object.\
-                                    max_browser_return_status(output_dict[browser_fullname], system_name,
-                                                              browser_details["browser_name"])
-            browser_details = {}
-        Utils.testcase_Utils.report_substep_status(status)
-        if output_dict[browser_fullname]:
-            selenium_Utils.save_screenshot_onerror(status, output_dict[browser_fullname])
         return status, output_dict
-
 
     def navigate_to_url(self, system_name, type="firefox", browser_name="all",
                         url=None, element_config_file=None, element_tag=None):
