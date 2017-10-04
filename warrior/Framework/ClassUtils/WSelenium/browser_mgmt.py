@@ -17,6 +17,7 @@ import re
 from time import sleep
 import urllib2
 from Framework.Utils.datetime_utils import get_current_timestamp
+from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.print_Utils import print_error, print_info, print_debug, print_exception, \
     print_warning
 
@@ -74,8 +75,9 @@ class BrowserManagement(object):
             print_exception(exception)
             status = False
         return status
-            
+
     # window management
+
 
     def close_window(self, browser_instance=None):
         """close the current window """
@@ -207,7 +209,6 @@ class BrowserManagement(object):
             status = False
         return status, url
 
-
     def go_to(self, url, browser_instance=None):
         """Navigates the active browser instance to the provided URL."""
         status = True
@@ -256,13 +257,13 @@ class BrowserManagement(object):
         if url is not None:
             self.go_to(url, browser_instance)
             sleep(1)
-    
+
     def switch_tab(self, browser_instance=None, tab_number=None, browser_type="firefox"):
         """Switching to different tabs in a browser with unique tab_number"""
         status = True
         if browser_instance is None:
             browser_instance = self.current_browser
-        
+
         if tab_number is not None:
             try:
                 tab_number = int(tab_number)
