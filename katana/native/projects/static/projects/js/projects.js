@@ -280,7 +280,6 @@ startNewProject : function() {
 		var oneSuite = projects.jsonProjectObject['Testsuites']['Testsuite'][sid];
 		console.log(oneSuite);
 		console.log("Runmode in popup ", oneSuite, oneSuite['runmode']['@type'] );
-	//alert(this.value);
 		oneSuite['runmode']['@type'] = this.value; 
 		popup.find("#runmode-at-value").show();
 		if (oneSuite['runmode']['@type'] == 'standard') {
@@ -399,7 +398,7 @@ startNewProject : function() {
 	oneSuite['onError']['@action'] = popup.find("#onError-at-action").val(); 
 	oneSuite['onError']['@value'] = popup.find("#onError-at-value").val(); 
 	oneSuite['runmode']['@type'] = popup.find("#runmode-at-type").val().toLowerCase(); 
-	oneSuite['runmode']['@value'] = popup.find("#rumode-at-value").val(); 
+	oneSuite['runmode']['@value'] = popup.find("#runmode-at-value").val(); 
 	console.log("Saving", oneSuite);
 },
 
@@ -606,7 +605,7 @@ Two global variables are heavily used when this function is called;
 		var tbid = "textTestSuiteFile-"+s+"-id";
 
 		var bid = "fileSuitecase-"+s+"-id";
-		items.push('<td><i title="ChangeFile" class="fa fa-folder-open" key="'+bid+'" katana-click="projects.getFileForSuite" /></td>');
+		items.push('<td><i title="ChangeFile" class="fa fa-folder-open" skey="'+bid+'" katana-click="projects.getFileForSuite" /></td>');
 		
 		oneSuite['Execute']['@ExecType'] = jsUcfirst(oneSuite['Execute']['@ExecType']); 
 		items.push('<td id="'+tbid+'" katana-click="projects.showSuiteFromProject" skey="'+oneSuite['path']+'">'+oneSuite['path']+'</td>');
@@ -624,17 +623,17 @@ Two global variables are heavily used when this function is called;
 		items.push('<td>'+oneSuite['impact']+'</td>');
 
 		var bid = "deleteTestSuite-"+s+"-id";
-		items.push('<td><i  title="Delete" class="fa fa-trash" value="X" key="'+bid+'" katana-click="projects.deleteTestSuiteCB"/>');
+		items.push('<td><i  title="Delete" class="fa fa-trash" value="X" skey="'+bid+'" katana-click="projects.deleteTestSuiteCB"/>');
 
 		bid = "editTestSuite-"+s+"-id";
-		items.push('<i  title="Edit" class="fa fa-pencil" title="Edit" key="'+bid+'" katana-click="projects.editTestSuiteCB"/>');
+		items.push('<i  title="Edit" class="fa fa-pencil" title="Edit" skey="'+bid+'" katana-click="projects.editTestSuiteCB"/>');
 
 
 		bid = "InsertTestSuite-"+s+"-id"
-		items.push('<i  title="Insert" class="fa fa-plus" value="Insert" key="'+bid+'" katana-click="projects.insertTestSuiteCB"/>');
+		items.push('<i  title="Insert" class="fa fa-plus" value="Insert" skey="'+bid+'" katana-click="projects.insertTestSuiteCB"/>');
 
 		bid = "DuplicateTestSuite-"+s+"-id"
-		items.push('<i  title="Duplicate" class="fa fa-copy" value="Duplicate" key="'+bid+'" katana-click="projects.duplicateTestSuiteCB"/></td>');
+		items.push('<i  title="Duplicate" class="fa fa-copy" value="Duplicate" skey="'+bid+'" katana-click="projects.duplicateTestSuiteCB"/></td>');
 
 		items.push('</tr>');
 		}
@@ -649,7 +648,7 @@ Two global variables are heavily used when this function is called;
 
 
 	getFileForSuite: function() {
-			var fname = this.attr('key');
+			var fname = this.attr('skey');
 			var names = fname.split('-');
 			var sid = parseInt(names[1]);
 			katana.$activeTab.attr('project-suite-row',sid);
@@ -657,13 +656,13 @@ Two global variables are heavily used when this function is called;
 	},
 
 	deleteTestSuiteCB : function(){
-			var names = this.attr('key').split('-');
+			var names = this.attr('skey').split('-');
 			var sid = parseInt(names[1]);
 			projects.removeTestSuite(sid,xdata);
 		},
 
 	editTestSuiteCB : function(){
-			var names = this.attr('key').split('-');
+			var names = this.attr('skey').split('-');
 			var sid = parseInt(names[1]);
 			console.log("xdata --> ", xdata);
 			katana.popupController.open(katana.$activeTab.find("#editTestSuiteEntry").html(),"Edit..." + sid, function(popup) {
@@ -674,14 +673,14 @@ Two global variables are heavily used when this function is called;
 		},
 
 	insertTestSuiteCB : function(){
-			var names = this.attr('key').split('-');
+			var names = this.attr('skey').split('-');
 			var sid = parseInt(names[1]);
 			console.log("xdata --> "+ xdata);
 			projects.insertTestSuite(sid,xdata,0);
 		},
 
 	duplicateTestSuiteCB : function(){
-			var names = this.attr('key').split('-');
+			var names = this.attr('skey').split('-');
 			var sid = parseInt(names[1]);
 			console.log("xdata --> "+ xdata);
 			projects.insertTestSuite(sid,xdata,1);
@@ -708,7 +707,6 @@ Two global variables are heavily used when this function is called;
 
 
 	showSuiteFromProject:function () {
-		//var fname = katana.$activeTab.find('#showSuiteFromProject').attr('key');
 		var fname = this.attr('skey');
 		var href='/katana/suites';
 		katana.templateAPI.load.call(this, href, '/static/suites/js/suites.js,', null, 'suite', function() { 

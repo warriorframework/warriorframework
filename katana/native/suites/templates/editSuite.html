@@ -142,13 +142,13 @@
 					<option value="ruf">RUF</option>
 					<option value="rup">RUP</option>
 					</select>
-					<input type="text" class="runmode_condition" id="runmodeAtValue" value=""/>	
+					<input type="text" class="runmode_condition" id="CaseRunmodeAtValue" value=""/>	
 					</div>
 
 
 					<div class="field">
 					<label class=" text-right" >ExecType:</label>
-					<select type="text" class="text-right" id="Execute-at-ExecType" value="" >
+					<select type="text" class="text-right" id="suiteExecuteAtExecType" value="" >
 					<option value="yes">Yes</option> 
 					<option value="no">No</option> 
 					<option value="if">If</option> 
@@ -157,20 +157,20 @@
 					</div>
 
 
-						<div class="field ">
-						<label class="rule-condition" >Rule Condition:</label>
-						<input type="text" class="rule-condition" id="executeRuleAtCondition" value=""/>
-						</div>			
+					<div class="field ">
+					<label class="rule-condition" >Rule Condition:</label>
+					<input type="text" class="rule-condition" id="executeRuleAtCondition" value=""/>
+					</div>			
 
-						<div class="field ">
-						<label  class="rule-condition" >Rule Condition Value:</label>
-						<select type="text" class="rule-condition text-right" id="executeRuleAtCondvalue" value="" >
-						<option value="PASS">PASS</option> 
-						<option value="FAIL">FAIL</option> 
-						<option value="ERROR">ERROR</option> 
-						<option value="SKIP">SKIP</option> 
-						</select>
-						</div>	
+					<div class="field ">
+					<label  class="rule-condition" >Rule Condition Value:</label>
+					<select type="text" class="rule-condition text-right" id="executeRuleAtCondvalue" value="" >
+					<option value="PASS">PASS</option> 
+					<option value="FAIL">FAIL</option> 
+					<option value="ERROR">ERROR</option> 
+					<option value="SKIP">SKIP</option> 
+					</select>
+					</div>	
 
 					<div class="field ">
 					<label class="rule-condition" >Rule Else:</label>
@@ -191,7 +191,7 @@
 
 					<div class="field col-md-3">
 					<label >Warrior Data File:</label>
-					<button class="btn btn-info" katana-click="suites.getResultsDirForSuiteRow">...</button>
+					<!-- <button class="btn btn-info" katana-click="suites.getResultsDirForSuiteRow">...</button>-->
 					<input type="text" id="StepInputDataFile"  value=""/>
 					</div>		
 	
@@ -217,7 +217,7 @@
 					<select type="text" class="text-right" id="caseonError-at-value" value="" >
 					</select>
 					</div>		
-					<button class="center button save" id="editTestcase" katana-click="suites.saveSuitesCaseUI">"Save Changes </button>
+					<i class="center button save" id="editTestcase" katana-click="suites.saveSuitesCaseUI">Save Changes </i>
 				</div>
 
 		</div>

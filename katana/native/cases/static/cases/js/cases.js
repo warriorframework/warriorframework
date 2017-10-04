@@ -440,7 +440,7 @@ function jsUcfirst(string)
 	fillStepDefaults: function(oneCaseStep) {
 
 		if (! oneCaseStep['step']){
-			oneCaseStep['step'] = { "@ExecType": "Yes", 
+			oneCaseStep['step'] = { "@ExecType": "yes", 
 					"Rule": { "@Condition": "", "@Condvalue": "", "@Else": "next", "@Elsevalue": "" }
 				}; 
 		}
@@ -533,7 +533,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		items.push('<td>'+oneCaseStep['onError']['@action'] +'</td>'); 
 		oneCaseStep['Execute']['@ExecType'] = jsUcfirst( oneCaseStep['Execute']['@ExecType']);
 		outstr = "ExecType=" + oneCaseStep['Execute']['@ExecType'] + "<br>";
-		if (oneCaseStep['Execute']['@ExecType'] == 'If' || oneCaseStep['Execute']['@ExecType'] == 'If Not') {
+		if (oneCaseStep['Execute']['@ExecType'] == 'if' || oneCaseStep['Execute']['@ExecType'] == 'if not') {
 			outstr = outstr + "Condition="+oneCaseStep['Execute']['Rule']['@Condition']+ "<br>" + 
 			"Condvalue="+oneCaseStep['Execute']['Rule']['@Condvalue']+ "<br>" + 
 			"Else="+oneCaseStep['Execute']['Rule']['@Else']+ "<br>" +
@@ -802,7 +802,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		popup.find('.rule-condition').hide();
 		if (oneCaseStep["Execute"]['@ExecType']) {
 			console.log("FOUND EXECT TYPE ",oneCaseStep["Execute"]['@ExecType'] )
-			if (oneCaseStep["Execute"]['@ExecType'] == 'If' || oneCaseStep["Execute"]['@ExecType'] == 'If Not') {
+			if (oneCaseStep["Execute"]['@ExecType'] == 'if' || oneCaseStep["Execute"]['@ExecType'] == 'if not') {
 				popup.find('.rule-condition').show();
 			}
 			
@@ -855,8 +855,8 @@ The UI currently uses jQuery and Bootstrap to display the data.
 	});
 
 
-	popup.find("#Execute-at-ExecType").on('change',function() {
-		if (this.value == 'If' || this.value == 'If Not') {
+	popup.find("#casesExecuteAtExecType").on('change',function() {
+		if (this.value == 'if' || this.value == 'if not') {
 			popup.find('.rule-condition').show();			
 		} else {
 			popup.find('.rule-condition').hide();
@@ -1127,7 +1127,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 	oneCaseStep["Description"] = popup.find("#StepDescription").val();
 	oneCaseStep["context"] =  popup.find("#StepContext").val();
 	oneCaseStep["Execute"] = { '@ExecType': '' , 'Rule': {} }
-	oneCaseStep["Execute"]["@ExecType"] = popup.find("#Execute-at-ExecType").val();	
+	oneCaseStep["Execute"]["@ExecType"] = popup.find("#casesExecuteAtExecType").val();	
 	//oneCaseStep["Execute"]["@ExecType"]['Rule'] = {} 
 	oneCaseStep["Execute"]['Rule']['@Condition'] = popup.find("#executeRuleAtCondition").val();	
 	oneCaseStep["Execute"]['Rule']['@Condvalue'] = popup.find("#executeRuleAtCondvalue").val();	
@@ -1157,7 +1157,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		"impact" :  "impact",
 		"runmode" : { '@type': 'standard', '@value': ""},
 		"InputDataFile" : "", 
-		"retry": { "@type": "If", "@Condition": "", "@Condvalue": "", "@count": "0", "@interval": "0"}, 
+		"retry": { "@type": "if", "@Condition": "", "@Condvalue": "", "@count": "0", "@interval": "0"}, 
 	 };
 	 return newCaseStep;
 },

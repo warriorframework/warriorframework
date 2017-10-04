@@ -30,13 +30,13 @@ function absFromPrefix(pathToBase, pathToFile) {
 	var bf = pathToBase.split('/');
 	var rf = pathToFile.split('/');
 	var nrf = pathToFile.split('/');
-	console.log("Removing", nrf, bf);
+	//console.log("Removing", nrf, bf);
 	
 	for (var i=0;i< rf.length; i++) {
 		if (rf[i] == "..")  { 
 			bf.pop();
 			nrf.splice(0,1);
-			console.log("Removing", nrf, bf);
+			//console.log("Removing", nrf, bf);
 	
 		} else {
 			break;
@@ -60,14 +60,14 @@ function prefixFromAbs(pathToBase, pathToFile) {
 	}
 	var tlen = bf.length - stack.length; 
 	var blen = stack.length;
-	console.log("bf=",bf);
-	console.log("rf=",rf);
-	console.log("prefixFromAbs", rf, tlen, blen, stack);
+	// console.log("bf=",bf);
+	// console.log("rf=",rf);
+	// console.log("prefixFromAbs", rf, tlen, blen, stack);
     for (var k=0;k < tlen; k++) {
 		upem.push("..");
 	}
 	var tail = rf.splice(blen,rf.length);
-	console.log('tail=', tail);
+	// console.log('tail=', tail);
 	return upem.join("/") + "/" +   tail.join('/');
 }
 var suites= {
@@ -88,7 +88,7 @@ var suites= {
 
 
 	initSuiteTree: function(){
-		console.log("Starting suite ");
+		//console.log("Starting suite ");
 		jQuery.getJSON("./suites/getSuiteListTree/").done(function(data) {
 			var sdata = data['treejs'];
 			console.log("tree ", sdata);
@@ -245,16 +245,21 @@ var suites= {
 		}
 
 	if (! oneCase['Execute']) {
+			alert("Missing Execute!!");
 			oneCase['Execute'] = { "@ExecType": "yes", "Rule" : {} };
 		}
 	if (! oneCase['Execute']['@ExecType']) {
+			alert("Missing ExecType!!");
+			
 			oneCase['Execute'] = { "@ExecType": "yes", "Rule" : {} };
 		}
 
 	if (! oneCase['Execute']['Rule']) {
 			oneCase['Execute']['Rule'] = { '@Condition' : '', '@Condvalue' : '', '@Else': 'abort', '@Elsevalue':'' };
 		}	
-	popup.find("#Execute-at-ExecType").val(oneCase['Execute']['@ExecType']); 
+
+	oneCase['Execute']['@ExecType'] = oneCase['Execute']['@ExecType'].toLowerCase();	
+	popup.find("#suiteExecuteAtExecType").val(oneCase['Execute']['@ExecType']); 
 	popup.find("#executeRuleAtCondition").val(oneCase['Execute']['Rule']['@Condition']); 
 	popup.find("#executeRuleAtCondvalue").val(oneCase['Execute']['Rule']['@Condvalue']); 
 	popup.find("#executeRuleAtElse").val(oneCase['Execute']['Rule']['@Else']); 
@@ -282,7 +287,7 @@ var suites= {
 		console.log("FOUND EXECT TYPE as  ",oneCase["Execute"]['@ExecType'] )
 		}	
 	}
-	popup.find("#Execute-at-ExecType").on('change',function() {
+	popup.find("#suiteExecuteAtExecType").on('change',function() {
 			if (this.value == 'if' || this.value == 'if not') {
 				popup.find('.rule-condition').show();			
 			} else {
@@ -313,35 +318,33 @@ var suites= {
 // row number from the table.
 /// -------------------------------------------------------------------------------
 	mapUItoSuiteCase: function(){
-	var popup = suites.lastPopup; 
-	var xdata = suites.jsonTestcases['Testcase'];
-	var s = parseInt(popup.find("#CaseRowToEdit").val());
-	console.log(xdata);
-	console.log(s);
-	var oneCase = xdata[s];
-	var id = s; // katana.$activeTab.find("#CaseRowToEdit").val();
-	console.log(oneCase);
+		var popup = suites.lastPopup; 
+		var s = parseInt(popup.find("#CaseRowToEdit").val());
+		var oneCase = suites.jsonTestcases['Testcase'][s];
+		console.log("Item ",s, oneCase);
 	
-	oneCase['impact'] = popup.find('#CaseImpact').val();
-	oneCase['path'] = popup.find('#CasePath').val();
-	oneCase['context'] = popup.find('#CaseContext').val();
-	oneCase['runtype'] = popup.find('#CaseRuntype').val();
-	
-	oneCase['runmode'] = { '@type' : "" , '@value' : ""};
-	oneCase['runmode']['@type'] = popup.find('#CaseRunmode').val();
-	oneCase['runmode']['@value'] = popup.find('#caseRunmodeAtValue').val();
+		oneCase['impact'] = popup.find('#CaseImpact').val();
+		oneCase['path'] = popup.find('#CasePath').val();
+		oneCase['context'] = popup.find('#CaseContext').val();
+		oneCase['runtype'] = popup.find('#CaseRuntype').val();	
+		oneCase['runmode'] = { '@type' : "" , '@value' : ""};
+		oneCase['runmode']['@type'] = popup.find('#CaseRunmode').val();
+		oneCase['runmode']['@value'] = popup.find('#CaseRunmodeAtValue').val();
+		oneCase['onError']['@action'] = popup.find("#caseonError-at-action").val();
+		oneCase['onError']['@value'] = popup.find("#caseonError-at-value").val();
+		oneCase['Execute'] = {'@ExecType': '', 'Rule' : {} }
+		oneCase['Execute']['Rule'] = { '@Condition' : '', '@Condvalue' : '', '@Else': 'abort', '@Elsevalue':'' };
+		oneCase['Execute']['Rule'] = {}
+		oneCase['Execute']['Rule']['@Condition']= popup.find("#executeRuleAtCondition").val(); 
+		oneCase['Execute']['Rule']['@Condvalue'] = popup.find("#executeRuleAtCondvalue").val(); 
+		oneCase['Execute']['Rule']['@Else'] = popup.find("#executeRuleAtElse").val(); 
+		oneCase['Execute']['Rule']['@Elsevalue'] = popup.find("#executeRuleAtElsevalue").val(); 
+		
+		var exectype = popup.find("#suiteExecuteAtExecType").val();
+		oneCase['Execute']['@ExecType'] = exectype ; 
+		console.log(popup.find('#suiteExecuteAtExecType').val(),popup.find('#CaseImpact').val());
 
-	oneCase['onError']['@action'] = popup.find("#caseonError-at-action").val();
-	oneCase['onError']['@value'] = popup.find("#caseonError-at-value").val();
-
-	oneCase['Execute'] = {}
-	oneCase['Execute']['@ExecType'] = popup.find("#Execute-at-ExecType").val().toLowerCase(); 
-	oneCase['Execute']['Rule'] = {}
-	oneCase['Execute']['Rule']['@Condition']= popup.find("#executeRuleAtCondition").val(); 
-	oneCase['Execute']['Rule']['@Condvalue'] = popup.find("#executeRuleAtCondvalue").val(); 
-	oneCase['Execute']['Rule']['@Else'] = popup.find("#executeRuleAtElse").val(); 
-	oneCase['Execute']['Rule']['@Elsevalue'] = popup.find("#executeRuleAtElsevalue").val(); 
-
+		console.log("After saving", s, oneCase);
 },
 /*
 Collects data into the global Suite data holder from the UI and returns the XML back 
@@ -553,7 +556,7 @@ Two global variables are heavily used when this function is called;
 	var defgoto = popup.find('#caseonError-at-value'); 
 	defgoto.hide();
 
-	if (gotoStep.trim() == 'goto'()) { 
+	if (gotoStep.trim() == 'goto') { 
 		defgoto.show();
 	} else {
 		defgoto.hide();
@@ -615,7 +618,6 @@ Two global variables are heavily used when this function is called;
 	items.push('</table>');
 	katana.$activeTab.find("#tableOfTestcasesForSuite").html( items.join(""));
 	katana.$activeTab.find('#Case_table_display tbody').sortable( { stop: suites.testSuiteSortEventHandler});
-
 	suites.fillSuiteDefaultGoto();
 },
 
@@ -709,16 +711,22 @@ Two global variables are heavily used when this function is called;
 		for (var xi = 0; xi < arrayLength; xi++) {
    				if (! oneCase[myStringArray[xi]]){
 						oneCase[myStringArray[xi]] = myStringArray[xi];
-					}
-   				
+					}	
 		}
 
 		if (! oneCase['onError']) {
 			oneCase['onError'] = { "@action": "next", "@value": "" };
 		}
-		oneCase['Execute'] = { "@ExecType": "Yes", "Rule": { "@Condition": "", "@Condvalue": "", "@Else": "next", "@Elsevalue": "" } };
-		
-},
+		if (!oneCase['Execute']) {
+			oneCase['Execute'] = { "@ExecType": "yes", "Rule": { "@Condition": "", "@Condvalue": "", "@Else": "next", "@Elsevalue": "" } };
+		}
+		if (!oneCase['Execute']['@ExecType']) {
+			oneCase['Execute'] = { "@ExecType": "yes", "Rule": { "@Condition": "", "@Condvalue": "", "@Else": "next", "@Elsevalue": "" } };
+		}
+		if (!oneCase['Execute']['Rule']) {
+			oneCase['Execute'][ "Rule"] = { "@Condition": "", "@Condvalue": "", "@Else": "next", "@Elsevalue": "" } ;
+		}	
+	},
 
 	createSuiteRequirementsTable : function(rdata){
 	var items =[]; 
@@ -731,7 +739,7 @@ Two global variables are heavily used when this function is called;
 	items.push('</th></tr>');
 	items.push('</thead>');
 	items.push('<tbody>');
-	console.log(rdata);
+	//console.log(rdata);
 	for (var s=0; s<Object.keys(rdata).length; s++ ) {
 		var oneReq = rdata[s];
 		var idnumber = s + 1
@@ -757,10 +765,10 @@ Two global variables are heavily used when this function is called;
 
 	saveAllRequirementsCB: function() { 
 		var slen = suites.jsonSuiteObject['Requirements'].length;
-		console.log("slen=", slen);
+		//console.log("slen=", slen);
 		for (var sid = 0; sid < slen; sid++ ) {
 			var txtNm = katana.$activeTab.find("#textRequirement-name-"+sid+"-id").val();
-			console.log("text ", txtNm);
+			//console.log("text ", txtNm);
 			suites.jsonSuiteObject['Requirements'][sid]  = { "@name": txtNm, "@value": ''}
 		}
 		suites.createSuiteRequirementsTable(suites.jsonSuiteObject['Requirements']);	
@@ -775,8 +783,8 @@ Two global variables are heavily used when this function is called;
 			var txtNm = katana.$activeTab.find("#textRequirement-name-"+sid+"-id").val();
 			//var txtVl = katana.$activeTab.find("#textRequirement-value-"+sid+"-id").val();
 			var txtVl = '';
-			console.log("Editing ..." + sid);
-			console.log(suites.jsonSuiteObject['Requirements'][sid])
+			//console.log("Editing ..." + sid);
+			// console.log(suites.jsonSuiteObject['Requirements'][sid])
 			suites.jsonSuiteObject['Requirements'][sid]  = { "@name": txtNm, "@value": txtVl};
 			suites.createSuiteRequirementsTable(suites.jsonSuiteObject['Requirements']);	
 
@@ -786,7 +794,7 @@ Two global variables are heavily used when this function is called;
 	deleteRequirementCB:	function() {
 			var names = this.attr('skey').split('-');
 			var sid = parseInt(names[1]);
-			console.log("Remove " + sid + " " + this.id ); 
+			// console.log("Remove " + sid + " " + this.id ); 
 			suites.jsonSuiteObject['Requirements'].splice(sid,1);
 			suites.createSuiteRequirementsTable(suites.jsonSuiteObject['Requirements']);	
 			
@@ -795,13 +803,13 @@ Two global variables are heavily used when this function is called;
 	insertRequirementCB:function( ) {
 			var names = this.attr('skey').split('-');
 			var sid = parseInt(names[1]);
-			console.log("Insert" + sid + " " + this.id ); 
+			// console.log("Insert" + sid + " " + this.id ); 
 			suites.insertRequirementToSuite(sid);
 			suites.createSuiteRequirementsTable(suites.jsonSuiteObject['Requirements']);	
 		},
 
 	removeRequirement : function(s,rdata){
-	console.log(rdata);
+	// console.log(rdata);
 	rdata.splice(s,1);
 		
 	},
@@ -828,7 +836,7 @@ Two global variables are heavily used when this function is called;
 		var nf = suites.jsonSuiteObject["Details"]['InputDataFile'];
 		var pathToBase = katana.$activeTab.find('#savefilepath').text();
 		var fpath = absFromPrefix(pathToBase, nf);
-		console.log("mapSuiteJsonToUi:", fpath, nf, pathToBase);
+		//console.log("mapSuiteJsonToUi:", fpath, nf, pathToBase);
 		
 		katana.$activeTab.find(tag).val(nf);
       	katana.$activeTab.find(tag).attr("value", nf);
@@ -854,17 +862,16 @@ Two global variables are heavily used when this function is called;
 	saveSuitesCaseUI : function() {	
 		suites.mapUItoSuiteCase();
 		suites.createCasesTable(suites.jsonTestcases['Testcase']);
-		console.log('Closing');
-		katana.popupController.close(suites.lastPopup);
+		suites.mapSuiteJsonToUi();
 },
 
 	insertRequirementToSuite : function(sid) {
-			console.log("Add Requirement... ");
+			// console.log("Add Requirement... ");
 			if (!suites.jsonSuiteObject['Requirements']) suites.jsonSuiteObject['Requirements'] = [];
 			rdata = suites.jsonSuiteObject['Requirements'];
 			var newReq = {"Requirement" : { "@name": "", "@value": ""},};
 			rdata.splice(sid - 1, 0, newReq); 
-			console.log(suites.jsonSuiteObject);
+			// console.log(suites.jsonSuiteObject);
 			suites.createSuiteRequirementsTable(suites.jsonSuiteObject['Requirements']);	
 },
 
