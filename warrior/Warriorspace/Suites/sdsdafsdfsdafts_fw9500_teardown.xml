@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestSuite>
+	<SaveToFile>sdsdafsdfsdafts_fw9500_teardown.xml</SaveToFile>
+	<Testcases>
+		<Testcase>
+			<impact>impact</impact>
+			<Execute ExecType="Yes">
+				<Rule Elsevalue="" Condvalue="" Condition="" Else="next"></Rule>
+			</Execute>
+			<InputDataFile></InputDataFile>
+			<onError action="next" value=""></onError>
+			<runmode type="Standard" value=""></runmode>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<path>../Cases/tc_fw9500_turn_down.xml</path>
+		</Testcase>
+		<Testcase>
+			<impact>impact</impact>
+			<Execute ExecType="Yes">
+				<Rule Elsevalue="" Condvalue="" Condition="" Else="next"></Rule>
+			</Execute>
+			<InputDataFile></InputDataFile>
+			<onError action="next" value=""></onError>
+			<runmode type="Standard" value=""></runmode>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<path>../Cases/tc_disconnect.xml</path>
+		</Testcase>
+		<Testcase>
+			<impact>impact</impact>
+			<Execute ExecType="Yes">
+				<Rule Elsevalue="" Condvalue="" Condition="" Else="next"></Rule>
+			</Execute>
+			<InputDataFile></InputDataFile>
+			<onError action="next" value=""></onError>
+			<runmode type="Standard" value=""></runmode>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<path>../Cases/tc_disconnect.xml</path>
+		</Testcase>
+		<Testcase>
+			<impact>impact</impact>
+			<Execute ExecType="Yes">
+				<Rule Elsevalue="" Condvalue="" Condition="" Else="next"></Rule>
+			</Execute>
+			<InputDataFile></InputDataFile>
+			<onError action="next" value=""></onError>
+			<runmode type="Standard" value=""></runmode>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<path>../Cases/tc_disconnect.xml</path>
+		</Testcase>
+		<Testcase>
+			<impact>impact</impact>
+			<Execute ExecType="Yes">
+				<Rule Elsevalue="" Condvalue="" Condition="" Else="next"></Rule>
+			</Execute>
+			<InputDataFile></InputDataFile>
+			<onError action="next" value=""></onError>
+			<runmode type="Standard" value=""></runmode>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<path>../Cases/tc_disconnect.xml</path>
+		</Testcase>
+		<Testcase>
+			<impact>impact</impact>
+			<Execute ExecType="Yes">
+				<Rule Elsevalue="" Condvalue="" Condition="" Else="next"></Rule>
+			</Execute>
+			<InputDataFile></InputDataFile>
+			<onError action="next" value=""></onError>
+			<runmode type="Standard" value=""></runmode>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<path>../Cases/tc_disconnect.xml</path>
+		</Testcase>
+	</Testcases>
+	<Requirements name="Kamran Husain" value=""></Requirements>
+	<Requirements name="Empty" value=""></Requirements>
+	<Requirements name="Requirement oneasdfsd" value=""></Requirements>
+	<Requirements name="REquire sdfsdf" value=""></Requirements>
+	<Details>
+		<InputDataFile>../Data/Demo_Input_Data_Files/Demo_Datafile_For_Inventory_Mgt.xml</InputDataFile>
+		<Name>sdsdafsdfsdafts_fw9500_teardown</Name>
+		<Title>Anotehr</Title>
+		<Resultsdir>../Data/Demo_Input_Data_Files/Demo_Rest_Datafile.xml</Resultsdir>
+		<State>In Review</State>
+		<Time>14:01</Time>
+		<Date>10/3/2017</Date>
+		<default_onError action="next" value="0"></default_onError>
+		<type exectype="sequential_testcases" Number_Attempts="" Max_Attempts="13"></type>
+		<Engineer>hhhh333kkk</Engineer>
+	</Details>
+</TestSuite>

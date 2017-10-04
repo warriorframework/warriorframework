@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestSuite>
+	<SaveToFile>ts_fw9500_teardownsdfsdfsdf.xml</SaveToFile>
+	<Testcases>
+		<Testcase>
+			<impact>impact</impact>
+			<Execute ExecType="Yes">
+				<Rule Elsevalue="" Condvalue="" Condition="" Else="next"></Rule>
+			</Execute>
+			<InputDataFile></InputDataFile>
+			<onError action="next" value=""></onError>
+			<runmode type="Standard" value=""></runmode>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<path>../Cases/tc_fw9500_turn_down.xml</path>
+		</Testcase>
+		<Testcase>
+			<impact>impact</impact>
+			<Execute ExecType="Yes">
+				<Rule Elsevalue="" Condvalue="" Condition="" Else="next"></Rule>
+			</Execute>
+			<ExecType ExecType="Yes">
+				<Rule></Rule>
+			</ExecType>
+			<onError action="next" value=""></onError>
+			<runmode type="standard" value=""></runmode>
+			<Step keyword="" TS="1" Driver=""></Step>
+			<Arguments>
+				<Argument></Argument>
+			</Arguments>
+			<context>context</context>
+			<runtype>runtype</runtype>
+			<path>path</path>
+		</Testcase>
+		<Testcase>
+			<impact>impact</impact>
+			<Execute ExecType="Yes">
+				<Rule Elsevalue="" Condvalue="" Condition="" Else="next"></Rule>
+			</Execute>
+			<ExecType ExecType="Yes">
+				<Rule></Rule>
+			</ExecType>
+			<onError action="next" value=""></onError>
+			<runmode type="standard" value=""></runmode>
+			<Step keyword="" TS="1" Driver=""></Step>
+			<Arguments>
+				<Argument></Argument>
+			</Arguments>
+			<context>context</context>
+			<runtype>runtype</runtype>
+			<path>path</path>
+		</Testcase>
+		<Testcase>
+			<impact>impact</impact>
+			<Execute ExecType="Yes">
+				<Rule Elsevalue="" Condvalue="" Condition="" Else="next"></Rule>
+			</Execute>
+			<InputDataFile></InputDataFile>
+			<onError action="next" value=""></onError>
+			<runmode type="Standard" value=""></runmode>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<path>../Cases/tc_disconnect.xml</path>
+		</Testcase>
+	</Testcases>
+	<Requirements name="sdas" value=""></Requirements>
+	<Requirements name="usad" value=""></Requirements>
+	<Details>
+		<InputDataFile>/Suites/Data</InputDataFile>
+		<Name>ts_fw9500_teardownsdfsdfsdf</Name>
+		<Title>FW9500 setup suite</Title>
+		<Resultsdir>/Suites/Execution</Resultsdir>
+		<State>New</State>
+		<Time>21:45</Time>
+		<Date>10/2/2017</Date>
+		<default_onError action="abort" value="0"></default_onError>
+		<type exectype="sequential_testcases" Number_Attempts="" Max_Attempts=""></type>
+		<Engineer>sradhakr</Engineer>
+	</Details>
+</TestSuite>
