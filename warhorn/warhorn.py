@@ -158,6 +158,7 @@ def overwrite_files(path, destination, overwrite, logfile, print_log_name):
 
     """
     sub_files, sub_folders = get_subfiles(path)
+    # to not copy hidden meta files like .git etc.,
     sub_files = filter(lambda f: not f.startswith('.'), sub_files)
     sub_folders = filter(lambda f: not f.startswith('.'), sub_folders)
     for sub_folder in sub_folders:
