@@ -364,12 +364,14 @@ def send_commands_from_testdata(testdatafile, obj_session, **args):
     """
 
     if isinstance(obj_session, WNetwork.warrior_cli_class.WarriorCli):
-        finalresult, responses_dict, td_resp_dict = obj_session.send_commands_from_testdata(testdatafile, **args)
+        finalresult, responses_dict, td_resp_dict = obj_session.send_commands_from_testdata(testdatafile,
+                                                                                            **args)
     else:
         wc_obj = WNetwork.warrior_cli_class.WarriorCli()
         wc_obj.conn_obj = WNetwork.warrior_cli_class.PexpectConnect()
         wc_obj.conn_obj.target_host = obj_session
-        finalresult, responses_dict, td_resp_dict = wc_obj.send_commands_from_testdata(testdatafile, **args)
+        finalresult, responses_dict, td_resp_dict = wc_obj.send_commands_from_testdata(testdatafile,
+                                                                                       **args)
 
     return finalresult, responses_dict, td_resp_dict
 
