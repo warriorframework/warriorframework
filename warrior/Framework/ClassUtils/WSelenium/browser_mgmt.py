@@ -18,7 +18,8 @@ from time import sleep
 import urllib2
 from Framework.Utils.datetime_utils import get_current_timestamp
 from Framework.Utils.testcase_Utils import pNote
-from Framework.Utils.print_Utils import print_error, print_info, print_debug, print_exception
+from Framework.Utils.print_Utils import print_error, print_info, print_debug, print_exception, \
+    print_warning
 
 
 try:
@@ -179,38 +180,34 @@ class BrowserManagement(object):
             self.current_browser.forward()
 
     def check_url(self, url):
-        """To check whether the user provided url is valid or not."""
+        """
+        To check whether the user provided url is valid or not.
+
+        DISCLAIMER: This function internally opens the url to assert the validity of the url.
+
+        Returns:
+            1. status(bool)= True / False.(Whether the url can be reached)
+            2. url : The actual url itself
+        """
         status = True
-        search_http = re.search("http", url)
-        if not search_http:
-            print_error("Provide the url along with http/https")
-            status = False
-            return status, url
         try:
             url_open = urllib2.urlopen(url)
             get_status_code = url_open.code
             pattern = re.compile('^2[0-9][0-9]$')
-            if not pattern.match(str(get_status_code)):
+            if not pattern.match(str(get_status_code)) and get_status_code is not None:
+                print_info("The Status code for url : {} is {}".format(url, get_status_code))
                 status = False
         except urllib2.HTTPError as http_error:
-            print_error("URLError: {} reason: ({}) status code: {}".format(url, http_error.reason, http_error.code))
+            print_warning("URLError: {} reason: ({}) status code: {}".format
+                          (url, http_error.reason, http_error.code))
             status = False
         except urllib2.URLError as url_err:
-            print_error("URLError: {} reason: ({})".format(url, url_err.reason))
             status = False
-        if status == False:
-            print_error("Incorrect URL provided")
+            print_warning("URLError: {} reason: ({})".format(url, url_err.reason))
+        except Exception, err:
+            print_warning("Exception: {0}".format(err))
+            status = False
         return status, url
-
-    def max_browser_return_status(self, browser, system_name, browser_name):
-        """ To maximize browser window """
-        if browser:
-            status = self.maximize_browser_window(browser)
-        else:
-            pNote("Browser of system {0} and name {1} not found in the datarepository"
-                  .format(system_name, browser_name), "Exception")
-            status = False
-        return status
 
     def go_to(self, url, browser_instance=None):
         """Navigates the active browser instance to the provided URL."""
@@ -221,9 +218,10 @@ class BrowserManagement(object):
                 browser_instance.get(url)
             else:
                 self.current_browser.get(url)
-        except Exception as exception:
-            print_exception(exception)
+        except Exception, err:
+            print_error(err)
             status = False
+            print_error("Unable to Navigate to URL:'%s'" % url)
         return status
 
     def reload_page(self, browser_instance=None):
@@ -234,7 +232,7 @@ class BrowserManagement(object):
             self.current_browser.refresh()
 
     def hard_reload_page(self, browser_instance=None):
-        """ To reload the browser window"""
+        """Simulates Refreshing/Reloading the page just as users using F5 """
         if browser_instance is None:
             self.current_browser.refresh()
 
@@ -243,7 +241,7 @@ class BrowserManagement(object):
         sleep(1)
 
     def open_tab(self, browser_instance=None, url=None, browser_type="firefox"):
-        """ To open a tab """
+        """Opens a new tab in the browser"""
         if browser_instance is None:
             browser_instance = self.current_browser
 
@@ -261,7 +259,7 @@ class BrowserManagement(object):
             sleep(1)
 
     def switch_tab(self, browser_instance=None, tab_number=None, browser_type="firefox"):
-        """ To switch between tabs """
+        """Switching to different tabs in a browser with unique tab_number"""
         status = True
         if browser_instance is None:
             browser_instance = self.current_browser
@@ -319,7 +317,7 @@ class BrowserManagement(object):
         return status
 
     def close_tab(self, browser_instance=None, tab_number=None, browser_type="firefox"):
-        """ To close the tab """
+        """Closing tabs in a browser with unique tab_number"""
         if browser_instance is None:
             browser_instance = self.current_browser
 
@@ -376,7 +374,7 @@ class BrowserManagement(object):
         return status
 
     def delete_all_cookies_in_browser(self, browser_instance=None):
-        """ To delete all the cookies in browser """
+        """Delete the cookies for a particular browser instance"""
         status = True
         if browser_instance is None:
             browser_instance = self.current_browser
@@ -389,7 +387,7 @@ class BrowserManagement(object):
         return status
 
     def delete_a_specific_cookie(self, browser_instance=None, cookie_name=None):
-        """ To delete the specific cookie in browser """
+        """Delete a specific cookie on a specific browser instance"""
         status = True
         if browser_instance is None:
             browser_instance = self.current_browser
