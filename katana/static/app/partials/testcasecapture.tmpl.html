@@ -656,8 +656,9 @@ select > option:first-child{
                                id="InputDataFile2"
                                ng-change="monitorPathBtnValue()"
                                ng-model='model.Testcase.Details.InputDataFile'
+                               ng-click="loadDataFile(model.Testcase.Details.InputDataFile)"
                                ng-disabled="status.nodatafile == '1'"
-                               placeholder="Location of the Input Data file">
+                               placeholder="Location of the Input Data file" style="cursor:pointer;">
                         <span class="input-group-addon" style="background-color: white">
                             <input id="idfCheckbox2" type="checkbox"
                                    ng-model='status.nodatafile'
@@ -674,8 +675,9 @@ select > option:first-child{
                                id="InputDataFile"
                                ng-change="monitorPathBtnValue()"
                                ng-model='model.Testcase.Details.InputDataFile'
+                               ng-click="loadDataFile(model.Testcase.Details.InputDataFile)"
                                ng-disabled="status.nodatafile == '1'"
-                               placeholder="Location of the Input Data file">
+                               placeholder="Location of the Input Data file" style="cursor:pointer;">
                         <span class="input-group-addon" style="background-color: white">
                             <input id="idfCheckbox" type="checkbox"
                                    ng-model='status.nodatafile'
