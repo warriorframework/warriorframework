@@ -433,7 +433,7 @@ class caseObject {
 				});
 				katana.$activeTab.find('#myCaseTree').jstree(jdata);
 			});
-		//katana.$activeTab.find('#mmm').hide();
+		
 	},
 
 	closeCase: function(){
@@ -879,12 +879,6 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		}
 		popup.find("#arguments-textarea").html( a_items.join("\n"));	
 		console.log("Making arguments at ",sid, oneCaseStep, popup, popup.find("#arguments-textarea"), a_items);
-		
-		// cases.fillCaseStepDefaultGoto(popup);
-		// 	popup.find('#SteponError-at-action').on('change', function(){ 
-		// 		var popup = $(this).closest('.popup');
-		// 		cases.fillCaseStepDefaultGoto(popup);
-		// });
 
 	},
 
