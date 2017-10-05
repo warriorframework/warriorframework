@@ -27,6 +27,9 @@ class CommonActions(object):
     """class CommonActions having methods (keywords) that are common for all the products"""
 
     def __init__(self):
+        """
+            Constructor
+        """
         self.resultfile = Utils.config_Utils.resultfile
         self.datafile = Utils.config_Utils.datafile
         self.logsdir = Utils.config_Utils.logsdir
@@ -123,6 +126,9 @@ class CommonActions(object):
             type = type of datavalue (string/int/float)
         """
         def get_dict_to_update(var, val):
+            """
+                For splitting the inner dict in var if available
+            """
             dic = {}
             if '.' in var:
                 [key, value] = var.split('.', 1)
