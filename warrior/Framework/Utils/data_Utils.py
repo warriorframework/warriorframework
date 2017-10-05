@@ -1412,10 +1412,12 @@ def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
     source could be environment or datarepository for now.
     """
     error_msg1 = ("Could not find any %s variable {0!r} corresponding to {1!r}"
-                  "provided in input data/testdata file. \nWill default to "
+                  "provided in input data/testdata file.\nWill default to "
                   "None") % (prefix)
     error_msg2 = ("Unable to substitute %s variable {0!r} corresponding to "
-                  "{1!r} provided in input data/testdata file") % (prefix)
+                  "{1!r} provided in input data/testdata file.\nThe value "
+                  "processed till now is {2!r} whose evaluation resulted in "
+                  "{3!r} exception") % (prefix)
     if type(raw_value) == dict:
         for k in raw_value:
             value = raw_value[k]
@@ -1432,10 +1434,10 @@ def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
                                 start_pattern+string+end_pattern,
                                 get_var_by_string_prefix(string))
                         elif isinstance(raw_value[k], (list, dict)):
-                            raw_value[k] = literal_eval(
-                                str(raw_value[k]).replace(
+                            raw_value[k] = str(raw_value[k]).replace(
                                     start_pattern+string+end_pattern,
-                                    get_var_by_string_prefix(string)))
+                                    get_var_by_string_prefix(string))
+                            raw_value[k] = literal_eval(raw_value[k])
                         else:
                             print_error("Unsupported format - " +
                                         error_msg2.format(string, value))
@@ -1453,9 +1455,9 @@ def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
                                 raw_value[k] = literal_eval(
                                     str(raw_value[k]).replace(
                                         search_obj.group(), 'None'))
-                    except SyntaxError:
+                    except SyntaxError as synerr:
                         print_error("Syntax Error - " +
-                                    error_msg2.format(string, value))
+                                    error_msg2.format(string, value, raw_value[k], synerr))
     elif type(raw_value) == str:
         extracted_var = string_Utils.return_quote(str(raw_value),
                                                   start_pattern, end_pattern)
