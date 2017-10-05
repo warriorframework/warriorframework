@@ -231,11 +231,11 @@ def print_out_checkout_status(label, check, current_tag, repo_name, **kwargs):
     """Git checkout status reporting"""
     logfile = kwargs.get("logfile")
     print_log_name = kwargs.get("print_log_name")
-    if check and current_tag == "":
+    if check and current_tag == label:
         print_info("Checkout complete. " + repo_name + " version: " + label,
                    logfile, print_log_name)
-    elif not check and current_tag != "":
-        print_error(label + " seems to be an invalid tag name" + repo_name +
+    elif not check and current_tag != label:
+        print_error(label + " seems to be an invalid tag name\n" + repo_name +
                     " is now running: " + current_tag,
                     logfile, print_log_name)
         setDone(1)
