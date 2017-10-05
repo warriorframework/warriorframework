@@ -1,5 +1,5 @@
 Release: Ninja
-Version: warrior-3.3.1
+Version: warrior-3.4.0
 
 ===================
 1: Release details
@@ -16,7 +16,7 @@ This is release Ninja of Warrior Test Automation Framework
 ==================
 2. Version Details
 ==================
-You are on Release Ninja, Version warrior-3.3.1 of Warrior Framework.
+You are on Release Ninja, Version warrior-3.4.0 of Warrior Framework.
 Procedure to get a specific version is available in section-3 of this document.
 
 +++++++++++++++++++++++++++++++++
@@ -24,11 +24,30 @@ Procedure to get a specific version is available in section-3 of this document.
 +++++++++++++++++++++++++++++++++
 
 
----------
-Bug Fixes
----------
+-------------
+New Features:
+-------------
+[WAR-724] - Selenium KWs: Test if all the available selenium functionality in Warrior is compatible with Selenium 3.0
+[WAR-1003] - As a user, I want to know he python version on which Warrior is running
+[WAR-1053] - As a user, I want to be able to run Suites in a project in parallel
+[WAR-1069] - Selenium: As a user, I want to launch browser and maximize it in the same keyword
+[WAR-851] - WARHORN: As a user, I need an option to create virtual environment
 
-WAR-1083: Warhorn: Warriorspace is not getting copied over correctly
+-------------
+Improvements:
+-------------
+[WAR-1340] - User should able open the test case maped in the test suit by clicking on the test case name(need hyperlink support)
+[WAR-1389] - travis pylint failure for using print in war_print_class has to be ignored
+[WAR-1405] - Travis: Ignore deleted files for pylint check
+[WAR-1426] - Resolve issues with Regression test
+[WAR-1142] - Move hardcoded url in warrior_cli_driver to w_settings
+
+---------
+Bugfixes:
+---------
+[WAR-1141] - selenium:not able to launch the browser with url if it is not the part of world wide web
+[WAR-1356] - Modify send_command(cli) utility to support both pexpect and WarriorConnect objects
+
 
 =================================================
 3. Procedure to get a specific version of Warrior
