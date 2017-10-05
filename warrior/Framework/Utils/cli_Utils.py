@@ -17,8 +17,6 @@ from Framework.Utils.print_Utils import print_info, print_warning
 from Framework.Utils.testcase_Utils import pNote
 from Framework.ClassUtils import WNetwork, ssh_utils_class
 from WarriorCore.Classes.war_cli_class import WarriorCliClass
-from WarriorCore.Classes.testcase_utils_class import TestcaseUtils
-from Framework.ClassUtils import database_utils_class
 
 try:
     import pexpect
