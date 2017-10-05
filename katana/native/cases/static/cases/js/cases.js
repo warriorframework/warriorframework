@@ -192,8 +192,8 @@ class caseTestStepObject {
 			jsonData = 	this.createEmptyTestStep(); 
 		}
 		this.Arguments = [] ; 
-		for (var a=0;a<jsonData['Arguments']['argument'].length; a++) {
-			var ao = jsonData['Arguments']['argument'][a];
+		for (var a=0;a<jsonData['Arguments'].length; a++) {
+			var ao = jsonData['Arguments'][a];
 			this.Arguments.push({ 'value': ao['@value'], 'name' : ao['@name']})
 		}
 		console.log("Adding-->",jsonData);
@@ -253,7 +253,7 @@ class caseTestStepObject {
 	createEmptyTestStep() {
 		var newCaseStep = {
 				"step": 
-					{  "@Driver": "demo_driver", "@Keyword": "" , "@TS": "0" },
+					{"@Driver": "demo_driver", "@Keyword": "" , "@TS": "0" },
 				"Arguments" : 
 					{ 'Argument': [] },
 				"onError": {  "@action" : "next", "@value" : "" } ,
@@ -272,11 +272,15 @@ class caseTestStepObject {
 
 
 	getJSON() { 
+		var myArgs = [];
+		for (var x in this.Arguments){
+			myArgs.push({ 'argument' : { '@name': this.Arguments[x].name , '@value': this.Arguments[x].value }});
+		}
+
 		return  {
 				"step": 
-					{  "@Driver": this.step_driver, "@Keyword": this.step_keyword , "@TS": this.step_TS },
-				"Arguments" : 
-					{ 'Argument': jQuery.extend(true, {}, this.Arguments ) },
+					{"@Driver": this.step_driver, "@Keyword": this.step_keyword , "@TS": this.step_TS },
+				"Arguments" : 	myArgs  ,
 				"onError": {  "@action" : this.onError_action , "@value" : this.onError_value } ,
 				"iteration_type": {   "@type" : "" } ,
 				"Description":this.Description,
@@ -314,6 +318,9 @@ class caseObject {
 		if (!jsonData['Requirements']['Requirement']) {
 			jsonData['Requirements']['Requirement']= [] 
 		}
+		if (!jQuery.isArray(jsonData['Requirements']['Requirement'] )) {
+			jsonData['Requirements']['Requirement'] = [jsonData['Requirements']['Requirement']];
+		}
 		this.Requirements = new caseRequirementsObject(jsonData['Requirements']['Requirement']);
 		
 		// Adjust up front. 
@@ -327,6 +334,9 @@ class caseObject {
 			jsonData['Steps']['step'] = [] 
 		} 
 		//
+		if (!jQuery.isArray(jsonData['Steps']['step'])) {
+		 jsonData['Steps']['step'] = [ jsonData['Steps']['step'] ];
+		}
 		this.Teststeps = [];
 		for (var k=0; k<jsonData['Steps']['step'].length; k++) {	
 			var ts = new caseTestStepObject(jsonData['Steps']['step'][k]);
@@ -668,8 +678,8 @@ class caseObject {
 			xfname  = xfname + ".xml";
 		}
 		
-
-		var topNode  = { 'Testcase' : cases.jsonCaseObject};
+		console.log(cases.jsonCaseObject.getJSON());
+		var topNode  = { 'Testcase' : cases.jsonCaseObject.getJSON()};
 		//console.log("sending case 3", xfname, cases.jsonCaseObject);
 		
 		$.ajax({
@@ -691,35 +701,7 @@ class caseObject {
 	});
 },
 
-// Case steps that are incomplete in an XML file can cause havoc on the UI. 
-// Fill in defaults for missing fields. 
-	fillStepDefaults: function(oneCaseStep) {
 
-		if (! oneCaseStep['step']){
-			oneCaseStep['step'] = { "@ExecType": "yes", 
-					"Rule": { "@Condition": "", "@Condvalue": "", "@Else": "next", "@Elsevalue": "" }
-				}; 
-		}
-		if (!oneCaseStep['step']['Rule']) {
-				oneCaseStep['step']['Rule'] = { "Rule": { "@Condition": "", "@Condvalue": "", "@Else": "next", "@Elsevalue": "" } };
-		}
-		if (! oneCaseStep['onError']) {
-			oneCaseStep['onError'] = { "@action": "next", "@value": "" };
-		}
-		if (! oneCaseStep['runmode']) {
-			oneCaseStep['runmode'] = { "@type": "next", "@value": "" };
-		}
-		if (! oneCaseStep['retry']) {
-			oneCaseStep['retry'] = { "@type": "next", "@Condition": "", "@Condvalue": "", "@count": "" , "@interval": ""};
-		}
-		if (! oneCaseStep['Arguments']) {
-			oneCaseStep['Arguments'] = { 'argument': [] }
-		}
-		if (! oneCaseStep['InputDataFile']) {
-			oneCaseStep['InputDataFile'] = "";
-		}
-
-},
 
 /*
 Maps the data from a Testcase object to the UI. 
@@ -752,10 +734,9 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		// Validation and default assignments 
 		// Create empty elements with defaults if none found. ;-)
 		// -------------------------------------------------------------------------
-		//cases.fillStepDefaults(oneCaseStep);
-		items.push('<td>'+oneCaseStep['@Driver'] +'</td>'); 
+		items.push('<td>'+oneCaseStep.step_driver +'</td>'); 
 		var outstr; 
-		items.push('<td>'+oneCaseStep['@Keyword'] + "<br>TS=" +oneCaseStep['@TS']+'</td>'); 
+		items.push('<td>'+oneCaseStep.step_keyword + "<br>TS=" +oneCaseStep.step_TS+'</td>'); 
 		outstr =  oneCaseStep['Description'];
 		bid = "SelectStepInputData-"+s+"-id-";
 		var fileExp = '<i title="Select Warrior Input Data" class="fa fa-plus" theSid="'+s+'" id="'+bid+'" katana-click="cases.getStepInputDataFile()" key="'+bid+'"/>';
@@ -873,12 +854,12 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		var a_items = [] ;
 		var xstr;
 		var bid;
-		var arguments = oneCaseStep['Arguments']['argument'];
+		var arguments = oneCaseStep['Arguments'];
 		var ta = 0; 
 		var sid = parseInt(popup.find("#StepRowToEdit").attr('value'));	
-		
+		console.log("Making arguments at ",sid, oneCaseStep);
 		for (xarg in arguments) {
-				//console.log(arguments[xarg]);
+			console.log(arguments[xarg]);
 			a_items.push('<div class="row">');
 			a_items.push('<label class="col-md-2">Name</label><input  type="text" argid="caseArgName-'+ta+'" value="'+arguments[xarg]["@name"]+'"/>');
 			a_items.push('<label class="col-md-2">Value</label><input  type="text" argid="caseArgValue-'+ta+'" value="'+arguments[xarg]["@value"]+'"/>');
@@ -897,30 +878,32 @@ The UI currently uses jQuery and Bootstrap to display the data.
 			
 		}
 		popup.find("#arguments-textarea").html( a_items.join("\n"));	
-		if (!jQuery.isArray(cases.jsonCaseSteps)) {
-			cases.jsonCaseSteps = [cases.jsonCaseSteps];
-			}
-		cases.fillCaseStepDefaultGoto(popup);
-			popup.find('#SteponError-at-action').on('change', function(){ 
-				var popup = $(this).closest('.popup');
-				fillCaseStepDefaultGoto(popup);
-		});
+		console.log("Making arguments at ",sid, oneCaseStep, popup, popup.find("#arguments-textarea"), a_items);
+		
+		// cases.fillCaseStepDefaultGoto(popup);
+		// 	popup.find('#SteponError-at-action').on('change', function(){ 
+		// 		var popup = $(this).closest('.popup');
+		// 		cases.fillCaseStepDefaultGoto(popup);
+		// });
 
 	},
 
 
 // Fill in default GoTo steps for a popup window for a case step. 
 	fillCaseStepDefaultGoto : function(popupx) {
-		var popup = $(this).closest('.popup');
+		var popup = cases.lastPopup ;
 		var gotoStep =popup.find('#SteponError-at-action').val();
 		console.log("Step ", gotoStep, popup.find('#SteponError-at-action'));
 		var defgoto = popup.find('#SteponError-at-value'); 
 		defgoto.hide();
 		defgoto.empty(); 
-		var xdata = cases.jsonCaseObject["Steps"]; // ['Testcase']; 
-		console.log("Step....",Object.keys(xdata).length, xdata);
-		for (var s=0; s<Object.keys(xdata).length; s++ ) {
+		var xdata = cases.jsonCaseObject.Teststeps; // ['Testcase']; 
+		console.log("Step....",xdata.length, xdata);
+		for (var s=0; s<xdata.length; s++ ) {
 			defgoto.append($('<option>',{ value: s,  text: s+1}));
+		}
+		if (gotoStep == 'goto') {
+			defgoto.show();
 		}
 	},
 
@@ -929,14 +912,14 @@ The UI currently uses jQuery and Bootstrap to display the data.
 	setupPopupDialog: function (sid,xdata,popup) {
 		katana.$activeTab.find("#editCaseStepDiv").attr('data-popup-id',popup);
 		katana.$activeTab.find("#editCaseStepDiv").attr('row-id',sid);
-		
+		cases.lastPopup = popup;
 		console.log(popup);  					// Merely returns the div tag
 		var dd_driver = popup.find('#StepDriver');
 		oneCaseStep = xdata[sid]
-		var driver = oneCaseStep[ "@Driver"]  // 
-		var keyword  = oneCaseStep[ "@Keyword"]   // 
+		var driver = oneCaseStep.step_driver  // 
+		var keyword  = oneCaseStep.step_keyword   // 
 		var a_items = []; 
-		console.log("---- oneCase ---- ", oneCaseStep["@Driver"], oneCaseStep[ "@Keyword"] , oneCaseStep);
+		console.log("---- oneCase ---- ", oneCaseStep.step_driver, oneCaseStep.step_keyword , oneCaseStep);
 		popup.attr("caseStep", oneCaseStep);
 		popup.attr("sid", sid);
 		//
@@ -951,13 +934,13 @@ The UI currently uses jQuery and Bootstrap to display the data.
 					popup.find("#StepDriver").append($('<option>',{ value: a_items[x],  text: a_items[x]}));
 				}
 			a_items = katana.$activeTab.data("data-keywords-"+driver);                      // keep list of keywords... 
-			popup.find('#StepDriver').val(oneCaseStep["@Driver"]);
+			popup.find('#StepDriver').val(oneCaseStep.step_driver);
 			popup.find("#StepKeyword").empty();
 	 		console.log(a_items);
 	 		for (let x of a_items) {
 	 			popup.find("#StepKeyword").append($('<option>',{ value: x,  text: x }));
 	 			}
-	 		popup.find("#StepKeyword").val(oneCaseStep["@Keyword"]);
+	 		popup.find("#StepKeyword").val(oneCaseStep.step_keyword);
 			a_items = katana.$activeTab.data("data-comments"+driver+"-"+keyword);
 		 	console.log("received", a_items);
 			out_array = a_items[0]['comment'];
@@ -972,8 +955,8 @@ The UI currently uses jQuery and Bootstrap to display the data.
 				cases.lastPopup.find("#sourceCaseFileDef").html(outstr);	
  				}
  			console.log("Setting attributes",driver,keyword,a_items)
-			popup.find('#StepDriver').val(oneCaseStep["@Driver"]);
-			popup.find("#StepKeyword").val(oneCaseStep["@Keyword"]);
+			popup.find('#StepDriver').val(oneCaseStep.step_driver);
+			popup.find("#StepKeyword").val(oneCaseStep.step_keyword);
 		} else {
 			jQuery.getJSON("./cases/getListOfActions").done(function(data) {
 					//a_items = data['actions'];
@@ -984,24 +967,29 @@ The UI currently uses jQuery and Bootstrap to display the data.
 					for (var x =0; x < a_items.length; x++) {
 							popup.find("#StepDriver").append($('<option>',{ value: a_items[x],  text: a_items[x]}));
 						}
+
+					var sid = katana.$activeTab.find("#editCaseStepDiv").attr('row-id');
+					var oneCaseStep = cases.jsonCaseSteps[sid]
+		
 					//console.log(dd_driver.html());
-					popup.find('#StepDriver').val(oneCaseStep["@Driver"]);
-					popup.find("#StepKeyword").val(oneCaseStep["@Keyword"]);
+					popup.find('#StepDriver').val(oneCaseStep.step_driver);
+					popup.find("#StepKeyword").val(oneCaseStep.step_keyword);
 					// Now set up the keywords
-					var driver = oneCaseStep[ "@Driver"]  ;
-					var keyword  = oneCaseStep[ "@Keyword"];
+
+					var driver = oneCaseStep.step_driver  ;
+					var keyword  = oneCaseStep.step_keyword;
 					console.log("Collecting ...", driver, keyword);
 
 					jQuery.getJSON("./cases/getListOfKeywords/?driver="+driver).done(function(data) {
 	 						popup.find("#StepKeyword").empty();
-	 						var driver = oneCaseStep[ "@Driver"]  ;
+	 						var driver = oneCaseStep.step_driver  ;
 	 						var a_items = jQuery.extend( true, [], data['keywords']);
 	 						katana.$activeTab.data("data-keywords-"+driver, a_items);                      // keep list of actions... 
 							console.log(a_items, driver, data['keywords']);
 	 						for (let x of a_items) {
 	 							popup.find("#StepKeyword").append($('<option>',{ value: x,  text: x }));
 	 						}
-	 					popup.find('#StepKeyword').val(oneCaseStep["@Keyword"]);
+	 					popup.find('#StepKeyword').val(oneCaseStep.step_keyword);
 					
 						jQuery.getJSON("./cases/getListOfComments/?driver="+driver+"&keyword="+keyword).done(function(data) {
 		 					var a_items = jQuery.extend( true, {}, data['fields']);
@@ -1031,36 +1019,31 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		console.log('oneCaseStep', oneCaseStep);
 		popup.find("#StepRowToEdit").attr("value",sid);
 
-		//popup.find("#StepDriver").attr("value",oneCaseStep[ "@Driver"]);
-		popup.find("#StepDriver").val(oneCaseStep[ "@Driver"]);
+		//popup.find("#StepDriver").attr("value",oneCaseStep.step_driver);
+		popup.find("#StepDriver").val(oneCaseStep.step_driver);
 		console.log(popup.find("#StepDriver").val());
-		//popup.find("#StepKeyword").attr("value",oneCaseStep[ "@Keyword"]);
-		popup.find("#StepKeyword").val(oneCaseStep[ "@Keyword"]);
-
-		
-		//alert("Keyword = "+keyword+" driver = "+ driver + " values = "+ popup.find("#StepDriver").val(oneCaseStep[ "@Driver"]));
-		popup.find("#StepTS").attr("value",oneCaseStep["@TS"]);
+		popup.find("#StepKeyword").val(oneCaseStep.step_keyword);
+		popup.find("#StepTS").attr("value",oneCaseStep.step_TS);
 		popup.find("#StepDescription").attr("value",oneCaseStep["Description"]);
 		popup.find("#StepContext").attr("value",oneCaseStep["context"]);
-		popup.find("#SteponError-at-action").attr("value",oneCaseStep['onError']["@action"]);
-		popup.find("#SteponError-at-value").attr("value",oneCaseStep['onError']["@value"]);
-		popup.find("#runmode-at-type").attr("type",oneCaseStep["runmode"]["@type"]);
-		popup.find("#runmode-at-value").attr("value",oneCaseStep["runmode"]["@value"]);
+		popup.find("#SteponError-at-action").attr("value",oneCaseStep.onError_action);
+		popup.find("#SteponError-at-value").attr("value",oneCaseStep.onError_value);
+		popup.find("#runmode-at-type").attr("type",oneCaseStep.runmode_type);
+		popup.find("#runmode-at-value").attr("value",oneCaseStep.runmode_value);
 		popup.find("#StepImpact").attr("value",oneCaseStep["impact"]);
 		popup.find("#StepInputDataFile").attr("value",oneCaseStep["InputDataFile"]);
 		popup.find('.rule-condition').hide();
-		if (oneCaseStep["Execute"]['@ExecType']) {
-			console.log("FOUND EXECT TYPE ",oneCaseStep["Execute"]['@ExecType'] )
-			if (oneCaseStep["Execute"]['@ExecType'] == 'if' || oneCaseStep["Execute"]['@ExecType'] == 'if not') {
+		if (oneCaseStep.Execute_ExecType) {
+			if (oneCaseStep.Execute_ExecType == 'if' || oneCaseStep.Execute_ExecType == 'if not') {
 				popup.find('.rule-condition').show();
 			}
 			
 		}
-		if (oneCaseStep["Execute"]['Rule']) {
-			popup.find('#executeRuleAtCondition').attr('value',oneCaseStep["Execute"]['Rule']['@Condition']);
-			popup.find('#executeRuleAtCondvalue').attr('value',oneCaseStep["Execute"]['Rule']['@Condvalue']);
-			popup.find('#executeRuleAtElse').attr('value',oneCaseStep["Execute"]['Rule']['@Else']);
-			popup.find('#executeRuleAtElsevalue').attr('value',oneCaseStep["Execute"]['Rule']['@Elsevalue']);
+		if (oneCaseStep.Execute_Rule) {
+			popup.find('#executeRuleAtCondition').attr('value',oneCaseStep.Execute_Rule_Condition);
+			popup.find('#executeRuleAtCondvalue').attr('value',oneCaseStep.Execute_Rule_Condvalue);
+			popup.find('#executeRuleAtElse').attr('value',oneCaseStep.Execute_Rule_Else);
+			popup.find('#executeRuleAtElsevalue').attr('value',oneCaseStep.Execute_Rule_Elsevalue);
 		}
 	//katana.popupController.updateActiveWindow(popup);
 
@@ -1108,8 +1091,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		if (this.value == 'if' || this.value == 'if not') {
 			popup.find('.rule-condition').show();			
 		} else {
-			popup.find('.rule-condition').hide();
-			
+			popup.find('.rule-condition').hide();	
 		}
 	});
 
@@ -1180,8 +1162,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 
 	appendPopupArgument: function( ) {
 				var sid = cases.lastPopup.find('#StepRowToEdit').attr('value');
-				var xdata = cases.lastPopup.find('#StepRowToEdit').attr('xdata');
-				cases.addOneArgument(sid,xdata, cases.lastPopup);
+				cases.addOneArgument(sid);
 			},
 
 	insertRequirementIntoLine: function() {
@@ -1232,7 +1213,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		if (listCases.length < 2) {
 		 return; 
 		}
-		var oldCaseSteps = cases.jsonCaseObject["Steps"]['step'];
+		var oldCaseSteps = cases.jsonCaseSteps;
 		var newCaseSteps = new Array(listCases.length);
 			
 		for (xi=0; xi < listCases.length; xi++) {
@@ -1242,7 +1223,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 			newCaseSteps[ni] = oldCaseSteps[xi];
 		}
 
-		cases.jsonCaseObject["Steps"]['step'] = newCaseSteps;
+		cases.jsonCaseObject["Steps"] = newCaseSteps;
 		cases.jsonCaseSteps  = cases.jsonCaseObject["Steps"]
 		cases.mapCaseJsonToUi(cases.jsonCaseSteps);
 		
@@ -1296,12 +1277,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		cases.mapCaseJsonToUi(cases.jsonCaseSteps);		
 		},
 
-	// for a popup 
-	redrawArguments: function(sid, oneCaseStep,popup) {
-		var arguments = oneCaseStep['Arguments']['argument'];
-		cases.makePopupArguments(popup, oneCaseStep);
-	},
-
+	
 
 	saveOneArgument: function( sid, aid, xdata) {
 		var obj = cases.jsonCaseSteps[sid]['Arguments'][aid]; 	
@@ -1314,12 +1290,12 @@ The UI currently uses jQuery and Bootstrap to display the data.
 	//mapTestStepToUI(sid, xdata);
 	},
 
- 	addOneArgument: function( sid , xdata, popup ) {
+ 	addOneArgument: function( sid ) {
 		var xx = { "@name": "New" , "@value": "New" };
 		console.log("sid = ", sid, cases.jsonCaseSteps, cases.jsonCaseSteps[sid]['Arguments'] );
 		cases.jsonCaseSteps[sid]['Arguments'].push(xx);
 		oneCaseStep = cases.jsonCaseSteps[sid];
-		cases.redrawArguments(sid, oneCaseStep,popup);
+		cases.makePopupArguments(cases.lastPopup, oneCaseStep);
 	},
 
 	// Empty argument into location aid, for step sid in popup
@@ -1330,7 +1306,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		// }
 		cases.jsonCaseSteps[sid]['Arguments'].splice(aid,0,xx);
 		oneCaseStep = cases.jsonCaseSteps[sid];
-		cases.redrawArguments(sid, oneCaseStep,popup);
+		cases.makePopupArguments(cases.lastPopup, oneCaseStep);
 	},
 
 	// remove argument into location aid, for step sid in popup
@@ -1343,7 +1319,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 			console.log(popup);
 			}
 		oneCaseStep = cases.jsonCaseSteps[sid];
-		cases.redrawArguments(sid, oneCaseStep,popup);
+		cases.makePopupArguments(cases.lastPopup, oneCaseStep);
 	},
 
 // When the edit button is clicked, map step to the UI. 
@@ -1357,22 +1333,21 @@ The UI currently uses jQuery and Bootstrap to display the data.
 	console.log(xdata);
 	console.log(sid);
 	oneCaseStep = xdata[sid];
-	//fillStepDefaults(oneCaseStep);  // Takes care of missing values.... 
-	oneCaseStep["@Driver"] = popup.find("#StepDriver").val();
-	oneCaseStep["@Keyword"] = popup.find("#StepKeyword").val();
-	oneCaseStep["@TS"] =popup.find("#StepTS").val();
+	oneCaseStep.step_driver = popup.find("#StepDriver").val();
+	oneCaseStep.step_keyword = popup.find("#StepKeyword").val();
+	oneCaseStep.step_TS =popup.find("#StepTS").val();
 	oneCaseStep["Description"] = popup.find("#StepDescription").val();
 	oneCaseStep["context"] =  popup.find("#StepContext").val();
-	oneCaseStep["Execute"] = { '@ExecType': '' , 'Rule': {} }
-	oneCaseStep["Execute"]["@ExecType"] = popup.find("#casesExecuteAtExecType").val();	
+	oneCaseStep.Execute_ExecType  = popup.find("#casesExecuteAtExecType").val();	
 	//oneCaseStep["Execute"]["@ExecType"]['Rule'] = {} 
-	oneCaseStep["Execute"]['Rule']['@Condition'] = popup.find("#executeRuleAtCondition").val();	
-	oneCaseStep["Execute"]['Rule']['@Condvalue'] = popup.find("#executeRuleAtCondvalue").val();	
-	oneCaseStep["Execute"]['Rule']['@Else'] = popup.find("#executeRuleAtElse").val();	
-	oneCaseStep["Execute"]['Rule']['@Elsevalue'] = popup.find("#executeRuleAtElsevalue").val();	
-	oneCaseStep['onError'][ "@action"] = popup.find("#SteponError-at-action").val();
-	oneCaseStep['onError'][ "@value"] = popup.find("#SteponError-at-value").val();
-	oneCaseStep["runmode"] = { "@type" : popup.find("#runmode-at-type").val(),  "@value" : popup.find("#runmode-at-value").val()   };
+	oneCaseStep.Execute_Rule_Condition = popup.find("#executeRuleAtCondition").val();	
+	oneCaseStep.Execute_Rule_Condvalue = popup.find("#executeRuleAtCondvalue").val();	
+	oneCaseStep.Execute_Rule_Else      = popup.find("#executeRuleAtElse").val();	
+	oneCaseStep.Execute_Rule_Elsevalue = popup.find("#executeRuleAtElsevalue").val();	
+	oneCaseStep.onError_action = popup.find("#SteponError-at-action").val();
+	oneCaseStep.onError_value = popup.find("#SteponError-at-value").val();
+	oneCaseStep.runmode_type = popup.find("#runmode-at-type").val();
+	oneCaseStep.runmode_value = popup.find("#runmode-at-value").val();
 	oneCaseStep["impact"] =  popup.find("#StepImpact").val();
 	oneCaseStep["InputDataFile"] =  popup.find("#StepInputDataFile").val();
 
@@ -1382,7 +1357,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 
 	createNewStep(){
 	var newCaseStep = {
-		"step": {  "@Driver": "demo_driver", "@Keyword": "" , "@TS": "0" },
+		"step": {"@Driver": "demo_driver","@Keyword": "" , "@TS": "0" },
 		"Arguments" : { 'Argument': [] },
 		"onError": {  "@action" : "next", "@value" : "" } ,
 		"iteration_type": {   "@type" : "" } ,
@@ -1445,7 +1420,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 					
 	for (var s=0; s<rdata.length; s++ ) {
 			var oneReq = rdata[s];
-			console.log("oneReq", oneReq);
+			//console.log("oneReq", oneReq);
 			var idnumber = parseInt(s) + 1;
 
 			if (oneReq == null) {
