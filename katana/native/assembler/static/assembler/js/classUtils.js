@@ -113,11 +113,16 @@ class dependency{
         if(this.user == "yes"){
             install_user = "checked";
         }
-        var html_contents = '<div>'+
-                                '<label>' + this.name + '</label>' +
-                                '<input type="checkbox" value="Install" ' + install_cb +'>' +
-                                '<input type="checkbox" value="As User" ' + install_user +'>' +
-                            '</div>'
+        var html_contents = '<div style="width: 100%; padding: 1rem;">
+            <div class="card" style="padding: 1rem;">
+                <div class="card-block">
+                    <h4 class="card-title">Jira</h4>
+                    <h6 class="card-subtitle mb-2 text-muted">Version: 1.0.3</h6>
+                    <button class="btn btn-success">Card link</button>
+                    <button class="btn btn-danger">Another link</button>
+                </div>
+            </div>
+        </div>'
         var $elem = $(html_contents);
         return $elem
     }
