@@ -138,6 +138,7 @@ class CommonActions(object):
             value = datavalue
         dict_to_update = get_dict_to_update(datavar, value)
         update_datarepository(dict_to_update)
+        print_info("{0} is stored in {1} and updated in data_repository ".format(datavalue,datavar))
         return True
 
     def verify_data(self, expected, object_key, type='str', comparison='eq'):
