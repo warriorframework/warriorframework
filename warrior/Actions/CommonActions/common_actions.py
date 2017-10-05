@@ -138,7 +138,7 @@ class CommonActions(object):
             value = datavalue
         dict_to_update = get_dict_to_update(datavar, value)
         update_datarepository(dict_to_update)
-        print_info("{0} is stored in {1} and updated in data_repository ".format(datavalue,datavar))
+        print_info("{0} is stored in {1} and updated in data_repository ".format(datavalue, datavar))
         return True
 
     def verify_data(self, expected, object_key, type='str', comparison='eq'):
@@ -189,7 +189,8 @@ class CommonActions(object):
         """
         status = False
         if not any([var_key, var_value, filepath]):
-            print_error('Either Provide values to arguments \"var_key\" & \"var_value\" or to argument \"filepath\"')
+            print_error('Either Provide values to arguments \"var_key\" & \"var_value\"'
+                        ' or to argument \"filepath\"')
 
         if var_key is not None and var_value is not None:
             os.environ[var_key] = var_value
@@ -200,7 +201,7 @@ class CommonActions(object):
         if filepath is not None:
             testcasefile_path = get_object_from_datarepository('wt_testcase_filepath')
             try:
-                filepath=getAbsPath(filepath, os.path.dirname(testcasefile_path))
+                filepath = getAbsPath(filepath, os.path.dirname(testcasefile_path))
                 with open(filepath, "r") as json_handle:
                     get_json = json.load(json_handle)
                     if jsonkey in get_json:
@@ -228,5 +229,3 @@ class CommonActions(object):
                 status = False
 
         return status
-
-
