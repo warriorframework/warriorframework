@@ -830,6 +830,8 @@ app.controller('kwSeqCtrlr', ['$scope','$routeParams','$http', '$location', '$an
                     if(data == "no"){
 
                         var drivername = $scope.model.WrapperKeyword.Details.WrapperName;
+                        var actionPath = $scope.model.WrapperKeyword.Details.ActionFile;
+                        
                         $scope.model = {
                             "WrapperKeyword": {
                                 "Details": {
@@ -844,14 +846,15 @@ app.controller('kwSeqCtrlr', ['$scope','$routeParams','$http', '$location', '$an
                             }
                         };
                         $scope.status.nodatafile = '0';
-
                         sweetAlert({
-                            title: "Wrapper Keyword '" + drivername + "' is Saved",
-                            showConfirmButton: false,
-                            type: "success",
-                            timer: 1250
+                                 title: "Wrapper Keyword '" + drivername + "' is Saved.",
+                                 text: "In the path : " + actionPath,
+                                 closeOnConfirm: true,
+                                 confirmButtonColor: '#3b3131',
+                                 confirmButtonText: "Ok",
+                                 type: "success"
                         });
-                        $location.path('/kwseq');
+                       $location.path('/kwseq');
                     }
                     else{
                         var drivername = $scope.model.WrapperKeyword.Details.WrapperName;

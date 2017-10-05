@@ -188,12 +188,15 @@ def parsexmlobj():
             for elem in class_list_new:
                 if actions_package in str(elem[1]):
                     class_list_new = elem[0]
-            import_action_list.append('from ' + action.strip() + "." + file_name + " " +
-                                      "import " + class_list_new)
-            object_list = class_list_new + "_obj = " + class_list_new + "()"# Forming object
-            # creation and appending it to a list
-            object_list_new.append(object_list)
-            class_list = (object_list.split('=')[0]).strip()
+            if ActionFile.split('/')[-1].split('_')[0] in class_list_new.lower():
+                class_list = "self"
+            else:
+                import_action_list.append('from ' + action.strip() + "." + file_name + " " +
+                                        "import " + class_list_new)
+                object_list = class_list_new + "_obj = " + class_list_new + "()"# Forming object
+                # creation and appending it to a list
+                object_list_new.append(object_list)
+                class_list = (object_list.split('=')[0]).strip()
             Arguments = values.find('Arguments')# Finding all the arguments and it's values for
             # each sub-keyword
             if Arguments is not None:
@@ -256,11 +259,13 @@ def parsexmlobj():
                     line = line.replace('$wdesc', 'Description not provided by the user')
                 line = line.replace('$kw_list_1', str(kw_list_1))
                 f2.write(line)
+        final_obj_list = set(object_list_new)
+        final_import_list = set(import_action_list)
         with open(ActionFile, 'a+') as f2:
-            for _, vals in enumerate(import_action_list):
+            for _, vals in enumerate(final_import_list):
                 vals = vals.decode('utf-8')
                 f2.write('\n' + "        " + vals)
-            for _, val in enumerate(object_list_new):
+            for _, val in enumerate(final_obj_list):
                 val = val.decode('utf-8')
                 f2.write('\n' + "        " + val)
             for line in io.open(template_dir_1, 'r'):# Replacing kw_seq_temp with the import lines

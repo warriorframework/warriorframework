@@ -12,8 +12,8 @@
         "snowflake": "This is a mandatory field"
     },
     "file": {
-        "tooltip": "ActionFile Path respective to the above Selected driver would be populated here. ",
-        "protip": "",
+        "tooltip": "ActionFile Path respective to the above Selected driver would be populated here.",
+        "protip": "The selected path is the file path, wherein the Wrapper keyword will be saved.",
         "bantip": "",
         "snowflake": "This is a mandatory field."
     },

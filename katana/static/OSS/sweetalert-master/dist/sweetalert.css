@@ -50,6 +50,7 @@ body.stop-scrolling {
     line-height: 40px;
     display: block; }
   .sweet-alert p {
+    word-wrap:break-word;
     color: #797979;
     font-size: 16px;
     text-align: center;

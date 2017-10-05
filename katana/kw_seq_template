@@ -8,5 +8,5 @@ $new_line    def $wrapper_kw(self):
         """
         from Framework.Utils import data_Utils
         wdesc = "$wdesc"
-        status_list = []
+        pNote(wdesc)
         kw_list, status = $kw_list_1, True
