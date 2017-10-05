@@ -74,6 +74,286 @@ function jsUcfirst(string)
 }
 
 
+class caseRequirementsObject{
+
+	constructor (jsonRequirements) { 
+		this.Requirements = [];
+		if (!jsonRequirements) return this; 
+		for (var k =0; k < jsonRequirements.length; k++ ) {
+			this.Requirements.push(jsonRequirements[k]);
+		}
+	}
+
+	getJSON() {
+		var r = [];
+		for (var k=0; k < this.Requirements.length; k++) {
+			r.push({ 'Requirement': this.Requirements[k]} );
+		}
+		return r ;  // this matches the XML ... 
+	}
+
+	insertRequirement(sid,where,what){
+		this.Requirements.splice(sid,where,what);
+	}
+
+	getRequirements() {
+		return this.Requirements;
+	}
+
+	setRequirement(s,v){
+		this.Requirements[s]=v;
+	}
+}
+
+class caseDetailsObject{ 
+	// Define the members in the same manner as their XML counter parts
+	mapJSONdataToSelf(jsonDetailsData) {
+			this.fillDefaults();           // Fills internal values only
+			if (jsonDetailsData) {         // Overridden by incoming data.
+				var keys = Object.keys(jsonDetailsData);
+				for (var k=0; k < keys.length; k++) {
+					var key = keys[k];
+					this[key] = jsonDetailsData[key];
+				}
+			}
+	}
+
+	constructor(jsonDetailsData) {
+			this.mapJSONdataToSelf(jsonDetailsData);
+	}
+
+	setTimeStamp() { 
+		var date = new Date();
+	   	var year = date.getFullYear();
+	   	var month = date.getMonth() + 1;// months are zero indexed
+	   	var day = date.getDate();
+	   	var hour = date.getHours();
+	   	var minute = date.getMinutes();
+	   	if (minute < 10) {
+	       	minute = "0" + minute; 
+	       }
+		this.cDate = month + "/" + day + "/" + year; 
+		this.cTime = hour + ":" + minute; 
+	}
+	
+	fillDefaults() {
+		this.Name = '';  
+		this.Title = ''; 
+		this.Category = ''; 
+		this.Engineer = ''; 
+		this.State = ''; 
+		// this.cDate = ''; 
+		// this.cTime = ''; 
+		this.default_onError = ''; 
+		this.Datatype = ''; 
+		this.InputDataFile = '';
+		this.Resultsdir = ''; 
+		this.Logsdir = ''; 
+		this.ExpectedResults = ''; 
+		this.setTimeStamp();
+		}
+
+	getJSON() {
+		var details = {} ;
+		details.Name = this.Name  ;    
+		details.Title = this.Title   ;  
+		details.Category = this.Category   ;  		
+		details.Engineer = this.Engineer ;    		
+		details.State = this.State ;    
+		details.cDate = this.Date ;    
+		details.cTime = this.Time ;    
+		details.default_onError = this.default_onError;
+		details.Datatype = this.Datatype ;
+		details.InputDataFile = this.InputDataFile ;
+		details.Resultsdir = this.Resultsdir;
+		details.Logsdir = this.Logsdir;
+		details.ExpectedResults = this.ExpectedResults;
+		return details;
+	}
+
+	// returns a copy of itself. 
+	duplicateSelf() { 
+		return jQuery.extend(true, {}, this); 
+	}
+
+
+}
+//
+//  Input: 
+//		jsonData = ['Teststeps']['Teststep'] 
+//		which should be an array; if it is one element, make sure
+//		that it is an array of one element. 
+//
+class caseTestStepObject {
+
+	constructor(inputJsonData) {
+		var jsonData = inputJsonData;
+		if (!jsonData) {
+			jsonData = 	this.createEmptyTestStep(); 
+		}
+		this.Arguments = [] ; 
+		for (var a=0;a<jsonData['Arguments']['argument'].length; a++) {
+			var ao = jsonData['Arguments']['argument'][a];
+			this.Arguments.push({ 'value': ao['@value'], 'name' : ao['@name']})
+		}
+		console.log("Adding-->",jsonData);
+		this.step_driver = jsonData['@Driver']; 
+		this.step_keyword = jsonData['@Keyword']; 
+		this.step_TS = jsonData['@TS']; 
+		this.onError_action=jsonData['onError']['@action'];
+		this.onError_value=jsonData['onError']['@value'];
+		this.Description = jsonData['Description'];
+		this.iteration_type= jsonData['iteration_type'];
+		// Make sure the Execute and types exist
+		if (! jsonData['Execute']){
+				jsonData['Execute'] = { "@ExecType": "yes", 
+						"Rule": { "@Condition": "", "@Condvalue": "", "@Else": "next", "@Elsevalue": "" }
+					}; 
+			}
+		if (! jsonData['Execute']['@ExecType']){
+			jsonData['Execute']['@ExecType'] = 'yes'; 
+		}
+		// Make sure the rules and types exist
+		if (! jsonData['Execute']['Rule']){
+				jsonData['Execute']['Rule'] ={ "@Condition": "", "@Condvalue": "", "@Else": "next", "@Elsevalue": "" }; 
+			}
+		
+		this.Execute_ExecType = jsonData['Execute']['@ExecType'].toLowerCase();
+		this.Execute_Rule_Condition = jsonData['Execute']['Rule']['@Condition'];
+		this.Execute_Rule_Condvalue = jsonData['Execute']['Rule']['@Condvalue'];
+		this.Execute_Rule_Else = jsonData['Execute']['Rule']['@Else'];
+		this.Execute_Rule_Elsevalue = jsonData['Execute']['Rule']['@Elsevalue'];
+		this.impact = jsonData['impact'];
+		this.context = jsonData['context'];
+
+		if (! jsonData['runmode']) {
+			jsonData['runmode'] = { '@value': '', '@type' : ''}; 
+		}
+		this.runmode_value = jsonData['runmode']['@value'];
+		this.runmode_type  = jsonData['runmode']['@type'];
+
+		if (! jsonData['iteration_type']) {
+			jsonData['iteration_type']['@type'] = 'sequential_testcases';
+			jsonData['iteration_type']['@value'] = '';
+		}
+		// 
+		this.iteration_type = jsonData['iteration_type']['@type'];
+		this.iteration_value = jsonData['iteration_type']['@value'];
+
+		if (! jsonData['InputDataFile']) {
+			jsonData['InputDataFile'] = '';
+		}
+		this.InputDataFile = jsonData['InputDataFile'];
+		
+
+
+	// End of constructor 
+	}
+
+	createEmptyTestStep() {
+		var newCaseStep = {
+				"step": 
+					{  "@Driver": "demo_driver", "@Keyword": "" , "@TS": "0" },
+				"Arguments" : 
+					{ 'Argument': [] },
+				"onError": {  "@action" : "next", "@value" : "" } ,
+				"iteration_type": {   "@type" : "" } ,
+				"Description":"",
+				"Execute": {   "@ExecType": "yes",
+					"Rule": {   "@Condition": "","@Condvalue": "","@Else": "next", "@Elsevalue": "" }
+				}, 
+				"context": "positive", 
+				"impact" :  "impact",
+				"runmode" : { '@type': 'standard', '@value': ""},
+				"InputDataFile" : "", 
+			 	};
+		 return newCaseStep;
+	}
+
+
+	getJSON() { 
+		return  {
+				"step": 
+					{  "@Driver": this.step_driver, "@Keyword": this.step_keyword , "@TS": this.step_TS },
+				"Arguments" : 
+					{ 'Argument': jQuery.extend(true, {}, this.Arguments ) },
+				"onError": {  "@action" : this.onError_action , "@value" : this.onError_value } ,
+				"iteration_type": {   "@type" : "" } ,
+				"Description":this.Description,
+				"Execute": {   "@ExecType": this.Execute_ExecType,
+					"Rule": {   "@Condition": this.Execute_Rule_Condition ,
+								"@Condvalue": this.Execute_Rule_Condvalue,
+								"@Else": this.Execute_Rule_Else, 
+								"@Elsevalue": this.Execute_Rule_Elsevalue }
+				}, 
+				"context": this.context, 
+				"impact" : this.impact,
+				"runmode" : { '@type': this.runmode_type, '@value': this.runmode_value},
+				"InputDataFile" : this.InputDataFile, 
+			};
+	}
+}
+
+
+class caseObject {
+	constructor(jsonData) { 
+		//
+		// First confirm that the object is complete. 
+		// Return empty object if incomplete. 
+		//
+		console.log("In constructor", jsonData);
+		if (!jsonData['Details']) {
+			this.Details = new caseDetailsObject(null);
+		} else {
+			this.Details = new caseDetailsObject(jsonData['Details'])
+		}
+		// Use an empty as a starting point for 
+		if (!jsonData['Requirements']) {
+			jsonData['Requirements'] = [] 
+		} 
+		if (!jsonData['Requirements']['Requirement']) {
+			jsonData['Requirements']['Requirement']= [] 
+		}
+		this.Requirements = new caseRequirementsObject(jsonData['Requirements']['Requirement']);
+		
+		// Adjust up front. 
+
+		console.log("After", jsonData['Steps']);
+		
+		if (!jsonData['Steps']) {
+			jsonData['Steps']['step'] = [] 
+		} 
+		if (!jsonData['Steps']['step']) {
+			jsonData['Steps']['step'] = [] 
+		} 
+		//
+		this.Teststeps = [];
+		for (var k=0; k<jsonData['Steps']['step'].length; k++) {	
+			var ts = new caseTestStepObject(jsonData['Steps']['step'][k]);
+			this.Teststeps.push(ts);
+			}
+		// 
+		}
+
+	getJSON(){
+		var testStepsJSON = [];
+		for (var ts =0; ts< this.Teststeps.length; ts++ ) {
+			testStepsJSON.push(this.Teststeps[ts].getJSON());
+		}
+
+		return { 'Details': this.Details.getJSON(), 
+			'Requirements' : this.Requirements.getJSON(),
+			'Steps' : { 'step': testStepsJSON}, };
+
+	}
+}
+
+
+
+
+
+
+
  var cases = {
 
  	init: function() { 
@@ -151,13 +431,11 @@ function jsUcfirst(string)
 	},
 
 
-
-
-
 	 lastPopup: null,
 	 jsonCaseObject : [],
 	 jsonCaseDetails : [],				// A pointer to the Details   
 	 jsonCaseSteps : [],		  		// A pointer to the Steps object
+	
 //
 // This function is called when the page loads in cases.js . 
 //
@@ -165,40 +443,18 @@ function jsUcfirst(string)
 		var myfile = katana.$activeTab.find('#fullpathname').text();
 		jQuery.getJSON("./cases/getJSONcaseDataBack/?fname="+myfile).done(function(data) {
 			a_items = data['fulljson']['Testcase'];
-			//console.log("from views.py call=", a_items);
-			cases.jsonCaseObject = a_items; // JSON.parse(sdata); 
-			console.log("Incoming data",cases.jsonCaseObject, a_items); // instead of jdata.
-			if (!jQuery.isArray(cases.jsonCaseObject["Steps"]['step'])) {
-				cases.jsonCaseObject["Steps"]['step'] = [ cases.jsonCaseObject["Steps"]['step']];
-			}
-			cases.jsonCaseSteps  = cases.jsonCaseObject["Steps"];
-			console.log("Steps --> ", cases.jsonCaseSteps);
-			cases.jsonCaseDetails = cases.jsonCaseObject['Details'];
+
+			cases.jsonCaseObject  = new caseObject(a_items);
+			//console.log("Objects--->",a_items, myObj, myObj.getJSON());
+			cases.jsonCaseSteps  = cases.jsonCaseObject.Teststeps;      //
+			cases.jsonCaseDetails = cases.jsonCaseObject.Details;
 			katana.$activeTab.find("#editCaseStepDiv").hide();
 			katana.$activeTab.find("#tableOfTestStepsForCase").removeClass();
 			katana.$activeTab.find("#tableOfTestStepsForCase").addClass('col-md-12');
 			katana.$activeTab.find("#tableOfTestStepsForCase").show();
 			console.log("Here", cases.jsonCaseObject, cases.jsonCaseSteps);
-			for (vs in cases.jsonCaseSteps['step']) {
-				var oneCaseStep = cases.jsonCaseSteps['step'][vs];
-				console.log("Arguments", oneCaseStep, vs, cases.jsonCaseSteps['step']);
-				if (!oneCaseStep['Arguments']) {
-					oneCaseStep['Arguments'] = { 'argument': [] }; 
-				}
-				if (!oneCaseStep['Arguments']['argument']) {
-					oneCaseStep['Arguments']['argument'] = []; 
-				}
-				var arguments = oneCaseStep['Arguments']['argument'];
-				for (xarg in arguments) {
-					if (!arguments[xarg]) {
-						oneCaseStep['Arguments']['argument'][xarg] = { '@name': "", '@value': '' };
-					}
-				}
-			}
-
-		cases.mapCaseJsonToUi(cases.jsonCaseSteps);
-		//console.log("Here 2", cases.jsonCaseObject, cases.jsonCaseSteps);
-		cases.createRequirementsTable();
+			cases.mapCaseJsonToUi(cases.jsonCaseSteps);
+			cases.createRequirementsTable();
 
 	//$('#myform :checkbox').change(function()
 		katana.$activeTab.find('#ck_dataPath').change(function() {
@@ -248,7 +504,7 @@ function jsUcfirst(string)
 	cases.jsonCaseObject['Details']['Category'] = katana.$activeTab.find('#caseCategory').val();
 	cases.jsonCaseObject['Details']['State'] = katana.$activeTab.find('#caseState').val();
 	cases.jsonCaseObject['Details']['Engineer'] = katana.$activeTab.find('#caseEngineer').val();
-	cases.jsonCaseObject['Details']['Title'] = katana.$activeTab.find('#caseTitle').val();
+	
 	//cases.jsonCaseObject['Details']['Date'] = katana.$activeTab.find('#caseDate').val();
 
 	console.log("Attributes ", cases.jsonCaseObject);
@@ -351,7 +607,7 @@ function jsUcfirst(string)
 			  		var savefilepath = katana.$activeTab.find('#savesubdir').text();  
 			  		console.log("File path ==", savefilepath);
 					var nf = prefixFromAbs(savefilepath, selectedValue);
-					var oneCaseStep = cases.jsonCaseSteps['step'][sid];
+					var oneCaseStep = cases.jsonCaseSteps[sid];
 					oneCaseStep["InputDataFile"] = nf;
 					};
 			 var callback_on_dismiss = function(){ 
@@ -385,7 +641,7 @@ function jsUcfirst(string)
 		}
 
 	defgoto.empty(); 
-	var xdata = cases.jsonCaseObject["Steps"]['step']; // ['Testcase']; 
+	var xdata = cases.jsonCaseObject.Teststeps;
 	//console.log("Step....",Object.keys(xdata).length, xdata);
 	for (var s=0; s<Object.keys(xdata).length; s++ ) {
 		defgoto.append($('<option>',{ value: s,  text: s+1}));
@@ -469,16 +725,16 @@ function jsUcfirst(string)
 Maps the data from a Testcase object to the UI. 
 The UI currently uses jQuery and Bootstrap to display the data.
 */
- mapCaseJsonToUi: function(data){
+ mapCaseJsonToUi: function(xdata){
 	//
 	// This gives me ONE object - The root for test cases
 	// The step tag is the basis for each step in the Steps data array object.
 	// 
 	var items = []; 
-	var xdata = data['step'];
+	
 	if (!jQuery.isArray(xdata)) xdata = [xdata]; // convert singleton to array
 
-
+	console.log("mapCaseJsonToUi", cases.jsonCaseSteps, xdata); 
 	//console.log("xdata =" + xdata);
 	katana.$activeTab.find("#tableOfTestStepsForCase").html("");	  // Start with clean slate
 	items.push('<table class="case-configuration-table table-striped" id="Step_table_display"  width="100%" >');
@@ -489,14 +745,14 @@ The UI currently uses jQuery and Bootstrap to display the data.
 	items.push('<tbody>');
 	for (var s=0; s<Object.keys(xdata).length; s++ ) {  // for s in xdata
 		var oneCaseStep = xdata[s];			 // for each step in case
-		//console.log(oneCaseStep['path']);
+		console.log("The Step : ", oneCaseStep);
 		var showID = parseInt(s)+1;
 		items.push('<tr data-sid="'+s+'"><td>'+showID+'</td>');		// ID 
 		// -------------------------------------------------------------------------
 		// Validation and default assignments 
 		// Create empty elements with defaults if none found. ;-)
 		// -------------------------------------------------------------------------
-		cases.fillStepDefaults(oneCaseStep);
+		//cases.fillStepDefaults(oneCaseStep);
 		items.push('<td>'+oneCaseStep['@Driver'] +'</td>'); 
 		var outstr; 
 		items.push('<td>'+oneCaseStep['@Keyword'] + "<br>TS=" +oneCaseStep['@TS']+'</td>'); 
@@ -528,23 +784,21 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		outstr = out_array.join("");
 		//console.log("Arguments --> "+outstr);
 		items.push('<td>'+outstr+'</td>'); 
-		outstr = oneCaseStep['onError']['@action'] 
-			//"Value=" + oneCaseStep['onError']['@value']+"<br>"; 
-		items.push('<td>'+oneCaseStep['onError']['@action'] +'</td>'); 
-		oneCaseStep['Execute']['@ExecType'] = jsUcfirst( oneCaseStep['Execute']['@ExecType']);
-		outstr = "ExecType=" + oneCaseStep['Execute']['@ExecType'] + "<br>";
-		if (oneCaseStep['Execute']['@ExecType'] == 'if' || oneCaseStep['Execute']['@ExecType'] == 'if not') {
-			outstr = outstr + "Condition="+oneCaseStep['Execute']['Rule']['@Condition']+ "<br>" + 
-			"Condvalue="+oneCaseStep['Execute']['Rule']['@Condvalue']+ "<br>" + 
-			"Else="+oneCaseStep['Execute']['Rule']['@Else']+ "<br>" +
-			"Elsevalue="+oneCaseStep['Execute']['Rule']['@Elsevalue'];
+		items.push('<td>'+oneCaseStep.onError_action+'</td>'); 
+		
+		outstr = "ExecType=" + oneCaseStep.Execute_ExecType + "<br>";
+		if (oneCaseStep.Execute_ExecType == 'if' || oneCaseStep.Execute_ExecType == 'if not') {
+			outstr = outstr + "Condition="+oneCaseStep.Execute_Rule_Condition+ "<br>" + 
+			"Condvalue="+oneCaseStep.Execute_Rule_Condvalue+ "<br>" + 
+			"Else="+oneCaseStep.Execute_Rule_Elsevalue+ "<br>" +
+			"Elsevalue="+oneCaseStep.Execute_Rule_Elsevalue;
 		}
 		 
 			
 		items.push('<td>'+outstr+'</td>'); 
-		items.push('<td>'+oneCaseStep['runmode']['@type']+'</td>');
-		items.push('<td>'+oneCaseStep['context']+'</td>');
-		items.push('<td>'+oneCaseStep['impact']+'</td>'); 
+		items.push('<td>'+oneCaseStep.runmode_type+'</td>');
+		items.push('<td>'+oneCaseStep.context+'</td>');
+		items.push('<td>'+oneCaseStep.impact+'</td>'); 
 		var bid = "deleteTestStep-"+s+"-id-"
 		items.push('<td><i title="Delete" class="fa fa-trash" theSid="'+s+'" id="'+bid+'" katana-click="cases.deleteCaseFromLine()" key="'+bid+'"/>');
 
@@ -598,25 +852,21 @@ The UI currently uses jQuery and Bootstrap to display the data.
 	var names = this.attr('key').split('-');
 	var sid = parseInt(names[1]);
 	katana.popupController.open(katana.$activeTab.find("#editCaseStepDiv").html(),"Edit..." + sid, function(popup) {
-		cases.setupPopupDialog(sid,cases.jsonCaseSteps['step'] ,popup);
+		cases.setupPopupDialog(sid,cases.jsonCaseSteps,popup);
 	});
 	},	
 
 	addCaseFromLine: function() {
 	var names = this.attr('key').split('-');
 	var sid = parseInt(names[1]);
-	cases.addTestStepAboveToUI(sid,cases.jsonCaseSteps['step'],0);
+	cases.addTestStepAboveToUI(sid,cases.jsonCaseSteps,0);
 	},
 
 	duplicateCaseFromLine :function() { 
 		var names = this.attr('key').split('-');
 		var sid = parseInt(names[1]);
-		cases.addTestStepAboveToUI(sid,cases.jsonCaseSteps['step'],1);
+		cases.addTestStepAboveToUI(sid,cases.jsonCaseSteps,1);
 	},
-
-
-
-
 
 	makePopupArguments: function(popup,  oneCaseStep) {
 		cases.lastPopup = popup; 
@@ -647,8 +897,8 @@ The UI currently uses jQuery and Bootstrap to display the data.
 			
 		}
 		popup.find("#arguments-textarea").html( a_items.join("\n"));	
-		if (!jQuery.isArray(cases.jsonCaseSteps['step'])) {
-			cases.jsonCaseSteps['step'] = [cases.jsonCaseSteps['step']];
+		if (!jQuery.isArray(cases.jsonCaseSteps)) {
+			cases.jsonCaseSteps = [cases.jsonCaseSteps];
 			}
 		cases.fillCaseStepDefaultGoto(popup);
 			popup.find('#SteponError-at-action').on('change', function(){ 
@@ -666,9 +916,8 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		console.log("Step ", gotoStep, popup.find('#SteponError-at-action'));
 		var defgoto = popup.find('#SteponError-at-value'); 
 		defgoto.hide();
-		//var sid = popup.find('#CaseRowToEdit').val();
 		defgoto.empty(); 
-		var xdata = cases.jsonCaseObject["Steps"]['step']; // ['Testcase']; 
+		var xdata = cases.jsonCaseObject["Steps"]; // ['Testcase']; 
 		console.log("Step....",Object.keys(xdata).length, xdata);
 		for (var s=0; s<Object.keys(xdata).length; s++ ) {
 			defgoto.append($('<option>',{ value: s,  text: s+1}));
@@ -837,7 +1086,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 	
 	popup.find("#StepDriver").on('change',function() {
 		sid  = popup.find("#StepDriver").attr('theSid');   // 
-		var oneCaseStep = cases.jsonCaseSteps['step'][sid];
+		var oneCaseStep = cases.jsonCaseSteps[sid];
 		console.log(oneCaseStep);
 		//console.log("------");
 		console.log(popup.find("#StepDriver").val());
@@ -876,7 +1125,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 
 	popup.find("#StepKeyword").on('change',function() {
 		sid  = popup.find("#StepKeyword").attr('theSid');   // 
-		var oneCaseStep = cases.jsonCaseSteps['step'][sid];
+		var oneCaseStep = cases.jsonCaseSteps[sid];
 		var keyword = popup.find("#StepKeyword").val();  // 
 		var driver  = popup.find("#StepDriver").val();   // 
 		var xopts = jQuery.getJSON("./cases/getListOfComments/?driver="+driver+"&keyword="+keyword).done(function(data) {
@@ -930,8 +1179,6 @@ The UI currently uses jQuery and Bootstrap to display the data.
 			},
 
 	appendPopupArgument: function( ) {
-				//lert("add One Argument");
-
 				var sid = cases.lastPopup.find('#StepRowToEdit').attr('value');
 				var xdata = cases.lastPopup.find('#StepRowToEdit').attr('xdata');
 				cases.addOneArgument(sid,xdata, cases.lastPopup);
@@ -941,39 +1188,32 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		var names = this.attr('key').split('-');
 		var sid = parseInt(names[1]);
 		cases.adjustRequirementsTable();
-		console.log("Insert log in, ", sid);
-		cases.jsonCaseObject['Requirements']['Requirement'].splice(sid, 0, "");
+		console.log("Insert log in, ", cases.jsonCaseObject, sid);
+		cases.jsonCaseObject.Requirements.insertRequirement(sid, 0, "");
 		cases.createRequirementsTable();	
 	},
 
 	saveAllRequirementsCB: function() { 
-		var slen = cases.jsonCaseObject['Requirements']['Requirement'].length;
-		console.log("slen=", slen);
+		var slen = cases.jsonCaseObject.Requirements.length;
 		for (var sid = 0; sid < slen; sid++ ) {
 			var txtVl = katana.$activeTab.find("#textRequirement-name-"+sid+"-id").val();
-			console.log("text ", txtVl);
-			cases.jsonCaseObject['Requirements']['Requirement'][sid]  = txtVl;
+			cases.jsonCaseObject.Requirements.setRequirement(sid, txtVl);
 		}
 		cases.createRequirementsTable();		
 
 	},
 			
 	saveRequirementToLine : function(){
-
 		var names = this.attr('key').split('-');
 		var sid = parseInt(names[1]);
 		var txtVl = katana.$activeTab.find("#textRequirement-name-"+sid+"-id").val();
-		console.log("Editing ..." + sid, txtVl);
-		cases.adjustRequirementsTable();
-		rdata = cases.jsonCaseObject['Requirements']['Requirement'];
-		rdata[sid] = txtVl;
+		cases.jsonCaseObject.Requirements.setRequirement(sid, txtVl);
 		cases.createRequirementsTable();	
 	},
 
 	deleteOneRequirementToLine : function() {
 		var names = this.attr('key').split('-');
 		var sid = parseInt(names[1]);
-		
 		cases.adjustRequirementsTable();
 		rdata = cases.jsonCaseObject['Requirements']['Requirement'];
 		rdata.splice(sid,1); 
@@ -1010,7 +1250,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 
 // Removes a test suite by its ID and refresh the page. 
 	removeTestStep: function ( sid ){
-		cases.jsonCaseSteps['step'].splice(sid,1);
+		cases.jsonCaseSteps.splice(sid,1);
 		console.log("Removing testcases "+sid+" now " + Object.keys(cases.jsonCaseSteps).length);
 		cases.mapCaseJsonToUi(cases.jsonCaseSteps);
 	},
@@ -1019,15 +1259,15 @@ The UI currently uses jQuery and Bootstrap to display the data.
 	addNewTestStepToUI: function() {
 		var newObj = cases.createNewStep();
 
-		if (!cases.jsonCaseSteps['step']) {
-			cases.jsonCaseSteps['step'] = [];
+		if (!cases.jsonCaseSteps) {
+			cases.jsonCaseSteps = [];
 			}
-		if (!jQuery.isArray(cases.jsonCaseSteps['step'])) {
-			cases.jsonCaseSteps['step'] = [cases.jsonCaseSteps['step']];
+		if (!jQuery.isArray(cases.jsonCaseSteps)) {
+			cases.jsonCaseSteps = [cases.jsonCaseSteps];
 			}
 
-		console.log("Adding new step", cases.jsonCaseSteps,cases.jsonCaseSteps['step']);
-		cases.jsonCaseSteps['step'].push(newObj);  // Don't delete anything
+		console.log("Adding new step", cases.jsonCaseSteps,cases.jsonCaseSteps);
+		cases.jsonCaseSteps.push(newObj);  // Don't delete anything
 		cases.mapCaseJsonToUi(cases.jsonCaseSteps);		
 	},
 
@@ -1041,18 +1281,18 @@ The UI currently uses jQuery and Bootstrap to display the data.
 			aid = sid;				// One below the current one. 
 		}
 
-		if (!cases.jsonCaseSteps['step']) {
-			cases.jsonCaseSteps['step'] = [];
+		if (!cases.jsonCaseSteps) {
+			cases.jsonCaseSteps = [];
 			}
-		if (!jQuery.isArray(cases.jsonCaseSteps['step'])) {
-			cases.jsonCaseSteps['step'] = [cases.jsonCaseSteps['step']];
+		if (!jQuery.isArray(cases.jsonCaseSteps)) {
+			cases.jsonCaseSteps = [cases.jsonCaseSteps];
 			}
 
 		if (copy == 1){
-			console.log("Copying..., ", sid, " from ", cases.jsonCaseSteps['step'][sid]);
-			newObj = jQuery.extend(true, {}, cases.jsonCaseSteps['step'][sid]); 
+			console.log("Copying..., ", sid, " from ", cases.jsonCaseSteps[sid]);
+			newObj = jQuery.extend(true, {}, cases.jsonCaseSteps[sid]); 
 			}
-		cases.jsonCaseSteps['step'].splice(aid,0,newObj);  // Don't delete anything
+		cases.jsonCaseSteps.splice(aid,0,newObj);  // Don't delete anything
 		cases.mapCaseJsonToUi(cases.jsonCaseSteps);		
 		},
 
@@ -1064,7 +1304,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 
 
 	saveOneArgument: function( sid, aid, xdata) {
-		var obj = cases.jsonCaseSteps['step'][sid]['Arguments']['argument'][aid]; 	
+		var obj = cases.jsonCaseSteps[sid]['Arguments'][aid]; 	
 		obj['@name'] = katana.$activeTab.find('[argid=caseArgName-'+aid+']').attr('value');
 		obj['@value'] = katana.$activeTab.find('[argid=caseArgValue-'+aid+']').attr('value');
 		console.log("Saving..arguments-div "+ sid + " aid = "+ aid);
@@ -1076,36 +1316,33 @@ The UI currently uses jQuery and Bootstrap to display the data.
 
  	addOneArgument: function( sid , xdata, popup ) {
 		var xx = { "@name": "New" , "@value": "New" };
-		console.log("sid = ", sid, cases.jsonCaseSteps, cases.jsonCaseSteps['step'][sid]['Arguments'] );
-		if (! jQuery.isArray(cases.jsonCaseSteps['step'][sid]['Arguments']['argument']))  {
-			cases.jsonCaseSteps['step'][sid]['Arguments']['argument'] = [ cases.jsonCaseSteps['step'][sid]['Arguments']['argument'] ];
-		}
-		cases.jsonCaseSteps['step'][sid]['Arguments']['argument'].push(xx);
-		oneCaseStep = cases.jsonCaseSteps['step'][sid];
+		console.log("sid = ", sid, cases.jsonCaseSteps, cases.jsonCaseSteps[sid]['Arguments'] );
+		cases.jsonCaseSteps[sid]['Arguments'].push(xx);
+		oneCaseStep = cases.jsonCaseSteps[sid];
 		cases.redrawArguments(sid, oneCaseStep,popup);
 	},
 
 	// Empty argument into location aid, for step sid in popup
  	insertOneArgument: function( sid , aid,  popup ) {
 		var xx = { "@name": "" , "@value": " " };
-		if (! jQuery.isArray(cases.jsonCaseSteps['step'][sid]['Arguments']['argument']))  {
-			cases.jsonCaseSteps['step'][sid]['Arguments']['argument'] = [ cases.jsonCaseSteps['step'][sid]['Arguments']['argument'] ];
-		}
-		cases.jsonCaseSteps['step'][sid]['Arguments']['argument'].splice(aid,0,xx);
-		oneCaseStep = cases.jsonCaseSteps['step'][sid];
+		// if (! jQuery.isArray(cases.jsonCaseSteps[sid]['Arguments']['argument']))  {
+		// 	cases.jsonCaseSteps[sid]['Arguments']['argument'] = [ cases.jsonCaseSteps[sid]['Arguments']['argument'] ];
+		// }
+		cases.jsonCaseSteps[sid]['Arguments'].splice(aid,0,xx);
+		oneCaseStep = cases.jsonCaseSteps[sid];
 		cases.redrawArguments(sid, oneCaseStep,popup);
 	},
 
 	// remove argument into location aid, for step sid in popup
  	
 	removeOneArgument: function( sid, aid, popup ) {
-		if (cases.jsonCaseSteps['step'][sid]['Arguments']) { 
-			cases.jsonCaseSteps['step'][sid]['Arguments']['argument'].splice(aid,1);	
+		if (cases.jsonCaseSteps[sid]['Arguments']) { 
+			cases.jsonCaseSteps[sid]['Arguments'].splice(aid,1);	
 			console.log("sid =" + sid);
 			console.log("aid =" + aid);
 			console.log(popup);
 			}
-		oneCaseStep = cases.jsonCaseSteps['step'][sid];
+		oneCaseStep = cases.jsonCaseSteps[sid];
 		cases.redrawArguments(sid, oneCaseStep,popup);
 	},
 
@@ -1115,7 +1352,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 	console.log(cases.jsonCaseSteps);
 		
 	// Validate whether sid 
-	var xdata = cases.jsonCaseSteps['step'];
+	var xdata = cases.jsonCaseSteps;
 
 	console.log(xdata);
 	console.log(sid);
@@ -1167,13 +1404,13 @@ The UI currently uses jQuery and Bootstrap to display the data.
 	addStepToCase: function(){
 	// Add an entry to the jsonTestSuites....
 	var newCaseStep = createNewStep();
-	if (!cases.jsonCaseSteps['step']) {
-		cases.jsonCaseSteps['step'] = [];
+	if (!cases.jsonCaseSteps) {
+		cases.jsonCaseSteps = [];
 		}
-	if (!jQuery.isArray(cases.jsonCaseSteps['step'])) {
-		cases.jsonCaseSteps['step'] = [cases.jsonCaseSteps['step']];
+	if (!jQuery.isArray(cases.jsonCaseSteps)) {
+		cases.jsonCaseSteps = [cases.jsonCaseSteps];
 		}
-	cases.jsonCaseSteps['step'].push(newCaseStep);
+	cases.jsonCaseSteps.push(newCaseStep);
 	cases.mapCaseJsonToUi(cases.jsonCaseSteps);
 },
 
@@ -1203,17 +1440,17 @@ The UI currently uses jQuery and Bootstrap to display the data.
 	items.push('<tbody>');
 	console.log("createRequirementsTable");
 	cases.adjustRequirementsTable();
-	rdata = cases.jsonCaseObject['Requirements']['Requirement'];
-	console.log(rdata, Object.keys(rdata).length, cases.jsonCaseObject, cases.jsonCaseObject['Requirements']['Requirement']);
+	rdata = cases.jsonCaseObject.Requirements.getRequirements() ; //cases.jsonCaseObject['Requirements']['Requirement'];
+	console.log(rdata, rdata.length, cases.jsonCaseObject);
 					
-	for (var s=0; s<Object.keys(rdata).length; s++ ) {
-				var oneReq = rdata[s];
-				console.log("oneReq", oneReq);
-				var idnumber = parseInt(s) + 1; 
+	for (var s=0; s<rdata.length; s++ ) {
+			var oneReq = rdata[s];
+			console.log("oneReq", oneReq);
+			var idnumber = parseInt(s) + 1;
 
-				if (oneReq == null) {
-					oneReq = '';
-				}
+			if (oneReq == null) {
+				oneReq = '';
+			}
 
 			items.push('<tr data-sid=""><td>'+idnumber+'</td>');
 			var bid = "textRequirement-name-"+s+"-id";	
@@ -1237,19 +1474,17 @@ The UI currently uses jQuery and Bootstrap to display the data.
 },
 
 	adjustRequirementsTable: function(){
-	if (!cases.jsonCaseObject['Requirements']) cases.jsonCaseObject['Requirements'] =  { 'Requirement': [] } ;
-	if (!jQuery.isArray(cases.jsonCaseObject['Requirements']['Requirement'])) {
-			cases.jsonCaseObject['Requirements']['Requirement'] = [cases.jsonCaseObject['Requirements']['Requirement']];
-	}
+		return; 
+	// if (!cases.jsonCaseObject['Requirements']) cases.jsonCaseObject['Requirements'] =  { 'Requirement': [] } ;
+	// if (!jQuery.isArray(cases.jsonCaseObject['Requirements']['Requirement'])) {
+	// 		cases.jsonCaseObject['Requirements']['Requirement'] = [cases.jsonCaseObject['Requirements']['Requirement']];
+	// }
 },
 
 
 	addRequirementToCase: function() {
-			cases.adjustRequirementsTable();
-			rdata = cases.jsonCaseObject['Requirements']['Requirement'];
-			//var newReq = {"Requirement" :  ""};
-			rdata.push( "" );
-			console.log(cases.jsonCaseObject);
+			cases.jsonCaseObject.Requirements.insertRequirement(0,0,"");
+			console.log(cases.jsonCaseObject.Requirements);
 			cases.createRequirementsTable();	
 		},
 
