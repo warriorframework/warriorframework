@@ -70,14 +70,277 @@ function prefixFromAbs(pathToBase, pathToFile) {
 	// console.log('tail=', tail);
 	return upem.join("/") + "/" +   tail.join('/');
 }
+
+class suiteDetailsObject{
+
+	mapJSONdataToSelf(jsonDetailsData) {
+			this.fillDefaults();           // Fills internal values only
+			if (jsonDetailsData) {         // Overridden by incoming data.
+				this.Name = jsonDetailsData['Name'];  
+				this.Title = jsonDetailsData['Title']; 
+				this.Category = jsonDetailsData['Category']; 
+				this.Engineer = jsonDetailsData['Engineer']; 
+				this.Resultsdir = jsonDetailsData['Resultsdir']; 
+				this.State = jsonDetailsData['State']; 
+				this.default_onError_action = jsonDetailsData['default_onError']['@action']; 
+				this.default_onError_value = jsonDetailsData['default_onError']['@value']; 
+				this.InputDataFile = jsonDetailsData['InputDataFile'];
+				this.ExecType = jsonDetailsData["type"]["@exectype"]; 
+				this.ExecType_num_attempts = jsonDetailsData["type"]['@Number_Attempts']; 
+				this.ExecType_max_attempts = jsonDetailsData["type"]['@Max_Attempts']; 
+			}
+	}
+
+	getJSON(){
+		return { 
+			'Name': this.Name, 
+			'Title': this.Title,
+			'Category' : this.Category, 
+			'Engineer' : this.Engineer, 
+			'Resultsdir' : this.Resultsdir, 
+			'State' : this.State,
+			'default_onError': { '@action': this.default_onError_action, '@value': this.default_onError_value},
+			'InputDataFile' : this.InputDataFile,
+			'type' : { "@exectype":this.ExecType,'@Number_Attempts': this.ExecType_num_attempts, '@Max_Attempts':  this.ExecType_max_attempts}
+		};
+	}
+
+	constructor(jsonDetailsData) {
+			this.mapJSONdataToSelf(jsonDetailsData);
+	}
+
+	setTimeStamp() { 
+		var date = new Date();
+	   	var year = date.getFullYear();
+	   	var month = date.getMonth() + 1;// months are zero indexed
+	   	var day = date.getDate();
+	   	var hour = date.getHours();
+	   	var minute = date.getMinutes();
+	   	if (minute < 10) {
+	       	minute = "0" + minute; 
+	       }
+		this.cDate = month + "/" + day + "/" + year; 
+		this.cTime = hour + ":" + minute; 
+	}
+
+
+	fillDefaults() {
+		this.Name = '';  
+		this.Title = ''; 
+		this.Category = ''; 
+		this.Engineer = ''; 
+		this.Resultsdir = ''; 
+		this.State = ''; 
+		this.default_onError_action = ''; 
+		this.default_onError_value = ''; 
+		this.InputDataFile = '';
+		
+		this.ExecType = ''; 
+		this.ExecType_num_attempts = ''; 
+		this.ExecType_max_attempts = ''; 
+		this.setTimeStamp();
+	}
+
+	duplicateSelf() { 
+		return jQuery.extend(true, {}, this); 
+	}
+}
+
+
+
+class suiteRequirementsObject{
+
+	constructor (jsonRequirements) { 
+		this.Requirements = [];
+		if (!jsonRequirements) return this; 
+		for (var k =0; k < jsonRequirements.length; k++ ) {
+			this.Requirements.push(jsonRequirements[k]);
+		}
+	}
+
+	getJSON() {
+		var r = [];
+		for (var k=0; k < this.Requirements.length; k++) {
+			r.push({ 'Requirement': this.Requirements[k]} );
+		}
+		return r ;  // this matches the XML ... 
+	}
+
+	insertRequirement(sid,where,what){
+		this.Requirements.splice(sid,where,what);
+	}
+
+	getRequirements() {
+		return this.Requirements;
+	}
+
+	setRequirement(s,v){
+		this.Requirements[s]=v;
+	}
+}
+
+class suiteCaseObject {
+	constructor(inputJsonData) {
+		var jsonData = inputJsonData;
+		this.setupFromJSON(jsonData);
+	}
+
+	setupFromJSON(jsonData) { 
+		if (!jsonData) {
+			jsonData = 	this.createEmptyCase(); 
+		}
+		// Fill defaults here. 
+		this.fillDefaults(jsonData);
+		this.path = jsonData['path'];
+		this.context = jsonData['context'].toLowerCase();
+		this.runtype = jsonData['runtype'].toLowerCase();
+		this.impact = jsonData['impact'].toLowerCase();
+		this.InputDataFile = jsonData['InputDataFile'];
+		this.runmode_value = jsonData['runmode']['@value'].toLowerCase();
+		this.runmode_type = jsonData['runmode']['@type'].toLowerCase();
+		this.Execute_ExecType = jsonData['Execute']['@ExecType'].toLowerCase();
+		this.Execute_Rule_Condition = jsonData['Execute']['Rule']['@Condition'].toLowerCase();
+		this.Execute_Rule_Condvalue = jsonData['Execute']['Rule']['@Condvalue'];
+		this.Execute_Rule_Else = jsonData['Execute']['Rule']['@Else'].toLowerCase();
+		this.Execute_Rule_Elsevalue = jsonData['Execute']['Rule']['@Elsevalue'];
+		this.onError_action = jsonData['onError']['@action'];
+		this.onError_value = jsonData['onError']['@value'];	
+
+	}
+
+	getJSON(){
+		return {
+			'path': this.path,
+			'context': this.context,
+			'runtype': this.runtype,
+			'impact': this.impact,
+			'InputDataFile' : this.InputDataFile,
+			'runmode' : { "@value": this.runmode_value, "@type": this.runmode_type },
+			'onError': { "@action": this.onError_action, "@value": this.onError_value },
+			'Execute': { "@ExecType": this.Execute_ExecType, 
+				"Rule": { "@Condition": this.Execute_Rule_Condition, "@Condvalue": this.Execute_Rule_Condvalue , 
+					"@Else": this.Execute_Rule_Else , "@Elsevalue": this.Execute_Rule_Elsevalue } 
+			},
+		};
+
+	}
+
+	copyToDocument(tag, obj) {
+		localStorage.setItem(tag, JSON.stringify(obj.getJSON()));
+	}
+
+	copyFromDocument(tag) {
+		return JSON.parse(localStorage.getItem(tag));
+	}
+
+	fillDefaults(jsonData){
+
+		if (! jsonData['runmode']) {
+			jsonData['onError'] = { "@type": "standard", "@value": "" };
+		}
+		if (! jsonData['runmode']['@value']) {
+			jsonData['onError'] = { "@type": "standard", "@value": "" };
+		}
+		if (! jsonData['runmode']['@type']) {
+			jsonData['onError'] = { "@type": "standard", "@value": "" };
+		}
+
+		if (! jsonData['onError']) {
+			jsonData['onError'] = { "@action": "next", "@value": "" };
+		}
+		if (!jsonData['Execute']) {
+			jsonData['Execute'] = { "@ExecType": "yes", "Rule": { "@Condition": "", "@Condvalue": "", "@Else": "next", "@Elsevalue": "" } };
+		}
+		if (!jsonData['Execute']['@ExecType']) {
+			jsonData['Execute'] = { "@ExecType": "yes", "Rule": { "@Condition": "", "@Condvalue": "", "@Else": "next", "@Elsevalue": "" } };
+		}
+		if (!jsonData['Execute']['Rule']) {
+			jsonData['Execute'][ "Rule"] = { "@Condition": "", "@Condvalue": "", "@Else": "next", "@Elsevalue": "" } ;
+		}
+		return jsonData;
+
+	}
+
+	createEmptyCase() {
+		return {
+			'path': '',
+			'context': 'positive',
+			'runtype': 'sequential_keywords',
+			'runmode' : { "@value": "standard", "@type": "" },
+			'onError': { "@action": "next", "@value": "" },
+			'Execute': { "@ExecType": "yes", 
+				"Rule": { "@Condition": "", "@Condvalue": "", "@Else": "next", "@Elsevalue": "" } 
+			},
+		};
+
+	}
+}
+
+
+class testSuiteObject{
+	constructor(jsonData){
+		this.mapJsonData(jsonData);
+	}
+	mapJsonData(jsonData){ 
+			console.log("In constructor", jsonData);
+			if (!jsonData['Details']) {
+				this.Details = new suiteDetailsObject(null);
+			} else {
+				this.Details = new suiteDetailsObject(jsonData['Details'])
+			}
+
+			if (!jsonData['Requirements']) {
+				jsonData['Requirements'] = [] 
+			} 
+			if (!jsonData['Requirements']['Requirement']) {
+				jsonData['Requirements']['Requirement']= [] 
+			}
+			if (!jQuery.isArray(jsonData['Requirements']['Requirement'] )) {
+				jsonData['Requirements']['Requirement'] = [jsonData['Requirements']['Requirement']];
+			}
+
+			this.Requirements = new suiteRequirementsObject(jsonData['Requirements']['Requirement']);
+			console.log("After", jsonData['Testcases']);
+			
+			if (!jsonData['Testcases']) {
+				jsonData['Testcases']['Testcase'] = [] 
+			} 
+			if (!jsonData['Testcases']['Testcase']) {
+				jsonData['Testcases']['Testcase'] = [] 
+			} 
+			//
+			if (!jQuery.isArray(jsonData['Testcases']['Testcase'])) {
+			 jsonData['Testcases']['Testcase'] = [ jsonData['Testcases']['Testcase'] ];
+			}
+
+			this.Testcases = [];
+			for (var k=0; k<jsonData['Testcases']['Testcase'].length; k++) {	
+				var ts = new suiteCaseObject(jsonData['Testcases']['Testcase'][k]);
+				this.Testcases.push(ts);
+				}
+			// 
+			}
+
+		getJSON(){
+			var testcasesJSON = [];
+			for (var ts =0; ts< this.Testcases.length; ts++ ) {
+				testcasesJSON.push(this.Testcases[ts].getJSON());
+			}
+
+			return { 'Details': this.Details.getJSON(), 
+				'Requirements' : this.Requirements.getJSON(),
+				'Testcases' :  testcasesJSON };
+		}
+
+	}
+
+
+
 var suites= {
 
-	jsonSuiteObject : [],
-	jsonTestcases : [],			// for all Cases
-	mySuiteKeywordsArray : ["path","context","runtype","impact"],
-	mySuite_UI_Array : [ 'CasePath', 'CaseContext', 'CaseRuntype', 'CaseImpact'],
-
-
+	jsonSuiteObject : null,
+	jsonTestcases : null,			// for all Cases
+	
 	startNewSuite: function() {
 	  var xref="./suites/editSuite/?fname=NEW"; 
 	  katana.templateAPI.load(xref, null, null, 'SuiteNew') ;
@@ -140,9 +403,8 @@ var suites= {
 	jQuery.getJSON("./suites/getJSONSuiteData/?fname="+myfile).done(function(data) {
 			var sdata = data['fulljson'];
 			console.log("from views.py call=", sdata);
-			suites.jsonSuiteObject = sdata['TestSuite'];
-			if (!suites.jsonSuiteObject['Requirements']) suites.jsonSuiteObject['Requirements'] = [];
-			suites.jsonTestcases = suites.jsonSuiteObject['Testcases']; 
+			suites.jsonSuiteObject = new testSuiteObject(sdata['TestSuite']);
+			suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
 			suites.mapSuiteJsonToUi();  // This is where the table and edit form is created. 
 			katana.$activeTab.find('#default_onError').on('change',suites.fillSuiteDefaultGoto );
 			katana.$activeTab.find('#suiteState').on('change',suites.fillSuiteState );
@@ -175,116 +437,68 @@ var suites= {
 	},
 
 
-	createNewCaseForSuite: function() {
-		var newTestcase = {	
-		'path' : "",
-		"Step" : { "@Driver": "", "@keyword": "", "@TS": "1" },
-		"Arguments": { "Argument" :  "" },
-		"onError" :  "",
-		"onError": { "@action": "next", "@value": "" }, 
-		"runmode": { "@type": "standard", "@value": "" }, 
-		"ExecType": { "@ExecType": "Yes", "Rule" : {} },
-		"context": "",
-		"impact": ""
-		};
-	return newTestcase;
-	},
-
 /// -------------------------------------------------------------------------------
 // Dynamically create a new Testcase object and append to the suites.jsonTestcases 
 // array. Default values are used to fill in a complete structure. If there is 
 // no default value, a null value is inserted for the keyword
 /// -------------------------------------------------------------------------------
 	addCaseToSuite: function(){
-	var newTestcase =suites.createNewCaseForSuite();	
-	suites.jsonTestcases = suites.jsonSuiteObject['Testcases']; 
-	console.log(suites.jsonSuiteObject);
-	console.log(suites.jsonTestcases);
-	if (!jQuery.isArray(suites.jsonTestcases['Testcase'])) {
-		suites.jsonTestcases['Testcase'] = [suites.jsonTestcases['Testcase']];
-		}
-	console.log(suites.jsonTestcases);
-	suites.jsonTestcases['Testcase'].push(newTestcase);
-	suites.createCasesTable(suites.jsonTestcases['Testcase']);
-},
- 
+		var newTestcase =	new suiteCaseObject(); 	
+		console.log(suites.jsonTestcases);
+		suites.jsonTestcases.push(newTestcase);
+		suites.createCasesTable(suites.jsonTestcases);
+	},
+	 
 	insertCaseToSuite: function(sid, copy){
-	var newTestcase =suites.createNewCaseForSuite();	
-	if (!jQuery.isArray(suites.jsonTestcases['Testcase'])) {
-		suites.jsonTestcases['Testcase'] = [suites.jsonTestcases['Testcase']];
-		}
-	if (copy == 1) {
-		newTestcase = jQuery.extend(true, {}, suites.jsonTestcases['Testcase'][sid]); 
-	}
-	suites.jsonTestcases['Testcase'].splice(sid,0,newTestcase);
-	suites.createCasesTable(suites.jsonTestcases['Testcase']);
-},
+		var newTestcase =new suiteCaseObject(); 		
+		suites.jsonTestcases.splice(sid,0,newTestcase);
+		suites.createCasesTable(suites.jsonTestcases);
+	},
 
 	mapSuiteCaseToUI: function(s,popup) {
 
 	// This is called from an event handler ... 
-	var xdata = suites.jsonTestcases['Testcase'];
+	var xdata = suites.jsonTestcases;
 	console.log(s, xdata);
 	var oneCase = xdata[s];
 	console.log(oneCase);
 	console.log(oneCase['path']);
 	popup.find("#CaseRowToEdit").val(s); 
+	katana.$activeTab.attr('suite_case_row',s);  // for the file dialog.
 	console.log(popup.find("#CaseRowToEdit").val());
 	//katana.$activeTab.find("CasePath").val(oneCase['path']);
 	popup.attr('oneCase', s);
-	var myStringArray = suites.mySuiteKeywordsArray; 
-	var arrayLength = suites.mySuiteKeywordsArray.length;
-	for (var xi = 0; xi < arrayLength; xi++) {
-		console.log("Fill "+ suites.mySuite_UI_Array[xi]);
-			var xxx = "#"+ suites.mySuite_UI_Array[xi];
-			popup.find(xxx).val(oneCase[myStringArray[xi]]); 
-		}
-
-	if (! oneCase['onError']) {
-			oneCase['onError'] = { "@action": "next", "@value": "" };
-		}
-
-	if (! oneCase['Execute']) {
-			alert("Missing Execute!!");
-			oneCase['Execute'] = { "@ExecType": "yes", "Rule" : {} };
-		}
-	if (! oneCase['Execute']['@ExecType']) {
-			alert("Missing ExecType!!");
-			
-			oneCase['Execute'] = { "@ExecType": "yes", "Rule" : {} };
-		}
-
-	if (! oneCase['Execute']['Rule']) {
-			oneCase['Execute']['Rule'] = { '@Condition' : '', '@Condvalue' : '', '@Else': 'abort', '@Elsevalue':'' };
-		}	
-
-	oneCase['Execute']['@ExecType'] = oneCase['Execute']['@ExecType'].toLowerCase();	
-	popup.find("#suiteExecuteAtExecType").val(oneCase['Execute']['@ExecType']); 
-	popup.find("#executeRuleAtCondition").val(oneCase['Execute']['Rule']['@Condition']); 
-	popup.find("#executeRuleAtCondvalue").val(oneCase['Execute']['Rule']['@Condvalue']); 
-	popup.find("#executeRuleAtElse").val(oneCase['Execute']['Rule']['@Else']); 
-	popup.find("#executeRuleAtElsevalue").val(oneCase['Execute']['Rule']['@Elsevalue']); 
+	popup.find('#CasePath').val(oneCase.path);
+	popup.find('#CaseContext').val(oneCase.context);
+	popup.find('#CaseRuntype').val(oneCase.runtype);
+	popup.find('#CaseImpact').val(oneCase.impact);
+	popup.find("#suiteExecuteAtExecType").val(oneCase.Execute_ExecType); 
+	popup.find("#executeRuleAtCondition").val(oneCase.Execute_Rule_Condition); 
+	popup.find("#executeRuleAtCondvalue").val(oneCase.Execute_Rule_Condvalue); 
+	popup.find("#executeRuleAtElse").val(oneCase.Execute_Rule_Else); 
+	popup.find("#executeRuleAtElsevalue").val(oneCase.Execute_Rule_Elsevalue); 
+	popup.find("#StepInputDataFile").val(oneCase.InputDataFile); 
 
 	suites.fillSuiteCaseDefaultGoto(popup);
 	popup.find('#caseonError-at-action').on('change', function(){ 
 			
 			suites.fillSuiteCaseDefaultGoto(suites.lastPopup);
 	});
-	console.log("FOUND Run mode  TYPE ",oneCase["runmode"]['@type'] )
+	console.log("FOUND Run mode  TYPE ",oneCase.runmode_type )
 	popup.find('.runmode_condition').show();
-	oneCase["runmode"]['@type'] = oneCase["runmode"]['@type'].toLowerCase();
-	if (oneCase["runmode"]['@type'] === 'standard') {
-		console.log("Hiding... ",oneCase["runmode"]['@type']  )
+	oneCase.runmode_type = oneCase.runmode_type.toLowerCase();
+	if (oneCase.runmode_type === 'standard') {
+		console.log("Hiding... ",oneCase.runmode_type  )
 		popup.find('.runmode_condition').hide();
 	}
 
 	popup.find('.rule-condition').hide();
-	if (oneCase["Execute"]['@ExecType']) {
-		console.log("FOUND EXECT TYPE ",oneCase["Execute"]['@ExecType'] )
-		if (oneCase["Execute"]['@ExecType'] == 'if' || oneCase["Execute"]['@ExecType'] == 'if not') {
+	if (oneCase.Execute_ExecType) {
+		console.log("FOUND EXECT TYPE ",oneCase.Execute_ExecType )
+		if (oneCase.Execute_ExecType == 'if' || oneCase.Execute_ExecType == 'if not') {
 			popup.find('.rule-condition').show();
 		} else {
-		console.log("FOUND EXECT TYPE as  ",oneCase["Execute"]['@ExecType'] )
+		console.log("FOUND EXECT TYPE as  ",oneCase.Execute_ExecType )
 		}	
 	}
 	popup.find("#suiteExecuteAtExecType").on('change',function() {
@@ -320,30 +534,24 @@ var suites= {
 	mapUItoSuiteCase: function(){
 		var popup = suites.lastPopup; 
 		var s = parseInt(popup.find("#CaseRowToEdit").val());
-		var oneCase = suites.jsonTestcases['Testcase'][s];
+		var oneCase = suites.jsonTestcases[s];
 		console.log("Item ",s, oneCase);
-	
-		oneCase['impact'] = popup.find('#CaseImpact').val();
-		oneCase['path'] = popup.find('#CasePath').val();
-		oneCase['context'] = popup.find('#CaseContext').val();
-		oneCase['runtype'] = popup.find('#CaseRuntype').val();	
-		oneCase['runmode'] = { '@type' : "" , '@value' : ""};
-		oneCase['runmode']['@type'] = popup.find('#CaseRunmode').val();
-		oneCase['runmode']['@value'] = popup.find('#CaseRunmodeAtValue').val();
-		oneCase['onError']['@action'] = popup.find("#caseonError-at-action").val();
-		oneCase['onError']['@value'] = popup.find("#caseonError-at-value").val();
-		oneCase['Execute'] = {'@ExecType': '', 'Rule' : {} }
-		oneCase['Execute']['Rule'] = { '@Condition' : '', '@Condvalue' : '', '@Else': 'abort', '@Elsevalue':'' };
-		oneCase['Execute']['Rule'] = {}
-		oneCase['Execute']['Rule']['@Condition']= popup.find("#executeRuleAtCondition").val(); 
-		oneCase['Execute']['Rule']['@Condvalue'] = popup.find("#executeRuleAtCondvalue").val(); 
-		oneCase['Execute']['Rule']['@Else'] = popup.find("#executeRuleAtElse").val(); 
-		oneCase['Execute']['Rule']['@Elsevalue'] = popup.find("#executeRuleAtElsevalue").val(); 
+		oneCase.impact = popup.find('#CaseImpact').val();
+		oneCase.path = popup.find('#CasePath').val();
+		oneCase.context= popup.find('#CaseContext').val();
+		oneCase.runtype= popup.find('#CaseRuntype').val();	
+		oneCase.runmode_type= popup.find('#CaseRunmode').val();
+		oneCase.runmode_value= popup.find('#CaseRunmodeAtValue').val();
+		oneCase.onError_action= popup.find("#caseonError-at-action").val();
+		oneCase.onError_value= popup.find("#caseonError-at-value").val();
+		oneCase.Execute_Rule_Condition = popup.find("#executeRuleAtCondition").val(); 
+		oneCase.Execute_Rule_Condvalue= popup.find("#executeRuleAtCondvalue").val(); 
+		oneCase.Execute_Rule_Else= popup.find("#executeRuleAtElse").val(); 
+		oneCase.Execute_Rule_Elsevalue= popup.find("#executeRuleAtElsevalue").val(); 
 		
 		var exectype = popup.find("#suiteExecuteAtExecType").val();
-		oneCase['Execute']['@ExecType'] = exectype ; 
+		oneCase.Execute_ExecType = exectype ; 
 		console.log(popup.find('#suiteExecuteAtExecType').val(),popup.find('#CaseImpact').val());
-
 		console.log("After saving", s, oneCase);
 },
 /*
@@ -358,121 +566,102 @@ Two global variables are heavily used when this function is called;
 */
 	mapUiToSuiteJson: function() {
 
-	if (katana.$activeTab.find("#suiteName").val().length < 1) {
-		data = { 'heading': "Error", 'text' : "Please specific a suite name "}
-		katana.openAlert(data);
-		return
-	}
-	if (katana.$activeTab.find("#suiteTitle").val().length < 1) {
-		data = { 'heading': "Error", 'text' : "Please specific a title "}
-		katana.openAlert(data);
-		return
-	}
+		if (katana.$activeTab.find("#suiteName").val().length < 1) {
+			data = { 'heading': "Error", 'text' : "Please specific a suite name "}
+			katana.openAlert(data);
+			return
+		}
+		if (katana.$activeTab.find("#suiteTitle").val().length < 1) {
+			data = { 'heading': "Error", 'text' : "Please specific a title "}
+			katana.openAlert(data);
+			return
+		}
 
-	if (katana.$activeTab.find("#suiteEngineer").val().length < 1) {
-				data = { 'heading': "Error", 'text' : "Please specific a name for the engineer"}
-		katana.openAlert(data);
-		return
-	}
+		if (katana.$activeTab.find("#suiteEngineer").val().length < 1) {
+					data = { 'heading': "Error", 'text' : "Please specific a name for the engineer"}
+			katana.openAlert(data);
+			return
+		}
 
 	// Add an XML to saved file name 
-	var xfname = katana.$activeTab.find('#suiteName').val();
-	if (xfname.indexOf(".xml") < 0) {
-		xfname = xfname + '.xml';
-	}
-	katana.$activeTab.find('#savefilepath').text(xfname);
-	katana.$activeTab.find('#my_file_to_save').val(xfname);
-	suites.jsonSuiteObject['Details']['Name'] = katana.$activeTab.find('#suiteName').val();
-	suites.jsonSuiteObject['Details']['Title'] = katana.$activeTab.find('#suiteTitle').val();
-	suites.jsonSuiteObject['Details']['Engineer'] = katana.$activeTab.find('#suiteEngineer').val();
-	suites.jsonSuiteObject['Details']['Resultsdir'] = katana.$activeTab.find('#suiteResults').val();
-	suites.jsonSuiteObject['Details']['State'] = katana.$activeTab.find('#suiteState').val();
-	suites.jsonSuiteObject['Details']['default_onError'] = { '@value': '', '@action' : ''};
-	suites.jsonSuiteObject['Details']['default_onError']['@action'] = katana.$activeTab.find('#default_OnError').val();
-	suites.jsonSuiteObject['Details']['default_onError']['@value'] = katana.$activeTab.find('#default_OnError_goto').val();
-	suites.jsonSuiteObject['Details']['InputDataFile'] = katana.$activeTab.find('#suiteInputDataFile').val();
-	suites.jsonSuiteObject['SaveToFile'] = katana.$activeTab.find('#my_file_to_save').val();
+		var xfname = katana.$activeTab.find('#suiteName').val();
+		if (xfname.indexOf(".xml") < 0) {
+			xfname = xfname + '.xml';
+			}
+		katana.$activeTab.find('#savefilepath').text(xfname);
+		katana.$activeTab.find('#my_file_to_save').val(xfname);
 
-	suites.jsonSuiteObject['Details']["type"]["@exectype"]= katana.$activeTab.find("#suiteDatatype").val();
-	suites.jsonSuiteObject['Details']["type"]['@Number_Attempts']= katana.$activeTab.find("#data_type_num_attempts").val();
-	suites.jsonSuiteObject['Details']["type"]['@Max_Attempts']= katana.$activeTab.find("#data_type_max_attempts").val();
-
-	console.log("Saving ... ", suites.jsonSuiteObject['Details']);
-	   var date = new Date();
-	   var year = date.getFullYear();
-       var month = date.getMonth() + 1;// months are zero indexed
-       var day = date.getDate();
-       var hour = date.getHours();
-       var minute = date.getMinutes();
-       if (minute < 10) {
-       	minute = "0" + minute; 
-       }
-       
-	suites.jsonSuiteObject['Details']['Date'] = month + "/" + day + "/" + year; 
-	suites.jsonSuiteObject['Details']['Time'] = hour + ":" + minute;
-
-	// Override the name 
+		suites.jsonSuiteObject.Details.Name = katana.$activeTab.find('#suiteName').val();
+		suites.jsonSuiteObject.Details.Title = katana.$activeTab.find('#suiteTitle').val();
+		suites.jsonSuiteObject.Details.Engineer = katana.$activeTab.find('#suiteEngineer').val();
+		suites.jsonSuiteObject.Details.Resultsdir = katana.$activeTab.find('#suiteResults').val();
+		suites.jsonSuiteObject.Details.State = katana.$activeTab.find('#suiteState').val();
+		suites.jsonSuiteObject.Details.default_onError_action = katana.$activeTab.find('#default_OnError').val();
+		suites.jsonSuiteObject.Details.default_onError_value = katana.$activeTab.find('#default_OnError_goto').val();
+		suites.jsonSuiteObject.Details.InputDataFile = katana.$activeTab.find('#suiteInputDataFile').val();
+		suites.jsonSuiteObject.Details.ExecType = katana.$activeTab.find("#suiteDatatype").val();
+		suites.jsonSuiteObject.Details.ExecType_num_Attempts = katana.$activeTab.find("#data_type_num_attempts").val();
+		suites.jsonSuiteObject.Details.ExecType_max_Attempts = katana.$activeTab.find("#data_type_max_attempts").val();
+		suites.jsonSuiteObject.Details.setTimeStamp();
 
 
-	var xfname = suites.jsonSuiteObject['Details']['Name'];
-	if (xfname.indexOf(".xml") < 2) {
-		xfname = xfname + ".xml";
-	}
-	
-	console.log(suites.jsonSuiteObject);
-	console.log(suites.jsonSuiteObject['Testcases']);
-	var url = "./suites/getSuiteDataBack";
-	var csrftoken = $("[name='csrfmiddlewaretoken']").val();
-
-	$.ajaxSetup({
-			function(xhr, settings) {
-            xhr.setRequestHeader("X-CSRFToken", csrftoken)
-    	}
-	});
-	
-	var topNode = { 'TestSuite' : suites.jsonSuiteObject};
-	//var topNode = 
-	$.ajax({
-	    url : url,
-	    type: "POST",
-	    data : { 
-	    	'json': JSON.stringify(topNode),
-	    	'filetosave': xfname,
-	    	'savefilepath': katana.$activeTab.find('#savefilepath').text()
-	    	},
-	    headers: {'X-CSRFToken':csrftoken},
-    
-    success: function( data ){
-        var outstr = "Saved " + katana.$activeTab.find('#savefilepath').text() +katana.$activeTab.find('#my_file_to_save').val(); 
-		xdata = { 'heading': "Saved", 'text' : outstr}
-		katana.openAlert(xdata);
-        katana.$activeTab.find('#suiteName').val(suites.jsonSuiteObject['Details']['Name']);
-    	}
-	});
-
-},
-
-
-		start_wdfEditor: function() { 
-		var tag = '#suiteInputDataFile';
-		var filename = katana.$activeTab.find(tag).attr("fullpath");
-		console.log("WDF editor opening...", filename); 
+		var xfname = suites.jsonSuiteObject.Details.Name;
+		if (xfname.indexOf(".xml") < 2) {
+			xfname = xfname + ".xml";
+		}
+		
+		console.log(suites.jsonSuiteObject);
+		console.log(suites.jsonSuiteObject['Testcases']);
+		var url = "./suites/getSuiteDataBack";
 		var csrftoken = $("[name='csrfmiddlewaretoken']").val();
+
+		$.ajaxSetup({
+				function(xhr, settings) {
+	            xhr.setRequestHeader("X-CSRFToken", csrftoken)
+	    	}
+		});
 	
-		var href='/katana/wdf/index';
-		dd = { 'path' : filename}; 
-		pd = { type: 'POST',
-			   headers: {'X-CSRFToken':csrftoken},
-			   data:  dd};
-			  console.log("Pd = ", pd);
-	  		katana.templateAPI.load.call(this, href, '/static/wdf_edit/js/main.js,', null, 'wdf', function() { 
-				//var xref="/katana/wdf/index"; 
-	    		//katana.templateAPI.subAppLoad(xref,null,function(thisPage) {
-				console.log("loaded wdf");
-	    		//});
-		}, pd);
+		var topNode = { 'TestSuite' : suites.jsonSuiteObject.getJSON()};
+		//var topNode = 
+		$.ajax({
+		    url : url,
+		    type: "POST",
+		    data : { 
+		    	'json': JSON.stringify(topNode),
+		    	'filetosave': xfname,
+		    	'savefilepath': katana.$activeTab.find('#savefilepath').text()
+		    	},
+		    headers: {'X-CSRFToken':csrftoken},
+	    
+			success: function( data ){
+			        var outstr = "Saved " + katana.$activeTab.find('#savefilepath').text() +katana.$activeTab.find('#my_file_to_save').val(); 
+					xdata = { 'heading': "Saved", 'text' : outstr}
+					katana.openAlert(xdata);
+			        katana.$activeTab.find('#suiteName').val(suites.jsonSuiteObject.Details.Name);
+			    	}
+				});
 
 	},
+
+		start_wdfEditor: function() { 
+			var tag = '#suiteInputDataFile';
+			var filename = katana.$activeTab.find(tag).attr("fullpath");
+			console.log("WDF editor opening...", filename); 
+			var csrftoken = $("[name='csrfmiddlewaretoken']").val();
+		
+			var href='/katana/wdf/index';
+			dd = { 'path' : filename}; 
+			pd = { type: 'POST',
+				   headers: {'X-CSRFToken':csrftoken},
+				   data:  dd};
+				  console.log("Pd = ", pd);
+		  		   katana.templateAPI.load.call(this, href, '/static/wdf_edit/js/main.js,', null, 'wdf', function() { 
+					//var xref="/katana/wdf/index"; 
+		    		//katana.templateAPI.subAppLoad(xref,null,function(thisPage) {
+					console.log("loaded wdf");
+		    		//});
+			}, pd);
+		},
 
 	getInputDataForSuite: function () {
       var callback_on_accept = function(selectedValue) { 
@@ -480,7 +669,7 @@ Two global variables are heavily used when this function is called;
       		var pathToBase = katana.$activeTab.find('#savefilepath').text();
       		console.log("File path ==", pathToBase);
       		var nf = prefixFromAbs(pathToBase, selectedValue);
-      		suites.jsonSuiteObject['Details']['InputDataFile']= nf;
+      		suites.jsonSuiteObject.Details['InputDataFile']= nf;
       		console.log("Path set to ",nf);
       		var tag = '#suiteInputDataFile';
       		katana.$activeTab.find(tag).val(nf);
@@ -500,7 +689,7 @@ Two global variables are heavily used when this function is called;
       		var pathToBase = katana.$activeTab.find('#savefilepath').text();
       		console.log("File path ==", pathToBase);
       		var nf = prefixFromAbs(pathToBase, selectedValue);
-      		suites.jsonSuiteObject['Details']['Resultsdir']= nf;
+      		suites.jsonSuiteObject.Details.Resultsdir = nf;
       		console.log("Path set to ",nf);
             katana.$activeTab.find('#suiteResults').val(nf);
            };
@@ -512,15 +701,16 @@ Two global variables are heavily used when this function is called;
 
 	getResultsDirForSuiteRow: function () {
       var callback_on_accept = function(selectedValue) { 
-      		console.log(selectedValue);
       		// Convert to relative path.
-      		var sid = katana.$activeTab.attr('suite-case-row');
+      		var sid = katana.$activeTab.attr('suite_case_row');
+			var popup = suites.lastPopup;
       		var pathToBase = katana.$activeTab.find('#savefilepath').text();
-      		console.log("File path ==", pathToBase);
+      		console.log("File path ==", pathToBase, sid);
       		var nf = prefixFromAbs(pathToBase, selectedValue);
-      		suites.jsonTestcases['Testcase'][sid]['path'] = nf;
+      		suites.jsonTestcases[sid]['InputDataFile'] = nf;
       		console.log("Path set to ",nf," for ", sid);
-      		createCasesTable(suites.jsonTestcases['Testcase']);
+      		//createCasesTable(suites.jsonTestcases);
+      		popup.find("#StepInputDataFile").val(nf); 
             };
       var callback_on_dismiss = function(){ 
       		console.log("Dismissed");
@@ -543,7 +733,7 @@ Two global variables are heavily used when this function is called;
 	}
 
 	defgoto.empty(); 
-	var xdata = suites.jsonSuiteObject["Testcases"]; // ['Testcase'];
+	var xdata = suites.jsonSuiteObject["Testcases"]; 
 	if (!jQuery.isArray(xdata)) xdata = [xdata]; 
 	for (var s=0; s<Object.keys(xdata).length; s++ ) {
 		defgoto.append($('<option>',{ value: s,  text: s+1}));
@@ -552,68 +742,74 @@ Two global variables are heavily used when this function is called;
 
 	fillSuiteCaseDefaultGoto : function(popup) {
 
-	var gotoStep =popup.find('#caseonError-at-action').val();
-	var defgoto = popup.find('#caseonError-at-value'); 
-	defgoto.hide();
-
-	if (gotoStep.trim() == 'goto') { 
-		defgoto.show();
-	} else {
+		var gotoStep =popup.find('#caseonError-at-action').val();
+		var defgoto = popup.find('#caseonError-at-value'); 
 		defgoto.hide();
-		
-	}
-	//var sid = popup.find('#CaseRowToEdit').val();
-	defgoto.empty(); 
-	var xdata = suites.jsonSuiteObject["Testcases"]; // ['Testcase'];
-	if (!jQuery.isArray(xdata)) xdata = [xdata]; 
-	for (var s=0; s<Object.keys(xdata).length; s++ ) {
-		defgoto.append($('<option>',{ value: s,  text: s+1}));
-	}
-},
+
+		if (gotoStep.trim() == 'goto') { 
+			defgoto.show();
+		} else {
+			defgoto.hide();
+			
+		}
+		//var sid = popup.find('#CaseRowToEdit').val();
+		defgoto.empty(); 
+		var xdata = suites.jsonSuiteObject["Testcases"]; // ['Testcase'];
+		if (!jQuery.isArray(xdata)) xdata = [xdata]; 
+		for (var s=0; s<Object.keys(xdata).length; s++ ) {
+			defgoto.append($('<option>',{ value: s,  text: s+1}));
+		}
+	},
 
 //
 // This creates the table for viewing data in a sortable view. 
 // 
 	createCasesTable: function(xdata) {
-	var items = []; 
+		var items = []; 
 
-	items.push('<table id="Case_table_display" class="suite-configuration-table" width="100%">');
-	items.push('<thead>');
-	items.push('<tr id="CaseRow"><th>Num</th><th></th><th>Path</th><th>context</th><th>Run Type</th><th>Mode</th><th>OnError</th><th>Impact</th><th/></tr>');
-	items.push('</thead>');
-	items.push('<tbody>');
+		items.push('<table id="Case_table_display" class="suite-configuration-table" width="100%">');
+		items.push('<thead>');
+		items.push('<tr id="CaseRow"><th>Num</th><th></th><th>Path</th><th>context</th><th>Run Type</th><th>Mode</th><th>OnError</th><th>Impact</th><th/></tr>');
+		items.push('</thead>');
+		items.push('<tbody>');
 
-	//console.log(xdata);
-	katana.$activeTab.find("#tableOfTestcasesForSuite").html("");
-	for (var s=0; s<Object.keys(xdata).length; s++ ) {
-		var oneCase = xdata[s];
+		//console.log(xdata);
+		katana.$activeTab.find("#tableOfTestcasesForSuite").html("");
 
-		console.log(oneCase);
-		suites.fillCaseDefaults(s,xdata);
-		var showID = parseInt(s)+ 1; 
-		items.push('<tr data-sid="'+s+'"><td>'+showID+'</td>');
-		var bid = "fileTestcase-"+s+"-id";
-		items.push('<td><i title="ChangeFile" class="fa fa-folder-open" id="'+bid+'" katana-click="suites.fileNewSuiteFromLine" key="'+bid+'"/></td>');
-		items.push('<td katana-click="suites.showCaseFromSuite" skey="'+oneCase['path']+'"> '+oneCase['path']+'</td>');
-		items.push('<td>'+oneCase['context']+'</td>');
-		items.push('<td>'+oneCase['runtype']+'</td>');
-		items.push('<td>'+oneCase['runmode']['@type']);
-		if (oneCase['runmode']['@type'] != 'standard') {
-			items.push('<br>'+oneCase['runmode']['@value'].toLowerCase());
+		var slen = suites.jsonSuiteObject.Testcases.length; 
+		for (var s=0; s< slen; s++ ) {
+			var oneCase = suites.jsonSuiteObject.Testcases[s];
+			console.log(oneCase);
+			var showID = parseInt(s)+ 1; 
+			items.push('<tr data-sid="'+s+'"><td>'+showID+'</td>');
+			var bid = "fileTestcase-"+s+"-id";
+			items.push('<td><i title="ChangeFile" class="fa fa-folder-open" id="'+bid+'" katana-click="suites.fileNewSuiteFromLine" key="'+bid+'"/></td>');
+			items.push('<td katana-click="suites.showCaseFromSuite" skey="'+oneCase['path']+'"> '+oneCase['path']+'</td>');
+			items.push('<td>'+oneCase.context+'</td>');
+			items.push('<td>'+oneCase.runtype+'</td>');
+			items.push('<td>'+oneCase.runmode_type);
+			if (oneCase.runmode_type != 'standard') {
+				items.push('<br>'+oneCase.runmode_value.toLowerCase());
+			}
+			items.push('</td>');
+			items.push('<td>'+oneCase.onError_action+'</td>');
+			items.push('<td>'+oneCase.impact+'</td>');
+			bid = "deleteTestcase-"+s+"-id";
+			items.push('<td><i title="Delete" class="fa fa-trash" id="'+bid+'" katana-click="suites.deleteSuiteFromLine" key="'+bid+'"/>');
+			bid = "editTestcaseRow-"+s+"-id";
+			items.push('<i title="Edit" class="fa fa-pencil" title="Edit" id="'+bid+'" katana-click="suites.editNewSuiteIntoLine" key="'+bid+'"/> ');
+			bid = "insertTestcase-"+s+"-id";
+			items.push('<i title="Insert" class="fa fa-plus" title="Insert New Case" id="'+bid+'" katana-click="suites.insertNewSuiteIntoLine" key="'+bid+'"/>');
+			bid = "copyToStorage-"+s+"-id-";
+			items.push('<i title="Copy to clipboard" class="fa fa-clipboard" theSid="'+s+'"   id="'+bid+'" katana-click="suites.saveTestStep()" key="'+bid+'"/>');
+			bid = "copyFromStorage-"+s+"-id-";
+			items.push('<i title="Copy from clipboard" class="fa fa-outdent" theSid="'+s+'"   id="'+bid+'" katana-click="suites.restoreTestStep()" key="'+bid+'"/>');
+
+
+			bid = "dupTestcase-"+s+"-id";
+			items.push('<i title="Duplicate" class="fa fa-copy" title="Duplicate New Case" id="'+bid+'" katana-click="suites.duplicateNewSuiteIntoLine" key="'+bid+'"/></td>');
+			items.push('</tr>');
 		}
-		items.push('</td>');
-		items.push('<td>'+oneCase['onError']['@action']+'</td>');
-		items.push('<td>'+oneCase['impact']+'</td>');
-		bid = "deleteTestcase-"+s+"-id";
-		items.push('<td><i title="Delete" class="fa fa-trash" id="'+bid+'" katana-click="suites.deleteSuiteFromLine" key="'+bid+'"/>');
-		bid = "editTestcaseRow-"+s+"-id";
-		items.push('<i title="Edit" class="fa fa-pencil" title="Edit" id="'+bid+'" katana-click="suites.editNewSuiteIntoLine" key="'+bid+'"/> ');
-		bid = "insertTestcase-"+s+"-id";
-		items.push('<i title="Insert" class="fa fa-plus" title="Insert New Case" id="'+bid+'" katana-click="suites.insertNewSuiteIntoLine" key="'+bid+'"/>');
-		bid = "dupTestcase-"+s+"-id";
-		items.push('<i title="Duplicate" class="fa fa-copy" title="Duplicate New Case" id="'+bid+'" katana-click="suites.duplicateNewSuiteIntoLine" key="'+bid+'"/></td>');
-		items.push('</tr>');
-	}
 	items.push('</tbody>');
 	items.push('</table>');
 	katana.$activeTab.find("#tableOfTestcasesForSuite").html( items.join(""));
@@ -629,17 +825,36 @@ Two global variables are heavily used when this function is called;
 	suites.insertCaseToSuite(sid,0);
 },
 
- deleteSuiteFromLine :function() {
+ 	deleteSuiteFromLine :function() {
 	var names = this.attr('key').split('-');
 	var sid = parseInt(names[1]);
 	suites.removeTestcase(sid);
-},
+	},
 
-	 duplicateNewSuiteIntoLine : function( ){
+	duplicateNewSuiteIntoLine : function( ){
 	var names = this.attr('key').split('-');
 	var sid = parseInt(names[1]);
 	suites.insertCaseToSuite(sid,1);
-},
+	},
+
+
+	saveTestStep: function() {
+		var names = this.attr('key').split('-');
+		var sid = parseInt(names[1]);
+		console.log("Savig ...", suites.jsonTestcases[sid] );
+		suites.jsonTestcases[sid].copyToDocument('lastCaseCopied', suites.jsonTestcases[sid]);
+		},
+
+
+	restoreTestStep: function() {
+		var names = this.attr('key').split('-');
+		var sid = parseInt(names[1]);
+		jsonData = suites.jsonTestcases[sid].copyFromDocument('lastCaseCopied');
+		console.log("Retrieving ... ", jsonData);
+		newTestcase = new suiteCaseObject(jsonData);
+		suites.jsonTestcases.splice(sid,0,newTestcase);
+		suites.createCasesTable(suites.jsonTestcases);
+		},
 
 
 	editNewSuiteIntoLine : function() {
@@ -655,9 +870,9 @@ Two global variables are heavily used when this function is called;
 	fileNewSuiteFromLine :function(){ 
 	var names = this.attr('key').split('-');
 	var sid = parseInt(names[1]);
-	katana.$activeTab.attr('suite-case-row',sid);
+	katana.$activeTab.attr('suite_case_row',sid);
 	suites.getResultsDirForSuiteRow();
-},
+	},
 
 	showCaseFromSuite : function () {
 		var fname = this.attr('skey');
@@ -681,7 +896,7 @@ Two global variables are heavily used when this function is called;
 	 return; 
 	}
 
-	var oldCaseSteps = suites.jsonSuiteObject["Testcases"]['Testcase'];
+	var oldCaseSteps = suites.jsonSuiteObject.Testcases;
 	var newCaseSteps = new Array(listCases.length);
 
 	for (xi=0; xi < listCases.length; xi++) {
@@ -691,42 +906,15 @@ Two global variables are heavily used when this function is called;
 		newCaseSteps[ni] = oldCaseSteps[xi];
 	}
 
-	suites.jsonSuiteObject["Testcases"]['Testcase'] = newCaseSteps;
-	suites.jsonTestcases = suites.jsonSuiteObject['Testcases']; 
+	suites.jsonSuiteObject.Testcases = newCaseSteps;
+	suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
 	suites.mapSuiteJsonToUi();  // This is where the table and edit form is created. 
 },
 
 
 
 
-	fillCaseDefaults : function(s, data){
-		oneCase = data[s]
-		console.log(data);
-		if (oneCase == null) {
-			data[s] = {} ;
-			oneCase = data[s];
-		}
-		var myStringArray = suites.mySuiteKeywordsArray; // ["path","context","runtype","impact", ];
-		var arrayLength =myStringArray.length;
-		for (var xi = 0; xi < arrayLength; xi++) {
-   				if (! oneCase[myStringArray[xi]]){
-						oneCase[myStringArray[xi]] = myStringArray[xi];
-					}	
-		}
 
-		if (! oneCase['onError']) {
-			oneCase['onError'] = { "@action": "next", "@value": "" };
-		}
-		if (!oneCase['Execute']) {
-			oneCase['Execute'] = { "@ExecType": "yes", "Rule": { "@Condition": "", "@Condvalue": "", "@Else": "next", "@Elsevalue": "" } };
-		}
-		if (!oneCase['Execute']['@ExecType']) {
-			oneCase['Execute'] = { "@ExecType": "yes", "Rule": { "@Condition": "", "@Condvalue": "", "@Else": "next", "@Elsevalue": "" } };
-		}
-		if (!oneCase['Execute']['Rule']) {
-			oneCase['Execute'][ "Rule"] = { "@Condition": "", "@Condvalue": "", "@Else": "next", "@Elsevalue": "" } ;
-		}	
-	},
 
 	createSuiteRequirementsTable : function(rdata){
 	var items =[]; 
@@ -844,7 +1032,7 @@ Two global variables are heavily used when this function is called;
 	}
 
 
-		datatype = suites.jsonSuiteObject["Details"]["type"]["@exectype"];
+		datatype = suites.jsonSuiteObject.Details.ExecType;
 		datatype = datatype.toLowerCase(); 
 		katana.$activeTab.find('#data_type_max_attempts').hide();
 		katana.$activeTab.find('#data_type_num_attempts').hide();

@@ -15,8 +15,6 @@ the views.py python for Django.
 
 */ 
 // Belongs in main.js when ok. 
-
-// Belongs in main.js when ok. 
 // Converts a path that is relative to pathToBase into an absolute path with .. constructs. 
 //
 
@@ -161,8 +159,8 @@ class caseDetailsObject{
 		details.Category = this.Category   ;  		
 		details.Engineer = this.Engineer ;    		
 		details.State = this.State ;    
-		details.cDate = this.Date ;    
-		details.cTime = this.Time ;    
+		details.Date = this.cDate ;    
+		details.Time = this.cTime ;    
 		details.default_onError = this.default_onError;
 		details.Datatype = this.Datatype ;
 		details.InputDataFile = this.InputDataFile ;
