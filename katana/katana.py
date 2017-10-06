@@ -146,7 +146,7 @@ def parsexmlobj():
         subkw_list = Subkeyword.findall('Skw')
         doc_string_value, subkw_list, object_list_new, import_action_list, kw_name_1 = check_action_file_name(subkw_list, ActionFile)
         sum_val = 1
-        for _, new in enumerate(doc_string_value):# To have the doc string in the order with
+        for new in doc_string_value:# To have the doc string in the order with
             #numbers
             sample.append('\n' + "        " + str(sum_val) + ". " + new)
             sample_string = "".join(sample)
