@@ -897,15 +897,16 @@ def verify_data(expected, key, data_type='str', comparison='eq'):
     }
     result, err_msg, exp = validate()
     keys = key.split('.')
-    value = get_object_from_datarepository(keys[0])
+    temp_value = value = get_object_from_datarepository(keys[0])
     for k in keys[1:]:
         if k not in value:
             print_warning("key {} not present in data repository\n".format(key))
-        value = value[k]
+        else:
+            value = value[k]
     if not value:
         err_msg += "key {} not present in data repository\n".format(key)
         result = "ERROR"
-    if value:
+    if expected in temp_value and k in temp_value:
         print_info("The object_key {0} with the expected value {1} is in data_repository"
                    .format(key, expected))
     if result != "TRUE":
