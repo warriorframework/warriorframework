@@ -18,7 +18,7 @@ var assembler = {
 
                 for(var i=0; i<dep_list.length; i++){
                     dep_objs.push(new dependency(dep_list[i]))
-                    //$currentPage.find('#dependency-div').append(dep_objs[i].domElement);
+                    $currentPage.find('#dependency-div').append(dep_objs[i].domElement);
                 }
             });
     }

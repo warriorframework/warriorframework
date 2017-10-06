@@ -98,6 +98,9 @@ class dependency{
         this.name = data["@name"];
         this.install = data["@install"].toLowerCase().trim();
         this.user = data["@user"].toLowerCase().trim();
+        this.version = data["version"];
+        this.installed = data["installed"];
+        this.matched = data["matched"];
     }
 
     get domElement(){
@@ -113,16 +116,29 @@ class dependency{
         if(this.user == "yes"){
             install_user = "checked";
         }
-        var html_contents = '<div style="width: 100%; padding: 1rem;">
-            <div class="card" style="padding: 1rem;">
-                <div class="card-block">
-                    <h4 class="card-title">Jira</h4>
-                    <h6 class="card-subtitle mb-2 text-muted">Version: 1.0.3</h6>
-                    <button class="btn btn-success">Card link</button>
-                    <button class="btn btn-danger">Another link</button>
-                </div>
-            </div>
-        </div>'
+
+        var installed_txt = '<p class="btn btn-danger">Not Available</p>';
+        if(this.installed){
+            installed_txt = '<p class="btn btn-success">Available Version: ' + this.installed + '</p>';
+        }
+
+        var matched_btn = '<button class="btn btn-success">Up To Date</button>';
+        if(!this.installed){
+            matched_btn = '<button class="btn btn-danger">Install</button>';
+        }
+        else if(this.matched == "lower"){
+            matched_btn = '<button class="btn btn-danger">Needs Upgrade</button>';
+        }
+
+        var html_contents = '<div style="padding: 1rem;">' +
+                                '<div class="card" style="width: 350px; height:150px; padding: 1rem;">' +
+                                    '<div class="card-block">' +
+                                        '<h4 class="card-title">' + this.name +'</h4>' +
+                                        '<h6 class="card-subtitle mb-2 text-muted">Version: ' + this.version + '</h6><br>' +
+                                        installed_txt + matched_btn +
+                                    '</div>' +
+                                '</div>' +
+                            '</div>'
         var $elem = $(html_contents);
         return $elem
     }
