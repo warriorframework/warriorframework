@@ -14,22 +14,17 @@ limitations under the License.
 import sys
 import os
 import shutil
-import time
-import traceback
-import copy
 import traceback
 
-import exec_type_driver
 import Framework.Utils as Utils
 from Framework.Utils.print_Utils import print_info, print_error, print_warning
 from WarriorCore.Classes import execution_files_class, junit_class
-from WarriorCore import testsuite_utils, common_execution_utils, onerror_driver, \
-testsuite_driver, sequential_testsuite_driver, parallel_testsuite_driver
-from Framework.Utils.testcase_Utils import pNote
+from WarriorCore import common_execution_utils, sequential_testsuite_driver, \
+    parallel_testsuite_driver
+
+
 
 # !/usr/bin/python
-"""This the project driver that executes a collections of
-Warrior testsuites """
 
 
 def get_project_details(project_filepath, res_startdir, logs_startdir, data_repository):
