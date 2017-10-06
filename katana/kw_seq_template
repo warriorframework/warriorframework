@@ -9,4 +9,4 @@ $new_line    def $wrapper_kw(self):
         from Framework.Utils import data_Utils
         wdesc = "$wdesc"
         pNote(wdesc)
-        kw_list, status = $kw_list_1, True
+        kw_name, status = $kw_name_1, True

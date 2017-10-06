@@ -122,14 +122,7 @@ def parsexmlobj():
     And parse it to form a new Wrapper keyword & place it in the user provided file path.
     """
     method_names = []
-    arg_name_list = ""
-    object_list_new = []
-    class_list_new = []
-    import_action_list = []
     sample = []
-    py_files = ""
-    doc_string_value = []
-    kw_list_1 = []
     xmlobj = parseString("".join(request.body))
     tree = get_correct_xml_and_root_element(xmlobj)
 
@@ -151,91 +144,7 @@ def parsexmlobj():
         checkval = "no"
         Subkeyword = tree.find('Subkeyword')
         subkw_list = Subkeyword.findall('Skw')
-        for values in subkw_list:# To get the driver name for each sub-keyword and the keyword name
-            # from the sub keyword list.
-            subkw_list_attrib = values.attrib
-            driver = subkw_list_attrib.get('Driver')
-            kw_list = subkw_list_attrib.get('Keyword')
-            driver_file = gpysrcdir + '/ProductDrivers/' + driver + ".py"
-            actiondir = mkactiondirs(driver_file)
-            actions = get_action_dirlist(driver_file)# To get the action file directory and the
-            # action .py files for each sub- keyword.
-            pyfiles = mkactionpyfiles(actiondir)
-            if len(pyfiles) > 1:# If more than one .py file in action directory, checking each
-                # action file whether the user provided sub keyword name available in each .py file
-                # or not. If available that action .py file would be taken for further operation
-                for action_file in pyfiles:
-                    with open(action_file, 'r') as new_file:
-                        for line in new_file:
-                            next_word = get_method_name(line)
-                            if next_word == kw_list:
-                                pyfiles = str(action_file).encode('utf-8', 'ignore')
-
-            py_files = str(pyfiles).encode('utf-8', 'ignore')
-            (_, file_name) = py_files.rsplit('/', 1)
-            path = str(gpysrcdir).encode('utf-8', 'ignore')
-            sys.path.append(path)
-            file_name = file_name.split('.')[0]
-            py_files_1 = py_files.split('/')
-            py_files_1 = ('.').join(py_files_1)
-            for action in actions: # If multiple action directories available in a action directory
-            # checking whether the action package is available in .py file name.
-                if action.strip() in py_files_1:
-                    actions_package = action.strip() + "." + file_name
-            modules = importlib.import_module(actions_package)# To get the class name for the action
-            # .py file in which the sub keyword is available
-            class_list_new = inspect.getmembers(modules, inspect.isclass)
-            for elem in class_list_new:
-                if actions_package in str(elem[1]):
-                    class_list_new = elem[0]
-            if ActionFile.split('/')[-1].split('_')[0] in class_list_new.lower():
-                class_list = "self"
-            else:
-                import_action_list.append('from ' + action.strip() + "." + file_name + " " +
-                                        "import " + class_list_new)
-                object_list = class_list_new + "_obj = " + class_list_new + "()"# Forming object
-                # creation and appending it to a list
-                object_list_new.append(object_list)
-                class_list = (object_list.split('=')[0]).strip()
-            Arguments = values.find('Arguments')# Finding all the arguments and it's values for
-            # each sub-keyword
-            if Arguments is not None:
-                argument_list = Arguments.findall('argument')
-                if len(argument_list) == 1:
-                    for argument in argument_list:
-                        argument_name = argument.get('name')
-                        if argument_name is not None:
-                            arg_value = argument.get('value')
-                            if arg_value is None or arg_value is False:
-                                arg_value = argument.text
-                            arg_name = argument_name + "=" + "\"" + arg_value + "\""
-                            kw_list_1.append("{0}.{1}({2})".format(class_list, kw_list, arg_name))
-                            # Forming doc string for wrapper keyword by using sub keyword details
-                            doc_string_value.append("The keyword {0} in Driver {1} has a defined "
-                                                    "arguments {2} You must want to send other "
-                                                    "values through data file".format(kw_list,
-                                                                                      driver,
-                                                                                      arg_name))
-                        else:
-                            arg_name = ""
-                            kw_list_1.append("{0}.{1}({2})".format(class_list, kw_list, arg_name))
-                    doc_string_value.append("The keyword {0} in Driver {1} has a defined "
-                                            "arguments {2} You must want to send other values"
-                                            " through data file".format(kw_list, driver, arg_name))
-                else:
-                    for argument in argument_list:
-                        argument_name = argument.get('name')
-                        if argument_name is not None:
-                            arg_value = argument.get('value')
-                            if arg_value is None or arg_value is False:
-                                arg_value = argument.text
-                            arg_list = argument_name + "=" + "\'" + arg_value + "\',"
-                            arg_name_list += arg_list
-                    kw_list_1.append("{0}.{1}({2})".format(class_list, kw_list, arg_name_list))
-                    doc_string_value.append("The keyword {0} in Driver {1} has a defined arguments "
-                                            "{2} You must want to send other values through data "
-                                            "file".format(kw_list, driver, arg_name_list))
-                    arg_name_list = ""
+        doc_string_value, subkw_list, object_list_new, import_action_list, kw_name_1 = check_action_file_name(subkw_list, ActionFile)
         sum_val = 1
         for _, new in enumerate(doc_string_value):# To have the doc string in the order with
             #numbers
@@ -257,7 +166,7 @@ def parsexmlobj():
                     line = line.replace('$wdesc', Description)
                 else:
                     line = line.replace('$wdesc', 'Description not provided by the user')
-                line = line.replace('$kw_list_1', str(kw_list_1))
+                line = line.replace('$kw_name_1', str(kw_name_1))
                 f2.write(line)
         final_obj_list = set(object_list_new)
         final_import_list = set(import_action_list)
@@ -275,6 +184,94 @@ def parsexmlobj():
         f2.close()
     return checkval
 
+def check_action_file_name(subkw_list, ActionFile):
+    object_list_new = []
+    class_list_new = []
+    import_action_list = []
+    py_files = ""
+    doc_string_value = []
+    arg_name_list = ""
+    kw_name_1 = []
+    string = "The keyword {0} in Driver {1} has a defined arguments {2} You must want to"\
+                " send other values through data file"
+    for values in subkw_list:# To get the driver name for each sub-keyword and the keyword name
+        # from the sub keyword list.
+        subkw_list_attrib = values.attrib
+        driver = subkw_list_attrib.get('Driver')
+        kw_name = subkw_list_attrib.get('Keyword')
+        driver_file = gpysrcdir + '/ProductDrivers/' + driver + ".py"
+        actiondir = mkactiondirs(driver_file)
+        actions = get_action_dirlist(driver_file)# To get the action file directory and the
+        # action .py files for each sub- keyword.
+        pyfiles = mkactionpyfiles(actiondir)
+        if len(pyfiles) > 1:# If more than one .py file in action directory, checking each
+            # action file whether the user provided sub keyword name available in each .py file
+            # or not. If available that action .py file would be taken for further operation
+            for action_file in pyfiles:
+                with open(action_file, 'r') as new_file:
+                    for line in new_file:
+                        next_word = get_method_name(line)
+                        if next_word == kw_name:
+                            pyfiles = str(action_file).encode('utf-8', 'ignore')
+
+        py_files = str(pyfiles).encode('utf-8', 'ignore')
+        (_, file_name) = py_files.rsplit('/', 1)
+        path = str(gpysrcdir).encode('utf-8', 'ignore')
+        sys.path.append(path)
+        file_name = file_name.split('.')[0]
+        py_files_1 = py_files.split('/')
+        py_files_1 = ('.').join(py_files_1)
+        for action in actions: # If multiple action directories available in a action directory
+        # checking whether the action package is available in .py file name.
+            if action.strip() in py_files_1:
+                actions_package = action.strip() + "." + file_name
+        modules = importlib.import_module(actions_package)# To get the class name for the action
+        # .py file in which the sub keyword is available
+        class_list_new = inspect.getmembers(modules, inspect.isclass)
+        for elem in class_list_new:
+            if actions_package in str(elem[1]):
+                class_list_new = elem[0]
+        if ActionFile.split('/')[-1].split('_')[0] in class_list_new.lower():
+            class_list = "self"
+        else:
+            import_action_list.append('from ' + action.strip() + "." + file_name + " " +
+                                    "import " + class_list_new)
+            object_list = class_list_new + "_obj = " + class_list_new + "()"# Forming object
+            # creation and appending it to a list
+            object_list_new.append(object_list)
+            class_list = (object_list.split('=')[0]).strip()
+        Arguments = values.find('Arguments')# Finding all the arguments and it's values for
+        # each sub-keyword
+        if Arguments is not None:
+            argument_list = Arguments.findall('argument')
+            if len(argument_list) == 1:
+                for argument in argument_list:
+                    argument_name = argument.get('name')
+                    if argument_name is not None:
+                        arg_value = argument.get('value')
+                        if arg_value is None or arg_value is False:
+                            arg_value = argument.text
+                        arg_name = argument_name + "=" + "\"" + arg_value + "\""
+                        kw_name_1.append("{0}.{1}({2})".format(class_list, kw_name, arg_name))
+                        # Forming doc string for wrapper keyword by using sub keyword details
+                        doc_string_value.append(string .format(kw_name, driver, arg_name))
+                    else:
+                        arg_name = ""
+                        kw_name_1.append("{0}.{1}({2})".format(class_list, kw_name, arg_name))
+                doc_string_value.append(string .format(kw_name, driver, arg_name))
+            else:
+                for argument in argument_list:
+                    argument_name = argument.get('name')
+                    if argument_name is not None:
+                        arg_value = argument.get('value')
+                        if arg_value is None or arg_value is False:
+                            arg_value = argument.text
+                        arg_list = argument_name + "=" + "\'" + arg_value + "\',"
+                        arg_name_list += arg_list
+                kw_name_1.append("{0}.{1}({2})".format(class_list, kw_name, arg_name_list))
+                doc_string_value.append(string .format(kw_name, driver, arg_name_list))
+                arg_name_list = ""
+    return doc_string_value, subkw_list, object_list_new, import_action_list, kw_name_1
 
 def get_relative_path_for_kw_seq_temp():
     """ To get the absolute path of keyword sequencing template"""
