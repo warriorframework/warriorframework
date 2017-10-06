@@ -11,8 +11,8 @@ limitations under the License.
 
 */
 
-app.controller('newTestsuiteCtrl', ['$scope', '$http', '$location', '$route', '$controller', '$timeout', 'saveNewTestsuiteFactory', 'fileFactory', 'subdirs',
-    function($scope, $http, $location, $route, $controller, $timeout, saveNewTestsuiteFactory, fileFactory, subdirs) {
+app.controller('newTestsuiteCtrl', ['$scope', '$http', '$location', '$route', '$controller', '$timeout', 'saveNewTestsuiteFactory', 'fileFactory', 'getConfigFactory', 'subdirs',
+    function($scope, $http, $location, $route, $controller, $timeout, saveNewTestsuiteFactory, fileFactory, getConfigFactory, subdirs) {
 
         $scope.subdirs = subdirs;
         $scope.resultsdirSuite = '';
@@ -45,6 +45,131 @@ app.controller('newTestsuiteCtrl', ['$scope', '$http', '$location', '$route', '$
         $scope.newDate = '';
         $scope.newTime = '';
         $scope.newEng = '';
+
+       function readConfig(){
+          getConfigFactory.readconfig()
+          .then(function (data) {
+             $scope.cfg = data;
+            });
+      }
+
+      readConfig();
+
+//To Load the Case File from Suite 
+//Works for base Directory as well as Subdirectories
+     $scope.loadFile = function(filepath) {
+        var checkFlag = filepath.includes("..");                                         
+        if(checkFlag==true){                                                      //For files inside the Warrior directory
+             dirCheck=filepath.split("/").reverse()[1];
+             if(dirCheck=="Testcases"){                                           //Fetch Parent directory files
+                splitDir = filepath.split('/Testcases')[1]; 
+                finalUrl = "#/testcase"+splitDir+"/none";
+                window.open(finalUrl);
+             }
+             else if(dirCheck=="testcases"){
+                splitDir = filepath.split('/testcases')[1]; 
+                finalUrl = "#/testcase"+splitDir+"/none";
+                window.open(finalUrl);
+             }
+            else{                                                                 //Fetch subdirectory files
+                splitPath = filepath.split("/").pop(-1); 
+                splitter = splitPath+"/"; 
+                if(filepath.includes("Testcases")==true){
+                var checkDir = filepath.split("Testcases/")[1].split(splitPath)[0]; 
+                }
+                else{var checkDir = filepath.split("testcases/")[1].split(splitPath)[0];}  
+                   checkDir = checkDir.slice(0, -1);
+                   checkDir = checkDir.replace(/\//g,','); 
+                   finalUrlDir = "#/testcase/"+splitter+checkDir; 
+                   window.open(finalUrlDir);
+            }
+        }
+        else{                                                                     //For files outside the Warrior directory
+            testcaseDir = $scope.cfg.testsuitedir;
+            var matchPath = filepath.includes(testcaseDir);
+            if(matchPath == true){
+              splitPath = filepath.split(testcaseDir)[1]; 
+              fileName = splitPath.split("/").pop(-1); 
+              splitter = fileName+"/";
+              checkDir = filepath.split(testcaseDir)[1].split(fileName)[0]; 
+              checkDir = checkDir.slice(0, -1);
+              checkDir = checkDir.replace(/\//g,','); 
+              finalUrlDir = "#/testcase/"+splitter+checkDir; 
+              window.open(finalUrlDir);
+          }
+            else{ 
+            if(filepath != '') 
+                 {                                                                  //Mismatched Config and selected path;   
+                sweetAlert({
+                    title: "Config Path mismatch with the selected path !",
+                    closeOnConfirm: true,
+                    confirmButtonColor: '#3b3131',
+                    confirmButtonText: "Ok",
+                    type: "info"
+                });
+              }
+          }
+        }   
+      };
+
+
+    
+//To Load the InputData File from Suite 
+//Works for base Directory as well as Subdirectories
+    $scope.loadDataFile = function(filepath) {
+        var checkFlag = filepath.includes("..");                                         
+        if(checkFlag==true){                                                      //For files inside the Warrior directory
+             dirCheck=filepath.split("/").reverse()[1];
+             if(dirCheck=="Data"){                                           //Fetch Parent directory files
+                splitDir = filepath.split('/Data')[1]; 
+                finalUrl = "#/datafile"+splitDir+"/none";
+                window.open(finalUrl);
+             }
+             else if(dirCheck=="data"){
+                splitDir = filepath.split('/data')[1]; 
+                finalUrl = "#/datafile"+splitDir+"/none";
+                window.open(finalUrl);
+             }
+            else{                                                                 //Fetch subdirectory files
+                splitPath = filepath.split("/").pop(-1); 
+                splitter = splitPath+"/"; 
+                if(filepath.includes("Data")==true){
+                var checkDir = filepath.split("Data/")[1].split(splitPath)[0]; 
+                }
+                else{var checkDir = filepath.split("data/")[1].split(splitPath)[0];} 
+                      checkDir = checkDir.slice(0, -1);
+                      checkDir = checkDir.replace(/\//g,','); 
+                      finalUrlDir = "#/datafile/"+splitter+checkDir; 
+                      window.open(finalUrlDir);
+            }
+        }
+        else{                                                                     //For files outside the Warrior directory
+            dataDir = $scope.cfg.idfdir;
+            var matchPath = filepath.includes(dataDir);
+            if(matchPath == true){
+              splitPath = filepath.split(dataDir)[1]; 
+              fileName = splitPath.split("/").pop(-1); 
+              splitter = fileName+"/";
+              checkDir = filepath.split(dataDir)[1].split(fileName)[0]; 
+              checkDir = checkDir.slice(0, -1);
+              checkDir = checkDir.replace(/\//g,','); 
+              finalUrlDir = "#/datafile/"+splitter+checkDir; 
+              window.open(finalUrlDir);
+          }
+            else{ 
+            if(filepath != '') 
+                 {                                                                  //Mismatched Config and selected path;   
+                sweetAlert({
+                    title: "Config Path mismatch with the selected path !",
+                    closeOnConfirm: true,
+                    confirmButtonColor: '#3b3131',
+                    confirmButtonText: "Ok",
+                    type: "info"
+                });
+              }
+          }
+        } 
+     };
 
         fileFactory.readdatafile()
             .then(
