@@ -701,6 +701,7 @@
                 <div class="col-sm-5">
                     <input type="text" class="form-control" ng-model="IDFSuite" id="IDF"
                            ng-change="idf_monitorPathBtnValue()"
+                           ng-click="loadDataFile(IDFSuite)"
                            placeholder="Location of the Input Data File">
                 </div>
                 <div class="col-sm-1">
@@ -870,9 +871,11 @@
                                  <td class="text-right">
                                     {{ $index + 1 }}
                                 </td>
-                                <td style="word-break: break-all">{{testcases[$index].path}}</td>
+                                <td style="word-break: break-all;cursor:pointer;"><a ng-click="loadFile(testcases[$index].path)" >                           {{testcases[$index].path}}
+                                </a></td>
                                 <td>{{testcases[$index].context}}</td>
-                                <td ng-show="exectype != 'iterative_parallel' && exectype != 'iterative_sequential'" style="word-break: break-all">{{testcases[$index].InputDataFile}}</td>
+                                <td ng-show="exectype != 'iterative_parallel' && exectype != 'iterative_sequential'" style="word-break: break-all;cursor:pointer;"><a ng-click="loadDataFile(testcases[$index].InputDataFile)" >{{testcases[$index].InputDataFile}}
+                                </a></td>
                                 <td>
                                     Type = {{ testcases[$index].Execute._ExecType }}<br>
                                     <div ng-if="testcases[$index].Execute._ExecType == 'If' || testcases[$index].Execute._ExecType == 'If Not'">
@@ -1034,6 +1037,7 @@
                                 <input type="text" class="form-control" id="Path"
                                        ng-change="monitorPathBtnValue($index)"
                                        ng-model='testcases[$index].path'
+                                       ng-click="loadFile(testcases[$index].path)"
                                        placeholder="Case file path">
                             </div>
                             <div class="col-sm-1">
@@ -1206,8 +1210,9 @@
                             <div class="col-sm-5">
                                 <input type="text" class="form-control"
                                        id="datafile_path"
+                                       ng-model = "testcases[$index].InputDataFile"
                                        ng-change="td_df_monitorPathBtnValue($index)"
-                                       ng-model='testcases[$index].InputDataFile'
+                                       ng-click='loadDataFile(testcases[$index].InputDataFile)'
                                        placeholder="Datafile file path">
                             </div>
                             <div class="col-sm-1">
@@ -2264,9 +2269,11 @@
                                  <td class="text-right">
                                     {{ $index + 1 }}
                                 </td>
-                                <td style="word-break: break-all">{{testcases[$index].path}}</td>
+                                <td style="word-break: break-all;cursor:pointer;"><a ng-click="loadFile(testcases[$index].path)">                           {{testcases[$index].path}}
+                                </a></td>
                                 <td>{{testcases[$index].context}}</td>
-                                <td ng-show="exectype != 'iterative_parallel' && exectype != 'iterative_sequential'" style="word-break: break-all">{{testcases[$index].InputDataFile}}</td>
+                                <td ng-show="exectype != 'iterative_parallel' && exectype != 'iterative_sequential'" style="word-break: break-all;cursor:pointer;"><a ng-click="loadDataFile(testcases[$index].InputDataFile)" >{{testcases[$index].InputDataFile}}
+                                </a></td>
                                 <td>
                                     Type = {{ testcases[$index].Execute._ExecType }}<br>
                                     <div ng-if="testcases[$index].Execute._ExecType == 'If' || testcases[$index].Execute._ExecType == 'If Not'">
