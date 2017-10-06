@@ -74,6 +74,7 @@ function jsUcfirst(string)
 }
 
 
+
 class caseRequirementsObject{
 
 	constructor (jsonRequirements) { 
@@ -188,6 +189,11 @@ class caseTestStepObject {
 
 	constructor(inputJsonData) {
 		var jsonData = inputJsonData;
+		this.setupFromJSON(jsonData);
+	}
+
+	setupFromJSON(jsonData) { 
+		console.log("Asetup from ",jsonData);
 		if (!jsonData) {
 			jsonData = 	this.createEmptyTestStep(); 
 		}
@@ -244,16 +250,23 @@ class caseTestStepObject {
 			jsonData['InputDataFile'] = '';
 		}
 		this.InputDataFile = jsonData['InputDataFile'];
-		
-
-
 	// End of constructor 
+	}
+
+
+	copyToDocument(tag) {
+		localStorage.setItem(tag, JSON.stringify(this.getJSON()));
+	}
+
+	copyFromDocument(tag) {
+		return JSON.parse(localStorage.getItem(tag));
 	}
 
 	createEmptyTestStep() {
 		var newCaseStep = {
-				"step": 
-					{"@Driver": "demo_driver", "@Keyword": "" , "@TS": "0" },
+				"@Driver": "demo_driver", 
+				"@Keyword": "" , 
+				"@TS": "0" ,
 				"Arguments" : 
 					{ 'Argument': [] },
 				"onError": {  "@action" : "next", "@value" : "" } ,
@@ -278,8 +291,7 @@ class caseTestStepObject {
 		}
 
 		return  {
-				"step": 
-					{"@Driver": this.step_driver, "@Keyword": this.step_keyword , "@TS": this.step_TS },
+				"@Driver": this.step_driver, "@Keyword": this.step_keyword , "@TS": this.step_TS ,
 				"Arguments" : 	myArgs  ,
 				"onError": {  "@action" : this.onError_action , "@value" : this.onError_value } ,
 				"iteration_type": {   "@type" : "" } ,
@@ -299,72 +311,72 @@ class caseTestStepObject {
 }
 
 
-class caseObject {
-	constructor(jsonData) { 
-		//
-		// First confirm that the object is complete. 
-		// Return empty object if incomplete. 
-		//
-		console.log("In constructor", jsonData);
-		if (!jsonData['Details']) {
-			this.Details = new caseDetailsObject(null);
-		} else {
-			this.Details = new caseDetailsObject(jsonData['Details'])
-		}
-		// Use an empty as a starting point for 
-		if (!jsonData['Requirements']) {
-			jsonData['Requirements'] = [] 
-		} 
-		if (!jsonData['Requirements']['Requirement']) {
-			jsonData['Requirements']['Requirement']= [] 
-		}
-		if (!jQuery.isArray(jsonData['Requirements']['Requirement'] )) {
-			jsonData['Requirements']['Requirement'] = [jsonData['Requirements']['Requirement']];
-		}
-		this.Requirements = new caseRequirementsObject(jsonData['Requirements']['Requirement']);
-		
-		// Adjust up front. 
-
-		console.log("After", jsonData['Steps']);
-		
-		if (!jsonData['Steps']) {
-			jsonData['Steps']['step'] = [] 
-		} 
-		if (!jsonData['Steps']['step']) {
-			jsonData['Steps']['step'] = [] 
-		} 
-		//
-		if (!jQuery.isArray(jsonData['Steps']['step'])) {
-		 jsonData['Steps']['step'] = [ jsonData['Steps']['step'] ];
-		}
-		this.Teststeps = [];
-		for (var k=0; k<jsonData['Steps']['step'].length; k++) {	
-			var ts = new caseTestStepObject(jsonData['Steps']['step'][k]);
-			this.Teststeps.push(ts);
+	class caseObject {
+		constructor(jsonData) { 
+			//
+			// First confirm that the object is complete. 
+			// Return empty object if incomplete. 
+			//
+			console.log("In constructor", jsonData);
+			if (!jsonData['Details']) {
+				this.Details = new caseDetailsObject(null);
+			} else {
+				this.Details = new caseDetailsObject(jsonData['Details'])
 			}
-		// 
+			// Use an empty as a starting point for 
+			if (!jsonData['Requirements']) {
+				jsonData['Requirements'] = [] 
+			} 
+			if (!jsonData['Requirements']['Requirement']) {
+				jsonData['Requirements']['Requirement']= [] 
+			}
+			if (!jQuery.isArray(jsonData['Requirements']['Requirement'] )) {
+				jsonData['Requirements']['Requirement'] = [jsonData['Requirements']['Requirement']];
+			}
+			this.Requirements = new caseRequirementsObject(jsonData['Requirements']['Requirement']);
+			
+			// Adjust up front. 
+
+			console.log("After", jsonData['Steps']);
+			
+			if (!jsonData['Steps']) {
+				jsonData['Steps']['step'] = [] 
+			} 
+			if (!jsonData['Steps']['step']) {
+				jsonData['Steps']['step'] = [] 
+			} 
+			//
+			if (!jQuery.isArray(jsonData['Steps']['step'])) {
+			 jsonData['Steps']['step'] = [ jsonData['Steps']['step'] ];
+			}
+			this.Teststeps = [];
+			for (var k=0; k<jsonData['Steps']['step'].length; k++) {	
+				var ts = new caseTestStepObject(jsonData['Steps']['step'][k]);
+				this.Teststeps.push(ts);
+				}
+			// 
+			}
+
+		getJSON(){
+			var testStepsJSON = [];
+			for (var ts =0; ts< this.Teststeps.length; ts++ ) {
+				testStepsJSON.push(this.Teststeps[ts].getJSON());
+			}
+
+			return { 'Details': this.Details.getJSON(), 
+				'Requirements' : this.Requirements.getJSON(),
+				'Steps' : { 'step': testStepsJSON}, };
+
 		}
-
-	getJSON(){
-		var testStepsJSON = [];
-		for (var ts =0; ts< this.Teststeps.length; ts++ ) {
-			testStepsJSON.push(this.Teststeps[ts].getJSON());
-		}
-
-		return { 'Details': this.Details.getJSON(), 
-			'Requirements' : this.Requirements.getJSON(),
-			'Steps' : { 'step': testStepsJSON}, };
-
 	}
-}
 
 
+ 
 
-
-
-
-
- var cases = {
+///////////////////////////////////////////////////////////////////////////////////
+// The application code begins here.
+///////////////////////////////////////////////////////////////////////////////////
+var cases = {
 
  	init: function() { 
  		cases.displayTreeOfCases();
@@ -789,6 +801,11 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		bid = "addTestStepAbove-"+s+"-id-";
 		items.push('<i title="Insert" class="fa fa-plus" theSid="'+s+'"   id="'+bid+'" katana-click="cases.addCaseFromLine()" key="'+bid+'"/>');
 
+		bid = "copyToStorage-"+s+"-id-";
+		items.push('<i title="Copy to clipboard" class="fa fa-clipboard" theSid="'+s+'"   id="'+bid+'" katana-click="cases.saveTestStep()" key="'+bid+'"/>');
+		bid = "copyFromStorage-"+s+"-id-";
+		items.push('<i title="Copy from clipboard" class="fa fa-outdent" theSid="'+s+'"   id="'+bid+'" katana-click="cases.restoreTestStep()" key="'+bid+'"/>');
+
 		bid = "dupTestStepAbove-"+s+"-id-";
 		items.push('<i title="Duplicate" class="fa fa-copy" theSid="'+s+'"  id="'+bid+'" katana-click="cases.duplicateCaseFromLine()" key="'+bid+'"/></td>');
 
@@ -842,6 +859,24 @@ The UI currently uses jQuery and Bootstrap to display the data.
 	var sid = parseInt(names[1]);
 	cases.addTestStepAboveToUI(sid,cases.jsonCaseSteps,0);
 	},
+
+
+	saveTestStep: function() {
+	var names = this.attr('key').split('-');
+	var sid = parseInt(names[1]);
+	cases.jsonCaseSteps[sid].copyToDocument('lastStepCopied');
+	},
+
+
+	restoreTestStep: function() {
+	var names = this.attr('key').split('-');
+	var sid = parseInt(names[1]);
+	jsonData = cases.jsonCaseSteps[sid].copyFromDocument('lastStepCopied');
+	console.log("Retrieving ... ", jsonData);
+	cases.addTestStepAboveToUI(sid,cases.jsonCaseSteps,2,jsonData);
+	},
+
+
 
 	duplicateCaseFromLine :function() { 
 		var names = this.attr('key').split('-');
@@ -1232,7 +1267,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 
 // Create a fresh step at the end of the table.
 	addNewTestStepToUI: function() {
-		var newObj = cases.createNewStep();
+		var newObj = new caseTestStepObject();
 
 		if (!cases.jsonCaseSteps) {
 			cases.jsonCaseSteps = [];
@@ -1247,14 +1282,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 	},
 
 // Inserts a new test step 
-	addTestStepAboveToUI: function (sid,xdata,copy) {
-		var newObj = cases.createNewStep();
-		var aid = 0;   // Insert here. 
-		if (sid < 1) { 
-			aid = 0 ;
-		} else {
-			aid = sid;				// One below the current one. 
-		}
+	addTestStepAboveToUI: function (sid,xdata,copy,jsonData) {
 
 		if (!cases.jsonCaseSteps) {
 			cases.jsonCaseSteps = [];
@@ -1262,10 +1290,23 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		if (!jQuery.isArray(cases.jsonCaseSteps)) {
 			cases.jsonCaseSteps = [cases.jsonCaseSteps];
 			}
-
+		var aid = 0;   // Insert here. 
+		if (sid < 1) { 
+			aid = 0 ;
+		} else {
+			aid = sid;				// One below the current one. 
+		}
+		var newObj; 
+		if (copy == 0){
+			newObj = new caseTestStepObject();
+			}
 		if (copy == 1){
-			console.log("Copying..., ", sid, " from ", cases.jsonCaseSteps[sid]);
+			console.log("Copying...object ", sid, " from ", cases.jsonCaseSteps[sid]);
 			newObj = jQuery.extend(true, {}, cases.jsonCaseSteps[sid]); 
+			}
+		if (copy == 2){
+			console.log("Copying...JSON data ", sid, " from ", jsonData);
+			newObj = new caseTestStepObject(jsonData);
 			}
 		cases.jsonCaseSteps.splice(aid,0,newObj);  // Don't delete anything
 		cases.mapCaseJsonToUi(cases.jsonCaseSteps);		
@@ -1349,30 +1390,10 @@ The UI currently uses jQuery and Bootstrap to display the data.
 	console.log("after saving ",oneCaseStep);
 },
 
-	createNewStep(){
-	var newCaseStep = {
-		"step": {"@Driver": "demo_driver","@Keyword": "" , "@TS": "0" },
-		"Arguments" : { 'Argument': [] },
-		"onError": {  "@action" : "next", "@value" : "" } ,
-		"iteration_type": {   "@type" : "" } ,
-		"Description":"",
-		"Execute": {   "@ExecType": "yes",
-			"Rule": {   "@Condition": "","@Condvalue": "","@Else": "next", "@Elsevalue": "" }
-		}, 
-		"context": "positive", 
-		"impact" :  "impact",
-		"runmode" : { '@type': 'standard', '@value': ""},
-		"InputDataFile" : "", 
-		"retry": { "@type": "if", "@Condition": "", "@Condvalue": "", "@count": "0", "@interval": "0"}, 
-	 };
-	 return newCaseStep;
-},
-
-
 
 	addStepToCase: function(){
 	// Add an entry to the jsonTestSuites....
-	var newCaseStep = createNewStep();
+	var newCaseStep = new caseTestStepObject();
 	if (!cases.jsonCaseSteps) {
 		cases.jsonCaseSteps = [];
 		}
