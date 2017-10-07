@@ -387,8 +387,6 @@ class CIregressionActions(object):
             return status
         status = True
         datafile = Utils.config_Utils.datafile
-        print "datafile:", datafile
-        print "system name:", system_name
         tc_filepath = os.path.dirname(data_Utils.get_object_from_datarepository(
                                             'wt_testcase_filepath'))
         status = check_type(strvar, "strvar", str) and status
