@@ -10,13 +10,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
-import datetime
-from Framework import Utils
-from Framework.Utils import data_Utils, file_Utils
 import os
 import time
+from Framework import Utils
+from Framework.Utils import data_Utils, file_Utils
 from Framework.Utils.testcase_Utils import pNote
+from Framework.Utils.print_Utils import print_error
+
 
 class CIregressionActions(object):
     """
@@ -60,7 +60,7 @@ class CIregressionActions(object):
             Returns:
                 Returns True
         """
-        
+
         wdesc = "Once per tese case with system name given"
         pNote(wdesc)
         key = 'once_per_tc_with_system_name_given_'+str(step_num)
@@ -76,7 +76,7 @@ class CIregressionActions(object):
             Returns:
                 Returns True
         """
-        
+
         wdesc = "Once per testcase with system name not given"
         pNote(wdesc)
         key = 'once_per_tc_with_no_name_given_'+str(step_num)
@@ -92,7 +92,7 @@ class CIregressionActions(object):
             Returns:
                 Returns True
         """
-        
+
         wdesc = "Once per testcase with error"
         pNote(wdesc)
         key = 'once_per_tc_with_error_'+str(step_num)
@@ -109,7 +109,7 @@ class CIregressionActions(object):
             Returns:
                 Returns True
         """
-        
+
         wdesc = "Standard with system name given"
         pNote(wdesc)
         key = 'standard_with_system_name_given_'+str(step_num)
@@ -125,7 +125,7 @@ class CIregressionActions(object):
             Returns:
                 Returns True
         """
-        
+
         wdesc = "Standard with system name not given"
         pNote(wdesc)
         key = 'standard_with_system_name_not_given_'+str(step_num)
@@ -196,11 +196,11 @@ class CIregressionActions(object):
 
     def compare_hybrid_tc_result(self,input_file):
         """
-            It takes the input file path which is the expected result and compares with the log file and 
+            It takes the input file path which is the expected result and compares with the log file and
             returns True if both matches else False and prints the difference to console.
-            
+
             Arguments:
-                input_file: It takes expected result file path as input 
+                input_file: It takes expected result file path as input
         """
         wdesc = "Compares the test case result file with expected result file"
         pNote(wdesc)
@@ -329,3 +329,90 @@ class CIregressionActions(object):
         """
         path = data_Utils.get_object_from_datarepository("parallel_exec_tmp_dir")
         return file_Utils.delFolder(path)
+
+    def check_kw_arg_type(self, str_value, int_value, float_value, bool_value,
+                          list_value, tuple_value, dict_value, file_value):
+        status = True
+        err_msg = "{} is not an {} value but of type {}"
+        if type(str_value) is not str:
+            print_error(err_msg.format(str_value, "str", type(str_value)))
+            status = False
+        if type(int_value) is not int:
+            print_error(err_msg.format(int_value, "int", type(int_value)))
+            status = False
+        if type(float_value) is not float:
+            print_error(err_msg.format(float_value, "float", type(float_value)))
+            status = False
+        if type(bool_value) is not bool:
+            print_error(err_msg.format(bool_value, "bool", type(bool_value)))
+            status = False
+        if type(list_value) is not list:
+            print_error(err_msg.format(list_value, "list", type(list_value)))
+            status = False
+        if type(tuple_value) is not tuple:
+            print_error(err_msg.format(tuple_value, "tuple", type(tuple_value)))
+            status = False
+        if type(dict_value) is not dict:
+            print_error(err_msg.format(dict_value, "dict", type(dict_value)))
+            status = False
+        if type(file_value) is not file:
+            print_error(err_msg.format(file_value, "file", type(file_value)))
+            status = False
+        return status
+
+    def check_values_from_datafile(self, system_name, strvar, langs, states,
+                                   currencys, ramspace, configfile, intvar,
+                                   file_config):
+        """get the values from datafile
+        :Argument:
+            1. system_name = system name in the datafile
+            2. strvar = string variable
+            3. langs = list variable (should get from data file using wtag)
+            4. states = tuple variable
+            5. currencys = dict variable
+            6. ramspace = boolean variable
+            7. configfile = file variable
+            8. intvar = int variable
+            9. file_config = file variable
+        """
+        def check_type(var, varname, datatype):
+            """check that vars are of correct datatype
+            """
+            vartype = type(var)
+            status = True
+            if vartype is not datatype:
+                print_error('{} is expected to be {} type, but found to be of '
+                            '{} type'.format(varname, datatype, vartype))
+                status = False
+            return status
+        status = True
+        datafile = Utils.config_Utils.datafile
+        print "datafile:", datafile
+        print "system name:", system_name
+        tc_filepath = os.path.dirname(data_Utils.get_object_from_datarepository(
+                                            'wt_testcase_filepath'))
+        status = check_type(strvar, "strvar", str) and status
+        status = check_type(langs, "langs", list) and status
+        status = check_type(states, "states", tuple) and status
+        status = check_type(currencys, "currencys", dict) and status
+        status = check_type(ramspace, "ramspace", bool) and status
+        try:
+            if file_config.startswith('tag'):
+                file_config = data_Utils.resolve_argument_value_to_get_tag_value(
+                                        datafile, system_name, file_config)
+            if not os.path.isabs(configfile):
+                configfile = file_Utils.getAbsPath(configfile, tc_filepath)
+            if not os.path.isabs(file_config):
+                file_config = file_Utils.getAbsPath(file_config, tc_filepath)
+        except AttributeError:
+            print_error('configfile and file_config are expected to be files')
+            print_error('type of configfile is {}'.format(type(configfile)))
+            print_error('type of file_config is {}'.format(type(file_config)))
+            status = False
+        if type(intvar) is str and intvar.startswith('tag'):
+            intvar = data_Utils.resolve_argument_value_to_get_tag_value(
+                                    datafile, system_name, intvar)
+        else:
+            status = check_type(intvar, "intvar", int) and status
+
+        return status
