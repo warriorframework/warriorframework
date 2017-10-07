@@ -314,12 +314,12 @@ class WarriorCli(object):
                     print_warn_msg(keys, len(patterns))
                 if inorder:
                     pNote(save_msg1+' inorder.')
-                    cpatterns = map(lambda s: "({})".format(s), patterns)
+                    cpatterns = map(lambda s: "(" + s + ")", patterns)
                     pattern = ".*".join(cpatterns)
                     if pattern.endswith(".*(.*)"):
                         # remove .* pattern from above
                         pattern = pattern[:-6]+pattern[-4:]
-                    reobj = re.search(pattern, response)
+                    reobj = re.search(pattern, response, re.DOTALL)
                     if reobj:
                         grps = reobj.groups()
                         response_dict.update(dict(zip(keys, grps)))
