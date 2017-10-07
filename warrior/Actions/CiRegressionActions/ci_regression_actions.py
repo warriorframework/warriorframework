@@ -332,6 +332,17 @@ class CIregressionActions(object):
 
     def check_kw_arg_type(self, str_value, int_value, float_value, bool_value,
                           list_value, tuple_value, dict_value, file_value):
+        """Check the type of keyword arguments
+        :Argument:
+            1. str_value - expected to be string
+            2. int_value - expected to be int
+            3. float_value - expected to be float
+            4. bool_value - expected to be bool
+            5. list_value - expected to be list
+            6. tuple_value - expected to be tuple
+            7. dict_value - expected to be dict
+            8. file_value - expected to be file
+        """
         status = True
         err_msg = "{} is not an {} value but of type {}"
         if type(str_value) is not str:
