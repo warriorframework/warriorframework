@@ -754,7 +754,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 
 		items.push('<td>'+outstr+'</td>'); 
 
-		var arguments = oneCaseStep['Arguments']['argument'];
+		var arguments = oneCaseStep['Arguments'];
 		var out_array = [] 
 		var ta = 0; 
 		for (xarg in arguments) {
@@ -1162,6 +1162,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 			// Save popup ui to json object.
 			var popup = cases.lastPopup;
 			var sid = parseInt(popup.find("#StepRowToEdit").attr('value'));	
+			console.log("Saving...", sid);
 			cases.mapUItoTestStep(sid,popup);	
 			cases.mapCaseJsonToUi(cases.jsonCaseSteps);
 	},
@@ -1316,13 +1317,14 @@ The UI currently uses jQuery and Bootstrap to display the data.
 
 	saveOneArgument: function( sid, aid, xdata) {
 		var obj = cases.jsonCaseSteps[sid]['Arguments'][aid]; 	
-		obj['@name'] = katana.$activeTab.find('[argid=caseArgName-'+aid+']').attr('value');
-		obj['@value'] = katana.$activeTab.find('[argid=caseArgValue-'+aid+']').attr('value');
+		obj['@name'] = cases.lastPopup.find('[argid=caseArgName-'+aid+']').val();
+		obj['@value'] = cases.lastPopup.find('[argid=caseArgValue-'+aid+']').val();
 		console.log("Saving..arguments-div "+ sid + " aid = "+ aid);
-		console.log(katana.$activeTab.find('[argid=caseArgValue-'+aid+']'));
-		console.log(katana.$activeTab.find('[argid=caseArgValue-'+aid+']'));
+		console.log(cases.lastPopup.find('[argid=caseArgName-'+aid+']'));
+		console.log(cases.lastPopup.find('[argid=caseArgValue-'+aid+']'));
 		console.log(obj);
-	//mapTestStepToUI(sid, xdata);
+		cases.mapCaseJsonToUi(cases.jsonCaseSteps);		
+		
 	},
 
  	addOneArgument: function( sid ) {
@@ -1386,7 +1388,8 @@ The UI currently uses jQuery and Bootstrap to display the data.
 	oneCaseStep["impact"] =  popup.find("#StepImpact").val();
 	oneCaseStep["InputDataFile"] =  popup.find("#StepInputDataFile").val();
 
-	// Now all the arguments have 
+	// Save all arguments already in dialog...
+
 	console.log("after saving ",oneCaseStep);
 },
 
