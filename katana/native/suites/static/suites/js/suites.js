@@ -26,7 +26,9 @@ function jsUcfirst(string)
 function absFromPrefix(pathToBase, pathToFile) {
 	// Converts an absolute path to one that is relative to pathToBase 
 	// Input: 
-	// 		
+	// 
+	if (!pathToFile) return "";
+	if (pathToFile.length < 1) return "";
 	var bf = pathToBase.split('/');
 	var rf = pathToFile.split('/');
 	var nrf = pathToFile.split('/');
@@ -74,7 +76,11 @@ function prefixFromAbs(pathToBase, pathToFile) {
 class suiteDetailsObject{
 
 	mapJSONdataToSelf(jsonDetailsData) {
+			console.log(jsonDetailsData);
+				
 			this.fillDefaults();           // Fills internal values only
+			console.log(jsonDetailsData);
+				
 			if (jsonDetailsData) {         // Overridden by incoming data.
 				this.Name = jsonDetailsData['Name'];  
 				this.Title = jsonDetailsData['Title']; 
@@ -82,12 +88,15 @@ class suiteDetailsObject{
 				this.Engineer = jsonDetailsData['Engineer']; 
 				this.Resultsdir = jsonDetailsData['Resultsdir']; 
 				this.State = jsonDetailsData['State']; 
-				this.default_onError_action = jsonDetailsData['default_onError']['@action']; 
-				this.default_onError_value = jsonDetailsData['default_onError']['@value']; 
 				this.InputDataFile = jsonDetailsData['InputDataFile'];
-				this.ExecType = jsonDetailsData["type"]["@exectype"]; 
-				this.ExecType_num_attempts = jsonDetailsData["type"]['@Number_Attempts']; 
-				this.ExecType_max_attempts = jsonDetailsData["type"]['@Max_Attempts']; 
+				// Fill only if they exist...
+				if (jsonDetailsData['default_onError']) {
+					if ( jsonDetailsData['default_onError']['@action']) this.default_onError_action = jsonDetailsData['default_onError']['@action']; 
+					if ( jsonDetailsData['default_onError']['@value'] ) this.default_onError_value = jsonDetailsData['default_onError']['@value']; 			
+				}
+				if ( jsonDetailsData['type']['@exectype'] )this.ExecType = jsonDetailsData['type']['@exectype']; 
+				if ( jsonDetailsData['type']['@Num_attempts']) this.ExecType_num_attempts = jsonDetailsData['type']['@Num_attempts']; 
+				if ( jsonDetailsData['type']['@Max_attempts']) this.ExecType_max_attempts = jsonDetailsData['type']['@Max_attempts']; 
 			}
 	}
 
@@ -151,31 +160,42 @@ class suiteDetailsObject{
 class suiteRequirementsObject{
 
 	constructor (jsonRequirements) { 
-		this.Requirements = [];
+		this.aRequirements = [];
 		if (!jsonRequirements) return this; 
 		for (var k =0; k < jsonRequirements.length; k++ ) {
-			this.Requirements.push(jsonRequirements[k]);
+			this.aRequirements.push(jsonRequirements[k]);
 		}
 	}
 
-	getJSON() {
-		var r = [];
-		for (var k=0; k < this.Requirements.length; k++) {
-			r.push({ 'Requirement': this.Requirements[k]} );
-		}
-		return r ;  // this matches the XML ... 
+	getJSONdata() {
+		return this.aRequirements; 
+		// var r = [];
+		// for (var k=0; k < this.aRequirements.length; k++) {
+		// 	r.push( this.aRequirements[k] );
+		// }
+		// return r ;  // this matches the XML ... 
 	}
 
-	insertRequirement(sid,where,what){
-		this.Requirements.splice(sid,where,what);
+	insertRequirement(where,what){
+		this.aRequirements.splice(where,0,what);
 	}
 
 	getRequirements() {
-		return this.Requirements;
+		return this.aRequirements;
+	}
+
+
+
+	getLength() {
+		return this.aRequirements.length; 
 	}
 
 	setRequirement(s,v){
-		this.Requirements[s]=v;
+		this.aRequirements[s]=v;
+	}
+
+	deleteRequirement(sid) {
+		this.aRequirements.splice(s,1);
 	}
 }
 
@@ -245,9 +265,13 @@ class suiteCaseObject {
 			jsonData['onError'] = { "@type": "standard", "@value": "" };
 		}
 
-		if (! jsonData['onError']) {
-			jsonData['onError'] = { "@action": "next", "@value": "" };
+		if (!jsonData['default_onError']) {
+			jsonData['default_onError'] = { "@action": "next", "@value": "" };
 		}
+		if (!jsonData['default_onError']['@value']) {
+			jsonData['default_onError']['@value'] = "";
+		}
+
 		if (!jsonData['Execute']) {
 			jsonData['Execute'] = { "@ExecType": "yes", "Rule": { "@Condition": "", "@Condvalue": "", "@Else": "next", "@Elsevalue": "" } };
 		}
@@ -326,9 +350,10 @@ class testSuiteObject{
 			for (var ts =0; ts< this.Testcases.length; ts++ ) {
 				testcasesJSON.push(this.Testcases[ts].getJSON());
 			}
+			console.log(this);
 
 			return { 'Details': this.Details.getJSON(), 
-				'Requirements' : this.Requirements.getJSON(),
+				'Requirements' : { 'Requirement': this.Requirements.getJSONdata() },
 				'Testcases' :  testcasesJSON };
 		}
 
@@ -928,19 +953,19 @@ Two global variables are heavily used when this function is called;
 	items.push('</thead>');
 	items.push('<tbody>');
 	//console.log(rdata);
-	for (var s=0; s<Object.keys(rdata).length; s++ ) {
-		var oneReq = rdata[s];
-		var idnumber = s + 1
+	var slen = rdata.getLength();
+	var reqs = rdata.getRequirements();
+	for (var s=0; s<slen; s++ ) {
+		var idnumber = s + 1;
 		items.push('<tr data-sid=""><td>'+idnumber+'</td>');
-		//items.push('<td>'+oneReq+'</td>');
 		var bid = "textRequirement-name-"+s+"-id";	
-		items.push('<td><input type="text" value="'+oneReq['@name']+'" id="'+bid+'" /></td>');
-		bid = "deleteRequirement-"+s+"-id";
+		items.push('<td><input type="text" value="'+reqs[s]+'" id="'+bid+'" /></td>');
+		bid = "deleteRequirementbtn-"+s+"-id";
 		
 		items.push('<td><i  class="fa fa-trash"  title="Delete" skey="'+bid+'" katana-click="suites.deleteRequirementCB"/>');
-		bid = "editRequirement-"+s+"-id";
+		bid = "editRequirementbtn-"+s+"-id";
 		items.push('<i class="fa fa-floppy-o" title="Save Edit" skey="'+bid+'" katana-click="suites.saveRequirementCB"/>');
-		bid = "insertRequirement-"+s+"-id";
+		bid = "insertRequirementbtn-"+s+"-id";
 		items.push('<i class="fa fa-plus"  title="Insert" skey="'+bid+'" katana-click="suites.insertRequirementCB"/></td>');
 		
 	}
@@ -952,14 +977,13 @@ Two global variables are heavily used when this function is called;
 },
 
 	saveAllRequirementsCB: function() { 
-		var slen = suites.jsonSuiteObject['Requirements'].length;
+		var slen = suites.jsonSuiteObject.Requirements.getLength();
 		//console.log("slen=", slen);
 		for (var sid = 0; sid < slen; sid++ ) {
 			var txtNm = katana.$activeTab.find("#textRequirement-name-"+sid+"-id").val();
-			//console.log("text ", txtNm);
-			suites.jsonSuiteObject['Requirements'][sid]  = { "@name": txtNm, "@value": ''}
+			suites.jsonSuiteObject.Requirements.setRequirement( sid,  txtNm );
 		}
-		suites.createSuiteRequirementsTable(suites.jsonSuiteObject['Requirements']);	
+		suites.createSuiteRequirementsTable(suites.jsonSuiteObject.Requirements);	
 
 	},
 
@@ -967,39 +991,30 @@ Two global variables are heavily used when this function is called;
 	saveRequirementCB:function() {
 			var names = this.attr('skey').split('-');
 			var sid = parseInt(names[1]);
-			//console.log("xdata --> "+ rdata);  // Get this value and update your json. 
-			var txtNm = katana.$activeTab.find("#textRequirement-name-"+sid+"-id").val();
-			//var txtVl = katana.$activeTab.find("#textRequirement-value-"+sid+"-id").val();
-			var txtVl = '';
-			//console.log("Editing ..." + sid);
-			// console.log(suites.jsonSuiteObject['Requirements'][sid])
-			suites.jsonSuiteObject['Requirements'][sid]  = { "@name": txtNm, "@value": txtVl};
-			suites.createSuiteRequirementsTable(suites.jsonSuiteObject['Requirements']);	
-
-			//This is where you load in the edit form and display this row in detail. 
+			var txtVl = katana.$activeTab.find("#textRequirement-name-"+sid+"-id").val();
+			suites.jsonSuiteObject.Requirements.setRequirement( sid,  txtVl);
+			suites.createSuiteRequirementsTable(suites.jsonSuiteObject.Requirements);	
 		},
 
 	deleteRequirementCB:	function() {
 			var names = this.attr('skey').split('-');
 			var sid = parseInt(names[1]);
 			// console.log("Remove " + sid + " " + this.id ); 
-			suites.jsonSuiteObject['Requirements'].splice(sid,1);
-			suites.createSuiteRequirementsTable(suites.jsonSuiteObject['Requirements']);	
+			suites.jsonSuiteObject.Requirements.deleteRequirement(sid);
+			suites.createSuiteRequirementsTable(suites.jsonSuiteObject.Requirements);	
 			
 		},
 	
 	insertRequirementCB:function( ) {
 			var names = this.attr('skey').split('-');
 			var sid = parseInt(names[1]);
-			// console.log("Insert" + sid + " " + this.id ); 
-			suites.insertRequirementToSuite(sid);
-			suites.createSuiteRequirementsTable(suites.jsonSuiteObject['Requirements']);	
+			suites.jsonSuiteObject.Requirements.insertRequirement(sid,'');
+			suites.createSuiteRequirementsTable(suites.jsonSuiteObject.Requirements);	
 		},
 
-	removeRequirement : function(s,rdata){
-	// console.log(rdata);
-	rdata.splice(s,1);
-		
+	addRequirementToSuite() {
+		suites.jsonSuiteObject.Requirements.insertRequirement(0,'');
+		suites.createSuiteRequirementsTable(suites.jsonSuiteObject.Requirements);	
 	},
 /*
 // Shows the global Suite data holder in the UI.
@@ -1014,8 +1029,8 @@ Two global variables are heavily used when this function is called;
 */
  mapSuiteJsonToUi: function(data){
 	if (!jQuery.isArray(suites.jsonTestcasesj)) suites.jsonTestcasesj = [suites.jsonTestcasesj]; 
-	if (!suites.jsonSuiteObject['Requirements']) suites.jsonSuiteObject['Requirements'] = [];
-	if (!jQuery.isArray(suites.jsonSuiteObject['Requirements'])) suites.jsonSuiteObject['Requirements'] = [suites.jsonSuiteObject['Requirements']]; 
+	// if (!suites.jsonSuiteObject['Requirements']) suites.jsonSuiteObject['Requirements'] = [];
+	// if (!jQuery.isArray(suites.jsonSuiteObject['Requirements'])) suites.jsonSuiteObject['Requirements'] = [suites.jsonSuiteObject['Requirements']]; 
 	suites.createCasesTable(suites.jsonTestcases['Testcase']);
 
 	// Resolve the relative path for the wdf editor to get full path. ..
@@ -1042,8 +1057,7 @@ Two global variables are heavily used when this function is called;
 		if (datatype =='rmt'){
 			katana.$activeTab.find('#data_type_num_attempts').show();
 		}
-
-	suites.createSuiteRequirementsTable(suites.jsonSuiteObject['Requirements']);
+		suites.createSuiteRequirementsTable(suites.jsonSuiteObject.Requirements);		
 },  
 
 // Saves your suite to disk. 
@@ -1053,22 +1067,7 @@ Two global variables are heavily used when this function is called;
 		suites.mapSuiteJsonToUi();
 },
 
-	insertRequirementToSuite : function(sid) {
-			// console.log("Add Requirement... ");
-			if (!suites.jsonSuiteObject['Requirements']) suites.jsonSuiteObject['Requirements'] = [];
-			rdata = suites.jsonSuiteObject['Requirements'];
-			var newReq = {"Requirement" : { "@name": "", "@value": ""},};
-			rdata.splice(sid - 1, 0, newReq); 
-			// console.log(suites.jsonSuiteObject);
-			suites.createSuiteRequirementsTable(suites.jsonSuiteObject['Requirements']);	
-},
 
-	addRequirementToSuite : function() {
-			if (!suites.jsonSuiteObject['Requirements']) suites.jsonSuiteObject['Requirements'] = [];
-			suites.jsonSuiteObject['Requirements'].push({"Requirement" : { "@name": "", "@value": ""},});
-			//console.log(suites.jsonSuiteObject);
-			suites.createSuiteRequirementsTable(suites.jsonSuiteObject['Requirements']);	
-},
 
 
 // Removes a test Case by its ID and refresh the page. 

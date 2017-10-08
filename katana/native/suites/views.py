@@ -139,7 +139,7 @@ def editSuite(request):
 	xml_r["TestSuite"]["Details"]["type"]["@Max_Attempts"] = "0"
 	
 	xml_r["TestSuite"]["Details"]["default_onError"] = {}
-	xml_r["TestSuite"]["Details"]["default_onError"]['@action']= ""
+	xml_r["TestSuite"]["Details"]["default_onError"]['@action']= "next"
 	xml_r["TestSuite"]["Details"]["default_onError"]['@value']= ""
 
 	xml_r["TestSuite"]["Testcases"] = { 'Testcase' :[] }
@@ -177,7 +177,17 @@ def editSuite(request):
 	except:
 		xml_r["TestSuite"]["Details"]["type"]['@exectype'] = "sequential_testcases"
 
-	#xml_r["TestSuite"]["Details"]["default_onError"] = "" 
+	try: 
+		xml_r["TestSuite"]["Details"]["default_onError"]['@action']= xml_d["TestSuite"]["Details"]["default_onError"]['@action'];
+	except:
+		pass;
+
+	try: 
+		xml_r["TestSuite"]["Details"]["default_onError"]['@value']= xml_d["TestSuite"]["Details"]["default_onError"]['@value'];
+	except:
+		pass;
+
+	print "Details --> ", xml_r["TestSuite"]["Details"];
 
 	fulljsonstring = str(json.loads(json.dumps(xml_r['TestSuite'])));
 	fulljsonstring = fulljsonstring.replace('u"',"'").replace("u'",'"').replace("'",'"');
@@ -203,7 +213,7 @@ def editSuite(request):
 		'suiteTime': xml_r["TestSuite"]["Details"]["Time"],
 		'suiteState': xml_r["TestSuite"]["Details"]["State"],
 		#'suiteType': xml_r["TestSuite"]["Details"]["type"],
-		'suitedefault_onError':xml_r["TestSuite"]["Details"]["default_onError"].get('@action',""),
+		'suitedefault_onError':xml_r["TestSuite"]["Details"]["default_onError"].get('@action',"next"),
 		'suitedefault_onError_goto':xml_r["TestSuite"]["Details"]["default_onError"].get('@value',''),
 		'suiteCases': xml_r['TestSuite']['Testcases'],
 		#'fulljson': xml_r['TestSuite'],

@@ -83,12 +83,13 @@ class caseRequirementsObject{
 		}
 	}
 
-	getJSON() {
-		var r = [];
-		for (var k=0; k < this.Requirements.length; k++) {
-			r.push({ 'Requirement': this.Requirements[k]} );
-		}
-		return r ;  // this matches the XML ... 
+	getJSONdata() {
+		return this.Requirements;
+		// var r = [];
+		// for (var k=0; k < this.Requirements.length; k++) {
+		// 	r.push({ 'Requirement': this.Requirements[k]} );
+		// }
+		// return r ;  // this matches the XML ... 
 	}
 
 	insertRequirement(sid,where,what){
@@ -362,7 +363,7 @@ class caseTestStepObject {
 			}
 
 			return { 'Details': this.Details.getJSON(), 
-				'Requirements' : this.Requirements.getJSON(),
+				'Requirements' : { 'Requirement' : this.Requirements.getJSONdata() },
 				'Steps' : { 'step': testStepsJSON}, };
 
 		}
@@ -1202,10 +1203,11 @@ The UI currently uses jQuery and Bootstrap to display the data.
 	},
 
 	saveAllRequirementsCB: function() { 
-		var slen = cases.jsonCaseObject.Requirements.length;
+		var slen = cases.jsonCaseObject.Requirements.getRequirements().length;
 		for (var sid = 0; sid < slen; sid++ ) {
 			var txtVl = katana.$activeTab.find("#textRequirement-name-"+sid+"-id").val();
 			cases.jsonCaseObject.Requirements.setRequirement(sid, txtVl);
+			console.log("Saving", sid, txtVl);
 		}
 		cases.createRequirementsTable();		
 
