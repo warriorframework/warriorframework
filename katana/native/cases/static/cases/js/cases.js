@@ -633,12 +633,14 @@ var cases = {
 					oneCaseStep["InputDataFile"] = nf;
 					};
 			 var callback_on_dismiss = function(){ 
-			  		var popup = katana.$activeTab.find("#editCaseStepDiv").attr('data-popup-id');
+			  		var popup = cases.lastPopup; // katana.$activeTab.find("#editCaseStepDiv").attr('data-popup-id');
 			  		console.log("Dismissed", popup);
 
 			 	};
-			var popup = katana.$activeTab.find("#editCaseStepDiv").attr('data-popup-id');
-			katana.fileExplorerAPI.openFileExplorer("Select a file", false , $("[name='csrfmiddlewaretoken']").val(), popup, callback_on_accept, callback_on_dismiss)
+			//var popup = katana.$activeTab.find("#editCaseStepDiv").attr('data-popup-id');
+			var popup = cases.lastPopup;
+			console.log("Setting ... ", popup); 
+			katana.fileExplorerAPI.openFileExplorer("Select a file", false , $("[name='csrfmiddlewaretoken']").val(), popup.find('.page-content'), callback_on_accept, callback_on_dismiss)
 
 	},
 
