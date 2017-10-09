@@ -1,10 +1,16 @@
 class kwRepository {
-    constructor(url, label, clone, all_drivers){
-        this.url = url;
-        this.label = label;
-        this.clone = clone;
-        this.all_drivers = all_drivers;
-        this.drivers = []
+    constructor(data){
+        this.url = data["@url"];
+        this.label = data["@label"];
+        this.clone = data["@clone"];
+        this.all_drivers = data["@all_drivers"];
+        this.drivers = [];
+        console.log("12345");
+        console.log(data["driver"]);
+        for(var i=0; i<data["driver"].length; i++){
+            console.log("Here");
+            this.drivers.push(new driverDetails(data["driver"][i]));
+        }
     }
 
     addDriver(name, clone){
@@ -16,7 +22,8 @@ class kwRepository {
     }
 
     formDomElement() {
-        var $elem = $('<div></div>');
+        var $elem = $('<div>Sanika</div>');
+        return $elem;
     }
 
     get jsonObj() {
@@ -41,9 +48,10 @@ class kwRepository {
 }
 
 class driverDetails {
-    constructor(name, clone){
-        this.name = name;
-        this.clone = clone;
+    constructor(data){
+        console.log(data);
+        this.name = data["@name"];
+        this.clone = data["@clone"];
     }
 
     get jsonObj() {
@@ -108,34 +116,31 @@ class dependency{
     }
 
     formDomElement() {
-        var install_cb = "";
-        if(this.install == "yes"){
-            install_cb = "checked";
-        }
-        var install_user = "";
-        if(this.user == "yes"){
-            install_user = "checked";
-        }
-
-        var installed_txt = '<p class="btn btn-danger">Not Available</p>';
+        var installed_btn = '<button class="btn btn-success" katana-click="assembler.installDependency" aria-selected="false">Install</button>';
+        var available_txt = '<h6 class="card-subtitle mb-2 text-muted">&nbsp;</h6><br>';
         if(this.installed){
-            installed_txt = '<p class="btn btn-success">Available Version: ' + this.installed + '</p>';
-        }
-
-        var matched_btn = '<button class="btn btn-success">Up To Date</button>';
-        if(!this.installed){
-            matched_btn = '<button class="btn btn-danger">Install</button>';
-        }
-        else if(this.matched == "lower"){
-            matched_btn = '<button class="btn btn-danger">Needs Upgrade</button>';
+            available_txt = '<h6 class="card-subtitle mb-2 text-muted">Available Version: ' + this.installed + '</h6><br>';
+            if(!this.matched){
+                installed_btn = '<button class="btn btn-danger" katana-click="assembler.installDependency" aria-selected="false">Install</button>';
+            }
+            else if(this.matched == "lower"){
+                installed_btn = '<button class="btn btn-info" katana-click="assembler.upgradeDependency" aria-selected="false">Upgrade&nbsp;<i class="fa fa-exclamation-triangle tan" aria-hidden="true"></i>&nbsp;</button>';
+            }
+            else if(this.matched == "higher"){
+                installed_btn = '<button class="btn btn-success">Installed&nbsp;<i class="fa fa-check-circle green" aria-hidden="true"></i>&nbsp;</button>';
+            }
+            else{
+                installed_btn = '<button class="btn btn-success">Installed&nbsp;<i class="fa fa-check-circle green" aria-hidden="true"></i>&nbsp;</button>';
+            }
         }
 
         var html_contents = '<div style="padding: 1rem;">' +
-                                '<div class="card" style="width: 350px; height:150px; padding: 1rem;">' +
+                                '<div class="card" style="width: 350px; height:190px; padding: 1rem;">' +
                                     '<div class="card-block">' +
                                         '<h4 class="card-title">' + this.name +'</h4>' +
-                                        '<h6 class="card-subtitle mb-2 text-muted">Version: ' + this.version + '</h6><br>' +
-                                        installed_txt + matched_btn +
+                                        '<h6 class="card-subtitle mb-2 text-muted">Version: ' + this.version + '</h6><hr>' +
+                                        available_txt +
+                                        installed_btn +
                                     '</div>' +
                                 '</div>' +
                             '</div>'

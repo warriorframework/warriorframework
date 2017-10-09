@@ -25,7 +25,7 @@ class ConfigurationFileOps(View):
     def post(self, request):
 
         dependency_dict = {"jira": "1.0.3", "lxml": "3.5", "ncclient": "0.4.6",
-                           "paramiko": "1.16.0", "pexpect": "4.2.0", "pysnmp": "4.3.1",
+                           "paramiko": "1.16.0", "pexpect": "4.2.0", "pysnmp": "4.3.7",
                            "requests": "2.9.1", "selenium": "2.48.0", "xlrd": "1.0.0",
                            "cloudshell-automation-api": "7.1.0.34"}
         nav_obj = Navigator()
@@ -65,10 +65,11 @@ class ConfigurationFileOps(View):
                         pass
 
         if not isinstance(final_data["data"]["drivers"]["repository"], list):
-            final_data["data"]["drivers"]["repository"] = [
-                final_data["data"]["drivers"]["repository"]]
+            final_data["data"]["drivers"]["repository"] = [final_data["data"]["drivers"]["repository"]]
+        for i in range(0, len(final_data["data"]["drivers"]["repository"])):
+            if not isinstance(final_data["data"]["drivers"]["repository"][i]["driver"], list):
+                final_data["data"]["drivers"]["repository"][i]["driver"] = [final_data["data"]["drivers"]["repository"][i]["driver"]]
         if not isinstance(final_data["data"]["warriorspace"]["repository"], list):
-            final_data["data"]["warriorspace"]["repository"] = [
-                final_data["data"]["warriorspace"]["repository"]]
+            final_data["data"]["warriorspace"]["repository"] = [final_data["data"]["warriorspace"]["repository"]]
 
         return JsonResponse({"xml_contents": final_data})
