@@ -16,6 +16,21 @@ import os
 import sys
 from  utils import warrior_interface_utils
 
+try:
+    import django
+except:
+    print """
+    Whoops! You don't have django on your system. 
+
+    Please install django on your system. Try
+
+    sudo pip install django  
+
+    
+
+    """
+    sys.exit(-1); 
+
 if __name__ == "__main__":
 
     """

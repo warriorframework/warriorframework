@@ -7,5 +7,5 @@ if [ "$result" -ne 0 ]; then
 	echo "Please install django for katana to work"
 	echo "Try sudo pip install Django"
 else 
-	python ./katana.py
+	python ./katana.py $*
 fi
