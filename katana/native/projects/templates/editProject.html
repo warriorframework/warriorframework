@@ -39,14 +39,14 @@
 			</div>
 			<div class="field col-md-3 input_padding">
 				<label class="text-right">defaultOnError:</label>
-				<select class="text-right" type="text" id="default_onError" name="default_onError"  value="{{projectdefault_onError}}" >
-					<option value="next">Next</option>
-					<option value="abort">Abort</option>
-					<option value="abort_as_error">Abort As Error</option>
-					<option value="goto">Goto</option>
+				<select class="text-right" type="text" id="project_onError_action" value="{{project_onError_action}}" >
+					<option value="next">next</option>
+					<option value="abort">abort</option>
+					<option value="abort_as_error">abort as error</option>
+					<option value="goto">goto</option>
 				</select>
-				{{projectdefault_onError}}
-				<select class="text-right" type="text" id="default_onError_goto" name="default_onError_goto" value="{{projectdefault_onError_goto}}" >
+				
+				<select class="text-right" type="text" id="project_onError_value" value="{{project_onError_value}}" >
 				</select>
 
 			</div>
@@ -86,7 +86,7 @@
 				</div>
 				<div class="field ">
 				<label class=" text-right" >ExecType:</label>
-				<select type="text" class="text-right" id="casesExecuteAtExecType" value="" >
+				<select type="text" class="text-right" id="Execute-at-ExecType" value="" >
 				<option value="yes">Yes</option> 
 				<option value="if">If</option> 
 				<option value="if not">If Not</option> 				

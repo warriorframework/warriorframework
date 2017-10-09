@@ -108,8 +108,8 @@ class suiteDetailsObject{
 			'Engineer' : this.Engineer, 
 			'Resultsdir' : this.Resultsdir, 
 			'State' : this.State,
-			'Time': this.cDate; 
-			'Date' : this.cTime;
+			'Time': this.cDate,
+			'Date' : this.cTime,
 
 			'default_onError': { '@action': this.default_onError_action, '@value': this.default_onError_value},
 			'InputDataFile' : this.InputDataFile,

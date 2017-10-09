@@ -86,8 +86,8 @@ class projectDetailsObject{
 				this.cTime = jsonDetailsData['Time']; 
 				
 				if (jsonDetailsData['default_onError']) {
-					if ( jsonDetailsData['default_onError']['@action']) this.default_onError_action = jsonDetailsData['default_onError']['@action']; 
-					if ( jsonDetailsData['default_onError']['@value'] ) this.default_onError_value = jsonDetailsData['default_onError']['@value']; 			
+					if ( jsonDetailsData['default_onError']['@action']) this.onError_action = jsonDetailsData['default_onError']['@action'].toLowerCase(); 
+					if ( jsonDetailsData['default_onError']['@value'] ) this.onError_value = jsonDetailsData['default_onError']['@value']; 			
 				}
 			}
 	}
@@ -102,7 +102,7 @@ class projectDetailsObject{
 			'State' : this.State,
 			'Time': this.cDate,
 			'Date' : this.cTime,
-			'default_onError': { '@action': this.default_onError_action, '@value': this.default_onError_value},
+			'default_onError': { '@action': this.onError_action, '@value': this.onError_value},
 		};
 	}
 
@@ -132,8 +132,8 @@ class projectDetailsObject{
 		this.Engineer = ''; 
 		this.Resultsdir = ''; 
 		this.State = ''; 
-		this.default_onError_action = ''; 
-		this.default_onError_value = ''; 
+		this.onError_action = ''; 
+		this.onError_value = ''; 
 		this.setTimeStamp();
 	}
 
@@ -141,7 +141,6 @@ class projectDetailsObject{
 		return jQuery.extend(true, {}, this); 
 	}
 }
-
 
 
 class projectSuiteObject {
@@ -299,6 +298,7 @@ class projectsObject{
 	}
 
 
+
  var projects = {
 
 	closeProject: function(){
@@ -391,7 +391,7 @@ startNewProject : function() {
 			projects.mapProjectJsonToUi();  // This is where the table and edit form is created. 
 			projects.fillProjectDefaultGoto();
 			console.log("Adding defaults ");
-			katana.$activeTab.find('#default_onError').on('change',projects.fillProjectDefaultGoto );
+			katana.$activeTab.find('#project_onError_action').on('change',projects.fillProjectDefaultGoto );
 			katana.$activeTab.find('#Execute-at-ExecType').on('change',function() { 
 				if (this.value == 'if' || this.value == 'if not')
 				{
@@ -430,7 +430,6 @@ startNewProject : function() {
 			defgoto.hide();
 			
 		}
-		//var sid = popup.find('#CaseRowToEdit').val();
 		defgoto.empty(); 
 		var xdata = jsonProjectObject['Testsuites']; 
 		if (!jQuery.isArray(xdata)) xdata = [xdata]; 
@@ -526,14 +525,13 @@ startNewProject : function() {
 
 	fillProjectDefaultGoto : function() {
 	
-		var gotoStep = katana.$activeTab.find('#default_onError').val();
-		var defgoto = katana.$activeTab.find('#default_onError_goto'); 
+		var action = katana.$activeTab.find('#project_onError_action').val();
+		var defgoto = katana.$activeTab.find('#project_onError_value'); 
 		
-		if (gotoStep.trim() == 'goto') { 
+		if (action.trim() == 'goto') { 
 			defgoto.show();
 		} else {
 			defgoto.hide();
-			
 		}
 		var listSuites = katana.$activeTab.find('#tableOfTestSuitesForProject tbody').children(); 
 		defgoto.empty(); 
@@ -836,7 +834,7 @@ Two global variables are heavily used when this function is called;
 		katana.$activeTab.find("#tableOfTestSuitesForProject").html( items.join(""));
 		katana.$activeTab.find('#suite_table_display tbody').sortable( { stop: projects.testProjectSortEventHandler});
 		projects.fillProjectDefaultGoto();
-		katana.$activeTab.find('#default_onError').on('change',projects.fillProjectDefaultGoto );
+		katana.$activeTab.find('#project_onError_action').on('change',projects.fillProjectDefaultGoto );
 	},
 
 
@@ -977,8 +975,8 @@ Two global variables are heavily used when this function is called;
 
 		katana.$activeTab.find('#projectState').val(projects.jsonProjectObject.Details.State);
 		katana.$activeTab.find('#projectDate').val(projects.jsonProjectObject.Details.cDate + " " + projects.jsonProjectObject.Details.cTime);
-		katana.$activeTab.find('#default_onError').val(projects.jsonProjectObject.Details_default_onError_action);
-		katana.$activeTab.find('#default_onError_goto').val(projects.jsonProjectObject.Details_default_onError_value);
+		katana.$activeTab.find('#project_onError_action').val(projects.jsonProjectObject.Details.onError_action);
+		katana.$activeTab.find('#project_onError_value').val(projects.jsonProjectObject.Details.onError_value);
 		katana.$activeTab.find('#projectDatatype').val(projects.jsonProjectObject.Details_Datatype);
 		katana.$activeTab.find('#projectResultsDir').val(katana.$activeTab.find("#projectResultsDir").val());
 		projects.createSuitesTable();

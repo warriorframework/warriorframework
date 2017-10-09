@@ -180,8 +180,8 @@ def editProject(request):
 		'projectTime': xml_r["Project"]["Details"]["Time"],
 		'resultsDir': xml_r["Project"]["Details"]["ResultsDir"],
 		
-		'projectdefault_onError': xml_r["Project"]["Details"]["default_onError"].get('@action'),
-		'projectdefault_onError_goto': xml_r["Project"]["Details"]["default_onError"]['@value'],
+		'project_onError_action': xml_r["Project"]["Details"]["default_onError"].get('@action','abort'),
+		'project_onError_value':  xml_r["Project"]["Details"]["default_onError"].get('@avalue',""),
 		#'fulljson': xml_r['Project']
 		'fulljson': fulljsonstring,
 		}
