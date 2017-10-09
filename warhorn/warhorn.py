@@ -1102,7 +1102,6 @@ def replace_tools_from_product_repo(node_list, **kwargs):
     config_file_name = kwargs.get("config_file_name")
     console_log_name = kwargs.get("console_log_name")
     print_log_name = kwargs.get("print_log_name")
-    internal_copy = kwargs.get("dest")
     if "tools" in node_list:
         tools_node = get_node(config_file_name, "tools")
         tools_url = get_attribute_value(tools_node, "url")
@@ -1121,11 +1120,7 @@ def replace_tools_from_product_repo(node_list, **kwargs):
                 warrior_base_path, logfile=logfile,
                 config_file_name=config_file_name,
                 console_log_name=console_log_name, print_log_name=print_log_name)
-            if internal_copy == "":
-                warrior_tools_path = os.path.join(warrior_base_path,
-                                                  "warrior", "Tools")
-            else:
-                warrior_tools_path = os.path.join(warrior_base_path,
+            warrior_tools_path = os.path.join(warrior_base_path,
                                                   "warrior", "Tools")
             product_tools_path = os.path.join(tools_base_path, tools_root, "Tools")
             dir_util.copy_tree(product_tools_path, warrior_tools_path, update=1)
