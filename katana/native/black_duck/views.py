@@ -6,4 +6,4 @@ from django.http import HttpResponse
 
 # Create your views here.
 def index(request):
-    return HttpResponse("ABC")
+    return render(request, "black_duck/index.html")

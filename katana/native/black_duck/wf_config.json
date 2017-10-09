@@ -1,0 +1,9 @@
+{
+  "icon": "eye",
+  "color": "yellow",
+  "name" : "Black Duck",
+  "developer": "Warrior Framework",
+  "description": "Automate Black Duck Protex scan",
+  "url" : "/katana/blackduck/",
+  "app" : [{"name" : "Black Duck", "url" : "/katana/blackduck/", "include": "native.black_duck.urls"}]
+}
