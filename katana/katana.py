@@ -215,11 +215,11 @@ def check_action_file_name(subkw_list, ActionFile):
                             pyfiles = str(action_file).encode('utf-8', 'ignore')
 
         py_files = str(pyfiles).encode('utf-8', 'ignore')
-        (_, file_name) = py_files.rsplit('/', 1)
+        (_, file_name) = py_files.rsplit(os.sep, 1)
         path = str(gpysrcdir).encode('utf-8', 'ignore')
         sys.path.append(path)
         file_name = file_name.split('.')[0]
-        py_files_1 = py_files.split('/')
+        py_files_1 = py_files.split(os.sep)
         py_files_1 = ('.').join(py_files_1)
         for action in actions: # If multiple action directories available in a action directory
         # checking whether the action package is available in .py file name.
@@ -231,7 +231,7 @@ def check_action_file_name(subkw_list, ActionFile):
         for elem in class_list_new:
             if actions_package in str(elem[1]):
                 class_list_new = elem[0]
-        if ActionFile.split('/')[-1].split('_')[0] in class_list_new.lower():
+        if ActionFile.split(os.sep)[-1].split('_')[0] in class_list_new.lower():
             class_list = "self"
         else:
             import_action_list.append('from ' + action.strip() + "." + file_name + " " +
