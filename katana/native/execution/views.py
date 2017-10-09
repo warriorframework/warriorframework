@@ -84,7 +84,7 @@ class Execution(object):
         path = data_live_dir
         fpath = file_utils.get_new_filepath(fname, path, '.html')
         html_file = open(fpath, 'w')
-        html_file.write('creating')
+        html_file.write('<div data-currentTable="1"> </div> ')
         html_file.close()
         
         
@@ -107,8 +107,7 @@ class Execution(object):
 
     def delete_live_html_file(self, request):
         """
-        Update the html results by reading the live html results
-        file sent in the request
+        delete the live html file created
         """
         status = 'success'
         try:
@@ -154,7 +153,7 @@ class Execution(object):
         try:
             for item in os.listdir(data_live_dir):
                 path = os.path.join(data_live_dir, item)
-                if os.path.isfile(path):
+                if os.path.isfile(path) and not pathe.endswith('donotdeletethisfile.txt'):
                     os.remove(path)
                 elif os.path.isdir(path):
                      shutil.rmtree(path, 'ignore_errors')
