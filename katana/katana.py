@@ -23,11 +23,11 @@ except:
     Whoops! You don't have django on your system. 
 
     Please install django on your system. Try
-
     sudo pip install django  
 
+    For more information on how to install django, please visit 
+    https://docs.djangoproject.com/en/1.11/topics/install/ 
     
-
     """
     sys.exit(-1); 
 
