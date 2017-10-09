@@ -37,7 +37,7 @@
 
     Fill this out with the details of the repository that you want to clone
 
-    <tools url="http://repository/one/url.git" label="branch-name" overwrite="yes" clone="yes">
+    <tools url="http://repository/one/url.git" label="" overwrite="yes" clone="yes">
     </tools>
 
     -->
