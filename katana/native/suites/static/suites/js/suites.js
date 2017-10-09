@@ -108,6 +108,9 @@ class suiteDetailsObject{
 			'Engineer' : this.Engineer, 
 			'Resultsdir' : this.Resultsdir, 
 			'State' : this.State,
+			'Time': this.cDate; 
+			'Date' : this.cTime;
+
 			'default_onError': { '@action': this.default_onError_action, '@value': this.default_onError_value},
 			'InputDataFile' : this.InputDataFile,
 			'type' : { "@exectype":this.ExecType,'@Number_Attempts': this.ExecType_num_attempts, '@Max_Attempts':  this.ExecType_max_attempts}
@@ -265,11 +268,14 @@ class suiteCaseObject {
 			jsonData['onError'] = { "@type": "standard", "@value": "" };
 		}
 
-		if (!jsonData['default_onError']) {
-			jsonData['default_onError'] = { "@action": "next", "@value": "" };
+		if (!jsonData['onError']) {
+			jsonData['onError'] = { "@action": "next", "@value": "" };
 		}
-		if (!jsonData['default_onError']['@value']) {
-			jsonData['default_onError']['@value'] = "";
+		if (!jsonData['onError']['@action']) {
+			jsonData['onError']['@action'] = "";
+		}
+		if (!jsonData['onError']['@value']) {
+			jsonData['onError']['@value'] = "";
 		}
 
 		if (!jsonData['Execute']) {
@@ -826,11 +832,9 @@ Two global variables are heavily used when this function is called;
 			bid = "insertTestcase-"+s+"-id";
 			items.push('<i title="Insert" class="fa fa-plus" title="Insert New Case" id="'+bid+'" katana-click="suites.insertNewSuiteIntoLine" key="'+bid+'"/>');
 			bid = "copyToStorage-"+s+"-id-";
-			items.push('<i title="Copy to clipboard" class="fa fa-clipboard" theSid="'+s+'"   id="'+bid+'" katana-click="suites.saveTestStep()" key="'+bid+'"/>');
+			items.push('<i title="Copy to clipboard" class="fa fa-clipboard" theSid="'+s+'"   id="'+bid+'" katana-click="suites.saveTestStep" key="'+bid+'"/>');
 			bid = "copyFromStorage-"+s+"-id-";
-			items.push('<i title="Copy from clipboard" class="fa fa-outdent" theSid="'+s+'"   id="'+bid+'" katana-click="suites.restoreTestStep()" key="'+bid+'"/>');
-
-
+			items.push('<i title="Copy from clipboard" class="fa fa-outdent" theSid="'+s+'"   id="'+bid+'" katana-click="suites.restoreTestStep" key="'+bid+'"/>');
 			bid = "dupTestcase-"+s+"-id";
 			items.push('<i title="Duplicate" class="fa fa-copy" title="Duplicate New Case" id="'+bid+'" katana-click="suites.duplicateNewSuiteIntoLine" key="'+bid+'"/></td>');
 			items.push('</tr>');
@@ -866,7 +870,7 @@ Two global variables are heavily used when this function is called;
 	saveTestStep: function() {
 		var names = this.attr('key').split('-');
 		var sid = parseInt(names[1]);
-		console.log("Savig ...", suites.jsonTestcases[sid] );
+		console.log("Saving ...", suites.jsonTestcases[sid] );
 		suites.jsonTestcases[sid].copyToDocument('lastCaseCopied', suites.jsonTestcases[sid]);
 		},
 
@@ -876,9 +880,8 @@ Two global variables are heavily used when this function is called;
 		var sid = parseInt(names[1]);
 		jsonData = suites.jsonTestcases[sid].copyFromDocument('lastCaseCopied');
 		console.log("Retrieving ... ", jsonData);
-		newTestcase = new suiteCaseObject(jsonData);
-		suites.jsonTestcases.splice(sid,0,newTestcase);
-		suites.createCasesTable(suites.jsonTestcases);
+		newTestcase = new projectSuiteObject(jsonData);
+		
 		},
 
 

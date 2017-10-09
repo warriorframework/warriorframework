@@ -69,6 +69,235 @@ function jsUcfirst(string)
       return string.toLowerCase();
 }
 
+class projectDetailsObject{
+
+	mapJSONdataToSelf(jsonDetailsData) {
+			console.log(jsonDetailsData);
+				
+			this.fillDefaults();           // Fills internal values only
+			console.log(jsonDetailsData);
+				
+			if (jsonDetailsData) {         // Overridden by incoming data.
+				this.Name = jsonDetailsData['Name'];  
+				this.Title = jsonDetailsData['Title']; 
+				this.State = jsonDetailsData['State']; 
+				this.Engineer = jsonDetailsData['Engineer']; 
+				this.cDate = jsonDetailsData['Date']; 
+				this.cTime = jsonDetailsData['Time']; 
+				
+				if (jsonDetailsData['default_onError']) {
+					if ( jsonDetailsData['default_onError']['@action']) this.default_onError_action = jsonDetailsData['default_onError']['@action']; 
+					if ( jsonDetailsData['default_onError']['@value'] ) this.default_onError_value = jsonDetailsData['default_onError']['@value']; 			
+				}
+			}
+	}
+
+	getJSON(){
+		return { 
+			'Name': this.Name, 
+			'Title': this.Title,
+			'Category' : this.Category, 
+			'Engineer' : this.Engineer, 
+			'Resultsdir' : this.Resultsdir, 
+			'State' : this.State,
+			'Time': this.cDate,
+			'Date' : this.cTime,
+			'default_onError': { '@action': this.default_onError_action, '@value': this.default_onError_value},
+		};
+	}
+
+	constructor(jsonDetailsData) {
+			this.mapJSONdataToSelf(jsonDetailsData);
+	}
+
+	setTimeStamp() { 
+		var date = new Date();
+	   	var year = date.getFullYear();
+	   	var month = date.getMonth() + 1;// months are zero indexed
+	   	var day = date.getDate();
+	   	var hour = date.getHours();
+	   	var minute = date.getMinutes();
+	   	if (minute < 10) {
+	       	minute = "0" + minute; 
+	       }
+		this.cDate = month + "/" + day + "/" + year; 
+		this.cTime = hour + ":" + minute; 
+	}
+
+
+	fillDefaults() {
+		this.Name = '';  
+		this.Title = ''; 
+		this.Category = ''; 
+		this.Engineer = ''; 
+		this.Resultsdir = ''; 
+		this.State = ''; 
+		this.default_onError_action = ''; 
+		this.default_onError_value = ''; 
+		this.setTimeStamp();
+	}
+
+	duplicateSelf() { 
+		return jQuery.extend(true, {}, this); 
+	}
+}
+
+
+
+class projectSuiteObject {
+	constructor(inputJsonData) {
+		var jsonData = inputJsonData;
+		this.setupFromJSON(jsonData);
+	}
+
+	setupFromJSON(jsonData) { 
+		if (!jsonData) {
+			jsonData = 	this.createEmptyCase(); 
+		}
+		// Fill defaults here. 
+		this.fillDefaults(jsonData);
+		this.path = jsonData['path'];
+		this.impact = jsonData['impact'].toLowerCase();
+		this.InputDataFile = jsonData['InputDataFile'];
+		this.runmode_value = jsonData['runmode']['@value'].toLowerCase();
+		this.runmode_type = jsonData['runmode']['@type'].toLowerCase();
+		this.Execute_ExecType = jsonData['Execute']['@ExecType'].toLowerCase();
+		this.Execute_Rule_Condition = jsonData['Execute']['Rule']['@Condition'].toLowerCase();
+		this.Execute_Rule_Condvalue = jsonData['Execute']['Rule']['@Condvalue'];
+		this.Execute_Rule_Else = jsonData['Execute']['Rule']['@Else'].toLowerCase();
+		this.Execute_Rule_Elsevalue = jsonData['Execute']['Rule']['@Elsevalue'];
+		this.onError_action = jsonData['onError']['@action'];
+		this.onError_value = jsonData['onError']['@value'];	
+
+	}
+
+	getJSON(){
+		return {
+			'path': this.path,
+			'impact': this.impact,
+			'InputDataFile' : this.InputDataFile,
+			'runmode' : { "@value": this.runmode_value, "@type": this.runmode_type },
+			'onError': { "@action": this.onError_action, "@value": this.onError_value },
+			'Execute': { "@ExecType": this.Execute_ExecType, 
+				"Rule": { "@Condition": this.Execute_Rule_Condition, "@Condvalue": this.Execute_Rule_Condvalue , 
+					"@Else": this.Execute_Rule_Else , "@Elsevalue": this.Execute_Rule_Elsevalue } 
+			},
+		};
+
+	}
+
+	copyToDocument(tag, obj) {
+		localStorage.setItem(tag, JSON.stringify(obj.getJSON()));
+	}
+
+	copyFromDocument(tag) {
+		return JSON.parse(localStorage.getItem(tag));
+	}
+
+	fillDefaults(jsonData){
+
+
+		if (!jsonData['path']) {
+			jsonData['path'] =  "New";
+		}
+
+		if (!jsonData['impact']) {
+			jsonData['impact'] =  "impact";
+		}
+
+		if (! jsonData['runmode']) {
+			jsonData['runmode'] = { "@type": "standard", "@value": "" };
+		}
+
+		if (! jsonData['runmode']['@value']) {
+			jsonData['runmode'] = { "@type": "standard", "@value": "" };
+		}
+		if (! jsonData['runmode']['@type']) {
+			jsonData['runmode'] = { "@type": "standard", "@value": "" };
+		}
+
+		if (!jsonData['onError']) {
+			jsonData['onError'] = { "@action": "next", "@value": "" };
+		}
+		if (!jsonData['onError']['@value']) {
+			jsonData['onError']['@value'] = "";
+		}
+		if (!jsonData['onError']['@action']) {
+			jsonData['onError']['@action'] = "";
+		}
+
+		if (!jsonData['Execute']) {
+			jsonData['Execute'] = { "@ExecType": "yes", "Rule": { "@Condition": "", "@Condvalue": "", "@Else": "next", "@Elsevalue": "" } };
+		}
+		if (!jsonData['Execute']['@ExecType']) {
+			jsonData['Execute'] = { "@ExecType": "yes", "Rule": { "@Condition": "", "@Condvalue": "", "@Else": "next", "@Elsevalue": "" } };
+		}
+		if (!jsonData['Execute']['Rule']) {
+			jsonData['Execute'][ "Rule"] = { "@Condition": "", "@Condvalue": "", "@Else": "next", "@Elsevalue": "" } ;
+		}
+		return jsonData;
+
+	}
+
+	createEmptySuite() {
+		return {
+			'path': '',
+			'runmode' : { "@value": "standard", "@type": "" },
+			'onError': { "@action": "next", "@value": "" },
+			'Execute': { "@ExecType": "yes", 
+				"Rule": { "@Condition": "", "@Condvalue": "", "@Else": "next", "@Elsevalue": "" } 
+			},
+		};
+
+	}
+}
+
+
+class projectsObject{
+	constructor(jsonData){
+		this.mapJsonData(jsonData);
+	}
+	mapJsonData(jsonData){ 
+			console.log("In constructor", jsonData);
+			if (!jsonData['Details']) {
+				this.Details = new projectDetailsObject(null);
+			} else {
+				this.Details = new projectDetailsObject(jsonData['Details'])
+			}
+
+			
+			if (!jsonData['Testsuites']) {
+				jsonData['Testsuites']['Testsuite'] = [] 
+			} 
+			if (!jsonData['Testsuites']['Testsuite']) {
+				jsonData['Testsuites']['Testsuite'] = [] 
+			} 
+			//
+			if (!jQuery.isArray(jsonData['Testsuites']['Testsuite'])) {
+			 jsonData['Testsuites']['Testsuite'] = [ jsonData['Testsuites']['Testsuite'] ];
+			}
+
+			this.Testsuites = [];
+			for (var k=0; k<jsonData['Testsuites']['Testsuite'].length; k++) {	
+				var ts = new projectSuiteObject(jsonData['Testsuites']['Testsuite'][k]);
+				this.Testsuites.push(ts);
+				}
+			// 
+			}
+
+		getJSON(){
+			var testsuitesJSON = [];
+			for (var ts =0; ts< this.Testsuites.length; ts++ ) {
+				testsuitesJSON.push(this.Testsuites[ts].getJSON());
+			}
+			console.log(this);
+
+			return { 'Details': this.Details.getJSON(), 
+				'Testsuites' :  testsuitesJSON };
+		}
+
+	}
+
 
  var projects = {
 
@@ -157,9 +386,9 @@ startNewProject : function() {
 			var sdata = data['fulljson'];
 			console.log("from views.py call=", sdata);
 			//projects.jsonProjectObject = JSON.parse(sdata); 
-			projects.jsonProjectObject = sdata['Project'];
+			projects.jsonProjectObject = new projectsObject(sdata['Project']);
 			projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
-			projects.mapProjectJsonToUi(projects.jsonTestSuites);  // This is where the table and edit form is created. 
+			projects.mapProjectJsonToUi();  // This is where the table and edit form is created. 
 			projects.fillProjectDefaultGoto();
 			console.log("Adding defaults ");
 			katana.$activeTab.find('#default_onError').on('change',projects.fillProjectDefaultGoto );
@@ -180,45 +409,11 @@ startNewProject : function() {
 	  	var xref="./projects/editProject/?fname=" + thePage; 
 	  	katana.templateAPI.load(xref, null, null, 'Project') ;
 	},
-/// -------------------------------------------------------------------------------
-// Dynamically create a new TestSuite object and append to the jsonTestSuites 
-// array. Default values are used to fill in a complete structure. If there is 
-// no default value, a null value is inserted for the keyword
-/// -------------------------------------------------------------------------------
-	makeNewSuite: function() { 
-		var newTestSuite = {	
-		"path": "path/to/suite", 
-		"Execute": { "@ExecType": "yes",
-			"Rule": {"@Condition": "","@Condvalue": "","@Else": "next", "@Elsevalue": "" }
-		}, 
-		"runmode": {
-			"@type": "standard", "@value": "2"
-		},
-		"retry": {
-			"@type": "if not", 
-			"@Condition": 
-			"testsuite_1_result", 
-			"@Condvalue": "PASS", 
-			"@count": "6", 
-			"@interval": "0"
-		}, 
-		"onError": { 
-			"@action": "next",
-			 "@value": "" }, 
-		"impact": "impact" 
-		};
-		return newTestSuite;
-	},
 
 	addSuiteToProject: function(){
-	var newTestSuite = projects.makeNewSuite();
-	if (!jQuery.isArray(projects.jsonTestSuites['Testsuite'])) {
-		projects.jsonTestSuites['Testsuite'] = [projects.jsonTestSuites['Testsuite']];
-		}
-
-	projects.jsonTestSuites['Testsuite'].push(newTestSuite);
-	projects.mapProjectJsonToUi(projects.jsonTestSuites);
-
+		var newTestSuite = new projectTestSuite();
+		projects.jsonTestSuites.push(newTestSuite);
+		projects.mapProjectJsonToUi();
 	},
 
 
@@ -247,49 +442,46 @@ startNewProject : function() {
 
 	setupProjectPopupDialog: function(s,popup) {
 	console.log(s);
-	var oneSuite = projects.jsonProjectObject['Testsuites']['Testsuite'][s];
+	var oneSuite = projects.jsonProjectObject.Testsuites[s];
 	console.log(oneSuite);
 	popup.find("#suiteRowToEdit").val(s); 
 	popup.find("#suitePath").val(oneSuite['path']);
-	popup.find("#Execute-at-ExecType").val(jsUcfirst(oneSuite['Execute']['@ExecType'])); 
-	popup.find("#executeRuleAtCondition").val(oneSuite['Execute']['Rule']['@Condition']); 
-	popup.find("#executeRuleAtCondvalue").val(oneSuite['Execute']['Rule']['@Condvalue']); 
-	popup.find("#executeRuleAtElse").val(oneSuite['Execute']['Rule']['@Else']); 
-	popup.find("#executeRuleAtElsevalue").val(oneSuite['Execute']['Rule']['@Elsevalue']); 
-	popup.find("#onError-at-action").val(oneSuite['onError']['@action']); 
-	popup.find("#onError-at-value").val(oneSuite['onError']['@value']); 
-	popup.find("#runmode-at-type").val(oneSuite['runmode']['@type'].toLowerCase()); 
-	popup.find("#runmode-at-value").val(oneSuite['runmode']['@value']); 
-	popup.find("#impact").val(oneSuite['impact']); 
+	popup.find("#Execute-at-ExecType").val(jsUcfirst(oneSuite.Execute_ExecType)); 
+	popup.find("#executeRuleAtCondition").val(oneSuite.Execute_Rule_Condition); 
+	popup.find("#executeRuleAtCondvalue").val(oneSuite.Execute_Rule_Condvalue); 
+	popup.find("#executeRuleAtElse").val(oneSuite.Execute_Rule_Else); 
+	popup.find("#executeRuleAtElsevalue").val(oneSuite.Execute_Rule_Elsevalue); 
+	popup.find("#onError-at-action").val(oneSuite.onError_action); 
+	popup.find("#onError-at-value").val(oneSuite.onError_value); 
+	popup.find("#runmode-at-type").val(oneSuite.runmode_type.toLowerCase()); 
+	popup.find("#runmode-at-value").val(oneSuite.runmode_value); 
+	popup.find("#impact").val(oneSuite.impact); 
 	projects.fillProjectSuitePopupDefaultGoto(popup);
 	popup.find('#onError-at-action').on('change', function(){ 
 			var popup = $(this).closest('.popup');
 			projects.fillProjectSuitePopupDefaultGoto(popup);
 	});
 	popup.find('.rule-condition').hide();
-	if (oneSuite["Execute"]['@ExecType']) {
-		console.log("FOUND EXECT TYPE ",oneSuite["Execute"]['@ExecType'] )
-		if (oneSuite["Execute"]['@ExecType'] == 'if' || oneSuite["Execute"]['@ExecType'] == 'if not') {
+	if (oneSuite.Execute_ExecType) {
+		if (oneSuite.Execute_ExecType == 'if' || oneSuite.Execute_ExecType == 'if not') {
 			popup.find('.rule-condition').show();
 		}	
 	}
 	popup.find("#runmode-at-type").on('change', function() {
-		var popup = $(this).closest('.popup');
+		var popup = projects.lastPopup;
 		var sid = popup.find("#suiteRowToEdit").val();
-		console.log(projects.jsonProjectObject['Testsuites'], sid); 
-		var oneSuite = projects.jsonProjectObject['Testsuites']['Testsuite'][sid];
+		console.log(projects.jsonProjectObject.Testsuites, sid); 
+		var oneSuite = projects.jsonProjectObject.Testsuites[sid];
 		console.log(oneSuite);
-		console.log("Runmode in popup ", oneSuite, oneSuite['runmode']['@type'] );
-		oneSuite['runmode']['@type'] = this.value; 
+		oneSuite.runmode_type = this.value; 
 		popup.find("#runmode-at-value").show();
-		if (oneSuite['runmode']['@type'] == 'standard') {
+		if (oneSuite.runmode_type == 'standard') {
 		popup.find("#runmode-at-value").hide();
 		}
 		
 	});
 	popup.find("#runmode-at-value").show();
-	if (oneSuite['runmode']['@type'] == 'standard') {
-		
+	if (oneSuite.runmode_type == 'standard') {
 		popup.find("#runmode-at-value").hide();
 
 	}
@@ -313,20 +505,20 @@ startNewProject : function() {
 	// console.log(xdata);
 	// console.log(s);
 	// var oneSuite = xdata[s];
-		var oneSuite = projects.jsonProjectObject['Testsuites']['Testsuite'][s];
+		var oneSuite = projects.jsonProjectObject.Testsuites[s];
 		console.log(oneSuite);
 		katana.$activeTab.find("#suiteRowToEdit").val(s); 
 		katana.$activeTab.find("#suitePath").val(oneSuite['path']);
-		katana.$activeTab.find("#Execute-at-ExecType").val(oneSuite['Execute']['@ExecType']); 
-		katana.$activeTab.find("#executeRuleAtCondition").val(oneSuite['Execute']['Rule']['@Condition']); 
-		katana.$activeTab.find("#executeRuleAtCondvalue").val(oneSuite['Execute']['Rule']['@Condvalue']); 
-		katana.$activeTab.find("#executeRuleAtElse").val(oneSuite['Execute']['Rule']['@Else']); 
-		katana.$activeTab.find("#executeRuleAtElsevalue").val(oneSuite['Execute']['Rule']['@Elsevalue']); 
+		katana.$activeTab.find("#Execute-at-ExecType").val(oneSuite.Execute_ExecType); 
+		katana.$activeTab.find("#executeRuleAtCondition").val(oneSuite.Execute_Rule_Condition); 
+		katana.$activeTab.find("#executeRuleAtCondvalue").val(oneSuite.Execute_Rule_Condvalue); 
+		katana.$activeTab.find("#executeRuleAtElse").val(oneSuite.Execute_Rule_Else); 
+		katana.$activeTab.find("#executeRuleAtElsevalue").val(oneSuite.Execute_ule_Elsevalue); 
 		
-		katana.$activeTab.find("#onError-at-action").val(oneSuite['onError']['@action']); 
-		katana.$activeTab.find("#onError-at-value").val(oneSuite['onError']['@value']); 
-		katana.$activeTab.find("#runmode-at-type").val(oneSuite['runmode']['@type'].toLowerCase()); 
-		katana.$activeTab.find("#runmode-at-value").val(oneSuite['runmode']['@value']); 
+		katana.$activeTab.find("#onError-at-action").val(oneSuite['onError_action']); 
+		katana.$activeTab.find("#onError-at-value").val(oneSuite['onError_value']); 
+		katana.$activeTab.find("#runmode-at-type").val(oneSuite['runmodetype'].toLowerCase()); 
+		katana.$activeTab.find("#runmode-at-value").val(oneSuite['runmode_value']); 
 		katana.$activeTab.find("#impact").val(oneSuite['impact']); 
 		projects.fillProjectDefaultGoto();
 
@@ -385,20 +577,19 @@ startNewProject : function() {
 	}
 
 	var s = parseInt(popup.find("#suiteRowToEdit").val());
-	var oneSuite = projects.jsonProjectObject['Testsuites']['Testsuite'][s];
+	var oneSuite = projects.jsonProjectObject.Testsuites[s];
 	oneSuite['path'] = popup.find("#suitePath").val(); 
 	oneSuite['Execute'] = {}
-	oneSuite['Execute']['@ExecType'] = popup.find("#Execute-at-ExecType").val(); 
-	oneSuite['Execute']['Rule'] = {}
-	oneSuite['Execute']['Rule']['@Condition']= popup.find("#executeRuleAtCondition").val(); 
-	oneSuite['Execute']['Rule']['@Condvalue'] = popup.find("#executeRuleAtCondvalue").val(); 
-	oneSuite['Execute']['Rule']['@Else'] = popup.find("#executeRuleAtElse").val(); 
-	oneSuite['Execute']['Rule']['@Elsevalue'] = popup.find("#executeRuleAtElsevalue").val(); 
+	oneSuite.Execute_ExecType = popup.find("#Execute-at-ExecType").val(); 
+	oneSuite.Execute_Rule_Condition= popup.find("#executeRuleAtCondition").val(); 
+	oneSuite.Execute_Rule_Condvalue = popup.find("#executeRuleAtCondvalue").val(); 
+	oneSuite.Execute_Rule_Else = popup.find("#executeRuleAtElse").val(); 
+	oneSuite.Execute_Rule_Elsevalue = popup.find("#executeRuleAtElsevalue").val(); 
 	oneSuite['impact'] = popup.find("#impact").val(); 
-	oneSuite['onError']['@action'] = popup.find("#onError-at-action").val(); 
-	oneSuite['onError']['@value'] = popup.find("#onError-at-value").val(); 
-	oneSuite['runmode']['@type'] = popup.find("#runmode-at-type").val().toLowerCase(); 
-	oneSuite['runmode']['@value'] = popup.find("#runmode-at-value").val(); 
+	oneSuite.onError_action = popup.find("#onError-at-action").val(); 
+	oneSuite.onError_value = popup.find("#onError-at-value").val(); 
+	oneSuite.runmode_type = popup.find("#runmode-at-type").val().toLowerCase(); 
+	oneSuite.runmode_value = popup.find("#runmode-at-value").val(); 
 	console.log("Saving", oneSuite);
 },
 
@@ -584,59 +775,61 @@ Two global variables are heavily used when this function is called;
 		projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
 		console.log("Create suites for ", projects.jsonProjectObject['Testsuites']); 
 		
-		xdata = projects.jsonTestSuites['Testsuite'];
-		console.log("Create suites for ", xdata, projects.jsonTestSuites); 
+		console.log("Create suites for ", projects.jsonTestSuites); 
+		var slen = projects.jsonTestSuites.length;
 		katana.$activeTab.find("#tableOfTestSuitesForProject").html("");
-		for (var s=0; s<Object.keys(xdata).length; s++ ) {
-			var oneSuite = projects.jsonProjectObject['Testsuites']['Testsuite'][s];
+		for (var s=0; s<slen; s++ ) {
+			var oneSuite = projects.jsonProjectObject.Testsuites[s];
 		
-		//console.log(xdata);
-		if (oneSuite == null) {
-			projects.jsonProjectObject['Testsuites']['Testsuite'][s] = {} ;
-			oneSuite = projects.jsonProjectObject['Testsuites']['Testsuite'][s];
-		}
-		//console.log(oneSuite);
-		projects.fillSuiteDefaults(s,projects.jsonProjectObject['Testsuites']['Testsuite']);
-		//console.log(oneSuite);
-		//console.log(oneSuite['path']);
-		
-		items.push('<tr data-sid="'+s+'">');
-		items.push('<td>'+(parseInt(s)+1)+'</td>');
-		var tbid = "textTestSuiteFile-"+s+"-id";
+			items.push('<tr data-sid="'+s+'">');
+			items.push('<td>'+(parseInt(s)+1)+'</td>');
+			var tbid = "textTestSuiteFile-"+s+"-id";
 
-		var bid = "fileSuitecase-"+s+"-id";
-		items.push('<td><i title="ChangeFile" class="fa fa-folder-open" skey="'+bid+'" katana-click="projects.getFileForSuite" /></td>');
-		
-		oneSuite['Execute']['@ExecType'] = jsUcfirst(oneSuite['Execute']['@ExecType']); 
-		items.push('<td id="'+tbid+'" katana-click="projects.showSuiteFromProject" skey="'+oneSuite['path']+'">'+oneSuite['path']+'</td>');
-		items.push('<td>Type='+oneSuite['Execute']['@ExecType']+'<br>');
+			var bid = "fileSuitecase-"+s+"-id";
+			items.push('<td><i title="ChangeFile" class="fa fa-folder-open" skey="'+bid+'" katana-click="projects.getFileForSuite" /></td>');
+			
+			//oneSuite.Execute_ExecType = jsUcfirst(oneSuite.Execute_ExecType); 
+			items.push('<td id="'+tbid+'" katana-click="projects.showSuiteFromProject" skey="'+oneSuite.path+'">'+oneSuite.path+'</td>');
+			items.push('<td>Type='+oneSuite.Execute_ExecType+'<br>');
 
-		if (oneSuite['Execute']['@ExecType'] == 'if' || oneSuite['Execute']['@ExecType'] == 'if not') {
-			items.push('Condition='+oneSuite['Execute']['Rule']['@Condition']+'<br>');
-			items.push('Condvalue='+oneSuite['Execute']['Rule']['@Condvalue']+'<br>');
-			items.push('Else='+oneSuite['Execute']['Rule']['@Else']+'<br>');
-			items.push('Elsevalue='+oneSuite['Execute']['Rule']['@Elsevalue']+'<br>');
-		}
+			if (oneSuite.Execute_ExecType == 'if' || oneSuite.Execute_ExecType == 'if not') {
+				items.push('Condition='+oneSuite.Execute_Rule_Condition+'<br>');
+				items.push('Condvalue='+oneSuite.Execute_Rule_Condvalue+'<br>');
+				items.push('Else='+oneSuite.Execute_Rule_Else+'<br>');
+				items.push('Elsevalue='+oneSuite.Execute_Rule_Elsevalue+'<br>');
+			}
 
-		items.push('</td>');
-		items.push('<td>'+oneSuite['onError']['@action']+'</td>');
-		items.push('<td>'+oneSuite['impact']+'</td>');
-
-		var bid = "deleteTestSuite-"+s+"-id";
-		items.push('<td><i  title="Delete" class="fa fa-trash" value="X" skey="'+bid+'" katana-click="projects.deleteTestSuiteCB"/>');
-
-		bid = "editTestSuite-"+s+"-id";
-		items.push('<i  title="Edit" class="fa fa-pencil" title="Edit" skey="'+bid+'" katana-click="projects.editTestSuiteCB"/>');
+			items.push('</td>');
+			items.push('<td>'+oneSuite.onError_action+'</td>');
+			if (oneSuite.onError_action == 'goto') {
+				items.push('<td>'+oneSuite.onError_action+' '+oneSuite.onError_value+'</td>');
+			} else {
+				items.push('<td>'+oneSuite.onError_action+'</td>');
+			}
 
 
-		bid = "InsertTestSuite-"+s+"-id"
-		items.push('<i  title="Insert" class="fa fa-plus" value="Insert" skey="'+bid+'" katana-click="projects.insertTestSuiteCB"/>');
+			items.push('<td>'+oneSuite.impact+'</td>');
 
-		bid = "DuplicateTestSuite-"+s+"-id"
-		items.push('<i  title="Duplicate" class="fa fa-copy" value="Duplicate" skey="'+bid+'" katana-click="projects.duplicateTestSuiteCB"/></td>');
+			var bid = "deleteTestSuite-"+s+"-id";
+			items.push('<td><i  title="Delete" class="fa fa-trash" value="X" skey="'+bid+'" katana-click="projects.deleteTestSuiteCB"/>');
 
-		items.push('</tr>');
-		}
+			bid = "editTestSuite-"+s+"-id";
+			items.push('<i  title="Edit" class="fa fa-pencil" title="Edit" skey="'+bid+'" katana-click="projects.editTestSuiteCB"/>');
+
+			bid = "InsertTestSuitebtn-"+s+"-id"
+			items.push('<i  title="Insert" class="fa fa-plus" value="Insert" skey="'+bid+'" katana-click="projects.insertTestSuiteCB"/>');
+
+
+			bid = "copyToStorage-"+s+"-id-";
+			items.push('<i title="Copy to clipboard" class="fa fa-clipboard" theSid="'+s+'"   id="'+bid+'" katana-click="projects.copyToClipboardCB" key="'+bid+'"/>');
+			bid = "copyFromStorage-"+s+"-id-";
+			items.push('<i title="Copy from clipboard" class="fa fa-outdent" theSid="'+s+'"   id="'+bid+'" katana-click="projects.insertFromClipboardCB" key="'+bid+'"/>');
+
+			bid = "DuplicateTestSuite-"+s+"-id"
+			items.push('<i  title="Duplicate" class="fa fa-copy" value="Duplicate" skey="'+bid+'" katana-click="projects.duplicateTestSuiteCB"/></td>');
+
+			items.push('</tr>');
+			}
 		items.push('</tbody>');
 		items.push('</table>');
 
@@ -658,13 +851,13 @@ Two global variables are heavily used when this function is called;
 	deleteTestSuiteCB : function(){
 			var names = this.attr('skey').split('-');
 			var sid = parseInt(names[1]);
-			projects.removeTestSuite(sid,xdata);
+			projects.jsonTestSuites.splice(sid,1);
+			projects.mapProjectJsonToUi();	// Send in the modified array
 		},
 
 	editTestSuiteCB : function(){
 			var names = this.attr('skey').split('-');
 			var sid = parseInt(names[1]);
-			console.log("xdata --> ", xdata);
 			katana.popupController.open(katana.$activeTab.find("#editTestSuiteEntry").html(),"Edit..." + sid, function(popup) {
 				projects.lastPopup = popup; 
 				console.log(katana.$activeTab.find("#editTestSuiteEntry"));
@@ -675,15 +868,35 @@ Two global variables are heavily used when this function is called;
 	insertTestSuiteCB : function(){
 			var names = this.attr('skey').split('-');
 			var sid = parseInt(names[1]);
-			console.log("xdata --> "+ xdata);
-			projects.insertTestSuite(sid,xdata,0);
+			var nb = new projectTestSuite();
+			projects.jsonTestSuites.splice(sid,0,nb);
+			projects.mapProjectJsonToUi();	// Send in the modified array
 		},
+
+	copyToClipboardCB : function() { 
+		var names = this.attr('skey').split('-');
+		var sid = parseInt(names[1]);
+		projects.jsonTestSuites[sid].copytoDocument('lastSuiteCopied', projects.jsonTestSuites[sid]);
+
+	},
+
+	insertFromClipboardCB : function() { 
+		var names = this.attr('skey').split('-');
+		var sid = parseInt(names[1]);
+		jsonData = projects.jjsonTestSuites[sid].copyFromDocument('lastSuiteCopied');
+		console.log("Retrieving ... ", jsonData);
+		var nb  = new projectSuiteObject(jsonData);
+		projects.jsonTestSuites.splice(sid,0,nb);
+		projects.mapProjectJsonToUi();	// Send in the modified array
+	},
 
 	duplicateTestSuiteCB : function(){
 			var names = this.attr('skey').split('-');
 			var sid = parseInt(names[1]);
-			console.log("xdata --> "+ xdata);
-			projects.insertTestSuite(sid,xdata,1);
+			var jsonData = projects.jsonTestSuites[sid].getJSON();
+			var nb  = new projectSuiteObject(jsonData);
+			projects.jsonTestSuites.splice(sid,0,nb);
+			projects.mapProjectJsonToUi();	// Send in the modified array
 		},
 
 	getResultsDirForProjectRow: function() {
@@ -724,8 +937,8 @@ Two global variables are heavily used when this function is called;
 				if (listSuites.length < 2) {
 		 return; 
 		}
-		console.log(projects.jsonProjectObject["Testsuites"] );
-		var oldSuitesteps = projects.jsonProjectObject["Testsuites"]['Testsuite'];
+		console.log(projects.jsonProjectObject.Testsuites );
+		var oldSuitesteps = projects.jsonProjectObject.Testsuites;
 		var newSuitesteps = new Array(listSuites.length);
 		console.log("List of ... "+listSuites.length);
 		for (xi=0; xi < listSuites.length; xi++) {
@@ -736,10 +949,10 @@ Two global variables are heavily used when this function is called;
 			}
 
 		console.log(projects.jsonProjectObject);
-		projects.jsonProjectObject["Testsuites"]['Testsuite']= newSuitesteps;
-		console.log(projects.jsonProjectObject["Testsuites"] );
+		projects.jsonProjectObject.Testsuites = newSuitesteps;
+		console.log(projects.jsonProjectObject.Testsuites);
 		
-		projects.jsonTestSuites = projects.jsonProjectObject['Testsuites'] 
+		projects.jsonTestSuites = projects.jsonProjectObject.Testsuites;
 		projects.mapProjectJsonToUi();
 
 	},
@@ -749,42 +962,6 @@ Two global variables are heavily used when this function is called;
 		return dst; 
 	},
 
-	fillSuiteDefaults: function(s, data){
-		if(data[s] == null) {
-			data[s] = {} ;
-		}    
-		oneSuite = data[s];
-
-		if (!oneSuite['path']) {
-			oneSuite['path'] =  "New";
-		}
-
-		if (!oneSuite['impact']) {
-			oneSuite['impact'] =  "impact";
-		}
-
-		if (! oneSuite['Execute']){
-			oneSuite['Execute'] = { "@ExecType": "yes", 
-					"Rule": { "@Condition": "", "@Condvalue": "", "@Else": "next", "@Elsevalue": "" }
-				}; 
-		}
-		if (! oneSuite['Execute']['@ExecType']){
-				oneSuite['Execute']['@ExecType'] = "yes";
-		}
-		if (!oneSuite['Execute']['Rule']) {
-				oneSuite['Execute']['Rule'] = { "Rule": { "@Condition": "", "@Condvalue": "", "@Else": "next", "@Elsevalue": "" } };
-		}
-		if (! oneSuite['onError']) {
-			oneSuite['onError'] = { "@action": "next", "@value": "" };
-		}
-		if (! oneSuite['runmode']) {
-			oneSuite['runmode'] = { "@type": "standard", "@value": "" };
-		}
-		if (! oneSuite['retry']) {
-			oneSuite['retry'] = { "@type": "next", "@Condition": "", "@Condvalue": "", "@count": "" , "@interval": ""};
-		}
-
-	},
 /*
 // Shows the global project data holder in the UI.
 
@@ -797,19 +974,13 @@ Two global variables are heavily used when this function is called;
 
 */
 	mapProjectJsonToUi: function(){
-		if (!jQuery.isArray(projects.jsonTestSuites)){
-		 projects.jsonTestSuites = [projects.jsonTestSuites]; 
-		}
 
-
-		katana.$activeTab.find('#projectState').val(projects.jsonProjectObject['Details']['State']);
-		katana.$activeTab.find('#projectDate').val(projects.jsonProjectObject['Details']['Date'] + " " + projects.jsonProjectObject['Details']['Time'] );
-		katana.$activeTab.find('#default_onError').val(projects.jsonProjectObject['Details']['default_onError']['@action']);
-		katana.$activeTab.find('#default_onError_goto').val(projects.jsonProjectObject['Details']['default_onError']['@value']);
-		katana.$activeTab.find('#projectDatatype').val(projects.jsonProjectObject['Details']['Datatype']);
-		katana.$activeTab.find('#projectResultsDir').val(katana.$activeTab.find("#projectResultsDir").attr("value"));
-	
-
+		katana.$activeTab.find('#projectState').val(projects.jsonProjectObject.Details.State);
+		katana.$activeTab.find('#projectDate').val(projects.jsonProjectObject.Details.cDate + " " + projects.jsonProjectObject.Details.cTime);
+		katana.$activeTab.find('#default_onError').val(projects.jsonProjectObject.Details_default_onError_action);
+		katana.$activeTab.find('#default_onError_goto').val(projects.jsonProjectObject.Details_default_onError_value);
+		katana.$activeTab.find('#projectDatatype').val(projects.jsonProjectObject.Details_Datatype);
+		katana.$activeTab.find('#projectResultsDir').val(katana.$activeTab.find("#projectResultsDir").val());
 		projects.createSuitesTable();
 		projects.fillProjectDefaultGoto();
 	},  // end of function 
@@ -819,25 +990,6 @@ Two global variables are heavily used when this function is called;
 			katana.popupController.close(projects.lastPopup);
 			projects.mapProjectJsonToUi();
 	},
-
-// Removes a test suite by its ID and refresh the page. 
-	removeTestSuite: function( sid,xdata ){
-		projects.jsonTestSuites['Testsuite'].splice(sid,1);
-		console.log("Removing test suites "+sid+" now " + Object.keys(projects.jsonTestSuites).length);
-		mapProjectJsonToUi();	// Send in the modified array
-	},
-// Removes a test suite by its ID and refresh the page. 
-	insertTestSuite: function( sid,xdata, copy ){
-			var newTestSuite = projects.makeNewSuite();	
-			if (copy == 1) {
-				newTestSuite = jQuery.extend(true, {}, xdata[sid]); 
-			}
-		projects.jsonTestSuites['Testsuite'].splice(sid,0,newTestSuite);
-		console.log("insertining test suites at"+sid+" now " + Object.keys(projects.jsonTestSuites).length);
-		projects.mapProjectJsonToUi();	// Send in the modified array
-	},
-
-
 
 
 };

@@ -399,6 +399,7 @@ var cases = {
 
 
 	start_wdfEditor: function() { 
+		// Start the WDF editor. 
 		var tag = '#caseInputDataFile';
 		var filename = katana.$activeTab.find('#caseInputDataFile').attr("fullpath");
 		var csrftoken = $("[name='csrfmiddlewaretoken']").val();
@@ -624,7 +625,7 @@ var cases = {
 			var callback_on_accept = function(selectedValue) { 
 			  		var sid = katana.$activeTab.find("#editCaseStepDiv").attr('row-id');
 			  		console.log("Got this file" , selectedValue, names, sid);
-			  		var popup = katana.$activeTab.find("#editCaseStepDiv").attr('data-popup-id');
+			  		var popup = cases.lastPopup; // katana.$activeTab.find("#editCaseStepDiv").attr('data-popup-id');
 			  		var savefilepath = katana.$activeTab.find('#savesubdir').text();  
 			  		console.log("File path ==", savefilepath);
 					var nf = prefixFromAbs(savefilepath, selectedValue);
