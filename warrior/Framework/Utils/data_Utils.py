@@ -464,6 +464,9 @@ def _get_cmd_details(testdata, global_obj, system_name,
         else:
             resultant_list = _get_cmdparams_list(testdata, global_obj, attrib)
             if param == "sys_list":
+                # substitute sys tag value from var_config file
+                resultant_list = string_Utils.sub_from_varconfig(varconfigfile,
+                                                                 resultant_list)
                 details_dict["vc_file_list"] = []
                 vc_file_list = _get_vc_details(resultant_list, system_name,
                                                varconfigfile)
