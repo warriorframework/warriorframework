@@ -898,30 +898,23 @@ def verify_data(expected, key, data_type='str', comparison='eq'):
     result, err_msg, exp = validate()
     keys = key.split('.')
     value = get_object_from_datarepository(keys[0])
+    key_err_msg = "key {} not present in data repository\n"
     try:
-        if len(keys) == 1 and expected != value and not comp_funcs[comparison](value, exp):
+        for k in keys[1:]:
+            value = value[k]
+        if not value:
+            err_msg += key_err_msg.format(key)
+            result = "ERROR"
+        if result != "TRUE":
+            print_error(err_msg)
+        elif not comp_funcs[comparison](value, exp):
             result = "FALSE"
-            print_warning("The expected and repository value are different")
         else:
-            for k in keys[1:]:
-                if k in value:
-                    value = value[k]
-            if not expected == value and not comp_funcs[comparison](value, exp):
-                result = "FALSE"
-                print_warning("The expected and repository value are different")
-
+            print_info("The object_key {0} with the expected value {1} is in data_repository".format(key,expected))
     except KeyError:
-        err_msg += "key {} not present in data repository\n".format(key)
-        result = "ERROR"
-        print_error(err_msg)
+        print_error(key_err_msg.format(key))
     except TypeError:
-        err_msg += "key {} not present in data repository\n".format(key)
-        result = "ERROR"
-        print_error(err_msg)
-
-    if result == "TRUE":
-        print_info("{} found in repository with value: {}".format(key,expected))
-
+        print_error(key_err_msg.format(key))
     return result, value
 
 
