@@ -126,18 +126,21 @@ def parsexmlobj():
     xmlobj = parseString("".join(request.body))
     tree = get_correct_xml_and_root_element(xmlobj)
 
-    WrapperName = tree[0][0].text# To get the wrapper keyword name, Action file name and the
+    WrapperName = tree[0][0].text
+    # To get the wrapper keyword name, Action file name and the
     # description which is provided by the user.
     ActionFile = tree[0][2].text.strip()
     Description = tree[0][3].text
 
-    with open(ActionFile, 'r') as files:# To get the method names available in user provided
+    with open(ActionFile, 'r') as files:
+        # To get the method names available in user provided
         # action file from keyword sequencing tool UI screen
         for line in files:
             next_word = get_method_name(line)
             method_names.append(next_word)
 
-    if WrapperName in method_names:# To check if the user provided wrapper keyword name already
+    if WrapperName in method_names:
+        # To check if the user provided wrapper keyword name already
         # exists in action file
         checkval = "yes"
     else:
@@ -146,8 +149,9 @@ def parsexmlobj():
         subkw_list = Subkeyword.findall('Skw')
         doc_string_value, subkw_list, object_list_new, import_action_list, kw_name_1 = check_action_file_name(subkw_list, ActionFile)
         sum_val = 1
-        for new in doc_string_value:# To have the doc string in the order with
-            #numbers
+        for new in doc_string_value:
+            # To have the doc string in the order with
+            # numbers
             sample.append('\n' + "        " + str(sum_val) + ". " + new)
             sample_string = "".join(sample)
             sum_val += 1
@@ -156,7 +160,8 @@ def parsexmlobj():
 
         template_dir, template_dir_1 = get_relative_path_for_kw_seq_temp()
 
-        for line in io.open(template_dir, 'r'):# Replacing kw_seq_template with the respective
+        for line in io.open(template_dir, 'r'):
+            # Replacing kw_seq_template with the respective
             # details and placing it in user provided action file
             with open(ActionFile, 'a+') as f2:
                 line = line.replace('$new_line', '\n')
@@ -177,7 +182,8 @@ def parsexmlobj():
             for _, val in enumerate(final_obj_list):
                 val = val.decode('utf-8')
                 f2.write('\n' + "        " + val)
-            for line in io.open(template_dir_1, 'r'):# Replacing kw_seq_temp with the import lines
+            for line in io.open(template_dir_1, 'r'):
+                # Replacing kw_seq_temp with the import lines
                 # and object list which is already been created and placing it in user provided
                 # action file
                 f2.write('\n' + "    " + line)
@@ -185,6 +191,10 @@ def parsexmlobj():
     return checkval
 
 def check_action_file_name(subkw_list, ActionFile):
+    """
+    This method checks for the Actionfile name where the wrapper keyword needs to be appended.
+    And also the content of the wrapper keyword would be framed here.
+    """
     object_list_new = []
     class_list_new = []
     import_action_list = []
@@ -194,17 +204,20 @@ def check_action_file_name(subkw_list, ActionFile):
     kw_name_1 = []
     string = "The keyword {0} in Driver {1} has a defined arguments {2} You must want to"\
                 " send other values through data file"
-    for values in subkw_list:# To get the driver name for each sub-keyword and the keyword name
+    for values in subkw_list:
+        # To get the driver name for each sub-keyword and the keyword name
         # from the sub keyword list.
         subkw_list_attrib = values.attrib
         driver = subkw_list_attrib.get('Driver')
         kw_name = subkw_list_attrib.get('Keyword')
         driver_file = gpysrcdir + '/ProductDrivers/' + driver + ".py"
         actiondir = mkactiondirs(driver_file)
-        actions = get_action_dirlist(driver_file)# To get the action file directory and the
+        actions = get_action_dirlist(driver_file)
+        # To get the action file directory and the
         # action .py files for each sub- keyword.
         pyfiles = mkactionpyfiles(actiondir)
-        if len(pyfiles) > 1:# If more than one .py file in action directory, checking each
+        if len(pyfiles) > 1:
+            # If more than one .py file in action directory, checking each
             # action file whether the user provided sub keyword name available in each .py file
             # or not. If available that action .py file would be taken for further operation
             for action_file in pyfiles:
@@ -221,11 +234,13 @@ def check_action_file_name(subkw_list, ActionFile):
         file_name = file_name.split('.')[0]
         py_files_1 = py_files.split(os.sep)
         py_files_1 = ('.').join(py_files_1)
-        for action in actions: # If multiple action directories available in a action directory
+        for action in actions:
+        # If multiple action directories available in a action directory
         # checking whether the action package is available in .py file name.
             if action.strip() in py_files_1:
                 actions_package = action.strip() + "." + file_name
-        modules = importlib.import_module(actions_package)# To get the class name for the action
+        modules = importlib.import_module(actions_package)
+        # To get the class name for the action
         # .py file in which the sub keyword is available
         class_list_new = inspect.getmembers(modules, inspect.isclass)
         for elem in class_list_new:
@@ -236,11 +251,13 @@ def check_action_file_name(subkw_list, ActionFile):
         else:
             import_action_list.append('from ' + action.strip() + "." + file_name + " " +
                                     "import " + class_list_new)
-            object_list = class_list_new + "_obj = " + class_list_new + "()"# Forming object
+            object_list = class_list_new + "_obj = " + class_list_new + "()"
+            # Forming object
             # creation and appending it to a list
             object_list_new.append(object_list)
             class_list = (object_list.split('=')[0]).strip()
-        Arguments = values.find('Arguments')# Finding all the arguments and it's values for
+        Arguments = values.find('Arguments')
+        # Finding all the arguments and it's values for
         # each sub-keyword
         if Arguments is not None:
             argument_list = Arguments.findall('argument')
