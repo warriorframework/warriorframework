@@ -197,10 +197,13 @@ class caseTestStepObject {
 			jsonData = 	this.createEmptyTestStep(); 
 		}
 		this.Arguments = [] ; 
-		for (var a=0;a<jsonData['Arguments'].length; a++) {
-			var ao = jsonData['Arguments'][a];
-			this.Arguments.push({ 'value': ao['@value'], 'name' : ao['@name']})
+		if (jsonData['Arguments']) {
+			for (var a=0;a<jsonData['Arguments'].length; a++) {
+				var ao = jsonData['Arguments'][a];
+				this.Arguments.push({ 'value': ao['@value'], 'name' : ao['@name']})
+			}
 		}
+
 		console.log("Adding-->",jsonData);
 		this.step_driver = jsonData['@Driver']; 
 		this.step_keyword = jsonData['@Keyword']; 
@@ -364,7 +367,9 @@ class caseTestStepObject {
 
 		getJSON(){
 			var testStepsJSON = [];
+			console.log(this.Teststeps); 
 			for (var ts =0; ts< this.Teststeps.length; ts++ ) {
+				console.log(ts, this.Teststeps[ts]);
 				testStepsJSON.push(this.Teststeps[ts].getJSON());
 			}
 
