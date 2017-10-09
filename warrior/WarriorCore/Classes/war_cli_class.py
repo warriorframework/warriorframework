@@ -25,6 +25,7 @@ class WarriorCliClass(object):
     """Handle the command line input for warrior"""
     cmdprint = False
     def __init__(self):
+        """constructor"""
         return None
 
     @classmethod
@@ -36,15 +37,15 @@ class WarriorCliClass(object):
                 target_time, '%Y-%m-%d-%H-%M-%S')
             current_time = datetime.datetime.now().replace(microsecond=0)
             if target_time >= current_time:
-                print 'warrior will sleep until ' + str(target_time)
-                print 'please do not close this window'
+                print_info("warrior will sleep until : ".str(target_time))
+                print_info("please do not close this window")
                 time.sleep((target_time-current_time).total_seconds())
-                print 'warrior is now awake'
+                print_info("warrior is now awake")
             else:
-                print 'Please enter a future time'
+                print_info("Please enter a future time")
                 exit(1)
         except ValueError:
-            print 'Please enter a legit time in yyyy-mm-dd-hh-mm-ss format'
+            print_info("Please enter a legit time in yyyy-mm-dd-hh-mm-ss format")
             exit(1)
 
     @classmethod
@@ -59,9 +60,9 @@ class WarriorCliClass(object):
                 if Utils.xml_Utils.getRoot(xmlfile_abspath).tag == 'Testcase':
                     result.append(xmlfile_abspath)
                 else:
-                    print xmlfile_abspath + " is not a valid testcase xml"
+                    print_error(xmlfile_abspath, "is not a valid testcase xml")
             else:
-                print xmlfile_abspath + " is not a xml file"
+                print_error(xmlfile_abspath, " is not a xml file")
         return result
 
     def check_tag(self, category_list, dirlist):
@@ -89,7 +90,7 @@ class WarriorCliClass(object):
                             if len(set(category_list) & set(cat_text)) > 0:
                                 result.append(xmlfile)
             else:
-                print folder, "is not a directory"
+                print_error(folder, "is not a directory")
         print_info("Number of matching testcases: {0}".format(len(result)))
         return result
 
@@ -169,14 +170,14 @@ class WarriorCliClass(object):
                 suite.create_suite({"tc_type":tc_type, "kw_type":kw_type, "val":val})
                 filepath = suite.output_file()
             else:
-                print "None of the provided xml files are valid testcases"
+                print_error("None of the provided xml files are valid testcases")
                 exit(1)
         else:
-            print "**********\nWrong combination of CLI arguments,"\
+            print_error("**********\nWrong combination of CLI arguments,"\
                 " please choose only one testcase exec_type"\
                 " and one keyword exec_type, Warrior CLI commands"\
                 " does not support RMT and RUF with exec_type=parallel_keywords"\
-                "\n**********"
+                "\n**********")
             exit(1)
         return filepath
 
