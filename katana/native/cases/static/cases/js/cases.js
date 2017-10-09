@@ -630,13 +630,15 @@ var cases = {
 		
 			var callback_on_accept = function(selectedValue) { 
 			  		var sid = katana.$activeTab.find("#editCaseStepDiv").attr('row-id');
-			  		console.log("Got this file" , selectedValue, names, sid);
+			  		console.log("Got this file" , selectedValue, sid);
 			  		var popup = cases.lastPopup; // katana.$activeTab.find("#editCaseStepDiv").attr('data-popup-id');
 			  		var savefilepath = katana.$activeTab.find('#savesubdir').text();  
 			  		console.log("File path ==", savefilepath);
 					var nf = prefixFromAbs(savefilepath, selectedValue);
 					var oneCaseStep = cases.jsonCaseSteps[sid];
 					oneCaseStep["InputDataFile"] = nf;
+					popup.find("#StepInputDataFile").val(oneCaseStep["InputDataFile"], nf);
+		
 					};
 			 var callback_on_dismiss = function(){ 
 			  		var popup = cases.lastPopup; // katana.$activeTab.find("#editCaseStepDiv").attr('data-popup-id');
@@ -932,8 +934,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		var gotoStep =popup.find('#SteponError-at-action').val();
 		console.log("Step ", gotoStep, popup.find('#SteponError-at-action'));
 		var defgoto = popup.find('#SteponError-at-value'); 
-		defgoto.hide();
-		defgoto.empty(); 
+		defgoto.hide(); 
 		var xdata = cases.jsonCaseObject.Teststeps; // ['Testcase']; 
 		console.log("Step....",xdata.length, xdata);
 		for (var s=0; s<xdata.length; s++ ) {
@@ -1069,6 +1070,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		popup.find("#runmode-at-value").attr("value",oneCaseStep.runmode_value);
 		popup.find("#StepImpact").attr("value",oneCaseStep["impact"]);
 		popup.find("#StepInputDataFile").attr("value",oneCaseStep["InputDataFile"]);
+		popup.find("#StepInputDataFile").val(oneCaseStep["InputDataFile"]);
 		popup.find('.rule-condition').hide();
 		if (oneCaseStep.Execute_ExecType) {
 			if (oneCaseStep.Execute_ExecType == 'if' || oneCaseStep.Execute_ExecType == 'if not') {
@@ -1123,12 +1125,23 @@ The UI currently uses jQuery and Bootstrap to display the data.
  		});
 	});
 
+	cases.fillCaseStepDefaultGoto();
 
 	popup.find("#casesExecuteAtExecType").on('change',function() {
 		if (this.value == 'if' || this.value == 'if not') {
 			popup.find('.rule-condition').show();			
 		} else {
 			popup.find('.rule-condition').hide();	
+		}
+	});
+
+
+
+	popup.find("#SteponError-at-action").on('change',function() {
+		if (this.value == 'goto' ) {
+			popup.find('#SteponError-at-value').show();			
+		} else {
+			popup.find('#SteponError-at-value').hide();		
 		}
 	});
 
