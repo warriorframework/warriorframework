@@ -12,14 +12,13 @@ limitations under the License.
 '''
 import os
 import re
-import sys
 from collections import OrderedDict
 from ast import literal_eval
 from Framework.Utils import xml_Utils, string_Utils, testcase_Utils,\
-config_Utils, file_Utils
+ config_Utils, file_Utils
 from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.print_Utils import print_info, print_warning,\
-print_error, print_debug, print_exception
+ print_error, print_debug, print_exception
 from Framework.ClassUtils.testdata_class import TestData, TestDataIterations
 from Framework.Utils.xml_Utils import get_attributevalue_from_directchildnode as av_fromdc
 from Framework.Utils.string_Utils import sub_from_varconfigfile
@@ -899,22 +898,28 @@ def verify_data(expected, key, data_type='str', comparison='eq'):
     keys = key.split('.')
     value = get_object_from_datarepository(keys[0])
     key_err_msg = "key {} not present in data repository\n"
-    try:
-        for k in keys[1:]:
-            value = value[k]
-        if not value:
-            err_msg += key_err_msg.format(key)
-            result = "ERROR"
-        if result != "TRUE":
-            print_error(err_msg)
-        elif not comp_funcs[comparison](value, exp):
-            result = "FALSE"
-        else:
-            print_info("The object_key {0} with the expected value {1} is in data_repository".format(key,expected))
-    except KeyError:
+    if value:
+        try:
+            for k in keys[1:]:
+                value = value[k]
+            if result == "ERROR" or result == "EXCEPTION":
+                print_error(err_msg)
+            elif not comp_funcs[comparison](value, exp):
+                result = "FALSE"
+                print_warning("The key, value pair '{0}:{1}' present in the  "
+                              "data_repository doesn't satisfy the expected value & "
+                              "condition '{2}:{3}'".format(key, value, comparison, expected))
+            else:
+                print_info("The key, value pair '{0}:{1}' present in the  "
+                           "data_repository satisfies the expected value & condition "
+                           "'{2}:{3}'".format(key, value, comparison, expected))
+        except KeyError:
+            print_error(key_err_msg.format(key))
+    else:
+        # when the value is not in data_repo(value is False)
+        result = "ERROR"
         print_error(key_err_msg.format(key))
-    except TypeError:
-        print_error(key_err_msg.format(key))
+
     return result, value
 
 
