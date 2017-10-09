@@ -44,7 +44,7 @@ class WarriorCliClass(object):
             else:
                 print_info("Please enter a future time")
                 exit(1)
-            except ValueError:
+        except ValueError:
                 print_info("Please enter a legit time in yyyy-mm-dd-hh-mm-ss format")
                 print_info('warrior will sleep until ' + str(target_time))
                 print_info('please do not close this window')
