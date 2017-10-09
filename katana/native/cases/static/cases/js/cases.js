@@ -1324,7 +1324,6 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		console.log(cases.lastPopup.find('[argid=caseArgValue-'+aid+']'));
 		console.log(obj);
 		cases.mapCaseJsonToUi(cases.jsonCaseSteps);		
-		
 	},
 
  	addOneArgument: function( sid ) {
@@ -1361,36 +1360,43 @@ The UI currently uses jQuery and Bootstrap to display the data.
 
 // When the edit button is clicked, map step to the UI. 
 	mapUItoTestStep: function(sid,popup) {
-	//var sid = parseInt(katana.$activeTab.find("#StepRowToEdit").attr('value'));	
-	console.log(cases.jsonCaseSteps);
-		
-	// Validate whether sid 
-	var xdata = cases.jsonCaseSteps;
+		//var sid = parseInt(katana.$activeTab.find("#StepRowToEdit").attr('value'));	
+		console.log("mapUItoTestStep: ", cases.jsonCaseSteps);
+			
+		// Validate whether sid 
+		var xdata = cases.jsonCaseSteps;
 
-	console.log(xdata);
-	console.log(sid);
-	oneCaseStep = xdata[sid];
-	oneCaseStep.step_driver = popup.find("#StepDriver").val();
-	oneCaseStep.step_keyword = popup.find("#StepKeyword").val();
-	oneCaseStep.step_TS =popup.find("#StepTS").val();
-	oneCaseStep["Description"] = popup.find("#StepDescription").val();
-	oneCaseStep["context"] =  popup.find("#StepContext").val();
-	oneCaseStep.Execute_ExecType  = popup.find("#casesExecuteAtExecType").val();	
-	//oneCaseStep["Execute"]["@ExecType"]['Rule'] = {} 
-	oneCaseStep.Execute_Rule_Condition = popup.find("#executeRuleAtCondition").val();	
-	oneCaseStep.Execute_Rule_Condvalue = popup.find("#executeRuleAtCondvalue").val();	
-	oneCaseStep.Execute_Rule_Else      = popup.find("#executeRuleAtElse").val();	
-	oneCaseStep.Execute_Rule_Elsevalue = popup.find("#executeRuleAtElsevalue").val();	
-	oneCaseStep.onError_action = popup.find("#SteponError-at-action").val();
-	oneCaseStep.onError_value = popup.find("#SteponError-at-value").val();
-	oneCaseStep.runmode_type = popup.find("#runmode-at-type").val();
-	oneCaseStep.runmode_value = popup.find("#runmode-at-value").val();
-	oneCaseStep["impact"] =  popup.find("#StepImpact").val();
-	oneCaseStep["InputDataFile"] =  popup.find("#StepInputDataFile").val();
+		console.log(xdata);
+		console.log(sid);
+		oneCaseStep = xdata[sid];
+		oneCaseStep.step_driver = popup.find("#StepDriver").val();
+		oneCaseStep.step_keyword = popup.find("#StepKeyword").val();
+		oneCaseStep.step_TS =popup.find("#StepTS").val();
+		oneCaseStep["Description"] = popup.find("#StepDescription").val();
+		oneCaseStep["context"] =  popup.find("#StepContext").val();
+		oneCaseStep.Execute_ExecType  = popup.find("#casesExecuteAtExecType").val();	
+		//oneCaseStep["Execute"]["@ExecType"]['Rule'] = {} 
+		oneCaseStep.Execute_Rule_Condition = popup.find("#executeRuleAtCondition").val();	
+		oneCaseStep.Execute_Rule_Condvalue = popup.find("#executeRuleAtCondvalue").val();	
+		oneCaseStep.Execute_Rule_Else      = popup.find("#executeRuleAtElse").val();	
+		oneCaseStep.Execute_Rule_Elsevalue = popup.find("#executeRuleAtElsevalue").val();	
+		oneCaseStep.onError_action = popup.find("#SteponError-at-action").val();
+		oneCaseStep.onError_value = popup.find("#SteponError-at-value").val();
+		oneCaseStep.runmode_type = popup.find("#runmode-at-type").val();
+		oneCaseStep.runmode_value = popup.find("#runmode-at-value").val();
+		oneCaseStep["impact"] =  popup.find("#StepImpact").val();
+		oneCaseStep["InputDataFile"] =  popup.find("#StepInputDataFile").val();
 
-	// Save all arguments already in dialog...
-
-	console.log("after saving ",oneCaseStep);
+		// Save all arguments already in dialog...
+		console.log(cases.jsonCaseSteps[sid]['Arguments']);
+		var slen =  cases.jsonCaseSteps[sid]['Arguments'].length; 
+		for (var aid=0; aid<slen; aid++){
+			var obj = cases.jsonCaseSteps[sid]['Arguments'][aid]; 	
+			obj['@name'] = cases.lastPopup.find('[argid=caseArgName-'+aid+']').val();
+			obj['@value'] = cases.lastPopup.find('[argid=caseArgValue-'+aid+']').val();
+			
+		}
+		console.log("after saving ",oneCaseStep);
 },
 
 
