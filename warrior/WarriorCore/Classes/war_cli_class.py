@@ -45,12 +45,12 @@ class WarriorCliClass(object):
                 print_info("Please enter a future time")
                 exit(1)
         except ValueError:
-                print_info("Please enter a legit time in yyyy-mm-dd-hh-mm-ss format")
-                print_info('warrior will sleep until ' + str(target_time))
-                print_info('please do not close this window')
-                time.sleep((target_time-current_time).total_seconds())
-                print_info('warrior is now awake')
-                exit(1)  
+            print_info("Please enter a legit time in yyyy-mm-dd-hh-mm-ss format")
+            print_info('warrior will sleep until ' + str(target_time))
+            print_info('please do not close this window')
+            time.sleep((target_time-current_time).total_seconds())
+            print_info('warrior is now awake')
+            exit(1)
 
     @classmethod
     def check_xml(cls, files):
@@ -197,7 +197,8 @@ class WarriorCliClass(object):
 
         # Display version and framework details 
         parser.add_argument('--version', action='store_true', default=False,
-                            help=':version: Help the user with Current Warrior version and other Warrior package details ')
+                            help=':version: Help the user with Current Warrior version \
+                            and other Warrior package details ')
 
 
         # schedule sleep
@@ -278,8 +279,8 @@ class WarriorCliClass(object):
                             help=":testcae sequential: Set testcase exec_type to sequential")
 
         parser.add_argument('-RMT', type=int, default=0,
-                            help=" :run multiple times: Set testcase exec_type to run multiple times,"\
-                            " Enter value for number of attempts after tag")
+                            help=" :run multiple times: Set testcase exec_type to run multiple"\
+                            " times, Enter value for number of attempts after tag")
 
         parser.add_argument('-RUF', type=int, default=0,
                             help=" :run until fail:  set testcase exec_type to run until fails,"\
@@ -341,7 +342,8 @@ class WarriorCliClass(object):
                             help="create a property in test junit files which name is "\
                             "resultlocation and value is <job_url<url>> + <jobid>")
 
-        parser.add_argument('-encrypt', action='store', nargs='*', dest="encrypt", help="encrypt data string")
+        parser.add_argument('-encrypt', action='store', nargs='*', dest="encrypt", \
+                            help="encrypt data string")
 
         parser.add_argument('-cmdprint', action='store_true', default=False,
                             help=":cmdprint: print the command to be executed "\
