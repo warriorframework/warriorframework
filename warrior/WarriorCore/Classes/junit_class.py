@@ -53,7 +53,7 @@ class Junit(object):
         properties = self.create_element("properties")
         testsuite.append(properties)
 
-        properties.append(self.create_element("property", {"name": "location", "value": location}))
+        #properties.append(self.create_element("property", {"name": "location", "value": location}))
 
         self.root.append(testsuite)
 

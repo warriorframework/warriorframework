@@ -455,7 +455,7 @@ var wdf = {
     submit: function(){
         // save all the input fields and post it to server
         var csrftoken = katana.$activeTab.find("[name='csrfmiddlewaretoken']").val();
-        var data = katana.$activeTab.find("#big-box").find("input[name$='-key']");
+        var data = katana.$activeTab.find("#big-box").find("input[name$='-key']:not([name^='deleted-'])");
         var valid = true;
         $.each(data, function(ind, ele){
             if ($(ele).val().length == 0 || $(ele).val().indexOf(" ") != -1) {

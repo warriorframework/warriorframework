@@ -215,10 +215,6 @@ var execution = {
 
 	},
 
-
-
-
-
 	resultsViewer: {
 		/*Results viewer object
 		 * the num attribute is for testing purposes to check if the correct logs are written to the corect popup
@@ -334,7 +330,6 @@ var execution = {
 
 		openDefectsJson: function(){
 			elem = $(this);
-			console.log(elem)
 			logpath = elem.attr('data-logpath');
 			
 			//make a ajax call to get the contents of the json file
@@ -343,7 +338,6 @@ var execution = {
 		},
 		openConsoleLogFile: function(){
 			elem = $(this);
-			console.log(elem)
 			logpath = elem.attr('data-logpath');
 			
 			//make a ajax call to get the contents of the json file
@@ -351,19 +345,183 @@ var execution = {
 			katana.templateAPI.get.call(katana.$activeTab, 'execution/getLogFileContents', null, data_to_send, 'html', execution.resultsViewer.openDefectsJsonInPopup);
 		},
 		openDefectsJsonInPopup: function(data){
-			console.log(data);
 			data = JSON.parse(data);
 			popupName = data.logfile_name;
 			popupContent = JSON.stringify(data.contents, undefined, 2);
-			console.log(popupName, popupContent);
 //			textArea = '<textarea id="myTextArea" cols=50 rows=10>' +popupContent + '</textarea>'
 			html = '<pre>' + popupContent + '</pre>'
 			popup = katana.popupController.open(html, popupName);
 		},
-		
+		openXmlInApp: function(){
+			elem = $(this);
+			fpath = elem.attr('data-path');
+			ftype = elem.attr('data-type');
+			
+			if (ftype.toLowerCase() === 'case'){
+				var appName = 'Case';
+				var xref="./cases/editCase/?fname=" + fpath;
+			}else if (ftype.toLowerCase() === 'suite'){
+				var appName = 'Suite';
+				var xref="./suites/editSuite/?fname=" + fpath;
+			}else if (ftype.toLowerCase() === 'project'){
+				var appName = 'Project';
+				var xref="./projects/editProject/?fname=" + fpath;
+			}
+			
+			// open the app to edit the file
+			
+			katana.templateAPI.load(xref, null, null, appName) ;
+			
+		},
+		openAccordian: function() {
+			var $elem = this;
+			var closest_table = $elem.closest('table');
+			var closest_tr = $elem.closest('tr');
+			var isActive = closest_tr.hasClass('active');
+			closest_table.find('.active').removeClass('active');
+			if (!isActive && !closest_table.hasClass('filtering')) {
+				closest_tr.addClass('active');
+				
+			}
+		},
 		
 	},
-
+	
+	printFormater: {
+			  tables: '',
+			  table: '',
+			  bar: '',
+			  levels: ['KeywordRecord', 'TestcaseRecord', 'TestsuiteRecord', 'ProjectRecord'],
+			  statusFitlers: ['FAIL', 'ERROR', 'SKIPPED', 'PASS'],
+			  init: function(popup) {
+			    //execution.printFormater.table = popup.find('table');
+				tables = popup.find('#liveTables table')
+				execution.printFormater.tables = tables;
+				execution.printFormater.table = tables.last();
+				
+			    //execution.printFormater.barRelocate();
+				//commented out init accordian as it has it is handled for all tables as a katana click using openAccordian function
+			    //execution.printFormater.initAccordian(); 
+			    //execution.printFormater.sortingAPI.init();
+			    //execution.printFormater.justifyOrder();
+			    execution.printFormater.placeData();
+			  },
+			  barRelocate: function() {
+			    execution.printFormater.bar = execution.printFormater.table.find('tr:first-child').insertBefore(execution.printFormater.table).wrap('<div class="headingnav"></div>');
+			  },
+			  placeData: function() {
+			    setTimeout(function() {
+			    	// console.log(execution.printFormater.tables);
+			    	// console.log(execution.printFormater.table);
+			    	$.each(execution.printFormater.tables, function(index, table){
+			    		// console.log(table);
+			            $(table).find('tr[name] td:not([rowspan])').each(function() {
+			                var $elem = $(this);
+			                //console.log('element', $elem);
+			                var useData = $elem.parent().next('tr:not([name])').find('td:nth-child( ' + ($elem.prevAll('tr[name] td:not([rowspan])').length + 1) + ' )').text();
+			                //$elem.append('<span class="useData">' + useData + '</span>');
+			                // console.log($elem.html())
+			                html = $elem.html()
+			                $elem.html(html +  '<span class="useData">' + useData + '</span>');
+			              });   		
+			    		});
+			      }, 60);
+			  },
+			  initAccordian: function() {
+//			    execution.printFormater.table.find('tr[name="TestcaseRecord"]').on('click', function() {
+//			      execution.printFormater.openAccordian.call($(this));
+//			    });
+			    $(window).on('keydown', function(e) {
+			      if (e.keyCode == 40 && execution.printFormater.table.find('.active').length) {
+			        e.preventDefault();
+			        execution.printFormater.openAccordian.call(execution.printFormater.table.find('.active').nextAll('tr[name="TestcaseRecord"]:first'));
+			      } else if (e.keyCode == 38 && execution.printFormater.table.find('.active').length) {
+			        e.preventDefault();
+			        execution.printFormater.openAccordian.call(execution.printFormater.table.find('.active').prevAll('tr[name="TestcaseRecord"]:first'));
+			      }
+			    });
+			  },
+			  justifyOrder: function() {
+			    setTimeout(function() {
+			      execution.printFormater.table.find('tr[name]').each(function() {
+			        var $elem = $(this);
+			        var container = $('<div class="hoverConainer"></div>');
+			        var level = $elem.attr('name');
+			        for (var i = execution.printFormater.levels.indexOf(level) + 1; execution.printFormater.levels.length > i; i++) container.prepend($elem.prevAll('tr[name="' + execution.printFormater.levels[i] + '"]:first').clone());
+			        $elem.data(container);
+			      });
+			    }, 30);
+			  },
+			  openAccordian: function() {
+			    var $elem = this;
+			    var isActive = $elem.hasClass('active');
+			    var closest_table = $elem.closest('table');
+			    closest_table.find('.active').removeClass('active');
+			    //$elem.parent().find('.active').removeClass('active');
+			    //if (!isActive && !execution.printFormater.table.hasClass('filtering')) $elem.addClass('active');
+			    if (!isActive && !closest_table.hasClass('filtering')) $elem.addClass('active');
+			  },
+			  sortingAPI: {
+			    init: function() {
+			      execution.printFormater.bar.find('th').on('click', function() {
+			        var $elem = $(this);
+			        var name = $elem.text();
+			        $elem.toggleClass('up');
+			        if (name == 'Status') execution.printFormater.sortingAPI.filterBar(execution.printFormater.statusFitlers, name);
+			      });
+			    },
+			    filterBar: function(filterList, filterScope) {
+			      if (execution.printFormater.bar.siblings('.filterBar').length != 0) {
+			        execution.printFormater.table.removeClass('filtering');
+			        execution.printFormater.sortingAPI.filter();
+			        setTimeout(function() {
+			          execution.printFormater.bar.siblings('.filterBar').remove();
+			        }, 300);
+			        execution.printFormater.table.find('tr[name]').off('mouseover mouseleave');
+			      } else {
+			        execution.printFormater.table.addClass('filtering');
+			        var bar = $('<div class="filterBar" filterScope="' + ($('.headingnav tr th:contains("' + filterScope + '")').prevAll().length + 1) + '"></div>');
+			        for (var i = 0; filterList.length > i; i++) {
+			          var filter = $('<span>' + filterList[i] + '<input type="checkbox" value="' + filterList[i] + '"></span>').appendTo(bar);
+			          filter.find('input').on('change', function() {
+			            execution.printFormater.sortingAPI.filter(bar);
+			          });
+			        }
+			        bar.appendTo('.headingnav');
+			        execution.printFormater.table.find('tr[name]').on('mouseover', 'td[rowspan]:nth-child(1)', function() {
+			          var $elem = $(this).closest('tr');
+			          $elem.addClass('hover').data().appendTo($elem);
+			        }).on('mouseleave', 'td[rowspan]:nth-child(1)', function() {
+			          var $elem = $(this).closest('tr');
+			          $elem.removeClass('hover').find('.hoverConainer').remove();
+			        });
+			      }
+			    },
+			    filter: function(bar) {
+			      if (bar) {
+			        var activeFilters = bar.find('input:checked').map(function() {
+			          return $(this).val();
+			        }).get();
+			        var filterScope = bar.attr('filterScope');
+			        execution.printFormater.table.find('td[rowspan]:nth-child(' + filterScope + ')').each(function() {
+			          var $elem = $(this);
+			          if (activeFilters.indexOf($elem.text()) != -1 || activeFilters.length == 0) execution.printFormater.sortingAPI.filterAdd($elem.closest('tr'));
+			          else execution.printFormater.sortingAPI.filterRemove($elem.closest('tr'));
+			        });
+			      } else execution.printFormater.table.find('tr').each(function() {
+			        execution.printFormater.sortingAPI.filterAdd($(this));
+			      });
+			    },
+			    filterAdd: function(row) {
+			      row.removeClass('hidden');
+			    },
+			    filterRemove: function(row) {
+			      row.addClass('hidden');
+			    },
+			  },
+			}
+	
+	
 };
 	
 	class ExecutionClass{
@@ -421,7 +579,7 @@ var execution = {
 							 console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
 					 }
 			});
-			console.log("complete");
+			// console.log("complete");
 		}// executeWarrior ends
 
 		getHtml(){
@@ -434,8 +592,8 @@ var execution = {
 			var html_div = this.html_div;
 			var executionObject = this;
 			var liveHtmlFpath = this.liveHtmlFpath;
-			console.log("making an ajax call to get live html results");
-			console.log('liveHtmlFpath: ', liveHtmlFpath);
+			//console.log("making an ajax call to get live html results");
+			//console.log('liveHtmlFpath: ', liveHtmlFpath);
 			var data_to_send = JSON.stringify({"liveHtmlFpath": liveHtmlFpath});
 			$.ajax({
 				url : 'execution/getHtmlResults',
@@ -444,24 +602,24 @@ var execution = {
 				data: { data: data_to_send },
 				success : function(data){
 					if (data != "") {
-						var $html = $('<div/>').append(data);
-						// console.log($html);
+						 var $html = $('<div/>').append(data);
+
 						if ($html.find('.eoc').length == 0){
-							console.log('did not find eoc, try again')
+							//console.log('did not find eoc, try again')
 							var currentTimeout = window.setTimeout(function(){
 								executionObject.getHtml();
 							}, 5000);
 						} else{
-							console.log('found eoc clearing timeout')
+							//console.log('found eoc clearing timeout')
 							// on finding eoc delete the live html file
 							executionObject.deleteLiveHtmlFile();
 							window.clearTimeout(currentTimeout);
 						}
-						console.log('setting html')
+						//console.log('setting html')
 						executionObject.setHtml($html);
 					}
 						else{
-						console.log('empty data rxed');
+						//console.log('empty data rxed');
 						currentTimeout = window.setTimeout(function(){
 						executionObject.getHtml();
 					}, 5000);
@@ -477,12 +635,15 @@ var execution = {
 		 setHtml($html){
 			 /*takes the live html string wrapped in a div and calls the print formatter
 			  * method to adjust styles and fit into the popup*/
-			 var $table = $html.find('table');
-			 var $style = $html.find('style');
-			 this.html_div.html($table);
-			 this.html_div.append($style);
+//			 var $table = $html.find('table');
+//			 var $style = $html.find('style');
+//			 this.html_div.html($table);
+//			 this.html_div.append($style);
+			 
+			 this.html_div.html($html);
+			 // console.log(this.html_div);
 			 setTimeout(function() {
-				 printFormater.init(this.html_div);
+				 execution.printFormater.init(this.html_div);
 			 }, 100);
 		 }
 		 deleteLiveHtmlFile(){
@@ -495,196 +656,6 @@ var execution = {
 		
 }//ExecutionClass ENDS
 	
-	
-var htmlResultsApi = {
-	popup : '' ,
-	html_div: '' ,
-	init: function(popup) {
-		htmlResultsApi.popup = popup;
-		htmlResultsApi.html_div = htmlResultsApi.popup.find('#html-results-content');
-		htmlResultsApi.getHtml(htmlResultsApi.html_div);
-
-	},
-
-	// making an ajax call to get live html results
-	getHtml: function(html_div){
-		console.log("making an ajax call to get live html results");
-		$.ajax({
-			url : 'execution/getHtmlResults',
-			dataType : 'html',
-			type : 'GET',
-			// data : { data: data_to_send },
-			success : function(data){
-				console.log('success:');
-				// console.log("data form server: ", data);
-				if (data != "") {
-					// html_body = /<body.*?>([\s\S]*)<\/body>/.exec(data)[1];
-					//console.log(html_body);
-					// html_div.html(html_body);
-
-					///
-					var $html = $('<div/>').append(data);
-					console.log($html);
-
-					if ($html.find('.eoc').length == 0){
-						console.log('did not find eoc, try again')
-						htmlResultsApi.currentTimeout = window.setTimeout(function(){
-							htmlResultsApi.getHtml(html_div);
-						}, 1000);
-					} else{
-						console.log('found eoc clearing timeout')
-						window.clearTimeout(htmlResultsApi.currentTimeout);
-					}
-					console.log('setting html')
-					htmlResultsApi.setHtml($html, html_div);
-				}
-					else{
-					console.log('empty data rxed');
-					htmlResultsApi.currentTimeout = window.setTimeout(function(){
-					htmlResultsApi.getHtml(html_div);
-				}, 1000);
-
-			};
-
-			},
-			error : function(xhr,errmsg,err) {
-					 console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-			 }
-		 });
-
-	 },
-
-	 setHtml: function($html, html_div){
-		 console.log($html);
-		 var $table = $html.find('table');
-		 var $style = $html.find('style');
-		 console.log($table);
-		 console.log(html_div);
-		 html_div.html($table);
-		 html_div.append($style);
-		 setTimeout(function() {
-			 printFormater.init(html_div);
-		 }, 100);
-	 },
 
 
 
-};
-
-
-
-var printFormater = {
-  table: '',
-  bar: '',
-  levels: ['KeywordRecord', 'TestcaseRecord', 'TestsuiteRecord', 'ProjectRecord'],
-  statusFitlers: ['FAIL', 'ERROR', 'SKIPPED', 'PASS'],
-  init: function(popup) {
-    printFormater.table = popup.find('table');
-    printFormater.barRelocate();
-    printFormater.initAccordian();
-    printFormater.sortingAPI.init();
-    printFormater.justifyOrder();
-    printFormater.placeData();
-  },
-  barRelocate: function() {
-    printFormater.bar = printFormater.table.find('tr:first-child').insertBefore(printFormater.table).wrap('<div class="headingnav"></div>');
-  },
-  placeData: function() {
-    setTimeout(function() {
-      printFormater.table.find('tr[name] td:not([rowspan])').each(function() {
-        var $elem = $(this);
-        var useData = $elem.parent().next('tr:not([name])').find('td:nth-child( ' + ($elem.prevAll('tr[name] td:not([rowspan])').length + 1) + ' )').text();
-        $elem.append('<span class="useData">' + useData + '</span>');
-      });
-    }, 60);
-  },
-  initAccordian: function() {
-    printFormater.table.find('tr[name="TestcaseRecord"]').on('click', function() {
-      printFormater.openAccordian.call($(this));
-    });
-    $(window).on('keydown', function(e) {
-      if (e.keyCode == 40 && printFormater.table.find('.active').length) {
-        e.preventDefault();
-        printFormater.openAccordian.call(printFormater.table.find('.active').nextAll('tr[name="TestcaseRecord"]:first'));
-      } else if (e.keyCode == 38 && printFormater.table.find('.active').length) {
-        e.preventDefault();
-        printFormater.openAccordian.call(printFormater.table.find('.active').prevAll('tr[name="TestcaseRecord"]:first'));
-      }
-    });
-  },
-  justifyOrder: function() {
-    setTimeout(function() {
-      printFormater.table.find('tr[name]').each(function() {
-        var $elem = $(this);
-        var container = $('<div class="hoverConainer"></div>');
-        var level = $elem.attr('name');
-        for (var i = printFormater.levels.indexOf(level) + 1; printFormater.levels.length > i; i++) container.prepend($elem.prevAll('tr[name="' + printFormater.levels[i] + '"]:first').clone());
-        $elem.data(container);
-      });
-    }, 30);
-  },
-  openAccordian: function() {
-    var $elem = this;
-    var isActive = $elem.hasClass('active');
-    $elem.parent().find('.active').removeClass('active');
-    if (!isActive && !printFormater.table.hasClass('filtering')) $elem.addClass('active');
-  },
-  sortingAPI: {
-    init: function() {
-      printFormater.bar.find('th').on('click', function() {
-        var $elem = $(this);
-        var name = $elem.text();
-        $elem.toggleClass('up');
-        if (name == 'Status') printFormater.sortingAPI.filterBar(printFormater.statusFitlers, name);
-      });
-    },
-    filterBar: function(filterList, filterScope) {
-      if (printFormater.bar.siblings('.filterBar').length != 0) {
-        printFormater.table.removeClass('filtering');
-        printFormater.sortingAPI.filter();
-        setTimeout(function() {
-          printFormater.bar.siblings('.filterBar').remove();
-        }, 300);
-        printFormater.table.find('tr[name]').off('mouseover mouseleave');
-      } else {
-        printFormater.table.addClass('filtering');
-        var bar = $('<div class="filterBar" filterScope="' + ($('.headingnav tr th:contains("' + filterScope + '")').prevAll().length + 1) + '"></div>');
-        for (var i = 0; filterList.length > i; i++) {
-          var filter = $('<span>' + filterList[i] + '<input type="checkbox" value="' + filterList[i] + '"></span>').appendTo(bar);
-          filter.find('input').on('change', function() {
-            printFormater.sortingAPI.filter(bar);
-          });
-        }
-        bar.appendTo('.headingnav');
-        printFormater.table.find('tr[name]').on('mouseover', 'td[rowspan]:nth-child(1)', function() {
-          var $elem = $(this).closest('tr');
-          $elem.addClass('hover').data().appendTo($elem);
-        }).on('mouseleave', 'td[rowspan]:nth-child(1)', function() {
-          var $elem = $(this).closest('tr');
-          $elem.removeClass('hover').find('.hoverConainer').remove();
-        });
-      }
-    },
-    filter: function(bar) {
-      if (bar) {
-        var activeFilters = bar.find('input:checked').map(function() {
-          return $(this).val();
-        }).get();
-        var filterScope = bar.attr('filterScope');
-        printFormater.table.find('td[rowspan]:nth-child(' + filterScope + ')').each(function() {
-          var $elem = $(this);
-          if (activeFilters.indexOf($elem.text()) != -1 || activeFilters.length == 0) printFormater.sortingAPI.filterAdd($elem.closest('tr'));
-          else printFormater.sortingAPI.filterRemove($elem.closest('tr'));
-        });
-      } else printFormater.table.find('tr').each(function() {
-        printFormater.sortingAPI.filterAdd($(this));
-      });
-    },
-    filterAdd: function(row) {
-      row.removeClass('hidden');
-    },
-    filterRemove: function(row) {
-      row.addClass('hidden');
-    },
-  },
-};
