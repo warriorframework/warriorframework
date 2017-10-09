@@ -173,11 +173,13 @@ class CommonActions(object):
                                                      type, comparison)
         if result == "FALSE":
             print_error("Expected: {0} {1} {2} but found {0}={3}".format(
-                object_key, comparison, expected, value))
+                        object_key, comparison, expected, value))
         if result == "TRUE":
             return True
-        else:
+        elif result == "FALSE":
             return False
+        else:
+            return result
 
     def set_env_var(self, var_key=None, var_value=None, filepath=None,
                     jsonkey="environmental_variables"):
