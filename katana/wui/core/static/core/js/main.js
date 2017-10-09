@@ -920,7 +920,7 @@ var katana = {
                 var $tabContent = $currentPage.find('.page-content-inner');
             }
             else {
-                $tabeContent = parent;
+                $tabContent = parent;
             }
             katana.templateAPI.post('get_file_explorer_data/', csrftoken, {"path": start_directory},
                 function(data) {
@@ -946,10 +946,10 @@ var katana = {
                     });
                     $directoryData.jstree().hide_dots();
                     $tabContent.find('#explorer-accept').on('click', function(){
-                        katana.fileExplorerAPI.acceptFileExplorer(callBack_on_accept);
+                        katana.fileExplorerAPI.acceptFileExplorer(callBack_on_accept, parent);
                     });
                     $tabContent.find('#explorer-dismiss').on('click', function(){
-                        katana.fileExplorerAPI.dismissFileExplorer(callBack_on_dismiss);
+                        katana.fileExplorerAPI.dismissFileExplorer(callBack_on_dismiss, parent);
                     });
                     $tabContent.find('#explorer-up').on('click', function(){
                         katana.fileExplorerAPI.upFileExplorer(data.li_attr["data-path"], csrftoken, parent);
@@ -958,9 +958,14 @@ var katana = {
                 })
         },
 
-        acceptFileExplorer: function(callBack){
-            var $currentPage = katana.$activeTab;
-            $fileExplorerElement = $currentPage.find('div .overlay');
+        acceptFileExplorer: function(callBack, parent){
+            if(!parent || parent == "" || parent == undefined){
+                var $currentPage = katana.$activeTab;
+            }
+            else{
+                $currentPage = parent;
+            }
+            $fileExplorerElement = $currentPage.find('div[class="overlay"]');
             $selectedValue = $fileExplorerElement.find('[aria-selected=true]')
             var data_path = $selectedValue.attr("data-path");
             if(data_path == undefined){
@@ -971,9 +976,14 @@ var katana = {
             callBack && callBack(data_path);
         },
 
-        dismissFileExplorer: function(callBack){
-            var $currentPage = katana.$activeTab;
-            $fileExplorerElement = $currentPage.find('div .overlay');
+        dismissFileExplorer: function(callBack, parent){
+            if(!parent || parent == "" || parent == undefined){
+                var $currentPage = katana.$activeTab;
+            }
+            else{
+                var $currentPage = parent;
+            }
+            $fileExplorerElement = $currentPage.find('div[class="overlay"]');
             $fileExplorerElement.remove();
             callBack && callBack();
         },
