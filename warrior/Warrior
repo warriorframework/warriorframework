@@ -50,6 +50,9 @@ def update_jira_by_id(jiraproj, jiraid, exec_dir, status):
         print_info("jiraid not provided, will not update jira issue")
 
 def count(node, node_name, file_path):
+    """
+        Gets the count
+    """
     root = Utils.xml_Utils.getRoot(file_path)
     node = root.find(node)
 
@@ -107,9 +110,9 @@ def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
                     file_type = Utils.xml_Utils.getRoot(abs_filepath).tag
                     file_path = abs_filepath
                     step_count = 0
+                    flag = True
 
                     if file_type == "Project":
-                        print "Project"
                         suite_node = "Testsuites"
                         suite_node_name = "Testsuite"
                         suite_count, suite_value = count(suite_node, suite_node_name, file_path)
@@ -123,7 +126,7 @@ def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
                             root = Utils.xml_Utils.getRoot(ts_abs_filepath)
                             case_node = root.find(case_node)
                             if case_node is None:
-                               print ""
+                               Flag = True
                             else:
                                 case_value = case_node.findall(case_node_name)
                                 case_count = len(case_value)
@@ -137,7 +140,7 @@ def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
                                 root = Utils.xml_Utils.getRoot(tc_abs_filepath)
                                 step_node = root.find(step_node)
                                 if step_node is None:
-                                    print ""
+                                    Flag = True
                                 else:
                                     step_value = step_node.findall(step_node_name)
                                     step_count_1 = len(step_value)
@@ -150,7 +153,7 @@ def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
                         root = Utils.xml_Utils.getRoot(file_path)
                         case_node = root.find(case_node)
                         if case_node is None:
-                            print ""
+                            Flag = True
                         else:
                             case_value = case_node.findall(case_node_name)
                             case_count = len(case_value)
@@ -166,7 +169,7 @@ def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
                             root = Utils.xml_Utils.getRoot(tc_abs_filepath)
                             step_node = root.find(step_node)
                             if step_node is None:
-                                print ""
+                                Flag = True
                             else:
                                 step_value = step_node.findall(step_node_name)
                                 step_count_1 = len(step_value)
