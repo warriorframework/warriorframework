@@ -29,12 +29,13 @@ from utils.navigator_util import Navigator
 from katana_utils import *
 import scanfiles
 
-
 navigator = Navigator();
 path_to_src_python_file = navigator.get_katana_dir() + os.sep + "config.json"
+
+print "Setting Working dir --------------------------------", path_to_src_python_file
+gpysrcdir = path_to_src_python_file;
+
 All_case_action_details = py_file_details(json.loads(open(path_to_src_python_file).read())['pythonsrcdir']);
-setPythonSrcDir(All_case_action_details);
-print os.getcwd()
 EMPTY_DATA = json.loads(json.dumps(xmltodict.parse(open("./native/cases/empty.xml").read(), process_namespaces=True)));
 
 def index(request):

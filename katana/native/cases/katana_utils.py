@@ -2,14 +2,14 @@ import os
 import os.path 
 import re, glob, json, docstrings
 #gpysrcdir = pathname(cfg['pythonsrcdir'])
-gpysrcdir = "/home/khusain/Projects/forDemo/warriorframework/warrior"
+gpysrcdir = ""
 
-def setPythonSrcDir(fpath):
-    gpysrcdir = fpath; 
-
-def mkactiondirs(driverpath):  # changed
+def mkactiondirs(driverpath, srcdir):  # changed
     '''Given a directory name `drivername`, return its action python file name.'''
     # FrameworkDirectory/ used to be the prefix in the directory name.
+    gpysrcdir = srcdir
+    print "**** Setting gpysrcdir ****", gpysrcdir
+   
     actions_dirpath_list = []
     actions_package_list = get_action_dirlist(driverpath)
     if len(actions_package_list) == 0:
@@ -121,7 +121,7 @@ def fetch_comments(sa):
 
 
 def py_file_details(gpysrcdir):  # changed
-    print gpysrcdir
+    print "Get File details...", gpysrcdir
     #cfg = readconfig()
     #print cfg
     # gpysrcdir = fetchpath('pythonsrcdir')
@@ -157,7 +157,11 @@ def py_file_details(gpysrcdir):  # changed
     # for path in drivers_fpath:
     #     for directory in mkactiondirs(path):
     #         actiondirs.append(directory)
-    actiondirs = map(mkactiondirs, drivers_fpath)
+
+    # This is what we deserve for writing python code that relies on globals
+    # and does not use a class. 
+    srcdirs = [ gpysrcdir for df in pyfiles ]
+    actiondirs = map(mkactiondirs, drivers_fpath, srcdirs)
     #print "\n\n drivers: \n\n", json.dumps(drivers_fpath, indent=2)
     #print '\n\nactiondirs: \n\n', json.dumps(actiondirs, indent=2)
 
