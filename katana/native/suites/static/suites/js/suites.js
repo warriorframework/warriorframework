@@ -258,6 +258,19 @@ class suiteCaseObject {
 
 	fillDefaults(jsonData){
 
+		if (!jsonData['path'] ) {
+			jsonData['path'] = "";
+		}
+		if (!jsonData['context'] ) {
+			jsonData['context'] = 'postive'; 
+		}
+		if (!jsonData['runtype']) {
+			jsonData['runtype'] = 'sequential_keywords'; 
+		}
+		if (!jsonData['impact'] ) {
+			jsonData['impact'] = 'impact';
+		}
+
 		if (! jsonData['runmode']) {
 			jsonData['onError'] = { "@type": "standard", "@value": "" };
 		}
@@ -296,6 +309,7 @@ class suiteCaseObject {
 			'path': '',
 			'context': 'positive',
 			'runtype': 'sequential_keywords',
+			'impact' : 'impact',
 			'runmode' : { "@value": "standard", "@type": "" },
 			'onError': { "@action": "next", "@value": "" },
 			'Execute': { "@ExecType": "yes", 
@@ -1075,7 +1089,7 @@ Two global variables are heavily used when this function is called;
 
 // Removes a test Case by its ID and refresh the page. 
 	removeTestcase : function(sid ){
-	suites.jsonTestcases['Testcase'].splice(sid,1);
+	suites.jsonTestcases.splice(sid,1);
 	console.log("Removing test Cases "+sid+" now " + Object.keys(suites.jsonTestcases).length);
 	suites.mapSuiteJsonToUi();	// Send in the modified array
 },
