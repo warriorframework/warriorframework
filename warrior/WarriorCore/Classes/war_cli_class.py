@@ -181,10 +181,6 @@ class WarriorCliClass(object):
                 " and one keyword exec_type, Warrior CLI commands"\
                 " does not support RMT and RUF with exec_type=parallel_keywords"\
                 "\n**********")
-                            " please choose only one testcase exec_type"\
-                            " and one keyword exec_type, Warrior CLI commands"\
-                            " does not support RMT and RUF with exec_type=parallel_keywords"\
-                            "\n**********")
             exit(1)
         return filepath
 
