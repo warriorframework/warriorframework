@@ -238,7 +238,13 @@ class caseTestStepObject {
 		this.runmode_type  = jsonData['runmode']['@type'];
 
 		if (! jsonData['iteration_type']) {
-			jsonData['iteration_type']['@type'] = 'sequential_testcases';
+			jsonData['iteration_type'] = {'@type' : 'sequential_testcases', '@value' : '' } ; 
+		}
+
+		if (! jsonData['iteration_type']['@value']) {
+			jsonData['iteration_type']['@value'] = 'sequential_testcases';
+		}
+		if (! jsonData['iteration_type']['@value']) {
 			jsonData['iteration_type']['@value'] = '';
 		}
 		// 
