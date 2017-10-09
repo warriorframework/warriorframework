@@ -46,6 +46,15 @@ class WarriorCliClass(object):
                 exit(1)
         except ValueError:
             print_info("Please enter a legit time in yyyy-mm-dd-hh-mm-ss format")
+                print_info('warrior will sleep until ' + str(target_time))
+                print_info('please do not close this window')
+                time.sleep((target_time-current_time).total_seconds())
+                print_info('warrior is now awake')
+            else:
+                print_info('Please enter a future time')
+                exit(1)
+        except ValueError:
+            print_error('Please enter a legit time in yyyy-mm-dd-hh-mm-ss format')
             exit(1)
 
     @classmethod
@@ -63,6 +72,9 @@ class WarriorCliClass(object):
                     print_error(xmlfile_abspath, "is not a valid testcase xml")
             else:
                 print_error(xmlfile_abspath, " is not a xml file")
+                    print_info(xmlfile_abspath + " is not a valid testcase xml")
+            else:
+                print_info(xmlfile_abspath + " is not a xml file")
         return result
 
     def check_tag(self, category_list, dirlist):
@@ -91,6 +103,7 @@ class WarriorCliClass(object):
                                 result.append(xmlfile)
             else:
                 print_error(folder, "is not a directory")
+                print_error(str(folder) + "is not a directory")
         print_info("Number of matching testcases: {0}".format(len(result)))
         return result
 
@@ -178,6 +191,10 @@ class WarriorCliClass(object):
                 " and one keyword exec_type, Warrior CLI commands"\
                 " does not support RMT and RUF with exec_type=parallel_keywords"\
                 "\n**********")
+                            " please choose only one testcase exec_type"\
+                            " and one keyword exec_type, Warrior CLI commands"\
+                            " does not support RMT and RUF with exec_type=parallel_keywords"\
+                            "\n**********")
             exit(1)
         return filepath
 
@@ -336,7 +353,7 @@ class WarriorCliClass(object):
 
         parser.add_argument('-jobid', action='store', nargs='?',
                             help="create a property in test junit files which name is "\
-                            "resultlocation and value http://pharlap.tx.fnc.fujitsu.com/share/logs/<jobid>")
+                            "resultlocation and value is <job_url<url>> + <jobid>")
 
         parser.add_argument('-encrypt', action='store', nargs='*', dest="encrypt", help="encrypt data string")
 
