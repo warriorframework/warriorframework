@@ -151,7 +151,7 @@ class projectSuiteObject {
 
 	setupFromJSON(jsonData) { 
 		if (!jsonData) {
-			jsonData = 	this.createEmptyCase(); 
+			jsonData = 	this.createEmptySuite(); 
 		}
 		// Fill defaults here. 
 		this.fillDefaults(jsonData);
@@ -241,6 +241,7 @@ class projectSuiteObject {
 	createEmptySuite() {
 		return {
 			'path': '',
+			'impact': '',
 			'runmode' : { "@value": "standard", "@type": "" },
 			'onError': { "@action": "next", "@value": "" },
 			'Execute': { "@ExecType": "yes", 
@@ -411,7 +412,7 @@ startNewProject : function() {
 	},
 
 	addSuiteToProject: function(){
-		var newTestSuite = new projectTestSuite();
+		var newTestSuite = new projectSuiteObject();
 		projects.jsonTestSuites.push(newTestSuite);
 		projects.mapProjectJsonToUi();
 	},
@@ -866,7 +867,7 @@ Two global variables are heavily used when this function is called;
 	insertTestSuiteCB : function(){
 			var names = this.attr('skey').split('-');
 			var sid = parseInt(names[1]);
-			var nb = new projectTestSuite();
+			var nb = new projectSuiteObject();
 			projects.jsonTestSuites.splice(sid,0,nb);
 			projects.mapProjectJsonToUi();	// Send in the modified array
 		},
