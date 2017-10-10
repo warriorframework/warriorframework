@@ -26,7 +26,7 @@ from WarriorCore.Classes.war_cli_class import WarriorCliClass
 from Framework.ClassUtils import database_utils_class
 from Framework.ClassUtils.WNetwork.loging import ThreadedLog
 from Framework.Utils.list_Utils import get_list_by_separating_strings
-
+from WarriorCore.Classes.warmock_class import mocked
 
 """ Module for performing CLI operations """
 
@@ -136,6 +136,7 @@ class WarriorCli(object):
         if self.conn_obj and self.conn_obj.target_host:
             self.conn_obj.disconnect_telnet()
 
+    @mocked
     def send_command(self, start_prompt, end_prompt, command,
                      timeout=60):
         """ Sends the command to ssh/telnet session
@@ -242,6 +243,7 @@ class WarriorCli(object):
             responses_dict[key] = response_dict
         return finalresult, responses_dict
 
+    @mocked
     def _send_cmd(self, **kwargs):
         """method to send command based on the type of object """
 
@@ -431,6 +433,7 @@ class WarriorCli(object):
                 final_list.append(comma_sep_verify_names[i])
         return final_list
 
+    @mocked
     def _send_cmd_get_status(self, details_dict, index, system_name=None):
         """Sends a command, verifies the response and returns
         status of the command """
@@ -573,6 +576,7 @@ class WarriorCli(object):
 
         return value, kw_system_name, details_dict
 
+    @mocked
     def _send_command_retrials(self, details_dict, index, **kwargs):
         """ Sends a command to a session, if a user provided pattern
         is found in the command response then tries to resend the command
@@ -1347,6 +1351,7 @@ class PexpectConnect(object):
             time.sleep(2)
             self.target_host.close()
 
+    @mocked
     def send_command(self, command, start_prompt, end_prompt,
                      timeout=60, *args, **kwargs):
         """
