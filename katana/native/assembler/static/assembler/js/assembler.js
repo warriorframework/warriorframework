@@ -31,45 +31,145 @@ var assembler = {
 
     installDependency: function(){
         var $elem = $(this);
-        if($elem.attr("aria-selected") == "true"){
-            $elem.attr("aria-selected", "false");
-            $elem.css("background-color", "white");
-            $elem.css("color", "black");
-            $elem.html('Install');
-        }
-        else{
+        if($elem.attr('aria-selected') == 'false'){
+            $elem.attr('aria-selected', 'true');
             $parent = $elem.parent();
-            $elem.remove();
-            $parent.find('br').remove();
-            $parent.append('<div class="card" style="padding: 0.3rem 1rem;"></div>')
+            $elem.hide();
+            $parent.find('br').hide();
+            $parent.find('hr').hide();
+            $parent.append('<div class="card" style="padding: 0.5rem 1rem;"></div>')
             var $subClass = $parent.find('.card')
 
-            $subClass.append('<div class="row"><div class="col-sm-10">Install As:&nbsp;</div><div class="col-sm-1" style="padding-bottom: 0.4rem;"><i class="fa fa-times" aria-hidden="true"></i></div></div>')
-            $subClass.append('<div class="row"><div class="col"><button class="btn btn-info btn-block">Admin</button></div><div class="col"><button class="btn btn-info btn-block">User</button></div></div>')
-            /*$elem.attr("aria-selected", "true");
-            $elem.css("background-color", "#3b7a4c");
-            $elem.css("color", "white");
-            $elem.html('Install&nbsp;<i class="fa fa-check" style="color: white;" aria-hidden="true"></i>&nbsp;');*/
+            $subClass.append('<div class="row">' +
+                                '<div class="col-sm-10">Install As:&nbsp;</div>' +
+                                '<div class="col-sm-1" style="padding-bottom: 0.4rem;">' +
+                                    '<i class="fa fa-times" aria-hidden="true" katana-click="assembler.cancelDependencyInstallation"></i>' +
+                                '</div>' +
+                             '</div>')
+            $subClass.append('<div class="row">' +
+                                 '<div class="col-sm-2"></div>' +
+                                 '<div class="col-sm-8">' +
+                                     '<button class="btn btn-info" katana-click="assembler.installDependencyAsAdmin">Admin</button>' +
+                                     '&nbsp;&nbsp;' +
+                                     '<button class="btn btn-info" katana-click="assembler.installDependencyAsUser">User</button>' +
+                                 '</div>' +
+                             '</div>')
         }
+        else{
+            $elem.attr('aria-selected', 'false');
+            $elem.html('Install');
+            $elem.css("background-color", "white");
+            $elem.css("color", "black")
+
+        }
+    },
+
+    cancelDependencyInstallation: function(elem, ariaValue){
+        if(elem){
+            var $elem = elem;
+        }
+        else{
+            $elem = $(this);
+        }
+        if(ariaValue == undefined){
+            ariaValue = "false";
+        }
+        var $parentDiv = $elem.closest('.card');
+        var $installBtn = $parentDiv.siblings('button[katana-click="assembler.installDependency"]');
+        $installBtn.attr('aria-selected', ariaValue);
+        $parentDiv.remove();
+        $installBtn.siblings('br').show();
+        $installBtn.siblings('hr').show();
+        $installBtn.show();
+    },
+
+    installDependencyAsAdmin: function(){
+        var $elem = $(this);
+        $.when(assembler.setInstallBtn($elem, "Install As Admin")).then(assembler.cancelDependencyInstallation($elem, "true"));
+    },
+
+    installDependencyAsUser: function(){
+        $.when(assembler.setInstallBtn($elem, "Install As User")).then(assembler.cancelDependencyInstallation($elem, "true"));
+    },
+
+    setInstallBtn: function(elem, text){
+        var $elem = elem;
+        var $parentDiv = $elem.closest('.card');
+        var $installBtn = $parentDiv.siblings('button[katana-click="assembler.installDependency"]');
+        $installBtn.html(text + '&nbsp;<i class="fa fa-check" style="color: white" aria-hidden="true"></i>&nbsp;');
+        $installBtn.css("background-color", "#3b7a4c");
+        $installBtn.css("color", "white")
     },
 
     upgradeDependency: function(){
         var $elem = $(this);
-        if($elem.attr("aria-selected") == "true"){
-            $elem.attr("aria-selected", "false");
-            $elem.css("background-color", "white");
-            $elem.css("color", "black");
-            $elem.html('Upgrade&nbsp;<i class="fa fa-exclamation-triangle tan" aria-hidden="true">');
+        if($elem.attr('aria-selected') == 'false'){
+            $elem.attr('aria-selected', 'true');
+            $parent = $elem.parent();
+            $elem.hide();
+            $parent.find('br').hide();
+            $parent.find('hr').hide();
+            $parent.append('<div class="card" style="padding: 0.5rem 1rem;"></div>')
+            var $subClass = $parent.find('.card')
+
+            $subClass.append('<div class="row">' +
+                                '<div class="col-sm-10">Upgrade As:&nbsp;</div>' +
+                                '<div class="col-sm-1" style="padding-bottom: 0.4rem;">' +
+                                    '<i class="fa fa-times" aria-hidden="true" katana-click="assembler.cancelDependencyUpgrade"></i>' +
+                                '</div>' +
+                             '</div>')
+            $subClass.append('<div class="row">' +
+                                 '<div class="col-sm-2"></div>' +
+                                 '<div class="col-sm-8">' +
+                                     '<button class="btn btn-info" katana-click="assembler.upgradeDependencyAsAdmin">Admin</button>' +
+                                     '&nbsp;&nbsp;' +
+                                     '<button class="btn btn-info" katana-click="assembler.upgradeDependencyAsUser">User</button>' +
+                                 '</div>' +
+                             '</div>')
         }
         else{
-            $elem.attr("aria-selected", "true");
-            $elem.css("background-color", "#987150");
-            $elem.css("color", "white");
-            $elem.html('Upgrade&nbsp;<i class="fa fa-check" style="color: white;" aria-hidden="true"></i>&nbsp;');
+            $elem.attr('aria-selected', 'false');
+            $elem.html('Upgrade&nbsp;<i class="fa fa-exclamation-triangle tan" aria-hidden="true">');
+            $elem.css("background-color", "white");
+            $elem.css("color", "black")
+
         }
     },
 
-    installDepAsUser: function(){
+    cancelDependencyUpgrade: function(elem, ariaValue){
+        if(elem){
+            var $elem = elem;
+        }
+        else{
+            $elem = $(this);
+        }
+        if(ariaValue == undefined){
+            ariaValue = "false";
+        }
+        var $parentDiv = $elem.closest('.card');
+        var $upgradeBtn = $parentDiv.siblings('button[katana-click="assembler.upgradeDependency"]');
+        $upgradeBtn.attr('aria-selected', ariaValue);
+        $parentDiv.remove();
+        $upgradeBtn.siblings('br').show();
+        $upgradeBtn.siblings('hr').show();
+        $upgradeBtn.show();
+    },
 
-    }
+    upgradeDependencyAsAdmin: function(){
+        var $elem = $(this);
+        $.when(assembler.setUpgradeBtn($elem, "Upgrade As Admin")).then(assembler.cancelDependencyUpgrade($elem, "true"));
+    },
+
+    upgradeDependencyAsUser: function(){
+        $.when(assembler.setUpgradeBtn($elem, "Upgrade As User")).then(assembler.cancelDependencyUpgrade($elem, "true"));
+    },
+
+    setUpgradeBtn: function(elem, text){
+        var $elem = elem;
+        var $parentDiv = $elem.closest('.card');
+        var $upgradeBtn = $parentDiv.siblings('button[katana-click="assembler.upgradeDependency"]');
+        $upgradeBtn.html(text + '&nbsp;<i class="fa fa-check" style="color: white" aria-hidden="true"></i>&nbsp;');
+        $upgradeBtn.css("background-color", "#987150");
+        $upgradeBtn.css("color", "white")
+    },
 }
