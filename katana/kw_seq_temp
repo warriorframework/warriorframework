@@ -1,4 +1,4 @@
-    for i in kw_list:
+    for i in kw_name:
         output = eval(i)
         if isinstance(output, tuple):
             data_Utils.update_datarepository(output[1])
