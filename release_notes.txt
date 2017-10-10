@@ -1,5 +1,5 @@
 Release: Ninja
-Version: warrior-3.3.0
+Version: warrior-3.4.0
 
 ===================
 1: Release details
@@ -16,54 +16,38 @@ This is release Ninja of Warrior Test Automation Framework
 ==================
 2. Version Details
 ==================
-You are on Release Ninja, Version warrior-3.3.0 of Warrior Framework.
+You are on Release Ninja, Version warrior-3.4.0 of Warrior Framework.
 Procedure to get a specific version is available in section-3 of this document.
 
 +++++++++++++++++++++++++++++++++
 2.1. Change log for this release
 +++++++++++++++++++++++++++++++++
 
------------
-New Feature
------------
 
-WAR-1108 - HTML Results File will be available for viewing even when execution is stopped midway. This is supported only for sequential Executions.
-WAR-575 - Environment Variables are now supported in REST URLs provided in the Warrior Data File.
-WAR-815 - Support for the Run Mode functionality added in Suites inside the Project.
+-------------
+New Features:
+-------------
+[WAR-724] - Selenium KWs: Test if all the available selenium functionality in Warrior is compatible with Selenium 3.0
+[WAR-1003] - As a user, I want to know he python version on which Warrior is running
+[WAR-1053] - As a user, I want to be able to run Suites in a project in parallel
+[WAR-1069] - Selenium: As a user, I want to launch browser and maximize it in the same keyword
+[WAR-851] - WARHORN: As a user, I need an option to create virtual environment
 
-------------
-Improvements
-------------
-
-WAR-725 - Added Keywords to automate the testing of the Iterative Suite.
-WAR-868 - Added Keywords for File related utilities.
-WAR-890 - The default spawn terminal Color Code enhanced for better prompt-catching
-WAR-898 - Consolidated Keywords that are used for Framework testing into a single Actions Directory
-WAR-1024 - Project, Suite, Case, and Step Description is now available in the JUNIT result file.
-WAR-1288 - HTML Results File now being attached to the emails sent on first_failure and every_failure
-WAR-1315 - Pylint Configuration File moved to root of the repo
-WAR-1320 - Support for relative path for Warrior CLI parameters like logsdir, outputdir, and resultdir added.
-WAR-1323 - Modified the send_command(CLI) Keyword to use new WarriorConnect class
-WAR-1360 - Changed the name of Robot wrapper plugin from plugin_robot_wrapper to robot_wrapper_plugin
-WAR-1370 - Removed html object from junit before parallel execution to prohibit queue overflow
+-------------
+Improvements:
+-------------
+[WAR-1340] - User should able open the test case maped in the test suit by clicking on the test case name(need hyperlink support)
+[WAR-1389] - travis pylint failure for using print in war_print_class has to be ignored
+[WAR-1405] - Travis: Ignore deleted files for pylint check
+[WAR-1426] - Resolve issues with Regression test
+[WAR-1142] - Move hardcoded url in warrior_cli_driver to w_settings
 
 ---------
-Bug Fixes
+Bugfixes:
 ---------
+[WAR-1141] - selenium:not able to launch the browser with url if it is not the part of world wide web
+[WAR-1356] - Modify send_command(cli) utility to support both pexpect and WarriorConnect objects
 
-WAR-1150 - Fixed cookies parameter in Warrior REST Actions
-WAR-1195 - Fixed failure when the verify_on attribute value in the CLI-data file is missing or empty.
-WAR-1286 - Fixed error causing the 'Engineer' & 'Last updated' fields to rmain updated in the Suite Tab in Katana.
-WAR-1287 - Fixed error causing the 'Engineer' & 'Last updated' fields to rmain updated in the Project Tab in Katana.
-WAR-1297 - Fixed multiple Environment Variable Keyword to work if a URL has more that on environment variable
-WAR-1298 - Fixed error that causes opening and closing an existing CLI-data file in katana to reset the 'found' and 'execute' attribute values to default.
-WAR-1299 - Fixed issue that overrode the IDF file pointed in the command line and instead used IDF mapped in the Suite
-WAR-1306 - Fixed issue that could not resolve the variable configuration file given the data file pointed via the command line.
-WAR-1319 - Fixed issue that caused the Case details to not be printed out as part of Warrior execution summary
-WAR-1335 - Fixed issue that cause a race condition while writing junit file at the same time during parallel execution
-WAR-1357 - Fixed issue that caused duplicate entries for steps in the JUnit file
-WAR-1359 - Fixed missing step-level arguments and argument-values in the JUint File
-WAR-1364 - Fixed the demo project to contain path to the correct demo suite.
 
 =================================================
 3. Procedure to get a specific version of Warrior

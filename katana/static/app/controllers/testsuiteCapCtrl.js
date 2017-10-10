@@ -11,8 +11,8 @@ limitations under the License.
 
 */
 
-app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$controller', '$timeout', '$location', 'fileFactory', 'getTestsuiteFactory', 'setTestsuiteFactory', 'saveasTestsuiteFactory', 'subdirs',
-    function($scope, $http, $routeParams, $controller, $timeout, $location, fileFactory, getTestsuiteFactory, setTestsuiteFactory, saveasTestsuiteFactory, subdirs) {
+app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$controller', '$timeout', '$location', 'fileFactory', 'getTestsuiteFactory', 'setTestsuiteFactory', 'saveasTestsuiteFactory', 'getConfigFactory', 'subdirs',
+    function($scope, $http, $routeParams, $controller, $timeout, $location, fileFactory, getTestsuiteFactory, setTestsuiteFactory, saveasTestsuiteFactory, getConfigFactory, subdirs) {
 
         $scope.subdirs = subdirs;
         $scope.xml = {};
@@ -45,7 +45,133 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
         $scope.testcaseEditor = false;
         $scope.testcaseBeingEdited = "None";
 
-        function get_folders_names(json_dir_data){
+      function readConfig(){
+          getConfigFactory.readconfig()
+          .then(function (data) {
+             $scope.cfg = data;
+            });
+      }
+
+      readConfig();
+
+
+//To Load the Case File from Suite 
+//Works for base Directory as well as Subdirectories
+     $scope.loadFile = function(filepath) {
+        var checkFlag = filepath.includes("..");                                         
+        if(checkFlag==true){                                                      //For files inside the Warrior directory
+             dirCheck=filepath.split("/").reverse()[1];
+             if(dirCheck=="Testcases"){                                           //Fetch Parent directory files
+                splitDir = filepath.split('/Testcases')[1]; 
+                finalUrl = "#/testcase"+splitDir+"/none";
+                window.open(finalUrl);
+             }
+             else if(dirCheck=="testcases"){
+                splitDir = filepath.split('/testcases')[1]; 
+                finalUrl = "#/testcase"+splitDir+"/none";
+                window.open(finalUrl);
+             }
+            else{                                                                 //Fetch subdirectory files
+                splitPath = filepath.split("/").pop(-1); 
+                splitter = splitPath+"/"; 
+                if(filepath.includes("Testcases")==true){
+                var checkDir = filepath.split("Testcases/")[1].split(splitPath)[0]; 
+                }
+                else{var checkDir = filepath.split("testcases/")[1].split(splitPath)[0];}  
+                   checkDir = checkDir.slice(0, -1);
+                   checkDir = checkDir.replace(/\//g,','); 
+                   finalUrlDir = "#/testcase/"+splitter+checkDir; 
+                   window.open(finalUrlDir);
+            }
+        }
+        else{                                                                     //For files outside the Warrior directory
+            testcaseDir = $scope.cfg.testsuitedir;
+            var matchPath = filepath.includes(testcaseDir);
+            if(matchPath == true){
+              splitPath = filepath.split(testcaseDir)[1]; 
+              fileName = splitPath.split("/").pop(-1); 
+              splitter = fileName+"/";
+              checkDir = filepath.split(testcaseDir)[1].split(fileName)[0]; 
+              checkDir = checkDir.slice(0, -1);
+              checkDir = checkDir.replace(/\//g,','); 
+              finalUrlDir = "#/testcase/"+splitter+checkDir; 
+              window.open(finalUrlDir);
+          }
+            else{ 
+            if(filepath != '') 
+                 {                                                                  //Mismatched Config and selected path;   
+                sweetAlert({
+                    title: "Config Path mismatch with the selected path !",
+                    closeOnConfirm: true,
+                    confirmButtonColor: '#3b3131',
+                    confirmButtonText: "Ok",
+                    type: "info"
+                });
+              }
+          }
+        }   
+      };
+
+
+    
+//To Load the InputData File from Suite 
+//Works for base Directory as well as Subdirectories
+    $scope.loadDataFile = function(filepath) {
+        var checkFlag = filepath.includes("..");                                         
+        if(checkFlag==true){                                                      //For files inside the Warrior directory
+             dirCheck=filepath.split("/").reverse()[1];
+             if(dirCheck=="Data"){                                           //Fetch Parent directory files
+                splitDir = filepath.split('/Data')[1]; 
+                finalUrl = "#/datafile"+splitDir+"/none";
+                window.open(finalUrl);
+             }
+             else if(dirCheck=="data"){
+                splitDir = filepath.split('/data')[1]; 
+                finalUrl = "#/datafile"+splitDir+"/none";
+                window.open(finalUrl);
+             }
+            else{                                                                 //Fetch subdirectory files
+                splitPath = filepath.split("/").pop(-1); 
+                splitter = splitPath+"/"; 
+                if(filepath.includes("Data")==true){
+                var checkDir = filepath.split("Data/")[1].split(splitPath)[0]; 
+                }
+                else{var checkDir = filepath.split("data/")[1].split(splitPath)[0];} 
+                      checkDir = checkDir.slice(0, -1);
+                      checkDir = checkDir.replace(/\//g,','); 
+                      finalUrlDir = "#/datafile/"+splitter+checkDir; 
+                      window.open(finalUrlDir);
+            }
+        }
+        else{                                                                     //For files outside the Warrior directory
+            dataDir = $scope.cfg.idfdir;
+            var matchPath = filepath.includes(dataDir);
+            if(matchPath == true){
+              splitPath = filepath.split(dataDir)[1]; 
+              fileName = splitPath.split("/").pop(-1); 
+              splitter = fileName+"/";
+              checkDir = filepath.split(dataDir)[1].split(fileName)[0]; 
+              checkDir = checkDir.slice(0, -1);
+              checkDir = checkDir.replace(/\//g,','); 
+              finalUrlDir = "#/datafile/"+splitter+checkDir; 
+              window.open(finalUrlDir);
+          }
+            else{ 
+            if(filepath != '') 
+                 {                                                                  //Mismatched Config and selected path;   
+                sweetAlert({
+                    title: "Config Path mismatch with the selected path !",
+                    closeOnConfirm: true,
+                    confirmButtonColor: '#3b3131',
+                    confirmButtonText: "Ok",
+                    type: "info"
+                });
+              }
+          }
+        } 
+     };
+
+       function get_folders_names(json_dir_data){
             var dir = json_dir_data["dir"];
             var files = json_dir_data["file"];
             $scope.table = $scope.table + "<li>";
@@ -903,6 +1029,28 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
             }
             $scope.updateConditionList();
 
+  $scope.addCase = function (index) {
+        if($scope.testcaseEditor){
+            swal({
+                title: "You have a Case open in the Case editor that should be saved before editing a new Case.",
+                text: "Please save that Case.",
+                type: "warning",
+                confirmButtonText: "Ok",
+                closeOnConfirm: true,
+                confirmButtonColor: '#3b3131'
+            });
+        }
+        else {
+            $scope.testcaseToBeCopied = "None";
+            $scope.testcase_numbers = [];
+            for(var i=0; i<$scope.testcases.length; i++){
+                $scope.testcase_numbers.push(i+1);
+            }
+            openTestcaseCap(index);
+        }
+    };
+
+
             $scope.deleteTestcaseCap = function(index) {
                 swal({
                     title: "Are you sure you want to delete this Case?",
@@ -992,7 +1140,7 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
                     "InputDataFile": "",
                     "runtype": "sequential_keywords",
                     "onError": {
-                        "_action": " ",
+                        "_action": "next",
                         "_value": ""
                     },
                     "runmode": {
