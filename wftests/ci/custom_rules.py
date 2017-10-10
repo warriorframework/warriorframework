@@ -110,7 +110,7 @@ def main(kw=False):
     except IOError:
         print "Can't find {}".format(sys.argv[1])
         exit(0)
-    print "\n", sys.argv[1]
+    print sys.argv[1]
     if "Actions/" in sys.argv:
         kw = True
     root = ast.parse(f.read())

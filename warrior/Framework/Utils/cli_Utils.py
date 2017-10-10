@@ -16,7 +16,6 @@ import os
 from Framework.Utils.print_Utils import print_info, print_warning
 from Framework.Utils.testcase_Utils import pNote
 from Framework.ClassUtils import WNetwork, ssh_utils_class
-from WarriorCore.Classes.war_cli_class import WarriorCliClass
 from WarriorCore.Classes.warmock_class import mocked
 
 try:
