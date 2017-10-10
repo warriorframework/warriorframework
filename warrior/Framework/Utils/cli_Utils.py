@@ -364,14 +364,12 @@ def send_commands_from_testdata(testdatafile, obj_session, **args):
     """
 
     if isinstance(obj_session, WNetwork.warrior_cli_class.WarriorCli):
-        finalresult, td_resp_dict = obj_session.send_commands_from_testdata(testdatafile,
-                                                                                            **args)
+        finalresult, td_resp_dict = obj_session.send_commands_from_testdata(testdatafile, **args)
     else:
         wc_obj = WNetwork.warrior_cli_class.WarriorCli()
         wc_obj.conn_obj = WNetwork.warrior_cli_class.PexpectConnect()
         wc_obj.conn_obj.target_host = obj_session
-        finalresult, td_resp_dict = wc_obj.send_commands_from_testdata(testdatafile,
-                                                                                       **args)
+        finalresult, td_resp_dict = wc_obj.send_commands_from_testdata(testdatafile, **args)
 
     return finalresult, td_resp_dict
 
@@ -510,14 +508,13 @@ def _send_command_retrials(obj_session, details_dict, index, **kwargs):
     retry_count = no of times to retry.
     """
     if isinstance(obj_session, WNetwork.warrior_cli_class.WarriorCli):
-        result, response = obj_session._send_command_retrials(
-            details_dict, index, **kwargs)
+        result, response = obj_session._send_command_retrials(details_dict, index, **kwargs)
     else:
         wc_obj = WNetwork.warrior_cli_class.WarriorCli()
         wc_obj.conn_obj = WNetwork.warrior_cli_class.PexpectConnect()
         wc_obj.conn_obj.target_host = obj_session
-        result, response, details_dict = wc_obj._send_command_retrials(
-            details_dict, index, **kwargs)
+        result, response, details_dict = wc_obj._send_command_retrials(details_dict, index,
+                                                                       **kwargs)
 
     return result, response
 

@@ -286,8 +286,8 @@ class WarriorCli(object):
         # else takes from test case.
         if finalresult:
             for i in details_dict["sys_list"]:
-                # If sys_list in None or if sys_tag in td file has only subsystem name, then it takes
-                # from the test case else fetches from the td file.
+                # If sys_list in None or if sys_tag in td file has only subsystem name, then it
+                # takes from the test case else fetches from the td file.
                 if i is None or i is '' or i.startswith('['):
                     td_sys_list.append(system_name)
                 else:
@@ -301,8 +301,8 @@ class WarriorCli(object):
 
             for title_row, temp_resp_dict in responses_dict.iteritems():
                 for count, value in enumerate(temp_resp_dict):
-                    # if session name is given along with system name in td file, then it is split and
-                    # saved respectively. (eg: sys_name = sys1.session1)
+                    # if session name is given along with system name in td file, then it is split
+                    # and saved respectively. (eg: sys_name = sys1.session1)
                     temp_sys = td_sys_list[count].split('.', 1)
                     if len(temp_sys) > 1:
                         temp_sess_name = temp_sys[1]
@@ -908,8 +908,8 @@ class WarriorCli(object):
                 Distinguish if it is a connect smart action or disconnect
                 smart action
         """
-        if Utils.xml_Utils.getElementWithTagAttribValueMatch(
-           connect_testdata, "testdata", "title", tag_value) is not None:
+        if Utils.xml_Utils.getElementWithTagAttribValueMatch(connect_testdata, "testdata", "title",
+                                                             tag_value) is not None:
             print_info("**********The following command are sent as part of "
                        "the smart analysis**********")
             main_log = session_object.logfile
