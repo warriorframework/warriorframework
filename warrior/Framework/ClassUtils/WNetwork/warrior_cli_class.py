@@ -433,7 +433,6 @@ class WarriorCli(object):
                 final_list.append(comma_sep_verify_names[i])
         return final_list
 
-    @mocked
     def _send_cmd_get_status(self, details_dict, index, system_name=None):
         """Sends a command, verifies the response and returns
         status of the command """
@@ -1072,6 +1071,7 @@ class ParamikoConnect(object):
         if self.conn_type == "NESTED_SSH":
             self.via_host.close()
 
+    @mocked
     def send_command(self, command, get_pty=False, *args, **kwargs):
         """ Execute the command on the remote host
 

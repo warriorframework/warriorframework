@@ -369,3 +369,94 @@ class MockUtils(object):
             response = MockUtils.cli_Utils.response_dict.get(args[3], [""])[0] if WarriorCliClass.sim else ""
             pNote(":CMD: %s"%(args[3]))
             return response
+
+    class warrior_cli_class():
+        """
+            Mocked cli_Utils
+        """
+        response_dict = {}
+        response_reference_dict = {}
+
+        @staticmethod
+        def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=60,
+                prompt=".*(%|#|\$)", conn_options="", custom_keystroke="", **kwargs):
+            """
+                This function doesn't actually connect to the server
+            """
+            pNote("Mocking connect_ssh")
+            sshobj = "Mocking connect_ssh"
+            conn_string = ""
+            conn_options = "" if conn_options is False or conn_options is None else conn_options
+            # delete -o StrictHostKeyChecking=no and put them in conn_options
+            if not conn_options or conn_options is None:
+                conn_options = ""
+            command = 'ssh -p {0} {1}@{2} {3}'.format(port, username, ip, conn_options)
+            #command = ('ssh -p '+ port + ' ' + username + '@' + ip)
+            pNote("connectSSH: cmd = %s" % command, "DEBUG")
+            pNote("MOCK MODE: No connection is made to the server")
+
+            return sshobj, conn_string
+
+        @staticmethod
+        def connect_telnet(ip, port="23", username="", password="",
+                logfile=None, timeout=60, prompt=".*(%|#|\$)",
+                conn_options="", custom_keystroke="", **kwargs):
+            """
+                This function doesn't actually connect to the server
+            """
+            pNote("Mocking connect_telnet")
+            conn_options = "" if conn_options is False or conn_options is None else conn_options
+            pNote("timeout is: %s" % timeout, "DEBUG")
+            pNote("port num is: %s" % port, "DEBUG")
+            command = ('telnet '+ ip + ' '+ port)
+            if not conn_options or conn_options is None:
+                conn_options = ""
+            command = command + str(conn_options)
+            pNote("connectTelnet cmd = %s" % command, "DEBUG")
+            pNote("MOCK MODE: No connection is made to the server")
+            conn_string = ""
+            telnetobj = "Mocking connect_ssh"
+
+            return telnetobj, conn_string
+
+        @classmethod
+        def _send_cmd(cls, *args, **kwargs):
+            """
+                This function pass the command to the mocked send_command function
+            """
+            command = kwargs.get('command')
+            startprompt = kwargs.get('startprompt', ".*")
+            endprompt = kwargs.get('endprompt', None)
+            cmd_timeout = kwargs.get('cmd_timeout', None)
+            result, response = cls.send_command("session_obj", startprompt, endprompt, command, cmd_timeout)
+            return result, response
+
+        @classmethod
+        def send_command(cls, *args, **kwargs):
+            """
+                Get response from the processed response dict
+            """
+            from WarriorCore.Classes.war_cli_class import WarriorCliClass
+            pNote(":CMD: %s"%(args[3]))
+            specific_response = MockUtils.cli_Utils.response_reference_dict.get(args[3], True) if WarriorCliClass.sim else False
+            if specific_response:
+                response = MockUtils.cli_Utils.response_dict.get(args[3], {}).get(specific_response, "")
+            else:
+                response = MockUtils.cli_Utils.response_dict.get(args[3], {}).values()[0] if WarriorCliClass.sim else ""
+            pNote("Response:\n{0}\n".format(response))
+            return True, response
+
+        @classmethod
+        def _send_cmd_by_type(cls, *args, **kwargs):
+            """
+                mocked command
+            """
+            pNote(":CMD: %s"%(args[3]))
+
+        @classmethod
+        def _send_command_retrials(cls, *args, **kwargs):
+            """
+                mocked command
+            """
+            pNote("_send_command_retrials shouldn't be called in this mode")
+            return True, ""

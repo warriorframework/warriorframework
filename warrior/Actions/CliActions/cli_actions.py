@@ -193,7 +193,7 @@ class CliActions(object):
                    "session_name={1} Failed".format(system_name, session_name)
             if WarriorCliClass.mock or WarriorCliClass.sim:
                 result = True
-            if isinstance(wc_obj, WarriorCli) and wc_obj.conn_obj is not None \
+            elif isinstance(wc_obj, WarriorCli) and wc_obj.conn_obj is not None \
                and wc_obj.conn_obj.target_host is not None:
                 # execute smart action to produce user report
                 connect_testdata = \
@@ -340,44 +340,45 @@ class CliActions(object):
                 # Create an object for WarriorCli class and use it to
                 # establish ssh sessions
                 wc_obj = WarriorCli()
-                if credentials['conn_type'] == "SSH_NESTED":
-                    from Framework.ClassUtils.WNetwork.warrior_cli_class import ParamikoConnect
-                    wc_obj.conn_obj = ParamikoConnect(credentials)
-                else:
-                    from Framework.ClassUtils.WNetwork.warrior_cli_class import PexpectConnect
-                    wc_obj.conn_obj = PexpectConnect(credentials)
-                wc_obj.conn_obj.connect_ssh()
-
-                if wc_obj.conn_obj is not None and \
-                   wc_obj.conn_obj.target_host is not None:
-                    conn_string = wc_obj.conn_obj.conn_string
+                if WarriorCliClass.mock or WarriorCliClass.sim:
                     output_dict[session_id] = wc_obj
-                    output_dict[session_id + "_connstring"] = \
-                        conn_string.replace("\r\n", "")
-                    output_dict[session_id + "_td_response"] = {}
-                    result = True
-                    pNote("Connection to system-subsystem"
-                          "-session={0}-{1}-{2} is successful"
-                          .format(system_name, subsystem_name, session_name))
-
-                    # execute smart action to produce user report
-                    smart_result = Utils.cli_Utils.smart_action(
-                     self.datafile, call_system_name, conn_string,
-                     wc_obj.conn_obj.target_host, "connect")
-                    if smart_result is not None:
-                        output_dict[session_id + "_system"] = smart_result
-
-                elif WarriorCliClass.mock or WarriorCliClass.sim:
-                    output_dict[session_id] = wc_obj
-                    output_dict[session_id + "_connstring"] = conn_string
+                    output_dict[session_id + "_connstring"] = ""
                     output_dict[session_id + "_td_response"] = {}
                     result = True
                 else:
-                    result = False
-                    pNote("Connection to system-subsystem"
-                          "-session={0}-{1}-{2} Failed"
-                          .format(system_name, subsystem_name,
-                                  session_name), "warning")
+                    if credentials['conn_type'] == "SSH_NESTED":
+                        from Framework.ClassUtils.WNetwork.warrior_cli_class import ParamikoConnect
+                        wc_obj.conn_obj = ParamikoConnect(credentials)
+                    else:
+                        from Framework.ClassUtils.WNetwork.warrior_cli_class import PexpectConnect
+                        wc_obj.conn_obj = PexpectConnect(credentials)
+                    wc_obj.conn_obj.connect_ssh()
+
+                    if wc_obj.conn_obj is not None and \
+                       wc_obj.conn_obj.target_host is not None:
+                        conn_string = wc_obj.conn_obj.conn_string
+                        output_dict[session_id] = wc_obj
+                        output_dict[session_id + "_connstring"] = \
+                            conn_string.replace("\r\n", "")
+                        output_dict[session_id + "_td_response"] = {}
+                        result = True
+                        pNote("Connection to system-subsystem"
+                              "-session={0}-{1}-{2} is successful"
+                              .format(system_name, subsystem_name, session_name))
+
+                        # execute smart action to produce user report
+                        smart_result = Utils.cli_Utils.smart_action(
+                         self.datafile, call_system_name, conn_string,
+                         wc_obj.conn_obj.target_host, "connect")
+                        if smart_result is not None:
+                            output_dict[session_id + "_system"] = smart_result
+
+                    else:
+                        result = False
+                        pNote("Connection to system-subsystem"
+                              "-session={0}-{1}-{2} Failed"
+                              .format(system_name, subsystem_name,
+                                      session_name), "warning")
             else:
                 result = False
             Utils.data_Utils.update_datarepository(output_dict)
@@ -492,40 +493,41 @@ class CliActions(object):
                 # Create an object for WarriorCli class and use it to
                 # establish telnet sessions
                 wc_obj = WarriorCli()
-                from Framework.ClassUtils.WNetwork.warrior_cli_class import PexpectConnect
-                wc_obj.conn_obj = PexpectConnect(credentials)
-                wc_obj.conn_obj.connect_telnet()
-
-                if wc_obj.conn_obj is not None and \
-                   wc_obj.conn_obj.target_host is not None:
-                    conn_string = wc_obj.conn_obj.conn_string
+                if WarriorCliClass.mock or WarriorCliClass.sim:
                     output_dict[session_id] = wc_obj
-                    output_dict[session_id + "_connstring"] = \
-                        conn_string.replace("\r\n", "")
-                    output_dict[session_id + "_td_response"] = {}
-                    result = True
-                    pNote("Connection to system-subsystem"
-                          "-session={0}-{1}-{2} is successful".
-                          format(system_name, subsystem_name, session_name))
-
-                    # execute smart action to produce user report
-                    smart_result = Utils.cli_Utils.smart_action(
-                     self.datafile, call_system_name, conn_string,
-                     wc_obj.conn_obj.target_host, "connect")
-                    if smart_result is not None:
-                        output_dict[session_id + "_system"] = smart_result
-
-                elif WarriorCliClass.mock or WarriorCliClass.sim:
-                    output_dict[session_id] = wc_obj
-                    output_dict[session_id + "_connstring"] = conn_string
+                    output_dict[session_id + "_connstring"] = ""
                     output_dict[session_id + "_td_response"] = {}
                     result = True
                 else:
-                    result = False
-                    pNote("Connection to system-subsystem"
-                          "-session={0}-{1}-{2} Failed"
-                          .format(system_name, subsystem_name,
-                                  session_name), "warning")
+                    from Framework.ClassUtils.WNetwork.warrior_cli_class import PexpectConnect
+                    wc_obj.conn_obj = PexpectConnect(credentials)
+                    wc_obj.conn_obj.connect_telnet()
+
+                    if wc_obj.conn_obj is not None and \
+                       wc_obj.conn_obj.target_host is not None:
+                        conn_string = wc_obj.conn_obj.conn_string
+                        output_dict[session_id] = wc_obj
+                        output_dict[session_id + "_connstring"] = \
+                            conn_string.replace("\r\n", "")
+                        output_dict[session_id + "_td_response"] = {}
+                        result = True
+                        pNote("Connection to system-subsystem"
+                              "-session={0}-{1}-{2} is successful".
+                              format(system_name, subsystem_name, session_name))
+
+                        # execute smart action to produce user report
+                        smart_result = Utils.cli_Utils.smart_action(
+                         self.datafile, call_system_name, conn_string,
+                         wc_obj.conn_obj.target_host, "connect")
+                        if smart_result is not None:
+                            output_dict[session_id + "_system"] = smart_result
+
+                    else:
+                        result = False
+                        pNote("Connection to system-subsystem"
+                              "-session={0}-{1}-{2} Failed"
+                              .format(system_name, subsystem_name,
+                                      session_name), "warning")
             else:
                 result = False
             Utils.data_Utils.update_datarepository(output_dict)
