@@ -274,6 +274,9 @@ class WarriorCli(object):
         td_session_id = ''
 
         def append_resp_ref_key_value(value, temp_resp_dict, td_resp_dict, title_row):
+            """
+            The response reference value is updated in the data repository
+            """
             resp_key_value_dict = {value: temp_resp_dict[value]}
             if not WarriorCliClass.cmdprint:
                 td_resp_dict[title_row].update(resp_key_value_dict)
