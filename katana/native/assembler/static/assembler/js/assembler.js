@@ -172,4 +172,45 @@ var assembler = {
         $upgradeBtn.css("background-color", "#987150");
         $upgradeBtn.css("color", "white")
     },
+
+    updateKwRepoDetails: function(){
+        $elem = $(this);
+        $parentCardBlock = $elem.closest('.card-block');
+        console.log($parentCardBlock);
+        $footerBlockRow = $parentCardBlock.siblings('.card-footer').find('.row');
+        console.log($footerBlockRow);
+        $footerBlockRow.find('.fa').removeClass('fa-times').removeClass('red');
+        $footerBlockRow.find('.fa').removeClass('fa-check').removeClass('green');
+        $footerBlockRow.find('.fa').removeClass('fa-exclamation-triangle').removeClass('tan')
+        $footerBlockRow.find('.col-sm-8').html('');
+        var url = $elem.val();
+        if(url == ""){
+            $footerBlockRow.find('.fa').addClass('fa-exclamation-triangle').addClass('tan')
+            $footerBlockRow.find('.col-sm-8').html('No Repository Information Provided.');
+            $footerBlockRow.show();
+        }
+        else if(!url.endsWith(".git")){
+            $footerBlockRow.find('.fa').addClass('fa-times').addClass('red');
+            $footerBlockRow.find('.col-sm-8').html('Repository Not Available.');
+            $footerBlockRow.show();
+        } else {
+            $footerBlockRow.find('.fa').addClass('fa-check').addClass('green');
+            $footerBlockRow.find('.col-sm-8').html('Repository Available.');
+            $footerBlockRow.show();
+        }
+    },
+
+    toggleKwRepoClone: function(){
+        var $elem = $(this);
+        if($elem.attr('aria-selected') == "true"){
+            $elem.attr('aria-selected', 'false');
+            $elem.removeClass('fa-toggle-on').removeClass('green');
+            $elem.addClass('fa-toggle-off').addClass('grey');
+        }
+        else{
+            $elem.attr('aria-selected', 'true');
+            $elem.removeClass('fa-toggle-off').removeClass('grey');
+            $elem.addClass('fa-toggle-on').addClass('green');
+        }
+    }
 }

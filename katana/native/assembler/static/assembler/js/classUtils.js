@@ -1,14 +1,17 @@
 class kwRepository {
     constructor(data){
+        if(data["name"]){
+            this.name = data["name"];
+        } else {
+            this.name = "Enter Repository Details"
+        }
         this.url = data["@url"];
         this.label = data["@label"];
-        this.clone = data["@clone"];
-        this.all_drivers = data["@all_drivers"];
+        this.clone = data["@clone"].toLowerCase().trim();
+        this.all_drivers = data["@all_drivers"].toLowerCase().trim();
+        this.available = data["available"];
         this.drivers = [];
-        console.log("12345");
-        console.log(data["driver"]);
         for(var i=0; i<data["driver"].length; i++){
-            console.log("Here");
             this.drivers.push(new driverDetails(data["driver"][i]));
         }
     }
@@ -22,7 +25,89 @@ class kwRepository {
     }
 
     formDomElement() {
-        var $elem = $('<div>Sanika</div>');
+        var clone_icon = "fa fa-toggle-off grey";
+        if(this.clone == "yes"){
+            clone_icon = "fa fa-toggle-on green";
+        }
+        var available_icon = "fa fa-times red";
+        var available_text = "Repository Not Available"
+        if(this.available){
+            available_icon = "fa fa-check-circle green"
+            available_text = "Repository Available"
+        }
+        var hideAvailability = "";
+        if(this.url == ""){
+            hideAvailability = "display: none";
+        }
+        var driverDom = '';
+        for(var i=0; i<this.drivers.length; i++){
+            driverDom = driverDom + this.drivers[i].domElement;
+        }
+        var displayDrivers = "";
+        if(driverDom == ""){
+            displayDrivers = "display: none";
+        }
+        var allDriversIcon = "fa fa-toggle-off grey";
+        if(this.all_drivers == "yes"){
+            allDriversIcon = "fa fa-toggle-on green";
+        }
+        var $elem =  $('<div class="card" style="padding: 1rem;">' +
+                            '<div class="card-header">' +
+                                '<div class="row">' +
+                                    '<div class="col-sm-1">' +
+                                        '<i class="' + clone_icon + '" style="float:right; line-height:inherit!important;" ' +
+                                            'aria-hidden="true" katana-click="assembler.toggleKwRepoClone" aria-selected="true"></i>' +
+                                    '</div>' +
+                                    '<div class="col-sm-8">' +
+                                        this.name +
+                                    '</div>' +
+                                '</div>' +
+                            '</div>' +
+                            '<div class="card-block" style="padding: 1rem;">' +
+                                '<div class="row">' +
+                                    '<div class="col-sm-1" style="text-align: right; padding: 0.7rem;">' +
+                                        '<label>URL:</label>' +
+                                    '</div>' +
+                                    '<div class="col-sm-5">' +
+                                        '<input value="' + this.url + '" katana-change="assembler.updateKwRepoDetails">' +
+                                    '</div>' +
+                                    '<div class="col-sm-1" style="text-align: right; padding: 0.7rem;">' +
+                                        '<label>Label:</label>' +
+                                    '</div>' +
+                                    '<div class="col-sm-3">' +
+                                        '<input value="' + this.label + '">' +
+                                    '</div>' +
+                                '</div>' +
+                                '<div class="row" style="' + displayDrivers + '">' +
+                                    '<div class="col-sm-1"></div>' +
+                                    '<div class="col-sm-9">' +
+                                        '<div class="card">' +
+                                            '<div class="card-header">' +
+                                                '<i class="' + allDriversIcon + '"></i>' +
+                                                '<label>All Available Drivers</label>' +
+                                            '</div>' +
+                                            '<div class="card-block" style="padding: 1rem;">' +
+                                                '<div class="row text-center">' +
+                                                    driverDom +
+                                                '</div>' +
+                                            '</div>' +
+                                        '</div>' +
+                                    '</div>' +
+                                '</div>'+
+                                '<br>' +
+                            '</div>' +
+                            '<div class="card-footer">' +
+                                '<div class="row" style="' + hideAvailability + '">' +
+                                    '<div class="col-sm-1">' +
+                                        '<i class="' + available_icon + '" style="float:right; line-height:inherit!important;"></i>' +
+                                    '</div>' +
+                                    '<div class="col-sm-8 text-muted">' +
+                                        available_text +
+                                    '</div>' +
+                                '</div>' +
+                            '</div>' +
+                        '</div>' +
+                        '<br>');
         return $elem;
     }
 
@@ -49,9 +134,30 @@ class kwRepository {
 
 class driverDetails {
     constructor(data){
-        console.log(data);
         this.name = data["@name"];
         this.clone = data["@clone"];
+    }
+
+    get domElement(){
+        return this.formDomElement();
+    }
+
+    formDomElement() {
+        if(this.name){
+            var clone_icon = "fa fa-toggle-off grey";
+            if(this.clone == "yes"){
+                clone_icon = "fa fa-toggle-on green";
+            }
+            var elem = '<div class="col-sm-4">' +
+                            '<i class="' + clone_icon + '"></i>' +
+                            '<label>' + this.name + '</label>' +
+                        '</div>';
+        }
+        else{
+            var elem = "";
+        }
+
+        return elem;
     }
 
     get jsonObj() {
@@ -81,7 +187,7 @@ class wsRepository {
     }
 
     formDomElement() {
-        var html_contents = '<div></div>';
+        var html_contents = "";
         var $elem = $(html_contents);
         return $elem
     }
@@ -116,21 +222,45 @@ class dependency{
     }
 
     formDomElement() {
-        var installed_btn = '<button class="btn btn-success" katana-click="assembler.installDependency" aria-selected="false">Install</button>';
+        var installed_btn = '<button class="btn btn-success" ' +
+                                     'katana-click="assembler.installDependency" ' +
+                                     'aria-selected="false">' +
+                                         'Install' +
+                            '</button>';
         var available_txt = '<h6 class="card-subtitle mb-2 text-muted">&nbsp;</h6><br>';
         if(this.installed){
-            available_txt = '<h6 class="card-subtitle mb-2 text-muted">Available Version: ' + this.installed + '</h6><br>';
+            available_txt = '<h6 class="card-subtitle mb-2 text-muted">' +
+                                'Available Version: ' + this.installed +
+                            '</h6><br>';
             if(!this.matched){
-                installed_btn = '<button class="btn btn-danger" katana-click="assembler.installDependency" aria-selected="false">Install</button>';
+                installed_btn = '<button class="btn btn-danger" ' +
+                                         'katana-click="assembler.installDependency" ' +
+                                         'aria-selected="false">' +
+                                             'Install' +
+                                '</button>';
             }
             else if(this.matched == "lower"){
-                installed_btn = '<button class="btn btn-info" katana-click="assembler.upgradeDependency" aria-selected="false">Upgrade&nbsp;<i class="fa fa-exclamation-triangle tan" aria-hidden="true"></i>&nbsp;</button>';
+                installed_btn = '<button class="btn btn-info" ' +
+                                         'katana-click="assembler.upgradeDependency" ' +
+                                         'aria-selected="false">' +
+                                             'Upgrade&nbsp;' +
+                                             '<i class="fa fa-exclamation-triangle tan" ' +
+                                                 'aria-hidden="true">' +
+                                             '</i>&nbsp;' +
+                                '</button>';
             }
             else if(this.matched == "higher"){
-                installed_btn = '<button class="btn btn-success">Installed&nbsp;<i class="fa fa-check-circle green" aria-hidden="true"></i>&nbsp;</button>';
+                installed_btn = '<button class="btn btn-success">' +
+                                    'Installed&nbsp;' +
+                                    '<i class="fa fa-check-circle green" aria-hidden="true"></i>' +
+                                    '&nbsp;' +
+                                '</button>';
             }
             else{
-                installed_btn = '<button class="btn btn-success">Installed&nbsp;<i class="fa fa-check-circle green" aria-hidden="true"></i>&nbsp;</button>';
+                installed_btn = '<button class="btn btn-success">' +
+                                    'Installed&nbsp;' +
+                                    '<i class="fa fa-check-circle green" aria-hidden="true"></i>&nbsp;' +
+                                '</button>';
             }
         }
 
@@ -161,15 +291,3 @@ class dependency{
         return jsonObject;
     }
 }
-
-/*
-let new_obj = new kwRepository("url", "label", "clone", "all_drivers")
-console.log(new_obj)
-new_obj.addDriver("driver_name", "clone_no")
-new_obj.addDriver("driver_name_2", "clone_yes")
-console.log(new_obj);
-console.log(new_obj.jsonObj)
-*/
-
-let new_obj = new dependency({"@name": "jira", "@install": "YES", "@user": "NO"})
-console.log(new_obj)

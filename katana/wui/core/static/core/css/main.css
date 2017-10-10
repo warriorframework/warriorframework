@@ -1417,8 +1417,8 @@ div#launchpad.page.hidden .tabs {
 }
 
 .fa-toggle-on {
-	-webkit-transform: scaleX(-1);
-	transform: scaleX(-1);
+	/*-webkit-transform: scaleX(-1);
+	transform: scaleX(-1);*/
 }
 
 i.active {
