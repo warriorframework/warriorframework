@@ -14,7 +14,6 @@ limitations under the License.
 
 import os
 from Framework.Utils.print_Utils import print_info, print_warning
-from Framework.Utils.testcase_Utils import pNote
 from Framework.ClassUtils import WNetwork, ssh_utils_class
 from WarriorCore.Classes.warmock_class import mocked
 
@@ -32,7 +31,7 @@ def pexpect_spawn_with_env(pexpect_obj, command, timeout, escape=False, env=None
 
     wc_obj = WNetwork.warrior_cli_class.WarriorCli()
     child = wc_obj.pexpect_spawn_with_env(pexpect_obj, command, timeout,
-                                          escape=False, env=None)
+                                          escape, env)
 
     return child
 
