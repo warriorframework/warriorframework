@@ -7,7 +7,7 @@
 		<currency_map type='dict'>{'USA':'USD', 'India': 'INR'}</currency_map>
 		<ram_space_available type='bool'>False</ram_space_available>
 		<hd_space_available type='bool'>True</hd_space_available>
-        <config type='file'>rest_functional_tests/rest_variable_in_json_test_Data.xml</config>
+        <config type='file'>../../config_files/check_file_type</config>
 		<intvar type='int'>456</intvar>
 		<floatvar type='float'>345.65</floatvar>
     </system>

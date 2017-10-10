@@ -27,7 +27,7 @@
 				<argument name="ramspace" value="wtag=ram_space_available"/>
 				<argument name="configfile" value="cond_var/cond_var.xml"/>
 				<argument name="intvar" value="wtag=intvar"/>
-				<argument name="file_config" value="wtag=config"/>
+				<argument name="anotherfile" value="wtag=config"/>
 			</Arguments>
 			<onError action="next"/>
 			<Description>wtag</Description>
@@ -46,7 +46,7 @@
 				<argument name="ramspace" value="wtag=ram_space_available"/>
 				<argument name="configfile" value="wtag=config"/>
 				<argument name="intvar" value="wtag=floatvar"/>
-				<argument name="file_config" value="wtag=intvar"/>
+				<argument name="anotherfile" value="wtag=intvar"/>
 			</Arguments>
 			<onError action="next"/>
 			<Description>wtag</Description>
@@ -65,7 +65,7 @@
 				<argument name="ramspace" value="wtag=ram_space_available"/>
 				<argument name="configfile" value="wtag=config"/>
 				<argument name="intvar" value="tag=intvar"/>
-				<argument name="file_config" value="tag=config"/>
+				<argument name="anotherfile" value="tag=config"/>
 			</Arguments>
 			<onError action="next"/>
 			<Description>wtag</Description>

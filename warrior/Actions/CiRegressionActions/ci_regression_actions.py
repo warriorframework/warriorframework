@@ -343,6 +343,7 @@ class CIregressionActions(object):
             7. dict_value - expected to be dict
             8. file_value - expected to be file
         """
+        file_contents = "Checking file datatype in wtags"
         status = True
         err_msg = "{} is not an {} value but of type {}"
         if type(str_value) is not str:
@@ -369,11 +370,17 @@ class CIregressionActions(object):
         if type(file_value) is not file:
             print_error(err_msg.format(file_value, "file", type(file_value)))
             status = False
+        else:
+            actual_contents = file_value.read().strip()
+            if actual_contents != file_contents:
+                print_error("contents of the file {} is <<{}>> which does not match expected"
+                            " <<{}>>".format(file_value, actual_contents, file_contents))
+                status = False
         return status
 
     def check_values_from_datafile(self, system_name, strvar, langs, states,
                                    currencys, ramspace, configfile, intvar,
-                                   file_config):
+                                   anotherfile):
         """get the values from datafile
         :Argument:
             1. system_name = system name in the datafile
@@ -384,7 +391,7 @@ class CIregressionActions(object):
             6. ramspace = boolean variable
             7. configfile = file variable
             8. intvar = int variable
-            9. file_config = file variable
+            9. anotherfile = file variable
         """
         def check_type(var, varname, datatype):
             """check that vars are of correct datatype
@@ -406,17 +413,17 @@ class CIregressionActions(object):
         status = check_type(currencys, "currencys", dict) and status
         status = check_type(ramspace, "ramspace", bool) and status
         try:
-            if file_config.startswith('tag'):
-                file_config = data_Utils.resolve_argument_value_to_get_tag_value(
-                                        datafile, system_name, file_config)
+            if anotherfile.startswith('tag'):
+                anotherfile = data_Utils.resolve_argument_value_to_get_tag_value(
+                                        datafile, system_name, anotherfile)
             if not os.path.isabs(configfile):
                 configfile = file_Utils.getAbsPath(configfile, tc_filepath)
-            if not os.path.isabs(file_config):
-                file_config = file_Utils.getAbsPath(file_config, tc_filepath)
+            if not os.path.isabs(anotherfile):
+                anotherfile = file_Utils.getAbsPath(anotherfile, tc_filepath)
         except AttributeError:
-            print_error('configfile and file_config are expected to be files')
+            print_error('configfile and anotherfile are expected to be files')
             print_error('type of configfile is {}'.format(type(configfile)))
-            print_error('type of file_config is {}'.format(type(file_config)))
+            print_error('type of anotherfile is {}'.format(type(anotherfile)))
             status = False
         if type(intvar) is str and intvar.startswith('tag'):
             intvar = data_Utils.resolve_argument_value_to_get_tag_value(
