@@ -188,6 +188,7 @@ class WarriorCli(object):
             1. finalresult = boolean
         """
         responses_dict = {}
+        td_resp_dict = {}
         varconfigfile = args.get('varconfigfile', None)
         datafile = args.get("datafile", None)
         var_sub = args.get('var_sub', None)
@@ -248,11 +249,21 @@ class WarriorCli(object):
                     finalresult = "ERROR"
                 finalresult = finalresult and result
             responses_dict[key] = response_dict
+            td_resp_dict = self.update_resp_ref_in_data_repo(details_dict, system_name, session_name,
+                                                             finalresult, responses_dict, td_resp_dict)
+        return finalresult, td_resp_dict
 
+    def update_resp_ref_in_data_repo(self, details_dict, system_name, session_name,
+                                     finalresult, responses_dict, td_resp_dict):
         td_sys_list = []
         td_session_list = []
         td_session_id = ''
-        td_resp_dict = {}
+
+        def append_resp_ref_key_value(value, temp_resp_dict, td_resp_dict, title_row):
+            resp_key_value_dict = {value: temp_resp_dict[value]}
+            if not WarriorCliClass.cmdprint:
+                td_resp_dict[title_row].update(resp_key_value_dict)
+            return td_resp_dict
 
         # Fetching the system name and session name from details dict if available,
         # else takes from test case.
@@ -284,23 +295,21 @@ class WarriorCli(object):
                     td_session_id = Utils.data_Utils.get_session_id(temp_sys[0], temp_sess_name)
                     td_resp_dict = get_object_from_datarepository(str(td_session_id)+"_td_response")
 
-                    tr_dict = {title_row :{}}
                     # checks if title_row value is not in td_resp_dict
                     if title_row not in td_resp_dict.keys():
                     # if not available then it first updates the title_row value to td_resp_dict
-                        td_resp_dict.update(tr_dict)
+                        td_resp_dict[title_row] = {}
                         # after updating title_row value, it updates the resp_ref key and value
-                        resp_key_value_dict = {value: temp_resp_dict[value]}
-                        if not WarriorCliClass.cmdprint:
-                            td_resp_dict[title_row].update(resp_key_value_dict)
+                        td_resp_dict = append_resp_ref_key_value(value, temp_resp_dict,
+                                                                 td_resp_dict, title_row)
+
                     # if title_row value available in td_resp_dict,
                     # then it updates the resp_ref key and value to td_resp_dict
                     else:
-                        resp_key_value_dict = {value: temp_resp_dict[value]}
-                        if not WarriorCliClass.cmdprint:
-                            td_resp_dict[title_row].update(resp_key_value_dict)
+                        td_resp_dict = append_resp_ref_key_value(value, temp_resp_dict,
+                                                                 td_resp_dict, title_row)
+        return td_resp_dict
 
-        return finalresult, responses_dict, td_resp_dict
 
     @cmdprinter
     def _send_cmd(self, **kwargs):

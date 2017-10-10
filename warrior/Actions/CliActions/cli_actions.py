@@ -824,7 +824,7 @@ class CliActions(object):
         #testdata = abspaths[0]
         #varconfigfile = abspaths[1]
         # td_resp_dict = {}
-        status, resp_dict, td_resp_dict = cli_Utils.send_commands_from_testdata(testdata, session_object,
+        status, td_resp_dict = cli_Utils.send_commands_from_testdata(testdata, session_object,
                                                                   varconfigfile=varconfigfile,
                                                                   var_sub=var_sub,
                                                                   title=title, row=row_num,
@@ -857,12 +857,12 @@ class CliActions(object):
 
         if session_object.isalive():
             session_object.timeout = int_timeout
-            Utils.testcase_Utils.pNote("Timeout value is set to {0}mins for the session with" \
-                                       " system name : {1}, session name : {2}" \
+            Utils.testcase_Utils.pNote("Timeout value is set to {0}mins for the session with"
+                                       " system name : {1}, session name : {2}"
                                        .format(int_timeout, system_name, session_name))
         else:
             status = False
-            Utils.testcase_Utils.pNote("Session with system name : {0}, session name : {1}"\
+            Utils.testcase_Utils.pNote("Session with system name : {0}, session name : {1}"
                                        " is timedout/closed".format(system_name, session_name))
         return status
 
@@ -886,11 +886,11 @@ class CliActions(object):
         session_object = Utils.data_Utils.get_object_from_datarepository(session_id)
 
         if session_object.isalive():
-            Utils.testcase_Utils.pNote("Session with system name : {0}, session name : {1}"\
+            Utils.testcase_Utils.pNote("Session with system name : {0}, session name : {1}"
                                        " is alive".format(system_name, session_name))
         else:
             status = False
-            Utils.testcase_Utils.pNote("Session with system name : {0}, session name : {1}"\
+            Utils.testcase_Utils.pNote("Session with system name : {0}, session name : {1}"
                                        " is not alive".format(system_name, session_name))
         return status
 
