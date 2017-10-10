@@ -255,6 +255,20 @@ class WarriorCli(object):
 
     def update_resp_ref_in_data_repo(self, details_dict, system_name, session_name,
                                      finalresult, responses_dict, td_resp_dict):
+        """
+        -Updates the response reference key and value the respective session_id
+        -If the testcase and testdata file has two different system name, then it takes the td file
+        sys tag as priority and updates the response reference in the particular session_id
+
+            :Arguments:
+                1.details_dict = Contains all the details of the testdata block
+                2.system_name = Contains the system name given in the testcase
+                3.session_name = Contains the session name given in the testcase
+                4.responses_dict = Contains the response reference as a dictionary
+
+            :Returns:
+                td_resp_dict = dict
+        """
         td_sys_list = []
         td_session_list = []
         td_session_id = ''
