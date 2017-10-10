@@ -17,6 +17,7 @@ import argparse
 import xml.etree.ElementTree as ET
 import datetime, time
 import os
+import subprocess
 import Framework.Utils as Utils
 from Framework.Utils.print_Utils import print_error, print_info
 import WarriorCore.Classes.manual_defect_class as manual_defect_class
@@ -397,11 +398,12 @@ class WarriorCliClass(object):
                             "and xml results will be stored in this " \
                             "database server, database config file " \
                             "location = Tools/database/database_config.xml.")
+        # Warrior User guide pdf opens
         cur_path = os.getcwd()
-        split_path = cur_path.split('/warriorframework')[0]
-        file_path = split_path + "/warriorframework/docs/Warrior*.pdf"
-        cmd = "nohup evince -p 1 " + file_path
-        os.system(cmd + " >/dev/null 2>&1 & exit")
+        split_path = cur_path.split('warriorframework')[0]
+        file_path = os.path.join(split_path, "warriorframework", "docs", "Warrior Framework User Guide.pdf")
+        cmd = ["nohup", "evince", "-p", "1", file_path]
+        subprocess.Popen(cmd, stderr=open(os.devnull, 'w'))
 
         namespace = parser.parse_args(arglist)
         if namespace.cmdprint:
