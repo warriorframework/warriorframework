@@ -1414,7 +1414,7 @@ def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
     source could be environment or datarepository for now.
     """
     error_msg1 = ("Could not find any %s variable {0!r} corresponding to {1!r}"
-                  "provided in input data/testdata file.\nWill default to "
+                  " provided in input data/testdata file.\nWill default to "
                   "None") % (prefix)
     error_msg2 = ("Unable to substitute %s variable {0!r} corresponding to "
                   "{1!r} provided in input data/testdata file.\nThe value "
@@ -1458,8 +1458,14 @@ def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
                                     str(raw_value[k]).replace(
                                         search_obj.group(), 'None'))
                     except SyntaxError as synerr:
-                        print_error("Syntax Error - " +
-                                    error_msg2.format(string, value, raw_value[k], synerr))
+                        print "raw_value:", raw_value[k]
+                        print "type:", type(raw_value[k])
+                        from WarriorCore.Classes.testcase_utils_class import TestcaseUtils
+                        tuc_obj = TestcaseUtils()
+                        try:
+                            raw_value[k] = literal_eval(tuc_obj.rem_nonprintable_ctrl_chars(raw_value[k]))
+                        except:
+                            print_error("Syntax Error - " + error_msg2.format(string, value, raw_value[k], synerr))
     elif type(raw_value) == str:
         extracted_var = string_Utils.return_quote(str(raw_value),
                                                   start_pattern, end_pattern)
@@ -1507,7 +1513,7 @@ def substitute_var_patterns(raw_value, start_pattern="${", end_pattern="}"):
     prefixes = {'ENV': ('environment', lambda var: os.environ[var]),
                 'REPO': ('data repository', get_data)}
     error_msg = ("Could not find any {0} variable {1!r} corresponding to {2!r}"
-                 "provided in input data/testdata file. \nWill default to None"
+                 " provided in input data/testdata file.\nWill default to None"
                  )
     if raw_value is None:
         return raw_value

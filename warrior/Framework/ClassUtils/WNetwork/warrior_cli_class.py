@@ -281,9 +281,6 @@ class WarriorCli(object):
                 # if the requested pattern not found return empty string
                 reobj = re.search(resp_pat_req, response)
                 response = reobj.group(0) if reobj is not None else ""
-                # removing non-ascii/control characters(linefeed) from response
-                tuc_obj = TestcaseUtils()
-                response = tuc_obj.rem_nonprintable_ctrl_chars(response)
                 pNote("User has requested saving response. Response pattern "
                       "required by user is : {0}".format(resp_pat_req))
                 pNote("Portion of response saved to the data repository with "
