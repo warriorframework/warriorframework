@@ -863,7 +863,7 @@ var katana = {
 				 dataType: dataType,
 				 data: { data: toSend },
 				 success: function(data){
-					 console.log('success');
+					 //console.log('success');
 					 successCallBack && successCallBack(data);
 				 },
 				 error: function(xhr, textStatus, error){
