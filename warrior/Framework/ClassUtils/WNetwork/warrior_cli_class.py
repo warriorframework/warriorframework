@@ -22,7 +22,6 @@ from Framework import Utils
 from Framework.Utils.print_Utils import print_info, print_debug,\
  print_exception, print_error
 from Framework.Utils.testcase_Utils import pNote
-from WarriorCore.Classes.testcase_utils_class import TestcaseUtils
 from WarriorCore.Classes.war_cli_class import WarriorCliClass
 from Framework.Utils.cli_Utils import cmdprinter
 from Framework.ClassUtils import database_utils_class
