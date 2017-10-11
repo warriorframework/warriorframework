@@ -19,6 +19,7 @@ from Framework.Utils import xml_Utils, file_Utils
 from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.print_Utils import print_info
 from Framework.Utils.xml_Utils import getElementWithTagAttribValueMatch
+import katana_interface_class
 
 __author__ = 'Keenan Jabri'
 
@@ -35,7 +36,7 @@ class LineResult:
 
     def get_info(self, line):
         """gets info for line"""
-        inf_obj = line.get("info") if line.get("info") else ' '
+        inf_obj = line.get("info") if line.get("info") else ''
         info = json.dumps(inf_obj)
         info = info.replace('}"', ',').replace('"{', '').replace("'", "").replace('"', '')
         return info
@@ -169,7 +170,7 @@ class WarriorHtmlResults:
         else:
             return ''
 
-    def generate_html(self, junitObj, givenPath):
+    def generate_html(self, junitObj, givenPath, is_final):
         """ build the html givenPath: added this feature in case of later down the line calling from outside junit
         file ( no actual use as of now )
         """
@@ -185,9 +186,19 @@ class WarriorHtmlResults:
             html += item.html
         html = self.merge_html(html)
 
+        if is_final is True:
+            html += '<div class="complete"></div>'
+
         elem_file = open(self.get_path(), 'w')
         elem_file.write(html)
         elem_file.close()
+
+        katana = katana_interface_class.KatanaInterface()
+        katana.send_file(self.get_path(), 'updatehtmlResult')
+
+        if is_final is True:
+            katana.end_comunication()
+
         self.lineObjs = []
         print_info("++++ Results Summary ++++")
         print_info("Open the Results summary file given below in a browser to "

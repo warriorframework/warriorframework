@@ -19,6 +19,7 @@ import platform
 import re
 import subprocess
 import threading
+from xml.dom import minidom
 import xml.etree.ElementTree
 from os.path import expanduser
 from xml.dom.minidom import parseString
@@ -44,6 +45,7 @@ states_relpath = './config/states.json'
 newwarhornconfigfile_relpath = './config/newwarhornconfigfile.xml'
 newtestdatafile_relpath = './config/newtestdatafile.xml'
 deftagsfile_relpath = './config/defaulttags.json'
+warriorInterface = ''
 
 # compute abs paths
 CFGFILE = os.path.normpath((os.path.join(current_file_dir, cfg_relpath)))
@@ -73,6 +75,64 @@ def staticfiles(filename):
 def index():
     redirect('/katana/')
 
+
+class KWarrior():
+
+    htmlResults = ''
+
+    def __init__(self):
+        self.setLocation()
+
+    def updatehtmlResult(self, jsonObj):
+        path = jsonObj['fileUrl']
+        self.htmlResults = open( path, 'r').read()
+        return self.htmlResults
+
+    def getWarriorPath(self):
+        cfg = readconfig()
+        return cfg['pythonsrcdir']
+
+    def setLocation(self, jsonObj=''):
+        path = self.getWarriorPath() + '/Tools/w_settings.xml'
+        settingsXml = minidom.parse(path)
+        settingElems = settingsXml.getElementsByTagName('Setting')
+        for i in settingElems:
+            if i.attributes['name'].value == 'katana':
+                if jsonObj != '':
+                    i.attributes['location'].value = ''
+                else:
+                    i.attributes['location'].value = 'http://localhost:5000/warrior_request'
+                xmlToString = '<?xml version="1.0" ?><Default>'
+                for j in settingsXml.getElementsByTagName('Default')[0].childNodes:
+                    if j.nodeType == j.TEXT_NODE:
+                        xmlToString += str(j.data)
+        xmlToString += '</Default>'
+        file = open( path, 'w')
+        file.write(settingsXml.toxml())
+        file.close()
+
+
+@route('/warrior_request', method='POST')
+def warrior_request():
+    jsonObj = request.json
+    method = getattr(warriorInterface, jsonObj['toCall'])
+    method(jsonObj)
+
+
+@route('/get_html_results')
+def get_html_results():
+    global warriorInterface
+    if warriorInterface != '':
+        return warriorInterface.htmlResults
+    else:
+        return ''
+
+
+@route('/init_warpath')
+def init_warpath():
+    global warriorInterface
+    warriorInterface = KWarrior()
+    return 'test'
 
 @route('/katana/')
 def katana():
@@ -1279,6 +1339,8 @@ def search():
 
 @route('/execute/', method='POST')
 def execute():
+    global warriorInterface
+    warriorInterface = KWarrior()
     command_response = []
     filenames = request.forms.get("filenames")
     filenames = filenames.strip()
