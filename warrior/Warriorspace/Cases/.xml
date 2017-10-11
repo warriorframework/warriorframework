@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Testcase>
+	<Steps>
+		<step Keyword="connect" TS="1" Driver="cli_driver" draft="no">
+			<impact>impact</impact>
+			<Execute ExecType="yes">
+				<Rule Elsevalue="" Condvalue="" Condition="" Else=""></Rule>
+			</Execute>
+			<retry Condvalue="" interval="" count="" type="next" Condition=""></retry>
+			<Description></Description>
+			<iteration_type type=""></iteration_type>
+			<onError action="abort_as_error"></onError>
+			<runmode type="standard" value=""></runmode>
+			<Iteration_type type="standard"></Iteration_type>
+			<InputDataFile></InputDataFile>
+			<Arguments>
+				<argument name="system_name" value="Nothing"></argument>
+				<argument name="" value=""></argument>
+			</Arguments>
+			<context>positive</context>
+			<step ExecType="Yes">
+				<Rule Elsevalue="" Condvalue="" Condition="" Else="next"></Rule>
+			</step>
+		</step>
+		<step Keyword="connect" TS="1" Driver="cli_driver" draft="no">
+			<impact>impact</impact>
+			<Execute ExecType="yes">
+				<Rule Elsevalue="" Condvalue="" Condition="" Else=""></Rule>
+			</Execute>
+			<retry Condvalue="" interval="" count="" type="next" Condition=""></retry>
+			<Description></Description>
+			<iteration_type type=""></iteration_type>
+			<onError action="abort_as_error"></onError>
+			<runmode type="Standard" value=""></runmode>
+			<Iteration_type type="Standard"></Iteration_type>
+			<InputDataFile></InputDataFile>
+			<Arguments>
+				<argument name="system_name" value="Dip"></argument>
+				<argument name="" value=""></argument>
+			</Arguments>
+			<context>positive</context>
+			<step ExecType="Yes">
+				<Rule Elsevalue="" Condvalue="" Condition="" Else="next"></Rule>
+			</step>
+		</step>
+		<step Keyword="login" TS="2" Driver="fw9500_driver" draft="no">
+			<impact>impact</impact>
+			<Execute ExecType="if">
+				<Rule Condvalue="PASS" Condition="step_1_result" Else="abort"></Rule>
+			</Execute>
+			<retry Condvalue="" interval="" count="" type="next" Condition=""></retry>
+			<Description>Something</Description>
+			<iteration_type type=""></iteration_type>
+			<onError action="next"></onError>
+			<runmode type="standard" value=""></runmode>
+			<Iteration_type type="Standard"></Iteration_type>
+			<InputDataFile></InputDataFile>
+			<Arguments>
+				<argument name="system_name" value="Something"></argument>
+				<argument name="" value=""></argument>
+			</Arguments>
+			<context>positive</context>
+			<step ExecType="Yes">
+				<Rule Elsevalue="" Condvalue="" Condition="" Else="next"></Rule>
+			</step>
+		</step>
+	</Steps>
+	<Requirements>
+		<Requirement></Requirement>
+	</Requirements>
+	<Details>
+		<Category>fwcds</Category>
+		<Logsdir></Logsdir>
+		<InputDataFile>../Data/data_test.xml</InputDataFile>
+		<Name>tc_connect</Name>
+		<Title>An automation case to use for my need</Title>
+		<Datatype>Custom</Datatype>
+		<Resultsdir></Resultsdir>
+		<State>In Review</State>
+		<ExpectedResults></ExpectedResults>
+		<Time>12:34</Time>
+		<Date>2017-09-27</Date>
+		<default_onError action="next"></default_onError>
+		<Engineer>Engineer, Name</Engineer>
+	</Details>
+</Testcase>

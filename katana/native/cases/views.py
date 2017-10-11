@@ -29,11 +29,14 @@ from utils.navigator_util import Navigator
 from katana_utils import *
 import scanfiles
 
-
 navigator = Navigator();
 path_to_src_python_file = navigator.get_katana_dir() + os.sep + "config.json"
+
+print "Setting Working dir --------------------------------", path_to_src_python_file
+gpysrcdir = path_to_src_python_file;
+
 All_case_action_details = py_file_details(json.loads(open(path_to_src_python_file).read())['pythonsrcdir']);
-setPythonSrcDir(All_case_action_details);
+EMPTY_DATA = json.loads(json.dumps(xmltodict.parse(open("./native/cases/empty.xml").read(), process_namespaces=True)));
 
 def index(request):
 	path_to_config_file = navigator.get_katana_dir() + os.sep + "config.json"
@@ -158,58 +161,58 @@ def getListOfComments(request):
 		print details[driver]
 	return JsonResponse(responseBack)
 
-def getEmpty():
-	edata={
-		  "Testcase": {
-		    "Details": {
-		      "Name": "set_env_variable",
-		      "Title": "set_env_variable",
-		      "default_onError": { "@action": "next" },
-		      "Date": "2017-01-01",
-		      "Time": "23:00",
-		      "InputDataFile": "No_Data",
-		      "Engineer": "Warrior_Test",
-		      "Category": "Regression",
-		      "State": "Released"
-		    },
-		    "Requirements": {
-		      "Requirement": [
-		        "Demo-requirement-001",
-		        "Demo-requirement-002",
-		        "Demo-requirement-003"
-		      ]
-		    },
-		    "Steps": {
-		      "step": {
-		        "@Driver": "common_driver",
-		        "@Keyword": "set_env_var",
-		        "@TS": "1",
-		        "Arguments": {
-		          "argument": [
-		            {
-		              "@name": "var_key",
-		              "@value": "check3"
-		            },
-		            {
-		              "@name": "var_value",
-		              "@value": "3"
-		            }
-		          ]
-		        },
-		        "Description": [
-		          "Regression for existing support, setting one ENV variable",
-		          "compare values"
-		        ],
-		        "onError": { "@action": "next" },
-		        "Execute": { "@ExecType": "Yes" },
-		        "context": "positive",
-		        "impact": "impact"
-		      }
-		    }
-		  }
-		}  ;
+# def getEmpty():
+# 	edata={
+# 		  "Testcase": {
+# 		    "Details": {
+# 		      "Name": "set_env_variable",
+# 		      "Title": "set_env_variable",
+# 		      "default_onError": { "@action": "next" },
+# 		      "Date": "2017-01-01",
+# 		      "Time": "23:00",
+# 		      "InputDataFile": "No_Data",
+# 		      "Engineer": "Warrior_Test",
+# 		      "Category": "Regression",
+# 		      "State": "Released"
+# 		    },
+# 		    "Requirements": {
+# 		      "Requirement": [
+# 		        "Demo-requirement-001",
+# 		        "Demo-requirement-002",
+# 		        "Demo-requirement-003"
+# 		      ]
+# 		    },
+# 		    "Steps": {
+# 		      "step": {
+# 		        "@Driver": "common_driver",
+# 		        "@Keyword": "set_env_var",
+# 		        "@TS": "1",
+# 		        "Arguments": {
+# 		          "argument": [
+# 		            {
+# 		              "@name": "var_key",
+# 		              "@value": "check3"
+# 		            },
+# 		            {
+# 		              "@name": "var_value",
+# 		              "@value": "3"
+# 		            }
+# 		          ]
+# 		        },
+# 		        "Description": [
+# 		          "Description Line 1",
+# 		          "Description Line 2"
+# 		        ],
+# 		        "onError": { "@action": "next" },
+# 		        "Execute": { "@ExecType": "Yes" },
+# 		        "context": "positive",
+# 		        "impact": "impact"
+# 		      }
+# 		    }
+# 		  }
+# 		}  ;
 
-	return edata; 
+# 	return edata; 
 
 def editCase(request):
 	""" 
@@ -257,7 +260,7 @@ def editCase(request):
 	xml_r["Testcase"]["Steps"] = {} 
 	
 
-	edata = getEmpty()
+	#edata = getEmpty()
 
 	if filename == 'NEW':
 		subdir = path_to_testcases 
@@ -268,19 +271,19 @@ def editCase(request):
 		xlines = open(filename).read()
 		xml_d = xmltodict.parse(xlines, dict_constructor=dict);
 		subdir = os.path.split(filename)[0]
-		fn = 'save_' + os.path.split(filename)[1]
+		fn =  os.path.split(filename)[1]
 
 	fulljsonstring = str(json.loads(json.dumps(xml_d['Testcase'])));
 	fulljsonstring = fulljsonstring.replace('u"',"'").replace("u'",'"').replace("'",'"');
-	fulljsonstring = fulljsonstring.replace('None','""')
+	fulljsonstring = fulljsonstring.replace('None','""').replace('""""','""')
 
-	emptyCaseString = str(json.loads(json.dumps(edata['Testcase'])));
+	emptyCaseString = str(json.loads(json.dumps(EMPTY_DATA['Testcase'])));
 	emptyCaseString = emptyCaseString .replace('u"',"'").replace("u'",'"').replace("'",'"');
-	emptyCaseString = emptyCaseString .replace('None','""')
+	emptyCaseString = emptyCaseString .replace('None','""').replace('""""','""')
 
 
 	# Map the input to the response collector
-	for xstr in ["Name", "Title", "Category", "Date", "Time", "InputDataFile dict_constructor=dict", "Engineer", \
+	for xstr in ["Name", "Title", "Category", "Date", "Time", "InputDataFile", "Engineer", \
 		"Datatype", "default_onError", "Logsdir", "Resultsdir", "ExpectedResults"]:
 		try:
 			if not xml_r["Testcase"]["Details"].has_key(xstr): 
@@ -301,8 +304,13 @@ def editCase(request):
 	except:
 		xml_r["Testcase"]["Requirements"] = {}
 
+
+
+	print "filename ", filename 
+	print "subdir ", subdir 
+	print "path to cases ", path_to_testcases
 	context = { 
-		'myfile': filename,
+		'fullpathname': filename,
 		'savefilename': fn,
 		'savesubdir': subdir,
 		'savefilepath': path_to_testcases,
@@ -340,7 +348,7 @@ def getJSONcaseDataBack(request):
 	try:
 		xml_d = xmltodict.parse(open(filename).read());
 	except:
-		xml_d = getEmpty();
+		xml_d = EMPTY_DATA;
 
 	j_data = json.loads(json.dumps(xml_d))
 	responseBack = { 'fulljson': j_data , 'fname': filename }
@@ -360,11 +368,19 @@ def getCaseDataBack(request):
 	ijs = request.POST.get(u'json')
 	fn = request.POST.get(u'filetosave')
 	sb = request.POST.get(u'savesubdir')
-	fname = sb + os.sep + fn;  
+	fname = sb + os.sep + fn; 
+	if fname.find(".xml") < 2: fname = fname + ".xml"
+	 
 	print "save case to ", fname 
  
 	xml = xmltodict.unparse(json.loads(ijs), pretty=True)	
 	fd = open(fname,'w');
 	fd.write(xml);
 	fd.close();
+
+
+
+
+
+
 	return redirect(request.META['HTTP_REFERER'])
