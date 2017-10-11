@@ -1,0 +1,217 @@
+<?xml version="1.0" ?>
+<Testcase>
+    <Details>
+        <Name>multi_rules_with_expressions</Name>
+        <Title>Accept non-string condition value for exec type in tc/ts/pj</Title>
+        <Engineer>Ka Hei Chan</Engineer>
+        <Date>2017-1-23</Date>
+        <Time>14:53</Time>
+        <State/>
+        <InputDataFile>No_Data</InputDataFile>
+        <Datatype/>
+        <default_onError action="next"/>
+        <Logsdir/>
+        <Resultsdir/>
+        <ExpectedResults/>
+    </Details>
+    <Requirements>
+        <Requirement/>
+    </Requirements>
+    <Steps>
+        <!-- A&B -->
+        <step Driver="ci_regression_driver" Keyword="increase_value" TS="1">
+            <Arguments>
+                <argument name="key" value="expression_multi_rule_count"/>
+                <argument name="status" value="pass"/>
+                <argument name="max_status" value="pass"/>
+                <argument name="max_value" value="10"/>
+            </Arguments>
+            <onError action="next"/>
+            <Description>local_data_test</Description>
+            <iteration_type type=""/>
+            <Execute ExecType="If" Expression="1 &amp; 2">
+                <Rule Condition="step_1_result" Condvalue="PASS"/>
+                <Rule Condition="step_2_result" Condvalue="SKIPPED"/>
+            </Execute>
+            <context>positive</context>
+            <impact>impact</impact>
+            <rmt/>
+        </step>
+        <!-- A|B -->
+        <step Driver="ci_regression_driver" Keyword="increase_value" TS="1">
+            <Arguments>
+                <argument name="key" value="expression_multi_rule_count"/>
+                <argument name="status" value="pass"/>
+                <argument name="max_status" value="pass"/>
+                <argument name="max_value" value="10"/>
+            </Arguments>
+            <onError action="next"/>
+            <Description>local_data_test</Description>
+            <iteration_type type=""/>
+            <Execute ExecType="If" Expression="1 or 2">
+                <Rule Condition="step_1_result" Condvalue="PASS"/>
+                <Rule Condition="step_2_result" Condvalue="FAIL"/>
+            </Execute>
+            <context>positive</context>
+            <impact>impact</impact>
+            <rmt/>
+        </step>
+        <!-- (A and B) -->
+        <step Driver="ci_regression_driver" Keyword="increase_value" TS="1">
+            <Arguments>
+                <argument name="key" value="expression_multi_rule_count"/>
+                <argument name="status" value="pass"/>
+                <argument name="max_status" value="pass"/>
+                <argument name="max_value" value="10"/>
+            </Arguments>
+            <onError action="next"/>
+            <Description>local_data_test</Description>
+            <iteration_type type=""/>
+            <Execute ExecType="If" Expression="(1 &amp; 2)">
+                <Rule Condition="step_1_result" Condvalue="PASS"/>
+                <Rule Condition="step_2_result" Condvalue="PASS"/>
+            </Execute>
+            <context>positive</context>
+            <impact>impact</impact>
+            <rmt/>
+        </step>
+        <!-- (A&B)|C -->
+        <step Driver="ci_regression_driver" Keyword="increase_value" TS="1">
+            <Arguments>
+                <argument name="key" value="expression_multi_rule_count"/>
+                <argument name="status" value="pass"/>
+                <argument name="max_status" value="pass"/>
+                <argument name="max_value" value="10"/>
+            </Arguments>
+            <onError action="next"/>
+            <Description>local_data_test</Description>
+            <iteration_type type=""/>
+            <Execute ExecType="If" Expression="(1 &amp; 2) | 3">
+                <Rule Condition="step_1_result" Condvalue="PASS"/>
+                <Rule Condition="step_2_result" Condvalue="PASS"/>
+                <Rule Condition="step_2_result" Condvalue="FAIL"/>
+            </Execute>
+            <context>positive</context>
+            <impact>impact</impact>
+            <rmt/>
+        </step>
+        <!-- A|(B&C) -->
+        <step Driver="ci_regression_driver" Keyword="increase_value" TS="1">
+            <Arguments>
+                <argument name="key" value="expression_multi_rule_count"/>
+                <argument name="status" value="pass"/>
+                <argument name="max_status" value="pass"/>
+                <argument name="max_value" value="10"/>
+            </Arguments>
+            <onError action="next"/>
+            <Description>local_data_test</Description>
+            <iteration_type type=""/>
+            <Execute ExecType="If" Expression="1 | (2 and 3)">
+                <Rule Condition="step_1_result" Condvalue="PASS"/>
+                <Rule Condition="step_2_result" Condvalue="SKIPPED"/>
+                <Rule Condition="step_2_result" Condvalue="False"/>
+            </Execute>
+            <context>positive</context>
+            <impact>impact</impact>
+            <rmt/>
+        </step>
+        <!-- A&(B&C|(D|E)) -->
+        <step Driver="ci_regression_driver" Keyword="increase_value" TS="1">
+            <Arguments>
+                <argument name="key" value="expression_multi_rule_count"/>
+                <argument name="status" value="pass"/>
+                <argument name="max_status" value="pass"/>
+                <argument name="max_value" value="10"/>
+            </Arguments>
+            <onError action="next"/>
+            <Description>local_data_test</Description>
+            <iteration_type type=""/>
+            <Execute ExecType="If" Expression="1 and (2 and 3 | (4 or 5))">
+                <Rule Condition="step_1_result" Condvalue="PASS"/>
+                <Rule Condition="step_2_result" Condvalue="SKIPPED"/>
+                <Rule Condition="step_3_result" Condvalue="False"/>
+                <Rule Condition="step_4_result" Condvalue="False"/>
+                <Rule Condition="step_5_result" Condvalue="PASS"/>
+            </Execute>
+            <context>positive</context>
+            <impact>impact</impact>
+            <rmt/>
+        </step>
+        <!-- A&(B|(C&D)&E)|F -->
+        <step Driver="ci_regression_driver" Keyword="increase_value" TS="1">
+            <Arguments>
+                <argument name="key" value="expression_multi_rule_count"/>
+                <argument name="status" value="pass"/>
+                <argument name="max_status" value="pass"/>
+                <argument name="max_value" value="10"/>
+            </Arguments>
+            <onError action="next"/>
+            <Description>local_data_test</Description>
+            <iteration_type type=""/>
+            <Execute ExecType="If" Expression="1 and (2 or (3 and 4) and 5) or 6">
+                <Rule Condition="step_1_result" Condvalue="PASS"/>
+                <Rule Condition="step_2_result" Condvalue="SKIPPED"/>
+                <Rule Condition="step_3_result" Condvalue="False"/>
+                <Rule Condition="step_4_result" Condvalue="False"/>
+                <Rule Condition="step_5_result" Condvalue="PASS"/>
+                <Rule Condition="step_5_result" Condvalue="PASS"/>
+            </Execute>
+            <context>positive</context>
+            <impact>impact</impact>
+            <rmt/>
+        </step>
+        <!-- (A&B)|(A|B)&(A|B) -->
+        <step Driver="ci_regression_driver" Keyword="increase_value" TS="1">
+            <Arguments>
+                <argument name="key" value="expression_multi_rule_count"/>
+                <argument name="status" value="pass"/>
+                <argument name="max_status" value="pass"/>
+                <argument name="max_value" value="10"/>
+            </Arguments>
+            <onError action="next"/>
+            <Description>local_data_test</Description>
+            <iteration_type type=""/>
+            <Execute ExecType="If" Expression="(1 and 2) | (1 or 2) and (1 or 2)">
+                <Rule Condition="step_1_result" Condvalue="PASS"/>
+                <Rule Condition="step_2_result" Condvalue="FAIL"/>
+            </Execute>
+            <context>positive</context>
+            <impact>impact</impact>
+            <rmt/>
+        </step>
+        <!-- A&(B|(A&B)&(A|B)) - suppose to skip-->
+        <step Driver="ci_regression_driver" Keyword="increase_value" TS="1">
+            <Arguments>
+                <argument name="key" value="expression_multi_rule_count"/>
+                <argument name="status" value="pass"/>
+                <argument name="max_status" value="pass"/>
+                <argument name="max_value" value="10"/>
+            </Arguments>
+            <onError action="next"/>
+            <Description>local_data_test</Description>
+            <iteration_type type=""/>
+            <Execute ExecType="If" Expression="1 and (2 | (1 and 2) and (1 or 2))">
+                <Rule Condition="step_1_result" Condvalue="PASS"/>
+                <Rule Condition="step_2_result" Condvalue="FAIL"/>
+            </Execute>
+            <context>positive</context>
+            <impact>impact</impact>
+            <rmt/>
+        </step>
+        <step Driver="common_driver" Keyword="verify_data" TS="1">
+            <Arguments>
+                <argument name="expected" value="8"/>
+                <argument name="object_key" value="expression_multi_rule_count"/>
+                <argument name="type" value="int"/>
+                <argument name="comparison" value="eq"/>
+            </Arguments>
+            <onError action="next"/>
+            <Description>local_data_test</Description>
+            <iteration_type type=""/>
+            <Execute ExecType="yes"/>
+            <context>positive</context>
+            <impact>impact</impact>
+            <rmt/>
+        </step>
+    </Steps>
+</Testcase>

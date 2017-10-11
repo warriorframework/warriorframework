@@ -15,8 +15,6 @@ limitations under the License.
 # step driver module
 
 import traceback
-import os
-import exec_type_driver
 from WarriorCore.Classes.argument_datatype_class import ArgumentDatatype
 import Framework.Utils as Utils
 from Framework.Utils import file_Utils
@@ -162,26 +160,19 @@ def execute_step(step, step_num, data_repository, system_name, kw_parallel, queu
     Utils.testcase_Utils.update_arguments(args_repository)
     Utils.testcase_Utils.update_kw_resultfile(kw_resultfile)
 
-    exec_type_onerror = False
-    action, keyword_status = exec_type_driver.main(step)
+    # Executing keyword
+    send_keyword_to_productdriver(
+        driver, plugin, keyword, data_repository, args_repository)
+    keyword_status = data_repository['step-%s_status' % step_num]
+    Utils.testcase_Utils.update_step_num(str(step_num))
+    if context.upper() == 'NEGATIVE' and type(keyword_status) == bool:
+        print_debug("Keyword status = {0}, Flip status as context is Negative".format(
+            keyword_status))
+        keyword_status = not keyword_status
 
-    if action is True:
-        send_keyword_to_productdriver(driver, plugin, keyword,
-                                      data_repository, args_repository)
-        keyword_status = data_repository['step-%s_status' % step_num]
-        Utils.testcase_Utils.update_step_num(str(step_num))
-        if context.upper() == 'NEGATIVE' and isinstance(keyword_status, bool):
-            print_debug("Keyword status = {0}, Flip status as context is Negative".format(
-                keyword_status))
-            keyword_status = not keyword_status
-    elif action == 'SKIP':
-        print_debug("Action is {0}".format(action))
-
-    elif action is False:
-        exec_type_onerror = True
-        print_debug("Action is {0}".format(action))
-
-    print_info("\n")
+    # Getting onError action
+    # Insert rules else statement here
+    print_info("")
     print_info("*** Keyword status ***")
     step_goto_value = False
     step_onError_action = Utils.xml_Utils.get_attributevalue_from_directchildnode(
@@ -205,6 +196,7 @@ def execute_step(step, step_num, data_repository, system_name, kw_parallel, queu
     Utils.testcase_Utils.reportKeywordStatus(keyword_status, keyword)
     print_info("step number: {0}".format(step_num))
 
+    # Reporting status to data repo
     string_status = {"TRUE": "PASS", "FALSE": "FAIL",
                      "ERROR": "ERROR", "EXCEPTION": "EXCEPTION", "SKIP": "SKIP"}
 
@@ -215,6 +207,7 @@ def execute_step(step, step_num, data_repository, system_name, kw_parallel, queu
         print_error("unexpected step status, default to exception")
         data_repository['step_%s_result' % step_num] = "EXCEPTION"
 
+    # Addressing impact
     if step_impact.upper() == 'IMPACT':
         msg = "Status of the executed step  impacts TC result"
         if str(keyword_status).upper() == 'SKIP':
@@ -228,8 +221,8 @@ def execute_step(step, step_num, data_repository, system_name, kw_parallel, queu
         msg = "Exception message: " + \
             data_repository['step-%s_exception' % step_num]
         Utils.testcase_Utils.pNote_level(msg, "debug", "kw", ptc=False)
-    # time.sleep(1)
-    print_info("\n")
+
+    print_info("")
     kw_end_time = Utils.datetime_utils.get_current_timestamp()
     kw_duration = Utils.datetime_utils.get_time_delta(kw_start_time)
     hms = Utils.datetime_utils.get_hms_for_seconds(kw_duration)
@@ -269,7 +262,7 @@ def execute_step(step, step_num, data_repository, system_name, kw_parallel, queu
             # Create and replace existing Project junit file for each step
             tc_junit_object.output_junit(data_repository['wp_results_execdir'],
                                          print_summary=False)
-    return keyword_status, kw_resultfile, step_impact, exec_type_onerror
+    return keyword_status, kw_resultfile, step_impact
 
 
 def add_keyword_result(tc_junit_object, tc_timestamp, step_num, keyword,
