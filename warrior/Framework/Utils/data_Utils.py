@@ -1457,15 +1457,15 @@ def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
                                 raw_value[k] = literal_eval(
                                     str(raw_value[k]).replace(
                                         search_obj.group(), 'None'))
-                    except SyntaxError as synerr:
-                        print "raw_value:", raw_value[k]
-                        print "type:", type(raw_value[k])
+                    except SyntaxError:
                         from WarriorCore.Classes.testcase_utils_class import TestcaseUtils
                         tuc_obj = TestcaseUtils()
                         try:
-                            raw_value[k] = literal_eval(tuc_obj.rem_nonprintable_ctrl_chars(raw_value[k]))
-                        except:
-                            print_error("Syntax Error - " + error_msg2.format(string, value, raw_value[k], synerr))
+                            raw_value[k] = tuc_obj.rem_nonprintable_ctrl_chars(raw_value[k])
+                            raw_value[k] = literal_eval(raw_value[k])
+                        except Exception as exc:
+                            print_error("Syntax Error - " + error_msg2.format(
+                                        string, value, raw_value[k], exc))
     elif type(raw_value) == str:
         extracted_var = string_Utils.return_quote(str(raw_value),
                                                   start_pattern, end_pattern)
