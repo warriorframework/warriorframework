@@ -889,7 +889,7 @@ var katana = {
             else {
                 $tabeContent = parent;
             }
-            katana.templateAPI.post('get_file_explorer_data/', csrftoken, {"path": start_directory},
+            katana.templateAPI.post('get_file_explorer_data/', csrftoken, {"start_dir": start_directory},
                 function(data) {
                     var explorer_modal_html = $($('#file-explorer-template').html())
                     var $fileExplorerHeading = explorer_modal_html.find('#file-explorer-heading');

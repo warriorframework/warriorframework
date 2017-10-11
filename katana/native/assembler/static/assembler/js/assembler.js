@@ -207,7 +207,7 @@ var assembler = {
                 if(data["available"]){
                     $footerBlockRowIcon.addClass('fa-check').addClass('green');
                     $footerBlockRow.find('.col-sm-8').html('Repository Available.');
-                    $parentCardBlock.siblings('.card-header').find('.col-sm-8').html(data["repo_name"])
+                    $parentCardBlock.siblings('.card-header').find('.col-sm-7').html(data["repo_name"])
 
                     $driverBlock = $($parentCardBlock.find('.row')[1]);
                     for(var i=0; i<data["drivers"].length; i++){
@@ -237,6 +237,89 @@ var assembler = {
             $elem.attr('aria-selected', 'true');
             $elem.removeClass('fa-toggle-off').removeClass('grey');
             $elem.addClass('fa-toggle-on').addClass('green');
+        }
+    },
+
+    openFileExplorer: function(){
+        $.ajax({
+                headers: {
+                    'X-CSRFToken': $currentPage.find('input[name="csrfmiddlewaretoken"]').attr('value')
+                },
+                type: 'GET',
+                url: 'read_config_file/',
+            }).done(function(data) {
+                console.log(data);
+                callBack_on_accept = function(inputValue){
+                    console.log(inputValue)
+                };
+                callBack_on_dismiss = function(){
+                    console.log("Dismissed");
+                }
+                katana.fileExplorerAPI.openFileExplorer(false, data["warhorn_config"],
+                                                        $currentPage.find('input[name="csrfmiddlewaretoken"]').attr('value'),
+                                                        false, callBack_on_accept, callBack_on_dismiss)
+            });
+    },
+
+    addKwRepository: function(){
+        $currentPage = katana.$activeTab;
+        kw_repo_obj = new kwRepository()
+        $currentPage.find('#kw-div').append(kw_repo_obj.domElement);
+    },
+
+    deleteKwRepo: function(){
+        var $elem = $(this);
+        var callBack_on_accept = function(){
+            $elem.closest('.card').remove();
+            katana.openAlert({
+                "alert_type": "success",
+                "text": "Repository Deleted.",
+                "timer": 1250,
+                "show_accept_btn": false,
+                "show_cancel_btn": false,
+            })
+        };
+        var callBack_on_dismiss = function(){
+            katana.openAlert({
+                "heading": "Whew!",
+                "text": "Repository not deleted",
+                "timer": 1250,
+                "show_accept_btn": false,
+                "show_cancel_btn": false,
+            })
+        };
+        katana.openAlert({
+            "alert_type": "danger",
+	        "heading": "This will delete the Keyword Repository.",
+	        "text": "Are you sure you want to delete it?",
+	        "accept_btn_text": "Yes",
+	        "cancel_btn_text": "No",
+        }, callBack_on_accept, callBack_on_dismiss);
+    },
+
+    toggleDriverClone: function(){
+        var $elem = $(this);
+        if($elem.attr("aria-selected") == "true"){
+            $elem.attr("aria-selected", "false");
+            $elem.attr("class", "");
+            $elem.addClass("fa").addClass("fa-toggle-off").addClass("grey");
+        } else {
+            $elem.attr("aria-selected", "true");
+            $elem.attr("class", "");
+            $elem.addClass("fa").addClass("fa-toggle-on").addClass("green");
+        }
+    },
+
+    toggleAllDrivers: function(){
+        var $elem = $(this);
+        if($elem.attr("aria-selected") == "true"){
+            $elem.attr("aria-selected", "false");
+            $elem.attr("class", "");
+            $elem.addClass("fa").addClass("fa-toggle-off").addClass("grey");
+        } else {
+            $elem.attr("aria-selected", "true");
+            $elem.attr("class", "");
+            $elem.addClass("fa").addClass("fa-toggle-on").addClass("green");
         }
     }
 }

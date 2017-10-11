@@ -1,18 +1,44 @@
 class kwRepository {
     constructor(data){
+        if(!data || data == undefined){
+            data = {};
+        }
         if(data["name"]){
             this.name = data["name"];
         } else {
             this.name = "Enter Repository Details"
         }
-        this.url = data["@url"];
-        this.label = data["@label"];
-        this.clone = data["@clone"].toLowerCase().trim();
-        this.all_drivers = data["@all_drivers"].toLowerCase().trim();
-        this.available = data["available"];
+        if(data["@url"]){
+            this.url = data["@url"];
+        } else {
+            this.url = ""
+        }
+        if(data["@label"]){
+            this.label = data["@label"];
+        } else {
+            this.label = ""
+        }
+        if(data["@clone"]){
+            this.clone = data["@clone"].toLowerCase().trim();
+        } else {
+            this.clone = "yes"
+        }
+        if(data["@all_drivers"]){
+            this.all_drivers = data["@all_drivers"].toLowerCase().trim();
+        } else {
+            this.all_drivers = "yes";
+        }
+        if(data["available"]){
+            this.available = data["available"];
+        } else {
+            this.available = true;
+        }
         this.drivers = [];
-        for(var i=0; i<data["driver"].length; i++){
-            this.drivers.push(new driverDetails(data["driver"][i]));
+        if(data["driver"]){
+            for(var i=0; i<data["driver"].length; i++){
+                this.drivers.push(new driverDetails({"name": data["driver"][i], "@clone": "yes"}));
+            }
+            this.all_drivers = "no";
         }
     }
 
@@ -48,8 +74,10 @@ class kwRepository {
             displayDrivers = "display: none";
         }
         var allDriversIcon = "fa fa-toggle-off grey";
+        var aria_selected_all_drivers = "false";
         if(this.all_drivers == "yes"){
             allDriversIcon = "fa fa-toggle-on green";
+            aria_selected_all_drivers = "true";
         }
         var $elem =  $('<div class="card" style="padding: 1rem;">' +
                             '<div class="card-header">' +
@@ -58,8 +86,12 @@ class kwRepository {
                                         '<i class="' + clone_icon + '" style="float:right; line-height:inherit!important;" ' +
                                             'aria-hidden="true" katana-click="assembler.toggleKwRepoClone" aria-selected="true"></i>' +
                                     '</div>' +
-                                    '<div class="col-sm-8">' +
+                                    '<div class="col-sm-7">' +
                                         this.name +
+                                    '</div>' +
+                                    '<div class="col-sm-2">' +
+                                        '<button class="btn btn-danger" style="float:right;" ' +
+                                            'aria-hidden="true" katana-click="assembler.deleteKwRepo" aria-selected="true">Delete Repository</button>' +
                                     '</div>' +
                                 '</div>' +
                             '</div>' +
@@ -83,7 +115,7 @@ class kwRepository {
                                     '<div class="col-sm-9">' +
                                         '<div class="card">' +
                                             '<div class="card-header">' +
-                                                '<i class="' + allDriversIcon + '"></i>&nbsp;' +
+                                                '<i class="' + allDriversIcon + '" katana-click="assembler.toggleAllDrivers" aria-selected="' + aria_selected_all_drivers + '"></i>&nbsp;' +
                                                 '<label>All Available Drivers</label>' +
                                             '</div>' +
                                             '<div class="card-block" style="padding: 1rem;">' +
@@ -145,11 +177,13 @@ class driverDetails {
     formDomElement() {
         if(this.name){
             var clone_icon = "fa fa-toggle-off grey";
+            var aria_attribute = "false";
             if(this.clone == "yes"){
                 clone_icon = "fa fa-toggle-on green";
+                aria_attribute = "true";
             }
             var elem = '<div class="col-sm-4">' +
-                            '<i class="' + clone_icon + '"></i>&nbsp;' +
+                            '<i class="' + clone_icon + '" katana-click="assembler.toggleDriverClone" aria-selected="' + aria_attribute + '"></i>&nbsp;' +
                             '<label>' + this.name + '</label>' +
                         '</div>';
         }
@@ -175,11 +209,30 @@ class driverDetails {
 }
 
 class wsRepository {
-    constructor(url, label, clone, overwrite){
-        this.url = url;
-        this.clone = clone;
-        this.label = label;
-        this.overwrite = overwrite;
+    constructor(data){
+        if(!data || data == undefined){
+            data = {};
+        }
+        if(!data["@url"] || data["@url"] == undefined){
+            this.url = url;
+        } else {
+            this.url = "";
+        }
+        if(!data["@clone"] || data["@clone"] == undefined){
+            this.clone = data["@clone"].toLowerCase().trim();
+        } else {
+            this.clone = "yes";
+        }
+        if(!data["@label"] || data["@label"] == undefined){
+            this.label = data["@label"];
+        } else {
+            this.label = "";
+        }
+        if(!data["@overwrite"] || data["@overwrite"] == undefined){
+            this.overwrite = data["@overwrite"].toLowerCase().trim();
+        } else {
+            this.overwrite = "yes";
+        }
     }
 
     get domElement(){
