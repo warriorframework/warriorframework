@@ -52,15 +52,16 @@ def getEmpty():
 				 "path": "../../Warriorspace/Suites/Suite4.xml"}]}, "Details": {"default_onError": {"@action": "next", "@value": ""}, 
 				 "Title": "Project Title or Description", "Resultsdir": "", "Name": "Project Name", "Engineer": "Engineer"}}}
 	return edata;
-#import logging 
-#logger = logging.getLogger(__name__)
+
+import logging 
+logger = logging.getLogger(__name__)
 
 def getJSONProjectData(request):
 	path_to_config_file = navigator.get_katana_dir() + os.sep + "config.json"   
 	x= json.loads(open(path_to_config_file).read());
 	path_to_testcases = x['projdir'];
 	filename = request.GET.get('fname')
-	#logger.info("Getting data for %s "% filename);
+	logger.info("Getting data for %s "% filename);
 	try:
 		xml_d = xmltodict.parse(open(filename).read());
 	except:
