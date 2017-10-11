@@ -1460,11 +1460,12 @@ def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
                     except SyntaxError:
                         from WarriorCore.Classes.testcase_utils_class import TestcaseUtils
                         tuc_obj = TestcaseUtils()
+                        print_info("Checking after removing the illegal characters")
                         try:
                             raw_value[k] = tuc_obj.rem_nonprintable_ctrl_chars(raw_value[k])
                             raw_value[k] = literal_eval(raw_value[k])
                         except Exception as exc:
-                            print_error("Syntax Error - " + error_msg2.format(
+                            print_error("Error - " + error_msg2.format(
                                         string, value, raw_value[k], exc))
     elif type(raw_value) == str:
         extracted_var = string_Utils.return_quote(str(raw_value),
