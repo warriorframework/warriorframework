@@ -26,7 +26,7 @@
 
     <warriorspace>
 
-        <repository url="" overwrite="no" label="" clone="yes"/>
+        <repository url="" overwrite="yes" label="" clone="yes"/>
 
     </warriorspace>
 </data>

@@ -103,3 +103,14 @@ def get_repository_name(url):
     li_temp_1 = url.rsplit('/', 1)
     return li_temp_1[1][:-4] if \
         li_temp_1[1].endswith(".git") else li_temp_1[1]
+
+
+def check_ws_repo_availability(request):
+    nav_obj = Navigator()
+    available = True
+    url = request.POST.get('url')
+    repo_name = get_repository_name(url)
+    drivers = []
+    if not check_url_is_a_valid_repo(url):
+        available = False
+    return JsonResponse({"available": available, "repo_name": repo_name})

@@ -9,8 +9,6 @@ var assembler = {
                 url: 'assembler/get_config_file/',
                 data: {"filepath": false}
             }).done(function(data) {
-                var kw_repo_list = data.xml_contents.data.drivers.repository;
-                var ws_repo_list = data.xml_contents.data.warriorspace.repository;
                 var tools = data.xml_contents.data.tools;
 
                 var dep_objs = [];
@@ -20,11 +18,15 @@ var assembler = {
                 }
 
                 var kw_objs = []
-                for(var i=0; i<kw_repo_list.length; i++){
-                    console.log(kw_repo_list[i]);
-                    kw_objs.push(new kwRepository(kw_repo_list[i]))
+                for(var i=0; i<data.xml_contents.data.drivers.repository.length; i++){
+                    kw_objs.push(new kwRepository(data.xml_contents.data.drivers.repository[i]))
                     $currentPage.find('#kw-div').append(kw_objs[i].domElement);
-                    console.log(kw_objs[i]);
+                }
+
+                var ws_objs = [];
+                for(var i=0; i<data.xml_contents.data.warriorspace.repository.length; i++){
+                    ws_objs.push(new wsRepository(data.xml_contents.data.warriorspace.repository[i]));
+                    $currentPage.find('#ws-div').append(ws_objs[i].domElement);
                 }
             });
     },
@@ -321,5 +323,110 @@ var assembler = {
             $elem.attr("class", "");
             $elem.addClass("fa").addClass("fa-toggle-on").addClass("green");
         }
-    }
+    },
+
+    toggleWsOverwriteButton: function(){
+        var $elem = $(this);
+        if($elem.attr("aria-selected") == "true"){
+            $elem.attr("aria-selected", "false");
+            $elem.attr("class", "");
+            $elem.addClass("fa").addClass("fa-toggle-off").addClass("grey");
+        } else {
+            $elem.attr("aria-selected", "true");
+            $elem.attr("class", "");
+            $elem.addClass("fa").addClass("fa-toggle-on").addClass("green");
+        }
+    },
+
+    toggleWsRepoClone: function(){
+        var $elem = $(this);
+        if($elem.attr("aria-selected") == "true"){
+            $elem.attr("aria-selected", "false");
+            $elem.attr("class", "");
+            $elem.addClass("fa").addClass("fa-toggle-off").addClass("grey");
+        } else {
+            $elem.attr("aria-selected", "true");
+            $elem.attr("class", "");
+            $elem.addClass("fa").addClass("fa-toggle-on").addClass("green");
+        }
+    },
+
+    checkWsRepository: function(){
+        $elem = $(this);
+        $parentCardBlock = $elem.closest('.card-block');
+        $footerBlockRow = $parentCardBlock.siblings('.card-footer').find('.row');
+        var $footerBlockRowIcon = $footerBlockRow.find('.fa');
+        $footerBlockRowIcon.attr('class', 'fa')
+        $footerBlockRow.find('.col-sm-8').html('');
+        var url = $elem.val();
+        if(url == ""){
+            $footerBlockRowIcon.addClass('fa-exclamation-triangle').addClass('tan')
+            $footerBlockRow.find('.col-sm-8').html('No Repository Information Provided.');
+            $footerBlockRow.show();
+        }
+        else if(!url.endsWith(".git")){
+            $footerBlockRowIcon.addClass('fa-times').addClass('red');
+            $footerBlockRow.find('.col-sm-8').html('Repository Not Available.');
+            $footerBlockRow.show();
+        } else {
+            $footerBlockRowIcon.addClass('fa-spinner').addClass('fa-spin').addClass('tan');
+            $footerBlockRow.find('.col-sm-8').html('Checking Availability.');
+            $footerBlockRow.show();
+            $.ajax({
+                headers: {
+                    'X-CSRFToken': $currentPage.find('input[name="csrfmiddlewaretoken"]').attr('value')
+                },
+                type: 'POST',
+                url: 'assembler/check_ws_repo_availability/',
+                data: {"url": url}
+            }).done(function(data) {
+                $footerBlockRowIcon.attr('class', 'fa');
+                if(data["available"]){
+                    $footerBlockRowIcon.addClass('fa-check').addClass('green');
+                    $footerBlockRow.find('.col-sm-8').html('Repository Available.');
+                    $parentCardBlock.siblings('.card-header').find('.col-sm-4').html(data["repo_name"]);
+                } else {
+                    $footerBlockRowIcon.addClass('fa-times').addClass('red');
+                    $footerBlockRow.find('.col-sm-8').html('Repository Not Available.');
+                }
+            });
+        }
+    },
+
+    deleteWsRepo: function(){
+        var $elem = $(this);
+        var callBack_on_accept = function(){
+            $elem.closest('.card').remove();
+            katana.openAlert({
+                "alert_type": "success",
+                "text": "Repository Deleted.",
+                "timer": 1250,
+                "show_accept_btn": false,
+                "show_cancel_btn": false,
+            })
+        };
+        var callBack_on_dismiss = function(){
+            katana.openAlert({
+                "heading": "Whew!",
+                "text": "Repository not deleted",
+                "timer": 1250,
+                "show_accept_btn": false,
+                "show_cancel_btn": false,
+            })
+        };
+        katana.openAlert({
+            "alert_type": "danger",
+	        "heading": "This will delete the Warriorspace Repository.",
+	        "text": "Are you sure you want to delete it?",
+	        "accept_btn_text": "Yes",
+	        "cancel_btn_text": "No",
+        }, callBack_on_accept, callBack_on_dismiss);
+
+    },
+
+    addWsRepository: function(){
+        $currentPage = katana.$activeTab;
+        ws_repo_obj = new wsRepository();
+        $currentPage.find('#ws-div').append(ws_repo_obj.domElement);
+    },
 }

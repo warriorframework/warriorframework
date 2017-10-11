@@ -213,26 +213,32 @@ class wsRepository {
         if(!data || data == undefined){
             data = {};
         }
-        if(!data["@url"] || data["@url"] == undefined){
-            this.url = url;
+        if(data["name"]){
+            this.name = data["name"];
+        } else {
+            this.name = "Enter Repository Details"
+        }
+        if(data["@url"]){
+            this.url = data["@url"];
         } else {
             this.url = "";
         }
-        if(!data["@clone"] || data["@clone"] == undefined){
+        if(data["@clone"]){
             this.clone = data["@clone"].toLowerCase().trim();
         } else {
             this.clone = "yes";
         }
-        if(!data["@label"] || data["@label"] == undefined){
+        if(data["@label"]){
             this.label = data["@label"];
         } else {
             this.label = "";
         }
-        if(!data["@overwrite"] || data["@overwrite"] == undefined){
+        if(data["@overwrite"]){
             this.overwrite = data["@overwrite"].toLowerCase().trim();
         } else {
             this.overwrite = "yes";
         }
+        this.available = data["available"];
     }
 
     get domElement(){
@@ -240,7 +246,81 @@ class wsRepository {
     }
 
     formDomElement() {
-        var html_contents = "";
+        var cloneWsRepoIcon = "fa fa-toggle-off grey";
+        var wsCloneToggle = "false";
+        if(this.clone == "yes"){
+            cloneWsRepoIcon = "fa fa-toggle-on green";
+            wsCloneToggle = "true";
+        }
+
+        var overwriteWsFiles = "fa fa-toggle-off grey";
+        var overwriteSelect = "false";
+        if(this.overwrite == "yes"){
+            overwriteWsFiles = "fa fa-toggle-on green";
+            overwriteSelect = "true";
+        }
+        var hideAvailability = "";
+        if(this.url == ""){
+            hideAvailability = "display: none";
+        }
+        var wsAvailableIcon = "fa fa-times red";
+        var wsAvailableText = "Repository Not Available"
+        if(this.available){
+            wsAvailableIcon = "fa fa-check-circle green"
+            wsAvailableText = "Repository Available"
+        }
+        var html_contents = '<div class="card" style="padding: 1rem;">' +
+                                '<div class="card-header">' +
+                                    '<div class="row">' +
+                                        '<div class="col-sm-1">' +
+                                            '<i class="' + cloneWsRepoIcon + '" style="float:right; line-height:inherit!important;" ' +
+                                            'aria-selected="' + wsCloneToggle + '" katana-click="assembler.toggleWsRepoClone" aria-hidden="true"></i>' +
+                                        '</div>' +
+                                        '<div class="col-sm-5">' +
+                                            this.name +
+                                        '</div>' +
+                                        '<div class="col-sm-1">' +
+                                            '<i class="' + overwriteWsFiles + '" style="float:right; line-height:inherit!important;" ' +
+                                                'katana-click="assembler.toggleWsOverwriteButton"  aria-hidden="true" aria-selected="' + overwriteSelect + '"></i>' +
+                                        '</div>' +
+                                        '<div class="col-sm-1">' +
+                                            'Overwrite' +
+                                        '</div>' +
+                                        '<div class="col-sm-2">' +
+                                            '<button class="btn btn-danger" katana-click="assembler.deleteWsRepo" ' +
+                                                    'aria-hidden="true" style="float: right;">Delete Repository</button>' +
+                                        '</div>' +
+                                    '</div>' +
+                                '</div>' +
+                                '<div class="card-block" style="padding: 1rem;">' +
+                                    '<div class="row">' +
+                                        '<div class="col-sm-1" style="text-align: right; padding: 0.7rem;">' +
+                                            '<label>URL:</label>' +
+                                        '</div>' +
+                                        '<div class="col-sm-5">' +
+                                            '<input value="' + this.url + '" katana-change="assembler.checkWsRepository">' +
+                                        '</div>' +
+                                        '<div class="col-sm-1" style="text-align: right; padding: 0.7rem;">' +
+                                            '<label>Label:</label>' +
+                                        '</div>' +
+                                        '<div class="col-sm-3">' +
+                                            '<input value="' + this.label + '">' +
+                                        '</div>' +
+                                    '</div>' +
+                                    '<br>' +
+                                '</div>' +
+                                '<div class="card-footer">' +
+                                    '<div class="row" style="' + hideAvailability + '">' +
+                                        '<div class="col-sm-1">' +
+                                            '<i class="' +  wsAvailableIcon + '" style="float:right; line-height:inherit!important;"></i>' +
+                                        '</div>' +
+                                        '<div class="col-sm-8 text-muted">' +
+                                            wsAvailableText +
+                                        '</div>' +
+                                    '</div>' +
+                                '</div>' +
+                            '</div>' +
+                            '<br>';
         var $elem = $(html_contents);
         return $elem
     }
