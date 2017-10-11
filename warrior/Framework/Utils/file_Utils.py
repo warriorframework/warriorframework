@@ -933,6 +933,7 @@ def get_lines_between(fd, startidx, endidx):
     except Exception as e:
         print_error("found exception {} while moving to position on {}".
                     format(str(e), fd))
+    
     return lines
 
 

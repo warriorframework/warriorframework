@@ -59,26 +59,26 @@ class LineResult:
 #         defects_path = line.get("defects") if line.get("defects") else ''
         status_name = line.get("status") if line.get("status") else ''
         
-        #onclick='return false;'
+        #
         #katana-click='execution.resultsViewer.openLogs'
         
         # There won't be results link in html anymore as we decided we will not be linking xml files in our html results
 #         results_span = "<span style='padding-left:10px; padding-right: 10px;'>"\
-#                         "<a  name='results-link' href='{0}' target='_blank' onclick='return false;'>"\
+#                         "<a  name='results-link' href='{0}' target='_blank' >"\
 #                         "<i name='results-icon' class='fa fa-line-chart'  data-logPath='{0}' katana-click='execution.resultsViewer.openLogs'> </i>"\
 #                         "</a>"\
 #                         "</span>".format(result_path)
         
         # the link to logs should only be applied to a testcase and it will open the console logs of the testcase
         logs_span = "<span style='padding-left:10px; padding-right: 10px;'>"\
-                    "<a  name='results-link' href='{0}' target='_blank' onclick='return false;'>"\
+                    "<a  name='results-link' href='{0}' target='_blank' >"\
                     "<i name='logs-icon' class='fa fa-book'  data-logPath='{0}' katana-click='execution.resultsViewer.openConsoleLogFile' > </i>"\
                     "</a>"\
                     "</span>".format(line.get("console_logfile")) if line.get("console_logfile") else ''
 
         # link to defects will only be applied to a keyword and it will open the defects json file in a popup
         defects_span = "<span style='padding-left:10px; padding-right: 10px;'>"\
-                        "<a name='bug-link' href='{0}' target='_blank' onclick='return false;'>"\
+                        "<a name='bug-link' href='{0}' target='_blank' >"\
                         "<i name='bug-icon' class='fa fa-bug'  data-logPath='{0}' katana-click='execution.resultsViewer.openDefectsJson'> </i>"\
                         "</a>"\
                         "</span>".format(line.get("defects"))  if line.get("defects") else ''
@@ -238,12 +238,10 @@ class WarriorHtmlResults:
                 table_start = num
             if '</table>' in line:
                 table_end = num
-                    
         lines = file_Utils.get_lines_between(template_file, table_start, table_end)
         lines.insert(len(lines)-1, dynamic_cont)
         table_string = ''.join(lines)
-        tale_String = table_string.replace('\n', '')
-
+        table_string = table_string.replace('\n', '')
         with open(livehtmllocn) as live_file:
             live_string = live_file.read()
         marker_start = '<!--table-{0}starts-->'.format(str(live_html_iter))
@@ -281,8 +279,8 @@ class WarriorHtmlResults:
             html += item.html
             
         if is_final is True:
-            html += '<div class="complete"></div>'
-        
+            #html += '<div class="complete"></div>'
+            pass
         self.create_live_table(html, livehtmllocn, live_html_iter)
         
         html = self.merge_html(html)

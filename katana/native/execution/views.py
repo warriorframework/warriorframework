@@ -100,7 +100,6 @@ class Execution(object):
         """
         data_dict = json.loads(request.GET.get('data'))
         fpath = data_dict['liveHtmlFpath']   
-    #         print data
         with open(fpath) as htmlfile:
             data = htmlfile.readlines()
         return HttpResponse(data)
@@ -115,7 +114,6 @@ class Execution(object):
             fpath = data_dict['liveHtmlFpath']   
             os.remove(fpath)
         except Exception as err:
-            print "error deleting file"
             status = 'failure'
             
         return HttpResponse(status)
@@ -153,12 +151,13 @@ class Execution(object):
         try:
             for item in os.listdir(data_live_dir):
                 path = os.path.join(data_live_dir, item)
-                if os.path.isfile(path) and not pathe.endswith('donotdeletethisfile.txt'):
+                if os.path.isfile(path) and not path.endswith('donotdeletethisfile.txt'):
                     os.remove(path)
                 elif os.path.isdir(path):
                      shutil.rmtree(path, 'ignore_errors')
         except Exception as err:
             print "error ceaning up dir {0}".format(data_live_dir)
+            print err
             status = 'failure'
             
         return HttpResponse(status)

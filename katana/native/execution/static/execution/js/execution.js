@@ -390,29 +390,41 @@ var execution = {
 	printFormater: {
 			  tables: '',
 			  table: '',
-			  bar: '',
+			  //bar: '',
 			  levels: ['KeywordRecord', 'TestcaseRecord', 'TestsuiteRecord', 'ProjectRecord'],
 			  statusFitlers: ['FAIL', 'ERROR', 'SKIPPED', 'PASS'],
 			  init: function(popup) {
 			    //execution.printFormater.table = popup.find('table');
 				tables = popup.find('#liveTables table')
 				execution.printFormater.tables = tables;
-				execution.printFormater.table = tables.last();
-				
-			    //execution.printFormater.barRelocate();
+				execution.printFormater.table = tables.last();			
 				//commented out init accordian as it has it is handled for all tables as a katana click using openAccordian function
 			    //execution.printFormater.initAccordian(); 
-			    //execution.printFormater.sortingAPI.init();
-			    //execution.printFormater.justifyOrder();
+			    //execution.printFormater.justifyOrder(); // not required in new katana
+				execution.printFormater.disableHref();
+				execution.printFormater.barRelocate();
+			    execution.printFormater.sortingAPI.init();			    
 			    execution.printFormater.placeData();
+			    
+			    
 			  },
-			  barRelocate: function() {
-			    execution.printFormater.bar = execution.printFormater.table.find('tr:first-child').insertBefore(execution.printFormater.table).wrap('<div class="headingnav"></div>');
+			  disableHref: function(){
+				  
+				  $.each(execution.printFormater.tables, function(index, table){
+					  var table = $(table);
+					  aList =   table.find('a');
+						$.each(aList, function(index, element){
+							var href = $(element)[0].hasAttribute('href');
+							if(href){
+								$(element).attr('onclick', 'return false;')
+							}
+						});
+				  });
+				
+
 			  },
 			  placeData: function() {
 			    setTimeout(function() {
-			    	// console.log(execution.printFormater.tables);
-			    	// console.log(execution.printFormater.table);
 			    	$.each(execution.printFormater.tables, function(index, table){
 			    		// console.log(table);
 			            $(table).find('tr[name] td:not([rowspan])').each(function() {
@@ -427,20 +439,7 @@ var execution = {
 			    		});
 			      }, 60);
 			  },
-			  initAccordian: function() {
-//			    execution.printFormater.table.find('tr[name="TestcaseRecord"]').on('click', function() {
-//			      execution.printFormater.openAccordian.call($(this));
-//			    });
-			    $(window).on('keydown', function(e) {
-			      if (e.keyCode == 40 && execution.printFormater.table.find('.active').length) {
-			        e.preventDefault();
-			        execution.printFormater.openAccordian.call(execution.printFormater.table.find('.active').nextAll('tr[name="TestcaseRecord"]:first'));
-			      } else if (e.keyCode == 38 && execution.printFormater.table.find('.active').length) {
-			        e.preventDefault();
-			        execution.printFormater.openAccordian.call(execution.printFormater.table.find('.active').prevAll('tr[name="TestcaseRecord"]:first'));
-			      }
-			    });
-			  },
+
 			  justifyOrder: function() {
 			    setTimeout(function() {
 			      execution.printFormater.table.find('tr[name]').each(function() {
@@ -452,63 +451,68 @@ var execution = {
 			      });
 			    }, 30);
 			  },
-			  openAccordian: function() {
-			    var $elem = this;
-			    var isActive = $elem.hasClass('active');
-			    var closest_table = $elem.closest('table');
-			    closest_table.find('.active').removeClass('active');
-			    //$elem.parent().find('.active').removeClass('active');
-			    //if (!isActive && !execution.printFormater.table.hasClass('filtering')) $elem.addClass('active');
-			    if (!isActive && !closest_table.hasClass('filtering')) $elem.addClass('active');
+			  barRelocate: function() {
+				  // wrap each heading row in a heading nav div
+				  $.each(execution.printFormater.tables, function(index, table){
+						var headingRow = $(table).find('[name=HeadingRow]');
+						execution.printFormater.bar = headingRow.wrap('<div class="headingnav"></div>');
+				  });
+
 			  },
 			  sortingAPI: {
 			    init: function() {
-			      execution.printFormater.bar.find('th').on('click', function() {
-			        var $elem = $(this);
-			        var name = $elem.text();
-			        $elem.toggleClass('up');
-			        if (name == 'Status') execution.printFormater.sortingAPI.filterBar(execution.printFormater.statusFitlers, name);
-			      });
+			      // monitor the click event on the status arrow of each tables heading and call respective functions
+			      $.each(execution.printFormater.tables, function(index, table){
+			    	  // for each table find the heading nav 
+			    	  var table = $(table);
+			    	  var headingNav = table.find('.headingnav');
+			    	  headingNav.find('th').on('click', function() {
+					        var $elem = $(this);
+					        var name = $elem.text();
+					        $elem.toggleClass('up');
+					        if (name == 'Status') execution.printFormater.sortingAPI.filterBar(execution.printFormater.statusFitlers, name, headingNav, table);
+					      });
+			      });   
 			    },
-			    filterBar: function(filterList, filterScope) {
-			      if (execution.printFormater.bar.siblings('.filterBar').length != 0) {
-			        execution.printFormater.table.removeClass('filtering');
-			        execution.printFormater.sortingAPI.filter();
+			    filterBar: function(filterList, filterScope, headingNav, table) {
+			      if (headingNav.children('.filterBar').length != 0) {
+			        table.removeClass('filtering');
+			        execution.printFormater.sortingAPI.filter(null, table);
 			        setTimeout(function() {
-			          execution.printFormater.bar.siblings('.filterBar').remove();
+			        	headingNav.children('.filterBar').remove();
 			        }, 300);
-			        execution.printFormater.table.find('tr[name]').off('mouseover mouseleave');
+			        table.find('tr[name]').off('mouseover mouseleave');
 			      } else {
-			        execution.printFormater.table.addClass('filtering');
-			        var bar = $('<div class="filterBar" filterScope="' + ($('.headingnav tr th:contains("' + filterScope + '")').prevAll().length + 1) + '"></div>');
+			        table.addClass('filtering');
+			        var bar = $('<div class="filterBar" filterScope="' + (headingNav.find('tr th:contains("' + filterScope + '")').prevAll().length + 1) + '"></div>');
 			        for (var i = 0; filterList.length > i; i++) {
-			          var filter = $('<span>' + filterList[i] + '<input type="checkbox" value="' + filterList[i] + '"></span>').appendTo(bar);
+			          var filter = $('<span>'  + '<input type="checkbox" value="' + filterList[i] + '">' + filterList[i] + '</span>').appendTo(bar);
 			          filter.find('input').on('change', function() {
-			            execution.printFormater.sortingAPI.filter(bar);
+			            execution.printFormater.sortingAPI.filter(bar, table);
 			          });
 			        }
-			        bar.appendTo('.headingnav');
-			        execution.printFormater.table.find('tr[name]').on('mouseover', 'td[rowspan]:nth-child(1)', function() {
+			        bar.appendTo(headingNav);
+			        table.find('tr[name]').on('mouseover', 'td[rowspan]:nth-child(1)', function() {
 			          var $elem = $(this).closest('tr');
-			          $elem.addClass('hover').data().appendTo($elem);
+			          if($elem) $elem.addClass('hover').data().appendTo($elem);
 			        }).on('mouseleave', 'td[rowspan]:nth-child(1)', function() {
 			          var $elem = $(this).closest('tr');
 			          $elem.removeClass('hover').find('.hoverConainer').remove();
 			        });
 			      }
 			    },
-			    filter: function(bar) {
+			    filter: function(bar, table) {
 			      if (bar) {
 			        var activeFilters = bar.find('input:checked').map(function() {
 			          return $(this).val();
 			        }).get();
 			        var filterScope = bar.attr('filterScope');
-			        execution.printFormater.table.find('td[rowspan]:nth-child(' + filterScope + ')').each(function() {
+			        table.find('td[rowspan]:nth-child(' + filterScope + ')').each(function() {
 			          var $elem = $(this);
 			          if (activeFilters.indexOf($elem.text()) != -1 || activeFilters.length == 0) execution.printFormater.sortingAPI.filterAdd($elem.closest('tr'));
 			          else execution.printFormater.sortingAPI.filterRemove($elem.closest('tr'));
 			        });
-			      } else execution.printFormater.table.find('tr').each(function() {
+			      } else table.find('tr').each(function() {
 			        execution.printFormater.sortingAPI.filterAdd($(this));
 			      });
 			    },
@@ -519,7 +523,7 @@ var execution = {
 			      row.addClass('hidden');
 			    },
 			  },
-			}
+			},
 	
 	
 };
@@ -573,7 +577,7 @@ var execution = {
 					type : 'GET',
 					data : { data: data_to_send },
 					success : function(data){
-						console.log('success');
+						//console.log('success');
 					},
 					error : function(xhr,errmsg,err) {
 							 console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
@@ -639,9 +643,8 @@ var execution = {
 //			 var $style = $html.find('style');
 //			 this.html_div.html($table);
 //			 this.html_div.append($style);
-			 
+			 //console.log($html);
 			 this.html_div.html($html);
-			 // console.log(this.html_div);
 			 setTimeout(function() {
 				 execution.printFormater.init(this.html_div);
 			 }, 100);
