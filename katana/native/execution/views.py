@@ -227,8 +227,8 @@ def stream_warrior_output(warrior_exe, cmd_string, file_list, live_html_res_file
         # Yield this line to be used by streaming http response
         yield line + '</br>'
         if line.startswith('-I- DONE'):
-            with open(live_html_res_file, 'a') as html_file:
-                html_file.write("<div class='eoc'></div>")
+#             with open(live_html_res_file, 'a') as html_file:
+#                 html_file.write("<div class='eoc'></div>")
             break 
     
     # before returning set eoc div on the live html results file

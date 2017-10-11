@@ -384,6 +384,14 @@ var execution = {
 				
 			}
 		},
+		htmlFilter: function(){
+			var $elem = this;
+			var closest_table = $elem.closest('table');
+			var closest_headingNav = $elem.closest('.headingnav');
+			var name = $elem.text();
+			$elem.toggleClass('up');
+			execution.printFormater.sortingAPI.filterBar(execution.printFormater.statusFitlers, name, closest_headingNav, closest_table);
+		},
 		
 	},
 	
@@ -394,63 +402,13 @@ var execution = {
 			  levels: ['KeywordRecord', 'TestcaseRecord', 'TestsuiteRecord', 'ProjectRecord'],
 			  statusFitlers: ['FAIL', 'ERROR', 'SKIPPED', 'PASS'],
 			  init: function(html_div) {
-			    //execution.printFormater.table = popup.find('table');
-				
 				var tables = html_div.find('#liveTables table');
 				execution.printFormater.tables = tables;
-				execution.printFormater.table = tables.last();			
-				//commented out init accordian as it has it is handled for all tables as a katana click using openAccordian function
-			    //execution.printFormater.initAccordian(); 
-			    //execution.printFormater.justifyOrder(); // not required in new katana
-			    execution.printFormater.sortingAPI.init();			    
-			    execution.printFormater.placeData();		    
+				execution.printFormater.table = tables.last();			    
 			    
 			  },
 
-			  placeData: function() {
-			    setTimeout(function() {
-			    	$.each(execution.printFormater.tables, function(index, table){
-			    		// console.log(table);
-			            $(table).find('tr[name] td:not([rowspan])').each(function() {
-			                var $elem = $(this);
-			                //console.log('element', $elem);
-			                var useData = $elem.parent().next('tr:not([name])').find('td:nth-child( ' + ($elem.prevAll('tr[name] td:not([rowspan])').length + 1) + ' )').text();
-			                //$elem.append('<span class="useData">' + useData + '</span>');
-			                // console.log($elem.html())
-			                html = $elem.html()
-			                $elem.html(html +  '<span class="useData">' + useData + '</span>');
-			              });   		
-			    		});
-			      }, 60);
-			  },
-
-			  justifyOrder: function() {
-			    setTimeout(function() {
-			      execution.printFormater.table.find('tr[name]').each(function() {
-			        var $elem = $(this);
-			        var container = $('<div class="hoverConainer"></div>');
-			        var level = $elem.attr('name');
-			        for (var i = execution.printFormater.levels.indexOf(level) + 1; execution.printFormater.levels.length > i; i++) container.prepend($elem.prevAll('tr[name="' + execution.printFormater.levels[i] + '"]:first').clone());
-			        $elem.data(container);
-			      });
-			    }, 30);
-			  },
-
 			  sortingAPI: {
-			    init: function() {
-			      // monitor the click event on the status arrow of each tables heading and call respective functions
-			      $.each(execution.printFormater.tables, function(index, table){
-			    	  // for each table find the heading nav 
-			    	  var table = $(table);
-			    	  var headingNav = table.find('.headingnav');
-			    	  headingNav.find('th').on('click', function() {
-					        var $elem = $(this);
-					        var name = $elem.text();
-					        $elem.toggleClass('up');
-					        if (name == 'Status') execution.printFormater.sortingAPI.filterBar(execution.printFormater.statusFitlers, name, headingNav, table);
-					      });
-			      });   
-			    },
 			    filterBar: function(filterList, filterScope, headingNav, table) {
 			      if (headingNav.children('.filterBar').length != 0) {
 			        table.removeClass('filtering');
@@ -621,9 +579,11 @@ var execution = {
 //			 this.html_div.html($table);
 //			 this.html_div.append($style);
 			 //console.log($html);
+			 //console.log(this);
 			 this.html_div.html($html);
 			 this.disableHref();
 			 this.barRelocate();
+			 this.placeData();
 			 setTimeout(function() {
 				 execution.printFormater.init(this.html_div);
 			 }, 100);
@@ -649,13 +609,38 @@ var execution = {
 		  }
 		 barRelocate(){
 			  var tables = this.html_div.find('#liveTables table');
+			  //console.log('tables 1: ',tables);
 			  // wrap each heading row in a heading nav div
 			  $.each(tables, function(index, table){
 					var headingRow = $(table).find('[name=HeadingRow]');
 					headingRow.wrap('<div class="headingnav"></div>');
 			  });
-
 		  }
+		  placeData(){
+			  	var tables = this.html_div.find('#liveTables table');
+			    setTimeout(function() {			    	
+			    	//console.log('tables 2: ',tables);
+			    	$.each(tables, function(index, table){
+			    		// console.log(table);
+			    		var dynamicTdList = $(table).find('tr[name] td:not([rowspan])')
+			    		//console.log('dnamic list:', dynamicTdList);
+			    		$.each(dynamicTdList, function(index, elem){
+			    			var elem = $(elem);
+			                //var $elem = $(this);
+			                //console.log('element', $elem);
+			                //console.log('paren.next: ', $elem.parent().next('tr:not([name])'));
+			                //console.log('prev all: ',$elem.prevAll('tr[name] td:not([rowspan])'));
+			                var useData = elem.parent().next('tr:not([name])').find('td:nth-child( ' + (elem.prevAll('tr[name] td:not([rowspan])').length + 1) + ' )').text();
+			                elem.append('<span class="useData">' + useData + '</span>');
+			                // console.log($elem.html())
+			                // var html = $elem.html()
+			                // console.log('use data: ',useData);
+			                // $elem.html(html +  '<span class="useData">' + useData + '</span>');
+			              });   		
+			    		});
+			      }, 60);
+			  }
+
 }//ExecutionClass ENDS
 	
 
