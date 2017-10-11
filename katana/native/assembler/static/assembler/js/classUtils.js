@@ -83,7 +83,7 @@ class kwRepository {
                                     '<div class="col-sm-9">' +
                                         '<div class="card">' +
                                             '<div class="card-header">' +
-                                                '<i class="' + allDriversIcon + '"></i>' +
+                                                '<i class="' + allDriversIcon + '"></i>&nbsp;' +
                                                 '<label>All Available Drivers</label>' +
                                             '</div>' +
                                             '<div class="card-block" style="padding: 1rem;">' +
@@ -149,7 +149,7 @@ class driverDetails {
                 clone_icon = "fa fa-toggle-on green";
             }
             var elem = '<div class="col-sm-4">' +
-                            '<i class="' + clone_icon + '"></i>' +
+                            '<i class="' + clone_icon + '"></i>&nbsp;' +
                             '<label>' + this.name + '</label>' +
                         '</div>';
         }

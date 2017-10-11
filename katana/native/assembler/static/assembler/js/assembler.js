@@ -178,25 +178,51 @@ var assembler = {
         $parentCardBlock = $elem.closest('.card-block');
         console.log($parentCardBlock);
         $footerBlockRow = $parentCardBlock.siblings('.card-footer').find('.row');
-        console.log($footerBlockRow);
-        $footerBlockRow.find('.fa').removeClass('fa-times').removeClass('red');
-        $footerBlockRow.find('.fa').removeClass('fa-check').removeClass('green');
-        $footerBlockRow.find('.fa').removeClass('fa-exclamation-triangle').removeClass('tan')
+        var $footerBlockRowIcon = $footerBlockRow.find('.fa');
+        $footerBlockRowIcon.attr('class', 'fa')
         $footerBlockRow.find('.col-sm-8').html('');
         var url = $elem.val();
         if(url == ""){
-            $footerBlockRow.find('.fa').addClass('fa-exclamation-triangle').addClass('tan')
+            $footerBlockRowIcon.addClass('fa-exclamation-triangle').addClass('tan')
             $footerBlockRow.find('.col-sm-8').html('No Repository Information Provided.');
             $footerBlockRow.show();
         }
         else if(!url.endsWith(".git")){
-            $footerBlockRow.find('.fa').addClass('fa-times').addClass('red');
+            $footerBlockRowIcon.addClass('fa-times').addClass('red');
             $footerBlockRow.find('.col-sm-8').html('Repository Not Available.');
             $footerBlockRow.show();
         } else {
-            $footerBlockRow.find('.fa').addClass('fa-check').addClass('green');
-            $footerBlockRow.find('.col-sm-8').html('Repository Available.');
+            $footerBlockRowIcon.addClass('fa-spinner').addClass('fa-spin').addClass('tan');
+            $footerBlockRow.find('.col-sm-8').html('Checking Availability.');
             $footerBlockRow.show();
+            $.ajax({
+                headers: {
+                    'X-CSRFToken': $currentPage.find('input[name="csrfmiddlewaretoken"]').attr('value')
+                },
+                type: 'POST',
+                url: 'assembler/check_repo_availability/',
+                data: {"url": url}
+            }).done(function(data) {
+                $footerBlockRowIcon.attr('class', 'fa');
+                if(data["available"]){
+                    $footerBlockRowIcon.addClass('fa-check').addClass('green');
+                    $footerBlockRow.find('.col-sm-8').html('Repository Available.');
+                    $parentCardBlock.siblings('.card-header').find('.col-sm-8').html(data["repo_name"])
+
+                    $driverBlock = $($parentCardBlock.find('.row')[1]);
+                    for(var i=0; i<data["drivers"].length; i++){
+                        var ddObj = new driverDetails({"@name": data["drivers"][i], "@clone": "yes"})
+                        console.log(ddObj.domElement);
+                        console.log($driverBlock.find('.row, .text-center'));
+                        $driverBlock.find('.row, .text-center').append(ddObj.domElement)
+                    }
+                    $driverBlock.show();
+
+                } else {
+                    $footerBlockRowIcon.addClass('fa-times').addClass('red');
+                    $footerBlockRow.find('.col-sm-8').html('Repository Not Available.');
+                }
+            });
         }
     },
 

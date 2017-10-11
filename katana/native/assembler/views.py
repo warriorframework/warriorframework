@@ -4,13 +4,13 @@ from __future__ import unicode_literals
 import copy
 import json
 import os
-
-import imp
+import subprocess
 import xmltodict
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
 
+from native.assembler.assembler_utils.repository_details import KwRepositoryDetails
 from utils.navigator_util import Navigator
 
 
@@ -73,3 +73,33 @@ class ConfigurationFileOps(View):
             final_data["data"]["warriorspace"]["repository"] = [final_data["data"]["warriorspace"]["repository"]]
 
         return JsonResponse({"xml_contents": final_data})
+
+
+def check_repo_availability(request):
+    nav_obj = Navigator()
+    available = True
+    url = request.POST.get('url')
+    repo_name = get_repository_name(url)
+    drivers = []
+    if not check_url_is_a_valid_repo(url):
+        available = False
+    else:
+        temp_directory = os.path.join(nav_obj.get_katana_dir(), "native", "assembler", ".data")
+        kw_repo_obj = KwRepositoryDetails(url, temp_directory)
+        drivers = kw_repo_obj.get_pd_names()
+    return JsonResponse({"available": available, "repo_name": repo_name, "drivers": drivers})
+
+
+def check_url_is_a_valid_repo(url):
+    print "Verifying if {0} is a valid git repository.".format(url)
+    if subprocess.call(["git", "ls-remote", url]) != 0:
+        print "-- An Error Occurred -- {0} is not a valid git repository.".format(url)
+        return False
+    print "{0} is available".format(url)
+    return True
+
+
+def get_repository_name(url):
+    li_temp_1 = url.rsplit('/', 1)
+    return li_temp_1[1][:-4] if \
+        li_temp_1[1].endswith(".git") else li_temp_1[1]
