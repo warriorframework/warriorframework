@@ -158,7 +158,7 @@ def editSuite(request):
 			
 
 	# Map the input to the response collector
-	for xstr in ["Name", "Title", "Category", "Date", "Time", "Engineer", "Datatype", 'Resultsdir', 'InputDataFile']:
+	for xstr in ["Name", "Title", "Category", "Date", "Time", "Engineer",  'Resultsdir', 'InputDataFile']:
 		try: 
 			xml_r["TestSuite"]["Details"][xstr] = copy.copy(xml_d["TestSuite"]["Details"].get(xstr,""))
 		except:
@@ -200,7 +200,6 @@ def editSuite(request):
 		'docSpec': 'projectSpec',
 		'suiteName': xml_r["TestSuite"]["Details"]["Name"],
 		'suiteTitle': xml_r["TestSuite"]["Details"]["Title"],
-		'suiteDatatype': xml_r["TestSuite"]["Details"]["type"]["@exectype"],
 		'suiteEngineer': xml_r["TestSuite"]["Details"]["Engineer"],
 		'suiteLogsdir': xml_r["TestSuite"]["Details"]["Logsdir"],
 		'suiteResultsdir': xml_r["TestSuite"]["Details"]["Resultsdir"],

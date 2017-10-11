@@ -703,7 +703,6 @@ Two global variables are heavily used when this function is called;
 	projects.jsonProjectObject['Details']['Date'] = katana.$activeTab.find('#projectDate').val();
 	projects.jsonProjectObject['Details']['default_onError']['@action'] = katana.$activeTab.find('#default_onError').val();
 	projects.jsonProjectObject['Details']['default_onError']['@value'] = katana.$activeTab.find('#default_onError_goto').val();
-	projects.jsonProjectObject['Details']['Datatype'] = katana.$activeTab.find('#projectDatatype').val();
 	projects.jsonProjectObject['Details']['ResultsDir'] = katana.$activeTab.find('#projectResultsDir').val();
 	
 		var date = new Date();
@@ -978,7 +977,6 @@ Two global variables are heavily used when this function is called;
 		katana.$activeTab.find('#projectDate').val(projects.jsonProjectObject.Details.cDate + " " + projects.jsonProjectObject.Details.cTime);
 		katana.$activeTab.find('#project_onError_action').val(projects.jsonProjectObject.Details.onError_action);
 		katana.$activeTab.find('#project_onError_value').val(projects.jsonProjectObject.Details.onError_value);
-		katana.$activeTab.find('#projectDatatype').val(projects.jsonProjectObject.Details_Datatype);
 		katana.$activeTab.find('#projectResultsDir').val(katana.$activeTab.find("#projectResultsDir").val());
 		projects.createSuitesTable();
 		projects.fillProjectDefaultGoto();
