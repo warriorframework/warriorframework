@@ -393,36 +393,20 @@ var execution = {
 			  //bar: '',
 			  levels: ['KeywordRecord', 'TestcaseRecord', 'TestsuiteRecord', 'ProjectRecord'],
 			  statusFitlers: ['FAIL', 'ERROR', 'SKIPPED', 'PASS'],
-			  init: function(popup) {
+			  init: function(html_div) {
 			    //execution.printFormater.table = popup.find('table');
-				tables = popup.find('#liveTables table')
+				
+				var tables = html_div.find('#liveTables table');
 				execution.printFormater.tables = tables;
 				execution.printFormater.table = tables.last();			
 				//commented out init accordian as it has it is handled for all tables as a katana click using openAccordian function
 			    //execution.printFormater.initAccordian(); 
 			    //execution.printFormater.justifyOrder(); // not required in new katana
-				execution.printFormater.disableHref();
-				execution.printFormater.barRelocate();
 			    execution.printFormater.sortingAPI.init();			    
-			    execution.printFormater.placeData();
-			    
+			    execution.printFormater.placeData();		    
 			    
 			  },
-			  disableHref: function(){
-				  
-				  $.each(execution.printFormater.tables, function(index, table){
-					  var table = $(table);
-					  aList =   table.find('a');
-						$.each(aList, function(index, element){
-							var href = $(element)[0].hasAttribute('href');
-							if(href){
-								$(element).attr('onclick', 'return false;')
-							}
-						});
-				  });
-				
 
-			  },
 			  placeData: function() {
 			    setTimeout(function() {
 			    	$.each(execution.printFormater.tables, function(index, table){
@@ -451,14 +435,7 @@ var execution = {
 			      });
 			    }, 30);
 			  },
-			  barRelocate: function() {
-				  // wrap each heading row in a heading nav div
-				  $.each(execution.printFormater.tables, function(index, table){
-						var headingRow = $(table).find('[name=HeadingRow]');
-						execution.printFormater.bar = headingRow.wrap('<div class="headingnav"></div>');
-				  });
 
-			  },
 			  sortingAPI: {
 			    init: function() {
 			      // monitor the click event on the status arrow of each tables heading and call respective functions
@@ -645,6 +622,8 @@ var execution = {
 //			 this.html_div.append($style);
 			 //console.log($html);
 			 this.html_div.html($html);
+			 this.disableHref();
+			 this.barRelocate();
 			 setTimeout(function() {
 				 execution.printFormater.init(this.html_div);
 			 }, 100);
@@ -655,8 +634,28 @@ var execution = {
 			 katana.templateAPI.get.call(katana.$activeTab, 'execution/deleteLiveHtmlFile', null, data_to_send, 'html');
 
 		 }
-		
-		
+		 disableHref(){
+			  var tables = this.html_div.find('#liveTables table');
+			  $.each(tables, function(index, table){
+				  var table = $(table);
+				  var aList =   table.find('a');
+					$.each(aList, function(index, element){
+						var href = $(element)[0].hasAttribute('href');
+						if(href){
+							$(element).attr('onclick', 'return false;')
+						}
+					});
+			  });
+		  }
+		 barRelocate(){
+			  var tables = this.html_div.find('#liveTables table');
+			  // wrap each heading row in a heading nav div
+			  $.each(tables, function(index, table){
+					var headingRow = $(table).find('[name=HeadingRow]');
+					headingRow.wrap('<div class="headingnav"></div>');
+			  });
+
+		  }
 }//ExecutionClass ENDS
 	
 
