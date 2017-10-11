@@ -68,6 +68,7 @@ from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.print_Utils import print_debug, print_info
 from WarriorCore import step_driver, common_execution_utils
 import WarriorCore.onerror_driver as onerror_driver
+import WarriorCore.exec_type_driver as exec_type_driver
 
 
 class HybridDriver(object):
@@ -212,6 +213,37 @@ class HybridDriver(object):
             self.system_executed = self._get_system_executed(index)
             if self.stop_after_current_step:
                 break
+
+            # Decide whether or not to execute keyword
+            # First decide if this step should be executed in this iteration
+            if not goto_stepnum or goto_stepnum == str(step_num):
+                # get Exectype information
+                run_current_step, trigger_action = exec_type_driver.main(step)
+                if not run_current_step:
+                    keyword = step.get('Keyword')
+
+                    if trigger_action.upper() in ['ABORT', 'ABORT_AS_ERROR']:
+                        pNote("step exectype check failed and fail action is set to {0} hence aborting execution"
+                          "compeletely".format(trigger_action.upper()), "debug")
+                        self.stop_after_current_iteration = True
+                        self.stop_after_current_step = True
+                        goto_stepnum = False
+                        break
+                    elif trigger_action.upper() in ['SKIP', 'NEXT']:
+                        result = self._update_skip_results(step, self.system_executed,
+                                                   step_num)
+                        self.kw_resultfile_list.append(result[1])
+                        continue
+                    # when 'onError:goto' value is less than the current step num,
+                    # change the next iteration point to goto value
+                    elif trigger_action and int(trigger_action) < step_num:
+                        result = self._update_skip_results(step, self.system_executed,
+                                                   step_num)
+                        self.kw_resultfile_list.append(result[1])
+                        step_num = int(trigger_action)-1
+                        trigger_action = False
+
+                    continue
 
             # when there is no goto
             if not goto_stepnum:
