@@ -424,3 +424,113 @@ class dependency{
         return jsonObject;
     }
 }
+
+class toolsRepository{
+    constructor(data){
+        if(!data || data == undefined){
+            data = {};
+        }
+        if(data["name"]){
+            this.name = data["name"]
+        } else {
+            this.name = "Enter Repository Details";
+        }
+        if(data["@url"]){
+            this.url = data["@url"]
+        } else {
+            this.url = "";
+        }
+        if(data["@clone"]){
+            this.clone = data["@clone"].toLowerCase().tim();
+        } else {
+            this.clone = "yes";
+        }
+        if(data["@label"]){
+            this.label = data["@label"]
+        } else {
+            this.label = "";
+        }
+        this.available = data["available"]
+    }
+
+    get domElement(){
+        return this.formDomElement();
+    }
+
+    formDomElement() {
+        var cloneRepoIcon = "fa fa-toggle-off grey";
+        var cloneRepoSelected = "false";
+        if(this.clone == "yes"){
+            cloneRepoIcon = "fa fa-toggle-on green";
+            cloneRepoSelected = "true";
+        }
+        var repoAvailableIcon = "fa fa-times red";
+        var repoAvailableText = "Repository Not Available";
+        if(this.available){
+            repoAvailableIcon = "fa fa-check-circle green";
+            repoAvailableText = "Repository Available";
+        }
+        var displayToolsFooter = "";
+        if(this.url == ""){
+            displayToolsFooter = "display: none";
+        }
+        var html_contents = '<div class="card" style="padding: 1rem;">' +
+                                '<div class="card-header">' +
+                                    '<div class="row">' +
+                                        '<div class="col-sm-1">' +
+                                            '<i class="' + cloneRepoIcon + '" style="float:right; line-height:inherit!important;" ' +
+                                            'aria-selected="' + cloneRepoIcon + '" katana-click="assembler.toggleToolsClone" aria-hidden="true"></i>' +
+                                        '</div>' +
+                                        '<div class="col-sm-8">' +
+                                            this.name +
+                                        '</div>' +
+                                    '</div>' +
+                                '</div>' +
+                                '<div class="card-block" style="padding: 1rem;">' +
+                                    '<div class="row">' +
+                                        '<div class="col-sm-1" style="text-align: right; padding: 0.7rem;">' +
+                                            '<label>URL:</label>' +
+                                        '</div>' +
+                                        '<div class="col-sm-5">' +
+                                            '<input value="' + this.url + '" katana-change="assembler.onchangeToolsUrl">' +
+                                        '</div>' +
+                                        '<div class="col-sm-1" style="text-align: right; padding: 0.7rem;">' +
+                                            '<label>Label:</label>' +
+                                        '</div>' +
+                                        '<div class="col-sm-3">' +
+                                            '<input value="' + this.label + '">' +
+                                        '</div>' +
+                                    '</div>' +
+                                    '<div class="row">' +
+                                    '</div>' +
+                                    '<br>' +
+                                '</div>' +
+                                '<div class="card-footer">' +
+                                    '<div class="row" style="' + displayToolsFooter + '">' +
+                                        '<div class="col-sm-1">' +
+                                            '<i class="' + repoAvailableIcon + '" style="float:right; line-height:inherit!important;"></i>' +
+                                        '</div>' +
+                                        '<div class="col-sm-8 text-muted">' +
+                                            repoAvailableText +
+                                        '</div>' +
+                                    '</div>' +
+                                '</div>' +
+                            '</div>' +
+                            '<br>';
+        var $elem = $(html_contents);
+        return $elem
+    }
+
+    get jsonObj() {
+        return this.formJsonObj();
+    }
+
+    formJsonObj(){
+        var jsonObject = {
+            "@url": this.name,
+            "@clone": this.install,
+            "@label": this.user,
+        }
+        return jsonObject;
+    }
+}

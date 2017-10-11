@@ -9,13 +9,14 @@ var assembler = {
                 url: 'assembler/get_config_file/',
                 data: {"filepath": false}
             }).done(function(data) {
-                var tools = data.xml_contents.data.tools;
-
                 var dep_objs = [];
                 for(var i=0; i<data.xml_contents.data.warhorn.dependency.length; i++){
                     dep_objs.push(new dependency(data.xml_contents.data.warhorn.dependency[i]))
                     $currentPage.find('#dependency-div').append(dep_objs[i].domElement);
                 }
+
+                var tools_obj = new toolsRepository(data.xml_contents.data.tools);
+                $currentPage.find('#tools-div').append(tools_obj.domElement);
 
                 var kw_objs = []
                 for(var i=0; i<data.xml_contents.data.drivers.repository.length; i++){
@@ -428,5 +429,60 @@ var assembler = {
         $currentPage = katana.$activeTab;
         ws_repo_obj = new wsRepository();
         $currentPage.find('#ws-div').append(ws_repo_obj.domElement);
+    },
+
+    toggleToolsClone: function(){
+        var $elem = $(this);
+        if($elem.attr("aria-selected") == "true"){
+            $elem.attr("aria-selected", "false");
+            $elem.attr("class", "");
+            $elem.addClass("fa").addClass("fa-toggle-off").addClass("grey");
+        } else {
+            $elem.attr("aria-selected", "true");
+            $elem.attr("class", "");
+            $elem.addClass("fa").addClass("fa-toggle-on").addClass("green");
+        }
+    },
+
+    onchangeToolsUrl: function(){
+        $elem = $(this);
+        $parentCardBlock = $elem.closest('.card-block');
+        $footerBlockRow = $parentCardBlock.siblings('.card-footer').find('.row');
+        var $footerBlockRowIcon = $footerBlockRow.find('.fa');
+        $footerBlockRowIcon.attr('class', 'fa')
+        $footerBlockRow.find('.col-sm-8').html('');
+        var url = $elem.val();
+        if(url == ""){
+            $footerBlockRowIcon.addClass('fa-exclamation-triangle').addClass('tan')
+            $footerBlockRow.find('.col-sm-8').html('No Repository Information Provided.');
+            $footerBlockRow.show();
+        }
+        else if(!url.endsWith(".git")){
+            $footerBlockRowIcon.addClass('fa-times').addClass('red');
+            $footerBlockRow.find('.col-sm-8').html('Repository Not Available.');
+            $footerBlockRow.show();
+        } else {
+            $footerBlockRowIcon.addClass('fa-spinner').addClass('fa-spin').addClass('tan');
+            $footerBlockRow.find('.col-sm-8').html('Checking Availability.');
+            $footerBlockRow.show();
+            $.ajax({
+                headers: {
+                    'X-CSRFToken': $currentPage.find('input[name="csrfmiddlewaretoken"]').attr('value')
+                },
+                type: 'POST',
+                url: 'assembler/check_tools_repo_availability/',
+                data: {"url": url}
+            }).done(function(data) {
+                $footerBlockRowIcon.attr('class', 'fa');
+                if(data["available"]){
+                    $footerBlockRowIcon.addClass('fa-check').addClass('green');
+                    $footerBlockRow.find('.col-sm-8').html('Repository Available.');
+                    $parentCardBlock.siblings('.card-header').find('.col-sm-4').html(data["repo_name"]);
+                } else {
+                    $footerBlockRowIcon.addClass('fa-times').addClass('red');
+                    $footerBlockRow.find('.col-sm-8').html('Repository Not Available.');
+                }
+            });
+        }
     },
 }

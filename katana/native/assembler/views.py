@@ -106,11 +106,18 @@ def get_repository_name(url):
 
 
 def check_ws_repo_availability(request):
-    nav_obj = Navigator()
     available = True
     url = request.POST.get('url')
     repo_name = get_repository_name(url)
-    drivers = []
+    if not check_url_is_a_valid_repo(url):
+        available = False
+    return JsonResponse({"available": available, "repo_name": repo_name})
+
+
+def check_tools_repo_availability(request):
+    available = True
+    url = request.POST.get('url')
+    repo_name = get_repository_name(url)
     if not check_url_is_a_valid_repo(url):
         available = False
     return JsonResponse({"available": available, "repo_name": repo_name})
