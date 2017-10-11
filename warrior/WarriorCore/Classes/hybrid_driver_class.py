@@ -220,7 +220,6 @@ class HybridDriver(object):
                 # get Exectype information
                 run_current_step, trigger_action = exec_type_driver.main(step)
                 if not run_current_step:
-                    keyword = step.get('Keyword')
 
                     if trigger_action.upper() in ['ABORT', 'ABORT_AS_ERROR']:
                         pNote("step exectype check failed and fail action is set to {0} hence aborting execution"
