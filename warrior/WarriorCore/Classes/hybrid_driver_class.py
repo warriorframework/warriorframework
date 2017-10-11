@@ -234,11 +234,9 @@ class HybridDriver(object):
             step_status = result[0]
             kw_resultfile = result[1]
             step_impact = result[2]
-            exec_type_onerror = result[3]
 
             self._update_status_items(step_status, kw_resultfile, step_impact)
             goto_stepnum, step_num = self._compute_runmode_goto_operations(step, step_status,
-                                                                           exec_type_onerror,
                                                                            goto_stepnum, step_num)
             if (goto_stepnum == 'ABORT'):
                 if any([self.iter_type_list[index] == "once_per_tc",
@@ -253,8 +251,7 @@ class HybridDriver(object):
         return
 
     def _compute_runmode_goto_operations(self, step, step_status,
-                                         exec_type_onerror, goto_stepnum,
-                                         step_num):
+                                         goto_stepnum, step_num):
         """
         """
         runmode, value = common_execution_utils.get_runmode_from_xmlfile(step)
@@ -262,8 +259,7 @@ class HybridDriver(object):
         if runmode is not None:
             # if runmode is 'ruf' & step_status is False, skip the repeated
             # execution of same TC step and move to next actual step
-            if all(not exec_type_onerror, runmode == "ruf",
-                   step_status is False):
+            if all(runmode == "ruf", step_status is False):
                 goto_stepnum = str(value)
             # if runmode is 'rup' & step_status is True, skip the repeated
             # execution of same TC step and move to next actual step
@@ -272,19 +268,15 @@ class HybridDriver(object):
             else:
                 if any([step_status is False,
                        str(step_status).upper() == "ERROR",
-                       str(step_status).upper() == "EXCEPTION",
-                       exec_type_onerror is True]):
+                       str(step_status).upper() == "EXCEPTION"]):
                     goto_stepnum = onerror_driver.main(step, self.default_error_action,
-                                                       self.default_error_value,
-                                                       exec_type_onerror)
+                                                       self.default_error_value)
                     # if (goto_stepnum == 'ABORT'): break
         else:
             if any([step_status is False, str(step_status).upper() == "ERROR",
-                   str(step_status).upper() == "EXCEPTION",
-                   exec_type_onerror is True]):
+                   str(step_status).upper() == "EXCEPTION"]):
                 goto_stepnum = onerror_driver.main(step, self.default_error_action,
-                                                   self.default_error_value,
-                                                   exec_type_onerror)
+                                                   self.default_error_value)
                 if str(goto_stepnum).upper() == 'ABORT':
                     pass
                 # when 'onError:goto' value is less than the current step num,
