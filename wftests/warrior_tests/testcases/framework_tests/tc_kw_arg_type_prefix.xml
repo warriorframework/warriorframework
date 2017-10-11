@@ -18,7 +18,7 @@
 		<Requirement/>
 	</Requirements>
 	<Steps>
-		<step Driver="ci_regression_driver" Keyword="check_kw_arg_type" TS="1">
+		<step Driver="ci_regression_driver" Keyword="check_kw_arg_type_prefix" TS="1">
 			<Arguments>
 				<argument name="str_value" value="abcd"/>
 				<argument name="int_value" value="1234"/>
@@ -36,7 +36,7 @@
 			<context>positive</context>
 			<impact>impact</impact>
 		</step>
-		<step Driver="ci_regression_driver" Keyword="check_kw_arg_type" TS="1">
+		<step Driver="ci_regression_driver" Keyword="check_kw_arg_type_prefix" TS="1">
 			<Arguments>
 				<argument name="int_value" value="sbvc"/>
 				<argument name="float_value" value="2345.45"/>

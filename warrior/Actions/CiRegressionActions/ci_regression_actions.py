@@ -330,9 +330,11 @@ class CIregressionActions(object):
         path = data_Utils.get_object_from_datarepository("parallel_exec_tmp_dir")
         return file_Utils.delFolder(path)
 
-    def check_kw_arg_type(self, str_value, int_value, float_value, bool_value,
+    def check_kw_arg_type_prefix(self, str_value, int_value, float_value, bool_value,
                           list_value, tuple_value, dict_value, file_value):
-        """Check the type of keyword arguments
+        """This keyword is intended to test the type prefix for keyword arguments
+        when an argument name has a type_ prefix, the variable type will become
+        the type specified in the type_ prefix
         :Argument:
             1. str_value - expected to be string
             2. int_value - expected to be int
@@ -347,32 +349,41 @@ class CIregressionActions(object):
         status = True
         err_msg = "{} is not an {} value but of type {}"
         if type(str_value) is not str:
+            # this block checks if str_value is string type
             print_error(err_msg.format(str_value, "str", type(str_value)))
             status = False
         if type(int_value) is not int:
+            # this block checks if int_value is int type
             print_error(err_msg.format(int_value, "int", type(int_value)))
             status = False
         if type(float_value) is not float:
+            # this block checks if float_value is float type
             print_error(err_msg.format(float_value, "float", type(float_value)))
             status = False
         if type(bool_value) is not bool:
+            # this block checks if bool_value is bool type
             print_error(err_msg.format(bool_value, "bool", type(bool_value)))
             status = False
         if type(list_value) is not list:
+            # this block checks if list_value is list type
             print_error(err_msg.format(list_value, "list", type(list_value)))
             status = False
         if type(tuple_value) is not tuple:
+            # this block checks if tuple_value is tuple type
             print_error(err_msg.format(tuple_value, "tuple", type(tuple_value)))
             status = False
         if type(dict_value) is not dict:
+            # this block checks if dict_value is dict type
             print_error(err_msg.format(dict_value, "dict", type(dict_value)))
             status = False
         if type(file_value) is not file:
+            # this block checks if file_value is file type
             print_error(err_msg.format(file_value, "file", type(file_value)))
             status = False
         else:
             actual_contents = file_value.read().strip()
             if actual_contents != file_contents:
+                # this block checks if the contents of file type variable is expected
                 print_error("contents of the file {} is <<{}>> which does not match expected"
                             " <<{}>>".format(file_value, actual_contents, file_contents))
                 status = False
@@ -407,10 +418,15 @@ class CIregressionActions(object):
         datafile = Utils.config_Utils.datafile
         tc_filepath = os.path.dirname(data_Utils.get_object_from_datarepository(
                                             'wt_testcase_filepath'))
+        # this block checks if strvar is string type
         status = check_type(strvar, "strvar", str) and status
+        # this block checks if langs is list type
         status = check_type(langs, "langs", list) and status
+        # this block checks if states is tuple type
         status = check_type(states, "states", tuple) and status
+        # this block checks if currencys is dict type
         status = check_type(currencys, "currencys", dict) and status
+        # this block checks if ramspace is bool type
         status = check_type(ramspace, "ramspace", bool) and status
         try:
             if anotherfile.startswith('tag'):
