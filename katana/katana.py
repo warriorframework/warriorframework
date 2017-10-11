@@ -15,6 +15,19 @@ limitations under the License.
 import os
 import sys
 
+try:
+    import django
+except: 
+    print """
+    You are missing the django framework. 
+    Please install django on you system. 
+    Try  sudo pip install django 
+
+    Refer to this link for more information 
+    https://docs.djangoproject.com/en/1.11/topics/install/
+    """
+    sys.exit(0)
+
 if __name__ == "__main__":
 
     """
