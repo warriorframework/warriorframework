@@ -19,7 +19,7 @@ import re
 
 class ProgressBar(object):
     """
-    Class to estimate the previous run time of P/TS/TC and display a progress bar.
+        Class to display the progress bar
     """
     FULL = '%(bar)s %(current)d/%(total)d (%(percent)3d%%) %(remaining)d to go'
 
@@ -34,8 +34,7 @@ class ProgressBar(object):
         self.width = width
         self.symbol = symbol
         self.output = output
-        self.fmt = re.sub(r'(?P<name>%\(.+?\))d',
-            r'\g<name>%dd' % len(str(total)), fmt)
+        self.fmt = re.sub(r'(?P<name>%\(.+?\))d', r'\g<name>%dd' % len(str(total)), fmt)
 
         self.current = 0
 

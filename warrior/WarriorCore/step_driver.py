@@ -298,5 +298,5 @@ def main(step, step_num, data_repository, system_name, kw_parallel=False, queue=
         step_status = False, [], data_repository['wt_step_impact'], False
         print_error('unexpected error: {0}'.format(traceback.format_exc()))
     progress_bar.progress()
-    time.sleep(1)
+    time.sleep(0.1)
     return step_status
