@@ -21,7 +21,7 @@ usePythonServer = 0
 # Check number 1: Don't run the server if django not installed. 
 # 
 try:
-    import djangoxx
+    import django
 except: 
     print """
     You are missing the django framework. 
