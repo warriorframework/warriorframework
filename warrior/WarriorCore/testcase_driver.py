@@ -40,6 +40,7 @@ def get_testcase_details(testcase_filepath, data_repository, jiraproj):
     by user assigns default values.
     """
 
+    Utils.config_Utils.set_datarepository(data_repository)
     name = Utils.xml_Utils.getChildTextbyParentTag(testcase_filepath, 'Details', 'Name')
     title = Utils.xml_Utils.getChildTextbyParentTag(testcase_filepath, 'Details', 'Title')
     category = Utils.xml_Utils.getChildTextbyParentTag(testcase_filepath, 'Details', 'Category')
@@ -268,10 +269,8 @@ def report_testcase_result(tc_status, data_repository):
         2. data_repository (dict) = data_repository of the executed  testcase
     """
     print_info("\n**** Testcase Result ***")
-
     print_info("TESTCASE:{0}  STATUS:{1}".format(data_repository['wt_name'],
                                                  convertLogic(tc_status)))
-
     print_info("\n")
     Utils.testcase_Utils.pTestResult(tc_status, data_repository['wt_resultfile'])
     root = Utils.xml_Utils.getRoot(data_repository['wt_resultfile'])
