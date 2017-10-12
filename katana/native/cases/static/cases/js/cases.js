@@ -458,7 +458,8 @@ var cases = {
 				  });
 				  //katana.templateAPI.load(xref, null, null, 'Case') ;
 				});
-				katana.$activeTab.find('#myCaseTree').jstree(jdata);
+				create_jstree_search('#myCaseTree', '#jstreeFilterText' , sdata);
+				// katana.$activeTab.find('#myCaseTree').jstree(jdata);
 			});
 		
 	},

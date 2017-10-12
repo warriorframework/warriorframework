@@ -67,7 +67,7 @@ def getJSONProjectData(request):
 	except:
 		xml_d = getEmpty();
 
-	print xml_d
+	#print xml_d
 	if (not xml_d.has_key(u'Project')):
 		print "Invalid XML file"
 		xml_d = getEmpty();

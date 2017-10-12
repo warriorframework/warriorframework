@@ -16,62 +16,6 @@ the views.py python for Django.
 /// -------------------------------------------------------------------------------
 
 */ 
-function jsUcfirst(string) 
-{
-    return string.toLowerCase();
-}	
-
-
-
-function absFromPrefix(pathToBase, pathToFile) {
-	// Converts an absolute path to one that is relative to pathToBase 
-	// Input: 
-	// 
-	if (!pathToFile) return "";
-	if (pathToFile.length < 1) return "";
-	var bf = pathToBase.split('/');
-	var rf = pathToFile.split('/');
-	var nrf = pathToFile.split('/');
-	//console.log("Removing", nrf, bf);
-	
-	for (var i=0;i< rf.length; i++) {
-		if (rf[i] == "..")  { 
-			bf.pop();
-			nrf.splice(0,1);
-			//console.log("Removing", nrf, bf);
-	
-		} else {
-			break;
-		}
-	}
-	return bf.join('/') + '/' + nrf.join('/');
-}
-
-
-function prefixFromAbs(pathToBase, pathToFile) {
-	var stack = []; 
-    var upem  = [];
-	var bf = pathToBase.split('/');
-	var rf = pathToFile.split('/');
-	for (var i=0;i< rf.length; i++) {
-		if (rf[i] == bf[i]) { 
-			stack.push(bf[i]);
-		} else {
-			break;
-		}
-	}
-	var tlen = bf.length - stack.length; 
-	var blen = stack.length;
-	// console.log("bf=",bf);
-	// console.log("rf=",rf);
-	// console.log("prefixFromAbs", rf, tlen, blen, stack);
-    for (var k=0;k < tlen; k++) {
-		upem.push("..");
-	}
-	var tail = rf.splice(blen,rf.length);
-	// console.log('tail=', tail);
-	return upem.join("/") + "/" +   tail.join('/');
-}
 
 class suiteDetailsObject{
 
@@ -429,7 +373,9 @@ var suites= {
 
 		  		//katana.templateAPI.load(xref, null, null, 'Suite') ;
 				});
-			katana.$activeTab.find('#mySuiteTree').jstree(jdata); 
+			create_jstree_search('#mySuiteTree', '#jstreeFilterText' , sdata);
+		
+			//katana.$activeTab.find('#mySuiteTree').jstree(jdata); 
 		});
 
 	},
