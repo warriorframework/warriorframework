@@ -11,8 +11,8 @@ limitations under the License.
 
 */
 
-app.controller('newProjectCtrl', ['$scope', '$http', '$controller', '$location', '$route', 'saveasProjectFactory', 'fileFactory', 'subdirs',
-    function($scope, $http, $controller, $location, $route, saveasProjectFactory, fileFactory, subdirs) {
+app.controller('newProjectCtrl', ['$scope', '$http', '$controller', '$location', '$route', 'saveasProjectFactory', 'fileFactory', 'getConfigFactory', 'subdirs',
+    function($scope, $http, $controller, $location, $route, saveasProjectFactory, fileFactory, getConfigFactory, subdirs) {
 
         $scope.subdirs = subdirs;
         $scope.defaultProjectActions = ['next', 'abort', 'abort_as_error', 'goto'];
@@ -50,6 +50,68 @@ app.controller('newProjectCtrl', ['$scope', '$http', '$controller', '$location',
 
         $scope.newDate = ChildCtrl.baseCtrl.getDate();
         $scope.newTime = ChildCtrl.baseCtrl.getTime();
+
+      function readConfig(){
+          getConfigFactory.readconfig()
+          .then(function (data) {
+             $scope.cfg = data;
+            });
+      }
+
+      readConfig();
+
+//To Load the InputData File from Suite 
+//Works for base Directory as well as Subdirectories
+    $scope.loadFile = function(filepath) { 
+        var checkFlag = filepath.includes("..");                                         
+        if(checkFlag==true){                                                      //For files inside the Warrior directory
+           var dirCheck=filepath.split("/").reverse()[1];
+             if(dirCheck=="Suites"){                                           //Fetch Parent directory files
+                var splitDir = filepath.split('/Suites')[1]; 
+                var finalUrl = "#/testsuite"+splitDir+"/none";
+                window.open(finalUrl);    
+             }
+             else if(dirCheck=="suites"){
+                var splitDir = filepath.split('/suites')[1]; 
+                var finalUrl = "#/testsuite"+splitDir+"/none";
+                window.open(finalUrl);
+             }
+            else{                                                                 //Fetch subdirectory files
+                var splitPath = filepath.split("/").pop(-1); 
+                var splitter = splitPath+"/"; 
+                var checkDir = filepath.split("Suites/")[1].split(splitPath)[0]; 
+                checkDir = checkDir.slice(0, -1);
+                checkDir = checkDir.replace(/\//g,','); 
+                var finalUrlDir = "#/testsuite/"+splitter+checkDir;
+                window.open(finalUrlDir);
+            }
+        }
+        else{                                                                     //For files outside the Warrior directory
+            var dataDir = $scope.cfg.idfdir;
+            var matchPath = filepath.includes(dataDir);
+            if(matchPath == true){
+              splitPath = filepath.split(dataDir)[1]; 
+              var fileName = splitPath.split("/").pop(-1); 
+              splitter = fileName+"/";
+              var checkDir = filepath.split(dataDir)[1].split(fileName)[0]; 
+              checkDir = checkDir.replace(/\//g,','); 
+              var finalUrlDir = "#/testsuite/"+splitter+checkDir;
+              window.open(finalUrlDir);
+          }
+            else{ 
+            if(filepath != '') 
+                 {                                                                  //Mismatched Config and selected path;   
+                sweetAlert({
+                    title: "Config Path mismatch witn the selected path !",
+                    closeOnConfirm: true,
+                    confirmButtonColor: '#3b3131',
+                    confirmButtonText: "Ok",
+                    type: "info"
+                });
+              }
+          }
+        } 
+     };
 
         $scope.updateConditionList = function(param){
             for(var i=0; i<$scope.suites.length; i++){
