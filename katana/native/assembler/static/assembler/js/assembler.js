@@ -16,8 +16,6 @@ var assembler = {
                     dependencyDom = dep_objs[i].domElement;
                     dependencyDom.data("data-object", dep_objs[i]);
                     $currentPage.find('#dependency-div').append(dependencyDom);
-                    console.log(dependencyDom);
-                    console.log(dependencyDom.data());
                 }
 
                 var tools_obj = new toolsRepository(data.xml_contents.data.tools);
@@ -112,11 +110,14 @@ var assembler = {
     setInstallBtn: function(elem, text){
         var $elem = elem;
         var $parentDiv = $elem.closest('.card');
-
-        console.log($elem);
-        console.log($parentDiv.parent());
-        var dependencyObject = $parentDiv.parent().data();
-        console.log(dependencyObject);
+        var $topLevelDiv = $parentDiv.closest('.card-block').closest('.card').parent();
+        if(text == "Install As Admin"){
+            $topLevelDiv.data().dataObject.install = "yes";
+            $topLevelDiv.data().dataObject.user = "no";
+        } else {
+            $topLevelDiv.data().dataObject.install = "yes";
+            $topLevelDiv.data().dataObject.user = "yes";
+        }
         var $installBtn = $parentDiv.siblings('button[katana-click="assembler.installDependency"]');
         $installBtn.html(text + '&nbsp;<i class="fa fa-check" style="color: white" aria-hidden="true"></i>&nbsp;');
         $installBtn.css("background-color", "#3b7a4c");
@@ -189,6 +190,14 @@ var assembler = {
     setUpgradeBtn: function(elem, text){
         var $elem = elem;
         var $parentDiv = $elem.closest('.card');
+        var topLevelDiv = $parentDiv.closest('.card-block').closest('.card').parent();
+        if(text == "Upgrade As Admin"){
+            topLevelDiv.data().dataObject.install = "yes";
+            topLevelDiv.data().dataObject.user = "no";
+        } else {
+            topLevelDiv.data().dataObject.install = "yes";
+            topLevelDiv.data().dataObject.user = "yes";
+        }
         var $upgradeBtn = $parentDiv.siblings('button[katana-click="assembler.upgradeDependency"]');
         $upgradeBtn.html(text + '&nbsp;<i class="fa fa-check" style="color: white" aria-hidden="true"></i>&nbsp;');
         $upgradeBtn.css("background-color", "#987150");
@@ -452,21 +461,26 @@ var assembler = {
 
     toggleToolsClone: function(){
         var $elem = $(this);
+        var $topLevelDiv = $elem.closest('.card');
         if($elem.attr("aria-selected") == "true"){
             $elem.attr("aria-selected", "false");
             $elem.attr("class", "");
             $elem.addClass("fa").addClass("fa-toggle-off").addClass("grey");
+            $topLevelDiv.data().dataObject.clone = "no";
         } else {
             $elem.attr("aria-selected", "true");
             $elem.attr("class", "");
             $elem.addClass("fa").addClass("fa-toggle-on").addClass("green");
+            $topLevelDiv.data().dataObject.clone = "yes";
         }
+        console.log($topLevelDiv.data().dataObject);
     },
 
     onchangeToolsUrl: function(){
-        $elem = $(this);
-        $parentCardBlock = $elem.closest('.card-block');
-        $footerBlockRow = $parentCardBlock.siblings('.card-footer').find('.row');
+        var $elem = $(this);
+        var $parentCardBlock = $elem.closest('.card-block');
+        var $topLevelDiv = $elem.closest('.card')
+        var $footerBlockRow = $parentCardBlock.siblings('.card-footer').find('.row');
         var $footerBlockRowIcon = $footerBlockRow.find('.fa');
         $footerBlockRowIcon.attr('class', 'fa')
         $footerBlockRow.find('.col-sm-8').html('');
@@ -484,6 +498,7 @@ var assembler = {
             $footerBlockRowIcon.addClass('fa-spinner').addClass('fa-spin').addClass('tan');
             $footerBlockRow.find('.col-sm-8').html('Checking Availability.');
             $footerBlockRow.show();
+            alert(url);
             $.ajax({
                 headers: {
                     'X-CSRFToken': $currentPage.find('input[name="csrfmiddlewaretoken"]').attr('value')
@@ -494,6 +509,7 @@ var assembler = {
             }).done(function(data) {
                 $footerBlockRowIcon.attr('class', 'fa');
                 if(data["available"]){
+                    $topLevelDiv.data().dataObject.url = url;
                     $footerBlockRowIcon.addClass('fa-check').addClass('green');
                     $footerBlockRow.find('.col-sm-8').html('Repository Available.');
                     $parentCardBlock.siblings('.card-header').find('.col-sm-4').html(data["repo_name"]);
@@ -503,5 +519,6 @@ var assembler = {
                 }
             });
         }
+        console.log($topLevelDiv.data().dataObject);
     },
 }

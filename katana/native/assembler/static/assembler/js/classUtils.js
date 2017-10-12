@@ -342,9 +342,24 @@ class wsRepository {
 
 class dependency{
     constructor(data){
-        this.name = data["@name"];
-        this.install = data["@install"].toLowerCase().trim();
-        this.user = data["@user"].toLowerCase().trim();
+        if(!data || data == undefined){
+            data = {};
+        }
+        if(data["@name"]){
+            this.name = data["@name"];
+        } else {
+            this.name = "Enter Dependency Details";
+        }
+        if(!data["install"]){
+            this.install = data["@install"].toLowerCase().trim();
+        } else {
+            this.install = "yes";
+        }
+        if(!data["@user"]){
+            this.user = data["@user"].toLowerCase().trim();
+        } else {
+            this.user = "no"
+        }
         this.version = data["version"];
         this.installed = data["installed"];
         this.matched = data["matched"];
@@ -355,46 +370,42 @@ class dependency{
     }
 
     formDomElement() {
-        var installed_btn = '<button class="btn btn-success" ' +
-                                     'katana-click="assembler.installDependency" ' +
-                                     'aria-selected="false">' +
-                                         'Install' +
-                            '</button>';
-        var available_txt = '<h6 class="card-subtitle mb-2 text-muted">&nbsp;</h6><br>';
+        var availableText = "";
+        var installFunction = "installDependency";
         if(this.installed){
-            available_txt = '<h6 class="card-subtitle mb-2 text-muted">' +
-                                'Available Version: ' + this.installed +
-                            '</h6><br>';
-            if(!this.matched){
-                installed_btn = '<button class="btn btn-danger" ' +
-                                         'katana-click="assembler.installDependency" ' +
-                                         'aria-selected="false">' +
-                                             'Install' +
-                                '</button>';
+            availableText = 'Available Version: ' + this.installed
+        }
+        var depSelect = "true";
+        var installBtnText = "Install As Admin";
+        if(this.user == "yes"){
+            installBtnText = "Install As User";
+        }
+        var installBtnBgColor = "background-color: #3b7a4c";
+        var installBtnIcon = '<i class="fa fa-check" style="color: white" aria-hidden="true"></i>';
+        if(this.install == "no"){
+            depSelect = "false";
+            installBtnText = "Install";
+            installBtnBgColor = "background-color: white";
+            installBtnIcon = "";
+        }
+        if(this.matched == "lower"){
+            installBtnText = "Upgrade";
+            installFunction = "upgradeDependency";
+            installBtnIcon = '<i class="fa fa-exclamation-triangle tan" aria-hidden="true"></i>';
+            if(this.install == "yes"){
+                installBtnBgColor = "background-color: #987150";
+                depSelect = "true";
+                if(this.user == "yes"){
+                    installBtnText = "Upgrade As Admin";
+                }
+                else {
+                    installBtnText = "Upgrade As User";
+                }
             }
-            else if(this.matched == "lower"){
-                installed_btn = '<button class="btn btn-info" ' +
-                                         'katana-click="assembler.upgradeDependency" ' +
-                                         'aria-selected="false">' +
-                                             'Upgrade&nbsp;' +
-                                             '<i class="fa fa-exclamation-triangle tan" ' +
-                                                 'aria-hidden="true">' +
-                                             '</i>&nbsp;' +
-                                '</button>';
-            }
-            else if(this.matched == "higher"){
-                installed_btn = '<button class="btn btn-success">' +
-                                    'Installed&nbsp;' +
-                                    '<i class="fa fa-check-circle green" aria-hidden="true"></i>' +
-                                    '&nbsp;' +
-                                '</button>';
-            }
-            else{
-                installed_btn = '<button class="btn btn-success">' +
-                                    'Installed&nbsp;' +
-                                    '<i class="fa fa-check-circle green" aria-hidden="true"></i>&nbsp;' +
-                                '</button>';
-            }
+        } else if (this.matched || this.matched == "higher") {
+            installBtnText = "Installed";
+            installBtnIcon = '<i class="fa fa-check-circle green" aria-hidden="true"></i>';
+            depSelect = "false";
         }
 
         var html_contents = '<div style="padding: 1rem;">' +
@@ -402,8 +413,11 @@ class dependency{
                                     '<div class="card-block">' +
                                         '<h4 class="card-title">' + this.name +'</h4>' +
                                         '<h6 class="card-subtitle mb-2 text-muted">Version: ' + this.version + '</h6><hr>' +
-                                        available_txt +
-                                        installed_btn +
+                                        '<h6 class="card-subtitle mb-2 text-muted">' + availableText + '&nbsp;</h6><br>' +
+                                        '<button class="btn btn-success" katana-click="assembler.' + installFunction + '" ' +
+                                                 'aria-selected="' + depSelect + '" style="' + installBtnBgColor + '">' +
+                                            installBtnText + "&nbsp;" + installBtnIcon +
+                                        '</button>' +
                                     '</div>' +
                                 '</div>' +
                             '</div>'
