@@ -800,11 +800,15 @@ def git_checkout_label(label, base_path="", current_dir=""):
     if base_path != "":
         os.chdir(base_path)
     try:
+        # checking out label
         subprocess.check_call(["git", "checkout", label])
+        # getting current label in current_label
         current_label = subprocess.check_output(["git", "symbolic-ref",
                                                  '--short', 'HEAD']).strip()
     except:
         check = False
     if current_label != label:
         check = False
+    if current_dir != "":
+        os.chdir(current_dir)
     return check, current_label

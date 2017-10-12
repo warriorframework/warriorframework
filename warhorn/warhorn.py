@@ -796,14 +796,14 @@ def clone_warriorspace(base_path, current_dir, **kwargs):
     logfile = kwargs.get("logfile")
     config_file_name = kwargs.get("config_file_name")
     print_log_name = kwargs.get("print_log_name")
-    internal_copy = kwargs.get("dest")
     node = get_node(config_file_name, "warriorspace")
     if node is False:
-        print_error("Drivers tag not found. No drivers cloned.",
+        print_error("warriorspace tag not found. No warriorspace cloned.",
                     logfile, print_log_name)
         setDone(1)
     else:
         repositories = get_firstlevel_children(node, "repository")
+
         for repository in repositories:
             if 'url' not in repository.attrib and\
                             'label' not in repository.attrib and\
@@ -822,31 +822,18 @@ def clone_warriorspace(base_path, current_dir, **kwargs):
                     setDone(1)
                     print_info(name + " not cloned.", logfile, print_log_name)
                     continue
-                if not check_url_is_a_valid_repo(url, name, logfile,
-                                                 print_log_name):
+                if not check_url_is_a_valid_repo(url, name, logfile, print_log_name):
                     continue
                 try:
-                    if internal_copy == "":
-                        create_dir(os.path.join(base_path,
-                                            'warrior', 'temp'))
-                    else:
-                        create_dir(os.path.join(base_path,
-                                            'warrior', 'temp'))
+                    create_dir(os.path.join(base_path, 'warrior', 'temp'))
                 except:
-                    print_error("Warhorn does not have the required "
-                                "permissions to clone " + name,
+                    print_error("Warhorn does not have the required permissions to clone " + name,
                                 logfile, print_log_name)
                     setDone(1)
                 else:
                     overwrite = get_attribute_value(repository, "overwrite")
                     label = get_attribute_value(repository, "label")
-                    if internal_copy == "":
-                        path = os.path.join(base_path, 'warrior',
-                                        'temp', name)
-                    else:
-                        path = os.path.join(base_path, 'warrior',
-                                        'temp', name)
-
+                    path = os.path.join(base_path, 'warrior', 'temp', name)
 
                     # current_dir stores the path of the directory in which
                     # warhorn.py is running
@@ -855,12 +842,7 @@ def clone_warriorspace(base_path, current_dir, **kwargs):
 
                     # directory switch to where the warriorspace should be
                     # cloned.
-                    if internal_copy == "":
-                        os.chdir(os.path.join(base_path,
-                                          'warrior', 'temp'))
-                    else:
-                        os.chdir(os.path.join(base_path,
-                                          'warrior', 'temp'))
+                    os.chdir(os.path.join(base_path, 'warrior', 'temp'))
                     try:
                         subprocess.check_output(["git", "clone", url])
                     except:
@@ -879,40 +861,28 @@ def clone_warriorspace(base_path, current_dir, **kwargs):
 
                     # directory switch to where warhorn.py is running.
                     print_info("Cloning complete", logfile, print_log_name)
-                    if internal_copy == "":
-                        destination = os.path.join(base_path,
-                                               'warrior', 'Warriorspace')
-                    else:
-                        destination = os.path.join(base_path,
-                                               'warrior', 'Warriorspace')
+                    destination = os.path.join(base_path, 'warrior', 'Warriorspace')
                     dummy, root_repo_folder_list = get_subfiles(path)
-                    if not 'Warriorspace' in root_repo_folder_list:
-                        print_error('COuld not find Warriorspace under the root of the repository')
+                    if 'Warriorspace' not in root_repo_folder_list:
+                        print_error('Could not find Warriorspace under the '
+                                    'root of the repository')
                         setDone(1)
                     else:
-
                         try:
-                            overwrite_files(os.path.join(path,
-                                                         'Warriorspace'),
-                                            destination, overwrite,
-                                            logfile, print_log_name)
+                            overwrite_files(os.path.join(path, 'Warriorspace'),
+                                            destination, overwrite, logfile, print_log_name)
                         except:
-                            print_error("Could not copy Warriorspace files from "
-                                        + name + " into warriorframework", logfile,
-                                        print_log_name)
+                            print_error("Could not copy Warriorspace files from {} into "
+                                        "warriorframework".format(name), logfile, print_log_name)
                             setDone(1)
-            # folder inside the temp folder that had the initial clone of the
-            # repository get deleted here. This is done for every iteration
-            # because if user wants to clone another repository with the same
-            # name, it should not create a problem.
-            if internal_copy == "":
-                tmp_path = os.path.join(base_path,
-                                           'warrior', 'temp', name)
-            else:
-                tmp_path = os.path.join(base_path,
-                                           'warrior', 'temp', name)
-            if os.path.exists(tmp_path):
-                delete_directory(tmp_path, logfile, print_log_name)
+                # folder inside the temp folder that had the initial clone of
+                # the repository get deleted here. This is done for every
+                # iteration because if user wants to clone another repository
+                # with the same name, it should not create a problem
+                tmp_path = os.path.join(base_path, 'warrior', 'temp', name)
+                print "removing tmp_path:", tmp_path
+                if os.path.exists(tmp_path):
+                    delete_directory(tmp_path, logfile, print_log_name)
 
 
 def delete_temp_files_and_folders(base_path="", current_dir="", **kwargs):
