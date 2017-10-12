@@ -880,7 +880,6 @@ def clone_warriorspace(base_path, current_dir, **kwargs):
                 # iteration because if user wants to clone another repository
                 # with the same name, it should not create a problem
                 tmp_path = os.path.join(base_path, 'warrior', 'temp', name)
-                print "removing tmp_path:", tmp_path
                 if os.path.exists(tmp_path):
                     delete_directory(tmp_path, logfile, print_log_name)
 
@@ -906,19 +905,11 @@ def delete_temp_files_and_folders(base_path="", current_dir="", **kwargs):
     config_file_name = kwargs.get("config_file_name")
     console_log_name = kwargs.get("console_log_name")
     print_log_name = kwargs.get("print_log_name")
-    internal_copy = kwargs.get("dest")
     # temp folder deletions.
     # .git and tests folder deletions.
-    if internal_copy == "":
-        path_list = [os.path.join(base_path, 'warrior', 'temp'),
-                    os.path.join(base_path, 'temp'),
-                    os.path.join(base_path, 'warrior', '.git')]
-    else:
-        path_list = [os.path.join(base_path,
-                                           'warrior', 'temp'),
-                    os.path.join(base_path, 'temp'),
-                    os.path.join(base_path,
-                                           'warrior', '.git')]
+    path_list = [os.path.join(base_path, 'warrior', 'temp'),
+                 os.path.join(base_path, 'temp'),
+                 os.path.join(base_path, 'warrior', '.git')]
     if base_path != "":
         for path in path_list:
             if os.path.exists(path):
@@ -941,8 +932,8 @@ def delete_temp_files_and_folders(base_path="", current_dir="", **kwargs):
         shutil.copyfile(print_log_name, os.path.join(path, os.path.basename(os.path.normpath(print_log_name))))
         shutil.copyfile(console_log_name, os.path.join(path, os.path.basename(os.path.normpath(console_log_name))))
     except:
-        print "Unable to copy config/print_log/console_log file to " \
-        "correct location", logfile, print_log_name
+        print_error("Unable to copy config/print_log/console_log file to correct location",
+                    logfile, print_log_name)
 
     # log files deleted from the original directory.
     os.remove(print_log_name)
