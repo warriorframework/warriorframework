@@ -859,7 +859,7 @@ Two global variables are heavily used when this function is called;
 	      		var pathToBase = katana.$activeTab.find('#savefilepath').text();
 	      		console.log("File path ==", pathToBase);
 	      		var nf = prefixFromAbs(pathToBase, selectedValue);
-	      		projects.jsonTestSuites['Testsuite'][sid]['path'] = nf;
+	      		projects.jsonTestSuites[sid]['path'] = nf;
 	      		console.log("Path set to ",nf," for ", sid);
 	      		console.log(projects.jsonTestSuites);
 	      		projects.createSuitesTable();
