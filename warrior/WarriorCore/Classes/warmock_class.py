@@ -12,9 +12,10 @@ limitations under the License.
 '''
 from collections import OrderedDict
 from Framework.Utils.testcase_Utils import pNote
-from Framework.Utils.print_Utils import print_error, print_info, print_warning
+from Framework.Utils.print_Utils import print_info, print_warning
 # For function/method that only be mocked in trialmode (not sim mode), put name here
 VERIFY_ONLY = ["verify_cmd_response", "verify_inorder_cmd_response"]
+
 
 def mockready(func):
     """
@@ -28,6 +29,7 @@ def mockready(func):
     func.__dict__["mockready"] = True
     return func
 
+
 def mocked(func):
     """
         Decorator function that route function to mocked function
@@ -38,7 +40,7 @@ def mocked(func):
         """
         from WarriorCore.Classes.war_cli_class import WarriorCliClass
         if (not WarriorCliClass.mock and not WarriorCliClass.sim) or\
-             (WarriorCliClass.sim and func.__name__ in VERIFY_ONLY):
+           (WarriorCliClass.sim and func.__name__ in VERIFY_ONLY):
             return func(*args, **kwargs)
 
         # If it is in simulator mode, this function needs to retrieve response for command
@@ -56,7 +58,8 @@ def mocked(func):
             for index, cmd in enumerate(result["command_list"]):
                 pNote("#{}: {}".format(index+1, cmd))
                 if WarriorCliClass.sim:
-                    MockUtils.cli_Utils.response_reference_dict[cmd] = result["sim_response_list"][index]
+                    MockUtils.cli_Utils.response_reference_dict[cmd] = \
+                     result["sim_response_list"][index]
             return result
 
         # Print extra info
@@ -82,6 +85,7 @@ def mocked(func):
         return function(*args, **kwargs)
     return inner
 
+
 def get_response_file(testdatafile):
     """
         Link response to command in testdatafile
@@ -95,8 +99,8 @@ def get_response_file(testdatafile):
 
     for testdata in root.findall("testdata"):
         if testdata.get("execute") == "yes":
-            testdata_key = "{0}{1}".format(testdata.get('title', ""), \
-                                         _get_row(testdata))
+            testdata_key = "{0}{1}".format(testdata.get('title', ""),
+                                           _get_row(testdata))
             command_list = testdata.findall("command")
             for command in command_list:
                 cmd_text = command.get("send", "")
@@ -104,13 +108,16 @@ def get_response_file(testdatafile):
                 response_list = raw_response.split(",")
                 resp_text = OrderedDict()
                 for resp_symbol in response_list:
-                    if testdata.find(resp_symbol) is not None and testdata.find(resp_symbol).get("text") is not None:
+                    if testdata.find(resp_symbol) is not None and \
+                     testdata.find(resp_symbol).get("text") is not None:
                         resp_text.update({resp_symbol: testdata.find(resp_symbol).get("text")})
                     else:
-                        pNote("Error resolving symbol {} in testdata block {}".format(resp_symbol, testdata_key))
+                        pNote("Error resolving symbol {} in testdata "
+                              "block {}".format(resp_symbol, testdata_key))
                 response_dict[cmd_text] = resp_text
 
     MockUtils.cli_Utils.response_dict = response_dict
+
 
 class MockUtils(object):
     """
@@ -129,7 +136,7 @@ class MockUtils(object):
 
         @staticmethod
         def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=60,
-                prompt=".*(%|#|\$)", conn_options="", custom_keystroke="", **kwargs):
+                        prompt=".*(%|#|\$)", conn_options="", custom_keystroke="", **kwargs):
             """
                 This function doesn't actually connect to the server
             """
@@ -141,16 +148,15 @@ class MockUtils(object):
             if not conn_options or conn_options is None:
                 conn_options = ""
             command = 'ssh -p {0} {1}@{2} {3}'.format(port, username, ip, conn_options)
-            #command = ('ssh -p '+ port + ' ' + username + '@' + ip)
+            # command = ('ssh -p '+ port + ' ' + username + '@' + ip)
             pNote("connectSSH: cmd = %s" % command, "DEBUG")
             pNote("MOCK MODE: No connection is made to the server")
 
             return sshobj, conn_string
 
         @staticmethod
-        def connect_telnet(ip, port="23", username="", password="",
-                logfile=None, timeout=60, prompt=".*(%|#|\$)",
-                conn_options="", custom_keystroke="", **kwargs):
+        def connect_telnet(ip, port="23", username="", password="", logfile=None, timeout=60,
+                           prompt=".*(%|#|\$)", conn_options="", custom_keystroke="", **kwargs):
             """
                 This function doesn't actually connect to the server
             """
@@ -158,14 +164,14 @@ class MockUtils(object):
             conn_options = "" if conn_options is False or conn_options is None else conn_options
             pNote("timeout is: %s" % timeout, "DEBUG")
             pNote("port num is: %s" % port, "DEBUG")
-            command = ('telnet '+ ip + ' '+ port)
+            command = ('telnet ' + ip + ' ' + port)
             if not conn_options or conn_options is None:
                 conn_options = ""
             command = command + str(conn_options)
-            pNote("connectTelnet cmd = %s" % command, "DEBUG")
+            pNote("connectTelnet: cmd = %s" % command, "DEBUG")
             pNote("MOCK MODE: No connection is made to the server")
             conn_string = ""
-            telnetobj = "Mocking connect_ssh"
+            telnetobj = "Mocking connect_telnet"
 
             return telnetobj, conn_string
 
@@ -178,7 +184,8 @@ class MockUtils(object):
             startprompt = kwargs.get('startprompt', ".*")
             endprompt = kwargs.get('endprompt', None)
             cmd_timeout = kwargs.get('cmd_timeout', None)
-            result, response = cls.send_command("session_obj", startprompt, endprompt, command, cmd_timeout)
+            result, response = cls.send_command("session_obj", startprompt, endprompt,
+                                                command, cmd_timeout)
             return result, response
 
         @classmethod
@@ -190,12 +197,15 @@ class MockUtils(object):
                           " use 'send_command' method of 'PexpectConnect' class "
                           "in 'warrior/Framework/ClassUtils/WNetwork/warrior_cli_class.py'")
             from WarriorCore.Classes.war_cli_class import WarriorCliClass
-            pNote(":CMD: %s"%(args[3]))
-            specific_response = MockUtils.cli_Utils.response_reference_dict.get(args[3], True) if WarriorCliClass.sim else False
+            pNote(":CMD: %s" % (args[3]))
+            specific_response = MockUtils.cli_Utils.response_reference_dict.get(args[3], True) \
+                if WarriorCliClass.sim else False
             if specific_response:
-                response = MockUtils.cli_Utils.response_dict.get(args[3], {}).get(specific_response, "")
+                response = MockUtils.cli_Utils.response_dict.get(args[3],
+                                                                 {}).get(specific_response, "")
             else:
-                response = MockUtils.cli_Utils.response_dict.get(args[3], {}).values()[0] if WarriorCliClass.sim else ""
+                response = MockUtils.cli_Utils.response_dict.get(args[3], {}).values()[0] \
+                    if WarriorCliClass.sim else ""
             pNote("Response:\n{0}\n".format(response))
             return True, response
 
@@ -204,7 +214,7 @@ class MockUtils(object):
             """
                 mocked command
             """
-            pNote(":CMD: %s"%(args[3]))
+            pNote(":CMD: %s" % (args[3]))
 
         @classmethod
         def _send_command_retrials(cls, *args, **kwargs):
@@ -223,8 +233,9 @@ class MockUtils(object):
                           " use 'send_command' method of 'PexpectConnect' class "
                           "in 'warrior/Framework/ClassUtils/WNetwork/warrior_cli_class.py'")
             from WarriorCore.Classes.war_cli_class import WarriorCliClass
-            response = MockUtils.cli_Utils.response_dict.get(args[3], [""])[0] if WarriorCliClass.sim else ""
-            pNote(":CMD: %s"%(args[3]))
+            response = MockUtils.cli_Utils.response_dict.get(args[3], [""])[0] if \
+                WarriorCliClass.sim else ""
+            pNote(":CMD: %s" % (args[3]))
             return response
 
     class data_Utils():
@@ -240,9 +251,8 @@ class MockUtils(object):
             return None, None
 
         @staticmethod
-        def verify_cmd_response(match_list, context_list, command, response,
-                        verify_on_system, varconfigfile=None, endprompt="",
-                        verify_group=None):
+        def verify_cmd_response(match_list, context_list, command, response, verify_on_system,
+                                varconfigfile=None, endprompt="", verify_group=None):
             """
                 Trialmode only: it prints the verify text instead of doing actual verification
             """
@@ -255,17 +265,19 @@ class MockUtils(object):
 
             for i in range(0, len(match_list)):
                 if context_list[i] and match_list[i]:
-                    noiimpact, found = get_no_impact_logic(context_list[i])
+                    _, found = get_no_impact_logic(context_list[i])
                     found = testcase_Utils.pConvertLogical(found)
                     if found:
-                        pNote("Looking for '{}' in response to command '{}'".format(match_list[i], command))
+                        pNote("Looking for '{}' in response to "
+                              "command '{}'".format(match_list[i], command))
                     else:
-                        pNote("Not Looking for '{}' in response to command '{}'".format(match_list[i], command))
+                        pNote("Not Looking for '{}' in response to "
+                              "command '{}'".format(match_list[i], command))
             return "RAN"
 
         @staticmethod
         def verify_inorder_cmd_response(match_list, verify_list, system, command,
-                                verify_dict):
+                                        verify_dict):
             """
                 Trialmode only: it prints the verify text instead of doing actual verification
             """
@@ -283,7 +295,7 @@ class MockUtils(object):
 
         @staticmethod
         def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=60,
-                prompt=".*(%|#|\$)", conn_options="", custom_keystroke="", **kwargs):
+                        prompt=".*(%|#|\$)", conn_options="", custom_keystroke="", **kwargs):
             """
                 This function doesn't actually connect to the server
             """
@@ -295,16 +307,15 @@ class MockUtils(object):
             if not conn_options or conn_options is None:
                 conn_options = ""
             command = 'ssh -p {0} {1}@{2} {3}'.format(port, username, ip, conn_options)
-            #command = ('ssh -p '+ port + ' ' + username + '@' + ip)
+            # command = ('ssh -p '+ port + ' ' + username + '@' + ip)
             pNote("connectSSH: cmd = %s" % command, "DEBUG")
             pNote("MOCK MODE: No connection is made to the server")
 
             return sshobj, conn_string
 
         @staticmethod
-        def connect_telnet(ip, port="23", username="", password="",
-                logfile=None, timeout=60, prompt=".*(%|#|\$)",
-                conn_options="", custom_keystroke="", **kwargs):
+        def connect_telnet(ip, port="23", username="", password="", logfile=None, timeout=60,
+                           prompt=".*(%|#|\$)", conn_options="", custom_keystroke="", **kwargs):
             """
                 This function doesn't actually connect to the server
             """
@@ -316,10 +327,10 @@ class MockUtils(object):
             if not conn_options or conn_options is None:
                 conn_options = ""
             command = command + str(conn_options)
-            pNote("connectTelnet cmd = %s" % command, "DEBUG")
+            pNote("connectTelnet: cmd = %s" % command, "DEBUG")
             pNote("MOCK MODE: No connection is made to the server")
             conn_string = ""
-            telnetobj = "Mocking connect_ssh"
+            telnetobj = "Mocking connect_telnet"
 
             return telnetobj, conn_string
 
@@ -332,7 +343,8 @@ class MockUtils(object):
             startprompt = kwargs.get('startprompt', ".*")
             endprompt = kwargs.get('endprompt', None)
             cmd_timeout = kwargs.get('cmd_timeout', None)
-            result, response = cls.send_command("session_obj", startprompt, endprompt, command, cmd_timeout)
+            result, response = cls.send_command("session_obj", startprompt, endprompt,
+                                                command, cmd_timeout)
             return result, response
 
         @classmethod
@@ -341,12 +353,15 @@ class MockUtils(object):
                 Get response from the processed response dict
             """
             from WarriorCore.Classes.war_cli_class import WarriorCliClass
-            pNote(":CMD: %s"%(args[3]))
-            specific_response = MockUtils.cli_Utils.response_reference_dict.get(args[3], True) if WarriorCliClass.sim else False
+            pNote(":CMD: %s" % (args[3]))
+            specific_response = MockUtils.cli_Utils.response_reference_dict.get(args[3], True) \
+                if WarriorCliClass.sim else False
             if specific_response:
-                response = MockUtils.cli_Utils.response_dict.get(args[3], {}).get(specific_response, "")
+                response = MockUtils.cli_Utils.response_dict.get(args[3],
+                                                                 {}).get(specific_response, "")
             else:
-                response = MockUtils.cli_Utils.response_dict.get(args[3], {}).values()[0] if WarriorCliClass.sim else ""
+                response = MockUtils.cli_Utils.response_dict.get(args[3], {}).values()[0] \
+                    if WarriorCliClass.sim else ""
             pNote("Response:\n{0}\n".format(response))
             return True, response
 
@@ -355,7 +370,7 @@ class MockUtils(object):
             """
                 mocked command
             """
-            pNote(":CMD: %s"%(args[3]))
+            pNote(":CMD: %s" % (args[3]))
 
         @classmethod
         def _send_command_retrials(cls, *args, **kwargs):
