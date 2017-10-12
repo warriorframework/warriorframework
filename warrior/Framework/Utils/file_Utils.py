@@ -924,7 +924,7 @@ def get_lines_between(fd, startidx, endidx):
     try:
         fd.seek(0, 0)
         all_lines = fd.readlines()
-        lines = all_lines[startidx:endidx]
+        lines = all_lines[startidx-1:endidx]
     except IndexError:
         print_error("file has only {} lines, but expecting {} to {} lines".
                     format(len(all_lines), startidx, endidx))
@@ -933,6 +933,7 @@ def get_lines_between(fd, startidx, endidx):
     except Exception as e:
         print_error("found exception {} while moving to position on {}".
                     format(str(e), fd))
+    
     return lines
 
 

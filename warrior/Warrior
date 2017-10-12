@@ -20,6 +20,7 @@ try:
     import shutil
     import Framework.Utils.email_utils as email
     import Framework.Utils as Utils
+    from Framework.Utils import xml_Utils
     from Framework.Utils.print_Utils import print_error, print_info
     from WarriorCore import warrior_cli_driver, testcase_driver, testsuite_driver, project_driver
     from WarriorCore import ironclaw_driver, mockrun_driver, framework_detail
@@ -50,6 +51,31 @@ def update_jira_by_id(jiraproj, jiraid, exec_dir, status):
         print_info("jiraid not provided, will not update jira issue")
 
 
+def add_live_table_divs(livehtmllocn, file_list):
+    """
+    add the divs for the live html table
+    """
+
+    root_attribs = {'id': 'liveTables'}
+    root = xml_Utils.create_element("div", "", **root_attribs)
+
+    # for each iteration create a div with id = the iteration number, the table for tis iteration will be added 
+    # under this div
+    
+    for i in range(0, len(file_list)):   
+        marker_start = 'table-{0}starts'.format(str(i))
+        marker_end = 'table-{0}ends'.format(str(i))
+        div_attribs = {'id': str(i)}
+        elem = xml_Utils.create_subelement(root, 'div',  div_attribs)
+        start_comment = xml_Utils.create_comment_element(marker_start)
+        end_comment = xml_Utils.create_comment_element(marker_end)
+        elem.append(start_comment)
+        elem.append(end_comment)
+        # write the tree to the file
+        xml_Utils.write_tree_to_file(root, livehtmllocn)
+    return
+    
+
 def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
          jiraproj, overwrite, jiraid, dbsystem, livehtmllocn):
     """Parses the input parameters (i.e. sys.argv)
@@ -76,6 +102,7 @@ def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
         abs_cur_dir = os.path.abspath(os.curdir)
         status = True
         db_obj = database_utils_class.create_database_connection(dbsystem=dbsystem)
+        iter = 0 ## this iter is used for live html results
         for parameter in parameter_list:
             result = False
             # check if the input parameter is an xml file
@@ -97,7 +124,13 @@ def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
 
                     #pdate livehtmllocn to default repo
                     if livehtmllocn:
-                        default_repo.update({'livehtmllocn': livehtmllocn})
+                        live_html_dict = {}
+                        live_html_dict['livehtmllocn'] = livehtmllocn
+                        live_html_dict['iter'] = iter
+                        
+                        default_repo.update({'live_html_dict': live_html_dict})
+                        if iter == 0:
+                            add_live_table_divs(livehtmllocn, parameter_list)
 
                     if mockrun:
                         result = mockrun_driver.main(abs_filepath, len(parameter_list))
@@ -144,8 +177,11 @@ def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
             else:
                 print_error("unrecognized file format !!!")
             status = status and result
+            iter += 1
         if db_obj is not False and db_obj.status is True:
             db_obj.close_connection()
+        
+        
     return status
 
 if __name__ == '__main__':

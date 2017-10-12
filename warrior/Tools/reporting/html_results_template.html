@@ -624,23 +624,22 @@ tr[name="TestsuiteRecord"] .fa-book, tr[name="ProjectRecord"] .fa-book {
 
 
 	<!-- <h2>Results Summary</h2> -->
-	<table id="t1" name="ResultsSummaryTable">
-		<tr id="tr1" name="HeadingRow">
-			<th>Type</th>
-			<th>Name</th>
-			<th>Info</th>
-			<th>Timestamp</th>
-			<th>Duration</th>
-			<th>Status</th>
-			<th>Impact</th>
-			<th>On Error</th>
-			<th>
-			<span style="padding-left:5px">Results (<i class="fa fa-line-chart">)</i></span><br/>
-			<span style="padding-left:5px">Logs (<i class="fa fa fa-book">)</i></span><br/>
-			<span style="padding-left:5px">Defects (<i class="fa fa fa-bug">)</i></span><br/>
-			</th>
-			<th colspan="6" id="summary">Summary</th>
-		</tr>
+	<table class="htmlResults" id="t1" name="ResultsSummaryTable">
+			<tr id="tr1" name="HeadingRow" >
+				<th>Type</th>
+				<th>Name</th>
+				<th>Info</th>
+				<th>Timestamp</th>
+				<th>Duration</th>
+				<th katana-click="execution.resultsViewer.htmlFilter">Status</th>
+				<th>Impact</th>
+				<th>On Error</th>
+				<th>
+				<span >Logs (<i class="fa fa fa-book">)</i></span>
+				<span >Defects (<i class="fa fa fa-bug">)</i></span>
+				</th>
+				<th colspan="6" id="summary">Summary</th>
+			</tr>
 
 	</table>
 
@@ -651,3 +650,5 @@ tr[name="TestsuiteRecord"] .fa-book, tr[name="ProjectRecord"] .fa-book {
 </script>
 </body>
 </html>
+<!-- <span style="padding-left:5px">Results (<i class="fa fa-line-chart">)</i></span><br/> -->
+

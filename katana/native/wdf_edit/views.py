@@ -24,7 +24,10 @@ def index(request):
         filepath = data["path"]
         filepath = filepath.replace(wdfdir, "")
         filepath = filepath[1:] if filepath.startswith(os.sep) else filepath
-        data = xmltodict.parse(open(data["path"]).read())
+        if os.path.isfile(data["path"]):
+            data = xmltodict.parse(open(data["path"]).read())
+        else:
+            return render(request, 'wdf_edit/failure.html')
     else:
         sample_data = {"system": [{"@name": "Example system", "Example key": "Example value"}]}
         ref_dict = copy.deepcopy(sample_data)
@@ -41,6 +44,7 @@ def index(request):
             if type(sys["subsystem"]) == list:
                 for subsys in sys["subsystem"]:
                     for k, v in subsys.items():
+                        subsys[k] = "" if subsys[k] is None else subsys[k]
                         if k.startswith("@") and k != "@name" and k != "@default":
                             subsys[k[1:]] = v
                             del subsys[k]
@@ -49,6 +53,7 @@ def index(request):
             else:
                 subsys = sys["subsystem"]
                 for k, v in sys["subsystem"].items():
+                    subsys[k] = "" if subsys[k] is None else subsys[k]
                     if k.startswith("@") and k != "@name" and k != "@default":
                         subsys[k[1:]] = v
                         del subsys[k]
@@ -56,6 +61,7 @@ def index(request):
                         del subsys[k]
         else:
             for k, v in sys.items():
+                sys[k] = "" if sys[k] is None else sys[k]
                 if k.startswith("@") and k != "@name" and k != "@default":
                     sys[k[1:]] = v
                     del sys[k]

@@ -13,6 +13,7 @@
     </div>
   <div class="csrf-container">{% csrf_token %}</div>
   <div class="translator" url="{% load staticfiles %} {% static 'settings/translations.json'  %}"></div>
+  <div class="tab-template">EmailSettings</div>
   <script type="text/template" id="multi-select">
     <div class="dropdown-placeholder" katana-click="katana.toggleActive"></div>
     <div class="multi-select-dropdown hidden">
