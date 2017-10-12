@@ -436,8 +436,12 @@ var cases = {
 			jQuery.getJSON("./cases/getCaseListTree").done(function(data) {
 				var sdata = data['treejs'];
 				console.log(sdata);
-				//var jdata = { 'core' : { 'data' : [ JSON.parse(sdata)]}};
-				var jdata = { 'core' : { 'data' : sdata }}; 
+				//var jdata = { 'core' : { 'data' : sdata }}; 
+
+				var jdata = { 'core' : { 'data' : sdata },
+    					"plugins" : [ "sort" ],
+    					}; 
+			
 				katana.$activeTab.find('#myCaseTree').on("select_node.jstree", function (e, data) { 
 			      var thePage = data.node.li_attr['data-path'];
 			      console.log(thePage);

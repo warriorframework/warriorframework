@@ -273,6 +273,13 @@ def editCase(request):
 		subdir = os.path.split(filename)[0]
 		fn =  os.path.split(filename)[1]
 
+	if (not xml_d.has_key('Testcase')):
+		subdir = path_to_testcases 
+		filename = 'new.xml'
+		fn = 'new.xml'
+		print "Invalid XML file"
+		xml_d = copy.deepcopy(xml_r)
+
 	fulljsonstring = str(json.loads(json.dumps(xml_d['Testcase'])));
 	fulljsonstring = fulljsonstring.replace('u"',"'").replace("u'",'"').replace("'",'"');
 	fulljsonstring = fulljsonstring.replace('None','""').replace('""""','""')

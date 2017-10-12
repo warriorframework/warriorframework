@@ -331,8 +331,11 @@ class projectsObject{
 		jQuery.getJSON("./projects/getProjectListTree/").done(function(data) {
 			var sdata = data['treejs'];
 			//console.log("tree ", sdata);
-			var jdata = { 'core' : { 'data' : sdata }}; 
+			var jdata = { 'core' : { 'data' : sdata },
+    					"plugins" : [ "sort" ],
+    					}; 
 			
+			//console.log("Tree", sdata);
 
 			katana.$activeTab.find('#myProjectTree').on("select_node.jstree", function (e, data) { 
 		      var thePage = data.node.li_attr['data-path'];

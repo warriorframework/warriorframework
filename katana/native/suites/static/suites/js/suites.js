@@ -400,7 +400,12 @@ var suites= {
 		jQuery.getJSON("./suites/getSuiteListTree/").done(function(data) {
 			var sdata = data['treejs'];
 			console.log("tree ", sdata);
-			var jdata = { 'core' : { 'data' : sdata }}; 
+			//var jdata = { 'core' : { 'data' : sdata }}; 
+			var jdata = { 'core' : { 
+    			'data' : sdata },
+    		"plugins" : [ "sort" ],
+    		}; 
+			
 			
 			katana.$activeTab.find('#mySuiteTree').on("select_node.jstree", function (e, data) { 
 			      var thePage = data.node.li_attr['data-path'];

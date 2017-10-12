@@ -67,6 +67,11 @@ def getJSONProjectData(request):
 	except:
 		xml_d = getEmpty();
 
+	print xml_d
+	if (not xml_d.has_key(u'Project')):
+		print "Invalid XML file"
+		xml_d = getEmpty();
+
 	j_data = json.loads(json.dumps(xml_d))
 	responseBack = { 'fulljson': j_data , 'fname': filename }
 	return JsonResponse(responseBack)
