@@ -10,24 +10,38 @@ var assembler = {
                 data: {"filepath": false}
             }).done(function(data) {
                 var dep_objs = [];
+                var dependencyDom= "";
                 for(var i=0; i<data.xml_contents.data.warhorn.dependency.length; i++){
-                    dep_objs.push(new dependency(data.xml_contents.data.warhorn.dependency[i]))
-                    $currentPage.find('#dependency-div').append(dep_objs[i].domElement);
+                    dep_objs.push(new dependency(data.xml_contents.data.warhorn.dependency[i]));
+                    dependencyDom = dep_objs[i].domElement;
+                    dependencyDom.data("data-object", dep_objs[i]);
+                    $currentPage.find('#dependency-div').append(dependencyDom);
+                    console.log(dependencyDom);
+                    console.log(dependencyDom.data());
                 }
 
                 var tools_obj = new toolsRepository(data.xml_contents.data.tools);
-                $currentPage.find('#tools-div').append(tools_obj.domElement);
+                var toolsDom = "";
+                toolsDom = tools_obj.domElement;
+                toolsDom.data("data-object", tools_obj);
+                $currentPage.find('#tools-div').append(toolsDom);
 
                 var kw_objs = []
+                var kwDom = "";
                 for(var i=0; i<data.xml_contents.data.drivers.repository.length; i++){
-                    kw_objs.push(new kwRepository(data.xml_contents.data.drivers.repository[i]))
-                    $currentPage.find('#kw-div').append(kw_objs[i].domElement);
+                    kw_objs.push(new kwRepository(data.xml_contents.data.drivers.repository[i]));
+                    kwDom = kw_objs[i].domElement;
+                    kwDom.data("data-object", kw_objs[i]);
+                    $currentPage.find('#kw-div').append(kwDom);
                 }
 
                 var ws_objs = [];
+                var wsDom ="";
                 for(var i=0; i<data.xml_contents.data.warriorspace.repository.length; i++){
                     ws_objs.push(new wsRepository(data.xml_contents.data.warriorspace.repository[i]));
-                    $currentPage.find('#ws-div').append(ws_objs[i].domElement);
+                    wsDom = ws_objs[i].domElement;
+                    wsDom.data("data-object", ws_objs[i]);
+                    $currentPage.find('#ws-div').append(wsDom);
                 }
             });
     },
@@ -98,6 +112,11 @@ var assembler = {
     setInstallBtn: function(elem, text){
         var $elem = elem;
         var $parentDiv = $elem.closest('.card');
+
+        console.log($elem);
+        console.log($parentDiv.parent());
+        var dependencyObject = $parentDiv.parent().data();
+        console.log(dependencyObject);
         var $installBtn = $parentDiv.siblings('button[katana-click="assembler.installDependency"]');
         $installBtn.html(text + '&nbsp;<i class="fa fa-check" style="color: white" aria-hidden="true"></i>&nbsp;');
         $installBtn.css("background-color", "#3b7a4c");
