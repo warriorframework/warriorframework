@@ -655,6 +655,7 @@ Two global variables are heavily used when this function is called;
 	projects.jsonProjectObject['Details']['Engineer'] = katana.$activeTab.find('#projectEngineer').val();
 	projects.jsonProjectObject['Details']['State'] = katana.$activeTab.find('#projectState').val();
 	projects.jsonProjectObject['Details']['Date'] = katana.$activeTab.find('#projectDate').val();
+	projects.jsonProjectObject['Details']['default_onError'] = {}
 	projects.jsonProjectObject['Details']['default_onError']['@action'] = katana.$activeTab.find('#default_onError').val();
 	projects.jsonProjectObject['Details']['default_onError']['@value'] = katana.$activeTab.find('#default_onError_goto').val();
 	projects.jsonProjectObject['Details']['ResultsDir'] = katana.$activeTab.find('#projectResultsDir').val();
@@ -797,7 +798,7 @@ Two global variables are heavily used when this function is called;
 			var names = fname.split('-');
 			var sid = parseInt(names[1]);
 			katana.$activeTab.attr('project-suite-row',sid);
-			projects.getResultsDirForProjectRow();
+			projects.getResultsDirForProjectRow('Suites');
 	},
 
 	deleteTestSuiteCB : function(){
@@ -854,7 +855,6 @@ Two global variables are heavily used when this function is called;
 	getResultsDirForProjectRow: function() {
 	      var callback_on_accept = function(selectedValue) { 
 	      		console.log(selectedValue);
-	      		// Convert to relative path.
 	      		var sid = katana.$activeTab.attr('project-suite-row');
 	      		var pathToBase = katana.$activeTab.find('#savefilepath').text();
 	      		console.log("File path ==", pathToBase);
@@ -937,7 +937,7 @@ Two global variables are heavily used when this function is called;
 	},  // end of function 
 
 	saveChangesToRowCB: function() {
-			projects.mapUItoProjectSuite( projects.lastPopup, xdata );
+			projects.mapUItoProjectSuite( projects.lastPopup);
 			katana.popupController.close(projects.lastPopup);
 			projects.mapProjectJsonToUi();
 	},
