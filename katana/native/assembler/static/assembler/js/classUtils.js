@@ -304,7 +304,7 @@ class wsRepository {
                                             '<label>Label:</label>' +
                                         '</div>' +
                                         '<div class="col-sm-3">' +
-                                            '<input value="' + this.label + '">' +
+                                            '<input value="' + this.label + '" katana-change="assembler.checkWsLabel">' +
                                         '</div>' +
                                     '</div>' +
                                     '<br>' +
@@ -512,7 +512,7 @@ class toolsRepository{
                                             '<label>Label:</label>' +
                                         '</div>' +
                                         '<div class="col-sm-3">' +
-                                            '<input value="' + this.label + '">' +
+                                            '<input value="' + this.label + '" katana-change="assembler.onchangeToolsLabel">' +
                                         '</div>' +
                                     '</div>' +
                                     '<div class="row">' +

@@ -7,6 +7,7 @@
 <body>
     <div class="tool-bar">
         <div class="button" katana-click="assembler.openFileExplorer">Open</div>
+        <div class="button" katana-click="assembler.saveFile">Save</div>
     </div>
     <div class="csrf-container">{% csrf_token %}</div>
     <div auto-init="assembler.init">

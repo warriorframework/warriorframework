@@ -356,32 +356,39 @@ var assembler = {
 
     toggleWsOverwriteButton: function(){
         var $elem = $(this);
+        var $topLevelDiv = $elem.closest('.card');
         if($elem.attr("aria-selected") == "true"){
             $elem.attr("aria-selected", "false");
             $elem.attr("class", "");
             $elem.addClass("fa").addClass("fa-toggle-off").addClass("grey");
+            $topLevelDiv.data().dataObject.overwrite = "no";
         } else {
             $elem.attr("aria-selected", "true");
             $elem.attr("class", "");
             $elem.addClass("fa").addClass("fa-toggle-on").addClass("green");
+            $topLevelDiv.data().dataObject.overwrite = "yes";
         }
     },
 
     toggleWsRepoClone: function(){
         var $elem = $(this);
+        var $topLevelDiv = $elem.closest('.card');
         if($elem.attr("aria-selected") == "true"){
             $elem.attr("aria-selected", "false");
             $elem.attr("class", "");
             $elem.addClass("fa").addClass("fa-toggle-off").addClass("grey");
+            $topLevelDiv.data().dataObject.clone = "no";
         } else {
             $elem.attr("aria-selected", "true");
             $elem.attr("class", "");
             $elem.addClass("fa").addClass("fa-toggle-on").addClass("green");
+            $topLevelDiv.data().dataObject.clone = "yes";
         }
     },
 
     checkWsRepository: function(){
         $elem = $(this);
+        $topLevelDiv = $elem.closest('.card');
         $parentCardBlock = $elem.closest('.card-block');
         $footerBlockRow = $parentCardBlock.siblings('.card-footer').find('.row');
         var $footerBlockRowIcon = $footerBlockRow.find('.fa');
@@ -411,15 +418,24 @@ var assembler = {
             }).done(function(data) {
                 $footerBlockRowIcon.attr('class', 'fa');
                 if(data["available"]){
+                    $topLevelDiv.data().dataObject.url = url;
+                    $topLevelDiv.data().dataObject.available = true;
                     $footerBlockRowIcon.addClass('fa-check').addClass('green');
                     $footerBlockRow.find('.col-sm-8').html('Repository Available.');
                     $parentCardBlock.siblings('.card-header').find('.col-sm-4').html(data["repo_name"]);
                 } else {
                     $footerBlockRowIcon.addClass('fa-times').addClass('red');
                     $footerBlockRow.find('.col-sm-8').html('Repository Not Available.');
+                    $topLevelDiv.data().dataObject.available = false;
                 }
             });
         }
+    },
+
+    checkWsLabel: function(){
+        var $elem = $(this);
+        var $topLevelDiv = $elem.closest('.card');
+        $topLevelDiv.data().dataObject.label = $elem.val();
     },
 
     deleteWsRepo: function(){
@@ -498,7 +514,6 @@ var assembler = {
             $footerBlockRowIcon.addClass('fa-spinner').addClass('fa-spin').addClass('tan');
             $footerBlockRow.find('.col-sm-8').html('Checking Availability.');
             $footerBlockRow.show();
-            alert(url);
             $.ajax({
                 headers: {
                     'X-CSRFToken': $currentPage.find('input[name="csrfmiddlewaretoken"]').attr('value')
@@ -509,16 +524,60 @@ var assembler = {
             }).done(function(data) {
                 $footerBlockRowIcon.attr('class', 'fa');
                 if(data["available"]){
+                    $topLevelDiv.data().dataObject.available = false;
+                    console.log($topLevelDiv.data());
                     $topLevelDiv.data().dataObject.url = url;
                     $footerBlockRowIcon.addClass('fa-check').addClass('green');
                     $footerBlockRow.find('.col-sm-8').html('Repository Available.');
                     $parentCardBlock.siblings('.card-header').find('.col-sm-4').html(data["repo_name"]);
                 } else {
+                    $topLevelDiv.data().dataObject.available = true;
                     $footerBlockRowIcon.addClass('fa-times').addClass('red');
                     $footerBlockRow.find('.col-sm-8').html('Repository Not Available.');
                 }
             });
         }
+    },
+
+    onchangeToolsLabel: function(){
+        var $elem = $(this);
+        var $topLevelDiv = $elem.closest('.card');
+        $topLevelDiv.data().dataObject.label = $elem.val();
         console.log($topLevelDiv.data().dataObject);
+    },
+
+    saveFile: function(){
+        var $currentPage = katana.$activeTab;
+        var finalJson = {
+                            "data": {
+                                "warhorn": {
+                                    "dependency": []
+                                },
+                                "tools": "",
+                                "drivers": {
+                                    "repository": []
+                                },
+                                "warriorspace": {
+                                    "repository": []
+                                }
+                            }
+                        }
+        var dependencyDivChildren = $currentPage.find('#dependency-div').children('div');
+        for(var i=0; i<dependencyDivChildren.length; i++){
+            finalJson.data.warhorn.dependency.push(JSON.parse(JSON.stringify($(dependencyDivChildren[i]).data().dataObject)));
+        }
+
+        var toolsDivChild = $currentPage.find('#tools-div').children('div');
+        finalJson.data.tools = JSON.parse(JSON.stringify($(toolsDivChild[0]).data().dataObject));
+
+        var kwDivChildren = $currentPage.find('#kw-div').children('div');
+        for(i=0; i<kwDivChildren.length; i++){
+            finalJson.data.drivers.repository.push(JSON.parse(JSON.stringify($(kwDivChildren[i]).data().dataObject)));
+        }
+
+        var wsDivChildren = $currentPage.find('#ws-div').children('div');
+        for(i=0; i<wsDivChildren.length; i++){
+            finalJson.data.warriorspace.repository.push(JSON.parse(JSON.stringify($(wsDivChildren[i]).data().dataObject)));
+        }
     },
 }
