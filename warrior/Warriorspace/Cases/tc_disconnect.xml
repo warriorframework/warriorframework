@@ -1,0 +1,72 @@
+<Testcase>
+	<Details>
+		<Name>tc_disconnect</Name>
+		<Title>An automation case to disconnect and logout from fw9500 NE</Title>
+		<Engineer>sathya</Engineer>
+		<Date>2017-03-27</Date>
+		<Time>12:56</Time>
+		<State>In Review</State>
+		<InputDataFile>../Data/data_fw9500.xml</InputDataFile>
+		<Datatype>Custom</Datatype>
+		<default_onError action="next"/>
+		<Logsdir/>
+		<Resultsdir/>
+		<ExpectedResults/>
+		<Category>fwcds</Category>
+	</Details>
+	<Requirements>
+		<Requirement/>
+	</Requirements>
+	<Steps>
+		<step Driver="fw9500_driver" Keyword="logout" TS="2" draft="no">
+					<Arguments>
+						<argument name="system_name" value="FW9500-NE1[tl1]"/>
+				<argument/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>Login to the Network element</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="yes">
+				<Rule Condition="" Condvalue="" Else="abort" />
+			</Execute>
+			<context>positive</context>
+			<impact>impact</impact>
+			<runmode type="Standard" value=""/>
+			<Iteration_type type="Standard"/>
+		</step>
+  		<step Driver="cli_driver" Keyword="disconnect" TS="1" draft="no">
+  					<Arguments>
+              <argument name="system_name" value="FW9500-NE1[tl1]"/>
+  				<argument/>
+  			</Arguments>
+  			<onError action="abort_as_error"/>
+  			<Description/>
+  			<iteration_type type=""/>
+  			<Execute ExecType="Yes">
+  				<Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+  			</Execute>
+  			<context>positive</context>
+  			<impact>impact</impact>
+  			<runmode type="Standard" value=""/>
+  			<Iteration_type type="Standard"/>
+  		</step>
+      <step Driver="cli_driver" Keyword="disconnect" TS="1" draft="no">
+            <Arguments>
+              <argument name="system_name" value="FW9500-NE1[dip]"/>
+          <argument/>
+        </Arguments>
+        <onError action="abort_as_error"/>
+        <Description/>
+        <iteration_type type=""/>
+        <Execute ExecType="Yes">
+          <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+        </Execute>
+        <context>positive</context>
+        <impact>impact</impact>
+        <runmode type="Standard" value=""/>
+        <Iteration_type type="Standard"/>
+      </step>
+
+
+		</Steps>
+</Testcase>

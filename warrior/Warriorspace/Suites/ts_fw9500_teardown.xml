@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestSuite>
+	<SaveToFile>ts_fw9500_teardown.xml</SaveToFile>
+	<Testcases>
+		<Testcase>
+			<impact>impact</impact>
+			<Execute ExecType="Yes">
+				<Rule Elsevalue="" Condvalue="" Condition="" Else="next"></Rule>
+			</Execute>
+			<InputDataFile></InputDataFile>
+			<onError action="next" value=""></onError>
+			<runmode type="Standard" value=""></runmode>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<path>../Cases/tc_fw9500_turn_down.xml</path>
+		</Testcase>
+		<Testcase>
+			<impact>impact</impact>
+			<Execute ExecType="Yes">
+				<Rule Elsevalue="" Condvalue="" Condition="" Else="next"></Rule>
+			</Execute>
+			<InputDataFile></InputDataFile>
+			<onError action="next" value=""></onError>
+			<runmode type="Standard" value=""></runmode>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<path>../Cases/tc_disconnect.xml</path>
+		</Testcase>
+	</Testcases>
+	<Requirements>
+		<Requirement>Requirement-demo-001</Requirement>
+		<Requirement>Requirement-demo-002</Requirement>
+	</Requirements>
+	<Details>
+		<InputDataFile>None</InputDataFile>
+		<Name>ts_fw9500_teardown</Name>
+		<Title>FW9500 setup suite</Title>
+		<Resultsdir>None</Resultsdir>
+		<State>Released</State>
+		<Time>21:37:23</Time>
+		<Date>03/17/2017</Date>
+		<default_onError></default_onError>
+		<type exectype="sequential_testcases" Number_Attempts="" Max_Attempts=""></type>
+		<Engineer>sradhakr</Engineer>
+	</Details>
+</TestSuite>

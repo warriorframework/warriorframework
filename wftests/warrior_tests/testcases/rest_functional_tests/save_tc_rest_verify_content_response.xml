@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Testcase>
+	<logsDir>None</logsDir>
+	<Requirements>
+		<Requirement></Requirement>
+	</Requirements>
+	<expectedDir>PASS</expectedDir>
+	<resultsDir>None</resultsDir>
+	<dataPath>../../data/rest_functional_tests/rest_verify_response_data.xml</dataPath>
+	<Steps>
+		<step Keyword="perform_http_get" TS="1" Driver="rest_driver">
+			<impact>impact</impact>
+			<Execute ExecType="If"></Execute>
+			<retry Condvalue="" interval="" count="" type="next" Condition=""></retry>
+			<Description>This step tests the GET capability of REST</Description>
+			<onError action="next" value="None"></onError>
+			<runmode type="next"></runmode>
+			<step Keyword="None" ExecType="Yes" TS="" Driver="rest_driver">
+				<Rule Elsevalue="" Condvalue="" Condition="" Else="next"></Rule>
+			</step>
+			<Arguments>
+				<argument name="system_name" value="http_bin_1"></argument>
+				<argument name="url" value="http://httpbin.org/response-headers?key=val"></argument>
+				<argument name="" value=" "></argument>
+			</Arguments>
+			<context>positive</context>
+		</step>
+		<step Keyword="verify_response" TS="2" Driver="rest_driver">
+			<impact>impact</impact>
+			<Execute ExecType="Yes"></Execute>
+			<retry Condvalue="" interval="" count="" type="next" Condition=""></retry>
+			<Description>This step verifies the API response with the expected API response</Description>
+			<onError action="next"></onError>
+			<runmode type="next" value=""></runmode>
+			<step ExecType="Yes">
+				<Rule Elsevalue="" Condvalue="" Condition="" Else="next"></Rule>
+			</step>
+			<Arguments>
+				<argument name="system_name" value="http_bin_1"></argument>
+				<argument name="expected_api_response" value="tag=response_1"></argument>
+				<argument name="expected_response_type" value="json"></argument>
+				<argument name="comparison_mode" value="file"></argument>
+			</Arguments>
+			<context>positive</context>
+		</step>
+		<step Keyword="perform_http_get" TS="3" Driver="rest_driver">
+			<impact>impact</impact>
+			<Execute ExecType="Yes"></Execute>
+			<retry Condvalue="" interval="" count="" type="next" Condition=""></retry>
+			<Description>This step tests the GET capability of REST</Description>
+			<onError action="next"></onError>
+			<runmode type="next" value=""></runmode>
+			<step ExecType="Yes">
+				<Rule Elsevalue="" Condvalue="" Condition="" Else="next"></Rule>
+			</step>
+			<Arguments>
+				<argument name="system_name" value="http_bin_2"></argument>
+				<argument name="url" value="http://httpbin.org/xml"></argument>
+				<argument name="request_id" value="123"></argument>
+			</Arguments>
+			<context>positive</context>
+		</step>
+		<step Keyword="verify_response" TS="4" Driver="rest_driver">
+			<impact>impact</impact>
+			<Execute ExecType="Yes"></Execute>
+			<retry Condvalue="" interval="" count="" type="next" Condition=""></retry>
+			<Description>This step verifies the API response with the expected API response</Description>
+			<onError action="next"></onError>
+			<runmode type="next" value=""></runmode>
+			<step ExecType="Yes">
+				<Rule Elsevalue="" Condvalue="" Condition="" Else="next"></Rule>
+			</step>
+			<Arguments>
+				<argument name="system_name" value="http_bin_2"></argument>
+				<argument name="expected_api_response" value=""></argument>
+				<argument name="expected_response_type" value="xml"></argument>
+				<argument name="request_id" value="123"></argument>
+				<argument name="comparison_mode" value=""></argument>
+			</Arguments>
+			<context>positive</context>
+		</step>
+		<step Keyword="verify_response" TS="4" Driver="rest_driver">
+			<impact>impact</impact>
+			<Execute ExecType="Yes"></Execute>
+			<retry Condvalue="" interval="" count="" type="next" Condition=""></retry>
+			<Description>This step verifies the API response with the expected API response</Description>
+			<onError action="next"></onError>
+			<runmode type="next" value=""></runmode>
+			<step ExecType="Yes">
+				<Rule Elsevalue="" Condvalue="" Condition="" Else="next"></Rule>
+			</step>
+			<Arguments>
+				<argument name="system_name" value="http_bin_2"></argument>
+				<argument name="expected_api_response" value="Date of publication"></argument>
+				<argument name="expected_response_type" value="xml"></argument>
+				<argument name="request_id" value="123"></argument>
+				<argument name="comparison_mode" value="xpath=/*/@date"></argument>
+			</Arguments>
+			<context>positive</context>
+		</step>
+		<step Keyword="perform_http_get" TS="5" Driver="rest_driver">
+			<impact>impact</impact>
+			<Execute ExecType="Yes"></Execute>
+			<retry Condvalue="" interval="" count="" type="next" Condition=""></retry>
+			<Description>This step tests the GET capability of REST</Description>
+			<onError action="next"></onError>
+			<runmode type="next" value=""></runmode>
+			<step ExecType="Yes">
+				<Rule Elsevalue="" Condvalue="" Condition="" Else="next"></Rule>
+			</step>
+			<Arguments>
+				<argument name="system_name" value="http_bin_3"></argument>
+				<argument name="url" value="http://httpbin.org/robots.txt"></argument>
+				<argument name="request_id" value="1234"></argument>
+			</Arguments>
+			<context>positive</context>
+		</step>
+		<step Keyword="verify_response" TS="6" Driver="rest_driver">
+			<impact>impact</impact>
+			<Execute ExecType="Yes"></Execute>
+			<retry Condvalue="" interval="" count="" type="next" Condition=""></retry>
+			<Description>This step verifies the API response with the expected API response</Description>
+			<onError action="next"></onError>
+			<runmode type="next" value=""></runmode>
+			<step ExecType="Yes">
+				<Rule Elsevalue="" Condvalue="" Condition="" Else="next"></Rule>
+			</step>
+			<Arguments>
+				<argument name="system_name" value="http_bin_3"></argument>
+				<argument name="expected_api_response" value=""></argument>
+				<argument name="expected_response_type" value="text"></argument>
+				<argument name="request_id" value="1234"></argument>
+				<argument name="comparison_mode" value="regex=Dis"></argument>
+			</Arguments>
+			<context>positive</context>
+		</step>
+	</Steps>
+	<Details>
+		<Category>Feature</Category>
+		<Logsdir></Logsdir>
+		<InputDataFile>../../data/rest_functional_tests/rest_verify_response_data.xml</InputDataFile>
+		<Name>tc_rest_verify_content_response</Name>
+		<Title>To test verify api response keyword</Title>
+		<Datatype>Custom</Datatype>
+		<Resultsdir></Resultsdir>
+		<State>New</State>
+		<ExpectedResults>PASS</ExpectedResults>
+		<Time>11:25</Time>
+		<Date>2016-11-14</Date>
+		<default_onError>next</default_onError>
+		<Engineer>Ragh</Engineer>
+	</Details>
+	<SaveToFile>save_tc_rest_verify_content_response.xml</SaveToFile>
+</Testcase>
