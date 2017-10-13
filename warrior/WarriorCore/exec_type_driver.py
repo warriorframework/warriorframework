@@ -19,6 +19,13 @@ from Framework.Utils.print_Utils import print_error, print_info
 from Classes.argument_datatype_class import ArgumentDatatype
 from Framework.Utils.testcase_Utils import pNote
 
+MATH_OPERATION = {
+    "ge": lambda data_repo_var, exec_cond_var: data_repo_var >= exec_cond_var,
+    "gt": lambda data_repo_var, exec_cond_var: data_repo_var > exec_cond_var,
+    "le": lambda data_repo_var, exec_cond_var: data_repo_var <= exec_cond_var,
+    "lt": lambda data_repo_var, exec_cond_var: data_repo_var < exec_cond_var,
+}
+
 class ElseException(Exception):
     """
         Raise an exception when a rule fails with individual else action
@@ -41,14 +48,8 @@ def math_decision(exec_condition, exec_cond_var, operator):
             Else False
     """
     operator = operator.lower()
-    if operator == "ge":
-        return True if get_object_from_datarepository(exec_condition) >= exec_cond_var else False
-    elif operator == "gt":
-        return True if get_object_from_datarepository(exec_condition) > exec_cond_var else False
-    elif operator == "le":
-        return True if get_object_from_datarepository(exec_condition) <= exec_cond_var else False
-    elif operator == "lt":
-        return True if get_object_from_datarepository(exec_condition) < exec_cond_var else False
+    if operator in MATH_OPERATION:
+        return MATH_OPERATION[operator](get_object_from_datarepository(exec_condition), exec_cond_var)
 
     pNote("Unknown error occur when deciding value, please check condition value of the step",
           "Error")
@@ -69,7 +70,7 @@ def logical_decision(exec_condition, exec_cond_var, operator="equal"):
     if type(get_object_from_datarepository(exec_condition)) != type(exec_cond_var):
         pNote("Comparing different type of value, please check the conditional value type", "ERROR")
         status = False
-    elif operator in ["ge", "gt", "le", "lt"] and\
+    elif operator in MATH_OPERATION and\
          not isinstance(exec_condition, int) and not isinstance(exec_condition, float):
         pNote("Comparing non-numerical value using numerical operator,"\
             "please check value and operator type", "ERROR")
@@ -79,7 +80,7 @@ def logical_decision(exec_condition, exec_cond_var, operator="equal"):
         result = True if get_object_from_datarepository(exec_condition) == exec_cond_var else False
     elif status and operator == "ne":
         result = True if get_object_from_datarepository(exec_condition) != exec_cond_var else False
-    elif status and operator in ["ge", "gt", "le", "lt"]:
+    elif status and operator in MATH_OPERATION:
         result = math_decision(exec_condition, exec_cond_var, operator)
     else:
         pNote("Execution condition failed for expected value: {} , operator: {}, actual value: {}"\
