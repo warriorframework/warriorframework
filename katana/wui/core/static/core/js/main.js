@@ -918,19 +918,16 @@ var katana = {
 		// 	sdata: the contents of the jstree to be displayed. 
 		//
 		create_jstree_search: function (tag_for_tree, tag_for_search_box , sdata) {
-			  var jdata = { 'core' : { 'data' : sdata },
-				      					"plugins" : [ "sort" , "search"],
-				      					}; 
+			  var jdata = { 'core' : { 'data' : sdata }, "plugins" : [ "sort" , "search"], }; 
 			   katana.$activeTab.find(tag_for_tree).jstree(jdata);
 			  var to = false;
 			  katana.$activeTab.find(tag_for_search_box).keyup(function () {
-
-				      if(to) { clearTimeout(to); }
-				      to = setTimeout(function () {
-					            var v = katana.$activeTab.find(tag_for_search_box).val();
-					            katana.$activeTab.find(tag_for_tree).jstree(true).search(v);
-					          }, 250);
-				    });
+			      if(to) { clearTimeout(to); }
+			      to = setTimeout(function () {
+			           var v = katana.$activeTab.find(tag_for_search_box).val();
+			           katana.$activeTab.find(tag_for_tree).jstree(true).search(v);
+			          }, 250);
+			  });
 		},
 
 	    openFileExplorer: function(heading, start_directory, csrftoken, parent, callBack_on_accept, callBack_on_dismiss){
