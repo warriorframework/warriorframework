@@ -206,9 +206,9 @@ var assembler = {
 
     updateKwRepoDetails: function(){
         $elem = $(this);
-        $parentCardBlock = $elem.closest('.card-block');
-        console.log($parentCardBlock);
-        $footerBlockRow = $parentCardBlock.siblings('.card-footer').find('.row');
+        var $topLevelDiv = $elem.closest('.card');
+        var $parentCardBlock = $elem.closest('.card-block');
+        var $footerBlockRow = $parentCardBlock.siblings('.card-footer').find('.row');
         var $footerBlockRowIcon = $footerBlockRow.find('.fa');
         $footerBlockRowIcon.attr('class', 'fa')
         $footerBlockRow.find('.col-sm-8').html('');
@@ -236,20 +236,25 @@ var assembler = {
             }).done(function(data) {
                 $footerBlockRowIcon.attr('class', 'fa');
                 if(data["available"]){
+                    $topLevelDiv.data().dataObject.url = url;
+                    $topLevelDiv.data().dataObject.available = true;
                     $footerBlockRowIcon.addClass('fa-check').addClass('green');
                     $footerBlockRow.find('.col-sm-8').html('Repository Available.');
                     $parentCardBlock.siblings('.card-header').find('.col-sm-7').html(data["repo_name"])
 
                     $driverBlock = $($parentCardBlock.find('.row')[1]);
+                    $driverBlock.find('.row, .text-center').html('')
+                    $topLevelDiv.data().dataObject.drivers = [];
                     for(var i=0; i<data["drivers"].length; i++){
                         var ddObj = new driverDetails({"@name": data["drivers"][i], "@clone": "yes"})
-                        console.log(ddObj.domElement);
-                        console.log($driverBlock.find('.row, .text-center'));
                         $driverBlock.find('.row, .text-center').append(ddObj.domElement)
+                        $topLevelDiv.data().dataObject.drivers.push(ddObj)
                     }
                     $driverBlock.show();
 
                 } else {
+                    $topLevelDiv.data().dataObject.url = url;
+                    $topLevelDiv.data().dataObject.available = false;
                     $footerBlockRowIcon.addClass('fa-times').addClass('red');
                     $footerBlockRow.find('.col-sm-8').html('Repository Not Available.');
                 }
@@ -259,15 +264,18 @@ var assembler = {
 
     toggleKwRepoClone: function(){
         var $elem = $(this);
+        var $topLevelDiv = $elem.closest('.card');
         if($elem.attr('aria-selected') == "true"){
             $elem.attr('aria-selected', 'false');
             $elem.removeClass('fa-toggle-on').removeClass('green');
             $elem.addClass('fa-toggle-off').addClass('grey');
+            $topLevelDiv.data().dataObject.clone = "no";
         }
         else{
             $elem.attr('aria-selected', 'true');
             $elem.removeClass('fa-toggle-off').removeClass('grey');
             $elem.addClass('fa-toggle-on').addClass('green');
+            $topLevelDiv.data().dataObject.clone = "no";
         }
     },
 
@@ -330,27 +338,45 @@ var assembler = {
 
     toggleDriverClone: function(){
         var $elem = $(this);
+        var $topLevelDiv = $elem.closest('.card').closest('.row').closest('.card');
+        console.log($topLevelDiv.data().dataObject);
         if($elem.attr("aria-selected") == "true"){
             $elem.attr("aria-selected", "false");
             $elem.attr("class", "");
             $elem.addClass("fa").addClass("fa-toggle-off").addClass("grey");
+            for(var i=0; i<$topLevelDiv.data().dataObject.drivers.length; i++){
+                if($topLevelDiv.data().dataObject.drivers[i]["name"] == $elem.siblings('label').text()){
+                    $topLevelDiv.data().dataObject.drivers[i]["clone"] = "no";
+                    break;
+                }
+            }
+
         } else {
             $elem.attr("aria-selected", "true");
             $elem.attr("class", "");
             $elem.addClass("fa").addClass("fa-toggle-on").addClass("green");
+            for(var i=0; i<$topLevelDiv.data().dataObject.drivers.length; i++){
+                if($topLevelDiv.data().dataObject.drivers[i]["name"] == $elem.siblings('label').text()){
+                    $topLevelDiv.data().dataObject.drivers[i]["clone"] = "yes";
+                    break;
+                }
+            }
         }
     },
 
     toggleAllDrivers: function(){
         var $elem = $(this);
+        var $topLevelDiv = $elem.closest('.card');
         if($elem.attr("aria-selected") == "true"){
             $elem.attr("aria-selected", "false");
             $elem.attr("class", "");
             $elem.addClass("fa").addClass("fa-toggle-off").addClass("grey");
+            $topLevelDiv.data().dataObject.all_drivers = "no";
         } else {
             $elem.attr("aria-selected", "true");
             $elem.attr("class", "");
             $elem.addClass("fa").addClass("fa-toggle-on").addClass("green");
+            $topLevelDiv.data().dataObject.all_drivers = "yes";
         }
     },
 
@@ -564,20 +590,20 @@ var assembler = {
                         }
         var dependencyDivChildren = $currentPage.find('#dependency-div').children('div');
         for(var i=0; i<dependencyDivChildren.length; i++){
-            finalJson.data.warhorn.dependency.push(JSON.parse(JSON.stringify($(dependencyDivChildren[i]).data().dataObject)));
+            finalJson.data.warhorn.dependency.push(JSON.parse(JSON.stringify($(dependencyDivChildren[i]).data().dataObject.jsonObj)));
         }
 
         var toolsDivChild = $currentPage.find('#tools-div').children('div');
-        finalJson.data.tools = JSON.parse(JSON.stringify($(toolsDivChild[0]).data().dataObject));
+        finalJson.data.tools = JSON.parse(JSON.stringify($(toolsDivChild[0]).data().dataObject.jsonObj));
 
         var kwDivChildren = $currentPage.find('#kw-div').children('div');
         for(i=0; i<kwDivChildren.length; i++){
-            finalJson.data.drivers.repository.push(JSON.parse(JSON.stringify($(kwDivChildren[i]).data().dataObject)));
+            finalJson.data.drivers.repository.push(JSON.parse(JSON.stringify($(kwDivChildren[i]).data().dataObject.jsonObj)));
         }
 
         var wsDivChildren = $currentPage.find('#ws-div').children('div');
         for(i=0; i<wsDivChildren.length; i++){
-            finalJson.data.warriorspace.repository.push(JSON.parse(JSON.stringify($(wsDivChildren[i]).data().dataObject)));
+            finalJson.data.warriorspace.repository.push(JSON.parse(JSON.stringify($(wsDivChildren[i]).data().dataObject.jsonObj)));
         }
     },
 }

@@ -36,14 +36,10 @@ class kwRepository {
         this.drivers = [];
         if(data["driver"]){
             for(var i=0; i<data["driver"].length; i++){
-                this.drivers.push(new driverDetails({"name": data["driver"][i], "@clone": "yes"}));
+                this.drivers.push(new driverDetails({"@name": data["driver"][i]["@name"], "@clone": data["driver"][i]["@clone"]}));
             }
             this.all_drivers = "no";
         }
-    }
-
-    addDriver(name, clone){
-        this.drivers.push(new driverDetails(name, clone))
     }
 
     get domElement(){
@@ -70,7 +66,7 @@ class kwRepository {
             driverDom = driverDom + this.drivers[i].domElement;
         }
         var displayDrivers = "";
-        if(driverDom == ""){
+        if(this.url == ""){
             displayDrivers = "display: none";
         }
         var allDriversIcon = "fa fa-toggle-off grey";
@@ -200,12 +196,12 @@ class driverDetails {
 
     formJsonObj(){
         var jsonObject = {
-            "driver": {
-                "@name": this.name,
-                "@clone": this.clone
-            }
+            "@name": this.name,
+            "@clone": this.clone
         }
+        return jsonObject;
     }
+
 }
 
 class wsRepository {
