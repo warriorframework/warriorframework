@@ -574,6 +574,7 @@ var assembler = {
 
     saveFile: function(){
 
+        katana.openAlert({})
         var $currentPage = katana.$activeTab;
         var finalJson = {
                             "data": {
