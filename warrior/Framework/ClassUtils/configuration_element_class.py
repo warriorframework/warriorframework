@@ -28,6 +28,7 @@ class ConfigurationElement(object):
     """
 
     def __init__(self, name='base', start_pat="${", end_pat="}"):
+        """ Constructor """
         self.name = name
         self.attributes = {}
         self.children = {}
@@ -69,6 +70,7 @@ class ConfigurationElement(object):
             while match is not None:
                 return_value = return_value.replace(match.group(1), self.get_value(match.group(2)))
                 return_value = Utils.data_Utils.sub_from_env_var(return_value)
+                return_value = Utils.data_Utils.sub_from_data_repo(return_value)
                 match = self.__find_match(return_value[:return_value.find(check) + len(check)])
 
             if match is None:
@@ -332,7 +334,7 @@ class ConfigurationElement(object):
         for key in node.attrib:
             self.attributes[key] = node.attrib[key]
         self.attributes['xml_tag'] = node.tag
-        #self.attributes['xml_element'] = node
+        # self.attributes['xml_element'] = node
 
         for child in node:
             try:
@@ -343,8 +345,8 @@ class ConfigurationElement(object):
                 else:
                     self.children[child.attrib['name']].parse_tree(child)
             except KeyError:
-                print("No name attribute for node " + child.tag + ". Tree with root at node "
-                      + child.tag + " not parsed.")
+                print_error("No name attribute for node " + child.tag + ". Tree with root "
+                            "at node " + child.tag + " not parsed.")
 
     @staticmethod
     def __tabs(number):
@@ -377,4 +379,5 @@ class ConfigurationElement(object):
         return data
 
     def __str__(self):
+        """ Prints the string representation of the object """
         return self.print_me()

@@ -80,7 +80,6 @@ def katana():
     return template('index', template_lookup=template_lookup)
 
 
-
 @route('/readconfig')
 def readconfig():
     lines = ""

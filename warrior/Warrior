@@ -56,10 +56,12 @@ def print_progress_bar(file_type, file_path):
     if file_type == "Project":
         suite_node, suite_node_name = "Testsuites", "Testsuite"
         suite_value = Utils.xml_Utils.get_node_value(suite_node, suite_node_name, file_path)
+        step_count = 0
 
         for i in suite_value:
             ts_abs_filepath = Utils.xml_Utils.get_abs_filepath(file_path, i)
-            step_count = Utils.xml_Utils.get_step_value_from_case(ts_abs_filepath)
+            temp_step_count = Utils.xml_Utils.get_step_value_from_case(ts_abs_filepath)
+            step_count = temp_step_count + step_count
 
     elif file_type == "TestSuite":
         step_count = Utils.xml_Utils.get_step_value_from_case(file_path)

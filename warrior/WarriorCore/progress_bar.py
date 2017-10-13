@@ -21,7 +21,7 @@ class ProgressBar(object):
     """
         Class to display the progress bar
     """
-    FULL = '%(bar)s %(current)d/%(total)d (%(percent)3d%%) %(remaining)d to go'
+    FULL = '%(bar)s %(current)d/%(total)d (%(percent)3d%%) %(remaining)d steps to go'
 
     def __init__(self, total, width=40, fmt=FULL, symbol='=',
                  output=sys.stderr):
