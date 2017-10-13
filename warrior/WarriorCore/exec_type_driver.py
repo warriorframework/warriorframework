@@ -14,7 +14,7 @@ limitations under the License.
 """Module that handles the actions to be performed for
 conditional execution of a step in Testcase/Suite/Project """
 
-from Framework.Utils.data_Utils import get_object_from_datarepository
+from Framework.Utils.data_Utils import get_object_from_datarepository, verify_data
 from Framework.Utils.print_Utils import print_error, print_info
 from Classes.argument_datatype_class import ArgumentDatatype
 from Framework.Utils.testcase_Utils import pNote
@@ -81,7 +81,8 @@ def logical_decision(exec_condition, exec_cond_var, operator="equal"):
     elif status and operator == "ne":
         result = True if get_object_from_datarepository(exec_condition) != exec_cond_var else False
     elif status and operator in MATH_OPERATION:
-        result = math_decision(exec_condition, exec_cond_var, operator)
+        result, _ = verify_data(exec_cond_var, exec_condition,
+                                "float" if exec_condition.startswith("float_") else "int", operator)
     else:
         pNote("Execution condition failed for expected value: {} , operator: {}, actual value: {}"\
               .format(exec_cond_var, operator,
