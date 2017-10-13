@@ -94,27 +94,31 @@ def get_response_file(testdatafile):
     from Framework.Utils.data_Utils import _get_row
     tmp_list = getElementListWithSpecificXpath(testdatafile, "./global/response_file")
     response_file = tmp_list[0].text if tmp_list != [] else ""
-    root = getRoot(response_file)
     response_dict = {}
+    if response_file != "":
+        root = getRoot(response_file)
 
-    for testdata in root.findall("testdata"):
-        if testdata.get("execute") == "yes":
-            testdata_key = "{0}{1}".format(testdata.get('title', ""),
-                                           _get_row(testdata))
-            command_list = testdata.findall("command")
-            for command in command_list:
-                cmd_text = command.get("send", "")
-                raw_response = command.get("response", "")
-                response_list = raw_response.split(",")
-                resp_text = OrderedDict()
-                for resp_symbol in response_list:
-                    if testdata.find(resp_symbol) is not None and \
-                     testdata.find(resp_symbol).get("text") is not None:
-                        resp_text.update({resp_symbol: testdata.find(resp_symbol).get("text")})
-                    else:
-                        pNote("Error resolving symbol {} in testdata "
-                              "block {}".format(resp_symbol, testdata_key))
-                response_dict[cmd_text] = resp_text
+        for testdata in root.findall("testdata"):
+            if testdata.get("execute") == "yes":
+                testdata_key = "{0}{1}".format(testdata.get('title', ""),
+                                               _get_row(testdata))
+                command_list = testdata.findall("command")
+                for command in command_list:
+                    cmd_text = command.get("send", "")
+                    raw_response = command.get("response", "")
+                    response_list = raw_response.split(",")
+                    resp_text = OrderedDict()
+                    for resp_symbol in response_list:
+                        if testdata.find(resp_symbol) is not None and \
+                         testdata.find(resp_symbol).get("text") is not None:
+                            resp_text.update({resp_symbol: testdata.find(resp_symbol).get("text")})
+                        else:
+                            pNote("Error resolving symbol {} in testdata "
+                                  "block {}".format(resp_symbol, testdata_key))
+                    response_dict[cmd_text] = resp_text
+    else:
+        pNote("Unable to retrieve response file from testdata file, please put the path in"
+              " response_file tag inside global section of the testdata file", "ERROR")
 
     MockUtils.cli_Utils.response_dict = response_dict
 
