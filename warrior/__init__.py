@@ -10,9 +10,15 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import Framework
-import Framework.Utils as Utils 
-import Tools
-import WarriorCore
-import Actions
-import ProductDrivers
+import warrior.Framework
+import warrior.Framework as Framework
+import warrior.Framework.Utils 
+import warrior.Framework.Utils as Utils 
+import warrior.Tools 
+import warrior.Tools as Tools
+import warrior.WarriorCore
+import warrior.WarriorCore as WarriorCore
+import warrior.Actions
+import warrior.Actions as Actions
+import warrior.ProductDrivers
+import warrior.ProductDrivers as ProductDrivers
