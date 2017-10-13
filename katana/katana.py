@@ -117,7 +117,7 @@ if __name__ == "__main__":
                 port = args[i+1]
             break
     if usePythonServer:
-        server_address = ('127.0.0.1', port) 
+        server_address = ('127.0.0.1', int(port))
         HandlerClass.protocol_version = Protocol 
         httpd = ServerClass(server_address, SimpleHandler)
         sa = httpd.socket.getsockname()

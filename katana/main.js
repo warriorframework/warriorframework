@@ -10,8 +10,9 @@ function createWindow () {
   win = new BrowserWindow({width: 800, height: 600})
 
   //Replace the index.html with the katana.py index URL 
-  win.loadURL("http://localhost:"+port+"/katana");
+  setTimeout(loadPage, 2000);
 
+  // win.loadURL("http://localhost:"+port+"/katana");
   // win.loadURL(url.format({
   //   pathname: path.join(__dirname, 'index.html'),
   //   protocol: 'file:',
@@ -21,6 +22,10 @@ function createWindow () {
   win.on('closed', () => {
     win = null
   })
+}
+
+function loadPage() { 
+win.loadURL("http://localhost:"+port+"/katana");
 }
 
 app.on('ready', createWindow)
@@ -67,7 +72,7 @@ const createPyProc = () => {
   //pyProc = require('child_process').exec(script) 
   if (pyProc != null) {
     console.log('child process success')
-   //win.loadURL("http://localhost:"+port+"/katana");
+    win.loadURL("http://localhost:"+port+"/katana");
   }
 }
 
