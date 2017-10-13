@@ -10,6 +10,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from __builtin__ import str
 import os
 import re
 from collections import OrderedDict
@@ -22,7 +23,7 @@ from Framework.ClassUtils.testdata_class import TestData, TestDataIterations
 from Framework.Utils.xml_Utils import get_attributevalue_from_directchildnode as av_fromdc
 from Framework.Utils.string_Utils import sub_from_varconfigfile
 from Framework.ClassUtils import database_utils_class
-from __builtin__ import str
+from WarriorCore.Classes.testcase_utils_class import TestcaseUtils
 
 cmd_params = OrderedDict([("command_list", "send"),
                           ("sys_list", "sys"),
@@ -1458,9 +1459,10 @@ def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
                                     str(raw_value[k]).replace(
                                         search_obj.group(), 'None'))
                     except SyntaxError:
-                        from WarriorCore.Classes.testcase_utils_class import TestcaseUtils
                         tuc_obj = TestcaseUtils()
-                        print_info("Checking after removing the illegal characters")
+                        print_info("Cannot convert below value into correct format, removing "
+                                   "non-printable characters, will attempt conversion again")
+                        print_info("<<{}>>".format(raw_value[k]))
                         try:
                             raw_value[k] = tuc_obj.rem_nonprintable_ctrl_chars(raw_value[k])
                             raw_value[k] = literal_eval(raw_value[k])
