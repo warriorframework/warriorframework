@@ -55,7 +55,7 @@ def math_decision(exec_condition, exec_cond_var, operator):
           "Error")
     return False
 
-def logical_decision(exec_condition, exec_cond_var, operator="equal"):
+def logical_decision(exec_condition, exec_cond_var, operator="eq"):
     """
         Handle the logical decision for the value comparison
         :param:
