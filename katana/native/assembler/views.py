@@ -154,12 +154,43 @@ def check_tools_repo_availability(request):
 
 def save_warhorn_config_file(request):
     filepath = os.path.join(request.POST.get('directory'), request.POST.get('filename') + ".xml")
+    json_data = json.loads(request.POST.get('json_data'))
+    json_data["data"]["warriorframework"] = "Test"
+    print json_data["data"]
+    del json_data["data"]["tools"]
+    data = xmltodict.unparse(json_data)
+    response = _save_file(filepath, data)
+
+    return JsonResponse(response)
+
+
+def save_and_run_warhorn_config_file(request):
+    filepath = os.path.join(request.POST.get('directory'), request.POST.get('filename') + ".xml")
+    json_data = json.loads(request.POST.get('json_data'))
+    json_data["data"]["warriorframework"] = "Test"
+    print json_data["data"]
+    del json_data["data"]["tools"]
+    data = xmltodict.unparse(json_data)
+    response = _save_file(filepath, data)
+    nav_obj = Navigator()
+    warhorn_dir = nav_obj.get_warhorn_dir()
+    current_dir = os.getcwd()
+    output = ""
+    if response["saved"]:
+        os.chdir(warhorn_dir)
+        output = subprocess.Popen(["python", "warhorn.py", filepath], stdout=subprocess.PIPE).communicate()[0]
+        os.chdir(current_dir)
+    return JsonResponse({"output": output})
+
+
+def _save_file(filepath, data):
+    filepath = os.path.join(filepath)
     message = ""
     saved = True
     try:
         with open(filepath, 'w') as f:
-            f.write(xmltodict.unparse(json.loads(request.POST.get('json_data'))))
+            f.write(data)
     except Exception as e:
         saved = False
         message = e
-    return JsonResponse({"saved": saved, "message": message})
+    return {"saved": saved, "message": message}

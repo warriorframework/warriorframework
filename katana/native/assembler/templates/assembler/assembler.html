@@ -6,11 +6,13 @@
 </head>
 <body>
     <div class="tool-bar">
+        <div class="button" katana-click="assembler.init">New</div>
         <div class="button" katana-click="assembler.openFileExplorer">Open</div>
         <div class="button" katana-click="assembler.saveFile">Save</div>
+        <div class="button" katana-click="assembler.saveFileRunWarhorn">Assemble!</div>
     </div>
     <div class="csrf-container">{% csrf_token %}</div>
-    <div auto-init="assembler.init">
+    <div id="main-div" auto-init="assembler.init">
         {% include 'assembler/configFileDetails.html' %}
     </div>
 </body>

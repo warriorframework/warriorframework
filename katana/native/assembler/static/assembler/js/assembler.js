@@ -660,8 +660,6 @@ var assembler = {
                     finalJson.data.warriorspace.repository.push(JSON.parse(JSON.stringify($(wsDivChildren[i]).data().dataObject.jsonObj)));
                 }
 
-                console.log(finalJson);
-
                 $.ajax({
                     headers: {
                         'X-CSRFToken': $currentPage.find('input[name="csrfmiddlewaretoken"]').attr('value')
@@ -694,5 +692,63 @@ var assembler = {
                 "text": "",
                 "prompt": "true"}, callBack_on_accept)
             });
+    },
+
+    saveFileRunWarhorn: function(){
+        $.ajax({
+                headers: {
+                    'X-CSRFToken': $currentPage.find('input[name="csrfmiddlewaretoken"]').attr('value')
+                },
+                type: 'GET',
+                url: 'read_config_file/'
+            }).done(function(config_file_data){
+                var $currentPage = katana.$activeTab;
+                var finalJson = {
+                                    "data": {
+                                        "warhorn": {
+                                            "dependency": []
+                                        },
+                                        "tools": "",
+                                        "drivers": {
+                                            "repository": []
+                                        },
+                                        "warriorspace": {
+                                            "repository": []
+                                        }
+                                    }
+                                }
+                var dependencyDivChildren = $currentPage.find('#dependency-div').children('div');
+                for(var i=0; i<dependencyDivChildren.length; i++){
+                    finalJson.data.warhorn.dependency.push(JSON.parse(JSON.stringify($(dependencyDivChildren[i]).data().dataObject.jsonObj)));
+                }
+
+                var toolsDivChild = $currentPage.find('#tools-div').children('div');
+                finalJson.data.tools = JSON.parse(JSON.stringify($(toolsDivChild[0]).data().dataObject.jsonObj));
+
+                var kwDivChildren = $currentPage.find('#kw-div').children('div');
+                for(i=0; i<kwDivChildren.length; i++){
+                    var driversTemp = JSON.parse(JSON.stringify($(kwDivChildren[i]).data().dataObject.jsonObj))
+                    for(var j=0; j<$(kwDivChildren[i]).data().dataObject.drivers.length; j++){
+                        driversTemp.driver.push(JSON.parse(JSON.stringify($(kwDivChildren[i]).data().dataObject.drivers[i].jsonObj)));
+                    }
+                    finalJson.data.drivers.repository.push(driversTemp);
+                }
+
+                var wsDivChildren = $currentPage.find('#ws-div').children('div');
+                for(i=0; i<wsDivChildren.length; i++){
+                    finalJson.data.warriorspace.repository.push(JSON.parse(JSON.stringify($(wsDivChildren[i]).data().dataObject.jsonObj)));
+                }
+
+                $.ajax({
+                        headers: {
+                            'X-CSRFToken': $currentPage.find('input[name="csrfmiddlewaretoken"]').attr('value')
+                        },
+                        type: 'POST',
+                        url: 'assembler/save_and_run_warhorn_config_file/',
+                        data: {"json_data": JSON.stringify(finalJson), "filename": "temp_warhorn_run", "directory": config_file_data["warhorn_config"]}
+                    }).done(function(data) {
+                        katana.popupController.open(data["output"], "Output");
+                    });
+            })
     },
 }

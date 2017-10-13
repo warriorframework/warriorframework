@@ -17,6 +17,11 @@ class Navigator(object):
         warrior_dir = get_parent_directory(__file__, 3) + os.sep + 'warrior' + os.sep
         return warrior_dir
 
+    def get_warhorn_dir(self):
+        """will get warriors main directory"""
+        warrior_dir = get_parent_directory(__file__, 3) + os.sep + 'warhorn' + os.sep
+        return warrior_dir
+
     def search_folder_name(self, folder_name, given_dir):
         """searches for folder by name in all subdir until found or bottom level directory"""
         pass
