@@ -429,9 +429,12 @@ class CIregressionActions(object):
         # this block checks if ramspace is bool type
         status = check_type(ramspace, "ramspace", bool) and status
         try:
+            # check if tag is present and its functionality is not broken
             if anotherfile.startswith('tag'):
                 anotherfile = data_Utils.resolve_argument_value_to_get_tag_value(
                                         datafile, system_name, anotherfile)
+            # this checks if configfile and anotherfile are valid files
+            # by getting the absolute path of the file
             if not os.path.isabs(configfile):
                 configfile = file_Utils.getAbsPath(configfile, tc_filepath)
             if not os.path.isabs(anotherfile):
