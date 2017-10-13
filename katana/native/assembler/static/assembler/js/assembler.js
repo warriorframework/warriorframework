@@ -287,23 +287,66 @@ var assembler = {
                 type: 'GET',
                 url: 'read_config_file/',
             }).done(function(data) {
-                console.log(data);
                 callBack_on_accept = function(inputValue){
-                    console.log(inputValue)
+                    $.ajax({
+                        headers: {
+                            'X-CSRFToken': $currentPage.find('input[name="csrfmiddlewaretoken"]').attr('value')
+                        },
+                        type: 'POST',
+                        url: 'assembler/get_config_file/',
+                        data: {"filepath": inputValue}
+                    }).done(function(data) {
+                        $currentPage.find('#dependency-div').html('');
+                        $currentPage.find('#tools-div').html('');
+                        $currentPage.find('#kw-div').html('');
+                        $currentPage.find('#ws-div').html('');
+
+                        var dep_objs = [];
+                        var dependencyDom= "";
+                        for(var i=0; i<data.xml_contents.data.warhorn.dependency.length; i++){
+                            dep_objs.push(new dependency(data.xml_contents.data.warhorn.dependency[i]));
+                            dependencyDom = dep_objs[i].domElement;
+                            dependencyDom.data("data-object", dep_objs[i]);
+                            $currentPage.find('#dependency-div').append(dependencyDom);
+                        }
+
+                        var tools_obj = new toolsRepository(data.xml_contents.data.tools);
+                        var toolsDom = "";
+                        toolsDom = tools_obj.domElement;
+                        toolsDom.data("data-object", tools_obj);
+                        $currentPage.find('#tools-div').append(toolsDom);
+
+                        var kw_objs = []
+                        var kwDom = "";
+                        for(var i=0; i<data.xml_contents.data.drivers.repository.length; i++){
+                            kw_objs.push(new kwRepository(data.xml_contents.data.drivers.repository[i]));
+                            kwDom = kw_objs[i].domElement;
+                            kwDom.data("data-object", kw_objs[i]);
+                            $currentPage.find('#kw-div').append(kwDom);
+                        }
+
+                        var ws_objs = [];
+                        var wsDom ="";
+                        for(var i=0; i<data.xml_contents.data.warriorspace.repository.length; i++){
+                            ws_objs.push(new wsRepository(data.xml_contents.data.warriorspace.repository[i]));
+                            wsDom = ws_objs[i].domElement;
+                            wsDom.data("data-object", ws_objs[i]);
+                            $currentPage.find('#ws-div').append(wsDom);
+                        }
+                    });
                 };
-                callBack_on_dismiss = function(){
-                    console.log("Dismissed");
-                }
                 katana.fileExplorerAPI.openFileExplorer(false, data["warhorn_config"],
                                                         $currentPage.find('input[name="csrfmiddlewaretoken"]').attr('value'),
-                                                        false, callBack_on_accept, callBack_on_dismiss)
+                                                        false, callBack_on_accept)
             });
     },
 
     addKwRepository: function(){
         $currentPage = katana.$activeTab;
-        kw_repo_obj = new kwRepository()
-        $currentPage.find('#kw-div').append(kw_repo_obj.domElement);
+        kw_repo_obj = new kwRepository();
+        var kwDom = kw_repo_obj.domElement;
+        kwDom.data('data-object', kw_repo_obj);
+        $currentPage.find('#kw-div').append(kwDom);
     },
 
     deleteKwRepo: function(){
@@ -365,7 +408,7 @@ var assembler = {
 
     toggleAllDrivers: function(){
         var $elem = $(this);
-        var $topLevelDiv = $elem.closest('.card');
+        var $topLevelDiv = $elem.closest('.card').closest('.row').closest('.card');
         if($elem.attr("aria-selected") == "true"){
             $elem.attr("aria-selected", "false");
             $elem.attr("class", "");
@@ -497,7 +540,9 @@ var assembler = {
     addWsRepository: function(){
         $currentPage = katana.$activeTab;
         ws_repo_obj = new wsRepository();
-        $currentPage.find('#ws-div').append(ws_repo_obj.domElement);
+        var wsDom = ws_repo_obj.domElement;
+        wsDom.data('data-object', ws_repo_obj);
+        $currentPage.find('#ws-div').append(wsDom);
     },
 
     toggleToolsClone: function(){
@@ -603,13 +648,19 @@ var assembler = {
 
                 var kwDivChildren = $currentPage.find('#kw-div').children('div');
                 for(i=0; i<kwDivChildren.length; i++){
-                    finalJson.data.drivers.repository.push(JSON.parse(JSON.stringify($(kwDivChildren[i]).data().dataObject.jsonObj)));
+                    var driversTemp = JSON.parse(JSON.stringify($(kwDivChildren[i]).data().dataObject.jsonObj))
+                    for(var j=0; j<$(kwDivChildren[i]).data().dataObject.drivers.length; j++){
+                        driversTemp.driver.push(JSON.parse(JSON.stringify($(kwDivChildren[i]).data().dataObject.drivers[i].jsonObj)));
+                    }
+                    finalJson.data.drivers.repository.push(driversTemp);
                 }
 
                 var wsDivChildren = $currentPage.find('#ws-div').children('div');
                 for(i=0; i<wsDivChildren.length; i++){
                     finalJson.data.warriorspace.repository.push(JSON.parse(JSON.stringify($(wsDivChildren[i]).data().dataObject.jsonObj)));
                 }
+
+                console.log(finalJson);
 
                 $.ajax({
                     headers: {

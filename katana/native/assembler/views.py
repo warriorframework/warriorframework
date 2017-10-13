@@ -29,12 +29,21 @@ class ConfigurationFileOps(View):
                            "requests": "2.9.1", "selenium": "2.48.0", "xlrd": "1.0.0",
                            "cloudshell-automation-api": "7.1.0.34"}
         nav_obj = Navigator()
-        empty_template = os.path.join(nav_obj.get_katana_dir(), "native", "assembler",
-                                      "static",
-                                      "assembler", "base_templates", "empty.xml")
-        xml_contents = open(empty_template, 'r')
+        template = request.POST.get('filepath')
+        reference = os.path.join(nav_obj.get_katana_dir(), "native", "assembler",
+                                 "static",
+                                 "assembler", "base_templates", "empty.xml")
+        if template == "false":
+            template = os.path.join(nav_obj.get_katana_dir(), "native", "assembler",
+                                          "static",
+                                          "assembler", "base_templates", "empty.xml")
+        xml_contents = open(template, 'r')
         ordered_dict_json = xmltodict.parse(xml_contents)
         json_data = json.loads(json.dumps(ordered_dict_json))
+
+        ref_xml_contents = open(reference, 'r')
+        ref_ordered_dict_json = xmltodict.parse(ref_xml_contents)
+        ref_data = json.loads(json.dumps(ref_ordered_dict_json))
 
         final_data = copy.deepcopy(json_data)
 
@@ -64,14 +73,34 @@ class ConfigurationFileOps(View):
                     else:
                         pass
 
+        if "drivers" not in final_data["data"]:
+            final_data["data"]["drivers"] = copy.copy(ref_data["data"]["drivers"])
+
+        if "repository" not in final_data["data"]["drivers"]:
+            final_data["data"]["drivers"]["repository"] = copy.copy(ref_data["data"]["drivers"]["repository"])
+
         if not isinstance(final_data["data"]["drivers"]["repository"], list):
             final_data["data"]["drivers"]["repository"] = [final_data["data"]["drivers"]["repository"]]
         for i in range(0, len(final_data["data"]["drivers"]["repository"])):
+            if "driver" not in final_data["data"]["drivers"]["repository"][i]:
+                final_data["data"]["drivers"]["repository"][i]["driver"] = copy.copy(ref_data["data"]["drivers"]["repository"]["driver"])
+
             if not isinstance(final_data["data"]["drivers"]["repository"][i]["driver"], list):
                 final_data["data"]["drivers"]["repository"][i]["driver"] = [final_data["data"]["drivers"]["repository"][i]["driver"]]
+
+        if "warriorspace" not in final_data["data"]:
+            final_data["data"]["warriorspace"] = copy.copy(ref_data["data"]["warriorspace"])
+
+        if "repository" not in final_data["data"]["warriorspace"]:
+            final_data["data"]["warriorspace"]["repository"] = copy.copy(ref_data["data"]["warriorspace"]["repository"])
+
         if not isinstance(final_data["data"]["warriorspace"]["repository"], list):
             final_data["data"]["warriorspace"]["repository"] = [final_data["data"]["warriorspace"]["repository"]]
 
+        if "tools" not in final_data["data"]:
+            final_data["data"]["tools"] = copy.copy(ref_data["data"]["tools"])
+
+        print json.dumps(final_data, indent=4, sort_keys=True)
         return JsonResponse({"xml_contents": final_data})
 
 

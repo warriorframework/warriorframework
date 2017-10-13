@@ -38,7 +38,6 @@ class kwRepository {
             for(var i=0; i<data["driver"].length; i++){
                 this.drivers.push(new driverDetails({"@name": data["driver"][i]["@name"], "@clone": data["driver"][i]["@clone"]}));
             }
-            this.all_drivers = "no";
         }
     }
 
@@ -451,7 +450,7 @@ class toolsRepository{
             this.url = "";
         }
         if(data["@clone"]){
-            this.clone = data["@clone"].toLowerCase().tim();
+            this.clone = data["@clone"].toLowerCase().trim();
         } else {
             this.clone = "yes";
         }
