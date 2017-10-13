@@ -573,6 +573,7 @@ var assembler = {
     },
 
     saveFile: function(){
+
         var $currentPage = katana.$activeTab;
         var finalJson = {
                             "data": {
