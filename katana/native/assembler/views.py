@@ -121,3 +121,16 @@ def check_tools_repo_availability(request):
     if not check_url_is_a_valid_repo(url):
         available = False
     return JsonResponse({"available": available, "repo_name": repo_name})
+
+
+def save_warhorn_config_file(request):
+    filepath = os.path.join(request.POST.get('directory'), request.POST.get('filename') + ".xml")
+    message = ""
+    saved = True
+    try:
+        with open(filepath, 'w') as f:
+            f.write(xmltodict.unparse(json.loads(request.POST.get('json_data'))))
+    except Exception as e:
+        saved = False
+        message = e
+    return JsonResponse({"saved": saved, "message": message})

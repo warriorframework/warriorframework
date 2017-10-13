@@ -537,9 +537,9 @@ class toolsRepository{
 
     formJsonObj(){
         var jsonObject = {
-            "@url": this.name,
-            "@clone": this.install,
-            "@label": this.user,
+            "@url": this.url,
+            "@clone": this.clone,
+            "@label": this.label,
         }
         return jsonObject;
     }

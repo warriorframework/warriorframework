@@ -8,4 +8,5 @@ urlpatterns = [
     url(r'^check_repo_availability/$', views.check_repo_availability, name='check_repo_availability'),
     url(r'^check_ws_repo_availability/$', views.check_ws_repo_availability, name='check_ws_repo_availability'),
     url(r'^check_tools_repo_availability/$', views.check_tools_repo_availability, name='check_tools_repo_availability'),
+    url(r'^save_warhorn_config_file/$', views.save_warhorn_config_file, name='save_warhorn_config_file'),
 ]
