@@ -56,6 +56,7 @@ const createPyProc = () => {
   //pyProc = require('child_process').exec(script) 
   if (pyProc != null) {
     console.log('child process success')
+    win.loadURL("http://localhost:"+port+"/katana");
   }
 }
 
