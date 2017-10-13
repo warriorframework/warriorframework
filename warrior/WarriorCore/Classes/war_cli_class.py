@@ -379,11 +379,19 @@ class WarriorCliClass(object):
 
         #Running Warrior in Mock mode and Test mode
         parser.add_argument('-mock', action='store_true', default=False,
-                            help=":testmode: Trial run the Cases/Suites/Project")
+                            help=":mock mode: In this mode, connection to server "\
+                            "will be mocked (won't actually connect) and keywords will run. "\
+                            "User can verify input value from console output/result file")
 
         #Running Warrior in Mock mode and Test mode
         parser.add_argument('-sim', action='store_true', default=False,
-                            help=":testmode: Trial run the Cases/Suites/Project")
+                            help=":mock mode: In this mode, connection to server "\
+                            "will be mocked (won't actually connect) and keywords will run. "\
+                            "A response file can be specified in testdata file inside global tag."\
+                            "Instead of actual server response, Warrior will use the response "\
+                            "in the response file to do command verification"\
+                            "or other CLI related operation."
+                            "User can verify input value from console output/result file")
 
         namespace = parser.parse_args(arglist)
         #see if the below line is requried

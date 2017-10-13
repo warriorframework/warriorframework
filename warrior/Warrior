@@ -146,11 +146,7 @@ if __name__ == '__main__':
     status = main(FILEPATH, AUTO_DEFECTS, CSE_EXEC, IRON_CLAW,
                   JIRAPROJ, OVERWRITE, JIRAID, DBSYSTEM)
     status = {"true": True, "pass": True, "ran": "RAN"}.get(str(status).lower())
-    if status is True:
-        print_info("DONE 0")
-        sys.exit(0)
-        print "This line should not be printed"
-    elif status == 'RAN':
+    if status is True or status == "RAN":
         print_info("DONE 0")
         sys.exit(0)
         print "This line should not be printed"
