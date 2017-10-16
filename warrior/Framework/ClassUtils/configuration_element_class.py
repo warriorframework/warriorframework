@@ -29,6 +29,7 @@ class ConfigurationElement(object):
 
     def __init__(self, name='base', start_pat="${", end_pat="}"):
         """ Constructor """
+
         self.name = name
         self.attributes = {}
         self.children = {}
@@ -75,7 +76,8 @@ class ConfigurationElement(object):
 
             if match is None:
                 clean_partial += return_value[:return_value.find(check) + len(check)]
-                return_value = return_value.replace(return_value[:return_value.find(check) + len(check)], '')
+                # replace only the clean_partial value when there are multiple '}'
+                return_value = return_value.replace(return_value[:return_value.find(check) + len(check)], '', 1)
                 match = self.__find_match(return_value[:return_value.find(check) + len(check)])
                 if match is None:
                     return clean_partial + return_value
@@ -185,8 +187,7 @@ class ConfigurationElement(object):
                 else:
                     result.append(var)
             return result
-        else:
-            return False
+        return False
 
     def __frange(self, x, y, jump=None):
         """
@@ -265,7 +266,7 @@ class ConfigurationElement(object):
                 return self.attributes[value]
         except KeyError:
             print_error("Key error node " + self.name + " does not have sub node "
-                  + value.split('.')[0] + ". Cannot complete remainder of search for " + value)
+                        + value.split('.')[0] + ". Cannot complete remainder of search for " + value)
             return None
 
     def set_value(self, key, value):
@@ -283,7 +284,7 @@ class ConfigurationElement(object):
                 self.attributes[key] = value
         except KeyError:
             print_error("Key error node " + self.name + " does not have sub node "
-                  + key.split('.')[0] + ". Cannot complete remainder of search for " + key)
+                        + key.split('.')[0] + ". Cannot complete remainder of search for " + key)
 
     def get_node(self, value):
         """
@@ -380,4 +381,5 @@ class ConfigurationElement(object):
 
     def __str__(self):
         """ Prints the string representation of the object """
+
         return self.print_me()
