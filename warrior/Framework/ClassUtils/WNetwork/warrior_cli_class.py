@@ -242,18 +242,20 @@ class WarriorCli(object):
                             sys_name = system_name.split('.')[0]
                         else:
                             sys_name = details_dict["sys_list"][i]
-                        if details_dict["session_list"][i] == '' or details_dict["session_list"][i] is None:
+                        if details_dict["session_list"][i] == '' or \
+                           details_dict["session_list"][i] is None:
                             session_name = args.get("session_name")
                             ses_name = session_name
                         else:
                             ses_name = details_dict["session_list"][i]
 
-                        session_id = Utils.data_Utils.get_session_id(sys_name, ses_name) + "_td_response"
+                        session_id = Utils.data_Utils.get_session_id(sys_name, ses_name) + \
+                            "_td_response"
                         for k in resp_list_item:
                             if k == resp_list_item[i]:
                                 pNote("Portion of response saved to the data repository with key: "
-                                       "{0}.{1}.{2}, value: {3}"
-                                       .format(session_id, key, k, response_dict[k]))
+                                      "{0}.{1}.{2}, value: {3}".format(session_id, key,
+                                                                       k, response_dict[k]))
                     print_debug("<<<")
                 else:
                     finalresult = "ERROR"

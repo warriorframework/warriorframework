@@ -398,7 +398,8 @@ def _get_response_dict(details_dict, index, response, response_dict):
     """Get the response dict for a command. """
 
     wc_obj = WNetwork.warrior_cli_class.WarriorCli()
-    response_dict, resp_list_item = wc_obj._get_response_dict(details_dict, index, response, response_dict, resp_list_item = [])
+    response_dict, resp_list_item = wc_obj._get_response_dict(details_dict, index, response,
+                                                              response_dict, resp_list_item = [])
 
     return response_dict
 
