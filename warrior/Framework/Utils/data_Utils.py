@@ -113,6 +113,7 @@ def getSystemData(datafile, system_name, cnode, system='system'):
         if value is None:
             value = xml_Utils.get_text_from_direct_child(element, cnode)
         value = sub_from_env_var(value)
+        value = sub_from_data_repo(value)
 
     return value
 
@@ -181,6 +182,7 @@ def get_credentials(datafile, system_name, myInfo=[], tag_name="system",
                 output_dict[x] = cred_value
         value = output_dict
     updated_dict = sub_from_env_var(value)
+    updated_dict = sub_from_data_repo(updated_dict)
     return updated_dict
 
 
@@ -1833,6 +1835,7 @@ def get_iteration_syslist(system_node_list, system_name_list):
         if iter_flag is None:
             iter_flag = xml_Utils.get_text_from_direct_child(system, "iter")
         iter_flag = sub_from_env_var(iter_flag)
+        iter_flag = sub_from_data_repo(iter_flag)
 
         if str(iter_flag).lower() == "no":
             pass
