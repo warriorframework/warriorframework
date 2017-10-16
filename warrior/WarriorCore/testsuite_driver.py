@@ -142,6 +142,23 @@ def get_testcase_list(testsuite_filepath):
         testcase_list = []
         new_testcase_list = testcases.findall('Testcase')
         # execute tc multiple times
+        # In case we want to add this in the future. 
+        # newlist = []
+        # for ts in new_testcase_list:
+        #     sfilename = ts.find('path').text
+        #     dirname = os.path.dirname(testsuite_filepath)+os.sep
+        #     if sfilename.find('*') < 0 :
+        #         newlist.append(ts) 
+        #     else: 
+        #         files = glob.glob(dirname+sfilename) 
+        #         for fn in files:
+        #             nts = copy.deepcopy(ts) 
+        #             nts.find('path').text = fn.replace(dirname,'')
+        #             newlist.append(nts) 
+        # for ts in newlist: 
+        #     print_info("Added testcase [{0}] ".format(ts.find('path').text))
+        # for _, tc in enumerate(newlist):
+        
         for _, tc in enumerate(new_testcase_list):
             runmode, value = common_execution_utils.get_runmode_from_xmlfile(tc)
             retry_type, _, _, retry_value, _ = common_execution_utils.get_retry_from_xmlfile(tc)
