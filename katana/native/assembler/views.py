@@ -30,11 +30,23 @@ class ConfigurationFileOps(View):
                                                   "static", "assembler", "base_templates",
                                                   "empty.xml"))
         filename = "Untitled"
+        message = ""
+        status = "success"
         if template == "false":
             json_data = copy.deepcopy(ref_data)
         else:
-            json_data = read_xml_get_json(template)
-            filename, ext = os.path.splitext(get_dir_from_path(template))
+            if os.path.isfile(template):
+                json_data = read_xml_get_json(template)
+                if "error" in json_data:
+                    message = json_data["error"]
+                    status = "error"
+                    json_data = copy.deepcopy(ref_data)
+                else:
+                    filename, ext = os.path.splitext(get_dir_from_path(template))
+            else:
+                json_data = copy.deepcopy(ref_data)
+                message = "A directory was selected instead of a file."
+                status = "error"
 
         final_data = copy.deepcopy(json_data)
 
@@ -44,7 +56,7 @@ class ConfigurationFileOps(View):
         final_data = verify_tools_data(final_data, ref_data)
 
         # print json.dumps(final_data, indent=4, sort_keys=True)
-        return JsonResponse({"xml_contents": final_data, "filename": filename})
+        return JsonResponse({"xml_contents": final_data, "filename": filename, "status": status, "message": message})
 
 
 def verify_tools_data(final_data, ref_data):
@@ -124,9 +136,14 @@ def verify_dependency_json(json_data, final_data):
 
 
 def read_xml_get_json(filepath):
-    xml_contents = open(filepath, 'r')
-    ordered_dict_json = xmltodict.parse(xml_contents)
-    json_data = json.loads(json.dumps(ordered_dict_json))
+    json_data = {}
+    try:
+        xml_contents = open(filepath, 'r')
+    except Exception as e:
+        json_data["error"] = e
+    else:
+        ordered_dict_json = xmltodict.parse(xml_contents)
+        json_data = json.loads(json.dumps(ordered_dict_json))
     return json_data
 
 

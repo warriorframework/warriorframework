@@ -5,48 +5,74 @@ var assembler = {
                 headers: {
                     'X-CSRFToken': $currentPage.find('input[name="csrfmiddlewaretoken"]').attr('value')
                 },
-                type: 'POST',
-                url: 'assembler/get_config_file/',
-                data: {"filepath": false}
+                type: 'GET',
+                url: 'read_config_file/',
             }).done(function(data) {
-                $currentPage.find('.tool-bar').find('.title').text(data["filename"]);
+                $.ajax({
+                        headers: {
+                            'X-CSRFToken': $currentPage.find('input[name="csrfmiddlewaretoken"]').attr('value')
+                        },
+                        type: 'POST',
+                        url: 'assembler/get_config_file/',
+                        data: {"filepath": false}
+                    }).done(function(data) {
+                        $currentPage.find('.tool-bar').find('.title').text(data["filename"]);
 
-                var dep_objs = [];
-                var dependencyDom= "";
-                $currentPage.find('#dependency-div').html('');
-                for(var i=0; i<data.xml_contents.data.warhorn.dependency.length; i++){
-                    dep_objs.push(new dependency(data.xml_contents.data.warhorn.dependency[i]));
-                    dependencyDom = dep_objs[i].domElement;
-                    dependencyDom.data("data-object", dep_objs[i]);
-                    $currentPage.find('#dependency-div').append(dependencyDom);
-                }
+                        var dep_objs = [];
+                        var dependencyDom= "";
+                        $currentPage.find('#dependency-div').html('');
+                        for(var i=0; i<data.xml_contents.data.warhorn.dependency.length; i++){
+                            dep_objs.push(new dependency(data.xml_contents.data.warhorn.dependency[i]));
+                            dependencyDom = dep_objs[i].domElement;
+                            dependencyDom.data("data-object", dep_objs[i]);
+                            $currentPage.find('#dependency-div').append(dependencyDom);
+                        }
 
-                var tools_obj = new toolsRepository(data.xml_contents.data.tools);
-                var toolsDom = "";
-                $currentPage.find('#tools-div').html('');
-                toolsDom = tools_obj.domElement;
-                toolsDom.data("data-object", tools_obj);
-                $currentPage.find('#tools-div').append(toolsDom);
+                        var tools_obj = new toolsRepository(data.xml_contents.data.tools);
+                        var toolsDom = "";
+                        $currentPage.find('#tools-div').html('');
+                        toolsDom = tools_obj.domElement;
+                        toolsDom.data("data-object", tools_obj);
+                        $currentPage.find('#tools-div').append(toolsDom);
 
-                var kw_objs = []
-                var kwDom = "";
-                $currentPage.find('#kw-div').html('');
-                for(var i=0; i<data.xml_contents.data.drivers.repository.length; i++){
-                    kw_objs.push(new kwRepository(data.xml_contents.data.drivers.repository[i]));
-                    kwDom = kw_objs[i].domElement;
-                    kwDom.data("data-object", kw_objs[i]);
-                    $currentPage.find('#kw-div').append(kwDom);
-                }
+                        var kw_objs = []
+                        var kwDom = "";
+                        $currentPage.find('#kw-div').html('');
+                        for(var i=0; i<data.xml_contents.data.drivers.repository.length; i++){
+                            kw_objs.push(new kwRepository(data.xml_contents.data.drivers.repository[i]));
+                            kwDom = kw_objs[i].domElement;
+                            kwDom.data("data-object", kw_objs[i]);
+                            $currentPage.find('#kw-div').append(kwDom);
+                        }
 
-                var ws_objs = [];
-                var wsDom ="";
-                $currentPage.find('#ws-div').html('');
-                for(var i=0; i<data.xml_contents.data.warriorspace.repository.length; i++){
-                    ws_objs.push(new wsRepository(data.xml_contents.data.warriorspace.repository[i]));
-                    wsDom = ws_objs[i].domElement;
-                    wsDom.data("data-object", ws_objs[i]);
-                    $currentPage.find('#ws-div').append(wsDom);
-                }
+                        var ws_objs = [];
+                        var wsDom ="";
+                        $currentPage.find('#ws-div').html('');
+                        for(var i=0; i<data.xml_contents.data.warriorspace.repository.length; i++){
+                            ws_objs.push(new wsRepository(data.xml_contents.data.warriorspace.repository[i]));
+                            wsDom = ws_objs[i].domElement;
+                            wsDom.data("data-object", ws_objs[i]);
+                            $currentPage.find('#ws-div').append(wsDom);
+                        }
+                    });
+                    var not_available = "";
+                    if(data["warhorn_config"] === ""){
+                        if(data["pythonsrcdir"] === ""){
+                            not_avaiable = "The paths for Warrior Framework Directory and Warhorn Configuration Directory have not been set";
+                        }
+                        else {
+                            not_avaiable = "The path for Warhorn Configuration Directory has not been set";
+                        }
+                    } else if (data["pythonsrcdir"] === ""){
+                        not_avaiable = "The path for Warrior Framework Directory has not been set";
+                    }
+                    if(not_available !== ""){
+                        katana.openAlert({"alert_type": "warning",
+                                      "heading": "Configure the General Settings",
+                                      "sub_heading": not_available,
+                                      "text": "App may not behave as expected if the paths have not been set.",
+                                      "show_cancel_btn": false});
+                    }
             });
     },
 
@@ -304,43 +330,49 @@ var assembler = {
                         url: 'assembler/get_config_file/',
                         data: {"filepath": inputValue}
                     }).done(function(data) {
-                        $currentPage.find('.tool-bar').find('.title').text(data.filename);
-                        $currentPage.find('#dependency-div').html('');
-                        $currentPage.find('#tools-div').html('');
-                        $currentPage.find('#kw-div').html('');
-                        $currentPage.find('#ws-div').html('');
+                        if(data["status" === "success"]){
+                            $currentPage.find('.tool-bar').find('.title').text(data.filename);
+                            $currentPage.find('#dependency-div').html('');
+                            $currentPage.find('#tools-div').html('');
+                            $currentPage.find('#kw-div').html('');
+                            $currentPage.find('#ws-div').html('');
 
-                        var dep_objs = [];
-                        var dependencyDom= "";
-                        for(var i=0; i<data.xml_contents.data.warhorn.dependency.length; i++){
-                            dep_objs.push(new dependency(data.xml_contents.data.warhorn.dependency[i]));
-                            dependencyDom = dep_objs[i].domElement;
-                            dependencyDom.data("data-object", dep_objs[i]);
-                            $currentPage.find('#dependency-div').append(dependencyDom);
+                            var dep_objs = [];
+                            var dependencyDom= "";
+                            for(var i=0; i<data.xml_contents.data.warhorn.dependency.length; i++){
+                                dep_objs.push(new dependency(data.xml_contents.data.warhorn.dependency[i]));
+                                dependencyDom = dep_objs[i].domElement;
+                                dependencyDom.data("data-object", dep_objs[i]);
+                                $currentPage.find('#dependency-div').append(dependencyDom);
+                            }
+
+                            var tools_obj = new toolsRepository(data.xml_contents.data.tools);
+                            var toolsDom = "";
+                            toolsDom = tools_obj.domElement;
+                            toolsDom.data("data-object", tools_obj);
+                            $currentPage.find('#tools-div').append(toolsDom);
+
+                            var kw_objs = []
+                            var kwDom = "";
+                            for(var i=0; i<data.xml_contents.data.drivers.repository.length; i++){
+                                kw_objs.push(new kwRepository(data.xml_contents.data.drivers.repository[i]));
+                                kwDom = kw_objs[i].domElement;
+                                kwDom.data("data-object", kw_objs[i]);
+                                $currentPage.find('#kw-div').append(kwDom);
+                            }
+
+                            var ws_objs = [];
+                            var wsDom ="";
+                            for(var i=0; i<data.xml_contents.data.warriorspace.repository.length; i++){
+                                ws_objs.push(new wsRepository(data.xml_contents.data.warriorspace.repository[i]));
+                                wsDom = ws_objs[i].domElement;
+                                wsDom.data("data-object", ws_objs[i]);
+                                $currentPage.find('#ws-div').append(wsDom);
+                            }
                         }
-
-                        var tools_obj = new toolsRepository(data.xml_contents.data.tools);
-                        var toolsDom = "";
-                        toolsDom = tools_obj.domElement;
-                        toolsDom.data("data-object", tools_obj);
-                        $currentPage.find('#tools-div').append(toolsDom);
-
-                        var kw_objs = []
-                        var kwDom = "";
-                        for(var i=0; i<data.xml_contents.data.drivers.repository.length; i++){
-                            kw_objs.push(new kwRepository(data.xml_contents.data.drivers.repository[i]));
-                            kwDom = kw_objs[i].domElement;
-                            kwDom.data("data-object", kw_objs[i]);
-                            $currentPage.find('#kw-div').append(kwDom);
-                        }
-
-                        var ws_objs = [];
-                        var wsDom ="";
-                        for(var i=0; i<data.xml_contents.data.warriorspace.repository.length; i++){
-                            ws_objs.push(new wsRepository(data.xml_contents.data.warriorspace.repository[i]));
-                            wsDom = ws_objs[i].domElement;
-                            wsDom.data("data-object", ws_objs[i]);
-                            $currentPage.find('#ws-div').append(wsDom);
+                        else{
+                            katana.openAlert({"alert_type": "danger", "heading": "An Error Occurred",
+                            "text": data.message, "show_cancel_btn": false})
                         }
                     });
                 };
