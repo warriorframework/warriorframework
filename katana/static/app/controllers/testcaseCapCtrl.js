@@ -49,6 +49,65 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
 
         readConfig();
 
+
+//To Load the InputData File from Suite 
+//Works for base Directory as well as Subdirectories
+    $scope.loadDataFile = function(filepath) { 
+        var checkFlag = filepath.includes("..");                                         
+        if(checkFlag==true){                                                 //For files inside the Warrior directory
+           var dirCheck=filepath.split("/").reverse()[1]; 
+             if(dirCheck=="Data"){                                            //Fetch Parent directory files
+                var splitDir = filepath.split('/Data')[1]; 
+                var finalUrl = "#/datafile"+splitDir+"/none";
+                window.open(finalUrl);    
+             }
+             else if(dirCheck=="data"){
+                var splitDir = filepath.split('/data')[1]; 
+                var finalUrl = "#/datafile"+splitDir+"/none";
+                window.open(finalUrl);
+             }
+            else{                                                              //Fetch subdirectory files
+                var splitPath = filepath.split("/").pop(-1); 
+                var splitter = splitPath+"/"; 
+                if(filepath.includes("Data")==true){
+                var checkDir = filepath.split("Data/")[1].split(splitPath)[0]; 
+                }
+                else{var checkDir = filepath.split("data/")[1].split(splitPath)[0];}
+                checkDir = checkDir.slice(0, -1);
+                checkDir = checkDir.replace(/\//g,','); 
+                var finalUrlDir = "#/datafile/"+splitter+checkDir;
+                window.open(finalUrlDir);
+            }
+        }
+        else{                                                                     //For files outside the Warrior directory
+            var dataDir = $scope.cfg.idfdir;
+            var matchPath = filepath.includes(dataDir);
+            if(matchPath == true){
+              splitPath = filepath.split(dataDir)[1]; 
+              var fileName = splitPath.split("/").pop(-1); 
+              splitter = fileName+"/";
+              var checkDir = filepath.split(dataDir)[1].split(fileName)[0]; 
+              checkDir = checkDir.replace(/\//g,','); 
+              var finalUrlDir = "#/datafile/"+splitter+checkDir;
+              window.open(finalUrlDir);
+          }
+            else{ 
+            if(filepath != '') 
+                 {                                                                  //Mismatched Config and selected path;   
+                sweetAlert({
+                    title: "Config Path mismatch with the selected path !",
+                    closeOnConfirm: true,
+                    confirmButtonColor: '#3b3131',
+                    confirmButtonText: "Ok",
+                    type: "info"
+                });
+              }
+          }
+        } 
+     };
+
+
+
         function get_folders_names(json_dir_data){
             var dir = json_dir_data["dir"];
             var files = json_dir_data["file"];

@@ -73,17 +73,17 @@ def getErrorHandlingParameters(node, def_on_error_action, def_on_error_value, ex
         action = Utils.xml_Utils.get_attributevalue_from_directchildnode(node, 'onError', 'action')
         value = Utils.xml_Utils.get_attributevalue_from_directchildnode(node, 'onError', 'value')
 
-    if action is None or action is False:
+    if action is None or action is False or action == '':
         action = def_on_error_action
-    
+
     elif action is not None and action is not False:
         supported_values = ['next', 'goto', 'abort', 'abort_as_error']
         action = str(action).strip()
-        if not action.lower() in supported_values:
+        if action.lower() not in supported_values:
             print_warning("unsupported option '{0}' provided for onError action, supported values are {1}".format(action, supported_values))
             print_info("Hence using default_onError action")
-            action = def_on_error_action 
-    
+            action = def_on_error_action
+
     if value is None or value is False:
         value = def_on_error_value
 
