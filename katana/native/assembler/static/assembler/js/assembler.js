@@ -330,7 +330,7 @@ var assembler = {
                         url: 'assembler/get_config_file/',
                         data: {"filepath": inputValue}
                     }).done(function(data) {
-                        if(data["status" === "success"]){
+                        if(data["status"] === "success"){
                             $currentPage.find('.tool-bar').find('.title').text(data.filename);
                             $currentPage.find('#dependency-div').html('');
                             $currentPage.find('#tools-div').html('');
