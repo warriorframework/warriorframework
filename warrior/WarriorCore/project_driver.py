@@ -124,6 +124,7 @@ def get_testsuite_list(project_filepath):
    
         # for ts in testsuite_list:
         for ts in newlist:
+            print_info("*****Starting suite [{0}] ".format(ts.find('path').text))
             runmode, value = common_execution_utils.\
                 get_runmode_from_xmlfile(ts)
             retry_type, _, _, retry_value, _ = common_execution_utils.\

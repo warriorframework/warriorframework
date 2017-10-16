@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <Project>
 	<Details>
-		<Name>cond_var</Name>
+		<Name>pj_glob_suites.xml</Name>
 		<Title>Project for testing conditional execution</Title>
 		<Engineer>Ka Hei Chan</Engineer>
 		<State>New</State>
@@ -11,6 +11,14 @@
 	</Details>
 	<Testsuites>
 		<Testsuite>
+			<path>../suites/common_action_tests/common_action_suite.xml</path>
+			<Execute ExecType="If">
+				<Rule Condition="testsuite_1_result" Condvalue="PASS" Else="abort" Elsevalue=""/>
+			</Execute>
+			<onError action="next" value=""/>
+			<impact>noimpact</impact>
+		</Testsuite>
+		<Testsuite>
 			<path>../suites/framework_tests/cond_var/*</path>
 			<Execute ExecType="Yes">
 				<Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
@@ -19,7 +27,7 @@
 			<impact>impact</impact>
 		</Testsuite>
 		<Testsuite>
-			<path>../suites/rest_functional_tests/*</path>
+			<path>../suites/common_action_tests/*</path>
 			<Execute ExecType="If">
 				<Rule Condition="testsuite_1_result" Condvalue="PASS" Else="abort" Elsevalue=""/>
 			</Execute>
@@ -35,7 +43,7 @@
 			<impact>noimpact</impact>
 		</Testsuite>
 		<Testsuite>
-			<path>../suites/framework_tests/cond_var/pass.xml</path>
+			<path>../suites/rest_*/*</path>
 			<Execute ExecType="If">
 				<Rule Condition="testsuite_3_result" Condvalue="ERROR" Else="abort" Elsevalue=""/>
 			</Execute>
