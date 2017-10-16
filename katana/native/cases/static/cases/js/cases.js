@@ -1173,12 +1173,21 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		var xopts = jQuery.getJSON("./cases/getListOfComments/?driver="+driver+"&keyword="+keyword).done(function(data) {
  			//console.log(data);
  			a_items = data['fields'];
- 			//console.log(a_items);
+ 			console.log(a_items);
  			out_array = a_items[0]['comment'];
  			var outstr = out_array.join("<br>");
  			var hhh = popup.find("#sourceCaseFileText");
- 			hhh.empty(); 
+
+			hhh.empty(); 
  			hhh.append(outstr);
+
+
+ 			cases.lastPopup.find("#sourceCaseFileDef").html(""); 
+			if (a_items[0]['def']) {
+ 				outstr = a_items[0]['def'];
+ 				console.log(outstr);
+				cases.lastPopup.find("#sourceCaseFileDef").html(outstr);	
+ 				}
  			});
 		});
 	},
