@@ -48,12 +48,12 @@ class kwRepository {
     formDomElement() {
         var clone_icon = "fa fa-toggle-off grey";
         if(this.clone == "yes"){
-            clone_icon = "fa fa-toggle-on green";
+            clone_icon = "fa fa-toggle-on skyblue";
         }
         var available_icon = "fa fa-times red";
         var available_text = "Repository Not Available"
         if(this.available){
-            available_icon = "fa fa-check-circle green"
+            available_icon = "fa fa-check-circle skyblue"
             available_text = "Repository Available"
         }
         var hideAvailability = "";
@@ -71,7 +71,7 @@ class kwRepository {
         var allDriversIcon = "fa fa-toggle-off grey";
         var aria_selected_all_drivers = "false";
         if(this.all_drivers == "yes"){
-            allDriversIcon = "fa fa-toggle-on green";
+            allDriversIcon = "fa fa-toggle-on skyblue";
             aria_selected_all_drivers = "true";
         }
         var $elem =  $('<div class="card" style="padding: 1rem;">' +
@@ -85,8 +85,8 @@ class kwRepository {
                                         this.name +
                                     '</div>' +
                                     '<div class="col-sm-2">' +
-                                        '<button class="btn btn-danger" style="float:right;" ' +
-                                            'aria-hidden="true" katana-click="assembler.deleteKwRepo" aria-selected="true">Delete Repository</button>' +
+                                        '<i class="fa fa-trash" style="float:right;" ' +
+                                            'aria-hidden="true" katana-click="assembler.deleteKwRepo" aria-selected="true"></i>' +
                                     '</div>' +
                                 '</div>' +
                             '</div>' +
@@ -174,7 +174,7 @@ class driverDetails {
             var clone_icon = "fa fa-toggle-off grey";
             var aria_attribute = "false";
             if(this.clone == "yes"){
-                clone_icon = "fa fa-toggle-on green";
+                clone_icon = "fa fa-toggle-on skyblue";
                 aria_attribute = "true";
             }
             var elem = '<div class="col-sm-4">' +
@@ -244,14 +244,14 @@ class wsRepository {
         var cloneWsRepoIcon = "fa fa-toggle-off grey";
         var wsCloneToggle = "false";
         if(this.clone == "yes"){
-            cloneWsRepoIcon = "fa fa-toggle-on green";
+            cloneWsRepoIcon = "fa fa-toggle-on skyblue";
             wsCloneToggle = "true";
         }
 
         var overwriteWsFiles = "fa fa-toggle-off grey";
         var overwriteSelect = "false";
         if(this.overwrite == "yes"){
-            overwriteWsFiles = "fa fa-toggle-on green";
+            overwriteWsFiles = "fa fa-toggle-on skyblue";
             overwriteSelect = "true";
         }
         var hideAvailability = "";
@@ -261,7 +261,7 @@ class wsRepository {
         var wsAvailableIcon = "fa fa-times red";
         var wsAvailableText = "Repository Not Available"
         if(this.available){
-            wsAvailableIcon = "fa fa-check-circle green"
+            wsAvailableIcon = "fa fa-check-circle skyblue"
             wsAvailableText = "Repository Available"
         }
         var html_contents = '<div class="card" style="padding: 1rem;">' +
@@ -282,8 +282,8 @@ class wsRepository {
                                             'Overwrite' +
                                         '</div>' +
                                         '<div class="col-sm-2">' +
-                                            '<button class="btn btn-danger" katana-click="assembler.deleteWsRepo" ' +
-                                                    'aria-hidden="true" style="float: right;">Delete Repository</button>' +
+                                            '<i class="fa fa-trash" katana-click="assembler.deleteWsRepo" ' +
+                                                    'aria-hidden="true" style="float: right;"></i>' +
                                         '</div>' +
                                     '</div>' +
                                 '</div>' +
@@ -366,7 +366,7 @@ class dependency{
 
     formDomElement() {
         var availableText = "";
-        var installFunction = "installDependency";
+        var installFunction = 'katana-click="assembler.installDependency"';
         if(this.installed){
             availableText = 'Available Version: ' + this.installed
         }
@@ -375,7 +375,7 @@ class dependency{
         if(this.user == "yes"){
             installBtnText = "Install As User";
         }
-        var installBtnBgColor = "background-color: #3b7a4c";
+        var installBtnBgColor = "background-color: #4ea4e0; color: white;";
         var installBtnIcon = '<i class="fa fa-check" style="color: white" aria-hidden="true"></i>';
         if(this.install == "no"){
             depSelect = "false";
@@ -385,10 +385,10 @@ class dependency{
         }
         if(this.matched == "lower"){
             installBtnText = "Upgrade";
-            installFunction = "upgradeDependency";
+            installFunction = 'katana-click="assembler.upgradeDependency"';
             installBtnIcon = '<i class="fa fa-exclamation-triangle tan" aria-hidden="true"></i>';
             if(this.install == "yes"){
-                installBtnBgColor = "background-color: #987150";
+                installBtnBgColor = "background-color: #987150; color: white;";
                 depSelect = "true";
                 if(this.user == "yes"){
                     installBtnText = "Upgrade As Admin";
@@ -398,8 +398,9 @@ class dependency{
                 }
             }
         } else if (this.matched || this.matched == "higher") {
+            installFunction = "";
             installBtnText = "Installed";
-            installBtnIcon = '<i class="fa fa-check-circle green" aria-hidden="true"></i>';
+            installBtnIcon = '<i class="fa fa-check-circle skyblue" aria-hidden="true"></i>';
             depSelect = "false";
         }
 
@@ -409,8 +410,8 @@ class dependency{
                                         '<h4 class="card-title">' + this.name +'</h4>' +
                                         '<h6 class="card-subtitle mb-2 text-muted">Version: ' + this.version + '</h6><hr>' +
                                         '<h6 class="card-subtitle mb-2 text-muted">' + availableText + '&nbsp;</h6><br>' +
-                                        '<button class="btn btn-success" katana-click="assembler.' + installFunction + '" ' +
-                                                 'aria-selected="' + depSelect + '" style="' + installBtnBgColor + '">' +
+                                        '<button class="btn btn-success" ' + installFunction +
+                                                 ' aria-selected="' + depSelect + '" style="' + installBtnBgColor + '">' +
                                             installBtnText + "&nbsp;" + installBtnIcon +
                                         '</button>' +
                                     '</div>' +
@@ -470,13 +471,13 @@ class toolsRepository{
         var cloneRepoIcon = "fa fa-toggle-off grey";
         var cloneRepoSelected = "false";
         if(this.clone == "yes"){
-            cloneRepoIcon = "fa fa-toggle-on green";
+            cloneRepoIcon = "fa fa-toggle-on skyblue";
             cloneRepoSelected = "true";
         }
         var repoAvailableIcon = "fa fa-times red";
         var repoAvailableText = "Repository Not Available";
         if(this.available){
-            repoAvailableIcon = "fa fa-check-circle green";
+            repoAvailableIcon = "fa fa-check-circle skyblue";
             repoAvailableText = "Repository Available";
         }
         var displayToolsFooter = "";

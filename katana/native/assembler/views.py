@@ -101,7 +101,7 @@ def verify_drivers_json(final_data, ref_data):
 
 
 def verify_dependency_json(json_data, final_data):
-    dependency_dict = {"jira": "1.0.3", "lxml": "3.5", "ncclient": "0.4.6",
+    dependency_dict = {"jira": "1.0.3", "lxml": "3.5",
                        "paramiko": "1.16.0", "pexpect": "4.2.0", "pysnmp": "4.3.2",
                        "requests": "2.9.1", "selenium": "2.48.0", "xlrd": "1.0.0",
                        "cloudshell-automation-api": "7.1.0.34"}

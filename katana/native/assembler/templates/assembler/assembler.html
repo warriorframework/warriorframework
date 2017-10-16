@@ -13,7 +13,7 @@
         <div class="button" katana-click="assembler.saveFileRunWarhorn">Assemble!</div>
     </div>
     <div class="csrf-container">{% csrf_token %}</div>
-    <div id="main-div" auto-init="assembler.init">
+    <div id="main-div" auto-init="assembler.init" execution="1">
         {% include 'assembler/configFileDetails.html' %}
     </div>
 </body>

@@ -476,6 +476,10 @@ span.close:before {
 	color: #108c82;
 }
 
+.tab.skyblue {
+    color: #4ea4e0;
+}
+
 .tan {
 	color: #987150;
 }
@@ -494,6 +498,14 @@ span.close:before {
 
 .green {
 	color: #3b7a4c;
+}
+
+.skyblue{
+    color: #4ea4e0;
+}
+
+.lightblue {
+    color: #108c82;
 }
 
 .page-content .tab:hover {
@@ -2279,7 +2291,8 @@ i.active {
 	margin: 0 auto;
 }
 
-.loading:before {
+.
+:before {
 	content: '';
 	border: 8px solid #f3f3f3;
 	border-radius: 50%;
@@ -3696,4 +3709,20 @@ input[type="checkbox"]+label {
 }
 .tab-template {
     display: none !important;
+}
+
+.assembler-popup-loading {
+	content: '';
+	border: 8px solid #f3f3f3;
+	border-radius: 50%;
+	border-top: 8px solid #dc3545;
+	width: 80px;
+	height: 80px;
+	-webkit-animation: spin 2s ease-in-out infinite;
+	animation: spin 2s ease-in-out infinite;
+	position: absolute;
+	top: 40%;
+	left: 0;
+	right: 0;
+	margin: 0 auto;
 }

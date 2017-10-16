@@ -154,7 +154,7 @@ var assembler = {
         }
         var $installBtn = $parentDiv.siblings('button[katana-click="assembler.installDependency"]');
         $installBtn.html(text + '&nbsp;<i class="fa fa-check" style="color: white" aria-hidden="true"></i>&nbsp;');
-        $installBtn.css("background-color", "#3b7a4c");
+        $installBtn.css("background-color", "#4ea4e0");
         $installBtn.css("color", "white");
     },
 
@@ -272,7 +272,7 @@ var assembler = {
                 if(data["available"]){
                     $topLevelDiv.data().dataObject.url = url;
                     $topLevelDiv.data().dataObject.available = true;
-                    $footerBlockRowIcon.addClass('fa-check').addClass('green');
+                    $footerBlockRowIcon.addClass('fa-check').addClass('skyblue');
                     $footerBlockRow.find('.col-sm-8').html('Repository Available.');
                     $parentCardBlock.siblings('.card-header').find('.col-sm-7').html(data["repo_name"]);
 
@@ -301,14 +301,14 @@ var assembler = {
         var $topLevelDiv = $elem.closest('.card');
         if($elem.attr('aria-selected') == "true"){
             $elem.attr('aria-selected', 'false');
-            $elem.removeClass('fa-toggle-on').removeClass('green');
+            $elem.removeClass('fa-toggle-on').removeClass('skyblue');
             $elem.addClass('fa-toggle-off').addClass('grey');
             $topLevelDiv.data().dataObject.clone = "no";
         }
         else{
             $elem.attr('aria-selected', 'true');
             $elem.removeClass('fa-toggle-off').removeClass('grey');
-            $elem.addClass('fa-toggle-on').addClass('green');
+            $elem.addClass('fa-toggle-on').addClass('skyblue');
             $topLevelDiv.data().dataObject.clone = "no";
         }
     },
@@ -437,7 +437,7 @@ var assembler = {
         } else {
             $elem.attr("aria-selected", "true");
             $elem.attr("class", "");
-            $elem.addClass("fa").addClass("fa-toggle-on").addClass("green");
+            $elem.addClass("fa").addClass("fa-toggle-on").addClass("skyblue");
             for(var i=0; i<$topLevelDiv.data().dataObject.drivers.length; i++){
                 if($topLevelDiv.data().dataObject.drivers[i]["name"] == $elem.siblings('label').text()){
                     $topLevelDiv.data().dataObject.drivers[i]["clone"] = "yes";
@@ -458,7 +458,7 @@ var assembler = {
         } else {
             $elem.attr("aria-selected", "true");
             $elem.attr("class", "");
-            $elem.addClass("fa").addClass("fa-toggle-on").addClass("green");
+            $elem.addClass("fa").addClass("fa-toggle-on").addClass("skyblue");
             $topLevelDiv.data().dataObject.all_drivers = "yes";
         }
     },
@@ -474,7 +474,7 @@ var assembler = {
         } else {
             $elem.attr("aria-selected", "true");
             $elem.attr("class", "");
-            $elem.addClass("fa").addClass("fa-toggle-on").addClass("green");
+            $elem.addClass("fa").addClass("fa-toggle-on").addClass("skyblue");
             $topLevelDiv.data().dataObject.overwrite = "yes";
         }
     },
@@ -490,7 +490,7 @@ var assembler = {
         } else {
             $elem.attr("aria-selected", "true");
             $elem.attr("class", "");
-            $elem.addClass("fa").addClass("fa-toggle-on").addClass("green");
+            $elem.addClass("fa").addClass("fa-toggle-on").addClass("skyblue");
             $topLevelDiv.data().dataObject.clone = "yes";
         }
     },
@@ -529,7 +529,7 @@ var assembler = {
                 if(data["available"]){
                     $topLevelDiv.data().dataObject.url = url;
                     $topLevelDiv.data().dataObject.available = true;
-                    $footerBlockRowIcon.addClass('fa-check').addClass('green');
+                    $footerBlockRowIcon.addClass('fa-check').addClass('skyblue');
                     $footerBlockRow.find('.col-sm-8').html('Repository Available.');
                     $parentCardBlock.siblings('.card-header').find('.col-sm-4').html(data["repo_name"]);
                 } else {
@@ -597,7 +597,7 @@ var assembler = {
         } else {
             $elem.attr("aria-selected", "true");
             $elem.attr("class", "");
-            $elem.addClass("fa").addClass("fa-toggle-on").addClass("green");
+            $elem.addClass("fa").addClass("fa-toggle-on").addClass("skyblue");
             $topLevelDiv.data().dataObject.clone = "yes";
         }
     },
@@ -637,7 +637,7 @@ var assembler = {
                     $topLevelDiv.data().dataObject.available = false;
                     $topLevelDiv.data().dataObject.url = url;
                     $topLevelDiv.data().dataObject.available = true;
-                    $footerBlockRowIcon.addClass('fa-check').addClass('green');
+                    $footerBlockRowIcon.addClass('fa-check').addClass('skyblue');
                     $footerBlockRow.find('.col-sm-8').html('Repository Available.');
                     $parentCardBlock.siblings('.card-header').find('.col-sm-8').html(data["repo_name"]);
                 } else {
@@ -834,7 +834,13 @@ var assembler = {
                     delete finalJson.data.warriorspace
                 }
 
-                var popup = katana.popupController.open("", "Output");
+                var popupData = '<div class="text-center" style="padding-top: 10%; width: inherit;">' +
+                                    '<div class="assembler-popup-loading"></div>' +
+                                '</div>'
+                var pageElementId = $currentPage.closest('.page').attr('id');
+                var executionNumber = $currentPage.find('#main-div').attr('execution')
+                var popup = katana.popupController.open(popupData, pageElementId + ": Console Logs (" + executionNumber + ")");
+                $currentPage.find('#main-div').attr('execution', (parseInt(executionNumber)+1).toString())
 
                 $.ajax({
                         headers: {

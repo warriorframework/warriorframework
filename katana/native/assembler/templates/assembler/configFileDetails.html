@@ -1,216 +1,39 @@
 <body>
     <div style="padding: 2rem; width: 100%;">
         <div style="padding: 1rem;">
-            <h4>Dependencies</h4>
+            <h4>Pre-Requisites</h4>
         </div>
-        <div class="row" id="dependency-div">
-
-        </div>
+        <div class="row" id="dependency-div"></div>
     </div>
 
     <div style="padding: 2rem; width: 100%;">
         <div style="padding: 1rem;">
             <h4>Tools</h4>
         </div>
-        <div id="tools-div">
-            <!--<div class="card" style="padding: 1rem;">
-                <div class="card-header">
-                    <div class="row">
-                        <div class="col-sm-1">
-                            <i class="fa fa-toggle-on green" style="float:right; line-height:inherit!important;" aria-hidden="true"></i>
-                        </div>
-                        <div class="col-sm-8">
-                            Tools Repository: Repo Name
-                        </div>
-                    </div>
-                </div>
-                <div class="card-block" style="padding: 1rem;">
-                    <div class="row">
-                        <div class="col-sm-1" style="text-align: right; padding: 0.7rem;">
-                            <label>URL:</label>
-                        </div>
-                        <div class="col-sm-5">
-                            <input value="url.com">
-                        </div>
-                        <div class="col-sm-1" style="text-align: right; padding: 0.7rem;">
-                            <label>Label:</label>
-                        </div>
-                        <div class="col-sm-3">
-                            <input value="commit">
-                        </div>
-                    </div>
-                    <div class="row">
-
-                    </div>
-                    <br>
-                </div>
-                <div class="card-footer">
-                    <div class="row">
-                        <div class="col-sm-1">
-                            <i class="fa fa-spinner fa-spin tan" style="float:right; line-height:inherit!important;"></i>
-                        </div>
-                        <div class="col-sm-8 text-muted">
-                            Verifying Availability
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <br>-->
-        </div>
+        <div id="tools-div"></div>
     </div>
 
     <div style="padding: 2rem; width: 100%;">
-        <div style="padding: 1rem;">
-            <h4>Keyword Repositories</h4>
-        </div>
-        <div id="kw-div">
-            <!--<div class="card" style="padding: 1rem;">
-                <div class="card-header">
-                    <div class="row">
-                        <div class="col-sm-1">
-                            <i class="fa fa-toggle-on green" style="float:right; line-height:inherit!important;" aria-hidden="true"></i>
-                        </div>
-                        <div class="col-sm-8">
-                            Keyword Repository: Repo Name
-                        </div>
-                    </div>
-                </div>
-                <div class="card-block" style="padding: 1rem;">
-                    <div class="row">
-                        <div class="col-sm-1" style="text-align: right; padding: 0.7rem;">
-                            <label>URL:</label>
-                        </div>
-                        <div class="col-sm-5">
-                            <input value="url.com">
-                        </div>
-                        <div class="col-sm-1" style="text-align: right; padding: 0.7rem;">
-                            <label>Label:</label>
-                        </div>
-                        <div class="col-sm-3">
-                            <input value="commit">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-1"></div>
-                        <div class="col-sm-9">
-                            <div class="card">
-                                <div class="card-header">
-                                    <i class="fa fa-toggle-on green"></i>
-                                    <label>All Available Drivers</label>
-                                </div>
-                                <div class="card-block" style="padding: 1rem;">
-                                    <div class="row text-center">
-                                        <div class="col-sm-4">
-                                            <i class="fa fa-toggle-on green"></i>
-                                            <label>driver name one</label>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <i class="fa fa-toggle-off grey"></i>
-                                            <label>driver name two</label>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <i class="fa fa-toggle-off grey" ></i>
-                                            <label>driver name two</label>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <i class="fa fa-toggle-on green"></i>
-                                            <label>driver name one</label>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <i class="fa fa-toggle-off grey"></i>
-                                            <label>driver name two</label>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <i class="fa fa-toggle-off grey" ></i>
-                                            <label>driver name two</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <br>
-                </div>
-                <div class="card-footer">
-                    <div class="row">
-                        <div class="col-sm-1">
-                            <i class="fa fa-spinner fa-spin tan" style="float:right; line-height:inherit!important;"></i>
-                        </div>
-                        <div class="col-sm-8 text-muted">
-                            Verifying Availability
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <br>-->
-        </div>
         <div class="row" style="padding: 1rem;">
             <div class="col">
-                <button class="btn btn-success" katana-click="assembler.addKwRepository">Add Keyword Repository</button>
+                <h4>Keyword Repositories</h4>
+            </div>
+            <div class="col" style="padding: 0.6rem;">
+                <i class="fa fa-plus" katana-click="assembler.addKwRepository" style="float: right" aria-hidden="true">&nbsp;Repository</i>
             </div>
         </div>
+        <div id="kw-div"></div>
     </div>
 
     <div style="padding: 2rem; width: 100%;">
-        <div style="padding: 1rem;">
-            <h4>Warriorspace Repositories</h4>
-        </div>
-        <div id="ws-div">
-            <!--<div class="card" style="padding: 1rem;">
-                <div class="card-header">
-                    <div class="row">
-                        <div class="col-sm-1">
-                            <i class="fa fa-toggle-on green" style="float:right; line-height:inherit!important;" aria-hidden="true"></i>
-                        </div>
-                        <div class="col-sm-8">
-                            Warriorspace Repository: Repo Name
-                        </div>
-                    </div>
-                </div>
-                <div class="card-block" style="padding: 1rem;">
-                    <div class="row">
-                        <div class="col-sm-1" style="text-align: right; padding: 0.7rem;">
-                            <label>URL:</label>
-                        </div>
-                        <div class="col-sm-5">
-                            <input value="url.com">
-                        </div>
-                        <div class="col-sm-1" style="text-align: right; padding: 0.7rem;">
-                            <label>Label:</label>
-                        </div>
-                        <div class="col-sm-3">
-                            <input value="commit">
-                        </div>
-                        <div class="col-sm-1" style="padding: 1rem;">
-                            <i class="fa fa-toggle-on green" style="float:right;"></i>
-                        </div>
-                        <div class="col-sm-2" style="padding: 0.7rem;">
-                            Overwrite Older Files
-                        </div>
-                    </div>
-                    <div class="row">
-
-                    </div>
-                    <br>
-                </div>
-                <div class="card-footer">
-                    <div class="row">
-                        <div class="col-sm-1">
-                            <i class="fa fa-spinner fa-spin tan" style="float:right; line-height:inherit!important;"></i>
-                        </div>
-                        <div class="col-sm-8 text-muted">
-                            Verifying Availability
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <br>-->
-        </div>
         <div class="row" style="padding: 1rem;">
             <div class="col">
-                <button class="btn btn-success" katana-click="assembler.addWsRepository">Add Warios Repository</button>
+                <h4>Warriorspace Repositories</h4>
+            </div>
+            <div class="col" style="padding: 0.6rem;">
+                <i class="fa fa-plus" katana-click="assembler.addWsRepository" style="float: right" aria-hidden="true">&nbsp;Repository</i>
             </div>
         </div>
+        <div id="ws-div"></div>
     </div>
 </body>
