@@ -16,6 +16,7 @@ import os
 import shutil
 import time
 import copy
+import glob
 import WarriorCore.testsuite_driver as testsuite_driver
 import WarriorCore.onerror_driver as onerror_driver
 import traceback
@@ -106,7 +107,23 @@ def get_testsuite_list(project_filepath):
                    "found in the input file ')
     else:
         testsuite_list = testsuites.findall('Testsuite')
+        newlist = []
         for ts in testsuite_list:
+            sfilename = ts.find('path').text
+            dirname = os.path.dirname(project_filepath)+os.sep
+            if sfilename.find('*') < 0 :
+                newlist.append(ts) 
+            else: 
+                files = glob.glob(dirname+sfilename) 
+                for fn in files:
+                    nts = copy.deepcopy(ts) 
+                    nts.find('path').text = fn.replace(dirname,'')
+                    newlist.append(nts) 
+        for ts in newlist: 
+            print_info("Added suite [{0}] ".format(ts.find('path').text))
+   
+        # for ts in testsuite_list:
+        for ts in newlist:
             runmode, value = common_execution_utils.\
                 get_runmode_from_xmlfile(ts)
             retry_type, _, _, retry_value, _ = common_execution_utils.\
