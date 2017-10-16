@@ -11,8 +11,8 @@ limitations under the License.
 
 */
 
-app.controller('newProjectCtrl', ['$scope', '$http', '$controller', '$location', '$route', 'saveasProjectFactory', 'fileFactory', 'subdirs',
-    function($scope, $http, $controller, $location, $route, saveasProjectFactory, fileFactory, subdirs) {
+app.controller('newProjectCtrl', ['$scope', '$http', '$controller', '$location', '$route', 'saveasProjectFactory', 'fileFactory', 'getConfigFactory', 'subdirs',
+    function($scope, $http, $controller, $location, $route, saveasProjectFactory, fileFactory, getConfigFactory, subdirs) {
 
         $scope.subdirs = subdirs;
         $scope.defaultProjectActions = ['next', 'abort', 'abort_as_error', 'goto'];
@@ -34,6 +34,9 @@ app.controller('newProjectCtrl', ['$scope', '$http', '$controller', '$location',
         $scope.suite_numbers = [];
         $scope.suiteEditor = true;
         $scope.suiteBeingEdited = "None";
+        $scope.newDate = '';
+        $scope.newTime = '';
+        $scope.newEng = '';
 
         $scope.ExecuteTypes = ['Yes', 'If', 'If Not', 'No'];
         $scope.FirstExecuteTypes = ['Yes', 'No'];
@@ -44,6 +47,71 @@ app.controller('newProjectCtrl', ['$scope', '$http', '$controller', '$location',
         var ChildCtrl=this;
         ChildCtrl.baseCtrl = $controller('baseChariotCtrl',{ $scope: $scope, $http: $http });
         ChildCtrl.baseCtrl.readConfig();
+
+        $scope.newDate = ChildCtrl.baseCtrl.getDate();
+        $scope.newTime = ChildCtrl.baseCtrl.getTime();
+
+      function readConfig(){
+          getConfigFactory.readconfig()
+          .then(function (data) {
+             $scope.cfg = data;
+            });
+      }
+
+      readConfig();
+
+//To Load the InputData File from Suite 
+//Works for base Directory as well as Subdirectories
+    $scope.loadFile = function(filepath) { 
+        var checkFlag = filepath.includes("..");                                         
+        if(checkFlag==true){                                                      //For files inside the Warrior directory
+           var dirCheck=filepath.split("/").reverse()[1];
+             if(dirCheck=="Suites"){                                           //Fetch Parent directory files
+                var splitDir = filepath.split('/Suites')[1]; 
+                var finalUrl = "#/testsuite"+splitDir+"/none";
+                window.open(finalUrl);    
+             }
+             else if(dirCheck=="suites"){
+                var splitDir = filepath.split('/suites')[1]; 
+                var finalUrl = "#/testsuite"+splitDir+"/none";
+                window.open(finalUrl);
+             }
+            else{                                                                 //Fetch subdirectory files
+                var splitPath = filepath.split("/").pop(-1); 
+                var splitter = splitPath+"/"; 
+                var checkDir = filepath.split("Suites/")[1].split(splitPath)[0]; 
+                checkDir = checkDir.slice(0, -1);
+                checkDir = checkDir.replace(/\//g,','); 
+                var finalUrlDir = "#/testsuite/"+splitter+checkDir;
+                window.open(finalUrlDir);
+            }
+        }
+        else{                                                                     //For files outside the Warrior directory
+            var dataDir = $scope.cfg.idfdir;
+            var matchPath = filepath.includes(dataDir);
+            if(matchPath == true){
+              splitPath = filepath.split(dataDir)[1]; 
+              var fileName = splitPath.split("/").pop(-1); 
+              splitter = fileName+"/";
+              var checkDir = filepath.split(dataDir)[1].split(fileName)[0]; 
+              checkDir = checkDir.replace(/\//g,','); 
+              var finalUrlDir = "#/testsuite/"+splitter+checkDir;
+              window.open(finalUrlDir);
+          }
+            else{ 
+            if(filepath != '') 
+                 {                                                                  //Mismatched Config and selected path;   
+                sweetAlert({
+                    title: "Config Path mismatch witn the selected path !",
+                    closeOnConfirm: true,
+                    confirmButtonColor: '#3b3131',
+                    confirmButtonText: "Ok",
+                    type: "info"
+                });
+              }
+          }
+        } 
+     };
 
         $scope.updateConditionList = function(param){
             for(var i=0; i<$scope.suites.length; i++){
@@ -132,6 +200,7 @@ app.controller('newProjectCtrl', ['$scope', '$http', '$controller', '$location',
         fileFactory.readtooltipfile('project')
             .then(
                 function(data) {
+                    $scope.newEng = $scope.cfg.engineer;
                     console.log(data);
                     $scope.newProjecttooltips = data;
                 },
@@ -788,10 +857,10 @@ app.controller('newProjectCtrl', ['$scope', '$http', '$controller', '$location',
                     "Details": {
                         "Name": $scope.projectName,
                         "Title": $scope.projectTitle,
-                        "Engineer": $scope.cfg.engineer,
+                        "Engineer": $scope.newEng,
                         "State": $scope.State,
-                        "Date": ChildCtrl.baseCtrl.getDate(),
-                        "Time": ChildCtrl.baseCtrl.getTime(),
+                        "Date": $scope.newDate,
+                        "Time": $scope.newTime,
                         "default_onError": {
                             "_action": $scope.defaultProjectAction,
                             "_value": $scope.gotoStep
