@@ -9,8 +9,11 @@ var assembler = {
                 url: 'assembler/get_config_file/',
                 data: {"filepath": false}
             }).done(function(data) {
+                $currentPage.find('.tool-bar').find('.title').text(data["filename"]);
+
                 var dep_objs = [];
                 var dependencyDom= "";
+                $currentPage.find('#dependency-div').html('');
                 for(var i=0; i<data.xml_contents.data.warhorn.dependency.length; i++){
                     dep_objs.push(new dependency(data.xml_contents.data.warhorn.dependency[i]));
                     dependencyDom = dep_objs[i].domElement;
@@ -20,12 +23,14 @@ var assembler = {
 
                 var tools_obj = new toolsRepository(data.xml_contents.data.tools);
                 var toolsDom = "";
+                $currentPage.find('#tools-div').html('');
                 toolsDom = tools_obj.domElement;
                 toolsDom.data("data-object", tools_obj);
                 $currentPage.find('#tools-div').append(toolsDom);
 
                 var kw_objs = []
                 var kwDom = "";
+                $currentPage.find('#kw-div').html('');
                 for(var i=0; i<data.xml_contents.data.drivers.repository.length; i++){
                     kw_objs.push(new kwRepository(data.xml_contents.data.drivers.repository[i]));
                     kwDom = kw_objs[i].domElement;
@@ -35,6 +40,7 @@ var assembler = {
 
                 var ws_objs = [];
                 var wsDom ="";
+                $currentPage.find('#ws-div').html('');
                 for(var i=0; i<data.xml_contents.data.warriorspace.repository.length; i++){
                     ws_objs.push(new wsRepository(data.xml_contents.data.warriorspace.repository[i]));
                     wsDom = ws_objs[i].domElement;
@@ -52,15 +58,15 @@ var assembler = {
             $elem.hide();
             $parent.find('br').hide();
             $parent.find('hr').hide();
-            $parent.append('<div class="card" style="padding: 0.5rem 1rem;"></div>')
-            var $subClass = $parent.find('.card')
+            $parent.append('<div class="card" style="padding: 0.5rem 1rem;"></div>');
+            var $subClass = $parent.find('.card');
 
             $subClass.append('<div class="row">' +
                                 '<div class="col-sm-10">Install As:&nbsp;</div>' +
                                 '<div class="col-sm-1" style="padding-bottom: 0.4rem;">' +
                                     '<i class="fa fa-times" aria-hidden="true" katana-click="assembler.cancelDependencyInstallation"></i>' +
                                 '</div>' +
-                             '</div>')
+                             '</div>');
             $subClass.append('<div class="row">' +
                                  '<div class="col-sm-2"></div>' +
                                  '<div class="col-sm-8">' +
@@ -68,13 +74,15 @@ var assembler = {
                                      '&nbsp;&nbsp;' +
                                      '<button class="btn btn-info" katana-click="assembler.installDependencyAsUser">User</button>' +
                                  '</div>' +
-                             '</div>')
+                             '</div>');
         }
         else{
+            var $topLevelDiv = $elem.closest('.card').parent();
+            $topLevelDiv.data().dataObject.install = "no";
             $elem.attr('aria-selected', 'false');
             $elem.html('Install');
             $elem.css("background-color", "white");
-            $elem.css("color", "black")
+            $elem.css("color", "black");
 
         }
     },
@@ -121,7 +129,7 @@ var assembler = {
         var $installBtn = $parentDiv.siblings('button[katana-click="assembler.installDependency"]');
         $installBtn.html(text + '&nbsp;<i class="fa fa-check" style="color: white" aria-hidden="true"></i>&nbsp;');
         $installBtn.css("background-color", "#3b7a4c");
-        $installBtn.css("color", "white")
+        $installBtn.css("color", "white");
     },
 
     upgradeDependency: function(){
@@ -132,15 +140,15 @@ var assembler = {
             $elem.hide();
             $parent.find('br').hide();
             $parent.find('hr').hide();
-            $parent.append('<div class="card" style="padding: 0.5rem 1rem;"></div>')
-            var $subClass = $parent.find('.card')
+            $parent.append('<div class="card" style="padding: 0.5rem 1rem;"></div>');
+            var $subClass = $parent.find('.card');
 
             $subClass.append('<div class="row">' +
                                 '<div class="col-sm-10">Upgrade As:&nbsp;</div>' +
                                 '<div class="col-sm-1" style="padding-bottom: 0.4rem;">' +
                                     '<i class="fa fa-times" aria-hidden="true" katana-click="assembler.cancelDependencyUpgrade"></i>' +
                                 '</div>' +
-                             '</div>')
+                             '</div>');
             $subClass.append('<div class="row">' +
                                  '<div class="col-sm-2"></div>' +
                                  '<div class="col-sm-8">' +
@@ -148,13 +156,13 @@ var assembler = {
                                      '&nbsp;&nbsp;' +
                                      '<button class="btn btn-info" katana-click="assembler.upgradeDependencyAsUser">User</button>' +
                                  '</div>' +
-                             '</div>')
+                             '</div>');
         }
         else{
             $elem.attr('aria-selected', 'false');
             $elem.html('Upgrade&nbsp;<i class="fa fa-exclamation-triangle tan" aria-hidden="true">');
             $elem.css("background-color", "white");
-            $elem.css("color", "black")
+            $elem.css("color", "black");
 
         }
     },
@@ -166,7 +174,7 @@ var assembler = {
         else{
             $elem = $(this);
         }
-        if(ariaValue == undefined){
+        if(ariaValue === undefined){
             ariaValue = "false";
         }
         var $parentDiv = $elem.closest('.card');
@@ -201,7 +209,7 @@ var assembler = {
         var $upgradeBtn = $parentDiv.siblings('button[katana-click="assembler.upgradeDependency"]');
         $upgradeBtn.html(text + '&nbsp;<i class="fa fa-check" style="color: white" aria-hidden="true"></i>&nbsp;');
         $upgradeBtn.css("background-color", "#987150");
-        $upgradeBtn.css("color", "white")
+        $upgradeBtn.css("color", "white");
     },
 
     updateKwRepoDetails: function(){
@@ -210,11 +218,11 @@ var assembler = {
         var $parentCardBlock = $elem.closest('.card-block');
         var $footerBlockRow = $parentCardBlock.siblings('.card-footer').find('.row');
         var $footerBlockRowIcon = $footerBlockRow.find('.fa');
-        $footerBlockRowIcon.attr('class', 'fa')
+        $footerBlockRowIcon.attr('class', 'fa');
         $footerBlockRow.find('.col-sm-8').html('');
         var url = $elem.val();
-        if(url == ""){
-            $footerBlockRowIcon.addClass('fa-exclamation-triangle').addClass('tan')
+        if(url === ""){
+            $footerBlockRowIcon.addClass('fa-exclamation-triangle').addClass('tan');
             $footerBlockRow.find('.col-sm-8').html('No Repository Information Provided.');
             $footerBlockRow.show();
         }
@@ -240,15 +248,15 @@ var assembler = {
                     $topLevelDiv.data().dataObject.available = true;
                     $footerBlockRowIcon.addClass('fa-check').addClass('green');
                     $footerBlockRow.find('.col-sm-8').html('Repository Available.');
-                    $parentCardBlock.siblings('.card-header').find('.col-sm-7').html(data["repo_name"])
+                    $parentCardBlock.siblings('.card-header').find('.col-sm-7').html(data["repo_name"]);
 
                     $driverBlock = $($parentCardBlock.find('.row')[1]);
-                    $driverBlock.find('.row, .text-center').html('')
+                    $driverBlock.find('.row, .text-center').html('');
                     $topLevelDiv.data().dataObject.drivers = [];
                     for(var i=0; i<data["drivers"].length; i++){
-                        var ddObj = new driverDetails({"@name": data["drivers"][i], "@clone": "yes"})
-                        $driverBlock.find('.row, .text-center').append(ddObj.domElement)
-                        $topLevelDiv.data().dataObject.drivers.push(ddObj)
+                        var ddObj = new driverDetails({"@name": data["drivers"][i], "@clone": "yes"});
+                        $driverBlock.find('.row, .text-center').append(ddObj.domElement);
+                        $topLevelDiv.data().dataObject.drivers.push(ddObj);
                     }
                     $driverBlock.show();
 
@@ -296,6 +304,7 @@ var assembler = {
                         url: 'assembler/get_config_file/',
                         data: {"filepath": inputValue}
                     }).done(function(data) {
+                        $currentPage.find('.tool-bar').find('.title').text(data.filename);
                         $currentPage.find('#dependency-div').html('');
                         $currentPage.find('#tools-div').html('');
                         $currentPage.find('#kw-div').html('');
@@ -463,7 +472,7 @@ var assembler = {
         $footerBlockRowIcon.attr('class', 'fa')
         $footerBlockRow.find('.col-sm-8').html('');
         var url = $elem.val();
-        if(url == ""){
+        if(url === ""){
             $footerBlockRowIcon.addClass('fa-exclamation-triangle').addClass('tan')
             $footerBlockRow.find('.col-sm-8').html('No Repository Information Provided.');
             $footerBlockRow.show();
@@ -570,7 +579,7 @@ var assembler = {
         $footerBlockRowIcon.attr('class', 'fa')
         $footerBlockRow.find('.col-sm-8').html('');
         var url = $elem.val();
-        if(url == ""){
+        if(url === ""){
             $footerBlockRowIcon.addClass('fa-exclamation-triangle').addClass('tan')
             $footerBlockRow.find('.col-sm-8').html('No Repository Information Provided.');
             $footerBlockRow.show();
@@ -623,6 +632,7 @@ var assembler = {
                 url: 'read_config_file/'
             }).done(function(config_file_data) {
                 var callBack_on_accept = function(inputValue){
+
                 var $currentPage = katana.$activeTab;
                 var finalJson = {
                                     "data": {
@@ -644,54 +654,91 @@ var assembler = {
                 }
 
                 var toolsDivChild = $currentPage.find('#tools-div').children('div');
-                finalJson.data.tools = JSON.parse(JSON.stringify($(toolsDivChild[0]).data().dataObject.jsonObj));
+                if($(toolsDivChild[0]).data().dataObject.url.trim() != ""){
+                    finalJson.data.tools = JSON.parse(JSON.stringify($(toolsDivChild[0]).data().dataObject.jsonObj));
+                } else {
+                    delete finalJson.data.tools;
+                }
 
                 var kwDivChildren = $currentPage.find('#kw-div').children('div');
                 for(i=0; i<kwDivChildren.length; i++){
-                    var driversTemp = JSON.parse(JSON.stringify($(kwDivChildren[i]).data().dataObject.jsonObj))
-                    for(var j=0; j<$(kwDivChildren[i]).data().dataObject.drivers.length; j++){
-                        driversTemp.driver.push(JSON.parse(JSON.stringify($(kwDivChildren[i]).data().dataObject.drivers[i].jsonObj)));
+                    if($(kwDivChildren[i]).data().dataObject.url.trim() != ""){
+                        var driversTemp = JSON.parse(JSON.stringify($(kwDivChildren[i]).data().dataObject.jsonObj))
+                        for(var j=0; j<$(kwDivChildren[i]).data().dataObject.drivers.length; j++){
+                            driversTemp.driver.push(JSON.parse(JSON.stringify($(kwDivChildren[i]).data().dataObject.drivers[i].jsonObj)));
+                        }
+                        finalJson.data.drivers.repository.push(driversTemp);
                     }
-                    finalJson.data.drivers.repository.push(driversTemp);
+                }
+
+                if(finalJson.data.drivers.repository.length == 0){
+                    delete finalJson.data.drivers
                 }
 
                 var wsDivChildren = $currentPage.find('#ws-div').children('div');
                 for(i=0; i<wsDivChildren.length; i++){
-                    finalJson.data.warriorspace.repository.push(JSON.parse(JSON.stringify($(wsDivChildren[i]).data().dataObject.jsonObj)));
+                    if($(wsDivChildren[i]).data().dataObject.url.trim() != ""){
+                        finalJson.data.warriorspace.repository.push(JSON.parse(JSON.stringify($(wsDivChildren[i]).data().dataObject.jsonObj)));
+                    }
+                }
+
+                if(finalJson.data.warriorspace.repository.length == 0){
+                    delete finalJson.data.warriorspace
                 }
 
                 $.ajax({
-                    headers: {
-                        'X-CSRFToken': $currentPage.find('input[name="csrfmiddlewaretoken"]').attr('value')
-                    },
-                    type: 'POST',
-                    url: 'assembler/save_warhorn_config_file/',
-                    data: {"json_data": JSON.stringify(finalJson), "filename": inputValue, "directory": config_file_data["warhorn_config"]}
-                }).done(function(data) {
-                    if(data.saved){
-                        $currentPage.find('#dependency-div').html('');
-                        $currentPage.find('#tools-div').html('');
-                        $currentPage.find('#kw-div').html('');
-                        $currentPage.find('#ws-div').html('');
-                        assembler.init();
-                        katana.openAlert({"alert_type": "success",
-                            "heading": "Saved",
-                            "text": "Saved as: " + inputValue,
-                            "timer": 1250, "show_cancel_btn": false, "show_accept_btn": false})
-                    } else {
-                        katana.openAlert({"alert_type": "danger",
-                            "heading": "Not Saved!",
-                            "text": "Some error occurred: " + data.message,
-                            "show_cancel_btn": false})
-                    }
+                        headers: {
+                            'X-CSRFToken': $currentPage.find('input[name="csrfmiddlewaretoken"]').attr('value')
+                        },
+                        type: 'POST',
+                        url: 'assembler/save_warhorn_config_file/',
+                        data: {"json_data": JSON.stringify(finalJson), "filename": inputValue, "directory": config_file_data["warhorn_config"]}
+                    }).done(function(data) {
+                        if(data.saved){
+                            assembler.init();
+                            katana.openAlert({"alert_type": "success",
+                                "heading": "Saved",
+                                "text": "Saved as: " + inputValue,
+                                "timer": 1250, "show_cancel_btn": false, "show_accept_btn": false})
+                        } else {
+                            katana.openAlert({"alert_type": "danger",
+                                "heading": "Not Saved!",
+                                "text": "Some error occurred: " + data.message,
+                                "show_cancel_btn": false})
+                        }
 
-                });
-            }
-            katana.openAlert({"alert_type": "light",
-                "heading": "Name for the file",
-                "text": "",
-                "prompt": "true"}, callBack_on_accept)
-            });
+                    });
+                }
+                katana.openAlert({
+                    "alert_type": "light",
+                    "heading": "Name for the file",
+                    "text": "",
+                    "prompt": "true",
+                    "prompt_default": $currentPage.find('.tool-bar').find('.title').text()
+                    },
+                    function(inputValue) {
+                        $.ajax({
+                            headers: {
+                                'X-CSRFToken': $currentPage.find('input[name="csrfmiddlewaretoken"]').attr('value')
+                            },
+                            type: 'POST',
+                            url: 'check_if_file_exists/',
+                            data: {"filename": inputValue, "directory": config_file_data["warhorn_config"], "extension": ".xml"}
+                        }).done(function(data) {
+                            if(data.exists){
+                                katana.openAlert({
+                                    "alert_type": "warning",
+                                    "heading": "File Exists",
+                                    "text": "A file with the name " + inputValue + " already exists; do you want to overwrite it?",
+                                    "accept_btn_text": "Yes",
+                                    "cancel_btn_text": "No"
+                                    }, function() {callBack_on_accept(inputValue)})
+                            } else {
+                                callBack_on_accept(inputValue);
+                            }
+                        });
+                    });
+        });
     },
 
     saveFileRunWarhorn: function(){
@@ -723,21 +770,39 @@ var assembler = {
                 }
 
                 var toolsDivChild = $currentPage.find('#tools-div').children('div');
-                finalJson.data.tools = JSON.parse(JSON.stringify($(toolsDivChild[0]).data().dataObject.jsonObj));
+                if($(toolsDivChild[0]).data().dataObject.url.trim() != ""){
+                    finalJson.data.tools = JSON.parse(JSON.stringify($(toolsDivChild[0]).data().dataObject.jsonObj));
+                } else {
+                    delete finalJson.data.tools;
+                }
 
                 var kwDivChildren = $currentPage.find('#kw-div').children('div');
                 for(i=0; i<kwDivChildren.length; i++){
-                    var driversTemp = JSON.parse(JSON.stringify($(kwDivChildren[i]).data().dataObject.jsonObj))
-                    for(var j=0; j<$(kwDivChildren[i]).data().dataObject.drivers.length; j++){
-                        driversTemp.driver.push(JSON.parse(JSON.stringify($(kwDivChildren[i]).data().dataObject.drivers[i].jsonObj)));
+                    if($(kwDivChildren[i]).data().dataObject.url.trim() != ""){
+                        var driversTemp = JSON.parse(JSON.stringify($(kwDivChildren[i]).data().dataObject.jsonObj));
+                        for(var j=0; j<$(kwDivChildren[i]).data().dataObject.drivers.length; j++){
+                            driversTemp.driver.push(JSON.parse(JSON.stringify($(kwDivChildren[i]).data().dataObject.drivers[i].jsonObj)));
+                        }
+                        finalJson.data.drivers.repository.push(driversTemp);
                     }
-                    finalJson.data.drivers.repository.push(driversTemp);
+                }
+
+                if(finalJson.data.drivers.repository.length == 0){
+                    delete finalJson.data.drivers
                 }
 
                 var wsDivChildren = $currentPage.find('#ws-div').children('div');
                 for(i=0; i<wsDivChildren.length; i++){
-                    finalJson.data.warriorspace.repository.push(JSON.parse(JSON.stringify($(wsDivChildren[i]).data().dataObject.jsonObj)));
+                    if($(wsDivChildren[i]).data().dataObject.url.trim() != ""){
+                        finalJson.data.warriorspace.repository.push(JSON.parse(JSON.stringify($(wsDivChildren[i]).data().dataObject.jsonObj)));
+                    }
                 }
+
+                if(finalJson.data.warriorspace.repository.length == 0){
+                    delete finalJson.data.warriorspace
+                }
+
+                var popup = katana.popupController.open("", "Output");
 
                 $.ajax({
                         headers: {
@@ -747,7 +812,12 @@ var assembler = {
                         url: 'assembler/save_and_run_warhorn_config_file/',
                         data: {"json_data": JSON.stringify(finalJson), "filename": "temp_warhorn_run", "directory": config_file_data["warhorn_config"]}
                     }).done(function(data) {
-                        katana.popupController.open(data["output"], "Output");
+                        var split_op = data["output"].split('\n');
+                        final_op = "";
+                        for(var i=0; i<split_op.length; i++){
+                            final_op += split_op[i] + '<br>'
+                        }
+                        popup.find('.page-content').html(final_op)
                     });
             })
     },

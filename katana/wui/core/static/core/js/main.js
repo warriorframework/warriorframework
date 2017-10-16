@@ -315,7 +315,8 @@ var katana = {
 	        "accept_btn_text": "Ok (by default), Save, etc",
 	        "show_cancel_btn": "true (by default), false",
 	        "cancel_btn_text": "Cancel (by default), No, etc",
-	        "prompt": "false (by default), true"
+	        "prompt": "false (by default), true",
+	        "prompt_default": "'' by default"
 	    }
 
 	    <div class="overlay">
@@ -463,9 +464,14 @@ var katana = {
 	    }
 
 	    var prompt = ""
+	    var prompt_default = ""
+
+	    if(data.prompt_default){
+	        prompt_default = data.prompt_default;
+	    }
 
 	    if(data.prompt) {
-	        prompt = "<div><input id='alert-box-prompt' katana-change='katana.changeBorderColor' value=''></div>"
+	        prompt = "<div><input id='alert-box-prompt' katana-change='katana.changeBorderColor' value='"+ prompt_default +"'></div>"
 	    }
 
 	    var $alert_box = '<div class="overlay">' +
