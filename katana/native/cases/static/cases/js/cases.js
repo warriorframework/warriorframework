@@ -71,7 +71,29 @@ function jsUcfirst(string)
 	return string.toLowerCase();
 }
 
+class caseRuleObject { 
+	constructor (jsonData) {
+		this.Condition = jsonData['Condition'];
+		this.Condvalue = jsonData['Condvalue'];
+		this.Else = jsonData['Else'];
+		this.Elsevalue = jsonData['Elsevalue'];
+	}
 
+	getJSONdata() {
+		return ({"Rule": 
+			{ "@Condition": this.Condition, 
+			"@Condvalue": this.Condvalue, 
+			"@Else": this.Else, 
+			"@Elsevalue": this.Elsevalue } });
+	}
+
+	setDefaults() {
+		this.Condition = "";
+		this.Condvalue = "";
+		this.Else      = "";
+		this.Elsevalue = "";
+	}
+}
 
 class caseRequirementsObject{
 
@@ -192,7 +214,7 @@ class caseTestStepObject {
 	}
 
 	setupFromJSON(jsonData) { 
-		console.log("Asetup from ",jsonData);
+		console.log("Step from ",jsonData);
 		if (!jsonData) {
 			jsonData = 	this.createEmptyTestStep(); 
 		}
@@ -636,31 +658,31 @@ var cases = {
 
 	},
 
-	getStepInputDataFile: function() {
+	// getStepInputDataFile: function() {
 		
-			var callback_on_accept = function(selectedValue) { 
-			  		var sid = katana.$activeTab.find("#editCaseStepDiv").attr('row-id');
-			  		console.log("Got this file" , selectedValue, sid);
-			  		var popup = cases.lastPopup; // katana.$activeTab.find("#editCaseStepDiv").attr('data-popup-id');
-			  		var savefilepath = katana.$activeTab.find('#savesubdir').text();  
-			  		console.log("File path ==", savefilepath);
-					var nf = prefixFromAbs(savefilepath, selectedValue);
-					var oneCaseStep = cases.jsonCaseSteps[sid];
-					oneCaseStep["InputDataFile"] = nf;
-					popup.find("#StepInputDataFile").val(oneCaseStep["InputDataFile"], nf);
+	// 		var callback_on_accept = function(selectedValue) { 
+	// 		  		var sid = katana.$activeTab.find("#editCaseStepDiv").attr('row-id');
+	// 		  		console.log("Got this file" , selectedValue, sid);
+	// 		  		var popup = cases.lastPopup; // katana.$activeTab.find("#editCaseStepDiv").attr('data-popup-id');
+	// 		  		var savefilepath = katana.$activeTab.find('#savesubdir').text();  
+	// 		  		console.log("File path ==", savefilepath);
+	// 				var nf = prefixFromAbs(savefilepath, selectedValue);
+	// 				var oneCaseStep = cases.jsonCaseSteps[sid];
+	// 				oneCaseStep["InputDataFile"] = nf;
+	// 				popup.find("#StepInputDataFile").val(oneCaseStep["InputDataFile"], nf);
 		
-					};
-			 var callback_on_dismiss = function(){ 
-			  		var popup = cases.lastPopup; // katana.$activeTab.find("#editCaseStepDiv").attr('data-popup-id');
-			  		console.log("Dismissed", popup);
+	// 				};
+	// 		 var callback_on_dismiss = function(){ 
+	// 		  		var popup = cases.lastPopup; // katana.$activeTab.find("#editCaseStepDiv").attr('data-popup-id');
+	// 		  		console.log("Dismissed", popup);
 
-			 	};
-			//var popup = katana.$activeTab.find("#editCaseStepDiv").attr('data-popup-id');
-			var popup = cases.lastPopup;
-			console.log("Setting ... ", popup); 
-			katana.fileExplorerAPI.openFileExplorer("Select a file", false , $("[name='csrfmiddlewaretoken']").val(), popup.find('.page-content'), callback_on_accept, callback_on_dismiss)
+	// 		 	};
+	// 		//var popup = katana.$activeTab.find("#editCaseStepDiv").attr('data-popup-id');
+	// 		var popup = cases.lastPopup;
+	// 		console.log("Setting ... ", popup); 
+	// 		katana.fileExplorerAPI.openFileExplorer("Select a file", false , $("[name='csrfmiddlewaretoken']").val(), popup.find('.page-content'), callback_on_accept, callback_on_dismiss)
 
-	},
+	// },
 
 // Get Results directory from the case on a popup dialog
 // The dialog is shown BELOW the popup. BUG. 
@@ -770,9 +792,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		var outstr; 
 		items.push('<td>'+oneCaseStep.step_keyword + "<br>TS=" +oneCaseStep.step_TS+'</td>'); 
 		outstr =  oneCaseStep['Description'];
-		bid = "SelectStepInputData-"+s+"-id-";
-		var fileExp = '<i title="Select Warrior Input Data" class="fa fa-plus" theSid="'+s+'" id="'+bid+'" katana-click="cases.getStepInputDataFile()" key="'+bid+'"/>';
-
+		
 		items.push('<td>'+outstr+'</td>'); 
 
 		var arguments = oneCaseStep['Arguments'];
@@ -904,6 +924,28 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		cases.addTestStepAboveToUI(sid,cases.jsonCaseSteps,1);
 	},
 
+	createPopupArgumentsFromList( popup, mylist) {
+		console.log("Creating Arguments", mylist);
+		var a_items = [] ;
+		var xstr;
+		var ta =0; 
+		for (vn in mylist) {
+			if (vn < 1) continue; 
+			vntxt = mylist[vn];
+			var a_t = vntxt.split('=');
+			var vl = "";
+			if (a_t.length == 2) { vl =  a_t[1] ; } 
+			var kw = a_t[0];
+			a_items.push('<div class="row">');
+			a_items.push('<label class="col-md-2">Name</label><input  type="text" argid="caseArgName-'+ta+'" value="'+kw+'"/>');
+			a_items.push('<label class="col-md-2">Value</label><input  type="text" argid="caseArgValue-'+ta+'" value="'+vl+'"/>');
+			a_items.push('</div>');
+			ta += 1; 
+			}
+		popup.find("#arguments-textarea").html( a_items.join("\n"));	
+		console.log("Making arguments at ",oneCaseStep, popup, popup.find("#arguments-textarea"), a_items);
+	},
+
 	makePopupArguments: function(popup,  oneCaseStep) {
 		cases.lastPopup = popup; 
 		var a_items = [] ;
@@ -920,20 +962,20 @@ The UI currently uses jQuery and Bootstrap to display the data.
 			a_items.push('<label class="col-md-2">Value</label><input  type="text" argid="caseArgValue-'+ta+'" value="'+arguments[xarg]["@value"]+'"/>');
 			// Now a button to edit or delete ... 
 			bid = "deleteCaseArg-"+sid+"-"+ta+"-id"
-			a_items.push('<td><i title="Delete" class="fa fa-eraser" value="X" id="'+bid+'" key="'+bid+'"  katana-click="cases.deletePopupArgument"/>');
+			a_items.push('<td><i title="Delete" class="fa fa-eraser tbd-args" value="X" id="'+bid+'" key="'+bid+'"  katana-click="cases.deletePopupArgument"/>');
 			
 			bid = "saveCaseArg-"+sid+"-"+ta+"-id"
-			a_items.push('<td><i  title="Save Argument Change" class="fa fa-floppy-o" value="Save" id="'+bid+'" key="'+bid+'"  katana-click="cases.savePopupArgument"/>');
+			a_items.push('<td><i  title="Save Argument Change" class="fa fa-floppy-o tbd-args" value="Save" id="'+bid+'" key="'+bid+'"  katana-click="cases.savePopupArgument"/>');
 
 			bid = "insertCaseArg-"+sid+"-"+ta+"-id";
-			a_items.push('<td><i  title="Insert one" class="fa fa-plus" value="Save" id="'+bid+'" key="'+bid+'" katana-click="cases.insertPopupArgument"/>');
+			a_items.push('<td><i  title="Insert one" class="fa fa-plus tbd-args" value="Save" id="'+bid+'" key="'+bid+'" katana-click="cases.insertPopupArgument"/>');
 			
 			ta += 1
 			a_items.push('</div>');
 			
 		}
 		popup.find("#arguments-textarea").html( a_items.join("\n"));	
-		console.log("Making arguments at ",sid, oneCaseStep, popup, popup.find("#arguments-textarea"), a_items);
+		console.log("Making arguments at ",oneCaseStep, popup, popup.find("#arguments-textarea"), a_items);
 
 	},
 
@@ -993,6 +1035,11 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		 	console.log("received", a_items);
 			out_array = a_items[0]['comment'];
 			var outstr = out_array.join("\n");
+
+
+			cases.createPopupArgumentsFromList( popup,a_items[0]['args'])
+
+
 			//console.log(outstr);
 			cases.lastPopup.find("#sourceCaseFileText").html(""); 
 			cases.lastPopup.find("#sourceCaseFileText").html(outstr);
@@ -1045,7 +1092,8 @@ The UI currently uses jQuery and Bootstrap to display the data.
 			 				console.log("received", data, a_items);
 			 				out_array = a_items[0]['comment'];
 			 				var outstr = out_array.join("\n");
-			 				
+			 				cases.createPopupArgumentsFromList( popup,a_items[0]['args'])
+
 			 				cases.lastPopup.find("#sourceCaseFileText").html(""); 
 			 				cases.lastPopup.find("#sourceCaseFileText").html(outstr);
 			 				cases.lastPopup.find("#sourceCaseFileDef").html(""); 
@@ -1079,8 +1127,6 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		popup.find("#runmode-at-type").attr("type",oneCaseStep.runmode_type);
 		popup.find("#runmode-at-value").attr("value",oneCaseStep.runmode_value);
 		popup.find("#StepImpact").attr("value",oneCaseStep["impact"]);
-		popup.find("#StepInputDataFile").attr("value",oneCaseStep["InputDataFile"]);
-		popup.find("#StepInputDataFile").val(oneCaseStep["InputDataFile"]);
 		popup.find('.rule-condition').hide();
 		if (oneCaseStep.Execute_ExecType) {
 			if (oneCaseStep.Execute_ExecType == 'if' || oneCaseStep.Execute_ExecType == 'if not') {
@@ -1146,6 +1192,44 @@ The UI currently uses jQuery and Bootstrap to display the data.
 	});
 
 
+	popup.find("#StepDriverCkBx").change(function() {
+		console.log(this, this.value, this.checked);
+		var val= this.checked;
+		popup = cases.lastPopup;
+		if (val){
+			popup.find("#StepKeywordCkBx").prop('checked', true);
+			popup.find("#StepDriver").hide();
+			popup.find("#StepDriverText").show();
+			popup.find("#StepKeyword").hide();
+			popup.find("#StepKeywordText").show();
+			popup.find('[class="tbd-args"]').show();
+		}else{
+			popup.find("#StepKeywordCkBx").prop('checked', false);
+			popup.find("#StepDriver").show();
+			popup.find("#StepDriverText").hide();	
+			popup.find('[class="tbd-args"]').hide();
+		}
+	});
+		
+	popup.find("#StepKeywordCkBx").change(function() {
+		console.log(this);
+		var val= this.checked;
+		popup = cases.lastPopup;
+		if (val){
+			popup.find("#StepKeyword").hide();
+			popup.find("#StepKeywordText").show();
+			popup.find('[class="tbd-args"]').show();
+		}else{
+			popup.find("#StepKeyword").show();
+			popup.find("#StepKeywordText").hide();	
+			popup.find('[class="tbd-args"]').hide();
+		}
+	});
+
+
+
+
+
 
 	popup.find("#SteponError-at-action").on('change',function() {
 		if (this.value == 'goto' ) {
@@ -1180,6 +1264,11 @@ The UI currently uses jQuery and Bootstrap to display the data.
 
 			hhh.empty(); 
  			hhh.append(outstr);
+
+ 			// This is where I create arguments ...
+
+ 			var arg_array = a_items[0]['args'];
+ 			console.log(arg_array);
 
 
  			cases.lastPopup.find("#sourceCaseFileDef").html(""); 
@@ -1426,8 +1515,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		oneCaseStep.runmode_type = popup.find("#runmode-at-type").val();
 		oneCaseStep.runmode_value = popup.find("#runmode-at-value").val();
 		oneCaseStep["impact"] =  popup.find("#StepImpact").val();
-		oneCaseStep["InputDataFile"] =  popup.find("#StepInputDataFile").val();
-
+		
 		// Save all arguments already in dialog...
 		console.log(cases.jsonCaseSteps[sid]['Arguments']);
 		var slen =  cases.jsonCaseSteps[sid]['Arguments'].length; 

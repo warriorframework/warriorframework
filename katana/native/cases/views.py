@@ -101,7 +101,7 @@ def getListOfKeywords(request):
 	else:
 			details = All_case_action_details;
 
-	responseBack = { 'keywords': ["To_Be_Developed",] }
+	responseBack = { 'keywords': [] }
 	driver = request.GET.get('driver');
 		
 	if driver != "To_Be_Developed":
@@ -141,7 +141,7 @@ def getListOfComments(request):
 	
 	print "LOOOK::-->",  driver, " ", keyword;
 
-	if driver == "To_Be_Developed" :
+	if driver == "" :
 		return JsonResponse(responseBack)
 
 	try:
@@ -155,6 +155,7 @@ def getListOfComments(request):
 			print "fn ==> ", item['fn'], driver, keyword
 			if item['fn'] == keyword: 
 				print item.keys();
+				print item['args']
 				responseBack['fields'].append(item);
 				break;
 	except:

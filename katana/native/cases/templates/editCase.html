@@ -125,12 +125,19 @@
                                 <input type="text" id="StepRowToEdit" value="" />
                             </div>
                             <div class="field">
-                                <label>Driver</label>
+                                 <input type="checkbox" id="StepDriverCkBx" value="TBD" />
+                                <label class="text-right " id="StepDriverCkBxlbl">To be developed</label><label>Driver</label>
+                               
                                 <select type="text" id="StepDriver" value="" />
+                                <input type="text" class="hidden" id="StepDriverText" value="" />
+                               
                             </div>
                             <div class="field">
-                                <label>Keyword</label>
-                                <select type="text" id="StepKeyword" value="" />
+                                
+                                 <input type="checkbox" id="StepKeywordCkBx" value="TBD" /> <label class="text-right " id="StepDriverCkBxlbl">To be developed</label><label>Keyword</label>
+                                 <select type="text" id="StepKeyword" value="" />
+                                <input type="text" class="hidden" id="StepkeywordText" value="" />
+                               
                             </div>
                             <div class="field">
                                 <label>TS</label>
@@ -212,14 +219,10 @@
                                     <option value="noimpact">noimpact</option>
                                 </select>
                             </div>
-                            <div class="field col-md-3">
-                                <label>Warrior Data File:</label>
-                                <button class="btn btn-info" katana-click="cases.getStepInputDataFile">...</button>
-                                <input type="text" id="StepInputDataFile" value="" />
-                            </div>
+
                             <div id="arguments-textarea"> </div>
                             <div>
-                                <button class="btn btn-success" id="appendArgument" katana-click="cases.appendPopupArgument">Append Argument </button>
+                                <button class="btn btn-success tbd-args" id="appendArgument" katana-click="cases.appendPopupArgument">Append Argument </button>
                                 <button class="btn btn-success" id="saveEditCaseStep" katana-click="cases.saveTestCaseChanges">Save Changes To Test Step </button>
                                
                             </div>
