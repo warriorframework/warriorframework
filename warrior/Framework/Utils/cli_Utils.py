@@ -358,7 +358,6 @@ def send_commands_from_testdata(testdatafile, obj_session, **args):
     :Returns:
         1. finalresult = boolean
     """
-
     if isinstance(obj_session, WNetwork.warrior_cli_class.WarriorCli):
         finalresult, responses_dict = obj_session.send_commands_from_testdata(testdatafile, **args)
     else:
@@ -392,11 +391,10 @@ def _send_cmd(obj_session, **kwargs):
 
 def _get_response_dict(details_dict, index, response, response_dict):
     """Get the response dict for a command. """
-
     wc_obj = WNetwork.warrior_cli_class.WarriorCli()
-    response_dict = wc_obj._get_response_dict(details_dict, index, response, response_dict)
+    status, response_dict = wc_obj._get_response_dict(details_dict, index, response, response_dict)
 
-    return response_dict
+    return status, response_dict
 
 
 def start_threads(started_thread_for_system, thread_instance_list, same_system,

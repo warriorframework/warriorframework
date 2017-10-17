@@ -769,20 +769,21 @@ def git_checkout_label(label, base_path="", current_dir=""):
     check == True and current_tag != 0 is condition for invalid label
     check == False and current_tag != 0 is condition for problematic git
                                                         commands
-
     """
-    current_tag = ""
     check = True
+    current_label = ""
     if base_path != "":
         os.chdir(base_path)
     try:
-        if subprocess.call(["git", "rev-parse", "--verify", label]) == 0:
-            _ = subprocess.call(["git", "checkout", label])
-        else:
-            current_tag = subprocess.check_output(["git", "describe"])
+        # checking out label
+        subprocess.check_call(["git", "checkout", label])
+        # getting current label in current_label
+        current_label = subprocess.check_output(["git", "symbolic-ref",
+                                                 '--short', 'HEAD']).strip()
     except:
         check = False
-        current_tag = subprocess.check_output(["git", "describe"])
+    if current_label != label:
+        check = False
     if current_dir != "":
         os.chdir(current_dir)
-    return check, current_tag
+    return check, current_label
