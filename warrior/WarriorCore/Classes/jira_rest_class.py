@@ -11,18 +11,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-"""jira utils library which has functions related to
-interaction of Warrior framework with jira rest api and other related actions."""
-
-
-import urllib2, urllib
-import json,base64
-import sys,re
+import urllib2
+import urllib
+import requests
+import json
+import base64
 import random
-import Tools, os
+import os
+import Tools
 from Framework.Utils.print_Utils import print_error, print_info, print_warning
 from Framework.Utils import xml_Utils
 from Framework.Utils.testcase_Utils import pNote
+
+
+""" jira utils library which has functions related to interaction
+of Warrior framework with jira rest api and other related actions."""
+
 
 class Jira(object):
     """Warrior Jira class """
@@ -42,12 +46,13 @@ class Jira(object):
         self.server = credentials['url']
         self.username = credentials['username']
         self.password = credentials['password']
+        self.auth = (self.username, self.password)
         self.append = True if str(credentials['append_log']).lower().strip() == "true" else False
         self.status = True
         self.project_key = credentials['project_key']
         self.assignee = credentials['assignee']
 
-    def check_jira_issue(self, issue_summary, headers):
+    def check_jira_issue(self, issue_summary):
         """
             check jira server for any existing issue with the same summary(title)
             :para,:
@@ -59,12 +64,12 @@ class Jira(object):
         fetchuri = self.server
         parsed_summary = issue_summary.replace("[", "\\\\[")
         parsed_summary = parsed_summary.replace("]", "\\\\]")
-        postdata_url=fetchuri+'/rest/api/2/search/?jql=summary~'+urllib.quote_plus('\"' + parsed_summary + '\"')
-        request=urllib2.Request(str(postdata_url), None, headers)
+        postdata_url = (fetchuri + '/rest/api/2/search/?jql=summary~' +
+                        urllib.quote_plus('\"' + parsed_summary + '\"'))
+        response = requests.get(postdata_url, auth=self.auth)
         try:
-            handler = urllib2.urlopen(request)
-            extension=json.loads(handler.read())
-            for issue in extension["issues"]:
+            resp_dict = response.json()
+            for issue in resp_dict["issues"]:
                 if issue_summary[:-2].strip() == issue["fields"]["summary"].strip():
                     return issue["key"]
                 else:
@@ -73,8 +78,9 @@ class Jira(object):
             return False
 
         except Exception as e:
-            pNote("Problem checking JIRA issue.","error")
-            pNote("JIRA Error Code: ({0})".format(e),"error")
+            pNote("Problem checking JIRA issue: {0}".format(e))
+            pNote("JIRA Error code: ({0}), Error message: ({1})".
+                  format(e, response.status_code, response.text), "error")
             exit(1)
 
     def update_jira_issue(self, jiraid, status):
@@ -199,7 +205,7 @@ class Jira(object):
         opener = urllib2.build_opener(urllib2.HTTPHandler(debuglevel=1))
         #Create a POST request
         headers={"Authorization" : "Basic "+password,"Content-Type": "application/json"}
-        existed = self.check_jira_issue(issue_summary, headers)
+        existed = self.check_jira_issue(issue_summary)
         if not existed:
             request=urllib2.Request(str(postdata_url),postdata,headers)
             try:
