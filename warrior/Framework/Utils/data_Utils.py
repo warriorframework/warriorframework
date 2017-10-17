@@ -478,9 +478,11 @@ def _get_cmd_details(testdata, global_obj, system_name,
                     return filter(lambda gk: gk.tag == key, global_keys)[0]
                 return None
             keylist = _get_cmdparams_list(testdata, global_obj, attrib)[0]
-            if keylist is not None:
+            if keylist:
                 keys = map(lambda x: x.strip(), keylist.split(','))
                 resultant_list = [map(find_key_elem, keys)]
+            else:
+                resultant_list = [None] * len(vfylist)
         else:
             resultant_list = _get_cmdparams_list(testdata, global_obj, attrib)
             if param == "sys_list":
