@@ -392,7 +392,8 @@ class CIregressionActions(object):
     def check_values_from_datafile(self, system_name, strvar, langs, states,
                                    currencys, ramspace, configfile, intvar,
                                    anotherfile):
-        """get the values from datafile
+        """Verify the datatype of the value read from the datafile using either
+        the tag or wtag feature
         :Argument:
             1. system_name = system name in the datafile
             2. strvar = string variable
@@ -428,6 +429,7 @@ class CIregressionActions(object):
         status = check_type(currencys, "currencys", dict) and status
         # this block checks if ramspace is bool type
         status = check_type(ramspace, "ramspace", bool) and status
+        file_err = '{} is not a file, please check'
         try:
             # check if tag is present and its functionality is not broken
             if anotherfile.startswith('tag'):
@@ -439,6 +441,10 @@ class CIregressionActions(object):
                 configfile = file_Utils.getAbsPath(configfile, tc_filepath)
             if not os.path.isabs(anotherfile):
                 anotherfile = file_Utils.getAbsPath(anotherfile, tc_filepath)
+            if not os.path.isfile(configfile):
+                print_error(file_err.format(configfile))
+            if not os.path.isfile(anotherfile):
+                print_error(file_err.format(anotherfile))
         except AttributeError:
             print_error('configfile and anotherfile are expected to be files')
             print_error('type of configfile is {}'.format(type(configfile)))
