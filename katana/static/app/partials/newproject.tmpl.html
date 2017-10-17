@@ -198,7 +198,7 @@
                 <div class="col-sm-6">
                     <input type="text" class="form-control" required
                            id="Engineer"
-                           ng-model='prjEngineer'
+                           ng-model='newEng'
                            placeholder="Who created/edited this Project definition">
                 </div>
                 <div class="col-sm-1 align-fa-icon-after-input">
@@ -368,13 +368,13 @@
                 <div class="col-sm-3">
                     <input type="text" class="form-control"
                            id="Date"
-                           ng-model='prjDate'
+                           ng-model='newDate'
                            placeholder="Creation/updated date" disabled>
                 </div>
                 <div class="col-sm-3">
                     <input type="text" class="form-control disabled"
                            id="Time"
-                           ng-model='prjTime'
+                           ng-model='newTime'
                            placeholder="Creation/updated time" disabled>
                 </div>
                 <div class="col-sm-1 align-fa-icon-after-input">
@@ -603,7 +603,10 @@
                                  <td class="text-right">
                                     {{ $index + 1 }}
                                 </td>
-                                <td style="word-break: break-all">{{suites[$index].path}}</td>
+                                 <td style="word-break: break-all;cursor:pointer">
+                                <a target="_blank" ng-click="loadFile(suites[$index].path)" >                           {{suites[$index].path}}
+                                </a>
+                                </td>
                                 <td>
                                     Type = {{ suites[$index].Execute._ExecType }}<br>
                                     <div ng-if="suites[$index].Execute._ExecType == 'If' || suites[$index].Execute._ExecType == 'If Not'">
@@ -758,6 +761,7 @@
                                 <input type="text" class="form-control" id="Path"
                                        ng-model='suites[$index].path'
                                        ng-change="monitorPathBtnValue($index)"
+                                       ng-click="loadFile(suites[$index].path)"
                                        placeholder="Suite file path">
                             </div>
                             <div class="col-sm-1">
@@ -1573,7 +1577,10 @@
                                  <td class="text-right">
                                     {{ $index + 1 }}
                                 </td>
-                                <td style="word-break: break-all">{{suites[$index].path}}</td>
+                                <td style="word-break: break-all;cursor:pointer">
+                                <a target="_blank" ng-click="loadFile(suites[$index].path)" >                           {{suites[$index].path}}
+                                </a>
+                                </td>
                                 <td>
                                     Type = {{ suites[$index].Execute._ExecType }}<br>
                                     <div ng-if="suites[$index].Execute._ExecType == 'If' || suites[$index].Execute._ExecType == 'If Not'">
