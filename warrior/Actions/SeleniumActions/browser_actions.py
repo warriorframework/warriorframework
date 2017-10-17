@@ -10,14 +10,19 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from Framework.Utils.rest_Utils import remove_invalid_req_args
 
-import os
-from Framework.ClassUtils.WSelenium.browser_mgmt import BrowserManagement
+""" Selenium keywords for Generic Browser Actions """
+
+import os, re
+from urlparse import urlparse
 from Framework.Utils import selenium_Utils
 from Framework.Utils import data_Utils
+from Framework.ClassUtils.WSelenium.browser_mgmt import BrowserManagement
+from Actions.SeleniumActions.verify_actions import verify_actions
+from Actions.SeleniumActions.elementlocator_actions import elementlocator_actions
 from Framework.Utils.testcase_Utils import pNote, pSubStep
 from Framework.ClassUtils.json_utils_class import JsonUtils
-
 try:
     import Framework.Utils as Utils
 except ImportWarning:
@@ -38,11 +43,21 @@ class browser_actions(object):
         self.logfile = Utils.config_Utils.logfile
         self.jsonobj = JsonUtils()
         self.browser_object = BrowserManagement()
+        self.verify_obj = verify_actions()
+        self.elementlocator_obj = elementlocator_actions()
 
-    def browser_launch(self, system_name, browser_name="all", type="firefox", url=None, ip=None,
-                       remote=None, element_config_file=None, element_tag=None):
+    def browser_launch(self, system_name, browser_name="all", type="firefox",
+                       url=None, ip=None, remote=None, element_config_file=None,
+                       element_tag=None, binary=None, gecko_path=None,
+                       proxy_ip=None, proxy_port=None):
         """
-        This will launch a browser.
+        The Keyword would launch a browser and Navigate to the url, if provided by the user.
+
+        --------------------------------------------------------------------------------------
+        This keyword does not validate the url provided by the user. Please use
+        navigate_to_url_with_verification instead of providing a url with this keyword if you
+        need to verify the navigation result.
+        --------------------------------------------------------------------------------------
 
         :Datafile Usage:
 
@@ -71,13 +86,13 @@ class browser_actions(object):
 
                         Eg: <remote>yes</remote>
 
-            4. type = This <type> tag is a child og the <browser> tag in the
+            4. type = This <type> tag is a child of the <browser> tag in the
                       data file. The type of browser that should be opened can
                       be added in here.
 
                       Eg: <type>firefox</type>
 
-            5. browser_name = This <browser_name> tag is a child og the
+            5. browser_name = This <browser_name> tag is a child of the
                               <browser> tag in the data file. Each browser
                               instance should have a unique name. This name can
                               be added here
@@ -99,15 +114,14 @@ class browser_actions(object):
                                       ../Config_files/slenium_config.json
                                       </element_config_file>
 
-            8. element_tag = This element_tag refers to a particular element
-                             in the json fie which contains relevant
-                             information to that element. If you want to use
-                             this one element through out the testcase for a
-                             particular browser, you can include it in the
-                             data file. If this not the case, then you should
-                             create an argument tag in the relevant testcase
-                             step and add the value directly in the testcase
-                             step.
+            8. element_tag = This element_tag refers to a particular element in
+                             the json file which contains relevant information to
+                             that element. If you want to use this one element
+                             through out the testcase for a particular browser,
+                             you can include it in the data file. If this not
+                             the case, then you should create an argument tag
+                             in the relevant testcase step and add the value
+                             directly in the testcase step.
 
                              FOR DATA FILE
                              Eg: <element_tag>json_name_1</element_tag>
@@ -115,6 +129,23 @@ class browser_actions(object):
                              FOR TEST CASE
                              Eg: <argument name="element_tag"
                              value="json_name_1">
+
+            9. binary = This <binary> tag refers to path of the browser to
+                        invoke
+                        Eg: <binary>../../firefox/firefox</binary>
+
+            10. gecko_path = This <gecko_path> tag refers to path of the
+                             geckodriver
+                            Eg: <gecko_path>../../../geckodriver</gecko_path>
+
+            11. proxy_ip = This <proxy_ip> tag refers to the ip of the proxy
+                           server. When a proxy is required this tag has to set
+                           Eg: <proxy_ip>xx.xxx.xx.xx</proxy_ip>
+
+            12. proxy_port = This <proxy_port> tag refers to the port of the
+                            proxy server. When a proxy is required for
+                            remote connection this tag has to set.
+                           Eg: <proxy_port>yyyy</proxy_port>
 
         :Arguments:
 
@@ -129,8 +160,11 @@ class browser_actions(object):
                                            configuration file that contains
                                            all element locators
             8. element_tag (str) = particular element in the json fie which
-                                   contains relevant information to that
-                                   element
+                                   contains relevant information to that element
+            9. binary(str) = path of the browser
+            10. gecko_path(str) = path of the geckodriver
+            11. proxy_ip(str) = IP of the proxy server
+            12. proxy_port(str) = port of the proxy server
 
         :Returns:
 
@@ -167,24 +201,34 @@ class browser_actions(object):
                 browser_details = selenium_Utils.\
                     get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
-                browser_inst = self.browser_object.open_browser(
-                    browser_details["type"], webdriver_remote_url)
+                if type == "firefox":
+                    ff_profile = self.browser_object.\
+                        set_firefoxprofile(proxy_ip, proxy_port)
+                if binary != "" and gecko_path != "":
+                    browser_inst = self.browser_object.open_browser(
+                        browser_details["type"], webdriver_remote_url,
+                        binary=binary, gecko_path=gecko_path,
+                        profile_dir=ff_profile)
+                else:
+                    pNote("Please provide valid path for binary/geckodriver")
                 if browser_inst:
                     browser_fullname = "{0}_{1}".format(system_name,
                                                         browser_details["browser_name"])
                     output_dict[browser_fullname] = browser_inst
-                    if "url" in browser_details and browser_details["url"]\
-                            is not None:
-                        result, url = self.browser_object.check_url(browser_details["url"])
-                        if result is True:
+                    url = browser_details["url"]
+                    if url is not None:
+                        urlschema = urlparse(url)
+                        if urlschema.scheme:
                             result = self.browser_object.go_to(url, browser_inst)
+                        else:
+                            result = False
+                            pNote("Protocol scheme in your URL: \'{0}\' is missing, protocol could"
+                                  "be http/ftp/file".format(url), "error")
                     else:
                         result = True
                 else:
-                    pNote("could not open browser on system={0}, "
-                          "name={1}".format(system_name,
-                                            browser_details["browser_name"]),
-                          "error")
+                    pNote("could not open browser on system={0}, name={1}".format
+                          (system_name, browser_details["browser_name"]), "error")
                     result = False
                 status = status and result
             browser_details = {}
@@ -261,10 +305,128 @@ class browser_actions(object):
         selenium_Utils.report_status_and_screenshot(status, current_browser)
         return status
 
+    def browser_launch_and_maximize(self, system_name, browser_name="all", type="firefox",
+                                    url=None, ip=None, remote=None, element_config_file=None,
+                                    element_tag=None):
+        """
+        This will launch a browser and maximize the browser window if it is set.
+
+        :Datafile Usage:
+
+            Tags or attributes to be used in input datafile for the system or
+            subsystem. If both tag and attribute is provided the attribute will
+            be used.
+
+            1. system_name = This attribute can be specified in the datafile as
+                             a <system> tag directly under the <credentials>
+                             tag. An attribute "name" has to be added to this
+                             tag and the value of that attribute would be taken
+                             in as value to this keyword attribute.
+
+                             <system name="name_of_the_system"/>
+
+            2. ip = Specify this tag as a direct child of the <system> tag
+                    This tag would contain information about the IP of the
+                    remote machine on which you want your testcase to run
+
+                    Eg: <ip>167.125.0.1</ip>
+
+            3. remote = Specify this tag as a direct child of the <system> tag
+                        This tag when set to set, would use the IP above and
+                        start up a browser on that machine. If this tag is set
+                        to 'no', a browser would launch on your machine
+
+                        Eg: <remote>yes</remote>
+
+            4. type = This <type> tag is a child og the <browser> tag in the
+                      data file. The type of browser that should be opened can
+                      be added in here.
+
+                      Eg: <type>firefox</type>
+
+            5. browser_name = This <browser_name> tag is a child tag the
+                              <browser> tag in the data file. Each browser
+                              instance should have a unique name. This name can
+                              be added here
+
+                              Eg: <browser_name>Unique_name_1</browser_name>
+
+            6. url = The URL that you want to open your browser to can be added
+                     in the <url> tag under the <browser> tag.
+
+                     Eg: <url>https://www.google.com</url>
+
+            7. element_config_file = This <element_config_file> tag is a child
+                                     of the <browser> tag in the data file. This
+                                     stores the location of the element
+                                     configuration file that contains all
+                                     element locators.
+
+                                  Eg: <element_config_file>
+                                      ../Config_files/slenium_config.json
+                                      </element_config_file>
+
+            8. element_tag = This element_tag refers to a particular element in
+                             the json file which contains relevant information to
+                             that element. If you want to use this one element
+                             through out the testcase for a particular browser,
+                             you can include it in the data file. If this not
+                             the case, then you should create an argument tag
+                             in the relevant testcase step and add the value
+                             directly in the testcase step.
+
+                             FOR DATA FILE
+                             Eg: <element_tag>json_name_1</element_tag>
+
+                             FOR TEST CASE
+                             Eg: <argument name="element_tag" value="json_name_1">
+
+        :Arguments:
+
+            1. system_name(str) = the system name.
+            2. type(str) = Type of browser: firefox, chrome, ie.
+            3. browser_name(str) = Unique name for this particular browser
+            4. url(str) = URL to which the browser should be directed
+            5. ip(str) = IP of the remote machine
+            6. remote(str) = 'yes' or 'no' to indicate whether you want to
+                              connect to the given aboveIP
+            7. element_config_file (str) = location of the element configuration
+                                           file that contains all element
+                                           locators
+            8. element_tag (str) = particular element in the json fie which
+                                   contains relevant information to that element
+
+        :Returns:
+
+            1. status(bool)= True / False.
+            2. output_dict(dict) = dictionary containing information about the
+                                   browser
+
+        """
+        wdesc = "Opens browser instances and maximizes them"
+        pNote(wdesc)
+        pSubStep(wdesc)
+
+        status, output_dict = self.browser_launch(system_name=system_name, type=type,
+                                                  browser_name=browser_name, url=url, ip=ip,
+                                                  remote=remote,
+                                                  element_config_file=element_config_file,
+                                                  element_tag=element_tag)
+        if status:
+            for current_browser in output_dict:
+                self.browser_object.maximize_browser_window(output_dict[current_browser])
+
+        return status, output_dict
+
     def navigate_to_url(self, system_name, type="firefox", browser_name="all",
                         url=None, element_config_file=None, element_tag=None):
         """
         This will navigate the browser tab to given URL.
+
+        -----------------------------------------------------------------------------
+        This keyword does not validate the url provided by the user. Please use
+        navigate_to_url_with_verification if you need to verify the navigation result.
+        ------------------------------------------------------------------------------
 
         :Datafile Usage:
 
@@ -339,6 +501,7 @@ class browser_actions(object):
                                    contains relevant information to that
                                    element
 
+
         :Returns:
 
             1. status(bool)= True / False.
@@ -373,6 +536,164 @@ class browser_actions(object):
                     status = False
             browser_details = {}
         selenium_Utils.report_status_and_screenshot(status, current_browser)
+        return status
+
+    def navigate_to_url_with_verification(self, system_name, type="firefox", browser_name="all",
+                                          url=None, element_config_file=None, element_tag=None,
+                                          value_type=None, expected_value=None, locator_type=None,
+                                          locator=None):
+        """
+        The webpage would be directed to the given URL and then whether the navigation was
+        successful or not would be verified
+
+        :Datafile Usage:
+
+            Tags or attributes to be used in input datafile for the system or
+            subsystem. If both tag and attribute is provided the attribute will
+            be used.
+
+            1. system_name = This attribute can be specified in the datafile as
+                             a <system> tag directly under the <credentials>
+                             tag. An attribute "name" has to be added to this
+                             tag and the value of that attribute would be taken
+                             in as value to this keyword attribute.
+
+                             <system name="name_of_thy_system"/>
+
+            2. type = This <type> tag is a child og the <browser> tag in the
+                      data file. The type of browser that should be opened can
+                      be added in here.
+
+                      Eg: <type>firefox</type>
+
+            3. browser_name = This <browser_name> tag is a child og the
+                              <browser> tag in the data file. Each browser
+                              instance should have a unique name. This name can
+                              be added here
+
+                              Eg: <browser_name>Unique_name_1</browser_name>
+
+            4. url = The URL that you want to open your browser to can be added
+                     in the <url> tag under the <browser> tag.
+
+                     Eg: <url>https://www.google.com</url>
+
+
+
+            5. element_config_file = This <element_config_file> tag is a child
+                                     of the <browser> tag in the data file. This
+                                     stores the location of the element
+                                     configuration file that contains all
+                                     element locators.
+
+                                  Eg: <element_config_file>
+                                      ../Config_files/slenium_config.json
+                                      </element_config_file>
+
+            6. element_tag = This element_tag refers to a particular element in
+                             the json fie which contains relevant information to
+                             that element. If you want to use this one element
+                             through out the testcase for a particular browser,
+                             you can include it in the data file. If this not
+                             the case, then you should create an argument tag
+                             in the relevant testcase step and add the value
+                             directly in the testcase step.
+
+                             FOR DATA FILE
+                             Eg: <element_tag>json_name_1</element_tag>
+
+                             FOR TEST CASE
+                             Eg: <argument name="element_tag" value="json_name_1">
+
+            7.locator_type = This contains information about the type of
+                              locator that you want to use. Can be 'xpath',
+                              'id', 'css', 'link', 'tag','class', 'name'
+
+            8. locator = This contains the value of the locator. Something like
+                         "form", "nav-tags", "//[dh./dhh[yby]"
+
+            9. expected_value = This <expected_value> tag is a child og the
+                                <browser> tag in the data file. This tag would
+                                contain the the value you expect the browser to
+                                have. This can be either a  url, page title,
+                                page source, or page name
+
+                    Eg: <expected_value>http://www.google.com</expected_value>
+
+            10. value_type =This <value_type> tag is a child of the <browser>
+                            tag in the data file. This tag would contain the
+                            type of browser information that you want to verify.
+                            It can either be current_url, title, name, or
+                            page_source
+
+                            Eg: <value_type>title</value_type>
+
+            USING LOCATOR_TYPE & LOCATOR, VALUE_TYPE & EXPECTED_VALUE
+            
+           ======================================================
+
+            Please provide either the locator type and locator or provide value_type and
+            expected_value for the verificationr to be performed successfully
+
+            Note: Even though, current_url is an acceptable value_type, it is not recommended that
+                  you use it since it can result in a false positive. Please use it only if you are
+                  sure that the verification would go through correctly.
+
+        :Arguments:
+
+            1. system_name(str) = the system name.
+            2. type(str) = Type of browser: firefox, chrome, ie.
+            3. browser_name(str) = Unique name for this particular browser
+            4. url(str) = URL to which the browser should be directed
+            5. element_config_file (str) = location of the element configuration
+                                           file that contains all element
+                                           locators
+            6. element_tag (str) = particular element in the json fie which
+                                   contains relevant information to that element
+            7. locator_type (str) = type of the locator - xpath, id, etc.
+            8. locator (str) = locator by which the element should be located.
+            9. expected_value (str) = The expected value of the information
+                                      retrieved from the web page.
+            10. value_type(str) = Type of page information that you wat to
+                                  verify: current_url, name, title, or
+                                  page_source
+
+
+        :Returns:
+
+            1. status(bool)= True / False.
+
+        """
+        wdesc = "The webpage would be directed to the given URL and then whether the navigation " \
+                "was successful or not would be verified."
+        pNote(wdesc)
+        pSubStep(wdesc)
+
+        status = self.navigate_to_url(system_name=system_name, type=type, browser_name=browser_name,
+                                      url=url, element_config_file=element_config_file,
+                                      element_tag=element_tag)
+
+        if all((value_type is not None, expected_value is not None)):
+            status = status and self.verify_obj.verify_page_by_property(system_name=system_name,
+                                                                        expected_value=expected_value,
+                                                                        value_type=value_type,
+                                                                        browser_name=browser_name,
+                                                                        element_config_file=element_config_file,
+                                                                        element_tag=element_tag)
+        elif all((locator is not None, locator_type is not None)):
+            status = status and self.elementlocator_obj.get_element(system_name=system_name,
+                                                                    locator_type=locator_type,
+                                                                    locator=locator,
+                                                                    element_tag=element_tag,
+                                                                    element_config_file=element_config_file,
+                                                                    browser_name=browser_name)[0]
+        else:
+            pNote("The navigation result could not be verified as enough information was not "
+                  "provided. Either the locator and locator_type or the value_type and "
+                  "expected_value should be given.", "error")
+            status = False
+
+        Utils.testcase_Utils.report_substep_status(status)
         return status
 
     def navigate_forward(self, system_name, type="firefox", browser_name="all"):

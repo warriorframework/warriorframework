@@ -66,8 +66,20 @@ Also refer the python regex documentation https://docs.python.org/2/library/re.h
 			The default start pattern is ${ and default end_pattern is }
 		-->
 		<variable_pattern start_pattern="{{{" end_pattern="}}}"/>
-	</global>
 
+		<!--
+		=====================
+		I.d : keys:
+		=====================
+
+			This is an optional tag
+			Global values for pattern in the testdata section can be provided
+			in the keys tag as shown below.
+		-->
+		<k1 resp_pat_req="actual pattern for k1"/>
+		<k2 resp_pat_req="actual pattern for k2"/>
+		...
+	</global>
 
 
 	<!--
@@ -177,7 +189,7 @@ Also refer the python regex documentation https://docs.python.org/2/library/re.h
 							this feature is always enabled, user can turn it off by providing "n"
 
 		14. :resp_pat_req: 	(text or regular expression) to save only a particular text or regular expression
-							from the response
+							from the response. To save multiple patterns check resp_keys.
 
 		15. :resp_ref:  	(text, default=position of command in the testdata block) a user provided refernce text
 							for the response of this command
@@ -185,6 +197,9 @@ Also refer the python regex documentation https://docs.python.org/2/library/re.h
 							If user does not provide resp_ref, framework automatically assigns this value based on the
 							position of the command in the test data section.
 							i.e. if the command is the 2nd command in the test data then resp_ref="2" will be used and so on.
+							Give comma separated list of variables for storing multiple patterns. Each of this value would be stored
+							with the patterns specified from the keys mentioned in resp_keys i.e., first var here would be stored
+							with the pattern from the first key in resp_keys and so on
 
 		16. :monitor: 		(comma separated system names - Eg. NE1[cli].session, NE2, [dip] - where NE1, NE2 are the system names,
 							[cli], [dip] are the subsystem names and .session is the session name.) Responses from the
@@ -222,7 +237,15 @@ Also refer the python regex documentation https://docs.python.org/2/library/re.h
 							This feature is always disabled, user can turn it on by providing "y".
 							If enabled, command passes only when the received response order matches with the order given in the 'verify' tag
 
-		19.	:repeat:		(supported value = "y") when iter_type=‘per_td_block’ with repeat='y', corresponding command in testdata block
+		19. :resp_keys:		(comma separated list of keys) each key corresponds to a pattern which is either mentioned in this testdata section
+							or from the global section.
+
+		20. :inorder_resp_ref:(supported value = "n") patterns to be picked from the response in order or not. By default the patterns are
+							picked in order i.e., if resp_keys is 'k1, k2, k3' then in the response the patterns corresponding to k1 should occur
+							in the beginning followed by k2 and k3. If the inorder_resp_ref is set to 'no' then each of the patterns had to be
+							checked in the whole response every time.
+
+		21.	:repeat:		(supported value = "y") when iter_type=‘per_td_block’ with repeat='y', corresponding command in testdata block
 							will be executed in each iteration. This feature is always disabled, user can turn it on by providing "y" and this
 							tag is applicable only for the testdata commands without any iteration pattern in it.
 
@@ -308,6 +331,30 @@ Also refer the python regex documentation https://docs.python.org/2/library/re.h
 		Command will fail (i) when at least any one of the tags is not present in the response, (ii) when the received
 		order doesn't match the expected order(eg. failes when recieved order = "v2,v3,v1") -->
 		<command verify="v1,v2,v3" inorder="y" send="set paginate false" />
+
+<!--
+			4. For storing multiple patterns from the response the tags should be provided as shown below:
+			:resp_keys:			(comma separated list of keys) for specifying the patterns
+			:resp_ref:			(comma separated list of vars) for storing the response corresponding to patterns
+			:inorder_resp_ref:	("yes" or "no" default "yes") If yes retrieves the patterns from the response in order
+								If no, retrieves the patterns from the response individually everytime -->
+	<global>
+		<keys>
+			<gk1 resp_pattern_req="No such file or directory"/>
+		</keys>
+	</global>
+    <command send="ls NonExistTitleRowDir"
+             end="\$" verify="v1" resp_keys="k1, k2, gk"
+             resp_ref="lsoutK1,lsoutK2, lsoutK3"
+             inorder_resp_ref="n"/>
+    <v1 found="yes" search="No such file or directory" />
+    <k1 resp_pattern_req="ls: "/>
+    <k2 resp_pattern_req="cannot access.*:"/>
+
+<!-- This would store "ls:" (ref k1) pattern/text in lsoutK1,
+    "cannot access.*:" (ref k2) pattern/text in lsoutK2 and
+    "No such file or directory" (ref gk1 from global section) pattern/text in lsoutK3
+-->
 
 		<!--
 		========================
@@ -412,7 +459,6 @@ Also refer the python regex documentation https://docs.python.org/2/library/re.h
 
 		<v7 found="yes" search="Commit complete"/>
 	</testdata>
-
 
 <!--
 	==============================================================

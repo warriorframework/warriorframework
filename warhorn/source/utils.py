@@ -11,10 +11,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-"""
-Utility functions for warhorn.py
-"""
-
 import os
 import platform
 import shutil
@@ -26,6 +22,9 @@ import subprocess
 import datetime
 import sys
 from war_print_class import print_main
+"""
+Utility functions for warhorn.py
+"""
 
 
 def check_url_is_a_valid_repo(url, repo_name, logfile, print_log_name):
@@ -282,7 +281,6 @@ def delete_read_only(action, name, exc):
     os.remove(name)
 
 
-
 def get_subfiles(src):
     """ Gets all the directories and files listed under the specified directory.
     Separates the directories from standalone files.
@@ -425,16 +423,13 @@ def verify_python_version(str_version, regex_str, logfile, print_log_name):
     """
     pattern = re.compile(regex_str)
     if not pattern.match(str_version):
-        print_error("You are currently using Python " +
-                    str_version +
-                    ". It is strongly recommended that you install the correct "
-                    "version of Python (2.7.0 or above in the 2.7 family).",
-                    logfile, print_log_name)
+        print_error("You are currently using Python " + str_version + ". It is strongly "
+                    "recommended that you install the correct version of Python (2.7.0 or "
+                    "above in the 2.7 family).", logfile, print_log_name)
         setDone(1)
-        getDone()
+        getDone(logfile, print_log_name)
     else:
-        print_info("Python version satisfies requirements.", logfile,
-                   print_log_name)
+        print_info("Python version satisfies requirements.", logfile, print_log_name)
 
 
 def get_latest_tag(base_path="", current_dir=""):
@@ -570,55 +565,45 @@ def install_depen(dependency, dependency_name, logfile, print_log_name,
     counter = 0
     pip_cmds = ['pip', 'install', dependency]
     if user:
-        print_info("Installing {} as user...".format(dependency), logfile,
-                   print_log_name)
+        print_info("Installing {} as user...".format(dependency), logfile, print_log_name)
         pip_cmds.insert(2, "--user")
     try:
+        print_info("installing "+dependency, logfile, print_log_name)
         sp_output = subprocess.Popen(pip_cmds, stdout=subprocess.PIPE,
-                                     stderr=subprocess.PIPE,
-                                     stdin=subprocess.PIPE)
+                                     stderr=subprocess.PIPE, stdin=subprocess.PIPE)
         output = sp_output.stdout.read()
         print_info(output, logfile, print_log_name)
     except IOError:
         counter = 1
-        print_error("Warhorn was unable to install " +
-                    dependency_name +
-                    " because Warhorn does not have write permissions. "
-                    "You need to have admin privileges to install anything!",
-                    logfile, print_log_name)
+        print_error("Warhorn was unable to install " + dependency_name + " because Warhorn "
+                    "does not have write permissions. You need to have admin privileges to "
+                    "install anything!", logfile, print_log_name)
         setDone(1)
     except:
         counter = 1
-        print_error("Warhorn was unable to install " +
-                    dependency_name +
-                    ". Warhorn could not determine the cause for this. This "
-                    "could have happened because probably the system is not "
-                    "connected to internet.",
-                    logfile, print_log_name)
+        print_error("Warhorn was unable to install " + dependency_name + ". Warhorn could not "
+                    "determine the cause for this. This could have happened because probably the "
+                    "system is not connected to internet.", logfile, print_log_name)
         setDone(1)
     if counter == 0:
         try:
-            sp_output = subprocess.Popen(["pip", "show", dependency_name],
-                                         stdin=subprocess.PIPE,
-                                         stdout=subprocess.PIPE,
-                                         stderr=subprocess.PIPE)
+            sp_output = subprocess.Popen(["pip", "show", dependency_name], stdin=subprocess.PIPE,
+                                         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             output = sp_output.stdout.read()
             if output == "":
                 print_error(dependency_name + " could not be installed!!",
                             logfile, print_log_name)
                 setDone(1)
             else:
-                print_info(dependency_name + " installation complete!", logfile,
-                           print_log_name)
+                print_info(dependency_name + " installation complete!",
+                           logfile, print_log_name)
         except:
-            print_error("Warhorn wasn't able to determine if " +
-                        dependency_name +
-                        " was installed successfully or not!",
-                        logfile, print_log_name)
+            print_error("Warhorn wasn't able to determine if " + dependency_name + " was "
+                        "installed successfully or not!", logfile, print_log_name)
             setDone(1)
 
 
-def get_dependencies(logfile, print_log_name, config_file_name):
+def get_dependencies(logfile, print_log_name, config_file_name, venv=False):
     """ Function gets called from setup.py
     Gets the dependencies that need to be installed.
     Appends dependency name and version to a list if attribute 'install'
@@ -645,9 +630,8 @@ def get_dependencies(logfile, print_log_name, config_file_name):
     """
     node = get_node(config_file_name, 'warhorn')
     if node is False:
-        print_error("Warhorn tag not found! Proceeding with the installation "
-                    "without installing any of the recommended "
-                    "dependencies.", logfile, print_log_name)
+        print_error("Warhorn tag not found! Proceeding with the installation without installing "
+                    "any of the recommended dependencies.", logfile, print_log_name)
         setDone(1)
     else:
         dependencies = get_firstlevel_children(node, "dependency")
@@ -655,38 +639,28 @@ def get_dependencies(logfile, print_log_name, config_file_name):
         for dependency in dependencies:
             if 'install' in dependency.attrib:
                 if dependency.attrib["install"] == "yes":
-                    print_info("Warhorn will try to install " +
-                               dependency.attrib["name"] +
-                               " as it was set to 'yes' in the .xml file",
-                               logfile, print_log_name)
-                    if ('user' in dependency.attrib and
+                    print_info("Warhorn will try to install " + dependency.attrib["name"] + " as "
+                               "it was set to 'yes' in the .xml file", logfile, print_log_name)
+                    if (not venv and 'user' in dependency.attrib and
                             dependency.attrib["user"] == "yes"):
                         install_depen(dependency.attrib["name"] + "==" +
                                       versions.get(dependency.attrib["name"]),
-                                      dependency.attrib["name"], logfile,
-                                      print_log_name, True)
+                                      dependency.attrib["name"], logfile, print_log_name, True)
                     else:
                         install_depen(dependency.attrib["name"] + "==" +
                                       versions.get(dependency.attrib["name"]),
-                                      dependency.attrib["name"], logfile,
-                                      print_log_name)
+                                      dependency.attrib["name"], logfile, print_log_name)
                 elif dependency.attrib["install"] == "no":
-                    print_info("Warhorn will not install " +
-                               dependency.attrib["name"] +
-                               " as it was set to 'no' in the .xml file.",
-                               logfile, print_log_name)
+                    print_info("Warhorn will not install " + dependency.attrib["name"] + " as "
+                               "it was set to 'no' in the .xml file.", logfile, print_log_name)
                 else:
-                    print_error("Warhorn will not install " +
-                                dependency.attrib["name"] +
-                                " as the 'install' attribute in the .xml file "
-                                "was left blank.",
+                    print_error("Warhorn will not install " + dependency.attrib["name"] + " as "
+                                "the 'install' attribute in the .xml file was left blank.",
                                 logfile, print_log_name)
                     setDone(1)
             else:
-                print_error("Warhorn will not install " +
-                            dependency.attrib["name"] +
-                            " as the 'install' attribute was not found.",
-                            logfile, print_log_name)
+                print_error("Warhorn will not install " + dependency.attrib["name"] + " as "
+                            "the 'install' attribute was not found.", logfile, print_log_name)
                 setDone(1)
 
 
@@ -719,6 +693,7 @@ def get_dest(logfile, print_log_name, config_file_name):
                         "continue", logfile, print_log_name)
             setDone(1)
 
+
 def set_file_names():
     """ Function written so that setup.py can access these file names.
 
@@ -739,9 +714,9 @@ def setDone(value):
     DONE = value
 
 
-def getDone():
+def getDone(logfile, print_log_name):
     """This function prints the exit value of warhorn"""
-    print "DONE " + str(DONE)
+    print_info("DONE " + str(DONE), logfile, print_log_name)
     sys.exit(DONE)
 
 
@@ -794,20 +769,21 @@ def git_checkout_label(label, base_path="", current_dir=""):
     check == True and current_tag != 0 is condition for invalid label
     check == False and current_tag != 0 is condition for problematic git
                                                         commands
-
     """
-    current_tag = ""
     check = True
+    current_label = ""
     if base_path != "":
         os.chdir(base_path)
     try:
-        if subprocess.call(["git", "rev-parse", "--verify", label]) == 0:
-            _ = subprocess.call(["git", "checkout", label])
-        else:
-            current_tag = subprocess.check_output(["git", "describe"])
+        # checking out label
+        subprocess.check_call(["git", "checkout", label])
+        # getting current label in current_label
+        current_label = subprocess.check_output(["git", "symbolic-ref",
+                                                 '--short', 'HEAD']).strip()
     except:
         check = False
-        current_tag = subprocess.check_output(["git", "describe"])
+    if current_label != label:
+        check = False
     if current_dir != "":
         os.chdir(current_dir)
-    return check, current_tag
+    return check, current_label
