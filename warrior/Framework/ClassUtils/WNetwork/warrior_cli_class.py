@@ -20,7 +20,7 @@ import getpass
 import Tools
 from Framework import Utils
 from Framework.Utils.print_Utils import print_info, print_debug,\
- print_exception, print_error
+ print_exception, print_error, print_warning
 from Framework.Utils.testcase_Utils import pNote
 from WarriorCore.Classes.war_cli_class import WarriorCliClass
 from Framework.Utils.cli_Utils import cmdprinter
@@ -1196,11 +1196,12 @@ class PexpectConnect(object):
             conn_options = ""
         if not self.username:
             self.username = ""
-            print_info("Username not provided, taking {0} as Username" .format(getpass.getuser()))
+            print_warning("Using '{0}' as username since it is not provided "
+                          "in data file".format(getpass.getuser()))
         else:
             self.username += '@'
         command = 'ssh -p {0} {1}{2} {3}'.format(self.port, self.username,
-                                                  self.ip, conn_options)
+                                                 self.ip, conn_options)
         # command = ('ssh -p '+ port + ' ' + username + '@' + ip)
         print_debug("connectSSH: cmd = %s" % command)
         if WarriorCliClass.cmdprint:
