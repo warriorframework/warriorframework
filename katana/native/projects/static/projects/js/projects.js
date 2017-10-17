@@ -774,9 +774,9 @@ Two global variables are heavily used when this function is called;
 
 
 			bid = "copyToStorage-"+s+"-id-";
-			items.push('<i title="Copy to clipboard" class="fa fa-clipboard" theSid="'+s+'"   id="'+bid+'" katana-click="projects.copyToClipboardCB" key="'+bid+'"/>');
+			items.push('<i title="Copy to clipboard" class="fa fa-clipboard" theSid="'+s+'"   id="'+bid+'" katana-click="projects.copyToClipboardCB" skey="'+bid+'"/>');
 			bid = "copyFromStorage-"+s+"-id-";
-			items.push('<i title="Copy from clipboard" class="fa fa-outdent" theSid="'+s+'"   id="'+bid+'" katana-click="projects.insertFromClipboardCB" key="'+bid+'"/>');
+			items.push('<i title="Copy from clipboard" class="fa fa-outdent" theSid="'+s+'"   id="'+bid+'" katana-click="projects.insertFromClipboardCB" skey="'+bid+'"/>');
 
 			bid = "DuplicateTestSuite-"+s+"-id"
 			items.push('<i  title="Duplicate" class="fa fa-copy" value="Duplicate" skey="'+bid+'" katana-click="projects.duplicateTestSuiteCB"/></td>');
@@ -826,17 +826,28 @@ Two global variables are heavily used when this function is called;
 			projects.mapProjectJsonToUi();	// Send in the modified array
 		},
 
+
+	copyToDocument: function (tag, obj) {
+		localStorage.setItem(tag, JSON.stringify(obj.getJSON()));
+	},
+
+	copyFromDocument: function(tag) {
+		return JSON.parse(localStorage.getItem(tag));
+	},
+
 	copyToClipboardCB : function() { 
 		var names = this.attr('skey').split('-');
 		var sid = parseInt(names[1]);
-		projects.jsonTestSuites[sid].copytoDocument('lastSuiteCopied', projects.jsonTestSuites[sid]);
+		//projects.jsonTestSuites[sid].copytoDocument('lastSuiteCopied', projects.jsonTestSuites[sid]);
+		projects.copyToDocument('lastSuiteCopied', projects.jsonTestSuites[sid]);
 
 	},
 
 	insertFromClipboardCB : function() { 
 		var names = this.attr('skey').split('-');
 		var sid = parseInt(names[1]);
-		jsonData = projects.jjsonTestSuites[sid].copyFromDocument('lastSuiteCopied');
+		//jsonData = projects.jjsonTestSuites[sid].copyFromDocument('lastSuiteCopied');
+		jsonData = projects.copyFromDocument('lastSuiteCopied');
 		console.log("Retrieving ... ", jsonData);
 		var nb  = new projectSuiteObject(jsonData);
 		projects.jsonTestSuites.splice(sid,0,nb);
