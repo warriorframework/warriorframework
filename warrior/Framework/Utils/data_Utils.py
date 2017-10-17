@@ -913,9 +913,12 @@ def verify_data(expected, key, data_type='str', comparison='eq'):
                 print_info("The key, value pair '{0}:{1}' present in the  "
                            "data_repository satisfies the expected value & condition "
                            "'{2}:{3}'".format(key, value, comparison, expected))
-        except KeyError, Exception:
+        except KeyError:
             print_error(key_err_msg.format(key))
             result = "FALSE"
+        except Exception as e:
+            err_msg += "Got unknown exception {}\n".format(e)
+            result = "EXCEPTION"
     else:
         # when the value is not in data_repo(value is False)
         result = "ERROR"
