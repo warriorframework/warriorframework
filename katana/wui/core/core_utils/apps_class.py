@@ -36,6 +36,12 @@ class Apps:
                 for i in range(0, len(js_urls)):
                     js_urls[i] = get_relative_path(js_urls[i], app_path)
                 app.data["js_urls"] = js_urls
+                
+                # adding css urls to the app data
+                for i in range(0, len(css_urls)):
+                    css_urls[i] = get_relative_path(css_urls[i], app_path)
+                app.data["css_urls"] = css_urls
+                
                 self.apps.append(app)
         return self.apps
 
