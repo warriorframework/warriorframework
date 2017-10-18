@@ -1533,7 +1533,7 @@ i.active {
 	left: 0;
 	width: 100%;
 	height:60px;
-	//z-index: 1;
+	/*z-index: 1;*/
 	padding-right: 17px;
 	color: white;
 	background: #3699ff;
@@ -1721,7 +1721,7 @@ i.active {
 }
 [name="HeadingRow"] {
 	position: relative;
-	//top: -40px;
+	/*top: -40px;*/
 	left: 0;
 	color: white;
 	background: #3699ff !important;
@@ -1791,7 +1791,7 @@ i.active {
 	position: relative;
 	left: 0;
 	width: 100%;
-	//height: calc( 100% - 40px);
+	/*height: calc( 100% - 40px);*/
 	overflow: hidden;
 	-webkit-transform: translate3d( 0, 0, 0);
 	transform: translate3d( 0, 0, 0);
@@ -1960,7 +1960,7 @@ i.active {
 	background: #2578c1;
 	height: 40px;
 	top: 40px;
-	//position: absolute;
+	/*position: absolute;*/
 	left: 0;
 }
 
@@ -2299,7 +2299,6 @@ i.active {
 	margin: 0 auto;
 }
 
-.
 :before {
 	content: '';
 	border: 8px solid #f3f3f3;
@@ -3232,13 +3231,12 @@ div .tool-bar-links:active {
 	margin: 5px 5px 0px 2px;
 	padding: 5px 3px;
 	line-height: 1.5;
-	//-webkit-appearance: button;
+	/*-webkit-appearance: button;*/
 }
 
 
 /* execution app related styles ends*/
 
--
 /* wdf editor app related styles starts */
 
 .wdf-button {
