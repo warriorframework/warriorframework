@@ -104,9 +104,9 @@ def getListOfKeywords(request):
 	responseBack = { 'keywords': [] }
 	driver = request.GET.get('driver');
 		
-	if 1:		
-		#print dir(details);
-		print driver
+	#print dir(details);
+	print driver
+	try:
 		print len(details[driver][0])	
 		for item in details[driver][0]: 
 			fn = item['fn']
@@ -115,8 +115,9 @@ def getListOfKeywords(request):
 			if fn.find('ctions') > 0: continue;
 			if fn.find('_init_') > 0: continue;
 			print fn
-
 			responseBack['keywords'].append(item['fn']);
+	except: 
+		print "Unable to find driver..."
 	return JsonResponse(responseBack)
 
 ##
