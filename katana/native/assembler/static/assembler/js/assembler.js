@@ -242,9 +242,12 @@ var assembler = {
         $elem = $(this);
         var $topLevelDiv = $elem.closest('.card');
         var $parentCardBlock = $elem.closest('.card-block');
+        var $driverCard = $parentCardBlock.find('.card');
+        $driverCard.hide();
         var $footerBlockRow = $parentCardBlock.siblings('.card-footer').find('.row');
         var $footerBlockRowIcon = $footerBlockRow.find('.fa');
-        $footerBlockRowIcon.attr('class', 'fa');
+        $footerBlockRowIcon.attr("class", "");
+        $footerBlockRowIcon.addClass('fa').addClass('assembler-icon-pos-right');
         $footerBlockRow.find('.col-sm-8').html('');
         var url = $elem.val();
         if(url === ""){
@@ -268,8 +271,10 @@ var assembler = {
                 url: 'assembler/check_repo_availability/',
                 data: {"url": url}
             }).done(function(data) {
-                $footerBlockRowIcon.attr('class', 'fa');
+                $footerBlockRowIcon.attr("class", "");
+                $footerBlockRowIcon.addClass('fa').addClass('assembler-icon-pos-right');
                 if(data["available"]){
+                    $driverCard.show();
                     $topLevelDiv.data().dataObject.url = url;
                     $topLevelDiv.data().dataObject.available = true;
                     $footerBlockRowIcon.addClass('fa-check').addClass('skyblue');
@@ -304,12 +309,38 @@ var assembler = {
             $elem.removeClass('fa-toggle-on').removeClass('skyblue');
             $elem.addClass('fa-toggle-off').addClass('grey');
             $topLevelDiv.data().dataObject.clone = "no";
+            $cardBlock = $topLevelDiv.find('.card-block');
+            $cardBlock.addClass("assembler-disable-div");
+            $inputs = $cardBlock.find('input');
+            for(var i=0; i<$inputs.length; i++){
+                $($inputs[i]).prop('disabled', true);
+                $($inputs[i]).css('background-color', '#eaeaea');
+            }
+            var $driverBlock = $cardBlock.find('.card');
+            $driverBlock.find('.card-header').addClass('assembler-disable-div');
+            var $toggles = $driverBlock.find('i')
+            for(var i=0; i<$toggles.length; i++){
+                $($toggles[i]).css('color', '#eaeaea');
+            }
         }
         else{
             $elem.attr('aria-selected', 'true');
             $elem.removeClass('fa-toggle-off').removeClass('grey');
             $elem.addClass('fa-toggle-on').addClass('skyblue');
-            $topLevelDiv.data().dataObject.clone = "no";
+            $topLevelDiv.data().dataObject.clone = "yes";
+            $cardBlock = $topLevelDiv.find('.card-block');
+            $cardBlock.removeClass("assembler-disable-div");
+            $inputs = $cardBlock.find('input');
+            for(var i=0; i<$inputs.length; i++){
+                $($inputs[i]).prop('disabled', false);
+                $($inputs[i]).css('background-color', 'white');
+            }
+            var $driverBlock = $cardBlock.find('.card');
+            $driverBlock.find('.card-header').removeClass('assembler-disable-div');
+            var $toggles = $driverBlock.find('i')
+            for(var i=0; i<$toggles.length; i++){
+                $($toggles[i]).attr('style', '');
+            }
         }
     },
 
@@ -469,7 +500,7 @@ var assembler = {
         if($elem.attr("aria-selected") == "true"){
             $elem.attr("aria-selected", "false");
             $elem.attr("class", "");
-            $elem.addClass("fa").addClass("fa-toggle-off").addClass("grey");
+            $elem.addClass("fa").addClass("fa-toggle-off").addClass("grey").addClass('assembler-icon-pos-right');
             $topLevelDiv.data().dataObject.overwrite = "no";
         } else {
             $elem.attr("aria-selected", "true");
@@ -485,13 +516,33 @@ var assembler = {
         if($elem.attr("aria-selected") == "true"){
             $elem.attr("aria-selected", "false");
             $elem.attr("class", "");
-            $elem.addClass("fa").addClass("fa-toggle-off").addClass("grey");
+            $elem.addClass("fa").addClass("fa-toggle-off").addClass("grey").addClass('assembler-icon-pos-right');
             $topLevelDiv.data().dataObject.clone = "no";
+            $cardBlock = $topLevelDiv.find('.card-block');
+            $cardBlock.addClass("assembler-disable-div");
+            $inputs = $cardBlock.find('input');
+            for(var i=0; i<$inputs.length; i++){
+                $($inputs[i]).prop('disabled', true);
+                $($inputs[i]).css('background-color', '#eaeaea');
+            }
+            $overwriteIcon = $topLevelDiv.find('i[katana-click="assembler.toggleWsOverwriteButton"]');
+            $overwriteIcon.css("color", "#eaeaea");
+            $overwriteIcon.prop("disabled", true);
         } else {
             $elem.attr("aria-selected", "true");
             $elem.attr("class", "");
-            $elem.addClass("fa").addClass("fa-toggle-on").addClass("skyblue");
+            $elem.addClass("fa").addClass("fa-toggle-on").addClass("skyblue").addClass('assembler-icon-pos-right');
             $topLevelDiv.data().dataObject.clone = "yes";
+            $cardBlock = $topLevelDiv.find('.card-block');
+            $cardBlock.removeClass("assembler-disable-div");
+            $inputs = $cardBlock.find('input');
+            for(var i=0; i<$inputs.length; i++){
+                $($inputs[i]).prop('disabled', false);
+                $($inputs[i]).css('background-color', 'white');
+            }
+            $overwriteIcon = $topLevelDiv.find('i[katana-click="assembler.toggleWsOverwriteButton"]');
+            $overwriteIcon.attr("style", "");
+            $overwriteIcon.prop("disabled", false);
         }
     },
 
@@ -501,11 +552,12 @@ var assembler = {
         $parentCardBlock = $elem.closest('.card-block');
         $footerBlockRow = $parentCardBlock.siblings('.card-footer').find('.row');
         var $footerBlockRowIcon = $footerBlockRow.find('.fa');
-        $footerBlockRowIcon.attr('class', 'fa')
+        $footerBlockRowIcon.attr("class", "");
+        $footerBlockRowIcon.addClass('fa').addClass('assembler-icon-pos-right');
         $footerBlockRow.find('.col-sm-8').html('');
         var url = $elem.val();
         if(url === ""){
-            $footerBlockRowIcon.addClass('fa-exclamation-triangle').addClass('tan')
+            $footerBlockRowIcon.addClass('fa-exclamation-triangle').addClass('tan');
             $footerBlockRow.find('.col-sm-8').html('No Repository Information Provided.');
             $footerBlockRow.show();
         }
@@ -525,7 +577,8 @@ var assembler = {
                 url: 'assembler/check_ws_repo_availability/',
                 data: {"url": url}
             }).done(function(data) {
-                $footerBlockRowIcon.attr('class', 'fa');
+                $footerBlockRowIcon.attr("class", "");
+                $footerBlockRowIcon.addClass('fa').addClass('assembler-icon-pos-right');
                 if(data["available"]){
                     $topLevelDiv.data().dataObject.url = url;
                     $topLevelDiv.data().dataObject.available = true;
@@ -594,11 +647,25 @@ var assembler = {
             $elem.attr("class", "");
             $elem.addClass("fa").addClass("fa-toggle-off").addClass("grey");
             $topLevelDiv.data().dataObject.clone = "no";
+            $cardBlock = $topLevelDiv.find('.card-block');
+            $cardBlock.addClass("assembler-disable-div");
+            $inputs = $cardBlock.find('input');
+            for(var i=0; i<$inputs.length; i++){
+                $($inputs[i]).prop('disabled', true);
+                $($inputs[i]).css('background-color', '#eaeaea');
+            }
         } else {
             $elem.attr("aria-selected", "true");
             $elem.attr("class", "");
             $elem.addClass("fa").addClass("fa-toggle-on").addClass("skyblue");
             $topLevelDiv.data().dataObject.clone = "yes";
+            $cardBlock = $topLevelDiv.find('.card-block');
+            $cardBlock.removeClass("assembler-disable-div");
+            $inputs = $cardBlock.find('input');
+            for(var i=0; i<$inputs.length; i++){
+                $($inputs[i]).prop('disabled', false);
+                $($inputs[i]).css('background-color', 'white');
+            }
         }
     },
 

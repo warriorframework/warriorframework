@@ -78,7 +78,7 @@ class kwRepository {
                             '<div class="card-header">' +
                                 '<div class="row">' +
                                     '<div class="col-sm-1">' +
-                                        '<i class="' + clone_icon + '" style="float:right; line-height:inherit!important;" ' +
+                                        '<i class="' + clone_icon + ' assembler-icon-pos-right" ' +
                                             'aria-hidden="true" katana-click="assembler.toggleKwRepoClone" aria-selected="true"></i>' +
                                     '</div>' +
                                     '<div class="col-sm-7">' +
@@ -126,7 +126,7 @@ class kwRepository {
                             '<div class="card-footer">' +
                                 '<div class="row" style="' + hideAvailability + '">' +
                                     '<div class="col-sm-1">' +
-                                        '<i class="' + available_icon + '" style="float:right; line-height:inherit!important;"></i>' +
+                                        '<i class="' + available_icon + ' assembler-icon-pos-right"></i>' +
                                     '</div>' +
                                     '<div class="col-sm-8 text-muted">' +
                                         available_text +
@@ -268,14 +268,14 @@ class wsRepository {
                                 '<div class="card-header">' +
                                     '<div class="row">' +
                                         '<div class="col-sm-1">' +
-                                            '<i class="' + cloneWsRepoIcon + '" style="float:right; line-height:inherit!important;" ' +
+                                            '<i class="' + cloneWsRepoIcon + ' assembler-icon-pos-right" ' +
                                             'aria-selected="' + wsCloneToggle + '" katana-click="assembler.toggleWsRepoClone" aria-hidden="true"></i>' +
                                         '</div>' +
                                         '<div class="col-sm-5">' +
                                             this.name +
                                         '</div>' +
                                         '<div class="col-sm-1">' +
-                                            '<i class="' + overwriteWsFiles + '" style="float:right; line-height:inherit!important;" ' +
+                                            '<i class="' + overwriteWsFiles + ' assembler-icon-pos-right" ' +
                                                 'katana-click="assembler.toggleWsOverwriteButton"  aria-hidden="true" aria-selected="' + overwriteSelect + '"></i>' +
                                         '</div>' +
                                         '<div class="col-sm-1">' +
@@ -307,7 +307,7 @@ class wsRepository {
                                 '<div class="card-footer">' +
                                     '<div class="row" style="' + hideAvailability + '">' +
                                         '<div class="col-sm-1">' +
-                                            '<i class="' +  wsAvailableIcon + '" style="float:right; line-height:inherit!important;"></i>' +
+                                            '<i class="' +  wsAvailableIcon + ' assembler-icon-pos-right"></i>' +
                                         '</div>' +
                                         '<div class="col-sm-8 text-muted">' +
                                             wsAvailableText +
@@ -488,7 +488,7 @@ class toolsRepository{
                                 '<div class="card-header">' +
                                     '<div class="row">' +
                                         '<div class="col-sm-1">' +
-                                            '<i class="' + cloneRepoIcon + '" style="float:right; line-height:inherit!important;" ' +
+                                            '<i class="' + cloneRepoIcon + ' assembler-icon-pos-right" ' +
                                             'aria-selected="' + cloneRepoIcon + '" katana-click="assembler.toggleToolsClone" aria-hidden="true"></i>' +
                                         '</div>' +
                                         '<div class="col-sm-8">' +
@@ -518,7 +518,7 @@ class toolsRepository{
                                 '<div class="card-footer">' +
                                     '<div class="row" style="' + displayToolsFooter + '">' +
                                         '<div class="col-sm-1">' +
-                                            '<i class="' + repoAvailableIcon + '" style="float:right; line-height:inherit!important;"></i>' +
+                                            '<i class="' + repoAvailableIcon + ' assembler-icon-pos-right"></i>' +
                                         '</div>' +
                                         '<div class="col-sm-8 text-muted">' +
                                             repoAvailableText +
