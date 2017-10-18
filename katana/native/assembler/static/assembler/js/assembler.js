@@ -289,6 +289,7 @@ var assembler = {
                         $driverBlock.find('.row, .text-center').append(ddObj.domElement);
                         $topLevelDiv.data().dataObject.drivers.push(ddObj);
                     }
+                    console.log($topLevelDiv.data().dataObject);
                     $driverBlock.show();
 
                 } else {
@@ -764,7 +765,7 @@ var assembler = {
                     if($(kwDivChildren[i]).data().dataObject.url.trim() != ""){
                         var driversTemp = JSON.parse(JSON.stringify($(kwDivChildren[i]).data().dataObject.jsonObj))
                         for(var j=0; j<$(kwDivChildren[i]).data().dataObject.drivers.length; j++){
-                            driversTemp.driver.push(JSON.parse(JSON.stringify($(kwDivChildren[i]).data().dataObject.drivers[i].jsonObj)));
+                            driversTemp.driver.push(JSON.parse(JSON.stringify($(kwDivChildren[i]).data().dataObject.drivers[j].jsonObj)));
                         }
                         finalJson.data.drivers.repository.push(driversTemp);
                     }
@@ -784,6 +785,8 @@ var assembler = {
                 if(finalJson.data.warriorspace.repository.length == 0){
                     delete finalJson.data.warriorspace
                 }
+
+                console.log(finalJson);
 
                 $.ajax({
                         headers: {
@@ -880,7 +883,7 @@ var assembler = {
                     if($(kwDivChildren[i]).data().dataObject.url.trim() != ""){
                         var driversTemp = JSON.parse(JSON.stringify($(kwDivChildren[i]).data().dataObject.jsonObj));
                         for(var j=0; j<$(kwDivChildren[i]).data().dataObject.drivers.length; j++){
-                            driversTemp.driver.push(JSON.parse(JSON.stringify($(kwDivChildren[i]).data().dataObject.drivers[i].jsonObj)));
+                            driversTemp.driver.push(JSON.parse(JSON.stringify($(kwDivChildren[i]).data().dataObject.drivers[j].jsonObj)));
                         }
                         finalJson.data.drivers.repository.push(driversTemp);
                     }
