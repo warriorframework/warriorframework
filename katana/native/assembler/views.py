@@ -61,13 +61,26 @@ class ConfigurationFileOps(View):
 
 def verify_tools_data(final_data, ref_data):
     if "tools" not in final_data["data"]:
-        final_data["data"]["tools"] = copy.copy(ref_data["data"]["tools"])
+        final_data["data"]["tools"] = copy.deepcopy(ref_data["data"]["tools"])
+    else:
+        if "@url" not in final_data["data"]["tools"]:
+            final_data["data"]["tools"]["@url"] = ""
+        if "@clone" not in final_data["data"]["tools"]:
+            final_data["data"]["tools"]["@clone"] = "yes"
+        if "@label" not in final_data["data"]["tools"]:
+            final_data["data"]["tools"]["@label"] = ""
+        url = final_data["data"]["tools"]["@url"]
+        if url != "":
+            final_data["data"]["tools"]["name"] = get_repository_name(url=url)
+            final_data["data"]["tools"]["available"] = check_url_is_a_valid_repo(url=url)
+        else:
+            final_data["data"]["tools"]["available"] = False
     return final_data
 
 
 def verify_warriorspace_data(final_data, ref_data):
     if "warriorspace" not in final_data["data"]:
-        final_data["data"]["warriorspace"] = copy.copy(ref_data["data"]["warriorspace"])
+        final_data["data"]["warriorspace"] = copy.deepcopy(ref_data["data"]["warriorspace"])
 
     if "repository" not in final_data["data"]["warriorspace"]:
         final_data["data"]["warriorspace"]["repository"] = copy.copy(
@@ -76,27 +89,80 @@ def verify_warriorspace_data(final_data, ref_data):
     if not isinstance(final_data["data"]["warriorspace"]["repository"], list):
         final_data["data"]["warriorspace"]["repository"] = [
             final_data["data"]["warriorspace"]["repository"]]
+
+    for i in range(0, len(final_data["data"]["warriorspace"]["repository"])):
+        if "@url" not in final_data["data"]["warriorspace"]["repository"][i]:
+            final_data["data"]["warriorspace"]["repository"][i]["@url"] = ""
+        if "@clone" not in final_data["data"]["warriorspace"]["repository"][i]:
+            final_data["data"]["warriorspace"]["repository"][i]["@clone"] = "yes"
+        if "@label" not in final_data["data"]["warriorspace"]["repository"][i]:
+            final_data["data"]["warriorspace"]["repository"][i]["@label"] = ""
+        if "@overwrite" not in final_data["data"]["warriorspace"]["repository"][i]:
+            final_data["data"]["warriorspace"]["repository"][i]["@overwrite"] = "yes"
+        url = final_data["data"]["warriorspace"]["repository"][i]
+        if url != "":
+            final_data["data"]["warriorspace"]["repository"][i]["name"] = get_repository_name(url=url)
+            final_data["data"]["warriorspace"]["repository"][i]["available"] = check_url_is_a_valid_repo(url=url)
+        else:
+            final_data["data"]["warriorspace"]["repository"][i]["available"] = False
     return final_data
 
 
 def verify_drivers_json(final_data, ref_data):
+    nav_obj = Navigator()
     if "drivers" not in final_data["data"]:
-        final_data["data"]["drivers"] = copy.copy(ref_data["data"]["drivers"])
+        final_data["data"]["drivers"] = copy.deepcopy(ref_data["data"]["drivers"])
 
     if "repository" not in final_data["data"]["drivers"]:
-        final_data["data"]["drivers"]["repository"] = copy.copy(
-            ref_data["data"]["drivers"]["repository"])
+        final_data["data"]["drivers"]["repository"] = copy.deepcopy(ref_data["data"]["drivers"]["repository"])
 
     if not isinstance(final_data["data"]["drivers"]["repository"], list):
         final_data["data"]["drivers"]["repository"] = [final_data["data"]["drivers"]["repository"]]
+
     for i in range(0, len(final_data["data"]["drivers"]["repository"])):
+        if "@url" not in final_data["data"]["drivers"]["repository"][i]:
+            final_data["data"]["drivers"]["repository"][i]["@url"] = ""
+        if "@clone" not in final_data["data"]["drivers"]["repository"][i]:
+            final_data["data"]["drivers"]["repository"][i]["@clone"] = "yes"
+        if "@label" not in final_data["data"]["drivers"]["repository"][i]:
+            final_data["data"]["drivers"]["repository"][i]["@label"] = ""
+        if "@all_drivers" not in final_data["data"]["drivers"]["repository"][i]:
+            final_data["data"]["drivers"]["repository"][i]["@all_drivers"] = "yes"
         if "driver" not in final_data["data"]["drivers"]["repository"][i]:
-            final_data["data"]["drivers"]["repository"][i]["driver"] = copy.copy(
-                ref_data["data"]["drivers"]["repository"]["driver"])
+            final_data["data"]["drivers"]["repository"][i]["driver"] = copy.deepcopy(ref_data["data"]["drivers"]["repository"]["driver"])
 
         if not isinstance(final_data["data"]["drivers"]["repository"][i]["driver"], list):
-            final_data["data"]["drivers"]["repository"][i]["driver"] = [
-                final_data["data"]["drivers"]["repository"][i]["driver"]]
+            final_data["data"]["drivers"]["repository"][i]["driver"] = [final_data["data"]["drivers"]["repository"][i]["driver"]]
+
+        url = final_data["data"]["drivers"]["repository"][i]["@url"]
+        drivers_index = set()
+        if url != "":
+            final_data["data"]["drivers"]["repository"][i]["name"] = get_repository_name(url=url)
+            available = check_url_is_a_valid_repo(url=url)
+            final_data["data"]["drivers"]["repository"][i]["available"] = available
+            if available:
+                drivers_data = []
+                temp_directory = os.path.join(nav_obj.get_katana_dir(), "native", "assembler", ".data")
+                kw_repo_obj = KwRepositoryDetails(url, temp_directory)
+                drivers = set(kw_repo_obj.get_pd_names())
+                for j in range(0, len(final_data["data"]["drivers"]["repository"][i]["driver"])):
+                    if "@name" not in final_data["data"]["drivers"]["repository"][i]["driver"][j]:
+                        final_data["data"]["drivers"]["repository"][i]["driver"][j]["@name"] = ""
+                    else:
+                        if final_data["data"]["drivers"]["repository"][i]["driver"][j]["@name"] in drivers:
+                            drivers.remove(final_data["data"]["drivers"]["repository"][i]["driver"][j]["@name"])
+                        else:
+                            drivers_index.add(j)
+                    if "@clone" not in final_data["data"]["drivers"]["repository"][i]["driver"][j]:
+                        final_data["data"]["drivers"]["repository"][i]["driver"][j]["@clone"] = "yes"
+                for j in range(0, len(final_data["data"]["drivers"]["repository"][i]["driver"])):
+                    if j not in drivers_index:
+                        drivers_data.append(copy.deepcopy(final_data["data"]["drivers"]["repository"][i]["driver"][j]))
+                final_data["data"]["drivers"]["repository"][i]["driver"] = copy.deepcopy(drivers_data)
+                for driver_name in drivers:
+                    final_data["data"]["drivers"]["repository"][i]["driver"].append({"@name": driver_name, "@clone": "no"})
+        else:
+            final_data["data"]["drivers"]["repository"][i]["available"] = False
     return final_data
 
 
