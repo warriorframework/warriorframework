@@ -114,7 +114,7 @@ class kwRepository {
                                                 '<label>All Available Drivers</label>' +
                                             '</div>' +
                                             '<div class="card-block" style="padding: 1rem;">' +
-                                                '<div class="row text-center">' +
+                                                '<div class="row">' +
                                                     driverDom +
                                                 '</div>' +
                                             '</div>' +
@@ -178,8 +178,8 @@ class driverDetails {
                 aria_attribute = "true";
             }
             var elem = '<div class="col-sm-4">' +
-                            '<i class="' + clone_icon + '" katana-click="assembler.toggleDriverClone" aria-selected="' + aria_attribute + '"></i>&nbsp;' +
-                            '<label>' + this.name + '</label>' +
+                            '<i class="' + clone_icon + '" style="float: left; line-height: inherit !important" katana-click="assembler.toggleDriverClone" aria-selected="' + aria_attribute + '"></i>&nbsp;' +
+                            '<label style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; width: 270px;">' + this.name + '</label>' +
                         '</div>';
         }
         else{

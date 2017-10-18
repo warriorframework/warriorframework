@@ -99,7 +99,7 @@ def verify_warriorspace_data(final_data, ref_data):
             final_data["data"]["warriorspace"]["repository"][i]["@label"] = ""
         if "@overwrite" not in final_data["data"]["warriorspace"]["repository"][i]:
             final_data["data"]["warriorspace"]["repository"][i]["@overwrite"] = "yes"
-        url = final_data["data"]["warriorspace"]["repository"][i]
+        url = final_data["data"]["warriorspace"]["repository"][i]["@url"]
         if url != "":
             final_data["data"]["warriorspace"]["repository"][i]["name"] = get_repository_name(url=url)
             final_data["data"]["warriorspace"]["repository"][i]["available"] = check_url_is_a_valid_repo(url=url)
@@ -135,13 +135,13 @@ def verify_drivers_json(final_data, ref_data):
             final_data["data"]["drivers"]["repository"][i]["driver"] = [final_data["data"]["drivers"]["repository"][i]["driver"]]
 
         url = final_data["data"]["drivers"]["repository"][i]["@url"]
-        drivers_index = set()
         if url != "":
             final_data["data"]["drivers"]["repository"][i]["name"] = get_repository_name(url=url)
             available = check_url_is_a_valid_repo(url=url)
             final_data["data"]["drivers"]["repository"][i]["available"] = available
             if available:
                 drivers_data = []
+                drivers_index = set()
                 temp_directory = os.path.join(nav_obj.get_katana_dir(), "native", "assembler", ".data")
                 kw_repo_obj = KwRepositoryDetails(url, temp_directory)
                 drivers = set(kw_repo_obj.get_pd_names())
