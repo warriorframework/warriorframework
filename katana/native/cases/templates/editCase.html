@@ -219,10 +219,12 @@
                                     <option value="noimpact">noimpact</option>
                                 </select>
                             </div>
-
+                            <label class="text-right">Arguments, Values</label>
+                           
                             <div id="arguments-textarea"> </div>
+
                             <div>
-                                <button class="btn btn-success tbd-args" id="appendArgument" katana-click="cases.appendPopupArgument">Append Argument </button>
+                                <button class="btn btn-success case-tbd-args hidden" id="appendArgument" katana-click="cases.appendPopupArgument">Append Argument </button>
                                 <button class="btn btn-success" id="saveEditCaseStep" katana-click="cases.saveTestCaseChanges">Save Changes To Test Step </button>
                                
                             </div>

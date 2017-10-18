@@ -803,33 +803,18 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		
 		items.push('<td>'+outstr+'</td>'); 
 
-		var arguments = oneCaseStep['Arguments'];  // This is a dictionary 
+		var arguments = oneCaseStep.Arguments;  // This is a dictionary 
 		var out_array = [] 
 		var ta = 0; 
 		for (var xarg in arguments) { 
 			if (arguments.hasOwnProperty(xarg)) {
 
-			var xstr =  key+" = "+arguments[xarg] + "<br>";
+				var xstr =  xarg+" = "+arguments[xarg] + "<br>";
 					//console.log(xstr);
 			out_array.push(xstr); 	
 			}
-
-
-
-			// if (!arguments[xarg]) {
-			// 	continue;
-			// }
-			// var argvalue = arguments[xarg]['@value'];
-			// console.log("argvalue", argvalue);
-			// 	if (argvalue) {
-			// 	if (argvalue.length > 1) {
-			// 		var xstr =  arguments[xarg]['@name']+" = "+arguments[xarg]['@value'] + "<br>";
-			// 		//console.log(xstr);
-			// 		out_array.push(xstr); 
-			// 		}
-			// 	ta  = ta + 1; 
-			// 	}
-			}
+		}
+		
 		outstr = out_array.join("");
 		//console.log("Arguments --> "+outstr);
 		items.push('<td>'+outstr+'</td>'); 
@@ -958,8 +943,8 @@ The UI currently uses jQuery and Bootstrap to display the data.
 				vl = oneCaseStep.Arguments[kw];
 			}
 				a_items.push('<div><span>');
-				a_items.push('<input class="col-md-4 case-listed-args" type="text" disabled argid="caseArgName-'+ta+'" value="'+kw+'"/>');
-				a_items.push('<input class="col-md-4 case-listed-args" type="text" argid="caseArgValue-'+ta+'" value="'+vl+'"/>');
+				a_items.push('<input class="col-md-4 case-listed-args" type="text" argid="caseArgName-'+ta+'" value="'+kw+'" />');
+				a_items.push('<input class="col-md-4 case-listed-args case-listed-labels" type="text" isValue="true" argid="caseArgValue-'+ta+'" kwargid="caseArgName-'+ta+'" value="'+vl+'"/>');
 				a_items.push('</span></div>');
 				ta += 1; 
 			
@@ -987,13 +972,13 @@ The UI currently uses jQuery and Bootstrap to display the data.
 			a_items.push('<label class="col-md-2">Value</label><input  type="text" argid="caseArgValue-'+ta+'" value="'+arguments[xarg]["@value"]+'"/>');
 			// Now a button to edit or delete ... 
 			bid = "deleteCaseArg-"+sid+"-"+ta+"-id"
-			a_items.push('<td><i title="Delete" class="fa fa-eraser tbd-args" value="X" id="'+bid+'" skey="'+bid+'"  katana-click="cases.deletePopupArgument"/>');
+			a_items.push('<td><i title="Delete" class="fa fa-eraser case-args-tbd" value="X" id="'+bid+'" skey="'+bid+'"  katana-click="cases.deletePopupArgument"/>');
 			
 			bid = "saveCaseArg-"+sid+"-"+ta+"-id"
-			a_items.push('<td><i  title="Save Argument Change" class="fa fa-floppy-o tbd-args" value="Save" id="'+bid+'" key="'+bid+'"  katana-click="cases.savePopupArgument"/>');
+			a_items.push('<td><i  title="Save Argument Change" class="fa fa-floppy-o case-args-tbd" value="Save" id="'+bid+'" key="'+bid+'"  katana-click="cases.savePopupArgument"/>');
 
 			bid = "insertCaseArg-"+sid+"-"+ta+"-id";
-			a_items.push('<td><i  title="Insert one" class="fa fa-plus tbd-args" value="Save" id="'+bid+'" key="'+bid+'" katana-click="cases.insertPopupArgument"/>');
+			a_items.push('<td><i  title="Insert one" class="fa fa-plus case-args-tbd" value="Save" id="'+bid+'" key="'+bid+'" katana-click="cases.insertPopupArgument"/>');
 			
 			ta += 1
 			a_items.push('</div>');
@@ -1172,7 +1157,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		}
 	//katana.popupController.updateActiveWindow(popup);
 
-	cases.makePopupArguments(popup, oneCaseStep);
+	//cases.makePopupArguments(popup, oneCaseStep);
 
 	// Now  set the callbacks once the DOM has new HTML elements in it
 	
@@ -1241,11 +1226,16 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		if (val){
 			popup.find("#StepKeyword").hide();
 			popup.find("#StepKeywordText").show();
-			popup.find('[class="tbd-args"]').show();
+			popup.find(".case-args-tbd").show();
+			popup.find('.case-listed-args').hide();
+			popup.find('#sourceCaseFileDef').show();
+			popup.find('#sourceCaseFileText').show();
+			
 		}else{
 			popup.find("#StepKeyword").show();
 			popup.find("#StepKeywordText").hide();	
-			popup.find('[class="tbd-args"]').hide();
+			popup.find('.case-listed-args').show();
+			popup.find('.case-args-tbd').hide();	
 		}
 	});
 
@@ -1310,18 +1300,15 @@ The UI currently uses jQuery and Bootstrap to display the data.
 	},
 
 	showForUncheckedDevelop: function(popup){
-		popup.find("#StepKeywordCkBx").prop('checked', false);
-		popup.find("#StepDriver").show();
+			popup.find("#StepKeywordCkBx").prop('checked', false);
+			popup.find("#StepDriver").show();
 			popup.find("#StepDriverText").hide();	
-			popup.find('[class=".case-listed-args"]').show();
-			popup.find('[class="tbd-args"]').hide();
-			popup.find('sourceCaseFileDef').show();
-			popup.find('sourceCaseFileText').show();
-			popup.find('#appendArgument').hide();
+			popup.find('.case-listed-args').show();
+			popup.find('.case-args-tbd').hide();
+			popup.find('#sourceCaseFileDef').show();
+			popup.find('#sourceCaseFileText').show();
 			popup.find("#StepKeyword").show();
 			popup.find("#StepKeywordText").hide();
-		
-
 	},
 
 	hideForCheckedDevelop: function(popup){
@@ -1330,11 +1317,10 @@ The UI currently uses jQuery and Bootstrap to display the data.
 			popup.find("#StepDriverText").show();
 			popup.find("#StepKeyword").hide();
 			popup.find("#StepKeywordText").show();
-			popup.find('[class=".case-listed-args"]').hide();
-			popup.find('[class="tbd-args"]').show();
+			popup.find('.case-args-tbd').show();
+			popup.find('.case-listed-args').hide();
 			popup.find('#sourceCaseFileDef').hide();
 			popup.find('#sourceCaseFileText').hide();
-			popup.find('#appendArgument').show();
 
 	},
 
@@ -1563,8 +1549,24 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		console.log(xdata);
 		console.log(sid);
 		oneCaseStep = xdata[sid];
-		oneCaseStep.step_driver = popup.find("#StepDriver").val();
-		oneCaseStep.step_keyword = popup.find("#StepKeyword").val();
+
+
+		if (popup.find("#StepDriverCkBx").attr("checked")) {
+			oneCaseStep.step_driver = popup.find("#StepDriverText").val();
+			oneCaseStep.step_keyword = popup.find("#StepKeywordText").val();
+		} else {
+			oneCaseStep.step_driver = popup.find("#StepDriver").val();
+			oneCaseStep.step_keyword = popup.find("#StepKeyword").val();
+		}
+	
+		if (popup.find("#StepKeywordCkBx").attr("checked")) {
+			oneCaseStep.step_keyword = popup.find("#StepKeywordText").val();
+		} else {
+			oneCaseStep.step_keyword = popup.find("#StepKeyword").val();
+		}
+	
+
+		
 		oneCaseStep.step_TS =popup.find("#StepTS").val();
 		oneCaseStep["Description"] = popup.find("#StepDescription").val();
 		oneCaseStep["context"] =  popup.find("#StepContext").val();
@@ -1582,16 +1584,43 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		
 		// Save all arguments already in dialog...
 		console.log(cases.jsonCaseSteps[sid]['Arguments']);
-		var slen =  cases.jsonCaseSteps[sid]['Arguments'].length; 
-		for (var aid=0; aid<slen; aid++){
-			var obj = cases.jsonCaseSteps[sid]['Arguments'][aid]; 	
-			var vl =  cases.lastPopup.find('[argid=caseArgValue-'+aid+']').val();
-			if (vl.length > 0) {
-			obj['@name'] = cases.lastPopup.find('[argid=caseArgName-'+aid+']').val();
-			obj['@value'] = vl; 
-			}
-			
+		// Now collect the arguments from the UI and set 
+
+		var argIds = []
+		if (popup.find("#StepKeywordCkBx").attr("checked")) {
+			argIds = popup.find(".case-args-tbd");
+		} else {
+			argIds = popup.find(".case-listed-labels");
 		}
+		console.log("Arguments, ", argIds);
+		var slen = argIds.length;
+		oneCaseStep.Arguments = {} 
+		for (var argctr in argIds) {
+			if (argctr < slen) { 
+			var arg = argIds[argctr];
+			//console.log("Argument:", argctr, arg);
+			var vl = arg.value;   // The value 
+			console.log("key", arg,  vl)
+			var kw_id = arg.getAttribute('kwargid');
+			var kw = popup.find('[argid="'+kw_id+'"]').val()
+			console.log("key", kw, vl)
+			if (vl.length > 0 && vl != 'None') {
+					oneCaseStep.Arguments[kw] = vl; 
+				}
+			}
+		}
+
+
+		// var slen =  cases.jsonCaseSteps[sid]['Arguments'].length; 
+		// for (var aid=0; aid<slen; aid++){
+		// 	var obj = cases.jsonCaseSteps[sid]['Arguments'][aid]; 	
+		// 	var vl =  cases.lastPopup.find('[argid=caseArgValue-'+aid+']').val();
+		// 	if (vl.length > 0) {
+		// 	obj['@name'] = cases.lastPopup.find('[argid=caseArgName-'+aid+']').val();
+		// 	obj['@value'] = vl; 
+		// 	}
+			
+		// }
 		console.log("after saving ",oneCaseStep);
 },
 
