@@ -63,7 +63,7 @@ VFY_PARAM_LIST = ["verify_text_list", "verify_context_list",
 VERIFY_PARAMS = ["verify_context_list", "verify_on_list", "verify_map_list"]
 
 VARSUB_PARAM_LIST = ["verify_text_list", "verify_context_list", "verify_on_list",
-                    "verify_map_list", "operator_list", "cond_value_list", "cond_type_list"]
+                    "verify_map_list", "operator_list", "cond_value_list", "cond_type_list", "resp_key_list"]
 
 class TestData(object):
     """
