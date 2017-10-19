@@ -1,5 +1,5 @@
 {% load static %} 
-
+<link rel="stylesheet" href="{% static 'cases/css/cases.css' %}">
     <div class="tool-bar">
         <i id="addNewCase" class="button" katana-click="cases.startNewCase">Add New Testcase</i>
         <i id="addStep" class="button" katana-click="cases.addNewTestStepToUI">Add Step To Case</i>
@@ -82,10 +82,11 @@
                         </select>
                     </div>
                     <div class="col-md-2">
-                        <div>
-                            <input type="checkbox" id="ck_dataPath" name="ck_dataPath" value="No Data Path">
-                            <label class="text-right " id="caseDatatype_lbl">Data Type:</label>
-                        </div>
+                        <span>
+                              <label for="ck_dataPath" class="text-right " id="caseDatatype_lbl">Data Type:</label>
+                           <input type="checkbox" id="ck_dataPath" name="ck_dataPath" value="No Data Path"/>
+                        </span>
+                         
                         <select class="text-right  case-results-dir" type="text" id="caseDatatype" name="caseDatatype" value="{{caseDatatype}}">
                             <option value="Custom">Custom</option>
                             <option value="Hybrid">Hybrid</option>
@@ -124,17 +125,27 @@
                                 <label>Row</label>
                                 <input type="text" id="StepRowToEdit" value="" />
                             </div>
+                            <span>
+                                 <label for="StepDriverCkBx">To Be Developed</label>
+                                 <input type="checkbox" id="StepDriverCkBx" name="StepDriverCkBx" value="TBD" />
+                            
+                            </span>
+                            
+
                             <div class="field">
-                                 <input type="checkbox" id="StepDriverCkBx" value="TBD" />
-                                <label class="text-right " id="StepDriverCkBxlbl"> - </label><label>Driver</label>
-                               
+                                <label>Driver</label>
                                 <select type="text" id="StepDriver" value="" />
                                 <input type="text" class="hidden" id="StepDriverText" value="" />
                                
                             </div>
-                            <div class="field">
-                                
-                                 <input type="checkbox" id="StepKeywordCkBx" value="TBD" /> <label class="text-right " id="StepDriverCkBxlbl"> - </label><label>Keyword</label>
+
+                            <span>
+                                <label for="StepKeywordCkBx" >To Be Developed </label>
+                                <input type="checkbox" id="StepKeywordCkBx" name="StepKeywordCkBx" value="TBD" /> 
+                             </span>    
+
+                             <div class="field">
+                                 <label>Keyword</label>
                                  <select type="text" id="StepKeyword" value="" />
                                 <input type="text" class="hidden" id="StepkeywordText" value="" />
                                
