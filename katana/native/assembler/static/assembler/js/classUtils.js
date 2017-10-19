@@ -74,7 +74,7 @@ class kwRepository {
             allDriversIcon = "fa fa-toggle-on skyblue";
             aria_selected_all_drivers = "true";
         }
-        var $elem =  $('<div class="card" style="padding: 1rem;">' +
+        var $elem =  $('<div class="card border-secondary" style="padding: 1rem;">' +
                             '<div class="card-header">' +
                                 '<div class="row">' +
                                     '<div class="col-sm-1">' +
@@ -266,7 +266,7 @@ class wsRepository {
             wsAvailableIcon = "fa fa-check-circle skyblue"
             wsAvailableText = "Repository Available"
         }
-        var html_contents = '<div class="card" style="padding: 1rem;">' +
+        var html_contents = '<div class="card border-secondary" style="padding: 1rem;">' +
                                 '<div class="card-header">' +
                                     '<div class="row">' +
                                         '<div class="col-sm-1">' +
@@ -408,7 +408,7 @@ class dependency{
         }
 
         var html_contents = '<div style="padding: 1rem;">' +
-                                '<div class="card" style="width: 350px; height:190px; padding: 1rem;">' +
+                                '<div class="card border-secondary" style="width: 350px; height:190px; padding: 1rem;">' +
                                     '<div class="card-block">' +
                                         '<h4 class="card-title">' + this.name +'</h4>' +
                                         '<h6 class="card-subtitle mb-2 text-muted">Version: ' + this.version + '</h6><hr>' +
@@ -487,7 +487,7 @@ class toolsRepository{
         if(this.url == ""){
             displayToolsFooter = "display: none";
         }
-        var html_contents = '<div class="card" style="padding: 1rem;">' +
+        var html_contents = '<div class="card border-secondary" style="padding: 1rem;">' +
                                 '<div class="card-header">' +
                                     '<div class="row">' +
                                         '<div class="col-sm-1">' +
