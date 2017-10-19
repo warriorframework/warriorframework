@@ -65,6 +65,27 @@ def getCaseListTree(request):
 	jtree['state']= { 'opened': True };
 	return JsonResponse({'treejs': jtree })
 
+
+def getSystemNames(request):
+	filename = request.GET.get('filename');
+	names = [] 
+	if 1:
+		xlines = open(filename).read();
+		df =  xmltodict.parse(xlines ,  dict_constructor=dict) 
+		systems = df['credentials']['system']
+		for ms in df['credentials']['system']:
+			if ms.has_key('subsystem'):
+				for subsys in  ms['subsystem']:
+					names.append(ms['@name']+"."+subsys['@name'])
+			else:
+				names.append(ms['@name'])
+	if 0:
+		print "Unable to get names "
+	print names 
+	return JsonResponse({'system_names': names , 'filename' : filename })
+
+
+
 ##
 ## This is very costly imho. 
 ##

@@ -235,12 +235,12 @@ class caseTestStepObject {
 		var vlen = jsonData['Arguments']['argument'].length;
 		for (var a=0;a<vlen; a++) {
 				var ao = jsonData['Arguments']['argument'][a];
-				console.log("Adding... in setupFromJSON ---> ", ao); 
+				//console.log("Adding... in setupFromJSON ---> ", ao); 
 				this.Arguments[ao['@name']] = ao['@value]']
 			}
 		
 
-		console.log("Adding-->",jsonData);
+		//console.log("Adding-->",jsonData);
 		this.step_driver = jsonData['@Driver']; 
 		this.step_keyword = jsonData['@Keyword']; 
 		this.step_TS = jsonData['@TS']; 
@@ -388,7 +388,7 @@ class caseTestStepObject {
 			
 			// Adjust up front. 
 
-			console.log("After", jsonData['Steps']);
+			// console.log("After", jsonData['Steps']);
 			
 			if (!jsonData['Steps']) {
 				jsonData['Steps']['step'] = [] 
@@ -410,7 +410,7 @@ class caseTestStepObject {
 
 		getJSON(){
 			var testStepsJSON = [];
-			console.log(this.Teststeps); 
+			// console.log(this.Teststeps); 
 			for (var ts =0; ts< this.Teststeps.length; ts++ ) {
 				console.log(ts, this.Teststeps[ts]);
 				testStepsJSON.push(this.Teststeps[ts].getJSON());
@@ -430,6 +430,8 @@ class caseTestStepObject {
 // The application code begins here.
 ///////////////////////////////////////////////////////////////////////////////////
 var cases = {
+
+	system_names: [], 
 
  	init: function() { 
  		cases.displayTreeOfCases();
@@ -533,7 +535,7 @@ var cases = {
 			katana.$activeTab.find("#tableOfTestStepsForCase").removeClass();
 			katana.$activeTab.find("#tableOfTestStepsForCase").addClass('col-md-12');
 			katana.$activeTab.find("#tableOfTestStepsForCase").show();
-			console.log("Here", cases.jsonCaseObject, cases.jsonCaseSteps);
+			//console.log("Here", cases.jsonCaseObject, cases.jsonCaseSteps);
 			cases.mapCaseJsonToUi(cases.jsonCaseSteps);
 			cases.createRequirementsTable();
 
@@ -626,13 +628,16 @@ var cases = {
 	getFileSavePath: function () {
 			var tag = '#caseName';
 			var callback_on_accept = function(selectedValue) { 
-	  		console.log(selectedValue);
+	  		//console.log(selectedValue);
 	  		var savefilepath = katana.$activeTab.find('#savesubdir').text();
 	  		console.log("File path ==", savefilepath);
 	  		var nf = prefixFromAbs(savefilepath, selectedValue);
 	  		katana.$activeTab.find(tag).attr("value", nf);
 	  		katana.$activeTab.find(tag).attr("fullpath", selectedValue);
 			//katana.$activeTab.find(tag).text('');
+
+			//Now create a dropdown list from this path....
+			console.log("fullpath ",selectedValue );
 			};
 	  var callback_on_dismiss =  function(){ 
 	  		console.log("Dismissed");
@@ -644,7 +649,7 @@ var cases = {
 	getCaseInputDataFile: function () {
 
 			var callback_on_accept = function(selectedValue) { 
-	  		console.log(selectedValue);
+	  		//console.log(selectedValue);
 	  		var tag = '#caseInputDataFile'
 	  		var savefilepath = katana.$activeTab.find('#savesubdir').text();
 	  		
@@ -653,6 +658,12 @@ var cases = {
 	  		katana.$activeTab.find(tag).attr("value", nf);
 	  		katana.$activeTab.find(tag).attr("fullpath", selectedValue);
 			katana.$activeTab.find(tag).text(nf); // 
+			console.log("Data file == ", selectedValue)
+			jQuery.getJSON("./cases/getSystemNames/?filename="+selectedValue).done(function(data) {
+				console.log("System Names", data)
+				cases.system_names = data.system_names;
+				});	
+
 			};
 	  var callback_on_dismiss =  function(){ 
 	  		console.log("Dismissed");
@@ -663,7 +674,7 @@ var cases = {
 
 	getResultsDirForCases: function() {
 		var callback_on_accept = function(selectedValue) { 
-			  		console.log(selectedValue);
+			  		//console.log(selectedValue);
 			  		var tag = '#caseResultsdir'
 			  		var savefilepath = katana.$activeTab.find('#savesubdir').text();
 			  		console.log("File path ==", savefilepath);
@@ -729,7 +740,7 @@ var cases = {
 			xfname  = xfname + ".xml";
 		}
 		
-		console.log(cases.jsonCaseObject.getJSON());
+		//console.log(cases.jsonCaseObject.getJSON());
 		var topNode  = { 'Testcase' : cases.jsonCaseObject.getJSON()};
 		//console.log("sending case 3", xfname, cases.jsonCaseObject);
 		
@@ -857,8 +868,11 @@ The UI currently uses jQuery and Bootstrap to display the data.
 	katana.$activeTab.find(tag).attr("value", xf);			
 	katana.$activeTab.find(tag).attr("fullpath", nf);
 	console.log("File path ==", savefilepath, xf, nf);
-			
-
+		
+	jQuery.getJSON("./cases/getSystemNames/?filename="+nf).done(function(data) {
+		console.log("System Names", data)
+		cases.system_names = data.system_names;
+	});
 	/*
 	if (cases.jsonCaseDetails['Datatype'] == 'Custom') {
 		$(".arguments-div").hide();
@@ -902,7 +916,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 	var names = this.attr('key').split('-');
 	var sid = parseInt(names[1]);
 	jsonData = cases.jsonCaseSteps[sid].copyFromDocument('lastStepCopied');
-	console.log("Retrieving ... ", jsonData);
+	//console.log("Retrieving ... ", jsonData);
 	cases.addTestStepAboveToUI(sid,cases.jsonCaseSteps,2,jsonData);
 	},
 
@@ -932,17 +946,37 @@ The UI currently uses jQuery and Bootstrap to display the data.
 				vl = oneCaseStep.Arguments[kw];
 			}
 				a_items.push('<div><span>');
-				a_items.push('<input class="col-md-4 case-listed-args" type="text" argid="caseArgName-'+ta+'" value="'+kw+'" />');
+				a_items.push('<input class="col-md-6 case-listed-args" type="text" argid="caseArgName-'+ta+'" value="'+kw+'" />');
 				a_items.push('<input class="col-md-4 case-listed-args case-listed-labels" type="text" isValue="true" argid="caseArgValue-'+ta+'" kwargid="caseArgName-'+ta+'" value="'+vl+'"/>');
+				
+				if (kw == 'system_name') {
+					a_items.push('<select class="col-md-8 case-listed-args" type="text" id="caseSelectArgName-'+ta+'" argid="caseSelectArgName-'+ta+'" value="'+kw+'" katana-click="cases.handleSystemName">');
+					for (var xi in cases.system_names) {
+						var vx = cases.system_names[xi];
+						a_items.push('<option value="'+vx+'">'+vx+'</option>');
+					}
+					a_items.push('</select>');
+			
+				}
 				a_items.push('</span></div>');
 				ta += 1; 
 			
 			}
 		popup.find("#arguments-textarea").html( a_items.join("\n"));	
+
+	
 		//console.log("Making arguments at ",oneCaseStep, popup, popup.find("#arguments-textarea"), a_items);
 	},
 
-
+	handleSystemName: function() {
+					var popup = cases.lastPopup;
+					var names = this.attr("argid").split('-');
+					var ta = names[1];
+					console.log("....selected ...", names, ta);
+					var vl = popup.find('#caseSelectArgName-'+ta).val();
+					//popup.find('[argid=#caseArgValue-'+ta).val(vl);
+					popup.find('[argid="caseArgValue-'+ta+'"]').val(vl);
+	},
 	// When you are using the Editable 
 	makePopupArgumentsForTBD: function(popup,  oneCaseStep) {
 		console.log("makePopupArguments", oneCaseStep);
@@ -957,7 +991,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		console.log("Making arguments at ",sid, oneCaseStep);
 
 		for (dkey in arguments) {
-			console.log(arguments[dkey]);
+			//console.log(arguments[dkey]);
 			if (arguments.hasOwnProperty(dkey)) { 
 				vl = arguments[dkey];
 				a_items.push('<div class="row">');
@@ -1018,7 +1052,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		popup.find('#StepDriver').attr('value',oneCaseStep.step_driver);
 
 		
-		console.log("STARTING......", popup, popup.find('#StepDriver').val());
+		//console.log("STARTING......", popup, popup.find('#StepDriver').val());
 		
 		popup.find("#StepKeyword").val(oneCaseStep.step_keyword);
 		popup.find("#StepKeyword").attr('value', oneCaseStep.step_keyword);
@@ -1026,7 +1060,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		popup.find('#StepDriverText').val(oneCaseStep.step_driver);
 		popup.find("#StepKeywordText").val(oneCaseStep.step_keyword);
 		
-		console.log('oneCaseStep', oneCaseStep);
+		//console.log('oneCaseStep', oneCaseStep);
 		popup.find("#StepRowToEdit").attr("value",sid);
 		popup.find("#StepDriver").val(oneCaseStep.step_driver);
 		popup.find("#StepKeyword").val(oneCaseStep.step_keyword);
@@ -1061,7 +1095,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		if (katana.$activeTab.data("data-comments"+driver+"-"+keyword)) {
 			alert("Caching!");
 			a_items = katana.$activeTab.data("data-drivers");   // Get the list of cations 
-			console.log("a_items for drivers ", a_items);       
+			//console.log("a_items for drivers ", a_items);       
 			popup.find("#StepDriver").empty();  				// Empty all the options....
 			katana.$activeTab.attr("data-drivers", a_items);                     
 			for (var x =0; x < a_items.length; x++) {
@@ -1074,13 +1108,13 @@ The UI currently uses jQuery and Bootstrap to display the data.
 
 			popup.find('#StepDriver').val(oneCaseStep.step_driver);
 			popup.find("#StepKeyword").empty();
-	 		console.log(a_items);
+	 		// console.log(a_items);
 	 		for (let x of a_items) {
 	 			popup.find("#StepKeyword").append($('<option>',{ value: x,  text: x }));
 	 			}
 	 		popup.find("#StepKeyword").val(oneCaseStep.step_keyword);
 			a_items = katana.$activeTab.data("data-comments"+driver+"-"+keyword);
-		 	console.log("received", a_items);
+		 	// console.log("received", a_items);
 			out_array = a_items[0]['comment'];
 			var outstr = out_array.join("\n");
 			var sid = katana.$activeTab.find("#editCaseStepDiv").attr('row-id');
@@ -1098,7 +1132,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
  				console.log(outstr);
 				cases.lastPopup.find("#sourceCaseFileDef").html(outstr);	
  				}
- 			console.log("Setting attribute 1069 ",driver,keyword,a_items, oneCaseStep)
+ 			// console.log("Setting attribute 1069 ",driver,keyword,a_items, oneCaseStep)
 			popup.find('#StepDriver').val(oneCaseStep.step_driver);
 			popup.find("#StepKeyword").val(oneCaseStep.step_keyword);
 		} else {
@@ -1109,7 +1143,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 					var oneCaseStep = cases.jsonCaseSteps[sid];
 					popup.find('#StepDriver').val(oneCaseStep.step_driver);
 
-					console.log("STARTING......", popup, popup.find('#StepDriver').val());
+					// console.log("STARTING......", popup, popup.find('#StepDriver').val());
 					
 					popup.find("#StepKeyword").val(oneCaseStep.step_keyword);
 					popup.find('#StepDriverText').val(oneCaseStep.step_driver);
@@ -1121,7 +1155,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 					for (var x =0; x < a_items.length; x++) {
 							popup.find("#StepDriver").append($('<option>',{ value: a_items[x],  text: a_items[x]}));
 						}
-					console.log("a+_items", a_items );					
+					// console.log("a+_items", a_items );					
 					// Now set up the keywords
 					var sid = katana.$activeTab.find("#editCaseStepDiv").attr('row-id');
 					var oneCaseStep = cases.jsonCaseSteps[sid]
@@ -1205,8 +1239,9 @@ The UI currently uses jQuery and Bootstrap to display the data.
  		});
 	
 	popup.find("#StepDriver").on('change',function() {
-		sid  = popup.find("#StepDriver").attr('theSid');   // 
+		sid  = cases.lastPopup.find("#StepDriver").attr('theSid');   // 
 		var oneCaseStep = cases.jsonCaseSteps[sid];
+		var popup = cases.lastPopup;
 		console.log("Changed ..", oneCaseStep, popup.find("#StepDriver").val());
 		var driver =popup.find("#StepDriver").val();
 		var xopts = jQuery.getJSON("./cases/getListOfKeywords/?driver="+driver).done(function(data) {
