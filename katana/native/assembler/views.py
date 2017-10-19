@@ -171,6 +171,7 @@ def verify_dependency_json(json_data, final_data):
                        "paramiko": "1.16.0", "pexpect": "4.2.0", "pysnmp": "4.3.2",
                        "requests": "2.9.1", "selenium": "2.48.0", "xlrd": "1.0.0",
                        "cloudshell-automation-api": "7.1.0.34"}
+    extra_dependencies = set()
     for i in range(0, len(json_data["data"]["warhorn"]["dependency"])):
         for key, value in json_data["data"]["warhorn"]["dependency"][i].items():
             if key == "@name":
@@ -197,7 +198,12 @@ def verify_dependency_json(json_data, final_data):
                         final_data["data"]["warhorn"]["dependency"][i]["matched"] = False
                     break
                 else:
-                    pass
+                    extra_dependencies.add(i)
+    dependency_list = []
+    for i in range(0, len(final_data["data"]["warhorn"]["dependency"])):
+        if i not in extra_dependencies:
+            dependency_list.append(copy.deepcopy(final_data["data"]["warhorn"]["dependency"][i]))
+    final_data["data"]["warhorn"]["dependency"] = copy.deepcopy(dependency_list)
     return final_data
 
 
