@@ -11,4 +11,5 @@ urlpatterns = [
     url(r'^save_warhorn_config_file/$', views.save_warhorn_config_file, name='save_warhorn_config_file'),
     url(r'^save_and_run_warhorn_config_file/$', views.save_and_run_warhorn_config_file,
         name='save_and_run_warhorn_config_file'),
+    url(r'^get_data_directory/$', views.get_data_directory, name='get_data_directory'),
 ]

@@ -268,7 +268,11 @@ def check_tools_repo_availability(request):
 
 
 def save_warhorn_config_file(request):
-    filepath = os.path.join(request.POST.get('directory'), request.POST.get('filename') + ".xml")
+    nav_obj = Navigator()
+    directory = request.POST.get('directory')
+    if directory == "default":
+        directory = os.path.join(nav_obj.get_katana_dir(), "native", "assembler", ".data")
+    filepath = os.path.join(directory, request.POST.get('filename') + ".xml")
     json_data = json.loads(request.POST.get('json_data'))
     json_data["data"]["warriorframework"] = "Test"
     data = xmltodict.unparse(json_data)
@@ -278,7 +282,11 @@ def save_warhorn_config_file(request):
 
 
 def save_and_run_warhorn_config_file(request):
-    filepath = os.path.join(request.POST.get('directory'), request.POST.get('filename') + ".xml")
+    nav_obj = Navigator()
+    directory = request.POST.get('directory')
+    if directory == "default":
+        directory = os.path.join(nav_obj.get_katana_dir(), "native", "assembler", ".data")
+    filepath = os.path.join(directory, request.POST.get('filename') + ".xml")
     json_data = json.loads(request.POST.get('json_data'))
     json_data["data"]["warriorframework"] = "Test"
     data = xmltodict.unparse(json_data)
@@ -306,3 +314,9 @@ def _save_file(filepath, data):
         saved = False
         message = e
     return {"saved": saved, "message": message}
+
+
+def get_data_directory(request):
+    nav_obj = Navigator()
+    directory = os.path.join(nav_obj.get_katana_dir(), "native", "assembler", ".data")
+    return JsonResponse({"data_directory": directory})

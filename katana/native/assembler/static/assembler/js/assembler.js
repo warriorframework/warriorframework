@@ -8,7 +8,7 @@ var assembler = {
                 },
                 type: 'GET',
                 url: 'read_config_file/',
-            }).done(function(data) {
+            }).done(function(config_json_data) {
                 $.ajax({
                         headers: {
                             'X-CSRFToken': $currentPage.find('input[name="csrfmiddlewaretoken"]').attr('value')
@@ -57,15 +57,8 @@ var assembler = {
                         katana.translate(translationUrl, $currentPage);
                     });
                     var not_available = "";
-                    if(data["warhorn_config"] === ""){
-                        if(data["pythonsrcdir"] === ""){
-                            not_avaiable = "The paths for Warrior Framework Directory and Warhorn Configuration Directory have not been set";
-                        }
-                        else {
-                            not_avaiable = "The path for Warhorn Configuration Directory has not been set";
-                        }
-                    } else if (data["pythonsrcdir"] === ""){
-                        not_avaiable = "The path for Warrior Framework Directory has not been set";
+                    if (config_json_data["pythonsrcdir"] === ""){
+                        not_available = "The path for Warrior Framework Directory has not been set";
                     }
                     if(not_available !== ""){
                         katana.openAlert({"alert_type": "warning",
@@ -355,7 +348,7 @@ var assembler = {
                     'X-CSRFToken': $currentPage.find('input[name="csrfmiddlewaretoken"]').attr('value')
                 },
                 type: 'GET',
-                url: 'read_config_file/',
+                url: 'assembler/get_data_directory/',
             }).done(function(data) {
                 callBack_on_accept = function(inputValue){
                     $.ajax({
@@ -414,7 +407,7 @@ var assembler = {
                         }
                     });
                 };
-                katana.fileExplorerAPI.openFileExplorer(false, data["warhorn_config"],
+                katana.fileExplorerAPI.openFileExplorer(false, data["data_directory"],
                                                         $currentPage.find('input[name="csrfmiddlewaretoken"]').attr('value'),
                                                         false, callBack_on_accept)
             });
@@ -742,204 +735,196 @@ var assembler = {
                     'X-CSRFToken': $currentPage.find('input[name="csrfmiddlewaretoken"]').attr('value')
                 },
                 type: 'GET',
-                url: 'read_config_file/'
-            }).done(function(config_file_data) {
-                var callBack_on_accept = function(inputValue){
+                url: 'assembler/get_data_directory/',
+        }).done(function(data_directory) {
+            var callBack_on_accept = function(inputValue){
 
-                var $currentPage = katana.$activeTab;
-                var finalJson = {
-                                    "data": {
-                                        "warhorn": {
-                                            "dependency": []
-                                        },
-                                        "tools": "",
-                                        "drivers": {
-                                            "repository": []
-                                        },
-                                        "warriorspace": {
-                                            "repository": []
-                                        }
+            var $currentPage = katana.$activeTab;
+            var finalJson = {
+                                "data": {
+                                    "warhorn": {
+                                        "dependency": []
+                                    },
+                                    "tools": "",
+                                    "drivers": {
+                                        "repository": []
+                                    },
+                                    "warriorspace": {
+                                        "repository": []
                                     }
                                 }
-                var dependencyDivChildren = $currentPage.find('#dependency-div').children('div');
-                for(var i=0; i<dependencyDivChildren.length; i++){
-                    finalJson.data.warhorn.dependency.push(JSON.parse(JSON.stringify($(dependencyDivChildren[i]).data().dataObject.jsonObj)));
-                }
-
-                var toolsDivChild = $currentPage.find('#tools-div').children('div');
-                if($(toolsDivChild[0]).data().dataObject.url.trim() != ""){
-                    finalJson.data.tools = JSON.parse(JSON.stringify($(toolsDivChild[0]).data().dataObject.jsonObj));
-                } else {
-                    delete finalJson.data.tools;
-                }
-
-                var kwDivChildren = $currentPage.find('#kw-div').children('div');
-                for(i=0; i<kwDivChildren.length; i++){
-                    if($(kwDivChildren[i]).data().dataObject.url.trim() != ""){
-                        var driversTemp = JSON.parse(JSON.stringify($(kwDivChildren[i]).data().dataObject.jsonObj))
-                        for(var j=0; j<$(kwDivChildren[i]).data().dataObject.drivers.length; j++){
-                            driversTemp.driver.push(JSON.parse(JSON.stringify($(kwDivChildren[i]).data().dataObject.drivers[j].jsonObj)));
-                        }
-                        finalJson.data.drivers.repository.push(driversTemp);
-                    }
-                }
-
-                if(finalJson.data.drivers.repository.length == 0){
-                    delete finalJson.data.drivers
-                }
-
-                var wsDivChildren = $currentPage.find('#ws-div').children('div');
-                for(i=0; i<wsDivChildren.length; i++){
-                    if($(wsDivChildren[i]).data().dataObject.url.trim() != ""){
-                        finalJson.data.warriorspace.repository.push(JSON.parse(JSON.stringify($(wsDivChildren[i]).data().dataObject.jsonObj)));
-                    }
-                }
-
-                if(finalJson.data.warriorspace.repository.length == 0){
-                    delete finalJson.data.warriorspace
-                }
-
-                console.log(finalJson);
-
-                $.ajax({
-                        headers: {
-                            'X-CSRFToken': $currentPage.find('input[name="csrfmiddlewaretoken"]').attr('value')
-                        },
-                        type: 'POST',
-                        url: 'assembler/save_warhorn_config_file/',
-                        data: {"json_data": JSON.stringify(finalJson), "filename": inputValue, "directory": config_file_data["warhorn_config"]}
-                    }).done(function(data) {
-                        if(data.saved){
-                            assembler.init();
-                            katana.openAlert({"alert_type": "success",
-                                "heading": "Saved",
-                                "text": "Saved as: " + inputValue,
-                                "timer": 1250, "show_cancel_btn": false, "show_accept_btn": false})
-                        } else {
-                            katana.openAlert({"alert_type": "danger",
-                                "heading": "Not Saved!",
-                                "text": "Some error occurred: " + data.message,
-                                "show_cancel_btn": false})
-                        }
-
-                    });
-                }
-                katana.openAlert({
-                    "alert_type": "light",
-                    "heading": "Name for the file",
-                    "text": "",
-                    "prompt": "true",
-                    "prompt_default": $currentPage.find('.tool-bar').find('.title').text()
-                    },
-                    function(inputValue) {
-                        $.ajax({
-                            headers: {
-                                'X-CSRFToken': $currentPage.find('input[name="csrfmiddlewaretoken"]').attr('value')
-                            },
-                            type: 'POST',
-                            url: 'check_if_file_exists/',
-                            data: {"filename": inputValue, "directory": config_file_data["warhorn_config"], "extension": ".xml"}
-                        }).done(function(data) {
-                            if(data.exists){
-                                katana.openAlert({
-                                    "alert_type": "warning",
-                                    "heading": "File Exists",
-                                    "text": "A file with the name " + inputValue + " already exists; do you want to overwrite it?",
-                                    "accept_btn_text": "Yes",
-                                    "cancel_btn_text": "No"
-                                    }, function() {callBack_on_accept(inputValue)})
-                            } else {
-                                callBack_on_accept(inputValue);
                             }
-                        });
-                    });
+            var dependencyDivChildren = $currentPage.find('#dependency-div').children('div');
+            for(var i=0; i<dependencyDivChildren.length; i++){
+                finalJson.data.warhorn.dependency.push(JSON.parse(JSON.stringify($(dependencyDivChildren[i]).data().dataObject.jsonObj)));
+            }
+
+            var toolsDivChild = $currentPage.find('#tools-div').children('div');
+            if($(toolsDivChild[0]).data().dataObject.url.trim() != ""){
+                finalJson.data.tools = JSON.parse(JSON.stringify($(toolsDivChild[0]).data().dataObject.jsonObj));
+            } else {
+                delete finalJson.data.tools;
+            }
+
+            var kwDivChildren = $currentPage.find('#kw-div').children('div');
+            for(i=0; i<kwDivChildren.length; i++){
+                if($(kwDivChildren[i]).data().dataObject.url.trim() != ""){
+                    var driversTemp = JSON.parse(JSON.stringify($(kwDivChildren[i]).data().dataObject.jsonObj))
+                    for(var j=0; j<$(kwDivChildren[i]).data().dataObject.drivers.length; j++){
+                        driversTemp.driver.push(JSON.parse(JSON.stringify($(kwDivChildren[i]).data().dataObject.drivers[j].jsonObj)));
+                    }
+                    finalJson.data.drivers.repository.push(driversTemp);
+                }
+            }
+
+            if(finalJson.data.drivers.repository.length == 0){
+                delete finalJson.data.drivers
+            }
+
+            var wsDivChildren = $currentPage.find('#ws-div').children('div');
+            for(i=0; i<wsDivChildren.length; i++){
+                if($(wsDivChildren[i]).data().dataObject.url.trim() != ""){
+                    finalJson.data.warriorspace.repository.push(JSON.parse(JSON.stringify($(wsDivChildren[i]).data().dataObject.jsonObj)));
+                }
+            }
+
+            if(finalJson.data.warriorspace.repository.length == 0){
+                delete finalJson.data.warriorspace
+            }
+
+            console.log(finalJson);
+
+            $.ajax({
+                    headers: {
+                        'X-CSRFToken': $currentPage.find('input[name="csrfmiddlewaretoken"]').attr('value')
+                    },
+                    type: 'POST',
+                    url: 'assembler/save_warhorn_config_file/',
+                    data: {"json_data": JSON.stringify(finalJson), "filename": inputValue, "directory": "default"}
+            }).done(function(data) {
+                if(data.saved){
+                    assembler.init();
+                    katana.openAlert({"alert_type": "success",
+                        "heading": "Saved",
+                        "text": "Saved as: " + inputValue,
+                        "timer": 1250, "show_cancel_btn": false, "show_accept_btn": false})
+                } else {
+                    katana.openAlert({"alert_type": "danger",
+                        "heading": "Not Saved!",
+                        "text": "Some error occurred: " + data.message,
+                        "show_cancel_btn": false})
+                }
+
+            });
+        }
+        katana.openAlert({
+            "alert_type": "light",
+            "heading": "Name for the file",
+            "text": "",
+            "prompt": "true",
+            "prompt_default": $currentPage.find('.tool-bar').find('.title').text()
+            },
+            function(inputValue) {
+                $.ajax({
+                    headers: {
+                        'X-CSRFToken': $currentPage.find('input[name="csrfmiddlewaretoken"]').attr('value')
+                    },
+                    type: 'POST',
+                    url: 'check_if_file_exists/',
+                    data: {"filename": inputValue, "directory": data_directory["data_directory"], "extension": ".xml"}
+                }).done(function(data) {
+                    if(data.exists){
+                        katana.openAlert({
+                            "alert_type": "warning",
+                            "heading": "File Exists",
+                            "text": "A file with the name " + inputValue + " already exists; do you want to overwrite it?",
+                            "accept_btn_text": "Yes",
+                            "cancel_btn_text": "No"
+                            }, function() {callBack_on_accept(inputValue)})
+                    } else {
+                        callBack_on_accept(inputValue);
+                    }
+                });
+            });
         });
     },
 
     saveFileRunWarhorn: function(){
+        var $currentPage = katana.$activeTab;
+        var finalJson = {
+                            "data": {
+                                "warhorn": {
+                                    "dependency": []
+                                },
+                                "tools": "",
+                                "drivers": {
+                                    "repository": []
+                                },
+                                "warriorspace": {
+                                    "repository": []
+                                }
+                            }
+                        }
+        var dependencyDivChildren = $currentPage.find('#dependency-div').children('div');
+        for(var i=0; i<dependencyDivChildren.length; i++){
+            finalJson.data.warhorn.dependency.push(JSON.parse(JSON.stringify($(dependencyDivChildren[i]).data().dataObject.jsonObj)));
+        }
+
+        var toolsDivChild = $currentPage.find('#tools-div').children('div');
+        if($(toolsDivChild[0]).data().dataObject.url.trim() != ""){
+            finalJson.data.tools = JSON.parse(JSON.stringify($(toolsDivChild[0]).data().dataObject.jsonObj));
+        } else {
+            delete finalJson.data.tools;
+        }
+
+        var kwDivChildren = $currentPage.find('#kw-div').children('div');
+        for(i=0; i<kwDivChildren.length; i++){
+            if($(kwDivChildren[i]).data().dataObject.url.trim() != ""){
+                var driversTemp = JSON.parse(JSON.stringify($(kwDivChildren[i]).data().dataObject.jsonObj));
+                for(var j=0; j<$(kwDivChildren[i]).data().dataObject.drivers.length; j++){
+                    driversTemp.driver.push(JSON.parse(JSON.stringify($(kwDivChildren[i]).data().dataObject.drivers[j].jsonObj)));
+                }
+                finalJson.data.drivers.repository.push(driversTemp);
+            }
+        }
+
+        if(finalJson.data.drivers.repository.length == 0){
+            delete finalJson.data.drivers
+        }
+
+        var wsDivChildren = $currentPage.find('#ws-div').children('div');
+        for(i=0; i<wsDivChildren.length; i++){
+            if($(wsDivChildren[i]).data().dataObject.url.trim() != ""){
+                finalJson.data.warriorspace.repository.push(JSON.parse(JSON.stringify($(wsDivChildren[i]).data().dataObject.jsonObj)));
+            }
+        }
+
+        if(finalJson.data.warriorspace.repository.length == 0){
+            delete finalJson.data.warriorspace
+        }
+
+        var popupData = '<div class="text-center" style="padding-top: 10%; width: inherit;">' +
+                            '<div class="assembler-popup-loading"></div>' +
+                        '</div>'
+        var pageElementId = $currentPage.closest('.page').attr('id');
+        var executionNumber = $currentPage.find('#main-div').attr('execution')
+        var popup = katana.popupController.open(popupData, pageElementId + ": Console Logs (" + executionNumber + ")");
+        $currentPage.find('#main-div').attr('execution', (parseInt(executionNumber)+1).toString())
+
         $.ajax({
                 headers: {
                     'X-CSRFToken': $currentPage.find('input[name="csrfmiddlewaretoken"]').attr('value')
                 },
-                type: 'GET',
-                url: 'read_config_file/'
-            }).done(function(config_file_data){
-                var $currentPage = katana.$activeTab;
-                var finalJson = {
-                                    "data": {
-                                        "warhorn": {
-                                            "dependency": []
-                                        },
-                                        "tools": "",
-                                        "drivers": {
-                                            "repository": []
-                                        },
-                                        "warriorspace": {
-                                            "repository": []
-                                        }
-                                    }
-                                }
-                var dependencyDivChildren = $currentPage.find('#dependency-div').children('div');
-                for(var i=0; i<dependencyDivChildren.length; i++){
-                    finalJson.data.warhorn.dependency.push(JSON.parse(JSON.stringify($(dependencyDivChildren[i]).data().dataObject.jsonObj)));
+                type: 'POST',
+                url: 'assembler/save_and_run_warhorn_config_file/',
+                data: {"json_data": JSON.stringify(finalJson), "filename": "temp_warhorn_run", "directory": "default"}
+            }).done(function(data) {
+                var split_op = data["output"].split('\n');
+                final_op = "";
+                for(var i=0; i<split_op.length; i++){
+                    final_op += split_op[i] + '<br>'
                 }
-
-                var toolsDivChild = $currentPage.find('#tools-div').children('div');
-                if($(toolsDivChild[0]).data().dataObject.url.trim() != ""){
-                    finalJson.data.tools = JSON.parse(JSON.stringify($(toolsDivChild[0]).data().dataObject.jsonObj));
-                } else {
-                    delete finalJson.data.tools;
-                }
-
-                var kwDivChildren = $currentPage.find('#kw-div').children('div');
-                for(i=0; i<kwDivChildren.length; i++){
-                    if($(kwDivChildren[i]).data().dataObject.url.trim() != ""){
-                        var driversTemp = JSON.parse(JSON.stringify($(kwDivChildren[i]).data().dataObject.jsonObj));
-                        for(var j=0; j<$(kwDivChildren[i]).data().dataObject.drivers.length; j++){
-                            driversTemp.driver.push(JSON.parse(JSON.stringify($(kwDivChildren[i]).data().dataObject.drivers[j].jsonObj)));
-                        }
-                        finalJson.data.drivers.repository.push(driversTemp);
-                    }
-                }
-
-                if(finalJson.data.drivers.repository.length == 0){
-                    delete finalJson.data.drivers
-                }
-
-                var wsDivChildren = $currentPage.find('#ws-div').children('div');
-                for(i=0; i<wsDivChildren.length; i++){
-                    if($(wsDivChildren[i]).data().dataObject.url.trim() != ""){
-                        finalJson.data.warriorspace.repository.push(JSON.parse(JSON.stringify($(wsDivChildren[i]).data().dataObject.jsonObj)));
-                    }
-                }
-
-                if(finalJson.data.warriorspace.repository.length == 0){
-                    delete finalJson.data.warriorspace
-                }
-
-                var popupData = '<div class="text-center" style="padding-top: 10%; width: inherit;">' +
-                                    '<div class="assembler-popup-loading"></div>' +
-                                '</div>'
-                var pageElementId = $currentPage.closest('.page').attr('id');
-                var executionNumber = $currentPage.find('#main-div').attr('execution')
-                var popup = katana.popupController.open(popupData, pageElementId + ": Console Logs (" + executionNumber + ")");
-                $currentPage.find('#main-div').attr('execution', (parseInt(executionNumber)+1).toString())
-
-                $.ajax({
-                        headers: {
-                            'X-CSRFToken': $currentPage.find('input[name="csrfmiddlewaretoken"]').attr('value')
-                        },
-                        type: 'POST',
-                        url: 'assembler/save_and_run_warhorn_config_file/',
-                        data: {"json_data": JSON.stringify(finalJson), "filename": "temp_warhorn_run", "directory": config_file_data["warhorn_config"]}
-                    }).done(function(data) {
-                        var split_op = data["output"].split('\n');
-                        final_op = "";
-                        for(var i=0; i<split_op.length; i++){
-                            final_op += split_op[i] + '<br>'
-                        }
-                        popup.find('.page-content').html(final_op)
-                    });
-            })
+                popup.find('.page-content').html(final_op)
+            });
     },
 }
