@@ -81,18 +81,16 @@ class caseRuleObject {
 
 		} else { 
 
-		this.Condition = jsonData['Condition'];
-		this.Condvalue = jsonData['Condvalue'];
-		this.Else = jsonData['Else'];
-		this.Elsevalue = jsonData['Elsevalue'];
+		this.Condition = jsonData['@Condition'];
+		this.Condvalue = jsonData['@Condvalue'];
+		this.Else = jsonData['@Else'];
+		this.Elsevalue = jsonData['@Elsevalue'];
 		}
 	}	
 
 	getTableFragment() {
-		return "Condition"+this._Condition+ "<br>" + \
-		"Condvalue="+this.Condvalue+ "<br>" + \
-		"Else="+this.Elsevalue+ "<br>" + \
-		"Elsevalue="+this.Elsevalue;
+		return "Condition="+this.Condition+ "<br>" + "Condvalue="+this.Condvalue+ "<br>" + 
+		"Else="+this.Elsevalue+ "<br>" + "Elsevalue="+this.Elsevalue;
 
 
 	}
@@ -108,11 +106,11 @@ class caseRuleObject {
 	}
 
 	getJSONdata() {
-		return ({"Rule": 
+		return ( 
 			{ "@Condition": this.Condition, 
 			"@Condvalue": this.Condvalue, 
 			"@Else": this.Else, 
-			"@Elsevalue": this.Elsevalue } });
+			"@Elsevalue": this.Elsevalue } );
 	}
 
 	setDefaults() {
@@ -145,6 +143,7 @@ class caseRuleObject {
                                 <input class="rule-condition" type="text" id="executeRuleAtElsevalue-${trule}" value="${this.Elsevalue}" />\
                             </div>\
 			`;
+			return outstr;
 	}
 
 }
@@ -326,13 +325,14 @@ class caseTestStepObject {
 			jsonData['Execute']['Rule'] = [ jsonData['Execute']['Rule']];
 		}
 
-		this.Execute.Rule = [];
+		this.Execute = { 'Rule': [] };
+		//console.log(this.Execute.Rule);
+	
 		for (var xr in jsonData['Execute']['Rule']) {
-			jd = jsonData['Execute']['Rule'][xr]; 
-			console.log("rule ...", jd);
+			var jd = jsonData['Execute']['Rule'][xr]; 
+			//console.log("rule ...", jd);
 			var nr = new caseRuleObject(jd);
 			this.Execute.Rule.push(nr);
-
 		}
 
 		// this.Execute_Rule_Condition = jsonData['Execute']['Rule']['@Condition'];
@@ -414,10 +414,10 @@ class caseTestStepObject {
 		var myRules = [];
 		for (var key in this.Execute.Rule)
 		{
-			myRules.push({'Rule': {"@Condition": this.Execute.Rule[key].Condition ,
+			myRules.push({"@Condition": this.Execute.Rule[key].Condition ,
 								"@Condvalue": this.Execute.Rule[key].Condvalue,
 								"@Else": this.Execute.Rule[key].Else, 
-								"@Elsevalue": this.Execute.Rule[key].Elsevalue }});
+								"@Elsevalue": this.Execute.Rule[key].Elsevalue });
 		}
 
 
@@ -928,7 +928,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		 }
 		 
 
-		 
+
 			
 		items.push('<td>'+outstr+'</td>'); 
 		items.push('<td>'+oneCaseStep.runmode_type+'</td>');
@@ -1176,7 +1176,13 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		popup.find('.rule-condition').hide();
 
 
+		popup.find('#casesExecuteAtExecType').attr("value",oneCaseStep.Execute_ExecType );
+		popup.find('#casesExecuteAtExecType').val(oneCaseStep.Execute_ExecType );
+
+		console.log("ExecType = ", oneCaseStep.Execute_ExecType, oneCaseStep);
+		
 		if (oneCaseStep.Execute_ExecType) {
+			
 			if (oneCaseStep.Execute_ExecType == 'if' || oneCaseStep.Execute_ExecType == 'if not') {
 				popup.find('.rule-condition').show();
 			}
@@ -1190,11 +1196,14 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		}
 
 		r_items= [];
-		for (var x in oneCaseStep.Execute_Rule) {
-			var crule  = oneCaseStep.Execute_Rule[x];
+		for (var x in oneCaseStep.Execute.Rule) {
+			var crule  = oneCaseStep.Execute.Rule[x];
+			console.log(crule)
 			r_items.push(crule.getHTMLfragment(x));
 
 		}
+
+		popup.find("#caseStepAllRules").html(r_items.join("\n"));
 
 		// if () {
 		// 	popup.find('#executeRuleAtCondition').attr('value',oneCaseStep.Execute_Rule_Condition);
@@ -1288,7 +1297,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
  						var driver = oneCaseStep.step_driver  ;
  						var a_items = jQuery.extend( true, [], data['keywords']);
  						//katana.$activeTab.data("data-keywords-"+driver, a_items);                      // keep list of actions... 
-						console.log(a_items, driver, data['keywords']);
+						//console.log(a_items, driver, data['keywords']);
  						for (let x of a_items) {
  							popup.find("#StepKeyword").append($('<option>',{ value: x,  text: x }));
  						}
@@ -1751,13 +1760,16 @@ The UI currently uses jQuery and Bootstrap to display the data.
 
 		// Collect all the elements rule-condition-top 
 		var rules = popup.find('.rule-condition-top');
+		var ctr = 0; 
 		for (let tr of rules){
 			var nr = new caseRuleObject() 
-			nr.setValues(popup.find("#executeRuleAtCondition").val(), 
-					popup.find("#executeRuleAtCondvalue").val(),
-					popup.find("#executeRuleAtElse").val(),
-					popup.find("#executeRuleAtElsevalue").val());
+			nr.setValues(popup.find("#executeRuleAtCondition-"+ctr).val(), 
+					popup.find("#executeRuleAtCondvalue-"+ctr).val(),
+					popup.find("#executeRuleAtElse-"+ctr).val(),
+					popup.find("#executeRuleAtElsevalue-"+ctr).val());
+			console.log("Saving ...", nr);
 			oneCaseStep.Execute.Rule.push(nr);
+			ctr += 1; 
 		}
 
 		// oneCaseStep.Execute_Rule_Condition = popup.find("#executeRuleAtCondition").val();	
