@@ -11,7 +11,7 @@ from django.shortcuts import render
 from django.views import View
 
 from native.assembler.assembler_utils.repository_details import KwRepositoryDetails
-from utils.directory_traversal_utils import get_dir_from_path
+from utils.directory_traversal_utils import get_dir_from_path, delete_dir
 from utils.navigator_util import Navigator
 
 
@@ -161,6 +161,8 @@ def verify_drivers_json(final_data, ref_data):
                 final_data["data"]["drivers"]["repository"][i]["driver"] = copy.deepcopy(drivers_data)
                 for driver_name in drivers:
                     final_data["data"]["drivers"]["repository"][i]["driver"].append({"@name": driver_name, "@clone": "no"})
+                if os.path.isdir(kw_repo_obj.repo_directory):
+                    delete_dir(kw_repo_obj.repo_directory)
         else:
             final_data["data"]["drivers"]["repository"][i]["available"] = False
     return final_data
@@ -231,6 +233,8 @@ def check_repo_availability(request):
         temp_directory = os.path.join(nav_obj.get_katana_dir(), "native", "assembler", ".data")
         kw_repo_obj = KwRepositoryDetails(url, temp_directory)
         drivers = kw_repo_obj.get_pd_names()
+        if os.path.isdir(kw_repo_obj.repo_directory):
+            delete_dir(kw_repo_obj.repo_directory)
     return JsonResponse({"available": available, "repo_name": repo_name, "drivers": drivers})
 
 
