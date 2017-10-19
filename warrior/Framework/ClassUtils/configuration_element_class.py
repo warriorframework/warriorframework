@@ -44,7 +44,8 @@ class ConfigurationElement(object):
         # Create a regex search object which, when found
         # contains a group object with the text within the start and end pattern
         # and another group object with the text and start/end pattern
-        return re.search(r".*(" + re.escape(self.start_pat) + r"(.*)" + re.escape(self.end_pat) + r").*", string)
+        text_between_pattern = r"([^" + re.escape(self.end_pat) + r"]*)"
+        return re.search(r".*(" + re.escape(self.start_pat) + text_between_pattern + re.escape(self.end_pat) + r").*", string)
 
     def expand_variables(self, string):
         """
@@ -68,12 +69,11 @@ class ConfigurationElement(object):
         return_value = string
         end_pattern = self.end_pat
         # When end_pat_index == -1, which means end_pattern is not found in the return_value string
-        end_pat_index = return_value.find(end_pattern)
         # Get the regex match object of the substring
         # which looks for text between start and endpattern
-        match = self.__find_match(return_value[:end_pat_index + len(end_pattern)])
+        match = self.__find_match(return_value)
         # Only substitued the string when there is a match
-        while end_pat_index != -1 and match is not None:
+        while match is not None:
             # match.group(2) contains the pre-sub value
             # substitued value is the actual value after parsing the pre-sub value
             substitued_value = self.get_value(match.group(2))
@@ -88,8 +88,7 @@ class ConfigurationElement(object):
                 return_value, self.start_pat, self.end_pat)
 
             # Doing another search for the next value to substitue
-            end_pat_index = return_value.find(end_pattern)
-            match = self.__find_match(return_value[:end_pat_index + len(end_pattern)])
+            match = self.__find_match(return_value)
 
         return return_value
 
