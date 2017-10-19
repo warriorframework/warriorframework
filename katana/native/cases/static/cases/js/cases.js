@@ -76,10 +76,35 @@ function jsUcfirst(string)
 
 class caseRuleObject { 
 	constructor (jsonData) {
+		if (jsonData == null){
+			this.setDefaults();
+
+		} else { 
+
 		this.Condition = jsonData['Condition'];
 		this.Condvalue = jsonData['Condvalue'];
 		this.Else = jsonData['Else'];
 		this.Elsevalue = jsonData['Elsevalue'];
+		}
+	}	
+
+	getTableFragment() {
+		return "Condition"+this._Condition+ "<br>" + \
+		"Condvalue="+this.Condvalue+ "<br>" + \
+		"Else="+this.Elsevalue+ "<br>" + \
+		"Elsevalue="+this.Elsevalue;
+
+
+	}
+
+	setValues(cd,cv,el,ev) {
+
+		this.Condition = cd; //jsonData['Condition'];
+		this.Condvalue = cv; //jsonData['Condvalue'];
+		this.Else = el; //jsonData['Else'];
+		this.Elsevalue = ev; //jsonData['Elsevalue'];
+		
+
 	}
 
 	getJSONdata() {
@@ -96,6 +121,32 @@ class caseRuleObject {
 		this.Else      = "";
 		this.Elsevalue = "";
 	}
+
+	getHTMLfragment(trule){
+			var outstr = `<div class="field rule-condition-top">\
+                          <label class="rule-condition">Rule Condition:</label>\
+                                <input type="text" class="rule-condition" id="executeRuleAtCondition-${trule}" value="${this.Condition}" />\
+                            </div>\
+                            <div class="field ">\
+                                <label class="rule-condition">Rule Condition Value:</label>\
+                                <input type="text" class="rule-condition" id="executeRuleAtCondvalue-${trule}" value="${this.Condvalue}" />\
+                            </div>\
+                            <div class="field ">\
+                                <label class="rule-condition">Rule Else:</label>\
+                                <select type="text" class="rule-condition text-right" id="executeRuleAtElse-${trule}" value="${this.Else}">\
+                                        <option value="next">next</option>\
+                                        <option value="abort">abort</option>\
+                                        <option value="abort_as_error">abort as error</option>\
+                                        <option value="goto">goto</option>\
+                                </select>\
+                            </div>\                      
+                            <div class="field ">\
+                                <label class="rule-condition">Rule Else Value:</label>\
+                                <input class="rule-condition" type="text" id="executeRuleAtElsevalue-${trule}" value="${this.Elsevalue}" />\
+                            </div>\
+			`;
+	}
+
 }
 
 class caseRequirementsObject{
@@ -258,7 +309,7 @@ class caseTestStepObject {
 		// Make sure the Execute and types exist
 		if (! jsonData['Execute']){
 				jsonData['Execute'] = { "@ExecType": "yes", 
-						"Rule": { "@Condition": "", "@Condvalue": "", "@Else": "next", "@Elsevalue": "" }
+						"Rule": [ { "@Condition": "", "@Condvalue": "", "@Else": "next", "@Elsevalue": "" }, ]
 					}; 
 			}
 		if (! jsonData['Execute']['@ExecType']){
@@ -266,14 +317,28 @@ class caseTestStepObject {
 		}
 		// Make sure the rules and types exist
 		if (! jsonData['Execute']['Rule']){
-				jsonData['Execute']['Rule'] ={ "@Condition": "", "@Condvalue": "", "@Else": "next", "@Elsevalue": "" }; 
+				jsonData['Execute']['Rule'] = [ { "@Condition": "", "@Condvalue": "", "@Else": "next", "@Elsevalue": "" }, ]; 
 			}
 		
 		this.Execute_ExecType = jsonData['Execute']['@ExecType'].toLowerCase();
-		this.Execute_Rule_Condition = jsonData['Execute']['Rule']['@Condition'];
-		this.Execute_Rule_Condvalue = jsonData['Execute']['Rule']['@Condvalue'];
-		this.Execute_Rule_Else = jsonData['Execute']['Rule']['@Else'];
-		this.Execute_Rule_Elsevalue = jsonData['Execute']['Rule']['@Elsevalue'];
+
+		if ( !jQuery.isArray(jsonData['Execute']['Rule'])) {
+			jsonData['Execute']['Rule'] = [ jsonData['Execute']['Rule']];
+		}
+
+		this.Execute.Rule = [];
+		for (var xr in jsonData['Execute']['Rule']) {
+			jd = jsonData['Execute']['Rule'][xr]; 
+			console.log("rule ...", jd);
+			var nr = new caseRuleObject(jd);
+			this.Execute.Rule.push(nr);
+
+		}
+
+		// this.Execute_Rule_Condition = jsonData['Execute']['Rule']['@Condition'];
+		// this.Execute_Rule_Condvalue = jsonData['Execute']['Rule']['@Condvalue'];
+		// this.Execute_Rule_Else = jsonData['Execute']['Rule']['@Else'];
+		// this.Execute_Rule_Elsevalue = jsonData['Execute']['Rule']['@Elsevalue'];
 		this.impact = jsonData['impact'];
 		this.context = jsonData['context'];
 
@@ -324,7 +389,10 @@ class caseTestStepObject {
 				"iteration_type": {   "@type" : "" } ,
 				"Description":"",
 				"Execute": {   "@ExecType": "yes",
-					"Rule": {   "@Condition": "","@Condvalue": "","@Else": "next", "@Elsevalue": "" }
+					
+					"Rule": [ 
+						{   "@Condition": "","@Condvalue": "","@Else": "next", "@Elsevalue": "" },
+						],
 				}, 
 				"context": "positive", 
 				"impact" :  "impact",
@@ -337,16 +405,21 @@ class caseTestStepObject {
 
 	getJSON() { 
 		var myArgs = [];
-		// for (var x in this.Arguments){
-			// myArgs.push({ 'argument' : { '@name': this.Arguments[x].name , '@value': this.Arguments[x].value }});
-		// }
 		for (var key in this.Arguments) {
     		// check if the property/key is defined in the object itself, not in parent
     		if (this.Arguments.hasOwnProperty(key)) {           
         			 myArgs.push({ 'argument' : { '@name': key , '@value': this.Arguments[key]}});
-		// }
     		}
 		}
+		var myRules = [];
+		for (var key in this.Execute.Rule)
+		{
+			myRules.push({'Rule': {"@Condition": this.Execute.Rule[key].Condition ,
+								"@Condvalue": this.Execute.Rule[key].Condvalue,
+								"@Else": this.Execute.Rule[key].Else, 
+								"@Elsevalue": this.Execute.Rule[key].Elsevalue }});
+		}
+
 
 		return  {
 				"@Driver": this.step_driver, "@Keyword": this.step_keyword , "@TS": this.step_TS ,
@@ -354,12 +427,7 @@ class caseTestStepObject {
 				"onError": {  "@action" : this.onError_action , "@value" : this.onError_value } ,
 				"iteration_type": {   "@type" : "" } ,
 				"Description":this.Description,
-				"Execute": {   "@ExecType": this.Execute_ExecType,
-					"Rule": {   "@Condition": this.Execute_Rule_Condition ,
-								"@Condvalue": this.Execute_Rule_Condvalue,
-								"@Else": this.Execute_Rule_Else, 
-								"@Elsevalue": this.Execute_Rule_Elsevalue }
-				}, 
+				"Execute": {   "@ExecType": this.Execute_ExecType, 'Rule': myRules	}, 
 				"context": this.context, 
 				"impact" : this.impact,
 				"runmode" : { '@type': this.runmode_type, '@value': this.runmode_value},
@@ -848,11 +916,18 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		
 		outstr = "ExecType=" + oneCaseStep.Execute_ExecType + "<br>";
 		if (oneCaseStep.Execute_ExecType == 'if' || oneCaseStep.Execute_ExecType == 'if not') {
-			outstr = outstr + "Condition="+oneCaseStep.Execute_Rule_Condition+ "<br>" + 
-			"Condvalue="+oneCaseStep.Execute_Rule_Condvalue+ "<br>" + 
-			"Else="+oneCaseStep.Execute_Rule_Elsevalue+ "<br>" +
-			"Elsevalue="+oneCaseStep.Execute_Rule_Elsevalue;
-		}
+
+			for (let rl of oneCaseStep.Execute.Rule) {
+				outstr = outstr + rl.getTableFragment();
+			}
+
+		// 	outstr = outstr + "Condition="+oneCaseStep.Execute_Rule_Condition+ "<br>" + 
+		// 	"Condvalue="+oneCaseStep.Execute_Rule_Condvalue+ "<br>" + 
+		// 	"Else="+oneCaseStep.Execute_Rule_Elsevalue+ "<br>" +
+		// 	"Elsevalue="+oneCaseStep.Execute_Rule_Elsevalue;
+		 }
+		 
+
 		 
 			
 		items.push('<td>'+outstr+'</td>'); 
@@ -1099,6 +1174,8 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		popup.find("#runmode-at-value").attr("value",oneCaseStep.runmode_value);
 		popup.find("#StepImpact").attr("value",oneCaseStep["impact"]);
 		popup.find('.rule-condition').hide();
+
+
 		if (oneCaseStep.Execute_ExecType) {
 			if (oneCaseStep.Execute_ExecType == 'if' || oneCaseStep.Execute_ExecType == 'if not') {
 				popup.find('.rule-condition').show();
@@ -1111,12 +1188,22 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		} else { 
 			popup.find(".runmode-value").show();
 		}
-		if (oneCaseStep.Execute_Rule) {
-			popup.find('#executeRuleAtCondition').attr('value',oneCaseStep.Execute_Rule_Condition);
-			popup.find('#executeRuleAtCondvalue').attr('value',oneCaseStep.Execute_Rule_Condvalue);
-			popup.find('#executeRuleAtElse').attr('value',oneCaseStep.Execute_Rule_Else);
-			popup.find('#executeRuleAtElsevalue').attr('value',oneCaseStep.Execute_Rule_Elsevalue);
+
+		r_items= [];
+		for (var x in oneCaseStep.Execute_Rule) {
+			var crule  = oneCaseStep.Execute_Rule[x];
+			r_items.push(crule.getHTMLfragment(x));
+
 		}
+
+		// if () {
+		// 	popup.find('#executeRuleAtCondition').attr('value',oneCaseStep.Execute_Rule_Condition);
+		// 	popup.find('#executeRuleAtCondvalue').attr('value',oneCaseStep.Execute_Rule_Condvalue);
+		// 	popup.find('#executeRuleAtElse').attr('value',oneCaseStep.Execute_Rule_Else);
+		// 	popup.find('#executeRuleAtElsevalue').attr('value',oneCaseStep.Execute_Rule_Elsevalue);
+		// }
+
+
 		cases.fillCaseStepDefaultGoto();
 		cases.showForUncheckedDevelop(popup);
 
@@ -1660,10 +1747,23 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		oneCaseStep["context"] =  popup.find("#StepContext").val();
 		oneCaseStep.Execute_ExecType  = popup.find("#casesExecuteAtExecType").val();	
 		//oneCaseStep["Execute"]["@ExecType"]['Rule'] = {} 
-		oneCaseStep.Execute_Rule_Condition = popup.find("#executeRuleAtCondition").val();	
-		oneCaseStep.Execute_Rule_Condvalue = popup.find("#executeRuleAtCondvalue").val();	
-		oneCaseStep.Execute_Rule_Else      = popup.find("#executeRuleAtElse").val();	
-		oneCaseStep.Execute_Rule_Elsevalue = popup.find("#executeRuleAtElsevalue").val();	
+		oneCaseStep.Execute.Rule = [] 
+
+		// Collect all the elements rule-condition-top 
+		var rules = popup.find('.rule-condition-top');
+		for (let tr of rules){
+			var nr = new caseRuleObject() 
+			nr.setValues(popup.find("#executeRuleAtCondition").val(), 
+					popup.find("#executeRuleAtCondvalue").val(),
+					popup.find("#executeRuleAtElse").val(),
+					popup.find("#executeRuleAtElsevalue").val());
+			oneCaseStep.Execute.Rule.push(nr);
+		}
+
+		// oneCaseStep.Execute_Rule_Condition = popup.find("#executeRuleAtCondition").val();	
+		// oneCaseStep.Execute_Rule_Condvalue = popup.find("#executeRuleAtCondvalue").val();	
+		// oneCaseStep.Execute_Rule_Else      = popup.find("#executeRuleAtElse").val();	
+		// oneCaseStep.Execute_Rule_Elsevalue = popup.find("#executeRuleAtElsevalue").val();	
 		oneCaseStep.onError_action = popup.find("#SteponError-at-action").val();
 		oneCaseStep.onError_value = popup.find("#SteponError-at-value").val();
 		oneCaseStep.runmode_type = popup.find("#runmode-at-type").val();
