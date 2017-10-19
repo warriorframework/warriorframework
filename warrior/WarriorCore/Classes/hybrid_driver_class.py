@@ -222,10 +222,17 @@ class HybridDriver(object):
                 if not run_current_step:
 
                     if trigger_action.upper() in ['ABORT', 'ABORT_AS_ERROR']:
-                        pNote("step exectype check failed and fail action is set to {0} hence aborting execution"
-                          "compeletely".format(trigger_action.upper()), "debug")
-                        self.stop_after_current_iteration = True
-                        self.stop_after_current_step = True
+                        if any([self.iter_type_list[index] == "once_per_tc",
+                               self.iter_type_list[index] == "end_of_tc"]):
+                            pNote("step exectype check failed, fail action is set to {0} and"
+                                  "step iter_type={1} hence aborting execution compeletely".\
+                                  format(trigger_action.upper(), self.iter_type_list[index]), "debug")
+                            self.stop_after_current_iteration = True
+                            self.stop_after_current_step = True
+                        else:
+                            pNote("step exectype check failed, fail action is set to {0} and"
+                                  "step iter_type={1} hence aborting execution for this system".\
+                                  format(trigger_action.upper(), self.iter_type_list[index]), "debug")
                         goto_stepnum = False
                         break
                     elif trigger_action.upper() in ['SKIP', 'NEXT']:
