@@ -78,7 +78,7 @@ class kwRepository {
                             '<div class="card-header">' +
                                 '<div class="row">' +
                                     '<div class="col-sm-1">' +
-                                        '<i class="' + clone_icon + ' assembler-icon-pos-right" ' +
+                                        '<i class="' + clone_icon + ' assembler-icon-pos-right" key="kwRepoClone" ' +
                                             'aria-hidden="true" katana-click="assembler.toggleKwRepoClone" aria-selected="true"></i>' +
                                     '</div>' +
                                     '<div class="col-sm-7">' +
@@ -86,7 +86,7 @@ class kwRepository {
                                     '</div>' +
                                     '<div class="col-sm-2">' +
                                         '<i class="fa fa-trash" style="float:right;" ' +
-                                            'aria-hidden="true" katana-click="assembler.deleteKwRepo" aria-selected="true"></i>' +
+                                            'aria-hidden="true" katana-click="assembler.deleteKwRepo" aria-selected="true" key="kwRepoDelete"></i>' +
                                     '</div>' +
                                 '</div>' +
                             '</div>' +
@@ -96,13 +96,13 @@ class kwRepository {
                                         '<label>URL:</label>' +
                                     '</div>' +
                                     '<div class="col-sm-5">' +
-                                        '<input value="' + this.url + '" katana-change="assembler.updateKwRepoDetails">' +
+                                        '<input key="kwRepo" value="' + this.url + '" katana-change="assembler.updateKwRepoDetails">' +
                                     '</div>' +
                                     '<div class="col-sm-1" style="text-align: right; padding: 0.7rem;">' +
                                         '<label>Label:</label>' +
                                     '</div>' +
                                     '<div class="col-sm-3">' +
-                                        '<input value="' + this.label + '">' +
+                                        '<input key="kwRepoLabel" value="' + this.label + '">' +
                                     '</div>' +
                                 '</div>' +
                                 '<div class="row" style="' + displayDrivers + '">' +
@@ -110,7 +110,8 @@ class kwRepository {
                                     '<div class="col-sm-9">' +
                                         '<div class="card">' +
                                             '<div class="card-header">' +
-                                                '<i class="' + allDriversIcon + '" katana-click="assembler.toggleAllDrivers" aria-selected="' + aria_selected_all_drivers + '"></i>&nbsp;' +
+                                                '<i class="' + allDriversIcon + '" katana-click="assembler.toggleAllDrivers" ' +
+                                                    ' key="kwRepoAllDrivers" aria-selected="' + aria_selected_all_drivers + '"></i>&nbsp;' +
                                                 '<label>All Available Drivers</label>' +
                                             '</div>' +
                                             '<div class="card-block" style="padding: 1rem;">' +
@@ -178,7 +179,8 @@ class driverDetails {
                 aria_attribute = "true";
             }
             var elem = '<div class="col-sm-4">' +
-                            '<i class="' + clone_icon + '" style="float: left; line-height: inherit !important" katana-click="assembler.toggleDriverClone" aria-selected="' + aria_attribute + '"></i>&nbsp;' +
+                            '<i class="' + clone_icon + '" style="float: left; line-height: inherit !important" ' +
+                            ' key="kwRepoDriver" katana-click="assembler.toggleDriverClone" aria-selected="' + aria_attribute + '"></i>&nbsp;' +
                             '<label style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; width: 270px;">' + this.name + '</label>' +
                         '</div>';
         }
@@ -269,20 +271,21 @@ class wsRepository {
                                     '<div class="row">' +
                                         '<div class="col-sm-1">' +
                                             '<i class="' + cloneWsRepoIcon + ' assembler-icon-pos-right" ' +
-                                            'aria-selected="' + wsCloneToggle + '" katana-click="assembler.toggleWsRepoClone" aria-hidden="true"></i>' +
+                                            'aria-selected="' + wsCloneToggle + '" katana-click="assembler.toggleWsRepoClone" aria-hidden="true" ' +
+                                            'key="wsRepoClone"></i>' +
                                         '</div>' +
                                         '<div class="col-sm-5">' +
                                             this.name +
                                         '</div>' +
                                         '<div class="col-sm-1">' +
-                                            '<i class="' + overwriteWsFiles + ' assembler-icon-pos-right" ' +
+                                            '<i class="' + overwriteWsFiles + ' assembler-icon-pos-right" key="wsRepoOverwrite" ' +
                                                 'katana-click="assembler.toggleWsOverwriteButton"  aria-hidden="true" aria-selected="' + overwriteSelect + '"></i>' +
                                         '</div>' +
                                         '<div class="col-sm-1">' +
                                             'Overwrite' +
                                         '</div>' +
                                         '<div class="col-sm-2">' +
-                                            '<i class="fa fa-trash" katana-click="assembler.deleteWsRepo" ' +
+                                            '<i class="fa fa-trash" katana-click="assembler.deleteWsRepo" key="wsRepoDelete"' +
                                                     'aria-hidden="true" style="float: right;"></i>' +
                                         '</div>' +
                                     '</div>' +
@@ -293,13 +296,13 @@ class wsRepository {
                                             '<label>URL:</label>' +
                                         '</div>' +
                                         '<div class="col-sm-5">' +
-                                            '<input value="' + this.url + '" katana-change="assembler.checkWsRepository">' +
+                                            '<input key="wsRepo" value="' + this.url + '" katana-change="assembler.checkWsRepository">' +
                                         '</div>' +
                                         '<div class="col-sm-1" style="text-align: right; padding: 0.7rem;">' +
                                             '<label>Label:</label>' +
                                         '</div>' +
                                         '<div class="col-sm-3">' +
-                                            '<input value="' + this.label + '" katana-change="assembler.checkWsLabel">' +
+                                            '<input key="wsRepoLabel" value="' + this.label + '" katana-change="assembler.checkWsLabel">' +
                                         '</div>' +
                                     '</div>' +
                                     '<br>' +
@@ -488,8 +491,9 @@ class toolsRepository{
                                 '<div class="card-header">' +
                                     '<div class="row">' +
                                         '<div class="col-sm-1">' +
-                                            '<i class="' + cloneRepoIcon + ' assembler-icon-pos-right" ' +
-                                            'aria-selected="' + cloneRepoIcon + '" katana-click="assembler.toggleToolsClone" aria-hidden="true"></i>' +
+                                            '<i class="' + cloneRepoIcon + ' assembler-icon-pos-right"' +
+                                            'aria-selected="' + cloneRepoIcon + '" katana-click="assembler.toggleToolsClone" aria-hidden="true" '+
+                                            'key="toolsRepoClone"></i>' +
                                         '</div>' +
                                         '<div class="col-sm-8">' +
                                             this.name +
@@ -502,13 +506,15 @@ class toolsRepository{
                                             '<label>URL:</label>' +
                                         '</div>' +
                                         '<div class="col-sm-5">' +
-                                            '<input value="' + this.url + '" katana-change="assembler.onchangeToolsUrl">' +
+                                            '<input value="' + this.url + '" key="toolsRepo" katana-change="assembler.onchangeToolsUrl"' +
+                                            'key="toolsRepo">' +
                                         '</div>' +
                                         '<div class="col-sm-1" style="text-align: right; padding: 0.7rem;">' +
                                             '<label>Label:</label>' +
                                         '</div>' +
                                         '<div class="col-sm-3">' +
-                                            '<input value="' + this.label + '" katana-change="assembler.onchangeToolsLabel">' +
+                                            '<input value="' + this.label + '" katana-change="assembler.onchangeToolsLabel" ' +
+                                                    'key="toolsRepoLabel" >' +
                                         '</div>' +
                                     '</div>' +
                                     '<div class="row">' +

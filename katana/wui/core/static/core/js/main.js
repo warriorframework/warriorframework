@@ -292,7 +292,7 @@ var katana = {
 	translate: function( url, container ){
 		$.getJSON( url, function( jsonObj ) {
 			$.each( jsonObj.data, function(){
-				var $elem = container.find( 'input[key="' + this.key  + '"], select[key="' + this.key  + '"]' );
+				var $elem = container.find( 'input[key="' + this.key  + '"], select[key="' + this.key  + '"], i[key="' + this.key +'"]' );
 				var field = $elem.parent()
 				$elem.attr( 'placeholder', this.translateTo );
 				$elem.attr( 'title', this.toolTip );

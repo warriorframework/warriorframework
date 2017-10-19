@@ -1,6 +1,7 @@
 var assembler = {
     init: function(){
         $currentPage = katana.$activeTab;
+        var translationUrl = $currentPage.find('.translator').attr('url');
         $.ajax({
                 headers: {
                     'X-CSRFToken': $currentPage.find('input[name="csrfmiddlewaretoken"]').attr('value')
@@ -17,7 +18,6 @@ var assembler = {
                         data: {"filepath": false}
                     }).done(function(data) {
                         $currentPage.find('.tool-bar').find('.title').text(data["filename"]);
-
                         var dep_objs = [];
                         var dependencyDom= "";
                         $currentPage.find('#dependency-div').html('');
@@ -54,6 +54,7 @@ var assembler = {
                             wsDom.data("data-object", ws_objs[i]);
                             $currentPage.find('#ws-div').append(wsDom);
                         }
+                        katana.translate(translationUrl, $currentPage);
                     });
                     var not_available = "";
                     if(data["warhorn_config"] === ""){
@@ -242,6 +243,8 @@ var assembler = {
         $elem = $(this);
         var $topLevelDiv = $elem.closest('.card');
         var $parentCardBlock = $elem.closest('.card-block');
+        var $repoNameBlock = $parentCardBlock.siblings('.card-header').find('.col-sm-7');
+        $repoNameBlock.html('Enter Repository Details');
         var $driverCard = $parentCardBlock.find('.card');
         $driverCard.hide();
         var $footerBlockRow = $parentCardBlock.siblings('.card-footer').find('.row');
@@ -279,7 +282,7 @@ var assembler = {
                     $topLevelDiv.data().dataObject.available = true;
                     $footerBlockRowIcon.addClass('fa-check').addClass('skyblue');
                     $footerBlockRow.find('.col-sm-8').html('Repository Available.');
-                    $parentCardBlock.siblings('.card-header').find('.col-sm-7').html(data["repo_name"]);
+                    $repoNameBlock.html(data["repo_name"]);
 
                     $driverBlock = $($parentCardBlock.find('.row')[1]);
                     $driverBlock.find('.row, .text-center').html('');
@@ -290,6 +293,7 @@ var assembler = {
                         $topLevelDiv.data().dataObject.drivers.push(ddObj);
                     }
                     console.log($topLevelDiv.data().dataObject);
+                    katana.translate($currentPage.find('.translator').attr('url'), $driverCard)
                     $driverBlock.show();
 
                 } else {
@@ -368,6 +372,7 @@ var assembler = {
                             $currentPage.find('#tools-div').html('');
                             $currentPage.find('#kw-div').html('');
                             $currentPage.find('#ws-div').html('');
+                            var translationUrl = $currentPage.find('.translator').attr('url');
 
                             var dep_objs = [];
                             var dependencyDom= "";
@@ -401,6 +406,7 @@ var assembler = {
                                 wsDom.data("data-object", ws_objs[i]);
                                 $currentPage.find('#ws-div').append(wsDom);
                             }
+                            katana.translate(translationUrl, $currentPage);
                         }
                         else{
                             katana.openAlert({"alert_type": "danger", "heading": "An Error Occurred",
@@ -419,7 +425,8 @@ var assembler = {
         kw_repo_obj = new kwRepository();
         var kwDom = kw_repo_obj.domElement;
         kwDom.data('data-object', kw_repo_obj);
-        $currentPage.find('#kw-div').append(kwDom);
+        $.when(katana.translate($currentPage.find('.translator').attr('url'), kwDom)).then($currentPage.find('#kw-div').append(kwDom));
+
     },
 
     deleteKwRepo: function(){
@@ -552,6 +559,8 @@ var assembler = {
         $topLevelDiv = $elem.closest('.card');
         $parentCardBlock = $elem.closest('.card-block');
         $footerBlockRow = $parentCardBlock.siblings('.card-footer').find('.row');
+        var $repoNameBlock = $parentCardBlock.siblings('.card-header').find('.col-sm-5');
+        $repoNameBlock.html('Enter Repository Details');
         var $footerBlockRowIcon = $footerBlockRow.find('.fa');
         $footerBlockRowIcon.attr("class", "");
         $footerBlockRowIcon.addClass('fa').addClass('assembler-icon-pos-right');
@@ -585,7 +594,7 @@ var assembler = {
                     $topLevelDiv.data().dataObject.available = true;
                     $footerBlockRowIcon.addClass('fa-check').addClass('skyblue');
                     $footerBlockRow.find('.col-sm-8').html('Repository Available.');
-                    $parentCardBlock.siblings('.card-header').find('.col-sm-4').html(data["repo_name"]);
+                    $repoNameBlock.html(data["repo_name"]);
                 } else {
                     $footerBlockRowIcon.addClass('fa-times').addClass('red');
                     $footerBlockRow.find('.col-sm-8').html('Repository Not Available.');
@@ -637,7 +646,7 @@ var assembler = {
         ws_repo_obj = new wsRepository();
         var wsDom = ws_repo_obj.domElement;
         wsDom.data('data-object', ws_repo_obj);
-        $currentPage.find('#ws-div').append(wsDom);
+        $.when(katana.translate($currentPage.find('.translator').attr('url'), wsDom)).then($currentPage.find('#ws-div').append(wsDom));
     },
 
     toggleToolsClone: function(){
@@ -646,7 +655,7 @@ var assembler = {
         if($elem.attr("aria-selected") == "true"){
             $elem.attr("aria-selected", "false");
             $elem.attr("class", "");
-            $elem.addClass("fa").addClass("fa-toggle-off").addClass("grey");
+            $elem.addClass("fa").addClass("fa-toggle-off").addClass("grey").addClass('assembler-icon-pos-right');
             $topLevelDiv.data().dataObject.clone = "no";
             $cardBlock = $topLevelDiv.find('.card-block');
             $cardBlock.addClass("assembler-disable-div");
@@ -658,7 +667,7 @@ var assembler = {
         } else {
             $elem.attr("aria-selected", "true");
             $elem.attr("class", "");
-            $elem.addClass("fa").addClass("fa-toggle-on").addClass("skyblue");
+            $elem.addClass("fa").addClass("fa-toggle-on").addClass("skyblue").addClass('assembler-icon-pos-right');
             $topLevelDiv.data().dataObject.clone = "yes";
             $cardBlock = $topLevelDiv.find('.card-block');
             $cardBlock.removeClass("assembler-disable-div");
@@ -673,10 +682,13 @@ var assembler = {
     onchangeToolsUrl: function(){
         var $elem = $(this);
         var $parentCardBlock = $elem.closest('.card-block');
+        var $repoNameBlock = $parentCardBlock.siblings('.card-header').find('.col-sm-8');
+        $repoNameBlock.html('Enter Repository Details');
         var $topLevelDiv = $elem.closest('.card')
         var $footerBlockRow = $parentCardBlock.siblings('.card-footer').find('.row');
         var $footerBlockRowIcon = $footerBlockRow.find('.fa');
-        $footerBlockRowIcon.attr('class', 'fa')
+        $footerBlockRowIcon.attr('class', '');
+        $footerBlockRowIcon.addClass('fa').addClass('assembler-icon-pos-right');
         $footerBlockRow.find('.col-sm-8').html('');
         var url = $elem.val();
         if(url === ""){
@@ -700,14 +712,15 @@ var assembler = {
                 url: 'assembler/check_tools_repo_availability/',
                 data: {"url": url}
             }).done(function(data) {
-                $footerBlockRowIcon.attr('class', 'fa');
+                $footerBlockRowIcon.attr('class', '');
+                $footerBlockRowIcon.addClass('fa').addClass('assembler-icon-pos-right');
                 if(data["available"]){
                     $topLevelDiv.data().dataObject.available = false;
                     $topLevelDiv.data().dataObject.url = url;
                     $topLevelDiv.data().dataObject.available = true;
                     $footerBlockRowIcon.addClass('fa-check').addClass('skyblue');
                     $footerBlockRow.find('.col-sm-8').html('Repository Available.');
-                    $parentCardBlock.siblings('.card-header').find('.col-sm-8').html(data["repo_name"]);
+                    $repoNameBlock.html(data["repo_name"]);
                 } else {
                     $topLevelDiv.data().dataObject.available = false;
                     $footerBlockRowIcon.addClass('fa-times').addClass('red');

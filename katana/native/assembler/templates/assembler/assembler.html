@@ -12,6 +12,7 @@
         <div class="button" katana-click="assembler.saveFile">Save</div>
         <div class="button" katana-click="assembler.saveFileRunWarhorn">Assemble!</div>
     </div>
+    <div class="translator" url="{% load staticfiles %} {% static 'assembler/translations.json'  %}"></div>
     <div class="csrf-container">{% csrf_token %}</div>
     <div id="main-div" auto-init="assembler.init" execution="1">
         {% include 'assembler/configFileDetails.html' %}
