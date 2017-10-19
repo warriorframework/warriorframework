@@ -343,6 +343,7 @@ var assembler = {
     },
 
     openFileExplorer: function(){
+        var $currentPage = katana.$activeTab;
         $.ajax({
                 headers: {
                     'X-CSRFToken': $currentPage.find('input[name="csrfmiddlewaretoken"]').attr('value')
@@ -351,6 +352,7 @@ var assembler = {
                 url: 'assembler/get_data_directory/',
             }).done(function(data) {
                 callBack_on_accept = function(inputValue){
+                    $currentPage.find('.page-content-inner').append('<div class="overlay text-center"><i class="fa fa-spinner fa-5x fa-spin centered" aria-hidden="true"></i></div>')
                     $.ajax({
                         headers: {
                             'X-CSRFToken': $currentPage.find('input[name="csrfmiddlewaretoken"]').attr('value')
@@ -400,8 +402,10 @@ var assembler = {
                                 $currentPage.find('#ws-div').append(wsDom);
                             }
                             katana.translate(translationUrl, $currentPage);
+                            $currentPage.find('.overlay').remove();
                         }
                         else{
+                            $currentPage.find('.overlay').remove();
                             katana.openAlert({"alert_type": "danger", "heading": "An Error Occurred",
                             "text": data.message, "show_cancel_btn": false})
                         }
