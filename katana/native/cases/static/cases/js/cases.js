@@ -22,6 +22,7 @@ function absFromPrefix(pathToBase, pathToFile) {
 	// Converts an absolute path to one that is relative to pathToBase 
 	// Input: 
 	// 		
+	if (!pathToBase || !pathToFile) return "";
 	var bf = pathToBase.split('/');
 	var rf = pathToFile.split('/');
 	var nrf = pathToFile.split('/');
@@ -41,6 +42,8 @@ function absFromPrefix(pathToBase, pathToFile) {
 }
 
 function prefixFromAbs(pathToBase, pathToFile) {
+	if (!pathToBase || !pathToFile) return "";
+	
 	var stack = []; 
     var upem  = [];
 	var bf = pathToBase.split('/');
@@ -235,8 +238,12 @@ class caseTestStepObject {
 		var vlen = jsonData['Arguments']['argument'].length;
 		for (var a=0;a<vlen; a++) {
 				var ao = jsonData['Arguments']['argument'][a];
-				//console.log("Adding... in setupFromJSON ---> ", ao); 
-				this.Arguments[ao['@name']] = ao['@value]']
+				if (ao == null) break;
+				console.log("Adding... in setupFromJSON ---> ", ao); 
+				if (ao['@name'] && ao['value']) { 
+					this.Arguments[ao['@name']] = ao['@value]']
+				}
+			
 			}
 		
 
@@ -554,7 +561,28 @@ var cases = {
 	},
 
 
+	getCaseStateString: function() {
+		var selection = katana.$activeTab.find("#caseState").val();
+		console.log("Selected ", selection, this); 
+		if (selection != "Add Another") return;
+		var newstr = prompt("Add new state","New State");
+		if (newstr == "" || newstr == null ) {
 
+		} else { 
+			jQuery.getJSON("./cases/addCaseStateOption/?option="+newstr).done(function(data) {
+ 				var sb = katana.$activeTab.find('#caseState');
+ 				var lb = data['case_state_options'];
+ 				sb.empty()
+ 				console.log("Data", data);
+ 				for (let x of lb){
+ 					console.log("Appending", x);
+ 					sb.append($('<option>', { id: x,  value: x, text: x}));
+
+ 				}
+			});
+		}
+
+	},
 
 
 	mapUiToCaseJson: function() {

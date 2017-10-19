@@ -37,6 +37,7 @@ gpysrcdir = path_to_src_python_file;
 
 All_case_action_details = py_file_details(json.loads(open(path_to_src_python_file).read())['pythonsrcdir']);
 EMPTY_DATA = json.loads(json.dumps(xmltodict.parse(open("./native/cases/empty.xml").read(), process_namespaces=True)));
+caseStateOptions_str = ['New','Draft','In Review','Released', 'Add Another']
 
 def index(request):
 	path_to_config_file = navigator.get_katana_dir() + os.sep + "config.json"
@@ -69,22 +70,31 @@ def getCaseListTree(request):
 def getSystemNames(request):
 	filename = request.GET.get('filename');
 	names = [] 
-	if 1:
+	try:
 		xlines = open(filename).read();
 		df =  xmltodict.parse(xlines ,  dict_constructor=dict) 
 		systems = df['credentials']['system']
 		for ms in df['credentials']['system']:
 			if ms.has_key('subsystem'):
 				for subsys in  ms['subsystem']:
-					names.append(ms['@name']+"."+subsys['@name'])
+					names.append(ms['@name']+"["+subsys['@name']+"]")
 			else:
 				names.append(ms['@name'])
-	if 0:
+	except:
 		print "Unable to get names "
 	print names 
 	return JsonResponse({'system_names': names , 'filename' : filename })
 
-
+def addCaseStateOption(request):
+	option = request.GET.get('option')
+	print "Option = ", option
+	try: 
+		x = caseStateOptions_str.index(option)
+	except:
+		print "Not found" 
+		caseStateOptions_str.append(option)
+		print caseStateOptions_str
+	return JsonResponse({'case_state_options': caseStateOptions_str  })
 
 ##
 ## This is very costly imho. 
@@ -324,7 +334,7 @@ def editCase(request):
 		except:
 			pass
 
-	caseStateOptions_str = ['New','Draft','In Review','Released']
+	#caseStateOptions_str = ['New','Draft','In Review','Released', 'Add Another']
 
 	try:
 		xml_r['Testcase']['Steps'] = copy.deepcopy(xml_d['Testcase']['Steps']);

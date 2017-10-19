@@ -35,10 +35,8 @@
                     <div class="col">
                         <label>Expected Results:</label>
                        
-                         <select class="text-right" type="text" id="caseExpectedResults" value="{{caseExpectedResults}}">
-                            <option value="PASS">PASS</option>
-                            <option value="FAIL">FAIL</option>
-                        </select>
+                         <input  class="text-right" type="text" id="caseExpectedResults" value="{{caseExpectedResults}}">
+                        </input>
                     </div>
                     <div class="col">
                         <label>Engineer:</label>
@@ -52,11 +50,13 @@
                     </div>
                     <div class="col">
                         <label>Warrior Data File:</label>
-                        <div class="btn-group col-md-12">
+                        <input type="checkbox" id="ck_dataPath" name="ck_dataPath" value="No Data Path"/>
+
+                        <div class="btn-group col-md-12 case-results-dir">
                         <input type="text" id="caseInputDataFile" value="{{caseInputDataFile}}" />
                         
-                        <button class="button" katana-click="cases.getCaseInputDataFile">...</button>
-                        <button class="fa fa-pencil" katana-click="cases.start_wdfEditor">WDF</button>
+                        <button class="button case-results-dir" katana-click="cases.getCaseInputDataFile">...</button>
+                        <button class="fa fa-pencil case-results-dir" katana-click="cases.start_wdfEditor">WDF</button>
                         </div>
                     </div>
 
@@ -75,7 +75,7 @@
                     </div>
                     <div class="col-md-2">
                         <label>Case State:</label>
-                        <select class="text-right" type="text" id="caseState" name="caseState" value="{{caseState}}">
+                        <select class="text-right" type="text" id="caseState" name="caseState" value="{{caseState}}" katana-click="cases.getCaseStateString">
                             {% for x in caseStateOptions %}
                             <option id="{{x}}">{{x}}</option>
                             {% endfor %}
@@ -83,11 +83,11 @@
                     </div>
                     <div class="col-md-2">
                         <span>
-                              <label for="ck_dataPath" class="text-right " id="caseDatatype_lbl">Data Type:</label>
-                           <input type="checkbox" id="ck_dataPath" name="ck_dataPath" value="No Data Path"/>
+                        <label for="ck_dataPath" id="caseDatatype_lbl">Data Type:</label>
+                        
                         </span>
                          
-                        <select class="text-right  case-results-dir" type="text" id="caseDatatype" name="caseDatatype" value="{{caseDatatype}}">
+                        <select class="text-right  " type="text" id="caseDatatype" name="caseDatatype" value="{{caseDatatype}}">
                             <option value="Custom">Custom</option>
                             <option value="Hybrid">Hybrid</option>
                             <option value="Iterative">Iterative</option>
@@ -221,7 +221,7 @@
                                     <option value="RUP">RUP</option>
                                 </select>
                                 <label class="text-right runmode-value">Run mode value:</label>
-                                <input type="text" class="text-right" id="runmode-at-type" value="" />
+                                <input type="text"  id="runmode-at-type" value="" />
                             </div>
                             <div class="field">
                                 <label class="text-right">impact</label>
@@ -243,7 +243,6 @@
 
                          <div class="col-md-8">
                             <div id="sourceCaseFileDef" class='case-signature'> Signature </div>
-                            <p>Source File</p>
                             <pre id="sourceCaseFileText" class='case-scrollable-source-text' height="100%"> Source file </pre>
                        
 
