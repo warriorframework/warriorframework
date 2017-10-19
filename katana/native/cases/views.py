@@ -287,10 +287,7 @@ def editCase(request):
 		print "Invalid XML file"
 		xml_d = copy.deepcopy(xml_r)
 
-	fulljsonstring = str(json.loads(json.dumps(xml_d['Testcase'])));
-	fulljsonstring = fulljsonstring.replace('u"',"'").replace("u'",'"').replace("'",'"');
-	fulljsonstring = fulljsonstring.replace('None','""').replace('""""','""')
-
+	
 	emptyCaseString = str(json.loads(json.dumps(EMPTY_DATA['Testcase'])));
 	emptyCaseString = emptyCaseString .replace('u"',"'").replace("u'",'"').replace("'",'"');
 	emptyCaseString = emptyCaseString .replace('None','""').replace('""""','""')
@@ -318,8 +315,12 @@ def editCase(request):
 	except:
 		xml_r["Testcase"]["Requirements"] = {}
 
+	fulljsonstring = str(json.loads(json.dumps(xml_d['Testcase'])));
+	fulljsonstring = fulljsonstring.replace('u"',"'").replace("u'",'"').replace("'",'"');
+	fulljsonstring = fulljsonstring.replace('None','""').replace('""""','""')
 
 
+	print fulljsonstring
 	print "filename ", filename 
 	print "subdir ", subdir 
 	print "path to cases ", path_to_testcases

@@ -214,18 +214,31 @@ class caseTestStepObject {
 	}
 
 	setupFromJSON(jsonData) { 
-		console.log("Step from ",jsonData);
+		console.log("Setp from JSON from ",jsonData);
 		if (!jsonData) {
+			console.log("Create empty")
 			jsonData = 	this.createEmptyTestStep(); 
 		}
 		this.Arguments = {} ; 
-		if (jsonData['Arguments']) {
-			for (var a=0;a<jsonData['Arguments'].length; a++) {
-				var ao = jsonData['Arguments'][a];
-				//this.Arguments.push({ 'value': ao['@value'], 'name' : ao['@name']})
+		console.log("Setting Arguments ....",jsonData);
+
+		if (!jsonData['Arguments']) {
+			jsonData['Arguments']= { 'argument': [] }
+		}
+		if (!jsonData['Arguments']['argument']) {
+			jsonData['Arguments']= { 'argument': [] }
+		}
+		if (!jQuery.isArray(jsonData['Arguments']['argument'])) {
+			jsonData['Arguments']['argument'] = [jsonData['Arguments']['argument']];
+			}
+
+		var vlen = jsonData['Arguments']['argument'].length;
+		for (var a=0;a<vlen; a++) {
+				var ao = jsonData['Arguments']['argument'][a];
+				console.log("Adding... in setupFromJSON ---> ", ao); 
 				this.Arguments[ao['@name']] = ao['@value]']
 			}
-		}
+		
 
 		console.log("Adding-->",jsonData);
 		this.step_driver = jsonData['@Driver']; 
@@ -299,7 +312,7 @@ class caseTestStepObject {
 				"@Keyword": "" , 
 				"@TS": "0" ,
 				"Arguments" : 
-					{ 'Argument': [] },
+					{ 'argument': [] },
 				"onError": {  "@action" : "next", "@value" : "" } ,
 				"iteration_type": {   "@type" : "" } ,
 				"Description":"",
@@ -933,7 +946,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 	// When you are using the Editable 
 	makePopupArgumentsForTBD: function(popup,  oneCaseStep) {
 		console.log("makePopupArguments", oneCaseStep);
-		cases.lastPopup = popup; 
+		//cases.lastPopup = popup; 
 
 		var a_items = [] ;
 		var xstr;
@@ -942,28 +955,28 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		var ta = 0; 
 		var sid = parseInt(popup.find("#StepRowToEdit").attr('value'));	
 		console.log("Making arguments at ",sid, oneCaseStep);
+
 		for (dkey in arguments) {
 			console.log(arguments[dkey]);
 			if (arguments.hasOwnProperty(dkey)) { 
-			vl = arguments[dkey];
-			a_items.push('<div class="row">');
-			a_items.push('<input class="col-md-4 case-args-tbd" type="text" argid="caseArgName-'+ta+'" value="'+dkey+'"/>');
-			a_items.push('<input class="col-md-4 case-args-tbd case-argstbd-lbls" type="text" argid="caseArgValue-'+ta+'"  kwargid="caseArgName-'+ta+'" value="'+vl+'"/>');
-			// Now a button to edit or delete ... 
-			bid = "deleteCaseArg-"+sid+"-"+ta+"-id"
-			a_items.push('<td><i title="Delete" class="fa fa-eraser case-args-tbd" value="X" id="'+bid+'" sakey="'+bid+'" kwargid="caseArgName-'+ta+'"  katana-click="cases.deletePopupArgument"/>');
+				vl = arguments[dkey];
+				a_items.push('<div class="row">');
+				a_items.push('<input class="col-md-4 case-args-tbd" type="text" argid="caseArgName-'+ta+'" value="'+dkey+'"/>');
+				a_items.push('<input class="col-md-4 case-args-tbd case-argstbd-lbls" type="text" argid="caseArgValue-'+ta+'"  kwargid="caseArgName-'+ta+'" value="'+vl+'"/>');
+				// Now a button to edit or delete ... 
+				bid = "deleteCaseArg-"+sid+"-"+ta+"-id"
+				a_items.push('<td><i title="Delete" class="fa fa-eraser case-args-tbd" value="X" id="'+bid+'" sakey="'+bid+'" kwargid="caseArgName-'+ta+'"  katana-click="cases.deletePopupArgument"/>');
 
-			bid = "insertCaseArg-"+sid+"-"+ta+"-id";
-			a_items.push('<td><i  title="Insert one" class="fa fa-plus case-args-tbd" value="Add" id="'+bid+'" sakey="'+bid+'" katana-click="cases.insertPopupArgument"/>');
-			
-			ta += 1
-			a_items.push('</div>');
-			}
-			
+				bid = "insertCaseArg-"+sid+"-"+ta+"-id";
+				a_items.push('<td><i  title="Insert one" class="fa fa-plus case-args-tbd" value="Add" id="'+bid+'" sakey="'+bid+'" katana-click="cases.insertPopupArgument"/>');
+				
+				ta += 1
+				a_items.push('</div>');
+			}	
 		}
+
 		popup.find("#arguments-textarea").html( a_items.join("\n"));	
 		//console.log("Making arguments at ",oneCaseStep, popup, popup.find("#arguments-textarea"), a_items);
-
 	},
 
 
@@ -1012,6 +1025,36 @@ The UI currently uses jQuery and Bootstrap to display the data.
 
 		popup.find('#StepDriverText').val(oneCaseStep.step_driver);
 		popup.find("#StepKeywordText").val(oneCaseStep.step_keyword);
+		
+		console.log('oneCaseStep', oneCaseStep);
+		popup.find("#StepRowToEdit").attr("value",sid);
+		popup.find("#StepDriver").val(oneCaseStep.step_driver);
+		popup.find("#StepKeyword").val(oneCaseStep.step_keyword);
+		popup.find("#StepTS").attr("value",oneCaseStep.step_TS);
+		popup.find("#StepDescription").attr("value",oneCaseStep["Description"]);
+		popup.find("#StepContext").attr("value",oneCaseStep["context"]);
+		popup.find("#SteponError-at-action").attr("value",oneCaseStep.onError_action);
+		popup.find("#SteponError-at-value").attr("value",oneCaseStep.onError_value);
+		popup.find("#runmode-at-type").attr("type",oneCaseStep.runmode_type);
+		popup.find("#runmode-at-value").attr("value",oneCaseStep.runmode_value);
+		popup.find("#StepImpact").attr("value",oneCaseStep["impact"]);
+		popup.find('.rule-condition').hide();
+		if (oneCaseStep.Execute_ExecType) {
+			if (oneCaseStep.Execute_ExecType == 'if' || oneCaseStep.Execute_ExecType == 'if not') {
+				popup.find('.rule-condition').show();
+			}
+			
+		}
+		if (oneCaseStep.Execute_Rule) {
+			popup.find('#executeRuleAtCondition').attr('value',oneCaseStep.Execute_Rule_Condition);
+			popup.find('#executeRuleAtCondvalue').attr('value',oneCaseStep.Execute_Rule_Condvalue);
+			popup.find('#executeRuleAtElse').attr('value',oneCaseStep.Execute_Rule_Else);
+			popup.find('#executeRuleAtElsevalue').attr('value',oneCaseStep.Execute_Rule_Elsevalue);
+		}
+		cases.fillCaseStepDefaultGoto();
+		cases.showForUncheckedDevelop(popup);
+
+
 		//
 		// Check if you already have this keyword defined....
 		//
@@ -1041,7 +1084,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 			out_array = a_items[0]['comment'];
 			var outstr = out_array.join("\n");
 			var sid = katana.$activeTab.find("#editCaseStepDiv").attr('row-id');
-			var oneCaseStep = cases.jsonCaseSteps[sid]
+			var oneCaseStep = cases.jsonCaseSteps[sid];
 			console.log("Creating from list", oneCaseStep);
 			cases.createPopupArgumentsFromList( popup,a_items[0]['args'],oneCaseStep)
 
@@ -1088,15 +1131,15 @@ The UI currently uses jQuery and Bootstrap to display the data.
 					console.log("Collecting ...", driver, keyword);
 
 					jQuery.getJSON("./cases/getListOfKeywords/?driver="+driver).done(function(data) {
-	 						popup.find("#StepKeyword").empty();
-	 						var driver = oneCaseStep.step_driver  ;
-	 						var a_items = jQuery.extend( true, [], data['keywords']);
-	 						//katana.$activeTab.data("data-keywords-"+driver, a_items);                      // keep list of actions... 
-							console.log(a_items, driver, data['keywords']);
-	 						for (let x of a_items) {
-	 							popup.find("#StepKeyword").append($('<option>',{ value: x,  text: x }));
-	 						}
-	 					popup.find('#StepKeyword').val(oneCaseStep.step_keyword);
+ 						popup.find("#StepKeyword").empty();
+ 						var driver = oneCaseStep.step_driver  ;
+ 						var a_items = jQuery.extend( true, [], data['keywords']);
+ 						//katana.$activeTab.data("data-keywords-"+driver, a_items);                      // keep list of actions... 
+						console.log(a_items, driver, data['keywords']);
+ 						for (let x of a_items) {
+ 							popup.find("#StepKeyword").append($('<option>',{ value: x,  text: x }));
+ 						}
+ 						popup.find('#StepKeyword').val(oneCaseStep.step_keyword);
 						if (a_items.length > 0 ) {
 							jQuery.getJSON("./cases/getListOfComments/?driver="+driver+"&keyword="+keyword).done(function(data) {
 			 					var a_items = jQuery.extend( true, {}, data['fields']);
@@ -1126,49 +1169,25 @@ The UI currently uses jQuery and Bootstrap to display the data.
 							} else { 
 								popup.find("#StepDriverCkBx").prop('checked', true);
 								popup.find("#StepKeywordCkBx").prop('checked', true);
+								cases.hideForCheckedDevelop(cases.lastPopup);
+
+								// var sid = katana.$activeTab.find("#editCaseStepDiv").attr('row-id');
+								// var oneCaseStep = cases.jsonCaseSteps[sid];
+							 	cases.lastPopup.Arguments= jQuery.extend(true,[],oneCaseStep.Arguments);
+								cases.makePopupArgumentsForTBD(cases.lastPopup, oneCaseStep);
 			
+
 
 							}
 						});
-
-
-					}
-
-				
+								
 			});
 		}
 
 
 
 		//console.log(xdata);
-		console.log('oneCaseStep', oneCaseStep);
-		popup.find("#StepRowToEdit").attr("value",sid);
-		popup.find("#StepDriver").val(oneCaseStep.step_driver);
-		popup.find("#StepKeyword").val(oneCaseStep.step_keyword);
-		popup.find("#StepTS").attr("value",oneCaseStep.step_TS);
-		popup.find("#StepDescription").attr("value",oneCaseStep["Description"]);
-		popup.find("#StepContext").attr("value",oneCaseStep["context"]);
-		popup.find("#SteponError-at-action").attr("value",oneCaseStep.onError_action);
-		popup.find("#SteponError-at-value").attr("value",oneCaseStep.onError_value);
-		popup.find("#runmode-at-type").attr("type",oneCaseStep.runmode_type);
-		popup.find("#runmode-at-value").attr("value",oneCaseStep.runmode_value);
-		popup.find("#StepImpact").attr("value",oneCaseStep["impact"]);
-		popup.find('.rule-condition').hide();
-		if (oneCaseStep.Execute_ExecType) {
-			if (oneCaseStep.Execute_ExecType == 'if' || oneCaseStep.Execute_ExecType == 'if not') {
-				popup.find('.rule-condition').show();
-			}
-			
-		}
-		if (oneCaseStep.Execute_Rule) {
-			popup.find('#executeRuleAtCondition').attr('value',oneCaseStep.Execute_Rule_Condition);
-			popup.find('#executeRuleAtCondvalue').attr('value',oneCaseStep.Execute_Rule_Condvalue);
-			popup.find('#executeRuleAtElse').attr('value',oneCaseStep.Execute_Rule_Else);
-			popup.find('#executeRuleAtElsevalue').attr('value',oneCaseStep.Execute_Rule_Elsevalue);
-		}
-	cases.fillCaseStepDefaultGoto();
-	cases.showForUncheckedDevelop(popup);
-
+		
 	// Fill in the value based on keyword and action 
 	var opts = jQuery.getJSON("./cases/getListOfComments/?driver="+driver+"&keyword="+keyword).done(function(data) {
  			a_items = data['fields'];
