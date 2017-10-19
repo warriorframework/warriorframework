@@ -563,7 +563,6 @@ var cases = {
 
 	getCaseStateString: function() {
 		var selection = katana.$activeTab.find("#caseState").val();
-		console.log("Selected ", selection, this); 
 		if (selection != "Add Another") return;
 		var newstr = prompt("Add new state","New State");
 		if (newstr == "" || newstr == null ) {
@@ -575,7 +574,6 @@ var cases = {
  				sb.empty()
  				console.log("Data", data);
  				for (let x of lb){
- 					console.log("Appending", x);
  					sb.append($('<option>', { id: x,  value: x, text: x}));
 
  				}
@@ -1105,7 +1103,13 @@ The UI currently uses jQuery and Bootstrap to display the data.
 			if (oneCaseStep.Execute_ExecType == 'if' || oneCaseStep.Execute_ExecType == 'if not') {
 				popup.find('.rule-condition').show();
 			}
-			
+		}
+
+		
+		if (oneCaseStep.runmode_type.toLowerCase() == 'standard') {
+			popup.find(".runmode-value").hide();
+		} else { 
+			popup.find(".runmode-value").show();
 		}
 		if (oneCaseStep.Execute_Rule) {
 			popup.find('#executeRuleAtCondition').attr('value',oneCaseStep.Execute_Rule_Condition);
@@ -1206,7 +1210,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 							jQuery.getJSON("./cases/getListOfComments/?driver="+driver+"&keyword="+keyword).done(function(data) {
 			 					var a_items = jQuery.extend( true, {}, data['fields']);
 		 						//a_items = data['fields'];
-				 				console.log("received", data, a_items);
+				 				console.log("Data for function received", data, a_items);
 				 				out_array = a_items[0]['comment'];
 				 				var outstr = out_array.join("\n");
 				 				var sid = katana.$activeTab.find("#editCaseStepDiv").attr('row-id');
@@ -1214,7 +1218,10 @@ The UI currently uses jQuery and Bootstrap to display the data.
 								console.log("Creating from list 1123", oneCaseStep);
 				
 				 				cases.createPopupArgumentsFromList( popup,a_items[0]['args'], oneCaseStep)
-
+				 				var wdesc = a_items[0]['wdesc'];
+				 				console.log(wdesc);
+				 				cases.lastPopup.find("#StepWDescription").html(wdesc); 
+				 				
 				 				cases.lastPopup.find("#sourceCaseFileText").html(""); 
 				 				cases.lastPopup.find("#sourceCaseFileText").html(outstr);
 				 				cases.lastPopup.find("#sourceCaseFileDef").html(""); 
@@ -1339,7 +1346,8 @@ The UI currently uses jQuery and Bootstrap to display the data.
 
 
 	popup.find("#runmode-at-value").on('change',function() {
-		if (this.value == 'standard' ) {
+		var myvalue = this.value.toLowerCase()
+		if (myvalue == 'standard') {
 			popup.find('.runmode-value').hide();			
 		} else {
 			popup.find('.runmode-value').show();	
@@ -1659,6 +1667,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		oneCaseStep.onError_action = popup.find("#SteponError-at-action").val();
 		oneCaseStep.onError_value = popup.find("#SteponError-at-value").val();
 		oneCaseStep.runmode_type = popup.find("#runmode-at-type").val();
+
 		oneCaseStep.runmode_value = popup.find("#runmode-at-value").val();
 		oneCaseStep["impact"] =  popup.find("#StepImpact").val();
 		

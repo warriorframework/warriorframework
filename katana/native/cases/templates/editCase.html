@@ -45,7 +45,7 @@
                 </div>
                 <div class="row ">
                     <div class="col-md-2">
-                        <label>Date:</label>
+                        <label>Last Updated:</label>
                         <input type="text" id="caseDate" value="{{caseDate}} {{caseTime}}" />
                     </div>
                     <div class="col">
@@ -125,6 +125,9 @@
                                 <label>Row</label>
                                 <input type="text" id="StepRowToEdit" value="" />
                             </div>
+                            <div>
+                            <button class="btn btn-success" id="saveEditCaseStep" katana-click="cases.saveTestCaseChanges">Save Changes To Test Step </button>
+                            </div>                           
                             <span>
                                  <label for="StepDriverCkBx">To Be Developed</label>
                                  <input type="checkbox" id="StepDriverCkBx" name="StepDriverCkBx" value="TBD" />
@@ -158,14 +161,22 @@
                                 <label>Description</label>
                                 <input type="text" id="StepDescription" value="" />
                             </div>
-                            <div class="field">
-                                <label>Context</label>
-                                <select type="text" class="text-right" id="StepContext" value="">
-                                    <option value="positive">positive</option>
-                                    <option value="negative">negative</option>
-                                </select>
 
+                            <div class="field">
+                                <label>wDescription</label>
+                                <label type="text" id="StepWDescription" value="" />
                             </div>
+
+                            <label class="text-right">Arguments, Values</label>
+                           
+                            <div id="arguments-textarea"> </div>
+
+                            <div>
+                                <button class="btn btn-success case-args-tbd hidden" id="appendArgument" katana-click="cases.appendPopupArgument">Append Argument </button>
+                                
+                            </div>
+
+                            
                             <div class="field">
                                 <label class=" text-right">ExecType:</label>
                                 <select type="text" class="text-right" id="casesExecuteAtExecType" value="">
@@ -193,24 +204,10 @@
 
                                 </select>
                             </div>
+                            
                             <div class="field ">
                                 <label class="rule-condition">Rule Else Value:</label>
                                 <input class="rule-condition" type="text" id="executeRuleAtElsevalue" value="" />
-                            </div>
-                            <div class="field ">
-                            </div>
-                            <div class="field">
-                                <label class="col-md-2 text-right">On Error Action </label>
-                                <select type="text" class="text-right" id="SteponError-at-action" value="">
-
-                                    <option value="next">next</option>
-                    <option value="abort">abort</option>
-                    <option value="abort_as_error">abort as error</option>
-                    <option value="goto">goto</option>
-
-                                </select>
-                                <select type="text" class="text-right" id="SteponError-at-value" value="">
-                                </select>
                             </div>
                             <div class="field">
                                 <label class="text-right">Run mode type:</label>
@@ -221,7 +218,7 @@
                                     <option value="RUP">RUP</option>
                                 </select>
                                 <label class="text-right runmode-value">Run mode value:</label>
-                                <input type="text"  id="runmode-at-type" value="" />
+                                <input class="text-right runmode-value" type="text"  id="runmode-at-type" value="" />
                             </div>
                             <div class="field">
                                 <label class="text-right">impact</label>
@@ -230,15 +227,32 @@
                                     <option value="noimpact">noimpact</option>
                                 </select>
                             </div>
-                            <label class="text-right">Arguments, Values</label>
-                           
-                            <div id="arguments-textarea"> </div>
+                            <div class="field">
+                                <label>Context</label>
+                                <select type="text" class="text-right" id="StepContext" value="">
+                                    <option value="positive">positive</option>
+                                    <option value="negative">negative</option>
+                                </select>
 
-                            <div>
-                                <button class="btn btn-success case-args-tbd hidden" id="appendArgument" katana-click="cases.appendPopupArgument">Append Argument </button>
-                                <button class="btn btn-success" id="saveEditCaseStep" katana-click="cases.saveTestCaseChanges">Save Changes To Test Step </button>
-                               
                             </div>
+
+                            <div class="field">
+                                <label class="text-right">On Error Action </label>
+                                <select type="text" class="text-right" id="SteponError-at-action" value="">
+
+                                    <option value="next">next</option>
+                                    <option value="abort">abort</option>
+                                    <option value="abort_as_error">abort as error</option>
+                                    <option value="goto">goto</option>
+
+                                </select>
+                                <select type="text" class="text-right" id="SteponError-at-value" value="">
+                                </select>
+                            </div>
+
+                            
+                         <button class="btn btn-success" id="saveEditCaseStep2" katana-click="cases.saveTestCaseChanges">Save Changes To Test Step </button>
+                               
                         </div>
 
                          <div class="col-md-8">
