@@ -41,8 +41,9 @@ class ConfigurationElement(object):
         :param string:
         :return:
         """
-        # print "pattern of regex:", r".*(" + re.escape(self.start_pat) + r"(.*)" + re.escape(self.end_pat) + r").*"
-        # print "what string it is getting regex", string
+        # Create a regex search object which, when found
+        # contains a group object with the text within the start and end pattern
+        # and another group object with the text and start/end pattern
         return re.search(r".*(" + re.escape(self.start_pat) + r"(.*)" + re.escape(self.end_pat) + r").*", string)
 
     def expand_variables(self, string):
