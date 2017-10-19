@@ -585,19 +585,19 @@ var cases = {
 
 	mapUiToCaseJson: function() {
 
-		if ( katana.$activeTab.find('#caseName').attr('value').length < 1) {
-			data = { 'heading': "Error", 'text' : "Please specific a case name "}
+		if ( katana.$activeTab.find('#caseName').val().length < 1) {
+			data = { 'heading': "Error", 'text' : "Please specify a case name "}
 			katana.openAlert(data);
 			return -1;
 		}
 
-		if ( katana.$activeTab.find('#caseTitle').attr('value').length < 1) {
-			data = { 'heading': "Error", 'text' : "Please specific a title "}
+		if ( katana.$activeTab.find('#caseTitle').val().length < 1) {
+			data = { 'heading': "Error", 'text' : "Please specify a title "}
 			katana.openAlert(data);
 			return -1;
 		}
-		if ( katana.$activeTab.find('#caseEngineer').attr('value').length < 1) {
-			data = { 'heading': "Error", 'text' : "Please specific a name for the engineer"}
+		if ( katana.$activeTab.find('#caseEngineer').val().length < 1) {
+			data = { 'heading': "Error", 'text' : "Please specify a name for the engineer"}
 			katana.openAlert(data);
 			return -1;
 		}
@@ -1105,7 +1105,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 			}
 		}
 
-		
+
 		if (oneCaseStep.runmode_type.toLowerCase() == 'standard') {
 			popup.find(".runmode-value").hide();
 		} else { 
