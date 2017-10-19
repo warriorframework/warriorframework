@@ -67,7 +67,6 @@ class ConfigurationElement(object):
         """
         # The string that is currently being processed
         return_value = string
-        end_pattern = self.end_pat
         # When end_pat_index == -1, which means end_pattern is not found in the return_value string
         # Get the regex match object of the substring
         # which looks for text between start and endpattern
