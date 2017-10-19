@@ -44,6 +44,8 @@ CMD_PARAMS = OrderedDict([("command_list", "send"),
                           ("resp_ref_list", "resp_ref"),
                           ("resp_req_list", "resp_req"),
                           ("resp_pat_req_list", "resp_pat_req"),
+                          ("resp_key_list", "resp_keys"),
+                          ("inorder_resp_ref_list", "inorder_resp_ref"),
                           ("log_list", "monitor"),
                           ("verify_on_list", "verify_on"),
                           ("inorder_search_list", "inorder"),
@@ -484,7 +486,7 @@ class TestData(object):
                     pass
 
                 cmd_index += 1
-            
+
             old_cmd_index += 1
 
     @staticmethod
@@ -499,19 +501,19 @@ class TestData(object):
             if param not in VARSUB_PARAM_LIST and param!="vc_file_list":
                 string_list = details_dict[param]
                 td_sys_list = details_dict["sys_list"]
-                new_string_list = string_Utils.sub_from_wdf\
-                (datafile, string_list, td_sys_list, kw_system_name)
+                new_string_list = string_Utils.sub_from_wdf(datafile, string_list,
+                                                            td_sys_list, kw_system_name)
                 details_dict[param] = new_string_list
 
             elif param in VARSUB_PARAM_LIST:
                 string_list = details_dict[param]
                 for i, sub_list in enumerate(string_list):
                     if sub_list is not None:
-                        new_sub_list = string_Utils.sub_from_wdf\
-                        (datafile, sub_list)
+                        new_sub_list = string_Utils.sub_from_wdf(datafile, sub_list)
                         string_list[i] = new_sub_list
                         details_dict[param] = string_list
         return details_dict
+
 
 class TestDataIterations(object):
     """
