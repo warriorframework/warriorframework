@@ -630,7 +630,6 @@ class WarriorCli(object):
 
         return value, kw_system_name, details_dict
 
-    @mocked
     def _send_command_retrials(self, details_dict, index, **kwargs):
         """ Sends a command to a session, if a user provided pattern
         is found in the command response then tries to resend the command

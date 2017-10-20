@@ -375,11 +375,3 @@ class MockUtils(object):
                 mocked command
             """
             pNote(":CMD: %s" % (args[3]))
-
-        @classmethod
-        def _send_command_retrials(cls, *args, **kwargs):
-            """
-                mocked command
-            """
-            pNote("_send_command_retrials shouldn't be called in this mode")
-            return True, ""
