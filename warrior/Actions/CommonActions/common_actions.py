@@ -49,10 +49,15 @@ class CommonActions(object):
         Utils.testcase_Utils.pSubStep(WDesc)
         pNote(self.datafile)
         pNote('Starting Time Out of ' + timeout + 'secs')
-        time.sleep(float(timeout))
+        wait_time = float(timeout)
+        print_interval = wait_time/10
+        pNote('Remaining Time out will be notified every {} secs'.format(print_interval))
+        while wait_time > 0:
+            wait_time -= print_interval
+            time.sleep(print_interval)
+            pNote('Remaining Time out {} seconds'.format(wait_time))
         pNote('Ending Time Out of ' + timeout + 'secs')
         pNote('********Below Testing occured after Timeout *********')
-
         status = True
         Utils.testcase_Utils.report_substep_status(status)
         return status
