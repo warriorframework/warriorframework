@@ -85,16 +85,19 @@ def datafilepath(path):
     subsystem_name_list = []
     system_name_list = []
     lines = ""
-    with open(path, 'r') as f:
-       lines = f.read()
-    corrected_xml = remove_extra_newlines_char_xml(lines)
-    with open('output.txt', 'w') as files:
-        files.write(corrected_xml)
-    tree = xml.etree.ElementTree.parse('output.txt')
-    root = tree.getroot()
-    system = root.findall('system')
-    for val in system:
-        system_name_list.append(val.get('name') + ',')
+    try:
+        with open(path, 'r') as f:
+            lines = f.read()
+        corrected_xml = remove_extra_newlines_char_xml(lines)
+        with open('output.txt', 'w') as files:
+            files.write(corrected_xml)
+        tree = xml.etree.ElementTree.parse('output.txt')
+        root = tree.getroot()
+        system = root.findall('system')
+        for val in system:
+            system_name_list.append(val.get('name') + ',')
+    except Exception:
+        print "Kindly provide the correct Relative path for Input data File, if auto-population of system & Subsystem name is needed."
     return system_name_list
 
 

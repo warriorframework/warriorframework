@@ -50,7 +50,8 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
         $scope.hideTxtBox = true;
         $scope.hideDropDwn = false;
         $scope.hideDrop = false;
-        
+
+                     
 
         function readConfig(){
             getConfigFactory.readconfig()
@@ -872,7 +873,8 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
             $scope.changeExistingIterTypes();
         }
         $scope.monitorPathBtnValue();
-    };
+
+        };
 
     //-- Requirements Editor -----------------------------------------------
 
@@ -1025,8 +1027,8 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
         var IDFPath = $scope.model.Testcase.Details.InputDataFile;
         if(IDFPath == ''){
              sweetAlert({
-                        title: "Input Data File path is not specified. So System & Subsystem name cannot be fetched.",
-                        text: "Kindly provide the path and then click on 'New step' button if auto-population needed.",
+                        title: "Input Data File path is not specified, so the System & Subsystem name cannot be fetched.",
+                        text: "Kindly provide the path and then click on 'New step' button if auto-population is needed.",
                         closeOnConfirm: true,
                         confirmButtonColor: '#3b3131',
                         confirmButtonText: "Ok",
@@ -1104,7 +1106,7 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
 
         $scope.urlCheck = function () {
              var filename = $scope.model.Testcase.Details.InputDataFile;
-              if(filename == '' || filename == undefined){
+              if(filename == '' || filename == undefined || $scope.status.nodatafile == '1'){
                 $scope.hideSubsys  = true;
                 $scope.hideTxtBox = false;
                 $scope.hideDropDwn = true;
@@ -1140,14 +1142,21 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
                     URLSplit();
                     return $scope.pathXml;
                 }
-                else{ 
+                else{
+                    if($scope.status.nodatafile == '0'){ 
                     swal({
-                        title: "Kindly provide the correct Relative path of Input data File ",
+                        title: "Kindly provide the correct Relative path for Input data File, if auto-population of system & Subsystem name is needed.",
                         closeOnConfirm: true,
                         confirmButtonColor: '#3b3131',
                         confirmButtonText: "Ok",
                         type: "warning"
                     });
+                    $scope.hideSubsys  = true;
+                    $scope.hideTxtBox = false;
+                    $scope.hideDropDwn = true;
+                    $scope.hideDrop = true;
+                    $scope.hideText = false;
+                }
                 }
 
          }
@@ -1506,7 +1515,10 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
         rec._Driver = driver;
         rec._Keyword = funname;
         console.log('$scope.xml.mapargs: ', JSON.stringify($scope.xml.mapargs));
-        _.each($scope.xml.mapargs, function (v, k) {
+        $scope.args = JSON.stringify($scope.xml.mapargs);
+        $scope.args = $scope.args.replace('undefined','subsystem_name');
+        $scope.newArguments = JSON.parse($scope.args);
+        _.each($scope.newArguments, function (v, k) {
             if (k != 'self' && $.trim(v) != '') {
                 rec.Arguments.argument.push({'_name': k, '_value': v });
             }
@@ -1706,6 +1718,7 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
         if($scope.insertStep){
             $scope.insertStep = false;
         }
+
     };
 
     $scope.testcaseTooltips = [];
