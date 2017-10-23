@@ -41,9 +41,10 @@ class ConfigurationElement(object):
         :param string:
         :return:
         """
-        # Create a regex search object which, when found
-        # contains a group object with the text within the start and end pattern
+        # Create a regex search object which contains
+        # a group object with the text within the start and end pattern
         # and another group object with the text and start/end pattern
+        # if the regex pattern doesn't match with the string, it return None
         text_between_pattern = r"([^" + re.escape(self.end_pat) + r"]*)"
         return re.search(r".*(" + re.escape(self.start_pat) + text_between_pattern + re.escape(self.end_pat) + r").*", string)
 
