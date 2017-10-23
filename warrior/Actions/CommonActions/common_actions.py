@@ -172,30 +172,37 @@ class CommonActions(object):
             return False
 
     def set_env_var(self, var_key=None, var_value=None, filepath=None,
-                    jsonkey="environmental_variables"):
-        """create a temp environment variable
-        the value will only stay for this run
+                    jsonkey="environmental_variables", overwrite = "yes"):
+        """Create a temp environment variable, the value will only stay for the current Execution
         :Argument:
             var_key = key of the environment variable
             var_value = value of the environment variable
             filepath = Json file where Environmental variables are defined
             jsonkey = The key where all the ENV variable & values are defined
         With jsonkey arg, Users can call same file to set various ENV Variable
+            overwrite = Yes-Will overwrite ENV variables set earlier via terminal or other means
+                        No -Will not overwrite the ENV variables set earlier with the ones passed
+                            through this keyword.
 
         Variable File :
         Sample environmental_variable file is available under
         Warriorspace/Config_file/Samples/Set_ENV_Variable_Sample.json
         """
+        overwrite = overwrite.upper()
         status = False
         if not any([var_key, var_value, filepath]):
-            print_error('Either Provide values to arguments \"var_key\" & \"var_value\" or to argument \"filepath\"')
-
-        if var_key is not None and var_value is not None:
+            print_error('Either Provide values to arguments \"var_key\" & \"var_value\" or to '
+                        'argument \"filepath\"')
+        if overwrite == "NO" and os.getenv(var_key):
+            print_info("Using ENV variable {0} set earlier with value '{1}'".format(var_key,
+                                                                           os.getenv(var_key)))
+        elif var_key is not None and var_value is not None and overwrite in ["YES", "NO"]:
             os.environ[var_key] = var_value
             if os.environ[var_key] == var_value:
-                print_info('Set ENV variable {0} with value '
-                           '{1}'.format(var_key, var_value))
+                print_info("Set ENV variable {0} with value '{1}'".format(var_key, var_value))
                 status = True
+        else:
+            print_error('The attribute overwrite can only accept values either yes or no')
         if filepath is not None:
             testcasefile_path = get_object_from_datarepository('wt_testcase_filepath')
             try:
@@ -205,11 +212,19 @@ class CommonActions(object):
                     if jsonkey in get_json:
                         env_dict = get_json[jsonkey]
                         for var_key, var_value in env_dict.items():
-                            os.environ[var_key] = var_value
-                            if os.environ[var_key] == var_value:
-                                print_info('Set ENV variable {0} with value '
-                                           '{1}'.format(var_key, var_value))
+                            if overwrite == "NO" and os.getenv(var_key):
+                                print_info('Using ENV variable {0} set earlier with value '
+                                           '{1}'.format(var_key, os.getenv(var_key)))
                                 status = True
+                            elif overwrite in ["YES", "NO"]:
+                                os.environ[var_key] = str(var_value)
+                                if os.environ[var_key] == var_value:
+                                    print_info('Setting ENV variable {0} with value '
+                                               '{1}'.format(var_key, var_value))
+                                    status = True
+                            else:
+                                print_error('The attribute overwrite can only accept values either '
+                                            'yes or no')
                     else:
                         print_error('The {0} file is missing the key '
                                     '\"environmental_variables\", please refer to '
