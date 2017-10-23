@@ -299,9 +299,12 @@ class WarriorCli(object):
             save_msg2 = "Response pattern required by user is : {0}"
             save_msg3 = ("Portion of response saved to the data repository "
                          "with key: {0}, value: {1}")
+            save_msg4 = "Cannot found response pattern: {0} in response: {1}"
             if resp_pat_req is not None:
                 # if the requested pattern not found return empty string
                 reobj = re.search(resp_pat_req, response)
+                if reobj is None:
+                    pNote(save_msg4.format(resp_pat_req, response))
                 response = reobj.group(0) if reobj is not None else ""
                 response_dict[resp_ref] = response
                 pNote(save_msg1+'.')
