@@ -67,7 +67,8 @@ class Jira(object):
         postdata_url = (fetchuri + '/rest/api/2/search/?jql=summary~' +
                         urllib.quote_plus('\"' + parsed_summary + '\"'))
         response = requests.get(postdata_url, auth=self.auth)
-        try:
+
+        if response:
             resp_dict = response.json()
             for issue in resp_dict["issues"]:
                 if issue_summary[:-2].strip() == issue["fields"]["summary"].strip():
@@ -76,11 +77,10 @@ class Jira(object):
                     # partially match title
                     pass
             return False
-
-        except Exception as e:
-            pNote("Problem checking JIRA issue: {0}".format(e))
+        else:
+            pNote("Problem checking JIRA issues", "error")
             pNote("JIRA Error code: ({0}), Error message: ({1})".
-                  format(e, response.status_code, response.text), "error")
+                  format(response.status_code, response.text), "error")
             exit(1)
 
     def update_jira_issue(self, jiraid, status):
@@ -230,30 +230,22 @@ class Jira(object):
         """Function to attach logs to jira Ticket using JIRA rest API"""
 
         fetchuri = self.server
-        postdata_url=fetchuri+'/rest/api/2/issue/'+issue_id+'/attachments'
-        credential_handler=self.username+":"+self.password
-        password=base64.b64encode(credential_handler)
-        boundary = '----------%s' % ''.join(random.sample('0123456789abcdef', 15))
-        post_data = []
-        post_data.append('--%s' % boundary)
-        post_data.append('Content-Disposition: form-data; name="file"; filename="%s"' % str(logfile.split("/")[-1]))
-        post_data.append('Content-Type: %s' % 'text/plain')
-        post_data.append('')
-        post_data.append(open(logfile, 'r').read())
-        post_data.append('--%s--' % boundary)
-        post_data.append('')   
-        body = '\r\n'.join(post_data)
-        req = urllib2.Request(str(postdata_url), body)
-        req.add_header("X-Atlassian-Token", "nocheck")
-        req.add_header("Authorization","Basic "+password)
-        req.add_header("Content-Type", "multipart/form-data; boundary=%s" % boundary)
-        try:
-            handler = urllib2.urlopen(req)
-            extension=json.loads(handler.read())
-            print_info("Log File {0} uploaded to Issue-Id: {1}".format(logfile.split("/")[-1],issue_id))
-        except urllib2.HTTPError, e:
-            pNote("Problem attaching logs to JIRA issue {0}".format(issue_id),"error")
-            pNote("JIRA Error code: ({0})".format(e.code),"error")
+        postdata_url = fetchuri + '/rest/api/2/issue/' + issue_id + '/attachments'
+        print_info("logfile is : {0}".format(logfile))
+        fileobj = open(logfile, 'rb').read()
+        logfile_name = os.path.basename(logfile)
+        headers = {"X-Atlassian-Token": "nocheck"}
+        files = {"file": (logfile_name, fileobj)}
+        response = requests.post(postdata_url, auth=self.auth,
+                                 files=files, headers=headers)
+
+        if response:
+            print_info("Log File {0} uploaded to Issue-Id: {1}".format(logfile_name,
+                                                                       issue_id))
+        else:
+            pNote("Problem attaching logs to JIRA issue {0}".format(issue_id), "error")
+            pNote("JIRA Error code: ({0}), Error message: ({1})".
+                  format(response.status_code, response.text), "error")
             exit(1)
 
 
