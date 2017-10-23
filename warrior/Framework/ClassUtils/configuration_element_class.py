@@ -41,7 +41,12 @@ class ConfigurationElement(object):
         :param string:
         :return:
         """
-        return re.search(r".*(" + re.escape(self.start_pat) + r"(.*)" + re.escape(self.end_pat) + r").*", string)
+        # Create a regex search object which contains
+        # a group object with the text within the start and end pattern
+        # and another group object with the text and start/end pattern
+        # if the regex pattern doesn't match with the string, it return None
+        text_between_pattern = r"([^" + re.escape(self.end_pat) + r"]*)"
+        return re.search(r".*(" + re.escape(self.start_pat) + text_between_pattern + re.escape(self.end_pat) + r").*", string)
 
     def expand_variables(self, string):
         """
@@ -61,24 +66,31 @@ class ConfigurationElement(object):
         :param string:
         :return:
         """
+        # The string that is currently being processed
         return_value = string
-        clean_partial = ''
-        check = self.end_pat
-        match = self.__find_match(return_value[:return_value.find(check) + len(check)])
-        while True:
-            # find variable in string linearly and add each parsed variable chunk to result string
-            while match is not None:
-                return_value = return_value.replace(match.group(1), self.get_value(match.group(2)))
-                return_value = Utils.data_Utils.sub_from_env_var(return_value)
-                return_value = Utils.data_Utils.sub_from_data_repo(return_value)
-                match = self.__find_match(return_value[:return_value.find(check) + len(check)])
+        # When end_pat_index == -1, which means end_pattern is not found in the return_value string
+        # Get the regex match object of the substring
+        # which looks for text between start and endpattern
+        match = self.__find_match(return_value)
+        # Only substitued the string when there is a match
+        while match is not None:
+            # match.group(2) contains the pre-sub value
+            # substitued value is the actual value after parsing the pre-sub value
+            substitued_value = self.get_value(match.group(2))
+            # match.group(1) contains start_pattern, pre-sub value and end_pattern
+            # for default pattern, it looks like ${PRESUB_VALUE}
+            # this step replace the pre_sub value
+            return_value = return_value.replace(match.group(1), substitued_value, 1)
+            # Call other substitute functions
+            return_value = Utils.data_Utils.sub_from_env_var(
+                return_value, self.start_pat, self.end_pat)
+            return_value = Utils.data_Utils.sub_from_data_repo(
+                return_value, self.start_pat, self.end_pat)
 
-            if match is None:
-                clean_partial += return_value[:return_value.find(check) + len(check)]
-                return_value = return_value.replace(return_value[:return_value.find(check) + len(check)], '')
-                match = self.__find_match(return_value[:return_value.find(check) + len(check)])
-                if match is None:
-                    return clean_partial + return_value
+            # Doing another search for the next value to substitue
+            match = self.__find_match(return_value)
+
+        return return_value
 
     def get_list_direct(self, string):
         """
