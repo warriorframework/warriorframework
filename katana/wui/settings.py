@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'native.execution',
     'native.wdf_edit',
     'native.assembler',
+    'native.cli_data',
 ]
 
 MIDDLEWARE = [

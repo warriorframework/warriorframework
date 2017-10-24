@@ -30,4 +30,5 @@ urlpatterns = [
     url(r'^katana/cases/', include('native.cases.urls')),
     url(r'^katana/assembler/', include('native.assembler.urls')),
     url(r'^katana/execution/', include('native.execution.urls')),
+    url(r'^katana/cli_data/', include('native.cli_data.urls')),
 ]
