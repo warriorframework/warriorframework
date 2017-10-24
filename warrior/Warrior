@@ -22,7 +22,8 @@ try:
     import Framework.Utils as Utils
     from Framework.Utils.print_Utils import print_error, print_info
     from WarriorCore import warrior_cli_driver, testcase_driver, testsuite_driver, project_driver
-    from WarriorCore import ironclaw_driver, mockrun_driver, framework_detail
+    from WarriorCore import ironclaw_driver, mockrun_driver, framework_detail, testsuite_utils
+    from WarriorCore import progress_bar
     from WarriorCore.Classes.jira_rest_class import Jira
     from Framework.ClassUtils import database_utils_class
 except:
@@ -48,6 +49,27 @@ def update_jira_by_id(jiraproj, jiraid, exec_dir, status):
     else:
         print_info("jiraid not provided, will not update jira issue")
 
+def print_progress_bar(file_type, file_path):
+    """
+        It calculates the total no.of.steps in executing file(P/TS/TC)
+    """
+    if file_type == "Project":
+        suite_node, suite_node_name = "Testsuites", "Testsuite"
+        suite_value = Utils.xml_Utils.get_node_value(suite_node, suite_node_name, file_path)
+        step_count = 0
+
+        for i in suite_value:
+            ts_abs_filepath = Utils.xml_Utils.get_abs_filepath(file_path, i)
+            temp_step_count = Utils.xml_Utils.get_step_value_from_case(ts_abs_filepath)
+            step_count = temp_step_count + step_count
+
+    elif file_type == "TestSuite":
+        step_count = Utils.xml_Utils.get_step_value_from_case(file_path)
+
+    elif file_type == "Testcase":
+        step_value = Utils.xml_Utils.get_step_value_from_step(file_path)
+        step_count = len(step_value)
+    progress_bar.progress = progress_bar.ProgressBar(step_count)
 
 def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
          jiraproj, overwrite, jiraid, dbsystem):
@@ -93,6 +115,9 @@ def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
                         default_repo.update({'db_obj': db_obj})
                     else:
                         default_repo.update({'db_obj': False})
+                    file_type = Utils.xml_Utils.getRoot(abs_filepath).tag
+                    file_path = abs_filepath
+                    print_progress_bar(file_type, file_path)
 
                     if mockrun:
                         result = mockrun_driver.main(abs_filepath, len(parameter_list))

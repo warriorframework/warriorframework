@@ -20,7 +20,7 @@ import traceback
 import WarriorCore.step_driver as step_driver
 import WarriorCore.onerror_driver as onerror_driver
 import WarriorCore.exec_type_driver as exec_type_driver
-from WarriorCore import common_execution_utils
+from WarriorCore import common_execution_utils, progress_bar
 import Framework
 import Framework.Utils as Utils
 from Framework.Utils.testcase_Utils import pNote
@@ -30,7 +30,8 @@ def get_system_console_log(filename, logsdir, console_name):
     """Assign seperate console logfile for each system in parallel execution """
 
     console_logfile = Utils.file_Utils.getCustomLogFile(filename, logsdir, console_name)
-    print_info ("************ This is parallel execution... console logs for {0} will be logged in {1} ************".format(console_name, console_logfile))
+    print_info ("************ This is parallel execution... console logs for {0} will be logged in"
+                " {1} ************".format(console_name, console_logfile))
     Utils.config_Utils.debug_file(console_logfile)
 
     return console_logfile
@@ -44,17 +45,18 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
     default_error_action = data_repository['wt_def_on_error_action']
     default_error_value = data_repository['wt_def_on_error_value']
 
-    goto_stepnum        = False
-    kw_resultfile_list  = []
-    step_status_list    = []
-    step_impact_list    = []
-    step_num            = 0
+    goto_stepnum = False
+    kw_resultfile_list = []
+    step_status_list = []
+    step_impact_list = []
+    step_num = 0
 
     if parallel is True:
         system_console_log = get_system_console_log(data_repository['wt_filename'],
                                                     data_repository['wt_logsdir'],
                                                     '{0}_consoleLogs'.format(system_name))
-    while step_num < len(step_list):
+    while step_num < len(step_list) and progress_bar.progress.total:
+        progress_bar.progress.current += 1
         step = step_list[step_num]
         # execute steps
         step_num += 1
@@ -208,7 +210,8 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
                             condition_met = False
                     except KeyError:
                         condition_met = False
-                        print_warning("The given condition '{0}' is not there in the data repository".format(retry_cond_value))
+                        print_warning("The given condition '{0}' is not there in the "
+                                      "data repository".format(retry_cond_value))
                     if condition_met == False:
                         pNote("The given condition '{0}' matched with the "
                               "value '{1}'".format(data_repository[retry_cond],
@@ -229,7 +232,8 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
         try:
             # put result into multiprocessing queue and later retrieve in corresponding driver
             # parallel testcase sequenial keywords
-            queue.put((step_status_list, kw_resultfile_list, system_name, step_impact_list, data_repository['wt_junit_object']))
+            queue.put((step_status_list, kw_resultfile_list, system_name,
+                       step_impact_list, data_repository['wt_junit_object']))
         except Exception, e:
             print_error(traceback.format_exc())
 

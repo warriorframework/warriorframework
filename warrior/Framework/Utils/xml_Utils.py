@@ -25,6 +25,7 @@ from xml.etree.ElementTree import tostring
 from Framework.OSS import xmltodict
 from print_Utils import print_debug, print_info, print_error, print_warning, print_exception
 from collections import OrderedDict
+import WarriorCore
 
 try:
     from lxml import etree, objectify
@@ -678,6 +679,47 @@ def get_child_with_matching_tag(parent, tag_name):
         child_node = ""
     return child_node
 
+def get_node_value(node, node_name, file_path):
+    """
+        The node value for the particular node is fetched from the xml.
+        eg: If the node is 'Testcases' then returns all the 'Testcase' inside the 'Testcases' node
+    """
+    root = getRoot(file_path)
+    node = root.find(node)
+
+    if node is not None:
+        node_value = node.findall(node_name)
+    return node_value
+
+def get_step_value_from_step(file_path):
+    """
+       The node value for 'Steps' is fetched from xml"
+    """
+    step_node, step_node_name = "Steps", "step"
+    return get_node_value(step_node, step_node_name, file_path)
+
+def get_step_value_from_case(file_path):
+    """
+       The node value for 'Testcases' is fetched from xml"
+    """
+    case_node, case_node_name = "Testcases", "Testcase"
+    case_value = get_node_value(case_node, case_node_name, file_path)
+    step_count = 0
+
+    for i in case_value:
+        tc_abs_filepath = get_abs_filepath(file_path, i)
+        step_value = get_step_value_from_step(tc_abs_filepath)
+        step_count = step_count + len(step_value)
+    return step_count
+
+def get_abs_filepath(file_path, x):
+    """
+        From the relative path, the absolute file path is fetched
+    """
+    rel_path = WarriorCore.testsuite_utils.get_path_from_xmlfile(x)
+    dir_file_path = os.path.dirname(file_path)
+    abs_filepath = file_Utils.getAbsPath(rel_path, dir_file_path)
+    return abs_filepath
 
 def convert_dom_to_string(element):
     """
@@ -1009,31 +1051,3 @@ def list_path_responses_datafile(datafile, system_name):
         "./*[@name='"+system_name+"']/expected_api_response/*")
     responses_list = [x.text for x in resp_element_list]
     return path_list, responses_list
-
-def del_tag_from_element(ele, tag):
-    """
-        Delete a subelement with specific tag from an xml element object
-        return the deleted subelement if pass
-        return False if subelement not found
-    """
-    if ele.find(tag) is not None:
-        ele.remove(ele.find(tag))
-        return ele
-    else:
-        print_warning("cannot found {0} in element".format(str(tag)))
-    return False
-
-def safe_subelement(parent, tagname, text="", **kwargs):
-    """
-        create or overwrite a child element under the parent
-    """
-    if parent.find(tagname) is not None:
-        # Overwrite the child
-        ele = parent.find(tagname)
-        ele.text = text
-        ele.attrib = kwargs
-    else:
-        ele = ElementTree.SubElement(parent, tagname)
-        ele.text = text
-        ele.attrib = kwargs
-    return ele

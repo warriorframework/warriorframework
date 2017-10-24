@@ -15,12 +15,13 @@ limitations under the License.
 # step driver module
 
 import traceback
+import time
 from WarriorCore.Classes.argument_datatype_class import ArgumentDatatype
 import Framework.Utils as Utils
 from Framework.Utils import file_Utils
 from Framework.Utils.print_Utils import print_info, print_debug, print_error, print_exception
 # from WarriorCore import onerror_driver
-
+from WarriorCore import onerror_driver, progress_bar
 
 def get_arguments(step):
     """ For a step in the testcase xml file gets the list of all
@@ -289,4 +290,6 @@ def main(step, step_num, data_repository, system_name, kw_parallel=False, queue=
     except Exception:
         step_status = False, [], data_repository['wt_step_impact'], False
         print_error('unexpected error: {0}'.format(traceback.format_exc()))
+    progress_bar.progress()
+    time.sleep(0.1)
     return step_status
