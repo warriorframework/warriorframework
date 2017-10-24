@@ -20,7 +20,7 @@ import subprocess
 import Tools
 from Framework import Utils
 from Framework.Utils.print_Utils import print_info, print_debug,\
- print_exception, print_error
+ print_warning, print_exception, print_error
 from Framework.Utils.testcase_Utils import pNote
 from WarriorCore.Classes.war_cli_class import WarriorCliClass
 from Framework.Utils.cli_Utils import cmdprinter
@@ -207,7 +207,7 @@ class WarriorCli(object):
         finalresult = True if len(testdata_dict) > 0 else False
         for key, details_dict in testdata_dict.iteritems():
             response_dict = {}
-            resp_list_item = []
+            resp_key_list = []
             responses_dict[key] = ""
             command_list = details_dict["command_list"]
             stepdesc = "Send the following commands: "
@@ -234,28 +234,30 @@ class WarriorCli(object):
                     result, response = new_obj_session._send_command_retrials(
                         details_dict, index=i, result=result,
                         response=response, system_name=td_sys)
-                    response_dict, resp_list_item = new_obj_session._get_response_dict(
-                        details_dict, i, response, response_dict, resp_list_item)
-                    sys_name = ses_name = ''
-                    if response_dict.values()[i] is not None:
-                        if details_dict["sys_list"][i] == '' or details_dict["sys_list"][i] is None:
-                            sys_name = system_name.split('.')[0]
-                        else:
-                            sys_name = details_dict["sys_list"][i]
-                        if details_dict["session_list"][i] == '' or \
-                           details_dict["session_list"][i] is None:
-                            session_name = args.get("session_name")
-                            ses_name = session_name
-                        else:
-                            ses_name = details_dict["session_list"][i]
 
-                        session_id = Utils.data_Utils.get_session_id(sys_name, ses_name) + \
-                            "_td_response"
-                        for k in resp_list_item:
-                            if k == resp_list_item[i]:
-                                pNote("Portion of response saved to the data repository with key: "
-                                      "{0}.{1}.{2}, value: {3}".format(session_id, key,
-                                                                       k, response_dict[k]))
+                    rspRes, response_dict, resp_key_list = new_obj_session._get_response_dict(
+                        details_dict, i, response, response_dict, resp_key_list)
+                    sys_name = ses_name = ''
+                    if len(response_dict) < 0:
+                        if response_dict[resp_key_list[i]] is not None:
+                            if details_dict["sys_list"][i] == '' or \
+                             details_dict["sys_list"][i] is None:
+                                sys_name = system_name.split('.')[0]
+                            else:
+                                sys_name = details_dict["sys_list"][i]
+                            if details_dict["session_list"][i] == '' or \
+                               details_dict["session_list"][i] is None:
+                                ses_name = session_name = args.get("session_name")
+                            else:
+                                ses_name = details_dict["session_list"][i]
+                            session_id = Utils.data_Utils.get_session_id(sys_name, ses_name) + \
+                                "_td_response"
+                            pNote("Portion of response saved to the data repository with key: "
+                                  "{0}.{1}.{2}, value: {3}"
+                                  .format(session_id, key, resp_key_list[i], 
+                                          response_dict[resp_key_list[i]]))
+                    result = result and rspRes
+
                     print_debug("<<<")
                 else:
                     finalresult = "ERROR"
@@ -287,29 +289,85 @@ class WarriorCli(object):
         return result, response
 
     @staticmethod
-    def _get_response_dict(details_dict, index, response, response_dict, resp_list_item = []):
+    def _get_response_dict(details_dict, index, response, response_dict, resp_key_list = []):
         """Get the response dict for a command. """
+        def print_warn_msg(keyvars, numpats):
+            """ print a warning message if the number of vars to be stored with
+            the patterns does not match with the number of patterns
+            """
+            warn_msg = ("The number of response reference keys to store is {0}"
+                        " than \nthe response reference patterns.\nThe number "
+                        "of response reference keys({1}) is {2}\nwhich is {0} "
+                        "than number of response reference patterns {3}")
+            lessormore = "less" if len(keyvars) < numpats else "more"
+            print_warning(warn_msg.format(lessormore, ", ".join(keyvars),
+                                          len(keyvars), numpats))
         resp_ref = details_dict["resp_ref_list"][index]
         resp_req = details_dict["resp_req_list"][index]
         resp_pat_req = details_dict["resp_pat_req_list"][index]
+        resp_keys = details_dict["resp_key_list"][index]
+        inorder = details_dict["inorder_resp_ref_list"][index]
+        status = True
+        if inorder is not None and inorder.lower().startswith("n"):
+            inorder = False
+        else:
+            inorder = True
 
         resp_req = {None: 'y', '': 'y',
                     'no': 'n', 'n': 'n'}.get(str(resp_req).lower(), 'y')
         resp_ref = {None: index+1, '': index+1}.get(resp_ref, str(resp_ref))
         if not resp_req == "n":
+            save_msg1 = "User has requested saving response"
+            save_msg2 = "Response pattern required by user is : {0}"
+            save_msg3 = ("Portion of response saved to the data repository "
+                         "with key: {0}, value: {1}")
             if resp_pat_req is not None:
                 # if the requested pattern not found return empty string
                 reobj = re.search(resp_pat_req, response)
                 response = reobj.group(0) if reobj is not None else ""
-                pNote("User has requested saving response. Response pattern "
-                      "required by user is : {0}".format(resp_pat_req))
-                pNote("Portion of response saved to the data repository with "
-                      "key: {0}, value: {1}".format(resp_ref, response))
+                response_dict[resp_ref] = response
+                pNote(save_msg1+'.')
+                pNote(save_msg2.format(resp_pat_req))
+                pNote(save_msg3.format(resp_ref, response))
+            elif resp_keys is not None:
+                keys = resp_ref.split(',')
+                patterns = [k.get("resp_pattern_req") for k in resp_keys]
+                if len(keys) != len(patterns):
+                    print_warn_msg(keys, len(patterns))
+                if inorder:
+                    pNote(save_msg1+' inorder.')
+                    cpatterns = map(lambda s: "(" + s + ")", patterns)
+                    pattern = ".*".join(cpatterns)
+                    if pattern.endswith(".*(.*)"):
+                        # remove .* pattern from above
+                        pattern = pattern[:-6]+pattern[-4:]
+                    reobj = re.search(pattern, response, re.DOTALL)
+                    if reobj:
+                        grps = reobj.groups()
+                        response_dict.update(dict(zip(keys, grps)))
+                        pNote(save_msg2.format(pattern))
+                        map(lambda x: pNote(save_msg3.format(*x)), zip(keys,
+                                                                       grps))
+                    else:
+                        print_error("inorder search of patterns in response "
+                                    "failed")
+                        print_error("Expected: '{}'".format(pattern))
+                        print_error("But Found: '{}'".format(response))
+                        status = False
+                else:
+                    pNote(save_msg1+' separately.')
+                    for key, pattern in zip(keys, patterns):
+                        reobj = re.search(pattern, response)
+                        presponse = reobj.group(0) if reobj is not None else ""
+                        response_dict[key] = presponse
+                        pNote(save_msg2.format(pattern))
+                        pNote(save_msg3.format(key, presponse))
         else:
-            response = ""
-        response_dict[resp_ref] = response
-        resp_list_item.append(resp_ref)
-        return response_dict, resp_list_item
+            #response = ""
+            response_dict[resp_ref] = ""
+        #response_dict[resp_ref] = ""
+        resp_key_list.append(resp_ref)
+        return status, response_dict, resp_key_list
 
     @staticmethod
     def start_threads(started_thread_for_system, thread_instance_list,
