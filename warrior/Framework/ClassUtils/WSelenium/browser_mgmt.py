@@ -69,7 +69,8 @@ class BrowserManagement(object):
                                     binary=binary, gecko_path=gecko_path)
         print_info("The Selenium Webdriver version is '{0}'".format(webdriver.__version__))
         if browser:
-            browser_version = self.get_browser_details(browser)
+            browser_detail_dict = self.get_browser_details(browser)
+            browser_version = browser_detail_dict['version']
             print_info("The Browser '{0}' version is '{1}'".format(browser_name, browser_version))
         return browser
 
@@ -80,10 +81,11 @@ class BrowserManagement(object):
                        browser = The browser instance
 
             Return :
-                     browser_version = The browser instances' version.
+                     browser_detail_dict = A Dictionary containing details of the browser instance.
         """
-        browser_version = browser.capabilities['version']
-        return browser_version
+        browser_detail_dict = {}
+        browser_detail_dict['version'] = browser.capabilities['version']
+        return browser_detail_dict
 
     def close_browser(self, browser_instance=None):
         """closes a browser session """
