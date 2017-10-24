@@ -845,8 +845,9 @@ Two global variables are heavily used when this function is called;
 		var sid = parseInt(names[1]);
 		jsonData = suites.jsonTestcases[sid].copyFromDocument('lastCaseCopied');
 		console.log("Retrieving ... ", jsonData);
-		newTestcase = new projectSuiteObject(jsonData);
-		
+		newTestcase = new suiteCaseObject(jsonData);
+		suites.jsonTestcases.splice(sid,0,newTestcase);
+		suites.createCasesTable(suites.jsonTestcases);
 		},
 
 

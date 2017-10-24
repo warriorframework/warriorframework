@@ -19,6 +19,7 @@ function absFromPrefix(pathToBase, pathToFile) {
 	// Converts an absolute path to one that is relative to pathToBase 
 	// Input: 
 	// 		
+	if (pathToFile == null) return '';
 	var bf = pathToBase.split('/');
 	var rf = pathToFile.split('/');
 	var nrf = pathToFile.split('/');
