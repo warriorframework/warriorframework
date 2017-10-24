@@ -84,9 +84,13 @@ def saveFile(request):
 	path_to_config = navigator.get_katana_dir() + os.sep + "config.json"
 	config = json.loads(open(path_to_config).read())
 	fpath = config['pythonsrcdir']
+	print request.POST
 	fname = request.POST.get(u'filetosave');
 	tdata = request.POST.get(u'texttosave');
-	fd = open(fpath + os.sep + fname,'w');
+	if fname[0] == '/':
+		fd = open(fname,'w')
+	else:
+		fd = open(fpath + os.sep + fname,'w');
 	fd.write(tdata);
 	fd.close();
 	return redirect(request.META['HTTP_REFERER'])

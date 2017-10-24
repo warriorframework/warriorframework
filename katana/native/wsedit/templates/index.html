@@ -6,25 +6,22 @@
  -->   
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/codemirror.js" />
 <link rel="stylesheet" href="{% static  'wsedit/js/CodeMirror/lib/codemirror.css' %} ">
-<script  src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/addon/hint/xml-hint.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/mode/xml/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/mode/python/python.js"></script>
   
   <div class="tool-bar">
-       <i class="button" katana-click="wsedit.openFileFromServer">Edit File</i>
-	    <i class="button" katana-click="wsedit.saveFileToServer">Write Changes To Disk</i>
-		  
-        
+       <i katana-click="wsedit.openFileFromServer" class="fa fa-edit">Edit Python File</i>
+ <input class="text col-md-6" id="wsedit-filename" value="filename"></input>
+	    <i  katana-click="wsedit.saveFileToServer" class="fa fa-floppy-o" >Write File </i> 
+	    <label  id='wsedit-saveme-btn'></label>
     </div>
 
-   	   <div class="csrf-container">{% csrf_token %}</div>
-		<input class="text" id="wsedit-filename" value="filename">
+   	 <div class="csrf-container">{% csrf_token %}</div>
 
-			<div id="savesubdir" class="hidden">{{savesubdir}}</div>
-            <div class="col-md-12" min-height="100%">
-			 	<textarea id='wsedit-scrollable-source-text' height="100%" width="100%"> Source file</textarea> 
-			
-   			</div>
-   			<label id="pythonsrcdir" class="hidden">{{pythonsrcdir}}</label>
+	<div id="wsedit-savesubdir" class="hidden">{{savesubdir}}</div>
+    <div class="col-md-12" min-height="100%">
+	<textarea id='wsedit-scrollable-source-text' > </textarea> 	
+   	</div>
+   	<label id="wsedit-pythonsrcdir" class="hidden">{{pythonsrcdir}}</label>
         
 </div>
   

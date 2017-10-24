@@ -71,7 +71,7 @@ var wsedit = {
 			var tag = '#wsedit-filename';
 			var callback_on_accept = function(selectedValue) { 
 	  		//console.log(selectedValue);
-	  		var savefilepath = katana.$activeTab.find('#savesubdir').text();
+	  		var savefilepath = katana.$activeTab.find('#wsedit-savesubdir').text();
 	  		console.log("File path ==", savefilepath);
 	  		var nf = prefixFromAbs(savefilepath, selectedValue);
 	  		katana.$activeTab.find(tag).val(selectedValue);
@@ -92,29 +92,40 @@ var wsedit = {
 				
 				if (!wsedit.myCodeEdit) {
 
-				wsedit.myCodeEdit = CodeMirror.fromTextArea(katana.$activeTab.find('#wsedit-scrollable-source-text')[0],
-				 	{ value: sdata, mode: data['mode'], "lineNumbers": true, "min-height": "100%" }
-					);
+					wsedit.myCodeEdit = CodeMirror.fromTextArea(katana.$activeTab.find('#wsedit-scrollable-source-text')[0],
+				 	{ value: sdata } );
+
+					wsedit.myCodeEdit.on('change', wsedit.textModifiedCB ) ;
+
 				} else { 
 					wsedit.myCodeEdit.setValue(sdata);
-					wsedit.myCodeEdit.setOption("lineNumbers", true);
-					wsedit.myCodeEdit.setOption("mode", data['mode']);
-					wsedit.myCodeEdit.setOption("min-height","100%");
 				}
+				wsedit.myCodeEdit.setOption("lineNumbers", true);
+				wsedit.myCodeEdit.setOption("mode", data['mode']);
+				wsedit.myCodeEdit.setOption("min-height","100%");
+				wsedit.myCodeEdit.setOption("matchBrackets", true);
+				wsedit.myCodeEdit.setOption("styleActiveLine", true); 
+				//wsedit.myCodeEdit.setOption("theme", "midnight");
+				////====Reset the modified flag=====////
+				katana.$activeTab.find("#wsedit-saveme-btn").html("");
+				
+				});
 
-			});
-
-			////====
-
+			
 
 			};
 	  var callback_on_dismiss =  function(){ 
 	  		console.log("Dismissed");
 	 };
-	 var pdir = katana.$activeTab.find("#pythonsrcdir")[0].innerText; 
+	 var pdir = katana.$activeTab.find("#wsedit-pythonsrcdir")[0].innerText; 
 	 console.log("Pdir = ", pdir);
 	 katana.fileExplorerAPI.openFileExplorer("Select a file", pdir , $("[name='csrfmiddlewaretoken']").val(), false, callback_on_accept, callback_on_dismiss,".py");
 	  
+	},
+
+	textModifiedCB: function(how, where) {
+		console.log("...modified...");
+		katana.$activeTab.find("#wsedit-saveme-btn").html("(modified)");
 	},
 
 	saveFileToServer: function() {
@@ -127,17 +138,17 @@ var wsedit = {
 			}
 		});
 		var xfname = katana.$activeTab.find('#wsedit-filename').val();	
-		var topNode  = { 'Filename' : katana.$activeTab.find('wsedit-filename').val(),
-				'Text': katana.$activeTab.find('wsedit-scrollable-source-text').val()};
-		
+		var xstr = wsedit.myCodeEdit.getValue();
+		var topNode  = { 'Filename' : katana.$activeTab.find('#wsedit-filename').val(),
+				'Text': xstr }; 
+		console.log("jsontosave", topNode);
 		$.ajax({
 		url : url,
 		type: "POST",
 		data : { 
-			//'textosave': JSON.stringify(topNode),	
-			'texttodave':katana.$activeTab.find('wsedit-scrollable-source-text').val(),
-			'filetosave': katana.$activeTab.find('wsedit-filename').val(),
-
+			'jsontosave': JSON.stringify(topNode),	
+			'texttosave': xstr,
+			'filetosave': katana.$activeTab.find('#wsedit-filename').val(),
 			},
 		headers: {'X-CSRFToken':csrftoken},
 		success: function( data ){
