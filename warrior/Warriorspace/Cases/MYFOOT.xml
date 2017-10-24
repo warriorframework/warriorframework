@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Testcase>
+	<logsDir>None</logsDir>
+	<Requirements>
+		<Requirement></Requirement>
+		<Requirement>Ah so</Requirement>
+		<Requirement>This is one</Requirement>
+		<Requirement>This is another</Requirement>
+		<Requirement></Requirement>
+		<Requirement>Anotehr</Requirement>
+	</Requirements>
+	<expectedDir>PASS</expectedDir>
+	<resultsDir>None</resultsDir>
+	<dataPath>../Data/Demo_Input_Data_Files/Demo_Datafile_For_Inventory_Mgt.xml</dataPath>
+	<Steps>
+		<step Keyword="connect" TS="1" Driver="cli_driver" draft="no">
+			<impact>impact</impact>
+			<Execute ExecType="if">
+				<Rule Elsevalue="sdfsd" Condvalue="PASS" Condition="sd" Else="next"></Rule>
+			</Execute>
+			<retry Condvalue="" interval="" count="" type="next" Condition=""></retry>
+			<Description></Description>
+			<iteration_type type=""></iteration_type>
+			<onError action="next" value="None"></onError>
+			<runmode type="" value="standard"></runmode>
+			<Iteration_type type="Standard"></Iteration_type>
+			<InputDataFile></InputDataFile>
+			<Arguments>
+				<argument name="system_name" value="FW9500-NE1[tl1]"></argument>
+				<argument name="" value=""></argument>
+			</Arguments>
+			<context>positive</context>
+			<step ExecType="Yes">
+				<Rule Elsevalue="" Condvalue="" Condition="" Else="next"></Rule>
+			</step>
+		</step>
+		<step Keyword="connect" TS="1" Driver="cli_driver" draft="no">
+			<impact>impact</impact>
+			<Execute ExecType="yes">
+				<Rule Elsevalue="" Condvalue="" Condition="" Else=""></Rule>
+			</Execute>
+			<retry Condvalue="" interval="" count="" type="next" Condition=""></retry>
+			<Description></Description>
+			<iteration_type type=""></iteration_type>
+			<onError action="abort_as_error"></onError>
+			<runmode type="Standard" value=""></runmode>
+			<Iteration_type type="Standard"></Iteration_type>
+			<InputDataFile></InputDataFile>
+			<Arguments>
+				<argument name="system_name" value="FW9500-NE1[dip]"></argument>
+				<argument name="" value=""></argument>
+			</Arguments>
+			<context>positive</context>
+			<step ExecType="Yes">
+				<Rule Elsevalue="" Condvalue="" Condition="" Else="next"></Rule>
+			</step>
+		</step>
+		<step Keyword="login" TS="2" Driver="fw9500_driver" draft="no">
+			<impact>impact</impact>
+			<Execute ExecType="if">
+				<Rule Condvalue="PASS" Condition="step_1_result" Else="abort"></Rule>
+			</Execute>
+			<retry Condvalue="" interval="" count="" type="next" Condition=""></retry>
+			<Description>Login to the Network element</Description>
+			<iteration_type type=""></iteration_type>
+			<onError action="next"></onError>
+			<runmode type="Standard" value=""></runmode>
+			<Iteration_type type="Standard"></Iteration_type>
+			<InputDataFile></InputDataFile>
+			<Arguments>
+				<argument name="system_name" value="FW9500-NE1[tl1]"></argument>
+				<argument name="" value=""></argument>
+			</Arguments>
+			<context>positive</context>
+			<step ExecType="Yes">
+				<Rule Elsevalue="" Condvalue="" Condition="" Else="next"></Rule>
+			</step>
+		</step>
+		<step Keyword="login" TS="2" Driver="fw9500_driver" draft="no">
+			<impact>impact</impact>
+			<Execute ExecType="if">
+				<Rule Condvalue="PASS" Condition="step_1_result" Else="abort"></Rule>
+			</Execute>
+			<retry Condvalue="" interval="" count="" type="next" Condition=""></retry>
+			<Description>Login to the Network element</Description>
+			<iteration_type type=""></iteration_type>
+			<onError action="next"></onError>
+			<runmode type="Standard" value=""></runmode>
+			<Iteration_type type="Standard"></Iteration_type>
+			<InputDataFile></InputDataFile>
+			<Arguments>
+				<argument name="system_name" value="FW9500-NE1[tl1]"></argument>
+				<argument name="" value=""></argument>
+			</Arguments>
+			<context>positive</context>
+			<step ExecType="Yes">
+				<Rule Elsevalue="" Condvalue="" Condition="" Else="next"></Rule>
+			</step>
+		</step>
+	</Steps>
+	<Details>
+		<Category>fwcds</Category>
+		<Logsdir>../Data/Demo_Input_Data_Files/</Logsdir>
+		<InputDataFile>../Data/Demo_Input_Data_Files/Demo_Datafile_For_Inventory_Mgt.xml</InputDataFile>
+		<Name>MYFOOT</Name>
+		<Title>An automation case to connect and login to fw9500 NE</Title>
+		<Datatype>Custom</Datatype>
+		<Resultsdir>../Execution</Resultsdir>
+		<State>New</State>
+		<ExpectedResults>PASS</ExpectedResults>
+		<Time>9:19</Time>
+		<Date>10/4/2017</Date>
+		<default_onError>next</default_onError>
+		<Engineer>kamran</Engineer>
+	</Details>
+</Testcase>

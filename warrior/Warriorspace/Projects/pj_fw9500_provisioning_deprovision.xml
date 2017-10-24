@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+	<Testsuites>
+		<Testsuite>
+			<impact>impact</impact>
+			<Execute ExecType="yes">
+				<Rule Elsevalue="" Condvalue="None" Condition="" Else="next"></Rule>
+			</Execute>
+			<retry Condvalue="" interval="" count="" type="next" Condition=""></retry>
+			<onError action="abort" value="0"></onError>
+			<runmode type="standard"></runmode>
+			<path>../Projects/ts_fw9500_setup.xml</path>
+		</Testsuite>
+		<Testsuite>
+			<impact>impact</impact>
+			<Execute ExecType="yes">
+				<Rule Elsevalue="" Condvalue="" Condition="" Else="next"></Rule>
+			</Execute>
+			<retry Condvalue="" interval="" count="" type="next" Condition=""></retry>
+			<onError action="next" value=""></onError>
+			<runmode type="standard" value=""></runmode>
+			<path>../Suites/ts_fw9500_provisioning.xml</path>
+		</Testsuite>
+		<Testsuite>
+			<impact>impact</impact>
+			<Execute ExecType="yes">
+				<Rule Elsevalue="" Condvalue="" Condition="" Else="next"></Rule>
+			</Execute>
+			<retry Condvalue="" interval="" count="" type="next" Condition=""></retry>
+			<onError action="next" value=""></onError>
+			<runmode type="standard" value=""></runmode>
+			<path>../Suites/ts_fw9500_deprovisioning.xml</path>
+		</Testsuite>
+		<Testsuite>
+			<impact>impact</impact>
+			<Execute ExecType="yes">
+				<Rule Elsevalue="" Condvalue="" Condition="" Else="next"></Rule>
+			</Execute>
+			<retry Condvalue="" interval="" count="" type="next" Condition=""></retry>
+			<onError action="abort" value=""></onError>
+			<runmode type="standard" value=""></runmode>
+			<path>../Suites/ts_fw9500_teardown.xml</path>
+		</Testsuite>
+	</Testsuites>
+	<SaveToFile>pj_fw9500_provisioning_deprovision</SaveToFile>
+	<Details>
+		<Name>pj_fw9500_provisioning_deprovision</Name>
+		<Title>TestSave</Title>
+		<Datatype>Custom</Datatype>
+		<State>New</State>
+		<Time>21:40:17</Time>
+		<Date>03/17/2017 21:40:17 21:40:17 21:40:17</Date>
+		<default_onError action="next" value="0"></default_onError>
+		<Engineer>kamran</Engineer>
+	</Details>
+</Project>
