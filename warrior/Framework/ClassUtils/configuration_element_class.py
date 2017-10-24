@@ -45,8 +45,12 @@ class ConfigurationElement(object):
         # a group object with the text within the start and end pattern
         # and another group object with the text and start/end pattern
         # if the regex pattern doesn't match with the string, it return None
-        text_between_pattern = r"([^" + re.escape(self.end_pat) + r"]*)"
-        return re.search(r".*(" + re.escape(self.start_pat) + text_between_pattern + re.escape(self.end_pat) + r").*", string)
+        # .* matches everything
+        # ? matches until the first occurence of the next pattern, in this case
+        # it matches the first occurence of the end pattern
+        text_between_pattern = r"(.*?)"
+        return re.search(r".*(" + re.escape(self.start_pat) + text_between_pattern +\
+            re.escape(self.end_pat) + r").*", string)
 
     def expand_variables(self, string):
         """
