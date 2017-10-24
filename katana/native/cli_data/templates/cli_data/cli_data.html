@@ -7,9 +7,9 @@
 <body>
     <div id="files-div">
 		<div class="tool-bar">
-            <div katana-click="cli_data.fileDisplayAPI.init" class="button">New</div>
+            <div katana-click="cliData.fileDisplayAPI.newFile" class="button">New</div>
         </div>
-	    <div id="displayFiles" auto-init="cli_data.fileDisplayAPI.init">
+	    <div id="displayFiles" auto-init="cliData.fileDisplayAPI.init">
 	    </div>
 	</div>
     <div class="csrf-container">{% csrf_token %}</div>
