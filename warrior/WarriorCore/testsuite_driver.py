@@ -10,20 +10,23 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+
+
+"""Test suite driver module to execute a collection of testcases """
 import sys
 import os
 import time
 import traceback
 import shutil
 import copy
+
 import sequential_testcase_driver
+import testcase_driver
+import onerror_driver
 import parallel_testcase_driver
 from WarriorCore.Classes import execution_files_class, junit_class
 from WarriorCore.Classes.iterative_testsuite_class import IterativeTestsuite
 from WarriorCore import testsuite_utils, common_execution_utils
-import Framework.Utils as Utils
-from Framework.Utils.print_Utils import print_info, print_debug, print_warning, print_error
-"""Test suite driver module to execute a collection of testcases """
 
 #===============================================================================
 # Import all the necessary packages, libraries
@@ -31,26 +34,12 @@ from Framework.Utils.print_Utils import print_info, print_debug, print_warning, 
 # Actions   = package containing all Actions files
 #===============================================================================
 
-
-def initialize_suite_fields(data_repository):
-    """Initializing suite fields in data_repository so that it does not get
-    carried over to next suites. The following suite fields has to be taken
-    fresh for each test suite
-    wt_suite_execution_dir - for putting the results
-    suite_data_file - data file for this suite
-    wt_suite_name - name of this suite
-    suite_exectype - exectype for this suite
-    """
-    print_info("initializing suite fields in data_repository")
-    suite_fields_to_initialize = ['wt_suite_execution_dir', 'suite_data_file',
-                                  'wt_suite_name', 'suite_exectype']
-    for suite_field in suite_fields_to_initialize:
-        if suite_field in data_repository:
-            del data_repository[suite_field]
+import Framework.Utils as Utils
+from Framework.Utils.print_Utils import print_info, print_debug, print_warning, print_error
 
 
-def get_suite_details(testsuite_filepath, data_repository, from_project,
-                      res_startdir, logs_startdir):
+def get_suite_details(testsuite_filepath, data_repository, from_project, res_startdir,
+                      logs_startdir):
     """Gets all the details of the Testsuite from its xml file
     Details that are currently obtained are:
         1. Name,
@@ -90,18 +79,17 @@ def get_suite_details(testsuite_filepath, data_repository, from_project,
     if def_on_error_value is None or def_on_error_value is False:
         def_on_error_value = None
 
-    if 'ow_resultdir' in data_repository and not from_project:
+    if data_repository.has_key('ow_resultdir') and not from_project:
         res_startdir = data_repository['ow_resultdir']
-    if 'ow_logdir' in data_repository and not from_project:
+    if data_repository.has_key('ow_logdir') and not from_project:
         logs_startdir = data_repository['ow_logdir']
 
-    efile_obj = execution_files_class.ExecFilesClass(testsuite_filepath, "ts",
-                                                     res_startdir, logs_startdir)
+    efile_obj = execution_files_class.ExecFilesClass(testsuite_filepath, "ts", res_startdir,
+                                                     logs_startdir)
     data_file = efile_obj.get_data_files()[0]
     suite_resultfile = efile_obj.resultfile
     suite_execution_dir = os.path.dirname(suite_resultfile)
-    junit_resultfile = (Utils.file_Utils.getNameOnly(suite_resultfile) +
-                        "_tsjunit.xml")
+    junit_resultfile = Utils.file_Utils.getNameOnly(suite_resultfile) + "_tsjunit.xml"
     ws_results_execdir = efile_obj.results_execdir
     ws_logs_execdir = efile_obj.logs_execdir
 
@@ -154,6 +142,23 @@ def get_testcase_list(testsuite_filepath):
         testcase_list = []
         new_testcase_list = testcases.findall('Testcase')
         # execute tc multiple times
+        # In case we want to add this in the future. 
+        # newlist = []
+        # for ts in new_testcase_list:
+        #     sfilename = ts.find('path').text
+        #     dirname = os.path.dirname(testsuite_filepath)+os.sep
+        #     if sfilename.find('*') < 0 :
+        #         newlist.append(ts) 
+        #     else: 
+        #         files = glob.glob(dirname+sfilename) 
+        #         for fn in files:
+        #             nts = copy.deepcopy(ts) 
+        #             nts.find('path').text = fn.replace(dirname,'')
+        #             newlist.append(nts) 
+        # for ts in newlist: 
+        #     print_info("Added testcase [{0}] ".format(ts.find('path').text))
+        # for _, tc in enumerate(newlist):
+        
         for _, tc in enumerate(new_testcase_list):
             runmode, value = common_execution_utils.get_runmode_from_xmlfile(tc)
             retry_type, _, _, retry_value, _ = common_execution_utils.get_retry_from_xmlfile(tc)
@@ -227,7 +232,7 @@ def print_suite_details_to_console(suite_repository, testsuite_filepath, junit_r
 
 def execute_testsuite(testsuite_filepath, data_repository, from_project,
                       auto_defects, jiraproj, res_startdir, logs_startdir,
-                      ts_onError_action, queue, ts_parallel):
+                      ts_onError_action):
     """Executes the testsuite (provided as a xml file)
             - Takes a testsuite xml file as input and
             sends each testcase to Basedriver for execution.
@@ -245,7 +250,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
     """
     suite_start_time = Utils.datetime_utils.get_current_timestamp()
     print_info("[{0}] Testsuite execution starts".format(suite_start_time))
-    initialize_suite_fields(data_repository)
+    # goto_tc = False
     suite_repository = get_suite_details(testsuite_filepath, data_repository,
                                          from_project, res_startdir, logs_startdir)
     testcase_list = get_testcase_list(testsuite_filepath)
@@ -311,7 +316,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
                                      tests=no_of_tests, failures='0',
                                      time='0', timestamp=suite_timestamp)
     testsuite_utils.pSuite_property(junit_resultfile, 'title', suite_repository['suite_title'])
-    testsuite_utils.pSuite_property(junit_resultfile, 'location', testsuite_filepath)
+    ts_junit_object.add_property('location', testsuite_filepath, "ts", suite_timestamp)
     if "jobid" in data_repository:
         testsuite_utils.pSuite_property(junit_resultfile, 'resultlocation',
                                         data_repository["jobid"])
@@ -319,8 +324,8 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
 
     print_suite_details_to_console(suite_repository, testsuite_filepath, junit_resultfile)
 
-    if not from_project:
-        data_repository["war_parallel"] = False
+
+    data_repository["war_parallel"] = False
 
     if execution_type.upper() == 'PARALLEL_TESTCASES':
         ts_junit_object.remove_html_obj()
@@ -393,12 +398,14 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
             print_debug("\n\n<======= ATTEMPT: {0} ======>".format(i))
             # We aren't actually summing each test result here...
             test_suite_status = sequential_testcase_driver.main(testcase_list, suite_repository,
-                                                                data_repository, from_project,
+                                                                data_repository,
+                                                                from_project,
                                                                 auto_defects=auto_defects)
 
     elif execution_type.upper() == "ITERATIVE_SEQUENTIAL":
-        # if execution type is iterative sequential call WarriorCore.Classes.iterative_testsuite
-        # class and execute the testcases in iterative sequential fashion on the systems
+		# if execution type is iterative sequential call WarriorCore.Classes.iterative_testsuite
+        # class and
+		# execute the testcases in iterative sequential fashion on the systems
         print_info("Iterative sequential suite")
 
         iter_seq_ts_obj = IterativeTestsuite(testcase_list, suite_repository,
@@ -407,8 +414,9 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
         test_suite_status = iter_seq_ts_obj.execute_iterative_sequential()
 
     elif execution_type.upper() == "ITERATIVE_PARALLEL":
-        # if execution type is iterative parallel call WarriorCore.Classes.iterative_testsuite
-        # class and execute the testcases in iterative parallel fashion on the systems
+		# if execution type is iterative parallel call WarriorCore.Classes.iterative_testsuite
+        # class and
+		# execute the testcases in iterative parallel fashion on the systems
         ts_junit_object.remove_html_obj()
         print_info("Iterative parallel suite")
         data_repository["war_parallel"] = True
@@ -452,37 +460,26 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
                             ts_junit_object.filename+"_junit.xml")
             data_repository.get("db_obj").add_html_result_to_mongodb(ts_junit_xml)
     else:
-        # Do not output JUnit result file for parallel suite execution
-        if not ts_parallel and not data_repository['war_parallel']:
-            # Create and replace existing Project junit file for each suite
-            ts_junit_object.output_junit(data_repository['wp_results_execdir'],
-                                         print_summary=False)
-
-    if ts_parallel:
-        ts_impact = data_repository['wt_ts_impact']
-        if ts_impact.upper() == 'IMPACT':
-            msg = "Status of the executed suite impacts project result"
-        elif ts_impact.upper() == 'NOIMPACT':
-            msg = "Status of the executed suite case does not impact project result"
-        print_debug(msg)
-        # put result into multiprocessing queue and later retrieve in corresponding driver
-        queue.put((test_suite_status, ts_impact, suite_timestamp, ts_junit_object))
+        # Create and replace existing Project junit file for each suite
+        ts_junit_object.output_junit(data_repository['wp_results_execdir'],
+                                     print_summary=False)
 
     return test_suite_status, suite_repository
 
 
-def main(testsuite_filepath, data_repository={}, from_project=False, auto_defects=False,
-         jiraproj=None, res_startdir=None, logs_startdir=None, ts_onError_action=None,
-         queue=None, ts_parallel=False):
-    """Executes a test suite """ 
+def main(testsuite_filepath, data_repository={},
+         from_project=False, auto_defects=False, jiraproj=None,
+         res_startdir=None, logs_startdir=None, ts_onError_action=None):
+    """Executes a test suite """
     try:
         test_suite_status, suite_repository = execute_testsuite(testsuite_filepath,
-                                                                data_repository, from_project,
-                                                                auto_defects, jiraproj,
-                                                                res_startdir, logs_startdir,
-                                                                ts_onError_action, queue,
-                                                                ts_parallel)
-
+                                                                data_repository,
+                                                                from_project,
+                                                                auto_defects,
+                                                                jiraproj,
+                                                                res_startdir,
+                                                                logs_startdir,
+                                                                ts_onError_action)
     except Exception:
         print_error('unexpected error {0}'.format(traceback.format_exc()))
         test_suite_status, suite_repository = False, None
