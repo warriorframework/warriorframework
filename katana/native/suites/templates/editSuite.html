@@ -123,28 +123,16 @@
 					<option value="negative">negative</option>
 					</select>
 
-					</div>
-					<div class="field">
-					<label >Run Type:</label>
-					<select type="text" class="text-right" id="CaseRuntype" value="sequential_keywords" >
-					<option value="sequential_keywords">sequential_keywords</option>
-					<option value="parallel_keywords">parallel_keywords</option>
-					</select>
+
+					<div class="field col-md-3">
+					<label >Warrior Data File:</label>
+					<button class="btn btn-info" katana-click="suites.getResultsDirForSuiteRow">...</button>
+					<input type="text" id="StepInputDataFile"  value=""/>
+					</div>		
+	
 
 
-					</div>
-					<div class="field">
-					<label >Run Mode:</label>
-					
-					<select type="text" class="text-right" id="CaseRunmode" value="standard" >
-					<option value="standard">standard</option>
-					<option value="rmt">RMT</option>
-					<option value="ruf">RUF</option>
-					<option value="rup">RUP</option>
-					</select>
-					<input type="number" class="runmode_condition" id="CaseRunmodeAtValue" value=""/>	
-					</div>
-
+	
 
 					<div class="field">
 					<label class=" text-right" >ExecType:</label>
@@ -188,23 +176,28 @@
 						<div class="field ">
 						</div>			
 				
-
-					<div class="field col-md-3">
-					<label >Warrior Data File:</label>
-					<button class="btn btn-info" katana-click="suites.getResultsDirForSuiteRow">...</button>
-					<input type="text" id="StepInputDataFile"  value=""/>
-					</div>		
-	
-
+					</div>
 					<div class="field">
-					<label >Impact:</label>
-
-					<select type="text" class="text-right" id="CaseImpact" value="impact" >
-					<option value="impact">impact</option>
-					<option value="noimpact">noimpact</option>
+					<label >Run Type:</label>
+					<select type="text" class="text-right" id="CaseRuntype" value="sequential_keywords" >
+					<option value="sequential_keywords">sequential_keywords</option>
+					<option value="parallel_keywords">parallel_keywords</option>
 					</select>
 
+
 					</div>
+					<div class="field">
+					<label >Run Mode:</label>
+					
+					<select type="text" class="text-right" id="CaseRunmode" value="standard" >
+					<option value="standard">standard</option>
+					<option value="rmt">RMT</option>
+					<option value="ruf">RUF</option>
+					<option value="rup">RUP</option>
+					</select>
+					<input type="number" class="runmode_condition" id="CaseRunmodeAtValue" value=""/>	
+					</div>
+
 
 					<div class="field">
 					<label class="text-right" >On Error action:</label>
@@ -216,8 +209,19 @@
 					</select>
 					<select type="text" class="text-right" id="caseonError-at-value" value="" >
 					</select>
-					</div>		
-					<i class="center button save" id="editTestcase" katana-click="suites.saveSuitesCaseUI">Save Changes </i>
+					</div>	
+
+					<div class="field">
+					<label >Impact:</label>
+
+					<select type="text" class="text-right" id="CaseImpact" value="impact" >
+					<option value="impact">impact</option>
+					<option value="noimpact">noimpact</option>
+					</select>
+
+					</div>
+	
+					<i class="center col-md-3 button save" id="editTestcase" katana-click="suites.saveSuitesCaseUI">Save Changes </i>
 				</div>
 
 		</div>
