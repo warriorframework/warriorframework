@@ -5,44 +5,20 @@ class command{
         if(data === undefined){
             data = {};
         }
-        if(!data["@sys"]){
-            this.sys = this.getDefaults("sys");
-        }
-        if(!data["@session"]){
-            this.session = this.getDefaults("session");
-        }
-        if(!data["@start"]){
-            this.start = this.getDefaults("start");
-        }
-        if(!data["@end"]){
-            this.end = this.getDefaults("end");
-        }
-        if(!data["@timeout"]){
-            this.timeout = this.getDefaults("timeout");
-        }
-        if(!data["@sleep"]){
-            this.sleep = this.getDefaults("sleep");
-        }
-        if(!data["@verify"]){
-            this.verify = this.getDefaults("verify");
-        }
+        this.sys = !data["@sys"] ? this.getDefaults("sys") : data["@sys"];
+        this.session = !data["@session"] ? this.getDefaults("session") : data["@session"];
+        this.start = !data["@start"] ? this.getDefaults("start") : data["@start"];
+        this.end = !data["@end"] ? this.getDefaults("end") : data["@end"];
+        this.timeout = !data["@timeout"] ? this.getDefaults("timeout") : data["@timeout"];
+        this.sleep = !data["@sleep"] ? this.getDefaults("sleep") : data["@sleep"];
+        this.verify = !data["@verify"] ? this.getDefaults("verify") : data["@verify"];
         this.retry = this.converter("retry", data["@retry"], false, true);
-        if(!data["@retry_timer"]){
-            this.retry_timer = this.getDefaults("retry_timer");
-        }
-        if(!data["@retry_count"]){
-            this.retry_count = this.getDefaults("retry_count");
-        }
-        if(!data["@retry_onmatch"]){
-            this.retry_onmatch = this.getDefaults("retry_onmatch");
-        }
+        this.retry_timer = !data["@retry_timer"] ? this.getDefaults("retry_timer") : data["@retry_timer"];
+        this.retry_count = !data["@retry_count"] ? this.getDefaults("retry_count") : data["@retry_count"];
+        this.retry_onmatch = !data["@retry_onmatch"] ? this.getDefaults("retry_onmatch") : data["@retry_onmatch"];
         this.resp_req = this.converter("resp_req", data["@resp_req"], false, true);
-        if(!data["@resp_pat_req"]){
-            this.resp_pat_req = this.getDefaults("resp_pat_req");
-        }
-        if(!data["@resp_ref"]){
-            this.resp_ref = this.getDefaults("resp_ref");
-        }
+        this.resp_pat_req = !data["@resp_pat_req"] ? this.getDefaults("resp_pat_req") : data["@resp_pat_req"];
+        this.resp_ref = !data["@resp_ref"] ? this.getDefaults("resp_ref") : data["@resp_ref"];
         this.inorder = this.converter("inorder", data["@inorder"], false, true);
         this.repeat = this.converter("repeat", data["@repeat"], false, true);
     }
@@ -129,35 +105,85 @@ class command{
     }
 }
 
+class globalCommand extends command{
 
-let cmd_obj = new command();
-console.log(cmd_obj);
-cmd_obj.retry_count = "10";
-console.log(cmd_obj.retry_count)
-console.log(cmd_obj.jsonObj)
-
-
-/*
-class globalCommand {
     constructor(data){
-        command.call(this, data);
-        if(data === undefined){
-            data = {};
+        super(data);
+        this.iter_type = this.converter("iter_type", data["@iter_type"], false, true);
+    }
+
+    converter(key, value, toJson, toEnglish){
+        var keys = {
+            "iter_type": {
+                "toJson" : (value == "Per Command") ? "per_cmd" : this.getDefaults(key),
+                "toEnglish": (value !== undefined && value.toLowerCase().trim() == "per_cmd") ? "Per Command" : "Per CLI-Data Block"
+            }
         }
-        if(data["@iter_type"]){
-            this.iter_type = "per_td_cmd";
+
+        if(!(keys.hasOwnProperty(key))){
+            return super.converter(key, value, toJson, toEnglish);
+        } else {
+            var direction = "toJson";
+            if(toEnglish){
+                direction = "toEnglish";
+            }
+
+            return keys[key][direction]
         }
     }
 
-    consoleLogStuff(){
-        console.log(this.retry);
+    getDefaults(key){
+        var defaults = {
+            "iter_type": "per_td_block"
+        }
+        if(key in defaults){
+            return defaults[key];
+        } else {
+            return super.getDefaults(key);
+        }
+    }
+
+    get jsonObj() {
+        return this.formJsonObj();
+    }
+
+    formJsonObj(){
+        var jsonObject = super.formJsonObj();
+        jsonObject["@iter_type"] = this.converter("iter_type", this.iter_type, true, false);
+        return jsonObject;
     }
 }
 
+class testdataCommand extends command{
+    constructor(data){
+        super(data);
+        this.send = !data["@send"] ? this.getDefaults("send") : data["@send"];
+    }
 
-let cmd_obj = new globalCommand();
+    getDefaults(key){
+        var defaults = {
+            "send": ""
+        }
+        if(key in defaults){
+            return defaults[key];
+        } else {
+            return super.getDefaults(key);
+        }
+    }
+
+    get jsonObj() {
+        return this.formJsonObj();
+    }
+
+    formJsonObj(){
+        var jsonObject = super.formJsonObj();
+        jsonObject["@send"] = (this.send === "") ? this.getDefaults("send") : this.send;
+        return jsonObject;
+    }
+}
+
+let cmd_obj = new testdataCommand({"@sleep": "55", "@send": "command"});
 console.log(cmd_obj);
 cmd_obj.retry_count = "10";
 console.log(cmd_obj.retry_count)
 console.log(cmd_obj.jsonObj);
-cmd_obj.consoleLogStuff();*/

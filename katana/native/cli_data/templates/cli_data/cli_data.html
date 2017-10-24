@@ -5,6 +5,13 @@
     <title>CLI Data</title>
 </head>
 <body>
-    <div>{{data}}</div>
+    <div id="files-div">
+		<div class="tool-bar">
+            <div katana-click="cli_data.fileDisplayAPI.init" class="button">New</div>
+        </div>
+	    <div id="displayFiles" auto-init="cli_data.fileDisplayAPI.init">
+	    </div>
+	</div>
+    <div class="csrf-container">{% csrf_token %}</div>
 </body>
 </html>
