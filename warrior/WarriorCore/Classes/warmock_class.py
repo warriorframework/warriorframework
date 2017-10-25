@@ -97,25 +97,20 @@ def get_response_file(testdatafile):
     response_dict = {}
     if response_file != "":
         root = getRoot(response_file)
-
-        for testdata in root.findall("testdata"):
-            if testdata.get("execute") == "yes":
-                testdata_key = "{0}{1}".format(testdata.get('title', ""),
-                                               _get_row(testdata))
-                command_list = testdata.findall("command")
-                for command in command_list:
-                    cmd_text = command.get("send", "")
-                    raw_response = command.get("response", "")
-                    response_list = raw_response.split(",")
-                    resp_text = OrderedDict()
-                    for resp_symbol in response_list:
-                        if testdata.find(resp_symbol) is not None and \
-                         testdata.find(resp_symbol).get("text") is not None:
-                            resp_text.update({resp_symbol: testdata.find(resp_symbol).get("text")})
-                        else:
-                            pNote("Error resolving symbol {} in testdata "
-                                  "block {}".format(resp_symbol, testdata_key))
-                    response_dict[cmd_text] = resp_text
+        responses = root.find("responses")
+        if responses is not None:
+            for resp in responses:
+                resp_name = resp.tag
+                resp_text = resp.get("text", "")
+                if resp_name in response_dict:
+                    pNote("A response with tag name {} has been created before with value: {}"
+                          "Please rename with a different tag name".\
+                          format(resp_name, response_dict[resp_name]))
+                else:
+                    response_dict[resp_name] = resp_text
+        else:
+            pNote("Unable to find responses, please put all responses inside a responses tag",
+                  "ERROR")
     else:
         pNote("Unable to retrieve response file from testdata file, please put the path in"
               " response_file tag inside global section of the testdata file", "ERROR")
