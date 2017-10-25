@@ -3,29 +3,27 @@
 var cliData = {
 
     fileDisplayAPI: {
-
         init: function() {
             var $currentPage = katana.$activeTab;
-            var $displayFilesDiv = $currentPage.find('#displayFiles');
+            var $displayFilesDiv = $currentPage.find('#display-files');
+            var $displayErrorMsgDiv = $currentPage.find('#display-error-message');
             $.ajax({
                 type: 'GET',
                 url: 'read_config_file/',
             }).done(function(config_json_data) {
                 if(config_json_data["testdata"] === ""){
-                    katana.openAlert({"alert_type": "danger", "heading": "Configuration Not Set",
-                                      "text": "Please set up the configuration to use this App",
-                                      "show_cancel_btn": false})
-
-                    $displayFilesDiv.html('Please set up the configuration to use this App');
+                    $displayErrorMsgDiv.show();
+                    $displayFilesDiv.hide();
                 } else {
-                    $displayFilesDiv.html('');
-                     $.ajax({
-                            headers: {
-                                'X-CSRFToken': $currentPage.find('input[name="csrfmiddlewaretoken"]').attr('value')
-                            },
-                            type: 'POST',
-                            url: 'get_file_explorer_data/',
-                            data: {"data": {"start_dir": config_json_data["testdata"]}}
+                    $displayErrorMsgDiv.hide();
+                    $displayFilesDiv.show();
+                    $.ajax({
+                           headers: {
+                               'X-CSRFToken': $currentPage.find('input[name="csrfmiddlewaretoken"]').attr('value')
+                           },
+                           type: 'POST',
+                           url: 'get_file_explorer_data/',
+                           data: {"data": {"start_dir": config_json_data["testdata"]}}
                         }).done(function(data) {
                             $displayFilesDiv.jstree({
                                 "core": { "data": [data]},
@@ -48,7 +46,13 @@ var cliData = {
         },
 
         newFile: function() {
-
+            $.ajax({
+               type: 'GET',
+               url: 'cli_data/get_default_file/',
+               data: {"path": false}
+            }).done(function(data) {
+                console.log(data);
+            });
         }
     }
 
