@@ -70,18 +70,21 @@ class BrowserManagement(object):
         print_info("The Selenium Webdriver version is '{0}'".format(webdriver.__version__))
         if browser:
             browser_detail_dict = self.get_browser_details(browser)
-            browser_version = browser_detail_dict['version']
-            print_info("The Browser '{0}' version is '{1}'".format(browser_name, browser_version))
+            for details, value in browser_detail_dict.items():
+                print_info("The Browser '{0}' {1} is '{2}'".format(browser_name, details, value))
         return browser
 
     def get_browser_details(self, browser):
-        """ Return the Browser details
+        """ Return the Browser details dict. The Dict can be updated with additional information
+        about the Browser
 
             Arguments :
                        browser = The browser instance
 
             Return :
-                     browser_detail_dict = A Dictionary containing details of the browser instance.
+                     browser_detail_dict = A Dictionary containing details of the browser instance
+                     such as version.
+
         """
         browser_detail_dict = {}
         browser_detail_dict['version'] = browser.capabilities['version']
