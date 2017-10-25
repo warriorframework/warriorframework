@@ -30,6 +30,7 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
         $scope.step_onerror = "next";
         $scope.step_onerror_value = "";
         $scope.arg_list = [{"_name": "", "_value": ""}];
+        $scope.rule_list = [{"_Condition": "", "_Operator": "eq", "_Condvalue": "", "_Else": "next" , "_Elsevalue": ""}];
         $scope.showStepEdit = false;
         $scope.insertStep = false;
         $scope.alldirinfo = "";
@@ -39,6 +40,13 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
         $scope.earlier_li = [];
         $scope.btnValue = "Path";
         $scope.showModal = {visible: false};
+        $scope.showRulesBelow = false;
+        $scope.hideElseVal = true;
+        $scope.hideExp = true;
+        $scope.hideElse = true;
+        $scope.ExecTypeVal = 0;
+        // $scope.ruleTable = false;
+        $scope.hideRuleElseVal = true;
 
         function readConfig(){
             getConfigFactory.readconfig()
@@ -49,6 +57,53 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
 
         readConfig();
 
+$scope.cancelRule = function(){ 
+$scope.status.step.Execute._ExecType = 'Yes';
+$scope.showRulesBelow = false;
+$scope.hideExp = true;
+$scope.hideElse = true;
+$scope.hideElseVal = true;
+//$scope.ruleTable = false;
+}
+    
+
+$scope.showRules = function(execType){
+    if(execType == 'If' || execType == 'If Not'){
+        if($scope.ExecTypeVal == 1){
+            $scope.rule_list = '';
+            $scope.rule_list = [];
+        }
+    $scope.showRulesBelow = true; 
+    $scope.hideExp = false;
+    $scope.hideElse = false;
+    $scope.ExecTypeVal = 1;
+    $scope.rule_list.push({"_Condition": "", "_Operator": "eq", "_Condvalue": "", "_Else": "next" , "_Elsevalue": ""});
+    }
+    else{
+        $scope.showRulesBelow = false;
+        $scope.hideExp = true;
+        $scope.hideElse = true;
+        $scope.hideElseVal = true;
+    }
+}
+
+$scope.showElseVal = function(elseval){
+    if(elseval == 'goto'){
+    $scope.hideElseVal = false;
+    }
+    else{
+        $scope.hideElseVal = true;
+    }
+}
+
+$scope.showRuleElseVal = function(elseval){
+    if(elseval == 'goto'){
+    $scope.hideRuleElseVal = false;
+    }
+    else{
+        $scope.hideRuleElseVal = true;
+    }
+}
 
 //To Load the InputData File from Suite 
 //Works for base Directory as well as Subdirectories
@@ -243,6 +298,12 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
             $scope.arg_list.push({"_name": "", "_value": ""});
         };
 
+        $scope.addAnotherRulesToList = function (){ 
+        $scope.rule_list.push({"_Condition": "", "_Operator": "eq", "_Condvalue": "", "_Else": "next" , "_Elsevalue": ""});
+        $scope.showRuleElseVal("next");
+        //$scope.ruleTable = true;
+        };
+
         $scope.deleteArgFromList = function(index){
             if($scope.arg_list.length > 1){
                 $scope.arg_list.splice(index, 1);
@@ -250,6 +311,23 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
             else{
                 $scope.arg_list = [{"_name": "", "_value": ""}];
             }
+        };
+
+        $scope.deleteRuleFromList = function(index){
+        if($scope.rule_list.length > 1){
+            $scope.rule_list.splice(index, 1);
+        }
+        else{
+            $scope.rule_list = [{"_Condition": "", "_Operator": "eq", "_Condvalue": "", "_Else": "next" , "_Elsevalue": ""}];
+            sweetAlert({
+                title: "Specify atleast one Rule.",
+                closeOnConfirm: true,
+                confirmButtonColor: '#3b3131',
+                confirmButtonText: "Ok",
+                type: "info"
+            });
+        }
+
         };
 
             $scope.syncStepOnError = function(){
@@ -411,8 +489,9 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
             if(!$scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Arguments.argument.hasOwnProperty(length)){
                 $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Arguments.argument = [$scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Arguments.argument];
             }
-            if($scope.status.kwCheckbox){
+            if($scope.status.kwCheckbox || $scope.showRulesBelow){
                 $scope.arg_list = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Arguments.argument;
+                $scope.rule_list = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Execute.Rule;
             }
             else{
                 var mapped_arg_obj = {};
@@ -425,8 +504,13 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
                     return a.split('=')[0];
                 });
             }
+            
             $scope.status.step.Execute._ExecType = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Execute._ExecType;
+            $scope.status.step.Execute._Expression = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Execute._Expression;
+            $scope.status.step.Execute._Else = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Execute._Else;
+            $scope.status.step.Execute._Elsevalue = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Execute._Elsevalue;
             $scope.status.step.Execute.Rule._Condition = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Execute.Rule._Condition;
+            $scope.status.step.Execute.Rule._Operator = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Execute.Rule._Operator;
             $scope.status.step.Execute.Rule._Condvalue = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Execute.Rule._Condvalue;
             $scope.status.step.Execute.Rule._Else = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Execute.Rule._Else;
             $scope.status.step.Execute.Rule._Elsevalue = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Execute.Rule._Elsevalue;
@@ -625,11 +709,11 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
 
                 for (i = 0; i < $scope.model.Testcase.Steps.step.length; i++) {
                     if(!$scope.model.Testcase.Steps.step[i].hasOwnProperty("Execute")){
-                        $scope.model.Testcase.Steps.step[i]["Execute"] = {"_ExecType": "Yes", "Rule": {"_Elsevalue": "", "_Else": "", "_Condvalue": "", "_Condition": ""}}
+                    $scope.model.Testcase.Steps.step[i]["Execute"] = {"_ExecType": "Yes", "_Expression": "", "_Else": "next", "_Elsevalue": "", "Rule": {"_Condition": "", "_Operator": "eq", "_Condvalue": "", "_Else": "next" , "_Elsevalue": ""}}
                     }
 
                     if(!$scope.model.Testcase.Steps.step[i].Execute.hasOwnProperty("Rule")){
-                        $scope.model.Testcase.Steps.step[i].Execute["Rule"] = {"_Elsevalue": "", "_Else": "", "_Condvalue": "", "_Condition": ""}
+                    $scope.model.Testcase.Steps.step[i].Execute["Rule"] = {"_Condition": "", "_Operator": "eq", "_Condvalue": "", "_Else": "next" , "_Elsevalue": ""}
                     }
 
                     if(!$scope.model.Testcase.Steps.step[i].hasOwnProperty("onError")){
@@ -683,18 +767,32 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
                     }
 
                      for(j=0; j<$scope.status.stepsexecutes.length; j++){
-                        if($scope.model.Testcase.Steps.step[i].Execute._ExecType.toLowerCase() == $scope.status.stepsexecutes[j].toLowerCase()){
+                         if($scope.model.Testcase.Steps.step[i].Execute._ExecType.toLowerCase() == $scope.status.stepsexecutes[j].toLowerCase()){
                             $scope.model.Testcase.Steps.step[i].Execute._ExecType = $scope.status.stepsexecutes[j];
                             break;
-                        }
-                    }
+                         }
+                     }
 
                     for(j=0; j<$scope.status.steperrors.length; j++){
-                        if($scope.model.Testcase.Steps.step[i].Execute.Rule._Else.toLowerCase() == $scope.status.steperrors[j].toLowerCase()){
+                        if($scope.model.Testcase.Steps.step[i].Execute._Else.toLowerCase() == $scope.status.steperrors[j].toLowerCase()){
+                            $scope.model.Testcase.Steps.step[i].Execute._Else = $scope.status.steperrors[j];
+                            break;
+                        }
+                     }
+
+                     for(j=0; j<$scope.status.operator.length; j++){
+                        if($scope.model.Testcase.Steps.step[i].Execute.Rule._Operator.toLowerCase() == $scope.status.operator[j].toLowerCase()){
+                            $scope.model.Testcase.Steps.step[i].Execute.Rule._Operator = $scope.status.operator[j];
+                            break;
+                         }
+                     }
+
+                     for(j=0; j<$scope.status.steperrors.length; j++){
+                         if($scope.model.Testcase.Steps.step[i].Execute.Rule._Else.toLowerCase() == $scope.status.steperrors[j].toLowerCase()){
                             $scope.model.Testcase.Steps.step[i].Execute.Rule._Else = $scope.status.steperrors[j];
                             break;
                         }
-                    }
+                     }
 
                     for(j=0; j<$scope.status.runmodes.length; j++){
                         if($scope.model.Testcase.Steps.step[i].runmode._type == ""){
@@ -825,6 +923,8 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
         iterationtypes: ['Standard', 'once_per_tc', 'end_of_tc'],
 
         stepsexecutes: ['If', 'If Not', 'Yes', 'No'],
+
+        operator: ['ge', 'gt', 'le', 'lt', 'eq', 'ne' ],
 
         stepexecuteerrors: ['next', 'abort', 'abort_as_error', 'goto'],
 
@@ -1020,9 +1120,15 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
         else {
             startStepCap(edtype, val, index);
         }
+        $scope.hideElseVal = true;
     };
 
         function startStepCap(edtype, val, index){
+            $scope.showRulesBelow = false;
+            $scope.hideElse =  true;
+            $scope.hideExp =  true;
+            $scope.rule_list = '';
+            $scope.rule_list = [];
             $scope.step_numbers = [];
             $scope.stepToBeCopied = "None";
             for(var i=0; i<$scope.model.Testcase.Steps.step.length; i++){
@@ -1201,9 +1307,11 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
             var var_args = [];
             if($scope.model.Testcase.Steps.step[index].Arguments.argument.hasOwnProperty(length)){
                 $scope.arg_list = $scope.model.Testcase.Steps.step[index].Arguments.argument;
+                $scope.rule_list = $scope.model.Testcase.Steps.step[index].Execute.Rule;
             }
             else{
                 $scope.arg_list = [$scope.model.Testcase.Steps.step[index].Arguments.argument];
+                $scope.rule_list = [$scope.model.Testcase.Steps.step[index].Execute.Rule];
             }
             for(var i=0; i<$scope.arg_list.length; i++){
                 var_argsmap[$scope.arg_list[i]._name] = $scope.arg_list[i]._value;
@@ -1286,6 +1394,17 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
           "Arguments": {
             "argument": []
           },
+          "Execute": {
+            "_ExecType": "Yes",
+            "_Expression": "",
+            "_Else": "next",
+            "Rule": {
+                "_Condition":"",
+                "_Condvalue":"",
+                "_Else":"next",
+                "_Elsevalue":""
+            }
+          },
           "onError": {
             "_action": $scope.step_onerror, // Inherits from default_onError value in the TC
             "_value": $scope.step_onerror_value
@@ -1294,15 +1413,6 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
             "iteration_type": {
                 "_type":"Standard"
             },
-          "Execute": {
-            "_ExecType": "Yes",
-            "Rule": {
-                "_Condition":"",
-                "_Condvalue":"",
-                "_Else":"next",
-                "_Elsevalue":""
-            }
-          },
           "context": "positive",    // negative, positive
           "impact": "impact",     // impact, noimpact
           "_TS": "1",
@@ -1323,6 +1433,17 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
           "Arguments": {
             "argument": []
           },
+          "Execute": {
+            "_ExecType": "Yes",
+            "_Expression": "",
+            "_Else": "next",
+            "Rule": {
+                "_Condition":"",
+                "_Condvalue":"",
+                "_Else":"next",
+                "_Elsevalue":""
+            }
+          },
           "onError": {
             "_action": "", // next, abort, goto
             "_value": ""
@@ -1331,15 +1452,6 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
             "iteration_type": {
                 "_type":"Standard"
             },
-          "Execute": {
-            "_ExecType": "Yes",
-            "Rule": {
-                "_Condition":"",
-                "_Condvalue":"",
-                "_Else":"next",
-                "_Elsevalue":""
-            }
-          },
             "context": "positive",    // negative, positive
             "impact": "impact",     // impact, noimpact
             "runmode": {
@@ -1404,13 +1516,27 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
             $scope.status.step.iteration_type['_type'] = "";
         }
         rec.iteration_type['_type'] = $scope.status.step.iteration_type['_type'];
+
         if($scope.status.step.Execute == undefined){
             $scope.status.step.Execute = {};
         }
+
         if($scope.status.step.Execute['_ExecType'] == undefined){
             $scope.status.step.Execute['_ExecType'] = "Yes";
         }
+
+        if($scope.status.step.Execute['_Else'] == undefined){
+            $scope.status.step.Execute['_Else'] = "Next";
+        }
+
+        if($scope.status.step.Execute['Rule']['_Else'] == undefined){
+            $scope.status.step.Execute['Rule']['_Else'] = "Next";
+        }
+
         rec.Execute['_ExecType'] = $scope.status.step.Execute['_ExecType'];
+        rec.Execute['_Expression'] = $scope.status.step.Execute['_Expression'];
+        rec.Execute['_Else'] = $scope.status.step.Execute['_Else'];
+        rec.Execute['_Elsevalue'] = $scope.status.step.Execute['_Elsevalue'];
 
         if (rec.Execute['_ExecType'] == 'If' || rec.Execute['_ExecType'] == 'If Not') {
             rec.Execute['Rule']['_Condition'] = $scope.status.step.Execute['Rule']['_Condition'];
@@ -1529,6 +1655,9 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
             newstep.Arguments.argument = $scope.arg_list;
         }
 
+        if($scope.showRulesBelow){
+        newstep.Execute.Rule = $scope.rule_list;
+        }
 
         if ($scope.status.step_edit_mode == 'New') {
             if($scope.status.stepindex==-1){
