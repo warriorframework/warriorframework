@@ -17,6 +17,8 @@ if sys.version_info < (2, 7):
     sys.exit(0)
 try:
     import os
+    import re
+    import subprocess
     import shutil
     import Framework.Utils.email_utils as email
     import Framework.Utils as Utils
@@ -48,6 +50,110 @@ def update_jira_by_id(jiraproj, jiraid, exec_dir, status):
     else:
         print_info("jiraid not provided, will not update jira issue")
 
+def notify_send_for_exit_status(exit_status):
+        if exit_status is "Done_0":
+                os_name = subprocess.check_output('lsb_release -ds', shell=True)
+
+                if "Red Hat" in os_name or "Mandriva" in os_name or "Mandrake" in os_name or "Fedora" in os_name or "SuSE" in os_name or "CentOS" in os_name :
+                        val1 = subprocess.check_output('rpm -qa | grep libnotify', stderr=subprocess.STDOUT, shell=True)
+
+                        res1 = re.search("libnotify4", val1)
+                        res2 = re.search("libnotify-bin", val1)
+                        if res1 is not None or res2 is not None:
+                                os.system('notify-send "Warrior Execution Passed" -i dialog-ok')
+                                print "\a"
+
+                elif "buntu" in os_name or "KNOPPIX" in os_name:
+                        val1 = subprocess.check_output('dpkg -l | grep libnotify', stderr=subprocess.STDOUT, shell=True)
+
+                        res1 = re.search("libnotify4", val1)
+                        res2 = re.search("libnotify-bin", val1)
+                        if res1 is not None or res2 is not None:
+                                os.system('notify-send "Warrior Execution Passed" -i dialog-ok')
+                                print "\a"
+
+                elif "Slax" in os_name:
+                        val1 = subprocess.check_output('ls /var/log/packages | grep libnotify', stderr=subprocess.STDOUT, shell=True)
+
+                        res1 = re.search("libnotify4", val1)
+                        res2 = re.search("libnotify-bin", val1)
+                        if res1 is not None or res2 is not None:
+                                os.system('notify-send "Warrior Execution Passed" -i dialog-ok')
+                                print "\a"
+
+                elif "gentoo" in os_name:
+                        val1 = subprocess.check_output('equery list "*" | grep libnotify', stderr=subprocess.STDOUT, shell=True)
+
+                        res1 = re.search("libnotify4", val1)
+                        res2 = re.search("libnotify-bin", val1)
+                        if res1 is not None or res2 is not None:
+                                os.system('notify-send "Warrior Execution Passed" -i dialog-ok')
+                                print "\a"
+
+                elif "Arch" in os_name:
+                        val1 = subprocess.check_output('pacman -Ql "libnotify"', stderr=subprocess.STDOUT, shell=True)
+
+                        res1 = re.search("libnotify4", val1)
+                        res2 = re.search("libnotify-bin", val1)
+                        if res1 is not None or res2 is not None:
+                                os.system('notify-send "Warrior Execution Passed" -i dialog-ok')
+                                print "\a"
+
+                else:
+                        print ""
+
+        elif exit_status is "Done_1":
+                os_name = subprocess.check_output('lsb_release -ds', shell=True)
+
+                if "Red Hat" in os_name or "Mandriva" in os_name or "Mandrake" in os_name or "Fedora" in os_name or "SuSE" in os_name or "CentOS" in os_name :
+                        val1 = subprocess.check_output('rpm -qa | grep libnotify', stderr=subprocess.STDOUT, shell=True)
+
+                        res1 = re.search("libnotify4", val1)
+                        res2 = re.search("libnotify-bin", val1)
+                        if res1 is not None or res2 is not None:
+                                os.system('notify-send "Warrior Execution Failed" -i dialog-ok')
+                                print "\a"
+
+                elif "buntu" in os_name or "KNOPPIX" in os_name:
+                        val1 = subprocess.check_output('dpkg -l | grep libnotify', stderr=subprocess.STDOUT, shell=True)
+
+                        res1 = re.search("libnotify4", val1)
+                        res2 = re.search("libnotify-bin", val1)
+                        if res1 is not None or res2 is not None:
+                                os.system('notify-send "Warrior Execution Failed" -i dialog-ok')
+                                print "\a"
+
+                elif "Slax" in os_name:
+                        val1 = subprocess.check_output('ls /var/log/packages | grep libnotify', stderr=subprocess.STDOUT, shell=True)
+
+                        res1 = re.search("libnotify4", val1)
+                        res2 = re.search("libnotify-bin", val1)
+                        if res1 is not None or res2 is not None:
+                                os.system('notify-send "Warrior Execution Failed" -i dialog-ok')
+                                print "\a"
+
+                elif "gentoo" in os_name:
+                        val1 = subprocess.check_output('equery list "*" | grep libnotify', stderr=subprocess.STDOUT, shell=True)
+
+                        res1 = re.search("libnotify4", val1)
+                        res2 = re.search("libnotify-bin", val1)
+                        if res1 is not None or res2 is not None:
+                                os.system('notify-send "Warrior Execution Failed" -i dialog-ok')
+                                print "\a"
+
+                elif "Arch" in os_name:
+                        val1 = subprocess.check_output('pacman -Ql "libnotify"', stderr=subprocess.STDOUT, shell=True)
+
+                        res1 = re.search("libnotify4", val1)
+                        res2 = re.search("libnotify-bin", val1)
+                        if res1 is not None or res2 is not None:
+                                os.system('notify-send "Warrior Execution Failed" -i dialog-ok')
+                                print "\a"
+
+                else:
+                        print ""
+        else:
+                print ""
 
 def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
          jiraproj, overwrite, jiraid, dbsystem):
@@ -152,9 +258,13 @@ if __name__ == '__main__':
     status = {"true": True, "pass": True}.get(str(status).lower())
     if status is True:
         print_info("DONE 0")
+        exit_status = "Done_0"
+        notify_send_for_exit_status(exit_status)
         sys.exit(0)
         print "This line should not be printed"
     else:
         print_info("DONE 1")
+        exit_status = "Done_1"
+        notify_send_for_exit_status(exit_status)
         sys.exit(1)
         print "This line should not be printed"
