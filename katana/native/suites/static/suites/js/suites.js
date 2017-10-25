@@ -141,7 +141,7 @@ class suiteRequirementsObject{
 		this.aRequirements[s]=v;
 	}
 
-	deleteRequirement(sid) {
+	deleteRequirement(s) {
 		this.aRequirements.splice(s,1);
 	}
 }
