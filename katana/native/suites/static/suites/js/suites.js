@@ -314,11 +314,11 @@ class testSuiteObject{
 			for (var ts =0; ts< this.Testcases.length; ts++ ) {
 				testcasesJSON.push(this.Testcases[ts].getJSON());
 			}
-			console.log(this);
+			console.log("testCases", testcasesJSON);
 
 			return { 'Details': this.Details.getJSON(), 
 				'Requirements' : { 'Requirement': this.Requirements.getJSONdata() },
-				'Testcases' :  testcasesJSON };
+				'Testcases' : { 'Testcase':  testcasesJSON } };
 		}
 
 	}
@@ -439,14 +439,18 @@ var suites= {
 // no default value, a null value is inserted for the keyword
 /// -------------------------------------------------------------------------------
 	addCaseToSuite: function(){
-		var newTestcase =	new suiteCaseObject(); 	
+		var newTestcase =	new suiteCaseObject(); 
+		
+		suites.jsonTestcases = suites.jsonSuiteObject.Testcases	
 		console.log(suites.jsonTestcases);
 		suites.jsonTestcases.push(newTestcase);
 		suites.createCasesTable(suites.jsonTestcases);
 	},
 	 
 	insertCaseToSuite: function(sid, copy){
-		var newTestcase =new suiteCaseObject(); 		
+		var newTestcase =new suiteCaseObject();
+		suites.jsonTestcases = suites.jsonSuiteObject.Testcases	
+		 		
 		suites.jsonTestcases.splice(sid,0,newTestcase);
 		suites.createCasesTable(suites.jsonTestcases);
 	},
@@ -454,6 +458,7 @@ var suites= {
 	mapSuiteCaseToUI: function(s,popup) {
 
 	// This is called from an event handler ... 
+	suites.jsonTestcases = suites.jsonSuiteObject.Testcases		
 	var xdata = suites.jsonTestcases;
 	console.log(s, xdata);
 	var oneCase = xdata[s];
@@ -682,12 +687,15 @@ Two global variables are heavily used when this function is called;
 	getResultsDirForSuite: function () {
       var callback_on_accept = function(selectedValue) { 
       		console.log(selectedValue);
+      		var popup = suites.lastPopup;
+      		
       		var pathToBase = katana.$activeTab.find('#savefilepath').text();
       		console.log("File path ==", pathToBase);
       		var nf = prefixFromAbs(pathToBase, selectedValue);
       		suites.jsonSuiteObject.Details.Resultsdir = nf;
       		console.log("Path set to ",nf);
             katana.$activeTab.find('#suiteResults').val(nf);
+            popup.find("#StepInputDataFile").val(nf); 
            };
       var callback_on_dismiss = function(){ 
       		console.log("Dismissed");
@@ -695,24 +703,23 @@ Two global variables are heavily used when this function is called;
      katana.fileExplorerAPI.openFileExplorer("Select a file", false , $("[name='csrfmiddlewaretoken']").val(), false, callback_on_accept, callback_on_dismiss);
 	},
 
-	getResultsDirForSuiteRow: function () {
+
+	getDirForSuiteRow: function (where) {
       var callback_on_accept = function(selectedValue) { 
-      		// Convert to relative path.
       		var sid = katana.$activeTab.attr('suite_case_row');
-			var popup = suites.lastPopup;
-      		var pathToBase = katana.$activeTab.find('#savefilepath').text();
+			var pathToBase = katana.$activeTab.find('#savefilepath').text();
       		console.log("File path ==", pathToBase, sid);
       		var nf = prefixFromAbs(pathToBase, selectedValue);
-      		suites.jsonTestcases[sid]['InputDataFile'] = nf;
-      		console.log("Path set to ",nf," for ", sid);
-      		//createCasesTable(suites.jsonTestcases);
-      		popup.find("#StepInputDataFile").val(nf); 
+      		var oneCase = suites.jsonSuiteObject.Testcases[sid];
+      		oneCase[where]= nf;
+      		console.log("Path set to ",nf," for ", sid, oneCase);
+      		suites.createCasesTable(suites.jsonTestcases);
             };
       var callback_on_dismiss = function(){ 
       		console.log("Dismissed");
 	 };
      katana.fileExplorerAPI.openFileExplorer("Select a file", false , $("[name='csrfmiddlewaretoken']").val(), false, callback_on_accept, callback_on_dismiss);
-},
+	},
 
 	fillSuiteDefaultGoto :function() {
 
@@ -763,9 +770,9 @@ Two global variables are heavily used when this function is called;
 	createCasesTable: function(xdata) {
 		var items = []; 
 
-		items.push('<table id="Case_table_display" class="suite-configuration-table" width="100%">');
+		items.push('<table  id="Case_table_display" class="suite-configuration-table" width="100%">');
 		items.push('<thead>');
-		items.push('<tr id="CaseRow"><th>Num</th><th></th><th>Path</th><th>context</th><th>Run Type</th><th>Mode</th><th>OnError</th><th>Impact</th><th/></tr>');
+		items.push('<tr id="CaseRow"><th>Num</th><th></th><th>Path</th><th></th><th>Input Data</th><th>context</th><th>Run Type</th><th>Mode</th><th>OnError</th><th>Impact</th><th/></tr>');
 		items.push('</thead>');
 		items.push('<tbody>');
 
@@ -781,6 +788,8 @@ Two global variables are heavily used when this function is called;
 			var bid = "fileTestcase-"+s+"-id";
 			items.push('<td><i title="ChangeFile" class="fa fa-folder-open" id="'+bid+'" katana-click="suites.fileNewSuiteFromLine" key="'+bid+'"/></td>');
 			items.push('<td katana-click="suites.showCaseFromSuite" skey="'+oneCase['path']+'"> '+oneCase['path']+'</td>');
+			items.push('<td><i title="Change Input Data File" class="fa fa-folder-open" id="'+bid+'" katana-click="suites.fileNewInputFromLine" key="'+bid+'"/></td>');
+			items.push('<td skey="'+oneCase['InputDataFile']+'"> '+oneCase['InputDataFile']+'</td>');
 			items.push('<td>'+oneCase.context+'</td>');
 			items.push('<td>'+oneCase.runtype+'</td>');
 			items.push('<td>'+oneCase.runmode_type);
@@ -865,7 +874,14 @@ Two global variables are heavily used when this function is called;
 	var names = this.attr('key').split('-');
 	var sid = parseInt(names[1]);
 	katana.$activeTab.attr('suite_case_row',sid);
-	suites.getResultsDirForSuiteRow();
+	suites.getDirForSuiteRow('path');
+	},
+
+	fileNewInputFromLine:function(){ 
+	var names = this.attr('key').split('-');
+	var sid = parseInt(names[1]);
+	katana.$activeTab.attr('suite_case_row',sid);
+	suites.getDirForSuiteRow('InputDataFile');
 	},
 
 	showCaseFromSuite : function () {
