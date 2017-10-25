@@ -29,7 +29,7 @@ class CliDataFileClass(View):
     app_static_dir = join_path(app_directory, "static")
 
     def get(self, request):
-        filepath = '/home/sanika/warriorframework/katana/native/cli_data/static/base_templates/test.xml'
+        filepath = request.GET.get('path')
         base_filepath = join_path(CliDataFileClass.app_static_dir, "base_templates", "empty.xml")
         if filepath == "false":
             filepath = base_filepath
