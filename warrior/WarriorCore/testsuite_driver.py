@@ -19,7 +19,7 @@ import time
 import traceback
 import shutil
 import copy
-
+import xmltodict
 import sequential_testcase_driver
 import testcase_driver
 import onerror_driver
@@ -448,6 +448,21 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
                                      print_summary=False)
 
     return test_suite_status, suite_repository
+
+
+def check_runtype_mismatch(testsuite_filepath):
+    """
+    Return True if runtypes are consistent; False if parallel and sequential are mixed.
+    Arguments:
+    1. testsuite_filepath   = (string) the full path of the testsuite xml file.
+    """
+    mydir = xmltodict.parse(open(testsuite_filepath).read()); 
+    runtype = {} 
+    cases = mydir['TestSuite']['Testcases']['Testcase'] 
+    if not isinstance(cases, list): cases = [ cases, ] 
+    for cs in cases: runtype[cs['runtype']] = 1;   
+    if len(runtype.keys()) != 1: return False
+    return True
 
 
 def main(testsuite_filepath, data_repository={},
