@@ -10,8 +10,8 @@
 		<InputDataFile>No_Data</InputDataFile>
 		<Datatype/>
 		<default_onError action="next"/>
-		<Logsdir/>
-		<Resultsdir/>
+		<Logsdir>/data/users/vsethura/workspace/WAR-1313/dir_log</Logsdir>
+		<Resultsdir>/data/users/vsethura/workspace/WAR-1313/dir_result</Resultsdir>
 		<ExpectedResults/>
 	</Details>
 	<Requirements>
