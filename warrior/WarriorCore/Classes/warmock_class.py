@@ -10,7 +10,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from collections import OrderedDict
 from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.print_Utils import print_info, print_warning
 # For function/method that only be mocked in trialmode (not sim mode), put name here
@@ -38,12 +37,16 @@ def mocked(func):
         """
             Call corresponding mock method
         """
+        # If warrior is not in mock or sim mode
+        # or if warrior is in sim mode but it's a VERIFY_ONLY function
+        # return the original function
         from WarriorCore.Classes.war_cli_class import WarriorCliClass
         if (not WarriorCliClass.mock and not WarriorCliClass.sim) or\
            (WarriorCliClass.sim and func.__name__ in VERIFY_ONLY):
             return func(*args, **kwargs)
 
-        # If it is in simulator mode, this function needs to retrieve response for command
+        # If warrior is in simulator mode, this function will also parse the simresp
+        # and parse response file
         if func.__name__ == "get_command_details_from_testdata":
             if WarriorCliClass.sim and args[0] is not None and args[0] != "":
                 from Framework.Utils.data_Utils import cmd_params
@@ -51,15 +54,20 @@ def mocked(func):
                 get_response_file(args[0])
             return func(*args, **kwargs)
 
-        # same as above function to retrieve response
+        # link the command with its simresp value into a dict
         if func.__name__ == "_get_cmd_details":
             result = func(*args, **kwargs)
             pNote("The non-substituted commands:")
             for index, cmd in enumerate(result["command_list"]):
                 pNote("#{}: {}".format(index+1, cmd))
                 if WarriorCliClass.sim:
-                    MockUtils.cli_Utils.response_reference_dict[cmd] = \
-                     result["sim_response_list"][index]
+                    if cmd in MockUtils.cli_Utils.response_reference_dict and \
+                        MockUtils.cli_Utils.response_reference_dict[cmd] is not None:
+                        pNote("Command: {} is already linked to simresp: {}"\
+                              .format(cmd, MockUtils.cli_Utils.response_reference_dict[cmd]))
+                    else:
+                        MockUtils.cli_Utils.response_reference_dict[cmd] = \
+                        result["sim_response_list"][index]
             return result
 
         # Print extra info
@@ -88,10 +96,9 @@ def mocked(func):
 
 def get_response_file(testdatafile):
     """
-        Link response to command in testdatafile
+        Build the response dict with response tag name and response text
     """
     from Framework.Utils.xml_Utils import getRoot, getElementListWithSpecificXpath
-    from Framework.Utils.data_Utils import _get_row
     tmp_list = getElementListWithSpecificXpath(testdatafile, "./global/response_file")
     response_file = tmp_list[0].text if tmp_list != [] else ""
     response_dict = {}
@@ -197,14 +204,17 @@ class MockUtils(object):
                           "in 'warrior/Framework/ClassUtils/WNetwork/warrior_cli_class.py'")
             from WarriorCore.Classes.war_cli_class import WarriorCliClass
             pNote(":CMD: %s" % (args[3]))
-            specific_response = MockUtils.cli_Utils.response_reference_dict.get(args[3], True) \
-                if WarriorCliClass.sim else False
-            if specific_response:
-                response = MockUtils.cli_Utils.response_dict.get(args[3],
-                                                                 {}).get(specific_response, "")
+            # response reference dict contains all command with simresp
+            if WarriorCliClass.sim and args[3] in MockUtils.cli_Utils.response_reference_dict:
+                simresp = MockUtils.cli_Utils.response_reference_dict.get(args[3], False)
+                response = MockUtils.cli_Utils.response_dict.get(simresp, "")
+            # if command doesn't have simresp, try to get the default response
+            elif WarriorCliClass.sim and args[3] not in MockUtils.cli_Utils.response_reference_dict:
+                response = MockUtils.cli_Utils.response_reference_dict.get("default", "")
+            # if default is not found or in mock mode, return empty response
             else:
-                response = MockUtils.cli_Utils.response_dict.get(args[3], {}).values()[0] \
-                    if WarriorCliClass.sim else ""
+                response = ""
+
             pNote("Response:\n{0}\n".format(response))
             return True, response
 
@@ -353,14 +363,18 @@ class MockUtils(object):
             """
             from WarriorCore.Classes.war_cli_class import WarriorCliClass
             pNote(":CMD: %s" % (args[3]))
-            specific_response = MockUtils.cli_Utils.response_reference_dict.get(args[3], True) \
-                if WarriorCliClass.sim else False
-            if specific_response:
-                response = MockUtils.cli_Utils.response_dict.get(args[3],
-                                                                 {}).get(specific_response, "")
+            # response reference dict contains all command with simresp
+            if WarriorCliClass.sim and \
+                MockUtils.cli_Utils.response_reference_dict.get(args[3], None) is not None:
+                simresp = MockUtils.cli_Utils.response_reference_dict.get(args[3], False)
+                response = MockUtils.cli_Utils.response_dict.get(simresp, "")
+            # if command doesn't have simresp, try to get the default response
+            elif WarriorCliClass.sim:
+                response = MockUtils.cli_Utils.response_dict.get("default", "")
+            # if default is not found or in mock mode, return empty response
             else:
-                response = MockUtils.cli_Utils.response_dict.get(args[3], {}).values()[0] \
-                    if WarriorCliClass.sim else ""
+                response = ""
+
             pNote("Response:\n{0}\n".format(response))
             return True, response
 
