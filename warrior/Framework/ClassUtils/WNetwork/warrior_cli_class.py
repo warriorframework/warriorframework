@@ -188,7 +188,7 @@ class WarriorCli(object):
             1. finalresult = boolean
         """
         responses_dict = {}
-        td_resp_dict = {}
+        resp_key_list = []
         varconfigfile = args.get('varconfigfile', None)
         datafile = args.get("datafile", None)
         var_sub = args.get('var_sub', None)
@@ -236,7 +236,7 @@ class WarriorCli(object):
                         details_dict, index=i, result=result,
                         response=response, system_name=td_sys)
                     response_dict = new_obj_session._get_response_dict(
-                        details_dict, i, response, response_dict)
+                        details_dict, i, response, response_dict, resp_key_list)
                     print_debug("<<<")
                 else:
                     finalresult = "ERROR"
@@ -250,11 +250,11 @@ class WarriorCli(object):
                 finalresult = finalresult and result
             responses_dict[key] = response_dict
             td_resp_dict = self.update_resp_ref_in_data_repo(details_dict, system_name, session_name,
-                                                             finalresult, responses_dict, td_resp_dict)
+                                                             finalresult, responses_dict, resp_key_list)
         return finalresult, td_resp_dict
 
     def update_resp_ref_in_data_repo(self, details_dict, system_name, session_name,
-                                     finalresult, responses_dict, td_resp_dict):
+                                     finalresult, responses_dict, resp_key_list=[]):
         """
         -Updates the response reference key and value the respective session_id
         -If the testcase and testdata file has two different system name, then it takes the td file
@@ -273,15 +273,6 @@ class WarriorCli(object):
         td_session_list = []
         td_session_id = ''
 
-        def append_resp_ref_key_value(value, temp_resp_dict, td_resp_dict, title_row):
-            """
-            The response reference value is updated in the data repository
-            """
-            resp_key_value_dict = {value: temp_resp_dict[value]}
-            if not WarriorCliClass.cmdprint:
-                td_resp_dict[title_row].update(resp_key_value_dict)
-            return td_resp_dict
-
         # Fetching the system name and session name from details dict if available,
         # else takes from test case.
         if finalresult:
@@ -292,6 +283,7 @@ class WarriorCli(object):
                     td_sys_list.append(system_name)
                 else:
                     td_sys_list.append(i)
+            td_session_list = [k or session_name for k in details_dict["session_list"]]
             for k in details_dict["session_list"]:
                 # If session name not available it td file, it fetches from the test case.
                 if k is None or k is '':
@@ -300,7 +292,7 @@ class WarriorCli(object):
                     td_session_list.append(k)
 
             for title_row, temp_resp_dict in responses_dict.iteritems():
-                for count, value in enumerate(temp_resp_dict):
+                for count, value in enumerate(resp_key_list):
                     # if session name is given along with system name in td file, then it is split
                     # and saved respectively. (eg: sys_name = sys1.session1)
                     temp_sys = td_sys_list[count].split('.', 1)
@@ -313,20 +305,16 @@ class WarriorCli(object):
                     td_resp_dict = get_object_from_datarepository(str(td_session_id)+"_td_response")
 
                     # checks if title_row value is not in td_resp_dict
-                    if title_row not in td_resp_dict.keys():
+                    if title_row not in td_resp_dict:
                     # if not available then it first updates the title_row value to td_resp_dict
                         td_resp_dict[title_row] = {}
-                        # after updating title_row value, it updates the resp_ref key and value
-                        td_resp_dict = append_resp_ref_key_value(value, temp_resp_dict,
-                                                                 td_resp_dict, title_row)
 
-                    # if title_row value available in td_resp_dict,
-                    # then it updates the resp_ref key and value to td_resp_dict
-                    else:
-                        td_resp_dict = append_resp_ref_key_value(value, temp_resp_dict,
-                                                                 td_resp_dict, title_row)
+                    # title_row value is available in td_resp_dict,
+                    # so it updates the resp_ref key and value to td_resp_dict
+                    resp_key_value_dict = {value: temp_resp_dict[value]}
+                    if not WarriorCliClass.cmdprint:
+                        td_resp_dict[title_row].update(resp_key_value_dict)
         return td_resp_dict
-
 
     @cmdprinter
     def _send_cmd(self, **kwargs):
@@ -345,7 +333,7 @@ class WarriorCli(object):
         return result, response
 
     @staticmethod
-    def _get_response_dict(details_dict, index, response, response_dict):
+    def _get_response_dict(details_dict, index, response, response_dict, resp_key_list = []):
         """Get the response dict for a command. """
         resp_ref = details_dict["resp_ref_list"][index]
         resp_req = details_dict["resp_req_list"][index]
@@ -366,6 +354,7 @@ class WarriorCli(object):
         else:
             response = ""
         response_dict[resp_ref] = response
+        resp_key_list.append(resp_ref)
         return response_dict
 
     @staticmethod
