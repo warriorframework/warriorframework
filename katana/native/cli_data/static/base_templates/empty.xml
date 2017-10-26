@@ -3,6 +3,7 @@
         <command_params sys="" session="" start=".*" end="" timeout="60" sleep="0" retry="n"
                             retry_timer="60" retry_count="5" resp_req="y" resp_ref="" verify=""
                             retry_onmatch="" resp_pat_req="" monitor="" inorder="" repeat=""/>
+        <variable_pattern start_pattern="" end_pattern=""/>
         <verifications>
             <verification found="yes" search="" verify_on="" />
             <combination combo=""/>
@@ -17,5 +18,6 @@
                  retry_onmatch="" resp_pat_req="" monitor="" inorder="" repeat=""/>
         <verification found="yes" search="" verify_on="" />
         <key resp_pattern_req=""/>
+        <variable_pattern start_pattern="" end_pattern=""/>
     </testdata>
 </data>

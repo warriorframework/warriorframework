@@ -14,6 +14,7 @@ class VerifyCliDataClass:
         json_data = copy.deepcopy(self.json_data)
         json_data["data"] = self.__verify_global_block(json_data["data"])
         json_data["data"] = self.__verify_global_cmd_parameters(json_data["data"])
+        json_data["data"] = self.__verify_global_verify_pattern(json_data["data"])
         json_data["data"] = self.__verify_global_others(json_data["data"])
 
         json_data["data"] = self.__verify_testdata_block(json_data["data"])
@@ -31,7 +32,7 @@ class VerifyCliDataClass:
 
     def __verify_global_cmd_parameters(self, json_data):
         flag = True
-        if "command_params" not in json_data["global"]:
+        if "command_params" not in json_data["global"] or json_data["global"]["command_params"] is None:
             json_data["global"]["command_params"] = copy.deepcopy(self.defaults["data"]["global"]["command_params"])
             flag = False
         if flag:
@@ -40,8 +41,65 @@ class VerifyCliDataClass:
                     json_data["global"]["command_params"][key] = value
         return json_data
 
-    def __verify_global_others(self, json_data):
+    def __verify_global_verify_pattern(self, json_data):
+        flag = True
+        if "variable_pattern" not in json_data["global"]:
+            json_data["global"]["variable_pattern"] = self.defaults["data"]["global"]["variable_pattern"]
+            flag = False
+        if isinstance(json_data["global"]["variable_pattern"], list):
+            json_data["global"]["variable_pattern"] = json_data["global"]["variable_pattern"][0]
+        if flag:
+            for key, value in self.defaults["data"]["global"]["variable_pattern"].items():
+                if key not in json_data["global"]["variable_pattern"]:
+                    json_data["global"]["variable_pattern"][key] = value
         return json_data
+
+    def __verify_global_others(self, json_data):
+        if "verifications" in json_data["global"]:
+            if json_data["global"]["verifications"] is None:
+                del json_data["global"]["verifications"]
+            else:
+                json_data["global"]["verifications"] = self.__verify_global_vers(json_data["global"]["verifications"])
+        if "keys" in json_data:
+            if json_data["global"]["keys"] is None:
+                del json_data["global"]["keys"]
+            else:
+                json_data["global"]["keys"] = self.__verify_global_keys(json_data["global"]["keys"])
+        return json_data
+
+    def __verify_global_vers(self, verifications_json):
+        if not isinstance(verifications_json, list):
+            verifications_json = [verifications_json]
+        final_json = []
+        for i in range(0, len(verifications_json)):
+            for child_key, child_value in verifications_json[i].items():
+                for key in child_value:
+                    if key in self.defaults["data"]["global"]["verifications"]["combination"]:
+                        combo_tag = {child_key: self.__verify_global_verifications(child_value, "combination")}
+                        final_json.append(copy.deepcopy(combo_tag))
+                    elif key in self.defaults["data"]["global"]["verifications"]["verification"]:
+                        ver_tag = {child_key: self.__verify_global_verifications(child_value, "verification")}
+                        final_json.append(copy.deepcopy(ver_tag))
+                    break
+        return final_json
+
+    def __verify_global_verifications(self, json_data, key):
+        json_data["type"] = key
+        for key, value in self.defaults["data"]["global"]["verifications"][key].items():
+            if key not in json_data:
+                json_data[key] = value
+        return json_data
+
+    def __verify_global_keys(self, keys_json):
+        if not isinstance(keys_json, list):
+            keys_json = [keys_json]
+        for i in range(0, len(keys_json)):
+            keys_json[i]["type"] = "key"
+            for key, value in self.defaults["data"]["global"]["keys"]["key"].items():
+                for child_key, child_value in keys_json[i].items():
+                    if key not in child_value:
+                        keys_json[i][child_key][key] = value
+        return keys_json
 
     def __verify_testdata_block(self, json_data):
         if "testdata" not in json_data:
@@ -59,6 +117,8 @@ class VerifyCliDataClass:
         for key in testdata_json:
             if key == "command":
                 final_json["command"] = self.__verify_testdata_command(testdata_json["command"])
+            if key == "variable_pattern":
+                final_json["variable_pattern"] = self.__verify_testdata_variable_pattern(testdata_json["variable_pattern"])
             elif key.startswith("@"):
                 final_json[key] = testdata_json[key]
             else:
@@ -76,6 +136,14 @@ class VerifyCliDataClass:
                     json_data[i][key] = value
         return json_data
 
+    def __verify_testdata_variable_pattern(self, json_data):
+        if isinstance(json_data, list):
+            json_data = json_data[0]
+        for key, value in self.defaults["data"]["testdata"]["variable_pattern"].items():
+            if key not in json_data:
+                json_data[key] = value
+        return json_data
+
     def __verify_testdata_others(self, other_json):
         final_json = False
         for key in other_json:
@@ -88,6 +156,7 @@ class VerifyCliDataClass:
         return final_json
 
     def __verify_testdata_others_contents(self, other_json, type_of_other):
+        other_json["type"] = type_of_other
         for key, value in self.defaults["data"]["testdata"][type_of_other].items():
             if key not in other_json:
                 other_json[key] = value
