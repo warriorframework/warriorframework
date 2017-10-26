@@ -1222,9 +1222,11 @@
                      
                         <td>
                                 <b> Type = </b> {{ step.Execute._ExecType }}
+                                <!-- <span ng-if="step.Execute._ExecType == 'If' || step.Execute._ExecType == 'If Not'"></span> -->
                                 &nbsp;&nbsp;<b> Expression = </b>{{ step.Execute._Expression}} 
                                 &nbsp;&nbsp;<b> Else = </b>{{ step.Execute._Else}} 
                                 &nbsp;&nbsp;<b> Else Value = </b>{{ step.Execute._Elsevalue}} 
+                                <!-- </span> -->
                                 <div>
                                     <div ng-repeat='rule in step.Execute.Rule'>
                                            <b>Rule {{ $index + 1 }}.  </b>Condition = {{ rule._Condition}} <b>,</b>
@@ -2136,7 +2138,6 @@
                     <select class='form-control'
                             id='stepexecelse'
                             ng-model="status.step.Execute._Else"
-                            ng-change="showElseVal(status.step.Execute._Else);"
                             ng-options="o as o for o in status.steperrors"></select>
                 </div>
 
@@ -2177,7 +2178,7 @@
                 
         </div>
 
-        <div class="col-sm-4" ng-hide="hideElseVal" style="padding-top:10px !important;width:30% !important;">
+        <div class="col-sm-4" ng-if="status.step.Execute._Else == 'goto'" style="padding-top:10px !important;width:30% !important;">
                 <label for='stepexecelsev' class="col-sm-5 control-label ellipsis-the-overflow mandatory-field" style="padding-top:7px !important;">Else Value</label>
                
                 <div class="tooltip-on-right align-fa-icon-after-label-step">
@@ -2444,7 +2445,7 @@
                             </div>
                        </div>
                     <div class="form-group">
-                            <label class="col-sm-5 control-label mandatory-field" style="padding-top:7px !important;">Condition Value</label>
+                            <label for="steprulecondval" class="col-sm-5 control-label mandatory-field" style="padding-top:7px !important;">Condition Value</label>
                             <div class="tooltip-on-right align-fa-icon-after-label-step">
                                 <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
                                 <span class="tooltip-content">
@@ -2479,7 +2480,7 @@
                             </div>
                             <div class="col-sm-7">
                                 <div class="input-group">
-                                    <input type="text" class="form-control" required ng-model="rule_list[$index]._Condvalue">
+                                    <input type="text" id="steprulecondval" class="form-control" required ng-model="rule_list[$index]._Condvalue">
                                    
                                 </div>
                             </div>
@@ -2557,7 +2558,6 @@
                                     <select class='form-control'
                                         id='stepexecelsenew'
                                         ng-model="rule_list[$index]._Else"
-                                        ng-change="showRuleElseVal(rule_list[$index]._Else);"
                                         ng-options="o as o for o in status.steperrors"></select>
                                     
                                 </div>
@@ -2596,8 +2596,8 @@
                                     </div>
                                 </div>
                         </div>
-                        <div class="form-group" ng-hide="hideRuleElseVal">
-                                <label class="col-sm-5 control-label mandatory-field" style="padding-top:7px !important;">Else Value</label>
+                        <div class="form-group"  ng-if="rule_list[$index]._Else == 'goto'">
+                                <label for="stepexecelsevalnew" class="col-sm-5 control-label mandatory-field" style="padding-top:7px !important;">Else Value</label>
                                 <div class="tooltip-on-right align-fa-icon-after-label-step">
                                     <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
                                     <span class="tooltip-content">
@@ -2632,7 +2632,7 @@
                                 </div>
                                 <div class="col-sm-7">
                                     <div class="input-group">
-                                        <input type="text" class="form-control" required ng-model="rule_list[$index]._Elsevalue">
+                                        <input type="text" id="stepexecelsevalnew" class="form-control" required ng-model="rule_list[$index]._Elsevalue">
                                        
                                     </div>
                                 </div>
@@ -3362,9 +3362,11 @@
 
                         <td>
                                 <b> Type = </b> {{ step.Execute._ExecType }}
+                                <!-- <span ng-if="step.Execute._ExecType == 'If' || step.Execute._ExecType == 'If Not'"></span> -->
                                 &nbsp;&nbsp;<b> Expression = </b>{{ step.Execute._Expression}} 
                                 &nbsp;&nbsp;<b> Else = </b>{{ step.Execute._Else}} 
                                 &nbsp;&nbsp;<b> Else Value = </b>{{ step.Execute._Elsevalue}} 
+                                <!-- </span> -->
                                 <div>
                                     <div ng-repeat='rule in step.Execute.Rule'>
                                            <b>Rule {{ $index + 1 }}.  </b>Condition = {{ rule._Condition}} <b>,</b>

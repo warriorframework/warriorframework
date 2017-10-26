@@ -13,7 +13,7 @@ limitations under the License.
 
 app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location', '$anchorScroll', 'TestcaseFactory', 'fileFactory', 'getConfigFactory', 'subdirs',
     function ($scope, $routeParams, $http, $location, $anchorScroll, TestcaseFactory, fileFactory, getConfigFactory, subdirs) {
-alert("2");
+
     'use strict';
 
     $scope.step_numbers = [];
@@ -1246,12 +1246,12 @@ $scope.showRules = function(execType){
                 $scope.status.step.Arguments.argument = [$scope.status.step.Arguments.argument];
             }
 
-            if($scope.model.Testcase.Steps.step[index].Execute.Rule.hasOwnProperty(length)){
+            /* if($scope.model.Testcase.Steps.step[index].Execute.Rule.hasOwnProperty(length)){
                 $scope.rule_list = $scope.model.Testcase.Steps.step[index].Execute.Rule;
             }
             else{
                 $scope.rule_list = [$scope.model.Testcase.Steps.step[index].Execute.Rule];
-            }
+            } */
 
             var vals = _.pluck($scope.status.step.Arguments.argument, '_name');
 
@@ -1382,6 +1382,7 @@ $scope.showRules = function(execType){
             "_ExecType": "Yes",
             "_Expression": "",
             "_Else": "next",
+            "_Elsevalue":"",
             "Rule": {
                 "_Condition":"",
                 "_Condvalue":"",
@@ -1421,6 +1422,7 @@ $scope.showRules = function(execType){
             "_ExecType": "Yes",
             "_Expression": "",
             "_Else": "next",
+            "_Elsevalue":"",
             "Rule": {
                 "_Condition":"",
                 "_Condvalue":"",
@@ -1513,9 +1515,9 @@ $scope.showRules = function(execType){
             $scope.status.step.Execute['_Else'] = "Next";
         }
 
-        if($scope.status.step.Execute['Rule']['_Else'] == undefined){
+        /* if($scope.status.step.Execute['Rule']['_Else'] == undefined){
             $scope.status.step.Execute['Rule']['_Else'] = "Next";
-        }
+        } */
 
         rec.Execute['_ExecType'] = $scope.status.step.Execute['_ExecType'];
         rec.Execute['_Expression'] = $scope.status.step.Execute['_Expression'];
@@ -1523,9 +1525,10 @@ $scope.showRules = function(execType){
         rec.Execute['_Elsevalue'] = $scope.status.step.Execute['_Elsevalue'];
 
         if (rec.Execute['_ExecType'] == 'If' || rec.Execute['_ExecType'] == 'If Not') {
-            rec.Execute['Rule']['_Condition'] = $scope.status.step.Execute['Rule']['_Condition'];
+/*             rec.Execute['Rule']['_Condition'] = $scope.status.step.Execute['Rule']['_Condition'];
+            rec.Execute['Rule']['_Operator'] = $scope.status.step.Execute['Rule']['_Operator'];
             rec.Execute['Rule']['_Condvalue'] = $scope.status.step.Execute['Rule']['_Condvalue'];
-            rec.Execute['Rule']['_Else'] = $scope.status.step.Execute['Rule']['_Else'];
+            rec.Execute['Rule']['_Else'] = $scope.status.step.Execute['Rule']['_Else'];  */
 
             if (rec.Execute['Rule']['_Else'] == 'goto') {
                 if ($.trim($scope.status.step.Execute['Rule']['_Elsevalue']) == '') {
@@ -1592,6 +1595,63 @@ $scope.showRules = function(execType){
                             return;
                         }
                     }
+                }
+            }
+        }
+
+        if($scope.status.step.Execute._ExecType == 'If' || $scope.status.step.Execute._ExecType == 'If Not'){
+            if($scope.status.step.Execute._Else == 'goto'){ 
+                if($scope.status.step.Execute._Elsevalue == ''){
+                    sweetAlert({
+                        title: "Else Value is required when Execute Type->Else is 'goto'.",
+                        closeOnConfirm: true,
+                        confirmButtonColor: '#3b3131',
+                        confirmButtonText: "Ok",
+                        type: "error"
+                    });
+                    return;
+                }
+            }
+         }
+
+        if($scope.status.step.Execute._ExecType == 'If' || $scope.status.step.Execute._ExecType == 'If Not'){ 
+            if(document.getElementById('steprulecondition').value == ''){ 
+                sweetAlert({
+                    title: "Condition field is required when Execute Type is 'If/If Not'.",
+                    closeOnConfirm: true,
+                    confirmButtonColor: '#3b3131',
+                    confirmButtonText: "Ok",
+                    type: "error"
+                });
+                return;
+            }
+            
+        }
+
+        if($scope.status.step.Execute._ExecType == 'If' || $scope.status.step.Execute._ExecType == 'If Not'){ 
+             if(document.getElementById('steprulecondval').value == ''){ 
+                sweetAlert({
+                    title: "Condition Value field is required when Execute Type is 'If/If Not'.",
+                    closeOnConfirm: true,
+                    confirmButtonColor: '#3b3131',
+                    confirmButtonText: "Ok",
+                    type: "error"
+                });
+                return;
+            }
+        }
+
+        if($scope.status.step.Execute._ExecType == 'If' || $scope.status.step.Execute._ExecType == 'If Not'){
+            if(document.getElementById('stepexecelsenew').value == 3){ 
+                if(document.getElementById('stepexecelsevalnew').value == ''){
+                    sweetAlert({
+                        title: "Else Value is required when Rule->Else is 'goto'.",
+                        closeOnConfirm: true,
+                        confirmButtonColor: '#3b3131',
+                        confirmButtonText: "Ok",
+                        type: "error"
+                    });
+                    return;
                 }
             }
         }
@@ -1666,6 +1726,7 @@ $scope.showRules = function(execType){
         if($scope.insertStep){
             $scope.insertStep = false;
         }
+
     };
 
     $scope.testcaseTooltips = [];
