@@ -13,7 +13,7 @@ limitations under the License.
 
 app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location', '$anchorScroll', 'TestcaseFactory', 'fileFactory', 'getConfigFactory', 'subdirs',
     function ($scope, $routeParams, $http, $location, $anchorScroll, TestcaseFactory, fileFactory, getConfigFactory, subdirs) {
-
+alert("2");
     'use strict';
 
     $scope.step_numbers = [];
@@ -41,12 +41,11 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
         $scope.btnValue = "Path";
         $scope.showModal = {visible: false};
         $scope.showRulesBelow = false;
-        $scope.hideElseVal = true;
         $scope.hideExp = true;
         $scope.hideElse = true;
         $scope.ExecTypeVal = 0;
         // $scope.ruleTable = false;
-        $scope.hideRuleElseVal = true;
+        
 
         function readConfig(){
             getConfigFactory.readconfig()
@@ -62,8 +61,6 @@ $scope.cancelRule = function(){
     $scope.status.step.Execute._ExecType = 'Yes';
     $scope.showRulesBelow = false;
     $scope.hideExp = true;
-    $scope.hideElse = true;
-    $scope.hideElseVal = true;
     //$scope.ruleTable = false;
 }
     
@@ -84,27 +81,6 @@ $scope.showRules = function(execType){
         $scope.showRulesBelow = false;
         $scope.hideExp = true;
         $scope.hideElse = true;
-        $scope.hideElseVal = true;
-    }
-}
-
-//Else Value check for the Execute Type
-$scope.showElseVal = function(elseval){
-    if(elseval == 'goto'){
-    $scope.hideElseVal = false;
-    }
-    else{
-        $scope.hideElseVal = true;
-    }
-}
-
-//Else Value check for the Rule
-$scope.showRuleElseVal = function(elseval){
-    if(elseval == 'goto'){
-    $scope.hideRuleElseVal = false;
-    }
-    else{
-        $scope.hideRuleElseVal = true;
     }
 }
 
@@ -303,7 +279,6 @@ $scope.showRuleElseVal = function(elseval){
         //To add Multiple Rules for the Execute Type
         $scope.addAnotherRulesToList = function (){ 
             $scope.rule_list.push({"_Condition": "", "_Operator": "eq", "_Condvalue": "", "_Else": "next" , "_Elsevalue": ""});
-            $scope.showRuleElseVal("next");
             //$scope.ruleTable = true;
         };
 
@@ -1122,7 +1097,6 @@ $scope.showRuleElseVal = function(elseval){
         else {
             startStepCap(edtype, val, index);
         }
-        $scope.hideElseVal = true;
     };
 
         function startStepCap(edtype, val, index){
