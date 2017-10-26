@@ -478,9 +478,11 @@ def _get_cmd_details(testdata, global_obj, system_name,
                     return filter(lambda gk: gk.tag == key, global_keys)[0]
                 return None
             keylist = _get_cmdparams_list(testdata, global_obj, attrib)[0]
-            if keylist is not None:
+            if keylist:
                 keys = map(lambda x: x.strip(), keylist.split(','))
                 resultant_list = [map(find_key_elem, keys)]
+            else:
+                resultant_list = [None] * len(vfylist)
         else:
             resultant_list = _get_cmdparams_list(testdata, global_obj, attrib)
             if param == "sys_list":
@@ -765,7 +767,7 @@ def get_no_impact_logic(context_str):
               'Y:NOIMPACT': (True, 'YES'),
               'Y': (False, 'YES'),
               'NO:NOIMPACT': (True, 'No'),
-              'NO': (False, 'No'), 
+              'NO': (False, 'No'),
               'N:NOIMPACT': (True, 'No'),
               'N': (False, 'No'),
             }.get(context_str.upper(), False)
@@ -1295,14 +1297,14 @@ def resolve_argument_value_to_get_tag_value(datafile, system_name,
     if element_value_in_argument.startswith("tag="):
         tag_name = evaluate_tc_argument_value(element_value_in_argument)
         if tag_name:
-            system_name_list = xml_Utils.get_matching_firstlevel_children_from_root(datafile, 
+            system_name_list = xml_Utils.get_matching_firstlevel_children_from_root(datafile,
                                                                                     "system")
             if system_name_list == [] or system_name_list is None or system_name_list is False:
                 return element_value_in_argument
             else:
                 for system in system_name_list:
                     if system.attrib["name"] == system_name:
-                        node_list = xml_Utils.get_matching_firstlevel_children_from_node(system, 
+                        node_list = xml_Utils.get_matching_firstlevel_children_from_node(system,
                                                                                          tag_name)
                         if node_list == [] or node_list is None or node_list is False:
                             print_error("The tag value: {0} is not defined in the datafile:{1}"\
