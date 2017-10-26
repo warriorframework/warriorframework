@@ -906,6 +906,8 @@ var katana = {
 
 	fileExplorerAPI: {
 
+			only_ext: null, 
+
 			init: function(){
 				var $elem = this;
 				input = $elem.parent().find('input');
@@ -914,7 +916,30 @@ var katana = {
 				});
 			},
 
-	    openFileExplorer: function(heading, start_directory, csrftoken, parent, callBack_on_accept, callBack_on_dismiss){
+		create_jstree_search: function (tag_for_tree, tag_for_search_box , sdata) {
+			  var jdata = { 'core' : { 'data' : sdata }, "plugins" : [ "sort" , "search"], }; 
+			   katana.$activeTab.find(tag_for_tree).jstree(jdata);
+			  var to = false;
+			  katana.$activeTab.find(tag_for_search_box).keyup(function () {
+			      if(to) { clearTimeout(to); }
+			      to = setTimeout(function () {
+			           var v = katana.$activeTab.find(tag_for_search_box).val();
+			           katana.$activeTab.find(tag_for_tree).jstree(true).search(v);
+			          }, 250);
+			  });
+		},
+
+	    openFileExplorer: function(heading, start_directory, csrftoken, parent, callBack_on_accept, callBack_on_dismiss, show_only_ext){
+		//
+		// Create a callback for filtering and searching elements on a jstree. 
+		// The nodes are sorted using the jstree builtin sort function 
+		// Inputs:
+		// 	tag_for_tree: HTML ID for the jstree div. 
+		// 	tag_for_search_box: HTML ID for the text box where the user will type
+		// 	sdata: the contents of the jstree to be displayed. 
+		//
+		
+
             if(!heading || heading == "" || heading == undefined){
                 heading = "Select a file"
             }
@@ -928,7 +953,12 @@ var katana = {
             else {
                 $tabContent = parent;
             }
-            katana.templateAPI.post('get_file_explorer_data/', csrftoken, {"start_dir": start_directory},
+            console.log("File explorer-up", show_only_ext);
+            katana.fileExplorerAPI.only_ext = null;
+            if (show_only_ext) {
+            	katana.fileExplorerAPI.only_ext = show_only_ext;
+            }
+            katana.templateAPI.post('get_file_explorer_data/', csrftoken, {"path": start_directory, 'only_ext': katana.fileExplorerAPI.only_ext},
                 function(data) {
                     var explorer_modal_html = $($('#file-explorer-template').html())
                     var $fileExplorerHeading = explorer_modal_html.find('#file-explorer-heading');
@@ -958,7 +988,7 @@ var katana = {
                         katana.fileExplorerAPI.dismissFileExplorer(callBack_on_dismiss, parent);
                     });
                     $tabContent.find('#explorer-up').on('click', function(){
-                        katana.fileExplorerAPI.upFileExplorer(data.li_attr["data-path"], csrftoken, parent);
+                        katana.fileExplorerAPI.upFileExplorer(data.li_attr["data-path"], csrftoken, parent, katana.fileExplorerAPI.only_ext);
                     });
 
                 })
@@ -980,6 +1010,7 @@ var katana = {
             }
             $fileExplorerElement.remove();
             callBack && callBack(data_path);
+            katana.fileExplorerAPI.only_ext = null;
         },
 
         dismissFileExplorer: function(callBack, parent){
@@ -991,10 +1022,11 @@ var katana = {
             }
             $fileExplorerElement = $currentPage.find('div[class="overlay"]');
             $fileExplorerElement.remove();
+            katana.fileExplorerAPI.only_ext = null;
             callBack && callBack();
         },
 
-        upFileExplorer: function(currentPath, csrftoken, parent){
+        upFileExplorer: function(currentPath, csrftoken, parent, only_ext){
             if(!parent || parent == undefined || parent == ""){
                 var $currentPage = katana.$activeTab;
                 var $tabContent = $currentPage.find('.page-content-inner');
@@ -1002,7 +1034,7 @@ var katana = {
             else {
                 $tabContent = parent;
             }
-            katana.templateAPI.post('get_file_explorer_data/', csrftoken, {"path": currentPath},
+            katana.templateAPI.post('get_file_explorer_data/', csrftoken, {"path": currentPath, 'only_ext': only_ext},
                 function(data) {
 
                     var $directoryDataDiv = $tabContent.find('.directory-data-div');
@@ -1026,7 +1058,7 @@ var katana = {
                     $directoryData.jstree().hide_dots();
                     $tabContent.find('#explorer-up').off('click');
                     $tabContent.find('#explorer-up').on('click', function(){
-                        katana.fileExplorerAPI.upFileExplorer(data.li_attr["data-path"], csrftoken, parent);
+                        katana.fileExplorerAPI.upFileExplorer(data.li_attr["data-path"], csrftoken, parent,  only_ext);
                     });
                 });
         },

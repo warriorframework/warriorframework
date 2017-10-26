@@ -36,7 +36,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'jsonify',
     'wui.core',
     'native.wapp_management',
     'native.wappstore',
@@ -47,6 +46,7 @@ INSTALLED_APPS = [
     'native.execution',
     'native.wdf_edit',
     'native.assembler',
+    'native.wsedit',
 ]
 
 MIDDLEWARE = [
