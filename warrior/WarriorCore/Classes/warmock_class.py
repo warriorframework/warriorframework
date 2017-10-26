@@ -127,6 +127,11 @@ def get_response_file(testdatafile):
 
 
 def simresp_parser(simresp):
+    """
+        Takes in a raw simresp and substitute each part of it with the linked response
+        based on the separator it combine responses differently
+        , combine responses with space, + combine without space, # combine with newline
+    """
     result = ""
     resp_tag = ""
     char_dict = {",":" ", "+":"", "#":os.linesep}
