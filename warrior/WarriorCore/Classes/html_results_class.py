@@ -263,7 +263,9 @@ class WarriorHtmlResults:
         file ( no actual use as of now )
         """
         
-
+        live_html_dict = data_Utils.get_object_from_datarepository('live_html_dict')
+        livehtmllocn = live_html_dict['livehtmllocn'] 
+        live_html_iter = live_html_dict['iter']
         
         if junitObj:
             self.junit_file = junitObj
@@ -279,11 +281,7 @@ class WarriorHtmlResults:
         if is_final is True:
             #html += '<div class="complete"></div>'
             pass
-        live_html_dict = data_Utils.get_object_from_datarepository('live_html_dict', verbose=False)
-        if live_html_dict:
-            livehtmllocn = live_html_dict['livehtmllocn'] 
-            live_html_iter = live_html_dict['iter']
-            self.create_live_table(html, livehtmllocn, live_html_iter)
+        self.create_live_table(html, livehtmllocn, live_html_iter)
         
         html = self.merge_html(html)
         elem_file = open(self.get_path(), 'w')

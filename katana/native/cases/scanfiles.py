@@ -21,7 +21,7 @@ def fetch_action_file_names(basedir,name,num):
             dirs = glob.glob(basedir + '/**/*actions.py')
         else:
             action_directory=basedir+'/'+num+'Actions'
-            print 'action directory %s'%action_directory
+            print 'action direcory %s'%action_directory
             dirs = glob.glob(action_directory+'/*actions.py')
         print '\n'
         for d in dirs: print d
