@@ -944,7 +944,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		items.push('<i title="Insert" class="fa fa-plus" theSid="'+s+'"   id="'+bid+'" katana-click="cases.addCaseFromLine()" key="'+bid+'"/>');
 
 		bid = "copyToStorage-"+s+"-id-";
-		items.push('<i title="Copy to clipboard" class="fa fa-clipboard" theSid="'+s+'"   id="'+bid+'" katana-click="cases.saveTestStep()" key="'+bid+'"/>');
+		items.push('<br><i title="Copy to clipboard" class="fa fa-clipboard" theSid="'+s+'"   id="'+bid+'" katana-click="cases.saveTestStep()" key="'+bid+'"/>');
 		bid = "copyFromStorage-"+s+"-id-";
 		items.push('<i title="Copy from clipboard" class="fa fa-outdent" theSid="'+s+'"   id="'+bid+'" katana-click="cases.restoreTestStep()" key="'+bid+'"/>');
 
