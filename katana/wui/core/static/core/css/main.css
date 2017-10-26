@@ -767,7 +767,7 @@ option {
 option:hover {
 	background: white;
 }
-/*
+
 input[type="checkbox"]+label:before {
 	display: block;
 	font: normal normal normal 14px/1 FontAwesome;
@@ -783,7 +783,7 @@ input[type="checkbox"]+label:before {
 	font-size: 20px;
 	line-height: 21px;
 	border: solid 3px grey;
-	
+	/* margin-left: -34px; */
 }
 
 input[type="checkbox"] {
@@ -801,39 +801,6 @@ input[type="checkbox"]:checked+label:before {
 	background: white;
 	content: "\f00c";
 }
-
-input[type=checkbox] {
-    position: relative;
-    visibility: hidden;
-    cursor: pointer;
-}
-
-input[type=checkbox]:after {
-    display: block;
-    content: "OFF";
-    position: absolute;
-    top: 0;
-    right: -30px;
-    visibility: visible;
-    height: 30px;
-    line-height: 30px;
-    width: 50px;
-    text-align: center;
-    border-radius: 4px;
-    background: #d00;
-    color: #fff;
-    font-weight: 600;
-    cursor: pointer;
-}
-
-input[type=checkbox]:checked:after {
-    content: "ON";
-    background: #0a0;
-}
-
-*/
-
-
 
 li.folder,
 li.file {
@@ -3724,6 +3691,7 @@ input[type="checkbox"]+label {
     flex-grow: .3;
 
 }
+
 .suite-configuration-table tr th:nth-child(2), .suite-configuration-table tr td:nth-child(2) {
     flex-grow: .3;
 }
@@ -3732,7 +3700,17 @@ input[type="checkbox"]+label {
     flex-grow: 2;
 }
 
+
 .suite-configuration-table tr th:nth-child(4), .suite-configuration-table tr td:nth-child(4) {
+    flex-grow: .3;
+}
+
+.suite-configuration-table tr th:nth-child(5), .suite-configuration-table tr td:nth-child(5) {
+    flex-grow: 2;
+}
+
+
+.suite-configuration-table tr th:nth-child(6), .suite-configuration-table tr td:nth-child(6) {
     flex-grow: 1;
 }
 
