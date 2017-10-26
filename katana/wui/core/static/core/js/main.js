@@ -292,7 +292,7 @@ var katana = {
 	translate: function( url, container ){
 		$.getJSON( url, function( jsonObj ) {
 			$.each( jsonObj.data, function(){
-				var $elem = container.find( 'input[key="' + this.key  + '"], select[key="' + this.key  + '"]' );
+				var $elem = container.find( 'input[key="' + this.key  + '"], select[key="' + this.key  + '"], i[key="' + this.key +'"]' );
 				var field = $elem.parent()
 				$elem.attr( 'placeholder', this.translateTo );
 				$elem.attr( 'title', this.toolTip );
@@ -315,7 +315,8 @@ var katana = {
 	        "accept_btn_text": "Ok (by default), Save, etc",
 	        "show_cancel_btn": "true (by default), false",
 	        "cancel_btn_text": "Cancel (by default), No, etc",
-	        "prompt": "false (by default), true"
+	        "prompt": "false (by default), true",
+	        "prompt_default": "'' by default"
 	    }
 
 	    <div class="overlay">
@@ -463,9 +464,14 @@ var katana = {
 	    }
 
 	    var prompt = ""
+	    var prompt_default = ""
+
+	    if(data.prompt_default){
+	        prompt_default = data.prompt_default;
+	    }
 
 	    if(data.prompt) {
-	        prompt = "<div><input id='alert-box-prompt' katana-change='katana.changeBorderColor' value=''></div>"
+	        prompt = "<div><input id='alert-box-prompt' katana-change='katana.changeBorderColor' value='"+ prompt_default +"'></div>"
 	    }
 
 	    var $alert_box = '<div class="overlay">' +
@@ -922,7 +928,7 @@ var katana = {
             else {
                 $tabContent = parent;
             }
-            katana.templateAPI.post('get_file_explorer_data/', csrftoken, {"path": start_directory},
+            katana.templateAPI.post('get_file_explorer_data/', csrftoken, {"start_dir": start_directory},
                 function(data) {
                     var explorer_modal_html = $($('#file-explorer-template').html())
                     var $fileExplorerHeading = explorer_modal_html.find('#file-explorer-heading');

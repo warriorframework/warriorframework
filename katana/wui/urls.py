@@ -29,5 +29,6 @@ urlpatterns = [
     url(r'^katana/projects/', include('native.projects.urls')),
     url(r'^katana/suites/', include('native.suites.urls')),
     url(r'^katana/cases/', include('native.cases.urls')),
+    url(r'^katana/assembler/', include('native.assembler.urls')),
     url(r'^katana/execution/', include('native.execution.urls')),
 ]

@@ -17,13 +17,11 @@ import copy
 import shutil
 import zipfile
 
-import binascii
-from django.http import JsonResponse, HttpResponseRedirect, HttpResponse
-from django.shortcuts import render, redirect
+from django.http import JsonResponse
+from django.shortcuts import render
 from django.views import View
 import xml.etree.cElementTree as ET
 
-from native.wapp_management.forms import UploadFileForm
 from native.wapp_management.wapp_management_utils.app_validator import AppValidator
 from native.wapp_management.wapp_management_utils.installer import Installer
 from native.wapp_management.wapp_management_utils.uninstaller import Uninstaller
