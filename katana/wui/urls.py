@@ -29,4 +29,5 @@ urlpatterns = [
     url(r'^katana/suites/', include('native.suites.urls')),
     url(r'^katana/cases/', include('native.cases.urls')),
     url(r'^katana/execution/', include('native.execution.urls')),
+    url(r'^katana/wsedit/', include('native.wsedit.urls')),
 ]

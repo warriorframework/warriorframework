@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'native.cases',
     'native.execution',
     'native.wdf_edit',
+    'native.wsedit',
 ]
 
 MIDDLEWARE = [
