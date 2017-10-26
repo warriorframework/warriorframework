@@ -3691,6 +3691,7 @@ input[type="checkbox"]+label {
     flex-grow: .3;
 
 }
+
 .suite-configuration-table tr th:nth-child(2), .suite-configuration-table tr td:nth-child(2) {
     flex-grow: .3;
 }
@@ -3699,7 +3700,17 @@ input[type="checkbox"]+label {
     flex-grow: 2;
 }
 
+
 .suite-configuration-table tr th:nth-child(4), .suite-configuration-table tr td:nth-child(4) {
+    flex-grow: .3;
+}
+
+.suite-configuration-table tr th:nth-child(5), .suite-configuration-table tr td:nth-child(5) {
+    flex-grow: 2;
+}
+
+
+.suite-configuration-table tr th:nth-child(6), .suite-configuration-table tr td:nth-child(6) {
     flex-grow: 1;
 }
 
