@@ -1748,7 +1748,7 @@ i.active {
 	top: 40px;
 	left: 0;
 	width: 100%;
-	//height: calc( 100% - 40px);
+	/*height: calc( 100% - 40px); */
 	overflow: hidden;
 	-webkit-transform: translate3d( 0, 0, 0);
 	transform: translate3d( 0, 0, 0);
@@ -3193,13 +3193,13 @@ div .tool-bar-links:active {
 	margin: 5px 5px 0px 2px;
 	padding: 5px 3px;
 	line-height: 1.5;
-	//-webkit-appearance: button;
+	/*-webkit-appearance: button;*/
 }
 
 
 /* execution app related styles ends*/
 
--
+
 /* wdf editor app related styles starts */
 
 .wdf-button {
