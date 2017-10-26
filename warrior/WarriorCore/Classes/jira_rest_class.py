@@ -16,7 +16,6 @@ import urllib
 import requests
 import json
 import base64
-import random
 import os
 import Tools
 from Framework.Utils.print_Utils import print_error, print_info, print_warning
@@ -173,12 +172,11 @@ class Jira(object):
     def create_jira_issue(self, issue_summary, issue_description, issue_type='Bug'):
         """Function to Create jira Ticket using JIRA rest API"""
 
-        issue_summary=issue_summary.replace('"', " ")
-        issue_description=issue_description.replace('"', "-")
-        # if description has any \n in it, it will cause a 400 http bad request error and unable to upload the issue
-        # issue_description=issue_description.replace('\n', "************")
+        issue_summary = issue_summary.replace('"', " ")
+        issue_description = issue_description.replace('"', "-")
         fetchuri = self.server
-        postdata_url=fetchuri+'/rest/api/2/issue/'
+        postdata_url = fetchuri + '/rest/api/2/issue/'
+        headers = {"Content-Type": "application/json"}
         postdata = """
         {
             "fields": {
@@ -194,36 +192,32 @@ class Jira(object):
             }
         }
         """
-        credential_handler=urllib2.HTTPPasswordMgrWithDefaultRealm()
-        credential_handler.add_password(None,postdata_url,self.username,self.password)
-        auth = urllib2.HTTPBasicAuthHandler(credential_handler)
-        userpassword=self.username+":"+self.password
-        password=base64.b64encode(userpassword)
-        #Create an Authentication handler
-        opener = urllib2.build_opener(auth)
-        urllib2.install_opener(opener)
-        opener = urllib2.build_opener(urllib2.HTTPHandler(debuglevel=1))
-        #Create a POST request
-        headers={"Authorization" : "Basic "+password,"Content-Type": "application/json"}
+
         existed = self.check_jira_issue(issue_summary)
         if not existed:
-            request=urllib2.Request(str(postdata_url),postdata,headers)
-            try:
-                handler = urllib2.urlopen(request)
-                extension=json.loads(handler.read())
-                issue_id = str(extension['key'])
+            # POST request to create new Jira issue
+            response = requests.post(postdata_url, auth=self.auth,
+                                     headers=headers, data=postdata)
+            if response:
+                resp_dict = response.json()
+                issue_id = str(resp_dict['key'])
                 print_info("JIRA Issue Created. Issue-Id: {0}".format(issue_id))
                 return issue_id
-            except Exception as e:
-                pNote("Problem creating JIRA issue.","error")
-                pNote("JIRA Error Code: ({0})".format(e),"error")
+            else:
+                pNote("Problem creating JIRA issue", "error")
+                pNote("JIRA Error code: ({0}), Error message: ({1})".
+                      format(response.status_code, response.text), "error")
                 exit(1)
         else:
             if self.append:
-                print_info("Issue already exist - " + str(existed) + ". Will update log")
+                print_info("Issue '{0}' already exists and the execution logs "
+                           "will be uploaded since the 'append_log' option is "
+                           "set to True in jira config file".format(str(existed)))
                 return existed
             else:
-                print_info("Issue already exist - " + str(existed) + ". Will not update log")
+                print_info("Issue '{0}' already exists and the execution logs "
+                           "will not be uploaded since the 'append_log' option is "
+                           "not set to True in jira config file".format(str(existed)))
                 return None
 
     def upload_logfile_to_jira_issue(self, issue_id, logfile, attachment_name=None):
