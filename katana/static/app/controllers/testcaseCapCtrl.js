@@ -57,16 +57,17 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
 
         readConfig();
 
+//To Cancel the Rules, this will reset the Execute type value to its default - 'Yes'
 $scope.cancelRule = function(){ 
-$scope.status.step.Execute._ExecType = 'Yes';
-$scope.showRulesBelow = false;
-$scope.hideExp = true;
-$scope.hideElse = true;
-$scope.hideElseVal = true;
-//$scope.ruleTable = false;
+    $scope.status.step.Execute._ExecType = 'Yes';
+    $scope.showRulesBelow = false;
+    $scope.hideExp = true;
+    $scope.hideElse = true;
+    $scope.hideElseVal = true;
+    //$scope.ruleTable = false;
 }
     
-
+//This renders the Rules Fields
 $scope.showRules = function(execType){
     if(execType == 'If' || execType == 'If Not'){
         if($scope.ExecTypeVal == 1){
@@ -87,6 +88,7 @@ $scope.showRules = function(execType){
     }
 }
 
+//Else Value check for the Execute Type
 $scope.showElseVal = function(elseval){
     if(elseval == 'goto'){
     $scope.hideElseVal = false;
@@ -96,6 +98,7 @@ $scope.showElseVal = function(elseval){
     }
 }
 
+//Else Value check for the Rule
 $scope.showRuleElseVal = function(elseval){
     if(elseval == 'goto'){
     $scope.hideRuleElseVal = false;
@@ -160,7 +163,6 @@ $scope.showRuleElseVal = function(elseval){
           }
         } 
      };
-
 
 
         function get_folders_names(json_dir_data){
@@ -298,10 +300,11 @@ $scope.showRuleElseVal = function(elseval){
             $scope.arg_list.push({"_name": "", "_value": ""});
         };
 
+        //To add Multiple Rules for the Execute Type
         $scope.addAnotherRulesToList = function (){ 
-        $scope.rule_list.push({"_Condition": "", "_Operator": "eq", "_Condvalue": "", "_Else": "next" , "_Elsevalue": ""});
-        $scope.showRuleElseVal("next");
-        //$scope.ruleTable = true;
+            $scope.rule_list.push({"_Condition": "", "_Operator": "eq", "_Condvalue": "", "_Else": "next" , "_Elsevalue": ""});
+            $scope.showRuleElseVal("next");
+            //$scope.ruleTable = true;
         };
 
         $scope.deleteArgFromList = function(index){
@@ -313,6 +316,7 @@ $scope.showRuleElseVal = function(elseval){
             }
         };
 
+        //To delete rule for the Execute Type
         $scope.deleteRuleFromList = function(index){
         if($scope.rule_list.length > 1){
             $scope.rule_list.splice(index, 1);
@@ -343,8 +347,8 @@ $scope.showRuleElseVal = function(elseval){
             }
         };
 
-    $scope.xml.mapargs = {};
-    $scope.xml.arglist = [];
+        $scope.xml.mapargs = {};
+        $scope.xml.arglist = [];
         $scope.changedIndex = -1;
 
         $scope.savecreateTestcaseCap = false;
@@ -825,16 +829,14 @@ $scope.showRuleElseVal = function(elseval){
                         }
                     }
 
-                    if($scope.model.Testcase.Steps.step[i].hasOwnProperty("_draft")){
-                        if($scope.model.Testcase.Steps.step[i]["_draft"].toLowerCase() == "yes"){
-                            $scope.model.Testcase.Steps.step[i]["_draft"] = "yes";
-                        }
-                        else{
-                            $scope.model.Testcase.Steps.step[i]["_draft"] = "no";
-                        }
+                if($scope.model.Testcase.Steps.step[i].hasOwnProperty("_draft")){
+                    if($scope.model.Testcase.Steps.step[i]["_draft"].toLowerCase() == "yes"){
+                        $scope.model.Testcase.Steps.step[i]["_draft"] = "yes";
                     }
-
-
+                    else{
+                        $scope.model.Testcase.Steps.step[i]["_draft"] = "no";
+                    }
+                }
                 }
 
                 if($scope.model.Testcase.Details.Datatype === "Hybrid"){
@@ -1210,7 +1212,7 @@ $scope.showRuleElseVal = function(elseval){
         }
     };
 
-        function openStepCap(drivername, index){
+        function openStepCap(drivername, index){ 
             $scope.stepBeingEdited = index;
             $scope.step_numbers = [];
             $scope.stepToBeCopied = "None";
@@ -1244,6 +1246,7 @@ $scope.showRuleElseVal = function(elseval){
                 flag_kwd_length = false;
                 kwd = get_unavailable_kwd_data(index);
             }
+            
             console.log('kwd: ', JSON.stringify(kwd));
 
             $scope.status.keyword = kwd.fn;
@@ -1267,6 +1270,13 @@ $scope.showRuleElseVal = function(elseval){
 
             if(!$scope.status.step.Arguments.argument.hasOwnProperty(length)){
                 $scope.status.step.Arguments.argument = [$scope.status.step.Arguments.argument];
+            }
+
+            if($scope.model.Testcase.Steps.step[index].Execute.Rule.hasOwnProperty(length)){
+                $scope.rule_list = $scope.model.Testcase.Steps.step[index].Execute.Rule;
+            }
+            else{
+                $scope.rule_list = [$scope.model.Testcase.Steps.step[index].Execute.Rule];
             }
 
             var vals = _.pluck($scope.status.step.Arguments.argument, '_name');
