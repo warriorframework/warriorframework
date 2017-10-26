@@ -29,11 +29,15 @@ from utils.navigator_util import Navigator
 from katana_utils import *
 import scanfiles
 
-
 navigator = Navigator();
 path_to_src_python_file = navigator.get_katana_dir() + os.sep + "config.json"
+
+print "Setting Working dir --------------------------------", path_to_src_python_file
+gpysrcdir = path_to_src_python_file;
+
 All_case_action_details = py_file_details(json.loads(open(path_to_src_python_file).read())['pythonsrcdir']);
-setPythonSrcDir(All_case_action_details);
+EMPTY_DATA = json.loads(json.dumps(xmltodict.parse(open("./native/cases/empty.xml").read(), process_namespaces=True)));
+caseStateOptions_str = ['New','Draft','In Review','Released', 'Add Another']
 
 def index(request):
 	path_to_config_file = navigator.get_katana_dir() + os.sep + "config.json"
@@ -62,6 +66,36 @@ def getCaseListTree(request):
 	jtree['state']= { 'opened': True };
 	return JsonResponse({'treejs': jtree })
 
+
+def getSystemNames(request):
+	filename = request.GET.get('filename');
+	names = [] 
+	try:
+		xlines = open(filename).read();
+		df =  xmltodict.parse(xlines ,  dict_constructor=dict) 
+		systems = df['credentials']['system']
+		for ms in df['credentials']['system']:
+			if ms.has_key('subsystem'):
+				for subsys in  ms['subsystem']:
+					names.append(ms['@name']+"["+subsys['@name']+"]")
+			else:
+				names.append(ms['@name'])
+	except:
+		print "Unable to get names "
+	print names 
+	return JsonResponse({'system_names': names , 'filename' : filename })
+
+def addCaseStateOption(request):
+	option = request.GET.get('option')
+	print "Option = ", option
+	try: 
+		x = caseStateOptions_str.index(option)
+	except:
+		print "Not found" 
+		caseStateOptions_str.append(option)
+		print caseStateOptions_str
+	return JsonResponse({'case_state_options': caseStateOptions_str  })
+
 ##
 ## This is very costly imho. 
 ##
@@ -78,7 +112,7 @@ def getListOfActions(request):
 	path_to_pythonsrc = json.loads(open(path_to_src_python_file).read())['pythonsrcdir'] ;                 
 	jsr = scanfiles.fetch_action_file_names(path_to_pythonsrc,'driver','all');
 	actions = [ os.path.basename(fn)[:-3] for fn in jsr['ProductDrivers']];
-	actions.insert(0,"To_Be_Developed")
+	#actions.insert(0,"To_Be_Developed")
 	return JsonResponse({'actions': actions , 'filesinfo' : All_case_action_details })
 
 
@@ -98,17 +132,23 @@ def getListOfKeywords(request):
 	else:
 			details = All_case_action_details;
 
-	responseBack = { 'keywords': ["To_Be_Developed",] }
+	responseBack = { 'keywords': [] }
 	driver = request.GET.get('driver');
 		
-	if driver != "To_Be_Developed":
-			
-		print dir(details);
-		print driver
+	#print dir(details);
+	print driver
+	try:
 		print len(details[driver][0])	
 		for item in details[driver][0]: 
-			print item['fn']
+			fn = item['fn']
+			print "See", fn
+			if fn.find('.py') > 0: continue;
+			if fn.find('ctions') > 0: continue;
+			if fn.find('_init_') > 0: continue;
+			print fn
 			responseBack['keywords'].append(item['fn']);
+	except: 
+		print "Unable to find driver..."
 	return JsonResponse(responseBack)
 
 ##
@@ -138,7 +178,7 @@ def getListOfComments(request):
 	
 	print "LOOOK::-->",  driver, " ", keyword;
 
-	if driver == "To_Be_Developed" :
+	if driver == "" :
 		return JsonResponse(responseBack)
 
 	try:
@@ -152,64 +192,65 @@ def getListOfComments(request):
 			print "fn ==> ", item['fn'], driver, keyword
 			if item['fn'] == keyword: 
 				print item.keys();
+				print item['args']
 				responseBack['fields'].append(item);
 				break;
 	except:
 		print details[driver]
 	return JsonResponse(responseBack)
 
-def getEmpty():
-	edata={
-		  "Testcase": {
-		    "Details": {
-		      "Name": "set_env_variable",
-		      "Title": "set_env_variable",
-		      "default_onError": { "@action": "next" },
-		      "Date": "2017-01-01",
-		      "Time": "23:00",
-		      "InputDataFile": "No_Data",
-		      "Engineer": "Warrior_Test",
-		      "Category": "Regression",
-		      "State": "Released"
-		    },
-		    "Requirements": {
-		      "Requirement": [
-		        "Demo-requirement-001",
-		        "Demo-requirement-002",
-		        "Demo-requirement-003"
-		      ]
-		    },
-		    "Steps": {
-		      "step": {
-		        "@Driver": "common_driver",
-		        "@Keyword": "set_env_var",
-		        "@TS": "1",
-		        "Arguments": {
-		          "argument": [
-		            {
-		              "@name": "var_key",
-		              "@value": "check3"
-		            },
-		            {
-		              "@name": "var_value",
-		              "@value": "3"
-		            }
-		          ]
-		        },
-		        "Description": [
-		          "Regression for existing support, setting one ENV variable",
-		          "compare values"
-		        ],
-		        "onError": { "@action": "next" },
-		        "Execute": { "@ExecType": "Yes" },
-		        "context": "positive",
-		        "impact": "impact"
-		      }
-		    }
-		  }
-		}  ;
+# def getEmpty():
+# 	edata={
+# 		  "Testcase": {
+# 		    "Details": {
+# 		      "Name": "set_env_variable",
+# 		      "Title": "set_env_variable",
+# 		      "default_onError": { "@action": "next" },
+# 		      "Date": "2017-01-01",
+# 		      "Time": "23:00",
+# 		      "InputDataFile": "No_Data",
+# 		      "Engineer": "Warrior_Test",
+# 		      "Category": "Regression",
+# 		      "State": "Released"
+# 		    },
+# 		    "Requirements": {
+# 		      "Requirement": [
+# 		        "Demo-requirement-001",
+# 		        "Demo-requirement-002",
+# 		        "Demo-requirement-003"
+# 		      ]
+# 		    },
+# 		    "Steps": {
+# 		      "step": {
+# 		        "@Driver": "common_driver",
+# 		        "@Keyword": "set_env_var",
+# 		        "@TS": "1",
+# 		        "Arguments": {
+# 		          "argument": [
+# 		            {
+# 		              "@name": "var_key",
+# 		              "@value": "check3"
+# 		            },
+# 		            {
+# 		              "@name": "var_value",
+# 		              "@value": "3"
+# 		            }
+# 		          ]
+# 		        },
+# 		        "Description": [
+# 		          "Description Line 1",
+# 		          "Description Line 2"
+# 		        ],
+# 		        "onError": { "@action": "next" },
+# 		        "Execute": { "@ExecType": "Yes" },
+# 		        "context": "positive",
+# 		        "impact": "impact"
+# 		      }
+# 		    }
+# 		  }
+# 		}  ;
 
-	return edata; 
+# 	return edata; 
 
 def editCase(request):
 	""" 
@@ -257,7 +298,7 @@ def editCase(request):
 	xml_r["Testcase"]["Steps"] = {} 
 	
 
-	edata = getEmpty()
+	#edata = getEmpty()
 
 	if filename == 'NEW':
 		subdir = path_to_testcases 
@@ -268,19 +309,23 @@ def editCase(request):
 		xlines = open(filename).read()
 		xml_d = xmltodict.parse(xlines, dict_constructor=dict);
 		subdir = os.path.split(filename)[0]
-		fn = 'save_' + os.path.split(filename)[1]
+		fn =  os.path.split(filename)[1]
 
-	fulljsonstring = str(json.loads(json.dumps(xml_d['Testcase'])));
-	fulljsonstring = fulljsonstring.replace('u"',"'").replace("u'",'"').replace("'",'"');
-	fulljsonstring = fulljsonstring.replace('None','""')
+	if (not xml_d.has_key('Testcase')):
+		subdir = path_to_testcases 
+		filename = 'new.xml'
+		fn = 'new.xml'
+		print "Invalid XML file"
+		xml_d = copy.deepcopy(xml_r)
 
-	emptyCaseString = str(json.loads(json.dumps(edata['Testcase'])));
+	
+	emptyCaseString = str(json.loads(json.dumps(EMPTY_DATA['Testcase'])));
 	emptyCaseString = emptyCaseString .replace('u"',"'").replace("u'",'"').replace("'",'"');
-	emptyCaseString = emptyCaseString .replace('None','""')
+	emptyCaseString = emptyCaseString .replace('None','""').replace('""""','""')
 
 
 	# Map the input to the response collector
-	for xstr in ["Name", "Title", "Category", "Date", "Time", "InputDataFile dict_constructor=dict", "Engineer", \
+	for xstr in ["Name", "Title", "Category", "Date", "Time", "InputDataFile", "Engineer", \
 		"Datatype", "default_onError", "Logsdir", "Resultsdir", "ExpectedResults"]:
 		try:
 			if not xml_r["Testcase"]["Details"].has_key(xstr): 
@@ -289,7 +334,7 @@ def editCase(request):
 		except:
 			pass
 
-	caseStateOptions_str = ['New','Draft','In Review','Released']
+	#caseStateOptions_str = ['New','Draft','In Review','Released', 'Add Another']
 
 	try:
 		xml_r['Testcase']['Steps'] = copy.deepcopy(xml_d['Testcase']['Steps']);
@@ -301,8 +346,17 @@ def editCase(request):
 	except:
 		xml_r["Testcase"]["Requirements"] = {}
 
+	fulljsonstring = str(json.loads(json.dumps(xml_d['Testcase'])));
+	fulljsonstring = fulljsonstring.replace('u"',"'").replace("u'",'"').replace("'",'"');
+	fulljsonstring = fulljsonstring.replace('None','""').replace('""""','""')
+
+
+	print fulljsonstring
+	print "filename ", filename 
+	print "subdir ", subdir 
+	print "path to cases ", path_to_testcases
 	context = { 
-		'myfile': filename,
+		'fullpathname': filename,
 		'savefilename': fn,
 		'savesubdir': subdir,
 		'savefilepath': path_to_testcases,
@@ -340,7 +394,7 @@ def getJSONcaseDataBack(request):
 	try:
 		xml_d = xmltodict.parse(open(filename).read());
 	except:
-		xml_d = getEmpty();
+		xml_d = EMPTY_DATA;
 
 	j_data = json.loads(json.dumps(xml_d))
 	responseBack = { 'fulljson': j_data , 'fname': filename }
@@ -360,11 +414,19 @@ def getCaseDataBack(request):
 	ijs = request.POST.get(u'json')
 	fn = request.POST.get(u'filetosave')
 	sb = request.POST.get(u'savesubdir')
-	fname = sb + os.sep + fn;  
+	fname = sb + os.sep + fn; 
+	if fname.find(".xml") < 2: fname = fname + ".xml"
+	 
 	print "save case to ", fname 
  
 	xml = xmltodict.unparse(json.loads(ijs), pretty=True)	
 	fd = open(fname,'w');
 	fd.write(xml);
 	fd.close();
+
+
+
+
+
+
 	return redirect(request.META['HTTP_REFERER'])
