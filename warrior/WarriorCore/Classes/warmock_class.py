@@ -10,6 +10,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import os
 from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.print_Utils import print_info, print_warning
 # For function/method that only be mocked in trialmode (not sim mode), put name here
@@ -125,6 +126,28 @@ def get_response_file(testdatafile):
     MockUtils.cli_Utils.response_dict = response_dict
 
 
+def simresp_parser(simresp):
+    result = ""
+    resp_tag = ""
+    char_dict = {",":" ", "+":"", "#":os.linesep}
+    for char in simresp:
+        if char == "," or char == "+" or char == "#":
+            response = MockUtils.cli_Utils.response_dict.get(resp_tag, None)
+            if response is not None:
+                result += response + char_dict[char]
+            else:
+                pNote("Unable to find response tag: {} in response file".format(resp_tag))
+            resp_tag = ""
+        else:
+            resp_tag += char
+    if resp_tag != "":
+        response = MockUtils.cli_Utils.response_dict.get(resp_tag, None)
+        if response is not None:
+            result += response
+        else:
+            pNote("Unable to find response tag: {} in response file".format(resp_tag))
+    return result
+
 class MockUtils(object):
     """
         This class contains all the mocked Utils
@@ -202,21 +225,7 @@ class MockUtils(object):
             print_warning("This method is obsolete and will be deprecated soon. Please"
                           " use 'send_command' method of 'PexpectConnect' class "
                           "in 'warrior/Framework/ClassUtils/WNetwork/warrior_cli_class.py'")
-            from WarriorCore.Classes.war_cli_class import WarriorCliClass
-            pNote(":CMD: %s" % (args[3]))
-            # response reference dict contains all command with simresp
-            if WarriorCliClass.sim and args[3] in MockUtils.cli_Utils.response_reference_dict:
-                simresp = MockUtils.cli_Utils.response_reference_dict.get(args[3], False)
-                response = MockUtils.cli_Utils.response_dict.get(simresp, "")
-            # if command doesn't have simresp, try to get the default response
-            elif WarriorCliClass.sim and args[3] not in MockUtils.cli_Utils.response_reference_dict:
-                response = MockUtils.cli_Utils.response_reference_dict.get("default", "")
-            # if default is not found or in mock mode, return empty response
-            else:
-                response = ""
-
-            pNote("Response:\n{0}\n".format(response))
-            return True, response
+            return MockUtils.warrior_cli_class.send_command(*args, **kwargs)
 
         @classmethod
         def _send_cmd_by_type(cls, *args, **kwargs):
@@ -241,10 +250,7 @@ class MockUtils(object):
             print_warning("This method is obsolete and will be deprecated soon. Please"
                           " use 'send_command' method of 'PexpectConnect' class "
                           "in 'warrior/Framework/ClassUtils/WNetwork/warrior_cli_class.py'")
-            from WarriorCore.Classes.war_cli_class import WarriorCliClass
-            response = MockUtils.cli_Utils.response_dict.get(args[3], [""])[0] if \
-                WarriorCliClass.sim else ""
-            pNote(":CMD: %s" % (args[3]))
+            _, response = MockUtils.warrior_cli_class.send_command(*args, **kwargs)
             return response
 
     class data_Utils():
@@ -367,7 +373,7 @@ class MockUtils(object):
             if WarriorCliClass.sim and \
                 MockUtils.cli_Utils.response_reference_dict.get(args[3], None) is not None:
                 simresp = MockUtils.cli_Utils.response_reference_dict.get(args[3], False)
-                response = MockUtils.cli_Utils.response_dict.get(simresp, "")
+                response = simresp_parser(simresp)
             # if command doesn't have simresp, try to get the default response
             elif WarriorCliClass.sim:
                 response = MockUtils.cli_Utils.response_dict.get("default", "")
