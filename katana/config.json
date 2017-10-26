@@ -1,11 +1,11 @@
 {
     "engineer": "",
-    "idfdir": "/home/khusain/Projects/WAR-1326/warriorframework/warrior/Warriorspace/Data",
-    "projdir": "/home/khusain/Projects/WAR-1326/warriorframework/warrior/Warriorspace/Projects",
+    "idfdir": "",
+    "projdir": "",
     "pythonpath": "",
-    "pythonsrcdir": "/home/khusain/Projects/WAR-1326/warriorframework/warrior",
+    "pythonsrcdir": "",
     "testdata": "",
-    "testsuitedir": "/home/khusain/Projects/WAR-1326/warriorframework/warrior/Warriorspace/Suites",
+    "testsuitedir": "",
     "warhorn_config": "",
-    "xmldir": "/home/khusain/Projects/WAR-1326/warriorframework/warrior/Warriorspace/Testcases"
+    "xmldir": ""
 }

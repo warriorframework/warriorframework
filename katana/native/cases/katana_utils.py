@@ -2,14 +2,14 @@ import os
 import os.path 
 import re, glob, json, docstrings
 #gpysrcdir = pathname(cfg['pythonsrcdir'])
-gpysrcdir = ""
+gpysrcdir = "/home/khusain/Projects/forDemo/warriorframework/warrior"
 
-def mkactiondirs(driverpath, srcdir):  # changed
+def setPythonSrcDir(fpath):
+    gpysrcdir = fpath; 
+
+def mkactiondirs(driverpath):  # changed
     '''Given a directory name `drivername`, return its action python file name.'''
     # FrameworkDirectory/ used to be the prefix in the directory name.
-    gpysrcdir = srcdir
-    print "**** Setting gpysrcdir ****", gpysrcdir
-   
     actions_dirpath_list = []
     actions_package_list = get_action_dirlist(driverpath)
     if len(actions_package_list) == 0:
@@ -20,11 +20,11 @@ def mkactiondirs(driverpath, srcdir):  # changed
     elif len(actions_package_list) > 0:
         for package in actions_package_list:
             try:
-                #print package
+                print package
                 package = package.replace(' ', '')
                 pkg = re.sub('[\n\t' '\\\]', '', package)
-                #print pkg
-                #print package
+                print pkg
+                print package
                 if pkg == 'Actions':
                     actions_dirpath = gpysrcdir + os.sep + 'Actions'
                 elif pkg.startswith('Actions.'):
@@ -67,7 +67,7 @@ def get_action_dirlist(driverpath):  # changed
                 # print match_string
                 actions_package_list = match_string.split('[')[1].split(']')[
                     0].split(',')
-                # print "\n action package list: ", actions_package_list
+                print "\n action package list: ", actions_package_list
                 # for line in lines:
                 # if re.search(search, line):
                 # print "package_list found"
@@ -121,7 +121,7 @@ def fetch_comments(sa):
 
 
 def py_file_details(gpysrcdir):  # changed
-    print "Get File details...", gpysrcdir
+    print gpysrcdir
     #cfg = readconfig()
     #print cfg
     # gpysrcdir = fetchpath('pythonsrcdir')
@@ -157,15 +157,11 @@ def py_file_details(gpysrcdir):  # changed
     # for path in drivers_fpath:
     #     for directory in mkactiondirs(path):
     #         actiondirs.append(directory)
-
-    # This is what we deserve for writing python code that relies on globals
-    # and does not use a class. 
-    srcdirs = [ gpysrcdir for df in pyfiles ]
-    actiondirs = map(mkactiondirs, drivers_fpath, srcdirs)
-    #print "\n\n drivers: \n\n", json.dumps(drivers_fpath, indent=2)
+    actiondirs = map(mkactiondirs, drivers_fpath)
+    print "\n\n drivers: \n\n", json.dumps(drivers_fpath, indent=2)
     #print '\n\nactiondirs: \n\n', json.dumps(actiondirs, indent=2)
 
     actionpyfiles = map(mkactionpyfiles, actiondirs)
     drivercomments = fetch_comments(zip(drivers, actionpyfiles))
-    #print 'driver:docs\n', json.dumps(drivercomments, indent=2)
+    print 'driver:docs\n', json.dumps(drivercomments, indent=2)
     return drivercomments

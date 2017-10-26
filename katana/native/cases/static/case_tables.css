@@ -1,0 +1,108 @@
+
+
+.case-configuration-table {}
+.case-configuration-table table {
+  border-collapse: collapse;
+}
+.case-configuration-table td {
+  text-align: left;
+  overflow: auto;
+ 
+}
+
+.case-configuration-table th {
+  text-align: left;
+  border: 0px ;
+
+}
+
+.case-configuration-table th{
+    height: 35px;
+    line-height: 35px;
+    text-align: left; 
+    vertical-align: top;
+    font-weight: 400;
+    color: #FFF;
+    background-color: #577BA0;
+}
+
+.case-configuration-table i{
+    padding: 4px;
+    font-size: 16px;
+}
+
+.case-configuration-table tr:nth-child(even){background-color: #f2f2ff}
+
+.case-configuration-table tr th:nth-child(1), .case-configuration-table tr td:nth-child(1) {
+    flex-grow: .3;
+}
+.case-configuration-table tr th:nth-child(2), .case-configuration-table tr td:nth-child(2) {
+    flex-grow: 2;
+}
+.case-configuration-table tr th:nth-child(3), .case-configuration-table tr td:nth-child(3) {
+    flex-grow: 2;
+}
+.case-configuration-table tr th:nth-child(4), .case-configuration-table tr td:nth-child(4) {
+    flex-grow: 3;
+}
+.case-configuration-table tr th:nth-child(5), .case-configuration-table tr td:nth-child(5) {
+    flex-grow: 3;
+}
+
+.case-configuration-table tr th:nth-child(6), .case-configuration-table tr td:nth-child(6) {
+    flex-grow: 2;
+}
+.case-configuration-table tr th:nth-child(7), .case-configuration-table tr td:nth-child(7) {
+    flex-grow: 2;
+}
+
+.case-configuration-table tr th:last-child, .case-configuration-table tr td:last-child {
+    flex-grow: 1.1;
+    font-size: 18px;
+}
+
+
+.case-req-configuration-table {}
+.case-req-configuration-table table {
+  border-collapse: collapse;
+}
+.case-req-configuration-table td {
+  text-align: left;
+  overflow: auto;
+ 
+}
+
+.case-req-configuration-table th {
+  text-align: left;
+  border: 0px ;
+
+}
+
+.case-req-configuration-table th{
+    height: 35px;
+    line-height: 35px;
+    text-align: left; 
+    vertical-align: top;
+    font-weight: 400;
+    color: #FFF;
+    background-color: #577BA0;
+}
+
+.case-req-configuration-table i{
+    padding: 4px;
+    font-size: 16px;
+}
+
+.case-req-configuration-table tr:nth-child(even){background-color: #f2f2ff}
+
+.case-req-configuration-table tr th:nth-child(1), .case-req-configuration-table tr td:nth-child(1) {
+    flex-grow: .3;
+}
+.case-req-configuration-table tr th:nth-child(1), .case-req-configuration-table tr td:nth-child(1) {
+    flex-grow: .3;
+}
+
+.case-req-configuration-table tr th:last-child, .case-req-configuration-table tr td:last-child {
+    flex-grow: 1.1;
+    font-size: 18px;
+}

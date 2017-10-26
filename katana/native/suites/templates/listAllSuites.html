@@ -1,12 +1,14 @@
 
 {% load static %}
 
-<div id="OverwriteSuiteHere">
+<body>
+<div class="tool-bar">   
+      <button id="addNewCase" class="btn btn-success" onclick="suiteApp.startNewSuite()">Add New Suite</button>
+  </div>
 <div class="csrf-container">{% csrf_token %}</div>
 <h2>List of Suites</h2>		
-  	<div id="mySuite" auto-init="suites.initSuiteTree">	</div>	
-	<div id="mySuiteTree"></div>
-	Search: <input id="jstreeFilterText" class="col-md-2" />
-<button class="btn btn-success" katana-click="suites.startNewSuite">Add New Suite</button>
+  <div id="mySuite" auto-init="suiteApp.displayTreeOfSuites">		</div>
 
-</div>
+<div id="mySuiteTree"></div>
+</body>
+

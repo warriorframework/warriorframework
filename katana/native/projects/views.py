@@ -53,23 +53,16 @@ def getEmpty():
 				 "Title": "Project Title or Description", "Resultsdir": "", "Name": "Project Name", "Engineer": "Engineer"}}}
 	return edata;
 
-import logging 
-logger = logging.getLogger(__name__)
 
 def getJSONProjectData(request):
 	path_to_config_file = navigator.get_katana_dir() + os.sep + "config.json"   
 	x= json.loads(open(path_to_config_file).read());
 	path_to_testcases = x['projdir'];
 	filename = request.GET.get('fname')
-	logger.info("Getting data for %s "% filename);
+	print "Getting data for ", filename;
 	try:
 		xml_d = xmltodict.parse(open(filename).read());
 	except:
-		xml_d = getEmpty();
-
-	#print xml_d
-	if (not xml_d.has_key(u'Project')):
-		print "Invalid XML file"
 		xml_d = getEmpty();
 
 	j_data = json.loads(json.dumps(xml_d))
@@ -140,6 +133,7 @@ def editProject(request):
 	xml_r["Project"]["Details"]["State"] = "" #OrderedDict([('$', 'New')])
 	xml_r["Project"]["Details"]["Date"] = "" #OrderedDict([('$', '')])
 	xml_r["Project"]["Details"]["Time"] = "" #OrderedDict([('$', '')])
+	xml_r["Project"]["Details"]["Datatype"] = "" #OrderedDict([('$', '')])
 	xml_r["Project"]["Details"]["Engineer"] = "" #OrderedDict([('$', '')])
 	xml_r["Project"]["Details"]["ResultsDir"] = "" #OrderedDict([('$', '')])
 	xml_r["Project"]["Details"]["default_onError"] = { '@action': '', '@value': ''} #OrderedDict([('$', '')])
@@ -152,7 +146,8 @@ def editProject(request):
 		xml_d = xmltodict.parse(xlines, dict_constructor=dict);
 
 		# Map the input to the response collector
-		for xstr in ["Name", "Title", "Category", "Date", "Time", "Engineer", "ResultsDir"]:
+		for xstr in ["Name", "Title", "Category", "Date", "Time", "Engineer", \
+			"Datatype", "ResultsDir"]:
 			try:
 				xml_r["Project"]["Details"][xstr]= xml_d["Project"]["Details"][xstr];
 			except: 
@@ -183,9 +178,10 @@ def editProject(request):
 		'projectCategory': xml_r["Project"]["Details"]["Category"],
 		'projectDate': xml_r["Project"]["Details"]["Date"],
 		'projectTime': xml_r["Project"]["Details"]["Time"],
-		'resultsDir': xml_r["Project"]["Details"]["ResultsDir"],	
-		'project_onError_action': xml_r["Project"]["Details"]["default_onError"].get('@action','abort'),
-		'project_onError_value':  xml_r["Project"]["Details"]["default_onError"].get('@avalue',""),
+		'resultsDir': xml_r["Project"]["Details"]["ResultsDir"],
+		
+		'projectdefault_onError': xml_r["Project"]["Details"]["default_onError"].get('@action'),
+		'projectdefault_onError_goto': xml_r["Project"]["Details"]["default_onError"]['@value'],
 		#'fulljson': xml_r['Project']
 		'fulljson': fulljsonstring,
 		}

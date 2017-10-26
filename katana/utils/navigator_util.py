@@ -30,7 +30,7 @@ class Navigator(object):
         """returns back the parent of given_dir and allows a user to run multipule times"""
         pass
 
-    def get_dir_tree_json(self, start_dir_path, dir_icon=None, file_icon='jstree-file', fl=False, only_ext=None):
+    def get_dir_tree_json(self, start_dir_path, dir_icon=None, file_icon='jstree-file', fl=False):
         """
         Takes an absolute path to a directory(start_dir_path)  as input and creates a
         json tree having the start_dir as the root.
@@ -70,8 +70,6 @@ class Navigator(object):
 
         """
         base_name = os.path.basename(start_dir_path)
-        print "Checking...", start_dir_path, only_ext
-
         layout = {'text': base_name}
         layout['li_attr'] = {'data-path': start_dir_path}
         if not fl:
@@ -79,28 +77,17 @@ class Navigator(object):
             fl = 'false'
         if os.path.isdir(start_dir_path):
             for x in os.listdir(start_dir_path):
-                
                 try:
-                    children = self.get_dir_tree_json(os.path.join(start_dir_path, x), fl=fl, only_ext=only_ext)
+                    children = self.get_dir_tree_json(os.path.join(start_dir_path, x), fl=fl)
                 except IOError:
-                    print "Error"
                     pass
                 except Exception as e:
                     print "-- An Error Occurred -- {0}".format(e)
                 else:
-                    # ok = True
-                    # if os.path.isdir(os.path.join(start_dir_path,x)) or only_ext == None: ok = True;
-                    # if only_ext and os.path.splitext(os.path.join(start_dir_path),children)[1] == only_ext: 
-                    #         ok=False
-                    #children = [ x for x in children if x ]
-                    if children.has_key('text'): 
-                        if "children" in layout:
-                            layout['children'].append(children)
-                        else:
-                            layout['children'] = [children]
+                    if "children" in layout:
+                        layout['children'].append(children)
+                    else:
+                        layout['children'] = [children]
         else:
             layout['icon'] = file_icon
-            if only_ext and (os.path.splitext(base_name)[1] != only_ext): 
-                    print "file ...", base_name, " rejected ", only_ext
-                    return { }
         return layout
