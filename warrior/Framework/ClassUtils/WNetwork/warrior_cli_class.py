@@ -235,7 +235,8 @@ class WarriorCli(object):
                         response=response, system_name=td_sys)
                     rspRes, response_dict = new_obj_session._get_response_dict(
                         details_dict, i, response, response_dict)
-                    result = result and rspRes
+                    result = result and rspRes if "ERROR" not in (
+                        result, rspRes) else "ERROR"
                     print_debug("<<<")
                 else:
                     finalresult = "ERROR"
