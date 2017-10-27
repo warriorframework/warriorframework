@@ -888,7 +888,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 	katana.$activeTab.find("#tableOfTestStepsForCase").html("");	  // Start with clean slate
 	items.push('<table class="case-configuration-table table-striped" id="Step_table_display"  width="100%" >');
 	items.push('<thead>');
-	items.push('<tr id="StepRow"><th>#</th><th>Driver</th><th>Keyword</th><th>Description</th><th>Arguments</th>\
+	items.push('<tr id="StepRow"><th>TS</th><th>Driver</th><th>Keyword</th><th>Description</th><th>Arguments</th>\
 		<th>OnError</th><th>Execute</th><th>Run Mode</th><th>Context</th><th>Impact</th><th>Other</th></tr>');
 	items.push('</thead>');
 	items.push('<tbody>');
@@ -896,6 +896,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		var oneCaseStep = xdata[s];			 // for each step in case
 		//console.log("The Step : ", oneCaseStep);
 		var showID = parseInt(s)+1;
+		oneCaseStep.step_TS = showID; 
 		items.push('<tr data-sid="'+s+'"><td>'+showID+'</td>');		// ID 
 		// -------------------------------------------------------------------------
 		// Validation and default assignments 
@@ -903,7 +904,8 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		// -------------------------------------------------------------------------
 		items.push('<td>'+oneCaseStep.step_driver +'</td>'); 
 		var outstr; 
-		items.push('<td>'+oneCaseStep.step_keyword + "<br>TS=" +oneCaseStep.step_TS+'</td>'); 
+		//items.push('<td>'+oneCaseStep.step_keyword + "<br>TS=" +oneCaseStep.step_TS+'</td>'); 
+		items.push('<td>'+oneCaseStep.step_keyword +'</td>'); 
 		outstr =  oneCaseStep['Description'];
 		if (outstr == null) outstr = "";
 		items.push('<td>'+outstr+'</td>'); 
@@ -1802,7 +1804,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 			oneCaseStep.step_keyword = popup.find("#StepKeyword").val();
 		}
 	
-		oneCaseStep.step_TS =popup.find("#StepTS").val();
+		//oneCaseStep.step_TS =popup.find("#StepTS").val();
 		oneCaseStep["Description"] = popup.find("#StepDescription").val();
 		oneCaseStep["context"] =  popup.find("#StepContext").val();
 		oneCaseStep.Execute_ExecType  = popup.find("#casesExecuteAtExecType").val();	
