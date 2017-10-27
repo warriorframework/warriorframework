@@ -42,9 +42,25 @@ def update_jira_by_id(jiraproj, jiraid, exec_dir, status):
     if jiraid is not False:
         jira_obj = Jira(jiraproj)
         if jira_obj.status is True:
-            if jira_obj.update_jira_issue(jiraid, status):
-                zip_file = shutil.make_archive(exec_dir, 'zip', exec_dir)
-                jira_obj.upload_logfile_to_jira_issue(jiraid, zip_file)
+            # Get the current jira issue status
+            issue_status = jira_obj.get_jira_issue_status(jiraid)
+            isReopend = False
+            # Reopen the jira issue if it is closed, to upload the execution logs
+            if issue_status and issue_status.lower() == "closed":
+                print_info("Reopening Jira issue '{0}' to upload warrior "
+                           "execution logs".format(jiraid))
+                jira_obj.set_jira_issue_status(jiraid, "Reopened")
+                isReopend = True
+            # Upload execution logs
+            zip_file = shutil.make_archive(exec_dir, 'zip', exec_dir)
+            jira_obj.upload_logfile_to_jira_issue(jiraid, zip_file)
+            # Close the jira issue if it is reopened in the above if block
+            if isReopend is True:
+                print_info("Closing Jira issue '{0}' which was reopened "
+                           "earlier".format(jiraid))
+                jira_obj.set_jira_issue_status(jiraid, "Closed")
+            # Update Jira issue based on warrior execution status
+            jira_obj.update_jira_issue(jiraid, status)
     else:
         print_info("jiraid not provided, will not update jira issue")
 
