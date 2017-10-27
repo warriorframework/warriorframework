@@ -902,13 +902,13 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		// Validation and default assignments 
 		// Create empty elements with defaults if none found. ;-)
 		// -------------------------------------------------------------------------
-		items.push('<td>'+oneCaseStep.step_driver +'</td>'); 
+		items.push('<td title="'+oneCaseStep.step_driver+'">'+oneCaseStep.step_driver +'</td>'); 
 		var outstr; 
 		//items.push('<td>'+oneCaseStep.step_keyword + "<br>TS=" +oneCaseStep.step_TS+'</td>'); 
-		items.push('<td>'+oneCaseStep.step_keyword +'</td>'); 
+		items.push('<td title="'+oneCaseStep.step_keyword+'">'+oneCaseStep.step_keyword +'</td>'); 
 		outstr =  oneCaseStep['Description'];
 		if (outstr == null) outstr = "";
-		items.push('<td>'+outstr+'</td>'); 
+		items.push('<td title="'+outstr+'">'+outstr+'</td>'); 
 
 		var arguments = oneCaseStep.Arguments;  // This is a dictionary 
 		var out_array = [] 
