@@ -1875,13 +1875,23 @@ i.active {
 	color: inherit;
 }
 
+.htmlResults td[rowspan]:nth-child(2):hover,
 .htmlResults td[rowspan]:nth-child(3):hover,
-.htmlResults td[rowspan]:nth-child(4):hover {
+.htmlResults td[rowspan]:nth-child(4):hover,
+.htmlResults td[rowspan]:nth-child(5):hover,
+.htmlResults td[rowspan]:nth-child(6):hover,
+.htmlResults td[rowspan]:nth-child(7):hover,
+.htmlResults td[rowspan]:nth-child(8):hover{
 	overflow: visible;
 }
 
+.htmlResults td[rowspan]:nth-child(2):hover div:not(:empty),
 .htmlResults td[rowspan]:nth-child(3):hover div:not(:empty),
-.htmlResults td[rowspan]:nth-child(4):hover div:not(:empty) {
+.htmlResults td[rowspan]:nth-child(4):hover div:not(:empty),
+.htmlResults td[rowspan]:nth-child(5):hover div:not(:empty),
+.htmlResults td[rowspan]:nth-child(6):hover div:not(:empty),
+.htmlResults td[rowspan]:nth-child(7):hover div:not(:empty),
+.htmlResults td[rowspan]:nth-child(8):hover div:not(:empty) {
 	position: absolute;
 	background: #3699ff;
 	z-index: 1;
