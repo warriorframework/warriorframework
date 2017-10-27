@@ -3,14 +3,20 @@
 <div id="OverwriteProjectHere">
 <div class="csrf-container">{% csrf_token %}</div>
 <h2>List of Projects</h2>
+
+<div class="tool-bar">
+	
+	
+		Search: <input id="jstreeFilterText" class="col-md-2" />
+			<button  class="button" katana-click="projects.startNewProject">Add New Project</button>
+		
+
+</div>
 <div id="myProject" auto-init="projects.initProjectTree"> </div>
 	
 <div class="row">
 	<div class="col-md-4" id="myProjectTree"></div>
-	<div class="col-md-4">
-		Search: <input id="jstreeFilterText" class="col-md-2" />
-	</div>
+
 </div>
-		
-		<button  class="btn btn-success" katana-click="projects.startNewProject">Add New Project</button>
+	
 </div>

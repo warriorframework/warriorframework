@@ -3,18 +3,20 @@
 
 <div id="OverwriteSuiteHere">
 <div class="csrf-container">{% csrf_token %}</div>
+
+<div class="tool-bar">
+
+ 	Search: <input id="jstreeFilterText" class="col-md-2" />	
+	<button class="button" katana-click="suites.startNewSuite">Add New Suite</button>
+</div>
+
+
 <h2>List of Suites</h2>		
   	<div id="mySuite" auto-init="suites.initSuiteTree">	</div>
  <div class="row">
  	<div  class="col-md-4" id="mySuiteTree"></div>
- 	<div  class="col-md-4" >
- 		
-		Search: <input id="jstreeFilterText" class="col-md-2" />	
-	
- 	</div>
-	
+ 	
  </div>	
 
-<button class="btn btn-success" katana-click="suites.startNewSuite">Add New Suite</button>
 
 </div>
