@@ -37,6 +37,24 @@ class Apps:
                     js_urls[i] = get_relative_path(js_urls[i], app_path)
                 app.data["js_urls"] = js_urls
                 self.apps.append(app)
+        self.apps = self.__sort_apps()
+        return self.apps
+
+    def __sort_apps(self):
+        order = ["Projects", "Suites", "Cases", "WDF Editor", "Execution", "Settings", "Assembler",
+                 "Wapp Management", "Wapp Store", "Keyword Editor"]
+        final_apps = []
+        included_set = set()
+        for app_name in order:
+            for app in self.apps:
+                if app_name == app.data["name"]:
+                    final_apps.append(app)
+                    included_set.add(app_name)
+                    break
+        for app in self.apps:
+            if app.data["name"] not in included_set:
+                final_apps.append(app)
+        self.apps = final_apps
         return self.apps
 
     def get_config_paths(self, data):
