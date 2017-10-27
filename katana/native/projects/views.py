@@ -46,10 +46,8 @@ def getEmpty():
 	edata={"Project": 
 			{"Testsuites": 
 			{"Testsuite": 
-				[{"onError": {"@action": "goto", "@value": "3"}, "path": "../../Warriorspace/Suites/Suite1.xml"}, 
-				{"onError": {"@action": "abort"}, "path": "../../Warriorspace/Suites/Suite2.xml"},
-				 {"path": "../../Warriorspace/Suites/Suite3.xml"}, {"onError": {"@action": "next"}, 
-				 "path": "../../Warriorspace/Suites/Suite4.xml"}]}, "Details": {"default_onError": {"@action": "next", "@value": ""}, 
+				[]}, 
+				"Details": {"default_onError": {"@action": "next", "@value": ""}, 
 				 "Title": "Project Title or Description", "Resultsdir": "", "Name": "Project Name", "Engineer": "Engineer"}}}
 	return edata;
 

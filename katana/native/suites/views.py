@@ -87,13 +87,7 @@ def getEmpty():
 	edata = {"TestSuite": 
 		{"Testcases": 
 			{"Testcase": 
-				[{"impact": "impact",
-				  "Execute": {"@ExecType": "yes", "Rule": {"@Elsevalue": "", "@Condvalue": "", "@Condition": "", "@Else": "next"}},
-				 "InputDataFile": "", "onError": {"@action": "next", "@value": ""}, 
-				 "runmode": {"@type": "standard", "@value": ""}, "context": "positive", "runtype": "sequential_keywords", "path": "../Cases/EDITME.xml"}, 
-				 {"impact": "impact", "Execute": {"@ExecType": "Yes", "Rule": {"@Elsevalue": "", "@Condvalue": "", "@Condition": "", "@Else": "next"}}, 
-				 "InputDataFile": "", "onError": {"@action": "next", "@value": ""}, 
-				 "runmode": {"@type": "standard", "@value": ""}, "context": "positive", "runtype": "sequential_keywords", "path": "../Cases/EDITME.xml"}]}, 
+				[]}, 
 				 "Requirements": {"Requirement": ["Requirement-demo-001", "Requirement-demo-002"]}, "Details": {"Name": "Name Here", "Title": "Title", 
 				 "Resultsdir": "", 
 				 "State": "Released", 
