@@ -237,25 +237,17 @@ class WarriorCli(object):
 
                     rspRes, response_dict, resp_key_list = new_obj_session._get_response_dict(
                         details_dict, i, response, response_dict, resp_key_list)
-                    sys_name = ses_name = ''
-                    if len(response_dict) < 0:
-                        if response_dict[resp_key_list[i]] is not None:
-                            if details_dict["sys_list"][i] == '' or \
-                             details_dict["sys_list"][i] is None:
-                                sys_name = system_name.split('.')[0]
-                            else:
-                                sys_name = details_dict["sys_list"][i]
-                            if details_dict["session_list"][i] == '' or \
-                               details_dict["session_list"][i] is None:
-                                ses_name = session_name = args.get("session_name")
-                            else:
-                                ses_name = details_dict["session_list"][i]
-                            session_id = Utils.data_Utils.get_session_id(sys_name, ses_name) + \
-                                "_td_response"
-                            pNote("Portion of response saved to the data repository with key: "
-                                  "{0}.{1}.{2}, value: {3}"
-                                  .format(session_id, key, resp_key_list[i], 
-                                          response_dict[resp_key_list[i]]))
+                    if len(response_dict) > 0:
+                        if intsize != len(resp_key_list):
+                            for resp in range(len(resp_key_list)):
+                                self.print_resp_ref_key_value(details_dict, response_dict,
+                                                              resp_key_list, resp, i, system_name,
+                                                              session_name, key)
+                        else:
+                            resp = i
+                            self.print_resp_ref_key_value(details_dict, response_dict,
+                                                          resp_key_list, resp, i,
+                                                          system_name, session_name, key)
                     result = result and rspRes
 
                     print_debug("<<<")
@@ -272,6 +264,28 @@ class WarriorCli(object):
             responses_dict[key] = response_dict
         return finalresult, responses_dict
 
+    def print_resp_ref_key_value(self, details_dict, response_dict, resp_key_list,
+                                 resp, i, system_name, session_name, key):
+        """
+            The response reference key value is printed in the way it is saved
+            in data repository along with its value
+        """
+        sys_name = ses_name = ''
+        if resp_key_list[resp] in response_dict:
+            if response_dict[resp_key_list[resp]] is not None:
+                if details_dict["sys_list"][i] == '' or details_dict["sys_list"][i] is None:
+                    sys_name = system_name.split('.')[0]
+                else:
+                    sys_name = details_dict["sys_list"][i]
+                if details_dict["session_list"][i] == '' or details_dict["session_list"][i] is None:
+                    ses_name = session_name
+                else:
+                    ses_name = details_dict["session_list"][i]
+                session_id = Utils.data_Utils.get_session_id(sys_name, ses_name) + "_td_response"
+                pNote("Portion of response saved to the data repository with key: "
+                      "{0}.{1}.{2}, value: {3}"
+                      .format(session_id, key, resp_key_list[resp],
+                              response_dict[resp_key_list[resp]]))
     @cmdprinter
     def _send_cmd(self, **kwargs):
         """method to send command based on the type of object """
@@ -319,16 +333,15 @@ class WarriorCli(object):
         if not resp_req == "n":
             save_msg1 = "User has requested saving response"
             save_msg2 = "Response pattern required by user is : {0}"
-            save_msg3 = ("Portion of response saved to the data repository "
-                         "with key: {0}, value: {1}")
             if resp_pat_req is not None:
                 # if the requested pattern not found return empty string
+                import pdb;pdb.set_trace()
                 reobj = re.search(resp_pat_req, response)
                 response = reobj.group(0) if reobj is not None else ""
                 response_dict[resp_ref] = response
+                resp_key_list.append(resp_ref)
                 pNote(save_msg1+'.')
                 pNote(save_msg2.format(resp_pat_req))
-                pNote(save_msg3.format(resp_ref, response))
             elif resp_keys is not None:
                 keys = resp_ref.split(',')
                 patterns = [k.get("resp_pattern_req") for k in resp_keys]
@@ -346,8 +359,7 @@ class WarriorCli(object):
                         grps = reobj.groups()
                         response_dict.update(dict(zip(keys, grps)))
                         pNote(save_msg2.format(pattern))
-                        map(lambda x: pNote(save_msg3.format(*x)), zip(keys,
-                                                                       grps))
+                        resp_key_list = keys
                     else:
                         print_error("inorder search of patterns in response "
                                     "failed")
@@ -360,13 +372,11 @@ class WarriorCli(object):
                         reobj = re.search(pattern, response)
                         presponse = reobj.group(0) if reobj is not None else ""
                         response_dict[key] = presponse
+                        resp_key_list.append(key)
                         pNote(save_msg2.format(pattern))
-                        pNote(save_msg3.format(key, presponse))
         else:
             #response = ""
             response_dict[resp_ref] = ""
-        #response_dict[resp_ref] = ""
-        resp_key_list.append(resp_ref)
         return status, response_dict, resp_key_list
 
     @staticmethod
