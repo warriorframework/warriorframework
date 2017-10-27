@@ -96,6 +96,10 @@ class caseRuleObject {
 	}
 
 	setValues(cd,cv,el,ev) {
+		if (cd == null)  cd = "";
+		if (cv == null)  cv = "";
+		if (el == null)  el = "";
+		if (ev == null)  ev = "";
 
 		this.Condition = cd; //jsonData['Condition'];
 		this.Condvalue = cv; //jsonData['Condvalue'];
@@ -121,8 +125,9 @@ class caseRuleObject {
 	}
 
 	getHTMLfragment(trule){
+			var ruleNumber = parseInt(trule) + 1;
 			var outstr = `<div class="field rule-condition-top">\
-                          <label class="rule-condition">Condition:</label>\
+                          <label class="rule-condition">Condition ${ruleNumber}:</label>\
                                 <input type="text" class="rule-condition" id="executeRuleAtCondition-${trule}" value="${this.Condition}" />\
                             </div>\
                             <div class="field ">\
@@ -404,7 +409,7 @@ class caseTestStepObject {
 
 	addNewRule(){
 		var jd = this.Execute.Rule.length;
-		var nr = new caseRuleObject(jd);
+		var nr = new caseRuleObject();
 		this.Execute.Rule.push(nr);
 	}
 
@@ -1133,13 +1138,13 @@ The UI currently uses jQuery and Bootstrap to display the data.
 
 		}
 		popup.find("#caseStepAllRules").html(r_items.join("\n"));
-		if (oneCaseStep.Execute_ExecType == 'if' || oneCaseStep.Execute_ExecType == 'if not') {
-				console.log("Showing ...",oneCaseStep.Execute_ExecType );
-				popup.find('.rule-condition').show();
-			} else {
-				console.log("Hiding ...",oneCaseStep.Execute_ExecType );
-				popup.find('.rule-condition').hide();
-			}
+		// if (oneCaseStep.Execute_ExecType == 'if' || oneCaseStep.Execute_ExecType == 'if not') {
+		// 		console.log("Showing ...",oneCaseStep.Execute_ExecType );
+		// 		popup.find('.rule-condition').show();
+		// 	} else {
+		// 		console.log("Hiding ...",oneCaseStep.Execute_ExecType );
+		// 		popup.find('.rule-condition').hide();
+		// 	}
 		
 	},
 
