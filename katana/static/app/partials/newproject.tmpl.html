@@ -603,7 +603,10 @@
                                  <td class="text-right">
                                     {{ $index + 1 }}
                                 </td>
-                                <td style="word-break: break-all">{{suites[$index].path}}</td>
+                                 <td style="word-break: break-all;cursor:pointer">
+                                <a target="_blank" ng-click="loadFile(suites[$index].path)" >                           {{suites[$index].path}}
+                                </a>
+                                </td>
                                 <td>
                                     Type = {{ suites[$index].Execute._ExecType }}<br>
                                     <div ng-if="suites[$index].Execute._ExecType == 'If' || suites[$index].Execute._ExecType == 'If Not'">
@@ -758,6 +761,7 @@
                                 <input type="text" class="form-control" id="Path"
                                        ng-model='suites[$index].path'
                                        ng-change="monitorPathBtnValue($index)"
+                                       ng-click="loadFile(suites[$index].path)"
                                        placeholder="Suite file path">
                             </div>
                             <div class="col-sm-1">
@@ -1573,7 +1577,10 @@
                                  <td class="text-right">
                                     {{ $index + 1 }}
                                 </td>
-                                <td style="word-break: break-all">{{suites[$index].path}}</td>
+                                <td style="word-break: break-all;cursor:pointer">
+                                <a target="_blank" ng-click="loadFile(suites[$index].path)" >                           {{suites[$index].path}}
+                                </a>
+                                </td>
                                 <td>
                                     Type = {{ suites[$index].Execute._ExecType }}<br>
                                     <div ng-if="suites[$index].Execute._ExecType == 'If' || suites[$index].Execute._ExecType == 'If Not'">
