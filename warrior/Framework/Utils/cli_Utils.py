@@ -511,7 +511,7 @@ def _send_command_retrials(obj_session, details_dict, index, **kwargs):
         wc_obj = WNetwork.warrior_cli_class.WarriorCli()
         wc_obj.conn_obj = WNetwork.warrior_cli_class.PexpectConnect()
         wc_obj.conn_obj.target_host = obj_session
-        result, response, details_dict = wc_obj._send_command_retrials(details_dict, index,
+        result, response = wc_obj._send_command_retrials(details_dict, index,
                                                                        **kwargs)
 
     return result, response
