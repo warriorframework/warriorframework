@@ -1198,10 +1198,11 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		popup.find("#StepContext").attr("value",oneCaseStep["context"]);
 		popup.find("#SteponError-at-action").attr("value",oneCaseStep.onError_action);
 		popup.find("#SteponError-at-value").attr("value",oneCaseStep.onError_value);
-		popup.find("#runmode-at-type").attr("type",oneCaseStep.runmode_type);
+		popup.find("#runmode-at-type").attr("value",oneCaseStep.runmode_type);
 		popup.find("#runmode-at-value").attr("value",oneCaseStep.runmode_value);
 		popup.find("#StepImpact").attr("value",oneCaseStep["impact"]);
 		popup.find('.rule-condition').hide();
+		popup.find('.runmode-value').hide();
 
 
 		popup.find('#casesExecuteAtExecType').attr("value",oneCaseStep.Execute_ExecType );
@@ -1219,7 +1220,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 				popup.find('.rule-condition').hide();
 			}
 		//}
-
+		console.log("RUNMDE -->", oneCaseStep.runmode_type.toLowerCase(), oneCaseStep);
 		if (oneCaseStep.runmode_type.toLowerCase() == 'standard') {
 			popup.find(".runmode-value").hide();
 		} else { 
