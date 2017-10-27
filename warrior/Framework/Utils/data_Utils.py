@@ -468,18 +468,22 @@ def _get_cmd_details(testdata, global_obj, system_name,
         elif param == "resp_key_list":
             def find_key_elem(key):
                 """get the key_elem from test case corresponding to key from
-                the testdata or global section
+                the testdata or global section. Return None if it is not
+                found in both testdata and global section
                 """
                 if testdata.find(key) is not None:
                     return testdata.find(key)
                 if global_obj is not None:
                     global_key_elem = global_obj.find("keys")
                     global_keys = xml_Utils.get_child_node_list(global_key_elem)
+                    # return the first matched entry in global section with tag=key
                     return filter(lambda gk: gk.tag == key, global_keys)[0]
                 return None
             keylist = _get_cmdparams_list(testdata, global_obj, attrib)[0]
             if keylist is not None:
+                # get the keys to be used for pattern matching in this command
                 keys = map(lambda x: x.strip(), keylist.split(','))
+                # get the xml elements corresponding to the key
                 resultant_list = [map(find_key_elem, keys)]
         else:
             resultant_list = _get_cmdparams_list(testdata, global_obj, attrib)

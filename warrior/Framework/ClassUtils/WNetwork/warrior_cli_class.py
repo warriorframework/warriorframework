@@ -309,11 +309,15 @@ class WarriorCli(object):
                 pNote(save_msg3.format(resp_ref, response))
             elif resp_keys is not None:
                 keys = resp_ref.split(',')
+                # get the patterns from pattern entries in testdata file
                 patterns = [k.get("resp_pattern_req") for k in resp_keys]
+                # warn if number of patterns does not match number of resp_ref keys
                 if len(keys) != len(patterns):
                     print_warn_msg(keys, len(patterns))
                 if inorder:
                     pNote(save_msg1+' inorder.')
+                    # since inorder pattern matching selected, join all the
+                    # patterns in order to create a single big pattern
                     cpatterns = map(lambda s: "(" + s + ")", patterns)
                     pattern = ".*".join(cpatterns)
                     if pattern.endswith(".*(.*)"):
@@ -322,8 +326,11 @@ class WarriorCli(object):
                     reobj = re.search(pattern, response, re.DOTALL)
                     if reobj:
                         grps = reobj.groups()
+                        # update response_dict with resp_ref keys and
+                        # their corresponding matched patterns
                         response_dict.update(dict(zip(keys, grps)))
                         pNote(save_msg2.format(pattern))
+                        # print to console the key and the corresponding match stored
                         map(lambda x: pNote(save_msg3.format(*x)), zip(keys,
                                                                        grps))
                     else:
