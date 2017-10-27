@@ -122,15 +122,15 @@ class caseRuleObject {
 
 	getHTMLfragment(trule){
 			var outstr = `<div class="field rule-condition-top">\
-                          <label class="rule-condition">Rule Condition:</label>\
+                          <label class="rule-condition">Condition:</label>\
                                 <input type="text" class="rule-condition" id="executeRuleAtCondition-${trule}" value="${this.Condition}" />\
                             </div>\
                             <div class="field ">\
-                                <label class="rule-condition">Rule Condition Value:</label>\
+                                <label class="rule-condition">Condition Value:</label>\
                                 <input type="text" class="rule-condition" id="executeRuleAtCondvalue-${trule}" value="${this.Condvalue}" />\
                             </div>\
                             <div class="field ">\
-                                <label class="rule-condition">Rule Else:</label>\
+                                <label class="rule-condition">Else:</label>\
                                 <select type="text" class="rule-condition text-right" id="executeRuleAtElse-${trule}" value="${this.Else}">\
                                         <option value="next">next</option>\
                                         <option value="abort">abort</option>\
@@ -139,7 +139,7 @@ class caseRuleObject {
                                 </select>\
                             </div>\                      
                             <div class="field ">\
-                                <label class="rule-condition">Rule Else Value:</label>\
+                                <label class="rule-condition">Else Value:</label>\
                                 <input class="rule-condition" type="text" id="executeRuleAtElsevalue-${trule}" value="${this.Elsevalue}" />\
                             </div>\
 			`;
@@ -304,7 +304,7 @@ class caseTestStepObject {
 		this.onError_action=jsonData['onError']['@action'];
 		this.onError_value=jsonData['onError']['@value'];
 		this.Description = jsonData['Description'];
-		this.iteration_type= jsonData['iteration_type'];
+		//this.iteration_type= jsonData['iteration_type'];
 		// Make sure the Execute and types exist
 		if (! jsonData['Execute']){
 				jsonData['Execute'] = { "@ExecType": "yes", 
@@ -348,19 +348,19 @@ class caseTestStepObject {
 		this.runmode_value = jsonData['runmode']['@value'];
 		this.runmode_type  = jsonData['runmode']['@type'];
 
-		if (! jsonData['iteration_type']) {
-			jsonData['iteration_type'] = {'@type' : 'sequential_testcases', '@value' : '' } ; 
-		}
+		// if (! jsonData['iteration_type']) {
+		// 	jsonData['iteration_type'] = {'@type' : 'sequential_testcases', '@value' : '' } ; 
+		// }
 
-		if (! jsonData['iteration_type']['@value']) {
-			jsonData['iteration_type']['@value'] = 'sequential_testcases';
-		}
-		if (! jsonData['iteration_type']['@value']) {
-			jsonData['iteration_type']['@value'] = '';
-		}
-		// 
-		this.iteration_type = jsonData['iteration_type']['@type'];
-		this.iteration_value = jsonData['iteration_type']['@value'];
+		// if (! jsonData['iteration_type']['@value']) {
+		// 	jsonData['iteration_type']['@value'] = 'sequential_testcases';
+		// }
+		// if (! jsonData['iteration_type']['@value']) {
+		// 	jsonData['iteration_type']['@value'] = '';
+		// }
+		// // 
+		// this.iteration_type = jsonData['iteration_type']['@type'];
+		// this.iteration_value = jsonData['iteration_type']['@value'];
 
 		if (! jsonData['InputDataFile']) {
 			jsonData['InputDataFile'] = '';
@@ -386,7 +386,7 @@ class caseTestStepObject {
 				"Arguments" : 
 					{ 'argument': [] },
 				"onError": {  "@action" : "next", "@value" : "" } ,
-				"iteration_type": {   "@type" : "" } ,
+				//"iteration_type": {   "@type" : "" } ,
 				"Description":"",
 				"Execute": {   "@ExecType": "yes",
 					
@@ -402,6 +402,11 @@ class caseTestStepObject {
 		 return newCaseStep;
 	}
 
+	addNewRule(){
+		var jd = this.Execute.Rule.length;
+		var nr = new caseRuleObject(jd);
+		this.Execute.Rule.push(nr);
+	}
 
 	getJSON() { 
 		var myArgs = [];
@@ -425,7 +430,7 @@ class caseTestStepObject {
 				"@Driver": this.step_driver, "@Keyword": this.step_keyword , "@TS": this.step_TS ,
 				"Arguments" : 	myArgs  ,
 				"onError": {  "@action" : this.onError_action , "@value" : this.onError_value } ,
-				"iteration_type": {   "@type" : "" } ,
+				//"iteration_type": {   "@type" : "" } ,
 				"Description":this.Description,
 				"Execute": {   "@ExecType": this.Execute_ExecType, 'Rule': myRules	}, 
 				"context": this.context, 
@@ -944,9 +949,9 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		items.push('<i title="Insert" class="fa fa-plus" theSid="'+s+'"   id="'+bid+'" katana-click="cases.addCaseFromLine()" key="'+bid+'"/>');
 
 		bid = "copyToStorage-"+s+"-id-";
-		items.push('<br><i title="Copy to clipboard" class="fa fa-clipboard" theSid="'+s+'"   id="'+bid+'" katana-click="cases.saveTestStep()" key="'+bid+'"/>');
+		items.push('<br><i title="Copy" class="fa fa-clipboard" theSid="'+s+'"   id="'+bid+'" katana-click="cases.saveTestStep()" key="'+bid+'"/>');
 		bid = "copyFromStorage-"+s+"-id-";
-		items.push('<i title="Copy from clipboard" class="fa fa-outdent" theSid="'+s+'"   id="'+bid+'" katana-click="cases.restoreTestStep()" key="'+bid+'"/>');
+		items.push('<i title="Paste" class="fa fa-outdent" theSid="'+s+'"   id="'+bid+'" katana-click="cases.restoreTestStep()" key="'+bid+'"/>');
 
 		bid = "dupTestStepAbove-"+s+"-id-";
 		items.push('<i title="Duplicate" class="fa fa-copy" theSid="'+s+'"  id="'+bid+'" katana-click="cases.duplicateCaseFromLine()" key="'+bid+'"/></td>');
@@ -1114,6 +1119,29 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		//console.log("Making arguments at ",oneCaseStep, popup, popup.find("#arguments-textarea"), a_items);
 	},
 
+	addNewRuleToStep : function() {
+		var popup = cases.lastPopup ;
+		var sid = katana.$activeTab.find("#editCaseStepDiv").attr('row-id');
+		var oneCaseStep = cases.jsonCaseSteps[sid];
+		oneCaseStep.addNewRule();
+
+		r_items= [];
+		for (var x in oneCaseStep.Execute.Rule) {
+			var crule  = oneCaseStep.Execute.Rule[x];
+			console.log(crule)
+			r_items.push(crule.getHTMLfragment(x));
+
+		}
+		popup.find("#caseStepAllRules").html(r_items.join("\n"));
+		if (oneCaseStep.Execute_ExecType == 'if' || oneCaseStep.Execute_ExecType == 'if not') {
+				console.log("Showing ...",oneCaseStep.Execute_ExecType );
+				popup.find('.rule-condition').show();
+			} else {
+				console.log("Hiding ...",oneCaseStep.Execute_ExecType );
+				popup.find('.rule-condition').hide();
+			}
+		
+	},
 
 // Fill in default GoTo steps for a popup window for a case step. 
 	fillCaseStepDefaultGoto : function(popupx) {
@@ -1325,7 +1353,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 				
 				 				cases.createPopupArgumentsFromList( popup,a_items[0]['args'], oneCaseStep)
 				 				var wdesc = a_items[0]['wdesc'];
-				 				console.log(wdesc);
+				 				console.log("***WDescription", wdesc);
 				 				cases.lastPopup.find("#StepWDescription").html(wdesc); 
 				 				
 				 				cases.lastPopup.find("#sourceCaseFileText").html(""); 

@@ -9,6 +9,7 @@
         
     </div>
 <div class="csrf-container">{% csrf_token %}</div>
+
    <div auto-init="cases.mapFullCaseJson"> 
     <div class="container-fluid" >
         <div class="row">
@@ -128,11 +129,11 @@
                             <div>
                             <button class="btn btn-success" id="saveEditCaseStep" katana-click="cases.saveTestCaseChanges">Save Changes To Test Step </button>
                             </div>                           
-                            <span>
-                                 <label for="StepDriverCkBx">To Be Developed</label>
-                                 <input type="checkbox" id="StepDriverCkBx" name="StepDriverCkBx" value="TBD" />
-                            
-                            </span>
+                            <div>
+                                
+                                 <input type="checkbox" id="StepDriverCkBx" name="StepDriverCkBx" value="TBD" >To be developed</input>
+                
+                            </div>
                             
 
                             <div class="field">
@@ -142,10 +143,9 @@
                                
                             </div>
 
-                            <span>
-                                <label for="StepKeywordCkBx" >To Be Developed </label>
-                                <input type="checkbox" id="StepKeywordCkBx" name="StepKeywordCkBx" value="TBD" /> 
-                             </span>    
+                            <div>
+                                 <input type="checkbox" id="StepKeywordCkBx" name="StepKeywordCkBx" value="TBD">To Be Developed</input> 
+                             </div>    
 
                              <div class="field">
                                  <label>Keyword</label>
@@ -190,7 +190,9 @@
                             </div>
 
                             <div id="caseStepAllRules"/>
-
+                            <div>
+                                  <button class="btn btn-success rule-condition" id="addRuleToStep" katana-click="cases.addNewRuleToStep">Add Rule</button>
+                            </div>
                             
                             <div class="field">
                                 <label class="text-right">Run mode type:</label>

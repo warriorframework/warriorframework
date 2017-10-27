@@ -1,50 +1,37 @@
-.casescheckbox {
-	width: 25px;
-	margin: 20px 100px;
-	position: relative;
-}
 
-.casescheckbox:after{
-	opacity: 0.2;
-	content: '';
-	position: absolute;
-	width: 9px;
-	height: 5px;
-	background: transparent;
-	top: 6px;
-	left: 7px;
-	border: 3px solid #333;
-	border-top: none;
-	border-right: none;
 
-	transform: rotate(-45deg);
+/* INPUT */
+input[type="checkbox"]{
+  appearance:none;
+  width:40px;
+  height:16px;
+  border:1px solid #aaa;
+  border-radius:2px;
+  background:#ebebeb;
+  position:relative;
+  display:inline-block;
+  overflow:hidden;
+  vertical-align:middle;
+  transition: background 0.3s;
+  box-sizing:border-box;
 }
-
-/*
-.casescheckbox:before{
-	content: 'Off';
-	position: absolute;
-	top: 12px;
-	left: 84px;
-	height: 2px;
-	color: #111;
-	font-size: 16px;
+input[type="checkbox"]:after{
+  content:'';
+  position:absolute;
+  top:-1px;
+  left:-1px;
+  width:14px;
+  height:14px;
+  background:white;
+  border:1px solid #aaa;
+  border-radius:2px;
+  transition: left 0.1s cubic-bezier(0.785, 0.135, 0.15, 0.86);
 }
-*/
-.casescheckbox label {
-	cursor: pointer;
-	position: absolute;
-	width: 25px;
-	height: 25px;
-	top: 0;
-  	left: 0;
-	background: #eee;
-	border:1px solid #ddd;
+input[type="checkbox"]:checked{
+  background:#a6c7ff;
+  border-color:#8daee5;
 }
-
-.casescheckbox label::hover::after { 
-	opacity: 0.5;
- }
-.casescheckbox input[type=checkbox]:checked + label:after {
-	opacity: 1;
+input[type="checkbox"]:checked:after{
+  left:23px;
+  border-color:#8daee5;
 }
