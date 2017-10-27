@@ -18,7 +18,6 @@ import os
 import Tools
 from Framework.Utils.print_Utils import print_error, print_info, print_warning
 from Framework.Utils import xml_Utils
-from Framework.Utils.testcase_Utils import pNote
 
 
 """ jira utils library which has functions related to interaction
@@ -52,16 +51,15 @@ class Jira(object):
     def check_jira_issue(self, issue_summary):
         """
             check jira server for any existing issue with the same summary(title)
-            :para,:
-                issue_summary: issue title
-                headers: auth header
-            :return:
-                the existing issue key or False if not found
+            :Arguments,:
+                1. issue_summary(str) - issue title
+            :Returns:
+                1. issue_id(str/boolean) - existing issue key or False if not found
         """
-        fetchuri = self.server
+        issue_id = False
         parsed_summary = issue_summary.replace("[", "\\\\[")
         parsed_summary = parsed_summary.replace("]", "\\\\]")
-        postdata_url = (fetchuri + '/rest/api/2/search/?jql=summary~' +
+        postdata_url = (self.server + '/rest/api/2/search/?jql=summary~' +
                         urllib.quote_plus('\"' + parsed_summary + '\"'))
         response = requests.get(postdata_url, auth=self.auth)
 
@@ -69,16 +67,15 @@ class Jira(object):
             resp_dict = response.json()
             for issue in resp_dict["issues"]:
                 if issue_summary[:-2].strip() == issue["fields"]["summary"].strip():
-                    return issue["key"]
+                    issue_id = issue["key"]
                 else:
                     # partially match title
                     pass
-            return False
         else:
-            pNote("Problem checking JIRA issues", "error")
-            pNote("JIRA Error code: ({0}), Error message: ({1})".
-                  format(response.status_code, response.text), "error")
-            exit(1)
+            print_error("Problem checking JIRA issues with same issue summary")
+            print_error("JIRA Error code: ({0}), Error message: ({1})".
+                        format(response.status_code, response.text))
+        return issue_id
 
     def update_jira_issue(self, jiraid, status):
         """
@@ -173,12 +170,22 @@ class Jira(object):
         return oper_status
 
     def create_jira_issue(self, issue_summary, issue_description, issue_type='Bug'):
-        """Function to Create jira Ticket using JIRA rest API"""
-
+        """
+        Function to Create jira Ticket using JIRA rest API
+        :Arguments:
+            1. issue_summary(str) - Jira issue ID
+            2. issue_description(str) - warrior execution status
+            3. issue_type(str) - Jira issue type(Ex. Story/Bug/Task)
+        :Returns:
+            1. issue_id(str/boolean) - (a) issue_key if created
+                                       (b) False if not created
+                                       (c) issue_key if already exists and the append_log is True
+                                       (d) False if already exists and the append_log is not True
+        """
+        issue_id = False
         issue_summary = issue_summary.replace('"', " ")
         issue_description = issue_description.replace('"', "-")
-        fetchuri = self.server
-        postdata_url = fetchuri + '/rest/api/2/issue/'
+        postdata_url = self.server + '/rest/api/2/issue/'
         headers = {"Content-Type": "application/json"}
         postdata = """
         {
@@ -205,29 +212,32 @@ class Jira(object):
                 resp_dict = response.json()
                 issue_id = str(resp_dict['key'])
                 print_info("JIRA Issue Created. Issue-Id: {0}".format(issue_id))
-                return issue_id
             else:
-                pNote("Problem creating JIRA issue", "error")
-                pNote("JIRA Error code: ({0}), Error message: ({1})".
-                      format(response.status_code, response.text), "error")
-                exit(1)
+                print_error("Problem creating JIRA issue")
+                print_error("JIRA Error code: ({0}), Error message: ({1})".
+                            format(response.status_code, response.text))
         else:
             if self.append:
                 print_info("Issue '{0}' already exists and the execution logs "
                            "will be uploaded since the 'append_log' option is "
                            "set to True in jira config file".format(str(existed)))
-                return existed
+                issue_id = existed
             else:
                 print_info("Issue '{0}' already exists and the execution logs "
                            "will not be uploaded since the 'append_log' option is "
                            "not set to True in jira config file".format(str(existed)))
-                return None
+
+        return issue_id
 
     def upload_logfile_to_jira_issue(self, issue_id, logfile, attachment_name=None):
-        """Function to attach logs to jira Ticket using JIRA rest API"""
+        """
+        Function to attach logs to jira Ticket using JIRA rest API
+        :Arguments:
+            1. issue_id(str) - Jira issue ID
+            2. logfile(str) - File to be attached
+        """
 
-        fetchuri = self.server
-        postdata_url = fetchuri + '/rest/api/2/issue/' + issue_id + '/attachments'
+        postdata_url = self.server + '/rest/api/2/issue/' + issue_id + '/attachments'
         print_info("logfile is : {0}".format(logfile))
         fileobj = open(logfile, 'rb').read()
         logfile_name = os.path.basename(logfile)
@@ -240,11 +250,10 @@ class Jira(object):
             print_info("Log File {0} uploaded to Issue-Id: {1}".format(logfile_name,
                                                                        issue_id))
         else:
-            pNote("Problem attaching logs to JIRA issue {0}".format(issue_id), "error")
-            pNote("JIRA Error code: ({0}), Error message: ({1})".
-                  format(response.status_code, response.text), "error")
+            print_error("Problem attaching logs to JIRA issue {0}".format(issue_id))
+            print_error("JIRA Error code: ({0}), Error message: ({1})".
+                        format(response.status_code, response.text))
             exit(1)
-
 
     def create_issues_from_jsonlist(self, json_file_list,
                                     result_xml_file, issue_type='Bug'):
@@ -259,8 +268,9 @@ class Jira(object):
                                                   issue_description,
                                                   issue_type)
                 self.update_issue_in_resultxml(result_xml_file, issue_id, step_num)
-                if issue_id is not None:
-                    # The cases when issue_id is None are 1) error 2) issue exist and user chose not to append log
+                if issue_id:
+                    # The cases when issue_id is False/None are 1) error
+                    # 2) issue exist and user chose not to append log
                     issue_id_list.append(issue_id)
 
         print_info("Issue List: {0}".format(issue_id_list))
