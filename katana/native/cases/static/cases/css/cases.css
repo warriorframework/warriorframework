@@ -1,6 +1,6 @@
 
 
-/* INPUT */
+/* INPUT 
 input[type="checkbox"]{
   appearance:none;
   width:40px;
@@ -35,3 +35,4 @@ input[type="checkbox"]:checked:after{
   left:23px;
   border-color:#8daee5;
 }
+*/
