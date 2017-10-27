@@ -26,13 +26,13 @@ function absFromPrefix(pathToBase, pathToFile) {
 	var bf = pathToBase.split('/');
 	var rf = pathToFile.split('/');
 	var nrf = pathToFile.split('/');
-	console.log("Removing", nrf, bf);
+	//console.log("Removing", nrf, bf);
 	
 	for (var i=0;i< rf.length; i++) {
 		if (rf[i] == "..")  { 
 			bf.pop();
 			nrf.splice(0,1);
-			console.log("Removing", nrf, bf);
+			//console.log("Removing", nrf, bf);
 	
 		} else {
 			break;
@@ -269,11 +269,11 @@ class caseTestStepObject {
 	setupFromJSON(jsonData) { 
 		console.log("Setp from JSON from ",jsonData);
 		if (!jsonData) {
-			console.log("Create empty")
+			//console.log("Create empty")
 			jsonData = 	this.createEmptyTestStep(); 
 		}
 		this.Arguments = {} ; 
-		console.log("Setting Arguments ....",jsonData);
+		//console.log("Setting Arguments ....",jsonData);
 
 		if (!jsonData['Arguments']) {
 			jsonData['Arguments']= { 'argument': [] }
@@ -289,7 +289,7 @@ class caseTestStepObject {
 		for (var a=0;a<vlen; a++) {
 				var ao = jsonData['Arguments']['argument'][a];
 				if (ao == null) break;
-				console.log("Adding... in setupFromJSON ---> ", ao); 
+				//console.log("Adding... in setupFromJSON ---> ", ao); 
 				if (ao['@name'] && ao['value']) { 
 					this.Arguments[ao['@name']] = ao['@value]']
 				}
@@ -466,7 +466,7 @@ class caseTestStepObject {
 			// console.log("After", jsonData['Steps']);
 			
 			if (!jsonData['Steps']) {
-				jsonData['Steps']['step'] = [] 
+				jsonData['Steps'] = { 'step': []}
 			} 
 			if (!jsonData['Steps']['step']) {
 				jsonData['Steps']['step'] = [] 
@@ -671,7 +671,7 @@ var cases = {
 		}
 
 
-			var xfname = katana.$activeTab.find('#caseName').val();
+		var xfname = katana.$activeTab.find('#caseName').val();
 			if (xfname.indexOf(".xml") < 0) { 
 				xfname  = xfname + ".xml";
 			}
@@ -849,9 +849,10 @@ var cases = {
 		headers: {'X-CSRFToken':csrftoken},
 		success: function( data ){
 			// The following causes an exception
-			//xdata = { 'heading': "Sent", 'text' : "sent the file... "+data}
-			//katana.openAlert(xdata);
-			alert("Saved...");
+			console.log("Data", data);
+			xdata = { 'heading': "Sent", 'text' : "Saved "}
+			katana.openAlert(xdata);
+			//alert("Saved...");
 	
 		},
 	});
@@ -872,7 +873,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 	
 	if (!jQuery.isArray(xdata)) xdata = [xdata]; // convert singleton to array
 
-	console.log("mapCaseJsonToUi", cases.jsonCaseSteps, xdata); 
+	//console.log("mapCaseJsonToUi", cases.jsonCaseSteps, xdata); 
 	//console.log("xdata =" + xdata);
 	katana.$activeTab.find("#tableOfTestStepsForCase").html("");	  // Start with clean slate
 	items.push('<table class="case-configuration-table table-striped" id="Step_table_display"  width="100%" >');
@@ -894,7 +895,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		var outstr; 
 		items.push('<td>'+oneCaseStep.step_keyword + "<br>TS=" +oneCaseStep.step_TS+'</td>'); 
 		outstr =  oneCaseStep['Description'];
-		
+		if (outstr == null) outstr = "";
 		items.push('<td>'+outstr+'</td>'); 
 
 		var arguments = oneCaseStep.Arguments;  // This is a dictionary 
@@ -910,9 +911,11 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		}
 		
 		outstr = out_array.join("");
-		//console.log("Arguments --> "+outstr);
 		items.push('<td>'+outstr+'</td>'); 
-		items.push('<td>'+oneCaseStep.onError_action+'</td>'); 
+		outstr =  oneCaseStep.onError_action;
+		console.log("On Error Action",oneCaseStep.onError_action )
+		if (oneCaseStep.onError_action == 'goto') outstr += " " + oneCaseStep.onError_value;
+		items.push('<td>'+outstr+'</td>'); 
 		
 		outstr = "ExecType=" + oneCaseStep.Execute_ExecType + "<br>";
 		if (oneCaseStep.Execute_ExecType == 'if' || oneCaseStep.Execute_ExecType == 'if not') {
@@ -927,9 +930,6 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		// 	"Elsevalue="+oneCaseStep.Execute_Rule_Elsevalue;
 		 }
 		 
-
-
-			
 		items.push('<td>'+outstr+'</td>'); 
 		items.push('<td>'+oneCaseStep.runmode_type+'</td>');
 		items.push('<td>'+oneCaseStep.context+'</td>');
@@ -994,7 +994,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 	editCaseFromLine: function() { 
 	var names = this.attr('key').split('-');
 	var sid = parseInt(names[1]);
-	katana.popupController.open(katana.$activeTab.find("#editCaseStepDiv").html(),"Edit..." + sid, function(popup) {
+	katana.popupController.open(katana.$activeTab.find("#editCaseStepDiv").html(),"Edit..." + sid + 1, function(popup) {
 		cases.setupPopupDialog(sid,cases.jsonCaseSteps,popup);
 	});
 	},	
@@ -1181,13 +1181,16 @@ The UI currently uses jQuery and Bootstrap to display the data.
 
 		console.log("ExecType = ", oneCaseStep.Execute_ExecType, oneCaseStep);
 		
-		if (oneCaseStep.Execute_ExecType) {
+		//if (oneCaseStep.Execute_ExecType) {
 			
 			if (oneCaseStep.Execute_ExecType == 'if' || oneCaseStep.Execute_ExecType == 'if not') {
+				console.log("Showing ...",oneCaseStep.Execute_ExecType );
 				popup.find('.rule-condition').show();
+			} else {
+				console.log("Hiding ...",oneCaseStep.Execute_ExecType );
+				popup.find('.rule-condition').hide();
 			}
-		}
-
+		//}
 
 		if (oneCaseStep.runmode_type.toLowerCase() == 'standard') {
 			popup.find(".runmode-value").hide();
@@ -1205,6 +1208,14 @@ The UI currently uses jQuery and Bootstrap to display the data.
 
 		popup.find("#caseStepAllRules").html(r_items.join("\n"));
 
+		if (oneCaseStep.Execute_ExecType == 'if' || oneCaseStep.Execute_ExecType == 'if not') {
+				console.log("Showing ...",oneCaseStep.Execute_ExecType );
+				popup.find('.rule-condition').show();
+			} else {
+				console.log("Hiding ...",oneCaseStep.Execute_ExecType );
+				popup.find('.rule-condition').hide();
+			}
+
 		// if () {
 		// 	popup.find('#executeRuleAtCondition').attr('value',oneCaseStep.Execute_Rule_Condition);
 		// 	popup.find('#executeRuleAtCondvalue').attr('value',oneCaseStep.Execute_Rule_Condvalue);
@@ -1221,7 +1232,6 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		// Check if you already have this keyword defined....
 		//
 		if (katana.$activeTab.data("data-comments"+driver+"-"+keyword)) {
-			alert("Caching!");
 			a_items = katana.$activeTab.data("data-drivers");   // Get the list of cations 
 			//console.log("a_items for drivers ", a_items);       
 			popup.find("#StepDriver").empty();  				// Empty all the options....
@@ -1558,7 +1568,9 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		cases.adjustRequirementsTable();
 		console.log("Insert log in, ", cases.jsonCaseObject, sid);
 		cases.jsonCaseObject.Requirements.insertRequirement(sid, 0, "");
+		cases.saveAllRequirementsCB();
 		cases.createRequirementsTable();	
+
 	},
 
 	saveAllRequirementsCB: function() { 
@@ -1577,6 +1589,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		var sid = parseInt(names[1]);
 		var txtVl = katana.$activeTab.find("#textRequirement-name-"+sid+"-id").val();
 		cases.jsonCaseObject.Requirements.setRequirement(sid, txtVl);
+		cases.saveAllRequirementsCB();
 		cases.createRequirementsTable();	
 	},
 
@@ -1584,8 +1597,12 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		var names = this.attr('key').split('-');
 		var sid = parseInt(names[1]);
 		cases.adjustRequirementsTable();
-		rdata = cases.jsonCaseObject['Requirements']['Requirement'];
+		cases.saveAllRequirementsCB();
+		rdata = cases.jsonCaseObject.Requirements['Requirements']
+		console.log("Before Deleting",rdata);
 		rdata.splice(sid,1); 
+		console.log("After Deleting",rdata);
+		
 		cases.createRequirementsTable();
 	},
 
@@ -1864,7 +1881,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 	items.push('<table id="Requirements_table_display" class="case-req-configuration-table  striped" width="100%" >');
 	items.push('<thead>');
 	items.push('<tr id="ReqRow"><th>#</th><th>Requirement</th><th>');
-	items.push('<i title="Save Edit" katana-click="cases.saveAllRequirementsCB">Save All</i>')
+	//items.push('<i title="Save Edit" katana-click="cases.saveAllRequirementsCB">Save All</i>')
 	items.push('</th></tr>');
 	items.push('</thead>');
 	items.push('<tbody>');
