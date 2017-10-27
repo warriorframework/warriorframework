@@ -82,6 +82,7 @@ var wsedit = {
 			jQuery.getJSON("./wsedit/getFileData/?filename="+selectedValue).done(function(data) {
 				var sdata = data['fulltext'];
 				wsedit.sdata = data;
+				katana.$activeTab.find('#wsedit-scrollable-source-text').show();
 				katana.$activeTab.find('#wsedit-scrollable-source-text').html(sdata);
 				console.log("received", data['mode']);
 
