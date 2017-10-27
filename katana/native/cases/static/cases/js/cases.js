@@ -1830,7 +1830,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		// oneCaseStep.Execute_Rule_Else      = popup.find("#executeRuleAtElse").val();	
 		// oneCaseStep.Execute_Rule_Elsevalue = popup.find("#executeRuleAtElsevalue").val();	
 		oneCaseStep.onError_action = popup.find("#SteponError-at-action").val();
-		oneCaseStep.onError_value = popup.find("#SteponError-at-value").val();
+		oneCaseStep.onError_value = paresInt(popup.find("#SteponError-at-value").val())+1;
 		oneCaseStep.runmode_type = popup.find("#runmode-at-type").val();
 
 		oneCaseStep.runmode_value = popup.find("#runmode-at-value").val();
