@@ -7,7 +7,63 @@
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/codemirror.js" />
 <link rel="stylesheet" href="{% static  'wsedit/js/CodeMirror/lib/codemirror.css' %} ">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/mode/python/python.js"></script> -->
-   <link rel="stylesheet" href="{% static 'wsedit/css/codemirror.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/codemirror.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/3024-day.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/3024-night.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/abcdef.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/ambiance.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/base16-dark.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/bespin.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/base16-light.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/blackboard.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/cobalt.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/colorforth.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/dracula.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/duotone-dark.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/duotone-light.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/eclipse.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/elegant.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/erlang-dark.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/hopscotch.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/icecoder.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/isotope.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/lesser-dark.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/liquibyte.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/material.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/mbo.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/mdn-like.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/midnight.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/monokai.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/neat.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/neo.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/night.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/panda-syntax.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/paraiso-dark.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/paraiso-light.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/pastel-on-dark.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/railscasts.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/rubyblue.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/seti.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/solarized.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/the-matrix.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/tomorrow-night-bright.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/tomorrow-night-eighties.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/ttcn.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/twilight.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/vibrant-ink.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/xq-dark.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/xq-light.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/yeti.css' %}">
+<link rel="stylesheet" href="{% static 'wsedit/css/theme/zenburn.css' %}">
+ 
+  <script src="{% static 'wsedit/js/addon/fold/foldcode.js' %}"></script>
+  <script src="{% static 'wsedit/js/addon/fold/foldgutter.js' %}"></script>
+  <script src="{% static 'wsedit/js/addon/fold/brace-fold.js' %}"></script>
+  <script src="{% static 'wsedit/js/addon/fold/xml-fold.js' %}"></script>
+  <script src="{% static 'wsedit/js/addon/fold/indent-fold.js' %}"></script>
+  <script src="{% static 'wsedit/js/addon/fold/markdown-fold.js' %}"></script>
+  <script src="{% static 'wsedit/js/addon/fold/comment-fold.js' %}"></script>
+  
 <style>
 .CodeMirror {
     height: 100% !important;
@@ -15,20 +71,77 @@
 </style>
 
 
-  <div class="tool-bar">
-       <i katana-click="wsedit.openFileFromServer" class="fa fa-edit">&nbsp;Edit Action File</i>
- <input class="text col-md-6" id="wsedit-filename" value="filename"></input>
-	    <i  katana-click="wsedit.saveFileToServer" class="fa fa-floppy-o" >&nbsp;Save</i> 
-	    <label  id='wsedit-saveme-btn'></label>
+  <div class="tool-bar ">
+    <i katana-click="wsedit.openFileFromServer" class="fa fa-edit">&nbsp;Edit Action File</i>
+      <input class="text col-md-6" id="wsedit-filename" value="filename"></input>
+      <i  katana-click="wsedit.saveFileToServer" class="fa fa-floppy-o" >&nbsp;Save</i> 
+      <label  id='wsedit-saveme-btn'></label>
+            <i katana-click="wsedit.toggleLineWrap" class="fa fa-arrows-h" title="Line wrap"></i>  
+      <i katana-click="wsedit.toggleLineNumber" class="fa fa-hashtag" title="Line Numbers"></i>  
+      
+    <select class="col-md-1" onchange="selectTheme()" id="wsedit-select" katana-click="wsedit.onThemeChange">
+    <option selected>default</option>
+    <option>3024-day</option>
+    <option>3024-night</option>
+    <option>abcdef</option>
+    <option>ambiance</option>
+    <option>base16-dark</option>
+    <option>base16-light</option>
+    <option>bespin</option>
+    <option>blackboard</option>
+    <option>cobalt</option>
+    <option>colorforth</option>
+    <option>dracula</option>
+    <option>duotone-dark</option>
+    <option>duotone-light</option>
+    <option>eclipse</option>
+    <option>elegant</option>
+    <option>erlang-dark</option>
+    <option>hopscotch</option>
+    <option>icecoder</option>
+    <option>isotope</option>
+    <option>lesser-dark</option>
+    <option>liquibyte</option>
+    <option>material</option>
+    <option>mbo</option>
+    <option>mdn-like</option>
+    <option>midnight</option>
+    <option>monokai</option>
+    <option>neat</option>
+    <option>neo</option>
+    <option>night</option>
+    <option>panda-syntax</option>
+    <option>paraiso-dark</option>
+    <option>paraiso-light</option>
+    <option>pastel-on-dark</option>
+    <option>railscasts</option>
+    <option>rubyblue</option>
+    <option>seti</option>
+    <option>solarized dark</option>
+    <option>solarized light</option>
+    <option>the-matrix</option>
+    <option>tomorrow-night-bright</option>
+    <option>tomorrow-night-eighties</option>
+    <option>ttcn</option>
+    <option>twilight</option>
+    <option>vibrant-ink</option>
+    <option>xq-dark</option>
+    <option>xq-light</option>
+    <option>yeti</option>
+    <option>zenburn</option>
+</select> 
+
     </div>
 
    	 <div class="csrf-container">{% csrf_token %}</div>
 
 	<div id="wsedit-savesubdir" class="hidden">{{savesubdir}}</div>
-   
+  <label id="wsedit-pythonsrcdir" class="hidden">{{pythonsrcdir}}</label>
+
+  <div auto-init="wsedit.init" >
 	<textarea id='wsedit-scrollable-source-text'  min-height="95%" class='hidden' > </textarea> 	
    
-   	<label id="wsedit-pythonsrcdir" class="hidden">{{pythonsrcdir}}</label>
+  
         
 </div>
   
