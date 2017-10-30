@@ -42,6 +42,8 @@ cmd_params = OrderedDict([("command_list", "send"),
                           ("resp_ref_list", "resp_ref"),
                           ("resp_req_list", "resp_req"),
                           ("resp_pat_req_list", "resp_pat_req"),
+                          ("resp_key_list", "resp_keys"),
+                          ("inorder_resp_ref_list", "inorder_resp_ref"),
                           ("log_list", "monitor"),
                           ("verify_on_list", "verify_on"),
                           ("inorder_search_list", "inorder"),
@@ -112,6 +114,7 @@ def getSystemData(datafile, system_name, cnode, system='system'):
         if value is None:
             value = xml_Utils.get_text_from_direct_child(element, cnode)
         value = sub_from_env_var(value)
+        value = sub_from_data_repo(value)
 
     return value
 
@@ -180,6 +183,7 @@ def get_credentials(datafile, system_name, myInfo=[], tag_name="system",
                 output_dict[x] = cred_value
         value = output_dict
     updated_dict = sub_from_env_var(value)
+    updated_dict = sub_from_data_repo(updated_dict)
     return updated_dict
 
 
@@ -461,9 +465,28 @@ def _get_cmd_details(testdata, global_obj, system_name,
             vfylist = details_dict["verify_list"]
             vfylist, maplist = _get_mapping_details(global_obj, vfylist)
             resultant_list = maplist
+        elif param == "resp_key_list":
+            def find_key_elem(key):
+                """get the key_elem from test case corresponding to key from
+                the testdata or global section
+                """
+                if testdata.find(key) is not None:
+                    return testdata.find(key)
+                if global_obj is not None:
+                    global_key_elem = global_obj.find("keys")
+                    global_keys = xml_Utils.get_child_node_list(global_key_elem)
+                    return filter(lambda gk: gk.tag == key, global_keys)[0]
+                return None
+            keylist = _get_cmdparams_list(testdata, global_obj, attrib)[0]
+            if keylist is not None:
+                keys = map(lambda x: x.strip(), keylist.split(','))
+                resultant_list = [map(find_key_elem, keys)]
         else:
             resultant_list = _get_cmdparams_list(testdata, global_obj, attrib)
             if param == "sys_list":
+                # substitute sys tag value from var_config file
+                resultant_list = string_Utils.sub_from_varconfig(varconfigfile,
+                                                                 resultant_list)
                 details_dict["vc_file_list"] = []
                 vc_file_list = _get_vc_details(resultant_list, system_name,
                                                varconfigfile)
@@ -1852,6 +1875,7 @@ def get_iteration_syslist(system_node_list, system_name_list):
         if iter_flag is None:
             iter_flag = xml_Utils.get_text_from_direct_child(system, "iter")
         iter_flag = sub_from_env_var(iter_flag)
+        iter_flag = sub_from_data_repo(iter_flag)
 
         if str(iter_flag).lower() == "no":
             pass

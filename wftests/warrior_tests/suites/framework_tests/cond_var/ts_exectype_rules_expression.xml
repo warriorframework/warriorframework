@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+<TestSuite>
+    <Details>
+        <Name>ts_exectype_rules_expression</Name>
+        <Title>Test conditional statement for different tc statues</Title>
+        <Engineer>Ka Hei Chan</Engineer>
+        <Date>08/22/2016</Date>
+        <Time>17:01:28</Time>
+        <type exectype="sequential_testcases"/>
+        <State/>
+        <default_onError action="next"/>
+        <Resultsdir/>
+        <IDF/>
+    </Details>
+    <Requirements>
+        <Requirement/>
+    </Requirements>
+    <Testcases>
+        <Testcase>
+            <path>../../../testcases/framework_tests/cond_var/simple_cond_var.xml</path>
+            <context>positive</context>
+            <runtype>sequential_keywords</runtype>
+            <onError action="next"/>
+            <rmt/>
+            <impact>impact</impact>
+            <Execute ExecType="Yes"/>
+        </Testcase>
+        <Testcase>
+            <path>../../../testcases/framework_tests/cond_var/multi_rules_no_expression.xml</path>
+            <context>positive</context>
+            <runtype>sequential_keywords</runtype>
+            <onError action="next"/>
+            <Execute ExecType="Yes"/>
+            <rmt/>
+            <impact>noimpact</impact>
+        </Testcase>
+        <Testcase>
+            <path>../../../testcases/framework_tests/cond_var/multi_rules_with_expressions.xml</path>
+            <context>positive</context>
+            <runtype>sequential_keywords</runtype>
+            <onError action="next"/>
+            <Execute ExecType="Yes"/>
+            <rmt/>
+            <impact>noimpact</impact>
+        </Testcase>
+    </Testcases>
+</TestSuite>

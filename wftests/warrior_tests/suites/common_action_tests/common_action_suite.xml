@@ -19,13 +19,19 @@
 			<onError action="next"/>
 			<impact>impact</impact>
 		</Testcase>
-                <Testcase>
-                        <path>../../testcases/common_actions_tests/set_env_variable.xml</path>
-                        <context>positive</context>
-                        <runtype>sequential_keywords</runtype>
-                        <onError action="next"/>
-                        <impact>impact</impact>
-                </Testcase>
-
+        <Testcase>
+                <path>../../testcases/common_actions_tests/set_env_variable.xml</path>
+                <context>positive</context>
+                <runtype>sequential_keywords</runtype>
+                <onError action="next"/>
+                <impact>impact</impact>
+        </Testcase>
+		<Testcase>
+                <path>../../testcases/common_actions_tests/verify_data_test.xml</path>
+                <context>positive</context>
+                <runtype>sequential_keywords</runtype>
+                <onError action="next"/>
+                <impact>impact</impact>
+		</Testcase>
 	</Testcases>
 </TestSuite>
