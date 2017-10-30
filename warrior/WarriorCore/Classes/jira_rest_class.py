@@ -74,7 +74,7 @@ class Jira(object):
         else:
             print_error("Problem checking JIRA issues with same issue summary")
             print_error("JIRA Error code: ({0}), Error message: ({1})".
-                        format(response.status_code, response.text))
+                        format(response.status_code, response.reason))
         return issue_id
 
     def update_jira_issue(self, jiraid, status):
@@ -91,8 +91,7 @@ class Jira(object):
         print_info("Updating the status of the Jira issue '{0}'".format(jiraid))
         issue_type = self.get_jira_issue_type(jiraid)
         if not issue_type:
-            print_error("Failed to get the details of Jira ID '{}', "
-                        "unable to update jira status".format(jiraid))
+            # when failed to get the type of the Jira issue
             return False
 
         oper_status = True
@@ -184,7 +183,7 @@ class Jira(object):
             else:
                 print_error("Problem creating JIRA issue")
                 print_error("JIRA Error code: ({0}), Error message: ({1})".
-                            format(response.status_code, response.text))
+                            format(response.status_code, response.reason))
         else:
             if self.append:
                 print_info("Issue '{0}' already exists and the execution logs "
@@ -222,7 +221,7 @@ class Jira(object):
         else:
             print_error("Problem attaching logs to Jira issue '{0}'".format(issue_id))
             print_error("JIRA Error code: ({0}), Error message: ({1})".
-                        format(response.status_code, response.text))
+                        format(response.status_code, response.reason))
             exit(1)
 
     def create_issues_from_jsonlist(self, json_file_list,
@@ -347,6 +346,10 @@ class Jira(object):
         if response:
             issue_details = response.json()
             issue_type = issue_details['fields']['issuetype']['name'].lower()
+        else:
+            print_error("Problem getting type of the Jira issue '{0}'".format(jiraid))
+            print_error("JIRA Error code: ({0}), Error message: ({1})".
+                        format(response.status_code, response.reason))
 
         return issue_type
 
@@ -366,6 +369,10 @@ class Jira(object):
         if response:
             issue_details = response.json()
             issue_status = issue_details['fields']['status']['name']
+        else:
+            print_error("Problem getting status of the Jira issue '{0}'".format(jiraid))
+            print_error("JIRA Error code: ({0}), Error message: ({1})".
+                        format(response.status_code, response.reason))
 
         return issue_status
 
@@ -410,7 +417,7 @@ class Jira(object):
                 print_error("Error while changing Jira issue status")
                 print_error("JIRA Error code: ({0}), Error message: "
                             "({1})".format(resp_change_trans.status_code,
-                                           resp_change_trans.text))
+                                           resp_change_trans.reason))
                 oper_status = False
 
         return oper_status
