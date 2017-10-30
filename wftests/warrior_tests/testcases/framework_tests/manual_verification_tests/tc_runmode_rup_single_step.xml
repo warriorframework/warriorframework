@@ -20,18 +20,6 @@
 	<Steps>
 		<step Driver="ci_regression_driver" Keyword="local_data_test" TS="1">
 			<Arguments>
-				<argument name="desired_status" value="fail"/>
-			</Arguments>
-			<onError action="next"/>
-			<Description>local_data_test</Description>
-			<iteration_type type=""/>
-			<Execute ExecType="Yes"/>
-			<context>negative</context>
-			<impact>impact</impact>
-			<runmode type="rup" value="5" interval="2"/>
-		</step>
-				<step Driver="ci_regression_driver" Keyword="local_data_test" TS="2">
-			<Arguments>
 				<argument name="desired_status" value="pass"/>
 			</Arguments>
 			<onError action="next"/>
@@ -40,31 +28,7 @@
 			<Execute ExecType="Yes"/>
 			<context>positive</context>
 			<impact>impact</impact>
-			<runmode type="ruf" value="3" interval="1"/>
-		</step>
-				<step Driver="ci_regression_driver" Keyword="local_data_test" TS="3">
-			<Arguments>
-				<argument name="desired_status" value="pass"/>
-			</Arguments>
-			<onError action="next"/>
-			<Description>local_data_test</Description>
-			<iteration_type type=""/>
-			<Execute ExecType="Yes"/>
-			<context>positive</context>
-			<impact>impact</impact>
-			<runmode type="rmt" value="5" interval="5"/>
-		</step>
-				<step Driver="ci_regression_driver" Keyword="local_data_test" TS="1">
-			<Arguments>
-				<argument name="desired_status" value="pass"/>
-			</Arguments>
-			<onError action="next"/>
-			<Description>local_data_test</Description>
-			<iteration_type type=""/>
-			<Execute ExecType="Yes"/>
-			<context>positive</context>
-			<impact>impact</impact>
-			<runmode type="rup" value="5" interval="2"/>
+			<runmode type="rup" value="5"/>
 		</step>
 	</Steps>
 </Testcase>
