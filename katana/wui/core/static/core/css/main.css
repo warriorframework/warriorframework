@@ -535,11 +535,13 @@ span.close:before {
 	transform: translateZ(0);
 	-webkit-transition: max-width 0.2s ease, -webkit-transform 0.2s ease;
 	transition: max-width 0.2s ease, transform 0.2s ease;
+	text-overflow: initial;
 }
 
 .nav .tab.active[uid="launchpad"] {
 	max-width: 200px;
 	font-size: inherit;
+	text-overflow: ellipsis;
 }
 
 .nav .tab.active[uid="launchpad"]:before {
