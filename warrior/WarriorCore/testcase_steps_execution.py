@@ -21,10 +21,10 @@ import WarriorCore.step_driver as step_driver
 import WarriorCore.onerror_driver as onerror_driver
 import WarriorCore.exec_type_driver as exec_type_driver
 from WarriorCore import common_execution_utils
-import Framework
 import Framework.Utils as Utils
 from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.print_Utils import print_info, print_debug, print_warning, print_error
+from Framework.Utils.datetime_utils import war_wait_till_time
 
 def get_system_console_log(filename, logsdir, console_name):
     """Assign seperate console logfile for each system in parallel execution """
@@ -156,22 +156,32 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
         step_status_list.append(step_status)
         kw_resultfile_list.append(kw_resultfile)
         step_impact_list.append(step_impact)
-        runmode, value = common_execution_utils.get_runmode_from_xmlfile(step)
+        runmode, value, runmode_interval = common_execution_utils.get_runmode_from_xmlfile(step)
         retry_type, retry_cond, retry_cond_value, retry_value, retry_interval = \
             common_execution_utils.get_retry_from_xmlfile(step)
         if runmode is not None:
+            if runmode == "RMT" and runmode_interval is not None:
+                pNote("Wait for {0}sec before the next runmode attempt ".format(runmode_interval))
+                war_wait_till_time(runmode_interval)
             # if runmode is 'ruf' & step_status is False, skip the repeated
             # execution of same TC step and move to next actual step
-            if runmode == "RUF" and step_status is False:
+            elif runmode == "RUF" and step_status is False:
                 goto_stepnum = str(value)
             # if runmode is 'rup' & step_status is True, skip the repeated
             # execution of same TC step and move to next actual step
             elif runmode =="RUP" and step_status is True:
                 goto_stepnum = str(value)
+            elif runmode == "RUF" and step_status is True:
+                pNote("Wait for {0}sec before the next runmode attempt ".format(runmode_interval))
+                war_wait_till_time(runmode_interval)
+            elif runmode =="RUP" and step_status is False:
+                pNote("Wait for {0}sec before the next runmode attempt ".format(runmode_interval))
+                war_wait_till_time(runmode_interval)
             else:
                 if step_status is False or str(step_status).upper() == "ERROR" \
                 or str(step_status).upper() == "EXCEPTION":
-                    goto_stepnum = onerror_driver.main(step, default_error_action, default_error_value)
+                    goto_stepnum = onerror_driver.main(step, default_error_action,
+                                                       default_error_value)
                     if goto_stepnum in ['ABORT', 'ABORT_AS_ERROR']: break
 
         elif retry_type is not None:
@@ -182,7 +192,7 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
                         pNote("Wait for {0}sec before retrying".format(retry_interval))
                         pNote("The given condition '{0}' matches the expected "
                               "value '{1}'".format(data_repository[retry_cond], retry_cond_value))
-                        time.sleep(int(retry_interval))
+                        war_wait_till_time(retry_interval)
                     else:
                         condition_met = False
                         print_warning("The condition value '{0}' does not match with the "
@@ -203,7 +213,7 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
                             pNote("The condition value '{0}' does not match with the expected "
                                   "value '{1}'".format(data_repository[retry_cond],
                                                        retry_cond_value))
-                            time.sleep(int(retry_interval))
+                            war_wait_till_time(retry_interval)
                         else:
                             condition_met = False
                     except KeyError:

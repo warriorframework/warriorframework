@@ -13,7 +13,6 @@ limitations under the License.
 
 
 """common_actions module where keywords common to all products are developed"""
-import time
 import json
 import Framework.Utils as Utils
 import os
@@ -21,6 +20,7 @@ from Framework.Utils.print_Utils import print_info, print_error
 from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.data_Utils import get_object_from_datarepository, update_datarepository
 from Framework.Utils.file_Utils import getAbsPath
+from Framework.Utils.datetime_utils import war_wait_till_time
 
 
 class CommonActions(object):
@@ -47,18 +47,9 @@ class CommonActions(object):
 
         WDesc = "Waits for the timeout provided"
         Utils.testcase_Utils.pSubStep(WDesc)
-        pNote(self.datafile)
-        pNote('Starting Time Out of ' + timeout + 'secs')
-        wait_time = float(timeout)
-        print_interval = wait_time/10
-        pNote('Remaining Time out will be notified every {} secs'.format(print_interval))
-        while wait_time > 0:
-            wait_time -= print_interval
-            time.sleep(print_interval)
-            pNote('Remaining Time out {} seconds'.format(wait_time))
-        pNote('Ending Time Out of ' + timeout + 'secs')
+        status = False
+        status = war_wait_till_time(timeout)
         pNote('********Below Testing occured after Timeout *********')
-        status = True
         Utils.testcase_Utils.report_substep_status(status)
         return status
 
