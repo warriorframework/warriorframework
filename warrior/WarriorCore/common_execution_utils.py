@@ -44,8 +44,8 @@ def get_runmode_from_xmlfile(element):
                               " values".format(rt_type))
                 return (None, 1, None)
             elif rt_interval is None or rt_interval is "":
-                print_warning("Unsupported value '{0}' provided for 'runmode:"
-                                  "interval' tag".format(rt_interval))
+                print_warning("Unsupported value '{0}' provided for 'runmode:interval' "
+                              "tag".format(rt_interval))
                 return (rt_type, 1, None)
             try:
                 rt_value = int(rt_value)
@@ -58,7 +58,7 @@ def get_runmode_from_xmlfile(element):
                                   " 1 for execution".format(rt_value))
                 if rt_interval < 0:
                     rt_interval = 0
-                    print_warning("Value provided for 'runmode:value' tag "
+                    print_warning("Value provided for 'runmode:interval' tag "
                                   "'{0}' is less than '1', using default value"
                                   " 1 for execution".format(rt_interval))
             except ValueError:
@@ -92,17 +92,18 @@ def get_retry_from_xmlfile(element):
                           .format(retry_type))
             return (None, None, None, 5, 5)
         if (retry_cond is None) or (retry_cond_value is None):
-            print_warning("Atleast one of the value provided for 'retry_cond/retry_cond_value' is None.")
+            print_warning("Atleast one of the value provided for 'retry_cond/retry_cond_value' "
+                          "is None.")
             return (None, None, None, 5, 5)
-        retry_interval=str(retry_interval)
+        retry_interval = str(retry_interval)
         retry_value = str(retry_value)
-        if retry_interval.isdigit() == False:
+        if retry_interval.isdigit() is False:
             retry_interval = 5
             print_warning("The value provided for "\
                           "retry:retry_interval is not valid, "\
                           "using default value 5 for execution")
         retry_interval = int(retry_interval)
-        if retry_value.isdigit() == False:
+        if retry_value.isdigit() is False:
             retry_value = 5
             print_warning("The value provided for "\
                           "retry:retry_value is not valid, "\

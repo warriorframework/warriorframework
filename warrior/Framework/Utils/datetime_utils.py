@@ -26,8 +26,9 @@ def war_wait_till_time(wait_time, unit="SECONDS"):
                   1. Second by default
                   2. Minute
                   3. Hour
-                  4. Month (30 days is assumed for one Month)
-                  5. Year (365 days is assumed for one Year)
+                  4. Day
+                  5. Month (30 days is assumed for one Month)
+                  6. Year (365 days is assumed for one Year)
     :return:
     Status = Bool
     """

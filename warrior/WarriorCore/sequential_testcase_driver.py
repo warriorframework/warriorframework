@@ -85,7 +85,7 @@ def execute_sequential_testcases(testcase_list, suite_repository,
         else:
             # if tc_rel_path is None, what are we doing here?
             tc_path = str(tc_rel_path)
-        print('\n')
+        print_info('\n')
         print_debug("<<<< Starting execution of Test case: {0}>>>>".
                     format(tc_path))
         action, tc_status = exec_type_driver.main(testcase)

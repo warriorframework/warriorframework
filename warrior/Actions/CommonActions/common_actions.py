@@ -27,6 +27,7 @@ class CommonActions(object):
     """class CommonActions having methods (keywords) that are common for all the products"""
 
     def __init__(self):
+        """constructor"""
         self.resultfile = Utils.config_Utils.resultfile
         self.datafile = Utils.config_Utils.datafile
         self.logsdir = Utils.config_Utils.logsdir
@@ -119,6 +120,14 @@ class CommonActions(object):
             type = type of datavalue (string/int/float)
         """
         def get_dict_to_update(var, val):
+            """
+            The function creates a dictionary with Variable and value. If Variable has "." seperated
+            keys then the value is updated at appropriate level of the nested dictionary.
+            :param var: Dictionary Key or Key seperated with "." for nested dict keys.
+            :param val: Value for the Key.
+
+            :return: Dictionary
+            """
             dic = {}
             if '.' in var:
                 [key, value] = var.split('.', 1)
@@ -157,8 +166,7 @@ class CommonActions(object):
         "matches with expected"
         Utils.testcase_Utils.pNote(wDesc)
 
-        result, value = Utils.data_Utils.verify_data(expected, object_key,
-                                                     type, comparison)
+        result, value = Utils.data_Utils.verify_data(expected, object_key, type, comparison)
         if result == "FALSE":
             print_error("Expected: {0} {1} {2} but found {0}={3}".format(
                 object_key, comparison, expected, value))
@@ -168,7 +176,7 @@ class CommonActions(object):
             return False
 
     def set_env_var(self, var_key=None, var_value=None, filepath=None,
-                    jsonkey="environmental_variables", overwrite = "yes"):
+                    jsonkey="environmental_variables", overwrite="yes"):
         """Create a temp environment variable, the value will only stay for the current Execution
         :Argument:
             var_key = key of the environment variable
@@ -190,8 +198,8 @@ class CommonActions(object):
             print_error('Either Provide values to arguments \"var_key\" & \"var_value\" or to '
                         'argument \"filepath\"')
         if overwrite == "NO" and os.getenv(var_key):
-            print_info("Using ENV variable {0} set earlier with value '{1}'".format(var_key,
-                                                                           os.getenv(var_key)))
+            print_info("Using ENV variable {0} set earlier with "
+                       "value '{1}'".format(var_key, os.getenv(var_key)))
         elif var_key is not None and var_value is not None and overwrite in ["YES", "NO"]:
             os.environ[var_key] = var_value
             if os.environ[var_key] == var_value:
@@ -202,7 +210,7 @@ class CommonActions(object):
         if filepath is not None:
             testcasefile_path = get_object_from_datarepository('wt_testcase_filepath')
             try:
-                filepath=getAbsPath(filepath, os.path.dirname(testcasefile_path))
+                filepath = getAbsPath(filepath, os.path.dirname(testcasefile_path))
                 with open(filepath, "r") as json_handle:
                     get_json = json.load(json_handle)
                     if jsonkey in get_json:
@@ -238,5 +246,3 @@ class CommonActions(object):
                 status = False
 
         return status
-
-
