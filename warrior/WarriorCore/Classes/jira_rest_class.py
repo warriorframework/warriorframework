@@ -206,6 +206,7 @@ class Jira(object):
             3. attachment_name(str) - Name of the file to be attached
         """
 
+        status = False
         postdata_url = self.server + '/rest/api/2/issue/' + issue_id + '/attachments'
         print_info("logfile is : {0}".format(logfile))
         fileobj = open(logfile, 'rb').read()
@@ -216,13 +217,14 @@ class Jira(object):
                                  files=files, headers=headers)
 
         if response:
+            status = True
             print_info("{0} - '{1}' uploaded to Jira issue '{2}'"
                        .format(attachment_name, logfile_name, issue_id))
         else:
             print_error("Problem attaching logs to Jira issue '{0}'".format(issue_id))
             print_error("JIRA Error code: ({0}), Error message: ({1})".
                         format(response.status_code, response.reason))
-            exit(1)
+        return status
 
     def create_issues_from_jsonlist(self, json_file_list,
                                     result_xml_file, issue_type='Bug'):
