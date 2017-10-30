@@ -57,14 +57,16 @@ var wsedit = {
 
 
  	init: function() { 
- 		console.log("Start....");
- 		//wsedit.myCodeEdit = CodeMirror.CodeMirror.fromTextArea(katana.$activeTab.find('#wsedit-scrollable-source-text'));
-		//wsedit.myCodeEdit  = CodeMirror.fromTextArea(katana.$activeTab.find('#wsedit-scrollable-source-text')[0]);
-		//   value: "function myScript(){return 100;}\n",
-		//   mode:  "javascript"
-		// });
-		// // wsedit.flask.run('#wsedit-scrollable-source-text');
-		wsedit.myCodeEdit = CodeMirror.fromTextArea(katana.$activeTab.find('#wsedit-scrollable-source-text')[0],{ value: ""} );
+ 		//console.log("Start....",	katana.$activeTab.find("#wsedit-file-menu"));
+ 		//extraKeys: {"Ctrl-Q": function(cm){ wsedit.myCodeEdit.foldCode(wsedit.myCodeEdit.getCursor()); }},
+    		
+ 		wsedit.myCodeEdit = CodeMirror.fromTextArea(katana.$activeTab.find('#wsedit-scrollable-source-text')[0],
+ 			{ value: "",
+ 			foldGutter: true,
+ 			extraKeys: {"Ctrl-Q": function(cm){ console.log(cm); cm.foldCode(cm.getCursor()); }},
+    
+    		gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+ 		} );
 		console.log("Started....",wsedit.myCodeEdit );
  		
 
@@ -109,8 +111,10 @@ var wsedit = {
 				wsedit.myCodeEdit.setOption("matchBrackets", true);
 				wsedit.myCodeEdit.setOption("styleActiveLine", true);
 				katana.$activeTab.find("#wsedit-saveme-btn").html("");
-				wsedit.myCodeEdit.setOption("extraKeys",{"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); }});
- 
+				//wsedit.myCodeEdit.setOption("extraKeys",{"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); }});
+ 				wsedit.myCodeEdit.setOption("foldGutter", true);
+    			//wsedit.myCodeEdit.setOption("gutters": ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]);
+
 			});
 
 			
@@ -134,6 +138,10 @@ var wsedit = {
 
 	onThemeChange: function()  { 
 		wsedit.selectTheme();
+	},
+
+	toggleCodeFold: function() { 
+		wsedit.myCodeEdit.foldCode(wsedit.myCodeEdit.getCursor());
 	},
 
 	toggleLineWrap: function() {

@@ -56,30 +56,174 @@
 <link rel="stylesheet" href="{% static 'wsedit/css/theme/yeti.css' %}">
 <link rel="stylesheet" href="{% static 'wsedit/css/theme/zenburn.css' %}">
  
-  <script src="{% static 'wsedit/js/addon/fold/foldcode.js' %}"></script>
+<!-- <script src="{% static 'wsedit/js/addon/fold/foldcode.js' %}"></script>
   <script src="{% static 'wsedit/js/addon/fold/foldgutter.js' %}"></script>
   <script src="{% static 'wsedit/js/addon/fold/brace-fold.js' %}"></script>
   <script src="{% static 'wsedit/js/addon/fold/xml-fold.js' %}"></script>
   <script src="{% static 'wsedit/js/addon/fold/indent-fold.js' %}"></script>
   <script src="{% static 'wsedit/js/addon/fold/markdown-fold.js' %}"></script>
-  <script src="{% static 'wsedit/js/addon/fold/comment-fold.js' %}"></script>
+  <script src="{% static 'wsedit/js/addon/fold/comment-fold.js' %}"></script>  -->
+<script src="{% static 'wsedit/js/foldcode.js' %}"></script>
+<script src="{% static 'wsedit/js/foldgutter.js' %}"></script>
+<script src="{% static 'wsedit/js/brace-fold.js' %}"></script>
+<script src="{% static 'wsedit/js/xml-fold.js' %}"></script>
+<script src="{% static 'wsedit/js/indent-fold.js' %}"></script>
+<script src="{% static 'wsedit/js/markdown-fold.js' %}"></script>
+<script src="{% static 'wsedit/js/comment-fold.js' %}"></script>
   
 <style>
 .CodeMirror {
     height: 100% !important;
 }
+/* Navbar container */
+.navbar {
+  overflow: hidden;
+  background-color: #333;
+  font-family: Arial;
+}
+
+/* Links inside the navbar */
+.navbar a {
+  float: left;
+  font-size: 16px;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+/* The dropdown container */
+.dropdown {
+  float: left;
+  overflow: hidden;
+}
+
+/* Dropdown button */
+.dropdown .dropbtn {
+  font-size: 16px; 
+  border: none;
+  outline: none;
+  color: white;
+  padding: 14px 16px;
+  background-color: inherit;
+}
+
+/* Add a red background color to navbar links on hover */
+.navbar a:hover, .dropdown:hover .dropbtn {
+  background-color: red;
+}
+
+/* Dropdown content (hidden by default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  float: none;
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+}
+
+/* Add a grey background color to dropdown links on hover */
+.dropdown-content a:hover {
+  background-color: #ddd;
+}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+Try it Yourself »
+/* Navbar container */
+.navbar {
+  overflow: hidden;
+  background-color: #333;
+  font-family: Arial;
+}
+
+/* Links inside the navbar */
+.navbar a {
+  float: left;
+  font-size: 16px;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+/* The dropdown container */
+.dropdown {
+  float: left;
+  overflow: hidden;
+}
+
+/* Dropdown button */
+.dropdown .dropbtn {
+  font-size: 16px; 
+  border: none;
+  outline: none;
+  color: white;
+  padding: 14px 16px;
+  background-color: inherit;
+}
+
+/* Add a red background color to navbar links on hover */
+.navbar a:hover, .dropdown:hover .dropbtn {
+  background-color: red;
+}
+
+/* Dropdown content (hidden by default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 10000;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  float: none;
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+}
+
+/* Add a grey background color to dropdown links on hover */
+.dropdown-content a:hover {
+  background-color: #ddd;
+}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+
 </style>
-
-
   <div class="tool-bar ">
+     <input class="left text col-md-4" id="wsedit-filename" value="filename"></input>
     <i katana-click="wsedit.openFileFromServer" class="fa fa-edit">&nbsp;Edit Action File</i>
-      <input class="text col-md-6" id="wsedit-filename" value="filename"></input>
-      <i  katana-click="wsedit.saveFileToServer" class="fa fa-floppy-o" >&nbsp;Save</i> 
-      <label  id='wsedit-saveme-btn'></label>
-            <i katana-click="wsedit.toggleLineWrap" class="fa fa-arrows-h" title="Line wrap"></i>  
-      <i katana-click="wsedit.toggleLineNumber" class="fa fa-hashtag" title="Line Numbers"></i>  
-      
-    <select class="col-md-1" onchange="selectTheme()" id="wsedit-select" katana-click="wsedit.onThemeChange">
+   
+    <i  katana-click="wsedit.saveFileToServer" class="fa fa-floppy-o" >&nbsp;Save</i> 
+    <label  id='wsedit-saveme-btn'></label>
+    <i katana-click="wsedit.toggleLineWrap" class="fa fa-arrows-h" title="Line wrap"></i>  
+    <i katana-click="wsedit.toggleCodFold" class="fa fa-arrows-v" title="Line wrap"></i> 
+    <i katana-click="wsedit.toggleLineNumber" class="fa fa-hashtag" title="Line Numbers"></i>  
+
+    Style:<select class="col-md-1" onchange="wsedit.selectTheme()" id="wsedit-select" katana-click="wsedit.onThemeChange">
     <option selected>default</option>
     <option>3024-day</option>
     <option>3024-night</option>
@@ -129,19 +273,18 @@
     <option>xq-light</option>
     <option>yeti</option>
     <option>zenburn</option>
-</select> 
+  </select> 
 
     </div>
 
-   	 <div class="csrf-container">{% csrf_token %}</div>
-
+  <div class="csrf-container">{% csrf_token %}</div>
 	<div id="wsedit-savesubdir" class="hidden">{{savesubdir}}</div>
   <label id="wsedit-pythonsrcdir" class="hidden">{{pythonsrcdir}}</label>
 
-  <div auto-init="wsedit.init" >
-	<textarea id='wsedit-scrollable-source-text'  min-height="95%" class='hidden' > </textarea> 	
+<div auto-init="wsedit.init">
+	<textarea id='wsedit-scrollable-source-text'  min-height="75%" class='hidden' > </textarea> 	
    
-  
+</div>
         
 </div>
   
