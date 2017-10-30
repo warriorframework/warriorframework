@@ -50,8 +50,9 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
         $scope.hideTxtBox = true;
         $scope.hideDropDwn = false;
         $scope.hideDrop = false;
-
-                     
+        $scope.editStepFlag = 0;
+        $scope.argsField = 0;
+     
 
         function readConfig(){
             getConfigFactory.readconfig()
@@ -856,10 +857,37 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
 
     };
 
+    $scope.noDatacheck = function(){ 
+        swal({
+            title: "You have selected 'No Data' option for Input Data File which reset the values of System/Subsystem.",
+            text: "",
+            type: "info",
+            confirmButtonText: "Ok",
+            closeOnConfirm: true,
+            confirmButtonColor: '#3b3131'
+        });
+        $scope.argsMapField();
+        $scope.argsField = 1;
+     
+    }
+
+    $scope.argsMapField = function(){
+        $scope.hideSubsys  = true;
+        $scope.hideTxtBox = false;
+        $scope.hideDropDwn = true;
+        $scope.hideDrop = true;
+        $scope.hideText = false; 
+        $scope.xml.mapargs['system_name'] = '';
+        $scope.xml.mapargs['subsystem_name'] = '';
+    }
+
     $scope.noteInputDataStatus = function () {
         var idfval = '', // 'Data File Required'
             clazz = '';
         if ($scope.status.nodatafile == '1') {
+            if($scope.editStepFlag == 1){
+                $scope.noDatacheck();
+            }
             idfval = 'No_Data';
             clazz = 'disabled';
             for(var i=0; i<$scope.model.Testcase.Steps.step.length; i++){
@@ -1245,6 +1273,10 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
     // Allow Edit op for the Step at the given index within the Steps array.
     // Event handler when the driver name is selected in the Step Grid.
     $scope.editStep = function (drivername, index) {
+        $scope.editStepFlag = 1;
+        if($scope.argsField == 1){ 
+            $scope.argsMapField();
+        }
         $scope.hideSubsys  = false;
         if($scope.showStepEdit){
             swal({
@@ -1262,7 +1294,7 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
         if($scope.model.Testcase.Details.Name !=''){ 
                $scope.sysFields();           
         }
-        
+
        };
 
         function openStepCap(drivername, index){
@@ -1693,7 +1725,6 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
             newstep["_draft"] = "yes";
             newstep.Arguments.argument = $scope.arg_list;
         }
-
 
         if ($scope.status.step_edit_mode == 'New') {
             if($scope.status.stepindex==-1){
