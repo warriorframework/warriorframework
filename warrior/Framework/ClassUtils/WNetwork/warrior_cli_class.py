@@ -238,16 +238,10 @@ class WarriorCli(object):
                     rspRes, response_dict, resp_key_list = new_obj_session._get_response_dict(
                         details_dict, i, response, response_dict, resp_key_list)
                     if len(response_dict) > 0:
-                        if intsize != len(resp_key_list):
-                            for resp in range(len(resp_key_list)):
-                                self.print_resp_ref_key_value(details_dict, response_dict,
-                                                              resp_key_list, resp, i, system_name,
-                                                              session_name, key)
-                        else:
-                            resp = i
+                        for resp in range(len(resp_key_list)):
                             self.print_resp_ref_key_value(details_dict, response_dict,
-                                                          resp_key_list, resp, i,
-                                                          system_name, session_name, key)
+                                                          resp_key_list, resp, i, system_name,
+                                                          session_name, key)
                     result = result and rspRes
 
                     print_debug("<<<")
@@ -283,9 +277,8 @@ class WarriorCli(object):
                     ses_name = details_dict["session_list"][i]
                 session_id = Utils.data_Utils.get_session_id(sys_name, ses_name) + "_td_response"
                 pNote("Portion of response saved to the data repository with key: "
-                      "{0}.{1}.{2}, value: {3}"
-                      .format(session_id, key, resp_key_list[resp],
-                              response_dict[resp_key_list[resp]]))
+                      "'{0}.{1}.{2}' and value: '{3}'".format(session_id, key, resp_key_list[resp],
+                                                              response_dict[resp_key_list[resp]]))
     @cmdprinter
     def _send_cmd(self, **kwargs):
         """method to send command based on the type of object """
@@ -335,7 +328,6 @@ class WarriorCli(object):
             save_msg2 = "Response pattern required by user is : {0}"
             if resp_pat_req is not None:
                 # if the requested pattern not found return empty string
-                import pdb;pdb.set_trace()
                 reobj = re.search(resp_pat_req, response)
                 response = reobj.group(0) if reobj is not None else ""
                 response_dict[resp_ref] = response
