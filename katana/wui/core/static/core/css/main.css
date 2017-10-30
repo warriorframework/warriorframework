@@ -358,6 +358,7 @@ span.close:before {
 		position: absolute;
 		left: 0;
 		top: 0;
+		border-bottom: none;
 }
 .tab.active {
 	background: rgb(255, 255, 255) !important;
