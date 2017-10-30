@@ -11,10 +11,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import urllib
 import requests
 import json
 import os
+
 import Tools
 from Framework.Utils.print_Utils import print_error, print_info, print_warning
 from Framework.Utils import xml_Utils
@@ -60,7 +60,7 @@ class Jira(object):
         parsed_summary = issue_summary.replace("[", "\\\\[")
         parsed_summary = parsed_summary.replace("]", "\\\\]")
         postdata_url = (self.server + '/rest/api/2/search/?jql=summary~' +
-                        urllib.quote_plus('\"' + parsed_summary + '\"'))
+                        '\"' + parsed_summary + '\"')
         response = requests.get(postdata_url, auth=self.auth)
 
         if response:
@@ -252,9 +252,8 @@ class Jira(object):
 
         tc_name, keyword, step_num, issue_summary = (None,)*4
         step = keyword
-        desc = '-'*18 +' Description '+'-'*18+  '\\n'
+        desc = '-'*18 + ' Description ' + '-'*18 + '\\n'
         p_header = '-'*18 + 'Problem Details' + '-'*18 + '\\n'
-
 
         with open(json_file) as issue_file:
             json_data = json.load(issue_file)
@@ -269,21 +268,22 @@ class Jira(object):
             elif 'step_num' in attr:
                 step_num = attr['step_num']
         if not all([tc_name, keyword, step_num]):
-            print_error("all/one of tc_name, keyword, step_num is missing.."\
+            print_error("all/one of tc_name, keyword, step_num is missing.."
                         "could not create jira ticket without these details")
         else:
-            issue_summary = "TC-"+ str(tc_name).strip() + ":" + "Keyword-" + str(keyword).strip()\
-                     + ":" + "Step{0}.".format(str(step_num)) + str(step).strip() + "[FAILED]" + '\\n'
+            issue_summary = ("TC-" + str(tc_name).strip() + ":" + "Keyword-" +
+                             str(keyword).strip() + ":" + "Step{0}.".format(str(step_num)) +
+                             str(step).strip() + "[FAILED]" + '\\n')
 
-            desc = desc + '\\n' + issue_summary + '\\n'  + '\\n' + p_header + '\\n'
+            desc = desc + '\\n' + issue_summary + '\\n' + '\\n' + p_header + '\\n'
             for attr in json_data:
                 for key, value in attr.items():
                     key = key.replace('\n', "\\n")
                     value = value.replace('\n', "\\n")
-                    desc = desc + str(key) +':' + str(value) +'\\n'
+                    desc = desc + str(key) + ':' + str(value) + '\\n'
 
-            desc = '\\n' + desc + '\\n' +  "-Attached logfiles" + '\\n' +\
-                    "-Attached actual testcase for steps to reproduce" + '\\n'
+            desc = ('\\n' + desc + '\\n' + "-Attached logfiles" + '\\n' +
+                    "-Attached actual testcase for steps to reproduce" + '\\n')
         return issue_summary, desc, str(step_num)
 
     @classmethod
@@ -325,8 +325,8 @@ class Jira(object):
                 output_dict[item] = xml_Utils.get_text_from_direct_child(element, item)
             return output_dict
         else:
-            msg = "There is no project with name: '{0}' "\
-            "in the jira config file: '{1}'".format(system_name, "Tools/jira/jira_config.xml")
+            msg = ("There is no project with name: '{0}' in the jira config "
+                   "file: '{1}'".format(system_name, "Tools/jira/jira_config.xml"))
             print_warning(msg)
             return False
 
