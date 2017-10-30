@@ -11,6 +11,7 @@
 				<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 				<link rel="stylesheet" href="{% static 'core/css/jstree/jstree.min.css' %}">
 				<link rel="stylesheet" href="{% static 'core/css/bootstrap.min.css' %}">
+				<link rel="icon" href="{% static 'core/images/logo.png' %}" type="image/png">
         <link rel="stylesheet" type="text/css" href="{% static 'core/css/main.css' %}" />
 				<style id="bg-style">
 					{% if userData.bgImage != "" %}
@@ -22,7 +23,9 @@
 
 			<div class="view activeView">
 				<div class="header">
-					<h1>WARRIOR</h1>
+						<h1>
+						<div class="logo-image" style="background-image: url({% static 'core/images/logo.png' %})"></div>
+						WARRIOR</h1>
 					<div class="quick-user" katana-click="katana.toggleActiveGlobal" >
 						<i class="fa fa-cog" katana-click="katana.templateAPI.load" url="/katana/settings/" jsurls="  /static/settings/js/settings.js,"></i>
 						<div class="profile-image image" style="background-image: url({{ userData.Base64image }})"></div>
