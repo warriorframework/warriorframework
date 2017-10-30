@@ -335,7 +335,6 @@ class WarriorCli(object):
             save_msg2 = "Response pattern required by user is : {0}"
             if resp_pat_req is not None:
                 # if the requested pattern not found return empty string
-                import pdb;pdb.set_trace()
                 reobj = re.search(resp_pat_req, response)
                 response = reobj.group(0) if reobj is not None else ""
                 response_dict[resp_ref] = response
