@@ -1,9 +1,9 @@
 <?xml version="1.0" ?>
 <Testcase>
 	<Details>
-		<Name>tc_runmode_rup_single_step</Name>
-		<Title>Verifies runmode-rup functionality when a tc has one step in it</Title>
-		<Engineer>vsethura</Engineer>
+		<Name>tc_runmode_rup_ruf_rmt_checks</Name>
+		<Title>Verifies runmode functionality of RUP/RUF/RMT with time interval.</Title>
+		<Engineer>Warrior_user</Engineer>
 		<Date>2017-04-12</Date>
 		<Time>18:25</Time>
 		<State/>
