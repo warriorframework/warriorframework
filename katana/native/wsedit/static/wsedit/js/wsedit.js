@@ -53,18 +53,20 @@ function prefixFromAbs(pathToBase, pathToFile) {
 var wsedit = { 
 
 	myCodeEdit: null,
+	rulers: [],
 	//location.hash : "#cobalt",
 
 
  	init: function() { 
  		//console.log("Start....",	katana.$activeTab.find("#wsedit-file-menu"));
  		//extraKeys: {"Ctrl-Q": function(cm){ wsedit.myCodeEdit.foldCode(wsedit.myCodeEdit.getCursor()); }},
-    		
+    	wsedit.makeRulers();	
  		wsedit.myCodeEdit = CodeMirror.fromTextArea(katana.$activeTab.find('#wsedit-scrollable-source-text')[0],
  			{ value: "",
  			foldGutter: true,
  			extraKeys: {"Ctrl-Q": function(cm){ console.log(cm); cm.foldCode(cm.getCursor()); }},
-    
+    		rulers:[], 
+    		theme: 'cobalt',
     		gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
  		} );
 		console.log("Started....",wsedit.myCodeEdit );
@@ -72,6 +74,7 @@ var wsedit = {
 
  	},
 
+ 	
 	openFileFromServer: function() {
 
 			var tag = '#wsedit-filename';
@@ -82,6 +85,7 @@ var wsedit = {
 	  		var nf = prefixFromAbs(savefilepath, selectedValue);
 	  		katana.$activeTab.find(tag).val(selectedValue);
 	  		katana.$activeTab.find(tag).attr("fullpath", selectedValue);
+			katana.$activeTab.find(tag).attr("title", selectedValue);
 			console.log("fullpath ",selectedValue );
 			// Now get the file from the server and display the data. ..
 
@@ -91,18 +95,6 @@ var wsedit = {
 				// katana.$activeTab.find('#wsedit-scrollable-source-text').show();
 				// katana.$activeTab.find('#wsedit-scrollable-source-text').html(sdata);
 				console.log("received", data['mode']);
-				
-				// if (wsedit.myCodeEdit == null) {
-
-				// 	wsedit.myCodeEdit = CodeMirror.fromTextArea(katana.$activeTab.find('#wsedit-scrollable-source-text')[0],
-				//  	{ value: sdata } );
-
-				// 	wsedit.myCodeEdit.on('change', wsedit.textModifiedCB ) ;
-
-
-				// } else { 
-				// 	wsedit.myCodeEdit.setValue(sdata);
-				// }
 				wsedit.myCodeEdit.setValue(sdata);
 				wsedit.myCodeEdit.setOption("lineNumbers", true);
 				wsedit.myCodeEdit.setOption("lineWrapping", true);
@@ -120,7 +112,7 @@ var wsedit = {
 			
 
 			};
-	  var callback_on_dismiss =  function(){ 
+	 var callback_on_dismiss =  function(){ 
 	  		console.log("Dismissed");
 	 };
 	 var pdir = katana.$activeTab.find("#wsedit-pythonsrcdir")[0].innerText; 
@@ -140,8 +132,25 @@ var wsedit = {
 		wsedit.selectTheme();
 	},
 
-	toggleCodeFold: function() { 
-		wsedit.myCodeEdit.foldCode(wsedit.myCodeEdit.getCursor());
+	makeRulers : function() { 
+	  var nums = "0123456789", space = "          ";
+	  var colors = ["#fcc", "#f5f577", "#cfc", "#aff", "#ccf", "#fcf"];
+	  wsedit.rulers = [], value = "";
+	  for (var i = 1; i <= 10; i++) {
+	    wsedit.rulers.push({color: colors[i], column: i * 10, lineStyle: "dashed"});
+
+  		}
+ 	},
+
+	toggleRulers: function(){
+		var rr = wsedit.myCodeEdit.getOption("rulers");
+		if (rr.length < 1) {
+			wsedit.myCodeEdit.setOption("rulers", wsedit.rulers);
+		} else {	
+			wsedit.myCodeEdit.setOption("rulers", []);
+		}
+		
+
 	},
 
 	toggleLineWrap: function() {
