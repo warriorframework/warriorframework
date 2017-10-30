@@ -11,19 +11,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import sys
 import json
+import sys
 import difflib
 import os
+
+import file_Utils
 import os.path
+
 from xml.dom import minidom
 from xml.etree import ElementTree
 from xml.etree.ElementTree import tostring
 from Framework.OSS import xmltodict
-from print_Utils import print_debug, print_info, print_error, print_warning,\
-print_exception
-import file_Utils
-import json
+from print_Utils import print_debug, print_info, print_error, print_warning, print_exception
 from collections import OrderedDict
 
 try:
@@ -35,17 +35,18 @@ except ImportError as err:
 def create_subelement(parent, tag, attrib):
     """Creates a subelement with given tag
     and attributes under the parent element """
-
     subelement = ElementTree.SubElement(parent, tag, attrib)
     return subelement
 
 def getValuebyTag (filename, tag):
+    """Get the value from the tag name from the xml file"""
     doc = minidom.parse(filename)
     itemlist = doc.getElementsByTagName(tag)[0].toxml()
     itemvalue = itemlist.replace('<' + tag + '>', '').replace('</' + tag + '>', '')
     return itemvalue
 
 def getValuebyAttribute (filename, attribute, tag):
+    """Get the value of the attribute in a tag from the xml file"""
     doc = minidom.parse(filename)
     itemlist = doc.getElementsByTagName(tag)[0].toxml()
     return itemlist.attributes[attribute].value
@@ -67,6 +68,7 @@ def get_last_child(node):
     return element
 
 def getNodeCount(filename, node):
+    """Get the Number of subnodes under the node specified in the xml file"""
     with open (filename, 'rt') as f:
         tree = ElementTree.parse(f)
     count = 0
@@ -75,7 +77,7 @@ def getNodeCount(filename, node):
     return count
 
 def get_tree_from_file(filepath):
-
+    """ Get the tree from the xml file"""
     if file_Utils.fileExists(filepath):
             tree = ElementTree.parse(filepath)
     else:
@@ -84,17 +86,23 @@ def get_tree_from_file(filepath):
     return tree
 
 def getRoot(filename):
-    tree = ElementTree.parse(filename)
-    root = tree.getroot()
+    """ Get the Root of the xml file"""
+    try:
+        tree = ElementTree.parse(filename)
+        root = tree.getroot()
+    except ElementTree.ParseError, msg:
+        print_error("The xml file: {0} is {1}".format(filename, msg))
+        print_info("DONE 1")
+        sys.exit(0)
     return root
 
 def convert_element_to_string(element):
     """Converts the provided xml element to string """
-
     string = tostring(element)
     return string
 
 def getNodeValuebyAttribute (filename, node, attribute):
+    """ Get Node value from the Attribute from the xml fle"""
     value = None
     root = getRoot (filename)
     element = root.find(node)
@@ -106,6 +114,7 @@ def getNodeValuebyAttribute (filename, node, attribute):
 #         return value
 
 def nodeExists (filename, node):
+    """Find whether the Node exists in the xml file"""
     count = getNodeCount (filename, node)
     status = False
     if count > 0:
@@ -113,6 +122,7 @@ def nodeExists (filename, node):
     return status
 
 def getNodeText(filename, node):
+    """Get the Text of the Node"""
     root = ElementTree.parse(filename).getroot()
     node = root.find(node)
     if node is not None:
@@ -125,13 +135,13 @@ def get_node(filename, node_name):
     """Gets seraches for a node under the root and returns the node"""
     root = ElementTree.parse(filename).getroot()
     node = root.find(node_name)
+    node = root.find(node_name)
     if node is not None:
         return node
     else: return False
 
 def write_tree_to_file(root, file_path):
-    """
-    """
+    """Modify/Write to the xml file(filepath) """
     tree = ElementTree.ElementTree(root)
     tree.write(file_path)
 
@@ -151,13 +161,13 @@ def get_matching_firstlevel_children_from_node(node, child_tag):
 
 
 def get_node_list_iterative(filename, node_name):
+    """Find all matching subelements and returns iterable elements"""
     root = ElementTree.parse(filename).getroot()
-    print root
     node_list = root.iterfind(node_name)
-    print node_list
     return node_list
 
 def getChildNodeTextaslist (parentnode, childnode):
+    """Get all child node text of the parent node and return as a list"""
     textlist = []
     for childnode in parentnode.findall(childnode):
         textlist.append(childnode.text)
@@ -169,14 +179,13 @@ def get_text_from_direct_child(parentnode, childname):
     If child is present return the text of the child (returned text will be empty if the child has no text
     Returns False if child is not found under the parent
     """
-
     childnode = parentnode.find(childname)
     if childnode is not None:
         return childnode.text
     else: return False
 
 def get_child_node_list(parentnode):
-    """Retruns the list tof children under to a provided parent node """
+    """Returns the list of children under to a provided parent node """
     child_nodelist = []
     for child in parentnode:
         child_nodelist.append(child)
@@ -185,10 +194,10 @@ def get_child_node_list(parentnode):
 def get_attributevalue_from_directchildnode (parentnode, childname, attribute):
     """ Takes a parent node element as input
     Searches for the first child with the provided name under the parent node
-    If child is present returns the value for the requested child attribute (the returns None if the child does not have that attributte)
+    If child is present returns the value for the requested child attribute (the returns None if
+    the child does not have that attributte)
     Returns False if child is not found under the parent
     """
-
     childnode = parentnode.find(childname)
     if childnode is not None:
         value = childnode.get(attribute)
@@ -196,6 +205,8 @@ def get_attributevalue_from_directchildnode (parentnode, childname, attribute):
     else: return False
 
 def getNodeListbyAttribute (parentnode, childnode, attribute):
+    """Traverse through all the child node from the parent node and get the attribute from each
+    child node and return all the attrubute as a list"""
     textlist = []
     for childnode in parentnode.findall(childnode):
         text = childnode.get(attribute)
@@ -204,7 +215,8 @@ def getNodeListbyAttribute (parentnode, childnode, attribute):
 
 def getChildTextbyParentAttribute (datafile, pnode, patt, pattval, cnode):
     """
-    Seraches XML file for the parent node with a specific value. Finds the child node and returns its text
+    Seraches XML file for the parent node with a specific value. Finds the child node and returns
+    its text
     datafile = xml file searched
     pnode = parent node
     patt = parent node attribute
@@ -250,6 +262,13 @@ def getChildTextbyParentTag (datafile, pnode, cnode):
 
 
 def getChildAttributebyParentTag (datafile, pnode, cnode, cattrib):
+    """Find the attribute in child node by traversing through the parent node
+    in the given file
+    datafile = xml file searched
+    pnode = parent node
+    cnode = child node
+    cattrob = child node attrib
+    """
     tree = ElementTree.parse(datafile)
     root = tree.getroot()
     node = root.find(pnode)
@@ -313,8 +332,6 @@ def verifyParentandChildrenMatch (datafile, pnode, cnode, cvalue, rnode, rvalue)
                 if cnodev == rvalue:
                     # print_debug("-D- BREAK END METHOD verifyParentandChildrenMatch_Status '%s'" % status)
                     return True
-
-    print ("FINAL END METHOD verifyParentandChildrenMatch_Status " % status)
     return status
 
 
@@ -424,7 +441,6 @@ def getElementsListWithTagAttribValueMatch(datafile, tag, attrib, value):
     element_list = []
     root = ElementTree.parse(datafile).getroot()
     for element in root.iterfind(".//%s[@%s='%s']" % (tag, attrib, value)):
-        print element
         element_list.append(element)
     return element_list
 
@@ -613,6 +629,7 @@ def get_elements_by_tagname_ignore_ns(filename, element_tag):
 
 #2015/12/09 ymizugaki add begin
 def getValuebyTagFromResponse (response, tag):
+    """Given a xml response object, returns the value for a particular tag"""
     doc = minidom.parseString(response)
     item = doc.getElementsByTagName(tag)
     if len(item) != 0:
@@ -626,6 +643,7 @@ def getValuebyTagFromResponse (response, tag):
     return itemvalue
 
 def get_last_level_children(node, tag):
+    """Find and return the last level children"""
     ele = None
     for sub in node.iter(tag):
         ele = sub
@@ -652,8 +670,7 @@ def get_element_by_attribute(xml_file, tag_name, attr_name, attr_value):
         return False
 
 def get_child_with_matching_tag(parent, tag_name):
-    """
-    """
+    """ Find whether Child node with tag = tag_name exists, if exists then return the child node"""
     child_node = ""
     try:
         child_node = parent.getElementsByTagName(tag_name)[0]
@@ -892,6 +909,7 @@ def compare_xml(xml1, xml2, output_file=False, sorted_json=True,
 
 
 def get_children_as_dict(parent):
+    """For a given parent object, return all children as a dictionary with the childs tag as key"""
     child_list = getChildElementsListWithSpecificXpath(parent, "*")
     child_dict = {}
     for child in child_list:
@@ -925,6 +943,7 @@ def convert_xml_to_list_of_dict(file_name):
 
 #2016/06/22 ymizugaki add begin
 def getValuebyTagFromStringWithXpath(response, xpathString, ns):
+    """Given a response object, return the value from the xpath and namespace combination"""
     xml = etree.fromstring(response)
     item = xml.xpath(xpathString, namespaces=ns)
     if len(item) != 0:
@@ -934,6 +953,7 @@ def getValuebyTagFromStringWithXpath(response, xpathString, ns):
     return itemValue
 
 def getValueListbyTagFromString(response, tag):
+    """Given a response object, return the list of value tag present in the object"""
     doc = minidom.parseString(response)
     item = doc.getElementsByTagName(tag)
     itemlist = []
