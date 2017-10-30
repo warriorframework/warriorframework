@@ -897,7 +897,7 @@ def verify_data(expected, key, data_type='str', comparison='eq'):
     result, err_msg, exp = validate()
     keys = key.split('.')
     value = get_object_from_datarepository(keys[0])
-    key_err_msg = "key {} not present in data repository\n"
+    key_err_msg = "In the given key '{0}', '{1}' is not present in data repository"
     if value:
         try:
             for k in keys[1:]:
@@ -906,15 +906,19 @@ def verify_data(expected, key, data_type='str', comparison='eq'):
                 print_error(err_msg)
             elif not comp_funcs[comparison](value, exp):
                 result = "FALSE"
-                print_warning("The key, value pair '{0}:{1}' present in the  "
-                              "data_repository doesn't satisfy the expected value & "
-                              "condition '{2}:{3}'".format(key, value, comparison, expected))
+                if type(value) != type(exp):
+                    print_warning("The expected value '{0}' is of {1} and data_repository value "
+                                  "'{2}' is of {3}".format(exp, type(exp), value, type(value)))
+                else:
+                    print_warning("The key, value pair '{0}:{1}' present in the "
+                                  "data_repository doesn't satisfy the expected value: '{2}' & "
+                                  "condition: '{3}'".format(key, value, expected, comparison))
             else:
                 print_info("The key, value pair '{0}:{1}' present in the  "
-                           "data_repository satisfies the expected value & condition "
-                           "'{2}:{3}'".format(key, value, comparison, expected))
+                           "data_repository satisfies the expected type & condition "
+                           "'{2}:{3}'".format(key, value, data_type, comparison))
         except KeyError:
-            print_error(key_err_msg.format(key))
+            print_error(key_err_msg.format(key, k))
             result = "FALSE"
         except Exception as e:
             err_msg += "Got unknown exception {}\n".format(e)
@@ -922,7 +926,7 @@ def verify_data(expected, key, data_type='str', comparison='eq'):
     else:
         # when the value is not in data_repo(value is False)
         result = "ERROR"
-        print_error(key_err_msg.format(key))
+        print_error(key_err_msg.format(key, key.split('.')[0]))
 
     return result, value
 

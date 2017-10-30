@@ -174,8 +174,6 @@ class CommonActions(object):
         if result == "TRUE":
             return True
         elif result == "FALSE":
-            print_error("Expected: {0} {1} {2} but found {0}={3}".format(
-                        object_key, comparison, expected, value))
             return False
         else:
             return result
