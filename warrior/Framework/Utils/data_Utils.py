@@ -10,21 +10,20 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from __builtin__ import str
 import os
 import re
-import sys
 from collections import OrderedDict
 from ast import literal_eval
-from Framework.Utils import xml_Utils, string_Utils, testcase_Utils,\
-config_Utils, file_Utils
+from Framework.Utils import xml_Utils, string_Utils, testcase_Utils, config_Utils, file_Utils
 from Framework.Utils.testcase_Utils import pNote
-from Framework.Utils.print_Utils import print_info, print_warning,\
-print_error, print_debug, print_exception
+from Framework.Utils.print_Utils import (print_info, print_warning, print_error,
+                                         print_debug, print_exception)
 from Framework.ClassUtils.testdata_class import TestData, TestDataIterations
 from Framework.Utils.xml_Utils import get_attributevalue_from_directchildnode as av_fromdc
 from Framework.Utils.string_Utils import sub_from_varconfigfile
 from Framework.ClassUtils import database_utils_class
-from __builtin__ import str
+from WarriorCore.Classes.testcase_utils_class import TestcaseUtils
 
 cmd_params = OrderedDict([("command_list", "send"),
                           ("sys_list", "sys"),
@@ -219,6 +218,7 @@ def _get_system_or_subsystem(datafile, system_name, tag="system", attr='name'):
     if element is None or element is False:
         pNote(msg, "warn")
     return element
+
 
 def get_session_id(system_name, session_name=None):
     """Returns the session-id based on the provided system_name
@@ -579,6 +579,7 @@ def _get_verification_details(testdata, global_obj, verify_list, cmd_attrib,
             resultant_list.append(resultant_sublist)
     return resultant_list
 
+
 def _get_vc_details(sys_list, system_name, varconfigfile):
     """ To get the variable_config files specific to
     the systems in the sys_list from the datafile """
@@ -781,7 +782,14 @@ def convert2type(value, data_type='str'):
     """
     type_funcs = {'str': str, 'int': int, 'float': float}
     convert = type_funcs[data_type]
-    return convert(value)
+    cvalue = value
+    try:
+        cvalue = convert(value)
+    except ValueError:
+        print_error("'{}' should be of type {}, please correct".format(value, data_type))
+    except Exception as exception:
+        print_exception(exception)
+    return cvalue
 
 
 def verify_cmd_response(match_list, context_list, command, response,
@@ -892,6 +900,7 @@ def verify_data(expected, key, data_type='str', comparison='eq'):
         """
         result = "TRUE"
         err_msg = ""
+        exp = None
         if data_type not in type_funcs:
             err_msg += "type {} not supported, only one of {} supported\n".\
                 format(data_type, '/'.join(type_funcs.keys()))
@@ -1093,6 +1102,7 @@ def _get_resp_order(context_list, verify_list, resp_details_dict):
 
     return resp_details_dict
 
+
 def _validate_index_value(index, index_list, context_list):
     """ Returns True if the value in the given index is in expected order """
     status = True
@@ -1241,6 +1251,7 @@ def verify_inorder_cmd_response(match_list, verify_list, system, command,
               "{0}".format(system), "debug")
 
     return status
+
 
 def get_cse_script_args_string(datafile, system_name):
     """Form the argument string for the CSE script from the arguments
@@ -1427,10 +1438,12 @@ def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
     source could be environment or datarepository for now.
     """
     error_msg1 = ("Could not find any %s variable {0!r} corresponding to {1!r}"
-                  "provided in input data/testdata file. \nWill default to "
+                  " provided in input data/testdata file.\nWill default to "
                   "None") % (prefix)
     error_msg2 = ("Unable to substitute %s variable {0!r} corresponding to "
-                  "{1!r} provided in input data/testdata file") % (prefix)
+                  "{1!r} provided in input data/testdata file.\nThe value "
+                  "processed till now is {2!r} whose evaluation resulted in "
+                  "{3!r} exception") % (prefix)
     if type(raw_value) == dict:
         for k in raw_value:
             value = raw_value[k]
@@ -1447,10 +1460,10 @@ def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
                                 start_pattern+string+end_pattern,
                                 get_var_by_string_prefix(string))
                         elif isinstance(raw_value[k], (list, dict)):
-                            raw_value[k] = literal_eval(
-                                str(raw_value[k]).replace(
+                            raw_value[k] = str(raw_value[k]).replace(
                                     start_pattern+string+end_pattern,
-                                    get_var_by_string_prefix(string)))
+                                    get_var_by_string_prefix(string))
+                            raw_value[k] = literal_eval(raw_value[k])
                         else:
                             print_error("Unsupported format - " +
                                         error_msg2.format(string, value))
@@ -1469,8 +1482,16 @@ def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
                                     str(raw_value[k]).replace(
                                         search_obj.group(), 'None'))
                     except SyntaxError:
-                        print_error("Syntax Error - " +
-                                    error_msg2.format(string, value))
+                        tuc_obj = TestcaseUtils()
+                        print_info("Cannot convert below value into correct format, removing "
+                                   "non-printable characters, will attempt conversion again")
+                        print_info("<<{}>>".format(raw_value[k]))
+                        try:
+                            raw_value[k] = tuc_obj.rem_nonprintable_ctrl_chars(raw_value[k])
+                            raw_value[k] = literal_eval(raw_value[k])
+                        except Exception as exc:
+                            print_error("Error - " + error_msg2.format(
+                                        string, value, raw_value[k], exc))
     elif type(raw_value) == str:
         extracted_var = string_Utils.return_quote(str(raw_value),
                                                   start_pattern, end_pattern)
@@ -1518,7 +1539,7 @@ def substitute_var_patterns(raw_value, start_pattern="${", end_pattern="}"):
     prefixes = {'ENV': ('environment', lambda var: os.environ[var]),
                 'REPO': ('data repository', get_data)}
     error_msg = ("Could not find any {0} variable {1!r} corresponding to {2!r}"
-                 "provided in input data/testdata file. \nWill default to None"
+                 " provided in input data/testdata file.\nWill default to None"
                  )
     if raw_value is None:
         return raw_value
@@ -1647,6 +1668,7 @@ def get_td_vc(datafile, system_name, td_tag, vc_tag):
 
     return testdata, varconfigfile
 
+
 def get_nc_config_string(config_datafile, config_name, var_configfile=None):
     """
     Get the config of netconf as a list
@@ -1699,6 +1721,7 @@ def get_nc_config_string(config_datafile, config_name, var_configfile=None):
         print_exception(exception)
         status = "error"
     return status, configuration_list
+
 
 def _check_tag_or_attr_exists(datafile, system_name, cnode, system='system'):
     """Check if the given tag/attribute(cnode) exists for the system_name in
@@ -1756,6 +1779,7 @@ def get_default_ecf_and_et(arguments_dict, current_datafile, current_browser,
 
     return arguments_dict
 
+
 def get_all_system_or_subsystem(datafile, system_name=None):
     """
         return all the system elements or all the children of a system element with specific name
@@ -1764,6 +1788,7 @@ def get_all_system_or_subsystem(datafile, system_name=None):
         return xml_Utils.getElementListWithSpecificXpath(datafile, "./system")
     else:
         return xml_Utils.getElementListWithSpecificXpath(datafile, "./system[@name='" + system_name + "']/*")
+
 
 def group_systems_with_same_tag_value(root, tag, value):
     """
@@ -1775,12 +1800,14 @@ def group_systems_with_same_tag_value(root, tag, value):
     other_system_list = [ele for ele in all_system_list if ele not in system_list]
     return system_list, other_system_list
 
+
 def group_systems_with_unique_tag_value(root, tag):
     """
         Separate system into lists where each list only has system with unique tag value
     """
     all_system_list = xml_Utils.getChildElementsListWithSpecificXpath(root, "./system")
     return _helper_unique_group(all_system_list, tag)
+
 
 def _helper_unique_group(all_system_list, tag):
     """
@@ -1802,6 +1829,7 @@ def _helper_unique_group(all_system_list, tag):
 
     other_system_list.insert(0, system_list)
     return other_system_list
+
 
 def get_system_list(datafile, node_req=False):
     """Get the list of systems from the datafile
@@ -1841,7 +1869,6 @@ def get_system_list(datafile, node_req=False):
         return system_list
 
 
-
 def get_iteration_syslist(system_node_list, system_name_list):
     """
     Takes a list of system nodes and system names and
@@ -1871,6 +1898,7 @@ def get_iteration_syslist(system_node_list, system_name_list):
                 iteration_sysnodelist.append(system)
 
     return iteration_sysnamelist, iteration_sysnodelist
+
 
 def generate_datafile(lists_of_systems, output_dir, filename):
     """
