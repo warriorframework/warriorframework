@@ -94,19 +94,20 @@ class Jira(object):
             # when failed to get the type of the Jira issue
             return False
 
-        oper_status = True
+        oper_status = False
         status_map = {"true": "pass", "false": "fail"}
         status = status_map[str(status).lower()] if str(status).lower() in \
             status_map else str(status).lower()
 
         # Find the correct jira system from the jira_config.xml
         if self.jiraproj is not None:
+            jiraproj = self.jiraproj
             sys_elem = xml_Utils.getElementWithTagAttribValueMatch(self.jira_template_xml,
-                                                                   'system', 'name',
-                                                                   self.jiraproj)
+                                                                   'system', 'name', jiraproj)
         else:
+            jiraproj = "default"
             sys_elem = xml_Utils.getElementWithTagAttribValueMatch(self.jira_template_xml,
-                                                                   'system', 'default', "true")
+                                                                   'system', jiraproj, "true")
 
         # Find the correct issue type and status
         if sys_elem is not None and sys_elem is not False:
@@ -124,16 +125,20 @@ class Jira(object):
 
             if type_matched is not None and status in type_matched.keys():
                 # Change the jira issue status
-                to_status = type_matched[status][0].lower()
-                oper_status = self.set_jira_issue_status(jiraid, to_status)
+                if type_matched[status][0]:
+                    to_status = type_matched[status][0].lower()
+                    oper_status = self.set_jira_issue_status(jiraid, to_status)
+                else:
+                    print_error("No value provided for the tag '{0}' under issue_type "
+                                "'{1}' of project '{2}' in jira_config file '{3}'.".
+                                format(status, issue_type, jiraproj,
+                                       "Tools/jira/jira_config.xml"))
             else:
                 print_error("Cannot find the correct issue type in "
                             "jira_config file, unable to update jira status")
-                oper_status = False
         else:
             print_error("There is no project with name: '{0}' in the jira config "
                         "file: '{1}'".format(self.jiraproj, "Tools/jira/jira_config.xml"))
-            oper_status = False
 
         return oper_status
 
