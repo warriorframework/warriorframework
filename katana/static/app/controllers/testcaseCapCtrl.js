@@ -30,7 +30,7 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
         $scope.step_onerror = "next";
         $scope.step_onerror_value = "";
         $scope.arg_list = [{"_name": "", "_value": ""}];
-        $scope.rule_list = [{"_Condition": "", "_Operator": "eq", "_Condvalue": "", "_Else": "next" , "_Elsevalue": ""}];
+        //$scope.rule_list = [{"_Condition": "", "_Operator": "eq", "_Condvalue": "", "_Else": "next" , "_Elsevalue": ""}];
         $scope.showStepEdit = false;
         $scope.insertStep = false;
         $scope.alldirinfo = "";
@@ -43,6 +43,7 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
         $scope.showRulesBelow = false;
         $scope.hideExp = true;
         $scope.hideElse = true;
+       // $scope.hideElseVal = true;
         $scope.ExecTypeVal = 0;
         // $scope.ruleTable = false;
         
@@ -61,27 +62,32 @@ $scope.cancelRule = function(){
     $scope.status.step.Execute._ExecType = 'Yes';
     $scope.showRulesBelow = false;
     $scope.hideExp = true;
+    $scope.hideElse = true;
+   // $scope.hideElseval= true;
     //$scope.ruleTable = false;
 }
     
 //This renders the Rules Fields
 $scope.showRules = function(execType){
     if(execType == 'If' || execType == 'If Not'){
+        $scope.status.step.Execute._Else = 'next';
         if($scope.ExecTypeVal == 1){
             $scope.rule_list = '';
-            $scope.rule_list = [];
+            $scope.rule_list = [{}];
         }
     $scope.showRulesBelow = true; 
     $scope.hideExp = false;
     $scope.hideElse = false;
     $scope.ExecTypeVal = 1;
     $scope.rule_list.push({"_Condition": "", "_Operator": "eq", "_Condvalue": "", "_Else": "next" , "_Elsevalue": ""});
+    $scope.rule_list.splice(0,1);
     }
     else{
         $scope.showRulesBelow = false;
         $scope.hideExp = true;
         $scope.hideElse = true;
     }
+
 }
 
 //To Load the InputData File from Suite 
@@ -688,7 +694,7 @@ $scope.showRules = function(execType){
 
                 for (i = 0; i < $scope.model.Testcase.Steps.step.length; i++) {
                     if(!$scope.model.Testcase.Steps.step[i].hasOwnProperty("Execute")){
-                    $scope.model.Testcase.Steps.step[i]["Execute"] = {"_ExecType": "Yes", "_Expression": "", "_Else": "next", "_Elsevalue": "", "Rule": {"_Condition": "", "_Operator": "eq", "_Condvalue": "", "_Else": "next" , "_Elsevalue": ""}}
+                    $scope.model.Testcase.Steps.step[i]["Execute"] = {"_ExecType": "Yes", "_Expression": "", "_Else": "", "_Elsevalue": "", "Rule": {"_Condition": "", "_Operator": "eq", "_Condvalue": "", "_Else": "next" , "_Elsevalue": ""}}
                     }
 
                     if(!$scope.model.Testcase.Steps.step[i].Execute.hasOwnProperty("Rule")){
@@ -1104,7 +1110,7 @@ $scope.showRules = function(execType){
             $scope.hideElse =  true;
             $scope.hideExp =  true;
             $scope.rule_list = '';
-            $scope.rule_list = [];
+            $scope.rule_list = [{}];
             $scope.step_numbers = [];
             $scope.stepToBeCopied = "None";
             for(var i=0; i<$scope.model.Testcase.Steps.step.length; i++){
@@ -1380,14 +1386,15 @@ $scope.showRules = function(execType){
           },
           "Execute": {
             "_ExecType": "Yes",
-            "_Expression": "",
-            "_Else": "next",
-            "_Elsevalue":"",
+           // "_Expression": "",
+            //"_Else": "next",
+            //"_Elsevalue":"",
             "Rule": {
-                "_Condition":"",
-                "_Condvalue":"",
+                //"_Condition":"",
+               // "_Condvalue":"",
                 "_Else":"next",
-                "_Elsevalue":""
+               // "_Elsevalue":""
+               "_Operator":"eq"
             }
           },
           "onError": {
@@ -1420,15 +1427,10 @@ $scope.showRules = function(execType){
           },
           "Execute": {
             "_ExecType": "Yes",
-            "_Expression": "",
-            "_Else": "next",
-            "_Elsevalue":"",
-            "Rule": {
-                "_Condition":"",
-                "_Condvalue":"",
-                "_Else":"next",
-                "_Elsevalue":""
-            }
+            //"_Expression": "",
+            //"_Else": "",
+            //"_Elsevalue":"",
+            "Rule": []
           },
           "onError": {
             "_action": "", // next, abort, goto
@@ -1511,9 +1513,9 @@ $scope.showRules = function(execType){
             $scope.status.step.Execute['_ExecType'] = "Yes";
         }
 
-        if($scope.status.step.Execute['_Else'] == undefined){
+        /*if($scope.status.step.Execute['_Else'] == undefined){
             $scope.status.step.Execute['_Else'] = "Next";
-        }
+        }*/
 
         /* if($scope.status.step.Execute['Rule']['_Else'] == undefined){
             $scope.status.step.Execute['Rule']['_Else'] = "Next";
@@ -1550,7 +1552,8 @@ $scope.showRules = function(execType){
             delete rec.Execute['Rule'];
         }
 
-        console.log('rec', JSON.stringify(rec, null, 2));
+        console.log('rec', JSON.stringify(rec, null, 2)); 
+        
         return rec;
     }
 
@@ -1599,9 +1602,9 @@ $scope.showRules = function(execType){
             }
         }
 
-        if($scope.status.step.Execute._ExecType == 'If' || $scope.status.step.Execute._ExecType == 'If Not'){
-            if($scope.status.step.Execute._Else == 'goto'){ 
-                if($scope.status.step.Execute._Elsevalue == ''){
+        if($scope.status.step.Execute._ExecType == 'If' || $scope.status.step.Execute._ExecType == 'If Not'){ 
+            if(document.getElementById('stepexecelse').value == 3){ 
+                if(document.getElementById('stepexecelsev').value == ''){ 
                     sweetAlert({
                         title: "Else Value is required when Execute Type->Else is 'goto'.",
                         closeOnConfirm: true,
@@ -1727,6 +1730,8 @@ $scope.showRules = function(execType){
             $scope.insertStep = false;
         }
 
+    $scope.rule_list.push({"_Condition": "", "_Operator": "eq", "_Condvalue": "", "_Else": "next" , "_Elsevalue": ""});
+    $scope.rule_list.pop();
     };
 
     $scope.testcaseTooltips = [];

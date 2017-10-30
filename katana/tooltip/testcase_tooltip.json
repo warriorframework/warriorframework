@@ -121,8 +121,8 @@
     },
     "expression": {
         "tooltip": "Logical Operators are supported amongst the rules.",
-        "protip": "ProTip: By default the operator amongst the rules is AND. Example : Rule1 & Rule 2 ...... & Rule n.",
-        "bantip": "It could be the mixed of AND & OR. Example : (Rule 1 AND Rule 2) OR Rule 3.",
+        "protip": "ProTip: By default the operator amongst the rules is AND. Example : 1 & 2 ...... & n.",
+        "bantip": "It could be the mixed of AND & OR. Example : (1 AND 2) OR 3.",
         "snowflake": ""
     },
     "execelse": {
