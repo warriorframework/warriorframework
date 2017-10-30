@@ -4,11 +4,9 @@ from __future__ import unicode_literals
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
-
 from native.cli_data.cli_data_utils.verify_cli_data_class import VerifyCliDataClass
 from utils.directory_traversal_utils import join_path
 from utils.navigator_util import Navigator
-from utils.json_utils import read_xml_get_json
 
 
 class CliDataView(View):
