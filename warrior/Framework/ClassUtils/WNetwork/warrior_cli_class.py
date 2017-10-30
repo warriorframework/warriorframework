@@ -367,7 +367,6 @@ class WarriorCli(object):
                         resp_key_list.append(key)
                         pNote(save_msg2.format(pattern))
         else:
-            #response = ""
             response_dict[resp_ref] = ""
         return status, response_dict, resp_key_list
 
