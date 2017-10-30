@@ -2546,9 +2546,21 @@ textarea {
 	font-size: 30px;
 	line-height: inherit;
 	font-weight: 600;
-	padding-left: 35px;
+	padding-left: 54px;
 }
-
+.logo-image {
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    left: 20px;
+    top: 5px;
+    background-size: 95%;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: block;
+    background-color: white;
+    border-radius: 9px;
+}
 .close {
 	float: none;
 	font-size: inherit;
