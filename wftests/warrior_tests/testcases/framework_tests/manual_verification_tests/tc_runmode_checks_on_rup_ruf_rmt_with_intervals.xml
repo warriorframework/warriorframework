@@ -26,8 +26,8 @@
 			<Description>local_data_test</Description>
 			<iteration_type type=""/>
 			<Execute ExecType="Yes"/>
-			<context>negative</context>
-			<impact>impact</impact>
+			<context>positive</context>
+			<impact>noimpact</impact>
 			<runmode type="rup" value="5" interval="2"/>
 		</step>
 				<step Driver="ci_regression_driver" Keyword="local_data_test" TS="2">
