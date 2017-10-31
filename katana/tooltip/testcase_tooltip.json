@@ -121,8 +121,8 @@
     },
     "expression": {
         "tooltip": "Logical Operators are supported amongst the rules.",
-        "protip": "ProTip: By default the operator amongst the rules is AND. Example : 1 & 2 ...... & n.",
-        "bantip": "It could be the mixed of AND & OR. Example : (1 AND 2) OR 3.",
+        "protip": "ProTip: By default the operator amongst the rules is AND.",
+        "bantip": "If you want to compute or amongst all 4 rules. Then expression text box shall be filled with “1 | 2 | 3 | 4”. If you want to compute AND between (rule-1, rule-3), (rule-2,rule-4) and OR between the computed ANDs. Then expression text box shall be filled with (1&3) | (2&4)",
         "snowflake": ""
     },
     "execelse": {
