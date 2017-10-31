@@ -5,12 +5,22 @@
 <div id="OverwriteCaseHere">
 
 <div class="csrf-container">{% csrf_token %}</div>
+<div class="tool-bar">
+Search: <input id="jstreeFilterText" class="col-md-2" />
+<button id="addNewCase" class="button" onclick="cases.startNewCase()">Add New Case</button>
+
+</div>
 
 <h2>{{title}}</h2>
-<div id="myCaseTree" auto-init="cases.init"></div>
-<div id="mmm" class="hidden">{{treejs}}</div>
-Search: <input id="jstreeFilterText" class="col-md-2" />
-<button id="addNewCase" class="btn btn-success" onclick="cases.startNewCase()">Add New Testcase</button>
+<div class="row">
+<div class="col-md-4" id="myCaseTree" auto-init="cases.init"></div>
+	<div class="col-md-4">
+	
+	</div>
 </div>
+
+</div>
+<div class=" hidden" id="mmm" >{{treejs}}</div>
+
 </body>
 
