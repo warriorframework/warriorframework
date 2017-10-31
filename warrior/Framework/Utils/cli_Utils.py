@@ -16,6 +16,7 @@ import os
 from Framework.Utils.print_Utils import print_info, print_warning
 from Framework.ClassUtils import WNetwork, ssh_utils_class
 from WarriorCore.Classes.warmock_class import mocked
+from WarriorCore.Classes.war_cli_class import WarriorCliClass
 
 try:
     import pexpect
@@ -367,7 +368,8 @@ def _send_cmd(obj_session, **kwargs):
 def _get_response_dict(details_dict, index, response, response_dict):
     """Get the response dict for a command. """
     wc_obj = WNetwork.warrior_cli_class.WarriorCli()
-    status, response_dict = wc_obj._get_response_dict(details_dict, index, response, response_dict)
+    status, response_dict = wc_obj._get_response_dict(details_dict, index,
+                                                      response, response_dict)
 
     return status, response_dict
 
