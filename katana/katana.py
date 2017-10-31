@@ -101,7 +101,7 @@ def searchkw():
     value = parseString("".join(request.body))
     tree = get_correct_xml_and_root_element(value)
     driver_name = tree.text
-    driver_file = gpysrcdir + '/ProductDrivers/' + driver_name + ".py"
+    driver_file = os.path.join(gpysrcdir, 'ProductDrivers', driver_name + ".py")
     actiondir_new = mkactiondirs(driver_file)
     py_files = mkactionpyfiles(actiondir_new)
     return py_files
@@ -132,12 +132,10 @@ def parsexmlobj():
     ActionFile = tree[0][2].text.strip()
     Description = tree[0][3].text
 
-    with open(ActionFile, 'r') as files:
+    with open(ActionFile, 'r') as action_file:
         # To get the method names available in user provided
         # action file from keyword sequencing tool UI screen
-        for line in files:
-            next_word = get_method_name(line)
-            method_names.append(next_word)
+        method_names = map(extract_method_name, action_file.readlines())
 
     if WrapperName in method_names:
         # To check if the user provided wrapper keyword name already
@@ -147,7 +145,8 @@ def parsexmlobj():
         checkval = "no"
         Subkeyword = tree.find('Subkeyword')
         subkw_list = Subkeyword.findall('Skw')
-        doc_string_value, subkw_list, object_list_new, import_action_list, kw_name_1 = check_action_file_name(subkw_list, ActionFile)
+        (doc_string_value, subkw_list, object_list_new, import_action_list,
+         kw_name_1) = check_action_file_name(subkw_list, ActionFile)
         sum_val = 1
         for new in doc_string_value:
             # To have the doc string in the order with
@@ -176,10 +175,10 @@ def parsexmlobj():
         final_obj_list = set(object_list_new)
         final_import_list = set(import_action_list)
         with open(ActionFile, 'a+') as f2:
-            for _, vals in enumerate(final_import_list):
+            for vals in final_import_list:
                 vals = vals.decode('utf-8')
                 f2.write('\n' + "        " + vals)
-            for _, val in enumerate(final_obj_list):
+            for val in final_obj_list:
                 val = val.decode('utf-8')
                 f2.write('\n' + "        " + val)
             for line in io.open(template_dir_1, 'r'):
@@ -189,6 +188,7 @@ def parsexmlobj():
                 f2.write('\n' + "    " + line)
         f2.close()
     return checkval
+
 
 def check_action_file_name(subkw_list, ActionFile):
     """
@@ -202,15 +202,15 @@ def check_action_file_name(subkw_list, ActionFile):
     doc_string_value = []
     arg_name_list = ""
     kw_name_1 = []
-    string = "The keyword {0} in Driver {1} has a defined arguments {2} You must want to"\
-                " send other values through data file"
+    string = ("The keyword {0} in Driver {1} has defined arguments {2}. "
+              "You must want to send other values through data file")
     for values in subkw_list:
         # To get the driver name for each sub-keyword and the keyword name
         # from the sub keyword list.
         subkw_list_attrib = values.attrib
         driver = subkw_list_attrib.get('Driver')
         kw_name = subkw_list_attrib.get('Keyword')
-        driver_file = gpysrcdir + '/ProductDrivers/' + driver + ".py"
+        driver_file = os.path.join(gpysrcdir, 'ProductDrivers', driver + ".py")
         actiondir = mkactiondirs(driver_file)
         actions = get_action_dirlist(driver_file)
         # To get the action file directory and the
@@ -223,7 +223,7 @@ def check_action_file_name(subkw_list, ActionFile):
             for action_file in pyfiles:
                 with open(action_file, 'r') as new_file:
                     for line in new_file:
-                        next_word = get_method_name(line)
+                        next_word = extract_method_name(line)
                         if next_word == kw_name:
                             pyfiles = str(action_file).encode('utf-8', 'ignore')
 
@@ -235,8 +235,8 @@ def check_action_file_name(subkw_list, ActionFile):
         py_files_1 = py_files.split(os.sep)
         py_files_1 = ('.').join(py_files_1)
         for action in actions:
-        # If multiple action directories available in a action directory
-        # checking whether the action package is available in .py file name.
+            # If multiple action directories available in a action directory
+            # checking whether the action package is available in .py file name
             if action.strip() in py_files_1:
                 actions_package = action.strip() + "." + file_name
         modules = importlib.import_module(actions_package)
@@ -250,7 +250,7 @@ def check_action_file_name(subkw_list, ActionFile):
             class_list = "self"
         else:
             import_action_list.append('from ' + action.strip() + "." + file_name + " " +
-                                    "import " + class_list_new)
+                                      "import " + class_list_new)
             object_list = class_list_new + "_obj = " + class_list_new + "()"
             # Forming object
             # creation and appending it to a list
@@ -290,28 +290,27 @@ def check_action_file_name(subkw_list, ActionFile):
                 arg_name_list = ""
     return doc_string_value, subkw_list, object_list_new, import_action_list, kw_name_1
 
+
 def get_relative_path_for_kw_seq_temp():
     """ To get the absolute path of keyword sequencing template"""
     katana_exe = sys.argv[0]
-    katana_py_file = katana_exe.split('/')
-    if len(katana_py_file) > 1:
-        katana_py_file = katana_py_file[:-1]
-        katana_py_file = '/'.join(katana_py_file)
-        template_dir = os.getcwd() + '/' + katana_py_file + '/kw_seq_template'
-        template_dir_1 = os.getcwd() + '/' + katana_py_file + '/kw_seq_temp'
+    (katana_dir, katana_py_file) = os.path.split(katana_exe)
+    if katana_py_file != "":
+        template_dir = os.path.join(os.getcwd(), katana_dir, 'kw_seq_template')
+        template_dir_1 = os.path.join(os.getcwd(), katana_dir, 'kw_seq_temp')
     else:
         template_dir = 'kw_seq_template'
         template_dir_1 = 'kw_seq_temp'
     return template_dir, template_dir_1
 
 
-def get_method_name(line):
+def extract_method_name(line):
     """ To check whether the user provided wrapper keyword name already exists in user provided
         action file from keyword sequencing tool UI screen"""
     if line.strip().startswith("def "):
         line = line.split()
-        next_word = line[line.index("def")+1].split("(")[0]
-        return next_word
+        method_name = line[1].split("(")[0]
+        return method_name
 
 
 @route('/readdeftagsfile')
@@ -346,8 +345,6 @@ def readstatesfile():
         lines = f.read()
     states = json.loads("".join(lines))
     return states
-
-
 
 
 @route('/readtooltip/:tab')
@@ -591,35 +588,25 @@ def mkactiondirs(driverpath):  # changed
     return actions_dirpath_list
 
 
-def get_action_dirlist(driverpath):  # changed
-    """ Get the list of action directories """
+def get_action_dirlist(driverpath):
+    """ Get the list of action directories
+    """
     actions_package_list = []
     try:
         if os.path.isfile(driverpath):
-            '''
-            fobj = open(driverpath, 'r')
-            lines = fobj.readlines()
-            '''
-            lines = []
             with open(driverpath, 'r') as fobj:
-                lines = fobj.readlines()
-            lines_as_string = ''.join(lines)
+                drv_text = fobj.read()
             search_string = re.compile('package_list.*=.*\]',
                                        re.DOTALL | re.MULTILINE)
-            match = re.search(search_string, lines_as_string)
+            match = re.search(search_string, drv_text)
 
             if match:
                 match_string = match.group()
                 # print match_string
-                actions_package_list = match_string.split('[')[1].split(']')[
-                    0].split(',')
+                # actions_package_list = match_string.split('[')[1].split(']')[0].split(',')
+                # extracting the text within [] and get the list of packages separated by ,
+                actions_package_list = re.findall(r'[\[\]]', match_string)[0].split(',')
                 print "\n action package list: ", actions_package_list
-                # for line in lines:
-                # if re.search(search, line):
-                # print "package_list found"
-                # print line
-                # actions_package_list = line.split('[')[1].split(']')[0].split(',')
-                # print "\n action package list: ", actions_package_list
             return actions_package_list
         else:
             print "file {0} does not exist".format(driverpath)
