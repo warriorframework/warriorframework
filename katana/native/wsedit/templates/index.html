@@ -95,18 +95,19 @@
     
 
     <i katana-click="wsedit.openFileFromServer" title="Edit Action File" class="fa fa-edit">&nbsp;Edit</i>
-   <input class="col-md-4" id="wsedit-filename" value=""></input>
-
+  
     <i  katana-click="wsedit.saveFileToServer" title="Save file" class="fa fa-floppy-o" >&nbsp;Save</i> 
     <label  id='wsedit-saveme-btn'>....</label>
    
-    
-    <i katana-click="wsedit.toggleLineNumber" class="fa fa-hashtag" title="Line Numbers"></i>  
-    <i katana-click="wsedit.toggleRulers" class="fa fa-sort-amount-asc" title="Show Rulers"></i>  
-     <i katana-click="wsedit.toggleLineWrap" class="fa fa-reply-all" title="Line wrap"></i>  
+    <i katana-click="wsedit.toggleVerbose" id="wsedit-toggleVerbose" class="fa fa-chevron-left" title="Show/Hide Menu"></i>  
+   
+    <input class="col-md-4 wsedit-verbose-menu hidden" id="wsedit-filename" value=""></input>
+    <i katana-click="wsedit.toggleLineNumber" class="fa fa-hashtag wsedit-verbose-menu hidden" title="Line Numbers"></i>  
+    <i katana-click="wsedit.toggleRulers" class="fa fa-sort-amount-asc wsedit-verbose-menu hidden" title="Show Rulers"></i>  
+    <i katana-click="wsedit.toggleLineWrap" class="fa fa-reply-all wsedit-verbose-menu hidden" title="Line wrap"></i>  
   
-
-    Style:<select class="col-md-1" onchange="wsedit.selectTheme()" id="wsedit-select" katana-click="wsedit.onThemeChange">
+    <label class="wsedit-verbose-menu hidden">Style:</label>
+    <select class="col-md-1 wsedit-verbose-menu hidden" onchange="wsedit.selectTheme()" id="wsedit-select" katana-click="wsedit.onThemeChange">
     <option selected>default</option>
     <option>3024-day</option>
     <option>3024-night</option>

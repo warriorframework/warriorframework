@@ -157,9 +157,25 @@ var wsedit = {
 		var wrap = !wsedit.myCodeEdit.getOption("lineWrapping");
 		wsedit.myCodeEdit.setOption("lineWrapping", wrap);
 	},
+
 	toggleLineNumber: function() {
 		var numbers = !wsedit.myCodeEdit.getOption("lineNumbers");
 		wsedit.myCodeEdit.setOption("lineNumbers", numbers);
+	},
+
+
+	//wsedit-verbose-menu
+	toggleVerbose: function() {
+		var visible = katana.$activeTab.find(".wsedit-verbose-menu").is(":visible");
+		if (visible) {
+			 katana.$activeTab.find(".wsedit-verbose-menu").hide();
+			 katana.$activeTab.find("#wsedit-toggleVerbose").addClass("fa-chevron-left");
+			 katana.$activeTab.find("#wsedit-toggleVerbose").removeClass("fa-chevron-right");
+		} else {
+			 katana.$activeTab.find(".wsedit-verbose-menu").show();
+			 katana.$activeTab.find("#wsedit-toggleVerbose").addClass("fa-chevron-right");
+			 katana.$activeTab.find("#wsedit-toggleVerbose").removeClass("fa-chevron-left");
+		}		
 	},
 
 	textModifiedCB: function(how, where) {
