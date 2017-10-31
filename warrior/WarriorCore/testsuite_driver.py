@@ -373,18 +373,9 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
                 break
 
     elif execution_type.upper() == 'RUN_MULTIPLE':
-        Max_Attempts = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath, 'Details',
-                                                                    'type', 'Max_Attempts')
-        Number_Attempts = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath,
+        execution_value = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath,
                                                                         'Details', 'type',
                                                                         'Number_Attempts')
-
-        if Max_Attempts == "":
-            execution_value = Number_Attempts
-        else:
-            execution_value = Max_Attempts
-
-
         print_info("Execution type: {0}, Max Attempts: {1}".format(execution_type, execution_value))
 
         i = 0
