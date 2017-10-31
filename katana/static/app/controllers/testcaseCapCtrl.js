@@ -857,7 +857,7 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
 
     };
 
-    $scope.noDatacheck = function(){ 
+    $scope.noDatacheck = function(){
         swal({
             title: "You have selected 'No Data' option for Input Data File which reset the values of System/Subsystem.",
             text: "",
@@ -867,11 +867,9 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
             confirmButtonColor: '#3b3131'
         });
         $scope.argsMapField();
-        $scope.argsField = 1;
-     
     }
 
-    $scope.argsMapField = function(){
+    $scope.argsMapField = function(){ 
         $scope.hideSubsys  = true;
         $scope.hideTxtBox = false;
         $scope.hideDropDwn = true;
@@ -879,6 +877,7 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
         $scope.hideText = false; 
         $scope.xml.mapargs['system_name'] = '';
         $scope.xml.mapargs['subsystem_name'] = '';
+        $scope.argsField = 1;
     }
 
     $scope.noteInputDataStatus = function () {
@@ -1274,9 +1273,6 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
     // Event handler when the driver name is selected in the Step Grid.
     $scope.editStep = function (drivername, index) {
         $scope.editStepFlag = 1;
-        if($scope.argsField == 1){ 
-            $scope.argsMapField();
-        }
         $scope.hideSubsys  = false;
         if($scope.showStepEdit){
             swal({
@@ -1291,7 +1287,7 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
         else {
             openStepCap(drivername, index);
         }
-        if($scope.model.Testcase.Details.Name !=''){ 
+        if($scope.model.Testcase.Details.Name !=''){
                $scope.sysFields();           
         }
 
@@ -1372,12 +1368,16 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
                 $scope.xml.mapargs[a._name] = a._value;
             });
 
+            if($scope.argsField == 1){
+           $scope.argsMapField();
+            }
+
             console.log('MAPARGS: ', JSON.stringify($scope.xml.mapargs, null, 2));
             $scope.status.step_edit_mode = 'Edit';
             if($scope.insertStep){
                 $scope.insertStep = false;
             }
-
+            
             }
 
     $scope.showStepEditor = function () {
