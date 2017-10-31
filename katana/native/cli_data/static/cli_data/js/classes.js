@@ -226,14 +226,14 @@ class testdata{
 
 class verifications{
     constructor(data){
-        this.cond_type_mappings = {"String": "str", "Integer": "int", "Float": "float"};
-        this.cond_type_mappings_rev = this.flipObject(this.cond_type_mappings);
-        this.cond_type_options = this.getOptionsFromMappings(this.cond_type_mappings)
-        this.operator_mappings = {"Equal To": "eq", "Not Equal To": "ne", "Greater Than": "gt",
+        this.cond_type_toJson = {"String": "str", "Integer": "int", "Float": "float"};
+        this.cond_type_toEnglish = this.flipObject(this.cond_type_toJson);
+        this.cond_type_options = this.getOptionsFromMappings(this.cond_type_toJson)
+        this.operator_toJson = {"Equal To": "eq", "Not Equal To": "ne", "Greater Than": "gt",
                                  "Greater Than Or Equal To": "ge", "Lesser Than": "lt",
                                  "Lesser Than Or Equal To": "le"};
-        this.operator_mappings_rev = this.flipObject(this.operator_mappings);
-        this.operator_options = this.getOptionsFromMappings(this.operator_mappings);
+        this.operator_toEnglish = this.flipObject(this.operator_toJson);
+        this.operator_options = this.getOptionsFromMappings(this.operator_toJson);
 
         if(data === undefined || data === {}){
             data = {"verification": {}}
@@ -241,6 +241,7 @@ class verifications{
         for(var key in data){
             if(data.hasOwnProperty(key)){
                 this.name = key;
+                this.type = "verification";
                 this.found = this.converter("found", data["@found"], false, true);
                 this.search = !data["@search"] ? this.getDefaults("search") : data["@search"];
                 this.verify_on = !data["@verify_on"] ? this.getDefaults("verify_on") : data["@verify_on"];
@@ -263,12 +264,12 @@ class verifications{
                 "toEnglish": (value !== undefined && value.toLowerCase().trim() == "no") ? "No" : "Yes"
             },
             "cond_type": {
-                "toJson" : (value !== undefined) ? this.cond_type_mappings_rev[value]: this.cond_type_mappings_rev[this.getDefaults(key)],
-                "toEnglish": (value !== undefined) ? this.cond_type_mappings[value.toLowerCase().trim()] : this.cond_type_mappings[this.getDefaults(key)]
+                "toJson" : (value !== undefined) ? this.cond_type_toJson[value]: this.cond_type_toJson[this.getDefaults(key)],
+                "toEnglish": (value !== undefined) ? this.cond_type_toEnglish[value.toLowerCase().trim()] : this.cond_type_toEnglish[this.getDefaults(key)]
             },
             "operator": {
-                "toJson" : (value !== undefined) ? this.operator_mappings_rev[value]: this.operator_mappings_rev[this.getDefaults(key)],
-                "toEnglish": (value !== undefined) ? this.operator_mappings[value.toLowerCase().trim()] : this.operator_mappings[this.getDefaults(key)]
+                "toJson" : (value !== undefined) ? this.operator_toJson[value]: this.operator_toJson[this.getDefaults(key)],
+                "toEnglish": (value !== undefined) ? this.operator_toEnglish[value.toLowerCase().trim()] : this.operator_toEnglish[this.getDefaults(key)]
             }
         }
 
@@ -342,5 +343,101 @@ class globalVerifications extends verifications{
 class testdataVerifications extends verifications{
 
 }
-let ver_obj = new verifications();
-console.log(ver_obj.jsonObj)
+
+/* Combinations Class */
+
+class combinations{
+    constructor(data){
+        if(data === undefined || data === {}){
+            data = {"combination": {}}
+        }
+        for(var key in data){
+            if(data.hasOwnProperty(key)){
+                this.name = key;
+                this.type = "combination";
+                this.combo = !data["@combo"] ? this.getDefaults("combo") : data["@combo"];
+                break;
+            }
+        }
+    }
+
+    getDefaults(key){
+        var defaults = {
+            "combo": ""
+        }
+        return defaults[key];
+    }
+
+    get jsonObj() {
+        return this.formJsonObj();
+    }
+
+    formJsonObj(){
+        var jsonObject = {};
+        jsonObject[this.name] = {
+            "@combo": (this.combo === "") ? this.getDefaults("combo") : this.combo,
+        };
+        return jsonObject;
+    }
+}
+
+/* Global Combinations Class */
+
+class globalCombinations extends combinations{
+
+}
+
+/* Testdata Combinations Class */
+
+class testdataCombinations extends combinations{
+
+}
+
+/* Global Keys Class */
+
+class keys{
+    constructor(data){
+        if(data === undefined || data === {}){
+            data = {"key": {}}
+        }
+        for(var key in data){
+            if(data.hasOwnProperty(key)){
+                this.name = key;
+                this.type = "key";
+                this.resp_pattern_req = !data["@resp_pattern_req"] ? this.getDefaults("resp_pattern_req") : data["@resp_pattern_req"];
+                break;
+            }
+        }
+    }
+
+    getDefaults(key){
+        var defaults = {
+            "resp_pattern_req": ""
+        }
+        return defaults[key];
+    }
+
+    get jsonObj() {
+        return this.formJsonObj();
+    }
+
+    formJsonObj(){
+        var jsonObject = {};
+        jsonObject[this.name] = {
+            "@resp_pattern_req": (this.resp_pattern_req === "") ? this.getDefaults("resp_pattern_req") : this.resp_pattern_req,
+        };
+        return jsonObject;
+    }
+}
+
+/* Global Keys Class */
+
+class globalKeys extends keys{
+
+}
+
+/* Testdata Combinations Class */
+
+class testdataKeys extends keys{
+
+}
