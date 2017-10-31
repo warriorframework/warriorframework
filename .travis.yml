@@ -26,6 +26,9 @@ matrix:
     - os: linux
       env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/pj_parallel_execution_2.xml
       python: 2.7
+    - os: linux
+      env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/pj_runmode_retry_at_suite_level_at_project_file.xml
+      python: 2.7
 
 before_install:
     - if [ ${INSTALL} = "yes" ]; then
