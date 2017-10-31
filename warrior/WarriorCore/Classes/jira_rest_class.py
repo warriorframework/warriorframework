@@ -11,13 +11,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import requests
 import json
 import os
 
 import Tools
 from Framework.Utils.print_Utils import print_error, print_info, print_warning
 from Framework.Utils import xml_Utils
+
+try:
+    import requests
+except ImportError:
+    print_warning("{0}: 'requests' module is not installed".format(os.path.abspath(__file__)))
+    print_warning("WarriorFramework uses 'requests' module for all Jira related activites")
 
 
 """ jira utils library which has functions related to interaction
