@@ -28,5 +28,29 @@
                         <context>positive</context>
                         <impact>impact</impact>
                 </step>
+                <step Driver="common_driver" Keyword="verify_data" TS="1">
+                        <Arguments>
+                                <argument name="expected" value="4"/>
+                                <argument name="object_key" value="ts_rup_count_global"/>
+                                <argument name="type" value="int"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description></Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
+                <step Driver="common_driver" Keyword="verify_data" TS="1">
+                        <Arguments>
+                                <argument name="expected" value="5"/>
+                                <argument name="object_key" value="ts_ruf_count_global"/>
+                                <argument name="type" value="int"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description></Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
         </Steps>
 </Testcase>

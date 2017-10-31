@@ -10,7 +10,7 @@
         <default_onError action="next"/>
     </Details>
     <Testsuites>
-        <!-- RUF support at suite level -->
+<!-- RUF support at suite level -->
         <Testsuite>
             <path>../suites/framework_tests/ts_runmode_ruf_at_suite_level.xml</path>
             <Execute ExecType="Yes"/>
@@ -82,6 +82,16 @@
             <path>../suites/framework_tests/runmode_tests/ts_runmode_rmt_at_ts_global_level.xml</path>
             <onError action="next" value=""/>
             <impact>impact</impact>
+        </Testsuite>
+        <Testsuite>
+            <path>../suites/framework_tests/runmode_tests/ts_runmode_rup_at_ts_global_level.xml</path>
+            <onError action="next" value=""/>
+            <impact>impact</impact>
+        </Testsuite>
+        <Testsuite>
+            <path>../suites/framework_tests/runmode_tests/ts_runmode_ruf_at_ts_global_level.xml</path>
+            <onError action="next" value=""/>
+            <impact>noimpact</impact>
         </Testsuite>
 
         <!-- verify runmode at suite global level -->
