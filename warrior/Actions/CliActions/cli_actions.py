@@ -984,6 +984,7 @@ class CliActions(object):
             output_dict.update(sys_dict)        
         return status, output_dict
 
+    @mockready
     def disconnect_all(self):
         """This is a disconnect all operation that can disconnect all ssh/telnet sessions
         based on the details provided by the user in the input datafile.
