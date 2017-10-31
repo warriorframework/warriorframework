@@ -16,6 +16,7 @@ import time
 import traceback
 import shutil
 import copy
+import glob
 import sequential_testcase_driver
 import parallel_testcase_driver
 from WarriorCore.Classes import execution_files_class, junit_class
@@ -154,7 +155,23 @@ def get_testcase_list(testsuite_filepath):
         testcase_list = []
         new_testcase_list = testcases.findall('Testcase')
         # execute tc multiple times
-        for _, tc in enumerate(new_testcase_list):
+        newlist = []
+        for ts in new_testcase_list:
+            sfilename = ts.find('path').text  # for all test cases
+            dirname = os.path.dirname(testsuite_filepath)+os.sep
+            if sfilename.find('*') < 0 : # Check if you need to expand 
+                newlist.append(ts)  # Nope? Keep it. 
+            else: 
+                files = glob.glob(dirname+sfilename)  #Expand it. 
+                for fn in files:
+                    nts = copy.deepcopy(ts) # Copy the node, overwrite name
+                    nts.find('path').text = fn.replace(dirname,'')
+                    newlist.append(nts) # Use this node instead. 
+        for ts in newlist: # Tell the user what happened. 
+            print_info("Added testcase [{0}] ".format(ts.find('path').text))
+        for _, tc in enumerate(newlist):
+        # old way here. 
+        #for _, tc in enumerate(new_testcase_list):
             runmode, value = common_execution_utils.get_runmode_from_xmlfile(tc)
             retry_type, _, _, retry_value, _ = common_execution_utils.get_retry_from_xmlfile(tc)
             if runmode is not None and value > 0:

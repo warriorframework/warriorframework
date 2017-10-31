@@ -16,7 +16,7 @@ import os
 import shutil
 import copy
 import traceback
-
+import glob
 import Framework.Utils as Utils
 from Framework.Utils.print_Utils import print_info, print_error, print_warning
 from WarriorCore.Classes import execution_files_class, junit_class
@@ -104,8 +104,23 @@ def get_testsuite_list(project_filepath):
         print_info('Testsuite is empty: tag <Testsuites> not "\
                    "found in the input file ')
     else:
-        testsuite_list = testsuites.findall('Testsuite')
+        testsuite_list = testsuites.findall('Testsuite') # Use suites
+        newlist = []  # Expanded list goes here. 
         for ts in testsuite_list:
+            sfilename = ts.find('path').text   # find the path. 
+            dirname = os.path.dirname(project_filepath)+os.sep
+            if sfilename.find('*') < 0 :  # Check if needs expansion
+                newlist.append(ts)  #Nope ? ... keep it. 
+            else: 
+                files = glob.glob(dirname+sfilename)  # Expane
+                for fn in files:
+                    nts = copy.deepcopy(ts)   #Copy the node and replace name
+                    nts.find('path').text = fn.replace(dirname,'')
+                    newlist.append(nts)  # new node append to list to process
+        for ts in newlist: # tell the user what you did 
+            print_info("Added suite [{0}] ".format(ts.find('path').text))
+   
+        for ts in newlist:
             runmode, value = common_execution_utils.\
                 get_runmode_from_xmlfile(ts)
             retry_type, _, _, retry_value, _ = common_execution_utils.\
