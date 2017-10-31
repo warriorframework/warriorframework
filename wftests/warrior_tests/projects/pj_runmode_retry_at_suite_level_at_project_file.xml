@@ -10,7 +10,72 @@
         <default_onError action="next"/>
     </Details>
     <Testsuites>
-        
+        <!-- RUF support at suite level -->
+        <Testsuite>
+            <path>../suites/framework_tests/ts_runmode_ruf_at_suite_level.xml</path>
+            <Execute ExecType="Yes"/>
+            <onError action="next" value=""/>
+            <runmode type="ruf" value="2"/>
+            <impact>impact</impact>
+        </Testsuite>
+        <!-- RMT support at suite level -->
+        <Testsuite>
+            <path>../suites/framework_tests/ts_runmode_rmt_at_suite_level.xml</path>
+            <Execute ExecType="Yes"/>
+            <onError action="next" value=""/>
+            <runmode type="rmt" value="2"/>
+            <impact>impact</impact>
+        </Testsuite>
+        <!-- RUP support at suite level -->
+        <Testsuite>
+            <path>../suites/framework_tests/ts_runmode_rup_at_suite_level.xml</path>
+            <Execute ExecType="Yes"/>
+            <onError action="next" value=""/>
+            <runmode type="rup" value="2"/>
+            <impact>impact</impact>
+        </Testsuite>
+        <!-- Verify runmode -->
+        <Testsuite> 
+            <path>../suites/framework_tests/ts_verify_runmode_at_suite_level.xml</path>
+            <Execute ExecType="Yes"/>
+            <onError action="next" value=""/>
+            <impact>impact</impact>
+        </Testsuite>
+        <!-- retry if condition not met -->
+        <Testsuite>
+            <path>../suites/framework_tests/ts_retry_cond_tc_level_if_met_not.xml</path>
+            <onError action="next" value=""/>
+            <retry type="if" Condition="testsuite_1_result" Condvalue="FAIL" count="4" interval="0"/>
+            <impact>impact</impact>
+        </Testsuite>
+        <!-- retry if condition met -->
+        <Testsuite>
+            <path>../suites/framework_tests/ts_retry_cond_tc_level_if_met.xml</path>
+            <onError action="next" value=""/>
+            <retry type="if" Condition="testsuite_1_result" Condvalue="PASS" count="3" interval="0"/>
+            <impact>impact</impact>
+        </Testsuite>
+        <!-- retry if not condition not met -->
+        <Testsuite>
+            <path>../suites/framework_tests/ts_retry_cond_tc_level_if_not_met_not.xml</path>
+            <onError action="next" value=""/>
+            <retry type="if not" Condition="testsuite_1_result" Condvalue="FAIL" count="5" interval="0"/>
+            <impact>impact</impact>
+        </Testsuite>
+        <!-- retry if not condition met -->
+        <Testsuite>
+            <path>../suites/framework_tests/ts_retry_cond_tc_level_if_not_met.xml</path>
+            <onError action="next" value=""/>
+            <retry type="if not" Condition="testsuite_1_result" Condvalue="PASS" count="6" interval="0"/>
+            <impact>impact</impact>
+        </Testsuite>
+        <!-- verify retry feature -->
+        <Testsuite>
+            <path>../suites/framework_tests/ts_retry_cond_tc_level_verify.xml</path>
+            <onError action="next" value=""/>
+            <impact>impact</impact>
+        </Testsuite>
+
 
         <!-- runmode at suite global level (inside detail-exectype tag) -->
         <Testsuite>
