@@ -480,12 +480,8 @@ def _get_cmd_details(testdata, global_obj, system_name,
                     return filter(lambda gk: gk.tag == key, global_keys)[0]
                 return None
             keylist = _get_cmdparams_list(testdata, global_obj, attrib)[0]
-<<<<<<< HEAD
-            if keylist is not None:
-                # get the keys to be used for pattern matching in this command
-=======
             if keylist:
->>>>>>> f323f313799d5b6d01a78eea7cf1061d730d262d
+                # get the keys to be used for pattern matching in this command
                 keys = map(lambda x: x.strip(), keylist.split(','))
                 # get the xml elements corresponding to the key
                 resultant_list = [map(find_key_elem, keys)]
