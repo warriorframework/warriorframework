@@ -23,11 +23,10 @@ from Framework.Utils.print_Utils import print_info, print_debug,\
  print_warning, print_exception, print_error
 from Framework.Utils.testcase_Utils import pNote
 from WarriorCore.Classes.war_cli_class import WarriorCliClass
-from Framework.Utils.cli_Utils import cmdprinter
 from Framework.ClassUtils import database_utils_class
 from Framework.ClassUtils.WNetwork.loging import ThreadedLog
 from Framework.Utils.list_Utils import get_list_by_separating_strings
-
+from WarriorCore.Classes.warmock_class import mocked
 
 """ Module for performing CLI operations """
 
@@ -137,7 +136,7 @@ class WarriorCli(object):
         if self.conn_obj and self.conn_obj.target_host:
             self.conn_obj.disconnect_telnet()
 
-    @cmdprinter
+    @mocked
     def send_command(self, start_prompt, end_prompt, command,
                      timeout=60):
         """ Sends the command to ssh/telnet session
@@ -192,11 +191,6 @@ class WarriorCli(object):
         var_sub = args.get('var_sub', None)
         title = args.get('title', None)
         row = args.get('row', None)
-        if WarriorCliClass.cmdprint:
-            if title:
-                pNote("*************{}*************".format('Title: ' + title))
-            if row:
-                pNote("*************{}*************".format('Row: ' + row))
         system_name = args.get("system_name")
         session_name = args.get("session_name")
         if session_name is not None:
@@ -250,7 +244,7 @@ class WarriorCli(object):
             responses_dict[key] = response_dict
         return finalresult, responses_dict
 
-    @cmdprinter
+    @mocked
     def _send_cmd(self, **kwargs):
         """method to send command based on the type of object """
 
@@ -497,7 +491,6 @@ class WarriorCli(object):
                 final_list.append(comma_sep_verify_names[i])
         return final_list
 
-    @cmdprinter
     def _send_cmd_get_status(self, details_dict, index, system_name=None):
         """Sends a command, verifies the response and returns
         status of the command """
@@ -640,7 +633,6 @@ class WarriorCli(object):
 
         return value, kw_system_name, details_dict
 
-    @cmdprinter
     def _send_command_retrials(self, details_dict, index, **kwargs):
         """ Sends a command to a session, if a user provided pattern
         is found in the command response then tries to resend the command
@@ -1136,6 +1128,7 @@ class ParamikoConnect(object):
         if self.conn_type == "NESTED_SSH":
             self.via_host.close()
 
+    @mocked
     def send_command(self, command, get_pty=False, *args, **kwargs):
         """ Execute the command on the remote host
 
@@ -1262,9 +1255,6 @@ class PexpectConnect(object):
                                                  self.ip, conn_options)
         # command = ('ssh -p '+ port + ' ' + username + '@' + ip)
         print_debug("connectSSH: cmd = %s" % command)
-        if WarriorCliClass.cmdprint:
-            pNote("connectSSH: :CMD: %s" % command)
-            return None, ""
         child = WarriorCli.pexpect_spawn_with_env(self.pexpect, command,
                                                   self.timeout,
                                                   env={"TERM": "dumb"})
@@ -1424,7 +1414,7 @@ class PexpectConnect(object):
             time.sleep(2)
             self.target_host.close()
 
-    @cmdprinter
+    @mocked
     def send_command(self, command, start_prompt, end_prompt,
                      timeout=60, *args, **kwargs):
         """

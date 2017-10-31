@@ -22,7 +22,7 @@ try:
     import Framework.Utils as Utils
     from Framework.Utils.print_Utils import print_error, print_info
     from WarriorCore import warrior_cli_driver, testcase_driver, testsuite_driver, project_driver
-    from WarriorCore import ironclaw_driver, mockrun_driver, framework_detail
+    from WarriorCore import ironclaw_driver, framework_detail
     from WarriorCore.Classes.jira_rest_class import Jira
     from Framework.ClassUtils import database_utils_class
 except:
@@ -64,9 +64,7 @@ def update_jira_by_id(jiraproj, jiraid, exec_dir, status):
     else:
         print_info("jiraid not provided, will not update jira issue")
 
-
-def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
-         jiraproj, overwrite, jiraid, dbsystem):
+def main(parameter_list, a_defects, cse_execution, iron_claw, jiraproj, overwrite, jiraid, dbsystem):
     """Parses the input parameters (i.e. sys.argv)
         If the input parameter is an xml file:
             - check if file exists, if exists
@@ -110,9 +108,7 @@ def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
                     else:
                         default_repo.update({'db_obj': False})
 
-                    if mockrun:
-                        result = mockrun_driver.main(abs_filepath, len(parameter_list))
-                    elif Utils.xml_Utils.getRoot(abs_filepath).tag == 'Testcase':
+                    if Utils.xml_Utils.getRoot(abs_filepath).tag == 'Testcase':
                         default_repo['war_file_type'] = "Case"
                         result, tc_duration, data_repository = testcase_driver.main(
                                 abs_filepath, data_repository=default_repo,
@@ -156,17 +152,17 @@ def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
 
 if __name__ == '__main__':
 
-    (FILEPATH, mockrun, AUTO_DEFECTS, version, CSE_EXEC, IRON_CLAW, JIRAPROJ,
-     OVERWRITE, JIRAID, DBSYSTEM) = warrior_cli_driver.main(sys.argv[1:])
+    FILEPATH, AUTO_DEFECTS, version, CSE_EXEC, IRON_CLAW, JIRAPROJ, \
+    OVERWRITE, JIRAID, DBSYSTEM = warrior_cli_driver.main(sys.argv[1:])
     if version:
         framework_detail.warrior_framework_details()
         sys.exit(0)
     if not CSE_EXEC and len(FILEPATH) == 0:
-        print_error("Provide at least one xml file to execute")
-    status = main(FILEPATH, mockrun, AUTO_DEFECTS, CSE_EXEC, IRON_CLAW,
+        print_error("Provide atleast one xml file to execute")
+    status = main(FILEPATH, AUTO_DEFECTS, CSE_EXEC, IRON_CLAW,
                   JIRAPROJ, OVERWRITE, JIRAID, DBSYSTEM)
-    status = {"true": True, "pass": True}.get(str(status).lower())
-    if status is True:
+    status = {"true": True, "pass": True, "ran": "RAN"}.get(str(status).lower())
+    if status is True or status == "RAN":
         print_info("DONE 0")
         sys.exit(0)
         print "This line should not be printed"

@@ -23,6 +23,7 @@ from Framework.ClassUtils.testdata_class import TestData, TestDataIterations
 from Framework.Utils.xml_Utils import get_attributevalue_from_directchildnode as av_fromdc
 from Framework.Utils.string_Utils import sub_from_varconfigfile
 from Framework.ClassUtils import database_utils_class
+from WarriorCore.Classes.warmock_class import mocked
 from WarriorCore.Classes.testcase_utils_class import TestcaseUtils
 
 cmd_params = OrderedDict([("command_list", "send"),
@@ -293,7 +294,7 @@ def get_object_from_datarepository(object_key, verbose=True):
             print_warning('{0} is not found in data repository'.format(object_key))
     return obj
 
-
+@mocked
 def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
     """Gets the command_list, startprompt_list, endprompt_list,
     verify_list from testdata """
@@ -385,7 +386,6 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
             (details_dict, vc_file=varconfigfile, var_sub=None, start_pat=start_pat, end_pat=end_pat)
             testdata_dict[testdata_key] = details_dict
             found = 1
-
         else:
             not_found += 1
 
@@ -433,7 +433,7 @@ def _get_mapping_details(global_obj, vfylist):
             map_list.append(None)
     return (vfylist, map_list)
 
-
+@mocked
 def _get_cmd_details(testdata, global_obj, system_name,
                      varconfigfile, var_sub=None):
     """Get the command details from testdata file
@@ -775,7 +775,6 @@ def get_no_impact_logic(context_str):
 
     return value
 
-
 def convert2type(value, data_type='str'):
     """Convert value to data_type and return value in that data_type
     Currently supported are str/int/float only
@@ -791,7 +790,7 @@ def convert2type(value, data_type='str'):
         print_exception(exception)
     return cvalue
 
-
+@mocked
 def verify_cmd_response(match_list, context_list, command, response,
                         verify_on_system, varconfigfile=None, endprompt="",
                         verify_group=None):
@@ -1121,7 +1120,6 @@ def _validate_index_value(index, index_list, context_list):
 
     return status
 
-
 def verify_relation(actual_value, cond_value, operator, cond_type):
     """
         use verify_data to do comparison of two values
@@ -1139,7 +1137,7 @@ def verify_relation(actual_value, cond_value, operator, cond_type):
     status = True if result == "TRUE" else False
     return status
 
-
+@mocked
 def verify_inorder_cmd_response(match_list, verify_list, system, command,
                                 verify_dict, verify_group=None):
     """ Verifies search strings in the system response and matches the
