@@ -151,7 +151,7 @@
     },
     "condvalue": {
         "tooltip": "This is the value for the condition given above",
-        "protip": "ProTip: If you have entered a step status above, this field should contain one of these values: 'Pass', 'Fail', 'Error', 'Exception'.",
+        "protip": "ProTip: If you have entered a step status above, this field should contain one of these values: 'PASS', 'FAIL', 'ERROR', 'EXCEPTION'.",
         "bantip": "",
         "snowflake": "This is a mandatory field."
     },

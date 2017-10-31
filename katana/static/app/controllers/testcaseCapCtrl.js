@@ -1530,7 +1530,7 @@ $scope.showRules = function(execType){
             rec.Execute['Rule']['_Condition'] = $scope.status.step.Execute['Rule']['_Condition'];
             rec.Execute['Rule']['_Operator'] = $scope.status.step.Execute['Rule']['_Operator'];
             rec.Execute['Rule']['_Condvalue'] = $scope.status.step.Execute['Rule']['_Condvalue'];
-            rec.Execute['Rule']['_Else'] = $scope.status.step.Execute['Rule']['_Else'];  
+            rec.Execute['Rule']['_Else'] = $scope.status.step.Execute['Rule']['_Else']; 
 
             if (rec.Execute['Rule']['_Else'] == 'goto') {
                 if ($.trim($scope.status.step.Execute['Rule']['_Elsevalue']) == '') {
@@ -1733,9 +1733,9 @@ $scope.showRules = function(execType){
         if($scope.insertStep){
             $scope.insertStep = false;
         }
-/*
+
     $scope.rule_list.push({"_Condition": "", "_Operator": "eq", "_Condvalue": "", "_Else": "next" , "_Elsevalue": ""});
-    $scope.rule_list.pop();*/
+    $scope.rule_list.pop();
     };
 
     $scope.testcaseTooltips = [];

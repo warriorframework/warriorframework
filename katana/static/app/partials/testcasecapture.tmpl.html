@@ -1223,7 +1223,7 @@
                         <td>
                                 <b> Type = </b> {{ step.Execute._ExecType }}
                                 <span ng-if="step.Execute._ExecType == 'If' || step.Execute._ExecType == 'If Not'">
-                                    <span ng-show="step.Execute._Expression !== ''">
+                                    <span ng-if="step.Execute._Expression !== ''">
                                     &nbsp;&nbsp;<b> Expression = </b>{{ step.Execute._Expression}} 
                                     </span>
                                     &nbsp;&nbsp;<b> Else = </b>{{ step.Execute._Else}} 
@@ -1236,7 +1236,7 @@
                                             Operator = {{ rule._Operator}} <b>,</b>
                                             Condition value = {{ rule._Condvalue}} <b>,</b>
                                             Else = {{ rule._Else}} 
-                                            <span ng-show="rule._Else == 'goto'">
+                                            <span ng-if="rule._Else == 'goto'">
                                             <b>,</b> Else value = {{ rule._Elsevalue}}
                                             </span>
                                         </div>
@@ -1937,7 +1937,7 @@
                     </div>
                 </div>
 
-            <div class="form-group">
+            <div class="form-group" style="margin-bottom:0px;">
                     <label for='stepdescription'
                            class="col-sm-3 offset-1 control-label ellipsis-the-overflow">Execute Type
                     </label>
@@ -2018,7 +2018,7 @@
 
             </div>
 
-<div class="row">
+<div class="row" style="margin-top:5px;">
     <div class="form-group" ng-if="status.step.Execute._ExecType == 'If' || status.step.Execute._ExecType == 'If Not'">
         <!-- <div class="col-sm-2" ng-hide="hideExp" style="width:30% !important"> -->
                 <label for='stepexp' class="col-sm-2 control-label ellipsis-the-overflow" style="width:13% !important;">Expression</label>
@@ -2413,9 +2413,7 @@
                                     <select class='form-control'
                                     id='stepruleoperator{{$index}}'
                                     ng-model='rule_list[$index]._Operator'
-                                    ng-init=" rule_list[$index]._Operator = status.operator[0]"
                                     ng-options="o as o for o in status.operator">
-                                    <option value="" selected hidden />
                                     </select>
                                 
                             </div>
@@ -3376,7 +3374,7 @@
                         <td>
                                 <b> Type = </b> {{ step.Execute._ExecType }}
                                 <span ng-if="step.Execute._ExecType == 'If' || step.Execute._ExecType == 'If Not'">
-                                    <span ng-show="step.Execute._Expression !== ''">
+                                    <span ng-if="step.Execute._Expression !== ''">
                                     &nbsp;&nbsp;<b> Expression = </b>{{ step.Execute._Expression}} 
                                     </span>
                                     &nbsp;&nbsp;<b> Else = </b>{{ step.Execute._Else}} 
@@ -3389,7 +3387,7 @@
                                             Operator = {{ rule._Operator}} <b>,</b>
                                             Condition value = {{ rule._Condvalue}} <b>,</b>
                                             Else = {{ rule._Else}} 
-                                            <span ng-show="rule._Else == 'goto'">
+                                            <span ng-if="rule._Else == 'goto'">
                                             <b>,</b> Else value = {{ rule._Elsevalue}}
                                             </span>
                                         </div>
