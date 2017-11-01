@@ -477,12 +477,12 @@ def _get_cmd_details(testdata, global_obj, system_name,
                     global_key_elem = global_obj.find("keys")
                     global_keys = xml_Utils.get_child_node_list(global_key_elem)
                     # return the first matched entry in global section with tag=key
-                    return filter(lambda gk: gk.tag == key, global_keys)[0]
+                    return [glob_key for glob_key in global_keys if glob_key.tag == key][0]
                 return None
             keylist = _get_cmdparams_list(testdata, global_obj, attrib)[0]
             if keylist:
                 # get the keys to be used for pattern matching in this command
-                keys = map(lambda x: x.strip(), keylist.split(','))
+                keys = [key.strip() for key in keylist.split(',')]
                 # get the xml elements corresponding to the key
                 resultant_list = [map(find_key_elem, keys)]
             else:
@@ -504,6 +504,7 @@ def _get_cmd_details(testdata, global_obj, system_name,
 def _get_global_var(global_obj, key):
     """locate element in a etree object (in this case, child of global tag in testdata file)"""
     return global_obj.find(key) if global_obj is not None else None
+
 
 def _get_cmdparams_list(testdata, global_obj, cmd_attrib):
     """Get the list of values for a

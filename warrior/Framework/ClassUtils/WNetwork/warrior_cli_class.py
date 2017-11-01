@@ -321,7 +321,7 @@ class WarriorCli(object):
                     pNote(save_msg1+' inorder.')
                     # since inorder pattern matching selected, join all the
                     # patterns in order to create a single big pattern
-                    cpatterns = map(lambda s: "(" + s + ")", patterns)
+                    cpatterns = ["({})".format(pat) for pat in patterns]
                     pattern = ".*".join(cpatterns)
                     if pattern.endswith(".*(.*)"):
                         # remove .* pattern from above
@@ -334,8 +334,7 @@ class WarriorCli(object):
                         response_dict.update(dict(zip(keys, grps)))
                         pNote(save_msg2.format(pattern))
                         # print to console the key and the corresponding match stored
-                        map(lambda x: pNote(save_msg3.format(*x)), zip(keys,
-                                                                       grps))
+                        [pNote(save_msg3.format(key, grp)) for (key, grp) in zip(keys, grps)]
                     else:
                         print_error("inorder search of patterns in response "
                                     "failed")
