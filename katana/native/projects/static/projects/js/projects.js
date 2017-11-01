@@ -205,6 +205,7 @@ class projectSuiteObject {
 class projectsObject{
 	constructor(jsonData){
 		this.mapJsonData(jsonData);
+		
 	}
 	mapJsonData(jsonData){ 
 			console.log("In constructor", jsonData);
@@ -248,21 +249,210 @@ class projectsObject{
 	}
 
 
+var treeData = [
+  {
+    "name": "Top Level",
+    "parent": "null",
+    "children": [
+      {
+        "name": "Level 2: A",
+        "parent": "Top Level",
+        "children": [
+          {
+            "name": "Son of A",
+            "parent": "Level 2: A"
+          },
+          {
+            "name": "Daughter of A",
+            "parent": "Level 2: A"
+          }
+        ]
+      },
+      {
+        "name": "Level 2: B",
+        "parent": "Top Level"
+      }
+    ]
+  }
+];
+
 
  var projects = {
+
+ 	treeData : [], 
 
 	closeProject: function(){
 		katana.closeSubApp();
 	},
 
-	emailCases: {
-		generalBody: '',
-
-		init: function () {
-			console.log('test auto init of app');
-			Cases.emailCases.generalBody = $(this);
-		},
+// Toggle children.
+	toggle: function(d) {
+	  if (d.children) {
+	    d._children = d.children;
+	    d.children = null;
+	  } else {
+	    d.children = d._children;
+	    d._children = null;
+	  }
 	},
+
+
+	filesOnlycreateChildrenData: function(tnode, td) {
+		if (!tnode.children) return []; 
+		var mykids = [];              // create kids for this d3 node 
+		var kids = tnode['children']; // from incoming tree node.
+		for (var xc in kids){
+			var thisnode = { "name": kids[xc].text, 
+    			"data-path": kids[xc]["li_attr"]["data-path"], "parent": td , "children": []}
+			children = projects.createChildrenData(kids[xc], thisnode);
+			thisnode.children = children;
+			mykids.push(thisnode );
+		}
+		return mykids;
+	},
+
+	filesOnlyc3DData: function(tdata) {
+		var td = {
+		"name": "Projects",
+    	"parent": "null", 
+    	"children": [],
+    	};
+    	var prj = tdata['children'];
+    	for (var xc in prj) {
+    		mykids = projects.createChildrenData(prj[xc], td);
+    		td.children.push({ "name": prj[xc].text, 
+    			"data-path": prj[xc]["li_attr"]["data-path"], "parent": td , "children": mykids} );
+    	}
+    	projects.treeData = [td]; 
+	},
+
+
+	createD3treeData: function(tdata) {
+
+		var td = {
+		"name": projects.jsonProjectObject.Details.Name,
+    	"parent": "null", 
+    	"children": [],
+    	};
+    	var slen = projects.jsonTestSuites.length;
+		for (var s=0; s<slen; s++ ) {
+    		var oneSuite = projects.jsonProjectObject.Testsuites[s];
+    		var items = [];
+    		items.push('Condition='+oneSuite.Execute_ExecType+'<br>');
+			//console.log("Pushing ", oneSuite, items);
+			if (oneSuite.Execute_ExecType == 'if' || oneSuite.Execute_ExecType == 'if not') {
+				items.push('Condition='+oneSuite.Execute_Rule_Condition+'<br>');
+				items.push('Condvalue='+oneSuite.Execute_Rule_Condvalue+'<br>');
+				items.push('Else='+oneSuite.Execute_Rule_Else+'<br>');
+				items.push('Elsevalue='+oneSuite.Execute_Rule_Elsevalue+'<br>');
+			}
+			var execStr = items.join("");
+			var displayStr = "Name: " + oneSuite.path + "Execute:" + execStr; 
+
+    		td.children.push({ "name": oneSuite.path, 
+    			"rowid" : s,
+    			'displayStr' : displayStr,
+    			"exectype" : execStr, 
+    			"runmode" : oneSuite.runmode_type + " " + oneSuite.runmode_value,
+    			'on-error' : oneSuite.onError_action + " " + oneSuite.onError_value,
+    			"data-path": oneSuite.InputDataFile , "parent": td , "children": []} );
+    	}
+    	projects.treeData = [td]; 
+    	console.log("Tree Data ....", td);
+    	
+	},
+
+
+
+
+	createD3tree: function() {
+		var margin = {top: 20, right: 120, bottom: 20, left: 120},
+		 width = 960 - margin.right - margin.left,
+		 height = 500 - margin.top - margin.bottom;
+		 
+		projects.tree = d3.layout.tree()
+		 .size([height, width]);
+		console.log("Creating ....", projects.tree, height, width );
+		
+		projects.diagonal = d3.svg.diagonal()
+		 .projection(function(d) { return [d.y, d.x]; });
+
+		katana.$activeTab.find("[g3did='projects-3d-tree']").attr('id', projects.jsonProjectObject.Details.Name);
+
+		console.log("Creating ....",  );
+		
+		var useID = '#' + projects.jsonProjectObject.Details.Name;
+		console.log("Changing ID ", useID, );
+		// Delete any element 
+
+		d3.select("[useID='" + useID + "']").remove();
+		projects.svg = d3.select(useID).append("svg")
+		 .attr("width", width + margin.right + margin.left)
+		 .attr("height", height + margin.top + margin.bottom)
+		 .attr("useID", useID)
+		 .append("g")
+		 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+		
+		projects.root = projects.treeData[0];
+		projects.nodeCtr  = 1;   
+		projects.updateTree();
+		
+		},
+
+
+	  updateTree: function() { 
+	  	var nodes = projects.tree.nodes(projects.root).reverse();
+   		projects.links = projects.tree.links(nodes);
+   		// Normalize for fixed-depth.
+  		nodes.forEach(function(d) { d.y = d.depth * 180; });
+		console.log("Updating ...", nodes, projects.links);
+  		
+  		// Declare the nodes
+  		var node = projects.svg.selectAll("g.project-d3-node")
+   			.data(nodes, function(d) { return d.id || (d.id = ++projects.nodeCtr); });
+
+  // Enter the nodes.
+  		var nodeEnter = node.enter().append("g")
+   				.attr("class", "project-d3-node")
+   				.attr("transform", function(d) { 
+    			return "translate(" + d.y + "," + d.x + ")"; });
+
+  			nodeEnter.append("circle")
+   			.attr("r", 10)
+   			.style("fill", "#fff");
+
+			nodeEnter.append("text")
+			   .attr("x", function(d) { 
+			    return d.children || d._children ? -13 : 13; })
+			   .attr("dy", ".35em")
+			   .attr("text-anchor", function(d) { 
+			    return d.children || d._children ? "end" : "start"; })
+			   .text(function(d) { return d.displayStr; })
+			   .style("fill-opacity", 1);
+
+			// Declare the linksâ€¦
+			var link = projects.svg.selectAll(".project-d3-link")
+			   .data(projects.links, function(d) { return d.target.id; });
+
+		  // Enter the links.
+		  link.enter().insert("path", "g")
+		   	.attr("class", "project-d3-link")
+		   	.attr("d", projects.diagonal);
+		   	projects.svg.selectAll(".project-d3-node").on("click", function(d) {
+		   	//
+			console.log("Clicked ...", d);
+
+			var sid = d.rowid;
+
+				katana.popupController.open(katana.$activeTab.find("#editTestSuiteEntry").html(),"Edit..." , function(popup) {
+				projects.lastPopup = popup; 
+				console.log(katana.$activeTab.find("#editTestSuiteEntry"));
+				projects.setupProjectPopupDialog(sid,popup);
+			});
+			///
+			});
+
+	  },
 
 
 	save: function(){
@@ -284,7 +474,9 @@ class projectsObject{
     					"plugins" : [ "sort" ],
     					}; 
 
-			//console.log("Tree", sdata);
+			console.log("Tree", sdata);
+			
+
 			katana.$activeTab.find('#myProjectTree').on("select_node.jstree", function (e, data) { 
 		      var thePage = data.node.li_attr['data-path'];
 	
@@ -292,10 +484,6 @@ class projectsObject{
 		      if (extn < 4){
 		        return;
 		      }
-		  //     katana.$view.one('tabAdded', function(){
-		  //     projects.mapFullProjectJson(thePage);
-		  // });
-		  //
 			  var xref="./projects/editProject/?fname=" + thePage; 
 			  projects.thefile = thePage;
 
@@ -304,15 +492,20 @@ class projectsObject{
 			   			console.log("starting ...", this);
 				  		projects.mapFullProjectJson(projects.thefile);
 				  });
-			   // katana.templateAPI.load(xref, null, null, 'Project') ;
+			 
 			  });
 
-		create_jstree_search('#myProjectTree', '#jstreeFilterText' , sdata);
-			
-		//katana.$activeTab.find('#myProjectTree').jstree(jdata);
-		});
+			 // setTimeout(function(){ 
+				// projects.createD3tree();
+			 // }, 1000);
 
-},
+
+
+
+			create_jstree_search('#myProjectTree', '#jstreeFilterText' , sdata);
+			});
+
+	},
 
 /// -------------------------------------------------------------------------------
 // 
@@ -770,7 +963,7 @@ Two global variables are heavily used when this function is called;
 			items.push('<i  title="Edit" class="fa fa-pencil" title="Edit" skey="'+bid+'" katana-click="projects.editTestSuiteCB"/>');
 
 			bid = "InsertTestSuitebtn-"+s+"-id"
-			items.push('<i  title="Insert" class="fa fa-plus" value="Insert" skey="'+bid+'" katana-click="projects.insertTestSuiteCB"/>');
+			items.push('<i  title="Insert" class="fa fa-plus" value="Insert" skey="'+bid+'" katana-click="projects.insertTestSuiteCB"/><br>');
 
 
 			bid = "copyToStorage-"+s+"-id-";
@@ -811,7 +1004,7 @@ Two global variables are heavily used when this function is called;
 	editTestSuiteCB : function(){
 			var names = this.attr('skey').split('-');
 			var sid = parseInt(names[1]);
-			katana.popupController.open(katana.$activeTab.find("#editTestSuiteEntry").html(),"Edit..." + sid, function(popup) {
+			katana.popupController.open(katana.$activeTab.find("#editTestSuiteEntry").html(),"Edit..." , function(popup) {
 				projects.lastPopup = popup; 
 				console.log(katana.$activeTab.find("#editTestSuiteEntry"));
 				projects.setupProjectPopupDialog(sid,popup);
@@ -945,6 +1138,10 @@ Two global variables are heavily used when this function is called;
 		katana.$activeTab.find('#projectResultsDir').val(katana.$activeTab.find("#projectResultsDir").val());
 		projects.createSuitesTable();
 		projects.fillProjectDefaultGoto();
+
+		projects.createD3treeData();
+		projects.createD3tree();
+
 	},  // end of function 
 
 	saveChangesToRowCB: function() {

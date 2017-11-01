@@ -1,4 +1,9 @@
 {% load static %}
+<link rel="stylesheet" href="{% static 'projects/css/project-d3.css' %}">
+
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-cloud/1.2.4/d3.layout.cloud.js"></script>
+<div id="myProject" auto-init="projects.initProjectTree"> </div>
 
 <div id="OverwriteProjectHere">
 <div class="csrf-container">{% csrf_token %}</div>
@@ -12,11 +17,10 @@
 		
 
 </div>
-<div id="myProject" auto-init="projects.initProjectTree"> </div>
 	
 <div class="row">
 	<div class="col-md-4" id="myProjectTree"></div>
-
+	
 </div>
 	
 </div>
