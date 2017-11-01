@@ -46,7 +46,7 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
        // $scope.hideElseVal = true;
         $scope.ExecTypeVal = 0;
         // $scope.ruleTable = false;
-        
+       
 
         function readConfig(){
             getConfigFactory.readconfig()
@@ -57,20 +57,25 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
 
         readConfig();
 
+
 //To Cancel the Rules, this will reset the Execute type value to its default - 'Yes'
-$scope.cancelRule = function(){ 
+/*$scope.cancelRule = function(){
     $scope.status.step.Execute._ExecType = 'Yes';
     $scope.showRulesBelow = false;
     $scope.hideExp = true;
     $scope.hideElse = true;
    // $scope.hideElseval= true;
     //$scope.ruleTable = false;
-}
+}*/
     
 //This renders the Rules Fields
 $scope.showRules = function(execType){
     if(execType == 'If' || execType == 'If Not'){
+        $scope.rule_list = '';
+        $scope.rule_list = [{}];
         $scope.status.step.Execute._Else = 'next';
+        $scope.status.step.Execute.Rule._Else = 'next';
+        $scope.status.step.Execute.Rule._Operator = 'eq';
         if($scope.ExecTypeVal == 1){
             $scope.rule_list = '';
             $scope.rule_list = [{}];
@@ -713,6 +718,10 @@ $scope.showRules = function(execType){
                         $scope.model.Testcase.Steps.step[i]["Iteration_type"] = {"_type": "standard"};
                     }
 
+                    if(!$scope.model.Testcase.Steps.step[i].hasOwnProperty("runmode")){
+                        $scope.model.Testcase.Steps.step[i]["runmode"] = {"_type": "Standard"};
+                    }
+
                     if(!$scope.model.Testcase.Steps.step[i].hasOwnProperty("context")){
                         $scope.model.Testcase.Steps.step[i]["context"] = "positive";
                     }
@@ -783,6 +792,7 @@ $scope.showRules = function(execType){
                         if($scope.model.Testcase.Steps.step[i].runmode._type == ""){
                             $scope.model.Testcase.Steps.step[i].runmode._type = "Standard";
                         }
+                        
                         if($scope.model.Testcase.Steps.step[i].runmode._type.toLowerCase() == $scope.status.runmodes[j].toLowerCase()){
                             $scope.model.Testcase.Steps.step[i].runmode._type = $scope.status.runmodes[j];
                             break;
@@ -905,9 +915,9 @@ $scope.showRules = function(execType){
 
         iterationtypes: ['Standard', 'once_per_tc', 'end_of_tc'],
 
-        stepsexecutes: ['If', 'If Not', 'Yes', 'No'],
+        stepsexecutes: ['Yes', 'No' , 'If', 'If Not' ],
 
-        operator: ['ge', 'gt', 'le', 'lt', 'eq', 'ne' ],
+        operator: ['eq', 'ge', 'gt', 'le', 'lt', 'ne' ],
 
         stepexecuteerrors: ['next', 'abort', 'abort_as_error', 'goto'],
 
@@ -1210,7 +1220,19 @@ $scope.showRules = function(execType){
             console.log('$scope.model: ' + JSON.stringify($scope.model));
             $scope.status.step = $scope.model.Testcase.Steps.step[index];
             console.log('Step to edit: ' + JSON.stringify($scope.status.step));
-            $scope.changedIndex = index;
+        
+            if($scope.model.Testcase.Steps.step[index].hasOwnProperty("rmt")){
+                if(!$scope.model.Testcase.Steps.step[index].hasOwnProperty("runmode")) {
+                    $scope.model.Testcase.Steps.step[index].runmode = {
+                        "_type": "Standard",
+                        "_value": ""
+                    }
+                }
+                $scope.model.Testcase.Steps.step[index].runmode._type = "Standard";
+                delete $scope.model.Testcase.Steps.step[index].rmt
+            }
+
+         $scope.changedIndex = index;
             $scope.driverSelected(drivername);
             var flag_kwd_length = true;
             if($scope.xml.keywords.length > 0){
@@ -1234,7 +1256,6 @@ $scope.showRules = function(execType){
                 $scope.selectKeyword(kwd.fn);  // Do this before setting the values of args.
             }
 
-
             var args = _.map(kwd.args, function (a) {
                 return $.trim(a.split('=')[0]);
             });
@@ -1252,12 +1273,49 @@ $scope.showRules = function(execType){
                 $scope.status.step.Arguments.argument = [$scope.status.step.Arguments.argument];
             }
 
-            if($scope.model.Testcase.Steps.step[index].Execute.Rule.hasOwnProperty(length)){
-                $scope.rule_list = $scope.model.Testcase.Steps.step[index].Execute.Rule;
+            if($scope.status.step.Execute._ExecType == 'If' || $scope.status.step.Execute._ExecType == 'If Not'){ 
+                if($scope.showRulesBelow == false){
+                    $scope.showRulesBelow = true;
+                }
+                if($scope.model.Testcase.Steps.step[index].Execute.Rule.hasOwnProperty(length)){ 
+                    $scope.showRulesBelow = true;
+                    $scope.rule_list = $scope.model.Testcase.Steps.step[index].Execute.Rule;
+                }
+                else{
+                    $scope.rule_list = [$scope.model.Testcase.Steps.step[index].Execute.Rule];
+                } 
             }
+
             else{
-                $scope.rule_list = [$scope.model.Testcase.Steps.step[index].Execute.Rule];
-            } 
+                $scope.kwCheckbox = false;
+                $scope.driverCheckbox = false;
+                $scope.showRulesBelow = false;
+                $scope.status.step.Execute._ExecType = $scope.status.step.Execute._ExecType;
+            }
+
+            if($scope.status.step.Execute._ExecType == 'If' || $scope.status.step.Execute._ExecType == 'If Not'){
+               if($scope.showRulesBelow == false){
+                    $scope.showRulesBelow = true;
+                } 
+                if($scope.status.step.Execute._Else == undefined){
+                    $scope.status.step.Execute._Else = 'next';
+                }
+                else{ 
+                    $scope.status.step.Execute._Else = $scope.status.step.Execute._Else;
+                }
+
+                if($scope.status.step.Execute.Rule._Operator == undefined){
+                    $scope.status.step.Execute.Rule._Operator = 'eq';
+                }
+
+                if($scope.model.Testcase.Steps.step[index].Execute.Rule._Else == undefined){ 
+                    $scope.model.Testcase.Steps.step[index].Execute.Rule._Else = 'next';
+                }
+            }
+
+            else{
+                $scope.status.step.Execute._ExecType = $scope.status.step.Execute._ExecType;
+            }
 
             var vals = _.pluck($scope.status.step.Arguments.argument, '_name');
 
@@ -1420,7 +1478,7 @@ $scope.showRules = function(execType){
     }
 
 
-    function populate_step(driver, funname) {
+    function populate_step(driver, funname) { 
         var rec = {
           "Arguments": {
             "argument": []
@@ -1430,7 +1488,11 @@ $scope.showRules = function(execType){
             //"_Expression": "",
             //"_Else": "",
             //"_Elsevalue":"",
-            "Rule": []
+            "Rule": {
+            "_Else": "next",
+            "_Operator" : "eq"
+            }
+            
           },
           "onError": {
             "_action": "", // next, abort, goto
@@ -1973,6 +2035,8 @@ $scope.showRules = function(execType){
             }
         }
 
+
+
     };
         function check_and_save_file(){
             var filename = $scope.model.Testcase.Details.Name + '.xml';
@@ -2072,7 +2136,6 @@ $scope.showRules = function(execType){
                     alert(data);
                 });
     }
-
     window.S = $scope;
 
 }]);

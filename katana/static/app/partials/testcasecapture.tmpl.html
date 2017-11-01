@@ -1223,17 +1223,27 @@
                         <td>
                                 <b> Type = </b> {{ step.Execute._ExecType }}
                                 <span ng-if="step.Execute._ExecType == 'If' || step.Execute._ExecType == 'If Not'">
-                                    <span ng-if="step.Execute._Expression !== ''">
+                                    <span ng-show="step.Execute._Expression !== ''">
                                     &nbsp;&nbsp;<b> Expression = </b>{{ step.Execute._Expression}} 
                                     </span>
-                                    &nbsp;&nbsp;<b> Else = </b>{{ step.Execute._Else}} 
+                                    <span ng-show="step.Execute._Else == ''">
+                                    &nbsp;&nbsp;<b> Else = </b> next 
+                                    </span>
+                                    <span ng-show="step.Execute._Else !== ''">
+                                    &nbsp;&nbsp;<b> Else = </b>{{ step.Execute._Else}}
+                                    </span>
                                     <span ng-if="step.Execute._Else == 'goto'">
                                     &nbsp;&nbsp;<b> Else Value = </b>{{ step.Execute._Elsevalue}} 
                                     </span>
                                     <div>
                                         <div ng-repeat='rule in step.Execute.Rule'>
                                             <b>Rule {{ $index + 1 }}.  </b>Condition = {{ rule._Condition}} <b>,</b>
+                                            <span ng-show="step.Execute._Operator == ''">
+                                            Operator = eq <b>,</b>
+                                            </span>
+                                            <span ng-show="step.Execute._Operator !== ''">
                                             Operator = {{ rule._Operator}} <b>,</b>
+                                            </span>
                                             Condition value = {{ rule._Condvalue}} <b>,</b>
                                             Else = {{ rule._Else}} 
                                             <span ng-if="rule._Else == 'goto'">
@@ -1978,7 +1988,9 @@
                                 id='stepexecute'
                                 ng-model="status.step.Execute._ExecType"
                                 ng-options="o as o for o in status.stepsexecutes"
+                                ng-init=" status.step.Execute._ExecType = status.stepsexecutes[0]"
                                 ng-change="showRules(status.step.Execute._ExecType);">
+                                <option value="" selected hidden />
                         </select>
                      </div>
                     <div class="col-sm-1">
@@ -2376,7 +2388,7 @@
                         </div>
                        </div>
                        <div class="form-group">
-                            <label class="col-sm-5 control-label" style="padding-top:7px !important;">Operator</label>
+                            <label class="col-sm-5 control-label" style="padding-top:7px !important;" for="stepruleoperator{{$index}}">Operator</label>
                             <div class="tooltip-on-right align-fa-icon-after-label-step">
                                 <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
                                 <span class="tooltip-content">
@@ -2413,7 +2425,9 @@
                                     <select class='form-control'
                                     id='stepruleoperator{{$index}}'
                                     ng-model='rule_list[$index]._Operator'
+                                    ng-init=" rule_list[$index]._Operator = status.operator[0]"
                                     ng-options="o as o for o in status.operator">
+                                    <option value="" selected hidden />
                                     </select>
                                 
                             </div>
@@ -2529,7 +2543,7 @@
                     </div>
                        
                         <div class="form-group">
-                                <label class="col-sm-5 control-label" style="padding-top:7px !important;">Else</label>
+                                <label class="col-sm-5 control-label" style="padding-top:7px !important;" for="stepexecelsenew{{$index}}">Else</label>
                                 <div class="tooltip-on-right align-fa-icon-after-label-step">
                                     <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
                                     <span class="tooltip-content">
@@ -2564,7 +2578,7 @@
                                 </div>
                                 <div class="col-sm-7">
                                     <select class='form-control'
-                                        id='stepexecelsenew'
+                                        id='stepexecelsenew{{$index}}'
                                         ng-model="rule_list[$index]._Else"
                                         ng-init=" rule_list[$index]._Else = status.steperrors[0]"
                                         ng-options="o as o for o in status.steperrors">
@@ -2688,7 +2702,7 @@
                    <div class="" >
                        <div class="" style="margin-left:11%"> 
                         <button type="button" ng-click="addAnotherRulesToList()" class="btn btn-default" value="">Add Rule</button>
-                         <button type="button" ng-click="cancelRule()" class="btn btn-default" value="">Cancel</button>                             
+                        <!-- <button type="button" ng-click="cancelRule()" class="btn btn-default" value="">Cancel</button>                              -->
                        </div>
                    </div>
                </div>
@@ -2816,7 +2830,11 @@
                     <div class="col-sm-8">
                         <select class='form-control' id='runtype'
                                 ng-model="status.step.runmode._type"
-                                ng-options="o as o for o in status.runmodes"></select>
+                                ng-init="status.step.runmode._type = status.runmodes[0]"
+                                ng-options="o as o for o in status.runmodes">
+                                <option value="" selected hidden />    
+                                </select>
+                                  
                     </div>
                     <div class="col-sm-1">
                         <div class="tooltip-on-right-no-margin align-fa-icon-after-input-step">
@@ -3374,17 +3392,27 @@
                         <td>
                                 <b> Type = </b> {{ step.Execute._ExecType }}
                                 <span ng-if="step.Execute._ExecType == 'If' || step.Execute._ExecType == 'If Not'">
-                                    <span ng-if="step.Execute._Expression !== ''">
+                                    <span ng-show="step.Execute._Expression !== ''">
                                     &nbsp;&nbsp;<b> Expression = </b>{{ step.Execute._Expression}} 
                                     </span>
-                                    &nbsp;&nbsp;<b> Else = </b>{{ step.Execute._Else}} 
+                                    <span ng-show="step.Execute._Else == ''">
+                                    &nbsp;&nbsp;<b> Else = </b> next 
+                                    </span>
+                                    <span ng-show="step.Execute._Else !== ''">
+                                    &nbsp;&nbsp;<b> Else = </b>{{ step.Execute._Else}}
+                                    </span>
                                     <span ng-if="step.Execute._Else == 'goto'">
                                     &nbsp;&nbsp;<b> Else Value = </b>{{ step.Execute._Elsevalue}} 
                                     </span>
                                     <div>
                                         <div ng-repeat='rule in step.Execute.Rule'>
                                             <b>Rule {{ $index + 1 }}.  </b>Condition = {{ rule._Condition}} <b>,</b>
+                                            <span ng-show="step.Execute._Operator == ''">
+                                            Operator = eq <b>,</b>
+                                            </span>
+                                            <span ng-show="step.Execute._Operator !== ''">
                                             Operator = {{ rule._Operator}} <b>,</b>
+                                            </span>
                                             Condition value = {{ rule._Condvalue}} <b>,</b>
                                             Else = {{ rule._Else}} 
                                             <span ng-if="rule._Else == 'goto'">
