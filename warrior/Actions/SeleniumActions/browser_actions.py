@@ -251,9 +251,9 @@ class browser_actions(object):
                         print_error("pyvirtualdisplay is not installed in order "
                                     "to launch the browser in headless mode")
                         status = False
-                    except:
-                        print_error("Xvfb is not installed in order "
-                                    "to launch the browser in headless mode")
+                    except Exception as e:
+                        print_error("Encountered Exception: {0}, while trying to launch the browser"
+                                    " in headless mode".format(e))
                         status = False
                 if binary != "" and gecko_path != "":
                     browser_inst = self.browser_object.open_browser(browser_details["type"], 
