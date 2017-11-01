@@ -53,19 +53,28 @@ function prefixFromAbs(pathToBase, pathToFile) {
 var wsedit = { 
 
 	myCodeEdit: null,
-	// flask : new CodeFlask,
+	rulers: [],
+	//location.hash : "#cobalt",
+
 
  	init: function() { 
- 		console.log("Start....");
- 		//wsedit.myCodeEdit = CodeMirror.CodeMirror.fromTextArea(katana.$activeTab.find('#wsedit-scrollable-source-text'));
-		//wsedit.myCodeEdit  = CodeMirror.fromTextArea(katana.$activeTab.find('#wsedit-scrollable-source-text')[0]);
-		//   value: "function myScript(){return 100;}\n",
-		//   mode:  "javascript"
-		// });
-		// // wsedit.flask.run('#wsedit-scrollable-source-text');
+ 		//console.log("Start....",	katana.$activeTab.find("#wsedit-file-menu"));
+ 		//extraKeys: {"Ctrl-Q": function(cm){ wsedit.myCodeEdit.foldCode(wsedit.myCodeEdit.getCursor()); }},
+    	wsedit.makeRulers();	
+ 		wsedit.myCodeEdit = CodeMirror.fromTextArea(katana.$activeTab.find('#wsedit-scrollable-source-text')[0],
+ 			{ value: "",
+ 			foldGutter: true,
+ 			extraKeys: {"Ctrl-Q": function(cm){ console.log(cm); cm.foldCode(cm.getCursor()); }},
+    		rulers:[], 
+    		theme: 'cobalt',
+    		gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+ 		} );
+		console.log("Started....",wsedit.myCodeEdit );
+ 		
 
  	},
 
+ 	
 	openFileFromServer: function() {
 
 			var tag = '#wsedit-filename';
@@ -76,52 +85,97 @@ var wsedit = {
 	  		var nf = prefixFromAbs(savefilepath, selectedValue);
 	  		katana.$activeTab.find(tag).val(selectedValue);
 	  		katana.$activeTab.find(tag).attr("fullpath", selectedValue);
+			katana.$activeTab.find(tag).attr("title", selectedValue);
 			console.log("fullpath ",selectedValue );
 			// Now get the file from the server and display the data. ..
 
 			jQuery.getJSON("./wsedit/getFileData/?filename="+selectedValue).done(function(data) {
 				var sdata = data['fulltext'];
 				wsedit.sdata = data;
-				katana.$activeTab.find('#wsedit-scrollable-source-text').show();
-				katana.$activeTab.find('#wsedit-scrollable-source-text').html(sdata);
+				// katana.$activeTab.find('#wsedit-scrollable-source-text').show();
+				// katana.$activeTab.find('#wsedit-scrollable-source-text').html(sdata);
 				console.log("received", data['mode']);
-
-
-					// wsedit.myCodeEdit = CodeMirror.fromTextArea(katana.$activeTab.find('#wsedit-scrollable-source-text')[0],
-					// 	{ value: sdata, mode: data['mode'] }
-					// 	);
-				
-				if (!wsedit.myCodeEdit) {
-
-					wsedit.myCodeEdit = CodeMirror.fromTextArea(katana.$activeTab.find('#wsedit-scrollable-source-text')[0],
-				 	{ value: sdata } );
-
-					wsedit.myCodeEdit.on('change', wsedit.textModifiedCB ) ;
-
-				} else { 
-					wsedit.myCodeEdit.setValue(sdata);
-				}
+				wsedit.myCodeEdit.setValue(sdata);
 				wsedit.myCodeEdit.setOption("lineNumbers", true);
+				wsedit.myCodeEdit.setOption("lineWrapping", true);
 				wsedit.myCodeEdit.setOption("mode", data['mode']);
 				wsedit.myCodeEdit.setOption("min-height","100%");
 				wsedit.myCodeEdit.setOption("matchBrackets", true);
-				wsedit.myCodeEdit.setOption("styleActiveLine", true); 
-				//wsedit.myCodeEdit.setOption("theme", "midnight");
-				////====Reset the modified flag=====////
+				wsedit.myCodeEdit.setOption("styleActiveLine", true);
 				katana.$activeTab.find("#wsedit-saveme-btn").html("");
-				
-				});
+				//wsedit.myCodeEdit.setOption("extraKeys",{"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); }});
+ 				wsedit.myCodeEdit.setOption("foldGutter", true);
+    			//wsedit.myCodeEdit.setOption("gutters": ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]);
+
+			});
 
 			
 
 			};
-	  var callback_on_dismiss =  function(){ 
+	 var callback_on_dismiss =  function(){ 
 	  		console.log("Dismissed");
 	 };
 	 var pdir = katana.$activeTab.find("#wsedit-pythonsrcdir")[0].innerText; 
 	 console.log("Pdir = ", pdir);
 	 katana.fileExplorerAPI.openFileExplorer("Select a file", pdir , $("[name='csrfmiddlewaretoken']").val(), false, callback_on_accept, callback_on_dismiss,".py");
 	  
+	},
+
+	
+	selectTheme: function() {
+		var theme = katana.$activeTab.find('#wsedit-select').val();
+		wsedit.myCodeEdit.setOption("theme", theme);
+
+	},
+
+	onThemeChange: function()  { 
+		wsedit.selectTheme();
+	},
+
+	makeRulers : function() { 
+	  var nums = "0123456789", space = "          ";
+	  var colors = ["#fcc", "#f5f577", "#cfc", "#aff", "#ccf", "#fcf"];
+	  wsedit.rulers = [], value = "";
+	  for (var i = 1; i <= 10; i++) {
+	    wsedit.rulers.push({color: colors[i], column: i * 10, lineStyle: "dashed"});
+
+  		}
+ 	},
+
+	toggleRulers: function(){
+		var rr = wsedit.myCodeEdit.getOption("rulers");
+		if (rr.length < 1) {
+			wsedit.myCodeEdit.setOption("rulers", wsedit.rulers);
+		} else {	
+			wsedit.myCodeEdit.setOption("rulers", []);
+		}
+		
+
+	},
+
+	toggleLineWrap: function() {
+		var wrap = !wsedit.myCodeEdit.getOption("lineWrapping");
+		wsedit.myCodeEdit.setOption("lineWrapping", wrap);
+	},
+
+	toggleLineNumber: function() {
+		var numbers = !wsedit.myCodeEdit.getOption("lineNumbers");
+		wsedit.myCodeEdit.setOption("lineNumbers", numbers);
+	},
+
+
+	//wsedit-verbose-menu
+	toggleVerbose: function() {
+		var visible = katana.$activeTab.find(".wsedit-verbose-menu").is(":visible");
+		if (visible) {
+			 katana.$activeTab.find(".wsedit-verbose-menu").hide();
+			 katana.$activeTab.find("#wsedit-toggleVerbose").addClass("fa-chevron-left");
+			 katana.$activeTab.find("#wsedit-toggleVerbose").removeClass("fa-chevron-right");
+		} else {
+			 katana.$activeTab.find(".wsedit-verbose-menu").show();
+			 katana.$activeTab.find("#wsedit-toggleVerbose").addClass("fa-chevron-right");
+			 katana.$activeTab.find("#wsedit-toggleVerbose").removeClass("fa-chevron-left");
+		}		
 	},
 
 	textModifiedCB: function(how, where) {
