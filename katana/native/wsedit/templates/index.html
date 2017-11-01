@@ -1,0 +1,34 @@
+{% load staticfiles %} 
+<!-- <link rel="stylesheet" href="{% static 'wsedit/css/wsedit.css' %}">
+
+<script src="{% static 'wsedit/js/CodeMirror/lib/codemirror-compressed.js' %}"></script>
+
+ -->   
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/codemirror.js" />
+<link rel="stylesheet" href="{% static  'wsedit/js/CodeMirror/lib/codemirror.css' %} ">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.31.0/mode/python/python.js"></script> -->
+   <link rel="stylesheet" href="{% static 'wsedit/css/codemirror.css' %}">
+<style>
+.CodeMirror {
+    height: 100% !important;
+}
+</style>
+
+
+  <div class="tool-bar">
+       <i katana-click="wsedit.openFileFromServer" class="fa fa-edit">&nbsp;Edit Action File</i>
+ <input class="text col-md-6" id="wsedit-filename" value="filename"></input>
+	    <i  katana-click="wsedit.saveFileToServer" class="fa fa-floppy-o" >&nbsp;Save</i> 
+	    <label  id='wsedit-saveme-btn'></label>
+    </div>
+
+   	 <div class="csrf-container">{% csrf_token %}</div>
+
+	<div id="wsedit-savesubdir" class="hidden">{{savesubdir}}</div>
+   
+	<textarea id='wsedit-scrollable-source-text'  min-height="95%" class='hidden' > </textarea> 	
+   
+   	<label id="wsedit-pythonsrcdir" class="hidden">{{pythonsrcdir}}</label>
+        
+</div>
+  

@@ -25,6 +25,7 @@ urlpatterns = [
     url(r'^katana/wapp_management/', include('native.wapp_management.urls')),
     url(r'^katana/wappstore/', include('native.wappstore.urls')),
     url(r'^katana/wdf/', include('native.wdf_edit.urls')),
+    url(r'^katana/wsedit/', include('native.wsedit.urls')),
     url(r'^katana/projects/', include('native.projects.urls')),
     url(r'^katana/suites/', include('native.suites.urls')),
     url(r'^katana/cases/', include('native.cases.urls')),
