@@ -108,7 +108,9 @@ def searchkw():
 
 
 def get_correct_xml_and_root_element(value):
-    """ To get the correct xml format from Katana UI and to get it's root element """
+    """ To get the correct xml format from Katana UI
+        and to get it's root element
+    """
     indented_xml = "".join(value.toprettyxml(newl='\n'))
     corrected_xml = remove_extra_newlines_char_xml(indented_xml)
     tree = xml.etree.ElementTree.fromstring(corrected_xml)
@@ -121,7 +123,6 @@ def parsexmlobj():
     This method fetch the XML object from the Katana UI of Keyword sequencing tool screen.
     And parse it to form a new Wrapper keyword & place it in the user provided file path.
     """
-    method_names = []
     sample = []
     xmlobj = parseString("".join(request.body))
     tree = get_correct_xml_and_root_element(xmlobj)
@@ -550,41 +551,38 @@ def namecase(s):
 gpysrcdir = ''
 
 
-def mkactiondirs(driverpath):  # changed
-    '''Given a directory name `drivername`, return its action python file name.'''
+def mkactiondirs(driverpath):
+    '''Given a directory name `drivername`, return its action python file name.
+    '''
     # FrameworkDirectory/ used to be the prefix in the directory name.
     actions_dirpath_list = []
     actions_package_list = get_action_dirlist(driverpath)
     if len(actions_package_list) == 0:
-        print "the driver {0} does not import any actions package or import format is wrong".format(
-            os.path.basename(driverpath))
-    # print "action package list in mkactions dir", actions_package_list
-    # print type(actions_package_list)
-
-    elif len(actions_package_list) > 0:
-        for package in actions_package_list:
-            try:
-                print package
-                package = package.replace(' ', '')
-                pkg = re.sub('[\n\t' '\\\]', '', package)
-                print pkg
-                print package
-                if pkg == 'Actions':
-                    actions_dirpath = gpysrcdir + os.sep + 'Actions'
-                elif pkg.startswith('Actions.'):
-                    path = pkg.replace('.', os.sep)
-                    actions_dirpath = gpysrcdir + os.sep + path
-                else:
-                    path = pkg.replace('.', os.sep)
-                    actions_dirpath = gpysrcdir + os.sep + 'Actions' + os.sep + path
-                    print actions_dirpath
-                if os.path.isdir(actions_dirpath):
-                    actions_dirpath_list.append(actions_dirpath)
-                else:
-                    print "the actions package {0} does not exist or the location is not compatible with warrior framework:".format(
-                        actions_dirpath)
-            except Exception, e:
-                print str(e)
+        print ("the driver {0} does not import any actions package or import "
+               "format is wrong").format(os.path.basename(driverpath))
+    for package in actions_package_list:
+        try:
+            print package
+            package = package.replace(' ', '')
+            pkg = re.sub('[\n\t' '\\\]', '', package)
+            print pkg
+            print package
+            if pkg == 'Actions':
+                actions_dirpath = os.path.join(gpysrcdir, 'Actions')
+            elif pkg.startswith('Actions.'):
+                pathlist = pkg.split('.')
+                actions_dirpath = os.path.join(gpysrcdir, *pathlist)
+            else:
+                pathlist = pkg.split('.')
+                actions_dirpath = os.path.join(gpysrcdir, 'Actions', *pathlist)
+            print actions_dirpath
+            if os.path.isdir(actions_dirpath):
+                actions_dirpath_list.append(actions_dirpath)
+            else:
+                print ("the actions package {0} does not exist or the location is not "
+                       "compatible with warrior framework:").format(actions_dirpath)
+        except Exception, e:
+            print str(e)
     return actions_dirpath_list
 
 
@@ -602,15 +600,11 @@ def get_action_dirlist(driverpath):
 
             if match:
                 match_string = match.group()
-                # print match_string
-                # actions_package_list = match_string.split('[')[1].split(']')[0].split(',')
                 # extracting the text within [] and get the list of packages separated by ,
-                actions_package_list = re.findall(r'[\[\]]', match_string)[0].split(',')
-                print "\n action package list: ", actions_package_list
-            return actions_package_list
+                actions_package_list = re.findall(r'\[(.*)\]', match_string)[0].split(',')
+                print "\n actions package list: ", actions_package_list
         else:
             print "file {0} does not exist".format(driverpath)
-            return actions_package_list
     except Exception, e:
         print str(e)
     return actions_package_list
