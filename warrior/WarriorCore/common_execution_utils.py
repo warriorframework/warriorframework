@@ -36,6 +36,16 @@ def get_runmode_from_xmlfile(element):
         rt_interval = runmode.get("interval")
         rt_type = None if rt_type == "" or rt_type == "STANDARD" else rt_type
         if rt_value is not None and rt_type is not None:
+            if rt_interval is None or rt_interval is "":
+                rt_interval = None
+            else:
+                try:
+                    rt_interval = float(rt_interval)
+                except ValueError:
+                    print_warning("The value for Runmode interval is {0}, please provide seconds to"
+                                  " wait in numerals".format(rt_interval))
+                    rt_interval = None
+
 
             if rt_type not in ['RUF', 'RUP', 'RMT']:
                 print_warning("Unsupported value '{0}' provided for 'runmode:"
@@ -43,31 +53,22 @@ def get_runmode_from_xmlfile(element):
                               "and these values can not be combined with other"
                               " values".format(rt_type))
                 return (None, 1, None)
-            elif rt_interval is None or rt_interval is "":
-                print_warning("Unsupported value '{0}' provided for 'runmode:interval' "
-                              "tag".format(rt_interval))
-                return (rt_type, 1, None)
             try:
                 rt_value = int(rt_value)
-                rt_interval = float(rt_interval)
 
                 if rt_value < 1:
                     rt_value = 1
                     print_warning("Value provided for 'runmode:value' tag "
                                   "'{0}' is less than '1', using default value"
                                   " 1 for execution".format(rt_value))
-                if rt_interval < 0:
-                    rt_interval = 0
-                    print_warning("Value provided for 'runmode:interval' tag "
-                                  "'{0}' is less than '1', using default value"
-                                  " 1 for execution".format(rt_interval))
+
             except ValueError:
                 print_warning("Unsupported value '{0}' provided for 'runmode:"
                               "value' tag, please provide an integer, using "
                               "default value '1' for execution".
                               format(rt_value))
                 rt_value = 1
-                rt_interval = 0
+                rt_interval = None
     return (rt_type, rt_value, rt_interval)
 
 def get_retry_from_xmlfile(element):

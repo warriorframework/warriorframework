@@ -150,7 +150,6 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
                                    kw_start_time, "0", "skipped",
                                    impact_dict.get(step_impact.upper()), "N/A", step_description)
             data_repository['step_{}_result'.format(step_num)] = "SKIPPED"
-
             continue
 
         step_status_list.append(step_status)
@@ -171,10 +170,10 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
             # execution of same TC step and move to next actual step
             elif runmode =="RUP" and step_status is True:
                 goto_stepnum = str(value)
-            elif runmode == "RUF" and step_status is True:
+            elif runmode == "RUF" and step_status is True and runmode_interval is not None:
                 pNote("Wait for {0}sec before the next runmode attempt ".format(runmode_interval))
                 war_wait_till_time(runmode_interval)
-            elif runmode =="RUP" and step_status is False:
+            elif runmode =="RUP" and step_status is False and runmode_interval is not None:
                 pNote("Wait for {0}sec before the next runmode attempt ".format(runmode_interval))
                 war_wait_till_time(runmode_interval)
             else:

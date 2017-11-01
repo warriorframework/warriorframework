@@ -358,4 +358,4 @@ class CIregressionActions(object):
             return False
         else:
             raise Exception("This is raised in ci_regression_actions.local_data_test")
-        print data_repository
+
