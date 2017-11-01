@@ -358,6 +358,7 @@ span.close:before {
 		position: absolute;
 		left: 0;
 		top: 0;
+		border-bottom: none;
 }
 .tab.active {
 	background: rgb(255, 255, 255) !important;
@@ -554,11 +555,13 @@ span.close:before {
 	transform: translateZ(0);
 	-webkit-transition: max-width 0.2s ease, -webkit-transform 0.2s ease;
 	transition: max-width 0.2s ease, transform 0.2s ease;
+	text-overflow: initial;
 }
 
 .nav .tab.active[uid="launchpad"] {
 	max-width: 200px;
 	font-size: inherit;
+	text-overflow: ellipsis;
 }
 
 .nav .tab.active[uid="launchpad"]:before {
@@ -2592,7 +2595,6 @@ textarea {
     background-color: white;
     border-radius: 9px;
 }
-
 .close {
 	float: none;
 	font-size: inherit;
