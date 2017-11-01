@@ -348,8 +348,9 @@ var treeData = [
 				items.push('Elsevalue='+oneSuite.Execute_Rule_Elsevalue+'<br>');
 			}
 			var execStr = items.join("");
-			var displayStr = oneSuite.path + "<br>runmode:" + oneSuite.runmode_type + " " + oneSuite.runmode_value + 
-					"<br>onError:" + oneSuite.onError_action + " " + oneSuite.onError_value; 
+			var displayStr = "" + oneSuite.path + "<br>runmode:" + oneSuite.runmode_type + " " + oneSuite.runmode_value + 
+					"<br>onError:" + oneSuite.onError_action + " " + oneSuite.onError_value + 
+					"<br>" + execStr + "</div>"; 
 
     		td.children.push({ "name": oneSuite.path, 
     			'ntype': 'suite',
@@ -369,13 +370,14 @@ var treeData = [
 
 
 	createD3tree: function() {
+		var optimalHt = projects.jsonTestSuites.length * 100 + 200; 
 		var margin = {top: 20, right: 120, bottom: 20, left: 120},
-		 width = 960 - margin.right - margin.left,
-		 height = 800 - margin.top - margin.bottom;
+		 width = 1080- margin.right - margin.left,
+		 height = optimalHt - margin.top - margin.bottom;
 		 
 		projects.tree = d3.layout.tree()
 		 .size([height, width]);
-		console.log("Creating ....", projects.tree, height, width );
+		//console.log("Creating ....", projects.tree, height, width );
 		
 		projects.diagonal = d3.svg.diagonal()
 		 .projection(function(d) { return [d.y, d.x]; });
@@ -407,7 +409,17 @@ var treeData = [
 	  	var nodes = projects.tree.nodes(projects.root).reverse();
    		projects.links = projects.tree.links(nodes);
    		// Normalize for fixed-depth.
-  		nodes.forEach(function(d) { d.y = d.depth * 180; });
+  		nodes.forEach(function(d) {
+  			var optimalHt = projects.jsonTestSuites.length * 100 + 200; 
+		
+  			d.y = d.depth * 180; 
+  			if (d.rowid > 5) {
+  				d.x -= optimalHt / 2; 
+  				d.y += 300;
+  			}
+			//console.log("DX set for ", d.rowid, d.x, d.y );
+  			
+  			});
 		
   		// Declare the nodes
   		var node = projects.svg.selectAll("g.project-d3-node")
@@ -433,7 +445,7 @@ var treeData = [
 			feMerge.append("feMergeNode").attr("in","offsetBlur");
 			feMerge.append("feMergeNode").attr("in","SourceGraphic");
 
-
+			
  			
    			nodeEnter.append("rect")
    			.attr("width",100)
@@ -448,12 +460,44 @@ var treeData = [
 
    			})
    			.on("mouseover",function(d) {
-   					var el = d3.select("[tooltipid='"+d.rowid+"']");
-   					el.style("visibility", "visible");
+   					// var el = d3.select("[tooltipid='"+d.rowid+"']");
+   					// el.style("visibility", "visible");
+   					var fobj = projects.svg.append('foreignObject')
+   						.attr({
+   							'x': d.y + 100,
+   							'y': d.x - 30, 
+   							'width': 450, 
+   							'class' : 'projectSuiteTooltip',
+   						})
+   						.style({
+   							'fill' : 'red',
+   							'opacity': 1.0,
+   							'border' : '2px solid "green"',
+   						});
+   						var div = fobj.append("xhtml:div").append('div');
+   						div.append('p')
+   							.style('border', '2px solid green')
+   							//.style('fill','red')
+   							//.style('color', 'white')
+   							.html(d.displayStr);
+   						var foHt = div[0][0].getBoundingClientRect().height;
+   						var foWd =  div[0][0].getBoundingClientRect().width;
+   						projects.svg.append("rect")
+   							.attr({ 
+							'x': d.y + 100,
+   							'y': d.x - 30, 
+   							'height': foHt ,
+   							'width' : foWd , 
+							'class' : 'projectSuiteTooltip',
+   							})
+   							.style({
+							'fill': '#000',
+   							'opacity': 0.2, 
+   							});
+
    				})
    			.on("mouseout",function(d) {
-   					var el = d3.select("[tooltipid='"+d.rowid+"']");
-					el.style("visibility", "hidden");
+   		 			projects.svg.selectAll('.projectSuiteTooltip').remove();
    				})
    			.style("filter","url(#drop-shadow");
 
@@ -465,33 +509,41 @@ var treeData = [
 					if (d.ntype == 'project') return "Project"
 					return "TS=" + (parseInt(d.rowid) + 1); })
 				.style("fill-opacity", 1);
+   			 			
+				nodeEnter.append("foreignObject")
+	   				.attr("width", 50)
+	   				.attr("height", 20)
+	   				.attr("y", 30)
+	   				.attr("class", "fa fa-trash")
+	   				.attr("deleteNodeid",function(d) { return d.rowid; })
+	   				.style("opacity", 1)
+	   				.style("fill-opacity",1)
+	   				.style("border", "1px solid green")
+	   				.style("visibility", function(d) {
+	   					if (d.ntype == 'project') {
+	   						return "hidden";
+	   					} else {
+	   						return "visible";
+	   					}
+	   				})
+	   				.html(function(d) { return " "; } )
+	   				.on("click", function(d) { 
+	   						console.log("cccc, ", d, this);
+		   					if (this.hasAttribute('deleteNodeid')) {
+	   							console.log("Clicked to delete " + d.rowid);
 
-   			nodeEnter.append("foreignObject")
-   				.attr("width", 200)
-   				.attr("height", 100)
-   				.attr("x", 200)
-   				.attr("tooltipid",function(d) { return d.rowid; })
-   				.style("visibility","hidden")
-   				
-   				.html(function(d) { return d.displayStr; } );
+	   							projects.jsonTestSuites.splice(d.rowid,1);
+								projects.mapProjectJsonToUi();	// Send i
+	   							
+	   						}
+	   						event.stopPropagation();
 
+	   				});
 
-			// nodeEnter.append("text")
-			//    .attr("x", function(d) { 
-			//     return d.children || d._children ? -73 : 53; })
-			//    .attr("dy", ".35em")
-			//    .attr("text-anchor", function(d) { 
-			//     return d.children || d._children ? "end" : "start"; })
-			//    .text(function(d) { return d.displayStr; })
-			//    .style("fill-opacity", 1);
 
 			// Declare the linksâ€¦
 			var link = projects.svg.selectAll(".project-d3-link")
 			   .data(projects.links, function(d) { return d.target.id; });
-
-
-			// Filters. 
-
 
 		  // Enter the links.
 		  link.enter().insert("path", "g")
@@ -499,15 +551,19 @@ var treeData = [
 		   	.attr("d", projects.diagonal);
 		   	projects.svg.selectAll(".project-d3-node").on("click", function(d) {
 		   	//
-			console.log("Clicked ...", d);
 
-			var sid = d.rowid;
+		   		if (!this.hasAttribute('deleteNodeid')) {
+	   						
+					console.log("Clicked ...", d, this, this.hasAttribute('deleteNodeid'));
 
-				katana.popupController.open(katana.$activeTab.find("#editTestSuiteEntry").html(),"Edit..." , function(popup) {
-				projects.lastPopup = popup; 
-				console.log(katana.$activeTab.find("#editTestSuiteEntry"));
-				projects.setupProjectPopupDialog(sid,popup);
-			});
+					var sid = d.rowid;
+
+					katana.popupController.open(katana.$activeTab.find("#editTestSuiteEntry").html(),"Edit..." , function(popup) {
+					projects.lastPopup = popup; 
+					console.log(katana.$activeTab.find("#editTestSuiteEntry"));
+					projects.setupProjectPopupDialog(sid,popup);
+					});
+				}
 			///
 			});
 
