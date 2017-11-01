@@ -333,6 +333,7 @@ var treeData = [
 		"name": projects.jsonProjectObject.Details.Name,
     	"parent": "null", 
     	"children": [],
+    	"ntype": 'project',
     	};
     	var slen = projects.jsonTestSuites.length;
 		for (var s=0; s<slen; s++ ) {
@@ -347,9 +348,11 @@ var treeData = [
 				items.push('Elsevalue='+oneSuite.Execute_Rule_Elsevalue+'<br>');
 			}
 			var execStr = items.join("");
-			var displayStr = "Name: " + oneSuite.path + "Execute:" + execStr; 
+			var displayStr = oneSuite.path + "<br>runmode:" + oneSuite.runmode_type + " " + oneSuite.runmode_value + 
+					"<br>onError:" + oneSuite.onError_action + " " + oneSuite.onError_value; 
 
     		td.children.push({ "name": oneSuite.path, 
+    			'ntype': 'suite',
     			"rowid" : s,
     			'displayStr' : displayStr,
     			"exectype" : execStr, 
@@ -368,7 +371,7 @@ var treeData = [
 	createD3tree: function() {
 		var margin = {top: 20, right: 120, bottom: 20, left: 120},
 		 width = 960 - margin.right - margin.left,
-		 height = 500 - margin.top - margin.bottom;
+		 height = 800 - margin.top - margin.bottom;
 		 
 		projects.tree = d3.layout.tree()
 		 .size([height, width]);
@@ -405,8 +408,7 @@ var treeData = [
    		projects.links = projects.tree.links(nodes);
    		// Normalize for fixed-depth.
   		nodes.forEach(function(d) { d.y = d.depth * 180; });
-		console.log("Updating ...", nodes, projects.links);
-  		
+		
   		// Declare the nodes
   		var node = projects.svg.selectAll("g.project-d3-node")
    			.data(nodes, function(d) { return d.id || (d.id = ++projects.nodeCtr); });
@@ -417,22 +419,79 @@ var treeData = [
    				.attr("transform", function(d) { 
     			return "translate(" + d.y + "," + d.x + ")"; });
 
-  			nodeEnter.append("circle")
-   			.attr("r", 10)
-   			.style("fill", "#fff");
+   				
+
+   			var defs  = projects.svg.append('defs');
+			var filter = defs.append("filter").attr("id","drop-shadow").attr("height","150%");
+			filter.append("feGaussianBlur").attr("in","SourceAlpha").attr("stdDeviation",5)
+			.attr("result","blur");
+			filter.append("feOffset").attr("in","blur")
+			.attr("dx",5)
+			.attr("dy",5)
+			.attr("result", "offsetBlur");
+			var feMerge = filter.append("feMerge");
+			feMerge.append("feMergeNode").attr("in","offsetBlur");
+			feMerge.append("feMergeNode").attr("in","SourceGraphic");
+
+
+ 			
+   			nodeEnter.append("rect")
+   			.attr("width",100)
+   			.attr("height",30)
+   			.attr("fill", function(d) { 
+   				if (d.ntype == 'project') return '#aaa';
+   				return '#fff';
+   			})
+   			.style('stroke', function(d) { 
+   				if (d.ntype == 'project') return 'blue';
+   				return 'green';
+
+   			})
+   			.on("mouseover",function(d) {
+   					var el = d3.select("[tooltipid='"+d.rowid+"']");
+   					el.style("visibility", "visible");
+   				})
+   			.on("mouseout",function(d) {
+   					var el = d3.select("[tooltipid='"+d.rowid+"']");
+					el.style("visibility", "hidden");
+   				})
+   			.style("filter","url(#drop-shadow");
 
 			nodeEnter.append("text")
-			   .attr("x", function(d) { 
-			    return d.children || d._children ? -13 : 13; })
-			   .attr("dy", ".35em")
-			   .attr("text-anchor", function(d) { 
-			    return d.children || d._children ? "end" : "start"; })
-			   .text(function(d) { return d.displayStr; })
-			   .style("fill-opacity", 1);
+				.attr("x", 10)
+				.attr("y", 20)
+				.attr("dy", ".35em")
+				.text(function(d) { 
+					if (d.ntype == 'project') return "Project"
+					return "TS=" + (parseInt(d.rowid) + 1); })
+				.style("fill-opacity", 1);
+
+   			nodeEnter.append("foreignObject")
+   				.attr("width", 200)
+   				.attr("height", 100)
+   				.attr("x", 200)
+   				.attr("tooltipid",function(d) { return d.rowid; })
+   				.style("visibility","hidden")
+   				
+   				.html(function(d) { return d.displayStr; } );
+
+
+			// nodeEnter.append("text")
+			//    .attr("x", function(d) { 
+			//     return d.children || d._children ? -73 : 53; })
+			//    .attr("dy", ".35em")
+			//    .attr("text-anchor", function(d) { 
+			//     return d.children || d._children ? "end" : "start"; })
+			//    .text(function(d) { return d.displayStr; })
+			//    .style("fill-opacity", 1);
 
 			// Declare the linksâ€¦
 			var link = projects.svg.selectAll(".project-d3-link")
 			   .data(projects.links, function(d) { return d.target.id; });
+
+
+			// Filters. 
+
 
 		  // Enter the links.
 		  link.enter().insert("path", "g")
