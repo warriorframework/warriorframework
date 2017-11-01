@@ -280,6 +280,7 @@ var treeData = [
  var projects = {
 
  	treeData : [], 
+ 	treeView  : 0,
 
 	closeProject: function(){
 		katana.closeSubApp();
@@ -335,6 +336,8 @@ var treeData = [
     	"children": [],
     	"ntype": 'project',
     	};
+    	projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
+			
     	var slen = projects.jsonTestSuites.length;
 		for (var s=0; s<slen; s++ ) {
     		var oneSuite = projects.jsonProjectObject.Testsuites[s];
@@ -518,7 +521,6 @@ var treeData = [
 	   				.attr("deleteNodeid",function(d) { return d.rowid; })
 	   				.style("opacity", 1)
 	   				.style("fill-opacity",1)
-	   				.style("border", "1px solid green")
 	   				.style("visibility", function(d) {
 	   					if (d.ntype == 'project') {
 	   						return "hidden";
@@ -531,15 +533,67 @@ var treeData = [
 	   						console.log("cccc, ", d, this);
 		   					if (this.hasAttribute('deleteNodeid')) {
 	   							console.log("Clicked to delete " + d.rowid);
-
 	   							projects.jsonTestSuites.splice(d.rowid,1);
-								projects.mapProjectJsonToUi();	// Send i
-	   							
+								projects.mapProjectJsonToUi();	 
 	   						}
 	   						event.stopPropagation();
-
 	   				});
 
+	   				nodeEnter.append("foreignObject")
+	   				.attr("width", 20)
+	   				.attr("height", 20)
+	   				.attr("y", 30)
+	   				.attr("x", 30)
+	   				.attr("class", "fa fa-plus")
+	   				.attr("addNodeid",function(d) { return d.rowid; })
+	   				.style("opacity", 1)
+	   				.style("fill-opacity",1)
+	   				.style("visibility", function(d) {
+	   					if (d.ntype == 'project') {
+	   						return "hidden";
+	   					} else {
+	   						return "visible";
+	   					}
+	   				})
+	   				.html(function(d) { return " "; } )
+	   				.on("click", function(d) { 
+	   						console.log("cccc, ", d, this);
+		   					if (this.hasAttribute('addNodeid')) {
+	   							console.log("Clicked to add " + d.rowid);
+	   							var nb = new projectSuiteObject();
+								projects.jsonTestSuites.splice(d.rowid,0,nb);
+								projects.mapProjectJsonToUi();	// Send in the modified array
+	   						}
+	   						event.stopPropagation();
+	   				});
+					nodeEnter.append("foreignObject")
+	   				.attr("width", 20)
+	   				.attr("height", 20)
+	   				.attr("y", 30)
+	   				.attr("x", 60)
+	   				.attr("class", "fa fa-folder-open")
+	   				.attr("folderNodeid",function(d) { return d.rowid; })
+	   				.style("opacity", 1)
+	   				.style("fill-opacity",1)
+	   				.style("visibility", function(d) {
+	   					if (d.ntype == 'project') {
+	   						return "hidden";
+	   					} else {
+	   						return "visible";
+	   					}
+	   				})
+	   				.html(function(d) { return " "; } )
+	   				.on("click", function(d) { 
+	   						console.log("cccc, ", d, this);
+		   					if (this.hasAttribute('folderNodeid')) {
+	   							console.log("Clicked to add " + d.rowid);
+	   							var nb = new projectSuiteObject();
+								katana.$activeTab.attr('project-suite-row',d.rowid);
+								projects.getResultsDirForProjectRow('Suites');
+								projects.mapProjectJsonToUi();	// Send in the modified array
+	   						}
+	   						event.stopPropagation();
+	   				});
 
 			// Declare the linksâ€¦
 			var link = projects.svg.selectAll(".project-d3-link")
@@ -1182,6 +1236,8 @@ Two global variables are heavily used when this function is called;
 	      		console.log("Path set to ",nf," for ", sid);
 	      		console.log(projects.jsonTestSuites);
 	      		projects.createSuitesTable();
+	      		projects.createD3treeData();
+				projects.createD3tree();
 	            };
 	      var callback_on_dismiss =  function(){ 
 	      		console.log("Dismissed");
@@ -1189,6 +1245,19 @@ Two global variables are heavily used when this function is called;
 	     katana.fileExplorerAPI.openFileExplorer("Select a file", false , $("[name='csrfmiddlewaretoken']").val(), false, callback_on_accept, callback_on_dismiss);
 	},
 
+	swapViews: function(){
+		console.log("Hellos!", projects.treeView);
+		if (projects.treeView == 0) {
+			katana.$activeTab.find("#projects-standard-edit").hide();
+			katana.$activeTab.find("#projects-graphics-edit").show();
+			projects.treeView = 1; 
+		} else {
+			projects.treeView = 0;
+			katana.$activeTab.find("#projects-standard-edit").show();
+			katana.$activeTab.find("#projects-graphics-edit").hide();
+
+		}
+	},
 
 	showSuiteFromProject:function () {
 		var fname = this.attr('skey');

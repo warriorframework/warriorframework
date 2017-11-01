@@ -3,18 +3,19 @@
 			
 
 <div class="tool-bar">
+			<i id="projectSwapView" class="fa fa-tree" katana-click="projects.swapViews"></i>
 	    	<i id="addSuite" class="button" katana-click="projects.addSuiteToProject">Add Suite To Project</i>
 			<i class="button" katana-click="projects.mapUiToProjectJson">Save Changes to Disk </i>
 
 </div>
-<div class="projects-graphics-edit" >
-<div class="col-md-6" id="projects-3d-tree" g3did='projects-3d-tree' width="960" height="500"></div>
-</div>
+
 
 
 <div auto-init="projects.mapFullProjectJson">
-
-<div class="projects-standard-edit" >
+<div id="projects-graphics-edit" class="hidden" >
+<div class="col-md-6" id="projects-3d-tree" g3did='projects-3d-tree' width="960" height="500"></div>
+</div>
+<div id="projects-standard-edit" >
 	<div class="col-md-12 row">
 			<div class="field col-md-3 input_padding">
 				<label for="projectName">Name*:</label>
