@@ -89,6 +89,11 @@ class projectDetailsObject{
 	duplicateSelf() { 
 		return jQuery.extend(true, {}, this); 
 	}
+
+	getSummary(){
+		var rstr = "Name: "+this.Name+"<br>Title: " + this.Title + "<br>Category: " + this.Category + "<br>Engineer: " + this.Engineer + "<br>State: " + this.State; 
+		return rstr; 
+	}
 }
 
 
@@ -329,12 +334,13 @@ var treeData = [
 
 
 	createD3treeData: function(tdata) {
-
+		var projectSummary = projects.jsonProjectObject.Details.getSummary();
 		var td = {
 		"name": projects.jsonProjectObject.Details.Name,
     	"parent": "null", 
     	"children": [],
     	"ntype": 'project',
+    	"displayStr": projectSummary,
     	};
     	projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
 			
@@ -606,7 +612,7 @@ var treeData = [
 		   	projects.svg.selectAll(".project-d3-node").on("click", function(d) {
 		   	//
 
-		   		if (!this.hasAttribute('deleteNodeid')) {
+		   		if (!this.hasAttribute('deleteNodeid') && d.ntype == 'suite') {
 	   						
 					console.log("Clicked ...", d, this, this.hasAttribute('deleteNodeid'));
 
