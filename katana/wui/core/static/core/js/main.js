@@ -80,17 +80,25 @@ var katana = {
 	},
 
 	subApp: function( uid, callBack ){
+		
 		var uid = uid ? uid : this.attr('uid') ? this.attr('uid') : false;
 		if( uid )
 			{
-				var subApp = $( $( '#' + uid ).html() ).prependTo( katana.$activeTab );
+				if(katana.$activeTab.find('.page').length != 0){
+					var prependTo = katana.$activeTab.find('.page');
+				}else{
+					var prependTo = katana.$activeTab;
+				}
+				
+				
+				var subApp = $( $( '#' + uid ).html() ).prependTo( prependTo );
 				callBack && callBack( subApp.find('.page-content-inner') );
 
 			}
 	},
 
 	closeSubApp: function(){
-		var page = katana.$activeTab.find('.page:first');
+		var page = katana.$activeTab.find('.page:last');
 		page.addClass('removing');
 		setTimeout(function () {
 			page.remove();
@@ -844,7 +852,7 @@ var katana = {
 			 });
 		 },
 
-		 get: function( url, csrf, toSend, dataType, successCallBack ){
+		 get: function( url, csrf, toSend, dataType, successCallBack, successCallBackData){
 
 			 // intialize values for url, csrf, dataType, toSend
 			 var $elem = this ? this : katana.$activeTab;
@@ -870,7 +878,7 @@ var katana = {
 				 data: { data: toSend },
 				 success: function(data){
 					 //console.log('success');
-					 successCallBack && successCallBack(data);
+					 successCallBack && successCallBack(data, successCallBackData);
 				 },
 				 error: function(xhr, textStatus, error){
 					 console.log(xhr.statusText);
