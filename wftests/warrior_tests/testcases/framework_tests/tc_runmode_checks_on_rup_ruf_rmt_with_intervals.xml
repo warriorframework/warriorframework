@@ -18,7 +18,7 @@
 		<Requirement/>
 	</Requirements>
 	<Steps>
-		<step Driver="ci_regression_driver" Keyword="local_data_test" TS="1">
+		<step Driver="ci_regression_driver" Keyword="runmode_interval_test" TS="1">
 			<Arguments>
 				<argument name="desired_status" value="fail"/>
 			</Arguments>
@@ -28,9 +28,24 @@
 			<Execute ExecType="Yes"/>
 			<context>positive</context>
 			<impact>noimpact</impact>
-			<runmode type="rup" value="5" interval="2"/>
+			<runmode type="rup" value="2" interval="2"/>
 		</step>
-				<step Driver="ci_regression_driver" Keyword="local_data_test" TS="2">
+				<step Driver="common_driver" Keyword="verify_data" TS="2">
+			<Arguments>
+				<argument name="expected" value="2"/>
+				<argument name="type" value="float"/>
+				<argument name="comparison" value="ge"/>
+				<argument name="object_key" value="delta"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>local_data_test</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+
+		</step>
+				<step Driver="ci_regression_driver" Keyword="runmode_interval_test" TS="3">
 			<Arguments>
 				<argument name="desired_status" value="pass"/>
 			</Arguments>
@@ -40,9 +55,24 @@
 			<Execute ExecType="Yes"/>
 			<context>positive</context>
 			<impact>impact</impact>
-			<runmode type="ruf" value="3" interval="1"/>
+			<runmode type="ruf" value="4" interval="11"/>
 		</step>
-				<step Driver="ci_regression_driver" Keyword="local_data_test" TS="3">
+						<step Driver="common_driver" Keyword="verify_data" TS="4">
+			<Arguments>
+				<argument name="expected" value="11"/>
+				<argument name="type" value="float"/>
+				<argument name="comparison" value="ge"/>
+				<argument name="object_key" value="delta"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>local_data_test</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+
+		</step>
+				<step Driver="ci_regression_driver" Keyword="runmode_interval_test" TS="5">
 			<Arguments>
 				<argument name="desired_status" value="pass"/>
 			</Arguments>
@@ -52,11 +82,14 @@
 			<Execute ExecType="Yes"/>
 			<context>positive</context>
 			<impact>impact</impact>
-			<runmode type="rmt" value="5" interval="5"/>
+			<runmode type="rmt" value="6" interval="5"/>
 		</step>
-				<step Driver="ci_regression_driver" Keyword="local_data_test" TS="1">
+						<step Driver="common_driver" Keyword="verify_data" TS="5">
 			<Arguments>
-				<argument name="desired_status" value="pass"/>
+				<argument name="expected" value="5"/>
+				<argument name="type" value="float"/>
+				<argument name="comparison" value="ge"/>
+				<argument name="object_key" value="delta"/>
 			</Arguments>
 			<onError action="next"/>
 			<Description>local_data_test</Description>
@@ -64,7 +97,8 @@
 			<Execute ExecType="Yes"/>
 			<context>positive</context>
 			<impact>impact</impact>
-			<runmode type="rup" value="5" interval="2"/>
+
 		</step>
+
 	</Steps>
 </Testcase>
