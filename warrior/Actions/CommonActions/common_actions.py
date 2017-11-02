@@ -178,7 +178,7 @@ class CommonActions(object):
             print_error("Expected: {0} {1} {2} but found {0}={3}".format(
                 object_key, comparison, expected, value))
             return False
-         elif result == "TRUE":
+        elif result == "TRUE":
             print_info("Expected: {0} {1} {2} found the same".format(
                 object_key, comparison, expected, value))
             return True
