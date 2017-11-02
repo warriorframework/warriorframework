@@ -233,7 +233,7 @@ class WarriorCli(object):
                         details_dict, i, response, response_dict, resp_key_list)
                     if len(response_dict) > 0:
                         for count, resp in enumerate(resp_key_list[i].keys()):
-                            session_id = self.print_resp_ref_key_value(details_dict, response_dict,
+                            session_id = self.get_session_id_for_resp_ref(details_dict, response_dict,
                                                               resp, i, system_name,
                                                               session_name, key)
                             if len(resp_key_list[i].keys()) == 1:
@@ -262,11 +262,10 @@ class WarriorCli(object):
             responses_dict[key] = dict(response_dict)
         return finalresult, responses_dict
 
-    def print_resp_ref_key_value(self, details_dict, response_dict,
+    def get_session_id_for_resp_ref(self, details_dict, response_dict,
                                  resp, i, system_name, session_name, key):
         """
-            The response reference key value is printed in the way it is saved
-            in data repository along with its value
+        The session id is retrieved for updating and printing the response reference key & value
         """
         sys_name = ses_name = ''
         if resp in response_dict.keys():
