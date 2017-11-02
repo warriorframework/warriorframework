@@ -1223,32 +1223,31 @@
                         <td>
                                 <b> Type = </b> {{ step.Execute._ExecType }}
                                 <span ng-if="step.Execute._ExecType == 'If' || step.Execute._ExecType == 'If Not'">
-                                    <span ng-show="step.Execute._Expression !== ''">
-                                    &nbsp;&nbsp;<b> Expression = </b>{{ step.Execute._Expression}} 
+                                    <span ng-show="step.Execute._Expression == undefined">
+                                    &nbsp;&nbsp;<b> Multi Rule Expression = </b>Not Applicable 
                                     </span>
-                                    <span ng-show="step.Execute._Else == ''">
+                                    <span ng-show="step.Execute._Expression !== undefined">
+                                    &nbsp;&nbsp;<b> Multi Rule Expression = </b>{{step.Execute._Expression}} 
+                                    </span>
+                                    <span ng-show="step.Execute._Else == undefined">
                                     &nbsp;&nbsp;<b> Else = </b> next 
                                     </span>
-                                    <span ng-show="step.Execute._Else !== ''">
-                                    &nbsp;&nbsp;<b> Else = </b>{{ step.Execute._Else}}
+                                    <span ng-show="step.Execute._Else !== undefined">
+                                    &nbsp;&nbsp;<b> Else = </b>{{step.Execute._Else}}
                                     </span>
                                     <span ng-if="step.Execute._Else == 'goto'">
-                                    &nbsp;&nbsp;<b> Else Value = </b>{{ step.Execute._Elsevalue}} 
+                                    &nbsp;&nbsp;<b> Else Value = </b>{{step.Execute._Elsevalue}} 
                                     </span>
                                     <div>
                                         <div ng-repeat='rule in step.Execute.Rule'>
                                             <b>Rule {{ $index + 1 }}.  </b>Condition = {{ rule._Condition}} <b>,</b>
-                                            <span ng-show="step.Execute._Operator == ''">
+                                            <span ng-show="rule._Operator == undefined">
                                             Operator = eq <b>,</b>
                                             </span>
-                                            <span ng-show="step.Execute._Operator !== ''">
+                                            <span ng-show="rule._Operator !== undefined"> 
                                             Operator = {{ rule._Operator}} <b>,</b>
                                             </span>
                                             Condition value = {{ rule._Condvalue}} <b>,</b>
-                                            Else = {{ rule._Else}} 
-                                            <span ng-if="rule._Else == 'goto'">
-                                            <b>,</b> Else value = {{ rule._Elsevalue}}
-                                            </span>
                                         </div>
                                     </div>
                                 </span>
@@ -1262,6 +1261,9 @@
                             </div>
                             <div ng-show="step.runmode._type == 'Standard'">
                                 {{ step.runmode._type }}
+                            </div>
+                            <div ng-show="step.runmode._type == undefined">
+                                Standard
                             </div>
                         </td>
 
@@ -1988,9 +1990,9 @@
                                 id='stepexecute'
                                 ng-model="status.step.Execute._ExecType"
                                 ng-options="o as o for o in status.stepsexecutes"
-                                ng-init=" status.step.Execute._ExecType = status.stepsexecutes[0]"
+                                ng-init="status.step.Execute._ExecType = status.stepsexecutes[0]"
                                 ng-change="showRules(status.step.Execute._ExecType);">
-                                <option value="" selected hidden />
+                                <option value="" selected hidden /> 
                         </select>
                      </div>
                     <div class="col-sm-1">
@@ -2032,8 +2034,7 @@
 
 <div class="row" style="margin-top:5px;">
     <div class="form-group" ng-if="status.step.Execute._ExecType == 'If' || status.step.Execute._ExecType == 'If Not'">
-        <!-- <div class="col-sm-2" ng-hide="hideExp" style="width:30% !important"> -->
-                <label for='stepexp' class="col-sm-2 control-label ellipsis-the-overflow" style="width:13% !important;">Expression</label>
+                <label for='stepexp' class="col-sm-2 control-label ellipsis-the-overflow" style="width:13% !important;">Multi Rule Expression</label>
                 
                 <div class="tooltip-on-right align-fa-icon-after-label-step">
                         <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
@@ -2109,10 +2110,7 @@
                             </span>
                         </div>
                 </div>
-               
-       <!--  </div> -->
 
-        <!-- <div class="col-sm-2" ng-hide="hideElse" style="width:30% !important"> -->
                 <label for='stepexecelse' class="col-sm-2 control-label ellipsis-the-overflow" style="width:15% !important;">Else</label>
                
                 <div class="tooltip-on-right align-fa-icon-after-label-step">
@@ -2190,8 +2188,6 @@
                         </div>
                 </div>
                 
-        <!-- </div> -->
-
        <div ng-if="status.step.Execute._Else == 'goto'"> 
                 <label for='stepexecelsev' class="col-sm-2 control-label mandatory-field" style="width:15% !important;">Else Value</label>
                
@@ -2276,33 +2272,7 @@
 </div>
 
 <div class="form-group">
-        
-
-    
-                            
-<!-- <div class="form-group" ng-show="ruleTable" style="margin-top:5px;">
-    <div class="col-sm-12">
-        <table class='table table-bordered table-condensed table-hover' style="margin-bottom:0px !important;">
-            <tbody>
-            <tr ng-repeat="Rule in rule_list track by $index">
-                <td class="text-right min-width-35">
-                    {{ $index + 1 }}. : 
-                </td>
-                <td> 
-                       <b>Condition</b> = {{ rule_list[$index]._Condition}}
-                        &nbsp;&nbsp;&nbsp;&nbsp;<b>Operator</b> = {{ rule_list[$index]._Operator}}
-                        &nbsp;&nbsp;&nbsp;&nbsp;<b>Condition value</b>= {{ rule_list[$index]._Condvalue}}
-                        &nbsp;&nbsp;&nbsp;&nbsp;<b>Else</b> = {{ rule_list[$index]._Else }}
-                        &nbsp;&nbsp;&nbsp;&nbsp;<b>Else value</b>= {{ rule_list[$index]._Elsevalue}}
-                </td>
-
-            </tr>
-            </tbody>
-        </table>
-    </div>
-</div> -->
-
-       <div class="col-sm-8" ng-show="showRulesBelow">
+        <div class="col-sm-8" ng-show="showRulesBelow">
            <div class= "">
                <div class="mArgs">
                    <div ng-repeat="Rule in rule_list track by $index" class="container pull-left" style="width:135%;margin-left:8%">
@@ -2541,168 +2511,13 @@
                                 </div>
                             </div>
                     </div>
-                       
-                        <div class="form-group">
-                                <label class="col-sm-5 control-label" style="padding-top:7px !important;" for="stepexecelsenew{{$index}}">Else</label>
-                                <div class="tooltip-on-right align-fa-icon-after-label-step">
-                                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
-                                    <span class="tooltip-content">
-                                         <div ng-if="testcaseTooltips.condelse.tooltip != ''">
-                                            <i class="fa fa-rocket" aria-hidden="true"></i>
-                                            &nbsp;
-                                            {{testcaseTooltips.condelse.tooltip}}
-                                            <br>
-                                        </div>
-                                        <div ng-if="testcaseTooltips.condelse.protip != ''">
-                                            <br>
-                                            <i class="fa fa-bolt" aria-hidden="true"></i>
-                                            &nbsp;
-                                            {{testcaseTooltips.condelse.protip}}
-                                            <br>
-                                        </div>
-                                        <div ng-if="testcaseTooltips.condelse.bantip != ''">
-                                            <br>
-                                            <i class="fa fa-ban" aria-hidden="true"></i>
-                                            &nbsp;
-                                            {{testcaseTooltips.condelse.bantip}}
-                                            <br>
-                                        </div>
-                                        <div ng-if="testcaseTooltips.condelse.snowflake != ''">
-                                            <br>
-                                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
-                                            &nbsp;
-                                            {{testcaseTooltips.condelse.snowflake}}
-                                            <br>
-                                        </div>
-                                    </span>
-                                </div>
-                                <div class="col-sm-7">
-                                    <select class='form-control'
-                                        id='stepexecelsenew{{$index}}'
-                                        ng-model="rule_list[$index]._Else"
-                                        ng-init=" rule_list[$index]._Else = status.steperrors[0]"
-                                        ng-options="o as o for o in status.steperrors">
-                                        <option value="" selected hidden />
-                                    </select>
-                                    
-                                </div>
-                                <div class="col-sm-1">
-                                    <div class="tooltip-on-right-no-margin align-fa-icon-after-input-step">
-                                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
-                                        <span class="tooltip-content">
-                                             <div ng-if="testcaseTooltips.condelse.tooltip != ''">
-                                                <i class="fa fa-rocket" aria-hidden="true"></i>
-                                                &nbsp;
-                                                {{testcaseTooltips.condelse.tooltip}}
-                                                <br>
-                                            </div>
-                                            <div ng-if="testcaseTooltips.condelse.protip != ''">
-                                                <br>
-                                                <i class="fa fa-bolt" aria-hidden="true"></i>
-                                                &nbsp;
-                                                {{testcaseTooltips.condelse.protip}}
-                                                <br>
-                                            </div>
-                                            <div ng-if="testcaseTooltips.condelse.bantip != ''">
-                                                <br>
-                                                <i class="fa fa-ban" aria-hidden="true"></i>
-                                                &nbsp;
-                                                {{testcaseTooltips.condelse.bantip}}
-                                                <br>
-                                            </div>
-                                            <div ng-if="testcaseTooltips.condelse.snowflake != ''">
-                                                <br>
-                                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
-                                                &nbsp;
-                                                {{testcaseTooltips.condelse.snowflake}}
-                                                <br>
-                                            </div>
-                                        </span>
-                                    </div>
-                                </div>
-                        </div>
-                        <div class="form-group"  ng-if="rule_list[$index]._Else == 'goto'">
-                                <label for="stepexecelsevalnew" class="col-sm-5 control-label mandatory-field" style="padding-top:7px !important;">Else Value</label>
-                                <div class="tooltip-on-right align-fa-icon-after-label-step">
-                                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
-                                    <span class="tooltip-content">
-                                         <div ng-if="testcaseTooltips.condelsevalue.tooltip != ''">
-                                            <i class="fa fa-rocket" aria-hidden="true"></i>
-                                            &nbsp;
-                                            {{testcaseTooltips.condelsevalue.tooltip}}
-                                            <br>
-                                        </div>
-                                        <div ng-if="testcaseTooltips.condelsevalue.protip != ''">
-                                            <br>
-                                            <i class="fa fa-bolt" aria-hidden="true"></i>
-                                            &nbsp;
-                                            {{testcaseTooltips.condelsevalue.protip}}
-                                            <br>
-                                        </div>
-                                        <div ng-if="testcaseTooltips.condelsevalue.bantip != ''">
-                                            <br>
-                                            <i class="fa fa-ban" aria-hidden="true"></i>
-                                            &nbsp;
-                                            {{testcaseTooltips.condelsevalue.bantip}}
-                                            <br>
-                                        </div>
-                                        <div ng-if="testcaseTooltips.condelsevalue.snowflake != ''">
-                                            <br>
-                                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
-                                            &nbsp;
-                                            {{testcaseTooltips.condelsevalue.snowflake}}
-                                            <br>
-                                        </div>
-                                    </span>
-                                </div>
-                                <div class="col-sm-7">
-                                    <div class="input-group">
-                                        <input type="text" id="stepexecelsevalnew" class="form-control" required ng-model="rule_list[$index]._Elsevalue">
-                                       
-                                    </div>
-                                </div>
-                                <div class="col-sm-1">
-                                    <div class="tooltip-on-right-no-margin align-fa-icon-after-input-step">
-                                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
-                                        <span class="tooltip-content">
-                                             <div ng-if="testcaseTooltips.condelsevalue.tooltip != ''">
-                                                <i class="fa fa-rocket" aria-hidden="true"></i>
-                                                &nbsp;
-                                                {{testcaseTooltips.condelsevalue.tooltip}}
-                                                <br>
-                                            </div>
-                                            <div ng-if="testcaseTooltips.condelsevalue.protip != ''">
-                                                <br>
-                                                <i class="fa fa-bolt" aria-hidden="true"></i>
-                                                &nbsp;
-                                                {{testcaseTooltips.condelsevalue.protip}}
-                                                <br>
-                                            </div>
-                                            <div ng-if="testcaseTooltips.condelsevalue.bantip != ''">
-                                                <br>
-                                                <i class="fa fa-ban" aria-hidden="true"></i>
-                                                &nbsp;
-                                                {{testcaseTooltips.condelsevalue.bantip}}
-                                                <br>
-                                            </div>
-                                            <div ng-if="testcaseTooltips.condelsevalue.snowflake != ''">
-                                                <br>
-                                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
-                                                &nbsp;
-                                                {{testcaseTooltips.condelsevalue.snowflake}}
-                                                <br>
-                                            </div>
-                                        </span>
-                                    </div>
-                                </div>
-                        </div>
+ 
                         <button style="margin-top:5px !important;margin-bottom:10px !important;float:right;margin-right:8%;" type="button" ng-click="deleteRuleFromList($index)" class="btn btn-default" value="">Delete Rule</button>
                         <br>
                    </div>
                    <div class="" >
                        <div class="" style="margin-left:11%"> 
                         <button type="button" ng-click="addAnotherRulesToList()" class="btn btn-default" value="">Add Rule</button>
-                        <!-- <button type="button" ng-click="cancelRule()" class="btn btn-default" value="">Cancel</button>                              -->
                        </div>
                    </div>
                </div>
@@ -3392,32 +3207,31 @@
                         <td>
                                 <b> Type = </b> {{ step.Execute._ExecType }}
                                 <span ng-if="step.Execute._ExecType == 'If' || step.Execute._ExecType == 'If Not'">
-                                    <span ng-show="step.Execute._Expression !== ''">
-                                    &nbsp;&nbsp;<b> Expression = </b>{{ step.Execute._Expression}} 
+                                    <span ng-show="step.Execute._Expression == undefined">
+                                    &nbsp;&nbsp;<b> Multi Rule Expression = </b>Not Applicable 
                                     </span>
-                                    <span ng-show="step.Execute._Else == ''">
+                                    <span ng-show="step.Execute._Expression !== undefined">
+                                    &nbsp;&nbsp;<b> Multi Rule Expression = </b>{{step.Execute._Expression}} 
+                                    </span>
+                                    <span ng-show="step.Execute._Else == undefined">
                                     &nbsp;&nbsp;<b> Else = </b> next 
                                     </span>
-                                    <span ng-show="step.Execute._Else !== ''">
-                                    &nbsp;&nbsp;<b> Else = </b>{{ step.Execute._Else}}
+                                    <span ng-show="step.Execute._Else !== undefined">
+                                    &nbsp;&nbsp;<b> Else = </b>{{step.Execute._Else}}
                                     </span>
                                     <span ng-if="step.Execute._Else == 'goto'">
-                                    &nbsp;&nbsp;<b> Else Value = </b>{{ step.Execute._Elsevalue}} 
+                                    &nbsp;&nbsp;<b> Else Value = </b>{{step.Execute._Elsevalue}} 
                                     </span>
                                     <div>
                                         <div ng-repeat='rule in step.Execute.Rule'>
                                             <b>Rule {{ $index + 1 }}.  </b>Condition = {{ rule._Condition}} <b>,</b>
-                                            <span ng-show="step.Execute._Operator == ''">
+                                            <span ng-show="rule._Operator == undefined">
                                             Operator = eq <b>,</b>
                                             </span>
-                                            <span ng-show="step.Execute._Operator !== ''">
+                                            <span ng-show="rule._Operator !== undefined"> 
                                             Operator = {{ rule._Operator}} <b>,</b>
                                             </span>
                                             Condition value = {{ rule._Condvalue}} <b>,</b>
-                                            Else = {{ rule._Else}} 
-                                            <span ng-if="rule._Else == 'goto'">
-                                            <b>,</b> Else value = {{ rule._Elsevalue}}
-                                            </span>
                                         </div>
                                     </div>
                                 </span>
