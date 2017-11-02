@@ -120,9 +120,9 @@
         "snowflake": ""
     },
     "expression": {
-        "tooltip": "Logical Operators are supported amongst the rules.",
-        "protip": "ProTip: By default the operator amongst the rules is AND.",
-        "bantip": "If you want to compute or amongst all 4 rules. Then expression text box shall be filled with “1 | 2 | 3 | 4”. If you want to compute AND between (rule-1, rule-3), (rule-2,rule-4) and OR between the computed ANDs. Then expression text box shall be filled with (1&3) | (2&4)",
+        "tooltip": "The expression is a logical expression. Logical operators supported are: & AND | OR . Regular expression is not supported.Examples: 1 | 2 | 3 | 4 should be used for Rule1 OR Rule2 OR Rule3 OR Rule4. (1|2) & 3 should be used for (Rule 1 OR Rule 2) and then the result will be used with AND Rule 3",
+        "protip": "ProTip: If Expression field is left blank, Warrior will assume an AND operation for all the rules.",
+        "bantip": "If you want to compute or for all 4 rules, then expression text box shall be filled with “1 | 2 | 3 | 4”. If you want to compute AND between (rule-1, rule-3), (rule-2,rule-4) and OR between the computed ANDs, then expression text box shall be filled with (1&3) | (2&4)",
         "snowflake": ""
     },
     "execelse": {
