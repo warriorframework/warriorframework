@@ -27,6 +27,9 @@ class CommonActions(object):
     """class CommonActions having methods (keywords) that are common for all the products"""
 
     def __init__(self):
+        """
+            Constructor
+        """
         self.resultfile = Utils.config_Utils.resultfile
         self.datafile = Utils.config_Utils.datafile
         self.logsdir = Utils.config_Utils.logsdir
@@ -128,6 +131,9 @@ class CommonActions(object):
             type = type of datavalue (string/int/float)
         """
         def get_dict_to_update(var, val):
+            """
+                For splitting the inner dict in var if available
+            """
             dic = {}
             if '.' in var:
                 [key, value] = var.split('.', 1)
@@ -143,6 +149,8 @@ class CommonActions(object):
             value = datavalue
         dict_to_update = get_dict_to_update(datavar, value)
         update_datarepository(dict_to_update)
+        print_info("Value: {0} is stored in a Key:{1} of Warrior "
+                   "data_repository ".format(datavalue, datavar))
         return True
 
     def verify_data(self, expected, object_key, type='str', comparison='eq'):
@@ -168,13 +176,12 @@ class CommonActions(object):
 
         result, value = Utils.data_Utils.verify_data(expected, object_key,
                                                      type, comparison)
-        if result == "FALSE":
-            print_error("Expected: {0} {1} {2} but found {0}={3}".format(
-                object_key, comparison, expected, value))
         if result == "TRUE":
             return True
-        else:
+        elif result == "FALSE":
             return False
+        else:
+            return result
 
     def set_env_var(self, var_key=None, var_value=None, filepath=None,
                     jsonkey="environmental_variables", overwrite = "yes"):
@@ -211,7 +218,7 @@ class CommonActions(object):
         if filepath is not None:
             testcasefile_path = get_object_from_datarepository('wt_testcase_filepath')
             try:
-                filepath=getAbsPath(filepath, os.path.dirname(testcasefile_path))
+                filepath = getAbsPath(filepath, os.path.dirname(testcasefile_path))
                 with open(filepath, "r") as json_handle:
                     get_json = json.load(json_handle)
                     if jsonkey in get_json:
@@ -247,5 +254,3 @@ class CommonActions(object):
                 status = False
 
         return status
-
-
