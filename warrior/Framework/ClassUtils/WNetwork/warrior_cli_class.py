@@ -280,21 +280,32 @@ class WarriorCli(object):
         """
         The session id is retrieved for updating and printing the response reference key & value
         """
-        sys_name = ses_name = ''
+        sys_name = ''
+        ses_name = ''
         session_id = ''
         temp_sys = details_dict["sys_list"][i]
+        temp_session = details_dict["session_list"][i]
+        temp_sess = ''
         if resp in response_dict.keys():
             # If sys_list in None or if sys_tag in td file has only subsystem name, then it
             # takes from the test case else fetches from the td file.
             if temp_sys == '' or temp_sys is None or temp_sys.startswith('['):
-                sys_name = system_name.split('.')[0]
+                sys_name = system_name.split('.', 1)[0]
             else:
-                sys_name = temp_sys
+                sys_name = temp_sys.split('.', 1)[0]
+                if len(temp_sys.split('.', 1)) > 1:
+                    temp_sess = temp_sys.split('.', 1)[1]
             # If session name not available it td file, it fetches from the test case.
-            if details_dict["session_list"][i] == '' or details_dict["session_list"][i] is None:
-                ses_name = session_name
+            if temp_session == '' or temp_session is None and temp_sess == '':
+                if len(system_name.split('.', 1)) > 1:
+                    ses_name = system_name.split('.', 1)[1]
+                else:
+                    ses_name = session_name
             else:
-                ses_name = details_dict["session_list"][i]
+                if len(temp_sys.split('.', 1)) > 1:
+                    ses_name = temp_sys.split('.', 1)[1]
+                else:
+                    ses_name = session_name
             session_id = Utils.data_Utils.get_session_id(sys_name, ses_name) + "_td_response"
         return session_id
 
