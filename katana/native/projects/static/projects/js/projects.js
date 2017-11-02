@@ -381,8 +381,9 @@ var treeData = [
 
 	createD3tree: function() {
 		var optimalHt = projects.jsonTestSuites.length * 100 + 200; 
+		var optimalWd = katana.$activeTab.find("#projectsMasterPage").width();
 		var margin = {top: 20, right: 120, bottom: 20, left: 120},
-		 width = 1080- margin.right - margin.left,
+		 width = optimalWd - margin.right - margin.left,
 		 height = optimalHt - margin.top - margin.bottom;
 		 
 		projects.tree = d3.layout.tree()
@@ -437,14 +438,29 @@ var treeData = [
 
 
    		var dragSuite = d3.behavior.drag()
-	  .on('drag', function(d,i) {
+	  		.on('drag', function(d,i) {
  			d.y += d3.event.dx;
             d.x += d3.event.dy;
             d3.select(this).attr("transform", function(d,i){
                 return "translate(" + [ d.y,d.x ] + ")"
             })
 
-	  });
+	  		}).on('dragend', function(d,i) {
+	  		console.log("Drag ended...", projects.links);
+	  		// Remove links...
+	  		projects.svg.selectAll(".project-d3-link").remove();
+			var link = projects.svg.selectAll(".project-d3-link")
+					   .data(projects.links, function(d) { return d.target.id; });
+			projects.diagonal = d3.svg.diagonal()
+		 				.projection(function(d) { return [d.y, d.x]; });
+			console.log("Drag ended...");
+	  			  // Enter the links.
+				 link.enter().insert("path", "g")
+				   	.attr("class", "project-d3-link")
+				   	.attr("d", projects.diagonal);
+
+
+	  	});
 	  
   // Enter the nodes.
   		var nodeEnter = node.enter().append("g")
@@ -614,28 +630,59 @@ var treeData = [
 	   						event.stopPropagation();
 	   				});
 
-			// Declare the linksâ€¦
-			var link = projects.svg.selectAll(".project-d3-link")
-			   .data(projects.links, function(d) { return d.target.id; });
+	   				nodeEnter.append("foreignObject")
+	   				.attr("width", 20)
+	   				.attr("height", 20)
+	   				.attr("y", 30)
+	   				.attr("x", 90)
+	   				.attr("class", "fa fa-pencil")
+	   				.attr("editNodeid",function(d) { return d.rowid; })
+	   				.style("opacity", 1)
+	   				.style("fill-opacity",1)
+	   				.style("visibility", function(d) {
+	   					if (d.ntype == 'project') {
+	   						return "hidden";
+	   					} else {
+	   						return "visible";
+	   					}
+	   				})
+	   				.html(function(d) { return " "; } )
+	   				.on("click", function(d) { 
+	   						console.log("cccc, ", d, this);
+		   					if (this.hasAttribute('editNodeid')) {
+	   							console.log("Clicked ...", d, this, this.hasAttribute('deleteNodeid'));
+									var sid = d.rowid;
+								katana.popupController.open(katana.$activeTab.find("#editTestSuiteEntry").html(),"Edit..." , function(popup) {
+									projects.lastPopup = popup; 
+									console.log(katana.$activeTab.find("#editTestSuiteEntry"));
+									projects.setupProjectPopupDialog(sid,popup);
+								});
+	   						}
+	   						event.stopPropagation();
+	   				});
 
-		  // Enter the links.
-		  link.enter().insert("path", "g")
-		   	.attr("class", "project-d3-link")
-		   	.attr("d", projects.diagonal);
+			// Declare the links
+				var link = projects.svg.selectAll(".project-d3-link")
+					   .data(projects.links, function(d) { return d.target.id; });
+
+				  // Enter the links.
+				  link.enter().insert("path", "g")
+				   	.attr("class", "project-d3-link")
+				   	.attr("d", projects.diagonal);
+
+
+
 		   	projects.svg.selectAll(".project-d3-node").on("click", function(d) {
 		   	//
-
-		   		if (!this.hasAttribute('deleteNodeid') && d.ntype == 'suite') {
-	   						
+		   	//
+		   		if (!this.hasAttribute('deleteNodeid') && d.ntype == 'suite' ) {	   						
 					console.log("Clicked ...", d, this, this.hasAttribute('deleteNodeid'));
-
-					var sid = d.rowid;
-
-					katana.popupController.open(katana.$activeTab.find("#editTestSuiteEntry").html(),"Edit..." , function(popup) {
-					projects.lastPopup = popup; 
-					console.log(katana.$activeTab.find("#editTestSuiteEntry"));
-					projects.setupProjectPopupDialog(sid,popup);
-					});
+					// var sid = d.rowid;
+					// katana.popupController.open(katana.$activeTab.find("#editTestSuiteEntry").html(),"Edit..." , function(popup) {
+					// 	projects.lastPopup = popup; 
+					// 	console.log(katana.$activeTab.find("#editTestSuiteEntry"));
+					// 	projects.setupProjectPopupDialog(sid,popup);
+					// });
 				}
 			///
 			});
