@@ -799,13 +799,12 @@ startNewProject : function() {
 		projects.mapProjectJsonToUi();
 	},
 
+	fillProjectDetailsDefaultGoto: function(popup) {
 
-	fillProjectSuitePopupDefaultGoto: function(popup) {
-
-		var gotoStep =popup.find('#default_onError').val();
+		var gotoStep =katana.$activeTab.find('#default_onError').val();
 		console.log("Step ", gotoStep);
-		var defgoto = popup.find('#default_onError_goto'); 
-			defgoto.hide();
+		var defgoto = katana.$activeTab.find('#default_onError_goto'); 
+		defgoto.hide();
 
 		if (gotoStep.trim() == 'goto') { 
 			defgoto.show();
@@ -817,7 +816,27 @@ startNewProject : function() {
 		var xdata = jsonProjectObject['Testsuites']; 
 		if (!jQuery.isArray(xdata)) xdata = [xdata]; 
 		for (var s=0; s<Object.keys(xdata).length; s++ ) {
-			defgoto.append($('<option>',{ value: s,  text: s}));
+			defgoto.append($('<option>',{ value: s+1,  text: s+1}));
+		}
+	},
+	fillProjectSuitePopupDefaultGoto: function(popup) {
+
+		var gotoStep =popup.find('#onError-at-action').val();
+		console.log("Step ", gotoStep);
+		var defgoto = popup.find('#onError-at-value'); 
+			defgoto.hide();
+
+		if (gotoStep.trim() == 'goto') { 
+			defgoto.show();
+		} else {
+			defgoto.hide();
+			
+		}
+		defgoto.empty(); 
+		var xdata = projects.jsonProjectObject['Testsuites']; 
+		if (!jQuery.isArray(xdata)) xdata = [xdata]; 
+		for (var s=0; s<Object.keys(xdata).length; s++ ) {
+			defgoto.append($('<option>',{ value: s+1,  text: s+1}));
 		}
 	},
 
@@ -907,7 +926,7 @@ startNewProject : function() {
 	},
 
 	fillProjectDefaultGoto : function() {
-	
+		console.log("filling ......",projects.jsonProjectObject.Testsuites )
 		var action = katana.$activeTab.find('#project_onError_action').val();
 		var defgoto = katana.$activeTab.find('#project_onError_value'); 
 		
@@ -916,32 +935,16 @@ startNewProject : function() {
 		} else {
 			defgoto.hide();
 		}
-		var listSuites = katana.$activeTab.find('#tableOfTestSuitesForProject tbody').children(); 
+		var listSuites = projects.jsonProjectObject.Testsuites; 
+		console.log("Setting..project...goto", listSuites); 
+			
 		defgoto.empty(); 
 		for (xi=0; xi < listSuites.length; xi++) {
-			defgoto.append($('<option>',{ value: xi,  text: xi+1}));
+			defgoto.append($('<option>',{ value: xi+1,  text: xi+1}));
 		}
 	},
 
-	fillProjectSuitePopupDefaultGoto : function(popup) {
-
-		var gotoStep =popup.find('#onError-at-action').val();
-		//console.log("Step ", gotoStep);
-		var defgoto = popup.find('#onError-at-value'); 
-		defgoto.hide();
-
-		if (gotoStep.trim() == 'goto'.trim()) { 
-			defgoto.show();
-		} 
-		//var sid = popup.find('#CaseRowToEdit').val();
-		defgoto.empty(); 
-		var xdata = projects.jsonProjectObject['Testsuites'] // ['Testcase'];
-		if (!jQuery.isArray(xdata)) xdata = [xdata]; 
-		for (var s=0; s<Object.keys(xdata).length; s++ ) {
-			defgoto.append($('<option>',{ value: s,  text: s+1}));
-		}
-	},
-
+	
 /// -------------------------------------------------------------------------------
 // This function is called to map the currently edited project suite to 
 // the field being edited. 
