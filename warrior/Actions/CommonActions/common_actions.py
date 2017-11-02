@@ -27,7 +27,11 @@ class CommonActions(object):
     """class CommonActions having methods (keywords) that are common for all the products"""
 
     def __init__(self):
-        """constructor"""
+
+        """
+            Constructor
+        """
+
         self.resultfile = Utils.config_Utils.resultfile
         self.datafile = Utils.config_Utils.datafile
         self.logsdir = Utils.config_Utils.logsdir
@@ -121,12 +125,14 @@ class CommonActions(object):
         """
         def get_dict_to_update(var, val):
             """
+
             The function creates a dictionary with Variable and value. If Variable has "." seperated
             keys then the value is updated at appropriate level of the nested dictionary.
             :param var: Dictionary Key or Key seperated with "." for nested dict keys.
             :param val: Value for the Key.
 
             :return: Dictionary
+
             """
             dic = {}
             if '.' in var:
@@ -143,6 +149,8 @@ class CommonActions(object):
             value = datavalue
         dict_to_update = get_dict_to_update(datavar, value)
         update_datarepository(dict_to_update)
+        print_info("Value: {0} is stored in a Key:{1} of Warrior "
+                   "data_repository ".format(datavalue, datavar))
         return True
 
     def verify_data(self, expected, object_key, type='str', comparison='eq'):
@@ -165,15 +173,17 @@ class CommonActions(object):
         wDesc = "Verify if value of object_key in data_repository "
         "matches with expected"
         Utils.testcase_Utils.pNote(wDesc)
-
         result, value = Utils.data_Utils.verify_data(expected, object_key, type, comparison)
         if result == "FALSE":
             print_error("Expected: {0} {1} {2} but found {0}={3}".format(
                 object_key, comparison, expected, value))
-        if result == "TRUE":
+            return False
+         elif result == "TRUE":
+            print_info("Expected: {0} {1} {2} found the same".format(
+                object_key, comparison, expected, value))
             return True
         else:
-            return False
+            return result
 
     def set_env_var(self, var_key=None, var_value=None, filepath=None,
                     jsonkey="environmental_variables", overwrite="yes"):

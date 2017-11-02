@@ -287,7 +287,7 @@ def report_testcase_result(tc_status, data_repository):
     fail_count = 0
     for value in root.findall('Keyword'):
         kw_status = value.find('KeywordStatus').text
-        if kw_status != "PASS":
+        if kw_status != "PASS" and kw_status != "RAN":
             fail_count += 1
             kw_name = value.find('Name').text
             get_step_value = value.attrib.values()

@@ -20,12 +20,17 @@ Returns the actions that should e taken corresponding to the failure """
 from xml.etree import ElementTree as ET
 import Framework.Utils as Utils
 from Framework.Utils.print_Utils import print_info, print_warning, print_debug
+from WarriorCore.Classes.war_cli_class import WarriorCliClass
 
 
 def main(node, def_on_error_action, def_on_error_value, exec_type=False):
     """Takes a xml element (steps/step codntion / testcase/ tesuite)
     as input and return the action to be performed for failure
     conditions """
+
+    if WarriorCliClass.mock:
+        # If it is in trialmode and has error, always run next step
+        return False
 
     error_handle = {}
     action, value = getErrorHandlingParameters(node, def_on_error_action,
