@@ -282,6 +282,7 @@ var treeData = [
 ];
 
 
+
  var projects = {
 
  	treeData : [], 
@@ -413,7 +414,7 @@ var treeData = [
 		
 		},
 
-
+	  
 	  updateTree: function() { 
 	  	var nodes = projects.tree.nodes(projects.root).reverse();
    		projects.links = projects.tree.links(nodes);
@@ -434,11 +435,23 @@ var treeData = [
   		var node = projects.svg.selectAll("g.project-d3-node")
    			.data(nodes, function(d) { return d.id || (d.id = ++projects.nodeCtr); });
 
+
+   		var dragSuite = d3.behavior.drag()
+	  .on('drag', function(d,i) {
+ 			d.y += d3.event.dx;
+            d.x += d3.event.dy;
+            d3.select(this).attr("transform", function(d,i){
+                return "translate(" + [ d.y,d.x ] + ")"
+            })
+
+	  });
+	  
   // Enter the nodes.
   		var nodeEnter = node.enter().append("g")
    				.attr("class", "project-d3-node")
    				.attr("transform", function(d) { 
-    			return "translate(" + d.y + "," + d.x + ")"; });
+    			return "translate(" + d.y + "," + d.x + ")"; })
+    			.call(dragSuite);
 
    				
 
