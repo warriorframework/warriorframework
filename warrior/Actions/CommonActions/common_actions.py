@@ -14,8 +14,9 @@ limitations under the License.
 
 """common_actions module where keywords common to all products are developed"""
 import json
-import Framework.Utils as Utils
 import os
+
+import Framework.Utils as Utils
 from Framework.Utils.print_Utils import print_info, print_error
 from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.data_Utils import get_object_from_datarepository, update_datarepository
@@ -174,7 +175,9 @@ class CommonActions(object):
         "matches with expected"
         Utils.testcase_Utils.pNote(wDesc)
         result, value = Utils.data_Utils.verify_data(expected, object_key, type, comparison)
-        if result == "FALSE":
+        if result not in ["FALSE", "TRUE"]:
+            return result
+        elif result == "FALSE":
             print_error("Expected: {0} {1} {2} but found {0}={3}".format(
                 object_key, comparison, expected, value))
             return False
@@ -182,8 +185,7 @@ class CommonActions(object):
             print_info("Expected: {0} {1} {2} found the same".format(
                 object_key, comparison, expected, value))
             return True
-        else:
-            return result
+
 
     def set_env_var(self, var_key=None, var_value=None, filepath=None,
                     jsonkey="environmental_variables", overwrite="yes"):
