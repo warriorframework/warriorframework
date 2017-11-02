@@ -16,9 +16,9 @@ import re
 import sys
 import time
 import subprocess
-from collections import OrderedDict
-
+import getpass
 import Tools
+from collections import OrderedDict
 from Framework import Utils
 from Framework.Utils.print_Utils import print_info, print_debug,\
  print_warning, print_exception, print_error
@@ -334,9 +334,13 @@ class WarriorCli(object):
         if not resp_req == "n":
             save_msg1 = "User has requested saving response"
             save_msg2 = "Response pattern required by user is : {0}"
+            save_msg4 = "Cannot found response pattern: {0} in response"
+
             if resp_pat_req is not None:
                 # if the requested pattern not found return empty string
                 reobj = re.search(resp_pat_req, response)
+                if reobj is None:
+                    pNote(save_msg4.format(resp_pat_req))
                 response = reobj.group(0) if reobj is not None else ""
                 response_dict[resp_ref] = response
                 temp_resp_dict = {resp_ref: response}
@@ -1293,8 +1297,14 @@ class PexpectConnect(object):
         # delete -o StrictHostKeyChecking=no and put them in conn_options
         if not conn_options or conn_options is None:
             conn_options = ""
-        command = 'ssh -p {0} {1}@{2} {3}'.format(self.port, self.username,
-                                                  self.ip, conn_options)
+        if not self.username:
+            self.username = ""
+            print_warning("Using '{0}' as username since it is not provided "
+                          "in data file".format(getpass.getuser()))
+        else:
+            self.username += '@'
+        command = 'ssh -p {0} {1}{2} {3}'.format(self.port, self.username,
+                                                 self.ip, conn_options)
         # command = ('ssh -p '+ port + ' ' + username + '@' + ip)
         print_debug("connectSSH: cmd = %s" % command)
         if WarriorCliClass.cmdprint:
