@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import os
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
 from native.cli_data.cli_data_utils.verify_cli_data_class import VerifyCliDataClass
-from utils.directory_traversal_utils import join_path
+from utils.directory_traversal_utils import join_path, get_dir_from_path
 from utils.navigator_util import Navigator
 
 
@@ -31,6 +32,9 @@ class CliDataFileClass(View):
         base_filepath = join_path(CliDataFileClass.app_static_dir, "base_templates", "empty.xml")
         if filepath == "false":
             filepath = base_filepath
+            name = "Untitled"
+        else:
+            name, _ = os.path.splitext(get_dir_from_path(filepath))
         vcdc_obj = VerifyCliDataClass(filepath, base_filepath)
         json_data = vcdc_obj.verify_contents()
-        return JsonResponse(json_data)
+        return JsonResponse({"data": json_data, "name": name})

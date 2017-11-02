@@ -7,6 +7,8 @@ var cliData = {
             var $currentPage = katana.$activeTab;
             var $displayFilesDiv = $currentPage.find('#display-files');
             var $displayErrorMsgDiv = $currentPage.find('#display-error-message');
+            var $mainDiv = $currentPage.find('#main-div');
+            $mainDiv.hide();
             $.ajax({
                 type: 'GET',
                 url: 'read_config_file/',
@@ -40,9 +42,7 @@ var cliData = {
                                     }
                             });
                             $displayFilesDiv.jstree().hide_dots();
-                            alert("1");
                             $displayFilesDiv.on("select_node.jstree", function (e, data) {
-                                alert("HERE")
                                 if (data["node"]["icon"] == "jstree-file") {
                                     $.ajax({
                                         url: "cli_data/get_default_file/",
@@ -65,7 +65,16 @@ var cliData = {
                url: 'cli_data/get_default_file/',
                data: {"path": false}
             }).done(function(data) {
-                console.log(data);
+                //console.log(data);
+                var $currentPage = katana.$activeTab;
+                var $displayFilesDiv = $currentPage.find('#display-files');
+                $displayFilesDiv.hide();
+                var $displayErrorMsgDiv = $currentPage.find('#display-error-message');
+                $displayErrorMsgDiv.hide();
+                var $mainDiv = $currentPage.find('#main-div');
+                $mainDiv.show();
+                var $toolBarDiv = $currentPage.find('.tool-bar');
+                $toolBarDiv.find('.title').html(data["name"]);
             });
         },
     }

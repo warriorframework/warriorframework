@@ -1,0 +1,51 @@
+.cli-data-left-column{
+    float: left;
+    width: 50%;
+    height: 100%;
+
+}
+
+.cli-data-right-column{
+    float: right;
+    width: 50%;
+    height: 100%;
+}
+
+.cli-data-left-column-topbar{
+    width: 100%;
+    height: 70px;
+    background-color: #e4e5e4;
+    top:0;
+    left:0;
+    padding: 0.8rem;
+}
+
+.cli-data-left-column-topbar-header{
+    width:75%;
+    float: left;
+}
+
+.cli-data-left-column-topbar-header-top{
+    width: 100%;
+    height: 40%
+}
+
+.cli-data-left-column-topbar-header-bottom{
+    width: 100%;
+    height: 60%
+}
+
+.cli-data-left-column-icons{
+    width: 25%;
+    float: left;
+    padding-top:0.8rem;
+}
+
+.cli-data-right-column-topbar{
+    width: 100%;
+    height: 70px;
+    background-color: #e4e5e4;
+    top:0;
+    left:0;
+    padding: 0.8rem;
+}
