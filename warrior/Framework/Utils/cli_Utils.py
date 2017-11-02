@@ -14,8 +14,8 @@ limitations under the License.
 
 import os
 from Framework.Utils.print_Utils import print_info, print_warning
-from Framework.Utils.testcase_Utils import pNote
 from Framework.ClassUtils import WNetwork, ssh_utils_class
+from WarriorCore.Classes.warmock_class import mocked
 from WarriorCore.Classes.war_cli_class import WarriorCliClass
 
 try:
@@ -27,44 +27,16 @@ except ImportError:
                "without pexpect module. Users can however create"
                "their own custom libraries for cli interaction \n")
 
-""" Api for cli related operations """
-
-
-def cmdprinter(cmdfunc):
-    """decorator"""
-    def inner(*args, **kwargs):
-        """routing different mock functions"""
-        if WarriorCliClass.cmdprint:
-            result = (True, "")
-            if cmdfunc.__name__ == "_send_cmd_get_status":
-                pNote(":CMD: %s" % (args[1]["command_list"][kwargs['index']]))
-            elif cmdfunc.__name__ == "_send_command_retrials":
-                pass
-            elif cmdfunc.__name__ == "send_command":
-                pNote(":CMD: %s" % (args[3]))
-            elif cmdfunc.__name__ == "send_command_and_get_response":
-                pNote(":CMD: %s" % (args[3]))
-                result = ""
-            elif cmdfunc.__name__ == "_send_cmd":
-                pNote(":CMD: %s" % (kwargs['command']))
-            else:
-                pNote(":CMD: %s" % (args[3]))
-        else:
-            result = cmdfunc(*args, **kwargs)
-        return result
-    return inner
-
-
 def pexpect_spawn_with_env(pexpect_obj, command, timeout, escape=False, env=None):
     """ spawn a pexpect object with environment variable """
 
     wc_obj = WNetwork.warrior_cli_class.WarriorCli()
     child = wc_obj.pexpect_spawn_with_env(pexpect_obj, command, timeout,
-                                          escape=False, env=None)
+                                          escape, env)
 
     return child
 
-
+@mocked
 def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=60,
                 prompt=".*(%|#|\$)", conn_options="", custom_keystroke="", escape="", **kwargs):
     """
@@ -98,6 +70,7 @@ def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=6
     return session_object, conn_string
 
 
+@mocked
 def connect_telnet(ip, port="23", username="", password="",
                    logfile=None, timeout=60, prompt=".*(%|#|\$)",
                    conn_options="", custom_keystroke="", escape="", **kwargs):
@@ -169,7 +142,7 @@ def disconnect(child):
 
     return child
 
-
+@mocked
 def send_command_and_get_response(sessionobj, prompt1, prompt2, command):
     """"Sends a command to a terminal expects a completion prompt
     If completion prompt was found, returns the response of the command """
@@ -268,7 +241,7 @@ def get_connection_port(conn_type, inpdict):
 
     return inpdict
 
-
+@mocked
 def send_command(session_object, start_prompt, end_prompt, command,
                  timeout=60):
     """
@@ -371,7 +344,7 @@ def send_commands_from_testdata(testdatafile, obj_session, **args):
 
     return finalresult, responses_dict
 
-
+@mocked
 def _send_cmd(obj_session, **kwargs):
     """method to send command based on the type of object """
 
@@ -460,7 +433,6 @@ def get_unique_log_and_verify_list(log_list, verify_on_list, system_name):
 
     return final_list
 
-
 def _send_cmd_get_status(obj_session, details_dict, index, system_name=None):
     """Sends a command, verifies the response and returns
     status of the command """
@@ -493,7 +465,7 @@ def _get_obj_session(details_dict, obj_session, kw_system_name, index):
 
     return value, kw_system_name, details_dict
 
-
+@mocked
 def _send_command_retrials(obj_session, details_dict, index, **kwargs):
     """ Sends a command to a session, if a user provided pattern
     is found in the command response then tries to resend the command multiple
