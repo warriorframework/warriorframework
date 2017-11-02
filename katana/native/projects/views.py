@@ -71,7 +71,13 @@ def getJSONProjectData(request):
 		xml_d = getEmpty();
 
 	j_data = json.loads(json.dumps(xml_d))
-	responseBack = { 'fulljson': j_data , 'fname': filename }
+
+
+	fpath = x['testsuitedir'];
+	files = glob.glob(fpath + "/**/*.xml");
+	answer = [{ 'name': os.path.basename(fn), 'fullpath': fn } for fn in files ]
+
+	responseBack = { 'fulljson': j_data , 'fname': filename , 'suites': answer}
 	return JsonResponse(responseBack)
 
 ## MUST MOVE TO CLASS !!!!
@@ -102,6 +108,14 @@ def index(request):
 	context.update(csrf(request))
 	return HttpResponse(template.render(context, request))
 
+
+def getListOfExistingSuites(request):
+	path_to_config_file = navigator.get_katana_dir() + os.sep + "config.json"
+	x= json.loads(open(path_to_config_file).read());
+	fpath = x['testsuitedir'];
+	files = glob.glob(fpath + "/**/*.xml");
+	answer = [{ 'name': os.path.basename(), 'fullpath': fn } for fn in files ]
+	return JsonResponse({'suites': answer })
 
 def getProjectListTree(request):
 	path_to_config_file = navigator.get_katana_dir() + os.sep + "config.json"

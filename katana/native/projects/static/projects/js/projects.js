@@ -767,10 +767,11 @@ startNewProject : function() {
 	//var myfile = katana.$activeTab.find('#fullpathname').text();
 	jQuery.getJSON("./projects/getJSONProjectData/?fname="+myfile).done(function(data) {
 			var sdata = data['fulljson'];
-			console.log("from views.py call=", sdata);
+			console.log("from views.py call=", sdata, data);
 			//projects.jsonProjectObject = JSON.parse(sdata); 
 			projects.jsonProjectObject = new projectsObject(sdata['Project']);
 			projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
+			projects.jsonListOfSuites = data['suites'];
 			projects.mapProjectJsonToUi();  // This is where the table and edit form is created. 
 			projects.fillProjectDefaultGoto();
 			console.log("Adding defaults ");
@@ -842,9 +843,9 @@ startNewProject : function() {
 
 
 	setupProjectPopupDialog: function(s,popup) {
-	console.log(s);
+	//console.log(s);
 	var oneSuite = projects.jsonProjectObject.Testsuites[s];
-	console.log(oneSuite);
+	//console.log(oneSuite);
 	popup.find("#suiteRowToEdit").val(s); 
 	popup.find("#suitePath").val(oneSuite['path']);
 	popup.find("#Execute-at-ExecType").val(jsUcfirst(oneSuite.Execute_ExecType)); 
@@ -871,9 +872,9 @@ startNewProject : function() {
 	popup.find("#runmode-at-type").on('change', function() {
 		var popup = projects.lastPopup;
 		var sid = popup.find("#suiteRowToEdit").val();
-		console.log(projects.jsonProjectObject.Testsuites, sid); 
+		// console.log(projects.jsonProjectObject.Testsuites, sid); 
 		var oneSuite = projects.jsonProjectObject.Testsuites[sid];
-		console.log(oneSuite);
+		// console.log(oneSuite);
 		oneSuite.runmode_type = this.value; 
 		popup.find("#runmode-at-value").show();
 		if (oneSuite.runmode_type == 'standard') {
@@ -907,7 +908,7 @@ startNewProject : function() {
 	// console.log(s);
 	// var oneSuite = xdata[s];
 		var oneSuite = projects.jsonProjectObject.Testsuites[s];
-		console.log(oneSuite);
+		//console.log(oneSuite);
 		katana.$activeTab.find("#suiteRowToEdit").val(s); 
 		katana.$activeTab.find("#suitePath").val(oneSuite['path']);
 		katana.$activeTab.find("#Execute-at-ExecType").val(oneSuite.Execute_ExecType); 
@@ -926,7 +927,7 @@ startNewProject : function() {
 	},
 
 	fillProjectDefaultGoto : function() {
-		console.log("filling ......",projects.jsonProjectObject.Testsuites )
+		// console.log("filling ......",projects.jsonProjectObject.Testsuites )
 		var action = katana.$activeTab.find('#project_onError_action').val();
 		var defgoto = katana.$activeTab.find('#project_onError_value'); 
 		
@@ -936,7 +937,7 @@ startNewProject : function() {
 			defgoto.hide();
 		}
 		var listSuites = projects.jsonProjectObject.Testsuites; 
-		console.log("Setting..project...goto", listSuites); 
+		//console.log("Setting..project...goto", listSuites); 
 			
 		defgoto.empty(); 
 		for (xi=0; xi < listSuites.length; xi++) {
@@ -982,7 +983,7 @@ startNewProject : function() {
 
 	getSuiteDataFileForProject: function (tag) {
       var callback_on_accept = function(selectedValue) { 
-      		console.log(selectedValue);
+      		//console.log(selectedValue);
       		// Convert to relative path.
       		var pathToBase = katana.$activeTab.find('#savefilepath').text();
       		console.log("File path ==", pathToBase);
@@ -1001,10 +1002,10 @@ startNewProject : function() {
 		  var popup = projects.lastPopup;
 		  var tag = popup.find('#suitePath');
 	      var callback_on_accept = function(selectedValue) { 
-	      		console.log(selectedValue);
+	      		//console.log(selectedValue);
 	      		var popup = projects.lastPopup;
 		 		var tag = popup.find('#suitePath');
-		 		console.log(tag);
+		 		//console.log(tag);
 	      		// Convert to relative path.
 	      		var pathToBase = katana.$activeTab.find('#savefilepath').text();
 	      		var nf = prefixFromAbs(pathToBase, selectedValue);
@@ -1026,7 +1027,7 @@ startNewProject : function() {
       		console.log(selectedValue);
       		// Convert to relative path.
       		var pathToBase = katana.$activeTab.find('#savefilepath').text();
-      		console.log("File path ==", pathToBase);
+      		// console.log("File path ==", pathToBase);
       		var nf = prefixFromAbs(pathToBase, selectedValue);
       		katana.$activeTab.find("#projectResultsDir").attr("value", nf);
       		katana.$activeTab.find("#projectResultsDir").attr("fullpath", selectedValue);
@@ -1155,11 +1156,11 @@ Two global variables are heavily used when this function is called;
 		items.push('<tr id="suiteRow"><th>Num</th><th/><th>Suite</th><th>Execute</th><th>OnError</th><th>Impact</th><th/></tr>');
 		items.push('</thead>');
 		items.push('<tbody>');
-		console.log("Create suites for ", projects.jsonProjectObject); 
+		//console.log("Create suites for ", projects.jsonProjectObject); 
 		projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
-		console.log("Create suites for ", projects.jsonProjectObject['Testsuites']); 
+		// console.log("Create suites for ", projects.jsonProjectObject['Testsuites']); 
 		
-		console.log("Create suites for ", projects.jsonTestSuites); 
+		//console.log("Create suites for ", projects.jsonTestSuites); 
 		var slen = projects.jsonTestSuites.length;
 		katana.$activeTab.find("#tableOfTestSuitesForProject").html("");
 		for (var s=0; s<slen; s++ ) {
@@ -1244,7 +1245,7 @@ Two global variables are heavily used when this function is called;
 			var sid = parseInt(names[1]);
 			katana.popupController.open(katana.$activeTab.find("#editTestSuiteEntry").html(),"Edit..." , function(popup) {
 				projects.lastPopup = popup; 
-				console.log(katana.$activeTab.find("#editTestSuiteEntry"));
+				//console.log(katana.$activeTab.find("#editTestSuiteEntry"));
 				projects.setupProjectPopupDialog(sid,popup);
 			});
 		},
@@ -1296,14 +1297,14 @@ Two global variables are heavily used when this function is called;
 
 	getResultsDirForProjectRow: function() {
 	      var callback_on_accept = function(selectedValue) { 
-	      		console.log(selectedValue);
+	      		// console.log(selectedValue);
 	      		var sid = katana.$activeTab.attr('project-suite-row');
 	      		var pathToBase = katana.$activeTab.find('#savefilepath').text();
-	      		console.log("File path ==", pathToBase);
+	      		// console.log("File path ==", pathToBase);
 	      		var nf = prefixFromAbs(pathToBase, selectedValue);
 	      		projects.jsonTestSuites[sid]['path'] = nf;
-	      		console.log("Path set to ",nf," for ", sid);
-	      		console.log(projects.jsonTestSuites);
+	      		// console.log("Path set to ",nf," for ", sid);
+	      		// console.log(projects.jsonTestSuites);
 	      		projects.createSuitesTable();
 	      		projects.createD3treeData();
 				projects.createD3tree();
@@ -1315,7 +1316,7 @@ Two global variables are heavily used when this function is called;
 	},
 
 	swapViews: function(){
-		console.log("Hellos!", projects.treeView);
+		//console.log("Hellos!", projects.treeView);
 		if (projects.treeView == 0) {
 			katana.$activeTab.find("#projects-standard-edit").hide();
 			katana.$activeTab.find("#projects-graphics-edit").show();

@@ -8,6 +8,7 @@ urlpatterns = [
     url(r'getProjectDataBack', views.getProjectDataBack, name='getProjectDataBack'),
     url(r'getJSONProjectData', views.getJSONProjectData, name='getJSONProjectData'),
  	url(r'getProjectListTree', views.getProjectListTree, name='getProjectListTree'),
+	url(r'getListOfExistingSuites', views.getListOfExistingSuites, name='getListOfExistingSuites'),
 
     #url(r'^email_setting_handler', views.email_setting_handler, name='email_setting_handler'),
     #url(r'^secret_handler', views.secret_handler, name='secret_handler'),

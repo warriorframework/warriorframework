@@ -50,3 +50,5 @@
 
 .project-configuration-table tr:nth-child(even){background-color: #f2f2ff}
 
+
+.project-existing-suites {  border:2px solid #ccc; overflow-y: scroll;  }
