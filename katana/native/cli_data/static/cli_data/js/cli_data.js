@@ -40,6 +40,20 @@ var cliData = {
                                     }
                             });
                             $displayFilesDiv.jstree().hide_dots();
+                            alert("1");
+                            $displayFilesDiv.on("select_node.jstree", function (e, data) {
+                                alert("HERE")
+                                if (data["node"]["icon"] == "jstree-file") {
+                                    $.ajax({
+                                        url: "cli_data/get_default_file/",
+                                        type: "GET",
+                                        data: {"path": data["node"]["li_attr"]["data-path"]},
+                                        success: function(data){
+                                            console.log(data);
+                                        }
+                                    });
+                                }
+                            });
                         });
                 }
             });
@@ -53,7 +67,7 @@ var cliData = {
             }).done(function(data) {
                 console.log(data);
             });
-        }
+        },
     }
 
 }

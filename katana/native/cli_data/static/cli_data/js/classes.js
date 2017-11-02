@@ -242,12 +242,12 @@ class verifications{
             if(data.hasOwnProperty(key)){
                 this.name = key;
                 this.type = "verification";
-                this.found = this.converter("found", data["@found"], false, true);
-                this.search = !data["@search"] ? this.getDefaults("search") : data["@search"];
-                this.verify_on = !data["@verify_on"] ? this.getDefaults("verify_on") : data["@verify_on"];
-                this.cond_value = !data["@cond_value"] ? this.getDefaults("cond_value") : data["@cond_value"];
-                this.cond_type = this.converter("cond_type", data["@cond_type"], false, true);
-                this.operator = this.converter("operator", data["@operator"], false, true);
+                this.found = this.converter("found", data[this.name]["@found"], false, true);
+                this.search = !data[this.name]["@search"] ? this.getDefaults("search") : data[this.name]["@search"];
+                this.verify_on = !data[this.name]["@verify_on"] ? this.getDefaults("verify_on") : data[this.name]["@verify_on"];
+                this.cond_value = !data[this.name]["@cond_value"] ? this.getDefaults("cond_value") : data[this.name]["@cond_value"];
+                this.cond_type = this.converter("cond_type", data[this.name]["@cond_type"], false, true);
+                this.operator = this.converter("operator", data[this.name]["@operator"], false, true);
                 break;
             }
         }
@@ -355,7 +355,7 @@ class combinations{
             if(data.hasOwnProperty(key)){
                 this.name = key;
                 this.type = "combination";
-                this.combo = !data["@combo"] ? this.getDefaults("combo") : data["@combo"];
+                this.combo = !data[this.name]["@combo"] ? this.getDefaults("combo") : data[this.name]["@combo"];
                 break;
             }
         }
@@ -404,7 +404,7 @@ class keys{
             if(data.hasOwnProperty(key)){
                 this.name = key;
                 this.type = "key";
-                this.resp_pattern_req = !data["@resp_pattern_req"] ? this.getDefaults("resp_pattern_req") : data["@resp_pattern_req"];
+                this.resp_pattern_req = !data[this.name]["@resp_pattern_req"] ? this.getDefaults("resp_pattern_req") : data[this.name]["@resp_pattern_req"];
                 break;
             }
         }
@@ -441,3 +441,7 @@ class globalKeys extends keys{
 class testdataKeys extends keys{
 
 }
+
+let comb_obj = new testdataKeys({"k1": {"@resp_pattern_req": "lalalala"}});
+console.log(comb_obj);
+console.log(comb_obj.jsonObj);
