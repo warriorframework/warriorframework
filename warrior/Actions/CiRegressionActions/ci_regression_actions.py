@@ -331,31 +331,30 @@ class CIregressionActions(object):
         path = data_Utils.get_object_from_datarepository("parallel_exec_tmp_dir")
         return file_Utils.delFolder(path)
 
-    def generate_timestamp_delta(self, stored_delta_key, desired_status):
+    def generate_timestamp_delta(self, stored_delta_key, timestamp_key, desired_status):
         """
             test keyword created for runmode_timer
             Generate a delta from comparing current time with store timestamp
             save the delta and current timestamp in repo for keyword verify_delta
         :Argument:
             stored_delta_key = key name to store the list of delta
+            timestamp_key = key name to store the timestamp
             desired_status = user desired status
                 input pass->true, fail->false and everything else ->exception
         """
         cur_ts = datetime_utils.get_current_timestamp()
-        key = "ci_test_current_timestamp"
-        result_dict = {key: cur_ts}
+        result_dict = {timestamp_key: cur_ts}
         status = self.local_data_test(desired_status)
 
-        previous_time = data_Utils.get_object_from_datarepository(key)
+        previous_time = data_Utils.get_object_from_datarepository(timestamp_key)
+        stored_delta = data_Utils.get_object_from_datarepository(stored_delta_key)
         if previous_time:
             delta = datetime_utils.get_time_delta(previous_time, cur_ts)
-            stored_delta = data_Utils.get_object_from_datarepository(stored_delta_key)
             if stored_delta:
                 stored_delta.append(delta)
                 result_dict.update({stored_delta_key: stored_delta})
             else:
                 result_dict.update({stored_delta_key: [delta]})
-
         return status, result_dict
 
     def verify_delta(self, delta_key, int_num, float_min_val):

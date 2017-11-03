@@ -21,6 +21,7 @@
 		<step Driver="ci_regression_driver" Keyword="generate_timestamp_delta" TS="1">
 			<Arguments>
 				<argument name="stored_delta_key" value="tc_runmode_rup_delta"/>
+				<argument name="timestamp_key" value="tc_runmode_rup_ts"/>
 				<argument name="desired_status" value="fail"/>
 			</Arguments>
 			<onError action="next"/>
@@ -29,13 +30,67 @@
 			<Execute ExecType="Yes"/>
 			<context>positive</context>
 			<impact>noimpact</impact>
-			<runmode type="rup" value="3" interval="5"/>
+			<runmode type="rup" value="3" runmode_timer="5"/>
 		</step>
 		<step Driver="ci_regression_driver" Keyword="verify_delta" TS="2">
 			<Arguments>
 				<argument name="delta_key" value="tc_runmode_rup_delta"/>
 				<argument name="int_num" value="2"/>
-				<argument name="float_min_val" value="5"/>
+				<argument name="float_min_val" value="5.0"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>local_data_test</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="ci_regression_driver" Keyword="generate_timestamp_delta" TS="3">
+			<Arguments>
+				<argument name="stored_delta_key" value="tc_runmode_ruf_delta"/>
+				<argument name="timestamp_key" value="tc_runmode_ruf_ts"/>
+				<argument name="desired_status" value="pass"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>local_data_test</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>noimpact</impact>
+			<runmode type="ruf" value="5" runmode_timer="3"/>
+		</step>
+		<step Driver="ci_regression_driver" Keyword="verify_delta" TS="4">
+			<Arguments>
+				<argument name="delta_key" value="tc_runmode_ruf_delta"/>
+				<argument name="int_num" value="4"/>
+				<argument name="float_min_val" value="3.0"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>local_data_test</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="ci_regression_driver" Keyword="generate_timestamp_delta" TS="5">
+			<Arguments>
+				<argument name="stored_delta_key" value="tc_runmode_rmt_delta"/>
+				<argument name="timestamp_key" value="tc_runmode_rmt_ts"/>
+				<argument name="desired_status" value="pass"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>local_data_test</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>noimpact</impact>
+			<runmode type="rmt" value="4" runmode_timer="4"/>
+		</step>
+		<step Driver="ci_regression_driver" Keyword="verify_delta" TS="6">
+			<Arguments>
+				<argument name="delta_key" value="tc_runmode_rmt_delta"/>
+				<argument name="int_num" value="3"/>
+				<argument name="float_min_val" value="4.0"/>
 			</Arguments>
 			<onError action="next"/>
 			<Description>local_data_test</Description>

@@ -49,15 +49,15 @@ def wait_for_timeout(wait_time, unit="SECONDS"):
         else:
             print_warning('The supported unit of seconds is Seconds/Minutes/Hours/Months/Years'
                           'The default unit of Seconds would be used')
-        print_info('Starting to wait for ' + str(seconds) + 'Seconds')
+        print_info('Starting to wait for {} Seconds'.format(seconds))
         wait_seconds = seconds
         print_interval = wait_seconds / 10
         print_info('Remaining wait time will be notified every {} secs'.format(print_interval))
-        while wait_seconds > 0:
-            wait_seconds -= print_interval
+        for count in range(10):
+            print_info('Remaining Wait Time is {:.1f} seconds'.\
+                format(wait_seconds-count*print_interval))
             time.sleep(print_interval)
-            print_info('Remaining Wait Time is {} seconds'.format(wait_seconds))
-        print_info('Ending Wait time of ' + str(seconds) + 'secs')
+        print_info('Ending Wait time of {} Seconds'.format(seconds))
         return True
     except TypeError:
         print_warning('Unable to parse wait_time value, Please use int/float as wait_time value.')
