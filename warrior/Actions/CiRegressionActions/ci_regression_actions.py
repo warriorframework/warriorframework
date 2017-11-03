@@ -347,5 +347,20 @@ class CIregressionActions(object):
         previous_time = data_Utils.get_object_from_datarepository("ci_test_current_timestamp")
         if previous_time:
             delta = datetime_utils.get_time_delta(previous_time, value)
-            status = data_Utils.verify_data(float_expected_waittime, delta, 'float', 'le')
+            status = str(data_Utils.verify_data(
+                float_expected_waittime, delta, 'float', 'le')).upper()
+            status_text = {
+                "TRUE": ("Runmode wait time meets minimum expected waittime requirement", "INFO"),
+                "FALSE":
+                ("Runmode wait time doesn't meet minimum expected waittime requirement", "WARNING"),
+                "ERROR":
+                ("Error occured when comparing runmode waittime with expected waittime", "ERROR"),
+                "EXCEPTION":
+                ("Error occured when comparing runmode waittime with expected waittime", "ERROR")
+            }
+            pNote(status_text[status][0], status_text[status][1])
+            if status == "TRUE":
+                status = True
+            elif status == "FALSE":
+                status = False
         return status, result_dict
