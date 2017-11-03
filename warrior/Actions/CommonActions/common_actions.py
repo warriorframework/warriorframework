@@ -21,7 +21,7 @@ from Framework.Utils.print_Utils import print_info, print_error
 from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.data_Utils import get_object_from_datarepository, update_datarepository
 from Framework.Utils.file_Utils import getAbsPath
-from Framework.Utils.datetime_utils import war_wait_till_time
+from Framework.Utils import datetime_utils
 
 
 class CommonActions(object):
@@ -43,9 +43,7 @@ class CommonActions(object):
         """waits (sleeps) for the time provided
 
         :Arguments:
-            1. resultfile(string) = full path to the result file
-            2. step_num(string) = step_num in string
-            3. timeout= time to wait in seconds
+            1. timeout= time to wait in seconds
 
         :Returns:
             1. status (bool)
@@ -53,8 +51,7 @@ class CommonActions(object):
 
         WDesc = "Waits for the timeout provided"
         Utils.testcase_Utils.pSubStep(WDesc)
-        status = False
-        status = war_wait_till_time(timeout)
+        status = datetime_utils.wait_for_timeout(timeout)
         pNote('********Below Testing occured after Timeout *********')
         Utils.testcase_Utils.report_substep_status(status)
         return status

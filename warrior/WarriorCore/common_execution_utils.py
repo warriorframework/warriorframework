@@ -24,28 +24,28 @@ def get_runmode_from_xmlfile(element):
 
     Return:
     rtype : The runmode type RUP/RUF/RMT/NONE
-    rt_value :
+    rt_value : Maximum attempts value for runmode rerun
+    runmode_timer : The waittime between each runmode rerun attempts
     """
     rt_type = None
     rt_value = 1
-    rt_interval = None
+    runmode_timer = None
     runmode = element.find("runmode")
     if runmode is not None:
         rt_type = runmode.get("type").strip().upper()
         rt_value = runmode.get("value")
-        rt_interval = runmode.get("interval")
+        runmode_timer = runmode.get("runmode_timer")
         rt_type = None if rt_type == "" or rt_type == "STANDARD" else rt_type
         if rt_value is not None and rt_type is not None:
-            if rt_interval is None or rt_interval is "":
-                rt_interval = None
+            if runmode_timer is None or runmode_timer == "":
+                runmode_timer = None
             else:
                 try:
-                    rt_interval = float(rt_interval)
+                    runmode_timer = float(runmode_timer)
                 except ValueError:
                     print_warning("The value for Runmode interval is {0}, please provide seconds to"
-                                  " wait in numerals".format(rt_interval))
-                    rt_interval = None
-
+                                  " wait in numerals".format(runmode_timer))
+                    runmode_timer = None
 
             if rt_type not in ['RUF', 'RUP', 'RMT']:
                 print_warning("Unsupported value '{0}' provided for 'runmode:"
@@ -53,6 +53,7 @@ def get_runmode_from_xmlfile(element):
                               "and these values can not be combined with other"
                               " values".format(rt_type))
                 return (None, 1, None)
+
             try:
                 rt_value = int(rt_value)
 
@@ -61,15 +62,14 @@ def get_runmode_from_xmlfile(element):
                     print_warning("Value provided for 'runmode:value' tag "
                                   "'{0}' is less than '1', using default value"
                                   " 1 for execution".format(rt_value))
-
             except ValueError:
                 print_warning("Unsupported value '{0}' provided for 'runmode:"
                               "value' tag, please provide an integer, using "
                               "default value '1' for execution".
                               format(rt_value))
                 rt_value = 1
-                rt_interval = None
-    return (rt_type, rt_value, rt_interval)
+
+    return (rt_type, rt_value, runmode_timer)
 
 def get_retry_from_xmlfile(element):
     """Get 'retry' tag and its values from the testcase step.

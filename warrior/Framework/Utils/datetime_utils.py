@@ -16,14 +16,14 @@ import datetime
 import time
 from Framework.Utils.print_Utils import print_info, print_error, print_warning
 
-def war_wait_till_time(wait_time, unit="SECONDS"):
+def wait_for_timeout(wait_time, unit="SECONDS"):
     """
     Warrior, Wait till the time is a generic wait. The Wait is informed to the user in 10 intervals
     equally divided from the over all wait.
 
     :param wait_time: Time for Warrior wait.
     :param unit: The unit of Time supported are
-                  1. Second by default
+                  1. Second (default)
                   2. Minute
                   3. Hour
                   4. Day
@@ -60,7 +60,7 @@ def war_wait_till_time(wait_time, unit="SECONDS"):
         print_info('Ending Wait time of ' + str(seconds) + 'secs')
         return True
     except TypeError:
-        print_warning('Please specify time to wait through numerals. Unable to wait as requested')
+        print_warning('Unable to parse wait_time value, Please use int/float as wait_time value.')
         return False
     except Exception as e:
         print_error('Encountered unexpected error {0} Unable to wait as requested'.format(e))
