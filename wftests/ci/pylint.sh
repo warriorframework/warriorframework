@@ -5,7 +5,7 @@ cd ../
 git clone https://github.com/warriorframework/warriorframework.git pylint_warrior
 cd pylint_warrior
 
-if [[ "${TRAVIS_BRANCH}" == "master" ]]; then
+if [[ "${TRAVIS_BRANCH}" == "master" ]] && [[ "${TRAVIS_PULL_REQUEST_BRANCH}" != release* ]]; then
     echo "Pull request shouldn't merge to master"
     exit 1
 fi
