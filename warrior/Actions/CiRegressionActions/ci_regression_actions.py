@@ -331,36 +331,50 @@ class CIregressionActions(object):
         path = data_Utils.get_object_from_datarepository("parallel_exec_tmp_dir")
         return file_Utils.delFolder(path)
 
-    def runmode_interval_test(self, float_expected_waittime):
-        """For testing/demo/placeholder
-        return true/false/exception based on input and update the datarepo with currenttime or
-        delta time between previous step and current step.
-        :Argument:
-            desired_status = user desired status
-            input pass->true, fail->false and everything else ->exception
+    def generate_timestamp_delta(self, stored_delta_key, desired_status):
         """
-        value = datetime_utils.get_current_timestamp()
+            test keyword created for runmode_timer
+            Generate a delta from comparing current time with store timestamp
+            save the delta and current timestamp in repo for verify_delta
+        :Argument:
+            stored_delta_key = key name to store the list of delta
+            desired_status = user desired status
+                input pass->true, fail->false and everything else ->exception
+        """
+        cur_ts = datetime_utils.get_current_timestamp()
         key = "ci_test_current_timestamp"
-        result_dict = {key: value}
-        status = True
+        result_dict = {key: cur_ts}
+        status = self.local_data_test(desired_status)
 
-        previous_time = data_Utils.get_object_from_datarepository("ci_test_current_timestamp")
+        previous_time = data_Utils.get_object_from_datarepository(key)
         if previous_time:
-            delta = datetime_utils.get_time_delta(previous_time, value)
-            status = str(data_Utils.verify_data(
-                float_expected_waittime, delta, 'float', 'le')).upper()
-            status_text = {
-                "TRUE": ("Runmode wait time meets minimum expected waittime requirement", "INFO"),
-                "FALSE":
-                ("Runmode wait time doesn't meet minimum expected waittime requirement", "WARNING"),
-                "ERROR":
-                ("Error occured when comparing runmode waittime with expected waittime", "ERROR"),
-                "EXCEPTION":
-                ("Error occured when comparing runmode waittime with expected waittime", "ERROR")
-            }
-            pNote(status_text[status][0], status_text[status][1])
-            if status == "TRUE":
-                status = True
-            elif status == "FALSE":
-                status = False
+            delta = datetime_utils.get_time_delta(previous_time, cur_ts)
+            stored_delta = data_Utils.get_object_from_datarepository(stored_delta_key)
+            if stored_delta:
+                stored_delta.append(delta)
+                result_dict.update({stored_delta_key: stored_delta})
+            else:
+                result_dict.update({stored_delta_key: [delta]})
+
         return status, result_dict
+
+    def verify_delta(self, delta_key, int_num, float_min_val):
+        """
+            test keyword created for runmode_timer
+            Compare a list of delta to a minimum value
+        :Argument:
+            delta_key = key name for the list of delta
+            int_num = number of delta required in list of delta
+            float_min_val = minimum value of each delta
+        """
+        status = False
+        stored_delta = data_Utils.get_object_from_datarepository(delta_key)
+        if stored_delta:
+            if len(stored_delta) != int_num:
+                pNote("not enough delta value stored in list", "Error")
+            else:
+                status = all([x >= float_min_val for x in stored_delta])
+                if not status:
+                    pNote("Delta: {} not meet minimum value {}".\
+                        format(str(stored_delta), float_min_val))
+        return status
