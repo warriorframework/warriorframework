@@ -13,7 +13,7 @@ limitations under the License.
 
 import datetime
 from Framework import Utils
-from Framework.Utils import data_Utils, file_Utils
+from Framework.Utils import data_Utils, file_Utils, datetime_utils, config_Utils
 import os
 import time
 from Framework.Utils.testcase_Utils import pNote
@@ -266,6 +266,7 @@ class CIregressionActions(object):
             input pass->true, fail->false and everything else ->exception
         """
         # print "desired_status: " + desired_status
+
         if desired_status == "pass":
             return True
         elif desired_status == "fail":
@@ -329,3 +330,52 @@ class CIregressionActions(object):
         """
         path = data_Utils.get_object_from_datarepository("parallel_exec_tmp_dir")
         return file_Utils.delFolder(path)
+
+    def generate_timestamp_delta(self, stored_delta_key, timestamp_key, desired_status):
+        """
+            test keyword created for runmode_timer
+            Generate a delta from comparing current time with store timestamp
+            save the delta and current timestamp in repo for keyword verify_delta
+        :Argument:
+            stored_delta_key = key name to store the list of delta
+            timestamp_key = key name to store the timestamp
+            desired_status = user desired status
+                input pass->true, fail->false and everything else ->exception
+        """
+        cur_ts = datetime_utils.get_current_timestamp()
+        result_dict = {timestamp_key: cur_ts}
+        status = self.local_data_test(desired_status)
+
+        previous_time = data_Utils.get_object_from_datarepository(timestamp_key)
+        stored_delta = data_Utils.get_object_from_datarepository(stored_delta_key)
+        if previous_time:
+            delta = datetime_utils.get_time_delta(previous_time, cur_ts)
+            if stored_delta:
+                stored_delta.append(delta)
+                result_dict.update({stored_delta_key: stored_delta})
+            else:
+                result_dict.update({stored_delta_key: [delta]})
+        return status, result_dict
+
+    def verify_delta(self, delta_key, int_num, float_min_val):
+        """
+            test keyword created for runmode_timer
+            Compare a list of delta to a minimum value
+            This is used to ensure runmode is correctly waiting
+            for a minimum amount of time (float_min_val)
+        :Argument:
+            delta_key = key name for the list of delta
+            int_num = number of delta required in list of delta
+            float_min_val = minimum value of each delta
+        """
+        status = False
+        stored_delta = data_Utils.get_object_from_datarepository(delta_key)
+        if stored_delta:
+            if len(stored_delta) != int_num:
+                pNote("not enough delta value stored in list", "Error")
+            else:
+                status = all([x >= float_min_val for x in stored_delta])
+                if not status:
+                    pNote("Delta: {} not meet minimum value {}".\
+                        format(str(stored_delta), float_min_val))
+        return status

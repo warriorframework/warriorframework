@@ -155,7 +155,7 @@ def get_testcase_list(testsuite_filepath):
         new_testcase_list = testcases.findall('Testcase')
         # execute tc multiple times
         for _, tc in enumerate(new_testcase_list):
-            runmode, value = common_execution_utils.get_runmode_from_xmlfile(tc)
+            runmode, value, _ = common_execution_utils.get_runmode_from_xmlfile(tc)
             retry_type, _, _, retry_value, _ = common_execution_utils.get_retry_from_xmlfile(tc)
             if runmode is not None and value > 0:
                 # more than one step in step list, insert new step
