@@ -3,9 +3,9 @@
 	<Details>
 		<Name>tc_runmode_rup_ruf_rmt_checks</Name>
 		<Title>Verifies runmode functionality of RUP/RUF/RMT with time interval.</Title>
-		<Engineer>Warrior_user</Engineer>
-		<Date>2017-04-12</Date>
-		<Time>18:25</Time>
+		<Engineer>Ka Hei Chan</Engineer>
+		<Date>2017-11-03</Date>
+		<Time>15:18</Time>
 		<State/>
 		<InputDataFile>No_Data</InputDataFile>
 		<Datatype/>
@@ -18,8 +18,9 @@
 		<Requirement/>
 	</Requirements>
 	<Steps>
-		<step Driver="ci_regression_driver" Keyword="runmode_interval_test" TS="1">
+		<step Driver="ci_regression_driver" Keyword="generate_timestamp_delta" TS="1">
 			<Arguments>
+				<argument name="stored_delta_key" value="tc_runmode_rup_delta"/>
 				<argument name="desired_status" value="fail"/>
 			</Arguments>
 			<onError action="next"/>
@@ -28,14 +29,13 @@
 			<Execute ExecType="Yes"/>
 			<context>positive</context>
 			<impact>noimpact</impact>
-			<runmode type="rup" value="2" interval="2"/>
+			<runmode type="rup" value="3" interval="5"/>
 		</step>
-				<step Driver="common_driver" Keyword="verify_data" TS="2">
+		<step Driver="ci_regression_driver" Keyword="verify_delta" TS="2">
 			<Arguments>
-				<argument name="expected" value="2"/>
-				<argument name="type" value="float"/>
-				<argument name="comparison" value="ge"/>
-				<argument name="object_key" value="delta"/>
+				<argument name="delta_key" value="tc_runmode_rup_delta"/>
+				<argument name="int_num" value="2"/>
+				<argument name="float_min_val" value="5"/>
 			</Arguments>
 			<onError action="next"/>
 			<Description>local_data_test</Description>
@@ -43,61 +43,6 @@
 			<Execute ExecType="Yes"/>
 			<context>positive</context>
 			<impact>impact</impact>
-
-		</step>
-				<step Driver="ci_regression_driver" Keyword="runmode_interval_test" TS="3">
-			<Arguments>
-				<argument name="desired_status" value="pass"/>
-			</Arguments>
-			<onError action="next"/>
-			<Description>local_data_test</Description>
-			<iteration_type type=""/>
-			<Execute ExecType="Yes"/>
-			<context>positive</context>
-			<impact>impact</impact>
-			<runmode type="ruf" value="4" interval="11"/>
-		</step>
-						<step Driver="common_driver" Keyword="verify_data" TS="4">
-			<Arguments>
-				<argument name="expected" value="11"/>
-				<argument name="type" value="float"/>
-				<argument name="comparison" value="ge"/>
-				<argument name="object_key" value="delta"/>
-			</Arguments>
-			<onError action="next"/>
-			<Description>local_data_test</Description>
-			<iteration_type type=""/>
-			<Execute ExecType="Yes"/>
-			<context>positive</context>
-			<impact>impact</impact>
-
-		</step>
-				<step Driver="ci_regression_driver" Keyword="runmode_interval_test" TS="5">
-			<Arguments>
-				<argument name="desired_status" value="pass"/>
-			</Arguments>
-			<onError action="next"/>
-			<Description>local_data_test</Description>
-			<iteration_type type=""/>
-			<Execute ExecType="Yes"/>
-			<context>positive</context>
-			<impact>impact</impact>
-			<runmode type="rmt" value="6" interval="5"/>
-		</step>
-						<step Driver="common_driver" Keyword="verify_data" TS="5">
-			<Arguments>
-				<argument name="expected" value="5"/>
-				<argument name="type" value="float"/>
-				<argument name="comparison" value="ge"/>
-				<argument name="object_key" value="delta"/>
-			</Arguments>
-			<onError action="next"/>
-			<Description>local_data_test</Description>
-			<iteration_type type=""/>
-			<Execute ExecType="Yes"/>
-			<context>positive</context>
-			<impact>impact</impact>
-
 		</step>
 
 	</Steps>

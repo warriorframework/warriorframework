@@ -335,7 +335,7 @@ class CIregressionActions(object):
         """
             test keyword created for runmode_timer
             Generate a delta from comparing current time with store timestamp
-            save the delta and current timestamp in repo for verify_delta
+            save the delta and current timestamp in repo for keyword verify_delta
         :Argument:
             stored_delta_key = key name to store the list of delta
             desired_status = user desired status
@@ -362,6 +362,8 @@ class CIregressionActions(object):
         """
             test keyword created for runmode_timer
             Compare a list of delta to a minimum value
+            This is used to ensure runmode is correctly waiting
+            for a minimum amount of time (float_min_val)
         :Argument:
             delta_key = key name for the list of delta
             int_num = number of delta required in list of delta
