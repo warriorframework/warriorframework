@@ -12,7 +12,7 @@ limitations under the License.
 '''
 
 
-"""common_actions module where keywords common to all products are developed"""
+
 import json
 import os
 
