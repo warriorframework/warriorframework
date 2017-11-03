@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <Testcase>
 	<Details>
-		<Name>tc_runmode_rup_ruf_rmt_checks</Name>
+		<Name>tc_runmode_timer_verification</Name>
 		<Title>Verifies runmode functionality of RUP/RUF/RMT with time interval.</Title>
 		<Engineer>Ka Hei Chan</Engineer>
 		<Date>2017-11-03</Date>
