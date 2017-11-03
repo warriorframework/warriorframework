@@ -331,7 +331,7 @@ class CIregressionActions(object):
         path = data_Utils.get_object_from_datarepository("parallel_exec_tmp_dir")
         return file_Utils.delFolder(path)
 
-    def runmode_interval_test(self, desired_status):
+    def runmode_interval_test(self, float_expected_waittime):
         """For testing/demo/placeholder
         return true/false/exception based on input and update the datarepo with currenttime or
         delta time between previous step and current step.
@@ -339,23 +339,13 @@ class CIregressionActions(object):
             desired_status = user desired status
             input pass->true, fail->false and everything else ->exception
         """
-
         value = datetime_utils.get_current_timestamp()
-        key = "current_timestamp"
-        dict = {key: value}
-        data_repository = config_Utils.data_repository
+        key = "ci_test_current_timestamp"
+        result_dict = {key: value}
+        status = True
 
-        if key in data_repository.keys():
-            previous_time = data_repository[key]
+        previous_time = data_Utils.get_object_from_datarepository("ci_test_current_timestamp")
+        if previous_time:
             delta = datetime_utils.get_time_delta(previous_time, value)
-            delta_dict = {"delta":delta}
-            data_repository.update(delta_dict)
-        data_repository.update(dict)
-        #print data_repository
-        if desired_status == "pass":
-            return True
-        elif desired_status == "fail":
-            return False
-        else:
-            raise Exception("This is raised in ci_regression_actions.local_data_test")
-
+            status = data_Utils.verify_data(float_expected_waittime, delta, 'float', 'le')
+        return status, result_dict
