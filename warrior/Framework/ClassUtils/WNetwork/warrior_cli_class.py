@@ -16,18 +16,17 @@ import re
 import sys
 import time
 import subprocess
-
+import getpass
 import Tools
 from Framework import Utils
 from Framework.Utils.print_Utils import print_info, print_debug,\
- print_exception, print_error
+ print_warning, print_exception, print_error
 from Framework.Utils.testcase_Utils import pNote
 from WarriorCore.Classes.war_cli_class import WarriorCliClass
-from Framework.Utils.cli_Utils import cmdprinter
 from Framework.ClassUtils import database_utils_class
 from Framework.ClassUtils.WNetwork.loging import ThreadedLog
 from Framework.Utils.list_Utils import get_list_by_separating_strings
-
+from WarriorCore.Classes.warmock_class import mocked
 
 """ Module for performing CLI operations """
 
@@ -137,7 +136,7 @@ class WarriorCli(object):
         if self.conn_obj and self.conn_obj.target_host:
             self.conn_obj.disconnect_telnet()
 
-    @cmdprinter
+    @mocked
     def send_command(self, start_prompt, end_prompt, command,
                      timeout=60):
         """ Sends the command to ssh/telnet session
@@ -192,11 +191,6 @@ class WarriorCli(object):
         var_sub = args.get('var_sub', None)
         title = args.get('title', None)
         row = args.get('row', None)
-        if WarriorCliClass.cmdprint:
-            if title:
-                pNote("*************{}*************".format('Title: ' + title))
-            if row:
-                pNote("*************{}*************".format('Row: ' + row))
         system_name = args.get("system_name")
         session_name = args.get("session_name")
         if session_name is not None:
@@ -233,8 +227,10 @@ class WarriorCli(object):
                     result, response = new_obj_session._send_command_retrials(
                         details_dict, index=i, result=result,
                         response=response, system_name=td_sys)
-                    response_dict = new_obj_session._get_response_dict(
+                    rspRes, response_dict = new_obj_session._get_response_dict(
                         details_dict, i, response, response_dict)
+                    result = (result and rspRes) if "ERROR" not in (
+                                result, rspRes) else "ERROR"
                     print_debug("<<<")
                 else:
                     finalresult = "ERROR"
@@ -249,7 +245,7 @@ class WarriorCli(object):
             responses_dict[key] = response_dict
         return finalresult, responses_dict
 
-    @cmdprinter
+    @mocked
     def _send_cmd(self, **kwargs):
         """method to send command based on the type of object """
 
@@ -268,26 +264,89 @@ class WarriorCli(object):
     @staticmethod
     def _get_response_dict(details_dict, index, response, response_dict):
         """Get the response dict for a command. """
+        def print_warn_msg(keyvars, numpats):
+            """ print a warning message if the number of vars to be stored with
+            the patterns does not match with the number of patterns
+            """
+            warn_msg = ("The number of response reference keys to store is {0}"
+                        " than \nthe response reference patterns.\nThe number "
+                        "of response reference keys({1}) is {2}\nwhich is {0} "
+                        "than number of response reference patterns {3}")
+            lessormore = "less" if len(keyvars) < numpats else "more"
+            print_warning(warn_msg.format(lessormore, ", ".join(keyvars),
+                                          len(keyvars), numpats))
         resp_ref = details_dict["resp_ref_list"][index]
         resp_req = details_dict["resp_req_list"][index]
         resp_pat_req = details_dict["resp_pat_req_list"][index]
+        resp_keys = details_dict["resp_key_list"][index]
+        inorder = details_dict["inorder_resp_ref_list"][index]
+        status = True
+        if inorder is not None and inorder.lower().startswith("n"):
+            inorder = False
+        else:
+            inorder = True
 
         resp_req = {None: 'y', '': 'y',
                     'no': 'n', 'n': 'n'}.get(str(resp_req).lower(), 'y')
         resp_ref = {None: index+1, '': index+1}.get(resp_ref, str(resp_ref))
         if not resp_req == "n":
+            save_msg1 = "User has requested saving response"
+            save_msg2 = "Response pattern required by user is : {0}"
+            save_msg3 = ("Portion of response saved to the data repository "
+                         "with key: {0}, value: {1}")
+            save_msg4 = "Cannot found response pattern: {0} in response"
             if resp_pat_req is not None:
                 # if the requested pattern not found return empty string
                 reobj = re.search(resp_pat_req, response)
+                if reobj is None:
+                    pNote(save_msg4.format(resp_pat_req))
                 response = reobj.group(0) if reobj is not None else ""
-                pNote("User has requested saving response. Response pattern "
-                      "required by user is : {0}".format(resp_pat_req))
-                pNote("Portion of response saved to the data repository with "
-                      "key: {0}, value: {1}".format(resp_ref, response))
+                response_dict[resp_ref] = response
+                pNote(save_msg1+'.')
+                pNote(save_msg2.format(resp_pat_req))
+                pNote(save_msg3.format(resp_ref, response))
+            elif resp_keys is not None:
+                keys = resp_ref.split(',')
+                # get the patterns from pattern entries in testdata file
+                patterns = [k.get("resp_pattern_req") for k in resp_keys]
+                # warn if number of patterns does not match number of resp_ref keys
+                if len(keys) != len(patterns):
+                    print_warn_msg(keys, len(patterns))
+                if inorder:
+                    pNote(save_msg1+' inorder.')
+                    # since inorder pattern matching selected, join all the
+                    # patterns in order to create a single big pattern
+                    cpatterns = ["({})".format(pat) for pat in patterns]
+                    pattern = ".*".join(cpatterns)
+                    if pattern.endswith(".*(.*)"):
+                        # remove .* pattern from above
+                        pattern = pattern[:-6]+pattern[-4:]
+                    reobj = re.search(pattern, response, re.DOTALL)
+                    if reobj:
+                        grps = reobj.groups()
+                        # update response_dict with resp_ref keys and
+                        # their corresponding matched patterns
+                        response_dict.update(dict(zip(keys, grps)))
+                        pNote(save_msg2.format(pattern))
+                        # print to console the key and the corresponding match stored
+                        [pNote(save_msg3.format(key, grp)) for (key, grp) in zip(keys, grps)]
+                    else:
+                        print_error("inorder search of patterns in response "
+                                    "failed")
+                        print_error("Expected: '{}'".format(pattern))
+                        print_error("But Found: '{}'".format(response))
+                        status = False
+                else:
+                    pNote(save_msg1+' separately.')
+                    for key, pattern in zip(keys, patterns):
+                        reobj = re.search(pattern, response)
+                        presponse = reobj.group(0) if reobj is not None else ""
+                        response_dict[key] = presponse
+                        pNote(save_msg2.format(pattern))
+                        pNote(save_msg3.format(key, presponse))
         else:
-            response = ""
-        response_dict[resp_ref] = response
-        return response_dict
+            response_dict[resp_ref] = ""
+        return status, response_dict
 
     @staticmethod
     def start_threads(started_thread_for_system, thread_instance_list,
@@ -439,7 +498,6 @@ class WarriorCli(object):
                 final_list.append(comma_sep_verify_names[i])
         return final_list
 
-    @cmdprinter
     def _send_cmd_get_status(self, details_dict, index, system_name=None):
         """Sends a command, verifies the response and returns
         status of the command """
@@ -582,7 +640,6 @@ class WarriorCli(object):
 
         return value, kw_system_name, details_dict
 
-    @cmdprinter
     def _send_command_retrials(self, details_dict, index, **kwargs):
         """ Sends a command to a session, if a user provided pattern
         is found in the command response then tries to resend the command
@@ -1078,6 +1135,7 @@ class ParamikoConnect(object):
         if self.conn_type == "NESTED_SSH":
             self.via_host.close()
 
+    @mocked
     def send_command(self, command, get_pty=False, *args, **kwargs):
         """ Execute the command on the remote host
 
@@ -1194,13 +1252,16 @@ class PexpectConnect(object):
         # delete -o StrictHostKeyChecking=no and put them in conn_options
         if not conn_options or conn_options is None:
             conn_options = ""
-        command = 'ssh -p {0} {1}@{2} {3}'.format(self.port, self.username,
-                                                  self.ip, conn_options)
+        if not self.username:
+            self.username = ""
+            print_warning("Using '{0}' as username since it is not provided "
+                          "in data file".format(getpass.getuser()))
+        else:
+            self.username += '@'
+        command = 'ssh -p {0} {1}{2} {3}'.format(self.port, self.username,
+                                                 self.ip, conn_options)
         # command = ('ssh -p '+ port + ' ' + username + '@' + ip)
         print_debug("connectSSH: cmd = %s" % command)
-        if WarriorCliClass.cmdprint:
-            pNote("connectSSH: :CMD: %s" % command)
-            return None, ""
         child = WarriorCli.pexpect_spawn_with_env(self.pexpect, command,
                                                   self.timeout,
                                                   env={"TERM": "dumb"})
@@ -1360,7 +1421,7 @@ class PexpectConnect(object):
             time.sleep(2)
             self.target_host.close()
 
-    @cmdprinter
+    @mocked
     def send_command(self, command, start_prompt, end_prompt,
                      timeout=60, *args, **kwargs):
         """

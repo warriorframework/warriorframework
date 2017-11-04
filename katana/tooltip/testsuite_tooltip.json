@@ -149,6 +149,12 @@
         "bantip": "",
         "snowflake": "This is a mandatory field."
     },
+    "insertcase": {
+        "tooltip": "Click this to insert a case below",
+        "protip": "",
+        "bantip": "",
+        "snowflake": ""
+    },
 	"editTC": {
 		"tooltip": "Click this to edit this Case.",
         "protip": "",

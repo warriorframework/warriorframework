@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<TestSuite>
+        <Details>
+                <Name>ts_runmode_verify_at_ts_global_level</Name>
+                <Title>test suite to verify runmode at testsuite file detail section</Title>
+                <Engineer>Ka Hei Chan</Engineer>
+                <Date>2017-10-31</Date>
+                <Time>11:41:26</Time>
+                <type exectype="sequential_testcases"/>
+                <default_onError action="next"/>
+                <Resultsdir/>
+        </Details>
+        <Requirements>
+                <Requirement>Requirement-001</Requirement>
+                <Requirement>Requirement-002</Requirement>
+        </Requirements>
+        <Testcases>
+                <Testcase>
+                        <path>../../../testcases/framework_tests/runmode_tests/tc_runmode_verify_at_ts_global_level.xml</path>
+                        <context>positive</context>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next"/>
+                        <impact>impact</impact>
+                </Testcase>
+        </Testcases>
+</TestSuite>
+
