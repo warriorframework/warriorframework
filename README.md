@@ -14,7 +14,7 @@ warior-3.1.1 <br/>
 warior-3.2.0 <br/>
 warior-3.3.0 <br/>
 $
-3. To Check the current version you are at, execute "git branch" command
+3. To Check the current version you are at, execute "git branch" command <br/>
 $ git branch <br/>
 \* master <br/>
 $
@@ -23,7 +23,7 @@ $
 - If the active version is master it means you are not using a standard release version of warrior framework and hence it may
 not be a stable tested version.
 4. To switch to a specific version from master, execute 'git checkout <version_name>' command. <br/>
-$ git checkout warrior-3.3.0
+$ git checkout warrior-3.3.0 <br/>
 Note: checking out 'warrior-3.3.0'.
 You are in 'detached HEAD' state. You can look around, make experimental
 changes and commit them, and you can discard any commits you make in this
@@ -40,7 +40,7 @@ master <br/>
 $
 - \* indicates the active version.
 6. Switch from one version to another (current=warrior-3.3.0, switch to warrior-3.2.0) <br/>
-$ git checkout warrior-3.2.0
+$ git checkout warrior-3.2.0 <br/>
 Previous HEAD position was 146313d... reduce command timeout, wait after timeout=60
 HEAD is now at ecb6373... WAR-180, handle nd prompt on timeout
 $
@@ -49,7 +49,7 @@ $ git branch <br/>
 master <br/>
 $
 7. Switch to master branch again. <br/>
-$ git checkout master
+$ git checkout master <br/>
 Previous HEAD position was ecb6373... WAR-180, handle nd prompt on timeout
 Switched to branch 'master'
 Your branch is up-to-date with 'origin/master'.
