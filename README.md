@@ -15,8 +15,8 @@ warior-3.2.0 <br/>
 warior-3.3.0 <br/>
 $
 3. To Check the current version you are at, execute "git branch" command
-$ git branch\n
-\* master
+$ git branch <br/>
+\* master <br/>
 $
 - \* indicates the active version.
 - In the above example master is the active version.
@@ -34,9 +34,9 @@ git checkout -b <new-branch-name>
 HEAD is now at 146313d... reduce command timeout, wait after timeout=60
 $
 5. Execute git branch command to verify the active version.
-$ git branch \n
-\* (HEAD detached at warrior-3.3.0) \n
-master \n
+$ git branch <br/>
+\* (HEAD detached at warrior-3.3.0) <br/>
+master <br/>
 $
 - \* indicates the active version.
 6. Switch from one version to another (current=warrior-3.3.0, switch to warrior-3.2.0)
@@ -44,17 +44,17 @@ $ git checkout warrior-3.2.0
 Previous HEAD position was 146313d... reduce command timeout, wait after timeout=60
 HEAD is now at ecb6373... WAR-180, handle nd prompt on timeout
 $
-$ git branch \n
+$ git branch <br/>
 \* (HEAD detached at warrior-3.2.0) \
-master \n
+master <br/>
 $
 7. Switch to master branch again.
 $ git checkout master
 Previous HEAD position was ecb6373... WAR-180, handle nd prompt on timeout
 Switched to branch 'master'
 Your branch is up-to-date with 'origin/master'.
-$ \n
-$ \n
-$ git branch \n
-* master \n
+$ <br/>
+$ <br/>
+$ git branch <br/>
+* master <br/>
 $ 
