@@ -8,14 +8,14 @@ $ git clone https://github.com/warriorframework/warriorframework.git
 2. go to warriorframework directory
 $cd warriorframework
 3. To check the list of versions available, execute "git tag --list" command
-$ git tag --list
-warior-3.1.0
-warior-3.1.1
-warior-3.2.0
-warior-3.3.0
+$ git tag --list \n
+warior-3.1.0 \n
+warior-3.1.1 \n
+warior-3.2.0 \n
+warior-3.3.0 \n
 $
 3. To Check the current version you are at, execute "git branch" command
-$ git branch
+$ git branch\n
 \* master
 $
 - \* indicates the active version.
@@ -34,27 +34,27 @@ git checkout -b <new-branch-name>
 HEAD is now at 146313d... reduce command timeout, wait after timeout=60
 $
 5. Execute git branch command to verify the active version.
-$ git branch
-* (HEAD detached at warrior-3.3.0)
-master
+$ git branch \n
+\* (HEAD detached at warrior-3.3.0) \n
+master \n
 $
-- * indicates the active version.
+- \* indicates the active version.
 6. Switch from one version to another (current=warrior-3.3.0, switch to warrior-3.2.0)
 $ git checkout warrior-3.2.0
 Previous HEAD position was 146313d... reduce command timeout, wait after timeout=60
 HEAD is now at ecb6373... WAR-180, handle nd prompt on timeout
 $
-$ git branch
-* (HEAD detached at warrior-3.2.0)
-master
+$ git branch \n
+\* (HEAD detached at warrior-3.2.0) \
+master \n
 $
 7. Switch to master branch again.
 $ git checkout master
 Previous HEAD position was ecb6373... WAR-180, handle nd prompt on timeout
 Switched to branch 'master'
 Your branch is up-to-date with 'origin/master'.
-$
-$
-$ git branch
-* master
-$
+$ \n
+$ \n
+$ git branch \n
+* master \n
+$ 
