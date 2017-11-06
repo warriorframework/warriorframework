@@ -292,7 +292,7 @@ class HybridDriver(object):
                                          goto_stepnum, step_num):
         """
         """
-        runmode, value = common_execution_utils.get_runmode_from_xmlfile(step)
+        runmode, value, _ = common_execution_utils.get_runmode_from_xmlfile(step)
 
         if runmode is not None:
             # if runmode is 'ruf' & step_status is False, skip the repeated

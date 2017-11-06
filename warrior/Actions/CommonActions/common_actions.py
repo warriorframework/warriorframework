@@ -12,21 +12,27 @@ limitations under the License.
 '''
 
 
-"""common_actions module where keywords common to all products are developed"""
-import time
+
 import json
-import Framework.Utils as Utils
 import os
+
+import Framework.Utils as Utils
 from Framework.Utils.print_Utils import print_info, print_error
 from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.data_Utils import get_object_from_datarepository, update_datarepository
 from Framework.Utils.file_Utils import getAbsPath
+from Framework.Utils import datetime_utils
 
 
 class CommonActions(object):
     """class CommonActions having methods (keywords) that are common for all the products"""
 
     def __init__(self):
+
+        """
+            Constructor
+        """
+
         self.resultfile = Utils.config_Utils.resultfile
         self.datafile = Utils.config_Utils.datafile
         self.logsdir = Utils.config_Utils.logsdir
@@ -37,9 +43,7 @@ class CommonActions(object):
         """waits (sleeps) for the time provided
 
         :Arguments:
-            1. resultfile(string) = full path to the result file
-            2. step_num(string) = step_num in string
-            3. timeout= time to wait in seconds
+            1. timeout= time to wait in seconds
 
         :Returns:
             1. status (bool)
@@ -47,18 +51,8 @@ class CommonActions(object):
 
         WDesc = "Waits for the timeout provided"
         Utils.testcase_Utils.pSubStep(WDesc)
-        pNote(self.datafile)
-        pNote('Starting Time Out of ' + timeout + 'secs')
-        wait_time = float(timeout)
-        print_interval = wait_time/10
-        pNote('Remaining Time out will be notified every {} secs'.format(print_interval))
-        while wait_time > 0:
-            wait_time -= print_interval
-            time.sleep(print_interval)
-            pNote('Remaining Time out {} seconds'.format(wait_time))
-        pNote('Ending Time Out of ' + timeout + 'secs')
+        status = datetime_utils.wait_for_timeout(timeout)
         pNote('********Below Testing occured after Timeout *********')
-        status = True
         Utils.testcase_Utils.report_substep_status(status)
         return status
 
@@ -128,6 +122,16 @@ class CommonActions(object):
             type = type of datavalue (string/int/float)
         """
         def get_dict_to_update(var, val):
+            """
+
+            The function creates a dictionary with Variable and value. If Variable has "." seperated
+            keys then the value is updated at appropriate level of the nested dictionary.
+            :param var: Dictionary Key or Key seperated with "." for nested dict keys.
+            :param val: Value for the Key.
+
+            :return: Dictionary
+
+            """
             dic = {}
             if '.' in var:
                 [key, value] = var.split('.', 1)
@@ -143,6 +147,8 @@ class CommonActions(object):
             value = datavalue
         dict_to_update = get_dict_to_update(datavar, value)
         update_datarepository(dict_to_update)
+        print_info("Value: {0} is stored in a Key:{1} of Warrior "
+                   "data_repository ".format(datavalue, datavar))
         return True
 
     def verify_data(self, expected, object_key, type='str', comparison='eq'):
@@ -165,19 +171,21 @@ class CommonActions(object):
         wDesc = "Verify if value of object_key in data_repository "
         "matches with expected"
         Utils.testcase_Utils.pNote(wDesc)
-
-        result, value = Utils.data_Utils.verify_data(expected, object_key,
-                                                     type, comparison)
-        if result == "FALSE":
+        result, value = Utils.data_Utils.verify_data(expected, object_key, type, comparison)
+        if result not in ["FALSE", "TRUE"]:
+            return result
+        elif result == "FALSE":
             print_error("Expected: {0} {1} {2} but found {0}={3}".format(
                 object_key, comparison, expected, value))
-        if result == "TRUE":
-            return True
-        else:
             return False
+        elif result == "TRUE":
+            print_info("Expected: {0} {1} {2} found the same".format(
+                object_key, comparison, expected, value))
+            return True
+
 
     def set_env_var(self, var_key=None, var_value=None, filepath=None,
-                    jsonkey="environmental_variables", overwrite = "yes"):
+                    jsonkey="environmental_variables", overwrite="yes"):
         """Create a temp environment variable, the value will only stay for the current Execution
         :Argument:
             var_key = key of the environment variable
@@ -199,8 +207,8 @@ class CommonActions(object):
             print_error('Either Provide values to arguments \"var_key\" & \"var_value\" or to '
                         'argument \"filepath\"')
         if overwrite == "NO" and os.getenv(var_key):
-            print_info("Using ENV variable {0} set earlier with value '{1}'".format(var_key,
-                                                                           os.getenv(var_key)))
+            print_info("Using ENV variable {0} set earlier with "
+                       "value '{1}'".format(var_key, os.getenv(var_key)))
         elif var_key is not None and var_value is not None and overwrite in ["YES", "NO"]:
             os.environ[var_key] = var_value
             if os.environ[var_key] == var_value:
@@ -211,7 +219,7 @@ class CommonActions(object):
         if filepath is not None:
             testcasefile_path = get_object_from_datarepository('wt_testcase_filepath')
             try:
-                filepath=getAbsPath(filepath, os.path.dirname(testcasefile_path))
+                filepath = getAbsPath(filepath, os.path.dirname(testcasefile_path))
                 with open(filepath, "r") as json_handle:
                     get_json = json.load(json_handle)
                     if jsonkey in get_json:
@@ -247,5 +255,3 @@ class CommonActions(object):
                 status = False
 
         return status
-
-

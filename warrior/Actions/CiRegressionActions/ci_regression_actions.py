@@ -13,9 +13,8 @@ limitations under the License.
 import os
 import time
 from Framework import Utils
-from Framework.Utils import data_Utils, file_Utils
+from Framework.Utils import data_Utils, file_Utils, datetime_utils
 from Framework.Utils.testcase_Utils import pNote
-from Framework.Utils.print_Utils import print_error
 
 
 class CIregressionActions(object):
@@ -266,6 +265,7 @@ class CIregressionActions(object):
             input pass->true, fail->false and everything else ->exception
         """
         # print "desired_status: " + desired_status
+
         if desired_status == "pass":
             return True
         elif desired_status == "fail":
@@ -350,42 +350,42 @@ class CIregressionActions(object):
         err_msg = "{} is not an {} value but of type {}"
         if type(str_value) is not str:
             # this block checks if str_value is string type
-            print_error(err_msg.format(str_value, "str", type(str_value)))
+            pNote(err_msg.format(str_value, "str", type(str_value)), "error")
             status = False
         if type(int_value) is not int:
             # this block checks if int_value is int type
-            print_error(err_msg.format(int_value, "int", type(int_value)))
+            pNote(err_msg.format(int_value, "int", type(int_value)), "error")
             status = False
         if type(float_value) is not float:
             # this block checks if float_value is float type
-            print_error(err_msg.format(float_value, "float", type(float_value)))
+            pNote(err_msg.format(float_value, "float", type(float_value)), "error")
             status = False
         if type(bool_value) is not bool:
             # this block checks if bool_value is bool type
-            print_error(err_msg.format(bool_value, "bool", type(bool_value)))
+            pNote(err_msg.format(bool_value, "bool", type(bool_value)), "error")
             status = False
         if type(list_value) is not list:
             # this block checks if list_value is list type
-            print_error(err_msg.format(list_value, "list", type(list_value)))
+            pNote(err_msg.format(list_value, "list", type(list_value)), "error")
             status = False
         if type(tuple_value) is not tuple:
             # this block checks if tuple_value is tuple type
-            print_error(err_msg.format(tuple_value, "tuple", type(tuple_value)))
+            pNote(err_msg.format(tuple_value, "tuple", type(tuple_value)), "error")
             status = False
         if type(dict_value) is not dict:
             # this block checks if dict_value is dict type
-            print_error(err_msg.format(dict_value, "dict", type(dict_value)))
+            pNote(err_msg.format(dict_value, "dict", type(dict_value)), "error")
             status = False
         if type(file_value) is not file:
             # this block checks if file_value is file type
-            print_error(err_msg.format(file_value, "file", type(file_value)))
+            pNote(err_msg.format(file_value, "file", type(file_value)), "error")
             status = False
         else:
             actual_contents = file_value.read().strip()
             if actual_contents != file_contents:
                 # this block checks if the contents of file type variable is expected
-                print_error("contents of the file {} is <<{}>> which does not match expected"
-                            " <<{}>>".format(file_value, actual_contents, file_contents))
+                pNote("contents of the file {} is <<{}>> which does not match expected"
+                      " <<{}>>".format(file_value, actual_contents, file_contents), "error")
                 status = False
         return status
 
@@ -411,8 +411,8 @@ class CIregressionActions(object):
             vartype = type(var)
             status = True
             if vartype is not datatype:
-                print_error('{} is expected to be {} type, but found to be of '
-                            '{} type'.format(varname, datatype, vartype))
+                pNote('{} is expected to be {} type, but found to be of '
+                      '{} type'.format(varname, datatype, vartype), "error")
                 status = False
             return status
         status = True
@@ -442,18 +442,66 @@ class CIregressionActions(object):
             if not os.path.isabs(anotherfile):
                 anotherfile = file_Utils.getAbsPath(anotherfile, tc_filepath)
             if not os.path.isfile(configfile):
-                print_error(file_err.format(configfile))
+                pNote(file_err.format(configfile), "error")
             if not os.path.isfile(anotherfile):
-                print_error(file_err.format(anotherfile))
+                pNote(file_err.format(anotherfile), "error")
         except AttributeError:
-            print_error('configfile and anotherfile are expected to be files')
-            print_error('type of configfile is {}'.format(type(configfile)))
-            print_error('type of anotherfile is {}'.format(type(anotherfile)))
+            pNote('configfile and anotherfile are expected to be files', "error")
+            pNote('type of configfile is {}'.format(type(configfile)), "error")
+            pNote('type of anotherfile is {}'.format(type(anotherfile)), "error")
             status = False
         if type(intvar) is str and intvar.startswith('tag'):
             intvar = data_Utils.resolve_argument_value_to_get_tag_value(
                                     datafile, system_name, intvar)
         else:
             status = check_type(intvar, "intvar", int) and status
+        return status
 
+    def generate_timestamp_delta(self, stored_delta_key, timestamp_key, desired_status):
+        """
+            test keyword created for runmode_timer
+            Generate a delta from comparing current time with store timestamp
+            save the delta and current timestamp in repo for keyword verify_delta
+        :Argument:
+            stored_delta_key = key name to store the list of delta
+            timestamp_key = key name to store the timestamp
+            desired_status = user desired status
+                input pass->true, fail->false and everything else ->exception
+        """
+        cur_ts = datetime_utils.get_current_timestamp()
+        result_dict = {timestamp_key: cur_ts}
+        status = self.local_data_test(desired_status)
+
+        previous_time = data_Utils.get_object_from_datarepository(timestamp_key)
+        stored_delta = data_Utils.get_object_from_datarepository(stored_delta_key)
+        if previous_time:
+            delta = datetime_utils.get_time_delta(previous_time, cur_ts)
+            if stored_delta:
+                stored_delta.append(delta)
+                result_dict.update({stored_delta_key: stored_delta})
+            else:
+                result_dict.update({stored_delta_key: [delta]})
+        return status, result_dict
+
+    def verify_delta(self, delta_key, int_num, float_min_val):
+        """
+            test keyword created for runmode_timer
+            Compare a list of delta to a minimum value
+            This is used to ensure runmode is correctly waiting
+            for a minimum amount of time (float_min_val)
+        :Argument:
+            delta_key = key name for the list of delta
+            int_num = number of delta required in list of delta
+            float_min_val = minimum value of each delta
+        """
+        status = False
+        stored_delta = data_Utils.get_object_from_datarepository(delta_key)
+        if stored_delta:
+            if len(stored_delta) != int_num:
+                pNote("not enough delta value stored in list", "Error")
+            else:
+                status = all([x >= float_min_val for x in stored_delta])
+                if not status:
+                    pNote("Delta: {} not meet minimum value {}".\
+                        format(str(stored_delta), float_min_val))
         return status
