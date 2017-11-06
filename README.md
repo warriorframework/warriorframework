@@ -8,11 +8,11 @@ $ git clone https://github.com/warriorframework/warriorframework.git
 2. go to warriorframework directory
 $cd warriorframework
 3. To check the list of versions available, execute "git tag --list" command
-$ git tag --list \n
-warior-3.1.0 \n
-warior-3.1.1 \n
-warior-3.2.0 \n
-warior-3.3.0 \n
+$ git tag --list <br />
+warior-3.1.0 <br/>
+warior-3.1.1 <br/>
+warior-3.2.0 <br/>
+warior-3.3.0 <br/>
 $
 3. To Check the current version you are at, execute "git branch" command
 $ git branch\n
