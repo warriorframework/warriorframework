@@ -237,31 +237,27 @@ class WarriorCli(object):
                     if len(response_dict) > 0:
                         for count, resp in enumerate(resp_key_list[i].keys()):
                             # session id is formed from the system name and session name.
-                            session_id = self.get_session_id_for_resp_ref(details_dict, response_dict,
-                                                                       resp, i, system_name,
-                                                                       session_name, key)
+                            session_id = \
+                             self.get_session_id_for_resp_ref(details_dict, response_dict,
+                                                              resp, i, system_name,
+                                                              session_name, key)
                             td_resp_dict = get_object_from_datarepository(str(session_id))
                             # checks if title_row value is not in td_resp_dict
                             if key not in td_resp_dict:
-                                # if not available then it first updates the title_row value to td_resp_dict
+                                # if not available then it first updates the 
+                                # title_row value to td_resp_dict
                                 td_resp_dict[key] = {}
                             # title_row value is available in td_resp_dict,
                             # so it updates the resp_ref key and value to td_resp_dict
                             if len(resp_key_list[i].keys()) == 1:
-                                resp_key_value_dict = {response_dict.keys()[i]: response_dict.values()[i]}
+                                resp_key_value_dict = \
+                                 {response_dict.keys()[i]: response_dict.values()[i]}
                                 td_resp_dict[key].update(resp_key_value_dict)
-                                pNote("Portion of response saved to the data repository with key: "
-                                      "'{0}.{1}.{2}' and value: '{3}'".format(session_id, key, response_dict.keys()[i],
-                                                                              response_dict.values()[i]))
                             elif len(resp_key_list[i].keys()) > 1:
                                 resp_key_value_dict = {resp: resp_key_list[i].values()[count]}
                                 td_resp_dict[key].update(resp_key_value_dict)
-                                pNote("Portion of response saved to the data repository with key: "
-                                      "'{0}.{1}.{2}' and value: '{3}'".format(session_id, key, resp,
-                                                                              resp_key_list[i].values()[count]))
 
-                    result = (result and rspRes) if "ERROR" not in (
-                                result, rspRes) else "ERROR"
+                    result = (result and rspRes) if "ERROR" not in (result, rspRes) else "ERROR"
                     print_debug("<<<")
                 else:
                     finalresult = "ERROR"
@@ -276,7 +272,8 @@ class WarriorCli(object):
             responses_dict[key] = dict(response_dict)
         return finalresult, td_resp_dict
 
-    def get_session_id_for_resp_ref(self, details_dict, response_dict,resp, i, system_name, session_name, key):
+    def get_session_id_for_resp_ref(self, details_dict, response_dict, resp,
+                                    i, system_name, session_name, key):
         """
         The session id is retrieved for updating and printing the response reference key & value
         """
@@ -286,6 +283,7 @@ class WarriorCli(object):
         temp_sys = details_dict["sys_list"][i]
         temp_session = details_dict["session_list"][i]
         temp_sess = ''
+
         if resp in response_dict.keys():
             # If sys_list in None or if sys_tag in td file has only subsystem name, then it
             # takes from the test case else fetches from the td file.
@@ -306,6 +304,8 @@ class WarriorCli(object):
                     ses_name = temp_sys.split('.', 1)[1]
                 else:
                     ses_name = session_name
+            if temp_session:
+                ses_name = temp_session
             session_id = Utils.data_Utils.get_session_id(sys_name, ses_name) + "_td_response"
         return session_id
 
