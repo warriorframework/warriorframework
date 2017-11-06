@@ -1029,6 +1029,28 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
             }
             $scope.updateConditionList();
 
+  $scope.addCase = function (index) {
+        if($scope.testcaseEditor){
+            swal({
+                title: "You have a Case open in the Case editor that should be saved before editing a new Case.",
+                text: "Please save that Case.",
+                type: "warning",
+                confirmButtonText: "Ok",
+                closeOnConfirm: true,
+                confirmButtonColor: '#3b3131'
+            });
+        }
+        else {
+            $scope.testcaseToBeCopied = "None";
+            $scope.testcase_numbers = [];
+            for(var i=0; i<$scope.testcases.length; i++){
+                $scope.testcase_numbers.push(i+1);
+            }
+            openTestcaseCap(index);
+        }
+    };
+
+
             $scope.deleteTestcaseCap = function(index) {
                 swal({
                     title: "Are you sure you want to delete this Case?",
@@ -1118,7 +1140,7 @@ app.controller('testsuiteCapCtrl', ['$scope', '$http', '$routeParams', '$control
                     "InputDataFile": "",
                     "runtype": "sequential_keywords",
                     "onError": {
-                        "_action": " ",
+                        "_action": "next",
                         "_value": ""
                     },
                     "runmode": {
