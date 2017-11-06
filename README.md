@@ -16,9 +16,9 @@ warior-3.3.0
 $
 3. To Check the current version you are at, execute "git branch" command
 $ git branch
-* master
+\* master
 $
-- * indicates the active version.
+- \* indicates the active version.
 - In the above example master is the active version.
 - If the active version is master it means you are not using a standard release version of warrior framework and hence it may
 not be a stable tested version.
