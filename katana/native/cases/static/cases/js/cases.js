@@ -1036,7 +1036,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 	editCaseFromLine: function() { 
 	var names = this.attr('key').split('-');
 	var sid = parseInt(names[1]);
-	katana.popupController.open(katana.$activeTab.find("#editCaseStepDiv").html(),"Edit..." + sid + 1, function(popup) {
+	katana.popupController.open(katana.$activeTab.find("#editCaseStepDiv").html(),"Edit TimeStep " + (sid + 1), function(popup) {
 		cases.setupPopupDialog(sid,cases.jsonCaseObject.Teststeps,popup);
 	});
 	},	
@@ -1609,6 +1609,8 @@ The UI currently uses jQuery and Bootstrap to display the data.
 			console.log("Saving...", sid);
 			cases.mapUItoTestStep(sid,popup);	
 			cases.mapCaseJsonToUi(cases.jsonCaseObject.Teststeps);
+			katana.popupController.close(popup);
+			cases.lastPopup = null;
 	},
 
 	deletePopupArgument: function( ) {
@@ -1728,6 +1730,11 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		console.log("Adding new step", cases.jsonCaseObject.Teststeps,cases.jsonCaseObject.Teststeps);
 		cases.jsonCaseObject.Teststeps.push(newObj);  // Don't delete anything
 		cases.mapCaseJsonToUi(cases.jsonCaseObject.Teststeps);		
+
+		var sid = cases.jsonCaseObject.Teststeps.length - 1; 
+		katana.popupController.open(katana.$activeTab.find("#editCaseStepDiv").html(),"Edit TimeStep: " + (sid + 1), function(popup) {
+			cases.setupPopupDialog(sid,cases.jsonCaseObject.Teststeps,popup);
+		});
 	},
 
 // Inserts a new test step 
