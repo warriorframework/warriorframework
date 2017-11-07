@@ -1098,7 +1098,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 				
 				if (kw == 'system_name') {
 					//a_items.push('<select class="col-md-4 case-listed-args" type="text" id="caseSelectArgName-'+ta+'" argid="caseSelectArgName-'+ta+'" value="'+vl+'" katana-click="cases.handleSystemName">');
-					a_items.push('<select class="col-md-4 case-listed-args" type="text" id="caseSelectArgName-'+ta+'" argid="caseArgValue-'+ta+'" kwargid="caseArgName-'+ta+'" value="'+vl+'" >');
+					a_items.push('<select class="col-md-4 case-listed-args case-listed-labels" type="text" id="caseArgValue-'+ta+'" argid="caseArgValue-'+ta+'" kwargid="caseArgName-'+ta+'" value="'+vl+'" >');
 					for (var xi in cases.system_names) {
 						var vx = cases.system_names[xi];
 						a_items.push('<option value="'+vx+'">'+vx+'</option>');
@@ -1112,8 +1112,11 @@ The UI currently uses jQuery and Bootstrap to display the data.
 				ta += 1; 
 			
 			}
-		popup.find("#arguments-textarea").html( a_items.join("\n"));	
-		popup.find("#caseSelectArgName-0").editableSelect();
+			popup.find("#arguments-textarea").html( a_items.join("\n"));	
+				popup.find("#caseArgValue-0").editableSelect({
+		  			warpClass: 'ui-select-wrap',
+		  			editable: true
+					});
 	
 		//console.log("Making arguments at ",oneCaseStep, popup, popup.find("#arguments-textarea"), a_items);
 	},
@@ -1598,7 +1601,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 
 	closeEditedCaseStep: function() {
 		// Close the popup contrller 
-			katana.popupController.close();
+			//katana.popupController.close();
 			cases.mapCaseJsonToUi(cases.jsonCaseObject.Teststeps);
 	},
 
@@ -1610,7 +1613,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 			cases.mapUItoTestStep(sid,popup);	
 			cases.mapCaseJsonToUi(cases.jsonCaseObject.Teststeps);
 			katana.popupController.close(popup);
-			cases.lastPopup = null;
+			//cases.lastPopup = null;
 	},
 
 	deletePopupArgument: function( ) {
@@ -1901,7 +1904,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		for (var argctr in argIds) {
 			if (argctr < slen) { 
 			var arg = argIds[argctr];
-			//console.log("Argument:", argctr, arg);
+			console.log("Argument:", argctr, arg);
 			var vl = arg.value;   // The value 
 			console.log("key", arg,  vl)
 			var kw_id = arg.getAttribute('kwargid');
@@ -1913,17 +1916,6 @@ The UI currently uses jQuery and Bootstrap to display the data.
 			}
 		}
 
-
-		// var slen =  cases.jsonCaseObject.Teststeps[sid]['Arguments'].length; 
-		// for (var aid=0; aid<slen; aid++){
-		// 	var obj = cases.jsonCaseObject.Teststeps[sid]['Arguments'][aid]; 	
-		// 	var vl =  cases.lastPopup.find('[argid=caseArgValue-'+aid+']').val();
-		// 	if (vl.length > 0) {
-		// 	obj['@name'] = cases.lastPopup.find('[argid=caseArgName-'+aid+']').val();
-		// 	obj['@value'] = vl; 
-		// 	}
-			
-		// }
 		console.log("after saving ",oneCaseStep);
 	},
 
