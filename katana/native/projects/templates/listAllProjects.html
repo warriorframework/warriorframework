@@ -1,16 +1,19 @@
 {% load static %}
 
-<body> 
+<div id="OverwriteProjectHere">
+<div class="csrf-container">{% csrf_token %}</div>
+
 <div class="tool-bar">
-<button id="addSuite" class="btn btn-success" katana-click="projectApp.startNewProject">Add New Project</button>
-</div >
+Search: <input id="jstreeFilterText" class="col-md-2" />
+<button id="addNewProject" class="button" katana-click="projects.startNewProject"">Add New Project</button>
 
-<h2>List of Projects</h2>
-
-<div id="myProject" auto-init="projectApp.initProjectTree">
 </div>
- 
-<div id="myProjectTree"></div>
+<h2>List of Projects</h2>
+<div id="myProject" auto-init="projects.initProjectTree"> </div>
+	
+<div class="row">
+	<div class="col-md-6" id="myProjectTree"></div>
 
-
-</body>
+</div>
+		
+</div>
