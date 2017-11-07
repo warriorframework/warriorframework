@@ -609,14 +609,10 @@ var cases = {
 	onTabSwitch : function (){
 		cases.activePageID = $.find(".nav-inner .active")[0].textContent; 			
 		cases.jsonCaseObject = allCases[ cases.activePageID];
-
 		katana.$activeTab.find("#editCaseStepDiv").hide();
-		katana.$activeTab.find("#tableOfTestStepsForCase").removeClass();
-		katana.$activeTab.find("#tableOfTestStepsForCase").addClass('col-md-12');
-		katana.$activeTab.find("#tableOfTestStepsForCase").show();
+
 		cases.mapCaseJsonToUi(cases.jsonCaseObject.Teststeps);
 		cases.createRequirementsTable();
-
 		console.log("Case ID", cases.activePageID, cases.jsonCaseObject);
 	},
 
@@ -1098,23 +1094,26 @@ The UI currently uses jQuery and Bootstrap to display the data.
 			}
 				a_items.push('<div><span>');
 				a_items.push('<input class="col-md-6 case-listed-args" type="text" argid="caseArgName-'+ta+'" value="'+kw+'" />');
-				a_items.push('<input class="col-md-4 case-listed-args case-listed-labels" type="text" isValue="true" argid="caseArgValue-'+ta+'" kwargid="caseArgName-'+ta+'" value="'+vl+'"/>');
+				//a_items.push('<input class="col-md-4 case-listed-args case-listed-labels" type="text" isValue="true" argid="caseArgValue-'+ta+'" kwargid="caseArgName-'+ta+'" value="'+vl+'"/>');
 				
 				if (kw == 'system_name') {
-					a_items.push('<select class="col-md-8 case-listed-args" type="text" id="caseSelectArgName-'+ta+'" argid="caseSelectArgName-'+ta+'" value="'+kw+'" katana-click="cases.handleSystemName">');
+					//a_items.push('<select class="col-md-4 case-listed-args" type="text" id="caseSelectArgName-'+ta+'" argid="caseSelectArgName-'+ta+'" value="'+vl+'" katana-click="cases.handleSystemName">');
+					a_items.push('<select class="col-md-4 case-listed-args" type="text" id="caseSelectArgName-'+ta+'" argid="caseArgValue-'+ta+'" kwargid="caseArgName-'+ta+'" value="'+vl+'" >');
 					for (var xi in cases.system_names) {
 						var vx = cases.system_names[xi];
 						a_items.push('<option value="'+vx+'">'+vx+'</option>');
 					}
 					a_items.push('</select>');
-			
+					
+				} else {
+					a_items.push('<input class="col-md-4 case-listed-args case-listed-labels" type="text" isValue="true" argid="caseArgValue-'+ta+'" kwargid="caseArgName-'+ta+'" value="'+vl+'"/>');
 				}
 				a_items.push('</span></div>');
 				ta += 1; 
 			
 			}
 		popup.find("#arguments-textarea").html( a_items.join("\n"));	
-
+		popup.find("#caseSelectArgName-0").editableSelect();
 	
 		//console.log("Making arguments at ",oneCaseStep, popup, popup.find("#arguments-textarea"), a_items);
 	},
