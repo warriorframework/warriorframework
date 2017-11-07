@@ -124,6 +124,18 @@ var katana = {
 		$elem.siblings().removeClass('active');
 		$elem.addClass('active');
 		katana.$activeTab = katana.$view.find( '#' + uid ).removeClass('hidden');
+		var onSwitch = katana.$activeTab.find('[on-switch]');
+		console.log("********Calling...", onSwitch);
+		if (onSwitch != undefined) {
+			if(onSwitch[0]) { 
+
+			eval(onSwitch[0].getAttribute('on-switch'))();
+			console.log("*******Done***Calling...", onSwitch);
+			}
+			
+		}
+		
+
 	},
 
   closeTab: function( ignore ){

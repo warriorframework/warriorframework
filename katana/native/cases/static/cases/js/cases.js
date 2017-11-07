@@ -512,7 +512,7 @@ class caseTestStepObject {
 	}
 
 
- 
+ var allCases = [];
 
 ///////////////////////////////////////////////////////////////////////////////////
 // The application code begins here.
@@ -589,7 +589,7 @@ var cases = {
 				  var xref="./cases/editCase/?fname=" + thePage; 
 				  cases.thefile = thePage;				  // Load the response here. ...	
 				  katana.$activeTab.find(".case-single-toolbar").hide()
-				  katana.templateAPI.subAppLoad(xref, null, function(thisPage) { 
+				  katana.templateAPI.subAppLoad(xref,null, function(thisPage) { 
 			   			cases.mapFullCaseJson(); // (cases.thefile, null);
 				  });
 				  //katana.templateAPI.load(xref, null, null, 'Case') ;
@@ -606,6 +606,21 @@ var cases = {
 
 
 
+	onTabSwitch : function (){
+		cases.activePageID = $.find(".nav-inner .active")[0].textContent; 			
+		cases.jsonCaseObject = allCases[ cases.activePageID];
+
+		katana.$activeTab.find("#editCaseStepDiv").hide();
+		katana.$activeTab.find("#tableOfTestStepsForCase").removeClass();
+		katana.$activeTab.find("#tableOfTestStepsForCase").addClass('col-md-12');
+		katana.$activeTab.find("#tableOfTestStepsForCase").show();
+		cases.mapCaseJsonToUi(cases.jsonCaseObject.Teststeps);
+		cases.createRequirementsTable();
+
+		console.log("Case ID", cases.activePageID, cases.jsonCaseObject);
+	},
+
+
 //
 // This function is called when the page loads in cases.js . 
 //
@@ -614,9 +629,10 @@ var cases = {
 		jQuery.getJSON("./cases/getJSONcaseDataBack/?fname="+myfile).done(function(data) {
 			a_items = data['fulljson']['Testcase'];
 
-			cases.jsonCaseObject  = new caseObject(a_items);
-			//console.log("Objects--->",a_items, myObj, myObj.getJSON());
-			//cases.jsonCaseSteps  = cases.jsonCaseObject.Teststeps;      //
+			cases.activePageID = $.find(".nav-inner .active")[0].textContent; 
+			allCases[cases.activePageID] = new caseObject(a_items);
+			cases.jsonCaseObject =  allCases[cases.activePageID];
+			console.log("Objects--->",cases, allCases, cases.activePageID);
 			cases.jsonCaseDetails = cases.jsonCaseObject.Details;
 			katana.$activeTab.find("#editCaseStepDiv").hide();
 			katana.$activeTab.find("#tableOfTestStepsForCase").removeClass();
@@ -845,9 +861,7 @@ var cases = {
 			xfname  = xfname + ".xml";
 		}
 		
-		//console.log(cases.jsonCaseObject.getJSON());
 		var topNode  = { 'Testcase' : cases.jsonCaseObject.getJSON()};
-		//console.log("sending case 3", xfname, cases.jsonCaseObject);
 		
 		$.ajax({
 		url : url,
@@ -1181,7 +1195,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		//console.log("Step ", gotoStep, popup.find('#SteponError-at-action'));
 		var defgoto = popup.find('#SteponError-at-value'); 
 		defgoto.hide(); 
-		var xdata = cases.jsonCaseObject.Teststeps; // ['Testcase']; 
+		var xdata = cases.jsonCaseObject.Teststeps; 
 		//console.log("Step....",xdata.length, xdata);
 		for (var s=0; s<xdata.length; s++ ) {
 			defgoto.append($('<option>',{ value: s,  text: s+1}));
