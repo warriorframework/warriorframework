@@ -353,7 +353,7 @@ class caseTestStepObject {
 			jsonData['runmode'] = { '@value': '', '@type' : ''}; 
 		}
 		this.runmode_value = jsonData['runmode']['@value'];
-		this.runmode_type  = jsonData['runmode']['@type'];
+		this.runmode_type  = jsonData['runmode']['@type'].toLowerCase();
 
 
 
@@ -955,7 +955,12 @@ The UI currently uses jQuery and Bootstrap to display the data.
 	
 
 		items.push('<td>'+outstr+'</td>'); 
-		items.push('<td>'+oneCaseStep.runmode_type+'</td>');
+		xstr = '<td>'+oneCaseStep.runmode_type+'</td>';
+		if (oneCaseStep.runmode_type.toLowerCase() != 'standard') {
+			xstr = '<td>'+oneCaseStep.runmode_type+'<br>' + oneCaseStep.runmode_value+'</td>';
+		}
+		items.push(xstr);
+
 		items.push('<td>'+oneCaseStep.context+'</td>');
 		items.push('<td>'+oneCaseStep.impact+'</td>'); 
 		var bid = "deleteTestStep-"+s+"-id-"+cases.activePageID;
@@ -1231,19 +1236,20 @@ The UI currently uses jQuery and Bootstrap to display the data.
 
 		popup.find('#StepDriverText').val(oneCaseStep.step_driver);
 		popup.find("#StepKeywordText").val(oneCaseStep.step_keyword);
-		
-		//console.log('oneCaseStep', oneCaseStep);
+		//oneCaseStep.runmode_type = oneCaseStep.runmode_type.toLowerCase();
+		console.log('oneCaseStep', oneCaseStep);
 		popup.find("#StepRowToEdit").attr("value",sid);
 		popup.find("#StepDriver").val(oneCaseStep.step_driver);
 		popup.find("#StepKeyword").val(oneCaseStep.step_keyword);
 		popup.find("#StepTS").attr("value",oneCaseStep.step_TS);
 		popup.find("#StepDescription").attr("value",oneCaseStep["Description"]);
-		popup.find("#StepContext").attr("value",oneCaseStep["context"]);
-		popup.find("#SteponError-at-action").attr("value",oneCaseStep.onError_action);
-		popup.find("#SteponError-at-value").attr("value",oneCaseStep.onError_value);
-		popup.find("#runmode-at-type").attr("value",oneCaseStep.runmode_type);
-		popup.find("#runmode-at-value").attr("value",oneCaseStep.runmode_value);
-		popup.find("#StepImpact").attr("value",oneCaseStep["impact"]);
+		popup.find("#StepContext").val(oneCaseStep["context"]);
+		popup.find("#SteponError-at-action").val(oneCaseStep.onError_action);
+		popup.find("#SteponError-at-value").val(oneCaseStep.onError_value);
+		popup.find("#SteponError-at-value").attr('value',oneCaseStep.onError_value);
+		popup.find("#runmode-at-type").val(oneCaseStep.runmode_type);
+		popup.find("#runmode-at-value").val(oneCaseStep.runmode_value);
+		popup.find("#StepImpact").val(oneCaseStep["impact"]);
 		popup.find('.rule-condition').hide();
 		popup.find('.runmode-value').hide();
 
@@ -1523,7 +1529,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 	});
 
 
-	popup.find("#runmode-at-value").on('change',function() {
+	popup.find("#runmode-at-type").on('change',function() {
 		var myvalue = this.value.toLowerCase()
 		if (myvalue == 'standard') {
 			popup.find('.runmode-value').hide();			
@@ -1894,18 +1900,18 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		}
 			
 		
-		console.log("Arguments, ", argIds);
+		// console.log("Arguments, ", argIds);
 		var slen = argIds.length;
 		oneCaseStep.Arguments = {} 
 		for (var argctr in argIds) {
 			if (argctr < slen) { 
 			var arg = argIds[argctr];
-			console.log("Argument:", argctr, arg);
+			// console.log("Argument:", argctr, arg);
 			var vl = arg.value;   // The value 
-			console.log("key", arg,  vl)
+			// console.log("key", arg,  vl)
 			var kw_id = arg.getAttribute('kwargid');
 			var kw = popup.find('[argid="'+kw_id+'"]').val()
-			console.log("key", kw, vl)
+			// console.log("key", kw, vl)
 			if (vl.length > 0 && vl != 'None') {
 					oneCaseStep.Arguments[kw] = vl; 
 				}
