@@ -278,7 +278,7 @@ class caseTestStepObject {
 			jsonData = 	this.createEmptyTestStep(); 
 		}
 		this.Arguments = {} ; 
-		//console.log("Setting Arguments ....",jsonData);
+		console.log("Setting Arguments ....",jsonData);
 
 		if (!jsonData['Arguments']) {
 			jsonData['Arguments']= { 'argument': [] }
@@ -293,14 +293,16 @@ class caseTestStepObject {
 		var vlen = jsonData['Arguments']['argument'].length;
 		for (var a=0;a<vlen; a++) {
 				var ao = jsonData['Arguments']['argument'][a];
+				console.log("Adding... in setupFromJSON ---> ", ao, ao['@name'] , ao['@value'] ); 
+				
 				if (ao == null) break;
-				//console.log("Adding... in setupFromJSON ---> ", ao); 
-				if (ao['@name'] && ao['value']) { 
-					this.Arguments[ao['@name']] = ao['@value]']
-				}
-			
+				var nm = ao['@name'];
+				var vl = ao['@value'];
+				//if (ao['@name'] != ""  && ao['@value'] != "undefined") { 
+				this.Arguments[nm] = vl;
+				//}
 			}
-		
+		console.log("Arguments list --> ", this.Arguments);
 
 		//console.log("Adding-->",jsonData);
 		this.step_driver = jsonData['@Driver']; 
@@ -353,19 +355,7 @@ class caseTestStepObject {
 		this.runmode_value = jsonData['runmode']['@value'];
 		this.runmode_type  = jsonData['runmode']['@type'];
 
-		// if (! jsonData['iteration_type']) {
-		// 	jsonData['iteration_type'] = {'@type' : 'sequential_testcases', '@value' : '' } ; 
-		// }
 
-		// if (! jsonData['iteration_type']['@value']) {
-		// 	jsonData['iteration_type']['@value'] = 'sequential_testcases';
-		// }
-		// if (! jsonData['iteration_type']['@value']) {
-		// 	jsonData['iteration_type']['@value'] = '';
-		// }
-		// // 
-		// this.iteration_type = jsonData['iteration_type']['@type'];
-		// this.iteration_value = jsonData['iteration_type']['@value'];
 
 		if (! jsonData['InputDataFile']) {
 			jsonData['InputDataFile'] = '';
@@ -421,7 +411,7 @@ class caseTestStepObject {
 		for (var key in this.Arguments) {
     		// check if the property/key is defined in the object itself, not in parent
     		if (this.Arguments.hasOwnProperty(key)) {           
-        			 myArgs.push({ 'argument' : { '@name': key , '@value': this.Arguments[key]}});
+        			 myArgs.push({ '@name': key , '@value': this.Arguments[key]});
     		}
 		}
 		var myRules = [];
@@ -436,7 +426,7 @@ class caseTestStepObject {
 
 		return  {
 				"@Driver": this.step_driver, "@Keyword": this.step_keyword , "@TS": this.step_TS ,
-				"Arguments" : 	myArgs  ,
+				"Arguments" : { 'argument ': myArgs }  ,
 				"onError": {  "@action" : this.onError_action , "@value" : this.onError_value } ,
 				//"iteration_type": {   "@type" : "" } ,
 				"Description":this.Description,
@@ -456,6 +446,7 @@ class caseTestStepObject {
 			// First confirm that the object is complete. 
 			// Return empty object if incomplete. 
 			//
+			this.jsonData = jsonData;
 			console.log("In constructor", jsonData);
 			if (!jsonData['Details']) {
 				this.Details = new caseDetailsObject(null);
@@ -627,6 +618,7 @@ var cases = {
 
 			cases.activePageID = $.find(".nav-inner .active")[0].textContent; 
 			allCases[cases.activePageID] = new caseObject(a_items);
+
 			cases.jsonCaseObject =  allCases[cases.activePageID];
 			console.log("Objects--->",cases, allCases, cases.activePageID);
 			cases.jsonCaseDetails = cases.jsonCaseObject.Details;
@@ -925,6 +917,8 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		if (outstr == null) outstr = "";
 		items.push('<td title="'+outstr+'">'+outstr+'</td>'); 
 
+
+		console.log("Arguments...", oneCaseStep, oneCaseStep.Arguments);
 		var arguments = oneCaseStep.Arguments;  // This is a dictionary 
 		var out_array = [] 
 		var ta = 0; 
@@ -1080,7 +1074,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		var a_items = [] ;
 		var xstr;
 		var ta =0; 
-
+		var ks_sys_name = null;
 		for (vn in mylist) {
 			if (vn < 1) continue; 
 			vntxt = mylist[vn];
@@ -1104,6 +1098,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 						a_items.push('<option value="'+vx+'">'+vx+'</option>');
 					}
 					a_items.push('</select>');
+					ks_sys_name = "#caseArgValue-"+ta; 
 					
 				} else {
 					a_items.push('<input class="col-md-4 case-listed-args case-listed-labels" type="text" isValue="true" argid="caseArgValue-'+ta+'" kwargid="caseArgName-'+ta+'" value="'+vl+'"/>');
@@ -1113,7 +1108,8 @@ The UI currently uses jQuery and Bootstrap to display the data.
 			
 			}
 			popup.find("#arguments-textarea").html( a_items.join("\n"));	
-				popup.find("#caseArgValue-0").editableSelect({
+			if (ks_sys_name != null)
+				popup.find(ks_sys_name).editableSelect({
 		  			warpClass: 'ui-select-wrap',
 		  			editable: true
 					});

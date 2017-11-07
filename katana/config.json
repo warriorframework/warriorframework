@@ -5,7 +5,7 @@
     "pythonpath": "/home/khusain/Projects/clone/warriorframework/warrior/WarriorCore",
     "pythonsrcdir": "/home/khusain/Projects/clone/warriorframework/warrior",
     "testdata": "",
-    "testsuitedir": "/home/khusain/Projects/clone/warriorframework/wftests/warrior_tests/suites",
+    "testsuitedir": "/home/khusain/Projects/wui-test/warriorframework/warrior/Warriorspace/Suites",
     "warhorn_config": "/home/khusain/Projects/clone/warriorframework/warrior/Warriorspace/Suites",
-    "xmldir": "/home/khusain/Projects/clone/warriorframework/warrior/Warriorspace/Testcases"
+    "xmldir": "/home/khusain/Projects/wui-test/warriorframework/warrior/Warriorspace/Testcases"
 }

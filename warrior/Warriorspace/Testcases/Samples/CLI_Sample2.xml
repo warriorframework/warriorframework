@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Testcase>
+	<Steps>
+		<step Keyword="connect" TS="1" Driver="cli_driver">
+			<impact>impact</impact>
+			<Execute ExecType="yes">
+				<Rule Elsevalue="" Condvalue="" Condition="" Else=""></Rule>
+			</Execute>
+			<InputDataFile></InputDataFile>
+			<Description>connect_ssh</Description>
+			<onError action="next"></onError>
+			<runmode type="Standard" value=""></runmode>
+			<Arguments>
+				<argument  name="system_name" value="NE1"></argument >
+			</Arguments>
+			<context>positive</context>
+		</step>
+		<step Keyword="send_commands_by_testdata_title" TS="2" Driver="cli_driver">
+			<impact>impact</impact>
+			<Execute ExecType="yes">
+				<Rule Elsevalue="" Condvalue="" Condition="" Else=""></Rule>
+			</Execute>
+			<InputDataFile></InputDataFile>
+			<Description>enter confd config mode</Description>
+			<onError action="next"></onError>
+			<runmode type="Standard" value=""></runmode>
+			<Arguments>
+				<argument  name="system_name" value="NE1"></argument >
+				<argument  name="title" value="enter_config_mode"></argument >
+			</Arguments>
+			<context>positive</context>
+		</step>
+		<step Keyword="send_command" TS="3" Driver="cli_driver">
+			<impact>impact</impact>
+			<Execute ExecType="yes">
+				<Rule Elsevalue="" Condvalue="" Condition="" Else="next"></Rule>
+			</Execute>
+			<InputDataFile></InputDataFile>
+			<Description>List the files and folders in the Current working directory</Description>
+			<onError action="next"></onError>
+			<runmode type="Standard" value=""></runmode>
+			<Arguments>
+				<argument  name="system_name" value="NE1"></argument >
+				<argument  name="start_prompt" value=".*"></argument >
+				<argument  name="command" value="ls -lrt"></argument >
+				<argument  name="end_prompt" value="%$"></argument >
+			</Arguments>
+			<context>positive</context>
+		</step>
+	</Steps>
+	<Requirements>
+		<Requirement>rew</Requirement>
+		<Requirement>dsw</Requirement>
+	</Requirements>
+	<Details>
+		<Category>custom</Category>
+		<Logsdir>None</Logsdir>
+		<InputDataFile>../../Data/Samples/CLI_Data_Sample.xml</InputDataFile>
+		<Name>CLI_Sample2</Name>
+		<Title>cli sample testcase</Title>
+		<Datatype>Custom</Datatype>
+		<Resultsdir>None</Resultsdir>
+		<State>New</State>
+		<ExpectedResults>None</ExpectedResults>
+		<Time>11:56</Time>
+		<Date>11/7/2017</Date>
+		<default_onError>next</default_onError>
+		<Engineer>Warrior_user</Engineer>
+	</Details>
+</Testcase>
