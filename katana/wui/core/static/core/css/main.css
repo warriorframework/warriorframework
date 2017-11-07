@@ -787,7 +787,7 @@ option {
 option:hover {
 	background: white;
 }
-/*
+
 input[type="checkbox"]+label:before {
 	display: block;
 	font: normal normal normal 14px/1 FontAwesome;
@@ -803,7 +803,7 @@ input[type="checkbox"]+label:before {
 	font-size: 20px;
 	line-height: 21px;
 	border: solid 3px grey;
-	
+
 }
 
 input[type="checkbox"] {
@@ -821,7 +821,7 @@ input[type="checkbox"]:checked+label:before {
 	background: white;
 	content: "\f00c";
 }
-*/
+
 li.folder,
 li.file {
 	width: 40%;
@@ -1549,7 +1549,7 @@ i.active {
 	font-size: 14px;
 	position: relative;
 	text-align: center;
-	
+
 }
 .htmlResults .headingnav th:nth-child(1) {
 	flex-grow: .3;
@@ -3708,11 +3708,11 @@ input[type="checkbox"]+label {
 }
 
 .project-configuration-table tr th:nth-child(2), .project-configuration-table tr td:nth-child(2) {
-    flex-grow: .3; 
+    flex-grow: .3;
     font-size: 18px;
 }
 .project-configuration-table tr th:nth-child(3), .project-configuration-table tr td:nth-child(3) {
-    flex-grow: 4; 
+    flex-grow: 4;
     font-size: 18px;
 }
 .project-configuration-table tr th:nth-child(4), .project-configuration-table tr td:nth-child(4){
@@ -3738,7 +3738,7 @@ input[type="checkbox"]+label {
 .suite-configuration-table th{
     height: 35px;
     line-height: 35px;
-    text-align: left; 
+    text-align: left;
     vertical-align: top;
     font-weight: 400;
     color: #FFF;
@@ -3794,7 +3794,7 @@ input[type="checkbox"]+label {
 .suite-req-configuration-table th{
     height: 35px;
     line-height: 35px;
-    text-align: left; 
+    text-align: left;
     vertical-align: top;
     font-weight: 400;
     color: #FFF;
@@ -3834,7 +3834,7 @@ input[type="checkbox"]+label {
 .case-configuration-table td {
   text-align: left;
   overflow: auto;
- 
+
 }
 
 .case-configuration-table th {
@@ -3846,7 +3846,7 @@ input[type="checkbox"]+label {
 .case-configuration-table th{
     height: 35px;
     line-height: 35px;
-    text-align: left; 
+    text-align: left;
     vertical-align: top;
     font-weight: 400;
     color: #FFF;
@@ -3896,7 +3896,7 @@ input[type="checkbox"]+label {
 .case-req-configuration-table td {
   text-align: left;
   overflow: auto;
- 
+
 }
 
 .case-req-configuration-table th {
@@ -3908,7 +3908,7 @@ input[type="checkbox"]+label {
 .case-req-configuration-table th{
     height: 35px;
     line-height: 35px;
-    text-align: left; 
+    text-align: left;
     vertical-align: top;
     font-weight: 400;
     color: #FFF;
@@ -3934,13 +3934,13 @@ input[type="checkbox"]+label {
     font-size: 18px;
 }
 
-.case-signature { 
-  border-style: dotted; 
-  border-width: 1px; 
+.case-signature {
+  border-style: dotted;
+  border-width: 1px;
   font-style: italic;
 }
 
-.case-scrollable-source-text { 
+.case-scrollable-source-text {
   overflow:auto;
   background: '#bbb';
  }
@@ -4042,4 +4042,27 @@ input[type="checkbox"]+label {
 .assembler-icon-pos-right {
     float:right;
     line-height:inherit!important;
+}
+.tool-bar .field {
+    height: 100%;
+    padding: 0 5px;
+    width: auto;
+    display: inline-block;
+}
+
+.tool-bar label, .tool-bar input {
+    width: auto;
+    display: inline-block;
+    height: 100%;
+    margin: 0;
+    line-height: 35px;
+}
+
+.tool-bar input {
+    background: rgba(49, 49, 49, 0.08);
+    border: none;
+    color: white;
+}
+.tool-bar input::placeholder{
+    color: white;
 }

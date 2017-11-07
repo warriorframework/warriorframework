@@ -1,26 +1,26 @@
 
 
 
-.cases-checkbox {
+.suites-checkbox {
   border:1px solid red;
   border-radius:2px;
   background:#ebebeb;
 
 }
-.page[id^="Case"] {}
+.page[id^="SuiteNew"]  {}
 
-.page[id^="Case"] .row {
+.page[id^="SuiteNew"] .row {
     margin: 0;
 }
 
-.case-configuration-table th {
+.suite-configuration-table th {
     background: transparent;
     padding: 0 5px;
     text-align: center;
     border-right: solid 1px #90d1ff;
 }
 
-.case-configuration-table thead {
+.suite-configuration-table thead {
     background: #4ea4e0;
     padding-right: 10px;
     -webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.22);
@@ -28,28 +28,28 @@
     box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.22);
 }
 
-.case-req-configuration-table th {
+.suite-req-configuration-table th {
     background-color: #4ea4e0;
 }
 
-.page[id^="Case"] .page-content-inner > div {
+.page[id^="SuiteNew"]  .page-content-inner > div {
     padding-top: 0;
 }
 
-.case-configuration-table td {
+.suite-configuration-table td {
     padding: 3px 5px;
     text-align: center;
     border-right: solid 1px #dbdbdb;
 }
 
-.case-configuration-table {
+.suite-configuration-table {
     margin: 0;
     width: 100%;
     height: 100%;
     display: block;
 }
 
-.page[id^="Case"] .col-md-12 {
+.page[id^="SuiteNew"]  .col-md-12 {
     width: 100%;
     padding: 0;
     margin: 0;
@@ -57,40 +57,39 @@
     overflow: hidden;
 }
 
-.page[id^="Case"] .container-fluid {
+.page[id^="SuiteNew"]  .container-fluid {
     padding: 0;
 }
 
-[auto-init="cases.mapFullCaseJson"] > .container-fluid
+[auto-init="suites.mapFullSuiteJson"] > .container-fluid
  > .row > .col-md-9 {
     padding: 8px;
 }
 
-[auto-init="cases.mapFullCaseJson"] > .container-fluid
+[auto-init="suites.mapFullSuiteJson"] > .container-fluid
  > .row {
     height: 280px;
     overflow: hidden;
 }
 
-[auto-init="cases.mapFullCaseJson"] > .container-fluid
+[auto-init="suites.mapFullSuiteJson"] > .container-fluid
  > .row > .col-md-3 {
     padding: 0;
 }
 
-div#tableOfCaseRequirements {}
+div#tableOfsuiteRequirements {}
 
 table#Requirements_table_display {}
 
-.case-req-configuration-table tbody {height: calc(100% - 35px);overflow-y: scroll;}
+.suite-req-configuration-table tbody {height: calc(100% - 35px);overflow-y: scroll;}
 
-.case-req-configuration-table {
+.suite-req-configuration-table {
     position: relative;
     height: 100%;
     display: block;
 }
 
-[auto-init="cases.mapFullCaseJson"] > .container-fluid
- > .row + .col-md-12 {
+[auto-init="suites.mapFullSuiteJson"] > .container-fluid > .row + .col-md-12 {
     height: calc(100% - 280px);
     position: relative;
     display: block;
@@ -98,46 +97,46 @@ table#Requirements_table_display {}
     top: 0;
 }
 
-[auto-init="cases.mapFullCaseJson"] > .container-fluid
+[auto-init="suites.mapFullSuiteJson"] > .container-fluid
  > .row + .col-md-12 tbody {
     height: calc(100% - 39px);
     overflow-y: scroll;
 }
 
-.case-configuration-table thead {}
+.suite-configuration-table thead {}
 
-[auto-init="cases.mapFullCaseJson"] *::-webkit-scrollbar {
+[auto-init="suites.mapFullSuiteJson"] *::-webkit-scrollbar {
     width: 10px;
 }
 
-[auto-init="cases.mapFullCaseJson"] *::-webkit-scrollbar-track {
+[auto-init="suites.mapFullSuiteJson"] *::-webkit-scrollbar-track {
     background: white;
 
 }
 
-[auto-init="cases.mapFullCaseJson"] *::-webkit-scrollbar-thumb {
+[auto-init="suites.mapFullSuiteJson"] *::-webkit-scrollbar-thumb {
 background: grey;
 }
-.case-configuration-table th:last-child {
+.suite-configuration-table th:last-child {
     border: none;
 }
 
-.case-req-configuration-table thead {
+.suite-req-configuration-table thead {
     -webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.22);
     -webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.22);
     box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.22);
 }
 
-.case-req-configuration-table td, .case-req-configuration-table th {
+.suite-req-configuration-table td, .suite-req-configuration-table th {
     padding: 0 5px;
 }
 
-.case-req-configuration-table td {
+.suite-req-configuration-table td {
     height: 46px;
     line-height: 45px !important;
 }
 
-.case-req-configuration-table i {
+.suite-req-configuration-table i {
     line-height: 45px;
     width: 33%;
     text-align: center;

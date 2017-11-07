@@ -6,8 +6,11 @@
 
 <div class="csrf-container">{% csrf_token %}</div>
 <div class="tool-bar">
-Search: <input id="jstreeFilterText" class="col-md-2" />
-<button id="addNewCase" class="button" onclick="cases.startNewCase()">Add New Case</button>
+<div class="field">
+    <label><i class="fa fa-search"></i></label>
+		<input id="jstreeFilterText" placeholder="search">
+</div>
+<button id="addNewCase" class="button" katana-click="cases.startNewCase">Add New Case</button>
 
 </div>
 
@@ -15,7 +18,7 @@ Search: <input id="jstreeFilterText" class="col-md-2" />
 <div class="row">
 <div class="col-md-4" id="myCaseTree" auto-init="cases.init"></div>
 	<div class="col-md-4">
-	
+
 	</div>
 </div>
 
@@ -23,4 +26,3 @@ Search: <input id="jstreeFilterText" class="col-md-2" />
 <div class=" hidden" id="mmm" >{{treejs}}</div>
 
 </body>
-
