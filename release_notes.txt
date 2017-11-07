@@ -60,6 +60,7 @@ Improvements:
 [WAR-1452] - Address issues with WarriorCore/Classes/jira_rest_class.py
 [WAR-1545] - Add test for runmode on suite detail level
 [WAR-1552] - Update Authors file with recently contributions.
+[WAR-1562] - Improve notification of cyclic imports in Warrior
 
 ---------
 Bugfixes:

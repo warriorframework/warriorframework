@@ -23,6 +23,10 @@ import WarriorCore.Classes.manual_defect_class as manual_defect_class
 
 class WarriorCliClass(object):
     """Handle the command line input for warrior"""
+    # Class variable for warmock functionality
+    mock = False
+    sim = False
+
     def __init__(self):
         """empty constructor"""
         return None
@@ -395,7 +399,6 @@ class WarriorCliClass(object):
 
         namespace = parser.parse_args(arglist)
         #see if the below line is requried
-        WarriorCliClass.mock = WarriorCliClass.sim = False
         if namespace.mock:
             WarriorCliClass.mock = True
         if namespace.sim:
