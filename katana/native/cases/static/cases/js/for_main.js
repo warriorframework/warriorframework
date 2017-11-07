@@ -22,13 +22,13 @@ function absFromPrefix(pathToBase, pathToFile) {
 	var bf = pathToBase.split('/');
 	var rf = pathToFile.split('/');
 	var nrf = pathToFile.split('/');
-	console.log("Removing", nrf, bf);
+	//console.log("Removing", nrf, bf);
 	
 	for (var i=0;i< rf.length; i++) {
 		if (rf[i] == "..")  { 
 			bf.pop();
 			nrf.splice(0,1);
-			console.log("Removing", nrf, bf);
+			//console.log("Removing", nrf, bf);
 	
 		} else {
 			break;

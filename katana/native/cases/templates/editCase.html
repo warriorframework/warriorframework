@@ -8,9 +8,11 @@
 
         
     </div>
+
+
 <div class="csrf-container">{% csrf_token %}</div>
 
-   <div auto-init="cases.mapFullCaseJson"> 
+   <div auto-init="cases.mapFullCaseJson" on-switch="cases.onTabSwitch"> 
     <div class="container-fluid" >
         <div class="row">
             <div class="col-md-9">
@@ -53,7 +55,7 @@
                         <label>Warrior Data File:</label>
                         <input  class="cases-checkbox col-md-1" type="checkbox" id="ck_dataPath" name="ck_dataPath" value="No Data Path"> No Data File</input>
 
-                        <div class="btn-group col-md-10 case-results-dir">
+                        <div class="btn-group case-no-padding col-md-12 case-results-dir">
                         <input type="text" id="caseInputDataFile" value="{{caseInputDataFile}}" />
                         
                         <button class="button case-results-dir" katana-click="cases.getCaseInputDataFile">...</button>
@@ -73,6 +75,8 @@
                           </select>
                         <select class="text-right" type="text" id="default_onError_goto" name="default_onError_goto" value="{{default_onError}}">
                         </select>
+                      
+
                     </div>
                     <div class="col-md-2">
                         <label>Case State:</label>
@@ -96,7 +100,7 @@
                     </div>
                     <div class="col">
                         <label class="text-right " id="caseDatatype_lbl">Results Directory:</label>
-                        <div class="btn-group col-md-12">
+                        <div class="btn-group case-no-padding col-md-12">
                         <input class="text-right " type="text" id="caseResultsdir" value="{{caseResultsdir}}">
                         <button class="button" katana-click="cases.getResultsDirForCases">...</button>
                         </div>
@@ -112,10 +116,10 @@
             <div id="emptyTestCaseData" class="hidden"> {{emptyTestCase}} </div>
             <div id="listOfTestStepsForCase" class="hidden"> {{fulljsonstring}} </div> 
         </div>
-        <div class="container-fluid col-md-12">
-            <div class="row">
-                <div id="tableOfTestStepsForCase" class="col-md-12 "></div>
-            </div>
+        <div class="row">
+          
+                <div id="tableOfTestStepsForCase" class="col-md-12"></div>
+      
         </div>
         <div class="container-fluid">
             <div class="row" id="editCaseStepDiv" class="hidden">
@@ -131,7 +135,7 @@
                             </div>                           
                             <div>
                                 
-                                 <input class="col-md-2" type="checkbox" id="StepDriverCkBx" name="StepDriverCkBx" value="TBD" >To be developed</input>
+                                 <input class="col-md-2 wdf-sys-checkbox" type="checkbox" id="StepDriverCkBx" name="StepDriverCkBx" value="TBD" >To be developed</input>
                 
                             </div>
                             
@@ -144,7 +148,7 @@
                             </div>
 
                             <div>
-                                 <input class="col-md-2"  type="checkbox" id="StepKeywordCkBx" name="StepKeywordCkBx" value="TBD">To be developed</input> 
+                                 <input class="col-md-2 wdf-sys-checkbox" type="checkbox" id="StepKeywordCkBx" name="StepKeywordCkBx" value="TBD">To be developed</input> 
                              </div>    
 
                              <div class="field">

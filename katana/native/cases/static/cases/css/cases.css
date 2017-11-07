@@ -7,39 +7,125 @@
   background:#ebebeb;
 
 }
-/*
+/.case-configuration-table {}
+.case-configuration-table table {
+  border-collapse: collapse;
+}
+.case-configuration-table td {
+  text-align: left;
+  overflow: auto;
+ 
+}
 
-input[type="checkbox"]{
-   width:40px;
-  height:16px;
-  border:1px solid #aaa;
-  border-radius:2px;
-  background:#ebebeb;
-  position:relative;
-  display:inline-block;
-  overflow:hidden;
-  vertical-align:middle;
-  transition: background 0.3s;
-  box-sizing:border-box;
+.case-configuration-table th {
+  text-align: left;
+  border: 0px ;
+
 }
-input[type="checkbox"]:after{
-  content:'';
-  position:absolute;
-  top:-1px;
-  left:-1px;
-  width:14px;
-  height:14px;
-  background:white;
-  border:1px solid #aaa;
-  border-radius:2px;
-  transition: left 0.1s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+
+.case-configuration-table th{
+    height: 35px;
+    line-height: 35px;
+    text-align: left; 
+    vertical-align: top;
+    font-weight: 400;
+    color: #FFF;
+    background: #4ea4e0;
 }
-input[type="checkbox"]:checked{
-  background:#a6c7ff;
-  border-color:#8daee5;
+
+.case-configuration-table i{
+    padding: 4px;
+    font-size: 16px;
 }
-input[type="checkbox"]:checked:after{
-  left:23px;
-  border-color:#8daee5;
+
+.case-configuration-table tr:nth-child(even){background-color: #f2f2ff}
+
+.case-configuration-table tr th:nth-child(1), .case-configuration-table tr td:nth-child(1) {
+    flex-grow: .3;
 }
-*/
+.case-configuration-table tr th:nth-child(2), .case-configuration-table tr td:nth-child(2) {
+    flex-grow: 2;
+}
+.case-configuration-table tr th:nth-child(3), .case-configuration-table tr td:nth-child(3) {
+    flex-grow: 2;
+}
+.case-configuration-table tr th:nth-child(4), .case-configuration-table tr td:nth-child(4) {
+    flex-grow: 3;
+}
+.case-configuration-table tr th:nth-child(5), .case-configuration-table tr td:nth-child(5) {
+    flex-grow: 3;
+}
+
+.case-configuration-table tr th:nth-child(6), .case-configuration-table tr td:nth-child(6) {
+    flex-grow: 2;
+}
+.case-configuration-table tr th:nth-child(7), .case-configuration-table tr td:nth-child(7) {
+    flex-grow: 2;
+}
+
+.case-configuration-table tr th:last-child, .case-configuration-table tr td:last-child {
+    flex-grow: 1.1;
+    font-size: 18px;
+}
+
+
+.case-req-configuration-table {}
+.case-req-configuration-table table {
+  border-collapse: collapse;
+}
+.case-req-configuration-table td {
+  text-align: left;
+  overflow: auto;
+ 
+}
+
+.case-no-padding { 
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+.case-req-configuration-table th {
+  text-align: left;
+  border: 0px ;
+
+}
+
+.case-req-configuration-table th{
+    height: 35px;
+    line-height: 35px;
+    text-align: left; 
+    vertical-align: top;
+    font-weight: 400;
+    color: #FFF;
+    background: #4ea4e0;
+}
+
+.case-req-configuration-table i{
+    padding: 4px;
+    font-size: 16px;
+}
+
+.case-req-configuration-table tr:nth-child(even){background-color: #f2f2ff}
+
+.case-req-configuration-table tr th:nth-child(1), .case-req-configuration-table tr td:nth-child(1) {
+    flex-grow: .3;
+}
+.case-req-configuration-table tr th:nth-child(2), .case-req-configuration-table tr td:nth-child(2) {
+    flex-grow: 3;
+}
+
+.case-req-configuration-table tr th:last-child, .case-req-configuration-table tr td:last-child {
+    flex-grow: 2;
+    font-size: 18px;
+}
+
+.case-signature { 
+  border-style: dotted; 
+  border-width: 1px; 
+  font-style: italic;
+}
+
+.case-scrollable-source-text { 
+  overflow:auto;
+  background: '#bbb';
+ }
