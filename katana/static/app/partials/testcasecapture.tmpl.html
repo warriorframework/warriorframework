@@ -1247,7 +1247,7 @@
                                             <span ng-show="rule._Operator !== undefined"> 
                                             Operator = {{ rule._Operator}} <b>,</b>
                                             </span>
-                                            Condition value = {{ rule._Condvalue}} <b>,</b>
+                                            Condition value = {{ rule._Condvalue}}
                                         </div>
                                     </div>
                                 </span>
@@ -1375,7 +1375,7 @@
                             </div>
                         </td>
 
-                        <td ng-click="editStep(step._Driver, $index)" class='text-center' style='vertical-align:middle'>
+                        <td ng-click="editStep(step._Driver, $index);checkRule($index)" class='text-center' style='vertical-align:middle'>
                             <div class="tooltip-on-left-dark-big">
                                 <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                                 <span class="tooltip-content text-left">
@@ -1949,8 +1949,8 @@
                     </div>
                 </div>
 
-            <div class="form-group" style="margin-bottom:0px;">
-                    <label for='stepdescription'
+            <div class="form-group" style="margin-bottom:0px !important;">
+                    <label for='stepexecute'
                            class="col-sm-3 offset-1 control-label ellipsis-the-overflow">Execute Type
                     </label>
                     <div class="tooltip-on-right align-fa-icon-after-label-step">
@@ -2032,14 +2032,13 @@
 
             </div>
 
-<div class="row" style="margin-top:5px;">
-    <div class="form-group" ng-if="status.step.Execute._ExecType == 'If' || status.step.Execute._ExecType == 'If Not'">
-                <label for='stepexp' class="col-sm-3 control-label ellipsis-the-overflow">Multi Rule Expression</label>
-                
-                <div class="tooltip-on-right align-fa-icon-after-label-step">
+            <div class="form-group"  style="margin-top:10px !important;" ng-if="status.step.Execute._ExecType == 'If' || status.step.Execute._ExecType == 'If Not'">
+                    <label for='stepexp'
+                           class="col-sm-3 offset-1 control-label ellipsis-the-overflow">Multi Rule Expression</label>
+                    <div class="tooltip-on-right align-fa-icon-after-label-step">
                         <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
                         <span class="tooltip-content">
-                                <div ng-if="testcaseTooltips.expression.tooltip != ''">
+                             <div ng-if="testcaseTooltips.expression.tooltip != ''">
                                 <i class="fa fa-rocket" aria-hidden="true"></i>
                                 &nbsp;
                                 {{testcaseTooltips.expression.tooltip}}
@@ -2067,16 +2066,14 @@
                                 <br>
                             </div>
                         </span>
-                </div>
-
-                <div class="col-sm-3"> 
-                     <input type="text" class="form-control"
-                     id="stepexp"
-                     ng-model="status.step.Execute._Expression"
-                     placeholder="">
-                </div>
-
-                <div class="col-sm-1">
+                    </div>
+                    <div class="col-sm-8 mBot">
+                        <input type="text" class="form-control"
+                               id="stepexp"
+                               ng-model='status.step.Execute._Expression'
+                               placeholder="Multi Rule Expression"> <br/>
+                    </div>
+                    <div class="col-sm-1">
                         <div class="tooltip-on-right-no-margin align-fa-icon-after-input-step">
                             <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
                             <span class="tooltip-content">
@@ -2109,14 +2106,16 @@
                                 </div>
                             </span>
                         </div>
-                </div>
+                    </div>
+            </div>
 
-                <label for='stepexecelse' class="col-sm-2 control-label ellipsis-the-overflow" style="width:15% !important;">Else</label>
-               
-                <div class="tooltip-on-right align-fa-icon-after-label-step">
+            <div class="form-group" ng-if="status.step.Execute._ExecType == 'If' || status.step.Execute._ExecType == 'If Not'">
+
+                <label for='stepexecelse' class="col-sm-3 offset-1 control-label ellipsis-the-overflow">Else</label>
+                    <div class="tooltip-on-right align-fa-icon-after-label-step">
                         <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
                         <span class="tooltip-content">
-                                <div ng-if="testcaseTooltips.execelse.tooltip != ''">
+                             <div ng-if="testcaseTooltips.execelse.tooltip != ''">
                                 <i class="fa fa-rocket" aria-hidden="true"></i>
                                 &nbsp;
                                 {{testcaseTooltips.execelse.tooltip}}
@@ -2144,16 +2143,15 @@
                                 <br>
                             </div>
                         </span>
-                </div>
-
-                <div class="col-sm-2" style="width:15% !important;">
-                    <select class='form-control'
+                    </div>
+                    <div class="col-sm-8 mBot">
+                        <select class='form-control'
                             id='stepexecelse'
                             ng-model="status.step.Execute._Else"
-                            ng-options="o as o for o in status.steperrors"></select>
-                </div>
-
-                <div class="col-sm-1">
+                            ng-options="o as o for o in status.steperrors">
+                        </select> <br/>
+                    </div>
+                    <div class="col-sm-1">
                         <div class="tooltip-on-right-no-margin align-fa-icon-after-input-step">
                             <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
                             <span class="tooltip-content">
@@ -2186,15 +2184,17 @@
                                 </div>
                             </span>
                         </div>
-                </div>
-                
-       <div ng-if="status.step.Execute._Else == 'goto'"> 
-                <label for='stepexecelsev' class="col-sm-2 control-label mandatory-field" style="width:15% !important;">Else Value</label>
-               
-                <div class="tooltip-on-right align-fa-icon-after-label-step">
+                    </div>
+            </div>
+
+
+            <div class="form-group" ng-if="(status.step.Execute._ExecType == 'If' || status.step.Execute._ExecType == 'If Not') && status.step.Execute._Else == 'goto'">
+
+                <label for='stepexecelsev' class="col-sm-3 offset-1 control-label ellipsis-the-overflow mandatory-field">Else Value</label>
+                    <div class="tooltip-on-right align-fa-icon-after-label-step">
                         <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
                         <span class="tooltip-content">
-                                <div ng-if="testcaseTooltips.execelseval.tooltip != ''">
+                             <div ng-if="testcaseTooltips.execelseval.tooltip != ''">
                                 <i class="fa fa-rocket" aria-hidden="true"></i>
                                 &nbsp;
                                 {{testcaseTooltips.execelseval.tooltip}}
@@ -2222,17 +2222,14 @@
                                 <br>
                             </div>
                         </span>
-                </div>
-
-                <div class="col-sm-2" style="padding-left:0px;padding-right:0px;width:10% !important;">
-                    <input type="text" class="form-control"
+                    </div>
+                    <div class="col-sm-8 mBot">
+                        <input type="text" class="form-control"
                         id="stepexecelsev" required
                         ng-model="status.step.Execute._Elsevalue"
-                        placeholder="">
-
-                </div> 
-
-                <div class="col-sm-1">
+                        placeholder=""> <br/>
+                    </div>
+                    <div class="col-sm-1">
                         <div class="tooltip-on-right-no-margin align-fa-icon-after-input-step">
                             <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
                             <span class="tooltip-content">
@@ -2265,16 +2262,13 @@
                                 </div>
                             </span>
                         </div>
-                </div>
-                
-         </div>
-    </div>
-</div>
+                    </div>
+            </div>
 
 <div class="form-group">
         <div class="col-sm-8" ng-show="showRulesBelow">
            <div class= "">
-               <div class="mArgs">
+               <div class="">
                    <div ng-repeat="Rule in rule_list track by $index" class="container pull-left" style="width:135%;margin-left:8%">
                         <div class="form-group" style="visibility:hidden !important;">
                                 
@@ -2395,11 +2389,8 @@
                                     <select class='form-control'
                                     id='stepruleoperator{{$index}}'
                                     ng-model='rule_list[$index]._Operator'
-                                    ng-init=" rule_list[$index]._Operator = status.operator[0]"
                                     ng-options="o as o for o in status.operator">
-                                    <option value="" selected hidden />
                                     </select>
-                                
                             </div>
                             <div class="col-sm-1">
                                 <div class="tooltip-on-right-no-margin align-fa-icon-after-input-step">
@@ -3231,7 +3222,7 @@
                                             <span ng-show="rule._Operator !== undefined"> 
                                             Operator = {{ rule._Operator}} <b>,</b>
                                             </span>
-                                            Condition value = {{ rule._Condvalue}} <b>,</b>
+                                            Condition value = {{ rule._Condvalue}}
                                         </div>
                                     </div>
                                 </span>
