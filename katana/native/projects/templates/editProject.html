@@ -1,6 +1,6 @@
 {% load static %}
 {% csrf_token %}
-			
+<link rel="stylesheet" href="{% static 'projects/css/projects.css' %}">			
 
 <div class="tool-bar">
 			<i id="projectSwapView" class="fa fa-tree" katana-click="projects.swapViews"></i>
@@ -17,24 +17,24 @@
 </div>
 <div id="projects-standard-edit" >
 	<div class="col-md-12 row">
-			<div class="field col-md-3 input_padding">
-				<label for="projectName">Name*:</label>
+			<div class="col-md-3 project-input-w">
+				<label class="text-right">Name*:</label>
 				<input type="text-right" type="text" id="projectName" name="projectName" value="{{projectName}}"/>
 			</div>
-			<div class="field col-md-3 input_padding">	
-				<label for="projectTitle">Project Title*:</label>
+			<div class="col-md-3 project-input-w">	
+				<label class="text-right">Title*:</label>
 				<input required  type="text-right" type="text" id="projectTitle" name="projectTitle" value="{{projectTitle}}" />
 			</div>
-			<div class="field col-md-3 input_padding">
+			<div class="col-md-3 project-input-w input_padding">
 				<label class="text-right">Engineer*:</label>
 				<input required class="text-right" type="text" id="projectEngineer" name="projectEngineer" value="{{projectEngineer}}" />
 			</div>
-			<div class="field col-md-3 input_padding">	
+			<div class="col-md-3 project-input-w input_padding">	
 				<label class="text-right">Last Updated:</label>
 				<input class="text-right" type="text" id="projectDate" name="projectDate" value="{{projectDate}} {{projectTime}}" />
 			</div>
 
-			<div class="field col-md-3 input_padding">
+			<div class="col-md-3 input_padding">
 				<label class="text-right">State:</label>
 				<select class="text-right" type="text" id="projectState" name="projectState" value="{{projectState}}" >
 					<option value="New">New</option>
@@ -43,7 +43,7 @@
 					<option value="Add">Add Another</option>
 				</select>
 			</div>
-			<div class="field col-md-3 input_padding">
+			<div class="col-md-3 input_padding">
 				<label class="text-right">defaultOnError:</label>
 				<select class="text-right" type="text" id="project_onError_action" value="{{project_onError_action}}" >
 					<option value="next">next</option>
@@ -51,18 +51,17 @@
 					<option value="abort_as_error">abort as error</option>
 					<option value="goto">goto</option>
 				</select>
-				
 				<select class="text-right" type="text" id="project_onError_value" value="{{project_onError_value}}" >
 				</select>
 
 			</div>
 
-			<div class="field col-md-3 input_padding">	
-				
+			<div class="col-md-6 input_padding">				
 				<label class="text-right">Results Dir:</label>
-				<div class="" id="fileNames"></div>
 				<input class="text-right" type="text" id="projectResultsDir" name="projectResultsDir" value="{{resultsDir}}" />
 			</div>
+
+			<div class="" id="fileNames"></div>
 <!-- 			<div class="field col-md-3 input_padding ">	
 			
 				<label class="hidden text-right"  >Project Type:</label>

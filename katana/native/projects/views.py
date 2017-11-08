@@ -74,7 +74,9 @@ def getJSONProjectData(request):
 
 
 	fpath = x['testsuitedir'];
+	print x, fpath
 	files = glob.glob(fpath + "/**/*.xml");
+	files.extend(glob.glob(fpath+"/*.xml"))
 	answer = [{ 'name': os.path.basename(fn), 'fullpath': fn } for fn in files ]
 
 	responseBack = { 'fulljson': j_data , 'fname': filename , 'suites': answer}

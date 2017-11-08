@@ -249,7 +249,7 @@ class projectsObject{
 			console.log("*****Compiled .... ", jsonDataForSuites);
 
 			return { 'Details': this.Details.getJSONData(), 
-				'Testsuites' :  jsonDataForSuites };
+				'Testsuites' :  { 'Testsuite' : jsonDataForSuites } };
 		}
 
 	}
@@ -381,7 +381,7 @@ var treeData = [
     			'on-error' : oneSuite.onError_action + " " + oneSuite.onError_value,
     			"data-path": oneSuite.InputDataFile , "parent": td , "children": []} );
     	}
-
+    	console.log("Length of xisting suites ", existingSuites);
     	slen = existingSuites.length;
     	for (var s=0; s<slen; s++ ) {
     		oneSuite = existingSuites[s]
@@ -400,7 +400,7 @@ var treeData = [
     	katana.$activeTab.data('projectsTreeData', projects.treeData);
 
     	projects.treeData = katana.$activeTab.data('projectsTreeData');
-    	console.log("Tree Data ....", td);
+    	//console.log("Tree Data ....", td);
     	
 	},
 
@@ -430,7 +430,6 @@ var treeData = [
 		console.log("Creating for ",  projects.jsonProjectObject.Details.Name );
 		
 		var useID = '#' + projects.jsonProjectObject.Details.Name;
-		console.log("Changing ID ", useID, );
 		
 		d3.select("[useID='" + useID + "']").remove();  // Clear the screen. 
 		projects.svg = d3.select(useID).append("svg")
@@ -609,9 +608,9 @@ var treeData = [
 	   				})
 	   				.html(function(d) { return " "; } )
 	   				.on("click", function(d) { 
-	   						console.log("cccc, ", d, this);
+	   						//console.log("cccc, ", d, this);
 		   					if (this.hasAttribute('deleteNodeid')) {
-	   							console.log("Clicked to delete " + d.rowid);
+	   							//console.log("Clicked to delete " + d.rowid);
 	   							projects.jsonTestSuites.splice(d.rowid,1);
 								projects.mapProjectJsonToUi();	 
 	   						}
@@ -636,9 +635,9 @@ var treeData = [
 	   				})
 	   				.html(function(d) { return " "; } )
 	   				.on("click", function(d) { 
-	   						console.log("cccc, ", d, this);
+	   						//console.log("cccc, ", d, this);
 		   					if (this.hasAttribute('addNodeid')) {
-	   							console.log("Clicked to add " + d.rowid);
+	   							//console.log("Clicked to add " + d.rowid);
 	   							var nb = new projectSuiteObject();
 								projects.jsonTestSuites.splice(d.rowid,0,nb);
 								projects.mapProjectJsonToUi();	// Send in the modified array
@@ -663,9 +662,9 @@ var treeData = [
 	   				})
 	   				.html(function(d) { return " "; } )
 	   				.on("click", function(d) { 
-	   						console.log("cccc, ", d, this);
+	   						//console.log("cccc, ", d, this);
 		   					if (this.hasAttribute('folderNodeid')) {
-	   							console.log("Clicked to add " + d.rowid);
+	   							//console.log("Clicked to add " + d.rowid);
 	   							var nb = new projectSuiteObject();
 								katana.$activeTab.attr('project-suite-row',d.rowid);
 								projects.getResultsDirForProjectRow('Suites');
@@ -692,13 +691,13 @@ var treeData = [
 	   				})
 	   				.html(function(d) { return " "; } )
 	   				.on("click", function(d) { 
-	   						console.log("cccc, ", d, this);
+	   						// console.log("cccc, ", d, this);
 		   					if (this.hasAttribute('editNodeid')) {
-	   							console.log("Clicked ...", d, this, this.hasAttribute('deleteNodeid'));
+	   							// console.log("Clicked ...", d, this, this.hasAttribute('deleteNodeid'));
 									var sid = d.rowid;
 								katana.popupController.open(katana.$activeTab.find("#editTestSuiteEntry").html(),"Edit..." , function(popup) {
 									projects.lastPopup = popup; 
-									console.log(katana.$activeTab.find("#editTestSuiteEntry"));
+									// console.log(katana.$activeTab.find("#editTestSuiteEntry"));
 									projects.setupProjectPopupDialog(sid,popup);
 								});
 	   						}
@@ -768,7 +767,7 @@ var treeData = [
 
 		  
 			 	katana.templateAPI.subAppLoad(xref, null, function(thisPage) { 
-			   			console.log("starting ...", this);
+			   			//console.log("starting ...", this);
 				  		projects.mapFullProjectJson(projects.thefile);
 				  });
 			 
@@ -814,15 +813,16 @@ startNewProject : function() {
 	//var myfile = katana.$activeTab.find('#fullpathname').text();
 	jQuery.getJSON("./projects/getJSONProjectData/?fname="+myfile).done(function(data) {
 			var sdata = data['fulljson'];
-			console.log("from views.py call=", sdata);
+			console.log("****from views.py call=", data);
 			projects.jsonProjectObject = new projectsObject(sdata['Project']);
 			katana.$activeTab.data('projectsJSON', projects.jsonProjectObject);
-			katana.$activeTab.data('allExistingSuites', data['suites']);		
+			katana.$activeTab.data('allExistingSuites', data['suites']);	
+
 			projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
 			projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
 			projects.mapProjectJsonToUi();  // This is where the table and edit form is created. 
 			projects.fillProjectDefaultGoto();
-			console.log("Adding defaults ");
+			//console.log("Adding defaults ");
 			katana.$activeTab.find('#project_onError_action').on('change',projects.fillProjectDefaultGoto );
 			katana.$activeTab.find('#Execute-at-ExecType').on('change',function() { 
 				if (this.value == 'if' || this.value == 'if not')
@@ -857,7 +857,7 @@ startNewProject : function() {
 			projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
 
 		var gotoStep =popup.find('#default_onError').val();
-		console.log("Step ", gotoStep);
+		//console.log("Step ", gotoStep);
 		var defgoto = popup.find('#default_onError_goto'); 
 			defgoto.hide();
 
@@ -880,7 +880,7 @@ startNewProject : function() {
 			projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
 			projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
 
-	console.log(s);
+	//console.log(s);
 	var oneSuite = projects.jsonProjectObject.Testsuites[s];
 	console.log(oneSuite);
 	popup.find("#suiteRowToEdit").val(s); 
@@ -911,9 +911,9 @@ startNewProject : function() {
 			projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
 		var popup = projects.lastPopup;
 		var sid = popup.find("#suiteRowToEdit").val();
-		console.log(projects.jsonProjectObject.Testsuites, sid); 
+		//console.log(projects.jsonProjectObject.Testsuites, sid); 
 		var oneSuite = projects.jsonProjectObject.Testsuites[sid];
-		console.log(oneSuite);
+		//console.log(oneSuite);
 		oneSuite.runmode_type = this.value; 
 		popup.find("#runmode-at-value").show();
 		if (oneSuite.runmode_type == 'standard') {
@@ -949,7 +949,7 @@ startNewProject : function() {
 			projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
 			projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
 		var oneSuite = projects.jsonProjectObject.Testsuites[s];
-		console.log(oneSuite);
+		//console.log(oneSuite);
 		katana.$activeTab.find("#suiteRowToEdit").val(s); 
 		katana.$activeTab.find("#suitePath").val(oneSuite['path']);
 		katana.$activeTab.find("#Execute-at-ExecType").val(oneSuite.Execute_ExecType); 
@@ -1046,17 +1046,17 @@ startNewProject : function() {
 
 	getSuiteDataFileForProject: function (tag) {
       var callback_on_accept = function(selectedValue) { 
-      		console.log(selectedValue);
+      		// console.log(selectedValue);
       		// Convert to relative path.
       		var pathToBase = katana.$activeTab.find('#savefilepath').text();
-      		console.log("File path ==", pathToBase);
+      		// console.log("File path ==", pathToBase);
       		//var nf = katana.fileExplorerAPI.prefixFromAbs(pathToBase, selectedValue);
       		var nf = prefixFromAbs(pathToBase, selectedValue);
       		katana.$activeTab.find(tag).attr("value", nf);
       		katana.$activeTab.find(tag).attr("fullpath", selectedValue);
             };
       var callback_on_dismiss =  function(){ 
-      		console.log("Dismissed");
+      		// console.log("Dismissed");
 	 };
      katana.fileExplorerAPI.openFileExplorer("Select a file", false , $("[name='csrfmiddlewaretoken']").val(), false, callback_on_accept, callback_on_dismiss);
 },
@@ -1065,21 +1065,21 @@ startNewProject : function() {
 		  var popup = projects.lastPopup;
 		  var tag = popup.find('#suitePath');
 	      var callback_on_accept = function(selectedValue) { 
-	      		console.log(selectedValue);
+	      		// console.log(selectedValue);
 	      		var popup = projects.lastPopup;
 		 		var tag = popup.find('#suitePath');
-		 		console.log(tag);
+		 		// console.log(tag);
 	      		// Convert to relative path.
 	      		var pathToBase = katana.$activeTab.find('#savefilepath').text();
 	      		var nf = prefixFromAbs(pathToBase, selectedValue);
-	      		console.log("File path ==", pathToBase, nf);
+	      		// console.log("File path ==", pathToBase, nf);
 	      		popup.find("#suitePath").val(nf);
 	      		//katana.$activeTab.find("#suitePath").val(nf);
 	      		tag.attr("value", nf);
 	      		tag.attr("fullpath", selectedValue);
 	            };
 	      var callback_on_dismiss =  function(){ 
-	      		console.log("Dismissed");
+	      		// console.log("Dismissed");
 		 };
 	     katana.fileExplorerAPI.openFileExplorer("Select a file", false , $("[name='csrfmiddlewaretoken']").val(), false, callback_on_accept, callback_on_dismiss);
 	},
@@ -1087,17 +1087,17 @@ startNewProject : function() {
 
 	getResultsDirForProject: function() {
       var callback_on_accept = function(selectedValue) { 
-      		console.log(selectedValue);
+      		// console.log(selectedValue);
       		// Convert to relative path.
       		var pathToBase = katana.$activeTab.find('#savefilepath').text();
-      		console.log("File path ==", pathToBase);
+      		// console.log("File path ==", pathToBase);
       		var nf = prefixFromAbs(pathToBase, selectedValue);
       		katana.$activeTab.find("#projectResultsDir").attr("value", nf);
       		katana.$activeTab.find("#projectResultsDir").attr("fullpath", selectedValue);
       		katana.$activeTab.find("#projectResultsDir").val(nf);
             };
       var callback_on_dismiss =  function(){ 
-      		console.log("Dismissed");
+      		// console.log("Dismissed");
 	 };
      katana.fileExplorerAPI.openFileExplorer("Select a file", false , $("[name='csrfmiddlewaretoken']").val(), false, callback_on_accept, callback_on_dismiss);
 
@@ -1199,11 +1199,11 @@ Two global variables are heavily used when this function is called;
 		items.push('<tr id="suiteRow"><th>Num</th><th/><th>Suite</th><th>Execute</th><th>OnError</th><th>Impact</th><th/></tr>');
 		items.push('</thead>');
 		items.push('<tbody>');
-		console.log("Create suites for ", projects.jsonProjectObject); 
+		// console.log("Create suites for ", projects.jsonProjectObject); 
 		projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
-		console.log("Create suites for ", projects.jsonProjectObject['Testsuites']); 
+		// console.log("Create suites for ", projects.jsonProjectObject['Testsuites']); 
 		
-		console.log("Create suites for ", projects.jsonTestSuites); 
+		// console.log("Create suites for ", projects.jsonTestSuites); 
 		var slen = projects.jsonTestSuites.length;
 		katana.$activeTab.find("#tableOfTestSuitesForProject").html("");
 		for (var s=0; s<slen; s++ ) {
@@ -1297,7 +1297,7 @@ Two global variables are heavily used when this function is called;
 			var sid = parseInt(names[1]);
 			katana.popupController.open(katana.$activeTab.find("#editTestSuiteEntry").html(),"Edit..." , function(popup) {
 				projects.lastPopup = popup; 
-				console.log(katana.$activeTab.find("#editTestSuiteEntry"));
+				//console.log(katana.$activeTab.find("#editTestSuiteEntry"));
 				projects.setupProjectPopupDialog(sid,popup);
 			});
 		},
@@ -1362,14 +1362,14 @@ Two global variables are heavily used when this function is called;
 			projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
 			projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
 	      var callback_on_accept = function(selectedValue) { 
-	      		console.log(selectedValue);
+	      		// console.log(selectedValue);
 	      		var sid = katana.$activeTab.attr('project-suite-row');
 	      		var pathToBase = katana.$activeTab.find('#savefilepath').text();
-	      		console.log("File path ==", pathToBase);
+	      		// console.log("File path ==", pathToBase);
 	      		var nf = prefixFromAbs(pathToBase, selectedValue);
 	      		projects.jsonTestSuites[sid]['path'] = nf;
-	      		console.log("Path set to ",nf," for ", sid);
-	      		console.log(projects.jsonTestSuites);
+	      		// console.log("Path set to ",nf," for ", sid);
+	      		// console.log(projects.jsonTestSuites);
 	      		projects.createSuitesTable();
 	      		projects.createD3treeData();
 				projects.createD3tree();
@@ -1383,7 +1383,7 @@ Two global variables are heavily used when this function is called;
 	swapViews: function(){
 			projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
 			projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
-		console.log("Hellos!", projects.treeView);
+		//console.log("Hellos!", projects.treeView);
 		if (projects.treeView == 0) {
 			katana.$activeTab.find("#projects-standard-edit").hide();
 			katana.$activeTab.find("#projects-graphics-edit").show();
@@ -1414,24 +1414,24 @@ Two global variables are heavily used when this function is called;
 			projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
 			projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
 		var listSuites = katana.$activeTab.find('#tableOfTestSuitesForProject tbody').children(); 
-		console.log(listSuites);
+		//console.log(listSuites);
 				if (listSuites.length < 2) {
 		 return; 
 		}
-		console.log(projects.jsonProjectObject.Testsuites );
+		//console.log(projects.jsonProjectObject.Testsuites );
 		var oldSuitesteps = projects.jsonProjectObject.Testsuites;
 		var newSuitesteps = new Array(listSuites.length);
-		console.log("List of ... "+listSuites.length);
+		//console.log("List of ... "+listSuites.length);
 		for (xi=0; xi < listSuites.length; xi++) {
 			var xtr = listSuites[xi];
 			var ni  = xtr.getAttribute("data-sid");
-			console.log(xi + " => " + ni);
+			//console.log(xi + " => " + ni);
 			newSuitesteps[ni] = oldSuitesteps[xi];
 			}
 
-		console.log(projects.jsonProjectObject);
+		//console.log(projects.jsonProjectObject);
 		projects.jsonProjectObject.Testsuites = newSuitesteps;
-		console.log(projects.jsonProjectObject.Testsuites);
+		//console.log(projects.jsonProjectObject.Testsuites);
 		
 		projects.jsonTestSuites = projects.jsonProjectObject.Testsuites;
 		projects.mapProjectJsonToUi();
