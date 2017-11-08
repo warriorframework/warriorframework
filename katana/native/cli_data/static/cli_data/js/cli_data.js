@@ -65,7 +65,6 @@ var cliData = {
                url: 'cli_data/get_default_file/',
                data: {"path": false}
             }).done(function(data) {
-                //console.log(data);
                 var $currentPage = katana.$activeTab;
                 var $displayFilesDiv = $currentPage.find('#display-files');
                 $displayFilesDiv.hide();
@@ -75,6 +74,12 @@ var cliData = {
                 $mainDiv.show();
                 var $toolBarDiv = $currentPage.find('.tool-bar');
                 $toolBarDiv.find('.title').html(data["name"]);
+
+                var globalCmd = new globalCommand(data.contents.data.global);
+                $currentPage.find('.cli-data-left-column').html(globalCmd.htmlLeftContent);
+
+
+
             });
         },
     }

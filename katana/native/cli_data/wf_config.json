@@ -1,6 +1,6 @@
 {
-  "icon": "compass",
-  "color": "orange",
+  "icon": "map-signs",
+  "color": "yellow",
   "name" : "CLI Data",
   "developer": "Warrior Framework",
   "description": "Edit your CLI Data Files here.",

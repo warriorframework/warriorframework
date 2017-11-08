@@ -37,4 +37,4 @@ class CliDataFileClass(View):
             name, _ = os.path.splitext(get_dir_from_path(filepath))
         vcdc_obj = VerifyCliDataClass(filepath, base_filepath)
         json_data = vcdc_obj.verify_contents()
-        return JsonResponse({"data": json_data, "name": name})
+        return JsonResponse({"contents": json_data, "name": name})

@@ -24,7 +24,7 @@
 }
 
 .cli-data-left-column-topbar-header{
-    width:75%;
+    width:70%;
     float: left;
 }
 
@@ -39,7 +39,7 @@
 }
 
 .cli-data-left-column-icons{
-    width: 25%;
+    width: 30%;
     float: left;
     padding-top:0.8rem;
 }

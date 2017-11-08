@@ -1,5 +1,77 @@
 'use strict';
 
+var leftTableContent = '<div class="cli-data-left-column-topbar">' +
+                          '<div class="cli-data-left-column-topbar-header">' +
+                              '<div class="">' +
+                                  '<h6 id="display"></h6>' +
+                              '</div>' +
+                              '<div class="cli-data-left-column-topbar-header-top">' +
+                                  '<h4 id="displayTitle"></h4>' +
+                              '</div>' +
+                          '</div>' +
+                          '<div class="row cli-data-left-column-icons">' +
+                              '<div class="col">' +
+                                  '<i class="fa fa-plus"></i>' +
+                              '</div>' +
+                              '<div class="col">' +
+                                  '<i class="fa fa-files-o"></i>' +
+                              '</div>' +
+                              '<div class="col">' +
+                                  '<i class="fa fa-trash-o"></i>' +
+                              '</div>' +
+                              '<div class="col">' +
+                                  '<i class="fa fa-chevron-left"></i>' +
+                              '</div>' +
+                              '<div class="col">' +
+                                  '<i class="fa fa-chevron-right"></i>' +
+                              '</div>' +
+                          '</div>' +
+                      '</div>' +
+                      '<div id="left-content" class="cli-data-left-content"></div>';
+
+var leftColumnInputs = '<div class="row">' +
+                           '<div class="col-sm-4 cli-data-left-content-label"></div>' +
+                           '<div class="col-sm-8 cli-data-left-content-value">' +
+                               '<input class="cli-data-left-content-value-input">' +
+                           '</div>' +
+                       '</div>';
+
+var leftColumnSelects = '<div class="row">' +
+                            '<div class="col-sm-4 cli-data-left-content-label"></div>' +
+                            '<div class="col-sm-8 cli-data-left-content-value">' +
+                                '<select class="cli-data-left-content-value-input"></select>' +
+                            '</div>' +
+                        '</div>';
+
+var rightColumnTable = '<div class="cli-data-right-column-topbar">' +
+                           '<div class="cli-data-right-column-topbar-header">' +
+                               '<div class="cli-data-right-column-topbar-header-top">' +
+                                   '<h6 id="section"></h6>' +
+                               '</div>' +
+                               '<div class="cli-data-right-column-topbar-header-bottom">' +
+                                   '<h4 id="sectionTitle"></h4>' +
+                               '</div>' +
+                           '</div>' +
+                           '<div class="row cli-data-right-column-icons">' +
+                               '<div class="col">' +
+                                   '<i class="fa fa-thumb-tack" aria-hidden="true"></i>' +
+                               '</div>' +
+                           '</div>' +
+                       '</div>' +
+                       '<div class="cli-data-right-content" style="display: none;">' +
+                           '<ul></ul>' +
+                       '</div>' +
+                       '<br>';
+
+var rightColumnTableInputs = '<li>' +
+                                 '<div class="cli-data-labels">' +
+                                     '<div></div>' +
+                                 '</div>' +
+                                 '<div class="cli-data-columns">' +
+                                     '<div></div>' +
+                                 '</div>' +
+                            '</li>';
+
 /* Parent Command Class */
 
 class command{
@@ -123,6 +195,69 @@ class command{
 /* Global Command Class */
 
 class globalCommand extends command{
+
+    constructor(data){
+        super();
+        this.orderedVariables = this.getOrderedVariables();
+    }
+
+    getOrderedVariables() {
+        var orderedVariables = [
+            {"System": {"value": this.sys, "type": "input"}},
+            {"Session": {"value": this.session, "type": "input"}},
+            {"Start": {"value": this.start, "type": "input"}},
+            {"End": {"value": this.end, "type": "input"}},
+            {"Timeout": {"value": this.timeout, "type": "input"}},
+            {"Sleep": {"value": this.sleep, "type": "input"}},
+            {"Verify": {"value": this.verify, "type": "input"}},
+            {"Retry": {"value": this.retry, "type": "dropdown", "options": ["Yes", "No"]}},
+            {"Retry Timer": {"value": this.retry_timer, "type": "input"}},
+            {"Retry Count": {"value": this.retry_count, "type": "input"}},
+            {"Retry On Match": {"value": this.retry_onmatch, "type": "input"}},
+            {"Response Required": {"value": this.resp_req, "type": "dropdown", "options": ["Yes", "No"]}},
+            {"Response Pattern Required": {"value": this.resp_pat_req, "type": "input"}},
+            {"Response Reference": {"value": this.resp_ref, "type": "input"}},
+            {"Response Keys": {"value": this.resp_keys, "type": "input"}},
+            {"In-order Response Reference": {"value": this.inorder_resp_ref, "type": "dropdown", "options": ["Yes", "No"]}},
+            {"Monitor": {"value": this.monitor, "type": "input"}},
+            {"In-order": {"value": this.inorder, "type": "dropdown", "options": ["Yes", "No"]}},
+            {"Repeat": {"value": this.repeat, "type": "dropdown", "options": ["Yes", "No"]}}
+        ];
+        return orderedVariables
+    }
+
+    get htmlLeftContent() {
+        return this.formHtmlLeftContent();
+    }
+
+    formHtmlLeftContent(){
+        var $content = $(leftTableContent);
+        $content.find('#display').text("Global");
+        $content.find('#displayTitle').text("Command Parameters");
+        var $subContent = false;
+        for(var i=0; i<this.orderedVariables.length; i++){
+            for(var key in this.orderedVariables[i]){
+                if(this.orderedVariables[i][key]["type"] == "input"){
+                    $subContent = $(leftColumnInputs);
+                    $subContent.find('.cli-data-left-content-label').text(key);
+                    $subContent.find('.cli-data-left-content-value-input').val(this.orderedVariables[i][key]["value"]);
+                } else {
+                    $subContent = $(leftColumnSelects);
+                    $subContent.find('.cli-data-left-content-label').text(key);
+                    console.log(this.orderedVariables[i][key]["options"]);
+                    for(var j=0; j<this.orderedVariables[i][key]["options"].length; j++){
+                        console.log(this.orderedVariables[i][key]["options"][j]);
+                        $subContent.find('.cli-data-left-content-value-input').append($('<option>' + this.orderedVariables[i][key]["options"][j]  + '</option>'))
+                    }
+                    $subContent.find('.cli-data-left-content-value-input').val(this.orderedVariables[i][key]["value"]);
+                }
+                $($content[1]).append($subContent);
+                break;
+            }
+        }
+        return $content;
+    }
+
 }
 
 /* Testdata Command Class */
@@ -441,7 +576,3 @@ class globalKeys extends keys{
 class testdataKeys extends keys{
 
 }
-
-let comb_obj = new testdataKeys({"k1": {"@resp_pattern_req": "lalalala"}});
-console.log(comb_obj);
-console.log(comb_obj.jsonObj);
