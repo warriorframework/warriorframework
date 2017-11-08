@@ -71,7 +71,13 @@ def getJSONProjectData(request):
 		xml_d = getEmpty();
 
 	j_data = json.loads(json.dumps(xml_d))
-	responseBack = { 'fulljson': j_data , 'fname': filename }
+
+
+	fpath = x['testsuitedir'];
+	files = glob.glob(fpath + "/**/*.xml");
+	answer = [{ 'name': os.path.basename(fn), 'fullpath': fn } for fn in files ]
+
+	responseBack = { 'fulljson': j_data , 'fname': filename , 'suites': answer}
 	return JsonResponse(responseBack)
 
 ## MUST MOVE TO CLASS !!!!
