@@ -2,7 +2,7 @@
     float: left;
     width: 50%;
     height: 100%;
-
+    overflow-y: scroll;
 }
 
 .cli-data-right-column{
@@ -102,6 +102,7 @@
 .cli-data-left-content-value-input{
     border: none;
     font-size: 16px;
+    background-color: white;
 }
 
 .cli-data-left-content-label-last{
@@ -131,4 +132,8 @@
 
 .cli-data-right-content-value-last{
     padding: 1rem;
+}
+
+div.cli-data-left-content > div.row:last-child > div {
+    border-bottom: none; !important;
 }
