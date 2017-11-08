@@ -669,30 +669,10 @@ Two global variables are heavily used when this function is called;
 	}
 
 	console.log("Save to",xfname );
-	
-	projects.jsonProjectObject['Details']['Title'] = katana.$activeTab.find('#projectTitle').val();
-	projects.jsonProjectObject['Details']['Engineer'] = katana.$activeTab.find('#projectEngineer').val();
-	projects.jsonProjectObject['Details']['State'] = katana.$activeTab.find('#projectState').val();
-	projects.jsonProjectObject['Details']['Date'] = katana.$activeTab.find('#projectDate').val();
-	projects.jsonProjectObject['Details']['default_onError'] = {}
-	projects.jsonProjectObject['Details']['default_onError']['@action'] = katana.$activeTab.find('#default_onError').val();
-	projects.jsonProjectObject['Details']['default_onError']['@value'] = katana.$activeTab.find('#default_onError_goto').val();
-	projects.jsonProjectObject['Details']['ResultsDir'] = katana.$activeTab.find('#projectResultsDir').val();
-	
-		var date = new Date();
-	  
-	   var year = date.getFullYear();
-       var month = date.getMonth() + 1;// months are zero indexed
-       var day = date.getDate();
-       var hour = date.getHours();
-       var minute = date.getMinutes();
-       if (minute < 10) {
-       	minute = "0" + minute; 
-       }
-     
 
-	projects.jsonProjectObject['Details']['Date'] = month + "/" + day + "/" + year; 
-	projects.jsonProjectObject['Details']['Time'] = hour + ":" + minute; 
+
+	projects.jsonProjectObject.Details.setTimeStamp();
+
 	
 	//
 	// Now walk the DOM ..
@@ -711,7 +691,7 @@ Two global variables are heavily used when this function is called;
     	}
 	});
 	
-	var topNode  = { 'Project' : projects.jsonProjectObject};
+	var topNode  = { 'Project' : projects.jsonProjectObject.getJSON()};
 	console.log("Save to",xfname , projects.jsonProjectObject);
 
 	$.ajax({
