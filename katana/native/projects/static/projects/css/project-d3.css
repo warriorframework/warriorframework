@@ -1,11 +1,17 @@
 
-.project-d3-node circle {
+.project-d3-circle {
   cursor: pointer;
   fill: #fff;
   stroke: steelblue;
   stroke-width: 3px;
 }
 
+.project-d3-rect {
+  cursor: pointer;
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 3px;
+}
 .project-d3-node text {
   font-size: 11px;
 }
