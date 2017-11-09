@@ -75,10 +75,11 @@ var cliData = {
                 var $toolBarDiv = $currentPage.find('.tool-bar');
                 $toolBarDiv.find('.title').html(data["name"]);
 
-                var globalCmd = new globalCommand(data.contents.data.global);
-                $currentPage.find('.cli-data-left-column').html(globalCmd.htmlLeftContent);
+                //var globalCmd = new globalCommand(data.contents.data.global.command_params);
+                //$currentPage.find('.cli-data-left-column').html(globalCmd.htmlLeftContent);
 
-
+                var globalVer = new globalVerifications(data.contents.data.global)
+                $currentPage.find('.cli-data-left-column').html(globalVer.htmlLeftContent);
 
             });
         },
