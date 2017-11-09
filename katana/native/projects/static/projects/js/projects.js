@@ -256,32 +256,7 @@ class projectsObject{
 
 
 var treeData = [
-  {
-    "name": "Top Level",
-    "parent": "null",
-    "children": [
-      {
-        "name": "Level 2: A",
-        "parent": "Top Level",
-        "children": [
-          {
-            "name": "Son of A",
-            "parent": "Level 2: A"
-          },
-          {
-            "name": "Daughter of A",
-            "parent": "Level 2: A"
-          }
-        ]
-      },
-      {
-        "name": "Level 2: B",
-        "parent": "Top Level"
-      }
-    ]
-  }
 ];
-
 
 
  var projects = {
@@ -304,43 +279,93 @@ var treeData = [
 	  }
 	},
 
-
-	filesOnlycreateChildrenData: function(tnode, td) {
+	createD3treeData: function(tdata) {
 		projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
 		projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
+		existingSuites= katana.$activeTab.data('allExistingSuites');
 
-		if (!tnode.children) return []; 
-		var mykids = [];              // create kids for this d3 node 
-		var kids = tnode['children']; // from incoming tree node.
-		for (var xc in kids){
-			var thisnode = { "name": kids[xc].text, 
-    			"data-path": kids[xc]["li_attr"]["data-path"], "parent": td , "children": []}
-			children = projects.createChildrenData(kids[xc], thisnode);
-			thisnode.children = children;
-			mykids.push(thisnode );
-		}
-		return mykids;
-	},
+		pjDataSet = { 
+			'nodes': [],
+			'edges': []
+		};
 
-	filesOnlyc3DData: function(tdata) {
-		projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
-		projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
+		pjExistingSuites = { 
+			'nodes': [],
+			'edges': []
+		};
+		var nodeCtr = 0;
+		var projectSummary = projects.jsonProjectObject.Details.getSummary();
 		var td = {
-		"name": "Projects",
+		"name": projects.jsonProjectObject.Details.Name,
+		"id": nodeCtr++,
+		"rowid": 0,
     	"parent": "null", 
     	"children": [],
+    	"ntype": 'project',
+    	"displayStr": projectSummary,
     	};
-    	var prj = tdata['children'];
-    	for (var xc in prj) {
-    		mykids = projects.createChildrenData(prj[xc], td);
-    		td.children.push({ "name": prj[xc].text, 
-    			"data-path": prj[xc]["li_attr"]["data-path"], "parent": td , "children": mykids} );
-    	}
-    	projects.treeData = [td]; 
+    	pjDataSet.nodes.push(td);
+    	var slen = projects.jsonTestSuites.length;
+		for (var s=0; s<slen; s++ ) {
+			var sid = parseInt(s) + 1; 
+    		var oneSuite = projects.jsonProjectObject.Testsuites[s];
+    		var items = [];
+    		items.push('ExecType='+oneSuite.Execute_ExecType+'<br>');
+			//console.log("Pushing ", oneSuite, items);
+			if (oneSuite.Execute_ExecType == 'if' || oneSuite.Execute_ExecType == 'if not') {
+				items.push('Condition='+oneSuite.Execute_Rule_Condition+'<br>');
+				items.push('Condvalue='+oneSuite.Execute_Rule_Condvalue+'<br>');
+				items.push('Else='+oneSuite.Execute_Rule_Else+'<br>');
+				items.push('Elsevalue='+oneSuite.Execute_Rule_Elsevalue+'<br>');
+			}
+			var execStr = items.join("");
+			var displayStr = "" + oneSuite.path + "<br>runmode:" + oneSuite.runmode_type + " " + oneSuite.runmode_value + 
+					"<br>onError:" + oneSuite.onError_action + " " + oneSuite.onError_value + 
+					"<br>" + execStr + "</div>"; 
+
+    		var st = { "name": oneSuite.path, 
+    			'ntype': 'suite',
+    			"id": nodeCtr,
+    			"rowid" : sid,
+    			"width" : 100, 
+    			'displayStr' : displayStr,
+    			"exectype" : execStr, 
+    			"runmode" : oneSuite.runmode_type + " " + oneSuite.runmode_value,
+    			'on-error' : oneSuite.onError_action + " " + oneSuite.onError_value,
+    			"data-path": oneSuite.InputDataFile 
+    			} ;
+    		var ed = { 'source': nodeCtr - 1 , 'target': nodeCtr, 'value' : 3 };
+    		pjDataSet.nodes.push(st);
+    		pjDataSet.edges.push(ed);
+    		nodeCtr++;
+    		}
+    	// Now create the suites that exist ...
+
+		slen = existingSuites.length;
+    	for (var s=0; s<slen; s++ ) {
+    		oneSuite = existingSuites[s]
+				var st = { "name": oneSuite.fullpath, 
+    			'ntype': 'existingSuite',
+    			"rowid" : s,
+    			"id": nodeCtr++,
+    			"width" : 100, 
+    			'displayStr' : oneSuite.name,
+    			"exectype" : "ExceType=yes", 
+    			"runmode" : "standard",
+    			'on-error' : "next",
+    			"data-path": "", "parent": td , "children": []
+    			} ;
+    			pjDataSet.nodes.push(st);
+    			pjExistingSuites.nodes.push(st);
+    			
+    		}
+    	katana.$activeTab.data('pjDataSet', pjDataSet);
+    	katana.$activeTab.data('pjExistingSuites', pjExistingSuites);
+
 	},
+	
 
-
-	createD3treeData: function(tdata) {
+	xxcreateDdd3treeData: function(tdata) {
 		projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
 		projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
 		existingSuites= katana.$activeTab.data('allExistingSuites');
@@ -403,32 +428,18 @@ var treeData = [
     	
 	},
 
-
-
-
 	createD3tree: function() {
 		projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
 		projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
 		projects.treeData = katana.$activeTab.data('projectsTreeData');
-    	
+    	var pjDataSet = katana.$activeTab.data('pjDataSet');
+    	var pjExistingSuites = katana.$activeTab.data('pjExistingSuites');
 		var optimalHt = projects.jsonTestSuites.length * 100 + 200; 
 		var optimalWd = katana.$activeTab.find("#projectsMasterPage").width();
 		var margin = {top: 20, right: 120, bottom: 20, left: 120},
 					 width = optimalWd - margin.right - margin.left,
 					 height = optimalHt - margin.top - margin.bottom;
-					 
-		projects.tree = d3.layout.tree()
-		 .size([height, width]);
-		katana.$activeTab.data('projectsTree', projects.tree);
-	
-
-		// Create links here. 
-		projects.diagonal = d3.svg.diagonal()
-			.source(function(d) { return {"x":d.source.x, "y":d.source.y}; })            
-    		.target(function(d) { return {"x":d.target.x, "y":d.target.y}; })
-		 	.projection(function(d) { return [d.y, d.x]; });
-
-
+		var linkDistance = 100; 
 
 		katana.$activeTab.find("[g3did='projects-3d-tree']").attr('id', projects.jsonProjectObject.Details.Name);
 		console.log("Creating for ",  projects.jsonProjectObject.Details.Name );
@@ -436,78 +447,31 @@ var treeData = [
 		
 		d3.select("[useID='" + useID + "']").remove();  // Clear the screen. 
 		projects.svg = d3.select(useID).append("svg")
-		 .attr("width", width + margin.right + margin.left)
-		 .attr("height", height + margin.top + margin.bottom)
-		 .attr("useID", useID)
-		 .append("g")
-		 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+			 .attr("width", width + margin.right + margin.left)
+			 .attr("height", height + margin.top + margin.bottom)
+			 .attr("useID", useID)
+			 .append("g")
+			 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 		katana.$activeTab.data('projectsSVG', projects.svg);
 	
-		projects.root = projects.treeData[0];
-		projects.nodeCtr  = 1;   
-		projects.updateTree();
-		
-		},
-
-	  
-	  updateTree: function() { 
-	  	projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
-		projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
-		projects.treeData = katana.$activeTab.data('projectsTreeData');
-    	projects.tree = katana.$activeTab.data('projectsTree');
-    	existingSuites= katana.$activeTab.data('allExistingSuites');
-		projects.svg = katana.$activeTab.data('projectsSVG');
-	
-	  	var nodes = projects.tree.nodes(projects.root).reverse();  // All the nodes. 
-   		projects.links = projects.tree.links(nodes);
-   		// Normalize for fixed-depth.
-   		projects.links = projects.links.filter(function(d) { return d.target.ntype != 'existingSuite';})
-
-  		nodes.forEach(function(d) {
-  			var wd = katana.$activeTab.find("#projectsMasterPage").width();
-  			if (d.ntype == 'existingSuite') {
-	  				d.y  = wd - 300; 
-	  				d.x  = d.rowid * 50; 
-  				} else if (d.ntype == "project") {
-	  				d.y  = 50; 
-	  				d.x  = 50; 
-  				} else {
-  					var dY = parseInt(d.rowid/5) * 180; 
-	  				d.y = dY + 200; 
-	  				d.x = (d.rowid % 5 ) * 100; 
-  			}
-  		});
-		
+		projects.svg.append('defs').append('marker')
+        	.attr({'id':'arrowhead',
+               'viewBox':'-0 -5 10 10',
+               'refX':25,
+               'refY':0,
+               //'markerUnits':'strokeWidth',
+               'orient':'auto',
+               'markerWidth':10,
+               'markerHeight':10,
+               'xoverflow':'visible'})
+        	.append('svg:path')
+            .attr('d', 'M 0,-5 L 10 ,0 L 0,5')
+            .attr('fill', '#ccc')
+            .attr('stroke','#ccc');
 
 
-   		var dragSuite = d3.behavior.drag()
-	  		.on('drag', function(d,i) {
- 			d.y += d3.event.dx;
-            d.x += d3.event.dy;
-            d3.select(this).attr("transform", function(d,i){
-                return "translate(" + [ d.y,d.x ] + ")"
-            })
-
-	  		}).on('dragend', function(d,i) {
-	  		console.log("Drag ended...", projects.links);
-	  		// Remove links...
-	  		projects.svg.selectAll(".project-d3-link").remove();
-			var link = projects.svg.selectAll(".project-d3-link")
-					   .data(projects.links, function(d) { return d.target.id; });
-			projects.diagonal = d3.svg.diagonal()
-		 				.projection(function(d) { return [d.y, d.x]; });
-			console.log("Drag ended...");
-	  			  // Enter the links.
-			link.enter().insert("path", "g")
-				   	.attr("class", "project-d3-link")
-				   	.attr("d", projects.diagonal);
-
-
-	  	});
-
-
-	  	var defs  = projects.svg.append('defs');
-			var filter = defs.append("filter").attr("id","drop-shadow").attr("height","150%");
+        var defs  = projects.svg.append('defs');
+		var filter = defs.append("filter").attr("id","drop-shadow").attr("height","150%");
 			filter.append("feGaussianBlur").attr("in","SourceAlpha").attr("stdDeviation",5)
 			.attr("result","blur");
 			filter.append("feOffset").attr("in","blur")
@@ -518,38 +482,153 @@ var treeData = [
 			feMerge.append("feMergeNode").attr("in","offsetBlur");
 			feMerge.append("feMergeNode").attr("in","SourceGraphic");
 
+        // var force = d3.layout.force()
+		      //   .nodes(pjDataSet.nodes)
+		      //   .links(pjDataSet.edges)
+		      //   .size([optimalWd,optimalHt])
+		      //   .linkDistance([linkDistance])
+		      //   .charge([-500])
+		      //   .theta(0.1)
+		      //   .gravity(0.05)
+		      //   .start();
 
-		console.log("Creaing...")
+		var dragSuite = d3.behavior.drag()
+			  		.on('drag', function(d,i) {
+		 			d.x += d3.event.dx;
+		            d.y += d3.event.dy;
+		            d3.select(this).attr("transform", function(d,i){
+		            	console.log(d);
+		                return "translate(" + [ d.x,d.y ] + ")"
+		            })
 
-  		var node = projects.svg.selectAll("g")
-   			.data(nodes,  function(d) { return d.id || (d.id = ++projects.nodeCtr); })
-   			;
-   			
-   		console.log(node);
+			  		}).on('dragend', function(d,i) {
+			  		console.log("Drag ended...", d, d3.event);
+			  		// Remove links...
 
-  		// Enter the nodes.
-  		var allNodes = node.enter().append("g")  					
-   				.attr("transform", function(d) { 
-   					//console.log("here...", d);
-    					return "translate(" + d.y + "," + d.x + ")"; })
-    			.attr('class',function(d) { 
+			  	});
+
+
+		var nodes = projects.svg.selectAll("rect")
+      		.data(pjDataSet.nodes)
+	      	.enter()
+	     	.append("rect")
+	   		.attr("width",100)
+   			.attr("height",50)
+   			.attr('class',function(d) { 
    						//console.log("Setting circle", d);	
 						if (d.ntype == 'existingSuite') { 
-								return "project-d3-circle node";
+								return "project-d3-existing-type";
 							}
-						return "node project-d3-node";})
-    			.call(dragSuite);
-		
-		var eNodes = projects.svg.selectAll(".project-d3-circle");
+						return "project-d3-node";})
+   			.attr("x", function(d) { 
+   				d.x = 200;
+   				if (d.ntype == 'project') d.x = 10; 
+   				if (d.ntype == 'existingSuite') d.x = 700; 
+   				return d.x; 
+   				})
+   			.attr("y", function(d) {  d.y = d.rowid * 100; return d.y ;})
+   			.attr("fill", function(d) { 
+   				if (d.ntype == 'project') return '#aaa';
+   				if (d.ntype == 'existingSuite') return '#ddd'
+   				return '#fff';
+   			})
+   			.style('stroke', function(d) { 
+   				if (d.ntype == 'project') return 'blue';
+   				return 'green';
+
+   			})
+   			.on("mouseover",function(d) {
+   					//console.log(d3.event.x, d3.event.y, d);
+   					var fobj = projects.svg.append('foreignObject')
+					.attr('x',  
+			   				(d.ntype == 'project') ?  10 : (d.ntype == 'existingSuite') ? 600 : 200
+			   				)
+					.attr('y', d.rowid * 100 )
+					.attr('width', 450)
+					.attr('class', 'projectSuiteTooltip')
+					.style({
+						'fill' : 'red',
+						'opacity': 1.0,
+						'border' : '2px solid "green"',
+					});
+					var div = fobj.append("xhtml:div")
+					.append('div')
+					.attr('fill', 'blue');
+					div.append('p')
+						.style('border', '2px solid green')
+						.style('fill','red')
+						//.style('color', 'white')
+						.html(d.displayStr);
+					var foHt = div[0][0].getBoundingClientRect().height;
+					var foWd =  div[0][0].getBoundingClientRect().width;
+					projects.svg.append("rect")
+						// .attr('x', d.x+100)
+						// .attr('y', d.y-30)
+						.attr('width', foWd)
+						.attr('height',foHt)
+						.attr('class', 'projectSuiteTooltip')
+						.style({
+					'fill': '#000',
+						'opacity': 0., 
+						});
+
+   				})
+   			.on("mouseout",function(d) {
+   		 			projects.svg.selectAll('.projectSuiteTooltip').remove();
+   				})
+   			.style("filter","url(#drop-shadow")
+   			.call(dragSuite); ;
+   			//       		.call(force.drag)
+
+    		var nodelabels = projects.svg.selectAll(".nodelabel") 
+			       .data(pjDataSet.nodes)
+			       .enter()
+			       .append("text")
+			       .attr("x", function(d) { 
+	   				if (d.ntype == 'project') return 10; 
+	   				return 200; 
+	   				})
+	   			   .attr("y", function(d) {  return 25 + d.rowid * 100; })
+			       .attr("class","nodelabel")
+			       .attr("stroke","black")
+			       .text(function(d){
+			       		if (d.ntype == 'existingSuite') return "";
+			       		if (d.ntype == 'project') return d.name;
+			       		return "(" + d.rowid + ")" + d.name;})
+
+    		// var enodelabels = projects.svg.selectAll(".enodelabel") 
+			   //     .data(pjExistingSuites.nodes)
+			   //     .enter()
+			   //     .append("text")
+			   //     .attr("x", function(d) { 
+	   		// 		if (d.ntype == 'project') return 10; 
+	   		// 		return 700; 
+	   		// 		})
+	   		// 	   .attr("y", function(d) {  return d.rowid * 50; })
+			   //     .attr("class","enodelabel")
+			   //     .attr("stroke","blue")
+			   //     .text(function(d){return d.displayStr;});
+
+			projects.nodelabels = nodelabels;
+			console.log(projects.nodelabels);
+
+		var eNodes = projects.svg.selectAll(".project-d3-existing-type");
 		var nodeEnter = projects.svg.selectAll(".project-d3-node");
-	   	console.log(eNodes);
-	   	console.log(nodeEnter)
+	
+	
 
+		nodeEnter.append("text")
+				.attr("x", 10)
+				.attr("y", 20)
+				.attr("dy", ".35em")
+				.text(function(d) { 
+					if (d.ntype == 'project') return "Project"
+					if (d.ntype == 'existingSuite') return d.displayStr.substring(0,12);
+					return "TS=" + (parseInt(d.rowid) + 1); })
+				.style("fill-opacity", 1);
+   			 			
 
-		 
- 		console.log("here2...");
-
-  		eNodes.append("rect")
+		eNodes.append("rect")
  			// .attr("cx", function(d){ return d.x; })
  			// .attr("cy", function(d){ return d.y; })
  			.attr("rx", 5)
@@ -560,11 +639,9 @@ var treeData = [
  			.attr("transform", function(d) { 
    					return "translate(10,10)"; });
  			
-
 		eNodes.append("text")
 				.attr("x", 10)
 				.attr("y", 20)
-
 				.attr("dy", ".35em")
 				.text(function(d) {
 					if (d.ntype == 'existingSuite') return d.displayStr.substring(0,12);
@@ -572,69 +649,8 @@ var treeData = [
 				.style("fill-opacity", 1);
 
 
-   		nodeEnter.append("rect")
-   			.attr("width",100)
-   			.attr("height",30)
-   			.attr("fill", function(d) { 
-   				if (d.ntype == 'project') return '#aaa';
-   				return '#fff';
-   			})
-   			.style('stroke', function(d) { 
-   				if (d.ntype == 'project') return 'blue';
-   				return 'green';
 
-   			})
-   			.on("mouseover",function(d) {
-   					var fobj = projects.svg.append('foreignObject')
-   						.attr({
-   							'x': d.y + 100,
-   							'y': d.x - 30, 
-   							'width': 450, 
-   							'class' : 'projectSuiteTooltip',
-   						})
-   						.style({
-   							'fill' : 'red',
-   							'opacity': 1.0,
-   							'border' : '2px solid "green"',
-   						});
-   						var div = fobj.append("xhtml:div").append('div');
-   						div.append('p')
-   							.style('border', '2px solid green')
-   							//.style('fill','red')
-   							//.style('color', 'white')
-   							.html(d.displayStr);
-   						var foHt = div[0][0].getBoundingClientRect().height;
-   						var foWd =  div[0][0].getBoundingClientRect().width;
-   						projects.svg.append("rect")
-   							.attr({ 
-							'x': d.y + 100,
-   							'y': d.x - 30, 
-   							'height': foHt ,
-   							'width' : foWd , 
-							'class' : 'projectSuiteTooltip',
-   							})
-   							.style({
-							'fill': '#000',
-   							'opacity': 0.2, 
-   							});
-
-   				})
-   			.on("mouseout",function(d) {
-   		 			projects.svg.selectAll('.projectSuiteTooltip').remove();
-   				})
-   			.style("filter","url(#drop-shadow");
-
-			nodeEnter.append("text")
-				.attr("x", 10)
-				.attr("y", 20)
-				.attr("dy", ".35em")
-				.text(function(d) { 
-					if (d.ntype == 'project') return "Project"
-					if (d.ntype == 'existingSuite') return d.displayStr.substring(0,12);
-					return "TS=" + (parseInt(d.rowid) + 1); })
-				.style("fill-opacity", 1);
-   			 			
-			nodeEnter.append("foreignObject")
+		nodeEnter.append("foreignObject")
 	   				.attr("width", 50)
 	   				.attr("height", 20)
 	   				.attr("y", 30)
@@ -748,14 +764,79 @@ var treeData = [
 	   						event.stopPropagation();
 	   				});
 
-			// Declare the links
-				var link = projects.svg.selectAll(".project-d3-link")
-					   .data(projects.links, function(d) { return d.target.id; });
 
-				  // Enter the links.
-				  link.enter().insert("path", "g")
-				   	.attr("class", "project-d3-link")
-				   	.attr("d", projects.diagonal);
+
+		console.log(eNodes);
+	   	console.log(nodeEnter)
+		console.log("here2...");
+
+		var edgepaths = projects.svg.selectAll(".edgepath")
+		        .data(pjDataSet.edges)
+		        .enter()
+		        .append('line')
+		        .attr('class', 'edgepath')
+		        .attr('x1', function(d) { return parseInt(projects.nodelabels[0][d.source].getAttribute('x')) }) 
+		        .attr('y1', function(d) { return parseInt(projects.nodelabels[0][d.source].getAttribute('y'))}) 		
+				.attr('x2', function(d) { return parseInt(projects.nodelabels[0][d.target].getAttribute('x'))}) 
+		        .attr('y2', function(d) { return parseInt(projects.nodelabels[0][d.target].getAttribute('y'))})		
+		        .attr('stroke-width',2)
+		        .attr('stroke','blue')
+		        .attr("marker-end", "url(#arrowhead)")
+		        .style("pointer-events", "none");
+				
+
+
+      // 		var edgepaths = projects.svg.selectAll(".edgepath")
+		    //     .data(pjDataSet.edges)
+		    //     .enter()
+		    //     .append('path')
+		    //     .attr({'d': function(d) {
+		        		
+		    //     		var xx = projects.svg.selectAll(".nodelabel")[0][d.source];
+		    //     		var mx = xx.x.baseVal[0].value;
+		    //     		var my = xx.y.baseVal[0].value;
+		    //     		var xt = projects.svg.selectAll(".nodelabel")[0][d.target];
+		    //     		var tx = xt.x.baseVal[0].value;
+		    //     		var ty = xt.y.baseVal[0].value;
+						// console.log(d, mx, my, tx, ty);
+						// //return 'M '+d.source.x+' '+d.source.y+' L '+ d.target.x +' '+d.target.y},
+		    //     		return 'M '+mx+' '+my+' L '+ tx +' '+ty},
+		    //            'class':'edgepath',
+		    //            'fill-opacity':0,
+		    //            'stroke-opacity':0,
+		    //            'fill':'blue',
+		    //            'stroke-width' : 3, 
+		    //            'stroke':'red',
+		    //            'id':function(d,i) {return 'edgepath'+i}})
+		    //     .style("pointer-events", "none");
+				
+
+
+		},
+
+
+
+	  
+	  dontCallme: function() { 
+	  	projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
+		projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
+		projects.treeData = katana.$activeTab.data('projectsTreeData');
+    	projects.tree = katana.$activeTab.data('projectsTree');
+    	existingSuites= katana.$activeTab.data('allExistingSuites');
+		projects.svg = katana.$activeTab.data('projectsSVG');
+
+
+			nodeEnter.append("text")
+				.attr("x", 10)
+				.attr("y", 20)
+				.attr("dy", ".35em")
+				.text(function(d) { 
+					if (d.ntype == 'project') return "Project"
+					if (d.ntype == 'existingSuite') return d.displayStr.substring(0,12);
+					return "TS=" + (parseInt(d.rowid) + 1); })
+				.style("fill-opacity", 1);
+   			 			
+
 
 
 
