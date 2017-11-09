@@ -361,72 +361,11 @@ var treeData = [
     		}
     	katana.$activeTab.data('pjDataSet', pjDataSet);
     	katana.$activeTab.data('pjExistingSuites', pjExistingSuites);
-
+    	
 	},
 	
 
-	xxcreateDdd3treeData: function(tdata) {
-		projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
-		projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
-		existingSuites= katana.$activeTab.data('allExistingSuites');
 
-
-		var projectSummary = projects.jsonProjectObject.Details.getSummary();
-		var td = {
-		"name": projects.jsonProjectObject.Details.Name,
-    	"parent": "null", 
-    	"children": [],
-    	"ntype": 'project',
-    	"displayStr": projectSummary,
-    	};	
-    	var slen = projects.jsonTestSuites.length;
-		for (var s=0; s<slen; s++ ) {
-    		var oneSuite = projects.jsonProjectObject.Testsuites[s];
-    		var items = [];
-    		items.push('ExecType='+oneSuite.Execute_ExecType+'<br>');
-			//console.log("Pushing ", oneSuite, items);
-			if (oneSuite.Execute_ExecType == 'if' || oneSuite.Execute_ExecType == 'if not') {
-				items.push('Condition='+oneSuite.Execute_Rule_Condition+'<br>');
-				items.push('Condvalue='+oneSuite.Execute_Rule_Condvalue+'<br>');
-				items.push('Else='+oneSuite.Execute_Rule_Else+'<br>');
-				items.push('Elsevalue='+oneSuite.Execute_Rule_Elsevalue+'<br>');
-			}
-			var execStr = items.join("");
-			var displayStr = "" + oneSuite.path + "<br>runmode:" + oneSuite.runmode_type + " " + oneSuite.runmode_value + 
-					"<br>onError:" + oneSuite.onError_action + " " + oneSuite.onError_value + 
-					"<br>" + execStr + "</div>"; 
-
-    		td.children.push({ "name": oneSuite.path, 
-    			'ntype': 'suite',
-    			"rowid" : s,
-    			"width" : 100, 
-    			'displayStr' : displayStr,
-    			"exectype" : execStr, 
-    			"runmode" : oneSuite.runmode_type + " " + oneSuite.runmode_value,
-    			'on-error' : oneSuite.onError_action + " " + oneSuite.onError_value,
-    			"data-path": oneSuite.InputDataFile , "parent": td , "children": []} );
-    	}
-    	console.log("Length of xisting suites ", existingSuites);
-    	slen = existingSuites.length;
-    	for (var s=0; s<slen; s++ ) {
-    		oneSuite = existingSuites[s]
-				td.children.push({ "name": oneSuite.fullpath, 
-    			'ntype': 'existingSuite',
-    			"rowid" : s,
-    			"width" : 100, 
-    			'displayStr' : oneSuite.name,
-    			"exectype" : "ExceType=yes", 
-    			"runmode" : "standard",
-    			'on-error' : "next",
-    			"data-path": "", "parent": td , "children": []} );
-    	}
-
-    	projects.treeData = [td]; 
-    	katana.$activeTab.data('projectsTreeData', projects.treeData);
-    	projects.treeData = katana.$activeTab.data('projectsTreeData');
-    	//console.log("Tree Data ....", td);
-    	
-	},
 
 	createD3tree: function() {
 		projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
@@ -482,36 +421,55 @@ var treeData = [
 			feMerge.append("feMergeNode").attr("in","offsetBlur");
 			feMerge.append("feMergeNode").attr("in","SourceGraphic");
 
-        // var force = d3.layout.force()
-		      //   .nodes(pjDataSet.nodes)
-		      //   .links(pjDataSet.edges)
-		      //   .size([optimalWd,optimalHt])
-		      //   .linkDistance([linkDistance])
-		      //   .charge([-500])
-		      //   .theta(0.1)
-		      //   .gravity(0.05)
-		      //   .start();
+      	var force = d3.layout.force()
+		       .nodes(pjDataSet.nodes)
+		        .links(pjDataSet.edges)
+		        .size([optimalWd,optimalHt])
+		        .linkDistance([linkDistance])
+		        .charge([-500])
+		        .theta(0.1)
+		        .gravity(0.05)
+		        .start();
 
 		var dragSuite = d3.behavior.drag()
 			  		.on('drag', function(d,i) {
 		 			d.x += d3.event.dx;
 		            d.y += d3.event.dy;
 		            d3.select(this).attr("transform", function(d,i){
-		            	console.log(d);
 		                return "translate(" + [ d.x,d.y ] + ")"
 		            })
 
 			  		}).on('dragend', function(d,i) {
-			  		console.log("Drag ended...", d, d3.event);
-			  		// Remove links...
+			  		var pjDataSet = katana.$activeTab.data('pjDataSet');
+    	
+			  		projects.svg.selectAll(".nodelabel").remove();	
+    				var nodelabels = projects.svg.selectAll(".nodelabel") 
+					       .data(pjDataSet.nodes)
+					       .enter()
+					       .append("text")
+					       .attr("x", function(d) { 
+			   				if (d.ntype == 'project') return 10; 
+			   				return 200; 
+			   				})
+			   			   .attr("y", function(d) {  return 25 + d.rowid * 100; })
+					       .attr("class","nodelabel")
+					       .attr("stroke","black")
+					       .text(function(d){
+					       		if (d.ntype == 'existingSuite') return "";
+					       		if (d.ntype == 'project') return d.name;
+					       		return "(" + d.rowid + ")" + d.name;})
+			  		
 
 			  	});
 
 
-		var nodes = projects.svg.selectAll("rect")
-      		.data(pjDataSet.nodes)
-	      	.enter()
-	     	.append("rect")
+		var gnodes = projects.svg.selectAll('g')
+				.data(pjDataSet.nodes)
+				.enter()
+				.append('g');
+
+
+		var nodes = gnodes.append("rect")
 	   		.attr("width",100)
    			.attr("height",50)
    			.attr('class',function(d) { 
@@ -541,7 +499,7 @@ var treeData = [
    					//console.log(d3.event.x, d3.event.y, d);
    					var fobj = projects.svg.append('foreignObject')
 					.attr('x',  
-			   				(d.ntype == 'project') ?  10 : (d.ntype == 'existingSuite') ? 600 : 200
+			   				(d.ntype == 'project') ?  110 : (d.ntype == 'existingSuite') ? 700 : 250
 			   				)
 					.attr('y', d.rowid * 100 )
 					.attr('width', 450)
@@ -577,83 +535,13 @@ var treeData = [
    		 			projects.svg.selectAll('.projectSuiteTooltip').remove();
    				})
    			.style("filter","url(#drop-shadow")
-   			.call(dragSuite); ;
-   			//       		.call(force.drag)
+   			.call(dragSuite);
 
-    		var nodelabels = projects.svg.selectAll(".nodelabel") 
-			       .data(pjDataSet.nodes)
-			       .enter()
-			       .append("text")
-			       .attr("x", function(d) { 
-	   				if (d.ntype == 'project') return 10; 
-	   				return 200; 
-	   				})
-	   			   .attr("y", function(d) {  return 25 + d.rowid * 100; })
-			       .attr("class","nodelabel")
-			       .attr("stroke","black")
-			       .text(function(d){
-			       		if (d.ntype == 'existingSuite') return "";
-			       		if (d.ntype == 'project') return d.name;
-			       		return "(" + d.rowid + ")" + d.name;})
-
-    		// var enodelabels = projects.svg.selectAll(".enodelabel") 
-			   //     .data(pjExistingSuites.nodes)
-			   //     .enter()
-			   //     .append("text")
-			   //     .attr("x", function(d) { 
-	   		// 		if (d.ntype == 'project') return 10; 
-	   		// 		return 700; 
-	   		// 		})
-	   		// 	   .attr("y", function(d) {  return d.rowid * 50; })
-			   //     .attr("class","enodelabel")
-			   //     .attr("stroke","blue")
-			   //     .text(function(d){return d.displayStr;});
-
-			projects.nodelabels = nodelabels;
-			console.log(projects.nodelabels);
-
-		var eNodes = projects.svg.selectAll(".project-d3-existing-type");
-		var nodeEnter = projects.svg.selectAll(".project-d3-node");
-	
-	
-
-		nodeEnter.append("text")
-				.attr("x", 10)
-				.attr("y", 20)
-				.attr("dy", ".35em")
-				.text(function(d) { 
-					if (d.ntype == 'project') return "Project"
-					if (d.ntype == 'existingSuite') return d.displayStr.substring(0,12);
-					return "TS=" + (parseInt(d.rowid) + 1); })
-				.style("fill-opacity", 1);
-   			 			
-
-		eNodes.append("rect")
- 			// .attr("cx", function(d){ return d.x; })
- 			// .attr("cy", function(d){ return d.y; })
- 			.attr("rx", 5)
- 			.attr("ry", 5)
-   			.attr("width",100)
-   			.attr("height",30)
- 			.attr("fill", "grey")
- 			.attr("transform", function(d) { 
-   					return "translate(10,10)"; });
- 			
-		eNodes.append("text")
-				.attr("x", 10)
-				.attr("y", 20)
-				.attr("dy", ".35em")
-				.text(function(d) {
-					if (d.ntype == 'existingSuite') return d.displayStr.substring(0,12);
-					return "TS=" + (parseInt(d.rowid) + 1); })
-				.style("fill-opacity", 1);
-
-
-
-		nodeEnter.append("foreignObject")
-	   				.attr("width", 50)
+   		gnodes.append("text")
+	   				.text("")
+	   				.attr("width", 20)
 	   				.attr("height", 20)
-	   				.attr("y", 30)
+	   				.attr("y",50)
 	   				.attr("class", "fa fa-trash")
 	   				.attr("deleteNodeid",function(d) { return d.rowid; })
 	   				.style("opacity", 1)
@@ -676,11 +564,72 @@ var treeData = [
 	   						event.stopPropagation();
 	   				});
 
-	   		nodeEnter.append("foreignObject")
+   			//       		.call(force.drag)
+
+    	var nodelabels = gnodes.append("text")
+			       .attr("class","nodelabel")
+			       .attr("x", function(d) { 
+	   				if (d.ntype == 'project') return 10; 
+	   				return 200; 
+	   				})
+	   			   .attr("y", function(d) {  return 25 + d.rowid * 100; })
+			       .attr("stroke","black")
+			       .text(function(d){
+			       		if (d.ntype == 'existingSuite') return "";
+			       		if (d.ntype == 'project') return d.name;
+			       		return "(" + d.rowid + ")" + d.name;})
+
+    		// var enodelabels = projects.svg.selectAll(".enodelabel") 
+			   //     .data(pjExistingSuites.nodes)
+			   //     .enter()
+			   //     .append("text")
+			   //     .attr("x", function(d) { 
+	   		// 		if (d.ntype == 'project') return 10; 
+	   		// 		return 700; 
+	   		// 		})
+	   		// 	   .attr("y", function(d) {  return d.rowid * 50; })
+			   //     .attr("class","enodelabel")
+			   //     .attr("stroke","blue")
+			   //     .text(function(d){return d.displayStr;});
+
+		projects.nodelabels = nodelabels;
+		console.log(projects.nodelabels);
+
+		var eNodes = projects.svg.selectAll(".project-d3-existing-type");
+		var sNodes = projects.svg.selectAll(".project-d3-node");
+		console.log(sNodes)
+
+
+		sNodes.append("text")
+				.attr("x",function(d){ return d.x + 10; })
+				.attr("y",function(d){ return d.y + 30; })
+				.attr("dy", ".35em")
+				.text(function(d) { 
+					console.log("d = ", d)
+					if (d.ntype == 'project') return "Project"
+					if (d.ntype == 'existingSuite') return d.displayStr.substring(0,12);
+					return "TS=" + d.ntype; })
+				.style("fill-opacity", 1);
+   			 			
+
+		eNodes.append("rect")
+ 			.attr("rx", 5)
+ 			.attr("ry", 5)
+   			.attr("width",100)
+   			.attr("height",30)
+ 			.attr("fill", "green")
+ 			.attr("transform", function(d) { 
+ 					console.log("Append....");
+   					return "translate(10,10)"; });
+ 			
+	   			gnodes.append("foreignObject")
 	   				.attr("width", 20)
 	   				.attr("height", 20)
-	   				.attr("y", 30)
-	   				.attr("x", 30)
+	   				.attr("y", function(d) {  return 50 + d.rowid * 100; })
+	   				.attr("x", function(d) { 
+	   				if (d.ntype == 'project') return 10; 
+	   				return 200; 
+	   				})
 	   				.attr("class", "fa fa-plus")
 	   				.attr("addNodeid",function(d) { return d.rowid; })
 	   				.style("opacity", 1)
@@ -704,11 +653,14 @@ var treeData = [
 	   						event.stopPropagation();
 	   				});
 
-				nodeEnter.append("foreignObject")
-	   				.attr("width", 20)
+				gnodes.append("foreignObject")
+					.attr("width", 20)
 	   				.attr("height", 20)
-	   				.attr("y", 30)
-	   				.attr("x", 60)
+	   				.attr("y", function(d) { return 75 + d.rowid * 100;} )
+	   				.attr("x", function(d) { 
+	   				if (d.ntype == 'project') return 10; 
+	   				return 200; 
+	   				})
 	   				.attr("class", "fa fa-folder-open")
 	   				.attr("folderNodeid",function(d) { return d.rowid; })
 	   				.style("opacity", 1)
@@ -733,11 +685,14 @@ var treeData = [
 	   						event.stopPropagation();
 	   				});
 
-	   			nodeEnter.append("foreignObject")
+	   			gnodes.append("foreignObject")
 	   				.attr("width", 20)
 	   				.attr("height", 20)
-	   				.attr("y", 30)
-	   				.attr("x", 90)
+	   				.attr("y", function(d) { return 100 + d.rowid * 100;} )
+	   				.attr("x", function(d) { 
+	   				if (d.ntype == 'project') return 10; 
+	   				return 200; 
+	   				})
 	   				.attr("class", "fa fa-pencil")
 	   				.attr("editNodeid",function(d) { return d.rowid; })
 	   				.style("opacity", 1)
@@ -767,30 +722,30 @@ var treeData = [
 
 
 		console.log(eNodes);
-	   	console.log(nodeEnter)
+	   	console.log(sNodes)
 		console.log("here2...");
 
-		var edgepaths = projects.svg.selectAll(".edgepath")
-		        .data(pjDataSet.edges)
-		        .enter()
-		        .append('line')
-		        .attr('class', 'edgepath')
-		        .attr('x1', function(d) { return parseInt(projects.nodelabels[0][d.source].getAttribute('x')) }) 
-		        .attr('y1', function(d) { return parseInt(projects.nodelabels[0][d.source].getAttribute('y'))}) 		
-				.attr('x2', function(d) { return parseInt(projects.nodelabels[0][d.target].getAttribute('x'))}) 
-		        .attr('y2', function(d) { return parseInt(projects.nodelabels[0][d.target].getAttribute('y'))})		
-		        .attr('stroke-width',2)
-		        .attr('stroke','blue')
-		        .attr("marker-end", "url(#arrowhead)")
-		        .style("pointer-events", "none");
+		// var edgepaths = projects.svg.selectAll(".edgepath")
+		//         .data(pjDataSet.edges)
+		//         .enter()
+		//         .append('line')
+		//         .attr('class', 'edgepath')
+		//   //       .attr('x1', function(d) { return parseInt(projects.nodelabels[0][d.source].getAttribute('x')) }) 
+		//   //       .attr('y1', function(d) { return parseInt(projects.nodelabels[0][d.source].getAttribute('y'))}) 		
+		// 		// .attr('x2', function(d) { return parseInt(projects.nodelabels[0][d.target].getAttribute('x'))}) 
+		//   //       .attr('y2', function(d) { return parseInt(projects.nodelabels[0][d.target].getAttribute('y'))})		
+		//         .attr('stroke-width',2)
+		//         .attr('stroke','blue')
+		//         .attr("marker-end", "url(#arrowhead)")
+		//         .style("pointer-events", "none");
 				
 
 
-      // 		var edgepaths = projects.svg.selectAll(".edgepath")
-		    //     .data(pjDataSet.edges)
-		    //     .enter()
-		    //     .append('path')
-		    //     .attr({'d': function(d) {
+      		var edgepaths = projects.svg.selectAll(".edgepath")
+		        .data(pjDataSet.edges)
+		        .enter()
+		        .append('path')
+		        .attr({'d': function(d) {
 		        		
 		    //     		var xx = projects.svg.selectAll(".nodelabel")[0][d.source];
 		    //     		var mx = xx.x.baseVal[0].value;
@@ -799,16 +754,17 @@ var treeData = [
 		    //     		var tx = xt.x.baseVal[0].value;
 		    //     		var ty = xt.y.baseVal[0].value;
 						// console.log(d, mx, my, tx, ty);
-						// //return 'M '+d.source.x+' '+d.source.y+' L '+ d.target.x +' '+d.target.y},
-		    //     		return 'M '+mx+' '+my+' L '+ tx +' '+ty},
-		    //            'class':'edgepath',
-		    //            'fill-opacity':0,
-		    //            'stroke-opacity':0,
-		    //            'fill':'blue',
-		    //            'stroke-width' : 3, 
-		    //            'stroke':'red',
-		    //            'id':function(d,i) {return 'edgepath'+i}})
-		    //     .style("pointer-events", "none");
+						return 'M '+d.source.x +' '+d.source.y+' L '+ d.target.x +' '+d.target.y},
+		        		
+		               'class':'edgepath',
+		               'fill-opacity':1,
+		               'stroke-opacity':1,
+		               'fill':'blue',
+		               'stroke-width' : 3, 
+		               'stroke':'red',
+		               'marker-end': "url(#arrowhead)",
+		               'id':function(d,i) {return 'edgepath'+i}})
+		        .style("pointer-events", "none");
 				
 
 
@@ -826,7 +782,7 @@ var treeData = [
 		projects.svg = katana.$activeTab.data('projectsSVG');
 
 
-			nodeEnter.append("text")
+			sNodes.append("text")
 				.attr("x", 10)
 				.attr("y", 20)
 				.attr("dy", ".35em")
