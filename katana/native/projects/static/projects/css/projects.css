@@ -1,4 +1,19 @@
 
+.projects-header-icon { 
+    font-size: 20;
+    float: left;
+    vertical-align: middle;
+    color: "white";
+}
+
+.projects-header-label { 
+    font-size: 30;
+    float: left;
+    vertical-align: middle;
+    text-align: left; 
+    color: "white";
+}
+
 .project-input-w label, .project-input-w input {
     float: none; /* if you had floats before? otherwise inline-block will behave differently */
     display: inline-block;

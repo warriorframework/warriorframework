@@ -3,8 +3,9 @@
 <link rel="stylesheet" href="{% static 'projects/css/projects.css' %}">			
 
 <div class="tool-bar">
-			<i id="projectSwapView" class="fa fa-tree" katana-click="projects.swapViews"></i>
-	    	<i id="addSuite" class="button" katana-click="projects.addSuiteToProject">Add Suite To Project</i>
+			<i id="projectSwapView" class="fa fa-tree projects-header-icon" katana-click="projects.swapViews"></i>
+	    	<i id="addSuite" class="button" katana-click="projects.addEmptySuiteToProject">Add New Suite </i>
+	    	<i id="addSuite" class="button" katana-click="projects.addExistingSuiteToProject">Add Existing Suite </i>
 			<i class="button" katana-click="projects.mapUiToProjectJson">Save Changes to Disk </i>
 
 </div>
