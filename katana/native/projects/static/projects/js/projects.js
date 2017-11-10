@@ -441,10 +441,10 @@ var treeData = [
 		       .nodes(pjDataSet.nodes)
 		        .links(pjDataSet.edges)
 		        .size([optimalWd,optimalHt])
-		        .linkDistance([linkDistance])
-		        .charge([-500])
-		        .theta(0.1)
-		        .gravity(0.05)
+		        // .linkDistance([linkDistance])
+		        // .charge([-500])
+		        // .theta(0.1)
+		        // .gravity(0.05)
 		        .start();
 
 		var dragSuite = d3.behavior.drag()
@@ -668,16 +668,15 @@ var treeData = [
    			})
    			.on("mouseover",function(d) {
    					var fobj = projects.svg.append('foreignObject')
-					.attr('x',  0)
-					.attr('y',  d3.event.y - px_rect_height)
+					.attr('x',  d3.event.x - px_rect_width - 120)
+					.attr('y',  d3.event.y -(px_row_height/2))
 					.attr('width', 450)
 					.attr('class', 'projectSuiteTooltip')
 					;
 					var div = fobj.append("xhtml:div")
 					.append('div')
 					.attr('x',  0)
-					.attr('y',  0)
-					
+					.attr('y',  0)					
 					.style({
 						'opacity': 1.0,
 						'border' : '2px solid "green"',
@@ -687,7 +686,7 @@ var treeData = [
 						.style('background-color','white')
 						.style('opacity', 1)
 						//.style('color', 'white')
-						.html(d3.event.x + " " + d3.event.y + "<br>" + d.displayStr);
+						.html(d.displayStr);
 					var foHt = div[0][0].getBoundingClientRect().height;
 					var foWd = div[0][0].getBoundingClientRect().width;
    				})
@@ -716,50 +715,36 @@ var treeData = [
 		console.log(projects.nodelabels);
 
 		console.log(eNodes);
-	   //	console.log(sNodes)
-		console.log("here2...");
-
-		// var edgepaths = projects.svg.selectAll(".edgepath")
-		//         .data(pjDataSet.edges)
-		//         .enter()
-		//         .append('line')
-		//         .attr('class', 'edgepath')
-		//   //       .attr('x1', function(d) { return parseInt(projects.nodelabels[0][d.source].getAttribute('x')) }) 
-		//   //       .attr('y1', function(d) { return parseInt(projects.nodelabels[0][d.source].getAttribute('y'))}) 		
-		// 		// .attr('x2', function(d) { return parseInt(projects.nodelabels[0][d.target].getAttribute('x'))}) 
-		//   //       .attr('y2', function(d) { return parseInt(projects.nodelabels[0][d.target].getAttribute('y'))})		
-		//         .attr('stroke','blue')
-		//         .attr("marker-end", "url(#arrowhead)")
-		//         .style("pointer-events", "none");
-				
+	   	console.log("here2...");
 
 
-      		var edgepaths = projects.svg.selectAll(".edgepath")
-		        .data(pjDataSet.edges)
-		        .enter()
-		        .append('path')
-		        .attr({'d': function(d) {
-		        		
-		    //     		var xx = projects.svg.selectAll(".nodelabel")[0][d.source];
-		    //     		var mx = xx.x.baseVal[0].value;
-		    //     		var my = xx.y.baseVal[0].value;
-		    //     		var xt = projects.svg.selectAll(".nodelabel")[0][d.target];
-		    //     		var tx = xt.x.baseVal[0].value;
-		    //     		var ty = xt.y.baseVal[0].value;
-						// console.log(d, mx, my, tx, ty);
-						return 'M '+d.source.x + 50 + ' '+d.source.y+' L '+ d.target.x +' '+d.target.y},
-		        		
-		               'class':'edgepath',
-		               'fill-opacity':1,
-		               'stroke-opacity':1,
-		               'fill':'blue',
-		               'stroke-width' : 1, 
-		               'stroke':'red',
-		               'marker-end': "url(#arrowhead)",
-		               'id':function(d,i) {return 'edgepath'+i}})
-		        .style("pointer-events", "none");
-				
+		var link = projects.svg.selectAll(".link")
+			.data(pjDataSet.edges)
+			.enter().append("line")
+  			.attr("class", "link")
+  			.attr("id",function(d,i) {return 'edge'+i})
+		    .attr('marker-end','url(#arrowhead)')
+		    .attr("x1", function(d) { return  d.source.x; } )
+		   	.attr("y1", function(d) { return  d.source.y; } )
+		    .attr("x2", function(d) { return  d.target.x; } )
+		   	.attr("y2", function(d) { return  d.target.y; } )
+		    .style("stroke","#ccc")
+		    .style("pointer-events", "none");
 
+
+
+
+			// force.on("tick", function() {
+			//   link.attr("x1", function(d) { return d.source.x; })
+			//       .attr("y1", function(d) { return d.source.y; })
+			//       .attr("x2", function(d) { return d.target.x; })
+			//       .attr("y2", function(d) { return d.target.y; });
+
+			//   gnodes.attr("x", function(d) { return d.x; })
+			//        .attr("y", function(d) { return d.y; });
+			//   });
+		
+		
 
 		},
 
