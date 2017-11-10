@@ -583,6 +583,18 @@ class verifications{
         }
         return $content;
     }
+
+    addAnotherVerification(elem){
+        var $listOfLis = $(elem[1]).find('ul').find('li');
+        var $columns = false;
+        var label = false
+        for(var i=0; i<$listOfLis.length; i++){
+            $columns = $($listOfLis[i]).find('.cli-data-columns');
+            label = $($listOfLis[i]).find('.cli-data-labels').find('div').text();
+            $($listOfLis[i]).find('.cli-data-columns').append('<div>' + this.orderedVariables[i][label]["value"] + '</div>')
+        }
+        return elem
+    }
 }
 
 /* Global Verifications Class */

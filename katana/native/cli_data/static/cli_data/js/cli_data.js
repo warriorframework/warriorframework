@@ -78,7 +78,7 @@ var cliData = {
                 var globalCmd = new globalCommand(data.contents.data.global.command_params);
                 $currentPage.find('.cli-data-left-column').html(globalCmd.htmlLeftContent);
 
-                cliData.fileDisplayAPI.displayRightContents(data.contents.data);
+                setTimeout(function(){cliData.fileDisplayAPI.displayRightContents(data.contents.data)}, 1);
 
             });
         },
@@ -90,15 +90,21 @@ var cliData = {
             var globalCmd = new globalCommand(data.global.command_params);
             $rightColumn.append(globalCmd.htmlRightContent);
 
+            var globalVerHtmlContent = false;
             for(var i=0; i<data.global.verifications.length; i++){
                 for(var key in data.global.verifications[i]){
                     if(data.global.verifications[i][key]["type"] == "verification"){
                         var globalVer = new globalVerifications(data.global.verifications[i])
-                        $rightColumn.append(globalVer.htmlRightContent);
+                        if(!globalVerHtmlContent){
+                            globalVerHtmlContent = globalVer.htmlRightContent;
+                        } else {
+                            globalVerHtmlContent = globalVer.addAnotherVerification(globalVerHtmlContent);
+                        }
                     }
                     break;
                 }
             }
+            $rightColumn.append(globalVerHtmlContent);
 
             for(var i=0; i<data.global.verifications.length; i++){
                 for(var key in data.global.verifications[i]){
@@ -111,7 +117,6 @@ var cliData = {
             }
 
             for(var i=0; i<data.global.keys.length; i++){
-                console.log(data.global.keys[i]);
                 var globalRespKeys = new globalKeys(data.global.keys[i]);
                 $rightColumn.append(globalRespKeys.htmlRightContent);
             }

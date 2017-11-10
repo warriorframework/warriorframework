@@ -28,7 +28,8 @@ class CliDataFileClass(View):
     app_static_dir = join_path(app_directory, "static")
 
     def get(self, request):
-        filepath = request.GET.get('path')
+        #filepath = request.GET.get('path')
+        filepath = join_path(CliDataFileClass.app_static_dir, "base_templates", "test.xml")
         base_filepath = join_path(CliDataFileClass.app_static_dir, "base_templates", "empty.xml")
         if filepath == "false":
             filepath = base_filepath
