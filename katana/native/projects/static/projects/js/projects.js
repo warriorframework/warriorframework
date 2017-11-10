@@ -369,12 +369,28 @@ var treeData = [
 
 
 	createD3tree: function() {
+
+		var px_suite_column = 200; 
+		var px_row_height = 100; 
+		var px_y_icon_offset = 40;
+		var px_text_x_offset = 10; 
+		var px_text_y_offset = 30;
+		var px_rect_width = 200; 
+		var px_rect_height = 30;
+		var px_trash_offset = 0; 
+		var px_folder_offset = 25;
+		var px_edit_offset = 50;
+		var px_insert_offset = 75;
+		var px_existing_column = 700;
+
 		projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
 		projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
 		projects.treeData = katana.$activeTab.data('projectsTreeData');
+		existingSuites= katana.$activeTab.data('allExistingSuites');
+		
     	var pjDataSet = katana.$activeTab.data('pjDataSet');
     	var pjExistingSuites = katana.$activeTab.data('pjExistingSuites');
-		var optimalHt = projects.jsonTestSuites.length * 100 + 200; 
+		var optimalHt = existingSuites.length * px_row_height + (px_row_height * 2); 
 		var optimalWd = katana.$activeTab.find("#projectsMasterPage").width();
 		var margin = {top: 20, right: 120, bottom: 20, left: 120},
 					 width = optimalWd - margin.right - margin.left,
@@ -409,20 +425,6 @@ var treeData = [
             .attr('fill', '#ccc')
             .attr('stroke','#ccc');
 
-		var px_suite_column = 200; 
-		var px_row_height = 100; 
-		var px_y_icon_offset = 40;
-		var px_text_x_offset = 10; 
-		var px_text_y_offset = 30;
-		var px_rect_width = 100; 
-		var px_rect_height = 30;
-		var px_trash_offset = 0; 
-		var px_folder_offset = 25;
-		var px_edit_offset = 50;
-		var px_insert_offset = 75;
-		var px_existing_column = 700;
-
-
         var defs  = projects.svg.append('defs');
 		var filter = defs.append("filter").attr("id","drop-shadow").attr("height","150%");
 			filter.append("feGaussianBlur").attr("in","SourceAlpha").attr("stdDeviation",5)
@@ -453,7 +455,7 @@ var treeData = [
 		                return "translate(" + [ d.x,d.y ] + ")"
 		            	})
 			  		}).on('dragend', function(d,i) {
-			  			console.log("Drag end");
+			  			console.log("Drag end", d, i);
 			  		// var pjDataSet = katana.$activeTab.data('pjDataSet');
 			  		// projects.svg.selectAll(".nodelabel").remove();	
     			// 	var nodelabels = projects.svg.selectAll(".nodelabel") 
@@ -477,7 +479,7 @@ var treeData = [
 				.append('g')
 				.attr("transform",function(d) { 
 					var py = (d.rowid - 1) * px_row_height;
-					if (d.ntype == "project") return "translate("+10+","+px_rect_height+")";
+					if (d.ntype == "project") return "translate("+10+","+px_rect_height*2+")";
 					if (d.ntype == 'existingSuite') {
 						return "translate("+px_existing_column+","+py+")";
 					} 
@@ -629,38 +631,29 @@ var treeData = [
 
    			})
    			.on("mouseover",function(d) {
-   					//console.log(d3.event.x, d3.event.y, d);
    					var fobj = projects.svg.append('foreignObject')
-					.attr('x',  
-			   				(d.ntype == 'project') ?  110 : (d.ntype == 'existingSuite') ? 700 : 250
-			   				)
-					.attr('y', (d.rowid - 1) * px_row_height )
+					.attr('x',  0)
+					.attr('y',  d3.event.y - px_rect_height)
 					.attr('width', 450)
 					.attr('class', 'projectSuiteTooltip')
+					;
+					var div = fobj.append("xhtml:div")
+					.append('div')
+					.attr('x',  0)
+					.attr('y',  0)
+					
 					.style({
-						'fill' : 'red',
 						'opacity': 1.0,
 						'border' : '2px solid "green"',
 					});
-					var div = fobj.append("xhtml:div")
-					.append('div')
-					.attr('fill', 'blue');
 					div.append('p')
 						.style('border', '2px solid green')
-						.style('fill','red')
+						.style('background-color','white')
+						.style('opacity', 1)
 						//.style('color', 'white')
-						.html(d.x + " " + d.displayStr);
+						.html(d3.event.x + " " + d3.event.y + "<br>" + d.displayStr);
 					var foHt = div[0][0].getBoundingClientRect().height;
-					var foWd =  div[0][0].getBoundingClientRect().width;
-					projects.svg.append("rect")
-						.attr('width', foWd)
-						.attr('height',foHt)
-						.attr('class', 'projectSuiteTooltip')
-						.style({
-					'fill': '#000',
-						'opacity': 0., 
-						});
-
+					var foWd = div[0][0].getBoundingClientRect().width;
    				})
    			.on("mouseout",function(d) {
    		 			projects.svg.selectAll('.projectSuiteTooltip').remove();
@@ -674,9 +667,9 @@ var treeData = [
 		   .attr("y", 10)
 	       .attr("stroke","black")
 	       .text(function(d){
-	       		if (d.ntype == 'existingSuite') return  d.displayStr.substring(0,12);
-	       		if (d.ntype == 'project') return d.name;
-	       		return "(" + d.rowid + ")" + d.name;})
+	       		if (d.ntype == 'existingSuite') return  d.displayStr.substring(0,20);
+	       		if (d.ntype == 'project') return d.name.substring(0,20);
+	       		return "(" + d.rowid + ")" + d.name.substring(0,20);})
 
 		projects.nodelabels = nodelabels;
 		console.log(projects.nodelabels);
@@ -1069,7 +1062,37 @@ startNewProject : function() {
 	oneSuite.runmode_type = popup.find("#runmode-at-type").val().toLowerCase(); 
 	oneSuite.runmode_value = popup.find("#runmode-at-value").val(); 
 	console.log("Saving", oneSuite);
-},
+	},
+
+	editDetailsAsPopup: function (argument) {
+		// body...
+		var xstr = "Edit Details";
+		katana.$activeTab.find(".project-details-popup-save").show();
+		katana.popupController.open(katana.$activeTab.find("#projects-details-edit").html(),xstr, function(popup) {
+						projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
+						projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
+						projects.lastPopup = popup;
+						//projects.setupProjectPopupDialog(sid,popup);
+						popup.find(".project-details-popup-save").show();
+						katana.popupController.updateActiveWindow(popup);
+						
+      		 	});
+	},
+
+
+	savePopupToDetails: function() {
+		var popup = projects.lastPopup; 
+		katana.$activeTab.find("#projectName").val(popup.find('#projectName').val());
+		katana.$activeTab.find("#projectTitle").val(popup.find('#projectTitle').val());
+		katana.$activeTab.find("#projectEngineer").val(popup.find('#projectEngineer').val());
+		katana.$activeTab.find("#projectState").val(popup.find('#projectState').val());
+		katana.$activeTab.find("#project_onError_action").val(popup.find('#project_onError_action').val());
+		katana.$activeTab.find("#project_onError_value").val(popup.find('#project_onError_value').val());
+		katana.$activeTab.find("#projectResultsDir").val(popup.find('#projectResultsDir').val());
+
+		katana.$activeTab.find(".project-details-popup-save").hide();
+		katana.popupController.close(projects.lastPopup);
+	},
 
 
 
@@ -1087,9 +1110,9 @@ startNewProject : function() {
 			nb.path = nf; 
 			projects.jsonTestSuites.splice(sid,0,nb);
 			projects.mapProjectJsonToUi();	// Send in the modified array
-			
+			var xstr = "Edit Suite " + (parseInt(sid) + 1); 
 
-			katana.popupController.open(katana.$activeTab.find("#editTestSuiteEntry").html(),"Edit..." , function(popup) {
+			katana.popupController.open(katana.$activeTab.find("#editTestSuiteEntry").html(),xstr, function(popup) {
 						projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
 						projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
 						projects.lastPopup = popup;

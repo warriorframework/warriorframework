@@ -6,6 +6,9 @@
 			<i id="projectSwapView" class="fa fa-tree projects-header-icon" katana-click="projects.swapViews"></i>
 	    	<i id="addSuite" class="button" katana-click="projects.addEmptySuiteToProject">Add New Suite </i>
 	    	<i id="addSuite" class="button" katana-click="projects.addExistingSuiteToProject">Add Existing Suite </i>
+
+	    	<i id="addSuite" class="button" katana-click="projects.editDetailsAsPopup">Test </i>
+
 			<i class="button" katana-click="projects.mapUiToProjectJson">Save Changes to Disk </i>
 
 </div>
@@ -17,7 +20,7 @@
 <div class="col-md-6" id="projects-3d-tree" g3did='projects-3d-tree' width="960" height="500"></div>
 </div>
 <div id="projects-standard-edit" >
-	<div class="col-md-12 row">
+	<div id="projects-details-edit" class="col-md-12 row">
 			<div class="col-md-3 project-input-w">
 				<label class="text-right">Name*:</label>
 				<input type="text-right" type="text" id="projectName" name="projectName" value="{{projectName}}"/>
@@ -63,6 +66,14 @@
 			</div>
 
 			<div class="" id="fileNames"></div>
+
+
+
+		<div class="project-details-popup-save hidden">
+			<button id="project-details-popup-save" class="button" katana-click="projects.savePopupToDetails">Test </button>
+		</div>
+
+
 <!-- 			<div class="field col-md-3 input_padding ">	
 			
 				<label class="hidden text-right"  >Project Type:</label>
