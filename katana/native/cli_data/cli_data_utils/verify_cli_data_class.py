@@ -60,7 +60,7 @@ class VerifyCliDataClass:
                 del json_data["global"]["verifications"]
             else:
                 json_data["global"]["verifications"] = self.__verify_global_vers(json_data["global"]["verifications"])
-        if "keys" in json_data:
+        if "keys" in json_data["global"]:
             if json_data["global"]["keys"] is None:
                 del json_data["global"]["keys"]
             else:
@@ -94,9 +94,9 @@ class VerifyCliDataClass:
         if not isinstance(keys_json, list):
             keys_json = [keys_json]
         for i in range(0, len(keys_json)):
-            keys_json[i]["type"] = "key"
             for key, value in self.defaults["data"]["global"]["keys"]["key"].items():
                 for child_key, child_value in keys_json[i].items():
+                    keys_json[i][child_key]["type"] = "key"
                     if key not in child_value:
                         keys_json[i][child_key][key] = value
         return keys_json

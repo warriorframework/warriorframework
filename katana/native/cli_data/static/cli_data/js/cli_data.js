@@ -78,39 +78,74 @@ var cliData = {
                 var globalCmd = new globalCommand(data.contents.data.global.command_params);
                 $currentPage.find('.cli-data-left-column').html(globalCmd.htmlLeftContent);
 
-                /*console.log(data.contents.data.global.verifications[0]);
-                var globalVer = new globalVerifications(data.contents.data.global.verifications[0])
-                $currentPage.find('.cli-data-left-column').html(globalVer.htmlLeftContent);
-
-                console.log(data.contents.data.global.verifications[1]);
-                var globalComb = new globalCombinations(data.contents.data.global.verifications[1])
-                $currentPage.find('.cli-data-left-column').html(globalComb.htmlLeftContent);
-
-                console.log(data.contents.data.global.keys);
-                var glKey = new globalKeys(data.contents.data.global.keys)
-                $currentPage.find('.cli-data-left-column').html(glKey.htmlLeftContent);
-
-                console.log(data.contents.data.global.variable_pattern);
-                var vp = new globalVariablePattern(data.contents.data.global.variable_pattern)
-                $currentPage.find('.cli-data-left-column').html(vp.htmlLeftContent);*/
-
-                /*var globalCmd = new globalCommand(data.contents.data.global.command_params);
-                $currentPage.find('.cli-data-right-column').find('.cli-data-full-width').append(globalCmd.htmlRightContent);
-                console.log(globalCmd.htmlRightContent);
-
-                var globalVer = new globalVerifications(data.contents.data.global.verifications[0])
-                $currentPage.find('.cli-data-right-column').find('.cli-data-full-width').append(globalVer.htmlRightContent);
-
-                var globalComb = new globalCombinations(data.contents.data.global.verifications[1])
-                $currentPage.find('.cli-data-right-column').find('.cli-data-full-width').append(globalComb.htmlRightContent)
-
-                var glKey = new globalKeys(data.contents.data.global.keys)
-                $currentPage.find('.cli-data-right-column').find('.cli-data-full-width').append(glKey.htmlRightContent);
-
-                var vp = new globalVariablePattern(data.contents.data.global.variable_pattern)
-                $currentPage.find('.cli-data-right-column').find('.cli-data-full-width').append(vp.htmlRightContent)*/
+                cliData.fileDisplayAPI.displayRightContents(data.contents.data);
 
             });
+        },
+
+        displayRightContents: function(data){
+            var $currentPage = katana.$activeTab;
+            var $rightColumn = $currentPage.find('.cli-data-right-column').find('.cli-data-full-width');
+
+            var globalCmd = new globalCommand(data.global.command_params);
+            $rightColumn.append(globalCmd.htmlRightContent);
+
+            for(var i=0; i<data.global.verifications.length; i++){
+                for(var key in data.global.verifications[i]){
+                    if(data.global.verifications[i][key]["type"] == "verification"){
+                        var globalVer = new globalVerifications(data.global.verifications[i])
+                        $rightColumn.append(globalVer.htmlRightContent);
+                    }
+                    break;
+                }
+            }
+
+            for(var i=0; i<data.global.verifications.length; i++){
+                for(var key in data.global.verifications[i]){
+                    if(data.global.verifications[i][key]["type"] == "combination"){
+                        var globalComb = new globalCombinations(data.global.verifications[i])
+                        $rightColumn.append(globalComb.htmlRightContent);
+                    }
+                    break;
+                }
+            }
+
+            for(var i=0; i<data.global.keys.length; i++){
+                console.log(data.global.keys[i]);
+                var globalRespKeys = new globalKeys(data.global.keys[i]);
+                $rightColumn.append(globalRespKeys.htmlRightContent);
+            }
+
+            var globalVarPat = new globalVariablePattern(data.global.variable_pattern);
+            $rightColumn.append(globalVarPat.htmlRightContent);
+
+            for(i=0; i<data.testdata.length; i++){
+                for(var j=0; j<data.testdata[i].command.length; j++){
+                    var tdCmd = new testdataCommand(data.testdata[i].command[i]);
+                    $rightColumn.append(tdCmd.htmlRightContent)
+                }
+
+                for(key in data.testdata[i]){
+                    if(key !== "command" && key !== "variable_pattern"){
+                        if(data.testdata[i][key]["type"] == "verification"){
+                            var tdVer = new testdataVerifications({ key: data.testdata[i][key] })
+                            $rightColumn.append(tdVer.htmlRightContent)
+                        }
+                    }
+                }
+
+                for(key in data.testdata[i]){
+                    if(key !== "command" && key !== "variable_pattern"){
+                        if(data.testdata[i][key]["type"] == "key"){
+                            var tdKey = new testdataKeys({ key: data.testdata[i][key] })
+                            $rightColumn.append(tdKey.htmlRightContent)
+                        }
+                    }
+                }
+
+                var tdVarPat = new testdataVariablePattern(data.testdata[i].variable_pattern)
+                $rightColumn.append(tdVarPat.htmlRightContent)
+            }
         },
     }
 

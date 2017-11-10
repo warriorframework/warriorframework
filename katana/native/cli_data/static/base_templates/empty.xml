@@ -13,7 +13,7 @@
         </keys>
     </global>
     <testdata execute="yes" title="" row="" monitor="" iter_type="per_td_block">
-        <command_params send="" sys="" session="" start=".*" end="" timeout="60" sleep="0" retry="n"
+        <command send="" sys="" session="" start=".*" end="" timeout="60" sleep="0" retry="n"
                         retry_timer="60" retry_count="5" resp_req="y" resp_ref="" verify=""
                         retry_onmatch="" resp_pat_req="" resp_keys="" inorder_resp_ref="" monitor=""
                         inorder="" repeat=""/>
