@@ -32,6 +32,7 @@ from bottle import route, run, static_file, template, redirect, post, request, \
     response
 from docstrings import read_lines, parse_docs, class_defs
 from scanfiles import fetch_action_file_names
+import pkgutil
 
 
 current_file_dir = os.path.dirname(os.path.realpath(__file__))
@@ -65,7 +66,7 @@ DEFTAGSFILE = os.path.normpath((os.path.join(current_file_dir, deftagsfile_relpa
 TOOLTIP_DIR = '{0}{1}{2}{1}'.format(current_file_dir, os.sep, 'tooltip')
 
 
-ROOT = '{0}{1}{2}{1}'.format(current_file_dir, os.sep, 'static') 
+ROOT = '{0}{1}{2}{1}'.format(current_file_dir, os.sep, 'static')
 
 
 @route('/assets/<filename:path>')
@@ -82,6 +83,7 @@ def index():
 def katana():
     template_lookup = [current_file_dir, "{0}{1}{2}{1}".format(current_file_dir, os.sep, 'views')]
     return template('index', template_lookup=template_lookup)
+
 
 @route('/readconfig')
 def readconfig():
@@ -117,201 +119,101 @@ def get_correct_xml_and_root_element(value):
     return tree
 
 
+def get_action(driver, keyword):
+    drvmod = 'ProductDrivers.' + driver
+    drvmodobj = importlib.import_module(drvmod)
+    drvfile_methods = inspect.getmembers(drvmodobj, inspect.isroutine)
+    main_method = [item[1] for item in drvfile_methods if item[0] == 'main'][0]
+    main_src = inspect.getsource(main_method)
+    pkglstmatch = re.search(r'package_list.*=.*\[(.*)\]', main_src, re.MULTILINE | re.DOTALL)
+    pkglst = pkglstmatch.group(1).split(',')
+    for pkg in pkglst:
+        pkgobj = importlib.import_module(pkg)
+        pkgdir = os.path.dirname(pkgobj.__file__)
+        action_modules = [pkg+'.'+name for _, name, _ in pkgutil.iter_modules([pkgdir])]
+        action_module_objs = [importlib.import_module(action_module) for action_module in action_modules]
+        for action_module_obj in action_module_objs:
+            for action_class in inspect.getmembers(action_module_obj, inspect.isclass):
+                for func_name in inspect.getmembers(action_class[1], inspect.isroutine):
+                    if keyword == func_name[0]:
+                        return action_class[1]
+    return None
+
+
 @route('/parsexmlobj', method='POST')
 def parsexmlobj():
     """
     This method fetch the XML object from the Katana UI of Keyword sequencing tool screen.
     And parse it to form a new Wrapper keyword & place it in the user provided file path.
     """
-    sample = []
+    vars_to_replace = {'keyword_doc_list': ""}
+    keyword_sequencer_template_file = "keyword_sequencer_template"
+    keyword_doc_template = ("The keyword {} in Driver {} has defined arguments\n        {}.\n"
+                            "        You must send other values through data file\n        ")
     xmlobj = parseString("".join(request.body))
     tree = get_correct_xml_and_root_element(xmlobj)
-
-    WrapperName = tree[0][0].text
+    vars_to_replace['wrapper_kw'] = tree[0][0].text
     # To get the wrapper keyword name, Action file name and the
     # description which is provided by the user.
     ActionFile = tree[0][2].text.strip()
-    Description = tree[0][3].text
-
-    with open(ActionFile, 'r') as action_file:
-        # To get the method names available in user provided
-        # action file from keyword sequencing tool UI screen
-        method_names = map(extract_method_name, action_file.readlines())
-
-    if WrapperName in method_names:
-        # To check if the user provided wrapper keyword name already
-        # exists in action file
-        checkval = "yes"
-    else:
-        checkval = "no"
-        Subkeyword = tree.find('Subkeyword')
-        subkw_list = Subkeyword.findall('Skw')
-        (doc_string_value, subkw_list, object_list_new, import_action_list,
-         kw_name_1) = check_action_file_name(subkw_list, ActionFile)
-        sum_val = 1
-        for new in doc_string_value:
-            # To have the doc string in the order with
-            # numbers
-            sample.append('\n' + "        " + str(sum_val) + ". " + new)
-            sample_string = "".join(sample)
-            sum_val += 1
-            if sum_val > len(subkw_list):
-                break
-
-        template_dir, template_dir_1 = get_relative_path_for_kw_seq_temp()
-
-        for line in io.open(template_dir, 'r'):
-            # Replacing kw_seq_template with the respective
-            # details and placing it in user provided action file
-            with open(ActionFile, 'a+') as f2:
-                line = line.replace('$new_line', '\n')
-                line = line.replace('$wrapper_kw', WrapperName)
-                line = line.replace('$doc_string_values', sample_string)
-                if Description is not None:
-                    line = line.replace('$wdesc', Description)
-                else:
-                    line = line.replace('$wdesc', 'Description not provided by the user')
-                line = line.replace('$kw_name_1', str(kw_name_1))
-                f2.write(line)
-        final_obj_list = set(object_list_new)
-        final_import_list = set(import_action_list)
-        with open(ActionFile, 'a+') as f2:
-            for vals in final_import_list:
-                vals = vals.decode('utf-8')
-                f2.write('\n' + "        " + vals)
-            for val in final_obj_list:
-                val = val.decode('utf-8')
-                f2.write('\n' + "        " + val)
-            for line in io.open(template_dir_1, 'r'):
-                # Replacing kw_seq_temp with the import lines
-                # and object list which is already been created and placing it in user provided
-                # action file
-                f2.write('\n' + "    " + line)
-        f2.close()
-    return checkval
-
-
-def check_action_file_name(subkw_list, ActionFile):
-    """
-    This method checks for the Actionfile name where the wrapper keyword needs to be appended.
-    And also the content of the wrapper keyword would be framed here.
-    """
-    object_list_new = []
-    class_list_new = []
-    import_action_list = []
-    py_files = ""
-    doc_string_value = []
-    arg_name_list = ""
-    kw_name_1 = []
-    string = ("The keyword {0} in Driver {1} has defined arguments {2}. "
-              "You must want to send other values through data file")
-    for values in subkw_list:
-        # To get the driver name for each sub-keyword and the keyword name
-        # from the sub keyword list.
-        subkw_list_attrib = values.attrib
-        driver = subkw_list_attrib.get('Driver')
-        kw_name = subkw_list_attrib.get('Keyword')
-        driver_file = os.path.join(gpysrcdir, 'ProductDrivers', driver + ".py")
-        actiondir = mkactiondirs(driver_file)
-        actions = get_action_dirlist(driver_file)
-        # To get the action file directory and the
-        # action .py files for each sub- keyword.
-        pyfiles = mkactionpyfiles(actiondir)
-        if len(pyfiles) > 1:
-            # If more than one .py file in action directory, checking each
-            # action file whether the user provided sub keyword name available in each .py file
-            # or not. If available that action .py file would be taken for further operation
-            for action_file in pyfiles:
-                with open(action_file, 'r') as new_file:
-                    for line in new_file:
-                        next_word = extract_method_name(line)
-                        if next_word == kw_name:
-                            pyfiles = str(action_file).encode('utf-8', 'ignore')
-
-        py_files = str(pyfiles).encode('utf-8', 'ignore')
-        (_, file_name) = py_files.rsplit(os.sep, 1)
-        path = str(gpysrcdir).encode('utf-8', 'ignore')
-        sys.path.append(path)
-        file_name = file_name.split('.')[0]
-        py_files_1 = py_files.split(os.sep)
-        py_files_1 = ('.').join(py_files_1)
-        for action in actions:
-            # If multiple action directories available in a action directory
-            # checking whether the action package is available in .py file name
-            if action.strip() in py_files_1:
-                actions_package = action.strip() + "." + file_name
-        modules = importlib.import_module(actions_package)
-        # To get the class name for the action
-        # .py file in which the sub keyword is available
-        class_list_new = inspect.getmembers(modules, inspect.isclass)
-        for elem in class_list_new:
-            if actions_package in str(elem[1]):
-                class_list_new = elem[0]
-        if ActionFile.split(os.sep)[-1].split('_')[0] in class_list_new.lower():
-            class_list = "self"
+    vars_to_replace['wdesc'] = tree[0][3].text
+    if not os.path.isfile(ActionFile):
+        return ("Action File '{}' does not exist or is not a file,"
+                " please check").format(ActionFile)
+    sys.path.insert(0, gpysrcdir)
+    actionmodfile = os.path.relpath(ActionFile, gpysrcdir)
+    # remove the extension
+    actionmodfile = os.path.splitext(actionmodfile)[0]
+    # change file path to module path (separated by .)
+    actionmodfile = ".".join(actionmodfile.split(os.sep))
+    action_module = importlib.import_module(actionmodfile)
+    action_class = inspect.getmembers(action_module, inspect.isclass)[0][1]
+    action_methods = [item[0] for item in inspect.getmembers(action_class, inspect.isroutine)]
+    if vars_to_replace['wrapper_kw'] in action_methods:
+        return "already exists"
+    Subkeyword_elem = tree.find('Subkeyword')
+    subkw_list = Subkeyword_elem.findall('Skw')
+    keyword_details = []
+    for subkeyword in subkw_list:
+        skw_attrs = subkeyword.attrib
+        action_code = get_action(skw_attrs['Driver'], skw_attrs['Keyword'])
+        if actionmodfile != action_code.__module__:
+            keyword_action_class = action_code.__module__+'.'+action_code.__name__
         else:
-            import_action_list.append('from ' + action.strip() + "." + file_name + " " +
-                                      "import " + class_list_new)
-            object_list = class_list_new + "_obj = " + class_list_new + "()"
-            # Forming object
-            # creation and appending it to a list
-            object_list_new.append(object_list)
-            class_list = (object_list.split('=')[0]).strip()
-        Arguments = values.find('Arguments')
-        # Finding all the arguments and it's values for
-        # each sub-keyword
-        if Arguments is not None:
-            argument_list = Arguments.findall('argument')
-            if len(argument_list) == 1:
-                for argument in argument_list:
-                    argument_name = argument.get('name')
-                    if argument_name is not None:
-                        arg_value = argument.get('value')
-                        if arg_value is None or arg_value is False:
-                            arg_value = argument.text
-                        arg_name = argument_name + "=" + "\"" + arg_value + "\""
-                        kw_name_1.append("{0}.{1}({2})".format(class_list, kw_name, arg_name))
-                        # Forming doc string for wrapper keyword by using sub keyword details
-                        doc_string_value.append(string .format(kw_name, driver, arg_name))
-                    else:
-                        arg_name = ""
-                        kw_name_1.append("{0}.{1}({2})".format(class_list, kw_name, arg_name))
-                doc_string_value.append(string .format(kw_name, driver, arg_name))
-            else:
-                for argument in argument_list:
-                    argument_name = argument.get('name')
-                    if argument_name is not None:
-                        arg_value = argument.get('value')
-                        if arg_value is None or arg_value is False:
-                            arg_value = argument.text
-                        arg_list = argument_name + "=" + "\'" + arg_value + "\',"
-                        arg_name_list += arg_list
-                kw_name_1.append("{0}.{1}({2})".format(class_list, kw_name, arg_name_list))
-                doc_string_value.append(string .format(kw_name, driver, arg_name_list))
-                arg_name_list = ""
-    return doc_string_value, subkw_list, object_list_new, import_action_list, kw_name_1
-
-
-def get_relative_path_for_kw_seq_temp():
-    """ To get the absolute path of keyword sequencing template"""
-    katana_exe = sys.argv[0]
-    (katana_dir, katana_py_file) = os.path.split(katana_exe)
-    if katana_py_file != "":
-        template_dir = os.path.join(os.getcwd(), katana_dir, 'kw_seq_template')
-        template_dir_1 = os.path.join(os.getcwd(), katana_dir, 'kw_seq_temp')
+            keyword_action_class = ''
+        arguments = subkeyword.find('Arguments')
+        kw_args = {}
+        if arguments is not None:
+            argument_list = arguments.findall('argument')
+            kw_args = {arg.get('name'): arg.get('value') for arg in argument_list}
+        keyword_details.append((skw_attrs['Keyword'], keyword_action_class, kw_args))
+        arg_list_str = ','.join(['{}="{}"'.format(key, value)
+                                 for (key, value) in kw_args.iteritems()])
+        vars_to_replace['keyword_doc_list'] += keyword_doc_template.format(
+                                                skw_attrs['Keyword'],
+                                                skw_attrs['Driver'], arg_list_str)
     else:
-        template_dir = 'kw_seq_template'
-        template_dir_1 = 'kw_seq_temp'
-    return template_dir, template_dir_1
+        ws27 = ',\n'+' '*27
+        ws28 = ws27+' '
+        inner_to_print_list = ['('+ws28.join(["'{}', '{}'".format(a, b),
+                                              str(c)])+')' for (a, b, c) in keyword_details]
+        outer_to_print = '['+ws27.join(inner_to_print_list)+']'
+        vars_to_replace['keyword_details'] = outer_to_print
 
+    with io.open(keyword_sequencer_template_file) as kwdseqtemp:
+        kwdseqtempstr = kwdseqtemp.read()
+    from string import Template
+    kwdseqtemp = Template(kwdseqtempstr)
+    kwdseqtempstr = kwdseqtemp.substitute(vars_to_replace)
 
-def extract_method_name(line):
-    """ To check whether the user provided wrapper keyword name already exists in user provided
-        action file from keyword sequencing tool UI screen"""
-    if line.strip().startswith("def "):
-        line = line.split()
-        method_name = line[1].split("(")[0]
-        return method_name
+    try:
+        with io.open(ActionFile, 'a') as actfile:
+            actfile.write(kwdseqtempstr)
+    except Exception as e:
+        print "got exception <<{}>> while writing to action file".format(e)
+        return "Error writing to actionfile {}".format(ActionFile)
+
+    return "new keyword {} saved".format(vars_to_replace['wrapper_kw'])
 
 
 @route('/readdeftagsfile')
