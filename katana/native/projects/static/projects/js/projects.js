@@ -455,21 +455,42 @@ var treeData = [
 		                return "translate(" + [ d.x,d.y ] + ")"
 		            	})
 			  		}).on('dragend', function(d,i) {
+
+	  					projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
+						projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
+						projects.treeData = katana.$activeTab.data('projectsTreeData');
+						existingSuites= katana.$activeTab.data('allExistingSuites');
 			  			console.log("Drag end", d, i);
-			  		// var pjDataSet = katana.$activeTab.data('pjDataSet');
-			  		// projects.svg.selectAll(".nodelabel").remove();	
-    			// 	var nodelabels = projects.svg.selectAll(".nodelabel") 
-					  //      .data(pjDataSet.nodes)
-					  //      .enter()
-					  //      .append("text")
-					  //      .attr("x",10)
-			   	// 		   .attr("y",10)
-					  //      .attr("class","nodelabel")
-					  //      .attr("stroke","black")
-					  //      .text(function(d){
-					  //      		if (d.ntype == 'existingSuite') return "";
-					  //      		if (d.ntype == 'project') return d.name;
-					  //      		return "(" + d.rowid + ")" + d.name;})
+			  			if (d.x < (px_existing_column -px_rect_width) && (d.x >px_suite_column )){
+
+			  				if (d.id > projects.jsonTestSuites.length  && d.ntype == 'existingSuite') {
+								console.log("You are inserting ...", d);
+								// Location??
+								var loc = parseInt( 0.5 + ( d.y / px_row_height)); 
+								console.log("Location = ", loc, " fname = ", d.name);
+								var pathToBase = katana.$activeTab.find('#savefilepath').text();
+      							var nf = prefixFromAbs(pathToBase, d.name);
+      							console.log("Adding ..", nf);
+								projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
+								projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
+								var sid  = projects.jsonTestSuites.length;
+								if (loc > sid) loc = sid 
+								var nb = new projectSuiteObject();
+								nb.path = nf; 
+								projects.jsonTestSuites.splice(loc,0,nb);
+								projects.mapProjectJsonToUi();	// Send in the modified array
+			  				}
+
+							if (d.id < projects.jsonTestSuites.length  && d.ntype == 'suite') {
+								console.log("You are rearranging nodes. ...", d);
+								// Location
+
+			  				}
+
+
+
+			  				
+			  			}
 			  	});
 
 
@@ -614,11 +635,26 @@ var treeData = [
 	   				});
 
 		gnodes.append("rect")
-	   		.attr("width",px_rect_width)
-   			.attr("height",px_rect_height)
+	   		.attr("width",function(d){ 
+					if (d.ntype == 'project') return px_rect_width * 0.5;
+   					return px_rect_width; 
+   			})
+   			.attr("height",function(d){ 
+					if (d.ntype == 'project') return px_rect_height * 2;
+   					return px_rect_height; 
+   			})
    			.attr("x", 0)
    			.attr("y", 0)
-   			.attr('fill','steelblue')
+   			.attr("rx", function(d){ 
+					if (d.ntype == 'project') return 5;
+   					if (d.ntype == 'existingSuite') return 8;
+   					return 0; 
+   			})
+   			.attr('fill', function(d){ 
+					if (d.ntype == 'project') return '#42f49b';
+   					if (d.ntype == 'suite') return 'steelblue';
+   					return 'white'; 
+   			})
    			.attr('class',function(d) { 
    						//console.log("Setting circle", d);	
 						if (d.ntype == 'existingSuite') { 
@@ -658,13 +694,18 @@ var treeData = [
    			.on("mouseout",function(d) {
    		 			projects.svg.selectAll('.projectSuiteTooltip').remove();
    				})
+   			.on("click",function(d) {
+   		 			if (d.ntype == 'project') {
+   		 				projects.editDetailsAsPopup();
+   		 			}
+   				})
    			.style("filter","url(#drop-shadow");
 
 
     	var nodelabels = gnodes.append("text")
 	       .attr("class","nodelabel")
 	       .attr("x", 10)
-		   .attr("y", 10)
+		   .attr("y", px_rect_height / 2)
 	       .attr("stroke","black")
 	       .text(function(d){
 	       		if (d.ntype == 'existingSuite') return  d.displayStr.substring(0,20);
