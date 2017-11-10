@@ -75,24 +75,40 @@ var cliData = {
                 var $toolBarDiv = $currentPage.find('.tool-bar');
                 $toolBarDiv.find('.title').html(data["name"]);
 
-                //var globalCmd = new globalCommand(data.contents.data.global.command_params);
-                //$currentPage.find('.cli-data-left-column').html(globalCmd.htmlLeftContent);
+                var globalCmd = new globalCommand(data.contents.data.global.command_params);
+                $currentPage.find('.cli-data-left-column').html(globalCmd.htmlLeftContent);
 
-                //console.log(data.contents.data.global.verifications[0]);
-                //var globalVer = new globalVerifications(data.contents.data.global.verifications[0])
-                //$currentPage.find('.cli-data-left-column').html(globalVer.htmlLeftContent);
+                /*console.log(data.contents.data.global.verifications[0]);
+                var globalVer = new globalVerifications(data.contents.data.global.verifications[0])
+                $currentPage.find('.cli-data-left-column').html(globalVer.htmlLeftContent);
 
-                //console.log(data.contents.data.global.verifications[1]);
-                //var globalComb = new globalCombinations(data.contents.data.global.verifications[1])
-                //$currentPage.find('.cli-data-left-column').html(globalComb.htmlLeftContent);
+                console.log(data.contents.data.global.verifications[1]);
+                var globalComb = new globalCombinations(data.contents.data.global.verifications[1])
+                $currentPage.find('.cli-data-left-column').html(globalComb.htmlLeftContent);
 
-                //console.log(data.contents.data.global.keys);
-                //var glKey = new globalKeys(data.contents.data.global.keys)
-                //$currentPage.find('.cli-data-left-column').html(glKey.htmlLeftContent);
+                console.log(data.contents.data.global.keys);
+                var glKey = new globalKeys(data.contents.data.global.keys)
+                $currentPage.find('.cli-data-left-column').html(glKey.htmlLeftContent);
 
                 console.log(data.contents.data.global.variable_pattern);
                 var vp = new globalVariablePattern(data.contents.data.global.variable_pattern)
-                $currentPage.find('.cli-data-left-column').html(vp.htmlLeftContent);
+                $currentPage.find('.cli-data-left-column').html(vp.htmlLeftContent);*/
+
+                /*var globalCmd = new globalCommand(data.contents.data.global.command_params);
+                $currentPage.find('.cli-data-right-column').find('.cli-data-full-width').append(globalCmd.htmlRightContent);
+                console.log(globalCmd.htmlRightContent);
+
+                var globalVer = new globalVerifications(data.contents.data.global.verifications[0])
+                $currentPage.find('.cli-data-right-column').find('.cli-data-full-width').append(globalVer.htmlRightContent);
+
+                var globalComb = new globalCombinations(data.contents.data.global.verifications[1])
+                $currentPage.find('.cli-data-right-column').find('.cli-data-full-width').append(globalComb.htmlRightContent)
+
+                var glKey = new globalKeys(data.contents.data.global.keys)
+                $currentPage.find('.cli-data-right-column').find('.cli-data-full-width').append(glKey.htmlRightContent);
+
+                var vp = new globalVariablePattern(data.contents.data.global.variable_pattern)
+                $currentPage.find('.cli-data-right-column').find('.cli-data-full-width').append(vp.htmlRightContent)*/
 
             });
         },

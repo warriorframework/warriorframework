@@ -58,17 +58,15 @@ var rightColumnTable = '<div class="cli-data-right-column-topbar">' +
                                '</div>' +
                            '</div>' +
                        '</div>' +
-                       '<div class="cli-data-right-content" style="display: none;">' +
+                       '<div class="cli-data-right-content">' +
                            '<ul></ul>' +
                        '</div>' +
                        '<br>';
 
 var rightColumnTableInputs = '<li>' +
                                  '<div class="cli-data-labels">' +
-                                     '<div></div>' +
                                  '</div>' +
                                  '<div class="cli-data-columns">' +
-                                     '<div></div>' +
                                  '</div>' +
                             '</li>';
 
@@ -251,6 +249,27 @@ class globalCommand extends command{
                     $subContent.find('.cli-data-left-content-value-input').val(this.orderedVariables[i][key]["value"]);
                 }
                 $($content[1]).append($subContent);
+                break;
+            }
+        }
+        return $content;
+    }
+
+    get htmlRightContent() {
+        return this.formHtmlRightContent();
+    }
+
+    formHtmlRightContent(){
+        var $content = $(rightColumnTable);
+        $content.find('#section').text("Global");
+        $content.find('#sectionTitle').text("Command Parameters");
+        var $subContent = false;
+        for(var i=0; i<this.orderedVariables.length; i++){
+            for(var key in this.orderedVariables[i]){
+                $subContent = $(rightColumnTableInputs);
+                $subContent.find('.cli-data-labels').html('<div>' + key + '</div>');
+                $subContent.find('.cli-data-columns').html('<div>' + this.orderedVariables[i][key]["value"] + '</div>');
+                $($content[1]).find('ul').append($subContent);
                 break;
             }
         }
@@ -509,10 +528,30 @@ class globalVerifications extends verifications{
                     for(var j=0; j<this.orderedVariables[i][key]["options"].length; j++){
                         $subContent.find('.cli-data-left-content-value-input').append($('<option>' + this.orderedVariables[i][key]["options"][j]  + '</option>'))
                     }
-                    console.log(this.orderedVariables[i][key]["value"]);
                     $subContent.find('.cli-data-left-content-value-input').val(this.orderedVariables[i][key]["value"]);
                 }
                 $($content[1]).append($subContent);
+                break;
+            }
+        }
+        return $content;
+    }
+
+    get htmlRightContent() {
+        return this.formHtmlRightContent();
+    }
+
+    formHtmlRightContent(){
+        var $content = $(rightColumnTable);
+        $content.find('#section').text("Global");
+        $content.find('#sectionTitle').text("Verifications");
+        var $subContent = false;
+        for(var i=0; i<this.orderedVariables.length; i++){
+            for(var key in this.orderedVariables[i]){
+                $subContent = $(rightColumnTableInputs);
+                $subContent.find('.cli-data-labels').html('<div>' + key + '</div>');
+                $subContent.find('.cli-data-columns').html('<div>' + this.orderedVariables[i][key]["value"] + '</div>');
+                $($content[1]).find('ul').append($subContent);
                 break;
             }
         }
@@ -599,10 +638,30 @@ class globalCombinations extends combinations{
                     for(var j=0; j<this.orderedVariables[i][key]["options"].length; j++){
                         $subContent.find('.cli-data-left-content-value-input').append($('<option>' + this.orderedVariables[i][key]["options"][j]  + '</option>'))
                     }
-                    console.log(this.orderedVariables[i][key]["value"]);
                     $subContent.find('.cli-data-left-content-value-input').val(this.orderedVariables[i][key]["value"]);
                 }
                 $($content[1]).append($subContent);
+                break;
+            }
+        }
+        return $content;
+    }
+
+    get htmlRightContent() {
+        return this.formHtmlRightContent();
+    }
+
+    formHtmlRightContent(){
+        var $content = $(rightColumnTable);
+        $content.find('#section').text("Global");
+        $content.find('#sectionTitle').text("Verification Combinations");
+        var $subContent = false;
+        for(var i=0; i<this.orderedVariables.length; i++){
+            for(var key in this.orderedVariables[i]){
+                $subContent = $(rightColumnTableInputs);
+                $subContent.find('.cli-data-labels').html('<div>' + key + '</div>');
+                $subContent.find('.cli-data-columns').html('<div>' + this.orderedVariables[i][key]["value"] + '</div>');
+                $($content[1]).find('ul').append($subContent);
                 break;
             }
         }
@@ -663,7 +722,7 @@ class globalKeys extends keys{
 
     getOrderedVariables() {
         var orderedVariables = [
-            {"Required Response Pattern": {"value": this.search, "type": "input"}},
+            {"Req. Resp Pattern": {"value": this.resp_pattern_req, "type": "input"}},
         ];
         return orderedVariables
     }
@@ -689,10 +748,30 @@ class globalKeys extends keys{
                     for(var j=0; j<this.orderedVariables[i][key]["options"].length; j++){
                         $subContent.find('.cli-data-left-content-value-input').append($('<option>' + this.orderedVariables[i][key]["options"][j]  + '</option>'))
                     }
-                    console.log(this.orderedVariables[i][key]["value"]);
                     $subContent.find('.cli-data-left-content-value-input').val(this.orderedVariables[i][key]["value"]);
                 }
                 $($content[1]).append($subContent);
+                break;
+            }
+        }
+        return $content;
+    }
+
+    get htmlRightContent() {
+        return this.formHtmlRightContent();
+    }
+
+    formHtmlRightContent(){
+        var $content = $(rightColumnTable);
+        $content.find('#section').text("Global");
+        $content.find('#sectionTitle').text("Response Keys");
+        var $subContent = false;
+        for(var i=0; i<this.orderedVariables.length; i++){
+            for(var key in this.orderedVariables[i]){
+                $subContent = $(rightColumnTableInputs);
+                $subContent.find('.cli-data-labels').html('<div>' + key + '</div>');
+                $subContent.find('.cli-data-columns').html('<div>' + this.orderedVariables[i][key]["value"] + '</div>');
+                $($content[1]).find('ul').append($subContent);
                 break;
             }
         }
@@ -777,10 +856,30 @@ class globalVariablePattern extends variablePattern{
                     for(var j=0; j<this.orderedVariables[i][key]["options"].length; j++){
                         $subContent.find('.cli-data-left-content-value-input').append($('<option>' + this.orderedVariables[i][key]["options"][j]  + '</option>'))
                     }
-                    console.log(this.orderedVariables[i][key]["value"]);
                     $subContent.find('.cli-data-left-content-value-input').val(this.orderedVariables[i][key]["value"]);
                 }
                 $($content[1]).append($subContent);
+                break;
+            }
+        }
+        return $content;
+    }
+
+    get htmlRightContent() {
+        return this.formHtmlRightContent();
+    }
+
+    formHtmlRightContent(){
+        var $content = $(rightColumnTable);
+        $content.find('#section').text("Global");
+        $content.find('#sectionTitle').text("Variable Pattern");
+        var $subContent = false;
+        for(var i=0; i<this.orderedVariables.length; i++){
+            for(var key in this.orderedVariables[i]){
+                $subContent = $(rightColumnTableInputs);
+                $subContent.find('.cli-data-labels').html('<div>' + key + '</div>');
+                $subContent.find('.cli-data-columns').html('<div>' + this.orderedVariables[i][key]["value"] + '</div>');
+                $($content[1]).find('ul').append($subContent);
                 break;
             }
         }
