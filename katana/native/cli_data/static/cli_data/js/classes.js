@@ -98,6 +98,7 @@ class command{
         this.inorder = this.converter("inorder", data["@inorder"], false, true);
         this.monitor = !data["@monitor"] ? this.getDefaults("monitor") : data["@monitor"];
         this.repeat = this.converter("repeat", data["@repeat"], false, true);
+        this.general_options = ["Yes", "No"];
     }
 
     get jsonObj() {
@@ -210,18 +211,18 @@ class globalCommand extends command{
             {"Timeout": {"value": this.timeout, "type": "input"}},
             {"Sleep": {"value": this.sleep, "type": "input"}},
             {"Verify": {"value": this.verify, "type": "input"}},
-            {"Retry": {"value": this.retry, "type": "dropdown", "options": ["Yes", "No"]}},
+            {"Retry": {"value": this.retry, "type": "dropdown", "options": this.general_options}},
             {"Retry Timer": {"value": this.retry_timer, "type": "input"}},
             {"Retry Count": {"value": this.retry_count, "type": "input"}},
             {"Retry On Match": {"value": this.retry_onmatch, "type": "input"}},
-            {"Response Required": {"value": this.resp_req, "type": "dropdown", "options": ["Yes", "No"]}},
+            {"Response Required": {"value": this.resp_req, "type": "dropdown", "options": this.general_options}},
             {"Response Pattern Required": {"value": this.resp_pat_req, "type": "input"}},
             {"Response Reference": {"value": this.resp_ref, "type": "input"}},
             {"Response Keys": {"value": this.resp_keys, "type": "input"}},
-            {"In-order Response Reference": {"value": this.inorder_resp_ref, "type": "dropdown", "options": ["Yes", "No"]}},
+            {"In-order Response Reference": {"value": this.inorder_resp_ref, "type": "dropdown", "options": this.general_options}},
             {"Monitor": {"value": this.monitor, "type": "input"}},
-            {"In-order": {"value": this.inorder, "type": "dropdown", "options": ["Yes", "No"]}},
-            {"Repeat": {"value": this.repeat, "type": "dropdown", "options": ["Yes", "No"]}}
+            {"In-order": {"value": this.inorder, "type": "dropdown", "options": this.general_options}},
+            {"Repeat": {"value": this.repeat, "type": "dropdown", "options": this.general_options}}
         ];
         return orderedVariables
     }
@@ -367,6 +368,7 @@ class verifications{
                                  "Lesser Than Or Equal To": "le"};
         this.operator_toEnglish = this.flipObject(this.operator_toJson);
         this.operator_options = this.getOptionsFromMappings(this.operator_toJson);
+        this.general_options = ["Yes", "No"];
 
         if(data === undefined || data === {}){
             data = {"verification": {}}
@@ -476,25 +478,12 @@ class globalVerifications extends verifications{
 
     getOrderedVariables() {
         var orderedVariables = [
-            {"System": {"value": this.sys, "type": "input"}},
-            {"Session": {"value": this.session, "type": "input"}},
-            {"Start": {"value": this.start, "type": "input"}},
-            {"End": {"value": this.end, "type": "input"}},
-            {"Timeout": {"value": this.timeout, "type": "input"}},
-            {"Sleep": {"value": this.sleep, "type": "input"}},
-            {"Verify": {"value": this.verify, "type": "input"}},
-            {"Retry": {"value": this.retry, "type": "dropdown", "options": ["Yes", "No"]}},
-            {"Retry Timer": {"value": this.retry_timer, "type": "input"}},
-            {"Retry Count": {"value": this.retry_count, "type": "input"}},
-            {"Retry On Match": {"value": this.retry_onmatch, "type": "input"}},
-            {"Response Required": {"value": this.resp_req, "type": "dropdown", "options": ["Yes", "No"]}},
-            {"Response Pattern Required": {"value": this.resp_pat_req, "type": "input"}},
-            {"Response Reference": {"value": this.resp_ref, "type": "input"}},
-            {"Response Keys": {"value": this.resp_keys, "type": "input"}},
-            {"In-order Response Reference": {"value": this.inorder_resp_ref, "type": "dropdown", "options": ["Yes", "No"]}},
-            {"Monitor": {"value": this.monitor, "type": "input"}},
-            {"In-order": {"value": this.inorder, "type": "dropdown", "options": ["Yes", "No"]}},
-            {"Repeat": {"value": this.repeat, "type": "dropdown", "options": ["Yes", "No"]}}
+            {"Search": {"value": this.search, "type": "input"}},
+            {"Found": {"value": this.found, "type": "dropdown", "options": this.general_options}},
+            {"Verify On": {"value": this.verify_on, "type": "input"}},
+            {"Condition Value": {"value": this.cond_value, "type": "input"}},
+            {"Condition Type": {"value": this.cond_type, "type": "dropdown", "options": [...this.cond_type_options]}},
+            {"Operator": {"value": this.operator, "type": "dropdown", "options": [...this.operator_options]}},
         ];
         return orderedVariables
     }
@@ -506,7 +495,7 @@ class globalVerifications extends verifications{
     formHtmlLeftContent(){
         var $content = $(leftTableContent);
         $content.find('#display').text("Global");
-        $content.find('#displayTitle').text("Command Parameters");
+        $content.find('#displayTitle').text("Verifications");
         var $subContent = false;
         for(var i=0; i<this.orderedVariables.length; i++){
             for(var key in this.orderedVariables[i]){
@@ -520,6 +509,7 @@ class globalVerifications extends verifications{
                     for(var j=0; j<this.orderedVariables[i][key]["options"].length; j++){
                         $subContent.find('.cli-data-left-content-value-input').append($('<option>' + this.orderedVariables[i][key]["options"][j]  + '</option>'))
                     }
+                    console.log(this.orderedVariables[i][key]["value"]);
                     $subContent.find('.cli-data-left-content-value-input').val(this.orderedVariables[i][key]["value"]);
                 }
                 $($content[1]).append($subContent);
@@ -576,7 +566,48 @@ class combinations{
 /* Global Combinations Class */
 
 class globalCombinations extends combinations{
+    constructor(data){
+        super();
+        this.orderedVariables = this.getOrderedVariables();
+    }
 
+    getOrderedVariables() {
+        var orderedVariables = [
+            {"Combination": {"value": this.combo, "type": "input"}},
+        ];
+        return orderedVariables
+    }
+
+    get htmlLeftContent() {
+        return this.formHtmlLeftContent();
+    }
+
+    formHtmlLeftContent(){
+        var $content = $(leftTableContent);
+        $content.find('#display').text("Global");
+        $content.find('#displayTitle').text("Verification Combinations");
+        var $subContent = false;
+        for(var i=0; i<this.orderedVariables.length; i++){
+            for(var key in this.orderedVariables[i]){
+                if(this.orderedVariables[i][key]["type"] == "input"){
+                    $subContent = $(leftColumnInputs);
+                    $subContent.find('.cli-data-left-content-label').text(key);
+                    $subContent.find('.cli-data-left-content-value-input').val(this.orderedVariables[i][key]["value"]);
+                } else {
+                    $subContent = $(leftColumnSelects);
+                    $subContent.find('.cli-data-left-content-label').text(key);
+                    for(var j=0; j<this.orderedVariables[i][key]["options"].length; j++){
+                        $subContent.find('.cli-data-left-content-value-input').append($('<option>' + this.orderedVariables[i][key]["options"][j]  + '</option>'))
+                    }
+                    console.log(this.orderedVariables[i][key]["value"]);
+                    $subContent.find('.cli-data-left-content-value-input').val(this.orderedVariables[i][key]["value"]);
+                }
+                $($content[1]).append($subContent);
+                break;
+            }
+        }
+        return $content;
+    }
 }
 
 /* Testdata Combinations Class */
@@ -625,11 +656,140 @@ class keys{
 /* Global Keys Class */
 
 class globalKeys extends keys{
+    constructor(data){
+        super();
+        this.orderedVariables = this.getOrderedVariables();
+    }
 
+    getOrderedVariables() {
+        var orderedVariables = [
+            {"Required Response Pattern": {"value": this.search, "type": "input"}},
+        ];
+        return orderedVariables
+    }
+
+    get htmlLeftContent() {
+        return this.formHtmlLeftContent();
+    }
+
+    formHtmlLeftContent(){
+        var $content = $(leftTableContent);
+        $content.find('#display').text("Global");
+        $content.find('#displayTitle').text("Response Keys");
+        var $subContent = false;
+        for(var i=0; i<this.orderedVariables.length; i++){
+            for(var key in this.orderedVariables[i]){
+                if(this.orderedVariables[i][key]["type"] == "input"){
+                    $subContent = $(leftColumnInputs);
+                    $subContent.find('.cli-data-left-content-label').text(key);
+                    $subContent.find('.cli-data-left-content-value-input').val(this.orderedVariables[i][key]["value"]);
+                } else {
+                    $subContent = $(leftColumnSelects);
+                    $subContent.find('.cli-data-left-content-label').text(key);
+                    for(var j=0; j<this.orderedVariables[i][key]["options"].length; j++){
+                        $subContent.find('.cli-data-left-content-value-input').append($('<option>' + this.orderedVariables[i][key]["options"][j]  + '</option>'))
+                    }
+                    console.log(this.orderedVariables[i][key]["value"]);
+                    $subContent.find('.cli-data-left-content-value-input').val(this.orderedVariables[i][key]["value"]);
+                }
+                $($content[1]).append($subContent);
+                break;
+            }
+        }
+        return $content;
+    }
 }
 
 /* Testdata Combinations Class */
 
 class testdataKeys extends keys{
+
+}
+
+/* Parent Variable Pattern Class */
+
+class variablePattern{
+
+    constructor(data){
+        if(data === undefined || data === {}){
+            data = {}
+        }
+        this.start_pattern = !data["@start_pattern"] ? this.getDefaults("start_pattern") : data["@start_pattern"];
+        this.end_pattern = !data["@end_pattern"] ? this.getDefaults("end_pattern") : data["@end_pattern"];
+    }
+
+    getDefaults(key){
+        var defaults = {
+            "start_pattern": "${",
+            "end_pattern": "}"
+        }
+        return defaults[key];
+    }
+
+    get jsonObj() {
+        return this.formJsonObj();
+    }
+
+    formJsonObj(){
+        var jsonObject = {};
+        jsonObject[this.name] = {
+            "@start_pattern": (this.start_pattern === "") ? this.getDefaults("start_pattern") : this.start_pattern,
+            "@end_pattern": (this.end_pattern === "") ? this.getDefaults("end_pattern") : this.end_pattern
+        };
+        return jsonObject;
+    }
+}
+
+/* Global Variable Pattern Class */
+
+class globalVariablePattern extends variablePattern{
+    constructor(data){
+        super();
+        this.orderedVariables = this.getOrderedVariables();
+    }
+
+    getOrderedVariables() {
+        var orderedVariables = [
+            {"Start Pattern": {"value": this.start_pattern, "type": "input"}},
+            {"End Pattern": {"value": this.end_pattern, "type": "input"}},
+        ];
+        return orderedVariables
+    }
+
+    get htmlLeftContent() {
+        return this.formHtmlLeftContent();
+    }
+
+    formHtmlLeftContent(){
+        var $content = $(leftTableContent);
+        $content.find('#display').text("Global");
+        $content.find('#displayTitle').text("Variable Patterns");
+        var $subContent = false;
+        for(var i=0; i<this.orderedVariables.length; i++){
+            for(var key in this.orderedVariables[i]){
+                if(this.orderedVariables[i][key]["type"] == "input"){
+                    $subContent = $(leftColumnInputs);
+                    $subContent.find('.cli-data-left-content-label').text(key);
+                    $subContent.find('.cli-data-left-content-value-input').val(this.orderedVariables[i][key]["value"]);
+                } else {
+                    $subContent = $(leftColumnSelects);
+                    $subContent.find('.cli-data-left-content-label').text(key);
+                    for(var j=0; j<this.orderedVariables[i][key]["options"].length; j++){
+                        $subContent.find('.cli-data-left-content-value-input').append($('<option>' + this.orderedVariables[i][key]["options"][j]  + '</option>'))
+                    }
+                    console.log(this.orderedVariables[i][key]["value"]);
+                    $subContent.find('.cli-data-left-content-value-input').val(this.orderedVariables[i][key]["value"]);
+                }
+                $($content[1]).append($subContent);
+                break;
+            }
+        }
+        return $content;
+    }
+}
+
+/* Testdata Variable Pattern Class */
+
+class testdataVariablePattern extends variablePattern{
 
 }

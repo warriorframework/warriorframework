@@ -78,8 +78,21 @@ var cliData = {
                 //var globalCmd = new globalCommand(data.contents.data.global.command_params);
                 //$currentPage.find('.cli-data-left-column').html(globalCmd.htmlLeftContent);
 
-                var globalVer = new globalVerifications(data.contents.data.global)
-                $currentPage.find('.cli-data-left-column').html(globalVer.htmlLeftContent);
+                //console.log(data.contents.data.global.verifications[0]);
+                //var globalVer = new globalVerifications(data.contents.data.global.verifications[0])
+                //$currentPage.find('.cli-data-left-column').html(globalVer.htmlLeftContent);
+
+                //console.log(data.contents.data.global.verifications[1]);
+                //var globalComb = new globalCombinations(data.contents.data.global.verifications[1])
+                //$currentPage.find('.cli-data-left-column').html(globalComb.htmlLeftContent);
+
+                //console.log(data.contents.data.global.keys);
+                //var glKey = new globalKeys(data.contents.data.global.keys)
+                //$currentPage.find('.cli-data-left-column').html(glKey.htmlLeftContent);
+
+                console.log(data.contents.data.global.variable_pattern);
+                var vp = new globalVariablePattern(data.contents.data.global.variable_pattern)
+                $currentPage.find('.cli-data-left-column').html(vp.htmlLeftContent);
 
             });
         },
