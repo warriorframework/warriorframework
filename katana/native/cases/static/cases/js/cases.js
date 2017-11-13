@@ -712,7 +712,8 @@ var cases = {
    	
 	cases.jsonCaseObject['Details']['Date'] = month + "/" + day + "/" + year; 
 	cases.jsonCaseObject['Details']['Time'] = hour + ":" + minute; 
-
+	cases.saveAllRequirementsCB();
+		
 
 
 	// cases.jsonCaseObject['expectedDir'] =  katana.$activeTab.find('#caseExpectedResults').attr('value');
@@ -995,13 +996,13 @@ The UI currently uses jQuery and Bootstrap to display the data.
 
 	for (var s=0; s<Object.keys(xdata).length; s++ ) {  // for s in xdata
 		var oneCaseStep = xdata[s];			 // for each step in case
-		bid = "copyToStorage-"+s+"-id-"+cases.activePageID;
-		jdata = oneCaseStep.getJSON();
-		//console.log("Creating data for ", bid, jdata);
-		katana.$activeTab.find("#"+bid).data('jdata',jdata);
-	}
-
-
+	 	bid = "copyToStorage-"+s+"-id-"+cases.activePageID;
+	 	console.log("Duplication of data for ", xdata, oneCaseStep);
+		
+	 	jdata = oneCaseStep.getJSON();
+	 	console.log("Duplication of data for ", bid, jdata);
+	 	katana.$activeTab.find("#"+bid).data('jdata',jdata);
+	 }
 
 	var tag = '#caseInputDataFile'
 	var xf = katana.$activeTab.find(tag).val() ;
