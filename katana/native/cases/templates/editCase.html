@@ -1,7 +1,9 @@
 {% load static %} 
 <link rel="stylesheet" href="{% static 'cases/css/cases.css' %}">
+<link rel="stylesheet" href="{% static 'cases/css/jquery-editable-select.css' %}">
     <div class="tool-bar">
-        <i id="addNewCase" class="button" katana-click="cases.startNewCase">Add New Testcase</i>
+        <label class="cases-title-label">Edit Case</label>
+        <i id="addNewCase" class="button" katana-click="cases.startNewCase">Add New Case</i>
         <i id="addStep" class="button" katana-click="cases.addNewTestStepToUI">Add Step To Case</i>
         <i class="button" katana-click="cases.addRequirementToCase">Add Requirement</i>
         <i class="button" katana-click="cases.sendCaseToServer">Save</i>
@@ -135,7 +137,7 @@
                             </div>                           
                             <div>
                                 
-                                 <input class="col-md-2 wdf-sys-checkbox" type="checkbox" id="StepDriverCkBx" name="StepDriverCkBx" value="TBD" >To be developed</input>
+                                 <input class="col-md-2 cases-checkbox" type="checkbox" id="StepDriverCkBx" name="StepDriverCkBx" value="TBD" >To be developed</input>
                 
                             </div>
                             
@@ -148,7 +150,7 @@
                             </div>
 
                             <div>
-                                 <input class="col-md-2 wdf-sys-checkbox" type="checkbox" id="StepKeywordCkBx" name="StepKeywordCkBx" value="TBD">To be developed</input> 
+                                 <input class="col-md-2 cases-checkbox" type="checkbox" id="StepKeywordCkBx" name="StepKeywordCkBx" value="TBD">To be developed</input> 
                              </div>    
 
                              <div class="field">
@@ -157,7 +159,7 @@
                                 <input type="text" class="hidden" id="StepkeywordText" value="" />
                                
                             </div>
-                            <div class="field">
+                            <div class="field  hidden">
                                 <label>TS</label>
                                 <input type="text" id="StepTS" value="" />
                             </div>

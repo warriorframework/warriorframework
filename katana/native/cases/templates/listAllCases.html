@@ -1,17 +1,16 @@
 {% load static %}
-
+<link rel="stylesheet" href="{% static 'cases/css/cases.css' %}">
 <body>
 
 <div id="OverwriteCaseHere">
 
 <div class="csrf-container">{% csrf_token %}</div>
 <div class="tool-bar">
+<label class="cases-title-label">Cases</label>
 Search: <input id="jstreeFilterText" class="col-md-2" />
 <button id="addNewCase" class="button" onclick="cases.startNewCase()">Add New Case</button>
 
 </div>
-
-<h2>{{title}}</h2>
 <div class="row">
 <div class="col-md-4" id="myCaseTree" auto-init="cases.init"></div>
 	<div class="col-md-4">

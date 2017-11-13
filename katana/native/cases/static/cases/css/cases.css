@@ -1,13 +1,20 @@
 
 
 /* INPUT */
+.cases-title-label {
+  float: left;
+  font-size: 28;
+
+}
+
+
 .cases-checkbox {
   border:1px solid red;
   border-radius:2px;
   background:#ebebeb;
 
 }
-/.case-configuration-table {}
+.case-configuration-table {}
 .case-configuration-table table {
   border-collapse: collapse;
 }
