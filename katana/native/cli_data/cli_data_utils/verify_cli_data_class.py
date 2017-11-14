@@ -91,14 +91,11 @@ class VerifyCliDataClass:
         return json_data
 
     def __verify_global_keys(self, keys_json):
-        if not isinstance(keys_json, list):
-            keys_json = [keys_json]
-        for i in range(0, len(keys_json)):
-            for key, value in self.defaults["data"]["global"]["keys"]["key"].items():
-                for child_key, child_value in keys_json[i].items():
-                    keys_json[i][child_key]["type"] = "key"
-                    if key not in child_value:
-                        keys_json[i][child_key][key] = value
+        for key, value in self.defaults["data"]["global"]["keys"]["key"].items():
+            for child_key, child_value in keys_json.items():
+                keys_json[child_key]["type"] = "key"
+                if key not in child_value:
+                    keys_json[child_key][key] = value
         return keys_json
 
     def __verify_testdata_block(self, json_data):
@@ -117,7 +114,7 @@ class VerifyCliDataClass:
         for key in testdata_json:
             if key == "command":
                 final_json["command"] = self.__verify_testdata_command(testdata_json["command"])
-            if key == "variable_pattern":
+            elif key == "variable_pattern":
                 final_json["variable_pattern"] = self.__verify_testdata_variable_pattern(testdata_json["variable_pattern"])
             elif key.startswith("@"):
                 final_json[key] = testdata_json[key]

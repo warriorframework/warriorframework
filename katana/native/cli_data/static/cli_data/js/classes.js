@@ -11,19 +11,19 @@ var leftTableContent = '<div class="cli-data-left-column-topbar">' +
                           '</div>' +
                           '<div class="row cli-data-left-column-icons">' +
                               '<div class="col">' +
-                                  '<i class="fa fa-plus"></i>' +
+                                  '<i class="fa fa-plus" katana-click="cliData.leftColumn.addAnotherBlock"></i>' +
                               '</div>' +
                               '<div class="col">' +
-                                  '<i class="fa fa-files-o"></i>' +
+                                  '<i class="fa fa-files-o" katana-click="cliData.leftColumn.duplicateBlock"></i>' +
                               '</div>' +
                               '<div class="col">' +
-                                  '<i class="fa fa-trash-o"></i>' +
+                                  '<i class="fa fa-trash-o" katana-click="cliData.leftColumn.deleteBlock"></i>' +
                               '</div>' +
                               '<div class="col">' +
-                                  '<i class="fa fa-chevron-left"></i>' +
+                                  '<i class="fa fa-chevron-left" katana-click="cliData.leftColumn.previousBlock"></i>' +
                               '</div>' +
                               '<div class="col">' +
-                                  '<i class="fa fa-chevron-right"></i>' +
+                                  '<i class="fa fa-chevron-right" katana-click="cliData.leftColumn.nextBlock"></i>' +
                               '</div>' +
                           '</div>' +
                       '</div>' +
@@ -54,7 +54,7 @@ var rightColumnTable = '<div class="cli-data-right-column-topbar">' +
                            '</div>' +
                            '<div class="row cli-data-right-column-icons">' +
                                '<div class="col">' +
-                                   '<i class="fa fa-thumb-tack" aria-hidden="true"></i>' +
+                                   '<i class="fa fa-thumb-tack" aria-hidden="true" pinned="false" katana-click="cliData.rightColumn.pinTable"></i>' +
                                '</div>' +
                            '</div>' +
                        '</div>' +
@@ -217,6 +217,8 @@ class command{
                 break;
             }
         }
+        $($content[0]).data({"dataObject": this});
+        console.log($content);
         return $content;
     }
 
@@ -238,7 +240,33 @@ class command{
                 break;
             }
         }
+        $($content[0]).data({"dataObject": this});
         return $content;
+    }
+
+    getOrderedVariables() {
+        var orderedVariables = [
+            {"System": {"value": this.sys, "type": "input", variable: "sys"}},
+            {"Session": {"value": this.session, "type": "input", variable: "session"}},
+            {"Start": {"value": this.start, "type": "input", variable: "start"}},
+            {"End": {"value": this.end, "type": "input", variable: "end"}},
+            {"Timeout": {"value": this.timeout, "type": "input", variable: "timeout"}},
+            {"Sleep": {"value": this.sleep, "type": "input", variable: "sleep"}},
+            {"Verify": {"value": this.verify, "type": "input", variable: "verify"}},
+            {"Retry": {"value": this.retry, "type": "dropdown", "options": this.general_options, variable: "retry"}},
+            {"Retry Timer": {"value": this.retry_timer, "type": "input", variable: "retry_timer"}},
+            {"Retry Count": {"value": this.retry_count, "type": "input", variable: "retry_count"}},
+            {"Retry On Match": {"value": this.retry_onmatch, "type": "input", variable: "retry_onmatch"}},
+            {"Response Required": {"value": this.resp_req, "type": "dropdown", "options": this.general_options, variable: "resp_req"}},
+            {"Response Pattern Required": {"value": this.resp_pat_req, "type": "input", variable: "resp_pat_req"}},
+            {"Response Reference": {"value": this.resp_ref, "type": "input", variable: "resp_ref"}},
+            {"Response Keys": {"value": this.resp_keys, "type": "input", variable: "resp_keys"}},
+            {"In-order Response Reference": {"value": this.inorder_resp_ref, "type": "dropdown", "options": this.general_options, variable: "inorder_resp_ref"}},
+            {"Monitor": {"value": this.monitor, "type": "input", variable: "monitor"}},
+            {"In-order": {"value": this.inorder, "type": "dropdown", "options": this.general_options, variable: "inorder"}},
+            {"Repeat": {"value": this.repeat, "type": "dropdown", "options": this.general_options, variable: "repeat"}}
+        ];
+        return orderedVariables
     }
 }
 
@@ -247,37 +275,11 @@ class command{
 class globalCommand extends command{
 
     constructor(data){
-        super();
+        super(data);
         this.orderedVariables = this.getOrderedVariables();
         this.level = "Global";
         this.block_name = "Command Parameters"
     }
-
-    getOrderedVariables() {
-        var orderedVariables = [
-            {"System": {"value": this.sys, "type": "input"}},
-            {"Session": {"value": this.session, "type": "input"}},
-            {"Start": {"value": this.start, "type": "input"}},
-            {"End": {"value": this.end, "type": "input"}},
-            {"Timeout": {"value": this.timeout, "type": "input"}},
-            {"Sleep": {"value": this.sleep, "type": "input"}},
-            {"Verify": {"value": this.verify, "type": "input"}},
-            {"Retry": {"value": this.retry, "type": "dropdown", "options": this.general_options}},
-            {"Retry Timer": {"value": this.retry_timer, "type": "input"}},
-            {"Retry Count": {"value": this.retry_count, "type": "input"}},
-            {"Retry On Match": {"value": this.retry_onmatch, "type": "input"}},
-            {"Response Required": {"value": this.resp_req, "type": "dropdown", "options": this.general_options}},
-            {"Response Pattern Required": {"value": this.resp_pat_req, "type": "input"}},
-            {"Response Reference": {"value": this.resp_ref, "type": "input"}},
-            {"Response Keys": {"value": this.resp_keys, "type": "input"}},
-            {"In-order Response Reference": {"value": this.inorder_resp_ref, "type": "dropdown", "options": this.general_options}},
-            {"Monitor": {"value": this.monitor, "type": "input"}},
-            {"In-order": {"value": this.inorder, "type": "dropdown", "options": this.general_options}},
-            {"Repeat": {"value": this.repeat, "type": "dropdown", "options": this.general_options}}
-        ];
-        return orderedVariables
-    }
-
 }
 
 /* Testdata Command Class */
@@ -313,29 +315,24 @@ class testdataCommand extends command{
     }
 
     getOrderedVariables() {
-        var orderedVariables = [
-            {"Send": {"value": this.send, "type": "input"}},
-            {"System": {"value": this.sys, "type": "input"}},
-            {"Session": {"value": this.session, "type": "input"}},
-            {"Start": {"value": this.start, "type": "input"}},
-            {"End": {"value": this.end, "type": "input"}},
-            {"Timeout": {"value": this.timeout, "type": "input"}},
-            {"Sleep": {"value": this.sleep, "type": "input"}},
-            {"Verify": {"value": this.verify, "type": "input"}},
-            {"Retry": {"value": this.retry, "type": "dropdown", "options": this.general_options}},
-            {"Retry Timer": {"value": this.retry_timer, "type": "input"}},
-            {"Retry Count": {"value": this.retry_count, "type": "input"}},
-            {"Retry On Match": {"value": this.retry_onmatch, "type": "input"}},
-            {"Response Required": {"value": this.resp_req, "type": "dropdown", "options": this.general_options}},
-            {"Response Pattern Required": {"value": this.resp_pat_req, "type": "input"}},
-            {"Response Reference": {"value": this.resp_ref, "type": "input"}},
-            {"Response Keys": {"value": this.resp_keys, "type": "input"}},
-            {"In-order Response Reference": {"value": this.inorder_resp_ref, "type": "dropdown", "options": this.general_options}},
-            {"Monitor": {"value": this.monitor, "type": "input"}},
-            {"In-order": {"value": this.inorder, "type": "dropdown", "options": this.general_options}},
-            {"Repeat": {"value": this.repeat, "type": "dropdown", "options": this.general_options}}
+        var genericArray = super.getOrderedVariables();
+        var specificArray = [
+            {"Send": {"value": this.send, "type": "input", variable: "send"}},
         ];
+        var orderedVariables = specificArray.concat(genericArray);
         return orderedVariables
+    }
+
+    addAnother(elem){
+        var $listOfLis = $(elem[1]).find('ul').find('li');
+        var $columns = false;
+        var label = false
+        for(var i=0; i<$listOfLis.length; i++){
+            $columns = $($listOfLis[i]).find('.cli-data-columns');
+            label = $($listOfLis[i]).find('.cli-data-labels').find('div').text();
+            $($listOfLis[i]).find('.cli-data-columns').append('<div>' + this.orderedVariables[i][label]["value"] + '</div>')
+        }
+        return elem
     }
 
 }
@@ -444,13 +441,13 @@ class verifications{
 
     getOrderedVariables() {
         var orderedVariables = [
-            {"Verification Name": {"value": this.name, "type": "input"}},
-            {"Search": {"value": this.search, "type": "input"}},
-            {"Found": {"value": this.found, "type": "dropdown", "options": this.general_options}},
-            {"Verify On": {"value": this.verify_on, "type": "input"}},
-            {"Condition Value": {"value": this.cond_value, "type": "input"}},
-            {"Condition Type": {"value": this.cond_type, "type": "dropdown", "options": [...this.cond_type_options]}},
-            {"Operator": {"value": this.operator, "type": "dropdown", "options": [...this.operator_options]}},
+            {"Verification Name": {"value": this.name, "type": "input", variable: "name"}},
+            {"Search": {"value": this.search, "type": "input", variable: "search"}},
+            {"Found": {"value": this.found, "type": "dropdown", "options": this.general_options, variable: "found"}},
+            {"Verify On": {"value": this.verify_on, "type": "input", variable: "verify_on"}},
+            {"Condition Value": {"value": this.cond_value, "type": "input", variable: "cond_value"}},
+            {"Condition Type": {"value": this.cond_type, "type": "dropdown", "options": [...this.cond_type_options], variable: "cond_type"}},
+            {"Operator": {"value": this.operator, "type": "dropdown", "options": [...this.operator_options], variable: "type"}},
         ];
         return orderedVariables
     }
@@ -560,6 +557,7 @@ class verifications{
                 break;
             }
         }
+        $($content[0]).data({"dataObject": this});
         return $content;
     }
 
@@ -581,10 +579,11 @@ class verifications{
                 break;
             }
         }
+        $($content[0]).data({"dataObject": this});
         return $content;
     }
 
-    addAnotherVerification(elem){
+    addAnother(elem){
         var $listOfLis = $(elem[1]).find('ul').find('li');
         var $columns = false;
         var label = false
@@ -602,7 +601,7 @@ class verifications{
 class globalVerifications extends verifications{
 
     constructor(data){
-        super();
+        super(data);
         this.level = "Global";
         this.block_name = "Verifications"
     }
@@ -612,7 +611,7 @@ class globalVerifications extends verifications{
 
 class testdataVerifications extends verifications{
     constructor(data){
-        super();
+        super(data);
         this.level = "CLI Data";
         this.block_name = "Verifications"
     }
@@ -638,8 +637,8 @@ class combinations{
 
     getOrderedVariables() {
         var orderedVariables = [
-            {"Combination Name": {"value": this.name, "type": "input"}},
-            {"Combination": {"value": this.combo, "type": "input"}},
+            {"Combination Name": {"value": this.name, "type": "input", variable: "name"}},
+            {"Combination": {"value": this.combo, "type": "input", variable: "combo"}},
         ];
         return orderedVariables
     }
@@ -690,6 +689,7 @@ class combinations{
                 break;
             }
         }
+        $($content[0]).data({"dataObject": this});
         return $content;
     }
 
@@ -711,7 +711,20 @@ class combinations{
                 break;
             }
         }
+        $($content[0]).data({"dataObject": this});
         return $content;
+    }
+
+    addAnother(elem){
+        var $listOfLis = $(elem[1]).find('ul').find('li');
+        var $columns = false;
+        var label = false
+        for(var i=0; i<$listOfLis.length; i++){
+            $columns = $($listOfLis[i]).find('.cli-data-columns');
+            label = $($listOfLis[i]).find('.cli-data-labels').find('div').text();
+            $($listOfLis[i]).find('.cli-data-columns').append('<div>' + this.orderedVariables[i][label]["value"] + '</div>')
+        }
+        return elem
     }
 }
 
@@ -719,7 +732,7 @@ class combinations{
 
 class globalCombinations extends combinations{
     constructor(data){
-        super();
+        super(data);
         this.level = "Global";
         this.block_name = "Verification Combinations"
     }
@@ -751,8 +764,8 @@ class keys{
 
     getOrderedVariables() {
         var orderedVariables = [
-            {"Key Name": {"value": this.name, "type": "input"}},
-            {"Req. Resp Pattern": {"value": this.resp_pattern_req, "type": "input"}},
+            {"Key Name": {"value": this.name, "type": "input", variable: "name"}},
+            {"Req. Resp Pattern": {"value": this.resp_pattern_req, "type": "input", variable: "resp_pattern_req"}},
         ];
         return orderedVariables
     }
@@ -803,6 +816,7 @@ class keys{
                 break;
             }
         }
+        $($content[0]).data({"dataObject": this});
         return $content;
     }
 
@@ -824,7 +838,20 @@ class keys{
                 break;
             }
         }
+        $($content[0]).data({"dataObject": this});
         return $content;
+    }
+
+    addAnother(elem){
+        var $listOfLis = $(elem[1]).find('ul').find('li');
+        var $columns = false;
+        var label = false
+        for(var i=0; i<$listOfLis.length; i++){
+            $columns = $($listOfLis[i]).find('.cli-data-columns');
+            label = $($listOfLis[i]).find('.cli-data-labels').find('div').text();
+            $($listOfLis[i]).find('.cli-data-columns').append('<div>' + this.orderedVariables[i][label]["value"] + '</div>')
+        }
+        return elem
     }
 }
 
@@ -832,7 +859,7 @@ class keys{
 
 class globalKeys extends keys{
     constructor(data){
-        super();
+        super(data);
         this.level = "Global";
         this.block_name = "Response Keys"
     }
@@ -842,7 +869,7 @@ class globalKeys extends keys{
 
 class testdataKeys extends keys{
     constructor(data){
-        super();
+        super(data);
         this.level = "CLI Data";
         this.block_name = "Response Keys"
     }
@@ -863,8 +890,8 @@ class variablePattern{
 
     getOrderedVariables() {
         var orderedVariables = [
-            {"Start Pattern": {"value": this.start_pattern, "type": "input"}},
-            {"End Pattern": {"value": this.end_pattern, "type": "input"}},
+            {"Start Pattern": {"value": this.start_pattern, "type": "input", variable: "start_pattern"}},
+            {"End Pattern": {"value": this.end_pattern, "type": "input", variable: "end_pattern"}},
         ];
         return orderedVariables
     }
@@ -917,6 +944,7 @@ class variablePattern{
                 break;
             }
         }
+        $($content[0]).data({"dataObject": this});
         return $content;
     }
 
@@ -938,6 +966,7 @@ class variablePattern{
                 break;
             }
         }
+        $($content[0]).data({"dataObject": this});
         return $content;
     }
 }
@@ -946,7 +975,7 @@ class variablePattern{
 
 class globalVariablePattern extends variablePattern{
     constructor(data){
-        super();
+        super(data);
         this.level = "Global";
         this.block_name = "Variable Pattern"
     }
@@ -956,7 +985,7 @@ class globalVariablePattern extends variablePattern{
 
 class testdataVariablePattern extends variablePattern{
     constructor(data){
-        super();
+        super(data);
         this.level = "CLI Data";
         this.block_name = "Variable Pattern"
     }
