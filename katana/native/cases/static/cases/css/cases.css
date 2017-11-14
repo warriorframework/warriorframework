@@ -12,6 +12,8 @@
   border:1px solid red;
   border-radius:2px;
   background:#ebebeb;
+  float: left;
+  width: 15px;
 
 }
 .case-configuration-table {}

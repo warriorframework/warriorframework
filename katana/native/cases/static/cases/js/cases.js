@@ -267,18 +267,19 @@ class caseDetailsObject{
 class caseTestStepObject {
 
 	constructor(inputJsonData) {
-		var jsonData = inputJsonData;
-		this.setupFromJSON(jsonData);
+		this.jsonData = inputJsonData;	
+		console.log("Setp from JSON from ",inputJsonData);
+		this.setupFromJSON(this.jsonData);
 	}
 
 	setupFromJSON(jsonData) { 
-	//		console.log("Setp from JSON from ",jsonData);
+		//console.log("Setp from JSON from ",jsonData);
 		if (!jsonData) {
 			//console.log("Create empty")
 			jsonData = 	this.createEmptyTestStep(); 
 		}
 		this.Arguments = {} ; 
-		console.log("Setting Arguments ....",jsonData);
+		console.log("******Setting Arguments ....",jsonData);
 
 		if (!jsonData['Arguments']) {
 			jsonData['Arguments']= { 'argument': [] }
@@ -354,9 +355,6 @@ class caseTestStepObject {
 		}
 		this.runmode_value = jsonData['runmode']['@value'];
 		this.runmode_type  = jsonData['runmode']['@type'].toLowerCase();
-
-
-
 		if (! jsonData['InputDataFile']) {
 			jsonData['InputDataFile'] = '';
 		}
@@ -372,8 +370,8 @@ class caseTestStepObject {
 	}
 
 	copyFromDocument(tag) {
-		console.log("Copying from document", tag );
-		return JSON.parse(localStorage.getItem(tag));
+		console.log("Copying from document", tag, JSON.parse(localStorage.getItem(tag)) );
+		return localStorage.getItem(tag);
 	}
 
 	createEmptyTestStep() {
@@ -426,7 +424,7 @@ class caseTestStepObject {
 
 		return  {
 				"@Driver": this.step_driver, "@Keyword": this.step_keyword , "@TS": this.step_TS ,
-				"Arguments" : { 'argument ': myArgs }  ,
+				"Arguments" : { 'argument': myArgs }  ,
 				"onError": {  "@action" : this.onError_action , "@value" : this.onError_value } ,
 				//"iteration_type": {   "@type" : "" } ,
 				"Description":this.Description,
@@ -978,10 +976,10 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		
 
 	
-
+		//console.log("---oneCaseStep", oneCaseStep);
 		items.push('<td>'+outstr+'</td>'); 
 		xstr = '<td>'+oneCaseStep.runmode_type+'</td>';
-		if (oneCaseStep.runmode_type.toLowerCase() != 'standard') {
+		if (oneCaseStep.runmode_type != 'standard') {
 			xstr = '<td>'+oneCaseStep.runmode_type+'<br>' + oneCaseStep.runmode_value+'</td>';
 		}
 		items.push(xstr);
@@ -1021,10 +1019,9 @@ The UI currently uses jQuery and Bootstrap to display the data.
 	for (var s=0; s<Object.keys(xdata).length; s++ ) {  // for s in xdata
 		var oneCaseStep = xdata[s];			 // for each step in case
 	 	bid = "copyToStorage-"+s+"-id-"+cases.activePageID;
-	 	console.log("Duplication of data for ", xdata, oneCaseStep);
-		
+	 	//console.log("Duplication of data for ", xdata, oneCaseStep);
 	 	jdata = oneCaseStep.getJSON();
-	 	console.log("Duplication of data for ", bid, jdata);
+	 	//console.log("Duplication of data for ", bid, jdata);
 	 	katana.$activeTab.find("#"+bid).data('jdata',jdata);
 	 }
 
@@ -1083,8 +1080,6 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		cases.jsonCaseDetails = cases.jsonCaseObject.Details;
 		var names = this.attr('key').split('-');
 		var sid = parseInt(names[1]);
-		
-		
 		var jdata = katana.$activeTab.find("#"+this.attr('key')).data('jdata');
 		console.log("Saving ...", names, jdata);
 		cases.jsonCaseObject.Teststeps[sid].copyToDocument('lastStepCopied',jdata);
@@ -1094,11 +1089,12 @@ The UI currently uses jQuery and Bootstrap to display the data.
 	restoreTestStep: function() {
 		cases.jsonCaseObject = katana.$activeTab.data("casesJSON");
 		cases.jsonCaseDetails = cases.jsonCaseObject.Details;
-	var names = this.attr('key').split('-');
-	var sid = parseInt(names[1]);
-	jsonData = cases.jsonCaseObject.Teststeps[sid].copyFromDocument('lastStepCopied');
-	console.log("Retrieving ... ", jsonData);
-	cases.addTestStepAboveToUI(sid,cases.jsonCaseObject.Teststeps,2,jsonData);
+		var names = this.attr('key').split('-');
+		var sid = parseInt(names[1]);
+		var jsonData = cases.jsonCaseObject.Teststeps[sid].copyFromDocument('lastStepCopied');
+		console.log("Retrieving ... ", JSON.parse(jsonData));
+		katana.$activeTab.data("lastStepCopiedData", jsonData);
+		cases.addTestStepAboveToUI(sid,cases.jsonCaseObject.Teststeps,2);
 	},
 
 
@@ -1114,10 +1110,13 @@ The UI currently uses jQuery and Bootstrap to display the data.
 	createPopupArgumentsFromList( popup, mylist, oneCaseStep) {
 		//console.log("Creating Arguments", mylist, oneCaseStep);
 		cases.jsonCaseObject = katana.$activeTab.data("casesJSON");
-			cases.jsonCaseDetails = cases.jsonCaseObject.Details;
+		cases.jsonCaseDetails = cases.jsonCaseObject.Details;
 		var a_items = [] ;
 		var xstr;
 		var ta =0; 
+
+		var disabledStr = cases.jsonCaseObject['Details']['Datatype'] == 'Hybrid' ? 'disabled' : "";
+
 		var ks_sys_name = null;
 		for (vn in mylist) {
 			if (vn < 1) continue; 
@@ -1136,7 +1135,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 				
 				if (kw == 'system_name') {
 					//a_items.push('<select class="col-md-4 case-listed-args" type="text" id="caseSelectArgName-'+ta+'" argid="caseSelectArgName-'+ta+'" value="'+vl+'" katana-click="cases.handleSystemName">');
-					a_items.push('<select class="col-md-4 case-listed-args case-listed-labels" type="text" id="caseArgValue-'+ta+'" argid="caseArgValue-'+ta+'" kwargid="caseArgName-'+ta+'" value="'+vl+'" >');
+					a_items.push('<select class="col-md-4 case-listed-args case-listed-labels" ' + disabledStr + ' type="text" id="caseArgValue-'+ta+'" argid="caseArgValue-'+ta+'" kwargid="caseArgName-'+ta+'" value="'+vl+'" >');
 					for (var xi in cases.system_names) {
 						var vx = cases.system_names[xi];
 						a_items.push('<option value="'+vx+'">'+vx+'</option>');
@@ -1176,7 +1175,9 @@ The UI currently uses jQuery and Bootstrap to display the data.
 	makePopupArgumentsForTBD: function(popup,  oneCaseStep) {
 		console.log("makePopupArguments", oneCaseStep);
 		//cases.lastPopup = popup; 
-
+		cases.jsonCaseObject = katana.$activeTab.data("casesJSON");
+		cases.jsonCaseDetails = cases.jsonCaseObject.Details;
+		
 		var a_items = [] ;
 		var xstr;
 		var bid;
@@ -1283,7 +1284,6 @@ The UI currently uses jQuery and Bootstrap to display the data.
 
 		popup.find('#StepDriverText').val(oneCaseStep.step_driver);
 		popup.find("#StepKeywordText").val(oneCaseStep.step_keyword);
-		//oneCaseStep.runmode_type = oneCaseStep.runmode_type.toLowerCase();
 		console.log('oneCaseStep', oneCaseStep);
 		popup.find("#StepRowToEdit").attr("value",sid);
 		popup.find("#StepDriver").val(oneCaseStep.step_driver);
@@ -1316,8 +1316,8 @@ The UI currently uses jQuery and Bootstrap to display the data.
 				popup.find('.rule-condition').hide();
 			}
 		//}
-		console.log("RUNMDE -->", oneCaseStep.runmode_type.toLowerCase(), oneCaseStep);
-		if (oneCaseStep.runmode_type.toLowerCase() == 'standard') {
+		console.log("RUNMDE -->", oneCaseStep.runmode_type, oneCaseStep);
+		if (oneCaseStep.runmode_type == 'standard') {
 			popup.find(".runmode-value").hide();
 		} else { 
 			popup.find(".runmode-value").show();
@@ -1459,7 +1459,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 				 				cases.createPopupArgumentsFromList( popup,a_items[0]['args'], oneCaseStep)
 				 				var wdesc = a_items[0]['wdesc'];
 				 				console.log("***WDescription", wdesc);
-				 				cases.lastPopup.find("#StepWDescription").html(wdesc); 
+				 				cases.lastPopup.find("#StepWDescription").val(wdesc); 
 				 				
 				 				cases.lastPopup.find("#sourceCaseFileText").html(""); 
 				 				cases.lastPopup.find("#sourceCaseFileText").html(outstr);
@@ -1835,9 +1835,10 @@ The UI currently uses jQuery and Bootstrap to display the data.
 	},
 
 // Inserts a new test step 
-	addTestStepAboveToUI: function (sid,xdata,copy,jsonData) {
+	addTestStepAboveToUI: function (sid,xdata,copy ) {
+
 		cases.jsonCaseObject = katana.$activeTab.data("casesJSON");
-			cases.jsonCaseDetails = cases.jsonCaseObject.Details;
+		cases.jsonCaseDetails = cases.jsonCaseObject.Details;
 
 		if (!cases.jsonCaseObject.Teststeps) {
 			cases.jsonCaseObject.Teststeps = [];
@@ -1852,6 +1853,8 @@ The UI currently uses jQuery and Bootstrap to display the data.
 			aid = sid;				// One below the current one. 
 		}
 		var newObj; 
+		var j1 = JSON.parse(katana.$activeTab.data("lastStepCopiedData"));
+		var j2 = JSON.parse(localStorage.getItem('lastStepCopied'));	
 		if (copy == 0){
 			newObj = new caseTestStepObject();
 			}
@@ -1860,8 +1863,9 @@ The UI currently uses jQuery and Bootstrap to display the data.
 			newObj = jQuery.extend(true, {}, cases.jsonCaseObject.Teststeps[sid]); 
 			}
 		if (copy == 2){
-			console.log("Copying...JSON data ", sid, " from ", jsonData);
-			newObj = new caseTestStepObject(jsonData);
+			console.log("Documentj1: ", j1.Arguments ," local: j2 ", j2.Arguments);
+			console.log( cases.jsonCaseObject.Teststeps[sid].getJSON());
+			newObj = new caseTestStepObject(j2);
 			}
 		cases.jsonCaseObject.Teststeps.splice(aid,0,newObj);  // Don't delete anything
 		cases.mapCaseJsonToUi(cases.jsonCaseObject.Teststeps);		

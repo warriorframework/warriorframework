@@ -3,10 +3,10 @@
 <link rel="stylesheet" href="{% static 'cases/css/jquery-editable-select.css' %}">
     <div class="tool-bar">
         <label class="cases-title-label">Edit Case</label>
-        <i id="addNewCase" class="button" katana-click="cases.startNewCase">Add New Case</i>
-        <i id="addStep" class="button" katana-click="cases.addNewTestStepToUI">Add Step To Case</i>
-        <i class="button" katana-click="cases.addRequirementToCase">Add Requirement</i>
-        <i class="button" katana-click="cases.sendCaseToServer">Save</i>
+        <button id="addNewCase" class="button" katana-click="cases.startNewCase">Add New Case</button>
+        <button id="addStep" class="button" katana-click="cases.addNewTestStepToUI">Add Step To Case</button>
+        <button class="button" katana-click="cases.addRequirementToCase">Add Requirement</button>
+        <button class="button" katana-click="cases.sendCaseToServer">Save</button>
 
         
     </div>
@@ -55,13 +55,13 @@
                     </div>
                     <div class="col">
                         <label>Warrior Data File:</label>
-                        <input  class="cases-checkbox col-md-1" type="checkbox" id="ck_dataPath" name="ck_dataPath" value="No Data Path"> No Data File</input>
+                        <input  class="cases-checkbox " type="checkbox" id="ck_dataPath" name="ck_dataPath" value="No Data Path"></input>
 
                         <div class="btn-group case-no-padding col-md-12 case-results-dir">
                         <input type="text" id="caseInputDataFile" value="{{caseInputDataFile}}" />
                         
                         <button class="button case-results-dir" katana-click="cases.getCaseInputDataFile">...</button>
-                        <button class="fa fa-pencil case-results-dir" katana-click="cases.start_wdfEditor">WDF</button>
+                        <button class="button fa fa-pencil case-results-dir" katana-click="cases.start_wdfEditor">WDF</button>
                         </div>
                     </div>
 
@@ -137,7 +137,7 @@
                             </div>                           
                             <div>
                                 
-                                 <input class="col-md-2 cases-checkbox" type="checkbox" id="StepDriverCkBx" name="StepDriverCkBx" value="TBD" >To be developed</input>
+                                 <input class=" cases-checkbox" type="checkbox" id="StepDriverCkBx" name="StepDriverCkBx" value="TBD" >To be developed</input>
                 
                             </div>
                             
@@ -150,7 +150,7 @@
                             </div>
 
                             <div>
-                                 <input class="col-md-2 cases-checkbox" type="checkbox" id="StepKeywordCkBx" name="StepKeywordCkBx" value="TBD">To be developed</input> 
+                                 <input class=" cases-checkbox" type="checkbox" id="StepKeywordCkBx" name="StepKeywordCkBx" value="TBD">To be developed</input> 
                              </div>    
 
                              <div class="field">
@@ -170,7 +170,7 @@
 
                             <div class="field">
                                 <label>wDescription</label>
-                                <label type="text" id="StepWDescription" value="" />
+                                <input type="text" id="StepWDescription" disabled  value="" />
                             </div>
 
                             <label class="text-right">Arguments, Values</label>
