@@ -216,13 +216,13 @@ class suiteCaseObject {
 		}
 
 		if (! jsonData['runmode']) {
-			jsonData['onError'] = { "@type": "standard", "@value": "" };
+			jsonData['runmode'] = { "@type": "standard", "@value": "" };
 		}
 		if (! jsonData['runmode']['@value']) {
-			jsonData['onError'] = { "@type": "standard", "@value": "" };
+			jsonData['runmode'] = { "@type": "standard", "@value": "" };
 		}
 		if (! jsonData['runmode']['@type']) {
-			jsonData['onError'] = { "@type": "standard", "@value": "" };
+			jsonData['runmode'] = { "@type": "standard", "@value": "" };
 		}
 
 		if (!jsonData['onError']) {
@@ -400,6 +400,9 @@ var suites= {
 			var sdata = data['fulljson'];
 			console.log("from views.py call=", sdata);
 			suites.jsonSuiteObject = new testSuiteObject(sdata['TestSuite']);
+			katana.$activeTab.data("suiteJSON", suites.jsonSuiteObject);
+
+			suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
 			suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
 			suites.mapSuiteJsonToUi();  // This is where the table and edit form is created. 
 			katana.$activeTab.find('#default_onError').on('change',suites.fillSuiteDefaultGoto );
@@ -410,6 +413,8 @@ var suites= {
 
 	fillSuiteDataOptions: function() { 
 		var datatype = this.value; 
+			suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+			suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
 		datatype = datatype.toLowerCase(); 
 		katana.$activeTab.find('#data_type_max_attempts').hide();
 		katana.$activeTab.find('#data_type_num_attempts').hide();
@@ -439,23 +444,29 @@ var suites= {
 // no default value, a null value is inserted for the keyword
 /// -------------------------------------------------------------------------------
 	addCaseToSuite: function(){
+			suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+			suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
 		var newTestcase =	new suiteCaseObject(); 
 		
 		suites.jsonTestcases = suites.jsonSuiteObject.Testcases	
 		console.log(suites.jsonTestcases);
 		suites.jsonTestcases.push(newTestcase);
-		suites.createCasesTable(suites.jsonTestcases);
+		suites.createCasesTable();
 	},
 	 
 	insertCaseToSuite: function(sid, copy){
+			suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+			suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
 		var newTestcase =new suiteCaseObject();
 		suites.jsonTestcases = suites.jsonSuiteObject.Testcases	
 		 		
 		suites.jsonTestcases.splice(sid,0,newTestcase);
-		suites.createCasesTable(suites.jsonTestcases);
+		suites.createCasesTable();
 	},
 
 	mapSuiteCaseToUI: function(s,popup) {
+			suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+			suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
 
 	// This is called from an event handler ... 
 	suites.jsonTestcases = suites.jsonSuiteObject.Testcases		
@@ -473,6 +484,8 @@ var suites= {
 	popup.find('#CaseContext').val(oneCase.context);
 	popup.find('#CaseRuntype').val(oneCase.runtype);
 	popup.find('#CaseImpact').val(oneCase.impact);
+	popup.find('#caseonError-at-action').val(oneCase.onError_action)
+	popup.find('#caseonError-at-value').val(oneCase.onError_value)
 	popup.find("#suiteExecuteAtExecType").val(oneCase.Execute_ExecType); 
 	popup.find("#executeRuleAtCondition").val(oneCase.Execute_Rule_Condition); 
 	popup.find("#executeRuleAtCondvalue").val(oneCase.Execute_Rule_Condvalue); 
@@ -482,6 +495,8 @@ var suites= {
 
 	suites.fillSuiteCaseDefaultGoto(popup);
 	popup.find('#caseonError-at-action').on('change', function(){ 
+			suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+			suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
 			
 			suites.fillSuiteCaseDefaultGoto(suites.lastPopup);
 	});
@@ -533,6 +548,8 @@ var suites= {
 // row number from the table.
 /// -------------------------------------------------------------------------------
 	mapUItoSuiteCase: function(){
+			suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+			suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
 		var popup = suites.lastPopup; 
 		var s = parseInt(popup.find("#CaseRowToEdit").val());
 		var oneCase = suites.jsonTestcases[s];
@@ -566,6 +583,8 @@ Two global variables are heavily used when this function is called;
 
 */
 	mapUiToSuiteJson: function() {
+			suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+			suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
 
 		if (katana.$activeTab.find("#suiteName").val().length < 1) {
 			data = { 'heading': "Error", 'text' : "Please specific a suite name "}
@@ -645,6 +664,8 @@ Two global variables are heavily used when this function is called;
 	},
 
 		start_wdfEditor: function() { 
+			suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+			suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
 			var tag = '#suiteInputDataFile';
 			var filename = katana.$activeTab.find(tag).attr("fullpath");
 			console.log("WDF editor opening...", filename); 
@@ -666,6 +687,8 @@ Two global variables are heavily used when this function is called;
 
 	getInputDataForSuite: function () {
       var callback_on_accept = function(selectedValue) { 
+			suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+			suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
       		console.log(selectedValue);
       		var pathToBase = katana.$activeTab.find('#savefilepath').text();
       		console.log("File path ==", pathToBase);
@@ -686,6 +709,8 @@ Two global variables are heavily used when this function is called;
 
 	getResultsDirForSuite: function () {
       var callback_on_accept = function(selectedValue) { 
+			suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+			suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
       		console.log(selectedValue);
       		var popup = suites.lastPopup;
       		
@@ -706,6 +731,8 @@ Two global variables are heavily used when this function is called;
 
 	getDirForSuiteRow: function (where) {
       var callback_on_accept = function(selectedValue) { 
+			suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+			suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
       		var sid = katana.$activeTab.attr('suite_case_row');
 			var pathToBase = katana.$activeTab.find('#savefilepath').text();
       		console.log("File path ==", pathToBase, sid);
@@ -713,7 +740,7 @@ Two global variables are heavily used when this function is called;
       		var oneCase = suites.jsonSuiteObject.Testcases[sid];
       		oneCase[where]= nf;
       		console.log("Path set to ",nf," for ", sid, oneCase);
-      		suites.createCasesTable(suites.jsonTestcases);
+      		suites.createCasesTable();
             };
       var callback_on_dismiss = function(){ 
       		console.log("Dismissed");
@@ -722,6 +749,8 @@ Two global variables are heavily used when this function is called;
 	},
 
 	fillSuiteDefaultGoto :function() {
+			suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+			suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
 
 	var gotoStep = katana.$activeTab.find('#default_onError').val();
 	//console.log("Step ", gotoStep);
@@ -744,6 +773,8 @@ Two global variables are heavily used when this function is called;
 },
 
 	fillSuiteCaseDefaultGoto : function(popup) {
+			suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+			suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
 
 		var gotoStep =popup.find('#caseonError-at-action').val();
 		var defgoto = popup.find('#caseonError-at-value'); 
@@ -767,8 +798,10 @@ Two global variables are heavily used when this function is called;
 //
 // This creates the table for viewing data in a sortable view. 
 // 
-	createCasesTable: function(xdata) {
+	createCasesTable: function() {
 		var items = []; 
+			suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+			suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
 
 		items.push('<table  id="Case_table_display" class="suite-configuration-table" width="100%">');
 		items.push('<thead>');
@@ -782,14 +815,14 @@ Two global variables are heavily used when this function is called;
 		var slen = suites.jsonSuiteObject.Testcases.length; 
 		for (var s=0; s< slen; s++ ) {
 			var oneCase = suites.jsonSuiteObject.Testcases[s];
-			console.log(oneCase);
+			console.log("Drawing table", oneCase);
 			var showID = parseInt(s)+ 1; 
 			items.push('<tr data-sid="'+s+'"><td>'+showID+'</td>');
 			var bid = "fileTestcase-"+s+"-id";
 			items.push('<td><i title="ChangeFile" class="fa fa-folder-open" id="'+bid+'" katana-click="suites.fileNewSuiteFromLine" key="'+bid+'"/></td>');
-			items.push('<td katana-click="suites.showCaseFromSuite" skey="'+oneCase['path']+'"> '+oneCase['path']+'</td>');
+			items.push('<td katana-click="suites.showCaseFromSuite" skey="'+oneCase['path']+'" title="'+oneCase['path']+'"> '+oneCase['path']+'</td>');
 			items.push('<td><i title="Change Input Data File" class="fa fa-folder-open" id="'+bid+'" katana-click="suites.fileNewInputFromLine" key="'+bid+'"/></td>');
-			items.push('<td skey="'+oneCase['InputDataFile']+'"> '+oneCase['InputDataFile']+'</td>');
+			items.push('<td skey="'+oneCase['InputDataFile']+'"  title="'+oneCase['InputDataFile']+'"> '+oneCase['InputDataFile']+'</td>');
 			items.push('<td>'+oneCase.context+'</td>');
 			items.push('<td>'+oneCase.runtype+'</td>');
 			items.push('<td>'+oneCase.runmode_type);
@@ -797,14 +830,20 @@ Two global variables are heavily used when this function is called;
 				items.push('<br>'+oneCase.runmode_value.toLowerCase());
 			}
 			items.push('</td>');
-			items.push('<td>'+oneCase.onError_action+'</td>');
+			if (oneCase.onError_action != 'goto') {
+					items.push('<td>'+oneCase.onError_action+'</td>');
+			
+			} else {
+					items.push('<td>'+oneCase.onError_action+' '+oneCase.onError_value +'</td>');	
+			}
+
 			items.push('<td>'+oneCase.impact+'</td>');
 			bid = "deleteTestcase-"+s+"-id";
 			items.push('<td><i title="Delete" class="fa fa-trash" id="'+bid+'" katana-click="suites.deleteSuiteFromLine" key="'+bid+'"/>');
 			bid = "editTestcaseRow-"+s+"-id";
 			items.push('<i title="Edit" class="fa fa-pencil" title="Edit" id="'+bid+'" katana-click="suites.editNewSuiteIntoLine" key="'+bid+'"/> ');
 			bid = "insertTestcase-"+s+"-id";
-			items.push('<i title="Insert" class="fa fa-plus" title="Insert New Case" id="'+bid+'" katana-click="suites.insertNewSuiteIntoLine" key="'+bid+'"/>');
+			items.push('<i title="Insert" class="fa fa-plus" title="Insert New Case" id="'+bid+'" katana-click="suites.insertNewSuiteIntoLine" key="'+bid+'"/><br>');
 			bid = "copyToStorage-"+s+"-id-";
 			items.push('<i title="Copy to clipboard" class="fa fa-clipboard" theSid="'+s+'"   id="'+bid+'" katana-click="suites.saveTestStep" key="'+bid+'"/>');
 			bid = "copyFromStorage-"+s+"-id-";
@@ -821,6 +860,8 @@ Two global variables are heavily used when this function is called;
 },
 
 	insertNewSuiteIntoLine : function() {
+			suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+			suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
 	console.log(this.attr('key'));
 	var names = this.attr('key').split('-');
 	console.log(this.attr('key'));
@@ -829,12 +870,16 @@ Two global variables are heavily used when this function is called;
 },
 
  	deleteSuiteFromLine :function() {
+			suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+			suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
 	var names = this.attr('key').split('-');
 	var sid = parseInt(names[1]);
 	suites.removeTestcase(sid);
 	},
 
 	duplicateNewSuiteIntoLine : function( ){
+			suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+			suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
 	var names = this.attr('key').split('-');
 	var sid = parseInt(names[1]);
 	suites.insertCaseToSuite(sid,1);
@@ -842,6 +887,8 @@ Two global variables are heavily used when this function is called;
 
 
 	saveTestStep: function() {
+			suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+			suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
 		var names = this.attr('key').split('-');
 		var sid = parseInt(names[1]);
 		console.log("Saving ...", suites.jsonTestcases[sid] );
@@ -850,20 +897,28 @@ Two global variables are heavily used when this function is called;
 
 
 	restoreTestStep: function() {
-		var names = this.attr('key').split('-');
-		var sid = parseInt(names[1]);
-		jsonData = suites.jsonTestcases[sid].copyFromDocument('lastCaseCopied');
-		console.log("Retrieving ... ", jsonData);
-		newTestcase = new suiteCaseObject(jsonData);
-		suites.jsonTestcases.splice(sid,0,newTestcase);
-		suites.createCasesTable(suites.jsonTestcases);
+			suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+			suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
+			var names = this.attr('key').split('-');
+			var sid = parseInt(names[1]);
+			jsonData = suites.jsonTestcases[sid].copyFromDocument('lastCaseCopied');
+			console.log("Retrieving ... ", jsonData);
+			newTestcase = new suiteCaseObject(jsonData);
+			suites.jsonTestcases.splice(sid,0,newTestcase);
+			suites.createCasesTable();
 		},
 
 
 	editNewSuiteIntoLine : function() {
-	var names = this.attr('key').split('-');
-	var sid = parseInt(names[1]);
-		katana.popupController.open(katana.$activeTab.find("#editTestCaseEntry").html(),"Edit..." + sid, function(popup) {
+			suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+			suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
+			var names = this.attr('key').split('-');
+			var sid = parseInt(names[1]);
+			katana.popupController.open(katana.$activeTab.find("#editTestCaseEntry").html(),"Edit Case " + (sid + 1), function(popup) {
+			
+
+
+
 			suites.lastPopup = popup;
 			suites.mapSuiteCaseToUI(sid,popup);
 		});
@@ -871,27 +926,33 @@ Two global variables are heavily used when this function is called;
 },
 
 	fileNewSuiteFromLine :function(){ 
-	var names = this.attr('key').split('-');
-	var sid = parseInt(names[1]);
-	katana.$activeTab.attr('suite_case_row',sid);
-	suites.getDirForSuiteRow('path');
+			suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+			suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
+			var names = this.attr('key').split('-');
+			var sid = parseInt(names[1]);
+			katana.$activeTab.attr('suite_case_row',sid);
+			suites.getDirForSuiteRow('path');
 	},
 
 	fileNewInputFromLine:function(){ 
-	var names = this.attr('key').split('-');
-	var sid = parseInt(names[1]);
-	katana.$activeTab.attr('suite_case_row',sid);
-	suites.getDirForSuiteRow('InputDataFile');
+			suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+			suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
+			var names = this.attr('key').split('-');
+			var sid = parseInt(names[1]);
+			katana.$activeTab.attr('suite_case_row',sid);
+			suites.getDirForSuiteRow('InputDataFile');
 	},
 
 	showCaseFromSuite : function () {
-		var fname = this.attr('skey');
-		var xref="./cases/editCase/?fname="+fname; 
-	  	console.log("Calling case ", fname, xref);
-		var href='/katana/cases';
-	  	katana.templateAPI.load.call(this, href, '/static/cases/js/cases.js,', null, 'case', function() { 
-				var xref="./cases/editCase/?fname="+fname; 
-	    		katana.templateAPI.subAppLoad(xref,null,function(thisPage) {
+			suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+			suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
+			var fname = this.attr('skey');
+			var xref="./cases/editCase/?fname="+fname; 
+		  	console.log("Calling case ", fname, xref);
+			var href='/katana/cases';
+		  	katana.templateAPI.load.call(this, href, '/static/cases/js/cases.js,', null, 'case', function() { 
+					var xref="./cases/editCase/?fname="+fname; 
+	    			katana.templateAPI.subAppLoad(xref,null,function(thisPage) {
 						cases.mapFullCaseJson(fname,'#listOfTestStepsForCase');
 	    		});
 
@@ -899,11 +960,13 @@ Two global variables are heavily used when this function is called;
 	},
 //
 	testSuiteSortEventHandler : function(event, ui ) {
-	var listItems = [] ; 
-	var listCases = katana.$activeTab.find('#Case_table_display tbody').children(); 
-	console.log(listCases);
-		if (listCases.length < 2) {
-	 return; 
+			suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+			suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
+			var listItems = [] ; 
+			var listCases = katana.$activeTab.find('#Case_table_display tbody').children(); 
+			console.log(listCases);
+				if (listCases.length < 2) {
+			 return; 
 	}
 
 	var oldCaseSteps = suites.jsonSuiteObject.Testcases;
@@ -914,12 +977,12 @@ Two global variables are heavily used when this function is called;
 		var ni  = xtr.getAttribute("data-sid");
 		console.log(xi + " => " + ni);
 		newCaseSteps[ni] = oldCaseSteps[xi];
-	}
+		}
 
-	suites.jsonSuiteObject.Testcases = newCaseSteps;
-	suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
-	suites.mapSuiteJsonToUi();  // This is where the table and edit form is created. 
-},
+		suites.jsonSuiteObject.Testcases = newCaseSteps;
+		suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
+		suites.mapSuiteJsonToUi();  // This is where the table and edit form is created. 
+	},
 
 
 
@@ -927,20 +990,22 @@ Two global variables are heavily used when this function is called;
 
 
 	createSuiteRequirementsTable : function(rdata){
-	var items =[]; 
-	katana.$activeTab.find("#tableOfTestRequirements").html("");
-	
-	items.push('<table id="Case_Req_table_display" class="suite-req-configuration-table  striped" width="100%" >');
-	items.push('<thead>');
-	items.push('<tr id="ReqRow"><th>#</th><th>Requirement</th><th>')
-	items.push('<i title="Save Edit" katana-click="suites.saveAllRequirementsCB">Save All</i>')
-	items.push('</th></tr>');
-	items.push('</thead>');
-	items.push('<tbody>');
-	//console.log(rdata);
-	var slen = rdata.getLength();
-	var reqs = rdata.getRequirements();
-	for (var s=0; s<slen; s++ ) {
+			suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+			suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
+		var items =[]; 
+		katana.$activeTab.find("#tableOfTestRequirements").html("");
+		
+		items.push('<table id="Case_Req_table_display" class="suite-req-configuration-table  striped" width="100%" >');
+		items.push('<thead>');
+		items.push('<tr id="ReqRow"><th>#</th><th>Requirement</th><th>')
+		items.push('<i title="Save Edit" katana-click="suites.saveAllRequirementsCB">Save All</i>')
+		items.push('</th></tr>');
+		items.push('</thead>');
+		items.push('<tbody>');
+		//console.log(rdata);
+		var slen = rdata.getLength();
+		var reqs = rdata.getRequirements();
+		for (var s=0; s<slen; s++ ) {
 		var idnumber = s + 1;
 		items.push('<tr data-sid=""><td>'+idnumber+'</td>');
 		var bid = "textRequirement-name-"+s+"-id";	
@@ -962,10 +1027,12 @@ Two global variables are heavily used when this function is called;
 },
 
 	saveAllRequirementsCB: function() { 
-		var slen = suites.jsonSuiteObject.Requirements.getLength();
-		//console.log("slen=", slen);
-		for (var sid = 0; sid < slen; sid++ ) {
-			var txtNm = katana.$activeTab.find("#textRequirement-name-"+sid+"-id").val();
+			suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+			suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
+			var slen = suites.jsonSuiteObject.Requirements.getLength();
+			//console.log("slen=", slen);
+			for (var sid = 0; sid < slen; sid++ ) {
+				var txtNm = katana.$activeTab.find("#textRequirement-name-"+sid+"-id").val();
 			suites.jsonSuiteObject.Requirements.setRequirement( sid,  txtNm );
 		}
 		suites.createSuiteRequirementsTable(suites.jsonSuiteObject.Requirements);	
@@ -974,6 +1041,8 @@ Two global variables are heavily used when this function is called;
 
 
 	saveRequirementCB:function() {
+			suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+			suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
 			var names = this.attr('skey').split('-');
 			var sid = parseInt(names[1]);
 			var txtVl = katana.$activeTab.find("#textRequirement-name-"+sid+"-id").val();
@@ -982,6 +1051,8 @@ Two global variables are heavily used when this function is called;
 		},
 
 	deleteRequirementCB:	function() {
+			suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+			suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
 			var names = this.attr('skey').split('-');
 			var sid = parseInt(names[1]);
 			// console.log("Remove " + sid + " " + this.id ); 
@@ -991,6 +1062,8 @@ Two global variables are heavily used when this function is called;
 		},
 	
 	insertRequirementCB:function( ) {
+			suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+			suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
 			var names = this.attr('skey').split('-');
 			var sid = parseInt(names[1]);
 			suites.jsonSuiteObject.Requirements.insertRequirement(sid,'');
@@ -998,6 +1071,8 @@ Two global variables are heavily used when this function is called;
 		},
 
 	addRequirementToSuite() {
+			suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+			suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
 		suites.jsonSuiteObject.Requirements.insertRequirement(0,'');
 		suites.createSuiteRequirementsTable(suites.jsonSuiteObject.Requirements);	
 	},
@@ -1013,10 +1088,12 @@ Two global variables are heavily used when this function is called;
 
 */
  mapSuiteJsonToUi: function(data){
+			suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+			suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
 	if (!jQuery.isArray(suites.jsonTestcasesj)) suites.jsonTestcasesj = [suites.jsonTestcasesj]; 
 	// if (!suites.jsonSuiteObject['Requirements']) suites.jsonSuiteObject['Requirements'] = [];
 	// if (!jQuery.isArray(suites.jsonSuiteObject['Requirements'])) suites.jsonSuiteObject['Requirements'] = [suites.jsonSuiteObject['Requirements']]; 
-	suites.createCasesTable(suites.jsonTestcases['Testcase']);
+	suites.createCasesTable();
 
 	// Resolve the relative path for the wdf editor to get full path. ..
 	if (!suites.jsonSuiteObject['InputDataFile']) {
@@ -1047,20 +1124,25 @@ Two global variables are heavily used when this function is called;
 
 // Saves your suite to disk. 
 	saveSuitesCaseUI : function() {	
-		suites.mapUItoSuiteCase();
-		suites.createCasesTable(suites.jsonTestcases['Testcase']);
-		suites.mapSuiteJsonToUi();
-},
+			suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+			suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
+			suites.mapUItoSuiteCase();
+			suites.createCasesTable();
+			//suites.mapSuiteJsonToUi();
+			katana.popupController.close(suites.lastPopup);
+	},
 
 
 
 
 // Removes a test Case by its ID and refresh the page. 
 	removeTestcase : function(sid ){
-	suites.jsonTestcases.splice(sid,1);
-	console.log("Removing test Cases "+sid+" now " + Object.keys(suites.jsonTestcases).length);
-	suites.mapSuiteJsonToUi();	// Send in the modified array
-},
+			suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+			suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
+		suites.jsonTestcases.splice(sid,1);
+		console.log("Removing test Cases "+sid+" now " + Object.keys(suites.jsonTestcases).length);
+		suites.mapSuiteJsonToUi();	// Send in the modified array
+	},
 
 
 };
