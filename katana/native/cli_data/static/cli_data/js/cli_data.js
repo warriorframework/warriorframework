@@ -2,12 +2,112 @@
 
 var cliData = {
 
+    Editor: {
+
+        closeFile: function(){
+            var $currentPage = katana.$activeTab;
+            var callbackOnAccept = function(){
+                $currentPage.find('[katana-click="cliData.fileDisplayAPI.newFile"]').show();
+                $currentPage.find('[katana-click="cliData.Editor.closeFile"]').hide();
+                $currentPage.find('[katana-click="cliData.Editor.saveFile"]').hide();
+                $currentPage.find('#main-div').find('.cli-data-left-column').html('');
+                $currentPage.find('#main-div').find('.cli-data-full-width').html('');
+                $currentPage.find('#main-div').hide();
+                $currentPage.find('#display-files').show();
+            }
+            katana.openAlert({"alert_type": "warning",
+                               "heading": "Do You Want To Continue?",
+                               "text": "All changes made would be discarded.",
+                               "accept_btn_text": "Yes", "cancel_btn_text": "No"},
+                             callbackOnAccept)
+
+        },
+
+        saveFile: function() {
+            var $currentPage = katana.$activeTab;
+            $.ajax({
+                headers: {
+                    'X-CSRFToken': $currentPage.find('input[name="csrfmiddlewaretoken"]').attr('value')
+                },
+                type: 'GET',
+                url: 'read_config_file/',
+            }).done(function(config_file_data){
+                var callBack_on_accept = function(inputValue){
+                    var finalJson = {
+                        "data": {
+                            "global": {"tag": "yoyo"},
+                            "testdata": [ {"more_tag": "one yoyo"}, {"more_tag": "more yoyo"}]
+                            }
+                        }
+
+                    $.ajax({
+                        headers: {
+                            'X-CSRFToken': $currentPage.find('input[name="csrfmiddlewaretoken"]').attr('value')
+                        },
+                        type: 'POST',
+                        url: 'cli_data/save_testdata_file/',
+                        data: {"json_data": JSON.stringify(finalJson), "filename": inputValue, "directory": config_file_data.testdata}
+                    }).done(function(data) {
+                        if(data.saved){
+                            cliData.fileDisplayAPI.init();
+                            katana.openAlert({"alert_type": "success",
+                                "heading": "Saved",
+                                "text": "Saved as: " + inputValue,
+                                "timer": 1250, "show_cancel_btn": false, "show_accept_btn": false})
+                        } else {
+                            katana.openAlert({"alert_type": "danger",
+                                "heading": "Not Saved!",
+                                "text": "Some error occurred: " + data.message,
+                                "show_cancel_btn": false})
+                        }
+
+                    });
+                };
+                katana.openAlert({
+                    "alert_type": "light",
+                    "heading": "Name for the file",
+                    "text": "",
+                    "prompt": "true",
+                    "prompt_default": $currentPage.find('.tool-bar').find('.title').text()
+                    },
+                    function(inputValue){
+                         $.ajax({
+                            headers: {
+                                'X-CSRFToken': $currentPage.find('input[name="csrfmiddlewaretoken"]').attr('value')
+                            },
+                            type: 'POST',
+                            url: 'check_if_file_exists/',
+                            data: {"filename": inputValue, "directory": config_file_data.testdata, "extension": ".xml"}
+                        }).done(function(data){
+                             if(data.exists){
+                                katana.openAlert({
+                                    "alert_type": "warning",
+                                    "heading": "File Exists",
+                                    "text": "A file with the name " + inputValue + " already exists; do you want to overwrite it?",
+                                    "accept_btn_text": "Yes",
+                                    "cancel_btn_text": "No"
+                                    }, function() {callBack_on_accept(inputValue)})
+                             } else {
+                                callBack_on_accept(inputValue);
+                             }
+                        });
+                    })
+            });
+        },
+    },
+
     fileDisplayAPI: {
         init: function() {
             var $currentPage = katana.$activeTab;
+            var $newBtn = $currentPage.find('[katana-click="cliData.fileDisplayAPI.newFile"]');
+            var $closeBtn = $currentPage.find('[katana-click="cliData.Editor.closeFile"]');
+            var $saveBtn = $currentPage.find('[katana-click="cliData.Editor.saveFile"]');
             var $displayFilesDiv = $currentPage.find('#display-files');
             var $displayErrorMsgDiv = $currentPage.find('#display-error-message');
             var $mainDiv = $currentPage.find('#main-div');
+            $newBtn.hide();
+            $closeBtn.hide();
+            $saveBtn.hide();
             $mainDiv.hide();
             $.ajax({
                 type: 'GET',
@@ -17,6 +117,7 @@ var cliData = {
                     $displayErrorMsgDiv.show();
                     $displayFilesDiv.hide();
                 } else {
+                    $newBtn.show();
                     $displayErrorMsgDiv.hide();
                     $displayFilesDiv.show();
                     $.ajax({
@@ -49,7 +150,29 @@ var cliData = {
                                         type: "GET",
                                         data: {"path": data["node"]["li_attr"]["data-path"]},
                                         success: function(data){
-                                            console.log(data);
+                                            var $currentPage = katana.$activeTab;
+                                            var $newBtn = $currentPage.find('[katana-click="cliData.fileDisplayAPI.newFile"]');
+                                            var $closeBtn = $currentPage.find('[katana-click="cliData.Editor.closeFile"]');
+                                            var $saveBtn = $currentPage.find('[katana-click="cliData.Editor.saveFile"]');
+                                            var $displayFilesDiv = $currentPage.find('#display-files');
+                                            $displayFilesDiv.hide();
+                                            var $displayErrorMsgDiv = $currentPage.find('#display-error-message');
+                                            $displayErrorMsgDiv.hide();
+                                            var $mainDiv = $currentPage.find('#main-div');
+                                            $mainDiv.show();
+                                            var $toolBarDiv = $currentPage.find('.tool-bar');
+                                            $toolBarDiv.find('.title').html(data["name"]);
+
+                                            $newBtn.hide();
+                                            $closeBtn.show();
+                                            $saveBtn.show();
+
+                                            var globalCmd = new globalCommand(data.contents.data.global.command_params);
+                                            var $content = globalCmd.htmlLeftContent;
+                                            $($content[0]).attr("objectIndex", "0");
+                                            $currentPage.find('.cli-data-left-column').html($content);
+
+                                            setTimeout(function(){cliData.fileDisplayAPI.displayRightContents(data.contents.data)}, 1);
                                         }
                                     });
                                 }
@@ -65,8 +188,10 @@ var cliData = {
                url: 'cli_data/get_default_file/',
                data: {"path": false}
             }).done(function(data) {
-                //console.log(data);
                 var $currentPage = katana.$activeTab;
+                var $newBtn = $currentPage.find('[katana-click="cliData.fileDisplayAPI.newFile"]');
+                var $closeBtn = $currentPage.find('[katana-click="cliData.Editor.closeFile"]');
+                var $saveBtn = $currentPage.find('[katana-click="cliData.Editor.saveFile"]');
                 var $displayFilesDiv = $currentPage.find('#display-files');
                 $displayFilesDiv.hide();
                 var $displayErrorMsgDiv = $currentPage.find('#display-error-message');
@@ -75,6 +200,10 @@ var cliData = {
                 $mainDiv.show();
                 var $toolBarDiv = $currentPage.find('.tool-bar');
                 $toolBarDiv.find('.title').html(data["name"]);
+
+                $newBtn.hide();
+                $closeBtn.show();
+                $saveBtn.show();
 
                 var globalCmd = new globalCommand(data.contents.data.global.command_params);
                 var $content = globalCmd.htmlLeftContent;

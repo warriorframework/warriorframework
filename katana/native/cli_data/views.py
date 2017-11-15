@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import json
 import os
+
+import xmltodict
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
@@ -28,8 +31,8 @@ class CliDataFileClass(View):
     app_static_dir = join_path(app_directory, "static")
 
     def get(self, request):
-        #filepath = request.GET.get('path')
-        filepath = join_path(CliDataFileClass.app_static_dir, "base_templates", "test.xml")
+        filepath = request.GET.get('path')
+        # filepath = join_path(CliDataFileClass.app_static_dir, "base_templates", "test.xml")
         base_filepath = join_path(CliDataFileClass.app_static_dir, "base_templates", "empty.xml")
         if filepath == "false":
             filepath = base_filepath
@@ -39,3 +42,22 @@ class CliDataFileClass(View):
         vcdc_obj = VerifyCliDataClass(filepath, base_filepath)
         json_data = vcdc_obj.verify_contents()
         return JsonResponse({"contents": json_data, "name": name})
+
+    def post(self, request):
+        json_data = json.loads(request.POST.get('json_data'))
+        print json_data
+        data = xmltodict.unparse(json_data)
+        print data
+        directory = request.POST.get('directory')
+        print directory
+        filepath = os.path.join(directory, request.POST.get('filename') + ".xml")
+        print filepath
+        message = ""
+        saved = True
+        try:
+            with open(filepath, 'w') as f:
+                f.write(data)
+        except Exception as e:
+            saved = False
+            message = e
+        return JsonResponse({"saved": saved, "message": message})
