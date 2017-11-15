@@ -385,6 +385,20 @@ class testdata{
         this.level = "CLI Data";
         this.block_name = "Block";
         this.pristine = true;
+        this.general_options = ["Yes", "No"];
+        this.iter_type_options = ["Per CLI-Data Block", "Per Command"];
+        this.orderedVariables = this.getOrderedVariables();
+    }
+
+    getOrderedVariables() {
+        var orderedVariables = [
+            {"Title": {"value": this.title, "type": "input", variable: "title"}},
+            {"Row Number": {"value": this.row, "type": "input", variable: "row"}},
+            {"Execute": {"value": this.execute, "type": "dropdown", "options": this.general_options, variable: "execute"}},
+            {"Monitor": {"value": this.monitor, "type": "input", variable: "monitor"}},
+            {"Iteration Type": {"value": this.iter_type, "type": "dropdown",  "options": this.iter_type_options, variable: "iter_type"}}
+        ];
+        return orderedVariables
     }
 
     converter(key, value, toJson, toEnglish){
@@ -437,6 +451,94 @@ class testdata{
         };
         return jsonObject;
     }
+
+    get htmlLeftContent() {
+        return this.formHtmlLeftContent();
+    }
+
+    formHtmlLeftContent(){
+        var $content = $(leftTableContent);
+        $content.find('#display').text(this.level);
+        $content.find('#displayTitle').text(this.block_name);
+        var $subContent = false;
+        for(var i=0; i<this.orderedVariables.length; i++){
+            for(var key in this.orderedVariables[i]){
+                if(this.orderedVariables[i][key]["type"] == "input"){
+                    $subContent = $(leftColumnInputs);
+                    $subContent.find('.cli-data-left-content-label').text(key);
+                    $subContent.find('.cli-data-left-content-value-input').val(this.orderedVariables[i][key]["value"]);
+                } else {
+                    $subContent = $(leftColumnSelects);
+                    $subContent.find('.cli-data-left-content-label').text(key);
+                    for(var j=0; j<this.orderedVariables[i][key]["options"].length; j++){
+                        $subContent.find('.cli-data-left-content-value-input').append($('<option>' + this.orderedVariables[i][key]["options"][j]  + '</option>'))
+                    }
+                    $subContent.find('.cli-data-left-content-value-input').val(this.orderedVariables[i][key]["value"]);
+                }
+                $($content[1]).append($subContent);
+                break;
+            }
+        }
+        $($content[0]).data({"dataObject": [this]});
+        return $content;
+    }
+
+    get htmlRightContent() {
+        return this.formHtmlRightContent();
+    }
+
+    formHtmlRightContent(){
+        var $content = $(rightColumnTable);
+        $content.find('#section').text(this.level);
+        $content.find('#sectionTitle').text(this.block_name);
+        var $subContent = false;
+        for(var i=0; i<this.orderedVariables.length; i++){
+            for(var key in this.orderedVariables[i]){
+                $subContent = $(rightColumnTableInputs);
+                $subContent.find('.cli-data-labels').html('<div>' + key + '</div>');
+                $subContent.find('.cli-data-columns').html('<div katana-click="cliData.rightColumn.makeActive">' + this.orderedVariables[i][key]["value"] + '</div>');
+                $($content[1]).find('ul').append($subContent);
+                break;
+            }
+        }
+        $($content[0]).data({"dataObject": [this]});
+        return $content;
+    }
+
+    addAnother(){
+        var tdObj = new testdata();
+        console.log(tdObj);
+        var $content = tdObj.htmlRightContent;
+        console.log($content);
+
+        var tdCmdObj = new testdataCommand();
+        var temp = tdCmdObj.htmlRightContent;
+        for(var i=0; i<temp.length; i++){
+            $content.push(temp[i]);
+        }
+
+        var tdVerObj = new testdataVerifications();
+        temp = tdVerObj.htmlRightContent;
+        for(var i=0; i<temp.length; i++){
+            $content.push(temp[i]);
+        }
+
+        var tdKeysObj = new testdataKeys();
+        temp = tdKeysObj.htmlRightContent;
+        for(var i=0; i<temp.length; i++){
+            $content.push(temp[i]);
+        }
+
+        var tdVarPatObj = new testdataVariablePattern();
+        temp = tdVarPatObj.htmlRightContent;
+        for(var i=0; i<temp.length; i++){
+            $content.push(temp[i]);
+        }
+
+        return $content
+    }
+
+    deleteBlockElement(elem, index){}
 }
 
 /* Verifications Class */

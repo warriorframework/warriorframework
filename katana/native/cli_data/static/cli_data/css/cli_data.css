@@ -224,3 +224,19 @@ div.cli-data-left-content > div.row:last-child > div {
     color: gray;
     cursor: not-allowed !important;
 }
+
+.cli-data-loading {
+	content: '';
+	border: 8px solid #f3f3f3;
+	border-radius: 50%;
+	border-top: 8px solid #dc3545;
+	width: 80px;
+	height: 80px;
+	-webkit-animation: spin 2s ease-in-out infinite;
+	animation: spin 2s ease-in-out infinite;
+	position: absolute;
+	top: 45%;
+	left: 13%;
+	right: 0;
+	margin: 0 auto;
+}

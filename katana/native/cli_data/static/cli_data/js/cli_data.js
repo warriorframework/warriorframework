@@ -167,6 +167,8 @@ var cliData = {
                                             $closeBtn.show();
                                             $saveBtn.show();
 
+                                            $currentPage.find('.page-content-inner').append('<div class="overlay"><div class="cli-data-loading"></div></div>');
+
                                             var globalCmd = new globalCommand(data.contents.data.global.command_params);
                                             var $content = globalCmd.htmlLeftContent;
                                             $($content[0]).attr("objectIndex", "0");
@@ -204,6 +206,8 @@ var cliData = {
                 $newBtn.hide();
                 $closeBtn.show();
                 $saveBtn.show();
+
+                $currentPage.find('.page-content-inner').append('<div class="overlay"><div class="cli-data-loading"></div></div>');
 
                 var globalCmd = new globalCommand(data.contents.data.global.command_params);
                 var $content = globalCmd.htmlLeftContent;
@@ -274,6 +278,10 @@ var cliData = {
 
 
             for(i=0; i<data.testdata.length; i++){
+
+                var td = new testdata(data.testdata[i]);
+                $rightColumn.append(td.htmlRightContent);
+
                 var tdCmdHtmlContent = false;
                 for(var j=0; j<data.testdata[i].command.length; j++){
                     var tdCmd = new testdataCommand(data.testdata[i].command[j]);
@@ -323,6 +331,8 @@ var cliData = {
                 var tdVarPat = new testdataVariablePattern(data.testdata[i].variable_pattern)
                 $rightColumn.append(tdVarPat.htmlRightContent)
             }
+
+            $currentPage.find('.overlay').remove();
         },
     },
 
@@ -387,17 +397,45 @@ var cliData = {
             $content.push($activeElement.next()[0]);
             $content.push($activeElement.next().next()[0]);
             var dataObj = $activeElement.data().dataObject;
-            dataObj[objectIndex].deleteBlockElement($content, objectIndex);
-            if(objectIndex < dataObj.length){
+            var className = dataObj[objectIndex].constructor.name;
+            if (className == "testdata") {
+                var $rightFullWidthColumn = $currentPage.find('.cli-data-right-column').find('.cli-data-full-width');
+                var $rightChildren = $rightFullWidthColumn.children();
+                var currIndex = $activeElement.index();
+                var nextIndex = currIndex + 15;
+                if(nextIndex >= $rightChildren.length && nextIndex == 30) {
+                    var $newTdBlock = dataObj[objectIndex].addAnother();
+                    $rightFullWidthColumn.append($newTdBlock);
+                }
+                for(var i=currIndex; i<nextIndex; i++){
+                    $($rightChildren[i]).remove();
+                }
+                $rightChildren = $currentPage.find('.cli-data-right-column').find('.cli-data-full-width').children();
+                if (currIndex >= $rightChildren.length){
+                    currIndex = currIndex - 1;
+                }
+                $($rightChildren[currIndex]).attr("active", "true");
+                $activeElement = $currentPage.find('[active="true"]');
+                $activeElement.get(0).scrollIntoView(true);
+                dataObj = $activeElement.data().dataObject;
+                objectIndex = dataObj.length - 1;
                 var $leftData = dataObj[objectIndex].htmlLeftContent;
                 $leftData.hide();
                 $leftColumn.html($leftData.fadeIn(500));
                 $leftColumn.find('.cli-data-left-column-topbar').attr("objectIndex", objectIndex);
-            } else if (objectIndex-1 <= dataObj.length) {
-                var $leftData = dataObj[objectIndex-1].htmlLeftContent;
-                $leftData.hide();
-                $leftColumn.html($leftData.fadeIn(500));
-                $leftColumn.find('.cli-data-left-column-topbar').attr("objectIndex", objectIndex-1);
+            } else {
+                dataObj[objectIndex].deleteBlockElement($content, objectIndex);
+                if(objectIndex < dataObj.length){
+                    var $leftData = dataObj[objectIndex].htmlLeftContent;
+                    $leftData.hide();
+                    $leftColumn.html($leftData.fadeIn(500));
+                    $leftColumn.find('.cli-data-left-column-topbar').attr("objectIndex", objectIndex);
+                } else if (objectIndex-1 <= dataObj.length) {
+                    var $leftData = dataObj[objectIndex-1].htmlLeftContent;
+                    $leftData.hide();
+                    $leftColumn.html($leftData.fadeIn(500));
+                    $leftColumn.find('.cli-data-left-column-topbar').attr("objectIndex", objectIndex-1);
+                }
             }
         },
 
@@ -429,6 +467,8 @@ var cliData = {
             var newObj = false;
             if (className == "testdataCommand") {
                 newObj = new testdataCommand(data);
+            } else if (className == "testdata") {
+                newObj = new testdata(data);
             } else if(className == "globalVerifications"){
                 newObj = new globalVerifications(data);
             } else if (className == "testdataVerifications") {
@@ -446,12 +486,25 @@ var cliData = {
             }
 
             if(newObj) {
-                $content = newObj.addAnother($content);
                 var $leftColumn = $currentPage.find('.cli-data-left-column');
-                var $leftData = newObj.htmlLeftContent;
-                $leftData.hide();
-                $leftColumn.html($leftData.fadeIn(500));
-                $leftColumn.find('.cli-data-left-column-topbar').attr("objectIndex", dataObj.length - 1);
+                if(className == "testdata"){
+                    $content = newObj.addAnother();
+                    $activeElement.attr("active", "false");
+                    $($content[0]).attr("active", "true")
+                    var $rightFullWidthColumn = $currentPage.find('.cli-data-full-width');
+                    $rightFullWidthColumn.append($content);
+                    $($content[0]).get(0).scrollIntoView(true);
+                    var $leftData = newObj.htmlLeftContent;
+                    $leftData.hide();
+                    $leftColumn.html($leftData.fadeIn(500));
+                    $leftColumn.find('.cli-data-left-column-topbar').attr("objectIndex", 0);
+                } else {
+                    $content = newObj.addAnother($content);
+                    var $leftData = newObj.htmlLeftContent;
+                    $leftData.hide();
+                    $leftColumn.html($leftData.fadeIn(500));
+                    $leftColumn.find('.cli-data-left-column-topbar').attr("objectIndex", dataObj.length - 1);
+                }
             }
         },
     },
