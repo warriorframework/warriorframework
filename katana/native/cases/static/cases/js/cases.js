@@ -126,9 +126,16 @@ class caseRuleObject {
 
 	getHTMLfragment(trule){
 			var ruleNumber = parseInt(trule) + 1;
-			var outstr = `<div class="field rule-condition-top">\
-                          <label class="rule-condition">Condition ${ruleNumber}:</label>\
-                                <input type="text" class="rule-condition" id="executeRuleAtCondition-${trule}" value="${this.Condition}" />\
+
+			var xstr = ''; 
+			 if (trule > 0){
+				xstr = '<button class="rule-condition button" rkey="'+trule+'" katana-click="cases.removeRuleFromStep">Remove</button> ';
+            }
+
+
+			var outstr = `<div class="field rule-condition-top"><label class="rule-condition">Condition ${ruleNumber}:</label>\
+                          ${xstr} \
+                          <input type="text" class="rule-condition" id="executeRuleAtCondition-${trule}" value="${this.Condition}" />\
                             </div>\
                             <div class="field ">\
                                 <label class="rule-condition">Condition Value:</label>\
@@ -403,6 +410,7 @@ class caseTestStepObject {
 		var nr = new caseRuleObject();
 		this.Execute.Rule.push(nr);
 	}
+
 
 	getJSON() { 
 		var myArgs = [];
@@ -1211,7 +1219,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 
 	addNewRuleToStep : function() {
 		cases.jsonCaseObject = katana.$activeTab.data("casesJSON");
-			cases.jsonCaseDetails = cases.jsonCaseObject.Details;
+		cases.jsonCaseDetails = cases.jsonCaseObject.Details;
 		var popup = cases.lastPopup ;
 		var sid = katana.$activeTab.find("#editCaseStepDiv").attr('row-id');
 		var oneCaseStep = cases.jsonCaseObject.Teststeps[sid];
@@ -1220,25 +1228,39 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		r_items= [];
 		for (var x in oneCaseStep.Execute.Rule) {
 			var crule  = oneCaseStep.Execute.Rule[x];
-			console.log(crule)
 			r_items.push(crule.getHTMLfragment(x));
 
 		}
 		popup.find("#caseStepAllRules").html(r_items.join("\n"));
-		// if (oneCaseStep.Execute_ExecType == 'if' || oneCaseStep.Execute_ExecType == 'if not') {
-		// 		console.log("Showing ...",oneCaseStep.Execute_ExecType );
-		// 		popup.find('.rule-condition').show();
-		// 	} else {
-		// 		console.log("Hiding ...",oneCaseStep.Execute_ExecType );
-		// 		popup.find('.rule-condition').hide();
-		// 	}
-		
+
+
+	},
+
+	removeRuleFromStep: function() {
+		cases.jsonCaseObject = katana.$activeTab.data("casesJSON");
+		var popup = cases.lastPopup ;
+		var sid = katana.$activeTab.find("#editCaseStepDiv").attr('row-id');
+		var oneCaseStep = cases.jsonCaseObject.Teststeps[sid];
+		var elem = $(this);
+		var rid = $elem.attr('rkey');
+		console.log("Removing...", rid, " from ", sid)	
+		if (rid  > 0) {
+			oneCaseStep.Execute.Rule.splice(rid,1);	
+		}
+		// Now draw the rules again. 
+		r_items= [];
+		for (var x in oneCaseStep.Execute.Rule) {
+			var crule  = oneCaseStep.Execute.Rule[x];
+			r_items.push(crule.getHTMLfragment(x));
+		}
+		popup.find("#caseStepAllRules").html(r_items.join("\n"));
+
 	},
 
 // Fill in default GoTo steps for a popup window for a case step. 
 	fillCaseStepDefaultGoto : function(popupx) {
 		cases.jsonCaseObject = katana.$activeTab.data("casesJSON");
-			cases.jsonCaseDetails = cases.jsonCaseObject.Details;
+		cases.jsonCaseDetails = cases.jsonCaseObject.Details;
 		var popup = cases.lastPopup ;
 		var gotoStep =popup.find('#SteponError-at-action').val();
 		//console.log("Step ", gotoStep, popup.find('#SteponError-at-action'));
@@ -1258,7 +1280,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 // Show a popup dialog with items from a case.
 	setupPopupDialog: function (sid,xdata,popup) {
 		cases.jsonCaseObject = katana.$activeTab.data("casesJSON");
-			cases.jsonCaseDetails = cases.jsonCaseObject.Details;
+		cases.jsonCaseDetails = cases.jsonCaseObject.Details;
 		katana.$activeTab.find("#editCaseStepDiv").attr('data-popup-id',popup);
 		katana.$activeTab.find("#editCaseStepDiv").attr('row-id',sid);
 		cases.lastPopup = popup;
