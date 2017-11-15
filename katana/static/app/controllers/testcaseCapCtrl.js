@@ -26,7 +26,6 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
         $scope.xml.pycs = {};
         $scope.xml.args = {};
         $scope.original_iter_types = [];
-    // $scope.xml.capargs = [];        // where the arguments are captured in the form.
         $scope.step_onerror = "next";
         $scope.step_onerror_value = "";
         $scope.arg_list = [{"_name": "", "_value": ""}];
@@ -43,16 +42,15 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
         $scope.subSysList = [];
         $scope.hideSubsys = true;
         $scope.hideText = true;
-        $scope.hideopt = true;
         $scope.sysVal = '';
-        $scope.sysAllVal = '';
-        $scope.subSysValueNew = [];
         $scope.hideTxtBox = true;
         $scope.hideDropDwn = false;
         $scope.hideDrop = false;
         $scope.editStepFlag = 0;
         $scope.argsField = 0;
-     
+        $scope.editIndex = '';
+        $scope.editArgs = 0;
+  
 
         function readConfig(){
             getConfigFactory.readconfig()
@@ -353,7 +351,9 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
         };
 
         $scope.copyStep = function(){
-
+            if( $scope.editArgs == 1){
+                $scope.stepToBeCopied = $scope.editIndex+1;
+            }
             $scope.hideSubsys = false;
 
             if($scope.stepToBeCopied == "None"){
@@ -440,19 +440,33 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
                 $scope.xml.arglist = _.map($scope.xml.args.args, function (a) {
                     return a.split('=')[0];
                 });
+
+                $scope.xml.arglist.push("subsystem_name");
+
+               $scope.args = JSON.stringify($scope.xml.mapargs);
+               $scope.args = $scope.args.replace('undefined','subsystem_name');
+               $scope.xml.mapargs = JSON.parse($scope.args);
+               var stepSys = $scope.xml.mapargs['system_name'];
+               var stepSubsys = $scope.xml.mapargs['subsystem_name'];
+               $scope.sysFields();
+               $scope.showSubsys(stepSys);
+
             }
-            $scope.status.step.Execute._ExecType = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Execute._ExecType;
-            $scope.status.step.Execute.Rule._Condition = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Execute.Rule._Condition;
-            $scope.status.step.Execute.Rule._Condvalue = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Execute.Rule._Condvalue;
-            $scope.status.step.Execute.Rule._Else = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Execute.Rule._Else;
-            $scope.status.step.Execute.Rule._Elsevalue = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Execute.Rule._Elsevalue;
-            $scope.status.step.iteration_type._type = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].iteration_type._type;
-            $scope.status.step.runmode._type = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].runmode._type;
-            $scope.status.step.runmode._value = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].runmode._value;
-            $scope.status.step.impact = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].impact;
-            $scope.status.step.context = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].context;
-            $scope.status.step.onError._action = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].onError._action;
-            $scope.status.step.onError._value = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].onError._value;
+            if( $scope.editArgs == 0){
+                $scope.status.step.Execute._ExecType = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Execute._ExecType;
+                $scope.status.step.Execute.Rule._Condition = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Execute.Rule._Condition;
+                $scope.status.step.Execute.Rule._Condvalue = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Execute.Rule._Condvalue;
+                $scope.status.step.Execute.Rule._Else = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Execute.Rule._Else;
+                $scope.status.step.Execute.Rule._Elsevalue = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Execute.Rule._Elsevalue;
+                $scope.status.step.iteration_type._type = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].iteration_type._type;
+                $scope.status.step.runmode._type = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].runmode._type;
+                $scope.status.step.runmode._value = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].runmode._value;
+                $scope.status.step.impact = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].impact;
+                $scope.status.step.context = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].context;
+                $scope.status.step.onError._action = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].onError._action;
+                $scope.status.step.onError._value = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].onError._value;
+            }
+
         };
 
     $scope.model = {
@@ -1082,20 +1096,22 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
         $scope.sysFields();
     };
 
+    //To retrieve System Name List from the provided datafile.
     $scope.sysFields = function () {
           $scope.urlCheck();
              fileFactory.getSystems($scope.pathXml)
                 .then(function (data) {
                     $scope.sysList.push(data);
-                   var xx = JSON.stringify($scope.sysList);
-                        var count = (xx.match(/,/g) || []).length;
+                    var sysListStr = JSON.stringify($scope.sysList);
+                        var count = (sysListStr.match(/,/g) || []).length;
                         for (var i=0;i<count;i++){
-                            var temp = xx.split(',')[i];
+                            var splitValSys = sysListStr.split(',')[i];
                             if(i==0){
-                            temp = temp.split('[\"')[1];
+                            splitValSys = splitValSys.split('[\"')[1];
                             }
-                            $scope.sysList.push(temp);
+                            $scope.sysList.push(splitValSys);
                         }
+                        $scope.sysList.splice(0,1);
                     },
                 function (msg) {
                 alert(msg);
@@ -1104,6 +1120,7 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
                 $scope.sysList = [];
         };
 
+    //To retrieve Subsystem Name List from the provided datafile. It renders in UI with respect to the selected system name.
     $scope.showSubsys = function (sysValue) {
             $scope.sysVal = sysValue;
             $scope.hideSubsys = false;
@@ -1111,18 +1128,19 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
         fileFactory.getSubsys(sysValue,$scope.pathXml)
                 .then(function (data) {
                    $scope.subSysList.push(data);
-                      var xx = JSON.stringify($scope.subSysList);
-                      var count = (xx.match(/,/g) || []).length;
+                      var subSysListStr = JSON.stringify($scope.subSysList);
+                      var count = (subSysListStr.match(/,/g) || []).length;
                          for (var i=0;i<count;i++){
-                            var temp = xx.split(',')[i];
+                            var splitValSubSys = subSysListStr.split(',')[i];
                             if(i==0){
-                            temp = temp.split('[\"')[1];
+                            splitValSubSys = splitValSubSys.split('[\"')[1];
                             }
-                            $scope.subSysList.push(temp);
-                            if($scope.subSysList=="Not Applicable,,Not Applicable"){
-                            $scope.subSysList = "--";
-                           }
+                            $scope.subSysList.push(splitValSubSys);
                         }
+                            $scope.subSysList.splice(0,1);
+                            if($scope.subSysList == "No Subsystem Available"){
+                                $scope.hideSubsys = true;
+                           }
                     },
                 function (msg) {
                 alert(msg);
@@ -1131,6 +1149,7 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
                $scope.subSysList = [];
         };
 
+        //To check the format of datafile path.
         $scope.urlCheck = function () {
              var filename = $scope.model.Testcase.Details.InputDataFile;
               if(filename == '' || filename == undefined || $scope.status.nodatafile == '1'){
@@ -1189,6 +1208,7 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
          }
         };
 
+        //To Split the file path URL
         function URLSplit(){
             var array = [];
             if($scope.newPath.indexOf("\\")>= 0) {
@@ -1272,6 +1292,8 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
     // Allow Edit op for the Step at the given index within the Steps array.
     // Event handler when the driver name is selected in the Step Grid.
     $scope.editStep = function (drivername, index) {
+        $scope.editArgs = 1;
+        $scope.editIndex = index;
         $scope.editStepFlag = 1;
         $scope.hideSubsys  = false;
         if($scope.showStepEdit){
@@ -1285,12 +1307,13 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
             });
         }
         else {
+
+            $scope.copyStep();
+            $scope.hideSubsys  = false;
+            $scope.cancelArguments();
             openStepCap(drivername, index);
         }
-        if($scope.model.Testcase.Details.Name !=''){
-               $scope.sysFields();           
-        }
-
+        $scope.editArgs = 0;
        };
 
         function openStepCap(drivername, index){
@@ -1369,7 +1392,7 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
             });
 
             if($scope.argsField == 1){
-           $scope.argsMapField();
+                $scope.argsMapField();
             }
 
             console.log('MAPARGS: ', JSON.stringify($scope.xml.mapargs, null, 2));
@@ -1428,9 +1451,7 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
     // On change of the Driver name select control.
     // Gather function names for the selected driver.
     $scope.driverSelected = function (drivername) {
-
         $scope.putReqEditorOutOfSight();
-
         $scope.status.drivername = drivername;
         $scope.status.keyword = '';                     // When driver is selected, clear the keyword.
         $scope.status.stepdescription = '';            // And, the description field.
@@ -1464,11 +1485,16 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
         $scope.xml.arglist = _.map($scope.xml.args.args, function (a) {
             return a.split('=')[0];
         });
+        $scope.xml.arglist.push("subsystem_name");
         $scope.xml.mapargs = {};
         _.each($scope.xml.arglist, function (v) {
             $scope.xml.mapargs[v] = '';
         });
         console.log('xml.args', JSON.stringify($scope.xml.args));
+        if( $scope.editArgs == 0){
+            $scope.hideSubsys = true;
+        }
+
         return $scope.xml.args;
     };
 
@@ -1547,14 +1573,20 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
         rec._Driver = driver;
         rec._Keyword = funname;
         console.log('$scope.xml.mapargs: ', JSON.stringify($scope.xml.mapargs));
-        $scope.args = JSON.stringify($scope.xml.mapargs);
-        $scope.args = $scope.args.replace('undefined','subsystem_name');
-        $scope.newArguments = JSON.parse($scope.args);
-        _.each($scope.newArguments, function (v, k) {
+
+        _.each($scope.xml.mapargs, function (v, k) {
             if (k != 'self' && $.trim(v) != '') {
                 rec.Arguments.argument.push({'_name': k, '_value': v });
             }
         });
+
+         $scope.xml.args = _.where($scope.xml.keywords, { fn: $scope.status.keyword })[0];
+                $scope.xml.arglist = _.map($scope.xml.args.args, function (a) {
+                    return a.split('=')[0];
+                });
+
+        $scope.xml.arglist.push("subsystem_name");
+
         rec.Description = $scope.status.step.Description;
         if($scope.status.step.onError == undefined){
             $scope.status.step.onError = {};
@@ -1928,12 +1960,6 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
         $scope.model.Testcase.Details.default_onError = def_error_copy;
 
         console.log("Testcase\n", JSON.stringify(angular.toJson($scope.model.Testcase), null, 2));
-
-        // var x2js = new X2JS();
-        // var token = angular.toJson($scope.model);
-        // var xmlDoc = x2js.json2xml_str(JSON.parse(token));
-        // alert(xmlDoc);
-        // console.log(xmlDoc);
 
         if($scope.model.Testcase.Details.State == "Draft"){
             if(step_draft_count > 0){

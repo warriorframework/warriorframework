@@ -108,7 +108,7 @@
         "snowflake": ""
     },
     "steparg": {
-        "tooltip": "These are all the arguments accepted by the keyword above.",
+        "tooltip": "These are all the arguments accepted by the keyword above. System & subsytem will be auto-populated from the Input datafile(should be provided with correct path before the step creation). System name with no subsystem will only render the system name field and not subsystem name field.",
         "protip": "ProTip: If you want to know which arguments are mandatory and which are not or if you want to know the default value of the non-mandatory arguments, you can go through the signature of the keyword in the signature and comment section.",
         "bantip": "",
         "snowflake": "If you can't see anything here, you probably have not selected a keyword."

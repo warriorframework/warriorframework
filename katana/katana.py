@@ -122,7 +122,7 @@ def sysName(path,filename):
                 for valuee in sub_system:
                     subsystem_list.append(valuee.get('name') + ',')
             else:
-                 subsystem_list.append("Not Applicable" + ',')
+                 subsystem_list.append("No Subsystem Available" + ',')
     return subsystem_list
 
 @route('/readconfig')
