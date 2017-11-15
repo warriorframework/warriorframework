@@ -27,6 +27,11 @@
     vertical-align: middle;    
 }
 
+.projects-details-center {
+    padding: 20px;
+    height: 30px;
+    vertical-align: middle;
+}
 
 .project-configuration-table {}
 

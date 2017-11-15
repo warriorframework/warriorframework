@@ -3,13 +3,13 @@
 <link rel="stylesheet" href="{% static 'projects/css/projects.css' %}">			
 
 <div class="tool-bar">
-			<i id="projectSwapView" class="fa fa-tree projects-header-icon" katana-click="projects.swapViews"></i>
-	    	<i id="addSuite" class="button" katana-click="projects.addEmptySuiteToProject">Add New Suite </i>
-	    	<i id="addSuite" class="button" katana-click="projects.addExistingSuiteToProject">Add Existing Suite </i>
+			<button id="projectSwapView" class="fa fa-tree projects-header-icon" katana-click="projects.swapViews"></button>
+	    	<button id="addSuite" class="button" katana-click="projects.addEmptySuiteToProject">Add New Suite </button>
+	    	<button id="addSuite" class="button" katana-click="projects.addExistingSuiteToProject">Add Existing Suite </button>
 
 	<!--     	<i id="addSuite" class="button" katana-click="projects.editDetailsAsPopup">Test </i>
  -->
-			<i class="button" katana-click="projects.mapUiToProjectJson">Save Changes to Disk </i>
+			<button class="button" katana-click="projects.mapUiToProjectJson">Save Changes to Disk </button>
 
 </div>
 
@@ -20,7 +20,9 @@
 <div class="col-md-6" id="projects-3d-tree" g3did='projects-3d-tree' width="960" height="500"></div>
 </div>
 <div id="projects-standard-edit" >
-	<div id="projects-details-edit" class="col-md-12 row">
+	<div id="projects-details-edit" class="col-md-12"> 
+		<div class="row">
+			<div class="col-md-3"></div>
 			<div class="col-md-3 project-input-w">
 				<label class="text-right">Name*:</label>
 				<input type="text-right" type="text" id="projectName" name="projectName" value="{{projectName}}"/>
@@ -29,6 +31,12 @@
 				<label class="text-right">Title*:</label>
 				<input required  type="text-right" type="text" id="projectTitle" name="projectTitle" value="{{projectTitle}}" />
 			</div>
+			<div class="col-md-3"></div>
+			
+		</div>
+
+		<div class="row">	
+			<div class="col-md-3"></div>
 			<div class="col-md-3 project-input-w input_padding">
 				<label class="text-right">Engineer*:</label>
 				<input required class="text-right" type="text" id="projectEngineer" name="projectEngineer" value="{{projectEngineer}}" />
@@ -37,7 +45,10 @@
 				<label class="text-right">Last Updated:</label>
 				<input class="text-right" type="text" id="projectDate" name="projectDate" value="{{projectDate}} {{projectTime}}" />
 			</div>
-
+			<div class="col-md-3"></div>
+		</div>
+		<div class="row">
+			<div class="col-md-3"></div>
 			<div class="col-md-3 input_padding">
 				<label class="text-right">State:</label>
 				<select class="text-right" type="text" id="projectState" name="projectState" value="{{projectState}}" >
@@ -59,18 +70,21 @@
 				</select>
 
 			</div>
-
+			<div class="col-md-3"></div>
+		
+		</div>
+		<div class="row">
+		<div class="col-md-3"></div>
 			<div class="col-md-6 input_padding">				
 				<label class="text-right">Results Dir:</label>
 				<input class="text-right" type="text" id="projectResultsDir" name="projectResultsDir" value="{{resultsDir}}" />
 			</div>
-
-			<div class="" id="fileNames"></div>
-
-
-
-		<div class="project-details-popup-save hidden col-md-12">
-			<button id="project-details-popup-save" class="button center" katana-click="projects.savePopupToDetails">Save Changes to Details </button>
+			<div class="col-md-3"></div>
+			
+		</div>
+		<div class="" id="fileNames"></div>
+		<div class="project-details-popup-save hidden col-md-12 input_padding">
+			<button id="project-details-popup-save" class="project-details-center button center" katana-click="projects.savePopupToDetails">Save Changes to Details </button>
 		</div>
 
 

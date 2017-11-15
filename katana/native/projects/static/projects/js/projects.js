@@ -286,7 +286,8 @@ var treeData = [
 
 		pjDataSet = { 
 			'nodes': [],
-			'edges': []
+			'edges': [],
+
 		};
 
 		pjExistingSuites = { 
@@ -334,8 +335,10 @@ var treeData = [
     			'on-error' : oneSuite.onError_action + " " + oneSuite.onError_value,
     			"data-path": oneSuite.InputDataFile 
     			} ;
-    		var ed = { 'source': nodeCtr - 1 , 'target': nodeCtr, 'value' : 3 };
     		pjDataSet.nodes.push(st);
+    		
+			var ed = { 'source': pjDataSet.nodes[nodeCtr - 1], 'target': pjDataSet.nodes[nodeCtr], 'value' : 3 };
+    		
     		pjDataSet.edges.push(ed);
     		nodeCtr++;
     		}
@@ -371,7 +374,7 @@ var treeData = [
 	createD3tree: function() {
 
 		var px_suite_column = 200; 
-		var px_row_height = 100; 
+		var px_row_height = 60; 
 		var px_y_icon_offset = 40;
 		var px_text_x_offset = 10; 
 		var px_text_y_offset = 30;
@@ -425,32 +428,43 @@ var treeData = [
             .attr('fill', '#ccc')
             .attr('stroke','#ccc');
 
-        var defs  = projects.svg.append('defs');
-		var filter = defs.append("filter").attr("id","drop-shadow").attr("height","150%");
-			filter.append("feGaussianBlur").attr("in","SourceAlpha").attr("stdDeviation",5)
+       	defs  = projects.svg.append('defs');
+		projects.filter = defs.append("filter").attr("id","drop-shadow").attr("height","150%");
+		projects.filter.append("feGaussianBlur").attr("in","SourceAlpha").attr("stdDeviation",5)
 			.attr("result","blur");
-			filter.append("feOffset").attr("in","blur")
+		projects.filter.append("feOffset").attr("in","blur")
 			.attr("dx",5)
 			.attr("dy",5)
 			.attr("result", "offsetBlur");
-			var feMerge = filter.append("feMerge");
-			feMerge.append("feMergeNode").attr("in","offsetBlur");
-			feMerge.append("feMergeNode").attr("in","SourceGraphic");
+		projects.feMerge = projects.filter.append("feMerge");
+		projects.feMerge.append("feMergeNode").attr("in","offsetBlur");
+		projects.feMerge.append("feMergeNode").attr("in","SourceGraphic");
 
-      	var force = d3.layout.force()
-		       .nodes(pjDataSet.nodes)
-		        .links(pjDataSet.edges)
-		        .size([optimalWd,optimalHt])
-		        // .linkDistance([linkDistance])
-		        // .charge([-500])
-		        // .theta(0.1)
-		        // .gravity(0.05)
-		        .start();
+
+
+
+      	// var force = d3.layout.force()
+		     //   	.nodes(pjExistingSuites.nodes)
+		     //    .links(pjDataSet.edges)
+		     //    .size([optimalWd,optimalHt])
+		     //    .linkDistance(300)
+		     //    // .charge([-500])
+		     //    // .theta(0.1)
+		     //    // .gravity(0.05)
+		     //    .start();
+
+		var mylinks = projects.svg.selectAll('.project-d3-link')
+			.data(pjDataSet.edges)
+			.enter().append('line')
+			.attr('class','project-d3-link');
+
+		
 
 		var dragSuite = d3.behavior.drag()
 			  		.on('drag', function(d,i) {
 		 				d.x = d3.event.x;
 		            	d.y = d3.event.y;
+		            	//console.log('x =', d3.event.x, ", y=", d3.event.y)
 		            	d3.select(this).attr("transform", function(d,i){
 		                return "translate(" + [ d.x,d.y ] + ")"
 		            	})
@@ -506,9 +520,26 @@ var treeData = [
 					} 
 					return "translate("+px_suite_column+","+py+")";
 					})
+				.attr('class', 'masternode')
 				.call(dragSuite);
 
 		var eNodes = projects.svg.selectAll(".project-d3-existing-type");
+
+
+		// force.on('end', function() {
+		// 			var mNodes = projects.svg.selectAll(".project-d3-existing-type");
+		
+		// 			mNodes.attr("x", function(d) { return d.x; })
+  //       				  .attr('y', function(d) { return d.y; });
+ 
+		// 			mylinks.attr('x1', function(d) { return d.source.x; })
+		// 			        .attr('y1', function(d) { return d.source.y; })
+		// 			        .attr('x2', function(d) { return d.target.x; })
+		// 			        .attr('y2', function(d) { return d.target.y; });
+		// 		});
+
+
+
 
  		gnodes.append("foreignObject")
 	   				.attr("width", 20)
@@ -667,21 +698,24 @@ var treeData = [
 
    			})
    			.on("mouseover",function(d) {
+   					var dx = d3.mouse(this)[0];
+   					var dy = d3.mouse(this)[1];
+   					console.log(dx,dy, "x=", d3.event.pageX, " y=", d3.event.pageY, "d.x", d.x, ",", d.y , d.rowid, d.id);
    					var fobj = projects.svg.append('foreignObject')
-					.attr('x',  d3.event.x - px_rect_width - 120)
-					.attr('y',  d3.event.y -(px_row_height/2))
-					.attr('width', 450)
-					.attr('class', 'projectSuiteTooltip')
-					;
-					var div = fobj.append("xhtml:div")
-					.append('div')
-					.attr('x',  0)
-					.attr('y',  0)					
-					.style({
-						'opacity': 1.0,
-						'border' : '2px solid "green"',
-					});
-					div.append('p')
+						.attr('x',  20 + d3.event.pageX - px_rect_width )
+						.attr('y',  (d.rowid < pjDataSet.nodes.length) ? px_row_height * (d.rowid - 1): ((d.id-pjDataSet.nodes.length) * px_row_height) )
+						.attr('width', 450)
+						.attr('class', 'projectSuiteTooltip')
+						;
+						var div = fobj.append("xhtml:div")
+						.append('div')
+						.attr('x',  0)
+						.attr('y',  0)					
+						.style({
+							'opacity': 1.0,
+							'border' : '2px solid "green"',
+						});
+						div.append('p')
 						.style('border', '2px solid green')
 						.style('background-color','white')
 						.style('opacity', 1)
@@ -698,7 +732,8 @@ var treeData = [
    		 				projects.editDetailsAsPopup();
    		 			}
    				})
-   			.style("filter","url(#drop-shadow");
+   			.style("filter", projects.filter);
+   			//.style("filter","url(#drop-shadow");
 
 
     	var nodelabels = gnodes.append("text")
@@ -715,35 +750,28 @@ var treeData = [
 		console.log(projects.nodelabels);
 
 		console.log(eNodes);
-	   	console.log("here2...");
+	   	console.log("here2...", pjDataSet);
 
 
-		var link = projects.svg.selectAll(".link")
-			.data(pjDataSet.edges)
-			.enter().append("line")
-  			.attr("class", "link")
+	   	var edge_nodes = projects.svg.selectAll('.link')
+	   		.data(pjDataSet.edges)
+	   		.append('g')
+	   		.attr("class", "link")
+  			
+	   		//.attr("transform", function(d) {console.log("d-", d);  return("translate("+d.source.x+","+d.source.y+")");})
+	   		.append("line")
   			.attr("id",function(d,i) {return 'edge'+i})
-		    .attr('marker-end','url(#arrowhead)')
 		    .attr("x1", function(d) { return  d.source.x; } )
 		   	.attr("y1", function(d) { return  d.source.y; } )
 		    .attr("x2", function(d) { return  d.target.x; } )
 		   	.attr("y2", function(d) { return  d.target.y; } )
 		    .style("stroke","#ccc")
+		    .attr('marker-end','url(#arrowhead)')
 		    .style("pointer-events", "none");
 
 
+	// force.start();
 
-
-			// force.on("tick", function() {
-			//   link.attr("x1", function(d) { return d.source.x; })
-			//       .attr("y1", function(d) { return d.source.y; })
-			//       .attr("x2", function(d) { return d.target.x; })
-			//       .attr("y2", function(d) { return d.target.y; });
-
-			//   gnodes.attr("x", function(d) { return d.x; })
-			//        .attr("y", function(d) { return d.y; });
-			//   });
-		
 		
 
 		},
@@ -751,35 +779,7 @@ var treeData = [
 
 
 	  
-	  dontCallme: function() { 
-	  	projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
-		projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
-		projects.treeData = katana.$activeTab.data('projectsTreeData');
-    	projects.tree = katana.$activeTab.data('projectsTree');
-    	existingSuites= katana.$activeTab.data('allExistingSuites');
-		projects.svg = katana.$activeTab.data('projectsSVG');
 
-
-
-
-
-
-		   	projects.svg.selectAll(".project-d3-node").on("click", function(d) {
-		   	//
-		   	//
-		   		if (!this.hasAttribute('deleteNodeid') && d.ntype == 'suite' ) {	   						
-					console.log("Clicked ...", d, this, this.hasAttribute('deleteNodeid'));
-					// var sid = d.rowid;
-					// katana.popupController.open(katana.$activeTab.find("#editTestSuiteEntry").html(),"Edit..." , function(popup) {
-					// 	projects.lastPopup = popup; 
-					// 	console.log(katana.$activeTab.find("#editTestSuiteEntry"));
-					// 	projects.setupProjectPopupDialog(sid,popup);
-					// });
-				}
-			///
-			});
-
-	  },
 
 
 	save: function(){
@@ -946,6 +946,9 @@ startNewProject : function() {
 	popup.find("#impact").val(oneSuite.impact); 
 	projects.fillProjectSuitePopupDefaultGoto(popup);
 	popup.find('#onError-at-action').on('change', function(){ 
+			projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
+			projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
+
 			var popup = $(this).closest('.popup');
 			projects.fillProjectSuitePopupDefaultGoto(popup);
 	});
@@ -956,8 +959,8 @@ startNewProject : function() {
 		}	
 	}
 	popup.find("#runmode-at-type").on('change', function() {
-			projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
-			projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
+		projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
+		projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
 		var popup = projects.lastPopup;
 		var sid = popup.find("#suiteRowToEdit").val();
 		//console.log(projects.jsonProjectObject.Testsuites, sid); 
@@ -995,8 +998,8 @@ startNewProject : function() {
 	// console.log(xdata);
 	// console.log(s);
 	// var oneSuite = xdata[s];
-			projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
-			projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
+		projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
+		projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
 		var oneSuite = projects.jsonProjectObject.Testsuites[s];
 		//console.log(oneSuite);
 		katana.$activeTab.find("#suiteRowToEdit").val(s); 
@@ -1117,6 +1120,7 @@ startNewProject : function() {
 		katana.$activeTab.find("#projectResultsDir").val(popup.find('#projectResultsDir').val());
 
 		katana.$activeTab.find(".project-details-popup-save").hide();
+		popup.find(".project-details-popup-save").hide();
 		katana.popupController.close(projects.lastPopup);
 	},
 
@@ -1327,7 +1331,7 @@ Two global variables are heavily used when this function is called;
 			items.push('<td><i title="ChangeFile" class="fa fa-folder-open" skey="'+bid+'" katana-click="projects.getFileForSuite" /></td>');
 			
 			//oneSuite.Execute_ExecType = jsUcfirst(oneSuite.Execute_ExecType); 
-			items.push('<td id="'+tbid+'" katana-click="projects.showSuiteFromProject" skey="'+oneSuite.path+'">'+oneSuite.path+'</td>');
+			items.push('<td id="'+tbid+'" katana-click="projects.showSuiteFromProject" title="'+oneSuite.path+'" skey="'+oneSuite.path+'">'+oneSuite.path+'</td>');
 			items.push('<td>Type='+oneSuite.Execute_ExecType+'<br>');
 
 			if (oneSuite.Execute_ExecType == 'if' || oneSuite.Execute_ExecType == 'if not') {
