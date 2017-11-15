@@ -28,6 +28,8 @@ class VerifyCliDataClass:
     def __verify_global_block(self, json_data):
         if "global" not in json_data:
             json_data["global"] = copy.deepcopy(self.defaults["data"]["global"])
+        elif json_data["global"] is None:
+            json_data["global"] = copy.deepcopy(self.defaults["data"]["global"])
         return json_data
 
     def __verify_global_cmd_parameters(self, json_data):
@@ -55,16 +57,12 @@ class VerifyCliDataClass:
         return json_data
 
     def __verify_global_others(self, json_data):
-        if "verifications" in json_data["global"]:
-            if json_data["global"]["verifications"] is None:
-                del json_data["global"]["verifications"]
-            else:
-                json_data["global"]["verifications"] = self.__verify_global_vers(json_data["global"]["verifications"])
-        if "keys" in json_data["global"]:
-            if json_data["global"]["keys"] is None:
-                del json_data["global"]["keys"]
-            else:
-                json_data["global"]["keys"] = self.__verify_global_keys(json_data["global"]["keys"])
+        if "verifications" not in json_data["global"] or json_data["global"]["verifications"] is None:
+            json_data["global"]["verifications"] = copy.deepcopy(self.defaults["data"]["global"]["verifications"])
+        json_data["global"]["verifications"] = self.__verify_global_vers(json_data["global"]["verifications"])
+        if "keys" not in json_data["global"] or json_data["global"]["keys"] is None:
+            json_data["global"]["keys"] = copy.deepcopy(self.defaults["data"]["global"]["keys"])
+        json_data["global"]["keys"] = self.__verify_global_keys(json_data["global"]["keys"])
         return json_data
 
     def __verify_global_vers(self, verifications_json):
@@ -99,7 +97,7 @@ class VerifyCliDataClass:
         return keys_json
 
     def __verify_testdata_block(self, json_data):
-        if "testdata" not in json_data:
+        if "testdata" not in json_data or json_data["testdata"] is None:
             json_data["testdata"] = copy.deepcopy(self.defaults["data"]["testdata"])
         if not isinstance(json_data["testdata"], list):
             json_data["testdata"] = [json_data["testdata"]]
@@ -111,17 +109,37 @@ class VerifyCliDataClass:
 
     def __verify_testdata_contents(self, testdata_json):
         final_json = {}
+        cmd_flag = True
+        var_pat_flag = True
+        ver_flag = True
+        key_flag = True
         for key in testdata_json:
             if key == "command":
+                cmd_flag = False
                 final_json["command"] = self.__verify_testdata_command(testdata_json["command"])
             elif key == "variable_pattern":
+                var_pat_flag = False
                 final_json["variable_pattern"] = self.__verify_testdata_variable_pattern(testdata_json["variable_pattern"])
             elif key.startswith("@"):
                 final_json[key] = testdata_json[key]
             else:
                 validated_contents = self.__verify_testdata_others(testdata_json[key])
+                if validated_contents["type"] == "verification":
+                    ver_flag = False
+                elif validated_contents["type"] == "key":
+                    key_flag = False
                 if validated_contents:
                     final_json[key] = copy.deepcopy(validated_contents)
+        if cmd_flag:
+            final_json["command"] = [copy.deepcopy(self.defaults["data"]["testdata"]["command"])]
+        if var_pat_flag:
+            final_json["variable_pattern"] = copy.deepcopy(self.defaults["data"]["testdata"]["variable_pattern"])
+        if ver_flag:
+            final_json["verification"] = copy.deepcopy(self.defaults["data"]["testdata"]["verification"])
+            final_json["verification"]["type"] = "verification"
+        if key_flag:
+            final_json["key"] = copy.deepcopy(self.defaults["data"]["testdata"]["key"])
+            final_json["key"]["type"] = "key"
         return final_json
 
     def __verify_testdata_command(self, json_data):
