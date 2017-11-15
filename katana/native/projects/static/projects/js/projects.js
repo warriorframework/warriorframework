@@ -375,11 +375,11 @@ var treeData = [
 
 		var px_suite_column = 200; 
 		var px_row_height = 60; 
-		var px_y_icon_offset = 40;
+		var px_y_icon_offset = 35;
 		var px_text_x_offset = 10; 
 		var px_text_y_offset = 30;
 		var px_rect_width = 200; 
-		var px_rect_height = 30;
+		var px_rect_height = 35;
 		var px_trash_offset = 0; 
 		var px_folder_offset = 25;
 		var px_edit_offset = 50;
@@ -429,6 +429,7 @@ var treeData = [
             .attr('stroke','#ccc');
 
        	defs  = projects.svg.append('defs');
+       	
 		projects.filter = defs.append("filter").attr("id","drop-shadow").attr("height","150%");
 		projects.filter.append("feGaussianBlur").attr("in","SourceAlpha").attr("stdDeviation",5)
 			.attr("result","blur");
@@ -439,7 +440,6 @@ var treeData = [
 		projects.feMerge = projects.filter.append("feMerge");
 		projects.feMerge.append("feMergeNode").attr("in","offsetBlur");
 		projects.feMerge.append("feMergeNode").attr("in","SourceGraphic");
-
 
 
 
@@ -731,10 +731,12 @@ var treeData = [
    		 			if (d.ntype == 'project') {
    		 				projects.editDetailsAsPopup();
    		 			}
-   				})
-   			.style("filter", projects.filter);
-   			//.style("filter","url(#drop-shadow");
+   				});
 
+
+
+   		//gnodes.style("filter","url(#drop-shadow");
+		console.log("Filter-->", projects.filter );
 
     	var nodelabels = gnodes.append("text")
 	       .attr("class","nodelabel")
