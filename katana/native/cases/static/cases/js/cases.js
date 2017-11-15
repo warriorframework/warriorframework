@@ -924,10 +924,10 @@ The UI currently uses jQuery and Bootstrap to display the data.
 	//console.log("mapCaseJsonToUi", cases.jsonCaseSteps, xdata); 
 	//console.log("xdata =" + xdata);
 	katana.$activeTab.find("#tableOfTestStepsForCase").html("");	  // Start with clean slate
-	items.push('<table class="case-configuration-table table-striped" id="Step_table_display"  width="100%" >');
+	items.push('<table class="case-configuration-table" id="Step_table_display"  width="100%" >');
 	items.push('<thead>');
 	items.push('<tr id="StepRow"><th>TS</th><th>Driver</th><th>Keyword</th><th>Description</th><th>Arguments</th>\
-		<th>OnError</th><th>Execute</th><th>Run Mode</th><th>Context</th><th>Impact</th><th>Other</th></tr>');
+		<th>OnError</th><th>Execute</th><th>Run Mode</th><th>Context</th><th>Impact</th><th></th></tr>');
 	items.push('</thead>');
 	items.push('<tbody>');
 	for (var s=0; s<Object.keys(xdata).length; s++ ) {  // for s in xdata

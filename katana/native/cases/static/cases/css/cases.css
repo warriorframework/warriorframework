@@ -16,9 +16,14 @@
   width: 15px;
 
 }
-.case-configuration-table {}
+.case-configuration-table {
+  font-size: 12px;
+
+  
+}
 .case-configuration-table table {
   border-collapse: collapse;
+
 }
 .case-configuration-table td {
   text-align: left;
@@ -44,7 +49,7 @@
 
 .case-configuration-table i{
     padding: 4px;
-    font-size: 16px;
+   
 }
 
 .case-configuration-table tr:nth-child(even){background-color: #f2f2ff}
