@@ -40,11 +40,7 @@
         <v7 found="no" search="sanika" verify_on="NE1" cond_value="blah" cont_type="str" operator="ne"/>
         <v8 found="yes" search="" verify_on="" cond_value="" cont_type="str" operator="eq"/>
         <k7 resp_pattern_req="pattern 1"/>
-        <k8 resp_pattern_req="pattern 2"/>
-        <k9 resp_pattern_req="pattern 3"/>
-        <k10 resp_pattern_req="pattern 4"/>
-        <k11 resp_pattern_req="pattern 5"/>
-        <k12 resp_pattern_req="pattern 6"/>
+
         <variable_pattern start_pattern="${" end_pattern="}"/>
     </testdata>
 </data>

@@ -206,3 +206,21 @@ div.cli-data-left-content > div.row:last-child > div {
 .cli-data-no-padding {
     padding: 0; !important;
 }
+
+.cli-data-white-background {
+    background-color: white; !important;
+}
+
+.cli-data-columns > div:hover {
+    background-color: rgba(78, 164, 224, 0.4);
+}
+
+.cli-data-left-content-value-input:focus{
+    background-color: rgba(78, 164, 224, 0.4);
+    transition: background 0.2s ease;
+}
+
+.cli-data-disabled-icon {
+    color: gray;
+    cursor: not-allowed !important;
+}

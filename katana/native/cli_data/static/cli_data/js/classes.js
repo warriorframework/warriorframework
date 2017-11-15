@@ -43,7 +43,7 @@ var leftColumnSelects = '<div class="row">' +
                             '</div>' +
                         '</div>';
 
-var rightColumnTable = '<div class="cli-data-right-column-topbar">' +
+var rightColumnTable = '<div class="cli-data-right-column-topbar" active="false">' +
                            '<div class="cli-data-right-column-topbar-header">' +
                                '<div class="cli-data-right-column-topbar-header-top">' +
                                    '<h6 id="section"></h6>' +
@@ -97,6 +97,7 @@ class command{
         this.monitor = !data["@monitor"] ? this.getDefaults("monitor") : data["@monitor"];
         this.repeat = this.converter("repeat", data["@repeat"], false, true);
         this.general_options = ["Yes", "No"];
+        this.pristine = true;
     }
 
     get jsonObj() {
@@ -217,8 +218,7 @@ class command{
                 break;
             }
         }
-        $($content[0]).data({"dataObject": this});
-        console.log($content);
+        $($content[0]).data({"dataObject": [this]});
         return $content;
     }
 
@@ -235,12 +235,12 @@ class command{
             for(var key in this.orderedVariables[i]){
                 $subContent = $(rightColumnTableInputs);
                 $subContent.find('.cli-data-labels').html('<div>' + key + '</div>');
-                $subContent.find('.cli-data-columns').html('<div>' + this.orderedVariables[i][key]["value"] + '</div>');
+                $subContent.find('.cli-data-columns').html('<div katana-click="cliData.rightColumn.makeActive">' + this.orderedVariables[i][key]["value"] + '</div>');
                 $($content[1]).find('ul').append($subContent);
                 break;
             }
         }
-        $($content[0]).data({"dataObject": this});
+        $($content[0]).data({"dataObject": [this]});
         return $content;
     }
 
@@ -280,12 +280,24 @@ class globalCommand extends command{
         this.level = "Global";
         this.block_name = "Command Parameters"
     }
+
+    get htmlLeftContent() {
+        var $content = this.formHtmlLeftContent();
+        $($content[0]).find('.fa-plus').addClass('cli-data-disabled-icon');
+        $($content[0]).find('.fa-files-o').addClass('cli-data-disabled-icon');
+        $($content[0]).find('.fa-trash-o').addClass('cli-data-disabled-icon');
+        $($content[0]).find('.fa-chevron-left').addClass('cli-data-disabled-icon');
+        return $content;
+    }
 }
 
 /* Testdata Command Class */
 
 class testdataCommand extends command{
     constructor(data){
+        if(data === undefined){
+            data = {};
+        }
         super(data);
         this.send = !data["@send"] ? this.getDefaults("send") : data["@send"];
         this.orderedVariables = this.getOrderedVariables();
@@ -330,9 +342,29 @@ class testdataCommand extends command{
         for(var i=0; i<$listOfLis.length; i++){
             $columns = $($listOfLis[i]).find('.cli-data-columns');
             label = $($listOfLis[i]).find('.cli-data-labels').find('div').text();
-            $($listOfLis[i]).find('.cli-data-columns').append('<div>' + this.orderedVariables[i][label]["value"] + '</div>')
+            $($listOfLis[i]).find('.cli-data-columns').append('<div katana-click="cliData.rightColumn.makeActive">' + this.orderedVariables[i][label]["value"] + '</div>')
         }
+        var data = $(elem[0]).data().dataObject;
+        data.push(this);
+        $(elem[0]).data({dataObject: data})
         return elem
+    }
+
+    deleteBlockElement(elem, index){
+        var data = $(elem[0]).data().dataObject;
+        if (data.length == 1){
+            var newObj = new testdataCommand
+            elem = newObj.addAnother(elem);
+            data.push(newObj);
+        }
+        var $listOfLis = $(elem[1]).find('ul').find('li');
+        var $columnsChildren = false;
+        for(var i=0; i<$listOfLis.length; i++){
+            $columnsChildren = $($listOfLis[i]).find('.cli-data-columns').children();
+            $($columnsChildren[index]).remove();
+        }
+        data.splice(index, 1);
+        $(elem[0]).data({dataObject: data})
     }
 
 }
@@ -352,6 +384,7 @@ class testdata{
         this.iter_type = this.converter("iter_type", data["@iter_type"], false, true);
         this.level = "CLI Data";
         this.block_name = "Block";
+        this.pristine = true;
     }
 
     converter(key, value, toJson, toEnglish){
@@ -437,6 +470,7 @@ class verifications{
             }
         }
         this.orderedVariables = this.getOrderedVariables();
+        this.pristine = true;
     }
 
     getOrderedVariables() {
@@ -557,7 +591,7 @@ class verifications{
                 break;
             }
         }
-        $($content[0]).data({"dataObject": this});
+        $($content[0]).data({"dataObject": [this]});
         return $content;
     }
 
@@ -574,12 +608,12 @@ class verifications{
             for(var key in this.orderedVariables[i]){
                 $subContent = $(rightColumnTableInputs);
                 $subContent.find('.cli-data-labels').html('<div>' + key + '</div>');
-                $subContent.find('.cli-data-columns').html('<div>' + this.orderedVariables[i][key]["value"] + '</div>');
+                $subContent.find('.cli-data-columns').html('<div katana-click="cliData.rightColumn.makeActive">' + this.orderedVariables[i][key]["value"] + '</div>');
                 $($content[1]).find('ul').append($subContent);
                 break;
             }
         }
-        $($content[0]).data({"dataObject": this});
+        $($content[0]).data({"dataObject": [this]});
         return $content;
     }
 
@@ -590,8 +624,11 @@ class verifications{
         for(var i=0; i<$listOfLis.length; i++){
             $columns = $($listOfLis[i]).find('.cli-data-columns');
             label = $($listOfLis[i]).find('.cli-data-labels').find('div').text();
-            $($listOfLis[i]).find('.cli-data-columns').append('<div>' + this.orderedVariables[i][label]["value"] + '</div>')
+            $($listOfLis[i]).find('.cli-data-columns').append('<div katana-click="cliData.rightColumn.makeActive">' + this.orderedVariables[i][label]["value"] + '</div>')
         }
+        var data = $(elem[0]).data().dataObject
+        data.push(this);
+        $(elem[0]).data({dataObject: data})
         return elem
     }
 }
@@ -605,6 +642,23 @@ class globalVerifications extends verifications{
         this.level = "Global";
         this.block_name = "Verifications"
     }
+
+    deleteBlockElement(elem, index){
+        var data = $(elem[0]).data().dataObject;
+        if (data.length == 1){
+            var newObj = new globalVerifications();
+            elem = newObj.addAnother(elem);
+            data.push(newObj);
+        }
+        var $listOfLis = $(elem[1]).find('ul').find('li');
+        var $columnsChildren = false;
+        for(var i=0; i<$listOfLis.length; i++){
+            $columnsChildren = $($listOfLis[i]).find('.cli-data-columns').children();
+            $($columnsChildren[index]).remove();
+        }
+        data.splice(index, 1);
+        $(elem[0]).data({dataObject: data})
+    }
 }
 
 /* Testdata Verifications Class */
@@ -614,6 +668,23 @@ class testdataVerifications extends verifications{
         super(data);
         this.level = "CLI Data";
         this.block_name = "Verifications"
+    }
+
+    deleteBlockElement(elem, index){
+        var data = $(elem[0]).data().dataObject;
+        if (data.length == 1){
+            var newObj = new testdataVerifications();
+            elem = newObj.addAnother(elem);
+            data.push(newObj);
+        }
+        var $listOfLis = $(elem[1]).find('ul').find('li');
+        var $columnsChildren = false;
+        for(var i=0; i<$listOfLis.length; i++){
+            $columnsChildren = $($listOfLis[i]).find('.cli-data-columns').children();
+            $($columnsChildren[index]).remove();
+        }
+        data.splice(index, 1);
+        $(elem[0]).data({dataObject: data})
     }
 }
 
@@ -633,6 +704,7 @@ class combinations{
             }
         }
         this.orderedVariables = this.getOrderedVariables();
+        this.pristine = true;
     }
 
     getOrderedVariables() {
@@ -689,7 +761,7 @@ class combinations{
                 break;
             }
         }
-        $($content[0]).data({"dataObject": this});
+        $($content[0]).data({"dataObject": [this]});
         return $content;
     }
 
@@ -706,12 +778,12 @@ class combinations{
             for(var key in this.orderedVariables[i]){
                 $subContent = $(rightColumnTableInputs);
                 $subContent.find('.cli-data-labels').html('<div>' + key + '</div>');
-                $subContent.find('.cli-data-columns').html('<div>' + this.orderedVariables[i][key]["value"] + '</div>');
+                $subContent.find('.cli-data-columns').html('<div katana-click="cliData.rightColumn.makeActive">' + this.orderedVariables[i][key]["value"] + '</div>');
                 $($content[1]).find('ul').append($subContent);
                 break;
             }
         }
-        $($content[0]).data({"dataObject": this});
+        $($content[0]).data({"dataObject": [this]});
         return $content;
     }
 
@@ -722,8 +794,11 @@ class combinations{
         for(var i=0; i<$listOfLis.length; i++){
             $columns = $($listOfLis[i]).find('.cli-data-columns');
             label = $($listOfLis[i]).find('.cli-data-labels').find('div').text();
-            $($listOfLis[i]).find('.cli-data-columns').append('<div>' + this.orderedVariables[i][label]["value"] + '</div>')
+            $($listOfLis[i]).find('.cli-data-columns').append('<div katana-click="cliData.rightColumn.makeActive">' + this.orderedVariables[i][label]["value"] + '</div>')
         }
+        var data = $(elem[0]).data().dataObject;
+        data.push(this);
+        $(elem[0]).data({dataObject: data})
         return elem
     }
 }
@@ -735,6 +810,23 @@ class globalCombinations extends combinations{
         super(data);
         this.level = "Global";
         this.block_name = "Verification Combinations"
+    }
+
+    deleteBlockElement(elem, index){
+        var data = $(elem[0]).data().dataObject;
+        if (data.length == 1){
+            var newObj = new globalCombinations();
+            elem = newObj.addAnother(elem);
+            data.push(newObj);
+        }
+        var $listOfLis = $(elem[1]).find('ul').find('li');
+        var $columnsChildren = false;
+        for(var i=0; i<$listOfLis.length; i++){
+            $columnsChildren = $($listOfLis[i]).find('.cli-data-columns').children();
+            $($columnsChildren[index]).remove();
+        }
+        data.splice(index, 1);
+        $(elem[0]).data({dataObject: data})
     }
 }
 
@@ -760,6 +852,7 @@ class keys{
             }
         }
         this.orderedVariables = this.getOrderedVariables();
+        this.pristine = true;
     }
 
     getOrderedVariables() {
@@ -816,7 +909,7 @@ class keys{
                 break;
             }
         }
-        $($content[0]).data({"dataObject": this});
+        $($content[0]).data({"dataObject": [this]});
         return $content;
     }
 
@@ -833,12 +926,12 @@ class keys{
             for(var key in this.orderedVariables[i]){
                 $subContent = $(rightColumnTableInputs);
                 $subContent.find('.cli-data-labels').html('<div>' + key + '</div>');
-                $subContent.find('.cli-data-columns').html('<div>' + this.orderedVariables[i][key]["value"] + '</div>');
+                $subContent.find('.cli-data-columns').html('<div katana-click="cliData.rightColumn.makeActive">' + this.orderedVariables[i][key]["value"] + '</div>');
                 $($content[1]).find('ul').append($subContent);
                 break;
             }
         }
-        $($content[0]).data({"dataObject": this});
+        $($content[0]).data({"dataObject": [this]});
         return $content;
     }
 
@@ -849,8 +942,11 @@ class keys{
         for(var i=0; i<$listOfLis.length; i++){
             $columns = $($listOfLis[i]).find('.cli-data-columns');
             label = $($listOfLis[i]).find('.cli-data-labels').find('div').text();
-            $($listOfLis[i]).find('.cli-data-columns').append('<div>' + this.orderedVariables[i][label]["value"] + '</div>')
+            $($listOfLis[i]).find('.cli-data-columns').append('<div katana-click="cliData.rightColumn.makeActive">' + this.orderedVariables[i][label]["value"] + '</div>')
         }
+        var data = $(elem[0]).data().dataObject;
+        data.push(this);
+        $(elem[0]).data({dataObject: data})
         return elem
     }
 }
@@ -863,6 +959,23 @@ class globalKeys extends keys{
         this.level = "Global";
         this.block_name = "Response Keys"
     }
+
+    deleteBlockElement(elem, index){
+        var data = $(elem[0]).data().dataObject;
+        if (data.length == 1){
+            var newObj = new globalKeys();
+            elem = newObj.addAnother(elem);
+            data.push(newObj);
+        }
+        var $listOfLis = $(elem[1]).find('ul').find('li');
+        var $columnsChildren = false;
+        for(var i=0; i<$listOfLis.length; i++){
+            $columnsChildren = $($listOfLis[i]).find('.cli-data-columns').children();
+            $($columnsChildren[index]).remove();
+        }
+        data.splice(index, 1);
+        $(elem[0]).data({dataObject: data})
+    }
 }
 
 /* Testdata Keys Class */
@@ -872,6 +985,23 @@ class testdataKeys extends keys{
         super(data);
         this.level = "CLI Data";
         this.block_name = "Response Keys"
+    }
+
+    deleteBlockElement(elem, index){
+        var data = $(elem[0]).data().dataObject;
+        if (data.length == 1){
+            var newObj = new testdataKeys();
+            elem = newObj.addAnother(elem);
+            data.push(newObj);
+        }
+        var $listOfLis = $(elem[1]).find('ul').find('li');
+        var $columnsChildren = false;
+        for(var i=0; i<$listOfLis.length; i++){
+            $columnsChildren = $($listOfLis[i]).find('.cli-data-columns').children();
+            $($columnsChildren[index]).remove();
+        }
+        data.splice(index, 1);
+        $(elem[0]).data({dataObject: data})
     }
 }
 
@@ -886,6 +1016,7 @@ class variablePattern{
         this.start_pattern = !data["@start_pattern"] ? this.getDefaults("start_pattern") : data["@start_pattern"];
         this.end_pattern = !data["@end_pattern"] ? this.getDefaults("end_pattern") : data["@end_pattern"];
         this.orderedVariables = this.getOrderedVariables();
+        this.pristine = true;
     }
 
     getOrderedVariables() {
@@ -944,7 +1075,7 @@ class variablePattern{
                 break;
             }
         }
-        $($content[0]).data({"dataObject": this});
+        $($content[0]).data({"dataObject": [this]});
         return $content;
     }
 
@@ -961,12 +1092,12 @@ class variablePattern{
             for(var key in this.orderedVariables[i]){
                 $subContent = $(rightColumnTableInputs);
                 $subContent.find('.cli-data-labels').html('<div>' + key + '</div>');
-                $subContent.find('.cli-data-columns').html('<div>' + this.orderedVariables[i][key]["value"] + '</div>');
+                $subContent.find('.cli-data-columns').html('<div katana-click="cliData.rightColumn.makeActive">' + this.orderedVariables[i][key]["value"] + '</div>');
                 $($content[1]).find('ul').append($subContent);
                 break;
             }
         }
-        $($content[0]).data({"dataObject": this});
+        $($content[0]).data({"dataObject": [this]});
         return $content;
     }
 }
@@ -979,6 +1110,14 @@ class globalVariablePattern extends variablePattern{
         this.level = "Global";
         this.block_name = "Variable Pattern"
     }
+
+    get htmlLeftContent() {
+        var $content = this.formHtmlLeftContent();
+        $($content[0]).find('.fa-plus').addClass('cli-data-disabled-icon');
+        $($content[0]).find('.fa-files-o').addClass('cli-data-disabled-icon');
+        $($content[0]).find('.fa-trash-o').addClass('cli-data-disabled-icon');
+        return $content;
+    }
 }
 
 /* Testdata Variable Pattern Class */
@@ -988,5 +1127,13 @@ class testdataVariablePattern extends variablePattern{
         super(data);
         this.level = "CLI Data";
         this.block_name = "Variable Pattern"
+    }
+
+    get htmlLeftContent() {
+        var $content = this.formHtmlLeftContent();
+        $($content[0]).find('.fa-plus').addClass('cli-data-disabled-icon');
+        $($content[0]).find('.fa-files-o').addClass('cli-data-disabled-icon');
+        $($content[0]).find('.fa-trash-o').addClass('cli-data-disabled-icon');
+        return $content;
     }
 }

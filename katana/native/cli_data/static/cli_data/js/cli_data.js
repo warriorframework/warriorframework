@@ -78,6 +78,7 @@ var cliData = {
 
                 var globalCmd = new globalCommand(data.contents.data.global.command_params);
                 var $content = globalCmd.htmlLeftContent;
+                $($content[0]).attr("objectIndex", "0");
                 $currentPage.find('.cli-data-left-column').html($content);
 
                 setTimeout(function(){cliData.fileDisplayAPI.displayRightContents(data.contents.data)}, 1);
@@ -91,6 +92,7 @@ var cliData = {
 
             var globalCmd = new globalCommand(data.global.command_params);
             var $content = globalCmd.htmlRightContent;
+            $($content[0]).attr("active", "true");
             $rightColumn.append($content);
 
             var globalVerHtmlContent = false;
@@ -198,22 +200,130 @@ var cliData = {
     leftColumn: {
         nextBlock: function() {
             var $elem = $(this);
+            var objectIndex = parseInt($elem.closest('.cli-data-left-column-topbar').attr('objectIndex')) + 1;
+            var $currentPage = katana.$activeTab;
+            var $activeElement = $currentPage.find('[active="true"]');
+            var dataObj = $activeElement.data().dataObject;
+            if(dataObj.length > objectIndex){
+                var actualObj = dataObj[objectIndex];
+                $activeElement.get(0).scrollIntoView(true);
+            } else {
+                objectIndex = 0;
+                var $nextElem = $activeElement.next().next().next();
+                $nextElem.attr('active', 'true');
+                $activeElement.attr('active', 'false');
+                var dataObj = $nextElem.data().dataObject;
+                var actualObj = dataObj[objectIndex];
+                $nextElem.get(0).scrollIntoView(true);
+            }
+            var $leftColumn = $currentPage.find('.cli-data-left-column');
+            var $leftData = actualObj.htmlLeftContent;
+            $leftData.hide();
+            $leftColumn.html($leftData.fadeIn(500));
+            $leftColumn.find('.cli-data-left-column-topbar').attr("objectIndex", objectIndex);
         },
 
         previousBlock: function(){
             var $elem = $(this);
+            var objectIndex = parseInt($elem.closest('.cli-data-left-column-topbar').attr('objectIndex')) - 1;
+            var $currentPage = katana.$activeTab;
+            var $activeElement = $currentPage.find('[active="true"]');
+            var dataObj = $activeElement.data().dataObject;
+            if(objectIndex >= 0){
+                var actualObj = dataObj[objectIndex];
+                $activeElement.get(0).scrollIntoView(true);
+            } else {
+                var $prevElem = $activeElement.prev().prev().prev();
+                $prevElem.attr('active', 'true');
+                $activeElement.attr('active', 'false');
+                var dataObj = $prevElem.data().dataObject;
+                objectIndex = dataObj.length - 1;
+                var actualObj = dataObj[objectIndex];
+                $prevElem.get(0).scrollIntoView(true);
+            }
+            var $leftColumn = $currentPage.find('.cli-data-left-column');
+            var $leftData = actualObj.htmlLeftContent;
+            $leftData.hide();
+            $leftColumn.html($leftData.fadeIn(500));
+            $leftColumn.find('.cli-data-left-column-topbar').attr("objectIndex", objectIndex);
         },
 
         deleteBlock: function(){
             var $elem = $(this);
+            var objectIndex = parseInt($elem.closest('.cli-data-left-column-topbar').attr('objectIndex'));
+            var $currentPage = katana.$activeTab;
+            var $leftColumn = $currentPage.find('.cli-data-left-column');
+            var $activeElement = $currentPage.find('[active="true"]');
+            var $content = $activeElement;
+            $content.push($activeElement.next()[0]);
+            $content.push($activeElement.next().next()[0]);
+            var dataObj = $activeElement.data().dataObject;
+            dataObj[objectIndex].deleteBlockElement($content, objectIndex);
+            if(objectIndex < dataObj.length){
+                var $leftData = dataObj[objectIndex].htmlLeftContent;
+                $leftData.hide();
+                $leftColumn.html($leftData.fadeIn(500));
+                $leftColumn.find('.cli-data-left-column-topbar').attr("objectIndex", objectIndex);
+            } else if (objectIndex-1 <= dataObj.length) {
+                var $leftData = dataObj[objectIndex-1].htmlLeftContent;
+                $leftData.hide();
+                $leftColumn.html($leftData.fadeIn(500));
+                $leftColumn.find('.cli-data-left-column-topbar').attr("objectIndex", objectIndex-1);
+            }
         },
 
         duplicateBlock: function(){
             var $elem = $(this);
+            var $currentPage = katana.$activeTab;
+            var $activeElement = $currentPage.find('[active="true"]');
+            var objectIndex = parseInt($elem.closest('.cli-data-left-column-topbar').attr('objectIndex'));
+            var dataObj = $activeElement.data().dataObject;
+            var $currentObject = dataObj[objectIndex];
+            cliData.leftColumn.addAnotherBlock($elem, $currentObject.jsonObj)
         },
 
-        addAnotherBlock: function(){
-            var $elem = $(this);
+        addAnotherBlock: function(elem, data){
+            if(elem !== undefined){
+                var $elem = elem;
+            } else {
+                var $elem = $(this);
+            }
+            var objectIndex = parseInt($elem.closest('.cli-data-left-column-topbar').attr('objectIndex'));
+            var $currentPage = katana.$activeTab;
+            var $activeElement = $currentPage.find('[active="true"]');
+            var $content = $activeElement;
+            $content.push($activeElement.next()[0]);
+            $content.push($activeElement.next().next()[0]);
+            var dataObj = $activeElement.data().dataObject;
+            var $currentObject = dataObj[objectIndex];
+            var className = $currentObject.constructor.name;
+            var newObj = false;
+            if (className == "testdataCommand") {
+                newObj = new testdataCommand(data);
+            } else if(className == "globalVerifications"){
+                newObj = new globalVerifications(data);
+            } else if (className == "testdataVerifications") {
+                newObj = new testdataVerifications(data);
+            } else if (className == "globalCombinations") {
+                newObj = new globalCombinations(data);
+            } else if (className == "testdataCombinations") {
+                newObj = new testdataCombinations(data);
+            } else if (className == "globalKeys") {
+                newObj = new globalKeys(data);
+            } else if (className == "testdataKeys") {
+                newObj = new testdataKeys(data);
+            } else {
+                alert("You cannot add another block.");
+            }
+
+            if(newObj) {
+                $content = newObj.addAnother($content);
+                var $leftColumn = $currentPage.find('.cli-data-left-column');
+                var $leftData = newObj.htmlLeftContent;
+                $leftData.hide();
+                $leftColumn.html($leftData.fadeIn(500));
+                $leftColumn.find('.cli-data-left-column-topbar').attr("objectIndex", dataObj.length - 1);
+            }
         },
     },
 
@@ -222,30 +332,56 @@ var cliData = {
         pinTable: function(){
             var $elem = $(this);
             var pinned = $elem.attr('pinned');
-
+            var $currentPage = katana.$activeTab;
             var $rightColumn = $elem.closest('.cli-data-right-column');
-            var $fullWidth = $elem.closest('.cli-data-full-width');
+            var $fullWidth = $rightColumn.find('.cli-data-full-width');
             var $rightTopBar = $elem.closest('.cli-data-right-column-topbar');
 
             if(pinned == "false"){
-                $fullWidth.hide();
-                $rightColumn.addClass('cli-data-no-padding');
-                var $content = $rightTopBar.data().dataObject.htmlRightContent;
-                $($content[0]).find('i').addClass('fa-rotate-270 blue');
-                $($content[0]).find('i').attr('pinned', 'true');
-                $rightColumn.append($content[0]);
-                $rightColumn.append($content[1]);
-            } else {
-                $rightColumn.removeClass('cli-data-no-padding');
-                var $children = $rightColumn.children();
-                console.log($children);
+                $rightTopBar.find('i').addClass('fa-rotate-270 blue');
+                $rightTopBar.find('i').attr('pinned', 'true');
+                var $children = $fullWidth.children('.cli-data-right-column-topbar');
                 for(var i=0; i<$children.length; i++){
-                    $($children[i]).hide();
+                    $($children[i]).next().next().hide();
+                    if($($children[i]).find('i').attr('pinned') == "false"){
+                        $($children[i]).next().hide();
+                        $($children[i]).hide();
+                    }
                 }
-                $fullWidth.show();
+
+            } else {
+                var $children = $fullWidth.children();
+                for(var i=0; i<$children.length; i++){
+                    $($children[i]).show();
+                }
+                $rightTopBar.get(0).scrollIntoView(true);
+                $rightTopBar.find('i').removeClass('fa-rotate-270 blue');
+                $rightTopBar.find('i').attr('pinned', 'false');
             }
 
         },
+
+        makeActive: function(){
+            var $currentPage = katana.$activeTab;
+            $currentPage.find('[active="true"]').attr('active', 'false');
+            var $elem = $(this);
+            $elem.css("border-color", "1px solid red");
+            var objectIndex = $elem.index();
+            var $parentLi = $elem.closest('li');
+            var fieldIndex = $parentLi.index();
+            var $contentParent = $elem.closest('.cli-data-right-content');
+            var $headerParent = $contentParent.prev();
+            var dataObj = $headerParent.data().dataObject;
+            var actualObj = dataObj[objectIndex];
+            var $leftColumn = $currentPage.find('.cli-data-left-column');
+            var $leftData = actualObj.htmlLeftContent;
+            $leftData.hide();
+            $leftColumn.html($leftData.fadeIn(500));
+            $($leftColumn.find('#left-content').children().get(fieldIndex)).find('.cli-data-left-content-value-input').focus();
+            $leftColumn.find('.cli-data-left-column-topbar').attr("objectIndex", objectIndex);
+            $headerParent.attr('active', 'true');
+            setTimeout(function(){$elem.css("border-color", "none");}, 3000);
+        }
 
     },
 
