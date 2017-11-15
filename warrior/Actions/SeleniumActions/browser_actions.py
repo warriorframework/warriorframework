@@ -224,7 +224,8 @@ class browser_actions(object):
                         binary=binary, gecko_path=gecko_path,
                         profile_dir=ff_profile)
                 else:
-                    pNote("Please provide valid path for binary/geckodriver")
+                    browser_inst = self.browser_object.open_browser(browser_details["type"], webdriver_remote_url)
+                    #pNote("Please provide valid path for binary/geckodriver")
                 if browser_inst:
                     browser_fullname = "{0}_{1}".format(system_name,
                                                         browser_details["browser_name"])
