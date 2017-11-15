@@ -505,40 +505,62 @@ class testdata{
         return $content;
     }
 
-    addAnother(){
-        var tdObj = new testdata();
+    addAnother(data, tdCmd, tdVer, tdKey, tdVarPat){
+        var tdObj = new testdata(data);
         console.log(tdObj);
         var $content = tdObj.htmlRightContent;
         console.log($content);
 
-        var tdCmdObj = new testdataCommand();
-        var temp = tdCmdObj.htmlRightContent;
+        var temp = false;
+        for(var i=0; i<tdCmd.length; i++){
+            var tdCmdObj = new testdataCommand(tdCmd[i]);
+            if(!temp){
+                temp = tdCmdObj.htmlRightContent;
+            } else {
+                temp = tdCmdObj.addAnother(temp);
+            }
+        }
+        for(i=0; i<temp.length; i++){
+            $content.push(temp[i]);
+        }
+
+        temp = false;
+        for(i=0; i<tdVer.length; i++){
+            var tdVerObj = new testdataVerifications(tdVer[i]);
+            if(!temp){
+                temp = tdVerObj.htmlRightContent;
+            } else {
+                temp = tdVerObj.addAnother(temp);
+            }
+        }
+        for(i=0; i<temp.length; i++){
+            $content.push(temp[i]);
+        }
+
+        temp = false;
+        for(var i=0; i<tdKey.length; i++){
+            var tdKeysObj = new testdataKeys(tdKey[i]);
+            if(!temp){
+                temp = tdKeysObj.htmlRightContent;
+            } else {
+                temp = tdKeysObj.addAnother(temp);
+            }
+        }
         for(var i=0; i<temp.length; i++){
             $content.push(temp[i]);
         }
 
-        var tdVerObj = new testdataVerifications();
-        temp = tdVerObj.htmlRightContent;
-        for(var i=0; i<temp.length; i++){
-            $content.push(temp[i]);
+        for(i=0; i<tdVarPat.length; i++){
+            var tdVarPatObj = new testdataVariablePattern(tdVarPat[i]);
+            temp = tdVarPatObj.htmlRightContent;
         }
-
-        var tdKeysObj = new testdataKeys();
-        temp = tdKeysObj.htmlRightContent;
-        for(var i=0; i<temp.length; i++){
-            $content.push(temp[i]);
-        }
-
-        var tdVarPatObj = new testdataVariablePattern();
-        temp = tdVarPatObj.htmlRightContent;
-        for(var i=0; i<temp.length; i++){
+        for(i=0; i<temp.length; i++){
             $content.push(temp[i]);
         }
 
         return $content
     }
 
-    deleteBlockElement(elem, index){}
 }
 
 /* Verifications Class */

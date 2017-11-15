@@ -446,10 +446,38 @@ var cliData = {
             var objectIndex = parseInt($elem.closest('.cli-data-left-column-topbar').attr('objectIndex'));
             var dataObj = $activeElement.data().dataObject;
             var $currentObject = dataObj[objectIndex];
-            cliData.leftColumn.addAnotherBlock($elem, $currentObject.jsonObj)
+            var className = $currentObject.constructor.name;
+            if (className == "testdata") {
+                var activeIndex = $activeElement.index();
+                var $rightFullWidthColumn = $currentPage.find('.cli-data-right-column').find('.cli-data-full-width');
+                var $rightChildren = $rightFullWidthColumn.children();
+                var cmdJsons = [];
+                var temp = $($rightChildren[activeIndex + 3]).data().dataObject;
+                for(var i=0; i<temp.length; i++){
+                    cmdJsons.push(temp[i].jsonObj);
+                }
+                var verJsons = [];
+                temp = $($rightChildren[activeIndex + 6]).data().dataObject;
+                for(var i=0; i<temp.length; i++){
+                    verJsons.push(temp[i].jsonObj);
+                }
+                var keyJsons = [];
+                temp = $($rightChildren[activeIndex + 9]).data().dataObject;
+                for(var i=0; i<temp.length; i++){
+                    keyJsons.push(temp[i].jsonObj);
+                }
+                var varPatJsons = [];
+                temp = $($rightChildren[activeIndex + 12]).data().dataObject;
+                for(var i=0; i<temp.length; i++){
+                    varPatJsons.push(temp[i].jsonObj);
+                }
+                cliData.leftColumn.addAnotherBlock($elem, $currentObject.jsonObj, cmdJsons, verJsons, keyJsons, varPatJsons)
+            } else {
+                cliData.leftColumn.addAnotherBlock($elem, $currentObject.jsonObj)
+            }
         },
 
-        addAnotherBlock: function(elem, data){
+        addAnotherBlock: function(elem, data, tdCmd, tdVer, tdKey, tdVarPat){
             if(elem !== undefined){
                 var $elem = elem;
             } else {
@@ -488,7 +516,7 @@ var cliData = {
             if(newObj) {
                 var $leftColumn = $currentPage.find('.cli-data-left-column');
                 if(className == "testdata"){
-                    $content = newObj.addAnother();
+                    $content = newObj.addAnother(data, tdCmd, tdVer, tdKey, tdVarPat);
                     $activeElement.attr("active", "false");
                     $($content[0]).attr("active", "true")
                     var $rightFullWidthColumn = $currentPage.find('.cli-data-full-width');
