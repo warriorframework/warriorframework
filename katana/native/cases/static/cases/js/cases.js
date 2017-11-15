@@ -1027,7 +1027,7 @@ The UI currently uses jQuery and Bootstrap to display the data.
 	for (var s=0; s<Object.keys(xdata).length; s++ ) {  // for s in xdata
 		var oneCaseStep = xdata[s];			 // for each step in case
 	 	bid = "copyToStorage-"+s+"-id-"+cases.activePageID;
-	 	//console.log("Duplication of data for ", xdata, oneCaseStep);
+	 	console.log("Duplication of data for ", xdata, oneCaseStep);
 	 	jdata = oneCaseStep.getJSON();
 	 	//console.log("Duplication of data for ", bid, jdata);
 	 	katana.$activeTab.find("#"+bid).data('jdata',jdata);
@@ -1874,19 +1874,28 @@ The UI currently uses jQuery and Bootstrap to display the data.
 		} else {
 			aid = sid;				// One below the current one. 
 		}
-		var newObj; 
-		var j1 = JSON.parse(katana.$activeTab.data("lastStepCopiedData"));
-		var j2 = JSON.parse(localStorage.getItem('lastStepCopied'));	
+		var newObj, j1, j2;
+		try { 
+		 	j1 = JSON.parse(katana.$activeTab.data("lastStepCopiedData"));
+			j2 = JSON.parse(localStorage.getItem('lastStepCopied'));
+		} catch(err) {
+			j1 = {};
+			j2 = {};
+		}
+	
 		if (copy == 0){
 			newObj = new caseTestStepObject();
 			}
 		if (copy == 1){
 			console.log("Copying...object ", sid, " from ", cases.jsonCaseObject.Teststeps[sid]);
-			newObj = jQuery.extend(true, {}, cases.jsonCaseObject.Teststeps[sid]); 
+			//var json = jQuery.extend(true, {}, cases.jsonCaseObject.Teststeps[sid]); 
+			var json = cases.jsonCaseObject.Teststeps[sid].getJSON();
+			
+			newObj = new caseTestStepObject(json);
 			}
 		if (copy == 2){
-			console.log("Documentj1: ", j1.Arguments ," local: j2 ", j2.Arguments);
-			console.log( cases.jsonCaseObject.Teststeps[sid].getJSON());
+			//console.log("Documentj1: ", j1.Arguments ," local: j2 ", j2.Arguments);
+			//console.log( cases.jsonCaseObject.Teststeps[sid].getJSON());
 			newObj = new caseTestStepObject(j2);
 			}
 		cases.jsonCaseObject.Teststeps.splice(aid,0,newObj);  // Don't delete anything
