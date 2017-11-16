@@ -79,8 +79,32 @@ def getJSONProjectData(request):
 	files.extend(glob.glob(fpath+"/*.xml"))
 	answer = [{ 'name': os.path.basename(fn), 'fullpath': fn } for fn in files ]
 
-	responseBack = { 'fulljson': j_data , 'fname': filename , 'suites': answer}
+
+	#files = glob.glob(fpath+"*/*.xml")
+	#tt = navigator.get_dir_tree_json(fpath)
+	#tt['state']= { 'opened': True };
+	#print tt
+
+	tt = path_to_dict(fpath)
+	print tt;
+	responseBack = { 'fulljson': j_data , 
+					'fname': filename ,
+					'stree' : tt, 
+					'suites': answer}
 	return JsonResponse(responseBack)
+
+
+def path_to_dict(path):
+    d = {'name': os.path.basename(path)}
+    if os.path.isdir(path):
+        d['type'] = "directory"
+        d['children'] = [path_to_dict(os.path.join(path,x)) for x in os.listdir\
+(path)]
+    else:
+        d['type'] = "file"
+    return d
+
+
 
 ## MUST MOVE TO CLASS !!!!
 ## List all your projects ...
