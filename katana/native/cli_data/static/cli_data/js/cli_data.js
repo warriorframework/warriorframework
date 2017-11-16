@@ -25,21 +25,15 @@ var cliData = {
 
         saveFile: function() {
             var $currentPage = katana.$activeTab;
-            $.ajax({
+            var finalJson = cliData.Editor.getJson();
+            /*$.ajax({
                 headers: {
                     'X-CSRFToken': $currentPage.find('input[name="csrfmiddlewaretoken"]').attr('value')
                 },
                 type: 'GET',
                 url: 'read_config_file/',
             }).done(function(config_file_data){
-                var callBack_on_accept = function(inputValue){
-                    var finalJson = {
-                        "data": {
-                            "global": {"tag": "yoyo"},
-                            "testdata": [ {"more_tag": "one yoyo"}, {"more_tag": "more yoyo"}]
-                            }
-                        }
-
+                var callBack_on_accept = function(inputValue, finalJson){
                     $.ajax({
                         headers: {
                             'X-CSRFToken': $currentPage.find('input[name="csrfmiddlewaretoken"]').attr('value')
@@ -92,7 +86,38 @@ var cliData = {
                              }
                         });
                     })
-            });
+            });*/
+        },
+
+        getJson: function(){
+            var $currentPage = katana.$activeTab;
+            var finalJson = {
+                "data": {
+                    "global": {},
+                    "testdata": []
+                    }
+                }
+
+            var $rightFullWidth = $currentPage.find('.cli-data-right-column').find('.cli-data-full-width');
+            var $dataCarriers = $rightFullWidth.children('div .cli-data-right-column-topbar');
+
+            var globalEnd = false;
+
+            for(var i=0; i<5; i++){
+                if(i==0){
+
+                }
+            }
+
+            for(i=5; i<$dataCarriers.length; i++){
+                if(i%5 ==0 || i%5 == 4){
+
+                } else {
+
+                }
+            }
+
+            return finalJson;
         },
     },
 

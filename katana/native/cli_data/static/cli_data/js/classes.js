@@ -260,10 +260,9 @@ class command{
             {"Response Required": {"value": this.resp_req, "type": "dropdown", "options": this.general_options, variable: "resp_req"}},
             {"Response Pattern Required": {"value": this.resp_pat_req, "type": "input", variable: "resp_pat_req"}},
             {"Response Reference": {"value": this.resp_ref, "type": "input", variable: "resp_ref"}},
-            {"Response Keys": {"value": this.resp_keys, "type": "input", variable: "resp_keys"}},
-            {"In-order Response Reference": {"value": this.inorder_resp_ref, "type": "dropdown", "options": this.general_options, variable: "inorder_resp_ref"}},
-            {"Monitor": {"value": this.monitor, "type": "input", variable: "monitor"}},
+            {"Response Keys": {"value": this.resp_keys, "type": "input", variable: "resp_keys"}},{"Monitor": {"value": this.monitor, "type": "input", variable: "monitor"}},
             {"In-order": {"value": this.inorder, "type": "dropdown", "options": this.general_options, variable: "inorder"}},
+            {"In-order Response Reference": {"value": this.inorder_resp_ref, "type": "dropdown", "options": this.general_options, variable: "inorder_resp_ref"}},
             {"Repeat": {"value": this.repeat, "type": "dropdown", "options": this.general_options, variable: "repeat"}}
         ];
         return orderedVariables
