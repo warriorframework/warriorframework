@@ -457,7 +457,8 @@ var suites= {
 			console.log(suites.jsonTestcases);
 			suites.jsonTestcases.push(newTestcase);
 			suites.createCasesTable();
-
+			var sid = suites.jsonTestcases.length - 1; 
+				
 			// Now open up the popup controller. 
 			katana.popupController.open(katana.$activeTab.find("#editTestCaseEntry").html(),"Edit Case " + (sid + 1), function(popup) {
 				suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
@@ -484,6 +485,16 @@ var suites= {
 		console.log(suites.jsonTestcases);
 		suites.jsonTestcases.push(newTestcase);
 		suites.createCasesTable();
+		var sid = suites.jsonTestcases.length - 1; 
+				
+		// Now open up the popup controller. 
+		katana.popupController.open(katana.$activeTab.find("#editTestCaseEntry").html(),"Edit Case " + (sid + 1), function(popup) {
+				suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+				suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
+				suites.lastPopup = popup;
+				var sid = suites.jsonTestcases.length - 1; 
+				suites.mapSuiteCaseToUI(sid,popup);
+				});
 	},
 
 
@@ -840,7 +851,7 @@ Two global variables are heavily used when this function is called;
 
 		items.push('<table  id="Case_table_display" class="suite-configuration-table" width="100%">');
 		items.push('<thead>');
-		items.push('<tr id="CaseRow"><th>Num</th><th></th><th>Path</th><th></th><th>Input Data</th><th>context</th><th>Run Type</th><th>Mode</th><th>OnError</th><th>Impact</th><th/></tr>');
+		items.push('<tr id="CaseRow"><th>Num</th><th></th><th>Path</th><th></th><th>Input Data File</th><th>context</th><th>Run Type</th><th>Mode</th><th>OnError</th><th>Impact</th><th/></tr>');
 		items.push('</thead>');
 		items.push('<tbody>');
 
@@ -851,13 +862,18 @@ Two global variables are heavily used when this function is called;
 		for (var s=0; s< slen; s++ ) {
 			var oneCase = suites.jsonSuiteObject.Testcases[s];
 			console.log("Drawing table", oneCase);
+			var InputDataFileStr = oneCase['InputDataFile'];
+			if (InputDataFileStr == undefined) InputDataFileStr = '';
+			if (InputDataFileStr == 'undefined') InputDataFileStr = '';
+
+
 			var showID = parseInt(s)+ 1; 
 			items.push('<tr data-sid="'+s+'"><td>'+showID+'</td>');
 			var bid = "fileTestcase-"+s+"-id";
 			items.push('<td><i title="ChangeFile" class="fa fa-folder-open" id="'+bid+'" katana-click="suites.fileNewSuiteFromLine" key="'+bid+'"/></td>');
 			items.push('<td katana-click="suites.showCaseFromSuite" skey="'+oneCase['path']+'" title="'+oneCase['path']+'"> '+oneCase['path']+'</td>');
 			items.push('<td><i title="Change Input Data File" class="fa fa-folder-open" id="'+bid+'" katana-click="suites.fileNewInputFromLine" key="'+bid+'"/></td>');
-			items.push('<td skey="'+oneCase['InputDataFile']+'"  title="'+oneCase['InputDataFile']+'"> '+oneCase['InputDataFile']+'</td>');
+			items.push('<td skey="'+InputDataFileStr+'"  title="'+InputDataFileStr+'"> '+InputDataFileStr+'</td>');
 			items.push('<td title="'+oneCase.content+'">'+oneCase.context+'</td>');
 			items.push('<td title="'+oneCase.runtype+'">'+oneCase.runtype+'</td>');
 			items.push('<td title="'+oneCase.runmode_type+'">'+oneCase.runmode_type);
