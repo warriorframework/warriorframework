@@ -443,9 +443,41 @@ var suites= {
 // array. Default values are used to fill in a complete structure. If there is 
 // no default value, a null value is inserted for the keyword
 /// -------------------------------------------------------------------------------
-	addCaseToSuite: function(){
+	addExistingCaseToSuite: function(){
+
+		var callback_on_accept = function(selectedValue) { 
 			suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
 			suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
+      		var pathToBase = katana.$activeTab.find('#savefilepath').text();
+      		var nf = prefixFromAbs(pathToBase, selectedValue);
+			console.log("Adding ..", nf);
+			var newTestcase =	new suiteCaseObject(); 
+			newTestcase.path = nf; 
+			suites.jsonTestcases = suites.jsonSuiteObject.Testcases	
+			console.log(suites.jsonTestcases);
+			suites.jsonTestcases.push(newTestcase);
+			suites.createCasesTable();
+
+			// Now open up the popup controller. 
+			katana.popupController.open(katana.$activeTab.find("#editTestCaseEntry").html(),"Edit Case " + (sid + 1), function(popup) {
+				suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+				suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
+				suites.lastPopup = popup;
+				var sid = suites.jsonTestcases.length - 1; 
+				suites.mapSuiteCaseToUI(sid,popup);
+				});
+
+			};
+     	 var callback_on_dismiss =  function(){ 
+      		// console.log("Dismissed");
+	 		};
+     	katana.fileExplorerAPI.openFileExplorer("Select a Suite file", false , $("[name='csrfmiddlewaretoken']").val(), false, callback_on_accept, callback_on_dismiss);
+	
+	},
+
+	addCaseToSuite: function(){
+		suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+		suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
 		var newTestcase =	new suiteCaseObject(); 
 		
 		suites.jsonTestcases = suites.jsonSuiteObject.Testcases	
@@ -453,6 +485,9 @@ var suites= {
 		suites.jsonTestcases.push(newTestcase);
 		suites.createCasesTable();
 	},
+
+
+
 	 
 	insertCaseToSuite: function(sid, copy){
 			suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
@@ -823,9 +858,9 @@ Two global variables are heavily used when this function is called;
 			items.push('<td katana-click="suites.showCaseFromSuite" skey="'+oneCase['path']+'" title="'+oneCase['path']+'"> '+oneCase['path']+'</td>');
 			items.push('<td><i title="Change Input Data File" class="fa fa-folder-open" id="'+bid+'" katana-click="suites.fileNewInputFromLine" key="'+bid+'"/></td>');
 			items.push('<td skey="'+oneCase['InputDataFile']+'"  title="'+oneCase['InputDataFile']+'"> '+oneCase['InputDataFile']+'</td>');
-			items.push('<td>'+oneCase.context+'</td>');
-			items.push('<td>'+oneCase.runtype+'</td>');
-			items.push('<td>'+oneCase.runmode_type);
+			items.push('<td title="'+oneCase.content+'">'+oneCase.context+'</td>');
+			items.push('<td title="'+oneCase.runtype+'">'+oneCase.runtype+'</td>');
+			items.push('<td title="'+oneCase.runmode_type+'">'+oneCase.runmode_type);
 			if (oneCase.runmode_type != 'standard') {
 				items.push('<br>'+oneCase.runmode_value.toLowerCase());
 			}
@@ -915,15 +950,11 @@ Two global variables are heavily used when this function is called;
 			var names = this.attr('key').split('-');
 			var sid = parseInt(names[1]);
 			katana.popupController.open(katana.$activeTab.find("#editTestCaseEntry").html(),"Edit Case " + (sid + 1), function(popup) {
-			
-
-
-
 			suites.lastPopup = popup;
 			suites.mapSuiteCaseToUI(sid,popup);
-		});
+			});
 
-},
+	},
 
 	fileNewSuiteFromLine :function(){ 
 			suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
