@@ -10,6 +10,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from __future__ import division
 from __builtin__ import str
 import os
 import re
@@ -969,6 +970,73 @@ def verify_data(expected, key, data_type='str', comparison='eq'):
         print_error(key_err_msg.format(key, key.split('.')[0]))
 
     return result, value
+
+
+def verify_arith_exp(expression, expected, comparison='eq'):
+    """ Verify the output of the arithmetic expression matches the expected(float comparison)
+        :Arguments:
+            1. expression: Arithmetic expression to be compared with expected.
+                This can have env & data_repo values embedded in it.
+                    Ex. expression: "10+${ENV.x}-${REPO.y}*10"
+                Supported arithmetic operations: '+,-,*,/,%'
+                Expression will be evaluated based on python operator precedence
+            2. expected: Value to be compared with the expression output
+            3. comparison: Type of comparison(eq/ne/gt/ge/lt/le)
+                eq - check if both are same(equal)
+                ne - check if both are not same(not equal)
+                gt - check if expression output is greater than expected
+                ge - check if expression output is greater than or equal to expected
+                lt - check if expression output is lesser than expected
+                le - check if expression output is lesser than or equal to expected
+        :Returns:
+            1. status(boolean)
+    """
+
+    status = True
+    # Substitute env values in the expression
+    expression = sub_from_env_var(expression)
+    # Substitute data_repo values in the expression
+    expression = sub_from_data_repo(expression)
+    try:
+        expression_ouput = eval(expression)
+        expected = float(expected)
+    except SyntaxError:
+        print_error("Unable to evaluate the expression '{}' provided. "
+                    "Possible reasons: (i) Invalid arithmetic expression, "
+                    "(ii) Given env/data_repo values are not available".format(expression))
+        status = "ERROR"
+    except ValueError:
+        print_error("Unable to convert expected value '{}' to float".format((expected)))
+        status = "ERROR"
+    except Exception as exception:
+        print_exception(exception)
+        status = "ERROR"
+
+    comp_funcs = {
+        'eq': lambda x, y: x == y,
+        'ne': lambda x, y: x != y,
+        'gt': lambda x, y: x > y,
+        'ge': lambda x, y: x >= y,
+        'lt': lambda x, y: x < y,
+        'le': lambda x, y: x <= y
+    }
+
+    if comparison not in comp_funcs:
+        print_error("Valid comparisons are {}".format('/'.join(comp_funcs.keys())))
+        status = "ERROR"
+
+    if status is True:
+        comp_result = comp_funcs[comparison](expression_ouput, expected)
+        if comp_result is True:
+            print_info("Expression output '{0}' satisfies the given condition"
+                       "(value: '{1}' & comparison: '{2}')".format(expression_ouput,
+                                                                   expected, comparison))
+        else:
+            status = False
+            print_info("Expression output '{0}' doesn't satisfy the given condition"
+                       "(value: '{1}' & comparison: '{2}')".format(expression_ouput,
+                                                                   expected, comparison))
+    return status
 
 
 def verify_resp_inorder(match_list, context_list, command, response,

@@ -255,3 +255,28 @@ class CommonActions(object):
                 status = False
 
         return status
+
+    def verify_arith_exp(self, expression, expected, comparison='eq'):
+        """ Verify the output of the arithmetic expression matches the expected(float comparison)
+            :Arguments:
+                1. expression: Arithmetic expression to be compared with expected.
+                    This can have env & data_repo values embedded in it.
+                        Ex. expression: "10+${ENV.x}-${REPO.y}*10"
+                    Supported arithmetic operations: '+,-,*,/,%'
+                    Expression will be evaluated based on python operator precedence
+                2. expected: Value to be compared with the expression output
+                3. comparison: Type of comparison(eq/ne/gt/ge/lt/le)
+                    eq - check if both are same(equal)
+                    ne - check if both are not same(not equal)
+                    gt - check if expression output is greater than expected
+                    ge - check if expression output is greater than or equal to expected
+                    lt - check if expression output is lesser than expected
+                    le - check if expression output is lesser than or equal to expected
+            :Returns:
+                1. status(boolean)
+        """
+        wDesc = "Verify if the output of the arithmetic expression matches the expected"
+        Utils.testcase_Utils.pNote(wDesc)
+        status = Utils.data_Utils.verify_arith_exp(expression, expected,
+                                                   comparison)
+        return status
