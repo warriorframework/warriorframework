@@ -429,7 +429,7 @@ var treeData = [
             .attr('stroke','#ccc');
 
        	defs  = projects.svg.append('defs');
-       	
+
 		projects.filter = defs.append("filter").attr("id","drop-shadow").attr("height","150%");
 		projects.filter.append("feGaussianBlur").attr("in","SourceAlpha").attr("stdDeviation",5)
 			.attr("result","blur");
@@ -516,7 +516,13 @@ var treeData = [
 					var py = (d.rowid - 1) * px_row_height;
 					if (d.ntype == "project") return "translate("+10+","+px_rect_height*2+")";
 					if (d.ntype == 'existingSuite') {
-						return "translate("+px_existing_column+","+py+")";
+						var i = d.rowid - 1;
+						var xlen = Math.floor(pjExistingSuites.nodes.length / 3); 
+						var px = px_existing_column + ((i%3)*px_rect_width + 50); 
+						py = Math.floor(i/3)%xlen * px_row_height;
+
+
+						return "translate("+px+","+py+")";
 					} 
 					return "translate("+px_suite_column+","+py+")";
 					})
@@ -698,12 +704,24 @@ var treeData = [
 
    			})
    			.on("mouseover",function(d) {
-   					var dx = d3.mouse(this)[0];
-   					var dy = d3.mouse(this)[1];
-   					console.log(dx,dy, "x=", d3.event.pageX, " y=", d3.event.pageY, "d.x", d.x, ",", d.y , d.rowid, d.id);
+   					// var dx = d3.mouse(this)[0];
+   					// var dy = d3.mouse(this)[1];
+   					// console.log(dx,dy, "x=", d3.event.pageX, " y=", d3.event.pageY, "d.x", d.x, ",", d.y , d.rowid, d.id);
+   					var py = (d.rowid - 1) * px_row_height;
+					if (d.ntype == 'existingSuite') {
+						var i = d.rowid - 1;
+						var xlen = Math.floor(pjExistingSuites.nodes.length / 3); 
+						var px = px_existing_column + ((i%3)*px_rect_width + 50); 
+						py = Math.floor(i/3)%xlen * px_row_height;
+					}
+
+
+
    					var fobj = projects.svg.append('foreignObject')
-						.attr('x',  20 + d3.event.pageX - px_rect_width )
-						.attr('y',  (d.rowid < pjDataSet.nodes.length) ? px_row_height * (d.rowid - 1): ((d.id-pjDataSet.nodes.length) * px_row_height) )
+						// .attr('x',  20 + d3.event.pageX - px_rect_width )
+						// .attr('y',  (d.rowid < pjDataSet.nodes.length) ? px_row_height * (d.rowid - 1): ((d.id-pjDataSet.nodes.length) * px_row_height) )
+						.attr('x', px+20)
+						.attr('y', py+20)
 						.attr('width', 450)
 						.attr('class', 'projectSuiteTooltip')
 						;
@@ -719,10 +737,9 @@ var treeData = [
 						.style('border', '2px solid green')
 						.style('background-color','white')
 						.style('opacity', 1)
-						//.style('color', 'white')
 						.html(d.displayStr);
-					var foHt = div[0][0].getBoundingClientRect().height;
-					var foWd = div[0][0].getBoundingClientRect().width;
+					//var foHt = div[0][0].getBoundingClientRect().height;
+					//var foWd = div[0][0].getBoundingClientRect().width;
    				})
    			.on("mouseout",function(d) {
    		 			projects.svg.selectAll('.projectSuiteTooltip').remove();
