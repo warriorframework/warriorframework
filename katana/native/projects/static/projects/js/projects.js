@@ -708,6 +708,7 @@ var treeData = [
    					// var dy = d3.mouse(this)[1];
    					// console.log(dx,dy, "x=", d3.event.pageX, " y=", d3.event.pageY, "d.x", d.x, ",", d.y , d.rowid, d.id);
    					var py = (d.rowid - 1) * px_row_height;
+   					var px = px_suite_column;
 					if (d.ntype == 'existingSuite') {
 						var i = d.rowid - 1;
 						var xlen = Math.floor(pjExistingSuites.nodes.length / 3); 
@@ -718,8 +719,6 @@ var treeData = [
 
 
    					var fobj = projects.svg.append('foreignObject')
-						// .attr('x',  20 + d3.event.pageX - px_rect_width )
-						// .attr('y',  (d.rowid < pjDataSet.nodes.length) ? px_row_height * (d.rowid - 1): ((d.id-pjDataSet.nodes.length) * px_row_height) )
 						.attr('x', px+20)
 						.attr('y', py+20)
 						.attr('width', 450)
@@ -763,7 +762,7 @@ var treeData = [
 	       .text(function(d){
 	       		if (d.ntype == 'existingSuite') return  d.displayStr.substring(0,20);
 	       		if (d.ntype == 'project') return d.name.substring(0,20);
-	       		return "(" + d.rowid + ")" + d.name.substring(0,20);})
+	       		return "(" + d.rowid + ") ..." + d.name.substr(d.name.length - 15);})
 
 		projects.nodelabels = nodelabels;
 		console.log(projects.nodelabels);
