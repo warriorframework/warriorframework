@@ -1164,7 +1164,7 @@ class variablePattern{
 
     formJsonObj(){
         var jsonObject = {};
-        jsonObject[this.name] = {
+        jsonObject = {
             "@start_pattern": (this.start_pattern === "") ? this.getDefaults("start_pattern") : this.start_pattern,
             "@end_pattern": (this.end_pattern === "") ? this.getDefaults("end_pattern") : this.end_pattern
         };

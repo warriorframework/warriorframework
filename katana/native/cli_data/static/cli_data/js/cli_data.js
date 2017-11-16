@@ -25,15 +25,15 @@ var cliData = {
 
         saveFile: function() {
             var $currentPage = katana.$activeTab;
-            var finalJson = cliData.Editor.getJson();
-            /*$.ajax({
+            $.ajax({
                 headers: {
                     'X-CSRFToken': $currentPage.find('input[name="csrfmiddlewaretoken"]').attr('value')
                 },
                 type: 'GET',
                 url: 'read_config_file/',
             }).done(function(config_file_data){
-                var callBack_on_accept = function(inputValue, finalJson){
+                var callBack_on_accept = function(inputValue){
+                    var finalJson = cliData.Editor.getJson();
                     $.ajax({
                         headers: {
                             'X-CSRFToken': $currentPage.find('input[name="csrfmiddlewaretoken"]').attr('value')
@@ -86,7 +86,7 @@ var cliData = {
                              }
                         });
                     })
-            });*/
+            });
         },
 
         getJson: function(){
@@ -103,21 +103,79 @@ var cliData = {
 
             var globalEnd = false;
 
-            for(var i=0; i<5; i++){
-                if(i==0){
+           finalJson.data.global.command_params = $($dataCarriers[0]).data().dataObject[0].jsonObj;
+           finalJson.data.global.verifications = {};
 
+           for(var i=0; i<$($dataCarriers[1]).data().dataObject.length; i++){
+               var key_name = $($dataCarriers[1]).data().dataObject[i].name;
+               var obj_data = $($dataCarriers[1]).data().dataObject[i].jsonObj
+               finalJson.data.global.verifications[key_name] = obj_data[key_name];
+           }
+
+           for(i=0; i<$($dataCarriers[2]).data().dataObject.length; i++){
+               var key_name = $($dataCarriers[2]).data().dataObject[i].name;
+               var obj_data = $($dataCarriers[2]).data().dataObject[i].jsonObj
+               finalJson.data.global.verifications[key_name] = obj_data[key_name];
+           }
+
+           finalJson.data.global.keys = {};
+
+           for(i=0; i<$($dataCarriers[3]).data().dataObject.length; i++){
+               var key_name = $($dataCarriers[3]).data().dataObject[i].name;
+               var obj_data = $($dataCarriers[3]).data().dataObject[i].jsonObj
+               finalJson.data.global.keys[key_name] = obj_data[key_name];
+           }
+
+           finalJson.data.global.variable_pattern = $($dataCarriers[4]).data().dataObject[0].jsonObj;
+
+
+            for(i=5; i<$dataCarriers.length; i+=5){
+                var temp_data = {}
+                for(var j=0; j<5; j++){
+                    if(j ==0){
+                        for(var k=0; k<$($dataCarriers[i+j]).data().dataObject.length; k++){
+                            var tempJsonVar = $($dataCarriers[i+j]).data().dataObject[k].jsonObj;
+                            for(var key in tempJsonVar){
+                                var jsonVar = {};
+                                temp_data[key] = tempJsonVar[key];
+                            }
+                        }
+                    } else if(j == 1){
+                        temp_data.command = [];
+                        for(var k=0; k<$($dataCarriers[i+j]).data().dataObject.length; k++){
+                            temp_data.command.push($($dataCarriers[i+j]).data().dataObject[k].jsonObj);
+                        }
+                    } else if(j == 2){
+                        for(var k=0; k<$($dataCarriers[i+j]).data().dataObject.length; k++){
+                            var tempJsonVar = $($dataCarriers[i+j]).data().dataObject[k].jsonObj;
+                            for(var key in tempJsonVar){
+                                var jsonVar = {};
+                                temp_data[key] = tempJsonVar[key];
+                                break;
+                            }
+
+                        }
+                    } else if(j == 3){
+                        for(var k=0; k<$($dataCarriers[i+j]).data().dataObject.length; k++){
+                            var tempJsonVar = $($dataCarriers[i+j]).data().dataObject[k].jsonObj;
+                            for(var key in tempJsonVar){
+                                var jsonVar = {};
+                                temp_data[key] = tempJsonVar[key];
+                                break;
+                            }
+
+                        }
+                    } else if(j == 4){
+                        for(var k=0; k<$($dataCarriers[i+j]).data().dataObject.length; k++){
+                            temp_data.variable_pattern = $($dataCarriers[i+j]).data().dataObject[k].jsonObj;
+                        }
+                    }
                 }
+                finalJson.data.testdata.push(jQuery.extend({}, temp_data));
             }
 
-            for(i=5; i<$dataCarriers.length; i++){
-                if(i%5 ==0 || i%5 == 4){
-
-                } else {
-
-                }
-            }
-
-            return finalJson;
+            console.log(finalJson);
+            return finalJson
         },
     },
 

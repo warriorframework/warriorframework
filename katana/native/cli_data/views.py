@@ -45,13 +45,9 @@ class CliDataFileClass(View):
 
     def post(self, request):
         json_data = json.loads(request.POST.get('json_data'))
-        print json_data
         data = xmltodict.unparse(json_data)
-        print data
         directory = request.POST.get('directory')
-        print directory
         filepath = os.path.join(directory, request.POST.get('filename') + ".xml")
-        print filepath
         message = ""
         saved = True
         try:
