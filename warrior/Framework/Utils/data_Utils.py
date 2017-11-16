@@ -284,10 +284,14 @@ def update_datarepository(input_dict):
 
 
 def get_object_from_datarepository(object_key, verbose=True):
-    """Gets the value for the object with the provided name from datarepositoy """
+    """ Gets the value for the object with the provided name from data repository.
+    object_key contains .(dot) will be treated as nested key """
     try:
         data_repository = config_Utils.data_repository
-        obj = data_repository[object_key]
+        keys = object_key.split('.')
+        obj = data_repository[keys[0]]
+        for key in keys[1:]:
+            obj = obj[key]
     except KeyError:
         obj = False
         if verbose:
@@ -937,13 +941,10 @@ def verify_data(expected, key, data_type='str', comparison='eq'):
         'le': lambda x, y: x <= y
     }
     result, err_msg, exp = validate()
-    keys = key.split('.')
-    value = get_object_from_datarepository(keys[0])
+    value = get_object_from_datarepository(key)
     key_err_msg = "In the given key '{0}', '{1}' is not present in data repository"
     if value:
         try:
-            for k in keys[1:]:
-                value = value[k]
             if result == "ERROR" or result == "EXCEPTION":
                 print_error(err_msg)
             elif not comp_funcs[comparison](value, exp):
@@ -959,9 +960,6 @@ def verify_data(expected, key, data_type='str', comparison='eq'):
                 print_info("The key, value pair '{0}:{1}' present in the  "
                            "data_repository satisfies the expected type & condition "
                            "'{2}:{3}'".format(key, value, data_type, comparison))
-        except KeyError:
-            print_error(key_err_msg.format(key, k))
-            result = "FALSE"
         except Exception as e:
             err_msg += "Got unknown exception {}\n".format(e)
             result = "EXCEPTION"
@@ -1437,12 +1435,8 @@ def get_var_by_string_prefix(string):
     if string.startswith("ENV."):
         return os.environ[string.split('.', 1)[1]]
     if string.startswith("REPO."):
-        keys = string.split('.')
-        val = get_object_from_datarepository(keys[1])
-        for key in keys[2:]:
-            val = val[key]
-        else:
-            return val
+        keys = string.split('.', 1)
+        return get_object_from_datarepository(keys[1])
 
 
 def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
@@ -1549,18 +1543,9 @@ def substitute_var_patterns(raw_value, start_pattern="${", end_pattern="}"):
     """
         substitute variable inside start and end pattern
     """
-    def get_data(var):
-        """
-            get data from datarepo
-        """
-        repokeys = var.split('.')
-        val = get_object_from_datarepository(repokeys[0])
-        for key in repokeys[1:]:
-            val = val[key]
-        else:
-            return val
+
     prefixes = {'ENV': ('environment', lambda var: os.environ[var]),
-                'REPO': ('data repository', get_data)}
+                'REPO': ('data repository', get_object_from_datarepository)}
     error_msg = ("Could not find any {0} variable {1!r} corresponding to {2!r}"
                  " provided in input data/testdata file.\nWill default to None"
                  )
