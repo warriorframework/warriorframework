@@ -358,6 +358,7 @@ span.close:before {
 		position: absolute;
 		left: 0;
 		top: 0;
+		border-bottom: none;
 }
 .tab.active {
 	background: rgb(255, 255, 255) !important;
@@ -534,11 +535,13 @@ span.close:before {
 	transform: translateZ(0);
 	-webkit-transition: max-width 0.2s ease, -webkit-transform 0.2s ease;
 	transition: max-width 0.2s ease, transform 0.2s ease;
+	text-overflow: initial;
 }
 
 .nav .tab.active[uid="launchpad"] {
 	max-width: 200px;
 	font-size: inherit;
+	text-overflow: ellipsis;
 }
 
 .nav .tab.active[uid="launchpad"]:before {
@@ -1875,13 +1878,23 @@ i.active {
 	color: inherit;
 }
 
+.htmlResults td[rowspan]:nth-child(2):hover,
 .htmlResults td[rowspan]:nth-child(3):hover,
-.htmlResults td[rowspan]:nth-child(4):hover {
+.htmlResults td[rowspan]:nth-child(4):hover,
+.htmlResults td[rowspan]:nth-child(5):hover,
+.htmlResults td[rowspan]:nth-child(6):hover,
+.htmlResults td[rowspan]:nth-child(7):hover,
+.htmlResults td[rowspan]:nth-child(8):hover{
 	overflow: visible;
 }
 
+.htmlResults td[rowspan]:nth-child(2):hover div:not(:empty),
 .htmlResults td[rowspan]:nth-child(3):hover div:not(:empty),
-.htmlResults td[rowspan]:nth-child(4):hover div:not(:empty) {
+.htmlResults td[rowspan]:nth-child(4):hover div:not(:empty),
+.htmlResults td[rowspan]:nth-child(5):hover div:not(:empty),
+.htmlResults td[rowspan]:nth-child(6):hover div:not(:empty),
+.htmlResults td[rowspan]:nth-child(7):hover div:not(:empty),
+.htmlResults td[rowspan]:nth-child(8):hover div:not(:empty) {
 	position: absolute;
 	background: #3699ff;
 	z-index: 1;
@@ -2535,9 +2548,21 @@ textarea {
 	font-size: 30px;
 	line-height: inherit;
 	font-weight: 600;
-	padding-left: 35px;
+	padding-left: 54px;
 }
-
+.logo-image {
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    left: 20px;
+    top: 5px;
+    background-size: 95%;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: block;
+    background-color: white;
+    border-radius: 9px;
+}
 .close {
 	float: none;
 	font-size: inherit;
