@@ -496,9 +496,6 @@ var treeData = [
 								nb.path = nf; 
 								projects.jsonTestSuites.splice(loc,0,nb);
 								projects.mapProjectJsonToUi();	// Send
-
-
-
 								return ;
 			  				}
 			  			
@@ -535,12 +532,18 @@ var treeData = [
 								projects.jsonProjectObject.Testsuites[loc] = oldSuite
 
 								projects.mapProjectJsonToUi();	// Send in the modified array
+								return ;
 			  				}
 
-
-
+		
 			  				
 			  			}
+			  			if ((d.type =='file')||(d.type =='directory')) {
+			  				projects.svg.select(".existingSuiteNode").remove();
+			  				projects.createExistingTree();
+			  			}
+			  			
+			  			
 			  	});
 
 
@@ -841,7 +844,7 @@ var treeData = [
 		console.log("stree ", stree);
 		var sroot = stree; 
 		var tree = d3.layout.tree()
- 					.size([500, 500]);
+ 					.size([500, 1000]);
  		var diagonal = d3.svg.diagonal()
  					.projection(function(d) { return [d.y, d.x]; });
 
@@ -855,7 +858,7 @@ var treeData = [
 
 
    		projects.eNodes = eNodes;  // Very important for drag end.
-
+   		projects.diagonal = diagonal; // Sa
   		// Normalize for fixed-depth.
   		var n = 0;
   		nodes.forEach(function(d) { d.y = d.depth * 180; d.id = ++n;});
@@ -897,6 +900,7 @@ var treeData = [
 		  link.enter().insert("path", "g")
 		   .attr("class", "link")
 		   .attr("d", diagonal);
+		   projects.link = link;
 	},
 	  
 
