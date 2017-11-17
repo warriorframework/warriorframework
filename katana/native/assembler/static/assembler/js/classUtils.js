@@ -75,7 +75,7 @@ class kwRepository {
             aria_selected_all_drivers = "true";
         }
         var $elem =  $('<div class="card border-secondary" style="padding: 1rem;">' +
-                            '<div class="card-header">' +
+                            '<div class="card-header assembler-no-bg">' +
                                 '<div class="row">' +
                                     '<div class="col-sm-1">' +
                                         '<i class="' + clone_icon + ' assembler-icon-pos-right" key="kwRepoClone" ' +
@@ -109,7 +109,7 @@ class kwRepository {
                                     '<div class="col-sm-1"></div>' +
                                     '<div class="col-sm-9">' +
                                         '<div class="card">' +
-                                            '<div class="card-header">' +
+                                            '<div class="card-header assembler-no-bg">' +
                                                 '<i class="' + allDriversIcon + '" katana-click="assembler.toggleAllDrivers" ' +
                                                     ' key="kwRepoAllDrivers" aria-selected="' + aria_selected_all_drivers + '"></i>&nbsp;' +
                                                 '<label>All Available Drivers</label>' +
@@ -124,7 +124,7 @@ class kwRepository {
                                 '</div>'+
                                 '<br>' +
                             '</div>' +
-                            '<div class="card-footer">' +
+                            '<div class="card-footer assembler-no-bg">' +
                                 '<div class="row" style="' + hideAvailability + '">' +
                                     '<div class="col-sm-1">' +
                                         '<i class="' + available_icon + ' assembler-icon-pos-right"></i>' +
@@ -267,7 +267,7 @@ class wsRepository {
             wsAvailableText = "Repository Available"
         }
         var html_contents = '<div class="card border-secondary" style="padding: 1rem;">' +
-                                '<div class="card-header">' +
+                                '<div class="card-header assembler-no-bg">' +
                                     '<div class="row">' +
                                         '<div class="col-sm-1">' +
                                             '<i class="' + cloneWsRepoIcon + ' assembler-icon-pos-right" ' +
@@ -307,7 +307,7 @@ class wsRepository {
                                     '</div>' +
                                     '<br>' +
                                 '</div>' +
-                                '<div class="card-footer">' +
+                                '<div class="card-footer assembler-no-bg">' +
                                     '<div class="row" style="' + hideAvailability + '">' +
                                         '<div class="col-sm-1">' +
                                             '<i class="' +  wsAvailableIcon + ' assembler-icon-pos-right"></i>' +
@@ -361,6 +361,7 @@ class dependency{
         this.version = data["version"];
         this.installed = data["installed"];
         this.matched = data["matched"];
+        this.description = data["description"];
     }
 
     get domElement(){
@@ -410,7 +411,9 @@ class dependency{
         var html_contents = '<div style="padding: 1rem;">' +
                                 '<div class="card border-secondary" style="width: 350px; height:190px; padding: 1rem;">' +
                                     '<div class="card-block">' +
-                                        '<h4 class="card-title">' + this.name +'</h4>' +
+                                        '<h4 class="card-title assembler-description">' + this.name +
+                                            '<span class="assembler-description-text">' + this.description + '</span>' +
+                                        '</h4>' +
                                         '<h6 class="card-subtitle mb-2 text-muted">Version: ' + this.version + '</h6><hr>' +
                                         '<h6 class="card-subtitle mb-2 text-muted">' + availableText + '&nbsp;</h6><br>' +
                                         '<button class="btn btn-success" ' + installFunction +
@@ -488,7 +491,7 @@ class toolsRepository{
             displayToolsFooter = "display: none";
         }
         var html_contents = '<div class="card border-secondary" style="padding: 1rem;">' +
-                                '<div class="card-header">' +
+                                '<div class="card-header assembler-no-bg">' +
                                     '<div class="row">' +
                                         '<div class="col-sm-1">' +
                                             '<i class="' + cloneRepoIcon + ' assembler-icon-pos-right"' +
@@ -521,7 +524,7 @@ class toolsRepository{
                                     '</div>' +
                                     '<br>' +
                                 '</div>' +
-                                '<div class="card-footer">' +
+                                '<div class="card-footer assembler-no-bg">' +
                                     '<div class="row" style="' + displayToolsFooter + '">' +
                                         '<div class="col-sm-1">' +
                                             '<i class="' + repoAvailableIcon + ' assembler-icon-pos-right"></i>' +

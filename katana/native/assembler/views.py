@@ -50,7 +50,7 @@ class ConfigurationFileOps(View):
 
         final_data = copy.deepcopy(json_data)
 
-        final_data = verify_dependency_json(json_data, final_data)
+        final_data = verify_dependency_json(json_data, final_data, ref_data)
         final_data = verify_drivers_json(final_data, ref_data)
         final_data = verify_warriorspace_data(final_data, ref_data)
         final_data = verify_tools_data(final_data, ref_data)
@@ -168,18 +168,24 @@ def verify_drivers_json(final_data, ref_data):
     return final_data
 
 
-def verify_dependency_json(json_data, final_data):
-    dependency_dict = {"jira": "1.0.3", "lxml": "3.5",
-                       "paramiko": "1.16.0", "pexpect": "4.2.0", "pysnmp": "4.3.2",
-                       "requests": "2.9.1", "selenium": "2.48.0", "xlrd": "1.0.0",
-                       "cloudshell-automation-api": "7.1.0.34"}
+def __get_dependency_dict(ref_data):
+    output = {}
+    for el in ref_data["data"]["warhorn"]["dependency"]:
+        output[el["@name"]] = {"version": el["@version"], "description": el["@description"]}
+    return output
+
+
+def verify_dependency_json(json_data, final_data, ref_data):
+    dependency_dict = __get_dependency_dict(ref_data)
     extra_dependencies = set()
     for i in range(0, len(json_data["data"]["warhorn"]["dependency"])):
         for key, value in json_data["data"]["warhorn"]["dependency"][i].items():
             if key == "@name":
                 if value in dependency_dict:
                     final_data["data"]["warhorn"]["dependency"][i]["version"] = dependency_dict[
-                        value]
+                        value]["version"]
+                    final_data["data"]["warhorn"]["dependency"][i]["description"] = dependency_dict[
+                        value]["description"]
                     try:
                         module_name = __import__(value)
                         some_var = module_name.__version__

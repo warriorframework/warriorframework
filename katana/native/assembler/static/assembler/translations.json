@@ -6,7 +6,7 @@
     },
     {
       "key": "toolsRepo",
-      "toolTip": "Add Tools Repository URL here."
+      "toolTip": "Add Tools Repository URL here. To clone a private repository, please use (git) SSH cloning - support for HTTPS will be added in future releases."
     },
     {
       "key": "toolsRepoLabel",
@@ -18,7 +18,7 @@
     },
     {
       "key": "kwRepo",
-      "toolTip": "Add Keyword Repository URL here."
+      "toolTip": "Add Keyword Repository URL here. To clone a private repository, please use (git) SSH cloning - support for HTTPS will be added in future releases."
     },
     {
       "key": "kwRepoLabel",
@@ -46,7 +46,7 @@
     },
     {
       "key": "wsRepo",
-      "toolTip": "Add a Warriorspace Repository URL here."
+      "toolTip": "Add a Warriorspace Repository URL here. To clone a private repository, please use (git) SSH cloning - support for HTTPS will be added in future releases."
     },
     {
       "key": "wsRepoLabel",
