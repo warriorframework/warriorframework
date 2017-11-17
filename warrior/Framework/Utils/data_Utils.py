@@ -978,7 +978,6 @@ def verify_arith_exp(expression, expected, comparison='eq'):
             1. expression: Arithmetic expression to be compared with expected.
                 This can have env & data_repo values embedded in it.
                     Ex. expression: "10+${ENV.x}-${REPO.y}*10"
-                Supported arithmetic operations: '+,-,*,/,%'
                 Expression will be evaluated based on python operator precedence
             2. expected: Value to be compared with the expression output
             3. comparison: Type of comparison(eq/ne/gt/ge/lt/le)
