@@ -429,7 +429,7 @@ var treeData = [
                'xoverflow':'visible'})
         	.append('svg:path')
             .attr('d', 'M 0,-5 L 10 ,0 L 0,5')
-            .attr('fill', '#ccc')
+            .attr('fill', '#666')
             .attr('stroke','#ccc');
 
        	defs  = projects.svg.append('defs');
@@ -445,8 +445,6 @@ var treeData = [
 		projects.feMerge.append("feMergeNode").attr("in","offsetBlur");
 		projects.feMerge.append("feMergeNode").attr("in","SourceGraphic");
 
-
-
       	// var force = d3.layout.force()
 		     //   	.nodes(pjExistingSuites.nodes)
 		     //    .links(pjDataSet.edges)
@@ -457,15 +455,13 @@ var treeData = [
 		     //    // .gravity(0.05)
 		     //    .start();
 
-		var mylinks = projects.svg.selectAll('.project-d3-link')
-			.data(pjDataSet.edges)
-			.enter().append('line')
-			.attr('class','project-d3-link');
-
+		
 		
 
 		projects.dragSuite = d3.behavior.drag()
 			  		.on('drag', function(d,i) {
+			  			if (d.id == 0) return;
+
 		 				d.x = d3.event.x;
 		            	d.y = d3.event.y;
 		            	//console.log('x =', d3.event.x, ", y=", d3.event.y)
@@ -473,6 +469,7 @@ var treeData = [
 		                return "translate(" + [ d.x,d.y ] + ")"
 		            	})
 			  		}).on('dragend', function(d,i) {
+						if (d.id == 0) return;
 
 	  					projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
 						projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
@@ -586,15 +583,16 @@ var treeData = [
 		// 			        .attr('x2', function(d) { return d.target.x; })
 		// 			        .attr('y2', function(d) { return d.target.y; });
 		// 		});
+		
 
 
 		gnodes.append("rect")
 	   		.attr("width",function(d){ 
-					if (d.ntype == 'project') return px_rect_width * 0.5;
+					if (d.ntype == 'project') return px_rect_width * 0.6;
    					return px_rect_width; 
    			})
    			.attr("height",function(d){ 
-					if (d.ntype == 'project') return px_rect_height * 2;
+					if (d.ntype == 'project') return px_rect_height * 4;
    					return px_rect_height; 
    			})
    			.attr("x", 0)
@@ -626,7 +624,13 @@ var treeData = [
    					// var dy = d3.mouse(this)[1];
    					// console.log(dx,dy, "x=", d3.event.pageX, " y=", d3.event.pageY, "d.x", d.x, ",", d.y , d.rowid, d.id);
    					var py = (d.rowid - 1) * px_row_height;
-   					var px = px_suite_column;
+   					var px = px_suite_column + px_rect_width;
+
+   					if (d.rowid == 0) {
+   						py = px_row_height;
+   						px = px_suite_column - px_rect_width/2;
+   					}
+
 					if (d.ntype == 'existingSuite') {
 						var i = d.rowid - 1;
 						var xlen = Math.floor(pjExistingSuites.nodes.length / 3); 
@@ -644,6 +648,9 @@ var treeData = [
 						;
 						var div = fobj.append("xhtml:div")
 						.append('div')
+						.attr('border-bottom-width', 10)
+   						.attr('border-right-width', 10)
+   			
 						.attr('x',  0)
 						.attr('y',  0)					
 						.style({
@@ -794,10 +801,6 @@ var treeData = [
 
 
 
-
-   		//gnodes.style("filter","url(#drop-shadow");
-		console.log("Filter-->", projects.filter );
-
     	var nodelabels = gnodes.append("text")
 	       .attr("class","nodelabel")
 	       .attr("x", 10)
@@ -813,28 +816,23 @@ var treeData = [
 
 		console.log("here2...", pjDataSet);
 
-
-	   	var edge_nodes = projects.svg.selectAll('.link')
-	   		.data(pjDataSet.edges)
-	   		.append('g')
-	   		.attr("class", "link")
-  			
-	   		//.attr("transform", function(d) {console.log("d-", d);  return("translate("+d.source.x+","+d.source.y+")");})
-	   		.append("line")
-  			.attr("id",function(d,i) {return 'edge'+i})
-		    .attr("x1", function(d) { return  d.source.x; } )
-		   	.attr("y1", function(d) { return  d.source.y; } )
-		    .attr("x2", function(d) { return  d.target.x; } )
-		   	.attr("y2", function(d) { return  d.target.y; } )
-		    .style("stroke","#ccc")
-		    .attr('marker-end','url(#arrowhead)')
-		    .style("pointer-events", "none");
-
-
-	// force.start();
+		// var mylinks = projects.svg.selectAll('.project-d3-link')
+		// 	.data(pjDataSet.edges)
+		// 	.enter().append('line')
+		// 	.attr('class','project-d3-link')
+		// 	.attr("id",function(d,i) {return 'edge'+i})
+		//     .attr("x1", function(d) { return  px_suite_column +  px_rect_width/2; } )
+		//    	.attr("y1", function(d) { return  (d.source.id) * px_row_height + px_row_height/2 } )
+		//     .attr("x2", function(d) { return  px_suite_column +  px_rect_width/2; } )
+		//    	.attr("y2", function(d) { return  (d.target.id ) * px_row_height + px_row_height/2; } )
+		//     .style("stroke","#ccc")
+		//     .attr('marker-end','url(#arrowhead)')
+		//     .style("pointer-events", "none");
 
 		
-
+	   	
+ 	   
+		
 		},
 
 
@@ -844,7 +842,7 @@ var treeData = [
 		console.log("stree ", stree);
 		var sroot = stree; 
 		var tree = d3.layout.tree()
- 					.size([500, 1000]);
+ 					.size([700, 1000]);
  		var diagonal = d3.svg.diagonal()
  					.projection(function(d) { return [d.y, d.x]; });
 
