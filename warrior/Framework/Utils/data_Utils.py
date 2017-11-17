@@ -1027,14 +1027,12 @@ def verify_arith_exp(expression, expected, comparison='eq'):
     if status is True:
         comp_result = comp_funcs[comparison](expression_ouput, expected)
         if comp_result is True:
-            print_info("Expression output '{0}' satisfies the given condition"
-                       "(value: '{1}' & comparison: '{2}')".format(expression_ouput,
-                                                                   expected, comparison))
+            print_info("Expression output satisfies the given condition: "
+                       "'{0} {1} {2}'".format(expression_ouput, comparison, expected))
         else:
             status = False
-            print_info("Expression output '{0}' doesn't satisfy the given condition"
-                       "(value: '{1}' & comparison: '{2}')".format(expression_ouput,
-                                                                   expected, comparison))
+            print_info("Expression output does not satisfy the given condition: "
+                       "'{0} {1} {2}'".format(expression_ouput, comparison, expected))
     return status
 
 

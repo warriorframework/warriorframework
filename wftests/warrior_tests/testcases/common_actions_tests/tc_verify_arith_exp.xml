@@ -1,0 +1,190 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+                <Name>tc_verify_arith_exp</Name>
+                <Title>Test verify_arith_exp keyword</Title>
+                <Engineer>Warrior_user</Engineer>
+                <Date>2017-11-17</Date>
+                <Time>16:34</Time>
+                <State/>
+                <InputDataFile>No_Data</InputDataFile>
+                <Datatype/>
+                <default_onError action="next"/>
+                <Logsdir/>
+                <Resultsdir/>
+                <ExpectedResults/>
+        </Details>
+        <Requirements>
+                <Requirement/>
+        </Requirements>
+        <Steps>
+                <step Driver="common_driver" Keyword="set_env_var" TS="1" draft="no">
+                        <Arguments>
+                                <argument name="var_value" value="10"/>
+                                <argument name="var_key" value="var1"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Set the environment variable</Description>
+                        <iteration_type type=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                        <Iteration_type type="Standard"/>
+                </step>
+                <step Driver="common_driver" Keyword="store_in_repo" TS="2" draft="no">
+                        <Arguments>
+                                <argument name="datavar" value="var2"/>
+                                <argument name="datavalue" value="20"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Set the data_repo variable</Description>
+                        <iteration_type type=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                        <Iteration_type type="Standard"/>
+                </step>
+                <step Driver="common_driver" Keyword="verify_arith_exp" TS="3" draft="no">
+                        <Arguments>
+                                <argument name="expected" value="30"/>
+                                <argument name="comparison" value="eq"/>
+                                <argument name="expression" value="10+20"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Verify simple arithmetic expression without env &amp; data_repo values</Description>
+                        <iteration_type type=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                        <Iteration_type type="Standard"/>
+                </step>
+                <step Driver="common_driver" Keyword="verify_arith_exp" TS="4" draft="no">
+                        <Arguments>
+                                <argument name="expected" value="-10"/>
+                                <argument name="comparison" value="eq"/>
+                                <argument name="expression" value="${ENV.var1}-${REPO.var2}"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Verify simple arithmetic expression with env &amp; data_repo values</Description>
+                        <iteration_type type=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                        <Iteration_type type="Standard"/>
+                </step>
+                <step Driver="common_driver" Keyword="verify_arith_exp" TS="5" draft="no">
+                        <Arguments>
+                                <argument name="expected" value="398.8333333333333"/>
+                                <argument name="comparison" value="eq"/>
+                                <argument name="expression" value="${ENV.var1}/12+${REPO.var2}**2-(1^${ENV.var1})%3"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Verify complex arithmetic expression</Description>
+                        <iteration_type type=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                        <Iteration_type type="Standard"/>
+                </step>
+                <step Driver="common_driver" Keyword="verify_arith_exp" TS="6" draft="no">
+                        <Arguments>
+                                <argument name="expected" value="10"/>
+                                <argument name="comparison" value="ne"/>
+                                <argument name="expression" value="${ENV.var1}-${REPO.var2}"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Verify arithmetic expression: ne</Description>
+                        <iteration_type type=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                        <Iteration_type type="Standard"/>
+                </step>
+                <step Driver="common_driver" Keyword="verify_arith_exp" TS="7" draft="no">
+                        <Arguments>
+                                <argument name="expected" value="39"/>
+                                <argument name="comparison" value="gt"/>
+                                <argument name="expression" value="${ENV.var1}+${REPO.var2}+10"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Verify arithmetic expression: gt</Description>
+                        <iteration_type type=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                        <Iteration_type type="Standard"/>
+                </step>
+                <step Driver="common_driver" Keyword="verify_arith_exp" TS="8" draft="no">
+                        <Arguments>
+                                <argument name="expected" value="41"/>
+                                <argument name="comparison" value="ge"/>
+                                <argument name="expression" value="${ENV.var1}+${REPO.var2}+10"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Verify arithmetic expression: ge</Description>
+                        <iteration_type type=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>negative</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                        <Iteration_type type="Standard"/>
+                </step>
+                <step Driver="common_driver" Keyword="verify_arith_exp" TS="9" draft="no">
+                        <Arguments>
+                                <argument name="expected" value="41"/>
+                                <argument name="comparison" value="lt"/>
+                                <argument name="expression" value="${ENV.var1}+${REPO.var2}+10"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Verify arithmetic expression: lt</Description>
+                        <iteration_type type=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                        <Iteration_type type="Standard"/>
+                </step>
+                <step Driver="common_driver" Keyword="verify_arith_exp" TS="10" draft="no">
+                        <Arguments>
+                                <argument name="expected" value="39"/>
+                                <argument name="comparison" value="le"/>
+                                <argument name="expression" value="${ENV.var1}+${REPO.var2}+10"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Verify arithmetic expression: le</Description>
+                        <iteration_type type=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>negative</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                        <Iteration_type type="Standard"/>
+                </step>
+        </Steps>
+</Testcase>
