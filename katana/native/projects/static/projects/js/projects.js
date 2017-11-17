@@ -880,7 +880,10 @@ var treeData = [
 
 		  nodeEnter.append("circle")
 		   .attr("r", 10)
-		   .style("fill", "#fff");
+		   .style("fill", function(d) {
+		   		if (d.type == 'directory') return "#aaa";
+		   		return "#fff";
+		   });
 
 		  nodeEnter.append("text")
 		   .attr("x", function(d) { 
