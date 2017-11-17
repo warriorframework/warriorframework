@@ -11,23 +11,27 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
+
 """SNMP utility module using the python PYSNMP module"""
 
 import os
 import re, sys, time
 from time import sleep
 from Framework.Utils import testcase_Utils, data_Utils, config_Utils
-from pysnmp.entity.rfc3413.oneliner import cmdgen, ntforg
-from pysnmp import error as snmp_exception
-from pysnmp.proto.rfc1902 import OctetString
 import threading
-from pysnmp.proto.api import v2c
-from pysnmp.entity import engine, config
-from pysnmp.carrier.asyncore.dgram import udp, udp6, unix
-from pyasn1.codec.ber import decoder
-from pysnmp.proto import api
-from pysnmp.smi import builder, view, compiler, rfc1902, error
-from pysnmp import debug 
+try:
+    from pysnmp.entity.rfc3413.oneliner import cmdgen, ntforg
+    from pysnmp import error as snmp_exception
+    from pysnmp.proto.api import v2c
+    from pysnmp.entity import engine, config
+    from pysnmp.carrier.asyncore.dgram import udp, udp6, unix
+    from pyasn1.codec.ber import decoder
+    from pysnmp.proto import api
+    from pysnmp.smi import builder, view, compiler, rfc1902, error
+    from pysnmp import debug
+    from pysnmp.proto.rfc1902 import OctetString
+except ImportError:
+    testcase_Utils.pNote("Please Install PYSNMP 4.3.8 or Above", "error")
 
 
 
@@ -54,7 +58,7 @@ class WSnmp(object):
     data_repo={}
     snmpEngine = {}
     mibViewController = None
-    __authProtocol = {'usmHMACMD5AuthProtocol':config.usmHMACMD5AuthProtocol, 
+    authProtocol = {'usmHMACMD5AuthProtocol':config.usmHMACMD5AuthProtocol, 
                         'usmHMACSHAAuthProtocol':config.usmHMACSHAAuthProtocol,
                         'usmAesCfb128Protocol':config.usmAesCfb128Protocol,
                         'usmAesCfb256Protocol':config.usmAesCfb256Protocol,
@@ -124,6 +128,10 @@ class WSnmp(object):
             self.privProtocol = cmdgen.usm3DESEDEPrivProtocol
         if self.privProtocol == "usmDESPrivProtocol":
             self.privProtocol = cmdgen.usmDESPrivProtocol
+        if not self.privProtocol:
+            self.privProtocol = cmdgen.usmNoPrivProtocol
+        if not self.authProtocol:
+            self.authProtocol = cmdgen.usmNoAuthProtocol
         return cmdgen.UsmUserData(userName=self.userName,
                                   authKey=self.authKey, privKey=self.privKey,
                                   authProtocol=self.authProtocol,
@@ -197,12 +205,12 @@ class WSnmp(object):
         Dispatcher will never finish as job#1 never reaches zero
         :return:None
         """
-        __snmpEngine = cls.get_asyncoredispatcher(port)
+        snmpEngine = cls.get_asyncoredispatcher(port)
         try:
             # Dispatcher will never finish as job#1 never reaches zero
-            __snmpEngine.transportDispatcher.runDispatcher()
+            snmpEngine.transportDispatcher.runDispatcher()
         except:
-            __snmpEngine.transportDispatcher.closeDispatcher()
+            snmpEngine.transportDispatcher.closeDispatcher()
             raise
 
     @classmethod
@@ -217,10 +225,11 @@ class WSnmp(object):
         mibBuilder = builder.MibBuilder()
         custom_mib_path = cls.data_repo.get("custom_mib_path")
         load_mib_module = cls.data_repo.get("load_mib_module")
-        __custom_mib_paths = []
-        if custom_mib_path:
+        temp_custom_mib_paths = []
+        if custom_mib_path and load_mib_module:
             custom_mib_paths = custom_mib_path.split(',')
             for paths in custom_mib_paths:
+                paths = paths.strip()
                 if 'http' in paths and '@mib@' not in paths:
                     if paths[-1] == '/':
                         paths = paths + '/@mib@'
@@ -230,22 +239,20 @@ class WSnmp(object):
                     paths = paths.replace('browse', 'raw')
                 if 'http' in paths and 'browse' in paths:
                     paths = paths.replace('browse', 'raw')
-                __custom_mib_paths.append(paths)
+                temp_custom_mib_paths.append(paths)
             if os.name == 'posix' and '/usr/share/snmp/' not in custom_mib_path:
-                __custom_mib_paths = __custom_mib_paths+',/usr/share/snmp/'
-            compiler.addMibCompiler(mibBuilder, sources=__custom_mib_paths)
-            cls.mibViewController = view.MibViewController(mibBuilder)
-            for mibs in load_mib_module.split(","):
-                mibBuilder.loadModules(mibs)
-        else:
-            for mibs in load_mib_module.split(","):
-                mibBuilder.loadModules(mibs)
-            mibBuilder.loadModules('SNMPv2-MIB', 'SNMP-COMMUNITY-MIB')
-            cls.mibViewController = view.MibViewController(mibBuilder)
-        __snmpEngine = cls.get_asyncoredispatcher(port)
-        config.addTransport(__snmpEngine, udp.domainName,
+                temp_custom_mib_paths.append('/usr/share/snmp/')
+            try:
+                compiler.addMibCompiler(mibBuilder, sources=temp_custom_mib_paths)
+                cls.mibViewController = view.MibViewController(mibBuilder)
+                mibs=load_mib_module.split(",")
+                mibBuilder.loadModules(*mibs)
+            except error.MibNotFoundError as excep:
+                testcase_Utils.pNote("{} Mib Not Found!".format(excep), "Error")
+        snmpEngine = cls.get_asyncoredispatcher(port)
+        config.addTransport(snmpEngine, udp.domainName,
                             udp.UdpTransport().openServerMode(('0.0.0.0', int(port))))
-        __snmpEngine.transportDispatcher.jobStarted(1) 
+        snmpEngine.transportDispatcher.jobStarted(1) 
 
     @classmethod 
     def close_trap_listner_job(cls, port):
@@ -254,10 +261,10 @@ class WSnmp(object):
         :param transportDispatcher:
         :return:None
         """
-        __snmpEngine = cls.get_asyncoredispatcher(port)
-        __snmpEngine.transportDispatcher.jobFinished(1)
+        snmpEngine = cls.get_asyncoredispatcher(port)
+        snmpEngine.transportDispatcher.jobFinished(1)
         try :
-            __snmpEngine.transportDispatcher.unregisterTransport(udp.domainName)
+            snmpEngine.transportDispatcher.unregisterTransport(udp.domainName)
         except:
             testcase_Utils.pNote("Can not unregister udp Transport domain",
                                  'warning')
@@ -288,17 +295,18 @@ class WSnmp(object):
         decoded_msg.append({"SNMPVER":execContext["securityModel"]})
         decoded_msg.append({"securityName":execContext['securityName']})
         for oid, val in varBinds:
-            output = rfc1902.ObjectType(rfc1902.ObjectIdentity(oid),
+            try:
+                output = rfc1902.ObjectType(rfc1902.ObjectIdentity(oid),
                              val).resolveWithMib(cls.mibViewController).prettyPrint()
+            except error.SmiError as excep:
+                testcase_Utils.pNote("{} Decode Error!".format(excep), "Error")
             op_list = output.split(" = ")
             oid = op_list[0].strip()
             value = op_list[1].strip()
-            #print "#######################Recived Notification from {} #######################".format(snmpEngine.msgAndPduDsp.getTransportInfo(stateReference)[-1][0])
-            #print output
             decoded_msg.append((oid, value))
-        __decoded_msg = cls.data_repo.get("snmp_trap_messages_{}".format(transportAddress))
-        __decoded_msg.append(decoded_msg)
-        cls.data_repo.update({"snmp_trap_messages_{}".format(transportAddress):__decoded_msg})
+        temp_decoded_msg = cls.data_repo.get("snmp_trap_messages_{}".format(transportAddress))
+        temp_decoded_msg.append(decoded_msg)
+        cls.data_repo.update({"snmp_trap_messages_{}".format(transportAddress):temp_decoded_msg})
 
     @staticmethod
     def get_first_node_name(mib_filepath, mib_filename):
@@ -332,13 +340,13 @@ class WSnmp(object):
         :return: Treu or False
         """
         result = True
-        __snmpEngine = cls.get_asyncoredispatcher(port)
+        snmpEngine = cls.get_asyncoredispatcher(port)
         #debug.setLogger(debug.Debug('all'))
         try:
-            authprotocol = cls.__authProtocol.get(authProtocol, None)
-            privprotocol =  cls.__authProtocol.get(privProtocol, None)
+            authprotocol = cls.authProtocol.get(authProtocol, None)
+            privprotocol =  cls.authProtocol.get(privProtocol, None)
             config.addV3User(
-                snmpEngine=__snmpEngine, userName=username,
+                snmpEngine=snmpEngine, userName=username,
                 authProtocol = authprotocol, authKey=authkey,
                 privProtocol = privprotocol, privKey=privkey,
                 securityEngineId = v2c.OctetString(hexValue=securityengineid)
@@ -357,12 +365,13 @@ class WSnmp(object):
         :param community: SNMP community string, default is 'public'
         :return:
         """
-        __snmpEngine = cls.get_asyncoredispatcher(port)
+        snmpEngine = cls.get_asyncoredispatcher(port)
         result = True
         try:
-            config.addV1System(__snmpEngine, community, community)
+            config.addV1System(snmpEngine, community, community)
             testcase_Utils.pNote("Added SNMP Community {}".format(community))
         except:
             testcase_Utils.pNote("ADD SNMP Community Failed", "error")
             result = False
         return result
+

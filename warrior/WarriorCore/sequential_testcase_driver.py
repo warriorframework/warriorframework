@@ -85,7 +85,7 @@ def execute_sequential_testcases(testcase_list, suite_repository,
         else:
             # if tc_rel_path is None, what are we doing here?
             tc_path = str(tc_rel_path)
-        print('\n')
+        print_info('\n')
         print_debug("<<<< Starting execution of Test case: {0}>>>>".
                     format(tc_path))
         action, tc_status = exec_type_driver.main(testcase)
@@ -249,7 +249,7 @@ def execute_sequential_testcases(testcase_list, suite_repository,
             "Teststuie result"
         print_debug(msg)
 
-        runmode, value = common_execution_utils.get_runmode_from_xmlfile(
+        runmode, value, _ = common_execution_utils.get_runmode_from_xmlfile(
                                                                 testcase)
         retry_type, retry_cond, retry_cond_value, retry_value, retry_interval = common_execution_utils.get_retry_from_xmlfile(testcase)
         if runmode is not None:
