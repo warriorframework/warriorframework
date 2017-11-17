@@ -1234,6 +1234,9 @@ startNewProject : function() {
 
 
 	savePopupToDetails: function() {
+		projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
+		projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
+
 		var popup = projects.lastPopup; 
 		katana.$activeTab.find("#projectName").val(popup.find('#projectName').val());
 		katana.$activeTab.find("#projectTitle").val(popup.find('#projectTitle').val());
@@ -1243,9 +1246,20 @@ startNewProject : function() {
 		katana.$activeTab.find("#project_onError_value").val(popup.find('#project_onError_value').val());
 		katana.$activeTab.find("#projectResultsDir").val(popup.find('#projectResultsDir').val());
 
+		projects.jsonProjectObject.Details['Name'] = popup.find('#projectName').val();  
+		projects.jsonProjectObject.Details['Title'] = popup.find('#projectTitle').val();
+		projects.jsonProjectObject.Details['State'] =  popup.find('#projectState').val(); 
+		projects.jsonProjectObject.Details['Engineer'] = popup.find('#projectEngineer').val(); 
+		projects.jsonProjectObject.Details['onError_action'] = popup.find('#project_onError_action').val(); 
+		projects.jsonProjectObject.Details['onError_value'] = popup.find('#project_onError_value').val(); 
+
+
 		katana.$activeTab.find(".project-details-popup-save").hide();
 		popup.find(".project-details-popup-save").hide();
 		katana.popupController.close(projects.lastPopup);
+
+
+		projects.mapProjectJsonToUi();	
 	},
 
 
@@ -1705,6 +1719,7 @@ Two global variables are heavily used when this function is called;
 		projects.fillProjectDefaultGoto();
 		console.log("Re-creating tree data. ..")
 		projects.createD3treeData();
+		projects.createD3tree();
 		
 	},  // end of function 
 
