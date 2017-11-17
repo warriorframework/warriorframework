@@ -3025,7 +3025,7 @@ div .tool-bar-links:active {
 	left: 15%;
 	min-width: 70%;
 	height: 600px;
-	width: -webkit-fit-content;
+	width: 75%;
 	border-radius: 2px;
 	-webkit-animation: fadeEffect 1s;
 	color: black;
@@ -3038,8 +3038,8 @@ div .tool-bar-links:active {
 	transition: opacity 400ms ease-in;
 }
 .execution.dialog-container.small {
-    left:25%;
-    min-width: 50%;
+    left:15%;
+    min-width: 40%;
     height: 250px;
 }
 
@@ -3072,7 +3072,7 @@ div .tool-bar-links:active {
 	margin-top: 40px;
 	height: calc(100% - 80px);
 	padding: 0;
-	overflow: hidden;
+	//overflow: hidden;
 }
 
 .execution.cmd-options-menu {
