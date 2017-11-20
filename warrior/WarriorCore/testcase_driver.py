@@ -232,7 +232,7 @@ def get_steps_list(testcase_filepath):
         new_step_list = Steps.findall('step')
         # execute step multiple times
         for _, step in enumerate(new_step_list):
-            runmode, value = common_execution_utils.get_runmode_from_xmlfile(step)
+            runmode, value, _ = common_execution_utils.get_runmode_from_xmlfile(step)
             retry_type, _, _, retry_value, _ = common_execution_utils.get_retry_from_xmlfile(step)
             if runmode is not None and value > 0:
                 go_next = len(step_list) + value + 1
