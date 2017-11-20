@@ -106,7 +106,7 @@ def get_testsuite_list(project_filepath):
     else:
         testsuite_list = testsuites.findall('Testsuite')
         for ts in testsuite_list:
-            runmode, value = common_execution_utils.\
+            runmode, value, _ = common_execution_utils.\
                 get_runmode_from_xmlfile(ts)
             retry_type, _, _, retry_value, _ = common_execution_utils.\
                 get_retry_from_xmlfile(ts)
