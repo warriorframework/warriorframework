@@ -189,6 +189,14 @@ class browser_actions(object):
         if remote is None:
             remote = data_Utils.getSystemData(self.datafile, system_name,
                                               "remote")
+        if binary is None:
+            binary = data_Utils.getSystemData(self.datafile, system_name, "binary")
+        if gecko_path is None:
+            gecko_path = data_Utils.getSystemData(self.datafile, system_name, "gecko_path")
+        if proxy_ip is None:
+            proxy_ip = data_Utils.getSystemData(self.datafile, system_name, "proxy_ip")
+        if gecko_path is None:
+            proxy_port = data_Utils.getSystemData(self.datafile, system_name, "proxy_port")
 
         webdriver_remote_url = ip if str(remote).strip().lower() == "yes"\
             else False
@@ -218,7 +226,7 @@ class browser_actions(object):
                 if type == "firefox":
                     ff_profile = self.browser_object.\
                         set_firefoxprofile(proxy_ip, proxy_port)
-                if binary != "" and gecko_path != "":
+                if binary != None and gecko_path != None:
                     browser_inst = self.browser_object.open_browser(
                         browser_details["type"], webdriver_remote_url,
                         binary=binary, gecko_path=gecko_path,
