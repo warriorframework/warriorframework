@@ -15,6 +15,7 @@ import os
 
 import json
 import Tools
+import getpass
 from Framework.Utils import xml_Utils, file_Utils
 from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.print_Utils import print_info
@@ -158,7 +159,7 @@ class WarriorHtmlResults:
         template_html = temp.read().replace('\n', '')
         temp.close()
         index = template_html.rfind('</table>')
-        return template_html[:index] + dynamic_html + template_html[index:] + self.get_war_version()
+        return template_html[:index] + dynamic_html + template_html[index:] + self.get_war_version() + self.get_user()
 
     def get_war_version(self):
         """ find the warrior version """
@@ -168,6 +169,11 @@ class WarriorHtmlResults:
             return '<div class="version">' + version + '</div>'
         else:
             return ''
+
+    def get_user(self):
+        """ find the user who executed the testcase """
+        user = getpass.getuser()
+        return '<div class="user">' + user + '</div>'
 
     def generate_html(self, junitObj, givenPath):
         """ build the html givenPath: added this feature in case of later down the line calling from outside junit
