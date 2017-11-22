@@ -32,10 +32,13 @@
             output = func(action_class_obj, **kw_args)
             if isinstance(output, tuple):
                 update_datarepository(output[1])
-                status &= output[0]
-                pNote(keyword_result_msg.format(keyword, output[0]))
+                curstatus = output[0]
             else:
-                status &= output
-                pNote(keyword_result_msg.format(keyword, output))
+                curstatus = output
+            pNote(keyword_result_msg.format(keyword, curstatus))
+            if str(curstatus).upper() in ['ERROR', 'EXCEPTION']:
+                status = 'ERROR'
+            elif status != 'ERROR':
+                status &= curstatus
 
         return status
