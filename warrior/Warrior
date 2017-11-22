@@ -17,15 +17,30 @@ if sys.version_info < (2, 7):
     sys.exit(0)
 try:
     import os
+    print "import os was successful"
     import shutil
+    print "import shutil was successful"
     import Framework.Utils.email_utils as email
+    print "import email was successful"
     import Framework.Utils as Utils
+    print "import Utils was successful"
     from Framework.Utils.print_Utils import print_error, print_info
+    print "import print_Utils was successful"
     from WarriorCore import warrior_cli_driver, testcase_driver, testsuite_driver, project_driver
+    print "import warrior_cli_driver, testcase_driver, testsuite_driver, project_driver were successful"
     from WarriorCore import ironclaw_driver, framework_detail
+    print "import ironclaw_driver, framework_detail were successful"
     from WarriorCore.Classes.jira_rest_class import Jira
+    print "import jira_rest_class was successful"
     from Framework.ClassUtils import database_utils_class
+    print "import database_utils_class was successful"
 except:
+    print "\033[1;31m*********************************************"
+    print " !-Unable to import library in Warrior executable"
+    print " !-Successful imported libraries are printed above"
+    print " !-Please check your import statements for any code added to the framework"
+    print " !-Possible cause could be circular import"
+    print "*********************************************\033[0m"
     raise
 """
 This is the Warrior executable
