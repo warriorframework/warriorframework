@@ -14,8 +14,8 @@ limitations under the License.
 import os
 
 import json
-import Tools
 import getpass
+import Tools
 from Framework.Utils import xml_Utils, file_Utils
 from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.print_Utils import print_info
@@ -31,8 +31,8 @@ class LineResult:
 
     def __init__(self):
         """Constructor for class LineResult"""
-        self.keys = ['type', 'name', 'info', 'timestamp', 'duration', 'status', 'impact', 'onerror', 'msc', 'static',
-                     'dynamic']
+        self.keys = ['type', 'name', 'info', 'timestamp', 'duration', 'status', 'impact',
+                     'onerror', 'msc', 'static', 'dynamic']
 
     def get_info(self, line):
         """gets info for line"""
@@ -43,8 +43,8 @@ class LineResult:
 
     def set_dynamic_content(self, line):
         """sets content that is subjected to change"""
-        self.data['dynamic'] = [line.get("keywords"), line.get("passes"), line.get("failures"), line.get("errors"),
-                                line.get("exceptions"), line.get("skipped")]
+        self.data['dynamic'] = [line.get("keywords"), line.get("passes"), line.get("failures"),
+                                line.get("errors"), line.get("exceptions"), line.get("skipped")]
         self.data['timestamp'] = line.get("timestamp")
 
     def set_attributes(self, line, variant, stepcount):
@@ -167,8 +167,7 @@ class WarriorHtmlResults:
         if os.path.isfile(path):
             version = open(path, 'r').read().splitlines()[1].split(':')[1]
             return '<div class="version">' + version + '</div>'
-        else:
-            return ''
+        return ''
 
     def get_user(self):
         """ find the user who executed the testcase """
@@ -176,8 +175,8 @@ class WarriorHtmlResults:
         return '<div class="user">' + user + '</div>'
 
     def generate_html(self, junitObj, givenPath):
-        """ build the html givenPath: added this feature in case of later down the line calling from outside junit
-        file ( no actual use as of now )
+        """ build the html givenPath: added this feature in case of later down the line
+        calling from outside junit file ( no actual use as of now )
         """
         if junitObj:
             self.junit_file = junitObj
