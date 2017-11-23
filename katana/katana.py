@@ -20,6 +20,7 @@ import re
 import sys
 import inspect
 import importlib
+import imp
 import io
 import subprocess
 import threading
@@ -163,21 +164,22 @@ def parsexmlobj():
     sys.path.insert(0, gpysrcdir)
     actionmodfile = os.path.relpath(ActionFile, gpysrcdir)
     # remove the extension
-    actionmodfile = os.path.splitext(actionmodfile)[0]
-    # change file path to module path (separated by .)
-    actionmodfile = ".".join(actionmodfile.split(os.sep))
-    action_module = importlib.import_module(actionmodfile)
+    basename = os.path.splitext(actionmodfile)[0]
+    classpath = ".".join(basename.split(os.sep))
+    mod_desc = imp.find_module(basename)
+    action_module = imp.load_module(basename, *mod_desc)
     action_class = inspect.getmembers(action_module, inspect.isclass)[0][1]
     action_methods = [item[0] for item in inspect.getmembers(action_class, inspect.isroutine)]
+    print "Checking wrapper kw {} in {}".format(vars_to_replace['wrapper_kw'], actionmodfile)
     if vars_to_replace['wrapper_kw'] in action_methods:
-        return "already exists"
+        return "Wrapper Keyword {} already exists;in {}. Create Wrapper Keyword with different name.".format(vars_to_replace['wrapper_kw'], ActionFile)
     Subkeyword_elem = tree.find('Subkeyword')
     subkw_list = Subkeyword_elem.findall('Skw')
     keyword_details = []
     for subkeyword in subkw_list:
         skw_attrs = subkeyword.attrib
         action_code = get_action(skw_attrs['Driver'], skw_attrs['Keyword'])
-        if actionmodfile != action_code.__module__:
+        if classpath != action_code.__module__:
             keyword_action_class = action_code.__module__+'.'+action_code.__name__
         else:
             keyword_action_class = ''
@@ -211,9 +213,9 @@ def parsexmlobj():
             actfile.write(kwdseqtempstr)
     except Exception as e:
         print "got exception <<{}>> while writing to action file".format(e)
-        return "Error writing to actionfile {}".format(ActionFile)
+        return "Error writing keyword {} to actionfile {}".format(vars_to_replace['wrapper_kw'], ActionFile)
 
-    return "new keyword {} saved".format(vars_to_replace['wrapper_kw'])
+    return "new keyword {} saved;in the path {}".format(vars_to_replace['wrapper_kw'], ActionFile)
 
 
 @route('/readdeftagsfile')

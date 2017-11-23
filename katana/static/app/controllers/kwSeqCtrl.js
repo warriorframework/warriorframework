@@ -827,51 +827,25 @@ app.controller('kwSeqCtrlr', ['$scope','$routeParams','$http', '$location', '$an
             .then(
                 function(data) {
                     console.log(data);
-                    if(data == "no"){
+                    var dlist = data.split(';');
+                    var typ;
+                    if(dlist[0].search('saved') != -1) {
+                        typ = "success";
+                        $location.path('/kwseq');
+                    } else if(dlist[0].search('already exist') != -1) {
+                        typ = "warning";
+                    } else {
+                        typ = "error";
+                    }
 
-                        var drivername = $scope.model.WrapperKeyword.Details.WrapperName;
-                        var actionPath = $scope.model.WrapperKeyword.Details.ActionFile;
-                        
-                        $scope.model = {
-                            "WrapperKeyword": {
-                                "Details": {
-                                    "WrapperName": "",
-                                    "dvname" : "",
-                                    "ActionFile": "",
-                                    "Description": "",
-                                },
-                                "Subkeyword": {
-                                    "Skw": []
-                                }
-                            }
-                        };
-                        $scope.status.nodatafile = '0';
-                        sweetAlert({
-                                 title: "Wrapper Keyword '" + drivername + "' is Saved.",
-                                 text: "In the path : " + actionPath,
+                    sweetAlert({
+                                 title: dlist[0],
+                                 text: dlist[1],
                                  closeOnConfirm: true,
                                  confirmButtonColor: '#3b3131',
                                  confirmButtonText: "Ok",
-                                 type: "success"
+                                 type: typ
                         });
-                       $location.path('/kwseq');
-                    }
-                    else{
-                        var drivername = $scope.model.WrapperKeyword.Details.WrapperName;
-                        sweetAlert({
-                            title: "Wrapper Keyword '" + drivername + "' Already Exist",
-                            showConfirmButton: true,
-                            type: "warning",
-                            text: "Create Wrapper Keyword with different Name",
-                            timer: 20000
-                        });
-
-                        if ($scope.savecreateTestcaseCap) {
-                            $location.path('/kwseq');
-                          }  else {
-
-                        }
-                    }
                 });
 
     }
