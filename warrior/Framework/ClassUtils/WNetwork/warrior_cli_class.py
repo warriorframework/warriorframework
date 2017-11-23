@@ -422,7 +422,6 @@ class WarriorCli(object):
             response_dict[resp_ref] = ""
             temp_resp_dict = {resp_ref: ""}
             resp_key_list.append(temp_resp_dict)
-        print "response dict before order:", response_dict
         return status, response_dict, resp_key_list
 
     @staticmethod
