@@ -18,7 +18,7 @@ import time
 import subprocess
 import getpass
 import Tools
-from collections import OrderedDict
+import collections
 from Framework import Utils
 from Framework.Utils.print_Utils import print_info, print_debug,\
  print_warning, print_exception, print_error
@@ -204,7 +204,7 @@ class WarriorCli(object):
             system_name=system_name, datafile=datafile)
         finalresult = True if len(testdata_dict) > 0 else False
         for key, details_dict in testdata_dict.iteritems():
-            response_dict = {}
+            response_dict = collections.OrderedDict()
             responses_dict[key] = ""
             command_list = details_dict["command_list"]
             stepdesc = "Send the following commands: "
@@ -244,7 +244,7 @@ class WarriorCli(object):
                             td_resp_dict = get_object_from_datarepository(str(session_id))
                             # checks if title_row value is not in td_resp_dict
                             if key not in td_resp_dict:
-                                # if not available then it first updates the 
+                                # if not available then it first updates the
                                 # title_row value to td_resp_dict
                                 td_resp_dict[key] = {}
                             # title_row value is available in td_resp_dict,
@@ -422,7 +422,7 @@ class WarriorCli(object):
             response_dict[resp_ref] = ""
             temp_resp_dict = {resp_ref: ""}
             resp_key_list.append(temp_resp_dict)
-        response_dict = OrderedDict(response_dict)
+        print "response dict before order:", response_dict
         return status, response_dict, resp_key_list
 
     @staticmethod
