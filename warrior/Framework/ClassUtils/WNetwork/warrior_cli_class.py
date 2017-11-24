@@ -18,7 +18,7 @@ import time
 import subprocess
 import getpass
 import Tools
-from collections import OrderedDict
+import collections
 from Framework import Utils
 from Framework.Utils.print_Utils import print_info, print_debug,\
  print_warning, print_exception, print_error
@@ -201,7 +201,7 @@ class WarriorCli(object):
             system_name=system_name, datafile=datafile)
         finalresult = True if len(testdata_dict) > 0 else False
         for key, details_dict in testdata_dict.iteritems():
-            response_dict = {}
+            response_dict = collections.OrderedDict()
             resp_key_list = []
             responses_dict[key] = ""
             command_list = details_dict["command_list"]
@@ -229,21 +229,24 @@ class WarriorCli(object):
                     result, response = new_obj_session._send_command_retrials(
                         details_dict, index=i, result=result,
                         response=response, system_name=td_sys)
-                    rspRes, response_dict, resp_key_list = new_obj_session._get_response_dict(
-                        details_dict, i, response, response_dict, resp_key_list)
+                    rspRes, response_dict, resp_key_list = new_obj_session.\
+                        _get_response_dict(details_dict, i, response,
+                                           response_dict, resp_key_list)
                     if len(response_dict) > 0:
                         for count, resp in enumerate(resp_key_list[i].keys()):
-                            session_id = self.get_session_id_for_resp_ref(details_dict, response_dict,
-                                                              resp, i, system_name,
-                                                              session_name, key)
+                            session_id = self.get_session_id_for_resp_ref\
+                                (details_dict, response_dict, resp, i,
+                                 system_name, session_name, key)
                             if len(resp_key_list[i].keys()) == 1:
-                                pNote("Portion of response saved to the data repository with key: "
-                                      "'{0}.{1}.{2}' and value: '{3}'".format(session_id, key, response_dict.keys()[i],
-                                                                              response_dict.values()[i]))
+                                pNote("Portion of response saved to the data "
+                                      "repository with key: '{0}.{1}.{2}' and value: '{3}'"
+                                      .format(session_id, key, response_dict.keys()[i],
+                                              response_dict.values()[i]))
                             elif len(resp_key_list[i].keys()) > 1:
                                 pNote("Portion of response saved to the data repository with key: "
-                                      "'{0}.{1}.{2}' and value: '{3}'".format(session_id, key, resp,
-                                                                              resp_key_list[i].values()[count]))
+                                      "'{0}.{1}.{2}' and value: '{3}'"
+                                      .format(session_id, key, resp,
+                                              resp_key_list[i].values()[count]))
 
                     result = (result and rspRes) if "ERROR" not in (
                                 result, rspRes) else "ERROR"
@@ -263,17 +266,20 @@ class WarriorCli(object):
         return finalresult, responses_dict
 
     def get_session_id_for_resp_ref(self, details_dict, response_dict,
-                                 resp, i, system_name, session_name, key):
+                                    resp, i, system_name, session_name, key):
         """
-        The session id is retrieved for updating and printing the response reference key & value
+        The session id is retrieved for updating and printing the
+        response reference key & value
         """
         sys_name = ses_name = ''
         if resp in response_dict.keys():
-            if details_dict["sys_list"][i] == '' or details_dict["sys_list"][i] is None:
+            if details_dict["sys_list"][i] == '' or \
+              details_dict["sys_list"][i] is None:
                 sys_name = system_name.split('.')[0]
             else:
                 sys_name = details_dict["sys_list"][i]
-            if details_dict["session_list"][i] == '' or details_dict["session_list"][i] is None:
+            if details_dict["session_list"][i] == '' or \
+               details_dict["session_list"][i] is None:
                 ses_name = session_name
             else:
                 ses_name = details_dict["session_list"][i]
@@ -298,7 +304,8 @@ class WarriorCli(object):
         return result, response
 
     @staticmethod
-    def _get_response_dict(details_dict, index, response, response_dict, resp_key_list = []):
+    def _get_response_dict(details_dict, index, response, response_dict,
+                           resp_key_list=[]):
         """Get the response dict for a command. """
         def print_warn_msg(keyvars, numpats):
             """ print a warning message if the number of vars to be stored with
@@ -390,7 +397,6 @@ class WarriorCli(object):
             response_dict[resp_ref] = ""
             temp_resp_dict = {resp_ref: ""}
             resp_key_list.append(temp_resp_dict)
-        response_dict = OrderedDict(response_dict)
         return status, response_dict, resp_key_list
 
     @staticmethod
