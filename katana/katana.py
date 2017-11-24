@@ -121,6 +121,8 @@ def get_correct_xml_and_root_element(value):
 
 
 def get_action(driver, keyword):
+    """get action class corresponding to the keyword in the driver
+    """
     drvmod = 'ProductDrivers.' + driver
     drvmodobj = importlib.import_module(drvmod)
     drvfile_methods = inspect.getmembers(drvmodobj, inspect.isroutine)
@@ -147,6 +149,9 @@ def parsexmlobj():
     This method fetch the XML object from the Katana UI of Keyword sequencing tool screen.
     And parse it to form a new Wrapper keyword & place it in the user provided file path.
     """
+    # vars_to_replace is used for substituting the values in the template wrapper keyword
+    # the keys are the strings in the template which would be replaced with the values
+    # computed here
     vars_to_replace = {'keyword_doc_list': ""}
     keyword_sequencer_template_file = "keyword_sequencer_template"
     keyword_doc_template = ("The keyword {} in Driver {} has defined arguments\n        {}.\n"
@@ -165,14 +170,17 @@ def parsexmlobj():
     actionmodfile = os.path.relpath(ActionFile, gpysrcdir)
     # remove the extension
     basename = os.path.splitext(actionmodfile)[0]
+    # convert basename in dir format separated by '/' to class format separated by '.'
     classpath = ".".join(basename.split(os.sep))
     mod_desc = imp.find_module(basename)
     action_module = imp.load_module(basename, *mod_desc)
+    # get the class in which the wrapper keyword has to be put
     action_class = inspect.getmembers(action_module, inspect.isclass)[0][1]
     action_methods = [item[0] for item in inspect.getmembers(action_class, inspect.isroutine)]
     print "Checking wrapper kw {} in {}".format(vars_to_replace['wrapper_kw'], actionmodfile)
     if vars_to_replace['wrapper_kw'] in action_methods:
-        return "Wrapper Keyword {} already exists;in {}. Create Wrapper Keyword with different name.".format(vars_to_replace['wrapper_kw'], ActionFile)
+        return ("Wrapper Keyword {} already exists;in {}. Create Wrapper Keyword"
+                " with different name.").format(vars_to_replace['wrapper_kw'], ActionFile)
     Subkeyword_elem = tree.find('Subkeyword')
     subkw_list = Subkeyword_elem.findall('Skw')
     keyword_details = []
@@ -180,8 +188,12 @@ def parsexmlobj():
         skw_attrs = subkeyword.attrib
         action_code = get_action(skw_attrs['Driver'], skw_attrs['Keyword'])
         if classpath != action_code.__module__:
+            # the sub keyword action is different from the wrapper keyword
+            # action, hence need to import
             keyword_action_class = action_code.__module__+'.'+action_code.__name__
         else:
+            # the sub keyword action is same as wrapper keyword action,
+            # hence can be called directly with self
             keyword_action_class = ''
         arguments = subkeyword.find('Arguments')
         kw_args = {}
@@ -189,12 +201,17 @@ def parsexmlobj():
             argument_list = arguments.findall('argument')
             kw_args = {arg.get('name'): arg.get('value') for arg in argument_list}
         keyword_details.append((skw_attrs['Keyword'], keyword_action_class, kw_args))
+        # documenation of individual keywords in the katana is generated here
         arg_list_str = ','.join(['{}="{}"'.format(key, value)
                                  for (key, value) in kw_args.iteritems()])
         vars_to_replace['keyword_doc_list'] += keyword_doc_template.format(
                                                 skw_attrs['Keyword'],
                                                 skw_attrs['Driver'], arg_list_str)
     else:
+        # generating the code to substitute keyword_details in template
+        # this would be a list of three-tuples where each three tuple
+        # corresponds to a subkeyword with details of (keyword name,
+        # action class corresponding to the keyword, dictionary of named arguments)
         ws27 = ',\n'+' '*27
         ws28 = ws27+' '
         inner_to_print_list = ['('+ws28.join(["'{}', '{}'".format(a, b),
@@ -202,12 +219,15 @@ def parsexmlobj():
         outer_to_print = '['+ws27.join(inner_to_print_list)+']'
         vars_to_replace['keyword_details'] = outer_to_print
 
+    # vars_to_replace is used here to sustitute the patterns in keyword template
+    # which would be appended as wrapper keyword in the corresponding action class
     with io.open(keyword_sequencer_template_file) as kwdseqtemp:
         kwdseqtempstr = kwdseqtemp.read()
     from string import Template
     kwdseqtemp = Template(kwdseqtempstr)
     kwdseqtempstr = kwdseqtemp.substitute(vars_to_replace)
 
+    # appending the wrapper keyword code to the action class corresponding to wrapper keyword
     try:
         with io.open(ActionFile, 'a') as actfile:
             actfile.write(kwdseqtempstr)

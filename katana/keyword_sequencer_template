@@ -36,6 +36,9 @@
             else:
                 curstatus = output
             pNote(keyword_result_msg.format(keyword, curstatus))
+            # wrapper keyword result is pass if all the keywords passed (True) else fails
+            # with Fail if any of the keywords fail (False) or ERROR if any of the keyword
+            # fails with ERROR or EXCEPTION
             if str(curstatus).upper() in ['ERROR', 'EXCEPTION']:
                 status = 'ERROR'
             elif status != 'ERROR':
