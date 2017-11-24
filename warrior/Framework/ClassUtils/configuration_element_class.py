@@ -22,7 +22,6 @@ import decimal
 from Framework.Utils.print_Utils import print_error
 import Framework.Utils as Utils
 
-
 class ConfigurationElement(object):
     """
         Configuration element to support arbitrary xml object depth
@@ -42,7 +41,6 @@ class ConfigurationElement(object):
         :param string:
         :return:
         """
-
         # Create a regex search object which contains
         # a group object with the text within the start and end pattern
         # and another group object with the text and start/end pattern
@@ -51,8 +49,8 @@ class ConfigurationElement(object):
         # ? matches until the first occurence of the next pattern, in this case
         # it matches the first occurence of the end pattern
         text_between_pattern = r"(.*?)"
-        return re.search(r".*(" + re.escape(self.start_pat) + text_between_pattern +
-                         re.escape(self.end_pat) + r").*", string)
+        return re.search(r".*(" + re.escape(self.start_pat) + text_between_pattern +\
+            re.escape(self.end_pat) + r").*", string)
 
     def expand_variables(self, string):
         """
@@ -77,10 +75,7 @@ class ConfigurationElement(object):
         # When end_pat_index == -1, which means end_pattern is not found in the return_value string
         # Get the regex match object of the substring
         # which looks for text between start and endpattern
-        if isinstance(return_value, str):
-            match = self.__find_match(return_value)
-        else:
-            match = None
+        match = self.__find_match(return_value)
         # Only substitued the string when there is a match
         while match is not None:
             # match.group(2) contains the pre-sub value
@@ -124,14 +119,13 @@ class ConfigurationElement(object):
                 parsed_value = self.__parse_list("{" + match.group(2) + "}")
             except (ValueError, TypeError, AttributeError):
                 print_error("Invalid list range found")
-                return {'Error': False}
+                return {'Error':False}
             if parsed_value:
                 result[match.group(2)] = parsed_value
-            return_value = return_value.replace(return_value[:return_value.find(check) +
-                                                             len(check)], '')
+            return_value = return_value.replace(return_value[:return_value.find(check) + len(check)], '')
             match = self.__find_match(return_value[:return_value.find(check) + len(check)])
         if result == {}:
-            return {'False': False}
+            return {'False':False}
         return result
 
     def get_list(self, string):
@@ -168,23 +162,19 @@ class ConfigurationElement(object):
         return_value = string
         result = {}
         check = self.end_pat
-        if return_value is not False:
-            match = self.__find_match(return_value[:return_value.find(check) + len(check)])
-        else:
-            match = None
+        match = self.__find_match(return_value[:return_value.find(check) + len(check)])
         while match is not None:
             try:
                 parsed_value = self.__parse_list(self.get_value(match.group(2)))
             except (ValueError, TypeError, AttributeError):
                 print_error("Invalid list range found")
-                return {'Error': False}
+                return {'Error':False}
             if parsed_value:
                 result[match.group(2)] = parsed_value
-            return_value = return_value.replace(return_value[:return_value.find(check) +
-                                                             len(check)], '')
+            return_value = return_value.replace(return_value[:return_value.find(check) + len(check)], '')
             match = self.__find_match(return_value[:return_value.find(check) + len(check)])
         if result == {}:
-            return {'False': False}
+            return {'False':False}
         return result
 
     def __parse_list(self, string):
@@ -211,7 +201,8 @@ class ConfigurationElement(object):
                 else:
                     result.append(var)
             return result
-        return False
+        else:
+            return False
 
     def __frange(self, x, y, jump=None):
         """
@@ -237,8 +228,7 @@ class ConfigurationElement(object):
         if jump == 0:
             raise ValueError("step value cannot be 0")
         if (x > y and jump > 0) or (x < y and jump < 0):
-            raise ValueError("sign of step value must not be the same as difference between"
-                             "comparing values")
+            raise ValueError("sign of step value must not be the same as difference between comparing values")
 
         if x < y:
             while x <= y:
@@ -291,7 +281,7 @@ class ConfigurationElement(object):
                 return self.attributes[value]
         except KeyError:
             print_error("Key error node " + self.name + " does not have sub node "
-                        + value.split('.')[0] + ". Cannot complete remainder of search for " + value)
+                  + value.split('.')[0] + ". Cannot complete remainder of search for " + value)
             return None
 
     def set_value(self, key, value):
@@ -309,7 +299,7 @@ class ConfigurationElement(object):
                 self.attributes[key] = value
         except KeyError:
             print_error("Key error node " + self.name + " does not have sub node "
-                        + key.split('.')[0] + ". Cannot complete remainder of search for " + key)
+                  + key.split('.')[0] + ". Cannot complete remainder of search for " + key)
 
     def get_node(self, value):
         """

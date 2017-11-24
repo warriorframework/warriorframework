@@ -158,7 +158,7 @@ class TestData(object):
                     print_error("Multiple lists with different length found in command text")
                     details_dict["command_list"][cmd_index] = False
                     details_dict["verify_text_list"][cmd_index] = []
-            else:
+            elif details_dict["verify_text_list"][cmd_index]:
                 print_error("Ignored verify text for current invalid cmd")
                 details_dict["verify_text_list"][cmd_index] = []
         return cmd_list_substituted
@@ -561,7 +561,6 @@ class TestDataIterations(object):
         cmd_list_length = len(cmd_list)
         cmd_loc_list = [0]
         cmd_size = 1
-        cmd_split = ""
         cmd_list_subs = []
         for i, cmd in enumerate(cmd_list):
             vc_file = vc_file_list[i]
@@ -588,7 +587,7 @@ class TestDataIterations(object):
                 # move on to the next command
                 # This also means that the command parameters do not have any
                 # iteration patterns because the validation was already done.
-                if '+' not in cmd:
+                if isinstance(cmd, str) and '+' not in cmd:
                     td_obj = TestData()
                     cmd_list_subs = td_obj.list_substitution_precheck(vc_file_list[i], details_dict, '${', '}')
                 if cmd_iter_pattern != "" or (cmd_list_subs[0][i] != False and '+' not in cmd):
@@ -605,8 +604,6 @@ class TestDataIterations(object):
                         (cmd_iter_pattern, details_dict, i, vc_file)
 
                     details_dict = cmdresolved_details_dict
-                    if cmd_iter_pattern != "":
-                        cmd_split = cmd.split('+')[0]
 
                 new_details_dict = self.expand_vfy_params\
                     (details_dict, i, vc_file, cmd_iter_pattern)
