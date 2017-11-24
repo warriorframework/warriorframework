@@ -10,7 +10,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from __builtin__ import str
 import os
 import re
 from collections import OrderedDict
@@ -467,27 +466,35 @@ def _get_cmd_details(testdata, global_obj, system_name,
             vfylist, maplist = _get_mapping_details(global_obj, vfylist)
             resultant_list = maplist
         elif param == "resp_key_list":
-            def find_key_elem(key):
-                """get the key_elem from test case corresponding to key from
-                the testdata or global section. Return None if it is not
-                found in both testdata and global section
-                """
-                if testdata.find(key) is not None:
-                    return testdata.find(key)
-                if global_obj is not None:
-                    global_key_elem = global_obj.find("keys")
-                    global_keys = xml_Utils.get_child_node_list(global_key_elem)
-                    # return the first matched entry in global section with tag=key
-                    return [glob_key for glob_key in global_keys if glob_key.tag == key][0]
-                return None
-            keylist = _get_cmdparams_list(testdata, global_obj, attrib)[0]
-            if keylist:
-                # get the keys to be used for pattern matching in this command
-                keys = [key.strip() for key in keylist.split(',')]
-                # get the xml elements corresponding to the key
-                resultant_list = [map(find_key_elem, keys)]
-            else:
-                resultant_list = [None] * len(vfylist)
+            resultant_list = []
+            keyslist = _get_cmdparams_list(testdata, global_obj, attrib)
+            for keys in keyslist:
+                elem_list = []
+                if keys is None:
+                    resultant_list.append(None)
+                    continue
+                keylist = [key.strip() for key in keys.split(',')]
+                for key in keylist:
+                    # get the key_elem from test case corresponding to key from
+                    # the testdata or global section. Return None if it is not
+                    # found in both testdata and global section
+                    if testdata.find(key) is not None:
+                        elem_list.append(testdata.find(key))
+                        continue
+                    if global_obj is not None:
+                        global_key_elem = global_obj.find("keys")
+                        global_keys = xml_Utils.get_child_node_list(global_key_elem)
+                        # return the first matched entry in global section with tag=key
+                        for glob_key in global_keys:
+                            if glob_key.tag == key:
+                                elem_list.append(glob_key)
+                                break
+                        else:
+                            elem_list.append(None)
+                    else:
+                        elem_list.append(None)
+                else:
+                    resultant_list.append(elem_list)
         else:
             resultant_list = _get_cmdparams_list(testdata, global_obj, attrib)
             if param == "sys_list":

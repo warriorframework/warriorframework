@@ -308,10 +308,17 @@ class WarriorCli(object):
             elif resp_keys is not None:
                 keys = resp_ref.split(',')
                 # get the patterns from pattern entries in testdata file
-                patterns = [k.get("resp_pattern_req") for k in resp_keys]
+                patterns = [None if k is None else k.get("resp_pattern_req") for k in resp_keys]
                 # warn if number of patterns does not match number of resp_ref keys
                 if len(keys) != len(patterns):
                     print_warn_msg(keys, len(patterns))
+                for k, p in zip(keys, patterns):
+                    if p is None:
+                        print_error("There is no pattern element corresponding to {}, please check".format(k))
+                        status = False
+                else:
+                    if status is False:
+                        return status, response_dict
                 if inorder:
                     pNote(save_msg1+' inorder.')
                     # since inorder pattern matching selected, join all the
