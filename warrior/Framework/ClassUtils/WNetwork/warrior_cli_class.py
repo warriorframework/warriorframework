@@ -18,7 +18,7 @@ import time
 import subprocess
 import getpass
 import Tools
-import collections
+from collections import OrderedDict
 from Framework import Utils
 from Framework.Utils.print_Utils import print_info, print_debug,\
  print_warning, print_exception, print_error
@@ -201,7 +201,7 @@ class WarriorCli(object):
             system_name=system_name, datafile=datafile)
         finalresult = True if len(testdata_dict) > 0 else False
         for key, details_dict in testdata_dict.iteritems():
-            response_dict = collections.OrderedDict()
+            response_dict = OrderedDict()
             resp_key_list = []
             responses_dict[key] = ""
             command_list = details_dict["command_list"]
