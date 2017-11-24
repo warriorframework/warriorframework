@@ -235,7 +235,7 @@ def parsexmlobj():
         print "got exception <<{}>> while writing to action file".format(e)
         return "Error writing keyword {} to actionfile {}".format(vars_to_replace['wrapper_kw'], ActionFile)
 
-    return "new keyword {} saved;in the path {}".format(vars_to_replace['wrapper_kw'], ActionFile)
+    return "wrapper keyword {} saved;in the path {}".format(vars_to_replace['wrapper_kw'], ActionFile)
 
 
 @route('/readdeftagsfile')
