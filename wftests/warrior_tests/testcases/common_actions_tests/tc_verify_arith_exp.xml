@@ -4,8 +4,8 @@
                 <Name>tc_verify_arith_exp</Name>
                 <Title>Test verify_arith_exp keyword</Title>
                 <Engineer>Warrior_user</Engineer>
-                <Date>2017-11-17</Date>
-                <Time>16:34</Time>
+                <Date>2017-11-24</Date>
+                <Time>16:51</Time>
                 <State/>
                 <InputDataFile>No_Data</InputDataFile>
                 <Datatype/>
@@ -69,9 +69,9 @@
                 </step>
                 <step Driver="common_driver" Keyword="verify_arith_exp" TS="4" draft="no">
                         <Arguments>
-                                <argument name="expected" value="-10"/>
+                                <argument name="expected" value="${REPO.var2}"/>
                                 <argument name="comparison" value="eq"/>
-                                <argument name="expression" value="${ENV.var1}-${REPO.var2}"/>
+                                <argument name="expression" value="${ENV.var1}*2"/>
                         </Arguments>
                         <onError action="next"/>
                         <Description>Verify simple arithmetic expression with env &amp; data_repo values</Description>
@@ -103,20 +103,17 @@
                 </step>
                 <step Driver="common_driver" Keyword="verify_arith_exp" TS="6" draft="no">
                         <Arguments>
-                                <argument name="expected" value="10"/>
+                                <argument name="expected" value="${ENV.var1}"/>
                                 <argument name="comparison" value="ne"/>
                                 <argument name="expression" value="${ENV.var1}-${REPO.var2}"/>
                         </Arguments>
                         <onError action="next"/>
                         <Description>Verify arithmetic expression: ne</Description>
                         <iteration_type type=""/>
-                        <Execute ExecType="Yes">
-                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
-                        </Execute>
+                        <Execute ExecType="Yes"/>
                         <context>positive</context>
                         <impact>impact</impact>
                         <runmode type="Standard" value=""/>
-                        <Iteration_type type="Standard"/>
                 </step>
                 <step Driver="common_driver" Keyword="verify_arith_exp" TS="7" draft="no">
                         <Arguments>

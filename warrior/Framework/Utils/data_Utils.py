@@ -980,6 +980,7 @@ def verify_arith_exp(expression, expected, comparison='eq'):
                     Ex. expression: "10+${ENV.x}-${REPO.y}*10"
                 Expression will be evaluated based on python operator precedence
             2. expected: Value to be compared with the expression output
+                This can be a env or data_repo value.
             3. comparison: Type of comparison(eq/ne/gt/ge/lt/le)
                 eq - check if both are same(equal)
                 ne - check if both are not same(not equal)
@@ -992,10 +993,12 @@ def verify_arith_exp(expression, expected, comparison='eq'):
     """
 
     status = True
-    # Substitute env values in the expression
+    # Substitute env values in the expression & expected
     expression = sub_from_env_var(expression)
-    # Substitute data_repo values in the expression
+    expected = sub_from_env_var(expected)
+    # Substitute data_repo values in the expression & expected
     expression = sub_from_data_repo(expression)
+    expected = sub_from_data_repo(expected)
     try:
         expression_ouput = eval(expression)
         expected = float(expected)
