@@ -14,8 +14,6 @@ limitations under the License.
 """
 Module that has all tetdata related class and methods
 """
-
-
 import re
 from xml.etree import ElementTree
 from collections import OrderedDict
@@ -63,7 +61,9 @@ VFY_PARAM_LIST = ["verify_text_list", "verify_context_list",
 VERIFY_PARAMS = ["verify_context_list", "verify_on_list", "verify_map_list"]
 
 VARSUB_PARAM_LIST = ["verify_text_list", "verify_context_list", "verify_on_list",
-                    "verify_map_list", "operator_list", "cond_value_list", "cond_type_list", "resp_key_list"]
+                     "verify_map_list", "operator_list", "cond_value_list",
+                     "cond_type_list", "resp_key_list"]
+
 
 class TestData(object):
     """
@@ -92,11 +92,11 @@ class TestData(object):
         """
         vc_file_list = None if vc_file is None else details_dict["vc_file_list"]
         for param, _ in CMD_PARAMS.items():
-            if param not in VARSUB_PARAM_LIST and param!="vc_file_list":
+            if param not in VARSUB_PARAM_LIST and param != "vc_file_list":
                 # list in here is just a list of strings
                 string_list = details_dict[param]
                 new_string_list = string_Utils.sub_from_varconfig\
-                (vc_file_list, string_list, var_sub, start_pat, end_pat)
+                    (vc_file_list, string_list, var_sub, start_pat, end_pat)
                 details_dict[param] = new_string_list
 
             elif param in VARSUB_PARAM_LIST:
@@ -105,10 +105,9 @@ class TestData(object):
                 for i, sub_list in enumerate(string_list):
                     if sub_list is not None:
                         sub_vc_file_list = None if vc_file_list is None\
-                        else [vc_file_list[i]]*len(sub_list)
-                        new_sub_list = string_Utils.sub_from_varconfig(
-                                        sub_vc_file_list, sub_list,
-                                        var_sub, start_pat, end_pat)
+                         else [vc_file_list[i]]*len(sub_list)
+                        new_sub_list = string_Utils.sub_from_varconfig(sub_vc_file_list, sub_list,
+                                                                       var_sub, start_pat, end_pat)
 
                         string_list[i] = new_sub_list
                         details_dict[param] = string_list
@@ -134,7 +133,7 @@ class TestData(object):
                 return 'Error'
         elif len(dict_of_lists.values()) == 1 and dict_of_lists.values()[0]:
             return len(dict_of_lists.values()[0])
-        
+
         return False
 
     def cmd_quote_check(self, cfg_elem_obj, details_dict):
@@ -159,7 +158,7 @@ class TestData(object):
                     print_error("Multiple lists with different length found in command text")
                     details_dict["command_list"][cmd_index] = False
                     details_dict["verify_text_list"][cmd_index] = []
-            else:
+            elif details_dict["verify_text_list"][cmd_index]:
                 print_error("Ignored verify text for current invalid cmd")
                 details_dict["verify_text_list"][cmd_index] = []
         return cmd_list_substituted
@@ -203,7 +202,7 @@ class TestData(object):
         :param details_dict:
         :return:
             pair of list of boolean returned from cmd_quote_check and verify_text_check
-        """ 
+        """
         if len(details_dict["command_list"]) != len(details_dict["verify_text_list"]):
             raise ValueError("command list and verify_text_list aren't the same length")
 
@@ -245,7 +244,8 @@ class TestData(object):
                         expanded_str.append(raw_str.replace(start_pat+str_match+end_pat, str(value)))
                 else:
                     for index, value in enumerate(list_value):
-                        expanded_str[index] = expanded_str[index].replace(start_pat+str_match+end_pat, str(value))
+                        expanded_str[index] = expanded_str[index].\
+                         replace(start_pat+str_match+end_pat, str(value))
             else:
                 if str_match == 'Error':
                     return 'Error'
@@ -264,8 +264,10 @@ class TestData(object):
             list of value indicating if the cmd has list substitution or not
         """
         expanded_cmd = []
-        cmd_result = string_Utils.get_list_from_varconfigfile(details_dict["command_list"][cmd_index], varconfigfile, start_pat, end_pat)
-        expanded_cmd = self.string_sub(details_dict["command_list"][cmd_index], cmd_result, start_pat, end_pat)
+        cmd_result = string_Utils.get_list_from_varconfigfile(details_dict["command_list"][cmd_index],
+                                                              varconfigfile, start_pat, end_pat)
+        expanded_cmd = self.string_sub(details_dict["command_list"][cmd_index], cmd_result,
+                                       start_pat, end_pat)
 
         if expanded_cmd and expanded_cmd != 'Error':
             # Every cmd in here supposed to have at least 1 list sub
@@ -293,13 +295,16 @@ class TestData(object):
         verify_text_match_list = []
         for verify_text_string in details_dict["verify_text_list"][cmd_index]:
 
-            verify_text_result = string_Utils.get_list_from_varconfigfile(verify_text_string, varconfigfile, start_pat, end_pat)
+            verify_text_result = string_Utils.get_list_from_varconfigfile(verify_text_string,
+                                                                          varconfigfile, start_pat,
+                                                                          end_pat)
             expanded_verify_text = []
 
             # add the value to the verify text list (1 cmd can have multiple verify text)
             verify_text_match_list.append(verify_text_result.values())
 
-            expanded_verify_text = self.string_sub(verify_text_string, verify_text_result, start_pat, end_pat)
+            expanded_verify_text = self.string_sub(verify_text_string, verify_text_result,
+                                                   start_pat, end_pat)
 
             if expanded_verify_text and expanded_verify_text != 'Error':
                 expanded_verify_list.append(expanded_verify_text)
@@ -317,8 +322,10 @@ class TestData(object):
         """
             In the case of both command list and verify text list get list substitution
             handle the following case:
-            command and verify text share same substitution: 1-1 match the list value, so cmd 1 - verify 1, cmd2 - verify 2
-            command and verify text have different substitution: 1-many match the list value, so cmd 1 - verify a, verify b, verify c
+            command and verify text share same substitution: 1-1 match the list value,
+            so cmd 1 - verify 1, cmd2 - verify 2
+            command and verify text have different substitution: 1-many match the list value,
+            so cmd 1 - verify a, verify b, verify c
             command has list substitution but verify text doesn't: 1-1 match, cmd 1 - verify text
             also expand other lists to match # of cmd
         :param details_dict:
@@ -341,7 +348,8 @@ class TestData(object):
                 if param not in VFY_PARAM_LIST and param != "command_list":
                     # list in here is just a list of strings
                     # insert duplicated element after the current element
-                    details_dict[param].insert(cmd_index+sub_cmd_index+1, details_dict[param][cmd_index])
+                    details_dict[param].insert(cmd_index+sub_cmd_index+1,
+                                               details_dict[param][cmd_index])
                 elif param in VFY_PARAM_LIST:
                     # list in here is a list of sublists of strings
                     # for example: verify_text_list = [[v1[1], v1[2], v1[3]], [v2], [v3[1], v3[2]]]
@@ -399,7 +407,8 @@ class TestData(object):
                 if param != "command_list":
                     # list in here is just a list of strings
                     # insert duplicated element after the current element
-                    details_dict[param].insert(cmd_index+sub_cmd_index+1, details_dict[param][cmd_index])
+                    details_dict[param].insert(cmd_index+sub_cmd_index+1,
+                                               details_dict[param][cmd_index])
             details_dict["command_list"].insert(cmd_index+sub_cmd_index+1, cmd)
 
     def align_ver(self, details_dict, cmd_index, verify_text_match_list):
@@ -434,7 +443,8 @@ class TestData(object):
                 processed_list.append(details_dict["verify_text_list"][cmd_index][sub_verify_text_index])
         details_dict["verify_text_list"].insert(cmd_index+1, processed_list)
 
-    def list_substitution(self, details_dict, varconfigfile, cmd_list_substituted, verify_text_substituted, start_pat="${", end_pat="}"):
+    def list_substitution(self, details_dict, varconfigfile, cmd_list_substituted,
+                          verify_text_substituted, start_pat="${", end_pat="}"):
         """
             entry function for different list substitution case
             also handle the deletion of original list after alignment
@@ -453,8 +463,10 @@ class TestData(object):
         while cmd_index < len(details_dict["command_list"]):
             if cmd_list_substituted[old_cmd_index]:
                 if verify_text_substituted[old_cmd_index]:
-                    cmd_match = self.cmd_sub(details_dict, cmd_index, varconfigfile, start_pat, end_pat)
-                    verify_text_match_list = self.verify_sub(details_dict, cmd_index, varconfigfile, start_pat, end_pat)
+                    cmd_match = self.cmd_sub(details_dict, cmd_index, varconfigfile, start_pat,
+                                             end_pat)
+                    verify_text_match_list = self.verify_sub(details_dict, cmd_index, varconfigfile,
+                                                             start_pat, end_pat)
 
                     self.align_both(details_dict, cmd_index, cmd_match, verify_text_match_list)
 
@@ -475,7 +487,8 @@ class TestData(object):
                     cmd_index += cmd_jump
             else:
                 if verify_text_substituted[old_cmd_index]:
-                    verify_text_match_list = self.verify_sub(details_dict, cmd_index, varconfigfile, start_pat, end_pat)
+                    verify_text_match_list = self.verify_sub(details_dict, cmd_index, varconfigfile,
+                                                             start_pat, end_pat)
 
                     self.align_ver(details_dict, cmd_index, verify_text_match_list)
 
@@ -548,6 +561,7 @@ class TestDataIterations(object):
         cmd_list_length = len(cmd_list)
         cmd_loc_list = [0]
         cmd_size = 1
+        cmd_list_subs = []
         for i, cmd in enumerate(cmd_list):
             vc_file = vc_file_list[i]
             iteration_status = self.validate_iteration_patterns\
@@ -556,7 +570,7 @@ class TestDataIterations(object):
             # if iteration_status is False, mark command as False and
             # move on to the next command
             if not iteration_status:
-                print_error("Iteration pattern validation failed for the "\
+                print_error("Iteration pattern validation failed for the "
                             "the command {0}".format(cmd))
                 cmd_list[i] = False
                 cmd_loc_list.append(i + cmd_size)
@@ -573,23 +587,26 @@ class TestDataIterations(object):
                 # move on to the next command
                 # This also means that the command parameters do not have any
                 # iteration patterns because the validation was already done.
-                if cmd_iter_pattern != "":
+                if isinstance(cmd, str) and '+' not in cmd:
+                    td_obj = TestData()
+                    cmd_list_subs = td_obj.list_substitution_precheck(vc_file_list[i], details_dict, '${', '}')
+                if cmd_iter_pattern != "" or (cmd_list_subs[0][i] != False and '+' not in cmd):
                     # if cmd_iterpattern is not ""
                     # call the expand cmd_params method to resolve the
                     # iteration patterns in the command and get a updated
                     # details_dict get a updated details dict
 
                     if repeat_list[i] is not None:
-                        print_warning("repeat tag is not supported for the"\
-                                      " command with iteration pattern - "\
+                        print_warning("repeat tag is not supported for the"
+                                      " command with iteration pattern - "
                                       "{}". format(cmd))
                     cmdresolved_details_dict = self.expand_cmd_params\
-                    (cmd_iter_pattern, details_dict, i, vc_file)
+                        (cmd_iter_pattern, details_dict, i, vc_file)
 
                     details_dict = cmdresolved_details_dict
 
                 new_details_dict = self.expand_vfy_params\
-                (details_dict, i, vc_file, cmd_iter_pattern)
+                    (details_dict, i, vc_file, cmd_iter_pattern)
                 details_dict = new_details_dict
                 cmd_list = details_dict["command_list"]
 
@@ -607,16 +624,15 @@ class TestDataIterations(object):
                 cmd_size -= 1
 
         if res_status:
-            print_debug("resolving iteration patterns in the command, "\
-                        "command_parameters, verify search, verifcation "\
+            print_debug("resolving iteration patterns in the command, "
+                        "command_parameters, verify search, verifcation "
                         "parameters was successful")
 
         else:
-            print_debug("resolving iteration patterns in the command, "\
-                        "command_parameters, verify search, verifcation "\
+            print_debug("resolving iteration patterns in the command, "
+                        "command_parameters, verify search, verifcation "
                         "parameters was failed")
         return details_dict, cmd_loc_list
-
 
     def validate_iteration_patterns(self, cmd, details_dict, index):
         """
@@ -631,11 +647,11 @@ class TestDataIterations(object):
         cmd_iter_pattern = self.get_iteration_pattern(cmd)
         cmd_status = self._validate_cmd_iterpattern(cmd, cmd_iter_pattern)
         param_status = self._validate_params_iterpattern\
-        (cmd, details_dict, cmd_iter_pattern, index)
-        vfy_search_status =self._validate_vfysearch_iterpattern(cmd, details_dict, index)
+            (cmd, details_dict, cmd_iter_pattern, index)
+        vfy_search_status = self._validate_vfysearch_iterpattern(cmd, details_dict, index)
         vfyparams_status = self._validate_vfyparams_iterpattern(cmd, details_dict, index)
         status = cmd_status and param_status and vfy_search_status \
-        and vfyparams_status
+            and vfyparams_status
         return status
 
     def get_iteration_pattern(self, cmd):
@@ -645,7 +661,7 @@ class TestDataIterations(object):
         var_pat_list = self._get_varpat_list(cmd)
         iter_pattern_list = self._get_iterpattern_list(var_pat_list)
         iter_pattern = "" if len(iter_pattern_list) == 0\
-        else iter_pattern_list[0]
+            else iter_pattern_list[0]
         return iter_pattern
 
     def expand_cmd_params(self, cmd_iter_pattern, details_dict, index, vc_file):
@@ -657,58 +673,68 @@ class TestDataIterations(object):
         excl_list = ["command_list"]
         # First expand the iteration pattern in the actual command
         cmd_list = details_dict["command_list"]
+        vc_file_list = details_dict["vc_file_list"]
         cmd = cmd_list[index]
         # Change the repeat_list value in this index as None since td 'repeat'
         # tag is not supported for the commands with iteration pattern
         details_dict["repeat_list"][index] = None
         error = False
-        resolved_cmd_list, status = self._expand_iter_pattern\
-        (cmd, cmd_iter_pattern, vc_file)
-        if status and len(resolved_cmd_list) > 0:
-            # if resolving the iteration patterns in the command
-            # was successful then replace the command in the original
-            # command list with the new commands in the resolved_cmd_list
-            cmd_list[index:index+1] = resolved_cmd_list
+        if cmd_iter_pattern != "":
+            resolved_cmd_list, status = self._expand_iter_pattern\
+                (cmd, cmd_iter_pattern, vc_file)
+            if status and len(resolved_cmd_list) > 0:
+                # if resolving the iteration patterns in the command
+                # was successful then replace the command in the original
+                # command list with the new commands in the resolved_cmd_list
+                cmd_list[index:index+1] = resolved_cmd_list
 
-            # remember the length of the resolved cmd list say n
-            # for other command parameters if the iter pattern is provided
-            # resolve the iteration pattern provided, else repeat the parameter
-            # in its list by n times, so that each command that was resolved
-            # has the corresponding parameter repeated.
-            ref_length = len(resolved_cmd_list)
-            for param, _ in CMD_PARAMS.items():
-                if param not in excl_list:
-                    param_list = details_dict[param]
-                    param_value = param_list[index]
-                    iter_pattern = self.get_iteration_pattern(param_value)\
-                    if isinstance(param_value, str) else ""
+                # remember the length of the resolved cmd list say n
+                # for other command parameters if the iter pattern is provided
+                # resolve the iteration pattern provided, else repeat the parameter
+                # in its list by n times, so that each command that was resolved
+                # has the corresponding parameter repeated.
+                ref_length = len(resolved_cmd_list)
+                for param, _ in CMD_PARAMS.items():
+                    if param not in excl_list:
+                        param_list = details_dict[param]
+                        param_value = param_list[index]
+                        iter_pattern = self.get_iteration_pattern(param_value)\
+                            if isinstance(param_value, str) else ""
 
-                    if iter_pattern is not "":
-                        res_list, status = self._expand_iter_pattern\
-                        (param_value, iter_pattern, vc_file)
-                        if status and len(res_list) > 0:
-                            param_list[index:index+1] = res_list
-                        else:
-                            error = True
-                    else:
-                        res_list = []
-                        for _ in range(0, ref_length):
-                            if isinstance(param_value, list):
-                                new_list = []
-                                for element in param_value:
-                                    new_list.append(element)
-                                res_list.append(new_list)
+                        if iter_pattern is not "":
+                            res_list, status = self._expand_iter_pattern\
+                                (param_value, iter_pattern, vc_file)
+                            if status and len(res_list) > 0:
+                                param_list[index:index+1] = res_list
                             else:
-                                res_list.append(param_value)
-                        param_list[index:index+1] = res_list
+                                error = True
+                        else:
+                            res_list = []
+                            for _ in range(0, ref_length):
+                                if isinstance(param_value, list):
+                                    new_list = []
+                                    for element in param_value:
+                                        new_list.append(element)
+                                    res_list.append(new_list)
+                                else:
+                                    res_list.append(param_value)
+                            param_list[index:index+1] = res_list
+            else:
+                error = True
+            if error:
+                # if there were any problems in resolving the iteration patterns
+                # or if none of the nodes in the iterpattern are availabel in the
+                # varconfig file, i.e. resolved_cmd_list=[]mark command as False,
+                # do not care to resolve other cmd parameters. return details dict
+                cmd_list[index] = False
         else:
-            error = True
-        if error:
-            # if there were any problems in resolving the iteration patterns
-            # or if none of the nodes in the iterpattern are availabel in the
-            # varconfig file, i.e. resolved_cmd_list=[]mark command as False,
-            # do not care to resolve other cmd parameters. return details dict
-            cmd_list[index] = False
+            t_obj = TestData()
+            t_obj.list_substitution_precheck(vc_file_list[index], details_dict, '${', '}')
+            cmd_value = t_obj.cmd_sub(details_dict, index, vc_file_list[index], '${', '}')
+            if cmd_value[0] is not False:
+                t_obj.align_cmd(details_dict, index, cmd_value)
+                for param in CMD_PARAMS.keys():
+                    del details_dict[param][index]
         return details_dict
 
     def expand_vfy_params(self, details_dict, index, vc_file,
@@ -724,23 +750,23 @@ class TestDataIterations(object):
             for i, verify_text in enumerate(cur_verify_text_list):
                 error = False
                 vfy_iter_pattern = self.get_iteration_pattern(verify_text)\
-                if isinstance(verify_text, str) else ""
+                    if isinstance(verify_text, str) else ""
 
                 identical = True if vfy_iter_pattern == cmd_iter_pattern\
-                else False
+                    else False
 
                 # If a verification search has an iter pattern, resolve it
                 # and get a list of new search strings. Replace search string
                 # in erify_text list with the new search_string list obtained.
                 if vfy_iter_pattern is not "":
                     res_vfytext_list, status = self._expand_iter_pattern\
-                    (verify_text, vfy_iter_pattern, vc_file)
+                        (verify_text, vfy_iter_pattern, vc_file)
                     if status and len(res_vfytext_list) > 0:
                         # if resolving the verify iter pattern was successful
                         if identical:
                             for cnt in range(0, len(res_vfytext_list)):
                                 verify_text_list[index + cnt][i] = \
-                                res_vfytext_list[cnt]
+                                    res_vfytext_list[cnt]
                         else:
                             cur_verify_text_list[i:i+1] = res_vfytext_list
 
@@ -756,18 +782,17 @@ class TestDataIterations(object):
                             param_list = details_dict[param][index]
                             param_value = param_list[i]
                             iter_pattern = self.get_iteration_pattern\
-                            (param_value) if isinstance(param_value, str) \
-                            else ""
+                                (param_value) if isinstance(param_value, str) \
+                                else ""
 
                             if iter_pattern is not "":
                                 res_list, status = self._expand_iter_pattern\
-                                (param_value, iter_pattern, vc_file)
+                                    (param_value, iter_pattern, vc_file)
                                 if status and len(res_list) > 0:
                                     if identical:
-                                        for cnt in range\
-                                        (0, len(res_vfytext_list)):
+                                        for cnt in range(0, len(res_vfytext_list)):
                                             verify_params_list\
-                                            [index + cnt][i] = res_list[cnt]
+                                                [index + cnt][i] = res_list[cnt]
                                     else:
                                         param_list[i:i+1] = res_list
                                 else:
@@ -798,11 +823,11 @@ class TestDataIterations(object):
                                 verify_text_list[index + num][i] = False
 
                         else:
-                        # if there were any problems in resolving the iteration
-                        # patterns or if none of nodes in iter pattern are
-                        # available in varconfig file,i.e.resolved_cmd_list=[],
-                        # mark verify search as False, dont care to resolve
-                        # other verify parameters. return details dict
+                            # if there were any problems in resolving the iteration
+                            # patterns or if none of nodes in iter pattern are
+                            # available in varconfig file,i.e.resolved_cmd_list=[],
+                            # mark verify search as False, dont care to resolve
+                            # other verify parameters. return details dict
                             cur_verify_text_list[i] = False
         return details_dict
 
@@ -818,10 +843,10 @@ class TestDataIterations(object):
         if status is False or cmd_lst_length != cmd_loc_list[-1]:
             return details_dict
 
-        new_details_dict = {key:[] for key in details_dict.keys()}
+        new_details_dict = {key: [] for key in details_dict.keys()}
         new_cmd_loc_list = cmd_loc_list[:-1]
         while len(details_dict['command_list']) >\
-        len(new_details_dict['command_list']):
+                len(new_details_dict['command_list']):
             for i, loc in enumerate(new_cmd_loc_list):
                 if loc < cmd_loc_list[i+1]:
                     for val in details_dict:
@@ -838,14 +863,14 @@ class TestDataIterations(object):
         # Get repeat_count(largest delta between two consecutive
         # values in cmd_loc_list) from cmd_loc_list
         repeat_count = max(abs(val1 - val2) for (val1, val2) in\
-                               zip(cmd_loc_list[1:], cmd_loc_list[:-1]))
+                           zip(cmd_loc_list[1:], cmd_loc_list[:-1]))
         repeat_list = details_dict['repeat_list']
 
         for index, repeat_val in enumerate(repeat_list):
             # Proceed only if repeat tag is 'y' and the command index is
             # available in cmd_loc_list
-            if isinstance(repeat_val,str) and \
-            repeat_val.lower().startswith('y') and index in cmd_loc_list:
+            if isinstance(repeat_val, str) and \
+             repeat_val.lower().startswith('y') and index in cmd_loc_list:
                 cmd_pos = cmd_loc_list.index(index) + 1
                 # Update cmd positions by adding repeat_count-1 to
                 # remaining values in cmd_loc_list
@@ -884,8 +909,8 @@ class TestDataIterations(object):
 
             if not result:
                 print_error("Command: {0}".format(cmd))
-                print_error("Mix of different iteration patterns is "\
-                            "not supported within a command "\
+                print_error("Mix of different iteration patterns is "
+                            "not supported within a command "
                             "[{0} != {1}]".format(pat, cmd_iter_pattern))
             status = status and result
         return status
@@ -909,26 +934,25 @@ class TestDataIterations(object):
         # the other command parameters may or may not have iteration pattern
         # and if they do it should be same as the iteration pattern of cmd
         supported_patterns = [""] if cmd_iter_pattern == ""\
-        else ["", cmd_iter_pattern]
-               
+            else ["", cmd_iter_pattern]
 
         for param, attrib in CMD_PARAMS.items():
             if param not in excl_list:
                 element = details_dict[param][index]
 
                 element_iter_pattern = self.get_iteration_pattern(element) \
-                if isinstance(element, str) else ""
+                    if isinstance(element, str) else ""
 
                 result = True if element_iter_pattern in supported_patterns\
-                else False
+                    else False
 
                 if not result:
-                    err_msg1 = "Command '{0}' does not have iterations, "\
-                    "So iterations are not allowed in other command params "\
+                    err_msg1 = "Command '{0}' does not have iterations, "
+                    "So iterations are not allowed in other command params "
                     ", please remove iterations from '{1}'".format(cmd, attrib)
 
-                    err_msg2 = "Iteration patterns used in cmd parameters "\
-                    "should match the iteration pattern used in the cmd={0} "\
+                    err_msg2 = "Iteration patterns used in cmd parameters "
+                    "should match the iteration pattern used in the cmd={0} "
                     "please check iterations in '{1}'".format(cmd, attrib)
 
                     err_msg = err_msg1 if cmd_iter_pattern == "" else err_msg2
@@ -949,7 +973,7 @@ class TestDataIterations(object):
                 verify_text = verify_text_list[i]
 
                 vfy_iter_pattern = self.get_iteration_pattern(verify_text) \
-                if isinstance(verify_text, str) else ""
+                    if isinstance(verify_text, str) else ""
 
                 if vfy_iter_pattern is not "":
                     var_pat_list = self._get_varpat_list(verify_text)
@@ -958,13 +982,12 @@ class TestDataIterations(object):
                         result = True if pat == vfy_iter_pattern else False
                         if not result:
                             print_error("Command: {0}".format(cmd))
-                            print_error("Mix of different iteration patterns is "\
-                                        "not supported within a verification search "\
+                            print_error("Mix of different iteration patterns is "
+                                        "not supported within a verification search "
                                         "[{0} != {1}]".format(pat, vfy_iter_pattern))
                         status = status and result
                 final_status = status and final_status
         return final_status
-
 
     def _validate_vfyparams_iterpattern(self, cmd, details_dict, index):
         """
@@ -977,36 +1000,36 @@ class TestDataIterations(object):
             for i in range(0, len(verify_text_list)):
                 verify_text = verify_text_list[i]
                 vfy_iter_pattern = self.get_iteration_pattern(verify_text) \
-                if isinstance(verify_text, str) else ""
+                    if isinstance(verify_text, str) else ""
 
                 supported_patterns = [""] if vfy_iter_pattern is ""\
-                else ["", vfy_iter_pattern]
+                    else ["", vfy_iter_pattern]
 
                 for param in VERIFY_PARAMS:
                     param_list = details_dict[param][index]
                     param_value = param_list[i]
 
                     param_iter_pattern = self.get_iteration_pattern\
-                    (param_value) if isinstance(param_value, str) \
-                    else ""
+                        (param_value) if isinstance(param_value, str) \
+                        else ""
 
                     result = True if param_iter_pattern in supported_patterns\
-                    else False
+                        else False
 
                     if not result:
-                        err_msg1 = "Verification search '{0}' for cmd={1} "\
-                        "does not have iterations, So iterations are not "\
+                        err_msg1 = "Verification search '{0}' for cmd={1} "
+                        "does not have iterations, So iterations are not "
                         "allowed in other verification related params"\
-                        .format(verify_text,cmd)
+                            .format(verify_text, cmd)
 
-                        err_msg2 = "Iteration patterns used in verification "\
-                        "related parameters should match the iteration "\
-                        "pattern used in the verification search={0} please "\
+                        err_msg2 = "Iteration patterns used in verification "
+                        "related parameters should match the iteration "
+                        "pattern used in the verification search={0} please "
                         "check iterations in the verify sections of cmd={1}"\
-                        .format(verify_text, cmd)
+                            .format(verify_text, cmd)
 
                         err_msg = err_msg1 if vfy_iter_pattern == "" \
-                        else err_msg2
+                            else err_msg2
                         pNote(err_msg, "error")
                     status = result and status
         return status
@@ -1031,12 +1054,12 @@ class TestDataIterations(object):
         iter_pat_list = []
         for var_pat in var_pat_list:
             nested_string_list = var_pat.split(" ")
-            #split the variable pattern on a space to extract
+            # split the variable pattern on a space to extract
             # individual words from the pattern.
             # Resulting in a posiibility of nested variable patter
             # like network1.ne1.${network1.ne1.shel+.id}
             for nested_string in nested_string_list:
-                #split the nested string on the ${ to resolved nested strings
+                # split the nested string on the ${ to resolved nested strings
                 string_list = nested_string.split("${")
                 for string in string_list:
                     # extract the string from beginning till the last +
@@ -1057,8 +1080,8 @@ class TestDataIterations(object):
         then status is set to False
         """
         resolved_cmd_list = []
-        
-        # get the list of 
+
+        # get the list of
         # 1. parent names (i.e. the value of name attribute of the parents
         #    in the iter pattern
         # 2. parent list i.e. the xml node values of the parents provided
@@ -1070,9 +1093,9 @@ class TestDataIterations(object):
 
         # If there are any problems in finding the parent nodes in the vc_file
         # set status = False
-        status = False if len(parent_list) == 0 or len(name_list) ==0 \
-        else True
-        
+        status = False if len(parent_list) == 0 or len(name_list) == 0 \
+            else True
+
         if status:
             # initialize the last parent name to the name of the first parent
             # in the parent list, iterate over the list and create a dotted
@@ -1080,12 +1103,12 @@ class TestDataIterations(object):
             last_parent_name = name_list[0]
             for i in range(1, len(name_list)):
                 last_parent_name = "{0}.{1}".format(last_parent_name, name_list[i])
-    
+
             parent_name_list = [last_parent_name]
             parent_node_list = [parent_list[-1]]
 
             replacement_list, status = self._get_replacement_list\
-            (iter_list, parent_node_list, parent_name_list)
+                (iter_list, parent_node_list, parent_name_list)
 
             if status:
                 for string in replacement_list:
@@ -1151,12 +1174,12 @@ class TestDataIterations(object):
                     parent = node
                     parent_node_list.append(parent)
                 else:
-                    print_error("Could not find node={0} under parent={1} "\
+                    print_error("Could not find node={0} under parent={1} "
                                 "in file={2}".format(name, parent.tag, vc_file))
                     parent_node_list = []
                     break
             else:
-                print_error("Error while parsing the variable config file="\
+                print_error("Error while parsing the variable config file="
                             "{0}".format(vc_file))
         return parent_node_list
 
@@ -1203,8 +1226,8 @@ class TestDataIterations(object):
                 # resoltions as False but simply continue.
                 result = False if len(cnode_list) == 0 else True
                 if not result:
-                    pNote("Could not find child={0} under parent={1} in "\
-                          "variable config file".format(child_tag, pname), 
+                    pNote("Could not find child={0} under parent={1} in "
+                          "variable config file".format(child_tag, pname),
                           "error")
                     continue
                 for cnode in cnode_list:
@@ -1222,10 +1245,10 @@ class TestDataIterations(object):
                         # in this case resolving cmd iterations will be marked
                         # as false because without the name value fetching the
                         # data for the child is impossible.
-                        print_error("'name' attribute is essential to "\
-                                    "identify a node in the variable "\
-                                    "file, 'name' attribute is missing "\
-                                    "in some of the '{0}' nodes under {1}"\
+                        print_error("'name' attribute is essential to "
+                                    "identify a node in the variable "
+                                    "file, 'name' attribute is missing "
+                                    "in some of the '{0}' nodes under {1}"
                                     .format(child_tag, pname))
                         status = False
                         continue
@@ -1265,7 +1288,7 @@ class TestDataIterations(object):
                 cmd_status = True
             else:
                 cmd_status = False
-                print_error("number of {0} did not match number of commands"\
+                print_error("number of {0} did not match number of commands"
                             "={1}".format(param, cmd_length))
 
         verify_list = details_dict["verify_text_list"]
@@ -1273,15 +1296,14 @@ class TestDataIterations(object):
             vfy_status = True
             for vfy_param in VERIFY_PARAMS:
                 vfy_param_list = details_dict[vfy_param][i]
-                if search_list  and vfy_param_list:
+                if search_list and vfy_param_list:
                     if len(vfy_param_list) == len(search_list):
                         vfy_status = True
                     else:
                         vfy_status = False
-                        print_error("length of {0} did not match the no of "\
+                        print_error("length of {0} did not match the no of "
                                     "verification searches".format(vfy_param))
         status = status and cmd_status and vfy_status
-
 
         return status
 
@@ -1301,7 +1323,7 @@ class TestDataIterations(object):
             if len(cmd_loc_list) < 2 or cmd_loc_list[0] != 0:
                 status = False
             else:
-                for i in range (len(cmd_loc_list)-1):
+                for i in range(len(cmd_loc_list)-1):
                     if cmd_loc_list[i] > cmd_loc_list[i+1]:
                         status = False
         else:
