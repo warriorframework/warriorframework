@@ -588,12 +588,17 @@ class TestDataIterations(object):
                 # This also means that the command parameters do not have any
                 # iteration patterns because the validation was already done.
                 if isinstance(cmd, str) and '+' not in cmd:
+                    # precheck for list substitution if the command does not
+                    # have a bool value
                     td_obj = TestData()
-                    cmd_list_subs = td_obj.list_substitution_precheck(vc_file_list[i], details_dict, '${', '}')
-                if cmd_iter_pattern != "" or (cmd_list_subs[0][i] != False and '+' not in cmd):
-                    # if cmd_iterpattern is not ""
-                    # call the expand cmd_params method to resolve the
-                    # iteration patterns in the command and get a updated
+                    cmd_list_subs = td_obj.\
+                        list_substitution_precheck(vc_file_list[i],
+                                                   details_dict, '${', '}')
+                if cmd_iter_pattern != "" or \
+                   (cmd_list_subs[0][i] != False and '+' not in cmd):
+                    # if cmd_iterpattern is not "" or if the command has a
+                    # list value, call the expand cmd_params method to resolve
+                    # the iteration patterns in the command and get a updated
                     # details_dict get a updated details dict
 
                     if repeat_list[i] is not None:
@@ -723,14 +728,17 @@ class TestDataIterations(object):
                 error = True
             if error:
                 # if there were any problems in resolving the iteration patterns
-                # or if none of the nodes in the iterpattern are availabel in the
+                # or if none of the nodes in the iterpattern are available in the
                 # varconfig file, i.e. resolved_cmd_list=[]mark command as False,
                 # do not care to resolve other cmd parameters. return details dict
                 cmd_list[index] = False
         else:
+            # the list value is substituted and updates the details dict
             t_obj = TestData()
-            t_obj.list_substitution_precheck(vc_file_list[index], details_dict, '${', '}')
-            cmd_value = t_obj.cmd_sub(details_dict, index, vc_file_list[index], '${', '}')
+            t_obj.list_substitution_precheck(vc_file_list[index],
+                                             details_dict, '${', '}')
+            cmd_value = t_obj.cmd_sub(details_dict, index, vc_file_list[index],
+                                      '${', '}')
             if cmd_value[0] is not False:
                 t_obj.align_cmd(details_dict, index, cmd_value)
                 for param in CMD_PARAMS.keys():
