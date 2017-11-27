@@ -562,6 +562,7 @@ class TestDataIterations(object):
         cmd_loc_list = [0]
         cmd_size = 1
         cmd_list_subs = []
+        is_iter = False
         for i, cmd in enumerate(cmd_list):
             vc_file = vc_file_list[i]
             iteration_status = self.validate_iteration_patterns\
@@ -594,8 +595,9 @@ class TestDataIterations(object):
                     cmd_list_subs = td_obj.\
                         list_substitution_precheck(vc_file_list[i],
                                                    details_dict, '${', '}')
-                if cmd_iter_pattern != "" or \
-                   (cmd_list_subs[0][i] != False and '+' not in cmd):
+                    if cmd_list_subs[0][i] != False:
+                        is_iter = True
+                if cmd_iter_pattern != "" or is_iter is not False:
                     # if cmd_iterpattern is not "" or if the command has a
                     # list value, call the expand cmd_params method to resolve
                     # the iteration patterns in the command and get a updated
