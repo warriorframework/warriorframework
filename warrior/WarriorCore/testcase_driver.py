@@ -232,7 +232,7 @@ def get_steps_list(testcase_filepath):
         new_step_list = Steps.findall('step')
         # execute step multiple times
         for _, step in enumerate(new_step_list):
-            runmode, value = common_execution_utils.get_runmode_from_xmlfile(step)
+            runmode, value, _ = common_execution_utils.get_runmode_from_xmlfile(step)
             retry_type, _, _, retry_value, _ = common_execution_utils.get_retry_from_xmlfile(step)
             if runmode is not None and value > 0:
                 go_next = len(step_list) + value + 1
@@ -287,7 +287,7 @@ def report_testcase_result(tc_status, data_repository):
     fail_count = 0
     for value in root.findall('Keyword'):
         kw_status = value.find('KeywordStatus').text
-        if kw_status != "PASS":
+        if kw_status != "PASS" and kw_status != "RAN":
             fail_count += 1
             kw_name = value.find('Name').text
             get_step_value = value.attrib.values()

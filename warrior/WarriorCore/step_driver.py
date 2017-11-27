@@ -19,7 +19,7 @@ from WarriorCore.Classes.argument_datatype_class import ArgumentDatatype
 import Framework.Utils as Utils
 from Framework.Utils import file_Utils
 from Framework.Utils.print_Utils import print_info, print_debug, print_error, print_exception
-# from WarriorCore import onerror_driver
+from WarriorCore.Classes.war_cli_class import WarriorCliClass
 
 
 def get_arguments(step):
@@ -169,6 +169,8 @@ def execute_step(step, step_num, data_repository, system_name, kw_parallel, queu
         print_debug("Keyword status = {0}, Flip status as context is Negative".format(
             keyword_status))
         keyword_status = not keyword_status
+    if WarriorCliClass.mock and (keyword_status is True or keyword_status is False):
+        keyword_status = "RAN"
 
     # Getting onError action
     # Insert rules else statement here
@@ -198,7 +200,7 @@ def execute_step(step, step_num, data_repository, system_name, kw_parallel, queu
 
     # Reporting status to data repo
     string_status = {"TRUE": "PASS", "FALSE": "FAIL",
-                     "ERROR": "ERROR", "EXCEPTION": "EXCEPTION", "SKIP": "SKIP"}
+                     "ERROR": "ERROR", "EXCEPTION": "EXCEPTION", "SKIP": "SKIP", "RAN":"RAN"}
 
     if str(keyword_status).upper() in string_status.keys():
         data_repository['step_%s_result' %
