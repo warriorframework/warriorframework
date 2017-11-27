@@ -171,7 +171,10 @@ class WarriorHtmlResults:
 
     def get_user(self):
         """ find the user who executed the testcase """
-        user = getpass.getuser()
+	try:
+	    user = getpass.getuser()
+	except Exception:
+	    user = "Unknown_user"
         return '<div class="user">' + user + '</div>'
 
     def generate_html(self, junitObj, givenPath):
