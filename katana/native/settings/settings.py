@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-import json, os, xml.etree.ElementTree as xml_controler
+import os
 from utils.navigator_util import Navigator
 from collections import OrderedDict
-
 try:
     import xmltodict
 except ImportError:
     print "Please install xmltodict"
-import xmltodict, json, xml.etree.ElementTree as xml_controler
+import json
+import xml.etree.ElementTree as xml_controler
 
 class Settings:
 
@@ -21,46 +21,47 @@ class Settings:
     def smart_analysis_handler(self, request):
         mainFile = self.navigator.get_warrior_dir() + os.sep + 'Tools' + os.sep + 'connection' + os.sep +'connect_settings.xml'
         if request.method == 'POST':
-            val = xmltodict.unparse( {'credentials' : { 'system' : json.loads(request.POST.get('data')) }}, pretty = True)
-            with open(mainFile,'w') as f:
+            val = xmltodict.unparse({'credentials': {'system': json.loads(request.POST.get('data'))}}, pretty=True)
+            with open(mainFile, 'w') as f:
                 f.write(val)
         else:
-            with open( mainFile,'r') as f:
+            with open(mainFile, 'r') as f:
                 mainDict = xmltodict.parse(f)['credentials']
-            if mainDict is not None and not isinstance( mainDict['system'], list):
-                mainDict['system'] = [ mainDict['system'] ]
+            if mainDict is not None and not isinstance(mainDict['system'], list):
+                mainDict['system'] = [mainDict['system']]
 
             return mainDict
 
     def general_setting_handler(self, request):
-        json_file = self.navigator.get_katana_dir() + os.sep +'config.json'
-        w_settings = self.navigator.get_warrior_dir() + 'Tools'+ os.sep + 'w_settings.xml'
+        json_file = self.navigator.get_katana_dir() + os.sep + 'config.json'
+        w_settings = self.navigator.get_warrior_dir() + 'Tools' + os.sep + 'w_settings.xml'
         elem_file = xml_controler.parse(w_settings)
         elem_file = elem_file.getroot()
         elem = self.search_by_name('def_dir', elem_file)
         def_dir_string = xml_controler.tostring(elem)
         def_dir_xml_obj = elem
 
+
         if request.method == 'POST':
-            w_settings_data = { 'Setting' : { 'Logsdir' : '', 'Resultsdir' : '', '@name' : '' } }
+            w_settings_data = {'Setting': {'Logsdir': '', 'Resultsdir': '', '@name': ''}}
             returned_json = json.loads(request.POST.get('data'))
             for k, v in w_settings_data['Setting'].items():
                 w_settings_data['Setting'][k] = returned_json[0][k]
                 del returned_json[0][k]
 
             elem_file.remove(def_dir_xml_obj)
-            val = xmltodict.unparse( w_settings_data, pretty = True)
-            elem_file.insert( 0, xml_controler.fromstring(val) )
-            with open(w_settings,'w') as f:
+            val = xmltodict.unparse(w_settings_data, pretty=True)
+            elem_file.insert(0, xml_controler.fromstring(val))
+            with open(w_settings, 'w') as f:
                 f.write(xml_controler.tostring(elem_file))
-            with open(json_file,'w') as f:
-                f.write(json.dumps(returned_json[0], sort_keys=True, indent=4, separators=(',', ': ')))
+            with open(json_file, 'w') as f:
+                f.write(json.dumps(returned_json[0], indent=4, separators=(',', ': ')))
         else:
-            with open(json_file,'r') as f:
-                json_data = json.load( f, object_pairs_hook=OrderedDict)
-            data = {}
-            data['fromXml'] = xmltodict.parse(def_dir_string).get('Setting')
-            data['fromJson'] = json_data
+            with open(json_file, 'r') as f:
+                json_data = json.load(f, object_pairs_hook=OrderedDict)
+            data = {'fromXml': xmltodict.parse(def_dir_string).get('Setting'),
+                    'fromJson': json_data}
+            print data
             return data
 
     def profile_setting_handler(self, request):
