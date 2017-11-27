@@ -100,6 +100,11 @@ class suiteDetailsObject{
 	duplicateSelf() { 
 		return jQuery.extend(true, {}, this); 
 	}
+
+	getSummary(){
+		var rstr = "Name: "+this.Name+"<br>Title: " + this.Title + "<br>Category: " + this.Category + "<br>Engineer: " + this.Engineer + "<br>State: " + this.State; 
+		return rstr; 
+	}
 }
 
 
@@ -327,6 +332,7 @@ class testSuiteObject{
 
 var suites= {
 
+	treeView : 0,
 	jsonSuiteObject : null,
 	jsonTestcases : null,			// for all Cases
 	
@@ -379,6 +385,607 @@ var suites= {
 		});
 
 	},
+
+
+
+	createD3treeData: function(tdata) {
+		suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+		suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
+		
+		existingCases = katana.$activeTab.data('allExistingCases');
+
+		pjDataSet = { 
+			'nodes': [],
+			'edges': [],
+
+		};
+
+		pjExistingSuites = { 
+			'nodes': [],
+			'edges': []
+		};
+		var nodeCtr = 0;
+		var suiteSummary = suites.jsonSuiteObject.Details.getSummary();
+		var td = {
+		"name": suites.jsonSuiteObject.Details.Name,
+		"id": nodeCtr++,
+		"rowid": 0,
+    	"parent": "null", 
+    	"children": [],
+    	"ntype": 'suite',
+    	"displayStr": suiteSummary,
+    	};
+    	pjDataSet.nodes.push(td);
+    	var slen = suites.jsonTestcases.length;
+		for (var s=0; s<slen; s++ ) {
+			var sid = parseInt(s) + 1; 
+    		var oneCase = suites.jsonSuiteObject.Testcases[s];
+    		var items = [];
+    		items.push('ExecType='+oneCase.Execute_ExecType+'<br>');
+			if (oneCase.Execute_ExecType == 'if' || oneCase.Execute_ExecType == 'if not') {
+				items.push('Condition='+oneCase.Execute_Rule_Condition+'<br>');
+				items.push('Condvalue='+oneCase.Execute_Rule_Condvalue+'<br>');
+				items.push('Else='+oneCase.Execute_Rule_Else+'<br>');
+				items.push('Elsevalue='+oneCase.Execute_Rule_Elsevalue+'<br>');
+			}
+			var execStr = items.join("");
+			var displayStr = "" + oneCase.path + "<br>runmode:" + oneCase.runmode_type + " " + oneCase.runmode_value + 
+					"<br>onError:" + oneCase.onError_action + " " + oneCase.onError_value + 
+					"<br>" + execStr + "</div>"; 
+
+    		var st = { "name": oneCase.path, 
+    			'ntype': 'suite',
+    			'type': 'suite',
+    			"id": nodeCtr,
+    			"rowid" : sid,
+    			"width" : 100, 
+    			'displayStr' : displayStr,
+    			"exectype" : execStr, 
+    			"runmode" : oneCase.runmode_type + " " + oneCase.runmode_value,
+    			'on-error' : oneCase.onError_action + " " + oneCase.onError_value,
+    			"data-path": oneCase.InputDataFile 
+    			} ;
+    		pjDataSet.nodes.push(st);
+    		
+			var ed = { 'source': pjDataSet.nodes[nodeCtr - 1], 'target': pjDataSet.nodes[nodeCtr], 'value' : 3 };
+    		
+    		pjDataSet.edges.push(ed);
+    		nodeCtr++;
+    		}
+  
+    	katana.$activeTab.data('pjDataSet', pjDataSet);
+    	katana.$activeTab.data('pjExistingSuites', pjExistingSuites);
+    	suites.createD3tree();
+	},
+	
+
+	createD3tree: function() {
+
+		var px_suite_column = 200; 
+		var px_row_height = 60; 
+		var px_y_icon_offset = 35;
+		var px_text_x_offset = 10; 
+		var px_text_y_offset = 30;
+		var px_rect_width = 200; 
+		var px_rect_height = 35;
+		var px_trash_x_offset = px_rect_width  - 20; 
+		var px_trash_y_offset = 20; 
+		var px_folder_offset = 25;
+		var px_edit_x_offset = px_rect_width  - 20;
+		var px_edit_y_offset = 0;
+		var px_insert_x_offset = 0;
+		var px_insert_y_offset = 20;
+		var px_existing_column = 700;
+
+		suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+		suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
+
+		suites.treeData = katana.$activeTab.data('suitesTreeData');
+		existingSuites= katana.$activeTab.data('allExistingSuites');
+		
+    	var pjDataSet = katana.$activeTab.data('pjDataSet');
+    	var pjExistingSuites = katana.$activeTab.data('pjExistingSuites');
+		var optimalHt = existingSuites.length * px_row_height + (px_row_height * 2); 
+		if (optimalHt < 2000) { optimaalHt = 2000; }
+		var optimalWd = katana.$activeTab.find("#suitesMasterPage").width();
+		var margin = {top: 20, right: 120, bottom: 20, left: 120},
+					 width = optimalWd - margin.right - margin.left,
+					 height = optimalHt - margin.top - margin.bottom;
+		var linkDistance = 100; 
+
+		katana.$activeTab.find("[g3did='suites-3d-tree']").attr('id', suites.jsonSuiteObject.Details.Name);
+		var useID = '#' + suites.jsonSuiteObject.Details.Name;
+		console.log("Creating for ", useID);
+		
+		d3.select("[useID='" + useID + "']").remove();  // Clear the screen. 
+		suites.svg = d3.select(useID).append("svg")
+			 .attr("width", width + margin.right + margin.left)
+			 .attr("height", height + margin.top + margin.bottom)
+			 .attr("useID", useID)
+			 .append("g")
+			 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+		katana.$activeTab.data('suitesSVG', suites.svg);
+	
+		// suites.svg.append('defs').append('marker')
+  //       	.attr({'id':'arrowhead',
+  //              'viewBox':'-0 -5 10 10',
+  //              'refX':25,
+  //              'refY':0,
+  //              'orient':'auto',
+  //              'markerWidth':10,
+  //              'markerHeight':10,
+  //              'xoverflow':'visible'})
+  //       	.append('svg:path')
+  //           .attr('d', 'M 0,-5 L 10 ,0 L 0,5')
+  //           .attr('fill', '#666')
+  //           .attr('stroke','#ccc');
+
+  //      	defs  = suites.svg.append('defs');
+
+		// suites.filter = defs.append("filter").attr("id","drop-shadow").attr("height","150%");
+		// suites.filter.append("feGaussianBlur").attr("in","SourceAlpha").attr("stdDeviation",5)
+		// 	.attr("result","blur");
+		// suites.filter.append("feOffset").attr("in","blur")
+		// 	.attr("dx",5)
+		// 	.attr("dy",5)
+		// 	.attr("result", "offsetBlur");
+		// suites.feMerge = suites.filter.append("feMerge");
+		// suites.feMerge.append("feMergeNode").attr("in","offsetBlur");
+		// suites.feMerge.append("feMergeNode").attr("in","SourceGraphic");
+
+		suites.dragSuite = d3.behavior.drag()
+			  		.on('drag', function(d,i) {
+			  			if (d.id == 0) return;
+
+		 				d.x = d3.event.x;
+		            	d.y = d3.event.y;
+		            	//console.log('x =', d3.event.x, ", y=", d3.event.y)
+		            	d3.select(this).attr("transform", function(d,i){
+		                return "translate(" + [ d.x,d.y ] + ")"
+		            	})
+			  		}).on('dragend', function(d,i) {
+						if (d.id == 0) return;
+
+	  					suites.jsonSuiteObject = katana.$activeTab.data('suiteJSON');
+						suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
+						suites.treeData = katana.$activeTab.data('suitesTreeData');
+						existingSuites= katana.$activeTab.data('allExistingSuites');
+			  			console.log("Drag end", d, i);
+
+			  		
+						if ((d.type == 'file'  ) && (d.x < (-px_rect_width))) {
+								var loc = parseInt( 0.5 + ( d.y / px_row_height)); 
+								//console.log("Location = ", loc, " fname = ", d.name);
+								console.log("Location", loc, d);
+								var pathToBase = katana.$activeTab.find('#savefilepath').text();
+	      						var nf = prefixFromAbs(pathToBase, d.path);
+	      						console.log("Adding ..", nf);
+								suites.jsonSuiteObject = katana.$activeTab.data('suiteJSON');
+								suites.jsonTestSuites = suites.jsonSuiteObject['Testcases']; 
+								var sid  = suites.jsonTestSuites.length;
+								if (loc > sid) loc = sid 
+								var nb = new suiteCaseObject();
+								nb.path = nf; 
+								suites.jsonTestSuites.splice(loc,0,nb);
+								suites.mapSuiteJsonToUi();  // This is where the table and edit form is created. 
+								return ;
+			  				}
+			  			
+
+			  			// 	if (d.id > suites.jsonTestSuites.length  && d.ntype == 'existingSuite') {
+								// console.log("You are inserting ...", d);
+								// // Location??
+								// var loc = parseInt( 0.5 + ( d.y / px_row_height)); 
+								// console.log("Location = ", loc, " fname = ", d.name);
+								// var pathToBase = katana.$activeTab.find('#savefilepath').text();
+      		// 					var nf = prefixFromAbs(pathToBase, d.name);
+      		// 					console.log("Adding ..", nf);
+								// suites.jsonSuiteObject = katana.$activeTab.data('suitesJSON');
+								// suites.jsonTestSuites = suites.jsonSuiteObject['Testcases']; 
+								// var sid  = suites.jsonTestSuites.length;
+								// if (loc > sid) loc = sid 
+								// var nb = new projectSuiteObject();
+								// nb.path = nf; 
+								// suites.jsonTestSuites.splice(loc,0,nb);
+								// suites.mapProjectJsonToUi();	// Send in the modified array
+			  			// 	}
+			  			if (d.x < (px_existing_column -px_rect_width) && d.ntype == 'suite' && (d.x >px_suite_column )){
+							var theId = d.id -1;
+							if (theId < suites.jsonTestSuites.length  && d.ntype == 'suite') {
+								// d points to the location ... 
+								suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
+								suites.treeData = katana.$activeTab.data('suitesTreeData');
+								var loc = parseInt( 0.5 + ( d.y / px_row_height)); 
+								var sid  = suites.jsonTestSuites.length;
+								if (loc > sid) loc = sid 
+								console.log("You are rearranging nodes. ...", d.id, loc);
+								var oldSuite = jQuery.extend(true, {},suites.jsonSuiteObject.Testsuites[theId]);
+								suites.jsonSuiteObject.Testsuites[theId] = suites.jsonSuiteObject.Testsuites[loc]
+								suites.jsonSuiteObject.Testsuites[loc] = oldSuite
+							suites.mapSuiteJsonToUi();  // This is where the table and edit form is created. 
+								return ;
+			  				}
+
+		
+			  				
+			  			}
+			  			if ((d.type =='file')||(d.type =='directory')) {
+			  				suites.svg.select(".existingSuiteNode").remove();
+			  				suites.createExistingTree();
+			  			}
+			  			
+			  			
+			  	});
+
+
+
+
+
+		var gnodes = suites.svg.selectAll('g')
+				.data(pjDataSet.nodes)
+				.enter()
+				.append('g')
+				.attr("transform",function(d) { 
+					var py = (d.rowid - 1) * px_row_height;
+					if (d.ntype == "project") return "translate("+10+","+px_rect_height*2+")";
+					if (d.ntype == 'existingSuite') {
+						var i = d.rowid - 1;
+						var xlen = Math.floor(pjExistingSuites.nodes.length / 3); 
+						var px = px_existing_column + ((i%3)*px_rect_width + 50); 
+						py = Math.floor(i/3)%xlen * px_row_height;
+
+
+						return "translate("+px+","+py+")";
+					} 
+					return "translate("+px_suite_column+","+py+")";
+					})
+				.attr('class', 'masternode')
+				.call(suites.dragSuite);
+
+		//var eNodes = suites.svg.selectAll(".project-d3-existing-type");
+
+		suites.createExistingTree();
+
+		// force.on('end', function() {
+		// 			var mNodes = suites.svg.selectAll(".project-d3-existing-type");
+		
+		// 			mNodes.attr("x", function(d) { return d.x; })
+  //       				  .attr('y', function(d) { return d.y; });
+ 
+		// 			mylinks.attr('x1', function(d) { return d.source.x; })
+		// 			        .attr('y1', function(d) { return d.source.y; })
+		// 			        .attr('x2', function(d) { return d.target.x; })
+		// 			        .attr('y2', function(d) { return d.target.y; });
+		// 		});
+		
+
+
+		gnodes.append("rect")
+	   		.attr("width",function(d){ 
+					if (d.ntype == 'project') return px_rect_width * 0.6;
+   					return px_rect_width; 
+   			})
+   			.attr("height",function(d){ 
+					if (d.ntype == 'project') return px_rect_height * 4;
+   					return px_rect_height; 
+   			})
+   			.attr("x", 0)
+   			.attr("y", 0)
+   			.attr("rx", function(d){ 
+					if (d.ntype == 'project') return 5;
+   					if (d.ntype == 'existingSuite') return 8;
+   					return 3; 
+   			})
+   			.attr('fill', function(d){ 
+					if (d.ntype == 'project') return '#42f49b';
+   					if (d.ntype == 'suite') return 'steelblue';
+   					return 'white'; 
+   			})
+   			.attr('class',function(d) { 
+   						//console.log("Setting circle", d);	
+						if (d.ntype == 'existingSuite') { 
+								return "project-d3-existing-type";
+							}
+						return "project-d3-node";})
+   			.style('stroke-width', 3)
+   			.style('stroke', function(d) { 
+   				if (d.ntype == 'project') return 'blue';
+   				return 'darkblue';
+
+   			})
+   			.on("mouseover",function(d) {
+   					// var dx = d3.mouse(this)[0];
+   					// var dy = d3.mouse(this)[1];
+   					// console.log(dx,dy, "x=", d3.event.pageX, " y=", d3.event.pageY, "d.x", d.x, ",", d.y , d.rowid, d.id);
+   					var py = (d.rowid - 1) * px_row_height;
+   					var px = px_suite_column + px_rect_width;
+
+   					if (d.rowid == 0) {
+   						py = px_row_height;
+   						px = px_suite_column - px_rect_width/2;
+   					}
+
+					if (d.ntype == 'existingSuite') {
+						var i = d.rowid - 1;
+						var xlen = Math.floor(pjExistingSuites.nodes.length / 3); 
+						var px = px_existing_column + ((i%3)*px_rect_width + 50); 
+						py = Math.floor(i/3)%xlen * px_row_height;
+					}
+
+
+
+   					var fobj = suites.svg.append('foreignObject')
+						.attr('x', px+20)
+						.attr('y', py+20)
+						.attr('width', 450)
+						.attr('class', 'projectSuiteTooltip')
+						;
+						var div = fobj.append("xhtml:div")
+						.append('div')
+						.attr('border-bottom-width', 10)
+   						.attr('border-right-width', 10)
+   			
+						.attr('x',  0)
+						.attr('y',  0)					
+						.style({
+							'opacity': 1.0,
+							'border' : '2px solid "green"',
+						});
+						div.append('p')
+						.style('border', '2px solid green')
+						.style('background-color','white')
+						.style('opacity', 1)
+						.html(d.displayStr);
+					//var foHt = div[0][0].getBoundingClientRect().height;
+					//var foWd = div[0][0].getBoundingClientRect().width;
+   				})
+   			.on("mouseout",function(d) {
+   		 			suites.svg.selectAll('.projectSuiteTooltip').remove();
+   				})
+   			.on("click",function(d) {
+   		 			if (d.ntype == 'project') {
+   		 				//suites.editDetailsAsPopup();
+   		 			}
+   				});
+
+
+ 		gnodes.append("foreignObject")
+	   				.attr("width", 20)
+	   				.attr("height", 20)
+	   				.attr("y", px_trash_y_offset)
+	   				.attr("x", px_trash_x_offset)
+	   				.attr("class", "fa fa-trash")
+	   				.attr("deleteNodeid",function(d) { return d.rowid - 1; })
+	   				.style("opacity", 1)
+	   				.style("fill-opacity",1)
+	   				.style("visibility", function(d) {
+	   					if (d.ntype != 'suite') {
+	   						return "hidden";
+	   					} else {
+	   						return "visible";
+	   					}
+	   				})
+	   				.html(function(d) { return " "; } )
+	   				.on("click", function(d) { 
+	   						//console.log("cccc, ", d, this);
+		   					if (this.hasAttribute('deleteNodeid')) {
+	   							//console.log("Clicked to delete " + d.rowid);
+
+
+	   							suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+								suites.jsonTestcases = suites.jsonSuiteObject.Testcases	
+								suites.jsonTestcases.splice(d.rowid-1,1);
+								console.log(suites.jsonTestcases);
+								suites.createCasesTable();
+								suites.createD3treeData(); 
+								suites.createD3tree();
+	   					
+	   							
+							
+	   						}
+	   						event.stopPropagation();
+	   				});
+
+ 			
+	   			gnodes.append("foreignObject")
+	   				.attr("width", 20)
+	   				.attr("height", 20)
+	   				.attr("y", px_insert_y_offset)
+	   				.attr("x", px_insert_x_offset)
+	   				
+	   				// .attr("y", function(d) {  return px_y_icon_offset + ( d.rowid * px_row_height); })
+	   				// .attr("x", function(d) { 
+	   				// 	if (d.ntype == 'project') return 10; 
+	   				// 	return px_suite_column + px_insert_offset; 
+	   				// })
+	   				.attr("class", "fa fa-plus")
+	   				.attr("addNodeid",function(d) { return d.rowid - 1; })
+	   				.style("opacity", 1)
+	   				.style("fill-opacity",1)
+	   				.style("visibility", function(d) {
+	   					if (d.ntype != 'suite') {
+	   						return "hidden";
+	   					} else {
+	   						return "visible";
+	   					}
+	   				})
+	   				.html(function(d) { return " "; } )
+	   				.on("click", function(d) { 
+	   						//console.log("cccc, ", d, this);
+		   					if (this.hasAttribute('addNodeid')) {
+	   							//console.log("Clicked to add " + d.rowid);
+								var newTestcase =	new suiteCaseObject(); 
+								suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+								suites.jsonTestcases = suites.jsonSuiteObject.Testcases	
+								console.log(suites.jsonTestcases);
+								suites.jsonTestcases.push(newTestcase);	
+								suites.createCasesTable();
+								suites.createD3treeData(); 
+								suites.createD3tree();
+	   						}
+	   						event.stopPropagation();
+	   				});
+
+
+
+	   			gnodes.append("foreignObject")
+	   				.attr("width", 20)
+	   				.attr("height", 20)
+	   				.attr("y", px_edit_y_offset)
+	   				.attr("x", px_edit_x_offset)
+	   				
+	   				.attr("class", "fa fa-pencil")
+	   				.attr("editNodeid",function(d) { return d.rowid; })
+	   				.style("opacity", 1)
+	   				.style("fill-opacity",1)
+	   				.style("visibility", function(d) {
+	   					if (d.ntype != 'suite') {
+	   						return "hidden";
+	   					} else {
+	   						return "visible";
+	   					}
+	   				})
+	   				.html(function(d) { return " "; } )
+	   				.on("click", function(d) { 
+	   						// console.log("cccc, ", d, this);
+		   					if (this.hasAttribute('editNodeid')) {
+	   							// console.log("Clicked ...", d, this, this.hasAttribute('deleteNodeid'));
+									var sid = d.rowid-1;
+								katana.popupController.open(katana.$activeTab.find("#editTestSuiteEntry").html(),"Edit..." , function(popup) {
+									suites.lastPopup = popup; 
+									// console.log(katana.$activeTab.find("#editTestSuiteEntry"));
+									suites.mapSuiteCaseToUI(sid,popup);
+								});
+	   						}
+	   						event.stopPropagation();
+	   				});
+
+
+
+    	var nodelabels = gnodes.append("text")
+	       .attr("class","nodelabel")
+	       .attr("x", 10)
+		   .attr("y", px_rect_height / 2)
+	       .attr("stroke","black")
+	       .text(function(d){
+	       		if (d.ntype == 'existingSuite') return  d.displayStr.substring(0,20);
+	       		if (d.ntype == 'project') return d.name.substring(0,20);
+	       		return "(" + d.rowid + ") ..." + d.name.substr(d.name.length - 15);})
+
+		suites.nodelabels = nodelabels;
+		console.log(suites.nodelabels);
+
+		console.log("here2...", pjDataSet);
+
+		// var mylinks = suites.svg.selectAll('.project-d3-link')
+		// 	.data(pjDataSet.edges)
+		// 	.enter().append('line')
+		// 	.attr('class','project-d3-link')
+		// 	.attr("id",function(d,i) {return 'edge'+i})
+		//     .attr("x1", function(d) { return  px_suite_column +  px_rect_width/2; } )
+		//    	.attr("y1", function(d) { return  (d.source.id) * px_row_height + px_row_height/2 } )
+		//     .attr("x2", function(d) { return  px_suite_column +  px_rect_width/2; } )
+		//    	.attr("y2", function(d) { return  (d.target.id ) * px_row_height + px_row_height/2; } )
+		//     .style("stroke","#ccc")
+		//     .attr('marker-end','url(#arrowhead)')
+		//     .style("pointer-events", "none");
+
+		
+	   	
+ 	   
+		
+		},
+
+
+	createExistingTree: function() {
+
+		var stree = katana.$activeTab.data('existingSuiteTree');
+		console.log("stree ", stree);
+		var sroot = stree; 
+		var tree = d3.layout.tree()
+ 					.size([700, 1000]);
+ 		var diagonal = d3.svg.diagonal()
+ 					.projection(function(d) { return [d.y, d.x]; });
+
+ 		var nodes = tree.nodes(sroot).reverse(),
+   		links = tree.links(nodes);
+
+
+   		var eNodes = suites.svg.append('g')
+   			.attr('class','existingSuiteNode')
+   			.attr("transform", "translate(500,0)");
+
+
+   		suites.eNodes = eNodes;  // Very important for drag end.
+   		suites.diagonal = diagonal; // Sa
+  		// Normalize for fixed-depth.
+  		var n = 0;
+  		nodes.forEach(function(d) { d.y = d.depth * 180; d.id = ++n;});
+   		console.log("suites svg->", suites.svg.selectAll(".existingSuiteNode"), nodes);
+   		n= 0;
+		//var nodeEnter = suites.svg.selectAll("g.existingSuiteNode")
+		var nodeEnter = eNodes.selectAll("node")
+				.data(nodes)
+				.enter()
+				.append("g")
+				.attr("class", "node")
+				.attr("transform", function(d) { 
+				 return "translate(" + d.y  + "," + d.x + ")"; })
+				.on("mouseover", function(d) {
+					console.log("mouseover-->", d)
+
+				 })
+				.call(suites.dragSuite);
+
+		  nodeEnter.append("circle")
+		   .attr("r", 10)
+		   .style("fill", function(d) {
+		   		if (d.type == 'directory') return "#aaa";
+		   		return "#fff";
+		   });
+
+		  nodeEnter.append("text")
+		   .attr("x", function(d) { 
+		    return d.children || d._children ? -13 : 13; })
+		   .attr("dy", ".35em")
+		   .attr("text-anchor", function(d) { 
+		    return d.children || d._children ? "end" : "start"; })
+		   .text(function(d) { return d.name; })
+		   .style("fill-opacity", 1);
+
+		  // Declare the linksâ€¦
+		  //var link = suites.svg.selectAll("path.link")
+		  var link = eNodes.selectAll("path.link")
+		   .data(links, function(d) { return d.target.id; });
+
+		  // Enter the links.
+		  link.enter().insert("path", "g")
+		   .attr("class", "link")
+		   .attr("d", diagonal);
+		   suites.link = link;
+	},
+	  
+
+
+
+
+	swapViews: function(){
+			suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+			suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
+		console.log("Hellos!", suites.treeView);
+		if (suites.treeView == 0) {
+			katana.$activeTab.find("#suites-standard-edit").hide();
+			katana.$activeTab.find("#suites-graphics-edit").show();
+			suites.treeView = 1; 
+		} else {
+			suites.treeView = 0;
+			katana.$activeTab.find("#suites-standard-edit").show();
+			katana.$activeTab.find("#suites-graphics-edit").hide();
+
+		}
+	},
+
+
 /// -------------------------------------------------------------------------------
 // Sets up the global Suite data holder for the UI. 
 // This is called from the correspoding HTML file onLoad event 
@@ -398,9 +1005,13 @@ var suites= {
 	
 	jQuery.getJSON("./suites/getJSONSuiteData/?fname="+myfile).done(function(data) {
 			var sdata = data['fulljson'];
-			console.log("from views.py call=", sdata);
+			console.log("from views.py call=", sdata, data);
 			suites.jsonSuiteObject = new testSuiteObject(sdata['TestSuite']);
 			katana.$activeTab.data("suiteJSON", suites.jsonSuiteObject);
+
+			katana.$activeTab.data('allExistingSuites', data['cases']);	
+			katana.$activeTab.data('existingSuiteTree', data['stree']);	
+
 
 			suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
 			suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
@@ -1153,6 +1764,9 @@ Two global variables are heavily used when this function is called;
 		katana.$activeTab.find(tag).val(nf);
       	katana.$activeTab.find(tag).attr("value", nf);
 	  	katana.$activeTab.find(tag).attr("fullpath", fpath);
+
+	  	suites.createD3treeData();
+		suites.createD3tree();
 	}
 
 

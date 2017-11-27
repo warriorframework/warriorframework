@@ -40,6 +40,18 @@ def getSuiteListTree(request):
 	print jtree;
 	return JsonResponse({'treejs': jtree })
 
+
+def path_to_dict(path):
+    d = {'name': os.path.basename(path), 'path' : path}
+    if os.path.isdir(path):
+        d['type'] = "directory"
+        d['children'] = [path_to_dict(os.path.join(path,x)) for x in os.listdir\
+(path)]
+    else:
+        d['type'] = "file"
+    return d
+
+
 def getJSONSuiteData(request):
 	path_to_config_file = navigator.get_katana_dir() + os.sep + "config.json"   
 	x= json.loads(open(path_to_config_file).read());
@@ -55,8 +67,18 @@ def getJSONSuiteData(request):
 		print "Invalid XML file"
 		xml_d = getEmpty();
 
+	fpath = x['xmldir'];
+	tt = path_to_dict(fpath)
+	print tt;
+
+	files = glob.glob(fpath + "/**/*.xml");
+	files.extend(glob.glob(fpath+"/*.xml"))
+	files.extend(glob.glob(fpath+"/**/**/*.xml"))
+	cases  = [{ 'name': os.path.basename(fn), 'fullpath': fn } for fn in files ]
+
+
 	j_data = json.loads(json.dumps(xml_d))
-	responseBack = { 'fulljson': j_data , 'fname': filename }
+	responseBack = { 'fulljson': j_data , 'fname': filename , 'cases': cases,  'stree': tt}
 	return JsonResponse(responseBack)
 
 def index(request):
