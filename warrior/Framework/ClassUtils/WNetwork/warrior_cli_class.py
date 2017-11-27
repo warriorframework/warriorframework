@@ -234,19 +234,23 @@ class WarriorCli(object):
                                            response_dict, resp_key_list)
                     if len(response_dict) > 0:
                         for count, resp in enumerate(resp_key_list[i].keys()):
+                            # fetches the session id for each resp ref key.
                             session_id = self.get_session_id_for_resp_ref\
                                 (details_dict, response_dict, resp, i,
                                  system_name, session_name, key)
-                            if len(resp_key_list[i].keys()) == 1:
+                            if session_id:
+                                if len(resp_key_list[i].keys()) == 1:
+                                    # enters the if condition if it is a single response reference
+                                    actual_key = response_dict.keys()[i]
+                                    actual_value = response_dict.values()[i]
+                                elif len(resp_key_list[i].keys()) > 1:
+                                    # enters elif block when it is multiple response reference.
+                                    actual_key = resp
+                                    actual_value = resp_key_list[i].values()[count]
+                                # prints the session id, key and value
                                 pNote("Portion of response saved to the data "
                                       "repository with key: '{0}.{1}.{2}' and value: '{3}'"
-                                      .format(session_id, key, response_dict.keys()[i],
-                                              response_dict.values()[i]))
-                            elif len(resp_key_list[i].keys()) > 1:
-                                pNote("Portion of response saved to the data repository with key: "
-                                      "'{0}.{1}.{2}' and value: '{3}'"
-                                      .format(session_id, key, resp,
-                                              resp_key_list[i].values()[count]))
+                                      .format(session_id, key, actual_key, actual_value))
 
                     result = (result and rspRes) if "ERROR" not in (
                                 result, rspRes) else "ERROR"
@@ -271,21 +275,23 @@ class WarriorCli(object):
         The session id is retrieved for updating and printing the
         response reference key & value
         """
-        sys_name = ses_name = ''
+        sys_name = ses_name = session_id = ''
         if resp in response_dict.keys():
+            # if details dict has a sys value then it takes that else uses the test case
             if details_dict["sys_list"][i] == '' or \
               details_dict["sys_list"][i] is None:
                 sys_name = system_name.split('.')[0]
             else:
                 sys_name = details_dict["sys_list"][i]
+            # if details dict has a session value then it takes that else uses
+            # the test case if available
             if details_dict["session_list"][i] == '' or \
                details_dict["session_list"][i] is None:
                 ses_name = session_name
             else:
                 ses_name = details_dict["session_list"][i]
             session_id = Utils.data_Utils.get_session_id(sys_name, ses_name) + "_td_response"
-            return session_id
-        return ''
+        return session_id
 
     @mocked
     def _send_cmd(self, **kwargs):
