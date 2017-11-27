@@ -561,12 +561,11 @@ class TestDataIterations(object):
         cmd_list_length = len(cmd_list)
         cmd_loc_list = [0]
         cmd_size = 1
-        cmd_list_subs = []
-        is_iter = False
         for i, cmd in enumerate(cmd_list):
+            cmd_list_subs = []
+            is_iter = False
             vc_file = vc_file_list[i]
-            iteration_status = self.validate_iteration_patterns\
-            (cmd, details_dict, i)
+            iteration_status = self.validate_iteration_patterns(cmd, details_dict, i)
             cmd_size = 1 if cmd_size < 1 else cmd_size
             # if iteration_status is False, mark command as False and
             # move on to the next command
@@ -589,15 +588,14 @@ class TestDataIterations(object):
                 # This also means that the command parameters do not have any
                 # iteration patterns because the validation was already done.
                 if isinstance(cmd, str) and '+' not in cmd:
-                    # precheck for list substitution if the command does not
-                    # have a bool value
+                    # check if list exists in cmd
                     td_obj = TestData()
                     cmd_list_subs = td_obj.\
                         list_substitution_precheck(vc_file_list[i],
                                                    details_dict, '${', '}')
                     if cmd_list_subs[0][i] != False:
                         is_iter = True
-                if cmd_iter_pattern != "" or is_iter is not False:
+                if cmd_iter_pattern != "" or is_iter is True:
                     # if cmd_iterpattern is not "" or if the command has a
                     # list value, call the expand cmd_params method to resolve
                     # the iteration patterns in the command and get a updated
@@ -687,6 +685,8 @@ class TestDataIterations(object):
         details_dict["repeat_list"][index] = None
         error = False
         if cmd_iter_pattern != "":
+            # If details_dict["command_list"][index] has a '+', then
+            # cmd_iter_pattern will not be ""
             resolved_cmd_list, status = self._expand_iter_pattern\
                 (cmd, cmd_iter_pattern, vc_file)
             if status and len(resolved_cmd_list) > 0:
@@ -735,7 +735,8 @@ class TestDataIterations(object):
                 # do not care to resolve other cmd parameters. return details dict
                 cmd_list[index] = False
         else:
-            # the list value is substituted and updates the details dict
+            # if details_dict["command_list"][index] has a list value in it, then
+            # else block is executed
             t_obj = TestData()
             t_obj.list_substitution_precheck(vc_file_list[index],
                                              details_dict, '${', '}')
