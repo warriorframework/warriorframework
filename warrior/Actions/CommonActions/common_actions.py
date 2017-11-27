@@ -264,6 +264,7 @@ class CommonActions(object):
                         Ex. expression: "10+${ENV.x}-${REPO.y}*10"
                     Expression will be evaluated based on python operator precedence
                 2. expected: Value to be compared with the expression output
+                    This can be a env or data_repo or any numeral value.
                 3. comparison: Type of comparison(eq/ne/gt/ge/lt/le)
                     eq - check if both are same(equal)
                     ne - check if both are not same(not equal)
