@@ -17,6 +17,7 @@ import sys
 import time
 import subprocess
 import getpass
+import xml
 import Tools
 from Framework import Utils
 from Framework.Utils.print_Utils import print_info, print_debug,\
@@ -27,6 +28,7 @@ from Framework.ClassUtils import database_utils_class
 from Framework.ClassUtils.WNetwork.loging import ThreadedLog
 from Framework.Utils.list_Utils import get_list_by_separating_strings
 from WarriorCore.Classes.warmock_class import mocked
+from timeit import itertools
 
 """ Module for performing CLI operations """
 
@@ -308,17 +310,21 @@ class WarriorCli(object):
             elif resp_keys is not None:
                 keys = resp_ref.split(',')
                 # get the patterns from pattern entries in testdata file
-                patterns = [None if k is None else k.get("resp_pattern_req") for k in resp_keys]
-                # warn if number of patterns does not match number of resp_ref keys
-                if len(keys) != len(patterns):
-                    print_warn_msg(keys, len(patterns))
-                for k, p in zip(keys, patterns):
-                    if p is None:
-                        print_error("There is no pattern element corresponding to {}, please check".format(k))
+                patterns = []
+                # error out if any of the key element can not be retrieved
+                for key, resp_key in itertools.izip_longest(keys, resp_keys):
+                    if isinstance(resp_key, xml.etree.ElementTree.Element):
+                        patterns.append(resp_key.get("resp_pattern_req"))
+                    elif isinstance(resp_key, basestring):
+                        print_error("There is no pattern element for key '{}' corresponding"
+                                    " to '{}', please check".format(resp_key, key))
                         status = False
                 else:
                     if status is False:
                         return status, response_dict
+                # warn if number of patterns does not match number of resp_ref keys
+                if len(keys) != len(patterns):
+                    print_warn_msg(keys, len(patterns))
                 if inorder:
                     pNote(save_msg1+' inorder.')
                     # since inorder pattern matching selected, join all the

@@ -490,9 +490,9 @@ def _get_cmd_details(testdata, global_obj, system_name,
                                 elem_list.append(glob_key)
                                 break
                         else:
-                            elem_list.append(None)
+                            elem_list.append(key)
                     else:
-                        elem_list.append(None)
+                        elem_list.append(key)
                 else:
                     resultant_list.append(elem_list)
         else:
