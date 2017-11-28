@@ -93,7 +93,7 @@ class CoreConfig(AppConfig):
             ordered_json["idfdir"] = json_data["idfdir"]
 
         if "testdata" not in json_data or json_data["testdata"] == "":
-            path = get_abs_path(join_path("Warriorspace", "Data"), warrior_dir)
+            path = get_abs_path(join_path("Warriorspace", "Config_files"), warrior_dir)
             if path is not None:
                 ordered_json["testdata"] = path
             else:
