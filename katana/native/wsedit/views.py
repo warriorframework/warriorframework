@@ -64,7 +64,7 @@ def getFileData(request):
 		pass
 	if extn == '.py': mode = "python";
 	# if extn == '.pl': mode = "perl";
-	# if extn == '.xml': mode = "xml";
+	if extn == '.xml': mode = "xml";
 	# if extn == '.js': mode = "js";
 	print "Setting mode ", mode, extn
 
