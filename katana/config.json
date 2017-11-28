@@ -1,11 +1,10 @@
 {
-    "engineer": "",
+    "engineer": "", 
     "pythonsrcdir": "",
     "xmldir": "",
     "testsuitedir": "",
     "projdir": "",
     "idfdir": "",
     "testdata": "",
-    "warhorn_config": "",
     "pythonpath": ""
 }

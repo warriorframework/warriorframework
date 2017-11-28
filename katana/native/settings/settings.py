@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import os
+
+from utils.directory_traversal_utils import join_path
 from utils.navigator_util import Navigator
 from collections import OrderedDict
 try:
@@ -41,7 +43,6 @@ class Settings:
         def_dir_string = xml_controler.tostring(elem)
         def_dir_xml_obj = elem
 
-
         if request.method == 'POST':
             w_settings_data = {'Setting': {'Logsdir': '', 'Resultsdir': '', '@name': ''}}
             returned_json = json.loads(request.POST.get('data'))
@@ -61,7 +62,6 @@ class Settings:
                 json_data = json.load(f, object_pairs_hook=OrderedDict)
             data = {'fromXml': xmltodict.parse(def_dir_string).get('Setting'),
                     'fromJson': json_data}
-            print data
             return data
 
     def profile_setting_handler(self, request):
