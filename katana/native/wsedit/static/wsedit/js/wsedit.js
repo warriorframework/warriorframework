@@ -74,8 +74,17 @@ var wsedit = {
 
  	},
 
+
+	openPyFileFromServer: function() {
+		wsedit.openFileFromServer(".py");
+	},
+
+	openXmlFileFromServer: function() {
+		wsedit.openFileFromServer(".xml");
+	},
+
  	
-	openFileFromServer: function() {
+	openFileFromServer: function(extension) {
 
 			var tag = '#wsedit-filename';
 			var callback_on_accept = function(selectedValue) { 
@@ -91,6 +100,7 @@ var wsedit = {
 
 			jQuery.getJSON("./wsedit/getFileData/?filename="+selectedValue).done(function(data) {
 				var sdata = data['fulltext'];
+				katana.fileExplorerAPI.setExtension('');
 				wsedit.sdata = data;
 				// katana.$activeTab.find('#wsedit-scrollable-source-text').show();
 				// katana.$activeTab.find('#wsedit-scrollable-source-text').html(sdata);
@@ -114,10 +124,12 @@ var wsedit = {
 			};
 	 var callback_on_dismiss =  function(){ 
 	  		console.log("Dismissed");
+	  		katana.fileExplorerAPI.setExtension('');
+	
 	 };
 	 var pdir = katana.$activeTab.find("#wsedit-pythonsrcdir")[0].innerText; 
-	 console.log("Pdir = ", pdir);
-	 katana.fileExplorerAPI.openFileExplorer("Select a file", pdir , $("[name='csrfmiddlewaretoken']").val(), false, callback_on_accept, callback_on_dismiss,".py");
+	 katana.fileExplorerAPI.setExtension(extension);
+	 katana.fileExplorerAPI.openFileExplorer("Select a file", pdir , $("[name='csrfmiddlewaretoken']").val(), false, callback_on_accept, callback_on_dismiss);
 	  
 	},
 

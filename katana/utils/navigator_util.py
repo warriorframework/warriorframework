@@ -30,7 +30,7 @@ class Navigator(object):
         """returns back the parent of given_dir and allows a user to run multipule times"""
         pass
 
-    def get_dir_tree_json(self, start_dir_path, dir_icon=None, file_icon='jstree-file', fl=False):
+    def get_dir_tree_json(self, start_dir_path, dir_icon=None, file_icon='jstree-file', fl=False, extension=None):
         """
         Takes an absolute path to a directory(start_dir_path)  as input and creates a
         json tree having the start_dir as the root.
@@ -69,6 +69,8 @@ class Navigator(object):
 
 
         """
+        if os.path.splitext(start_dir_path)[1] != extension and os.path.isfile(start_dir_path) :
+            return None        
         base_name = os.path.basename(start_dir_path)
         layout = {'text': base_name}
         layout['li_attr'] = {'data-path': start_dir_path}
@@ -77,13 +79,20 @@ class Navigator(object):
             fl = 'false'
         if os.path.isdir(start_dir_path):
             for x in os.listdir(start_dir_path):
+                if extension: 
+                    if os.path.splitext(x)[1] != extension and os.path.isfile(os.path.join(start_dir_path,x)) : 
+                        continue 
                 try:
-                    children = self.get_dir_tree_json(os.path.join(start_dir_path, x), fl=fl)
+                    children = self.get_dir_tree_json(os.path.join(start_dir_path, x), fl=fl, extension=extension)
+                    if children == None: continue 
                 except IOError:
                     pass
                 except Exception as e:
                     print "-- An Error Occurred -- {0}".format(e)
                 else:
+                    if extension and children.has_key('children'):
+                        y  = [ a for a in children['children'] if os.path.isdir(a['li_attr']['data-path']) or os.path.splitext(a['text'])[1] == extension ]
+                        children['children'] = y;
                     if "children" in layout:
                         layout['children'].append(children)
                     else:

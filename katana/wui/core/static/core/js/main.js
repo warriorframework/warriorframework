@@ -906,7 +906,13 @@ var katana = {
 
 	fileExplorerAPI: {
 
-			init: function(){
+		extension: "", 
+
+		setExtension: function(ext) {
+			katana.fileExplorerAPI.extension = ext; 
+		},
+
+		init: function(){
 				var $elem = this;
 				input = $elem.parent().find('input');
 				katana.fileExplorerAPI.openFileExplorer( null, null, null, null, function( str ){
@@ -914,7 +920,7 @@ var katana = {
 				});
 			},
 
-	    openFileExplorer: function(heading, start_directory, csrftoken, parent, callBack_on_accept, callBack_on_dismiss){
+	    openFileExplorer: function(heading, start_directory, csrftoken, parent, callBack_on_accept, callBack_on_dismiss, ext){
             if(!heading || heading == "" || heading == undefined){
                 heading = "Select a file"
             }
@@ -928,7 +934,10 @@ var katana = {
             else {
                 $tabContent = parent;
             }
-            katana.templateAPI.post('get_file_explorer_data/', csrftoken, {"start_dir": start_directory},
+            diropts = { "start_dir": start_directory, "extension" : katana.fileExplorerAPI.extension };
+            console.log("extension", ext, diropts)
+           
+            katana.templateAPI.post('get_file_explorer_data/', csrftoken, diropts,
                 function(data) {
                     var explorer_modal_html = $($('#file-explorer-template').html())
                     var $fileExplorerHeading = explorer_modal_html.find('#file-explorer-heading');
@@ -1002,7 +1011,11 @@ var katana = {
             else {
                 $tabContent = parent;
             }
-            katana.templateAPI.post('get_file_explorer_data/', csrftoken, {"path": currentPath},
+
+            diropts = { "path": currentPath, "extension" : katana.fileExplorerAPI.extension };
+            console.log("path..", diropts)
+           
+            katana.templateAPI.post('get_file_explorer_data/', csrftoken, diropts,
                 function(data) {
 
                     var $directoryDataDiv = $tabContent.find('.directory-data-div');

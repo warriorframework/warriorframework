@@ -64,7 +64,12 @@ def get_file_explorer_data(request):
         start_dir = get_parent_directory(request.POST["data[path]"])
     else:
         start_dir = join_path(nav_obj.get_warrior_dir(), "Warriorspace")
-    output = nav_obj.get_dir_tree_json(start_dir_path=start_dir)
+    ext = None;
+    if "data[extension]" in request.POST: 
+        ext = request.POST["data[extension]"]
+    if len(ext) < 1: ext = None;
+    output = nav_obj.get_dir_tree_json(start_dir_path=start_dir, extension=ext)
+    
     return JsonResponse(output)
 
 
