@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
 import json
 import os
 from collections import OrderedDict
-
 from django.apps import AppConfig
-from utils.directory_traversal_utils import get_parent_directory, get_abs_path
+from utils.directory_traversal_utils import get_abs_path, join_path
 from utils.navigator_util import Navigator
 from wui.core.core_utils.app_info_class import AppInformation
 from wui.core.core_utils.apps_class import Apps
@@ -52,25 +50,57 @@ class CoreConfig(AppConfig):
             if "pythonsrcdir" not in json_data or json_data["pythonsrcdir"] == "" \
             else json_data["pythonsrcdir"]
 
-        ordered_json["xmldir"] = os.path.join(warrior_dir, "Warriorspace", "Testcases") \
-            if "xmldir" not in json_data or json_data["xmldir"] == "" \
-            else json_data["xmldir"]
+        warrior_dir = ordered_json["pythonsrcdir"]
 
-        ordered_json["testsuitedir"] = os.path.join(warrior_dir, "Warriorspace", "Suites") \
-            if "testsuitedir" not in json_data or json_data["testsuitedir"] == "" \
-            else json_data["testsuitedir"]
+        if "xmldir" not in json_data or json_data["xmldir"] == "":
+            path = get_abs_path(join_path("Warriorspace", "Testcases"), warrior_dir)
+            if path is not None:
+                ordered_json["xmldir"] = path
+            else:
+                ordered_json["xmldir"] = ""
+                print "-- An Error Occurred -- Path to Cases directory could not be located"
+        else:
+            ordered_json["xmldir"] = json_data["xmldir"]
 
-        ordered_json["projdir"] = os.path.join(warrior_dir, "Warriorspace", "Projects") \
-            if "projdir" not in json_data or json_data["projdir"] == "" \
-            else json_data["projdir"]
+        if "testsuitedir" not in json_data or json_data["testsuitedir"] == "":
+            path = get_abs_path(join_path("Warriorspace", "Suites"), warrior_dir)
+            if path is not None:
+                ordered_json["testsuitedir"] = path
+            else:
+                ordered_json["testsuitedir"] = ""
+                print "-- An Error Occurred -- Path to Cases directory could not be located"
+        else:
+            ordered_json["testsuitedir"] = json_data["testsuitedir"]
 
-        ordered_json["idfdir"] = os.path.join(warrior_dir, "Warriorspace", "Data") \
-            if "idfdir" not in json_data or json_data["idfdir"] == "" \
-            else json_data["idfdir"]
+        if "projdir" not in json_data or json_data["projdir"] == "":
+            path = get_abs_path(join_path("Warriorspace", "Projects"), warrior_dir)
+            if path is not None:
+                ordered_json["projdir"] = path
+            else:
+                ordered_json["projdir"] = ""
+                print "-- An Error Occurred -- Path to Cases directory could not be located"
+        else:
+            ordered_json["projdir"] = json_data["projdir"]
 
-        ordered_json["testdata"] = os.path.join(warrior_dir, "Warriorspace", "Config_files") \
-            if "testdata" not in json_data or json_data["testdata"] == "" \
-            else json_data["testdata"]
+        if "idfdir" not in json_data or json_data["idfdir"] == "":
+            path = get_abs_path(join_path("Warriorspace", "Data"), warrior_dir)
+            if path is not None:
+                ordered_json["idfdir"] = path
+            else:
+                ordered_json["idfdir"] = ""
+                print "-- An Error Occurred -- Path to Cases directory could not be located"
+        else:
+            ordered_json["idfdir"] = json_data["idfdir"]
+
+        if "testdata" not in json_data or json_data["testdata"] == "":
+            path = get_abs_path(join_path("Warriorspace", "Data"), warrior_dir)
+            if path is not None:
+                ordered_json["testdata"] = path
+            else:
+                ordered_json["testdata"] = ""
+                print "-- An Error Occurred -- Path to Cases directory could not be located"
+        else:
+            ordered_json["testdata"] = json_data["testdata"]
 
         if "pythonpath" not in json_data:
             ordered_json["pythonpath"] = ""
