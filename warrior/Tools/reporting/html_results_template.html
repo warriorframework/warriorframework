@@ -179,25 +179,6 @@ a {
     font-size: 12px;
 }
 
-td[rowspan]:nth-child(6){
-    flex-grow: .5;
-}
-
-.nav th:nth-child(6){
-    flex-grow: .5;
-}
-
-td[rowspan]:nth-child(9){
-    flex-grow: .5;
-}
-
-.nav th:nth-child(9){
-    flex-grow: .5;
-}
-
-.nav th:nth-child(11){
-    display: none;
-}
 td:not([rowspan]){
     font-size: 11px;
     text-align: center;
@@ -348,6 +329,20 @@ th span {
 }
 
 td[rowspan]:nth-child(4):hover div:not(:empty) {
+    position: absolute;
+    background: #3699ff;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    color: white;
+    height: 40px;
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.28);
+    -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.28);
+    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.28);
+    transform: translate3d( -3px, 4px, 0);
+}
+
+td[rowspan]:nth-child(2):hover div:not(:empty) {
     position: absolute;
     background: #3699ff;
     z-index: 1;
@@ -583,6 +578,78 @@ tr[name] td:not([rowspan]):nth-last-child(6):hover:before {
 tr[name="TestsuiteRecord"] .fa-book, tr[name="ProjectRecord"] .fa-book {
     display: none;
 }
+.nav th:nth-child(1){
+    max-width: 5%;
+}
+td[rowspan]:nth-child(1){
+    max-width: 5%;
+}
+.nav th:nth-child(2){
+    max-width: 11%;
+}
+td[rowspan]:nth-child(2){
+    max-width: 11%;
+}
+.nav th:nth-child(3){
+    max-width: 15%;
+}
+td[rowspan]:nth-child(3){
+    max-width: 15%;
+}
+.nav th:nth-child(4){
+    max-width: 20%;
+}
+td[rowspan]:nth-child(4){
+    max-width: 20%;
+}
+.nav th:nth-child(5){
+    max-width: 9%;
+}
+td[rowspan]:nth-child(5){
+    max-width: 9%;
+}
+.nav th:nth-child(6){
+    max-width: 4%;
+}
+td[rowspan]:nth-child(6){
+    max-width: 4%;
+}
+.nav th:nth-child(7){
+    max-width: 6%;
+}
+td[rowspan]:nth-child(7){
+    max-width: 6%;
+}
+.nav th:nth-child(8){
+    max-width: 5%;
+}
+td[rowspan]:nth-child(8){
+    max-width: 5%;
+}
+.nav th:nth-child(9){
+    max-width: 6%;
+}
+td[rowspan]:nth-child(9){
+    max-width: 5%;
+}
+.nav th:nth-child(10){
+    max-width: 5%;
+}
+td[rowspan]:nth-child(10){
+    max-width: 5%;
+}
+.nav th:nth-child(11){
+    max-width: 5%;
+}
+td[rowspan]:nth-child(11){
+    max-width: 5%;
+}
+.nav th:nth-child(12){
+    max-width: 5%;
+}
+td[rowspan]:nth-child(12){
+    max-width: 5%;
+}
 </style>
 </head>
 <body>
@@ -599,14 +666,11 @@ tr[name="TestsuiteRecord"] .fa-book, tr[name="ProjectRecord"] .fa-book {
 			<th>Duration</th>
 			<th>Status</th>
 			<th>Impact</th>
-			<th>On Error</th>
-			<th>
-			<span style="padding-left:5px">Results (<i class="fa fa-line-chart">)</i></span><br/>
-			<span style="padding-left:5px">Logs (<i class="fa fa fa-book">)</i></span><br/>
-			<span style="padding-left:5px">Defects (<i class="fa fa fa-bug">)</i></span><br/>
-			</th>
-			<th colspan="6" id="summary">Summary</th>
-		</tr>
+            <th>On Error</th>
+            <th>Results (<i class="fa fa-line-chart">)</th>
+            <th>Logs (<i class="fa fa fa-book">)</th>
+            <th>Defects (<i class="fa fa fa-bug">)</th>
+	    </tr>
 
 	</table>
 
