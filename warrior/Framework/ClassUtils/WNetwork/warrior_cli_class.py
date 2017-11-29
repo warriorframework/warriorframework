@@ -18,7 +18,6 @@ import time
 import subprocess
 import getpass
 import Tools
-import collections
 from Framework import Utils
 from Framework.Utils.print_Utils import print_info, print_debug,\
  print_warning, print_exception, print_error
@@ -204,7 +203,6 @@ class WarriorCli(object):
             system_name=system_name, datafile=datafile)
         finalresult = True if len(testdata_dict) > 0 else False
         for key, details_dict in testdata_dict.iteritems():
-            response_dict = collections.OrderedDict()
             responses_dict[key] = ""
             command_list = details_dict["command_list"]
             stepdesc = "Send the following commands: "
@@ -231,14 +229,14 @@ class WarriorCli(object):
                     result, response = new_obj_session._send_command_retrials(
                         details_dict, index=i, result=result,
                         response=response, system_name=td_sys)
+                    rspRes, resp_key_list = new_obj_session._get_response_dict(
+                        details_dict, i, response, resp_key_list)
 
-                    rspRes, response_dict, resp_key_list = new_obj_session._get_response_dict(
-                        details_dict, i, response, response_dict, resp_key_list)
-                    if len(response_dict) > 0:
-                        for count, resp in enumerate(resp_key_list[i].keys()):
+                    if resp_key_list:
+                        for resp in resp_key_list[i].keys():
                             # session id is formed from the system name and session name.
                             session_id = \
-                             self.get_session_id_for_resp_ref(details_dict, response_dict,
+                             self.get_session_id_for_resp_ref(details_dict, resp_key_list[i],
                                                               resp, i, system_name,
                                                               session_name, key)
                             td_resp_dict = get_object_from_datarepository(str(session_id))
@@ -247,15 +245,12 @@ class WarriorCli(object):
                                 # if not available then it first updates the
                                 # title_row value to td_resp_dict
                                 td_resp_dict[key] = {}
-                            # title_row value is available in td_resp_dict,
-                            # so it updates the resp_ref key and value to td_resp_dict
-                            if len(resp_key_list[i].keys()) == 1:
-                                resp_key_value_dict = \
-                                 {response_dict.keys()[i]: response_dict.values()[i]}
-                                td_resp_dict[key].update(resp_key_value_dict)
-                            elif len(resp_key_list[i].keys()) > 1:
-                                resp_key_value_dict = {resp: resp_key_list[i].values()[count]}
-                                td_resp_dict[key].update(resp_key_value_dict)
+                            # updates td_resp_dict with the key and value
+                            temp_resp = {resp: resp_key_list[i][resp]}
+                            td_resp_dict[key].update(temp_resp)
+                            pNote("Portion of response saved to the data "
+                                  "repository with key: '{0}.{1}.{2}' and value: '{3}'"
+                                  .format(session_id, key, resp, temp_resp[resp]))
 
                     result = (result and rspRes) if "ERROR" not in (result, rspRes) else "ERROR"
                     print_debug("<<<")
@@ -269,7 +264,7 @@ class WarriorCli(object):
                     result = "ERROR"
                     finalresult = "ERROR"
                 finalresult = finalresult and result
-            responses_dict[key] = dict(response_dict)
+            responses_dict[key] = {k: v for d in resp_key_list for k, v in d.iteritems()}
         return finalresult, td_resp_dict
 
     def get_session_id_for_resp_ref(self, details_dict, response_dict, resp,
@@ -326,7 +321,7 @@ class WarriorCli(object):
         return result, response
 
     @staticmethod
-    def _get_response_dict(details_dict, index, response, response_dict, resp_key_list=[]):
+    def _get_response_dict(details_dict, index, response, resp_key_list):
         """Get the response dict for a command. """
         def print_warn_msg(keyvars, numpats):
             """ print a warning message if the number of vars to be stored with
@@ -365,7 +360,6 @@ class WarriorCli(object):
                 if reobj is None:
                     pNote(save_msg4.format(resp_pat_req))
                 response = reobj.group(0) if reobj is not None else ""
-                response_dict[resp_ref] = response
                 temp_resp_dict = {resp_ref: response}
                 resp_key_list.append(temp_resp_dict)
                 pNote(save_msg1+'.')
@@ -390,9 +384,8 @@ class WarriorCli(object):
                     reobj = re.search(pattern, response, re.DOTALL)
                     if reobj:
                         grps = reobj.groups()
-                        # update response_dict with resp_ref keys and
+                        # update resp_key_list with resp_ref keys and
                         # their corresponding matched patterns
-                        response_dict.update(dict(zip(keys, grps)))
                         resp_key_list.append(dict(zip(keys, grps)))
                         pNote(save_msg2.format(pattern))
                         # print to console the key and the corresponding match stored
@@ -409,20 +402,17 @@ class WarriorCli(object):
                     for key, pattern in zip(keys, patterns):
                         reobj = re.search(pattern, response)
                         presponse = reobj.group(0) if reobj is not None else ""
-                        response_dict[key] = presponse
                         temp_resp_key_list.append(presponse)
                         pNote(save_msg2.format(pattern))
                         pNote(save_msg3.format(key, presponse))
                     resp_key_list.append(dict(zip(keys, temp_resp_key_list)))
             else:
-                response_dict[resp_ref] = ""
                 temp_resp_dict = {resp_ref: ""}
                 resp_key_list.append(temp_resp_dict)
         else:
-            response_dict[resp_ref] = ""
             temp_resp_dict = {resp_ref: ""}
             resp_key_list.append(temp_resp_dict)
-        return status, response_dict, resp_key_list
+        return status, resp_key_list
 
     @staticmethod
     def start_threads(started_thread_for_system, thread_instance_list,
