@@ -426,12 +426,16 @@ var cliData = {
             var $currentPage = katana.$activeTab;
             var $activeElement = $currentPage.find('[active="true"]');
             var dataObj = $activeElement.data().dataObject;
+            var nextElemIndex = 0;
+            var lastChildIndex = 1;
             if(dataObj.length > objectIndex){
                 var actualObj = dataObj[objectIndex];
                 $activeElement.get(0).scrollIntoView(true);
             } else {
                 objectIndex = 0;
                 var $nextElem = $activeElement.next().next().next();
+                nextElemIndex = $nextElem.index() + 1;
+                lastChildIndex = $currentPage.find('.cli-data-right-column').find('.cli-data-full-width').children().length - 2;
                 $nextElem.attr('active', 'true');
                 $activeElement.attr('active', 'false');
                 var dataObj = $nextElem.data().dataObject;
@@ -440,6 +444,9 @@ var cliData = {
             }
             var $leftColumn = $currentPage.find('.cli-data-left-column');
             var $leftData = actualObj.htmlLeftContent;
+            if(lastChildIndex == nextElemIndex){
+                $leftData.find('.fa-chevron-right').addClass('cli-data-disabled-icon');
+            }
             $leftData.hide();
             $leftColumn.html($leftData.fadeIn(500));
             $leftColumn.find('.cli-data-left-column-topbar').attr("objectIndex", objectIndex);
@@ -664,10 +671,15 @@ var cliData = {
             var fieldIndex = $parentLi.index();
             var $contentParent = $elem.closest('.cli-data-right-content');
             var $headerParent = $contentParent.prev();
+            var lastChildIndex = $contentParent.closest('.cli-data-full-width').children().length - 2;
+            var indexOfCurrent = $contentParent.index();
             var dataObj = $headerParent.data().dataObject;
             var actualObj = dataObj[objectIndex];
             var $leftColumn = $currentPage.find('.cli-data-left-column');
             var $leftData = actualObj.htmlLeftContent;
+            if(lastChildIndex == indexOfCurrent){
+                $leftData.find('.fa-chevron-right').addClass('cli-data-disabled-icon');
+            }
             $leftData.hide();
             $leftColumn.html($leftData.fadeIn(500));
             $($leftColumn.find('#left-content').children().get(fieldIndex)).find('.cli-data-left-content-value-input').focus();
