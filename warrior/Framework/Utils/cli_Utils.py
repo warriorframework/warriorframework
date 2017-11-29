@@ -27,6 +27,7 @@ except ImportError:
                "without pexpect module. Users can however create"
                "their own custom libraries for cli interaction \n")
 
+
 def pexpect_spawn_with_env(pexpect_obj, command, timeout, escape=False, env=None):
     """ spawn a pexpect object with environment variable """
 
@@ -35,6 +36,7 @@ def pexpect_spawn_with_env(pexpect_obj, command, timeout, escape=False, env=None
                                           escape, env)
 
     return child
+
 
 @mocked
 def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=60,
@@ -142,6 +144,7 @@ def disconnect(child):
 
     return child
 
+
 @mocked
 def send_command_and_get_response(sessionobj, prompt1, prompt2, command):
     """"Sends a command to a terminal expects a completion prompt
@@ -240,6 +243,7 @@ def get_connection_port(conn_type, inpdict):
     inpdict = wc_obj.get_connection_port(conn_type, inpdict)
 
     return inpdict
+
 
 @mocked
 def send_command(session_object, start_prompt, end_prompt, command,
@@ -344,6 +348,7 @@ def send_commands_from_testdata(testdatafile, obj_session, **args):
 
     return finalresult, td_resp_dict
 
+
 @mocked
 def _send_cmd(obj_session, **kwargs):
     """method to send command based on the type of object """
@@ -368,9 +373,9 @@ def _send_cmd(obj_session, **kwargs):
 def _get_response_dict(details_dict, index, response, response_dict):
     """Get the response dict for a command. """
     wc_obj = WNetwork.warrior_cli_class.WarriorCli()
-    status, response_dict, resp_key_list = \
-        wc_obj._get_response_dict(details_dict, index, response, response_dict, resp_key_list=[])
-    return status, response_dict
+    status, resp_key_list = \
+        wc_obj._get_response_dict(details_dict, index, response, resp_key_list=[])
+    return status, resp_key_list
 
 
 def start_threads(started_thread_for_system, thread_instance_list, same_system,
@@ -434,6 +439,7 @@ def get_unique_log_and_verify_list(log_list, verify_on_list, system_name):
 
     return final_list
 
+
 def _send_cmd_get_status(obj_session, details_dict, index, system_name=None):
     """Sends a command, verifies the response and returns
     status of the command """
@@ -465,6 +471,7 @@ def _get_obj_session(details_dict, obj_session, kw_system_name, index):
             details_dict, kw_system_name, index)
 
     return value, kw_system_name, details_dict
+
 
 @mocked
 def _send_command_retrials(obj_session, details_dict, index, **kwargs):
