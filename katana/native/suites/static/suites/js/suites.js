@@ -400,7 +400,7 @@ var suites= {
 
 		};
 
-		pjExistingSuites = { 
+		pjExistingTestCases = { 
 			'nodes': [],
 			'edges': []
 		};
@@ -434,8 +434,8 @@ var suites= {
 					"<br>" + execStr + "</div>"; 
 
     		var st = { "name": oneCase.path, 
-    			'ntype': 'suite',
-    			'type': 'suite',
+    			'ntype': 'testcase',
+    			'type': 'testcase',
     			"id": nodeCtr,
     			"rowid" : sid,
     			"width" : 100, 
@@ -454,7 +454,7 @@ var suites= {
     		}
   
     	katana.$activeTab.data('pjDataSet', pjDataSet);
-    	katana.$activeTab.data('pjExistingSuites', pjExistingSuites);
+    	katana.$activeTab.data('pjExistingTestCases', pjExistingTestCases);
     	suites.createD3tree();
 	},
 	
@@ -484,7 +484,7 @@ var suites= {
 		existingSuites= katana.$activeTab.data('allExistingSuites');
 		
     	var pjDataSet = katana.$activeTab.data('pjDataSet');
-    	var pjExistingSuites = katana.$activeTab.data('pjExistingSuites');
+    	var pjExistingTestCases = katana.$activeTab.data('pjExistingTestCases');
 		var optimalHt = existingSuites.length * px_row_height + (px_row_height * 2); 
 		if (optimalHt < 2000) { optimaalHt = 2000; }
 		var optimalWd = katana.$activeTab.find("#suitesMasterPage").width();
@@ -570,28 +570,10 @@ var suites= {
 								suites.mapSuiteJsonToUi();  // This is where the table and edit form is created. 
 								return ;
 			  				}
-			  			
 
-			  			// 	if (d.id > suites.jsonTestSuites.length  && d.ntype == 'existingSuite') {
-								// console.log("You are inserting ...", d);
-								// // Location??
-								// var loc = parseInt( 0.5 + ( d.y / px_row_height)); 
-								// console.log("Location = ", loc, " fname = ", d.name);
-								// var pathToBase = katana.$activeTab.find('#savefilepath').text();
-      		// 					var nf = prefixFromAbs(pathToBase, d.name);
-      		// 					console.log("Adding ..", nf);
-								// suites.jsonSuiteObject = katana.$activeTab.data('suitesJSON');
-								// suites.jsonTestSuites = suites.jsonSuiteObject['Testcases']; 
-								// var sid  = suites.jsonTestSuites.length;
-								// if (loc > sid) loc = sid 
-								// var nb = new projectSuiteObject();
-								// nb.path = nf; 
-								// suites.jsonTestSuites.splice(loc,0,nb);
-								// suites.mapProjectJsonToUi();	// Send in the modified array
-			  			// 	}
-			  			if (d.x < (px_existing_column -px_rect_width) && d.ntype == 'suite' && (d.x >px_suite_column )){
+			  			if (d.x < (px_existing_column -px_rect_width) && d.ntype == 'testcase' && (d.x >px_suite_column )){
 							var theId = d.id -1;
-							if (theId < suites.jsonTestSuites.length  && d.ntype == 'suite') {
+							if (theId < suites.jsonTestSuites.length  && d.ntype == 'testcase') {
 								// d points to the location ... 
 								suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
 								suites.treeData = katana.$activeTab.data('suitesTreeData');
@@ -627,10 +609,10 @@ var suites= {
 				.append('g')
 				.attr("transform",function(d) { 
 					var py = (d.rowid - 1) * px_row_height;
-					if (d.ntype == "project") return "translate("+10+","+px_rect_height*2+")";
+					if (d.ntype == "suite") return "translate("+10+","+px_rect_height*2+")";
 					if (d.ntype == 'existingSuite') {
 						var i = d.rowid - 1;
-						var xlen = Math.floor(pjExistingSuites.nodes.length / 3); 
+						var xlen = Math.floor(pjExistingTestCases.nodes.length / 3); 
 						var px = px_existing_column + ((i%3)*px_rect_width + 50); 
 						py = Math.floor(i/3)%xlen * px_row_height;
 
@@ -639,15 +621,15 @@ var suites= {
 					} 
 					return "translate("+px_suite_column+","+py+")";
 					})
-				.attr('class', 'masternode')
+				.attr('class', 'suite-masternode')
 				.call(suites.dragSuite);
 
-		//var eNodes = suites.svg.selectAll(".project-d3-existing-type");
+		//var eNodes = suites.svg.selectAll(".suite-d3-eexisting-type");
 
 		suites.createExistingTree();
 
 		// force.on('end', function() {
-		// 			var mNodes = suites.svg.selectAll(".project-d3-existing-type");
+		// 			var mNodes = suites.svg.selectAll(".suite-d3-eexisting-type");
 		
 		// 			mNodes.attr("x", function(d) { return d.x; })
   //       				  .attr('y', function(d) { return d.y; });
@@ -662,34 +644,34 @@ var suites= {
 
 		gnodes.append("rect")
 	   		.attr("width",function(d){ 
-					if (d.ntype == 'project') return px_rect_width * 0.6;
+					if (d.ntype == 'suite') return px_rect_width * 0.6;
    					return px_rect_width; 
    			})
    			.attr("height",function(d){ 
-					if (d.ntype == 'project') return px_rect_height * 4;
+					if (d.ntype == 'suite') return px_rect_height * 4;
    					return px_rect_height; 
    			})
    			.attr("x", 0)
    			.attr("y", 0)
    			.attr("rx", function(d){ 
-					if (d.ntype == 'project') return 5;
+					if (d.ntype == 'suite') return 5;
    					if (d.ntype == 'existingSuite') return 8;
    					return 3; 
    			})
    			.attr('fill', function(d){ 
-					if (d.ntype == 'project') return '#42f49b';
-   					if (d.ntype == 'suite') return 'steelblue';
+					if (d.ntype == 'suite') return '#42f49b';
+   					if (d.ntype == 'testcase') return 'steelblue';
    					return 'white'; 
    			})
    			.attr('class',function(d) { 
    						//console.log("Setting circle", d);	
 						if (d.ntype == 'existingSuite') { 
-								return "project-d3-existing-type";
+								return "suite-d3-eexisting-type";
 							}
-						return "project-d3-node";})
+						return "suite-d3-node";})
    			.style('stroke-width', 3)
    			.style('stroke', function(d) { 
-   				if (d.ntype == 'project') return 'blue';
+   				if (d.ntype == 'suite') return 'blue';
    				return 'darkblue';
 
    			})
@@ -707,7 +689,7 @@ var suites= {
 
 					if (d.ntype == 'existingSuite') {
 						var i = d.rowid - 1;
-						var xlen = Math.floor(pjExistingSuites.nodes.length / 3); 
+						var xlen = Math.floor(pjExistingTestCases.nodes.length / 3); 
 						var px = px_existing_column + ((i%3)*px_rect_width + 50); 
 						py = Math.floor(i/3)%xlen * px_row_height;
 					}
@@ -743,7 +725,7 @@ var suites= {
    		 			suites.svg.selectAll('.projectSuiteTooltip').remove();
    				})
    			.on("click",function(d) {
-   		 			if (d.ntype == 'project') {
+   		 			if (d.ntype == 'suite') {
    		 				//suites.editDetailsAsPopup();
    		 			}
    				});
@@ -759,7 +741,7 @@ var suites= {
 	   				.style("opacity", 1)
 	   				.style("fill-opacity",1)
 	   				.style("visibility", function(d) {
-	   					if (d.ntype != 'suite') {
+	   					if (d.ntype != 'testcase') {
 	   						return "hidden";
 	   					} else {
 	   						return "visible";
@@ -803,7 +785,7 @@ var suites= {
 	   				.style("opacity", 1)
 	   				.style("fill-opacity",1)
 	   				.style("visibility", function(d) {
-	   					if (d.ntype != 'suite') {
+	   					if (d.ntype != 'testcase') {
 	   						return "hidden";
 	   					} else {
 	   						return "visible";
@@ -839,7 +821,7 @@ var suites= {
 	   				.style("opacity", 1)
 	   				.style("fill-opacity",1)
 	   				.style("visibility", function(d) {
-	   					if (d.ntype != 'suite') {
+	   					if (d.ntype != 'testcase') {
 	   						return "hidden";
 	   					} else {
 	   						return "visible";
@@ -869,7 +851,7 @@ var suites= {
 	       .attr("stroke","black")
 	       .text(function(d){
 	       		if (d.ntype == 'existingSuite') return  d.displayStr.substring(0,20);
-	       		if (d.ntype == 'project') return d.name.substring(0,20);
+	       		if (d.ntype == 'suite') return d.name.substring(0,20);
 	       		return "(" + d.rowid + ") ..." + d.name.substr(d.name.length - 15);})
 
 		suites.nodelabels = nodelabels;

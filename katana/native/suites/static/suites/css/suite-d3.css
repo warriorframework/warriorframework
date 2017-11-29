@@ -4,13 +4,17 @@
   fill: #fff;
   stroke: steelblue;
   stroke-width: 3px;
+
 }
 
 .suite-d3-rect {
   cursor: pointer;
-  fill: steelblue;
   stroke: steelblue;
   stroke-width: 3px;
+  fill: white;
+  background-image: -webkit-linear-gradient(left, #fco, 30%, blue);
+  background-image: -o-linear-gradient(left, #fco, 30%, blue);
+  background-image: linear-gradient(to right, #fco, 30%, blue);
 }
 
 .suite-d3-node text {
@@ -18,6 +22,14 @@
   fill: steelblue;
  
 }
+
+.suite-masternode {
+
+ fill: white;
+}
+
+
+
 
 .suite-d3-link {
   fill: none;
