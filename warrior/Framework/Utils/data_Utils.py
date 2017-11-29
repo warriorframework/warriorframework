@@ -894,8 +894,11 @@ def verify_cmd_response(match_list, context_list, command, response,
 
 
 def verify_data(expected, key, data_type='str', comparison='eq'):
-    """Verify the value of the key in data repository matches
-    with expected value
+    """
+        Verify the value of the key in data repository matches
+        with expected value
+        the comparison will compare expected to key with comparison value
+        eg. expected=5, value of key=3, comparison='ge' mean 5 >= 3
     """
     def validate():
         """Verify the value of the key in data repository matches

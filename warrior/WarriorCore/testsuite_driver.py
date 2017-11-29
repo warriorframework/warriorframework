@@ -155,7 +155,7 @@ def get_testcase_list(testsuite_filepath):
         new_testcase_list = testcases.findall('Testcase')
         # execute tc multiple times
         for _, tc in enumerate(new_testcase_list):
-            runmode, value = common_execution_utils.get_runmode_from_xmlfile(tc)
+            runmode, value, _ = common_execution_utils.get_runmode_from_xmlfile(tc)
             retry_type, _, _, retry_value, _ = common_execution_utils.get_retry_from_xmlfile(tc)
             if runmode is not None and value > 0:
                 # more than one step in step list, insert new step
@@ -373,18 +373,9 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
                 break
 
     elif execution_type.upper() == 'RUN_MULTIPLE':
-        Max_Attempts = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath, 'Details',
-                                                                    'type', 'Max_Attempts')
-        Number_Attempts = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath,
+        execution_value = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath,
                                                                         'Details', 'type',
                                                                         'Number_Attempts')
-
-        if Max_Attempts == "":
-            execution_value = Number_Attempts
-        else:
-            execution_value = Max_Attempts
-
-
         print_info("Execution type: {0}, Max Attempts: {1}".format(execution_type, execution_value))
 
         i = 0
