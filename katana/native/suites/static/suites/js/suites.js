@@ -952,18 +952,17 @@ var suites= {
 
 
 	swapViews: function(){
-			suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
-			suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
-		console.log("Hellos!", suites.treeView);
+		suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+			// suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
+		
 		if (suites.treeView == 0) {
-			katana.$activeTab.find("#suites-standard-edit").hide();
+			katana.$activeTab.find(".suites-standard-edit").hide();
 			katana.$activeTab.find("#suites-graphics-edit").show();
 			suites.treeView = 1; 
 		} else {
 			suites.treeView = 0;
-			katana.$activeTab.find("#suites-standard-edit").show();
+			katana.$activeTab.find(".suites-standard-edit").show();
 			katana.$activeTab.find("#suites-graphics-edit").hide();
-
 		}
 	},
 
