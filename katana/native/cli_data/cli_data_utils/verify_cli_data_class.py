@@ -54,6 +54,8 @@ class VerifyCliDataClass:
             for key, value in self.defaults["data"]["global"]["variable_pattern"].items():
                 if key not in json_data["global"]["variable_pattern"]:
                     json_data["global"]["variable_pattern"][key] = value
+        for key, value in json_data["global"]["variable_pattern"].items():
+            self.defaults["data"]["testdata"]["variable_pattern"][key] = value
         return json_data
 
     def __verify_global_others(self, json_data):
