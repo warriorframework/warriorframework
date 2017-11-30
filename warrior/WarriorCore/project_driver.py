@@ -121,7 +121,7 @@ def get_testsuite_list(project_filepath):
             print_info("Added suite [{0}] ".format(ts.find('path').text))
    
         for ts in newlist:
-            runmode, value = common_execution_utils.\
+            runmode, value, _ = common_execution_utils.\
                 get_runmode_from_xmlfile(ts)
             retry_type, _, _, retry_value, _ = common_execution_utils.\
                 get_retry_from_xmlfile(ts)
