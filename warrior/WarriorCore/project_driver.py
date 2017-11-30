@@ -24,7 +24,7 @@ from WarriorCore import common_execution_utils, sequential_testsuite_driver, \
  parallel_testsuite_driver
 
 
-# !/usr/bin/python
+
 """This the project driver that executes a collections of
 Warrior testsuites """
 
@@ -106,25 +106,25 @@ def get_testsuite_list(project_filepath):
     else:
         testsuite_list = testsuites.findall('Testsuite') # Use suites
         newlist = []  # Expanded list goes here. 
-        for ts in testsuite_list:
-            sfilename = ts.find('path').text   # find the path. 
+        for testSuite in testsuite_list:
+            sfilename = testSuite.find('path').text   # find the path. 
             dirname = os.path.dirname(project_filepath)+os.sep
             if sfilename.find('*') < 0 :  # Check if needs expansion
-                newlist.append(ts)  #Nope ? ... keep it. 
+                newlist.append(testSuite)  #Nope ? ... keep it. 
             else: 
                 files = glob.glob(dirname+sfilename)  # Expane
-                for fn in files:
-                    nts = copy.deepcopy(ts)   #Copy the node and replace name
-                    nts.find('path').text = fn.replace(dirname,'')
-                    newlist.append(nts)  # new node append to list to process
-        for ts in newlist: # tell the user what you did 
-            print_info("Added suite [{0}] ".format(ts.find('path').text))
+                for myfilename in files:
+                    ntestSuite = copy.deepcopy(testSuite)   #Copy the node and replace name
+                    ntestSuite.find('path').text = myfilename.replace(dirname,'')
+                    newlist.append(ntestSuite)  # new node append to list to process
+        for testSuite in newlist: # tell the user what you did 
+            print_info("Added suite [{0}] ".format(testSuite.find('path').text))
    
-        for ts in newlist:
+        for testSuite in newlist:
             runmode, value, _ = common_execution_utils.\
-                get_runmode_from_xmlfile(ts)
+                get_runmode_from_xmlfile(testSuite)
             retry_type, _, _, retry_value, _ = common_execution_utils.\
-                get_retry_from_xmlfile(ts)
+                get_retry_from_xmlfile(testSuite)
             if runmode is not None and value > 0:
                 # more than one suite in suite list, insert new suite
                 go_next = len(testsuite_list_new) + value + 1
@@ -145,7 +145,7 @@ def get_testsuite_list(project_filepath):
                         copy_ts.find("retry").set("attempt", i+1)
                         testsuite_list_new.append(copy_ts)
             if retry_type is None and runmode is None:
-                testsuite_list_new.append(ts)
+                testsuite_list_new.append(testSuite)
         return testsuite_list_new
 
 

@@ -155,45 +155,45 @@ def get_testcase_list(testsuite_filepath):
         testcase_list = []
         new_testcase_list = testcases.findall('Testcase')
         # execute tc multiple times
-        # Process the asterisk if needed. 
+        # Process the asterisk if needed.
         newlist = []
-        for ts in new_testcase_list:
-            sfilename = ts.find('path').text  # for all test cases
+        for new_ts in new_testcase_list:
+            sfilename = new_ts.find('path').text  # for all test cases
             dirname = os.path.dirname(testsuite_filepath)+os.sep
-            if sfilename.find('*') < 0 : # Check if you need to expand 
-                newlist.append(ts)  # Nope? Keep it. 
-            else: 
-                files = glob.glob(dirname+sfilename)  #Expand it. 
+            if sfilename.find('*') < 0: # Check if you need to expand
+                newlist.append(new_ts)  # Nope? Keep it
+            else:
+                files = glob.glob(dirname+sfilename)  #Expand it
                 for fn in files:
-                    nts = copy.deepcopy(ts) # Copy the node, overwrite name
+                    nts = copy.deepcopy(new_ts) # Copy the node, overwrite name
                     nts.find('path').text = fn.replace(dirname,'')
-                    newlist.append(nts) # Use this node instead. 
-        for ts in newlist: # Tell the user what happened. 
-            print_info("Added testcase [{0}] ".format(ts.find('path').text))
-        for _, tc in enumerate(newlist):
-        # old way here. 
+                    newlist.append(nts) # Use this node instead.
+        for new_ts in newlist: # Tell the user what happened
+            print_info("Added testcase [{0}] ".format(new_ts.find('path').text))
+        for _, xxtc in enumerate(newlist):
+        # old way here.
         #for _, tc in enumerate(new_testcase_list):
-            runmode, value, _ = common_execution_utils.get_runmode_from_xmlfile(tc)
+            runmode, value, _ = common_execution_utils.get_runmode_from_xmlfile(xxtc)
 
 #        for _, tc in enumerate(new_testcase_list):
 #            runmode, value, _ = common_execution_utils.get_runmode_from_xmlfile(tc)
 
-            retry_type, _, _, retry_value, _ = common_execution_utils.get_retry_from_xmlfile(tc)
+            retry_type, _, _, retry_value, _ = common_execution_utils.get_retry_from_xmlfile(xxtc)
             if runmode is not None and value > 0:
                 # more than one step in step list, insert new step
                 if len(new_testcase_list) > 0:
                     go_next = len(testcase_list) + value + 1
                     for i in range(0, value):
-                        copy_tc = copy.deepcopy(tc)
+                        copy_tc = copy.deepcopy(xxtc)
                         copy_tc.find("runmode").set("value", go_next)
                         copy_tc.find("runmode").set("attempt", i+1)
                         testcase_list.append(copy_tc)
                 # only one step in step list, append new step
                 else:
                     for i in range(0, value):
-                        copy_tc = copy.deepcopy(tc)
+                        copy_tc = copy.deepcopy(xxtc)
                         copy_tc.find("runmode").set("attempt", i+1)
-                        testcase_list.append(tc)
+                        testcase_list.append(xxtc)
             if retry_type is not None and retry_value > 0:
                 if len(new_testcase_list) > 1:
                     go_next = len(testcase_list) + retry_value + 1
@@ -201,7 +201,7 @@ def get_testcase_list(testsuite_filepath):
                         get_runmode = tc.find('runmode')
                         tc.remove(get_runmode)
                     for i in range(0, retry_value):
-                        copy_tc = copy.deepcopy(tc)
+                        copy_tc = copy.deepcopy(xxtc)
                         copy_tc.find("retry").set("count", go_next)
                         copy_tc.find("retry").set("attempt", i+1)
                         testcase_list.append(copy_tc)
@@ -210,11 +210,11 @@ def get_testcase_list(testsuite_filepath):
                         get_runmode = tc.find('runmode')
                         tc.remove(get_runmode)
                     for i in range(0, retry_value):
-                        copy_tc = copy.deepcopy(tc)
+                        copy_tc = copy.deepcopy(xxtc)
                         copy_tc.find("retry").set("attempt", i+1)
                         testcase_list.append(copy_tc)
             if retry_type is None and runmode is None:
-                testcase_list.append(tc)
+                testcase_list.append(xxtc)
         return testcase_list
 
 
@@ -396,8 +396,8 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
 
     elif execution_type.upper() == 'RUN_MULTIPLE':
         execution_value = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath,
-                                                                        'Details', 'type',
-                                                                        'Number_Attempts')
+                                                                       'Details', 'type',
+                                                                       'Number_Attempts')
         print_info("Execution type: {0}, Max Attempts: {1}".format(execution_type, execution_value))
 
         i = 0
@@ -487,7 +487,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
 def main(testsuite_filepath, data_repository={}, from_project=False, auto_defects=False,
          jiraproj=None, res_startdir=None, logs_startdir=None, ts_onError_action=None,
          queue=None, ts_parallel=False):
-    """Executes a test suite """ 
+    """Executes a test suite """
     try:
         test_suite_status, suite_repository = execute_testsuite(testsuite_filepath,
                                                                 data_repository, from_project,
