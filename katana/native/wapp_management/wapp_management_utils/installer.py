@@ -2,13 +2,9 @@ import os
 import re
 
 from utils.directory_traversal_utils import join_path, get_dir_from_path, get_sub_folders, \
-    get_sub_dirs_and_files, get_paths_of_subfiles, delete_dir, get_parent_directory, \
-    get_relative_path
+    get_sub_dirs_and_files, get_paths_of_subfiles, delete_dir
 from utils.file_utils import copy_dir, readlines_from_file, write_to_file
 from utils.json_utils import read_json_data
-from utils.regex_utils import compile_regex
-from wui.core.core_utils.app_info_class import AppInformation
-from wui.core.core_utils.apps_class import App
 
 
 class Installer:
@@ -50,8 +46,6 @@ class Installer:
         if not output:
             if self.__revert_installation():
                 print "App installation successfully reverted."
-        else:
-            self.__update_app_information()
 
         return output
 
@@ -250,16 +244,3 @@ class Installer:
                         output = delete_dir(path_to_plugin)
 
         return output
-
-    def __update_app_information(self):
-        json_data = read_json_data(self.wf_config_file)
-        if json_data is not None:
-            app_path = get_parent_directory(self.wf_config_file)
-            app = App(json_data, app_path, self.base_directory)
-            js_urls = get_paths_of_subfiles(join_path(app_path, app.static_file_dir, "js"),
-                                            extension=compile_regex("^\.js$"))
-            for i in range(0, len(js_urls)):
-                js_urls[i] = get_relative_path(js_urls[i], app_path)
-                app.data["js_urls"] = js_urls
-                self.config_data["js_urls"] = js_urls
-            AppInformation.information.apps.append(app)
