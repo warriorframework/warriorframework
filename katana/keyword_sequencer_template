@@ -39,15 +39,13 @@
             # wrapper keyword result is pass if all the keywords passed (True) else fails
             # with Fail if any of the keywords fail (False) or ERROR if any of the keyword
             # fails with ERROR or EXCEPTION if any of the keyword fails with EXCEPTION
-            if str(curstatus).upper() == 'EXCEPTION':
+            if isinstance(status, bool):
+                if isinstance(curstatus, bool):
+                    status &= curstatus
+                else:
+                    status = curstatus
+            elif str(curstatus).upper() == 'EXCEPTION':
+                # status can be ERROR or EXCEPTION, need to change to EXCEPTION if curstatus is EXCEPTION
                 status = 'EXCEPTION'
-            elif str(curstatus).upper() == 'ERROR' and status != 'EXCEPTION':
-                status = 'ERROR'
-            elif isinstance(curstatus, bool) and isinstance(status, bool):
-                status &= curstatus
-            else:
-                pNote("Please check, could not update the wrapper keyword status as "
-                      "curstatus is {} and status is {},\nit is expected to be of type"
-                      " boolean, 'ERROR' or 'EXCEPTION'".format(curstatus, status))
 
         return status
