@@ -166,7 +166,7 @@ def get_testcase_list(testsuite_filepath):
                 files = glob.glob(dirname+sfilename)  #Expand it
                 for fn in files:
                     nts = copy.deepcopy(new_ts) # Copy the node, overwrite name
-                    nts.find('path').text = fn.replace(dirname,'')
+                    nts.find('path').text = fn.replace(dirname, '')
                     newlist.append(nts) # Use this node instead.
         for new_ts in newlist: # Tell the user what happened
             print_info("Added testcase [{0}] ".format(new_ts.find('path').text))
@@ -198,8 +198,8 @@ def get_testcase_list(testsuite_filepath):
                 if len(new_testcase_list) > 1:
                     go_next = len(testcase_list) + retry_value + 1
                     if runmode is not None:
-                        get_runmode = tc.find('runmode')
-                        tc.remove(get_runmode)
+                        get_runmode = xxtc.find('runmode')
+                        xxtc.remove(get_runmode)
                     for i in range(0, retry_value):
                         copy_tc = copy.deepcopy(xxtc)
                         copy_tc.find("retry").set("count", go_next)
@@ -207,8 +207,8 @@ def get_testcase_list(testsuite_filepath):
                         testcase_list.append(copy_tc)
                 else:
                     if runmode is not None:
-                        get_runmode = tc.find('runmode')
-                        tc.remove(get_runmode)
+                        get_runmode = xxtc.find('runmode')
+                        xxtc.remove(get_runmode)
                     for i in range(0, retry_value):
                         copy_tc = copy.deepcopy(xxtc)
                         copy_tc.find("retry").set("attempt", i+1)
@@ -242,6 +242,8 @@ def print_suite_details_to_console(suite_repository, testsuite_filepath, junit_r
 
     print_info("Executing testsuite '{0}'".format(suite_repository['suite_name'].strip()))
     print_info("Title: {0}".format(suite_repository['suite_title'].strip()))
+    if junit_resultfile:
+        print_info("Junit: {0}".format(junit_resultfile));
     print_info("Results directory: %s" % suite_repository['suite_execution_dir'])
     report_suite_requirements(suite_repository, testsuite_filepath)
     time.sleep(3)
