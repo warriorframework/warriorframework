@@ -351,8 +351,6 @@ class WarriorCli(object):
         if not resp_req == "n":
             save_msg1 = "User has requested saving response"
             save_msg2 = "Response pattern required by user is : {0}"
-            save_msg3 = ("Portion of response saved to the data repository "
-                         "with key: {0}, value: {1}")
             save_msg4 = "Cannot found response pattern: {0} in response"
             if resp_pat_req is not None:
                 # if the requested pattern not found return empty string
@@ -364,7 +362,6 @@ class WarriorCli(object):
                 resp_key_list.append(temp_resp_dict)
                 pNote(save_msg1+'.')
                 pNote(save_msg2.format(resp_pat_req))
-                pNote(save_msg3.format(resp_ref, response))
             elif resp_keys is not None:
                 keys = resp_ref.split(',')
                 # get the patterns from pattern entries in testdata file
@@ -388,8 +385,6 @@ class WarriorCli(object):
                         # their corresponding matched patterns
                         resp_key_list.append(dict(zip(keys, grps)))
                         pNote(save_msg2.format(pattern))
-                        # print to console the key and the corresponding match stored
-                        [pNote(save_msg3.format(key, grp)) for (key, grp) in zip(keys, grps)]
                     else:
                         print_error("inorder search of patterns in response "
                                     "failed")
@@ -404,7 +399,6 @@ class WarriorCli(object):
                         presponse = reobj.group(0) if reobj is not None else ""
                         temp_resp_key_list.append(presponse)
                         pNote(save_msg2.format(pattern))
-                        pNote(save_msg3.format(key, presponse))
                     resp_key_list.append(dict(zip(keys, temp_resp_key_list)))
             else:
                 temp_resp_dict = {resp_ref: ""}
