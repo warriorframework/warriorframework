@@ -93,7 +93,12 @@ class AppValidator:
                           "directory structure."
                     output = False
                 else:
-                        
+                    subs_files = get_paths_of_subfiles(join_path(self.path_to_app, "static",
+                                                                 self.app_name),
+                                                       re.compile("\.css$"))
+                    if len(subs_files) > 0:
+                        print "-- An Error Occurred -- static directory has a css file."
+                        output = False
                     subs_files = get_paths_of_subfiles(join_path(self.path_to_app, "static",
                                                                  self.app_name),
                                                        re.compile("\.js$"))

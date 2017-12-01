@@ -342,7 +342,9 @@ startNewProject : function() {
 			console.log("from views.py call=", sdata);
 			//projects.jsonProjectObject = JSON.parse(sdata); 
 			projects.jsonProjectObject = new projectsObject(sdata['Project']);
+
 			katana.$activeTab.data('projectsJSON', projects.jsonProjectObject );
+ 
 			projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
 			projects.mapProjectJsonToUi();  // This is where the table and edit form is created. 
 			projects.fillProjectDefaultGoto();
@@ -368,6 +370,7 @@ startNewProject : function() {
 
 	addSuiteToProject: function(){
 		var newTestSuite = new projectSuiteObject();
+
 		projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
 		projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
 		projects.jsonTestSuites.push(newTestSuite);
@@ -389,6 +392,7 @@ startNewProject : function() {
 			
 		}
 		defgoto.empty(); 
+
 		projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
 		projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
 		
@@ -402,9 +406,10 @@ startNewProject : function() {
 
 	setupProjectPopupDialog: function(s,popup) {
 	console.log(s);
+
 	projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
 	projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
-		
+
 	var oneSuite = projects.jsonProjectObject.Testsuites[s];
 	console.log(oneSuite);
 	popup.find("#suiteRowToEdit").val(s); 
@@ -467,6 +472,7 @@ startNewProject : function() {
 		projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
 		projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
 		
+
 		var oneSuite = projects.jsonProjectObject.Testsuites[s];
 		console.log(oneSuite);
 		katana.$activeTab.find("#suiteRowToEdit").val(s); 
@@ -487,9 +493,10 @@ startNewProject : function() {
 	},
 
 	fillProjectDefaultGoto : function() {
+
 		projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
 		projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
-		
+
 		var action = katana.$activeTab.find('#project_onError_action').val();
 		var defgoto = katana.$activeTab.find('#project_onError_value'); 
 		
@@ -506,9 +513,10 @@ startNewProject : function() {
 	},
 
 	fillProjectSuitePopupDefaultGoto : function(popup) {
+
 		projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
 		projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
-		
+
 		var gotoStep =popup.find('#onError-at-action').val();
 		//console.log("Step ", gotoStep);
 		var defgoto = popup.find('#onError-at-value'); 
@@ -542,7 +550,7 @@ startNewProject : function() {
 	}
 	projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
 	projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
-		
+
 	var s = parseInt(popup.find("#suiteRowToEdit").val());
 	var oneSuite = projects.jsonProjectObject.Testsuites[s];
 	oneSuite['path'] = popup.find("#suitePath").val(); 
@@ -581,9 +589,11 @@ startNewProject : function() {
 },
 
 	getSuiteDataForProject: function () {
+
 		projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
 		projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
 		
+
 		  var popup = projects.lastPopup;
 		  var tag = popup.find('#suitePath');
 	      var callback_on_accept = function(selectedValue) { 
@@ -657,9 +667,11 @@ Two global variables are heavily used when this function is called;
 		katana.openAlert(data);
 		return;
 	}
+
 	projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
 		projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
 		
+
 	projects.jsonProjectObject['Details']['Name'] = katana.$activeTab.find('#projectName').val();
 
 	// 
@@ -671,8 +683,35 @@ Two global variables are heavily used when this function is called;
 	console.log("Save to",xfname );
 
 
+
 	projects.jsonProjectObject.Details.setTimeStamp();
 
+// =======
+	
+// 	projects.jsonProjectObject['Details']['Title'] = katana.$activeTab.find('#projectTitle').val();
+// 	projects.jsonProjectObject['Details']['Engineer'] = katana.$activeTab.find('#projectEngineer').val();
+// 	projects.jsonProjectObject['Details']['State'] = katana.$activeTab.find('#projectState').val();
+// 	projects.jsonProjectObject['Details']['Date'] = katana.$activeTab.find('#projectDate').val();
+// 	projects.jsonProjectObject['Details']['default_onError'] = {}
+// 	projects.jsonProjectObject['Details']['default_onError']['@action'] = katana.$activeTab.find('#default_onError').val();
+// 	projects.jsonProjectObject['Details']['default_onError']['@value'] = katana.$activeTab.find('#default_onError_goto').val();
+// 	projects.jsonProjectObject['Details']['ResultsDir'] = katana.$activeTab.find('#projectResultsDir').val();
+	
+// 		var date = new Date();
+	  
+// 	   var year = date.getFullYear();
+//        var month = date.getMonth() + 1;// months are zero indexed
+//        var day = date.getDate();
+//        var hour = date.getHours();
+//        var minute = date.getMinutes();
+//        if (minute < 10) {
+//        	minute = "0" + minute; 
+//        }
+     
+
+// 	projects.jsonProjectObject['Details']['Date'] = month + "/" + day + "/" + year; 
+// 	projects.jsonProjectObject['Details']['Time'] = hour + ":" + minute; 
+// >>>>>>> e28dd668457db4783ecf3d31113b9f7a1d690e3c
 	
 	//
 	// Now walk the DOM ..
@@ -690,8 +729,10 @@ Two global variables are heavily used when this function is called;
             xhr.setRequestHeader("X-CSRFToken", csrftoken)
     	}
 	});
-	
+
 	var topNode  = { 'Project' : projects.jsonProjectObject.getJSON()};
+
+
 	console.log("Save to",xfname , projects.jsonProjectObject);
 
 	$.ajax({
@@ -717,9 +758,11 @@ Two global variables are heavily used when this function is called;
 // This creates the table for viewing data in a sortable view. 
 // 
 	createSuitesTable: function() {
+
 		projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
 		projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
 		
+
 		var items = []; 
 		items.push('<table id="suite_table_display" class="project-configuration-table striped" width="100%">');
 		items.push('<thead>');
@@ -799,9 +842,10 @@ Two global variables are heavily used when this function is called;
 			var fname = this.attr('skey');
 			var names = fname.split('-');
 			var sid = parseInt(names[1]);
+
 			projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
 		projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
-		
+
 			katana.$activeTab.attr('project-suite-row',sid);
 			projects.getResultsDirForProjectRow('Suites');
 	},
@@ -809,9 +853,11 @@ Two global variables are heavily used when this function is called;
 	deleteTestSuiteCB : function(){
 			var names = this.attr('skey').split('-');
 			var sid = parseInt(names[1]);
+
 			projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
 		projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
 		projects.jsonTestSuites.splice(sid,1);
+
 			projects.mapProjectJsonToUi();	// Send in the modified array
 		},
 
@@ -829,8 +875,10 @@ Two global variables are heavily used when this function is called;
 			var names = this.attr('skey').split('-');
 			var sid = parseInt(names[1]);
 			var nb = new projectSuiteObject();
+
 			projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
 			projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
+
 			projects.jsonTestSuites.splice(sid,0,nb);
 			projects.mapProjectJsonToUi();	// Send in the modified array
 		},
@@ -848,9 +896,11 @@ Two global variables are heavily used when this function is called;
 		var names = this.attr('skey').split('-');
 		var sid = parseInt(names[1]);
 		//projects.jsonTestSuites[sid].copytoDocument('lastSuiteCopied', projects.jsonTestSuites[sid]);
+
 		projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
 		projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
 		
+
 		projects.copyToDocument('lastSuiteCopied', projects.jsonTestSuites[sid]);
 
 	},
@@ -858,9 +908,11 @@ Two global variables are heavily used when this function is called;
 	insertFromClipboardCB : function() { 
 		var names = this.attr('skey').split('-');
 		var sid = parseInt(names[1]);
+
 		projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
 		projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
 		
+
 		//jsonData = projects.jjsonTestSuites[sid].copyFromDocument('lastSuiteCopied');
 		jsonData = projects.copyFromDocument('lastSuiteCopied');
 		console.log("Retrieving ... ", jsonData);
@@ -872,9 +924,10 @@ Two global variables are heavily used when this function is called;
 	duplicateTestSuiteCB : function(){
 			var names = this.attr('skey').split('-');
 			var sid = parseInt(names[1]);
+
 			projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
 			projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
-		
+
 			var jsonData = projects.jsonTestSuites[sid].getJSON();
 			var nb  = new projectSuiteObject(jsonData);
 			projects.jsonTestSuites.splice(sid,0,nb);
@@ -888,9 +941,10 @@ Two global variables are heavily used when this function is called;
 	      		var pathToBase = katana.$activeTab.find('#savefilepath').text();
 	      		console.log("File path ==", pathToBase);
 	      		var nf = prefixFromAbs(pathToBase, selectedValue);
+
 	      		projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
 				projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
-		
+
 	      		projects.jsonTestSuites[sid]['path'] = nf;
 	      		console.log("Path set to ",nf," for ", sid);
 	      		console.log(projects.jsonTestSuites);
@@ -921,9 +975,10 @@ Two global variables are heavily used when this function is called;
 				if (listSuites.length < 2) {
 		 return; 
 		}
+
 		projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
 		projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
-		
+
 		console.log(projects.jsonProjectObject.Testsuites );
 		var oldSuitesteps = projects.jsonProjectObject.Testsuites;
 		var newSuitesteps = new Array(listSuites.length);
@@ -961,9 +1016,11 @@ Two global variables are heavily used when this function is called;
 
 */
 	mapProjectJsonToUi: function(){
+
 		projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
 		projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
 		
+
 		katana.$activeTab.find('#projectState').val(projects.jsonProjectObject.Details.State);
 		katana.$activeTab.find('#projectDate').val(projects.jsonProjectObject.Details.cDate + " " + projects.jsonProjectObject.Details.cTime);
 		katana.$activeTab.find('#project_onError_action').val(projects.jsonProjectObject.Details.onError_action);
@@ -974,9 +1031,11 @@ Two global variables are heavily used when this function is called;
 	},  // end of function 
 
 	saveChangesToRowCB: function() {
+
 		projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
 		projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
 		
+
 			projects.mapUItoProjectSuite( projects.lastPopup);
 			katana.popupController.close(projects.lastPopup);
 			projects.mapProjectJsonToUi();
