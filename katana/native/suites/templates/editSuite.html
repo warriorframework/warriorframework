@@ -33,6 +33,7 @@
 	<div class="container-fluid">
 	<div class="row">
 		<div class="col-md-8">
+			<div class="container-fluid" id='suites-detail-popup' >
 			<div class="row">
 					<div class="col-md-4">
 						<label >Name*:</label>
@@ -104,13 +105,31 @@
 						</select>
 					</div>
 				</div>	
+				<div class="row">
+					<div class="col-md-4">
+					</div>
+					<div class="col-md-4">
+				
+					<button class="button hidden" id="suite-save-details-button" katana-click="suites.savePopupDetails"> Save changes </button>
+					</div>
+
+				</div>
+				
 			</div>
-		<div id="tableOfTestRequirements" class="col-md-4"></div>
+			</div>
+		
+		<div id="tableOfTestRequirements" class="col-md-3"></div>
+
 	</div>
 	</div>
 	<div class="container-fluid">
 		<div class="row">
+			<div class="container-fluid">
 			<div id="tableOfTestcasesForSuite" class="col-md-12" style='overflow:auto;' ></div>
+			</div>
+		</div>
+
+		<div class="row">
 			<div id="editTestcaseEntry"        class="col-md-12 hidden" >
 			
 				<input type="text" id="CaseRowToEdit" class="hidden" value=""/>
@@ -213,9 +232,7 @@
 				</div>
 					<i class="center col-md-3 button save" id="editTestcase" katana-click="suites.saveSuitesCaseUI">Save Changes </i>
 				</div>
-
 		</div>
-
 	</div>
 
 </div>

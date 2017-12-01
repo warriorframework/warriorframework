@@ -726,7 +726,7 @@ var suites= {
    				})
    			.on("click",function(d) {
    		 			if (d.ntype == 'suite') {
-   		 				//suites.editDetailsAsPopup();
+   		 				suites.editDetailsAsPopup();
    		 			}
    				});
 
@@ -832,10 +832,10 @@ var suites= {
 	   						// console.log("cccc, ", d, this);
 		   					if (this.hasAttribute('editNodeid')) {
 	   							// console.log("Clicked ...", d, this, this.hasAttribute('deleteNodeid'));
-									var sid = d.rowid-1;
-								katana.popupController.open(katana.$activeTab.find("#editTestSuiteEntry").html(),"Edit..." , function(popup) {
+								var sid = d.rowid-1;
+								katana.popupController.open(katana.$activeTab.find("#editTestCaseEntry").html(),"Edit "+sid , function(popup) {
 									suites.lastPopup = popup; 
-									// console.log(katana.$activeTab.find("#editTestSuiteEntry"));
+									//console.log("Creating .... ", popup);
 									suites.mapSuiteCaseToUI(sid,popup);
 								});
 	   						}
@@ -947,17 +947,64 @@ var suites= {
 		   suites.link = link;
 	},
 	  
+	editDetailsAsPopup: function (argument) {
+		// body...
+		var xstr = "Edit Details";
+		katana.$activeTab.find("#suite-save-details-button").show();
+		katana.popupController.open(katana.$activeTab.find("#suites-detail-popup").html(),xstr, function(popup) {
+						suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+						suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
+						suites.lastPopup = popup;
+						//projects.setupProjectPopupDialog(sid,popup);
+						popup.find("#suite-save-details-button").show();
+						katana.popupController.updateActiveWindow(popup);	
+      		 	});
+	},
 
 
+	savePopupDetails: function() {
+		suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
+		suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
+		var popup = suites.lastPopup; 
+		katana.$activeTab.find("#suiteName").val(popup.find('#suiteName').val());
+		katana.$activeTab.find("#suiteTitle").val(popup.find('#suiteTitle').val());
+		katana.$activeTab.find("#suiteEngineer").val(popup.find('#suiteEngineer').val());
+		katana.$activeTab.find("#suiteResults").val(popup.find('#suiteResults').val());
+		katana.$activeTab.find("#suiteState").val(popup.find('#suiteState').val());
+		katana.$activeTab.find('#default_OnError').val(popup.find('#default_OnError'));
+		katana.$activeTab.find('#default_OnError_goto').val(popup.find('#default_OnError_goto'));
+		katana.$activeTab.find('#suiteInputDataFile').val(popup.find('#suiteInputDataFile'));
+		katana.$activeTab.find('#suiteDatatype').val(popup.find('#suiteDatatype'));
+		katana.$activeTab.find('#data_type_num_attempts').val(popup.find('#data_type_num_attempts'));
+		katana.$activeTab.find('#data_type_max_attempts').val(popup.find('#data_type_max_attempts'));
+		
+		suites.jsonSuiteObject.Details.Name = katana.$activeTab.find('#suiteName').val();
+		suites.jsonSuiteObject.Details.Title = katana.$activeTab.find('#suiteTitle').val();
+		suites.jsonSuiteObject.Details.Engineer = katana.$activeTab.find('#suiteEngineer').val();
+		suites.jsonSuiteObject.Details.Resultsdir = katana.$activeTab.find('#suiteResults').val();
+		suites.jsonSuiteObject.Details.State = katana.$activeTab.find('#suiteState').val();
+		suites.jsonSuiteObject.Details.default_onError_action = katana.$activeTab.find('#default_OnError').val();
+		suites.jsonSuiteObject.Details.default_onError_value = katana.$activeTab.find('#default_OnError_goto').val();
+		suites.jsonSuiteObject.Details.InputDataFile = katana.$activeTab.find('#suiteInputDataFile').val();
+		suites.jsonSuiteObject.Details.ExecType = katana.$activeTab.find("#suiteDatatype").val();
+		suites.jsonSuiteObject.Details.ExecType_num_Attempts = katana.$activeTab.find("#data_type_num_attempts").val();
+		suites.jsonSuiteObject.Details.ExecType_max_Attempts = katana.$activeTab.find("#data_type_max_attempts").val();
 
+		popup.find("#suite-save-details-button").hide();
+		katana.popupController.close(suites.lastPopup);
+		
+	},
 
 	swapViews: function(){
 		suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
 			// suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
-		
+		katana.$activeTab.find("#suite-save-details-button").hide();
+
 		if (suites.treeView == 0) {
 			katana.$activeTab.find(".suites-standard-edit").hide();
 			katana.$activeTab.find("#suites-graphics-edit").show();
+			katana.$activeTab.find("#suite-save-details-button").show();
+
 			suites.treeView = 1; 
 		} else {
 			suites.treeView = 0;
@@ -1105,17 +1152,15 @@ var suites= {
 	mapSuiteCaseToUI: function(s,popup) {
 			suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
 			suites.jsonTestcases = suites.jsonSuiteObject.Testcases; 
-
+			//popup = suites.lastPopup;
 	// This is called from an event handler ... 
 	suites.jsonTestcases = suites.jsonSuiteObject.Testcases		
 	var xdata = suites.jsonTestcases;
-	console.log(s, xdata);
+	//console.log(s, xdata);
 	var oneCase = xdata[s];
-	console.log(oneCase);
-	console.log(oneCase['path']);
+	//console.log(oneCase, popup, suites.lastPopup);
 	popup.find("#CaseRowToEdit").val(s); 
 	katana.$activeTab.attr('suite_case_row',s);  // for the file dialog.
-	console.log(popup.find("#CaseRowToEdit").val());
 	//katana.$activeTab.find("CasePath").val(oneCase['path']);
 	popup.attr('oneCase', s);
 	popup.find('#CasePath').val(oneCase.path);
@@ -1130,7 +1175,8 @@ var suites= {
 	popup.find("#executeRuleAtElse").val(oneCase.Execute_Rule_Else); 
 	popup.find("#executeRuleAtElsevalue").val(oneCase.Execute_Rule_Elsevalue); 
 	popup.find("#StepInputDataFile").val(oneCase.InputDataFile); 
-
+	//console.log(popup.find("#caseonError-at-action").val(), oneCase);
+	
 	suites.fillSuiteCaseDefaultGoto(popup);
 	popup.find('#caseonError-at-action').on('change', function(){ 
 			suites.jsonSuiteObject = katana.$activeTab.data("suiteJSON");
@@ -1138,21 +1184,21 @@ var suites= {
 			
 			suites.fillSuiteCaseDefaultGoto(suites.lastPopup);
 	});
-	console.log("FOUND Run mode  TYPE ",oneCase.runmode_type )
+	//console.log("FOUND Run mode  TYPE ",oneCase.runmode_type )
 	popup.find('.runmode_condition').show();
 	oneCase.runmode_type = oneCase.runmode_type.toLowerCase();
 	if (oneCase.runmode_type === 'standard') {
-		console.log("Hiding... ",oneCase.runmode_type  )
+		//console.log("Hiding... ",oneCase.runmode_type  )
 		popup.find('.runmode_condition').hide();
 	}
 
 	popup.find('.rule-condition').hide();
 	if (oneCase.Execute_ExecType) {
-		console.log("FOUND EXECT TYPE ",oneCase.Execute_ExecType )
+		//console.log("FOUND EXECT TYPE ",oneCase.Execute_ExecType )
 		if (oneCase.Execute_ExecType == 'if' || oneCase.Execute_ExecType == 'if not') {
 			popup.find('.rule-condition').show();
 		} else {
-		console.log("FOUND EXECT TYPE as  ",oneCase.Execute_ExecType )
+		//console.log("FOUND EXECT TYPE as  ",oneCase.Execute_ExecType )
 		}	
 	}
 	popup.find("#suiteExecuteAtExecType").on('change',function() {
@@ -1417,7 +1463,7 @@ Two global variables are heavily used when this function is called;
 		var gotoStep =popup.find('#caseonError-at-action').val();
 		var defgoto = popup.find('#caseonError-at-value'); 
 		defgoto.hide();
-
+		//console.log(popup)
 		if (gotoStep.trim() == 'goto') { 
 			defgoto.show();
 		} else {
