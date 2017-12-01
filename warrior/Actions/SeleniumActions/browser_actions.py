@@ -196,7 +196,7 @@ class browser_actions(object):
         if proxy_ip is None:
             proxy_ip = data_Utils.getSystemData(self.datafile, system_name, "proxy_ip")
         if gecko_path is None:
-            proxy_port = data_Utils.getSystemData(self.datafile, system_name, "proxy_port")
+            gecko_path = data_Utils.getSystemData(self.datafile, system_name, "proxy_port")
 
         webdriver_remote_url = ip if str(remote).strip().lower() == "yes"\
             else False
@@ -223,17 +223,15 @@ class browser_actions(object):
                 browser_details = selenium_Utils.\
                     get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
-                if type == "firefox":
-                    ff_profile = self.browser_object.\
-                        set_firefoxprofile(proxy_ip, proxy_port)
-                if binary != None and gecko_path != None:
+                if gecko_path != None and type == "firefox":
+                    ff_profile = self.browser_object.set_firefoxprofile(proxy_ip, proxy_port)
                     browser_inst = self.browser_object.open_browser(
                         browser_details["type"], webdriver_remote_url,
                         binary=binary, gecko_path=gecko_path,
                         profile_dir=ff_profile)
                 else:
-                    browser_inst = self.browser_object.open_browser(browser_details["type"], webdriver_remote_url)
-                    #pNote("Please provide valid path for binary/geckodriver")
+                    browser_inst = self.browser_object.open_browser(browser_details["type"], webdriver_remote_url, binary=binary)
+
                 if browser_inst:
                     browser_fullname = "{0}_{1}".format(system_name,
                                                         browser_details["browser_name"])

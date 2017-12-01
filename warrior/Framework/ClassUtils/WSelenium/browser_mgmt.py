@@ -87,10 +87,12 @@ class BrowserManagement(object):
 
         """
         browser_detail_dict = {}
-        try:
-            browser_detail_dict['version'] = browser.capabilities['version']
-        except KeyError:
-            pass
+        capabilities_keys = ['version', 'browserVersion']
+        for keys in capabilities_keys:
+            try:
+                browser_detail_dict[keys] = browser.capabilities[keys]
+            except KeyError:
+                pass
         return browser_detail_dict
 
     def close_browser(self, browser_instance=None):
