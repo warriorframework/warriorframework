@@ -93,34 +93,48 @@ var wapp_management = {
         }
     },
 
-    sendInstallInfo: function(app_paths){
+    sendInstallInfo: function(app_paths, removeChildren){
         var $currentPage = katana.$activeTab;
-        $.ajax({
-            headers: {
-                'X-CSRFToken': wapp_management.getCookie('csrftoken')
-            },
-            type: 'POST',
-            url: 'wapp_management/install_an_app/',
-            data: {"app_paths": app_paths},
-        }).done(function(data) {
+        if (removeChildren === undefined){
+            removeChildren = true;
+        } else {
+            removeChildren = false;
+        }
+        app_paths.forEach(function(app_path, index){
             setTimeout(function(){
-                $currentPage.find('#form-for-paths').html('');
-                wapp_management.addAnotherApp(1);
-                katana.refreshLandingPage();
                 $.ajax({
-                    type: 'GET',
-                    url: 'wapp_management/update_installed_apps_section/',
-                }).done(function(installed_apps_data){
-                    $currentPage.find('#installed_apps_div').html(installed_apps_data);
-                    katana.openAlert({
-                        "alert_type": "success",
-                        "text": "Apps have been installed!",
-                        "show_accept_btn": true,
-                        "show_cancel_btn": false
-                    });
+                    headers: {
+                        'X-CSRFToken': wapp_management.getCookie('csrftoken')
+                    },
+                    type: 'POST',
+                    url: 'wapp_management/install_an_app/',
+                    data: {"app_paths": [app_path]},
+                }).done(function(data) {
+                    if(removeChildren){
+                        $($currentPage.find('#form-for-paths').children()[0]).remove();
+                    }
+                    setTimeout(function(){
+                        katana.refreshLandingPage();
+                        $.ajax({
+                            type: 'GET',
+                            url: 'wapp_management/update_installed_apps_section/',
+                        }).done(function(installed_apps_data){
+                            $currentPage.find('#installed_apps_div').html(installed_apps_data);
+                        });
+                    }, ((index+1)*2)* 1000);
                 });
-            }, 2000);
+            }, (index*2)* 2000);
         });
+
+        setTimeout(function(){
+            wapp_management.addAnotherApp(1);
+            katana.openAlert({
+                "alert_type": "success",
+                "text": "Apps have been installed!",
+                "show_accept_btn": true,
+                "show_cancel_btn": false
+            });
+        }, (app_paths.length*2)* 2000);
     },
 
     saveConfig: function(app_paths, callback){
@@ -463,7 +477,7 @@ var wapp_management = {
         for(var i=0; i<$disabledInputs.length; i++){
             app_paths.push($($disabledInputs[i]).val());
         }
-        wapp_management.sendInstallInfo(app_paths);
+        wapp_management.sendInstallInfo(app_paths, false);
 
         $parent = $currentPage.find("#" + configName);
         $parent.css("background-color", "#98afc7");

@@ -76,7 +76,10 @@ def install_an_app(request):
         shutil.rmtree(temp_dir_path)
     create_dir(temp_dir_path)
 
+    print app_paths
+
     for app_path in app_paths:
+        print app_path
         if app_path.endswith(".git"):
             repo_name = get_repository_name(app_path)
             os.system("git clone {0} {1}".format(app_path, join_path(temp_dir_path, repo_name)))
