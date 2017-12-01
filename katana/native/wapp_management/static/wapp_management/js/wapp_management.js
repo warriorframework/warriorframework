@@ -127,7 +127,9 @@ var wapp_management = {
         });
 
         setTimeout(function(){
-            wapp_management.addAnotherApp(1);
+            if(removeChildren){
+                wapp_management.addAnotherApp(1);
+            }
             katana.openAlert({
                 "alert_type": "success",
                 "text": "Apps have been installed!",
