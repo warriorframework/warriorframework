@@ -480,13 +480,13 @@ class BrowserManagement(object):
                         profile_dir)
             else:
                 ff_capabilities = webdriver.DesiredCapabilities.FIREFOX
-                if ff_capabilities['marionette']:
+                try:
                     ff_capabilities['acceptInsecureCerts'] = True
                     ffbinary = FirefoxBinary(binary)
                     browser = webdriver.Firefox(firefox_binary=ffbinary,
                                                 firefox_profile=profile_dir,
                                                 executable_path=gecko_path)
-                else:
+                except:
                     browser = webdriver.Firefox(firefox_profile=profile_dir)
             return browser
         except WebDriverException as e:
@@ -494,6 +494,9 @@ class BrowserManagement(object):
                 print_error("Please provide path for geckodriver executable")
             elif "Expected browser binary location" in str(e):
                 print_error("Please provide path of firefox executable")
+        except Exception as e:
+            print_error("Encountered Error {0}, while creating Firefox instance".format(e))
+
 
     def _make_chrome(self, webdriver_remote_url, desired_capabilities,
                      profile_dir, binary, gecko_path):
