@@ -218,14 +218,9 @@ class browser_actions(object):
                 browser_details = selenium_Utils.get_browser_details(browser,
                                                                      datafile=self.datafile,
                                                                      **arguments)
-            print "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^6", browser_details
             if browser_details is not None:
-                """
                 if browser_details["gecko_path"] not in [None, False] and \
                                 browser_details["type"] == "firefox":
-                """
-                print "%%%%%%%%%%%%%%%%%%%%%%", browser_details["gecko_path"], browser_details["type"], "%%%%%%%%%%%%%%%%%%%%%%%%%"
-                if gecko_path not in [None, False] and type == "firefox":
                     ff_profile = self.browser_object.set_firefoxprofile(proxy_ip, proxy_port)
                     browser_inst = self.browser_object.open_browser(
                         browser_details["type"], webdriver_remote_url,
