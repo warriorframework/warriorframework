@@ -283,16 +283,10 @@ var treeData = [
 		projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
 		projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
 		existingSuites= katana.$activeTab.data('allExistingSuites');
-
 		pjDataSet = { 
 			'nodes': [],
 			'edges': [],
 
-		};
-
-		pjExistingSuites = { 
-			'nodes': [],
-			'edges': []
 		};
 		var nodeCtr = 0;
 		var projectSummary = projects.jsonProjectObject.Details.getSummary();
@@ -338,42 +332,17 @@ var treeData = [
     			'on-error' : oneSuite.onError_action + " " + oneSuite.onError_value,
     			"data-path": oneSuite.InputDataFile ,
     			"children": [],
-    	
     			} ;
     		pjDataSet.nodes.push(st);
     		td.children.push(st)
 			var ed = { 'source': pjDataSet.nodes[nodeCtr - 1], 'target': pjDataSet.nodes[nodeCtr], 'value' : 3 };
-    		
     		pjDataSet.edges.push(ed);
     		nodeCtr++;
-    		}
-    	// Now create the suites that exist ...
-
-		// slen = existingSuites.length;
-  //   	for (var s=0; s<slen; s++ ) {
-  //   		oneSuite = existingSuites[s]
-		// 		var st = { "name": oneSuite.fullpath, 
-  //   			'ntype': 'existingSuite',
-  //   			"rowid" : s,
-  //   			"id": nodeCtr++,
-  //   			"width" : 100, 
-  //   			'displayStr' : oneSuite.name,
-  //   			"exectype" : "ExceType=yes", 
-  //   			"runmode" : "standard",
-  //   			'on-error' : "next",
-  //   			"data-path": "", "parent": td , "children": []
-  //   			} ;
-  //   			//pjDataSet.nodes.push(st);
-  //   			//pjExistingSuites.nodes.push(st);
-    			
-  //   		}
+			}
+		// 
     	katana.$activeTab.data('pjDataSet', pjDataSet);
-    	katana.$activeTab.data('pjExistingSuites', pjExistingSuites);
     	projects.createD3tree();
 	},
-	
-
-
 
 	createD3tree: function() {
 
@@ -399,8 +368,7 @@ var treeData = [
 		existingSuites= katana.$activeTab.data('allExistingSuites');
 		
     	var pjDataSet = katana.$activeTab.data('pjDataSet');
-    	var pjExistingSuites = katana.$activeTab.data('pjExistingSuites');
-		var optimalHt = existingSuites.length * px_row_height + (px_row_height * 2); 
+    	var optimalHt = existingSuites.length * px_row_height + (px_row_height * 2); 
 		if (optimalHt < 1000) { optimaalHt = 1000; }
 		var optimalWd = katana.$activeTab.find("#projectsMasterPage").width();
 		var margin = {top: 20, right: 120, bottom: 20, left: 120},
@@ -503,7 +471,7 @@ var treeData = [
 								projects.jsonProjectObject.Testsuites[theId] = projects.jsonProjectObject.Testsuites[loc]
 								projects.jsonProjectObject.Testsuites[loc] = oldSuite
 
-								projects.mapProjectJsonToUi();	// Send in the modified array
+								projects.mapProjectJsonToUi();	// Recreate the tree. 
 								return ;
 			  				}
 
@@ -517,9 +485,9 @@ var treeData = [
 
 			  			}
 			  			
-			  			
+			  		projects.mapProjectJsonToUi();	// Recreate the tree. 
+									
 			  	});
-
 
 		var gnodes = projects.svg.selectAll('g')
 				.data(pjDataSet.nodes)
@@ -528,40 +496,13 @@ var treeData = [
 				.attr("transform",function(d) { 
 					var py = (d.rowid - 1) * px_row_height;
 					if (d.ntype == "project") return "translate("+10+","+px_rect_height*2+")";
-					if (d.ntype == 'existingSuite') {
-						var i = d.rowid - 1;
-						var xlen = Math.floor(pjExistingSuites.nodes.length / 3); 
-						var px = px_existing_column + ((i%3)*px_rect_width + 50); 
-						py = Math.floor(i/3)%xlen * px_row_height;
-
-
-						return "translate("+px+","+py+")";
-					} 
 					return "translate("+px_suite_column+","+py+")";
 					})
 				.attr('class', 'masternode')
 				.call(projects.dragSuite);
 
-
 		projects.createExistingTree();
 		projects.createProjectTree();
-
-
-
-    	var nodelabels = gnodes.append("text")
-	       .attr("class","nodelabel")
-	       .attr("x", 10)
-		   .attr("y", px_rect_height / 2)
-	       .attr("stroke","black")
-	       .text(function(d){
-	       		if (d.ntype == 'existingSuite') return  d.displayStr.substring(0,20);
-	       		if (d.ntype == 'project') return d.name.substring(0,20);
-	       		return "(" + d.rowid + ") ..." + d.name.substr(d.name.length - 15);})
-
-		projects.nodelabels = nodelabels;
-		console.log(projects.nodelabels);
-
- 	   
 		
 		},
 
@@ -572,23 +513,19 @@ var treeData = [
 		var px_row_height = 60; 
 		var px_y_icon_offset = 35;
 		var px_text_x_offset = 10; 
-		var px_text_y_offset = 30;
+		var px_text_y_offset = 10;
 		var px_rect_width = 200; 
-		var px_rect_height = 35;
+		var px_rect_height = 25;
 		var px_trash_x_offset = 30; 
-		var px_trash_y_offset = 20; 
+		var px_trash_y_offset = 5; 
 		var px_folder_offset = 25;
-		var px_edit_x_offset = px_rect_width  - 20;
-		var px_edit_y_offset = 0;
-		var px_insert_x_offset = 0;
-		var px_insert_y_offset = 20;
+		var px_edit_x_offset = 50;
+		var px_edit_y_offset = 5;
+		var px_insert_x_offset = 10;
+		var px_insert_y_offset = 5;
 		var px_existing_column = 700;
 
-
-
-
 		var stree = katana.$activeTab.data('pjDataSet');
-		console.log("stree .. createProjectTree ", stree, stree.nodes[0]);
 		var sroot = stree.nodes[0]; 
 		var tree = d3.layout.tree()
  					.size([700, 1000]);
@@ -609,7 +546,7 @@ var treeData = [
   		// Normalize for fixed-depth.
   		var n = 100;
   		nodes.forEach(function(d) { d.y = d.depth * 180;/*d.id = ++n;*/});
-   		console.log("projects svg->", projects.svg.selectAll(".projectSuiteNode"), nodes);
+   		//console.log("projects svg->", projects.svg.selectAll(".projectSuiteNode"), nodes);
    		n= 0;
 		var nodeEnter = eNodes.selectAll("node")
 				.data(nodes)
@@ -618,10 +555,6 @@ var treeData = [
 				.attr("class", "node")
 				.attr("transform", function(d) { 
 				 return "translate(" + d.y  + "," + d.x + ")"; })
-				.on("mouseover", function(d) {
-					console.log("mouseover-->", d)
-
-				 })
 				.call(projects.dragSuite);
 
 		  nodeEnter.append("circle")
@@ -711,15 +644,6 @@ var treeData = [
    						px = px_suite_column - px_rect_width/2;
    					}
 
-					if (d.ntype == 'existingSuite') {
-						var i = d.rowid - 1;
-						var xlen = Math.floor(pjExistingSuites.nodes.length / 3); 
-						var px = px_existing_column + ((i%3)*px_rect_width + 50); 
-						py = Math.floor(i/3)%xlen * px_row_height;
-					}
-
-
-
    					var fobj = projects.svg.append('foreignObject')
 						.attr('x', px+20)
 						.attr('y', py+20)
@@ -730,7 +654,6 @@ var treeData = [
 						.append('div')
 						.attr('border-bottom-width', 10)
    						.attr('border-right-width', 10)
-   			
 						.attr('x',  0)
 						.attr('y',  0)					
 						.style({
@@ -745,14 +668,17 @@ var treeData = [
 					//var foHt = div[0][0].getBoundingClientRect().height;
 					//var foWd = div[0][0].getBoundingClientRect().width;
    				})
-   			.on("mouseout",function(d) {
-   		 			projects.svg.selectAll('.projectSuiteTooltip').remove();
-   				})
-   			.on("click",function(d) {
-   		 			if (d.ntype == 'project') {
-   		 				projects.editDetailsAsPopup();
-   		 			}
-   				});
+	   			.on("mouseout",function(d) {
+	   		 			projects.svg.selectAll('.projectSuiteTooltip').remove();
+	   				})
+	   			.on("click",function(d) {
+	   		 			if (d.ntype == 'project') {
+	   		 				projects.editDetailsAsPopup();
+	   		 			}
+	   		 			if (d.type == 'suite') {
+	   		 				console.log("edit suite", d.id, d);
+	   		 			}
+	   				});
 
 
    			nodeEnter.append("foreignObject")
@@ -800,7 +726,12 @@ var treeData = [
 		   projects.link = link;
 	},
 
+		nozoom : function () {
+		  d3.event.preventDefault();
+		},
 
+
+	// Create a tree with existing nodes. 
 	createExistingTree: function() {
 
 		var stree = katana.$activeTab.data('existingSuiteTree');
@@ -814,10 +745,14 @@ var treeData = [
  		var nodes = tree.nodes(sroot).reverse(),
    		links = tree.links(nodes);
 
+		
+
+		projects.svg.select('.existingSuiteNode').remove();  // Clear the screen. 
+		
 
    		var eNodes = projects.svg.append('g')
    			.attr('class','existingSuiteNode')
-   			.attr("transform", "translate(500,0)");
+   			.attr("transform", "translate(700,0)");
 
 
    		projects.eNodes = eNodes;  // Very important for drag end.
@@ -828,17 +763,25 @@ var treeData = [
    		console.log("projects svg->", projects.svg.selectAll(".existingSuiteNode"), nodes);
    		n= 0;
 		//var nodeEnter = projects.svg.selectAll("g.existingSuiteNode")
+
+
+
 		var nodeEnter = eNodes.selectAll("node")
 				.data(nodes)
 				.enter()
 				.append("g")
 				.attr("class", "node")
+				.on("touchstart", projects.nozoom)
+    			.on("touchmove", projects.nozoom)
 				.attr("transform", function(d) { 
 				 return "translate(" + d.y  + "," + d.x + ")"; })
 				.on("mouseover", function(d) {
 					console.log("mouseover-->", d)
-
 				 })
+				.on("click", function(d) {
+					console.log("mouse Clicked -->", d.c);
+					projects.onSuiteDirclick(d);
+				})
 				.call(projects.dragSuite);
 
 		  nodeEnter.append("circle")
@@ -857,8 +800,6 @@ var treeData = [
 		   .text(function(d) { return d.name; })
 		   .style("fill-opacity", 1);
 
-		  // Declare the linksâ€¦
-		  //var link = projects.svg.selectAll("path.link")
 		  var link = eNodes.selectAll("path.link")
 		   .data(links, function(d) { return d.target.id; });
 
@@ -869,6 +810,21 @@ var treeData = [
 		   projects.link = link;
 	},
 	  
+	onSuiteDirclick: function(d) {
+
+		if (d3.event.defaultPrevented) return;
+
+		  if (d.children) {
+		    d._children = d.children;
+		    d.children = null;
+		  } else {
+		    d.children = d._children;
+		    d._children = null;
+		  }
+		 projects.createExistingTree();
+		  //projects.createProjectTree();
+
+	},
 
 	save: function(){
 		katana.templateAPI.post.call( katana.$activeTab.find('.to-save'), null, null, katana.toJSON(), function( data ) {
