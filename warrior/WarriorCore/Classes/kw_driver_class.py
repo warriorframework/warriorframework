@@ -190,6 +190,9 @@ class KeywordOperations(object):
             elif args in self.data_repository:
                 arg_kv[args] = self.data_repository[args]
             if args != 'system_name' and 'system_name' in arg_kv:
+                # the args can be direct values or mentioned as
+                # wtag var (except system_name) like 'wtag=<wtag var>',
+                # which would be fetched from the input data file
                 targ = arg_kv[args] if args in arg_kv else args
                 value = self.get_credential_value(targ, arg_kv['system_name'])
                 if value is not None:
@@ -209,6 +212,9 @@ class KeywordOperations(object):
             elif args in self.data_repository:
                 arg_kv[args] = self.data_repository[args]
             if args != 'system_name' and 'system_name' in arg_kv:
+                # the args can be direct values or mentioned as
+                # wtag var (except system_name) like 'wtag=<wtag var>',
+                # which would be fetched from the input data file
                 targ = arg_kv[args] if args in arg_kv else args
                 value = self.get_credential_value(targ, arg_kv['system_name'])
                 if value is not None:

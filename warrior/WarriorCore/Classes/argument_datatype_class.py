@@ -23,8 +23,6 @@ arguments in Warrior testcase xml into python datatypes
 class ArgumentDatatype(object):
     """This is the class that gets the data type of an argument
     supplied by the user and stores it in the data repository.
-    The file option here is implemented separately in war-1172,
-    hence please use this feature only after that is merged.
     """
     type_funcs = {'str': str,
                   'int': int,
