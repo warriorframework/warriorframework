@@ -449,18 +449,6 @@ var treeData = [
 		projects.feMerge.append("feMergeNode").attr("in","offsetBlur");
 		projects.feMerge.append("feMergeNode").attr("in","SourceGraphic");
 
-      	// var force = d3.layout.force()
-		     //   	.nodes(pjExistingSuites.nodes)
-		     //    .links(pjDataSet.edges)
-		     //    .size([optimalWd,optimalHt])
-		     //    .linkDistance(300)
-		     //    // .charge([-500])
-		     //    // .theta(0.1)
-		     //    // .gravity(0.05)
-		     //    .start();
-
-		
-		
 
 		projects.dragSuite = d3.behavior.drag()
 			  		.on('drag', function(d,i) {
@@ -501,23 +489,6 @@ var treeData = [
 			  				}
 			  			
 
-			  			// 	if (d.id > projects.jsonTestSuites.length  && d.ntype == 'existingSuite') {
-								// console.log("You are inserting ...", d);
-								// // Location??
-								// var loc = parseInt( 0.5 + ( d.y / px_row_height)); 
-								// console.log("Location = ", loc, " fname = ", d.name);
-								// var pathToBase = katana.$activeTab.find('#savefilepath').text();
-      		// 					var nf = prefixFromAbs(pathToBase, d.name);
-      		// 					console.log("Adding ..", nf);
-								// projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
-								// projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
-								// var sid  = projects.jsonTestSuites.length;
-								// if (loc > sid) loc = sid 
-								// var nb = new projectSuiteObject();
-								// nb.path = nf; 
-								// projects.jsonTestSuites.splice(loc,0,nb);
-								// projects.mapProjectJsonToUi();	// Send in the modified array
-			  			// 	}
 			  			if (d.x < (px_existing_column -px_rect_width) && d.ntype == 'suite' && (d.x >px_suite_column )){
 							var theId = d.id -1;
 							if (theId < projects.jsonTestSuites.length  && d.ntype == 'suite') {
@@ -550,9 +521,6 @@ var treeData = [
 			  	});
 
 
-
-
-
 		var gnodes = projects.svg.selectAll('g')
 				.data(pjDataSet.nodes)
 				.enter()
@@ -574,59 +542,164 @@ var treeData = [
 				.attr('class', 'masternode')
 				.call(projects.dragSuite);
 
-		//var eNodes = projects.svg.selectAll(".project-d3-existing-type");
 
 		projects.createExistingTree();
 		projects.createProjectTree();
 
-		// force.on('end', function() {
-		// 			var mNodes = projects.svg.selectAll(".project-d3-existing-type");
+
+
+    	var nodelabels = gnodes.append("text")
+	       .attr("class","nodelabel")
+	       .attr("x", 10)
+		   .attr("y", px_rect_height / 2)
+	       .attr("stroke","black")
+	       .text(function(d){
+	       		if (d.ntype == 'existingSuite') return  d.displayStr.substring(0,20);
+	       		if (d.ntype == 'project') return d.name.substring(0,20);
+	       		return "(" + d.rowid + ") ..." + d.name.substr(d.name.length - 15);})
+
+		projects.nodelabels = nodelabels;
+		console.log(projects.nodelabels);
+
+ 	   
 		
-		// 			mNodes.attr("x", function(d) { return d.x; })
-  //       				  .attr('y', function(d) { return d.y; });
- 
-		// 			mylinks.attr('x1', function(d) { return d.source.x; })
-		// 			        .attr('y1', function(d) { return d.source.y; })
-		// 			        .attr('x2', function(d) { return d.target.x; })
-		// 			        .attr('y2', function(d) { return d.target.y; });
-		// 		});
-		
+		},
 
 
-		gnodes.append("rect")
-	   		.attr("width",function(d){ 
-					if (d.ntype == 'project') return px_rect_width * 0.6;
-   					return px_rect_width; 
-   			})
-   			.attr("height",function(d){ 
-					if (d.ntype == 'project') return px_rect_height * 4;
-   					return px_rect_height; 
-   			})
-   			.attr("x", 0)
-   			.attr("y", 0)
-   			.attr("rx", function(d){ 
-					if (d.ntype == 'project') return 5;
-   					if (d.ntype == 'existingSuite') return 8;
-   					return 3; 
-   			})
-   			.attr('fill', function(d){ 
-					if (d.ntype == 'project') return '#42f49b';
-   					if (d.ntype == 'suite') return 'steelblue';
-   					return 'white'; 
-   			})
-   			.attr('class',function(d) { 
-   						//console.log("Setting circle", d);	
-						if (d.ntype == 'existingSuite') { 
-								return "project-d3-existing-type";
-							}
-						return "project-d3-node";})
-   			.style('stroke-width', 3)
-   			.style('stroke', function(d) { 
-   				if (d.ntype == 'project') return 'blue';
-   				return 'darkblue';
+	createProjectTree: function() {
 
-   			})
-   			.on("mouseover",function(d) {
+		var px_suite_column = 200; 
+		var px_row_height = 60; 
+		var px_y_icon_offset = 35;
+		var px_text_x_offset = 10; 
+		var px_text_y_offset = 30;
+		var px_rect_width = 200; 
+		var px_rect_height = 35;
+		var px_trash_x_offset = 30; 
+		var px_trash_y_offset = 20; 
+		var px_folder_offset = 25;
+		var px_edit_x_offset = px_rect_width  - 20;
+		var px_edit_y_offset = 0;
+		var px_insert_x_offset = 0;
+		var px_insert_y_offset = 20;
+		var px_existing_column = 700;
+
+
+
+
+		var stree = katana.$activeTab.data('pjDataSet');
+		console.log("stree .. createProjectTree ", stree, stree.nodes[0]);
+		var sroot = stree.nodes[0]; 
+		var tree = d3.layout.tree()
+ 					.size([700, 1000]);
+ 		var diagonal = d3.svg.diagonal()
+ 					.projection(function(d) { return [d.y, d.x]; });
+
+ 		var nodes = tree.nodes(sroot).reverse(),
+   		links = tree.links(nodes);
+
+
+   		var eNodes = projects.svg.append('g')
+   			.attr('class','projectSuiteNode')
+   			.attr("transform", "translate(0,0)");
+
+
+   		projects.eNodes = eNodes;  // Very important for drag end.
+   		projects.diagonal = diagonal; // Sa
+  		// Normalize for fixed-depth.
+  		var n = 100;
+  		nodes.forEach(function(d) { d.y = d.depth * 180;/*d.id = ++n;*/});
+   		console.log("projects svg->", projects.svg.selectAll(".projectSuiteNode"), nodes);
+   		n= 0;
+		var nodeEnter = eNodes.selectAll("node")
+				.data(nodes)
+				.enter()
+				.append("g")
+				.attr("class", "node")
+				.attr("transform", function(d) { 
+				 return "translate(" + d.y  + "," + d.x + ")"; })
+				.on("mouseover", function(d) {
+					console.log("mouseover-->", d)
+
+				 })
+				.call(projects.dragSuite);
+
+		  nodeEnter.append("circle")
+		   .attr("r", 10)
+		   .style("fill", function(d) {
+		   		if (d.type == 'directory') return "#aaa";
+		   		return "#fff";
+		   });
+
+		  nodeEnter.append("text")
+		   .attr("x", function(d) { 
+		    return d.children || d._children ? -13 : 13; })
+		   .attr("dy", ".35em")
+		   .attr("text-anchor", function(d) { 
+		    return d.children || d._children ? "end" : "start"; })
+		   .text(function(d) { return d.name; })
+		   .style("fill-opacity", 1);
+
+		  nodeEnter.append("foreignObject")
+	   				.attr("width", 20)
+	   				.attr("height", 20)
+	   				.attr("y", px_insert_y_offset)
+	   				.attr("x", px_insert_x_offset)
+	   				
+	   				// .attr("y", function(d) {  return px_y_icon_offset + ( d.rowid * px_row_height); })
+	   				// .attr("x", function(d) { 
+	   				// 	if (d.ntype == 'project') return 10; 
+	   				// 	return px_suite_column + px_insert_offset; 
+	   				// })
+	   				.attr("class", "fa fa-plus")
+	   				.attr("addNodeid",function(d) { return d.rowid - 1; })
+	   				.style("opacity", 1)
+	   				.style("fill-opacity",1)
+	   				.style("visibility", function(d) {
+	   					if (d.ntype != 'suite') {
+	   						return "hidden";
+	   					} else {
+	   						return "visible";
+	   					}
+	   				})
+	   				.html(function(d) { return " "; } )
+	   				.on("click", function(d) { 
+	   						//console.log("cccc, ", d, this);
+		   					if (this.hasAttribute('addNodeid')) {
+	   							//console.log("Clicked to add " + d.rowid);
+	   							var nb = new projectSuiteObject();
+								projects.jsonTestSuites.splice(d.rowid-1,0,nb);
+								projects.mapProjectJsonToUi();	// Send in the modified array
+	   						}
+	   						event.stopPropagation();
+	   				});
+	   	       nodeEnter.append("foreignObject")
+	   				.attr("width", 20)
+	   				.attr("height", 20)
+	   				.attr("y", px_trash_y_offset)
+	   				.attr("x", px_trash_x_offset)
+	   				.attr("class", "fa fa-trash")
+	   				.attr("deleteNodeid",function(d) { return d.rowid - 1; })
+	   				.style("opacity", 1)
+	   				.style("fill-opacity",1)
+	   				.style("visibility", function(d) {
+	   					if (d.ntype != 'suite') {
+	   						return "hidden";
+	   					} else {
+	   						return "visible";
+	   					}
+	   				})
+	   				.html(function(d) { return " "; } )
+	   				.on("click", function(d) { 
+	   						//console.log("cccc, ", d, this);
+		   					if (this.hasAttribute('deleteNodeid')) {
+	   							//console.log("Clicked to delete " + d.rowid);
+	   							projects.jsonTestSuites.splice(d.rowid-1,1);
+								projects.mapProjectJsonToUi();	 
+	   						}
+	   						event.stopPropagation();
+	   				});
+	   	        nodeEnter.on("mouseover",function(d) {
    					// var dx = d3.mouse(this)[0];
    					// var dy = d3.mouse(this)[1];
    					// console.log(dx,dy, "x=", d3.event.pageX, " y=", d3.event.pageY, "d.x", d.x, ",", d.y , d.rowid, d.id);
@@ -682,99 +755,7 @@ var treeData = [
    				});
 
 
- 		gnodes.append("foreignObject")
-	   				.attr("width", 20)
-	   				.attr("height", 20)
-	   				.attr("y", px_trash_y_offset)
-	   				.attr("x", px_trash_x_offset)
-	   				.attr("class", "fa fa-trash")
-	   				.attr("deleteNodeid",function(d) { return d.rowid - 1; })
-	   				.style("opacity", 1)
-	   				.style("fill-opacity",1)
-	   				.style("visibility", function(d) {
-	   					if (d.ntype != 'suite') {
-	   						return "hidden";
-	   					} else {
-	   						return "visible";
-	   					}
-	   				})
-	   				.html(function(d) { return " "; } )
-	   				.on("click", function(d) { 
-	   						//console.log("cccc, ", d, this);
-		   					if (this.hasAttribute('deleteNodeid')) {
-	   							//console.log("Clicked to delete " + d.rowid);
-	   							projects.jsonTestSuites.splice(d.rowid-1,1);
-								projects.mapProjectJsonToUi();	 
-	   						}
-	   						event.stopPropagation();
-	   				});
-
- 			
-	   			gnodes.append("foreignObject")
-	   				.attr("width", 20)
-	   				.attr("height", 20)
-	   				.attr("y", px_insert_y_offset)
-	   				.attr("x", px_insert_x_offset)
-	   				
-	   				// .attr("y", function(d) {  return px_y_icon_offset + ( d.rowid * px_row_height); })
-	   				// .attr("x", function(d) { 
-	   				// 	if (d.ntype == 'project') return 10; 
-	   				// 	return px_suite_column + px_insert_offset; 
-	   				// })
-	   				.attr("class", "fa fa-plus")
-	   				.attr("addNodeid",function(d) { return d.rowid - 1; })
-	   				.style("opacity", 1)
-	   				.style("fill-opacity",1)
-	   				.style("visibility", function(d) {
-	   					if (d.ntype != 'suite') {
-	   						return "hidden";
-	   					} else {
-	   						return "visible";
-	   					}
-	   				})
-	   				.html(function(d) { return " "; } )
-	   				.on("click", function(d) { 
-	   						//console.log("cccc, ", d, this);
-		   					if (this.hasAttribute('addNodeid')) {
-	   							//console.log("Clicked to add " + d.rowid);
-	   							var nb = new projectSuiteObject();
-								projects.jsonTestSuites.splice(d.rowid-1,0,nb);
-								projects.mapProjectJsonToUi();	// Send in the modified array
-	   						}
-	   						event.stopPropagation();
-	   				});
-
-				// gnodes.append("foreignObject")
-				// 	.attr("width", 20)
-	   // 				.attr("height", 20)
-	   // 				.attr("y", px_y_icon_offset)
-	   // 				.attr("x", px_folder_offset)
-	   				
-	   // 				.attr("class", "fa fa-folder-open")
-	   // 				.attr("folderNodeid",function(d) { return d.rowid-1; })
-	   // 				.style("opacity", 1)
-	   // 				.style("fill-opacity",1)
-	   // 				.style("visibility", function(d) {
-	   // 					if (d.ntype != 'suite') {
-	   // 						return "hidden";
-	   // 					} else {
-	   // 						return "visible";
-	   // 					}
-	   // 				})
-	   // 				.html(function(d) { return " "; } )
-	   // 				.on("click", function(d) { 
-	   // 						//console.log("cccc, ", d, this);
-		  //  					if (this.hasAttribute('folderNodeid')) {
-	   // 							//console.log("Clicked to add " + d.rowid);
-	   // 							var nb = new projectSuiteObject();
-				// 				katana.$activeTab.attr('project-suite-row',d.rowid-1);
-				// 				projects.getResultsDirForProjectRow('Suites');
-				// 				projects.mapProjectJsonToUi();	// Send in the modified array
-	   // 						}
-	   // 						event.stopPropagation();
-	   // 				});
-
-	   			gnodes.append("foreignObject")
+   			nodeEnter.append("foreignObject")
 	   				.attr("width", 20)
 	   				.attr("height", 20)
 	   				.attr("y", px_edit_y_offset)
@@ -806,97 +787,6 @@ var treeData = [
 	   						event.stopPropagation();
 	   				});
 
-
-
-    	var nodelabels = gnodes.append("text")
-	       .attr("class","nodelabel")
-	       .attr("x", 10)
-		   .attr("y", px_rect_height / 2)
-	       .attr("stroke","black")
-	       .text(function(d){
-	       		if (d.ntype == 'existingSuite') return  d.displayStr.substring(0,20);
-	       		if (d.ntype == 'project') return d.name.substring(0,20);
-	       		return "(" + d.rowid + ") ..." + d.name.substr(d.name.length - 15);})
-
-		projects.nodelabels = nodelabels;
-		console.log(projects.nodelabels);
-
-		console.log("here2...", pjDataSet);
-
-		// var mylinks = projects.svg.selectAll('.project-d3-link')
-		// 	.data(pjDataSet.edges)
-		// 	.enter().append('line')
-		// 	.attr('class','project-d3-link')
-		// 	.attr("id",function(d,i) {return 'edge'+i})
-		//     .attr("x1", function(d) { return  px_suite_column +  px_rect_width/2; } )
-		//    	.attr("y1", function(d) { return  (d.source.id) * px_row_height + px_row_height/2 } )
-		//     .attr("x2", function(d) { return  px_suite_column +  px_rect_width/2; } )
-		//    	.attr("y2", function(d) { return  (d.target.id ) * px_row_height + px_row_height/2; } )
-		//     .style("stroke","#ccc")
-		//     .attr('marker-end','url(#arrowhead)')
-		//     .style("pointer-events", "none");
-
-		
-	   	
- 	   
-		
-		},
-
-
-	createProjectTree: function() {
-
-		var stree = katana.$activeTab.data('pjDataSet');
-		console.log("stree .. createProjectTree ", stree, stree.nodes[0]);
-		var sroot = stree.nodes[0]; 
-		var tree = d3.layout.tree()
- 					.size([700, 1000]);
- 		var diagonal = d3.svg.diagonal()
- 					.projection(function(d) { return [d.y, d.x]; });
-
- 		var nodes = tree.nodes(sroot).reverse(),
-   		links = tree.links(nodes);
-
-
-   		var eNodes = projects.svg.append('g')
-   			.attr('class','projectSuiteNode')
-   			.attr("transform", "translate(0,0)");
-
-
-   		projects.eNodes = eNodes;  // Very important for drag end.
-   		projects.diagonal = diagonal; // Sa
-  		// Normalize for fixed-depth.
-  		var n = 100;
-  		nodes.forEach(function(d) { d.y = d.depth * 180;/*d.id = ++n;*/});
-   		console.log("projects svg->", projects.svg.selectAll(".projectSuiteNode"), nodes);
-   		n= 0;
-		var nodeEnter = eNodes.selectAll("node")
-				.data(nodes)
-				.enter()
-				.append("g")
-				.attr("class", "node")
-				.attr("transform", function(d) { 
-				 return "translate(" + d.y  + "," + d.x + ")"; })
-				.on("mouseover", function(d) {
-					console.log("mouseover-->", d)
-
-				 })
-				.call(projects.dragSuite);
-
-		  nodeEnter.append("circle")
-		   .attr("r", 10)
-		   .style("fill", function(d) {
-		   		if (d.type == 'directory') return "#aaa";
-		   		return "#fff";
-		   });
-
-		  nodeEnter.append("text")
-		   .attr("x", function(d) { 
-		    return d.children || d._children ? -13 : 13; })
-		   .attr("dy", ".35em")
-		   .attr("text-anchor", function(d) { 
-		    return d.children || d._children ? "end" : "start"; })
-		   .text(function(d) { return d.name; })
-		   .style("fill-opacity", 1);
 
 		  // Declare the linksâ€¦
 		  //var link = projects.svg.selectAll("path.link")
