@@ -3,12 +3,17 @@
 <link rel="stylesheet" href="{% static 'projects/css/projects.css' %}">			
 
 <div class="tool-bar">
-			<button id="projectSwapView" class="fa fa-tree projects-header-icon" katana-click="projects.swapViews"></button>
+			<!-- <button id="projectSwapView" class="fa fa-tree projects-header-icon" katana-click="projects.swapViews"></button>
+
+			 -->	<select  type="text" class="button" id="projectViewMode" name="projectViewMode" value="1" >
+					<option value="Text">Text</option>
+					<option value="Tree">Tree</option>
+				</select>
+
 	    	<button id="addSuite" class="button" katana-click="projects.addEmptySuiteToProject">Add New Suite </button>
 	    	<button id="addSuite" class="button" katana-click="projects.addExistingSuiteToProject">Add Existing Suite </button>
 
-	<!--     	<i id="addSuite" class="button" katana-click="projects.editDetailsAsPopup">Test </i>
- -->
+	<!--     	<i id="addSuite" class="button" katana-click="projects.editDetailsAsPopup">Test </i>projectViewMode -->
 			<button class="button" katana-click="projects.mapUiToProjectJson">Save Changes to Disk </button>
 
 </div>
