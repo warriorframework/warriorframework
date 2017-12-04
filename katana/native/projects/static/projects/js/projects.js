@@ -301,6 +301,7 @@ var treeData = [
 		"id": nodeCtr++,
 		"rowid": 0,
     	"parent": "null", 
+    	"depth": 0,
     	"children": [],
     	"ntype": 'project',
     	"displayStr": projectSummary,
@@ -328,16 +329,19 @@ var treeData = [
     			'ntype': 'suite',
     			'type': 'suite',
     			"id": nodeCtr,
+    			"depth": 1, 
     			"rowid" : sid,
     			"width" : 100, 
     			'displayStr' : displayStr,
     			"exectype" : execStr, 
     			"runmode" : oneSuite.runmode_type + " " + oneSuite.runmode_value,
     			'on-error' : oneSuite.onError_action + " " + oneSuite.onError_value,
-    			"data-path": oneSuite.InputDataFile 
+    			"data-path": oneSuite.InputDataFile ,
+    			"children": [],
+    	
     			} ;
     		pjDataSet.nodes.push(st);
-    		
+    		td.children.push(st)
 			var ed = { 'source': pjDataSet.nodes[nodeCtr - 1], 'target': pjDataSet.nodes[nodeCtr], 'value' : 3 };
     		
     		pjDataSet.edges.push(ed);
@@ -538,6 +542,8 @@ var treeData = [
 			  			if ((d.type =='file')||(d.type =='directory')) {
 			  				projects.svg.select(".existingSuiteNode").remove();
 			  				projects.createExistingTree();
+			  				projects.createProjectTree();
+
 			  			}
 			  			
 			  			
@@ -571,6 +577,7 @@ var treeData = [
 		//var eNodes = projects.svg.selectAll(".project-d3-existing-type");
 
 		projects.createExistingTree();
+		projects.createProjectTree();
 
 		// force.on('end', function() {
 		// 			var mNodes = projects.svg.selectAll(".project-d3-existing-type");
@@ -836,6 +843,74 @@ var treeData = [
 		},
 
 
+	createProjectTree: function() {
+
+		var stree = katana.$activeTab.data('pjDataSet');
+		console.log("stree .. createProjectTree ", stree, stree.nodes[0]);
+		var sroot = stree.nodes[0]; 
+		var tree = d3.layout.tree()
+ 					.size([700, 1000]);
+ 		var diagonal = d3.svg.diagonal()
+ 					.projection(function(d) { return [d.y, d.x]; });
+
+ 		var nodes = tree.nodes(sroot).reverse(),
+   		links = tree.links(nodes);
+
+
+   		var eNodes = projects.svg.append('g')
+   			.attr('class','projectSuiteNode')
+   			.attr("transform", "translate(0,0)");
+
+
+   		projects.eNodes = eNodes;  // Very important for drag end.
+   		projects.diagonal = diagonal; // Sa
+  		// Normalize for fixed-depth.
+  		var n = 100;
+  		nodes.forEach(function(d) { d.y = d.depth * 180;/*d.id = ++n;*/});
+   		console.log("projects svg->", projects.svg.selectAll(".projectSuiteNode"), nodes);
+   		n= 0;
+		var nodeEnter = eNodes.selectAll("node")
+				.data(nodes)
+				.enter()
+				.append("g")
+				.attr("class", "node")
+				.attr("transform", function(d) { 
+				 return "translate(" + d.y  + "," + d.x + ")"; })
+				.on("mouseover", function(d) {
+					console.log("mouseover-->", d)
+
+				 })
+				.call(projects.dragSuite);
+
+		  nodeEnter.append("circle")
+		   .attr("r", 10)
+		   .style("fill", function(d) {
+		   		if (d.type == 'directory') return "#aaa";
+		   		return "#fff";
+		   });
+
+		  nodeEnter.append("text")
+		   .attr("x", function(d) { 
+		    return d.children || d._children ? -13 : 13; })
+		   .attr("dy", ".35em")
+		   .attr("text-anchor", function(d) { 
+		    return d.children || d._children ? "end" : "start"; })
+		   .text(function(d) { return d.name; })
+		   .style("fill-opacity", 1);
+
+		  // Declare the linksâ€¦
+		  //var link = projects.svg.selectAll("path.link")
+		  var link = eNodes.selectAll("path.link")
+		   .data(links, function(d) { return d.target.id; });
+
+		  // Enter the links.
+		  link.enter().insert("path", "g")
+		   .attr("class", "link")
+		   .attr("d", diagonal);
+		   projects.link = link;
+	},
+
+
 	createExistingTree: function() {
 
 		var stree = katana.$activeTab.data('existingSuiteTree');
@@ -990,7 +1065,7 @@ startNewProject : function() {
 			katana.$activeTab.data('projectsJSON', projects.jsonProjectObject);
 			katana.$activeTab.data('allExistingSuites', data['suites']);	
 			katana.$activeTab.data('existingSuiteTree', data['stree']);	
-
+			console.log("Existing stree == ", data['stree']);
 			projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
 			projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
 			projects.mapProjectJsonToUi();  // This is where the table and edit form is created. 
@@ -1586,7 +1661,7 @@ Two global variables are heavily used when this function is called;
 	},
 
 	insertFromClipboardCB : function() { 
-					projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
+		projects.jsonProjectObject = katana.$activeTab.data('projectsJSON');
 			projects.jsonTestSuites = projects.jsonProjectObject['Testsuites']; 
 
 		var names = this.attr('skey').split('-');
