@@ -994,7 +994,6 @@ def verify_arith_exp(expression, expected, comparison='eq'):
         :Returns:
             1. status(boolean)
     """
-
     status = True
     # Substitute env values in the expression & expected
     expression = sub_from_env_var(expression)
@@ -1002,21 +1001,22 @@ def verify_arith_exp(expression, expected, comparison='eq'):
     # Substitute data_repo values in the expression & expected
     expression = sub_from_data_repo(expression)
     expected = sub_from_data_repo(expected)
-    #Safe expression pattern from user.
-    expression_pattern = "^[0-9^%+\-*\/\(\)]*$"
-    #Any possible unsafe expression from user avoids passing through EVAL.
+    #Any possible unsafe expression from user will not pass through EVAL.
+    expression_pattern = "^[\d+(\.\d+)?^%+\-*\/\(\)]*$"
+    #Unresolved env/data_repo/unresolvable, non numerical string will be marked as ERROR
     if not re.search(expression_pattern, expression):
-        print_error("Unable to evaluate the expression '{}' provided. "
-                    "Possible reason: "
-                    "(i) Given env/data_repo values are not available".format(expression))
+        print_error("Unable to evaluate the expression '{}' provided. \n"
+                    "Possible reasons: \n"
+                    "(i) Given env/data_repo values are not available\n"
+                    "(ii) Illegal expression".format(expression))
         return "ERROR"
     try:
         expression_ouput = eval(expression)
         expected = float(expected)
     except SyntaxError:
-        print_error("Unable to evaluate the expression '{}' provided. "
-                    "Possible reasons: (i) Invalid arithmetic expression, "
-                    "(ii) Given env/data_repo values are not available".format(expression))
+        print_error("Unable to evaluate the expression '{}' provided.\n "
+                    "Possible reason: \n (i) Invalid arithmetic expression".format(expression))
+
         status = "ERROR"
     except ValueError:
         print_error("Unable to convert expected value '{}' to float".format((expected)))

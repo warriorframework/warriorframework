@@ -170,7 +170,7 @@
                         <Arguments>
                                 <argument name="expected" value="39"/>
                                 <argument name="comparison" value="le"/>
-                                <argument name="expression" value="${ENV.var1}+${REPO.var2}+10"/>
+                                <argument name="expression" value="${ENV.var1}+${REPO.var2}-1+11"/>
                         </Arguments>
                         <onError action="next"/>
                         <Description>Verify arithmetic expression: le</Description>
@@ -187,7 +187,7 @@
                         <Arguments>
                                 <argument name="expected" value="39"/>
                                 <argument name="comparison" value="le"/>
-                                <argument name="expression" value="rm -r /*"/>
+                                <argument name="expression" value="ls -lrt /*"/>
                         </Arguments>
                         <onError action="next"/>
                         <Description>User Expression is evaluated before processing with Python EVAL, Expect ERROR status</Description>
