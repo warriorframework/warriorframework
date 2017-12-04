@@ -73,7 +73,7 @@
 				</select>
 				<select class="text-right" type="text" id="project_onError_value" value="{{project_onError_value}}" >
 				</select>
-
+			
 			</div>
 			<div class="col-md-3"></div>
 		
@@ -81,8 +81,9 @@
 		<div class="row">
 		<div class="col-md-3"></div>
 			<div class="col-md-6 input_padding">				
-				<label class="text-right">Results Dir:</label>
+				<label class="text-right">Results Dir:</label><i title="ChangeFile" class="fa fa-folder-open" katana-click="projects.getResultsDirForProject" />
 				<input class="text-right" type="text" id="projectResultsDir" name="projectResultsDir" value="{{resultsDir}}" />
+				
 			</div>
 			<div class="col-md-3"></div>
 			

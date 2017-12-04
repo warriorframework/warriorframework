@@ -388,34 +388,7 @@ var treeData = [
 			 .append("g")
 			 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 		katana.$activeTab.data('projectsSVG', projects.svg);
-	
-		projects.svg.append('defs').append('marker')
-        	.attr({'id':'arrowhead',
-               'viewBox':'-0 -5 10 10',
-               'refX':25,
-               'refY':0,
-               //'markerUnits':'strokeWidth',
-               'orient':'auto',
-               'markerWidth':10,
-               'markerHeight':10,
-               'xoverflow':'visible'})
-        	.append('svg:path')
-            .attr('d', 'M 0,-5 L 10 ,0 L 0,5')
-            .attr('fill', '#666')
-            .attr('stroke','#ccc');
 
-       	defs  = projects.svg.append('defs');
-
-		projects.filter = defs.append("filter").attr("id","drop-shadow").attr("height","150%");
-		projects.filter.append("feGaussianBlur").attr("in","SourceAlpha").attr("stdDeviation",5)
-			.attr("result","blur");
-		projects.filter.append("feOffset").attr("in","blur")
-			.attr("dx",5)
-			.attr("dy",5)
-			.attr("result", "offsetBlur");
-		projects.feMerge = projects.filter.append("feMerge");
-		projects.feMerge.append("feMergeNode").attr("in","offsetBlur");
-		projects.feMerge.append("feMergeNode").attr("in","SourceGraphic");
 
 
 		projects.dragSuite = d3.behavior.drag()
@@ -441,6 +414,11 @@ var treeData = [
 						if ((d.type == 'file'  ) && (d.x < (-px_rect_width))) {
 								var loc = parseInt( 0.5 + ( d.y / px_row_height)); 
 								//console.log("Location = ", loc, " fname = ", d.name);
+
+
+
+
+
 								console.log("Location", loc, d);
 								var pathToBase = katana.$activeTab.find('#savefilepath').text();
 	      						var nf = prefixFromAbs(pathToBase, d.path);
@@ -547,13 +525,11 @@ var treeData = [
 
  		var nodes = tree.nodes(sroot).reverse(),
    		links = tree.links(nodes);
-
+   		projects.currentNode = null;
 
    		var eNodes = projects.svg.append('g')
    			.attr('class','projectSuiteNode')
    			.attr("transform", "translate(0,0)");
-
-
 	   		projects.eNodes = eNodes;  // Very important for drag end.
 	   		projects.diagonal = diagonal; // Sa
 	  		// Normalize for fixed-depth.
@@ -577,17 +553,14 @@ var treeData = [
 			   		return "#fff";
 			   })
 			   .on("mouseover",function(d) {
-   					// var dx = d3.mouse(this)[0];
-   					// var dy = d3.mouse(this)[1];
-   					// console.log(dx,dy, "x=", d3.event.pageX, " y=", d3.event.pageY, "d.x", d.x, ",", d.y , d.rowid, d.id);
-   					var py = (d.rowid - 1) * px_row_height;
+  					var py = (d.rowid - 1) * px_row_height;
    					var px = px_suite_column + px_rect_width;
-
+   					console.log("Setting currentNode",d );
+   					projects.currentNode = d;
    					if (d.rowid == 0) {
    						py = px_row_height;
    						px = px_suite_column - px_rect_width/2;
    					}
-
    					var fobj = projects.svg.append('foreignObject')
 						.attr('x', px+20)
 						.attr('y', py+20)
@@ -614,6 +587,7 @@ var treeData = [
    				})
 	   			.on("mouseout",function(d) {
 	   		 			projects.svg.selectAll('.projectSuiteTooltip').remove();
+	   		 			projects.currentNode = null;
 	   				})
 	   			.on("click",function(d) {
 	   		 			if (d.ntype == 'project') {
@@ -623,6 +597,12 @@ var treeData = [
 	   		 				console.log("edit suite", d.id, d);
 	   		 			}
 	   				});
+
+
+	   	d3.select('[id="projects-graphics-edit"]')
+	   	  	.on("keydown", function() { 
+	   	  		console.log("..keypress.." + d3.event.keyCode );
+	   	  	});
 
 
 		  nodeEnter.append("text")
@@ -694,55 +674,6 @@ var treeData = [
 	   						event.stopPropagation();
 	   				});
 
-
-
-	   	//         nodeEnter.on("mouseover",function(d) {
-   		// 			// var dx = d3.mouse(this)[0];
-   		// 			// var dy = d3.mouse(this)[1];
-   		// 			// console.log(dx,dy, "x=", d3.event.pageX, " y=", d3.event.pageY, "d.x", d.x, ",", d.y , d.rowid, d.id);
-   		// 			var py = (d.rowid - 1) * px_row_height;
-   		// 			var px = px_suite_column + px_rect_width;
-
-   		// 			if (d.rowid == 0) {
-   		// 				py = px_row_height;
-   		// 				px = px_suite_column - px_rect_width/2;
-   		// 			}
-
-   		// 			var fobj = projects.svg.append('foreignObject')
-					// 	.attr('x', px+20)
-					// 	.attr('y', py+20)
-					// 	.attr('width', 450)
-					// 	.attr('class', 'projectSuiteTooltip')
-					// 	;
-					// 	var div = fobj.append("xhtml:div")
-					// 	.append('div')
-					// 	.attr('border-bottom-width', 10)
-   		// 				.attr('border-right-width', 10)
-					// 	.attr('x',  0)
-					// 	.attr('y',  0)					
-					// 	.style({
-					// 		'opacity': 1.0,
-					// 		'border' : '2px solid "green"',
-					// 	});
-					// 	div.append('p')
-					// 	.style('border', '2px solid green')
-					// 	.style('background-color','white')
-					// 	.style('opacity', 1)
-					// 	.html(d.displayStr);
-					// //var foHt = div[0][0].getBoundingClientRect().height;
-					// //var foWd = div[0][0].getBoundingClientRect().width;
-   		// 		})
-	   	// 		.on("mouseout",function(d) {
-	   	// 	 			projects.svg.selectAll('.projectSuiteTooltip').remove();
-	   	// 			})
-	   	// 		.on("click",function(d) {
-	   	// 	 			if (d.ntype == 'project') {
-	   	// 	 				projects.editDetailsAsPopup();
-	   	// 	 			}
-	   	// 	 			if (d.type == 'suite') {
-	   	// 	 				console.log("edit suite", d.id, d);
-	   	// 	 			}
-	   	// 			});
 
 
    			nodeEnter.append("foreignObject")
