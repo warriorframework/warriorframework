@@ -104,14 +104,14 @@ def get_cmd_specific_response_file(root):
     cmds = root.find("commands")
     if cmds is not None:
         for cmd in cmds:
-            cmd_name = cmd.tag
+            # cmd_name = cmd.tag
             cmd_text = cmd.get("text", "")
             if cmd_text in cmd_specific_response_dict:
                 pNote("The cmd: '{}' has been created before"
                       "Please use one cmd block for the responses for same cmd".\
                       format(cmd_text))
             else:
-                cmd_specific_response_dict[cmd_text]
+                cmd_specific_response_dict[cmd_text] = {}
                 for resp in cmd:
                     resp_name = resp.tag
                     resp_text = resp.get("text", "")
@@ -170,7 +170,7 @@ def get_response_from_dict(cmd, simresp=None):
         response = cmd_response_dict[simresp]
     elif simresp is not None and simresp in MockUtils.cli_Utils.response_dict:
         response = MockUtils.cli_Utils.response_dict[simresp]
-    elif simresp is None and cmd_response_dict is not None and "default" in cmd_response_dict:
+    elif cmd_response_dict is not None and "default" in cmd_response_dict:
         response = cmd_response_dict["default"]
     else:
         response = MockUtils.cli_Utils.response_dict.get("default", None)
@@ -192,7 +192,7 @@ def cmd_resp_lookup(cmd):
         """
         for char in simresp:
             if char == "," or char == "+" or char == "#":
-                response = get_response_from_dict()
+                response = get_response_from_dict(cmd, resp_tag)
                 if response is not None:
                     result += response + char_dict[char]
                 else:
@@ -201,13 +201,17 @@ def cmd_resp_lookup(cmd):
             else:
                 resp_tag += char
         if resp_tag != "":
-            response = MockUtils.cli_Utils.response_dict.get(resp_tag, None)
+            response = get_response_from_dict(cmd, resp_tag)
             if response is not None:
                 result += response
             else:
                 pNote("Unable to find response tag: {} in response file".format(resp_tag))
     else:
-        result = get_response_from_dict(cmd)
+        response = get_response_from_dict(cmd)
+        if response is not None:
+            result += response
+        else:
+            pNote("Unable to find response tag: {} in response file".format(resp_tag))
     return result
 
 class MockUtils(object):
