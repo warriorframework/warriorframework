@@ -115,15 +115,25 @@ def getSystemData(datafile, system_name, cnode, system='system'):
     if element is not None:
         value = element.get(cnode, None)
         if value is None:
-            chelem = element.find(cnode)
-            if 'type' in chelem.attrib:
-                value = get_actual_cred_value(chelem.tag, chelem.text,
-                                              chelem.attrib['type'], startdir)
-            else:
-                value = chelem.text
+            value = get_cred_value_from_elem(element, cnode, startdir)
         value = sub_from_env_var(value)
         value = sub_from_data_repo(value)
 
+    return value
+
+
+def get_cred_value_from_elem(element, tag, startdir=''):
+    """given an credential element find the credential
+    value desired
+    """
+    chelem = element.find(tag)
+    if chelem is None:
+        return xml_Utils.get_text_from_direct_child(element, tag)
+    if 'type' in chelem.attrib:
+        value = get_actual_cred_value(chelem.tag, chelem.text,
+                                      chelem.attrib['type'], startdir)
+    else:
+        value = chelem.text
     return value
 
 
@@ -210,12 +220,7 @@ def get_credentials(datafile, system_name, myInfo=[], tag_name="system",
                                                         child.tag, child.text,
                                                         child.attrib['type'], startdir)
                     else:
-                        chelem = element.find(x)
-                        if 'type' in chelem.attrib:
-                            cred_value = get_actual_cred_value(chelem.tag, chelem.text,
-                                                               chelem.attrib['type'], startdir)
-                        else:
-                            cred_value = chelem.text
+                        cred_value = get_cred_value_from_elem(element, x, startdir)
                 output_dict[x] = cred_value
         value = output_dict
     updated_dict = sub_from_env_var(value)
