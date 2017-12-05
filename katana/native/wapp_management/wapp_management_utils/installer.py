@@ -2,6 +2,7 @@ import os
 from utils.directory_traversal_utils import join_path, get_dir_from_path, get_sub_folders, \
     delete_dir
 from utils.file_utils import copy_dir, readlines_from_file, write_to_file
+from utils.json_utils import read_json_data
 
 
 class Installer:
@@ -71,6 +72,17 @@ class Installer:
 
     def __edit_urls_py(self):
         checker = "RedirectView.as_view(url='/katana/')"
+        data = read_json_data(self.wf_config_file)
+        if "app" in data:
+            if not isinstance(data["app"], list):
+                data["app"] = [data["app"]]
+
+        for app_details in data["app"]:
+            if app_details["url"].startswith("/"):
+                app_url = app_details["url"][1:]
+            else:
+                app_url = app_details["url"]
+            self.urls_inclusions.append("url(r'^" + app_url + "', include('" + app_details["include"] + "')),")
 
         data = readlines_from_file(self.urls_file)
         self.urls_backup = data
@@ -90,6 +102,7 @@ class Installer:
         urls_data = ""
         for line in u_data:
             urls_data += line
+        print urls_data
         output = write_to_file(self.urls_file, urls_data)
         return output
 
