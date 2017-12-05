@@ -110,15 +110,31 @@ def getSystemData(datafile, system_name, cnode, system='system'):
         3. If a tag is present but has no text its value=None
     """
     value = False
+    startdir = os.path.dirname(datafile)
     element = _get_system_or_subsystem(datafile, system_name, tag=system)
     if element is not None:
         value = element.get(cnode, None)
         if value is None:
-            value = xml_Utils.get_text_from_direct_child(element, cnode)
+            chelem = element.find(cnode)
+            if 'type' in chelem.attrib:
+                value = get_actual_cred_value(chelem.tag, chelem.text,
+                                              chelem.attrib['type'], startdir)
+            else:
+                value = chelem.text
         value = sub_from_env_var(value)
         value = sub_from_data_repo(value)
 
     return value
+
+
+def get_actual_cred_value(tag, value, etype, startdir=''):
+    adt = ArgumentDatatype(tag, value)
+    adt.datatype = adt.get_type_func(etype)
+    if adt.datatype is file:
+        val = file_Utils.getAbsPath(value, startdir)
+    else:
+        val = adt.convert_string_to_datatype()
+    return val
 
 
 def get_credentials(datafile, system_name, myInfo=[], tag_name="system",
@@ -153,6 +169,7 @@ def get_credentials(datafile, system_name, myInfo=[], tag_name="system",
         3. If an attribute or tag is not present its value=boolean False
         4. If a tag is present but has no text its value=None
     """
+    startdir = os.path.dirname(datafile)
     # Find the parent system
     element = _get_system_or_subsystem(datafile, system_name, tag=tag_name,
                                        attr=attr_name)
@@ -163,13 +180,8 @@ def get_credentials(datafile, system_name, myInfo=[], tag_name="system",
             for child in element:
                 val = child.text
                 if 'type' in child.attrib:
-                    adt = ArgumentDatatype(child.tag, child.text)
-                    adt.datatype = adt.get_type_func(child.attrib['type'])
-                    if adt.datatype is file:
-                        startdir = os.path.dirname(datafile)
-                        val = file_Utils.getAbsPath(val, startdir)
-                    else:
-                        val = adt.convert_string_to_datatype()
+                    val = get_actual_cred_value(child.tag, child.text,
+                                                child.attrib['type'], startdir)
                 output_dict[child.tag] = val
 
             attrib_dict = element.attrib
@@ -189,8 +201,17 @@ def get_credentials(datafile, system_name, myInfo=[], tag_name="system",
                         cred_value = {}
                         for child in child_list:
                             cred_value[child.tag] = child.text
+                            if 'type' in child.attrib:
+                                cred_value[child.tag] = get_actual_cred_value(
+                                                        child.tag, child.text,
+                                                        child.attrib['type'], startdir)
                     else:
-                        cred_value = xml_Utils.get_text_from_direct_child(element, x)
+                        chelem = element.find(x)
+                        if 'type' in chelem.attrib:
+                            cred_value = get_actual_cred_value(chelem.tag, chelem.text,
+                                                               chelem.attrib['type'], startdir)
+                        else:
+                            cred_value = chelem.text
                 output_dict[x] = cred_value
         value = output_dict
     updated_dict = sub_from_env_var(value)

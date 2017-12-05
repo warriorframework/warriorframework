@@ -75,5 +75,29 @@
 			<impact>impact</impact>
 			<rmt/>
 		</step>
+        <step Driver="demo_driver" Keyword="pc_replacement" TS="4">
+            <!-- for testing myInfo feature -->
+            <Arguments>
+                <argument name="system_name" value="PCs[HP]"/>
+            </Arguments>
+            <onError action="next"/>
+            <Description>Check if lab PC is current or need replacement</Description>
+            <Execute ExecType="Yes"/>
+            <context>positive</context>
+            <impact>impact</impact>
+            <Iteration_type type=""/>
+        </step>
+        <step Driver="demo_driver" Keyword="check_lab_equipment" TS="5" draft="no">
+            <!-- for testing getSystemData -->
+            <Arguments>
+                <argument name="system_name" value="PCs[HP]"/>
+            </Arguments>
+            <onError action="next"/>
+            <Description>Check lab PC replacement Status</Description>
+            <Execute ExecType="Yes"/>
+            <context>positive</context>
+            <impact>impact</impact>
+            <runmode type="Standard" value=""/>
+        </step>
 	</Steps>
 </Testcase>
