@@ -99,7 +99,15 @@ def mocked(func):
     return inner
 
 def get_cmd_specific_response_file(root):
-    # Parse cmd specific responses
+    """
+        Map the commands block in the response file into a dict like this
+        {
+            "cmd1_text": {"default": "default response", "r1":"text"},
+            "cmd2_text": {"default": "def resp for cmd2", "r2":"hello"}
+        }
+        :argument:
+            root: response file root - xml elem
+    """
     cmd_specific_response_dict = {}
     cmds = root.find("commands")
     if cmds is not None:
