@@ -128,6 +128,10 @@ def getSystemData(datafile, system_name, cnode, system='system'):
 
 
 def get_actual_cred_value(tag, value, etype, startdir=''):
+    """get the credential value after converting to the
+    desired type and if file type get absolute path relative
+    to the startdir
+    """
     adt = ArgumentDatatype(tag, value)
     adt.datatype = adt.get_type_func(etype)
     if adt.datatype is file:
