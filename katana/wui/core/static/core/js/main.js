@@ -116,6 +116,16 @@ var katana = {
 		katana.$view.trigger('subAppAdded');
 	},
 
+	refreshLandingPage: function(){
+	    var $landingPage = $(document.body).find('#launchpad').find('.page-content');
+	    $.ajax({
+	        type: 'GET',
+	        url: 'refresh_landing_page/',
+	    }).done(function(data){
+	        $landingPage.html(data);
+	    });
+	},
+
 	refreshAutoInit: function( activeTab, prevElem ){
 			var autoInit = activeTab.find('[auto-init]');
 			autoInit = activeTab.attr('auto-init') ? autoInit.add( activeTab ) : autoInit;

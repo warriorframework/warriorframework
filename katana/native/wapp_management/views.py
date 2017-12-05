@@ -53,21 +53,16 @@ class WappManagementView(View):
         return render(request, WappManagementView.template, output)
 
 
+def update_installed_apps_section(request):
+    output = {"data": {"app": AppInformation.information.apps}}
+    return render(request, 'wapp_management/installed_apps.html', output)
+
+
 def uninstall_an_app(request):
     app_path = request.POST.get("app_path", None)
     app_type = request.POST.get("app_type", None)
     uninstaller_obj = Uninstaller(get_parent_directory(os.getcwd()), app_path, app_type)
-    output = uninstaller_obj.uninstall()
-    if output:
-        temp = []
-        index = -1
-        for i in range(0, len(AppInformation.information.apps)):
-            if AppInformation.information.apps[i].path == app_path:
-                index = i
-                break
-        temp.extend(AppInformation.information.apps[:index])
-        temp.extend(AppInformation.information.apps[index+1:])
-        AppInformation.information.apps = copy.deepcopy(temp)
+    uninstaller_obj.uninstall()
     output = {"data": {"app": AppInformation.information.apps}}
     return render(request, 'wapp_management/installed_apps.html', output)
 
@@ -81,7 +76,10 @@ def install_an_app(request):
         shutil.rmtree(temp_dir_path)
     create_dir(temp_dir_path)
 
+    print app_paths
+
     for app_path in app_paths:
+        print app_path
         if app_path.endswith(".git"):
             repo_name = get_repository_name(app_path)
             os.system("git clone {0} {1}".format(app_path, join_path(temp_dir_path, repo_name)))
