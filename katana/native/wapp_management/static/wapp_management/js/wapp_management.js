@@ -175,6 +175,7 @@ var wapp_management = {
 
             katana.openAlert({
                 "alert_type": "light",
+                "heading": "Configuration Name",
                 "text": "Please enter a name for the configuration.",
                 "show_accept_btn": true,
                 "show_cancel_btn": true,
