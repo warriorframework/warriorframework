@@ -76,8 +76,6 @@ def install_an_app(request):
     app_paths = request.POST.getlist("app_paths[]", None)
     dot_data_dir = join_path(os.getcwd(), "native", "wapp_management", ".data")
     temp_dir_path = join_path(dot_data_dir, "temp")
-    config_data = []
-    app_detail = {}
 
     if os.path.exists(temp_dir_path):
         shutil.rmtree(temp_dir_path)
@@ -108,15 +106,7 @@ def install_an_app(request):
                 print "-- An Error Occurred -- {0} does not exist".format(app_path)
         installer_obj = Installer(get_parent_directory(os.getcwd()), app_path)
         installer_obj.install()
-        temp_detail = installer_obj.config_data
-        app_detail["color"] = temp_detail["color"]
-        app_detail["icon"] = temp_detail["icon"]
-        app_detail["name"] = temp_detail["name"]
-        app_detail["url"] = temp_detail["url"]
-        app_detail["js_urls"] = temp_detail["js_urls"]
-        config_data.append(app_detail)
-        app_detail = {}
-    output_data = {"data": {"app": AppInformation.information.apps}, "config_data": config_data}
+    output_data = {"data": {"app": AppInformation.information.apps}}
     return render(request, 'wapp_management/installed_apps.html', output_data)
 
 

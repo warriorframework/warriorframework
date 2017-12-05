@@ -1,14 +1,14 @@
 import os
 import re
 from utils.directory_traversal_utils import join_path, get_sub_dirs_and_files, \
-    get_paths_of_subfiles, get_dir_from_path
+    get_paths_of_subfiles, get_sub_folders
 from utils.json_utils import read_json_data
 
 
 class AppValidator:
 
     def __init__(self, filepath):
-        self.app_name = get_dir_from_path(filepath)
+        self.app_name = get_sub_folders(join_path(filepath, "warriorframework", "katana", "apps"))[0]
         self.path_to_app = join_path(filepath, "warriorframework", "katana", "apps", self.app_name)
         self.wf_config_file = join_path(self.path_to_app, "wf_config.json")
         self.urls_inclusions = []
