@@ -28,6 +28,7 @@ from Framework.ClassUtils.WNetwork.loging import ThreadedLog
 from Framework.Utils.list_Utils import get_list_by_separating_strings
 from Framework.Utils.data_Utils import get_object_from_datarepository
 from WarriorCore.Classes.warmock_class import mocked
+from Framework.Utils.cli_Utils import _get_obj_session
 
 """ Module for performing CLI operations """
 
@@ -232,25 +233,8 @@ class WarriorCli(object):
                     rspRes, resp_key_list = new_obj_session._get_response_dict(
                         details_dict, i, response, resp_key_list)
 
-                    if resp_key_list:
-                        for resp in resp_key_list[i].keys():
-                            # session id is formed from the system name and session name.
-                            session_id = \
-                             self.get_session_id_for_resp_ref(details_dict, resp_key_list[i],
-                                                              resp, i, system_name,
-                                                              session_name, key)
-                            td_resp_dict = get_object_from_datarepository(str(session_id))
-                            # checks if title_row value is not in td_resp_dict
-                            if key not in td_resp_dict:
-                                # if not available then it first updates the
-                                # title_row value to td_resp_dict
-                                td_resp_dict[key] = {}
-                            # updates td_resp_dict with the key and value
-                            temp_resp = {resp: resp_key_list[i][resp]}
-                            td_resp_dict[key].update(temp_resp)
-                            pNote("Portion of response saved to the data "
-                                  "repository with key: '{0}.{1}.{2}' and value: '{3}'"
-                                  .format(session_id, key, resp, temp_resp[resp]))
+                    td_resp_dict = self.update_resp_ref_to_repo(details_dict, resp_key_list,
+                                                                i, system_name, key, td_resp_dict)
 
                     result = (result and rspRes) if "ERROR" not in (result, rspRes) else "ERROR"
                     print_debug("<<<")
@@ -267,42 +251,34 @@ class WarriorCli(object):
             responses_dict[key] = {k: v for d in resp_key_list for k, v in d.iteritems()}
         return finalresult, td_resp_dict
 
-    def get_session_id_for_resp_ref(self, details_dict, response_dict, resp,
-                                    i, system_name, session_name, key):
+    def update_resp_ref_to_repo(self, details_dict, resp_key_list, i,
+                                system_name, title_row, td_resp_dict):
         """
-        The session id is retrieved for updating and printing the response reference key & value
+        Updates the response reference in appropriate session_id.
+        There are two cases:
+            1. The user gives the system and session name only in testcase,
+            then it updates on testcase's session id
+            2. The user gives the system and session name in both testcase and testdata file,
+            then it takes testdata as priority and updates on testdata's session id
         """
-        sys_name = ''
-        ses_name = ''
-        session_id = ''
-        temp_sys = details_dict["sys_list"][i]
-        temp_session = details_dict["session_list"][i]
-        temp_sess = ''
 
-        if resp in response_dict.keys():
-            # If sys_list in None or if sys_tag in td file has only subsystem name, then it
-            # takes from the test case else fetches from the td file.
-            if temp_sys == '' or temp_sys is None or temp_sys.startswith('['):
-                sys_name = system_name.split('.', 1)[0]
-            else:
-                sys_name = temp_sys.split('.', 1)[0]
-                if len(temp_sys.split('.', 1)) > 1:
-                    temp_sess = temp_sys.split('.', 1)[1]
-            # If session name not available it td file, it fetches from the test case.
-            if temp_session == '' or temp_session is None and temp_sess == '':
-                if len(system_name.split('.', 1)) > 1:
-                    ses_name = system_name.split('.', 1)[1]
-                else:
-                    ses_name = session_name
-            else:
-                if len(temp_sys.split('.', 1)) > 1:
-                    ses_name = temp_sys.split('.', 1)[1]
-                else:
-                    ses_name = session_name
-            if temp_session:
-                ses_name = temp_session
-            session_id = Utils.data_Utils.get_session_id(sys_name, ses_name) + "_td_response"
-        return session_id
+        if resp_key_list:
+            for resp in resp_key_list[i].keys():
+                # session_id is formed from the system name and session name.
+                session_id = self._get_obj_session(details_dict, system_name, index=i, sess_id=True)
+                td_resp_dict = get_object_from_datarepository(str(session_id))
+                # checks if title_row value is not in td_resp_dict
+                if title_row not in td_resp_dict:
+                    # if not available then it first updates the
+                    # title_row value to td_resp_dict
+                    td_resp_dict[title_row] = {}
+                # updates td_resp_dict with the key and value
+                temp_resp = {resp: resp_key_list[i][resp]}
+                td_resp_dict[title_row].update(temp_resp)
+                pNote("Portion of response saved to the data "
+                      "repository with key: '{0}.{1}.{2}' and value: '{3}'"
+                      .format(session_id, title_row, resp, temp_resp[resp]))
+        return td_resp_dict
 
     @mocked
     def _send_cmd(self, **kwargs):
@@ -655,7 +631,7 @@ class WarriorCli(object):
 
         return result, response
 
-    def _get_obj_session(self, details_dict, kw_system_name, index):
+    def _get_obj_session(self, details_dict, kw_system_name, index, sess_id=False):
         """If system name is provided in testdata file
         get the session of that system name and use it or
         use the current obj_session"""
@@ -691,12 +667,19 @@ class WarriorCli(object):
         else:
             # print obj_session
             value = self
-            system_name = kw_system_name
-
+            tc_sys_split = kw_system_name.split('.') if isinstance(kw_system_name, str) else []
+            if len(tc_sys_split) == 2:
+                system_name = tc_sys_split[0]
+                session = tc_sys_split[1]
+            else:
+                system_name = kw_system_name
+            session_id = Utils.data_Utils.get_session_id(system_name, session)
         pNote("System name\t: {0}".format(system_name))
 
         if details_dict["sys_list"][index] is not None:
             kw_system_name = details_dict["sys_list"][index]
+        if sess_id is True:
+            return session_id + "_td_response"
 
         return value, kw_system_name, details_dict
 
