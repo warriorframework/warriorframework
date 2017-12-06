@@ -194,7 +194,7 @@ class browser_actions(object):
             gecko_path = data_Utils.getSystemData(self.datafile, system_name, "gecko_path")
         if proxy_ip is None:
             proxy_ip = data_Utils.getSystemData(self.datafile, system_name, "proxy_ip")
-        if gecko_path is None:
+        if proxy_port is None:
             gecko_path = data_Utils.getSystemData(self.datafile, system_name, "proxy_port")
 
         webdriver_remote_url = ip if str(remote).strip().lower() == "yes" else False
