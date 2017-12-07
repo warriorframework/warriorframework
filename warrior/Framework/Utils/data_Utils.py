@@ -999,6 +999,14 @@ def verify_arith_exp(expression, expected, comparison='eq'):
     # Substitute data_repo values in the expression & expected
     expression = sub_from_data_repo(expression)
     expected = sub_from_data_repo(expected)
+    #Expected expression pattern from user.
+    expression_pattern = "^[0-9()+\-*\/\(\)]*$"
+    #Any possible unsafe expression from user avoids passing through EVAL.
+    if not re.search(expression_pattern, expression):
+        print_error("Unable to evaluate the expression '{}' provided. "
+                    "Possible reason: "
+                    "(i) Given env/data_repo values are not available".format(expression))
+        return "ERROR"
     try:
         expression_ouput = eval(expression)
         expected = float(expected)
