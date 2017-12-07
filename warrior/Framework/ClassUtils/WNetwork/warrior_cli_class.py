@@ -234,9 +234,8 @@ class WarriorCli(object):
                         details_dict, i, response, resp_key_list)
                     resp_session_id = session_id + "_td_response"
 
-                    td_resp_dict = self.update_resp_ref_to_repo(details_dict, resp_key_list,
-                                                                i, system_name, key,
-                                                                td_resp_dict, resp_session_id)
+                    td_resp_dict = self.update_resp_ref_to_repo(details_dict, resp_key_list, i,
+                                                                key, td_resp_dict, resp_session_id)
 
                     result = (result and rspRes) if "ERROR" not in (result, rspRes) else "ERROR"
                     print_debug("<<<")
@@ -254,7 +253,7 @@ class WarriorCli(object):
         return finalresult, td_resp_dict
 
     def update_resp_ref_to_repo(self, details_dict, resp_key_list, i,
-                                system_name, title_row, td_resp_dict, session_id):
+                                title_row, td_resp_dict, session_id):
         """
         Updates the response reference in appropriate session_id.
         There are two cases:
