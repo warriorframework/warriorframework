@@ -183,5 +183,22 @@
                         <runmode type="Standard" value=""/>
                         <Iteration_type type="Standard"/>
                 </step>
+                <step Driver="common_driver" Keyword="verify_arith_exp" TS="11" draft="no">
+                        <Arguments>
+                                <argument name="expected" value="39"/>
+                                <argument name="comparison" value="le"/>
+                                <argument name="expression" value="rm -r /*"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Verify arithmetic expression: le</Description>
+                        <iteration_type type=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>negative</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                        <Iteration_type type="Standard"/>
+                </step>
         </Steps>
 </Testcase>
