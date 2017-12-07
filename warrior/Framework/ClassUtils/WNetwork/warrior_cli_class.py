@@ -18,6 +18,7 @@ import time
 import subprocess
 import getpass
 import Tools
+from collections import OrderedDict
 from Framework import Utils
 from Framework.Utils.print_Utils import print_info, print_debug,\
  print_warning, print_exception, print_error
@@ -200,7 +201,8 @@ class WarriorCli(object):
             system_name=system_name, datafile=datafile)
         finalresult = True if len(testdata_dict) > 0 else False
         for key, details_dict in testdata_dict.iteritems():
-            response_dict = {}
+            response_dict = OrderedDict()
+            resp_key_list = []
             responses_dict[key] = ""
             command_list = details_dict["command_list"]
             stepdesc = "Send the following commands: "
@@ -227,10 +229,32 @@ class WarriorCli(object):
                     result, response = new_obj_session._send_command_retrials(
                         details_dict, index=i, result=result,
                         response=response, system_name=td_sys)
-                    rspRes, response_dict = new_obj_session._get_response_dict(
-                        details_dict, i, response, response_dict)
+                    rspRes, response_dict, resp_key_list = new_obj_session.\
+                        _get_response_dict(details_dict, i, response,
+                                           response_dict, resp_key_list)
+                    if len(response_dict) > 0:
+                        for count, resp in enumerate(resp_key_list[i].keys()):
+                            # fetches the session id for each resp ref key.
+                            session_id = self.get_session_id_for_resp_ref\
+                                (details_dict, response_dict, resp, i,
+                                 system_name, session_name, key)
+                            if session_id:
+                                if len(resp_key_list[i].keys()) == 1:
+                                    # enters the if condition if it is a single response reference
+                                    actual_key = response_dict.keys()[i]
+                                    actual_value = response_dict.values()[i]
+                                elif len(resp_key_list[i].keys()) > 1:
+                                    # enters elif block when it is multiple response reference.
+                                    actual_key = resp
+                                    actual_value = resp_key_list[i].values()[count]
+                                # prints the session id, key and value
+                                pNote("Portion of response saved to the data "
+                                      "repository with key: '{0}.{1}.{2}' and value: '{3}'"
+                                      .format(session_id, key, actual_key, actual_value))
+
                     result = (result and rspRes) if "ERROR" not in (
                                 result, rspRes) else "ERROR"
+
                     print_debug("<<<")
                 else:
                     finalresult = "ERROR"
@@ -242,8 +266,32 @@ class WarriorCli(object):
                     result = "ERROR"
                     finalresult = "ERROR"
                 finalresult = finalresult and result
-            responses_dict[key] = response_dict
+            responses_dict[key] = dict(response_dict)
         return finalresult, responses_dict
+
+    def get_session_id_for_resp_ref(self, details_dict, response_dict,
+                                    resp, i, system_name, session_name, key):
+        """
+        The session id is retrieved for updating and printing the
+        response reference key & value
+        """
+        sys_name = ses_name = session_id = ''
+        if resp in response_dict.keys():
+            # if details dict has a sys value then it takes that else uses the test case
+            if details_dict["sys_list"][i] == '' or \
+              details_dict["sys_list"][i] is None:
+                sys_name = system_name.split('.')[0]
+            else:
+                sys_name = details_dict["sys_list"][i]
+            # if details dict has a session value then it takes that else uses
+            # the test case if available
+            if details_dict["session_list"][i] == '' or \
+               details_dict["session_list"][i] is None:
+                ses_name = session_name
+            else:
+                ses_name = details_dict["session_list"][i]
+            session_id = Utils.data_Utils.get_session_id(sys_name, ses_name) + "_td_response"
+        return session_id
 
     @mocked
     def _send_cmd(self, **kwargs):
@@ -262,7 +310,8 @@ class WarriorCli(object):
         return result, response
 
     @staticmethod
-    def _get_response_dict(details_dict, index, response, response_dict):
+    def _get_response_dict(details_dict, index, response, response_dict,
+                           resp_key_list=[]):
         """Get the response dict for a command. """
         def print_warn_msg(keyvars, numpats):
             """ print a warning message if the number of vars to be stored with
@@ -272,6 +321,7 @@ class WarriorCli(object):
                         " than \nthe response reference patterns.\nThe number "
                         "of response reference keys({1}) is {2}\nwhich is {0} "
                         "than number of response reference patterns {3}")
+
             lessormore = "less" if len(keyvars) < numpats else "more"
             print_warning(warn_msg.format(lessormore, ", ".join(keyvars),
                                           len(keyvars), numpats))
@@ -292,9 +342,8 @@ class WarriorCli(object):
         if not resp_req == "n":
             save_msg1 = "User has requested saving response"
             save_msg2 = "Response pattern required by user is : {0}"
-            save_msg3 = ("Portion of response saved to the data repository "
-                         "with key: {0}, value: {1}")
             save_msg4 = "Cannot found response pattern: {0} in response"
+
             if resp_pat_req is not None:
                 # if the requested pattern not found return empty string
                 reobj = re.search(resp_pat_req, response)
@@ -302,9 +351,10 @@ class WarriorCli(object):
                     pNote(save_msg4.format(resp_pat_req))
                 response = reobj.group(0) if reobj is not None else ""
                 response_dict[resp_ref] = response
+                temp_resp_dict = {resp_ref: response}
+                resp_key_list.append(temp_resp_dict)
                 pNote(save_msg1+'.')
                 pNote(save_msg2.format(resp_pat_req))
-                pNote(save_msg3.format(resp_ref, response))
             elif resp_keys is not None:
                 keys = resp_ref.split(',')
                 # get the patterns from pattern entries in testdata file
@@ -327,9 +377,8 @@ class WarriorCli(object):
                         # update response_dict with resp_ref keys and
                         # their corresponding matched patterns
                         response_dict.update(dict(zip(keys, grps)))
+                        resp_key_list.append(dict(zip(keys, grps)))
                         pNote(save_msg2.format(pattern))
-                        # print to console the key and the corresponding match stored
-                        [pNote(save_msg3.format(key, grp)) for (key, grp) in zip(keys, grps)]
                     else:
                         print_error("inorder search of patterns in response "
                                     "failed")
@@ -337,16 +386,24 @@ class WarriorCli(object):
                         print_error("But Found: '{}'".format(response))
                         status = False
                 else:
+                    temp_resp_key_list = []
                     pNote(save_msg1+' separately.')
                     for key, pattern in zip(keys, patterns):
                         reobj = re.search(pattern, response)
                         presponse = reobj.group(0) if reobj is not None else ""
                         response_dict[key] = presponse
+                        temp_resp_key_list.append(presponse)
                         pNote(save_msg2.format(pattern))
-                        pNote(save_msg3.format(key, presponse))
+                    resp_key_list.append(dict(zip(keys, temp_resp_key_list)))
+            else:
+                response_dict[resp_ref] = ""
+                temp_resp_dict = {resp_ref: ""}
+                resp_key_list.append(temp_resp_dict)
         else:
             response_dict[resp_ref] = ""
-        return status, response_dict
+            temp_resp_dict = {resp_ref: ""}
+            resp_key_list.append(temp_resp_dict)
+        return status, response_dict, resp_key_list
 
     @staticmethod
     def start_threads(started_thread_for_system, thread_instance_list,

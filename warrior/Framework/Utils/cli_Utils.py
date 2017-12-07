@@ -368,9 +368,8 @@ def _send_cmd(obj_session, **kwargs):
 def _get_response_dict(details_dict, index, response, response_dict):
     """Get the response dict for a command. """
     wc_obj = WNetwork.warrior_cli_class.WarriorCli()
-    status, response_dict = wc_obj._get_response_dict(details_dict, index,
-                                                      response, response_dict)
-
+    status, response_dict, resp_key_list = wc_obj.\
+        _get_response_dict(details_dict, index, response, response_dict, resp_key_list=[])
     return status, response_dict
 
 
