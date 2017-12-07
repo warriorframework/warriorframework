@@ -222,8 +222,8 @@ class WarriorCli(object):
                 print_debug(">>>")
                 command = details_dict["command_list"][i]
                 pNote("Command #{0}\t: {1}".format(str(i+1), command))
-                new_obj_session, td_sys, details_dict = \
-                    self._get_obj_session(details_dict, system_name, index=i)
+                new_obj_session, td_sys, details_dict, session_id = \
+                    self._get_obj_session(details_dict, system_name, index=i, sess_id=True)
                 if new_obj_session:
                     result, response = new_obj_session._send_cmd_get_status(
                         details_dict, index=i, system_name=td_sys)
@@ -232,9 +232,11 @@ class WarriorCli(object):
                         response=response, system_name=td_sys)
                     rspRes, resp_key_list = new_obj_session._get_response_dict(
                         details_dict, i, response, resp_key_list)
+                    resp_session_id = session_id + "_td_response"
 
                     td_resp_dict = self.update_resp_ref_to_repo(details_dict, resp_key_list,
-                                                                i, system_name, key, td_resp_dict)
+                                                                i, system_name, key,
+                                                                td_resp_dict, resp_session_id)
 
                     result = (result and rspRes) if "ERROR" not in (result, rspRes) else "ERROR"
                     print_debug("<<<")
@@ -252,7 +254,7 @@ class WarriorCli(object):
         return finalresult, td_resp_dict
 
     def update_resp_ref_to_repo(self, details_dict, resp_key_list, i,
-                                system_name, title_row, td_resp_dict):
+                                system_name, title_row, td_resp_dict, session_id):
         """
         Updates the response reference in appropriate session_id.
         There are two cases:
@@ -264,8 +266,6 @@ class WarriorCli(object):
 
         if resp_key_list:
             for resp in resp_key_list[i].keys():
-                # session_id is formed from the system name and session name.
-                session_id = self._get_obj_session(details_dict, system_name, index=i, sess_id=True)
                 td_resp_dict = get_object_from_datarepository(str(session_id))
                 # checks if title_row value is not in td_resp_dict
                 if title_row not in td_resp_dict:
@@ -323,7 +323,7 @@ class WarriorCli(object):
 
         resp_req = {None: 'y', '': 'y',
                     'no': 'n', 'n': 'n'}.get(str(resp_req).lower(), 'y')
-        resp_ref = {None: index+1, '': index+1}.get(resp_ref, str(resp_ref))
+        resp_ref = {None: str(index+1), '': str(index+1)}.get(resp_ref, str(resp_ref))
         if not resp_req == "n":
             save_msg1 = "User has requested saving response"
             save_msg2 = "Response pattern required by user is : {0}"
@@ -679,7 +679,7 @@ class WarriorCli(object):
         if details_dict["sys_list"][index] is not None:
             kw_system_name = details_dict["sys_list"][index]
         if sess_id is True:
-            return session_id + "_td_response"
+            return value, kw_system_name, details_dict, session_id
 
         return value, kw_system_name, details_dict
 
