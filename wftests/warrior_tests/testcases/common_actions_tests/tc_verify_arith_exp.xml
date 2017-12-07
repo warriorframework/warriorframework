@@ -190,13 +190,13 @@
                                 <argument name="expression" value="rm -r /*"/>
                         </Arguments>
                         <onError action="next"/>
-                        <Description>Verify arithmetic expression: le</Description>
+                        <Description>User Expression is evaluated before processing with Python EVAL, Expect ERROR status</Description>
                         <iteration_type type=""/>
                         <Execute ExecType="Yes">
                                 <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
                         </Execute>
                         <context>negative</context>
-                        <impact>impact</impact>
+                        <impact>noimpact</impact>
                         <runmode type="Standard" value=""/>
                         <Iteration_type type="Standard"/>
                 </step>
