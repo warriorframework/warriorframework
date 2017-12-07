@@ -258,6 +258,9 @@ class CommonActions(object):
 
     def verify_arith_exp(self, expression, expected, comparison='eq'):
         """ Verify the output of the arithmetic expression matches the expected(float comparison)
+            Note : Binary floating-point arithmetic holds many surprises.
+            Please refer to link, https://docs.python.org/2/tutorial/floatingpoint.html
+            This Keyword inherits errors in Python float operations.
             :Arguments:
                 1. expression: Arithmetic expression to be compared with expected.
                     This can have env & data_repo values embedded in it.
