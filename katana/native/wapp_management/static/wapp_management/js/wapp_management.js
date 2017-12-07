@@ -61,12 +61,9 @@ var wapp_management = {
     installAnApp: function(){
         var $currentPage = katana.$activeTab;
         var $elements = $currentPage.find("input[id*='app_path_for_config']")
-        console.log($elements);
         var app_paths = []
         var path = "";
         for(var i=0 ; i<$elements.length; i++){
-            console.log($elements[i]);
-            console.log($elements[i].value.trim());
             path = $elements[i].value.trim();
             if(path == ""){
                 katana.openAlert({
@@ -79,7 +76,19 @@ var wapp_management = {
                 return;
             }
             else {
-                app_paths.push(path)
+                if($($elements[i]).attr('valid-data') == "false"){
+                    katana.openAlert({
+                        "alert_type": "danger",
+                        "heading": "Invalid Information.",
+                        "text": "One or more paths/urls to App is invalid.",
+                        "show_accept_btn": true,
+                        "show_cancel_btn": false
+                     });
+                     return
+                }
+                else {
+                    app_paths.push(path);
+                }
             }
         }
 
@@ -175,6 +184,7 @@ var wapp_management = {
 
             katana.openAlert({
                 "alert_type": "light",
+                "heading": "Configuration Name",
                 "text": "Please enter a name for the configuration.",
                 "show_accept_btn": true,
                 "show_cancel_btn": true,
