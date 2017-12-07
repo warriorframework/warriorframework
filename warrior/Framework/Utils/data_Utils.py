@@ -974,6 +974,9 @@ def verify_data(expected, key, data_type='str', comparison='eq'):
 
 def verify_arith_exp(expression, expected, comparison='eq'):
     """ Verify the output of the arithmetic expression matches the expected(float comparison)
+        Note : Binary floating-point arithmetic holds many surprises.
+        Please refer to link, https://docs.python.org/2/tutorial/floatingpoint.html
+        This Keyword inherits errors in Python float operations.
         :Arguments:
             1. expression: Arithmetic expression to be compared with expected.
                 This can have env & data_repo values embedded in it.
@@ -999,8 +1002,8 @@ def verify_arith_exp(expression, expected, comparison='eq'):
     # Substitute data_repo values in the expression & expected
     expression = sub_from_data_repo(expression)
     expected = sub_from_data_repo(expected)
-    #Expected expression pattern from user.
-    expression_pattern = "^[0-9()+\-*\/\(\)]*$"
+    #Safe expression pattern from user.
+    expression_pattern = "^[0-9^%+\-*\/\(\)]*$"
     #Any possible unsafe expression from user avoids passing through EVAL.
     if not re.search(expression_pattern, expression):
         print_error("Unable to evaluate the expression '{}' provided. "
