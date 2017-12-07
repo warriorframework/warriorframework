@@ -2,7 +2,7 @@
     "name": {
         "tooltip": "This is the Wrapper Keyword name. Katana will save this Wrapper Keyword with the name provided in this field",
         "protip": "",
-        "bantip": "No spaces or special characters but for the exception of underscores, hyphens, and periods",
+        "bantip": "No integer value accepted. No spaces or special characters but for the exception of underscores, hyphens, and periods",
         "snowflake": "This is a mandatory field"
     },
     "dvname": {
