@@ -333,6 +333,7 @@ def get_object_from_datarepository(object_key, verbose=True):
             print_warning('{0} is not found in data repository'.format(object_key))
     return obj
 
+
 @mocked
 def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
     """Gets the command_list, startprompt_list, endprompt_list,
@@ -351,8 +352,8 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
     if isinstance(testdatafile, dict):
         print_info("Resolving testdata details from DB system - "
                    "'{}'".format(testdatafile.get('td_system')))
-        db_td_obj = database_utils_class.\
-         create_database_connection('dataservers', testdatafile.get('td_system'))
+        db_td_obj = database_utils_class.create_database_connection(
+                        'dataservers', testdatafile.get('td_system'))
         root = db_td_obj.get_tdblock_as_xmlobj(testdatafile)
 
         # if testdata block in the datafile has separate db system
@@ -360,9 +361,8 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
         if testdatafile.get('global_system') is not None:
             print_info("Resolving testdata-global block from DB system - "
                        "'{}'".format(testdatafile.get('global_system')))
-            db_tdglobal_obj = database_utils_class.\
-             create_database_connection('dataservers',
-                                        testdatafile.get('global_system'))
+            db_tdglobal_obj = database_utils_class.create_database_connection(
+                                'dataservers', testdatafile.get('global_system'))
             global_obj = db_tdglobal_obj.get_globalblock_as_xmlobj(testdatafile)
             db_tdglobal_obj.close_connection()
         else:
@@ -378,8 +378,8 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
     if isinstance(varconfigfile, dict):
         print_info("Resolving varconfig details from DB system - "
                    "'{}'".format(varconfigfile.get('var_system')))
-        db_var_obj = database_utils_class.\
-         create_database_connection('dataservers', varconfigfile.get('var_system'))
+        db_var_obj = database_utils_class.create_database_connection(
+                        'dataservers', varconfigfile.get('var_system'))
         varconfigfile = db_var_obj.get_varblock_as_xmlobj(varconfigfile)
         db_var_obj.close_connection()
 
@@ -388,9 +388,8 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
         exec_flag = get_exec_flag(testdata, title, row)
         exec_text = testdata.get("execute").strip()
         execute_req = string_Utils.conv_str_to_bool(exec_text)
-        if  execute_req and exec_flag:
-            testdata_key = "{0}{1}".format(testdata.get('title', ""), \
-                                         _get_row(testdata))
+        if execute_req and exec_flag:
+            testdata_key = "{0}{1}".format(testdata.get('title', ""), _get_row(testdata))
             details_dict = _get_cmd_details(testdata, global_obj, system_name,
                                             varconfigfile, var_sub=var_sub)
             start_pat = _get_pattern_list(testdata, global_obj)
@@ -399,8 +398,9 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
 
             print_info("var_sub:{0}".format(var_sub))
             td_obj = TestData()
-            details_dict = td_obj.varsub_varconfig_substitutions\
-            (details_dict, vc_file=None, var_sub=var_sub, start_pat=start_pat, end_pat=end_pat)
+            details_dict = td_obj.varsub_varconfig_substitutions(
+                            details_dict, vc_file=None, var_sub=var_sub,
+                            start_pat=start_pat, end_pat=end_pat)
 
             details_dict = td_obj.wdf_substitutions(details_dict, datafile,
                                                     kw_system_name=system_name)
@@ -408,15 +408,14 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
             details_dict = sub_from_data_repo(details_dict)
 
             td_iter_obj = TestDataIterations()
-            details_dict, cmd_loc_list = td_iter_obj.resolve_iteration_patterns\
-            (details_dict)
+            details_dict, cmd_loc_list = td_iter_obj.resolve_iteration_patterns(details_dict)
             iter_type = testdata.get('iter_type', None)
             # Type-2 iteration - per_td_block
             if iter_type == "per_td_block":
-                details_dict, cmd_loc_list = td_iter_obj.repeat_per_td_block\
-                (details_dict, cmd_loc_list)
-                details_dict = td_iter_obj.arrange_per_td_block\
-                (details_dict, cmd_loc_list)
+                details_dict, cmd_loc_list = td_iter_obj.repeat_per_td_block(
+                                                details_dict, cmd_loc_list)
+                details_dict = td_iter_obj.arrange_per_td_block(details_dict,
+                                                                cmd_loc_list)
 
             # List substitution happens after iteration because
             # list sub cannot recognize the + sign in iteration
@@ -697,7 +696,7 @@ def get_exec_flag(testdata, title, row):
         elif testdata.get('title', None) == title and process_row == '':
             exec_flag = True
     elif row:
-        if process_row == row and testdata.get('title', None) == None:
+        if process_row == row and testdata.get('title', None) is None:
             exec_flag = True
         elif process_row == row and testdata.get('title', None) == 'none':
             exec_flag = True
@@ -844,9 +843,9 @@ def verify_cmd_response(match_list, context_list, command, response,
     """Verifies the response with the provided
     match and context list
     """
-    err_msg = "Incorrect or no value provided for verification search/found, "
-    "check the verification data provided for the command. Command result will"
-    " be marked as ERROR"
+    err_msg = ("Incorrect or no value provided for verification search/found, "
+               "check the verification data provided for the command. Command "
+               "result will be marked as ERROR")
 
     if varconfigfile and varconfigfile is not None:
         match_list = string_Utils.sub_from_varconfig(varconfigfile, match_list)
@@ -919,8 +918,8 @@ def verify_cmd_response(match_list, context_list, command, response,
             else:
                 result = False if response == "" else True
 
-            verification_text = "verification success" if result else "veri"
-            "fication failed"
+            verification_text = "verification "
+            verification_text += "success" if result else "failed"
             msg = "Response " if found else "No response "
             msg += "found from command '{0}' on {2} :[{1}]:".format(
                             command, verification_text, verify_on_system)
@@ -1350,8 +1349,7 @@ def evaluate_tc_argument_value(element):
     temp_list = element.split("=")
     if len(temp_list) > 1:
         return temp_list[1]
-    else:
-        return False
+    return False
 
 
 def resolve_argument_value_to_get_tag_value(datafile, system_name,
@@ -1381,27 +1379,23 @@ def resolve_argument_value_to_get_tag_value(datafile, system_name,
                                                                 datafile, "system")
             if system_name_list == [] or system_name_list is None or system_name_list is False:
                 return element_value_in_argument
-            else:
-                for system in system_name_list:
-                    if system.attrib["name"] == system_name:
-                        node_list = xml_Utils.get_matching_firstlevel_children_from_node(
-                                                                        system, tag_name)
-                        if node_list == [] or node_list is None or node_list is False:
-                            print_error("The tag value: {0} is not defined in the "
-                                        "datafile:{1}".format(tag_name, datafile))
-                            return False
-                        else:
-                            tag_value = node_list[0].text
-                            tag_value = sub_from_env_var(tag_value)
-                            tag_value = sub_from_data_repo(tag_value)
-                            return tag_value
-                return element_value_in_argument
-        else:
-            print_error("The value for arg {0} is not defined in the case".
-                        format(element_value_in_argument))
+            for system in system_name_list:
+                if system.attrib["name"] == system_name:
+                    node_list = xml_Utils.get_matching_firstlevel_children_from_node(
+                                                                    system, tag_name)
+                    if node_list == [] or node_list is None or node_list is False:
+                        print_error("The tag value: {0} is not defined in the "
+                                    "datafile:{1}".format(tag_name, datafile))
+                        return False
+                    tag_value = node_list[0].text
+                    tag_value = sub_from_env_var(tag_value)
+                    tag_value = sub_from_data_repo(tag_value)
+                    return tag_value
             return element_value_in_argument
-    else:
+        print_error("The value for arg {0} is not defined in the case".
+                    format(element_value_in_argument))
         return element_value_in_argument
+    return element_value_in_argument
 
 
 def get_user_specified_tag_values_in_tc(datafile, system_name, **kwargs):
@@ -1486,8 +1480,7 @@ def get_var_by_string_prefix(string):
         val = get_object_from_datarepository(keys[1])
         for key in keys[2:]:
             val = val[key]
-        else:
-            return val
+        return val
 
 
 def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
@@ -1561,12 +1554,12 @@ def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
                         except Exception as exc:
                             print_error("Error - " + error_msg2.format(
                                         string, value, raw_value[k], exc))
-    elif type(raw_value) == str:
+    elif isinstance(raw_value, str):
         extracted_var = string_Utils.return_quote(str(raw_value),
                                                   start_pattern, end_pattern)
         extracted_var = [string for string in extracted_var
                          if prefix in string]
-        if len(extracted_var) > 0:
+        if extracted_var != []:
             for string in extracted_var:
                 try:
                     raw_value = raw_value.replace(start_pattern+string+end_pattern,
@@ -1600,8 +1593,7 @@ def substitute_var_patterns(raw_value, start_pattern="${", end_pattern="}"):
         val = get_object_from_datarepository(repokeys[0])
         for key in repokeys[1:]:
             val = val[key]
-        else:
-            return val
+        return val
     prefixes = {'ENV': ('environment', lambda var: os.environ[var]),
                 'REPO': ('data repository', get_data)}
     error_msg = ("Could not find any {0} variable {1!r} corresponding to {2!r}"
@@ -1623,18 +1615,15 @@ def substitute_var_patterns(raw_value, start_pattern="${", end_pattern="}"):
             if val:
                 raw_value = raw_value.replace(start_pattern+string+end_pattern,
                                               val)
-        else:
-            return raw_value
+        return raw_value
     elif isinstance(raw_value, list):
-        return map(lambda val: substitute_var_patterns(val, start_pattern,
-                                                       end_pattern), raw_value)
+        return [substitute_var_patterns(val, start_pattern, end_pattern) for val in raw_value]
     elif isinstance(raw_value, dict):
         for key in raw_value:
             raw_value[key] = substitute_var_patterns(raw_value[key],
                                                      start_pattern,
                                                      end_pattern)
-        else:
-            return raw_value
+        return raw_value
     else:
         print_error("Unsupported format - raw_value should either be a string,"
                     " list or dictionary")
@@ -1677,7 +1666,8 @@ def process_subsystem_list(datafile, system_name, subsystem=None):
                                                                   'subsystem',
                                                                   'name')
             else:  # when subsystem_list is empty, set it to None
-                if len(subsystem_list) == 0: subsystem_list = None
+                if subsystem_list == []:
+                    subsystem_list = None
         else:
             subsystem_list = None
     else:
@@ -1855,9 +1845,8 @@ def get_all_system_or_subsystem(datafile, system_name=None):
     """
     if system_name is None:
         return xml_Utils.getElementListWithSpecificXpath(datafile, "./system")
-    else:
-        return xml_Utils.getElementListWithSpecificXpath(datafile, "./system[@name='"
-                                                         + system_name + "']/*")
+    return xml_Utils.getElementListWithSpecificXpath(datafile, "./system[@name"
+                                                     "='%s']/*" % (system_name))
 
 
 def group_systems_with_same_tag_value(root, tag, value):
@@ -1938,8 +1927,7 @@ def get_system_list(datafile, node_req=False):
         system_node_list.append(system_node)
     if node_req:
         return system_list, system_node_list
-    else:
-        return system_list
+    return system_list
 
 
 def get_iteration_syslist(system_node_list, system_name_list):
