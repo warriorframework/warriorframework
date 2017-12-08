@@ -480,10 +480,9 @@ class CliActions(object):
                 if not credentials["custom_keystroke"]:
                     credentials["custom_keystroke"] = "wctrl:M"
                 credentials = Utils.cli_Utils.get_connection_port("telnet", credentials)
-                credentials['logfile'] = Utils.file_Utils.getCustomLogFile(self.filename,
-                                                                           self.logsdir,
-                                                                           'telnet_{0}_'
-                                                                           .format(session_id))
+                credentials['logfile'] = Utils.file_Utils.getCustomLogFile(
+                                            self.filename, self.logsdir,
+                                            'telnet_{0}_'.format(session_id))
                 if not credentials["timeout"]:
                     credentials["timeout"] = int_timeout
                 credentials["password"] = decrypt(credentials["password"])
@@ -505,17 +504,15 @@ class CliActions(object):
                     wc_obj.conn_obj = PexpectConnect(credentials)
                     wc_obj.conn_obj.connect_telnet()
 
-                    if wc_obj.conn_obj is not None and \
-                       wc_obj.conn_obj.target_host is not None:
+                    if wc_obj.conn_obj is not None and wc_obj.conn_obj.target_host is not None:
                         conn_string = wc_obj.conn_obj.conn_string
                         output_dict[session_id] = wc_obj
-                        output_dict[session_id + "_connstring"] = \
-                            conn_string.replace("\r\n", "")
+                        output_dict[session_id + "_connstring"] = conn_string.replace("\r\n", "")
                         output_dict[session_id + "_td_response"] = {}
                         result = True
-                        pNote("Connection to system-subsystem"
-                              "-session={0}-{1}-{2} is successful".
-                              format(system_name, subsystem_name, session_name))
+                        pNote("Connection to system-subsystem-session"
+                              "={0}-{1}-{2} is successful".format(
+                                system_name, subsystem_name, session_name))
 
                         # execute smart action to produce user report
                         smart_result = Utils.cli_Utils.smart_action(
@@ -526,10 +523,9 @@ class CliActions(object):
 
                     else:
                         result = False
-                        pNote("Connection to system-subsystem"
-                              "-session={0}-{1}-{2} Failed"
-                              .format(system_name, subsystem_name,
-                                      session_name), "warning")
+                        pNote("Connection to system-subsystem-session"
+                              "={0}-{1}-{2} Failed".format(system_name, subsystem_name,
+                                                           session_name), "warning")
             else:
                 result = False
             Utils.data_Utils.update_datarepository(output_dict)
@@ -631,13 +627,13 @@ class CliActions(object):
 
         wdesc = "Send commands from rows marked execute=yes in the test data of the system"
         desc = wdesc if description is None else description
-        return self.send_testdata_command_kw(system_name, session_name, desc, var_sub,
-                                             td_tag, vc_tag)
+        return self.send_testdata_command_kw(system_name, session_name, desc,
+                                             var_sub, td_tag, vc_tag)
 
     @mockready
     def send_commands_by_testdata_rownum(self, row_num, system_name,
-                                         session_name=None, var_sub=None, description=None,
-                                         td_tag=None, vc_tag=None):
+                                         session_name=None, var_sub=None,
+                                         description=None, td_tag=None, vc_tag=None):
         """Sends all the commands from testdata that has row equal to the
         provided row_num
 
@@ -651,7 +647,7 @@ class CliActions(object):
             If both tag and attribute is provided the attribute will be used.
 
             1. testdata = absolute/relative path of the testdata file.
-            2. variable_config = absolute/relative path of the variable\
+            2. variable_config = absolute/relative path of the variable
                                 config file.
 
             By default the "testdata" and "variable_config" tag/attribute
@@ -661,27 +657,27 @@ class CliActions(object):
 
         :Arguments:
             1. row_num (string) = row number in string representation
-            2. system_name (string) = This can be name of the\
-                system or a subsystem. In case of subsystem only\
-                single subsystem is supported. Format for subsystem\
+            2. system_name (string) = This can be name of the
+                system or a subsystem. In case of subsystem only
+                single subsystem is supported. Format for subsystem
                 is "system_name[subsystem_name]"
-            3. session_name(string) = name of the session to the string\
-            4. var_sub(string) = the pattern [var_sub] in the testdata commands,\
-                                 start_prompt, end_prompt, verification search\
+            3. session_name(string) = name of the session to the string
+            4. var_sub(string) = the pattern [var_sub] in the testdata commands,
+                                 start_prompt, end_prompt, verification search
                                  will substituted with this value.
-            5. description(string) = optional description string that overwrites the\
-                                default description(wdesc) of the keyword.\
-                                This string will be printed as the keyword description\
+            5. description(string) = optional description string that overwrites the
+                                default description(wdesc) of the keyword.
+                                This string will be printed as the keyword description
                                 in console logs and result files.
             6. td_tag = custom tag/attribute name of testdata file
             7. vc_tag = custom tag/attribute name of variable config file.
 
         :Returns:
             1. status(bool)
-            2. response dictionary(dict): a dictionary having the responses of all\
-                commands sent to the particular system or subsystem. This dictionary\
-                is available in warrior frameworks global data_repository and can be\
-                retrieved using the key= "session_id + _td_response" where\
+            2. response dictionary(dict): a dictionary having the responses of all
+                commands sent to the particular system or subsystem. This dictionary
+                is available in warrior frameworks global data_repository and can be
+                retrieved using the key= "session_id + _td_response" where
                 session_id="system_name+subsystem_name+session_name"
         """
 
@@ -708,7 +704,7 @@ class CliActions(object):
             If both tag and attribute is provided the attribute will be used.
 
             1. testdata = absolute/relative path of the testdata file.
-            2. variable_config = absolute/relative path of the variable\
+            2. variable_config = absolute/relative path of the variable
                                 config file.
 
             By default the "testdata" and "variable_config" tag/attribute
@@ -718,27 +714,27 @@ class CliActions(object):
 
         :Arguments:
             1. title (string) = title in string representation
-            2. system_name (string) = This can be name of the\
-                system or a subsystem. In case of subsystem only\
-                single subsystem is supported. Format for subsystem\
+            2. system_name (string) = This can be name of the
+                system or a subsystem. In case of subsystem only
+                single subsystem is supported. Format for subsystem
                 is "system_name[subsystem_name]"
-            3. session_name(string) = name of the session to the string\
-            4. var_sub(string) = the pattern [var_sub] in the testdata commands,\
-                                 start_prompt, end_prompt, verification search\
+            3. session_name(string) = name of the session to the string
+            4. var_sub(string) = the pattern [var_sub] in the testdata commands,
+                                 start_prompt, end_prompt, verification search
                                  will substituted with this value.
-            5. description(string) = optional description string that overwrites the\
-                                default description(wdesc) of the keyword.\
-                                This string will be printed as the keyword description\
+            5. description(string) = optional description string that overwrites the
+                                default description(wdesc) of the keyword.
+                                This string will be printed as the keyword description
                                 in console logs and result files.
             6. td_tag = custom tag/attribute name of testdata file.
             7. vc_tag = custom tag/attribute name of variable config file.
 
         :Returns:
             1. status(bool)
-            2. response dictionary(dict): a dictionary having the responses of all\
-                commands sent to the particular system or subsystem. This dictionary\
-                is available in warrior frameworks global data_repository and can be\
-                retrieved using the key= "session_id + _td_response" where\
+            2. response dictionary(dict): a dictionary having the responses of all
+                commands sent to the particular system or subsystem. This dictionary
+                is available in warrior frameworks global data_repository and can be
+                retrieved using the key= "session_id + _td_response" where
                 session_id="system_name+subsystem_name+session_name"
         """
 
@@ -764,7 +760,7 @@ class CliActions(object):
             If both tag and attribute is provided the attribute will be used.
 
             1. testdata = absolute/relative path of the testdata file.
-            2. variable_config = absolute/relative path of the variable\
+            2. variable_config = absolute/relative path of the variable
                                 config file.
 
             By default the "testdata" and "variable_config" tag/attribute
@@ -775,27 +771,27 @@ class CliActions(object):
         :Arguments:
             1. title = Title of the testdata block
             2. row = Row number of the testdata block
-            3. system_name (string) = This can be name of the\
-                system or a subsystem. In case of subsystem only\
-                single subsystem is supported. Format for subsystem\
+            3. system_name (string) = This can be name of the
+                system or a subsystem. In case of subsystem only
+                single subsystem is supported. Format for subsystem
                 is "system_name[subsystem_name]"
             4. session_name(string) = name of the session to the string
-            5. var_sub(string) = the pattern [var_sub] in the testdata commands,\
-                                 start_prompt, end_prompt, verification search\
+            5. var_sub(string) = the pattern [var_sub] in the testdata commands,
+                                 start_prompt, end_prompt, verification search
                                  will substituted with this value.
-            6. description(string) = optional description string that overwrites the\
-                                default description(wdesc) of the keyword.\
-                                This string will be printed as the keyword description\
+            6. description(string) = optional description string that overwrites the
+                                default description(wdesc) of the keyword.
+                                This string will be printed as the keyword description
                                 in console logs and result files.
             7. td_tag = custom tag/attribute name of testdata file.
             8. vc_tag = custom tag/attribute name of variable config file.
 
         :Returns:
             1. status(bool)
-            2. response dictionary(dict): a dictionary having the responses of all\
-                commands sent to the particular system or subsystem. This dictionary\
-                is available in warrior frameworks global data_repository and can be\
-                retrieved using the key= "session_id + _td_response" where\
+            2. response dictionary(dict): a dictionary having the responses of all
+                commands sent to the particular system or subsystem. This dictionary
+                is available in warrior frameworks global data_repository and can be
+                retrieved using the key= "session_id + _td_response" where
                 session_id="system_name+subsystem_name+session_name"
         """
         wdesc = "Send commands by title, row & execute=yes in the test data of the system"
@@ -815,8 +811,8 @@ class CliActions(object):
             1. system_name (string) = name of the system in the input datafile
             2. session_name(string) = name of the session to the string
             3. wdesc(string) = Keyword description
-            4. var_sub(string) = the pattern [var_sub] in the testdata commands,\
-                                 start_prompt, end_prompt, verification search\
+            4. var_sub(string) = the pattern [var_sub] in the testdata commands,
+                                 start_prompt, end_prompt, verification search
                                  will substituted with this value.
             5. title = title from the testdata file.
             6. row_num = row from the testdata file.
@@ -824,10 +820,10 @@ class CliActions(object):
             8. vc_tag = tag/attribute name of variable config file.
         :Returns:
             1. status(bool)
-            2. response dictionary(dict): a dictionary having the responses of all\
-                commands sent to the particular system or subsystem. This dictionary\
-                is available in warrior frameworks global data_repository and can be\
-                retrieved using the key= "session_id + _td_response" where\
+            2. response dictionary(dict): a dictionary having the responses of all
+                commands sent to the particular system or subsystem. This dictionary
+                is available in warrior frameworks global data_repository and can be
+                retrieved using the key= "session_id + _td_response" where
                 session_id="system_name+subsystem_name+session_name"
         """
         Utils.testcase_Utils.pSubStep(wdesc)
@@ -835,23 +831,13 @@ class CliActions(object):
         Utils.testcase_Utils.pNote("Datafile: {0}".format(self.datafile))
         session_id = Utils.data_Utils.get_session_id(system_name, session_name)
         session_object = Utils.data_Utils.get_object_from_datarepository(session_id)
-        testdata, varconfigfile = Utils.data_Utils.get_td_vc(self.datafile,
-                                                             system_name, td_tag, vc_tag)
-        # abspaths = Utils.data_Utils.get_filepath_from_system(self.datafile, system_name,
-        #                                                     'testdata', 'variable_config')
-        # testdata = abspaths[0]
-        # varconfigfile = abspaths[1]
-        # td_resp_dict = {}
-        status, resp_dict = cli_Utils.send_commands_from_testdata(testdata, session_object,
-                                                                  varconfigfile=varconfigfile,
-                                                                  var_sub=var_sub,
-                                                                  title=title, row=row_num,
-                                                                  system_name=system_name,
-                                                                  session_name=session_name,
-                                                                  datafile=self.datafile)
+        testdata, varconfigfile = Utils.data_Utils.get_td_vc(
+                                    self.datafile, system_name, td_tag, vc_tag)
+        status, td_resp_dict = cli_Utils.send_commands_from_testdata(
+                                testdata, session_object, varconfigfile=varconfigfile,
+                                var_sub=var_sub, title=title, row=row_num, system_name=system_name,
+                                session_name=session_name, datafile=self.datafile)
 
-        td_resp_dict = get_object_from_datarepository(str(session_id)+"_td_response")
-        td_resp_dict.update(resp_dict)
         Utils.testcase_Utils.report_substep_status(status)
         return status, td_resp_dict
 
@@ -931,7 +917,7 @@ class CliActions(object):
 
                 Users can provide tag/attribute for any ip_type under the system
                 in the input datafile and specify the tag/attribute name
-                as the value for ip_type argument, then the connection will be 
+                as the value for ip_type argument, then the connection will be
                 established using that value.
 
             2. username = username for the  session.

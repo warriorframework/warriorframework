@@ -13,6 +13,7 @@ limitations under the License.
 import os
 from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.print_Utils import print_info, print_warning
+from WarriorCore.Classes.war_cli_class import WarriorCliClass as WarCli
 # For function/method that only be mocked in trialmode (not sim mode), put name here
 VERIFY_ONLY = ["verify_cmd_response", "verify_inorder_cmd_response"]
 
@@ -22,8 +23,7 @@ def mockready(func):
         Decorator function that assign a mockready attrib to input func
         the attrib will be used to decide if the func is mockable or not
     """
-    from WarriorCore.Classes.war_cli_class import WarriorCliClass
-    if not WarriorCliClass.mock and not WarriorCliClass.sim:
+    if not WarCli.mock and not WarCli.sim:
         return func
 
     func.__dict__["mockready"] = True
@@ -41,29 +41,33 @@ def mocked(func):
         # If warrior is not in mock or sim mode
         # or if warrior is in sim mode but it's a VERIFY_ONLY function
         # return the original function
-        from WarriorCore.Classes.war_cli_class import WarriorCliClass
-        if (not WarriorCliClass.mock and not WarriorCliClass.sim) or\
-           (WarriorCliClass.sim and func.__name__ in VERIFY_ONLY):
+        if (not WarCli.mock and not WarCli.sim) or (WarCli.sim and func.__name__ in VERIFY_ONLY):
             return func(*args, **kwargs)
 
-        # If warrior is in simulator mode, this function will also parse the simresp
-        # and parse response file
+        """
+            If warrior is in simulator mode
+            this function will parse the response file
+            and tell warrior to store simresp value from each cmd
+            args[0] here is the testdata file
+        """
         if func.__name__ == "get_command_details_from_testdata":
-            if WarriorCliClass.sim and args[0] is not None and args[0] != "":
+            if WarCli.sim and args[0] is not None and args[0] != "":
                 from Framework.Utils.data_Utils import cmd_params
                 cmd_params.update({"sim_response_list": "simresp"})
                 get_response_file(args[0])
             return func(*args, **kwargs)
 
-        # link the command with its simresp value into a dict
+        """
+            link the command with its simresp value into a dict
+            so warrior knows which cmd maps to which response
+        """
         if func.__name__ == "_get_cmd_details":
             result = func(*args, **kwargs)
             pNote("The non-substituted commands:")
             for index, cmd in enumerate(result["command_list"]):
                 pNote("#{}: {}".format(index+1, cmd))
-                if WarriorCliClass.sim:
-                    if cmd in MockUtils.cli_Utils.response_reference_dict and \
-                        MockUtils.cli_Utils.response_reference_dict[cmd] is not None:
+                if WarCli.sim:
+                    if MockUtils.cli_Utils.response_reference_dict.get(cmd, None) is not None:
                         pNote("Command: {} is already linked to simresp: {}"\
                               .format(cmd, MockUtils.cli_Utils.response_reference_dict[cmd]))
                     else:
@@ -71,7 +75,7 @@ def mocked(func):
                         result["sim_response_list"][index]
             return result
 
-        # Print extra info
+        # Debug info
         # pNote("Util {} is mocked".format(func.__name__), "WARNING")
         # for value in [str(x) + ": " + str(y) for x, y in zip(inspect.getargspec(func)[0], args)]:
         #     pNote(value)
@@ -94,6 +98,38 @@ def mocked(func):
         return function(*args, **kwargs)
     return inner
 
+def get_cmd_specific_response_file(root):
+    """
+        Map the commands block in the response file into a dict like this
+        {
+            "cmd1_text": {"default": "default response", "r1":"text"},
+            "cmd2_text": {"default": "def resp for cmd2", "r2":"hello"}
+        }
+        :argument:
+            root: response file root - xml elem
+    """
+    cmd_specific_response_dict = {}
+    cmds = root.find("commands")
+    if cmds is not None:
+        for cmd in cmds:
+            # cmd_name = cmd.tag
+            cmd_text = cmd.get("text", "")
+            if cmd_text in cmd_specific_response_dict:
+                pNote("The cmd: '{}' has been created before"
+                      "Please use one cmd block for the responses for same cmd".\
+                      format(cmd_text))
+            else:
+                cmd_specific_response_dict[cmd_text] = {}
+                for resp in cmd:
+                    resp_name = resp.tag
+                    resp_text = resp.get("text", "")
+                    if resp_name in cmd_specific_response_dict[cmd_text]:
+                        pNote("A response with tag name {} has been created before with value: {}"
+                              "Please rename with a different tag name".\
+                              format(resp_name, cmd_specific_response_dict[cmd_text][resp_name]))
+                    else:
+                        cmd_specific_response_dict[cmd_text][resp_name] = resp_text
+    return cmd_specific_response_dict
 
 def get_response_file(testdatafile):
     """
@@ -103,8 +139,10 @@ def get_response_file(testdatafile):
     tmp_list = getElementListWithSpecificXpath(testdatafile, "./global/response_file")
     response_file = tmp_list[0].text if tmp_list != [] else ""
     response_dict = {}
+    cmd_specific_response_dict = {}
     if response_file != "":
         root = getRoot(response_file)
+        # Parse global responses
         responses = root.find("responses")
         if responses is not None:
             for resp in responses:
@@ -119,14 +157,34 @@ def get_response_file(testdatafile):
         else:
             pNote("Unable to find responses, please put all responses inside a responses tag",
                   "ERROR")
+        # Parse cmd specific responses
+        cmd_specific_response_dict = get_cmd_specific_response_file(root)
     else:
         pNote("Unable to retrieve response file from testdata file, please put the path in"
               " response_file tag inside global section of the testdata file", "ERROR")
 
     MockUtils.cli_Utils.response_dict = response_dict
+    MockUtils.cli_Utils.cmd_specific_response_dict = cmd_specific_response_dict
 
+def get_response_from_dict(cmd, simresp=None):
+    """
+        The order of getting response match is:
+        cmd specific response with simresp > global response with simresp > 
+        cmd specific response default > global response default
+    """
+    cmd_response_dict = MockUtils.cli_Utils.cmd_specific_response_dict.get(cmd, None)
+    response = ""
+    if simresp is not None and cmd_response_dict is not None and simresp in cmd_response_dict:
+        response = cmd_response_dict[simresp]
+    elif simresp is not None and simresp in MockUtils.cli_Utils.response_dict:
+        response = MockUtils.cli_Utils.response_dict[simresp]
+    elif cmd_response_dict is not None and "default" in cmd_response_dict:
+        response = cmd_response_dict["default"]
+    else:
+        response = MockUtils.cli_Utils.response_dict.get("default", None)
+    return response
 
-def simresp_parser(simresp):
+def cmd_resp_lookup(cmd):
     """
         Takes in a raw simresp and substitute each part of it with the linked response
         based on the separator it combine responses differently
@@ -135,18 +193,29 @@ def simresp_parser(simresp):
     result = ""
     resp_tag = ""
     char_dict = {",":" ", "+":"", "#":os.linesep}
-    for char in simresp:
-        if char == "," or char == "+" or char == "#":
-            response = MockUtils.cli_Utils.response_dict.get(resp_tag, None)
+    simresp = MockUtils.cli_Utils.response_reference_dict.get(cmd, None)
+    if simresp is not None:
+        """
+            If encountered a symbol, take all the char before as a resp_tag and try to find a simp
+        """
+        for char in simresp:
+            if char == "," or char == "+" or char == "#":
+                response = get_response_from_dict(cmd, resp_tag)
+                if response is not None:
+                    result += response + char_dict[char]
+                else:
+                    pNote("Unable to find response tag: {} in response file".format(resp_tag))
+                resp_tag = ""
+            else:
+                resp_tag += char
+        if resp_tag != "":
+            response = get_response_from_dict(cmd, resp_tag)
             if response is not None:
-                result += response + char_dict[char]
+                result += response
             else:
                 pNote("Unable to find response tag: {} in response file".format(resp_tag))
-            resp_tag = ""
-        else:
-            resp_tag += char
-    if resp_tag != "":
-        response = MockUtils.cli_Utils.response_dict.get(resp_tag, None)
+    else:
+        response = get_response_from_dict(cmd)
         if response is not None:
             result += response
         else:
@@ -167,6 +236,7 @@ class MockUtils(object):
         """
         response_dict = {}
         response_reference_dict = {}
+        cmd_specific_response_dict = {}
 
         @staticmethod
         def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=60,
@@ -310,8 +380,6 @@ class MockUtils(object):
         """
             Mocked cli_Utils
         """
-        response_dict = {}
-        response_reference_dict = {}
 
         @staticmethod
         def connect_ssh(ip, port="22", username="", password="", logfile=None, timeout=60,
@@ -371,17 +439,16 @@ class MockUtils(object):
         def send_command(cls, *args, **kwargs):
             """
                 Get response from the processed response dict
+
+                The order of getting response match is:
+                cmd specific response with simresp > global response with simresp > 
+                cmd specific response default > global response default
             """
-            from WarriorCore.Classes.war_cli_class import WarriorCliClass
             pNote(":CMD: %s" % (args[3]))
             # response reference dict contains all command with simresp
-            if WarriorCliClass.sim and \
-                MockUtils.cli_Utils.response_reference_dict.get(args[3], None) is not None:
-                simresp = MockUtils.cli_Utils.response_reference_dict.get(args[3], False)
-                response = simresp_parser(simresp)
-            # if command doesn't have simresp, try to get the default response
-            elif WarriorCliClass.sim:
-                response = MockUtils.cli_Utils.response_dict.get("default", "")
+            # args[3] is the cmd text
+            if WarCli.sim:
+                response = cmd_resp_lookup(args[3])
             # if default is not found or in mock mode, return empty response
             else:
                 response = ""
