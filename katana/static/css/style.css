@@ -383,7 +383,7 @@ form > div > div > label {
     color: white;
     border-radius: 6px;
     padding: 10px;
-    z-index: 3;
+    z-index: 15;
 
     /* Position the tooltip */
     position: absolute;
@@ -1792,7 +1792,7 @@ div#small-sidebar {
     border-radius: 0;
     margin-top: 50px !important;
     height: calc( 100% - 50px ) !important;
-    z-index: 999999 !important;
+    z-index: 9 !important;
 }
 
 #small-sidebar a.list-group-item.border-less {
@@ -1984,7 +1984,7 @@ label.filelist.ng-binding.ng-scope:last-child {
     background-image: url(/assets/images/image.jpg);
     background-position: center;
     background-size: cover;
-    z-index: 9999999;
+    z-index: 10;
 		-webkit-animation: opacity .4s ease;
     animation: opacity .4s ease;
 }

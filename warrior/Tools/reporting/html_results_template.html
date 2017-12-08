@@ -590,8 +590,22 @@ tr[name] td:not([rowspan]):nth-last-child(6):hover:before {
 }
 
 .version:before {
-    content: 'Warrior';
+    content: 'Version : ';
 }
+
+.user {
+    position: fixed;
+    bottom: 0;
+    z-index: 999999;
+    font-size: 14px;
+    padding: 5px 15px;
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.user:before {
+    content: 'User : ';
+}
+
 .EXCEPTION {
     color: #4ccbff;
 }

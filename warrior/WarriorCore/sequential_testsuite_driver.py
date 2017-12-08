@@ -153,7 +153,7 @@ def execute_sequential_testsuites(testsuite_list, project_repository,
             msg = "Status of the executed test suite does not impact project result"
         print_debug(msg)
 
-        runmode, value = common_execution_utils.get_runmode_from_xmlfile(testsuite)
+        runmode, value, _ = common_execution_utils.get_runmode_from_xmlfile(testsuite)
         retry_type, retry_cond, retry_cond_value, retry_value,\
             retry_interval = common_execution_utils.get_retry_from_xmlfile(testsuite)
         if runmode is not None:
