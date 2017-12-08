@@ -16,9 +16,9 @@
             <div class="form-group">
                 <label for="Name"
                        class="col-sm-2 control-label mandatory-field ellipsis-the-overflow">Name</label>
-                    <div class="tooltip-on-right align-fa-icon-after-label">
-                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
-                        <span class="tooltip-content">
+                <div class="tooltip-on-right align-fa-icon-after-label">
+                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                    <span class="tooltip-content">
                             <div ng-if="testcaseTooltips.name.tooltip != ''">
                                 <i class="fa fa-rocket" aria-hidden="true"></i>
                                 &nbsp;
@@ -47,9 +47,9 @@
                                 <br>
                             </div>
                         </span>
-                    </div>
+                </div>
                 <div class="col-sm-6">
-                        <input type="text" class="form-control"
+                    <input type="text" class="form-control"
                            id="Name" autofocus required
                            placeholder="Name of this Case"
                            ng-model='model.Testcase.Details.Name'>
@@ -176,8 +176,8 @@
                 <label for="Category"
                        class="col-sm-2 control-label ellipsis-the-overflow">Category</label>
                 <div class="tooltip-on-right align-fa-icon-after-label">
-                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
-                        <span class="tooltip-content">
+                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                    <span class="tooltip-content">
                             <div ng-if="testcaseTooltips.category.tooltip != ''">
                                 <i class="fa fa-rocket" aria-hidden="true"></i>
                                 &nbsp;
@@ -206,7 +206,7 @@
                                 <br>
                             </div>
                         </span>
-                    </div>
+                </div>
                 <div class="col-sm-6">
                     <input type="text" class="form-control"
                            id="Category"
@@ -1013,9 +1013,9 @@
                     <!-- <input type="text" class="form-control" id="Resultsdir"
                           ng-model='model.Testcase.Details.ExpectedResults'
                           title="Location of the results directory."> -->
-            <textarea id="ExpectedResults" class="form-control"
-                      rows="3" ng-model='model.Testcase.Details.ExpectedResults'
-                      placeholder='Results expected out of this Case'></textarea>
+                    <textarea id="ExpectedResults" class="form-control"
+                              rows="3" ng-model='model.Testcase.Details.ExpectedResults'
+                              placeholder='Results expected out of this Case'></textarea>
                 </div>
                 <div class="col-sm-1 align-fa-icon-after-input">
                     <div class="tooltip-on-right">
@@ -1196,7 +1196,7 @@
                         </td>
 
                         <td>
-                           {{ step.Description }}
+                            {{ step.Description }}
                         </td>
 
                         <td>
@@ -1465,9 +1465,9 @@
                     </div>
                     <div class="col-sm-3">
                         <input style="color:rgb(214, 48, 48)" type="button"
-                                class="btn btn-default form-control ellipsis-the-overflow"
-                                ng-click='saveArguments()'
-                                title={{testcaseTooltips.stepsave.tooltip}} value="Save Step">
+                               class="btn btn-default form-control ellipsis-the-overflow"
+                               ng-click='saveArguments()'
+                               title={{testcaseTooltips.stepsave.tooltip}} value="Save Step">
                     </div>
                 </div>
 
@@ -1606,11 +1606,11 @@
                     <div class="col-sm-8">
                         <div class="input-group" ng-show="!status.kwCheckbox">
                             <select class='form-control' id='stepkwd'
-                                ng-model="status.keyword"
-                                ng-change="selectKeyword(status.keyword)"
-                                ng-options="o.fn as o.fn for o in xml.keywords">
-                            <option value=''>Select Keyword</option>
-                        </select>
+                                    ng-model="status.keyword"
+                                    ng-change="selectKeyword(status.keyword)"
+                                    ng-options="o.fn as o.fn for o in xml.keywords">
+                                <option value=''>Select Keyword</option>
+                            </select>
                             <span class="input-group-addon" style="background-color: white">
                                 <input id="kwCheckbox1" type="checkbox"
                                        ng-model='status.kwCheckbox'
@@ -1664,7 +1664,7 @@
                     </div>
                 </div>
 
-                 <div class="form-group" ng-show="status.stepdescription !== '' && status.stepdescription !== undefined">
+                <div class="form-group" ng-show="status.stepdescription !== '' && status.stepdescription !== undefined">
                     <label for='stepwdescription'
                            class="col-sm-3 offset-1 control-label ellipsis-the-overflow">WDescription</label>
                     <div class="tooltip-on-right align-fa-icon-after-label-step">
@@ -1818,7 +1818,7 @@
                     </div>
                     <div class="col-sm-9 col-sm-offset-3 ellipsis-the-overflow color-me-red mBots"
                          ng-if="status.step.context == 'negative'">
-                         <i class="fa fa-exclamation-triangle" aria-hidden="true" >&nbsp;FAILURE EXPECTED</i>
+                        <i class="fa fa-exclamation-triangle" aria-hidden="true" >&nbsp;FAILURE EXPECTED</i>
                     </div>
                 </div>
 
@@ -1856,63 +1856,63 @@
                             </div>
                         </span>
                     </div>
-                   <div class=" col-sm-8" ng-show="!status.kwCheckbox && !status.driverCheckbox">
-                       <div class= "panelArgs">Arguments for the selected Keyword
-                           <div ng-repeat="arg in xml.args.args"
-                                ng-if='status.keyword != "" && xml.args.args.length == 1 && xml.args.args[0] == "self"'>
-                               <b class='text-danger' style="color: rgb(214, 48, 48)">
-                                   <br>
-                                   There are no editable values for this function / keyword.
-                               </b>
-                           </div>
-                           <div ng-repeat="arg in xml.arglist"
-                                ng-if='status.keyword != "" && xml.arglist.length > 0 && arg != "self"'>
-                               <div class="form-group mArgs">
-                                   <label for="arg{{$index}}"
-                                          class="col-sm-5 control-label text-info breakword"
-                                          style="color: black">
-                                       {{arg}}
-                                   </label>
-                                   <label for="arg{{$index}}"
-                                          class="col-sm-5 control-label text-info ellipsis-the-overflow-arg"
-                                          style="color: black">
-                                       {{arg}}
-                                   </label>
-                                   <div class="col-sm-7">
-                                       <input type="text"
-                                              class="form-control"
-                                              id="arg{{$index}}"
-                                              ng-model='xml.mapargs[arg]'
-                                              placeholder=""> <br/>
-                                   </div>
-                               </div>
-                           </div>
-                       </div>
-                   </div>
-                   <div class="col-sm-8" ng-show="status.kwCheckbox || status.driverCheckbox">
-                       <div class= "panelArgs">Add arguments, if any, for the keyword entered above.
-                           <div class="mArgs">
-                               <div ng-repeat="arg in arg_list track by $index">
-                                   <div class="form-group">
-                                       <label class="col-sm-5 control-label">Argument {{$index + 1}} Name</label>
-                                       <div class="col-sm-7">
-                                           <div class="input-group">
-                                               <input type="text" class="form-control" ng-model="arg_list[$index]._name">
-                                               <span class="input-group-addon" ng-click="deleteArgFromList($index)">
+                    <div class=" col-sm-8" ng-show="!status.kwCheckbox && !status.driverCheckbox">
+                        <div class= "panelArgs">Arguments for the selected Keyword
+                            <div ng-repeat="arg in xml.args.args"
+                                 ng-if='status.keyword != "" && xml.args.args.length == 1 && xml.args.args[0] == "self"'>
+                                <b class='text-danger' style="color: rgb(214, 48, 48)">
+                                    <br>
+                                    There are no editable values for this function / keyword.
+                                </b>
+                            </div>
+                            <div ng-repeat="arg in xml.arglist"
+                                 ng-if='status.keyword != "" && xml.arglist.length > 0 && arg != "self"'>
+                                <div class="form-group mArgs">
+                                    <label for="arg{{$index}}"
+                                           class="col-sm-5 control-label text-info breakword"
+                                           style="color: black">
+                                        {{arg}}
+                                    </label>
+                                    <label for="arg{{$index}}"
+                                           class="col-sm-5 control-label text-info ellipsis-the-overflow-arg"
+                                           style="color: black">
+                                        {{arg}}
+                                    </label>
+                                    <div class="col-sm-7">
+                                        <input type="text"
+                                               class="form-control"
+                                               id="arg{{$index}}"
+                                               ng-model='xml.mapargs[arg]'
+                                               placeholder=""> <br/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-8" ng-show="status.kwCheckbox || status.driverCheckbox">
+                        <div class= "panelArgs">Add arguments, if any, for the keyword entered above.
+                            <div class="mArgs">
+                                <div ng-repeat="arg in arg_list track by $index">
+                                    <div class="form-group">
+                                        <label class="col-sm-5 control-label">Argument {{$index + 1}} Name</label>
+                                        <div class="col-sm-7">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" ng-model="arg_list[$index]._name">
+                                                <span class="input-group-addon" ng-click="deleteArgFromList($index)">
                                                    <span class="fa fa-times-circle-o" aria-hidden="true"></span>
                                                </span>
-                                           </div>
-                                       </div>
-                                   </div>
-                               </div>
-                               <div class="form-group">
-                                   <div class="col-sm-4 col-sm-offset-5">
-                                       <input type="button" ng-click="addAnotherArgumentToList()" class="btn btn-default" value="Add">
-                                   </div>
-                               </div>
-                           </div>
-                       </div>
-                   </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-4 col-sm-offset-5">
+                                        <input type="button" ng-click="addAnotherArgumentToList()" class="btn btn-default" value="Add">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="col-sm-1">
                         <div class="tooltip-on-right-no-margin align-fa-icon-after-input-step">
                             <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
@@ -3107,22 +3107,22 @@
             <div class="col-sm-12">
                 <table class='table table-bordered table-condensed table-hover'>
                     <thead>
-                        <tr>
-                            <th class='text-muted text-right min-width-35'>#</th>
-                            <th class='text-muted'>Driver</th>
-                            <th class='text-muted'>Keyword</th> <!--  col-sm-2 -->
-                            <th class='text-muted'>Description</th> <!--  col-sm-2 -->
-                            <th class='text-muted'>Arguments</th>  <!-- col-sm-3 -->
-                            <th class='text-muted'>Execute</th> <!--  col-sm-2 -->
-                            <th class='text-muted' ng-if="model.Testcase.Details.Datatype == 'Hybrid'">Iteration Type</th>
-                            <th class='text-muted'>Run Mode</th>
-                            <th class='text-muted'>Impact</th>
-                            <th class='text-muted'>Context</th>
-                            <th class='text-muted'>onError</th>
-                            <th class='text-muted'>Insert</th>
-                            <th class='text-muted'>Edit</th>
-                            <th class='text-muted'>Delete</th>
-                        </tr>
+                    <tr>
+                        <th class='text-muted text-right min-width-35'>#</th>
+                        <th class='text-muted'>Driver</th>
+                        <th class='text-muted'>Keyword</th> <!--  col-sm-2 -->
+                        <th class='text-muted'>Description</th> <!--  col-sm-2 -->
+                        <th class='text-muted'>Arguments</th>  <!-- col-sm-3 -->
+                        <th class='text-muted'>Execute</th> <!--  col-sm-2 -->
+                        <th class='text-muted' ng-if="model.Testcase.Details.Datatype == 'Hybrid'">Iteration Type</th>
+                        <th class='text-muted'>Run Mode</th>
+                        <th class='text-muted'>Impact</th>
+                        <th class='text-muted'>Context</th>
+                        <th class='text-muted'>onError</th>
+                        <th class='text-muted'>Insert</th>
+                        <th class='text-muted'>Edit</th>
+                        <th class='text-muted'>Delete</th>
+                    </tr>
                     </thead>
                     <tbody>
                     <tr ng-repeat='step in model.Testcase.Steps.step' ng-show="$index > stepBeingEdited">
@@ -3171,7 +3171,7 @@
                         </td>
 
                         <td>
-                           {{ step.Description }}
+                            {{ step.Description }}
                         </td>
 
                         <td>
