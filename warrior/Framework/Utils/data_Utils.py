@@ -1757,13 +1757,15 @@ def get_nc_config_string(config_datafile, config_name, var_configfile=None):
                 for filepath in filepath_list:
                     if filepath:
                         rel_path = filepath.firstChild.data
-                        abs_filepath = file_Utils.getAbsPath(rel_path, os.path.dirname(config_datafile))
+                        abs_filepath = file_Utils.getAbsPath(
+                                        rel_path, os.path.dirname(config_datafile))
                         root = xml_Utils.get_document_root(abs_filepath)
                         config_node = xml_Utils.get_child_with_matching_tag(root, "config")
                         if config_node:
                             configuration = xml_Utils.convert_dom_to_string(config_node)
                             if var_configfile:
-                                configuration = sub_from_varconfigfile(configuration, var_configfile)
+                                configuration = sub_from_varconfigfile(
+                                                    configuration, var_configfile)
                             configuration_list.append(configuration)
                         else:
                             testcase_Utils.pNote("no <config> found in file {0}"
@@ -1815,7 +1817,8 @@ def get_default_ecf_and_et(arguments_dict, current_datafile, current_browser,
                 else:
                     arguments_dict[def_name_tuple[j]] = current_browser.get(name_tuple[j], None)
             else:
-                if arguments_dict[name_tuple[j]].startswith("tag") and "=" in arguments_dict[name_tuple[j]]:
+                if ((arguments_dict[name_tuple[j]].startswith("tag") and
+                     "=" in arguments_dict[name_tuple[j]])):
                     temp_list = arguments_dict[name_tuple[j]].split("=")
                     temp_var = temp_list[1]
                     for i in range(2, len(temp_list)):
@@ -1909,7 +1912,7 @@ def get_system_list(datafile, node_req=False):
     system_list = []
     system_node_list = []
     for system in systems:
-        #check if the system has subsystem or not.
+        # check if the system has subsystem or not.
         subsystems = system.findall('subsystem')
         if subsystems != []:
             first_subsystem = True
@@ -1923,11 +1926,11 @@ def get_system_list(datafile, node_req=False):
                     break
                 # if none of the subsystems have default="yes" then the default subsystem
                 # will be the first subsystem under the system.
-                elif first_subsystem == True:
+                elif first_subsystem is True:
                     subsystem_name = subsystem.get('name')
                     system_name = system.get('name') + '[' + subsystem_name + ']'
                     first_subsystem = False
-        #if there is no subsystem use the system.
+        # if there is no subsystem use the system.
         else:
             system_name = system.get('name')
             system_node = system
