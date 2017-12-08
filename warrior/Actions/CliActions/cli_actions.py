@@ -192,8 +192,9 @@ class CliActions(object):
                    "session_name={1} Failed".format(system_name, session_name)
             if WarriorCliClass.mock or WarriorCliClass.sim:
                 result = True
-            elif isinstance(wc_obj, WarriorCli) and wc_obj.conn_obj is not None \
-               and wc_obj.conn_obj.target_host is not None:
+            elif (isinstance(wc_obj, WarriorCli) and
+                  wc_obj.conn_obj is not None and
+                  wc_obj.conn_obj.target_host is not None):
                 # execute smart action to produce user report
                 connect_testdata = Utils.data_Utils.get_object_from_datarepository(
                   session_id+"_system", verbose=False)
