@@ -14,8 +14,7 @@ import Framework.Utils as Utils
 from Framework.Utils import cli_Utils
 from Framework.Utils.print_Utils import print_warning
 from Framework.Utils.testcase_Utils import pNote
-from Framework.Utils.data_Utils import (getSystemData, get_session_id,
-                                        get_credentials, get_object_from_datarepository)
+from Framework.Utils.data_Utils import getSystemData, get_session_id, get_credentials
 from Framework.Utils.encryption_utils import decrypt
 from WarriorCore.Classes.warmock_class import mockready
 from WarriorCore.Classes.war_cli_class import WarriorCliClass
@@ -47,7 +46,7 @@ class CliActions(object):
             Tags or attributes to be used in input datafile for the system or subsystem
             If both tag and attribute is provided the attribute will be used.
 
-            1. ip = IP address of the system.\
+            1. ip = IP address of the system.
 
                 Default value for ip type is ip, it can take any type of ip's
                 to connect to (like ipv4, ipv6, dns etc)
@@ -59,18 +58,18 @@ class CliActions(object):
 
             2. username = username for the  session.
             3. password = password for the  session.
-            4. timeout = use if you want to set timeout while connecting,\
+            4. timeout = use if you want to set timeout while connecting,
                 used for both ssh and telnet
-            5. prompt = for ssh connections, this is the prompt expected when\
+            5. prompt = for ssh connections, this is the prompt expected when
                 the connection is successful, not required for telnet.
             6. conn_type = the type of connection to be created (ssh/telnet).
-            7. ssh_port = use this tag to provide ssh port to connect to, if\
+            7. ssh_port = use this tag to provide ssh port to connect to, if
                 not provided default ssh port of 22 will be used.
-            8. telnet_port = use this tag to provide a telnet port to connect to\
+            8. telnet_port = use this tag to provide a telnet port to connect to
                 if not provided default telnet port 23 will be used.
-            9. conn_options = extra arguments that will be used when sending\
+            9. conn_options = extra arguments that will be used when sending
                 the ssh/telnet command, default is empty
-            10.custom_keystroke = a keystroke that will be sent after the initial\
+            10.custom_keystroke = a keystroke that will be sent after the initial
                 timeout, in case of server require a keystroke to show any prompt.
                 Default is the enter key
 
@@ -99,12 +98,12 @@ class CliActions(object):
 
         :Returns:
             1. status(bool)= True / False.
-            2. session_id (dict element)= an id is generated for each connection\
-                and each connection is stored in the framework's data_repository.\
+            2. session_id (dict element)= an id is generated for each connection
+                and each connection is stored in the framework's data_repository.
                 session_id=system_name+subsystem_name+session_name.
-            3. response dictionary(dict): an empty dictionary to store the responses of all\
-                commands sent to the particular system or subsystem.\
-                This dictionary is available in warrior frameworks global data_repository\
+            3. response dictionary(dict): an empty dictionary to store the responses of all
+                commands sent to the particular system or subsystem.
+                This dictionary is available in warrior frameworks global data_repository
                 and can be retrieved using the key= "session_id + _td_response".
 
         """
@@ -227,7 +226,7 @@ class CliActions(object):
             Tags or attributes to be used in input datafile for the system or subsystem
             If both tag and attribute is provided the attribute will be used.
 
-            1. ip = IP address of the system.\
+            1. ip = IP address of the system.
 
                 Default value for ip type is ip, it can take any type of ip's
                 to connect to (like ipv4, ipv6, dns etc)
@@ -241,11 +240,11 @@ class CliActions(object):
             3. password = password for the ssh session
             4. timeout = use if you want to set timeout while connecting
             5. prompt = the prompt expected when the connection is successful
-            6. ssh_port = use this tag to provide a ssh port to connect to,\
+            6. ssh_port = use this tag to provide a ssh port to connect to,
                 if not provided default ssh port 22 will be used.
-            7. conn_options = extra arguments that will be used when sending\
+            7. conn_options = extra arguments that will be used when sending
                 the ssh/telnet command, default is empty
-            8. custom_keystroke = a keystroke that will be sent after the initial\
+            8. custom_keystroke = a keystroke that will be sent after the initial
                 timeout, in case of server require a keystroke to show any prompt.
                 Default is the enter key
 
