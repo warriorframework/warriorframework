@@ -14,6 +14,7 @@ limitations under the License.
 import os
 
 import json
+import getpass
 import Tools
 from Framework.Utils import xml_Utils, file_Utils
 from Framework.Utils.testcase_Utils import pNote
@@ -30,6 +31,7 @@ class LineResult:
 
     def __init__(self):
         """Constructor for class LineResult"""
+
         self.keys = ['type', 'name', 'info', 'description', 'timestamp', 'duration', 'status', 'impact', 'onerror', 'result', 'log', 'defect', 'static',
                      'dynamic']
 
@@ -42,8 +44,8 @@ class LineResult:
 
     def set_dynamic_content(self, line):
         """sets content that is subjected to change"""
-        self.data['dynamic'] = [line.get("keywords"), line.get("passes"), line.get("failures"), line.get("errors"),
-                                line.get("exceptions"), line.get("skipped")]
+        self.data['dynamic'] = [line.get("keywords"), line.get("passes"), line.get("failures"),
+                                line.get("errors"), line.get("exceptions"), line.get("skipped")]
         self.data['timestamp'] = line.get("timestamp")
 
     def set_attributes(self, line, variant, stepcount):
@@ -157,7 +159,7 @@ class WarriorHtmlResults:
         template_html = temp.read().replace('\n', '')
         temp.close()
         index = template_html.rfind('</table>')
-        return template_html[:index] + dynamic_html + template_html[index:] + self.get_war_version()
+        return template_html[:index] + dynamic_html + template_html[index:] + self.get_war_version() + self.get_user()
 
     def get_war_version(self):
         """ find the warrior version """
@@ -165,12 +167,19 @@ class WarriorHtmlResults:
         if os.path.isfile(path):
             version = open(path, 'r').read().splitlines()[1].split(':')[1]
             return '<div class="version">' + version + '</div>'
-        else:
-            return ''
+        return ''
+
+    def get_user(self):
+        """ find the user who executed the testcase """
+	try:
+	    user = getpass.getuser()
+	except Exception:
+	    user = "Unknown_user"
+        return '<div class="user">' + user + '</div>'
 
     def generate_html(self, junitObj, givenPath):
-        """ build the html givenPath: added this feature in case of later down the line calling from outside junit
-        file ( no actual use as of now )
+        """ build the html givenPath: added this feature in case of later down the line
+        calling from outside junit file ( no actual use as of now )
         """
         if junitObj:
             self.junit_file = junitObj
