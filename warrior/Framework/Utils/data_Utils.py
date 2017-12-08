@@ -10,7 +10,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from __builtin__ import str
 import os
 import re
 from collections import OrderedDict
@@ -403,7 +402,8 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
             details_dict = td_obj.varsub_varconfig_substitutions\
             (details_dict, vc_file=None, var_sub=var_sub, start_pat=start_pat, end_pat=end_pat)
 
-            details_dict = td_obj.wdf_substitutions(details_dict, datafile, kw_system_name=system_name)
+            details_dict = td_obj.wdf_substitutions(details_dict, datafile,
+                                                    kw_system_name=system_name)
             details_dict = sub_from_env_var(details_dict)
             details_dict = sub_from_data_repo(details_dict)
 
@@ -418,23 +418,24 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
                 details_dict = td_iter_obj.arrange_per_td_block\
                 (details_dict, cmd_loc_list)
 
-            # List substitution happens after iteration because list sub cannot recognize the + sign in iteration
-            cmd_list_substituted, verify_text_substituted = td_obj.list_substitution_precheck(varconfigfile, details_dict, start_pat, end_pat)
+            # List substitution happens after iteration because
+            # list sub cannot recognize the + sign in iteration
+            cmd_list_substituted, verify_text_substituted = td_obj.list_substitution_precheck(
+                                                                varconfigfile, details_dict,
+                                                                start_pat, end_pat)
             td_obj.list_substitution(details_dict, varconfigfile, cmd_list_substituted,
                                      verify_text_substituted, start_pat, end_pat)
 
-            details_dict = td_obj.varsub_varconfig_substitutions\
-            (details_dict, vc_file=varconfigfile, var_sub=None, start_pat=start_pat, end_pat=end_pat)
+            details_dict = td_obj.varsub_varconfig_substitutions(
+                            details_dict, vc_file=varconfigfile, var_sub=None,
+                            start_pat=start_pat, end_pat=end_pat)
             testdata_dict[testdata_key] = details_dict
-            found = 1
         else:
             not_found += 1
 
     if not_found == len(root.findall("testdata")):
-        print_warning('There are no rows with execute=yes ' \
-                      'and title={0}, row={1} in testdata {2} '.format(title,
-                                                                       row,
-                                                                       testdatafile))
+        print_warning('There are no rows with execute=yes and title={0}, row={1}'
+                      ' in testdata {2} '.format(title, row, testdatafile))
     return testdata_dict
 
 
@@ -820,6 +821,7 @@ def get_no_impact_logic(context_str):
 
     return value
 
+
 def convert2type(value, data_type='str'):
     """Convert value to data_type and return value in that data_type
     Currently supported are str/int/float only
@@ -1190,6 +1192,7 @@ def _validate_index_value(index, index_list, context_list):
 
     return status
 
+
 def verify_relation(actual_value, cond_value, operator, cond_type):
     """verify the actual_value with the expected value
     """
@@ -1205,6 +1208,7 @@ def verify_relation(actual_value, cond_value, operator, cond_type):
     result, _ = verify_data(cond_value, "verify_cond", **ver_args)
     status = True if result == "TRUE" else False
     return status
+
 
 @mocked
 def verify_inorder_cmd_response(match_list, verify_list, system, command,
@@ -1303,8 +1307,8 @@ def verify_inorder_cmd_response(match_list, verify_list, system, command,
     rcv_all_resp_order = verify_dict.get('rcv_all_resp_order', [])
     rcv_all_resp_string = ",".join(rcv_all_resp_order)
 
-    pNote("Search string(s) is/are found in the following order for the command '{0}': '{1}' on {2}"
-          .format(command, rcv_all_resp_string, system), "debug")
+    pNote("Search string(s) is/are found in the following order for the command '{0}':"
+          " '{1}' on {2}".format(command, rcv_all_resp_string, system), "debug")
 
     if verify_order_list:
         verify_order_str = ",".join(verify_order_list)
@@ -1332,7 +1336,8 @@ def get_cse_script_args_string(datafile, system_name):
             attr = '-' + tag_list[x]
             value = value_list[x]
             script_args_list.append(attr)
-            if value is None: value = ''
+            if value is None:
+                value = ''
             script_args_list.append(value)
         args_string = ' '.join(script_args_list)
 
@@ -1372,18 +1377,18 @@ def resolve_argument_value_to_get_tag_value(datafile, system_name,
     if element_value_in_argument.startswith("tag="):
         tag_name = evaluate_tc_argument_value(element_value_in_argument)
         if tag_name:
-            system_name_list = xml_Utils.get_matching_firstlevel_children_from_root(datafile,
-                                                                                    "system")
+            system_name_list = xml_Utils.get_matching_firstlevel_children_from_root(
+                                                                datafile, "system")
             if system_name_list == [] or system_name_list is None or system_name_list is False:
                 return element_value_in_argument
             else:
                 for system in system_name_list:
                     if system.attrib["name"] == system_name:
-                        node_list = xml_Utils.get_matching_firstlevel_children_from_node(system,
-                                                                                         tag_name)
+                        node_list = xml_Utils.get_matching_firstlevel_children_from_node(
+                                                                        system, tag_name)
                         if node_list == [] or node_list is None or node_list is False:
-                            print_error("The tag value: {0} is not defined in the datafile:{1}"\
-                                .format(tag_name, datafile))
+                            print_error("The tag value: {0} is not defined in the "
+                                        "datafile:{1}".format(tag_name, datafile))
                             return False
                         else:
                             tag_value = node_list[0].text
@@ -1415,8 +1420,8 @@ def get_user_specified_tag_values_in_tc(datafile, system_name, **kwargs):
     credentials = get_credentials(datafile, system_name, in_list)
     for element in kwargs:
         if kwargs[element] is not None:
-            credentials[element] = resolve_argument_value_to_get_tag_value(datafile, system_name,
-                                                                           kwargs[element])
+            credentials[element] = resolve_argument_value_to_get_tag_value(
+                                    datafile, system_name, kwargs[element])
     return credentials
 
 
@@ -1633,8 +1638,8 @@ def substitute_var_patterns(raw_value, start_pattern="${", end_pattern="}"):
     else:
         print_error("Unsupported format - raw_value should either be a string,"
                     " list or dictionary")
-        print_error("raw_value: #{}# and its type is {}".format(raw_value,
-                                                                type(raw_value)))
+        print_error("raw_value: #{}# and its type is {}".format(
+                                    raw_value, type(raw_value)))
     return raw_value
 
 
@@ -1765,13 +1770,13 @@ def get_nc_config_string(config_datafile, config_name, var_configfile=None):
                                                  .format(abs_filepath), "error")
 
                 if not filepath_list:
-                    testcase_Utils.pNote("neither <config> nor a file containing <config> "\
-					                     "provided for the config_data = {0} in config file "\
-										 "= {1}".format(config_name, config_datafile), "error")
+                    testcase_Utils.pNote("neither <config> nor a file containing <config> provided"
+                                         " for the config_data = {0} in config file = {1}".format(
+                                                            config_name, config_datafile), "error")
                     status = "error"
         else:
-            testcase_Utils.pNote("config_data={0} is not found in config "\
-			                     "file ={1}".format(config_name, config_datafile), "error")
+            testcase_Utils.pNote("config_data={0} is not found in config file "
+                                 "={1}".format(config_name, config_datafile), "error")
             status = "error"
 
     except IOError as err:
