@@ -32,7 +32,7 @@ class LineResult:
     def __init__(self):
         """Constructor for class LineResult"""
 
-        self.keys = ['type', 'name', 'info', 'description', 'timestamp', 'duration', 'status', 'impact', 'onerror', 'result', 'log', 'defect', 'static',
+        self.keys = ['type', 'name', 'info', 'description', 'timestamp', 'duration', 'status', 'impact', 'onerror', 'msc', 'static',
                      'dynamic']
 
     def get_info(self, line):
@@ -65,11 +65,13 @@ class LineResult:
                      'status': '<span class=' + status_name + '>' + status_name + '</span>',
                      'impact': line.get("impact"),
                      'onerror': line.get("onerror"),
-                     'result': '<a href="' + result_file + '"><i style="margin-top:13px;" class="fa fa-line-chart"> </i></a>',
-                     'log': ( '' if variant == 'Keyword' else '<a href="' + ( line.get("logsdir") if line.get("logsdir") else '')
-                            + '"><i style="margin-top:13px;" class="fa fa-book"> </i></a>'),
-                     'defect': ('<a href="' + line.get("defects") + '"><i style="margin-top:13px;" class="fa fa-bug"> </i></a>'
-                            if line.get("defects") else ''),
+                     'msc': '<span style="padding-left:10px; padding-right: 10px;"><a href="' + result_file
+                            + '"><i class="fa fa-line-chart"> </i></a></span>' + (
+                                '' if variant == 'Keyword' else '<span style="padding-left:10px; padding-right: 10px;"><a href="' + (
+                                    line.get("logsdir") if line.get(
+                                        "logsdir") else '') + '"><i class="fa fa-book"> </i></a></span>') + (
+                            '<span style="padding-left:10px; padding-right: 10px;"><a href="' + line.get("defects")
+                            + '"><i class="fa fa-bug"> </i></a></span>' if line.get("defects") else ''),
                      'static': ['Count', 'Passed', 'Failed', 'Errors', 'Exceptions', 'Skipped']
                      }
 

@@ -206,7 +206,7 @@ td:not([rowspan]):nth-last-child(5){
 }
 td:not([rowspan]):nth-last-child(6){
     left: calc( 73% + 22.5% );
-    width: 4.5%;
+    width: 5%;
     display: block;
     font-size: 0;
     color: inherit;
@@ -645,10 +645,10 @@ td[rowspan]:nth-child(9){
     max-width: 5%;
 }
 .nav th:nth-child(10){
-    max-width: 5%;
+    max-width: 15%;
 }
 td[rowspan]:nth-child(10){
-    max-width: 5%;
+    max-width: 15%;
 }
 .nav th:nth-child(11){
     max-width: 5%;
@@ -656,18 +656,7 @@ td[rowspan]:nth-child(10){
 td[rowspan]:nth-child(11){
     max-width: 5%;
 }
-.nav th:nth-child(12){
-    max-width: 5%;
-}
-td[rowspan]:nth-child(12){
-    max-width: 5%;
-}
-.nav th:nth-child(13){
-    max-width: 5%;
-}
-td[rowspan]:nth-child(13){
-    max-width: 5%;
-}
+
 </style>
 </head>
 <body>
@@ -685,9 +674,11 @@ td[rowspan]:nth-child(13){
 			<th>Status</th>
 			<th>Impact</th>
             		<th>On Error</th>
-			<th>Results</th>
-			<th>Logs</th>
-			<th>Defects</th>
+			<th>
+			<span style="padding-left:5px">Results (<i class="fa fa-line-chart">)</i></span><br/>
+			<span style="padding-left:5px">Logs (<i class="fa fa fa-book">)</i></span><br/>
+			<span style="padding-left:5px">Defects (<i class="fa fa fa-bug">)</i></span><br/>
+			</th>
 			<th colspan="6" id="summary">Summary</th>
 	   	 </tr>
 	</table>
