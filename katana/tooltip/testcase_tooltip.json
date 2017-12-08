@@ -65,7 +65,7 @@
         "bantip": "",
         "snowflake": "If this field is left empty, the default path that has been specified by Warrior would be used."
     },
-	"expectedresult": {
+    "expectedresult": {
         "tooltip": "This field is for your information. You can enter what results are expected out of this Case here.",
         "protip": "ProTip: You can enter the action to take in Case of errors in this field. This helps in keeping track of the debug steps in case something goes wrong.",
         "bantip": "",
@@ -119,23 +119,47 @@
         "bantip": "",
         "snowflake": ""
     },
+    "expression": {
+        "tooltip": "The expression is a logical expression. Logical operators supported are: & AND | OR . Regular expression is not supported.Examples: 1 | 2 | 3 | 4 should be used for Rule1 OR Rule2 OR Rule3 OR Rule4. (1|2) & 3 should be used for (Rule 1 OR Rule 2) and then the result will be used with AND Rule 3",
+        "protip": "ProTip: If Expression field is left blank, Warrior will assume an AND operation for all the rules.",
+        "bantip": "If you want to compute or for all 4 rules, then expression text box shall be filled with “1 | 2 | 3 | 4”. If you want to compute AND between (rule-1, rule-3), (rule-2,rule-4) and OR between the computed ANDs, then expression text box shall be filled with (1&3) | (2&4)",
+        "snowflake": ""
+    },
+    "execelse": {
+        "tooltip": "This field is the top level else which executes when the 'expression' fails. This works similar to the 'On Error' field, you can choose between 'next', 'abort', and 'goto'.",
+        "protip": "ProTip: You should select 'abort' if you know that the failure of the condition above means nothing from this point onwards is going to Pass.",
+        "bantip": "",
+        "snowflake": ""
+    },
+    "execelseval": {
+        "tooltip": "This is step that you want to go to in case the rule is not met",
+        "protip": "ProTip: If you are selecting to go to a step above the current step, you may get stuck in an infinite loop.","protip": "",
+        "bantip": "",
+        "snowflake": "This is a mandatory field."
+    },
     "condition": {
         "tooltip": "This is the condition field for Execute Types 'If' and 'If Not'. If you want to execute this step based on he result of a previously executed step, then the syntax is step_<step_number>_result.",
         "protip": "ProTip: For conditions other than previous step status, you can check what is available for you to access by going through the keyword documentation and checking out the ':Returns:' section at the bottom.",
         "bantip": "While adding a condition that executes this step based on a previously executed step, the scope is limited to the steps in this Case. Do not add a condition trying to access a step status from any other Case but this one.",
         "snowflake": "This is a mandatory field."
     },
+    "operator": {
+        "tooltip": "This supports multiple inequalities between condition and condition value.",
+        "protip": "",
+        "bantip": "",
+        "snowflake": ""
+    },
     "condvalue": {
         "tooltip": "This is the value for the condition given above",
-        "protip": "ProTip: If you have entered a step status above, tis filed should contain one of these values: 'Pass', 'Fail', 'Error', 'Exception'.",
+        "protip": "ProTip: If you have entered a step status above, this field should contain one of these values: 'PASS', 'FAIL', 'ERROR', 'EXCEPTION'.",
         "bantip": "",
         "snowflake": "This is a mandatory field."
     },
     "condelse": {
-        "tooltip": "This field is the 'Else' field for the 'If'/'If Not' above. This works similar to the 'On Error' field, you can choose between 'next', 'abort', and 'goto'.",
+        "tooltip": "This field is the 'Else' field for the particular Rule. This works similar to the 'On Error' field, you can choose between 'next', 'abort', and 'goto'.",
         "protip": "ProTip: You should select 'abort' if you know that the failure of the condition above means nothing from this point onwards is going to Pass.",
         "bantip": "",
-        "snowflake": "This is a mandatory field."
+        "snowflake": ""
     },
     "condelsevalue": {
         "tooltip": "This is step that you want to go to in case that the condition above is not met",
