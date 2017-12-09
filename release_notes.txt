@@ -1,5 +1,5 @@
 Release: Ninja
-Version: warrior-3.5.0
+Version: warrior-3.6.0
 
 ===================
 1: Release details
@@ -19,7 +19,7 @@ This is release Ninja of Warrior Test Automation Framework
 ==================
 2. Version Details
 ==================
-You are on Release Ninja, Version warrior-3.5.0 of Warrior Framework.
+You are on Release Ninja, Version warrior-3.6.0 of Warrior Framework.
 Procedure to get a specific version is available in section-3 of this document.
 
 
@@ -32,52 +32,18 @@ Procedure to get a specific version is available in section-3 of this document.
 New Features:
 -------------
 
-[WAR-746] - As a user i need the ability to add multiple rules/exectypes while executing a step in a testcase
-[WAR-784] - As a user, I want to simulate command and response by sharing the response file to Warrior
-[WAR-1046] - As a user I need timer in runmode tags(RUP/RMT/RUF)
-[WAR-1156] - Need more resp_ref attribute in test data to fetch multiple patterns from output response
-[WAR-1168] - Option to use data repository values in Input Data and Var config files
-[WAR-1172] - Support file_ arg type in keyword args similar to int_, float_ etc.,
-[WAR-1266] - Add value comparison to Exectype-rule tag in step
-[WAR-1304] - Selenium: Need selenium browser_launch keyword to log information about the browser that was launched
-[WAR-1311] - Katana : Need a way to insert Testcase in Suite.
-[WAR-1406] - SSH connection without user credentials
-[WAR-1446] - As a user, I want to see wait time on screen
-[WAR-1450] - Print the 'expected result' before the test case starts
-[WAR-1451] - Need variable substitution for sys in test data
-[WAR-1479] - Support multiple rules/exectypes for hybrid mode
-
--------------
-Improvements:
--------------
-
-[WAR-1124] - Katana: The stash icon on the top bar in the current Katana must be changed to Github icon
-[WAR-1135] - As a user, I need to group the functionalities in the Testdata and variable config file.
-[WAR-1152] - Need more user friendly print statements when there are issues with case/suite/project xml files
-[WAR-1256] - Exception Handling and verify_snmp_action Keyword Update
-[WAR-1442] - Print statement needs to be improved for verify_data and store_in_repo keywords
-[WAR-1447] - As a user want options in set env KW
-[WAR-1452] - Address issues with WarriorCore/Classes/jira_rest_class.py
-[WAR-1545] - Add test for runmode on suite detail level
-[WAR-1552] - Update Authors file with recently contributions.
-[WAR-1562] - Improve notification of cyclic imports in Warrior
+[WAR-864] - As a user, I want an intelligent tool which can sequence multiple keywords to form a new keyword
+[WAR-912] - KATANA: Need support for multiple conditional statements and greater/smaller comparison
+[WAR-1303] - Selenium: The functional tests for selenium need to be updated with correct data
+[WAR-1542] - Support command specific responses for warmock
+[WAR-1575] - As a user, I need a support to send emails to multiple receivers
+[WAR-1576] - Both in CLI and HTML Results Page tester (who executed the test case) details should be available
 
 ---------
 Bugfixes:
 ---------
 
-[WAR-1120] - warhorn tools will try to copy and delete even when clone=no
-[WAR-1255] - response patterns stored through resp_ref get stored with control characters
-[WAR-1400] - Katana : Default Value for "On Error Action" is not working.
-[WAR-1401] - Katana : Button Overlaps in Suite
-[WAR-1444] - warhorn using label for checking out branch not working
-[WAR-1494] - Variable substitution process string incorrectly when string doesn't contain end_pattern longer than 1 char
-[WAR-1495] - Multi resp_ref failed regression test with varconfig file present
-[WAR-1507] - result from _get_response_dict is not combined properly with the result from _send_command_retrials
-[WAR-1514] - Comments are missing from response pattern code change
-[WAR-1518] - RMT was not iterating on suite files
-
-
+[WAR-1402] - Response reference is not saved properly while executing on a different system which is given in the td file.
 
 =================================================
 3. Procedure to get a specific version of Warrior
