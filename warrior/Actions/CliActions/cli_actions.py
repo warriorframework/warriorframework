@@ -173,7 +173,8 @@ class CliActions(object):
         wdesc = "Disconnects/Closes  session established with the system/subsystem"
         #Resolve system_name and subsystem_list
         #Removing duplicate subsystem entry and blank spaces in entry name
-        system_name, subsystem_list = Utils.data_Utils.resolve_system_subsystem_list(self.datafile, system_name)
+        system_name, subsystem_list = Utils.data_Utils.resolve_system_subsystem_list(self.datafile,
+                                                                                     system_name)
         status = True
 
         attempt = 1 if subsystem_list is None else len(subsystem_list)
@@ -197,14 +198,12 @@ class CliActions(object):
                and wc_obj.conn_obj.target_host is not None:
                 # execute smart action to produce user report
                 connect_testdata = \
-                 Utils.data_Utils.get_object_from_datarepository(
-                  session_id+"_system", verbose=False)
+                 Utils.data_Utils.get_object_from_datarepository(session_id+"_system", verbose=False)
                 if connect_testdata is not None and \
                    connect_testdata is not False:
-                    Utils.cli_Utils.smart_action(
-                     self.datafile, call_system_name, "",
-                     wc_obj.conn_obj.target_host,
-                     "disconnect", connect_testdata)
+                    Utils.cli_Utils.smart_action(self.datafile, call_system_name, "",
+                                                 wc_obj.conn_obj.target_host, "disconnect",
+                                                 connect_testdata)
 
                 wc_obj.disconnect()
                 result = False if wc_obj.isalive() else True
@@ -287,7 +286,8 @@ class CliActions(object):
         wdesc = "Connect to the ssh port of the system/subsystem and creates a session"
         #Resolve system_name and subsystem_list
         #Removing duplicate subsystem entry and blank spaces in entry name
-        system_name, subsystem_list = Utils.data_Utils.resolve_system_subsystem_list(self.datafile, system_name)
+        system_name, subsystem_list = Utils.data_Utils.resolve_system_subsystem_list(self.datafile,
+                                                                                     system_name)
         output_dict = {}
         status = True
 
@@ -456,7 +456,8 @@ class CliActions(object):
         wdesc = "Connect to the telnet port of the system and creates a session"
         #Resolve system_name and subsystem_list
         #Removing duplicate subsystem entry and blank spaces in entry name
-        system_name, subsystem_list = Utils.data_Utils.resolve_system_subsystem_list(self.datafile, system_name)
+        system_name, subsystem_list = Utils.data_Utils.resolve_system_subsystem_list(self.datafile,
+                                                                                     system_name)
         output_dict = {}
         status = True
 
@@ -833,13 +834,14 @@ class CliActions(object):
         Utils.testcase_Utils.pNote("Datafile: {0}".format(self.datafile))
         session_id = Utils.data_Utils.get_session_id(system_name, session_name)
         session_object = Utils.data_Utils.get_object_from_datarepository(session_id)
-        testdata, varconfigfile = Utils.data_Utils.get_td_vc(self.datafile, system_name, td_tag, vc_tag)
+        testdata, varconfigfile = Utils.data_Utils.get_td_vc(self.datafile, system_name,
+                                                             td_tag, vc_tag)
         #abspaths = Utils.data_Utils.get_filepath_from_system(self.datafile, system_name,
         #                                                     'testdata', 'variable_config')
         #testdata = abspaths[0]
         #varconfigfile = abspaths[1]
         # td_resp_dict = {}
-        status, resp_dict = cli_Utils.send_commands_from_testdata(testdata, session_object,
+        status, td_resp_dict = cli_Utils.send_commands_from_testdata(testdata, session_object,
                                                                   varconfigfile=varconfigfile,
                                                                   var_sub=var_sub,
                                                                   title=title, row=row_num,
@@ -847,8 +849,6 @@ class CliActions(object):
                                                                   session_name=session_name,
                                                                   datafile=self.datafile)
 
-        td_resp_dict = get_object_from_datarepository(str(session_id)+"_td_response")
-        td_resp_dict.update(resp_dict)
         Utils.testcase_Utils.report_substep_status(status)
         return  status, td_resp_dict
 
@@ -874,11 +874,12 @@ class CliActions(object):
 
         if session_object.isalive():
             session_object.timeout = int_timeout
-            Utils.testcase_Utils.pNote("Timeout value is set to {0}mins for the session with system name : {1},"\
-                                       " session name : {2}".format(int_timeout, system_name, session_name))
+            Utils.testcase_Utils.pNote("Timeout value is set to {0}mins for the session with"
+                                       " system name : {1}, session name : {2}"
+                                       .format(int_timeout, system_name, session_name))
         else:
             status = False
-            Utils.testcase_Utils.pNote("Session with system name : {0}, session name : {1}"\
+            Utils.testcase_Utils.pNote("Session with system name : {0}, session name : {1}"
                                        " is timedout/closed".format(system_name, session_name))
         return status
 
@@ -902,11 +903,11 @@ class CliActions(object):
         session_object = Utils.data_Utils.get_object_from_datarepository(session_id)
 
         if session_object.isalive():
-            Utils.testcase_Utils.pNote("Session with system name : {0}, session name : {1}"\
+            Utils.testcase_Utils.pNote("Session with system name : {0}, session name : {1}"
                                        " is alive".format(system_name, session_name))
         else:
             status = False
-            Utils.testcase_Utils.pNote("Session with system name : {0}, session name : {1}"\
+            Utils.testcase_Utils.pNote("Session with system name : {0}, session name : {1}"
                                        " is not alive".format(system_name, session_name))
         return status
 
@@ -921,15 +922,15 @@ class CliActions(object):
             If both tag and attribute is provided the attribute will be used.
 
             1. ip = IP address of the system.\
-            
+
                 Default value for ip type is ip, it can take any type of ip's
                 to connect to (like ipv4, ipv6, dns etc)
-                
+
                 Users can provide tag/attribute for any ip_type under the system
                 in the input datafile and specify the tag/attribute name
-                as the value for ip_type argument, then the connection will be 
+                as the value for ip_type argument, then the connection will be
                 established using that value.
-             
+
             2. username = username for the  session.
             3. password = password for the  session.
             4. timeout = use if you want to set timeout while connecting,\
@@ -961,7 +962,7 @@ class CliActions(object):
 
         output_dict = {}
         status = True
-        
+
         root = Utils.xml_Utils.getRoot(self.datafile)
         systems = root.findall('system')
         system_list = []
@@ -981,7 +982,7 @@ class CliActions(object):
         for system_name in system_list:
             sys_status, sys_dict = self.connect(system_name)
             status = status and sys_status
-            output_dict.update(sys_dict)        
+            output_dict.update(sys_dict)
         return status, output_dict
 
     @mockready

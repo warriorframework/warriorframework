@@ -26,7 +26,9 @@ from WarriorCore.Classes.war_cli_class import WarriorCliClass
 from Framework.ClassUtils import database_utils_class
 from Framework.ClassUtils.WNetwork.loging import ThreadedLog
 from Framework.Utils.list_Utils import get_list_by_separating_strings
+from Framework.Utils.data_Utils import get_object_from_datarepository
 from WarriorCore.Classes.warmock_class import mocked
+from Framework.Utils.cli_Utils import _get_obj_session
 
 """ Module for performing CLI operations """
 
@@ -186,6 +188,8 @@ class WarriorCli(object):
             1. finalresult = boolean
         """
         responses_dict = {}
+        resp_key_list = []
+        td_resp_dict = {}
         varconfigfile = args.get('varconfigfile', None)
         datafile = args.get("datafile", None)
         var_sub = args.get('var_sub', None)
@@ -200,7 +204,6 @@ class WarriorCli(object):
             system_name=system_name, datafile=datafile)
         finalresult = True if len(testdata_dict) > 0 else False
         for key, details_dict in testdata_dict.iteritems():
-            response_dict = {}
             responses_dict[key] = ""
             command_list = details_dict["command_list"]
             stepdesc = "Send the following commands: "
@@ -219,18 +222,22 @@ class WarriorCli(object):
                 print_debug(">>>")
                 command = details_dict["command_list"][i]
                 pNote("Command #{0}\t: {1}".format(str(i+1), command))
-                new_obj_session, td_sys, details_dict = \
-                    self._get_obj_session(details_dict, system_name, index=i)
+                new_obj_session, td_sys, details_dict, session_id = \
+                    self._get_obj_session(details_dict, system_name, index=i, sess_id=True)
                 if new_obj_session:
                     result, response = new_obj_session._send_cmd_get_status(
                         details_dict, index=i, system_name=td_sys)
                     result, response = new_obj_session._send_command_retrials(
                         details_dict, index=i, result=result,
                         response=response, system_name=td_sys)
-                    rspRes, response_dict = new_obj_session._get_response_dict(
-                        details_dict, i, response, response_dict)
-                    result = (result and rspRes) if "ERROR" not in (
-                                result, rspRes) else "ERROR"
+                    rspRes, resp_key_list = new_obj_session._get_response_dict(
+                        details_dict, i, response, resp_key_list)
+                    resp_session_id = session_id + "_td_response"
+
+                    td_resp_dict = self.update_resp_ref_to_repo(details_dict, resp_key_list, i,
+                                                                key, td_resp_dict, resp_session_id)
+
+                    result = (result and rspRes) if "ERROR" not in (result, rspRes) else "ERROR"
                     print_debug("<<<")
                 else:
                     finalresult = "ERROR"
@@ -242,8 +249,35 @@ class WarriorCli(object):
                     result = "ERROR"
                     finalresult = "ERROR"
                 finalresult = finalresult and result
-            responses_dict[key] = response_dict
-        return finalresult, responses_dict
+            responses_dict[key] = {k: v for d in resp_key_list for k, v in d.iteritems()}
+        return finalresult, td_resp_dict
+
+    def update_resp_ref_to_repo(self, details_dict, resp_key_list, i,
+                                title_row, td_resp_dict, session_id):
+        """
+        Updates the response reference in appropriate session_id.
+        There are two cases:
+            1. The user gives the system and session name only in testcase,
+            then it updates on testcase's session id
+            2. The user gives the system and session name in both testcase and testdata file,
+            then it takes testdata as priority and updates on testdata's session id
+        """
+
+        if resp_key_list:
+            for resp in resp_key_list[i].keys():
+                td_resp_dict = get_object_from_datarepository(str(session_id))
+                # checks if title_row value is not in td_resp_dict
+                if title_row not in td_resp_dict:
+                    # if not available then it first updates the
+                    # title_row value to td_resp_dict
+                    td_resp_dict[title_row] = {}
+                # updates td_resp_dict with the key and value
+                temp_resp = {resp: resp_key_list[i][resp]}
+                td_resp_dict[title_row].update(temp_resp)
+                pNote("Portion of response saved to the data "
+                      "repository with key: '{0}.{1}.{2}' and value: '{3}'"
+                      .format(session_id, title_row, resp, temp_resp[resp]))
+        return td_resp_dict
 
     @mocked
     def _send_cmd(self, **kwargs):
@@ -262,7 +296,7 @@ class WarriorCli(object):
         return result, response
 
     @staticmethod
-    def _get_response_dict(details_dict, index, response, response_dict):
+    def _get_response_dict(details_dict, index, response, resp_key_list):
         """Get the response dict for a command. """
         def print_warn_msg(keyvars, numpats):
             """ print a warning message if the number of vars to be stored with
@@ -288,12 +322,10 @@ class WarriorCli(object):
 
         resp_req = {None: 'y', '': 'y',
                     'no': 'n', 'n': 'n'}.get(str(resp_req).lower(), 'y')
-        resp_ref = {None: index+1, '': index+1}.get(resp_ref, str(resp_ref))
+        resp_ref = {None: str(index+1), '': str(index+1)}.get(resp_ref, str(resp_ref))
         if not resp_req == "n":
             save_msg1 = "User has requested saving response"
             save_msg2 = "Response pattern required by user is : {0}"
-            save_msg3 = ("Portion of response saved to the data repository "
-                         "with key: {0}, value: {1}")
             save_msg4 = "Cannot found response pattern: {0} in response"
             if resp_pat_req is not None:
                 # if the requested pattern not found return empty string
@@ -301,10 +333,10 @@ class WarriorCli(object):
                 if reobj is None:
                     pNote(save_msg4.format(resp_pat_req))
                 response = reobj.group(0) if reobj is not None else ""
-                response_dict[resp_ref] = response
+                temp_resp_dict = {resp_ref: response}
+                resp_key_list.append(temp_resp_dict)
                 pNote(save_msg1+'.')
                 pNote(save_msg2.format(resp_pat_req))
-                pNote(save_msg3.format(resp_ref, response))
             elif resp_keys is not None:
                 keys = resp_ref.split(',')
                 # get the patterns from pattern entries in testdata file
@@ -324,12 +356,10 @@ class WarriorCli(object):
                     reobj = re.search(pattern, response, re.DOTALL)
                     if reobj:
                         grps = reobj.groups()
-                        # update response_dict with resp_ref keys and
+                        # update resp_key_list with resp_ref keys and
                         # their corresponding matched patterns
-                        response_dict.update(dict(zip(keys, grps)))
+                        resp_key_list.append(dict(zip(keys, grps)))
                         pNote(save_msg2.format(pattern))
-                        # print to console the key and the corresponding match stored
-                        [pNote(save_msg3.format(key, grp)) for (key, grp) in zip(keys, grps)]
                     else:
                         print_error("inorder search of patterns in response "
                                     "failed")
@@ -337,16 +367,21 @@ class WarriorCli(object):
                         print_error("But Found: '{}'".format(response))
                         status = False
                 else:
+                    temp_resp_key_list = []
                     pNote(save_msg1+' separately.')
                     for key, pattern in zip(keys, patterns):
                         reobj = re.search(pattern, response)
                         presponse = reobj.group(0) if reobj is not None else ""
-                        response_dict[key] = presponse
+                        temp_resp_key_list.append(presponse)
                         pNote(save_msg2.format(pattern))
-                        pNote(save_msg3.format(key, presponse))
+                    resp_key_list.append(dict(zip(keys, temp_resp_key_list)))
+            else:
+                temp_resp_dict = {resp_ref: ""}
+                resp_key_list.append(temp_resp_dict)
         else:
-            response_dict[resp_ref] = ""
-        return status, response_dict
+            temp_resp_dict = {resp_ref: ""}
+            resp_key_list.append(temp_resp_dict)
+        return status, resp_key_list
 
     @staticmethod
     def start_threads(started_thread_for_system, thread_instance_list,
@@ -595,7 +630,7 @@ class WarriorCli(object):
 
         return result, response
 
-    def _get_obj_session(self, details_dict, kw_system_name, index):
+    def _get_obj_session(self, details_dict, kw_system_name, index, sess_id=False):
         """If system name is provided in testdata file
         get the session of that system name and use it or
         use the current obj_session"""
@@ -631,12 +666,19 @@ class WarriorCli(object):
         else:
             # print obj_session
             value = self
-            system_name = kw_system_name
-
+            tc_sys_split = kw_system_name.split('.') if isinstance(kw_system_name, str) else []
+            if len(tc_sys_split) == 2:
+                system_name = tc_sys_split[0]
+                session = tc_sys_split[1]
+            else:
+                system_name = kw_system_name
+            session_id = Utils.data_Utils.get_session_id(system_name, session)
         pNote("System name\t: {0}".format(system_name))
 
         if details_dict["sys_list"][index] is not None:
             kw_system_name = details_dict["sys_list"][index]
+        if sess_id is True:
+            return value, kw_system_name, details_dict, session_id
 
         return value, kw_system_name, details_dict
 
@@ -886,8 +928,8 @@ class WarriorCli(object):
                 Distinguish if it is a connect smart action or disconnect
                 smart action
         """
-        if Utils.xml_Utils.getElementWithTagAttribValueMatch(
-           connect_testdata, "testdata", "title", tag_value) is not None:
+        if Utils.xml_Utils.getElementWithTagAttribValueMatch(connect_testdata, "testdata", "title",
+                                                             tag_value) is not None:
             print_info("**********The following command are sent as part of "
                        "the smart analysis**********")
             main_log = session_object.logfile
