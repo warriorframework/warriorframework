@@ -1,0 +1,34 @@
+{% with subsystem|remove_name as subsystem %}
+    {% for k, v in subsystem.items %}
+        {% if v|is_dict == "true" %}
+        <!-- It's a child tag -->
+            <div class="field-inline dual-input" id="content">
+                <label>
+                    <i katana-click="wdf.addChild" class="fa fa-plus" title="Add Sub Data"/>
+                    <i katana-click="wdf.deleteTag" class="fa fa-trash i-danger" title="Delete Data"/>
+                </label>
+                <input class="wdf-input" name="key" katana-change="wdf.validateKey" value="{{ k }}" list="most_used_tags"/>
+                <input style="display: none;" class="wdf-input" name="value" value=""/>
+            </div>
+            {% for child_k, child_v in v.items %}
+                <div class="field-inline dual-input" id="subcontent">
+                    <label>
+                        <i katana-click="wdf.deleteChildTag" class="fa fa-trash i-danger" title="Delete Sub Data"/>
+                    </label>
+                    <input class="wdf-input" name="key" katana-change="wdf.validateKey" value="{{ child_k }}" list="most_used_tags"/>
+                    <input class="wdf-input" name="value" value="{{ child_v }}"/>
+                </div>
+            {% endfor %}
+        {% elif k != "@name" %}
+        <!-- It's not a child tag -->
+            <div class="field-inline dual-input" id="content">
+                <label>
+                    <i katana-click="wdf.addChild" class="fa fa-plus" title="Add Sub Data"/>
+                    <i katana-click="wdf.deleteTag" class="fa fa-trash i-danger" title="Delete Data"/>
+                </label>
+                <input class="wdf-input" name="key" katana-change="wdf.validateKey" value="{{ k }}" list="most_used_tags"/>
+                <input class="wdf-input" name="value" value="{{ v }}"/>
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endwith %}
