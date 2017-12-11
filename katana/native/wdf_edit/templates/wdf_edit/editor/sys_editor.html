@@ -16,26 +16,33 @@
 
     {% if "subsystem" not in system %}
         {% with system as subsystem %}
-            {% include "wdf_edit/editor/subsys_editor.html" %}
+            <div id="{{ forloop.counter }}-1-editor">
+                {% include "wdf_edit/editor/subsys_editor.html" %}
+            </div>
         {% endwith %}
     {% elif system.subsystem|is_dict == "true" %}
-        {% with system as subsystem %}<!-- Not every system has a subsystem toolbar -->
-            <div class="field-inline">
-                <input type="checkbox" class="wdf-subsys-checkbox" katana-click="wdf.subsysDefaultCheck" name="subsys" title="Default Subsystem"/>
-                <label class="wdf-label">Subsystem name:</label>
-                <input class="wdf-input" name="subsystem_name" katana-change="wdf.subSysNameChange" value="{{ subsystem|get_item:'@name' }}"/>
+        {% with system as subsystem %}
+        <!-- Not every system has a subsystem toolbar -->
+            <div id="{{ forloop.counter }}-1-editor">
+                <div class="field-inline">
+                    <input type="checkbox" class="wdf-subsys-checkbox" katana-click="wdf.subsysDefaultCheck" name="subsys" title="Default Subsystem"/>
+                    <label class="wdf-label">Subsystem name:</label>
+                    <input class="wdf-input" name="subsystem_name" katana-change="wdf.subSysNameChange" value="{{ subsystem|get_item:'@name' }}"/>
+                </div>
+                {% include "wdf_edit/editor/subsys_editor.html" %}
             </div>
-            {% include "wdf_edit/editor/subsys_editor.html" %}
         {% endwith %}
     {% elif system.subsystem %}
         {% for subsystem in system.subsystem %}
             <!-- Not every system has a subsystem toolbar -->
-            <div class="field-inline">
-                <input type="checkbox" class="wdf-subsys-checkbox" katana-click="wdf.subsysDefaultCheck" name="subsys" title="Default Subsystem"/>
-                <label class="wdf-label">Subsystem name:</label>
-                <input class="wdf-input" name="subsystem_name" katana-change="wdf.subSysNameChange" value="{{ subsystem|get_item:'@name' }}"/>
+            <div id="{{ forloop.parentloop.counter }}-{{ forloop.counter }}-editor">
+                <div class="field-inline">
+                    <input type="checkbox" class="wdf-subsys-checkbox" katana-click="wdf.subsysDefaultCheck" name="subsys" title="Default Subsystem"/>
+                    <label class="wdf-label">Subsystem name:</label>
+                    <input class="wdf-input" name="subsystem_name" katana-change="wdf.subSysNameChange" value="{{ subsystem|get_item:'@name' }}"/>
+                </div>
+                {% include "wdf_edit/editor/subsys_editor.html" %}
             </div>
-            {% include "wdf_edit/editor/subsys_editor.html" %}
         {% endfor %}
     {% endif %}
 </div>

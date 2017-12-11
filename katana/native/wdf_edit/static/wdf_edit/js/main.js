@@ -5,24 +5,10 @@ var wdf = {
         */
         $systems = katana.$activeTab.find(".control-box");
         $.each($systems, function(ind, sys) {
-            if (! $(sys).attr("id").startsWith("template")) {
-                $sys = $(sys);
-                $system_id = $sys.attr("id").split("-").slice(0,1);
-                $subsystem_id = $sys.attr("id").split("-").slice(1,2);
-                // if it has tags
-                if ($sys.find("#content").length > 0 && $subsystem_id != "1") {
-                    $sys.find("[katana-click='wdf.addSubSystem']").hide();
-                } else if ($sys.find("#content").length > 0 && $subsystem_id == "1") {
-                    // var $count = 0;
-                    // $.each($systems, function(sub_ind, sub_sys) {
-                    //     if ($(sub_sys).attr("id").startsWith($system_id+"-")) {
-                    //         $count = $count + 1;
-                    //     }
-                    // });
-                    // if ($count > 1) {
-                    //     $sys.find("[katana-click='wdf.addSubSystem']").hide();
-                    // }
-                    // $sys.find("[katana-click='wdf.addSubSystem']").hide();
+            sys = $(sys);
+            if (!sys.attr("id").startsWith("template")) {
+                if (sys.find("#content").length > 0 && sys.find("[name='subsystem_name']").length == 0) {
+                    sys.find("[katana-click='wdf.addSubSystem']").hide();
                 }
             }
         });
