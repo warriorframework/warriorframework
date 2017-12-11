@@ -1,0 +1,458 @@
+<div class='col-md-12'>
+    <h4>
+        <b>Katana Wrapper Keyword Editor</b>
+    </h4>
+
+    <hr/>
+
+    <div class="row">
+        <div class="form-group">
+            <label class="col-sm-3 control-label text-uppercase">Wrapper Keyword Details</label>
+        </div>
+    </div>
+
+    <form action="" method="post" class="form-horizontal" role="form">
+        <div class="row">
+            <div class="form-group">
+                <label for="WrapperName"
+                       class="col-sm-2 control-label mandatory-field ellipsis-the-overflow">Wrapper Keyword Name</label>
+
+                <div class="col-sm-6">
+                        <input type="text" class="form-control"
+                           id="WrapperName" autofocus required
+                           placeholder="Name of the Wrapper Keyword"
+                           ng-model='model.WrapperKeyword.Details.WrapperName'>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group">
+                <label for="ActionFile"
+                       class="col-sm-2 control-label mandatory-field ellipsis-the-overflow">Action File Name</label>
+
+                <div class="col-sm-6">
+                    <input type="text" class="form-control"
+                           required
+                           id="ActionFile"
+                           ng-model='model.WrapperKeyword.Details.ActionFile'
+                           placeholder="Name of the Action File">
+                </div>
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group">
+                <label for="Description"
+                       class="col-sm-2 control-label ellipsis-the-overflow">W Description</label>
+
+                <div class="col-sm-6">
+                    <input type="text" class="form-control"
+                           id="Description"
+                           placeholder="Wrapper Keyword Description"
+                           ng-model='model.WrapperKeyword.Details.Description'>
+                </div>
+
+            </div>
+        </div>
+
+
+        <hr/>
+
+        <div class="row">
+            <div class="form-group pull-left" style="padding-left:2em">
+                <label class=" control-label text-uppercase color-me-red">Subkeyword Details</label>
+            </div>
+        </div>
+
+        <div class='form-group' ng-show='hasNoSteps()' style="padding-left:1em">
+            <h6>
+                A Wrapper Keyword requires at least one Subkeyword definition. <br/>
+                Please use the 'New Subkeyword' button below to create a Subkeyword.
+            </h6>
+        </div>
+
+        <div class="form-group" ng-hide="hasNoSteps() || stepBeingEdited == 0">
+            <div class="col-sm-12">
+                <table class='table table-bordered table-condensed table-hover'>
+                    <thead>
+                    <tr>
+                        <th class='text-muted text-right min-width-35'>#</th>
+                        <th class='text-muted'>Subkeyword Driver</th>
+                        <th class='text-muted'>Subkeyword Name</th>
+
+                        <th class='text-muted'>Arguments</th>
+
+                        <th class='text-muted'>Insert</th>
+                        <th class='text-muted'>Edit</th>
+                        <th class='text-muted'>Delete</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat='step in model.WrapperKeyword.Subkeyword.step' ng-hide="showTopTable($index)">
+                        <td class="text-right min-width-35">
+                            <div class="tooltip-on-right-dark-big" ng-show="step['_draft'] == 'yes'">
+                                <i class="fa fa-exclamation-triangle color-me-yellow" aria-hidden="true"></i>
+
+                            </div>
+                            {{ $index + 1 }}
+                        </td>
+
+                        <td>
+                            {{ step._Driver }}
+                        </td>
+
+                        <td>
+                            {{ step._Keyword }}
+                        </td>
+
+                        <td>
+                            <div ng-if=" step.Arguments.argument.length !== undefined  ">
+                                <div ng-repeat='arg in step.Arguments.argument' ng-show="arg._name !== ''">
+                                    <div ng-show="arg._value !== ''">
+                                        {{ $index + 1 }}. {{ arg._name}} = {{arg._value }}
+                                    </div>
+                                    <div ng-show="arg._value == ''">
+                                        {{ $index + 1 }}. {{ arg._name}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div ng-if=" step.Arguments.argument._name !== undefined && step.Arguments.argument._name !== ''">
+                                <div ng-show="step.Arguments.argument._value !== ''">
+                                    1. {{ step.Arguments.argument._name }} = {{step.Arguments.argument._value }}
+                                </div>
+                                <div ng-show="step.Arguments.argument._value == ''">
+                                    1. {{ step.Arguments.argument._name }}
+                                </div>
+                            </div>
+                        </td>
+
+
+                        <td ng-click='addStep($index)' class='text-center' style='vertical-align:middle'>
+                            <div class="tooltip-on-left-dark-big">
+                                <span class="glyphicon glyphicon-import" aria-hidden="true"></span>
+
+                            </div>
+                        </td>
+
+                        <td ng-click="editStep(step._Driver, $index)" class='text-center' style='vertical-align:middle'>
+                            <div class="tooltip-on-left-dark-big">
+                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+
+                            </div>
+                        </td>
+
+                        <td ng-click='delStep($index)' class='text-center' style='vertical-align:middle'>
+                            <div class="tooltip-on-left-dark-big">
+                                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row" style="padding-left:1em" ng-show="showStepEditor()">
+            <div class="container pull-left" style="width: 50%">
+                <div class="form-group" ng-show="step_numbers.length > 0">
+                    <label for='gotostep' class="col-sm-3 control-label ellipsis-the-overflow">Copy Step #</label>
+                    <div class="col-sm-3">
+                        <select class='form-control'
+                                id='gotostep'
+                                ng-model="stepToBeCopied"
+                                ng-options="o as o for o in step_numbers"></select>
+                    </div>
+                    <div class="col-sm-2">
+                        <input type="button" class="btn btn-default form-control ellipsis-the-overflow" ng-click="copyStep()" value="Go!">
+                    </div>
+                    <div class="col-sm-3">
+                        <input style="color:rgb(214, 48, 48)" type="button"
+                                class="btn btn-default form-control ellipsis-the-overflow"
+                                ng-click='saveArguments()'
+                                title={{testcaseTooltips.stepsave.tooltip}} value="Save Subkeyword">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for='stepdriver' ng-show="!status.driverCheckbox" class="col-sm-4 control-label mandatory-field ellipsis-the-overflow">Subkeyword Drivers </label>
+                    <label for='stepdriver' ng-show="status.driverCheckbox" class="col-sm-4 control-label ellipsis-the-overflow">Subkeyword Drivers </label>
+
+                    <div class="col-sm-8">
+                        <div class="input-group" ng-show="!status.driverCheckbox">
+                            <select class='form-control'
+                                    id='stepdriver'
+                                    ng-model="status.drivername"
+                                    ng-change="driverSelected(status.drivername)"
+                                    ng-options="o as o for o in xml.drivers">
+                                <option value=''>Select Subkeyword Driver</option>
+                            </select>
+                            <span class="input-group-addon" style="background-color: white">
+                                <input id="driverCheckbox1" type="checkbox"
+                                       ng-model='status.driverCheckbox'
+                                       ng-click="emptyDriverName()">
+                                <label for="driverCheckbox1" class="control-label">&nbsp;To be developed</label>
+                            </span>
+                        </div>
+                        <div class="input-group" ng-show="status.driverCheckbox">
+                            <input class="form-control" ng-model="status.drivername">
+                            <span class="input-group-addon" style="background-color: white">
+                                <input id="driverCheckbox2" type="checkbox"
+                                       ng-model='status.driverCheckbox'
+                                       ng-click="emptyDriverName()">
+                                <label for="driverCheckbox2" class="control-label">&nbsp;To be developed</label>
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+                    <label for='stepkwd'
+                           class="col-sm-4 control-label mandatory-field ellipsis-the-overflow">Subkeyword Name</label>
+
+                    <div class="col-sm-8">
+                        <div class="input-group" ng-show="!status.kwCheckbox">
+                            <select class='form-control' id='stepkwd'
+                                ng-model="status.keyword"
+                                ng-change="selectKeyword(status.keyword)"
+                                ng-options="o.fn as o.fn for o in xml.keywords">
+                            <option value=''>Select Subkeyword Name</option>
+                        </select>
+                            <span class="input-group-addon" style="background-color: white">
+                                <input id="kwCheckbox1" type="checkbox"
+                                       ng-model='status.kwCheckbox'
+                                       ng-click="emptyKWName()">
+                                <label for="kwCheckbox1" class="control-label">&nbsp;To be developed</label>
+                            </span>
+                        </div>
+                        <div class="input-group" ng-show="status.kwCheckbox">
+                            <input class="form-control" ng-model="status.keyword">
+                            <span class="input-group-addon" style="background-color: white">
+                                <input id="kwCheckbox2" type="checkbox"
+                                       ng-model='status.kwCheckbox'
+                                       ng-click="emptyKWName()">
+                                <label for="kwCheckbox2" class="control-label">&nbsp;To be developed</label>
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
+
+                 <div class="form-group">
+                    <label class="col-sm-4 offset-1 control-label ellipsis-the-overflow">Arguments</label>
+
+                   <div class=" col-sm-8" ng-show="!status.kwCheckbox && !status.driverCheckbox">
+                       <div class= "panelArgs">Arguments for the selected Keyword
+                           <div ng-repeat="arg in xml.args.args"
+                                ng-if='status.keyword != "" && xml.args.args.length == 1 && xml.args.args[0] == "self"'>
+                               <b class='text-danger' style="color: rgb(214, 48, 48)">
+                                   <br>
+                                   There are no editable values for this function / keyword.
+                               </b>
+                           </div>
+                           <div ng-repeat="arg in xml.arglist"
+                                ng-if='status.keyword != "" && xml.arglist.length > 0 && arg != "self"'>
+                               <div class="form-group mArgs">
+                                   <label for="arg{{$index}}"
+                                          class="col-sm-5 control-label text-info breakword"
+                                          style="color: black">
+                                       {{arg}}
+                                   </label>
+                                   <label for="arg{{$index}}"
+                                          class="col-sm-5 control-label text-info ellipsis-the-overflow-arg"
+                                          style="color: black">
+                                       {{arg}}
+                                   </label>
+                                   <div class="col-sm-7">
+                                       <input type="text"
+                                              class="form-control"
+                                              id="arg{{$index}}"
+                                              ng-model='xml.mapargs[arg]'
+                                              placeholder=""> <br/>
+                                   </div>
+                               </div>
+                           </div>
+                       </div>
+                   </div>
+                   <div class="col-sm-8" ng-show="status.kwCheckbox || status.driverCheckbox">
+                       <div class= "panelArgs">Add arguments, if any, for the keyword entered above.
+                           <div class="mArgs">
+                               <div ng-repeat="arg in arg_list track by $index">
+                                   <div class="form-group">
+                                       <label class="col-sm-5 control-label">Argument {{$index + 1}} Name</label>
+                                       <div class="col-sm-7">
+                                           <div class="input-group">
+                                               <input type="text" class="form-control" ng-model="arg_list[$index]._name">
+                                               <span class="input-group-addon" ng-click="deleteArgFromList($index)">
+                                                   <span class="fa fa-times-circle-o" aria-hidden="true"></span>
+                                               </span>
+                                           </div>
+                                       </div>
+                                   </div>
+                               </div>
+                               <div class="form-group">
+                                   <div class="col-sm-4 col-sm-offset-5">
+                                       <input type="button" ng-click="addAnotherArgumentToList()" class="btn btn-default" value="Add">
+                                   </div>
+                               </div>
+                           </div>
+                       </div>
+                   </div>
+
+                </div>
+
+
+
+                <div class="form-group">
+                    <div style="color:rgb(214, 48, 48)"
+                         class="col-sm-9 col-sm-offset-3">
+                        <button style="color:rgb(214, 48, 48)" type="button"
+                                class="btn btn-default"
+                                ng-click='saveArguments()'
+                                title={{testcaseTooltips.stepsave.tooltip}}>
+                            Save Subkeyword
+                        </button>
+                        &nbsp;
+                        <button type="button"
+                                class="btn btn-default"
+                                ng-click='cancelArguments()'
+                                title={{testcaseTooltips.stepcancel.tooltip}}>
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+                <hr>
+            </div>
+            <div class="container pull-right" style="width: 50%">
+                <div class="form-group">
+
+                    <div class="col-sm-9"
+                         ng-hide='status.keyword == ""'>
+                        <b class='text-success' style="color: black">{{ xml.args.def }}</b>
+                        <br/><br/>
+                        <pre ng-if='xml.args.comment.length > 0'>{{xml.args.comment.join("\n")}}</pre>
+                        <pre ng-if='xml.args.comment.length === 0'>No comments available.</pre>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="form-group" ng-hide="hasNoSteps() || stepBeingEdited == 'None' || stepBeingEdited == model.WrapperKeyword.Subkeyword.step.length -1">
+            <div class="col-sm-12">
+                <table class='table table-bordered table-condensed table-hover'>
+                    <thead>
+                        <tr>
+                            <th class='text-muted text-right min-width-35'>#</th>
+                            <th class='text-muted'>Driver</th>
+                            <th class='text-muted'>Keyword</th>
+
+                            <th class='text-muted'>Arguments</th>
+
+                            <th class='text-muted'>Insert</th>
+                            <th class='text-muted'>Edit</th>
+                            <th class='text-muted'>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat='step in model.WrapperKeyword.Subkeyword.step' ng-show="$index > stepBeingEdited">
+                        <td class="text-right min-width-35">
+                            <div class="tooltip-on-right-dark-big" ng-show="step['_draft'] == 'yes'">
+                                <i class="fa fa-exclamation-triangle color-me-yellow" aria-hidden="true"></i>
+
+                            </div>
+                            {{ $index + 1 }}
+                        </td>
+
+                        <td>
+                            {{ step._Driver }}
+                        </td>
+
+                        <td>
+                            {{ step._Keyword }}
+                        </td>
+
+
+                        <td>
+                            <div ng-if=" step.Arguments.argument.length !== undefined  ">
+                                <div ng-repeat='arg in step.Arguments.argument' ng-show="arg._name !== ''">
+                                    <div ng-show="arg._value !== ''">
+                                        {{ $index + 1 }}. {{ arg._name}} = {{arg._value }}
+                                    </div>
+                                    <div ng-show="arg._value == ''">
+                                        {{ $index + 1 }}. {{ arg._name}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div ng-if=" step.Arguments.argument._name !== undefined && step.Arguments.argument._name !== ''">
+                                <div ng-show="step.Arguments.argument._value !== ''">
+                                    1. {{ step.Arguments.argument._name }} = {{step.Arguments.argument._value }}
+                                </div>
+                                <div ng-show="step.Arguments.argument._value == ''">
+                                    1. {{ step.Arguments.argument._name }}
+                                </div>
+                            </div>
+                        </td>
+
+
+                        <td ng-click='addStep($index)' class='text-center' style='vertical-align:middle'>
+                            <div class="tooltip-on-left-dark-big">
+                                <span class="glyphicon glyphicon-import" aria-hidden="true"></span>
+
+                            </div>
+                        </td>
+
+                        <td ng-click="editStep(step._Driver, $index)" class='text-center' style='vertical-align:middle'>
+                            <div class="tooltip-on-left-dark-big">
+                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+
+                            </div>
+                        </td>
+
+                        <td ng-click='delStep($index)' class='text-center' style='vertical-align:middle'>
+                            <div class="tooltip-on-left-dark-big">
+                                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group">
+                <div class="col-sm-10 col-sm-offset-2">
+                    <button style="color:rgb(214, 48, 48)" type="button"
+                            class="btn btn-default btn-reg"
+                            ng-click='startStepEdit("New", "", -1)'
+                            title={{testcaseTooltips.stepnew.tooltip}}>
+                        New Subkeyword
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <hr/>
+
+        <div class="form-group">
+            <div class="col-sm-10">
+                <!--<input type="checkbox" ng-model="savecreateTestcaseCap"/><label>
+                &nbsp;Create another&nbsp;</label>-->
+                <input style="color:rgb(214, 48, 48)" type="button"
+                       class="btn btn-default" value="Save Wrapper Keyword"
+                       ng-click="saveTestcaseCap()"/>
+                <input type="button" class="btn btn-default" value="Cancel"
+                       ng-click="cancelTestcaseCap()"/>
+            </div>
+        </div>
+
+    </form>
+
+    <hr/>
+</div>

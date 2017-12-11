@@ -1,0 +1,51 @@
+
+    def $wrapper_kw(self):
+        """
+        The KW is auto-generated with Sequential KW tool, you could group
+        Warrior Keywords to perform a specific action repeatedly.
+        The Author of the KW has predefined variables and its values.
+        Please use Data file to pass to the values to this KW, if required.
+        The predefined KW and variables are listed below exactly in the order of execution.
+        $keyword_doc_list"""
+        import inspect
+        import importlib
+        from Framework.Utils.data_Utils import update_datarepository
+        from Framework.Utils.testcase_Utils import pNote
+
+        keyword_result_msg = "The keyword {} completed successfully with result {}"
+        wdesc = "$wdesc"
+        pNote(wdesc)
+        status = True
+        keyword_details = $keyword_details
+        for (keyword, action_path, kw_args) in keyword_details:
+            if action_path:
+                mod_path, class_name = action_path.rsplit('.', 1)
+                action_mod = importlib.import_module(mod_path)
+                action_classes = inspect.getmembers(action_mod, inspect.isclass)
+                action_class = [item[1] for item in action_classes if item[0] == class_name][0]
+                action_class_obj = action_class()
+            else:
+                action_class_obj = self
+                action_class = self.__class__
+            action_methods = inspect.getmembers(action_class, inspect.isroutine)
+            func = [item[1] for item in action_methods if item[0] == keyword][0]
+            output = func(action_class_obj, **kw_args)
+            if isinstance(output, tuple):
+                update_datarepository(output[1])
+                curstatus = output[0]
+            else:
+                curstatus = output
+            pNote(keyword_result_msg.format(keyword, curstatus))
+            # wrapper keyword result is pass if all the keywords passed (True) else fails
+            # with Fail if any of the keywords fail (False) or ERROR if any of the keyword
+            # fails with ERROR or EXCEPTION if any of the keyword fails with EXCEPTION
+            if isinstance(status, bool):
+                if isinstance(curstatus, bool):
+                    status &= curstatus
+                else:
+                    status = curstatus
+            elif str(curstatus).upper() == 'EXCEPTION':
+                # status can be ERROR or EXCEPTION, need to change to EXCEPTION if curstatus is EXCEPTION
+                status = 'EXCEPTION'
+
+        return status
