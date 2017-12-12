@@ -58,10 +58,8 @@ var wdf = {
             Synchronize name change between input field and nav bar
         */
         var input_box = $(this);
-        input_box.prop("value", input_box.val());
 
-        var system_id = input_box.closest(".subsys-box").attr("name").split("-").slice(0,1);
-        var subsystem_id = input_box.closest(".subsys-box").attr("name").split("-").slice(0,1);
+        var system_id = input_box.closest(".control-box").attr("sysid");
 
         if (input_box.val().length != 0) {
             input_box.css("background", "none");
@@ -69,7 +67,8 @@ var wdf = {
 
         // find the button that links to the current system
         // Change the label and button text
-        var nav_button = katana.$activeTab.find("[linkto='#"+$system_id+"-1-control-box']");
+        var nav_button = katana.$activeTab.find("[linkto='#"+system_id+"-control-box']");
+        input_box.prop("value", input_box.val());
         nav_button.find("span").text(" "+input_box.prop("value"));
     },
 
@@ -77,13 +76,13 @@ var wdf = {
         /*
             Synchronize name change between input field and nav bar
         */
-        $target = $(this);
-        var $system_id = $target.attr("name").split("-").slice(0,1);
-        var $subsystem_id = $target.attr("name").split("-").slice(1,2);
+        var input_box = $(this);
+        var system_id = input_box.closest(".control-box").attr("sysid");
+        var subsystem_id = input_box.closest(".subsys-box").attr("subsysid");
 
-        $target = katana.$activeTab.find("[id$='button-box']").find("[linkto='#"+$system_id+"-"+$subsystem_id+"-control-box']");
-        $value = $(this).prop("value");
-        $target.find("span").text(" "+$value);
+        var nav_button = katana.$activeTab.find("[linkto='#"+system_id+"-"+subsystem_id+"-editor']");
+        input_box.prop("value", input_box.val());
+        nav_button.find("span").text(" "+input_box.prop("value"));
     },
 
     validateKey: function(){

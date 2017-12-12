@@ -7,26 +7,36 @@
         {% if "subsystem" not in system %}
             <div class="wdf-pad">
                 <div id="{{ forloop.counter }}-1-system-box" class="wdf-sys-nav">
-                    <button class="btn wdf-wide-button" katana-click="wdf.jump_to" linkto="#{{ forloop.counter }}-1-control-box" type="button"><i class="fa fa-server"/><span class="wdf-span"> {{ system|get_item:'@name' }}</span></button>
+                    <button class="btn wdf-wide-button" katana-click="wdf.jump_to" linkto="#{{ forloop.counter }}-control-box" type="button">
+                        <i class="fa fa-server"/><span class="wdf-span"> {{ system|get_item:'@name' }}</span>
+                    </button>
                 </div>
             </div>
         {% elif system.subsystem|is_dict == "true" %}
             <div class="wdf-pad">
                 <div id="{{ forloop.counter }}-1-system-box" class="wdf-sys-nav">
-                    <button class="btn wdf-wide-button" katana-click="wdf.jump_to" linkto="#{{ forloop.counter }}-1-control-box" type="button"><i class="fa fa-server"/><span class="wdf-span"> {{ system|get_item:'@name' }}</span></button>
+                    <button class="btn wdf-wide-button" katana-click="wdf.jump_to" linkto="#{{ forloop.counter }}-control-box" type="button">
+                        <i class="fa fa-server"/><span class="wdf-span"> {{ system|get_item:'@name' }}</span>
+                    </button>
                 </div>
                 <div id="{{ forloop.counter }}-1-button-box" class="wdf-subsys-nav">
-                    <button class="btn wdf-wide-button" katana-click="wdf.jump_to" linkto="#{{ forloop.counter }}-1-control-box" type="button"><i class="fa fa-terminal"/><span class="wdf-span"> {{ system.subsystem|get_item:'@name' }}</span></button>
+                    <button class="btn wdf-wide-button" katana-click="wdf.jump_to" linkto="#{{ forloop.counter }}-1-editor" type="button">
+                        <i class="fa fa-terminal"/><span class="wdf-span"> {{ system.subsystem|get_item:'@name' }}</span>
+                    </button>
                 </div>
             </div>
         {% elif system.subsystem %}
             <div class="wdf-pad">
                 <div id="{{ forloop.counter }}-1-system-box" class="wdf-sys-nav">
-                    <button class="btn wdf-wide-button" katana-click="wdf.jump_to" linkto="#{{ forloop.counter }}-1-control-box" type="button"><i class="fa fa-server"/><span class="wdf-span"> {{ system|get_item:'@name' }}</span></button>
+                    <button class="btn wdf-wide-button" katana-click="wdf.jump_to" linkto="#{{ forloop.counter }}-control-box" type="button">
+                        <i class="fa fa-server"/><span class="wdf-span"> {{ system|get_item:'@name' }}</span>
+                    </button>
                 </div>
                 {% for subsys in system.subsystem %}
                     <div id="{{ forloop.parentloop.counter }}-{{ forloop.counter }}-button-box" class="wdf-subsys-nav">
-                        <button class="btn wdf-wide-button" katana-click="wdf.jump_to" linkto="#{{ forloop.parentloop.counter }}-{{ forloop.counter }}-control-box" type="button"><i class="fa fa-terminal"/><span class="wdf-span"> {{ subsys|get_item:'@name' }}</span></button>
+                        <button class="btn wdf-wide-button" katana-click="wdf.jump_to" linkto="#{{ forloop.parentloop.counter }}-{{ forloop.counter }}-editor" type="button">
+                            <i class="fa fa-terminal"/><span class="wdf-span"> {{ subsys|get_item:'@name' }}</span>
+                        </button>
                     </div>
                 {% endfor %}
             </div>
