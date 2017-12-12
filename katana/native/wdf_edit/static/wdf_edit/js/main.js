@@ -5,7 +5,7 @@ var wdf = {
         */
         $systems = katana.$activeTab.find(".control-box");
         $.each($systems, function(ind, sys) {
-            sys = $(sys);
+            var sys = $(sys);
             if (!sys.attr("id").startsWith("template")) {
                 if (sys.find("#content").length > 0 && sys.find("[name='subsystem_name']").length == 0) {
                     sys.find("[katana-click='wdf.addSubSystem']").hide();
@@ -57,26 +57,20 @@ var wdf = {
         /*
             Synchronize name change between input field and nav bar
         */
-        $target = $(this);
-        $target.prop("value", $target.val());
-        var $system_id = $target.attr("name").split("-").slice(0,1);
-        var $subsystem_id = $target.attr("name").split("-").slice(1,2);
+        var input_box = $(this);
+        input_box.prop("value", input_box.val());
 
-        if ($target.val().length != 0) {
-            $target.css("background", "none");
+        var system_id = input_box.closest(".subsys-box").attr("name").split("-").slice(0,1);
+        var subsystem_id = input_box.closest(".subsys-box").attr("name").split("-").slice(0,1);
+
+        if (input_box.val().length != 0) {
+            input_box.css("background", "none");
         }
 
         // find the button that links to the current system
         // Change the label and button text
-        $target = katana.$activeTab.find("[id$='system-box']").find("[linkto='#"+$system_id+"-1-control-box']");
-        $target.find("span").text(" "+$(this).prop("value"));
-
-        // Change other system name input field under the same system
-        $value = $(this).prop("value");
-        $systems = katana.$activeTab.find("[name^='"+$system_id+"'][name$='-system_name']");
-        $.each($systems, function(ind, sys){
-            $(sys).prop("value", $value);
-        });
+        var nav_button = katana.$activeTab.find("[linkto='#"+$system_id+"-1-control-box']");
+        nav_button.find("span").text(" "+input_box.prop("value"));
     },
 
     subSysNameChange: function(){

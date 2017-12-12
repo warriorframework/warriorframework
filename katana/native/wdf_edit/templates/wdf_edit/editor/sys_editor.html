@@ -16,14 +16,14 @@
 
     {% if "subsystem" not in system %}
         {% with system as subsystem %}
-            <div id="{{ forloop.counter }}-1-editor">
+            <div id="{{ forloop.counter }}-1-editor" class="subsys-box">
                 {% include "wdf_edit/editor/subsys_editor.html" %}
             </div>
         {% endwith %}
     {% elif system.subsystem|is_dict == "true" %}
         {% with system as subsystem %}
         <!-- Not every system has a subsystem toolbar -->
-            <div id="{{ forloop.counter }}-1-editor">
+            <div id="{{ forloop.counter }}-1-editor" class="subsys-box">
                 <div class="field-inline">
                     <input type="checkbox" class="wdf-subsys-checkbox" katana-click="wdf.subsysDefaultCheck" name="subsys" title="Default Subsystem"/>
                     <label class="wdf-label">Subsystem name:</label>
@@ -35,7 +35,7 @@
     {% elif system.subsystem %}
         {% for subsystem in system.subsystem %}
             <!-- Not every system has a subsystem toolbar -->
-            <div id="{{ forloop.parentloop.counter }}-{{ forloop.counter }}-editor">
+            <div id="{{ forloop.parentloop.counter }}-{{ forloop.counter }}-editor" class="subsys-box">
                 <div class="field-inline">
                     <input type="checkbox" class="wdf-subsys-checkbox" katana-click="wdf.subsysDefaultCheck" name="subsys" title="Default Subsystem"/>
                     <label class="wdf-label">Subsystem name:</label>
