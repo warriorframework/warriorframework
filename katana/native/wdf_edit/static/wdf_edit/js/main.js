@@ -105,108 +105,47 @@ var wdf = {
 
     deleteTag: function(){
         // empty tag and all of its child tags
-        $target = $(this).closest(".control-box");
-        var $system_id = $target.attr("id").split("-").slice(0,1);
-        var $subsystem_id = $target.attr("id").split("-").slice(1,2);
-
-        // When delete the last tag, shows addSubSystem icon
-        if ($target.find("#content:has(label)").length == 1 && $subsystem_id == "1") {
-            $target.find("[katana-click='wdf.addSubSystem']").show();
+        $(this).closest("#content").remove();
+        if ($(this).closest(".child_tags").length == 1) {
+            $(this).closest(".child_tags").remove();
         }
-
-        // Get the id that represented the tag
-        $target = $(this).closest(".field-inline");
-        $raw_id = $target.find("[name*='-key']").attr("name").substring(0, $target.find("[name*='-key']").attr("name").length-4);
-        $id = $raw_id.split("-").slice(0,-1).join("-");
-
-        // loop through all child tag and empty them
-        $children = $target.parent().find("[name*='"+$id+"-']");
-        for (var i=0; i<$children.length; i++) {
-            if ($($children.get(i)).prop("name").indexOf("key") !== -1) {
-                $child = $($children.get(i)).closest(".field-inline");
-                // $child.removeClass("animated fadeIn");
-                // $child.addClass("animated bounceOutLeft");
-                // closure
-                // setTimeout((function(tmp){return function(){tmp.empty();}})($child), 600);
-                $child.empty();
-                $child.hide();
-            }
-        }
-  
-        // $target.removeClass("animated fadeIn");
-        // $target.addClass("animated bounceOutLeft");
-        // setTimeout(function(){$target.empty();}, 600);
-        $target.empty();
-        $target.hide();
     },
 
     deleteChildTag: function(){
-        // hide a specific child tag
-
-        // Find the parent tag, can either starts with -0-key or -1- key
-        $target = $(this).parent().parent().find("[name*='key']");
-        $id = $target.attr("name").split("-").slice(0,3).join("-")+"-0-key";
-        $parent_tag = $target.closest(".control-box").find("[name='"+$id+"']");
-        if ($parent_tag.length == 0) {
-            $id = $target.attr("name").split("-").slice(0,3).join("-")+"-1-key";
-            $parent_tag = $target.closest(".control-box").find("[name='"+$id+"']");
-        }
-        
-        $hide_target = $target.parent();
-        if ($target.prop("name").indexOf("deleted") == -1) {
-            $target.prop("name", "deleted-"+$target.prop("name"));
-            // $hide_target.removeClass("animated fadeIn");
-            // $hide_target.addClass("animated bounceOutLeft");
-            // setTimeout(function(){$hide_target.parent().parent().hide()}, 600);
-            $hide_target.hide();
-
-            // If deleting the last child tag, makes the parent tag become a regular tag again
-            if (parseInt($parent_tag.attr("child_count")) == 1) {
-                $parent_tag.next().show();
-            }
-            $parent_tag.attr("child_count", parseInt($parent_tag.attr("child_count"))-1);
+        $(this).closest("#subcontent").remove();
+        if ($(this).closest(".child_tags").length == 0) {
+            $(this).closest(".child_tags").find("[name='value']").show();
         }
     },
 
     deleteSystem: function(){
-        // empty the whole system, same function works on subsystem and system
-        $target=$(this).closest(".control-box");
-        var $system_id = $target.attr("id").split("-").slice(0,1);
-        var $subsystem_id = $target.attr("id").split("-").slice(1,2);
-
-        // When delete the 2nd last system, show add tag icon on main system
-        if ($target.parent().find("[id^='"+$system_id+"-']:not(:empty)").length == 2) {
-            // alert("You delete the last subsystem");
-            $target.parent().find("[id^='"+$system_id+"-1-']").find("[katana-click='wdf.addTag']").show()
-        }
-
-        if ($target.parent().find("[id^='"+$system_id+"-']:not(:empty)").length > 1 && !($target.find(".sub-tool-bar").hasClass("wdf-indent"))) {
-            $target.next().find(".sub-tool-bar").removeClass("wdf-indent");
-            $target.next().find(".sub-tool-bar").find("div").show();
-        }
-
-        // $target.removeClass("animated fadeIn");
-        // $target.addClass("animated bounceOutLeft");
-        // setTimeout(function(){$target.empty()}, 600);
-        $target.empty();
-
+        // empty the whole system
+        var target = $(this).closest(".control-box");
+        var system_id = target.attr("sysid");
+        target.remove();
+        
         // Update the nav bar
-        $target=katana.$activeTab.find("[id$='button-box']").find("[linkto='#"+$system_id+"-"+$subsystem_id+"-control-box']");
-        $target_sys=$target.closest(".wdf-pad");
-        // only 1 subsys remains, 1 btn for sys and 1 btn for subsys
-        if ($target_sys.find(".btn").length == 2) {
-            $target_sys.remove();
-        } else {
-            $target.parent().remove();
-        }
+        var nav_button = katana.$activeTab.find("[linkto='#"+system_id+"-control-box']").closest(".wdf-pad");
+        nav_button.remove();
+    },
+
+    deleteSubSystem: function(){
+        // empty the subsystem
+        var target = $(this).closest(".control-box");
+        var system_id = target.attr("sysid");
+        target.remove();
+        
+        // Update the nav bar
+        var nav_button = katana.$activeTab.find("[linkto='#"+system_id+"-control-box']").closest(".wdf-pad");
+        nav_button.remove();
     },
 
     sysDefaultCheck: function(){
         // Check the current sys checkbox and uncheck other sys checkbox
         if ($(this).prop("checked")) {
-            $boxes = katana.$activeTab.find(".wdf-sys-checkbox:checked");
-            if ($boxes.length > 1) {
-                $.each($boxes, function(ind, box){
+            var boxes = katana.$activeTab.find(".wdf-sys-checkbox:checked");
+            if (boxes.length > 1) {
+                $.each(boxes, function(ind, box){
                     $(box).prop("checked", false);
                 });
             }
@@ -216,12 +155,10 @@ var wdf = {
 
     subsysDefaultCheck: function(){
         // Check the current subsys checkbox and uncheck other subsys checkbox under the same sys
-        var $system_id = $(this).attr("name").split("-").slice(0,1);
-        var $subsystem_id = $(this).attr("name").split("-").slice(1,2);
         if ($(this).prop("checked")) {
-            $boxes = katana.$activeTab.find("[id^='"+$system_id+"'][id$='-control-box']").find(".wdf-subsys-checkbox:checked");
-            if ($boxes.length > 1) {
-                $.each($boxes, function(ind, box){
+            var boxes = $(this).closest(".control-box").find(".wdf-subsys-checkbox:checked");
+            if (boxes.length > 1) {
+                $.each(boxes, function(ind, box){
                     $(box).prop("checked", false);
                 });
             }
