@@ -3,8 +3,8 @@ var wdf = {
         /*
             Scan the systems and hide the addsubsystem button if there are tags in it
         */
-        $systems = katana.$activeTab.find(".control-box");
-        $.each($systems, function(ind, sys) {
+        var systems = katana.$activeTab.find(".control-box");
+        $.each(systems, function(ind, sys) {
             var sys = $(sys);
             if (!sys.attr("id").startsWith("template")) {
                 if (sys.find("#content").length > 0 && sys.find("[name='subsystem_name']").length == 0) {
@@ -21,7 +21,7 @@ var wdf = {
             $row_key = $row.find("[name$='-key']");
             $row_value = $row.find("[name$='-value']");
             if (typeof $row_key.attr("value") !== "undefined" && $row_key.attr("value").toLowerCase() == "password" ) {
-                $row_value.prop("type", "password");
+                $row_value.attr("type", "password");
             }
         });
     },
@@ -68,7 +68,7 @@ var wdf = {
         // find the button that links to the current system
         // Change the label and button text
         var nav_button = katana.$activeTab.find("[linkto='#"+system_id+"-control-box']");
-        input_box.prop("value", input_box.val());
+        input_box.attr("value", input_box.val());
         nav_button.find("span").text(" "+input_box.prop("value"));
     },
 
@@ -81,13 +81,13 @@ var wdf = {
         var subsystem_id = input_box.closest(".subsys-box").attr("subsysid");
 
         var nav_button = katana.$activeTab.find("[linkto='#"+system_id+"-"+subsystem_id+"-editor']");
-        input_box.prop("value", input_box.val());
+        input_box.attr("value", input_box.val());
         nav_button.find("span").text(" "+input_box.prop("value"));
     },
 
     validateKey: function(){
         $ele = $(this);
-        $ele.prop("value", $ele.val());
+        $ele.attr("value", $ele.val());
         $ele.css("background", "#f9f9f9");
         if ($ele.prop("value").indexOf(" ") != -1) {
             alert("Data key cannot contain whitespace");
@@ -97,7 +97,7 @@ var wdf = {
         }
 
         if ($ele.val().toLowerCase() == "password") {
-            $ele.next().prop("type", "password");
+            $ele.next().attr("type", "password");
         } else {
             $ele.next().removeAttr("type");
         }
@@ -122,17 +122,40 @@ var wdf = {
         // empty the whole system
         var target = $(this).closest(".control-box");
         var system_id = target.attr("sysid");
+        var target_control_box = katana.$activeTab.find("[linkto='#"+system_id+"-control-box']").closest(".wdf-pad");
+        // need to update the sysid for the systems below
+
+        var systems_list = katana.$activeTab.find("#wdf-editor-col").find(".control-box");
+        $.each(systems_list, function(ind, sys){
+            if (ind+1 > parseInt(system_id)){
+                // Decrease the system_id by 1 to fill the one being removed
+                console.log(ind+1);
+                $(sys).attr("sysid", ind);
+                $(sys).attr("id", ind+"-control-box");
+
+                var system_nav_button = katana.$activeTab.find("[linkto='#"+(ind+1)+"-control-box']");
+                system_nav_button.attr("linkto", "#"+ind+"-control-box");
+
+                var subsys_list = $(sys).find(".subsys-box");
+                $.each(subsys_list, function(sub_ind, subsys){
+                    $(subsys).attr("id", ind+"-"+(sub_ind+1)+"-editor");
+
+                    var subsys_nav_button = katana.$activeTab.find("[linkto='#"+(ind+1)+"-"+(sub_ind+1)+"-editor']");
+                    subsys_nav_button.attr("linkto", "#"+ind+"-"+(sub_ind+1)+"-editor");
+                });
+            }
+        });
+
         target.remove();
-        
-        // Update the nav bar
-        var nav_button = katana.$activeTab.find("[linkto='#"+system_id+"-control-box']").closest(".wdf-pad");
-        nav_button.remove();
+        target_control_box.remove();
     },
 
     deleteSubSystem: function(){
         // empty the subsystem
         var target = $(this).closest(".control-box");
         var system_id = target.attr("sysid");
+        // need to update the sysid for the systems below
+
         target.remove();
         
         // Update the nav bar
@@ -168,105 +191,54 @@ var wdf = {
 
     addSystem: function(){
         // Add a system
-        var $tmp = katana.$activeTab.find("#system_template").clone();
-        // length-1 is because there are a template sys and template subsys with class control-box in it
-        // the new system needs to have actual sys count + 1, which is the same as length-1
-        var $tmp_id = katana.$activeTab.find(".control-box").length-1;
+        var tmp = katana.$activeTab.find("#system_template").clone();
+        // There is a template sys with class control-box in it
+        // the new system needs to have actual sys count + 1, which is the same as length
+        var tmp_id = katana.$activeTab.find(".control-box").length;
 
-        // Replace template content with real content
-        $tmp.find("#template-system").prop("id", $tmp_id+"-1-control-box");
-        $tmp.find("[name='template-system-name']").prop("name", $tmp_id+"-1-system_name");
-        $tmp.find("[name='template-system-default']").prop("name", $tmp_id+"-1-default");
-        $tmp.find("[name='template-system.tag']").prop("name", $tmp_id+"-1-1-1-key");
-        $tmp.find("[name='template-system.value']").prop("name", $tmp_id+"-1-1-1-value");
-        katana.$activeTab.find("#wdf-editor-col").append($($tmp.html()));
+        // Add the system to the end of page
+        tmp.find("#template-system").attr("sysid", tmp_id);
+        tmp.find("#template-system").attr("id", tmp_id+"-control-box");
+        tmp.find("#template-subsys-editor").attr("subsysid", 1);
+        tmp.find("#template-subsys-editor").attr("id", tmp_id+"-1-editor");
+        katana.$activeTab.find("#wdf-editor-col").append(tmp.html());
 
-        katana.$activeTab.find("#"+$tmp_id+"-1-control-box").get(0).scrollIntoView(true);
-        katana.quickAnimation(katana.$activeTab.find("#"+$tmp_id+"-1-control-box").find("input"), "wdf-highlight", 1000);
+        katana.$activeTab.find("#"+tmp_id+"-control-box").get(0).scrollIntoView(true);
+        katana.quickAnimation(katana.$activeTab.find("#"+tmp_id+"-control-box").find("input"), "wdf-highlight", 1000);
 
         // Create button in nav bar
-        var $tmp = katana.$activeTab.find("#navigator_template").clone();
+        var tmp = katana.$activeTab.find("#navigator_template").clone();
         // length-2 as we just attached a new system into the view
-        var $tmp_id = katana.$activeTab.find(".control-box").length-2;
-        $tmp.find("#template-system-box").prop("id", $tmp_id+"-1-system-box");
-        $tmp.find("[linkto='template-nav.linkto']").attr("linkto", "#"+$tmp_id+"-1-control-box");
-        katana.$activeTab.find("#wdf-navigator").append($($tmp.html()));
+        tmp.find("[linkto='template-nav.linkto']").attr("linkto", "#"+tmp_id+"-control-box");
+        katana.$activeTab.find("#wdf-navigator").append(tmp.html());
     },
 
     addSubSystem: function(){
         // Add a subsystem under the current system
-        var $target = $(this).closest(".control-box");
-        var $system_id = $target.attr("id").split("-").slice(0,1);
-        var $subsystem_id = $target.attr("id").split("-").slice(1,2);
+        var target = $(this).closest(".control-box");
+        var system_id = target.attr("sysid");
+        var subsystem_id = target.find(".subsys-box").length+1;
 
-        if ($subsystem_id != "1") {
-            alert("Please only add subsystem under top level system");
-        } else if ($subsystem_id == "1" && $target.find("#content:has(div)").length > 0){
+        if (subsystem_id == 2 && target.find(".subsys-box").length == 0 & target.find("#content".length > 0)){
             alert("Please only add subsystem when top level system doesn't have tag");
         } else {
-            var $tmp = katana.$activeTab.find("#subsystem_template").clone();
-            var $subsystem_count = $target.parent().find("[id^='"+$system_id+"-'][id$='-control-box']").length;
+            var tmp = katana.$activeTab.find("#subsystem_template").clone();
 
-            if (katana.$activeTab.find("[name='"+$system_id+"-1-subsystem_name']").length == 0) {
+            if (target.find(".wdf-subsys-checkbox").length == 0) {
                 // no subsystem structure
-                var $tmp_id = $system_id+"-"+$subsystem_count+"-control-box"
-                $tmp.find("#template-subsystem").prop("id", $tmp_id);
-                $tmp.find("[name='template-system-name']").attr("value", $target.find('[name*="system_name"]').attr("value"));
-                $tmp.find("[name='template-system-name']").prop("name", $system_id+"-"+$subsystem_count+"-system_name");
-
-                $tmp.find("[name='template-subsystem-name']").prop("name", $system_id+"-"+$subsystem_count+"-subsystem_name");
-                $tmp.find("#content").remove();
-
-                $tmp.find("[name='template-system-default']").prop("name", $system_id+"-"+$subsystem_count+"-default");
-                $tmp.find("[name='template-subsystem-default']").prop("name", $system_id+"-"+$subsystem_count+"-default-subsys");
-
-                // Replace the current system with a system with subsystem tag
-                var $tags = $target.find(".field-inline");
-                katana.$activeTab.find("#"+$system_id+"-"+$subsystem_count+"-control-box").replaceWith($($tmp.html()));
-                $.each($tags, function(ind, tag){
-                    katana.$activeTab.find("#"+$system_id+"-"+$subsystem_count+"-control-box").append($(tag));
-                });
-
-                // Add new subsystem to the nav bar
-                var $tmp = katana.$activeTab.find("#navigator_button_template").clone();
-                $tmp.find("#template-button-box").prop("id", $system_id+"-"+$subsystem_count+"-button-box");
-                $tmp.find("[linkto='template-nav.linkto']").attr("linkto", "#"+$system_id+"-"+$subsystem_count+"-control-box");
-                // Add button after the last subsystem under the same system
-                katana.$activeTab.find("#"+$system_id+"-1-system-box").after($($tmp.html()));
-            } else {
-                // already has subsystem structure
-                var $tmp_id = $system_id+"-"+($subsystem_count+1)+"-control-box"
-                $tmp.find("#template-subsystem").prop("id", $tmp_id);
-                $tmp.find("[name='template-system-name']").attr("value", $target.find('[name*="system_name"]').attr("value"));
-                $tmp.find("[name='template-system-name']").prop("name", $system_id+"-"+($subsystem_count+1)+"-system_name");
-
-                $tmp.find("[name='template-subsystem-name']").prop("name", $system_id+"-"+($subsystem_count+1)+"-subsystem_name");
-                $tmp.find("[name='template-subsystem.tag']").prop("name", $system_id+"-"+($subsystem_count+1)+"-"+($target.children("#content").length+1)+"-1-key");
-                $tmp.find("[name='template-subsystem.value']").prop("name", $system_id+"-"+($subsystem_count+1)+"-"+($target.children("#content").length+1)+"-1-value");
-
-                $tmp.find("[name='template-system-default']").prop("name", $system_id+"-"+($subsystem_count+1)+"-default");
-                $tmp.find("[name='template-subsystem-default']").prop("name", $system_id+"-"+($subsystem_count+1)+"-default-subsys");
-                $tmp.find("[katana-click='wdf.addSubSystem']").hide()
-
-                $tmp.find(".sub-tool-bar").addClass("wdf-indent");
-                $tmp.find(".sub-tool-bar").find("div").hide();
-
-                // Add new subsystem after the last subsystem
-                katana.$activeTab.find("#"+$system_id+"-"+$subsystem_count+"-control-box").after($($tmp.html()));
-
-                // Add new subsystem to the nav bar
-                var $tmp = katana.$activeTab.find("#navigator_button_template").clone();
-                $tmp.find("#template-button-box").prop("id", $system_id+"-"+($subsystem_count+1)+"-button-box");
-                $tmp.find("[linkto='template-nav.linkto']").attr("linkto", "#"+$system_id+"-"+($subsystem_count+1)+"-control-box");
-                // Add button after the last subsystem under the same system
-                katana.$activeTab.find("#"+$system_id+"-"+($subsystem_count)+"-button-box").after($($tmp.html()));
+                var sysname = target.find('[name="system_name"]').prop("value");
+                tmp.find('[name="system_name"]').attr("value", sysname);
             }
 
-            // Highlight the new subsystem
-            katana.$activeTab.find("#"+$tmp_id).get(0).scrollIntoView(true);
-            katana.quickAnimation(katana.$activeTab.find("#"+$tmp_id).find("input"), "wdf-highlight", 1000);
+            tmp.find("#template-subsys-editor").attr("subsysid", subsystem_id);
+            tmp.find("#template-subsys-editor").attr("id", system_id+"-"+subsystem_id+"-editor");
 
-            // $target.parent().find("[id^='"+$system_id+"-1']").find("[katana-click='wdf.addTag']").hide()
+            target.append(tmp.html());
+
+            // Highlight the new subsystem
+            target = katana.$activeTab.find("#"+system_id+"-"+subsystem_id+"-editor")
+            target.get(0).scrollIntoView(true);
+            katana.quickAnimation(target.find("input"), "wdf-highlight", 1000);
         }
     },
 
@@ -278,8 +250,8 @@ var wdf = {
         var $subsystem_id = $target.attr("id").split("-").slice(1,2);
 
         var $id = $system_id+"-"+$subsystem_id+"-";
-        $tmp.find("[name='template-tag.tag']").prop("name", $id+($target.children("#content").length+1)+"-1-key");
-        $tmp.find("[name='template-tag.value']").prop("name", $id+($target.children("#content").length+1)+"-1-value");
+        $tmp.find("[name='template-tag.tag']").attr("name", $id+($target.children("#content").length+1)+"-1-key");
+        $tmp.find("[name='template-tag.value']").attr("name", $id+($target.children("#content").length+1)+"-1-value");
         $target.append($($tmp.html()));
     },
 
@@ -292,8 +264,8 @@ var wdf = {
         var $id = $raw_id.split("-").slice(0,-1).join("-");
         var $new_id = $target.parent().find("[name*='"+$id+"'][name$='-key']").length+1;
 
-        $tmp.find("[name='template-tag.tag']").prop("name", $id+"-"+$new_id+"-key");
-        $tmp.find("[name='template-tag.value']").prop("name", $id+"-"+$new_id+"-value");
+        $tmp.find("[name='template-tag.tag']").attr("name", $id+"-"+$new_id+"-key");
+        $tmp.find("[name='template-tag.value']").attr("name", $id+"-"+$new_id+"-value");
         $target.parent().find("[name*='"+$id+"'][name$='-key']:last").parent().after($($tmp.html()));
 
         $input = $target.parent().find("[name*='"+$id+"'][name$='-key']:first");

@@ -25,9 +25,12 @@
         <!-- Not every system has a subsystem toolbar -->
             <div id="{{ forloop.counter }}-1-editor" class="subsys-box" subsysid="1">
                 <div class="field-inline">
-                    <input type="checkbox" class="wdf-subsys-checkbox" katana-click="wdf.subsysDefaultCheck" name="subsys" title="Default Subsystem"/>
+                    <input type="checkbox" class="wdf-subsys-checkbox" katana-click="wdf.subsysDefaultCheck" name="subsys-default" title="Default Subsystem"/>
                     <label class="wdf-label">Subsystem name:</label>
                     <input class="wdf-input" name="subsystem_name" katana-change="wdf.subSysNameChange" value="{{ subsystem|get_item:'@name' }}"/>
+                    <i katana-click="wdf.toggle" class="fa fa-toggle-up" title="Hide/Show"/>
+                    <i katana-click="wdf.addTag" class="fa fa-plus" title="Add Data"/>
+                    <i katana-click="wdf.deleteSystem" class="fa fa-trash" title="Delete Subsystem"/>
                 </div>
                 {% include "wdf_edit/editor/subsys_editor.html" %}
             </div>
@@ -37,9 +40,12 @@
             <!-- Not every system has a subsystem toolbar -->
             <div id="{{ forloop.parentloop.counter }}-{{ forloop.counter }}-editor" class="subsys-box" subsysid="{{ forloop.counter }}">
                 <div class="field-inline">
-                    <input type="checkbox" class="wdf-subsys-checkbox" katana-click="wdf.subsysDefaultCheck" name="subsys" title="Default Subsystem"/>
+                    <input type="checkbox" class="wdf-subsys-checkbox" katana-click="wdf.subsysDefaultCheck" name="subsys-default" title="Default Subsystem"/>
                     <label class="wdf-label">Subsystem name:</label>
                     <input class="wdf-input" name="subsystem_name" katana-change="wdf.subSysNameChange" value="{{ subsystem|get_item:'@name' }}"/>
+                    <i katana-click="wdf.toggle" class="fa fa-toggle-up" title="Hide/Show"/>
+                    <i katana-click="wdf.addTag" class="fa fa-plus" title="Add Data"/>
+                    <i katana-click="wdf.deleteSystem" class="fa fa-trash" title="Delete Subsystem"/>
                 </div>
                 {% include "wdf_edit/editor/subsys_editor.html" %}
             </div>
