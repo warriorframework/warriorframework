@@ -539,7 +539,7 @@ $scope.showRules = function(execType){
                     }
                     else{
                         $scope.rule_list[i]._Operator = $scope.rule_list[i]._Operator;
-                    } 
+                    }
                 }
             }
             $scope.copyStepCheck = 0;
@@ -1395,6 +1395,10 @@ $scope.showRules = function(execType){
             $scope.hideSubsys  = false;
             $scope.cancelArguments();
             openStepCap(drivername, index);
+        }
+        var argsCheck = JSON.stringify($scope.xml.args.args);
+        if(argsCheck == '["self"]'){//To hide subsystem for 'no arguments'.
+            $scope.hideSubsys = true;
         }
         $scope.editArgs = 0;
        };
