@@ -407,7 +407,6 @@ $scope.showRules = function(execType){
                 $scope.stepToBeCopied = $scope.editIndex+1;
             }
             $scope.hideSubsys = false;
-
             if($scope.stepToBeCopied == "None"){
                 swal({
                     title: "Please select a step number from the dropdown.",
@@ -479,9 +478,8 @@ $scope.showRules = function(execType){
             if(!$scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Arguments.argument.hasOwnProperty(length)){
                 $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Arguments.argument = [$scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Arguments.argument];
             }
-            if($scope.status.kwCheckbox || $scope.showRulesBelow){
+            if($scope.status.kwCheckbox){
                 $scope.arg_list = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Arguments.argument;
-                $scope.rule_list = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Execute.Rule;
             }
             else{
                 var mapped_arg_obj = {};
@@ -503,15 +501,9 @@ $scope.showRules = function(execType){
                var stepSubsys = $scope.xml.mapargs['subsystem_name'];
                $scope.sysFields();
                $scope.showSubsys(stepSys);
-
             }
 
             if( $scope.editArgs == 0){
-                $scope.status.step.Execute._ExecType = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Execute._ExecType;
-                $scope.status.step.Execute.Rule._Condition = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Execute.Rule._Condition;
-                $scope.status.step.Execute.Rule._Condvalue = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Execute.Rule._Condvalue;
-                $scope.status.step.Execute.Rule._Else = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Execute.Rule._Else;
-                $scope.status.step.Execute.Rule._Elsevalue = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Execute.Rule._Elsevalue;
                 $scope.status.step.iteration_type._type = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].iteration_type._type;
                 $scope.status.step.runmode._type = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].runmode._type;
                 $scope.status.step.runmode._value = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].runmode._value;
@@ -531,17 +523,15 @@ $scope.showRules = function(execType){
             $scope.status.step.Execute._Expression = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Execute._Expression;
             $scope.status.step.Execute._Else = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Execute._Else;
             $scope.status.step.Execute._Elsevalue = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Execute._Elsevalue;
-            $scope.status.step.iteration_type._type = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].iteration_type._type;
-            $scope.status.step.runmode._type = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].runmode._type;
-            $scope.status.step.runmode._value = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].runmode._value;
-            $scope.status.step.impact = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].impact;
-            $scope.status.step.context = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].context;
-            $scope.status.step.onError._action = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].onError._action;
-            $scope.status.step.onError._value = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].onError._value;
+
             if($scope.copyStepCheck == 0){
                 $scope.copyStepCheck = 1;
-                $scope.copyStep();  
+                $scope.copyStepRules();  
             }
+        };
+
+        $scope.copyStepRules = function(){
+            $scope.rule_list = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Execute.Rule;
             if($scope.status.step.Execute._ExecType == 'If' || $scope.status.step.Execute._ExecType == 'If Not'){
                 for (var i = 0; i < $scope.rule_list.length; i++) {
                     if($scope.rule_list[i]._Operator == undefined){
@@ -1401,7 +1391,6 @@ $scope.showRules = function(execType){
             });
         }
         else {
-
             $scope.copyStep();
             $scope.hideSubsys  = false;
             $scope.cancelArguments();
