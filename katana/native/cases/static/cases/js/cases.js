@@ -1,23 +1,3 @@
-/*
-/// -------------------------------------------------------------------------------
-
-Case File Data Handler 
-
-Author: 
-Date: 
-
-The functions in this module are designed specifically for handling Suite XML files
-for the warrior framework. 
-
-It is expected to work with the editCase.html file and the calls in 
-the views.py python for Django. 
-/// -------------------------------------------------------------------------------
-
-*/ 
-// Belongs in main.js when ok. 
-// Converts a path that is relative to pathToBase into an absolute path with .. constructs. 
-//
-
 function absFromPrefix(pathToBase, pathToFile) {
 	// Converts an absolute path to one that is relative to pathToBase 
 	// Input: 

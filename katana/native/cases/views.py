@@ -234,7 +234,6 @@ def editCase(request):
         xml_r['Testcase']['Steps'] = copy.deepcopy(xml_d['Testcase']['Steps'])
     except:
         xml_r["Testcase"]["Steps"] = {}
-
     try:
         xml_r['Testcase']['Requirements'] = copy.deepcopy(xml_d['Testcase']['Requirements'])
     except:
@@ -269,7 +268,6 @@ def editCase(request):
         'emptyTestCase': emptyCaseString,
         'fulljson': xml_r['Testcase']
     }
-
     return HttpResponse(template.render(context, request))
 
 
@@ -301,8 +299,6 @@ def getCaseDataBack(request):
     sb = request.POST.get(u'savesubdir')
     fname = sb + os.sep + fn
     if fname.find(".xml") < 2: fname = fname + ".xml"
-
-
 
     xml = xmltodict.unparse(json.loads(ijs), pretty=True)
     fd = open(fname, 'w')
