@@ -465,7 +465,6 @@ var wapp_management = {
     },
 
     editConfig: function(config_name, callback) {
-
         if(config_name == undefined){
             var $elem = $(this);
             config_name = $elem.attr("config_name");
@@ -487,8 +486,10 @@ var wapp_management = {
 
         for(var i=0; i<$disabledInputs.length; i++){
             elem_value = $($disabledInputs[i]).val()
-            wapp_management.addAnotherApp((i+1), elem_value)
-            wapp_management.validateInput(elem_value, $($disabledInputs[i]), config_name)
+            wapp_management.addAnotherApp((i+1), elem_value);
+            var $parentChildren = $parent.children();
+            var $parentLastChild = $($parentChildren[$parentChildren.length - 1])
+            wapp_management.validateInput(elem_value, $parentLastChild.find('input'), config_name);
         }
 
         $siblings.html('');
@@ -565,13 +566,20 @@ var wapp_management = {
             url: 'wapp_management/validate_app_path/',
             data: data
         }).done(function(data) {
-            if(!data["valid"]){
+            if(!data["status"]){
                 $elem.css("border-color", "red");
                 $elem.attr("valid-data", false);
+                if($elem.next() !== undefined){
+                    $elem.next().remove();
+                }
+                $elem.after('<i class="fa fa-exclamation-triangle yellow" aria-hidden="true">&nbsp;' + data.message + '</i>');
             }
             else{
                 $elem.css("border-color", "#dcdcdc");
                 $elem.attr("valid-data", true);
+                if($elem.next() !== undefined){
+                    $elem.next().remove();
+                }
             }
             var $displayInputs = $currentPage.find('[id^="app_path_for_config_"]')
 

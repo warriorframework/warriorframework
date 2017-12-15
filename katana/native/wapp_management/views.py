@@ -200,7 +200,7 @@ def open_config(request):
 
 
 def validate_app_path(request):
-    output = False
+    output = {"status": True, "message": ""}
     detail_type = request.POST.get("type", None)
     detail_info = request.POST.get("value", None)
     dot_data_dir = join_path(os.getcwd(), "native", "wapp_management", ".data")
@@ -224,21 +224,24 @@ def validate_app_path(request):
                 zip_ref.close()
                 app_path = join_path(temp_dir_path, temp[:-4])
             else:
-                print "-- An Error Occurred -- {0} does not exist".format(detail_info)
+                output["status"] = False
+                output["message"] = "{0} does not exist".format(detail_info)
+                print "-- An Error Occurred -- ".format(output["message"])
         elif detail_type == "filepath":
             if os.path.isdir(detail_info):
                 filename = get_dir_from_path(detail_info)
                 copy_dir(detail_info, join_path(temp_dir_path, filename))
                 app_path = join_path(temp_dir_path, filename)
             else:
-                print "-- An Error Occurred -- {0} does not exist or is not a directory".format(detail_info)
+                output["status"] = False
+                output["message"] = "{0} does not exist or is not a directory".format(detail_info)
+                print "-- An Error Occurred -- {0}".format(output["message"])
         else:
             print "-- An Error Occurred -- Type of validation not given."
         if app_path:
             app_validator_obj = AppValidator(app_path)
             output = app_validator_obj.is_valid()
-            #shutil.rmtree(temp_dir_path)
     else:
         print "-- An Error Occurred -- Could not create temporary directory."
-    return JsonResponse({"valid": output})
+    return JsonResponse(output)
 
