@@ -1,4 +1,4 @@
-/* wdf editor app related styles starts */
+ wdf editor app related styles starts */
 
 .wdf-button {
     position: absolute;
@@ -7,8 +7,8 @@
 
 .wdf-wide-button {
     display: block;
-    width: 100% !important;
-    max-width: 100% !important;
+    width: 100%;
+    max-width: 100%;
     text-align: left;
     background-color: #f9f9f9;
     border: none;
@@ -25,10 +25,6 @@
 
 hr.wdf-hr {
     display: block;
-}
-
-.wdf-container {
-    padding: 1%;
 }
 
 .wdf-scroll {
@@ -54,10 +50,6 @@ hr.wdf-hr {
     width: calc(100% - 214px) !important;
     margin-left: 214px !important;
     background: #cccccc !important;
-}
-
-.sub-tool-bar .button {
-    margin-top: 4px;
 }
 
 .side-navigator {
@@ -87,7 +79,7 @@ hr.wdf-hr {
     padding: 5px 28px;
 }
 
-div#wdf-editor-col {
+#wdf-editor-col {
     flex: none;
     max-width: none;
     width: calc(100% - 360px);
@@ -110,14 +102,6 @@ div#wdf-editor-col {
 
 div#wdf-navigator .btn:hover {
     background: #eaeaea;
-}
-
-.wdf-container {
-    padding: 0;
-}
-
-.wdf-pad {
-    padding: 0;
 }
 
 .wdf-container .row {
@@ -168,19 +152,119 @@ div#wdf-navigator .btn:hover {
 
 .wdf-label {
     border: 0px !important;
+    width: 10% !important;
 }
 
 .control-box {
-    padding: 10px;
     margin-bottom: 12px;
     -webkit-box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.22);
     -moz-box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.22);
     box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.22);
-    padding-top: 45px;
-    position: relative;
+    /*position: relative;*/
 }
 
-.sub-tool-bar>.field {
+.control-box:empty {
+    display: none;
+}
+
+.subsys-toolbar {
+    background-color: #9eadbc;
+    color: white;
+    margin-bottom: 0;
+    padding: 0 2px;
+}
+
+.subsys-toolbar input {
+    display: inline-block;
+    width: 80%;
+    color: #212529;
+    background: transparent;
+    border: none;
+}
+
+.subsys-toolbar i {
+    display: inline-block;
+    margin:0 6px;
+}
+
+.subsys-toolbar .wdf-label {
+    display: inline-block;
+    background: transparent;
+}
+
+/* Redefining subtoolbar*/
+
+.sys-toolbar {
+    /*position: absolute;
+    top: 0;
+    left: 0;
+    text-align: right;
+    width: 100%;
+    height: 40px;
+    z-index: 9;
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.19);
+    -moz-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.19);
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.19);
+    padding: 0 2px;*/
+    background: #4ea4e0;
+    color: white;
+}
+
+.sys-toolbar+.to-scroll {
+    overflow: auto !important;
+    position: absolute;
+    top: 40px;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 40px);
+}
+
+.sys-toolbar .button {
+    margin: 5px 5px 0px 2px;
+    background: rgb(244, 244, 244);
+    border: solid #d2d2d2 1px;
+    color: #333;
+    width: auto;
+    text-align: center;
+}
+
+.sys-toolbar .field {
+    padding: 0;
+    height: 90%;
+    padding-top: 4px;
+    max-width: none;
+}
+
+.sys-toolbar input {
+    width: 80%;
+    padding: 0 5px;
+    border: none;
+    line-height: 40px;
+    color: white;
+    background: transparent;
+    display: inline-flex;
+}
+
+.sys-toolbar .button:hover {
+    background: #efefef;
+}
+
+.sys-toolbar>i {
+    line-height: 40px;
+    margin: 0 6px;
+}
+
+.wdf-container .sys-toolbar .title {
+    background: transparent;
+    text-align: left;
+    color: white;
+}
+
+.sys-toolbar .button {
+    margin-top: 4px;
+}
+
+.sys-toolbar>.field {
     width: 40px;
     overflow: hidden;
     margin: 0;
@@ -191,12 +275,13 @@ div#wdf-navigator .btn:hover {
     font-size: 0;
 }
 
-.sub-tool-bar>.field.title-block {
+.sys-toolbar>.field.title-block {
     left: 45px;
     top: 0;
-    width: calc(100% - 200px);
+    width: 75%;
     margin: 0;
     /* padding: 0; */
+    
     overflow: hidden;
     position: absolute;
     display: block;
@@ -206,19 +291,19 @@ div#wdf-navigator .btn:hover {
     color: white;
 }
 
-.sub-tool-bar>.field.title-block>input,
-.sub-tool-bar>.field.title-block>input::placeholder {
+.sys-toolbar>.field.title-block>input,
+.sys-toolbar>.field.title-block>input::placeholder {
     background: transparent;
     color: white;
     font-size: 20px;
 }
 
-.sub-tool-bar input[type="checkbox"]+label:before {
+.sys-toolbar input[type="checkbox"]+label:before {
     border-color: white;
 }
 
-.control-box:empty {
-    display: none;
-}
+/* End of redefining subtoolbar*/
 
-/* wdf editor app related styles ends */
+
+
+/* wdf editor app related styles ends 
