@@ -102,50 +102,73 @@ var wapp_management = {
         }
     },
 
-    sendInstallInfo: function(app_paths, removeChildren){
-        var $currentPage = katana.$activeTab;
-        if (removeChildren === undefined){
-            removeChildren = true;
-        } else {
-            removeChildren = false;
-        }
-        app_paths.forEach(function(app_path, index){
-            setTimeout(function(){
-                $.ajax({
-                    headers: {
-                        'X-CSRFToken': wapp_management.getCookie('csrftoken')
-                    },
-                    type: 'POST',
-                    url: 'wapp_management/install_an_app/',
-                    data: {"app_paths": [app_path]},
-                }).done(function(data) {
-                    if(removeChildren){
-                        $($currentPage.find('#form-for-paths').children()[0]).remove();
-                    }
-                    setTimeout(function(){
-                        katana.refreshLandingPage();
-                        $.ajax({
-                            type: 'GET',
-                            url: 'wapp_management/update_installed_apps_section/',
-                        }).done(function(installed_apps_data){
-                            $currentPage.find('#installed_apps_div').html(installed_apps_data);
-                        });
-                    }, ((index+1)*2)* 1000);
-                });
-            }, (index*2)* 2000);
-        });
-
-        setTimeout(function(){
-            if(removeChildren){
-                wapp_management.addAnotherApp(1);
+    sendInstallInfo: function(message){
+        if (message === undefined){
+            message = {
+                "installed": [],
+                "not_installed": []
             }
+        }
+        var $currentPage = katana.$activeTab
+        var $formDiv = $currentPage.find('#form-for-paths');
+        var $formDivChildren = $formDiv.children();
+        var app_path = "";
+        if($formDivChildren.length > 0){
+            app_path = $($formDivChildren[0]).find('input[id^="app_path_for_config"]').val();
+            $.ajax({
+                headers: {
+                    'X-CSRFToken': wapp_management.getCookie('csrftoken')
+                },
+                type: 'POST',
+                url: 'wapp_management/install_an_app/',
+                data: {"app_paths": app_path},
+            }).done(function(data){
+                $($formDivChildren[0]).remove();
+                if(data.status){
+                    var temp = {"name": app_path, "message": data.message, "status": true};
+                    message["installed"].push(temp);
+                } else {
+                    var temp = {"name": app_path, "message": data.message, "status": false};
+                    message["not_installed"].push(temp);
+                }
+                setTimeout(function(){
+                    katana.refreshLandingPage();
+                    $.ajax({
+                        type: 'GET',
+                        url: 'wapp_management/update_installed_apps_section/',
+                    }).done(function(installed_apps_data){
+                        $currentPage.find('#installed_apps_div').html(installed_apps_data);
+                        wapp_management.sendInstallInfo(message);
+                    });
+                }, 2000);
+            });
+        } else {
+            var alertType = "success";
+            var heading = "Apps have been installed.";
+            var text = "";
+            if(message["installed"].length > 0){
+                for(var i=0; i<message["installed"].length; i++){
+                    text += message["installed"][i]["name"] + ", ";
+                }
+                text = text.slice(0, -2);
+                text += " have been installed successfully.<br><br>";
+            }
+            if(message["not_installed"].length > 0){
+                alertType = "danger";
+                heading = "Some apps could not be installed.";
+                for(var i=0; i<message["not_installed"].length; i++){
+                    text += message["not_installed"][i]["name"] + " could not be installed. Errors: " + message["not_installed"][i]["message"] + "<br><br>";
+                }
+            }
+            wapp_management.addAnotherApp(1);
             katana.openAlert({
-                "alert_type": "success",
-                "text": "Apps have been installed!",
+                "alert_type": alertType,
+                "heading": heading,
+                "text": text,
                 "show_accept_btn": true,
                 "show_cancel_btn": false
             });
-        }, (app_paths.length*2)* 2000);
+        }
     },
 
     saveConfig: function(app_paths, callback){
@@ -210,7 +233,7 @@ var wapp_management = {
                         wapp_management.setSaveConfigAttr("no");
                         var $saved_preferences = $currentPage.find('#saved-preferences');
                         $saved_preferences.html(data);
-                        wapp_management.sendInstallInfo(app_paths);
+                        wapp_management.sendInstallInfo();
                     });
                 });
             },
@@ -220,7 +243,7 @@ var wapp_management = {
                     "show_accept_btn": true,
                     "show_cancel_btn": false
                 }, function(){
-                    wapp_management.sendInstallInfo(app_paths);
+                    wapp_management.sendInstallInfo();
                 });
             })
 
@@ -231,7 +254,7 @@ var wapp_management = {
                 "show_accept_btn": true,
                 "show_cancel_btn": false
             }, function(){
-                wapp_management.sendInstallInfo(app_paths);
+                wapp_management.sendInstallInfo();
             });
         });
     },
@@ -479,21 +502,35 @@ var wapp_management = {
     },
 
     installAppsFromConfig: function() {
-        var $elem = $(this);
-        var configName = $elem.attr("config_name")
         var $currentPage = katana.$activeTab;
-        var $tempConfigDetails = $currentPage.find("#config-details-" + configName);
-        var $disabledInputs = $tempConfigDetails.find('input:disabled')
-        var app_paths = [];
+        var $elem = $(this);
+        var config_name = $elem.attr("config_name");
+        var $parentDiv = $currentPage.find('#config-file-div');
+        var $childDiv = $parentDiv.find('#' + config_name);
+        $childDiv.css("background-color", "#98afc7");
+        var $siblings = $childDiv.siblings();
+        var $disabledInputs = $siblings.find('input:disabled')
+
+
+        var $parent = $currentPage.find("#form-for-paths");
+        $parent.html('');
+
+        var elem_value = false;
 
         for(var i=0; i<$disabledInputs.length; i++){
-            app_paths.push($($disabledInputs[i]).val());
+            elem_value = $($disabledInputs[i]).val()
+            wapp_management.addAnotherApp((i+1), elem_value)
         }
-        wapp_management.sendInstallInfo(app_paths, false);
 
-        $parent = $currentPage.find("#" + configName);
-        $parent.css("background-color", "#98afc7");
-        $tempConfigDetails.html("");
+        $siblings.html('');
+
+        setTimeout(function(){
+            $currentPage.find('.page-content-inner').scrollTop(0);
+        }, 100);
+
+        delete $.wapp_management_globals.preference_details[config_name];
+
+        wapp_management.sendInstallInfo();
     },
 
     validateInput: function(elem_value, elem, config_name){

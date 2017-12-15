@@ -68,44 +68,47 @@ def uninstall_an_app(request):
 
 
 def install_an_app(request):
-    app_paths = request.POST.getlist("app_paths[]", None)
+    app_path = request.POST.get("app_paths")
     dot_data_dir = join_path(os.getcwd(), "native", "wapp_management", ".data")
     temp_dir_path = join_path(dot_data_dir, "temp")
+    output_data = {"status": True, "message": ""}
 
     if os.path.exists(temp_dir_path):
         shutil.rmtree(temp_dir_path)
     create_dir(temp_dir_path)
 
-    print app_paths
-
-    for app_path in app_paths:
-        print app_path
-        if app_path.endswith(".git"):
-            repo_name = get_repository_name(app_path)
-            os.system("git clone {0} {1}".format(app_path, join_path(temp_dir_path, repo_name)))
-            app_path = join_path(temp_dir_path, repo_name)
-        elif app_path.endswith(".zip"):
-            if os.path.exists(app_path):
-                temp = app_path.split(os.sep)
-                temp = temp[len(temp)-1]
-                shutil.copyfile(app_path, join_path(temp_dir_path, temp))
-                zip_ref = zipfile.ZipFile(join_path(temp_dir_path, temp), 'r')
-                zip_ref.extractall(temp_dir_path)
-                zip_ref.close()
-                app_path = join_path(temp_dir_path, temp[:-4])
-            else:
-                print "-- An Error Occurred -- {0} does not exist".format(app_path)
+    if app_path.endswith(".git"):
+        repo_name = get_repository_name(app_path)
+        os.system("git clone {0} {1}".format(app_path, join_path(temp_dir_path, repo_name)))
+        app_path = join_path(temp_dir_path, repo_name)
+    elif app_path.endswith(".zip"):
+        if os.path.exists(app_path):
+            temp = app_path.split(os.sep)
+            temp = temp[len(temp)-1]
+            shutil.copyfile(app_path, join_path(temp_dir_path, temp))
+            zip_ref = zipfile.ZipFile(join_path(temp_dir_path, temp), 'r')
+            zip_ref.extractall(temp_dir_path)
+            zip_ref.close()
+            app_path = join_path(temp_dir_path, temp[:-4])
         else:
-            if os.path.isdir(app_path):
-                filename = get_dir_from_path(app_path)
-                copy_dir(app_path, join_path(temp_dir_path, filename))
-                app_path = join_path(temp_dir_path, filename)
-            else:
-                print "-- An Error Occurred -- {0} does not exist".format(app_path)
-        installer_obj = Installer(get_parent_directory(os.getcwd()), app_path)
-        installer_obj.install()
-    output_data = {"data": {"app": AppInformation.information.apps}}
-    return render(request, 'wapp_management/installed_apps.html', output_data)
+            output_data["status"] = False
+            output_data["message"] = "-- An Error Occurred -- {0} does not exist".format(app_path)
+            print output_data["message"]
+    else:
+        if os.path.isdir(app_path):
+            filename = get_dir_from_path(app_path)
+            copy_dir(app_path, join_path(temp_dir_path, filename))
+            app_path = join_path(temp_dir_path, filename)
+        else:
+            output_data["status"] = False
+            output_data["message"] = "-- An Error Occurred -- {0} does not exist".format(app_path)
+            print output_data["message"]
+    installer_obj = Installer(get_parent_directory(os.getcwd()), app_path)
+    installer_obj.install()
+    if installer_obj.message != "":
+        output_data["status"] = False
+        output_data["message"] += "\n" + installer_obj.message
+    return JsonResponse(output_data)
 
 
 class AppInstallConfig(View):
