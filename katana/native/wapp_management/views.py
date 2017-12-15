@@ -13,31 +13,28 @@ limitations under the License.
 
 from __future__ import unicode_literals
 import os
-import copy
 import shutil
 import zipfile
-
-import binascii
-from django.http import JsonResponse, HttpResponseRedirect, HttpResponse
-from django.shortcuts import render, redirect
+from django.http import JsonResponse
+from django.shortcuts import render
 from django.views import View
 import xml.etree.cElementTree as ET
-
-from native.wapp_management.forms import UploadFileForm
 from native.wapp_management.wapp_management_utils.app_validator import AppValidator
 from native.wapp_management.wapp_management_utils.installer import Installer
 from native.wapp_management.wapp_management_utils.uninstaller import Uninstaller
 from utils.directory_traversal_utils import join_path, get_sub_files, get_parent_directory, \
     create_dir, get_dir_from_path
 from utils.file_utils import copy_dir
+from utils.navigator_util import Navigator
 from utils.string_utils import get_repository_name
 from wui.core.core_utils.app_info_class import AppInformation
+nav_obj = Navigator()
 
 
 class WappManagementView(View):
 
     template = 'wapp_management/wapp_management.html'
-    dot_data_directory = join_path(os.getcwd(), "native", "wapp_management", ".data")
+    dot_data_directory = join_path(nav_obj.get_katana_dir(), "native", "wapp_management", ".data")
 
     def get(self, request):
         """
@@ -61,7 +58,7 @@ def update_installed_apps_section(request):
 def uninstall_an_app(request):
     app_path = request.POST.get("app_path", None)
     app_type = request.POST.get("app_type", None)
-    uninstaller_obj = Uninstaller(get_parent_directory(os.getcwd()), app_path, app_type)
+    uninstaller_obj = Uninstaller(get_parent_directory(nav_obj.get_katana_dir()), app_path, app_type)
     uninstaller_obj.uninstall()
     output = {"data": {"app": AppInformation.information.apps}}
     return render(request, 'wapp_management/installed_apps.html', output)
@@ -69,7 +66,7 @@ def uninstall_an_app(request):
 
 def install_an_app(request):
     app_path = request.POST.get("app_paths")
-    dot_data_dir = join_path(os.getcwd(), "native", "wapp_management", ".data")
+    dot_data_dir = join_path(nav_obj.get_katana_dir(), "native", "wapp_management", ".data")
     temp_dir_path = join_path(dot_data_dir, "temp")
     output_data = {"status": True, "message": ""}
 
@@ -103,7 +100,7 @@ def install_an_app(request):
             output_data["status"] = False
             output_data["message"] = "-- An Error Occurred -- {0} does not exist".format(app_path)
             print output_data["message"]
-    installer_obj = Installer(get_parent_directory(os.getcwd()), app_path)
+    installer_obj = Installer(get_parent_directory(nav_obj.get_katana_dir()), app_path)
     installer_obj.install()
     if installer_obj.message != "":
         output_data["status"] = False
@@ -203,7 +200,7 @@ def validate_app_path(request):
     output = {"status": True, "message": ""}
     detail_type = request.POST.get("type", None)
     detail_info = request.POST.get("value", None)
-    dot_data_dir = join_path(os.getcwd(), "native", "wapp_management", ".data")
+    dot_data_dir = join_path(nav_obj.get_katana_dir(), "native", "wapp_management", ".data")
     temp_dir_path = join_path(dot_data_dir, "temp")
     app_path = False
 

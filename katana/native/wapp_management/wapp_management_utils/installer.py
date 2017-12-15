@@ -107,7 +107,6 @@ class Installer:
         urls_data = ""
         for line in u_data:
             urls_data += line
-        print urls_data
         output = write_to_file(self.urls_file, urls_data)
         return output
 
