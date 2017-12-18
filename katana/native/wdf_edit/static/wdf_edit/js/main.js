@@ -7,8 +7,11 @@ var wdf = {
         $.each(systems, function(ind, sys) {
             var sys = $(sys);
             if (!sys.attr("id").startsWith("template")) {
-                if (sys.find("#content").length > 0 && sys.find("[name='subsystem_name']").length == 0) {
+                if (sys.find(".wdf-content").length > 0 && sys.find("[name='subsystem_name']").length == 0) {
                     sys.find("[katana-click='wdf.addSubSystem']").hide();
+                }
+                if (sys.find("[name='subsystem_name']").length > 0) {
+                    sys.find(".sys-toolbar").find("[katana-click='wdf.addTag']").hide();
                 }
             }
         });
@@ -93,6 +96,7 @@ var wdf = {
             tmp.find("#template-subsys-editor").attr("id", system_id+"-"+subsystem_id+"-editor");
 
             target.append(tmp.html());
+            target.find(".sys-toolbar").find("[katana-click='wdf.addTag']").hide();
 
             // Highlight the new subsystem
             target = katana.$activeTab.find("#"+system_id+"-"+subsystem_id+"-editor")
@@ -103,14 +107,19 @@ var wdf = {
             var tmp = katana.$activeTab.find("#navigator_button_template").clone();
             tmp.find("[linkto='template-nav.linkto']").attr("linkto", "#"+system_id+"-"+subsystem_id+"-editor");
             // Find the system box and append current subsys button to it
-            katana.$activeTab.find("[linkto='#"+system_id+"-control-box']").closest(".wdf-pad").append(tmp.html()); 
+            katana.$activeTab.find("[linkto='#"+system_id+"-control-box']").closest(".wdf-pad").append(tmp.html());
         }
     },
 
     addTag: function(){
         var tmp = katana.$activeTab.find("#tag_template").clone();
         // go to control box level
-        var target = $(this).closest(".control-box");
+        if ($(this).closest(".subsys-box").length == 0) {
+            var target = $(this).closest(".control-box");
+            target = target.find(".subsys-box");
+        } else {
+            var target = $(this).closest(".subsys-box");
+        }
         target.append(tmp.html());
     },
 
