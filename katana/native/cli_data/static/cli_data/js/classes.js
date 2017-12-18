@@ -32,14 +32,14 @@ var leftTableContent = '<div class="cli-data-left-column-topbar">' +
 var leftColumnInputs = '<div class="row">' +
                            '<div class="col-sm-4 cli-data-left-content-label"></div>' +
                            '<div class="col-sm-8 cli-data-left-content-value">' +
-                               '<input class="cli-data-left-content-value-input">' +
+                               '<input class="cli-data-left-content-value-input" onkeyup="cliData.leftColumn.inputChange(event, this)">' +
                            '</div>' +
                        '</div>';
 
 var leftColumnSelects = '<div class="row">' +
                             '<div class="col-sm-4 cli-data-left-content-label"></div>' +
                             '<div class="col-sm-8 cli-data-left-content-value">' +
-                                '<select class="cli-data-left-content-value-input"></select>' +
+                                '<select class="cli-data-left-content-value-input" katana-change="cliData.leftColumn.selectChange"></select>' +
                             '</div>' +
                         '</div>';
 

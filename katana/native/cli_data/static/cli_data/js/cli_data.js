@@ -625,6 +625,37 @@ var cliData = {
                 }
             }
         },
+
+        inputChange: function(event, elem){
+            var $currentPage = katana.$activeTab;
+            var elemRowIndex = $(elem).closest('.row').index();
+            var objectIndex = $currentPage.find('.cli-data-left-column').find('.cli-data-left-column-topbar').attr('objectindex');
+            var $activeRightTable = $currentPage.find('.cli-data-right-column').find('.cli-data-full-width').find('[active="true"]');
+            var $divBeingModified = $($($activeRightTable.next().find('ul').children()[elemRowIndex]).find('.cli-data-columns').children()[objectIndex])
+            var objectData = $activeRightTable.data().dataObject[objectIndex];
+            for (var key in objectData.orderedVariables[elemRowIndex]){
+                var varKey = objectData.orderedVariables[elemRowIndex][key]["variable"];
+            }
+            var newValue = $(elem).val();
+            objectData[varKey] = newValue;
+            $divBeingModified.text(newValue);
+        },
+
+        selectChange: function(){
+            var $elem = $(this);
+            var $currentPage = katana.$activeTab;
+            var elemRowIndex = $elem.closest('.row').index();
+            var objectIndex = $currentPage.find('.cli-data-left-column').find('.cli-data-left-column-topbar').attr('objectindex');
+            var $activeRightTable = $currentPage.find('.cli-data-right-column').find('.cli-data-full-width').find('[active="true"]');
+            var $divBeingModified = $($($activeRightTable.next().find('ul').children()[elemRowIndex]).find('.cli-data-columns').children()[objectIndex])
+            var objectData = $activeRightTable.data().dataObject[objectIndex];
+            for (var key in objectData.orderedVariables[elemRowIndex]){
+                var varKey = objectData.orderedVariables[elemRowIndex][key]["variable"];
+            }
+            var newValue = $elem.val();
+            objectData[varKey] = newValue;
+            $divBeingModified.text(newValue);
+        },
     },
 
     rightColumn: {
