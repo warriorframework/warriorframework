@@ -495,11 +495,8 @@ var wdf = {
             $.ajax({
                 url : "/katana/wdf/post",
                 type: "POST",
-                contentType: "application/json;",
-                dataType: "json",
                 data : JSON.stringify({"filepath": filepath, "description": description, "systems": systems}),
                 headers: {'X-CSRFToken':csrftoken},
-                //contentType: 'application/json',
                 success: function(data){
                     // load the tree
                     katana.$activeTab.find("#main_info").replaceWith(data);
