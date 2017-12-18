@@ -502,10 +502,10 @@ var wdf = {
                 //contentType: 'application/json',
                 success: function(data){
                     // load the tree
-                    // katana.$activeTab.find("#main_info").replaceWith(data);
-                    // var toolbar = katana.$activeTab.find(".tool-bar");
-                    // katana.$activeTab.find(".page-content").prepend(toolbar);
-                    // katana.refreshAutoInit(katana.$activeTab.find("#jstree"));
+                    katana.$activeTab.find("#main_info").replaceWith(data);
+                    var toolbar = katana.$activeTab.find(".tool-bar");
+                    katana.$activeTab.find(".page-content").prepend(toolbar);
+                    katana.refreshAutoInit(katana.$activeTab.find("#jstree"));
                 }
             }); 
         } else {
