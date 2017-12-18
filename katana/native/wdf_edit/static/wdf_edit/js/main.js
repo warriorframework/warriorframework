@@ -435,24 +435,33 @@ var wdf = {
             if ($(sys).find(".subsys-toolbar").length == 0){
                 var sys_data = wdf.build_data_list($(sys).find(".subsys-box"));
                 var current_sys = {"@name": sysname, "values": sys_data};
-                data.push(current_sys);
             } else if ($(sys).find(".subsys-toolbar").length == 1){
                 var subsys = $(sys).find(".subsys-box");
                 var sys_data = wdf.build_data_list(subsys);
                 var subsysname = $(subsys).find("input[name='subsystem_name']").prop("value");
                 var current_sys = {"@name": sysname, "subsystem": {"@name": subsysname, "values": sys_data}};
-                data.push(current_sys);
+                if ($(subsys).find(".wdf-subsys-checkbox").is(":checked")){
+                    current_sys["subsystem"]["@default"] = "yes";
+                }
             } else if ($(sys).find(".subsys-toolbar").length > 1){
                 var subsystems = $(sys).find(".subsys-box");
                 var values = []
                 subsystems.each(function(ind, subsys){
                     var sys_data = wdf.build_data_list(subsys);
                     var subsysname = $(subsys).find("input[name='subsystem_name']").prop("value");
-                    values.push({"@name": subsysname, "values": sys_data});
+                    if ($(subsys).find(".wdf-subsys-checkbox").is(":checked")){
+                        values.push({"@name": subsysname, "@default": "yes", "values": sys_data});
+                    } else {
+                        values.push({"@name": subsysname, "values": sys_data});
+                    }
                 });
                 var current_sys = {"@name": sysname, "subsystem": values};
-                data.push(current_sys);
             }
+
+            if ($(sys).find(".wdf-sys-checkbox").is(":checked")){
+                current_sys["@default"] = "yes";
+            }
+            data.push(current_sys);
         });
 
         return data;

@@ -142,13 +142,19 @@ def build_xml_dict(data):
             current_sys.update(combine_values(sys["values"]))
         elif "subsystem" in sys and isinstance(sys["subsystem"], dict):
             current_sys["subsystem"] = OrderedDict({"@name": sys["subsystem"]["@name"]})
+            if sys["subsystem"].get("@default", "") == "yes":
+                current_sys["subsystem"]["@default"] = "yes"
             current_sys["subsystem"].update(combine_values(sys["subsystem"]["values"]))
         elif "subsystem" in sys and isinstance(sys["subsystem"], list):
             current_sys["subsystem"] = []
             for subsys in sys["subsystem"]:
                 current_subsys = OrderedDict({"@name": subsys["@name"]})
+                if subsys.get("@default", "") == "yes":
+                    current_subsys["@default"] = "yes"
                 current_subsys.update(combine_values(subsys["values"]))
                 current_sys["subsystem"].append(current_subsys)
+        if sys.get("@default", "") == "yes":
+            current_sys["@default"] = "yes"
         result.append(current_sys) 
     return result
 
