@@ -2,7 +2,10 @@
     <div id="template-system" class="control-box">
         <!-- Every system has a toolbar -->
         <div class="sys-toolbar">
-            <input type="checkbox" class="wdf-sys-checkbox" katana-click="wdf.sysDefaultCheck" name="default" title="Default"/>
+            <div class="override-input-container">
+                <input type="checkbox" class="wdf-sys-checkbox" katana-click="wdf.sysDefaultCheck" name="default" title="Default"/>
+                <label/>
+            </div>
             <input class="wdf-input" name="system_name" placeholder="System name" katana-change="wdf.sysNameChange" value="New System"/>
             <div class="buttons">
                 <i katana-click="wdf.toggle" class="fa fa-toggle-up" title="Hide/Show"/>
@@ -20,7 +23,10 @@
 <div id="subsystem_template" auto-init="wdf.hide">
     <div id="template-subsys-editor" class="subsys-box" subsysid="1">
         <div class="subsys-toolbar">
-            <input type="checkbox" class="wdf-subsys-checkbox" katana-click="wdf.subsysDefaultCheck" name="subsys" title="Default Subsystem"/>
+            <div class="override-input-container">
+                <input type="checkbox" class="wdf-subsys-checkbox" katana-click="wdf.subsysDefaultCheck" name="subsys-default" title="Default Subsystem"/>
+                <label/>
+            </div>
             <input class="wdf-input" name="subsystem_name" katana-change="wdf.subSysNameChange" value="New Subsystem"/>
             <div class="buttons">
                 <i katana-click="wdf.toggle" class="fa fa-toggle-up" title="Hide/Show"/>

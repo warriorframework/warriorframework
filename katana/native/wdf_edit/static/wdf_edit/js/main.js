@@ -87,7 +87,7 @@ var wdf = {
         var system_id = target.attr("sysid");
         var subsystem_id = target.find(".subsys-box").length+1;
 
-        if (subsystem_id == 2 && target.find(".subsys-box").length == 1 && target.find(".wdf-content").length > 0){
+        if (subsystem_id == 2 && target.find(".subsys-toolbar").length == 0 && target.find(".wdf-content").length > 0){
             alert("Please only add subsystem when top level system doesn't have tag");
         } else {
             var tmp = katana.$activeTab.find("#subsystem_template").clone();
