@@ -36,7 +36,7 @@ class CoreConfig(AppConfig):
                                              'config_file_name': config_file_name,
                                              'available_apps': available_apps,
                                              'settings_apps': settings_apps})
-
+        
         warrior_dir = nav_obj.get_warrior_dir()
         config_json_file = os.path.join(base_directory, "config.json")
         with open(config_json_file, "r") as f:
