@@ -178,7 +178,7 @@ def on_post(request):
     wdfdir = config["idfdir"]
     filepath = os.path.join(wdfdir, filepath)
     print "Filepath:", filepath
-    # f = open(filepath, "w")
-    # f.write(miniparse(xmltodict.unparse(result)).toprettyxml())
+    f = open(filepath, "w")
+    f.write(miniparse(xmltodict.unparse(result)).toprettyxml())
     # return render(request, 'wdf_edit/result.html', {"data": json.dumps(request.POST, indent=4)})
     return render(request, 'wdf_edit/file_list.html', {})
