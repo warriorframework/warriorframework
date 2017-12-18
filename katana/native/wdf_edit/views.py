@@ -100,12 +100,18 @@ def remove_name(data):
 # Separation for functions used before/after saving the edited xml
 
 def combine_values(data):
+    """
+        Take a list of dict and combine them into one dict
+    """
     result = OrderedDict()
     for pair in data:
         result.update(pair)
     return result
 
 def build_xml_dict(data):
+    """
+        Build a list of systems that can be unparsed into xmltodict format xml file
+    """
     import pprint
     pprint.pprint(data)
 
