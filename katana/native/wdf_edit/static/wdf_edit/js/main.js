@@ -116,6 +116,7 @@ var wdf = {
         // go to control box level
         if ($(this).closest(".subsys-box").length == 0) {
             var target = $(this).closest(".control-box");
+            target.find(".sys-toolbar").find("[katana-click='wdf.addSubSystem']").hide();
             target = target.find(".subsys-box");
         } else {
             var target = $(this).closest(".subsys-box");
