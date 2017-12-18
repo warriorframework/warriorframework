@@ -390,6 +390,7 @@ var katana = {
 
     var $body = $('body');
     var $alertElement = $body.find('div .overlay');
+    $allAlerts = $alertElement.children();
     var $prompt = $body.find('#alert-box-prompt');
 
     var inputValue = false;
@@ -402,7 +403,12 @@ var katana = {
       katana.changeBorderColor("red");
     } else {
 
-      $alertElement.remove();
+        if($allAlerts.length > 1){
+            $($allAlerts[$allAlerts.length-1]).remove();
+        } else {
+            $alertElement.remove();
+        }
+
       if (callBack_on_accept) {
         if (!inputValue) {
           callBack_on_accept();
@@ -417,7 +423,12 @@ var katana = {
   dismissAlert: function(callBack_on_dismiss) {
     var $body = $('body');
     $alertElement = $body.find('div .overlay');
-    $alertElement.remove();
+    $allAlerts = $alertElement.children();
+    if($allAlerts.length > 1){
+        $($allAlerts[$allAlerts.length-1]).remove();
+    } else {
+        $alertElement.remove();
+    }
 
     if (callBack_on_dismiss) {
       callBack_on_dismiss();
@@ -426,27 +437,31 @@ var katana = {
 
   displayAlert: function(data, alert_box, callBack_on_accept, callBack_on_dismiss) {
 
-    $(alert_box).prependTo(katana.$view);
+    var $view = katana.$view;
+    var $existingOverlay = $view.find('.overlay');
+    var $alertBox = $(alert_box);
 
-    var $body = $('body');
+        $alertBox.find('#cancel-alert').one('click', function() {
+            katana.dismissAlert(callBack_on_dismiss);
+        });
+        $alertBox.find('#cancel-alert-icon').one('click', function() {
+            katana.dismissAlert(callBack_on_dismiss);
+        });
+        $alertBox.find('#accept-alert').on('click', function() {
+            katana.acceptAlert(callBack_on_accept);
+        });
 
-    $body.find('#cancel-alert').one('click', function() {
-
-      katana.dismissAlert(callBack_on_dismiss);
-    });
-
-    $body.find('#cancel-alert-icon').one('click', function() {
-
-      katana.dismissAlert(callBack_on_dismiss);
-    });
-
-    $body.find('#accept-alert').on('click', function() {
-      katana.acceptAlert(callBack_on_accept);
-    });
+    if($existingOverlay.length > 0){
+        $alertBox.prependTo($existingOverlay);
+    } else {
+        $totalAlertBox = $('<div class="overlay"></div>');
+        $totalAlertBox.html($alertBox);
+        $totalAlertBox.prependTo($view);
+    }
 
     if (data.timer) {
       setTimeout(function() {
-        katana.dismissAlert()
+        katana.dismissAlert(callBack_on_dismiss)
       }, data.timer);
     }
 
@@ -489,8 +504,7 @@ var katana = {
       prompt = "<div><input id='alert-box-prompt' katana-change='katana.changeBorderColor' value=''></div>"
     }
 
-    var $alert_box = '<div class="overlay">' +
-      '<div class="col-sm-5 centered">' +
+    var $alert_box = '<div class="col-sm-5 centered">' +
       '<div class="alert alert-' + data.alert_type + '" role="alert">' +
       '<div class="col" style="float: right;">' +
       '<i id="cancel-alert-icon" class="fa fa-times" style="float: right;"></i>' +
@@ -499,7 +513,6 @@ var katana = {
       '<hr>' +
       '<p class="mb-0">' + data.text + '</p>' + prompt + add_break +
       buttons +
-      '</div>' +
       '</div>' +
       '</div>'
 
