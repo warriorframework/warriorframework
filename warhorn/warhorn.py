@@ -1080,8 +1080,7 @@ def replace_tools_from_product_repo(node_list, **kwargs):
     config_file_name = kwargs.get("config_file_name")
     console_log_name = kwargs.get("console_log_name")
     print_log_name = kwargs.get("print_log_name")
-
-    if 'tools' in node_list:
+    if "tools" in node_list:
         tools_node = get_node(config_file_name, "tools")
         tools_url = get_attribute_value(tools_node, "url")
         tools_root = get_repository_name(tools_url)
