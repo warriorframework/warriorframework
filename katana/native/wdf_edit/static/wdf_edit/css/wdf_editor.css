@@ -155,14 +155,26 @@
     display: inline-block;
     font-size: 24px;
 }
-
+/*
 .wdf-container .sys-toolbar input[type="checkbox"] {
-    width: 30px;
-    height: 30px;
-    display:inline-block;
+    width: 30px !important;
+    height: 30px !important;
+    display:inline-block !important;
     vertical-align: middle;
     margin:0px 0px 2px 4px;
     border: 5px;
+
+    opacity: 1 !important;
+    position: relative !important;
+}*/
+
+.override-input-container {
+    position: relative;
+    top: -22px;
+    left: 6px;
+    display: inline-block;
+    width: 40px;
+    height: 40px;
 }
 
 .wdf-container .sys-toolbar > .title{
@@ -196,13 +208,13 @@
     font-size: 24px;
 }
 
-.wdf-container .subsys-toolbar input[type="checkbox"] {
+/*.wdf-container .subsys-toolbar input[type="checkbox"] {
     width: 30px;
     height: 30px;
     display:inline-block;
     vertical-align: middle;
     margin:0px 0px 2px 4px;
-}
+}*/
 
 .wdf-container .subsys-toolbar .buttons {
     text-align: right;

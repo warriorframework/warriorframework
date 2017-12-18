@@ -771,7 +771,7 @@ option:hover {
 	background: white;
 }
 
-/*input[type="checkbox"]+label:before {
+input[type="checkbox"]+label:before {
 	display: block;
 	font: normal normal normal 14px/1 FontAwesome;
 	content: "";
@@ -785,10 +785,10 @@ option:hover {
 	text-align: center;
 	font-size: 20px;
 	line-height: 21px;
-	border: solid 3px grey;*/
+	border: solid 3px grey;
 	/* margin-left: -34px; */
-/*}*/
-/*
+}
+
 input[type="checkbox"] {
 	position: absolute;
 	top: 0;
@@ -804,7 +804,7 @@ input[type="checkbox"]:checked+label:before {
 	background: white;
 	content: "\f00c";
 }
-*/
+
 li.folder,
 li.file {
 	width: 40%;
@@ -3265,9 +3265,9 @@ div .tool-bar-links:active {
 	-ms-transform: translateY(-50%);
 }
 
-/*input[type="checkbox"]+label {
+input[type="checkbox"]+label {
 	padding-left: 35px;
-}*/
+}
 
 .field-inline.dual-input>input {
 	width: calc(50% - 105px);
