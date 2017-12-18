@@ -123,6 +123,15 @@
 
 /* Defining sys-toolbar*/
 
+.override-input-container {
+    position: relative;
+    top: -22px;
+    left: 6px;
+    display: inline-block;
+    width: 30px;
+    height: 40px;
+}
+
 .wdf-container .sys-toolbar {
     background: #4ea4e0;
     color: white;
@@ -167,15 +176,6 @@
     opacity: 1 !important;
     position: relative !important;
 }*/
-
-.override-input-container {
-    position: relative;
-    top: -22px;
-    left: 6px;
-    display: inline-block;
-    width: 40px;
-    height: 40px;
-}
 
 .wdf-container .sys-toolbar > .title{
     background: #4ea4e0;
