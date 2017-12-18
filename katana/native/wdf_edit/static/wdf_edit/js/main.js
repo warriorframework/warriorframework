@@ -87,15 +87,23 @@ var wdf = {
         var system_id = target.attr("sysid");
         var subsystem_id = target.find(".subsys-box").length+1;
 
-        if (subsystem_id == 2 && target.find(".subsys-box").length == 0 & target.find(".wdf-content".length > 0)){
+        if (subsystem_id == 2 && target.find(".subsys-box").length == 1 && target.find(".wdf-content").length > 0){
             alert("Please only add subsystem when top level system doesn't have tag");
         } else {
             var tmp = katana.$activeTab.find("#subsystem_template").clone();
 
+            if (subsystem_id == 2 && target.find(".subsys-box").length == 1 && target.find(".wdf-content").length == 0) {
+                subsystem_id = 1;
+            }
+
             tmp.find("#template-subsys-editor").attr("subsysid", subsystem_id);
             tmp.find("#template-subsys-editor").attr("id", system_id+"-"+subsystem_id+"-editor");
 
-            target.append(tmp.html());
+            if (subsystem_id == 2 && target.find(".subsys-box").length == 1 && target.find(".wdf-content".length == 0)) {
+                subsystem_id = 1;
+            } else {
+                target.find(".subsys-box").replaceWith(tmp.html());
+            }
             target.find(".sys-toolbar").find("[katana-click='wdf.addTag']").hide();
 
             // Highlight the new subsystem
@@ -191,16 +199,23 @@ var wdf = {
             }
         });
 
-        target.remove();
+        if (system.find(".subsys-box").length == 1){
+            system.find(".sys-toolbar").find("[katana-click='wdf.addTag']").show();
+            target.empty();
+        } else {
+            target.remove();
+        }
+
         target_control_box.remove();
 
-        if (system.find(".subsys-box").length == 0){
-            system.find(".sys-toolbar").find("[katana-click='wdf.addTag']").show();
-        }
     },
 
     deleteTag: function(){
         // empty tag and all of its child tags
+        if ($(this).closest(".control-box").find(".subsys-toolbar").length == 0 && $(this).closest(".control-box").find(".wdf-content").length == 1){
+            $(this).closest(".control-box").find("[katana-click='wdf.addSubSystem']").show();
+        }
+
         if ($(this).closest(".child_tags").length == 1) {
             $(this).closest(".child_tags").remove();
         } else {
