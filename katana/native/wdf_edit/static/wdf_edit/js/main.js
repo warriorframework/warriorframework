@@ -40,152 +40,18 @@ var wdf = {
     },
 
     toggle: function(){
-        // hide all the div with id content under control-box
-        $target = $(this).closest(".control-box");
-        $target.children("#content").toggle();
-        $target.children("#subcontent").toggle();
+        // hide all the div with id content under control-box/subsys-box
+        var target = ($(this).closest(".subsys-box").length == 0 ? $(this).closest(".control-box") : $(this).closest(".subsys-box"));
         if ($(this).hasClass("fa-toggle-down")) {
             $(this).removeClass("fa-toggle-down");
             $(this).addClass("fa-toggle-up");
+            target.find(".wdf-content").each(function(ind, ele){$(ele).show()});
+            target.find(".wdf-subcontent").each(function(ind, ele){$(ele).show()});
         } else if ($(this).hasClass("fa-toggle-up")) {
             $(this).removeClass("fa-toggle-up");
             $(this).addClass("fa-toggle-down");
-        }
-    },
-
-    sysNameChange: function(){
-        /*
-            Synchronize name change between input field and nav bar
-        */
-        var input_box = $(this);
-
-        var system_id = input_box.closest(".control-box").attr("sysid");
-
-        if (input_box.val().length != 0) {
-            input_box.css("background", "none");
-        }
-
-        // find the button that links to the current system
-        // Change the label and button text
-        var nav_button = katana.$activeTab.find("[linkto='#"+system_id+"-control-box']");
-        input_box.attr("value", input_box.val());
-        nav_button.find("span").text(" "+input_box.prop("value"));
-    },
-
-    subSysNameChange: function(){
-        /*
-            Synchronize name change between input field and nav bar
-        */
-        var input_box = $(this);
-        var system_id = input_box.closest(".control-box").attr("sysid");
-        var subsystem_id = input_box.closest(".subsys-box").attr("subsysid");
-
-        var nav_button = katana.$activeTab.find("[linkto='#"+system_id+"-"+subsystem_id+"-editor']");
-        input_box.attr("value", input_box.val());
-        nav_button.find("span").text(" "+input_box.prop("value"));
-    },
-
-    validateKey: function(){
-        $ele = $(this);
-        $ele.attr("value", $ele.val());
-        $ele.css("background", "#f9f9f9");
-        if ($ele.prop("value").indexOf(" ") != -1) {
-            alert("Data key cannot contain whitespace");
-            $ele.focus()
-            // katana.quickAnimation($(this), "wdf-highlight", 1000);
-            $ele.css("background", "#ecff91");
-        }
-
-        if ($ele.val().toLowerCase() == "password") {
-            $ele.next().attr("type", "password");
-        } else {
-            $ele.next().removeAttr("type");
-        }
-    },
-
-    deleteTag: function(){
-        // empty tag and all of its child tags
-        $(this).closest("#content").remove();
-        if ($(this).closest(".child_tags").length == 1) {
-            $(this).closest(".child_tags").remove();
-        }
-    },
-
-    deleteChildTag: function(){
-        $(this).closest("#subcontent").remove();
-        if ($(this).closest(".child_tags").length == 0) {
-            $(this).closest(".child_tags").find("[name='value']").show();
-        }
-    },
-
-    deleteSystem: function(){
-        // empty the whole system
-        var target = $(this).closest(".control-box");
-        var system_id = target.attr("sysid");
-        var target_control_box = katana.$activeTab.find("[linkto='#"+system_id+"-control-box']").closest(".wdf-pad");
-        // need to update the sysid for the systems below
-
-        var systems_list = katana.$activeTab.find("#wdf-editor-col").find(".control-box");
-        $.each(systems_list, function(ind, sys){
-            if (ind+1 > parseInt(system_id)){
-                // Decrease the system_id by 1 to fill the one being removed
-                console.log(ind+1);
-                $(sys).attr("sysid", ind);
-                $(sys).attr("id", ind+"-control-box");
-
-                var system_nav_button = katana.$activeTab.find("[linkto='#"+(ind+1)+"-control-box']");
-                system_nav_button.attr("linkto", "#"+ind+"-control-box");
-
-                var subsys_list = $(sys).find(".subsys-box");
-                $.each(subsys_list, function(sub_ind, subsys){
-                    $(subsys).attr("id", ind+"-"+(sub_ind+1)+"-editor");
-
-                    var subsys_nav_button = katana.$activeTab.find("[linkto='#"+(ind+1)+"-"+(sub_ind+1)+"-editor']");
-                    subsys_nav_button.attr("linkto", "#"+ind+"-"+(sub_ind+1)+"-editor");
-                });
-            }
-        });
-
-        target.remove();
-        target_control_box.remove();
-    },
-
-    deleteSubSystem: function(){
-        // empty the subsystem
-        var target = $(this).closest(".control-box");
-        var system_id = target.attr("sysid");
-        // need to update the sysid for the systems below
-
-        target.remove();
-        
-        // Update the nav bar
-        var nav_button = katana.$activeTab.find("[linkto='#"+system_id+"-control-box']").closest(".wdf-pad");
-        nav_button.remove();
-    },
-
-    sysDefaultCheck: function(){
-        // Check the current sys checkbox and uncheck other sys checkbox
-        if ($(this).prop("checked")) {
-            var boxes = katana.$activeTab.find(".wdf-sys-checkbox:checked");
-            if (boxes.length > 1) {
-                $.each(boxes, function(ind, box){
-                    $(box).prop("checked", false);
-                });
-            }
-            $(this).prop("checked", true);
-        }
-    },
-
-    subsysDefaultCheck: function(){
-        // Check the current subsys checkbox and uncheck other subsys checkbox under the same sys
-        if ($(this).prop("checked")) {
-            var boxes = $(this).closest(".control-box").find(".wdf-subsys-checkbox:checked");
-            if (boxes.length > 1) {
-                $.each(boxes, function(ind, box){
-                    $(box).prop("checked", false);
-                });
-            }
-            $(this).prop("checked", true);
+            target.find(".wdf-content").each(function(ind, ele){$(ele).hide()});
+            target.find(".wdf-subcontent").each(function(ind, ele){$(ele).hide()});
         }
     },
 
@@ -262,6 +128,146 @@ var wdf = {
         target.append(tmp.html());
     },
 
+    deleteSystem: function(){
+        // empty the whole system
+        var target = $(this).closest(".control-box");
+        var system_id = target.attr("sysid");
+        var target_control_box = katana.$activeTab.find("[linkto='#"+system_id+"-control-box']").closest(".wdf-pad");
+        // need to update the sysid for the systems below
+
+        var systems_list = katana.$activeTab.find("#wdf-editor-col").find(".control-box");
+        $.each(systems_list, function(ind, sys){
+            if (ind+1 > parseInt(system_id)){
+                // Decrease the system_id by 1 to fill the one being removed
+                console.log(ind+1);
+                $(sys).attr("sysid", ind);
+                $(sys).attr("id", ind+"-control-box");
+
+                var system_nav_button = katana.$activeTab.find("[linkto='#"+(ind+1)+"-control-box']");
+                system_nav_button.attr("linkto", "#"+ind+"-control-box");
+
+                var subsys_list = $(sys).find(".subsys-box");
+                $.each(subsys_list, function(sub_ind, subsys){
+                    $(subsys).attr("id", ind+"-"+(sub_ind+1)+"-editor");
+
+                    var subsys_nav_button = katana.$activeTab.find("[linkto='#"+(ind+1)+"-"+(sub_ind+1)+"-editor']");
+                    subsys_nav_button.attr("linkto", "#"+ind+"-"+(sub_ind+1)+"-editor");
+                });
+            }
+        });
+
+        target.remove();
+        target_control_box.remove();
+    },
+
+    deleteSubSystem: function(){
+        // empty the subsystem
+        var target = $(this).closest(".control-box");
+        var system_id = target.attr("sysid");
+        // need to update the sysid for the systems below
+
+        target.remove();
+        
+        // Update the nav bar
+        var nav_button = katana.$activeTab.find("[linkto='#"+system_id+"-control-box']").closest(".wdf-pad");
+        nav_button.remove();
+    },
+
+    deleteTag: function(){
+        // empty tag and all of its child tags
+        $(this).closest("#content").remove();
+        if ($(this).closest(".child_tags").length == 1) {
+            $(this).closest(".child_tags").remove();
+        }
+    },
+
+    deleteChildTag: function(){
+        $(this).closest("#subcontent").remove();
+        if ($(this).closest(".child_tags").length == 0) {
+            $(this).closest(".child_tags").find("[name='value']").show();
+        }
+    },
+
+    sysNameChange: function(){
+        /*
+            Synchronize name change between input field and nav bar
+        */
+        var input_box = $(this);
+
+        var system_id = input_box.closest(".control-box").attr("sysid");
+
+        if (input_box.val().length != 0) {
+            input_box.css("background", "none");
+        }
+
+        // find the button that links to the current system
+        // Change the label and button text
+        var nav_button = katana.$activeTab.find("[linkto='#"+system_id+"-control-box']");
+        input_box.attr("value", input_box.val());
+        nav_button.find("span").text(" "+input_box.prop("value"));
+    },
+
+    subSysNameChange: function(){
+        /*
+            Synchronize name change between input field and nav bar
+        */
+        var input_box = $(this);
+        var system_id = input_box.closest(".control-box").attr("sysid");
+        var subsystem_id = input_box.closest(".subsys-box").attr("subsysid");
+
+        if (input_box.val().length != 0) {
+            input_box.css("background", "none");
+        }
+
+        var nav_button = katana.$activeTab.find("[linkto='#"+system_id+"-"+subsystem_id+"-editor']");
+        input_box.attr("value", input_box.val());
+        nav_button.find("span").text(" "+input_box.prop("value"));
+    },
+
+    validateKey: function(){
+        $ele = $(this);
+        $ele.attr("value", $ele.val());
+        $ele.css("background", "#f9f9f9");
+        if ($ele.prop("value").indexOf(" ") != -1) {
+            alert("Data key cannot contain whitespace");
+            $ele.focus()
+            // katana.quickAnimation($(this), "wdf-highlight", 1000);
+            $ele.css("background", "#ecff91");
+        }
+
+        if ($ele.val().toLowerCase() == "password") {
+            $ele.next().attr("type", "password");
+        } else {
+            $ele.next().removeAttr("type");
+        }
+    },
+
+    sysDefaultCheck: function(){
+        // Check the current sys checkbox and uncheck other sys checkbox
+        if ($(this).prop("checked")) {
+            var boxes = katana.$activeTab.find(".wdf-sys-checkbox:checked");
+            if (boxes.length > 1) {
+                $.each(boxes, function(ind, box){
+                    $(box).prop("checked", false);
+                });
+            }
+            $(this).prop("checked", true);
+        }
+    },
+
+    subsysDefaultCheck: function(){
+        // Check the current subsys checkbox and uncheck other subsys checkbox under the same sys
+        if ($(this).prop("checked")) {
+            var boxes = $(this).closest(".control-box").find(".wdf-subsys-checkbox:checked");
+            if (boxes.length > 1) {
+                $.each(boxes, function(ind, box){
+                    $(box).prop("checked", false);
+                });
+            }
+            $(this).prop("checked", true);
+        }
+    },
+
     hide: function(){
         $(this).hide();
     },
@@ -322,11 +328,11 @@ var wdf = {
         });
     },
 
-    submit: function(){
-        // save all the input fields and post it to server
-        var csrftoken = katana.$activeTab.find("[name='csrfmiddlewaretoken']").val();
-        var data = katana.$activeTab.find("#big-box").find("input[name$='-key']:not([name^='deleted-'])");
+    presubmit_validation: function(){
         var valid = true;
+        var editor = katana.$activeTab.find("#wdf-editor-col");
+
+        var data = editor.find("input[name='key']")
         $.each(data, function(ind, ele){
             if ($(ele).val().length == 0 || $(ele).val().indexOf(" ") != -1) {
                 $(ele).css("background", "#ecff91");
@@ -334,15 +340,15 @@ var wdf = {
             }
         });
 
-        var data = katana.$activeTab.find("#big-box").find("input[name$='-subsystem_name']");
+        var data = editor.find("input[name='subsystem_name']");
         $.each(data, function(ind, ele){
             if ($(ele).val().length == 0 || $(ele).val().indexOf(" ") != -1) {
-                $(ele).css("background", "#ecff91");
+                $(ele).css("background", "#00ffff");
                 valid = false;
             }
         });
 
-        var data = katana.$activeTab.find("#big-box").find("input[name$='-system_name']");
+        var data = editor.find("input[name='system_name']");
         $.each(data, function(ind, ele){
             if ($(ele).val().length == 0 || $(ele).val().indexOf(" ") != -1) {
                 $(ele).focus();
@@ -351,19 +357,100 @@ var wdf = {
             }
         });
 
+        return valid;
+    },
+
+    build_data_list: function(sys){
+        var sys = $(sys);
+        var data = [];
+
+        sys.children().each(function(ind, content){
+            if ($(content).hasClass("wdf-content")){
+                // Pure content, no child tags
+                var key = $(content).find("[name='key']").prop("value");
+                var val = $(content).find("[name='value']").prop("value");
+                // Can't create a dict with dynamic key...
+                var save = {};
+                save[key] = val;
+                data.push(save);
+            } else if ($(content).hasClass("child_tags")){
+                // Has child tags
+                var key = $(content).find("[name='key']").prop("value");
+                var val = []
+                $(content).find(".subcontent").each(function(ind, subcontent){
+                    var subkey = $(subcontent).find("[name='key']").prop("value");
+                    var subval = $(subcontent).find("[name='value']").prop("value");
+                    var save = {};
+                    save[subkey] = subval;
+                    val.push(save);
+                });
+                var save = {};
+                save[key] = val;
+                data.push(save);
+            }
+        });
+
+        return data;
+    },
+
+    build_systems(){
+        var systems = katana.$activeTab.find(".control-box");
+        // Get rid of template system
+        systems = systems.slice(0, -1);
+        var data = [];
+        systems.each(function(ind, sys){
+            var sysname = $(sys).find("input[name='system_name']").prop("value");
+
+            if ($(sys).find(".subsys-toolbar").length == 0){
+                var sys_data = wdf.build_data_list($(sys).find(".subsys-box"));
+                var current_sys = {"@name": sysname, "values": sys_data};
+                data.push(current_sys);
+            } else if ($(sys).find(".subsys-toolbar").length == 1){
+                var subsys = $(sys).find(".subsys-box");
+                var sys_data = wdf.build_data_list(subsys);
+                var subsysname = $(subsys).find("input[name='subsystem_name']").prop("value");
+                var current_sys = {"@name": sysname, "subsystem": {"@name": subsysname, "values": sys_data}};
+                data.push(current_sys);
+            } else if ($(sys).find(".subsys-toolbar").length > 1){
+                var subsystems = $(sys).find(".subsys-box");
+                var values = []
+                subsystems.each(function(ind, subsys){
+                    var sys_data = wdf.build_data_list(subsys);
+                    var subsysname = $(subsys).find("input[name='subsystem_name']").prop("value");
+                    values.push({"@name": subsysname, "values": sys_data});
+                });
+                var current_sys = {"@name": sysname, "subsystem": values};
+                data.push(current_sys);
+            }
+        });
+
+        return data;
+    },
+
+    submit: function(){
+        // save all the input fields and post it to server
+        var csrftoken = katana.$activeTab.find("[name='csrfmiddlewaretoken']").val();
+        var valid = wdf.presubmit_validation();
+
         if (valid) {
+            var systems = wdf.build_systems();
+            var filepath = katana.$activeTab.find("#xml_filepath").prop("value");
+            var description = katana.$activeTab.find("#xml_description").prop("value");
+
             $.ajax({
                 url : "/katana/wdf/post",
                 type: "POST",
-                data : katana.$activeTab.find("#big-box").serializeArray(),
+                contentType: "application/json;",
+                dataType: "json",
+                data : JSON.stringify({"filepath": filepath, "description": description, "systems": systems}),
                 headers: {'X-CSRFToken':csrftoken},
                 //contentType: 'application/json',
                 success: function(data){
                     // load the tree
-                    katana.$activeTab.find("#main_info").replaceWith(data);
-                    var $toolbar = katana.$activeTab.find(".tool-bar");
-                    katana.$activeTab.find(".page-content").prepend($toolbar);
-                    katana.refreshAutoInit(katana.$activeTab.find("#jstree"));
+                    // katana.$activeTab.find("#main_info").replaceWith(data);
+                    // var toolbar = katana.$activeTab.find(".tool-bar");
+                    // katana.$activeTab.find(".page-content").prepend(toolbar);
+                    // katana.refreshAutoInit(katana.$activeTab.find("#jstree"));
                 }
             }); 
         } else {

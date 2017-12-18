@@ -18,7 +18,7 @@
             </div>
         {% endwith %}
     {% elif system.subsystem|is_dict == "true" %}
-        {% with system as subsystem %}
+        {% with system.subsystem as subsystem %}
         <!-- Not every system has a subsystem toolbar -->
             <div id="{{ forloop.counter }}-1-editor" class="subsys-box" subsysid="1">
                 <div class="subsys-toolbar">

@@ -3,7 +3,7 @@
         {% if v|is_dict == "true" %}
         <!-- It's a child tag -->
             <div class="child_tags">
-                <div class="field-inline dual-input" id="content">
+                <div class="field-inline dual-input wdf-content">
                     <label>
                         <i katana-click="wdf.addChild" class="fa fa-plus" title="Add Sub Data"/>
                         <i katana-click="wdf.deleteTag" class="fa fa-trash i-danger" title="Delete Data"/>
@@ -12,7 +12,7 @@
                     <input style="display: none;" class="wdf-input" name="value" value=""/>
                 </div>
                 {% for child_k, child_v in v.items %}
-                    <div class="field-inline dual-input" id="subcontent">
+                    <div class="field-inline dual-input wdf-subcontent">
                         <label>
                             <i katana-click="wdf.deleteChildTag" class="fa fa-trash i-danger" title="Delete Sub Data"/>
                         </label>
@@ -23,7 +23,7 @@
             </div>
         {% elif k != "@name" %}
         <!-- It's not a child tag -->
-            <div class="field-inline dual-input" id="content">
+            <div class="field-inline dual-input wdf-content">
                 <label>
                     <i katana-click="wdf.addChild" class="fa fa-plus" title="Add Sub Data"/>
                     <i katana-click="wdf.deleteTag" class="fa fa-trash i-danger" title="Delete Data"/>
