@@ -10,47 +10,33 @@ from django.template.defaulttags import register
 from django.shortcuts import render
 from django.http import JsonResponse
 
+JSON_CONFIG = Navigator().get_katana_dir() + os.sep + "config.json"
+
 # Create your views here.
-def index(request):
-    """
-        Read an xml file and return the editor page with xml content in it
-    """
-    # Check to open new/existing file
-    config = read_json_data(Navigator().get_katana_dir() + os.sep + "config.json")
-    wdfdir = config["idfdir"]
-
-    if request.method == "POST":
-        data = request.POST
-        filepath = data["path"]
-        filepath = filepath.replace(wdfdir, "")
-        filepath = filepath[1:] if filepath.startswith(os.sep) else filepath
-        if os.path.isfile(data["path"]):
-            data = xmltodict.parse(open(data["path"]).read())
-        else:
-            return render(request, 'wdf_edit/failure.html')
-    else:
-        sample_data = {"system": [{"@name": "Example system", "Example key": "Example value"}]}
-        ref_dict = copy.deepcopy(sample_data)
-        return render(request, 'wdf_edit/index.html', {"data": sample_data, "data_read": ref_dict, "filepath": ""})
-
-    # xml should only has 1 root
+def process_xml(data):
+    # The first and only key in xml file should be the only root tag
     root = data.keys()[0]
 
-    # handle attributes
-    if type(data[root]["system"]) != list:
+    if not isinstance(data[root]["system"], list):
+        # The whole xml only has one system
         data[root]["system"] = [data[root]["system"]]
     for sys in data[root]["system"]:
         if "subsystem" in sys:
-            if type(sys["subsystem"]) == list:
+            if isinstance(sys["subsystem"], list):
+                # Multiple subsystems
                 for subsys in sys["subsystem"]:
                     for k, v in subsys.items():
                         subsys[k] = "" if subsys[k] is None else subsys[k]
                         if k.startswith("@") and k != "@name" and k != "@default":
+                            # Change attribute type value into tag type value
                             subsys[k[1:]] = v
                             del subsys[k]
                         elif k == "#text":
+                            # Clear extra text in unwant place 
+                            # (tag type value doesn't generate #text)
                             del subsys[k]
             else:
+                # One subsystem
                 subsys = sys["subsystem"]
                 for k, v in sys["subsystem"].items():
                     subsys[k] = "" if subsys[k] is None else subsys[k]
@@ -60,6 +46,7 @@ def index(request):
                     elif k == "#text":
                         del subsys[k]
         else:
+            # No subsystem
             for k, v in sys.items():
                 sys[k] = "" if sys[k] is None else sys[k]
                 if k.startswith("@") and k != "@name" and k != "@default":
@@ -70,13 +57,45 @@ def index(request):
     print(json.dumps(data[root], indent=4))
 
     ref_dict = copy.deepcopy(data[root])
-    return render(request, 'wdf_edit/index.html', {"data": data[root], "data_read": ref_dict, "filepath": filepath, "desc":data[root].get("description", "")})
+    return data, ref_dict
+
+def index(request):
+    """
+        Read an xml file and return the editor page with xml content in it
+    """
+    config = read_json_data(JSON_CONFIG)
+    wdfdir = config["idfdir"]
+
+    # Check to open new/existing file
+    if request.method == "POST":
+        data = request.POST
+        if os.path.isfile(data["path"]):
+            xml_data = xmltodict.parse(open(data["path"]).read())
+
+            # Generate the filepath to use on webpage
+            filepath = data["path"]
+            filepath = filepath.replace(wdfdir, "")
+            filepath = filepath[1:] if filepath.startswith(os.sep) else filepath
+
+            # xml should only has 1 root
+            root = xml_data.keys()[0]
+
+            data, ref_dict = process_xml(xml_data)
+            return render(request, 'wdf_edit/index.html', 
+                          {"data": xml_data[root], "data_read": ref_dict, "filepath": filepath,
+                           "desc":xml_data[root].get("description", "")})
+        else:
+            return render(request, 'wdf_edit/failure.html')
+    else:
+        sample_data = {"system": [{"@name": "Example system", "Example key": "Example value"}]}
+        ref_dict = copy.deepcopy(sample_data)
+        return render(request, 'wdf_edit/index.html', {"data": sample_data, "data_read": ref_dict, "filepath": ""})
 
 def get_jstree_dir(request):
     """
         Prepare the json for jstree to use
     """
-    config = read_json_data(Navigator().get_katana_dir() + os.sep + "config.json")
+    config = read_json_data(JSON_CONFIG)
     data = Navigator().get_dir_tree_json(config["idfdir"])
     data["text"] = config["idfdir"]
     # print json.dumps(data, indent=4)
@@ -149,7 +168,7 @@ def on_post(request):
     from xml.dom.minidom import parseString as miniparse
     print miniparse(xmltodict.unparse(result)).toprettyxml()
 
-    config = read_json_data(Navigator().get_katana_dir() + os.sep + "config.json")
+    config = read_json_data(JSON_CONFIG)
     wdfdir = config["idfdir"]
     filepath = os.path.join(wdfdir, filepath)
     print "Filepath:", filepath
