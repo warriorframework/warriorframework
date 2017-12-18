@@ -18,7 +18,7 @@ var wdf = {
     },
 
     search_for_password: function(){
-        $inputs = katana.$activeTab.find("#content, #subcontent");
+        $inputs = katana.$activeTab.find(".wdf-content, .wdf-subcontent");
         $inputs.each(function(ind, row) {
             $row = $(row);
             $row_key = $row.find("[name$='-key']");
@@ -87,7 +87,7 @@ var wdf = {
         var system_id = target.attr("sysid");
         var subsystem_id = target.find(".subsys-box").length+1;
 
-        if (subsystem_id == 2 && target.find(".subsys-box").length == 0 & target.find("#content".length > 0)){
+        if (subsystem_id == 2 && target.find(".subsys-box").length == 0 & target.find(".wdf-content".length > 0)){
             alert("Please only add subsystem when top level system doesn't have tag");
         } else {
             var tmp = katana.$activeTab.find("#subsystem_template").clone();
@@ -127,7 +127,7 @@ var wdf = {
     addChild: function(){
         var tmp = katana.$activeTab.find("#child_tag_template").clone();
         // go to control box level
-        var target = $(this).closest("#content");
+        var target = $(this).closest(".wdf-content");
 
         if (target.parent().prop("class") != "child_tags"){
             target.wrap("<div class='child_tags'></div>")
@@ -193,20 +193,29 @@ var wdf = {
 
         target.remove();
         target_control_box.remove();
+
+        if (system.find(".subsys-box").length == 0){
+            system.find(".sys-toolbar").find("[katana-click='wdf.addTag']").show();
+        }
     },
 
     deleteTag: function(){
         // empty tag and all of its child tags
-        $(this).closest("#content").remove();
         if ($(this).closest(".child_tags").length == 1) {
             $(this).closest(".child_tags").remove();
+        } else {
+            $(this).closest(".wdf-content").remove();
         }
     },
 
     deleteChildTag: function(){
-        $(this).closest("#subcontent").remove();
-        if ($(this).closest(".child_tags").length == 0) {
-            $(this).closest(".child_tags").find("[name='value']").show();
+        if ($(this).closest(".child_tags").find(".wdf-subcontent").length == 1) {
+            var tag = $(this).closest(".child_tags").find(".wdf-content");
+            tag.find("[name='value']").show();
+            $(this).closest(".child_tags").before(tag);
+            $(this).closest(".child_tags").remove();
+        } else {
+            $(this).closest(".wdf-subcontent").remove();
         }
     },
 
