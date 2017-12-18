@@ -71,4 +71,21 @@
         -->
 
     </warriorspace>
+
+    <!--
+
+    Fill this out with the details of any other repository that you want to clone
+
+    <repos url="http://repository/one/url.git" overwrite="yes" clone="yes">
+    </repos>
+    add src and dst tag to copy the dir tree at src location to the dst location with out
+    copying all the other data
+    you can also specify multiple sources and destinations. Each of the source tag should
+    begin with "src" and the corresponding destination should begin with "dst" with the 
+    same remaining letters like
+    src1 - dst1, srca - dsta, srcxyz - dstxyz
+    if src and dst are not given, all the contents of the repository would be copied to warrior/repos
+    if src alone is mentioned, the src would be copied to warrior/repos
+
+    -->
 </data>

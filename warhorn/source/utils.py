@@ -185,6 +185,21 @@ def get_attribute_value(tag_name, attrib_name):
     return value
 
 
+def get_transfer_list(tag):
+    transfer_list = []
+    defaultdst = os.path.join("warrior", "repos")
+    if 'defaultdst' in tag.attrib:
+        defaultdst = tag.attrib['defaultdst']
+    print "tag attributes:", tag.attrib
+    sources = [k for k in tag.attrib if k.startswith('src')]
+    for source in sources:
+        dest = source.replace('src', 'dst')
+        src = tag.attrib[source]
+        dst = tag.attrib[dest] if dest in tag.attrib else defaultdst
+        transfer_list.append((src, dst))
+    return transfer_list
+
+
 def get_all_leaf_dirs(path, paths):
     """ Retrieves all the leaf directories of the specified directory
 
