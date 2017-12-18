@@ -187,7 +187,7 @@ def get_attribute_value(tag_name, attrib_name):
 
 def get_transfer_list(tag):
     transfer_list = []
-    defaultdst = os.path.join("warrior", "Tools")
+    defaultdst = os.path.join("warrior", "repos")
     if 'defaultdst' in tag.attrib:
         defaultdst = tag.attrib['defaultdst']
     print "tag attributes:", tag.attrib
