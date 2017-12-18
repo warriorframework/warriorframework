@@ -149,7 +149,6 @@ var wdf = {
         $.each(systems_list, function(ind, sys){
             if (ind+1 > parseInt(system_id)){
                 // Decrease the system_id by 1 to fill the one being removed
-                console.log(ind+1);
                 $(sys).attr("sysid", ind);
                 $(sys).attr("id", ind+"-control-box");
 
@@ -172,15 +171,28 @@ var wdf = {
 
     deleteSubSystem: function(){
         // empty the subsystem
-        var target = $(this).closest(".control-box");
-        var system_id = target.attr("sysid");
-        // need to update the sysid for the systems below
+        var system = $(this).closest(".control-box");
+        var target = $(this).closest(".subsys-box");
+        var system_id = system.attr("sysid");
+        var subsystem_id = target.attr("subsysid");
+        var target_control_box = katana.$activeTab.find("[linkto='#"+system_id+"-"+subsystem_id+"-editor']").closest(".wdf-subsys-nav");
+
+        // need to update the subsysid for the subsystems below
+
+        var subsystems_list = system.find(".subsys-box");
+        $.each(subsystems_list, function(ind, subsys){
+            if (ind+1 > parseInt(subsystem_id)){
+                // Decrease the system_id by 1 to fill the one being removed
+                $(subsys).attr("subsysid", ind);
+                $(subsys).attr("id", system_id+"-"+ind+"-editor");
+
+                var subsys_nav_button = katana.$activeTab.find("[linkto='#"+system_id+"-"+(ind+1)+"-editor']");
+                subsys_nav_button.attr("linkto", "#"+system_id+"-"+ind+"-editor");
+            }
+        });
 
         target.remove();
-        
-        // Update the nav bar
-        var nav_button = katana.$activeTab.find("[linkto='#"+system_id+"-control-box']").closest(".wdf-pad");
-        nav_button.remove();
+        target_control_box.remove();
     },
 
     deleteTag: function(){
