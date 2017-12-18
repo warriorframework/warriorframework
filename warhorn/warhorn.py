@@ -25,7 +25,7 @@ from source.utils import (check_installed_python_version, print_info, verify_pyt
                           get_date_and_time, get_relative_path, set_file_names, get_dependencies,
                           setDone, getDone, get_parent_dir, get_all_direct_child_nodes,
                           remove_extra_list_elements, git_clone_repository, get_latest_tag,
-                          git_checkout_label, get_dest, install_depen)
+                          git_checkout_label, get_dest, install_depen, get_transfer_list)
 
 """
 
@@ -1080,29 +1080,39 @@ def replace_tools_from_product_repo(node_list, **kwargs):
     config_file_name = kwargs.get("config_file_name")
     console_log_name = kwargs.get("console_log_name")
     print_log_name = kwargs.get("print_log_name")
-    if "tools" in node_list:
-        tools_node = get_node(config_file_name, "tools")
-        tools_url = get_attribute_value(tools_node, "url")
-        tools_root = get_repository_name(tools_url)
-        tools_clone = get_attribute_value(tools_node, "clone")
-        tools_base_path = ""
-        warrior_node = get_node(config_file_name, "warriorframework")
-        warrior_base_path = get_attribute_value(warrior_node, "destination")
-        if tools_url and tools_clone == "yes":
-            tools_base_path = validate_base_path(
-                tools_base_path, logfile=logfile,
-                config_file_name=config_file_name,
-                console_log_name=console_log_name,
-                print_log_name=print_log_name)
-            warrior_base_path = validate_base_path(
-                warrior_base_path, logfile=logfile,
-                config_file_name=config_file_name,
-                console_log_name=console_log_name, print_log_name=print_log_name)
-            warrior_tools_path = os.path.join(warrior_base_path,
-                                                  "warrior", "Tools")
-            product_tools_path = os.path.join(tools_base_path, tools_root, "Tools")
-            dir_util.copy_tree(product_tools_path, warrior_tools_path, update=1)
-            delete_directory(os.path.join(tools_base_path, tools_root), logfile, print_log_name)
+
+    tools_node = get_node(config_file_name, "tools")
+    tools_url = get_attribute_value(tools_node, "url")
+    tools_root = get_repository_name(tools_url)
+    tools_clone = get_attribute_value(tools_node, "clone")
+    tools_base_path = ""
+    warrior_node = get_node(config_file_name, "warriorframework")
+    warrior_base_path = get_attribute_value(warrior_node, "destination")
+    if tools_url and tools_clone == "yes":
+        tools_base_path = validate_base_path(tools_base_path, logfile=logfile,
+                                             config_file_name=config_file_name,
+                                             console_log_name=console_log_name,
+                                             print_log_name=print_log_name)
+        warrior_base_path = validate_base_path(warrior_base_path, logfile=logfile,
+                                               config_file_name=config_file_name,
+                                               console_log_name=console_log_name,
+                                               print_log_name=print_log_name)
+        tools_base_path = os.path.join(tools_base_path, tools_root)
+        transfer_list = get_transfer_list(tools_node)
+        print "warrior_base_path:", warrior_base_path
+        print "tools_base_path:", tools_base_path
+        print "tools_root:", tools_root
+        if not transfer_list:
+            transfer_list = [("Tools", os.path.join("warrior", "Tools"))]
+        # warrior_tools_path = os.path.join(warrior_base_path, "warrior", "Tools")
+        # product_tools_path = os.path.join(tools_base_path, "Tools")
+        for (src, dst) in transfer_list:
+            src = os.path.join(tools_base_path, src).rstrip(os.path.sep)
+            dst = os.path.join(warrior_base_path, dst, os.path.basename(src))
+            if src == dst: continue
+            print_info("copying {} to {}".format(src, dst), logfile, print_log_name)
+            dir_util.copy_tree(src, dst, update=1)
+        delete_directory(tools_base_path, logfile, print_log_name)
 
 
 def assemble_warrior():
@@ -1197,11 +1207,12 @@ def assemble_warrior():
                                  console_log_name=console_log_name,
                                  print_log_name=print_log_name)
 
-    replace_tools_from_product_repo(node_list, logfile=logfile,
-                                    config_file_name=config_file_name,
-                                    console_log_name=console_log_name,
-                                    print_log_name=print_log_name,
-                                    dest=internal_copy)
+    if "tools" in node_list:
+        replace_tools_from_product_repo(node_list, logfile=logfile,
+                                        config_file_name=config_file_name,
+                                        console_log_name=console_log_name,
+                                        print_log_name=print_log_name,
+                                        dest=internal_copy)
     clone_drivers(base_path, current_dir, logfile=logfile,
                   config_file_name=config_file_name,
                   print_log_name=print_log_name,
