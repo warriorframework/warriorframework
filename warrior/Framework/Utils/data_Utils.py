@@ -1762,7 +1762,7 @@ def get_default_ecf_and_et(arguments_dict, current_datafile, current_browser,
                            name_tuple=("element_config_file", "element_tag"),
                            def_name_tuple=("DEF_ecf", "DEF_et")):
     """
-    Updates selenium argument sict with Default ECF and default element_tag
+    Updates selenium argument dict with Default ECF and default element_tag
     """
     for j in range(0, len(name_tuple)):
         if name_tuple[j] in arguments_dict:
