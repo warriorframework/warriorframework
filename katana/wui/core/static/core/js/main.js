@@ -444,9 +444,9 @@ var katana = {
     var index = 0;
     if($existingOverlay.length > 0){
         var $overlayChildren = $existingOverlay.children();
-        var lastIndex = $($overlayChildren[0]).attr('alert-number');
+        var lastIndex = parseInt($($overlayChildren[0]).attr('alert-number'));
         if (lastIndex >= $overlayChildren.length){
-            index = lastIndex + 2;
+            index = lastIndex + 1;
         } else {
             index = $overlayChildren.length;
         }
