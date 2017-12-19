@@ -389,7 +389,7 @@ var katana = {
   acceptAlert: function(index, callBack_on_accept) {
 
     var $body = $('body');
-    var $alertElement = $body.find('div .overlay');
+    var $alertElement = $body.find('div .alert-overlay');
     $allAlerts = $alertElement.children();
     $alertToBeDismissed = $alertElement.children('[alert-number="'+ index + '"]');
     var $prompt = $body.find('#alert-box-prompt');
@@ -423,7 +423,7 @@ var katana = {
 
   dismissAlert: function(index, callBack_on_dismiss) {
     var $body = $('body');
-    $alertElement = $body.find('div .overlay');
+    $alertElement = $body.find('div .alert-overlay');
     $allAlerts = $alertElement.children();
     $alertToBeDismissed = $alertElement.children('[alert-number="'+ index + '"]');
     if($allAlerts.length > 1){
@@ -440,10 +440,16 @@ var katana = {
   displayAlert: function(data, alert_box, callBack_on_accept, callBack_on_dismiss) {
 
     var $view = katana.$view;
-    var $existingOverlay = $view.find('.overlay');
+    var $existingOverlay = $view.find('.alert-overlay');
     var index = 0;
     if($existingOverlay.length > 0){
-        index = $existingOverlay.children().length;
+        var $overlayChildren = $existingOverlay.children();
+        var lastIndex = $($overlayChildren[0]).attr('alert-number');
+        if (lastIndex >= $overlayChildren.length){
+            index = lastIndex + 2;
+        } else {
+            index = $overlayChildren.length;
+        }
     }
     var $alertBox = $(alert_box);
     $alertBox.attr('alert-number', index)
@@ -461,7 +467,7 @@ var katana = {
     if($existingOverlay.length > 0){
         $alertBox.prependTo($existingOverlay);
     } else {
-        $totalAlertBox = $('<div class="overlay"></div>');
+        $totalAlertBox = $('<div class="alert-overlay"></div>');
         $totalAlertBox.html($alertBox);
         $totalAlertBox.prependTo($view);
     }
