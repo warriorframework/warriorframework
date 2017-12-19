@@ -555,7 +555,7 @@ span.close:before {
 	text-rendering: auto;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-	content: "\f0c9";
+	content: "\f015";
 	font-size: 17px;
 	line-height: 28px;
 }
