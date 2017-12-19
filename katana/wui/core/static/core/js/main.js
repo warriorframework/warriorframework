@@ -386,11 +386,12 @@ var katana = {
     $prompt.css("border-color", borderColor)
   },
 
-  acceptAlert: function(callBack_on_accept) {
+  acceptAlert: function(index, callBack_on_accept) {
 
     var $body = $('body');
     var $alertElement = $body.find('div .overlay');
     $allAlerts = $alertElement.children();
+    $alertToBeDismissed = $alertElement.children('[alert-number="'+ index + '"]');
     var $prompt = $body.find('#alert-box-prompt');
 
     var inputValue = false;
@@ -404,7 +405,7 @@ var katana = {
     } else {
 
         if($allAlerts.length > 1){
-            $($allAlerts[$allAlerts.length-1]).remove();
+            $alertToBeDismissed.remove();
         } else {
             $alertElement.remove();
         }
@@ -420,12 +421,13 @@ var katana = {
     }
   },
 
-  dismissAlert: function(callBack_on_dismiss) {
+  dismissAlert: function(index, callBack_on_dismiss) {
     var $body = $('body');
     $alertElement = $body.find('div .overlay');
     $allAlerts = $alertElement.children();
+    $alertToBeDismissed = $alertElement.children('[alert-number="'+ index + '"]');
     if($allAlerts.length > 1){
-        $($allAlerts[$allAlerts.length-1]).remove();
+        $alertToBeDismissed.remove();
     } else {
         $alertElement.remove();
     }
@@ -439,17 +441,22 @@ var katana = {
 
     var $view = katana.$view;
     var $existingOverlay = $view.find('.overlay');
+    var index = 0;
+    if($existingOverlay.length > 0){
+        index = $existingOverlay.children().length;
+    }
     var $alertBox = $(alert_box);
+    $alertBox.attr('alert-number', index)
 
-        $alertBox.find('#cancel-alert').one('click', function() {
-            katana.dismissAlert(callBack_on_dismiss);
-        });
-        $alertBox.find('#cancel-alert-icon').one('click', function() {
-            katana.dismissAlert(callBack_on_dismiss);
-        });
-        $alertBox.find('#accept-alert').on('click', function() {
-            katana.acceptAlert(callBack_on_accept);
-        });
+    $alertBox.find('#cancel-alert').one('click', function() {
+        katana.dismissAlert(index, callBack_on_dismiss);
+    });
+    $alertBox.find('#cancel-alert-icon').one('click', function() {
+        katana.dismissAlert(index, callBack_on_dismiss);
+    });
+    $alertBox.find('#accept-alert').on('click', function() {
+        katana.acceptAlert(index, callBack_on_accept);
+    });
 
     if($existingOverlay.length > 0){
         $alertBox.prependTo($existingOverlay);
@@ -461,7 +468,7 @@ var katana = {
 
     if (data.timer) {
       setTimeout(function() {
-        katana.dismissAlert(callBack_on_dismiss)
+        katana.dismissAlert(index, callBack_on_dismiss)
       }, data.timer);
     }
 
