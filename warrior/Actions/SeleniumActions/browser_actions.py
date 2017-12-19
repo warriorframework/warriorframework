@@ -15,16 +15,12 @@ from Framework.Utils.rest_Utils import remove_invalid_req_args
 """ Selenium keywords for Generic Browser Actions """
 
 import os, re
+import Framework.Utils as Utils
 from urlparse import urlparse
 from Framework.ClassUtils.WSelenium.browser_mgmt import BrowserManagement
+from Framework.Utils.print_Utils import print_warning, print_error
 from Actions.SeleniumActions.verify_actions import verify_actions
 from Actions.SeleniumActions.elementlocator_actions import elementlocator_actions
-
-try:
-    import Framework.Utils as Utils
-except ImportWarning:
-    raise ImportError
-
 from Framework.Utils import selenium_Utils
 from Framework.Utils import data_Utils
 from Framework.Utils import xml_Utils
@@ -52,7 +48,8 @@ class browser_actions(object):
     def browser_launch(self, system_name, browser_name="all", type="firefox",
                        url=None, ip=None, remote=None, element_config_file=None,
                        element_tag=None, binary=None, gecko_path=None,
-                       proxy_ip=None, proxy_port=None):
+                       proxy_ip=None, proxy_port=None, headless_mode=None):
+
         """
         The Keyword would launch a browser and Navigate to the url, if provided by the user.
 
@@ -61,6 +58,21 @@ class browser_actions(object):
         navigate_to_url_with_verification instead of providing a url with this keyword if you
         need to verify the navigation result.
         --------------------------------------------------------------------------------------
+
+        If the user wants to test the selenium functionalities in headless
+        mode, install pyvirtualdisplay and Xvfb. To install it follow
+        the below steps.
+
+        1. To install pyvirtualdisplay:
+               pip install pyvirtualdisplay
+
+        2. To install Xvfb:
+               sudo apt-get install Xvfb
+
+               i) For red hat based systems:
+                   yum install xorg-x11-server-Xvfb
+                               or
+                   yum search xvfb
 
         :Datafile Usage:
 
@@ -131,6 +143,12 @@ class browser_actions(object):
 
                              FOR TEST CASE
                              Eg: <argument name="element_tag" value="json_name_1">
+            9. headless_mode = This headless_mode tag refers to whether the browser has to be
+                               launched in headless mode or not.
+                            Eg: <argument name="headless_mode" value="yes">
+                                                or
+                                <argument name="headless_mode" value="y">
+                                <argument name="headless_mode" value="no"/>
 
             9. binary = This <binary> tag refers to path of the browser to
                         invoke
@@ -161,12 +179,14 @@ class browser_actions(object):
             7. element_config_file (str) = location of the element configuration
                                            file that contains all element
                                            locators
-            8. element_tag (str) = particular element in the json fie which
+            8. element_tag (str) = particular element in the json file which
                                    contains relevant information to that element
             9. binary(str) = path of the browser
             10. gecko_path(str) = path of the geckodriver
             11. proxy_ip(str) = IP of the proxy server
             12. proxy_port(str) = port of the proxy server
+            13. headless_mode(str) = 'yes/y' or 'no' to indicate whether you want to launch the
+                                     browser in headless mode or not. And it is case insensitive.
 
         :Returns:
 
@@ -189,6 +209,8 @@ class browser_actions(object):
         if remote is None:
             remote = data_Utils.getSystemData(self.datafile, system_name,
                                               "remote")
+        if headless_mode is None:
+            headless_mode = data_Utils.getSystemData(self.datafile, system_name, "headless_mode")
 
         webdriver_remote_url = ip if str(remote).strip().lower() == "yes"\
             else False
@@ -215,16 +237,32 @@ class browser_actions(object):
                 browser_details = selenium_Utils.\
                     get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
+                headless_mode_pattern = re.compile(r'y(es)?$', flags=re.IGNORECASE)
                 if type == "firefox":
                     ff_profile = self.browser_object.\
                         set_firefoxprofile(proxy_ip, proxy_port)
+                if headless_mode_pattern.match(str(headless_mode).strip()):
+                    try:
+                        from pyvirtualdisplay import Display
+                        display = Display(visible=0, size=(1024, 768))
+                        display.start()
+                        pNote("Running in headless mode")
+                    except ImportError:
+                        print_error("pyvirtualdisplay is not installed in order "
+                                    "to launch the browser in headless mode")
+                        status = False
+                    except Exception as e:
+                        print_error("Encountered Exception: {0}, while trying to launch the browser"
+                                    " in headless mode".format(e))
+                        status = False
                 if binary != "" and gecko_path != "":
-                    browser_inst = self.browser_object.open_browser(
-                        browser_details["type"], webdriver_remote_url,
-                        binary=binary, gecko_path=gecko_path,
-                        profile_dir=ff_profile)
+                    browser_inst = self.browser_object.open_browser(browser_details["type"], 
+                                                                    webdriver_remote_url,
+                                                                    binary=binary, gecko_path=gecko_path,
+                                                                    profile_dir=ff_profile)
+                                                                                         
                 else:
-                    pNote("Please provide valid path for binary/geckodriver")
+                    browser_inst = self.browser_object.open_browser(browser_details["type"], webdriver_remote_url)                   
                 if browser_inst:
                     browser_fullname = "{0}_{1}".format(system_name,
                                                         browser_details["browser_name"])
