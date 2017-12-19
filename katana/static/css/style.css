@@ -2191,3 +2191,7 @@ b.text-danger > br {
     color: white;
     border-radius: 0;
 }
+
+select.hideopt > option[value^="?"] {
+    display: none;
+}
