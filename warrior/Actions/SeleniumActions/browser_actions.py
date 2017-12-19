@@ -219,17 +219,24 @@ class browser_actions(object):
                                                                      datafile=self.datafile,
                                                                      **arguments)
             if browser_details is not None:
-                if browser_details["gecko_path"] not in [None, False] and \
+                print "binary", binary
+                print "gecko_path", gecko_path
+                print "browser_details", browser_details
+                if browser_details.get("gecko_path", None) not in [None, False] and \
                                 browser_details["type"] == "firefox":
+                    # If browser type is firefox, needs to have geckodriver path
+                    # if firefox version >= 47 and selenium must be >= 3.5 in order to support geckodriver
                     ff_profile = self.browser_object.set_firefoxprofile(proxy_ip, proxy_port)
                     browser_inst = self.browser_object.open_browser(
                         browser_details["type"], webdriver_remote_url,
                         binary=binary, gecko_path=gecko_path,
                         profile_dir=ff_profile)
-                else:
+                elif browser_details["type"] != "firefox":
+                    # assuming it is chrome
                     browser_inst = self.browser_object.open_browser(browser_details["type"],
-                                                                    webdriver_remote_url,
-                                                                    binary=binary)
+                                                                    webdriver_remote_url)
+                else:
+                    pNote("Please provide valid path for binary/geckodriver")
 
                 if browser_inst:
                     browser_fullname = "{0}_{1}".format(system_name,
