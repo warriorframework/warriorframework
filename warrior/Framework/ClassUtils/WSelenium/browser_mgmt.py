@@ -490,11 +490,8 @@ class BrowserManagement(object):
                 ff_capabilities = webdriver.DesiredCapabilities.FIREFOX
                 ff_capabilities['acceptInsecureCerts'] = True
                 # ffbinary = FirefoxBinary(binary)
-                # print ffbinary
-                print profile_dir
-                print gecko_path
-                browser = webdriver.Firefox(firefox_profile=profile_dir,
-                                            executable_path=gecko_path)
+                browser = webdriver.Firefox(executable_path=gecko_path)
+                print "browser", browser
             return browser
         except WebDriverException as e:
             if "executable needs to be in PATH" in str(e):
