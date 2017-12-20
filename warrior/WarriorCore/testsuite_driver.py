@@ -366,7 +366,6 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
             testsuite_utils.pSuite_update_suite_tests(str(test_count))
             if str(test_suite_status).upper() == "TRUE":
                 break
-
     #The below ELIF is to preserve backward compatibility. The new logic is available/
     #with execution_type == 'SEQUENTIAL_TESTCASES'
     elif execution_type.upper() == 'RUN_MULTIPLE' and runmode is None:

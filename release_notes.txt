@@ -1,10 +1,12 @@
 Release: Ninja
-Version: warrior-3.4.0
+Version: warrior-3.6.0
 
 ===================
 1: Release details
 ===================
 This is release Ninja of Warrior Test Automation Framework
+
+
 
 -------------------------------
 1.1: List of available releases
@@ -13,41 +15,35 @@ This is release Ninja of Warrior Test Automation Framework
 1. Ninja = warrior-3.1.0 to current
 
 
+
 ==================
 2. Version Details
 ==================
-You are on Release Ninja, Version warrior-3.4.0 of Warrior Framework.
+You are on Release Ninja, Version warrior-3.6.0 of Warrior Framework.
 Procedure to get a specific version is available in section-3 of this document.
+
+
 
 +++++++++++++++++++++++++++++++++
 2.1. Change log for this release
 +++++++++++++++++++++++++++++++++
 
-
 -------------
 New Features:
 -------------
-[WAR-724] - Selenium KWs: Test if all the available selenium functionality in Warrior is compatible with Selenium 3.0
-[WAR-1003] - As a user, I want to know he python version on which Warrior is running
-[WAR-1053] - As a user, I want to be able to run Suites in a project in parallel
-[WAR-1069] - Selenium: As a user, I want to launch browser and maximize it in the same keyword
-[WAR-851] - WARHORN: As a user, I need an option to create virtual environment
 
--------------
-Improvements:
--------------
-[WAR-1340] - User should able open the test case maped in the test suit by clicking on the test case name(need hyperlink support)
-[WAR-1389] - travis pylint failure for using print in war_print_class has to be ignored
-[WAR-1405] - Travis: Ignore deleted files for pylint check
-[WAR-1426] - Resolve issues with Regression test
-[WAR-1142] - Move hardcoded url in warrior_cli_driver to w_settings
+[WAR-864] - As a user, I want an intelligent tool which can sequence multiple keywords to form a new keyword
+[WAR-912] - KATANA: Need support for multiple conditional statements and greater/smaller comparison
+[WAR-1303] - Selenium: The functional tests for selenium need to be updated with correct data
+[WAR-1542] - Support command specific responses for warmock
+[WAR-1575] - As a user, I need a support to send emails to multiple receivers
+[WAR-1576] - Both in CLI and HTML Results Page tester (who executed the test case) details should be available
 
 ---------
 Bugfixes:
 ---------
-[WAR-1141] - selenium:not able to launch the browser with url if it is not the part of world wide web
-[WAR-1356] - Modify send_command(cli) utility to support both pexpect and WarriorConnect objects
 
+[WAR-1402] - Response reference is not saved properly while executing on a different system which is given in the td file.
 
 =================================================
 3. Procedure to get a specific version of Warrior

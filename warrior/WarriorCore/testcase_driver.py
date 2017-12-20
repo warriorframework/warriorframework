@@ -39,8 +39,11 @@ def get_testcase_details(testcase_filepath, data_repository, jiraproj):
     by user assigns default values.
     """
 
+    Utils.config_Utils.set_datarepository(data_repository)
     name = Utils.xml_Utils.getChildTextbyParentTag(testcase_filepath, 'Details', 'Name')
     title = Utils.xml_Utils.getChildTextbyParentTag(testcase_filepath, 'Details', 'Title')
+    expResults = Utils.xml_Utils.getChildTextbyParentTag(testcase_filepath,'Details',
+                                                         'ExpectedResults')
     category = Utils.xml_Utils.getChildTextbyParentTag(testcase_filepath, 'Details', 'Category')
     def_on_error_action = Utils.testcase_Utils.get_defonerror_fromxml_file(testcase_filepath)
     def_on_error_value = Utils.xml_Utils.getChildAttributebyParentTag(testcase_filepath, 'Details',
@@ -63,6 +66,9 @@ def get_testcase_details(testcase_filepath, data_repository, jiraproj):
         title = "None"
     else:
         title = str(title).strip()
+
+    if expResults is None or expResults is False:
+        expResults = "None"
 
     if def_on_error_value is None or def_on_error_value is False:
         def_on_error_value = None
@@ -95,7 +101,7 @@ def get_testcase_details(testcase_filepath, data_repository, jiraproj):
        By this feature we allow the user to run the same testcases, with
        different data files with out actually changing the testcase.
     """
-
+    #import pdb; pdb.set_trace()
     # First priority for data files given through CLI##
     if data_repository.has_key('ow_datafile'):
         datafile = data_repository['ow_datafile']
@@ -111,7 +117,9 @@ def get_testcase_details(testcase_filepath, data_repository, jiraproj):
     # Fourth priority for data files given in the Testcase file##
     else:
         datafile, data_type = efile_obj.get_data_files()
-
+    #To check the whether data file is a well formed xml file.
+    if datafile and datafile is not "NO_DATA":
+        Utils.xml_Utils.getRoot(datafile)
     # tc_execution_dir = Utils.file_Utils.createDir_addtimestamp(execution_dir, nameonly)
     # datafile, data_type = get_testcase_datafile(testcase_filepath)
     # resultfile, resultsdir = get_testcase_resultfile(testcase_filepath, tc_execution_dir,
@@ -124,7 +132,8 @@ def get_testcase_details(testcase_filepath, data_repository, jiraproj):
     Utils.config_Utils.debug_file(console_logfile)
     # objLogFile = Utils.testcase_Utils.pOpen(logfile)
 
-    to_strip_list = [name, title, category, datafile, data_type, logsdir, resultsdir, defectsdir]
+    to_strip_list = [name, title, category, datafile, data_type, logsdir,
+                     resultsdir, defectsdir, expResults]
     stripped_list = Utils.string_Utils.strip_white_spaces(to_strip_list)
 
     name = stripped_list[0]
@@ -135,6 +144,7 @@ def get_testcase_details(testcase_filepath, data_repository, jiraproj):
     logsdir = stripped_list[5]
     resultsdir = stripped_list[6]
     defectsdir = stripped_list[7]
+    expResults = stripped_list[8]
 
     # Add variables to data_repository
     data_repository['wt_name'] = name
@@ -149,6 +159,7 @@ def get_testcase_details(testcase_filepath, data_repository, jiraproj):
     data_repository['wt_logsdir'] = logsdir
     data_repository['wt_kw_results_dir'] = kw_results_dir
     data_repository['wt_defectsdir'] = defectsdir
+    data_repository['wt_expResults'] = expResults
     # data_repository['wt_logfile'] = objLogFile
     data_repository['wt_operating_system'] = operating_system.upper()
     data_repository['wt_def_on_error_action'] = def_on_error_action.upper()
@@ -224,17 +235,15 @@ def report_testcase_result(tc_status, data_repository):
         2. data_repository (dict) = data_repository of the executed  testcase
     """
     print_info("\n**** Testcase Result ***")
-
     print_info("TESTCASE:{0}  STATUS:{1}".format(data_repository['wt_name'],
                                                  convertLogic(tc_status)))
-
     print_info("\n")
     Utils.testcase_Utils.pTestResult(tc_status, data_repository['wt_resultfile'])
     root = Utils.xml_Utils.getRoot(data_repository['wt_resultfile'])
     fail_count = 0
     for value in root.findall('Keyword'):
         kw_status = value.find('KeywordStatus').text
-        if kw_status != "PASS":
+        if kw_status != "PASS" and kw_status != "RAN":
             fail_count += 1
             kw_name = value.find('Name').text
             get_step_value = value.attrib.values()
@@ -323,6 +332,7 @@ def print_testcase_details_to_console(testcase_filepath, data_repository):
     print_info("Logs directory: %s" % data_repository['wt_logsdir'])
     print_info("Defects directory: {0}".format(data_repository["wt_defectsdir"]))
     print_info("Datafile: %s" % data_repository['wt_datafile'])
+    print_info("Expected Results: %s" % data_repository['wt_expResults'])
     report_testcase_requirements(testcase_filepath)
     print_info("==============================================="
                "===================================")

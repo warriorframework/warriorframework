@@ -16,17 +16,16 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
 
     'use strict';
 
-    $scope.step_numbers = [];
+        $scope.step_numbers = [];
         $scope.stepToBeCopied = "None";
         $scope.stepBeingEdited = "None";
         $scope.subdirs = subdirs;
         $scope.xml = {};
-    $scope.xml.file = '';
-    $scope.xml.json = '';
-    $scope.xml.pycs = {};
-    $scope.xml.args = {};
+        $scope.xml.file = '';
+        $scope.xml.json = '';
+        $scope.xml.pycs = {};
+        $scope.xml.args = {};
         $scope.original_iter_types = [];
-    // $scope.xml.capargs = [];        // where the arguments are captured in the form.
         $scope.step_onerror = "next";
         $scope.step_onerror_value = "";
         $scope.arg_list = [{"_name": "", "_value": ""}];
@@ -39,8 +38,26 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
         $scope.earlier_li = [];
         $scope.btnValue = "Path";
         $scope.showModal = {visible: false};
+        $scope.sysList = [];
+        $scope.subSysList = [];
+        $scope.hideSubsys = true;
+        $scope.hideText = true;
+        $scope.sysVal = '';
+        $scope.hideTxtBox = true;
+        $scope.hideDropDwn = false;
+        $scope.hideDrop = false;
+        $scope.editStepFlag = 0;
+        $scope.argsField = 0;
+        $scope.editIndex = '';
+        $scope.editArgs = 0;
+        $scope.showRulesBelow = false;
+        $scope.hideExp = true;
+        $scope.hideElse = true;
+        $scope.ExecTypeVal = 0;
+        $scope.editstepcheck = 0;
+        $scope.copyStepCheck = 0;
 
-        function readConfig(){
+      function readConfig(){
             getConfigFactory.readconfig()
             .then(function (data) {
                $scope.cfg = data;
@@ -49,10 +66,35 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
 
         readConfig();
 
+    
+//This renders the Rules Fields
+$scope.showRules = function(execType){
+    if(execType == 'If' || execType == 'If Not'){
+        $scope.rule_list = '';
+        $scope.rule_list = [{}];
+        $scope.status.step.Execute._Else = 'next';
+        if($scope.ExecTypeVal == 1){
+            $scope.rule_list = '';
+            $scope.rule_list = [{}];
+        }
+    $scope.showRulesBelow = true; 
+    $scope.hideExp = false;
+    $scope.hideElse = false;
+    $scope.ExecTypeVal = 1;
+    $scope.rule_list.push({"_Condition": "", "_Operator": "eq", "_Condvalue": ""});
+    $scope.rule_list.splice(0,1);
+    }
+    else{
+        $scope.showRulesBelow = false;
+        $scope.hideExp = true;
+        $scope.hideElse = true;
+    }
+
+}
 
 //To Load the InputData File from Suite 
 //Works for base Directory as well as Subdirectories
-    $scope.loadDataFile = function(filepath) { 
+    $scope.loadDataFile = function(filepath) {
         var checkFlag = filepath.includes("..");                                         
         if(checkFlag==true){                                                 //For files inside the Warrior directory
            var dirCheck=filepath.split("/").reverse()[1]; 
@@ -105,7 +147,6 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
           }
         } 
      };
-
 
 
         function get_folders_names(json_dir_data){
@@ -243,6 +284,11 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
             $scope.arg_list.push({"_name": "", "_value": ""});
         };
 
+        //To add Multiple Rules for the Execute Type
+        $scope.addAnotherRulesToList = function (){
+            $scope.rule_list.push({"_Condition": "", "_Operator": "eq", "_Condvalue": ""});
+        };
+
         $scope.deleteArgFromList = function(index){
             if($scope.arg_list.length > 1){
                 $scope.arg_list.splice(index, 1);
@@ -250,6 +296,24 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
             else{
                 $scope.arg_list = [{"_name": "", "_value": ""}];
             }
+        };
+
+        //To delete rule for the Execute Type
+        $scope.deleteRuleFromList = function(index){
+            if($scope.rule_list.length > 1){
+                $scope.rule_list.splice(index, 1);
+            }
+            else{
+                $scope.rule_list = [{"_Condition": "", "_Operator": "eq", "_Condvalue": ""}];
+                sweetAlert({
+                    title: "Specify atleast one Rule.",
+                    closeOnConfirm: true,
+                    confirmButtonColor: '#3b3131',
+                    confirmButtonText: "Ok",
+                    type: "info"
+                });
+            }
+
         };
 
             $scope.syncStepOnError = function(){
@@ -265,8 +329,8 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
             }
         };
 
-    $scope.xml.mapargs = {};
-    $scope.xml.arglist = [];
+        $scope.xml.mapargs = {};
+        $scope.xml.arglist = [];
         $scope.changedIndex = -1;
 
         $scope.savecreateTestcaseCap = false;
@@ -301,7 +365,7 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
             $scope.status.kwCheckbox = $scope.status.driverCheckbox;
             $scope.status.drivername = "";
             $scope.driverSelected($scope.status.drivername);
-        };
+         };
 
         $scope.addNewTcstate = function(){
             if ($scope.new_state === undefined || $scope.new_state === ""){
@@ -339,7 +403,10 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
         };
 
         $scope.copyStep = function(){
-
+            if( $scope.editArgs == 1){
+                $scope.stepToBeCopied = $scope.editIndex+1;
+            }
+            $scope.hideSubsys = false;
             if($scope.stepToBeCopied == "None"){
                 swal({
                     title: "Please select a step number from the dropdown.",
@@ -351,7 +418,7 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
                 });
                 return;
             }
-
+    
             $scope.status.driverCheckbox = false;
             $scope.status.kwCheckbox = false;
 
@@ -424,19 +491,58 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
                 $scope.xml.arglist = _.map($scope.xml.args.args, function (a) {
                     return a.split('=')[0];
                 });
+
+                $scope.xml.arglist.push("subsystem_name");
+
+               $scope.args = JSON.stringify($scope.xml.mapargs);
+               $scope.args = $scope.args.replace('undefined','subsystem_name');
+               $scope.xml.mapargs = JSON.parse($scope.args);
+               var stepSys = $scope.xml.mapargs['system_name'];
+               var stepSubsys = $scope.xml.mapargs['subsystem_name'];
+               $scope.sysFields();
+               $scope.showSubsys(stepSys);
             }
+
+            if( $scope.editArgs == 0){
+                $scope.status.step.iteration_type._type = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].iteration_type._type;
+                $scope.status.step.runmode._type = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].runmode._type;
+                $scope.status.step.runmode._value = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].runmode._value;
+                $scope.status.step.impact = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].impact;
+                $scope.status.step.context = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].context;
+                $scope.status.step.onError._action = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].onError._action;
+                $scope.status.step.onError._value = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].onError._value;
+            }
+
             $scope.status.step.Execute._ExecType = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Execute._ExecType;
-            $scope.status.step.Execute.Rule._Condition = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Execute.Rule._Condition;
-            $scope.status.step.Execute.Rule._Condvalue = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Execute.Rule._Condvalue;
-            $scope.status.step.Execute.Rule._Else = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Execute.Rule._Else;
-            $scope.status.step.Execute.Rule._Elsevalue = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Execute.Rule._Elsevalue;
-            $scope.status.step.iteration_type._type = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].iteration_type._type;
-            $scope.status.step.runmode._type = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].runmode._type;
-            $scope.status.step.runmode._value = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].runmode._value;
-            $scope.status.step.impact = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].impact;
-            $scope.status.step.context = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].context;
-            $scope.status.step.onError._action = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].onError._action;
-            $scope.status.step.onError._value = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].onError._value;
+            if($scope.status.step.Execute._ExecType == 'If' || $scope.status.step.Execute._ExecType == 'If Not'){
+                $scope.showRulesBelow = true;
+            }
+            else{
+                $scope.showRulesBelow = false;
+            }
+            $scope.status.step.Execute._Expression = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Execute._Expression;
+            $scope.status.step.Execute._Else = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Execute._Else;
+            $scope.status.step.Execute._Elsevalue = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Execute._Elsevalue;
+
+            if($scope.copyStepCheck == 0){
+                $scope.copyStepCheck = 1;
+                $scope.copyStepRules();  
+            }
+        };
+
+        $scope.copyStepRules = function(){
+            $scope.rule_list = $scope.model.Testcase.Steps.step[$scope.stepToBeCopied - 1].Execute.Rule;
+            if($scope.status.step.Execute._ExecType == 'If' || $scope.status.step.Execute._ExecType == 'If Not'){
+                for (var i = 0; i < $scope.rule_list.length; i++) {
+                    if($scope.rule_list[i]._Operator == undefined){
+                        $scope.rule_list[i]._Operator = "eq";
+                    }
+                    else{
+                        $scope.rule_list[i]._Operator = $scope.rule_list[i]._Operator;
+                    }
+                }
+            }
+            $scope.copyStepCheck = 0;
         };
 
     $scope.model = {
@@ -462,24 +568,7 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
               "Requirement": []
             },
             "Steps": {
-              "step": [/*
-                {
-                  "Arguments": {
-                    "argument": {
-                      "_name": "count",
-                      "_value": "1"
-                    }
-                  },
-                  "onError": {
-                    "_action": "goto",
-                    "_value": "2"
-                  },
-                  "impact": "noimpact",
-                  "context": "positive",
-                  "_Driver": "DriverName",
-                  "_Keyword": "KeywordName"
-                }*/
-              ]
+              "step": []
             }
           }
         };
@@ -550,7 +639,6 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
                     var ok = delete $scope.model.Testcase.Requirements;
                     $scope.model.Testcase.Requirements = {};
                     $scope.model.Testcase.Requirements.Requirement = [];
-                    // console.log('Req', JSON.stringify($scope.model.Testcase.Requirements, null, 2));
                 }
                 if ($scope.model.Testcase.Requirements == '' ||
                     _.size($scope.model.Testcase.Requirements) == 0) {
@@ -624,12 +712,20 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
                 }
 
                 for (i = 0; i < $scope.model.Testcase.Steps.step.length; i++) {
-                    if(!$scope.model.Testcase.Steps.step[i].hasOwnProperty("Execute")){
-                        $scope.model.Testcase.Steps.step[i]["Execute"] = {"_ExecType": "Yes", "Rule": {"_Elsevalue": "", "_Else": "", "_Condvalue": "", "_Condition": ""}}
-                    }
+                    $scope.editstepcheck = 1;
+                    var index = i;
+                    var driverName = $scope.model.Testcase.Steps.step[i]._Driver;
+                    $scope.editStep(driverName,i);
+                    $scope.saveArguments();
+                    $scope.cancelArguments();
+                }
+
+                for (i = 0; i < $scope.model.Testcase.Steps.step.length; i++) { 
+                    if(!$scope.model.Testcase.Steps.step[i].hasOwnProperty("Execute")){ 
+                    $scope.model.Testcase.Steps.step[i]["Execute"] = {"_ExecType": "Yes", "_Expression": "", "_Else": "", "_Elsevalue": "", "Rule": {"_Condition": "", "_Operator": "eq", "_Condvalue": ""}}                    }
 
                     if(!$scope.model.Testcase.Steps.step[i].Execute.hasOwnProperty("Rule")){
-                        $scope.model.Testcase.Steps.step[i].Execute["Rule"] = {"_Elsevalue": "", "_Else": "", "_Condvalue": "", "_Condition": ""}
+                    $scope.model.Testcase.Steps.step[i].Execute["Rule"] = {"_Condition": "", "_Operator": "eq", "_Condvalue": ""}
                     }
 
                     if(!$scope.model.Testcase.Steps.step[i].hasOwnProperty("onError")){
@@ -642,6 +738,10 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
 
                     if(!$scope.model.Testcase.Steps.step[i].hasOwnProperty("Iteration_type")){
                         $scope.model.Testcase.Steps.step[i]["Iteration_type"] = {"_type": "standard"};
+                    }
+
+                    if(!$scope.model.Testcase.Steps.step[i].hasOwnProperty("runmode")){
+                        $scope.model.Testcase.Steps.step[i]["runmode"] = {"_type": "Standard"};
                     }
 
                     if(!$scope.model.Testcase.Steps.step[i].hasOwnProperty("context")){
@@ -683,23 +783,31 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
                     }
 
                      for(j=0; j<$scope.status.stepsexecutes.length; j++){
-                        if($scope.model.Testcase.Steps.step[i].Execute._ExecType.toLowerCase() == $scope.status.stepsexecutes[j].toLowerCase()){
+                         if($scope.model.Testcase.Steps.step[i].Execute._ExecType.toLowerCase() == $scope.status.stepsexecutes[j].toLowerCase()){
                             $scope.model.Testcase.Steps.step[i].Execute._ExecType = $scope.status.stepsexecutes[j];
                             break;
-                        }
-                    }
+                         }
+                     }
 
                     for(j=0; j<$scope.status.steperrors.length; j++){
-                        if($scope.model.Testcase.Steps.step[i].Execute.Rule._Else.toLowerCase() == $scope.status.steperrors[j].toLowerCase()){
-                            $scope.model.Testcase.Steps.step[i].Execute.Rule._Else = $scope.status.steperrors[j];
+                        if($scope.model.Testcase.Steps.step[i].Execute._Else.toLowerCase() == $scope.status.steperrors[j].toLowerCase()){
+                            $scope.model.Testcase.Steps.step[i].Execute._Else = $scope.status.steperrors[j];
                             break;
                         }
-                    }
+                     }
+
+                     for(j=0; j<$scope.status.operator.length; j++){
+                        if($scope.model.Testcase.Steps.step[i].Execute.Rule._Operator.toLowerCase() == $scope.status.operator[j].toLowerCase()){
+                            $scope.model.Testcase.Steps.step[i].Execute.Rule._Operator = $scope.status.operator[j];
+                            break;
+                         }
+                     }
 
                     for(j=0; j<$scope.status.runmodes.length; j++){
                         if($scope.model.Testcase.Steps.step[i].runmode._type == ""){
                             $scope.model.Testcase.Steps.step[i].runmode._type = "Standard";
                         }
+                        
                         if($scope.model.Testcase.Steps.step[i].runmode._type.toLowerCase() == $scope.status.runmodes[j].toLowerCase()){
                             $scope.model.Testcase.Steps.step[i].runmode._type = $scope.status.runmodes[j];
                             break;
@@ -727,16 +835,14 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
                         }
                     }
 
-                    if($scope.model.Testcase.Steps.step[i].hasOwnProperty("_draft")){
-                        if($scope.model.Testcase.Steps.step[i]["_draft"].toLowerCase() == "yes"){
-                            $scope.model.Testcase.Steps.step[i]["_draft"] = "yes";
-                        }
-                        else{
-                            $scope.model.Testcase.Steps.step[i]["_draft"] = "no";
-                        }
+                if($scope.model.Testcase.Steps.step[i].hasOwnProperty("_draft")){
+                    if($scope.model.Testcase.Steps.step[i]["_draft"].toLowerCase() == "yes"){
+                        $scope.model.Testcase.Steps.step[i]["_draft"] = "yes";
                     }
-
-
+                    else{
+                        $scope.model.Testcase.Steps.step[i]["_draft"] = "no";
+                    }
+                }
                 }
 
                 if($scope.model.Testcase.Details.Datatype === "Hybrid"){
@@ -810,7 +916,6 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
             _value: ''
         },
 
-
         default_onError: {          // This is the default_onError as it appears in the Details section.
             _action: 'next',
             _value: ""
@@ -825,6 +930,8 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
         iterationtypes: ['Standard', 'once_per_tc', 'end_of_tc'],
 
         stepsexecutes: ['If', 'If Not', 'Yes', 'No'],
+
+        operator: ['eq', 'ge', 'gt', 'le', 'lt', 'ne' ],
 
         stepexecuteerrors: ['next', 'abort', 'abort_as_error', 'goto'],
 
@@ -841,10 +948,37 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
 
     };
 
+    $scope.noDatacheck = function(){
+        swal({
+            title: "You have selected 'No Data' option for Input Data File which reset the values of System/Subsystem.",
+            text: "",
+            type: "info",
+            confirmButtonText: "Ok",
+            closeOnConfirm: true,
+            confirmButtonColor: '#3b3131'
+        });
+        $scope.argsMapField();
+    }
+
+    $scope.argsMapField = function(){ 
+        $scope.hideSubsys  = true;
+        $scope.hideTxtBox = false;
+        $scope.hideDropDwn = true;
+        $scope.hideDrop = true;
+        $scope.hideText = false; 
+        $scope.xml.mapargs['system_name'] = '';
+        $scope.xml.mapargs['subsystem_name'] = '';
+        $scope.argsField = 1;
+    }
+
     $scope.noteInputDataStatus = function () {
+
         var idfval = '', // 'Data File Required'
             clazz = '';
         if ($scope.status.nodatafile == '1') {
+            if($scope.editStepFlag == 1){
+                $scope.noDatacheck();
+            }
             idfval = 'No_Data';
             clazz = 'disabled';
             for(var i=0; i<$scope.model.Testcase.Steps.step.length; i++){
@@ -858,7 +992,8 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
             $scope.changeExistingIterTypes();
         }
         $scope.monitorPathBtnValue();
-    };
+
+        };
 
     //-- Requirements Editor -----------------------------------------------
 
@@ -971,7 +1106,7 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
     //---------------------------------------------------------------
 
     $scope.delStep = function (index) {
-
+ 
         sweetAlert({
             title: "Are you sure you want to delete Step #" + (index+1) + "?",
             closeOnConfirm: false,
@@ -1007,6 +1142,21 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
     };
 
     $scope.startStepEdit = function (edtype, val, index) {
+
+        var IDFPath = $scope.model.Testcase.Details.InputDataFile;
+        if(IDFPath == ''){
+             sweetAlert({
+                        title: "Input Data File path is not specified, so the System & Subsystem name cannot be fetched.",
+                        text: "Kindly provide the path and then click on 'New step' button if auto-population is needed.",
+                        closeOnConfirm: true,
+                        confirmButtonColor: '#3b3131',
+                        confirmButtonText: "Ok",
+                        type: "info"
+            });
+        }
+
+        $scope.hideSubsys = true;
+
         if($scope.showStepEdit){
             swal({
                 title: "You have a Step open in the step editor that should be saved before creating a new Step.",
@@ -1020,9 +1170,144 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
         else {
             startStepCap(edtype, val, index);
         }
+
+        $scope.sysFields();
     };
 
+    //To retrieve System Name List from the provided datafile.
+    $scope.sysFields = function () {
+          $scope.urlCheck();
+             fileFactory.getSystems($scope.pathXml)
+                .then(function (data) {
+                    $scope.sysList.push(data);
+                    var sysListStr = JSON.stringify($scope.sysList);
+                        var count = (sysListStr.match(/,/g) || []).length;
+                        for (var i=0;i<count;i++){
+                            var splitValSys = sysListStr.split(',')[i];
+                            if(i==0){
+                            splitValSys = splitValSys.split('[\"')[1];
+                            }
+                            $scope.sysList.push(splitValSys);
+                        }
+                        $scope.sysList.splice(0,1);
+                    },
+                function (msg) {
+                alert(msg);
+            });
+                $scope.sysList = '';
+                $scope.sysList = [];
+        };
+
+    //To retrieve Subsystem Name List from the provided datafile. It renders in UI with respect to the selected system name.
+    $scope.showSubsys = function (sysValue) {
+            $scope.sysVal = sysValue;
+            $scope.hideSubsys = false;
+            $scope.urlCheck();
+        fileFactory.getSubsys(sysValue,$scope.pathXml)
+                .then(function (data) {
+                   $scope.subSysList.push(data);
+                      var subSysListStr = JSON.stringify($scope.subSysList);
+                      var count = (subSysListStr.match(/,/g) || []).length;
+                         for (var i=0;i<count;i++){
+                            var splitValSubSys = subSysListStr.split(',')[i];
+                            if(i==0){
+                            splitValSubSys = splitValSubSys.split('[\"')[1];
+                            }
+                            $scope.subSysList.push(splitValSubSys);
+                        }
+                            $scope.subSysList.splice(0,1);
+                            if($scope.subSysList == "No Subsystem Available"){
+                                $scope.hideSubsys = true;
+                           }
+                    },
+                function (msg) {
+                alert(msg);
+            });
+               $scope.subSysList = '';
+               $scope.subSysList = [];
+        };
+
+        //To check the format of datafile path.
+        $scope.urlCheck = function () {
+             var filename = $scope.model.Testcase.Details.InputDataFile;
+              if(filename == '' || filename == undefined || $scope.status.nodatafile == '1'){
+                $scope.hideSubsys  = true;
+                $scope.hideTxtBox = false;
+                $scope.hideDropDwn = true;
+                $scope.hideDrop = true;
+                $scope.hideText = false;
+                }
+                else{
+                $scope.hideTxtBox = true;
+                $scope.hideDropDwn = false;
+                $scope.hideDrop = false;
+                $scope.hideText = true;
+                if(filename.includes("./Data")==true){ 
+                        var checkNew = filename.split('/Data')[1];  
+                        $scope.pathUG = $scope.cfg.pythonsrcdir + "/Warriorspace/Data" + checkNew; 
+                        $scope.pathUrl= $scope.pathUG.replace(/\\/g, "/"); 
+                        var s = $scope.pathUrl;
+                        var i = s.indexOf("/");
+                         if (i != -1) {
+                             $scope.newPath = s.substring(i, s.length);
+                         }    
+                    URLSplit();
+                    return $scope.pathXml;
+                }
+                else if(filename.includes("./data")==true){ 
+                        var checkNew = filename.split('/data')[1];  
+                        $scope.pathUG = $scope.cfg.pythonsrcdir + "/Warriorspace/data" + checkNew; 
+                        $scope.pathUrl= $scope.pathUG.replace(/\\/g, "/"); 
+                        var s = $scope.pathUrl;
+                        var i = s.indexOf("/");
+                         if (i != -1) {
+                             $scope.newPath = s.substring(i, s.length);
+                         }    
+                    URLSplit();
+                    return $scope.pathXml;
+                }
+                else{
+                    if($scope.status.nodatafile == '0'){ 
+                    swal({
+                        title: "Kindly provide the correct Relative path for Input data File, if auto-population of system & Subsystem name is needed.",
+                        closeOnConfirm: true,
+                        confirmButtonColor: '#3b3131',
+                        confirmButtonText: "Ok",
+                        type: "warning"
+                    });
+                    $scope.hideSubsys  = true;
+                    $scope.hideTxtBox = false;
+                    $scope.hideDropDwn = true;
+                    $scope.hideDrop = true;
+                    $scope.hideText = false;
+                }
+                }
+
+         }
+        };
+
+        //To Split the file path URL
+        function URLSplit(){
+            var array = [];
+            if($scope.newPath.indexOf("\\")>= 0) {
+                array = $scope.newPath.split("\\");
+            }
+            else {
+                array = $scope.newPath.split("/");
+            }
+            var path = "";
+            for(var i=0; i<=array.length-1; i++){
+                path = path + array[i] + ">"
+            }
+            $scope.pathXml = path.replace(/\>$/, '');
+    }
+
         function startStepCap(edtype, val, index){
+            $scope.showRulesBelow = false;
+            $scope.hideElse =  true;
+            $scope.hideExp =  true;
+            $scope.rule_list = '';
+            $scope.rule_list = [{}];
             $scope.step_numbers = [];
             $scope.stepToBeCopied = "None";
             for(var i=0; i<$scope.model.Testcase.Steps.step.length; i++){
@@ -1043,17 +1328,17 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
             }
         }
 
-        $scope.showTopTable = function(index){
-            if($scope.insertStep){
+        $scope.showTopTable = function(index){ 
+            if($scope.insertStep){ 
                 return index > $scope.stepBeingEdited
             }
-            else{
+            else{ 
                 return index >= $scope.stepBeingEdited
             }
-
         };
 
     $scope.addStep = function (index) {
+        $scope.hideSubsys = true;
         if($scope.showStepEdit){
             swal({
                 title: "You have a Step open in the step editor that should be saved before editing a new Step.",
@@ -1077,8 +1362,11 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
             for(var i=0; i<$scope.model.Testcase.Steps.step.length; i++){
                 $scope.step_numbers.push(i+1);
             }
+            $scope.status.step.Execute._ExecType= 'Yes';
+            $scope.showRulesBelow = false;
             $scope.insertStep = true;
         }
+         $scope.sysFields();
     };
 
     $scope.reqStepEdTypeAsString = function () {
@@ -1088,7 +1376,10 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
     // Allow Edit op for the Step at the given index within the Steps array.
     // Event handler when the driver name is selected in the Step Grid.
     $scope.editStep = function (drivername, index) {
-
+        $scope.editArgs = 1;
+        $scope.editIndex = index;
+        $scope.editStepFlag = 1;
+        $scope.hideSubsys  = false;
         if($scope.showStepEdit){
             swal({
                 title: "You have a Step open in the step editor that should be saved before editing a new Step.",
@@ -1100,9 +1391,17 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
             });
         }
         else {
+            $scope.copyStep();
+            $scope.hideSubsys  = false;
+            $scope.cancelArguments();
             openStepCap(drivername, index);
         }
-    };
+        var argsCheck = JSON.stringify($scope.xml.args.args);
+        if(argsCheck == '["self"]'){//To hide subsystem for 'no arguments'.
+            $scope.hideSubsys = true;
+        }
+        $scope.editArgs = 0;
+       };
 
         function openStepCap(drivername, index){
             $scope.stepBeingEdited = index;
@@ -1122,7 +1421,19 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
             console.log('$scope.model: ' + JSON.stringify($scope.model));
             $scope.status.step = $scope.model.Testcase.Steps.step[index];
             console.log('Step to edit: ' + JSON.stringify($scope.status.step));
-            $scope.changedIndex = index;
+        
+            if($scope.model.Testcase.Steps.step[index].hasOwnProperty("rmt")){
+                if(!$scope.model.Testcase.Steps.step[index].hasOwnProperty("runmode")) {
+                    $scope.model.Testcase.Steps.step[index].runmode = {
+                        "_type": "Standard",
+                        "_value": ""
+                    }
+                }
+                $scope.model.Testcase.Steps.step[index].runmode._type = "Standard";
+                delete $scope.model.Testcase.Steps.step[index].rmt
+            }
+
+         $scope.changedIndex = index;
             $scope.driverSelected(drivername);
             var flag_kwd_length = true;
             if($scope.xml.keywords.length > 0){
@@ -1138,13 +1449,13 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
                 flag_kwd_length = false;
                 kwd = get_unavailable_kwd_data(index);
             }
+            
             console.log('kwd: ', JSON.stringify(kwd));
 
             $scope.status.keyword = kwd.fn;
             if(flag_kwd_length){
                 $scope.selectKeyword(kwd.fn);  // Do this before setting the values of args.
             }
-
 
             var args = _.map(kwd.args, function (a) {
                 return $.trim(a.split('=')[0]);
@@ -1163,6 +1474,54 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
                 $scope.status.step.Arguments.argument = [$scope.status.step.Arguments.argument];
             }
 
+            if($scope.status.step.Execute._ExecType == 'If' || $scope.status.step.Execute._ExecType == 'If Not'){
+                if($scope.showRulesBelow == false){
+                    $scope.showRulesBelow = true;
+                }
+                if($scope.model.Testcase.Steps.step[index].Execute.Rule.hasOwnProperty(length)){
+                    $scope.showRulesBelow = true;
+                    $scope.rule_list = $scope.model.Testcase.Steps.step[index].Execute.Rule;
+                }
+                else{
+                    $scope.rule_list = [$scope.model.Testcase.Steps.step[index].Execute.Rule];
+                } 
+            }
+
+            else{
+                $scope.kwCheckbox = false;
+                $scope.driverCheckbox = false;
+                $scope.showRulesBelow = false;
+                if($scope.status.step.Execute._ExecType == 'Yes'){
+                    $scope.status.step.Execute._ExecType = 'Yes';
+                }
+                else{
+                    $scope.status.step.Execute._ExecType = 'No';
+                }
+            }
+
+            if($scope.status.step.Execute._ExecType == 'If' || $scope.status.step.Execute._ExecType == 'If Not'){
+                for (i = 0; i < $scope.model.Testcase.Steps.step.length; i++) {
+                    if($scope.showRulesBelow == false){
+                        $scope.showRulesBelow = true;
+                    } 
+                    if($scope.status.step.Execute._Else == undefined){
+                        $scope.status.step.Execute._Else = 'next';
+                    }
+
+                    if($scope.status.step.Execute._Else !== undefined){
+                        $scope.status.step.Execute._Else = $scope.status.step.Execute._Else;
+                    }
+
+                    if($scope.status.step.Execute._Else == "Abort"){
+                        $scope.status.step.Execute._Else = "abort";
+                    }
+    
+                }
+            }                
+            else{
+                $scope.status.step.Execute._ExecType = $scope.status.step.Execute._ExecType;
+            }
+
             var vals = _.pluck($scope.status.step.Arguments.argument, '_name');
 
             console.log('vals ', JSON.stringify(vals));
@@ -1179,17 +1538,34 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
                 $scope.xml.mapargs[a._name] = a._value;
             });
 
+            if($scope.argsField == 1){
+                $scope.argsMapField();
+            }
+
             console.log('MAPARGS: ', JSON.stringify($scope.xml.mapargs, null, 2));
             $scope.status.step_edit_mode = 'Edit';
             if($scope.insertStep){
                 $scope.insertStep = false;
             }
-
+            
             }
 
     $scope.showStepEditor = function () {
         return $scope.status.step_edit_mode != 'None';
     };
+
+    $scope.checkRule = function(index){ 
+       if($scope.status.step.Execute._ExecType == 'If' || $scope.status.step.Execute._ExecType == 'If Not'){
+            for (var i = 0; i < $scope.status.step.Execute.Rule.length; i++) {
+                if($scope.rule_list[i]._Operator == undefined){ 
+                    $scope.rule_list[i]._Operator = "eq";                   
+                }
+                else{   
+                    $scope.rule_list[i]._Operator = $scope.rule_list[i]._Operator;
+                }
+            } 
+        }                 
+    }
 
         function get_unavailable_kwd_data(index){
             var kwd = {};
@@ -1201,9 +1577,11 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
             var var_args = [];
             if($scope.model.Testcase.Steps.step[index].Arguments.argument.hasOwnProperty(length)){
                 $scope.arg_list = $scope.model.Testcase.Steps.step[index].Arguments.argument;
+                $scope.rule_list = $scope.model.Testcase.Steps.step[index].Execute.Rule;
             }
             else{
                 $scope.arg_list = [$scope.model.Testcase.Steps.step[index].Arguments.argument];
+                $scope.rule_list = [$scope.model.Testcase.Steps.step[index].Execute.Rule];
             }
             for(var i=0; i<$scope.arg_list.length; i++){
                 var_argsmap[$scope.arg_list[i]._name] = $scope.arg_list[i]._value;
@@ -1235,9 +1613,7 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
     // On change of the Driver name select control.
     // Gather function names for the selected driver.
     $scope.driverSelected = function (drivername) {
-
         $scope.putReqEditorOutOfSight();
-
         $scope.status.drivername = drivername;
         $scope.status.keyword = '';                     // When driver is selected, clear the keyword.
         $scope.status.stepdescription = '';            // And, the description field.
@@ -1271,11 +1647,16 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
         $scope.xml.arglist = _.map($scope.xml.args.args, function (a) {
             return a.split('=')[0];
         });
+        $scope.xml.arglist.push("subsystem_name");
         $scope.xml.mapargs = {};
         _.each($scope.xml.arglist, function (v) {
             $scope.xml.mapargs[v] = '';
         });
         console.log('xml.args', JSON.stringify($scope.xml.args));
+        if( $scope.editArgs == 0){
+            $scope.hideSubsys = true;
+        }
+
         return $scope.xml.args;
     };
 
@@ -1286,6 +1667,12 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
           "Arguments": {
             "argument": []
           },
+          "Execute": {
+            "_ExecType": "Yes",
+            "Rule": {
+                "_Operator" : "eq"
+            }
+          },
           "onError": {
             "_action": $scope.step_onerror, // Inherits from default_onError value in the TC
             "_value": $scope.step_onerror_value
@@ -1294,15 +1681,6 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
             "iteration_type": {
                 "_type":"Standard"
             },
-          "Execute": {
-            "_ExecType": "Yes",
-            "Rule": {
-                "_Condition":"",
-                "_Condvalue":"",
-                "_Else":"next",
-                "_Elsevalue":""
-            }
-          },
           "context": "positive",    // negative, positive
           "impact": "impact",     // impact, noimpact
           "_TS": "1",
@@ -1323,6 +1701,12 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
           "Arguments": {
             "argument": []
           },
+          "Execute": {
+            "_ExecType": "Yes",
+             "Rule": {
+                "_Operator" : "eq"
+            }
+          },
           "onError": {
             "_action": "", // next, abort, goto
             "_value": ""
@@ -1331,15 +1715,6 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
             "iteration_type": {
                 "_type":"Standard"
             },
-          "Execute": {
-            "_ExecType": "Yes",
-            "Rule": {
-                "_Condition":"",
-                "_Condvalue":"",
-                "_Else":"next",
-                "_Elsevalue":""
-            }
-          },
             "context": "positive",    // negative, positive
             "impact": "impact",     // impact, noimpact
             "runmode": {
@@ -1354,11 +1729,20 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
         rec._Driver = driver;
         rec._Keyword = funname;
         console.log('$scope.xml.mapargs: ', JSON.stringify($scope.xml.mapargs));
+
         _.each($scope.xml.mapargs, function (v, k) {
             if (k != 'self' && $.trim(v) != '') {
                 rec.Arguments.argument.push({'_name': k, '_value': v });
             }
         });
+
+         $scope.xml.args = _.where($scope.xml.keywords, { fn: $scope.status.keyword })[0];
+                $scope.xml.arglist = _.map($scope.xml.args.args, function (a) {
+                    return a.split('=')[0];
+                });
+
+        $scope.xml.arglist.push("subsystem_name");
+
         rec.Description = $scope.status.step.Description;
         if($scope.status.step.onError == undefined){
             $scope.status.step.onError = {};
@@ -1392,57 +1776,51 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
            $scope.status.step.impact = "impact"
        }
         rec.impact = $scope.status.step.impact;
+        if($scope.status.step.runmode._type !== undefined){
         rec.runmode._type = $scope.status.step.runmode._type;
         rec.runmode._value = $scope.status.step.runmode._value;
+    }
 
-        if($scope.model.Testcase.Details.Datatype == "Hybrid"){
+        if($scope.model.Testcase.Details.Datatype === "Hybrid"){
             if($scope.status.step.iteration_type['_type'] === ""){
                 $scope.status.step.iteration_type['_type'] = "Standard";
             }
+            else{
+                $scope.status.step.iteration_type['_type'] = $scope.status.step.iteration_type['_type'];
+            }
+
+            rec.iteration_type['_type'] = $scope.status.step.iteration_type['_type'];
         }
-        else{
-            $scope.status.step.iteration_type['_type'] = "";
-        }
-        rec.iteration_type['_type'] = $scope.status.step.iteration_type['_type'];
+
         if($scope.status.step.Execute == undefined){
             $scope.status.step.Execute = {};
         }
+
         if($scope.status.step.Execute['_ExecType'] == undefined){
             $scope.status.step.Execute['_ExecType'] = "Yes";
         }
+
         rec.Execute['_ExecType'] = $scope.status.step.Execute['_ExecType'];
+        rec.Execute['_Expression'] = $scope.status.step.Execute['_Expression'];
+        rec.Execute['_Else'] = $scope.status.step.Execute['_Else'];
+        rec.Execute['_Elsevalue'] = $scope.status.step.Execute['_Elsevalue'];
 
         if (rec.Execute['_ExecType'] == 'If' || rec.Execute['_ExecType'] == 'If Not') {
-            rec.Execute['Rule']['_Condition'] = $scope.status.step.Execute['Rule']['_Condition'];
-            rec.Execute['Rule']['_Condvalue'] = $scope.status.step.Execute['Rule']['_Condvalue'];
-            rec.Execute['Rule']['_Else'] = $scope.status.step.Execute['Rule']['_Else'];
-
-            if (rec.Execute['Rule']['_Else'] == 'goto') {
-                if ($.trim($scope.status.step.Execute['Rule']['_Elsevalue']) == '') {
-                    sweetAlert({
-                        title: "A Step # is required when 'On Error' is goto.",
-                        closeOnConfirm: true,
-                        confirmButtonColor: '#3b3131',
-                        confirmButtonText: "Ok",
-                        type: "error"
-                    });
-                    return null;
-                } else {
-                    rec.Execute['Rule']['_Elsevalue'] = $scope.status.step.Execute['Rule']['_Elsevalue'];
-                }
-            } else {
-                delete rec.Execute['Rule']['_Elsevalue'];
-            }
+           // rec.Execute['Rule']['_Condition'] = $scope.status.step.Execute['Rule']['_Condition'];
+           //rec.Execute['Rule']['_Operator'] = $scope.status.step.Execute['Rule']['_Operator'];
+           // rec.Execute['Rule']['_Condvalue'] = $scope.status.step.Execute['Rule']['_Condvalue'];
         } else {
             delete rec.Execute['Rule'];
         }
 
-        console.log('rec', JSON.stringify(rec, null, 2));
+        console.log('rec', JSON.stringify(rec, null, 2)); 
+        
         return rec;
     }
 
     /* Called when Save Step is clicked. */
     $scope.saveArguments = function () {
+
         var driver = $.trim($scope.status.drivername) || '',
             keyword = $.trim($scope.status.keyword) || '';
         if(!$scope.status.driverCheckbox && !$scope.status.kwCheckbox){
@@ -1486,6 +1864,54 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
             }
         }
 
+        if($scope.editstepcheck == 0){
+            if($scope.status.step.Execute._ExecType == 'If' || $scope.status.step.Execute._ExecType == 'If Not'){ 
+                if(document.getElementById('stepexecelse').value == 3){ 
+                    if(document.getElementById('stepexecelsev').value == ''){ 
+                        sweetAlert({
+                            title: "Else Value is required when Execute Type->Else is 'goto'.",
+                            closeOnConfirm: true,
+                            confirmButtonColor: '#3b3131',
+                            confirmButtonText: "Ok",
+                            type: "error"
+                        });
+                        return;
+                    }
+                }
+                
+             }
+        }
+
+        if($scope.status.step.Execute._ExecType == 'If' || $scope.status.step.Execute._ExecType == 'If Not'){ 
+          
+                    for(var i=0; i<$scope.rule_list.length; i++){
+                        if($scope.rule_list[i]._Condition == ""){
+                            sweetAlert({
+                                title: "Condition field of Rule " + (i+1) + " is required when Execute Type is 'If/If Not'.",
+                                closeOnConfirm: true,
+                                confirmButtonColor: '#3b3131',
+                                confirmButtonText: "Ok",
+                                type: "error"
+                            });
+                            return;
+                        }
+                    }
+
+                    for(var i=0; i<$scope.rule_list.length; i++){
+                        if($scope.rule_list[i]._Condvalue == ""){
+                            sweetAlert({
+                                title: "Condition Value field of Rule " + (i+1) + " is required when Execute Type is 'If/If Not'.",
+                                closeOnConfirm: true,
+                                confirmButtonColor: '#3b3131',
+                                confirmButtonText: "Ok",
+                                type: "error"
+                            });
+                            return;
+                        }
+                    }
+        }
+
+        if($scope.status.step.runmode._type !== undefined){
         if($scope.status.step.runmode._type !== "Standard"){
             var value = $.trim($scope.status.step.runmode._value);
             var re = /^[0-9]*$/;
@@ -1510,10 +1936,13 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
                 return;
             }
         }
+        }
 
-        if($scope.changedIndex !== -1) {
-            $scope.original_iter_types[$scope.changedIndex] = $scope.status.step.iteration_type._type;
-            $scope.changedIndex = -1;
+        if($scope.editstepcheck == 0){
+            if($scope.changedIndex !== -1) {
+                $scope.original_iter_types[$scope.changedIndex] = $scope.status.step.iteration_type._type;
+                $scope.changedIndex = -1;
+            }
         }
 
         var newstep = populate_step(driver, keyword);
@@ -1529,6 +1958,9 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
             newstep.Arguments.argument = $scope.arg_list;
         }
 
+        if($scope.showRulesBelow){
+        newstep.Execute.Rule = $scope.rule_list;
+        }
 
         if ($scope.status.step_edit_mode == 'New') {
             if($scope.status.stepindex==-1){
@@ -1554,6 +1986,7 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
             $scope.insertStep = false;
         }
     };
+
 
     $scope.testcaseTooltips = [];
         $scope.tcstates = [];
@@ -1648,6 +2081,21 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
             return;
         }
 
+        for (i = 0; i < $scope.model.Testcase.Steps.step.length; i++) {
+
+            if($scope.model.Testcase.Details.Datatype == "Hybrid"){
+                    if($scope.status.step.iteration_type._type == ""){
+                        $scope.status.step.iteration_type._type= "Standard";
+                        $scope.model.Testcase.Details.Datatype = "Hybrid";
+                    }
+                    else{
+                        $scope.status.step.iteration_type._type = $scope.status.step.iteration_type._type;
+
+                    }
+        $scope.model.Testcase.Details.Datatype = "Hybrid";
+            }
+    }
+
         if ($scope.model.Testcase.Details.InputDataFile == 'No_Data') {
             $scope.model.Testcase.Details.Datatype = '';
         } else {
@@ -1698,7 +2146,7 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
                 $scope.model.Testcase.Requirements.Requirement.splice(i, 1);
             }
         }
-
+        
         if ($scope.model.Testcase.Steps.step.length == 0) {
             sweetAlert({
                 title: "You need to define at least one Step before you can save this Testcase.",
@@ -1731,12 +2179,6 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
         $scope.model.Testcase.Details.default_onError = def_error_copy;
 
         console.log("Testcase\n", JSON.stringify(angular.toJson($scope.model.Testcase), null, 2));
-
-        // var x2js = new X2JS();
-        // var token = angular.toJson($scope.model);
-        // var xmlDoc = x2js.json2xml_str(JSON.parse(token));
-        // alert(xmlDoc);
-        // console.log(xmlDoc);
 
         if($scope.model.Testcase.Details.State == "Draft"){
             if(step_draft_count > 0){
@@ -1790,6 +2232,7 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
             }
         }
 
+
     };
         function check_and_save_file(){
             var filename = $scope.model.Testcase.Details.Name + '.xml';
@@ -1828,7 +2271,7 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
                 });
         }
 
-    function save(filename) {
+    function save(filename) {;
         var x2js = new X2JS();
         var token = angular.toJson($scope.model);
 
@@ -1889,7 +2332,6 @@ app.controller('TestcaseCapCtrl', ['$scope','$routeParams','$http', '$location',
                     alert(data);
                 });
     }
-
     window.S = $scope;
 
 }]);

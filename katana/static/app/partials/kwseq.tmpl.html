@@ -1,0 +1,1098 @@
+<style>
+select > option[value=""] {
+    display: none;
+}
+
+select > option:first-child{
+    display: none;
+}
+
+</style>
+
+<div class='col-md-12'>
+    <h4>
+        <b>KATANA WRAPPER KEYWORD EDITOR</b>
+    </h4>
+
+    <hr/>
+
+    <div class="row">
+        <div class="form-group">
+            <label class="col-sm-1 control-label text-uppercase">Wrapper Keyword Details</label>
+        </div>
+    </div>
+
+    <form action="" method="post" class="form-horizontal" role="form">
+        <div class="row">
+            <div class="form-group" style="margin-bottom:10px;">
+                <label for="WrapperName"
+                       class="col-sm-2 control-label mandatory-field ellipsis-the-overflow">Wrapper Keyword Name</label>
+
+                <div class="tooltip-on-right align-fa-icon-after-label">
+                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                    <span class="tooltip-content">
+                            <div ng-if="keweqTooltips.name.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{keweqTooltips.name.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="keweqTooltips.name.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{keweqTooltips.name.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="keweqTooltips.name.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{keweqTooltips.name.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="keweqTooltips.name.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{keweqTooltips.name.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                </div>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control"
+                           id="WrapperName" autofocus required
+                           placeholder="Name of the Wrapper Keyword"
+                           ng-model='model.WrapperKeyword.Details.WrapperName'>
+                </div>
+                <div class="col-sm-1 align-fa-icon-after-input">
+                    <div class="tooltip-on-right">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                             <div ng-if="keweqTooltips.name.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{keweqTooltips.name.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="keweqTooltips.name.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{keweqTooltips.name.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="keweqTooltips.name.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{keweqTooltips.name.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="keweqTooltips.name.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{keweqTooltips.name.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom:10px;">
+                <label for='topdriver' class="col-sm-2 control-label mandatory-field ellipsis-the-overflow">Drivers </label>
+
+                <div class="tooltip-on-right align-fa-icon-after-label-step">
+                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                    <span class="tooltip-content">
+                             <div ng-if="keweqTooltips.dvname.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{keweqTooltips.dvname.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="keweqTooltips.dvname.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{keweqTooltips.dvname.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="keweqTooltips.dvname.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{keweqTooltips.dvname.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="keweqTooltips.dvname.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{keweqTooltips.dvname.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                </div>
+                <div class="col-sm-6">
+                    <div class="input-group">
+                        <select class='form-control'
+                                id='topdriver'
+                                ng-model="status.dvname"
+                                ng-change="driverSelectedUp(status.dvname)"
+                                ng-options="o as o for o in xml.drivers">
+                            <option value=''>Select Driver</option>
+                        </select>
+
+                    </div>
+
+                </div>
+                <div class="col-sm-1">
+                    <div class="tooltip-on-right align-fa-icon-after-input-step">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                                 <div ng-if="keweqTooltips.dvname.tooltip != ''">
+                                    <i class="fa fa-rocket" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{keweqTooltips.dvname.tooltip}}
+                                    <br>
+                                </div>
+                                <div ng-if="keweqTooltips.dvname.protip != ''">
+                                    <br>
+                                    <i class="fa fa-bolt" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{keweqTooltips.dvname.protip}}
+                                    <br>
+                                </div>
+                                <div ng-if="keweqTooltips.dvname.bantip != ''">
+                                    <br>
+                                    <i class="fa fa-ban" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{keweqTooltips.dvname.bantip}}
+                                    <br>
+                                </div>
+                                <div ng-if="keweqTooltips.dvname.snowflake != ''">
+                                    <br>
+                                    <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{keweqTooltips.dvname.snowflake}}
+                                    <br>
+                                </div>
+                            </span>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="form-group" style="margin-bottom:10px;">
+                <label for="ActionFile"
+                       class="col-sm-2 control-label mandatory-field ellipsis-the-overflow">Action File Path</label>
+                <div class="tooltip-on-right align-fa-icon-after-label">
+                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                    <span class="tooltip-content">
+                            <div ng-if="keweqTooltips.file.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{keweqTooltips.file.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="keweqTooltips.file.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{keweqTooltips.file.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="keweqTooltips.file.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{keweqTooltips.file.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="keweqTooltips.file.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{keweqTooltips.file.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                </div>
+                <div class="col-sm-6">
+                        <select class='form-control'
+                                id='ActionFile'
+                                ng-model="model.WrapperKeyword.Details.ActionFile" ng-options="res as res for res in myList">
+                        <option value=''>Select ActionFile Name</option>
+                <!--         <option ng-repeat="res in myList track by [$index]">
+                            {{res}}
+                        </option>
+ -->
+
+                        </select>
+
+               </div>
+
+                <div class="col-sm-1 align-fa-icon-after-input">
+                    <div class="tooltip-on-right">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                            <div ng-if="keweqTooltips.file.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{keweqTooltips.file.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="keweqTooltips.file.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{keweqTooltips.file.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="keweqTooltips.file.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{keweqTooltips.file.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="keweqTooltips.file.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{keweqTooltips.file.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="form-group" style="margin-bottom:10px;">
+                <label for="Description"
+                       class="col-sm-2 control-label ellipsis-the-overflow">W Description</label>
+                <div class="tooltip-on-right align-fa-icon-after-label">
+                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                    <span class="tooltip-content">
+                        <div ng-if="keweqTooltips.desc.tooltip != ''">
+                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                            &nbsp;
+                            {{keweqTooltips.desc.tooltip}}
+                            <br>
+                        </div>
+                        <div ng-if="keweqTooltips.desc.protip != ''">
+                            <br>
+                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                            &nbsp;
+                            {{keweqTooltips.desc.protip}}
+                            <br>
+                        </div>
+                        <div ng-if="keweqTooltips.desc.bantip != ''">
+                            <br>
+                            <i class="fa fa-ban" aria-hidden="true"></i>
+                            &nbsp;
+                            {{keweqTooltips.desc.bantip}}
+                            <br>
+                        </div>
+                        <div ng-if="keweqTooltips.desc.snowflake != ''">
+                            <br>
+                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                            &nbsp;
+                            {{keweqTooltips.desc.snowflake}}
+                            <br>
+                        </div>
+                    </span>
+                </div>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control"
+                           id="Description"
+                           placeholder="Wrapper Keyword Description"
+                           ng-model='model.WrapperKeyword.Details.Description'>
+                </div>
+
+                <div class="col-sm-1 align-fa-icon-after-input">
+                    <div class="tooltip-on-right">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                            <div ng-if="keweqTooltips.desc.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{keweqTooltips.desc.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="keweqTooltips.desc.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{keweqTooltips.desc.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="keweqTooltips.desc.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{keweqTooltips.desc.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="keweqTooltips.desc.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{keweqTooltips.desc.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+          <hr/>
+        <div class="row">
+            <div class="form-group pull-left" style="padding-left:2em">
+                <label class=" control-label text-uppercase color-me-red">Subkeyword Details</label>
+            </div>
+        </div>
+
+        <div class='form-group' ng-show='hasNoSteps()' style="padding-left:1em">
+            <h6>
+                A Wrapper Keyword requires at least one Subkeyword definition. <br/>
+                Please use the 'New Subkeyword' button below to create a Subkeyword.
+            </h6>
+        </div>
+
+        <div class="form-group" ng-hide="hasNoSteps() || stepBeingEdited == 0">
+            <div class="col-sm-12">
+                <table class='table table-bordered table-condensed table-hover'>
+                    <thead>
+                    <tr>
+                        <th class='text-muted text-right min-width-35'>#</th>
+                        <th class='text-muted'>Subkeyword Driver</th>
+                        <th class='text-muted'>Subkeyword Name</th>
+
+                        <th class='text-muted'>Arguments</th>
+
+                        <th class='text-muted'>Insert</th>
+                        <th class='text-muted'>Edit</th>
+                        <th class='text-muted'>Delete</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat='Skw in model.WrapperKeyword.Subkeyword.Skw' ng-hide="showTopTable($index)">
+                        <td class="text-right min-width-35">
+                            <div class="tooltip-on-right-dark-big" ng-show="Skw['_draft'] == 'yes'">
+                                <i class="fa fa-exclamation-triangle color-me-yellow" aria-hidden="true"></i>
+
+                            </div>
+                            {{ $index + 1 }}
+                        </td>
+
+                        <td>
+                            {{ Skw._Driver }}
+                        </td>
+
+                        <td>
+                            {{ Skw._Keyword }}
+                        </td>
+
+                        <td>
+                            <div ng-if=" Skw.Arguments.argument.length !== undefined  ">
+                                <div ng-repeat='arg in Skw.Arguments.argument' ng-show="arg._name !== ''">
+                                    <div ng-show="arg._value !== ''">
+                                        {{ $index + 1 }}. {{ arg._name}} = {{arg._value }}
+                                    </div>
+                                    <div ng-show="arg._value == ''">
+                                        {{ $index + 1 }}. {{ arg._name}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div ng-if=" Skw.Arguments.argument._name !== undefined && Skw.Arguments.argument._name !== ''">
+                                <div ng-show="Skw.Arguments.argument._value !== ''">
+                                    1. {{ Skw.Arguments.argument._name }} = {{Skw.Arguments.argument._value }}
+                                </div>
+                                <div ng-show="Skw.Arguments.argument._value == ''">
+                                    1. {{ Skw.Arguments.argument._name }}
+                                </div>
+                            </div>
+                        </td>
+
+
+                        <td ng-click='addKwseq($index)' class='text-center' style='vertical-align:middle'>
+                            <div class="tooltip-on-left-dark-big">
+                                <span class="glyphicon glyphicon-import" aria-hidden="true"></span>
+                                <span class="tooltip-content text-left">
+                                    <div ng-if="keweqTooltips.insertstep.tooltip != ''">
+                                        <i class="fa fa-rocket" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{keweqTooltips.insertstep.tooltip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="keweqTooltips.insertstep.protip != ''">
+                                        <br>
+                                        <i class="fa fa-bolt" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{keweqTooltips.insertstep.protip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="keweqTooltips.insertstep.bantip != ''">
+                                        <br>
+                                        <i class="fa fa-ban" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{keweqTooltips.insertstep.bantip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="keweqTooltips.insertstep.snowflake != ''">
+                                        <br>
+                                        <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{keweqTooltips.insertstep.snowflake}}
+                                        <br>
+                                    </div>
+                                </span>
+                            </div>
+                        </td>
+
+                        <td ng-click="editStep(Skw._Driver, $index)" class='text-center' style='vertical-align:middle'>
+                            <div class="tooltip-on-left-dark-big">
+                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                <span class="tooltip-content text-left">
+                                    <div ng-if="keweqTooltips.editstep.tooltip != ''">
+                                        <i class="fa fa-rocket" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{keweqTooltips.editstep.tooltip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="keweqTooltips.editstep.protip != ''">
+                                        <br>
+                                        <i class="fa fa-bolt" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{keweqTooltips.editstep.protip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="keweqTooltips.editstep.bantip != ''">
+                                        <br>
+                                        <i class="fa fa-ban" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{keweqTooltips.editstep.bantip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="keweqTooltips.editstep.snowflake != ''">
+                                        <br>
+                                        <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{keweqTooltips.editstep.snowflake}}
+                                        <br>
+                                    </div>
+                                </span>
+                            </div>
+                        </td>
+
+                        <td ng-click='delKwseq($index)' class='text-center' style='vertical-align:middle'>
+                            <div class="tooltip-on-left-dark-big">
+                                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+                                <span class="tooltip-content text-left">
+                                    <div ng-if="keweqTooltips.deletestep.tooltip != ''">
+                                        <i class="fa fa-rocket" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{keweqTooltips.deletestep.tooltip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="keweqTooltips.deletestep.protip != ''">
+                                        <br>
+                                        <i class="fa fa-bolt" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{keweqTooltips.deletestep.protip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="keweqTooltips.deletestep.bantip != ''">
+                                        <br>
+                                        <i class="fa fa-ban" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{keweqTooltips.deletestep.bantip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="keweqTooltips.deletestep.snowflake != ''">
+                                        <br>
+                                        <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{keweqTooltips.deletestep.snowflake}}
+                                        <br>
+                                    </div>
+                                </span>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row" style="padding-left:1em" ng-show="showStepEditor()">
+            <div class="container pull-left" style="width: 40%">
+                <div class="form-group" ng-show="step_numbers.length > 0">
+                    <label for='gotostep' class="col-sm-3 control-label ellipsis-the-overflow">Copy S-KW #</label>
+                    <div class="col-sm-2">
+                        <select class='form-control'
+                                id='gotostep'
+                                ng-model="stepToBeCopied"
+                                ng-options="o as o for o in step_numbers"></select>
+                    </div>
+                    <div class="col-sm-1">
+                        <input type="button" class="btn btn-default form-control ellipsis-the-overflow" ng-click="copyStep()" value="Go!" style="min-width:150px;">
+                    </div>
+                    <div class="col-sm-2">
+                        <input style="color:rgb(214, 48, 48)" type="button"
+                               class="btn btn-default form-control ellipsis-the-overflow"
+                               ng-click='saveArguments()'
+                               title={{keweqTooltips.stepsave.tooltip}} value="Save Subkeyword">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for='stepdriver' ng-show="!status.driverCheckbox" class="col-sm-3 control-label mandatory-field ellipsis-the-overflow">Drivers </label>
+                    <label for='stepdriver' ng-show="status.driverCheckbox" class="col-sm-3 control-label ellipsis-the-overflow">Drivers </label>
+                    <div class="tooltip-on-right align-fa-icon-after-label-step">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                             <div ng-if="keweqTooltips.driver.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{keweqTooltips.driver.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="keweqTooltips.driver.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{keweqTooltips.driver.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="keweqTooltips.driver.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{keweqTooltips.driver.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="keweqTooltips.driver.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{keweqTooltips.driver.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                    <div class="col-sm-8">
+                        <div class="input-group" ng-show="!status.driverCheckbox">
+                            <select class='form-control'
+                                    id='stepdriver'
+                                    ng-model="status.drivername"
+                                    ng-change="driverSelected(status.drivername)"
+                                    ng-options="o as o for o in xml.drivers">
+                                <option value=''>Select Driver</option>
+                            </select>
+
+                        </div>
+
+                    </div>
+                    <div class="col-sm-1">
+                        <div class="tooltip-on-right align-fa-icon-after-input-step">
+                            <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                            <span class="tooltip-content">
+                                 <div ng-if="keweqTooltips.driver.tooltip != ''">
+                                    <i class="fa fa-rocket" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{keweqTooltips.driver.tooltip}}
+                                    <br>
+                                </div>
+                                <div ng-if="keweqTooltips.driver.protip != ''">
+                                    <br>
+                                    <i class="fa fa-bolt" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{keweqTooltips.driver.protip}}
+                                    <br>
+                                </div>
+                                <div ng-if="keweqTooltips.driver.bantip != ''">
+                                    <br>
+                                    <i class="fa fa-ban" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{keweqTooltips.driver.bantip}}
+                                    <br>
+                                </div>
+                                <div ng-if="keweqTooltips.driver.snowflake != ''">
+                                    <br>
+                                    <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{keweqTooltips.driver.snowflake}}
+                                    <br>
+                                </div>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for='stepkwd'
+                           class="col-sm-3 control-label mandatory-field ellipsis-the-overflow">Keywords</label>
+                    <div class="tooltip-on-right align-fa-icon-after-label-step">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                             <div ng-if="keweqTooltips.keyword.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{keweqTooltips.keyword.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="keweqTooltips.keyword.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{keweqTooltips.keyword.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="keweqTooltips.keyword.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{keweqTooltips.keyword.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="keweqTooltips.keyword.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{keweqTooltips.keyword.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                    <div class="col-sm-8">
+                        <div class="input-group" ng-show="!status.kwCheckbox">
+                            <select class='form-control' id='stepkwd'
+                                    ng-model="status.keyword"
+                                    ng-change="selectKeyword(status.keyword)"
+                                    ng-options="o.fn as o.fn for o in xml.keywords">
+                                <option value=''>Select Keyword</option>
+                            </select>
+                            <!-- <span class="input-group-addon" style="background-color: white">
+                                 <input id="kwCheckbox1" type="checkbox"
+                                        ng-model='status.kwCheckbox'
+                                        ng-click="emptyKWName()">
+                                 <label for="kwCheckbox1" class="control-label">&nbsp;To be developed</label>
+                             </span>-->
+                        </div>
+                        <!--   <div class="input-group" ng-show="status.kwCheckbox">
+                               <input class="form-control" ng-model="status.keyword">
+                               <span class="input-group-addon" style="background-color: white">
+                                   <input id="kwCheckbox2" type="checkbox"
+                                          ng-model='status.kwCheckbox'
+                                          ng-click="emptyKWName()">
+                                   <label for="kwCheckbox2" class="control-label">&nbsp;To be developed</label>
+                               </span>
+                           </div>-->
+                    </div>
+                    <div class="col-sm-1">
+                        <div class="tooltip-on-right-no-margin align-fa-icon-after-input-step">
+                            <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                            <span class="tooltip-content">
+                                 <div ng-if="keweqTooltips.keyword.tooltip != ''">
+                                    <i class="fa fa-rocket" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{keweqTooltips.keyword.tooltip}}
+                                    <br>
+                                </div>
+                                <div ng-if="keweqTooltips.keyword.protip != ''">
+                                    <br>
+                                    <i class="fa fa-bolt" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{keweqTooltips.keyword.protip}}
+                                    <br>
+                                </div>
+                                <div ng-if="keweqTooltips.keyword.bantip != ''">
+                                    <br>
+                                    <i class="fa fa-ban" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{keweqTooltips.keyword.bantip}}
+                                    <br>
+                                </div>
+                                <div ng-if="keweqTooltips.keyword.snowflake != ''">
+                                    <br>
+                                    <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{keweqTooltips.keyword.snowflake}}
+                                    <br>
+                                </div>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="form-group">
+                    <label class="col-sm-3 offset-1 control-label ellipsis-the-overflow">Arguments</label>
+                    <div class="tooltip-on-right align-fa-icon-after-label-step">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                             <div ng-if="keweqTooltips.steparg.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{keweqTooltips.steparg.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="keweqTooltips.steparg.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{keweqTooltips.steparg.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="keweqTooltips.steparg.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{keweqTooltips.steparg.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="keweqTooltips.steparg.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{keweqTooltips.steparg.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                    <div class=" col-sm-8" ng-show="!status.kwCheckbox && !status.driverCheckbox">
+                        <div class= "panelArgs">Arguments for the selected Keyword
+                            <div ng-repeat="arg in xml.args.args"
+                                 ng-if='status.keyword != "" && xml.args.args.length == 1 && xml.args.args[0] == "self"'>
+                                <b class='text-danger' style="color: rgb(214, 48, 48)">
+                                    <br>
+                                    There are no editable values for this function / keyword.
+                                </b>
+                            </div>
+                            <div ng-repeat="arg in xml.arglist"
+                                 ng-if='status.keyword != "" && xml.arglist.length > 0 && arg != "self"'>
+                                <div class="form-group mArgs">
+                                    <label for="arg{{$index}}"
+                                           class="col-sm-5 control-label text-info breakword"
+                                           style="color: black">
+                                        {{arg}}
+                                    </label>
+                                    <label for="arg{{$index}}"
+                                           class="col-sm-5 control-label text-info ellipsis-the-overflow-arg"
+                                           style="color: black">
+                                        {{arg}}
+                                    </label>
+                                    <div class="col-sm-7">
+                                        <input type="text"
+                                               class="form-control"
+                                               id="arg{{$index}}"
+                                               ng-model='xml.mapargs[arg]'
+                                               placeholder=""> <br/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-8" ng-show="status.kwCheckbox || status.driverCheckbox">
+                        <div class= "panelArgs">Add arguments, if any, for the keyword entered above.
+                            <div class="mArgs">
+                                <div ng-repeat="arg in arg_list track by $index">
+                                    <div class="form-group">
+                                        <label class="col-sm-5 control-label">Argument {{$index + 1}} Name</label>
+                                        <div class="col-sm-7">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" ng-model="arg_list[$index]._name">
+                                                <span class="input-group-addon" ng-click="deleteArgFromList($index)">
+                                                   <span class="fa fa-times-circle-o" aria-hidden="true"></span>
+                                               </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-4 col-sm-offset-5">
+                                        <input type="button" ng-click="addAnotherArgumentToList()" class="btn btn-default" value="Add">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-1">
+                        <div class="tooltip-on-right-no-margin align-fa-icon-after-input-step">
+                            <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                            <span class="tooltip-content">
+                                 <div ng-if="keweqTooltips.steparg.tooltip != ''">
+                                    <i class="fa fa-rocket" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{keweqTooltips.steparg.tooltip}}
+                                    <br>
+                                </div>
+                                <div ng-if="keweqTooltips.steparg.protip != ''">
+                                    <br>
+                                    <i class="fa fa-bolt" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{keweqTooltips.steparg.protip}}
+                                    <br>
+                                </div>
+                                <div ng-if="keweqTooltips.steparg.bantip != ''">
+                                    <br>
+                                    <i class="fa fa-ban" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{keweqTooltips.steparg.bantip}}
+                                    <br>
+                                </div>
+                                <div ng-if="keweqTooltips.steparg.snowflake != ''">
+                                    <br>
+                                    <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{keweqTooltips.steparg.snowflake}}
+                                    <br>
+                                </div>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <div style="color:rgb(214, 48, 48)"
+                         class="col-sm-9 col-sm-offset-3">
+                        <button style="color:rgb(214, 48, 48)" type="button"
+                                class="btn btn-default"
+                                ng-click='saveArguments()'
+                                title={{keweqTooltips.stepsave.tooltip}}>
+                            Save Subkeyword
+                        </button>
+                        &nbsp;
+                        <button type="button"
+                                class="btn btn-default"
+                                ng-click='cancelArguments()'
+                                title={{keweqTooltips.stepcancel.tooltip}}>
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+                <hr>
+            </div>
+            <div class="container pull-right" style="width: 60%">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Signature &amp;
+                        Comment</label>
+                    <div class="col-sm-9"
+                         ng-hide='status.keyword == ""'>
+                        <b class='text-success' style="color: black">{{ xml.args.def }}</b>
+                        <br/><br/>
+                        <pre ng-if='xml.args.comment.length > 0'>{{xml.args.comment.join("\n")}}</pre>
+                        <pre ng-if='xml.args.comment.length === 0'>No comments available.</pre>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    <!--    <div class="form-group" ng-hide="hasNoSteps() || stepBeingEdited == 'None' || stepBeingEdited == model.WrapperKeyword.Steps.step.length -1">
+            <div class="col-sm-12">
+                <table class='table table-bordered table-condensed table-hover'>
+                    <thead>
+                    <tr>
+                        <th class='text-muted text-right min-width-35'>#</th>
+                        <th class='text-muted'>Driver</th>
+                        <th class='text-muted'>Keyword</th>
+
+                        <th class='text-muted'>Arguments</th>
+
+                        <th class='text-muted'>Insert</th>
+                        <th class='text-muted'>Edit</th>
+                        <th class='text-muted'>Delete</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat='Skw in model.WrapperKeyword.Skws.Skw' ng-show="$index > stepBeingEdited">
+                        <td class="text-right min-width-35">
+
+                            {{ $index + 1 }}
+                        </td>
+
+                        <td>
+                            {{ Skw._Driver }}
+                        </td>
+
+                        <td>
+                            {{ Skw._Keyword }}
+                        </td>
+
+                        <td>
+                            {{ Skw.Description }}
+                        </td>
+
+                        <td>
+                            <div ng-if=" Skw.Arguments.argument.length !== undefined  ">
+                                <div ng-repeat='arg in Skw.Arguments.argument' ng-show="arg._name !== ''">
+                                    <div ng-show="arg._value !== ''">
+                                        {{ $index + 1 }}. {{ arg._name}} = {{arg._value }}
+                                    </div>
+                                    <div ng-show="arg._value == ''">
+                                        {{ $index + 1 }}. {{ arg._name}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div ng-if=" Skw.Arguments.argument._name !== undefined && Skw.Arguments.argument._name !== ''">
+                                <div ng-show="Skw.Arguments.argument._value !== ''">
+                                    1. {{ Skw.Arguments.argument._name }} = {{Skw.Arguments.argument._value }}
+                                </div>
+                                <div ng-show="Skw.Arguments.argument._value == ''">
+                                    1. {{ Skw.Arguments.argument._name }}
+                                </div>
+                            </div>
+                        </td>
+
+
+                        <td ng-click='addKwseq($index)' class='text-center' style='vertical-align:middle'>
+                            <div class="tooltip-on-left-dark-big">
+                                <span class="glyphicon glyphicon-import" aria-hidden="true"></span>
+                                <span class="tooltip-content text-left">
+                                    <div ng-if="keweqTooltips.insertstep.tooltip != ''">
+                                        <i class="fa fa-rocket" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{keweqTooltips.insertstep.tooltip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="keweqTooltips.insertstep.protip != ''">
+                                        <br>
+                                        <i class="fa fa-bolt" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{keweqTooltips.insertstep.protip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="keweqTooltips.insertstep.bantip != ''">
+                                        <br>
+                                        <i class="fa fa-ban" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{keweqTooltips.insertstep.bantip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="keweqTooltips.insertstep.snowflake != ''">
+                                        <br>
+                                        <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{keweqTooltips.insertstep.snowflake}}
+                                        <br>
+                                    </div>
+                                </span>
+                            </div>
+                        </td>
+
+                        <td ng-click="editStep(Skw._Driver, $index)" class='text-center' style='vertical-align:middle'>
+                            <div class="tooltip-on-left-dark-big">
+                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                <span class="tooltip-content text-left">
+                                    <div ng-if="keweqTooltips.editstep.tooltip != ''">
+                                        <i class="fa fa-rocket" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{keweqTooltips.editstep.tooltip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="keweqTooltips.editstep.protip != ''">
+                                        <br>
+                                        <i class="fa fa-bolt" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{keweqTooltips.editstep.protip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="keweqTooltips.editstep.bantip != ''">
+                                        <br>
+                                        <i class="fa fa-ban" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{keweqTooltips.editstep.bantip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="keweqTooltips.editstep.snowflake != ''">
+                                        <br>
+                                        <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{keweqTooltips.editstep.snowflake}}
+                                        <br>
+                                    </div>
+                                </span>
+                            </div>
+                        </td>
+
+                        <td ng-click='delKwseq($index)' class='text-center' style='vertical-align:middle'>
+                            <div class="tooltip-on-left-dark-big">
+                                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+                                <span class="tooltip-content text-left">
+                                    <div ng-if="keweqTooltips.deletestep.tooltip != ''">
+                                        <i class="fa fa-rocket" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{keweqTooltips.deletestep.tooltip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="keweqTooltips.deletestep.protip != ''">
+                                        <br>
+                                        <i class="fa fa-bolt" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{keweqTooltips.deletestep.protip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="keweqTooltips.deletestep.bantip != ''">
+                                        <br>
+                                        <i class="fa fa-ban" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{keweqTooltips.deletestep.bantip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="keweqTooltips.deletestep.snowflake != ''">
+                                        <br>
+                                        <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{keweqTooltips.deletestep.snowflake}}
+                                        <br>
+                                    </div>
+                                </span>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>-->
+
+        <div class="row">
+            <div class="form-group">
+                <div class="col-sm-10 col-sm-offset-2">
+                    <button style="color:rgb(214, 48, 48)" type="button"
+                            class="btn btn-default btn-reg"
+                            ng-click='startStepEdit("New", "", -1)'
+                            title={{keweqTooltips.stepnew.tooltip}}>
+                        New Subkeyword
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <hr/>
+
+        <div class="form-group">
+            <div class="col-sm-10">
+                <input style="color:rgb(214, 48, 48)" type="button"
+                       class="btn btn-default" value="Save Wrapper Keyword"
+                       ng-click="saveKwseqCap()"/>
+                <input type="button" class="btn btn-default" value="Cancel"
+                       ng-click="cancelKwseqCap()"/>
+            </div>
+        </div>
+
+    </form>
+
+    <hr/>
+</div>

@@ -163,6 +163,7 @@ def send_email(smtp_host, sender, receivers, subject, body, files):
     message = MIMEMultipart()
     message['From'] = sender
     message['To'] = receivers
+    receivers_list = [receiver.strip() for receiver in receivers.split(',')]
     message['Subject'] = subject
 
     part = MIMEText(body, 'plain')
@@ -179,7 +180,7 @@ def send_email(smtp_host, sender, receivers, subject, body, files):
 
     try:
         smtp_obj = smtplib.SMTP(smtp_host)
-        smtp_obj.sendmail(sender, receivers, message.as_string())
+        smtp_obj.sendmail(sender, receivers_list, message.as_string())
         pNote('Execution results emailed to receiver(s): {}'.format(receivers))
         smtp_obj.close()
 

@@ -26,12 +26,6 @@
             </a>
         </div>
         <div class="container pull-right" style="width: 50%">
-            <a target="_blank" href="http://www.fujitsu.com/us/">
-                <div class="pull-right tooltip-on-right-dark" style="padding-left: 10px; padding-right: 10px">
-                    <img src="/assets/images/Fujitsu-LogoRed.png">
-                    <span class="tooltip-content">Fujitsu</span>
-                </div>
-            </a>
             <a target="_blank" href="https://www.facebook.com/warriorframework/">
                 <div class="pull-right big-navbar-icons tooltip-on-right-dark">
                     <i class="fa fa-facebook-square fa-2x" aria-hidden="true"></i>
@@ -54,11 +48,11 @@
             </a>
             <a target="_blank" href="https://github.com/warriorframework/warriorframework">
                 <div class="pull-right big-navbar-icons tooltip-on-right-dark">
-                    <i class="fa fa-bitbucket fa-2x" aria-hidden="true"></i>
+                    <i class="fa fa-github fa-2x" aria-hidden="true"></i>
                     <span class="tooltip-content">Warrior Repository</span>
                 </div>
                 <div class="pull-right small-navbar-icons tooltip-on-right-dark">
-                    <i class="fa fa-bitbucket" aria-hidden="true"></i>
+                    <i class="fa fa-github" aria-hidden="true"></i>
                     <span class="tooltip-content">Warrior Repository</span>
                 </div>
             </a>
@@ -72,7 +66,7 @@
                 <span class="tooltip-content">Configuration</span>
             </a>
             <a class="list-group-item border-less tooltip-on-right-dark" ng-class="{ active: isActiveContain('testcase')}" style="color:rgb(214, 48, 48)" href="#/testcases" id="big-screen-sidebar-testcases">
-                <i class="fa fa-briefcase color-me-grey" aria-hidden="true"></i>
+                <i class="fa fa-square color-me-grey" aria-hidden="true"></i>
                 <span class="tooltip-content">Cases</span>
             </a>
             <a class="list-group-item border-less tooltip-on-right-dark" ng-class="{ active: isActiveContain('testsuite')}" style="color:rgb(214, 48, 48)" href="#/testsuites" id="big-screen-sidebar-suites">
@@ -89,7 +83,7 @@
             </a>
             <a class="list-group-item border-less tooltip-on-right-dark" ng-class="{ active: isActiveContain('testDatafile')}" style="color:rgb(214, 48, 48)" href="#/testDatafiles" id="big-screen-sidebar-tdfiles">
                 <i class="fa fa-paper-plane color-me-grey" aria-hidden="true"></i>
-                <span class="tooltip-content">CLI Data Files</span>
+                <span class="tooltip-content">Test Data Files</span>
             </a>
             <a class="list-group-item border-less tooltip-on-right-dark" ng-class="{ active: isActiveContain('/warhornconfigfile')}" style="color:rgb(214, 48, 48)" href="#/warhornconfigfiles" id="big-screen-sidebar-wcfiles">
                 <i class="fa fa-file-text color-me-grey" aria-hidden="true"></i>
@@ -98,6 +92,10 @@
             <a class="list-group-item border-less tooltip-on-right-dark" ng-class="{ active: isActive('/sequential')}" style="color:rgb(214, 48, 48)" href="#/sequential" id="big-screen-sidebar-execution">
                 <i class="fa fa-terminal color-me-grey" aria-hidden="true"></i>
                 <span class="tooltip-content">Execution</span>
+            </a>
+            <a class="list-group-item border-less tooltip-on-right-dark" ng-class="{ active: isActive('/kwseq')}" style="color:rgb(214, 48, 48)" href="#/kwseq" id="big-screen-sidebar-docs">
+                <i class="fa fa-sliders color-me-grey" aria-hidden="true"></i>
+                <span class="tooltip-content">Keyword Sequencer</span>
             </a>
         </div>
     </div>
@@ -109,7 +107,7 @@
                 <span class="add-space-1">Configuration</span>
             </a>
             <a class="list-group-item border-less" ng-class="{ active: isActiveContain('testcase')}" style="color:rgb(214, 48, 48)" href="#/testcases">
-                <i class="fa fa-briefcase color-me-grey" aria-hidden="true"></i>
+                <i class="fa fa-square color-me-grey" aria-hidden="true"></i>
                 <span class="add-space-1">Cases</span>
             </a>
             <a class="list-group-item border-less" ng-class="{ active: isActiveContain('testsuite')}" style="color:rgb(214, 48, 48)" href="#/testsuites">
@@ -126,7 +124,7 @@
             </a>
             <a class="list-group-item border-less" ng-class="{ active: isActiveContain('testDatafile')}" style="color:rgb(214, 48, 48)" href="#/testDatafiles">
                 <i class="fa fa-paper-plane color-me-grey" aria-hidden="true"></i>
-                <span class="add-space-1">CLI Data Files</span>
+                <span class="add-space-1">Test Data Files</span>
             </a>
             <a class="list-group-item border-less" ng-class="{ active: isActiveContain('/warhornconfigfile')}" style="color:rgb(214, 48, 48)" href="#/warhornconfigfiles">
                 <i class="fa fa-file-text color-me-grey" aria-hidden="true"></i>
@@ -135,6 +133,10 @@
             <a class="list-group-item border-less" ng-class="{ active: isActive('/sequential')}" style="color:rgb(214, 48, 48)" href="#/sequential">
                 <i class="fa fa-terminal color-me-grey" aria-hidden="true"></i>
                 <span class="add-space-1">Execution</span>
+            </a>
+            <a class="list-group-item border-less" ng-class="{ active: isActive('/kwseq')}" style="color:rgb(214, 48, 48)" href="#/kwseq">
+                <i class="fa fa-sliders color-me-grey" aria-hidden="true"></i>
+                <span class="add-space-1">Keyword Sequencer</span>
             </a>
         </div>
     </div>
@@ -186,11 +188,13 @@
     <script type="text/javascript" src="/assets/app/factory/testcaseFactory.js"></script>
     <script type="text/javascript" src="/assets/app/factory/datafileFactory.js"></script>
     <script type="text/javascript" src="/assets/app/factory/saveNewDataFileFactory.js"></script>
+    <script type="text/javascript" src="/assets/app/factory/kwSeqFacCtrl.js"></script>
     <script type="text/javascript" src="/assets/app/controllers/baseChariotCtrl.js"></script>
     <script type="text/javascript" src="/assets/app/controllers/configCtrl.js"></script>
     <script type="text/javascript" src="/assets/app/factory/warhornconfigfileFactory.js"></script>
     <script type="text/javascript" src="/assets/app/factory/saveNewWarhornConfigFileFactory.js"></script>
     <script type="text/javascript" src="/assets/app/controllers/testcaseCapCtrl.js"></script>
+
     <script type="text/javascript" src="/assets/app/factory/testdatafileFactory.js"></script>
     <script type="text/javascript" src="/assets/app/factory/saveNewTestDataFileFactory.js"></script>
     <script type="text/javascript" src="/assets/app/controllers/testcaseCtrl.js"></script>
@@ -211,7 +215,8 @@
     <script type="text/javascript" src="/assets/app/controllers/datafileCtrl.js"></script>
     <script type="text/javascript" src="/assets/app/controllers/newDataFileCtrl.js"></script>
     <script type="text/javascript" src="/assets/app/controllers/aboutCtrl.js"></script>
-
+    <script type="text/javascript" src="/assets/app/controllers/kwSeq.js"></script>
+    <script type="text/javascript" src="/assets/app/controllers/kwSeqCtrl.js"></script>
     <script type="text/javascript" src="/assets/app/factory/modalDirective.js"></script>
     <script type="text/javascript" src="/assets/app/factory/tagDirective.js"></script>
     <script type="text/javascript" src="/assets/app/controllers/CollapsibleLists.js"></script>
