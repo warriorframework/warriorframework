@@ -51,8 +51,7 @@ class browser_actions(object):
 
     def browser_launch(self, system_name, browser_name="all", type="firefox",
                        url=None, ip=None, remote=None, element_config_file=None,
-                       element_tag=None, binary=None, gecko_path=None,
-                       proxy_ip=None, proxy_port=None):
+                       element_tag=None):
         """
         The Keyword would launch a browser and Navigate to the url, if provided by the user.
 
@@ -89,13 +88,13 @@ class browser_actions(object):
 
                         Eg: <remote>yes</remote>
 
-            4. type = This <type> tag is a child of the <browser> tag in the
+            4. type = This <type> tag is a child og the <browser> tag in the
                       data file. The type of browser that should be opened can
                       be added in here.
 
                       Eg: <type>firefox</type>
 
-            5. browser_name = This <browser_name> tag is a child of the
+            5. browser_name = This <browser_name> tag is a child og the
                               <browser> tag in the data file. Each browser
                               instance should have a unique name. This name can
                               be added here
@@ -132,23 +131,6 @@ class browser_actions(object):
                              FOR TEST CASE
                              Eg: <argument name="element_tag" value="json_name_1">
 
-            9. binary = This <binary> tag refers to path of the browser to
-                        invoke
-                        Eg: <binary>../../firefox/firefox</binary>
-
-            10. gecko_path = This <gecko_path> tag refers to path of the
-                             geckodriver
-                            Eg: <gecko_path>../../../geckodriver</gecko_path>
-
-            11. proxy_ip = This <proxy_ip> tag refers to the ip of the proxy
-                           server. When a proxy is required this tag has to set
-                           Eg: <proxy_ip>xx.xxx.xx.xx</proxy_ip>
-
-            12. proxy_port = This <proxy_port> tag refers to the port of the
-                            proxy server. When a proxy is required for
-                            remote connection this tag has to set.
-                           Eg: <proxy_port>yyyy</proxy_port>
-
         :Arguments:
 
             1. system_name(str) = the system name.
@@ -163,10 +145,6 @@ class browser_actions(object):
                                            locators
             8. element_tag (str) = particular element in the json fie which
                                    contains relevant information to that element
-            9. binary(str) = path of the browser
-            10. gecko_path(str) = path of the geckodriver
-            11. proxy_ip(str) = IP of the proxy server
-            12. proxy_port(str) = port of the proxy server
 
         :Returns:
 
@@ -208,23 +186,13 @@ class browser_actions(object):
             browser_details = arguments
 
         for browser in browser_list:
-            arguments = Utils.data_Utils.get_default_ecf_and_et(arguments,
-                                                                self.datafile,
-                                                                browser)
+            arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
             if browser_details == {}:
                 browser_details = selenium_Utils.\
                     get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
-                if type == "firefox":
-                    ff_profile = self.browser_object.\
-                        set_firefoxprofile(proxy_ip, proxy_port)
-                if binary != "" and gecko_path != "":
-                    browser_inst = self.browser_object.open_browser(
-                        browser_details["type"], webdriver_remote_url,
-                        binary=binary, gecko_path=gecko_path,
-                        profile_dir=ff_profile)
-                else:
-                    pNote("Please provide valid path for binary/geckodriver")
+                browser_inst = self.browser_object.open_browser(
+                    browser_details["type"], webdriver_remote_url)
                 if browser_inst:
                     browser_fullname = "{0}_{1}".format(system_name,
                                                         browser_details["browser_name"])
