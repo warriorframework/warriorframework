@@ -488,15 +488,11 @@ class BrowserManagement(object):
                         profile_dir)
             else:
                 ff_capabilities = webdriver.DesiredCapabilities.FIREFOX
-                if ff_capabilities['marionette']:
-                    ff_capabilities['acceptInsecureCerts'] = True
-                    ffbinary = FirefoxBinary(binary)
-                    browser = webdriver.Firefox(firefox_binary=ffbinary,
-                                                firefox_profile=profile_dir,
-                                                executable_path=gecko_path)
-                else:
-                    print_info("Something is wrong in here, not launching firefox with gecko and binary")
-                    browser = webdriver.Firefox(firefox_profile=profile_dir)
+                ff_capabilities['acceptInsecureCerts'] = True
+                ffbinary = FirefoxBinary(binary)
+                browser = webdriver.Firefox(firefox_binary=ffbinary,
+                                            firefox_profile=profile_dir,
+                                            executable_path=gecko_path)
             return browser
         except WebDriverException as e:
             if "executable needs to be in PATH" in str(e):
