@@ -66,29 +66,8 @@ class BrowserManagement(object):
         browser_name = browser_name
         browser = self._make_browser(browser_name, desired_capabilities,
                                      profile_dir, webdriver_remote_url,
-                                    binary=binary, gecko_path=gecko_path)
-        print_info("The Selenium Webdriver version is '{0}'".format(webdriver.__version__))
-        if browser:
-            browser_detail_dict = self.get_browser_details(browser)
-            for details, value in browser_detail_dict.items():
-                print_info("The Browser '{0}' {1} is '{2}'".format(browser_name, details, value))
+                                     binary=binary, gecko_path=gecko_path)
         return browser
-
-    def get_browser_details(self, browser):
-        """ Return the Browser details dict. The Dict can be updated with additional information
-        about the Browser
-
-            Arguments :
-                       browser = The browser instance
-
-            Return :
-                     browser_detail_dict = A Dictionary containing details of the browser instance
-                     such as version.
-
-        """
-        browser_detail_dict = {}
-        browser_detail_dict['version'] = browser.capabilities['version']
-        return browser_detail_dict
 
     def close_browser(self, browser_instance=None):
         """closes a browser session """
