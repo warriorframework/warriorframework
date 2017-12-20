@@ -232,6 +232,7 @@ class browser_actions(object):
                                                                     webdriver_remote_url)
                 else:
                     pNote("Please provide valid path for binary/geckodriver")
+
                 if browser_inst:
                     browser_fullname = "{0}_{1}".format(system_name,
                                                         browser_details["browser_name"])

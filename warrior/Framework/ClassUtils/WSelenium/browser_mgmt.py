@@ -490,6 +490,9 @@ class BrowserManagement(object):
                 ff_capabilities = webdriver.DesiredCapabilities.FIREFOX
                 ff_capabilities['acceptInsecureCerts'] = True
                 ffbinary = FirefoxBinary(binary)
+                print ffbinary
+                print profile_dir
+                print gecko_path
                 browser = webdriver.Firefox(firefox_binary=ffbinary,
                                             firefox_profile=profile_dir,
                                             executable_path=gecko_path)
