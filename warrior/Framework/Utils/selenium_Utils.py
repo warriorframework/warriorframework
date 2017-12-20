@@ -20,6 +20,7 @@ from Framework.Utils import data_Utils
 from Framework.Utils import config_Utils
 from Framework.ClassUtils.WSelenium.browser_mgmt import BrowserManagement
 from Framework.Utils.print_Utils import print_error, print_info
+from Framework.Utils import testcase_Utils
 from Framework.Utils import file_Utils as file_Utils
 
 
@@ -39,6 +40,42 @@ def evaluate_argument_value(xpath_or_tagname, datafile):
         print_error("Invalid xpath: {0}".format(xpath_or_tagname))
         xpath_or_tagname = None
     return xpath_or_tagname
+
+
+def get_browser_details_from_data_file(system_name, arguments,
+                                       browser_details):
+    """ To get the browser details from the data file"""
+    datafile = config_Utils.datafile
+    system = xml_Utils.getElementWithTagAttribValueMatch(datafile,
+                                                         "system",
+                                                         "name",
+                                                         system_name)
+    browser_list = system.findall("browser")
+    try:
+        browser_list.extend(system.find("browsers").findall("browser"))
+    except AttributeError:
+        pass
+    if not browser_list:
+        browser_list.append(1)
+        browser_details = arguments
+    return browser_list, browser_details
+
+
+def get_current_browser_details(system_name, browser,
+                                arguments, browser_details):
+    """ To get the details of current browser """
+    datafile = config_Utils.datafile
+    arguments = data_Utils.get_default_ecf_and_et(arguments, datafile, browser)
+    if browser_details == {}:
+        browser_details = get_browser_details(browser, datafile, **arguments)
+    return browser_details
+
+
+def report_status_and_screenshot(status, current_browser):
+    """ To report the substep status and to take screenshot of webpage if any failure occured"""
+    testcase_Utils.report_substep_status(status)
+    if current_browser:
+        save_screenshot_onerror(status, current_browser)
 
 
 def save_screenshot_onerror(status, current_browser):
@@ -179,7 +216,8 @@ def get_mappers_for_all_elements(final_dict, def_name_tuple):
     """
     mapper = {}
     for element in final_dict:
-        if final_dict[element] is not None and final_dict[element] is not False and "=" in final_dict[element]:
+        if final_dict[element] is not None and final_dict[element] is\
+                not False and "=" in final_dict[element]:
             temp_list_1 = final_dict[element].split("=")
             if temp_list_1[0] in final_dict:
                 if "=" in final_dict[temp_list_1[0]]:
@@ -214,7 +252,8 @@ def update_final_dict_to_have_no_mappings(final_dict):
     values are retained
     """
     for element in final_dict:
-        if final_dict[element] is not None and final_dict[element] is not False and "=" in final_dict[element]:
+        if final_dict[element] is not None and final_dict[element] is\
+                not False and "=" in final_dict[element]:
             temp_list = final_dict[element].split("=")
             if temp_list[0] in final_dict:
                 temp_var = temp_list[1]
@@ -337,11 +376,12 @@ def get_browser_details(browser, datafile=None, br_name="browser_name",
     # since data file has priority, vales from data file get imposed on the
     # json values
     for element in final_dict:
-        if element in idf_data_dict and idf_data_dict[element] is not None and idf_data_dict[element] is not False:
+        if element in idf_data_dict and idf_data_dict[element] is not None and\
+                idf_data_dict[element] is not False:
             final_dict[element] = idf_data_dict[element]
 
     # Finally, if arguments are still None, the defaults and alues from the
-    # testcases are applied
+    # test cases are applied
     for element in final_dict:
         if final_dict[element] is None:
             if element in kwargs:
@@ -352,7 +392,6 @@ def get_browser_details(browser, datafile=None, br_name="browser_name",
         return None
 
     final_dict = data_Utils.sub_from_env_var(final_dict)
-
     return final_dict
 
 
@@ -411,13 +450,15 @@ def get_element_from_config_file(config_file, element_tag, child_tag,
     """
     locator_types = ("xpath", "id", "css", "link", "partial_link", "tag",
                      "class", "name")
-    wt_datafile = data_Utils.get_object_from_datarepository('wt_datafile') 
-    if wt_datafile: 
+    wt_datafile = data_Utils.get_object_from_datarepository('wt_datafile')
+    if wt_datafile:
         config_file = file_Utils.getAbsPath(config_file, os.path.dirname(wt_datafile))
     if config_file is not None and config_file is not False:
         if child_tag in locator_types:
             if element_tag is not None:
-                final_value = get_json_value_from_path(element_tag + "/" + child_tag, config_file, default)
+                final_value = get_json_value_from_path(element_tag + "/" +
+                                                       child_tag, config_file,
+                                                       default)
             else:
                 final_value = get_json_value_from_path(child_tag, config_file, default)
             if is_locator_type == "yes":
@@ -425,7 +466,9 @@ def get_element_from_config_file(config_file, element_tag, child_tag,
         else:
             if child_tag is not None:
                 if element_tag is not None:
-                    final_value = get_json_value_from_path(element_tag + "/" + child_tag, config_file, default)
+                    final_value = get_json_value_from_path(element_tag + "/" +
+                                                           child_tag, config_file,
+                                                           default)
                 else:
                     final_value = get_json_value_from_path(child_tag, config_file, default)
             else:

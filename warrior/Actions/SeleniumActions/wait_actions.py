@@ -11,25 +11,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-""" Selenium keywords for Wait Actions """
 from Framework.ClassUtils.WSelenium.element_locator import ElementLocator
 from Framework.ClassUtils.WSelenium.wait_operations import WaitOperations
 from Framework.ClassUtils.json_utils_class import JsonUtils
+from Framework.Utils.testcase_Utils import pNote, pSubStep
+from Framework.Utils import selenium_Utils
+
+
 try:
-    import json
-    import os
-    import sys
-    import re
-    import getopt
-    import datetime
     import Framework.Utils as Utils
 except ImportWarning:
-     raise ImportError
+    raise ImportError
 
-from Framework.Utils import data_Utils
-from Framework.Utils.testcase_Utils import pNote, pSubStep
-from Framework.Utils import xml_Utils
-from Framework.Utils import selenium_Utils
 
 class wait_actions(object):
     """This class has the functionality to wait till an event has happened on
@@ -82,8 +75,8 @@ class wait_actions(object):
                          Eg: <timeout>15</timeout>
 
             4. element_config_file = This <element_config_file> tag is a child
-                                     of the <browser> tag in the data file. This
-                                     stores the location of the element
+                                     of the <browser> tag in the data file.
+                                     This stores the location of the element
                                      configuration file that contains all
                                      element locators.
 
@@ -92,30 +85,33 @@ class wait_actions(object):
                                       </element_config_file>
 
             5. element_tag = This element_tag refers to a particular element in
-                             the json fie which contains relevant information to
-                             that element. If you want to use this one element
-                             through out the testcase for a particular browser,
-                             you can include it in the data file. If this not
-                             the case, then you should create an argument tag
-                             in the relevant testcase step and add the value
-                             directly in the testcase step.
+                             the json fie which contains relevant information
+                             to that element. If you want to use this one
+                             element through out the testcase for a particular
+                             browser, you can include it in the data file.
+                             If this not the case, then you should create an
+                             argument tag in the relevant testcase step and
+                             add the value directly in the testcase step.
 
                              FOR DATA FILE
                              Eg: <element_tag>json_name_1</element_tag>
 
                              FOR TEST CASE
-                             Eg: <argument name="element_tag" value="json_name_1">
+                             Eg: <argument name="element_tag"
+                             value="json_name_1">
 
         :Arguments:
 
             1. system_name(str) = the system name.
             2. browser_name(str) = Unique name for this particular browser
             3. timeout(str) = amount of time the browser should wait
-            4. element_config_file (str) = location of the element configuration
-                                           file that contains all element
-                                           locators
+            4. element_config_file (str) = location of the element
+                                           configuration file that
+                                           contains all
+                                           element locators
             5. element_tag (str) = particular element in the json fie which
-                                   contains relevant information to that element
+                                   contains relevant information to
+                                   that element
 
         :Returns:
 
@@ -131,29 +127,17 @@ class wait_actions(object):
         pSubStep(wdesc)
         browser_details = {}
 
-        system = xml_Utils.getElementWithTagAttribValueMatch(self.datafile,
-                                                             "system",
-                                                             "name",
-                                                             system_name)
-        browser_list = system.findall("browser")
-        try:
-            browser_list.extend(system.find("browsers").findall("browser"))
-        except AttributeError:
-            pass
-
-        if not browser_list:
-            browser_list.append(1)
-            browser_details = arguments
-
+        browser_list, browser_details = selenium_Utils.\
+            get_browser_details_from_data_file(system_name, arguments,
+                                               browser_details)
         for browser in browser_list:
-            arguments = Utils.data_Utils.get_default_ecf_and_et(arguments,
-                                                                self.datafile,
-                                                                browser)
-            if browser_details == {}:
-                browser_details = selenium_Utils. \
-                    get_browser_details(browser, datafile=self.datafile, **arguments)
+            browser_details = selenium_Utils.\
+                get_current_browser_details(system_name, browser, arguments,
+                                            browser_details)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if not current_browser:
                     pNote("Browser of system {0} and name {1} not found in the "
                           "datarepository"
@@ -165,9 +149,7 @@ class wait_actions(object):
                         implicit_wait(current_browser,
                                       browser_details["timeout"])
             browser_details = {}
-        Utils.testcase_Utils.report_substep_status(status)
-        if current_browser:
-            selenium_Utils.save_screenshot_onerror(status, current_browser)
+        selenium_Utils.report_status_and_screenshot(status, current_browser)
         return status
 
     def wait_until_element_is_clickable(self, system_name, timeout=5,
@@ -229,13 +211,13 @@ class wait_actions(object):
             locator. So if locator_type = name and locator = navigation-bar,
             then Warrior can search for an element with name "navigation-bar"
 
-            b. You can give location of the element_config_file and a tag inside
-            it so that Warrior can search for that tag and get the required
-            information from there.
+            b. You can give location of the element_config_file and a tag
+            inside it so that Warrior can search for that tag and get the
+            required information from there.
 
             - Now, if the locator type is given, Warrior
-            will search for that locator_type in the children of that element in
-            the element_config_file
+            will search for that locator_type in the children of that element
+            in the element_config_file
 
             - You can also set defaults in the element_config_file, and now,
             even if the locator_type is not given, Warrior will know which
@@ -251,7 +233,8 @@ class wait_actions(object):
                 following conditions must be satisfied.
 
                 1. locator_type and locator must be given
-                2. locator_type, element_config_file, and element_tag must be given
+                2. locator_type, element_config_file, and element_tag
+                must be given
                 3. element_config_file, and element_tag must be given
 
                 The datafile has the first priority, then the json file, and
@@ -292,30 +275,17 @@ class wait_actions(object):
         pNote(wdesc)
         pSubStep(wdesc)
         browser_details = {}
-
-        system = xml_Utils.getElementWithTagAttribValueMatch(self.datafile,
-                                                             "system",
-                                                             "name",
-                                                             system_name)
-        browser_list = system.findall("browser")
-        try:
-            browser_list.extend(system.find("browsers").findall("browser"))
-        except AttributeError:
-            pass
-
-        if not browser_list:
-            browser_list.append(1)
-            browser_details = arguments
-
+        browser_list, browser_details = selenium_Utils.\
+            get_browser_details_from_data_file(system_name, arguments,
+                                               browser_details)
         for browser in browser_list:
-            arguments = Utils.data_Utils.get_default_ecf_and_et(arguments,
-                                                                self.datafile,
-                                                                browser)
-            if browser_details == {}:
-                browser_details = selenium_Utils. \
-                    get_browser_details(browser, datafile=self.datafile, **arguments)
+            browser_details = selenium_Utils.\
+                get_current_browser_details(system_name, browser, arguments,
+                                            browser_details)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if not current_browser:
                     pNote("Browser of system {0} and name {1} not found in the "
                           "datarepository"
@@ -329,9 +299,7 @@ class wait_actions(object):
                                                         browser_details["locator"],
                                                         browser_details["timeout"])
             browser_details = {}
-        Utils.testcase_Utils.report_substep_status(status)
-        if current_browser:
-            selenium_Utils.save_screenshot_onerror(status, current_browser)
+        selenium_Utils.report_status_and_screenshot(status, current_browser)
         return status
 
     def wait_until_presence_of_element_located(self, system_name, timeout=5,
@@ -393,13 +361,13 @@ class wait_actions(object):
             locator. So if locator_type = name and locator = navigation-bar,
             then Warrior can search for an element with name "navigation-bar"
 
-            b. You can give location of the element_config_file and a tag inside
-            it so that Warrior can search for that tag and get the required
-            information from there.
+            b. You can give location of the element_config_file and a tag
+            inside it so that Warrior can search for that tag and get the
+            required information from there.
 
             - Now, if the locator type is given, Warrior
-            will search for that locator_type in the children of that element in
-            the element_config_file
+            will search for that locator_type in the children of that element
+            in the element_config_file
 
             - You can also set defaults in the element_config_file, and now,
             even if the locator_type is not given, Warrior will know which
@@ -415,7 +383,8 @@ class wait_actions(object):
                 following conditions must be satisfied.
 
                 1. locator_type and locator must be given
-                2. locator_type, element_config_file, and element_tag must be given
+                2. locator_type, element_config_file, and element_tag
+                must be given
                 3. element_config_file, and element_tag must be given
 
                 The datafile has the first priority, then the json file, and
@@ -456,32 +425,19 @@ class wait_actions(object):
         pNote(wdesc)
         pSubStep(wdesc)
         browser_details = {}
-
-        system = xml_Utils.getElementWithTagAttribValueMatch(self.datafile,
-                                                             "system",
-                                                             "name",
-                                                             system_name)
-        browser_list = system.findall("browser")
-        try:
-            browser_list.extend(system.find("browsers").findall("browser"))
-        except AttributeError:
-            pass
-
-        if not browser_list:
-            browser_list.append(1)
-            browser_details = arguments
-
+        browser_list, browser_details = selenium_Utils.\
+            get_browser_details_from_data_file(system_name, arguments,
+                                               browser_details)
         for browser in browser_list:
-            arguments = Utils.data_Utils.get_default_ecf_and_et(arguments,
-                                                                self.datafile,
-                                                                browser)
-            if browser_details == {}:
-                browser_details = selenium_Utils. \
-                    get_browser_details(browser, datafile=self.datafile, **arguments)
+            browser_details = selenium_Utils.\
+                get_current_browser_details(system_name, browser, arguments,
+                                            browser_details)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if not current_browser:
-                    pNote("Browser of system {0} and name {1} not found in the "
+                    pNote("Browser of system {0} and name {1} not found in the"
                           "datarepository"
                           .format(system_name, browser_details["browser_name"]),
                           "Exception")
@@ -493,9 +449,7 @@ class wait_actions(object):
                                                                browser_details["locator"],
                                                                browser_details["timeout"])
             browser_details = {}
-        Utils.testcase_Utils.report_substep_status(status)
-        if current_browser:
-            selenium_Utils.save_screenshot_onerror(status, current_browser)
+        selenium_Utils.report_status_and_screenshot(status, current_browser)
         return status
 
     def wait_until_presence_of_all_elements_located(self, system_name,
@@ -530,7 +484,8 @@ class wait_actions(object):
                               Eg: <browser_name>Unique_name_1</browser_name>
 
             3. timeout = This contains the information of how much time the
-                         browser needs to wait for all the elemnts to be located
+                         browser needs to wait for all the elemnts to be
+                         located
 
                          Eg: <timeout>15</timeout>
 
@@ -558,13 +513,13 @@ class wait_actions(object):
             locator. So if locator_type = name and locator = navigation-bar,
             then Warrior can search for an element with name "navigation-bar"
 
-            b. You can give location of the element_config_file and a tag inside
-            it so that Warrior can search for that tag and get the required
-            information from there.
+            b. You can give location of the element_config_file and a tag
+            inside it so that Warrior can search for that tag and get the
+            required information from there.
 
             - Now, if the locator type is given, Warrior
-            will search for that locator_type in the children of that element in
-            the element_config_file
+            will search for that locator_type in the children of that element
+            in the element_config_file
 
             - You can also set defaults in the element_config_file, and now,
             even if the locator_type is not given, Warrior will know which
@@ -580,7 +535,8 @@ class wait_actions(object):
                 following conditions must be satisfied.
 
                 1. locator_type and locator must be given
-                2. locator_type, element_config_file, and element_tag must be given
+                2. locator_type, element_config_file, and element_tag
+                must be given
                 3. element_config_file, and element_tag must be given
 
                 The datafile has the first priority, then the json file, and
@@ -621,32 +577,19 @@ class wait_actions(object):
         pNote(wdesc)
         pSubStep(wdesc)
         browser_details = {}
-
-        system = xml_Utils.getElementWithTagAttribValueMatch(self.datafile,
-                                                             "system",
-                                                             "name",
-                                                             system_name)
-        browser_list = system.findall("browser")
-        try:
-            browser_list.extend(system.find("browsers").findall("browser"))
-        except AttributeError:
-            pass
-
-        if not browser_list:
-            browser_list.append(1)
-            browser_details = arguments
-
+        browser_list, browser_details = selenium_Utils.\
+            get_browser_details_from_data_file(system_name, arguments,
+                                               browser_details)
         for browser in browser_list:
-            arguments = Utils.data_Utils.get_default_ecf_and_et(arguments,
-                                                                self.datafile,
-                                                                browser)
-            if browser_details == {}:
-                browser_details = selenium_Utils. \
-                    get_browser_details(browser, datafile=self.datafile, **arguments)
+            browser_details = selenium_Utils.\
+                get_current_browser_details(system_name, browser, arguments,
+                                            browser_details)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if not current_browser:
-                    pNote("Browser of system {0} and name {1} not found in the "
+                    pNote("Browser of system {0} and name {1} not found in the"
                           "datarepository"
                           .format(system_name, browser_details["browser_name"]),
                           "Exception")
@@ -658,9 +601,7 @@ class wait_actions(object):
                                                                     browser_details["locator"],
                                                                     browser_details["timeout"])
             browser_details = {}
-        Utils.testcase_Utils.report_substep_status(status)
-        if current_browser:
-            selenium_Utils.save_screenshot_onerror(status, current_browser)
+        selenium_Utils.report_status_and_screenshot(status, current_browser)
         return status
 
     def wait_until_visibility_is_determined(self, system_name, timeout="5",
@@ -723,13 +664,13 @@ class wait_actions(object):
             locator. So if locator_type = name and locator = navigation-bar,
             then Warrior can search for an element with name "navigation-bar"
 
-            b. You can give location of the element_config_file and a tag inside
-            it so that Warrior can search for that tag and get the required
-            information from there.
+            b. You can give location of the element_config_file and a tag
+            inside it so that Warrior can search for that tag and get the
+            required information from there.
 
             - Now, if the locator type is given, Warrior
-            will search for that locator_type in the children of that element in
-            the element_config_file
+            will search for that locator_type in the children of that element
+            in the element_config_file
 
             - You can also set defaults in the element_config_file, and now,
             even if the locator_type is not given, Warrior will know which
@@ -745,7 +686,8 @@ class wait_actions(object):
                 following conditions must be satisfied.
 
                 1. locator_type and locator must be given
-                2. locator_type, element_config_file, and element_tag must be given
+                2. locator_type, element_config_file, and element_tag
+                must be given
                 3. element_config_file, and element_tag must be given
 
                 The datafile has the first priority, then the json file, and
@@ -787,32 +729,19 @@ class wait_actions(object):
         pNote(wdesc)
         pSubStep(wdesc)
         browser_details = {}
-
-        system = xml_Utils.getElementWithTagAttribValueMatch(self.datafile,
-                                                             "system",
-                                                             "name",
-                                                             system_name)
-        browser_list = system.findall("browser")
-        try:
-            browser_list.extend(system.find("browsers").findall("browser"))
-        except AttributeError:
-            pass
-
-        if not browser_list:
-            browser_list.append(1)
-            browser_details = arguments
-
+        browser_list, browser_details = selenium_Utils.\
+            get_browser_details_from_data_file(system_name, arguments,
+                                               browser_details)
         for browser in browser_list:
-            arguments = Utils.data_Utils.get_default_ecf_and_et(arguments,
-                                                                self.datafile,
-                                                                browser)
-            if browser_details == {}:
-                browser_details = selenium_Utils. \
-                    get_browser_details(browser, datafile=self.datafile, **arguments)
+            browser_details = selenium_Utils.\
+                get_current_browser_details(system_name, browser, arguments,
+                                            browser_details)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if not current_browser:
-                    pNote("Browser of system {0} and name {1} not found in the "
+                    pNote("Browser of system {0} and name {1} not found in the"
                           "datarepository"
                           .format(system_name, browser_details["browser_name"]),
                           "Exception")
@@ -838,12 +767,11 @@ class wait_actions(object):
                                                               element,
                                                               browser_details["timeout"])
             browser_details = {}
-        Utils.testcase_Utils.report_substep_status(status)
-        if current_browser:
-            selenium_Utils.save_screenshot_onerror(status, current_browser)
+        selenium_Utils.report_status_and_screenshot(status, current_browser)
         return status
 
-    def wait_until_visibility_of_element_located(self, system_name, timeout="5",
+    def wait_until_visibility_of_element_located(self, system_name,
+                                                 timeout="5",
                                                  locator=None,
                                                  locator_type=None,
                                                  browser_name="all",
@@ -875,8 +803,8 @@ class wait_actions(object):
                               Eg: <browser_name>Unique_name_1</browser_name>
 
             3. timeout = This contains the information of how much time the
-                         browser needs to wait for an element whose existence in
-                         the DOM is unknown to become visible
+                         browser needs to wait for an element whose existence
+                         in the DOM is unknown to become visible
 
                          Eg: <timeout>15</timeout>
 
@@ -904,13 +832,13 @@ class wait_actions(object):
             locator. So if locator_type = name and locator = navigation-bar,
             then Warrior can search for an element with name "navigation-bar"
 
-            b. You can give location of the element_config_file and a tag inside
-            it so that Warrior can search for that tag and get the required
-            information from there.
+            b. You can give location of the element_config_file and a tag
+            inside it so that Warrior can search for that tag and get
+            the required information from there.
 
             - Now, if the locator type is given, Warrior
-            will search for that locator_type in the children of that element in
-            the element_config_file
+            will search for that locator_type in the children of that element
+            in the element_config_file
 
             - You can also set defaults in the element_config_file, and now,
             even if the locator_type is not given, Warrior will know which
@@ -926,7 +854,8 @@ class wait_actions(object):
                 following conditions must be satisfied.
 
                 1. locator_type and locator must be given
-                2. locator_type, element_config_file, and element_tag must be given
+                2. locator_type, element_config_file, and element_tag
+                must be given
                 3. element_config_file, and element_tag must be given
 
                 The datafile has the first priority, then the json file, and
@@ -968,32 +897,19 @@ class wait_actions(object):
         pNote(wdesc)
         pSubStep(wdesc)
         browser_details = {}
-
-        system = xml_Utils.getElementWithTagAttribValueMatch(self.datafile,
-                                                             "system",
-                                                             "name",
-                                                             system_name)
-        browser_list = system.findall("browser")
-        try:
-            browser_list.extend(system.find("browsers").findall("browser"))
-        except AttributeError:
-            pass
-
-        if not browser_list:
-            browser_list.append(1)
-            browser_details = arguments
-
+        browser_list, browser_details = selenium_Utils.\
+            get_browser_details_from_data_file(system_name, arguments,
+                                               browser_details)
         for browser in browser_list:
-            arguments = Utils.data_Utils.get_default_ecf_and_et(arguments,
-                                                                self.datafile,
-                                                                browser)
-            if browser_details == {}:
-                browser_details = selenium_Utils. \
-                    get_browser_details(browser, datafile=self.datafile, **arguments)
+            browser_details = selenium_Utils.\
+                get_current_browser_details(system_name, browser, arguments,
+                                            browser_details)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if not current_browser:
-                    pNote("Browser of system {0} and name {1} not found in the "
+                    pNote("Browser of system {0} and name {1} not found in the"
                           "datarepository"
                           .format(system_name, browser_details["browser_name"]),
                           "Exception")
@@ -1005,7 +921,5 @@ class wait_actions(object):
                                                                  browser_details["locator"],
                                                                  browser_details["timeout"])
             browser_details = {}
-        Utils.testcase_Utils.report_substep_status(status)
-        if current_browser:
-            selenium_Utils.save_screenshot_onerror(status, current_browser)
+        selenium_Utils.report_status_and_screenshot(status, current_browser)
         return status

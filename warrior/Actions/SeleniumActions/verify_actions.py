@@ -10,27 +10,20 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
-""" Selenium keywords for Verify Actions """
 from Framework.ClassUtils.WSelenium.verify_operations import VerifyOperations
 from Framework.ClassUtils.json_utils_class import JsonUtils
 from Framework.ClassUtils.WSelenium.element_locator import ElementLocator
 from Framework.Utils.print_Utils import print_error, print_info
+from Framework.Utils.testcase_Utils import pNote, pSubStep
+from Framework.Utils import selenium_Utils
+
+""" Selenium keywords for Verify Actions """
+
 try:
-    import json
-    import os
-    import sys
     import re
-    import getopt
-    import datetime
     import Framework.Utils as Utils
 except ImportWarning:
-     raise ImportError
-
-from Framework.Utils import data_Utils
-from Framework.Utils.testcase_Utils import pNote, pSubStep
-from Framework.Utils import xml_Utils
-from Framework.Utils import selenium_Utils
+    raise ImportError
 
 
 class verify_actions(object):
@@ -92,15 +85,15 @@ class verify_actions(object):
 
             5. value_type = This <value_type> tag is a child of the <browser>
                             tag in the data file. This tag would contain the
-                            type of browser information that you want to verify.
-                            It can either be current_url, title, name, or
-                            page_source
+                            type of browser information that you want to
+                            verify. It can either be current_url, title, name,
+                            or page_source
 
                             Eg: <value_type>title</value_type>
 
             6. element_config_file = This <element_config_file> tag is a child
-                                     of the <browser> tag in the data file. This
-                                     stores the location of the element
+                                     of the <browser> tag in the data file.
+                                     This stores the location of the element
                                      configuration file that contains all
                                      element locators.
 
@@ -108,20 +101,22 @@ class verify_actions(object):
                                       ../Config_files/selenium_config.json
                                       </element_config_file>
 
-            7. element_tag = This element_tag refers to a particular element in
-                             the json fie which contains relevant information to
-                             that element. If you want to use this one element
-                             through out the testcase for a particular browser,
-                             you can include it in the data file. If this not
-                             the case, then you should create an argument tag
-                             in the relevant testcase step and add the value
-                             directly in the testcase step.
+            7. element_tag = This element_tag refers to a particular element
+                             in the json fie which contains relevant
+                             information to that element. If you want to use
+                             this one element through out the testcase for a
+                             particular browser, you can include it in the
+                             data file. If this not the case, then you should
+                             create an argument tag in the relevant testcase
+                             step and add the value directly in the testcase
+                             step.
 
                              FOR DATA FILE
                              Eg: <element_tag>json_name_1</element_tag>
 
                              FOR TEST CASE
-                             Eg: <argument name="element_tag" value="json_name_1">
+                             Eg: <argument name="element_tag"
+                             value="json_name_1">
 
         :Arguments:
 
@@ -133,11 +128,12 @@ class verify_actions(object):
                                   page_source
             4. browser_name(str) = Unique name for this particular browser
             5. url(str) = URL to which the browser should be directed
-            6. element_config_file (str) = location of the element configuration
-                                           file that contains all element
-                                           locators
+            6. element_config_file (str) = location of the element
+                                           configuration file that contains
+                                           all element locators
             7. element_tag (str) = particular element in the json fie which
-                                   contains relevant information to that element
+                                   contains relevant information
+                                   to that element
 
         :Returns:
 
@@ -151,30 +147,21 @@ class verify_actions(object):
         pNote(wdesc)
         pSubStep(wdesc)
         browser_details = {}
-
-        system = xml_Utils.getElementWithTagAttribValueMatch(self.datafile,
-                                                             "system",
-                                                             "name",
-                                                             system_name)
-        browser_list = system.findall("browser")
-        try:
-            browser_list.extend(system.find("browsers").findall("browser"))
-        except AttributeError:
-            pass
-
-        if not browser_list:
-            browser_list.append(1)
-            browser_details = arguments
-
+        browser_list, browser_details = selenium_Utils.\
+            get_browser_details_from_data_file(system_name, arguments,
+                                               browser_details)
         for browser in browser_list:
-            arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
-            if browser_details == {}:
-                browser_details = selenium_Utils. \
-                    get_browser_details(browser, datafile=self.datafile, **arguments)
+            browser_details = selenium_Utils.\
+                get_current_browser_details(system_name, browser, arguments,
+                                            browser_details)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
-                    obtained_value = self.verify_oper_object.get_page_property(current_browser, browser_details["value_type"])
+                    obtained_value = self.verify_oper_object.\
+                        get_page_property(current_browser,
+                                          browser_details["value_type"])
                     if str(obtained_value) == expected_value:
                         pNote("The obtained {0}: {1} matches the expected "
                               "value: {2}. Verification success!".
@@ -183,8 +170,7 @@ class verify_actions(object):
                     else:
                         pNote("The obtained {0}: {1} does not match the "
                               "expected value: {2}. Verification failed!".
-                              format(value_type, obtained_value,
-                                     expected_value), "Error")
+                              format(value_type, obtained_value, expected_value), "Error")
                         status = False
                 else:
                     pNote("Browser of system {0} and name {1} not found in the "
@@ -193,9 +179,7 @@ class verify_actions(object):
                           "Exception")
                     status = False
             browser_details = {}
-        Utils.testcase_Utils.report_substep_status(status)
-        if current_browser:
-            selenium_Utils.save_screenshot_onerror(status, current_browser)
+        selenium_Utils.report_status_and_screenshot(status, current_browser)
         return status
 
     def verify_text_in_window_pane(self, system_name,
@@ -227,8 +211,9 @@ class verify_actions(object):
 
                               Eg: <browser_name>Unique_name_1</browser_name>
 
-            3. verification_text = text to be verified in the web page should be given as a comma separated value
-                                   without any space in between, if it is multiple values
+            3. verification_text = text to be verified in the web page should be given as a comma
+                                   separated value without any space in between, if it is multiple
+                                   values
                                    Eg. <verification_text>Gmail,Google</verification_text>
 
             4. element_config_file = This contains the location of the json
@@ -246,8 +231,8 @@ class verify_actions(object):
             you need to provide Warrior with some way to do it.
 
             a. You can either directly give values for the verification_text. So
-            if verification_text = verification_text(comma seperated values), then Warrior can search 
-            the given verification_text in the window pane
+            if verification_text = verification_text(comma seperated values), then Warrior can
+            search the given verification_text in the window pane
 
             b. You can give location of the element_config_file and a tag inside
             it so that Warrior can search for that tag and get the required
@@ -293,19 +278,13 @@ class verify_actions(object):
         arguments.pop('self')
         status = True
         browser_details = {}
-        system = xml_Utils.getElementWithTagAttribValueMatch(self.datafile,
-                                                             "system",
-                                                             "name",
-                                                             system_name)
-        browser_list = system.findall("browser")
-        try:
-            browser_list.extend(system.find("browsers").findall("browser"))
-        except AttributeError:
-            pass
+        wdesc = "To verify whether the user provided texts exist on the web page"
+        pNote(wdesc)
+        pSubStep(wdesc)
 
-        if not browser_list:
-            browser_list.append(1)
-            browser_details = arguments
+        browser_list, browser_details = selenium_Utils.\
+            get_browser_details_from_data_file(system_name, arguments,
+                                               browser_details)
 
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments,
@@ -318,8 +297,9 @@ class verify_actions(object):
                 if not browser_details["verification_text"].startswith("verification_text"):
                     browser_details["verification_text"] = \
                         "verification_text=" + browser_details["verification_text"]
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" +
-                                                                                  browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if not current_browser:
                     pNote("Browser of system {0} and name {1} not found in the "
                           "data repository"
@@ -332,16 +312,24 @@ class verify_actions(object):
                         for values in browser_details["verification_text"].split(","):
                             if re.search("verification_text=", values):
                                 values = re.sub("verification_text=", "", values)
-                            verification_status = self.element_locator_obj.get_element(current_browser, 'xpath=//*[contains(text(),"{}")]'.format(values), findall='y')
+                            verification_status = self.element_locator_obj.\
+                                get_element(current_browser,
+                                            'xpath=//*[contains(text(),"{}")]'.format(values),
+                                            findall='y')
                             if verification_status and len(verification_status) > 0:
-                                print_info("Verification text found {} times in the window pane".format(len(verification_status)))
+                                print_info("Verification text found {} times in the "
+                                           "window pane".format(len(verification_status)))
                             if not verification_status:
-                                print_error("The given string {} is not present in DOM".format(values))
+                                print_error("The given string {} is not present "
+                                            "in DOM".format(values))
                                 status = False
             else:
-                print_error("Value for browser_details/verification_text is None. Provide the value")
+                print_error("Value for browser_details/verification_text is None."
+                            "Provide the value")
                 status = False
-            return status
+
+            browser_details = {}
+        return status
 
     def verify_alert_is_present(self, system_name, action="accept",
                                 browser_name="all", element_config_file=None,
@@ -377,8 +365,8 @@ class verify_actions(object):
                         Eg: <action>dismiss</action>
 
             4. element_config_file = This <element_config_file> tag is a child
-                                     of the <browser> tag in the data file. This
-                                     stores the location of the element
+                                     of the <browser> tag in the data file.
+                                     This stores the location of the element
                                      configuration file that contains all
                                      element locators.
 
@@ -386,31 +374,34 @@ class verify_actions(object):
                                       ../Config_files/selenium_config.json
                                       </element_config_file>
 
-            5. element_tag = This element_tag refers to a particular element in
-                             the json fie which contains relevant information to
-                             that element. If you want to use this one element
-                             through out the testcase for a particular browser,
-                             you can include it in the data file. If this not
-                             the case, then you should create an argument tag
-                             in the relevant testcase step and add the value
-                             directly in the testcase step.
+            5. element_tag = This element_tag refers to a particular element
+                             in the json fie which contains relevant
+                             information to that element. If you want to use
+                             this one element through out the testcase for a
+                             particular browser, you can include it in the
+                             data file. If this not the case, then you should
+                             create an argument tag in the relevant testcase
+                             step and add the value directly in the testcase
+                             step.
 
                              FOR DATA FILE
                              Eg: <element_tag>json_name_1</element_tag>
 
                              FOR TEST CASE
-                             Eg: <argument name="element_tag" value="json_name_1">
+                             Eg: <argument name="element_tag"
+                             value="json_name_1">
 
         :Arguments:
 
             1. system_name(str) = the system name.
             2. browser_name(str) = Unique name for this particular browser
             3. actions(str) = action that needs to be performed on the alert
-            4. element_config_file (str) = location of the element configuration
-                                           file that contains all element
-                                           locators
+            4. element_config_file (str) = location of the element
+                                           configuration file that contains
+                                           all element locators
             5. element_tag (str) = particular element in the json fie which
-                                   contains relevant information to that element
+                                   contains relevant information to
+                                   that element
 
         :Returns:
 
@@ -424,30 +415,21 @@ class verify_actions(object):
         pNote(wdesc)
         pSubStep(wdesc)
         browser_details = {}
-
-        system = xml_Utils.getElementWithTagAttribValueMatch(self.datafile,
-                                                             "system",
-                                                             "name",
-                                                             system_name)
-        browser_list = system.findall("browser")
-        try:
-            browser_list.extend(system.find("browsers").findall("browser"))
-        except AttributeError:
-            pass
-
-        if not browser_list:
-            browser_list.append(1)
-            browser_details = arguments
-
+        browser_list, browser_details = selenium_Utils.\
+            get_browser_details_from_data_file(system_name, arguments,
+                                               browser_details)
         for browser in browser_list:
-            arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
-            if browser_details == {}:
-                browser_details = selenium_Utils. \
-                    get_browser_details(browser, datafile=self.datafile, **arguments)
+            browser_details = selenium_Utils.\
+                get_current_browser_details(system_name, browser, arguments,
+                                            browser_details)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.\
+                    get_object_from_datarepository(system_name + "_" +
+                                                   browser_details["browser_name"])
                 if current_browser:
-                    status = self.verify_oper_object.verify_alert_is_present(current_browser, browser_details["action"])
+                    status = self.verify_oper_object.\
+                        verify_alert_is_present(current_browser,
+                                                browser_details["action"])
                 else:
                     pNote("Browser of system {0} and name {1} not found in the "
                           "datarepository"
@@ -455,7 +437,5 @@ class verify_actions(object):
                           "Exception")
                     status = False
             browser_details = {}
-        Utils.testcase_Utils.report_substep_status(status)
-        if current_browser:
-            selenium_Utils.save_screenshot_onerror(status, current_browser)
+        selenium_Utils.report_status_and_screenshot(status, current_browser)
         return status
