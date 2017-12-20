@@ -87,7 +87,10 @@ class BrowserManagement(object):
 
         """
         browser_detail_dict = {}
-        browser_detail_dict['version'] = browser.capabilities['version']
+        browser_version = browser.capabilities.get("version", None)
+        if browser_version is None:
+            browser_version = browser.capabilities.get("browserVersion", None)
+        browser_detail_dict['version'] = browser_version
         return browser_detail_dict
 
     def close_browser(self, browser_instance=None):
@@ -272,7 +275,12 @@ class BrowserManagement(object):
         if browser_instance is None:
             browser_instance = self.current_browser
 
-        if browser_type == "firefox":
+        version = self.get_browser_details(browser_instance).get("version", "")
+        print version
+
+        from distutils.version import LooseVersion
+
+        if browser_type == "firefox" and LooseVersion(version) < LooseVersion("47.0.0"):
             element = browser_instance.find_element_by_tag_name("body")
             element.send_keys(Keys.LEFT_CONTROL, 'n')
         else:
@@ -480,20 +488,18 @@ class BrowserManagement(object):
                         profile_dir)
             else:
                 ff_capabilities = webdriver.DesiredCapabilities.FIREFOX
-                if ff_capabilities['marionette']:
-                    ff_capabilities['acceptInsecureCerts'] = True
-                    ffbinary = FirefoxBinary(binary)
-                    browser = webdriver.Firefox(firefox_binary=ffbinary,
-                                                firefox_profile=profile_dir,
-                                                executable_path=gecko_path)
-                else:
-                    browser = webdriver.Firefox(firefox_profile=profile_dir)
+                ff_capabilities['acceptInsecureCerts'] = True
+                # ffbinary = FirefoxBinary(binary)
+                browser = webdriver.Firefox(executable_path=gecko_path)
+                print "browser", browser
             return browser
         except WebDriverException as e:
             if "executable needs to be in PATH" in str(e):
                 print_error("Please provide path for geckodriver executable")
             elif "Expected browser binary location" in str(e):
                 print_error("Please provide path of firefox executable")
+        except Exception as e:
+            print_error("Encountered Error {0}, while creating Firefox instance".format(e))
 
     def _make_chrome(self, webdriver_remote_url, desired_capabilities,
                      profile_dir, binary, gecko_path):
