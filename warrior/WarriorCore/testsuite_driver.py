@@ -19,7 +19,7 @@ import time
 import traceback
 import shutil
 import copy
-
+import xmltodict
 import sequential_testcase_driver
 import testcase_driver
 import onerror_driver
