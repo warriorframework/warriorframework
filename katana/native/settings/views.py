@@ -14,9 +14,16 @@ limitations under the License.
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import os
 from django.shortcuts import render
+
+from native.assembler.assembler_utils.verify_file_contents import VerifyFileContents
 from native.settings.settings import Settings
-# Create your views here.
+from utils.navigator_util import Navigator
+
+nav_obj = Navigator()
+REF_FILE = os.path.join(nav_obj.get_katana_dir(), "native", "assembler", "static", "assembler",
+                        "base_templates", "empty.xml")
 
 controls = Settings()
 
@@ -40,3 +47,6 @@ def profile_setting_handler( request ):
 
 def smart_analysis_handler( request ):
     return render(request, 'settings/smart_analysis_handler.html', {"data": controls.smart_analysis_handler(request)})
+
+def prerequisites_handler(request):
+    return render(request, 'assembler/assembler.html')
