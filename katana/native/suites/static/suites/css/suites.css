@@ -1,0 +1,126 @@
+
+
+.suite-header-label { 
+    font-size: 20;
+    float: left;
+    text-align: left; 
+    color: "white";
+}
+
+.suite-header-ilabel { 
+    font-size: 14;
+    vertical-align: middle;
+    float: right;
+    
+    text-align: left; 
+    color: "white";
+}
+
+
+.suite-configuration-table {}
+.suite-configuration-table th{
+    height: 35px;
+    line-height: 35px;
+    text-align: left; 
+    vertical-align: top;
+    font-weight: 400;
+    color: #FFF;
+    background-color: #577BA0;
+}
+
+.suite-configuration-table td {
+  text-align: left;
+  overflow: hidden;
+}
+
+.suite-configuration-table i{
+    padding: 4px;
+    font-size: 16px;
+}
+
+
+
+.suite-configuration-table tr th:nth-child(1), .suite-configuration-table tr td:nth-child(1) {
+    flex-grow: .3;
+
+}
+
+.suite-configuration-table tr th:nth-child(2), .suite-configuration-table tr td:nth-child(2) {
+    flex-grow: .3;
+}
+
+.suite-configuration-table tr th:nth-child(3), .suite-configuration-table tr td:nth-child(3) {
+    flex-grow: 2;
+}
+
+
+.suite-configuration-table tr th:nth-child(4), .suite-configuration-table tr td:nth-child(4) {
+    flex-grow: .3;
+}
+
+.suite-configuration-table tr th:nth-child(5), .suite-configuration-table tr td:nth-child(5) {
+    flex-grow: 2;
+}
+
+
+.suite-configuration-table tr th:nth-child(6), .suite-configuration-table tr td:nth-child(6) {
+    flex-grow: .3;
+}
+
+
+.suite-configuration-table tr th:nth-child(7), .suite-configuration-table tr td:nth-child(7) {
+    flex-grow: .5;
+}
+
+.suite-configuration-table tr th:nth-child(8), .suite-configuration-table tr td:nth-child(8) {
+    flex-grow: .5;
+}
+
+.suite-configuration-table tr th:nth-child(9), .suite-configuration-table tr td:nth-child(9) {
+    flex-grow: .5;
+}
+
+.suite-configuration-table tr th:last-child, .suite-configuration-table tr td:last-child {
+    flex-grow: .8;
+    font-size: 18px;
+}
+
+.suite-configuration-table tr:nth-child(even){background-color: #f2f2ff}
+
+
+.suite-req-configuration-table {}
+.suite-req-configuration-table th{
+    height: 35px;
+    line-height: 35px;
+    text-align: left; 
+    vertical-align: top;
+    font-weight: 400;
+    color: #FFF;
+    background-color: #577BA0;
+}
+
+.suite-req-configuration-table td {
+  text-align: left;
+  overflow: hidden;
+}
+.suite-req-configuration-table i{
+    padding: 4px;
+    font-size: 16px;
+}
+
+
+.suite-req-configuration-table tr th:nth-child(1), .suite-req-configuration-table tr td:nth-child(1) {
+    flex-grow: .3;
+
+}
+
+.suite-req-configuration-table tr th:nth-child(2), .suite-req-configuration-table tr td:nth-child(2) {
+    flex-grow: 3;
+
+}
+
+.suite-req-configuration-table tr th:last-child, .suite-req-configuration-table tr td:last-child {
+    flex-grow: 1;
+    font-size: 18px;
+}
+

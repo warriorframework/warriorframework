@@ -1,0 +1,55 @@
+
+.suite-d3-existing-type {
+  cursor: pointer;
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 3px;
+
+}
+
+.suite-d3-rect {
+  cursor: pointer;
+  stroke: steelblue;
+  stroke-width: 3px;
+  fill: white;
+  background-image: -webkit-linear-gradient(left, #fco, 30%, blue);
+  background-image: -o-linear-gradient(left, #fco, 30%, blue);
+  background-image: linear-gradient(to right, #fco, 30%, blue);
+}
+
+.suite-d3-node text {
+  font-size: 11px;
+  fill: steelblue;
+ 
+}
+
+.suite-masternode {
+
+ fill: white;
+}
+
+
+
+
+.suite-d3-link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1.5px;
+}
+
+
+
+ .node circle {
+   fill: #fff;
+   stroke: steelblue;
+   stroke-width: 3px;
+ }
+
+ .node text { font: 10px sans-serif; }
+
+ .link {
+   fill: none;
+   stroke: #ccc;
+   stroke-width: 2px;
+ }
+ 
