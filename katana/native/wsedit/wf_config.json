@@ -1,0 +1,10 @@
+{
+
+  "icon": "pencil",
+  "color": "orange",
+  "name" : "Keyword Editor",
+  "url" : "/katana/wsedit/",
+  "developer": "Warrior Framework",
+  "description": "Edit your warrior source files with this App",
+  "app" : [{"name" : "Wsedit", "url" : "/katana/wsedit/", "include": "native.wsedit.urls"}]
+}

@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'native.suites',
     'native.cases',
     'native.execution',
+    'native.wsedit',
     'native.wdf_edit',
 ]
 
