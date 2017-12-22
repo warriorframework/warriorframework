@@ -169,37 +169,48 @@ class KeywordOperations(object):
             arg = arg.strip()
         if isinstance(arg, basestring) and arg.startswith("wtag"):
             var = arg.split("=")[1].strip()
-        if var in self.tag_dict:
-            value = self.tag_dict[var]
-            # substitute environment/datarepo variables in the value and return
-            if isinstance(value, (basestring, list, dict)):
-                return data_Utils.substitute_var_patterns(value)
-            else:
-                return value
-        else:
-            return None
+            if var in self.tag_dict:
+                value = self.tag_dict[var]
+                # substitute environment/datarepo variables in the value and return
+                if isinstance(value, (basestring, list, dict)):
+                    return data_Utils.substitute_var_patterns(value)
+                else:
+                    return value
+        return var
 
     def get_values_for_mandatory_args(self):
         """The values for mandatory arguments as a python dictionary
         """
+        def get_value(arg):
+            if arg in self.args_repository:
+                return self.args_repository[arg]
+            if arg in self.data_repository:
+                return self.data_repository[arg]
+            print_error("value for mandatory argument '{0}' not available in "
+                        "data_repository/args_repository".format(args))
+            return None
         print_info("getting values for mandatory arguments")
         arg_kv = {}
-        for args in self.req_args_list:
-            if args in self.args_repository:
-                arg_kv[args] = self.args_repository[args]
-            elif args in self.data_repository:
-                arg_kv[args] = self.data_repository[args]
-            if args != 'system_name' and 'system_name' in arg_kv:
+        sysname = 'system_name'
+        args_list = self.req_args_list[:]
+        if sysname in args_list:
+            arg_kv[sysname] = get_value(sysname)
+            if arg_kv[sysname] is None:
+                del arg_kv[sysname]
+            args_list.remove(sysname)
+        for args in args_list:
+            value = get_value(args)
+            if value is None:
+                continue
+            if sysname in arg_kv:
                 # the args can be direct values or mentioned as
                 # wtag var (except system_name) like 'wtag=<wtag var>',
                 # which would be fetched from the input data file
-                targ = arg_kv[args] if args in arg_kv else args
-                value = self.get_credential_value(targ, arg_kv['system_name'])
+                value = self.get_credential_value(value, arg_kv[sysname])
                 if value is not None:
                     arg_kv[args] = value
-            if args not in arg_kv:
-                print_error("value for mandatory argument '{0}' not available "
-                            "in data_repository/args_repository/datafile".format(args))
+            else:
+                arg_kv[args] = value
         return arg_kv
 
     def get_values_for_optional_args(self, arg_kv):
@@ -211,17 +222,17 @@ class KeywordOperations(object):
                 arg_kv[args] = self.args_repository[args]
             elif args in self.data_repository:
                 arg_kv[args] = self.data_repository[args]
+            if args not in arg_kv:
+                print_info("executing with default values for optional "
+                           "argument '{0}'".format(args))
+                continue
             if args != 'system_name' and 'system_name' in arg_kv:
                 # the args can be direct values or mentioned as
                 # wtag var (except system_name) like 'wtag=<wtag var>',
                 # which would be fetched from the input data file
-                targ = arg_kv[args] if args in arg_kv else args
-                value = self.get_credential_value(targ, arg_kv['system_name'])
+                value = self.get_credential_value(arg_kv[args], arg_kv['system_name'])
                 if value is not None:
                     arg_kv[args] = value
-            if args not in arg_kv:
-                print_info("executing with default values for optional "
-                           "argument '{0}'".format(args))
         else:
             if hasattr(self, 'tag_dict'):
                 del self.tag_dict

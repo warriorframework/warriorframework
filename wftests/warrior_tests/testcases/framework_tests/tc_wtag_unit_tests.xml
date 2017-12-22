@@ -23,6 +23,7 @@
 				<argument name="system_name" value="sys_wtag"/>
 				<argument name="strvar" value="wtag=strvar"/>
 				<argument name="langs" value="wtag=lang_list"/>
+				<argument name="states" value="wtag=states"/>
 				<argument name="currencys" value="wtag=currency_map"/>
 				<argument name="ramspace" value="wtag=ram_space_available"/>
 				<argument name="configfile" value="cond_var/cond_var.xml"/>
@@ -53,7 +54,7 @@
 			<iteration_type type=""/>
 			<Execute ExecType="Yes"/>
 			<context>negative</context>
-			<impact>impact</impact>
+			<impact>noimpact</impact>
 			<rmt/>
 		</step>
 		<step Driver="ci_regression_driver" Keyword="check_values_from_datafile" TS="3">
@@ -61,6 +62,7 @@
 				<argument name="system_name" value="sys_wtag"/>
 				<argument name="strvar" value="wtag=strvar"/>
 				<argument name="langs" value="wtag=lang_list"/>
+				<argument name="states" value="wtag=states"/>
 				<argument name="currencys" value="wtag=currency_map"/>
 				<argument name="ramspace" value="wtag=ram_space_available"/>
 				<argument name="configfile" value="wtag=config"/>
