@@ -182,6 +182,8 @@ class KeywordOperations(object):
         """The values for mandatory arguments as a python dictionary
         """
         def get_value(arg):
+            """get the value for arg from args or data repository
+            """
             if arg in self.args_repository:
                 return self.args_repository[arg]
             if arg in self.data_repository:
