@@ -263,7 +263,7 @@ class WarriorCli(object):
             then it takes testdata as priority and updates on testdata's session id
         """
 
-        if resp_key_list:
+        try:
             for resp in resp_key_list[i].keys():
                 td_resp_dict = get_object_from_datarepository(str(session_id))
                 # checks if title_row value is not in td_resp_dict
@@ -277,6 +277,8 @@ class WarriorCli(object):
                 pNote("Portion of response saved to the data "
                       "repository with key: '{0}.{1}.{2}' and value: '{3}'"
                       .format(session_id, title_row, resp, temp_resp[resp]))
+        except Exception as e:
+            print_error("Found exception: {}".format(e))
         return td_resp_dict
 
     @mocked
