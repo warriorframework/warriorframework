@@ -14,12 +14,11 @@ limitations under the License.
 
 import datetime
 import time
-from Framework.Utils.print_Utils import print_info, print_error, print_warning
+from Framework.Utils.print_Utils import print_info, print_error, print_warning, print_debug
 
-def wait_for_timeout(wait_time, unit="SECONDS"):
+def wait_for_timeout(wait_time, msg, unit="SECONDS"):
     """
-    Warrior, Wait till the time is a generic wait. The Wait is informed to the user in 10 intervals
-    equally divided from the over all wait.
+    Warrior, Wait till the time is a generic wait. The Wait is informed to the user as a count down.
 
     :param wait_time: Time for Warrior wait.
     :param unit: The unit of Time supported are
@@ -49,15 +48,10 @@ def wait_for_timeout(wait_time, unit="SECONDS"):
         else:
             print_warning('The supported unit of seconds is Seconds/Minutes/Hours/Months/Years'
                           'The default unit of Seconds would be used')
-        print_info('Starting to wait for {} Seconds'.format(seconds))
-        wait_seconds = seconds
-        print_interval = wait_seconds / 10
-        print_info('Remaining wait time will be notified every {} secs'.format(print_interval))
-        for count in range(10):
-            print_info('Remaining Wait Time is {:.1f} seconds'.\
-                format(wait_seconds-count*print_interval))
-            time.sleep(print_interval)
-        print_info('Ending Wait time of {} Seconds'.format(seconds))
+        timer = int(seconds)
+        for sec in range(timer, 0, -1):
+            print_info(msg .format(sec, '\033[1A\r'))
+            time.sleep(1)
         return True
     except TypeError:
         print_warning('Unable to parse wait_time value, Please use int/float as wait_time value.')
