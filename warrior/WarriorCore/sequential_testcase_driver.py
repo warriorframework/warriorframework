@@ -37,7 +37,7 @@ def update_suite_attribs(junit_resultfile, errors, skipped,
 
 def execute_sequential_testcases(testcase_list, suite_repository,
                                  data_repository, from_project, auto_defects,
-                                 iter_ts_sys, tc_parallel, queue):
+                                 iter_ts_sys, tc_parallel, queue, ts_iter):
     """Executes the testsuite (provided as a xml file)
             - Takes a testsuite xml file as input and sends
             each testcase to Basedriver for execution.
@@ -356,7 +356,15 @@ def execute_sequential_testcases(testcase_list, suite_repository,
         update_suite_attribs(junit_resultfile, str(errors),
                              str(skipped), str(tests), str(failures),
                              time='0')
-        tc_junit_list.append(data_repository['wt_junit_object'])
+        # junit_object/python_process is different for all the cases
+        # executed in parallel
+        if ts_iter is False:
+            tc_junit_list.append(data_repository['wt_junit_object'])
+
+    # junit_object/python_process is same for all the cases executed in the
+    # same system for 'iterative_parallel' suite execution
+    if ts_iter is True:
+        tc_junit_list = data_repository['wt_junit_object']
 
     suite_status = Utils.testcase_Utils.compute_status_using_impact(
                                         tc_status_list, tc_impact_list)
@@ -375,13 +383,15 @@ def execute_sequential_testcases(testcase_list, suite_repository,
                    tc_junit_list))
     return suite_status
 
-def main(testcase_list, suite_repository,
-         data_repository, from_project, auto_defects, iter_ts_sys=None, tc_parallel=False, queue=False):
+
+def main(testcase_list, suite_repository, data_repository, from_project,
+         auto_defects, iter_ts_sys=None, tc_parallel=False, queue=False,
+         ts_iter=False):
     """Executes testcases in a testsuite sequentially """
     try:
-        testsuite_status = execute_sequential_testcases(testcase_list, suite_repository,
-                                                        data_repository,
-                                                        from_project, auto_defects, iter_ts_sys, tc_parallel, queue)
+        testsuite_status = execute_sequential_testcases(
+         testcase_list, suite_repository, data_repository, from_project,
+         auto_defects, iter_ts_sys, tc_parallel, queue, ts_iter)
     except Exception:
         testsuite_status = False
         print_error('unexpected error {0}'.format(traceback.format_exc()))

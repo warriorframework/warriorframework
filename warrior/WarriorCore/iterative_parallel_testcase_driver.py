@@ -50,7 +50,8 @@ def execute_iterative_parallel_testcases(system_list, testcase_list, suite_repos
                                   ("auto_defects", auto_defects),
                                   ("system", system),
                                   ("tc_parallel", tc_parallel),
-                                  ("output_q", output_q)
+                                  ("output_q", output_q),
+                                  ("ts_iter", True)
                                   ])
 
         process, jobs_list, output_q = create_and_start_process_with_queue(target_module, tc_args_dict, jobs_list, output_q)
@@ -76,7 +77,7 @@ def execute_iterative_parallel_testcases(system_list, testcase_list, suite_repos
             tc_name_list.append(result[1])
             tc_impact_list.append(result[2][val])
             tc_duration_list.append(result[3][val])
-            tc_junit_list.append(result[4][val])
+        tc_junit_list.append(result[4])
     # parallel testcases generate multiple testcase junit result files
     # each files log the result for one testcase and not intergrated
     # update testsuite junit result file with individual testcase result files
