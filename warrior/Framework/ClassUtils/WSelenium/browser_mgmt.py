@@ -400,6 +400,21 @@ class BrowserManagement(object):
 
         return status
 
+    def set_firefox_proxy(self, profile_dir, proxy_ip, proxy_port):
+        """method to update the given preferences in Firefox profile"""
+        # Create a default Firefox profile first and update proxy_ip and port
+        ff_profile = webdriver.FirefoxProfile(profile_dir)
+        proxy_port = int(proxy_port)
+        ff_profile.set_preference("network.proxy.type", 1)
+        ff_profile.set_preference("network.proxy.http", proxy_ip)
+        ff_profile.set_preference("network.proxy.http_port", proxy_port)
+        ff_profile.set_preference("network.proxy.ssl", proxy_ip)
+        ff_profile.set_preference("network.proxy.ssl_port", proxy_port)
+        ff_profile.set_preference("network.proxy.ftp", proxy_ip)
+        ff_profile.set_preference("network.proxy.ftp_port", proxy_port)
+        ff_profile.update_preferences()
+
+        return ff_profile
 
     # private methods
     def _make_browser(self, browser_name, desired_capabilities=None,
@@ -427,6 +442,10 @@ class BrowserManagement(object):
         """Create an instance of firefox browser"""
         binary = kwargs.get("binary", None)
         gecko_path = kwargs.get("gecko_path", None)
+        proxy_ip = kwargs.get("proxy_ip", None)
+        proxy_port = kwargs.get("proxy_port", None)
+        if proxy_ip is not None and proxy_port is not None:
+            ff_profile = self.set_firefox_proxy(profile_dir, proxy_ip, proxy_port)
         # Need to check binary and gecko_path value
         # Need to check firefox version
 
@@ -435,7 +454,7 @@ class BrowserManagement(object):
             if webdriver_remote_url:
                 browser = self._create_remote_web_driver(
                     webdriver.DesiredCapabilities.FIREFOX,
-                    webdriver_remote_url, desired_capabilites, profile_dir)
+                    webdriver_remote_url, desired_capabilites, ff_profile)
             else:
                 ff_capabilities = webdriver.DesiredCapabilities.FIREFOX
                 # This is for internal testing needs...
@@ -443,7 +462,7 @@ class BrowserManagement(object):
                 ffbinary = FirefoxBinary(binary)
                 browser = webdriver.Firefox(firefox_binary=ffbinary,
                                             capabilities=ff_capabilities,
-                                            firefox_profile=profile_dir,
+                                            firefox_profile=ff_profile,
                                             executable_path=gecko_path)
         except WebDriverException as e:
             if "executable needs to be in PATH" in str(e):
