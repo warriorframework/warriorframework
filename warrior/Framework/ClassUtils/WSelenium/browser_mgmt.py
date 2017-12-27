@@ -14,6 +14,7 @@ limitations under the License.
 """ selenium browser management library"""
 import os
 import re
+import traceback
 from time import sleep
 import urllib2
 from Framework.Utils.datetime_utils import get_current_timestamp
@@ -470,8 +471,10 @@ class BrowserManagement(object):
             elif "Expected browser binary location" in str(e):
                 print_error("Please provide path of firefox executable")
             print_error(e)
+            traceback.print_exc()
         except Exception as e:
             print_error(e)
+            traceback.print_exc()
 
         return browser
 
