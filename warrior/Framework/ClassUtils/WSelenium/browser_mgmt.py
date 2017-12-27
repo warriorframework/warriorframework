@@ -34,11 +34,6 @@ try:
 except Exception as exception:
     print_exception(exception)
 
-
-BROWSER_NAMES = {'ff': "_make_ff",
-                 'firefox': "_make_ff",
-                 'chrome': "_make_chrome"
-                }
 class BrowserManagement(object):
     """Browser management class"""
 
@@ -411,16 +406,18 @@ class BrowserManagement(object):
         make browser methods to open a browser """
         creation_func = self._get_browser_creation_function(browser_name)
 
-        if not creation_func:
-            raise ValueError(browser_name + " is not a supported browser.")
+        if creation_func is None:
+            raise ValueError("{} is not a supported browser. Please use firefox or chrome".\
+                             format(browser_name))
 
         browser = creation_func(webdriver_remote_url, desired_capabilities, profile_dir)
         return browser
 
     def _get_browser_creation_function(self, browser_name):
         """Gets the browser function for the supported browsers
-        from the BROWSER_NAMES dictionary """
-        func_name = BROWSER_NAMES.get(browser_name.lower().replace(' ', ''))
+        from the browser_methods dictionary """
+        browser_methods = {'ff': "_make_ff", 'firefox': "_make_ff", 'chrome': "_make_chrome"}
+        func_name = browser_methods.get(browser_name.lower().replace(' ', ''))
         return getattr(self, func_name) if func_name else None
 
 
