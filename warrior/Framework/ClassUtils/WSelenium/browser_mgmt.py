@@ -55,7 +55,7 @@ class BrowserManagement(object):
             print_debug("Opening browser '%s'" % (browser_name))
         browser_name = browser_name
         browser = self._make_browser(browser_name, desired_capabilities,
-                                     profile_dir, webdriver_remote_url)
+                                     profile_dir, webdriver_remote_url, **kwargs)
         return browser
 
     def close_browser(self, browser_instance=None):
@@ -401,7 +401,7 @@ class BrowserManagement(object):
 
     # private methods
     def _make_browser(self, browser_name, desired_capabilities=None,
-                      profile_dir=None, webdriver_remote_url=None):
+                      profile_dir=None, webdriver_remote_url=None, **kwargs):
         """method to open a browser, calls other sepcific/generic
         make browser methods to open a browser """
         creation_func = self._get_browser_creation_function(browser_name)
@@ -410,7 +410,7 @@ class BrowserManagement(object):
             raise ValueError("{} is not a supported browser. Please use firefox or chrome".\
                              format(browser_name))
 
-        browser = creation_func(webdriver_remote_url, desired_capabilities, profile_dir)
+        browser = creation_func(webdriver_remote_url, desired_capabilities, profile_dir, **kwargs)
         return browser
 
     def _get_browser_creation_function(self, browser_name):
@@ -421,7 +421,7 @@ class BrowserManagement(object):
         return getattr(self, func_name) if func_name else None
 
 
-    def _make_ff(self, webdriver_remote_url, desired_capabilites, profile_dir):
+    def _make_ff(self, webdriver_remote_url, desired_capabilites, profile_dir, **kwargs):
         """Create an instance of firefox browser"""
 
         if webdriver_remote_url:
@@ -432,15 +432,15 @@ class BrowserManagement(object):
             browser = webdriver.Firefox(firefox_profile=profile_dir)
         return browser
 
-    def _make_chrome(self, webdriver_remote_url, desired_capabilities, profile_dir):
+    def _make_chrome(self, webdriver_remote_url, desired_capabilities, profile_dir, **kwargs):
         """Creates an instance of chrome browser and returns it
         Need to have selenium chrome driver exe placed in the python path"""
         return self._generic_make_browser(webdriver.Chrome,
                                           webdriver.DesiredCapabilities.CHROME,
-                                          webdriver_remote_url, desired_capabilities)
+                                          webdriver_remote_url, desired_capabilities, **kwargs)
 
     def _generic_make_browser(self, webdriver_type, desired_cap_type,
-                              webdriver_remote_url, desired_caps):
+                              webdriver_remote_url, desired_caps, **kwargs):
         """most of the make browser functions just call this function which creates the
         appropriate web-driver"""
         if not webdriver_remote_url:
