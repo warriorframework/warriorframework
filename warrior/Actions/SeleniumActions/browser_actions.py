@@ -215,6 +215,7 @@ class browser_actions(object):
                               get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 # Call utils to launch correct type of browser
+                # Need to pass the binary, gecko_path, proxy_ip, proxy_port if specified
                 browser_inst = self.browser_object.open_browser(
                     browser_details["type"], webdriver_remote_url)
                 if browser_inst:
