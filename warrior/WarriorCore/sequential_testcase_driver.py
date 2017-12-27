@@ -13,9 +13,6 @@ limitations under the License.
 
 #!/usr/bin/python
 
-"""This is sequential testcase driver which is used to execute
-the testcases of a suite in sequential order"""
-
 import os
 import time
 import traceback
@@ -27,33 +24,42 @@ from Framework.Utils.print_Utils import print_info, print_error, print_debug, pr
 from WarriorCore import testsuite_utils, common_execution_utils
 import exec_type_driver
 
+"""This is sequential testcase driver which is used to execute
+the testcases of a suite in sequential order"""
+
+
 def update_suite_attribs(junit_resultfile, errors, skipped,
                          tests, failures, time='0'):
     """Update suite attributes """
     testsuite_utils.pSuite_update_suite_attributes(junit_resultfile, str(errors),
-                                                         str(skipped), str(tests), str(failures),
-                                                         time)
+                                                   str(skipped), str(tests), str(failures), time)
 
 
 def execute_sequential_testcases(testcase_list, suite_repository,
                                  data_repository, from_project, auto_defects,
                                  iter_ts_sys, tc_parallel, queue, ts_iter):
-    """Executes the testsuite (provided as a xml file)
-            - Takes a testsuite xml file as input and sends
-            each testcase to Basedriver for execution.
-            - Computes the testsuite status based on the testcase_status
-            and the impact value of the testcase
-            - Handles testcase failures as per the default/specific
-            onError action/value
-            - Calls the function to report the testsuite status
+    """Executes the list of cases(of a suite) in sequential order
+        - Takes a testcase_list as input and sends
+        each case to Basedriver for execution.
+        - Computes the suite status based on the case_status
+        and the impact value of the case
+        - Handles case failures as per the default/specific
+        onError action/value
+        - Calls the function to report the suite status
 
-    Arguments:
-    1. testsuite_filepath   = (string) the full path of the testsuite xml file.
-    2. Warrior      = (module loader) module loader object to call the Warrior
-    3. execution_dir  = (string) the full path of the directory under which
-    the testsuite execution directory will be created
-    (results for the testsuite will be stored in the  testsuite execution
-    directory.)
+    :Arguments:
+        1. testcase_list(list) = List of cases to be executed
+        2. suite_repository(dict) = suite repository
+        3. data_repository(dict) = Warrior data repository
+        4. from_project(boolean) = True for Project execution else False
+        5. auto_defects(boolean) = True for Jira auto defect creation else False
+        6. iter_ts_sys(string) = System for iterative execution
+        7. tc_parallel(boolean) = True for Parallel execution else False
+        8. queue = Python multiprocessing queue for parallel execution
+        9. ts_iter(boolean) = True for 'iterative_parallel' execution else False
+    :Returns:
+        1. suite_status - overall suite status
+
     """
     goto_tc = False
 
@@ -102,10 +108,12 @@ def execute_sequential_testcases(testcase_list, suite_repository,
                                                     testsuite_dir)
             data_repository[tc_path] = data_file
         data_repository['wt_tc_impact'] = tc_impact
-        if testcase.find("runmode") is not None and testcase.find("runmode").get("attempt") is not None:
+        if testcase.find("runmode") is not None and \
+           testcase.find("runmode").get("attempt") is not None:
             print_info("testcase attempt: {0}".format(
                                 testcase.find("runmode").get("attempt")))
-        if testcase.find("retry") is not None and testcase.find("retry").get("attempt") is not None:
+        if testcase.find("retry") is not None and \
+           testcase.find("retry").get("attempt") is not None:
             print_info("testcase attempt: {0}".format(
                                 testcase.find("retry").get("attempt")))
 
@@ -137,14 +145,14 @@ def execute_sequential_testcases(testcase_list, suite_repository,
             elif goto_tc and goto_tc == str(tests) and action is True:
 
                 try:
-                    tc_result= testcase_driver.main(tc_path,
-                                                    data_repository,
-                                                    tc_context,
-                                                    runtype=tc_runtype,
-                                                    auto_defects=auto_defects,
-                                                    suite=suite_name,
-                                                    tc_onError_action=tc_onError_action,
-                                                    iter_ts_sys=iter_ts_sys)
+                    tc_result = testcase_driver.main(tc_path,
+                                                     data_repository,
+                                                     tc_context,
+                                                     runtype=tc_runtype,
+                                                     auto_defects=auto_defects,
+                                                     suite=suite_name,
+                                                     tc_onError_action=tc_onError_action,
+                                                     iter_ts_sys=iter_ts_sys)
                     tc_status = tc_result[0]
                     tc_duration = tc_result[1]
                     goto_tc = False
@@ -251,7 +259,8 @@ def execute_sequential_testcases(testcase_list, suite_repository,
 
         runmode, value, _ = common_execution_utils.get_runmode_from_xmlfile(
                                                                 testcase)
-        retry_type, retry_cond, retry_cond_value, retry_value, retry_interval = common_execution_utils.get_retry_from_xmlfile(testcase)
+        retry_type, retry_cond, retry_cond_value, retry_value, \
+            retry_interval = common_execution_utils.get_retry_from_xmlfile(testcase)
         if runmode is not None:
             if tc_status is True:
                 testsuite_utils.update_tc_duration(str(tc_duration))
