@@ -18,7 +18,7 @@ from time import sleep
 import urllib2
 from Framework.Utils.datetime_utils import get_current_timestamp
 from Framework.Utils.testcase_Utils import pNote
-from Framework.Utils.print_Utils import print_error, print_info, print_debug, print_exception, \
+from Framework.Utils.print_Utils import print_error, print_info, print_debug, print_exception,\
     print_warning
 
 
@@ -26,6 +26,8 @@ try:
     from selenium import webdriver
     from selenium.webdriver import ActionChains
     from selenium.webdriver.common.keys import Keys
+    from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
+    from selenium.common.exceptions import WebDriverException
 
     KEYS = {1: Keys.NUMPAD1, 2: Keys.NUMPAD2, 3: Keys.NUMPAD3,
         4: Keys.NUMPAD4, 5: Keys.NUMPAD5, 6: Keys.NUMPAD6,
@@ -423,13 +425,35 @@ class BrowserManagement(object):
 
     def _make_ff(self, webdriver_remote_url, desired_capabilites, profile_dir, **kwargs):
         """Create an instance of firefox browser"""
+        binary = kwargs.get("binary", None)
+        gecko_path = kwargs.get("gecko_path", None)
+        # Need to check binary and gecko_path value
+        # Need to check firefox version
 
-        if webdriver_remote_url:
-            browser = self._create_remote_web_driver(webdriver.DesiredCapabilities.FIREFOX,
-                                                     webdriver_remote_url, desired_capabilites,
-                                                     profile_dir)
-        else:
-            browser = webdriver.Firefox(firefox_profile=profile_dir)
+        browser = None
+        try:
+            if webdriver_remote_url:
+                browser = self._create_remote_web_driver(
+                    webdriver.DesiredCapabilities.FIREFOX,
+                    webdriver_remote_url, desired_capabilites, profile_dir)
+            else:
+                ff_capabilities = webdriver.DesiredCapabilities.FIREFOX
+                # This is for internal testing needs...
+                ff_capabilities['acceptInsecureCerts'] = True
+                ffbinary = FirefoxBinary(binary)
+                browser = webdriver.Firefox(firefox_binary=ffbinary,
+                                            capabilities=ff_capabilities,
+                                            firefox_profile=profile_dir,
+                                            executable_path=gecko_path)
+        except WebDriverException as e:
+            if "executable needs to be in PATH" in str(e):
+                print_error("Please provide path for geckodriver executable")
+            elif "Expected browser binary location" in str(e):
+                print_error("Please provide path of firefox executable")
+            print_error(e)
+        except Exception as e:
+            print_error(e)
+
         return browser
 
     def _make_chrome(self, webdriver_remote_url, desired_capabilities, profile_dir, **kwargs):
