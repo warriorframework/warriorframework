@@ -188,12 +188,14 @@ class browser_actions(object):
         pSubStep(wdesc)
         browser_details = {}
 
-        if ip is None:
-            ip = data_Utils.getSystemData(self.datafile, system_name, "ip")
-        if remote is None:
-            remote = data_Utils.getSystemData(self.datafile, system_name, "remote")
+        optional_arg_keys = ["ip", "remote", "binary", "gecko_path", "proxy_ip", "proxy_port"]
+        optional_args = {}
+        for arg in optional_arg_keys:
+            if arguments.get(arg, None) is None:
+                optional_args[arg] = data_Utils.getSystemData(self.datafile, system_name, arg)
 
-        webdriver_remote_url = ip if str(remote).strip().lower() == "yes" else False
+        optional_args["webdriver_remote_url"] = optional_args["ip"]\
+            if str(optional_args["remote"]).strip().lower() == "yes" else False
 
         system = xml_Utils.getElementWithTagAttribValueMatch(self.datafile,
                                                              "system", "name", system_name)
@@ -217,7 +219,7 @@ class browser_actions(object):
                 # Call utils to launch correct type of browser
                 # Need to pass the binary, gecko_path, proxy_ip, proxy_port if specified
                 browser_inst = self.browser_object.open_browser(
-                    browser_details["type"], webdriver_remote_url)
+                    browser_details["type"], **optional_args)
                 if browser_inst:
                     browser_fullname = "{0}_{1}".format(system_name,
                                                         browser_details["browser_name"])
