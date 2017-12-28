@@ -17,6 +17,7 @@ import re
 import traceback
 from time import sleep
 import urllib2
+from subprocess import check_output, CalledProcessError
 from distutils.version import LooseVersion
 from Framework.Utils.datetime_utils import get_current_timestamp
 from Framework.Utils.testcase_Utils import pNote
@@ -403,6 +404,19 @@ class BrowserManagement(object):
 
         return status
 
+    def get_firefox_version(self, binary):
+        if binary in [False, None]:
+            binary = "firefox"
+        version = False
+        try:
+            raw_version = check_output([binary, "-v"])
+            match = re.search("\d+\.\d+\.\d+", raw_version)
+            if match is not None:
+                version = LooseVersion(match.group(0))
+        except CalledProcessError as e:
+            print_error("Cannot find firefox version, will not launch browser")
+        return version
+
     def get_browser_version(self, browser):
         # Return the browser version as string
         browser_version = browser.capabilities.get("version", None)
@@ -476,13 +490,19 @@ class BrowserManagement(object):
                 ff_capabilities = webdriver.DesiredCapabilities.FIREFOX
                 # This is for internal testing needs...some https cert is not secure
                 ff_capabilities['acceptInsecureCerts'] = True
-                # Force disable marionette, works on Selenium 3 with FF ver < 47
-                # Without this line, selenium may encounter capability not found issue
-                ff_capabilities["marionette"] = False
+
+                # Force disable marionette, only needs in Selenium 3 with FF ver < 47
+                # Without these lines, selenium may encounter capability not found issue
+                # https://github.com/seleniumhq/selenium/issues/2739
+                # https://github.com/SeleniumHQ/selenium/issues/5106#issuecomment-347298110
+                if self.get_firefox_version(binary) < LooseVersion("47.0.0"):
+                    ff_capabilities["marionette"] = False
+
                 ffbinary = FirefoxBinary(binary) if binary is not None else None
                 optional_args = {}
                 if gecko_path is not None:
                     optional_args["executable_path"] = gecko_path
+                print ff_capabilities, optional_args
                 browser = webdriver.Firefox(firefox_binary=ffbinary,
                                             capabilities=ff_capabilities,
                                             firefox_profile=ff_profile, **optional_args)
