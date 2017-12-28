@@ -25,6 +25,7 @@ from Framework.Utils.print_Utils import print_error, print_info, print_debug, pr
 
 try:
     from selenium import webdriver
+    print_info("The Selenium Webdriver version is '{0}'".format(webdriver.__version__))
     from selenium.webdriver import ActionChains
     from selenium.webdriver.common.keys import Keys
     from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
@@ -432,21 +433,25 @@ class BrowserManagement(object):
                       profile_dir=None, webdriver_remote_url=None, **kwargs):
         """method to open a browser, calls other sepcific/generic
         make browser methods to open a browser """
-        creation_func = self._get_browser_creation_function(browser_name)
+        browser_methods = {'ff': self._make_ff, 'firefox': self._make_ff, 'chrome': self._make_chrome}
+        creation_method = browser_methods.get(browser_name, None)
 
-        if creation_func is None:
-            raise ValueError("{} is not a supported browser. Please use firefox or chrome".\
+        if creation_method is None:
+            print_error("{} is not a supported browser. Please use firefox or chrome".\
                              format(browser_name))
+            browser = None
+        else:
+            browser = creation_method(webdriver_remote_url, desired_capabilities, profile_dir, **kwargs)
+            if browser is not None:
+                print_info("The {} browser version is {}".format(browser_name, self.get_browser_version(browser)))
+            else:
+                print_error("Unable to create browser for: {}".format(browser_name))
 
-        browser = creation_func(webdriver_remote_url, desired_capabilities, profile_dir, **kwargs)
         return browser
 
     def _get_browser_creation_function(self, browser_name):
         """Gets the browser function for the supported browsers
         from the browser_methods dictionary """
-        browser_methods = {'ff': "_make_ff", 'firefox': "_make_ff", 'chrome': "_make_chrome"}
-        func_name = browser_methods.get(browser_name.lower().replace(' ', ''))
-        return getattr(self, func_name) if func_name else None
 
 
     def _make_ff(self, webdriver_remote_url, desired_capabilites, profile_dir, **kwargs):
