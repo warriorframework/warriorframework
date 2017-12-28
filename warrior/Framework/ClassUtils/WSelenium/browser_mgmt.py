@@ -448,7 +448,6 @@ class BrowserManagement(object):
         ff_profile = None
         if proxy_ip is not None and proxy_port is not None:
             ff_profile = self.set_firefox_proxy(profile_dir, proxy_ip, proxy_port)
-        # Need to check binary and gecko_path value
         # Need to check firefox version
 
         browser = None
@@ -459,12 +458,16 @@ class BrowserManagement(object):
                     webdriver_remote_url, desired_capabilites, ff_profile)
             else:
                 ff_capabilities = webdriver.DesiredCapabilities.FIREFOX
-                # This is for internal testing needs...
+                # This is for internal testing needs...some https cert is not secure
                 ff_capabilities['acceptInsecureCerts'] = True
+                ff_capabilities["marionette"] = False
                 ffbinary = FirefoxBinary(binary) if binary is not None else None
                 optional_args = {}
                 if gecko_path is not None:
                     optional_args["executable_path"] = gecko_path
+                print binary
+                print ffbinary
+                print optional_args
                 browser = webdriver.Firefox(firefox_binary=ffbinary,
                                             capabilities=ff_capabilities,
                                             firefox_profile=ff_profile, **optional_args)
