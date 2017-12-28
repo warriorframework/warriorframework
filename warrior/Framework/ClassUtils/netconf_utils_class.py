@@ -66,6 +66,9 @@ class WNetConf(object):
                                               nc_session['password'],
                                               nc_session['hostkey_verify'],
                                               nc_session['protocol_version'])
+            # If connection fails return False
+            if self.nc_manager is None:
+                return False
         except:
             traceback.print_exc()
             return False
