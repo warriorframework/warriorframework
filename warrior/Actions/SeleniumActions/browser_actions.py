@@ -193,6 +193,8 @@ class browser_actions(object):
         for arg in optional_arg_keys:
             if arguments.get(arg, None) is None:
                 optional_args[arg] = data_Utils.getSystemData(self.datafile, system_name, arg)
+                if optional_args[arg] is False:
+                    optional_args[arg] = None
 
         optional_args["webdriver_remote_url"] = optional_args["ip"]\
             if str(optional_args["remote"]).strip().lower() == "yes" else False

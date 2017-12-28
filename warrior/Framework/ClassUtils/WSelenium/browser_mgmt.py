@@ -445,6 +445,7 @@ class BrowserManagement(object):
         gecko_path = kwargs.get("gecko_path", None)
         proxy_ip = kwargs.get("proxy_ip", None)
         proxy_port = kwargs.get("proxy_port", None)
+        ff_profile = None
         if proxy_ip is not None and proxy_port is not None:
             ff_profile = self.set_firefox_proxy(profile_dir, proxy_ip, proxy_port)
         # Need to check binary and gecko_path value
@@ -460,11 +461,13 @@ class BrowserManagement(object):
                 ff_capabilities = webdriver.DesiredCapabilities.FIREFOX
                 # This is for internal testing needs...
                 ff_capabilities['acceptInsecureCerts'] = True
-                ffbinary = FirefoxBinary(binary)
+                ffbinary = FirefoxBinary(binary) if binary is not None else None
+                optional_args = {}
+                if gecko_path is not None:
+                    optional_args["executable_path"] = gecko_path
                 browser = webdriver.Firefox(firefox_binary=ffbinary,
                                             capabilities=ff_capabilities,
-                                            firefox_profile=ff_profile,
-                                            executable_path=gecko_path)
+                                            firefox_profile=ff_profile, **optional_args)
         except WebDriverException as e:
             if "executable needs to be in PATH" in str(e):
                 print_error("Please provide path for geckodriver executable")
