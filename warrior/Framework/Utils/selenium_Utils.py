@@ -439,3 +439,20 @@ def get_element_from_config_file(config_file, element_tag, child_tag,
         else:
             final_value = None
     return final_value
+
+def create_display():
+    status = True
+    try:
+        from pyvirtualdisplay import Display
+        display = Display(visible=0, size=(1920, 1080))
+        display.start()
+        print_info("Running in headless mode")
+    except ImportError:
+        print_error("pyvirtualdisplay is not installed in order "
+                    "to launch the browser in headless mode")
+        status = False
+    except Exception as e:
+        print_error("Encountered Exception: {0}, while trying to launch the browser"
+                    " in headless mode".format(e))
+        status = False
+    return status

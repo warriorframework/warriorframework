@@ -188,7 +188,7 @@ class browser_actions(object):
         pSubStep(wdesc)
         browser_details = {}
 
-        optional_arg_keys = ["ip", "remote"]
+        optional_arg_keys = ["ip", "remote", "headless_mode"]
         optional_args = {}
         for arg in optional_arg_keys:
             if arguments.get(arg, None) is None:
@@ -210,6 +210,11 @@ class browser_actions(object):
         if not browser_list:
             "No browser found in system: {}, please check datafile".format(system_name)
             status = False
+
+        if str(optional_args["headless_mode"]).strip().lower() in ["yes", "y"]:
+            status = selenium_Utils.create_display()
+            if not status:
+                browser_list = []
 
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
