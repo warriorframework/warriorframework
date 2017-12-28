@@ -17,6 +17,7 @@ import re
 import traceback
 from time import sleep
 import urllib2
+from distutils.version import LooseVersion
 from Framework.Utils.datetime_utils import get_current_timestamp
 from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.print_Utils import print_error, print_info, print_debug, print_exception,\
@@ -495,6 +496,12 @@ class BrowserManagement(object):
         except Exception as e:
             print_error(e)
             traceback.print_exc()
+
+        if browser is None and any((LooseVersion(webdriver.__version__) < LooseVersion("3.5.0"), gecko_path is None)):
+            print_info("Unable to create Firefox browser, one possible reason is because"\
+                       "Firefox version >= 47.0.1 and Selenium version < 3.5"\
+                       "In order to launch Firefox ver 47 and up, Selenium needs to be updated to >= 3.5"\
+                       "and needs geckodriver > 0.16")
 
         return browser
 
