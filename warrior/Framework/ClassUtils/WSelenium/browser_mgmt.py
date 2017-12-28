@@ -502,7 +502,7 @@ class BrowserManagement(object):
                 optional_args = {}
                 if gecko_path is not None:
                     optional_args["executable_path"] = gecko_path
-                print ff_capabilities, optional_args
+                # Need to specify log_path for geckodriver log
                 browser = webdriver.Firefox(firefox_binary=ffbinary,
                                             capabilities=ff_capabilities,
                                             firefox_profile=ff_profile, **optional_args)
