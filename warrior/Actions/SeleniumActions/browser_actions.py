@@ -221,6 +221,8 @@ class browser_actions(object):
             output_dict[system_name+"_headless"] = True
             if not status:
                 browser_list = []
+        else:
+            output_dict[system_name+"_headless"] = False
 
         for browser in browser_list:
             arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
