@@ -99,7 +99,11 @@ class BrowserManagement(object):
         status = True
         try:
             if browser_instance is not None:
+                # Need to distinguish whether browser is in headless mode or not
+                # as maximize_window doesn't work in headless mode
                 browser_instance.maximize_window()
+                browser_instance.set_window_size(1920, 1080)
+
             else:
                 self.current_browser.maximize_window()
         except Exception as exception:
@@ -509,6 +513,7 @@ class BrowserManagement(object):
                 optional_args = {}
                 if gecko_path is not None:
                     optional_args["executable_path"] = gecko_path
+                # gecko_log will only get generate if there is failure/error
                 optional_args["log_path"] = log_dir
                 # Need to specify log_path for geckodriver log
                 browser = webdriver.Firefox(firefox_binary=ffbinary,

@@ -333,7 +333,7 @@ class browser_actions(object):
             if browser_details is not None:
                 current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
                 if current_browser:
-                    self.browser_object.maximize_browser_window(current_browser)
+                    status = self.browser_object.maximize_browser_window(current_browser)
                 else:
                     pNote("Browser of system {0} and name {1} not found in the"
                           "datarepository"
