@@ -23,6 +23,7 @@ from Framework.Utils.datetime_utils import get_current_timestamp
 from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.print_Utils import print_error, print_info, print_debug, print_exception,\
     print_warning
+from Framework.Utils.data_Utils import get_object_from_datarepository
 
 
 try:
@@ -448,7 +449,8 @@ class BrowserManagement(object):
                       profile_dir=None, webdriver_remote_url=None, **kwargs):
         """method to open a browser, calls other sepcific/generic
         make browser methods to open a browser """
-        browser_methods = {'ff': self._make_ff, 'firefox': self._make_ff, 'chrome': self._make_chrome}
+        browser_methods = {'ff': self._make_ff, 'firefox': self._make_ff,
+                           'chrome': self._make_chrome}
         creation_method = browser_methods.get(browser_name, None)
 
         if creation_method is None:
@@ -456,9 +458,11 @@ class BrowserManagement(object):
                              format(browser_name))
             browser = None
         else:
+            kwargs["browser_name"] = browser_name
             browser = creation_method(webdriver_remote_url, desired_capabilities, profile_dir, **kwargs)
             if browser is not None:
-                print_info("The {} browser version is {}".format(browser_name, self.get_browser_version(browser)))
+                print_info("The {} browser version is {}".format(
+                    browser_name, self.get_browser_version(browser)))
             else:
                 print_error("Unable to create browser for: {}".format(browser_name))
 
@@ -478,7 +482,10 @@ class BrowserManagement(object):
         ff_profile = None
         if proxy_ip is not None and proxy_port is not None:
             ff_profile = self.set_firefox_proxy(profile_dir, proxy_ip, proxy_port)
-        # Need to check firefox version
+
+        log_dir = get_object_from_datarepository("wt_logsdir") if \
+                  kwargs.get("log_path") in [None, False] else kwargs.get("log_path")
+        log_dir = os.path.join(log_dir, "gecko_"+kwargs.get("browser_name", "default")+".log")
 
         browser = None
         try:
@@ -502,6 +509,7 @@ class BrowserManagement(object):
                 optional_args = {}
                 if gecko_path is not None:
                     optional_args["executable_path"] = gecko_path
+                optional_args["log_path"] = log_dir
                 # Need to specify log_path for geckodriver log
                 browser = webdriver.Firefox(firefox_binary=ffbinary,
                                             capabilities=ff_capabilities,

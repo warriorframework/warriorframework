@@ -133,7 +133,7 @@ class browser_actions(object):
                              FOR TEST CASE
                              Eg: <argument name="element_tag" value="json_name_1">
 
-            The following 4 arguments are added for Selenium 3 with Firefox
+            The next 5 arguments are added for Selenium 3 with Firefox
             9. binary = The absolute path of the browser executable
                         Eg: <binary>../../firefox/firefox</binary>
 
@@ -144,14 +144,18 @@ class browser_actions(object):
                              https://github.com/mozilla/geckodriver#selenium
                              Eg: <gecko_path>../../../geckodriver</gecko_path>
 
-            11. proxy_ip = This <proxy_ip> tag refers to the ip of the proxy
+            11. gecko_log
+
+            12. proxy_ip = This <proxy_ip> tag refers to the ip of the proxy
                            server. When a proxy is required this tag has to set
                            Eg: <proxy_ip>xx.xxx.xx.xx</proxy_ip>
 
-            12. proxy_port = This <proxy_port> tag refers to the port of the
+            13. proxy_port = This <proxy_port> tag refers to the port of the
                             proxy server. When a proxy is required for
                             remote connection this tag has to set.
                            Eg: <proxy_port>yyyy</proxy_port>
+
+            14. headless_mode
 
         :Arguments:
 
@@ -171,6 +175,7 @@ class browser_actions(object):
             10. gecko_path(str) = Absolute path of the geckodriver
             11. proxy_ip(str) = IP of the proxy server
             12. proxy_port(str) = port of the proxy server
+
 
         :Returns:
 
@@ -223,7 +228,7 @@ class browser_actions(object):
             if browser_details is not None:
                 # Call utils to launch correct type of browser
                 # Need to pass the binary, gecko_path, proxy_ip, proxy_port if specified
-                browser_optional_arg_keys = ["binary", "gecko_path", "proxy_ip", "proxy_port"]
+                browser_optional_arg_keys = ["binary", "gecko_path", "proxy_ip", "proxy_port", "gecko_log"]
                 browser_optional_args = {}
                 for arg in browser_optional_arg_keys:
                     if browser_details.get(arg) is not None:

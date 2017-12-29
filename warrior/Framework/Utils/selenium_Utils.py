@@ -444,6 +444,7 @@ def create_display():
     status = True
     try:
         from pyvirtualdisplay import Display
+        # Selenium has problem with firefox in virtualdisplay if resolution is low
         display = Display(visible=0, size=(1920, 1080))
         display.start()
         print_info("Running in headless mode")
