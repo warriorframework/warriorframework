@@ -48,6 +48,7 @@ class BrowserManagement(object):
         """Browser management constructor """
         self.current_browser = None
         self.current_window = None
+        self.headless_mode = False
 
     def open_browser(self, browser_name='firefox', webdriver_remote_url=False,
                      desired_capabilities=None, **kwargs):
@@ -101,8 +102,10 @@ class BrowserManagement(object):
             if browser_instance is not None:
                 # Need to distinguish whether browser is in headless mode or not
                 # as maximize_window doesn't work in headless mode
-                browser_instance.maximize_window()
-                browser_instance.set_window_size(1920, 1080)
+                if self.headless_mode:
+                    browser_instance.set_window_size(1920, 1080)
+                else:
+                    browser_instance.maximize_window()
 
             else:
                 self.current_browser.maximize_window()

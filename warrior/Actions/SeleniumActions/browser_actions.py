@@ -218,6 +218,7 @@ class browser_actions(object):
 
         if str(optional_args["headless_mode"]).strip().lower() in ["yes", "y"]:
             status = selenium_Utils.create_display()
+            browser_object.headless_mode = True
             if not status:
                 browser_list = []
 
