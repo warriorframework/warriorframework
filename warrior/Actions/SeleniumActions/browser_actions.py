@@ -218,7 +218,7 @@ class browser_actions(object):
 
         if str(optional_args["headless_mode"]).strip().lower() in ["yes", "y"]:
             status = selenium_Utils.create_display()
-            browser_object.headless_mode = True
+            output_dict[system_name+"_headless"] = True
             if not status:
                 browser_list = []
 
@@ -333,8 +333,9 @@ class browser_actions(object):
                     get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
                 current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                headless = Utils.data_Utils.get_object_from_datarepository(system_name + "_headless")
                 if current_browser:
-                    status = self.browser_object.maximize_browser_window(current_browser)
+                    status = self.browser_object.maximize_browser_window(current_browser, headless)
                 else:
                     pNote("Browser of system {0} and name {1} not found in the"
                           "datarepository"
