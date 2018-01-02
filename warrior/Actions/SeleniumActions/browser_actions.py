@@ -337,13 +337,13 @@ class browser_actions(object):
                 current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
                 headless = Utils.data_Utils.get_object_from_datarepository(system_name + "_headless")
                 if current_browser:
-                    status = self.browser_object.maximize_browser_window(current_browser, headless)
+                    status &= self.browser_object.maximize_browser_window(current_browser, headless)
                 else:
                     pNote("Browser of system {0} and name {1} not found in the"
                           "datarepository"
                           .format(system_name, browser_details["browser_name"]),
                           "Exception")
-                    status = False
+                    status &= False
             browser_details = {}
         Utils.testcase_Utils.report_substep_status(status)
         return status
