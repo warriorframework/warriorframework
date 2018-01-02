@@ -49,4 +49,4 @@ def smart_analysis_handler( request ):
     return render(request, 'settings/smart_analysis_handler.html', {"data": controls.smart_analysis_handler(request)})
 
 def prerequisites_handler(request):
-    return render(request, 'assembler/assembler.html')
+    return render(request, 'settings/prerequisites_handler.html', {"data": controls.prerequisites_handler(request)})

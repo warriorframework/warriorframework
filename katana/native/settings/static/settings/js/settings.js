@@ -164,4 +164,78 @@ var settings = {
 			$elem.removeClass('loading').addClass('saved');
 		});
 	},
+
+	prerequisites: {
+
+		init: function(){
+
+		},
+
+		installDependency: function(){
+
+			var $elem = $(this);
+			if($elem.attr('aria-selected') == 'false'){
+				$elem.attr('aria-selected', 'true');
+				$parent = $elem.parent();
+				$elem.hide();
+				$parent.find('br').hide();
+				$parent.find('hr').hide();
+				$parent.append('<div class="card" style="padding: 0.5rem 1rem;"></div>');
+				var $subClass = $parent.find('.card');
+
+				$subClass.append('<div class="row">' +
+									'<div class="col-sm-10">Install As:&nbsp;</div>' +
+									'<div class="col-sm-1" style="padding-bottom: 0.4rem;">' +
+										'<i class="fa fa-times" aria-hidden="true" katana-click="assembler.cancelDependencyInstallation"></i>' +
+									'</div>' +
+								 '</div>');
+				$subClass.append('<div class="row">' +
+									 '<div class="col-sm-2"></div>' +
+									 '<div class="col-sm-8">' +
+										 '<button class="btn btn-info" katana-click="assembler.installDependencyAsAdmin">Admin</button>' +
+										 '&nbsp;&nbsp;' +
+										 '<button class="btn btn-info" katana-click="assembler.installDependencyAsUser">User</button>' +
+									 '</div>' +
+								 '</div>');
+			}
+			else{
+				var $topLevelDiv = $elem.closest('.card').parent();
+				$topLevelDiv.data().dataObject.install = "no";
+				$elem.attr('aria-selected', 'false');
+				$elem.html('Install');
+				$elem.css("background-color", "white");
+				$elem.css("color", "black");
+
+			}
+
+		},
+
+		cancelDependencyInstallation: function(elem, ariaValue){
+			if(elem){
+				var $elem = elem;
+			}
+			else{
+				$elem = $(this);
+			}
+			if(ariaValue == undefined){
+				ariaValue = "false";
+			}
+			var $parentDiv = $elem.closest('.card');
+			var $installBtn = $parentDiv.siblings('button[katana-click="assembler.installDependency"]');
+			$installBtn.attr('aria-selected', ariaValue);
+			$parentDiv.remove();
+			$installBtn.siblings('br').show();
+			$installBtn.siblings('hr').show();
+			$installBtn.show();
+		},
+
+		installDependencyAsAdmin: function(){
+			var $elem = $(this);
+			$.when(assembler.setInstallBtn($elem, "Install As Admin")).then(assembler.cancelDependencyInstallation($elem, "true"));
+		},
+
+		installDependencyAsUser: function(){
+			$.when(assembler.setInstallBtn($elem, "Install As User")).then(assembler.cancelDependencyInstallation($elem, "true"));
+		},
+	}
 };

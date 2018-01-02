@@ -1,6 +1,6 @@
 class kwRepository {
     constructor(data){
-        if(!data || data == undefined){
+        if(!data || data === undefined){
             data = {};
         }
         if(data["name"]){
@@ -35,7 +35,7 @@ class kwRepository {
         }
         this.drivers = [];
         if(data["driver"]){
-            for(var i=0; i<data["driver"].length; i++){
+            for(let i=0; i<data["driver"].length; i++){
                 this.drivers.push(new driverDetails({"@name": data["driver"][i]["@name"], "@clone": data["driver"][i]["@clone"]}));
             }
         }
@@ -46,35 +46,35 @@ class kwRepository {
     }
 
     formDomElement() {
-        var clone_icon = "fa fa-toggle-off grey";
-        if(this.clone == "yes"){
+        let clone_icon = "fa fa-toggle-off grey";
+        if(this.clone === "yes"){
             clone_icon = "fa fa-toggle-on skyblue";
         }
-        var available_icon = "fa fa-times red";
-        var available_text = "Repository Not Available"
+        let available_icon = "fa fa-times red";
+        let available_text = "Repository Not Available";
         if(this.available){
-            available_icon = "fa fa-check-circle skyblue"
+            available_icon = "fa fa-check-circle skyblue";
             available_text = "Repository Available"
         }
-        var hideAvailability = "";
-        if(this.url == ""){
+        let hideAvailability = "";
+        if(this.url === ""){
             hideAvailability = "display: none";
         }
-        var driverDom = '';
-        for(var i=0; i<this.drivers.length; i++){
+        let driverDom = '';
+        for(let i=0; i<this.drivers.length; i++){
             driverDom = driverDom + this.drivers[i].domElement;
         }
-        var displayDrivers = "";
-        if(this.url == ""){
+        let displayDrivers = "";
+        if(this.url === ""){
             displayDrivers = "display: none";
         }
-        var allDriversIcon = "fa fa-toggle-off grey";
-        var aria_selected_all_drivers = "false";
-        if(this.all_drivers == "yes"){
+        let allDriversIcon = "fa fa-toggle-off grey";
+        let aria_selected_all_drivers = "false";
+        if(this.all_drivers === "yes"){
             allDriversIcon = "fa fa-toggle-on skyblue";
             aria_selected_all_drivers = "true";
         }
-        var $elem =  $('<div class="card border-secondary" style="padding: 1rem;">' +
+        let $elem =  $('<div class="card border-secondary" style="padding: 1rem;">' +
                             '<div class="card-header assembler-no-bg">' +
                                 '<div class="row">' +
                                     '<div class="col-sm-1">' +
@@ -144,17 +144,17 @@ class kwRepository {
     }
 
     formJsonObj(){
-        var driversJson = [];
-        for(var i=0; i<this.drivers; i++){
+        let driversJson = [];
+        for(let i=0; i<this.drivers; i++){
             driversJson.push(drivers[i].jsonObj)
         }
-        var jsonObject = {
+        let jsonObject = {
             "@url": this.url,
             "@label": this.label,
             "@clone": this.clone,
             "@all_drivers": this.all_drivers,
             "driver": driversJson
-        }
+        };
         return jsonObject;
     }
 
@@ -172,20 +172,20 @@ class driverDetails {
 
     formDomElement() {
         if(this.name){
-            var clone_icon = "fa fa-toggle-off grey";
-            var aria_attribute = "false";
-            if(this.clone == "yes"){
+            let clone_icon = "fa fa-toggle-off grey";
+            let aria_attribute = "false";
+            if(this.clone === "yes"){
                 clone_icon = "fa fa-toggle-on skyblue";
                 aria_attribute = "true";
             }
-            var elem = '<div class="col-sm-4">' +
+            let elem = '<div class="col-sm-4">' +
                             '<i class="' + clone_icon + '" style="float: left; line-height: inherit !important" ' +
                             ' key="kwRepoDriver" katana-click="assembler.toggleDriverClone" aria-selected="' + aria_attribute + '"></i>&nbsp;' +
                             '<label style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; width: 270px;">' + this.name + '</label>' +
                         '</div>';
         }
         else{
-            var elem = "";
+            let elem = "";
         }
 
         return elem;
@@ -196,10 +196,10 @@ class driverDetails {
     }
 
     formJsonObj(){
-        var jsonObject = {
+        let jsonObject = {
             "@name": this.name,
             "@clone": this.clone
-        }
+        };
         return jsonObject;
     }
 
@@ -207,7 +207,7 @@ class driverDetails {
 
 class wsRepository {
     constructor(data){
-        if(!data || data == undefined){
+        if(!data || data === undefined){
             data = {};
         }
         if(data["name"]){
@@ -243,30 +243,30 @@ class wsRepository {
     }
 
     formDomElement() {
-        var cloneWsRepoIcon = "fa fa-toggle-off grey";
-        var wsCloneToggle = "false";
-        if(this.clone == "yes"){
+        let cloneWsRepoIcon = "fa fa-toggle-off grey";
+        let wsCloneToggle = "false";
+        if(this.clone === "yes"){
             cloneWsRepoIcon = "fa fa-toggle-on skyblue";
             wsCloneToggle = "true";
         }
 
-        var overwriteWsFiles = "fa fa-toggle-off grey";
-        var overwriteSelect = "false";
-        if(this.overwrite == "yes"){
+        let overwriteWsFiles = "fa fa-toggle-off grey";
+        let overwriteSelect = "false";
+        if(this.overwrite === "yes"){
             overwriteWsFiles = "fa fa-toggle-on skyblue";
             overwriteSelect = "true";
         }
-        var hideAvailability = "";
-        if(this.url == ""){
+        let hideAvailability = "";
+        if(this.url === ""){
             hideAvailability = "display: none";
         }
-        var wsAvailableIcon = "fa fa-times red";
-        var wsAvailableText = "Repository Not Available"
+        let wsAvailableIcon = "fa fa-times red";
+        let wsAvailableText = "Repository Not Available";
         if(this.available){
-            wsAvailableIcon = "fa fa-check-circle skyblue"
+            wsAvailableIcon = "fa fa-check-circle skyblue";
             wsAvailableText = "Repository Available"
         }
-        var html_contents = '<div class="card border-secondary" style="padding: 1rem;">' +
+        let html_contents = '<div class="card border-secondary" style="padding: 1rem;">' +
                                 '<div class="card-header assembler-no-bg">' +
                                     '<div class="row">' +
                                         '<div class="col-sm-1">' +
@@ -319,7 +319,7 @@ class wsRepository {
                                 '</div>' +
                             '</div>' +
                             '<br>';
-        var $elem = $(html_contents);
+        let $elem = $(html_contents);
         return $elem
     }
 
@@ -328,19 +328,19 @@ class wsRepository {
     }
 
     formJsonObj(){
-        var jsonObject = {
+        let jsonObject = {
             "@url": this.url,
             "@label": this.label,
             "@clone": this.clone,
             "@overwrite": this.overwrite,
-        }
+        };
         return jsonObject;
     }
 }
 
 class dependency{
     constructor(data){
-        if(!data || data == undefined){
+        if(!data || data === undefined){
             data = {};
         }
         if(data["@name"]){
@@ -369,46 +369,46 @@ class dependency{
     }
 
     formDomElement() {
-        var availableText = "";
-        var installFunction = 'katana-click="assembler.installDependency"';
+        let availableText = "";
+        let installFunction = 'katana-click="assembler.installDependency"';
         if(this.installed){
             availableText = 'Available Version: ' + this.installed
         }
-        var depSelect = "true";
-        var installBtnText = "Install As Admin";
-        if(this.user == "yes"){
+        let depSelect = "true";
+        let installBtnText = "Install As Admin";
+        if(this.user === "yes"){
             installBtnText = "Install As User";
         }
-        var installBtnBgColor = "background-color: #4ea4e0; color: white;";
-        var installBtnIcon = '<i class="fa fa-check" style="color: white" aria-hidden="true"></i>';
-        if(this.install == "no"){
+        let installBtnBgColor = "background-color: #4ea4e0; color: white;";
+        let installBtnIcon = '<i class="fa fa-check" style="color: white" aria-hidden="true"></i>';
+        if(this.install === "no"){
             depSelect = "false";
             installBtnText = "Install";
             installBtnBgColor = "background-color: white";
             installBtnIcon = "";
         }
-        if(this.matched == "lower"){
+        if(this.matched === "lower"){
             installBtnText = "Upgrade";
             installFunction = 'katana-click="assembler.upgradeDependency"';
             installBtnIcon = '<i class="fa fa-exclamation-triangle tan" aria-hidden="true"></i>';
-            if(this.install == "yes"){
+            if(this.install === "yes"){
                 installBtnBgColor = "background-color: #987150; color: white;";
                 depSelect = "true";
-                if(this.user == "yes"){
+                if(this.user === "yes"){
                     installBtnText = "Upgrade As Admin";
                 }
                 else {
                     installBtnText = "Upgrade As User";
                 }
             }
-        } else if (this.matched || this.matched == "higher") {
+        } else if (this.matched || this.matched === "higher") {
             installFunction = "";
             installBtnText = "Installed";
             installBtnIcon = '<i class="fa fa-check-circle skyblue" aria-hidden="true"></i>';
             depSelect = "false";
         }
 
-        var html_contents = '<div style="padding: 1rem;">' +
+        let html_contents = '<div style="padding: 1rem;">' +
                                 '<div class="card border-secondary" style="width: 350px; height:190px; padding: 1rem;">' +
                                     '<div class="card-block">' +
                                         '<h4 class="card-title assembler-description">' + this.name +
@@ -422,8 +422,8 @@ class dependency{
                                         '</button>' +
                                     '</div>' +
                                 '</div>' +
-                            '</div>'
-        var $elem = $(html_contents);
+                            '</div>';
+        let $elem = $(html_contents);
         return $elem
     }
 
@@ -432,18 +432,18 @@ class dependency{
     }
 
     formJsonObj(){
-        var jsonObject = {
+        let jsonObject = {
             "@name": this.name,
             "@install": this.install,
             "@user": this.user,
-        }
+        };
         return jsonObject;
     }
 }
 
 class toolsRepository{
     constructor(data){
-        if(!data || data == undefined){
+        if(!data || data === undefined){
             data = {};
         }
         if(data["name"]){
@@ -474,23 +474,23 @@ class toolsRepository{
     }
 
     formDomElement() {
-        var cloneRepoIcon = "fa fa-toggle-off grey";
-        var cloneRepoSelected = "false";
-        if(this.clone == "yes"){
+        let cloneRepoIcon = "fa fa-toggle-off grey";
+        let cloneRepoSelected = "false";
+        if(this.clone === "yes"){
             cloneRepoIcon = "fa fa-toggle-on skyblue";
             cloneRepoSelected = "true";
         }
-        var repoAvailableIcon = "fa fa-times red";
-        var repoAvailableText = "Repository Not Available";
+        let repoAvailableIcon = "fa fa-times red";
+        let repoAvailableText = "Repository Not Available";
         if(this.available){
             repoAvailableIcon = "fa fa-check-circle skyblue";
             repoAvailableText = "Repository Available";
         }
-        var displayToolsFooter = "";
-        if(this.url == ""){
+        let displayToolsFooter = "";
+        if(this.url === ""){
             displayToolsFooter = "display: none";
         }
-        var html_contents = '<div class="card border-secondary" style="padding: 1rem;">' +
+        let html_contents = '<div class="card border-secondary" style="padding: 1rem;">' +
                                 '<div class="card-header assembler-no-bg">' +
                                     '<div class="row">' +
                                         '<div class="col-sm-1">' +
@@ -536,7 +536,7 @@ class toolsRepository{
                                 '</div>' +
                             '</div>' +
                             '<br>';
-        var $elem = $(html_contents);
+        let $elem = $(html_contents);
         return $elem
     }
 
@@ -545,11 +545,11 @@ class toolsRepository{
     }
 
     formJsonObj(){
-        var jsonObject = {
+        let jsonObject = {
             "@url": this.url,
             "@clone": this.clone,
             "@label": this.label,
-        }
+        };
         return jsonObject;
     }
 }

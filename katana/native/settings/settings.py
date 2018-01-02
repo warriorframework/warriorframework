@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import json, os, xml.etree.ElementTree as xml_controler
+from distutils.version import LooseVersion
+import copy
 from utils.navigator_util import Navigator
 from collections import OrderedDict
-
 try:
     import xmltodict
 except ImportError:
     print "Please install xmltodict"
-import xmltodict, json, xml.etree.ElementTree as xml_controler
+from utils.json_utils import read_xml_get_json
 
 class Settings:
 
@@ -137,3 +138,35 @@ class Settings:
             key_data = elem_file.read()
             elem_file.close()
             return key_data
+
+    def prerequisites_handler(self, request):
+        REF_FILE = os.path.join(self.navigator.get_katana_dir(), "native", "assembler", "static", "assembler", "base_templates", "empty.xml")
+        data = read_xml_get_json(REF_FILE)
+        prereqs = data["data"]["warhorn"]["dependency"]
+        prereq_data = []
+        for prereq in prereqs:
+            temp = {}
+            for key, value in prereq.items():
+                temp[key.strip('@')] = value
+
+            try:
+                module_name = __import__(temp["name"])
+                some_var = module_name.__version__
+            except ImportError:
+                temp["available_version"] = "--"
+                temp["installBtnText"] = "Install"
+            except Exception as e:
+                print "-- An Exception Occurred -- while getting details about {0}: {1}".format(temp["name"], e)
+                temp["available_version"] = "--"
+                temp["installBtnText"] = "Install"
+            else:
+                print some_var
+                temp["available_version"] = some_var
+                if LooseVersion(str(temp["version"])) <= LooseVersion(str(temp["available_version"])):
+                    temp["installBtnText"] = "Installed"
+                else:
+                    temp["installBtnText"] = "Upgrade"
+
+            prereq_data.append(copy.deepcopy(temp))
+        print prereq_data
+        return prereq_data
