@@ -226,10 +226,18 @@ class BrowserManagement(object):
                 browser_instance.get(url)
             else:
                 self.current_browser.get(url)
+        except WebDriverException, err:
+            print_error(err)
+            if "Reached error page" in err:
+                print_error("Unable to Navigate to URL:{}"\
+                            "possibly because of the url is not valid".format(url))
+            else:
+                status = False
         except Exception, err:
             print_error(err)
             status = False
             print_error("Unable to Navigate to URL:'%s'" % url)
+            traceback.print_exc()
         return status
 
     def reload_page(self, browser_instance=None):
