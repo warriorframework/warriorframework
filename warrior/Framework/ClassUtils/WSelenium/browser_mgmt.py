@@ -261,9 +261,14 @@ class BrowserManagement(object):
         if browser_instance is None:
             browser_instance = self.current_browser
 
-        if browser_type == "firefox":
+        # only when firefox version < 47, open a new tab, otherwise open new window
+        if browser_type == "firefox" and\
+           LooseVersion(self.get_browser_version(browser_instance)) < LooseVersion("47.0.0"):
             element = browser_instance.find_element_by_tag_name("body")
             element.send_keys(Keys.LEFT_CONTROL, 'n')
+        elif browser_type == "firefox":
+            # If FF version > 47, this action is not supported
+            raise Exception
         else:
             element = browser_instance.find_element_by_tag_name("body")
             element.send_keys(Keys.LEFT_CONTROL, 't')

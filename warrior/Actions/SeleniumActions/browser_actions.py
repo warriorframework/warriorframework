@@ -1576,15 +1576,19 @@ class browser_actions(object):
                     get_object_from_datarepository(system_name + "_" +
                                                    browser_details["browser_name"])
                 if current_browser:
-                    self.browser_object.open_tab(current_browser,
-                                                 browser_details["url"],
-                                                 browser_details["type"])
+                    try:
+                        status = self.browser_object.open_tab(current_browser,
+                                                              browser_details["url"],
+                                                              browser_details["type"])\
+                                 if status != "Error" else status
+                    except Exception:
+                        status = "Error"
                 else:
                     pNote("Browser of system {0} and name {1} not found in the "
                           "datarepository"
                           .format(system_name, browser_details["browser_name"]),
                           "Exception")
-                    status = False
+                    status = False if status != "Error" else status
             browser_details = {}
         Utils.testcase_Utils.report_substep_status(status)
         if current_browser:
