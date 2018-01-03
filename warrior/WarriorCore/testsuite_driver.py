@@ -16,6 +16,7 @@ import time
 import traceback
 import shutil
 import copy
+import glob
 import sequential_testcase_driver
 import parallel_testcase_driver
 from WarriorCore.Classes import execution_files_class, junit_class
@@ -154,45 +155,66 @@ def get_testcase_list(testsuite_filepath):
         testcase_list = []
         new_testcase_list = testcases.findall('Testcase')
         # execute tc multiple times
-        for _, tc in enumerate(new_testcase_list):
-            runmode, value, _ = common_execution_utils.get_runmode_from_xmlfile(tc)
-            retry_type, _, _, retry_value, _ = common_execution_utils.get_retry_from_xmlfile(tc)
+        # Process the asterisk if needed.
+        newlist = []
+        for new_ts in new_testcase_list:
+            sfilename = new_ts.find('path').text  # for all test cases
+            dirname = os.path.dirname(testsuite_filepath)+os.sep
+            if sfilename.find('*') < 0: # Check if you need to expand
+                newlist.append(new_ts)  # Nope? Keep it
+            else:
+                files = glob.glob(dirname+sfilename)  #Expand it
+                for fn in files:
+                    nts = copy.deepcopy(new_ts) # Copy the node, overwrite name
+                    nts.find('path').text = fn.replace(dirname, '')
+                    newlist.append(nts) # Use this node instead.
+        for new_ts in newlist: # Tell the user what happened
+            print_info("Added testcase [{0}] ".format(new_ts.find('path').text))
+        for _, xxtc in enumerate(newlist):
+        # old way here.
+        #for _, tc in enumerate(new_testcase_list):
+            runmode, value, _ = common_execution_utils.get_runmode_from_xmlfile(xxtc)
+
+#        for _, tc in enumerate(new_testcase_list):
+#            runmode, value, _ = common_execution_utils.get_runmode_from_xmlfile(tc)
+
+            retry_type, _, _, retry_value, _ = common_execution_utils.get_retry_from_xmlfile(xxtc)
             if runmode is not None and value > 0:
                 # more than one step in step list, insert new step
                 if len(new_testcase_list) > 0:
                     go_next = len(testcase_list) + value + 1
                     for i in range(0, value):
-                        copy_tc = copy.deepcopy(tc)
+                        copy_tc = copy.deepcopy(xxtc)
                         copy_tc.find("runmode").set("value", go_next)
                         copy_tc.find("runmode").set("attempt", i+1)
                         testcase_list.append(copy_tc)
                 # only one step in step list, append new step
                 else:
                     for i in range(0, value):
-                        copy_tc = copy.deepcopy(tc)
+                        copy_tc = copy.deepcopy(xxtc)
                         copy_tc.find("runmode").set("attempt", i+1)
-                        testcase_list.append(tc)
+                        testcase_list.append(xxtc)
             if retry_type is not None and retry_value > 0:
                 if len(new_testcase_list) > 1:
                     go_next = len(testcase_list) + retry_value + 1
                     if runmode is not None:
-                        get_runmode = tc.find('runmode')
-                        tc.remove(get_runmode)
+                        get_runmode = xxtc.find('runmode')
+                        xxtc.remove(get_runmode)
                     for i in range(0, retry_value):
-                        copy_tc = copy.deepcopy(tc)
+                        copy_tc = copy.deepcopy(xxtc)
                         copy_tc.find("retry").set("count", go_next)
                         copy_tc.find("retry").set("attempt", i+1)
                         testcase_list.append(copy_tc)
                 else:
                     if runmode is not None:
-                        get_runmode = tc.find('runmode')
-                        tc.remove(get_runmode)
+                        get_runmode = xxtc.find('runmode')
+                        xxtc.remove(get_runmode)
                     for i in range(0, retry_value):
-                        copy_tc = copy.deepcopy(tc)
+                        copy_tc = copy.deepcopy(xxtc)
                         copy_tc.find("retry").set("attempt", i+1)
                         testcase_list.append(copy_tc)
             if retry_type is None and runmode is None:
-                testcase_list.append(tc)
+                testcase_list.append(xxtc)
         return testcase_list
 
 
@@ -220,6 +242,8 @@ def print_suite_details_to_console(suite_repository, testsuite_filepath, junit_r
 
     print_info("Executing testsuite '{0}'".format(suite_repository['suite_name'].strip()))
     print_info("Title: {0}".format(suite_repository['suite_title'].strip()))
+    if junit_resultfile:
+        print_info("Junit: {0}".format(junit_resultfile));
     print_info("Results directory: %s" % suite_repository['suite_execution_dir'])
     report_suite_requirements(suite_repository, testsuite_filepath)
     time.sleep(3)
@@ -374,8 +398,8 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
 
     elif execution_type.upper() == 'RUN_MULTIPLE':
         execution_value = Utils.xml_Utils.getChildAttributebyParentTag(testsuite_filepath,
-                                                                        'Details', 'type',
-                                                                        'Number_Attempts')
+                                                                       'Details', 'type',
+                                                                       'Number_Attempts')
         print_info("Execution type: {0}, Max Attempts: {1}".format(execution_type, execution_value))
 
         i = 0
@@ -465,7 +489,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
 def main(testsuite_filepath, data_repository={}, from_project=False, auto_defects=False,
          jiraproj=None, res_startdir=None, logs_startdir=None, ts_onError_action=None,
          queue=None, ts_parallel=False):
-    """Executes a test suite """ 
+    """Executes a test suite """
     try:
         test_suite_status, suite_repository = execute_testsuite(testsuite_filepath,
                                                                 data_repository, from_project,

@@ -16,7 +16,7 @@ import os
 import shutil
 import copy
 import traceback
-
+import glob
 import Framework.Utils as Utils
 from Framework.Utils.print_Utils import print_info, print_error, print_warning
 from WarriorCore.Classes import execution_files_class, junit_class
@@ -24,10 +24,9 @@ from WarriorCore import common_execution_utils, sequential_testsuite_driver, \
  parallel_testsuite_driver
 
 
-# !/usr/bin/python
+
 """This the project driver that executes a collections of
 Warrior testsuites """
-
 
 def get_project_details(project_filepath, res_startdir, logs_startdir, data_repository):
     """Gets all details of the Project from its xml file"""
@@ -104,17 +103,31 @@ def get_testsuite_list(project_filepath):
         print_info('Testsuite is empty: tag <Testsuites> not "\
                    "found in the input file ')
     else:
-        testsuite_list = testsuites.findall('Testsuite')
-        for ts in testsuite_list:
+        testsuite_list = testsuites.findall('Testsuite') # Use suites
+        newlist = []  # Expanded list goes here.
+        for a_single_suite in testsuite_list:
+            sfilename = a_single_suite.find('path').text   # find the path.
+            dirname = os.path.dirname(project_filepath)+os.sep
+            if sfilename.find('*') < 0:  # Check if needs expansion
+                newlist.append(a_single_suite)  #Nope ? ... keep it.
+            else:
+                files = glob.glob(dirname+sfilename)  # Expane
+                for myfilename in files:
+                    na_single_suite = copy.deepcopy(a_single_suite)  #Copy
+                    na_single_suite.find('path').text = myfilename.replace(dirname, '')
+                    newlist.append(na_single_suite)  # new node
+        for a_single_suite in newlist: # tell the user what you did
+            print_info("Added suite [{0}] ".format(a_single_suite.find('path').text))
+        for a_single_suite in newlist:
             runmode, value, _ = common_execution_utils.\
-                get_runmode_from_xmlfile(ts)
+                get_runmode_from_xmlfile(a_single_suite)
             retry_type, _, _, retry_value, _ = common_execution_utils.\
-                get_retry_from_xmlfile(ts)
+                get_retry_from_xmlfile(a_single_suite)
             if runmode is not None and value > 0:
                 # more than one suite in suite list, insert new suite
                 go_next = len(testsuite_list_new) + value + 1
                 for i in range(0, value):
-                    copy_ts = copy.deepcopy(ts)
+                    copy_ts = copy.deepcopy(a_single_suite)
                     copy_ts.find("runmode").set("value", go_next)
                     copy_ts.find("runmode").set("attempt", i+1)
                     testsuite_list_new.append(copy_ts)
@@ -122,15 +135,15 @@ def get_testsuite_list(project_filepath):
                 if len(testsuite_list) > 1:
                     go_next = len(testsuite_list_new) + retry_value + 1
                     if runmode is not None:
-                        get_runmode = ts.find('runmode')
-                        ts.remove(get_runmode)
+                        get_runmode = a_single_suite.find('runmode')
+                        a_single_suite.remove(get_runmode)
                     for i in range(0, retry_value):
-                        copy_ts = copy.deepcopy(ts)
+                        copy_ts = copy.deepcopy(a_single_suite)
                         copy_ts.find("retry").set("count", go_next)
                         copy_ts.find("retry").set("attempt", i+1)
                         testsuite_list_new.append(copy_ts)
             if retry_type is None and runmode is None:
-                testsuite_list_new.append(ts)
+                testsuite_list_new.append(a_single_suite)
         return testsuite_list_new
 
 
