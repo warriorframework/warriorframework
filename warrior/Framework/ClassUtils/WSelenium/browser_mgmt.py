@@ -527,6 +527,7 @@ class BrowserManagement(object):
                 else:
                     # gecko_log will only get generate if there is failure/error
                     # Need to specify log_path for geckodriver log
+                    # Gecko driver will only launch if FF version is 47 or above
                     optional_args["log_path"] = log_dir
 
                 ffbinary = FirefoxBinary(binary) if binary is not None else None
