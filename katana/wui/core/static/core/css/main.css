@@ -3716,3 +3716,8 @@ input[type="checkbox"]+label {
 .tab-template {
     display: none !important;
 }
+
+.alert-content {
+	max-height: 15rem;
+	overflow: auto;
+}

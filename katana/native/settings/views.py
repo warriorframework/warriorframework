@@ -16,8 +16,7 @@ from __future__ import unicode_literals
 
 import os
 from django.shortcuts import render
-
-from native.assembler.assembler_utils.verify_file_contents import VerifyFileContents
+from django.http import JsonResponse
 from native.settings.settings import Settings
 from utils.navigator_util import Navigator
 
@@ -50,3 +49,6 @@ def smart_analysis_handler( request ):
 
 def prerequisites_handler(request):
     return render(request, 'settings/prerequisites_handler.html', {"data": controls.prerequisites_handler(request)})
+
+def install_prerequisite(request):
+    return JsonResponse(controls.prereq_installation_handler(request))

@@ -10,6 +10,7 @@ try:
 except ImportError:
     print "Please install xmltodict"
 from utils.json_utils import read_xml_get_json
+import subprocess
 
 class Settings:
 
@@ -149,6 +150,7 @@ class Settings:
             for key, value in prereq.items():
                 temp[key.strip('@')] = value
 
+            temp["status"] = "install"
             try:
                 module_name = __import__(temp["name"])
                 some_var = module_name.__version__
@@ -164,9 +166,27 @@ class Settings:
                 temp["available_version"] = some_var
                 if LooseVersion(str(temp["version"])) <= LooseVersion(str(temp["available_version"])):
                     temp["installBtnText"] = "Installed"
+                    temp["status"] = "installed"
                 else:
                     temp["installBtnText"] = "Upgrade"
+                    temp["status"] = "upgrade"
 
             prereq_data.append(copy.deepcopy(temp))
-        print prereq_data
         return prereq_data
+
+    def prereq_installation_handler(self, request):
+        name = request.POST.get('name')
+        admin = request.POST.get('admin')
+        version = request.POST.get('version')
+        status = True
+        command = ["pip", "install", "{0}=={1}".format(name, version)]
+        if admin == "true":
+            command.insert(0, "sudo")
+        else:
+            command.append("--user")
+        p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = p.communicate()
+        return_code = p.returncode
+        if return_code != 0:
+            status = False
+        return {"status": status, "return_code": return_code, "errors": err, "output": out}

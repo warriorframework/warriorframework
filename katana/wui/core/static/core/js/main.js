@@ -452,7 +452,7 @@ var katana = {
 	        buttons = '<hr>' +
 	                  '<div class="col" style="text-align: right;">' +
                             accept_btn_text + cancel_btn_text +
-                      '</div>'
+                      '</div>';
 
             add_break = "";
 	    }
@@ -463,8 +463,8 @@ var katana = {
 	        sub_heading = '<p>' + data.sub_heading + '</p>';
 	    }
 
-	    var prompt = ""
-	    var prompt_default = ""
+	    var prompt = "";
+	    var prompt_default = "";
 
 	    if(data.prompt_default){
 	        prompt_default = data.prompt_default;
@@ -482,11 +482,11 @@ var katana = {
 	                                '</div>' +
 	                                '<h4 class="alert-heading">' + data.heading + '</h4>' + sub_heading +
 	                                '<hr>' +
-	                                '<p class="mb-0">' + data.text + '</p>' + prompt + add_break +
+	                                '<p class="mb-0 alert-content">' + data.text + '</p>' + prompt + add_break +
 	                                buttons +
 	                            '</div>' +
 	                        '</div>' +
-	                    '</div>'
+	                    '</div>';
 
 	    callBack(data, $alert_box, callBack_on_accept, callBack_on_dismiss);
 	},
