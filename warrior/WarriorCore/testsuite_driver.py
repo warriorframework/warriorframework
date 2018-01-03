@@ -16,6 +16,7 @@ import time
 import traceback
 import shutil
 import copy
+import glob
 import sequential_testcase_driver
 import parallel_testcase_driver
 from WarriorCore.Classes import execution_files_class, junit_class
@@ -152,9 +153,34 @@ def get_testcase_list(testsuite_filepath):
         print_info('Testsuite is empty: tag <Testcases> not found in the input Testsuite xml file ')
     else:
         testcase_list = []
-        new_testcase_list = testcases.findall('Testcase')
+        new_testcase_list = []
+        orig_testcase_list = testcases.findall('Testcase')
+        for orig_tc in orig_testcase_list:
+            orig_tc_path = orig_tc.find('path').text
+            if '*' not in orig_tc_path:
+                new_testcase_list.append(orig_tc)
+            else:
+                orig_tc_abspath = Utils.file_Utils.getAbsPath(
+                   orig_tc_path, os.path.dirname(testsuite_filepath))
+                print_info("Provided testcase path: '{}' has asterisk(*) in "
+                           "it. All the path names matching the given pattern "
+                           "will be executed".format(orig_tc_abspath))
+                tc_files = glob.glob(orig_tc_abspath)
+                if tc_files:
+                    for tc_file in tc_files:
+                        new_tc = copy.deepcopy(orig_tc)
+                        new_tc.find('path').text = tc_file
+                        new_testcase_list.append(new_tc)
+                        print_info("Testcase: '{}' added to the execution "
+                                   "list ".format(tc_file))
+                else:
+                    print_warning("No path names matched the given pattern or Invalid "
+                                  "testcase path is given - '{}', same will be taken "
+                                  "for execution.".format(orig_tc_abspath))
+                    new_testcase_list.append(orig_tc)
+
         # execute tc multiple times
-        for _, tc in enumerate(new_testcase_list):
+        for tc in new_testcase_list:
             runmode, value, _ = common_execution_utils.get_runmode_from_xmlfile(tc)
             retry_type, _, _, retry_value, _ = common_execution_utils.get_retry_from_xmlfile(tc)
             if runmode is not None and value > 0:
