@@ -513,6 +513,7 @@ class BrowserManagement(object):
                     webdriver.DesiredCapabilities.FIREFOX,
                     webdriver_remote_url, desired_capabilites, ff_profile)
             else:
+                optional_args = {}
                 ff_capabilities = webdriver.DesiredCapabilities.FIREFOX
                 # This is for internal testing needs...some https cert is not secure
                 ff_capabilities['acceptInsecureCerts'] = True
@@ -523,14 +524,14 @@ class BrowserManagement(object):
                 # https://github.com/SeleniumHQ/selenium/issues/5106#issuecomment-347298110
                 if self.get_firefox_version(binary) < LooseVersion("47.0.0"):
                     ff_capabilities["marionette"] = False
+                else:
+                    # gecko_log will only get generate if there is failure/error
+                    # Need to specify log_path for geckodriver log
+                    optional_args["log_path"] = log_dir
 
                 ffbinary = FirefoxBinary(binary) if binary is not None else None
-                optional_args = {}
                 if gecko_path is not None:
                     optional_args["executable_path"] = gecko_path
-                # gecko_log will only get generate if there is failure/error
-                optional_args["log_path"] = log_dir
-                # Need to specify log_path for geckodriver log
                 browser = webdriver.Firefox(firefox_binary=ffbinary,
                                             capabilities=ff_capabilities,
                                             firefox_profile=ff_profile, **optional_args)
