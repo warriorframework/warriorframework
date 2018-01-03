@@ -1581,7 +1581,8 @@ class browser_actions(object):
                                                               browser_details["url"],
                                                               browser_details["type"])\
                                  if status != "Error" else status
-                    except Exception:
+                    except RuntimeError as err:
+                        pNote(err, "Error")
                         status = "Error"
                 else:
                     pNote("Browser of system {0} and name {1} not found in the "

@@ -268,7 +268,7 @@ class BrowserManagement(object):
             element.send_keys(Keys.LEFT_CONTROL, 'n')
         elif browser_type == "firefox":
             # If FF version > 47, this action is not supported
-            raise Exception
+            raise RuntimeError("Open tab operation is not supported in FF 47 or above")
         else:
             element = browser_instance.find_element_by_tag_name("body")
             element.send_keys(Keys.LEFT_CONTROL, 't')
