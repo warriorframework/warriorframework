@@ -56,6 +56,10 @@ class CoreView(View):
         return render(request, template, {"apps": AppInformation.information.apps, "userData": self.get_user_data()})
 
 
+def refresh_landing_page(request):
+    return render(request, 'core/landing_page.html', {"apps": AppInformation.information.apps})
+
+
 def get_file_explorer_data(request):
     nav_obj = Navigator()
     if "data[start_dir]" in request.POST and request.POST["data[start_dir]"] != "false":
