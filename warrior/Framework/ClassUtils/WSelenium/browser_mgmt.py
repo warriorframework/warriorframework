@@ -269,12 +269,13 @@ class BrowserManagement(object):
             element.send_keys(Keys.LEFT_CONTROL, 'n')
         elif browser_type == "firefox":
             # If FF version > 47, this action is not supported
-            print_error("Open tab operation is not supported in FF 47 or above")
+            print_error("Open tab operation is not supported in Firefox (47 or above)")
             status = False
         else:
-            # if chrome, open a new tab
             element = browser_instance.find_element_by_tag_name("body")
             element.send_keys(Keys.LEFT_CONTROL, 't')
+        print_warning("Both Firefox (47 or above) and Chrome with chromedriver (2.32 or above)"\
+                      "doesn't support opening new tab. Open tab may not function correctly")
         sleep(1)
         browser_instance.switch_to.window(browser_instance.window_handles[len(browser_instance.window_handles) - 1])
 
