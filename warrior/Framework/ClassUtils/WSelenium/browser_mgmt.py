@@ -258,6 +258,7 @@ class BrowserManagement(object):
 
     def open_tab(self, browser_instance=None, url=None, browser_type="firefox"):
         """Opens a new tab in the browser"""
+        status = True
         if browser_instance is None:
             browser_instance = self.current_browser
 
@@ -268,7 +269,8 @@ class BrowserManagement(object):
             element.send_keys(Keys.LEFT_CONTROL, 't')
         elif browser_type == "firefox":
             # If FF version > 47, this action is not supported
-            raise RuntimeError("Open tab operation is not supported in FF 47 or above")
+            print_error("Open tab operation is not supported in FF 47 or above")
+            status = False
         else:
             element = browser_instance.find_element_by_tag_name("body")
             element.send_keys(Keys.LEFT_CONTROL, 'n')
@@ -278,6 +280,8 @@ class BrowserManagement(object):
         if url is not None:
             self.go_to(url, browser_instance)
             sleep(1)
+
+        return status
 
     def switch_tab(self, browser_instance=None, tab_number=None, browser_type="firefox"):
         """Switching to different tabs in a browser with unique tab_number"""
