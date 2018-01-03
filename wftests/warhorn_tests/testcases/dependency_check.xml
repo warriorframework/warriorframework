@@ -1,0 +1,58 @@
+<?xml version="1.0" ?>
+<Testcase>
+	<Details>
+		<Name>dependency_check</Name>
+		<Title>warhorn dependency check</Title>
+		<Engineer>Arvind Kumar Sethuraman</Engineer>
+		<Date>2017-12-27</Date>
+		<Time>15:51</Time>
+		<State/>
+		<InputDataFile>No_Data</InputDataFile>
+		<Datatype/>
+		<default_onError action="next"/>
+		<Logsdir/>
+		<Resultsdir/>
+		<ExpectedResults/>
+	</Details>
+	<Requirements>
+		<Requirement/>
+	</Requirements>
+	<Steps>
+		<step Driver="warhorn_test_driver" Keyword="test_dependency_config" TS="1">
+			<Arguments>
+				<argument name="config_file" value="../wftests/warhorn_tests/config_files/dependency_config1.xml"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>warhorn dependency check with install yes and user no</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+			<rmt/>
+		</step>
+		<step Driver="warhorn_test_driver" Keyword="test_dependency_config" TS="1">
+			<Arguments>
+				<argument name="config_file" value="../wftests/warhorn_tests/config_files/dependency_config2.xml"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>warhorn dependency check with install yes and user yes</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+			<rmt/>
+		</step>
+		<step Driver="warhorn_test_driver" Keyword="test_dependency_config" TS="1">
+			<Arguments>
+				<argument name="config_file" value="../wftests/warhorn_tests/config_files/dependency_config3.xml"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>warhorn dependency check with install no and user mixed</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+			<rmt/>
+		</step>
+	</Steps>
+</Testcase>

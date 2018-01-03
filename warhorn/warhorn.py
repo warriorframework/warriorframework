@@ -849,7 +849,7 @@ def clone_warriorspace(base_path, current_dir, **kwargs):
                     dummy, root_repo_folder_list = get_subfiles(path)
                     if 'Warriorspace' not in root_repo_folder_list:
                         print_error('Could not find Warriorspace under the '
-                                    'root of the repository')
+                                    'root of the repository', logfile, print_log_name)
                         setDone(1)
                     else:
                         try:
