@@ -226,9 +226,9 @@ class BrowserManagement(object):
                 browser_instance.get(url)
             else:
                 self.current_browser.get(url)
-        except WebDriverException, err:
+        except WebDriverException as err:
             print_error(err)
-            if "Reached error page" in err:
+            if "Reached error page" in str(err):
                 print_error("Unable to Navigate to URL:{}"\
                             "possibly because of the url is not valid".format(url))
             else:
