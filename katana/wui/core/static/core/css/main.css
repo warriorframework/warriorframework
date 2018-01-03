@@ -1484,6 +1484,16 @@ i.active {
 	top: 50px;
 }
 
+.alert-overlay {
+	background: rgba(128, 128, 128, 0.51);
+	z-index: 9;
+	position: fixed;
+	height: calc(100% - 50px);
+	width: 100%;
+	left: 0;
+	top: 50px;
+}
+
 .popup .close:hover,
 .popup .min:hover {
 	color: #ef3e33;
