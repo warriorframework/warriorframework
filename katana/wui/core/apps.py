@@ -23,7 +23,9 @@ class CoreConfig(AppConfig):
         nav_obj = Navigator()
 
         base_directory = nav_obj.get_katana_dir()
+        warrior_dir = nav_obj.get_warrior_dir()
         config_file_name = "wf_config.json"
+        config_json_file = join_path(base_directory, "config.json")
         settings_file_path = get_abs_path(join_path("wui", "settings.py"), base_directory)
         core_index_obj = CoreIndex(base_directory, settings_file_path=settings_file_path)
 
@@ -36,5 +38,9 @@ class CoreConfig(AppConfig):
                                              'config_file_name': config_file_name,
                                              'available_apps': available_apps,
                                              'settings_apps': settings_apps})
+
+        ordered_json = validate_config_json(read_json_data(config_json_file), warrior_dir)
+        with open(config_json_file, "w") as f:
+            f.write(json.dumps(ordered_json, indent=4))
 
         # print "***************You are in Core Katana App Config Class***************"
