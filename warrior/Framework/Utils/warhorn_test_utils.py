@@ -17,12 +17,16 @@ from Framework.Utils.print_Utils import print_info, print_error
 
 
 def get_pip_cmd_output(addl_attrs):
+    """get the output of pip cmd given
+    """
     pip_cmd_list = ['pip']
     pip_cmd_list.extend(addl_attrs)
     return subprocess.check_output(pip_cmd_list)
 
 
 def get_installed_pkges():
+    """get the list of packages installed in the virutal env through pip
+    """
     pip_freeze = get_pip_cmd_output(['freeze'])
     installed_pkges = set([pkg.split('==')[0] for pkg in pip_freeze.split()])
     print_info("installed packages: %s" % installed_pkges)
@@ -43,6 +47,6 @@ def activate_virtualenv():
         execfile(venv_file, dict(__file__=venv_file))
         return True
     except Exception as e:
-        print "Activating virtual env at {} resulted in exception {}".format(ve_name, e)
-        print "Check {} is a proper virtualenv binary".format(ve_loc)
+        print_error("Activating virtual env at {} resulted in exception {}".format(ve_name, e))
+        print_error("Check {} is a proper virtualenv binary".format(ve_loc))
         return False

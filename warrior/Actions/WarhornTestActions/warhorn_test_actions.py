@@ -31,6 +31,9 @@ class WarhornTestActions(object):
         self.logfile = cfgUtils.logfile
 
     def test_dependency_config(self, config_file):
+        """check the dependencies are installed through warhorn
+        properly as defined in config_file config file
+        """
         status = True
         root = ElementTree.parse(config_file).getroot()
         node = root.find("warhorn")
