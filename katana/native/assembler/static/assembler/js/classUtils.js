@@ -86,7 +86,7 @@ class kwRepository {
                                     '</div>' +
                                     '<div class="col-sm-2">' +
                                         '<i class="fa fa-trash" style="float:right;" ' +
-                                            'aria-hidden="true" katana-click="assembler.devareKwRepo" aria-selected="true" key="kwRepoDevare"></i>' +
+                                            'aria-hidden="true" katana-click="assembler.deleteKwRepo" aria-selected="true" key="kwRepodelete"></i>' +
                                     '</div>' +
                                 '</div>' +
                             '</div>' +
@@ -285,7 +285,7 @@ class wsRepository {
                                             'Overwrite' +
                                         '</div>' +
                                         '<div class="col-sm-2">' +
-                                            '<i class="fa fa-trash" katana-click="assembler.devareWsRepo" key="wsRepoDevare"' +
+                                            '<i class="fa fa-trash" katana-click="assembler.deleteWsRepo" key="wsRepodelete"' +
                                                     'aria-hidden="true" style="float: right;"></i>' +
                                         '</div>' +
                                     '</div>' +
