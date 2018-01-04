@@ -39,7 +39,8 @@ class CoreConfig(AppConfig):
                                              'available_apps': available_apps,
                                              'settings_apps': settings_apps})
 
+        ordered_json = validate_config_json(read_json_data(config_json_file), warrior_dir)
         with open(config_json_file, "w") as f:
-            f.write(json.dumps(validate_config_json(read_json_data(config_json_file), warrior_dir), indent=4))
+            f.write(json.dumps(ordered_json, indent=4))
 
         # print "***************You are in Core Katana App Config Class***************"
