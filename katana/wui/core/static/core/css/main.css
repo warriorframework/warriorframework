@@ -358,6 +358,7 @@ span.close:before {
 		position: absolute;
 		left: 0;
 		top: 0;
+		border-bottom: none;
 }
 .tab.active {
 	background: rgb(255, 255, 255) !important;
@@ -534,11 +535,13 @@ span.close:before {
 	transform: translateZ(0);
 	-webkit-transition: max-width 0.2s ease, -webkit-transform 0.2s ease;
 	transition: max-width 0.2s ease, transform 0.2s ease;
+	text-overflow: initial;
 }
 
 .nav .tab.active[uid="launchpad"] {
 	max-width: 200px;
 	font-size: inherit;
+	text-overflow: ellipsis;
 }
 
 .nav .tab.active[uid="launchpad"]:before {
@@ -552,7 +555,7 @@ span.close:before {
 	text-rendering: auto;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-	content: "\f0c9";
+	content: "\f015";
 	font-size: 17px;
 	line-height: 28px;
 }
@@ -1481,6 +1484,16 @@ i.active {
 	top: 50px;
 }
 
+.alert-overlay {
+	background: rgba(128, 128, 128, 0.51);
+	z-index: 9;
+	position: fixed;
+	height: calc(100% - 50px);
+	width: 100%;
+	left: 0;
+	top: 50px;
+}
+
 .popup .close:hover,
 .popup .min:hover {
 	color: #ef3e33;
@@ -1875,13 +1888,23 @@ i.active {
 	color: inherit;
 }
 
+.htmlResults td[rowspan]:nth-child(2):hover,
 .htmlResults td[rowspan]:nth-child(3):hover,
-.htmlResults td[rowspan]:nth-child(4):hover {
+.htmlResults td[rowspan]:nth-child(4):hover,
+.htmlResults td[rowspan]:nth-child(5):hover,
+.htmlResults td[rowspan]:nth-child(6):hover,
+.htmlResults td[rowspan]:nth-child(7):hover,
+.htmlResults td[rowspan]:nth-child(8):hover{
 	overflow: visible;
 }
 
+.htmlResults td[rowspan]:nth-child(2):hover div:not(:empty),
 .htmlResults td[rowspan]:nth-child(3):hover div:not(:empty),
-.htmlResults td[rowspan]:nth-child(4):hover div:not(:empty) {
+.htmlResults td[rowspan]:nth-child(4):hover div:not(:empty),
+.htmlResults td[rowspan]:nth-child(5):hover div:not(:empty),
+.htmlResults td[rowspan]:nth-child(6):hover div:not(:empty),
+.htmlResults td[rowspan]:nth-child(7):hover div:not(:empty),
+.htmlResults td[rowspan]:nth-child(8):hover div:not(:empty) {
 	position: absolute;
 	background: #3699ff;
 	z-index: 1;
@@ -2535,9 +2558,21 @@ textarea {
 	font-size: 30px;
 	line-height: inherit;
 	font-weight: 600;
-	padding-left: 35px;
+	padding-left: 54px;
 }
-
+.logo-image {
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    left: 20px;
+    top: 5px;
+    background-size: 95%;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: block;
+    background-color: white;
+    border-radius: 9px;
+}
 .close {
 	float: none;
 	font-size: inherit;
@@ -3000,7 +3035,7 @@ div .tool-bar-links:active {
 	left: 15%;
 	min-width: 70%;
 	height: 600px;
-	width: -webkit-fit-content;
+	width: 75%;
 	border-radius: 2px;
 	-webkit-animation: fadeEffect 1s;
 	color: black;
@@ -3013,8 +3048,8 @@ div .tool-bar-links:active {
 	transition: opacity 400ms ease-in;
 }
 .execution.dialog-container.small {
-    left:25%;
-    min-width: 50%;
+    left:15%;
+    min-width: 40%;
     height: 250px;
 }
 
@@ -3047,7 +3082,7 @@ div .tool-bar-links:active {
 	margin-top: 40px;
 	height: calc(100% - 80px);
 	padding: 0;
-	overflow: hidden;
+	//overflow: hidden;
 }
 
 .execution.cmd-options-menu {
@@ -3604,67 +3639,6 @@ input[type="checkbox"]+label {
 
 #explorer-up:hover {color: white;}
 
-.wapp-management-error-border{
-    border: 1px solid red;
-}
-
-.wapp-management-config-padding {
-    padding-top: 0.5rem;
-}
-
-.wapp-management-header-div {
-    width: 100%;
-    height: 10rem;
-    padding: 4rem 0 0 5.5rem;
-}
-
-.wapp-management-no-top-padding {
-    padding: 0 5rem 5rem 5rem;
-}
-
-.full-width {
-    width: 100%;
-}
-
-.wapp-management-outer-card {
-    width: 20rem;
-    height: 26rem;
-    padding: 2rem;
-}
-
-.wapp-management-custom-card {
-    width: 16rem;
-    height: 22rem;
-}
-
-.wapp-management-card-icon {
-    line-height:inherit!important;
-}
-
-.wapp-management-overflow-nowrap {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
-
-.wapp-management-overflow-wrap {
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.wapp-management-overflow-fade {
-    overflow: hidden;
-    text-overflow: fade(100%);
-}
-
-.wapp-management-card-title-color {
-    background-color: #98afc7;
-}
-
-.wapp-management-toolbar-child {
-    height: 100%;
-    padding-left:0.9rem;
-}
 .nav .tab span {
     position: relative;
     top: 0;

@@ -1,5 +1,6 @@
 import os
-from utils.directory_traversal_utils import get_abs_path
+from collections import OrderedDict
+from utils.directory_traversal_utils import get_abs_path, join_path
 
 
 def get_app_path_from_name(app_name, config_file, base_directory):
@@ -51,3 +52,48 @@ def _get_package_name(directory_path, trailing_period=True):
     if not trailing_period:
         package_name = package_name[:-1]
     return package_name
+
+
+def validate_config_json(json_data, warrior_dir):
+    """
+    This function validates the config.json file and returns an ordered dictionary
+
+    :param json_data: original unordered contents of config.json
+    :param warrior_dir: path to warrior directory
+
+    :return: Ordered Dictionary containing validated config.json data
+    """
+    ordered_json = OrderedDict()
+    if "engineer" not in json_data:
+        ordered_json["engineer"] = ""
+    else:
+        ordered_json["engineer"] = json_data["engineer"]
+
+    ordered_json["pythonsrcdir"] = warrior_dir[:-1] \
+        if "pythonsrcdir" not in json_data or json_data["pythonsrcdir"] == "" \
+        else json_data["pythonsrcdir"]
+
+    warrior_dir = ordered_json["pythonsrcdir"]
+    ref = OrderedDict([("xmldir", "Testcases"),
+                       ('testsuitedir', 'Suites'),
+                       ('projdir', 'Projects'),
+                       ('idfdir', 'Data'),
+                       ('testdata', 'Config_files')])
+
+    for key, value in ref.items():
+        if key not in json_data or json_data[key] == "":
+            path = get_abs_path(join_path("Warriorspace", value), warrior_dir)
+            if path is not None:
+                ordered_json[key] = path
+            else:
+                ordered_json[key] = ""
+                print "-- An Error Occurred -- Path to {0} directory could not be located".format(value)
+        else:
+            ordered_json[key] = json_data[key]
+
+    if "pythonpath" not in json_data:
+        ordered_json["pythonpath"] = ""
+    else:
+        ordered_json["pythonpath"] = json_data["pythonpath"]
+
+    return ordered_json
