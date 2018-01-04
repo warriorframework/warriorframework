@@ -8,6 +8,7 @@ import subprocess
 from threading import Timer
 import xml.etree.ElementTree as xml_controler
 from distutils.version import LooseVersion
+from utils.directory_traversal_utils import join_path
 from utils.json_utils import read_xml_get_json
 from utils.navigator_util import Navigator
 from collections import OrderedDict
@@ -21,6 +22,7 @@ class Settings:
 
     def __init__(self):
         self.navigator = Navigator()
+        self.static_dir = join_path(self.navigator.get_katana_dir(), "native", "settings", "static", "settings")
 
     def get_location(self):
         pass
@@ -146,9 +148,8 @@ class Settings:
             return key_data
 
     def prerequisites_handler(self, request):
-        REF_FILE = os.path.join(self.navigator.get_katana_dir(), "native", "assembler", "static", "assembler", "base_templates", "empty.xml")
-        data = read_xml_get_json(REF_FILE)
-        prereqs = data["data"]["warhorn"]["dependency"]
+        ref_file = join_path(self.static_dir, "base_templates", "empty.xml")
+        prereqs = read_xml_get_json(ref_file)["data"]["warhorn"]["dependency"]
         prereq_data = []
         for prereq in prereqs:
             temp = {}

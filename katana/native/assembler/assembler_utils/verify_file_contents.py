@@ -1,7 +1,7 @@
 import copy
 import os
 from native.assembler.assembler_utils.repository_details import KwRepositoryDetails
-from utils.directory_traversal_utils import delete_dir
+from utils.directory_traversal_utils import delete_dir, join_path
 from utils.git_utils import get_repository_name, check_url_is_a_valid_repo
 from utils.json_utils import read_xml_get_json
 from utils.navigator_util import Navigator
@@ -12,10 +12,18 @@ class VerifyFileContents:
     def __init__(self, data_file, ref_data_file):
         self.data_file = data_file
         self.data = read_xml_get_json(data_file)
-        self.ref_data = ref_data_file
-        self.ref_data = read_xml_get_json(ref_data_file)
+        self.ref_data_file = ref_data_file
         self.nav_obj = Navigator()
+        self.dependency_template = join_path(self.nav_obj.get_katana_dir(), "native", "settings", "static",
+                                             "settings", "base_templates", "empty.xml")
+        self.ref_data = self._get_ref_data()
         self.dependency_dict = self.__get_dependency_dict()
+
+    def _get_ref_data(self):
+        data = read_xml_get_json(self.ref_data_file)
+        dependency_data = read_xml_get_json(self.dependency_template)
+        data["data"]["warhorn"] = copy.deepcopy(dependency_data["data"]["warhorn"])
+        return data
 
     def __get_dependency_dict(self):
         output = {}
