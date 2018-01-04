@@ -10,26 +10,22 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from Framework.Utils.rest_Utils import remove_invalid_req_args
 
 """ Selenium keywords for Generic Browser Actions """
 
-import os, re
+import os
 from urlparse import urlparse
 from Framework.ClassUtils.WSelenium.browser_mgmt import BrowserManagement
 from Actions.SeleniumActions.verify_actions import verify_actions
 from Actions.SeleniumActions.elementlocator_actions import elementlocator_actions
 
-try:
-    import Framework.Utils as Utils
-except ImportWarning:
-    raise ImportError
-
+import Framework.Utils as Utils
 from Framework.Utils import selenium_Utils
 from Framework.Utils import data_Utils
 from Framework.Utils import xml_Utils
 from Framework.Utils.testcase_Utils import pNote, pSubStep
 from Framework.ClassUtils.json_utils_class import JsonUtils
+from Framework.Utils.rest_Utils import remove_invalid_req_args
 
 
 class browser_actions(object):
@@ -338,8 +334,10 @@ class browser_actions(object):
                 browser_details = selenium_Utils. \
                     get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
-                headless = Utils.data_Utils.get_object_from_datarepository(system_name + "_headless")
+                current_browser = Utils.data_Utils.get_object_from_datarepository(
+                    system_name + "_" + browser_details["browser_name"])
+                headless = Utils.data_Utils.get_object_from_datarepository(
+                    system_name + "_headless")
                 if current_browser:
                     status &= self.browser_object.maximize_browser_window(current_browser, headless)
                 else:
@@ -1581,8 +1579,8 @@ class browser_actions(object):
                                                    browser_details["browser_name"])
                 if current_browser:
                         status &= self.browser_object.open_tab(current_browser,
-                                                              browser_details["url"],
-                                                              browser_details["type"])
+                                                               browser_details["url"],
+                                                               browser_details["type"])
                 else:
                     pNote("Browser of system {0} and name {1} not found in the "
                           "datarepository"
@@ -2517,7 +2515,8 @@ class browser_actions(object):
                     get_object_from_datarepository(system_name + "_" +
                                                    browser_details["browser_name"])
                 if current_browser:
-                    status = self.browser_object.delete_a_specific_cookie(current_browser, browser_details["cookie_name"])
+                    status = self.browser_object.delete_a_specific_cookie(
+                        current_browser, browser_details["cookie_name"])
                 else:
                     pNote("Browser of system {0} and name {1} not found in the "
                           "datarepository"
