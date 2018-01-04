@@ -442,6 +442,8 @@ def get_element_from_config_file(config_file, element_tag, child_tag,
 
 def create_display():
     status = True
+    if data_Utils.get_object_from_datarepository("headless_display"):
+        return status
     try:
         from pyvirtualdisplay import Display
         # Selenium has problem with firefox in virtualdisplay if resolution is low

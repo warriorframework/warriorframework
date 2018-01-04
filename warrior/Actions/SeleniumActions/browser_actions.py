@@ -216,11 +216,14 @@ class browser_actions(object):
             "No browser found in system: {}, please check datafile".format(system_name)
             status = False
 
-        if str(optional_args["headless_mode"]).strip().lower() in ["yes", "y"]:
+        enable_headless = Utils.data_Utils.get_object_from_datarepository("wt_enable_headless")
+        if str(optional_args["headless_mode"]).strip().lower() in ["yes", "y"] or enable_headless:
             status = selenium_Utils.create_display()
-            output_dict[system_name+"_headless"] = True
             if not status:
                 browser_list = []
+            else:
+                output_dict[system_name+"_headless"] = True
+                output_dict["headless_display"] = True
         else:
             output_dict[system_name+"_headless"] = False
 
