@@ -1,6 +1,7 @@
 from utils.directory_traversal_utils import get_parent_directory, get_dir_from_path, join_path, \
     get_paths_of_subfiles, get_relative_path
 from utils.json_utils import read_json_data
+from utils.regex_utils import compile_regex
 from wui.core.core_utils.app_info_class import AppInformation
 from wui.core.core_utils.core_utils import get_app_path_from_name
 
@@ -11,8 +12,7 @@ class App:
         """Constructor of the App Class"""
         self.data = json_data
         self.path = path
-        self.static_file_dir = join_path("static", get_dir_from_path(self.path), "js")
-
+        self.static_file_dir = join_path("static", get_dir_from_path(self.path))
 
 class Apps:
 
@@ -28,7 +28,8 @@ class Apps:
             json_data = read_json_data(url)
             if json_data is not None:
                 app = App(json_data, get_parent_directory(url))
-                js_urls = get_paths_of_subfiles(join_path(app.path, app.static_file_dir))
+                js_urls = get_paths_of_subfiles(join_path(app.path, app.static_file_dir, "js"),
+                                                extension=compile_regex("^\.js$"))
                 for i in range(0, len(js_urls)):
                     js_urls[i] = get_relative_path(js_urls[i], app.path)
                 app.data["js_urls"] = js_urls
