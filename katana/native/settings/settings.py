@@ -1,19 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import os
-
-from utils.directory_traversal_utils import join_path
 from utils.navigator_util import Navigator
-from collections import OrderedDict
-
 from wui.core.apps import validate_config_json
-
 try:
     import xmltodict
 except ImportError:
     print "Please install xmltodict"
 import json
 import xml.etree.ElementTree as xml_controler
+
 
 class Settings:
 
