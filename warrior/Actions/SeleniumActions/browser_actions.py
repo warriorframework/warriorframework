@@ -234,7 +234,8 @@ class browser_actions(object):
             if browser_details is not None:
                 # Call utils to launch correct type of browser
                 # Need to pass the binary, gecko_path, proxy_ip, proxy_port if specified
-                browser_optional_arg_keys = ["binary", "gecko_path", "proxy_ip", "proxy_port", "gecko_log"]
+                browser_optional_arg_keys = ["binary", "gecko_path",
+                                             "proxy_ip", "proxy_port", "gecko_log"]
                 browser_optional_args = {}
                 for arg in browser_optional_arg_keys:
                     if browser_details.get(arg) is not None:

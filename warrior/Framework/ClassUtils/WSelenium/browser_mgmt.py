@@ -35,10 +35,9 @@ try:
     from selenium.common.exceptions import WebDriverException
 
     KEYS = {1: Keys.NUMPAD1, 2: Keys.NUMPAD2, 3: Keys.NUMPAD3,
-        4: Keys.NUMPAD4, 5: Keys.NUMPAD5, 6: Keys.NUMPAD6,
-        7: Keys.NUMPAD7, 8: Keys.NUMPAD8, 9: Keys.NUMPAD9}
-
-except Exception as exception:
+            4: Keys.NUMPAD4, 5: Keys.NUMPAD5, 6: Keys.NUMPAD6,
+            7: Keys.NUMPAD7, 8: Keys.NUMPAD8, 9: Keys.NUMPAD9}
+except ImportError as exception:
     print_exception(exception)
 
 class BrowserManagement(object):
@@ -115,7 +114,9 @@ class BrowserManagement(object):
 
     def save_screenshot(self, browser_instance=None, filename=None,
                         directory=None):
-        """"""
+        """
+            Save screenshot of the specified/current browser
+        """
         status = True
         if browser_instance is None:
             browser_instance = self.current_browser
@@ -277,7 +278,8 @@ class BrowserManagement(object):
             element = browser_instance.find_element_by_tag_name("body")
             element.send_keys(Keys.LEFT_CONTROL, 't')
         sleep(1)
-        browser_instance.switch_to.window(browser_instance.window_handles[len(browser_instance.window_handles) - 1])
+        browser_instance.switch_to.window(browser_instance.window_handles\
+                                          [len(browser_instance.window_handles) - 1])
 
         if url is not None:
             self.go_to(url, browser_instance)
@@ -431,19 +433,26 @@ class BrowserManagement(object):
         return status
 
     def get_firefox_version(self, binary):
+        """
+            Use firefox binary to find out firefox version
+            before launching firefox in selenium
+        """
         if binary in [False, None]:
             binary = "firefox"
         version = False
         try:
             raw_version = check_output([binary, "-v"])
-            match = re.search("\d+\.\d+\.\d+", raw_version)
+            match = re.search(r"\d+\.\d+\.\d+", raw_version)
             if match is not None:
                 version = LooseVersion(match.group(0))
-        except CalledProcessError as e:
+        except CalledProcessError:
             print_error("Cannot find firefox version, will not launch browser")
         return version
 
     def get_browser_version(self, browser):
+        """
+            Get browser version from selenium
+        """
         # Return the browser version as string
         browser_version = browser.capabilities.get("version", None)
         if browser_version is None:
@@ -484,7 +493,8 @@ class BrowserManagement(object):
             browser = None
         else:
             kwargs["browser_name"] = browser_name
-            browser = creation_method(webdriver_remote_url, desired_capabilities, profile_dir, **kwargs)
+            browser = creation_method(webdriver_remote_url, desired_capabilities,
+                                      profile_dir, **kwargs)
             if browser is not None:
                 print_info("The {} browser version is {}".format(
                     browser_name, self.get_browser_version(browser)))
@@ -542,18 +552,19 @@ class BrowserManagement(object):
                 browser = webdriver.Firefox(firefox_binary=ffbinary,
                                             capabilities=ff_capabilities,
                                             firefox_profile=ff_profile, **optional_args)
-        except WebDriverException as e:
-            if "executable needs to be in PATH" in str(e):
+        except WebDriverException as err:
+            if "executable needs to be in PATH" in str(err):
                 print_error("Please provide path for geckodriver executable")
-            elif "Expected browser binary location" in str(e):
+            elif "Expected browser binary location" in str(err):
                 print_error("Please provide path of firefox executable")
-            print_error(e)
+            print_error(err)
             traceback.print_exc()
-        except Exception as e:
-            print_error(e)
+        except Exception as err:
+            print_error(err)
             traceback.print_exc()
 
-        if browser is None and any((LooseVersion(webdriver.__version__) < LooseVersion("3.5.0"), gecko_path is None)):
+        if browser is None and\
+           any((LooseVersion(webdriver.__version__) < LooseVersion("3.5.0"), gecko_path is None)):
             print_info("Unable to create Firefox browser, one possible reason is because"\
                        "Firefox version >= 47.0.1 and Selenium version < 3.5"\
                        "In order to launch Firefox ver 47 and up, Selenium needs to be updated to >= 3.5"\

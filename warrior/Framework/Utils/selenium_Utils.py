@@ -441,6 +441,11 @@ def get_element_from_config_file(config_file, element_tag, child_tag,
     return final_value
 
 def create_display():
+    """
+        Create a virtual display
+        Default size is 1920x1080 as smaller resolution
+        may cause problem in firefox
+    """
     status = True
     if data_Utils.get_object_from_datarepository("headless_display"):
         return status
@@ -454,8 +459,8 @@ def create_display():
         print_error("pyvirtualdisplay is not installed in order "
                     "to launch the browser in headless mode")
         status = False
-    except Exception as e:
+    except Exception as err:
         print_error("Encountered Exception: {0}, while trying to launch the browser"
-                    " in headless mode".format(e))
+                    " in headless mode".format(err))
         status = False
     return status
