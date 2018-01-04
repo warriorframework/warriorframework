@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 import json, os, xml.etree.ElementTree as xml_controler
 from distutils.version import LooseVersion
 import copy
+from threading import Timer
+
 from utils.navigator_util import Navigator
 from collections import OrderedDict
 try:
@@ -162,7 +164,6 @@ class Settings:
                 temp["available_version"] = "--"
                 temp["installBtnText"] = "Install"
             else:
-                print some_var
                 temp["available_version"] = some_var
                 if LooseVersion(str(temp["version"])) <= LooseVersion(str(temp["available_version"])):
                     temp["installBtnText"] = "Installed"
@@ -178,15 +179,25 @@ class Settings:
         name = request.POST.get('name')
         admin = request.POST.get('admin')
         version = request.POST.get('version')
-        status = True
+        status = False
+        return_code = -9
         command = ["pip", "install", "{0}=={1}".format(name, version)]
         if admin == "true":
             command.insert(0, "sudo")
         else:
             command.append("--user")
         p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        out, err = p.communicate()
-        return_code = p.returncode
-        if return_code != 0:
-            status = False
+        kill = lambda process: process.kill()
+        my_timer = Timer(10, kill, [p])
+        try:
+            my_timer.start()
+            out, err = p.communicate()
+            return_code = p.returncode
+            if return_code == 0:
+                status = True
+        finally:
+            if return_code == -9:
+                err = "Command could not be completed."
+                out = "Command could not be completed in 30 seconds - may be the user is not authorized to install {0}".format(name)
+            my_timer.cancel()
         return {"status": status, "return_code": return_code, "errors": err, "output": out}
