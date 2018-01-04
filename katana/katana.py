@@ -14,52 +14,37 @@ limitations under the License.
 
 import os
 import sys
+import subprocess
+class Katana:
+    def __init__(self):
+        pass
+
+    def runProcess(self, osString):
+        subprocess.Popen([osString], shell=True,
+             stdin=None, stdout=None, stderr=None, close_fds=True)
+
+    def to_string(self, args):
+        args[0] = 'manage.py'
+        if args[1] == 'database':
+            args.remove('database')
+        return 'python ' + ' '.join(args)
+
+    def to_katana_dir(self):
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        os.chdir(dir_path)
+
+    def katana_init(self, args):
+        args[0] = 'manage.py'
+        self.to_katana_dir()
+        has_db = True if args[1] == 'database' else False
+        self.runProcess( self.to_string(args) )
+        if has_db:
+            args = self.database_init(args)
+
+    def database_init(self, args):
+        self.runProcess('python manage.py makemigrations')
+        self.runProcess('python manage.py migrate --run-syncdb')
 
 if __name__ == "__main__":
-
-    """
-    This file is a wrapper file to run manage.py via katana.py.
-
-    This wrapper file was introduced to maintain backward compatibility between katana running on
-    the bottle server amd katana running on Django
-
-    The commands accepted are:
-
-    - python katana.py : This would start the server at localhost:5000
-    - python katana.py -p <port> : This would start the server at localhost:<port>
-
-    katana.py can also be run from a different directory : python /path/to/katana.py [-p <port>]
-
-    """
-
-    args = sys.argv[1:]
-    directory = os.path.dirname(sys.argv[0])
-
-    python_executable = sys.executable
-
-    if not python_executable:
-        command = "python"
-    else:
-        command = python_executable
-
-    port = 5000
-    runserver = "runserver"
-    filepath = "manage.py"
-
-    if directory is not "":
-        filepath = directory + os.sep + filepath
-
-    for i in range(0, len(args)):
-        if args[i] == "-p":
-            if i+1 >= len(args):
-                print "No port number given. Exiting."
-                sys.exit()
-            else:
-                port = args[i+1]
-            break
-    
-    
-    os.system("{0} {1} {2} {3}".format(command, filepath, runserver, port))
-    
-    
-    
+    katana = Katana()
+    katana.katana_init(sys.argv)
