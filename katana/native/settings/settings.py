@@ -5,6 +5,9 @@ import os
 from utils.directory_traversal_utils import join_path
 from utils.navigator_util import Navigator
 from collections import OrderedDict
+
+from wui.core.apps import validate_config_json
+
 try:
     import xmltodict
 except ImportError:
@@ -59,9 +62,9 @@ class Settings:
                 f.write(json.dumps(returned_json[0], indent=4, separators=(',', ': ')))
         else:
             with open(json_file, 'r') as f:
-                json_data = json.load(f, object_pairs_hook=OrderedDict)
+                json_data = json.load(f)
             data = {'fromXml': xmltodict.parse(def_dir_string).get('Setting'),
-                    'fromJson': json_data}
+                    'fromJson': validate_config_json(json_data, self.navigator.get_warrior_dir())}
             return data
 
     def profile_setting_handler(self, request):
