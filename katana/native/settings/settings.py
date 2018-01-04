@@ -1,18 +1,21 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-import json, os, xml.etree.ElementTree as xml_controler
-from distutils.version import LooseVersion
+import json
+import os
 import copy
+import sys
+import subprocess
 from threading import Timer
-
+import xml.etree.ElementTree as xml_controler
+from distutils.version import LooseVersion
+from utils.json_utils import read_xml_get_json
 from utils.navigator_util import Navigator
 from collections import OrderedDict
 try:
     import xmltodict
 except ImportError:
     print "Please install xmltodict"
-from utils.json_utils import read_xml_get_json
-import subprocess
+
 
 class Settings:
 
@@ -183,7 +186,8 @@ class Settings:
         return_code = -9
         command = ["pip", "install", "{0}=={1}".format(name, version)]
         if admin == "true":
-            command.insert(0, "sudo")
+            if not hasattr(sys, 'real_prefix'):
+                command.insert(0, "sudo")
         else:
             command.append("--user")
         p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
