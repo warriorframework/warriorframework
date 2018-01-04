@@ -1002,7 +1002,7 @@ var katana = {
         $tabContent = parent;
       }
       katana.templateAPI.post('get_file_explorer_data/', csrftoken, {
-          "path": start_directory
+          "start_dir": start_directory
         },
         function(data) {
           var explorer_modal_html = $($('#file-explorer-template').html())
