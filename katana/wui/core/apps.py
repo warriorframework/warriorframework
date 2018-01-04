@@ -33,6 +33,4 @@ class CoreConfig(AppConfig):
                                              'available_apps': available_apps,
                                              'settings_apps': settings_apps})
 
-        print AppInformation.information.apps
-
         # print "***************You are in Core Katana App Config Class***************"
