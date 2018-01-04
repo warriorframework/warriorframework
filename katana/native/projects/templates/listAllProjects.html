@@ -1,16 +1,26 @@
 {% load static %}
+<link rel="stylesheet" href="{% static 'projects/css/projects.css' %}">
+<link rel="stylesheet" href="{% static 'projects/css/project-d3.css' %}">
 
-<body> 
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-cloud/1.2.4/d3.layout.cloud.js"></script>
+<div id="myProject" auto-init="projects.initProjectTree"> </div>
+
+<div id="OverwriteProjectHere">
+<div class="csrf-container">{% csrf_token %}</div>
 <div class="tool-bar">
-<button id="addSuite" class="btn btn-success" katana-click="projectApp.startNewProject">Add New Project</button>
-</div >
+<label  class="projects-header-label">Projects</label>
+<label  class="projects-header-ilabel">Search</label>
 
-<h2>List of Projects</h2>
+		 <input id="jstreeFilterText" class="col-md-2" />
+			<button  class="button" katana-click="projects.startNewProject">Add New Project</button>
+		
 
-<div id="myProject" auto-init="projectApp.initProjectTree">
 </div>
- 
-<div id="myProjectTree"></div>
-
-
-</body>
+	
+<div class="row">
+	<div class="col-md-4" id="myProjectTree"></div>
+	
+</div>
+	
+</div>

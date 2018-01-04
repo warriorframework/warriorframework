@@ -1,0 +1,43 @@
+
+.project-d3-existing-type {
+  cursor: pointer;
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 3px;
+}
+
+.project-d3-rect {
+  cursor: pointer;
+  fill: steelblue;
+  stroke: steelblue;
+  stroke-width: 3px;
+}
+
+.project-d3-node text {
+  font-size: 11px;
+  fill: steelblue;
+ 
+}
+
+.project-d3-link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1.5px;
+}
+
+
+
+ .node circle {
+   fill: #fff;
+   stroke: steelblue;
+   stroke-width: 3px;
+ }
+
+ .node text { font: 10px sans-serif; }
+
+ .link {
+   fill: none;
+   stroke: #ccc;
+   stroke-width: 2px;
+ }
+ 

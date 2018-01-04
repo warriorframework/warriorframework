@@ -1,4 +1,37 @@
 
+.projects-header-icon { 
+    font-size: 20;
+    float: left;
+    vertical-align: middle;
+    color: "white";
+}
+
+.projects-header-label { 
+    font-size: 20;
+    float: left;
+    text-align: left; 
+    color: "white";
+}
+
+.projects-header-ilabel { 
+    font-size: 14;
+    vertical-align: middle;
+    float: right;
+    
+    text-align: left; 
+    color: "white";
+}
+.project-input-w label, .project-input-w input {
+    float: none; /* if you had floats before? otherwise inline-block will behave differently */
+    display: inline-block;
+    vertical-align: middle;    
+}
+
+.projects-details-center {
+    padding: 20px;
+    height: 30px;
+    vertical-align: middle;
+}
 
 .project-configuration-table {}
 
@@ -50,3 +83,4 @@
 }
 
 .project-configuration-table tr:nth-child(even){background-color: #f2f2ff}
+

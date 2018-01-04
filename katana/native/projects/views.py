@@ -46,28 +46,66 @@ def getEmpty():
 	edata={"Project": 
 			{"Testsuites": 
 			{"Testsuite": 
-				[{"onError": {"@action": "goto", "@value": "3"}, "path": "../../Warriorspace/Suites/Suite1.xml"}, 
-				{"onError": {"@action": "abort"}, "path": "../../Warriorspace/Suites/Suite2.xml"},
-				 {"path": "../../Warriorspace/Suites/Suite3.xml"}, {"onError": {"@action": "next"}, 
-				 "path": "../../Warriorspace/Suites/Suite4.xml"}]}, "Details": {"default_onError": {"@action": "next", "@value": ""}, 
+				[]}, 
+				"Details": {"default_onError": {"@action": "next", "@value": ""}, 
 				 "Title": "Project Title or Description", "Resultsdir": "", "Name": "Project Name", "Engineer": "Engineer"}}}
 	return edata;
 
+import logging 
+logger = logging.getLogger(__name__)
 
 def getJSONProjectData(request):
 	path_to_config_file = navigator.get_katana_dir() + os.sep + "config.json"   
 	x= json.loads(open(path_to_config_file).read());
 	path_to_testcases = x['projdir'];
 	filename = request.GET.get('fname')
-	print "Getting data for ", filename;
+	logger.info("Getting data for %s "% filename);
 	try:
 		xml_d = xmltodict.parse(open(filename).read());
 	except:
 		xml_d = getEmpty();
 
+	#print xml_d
+	if (not xml_d.has_key(u'Project')):
+		print "Invalid XML file"
+		xml_d = getEmpty();
+
 	j_data = json.loads(json.dumps(xml_d))
-	responseBack = { 'fulljson': j_data , 'fname': filename }
+
+
+	fpath = x['testsuitedir'];
+	print x, fpath
+	files = glob.glob(fpath + "/**/*.xml");
+	files.extend(glob.glob(fpath+"/*.xml"))
+	answer = [{ 'name': os.path.basename(fn), 'fullpath': fn } for fn in files ]
+
+
+	#files = glob.glob(fpath+"*/*.xml")
+	#tt = navigator.get_dir_tree_json(fpath)
+	#tt['state']= { 'opened': True };
+	#print tt
+
+	tt = path_to_dict(fpath)
+	print tt;
+	responseBack = { 'fulljson': j_data , 
+					'fname': filename ,
+					'stree' : tt, 
+					'suites': answer}
 	return JsonResponse(responseBack)
+
+
+def path_to_dict(path):
+    d = {'name': os.path.basename(path), 'path' : path}
+    if os.path.isdir(path):
+        d['type'] = "directory"
+        d['children'] = [path_to_dict(os.path.join(path,x)) for x in os.listdir\
+(path)]
+    else:
+        d['type'] = "file"
+
+    return d
+
+
 
 ## MUST MOVE TO CLASS !!!!
 ## List all your projects ...
@@ -133,7 +171,6 @@ def editProject(request):
 	xml_r["Project"]["Details"]["State"] = "" #OrderedDict([('$', 'New')])
 	xml_r["Project"]["Details"]["Date"] = "" #OrderedDict([('$', '')])
 	xml_r["Project"]["Details"]["Time"] = "" #OrderedDict([('$', '')])
-	xml_r["Project"]["Details"]["Datatype"] = "" #OrderedDict([('$', '')])
 	xml_r["Project"]["Details"]["Engineer"] = "" #OrderedDict([('$', '')])
 	xml_r["Project"]["Details"]["ResultsDir"] = "" #OrderedDict([('$', '')])
 	xml_r["Project"]["Details"]["default_onError"] = { '@action': '', '@value': ''} #OrderedDict([('$', '')])
@@ -146,8 +183,7 @@ def editProject(request):
 		xml_d = xmltodict.parse(xlines, dict_constructor=dict);
 
 		# Map the input to the response collector
-		for xstr in ["Name", "Title", "Category", "Date", "Time", "Engineer", \
-			"Datatype", "ResultsDir"]:
+		for xstr in ["Name", "Title", "Category", "Date", "Time", "Engineer", "ResultsDir"]:
 			try:
 				xml_r["Project"]["Details"][xstr]= xml_d["Project"]["Details"][xstr];
 			except: 
@@ -178,10 +214,9 @@ def editProject(request):
 		'projectCategory': xml_r["Project"]["Details"]["Category"],
 		'projectDate': xml_r["Project"]["Details"]["Date"],
 		'projectTime': xml_r["Project"]["Details"]["Time"],
-		'resultsDir': xml_r["Project"]["Details"]["ResultsDir"],
-		
-		'projectdefault_onError': xml_r["Project"]["Details"]["default_onError"].get('@action'),
-		'projectdefault_onError_goto': xml_r["Project"]["Details"]["default_onError"]['@value'],
+		'resultsDir': xml_r["Project"]["Details"]["ResultsDir"],	
+		'project_onError_action': xml_r["Project"]["Details"]["default_onError"].get('@action','abort'),
+		'project_onError_value':  xml_r["Project"]["Details"]["default_onError"].get('@avalue',""),
 		#'fulljson': xml_r['Project']
 		'fulljson': fulljsonstring,
 		}
