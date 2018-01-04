@@ -159,13 +159,26 @@ def get_testcase_list(testsuite_filepath):
             orig_tc_path = orig_tc.find('path').text
             if '*' not in orig_tc_path:
                 new_testcase_list.append(orig_tc)
+            # When the file path has asterisk(*), get the Warrior XML testcases
+            # files matching the given pattern
             else:
                 orig_tc_abspath = Utils.file_Utils.getAbsPath(
                    orig_tc_path, os.path.dirname(testsuite_filepath))
                 print_info("Provided testcase path: '{}' has asterisk(*) in "
-                           "it. All the path names matching the given pattern "
-                           "will be executed".format(orig_tc_abspath))
-                tc_files = glob.glob(orig_tc_abspath)
+                           "it. All the Warrior testcase XML files matching "
+                           "the given pattern will be executed".format(orig_tc_abspath))
+                # Get all the files matching the pattern
+                all_files = glob.glob(orig_tc_abspath)
+                # Get XML files
+                xml_files = [fl for fl in all_files if fl.endswith('.xml')]
+                tc_files = []
+                # Get Warrior testcase XML files
+                for xml_file in xml_files:
+                    root = Utils.xml_Utils.getRoot(xml_file)
+                    if root.tag.upper() == "TESTCASE":
+                        tc_files.append(xml_file)
+                # Copy the XML object and set the filepath as path value for
+                # all the files matching the pattern
                 if tc_files:
                     for tc_file in tc_files:
                         new_tc = copy.deepcopy(orig_tc)
@@ -175,7 +188,8 @@ def get_testcase_list(testsuite_filepath):
                                    "list ".format(tc_file))
                 else:
                     print_warning("No path names matched the given pattern or Invalid "
-                                  "testcase path is given - '{}', same will be taken "
+                                  "testcase path is given or No testcase XMLs "
+                                  "are available in '{}', same will be taken "
                                   "for execution.".format(orig_tc_abspath))
                     new_testcase_list.append(orig_tc)
 
