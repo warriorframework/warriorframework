@@ -152,21 +152,20 @@ def get_testcase_list(testsuite_filepath):
     if testcases is None:
         print_info('Testsuite is empty: tag <Testcases> not found in the input Testsuite xml file ')
     else:
-        testcase_list = []
         new_testcase_list = []
         orig_testcase_list = testcases.findall('Testcase')
         for orig_tc in orig_testcase_list:
             orig_tc_path = orig_tc.find('path').text
             if '*' not in orig_tc_path:
                 new_testcase_list.append(orig_tc)
-            # When the file path has asterisk(*), get the Warrior XML testcases
+            # When the file path has asterisk(*), get the Warrior XML testcase
             # files matching the given pattern
             else:
                 orig_tc_abspath = Utils.file_Utils.getAbsPath(
                    orig_tc_path, os.path.dirname(testsuite_filepath))
                 print_info("Provided testcase path: '{}' has asterisk(*) in "
                            "it. All the Warrior testcase XML files matching "
-                           "the given pattern will be executed".format(orig_tc_abspath))
+                           "the given pattern will be executed.".format(orig_tc_abspath))
                 # Get all the files matching the pattern
                 all_files = glob.glob(orig_tc_abspath)
                 # Get XML files
@@ -187,10 +186,13 @@ def get_testcase_list(testsuite_filepath):
                         print_info("Testcase: '{}' added to the execution "
                                    "list ".format(tc_file))
                 else:
-                    print_warning("No path names matched the given pattern or Invalid "
-                                  "testcase path is given or No testcase XMLs "
-                                  "are available in '{}', same will be taken "
-                                  "for execution.".format(orig_tc_abspath))
+                    print_warning("Asterisk(*) pattern match failed for '{}' due "
+                                  "to at least one of the following reasons:\n"
+                                  "1. No files matched the given pattern\n"
+                                  "2. Invalid testcase path is given\n"
+                                  "3. No testcase XMLs are available\n"
+                                  "Given path will be used for the Warrior "
+                                  "execution.".format(orig_tc_abspath))
                     new_testcase_list.append(orig_tc)
 
         # execute tc multiple times
