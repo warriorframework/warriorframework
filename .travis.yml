@@ -30,7 +30,7 @@ matrix:
     #   env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/pj_parallel_execution_2.xml
     #   python: 2.7
     - os: linux
-      env: INSTALL=yes TESTFILE=./wftests/warrior_tests/testcases/pj_parallel_execution_2.xml
+      env: INSTALL=yes TESTFILE=./wftests/warrior_tests/testcases/selenium_tests/tc_selenium_headless.xml
       python: 2.7
       addons:
         firefox: "46.0"
