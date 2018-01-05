@@ -1,0 +1,54 @@
+<?xml version="1.0" ?>
+<Project>
+        <Details>
+                <Name>pj_glob_suites</Name>
+                <Title>Project for testing asterisk(*) support in testsuite path of a project(using python glob module)</Title>
+                <Engineer>Warrior_user</Engineer>
+                <State/>
+                <Date>01/05/2018</Date>
+                <Time>11:08:02</Time>
+                <default_onError action="next" value=""/>
+        </Details>
+        <Testsuites>
+                <Testsuite>
+                        <path>../suites/common_action_tests/*</path>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                        <onError action="next" value=""/>
+                        <impact>impact</impact>
+                </Testsuite>
+                <Testsuite>
+                        <path>../suites/framework_tests/cond_var/*var.xml</path>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                        <onError action="next" value=""/>
+                        <impact>impact</impact>
+                </Testsuite>
+                <Testsuite>
+                        <path>../suites/framework_*/cond_var/fail.xml</path>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                        <onError action="next" value=""/>
+                        <impact>noimpact</impact>
+                </Testsuite>
+                <Testsuite>
+                        <path>../suites/*/*/pass.xml</path>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                        <onError action="next" value=""/>
+                        <impact>impact</impact>
+                </Testsuite>
+                <Testsuite>
+                        <path>../suites/framework_tests/cond_var/ts_exectype_rules_expression.xml</path>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                        <onError action="next" value=""/>
+                        <impact>impact</impact>
+                </Testsuite>
+        </Testsuites>
+</Project>
