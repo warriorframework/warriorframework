@@ -8,8 +8,8 @@ from utils.json_utils import read_json_data
 class AppValidator:
 
     def __init__(self, filepath):
-        self.app_name = get_sub_folders(join_path(filepath, "warriorframework", "katana", "installed_apps"))[0]
-        self.path_to_app = join_path(filepath, "warriorframework", "katana", "installed_apps", self.app_name)
+        self.app_name = get_sub_folders(join_path(filepath, "warriorframework", "katana", "wapps"))[0]
+        self.path_to_app = join_path(filepath, "warriorframework", "katana", "wapps", self.app_name)
         self.wf_config_file = join_path(self.path_to_app, "wf_config.json")
         self.urls_inclusions = []
 
