@@ -446,7 +446,7 @@ class BrowserManagement(object):
             if match is not None:
                 version = LooseVersion(match.group(0))
             else:
-                print raw_version
+                print_info("Cannot parse Firefox version: {}".format(raw_version))
         except CalledProcessError:
             print_error("Cannot find firefox version, will not launch browser")
         return version
