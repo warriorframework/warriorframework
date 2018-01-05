@@ -162,7 +162,7 @@ def get_testcase_list(testsuite_filepath):
             # files matching the given pattern
             else:
                 orig_tc_abspath = Utils.file_Utils.getAbsPath(
-                   orig_tc_path, os.path.dirname(testsuite_filepath))
+                    orig_tc_path, os.path.dirname(testsuite_filepath))
                 print_info("Provided testcase path: '{}' has asterisk(*) in "
                            "it. All the Warrior testcase XML files matching "
                            "the given pattern will be executed.".format(orig_tc_abspath))

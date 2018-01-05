@@ -115,7 +115,7 @@ def get_testsuite_list(project_filepath):
             # files matching the given pattern
             else:
                 orig_ts_abspath = Utils.file_Utils.getAbsPath(
-                   orig_ts_path, os.path.dirname(project_filepath))
+                    orig_ts_path, os.path.dirname(project_filepath))
                 print_info("Provided testsuite path: '{}' has asterisk(*) in "
                            "it. All the Warrior testsuite XML files matching "
                            "the given pattern will be executed.".format(orig_ts_abspath))
