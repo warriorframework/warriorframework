@@ -442,9 +442,11 @@ class BrowserManagement(object):
         version = False
         try:
             raw_version = check_output([binary, "-v"])
-            match = re.search(r"\d+\.\d+\.\d+", raw_version)
+            match = re.search(r"\d+\.\d+", raw_version)
             if match is not None:
                 version = LooseVersion(match.group(0))
+            else:
+                print raw_version
         except CalledProcessError:
             print_error("Cannot find firefox version, will not launch browser")
         return version
