@@ -48,7 +48,7 @@ class browser_actions(object):
 
     def browser_launch(self, system_name, browser_name="all", type="firefox",
                        url=None, ip=None, remote=None, element_config_file=None,
-                       element_tag=None):
+                       element_tag=None, headless_mode=None):
         """
         The Keyword would launch a browser and Navigate to the url, if provided by the user.
 
