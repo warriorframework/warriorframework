@@ -51,9 +51,8 @@ install:
         pip install pyvirtualdisplay==0.2.1 ;
         wget https://chromedriver.storage.googleapis.com/2.34/chromedriver_linux64.zip;
         unzip chromedriver_linux64.zip;
-        mv -f chromedriver /usr/local/share/;
-        chmod +x /usr/local/share/chromedriver;
-        ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver;
+        chmod +x chromedriver;
+        sudo ln -s chromedriver /usr/local/bin/chromedriver;
       fi
 
 script:
