@@ -49,8 +49,8 @@ install:
         pip install paramiko==1.16.0 ;
         pip install pysnmp==4.3.2 ;
         pip install pyvirtualdisplay==0.2.1 ;
-        wget https://chromedriver.storage.googleapis.com/2.34/chromedriver_linux64.zip
-        unzip chromedriver_linux64.zip
+        wget https://chromedriver.storage.googleapis.com/2.34/chromedriver_linux64.zip;
+        unzip chromedriver_linux64.zip;
       fi
 
 script:
