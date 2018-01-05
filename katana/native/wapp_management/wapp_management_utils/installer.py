@@ -27,6 +27,7 @@ class Installer:
         self.delete_app_dir = []
         self.delete_plugins_dir = []
         self.config_data = None
+        self.message = ""
 
     def install(self):
         output = self.__add_app_directory()
@@ -54,7 +55,9 @@ class Installer:
                 temp_pl_path= join_path(self.plugin_directory, plugin_name)
                 if os.path.exists(temp_pl_path):
                     output = False
-                    print "-- An Error Occurred -- Directory already exists: {0}.".format(temp_pl_path)
+                    message = "-- An Error Occurred -- Directory already exists: {0}.".format(temp_pl_path)
+                    print message
+                    self.message += message
                 else:
                     output = copy_dir(plugin, temp_pl_path)
                     self.delete_plugins_dir.append(plugin)
@@ -64,7 +67,9 @@ class Installer:
         temp_app_path = join_path(self.app_directory, self.app_name)
         if os.path.exists(temp_app_path):
             output = False
-            print "-- An Error Occurred -- Directory already exists: {0}.".format(temp_app_path)
+            message = "-- An Error Occurred -- Directory already exists: {0}.".format(temp_app_path)
+            print message
+            self.message += message
         else:
             output = copy_dir(self.path_to_app, temp_app_path)
             self.delete_app_dir.append(self.path_to_app)
@@ -102,7 +107,6 @@ class Installer:
         urls_data = ""
         for line in u_data:
             urls_data += line
-        print urls_data
         output = write_to_file(self.urls_file, urls_data)
         return output
 
