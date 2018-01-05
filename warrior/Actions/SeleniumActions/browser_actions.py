@@ -129,29 +129,35 @@ class browser_actions(object):
                              FOR TEST CASE
                              Eg: <argument name="element_tag" value="json_name_1">
 
+            9. headless_mode = Run selenium test in headless mode
+                                Used in system with no GUI component
+
             The next 5 arguments are added for Selenium 3 with Firefox
-            9. binary = The absolute path of the browser executable
+            Please use them inside the browser tag in system data file
+            binary = The absolute path of the browser executable
                         Eg: <binary>../../firefox/firefox</binary>
 
-            10. gecko_path = The absolute path of the geckodriver
-                             This is a mandatory argument if using Firefox version 47 or above
+            gecko_path = The absolute path of the geckodriver
+                             geckodriver is mandatory if using Firefox version 47 or above
                              This also required Selenium 3.5 or above
                              For more information please visit:
                              https://github.com/mozilla/geckodriver#selenium
                              Eg: <gecko_path>../../../geckodriver</gecko_path>
 
-            11. gecko_log
+            gecko_log = The absolute path for the geckodriver log to be saved
+                            This file only get generated if firefox is launched with geckodriver
+                            and failuer/error occur
+                            Default is the testcase log directory
 
-            12. proxy_ip = This <proxy_ip> tag refers to the ip of the proxy
+            proxy_ip = This <proxy_ip> tag refers to the ip of the proxy
                            server. When a proxy is required this tag has to set
                            Eg: <proxy_ip>xx.xxx.xx.xx</proxy_ip>
 
-            13. proxy_port = This <proxy_port> tag refers to the port of the
+            proxy_port = This <proxy_port> tag refers to the port of the
                             proxy server. When a proxy is required for
                             remote connection this tag has to set.
                            Eg: <proxy_port>yyyy</proxy_port>
 
-            14. headless_mode
 
         :Arguments:
 
@@ -167,10 +173,7 @@ class browser_actions(object):
                                            locators
             8. element_tag (str) = particular element in the json fie which
                                    contains relevant information to that element
-            9. binary(str) = Absolute path of the browser
-            10. gecko_path(str) = Absolute path of the geckodriver
-            11. proxy_ip(str) = IP of the proxy server
-            12. proxy_port(str) = port of the proxy server
+            9. headless_mode(str) = Enable headless_mode
 
 
         :Returns:
@@ -189,6 +192,7 @@ class browser_actions(object):
         pSubStep(wdesc)
         browser_details = {}
 
+        # Get optional argument from system data file if it is not specified in keyword arg
         optional_arg_keys = ["ip", "remote", "headless_mode"]
         optional_args = {}
         for arg in optional_arg_keys:
@@ -203,6 +207,7 @@ class browser_actions(object):
 
         browser_list = []
 
+        # Create a list of browser
         if system.findall("browser") is not None:
             browser_list.extend(system.findall("browser"))
         if system.find("browsers") is not None:
@@ -212,6 +217,7 @@ class browser_actions(object):
             "No browser found in system: {}, please check datafile".format(system_name)
             status = False
 
+        # Headless mode operation
         enable_headless = Utils.data_Utils.get_object_from_datarepository("wt_enable_headless")
         if str(optional_args["headless_mode"]).strip().lower() in ["yes", "y"] or enable_headless:
             status = selenium_Utils.create_display()

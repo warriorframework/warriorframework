@@ -275,6 +275,7 @@ class BrowserManagement(object):
                         "doesn't support opening new tab. Open tab may not function correctly")
             status = False
         else:
+            # If it is chrome ver < 60, actually open a new tab
             element = browser_instance.find_element_by_tag_name("body")
             element.send_keys(Keys.LEFT_CONTROL, 't')
         sleep(1)
@@ -517,6 +518,7 @@ class BrowserManagement(object):
         proxy_ip = kwargs.get("proxy_ip", None)
         proxy_port = kwargs.get("proxy_port", None)
         ff_profile = None
+        # if firefox is being used with proxy, set the profile here
         if proxy_ip is not None and proxy_port is not None:
             ff_profile = self.set_firefox_proxy(profile_dir, proxy_ip, proxy_port)
 
@@ -534,6 +536,7 @@ class BrowserManagement(object):
                 optional_args = {}
                 ff_capabilities = webdriver.DesiredCapabilities.FIREFOX
                 # This is for internal testing needs...some https cert is not secure
+                # And firefox will need to know how to handle it
                 ff_capabilities['acceptInsecureCerts'] = True
 
                 # Force disable marionette, only needs in Selenium 3 with FF ver < 47
