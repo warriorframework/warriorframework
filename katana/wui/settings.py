@@ -40,11 +40,11 @@ INSTALLED_APPS = [
     'native.wapp_management',
     'native.wappstore',
     'native.settings',
-    'native.projects',
-    'native.suites',
-    'native.cases',
-    'native.execution',
-    'native.wdf_edit',
+    'apps.projects',
+    'apps.suites',
+    'apps.cases',
+    'apps.execution',
+    'apps.wdf_edit',
 ]
 
 MIDDLEWARE = [
