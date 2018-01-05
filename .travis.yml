@@ -52,7 +52,7 @@ install:
         wget https://chromedriver.storage.googleapis.com/2.34/chromedriver_linux64.zip;
         unzip chromedriver_linux64.zip;
         chmod +x chromedriver;
-        sudo ln -s chromedriver /usr/local/bin/chromedriver;
+        sudo mv chromedriver /usr/local/bin/;
       fi
 
 script:
