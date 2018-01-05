@@ -169,7 +169,7 @@ class VerifyFileContents:
                         for j in range(0, len(self.data["data"]["drivers"]["repository"][i]["driver"])):
                             if j not in drivers_index:
                                 drivers_data.append(copy.deepcopy(self.data["data"]["drivers"]["repository"][i]["driver"][j]))
-                                self.data["data"]["drivers"]["repository"][i]["driver"] = copy.deepcopy(drivers_data)
+                        self.data["data"]["drivers"]["repository"][i]["driver"] = copy.deepcopy(drivers_data)
 
                         for driver_name in drivers:
                             self.data["data"]["drivers"]["repository"][i]["driver"].append({"@name": driver_name, "@clone": "no"})
