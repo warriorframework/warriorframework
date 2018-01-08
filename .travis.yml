@@ -34,6 +34,11 @@ matrix:
       python: 2.7
       addons:
         firefox: "46.0"
+    - os: linux
+      env: INSTALL=yes TESTFILE=./wftests/warrior_tests/testcases/selenium_tests/tc_selenium_headless.xml SELENIUM=yes SELENIUM3=yes
+      python: 2.7
+      addons:
+        firefox: "46.0"
 
 install:
     - if [ ${INSTALL} = "yes" ]; then
@@ -51,6 +56,9 @@ install:
         unzip chromedriver_linux64.zip;
         chmod +x chromedriver;
         sudo mv chromedriver /usr/local/bin/;
+      fi
+    - if [ ${SELENIUM3} = "yes" ]; then
+        pip install selenium==3.8
       fi
 
 script:
