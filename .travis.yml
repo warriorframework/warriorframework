@@ -58,7 +58,7 @@ install:
         sudo mv chromedriver /usr/local/bin/;
       fi
     - if [ ${SELENIUM3} = "yes" ]; then
-        pip install selenium==3.8
+        pip install selenium==3.8 ;
       fi
 
 script:
