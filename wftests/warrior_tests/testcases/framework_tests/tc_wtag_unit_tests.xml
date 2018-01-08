@@ -101,5 +101,16 @@
             <impact>impact</impact>
             <runmode type="Standard" value=""/>
         </step>
+		<step Driver="ci_regression_driver" Keyword="check_opt_values_from_datafile" TS="3">
+		    <!-- for testing with out mandatory values and all optional -->
+			<Arguments/>
+			<onError action="next"/>
+			<Description>wtag</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+			<rmt/>
+		</step>
 	</Steps>
 </Testcase>

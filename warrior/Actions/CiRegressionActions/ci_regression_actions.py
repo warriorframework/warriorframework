@@ -457,6 +457,69 @@ class CIregressionActions(object):
             status = check_type(intvar, "intvar", int) and status
         return status
 
+    def check_opt_values_from_datafile(self, system_name="sys_wtag",
+                                       strvar="I am a string variable",
+                                       langs=['English', 'Chinese', 'French'],
+                                       states=('texas', 'newyork'),
+                                       currencys={'USA': 'USD', 'India': 'INR'},
+                                       ramspace=False,
+                                       configfile="../../config_files/check_file_type",
+                                       intvar=456):
+        """Verify the datatype of the value read from the datafile using either
+        the tag or wtag feature
+        :Argument:
+            1. system_name = system name in the datafile
+            2. strvar = string variable
+            3. langs = list variable (should get from data file using wtag)
+            4. states = tuple variable
+            5. currencys = dict variable
+            6. ramspace = boolean variable
+            7. configfile = file variable
+            8. intvar = int variable
+        """
+        def check_type(var, varname, datatype):
+            """check that vars are of correct datatype
+            """
+            vartype = type(var)
+            status = True
+            if vartype is not datatype:
+                pNote('{} is expected to be {} type, but found to be of '
+                      '{} type'.format(varname, datatype, vartype), "error")
+                status = False
+            return status
+        status = True
+        datafile = Utils.config_Utils.datafile
+        tc_filepath = os.path.dirname(data_Utils.get_object_from_datarepository(
+                                            'wt_testcase_filepath'))
+        # this block checks if strvar is string type
+        status = check_type(strvar, "strvar", str) and status
+        # this block checks if langs is list type
+        status = check_type(langs, "langs", list) and status
+        # this block checks if states is tuple type
+        status = check_type(states, "states", tuple) and status
+        # this block checks if currencys is dict type
+        status = check_type(currencys, "currencys", dict) and status
+        # this block checks if ramspace is bool type
+        status = check_type(ramspace, "ramspace", bool) and status
+        file_err = '{} is not a file, please check'
+        try:
+            # this checks if configfile and anotherfile are valid files
+            # by getting the absolute path of the file
+            if not os.path.isabs(configfile):
+                configfile = file_Utils.getAbsPath(configfile, tc_filepath)
+            if not os.path.isfile(configfile):
+                pNote(file_err.format(configfile), "error")
+        except AttributeError:
+            pNote('configfile and anotherfile are expected to be files', "error")
+            pNote('type of configfile is {}'.format(type(configfile)), "error")
+            status = False
+        if type(intvar) is str and intvar.startswith('tag'):
+            intvar = data_Utils.resolve_argument_value_to_get_tag_value(
+                                    datafile, system_name, intvar)
+        else:
+            status = check_type(intvar, "intvar", int) and status
+        return status
+
     def generate_timestamp_delta(self, stored_delta_key, timestamp_key, desired_status):
         """
             test keyword created for runmode_timer
