@@ -279,6 +279,8 @@ class WarriorCli(object):
                       .format(session_id, title_row, resp, temp_resp[resp]))
         except Exception as e:
             print_error("Found exception: {}".format(e))
+            print_error("Check if the key list below is not empty and the keys are proper")
+            print_error(resp_key_list)
         return td_resp_dict
 
     @mocked
