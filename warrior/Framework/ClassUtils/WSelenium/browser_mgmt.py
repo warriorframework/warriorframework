@@ -97,16 +97,16 @@ class BrowserManagement(object):
         """Maximizes current browser window."""
         status = True
         try:
-            if browser_instance is not None:
-                # Need to distinguish whether browser is in headless mode or not
-                # as maximize_window doesn't work in headless mode
-                if headless_mode:
-                    browser_instance.set_window_size(1920, 1080)
-                else:
-                    browser_instance.maximize_window()
+            if browser_instance is None:
+                browser_instance = self.current_browser
 
+            # Need to distinguish whether browser is in headless mode or not
+            # as maximize_window doesn't work in headless mode
+            if headless_mode:
+                browser_instance.set_window_size(1920, 1080)
             else:
-                self.current_browser.maximize_window()
+                browser_instance.maximize_window()
+
         except Exception as exception:
             print_exception(exception)
             status = False
