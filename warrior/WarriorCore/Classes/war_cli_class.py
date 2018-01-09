@@ -397,6 +397,10 @@ class WarriorCliClass(object):
                             "or other CLI related operation."
                             "User can verify input value from console output/result file")
 
+        parser.add_argument('-headless', action='store_true', default=False,
+                            help="If headless mode is enabled, all selenium tests will run in xfvb "\
+                            "which will not need a GUI")
+
         namespace = parser.parse_args(arglist)
         #see if the below line is requried
         if namespace.mock:

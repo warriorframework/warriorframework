@@ -10,26 +10,22 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from Framework.Utils.rest_Utils import remove_invalid_req_args
 
 """ Selenium keywords for Generic Browser Actions """
 
-import os, re
+import os
 from urlparse import urlparse
 from Framework.ClassUtils.WSelenium.browser_mgmt import BrowserManagement
 from Actions.SeleniumActions.verify_actions import verify_actions
 from Actions.SeleniumActions.elementlocator_actions import elementlocator_actions
 
-try:
-    import Framework.Utils as Utils
-except ImportWarning:
-    raise ImportError
-
+import Framework.Utils as Utils
 from Framework.Utils import selenium_Utils
 from Framework.Utils import data_Utils
 from Framework.Utils import xml_Utils
 from Framework.Utils.testcase_Utils import pNote, pSubStep
 from Framework.ClassUtils.json_utils_class import JsonUtils
+from Framework.Utils.rest_Utils import remove_invalid_req_args
 
 
 class browser_actions(object):
@@ -45,14 +41,14 @@ class browser_actions(object):
         self.filename = Utils.config_Utils.filename
         self.logfile = Utils.config_Utils.logfile
         self.jsonobj = JsonUtils()
+        # Browser object is the Selenium Utils for all the browser related operations
         self.browser_object = BrowserManagement()
         self.verify_obj = verify_actions()
         self.elementlocator_obj = elementlocator_actions()
 
     def browser_launch(self, system_name, browser_name="all", type="firefox",
                        url=None, ip=None, remote=None, element_config_file=None,
-                       element_tag=None, binary=None, gecko_path=None,
-                       proxy_ip=None, proxy_port=None):
+                       element_tag=None, headless_mode=None):
         """
         The Keyword would launch a browser and Navigate to the url, if provided by the user.
 
@@ -132,22 +128,35 @@ class browser_actions(object):
                              FOR TEST CASE
                              Eg: <argument name="element_tag" value="json_name_1">
 
-            9. binary = This <binary> tag refers to path of the browser to
-                        invoke
+            9. headless_mode = Run selenium test in headless mode
+                                Used in system with no GUI component
+
+            The next 5 arguments are added for Selenium 3 with Firefox
+            Please use them inside the browser tag in system data file
+            binary = The absolute path of the browser executable
                         Eg: <binary>../../firefox/firefox</binary>
 
-            10. gecko_path = This <gecko_path> tag refers to path of the
-                             geckodriver
-                            Eg: <gecko_path>../../../geckodriver</gecko_path>
+            gecko_path = The absolute path of the geckodriver
+                             geckodriver is mandatory if using Firefox version 47 or above
+                             This also required Selenium 3.5 or above
+                             For more information please visit:
+                             https://github.com/mozilla/geckodriver#selenium
+                             Eg: <gecko_path>../../../geckodriver</gecko_path>
 
-            11. proxy_ip = This <proxy_ip> tag refers to the ip of the proxy
+            gecko_log = The absolute path for the geckodriver log to be saved
+                            This file only get generated if firefox is launched with geckodriver
+                            and failuer/error occur
+                            Default is the testcase log directory
+
+            proxy_ip = This <proxy_ip> tag refers to the ip of the proxy
                            server. When a proxy is required this tag has to set
                            Eg: <proxy_ip>xx.xxx.xx.xx</proxy_ip>
 
-            12. proxy_port = This <proxy_port> tag refers to the port of the
+            proxy_port = This <proxy_port> tag refers to the port of the
                             proxy server. When a proxy is required for
                             remote connection this tag has to set.
                            Eg: <proxy_port>yyyy</proxy_port>
+
 
         :Arguments:
 
@@ -163,10 +172,8 @@ class browser_actions(object):
                                            locators
             8. element_tag (str) = particular element in the json fie which
                                    contains relevant information to that element
-            9. binary(str) = path of the browser
-            10. gecko_path(str) = path of the geckodriver
-            11. proxy_ip(str) = IP of the proxy server
-            12. proxy_port(str) = port of the proxy server
+            9. headless_mode(str) = Enable headless_mode
+
 
         :Returns:
 
@@ -184,47 +191,58 @@ class browser_actions(object):
         pSubStep(wdesc)
         browser_details = {}
 
-        if ip is None:
-            ip = data_Utils.getSystemData(self.datafile, system_name, "ip")
-        if remote is None:
-            remote = data_Utils.getSystemData(self.datafile, system_name,
-                                              "remote")
+        # Get optional argument from system data file if it is not specified in keyword arg
+        optional_arg_keys = ["ip", "remote", "headless_mode"]
+        optional_args = {}
+        for arg in optional_arg_keys:
+            if arguments.get(arg, None) is None:
+                optional_args[arg] = data_Utils.getSystemData(self.datafile, system_name, arg)
 
-        webdriver_remote_url = ip if str(remote).strip().lower() == "yes"\
-            else False
+        optional_args["webdriver_remote_url"] = optional_args["ip"]\
+            if str(optional_args["remote"]).strip().lower() == "yes" else False
 
         system = xml_Utils.getElementWithTagAttribValueMatch(self.datafile,
-                                                             "system",
-                                                             "name",
-                                                             system_name)
-        browser_list = system.findall("browser")
-        try:
+                                                             "system", "name", system_name)
+
+        browser_list = []
+
+        # Create a list of browser
+        if system.findall("browser") is not None:
+            browser_list.extend(system.findall("browser"))
+        if system.find("browsers") is not None:
             browser_list.extend(system.find("browsers").findall("browser"))
-        except AttributeError:
-            pass
 
         if not browser_list:
-            browser_list.append(1)
-            browser_details = arguments
+            "No browser found in system: {}, please check datafile".format(system_name)
+            status = False
+
+        # Headless mode operation
+        enable_headless = Utils.data_Utils.get_object_from_datarepository("wt_enable_headless")
+        if str(optional_args["headless_mode"]).strip().lower() in ["yes", "y"] or enable_headless:
+            status = selenium_Utils.create_display()
+            if not status:
+                browser_list = []
+            else:
+                output_dict[system_name+"_headless"] = True
+                output_dict["headless_display"] = True
+        else:
+            output_dict[system_name+"_headless"] = False
 
         for browser in browser_list:
-            arguments = Utils.data_Utils.get_default_ecf_and_et(arguments,
-                                                                self.datafile,
-                                                                browser)
-            if browser_details == {}:
-                browser_details = selenium_Utils.\
-                    get_browser_details(browser, datafile=self.datafile, **arguments)
+            arguments = Utils.data_Utils.get_default_ecf_and_et(arguments, self.datafile, browser)
+            browser_details = selenium_Utils.\
+                              get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
-                if type == "firefox":
-                    ff_profile = self.browser_object.\
-                        set_firefoxprofile(proxy_ip, proxy_port)
-                if binary != "" and gecko_path != "":
-                    browser_inst = self.browser_object.open_browser(
-                        browser_details["type"], webdriver_remote_url,
-                        binary=binary, gecko_path=gecko_path,
-                        profile_dir=ff_profile)
-                else:
-                    pNote("Please provide valid path for binary/geckodriver")
+                # Call utils to launch correct type of browser
+                # Need to pass the binary, gecko_path, proxy_ip, proxy_port if specified
+                browser_optional_arg_keys = ["binary", "gecko_path",
+                                             "proxy_ip", "proxy_port", "gecko_log"]
+                browser_optional_args = {}
+                for arg in browser_optional_arg_keys:
+                    if browser_details.get(arg) is not None:
+                        browser_optional_args[arg] = browser_details.get(arg)
+                browser_inst = self.browser_object.open_browser(
+                    browser_details["type"], **browser_optional_args)
                 if browser_inst:
                     browser_fullname = "{0}_{1}".format(system_name,
                                                         browser_details["browser_name"])
@@ -245,7 +263,9 @@ class browser_actions(object):
                           (system_name, browser_details["browser_name"]), "error")
                     result = False
                 status = status and result
-            browser_details = {}
+            else:
+                pNote("Cannot load correct browser detail in system {}, please check datafile".\
+                      format(system_name))
         Utils.testcase_Utils.report_substep_status(status)
         return status, output_dict
 
@@ -319,15 +339,18 @@ class browser_actions(object):
                 browser_details = selenium_Utils. \
                     get_browser_details(browser, datafile=self.datafile, **arguments)
             if browser_details is not None:
-                current_browser = Utils.data_Utils.get_object_from_datarepository(system_name + "_" + browser_details["browser_name"])
+                current_browser = Utils.data_Utils.get_object_from_datarepository(
+                    system_name + "_" + browser_details["browser_name"])
+                headless = Utils.data_Utils.get_object_from_datarepository(
+                    system_name + "_headless")
                 if current_browser:
-                    self.browser_object.maximize_browser_window(current_browser)
+                    status &= self.browser_object.maximize_browser_window(current_browser, headless)
                 else:
                     pNote("Browser of system {0} and name {1} not found in the"
                           "datarepository"
                           .format(system_name, browser_details["browser_name"]),
                           "Exception")
-                    status = False
+                    status &= False
             browser_details = {}
         Utils.testcase_Utils.report_substep_status(status)
         return status
@@ -1560,15 +1583,15 @@ class browser_actions(object):
                     get_object_from_datarepository(system_name + "_" +
                                                    browser_details["browser_name"])
                 if current_browser:
-                    self.browser_object.open_tab(current_browser,
-                                                 browser_details["url"],
-                                                 browser_details["type"])
+                        status &= self.browser_object.open_tab(current_browser,
+                                                               browser_details["url"],
+                                                               browser_details["type"])
                 else:
                     pNote("Browser of system {0} and name {1} not found in the "
                           "datarepository"
                           .format(system_name, browser_details["browser_name"]),
                           "Exception")
-                    status = False
+                    status &= False
             browser_details = {}
         Utils.testcase_Utils.report_substep_status(status)
         if current_browser:
@@ -2497,7 +2520,8 @@ class browser_actions(object):
                     get_object_from_datarepository(system_name + "_" +
                                                    browser_details["browser_name"])
                 if current_browser:
-                    status = self.browser_object.delete_a_specific_cookie(current_browser, browser_details["cookie_name"])
+                    status = self.browser_object.delete_a_specific_cookie(
+                        current_browser, browser_details["cookie_name"])
                 else:
                     pNote("Browser of system {0} and name {1} not found in the "
                           "datarepository"
