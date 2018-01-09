@@ -101,9 +101,29 @@
             <impact>impact</impact>
             <runmode type="Standard" value=""/>
         </step>
-		<step Driver="ci_regression_driver" Keyword="check_opt_values_from_datafile" TS="3">
-		    <!-- for testing with out mandatory values and all optional -->
-			<Arguments/>
+		<step Driver="ci_regression_driver" Keyword="check_opt_values_from_datafile" TS="6">
+		    <!-- for testing optional args with wtag when system name provided -->
+			<Arguments>
+				<argument name="langs" value="wtag=lang_list"/>
+				<argument name="system_name" value="sys_wtag"/>
+				<argument name="currencys" value="wtag=currency_map"/>
+				<argument name="intvar" value="tag=intvar"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>wtag</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+			<rmt/>
+		</step>
+		<step Driver="ci_regression_driver" Keyword="check_opt_values_from_datafile" TS="7">
+		    <!-- for testing optional args with wtag when system name not provided -->
+			<Arguments>
+				<argument name="langs" value="wtag=lang_list"/>
+				<argument name="currencys" value="wtag=currency_map"/>
+				<argument name="intvar" value="tag=intvar"/>
+			</Arguments>
 			<onError action="next"/>
 			<Description>wtag</Description>
 			<iteration_type type=""/>

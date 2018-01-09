@@ -457,14 +457,14 @@ class CIregressionActions(object):
             status = check_type(intvar, "intvar", int) and status
         return status
 
-    def check_opt_values_from_datafile(self, system_name="sys_wtag",
-                                       strvar="I am a string variable",
-                                       langs=['English', 'Chinese', 'French'],
-                                       states=('texas', 'newyork'),
-                                       currencys={'USA': 'USD', 'India': 'INR'},
+    def check_opt_values_from_datafile(self, langs=['Sanskrit', 'Tamil'],
+                                       strvar="I am a default variable",
+                                       states="wtag=states",
+                                       system_name="sys_wtag",
+                                       currencys={'USA': 'USD'},
                                        ramspace=False,
                                        configfile="../../config_files/check_file_type",
-                                       intvar=456):
+                                       intvar=496):
         """Verify the datatype of the value read from the datafile using either
         the tag or wtag feature
         :Argument:

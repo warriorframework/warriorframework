@@ -138,6 +138,7 @@ class KeywordOperations(object):
         self.all_args_list = self.get_all_arguments()
         self.req_args_list = self.get_mandatory_arguments()
         self.optional_args_list = list(set(self.all_args_list) - set(self.req_args_list))
+        self.default_dict = self.get_defaults()
 
     def get_all_arguments(self):
         """Returns a list of all arguments required for
@@ -146,6 +147,15 @@ class KeywordOperations(object):
         if args.count('self') > 0:
             args.remove('self')
         return args
+
+    def get_defaults(self):
+        """Returns a dictionary of optional arguments with their default values for
+        the provided function/method object """
+        default_dict = {}
+        args, varargs, keyword, defaults = inspect.getargspec(self.exec_obj)
+        if defaults:
+            default_dict = dict(zip(args[-len(defaults):], defaults))
+        return default_dict
 
     def get_mandatory_arguments(self):
         """Returns a list of mandatory arguments required for the provided function/method
@@ -166,7 +176,6 @@ class KeywordOperations(object):
         var = arg
         if not hasattr(self, 'tag_dict'):
             self.tag_dict = data_Utils.get_credentials(datafile, system)
-            arg = arg.strip()
         if isinstance(arg, basestring) and arg.startswith("wtag"):
             var = arg.split("=")[1].strip()
             if var in self.tag_dict:
@@ -224,10 +233,12 @@ class KeywordOperations(object):
                 arg_kv[args] = self.args_repository[args]
             elif args in self.data_repository:
                 arg_kv[args] = self.data_repository[args]
-            if args not in arg_kv:
-                print_info("executing with default values for optional "
-                           "argument '{0}'".format(args))
-                continue
+            else:
+                arg_kv[args] = self.default_dict[args]
+                print_info("executing with default value '{0}' for optional "
+                           "argument '{1}'".format(arg_kv[args], args))
+        for args in self.optional_args_list:
+            # requires another loop since system_name may not be at beginning
             if args != 'system_name' and 'system_name' in arg_kv:
                 # the args can be direct values or mentioned as
                 # wtag var (except system_name) like 'wtag=<wtag var>',
@@ -275,7 +286,7 @@ class KeywordOperations(object):
         """Executes a function for a keyword"""
         kwargs, kw_status = self.get_argument_as_keywords()
 
-        print_info ("The Arguments passed for the current Step is: '{0}'".format(kwargs))
+        print_info("The Arguments passed for the current Step is: '{0}'".format(kwargs))
         if kw_status:
             # Execute the corresponding function
             try:
