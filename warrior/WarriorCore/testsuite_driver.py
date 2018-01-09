@@ -166,8 +166,8 @@ def get_testcase_list(testsuite_filepath):
                 print_info("Provided testcase path: '{}' has asterisk(*) in "
                            "it. All the Warrior testcase XML files matching "
                            "the given pattern will be executed.".format(orig_tc_abspath))
-                # Get all the files matching the pattern
-                all_files = glob.glob(orig_tc_abspath)
+                # Get all the files matching the pattern and sort them by name
+                all_files = sorted(glob.glob(orig_tc_abspath))
                 # Get XML files
                 xml_files = [fl for fl in all_files if fl.endswith('.xml')]
                 tc_files = []

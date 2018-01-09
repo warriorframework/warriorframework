@@ -119,8 +119,8 @@ def get_testsuite_list(project_filepath):
                 print_info("Provided testsuite path: '{}' has asterisk(*) in "
                            "it. All the Warrior testsuite XML files matching "
                            "the given pattern will be executed.".format(orig_ts_abspath))
-                # Get all the files matching the pattern
-                all_files = glob.glob(orig_ts_abspath)
+                # Get all the files matching the pattern and sort them by name
+                all_files = sorted(glob.glob(orig_ts_abspath))
                 # Get XML files
                 xml_files = [fl for fl in all_files if fl.endswith('.xml')]
                 ts_files = []
