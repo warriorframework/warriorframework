@@ -21,6 +21,9 @@ matrix:
       env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/pj_cond_var.xml
       python: 2.7
     - os: linux
+      env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/pj_glob.xml
+      python: 2.7
+    - os: linux
       env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/pj_rest.xml
       python: 2.7
     - os: linux
@@ -67,3 +70,5 @@ script:
       else
         python ./warrior/Warrior $TESTFILE ;
       fi
+after_success:
+  - bash <(curl -s https://copilot.blackducksoftware.com/ci/travis/scripts/upload)

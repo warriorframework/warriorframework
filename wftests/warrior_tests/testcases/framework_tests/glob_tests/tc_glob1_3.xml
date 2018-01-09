@@ -1,0 +1,37 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+                <Name>tc_glob1_3</Name>
+                <Title>Test asterisk(*) support in case/suite path(using python glob module)</Title>
+                <Engineer>Warrior_user</Engineer>
+                <Date>2018-01-09</Date>
+                <Time>14:22</Time>
+                <State/>
+                <InputDataFile>No_Data</InputDataFile>
+                <Datatype/>
+                <default_onError action="next"/>
+                <Logsdir/>
+                <Resultsdir/>
+                <ExpectedResults/>
+        </Details>
+        <Requirements>
+                <Requirement/>
+        </Requirements>
+        <Steps>
+                <step Driver="ci_regression_driver" Keyword="increase_value" TS="1" draft="no">
+                        <Arguments>
+                                <argument name="key" value="tc_glob_value"/>
+                                <argument name="status" value="pass"/>
+                                <argument name="max_value" value="3"/>
+                                <argument name="max_status" value="pass"/>
+                        </Arguments>
+                        <Execute ExecType="Yes"/>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type="Standard"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+        </Steps>
+</Testcase>

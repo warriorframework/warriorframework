@@ -10,7 +10,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from __builtin__ import str
 import os
 import re
 from collections import OrderedDict
@@ -294,6 +293,7 @@ def get_object_from_datarepository(object_key, verbose=True):
             print_warning('{0} is not found in data repository'.format(object_key))
     return obj
 
+
 @mocked
 def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
     """Gets the command_list, startprompt_list, endprompt_list,
@@ -434,6 +434,43 @@ def _get_mapping_details(global_obj, vfylist):
             map_list.append(None)
     return (vfylist, map_list)
 
+
+def _get_key_elements(testdata, global_obj, keys):
+    """given keys in a comma separated key names, get the elements
+    corresponding to each key in the testdata or global testdata block
+    :RETURN:
+    list of xml elements corresponding to the keys in testdata or global
+    testdata block. if the element is not found in testdata or global_obj,
+    the same key name in string would be appended
+    """
+    elem_list = []
+    if keys is None:
+        return None
+    keylist = [key.strip() for key in keys.split(',')]
+    for key in keylist:
+        # get the key_elem from test case corresponding to key from
+        # the testdata or global section. Return None if it is not
+        # found in both testdata and global section
+        if testdata.find(key) is not None:
+            elem_list.append(testdata.find(key))
+            continue
+        key_found = False
+        if global_obj is not None:
+            global_key_elem = global_obj.find("keys")
+            global_keys = xml_Utils.get_child_node_list(global_key_elem)
+            # return the first matched entry in global section with tag=key
+            for glob_key in global_keys:
+                if glob_key.tag == key:
+                    elem_list.append(glob_key)
+                    key_found = True
+                    break
+        if not key_found:
+            print_error("There is no pattern element for key '{}',"
+                        " please check".format(key))
+            elem_list.append(key)
+    return elem_list
+
+
 @mocked
 def _get_cmd_details(testdata, global_obj, system_name,
                      varconfigfile, var_sub=None):
@@ -467,27 +504,8 @@ def _get_cmd_details(testdata, global_obj, system_name,
             vfylist, maplist = _get_mapping_details(global_obj, vfylist)
             resultant_list = maplist
         elif param == "resp_key_list":
-            def find_key_elem(key):
-                """get the key_elem from test case corresponding to key from
-                the testdata or global section. Return None if it is not
-                found in both testdata and global section
-                """
-                if testdata.find(key) is not None:
-                    return testdata.find(key)
-                if global_obj is not None:
-                    global_key_elem = global_obj.find("keys")
-                    global_keys = xml_Utils.get_child_node_list(global_key_elem)
-                    # return the first matched entry in global section with tag=key
-                    return [glob_key for glob_key in global_keys if glob_key.tag == key][0]
-                return None
-            keylist = _get_cmdparams_list(testdata, global_obj, attrib)[0]
-            if keylist:
-                # get the keys to be used for pattern matching in this command
-                keys = [key.strip() for key in keylist.split(',')]
-                # get the xml elements corresponding to the key
-                resultant_list = [map(find_key_elem, keys)]
-            else:
-                resultant_list = [None] * len(vfylist)
+            keyslist = _get_cmdparams_list(testdata, global_obj, attrib)
+            resultant_list = [_get_key_elements(testdata, global_obj, keys) for keys in keyslist]
         else:
             resultant_list = _get_cmdparams_list(testdata, global_obj, attrib)
             if param == "sys_list":
