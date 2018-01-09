@@ -18,6 +18,9 @@ matrix:
       env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/pj_retry.xml
       python: 2.7
     - os: linux
+      env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/pj_glob.xml
+      python: 2.7
+    - os: linux
       env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/pj_iterative_execution.xml
       python: 2.7
     - os: linux
