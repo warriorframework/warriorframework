@@ -198,7 +198,6 @@ var katana = {
 
     setTitle: function(popup, title) {
       popup.find('.title').text(title);
-      console.log(popup.data());
       popup.data('tabIndex').text(title);
     },
 
