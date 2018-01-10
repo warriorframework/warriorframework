@@ -186,7 +186,7 @@ var katana = {
 
     open: function(content, title, callBack, size) {
       this.body = katana.$view;
-      var popup = this.template.clone().appendTo(katana.popupController.body);
+      var popup = this.template.clone().appendTo(katana.popupController.body.find('#wui-popups'));
       content && popup.find('.page-content').append(content);
       size && popup.addClass(size);
       katana.popupController.initEvents(popup);
@@ -198,12 +198,13 @@ var katana = {
 
     setTitle: function(popup, title) {
       popup.find('.title').text(title);
+      console.log(popup.data());
       popup.data('tabIndex').text(title);
     },
 
     createTab: function(popup) {
       if (!katana.popupController.tabBar) {
-        katana.popupController.tabBar = katana.popupController.tabTemplate.clone().appendTo(katana.popupController.body);
+        katana.popupController.tabBar = katana.popupController.tabTemplate.clone().appendTo(katana.popupController.body.find('#wui-popup-nav'));
         katana.popupController.tabBar.find('.tab').remove();
       }
       var tab = katana.popupController.tabTemplate.find('.tab').first().clone().appendTo(katana.popupController.tabBar);
@@ -214,11 +215,13 @@ var katana = {
     },
 
     openWindow: function(popup) {
-      var activePopup = katana.popupController.body.find('.popup.active');
-      if (activePopup.get(0) != popup.get(0)) {
+      var activePopup = katana.popupController.body.find('#wui-popups').find('.popup.active');
+      if (activePopup.get(0) !== popup.get(0)) {
         activePopup.removeClass('active');
         popup.removeClass('removeing hidden').addClass('active');
       }
+      activePopup = katana.popupController.body.find('#wui-popups').find('.popup.active').detach();
+      katana.popupController.body.find('#wui-popups').append(activePopup);
     },
 
     close: function(popup) {
@@ -230,8 +233,8 @@ var katana = {
     },
 
     updateActiveWindow: function(popup) {
-      var activePopup = katana.popupController.body.find('.popup.active');
-      if (activePopup.get(0) != popup.get(0)) {
+      var activePopup = katana.popupController.body.find('#wui-popups').find('.popup.active');
+      if (activePopup.get(0) !== popup.get(0)) {
         activePopup.removeClass('active');
         popup.addClass('active');
       }
