@@ -81,10 +81,10 @@ class AppValidator:
 
     def __is_compatible(self, data):
         output = {"status": True, "message": ""}
-        allowed, bounds = self.__get_version_list(data[self.mandatory_fields[2]])
-        disallowed, excluded_bounds = self.__get_version_list(data[self.mandatory_fields[3]])
         warrior_version = self.navigator.get_wf_version()
         all_warrior_versions = self.navigator.get_all_wf_versions()
+        allowed, bounds = self.__get_version_list(data[self.mandatory_fields[2]], all_warrior_versions)
+        disallowed, excluded_bounds = self.__get_version_list(data[self.mandatory_fields[3]], all_warrior_versions)
 
         in_allowed = self.__check_against_version_list(warrior_version, allowed, bounds)
         in_disallowed = self.__check_against_version_list(warrior_version, disallowed, excluded_bounds)
@@ -119,7 +119,7 @@ class AppValidator:
                         break
         return status
 
-    def __get_version_list(self, versions):
+    def __get_version_list(self, versions, existing_versions):
         bounds = []
         individual = []
         version_list = versions.split(",")
@@ -127,15 +127,29 @@ class AppValidator:
             el = el.strip()
             bound = {}
             if el.startswith(":"):
-                bound["upper"] = el[1:].strip()
-                bounds.append(copy.deepcopy(bound))
+                el = el[1:].strip()
+                if el in existing_versions:
+                    bound["upper"] = el
+                    bounds.append(copy.deepcopy(bound))
+                else:
+                    print "{0} is not a valid Warrior version.".format(el)
             elif "::" in el:
                 el_list = el.split("::")
-                bound["lower"] = el_list[0]
-                bound["upper"] = el_list[1]
-                bounds.append(copy.deepcopy(bound))
+                if el_list[1] in existing_versions:
+                    bound["upper"] = el_list[1]
+                    if el_list[0] in existing_versions:
+                        bound["lower"] = el_list[0]
+                    else:
+                        print "{0} is not a valid Warrior version.".format(el)
+                else:
+                    print "{0} is not a valid Warrior version.".format(el)
+                if len(bound.keys()) > 0:
+                    bounds.append(copy.deepcopy(bound))
             else:
-                individual.append(el)
+                if el in existing_versions:
+                    individual.append(el)
+                else:
+                    print "{0} is not a valid Warrior version.".format(el)
         return individual, bounds
 
 

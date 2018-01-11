@@ -46,7 +46,9 @@ class Navigator(object):
             tags_list = []
             for el in temp_list:
                 temp = el.split()[1].strip().split('/')[2]
-                if temp.startswith('warrior'):
+                if temp.startswith("warrior"):
+                    if "^" in temp:
+                        temp = temp.split('^')[0]
                     tags_list.append(temp)
         return tags_list
 
