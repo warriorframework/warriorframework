@@ -882,7 +882,7 @@ def verify_cmd_response(match_list, context_list, command, response,
             if match_object:
                 match = match_object.group()
                 msg = "Found '{0}' in response to '{1}' on {2} & "\
-                    "'Found' tag is set to '{3}', so the '{4}'"
+                    "'Found' tag is set to '{3}', so the {4}"
                 pattern_match = True
                 cond_value = verify_group[1][i]
                 if cond_value:
@@ -908,7 +908,7 @@ def verify_cmd_response(match_list, context_list, command, response,
             else:
                 match = match_list[i]
                 msg = "Did not find '{0}' in response to '{1}' on {2} & "\
-                    "'Found' tag is set to '{3}' so the '{4}'"
+                    "'Found' tag is set to '{3}' so the {4}"
                 status = False
             if found is status:
                 result = False if not found and nogroup else True
@@ -925,16 +925,16 @@ def verify_cmd_response(match_list, context_list, command, response,
                     result = False
             if pattern_match is True and found is True:
                 print_info(msg .format(match_list[i], command, verify_on_system,
-                                       "Yes", "Verification Passed"))
+                                       "Yes", "verification Passed"))
             elif pattern_match is True and found is False:
                 print_debug(msg .format(match_list[i], command, verify_on_system,
-                                        "No", "Verification Failed"))
+                                        "No", "verification Failed"))
             elif pattern_match is False and found is True:
                 print_debug(msg .format(match_list[i], command, verify_on_system,
-                                        "Yes", "Verification Failed"))
+                                        "Yes", "verification Failed"))
             elif pattern_match is False and found is False:
                 print_info(msg .format(match_list[i], command, verify_on_system,
-                                       "No", "Verification Passed"))
+                                       "No", "verification Passed"))
         elif context_list[i] and match_list[i] == "":
             noiimpact, found = get_no_impact_logic(context_list[i])
             found = string_Utils.conv_str_to_bool(found)
