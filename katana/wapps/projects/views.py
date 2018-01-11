@@ -14,8 +14,6 @@ limitations under the License.
 # -*- coding: utf-8 -*-
 #from __future__ import unicode_literals
 
-
-from native.settings.settings import Settings
 # Create your views here.
 
 from django.shortcuts import render, redirect
