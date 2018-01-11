@@ -19,15 +19,7 @@ class AppValidator:
             data = read_json_data(self.wf_config_file)
             if data is not None:
                 if "app" in data:
-                    if isinstance(data["app"], list):
-                        for app_details in data["app"]:
-                            if output["status"]:
-                                output = self.__verify_app_details(app_details)
-                            else:
-                                break
-
-                    else:
-                        output = self.__verify_app_details(data["app"])
+                    output = self.__verify_app_details(data["app"])
                 else:
                     output["status"] = False
                     output["message"] = "wf_config.json is not in the correct format."
