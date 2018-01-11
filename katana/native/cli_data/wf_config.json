@@ -1,9 +1,0 @@
-{
-  "icon": "map-signs",
-  "color": "yellow",
-  "name" : "CLI Data",
-  "developer": "Warrior Framework",
-  "description": "Edit your CLI Data Files here.",
-  "url" : "/katana/cli_data/",
-  "app" : [{"name" : "CLI Data", "url" : "/katana/cli_data/", "include": "native.cli_data.urls"}]
-}

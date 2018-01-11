@@ -18,7 +18,7 @@ class CoreIndex:
         self.available_apps = []
         self.settings_file_abs_path = settings_file_path
         self.settings_installed_apps = []
-        self.user_apps = "apps"
+        self.user_apps = "wapps"
         self.native_apps = "native"
 
     def get_available_apps(self):
@@ -54,7 +54,7 @@ class CoreIndex:
 
 def _get_apps(apps_directory_path, apps_package_name):
     """
-    This function gets all the app directories inside the "/katana/apps" and "katana/native"
+    This function gets all the app directories inside the "/katana/wapps" and "katana/native"
     directories
 
     Returns:
