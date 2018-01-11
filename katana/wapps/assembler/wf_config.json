@@ -5,5 +5,5 @@
   "developer": "Warrior Framework",
   "description": "Manage your Warrior Environment with this App",
   "url" : "/katana/assembler/",
-  "app" : [{"name" : "Assembler", "url" : "/katana/assembler/", "include": "native.assembler.urls"}]
+  "app" : [{"name" : "Assembler", "url" : "/katana/assembler/", "include": "wapps.assembler.urls"}]
 }

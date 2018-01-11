@@ -7,13 +7,13 @@ import xmltodict
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
-from native.assembler.assembler_utils.repository_details import KwRepositoryDetails
-from native.assembler.assembler_utils.verify_file_contents import VerifyFileContents
+from wapps.assembler.assembler_utils.repository_details import KwRepositoryDetails
+from wapps.assembler.assembler_utils.verify_file_contents import VerifyFileContents
 from utils.directory_traversal_utils import delete_dir
 from utils.git_utils import get_repository_name, check_url_is_a_valid_repo
 from utils.navigator_util import Navigator
 nav_obj = Navigator()
-REF_FILE = os.path.join(nav_obj.get_katana_dir(), "native", "assembler", "static", "assembler",
+REF_FILE = os.path.join(nav_obj.get_katana_dir(), "wapps", "assembler", "static", "assembler",
                         "base_templates", "empty.xml")
 
 
@@ -50,7 +50,7 @@ def check_repo_availability(request):
     if not check_url_is_a_valid_repo(url):
         available = False
     else:
-        temp_directory = os.path.join(nav_obj.get_katana_dir(), "native", "assembler", ".data")
+        temp_directory = os.path.join(nav_obj.get_katana_dir(), "wapps", "assembler", ".data")
         kw_repo_obj = KwRepositoryDetails(url, temp_directory)
         drivers = kw_repo_obj.get_pd_names()
         if os.path.isdir(kw_repo_obj.repo_directory):
@@ -80,7 +80,7 @@ def save_warhorn_config_file(request):
     nav_obj = Navigator()
     directory = request.POST.get('directory')
     if directory == "default":
-        directory = os.path.join(nav_obj.get_katana_dir(), "native", "assembler", ".data")
+        directory = os.path.join(nav_obj.get_katana_dir(), "wapps", "assembler", ".data")
     filepath = os.path.join(directory, request.POST.get('filename') + ".xml")
     json_data = json.loads(request.POST.get('json_data'))
     json_data["data"]["warriorframework"] = "Test"
@@ -94,7 +94,7 @@ def save_and_run_warhorn_config_file(request):
     nav_obj = Navigator()
     directory = request.POST.get('directory')
     if directory == "default":
-        directory = os.path.join(nav_obj.get_katana_dir(), "native", "assembler", ".data")
+        directory = os.path.join(nav_obj.get_katana_dir(), "wapps", "assembler", ".data")
     filepath = os.path.join(directory, request.POST.get('filename') + ".xml")
     json_data = json.loads(request.POST.get('json_data'))
     json_data["data"]["warriorframework"] = "Test"
@@ -127,5 +127,5 @@ def _save_file(filepath, data):
 
 def get_data_directory(request):
     nav_obj = Navigator()
-    directory = os.path.join(nav_obj.get_katana_dir(), "native", "assembler", ".data")
+    directory = os.path.join(nav_obj.get_katana_dir(), "wapps", "assembler", ".data")
     return JsonResponse({"data_directory": directory})
