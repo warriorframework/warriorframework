@@ -23,8 +23,8 @@ from django.http import StreamingHttpResponse, JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 
-import wapps
-from wapps.settings.settings import Settings
+import native
+from native.settings.settings import Settings
 from utils.navigator_util import Navigator
 from utils import file_utils
 
@@ -48,7 +48,7 @@ class Execution(object):
         Constructor for execution app
         """
         self.nav = Navigator()
-        self.katana_dir = os.path.dirname(wapps.__path__[0])
+        self.katana_dir = os.path.dirname(native.__path__[0])
         self.wf_dir = os.path.dirname(self.katana_dir)
         self.warrior = os.path.join(self.wf_dir, 'warrior', 'Warrior')
         self.default_ws = os.path.join(self.wf_dir, 'warrior', 'Warriorspace')
