@@ -6,5 +6,5 @@
   "url" : "/katana/projects/",
   "developer": "Warrior Framework",
   "description": "Edit your Projects with this App",
-  "app" : [{"name" : "Projects", "url" : "/katana/projects/", "include": "apps.projects.urls"}]
+  "app" : [{"name" : "Projects", "url" : "/katana/projects/", "include": "wapps.projects.urls"}]
 }

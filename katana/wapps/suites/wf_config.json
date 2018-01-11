@@ -6,5 +6,5 @@
   "url" : "/katana/suites/",
   "developer": "Warrior Framework",
   "description": "Edit your suites using this App.",
-  "app" : [{"name" : "Suites", "url" : "/katana/suites/", "include": "apps.suites.urls"}]
+  "app" : [{"name" : "Suites", "url" : "/katana/suites/", "include": "wapps.suites.urls"}]
 }
