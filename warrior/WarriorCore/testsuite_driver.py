@@ -16,6 +16,7 @@ import time
 import traceback
 import shutil
 import copy
+import glob
 import sequential_testcase_driver
 import parallel_testcase_driver
 from WarriorCore.Classes import execution_files_class, junit_class
@@ -151,10 +152,51 @@ def get_testcase_list(testsuite_filepath):
     if testcases is None:
         print_info('Testsuite is empty: tag <Testcases> not found in the input Testsuite xml file ')
     else:
-        testcase_list = []
-        new_testcase_list = testcases.findall('Testcase')
+        new_testcase_list = []
+        orig_testcase_list = testcases.findall('Testcase')
+        for orig_tc in orig_testcase_list:
+            orig_tc_path = orig_tc.find('path').text
+            if '*' not in orig_tc_path:
+                new_testcase_list.append(orig_tc)
+            # When the file path has asterisk(*), get the Warrior XML testcase
+            # files matching the given pattern
+            else:
+                orig_tc_abspath = Utils.file_Utils.getAbsPath(
+                    orig_tc_path, os.path.dirname(testsuite_filepath))
+                print_info("Provided testcase path: '{}' has asterisk(*) in "
+                           "it. All the Warrior testcase XML files matching "
+                           "the given pattern will be executed.".format(orig_tc_abspath))
+                # Get all the files matching the pattern and sort them by name
+                all_files = sorted(glob.glob(orig_tc_abspath))
+                # Get XML files
+                xml_files = [fl for fl in all_files if fl.endswith('.xml')]
+                tc_files = []
+                # Get Warrior testcase XML files
+                for xml_file in xml_files:
+                    root = Utils.xml_Utils.getRoot(xml_file)
+                    if root.tag.upper() == "TESTCASE":
+                        tc_files.append(xml_file)
+                # Copy the XML object and set the filepath as path value for
+                # all the files matching the pattern
+                if tc_files:
+                    for tc_file in tc_files:
+                        new_tc = copy.deepcopy(orig_tc)
+                        new_tc.find('path').text = tc_file
+                        new_testcase_list.append(new_tc)
+                        print_info("Testcase: '{}' added to the execution "
+                                   "list ".format(tc_file))
+                else:
+                    print_warning("Asterisk(*) pattern match failed for '{}' due "
+                                  "to at least one of the following reasons:\n"
+                                  "1. No files matched the given pattern\n"
+                                  "2. Invalid testcase path is given\n"
+                                  "3. No testcase XMLs are available\n"
+                                  "Given path will be used for the Warrior "
+                                  "execution.".format(orig_tc_abspath))
+                    new_testcase_list.append(orig_tc)
+
         # execute tc multiple times
-        for _, tc in enumerate(new_testcase_list):
+        for tc in new_testcase_list:
             runmode, value, _ = common_execution_utils.get_runmode_from_xmlfile(tc)
             retry_type, _, _, retry_value, _ = common_execution_utils.get_retry_from_xmlfile(tc)
             if runmode is not None and value > 0:

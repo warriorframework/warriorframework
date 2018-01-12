@@ -85,6 +85,51 @@ def katana():
     template_lookup = [current_file_dir, "{0}{1}{2}{1}".format(current_file_dir, os.sep, 'views')]
     return template('index', template_lookup=template_lookup)
 
+@route('/datafilepath/:path')
+def datafilepath(path):   
+    path = path.replace(">", os.sep)
+    subsystem_name_list = []
+    system_name_list = []
+    lines = ""
+    try:
+        with open(path, 'r') as f:
+            lines = f.read()
+        corrected_xml = remove_extra_newlines_char_xml(lines)
+        with open('output.txt', 'w') as files:
+            files.write(corrected_xml)
+        tree = xml.etree.ElementTree.parse('output.txt')
+        root = tree.getroot()
+        system = root.findall('system')
+        for val in system:
+            system_name_list.append(val.get('name') + ',')
+    except Exception:
+        print "Kindly provide the correct Relative path for Input data File, if auto-population of system & Subsystem name is needed."
+    return system_name_list
+
+
+@route('/sysName/:path/:filename')
+def sysName(path,filename): 
+    filename = filename.replace(">", os.sep)
+    lines = ""
+    subsystem_list = []
+    with open(filename, 'r') as f:
+       lines = f.read()
+    corrected_xml = remove_extra_newlines_char_xml(lines)
+    with open('output.txt', 'w') as files:
+        files.write(corrected_xml)
+    tree = xml.etree.ElementTree.parse('output.txt')
+    root = tree.getroot()
+    system = root.findall('system')
+    for val in system:
+        system_name = val.get('name')
+        if system_name == path:
+            sub_system = val.findall('subsystem')
+            if sub_system:
+                for valuee in sub_system:
+                    subsystem_list.append(valuee.get('name') + ',')
+            else:
+                 subsystem_list.append("No Subsystem Available" + ',')
+    return subsystem_list
 
 @route('/readconfig')
 def readconfig():

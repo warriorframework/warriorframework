@@ -17,18 +17,18 @@ import sys
 import time
 import subprocess
 import getpass
+import xml
 import Tools
 from Framework import Utils
 from Framework.Utils.print_Utils import print_info, print_debug,\
  print_warning, print_exception, print_error
 from Framework.Utils.testcase_Utils import pNote
-from WarriorCore.Classes.war_cli_class import WarriorCliClass
 from Framework.ClassUtils import database_utils_class
 from Framework.ClassUtils.WNetwork.loging import ThreadedLog
 from Framework.Utils.list_Utils import get_list_by_separating_strings
 from Framework.Utils.data_Utils import get_object_from_datarepository
 from WarriorCore.Classes.warmock_class import mocked
-from Framework.Utils.cli_Utils import _get_obj_session
+from timeit import itertools
 
 """ Module for performing CLI operations """
 
@@ -263,7 +263,7 @@ class WarriorCli(object):
             then it takes testdata as priority and updates on testdata's session id
         """
 
-        if resp_key_list:
+        try:
             for resp in resp_key_list[i].keys():
                 td_resp_dict = get_object_from_datarepository(str(session_id))
                 # checks if title_row value is not in td_resp_dict
@@ -277,6 +277,10 @@ class WarriorCli(object):
                 pNote("Portion of response saved to the data "
                       "repository with key: '{0}.{1}.{2}' and value: '{3}'"
                       .format(session_id, title_row, resp, temp_resp[resp]))
+        except Exception as e:
+            print_error("Found exception: {}".format(e))
+            print_error("Check if the key list below is not empty and the keys are proper")
+            print_error(resp_key_list)
         return td_resp_dict
 
     @mocked
@@ -340,7 +344,18 @@ class WarriorCli(object):
             elif resp_keys is not None:
                 keys = resp_ref.split(',')
                 # get the patterns from pattern entries in testdata file
-                patterns = [k.get("resp_pattern_req") for k in resp_keys]
+                patterns = []
+                # error out if any of the key element can not be retrieved
+                for key, resp_key in itertools.izip_longest(keys, resp_keys):
+                    if isinstance(resp_key, xml.etree.ElementTree.Element):
+                        patterns.append(resp_key.get("resp_pattern_req"))
+                    elif isinstance(resp_key, basestring):
+                        print_error("There is no pattern element for key '{}' corresponding"
+                                    " to '{}', please check".format(resp_key, key))
+                        status = False
+                else:
+                    if status is False:
+                        return status, resp_key_list
                 # warn if number of patterns does not match number of resp_ref keys
                 if len(keys) != len(patterns):
                     print_warn_msg(keys, len(patterns))

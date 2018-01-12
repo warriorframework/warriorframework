@@ -31,8 +31,9 @@ class LineResult:
 
     def __init__(self):
         """Constructor for class LineResult"""
-        self.keys = ['type', 'name', 'info', 'timestamp', 'duration', 'status', 'impact',
-                     'onerror', 'msc', 'static', 'dynamic']
+
+        self.keys = ['type', 'name', 'info', 'description', 'timestamp', 'duration', 'status', 'impact', 'onerror', 'msc', 'static',
+                     'dynamic']
 
     def get_info(self, line):
         """gets info for line"""
@@ -58,6 +59,7 @@ class LineResult:
                      'type': variant.replace('Test', '').replace('Keyword', 'step ') + str(stepcount),
                      'name': line.get("name"),
                      'info': self.get_info(line),
+                     'description': line.get("description"),
                      'timestamp': line.get("timestamp"),
                      'duration': line.get("time"),
                      'status': '<span class=' + status_name + '>' + status_name + '</span>',
