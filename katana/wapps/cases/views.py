@@ -25,7 +25,7 @@ navigator = Navigator()
 CONFIG_FILE = join_path(navigator.get_katana_dir(), "config.json")
 All_case_action_details = py_file_details(json.loads(open(CONFIG_FILE).read())['pythonsrcdir'])
 EMPTY_DATA = json.loads(
-    json.dumps(xmltodict.parse(open("./native/cases/static/empty.xml").read(), process_namespaces=True)))
+    json.dumps(xmltodict.parse(open("./wapps/cases/static/empty.xml").read(), process_namespaces=True)))
 caseStateOptions_str = ['New', 'Draft', 'In Review', 'Released', 'Add Another']
 
 

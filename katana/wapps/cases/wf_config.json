@@ -3,5 +3,7 @@
   "color": "red",
   "developer": "Warrior Framework",
   "description": "Edit your Cases with this App",
-  "app" : {"name" : "Cases", "url" : "/katana/cases/", "include": "wapps.cases.urls"}
+  "url" : "/katana/cases/",
+  "name" : "Cases",
+  "app" : [{"name" : "Cases", "url" : "/katana/cases/", "include": "wapps.cases.urls"}]
 }
