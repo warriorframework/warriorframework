@@ -13,7 +13,7 @@ limitations under the License.
 '''
 import sys
 if sys.version_info < (2, 7):
-    print("Warrior doesn't support Python version lower than 2.7, now exiting")
+    print "Warrior doesn't support Python version lower than 2.7, now exiting"
     sys.exit(0)
 try:
     import os
@@ -22,10 +22,10 @@ try:
     import Framework.Utils as Utils
     from Framework.Utils import xml_Utils
     from Framework.Utils.print_Utils import print_error, print_info
+    from Framework.ClassUtils import database_utils_class
     from WarriorCore import warrior_cli_driver, testcase_driver, testsuite_driver, project_driver
     from WarriorCore import ironclaw_driver, mockrun_driver, framework_detail
     from WarriorCore.Classes.jira_rest_class import Jira
-    from Framework.ClassUtils import database_utils_class
 except:
     raise
 """
@@ -45,7 +45,7 @@ def update_jira_by_id(jiraproj, jiraid, exec_dir, status):
             zip_file = shutil.make_archive(exec_dir, 'zip', exec_dir)
             jira_obj.upload_logfile_to_jira_issue(jiraid, zip_file)
             jira_obj.update_jira_issue(jiraid, status)
-            
+
     else:
         print_info("jiraid not provided, will not update jira issue")
 
@@ -58,14 +58,15 @@ def add_live_table_divs(livehtmllocn, file_list):
     root_attribs = {'id': 'liveTables'}
     root = xml_Utils.create_element("div", "", **root_attribs)
 
-    # for each iteration create a div with id = the iteration number, the table for tis iteration will be added 
+    # for each iteration create a div with id = the iteration number
+    # the table for tis iteration will be added
     # under this div
-    
-    for i in range(0, len(file_list)):   
+
+    for i in range(0, len(file_list)):
         marker_start = 'table-{0}starts'.format(str(i))
         marker_end = 'table-{0}ends'.format(str(i))
         div_attribs = {'id': str(i)}
-        elem = xml_Utils.create_subelement(root, 'div',  div_attribs)
+        elem = xml_Utils.create_subelement(root, 'div', div_attribs)
         start_comment = xml_Utils.create_comment_element(marker_start)
         end_comment = xml_Utils.create_comment_element(marker_end)
         elem.append(start_comment)
@@ -73,7 +74,99 @@ def add_live_table_divs(livehtmllocn, file_list):
         # write the tree to the file
         xml_Utils.write_tree_to_file(root, livehtmllocn)
     return
-    
+
+def file_execution(parameter_list, cli_args, abs_filepath, default_repo):
+    """
+        Call the corresponded driver of each file type
+    """
+    mockrun = cli_args.mockrun
+    a_defects = cli_args.ad
+    jiraproj = cli_args.jiraproj
+    jiraid = cli_args.jiraid
+
+    if mockrun:
+        result = mockrun_driver.main(abs_filepath, len(parameter_list))
+    elif Utils.xml_Utils.getRoot(abs_filepath).tag == 'Testcase':
+        default_repo['war_file_type'] = "Case"
+        result, _, data_repository = testcase_driver.main(
+            abs_filepath, data_repository=default_repo,
+            runtype='SEQUENTIAL_KEYWORDS',
+            auto_defects=a_defects, jiraproj=jiraproj)
+        update_jira_by_id(jiraproj, jiraid, os.path.dirname(
+            data_repository['wt_resultsdir']), result)
+        email.compose_send_email("Test Case: ", abs_filepath,
+                                 data_repository['wt_logsdir'],
+                                 data_repository['wt_resultsdir'], result)
+    elif Utils.xml_Utils.getRoot(abs_filepath).tag == 'TestSuite':
+        default_repo['war_file_type'] = "Suite"
+        result, suite_repository = testsuite_driver.main(
+            abs_filepath, auto_defects=a_defects,
+            jiraproj=jiraproj, data_repository=default_repo)
+        update_jira_by_id(jiraproj, jiraid,
+                          suite_repository['suite_execution_dir'], result)
+        email.compose_send_email("Test Suite: ", abs_filepath,
+                                 suite_repository['ws_logs_execdir'],
+                                 suite_repository['ws_results_execdir'], result)
+    elif Utils.xml_Utils.getRoot(abs_filepath).tag == 'Project':
+        default_repo['war_file_type'] = "Project"
+        result, project_repository = project_driver.main(
+            abs_filepath, auto_defects=a_defects,
+            jiraproj=jiraproj, data_repository=default_repo)
+        update_jira_by_id(jiraproj, jiraid,
+                          project_repository['project_execution_dir'], result)
+        email.compose_send_email("Project: ", abs_filepath,
+                                 project_repository['wp_logs_execdir'],
+                                 project_repository['wp_results_execdir'], result)
+    else:
+        print_error("Unrecognized root tag in the input xml file ! exiting!!!")
+
+def group_execution(parameter_list, cli_args, abs_cur_dir, db_obj):
+    """
+        Process the parameter list and prepare environment for file_execution
+    """
+    overwrite = cli_args.overwrite
+    livehtmllocn = cli_args.livehtmllocn
+
+    status = True
+
+    iter_count = 0 ## this iter is used for live html results
+    for parameter in parameter_list:
+        result = False
+        # check if the input parameter is an xml file
+        if Utils.file_Utils.get_extension_from_path(parameter) == '.xml':
+            filepath = parameter
+            framework_detail.warrior_banner()
+            abs_filepath = Utils.file_Utils.getAbsPath(filepath, abs_cur_dir)
+            print_info('Absolute path: {0}'.format(abs_filepath))
+            if Utils.file_Utils.fileExists(abs_filepath):
+                if overwrite.items():
+                    default_repo = overwrite
+                else:
+                    default_repo = {}
+
+                if db_obj is not False and db_obj.status is True:
+                    default_repo.update({'db_obj': db_obj})
+                else:
+                    default_repo.update({'db_obj': False})
+
+                #pdate livehtmllocn to default repo
+                if livehtmllocn:
+                    live_html_dict = {}
+                    live_html_dict['livehtmllocn'] = livehtmllocn
+                    live_html_dict['iter'] = iter_count
+
+                    default_repo.update({'live_html_dict': live_html_dict})
+                    if iter_count == 0:
+                        add_live_table_divs(livehtmllocn, parameter_list)
+
+                result = file_execution(parameter_list, cli_args, abs_filepath, default_repo)
+            else:
+                print_error("file does not exist !! exiting!!")
+        else:
+            print_error("unrecognized file format !!!")
+        status = status and result
+        iter_count += 1
+    return status
 
 # def execution(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
 #          jiraproj, overwrite, jiraid, dbsystem, livehtmllocn):
@@ -92,14 +185,8 @@ def execution(parameter_list, cli_args):
         1. parameter_list = list of command line parameters supplied by
         the user to execute Warrior
     """
-    mockrun = cli_args.mockrun
-    a_defects = cli_args.ad
     iron_claw = cli_args.ironclaw
-    jiraproj = cli_args.jiraproj
-    overwrite = cli_args.overwrite
-    jiraid = cli_args.jiraid
     dbsystem = cli_args.dbsystem
-    livehtmllocn = cli_args.livehtmllocn
 
     status = False
 
@@ -107,104 +194,34 @@ def execution(parameter_list, cli_args):
         status = ironclaw_driver.main(parameter_list)
     else:
         abs_cur_dir = os.path.abspath(os.curdir)
-        status = True
         db_obj = database_utils_class.create_database_connection(dbsystem=dbsystem)
-        iter = 0 ## this iter is used for live html results
-        for parameter in parameter_list:
-            result = False
-            # check if the input parameter is an xml file
-            if Utils.file_Utils.get_extension_from_path(parameter) == '.xml':
-                filepath = parameter
-                framework_detail.warrior_banner()
-                abs_filepath = Utils.file_Utils.getAbsPath(filepath, abs_cur_dir)
-                print_info('Absolute path: {0}'.format(abs_filepath))
-                if Utils.file_Utils.fileExists(abs_filepath):
-                    if len(overwrite.items()) > 0:
-                        default_repo = overwrite
-                    else:
-                        default_repo = {}
+        status = group_execution(parameter_list, cli_args, abs_cur_dir, db_obj)
 
-                    if db_obj is not False and db_obj.status is True:
-                        default_repo.update({'db_obj': db_obj})
-                    else:
-                        default_repo.update({'db_obj': False})
-
-                    #pdate livehtmllocn to default repo
-                    if livehtmllocn:
-                        live_html_dict = {}
-                        live_html_dict['livehtmllocn'] = livehtmllocn
-                        live_html_dict['iter'] = iter
-                        
-                        default_repo.update({'live_html_dict': live_html_dict})
-                        if iter == 0:
-                            add_live_table_divs(livehtmllocn, parameter_list)
-
-                    if mockrun:
-                        result = mockrun_driver.main(abs_filepath, len(parameter_list))
-                        
-                    
-                    
-
-                    
-                    elif Utils.xml_Utils.getRoot(abs_filepath).tag == 'Testcase':
-                        default_repo['war_file_type'] = "Case"
-                        result, tc_duration, data_repository = testcase_driver.main(
-                                abs_filepath, data_repository=default_repo,
-                                runtype='SEQUENTIAL_KEYWORDS',
-                                auto_defects=a_defects, jiraproj=jiraproj)
-                        update_jira_by_id(jiraproj, jiraid, os.path.dirname(
-                                            data_repository['wt_resultsdir']), result)
-                        email.compose_send_email("Test Case: ", abs_filepath,
-                                                 data_repository['wt_logsdir'],
-                                                 data_repository['wt_resultsdir'], result)
-                    elif Utils.xml_Utils.getRoot(abs_filepath).tag == 'TestSuite':
-                        default_repo['war_file_type'] = "Suite"
-                        result, suite_repository = testsuite_driver.main(
-                                abs_filepath, auto_defects=a_defects,
-                                jiraproj=jiraproj, data_repository=default_repo)
-                        update_jira_by_id(jiraproj, jiraid,
-                                          suite_repository['suite_execution_dir'], result)
-                        email.compose_send_email("Test Suite: ", abs_filepath,
-                                                 suite_repository['ws_logs_execdir'],
-                                                 suite_repository['ws_results_execdir'], result)
-                    elif Utils.xml_Utils.getRoot(abs_filepath).tag == 'Project':
-                        default_repo['war_file_type'] = "Project"
-                        result, project_repository = project_driver.main(
-                                abs_filepath, auto_defects=a_defects,
-                                jiraproj=jiraproj, data_repository=default_repo)
-                        update_jira_by_id(jiraproj, jiraid,
-                                          project_repository['project_execution_dir'], result)
-                        email.compose_send_email("Project: ", abs_filepath,
-                                                 project_repository['wp_logs_execdir'],
-                                                 project_repository['wp_results_execdir'], result)
-                    else:
-                        print_error("Unrecognized root tag in the input xml file ! exiting!!!")
-                else:
-                    print_error("file does not exist !! exiting!!")
-            else:
-                print_error("unrecognized file format !!!")
-            status = status and result
-            iter += 1
         if db_obj is not False and db_obj.status is True:
             db_obj.close_connection()
-        
-        
+
     return status
 
-def main():
+def main(**kwargs):
+    """
+        main method
+    """
     # (FILEPATH, mockrun, AUTO_DEFECTS, version, CSE_EXEC, IRON_CLAW, JIRAPROJ,
     #  OVERWRITE, JIRAID, DBSYSTEM, LIVEHTMLLOCN) = warrior_cli_driver.main(sys.argv[1:])
-    filepath, cli_args = warrior_cli_driver.main(sys.argv[1:])
+    if not kwargs:
+        filepath, cli_args = warrior_cli_driver.main(sys.argv[1:])
+    else:
+        filepath, cli_args = warrior_cli_driver.main(**kwargs)
 
     if cli_args.version:
         framework_detail.warrior_framework_details()
         sys.exit(0)
-    if len(filepath) == 0:
+    if not filepath:
         print_error("Provide at least one xml file to execute")
     status = execution(filepath, cli_args)
     status = {"true": True, "pass": True}.get(str(status).lower())
     # add code to send div finished using katana interface class
-    
+
     if status is True:
         print_info("DONE 0")
         sys.exit(0)
