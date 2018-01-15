@@ -28,6 +28,7 @@ try:
     from WarriorCore.Classes.jira_rest_class import Jira
 except:
     raise
+
 """
 This is the Warrior executable
 """
@@ -79,6 +80,7 @@ def file_execution(parameter_list, cli_args, abs_filepath, default_repo):
     """
         Call the corresponded driver of each file type
     """
+    result = False
     mockrun = cli_args.mockrun
     a_defects = cli_args.ad
     jiraproj = cli_args.jiraproj
@@ -120,11 +122,12 @@ def file_execution(parameter_list, cli_args, abs_filepath, default_repo):
     else:
         print_error("Unrecognized root tag in the input xml file ! exiting!!!")
 
-def group_execution(parameter_list, cli_args, abs_cur_dir, db_obj):
+    return result
+
+def group_execution(parameter_list, cli_args, abs_cur_dir, db_obj, overwrite):
     """
         Process the parameter list and prepare environment for file_execution
     """
-    overwrite = cli_args.overwrite
     livehtmllocn = cli_args.livehtmllocn
 
     status = True
@@ -170,7 +173,7 @@ def group_execution(parameter_list, cli_args, abs_cur_dir, db_obj):
 
 # def execution(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
 #          jiraproj, overwrite, jiraid, dbsystem, livehtmllocn):
-def execution(parameter_list, cli_args):
+def execution(parameter_list, cli_args, overwrite):
     """Parses the input parameters (i.e. sys.argv)
         If the input parameter is an xml file:
             - check if file exists, if exists
@@ -195,7 +198,7 @@ def execution(parameter_list, cli_args):
     else:
         abs_cur_dir = os.path.abspath(os.curdir)
         db_obj = database_utils_class.create_database_connection(dbsystem=dbsystem)
-        status = group_execution(parameter_list, cli_args, abs_cur_dir, db_obj)
+        status = group_execution(parameter_list, cli_args, abs_cur_dir, db_obj, overwrite)
 
         if db_obj is not False and db_obj.status is True:
             db_obj.close_connection()
@@ -209,16 +212,18 @@ def main(**kwargs):
     # (FILEPATH, mockrun, AUTO_DEFECTS, version, CSE_EXEC, IRON_CLAW, JIRAPROJ,
     #  OVERWRITE, JIRAID, DBSYSTEM, LIVEHTMLLOCN) = warrior_cli_driver.main(sys.argv[1:])
     if not kwargs:
-        filepath, cli_args = warrior_cli_driver.main(sys.argv[1:])
+        # Launch from terminal/cli exeuction
+        filepath, cli_args, overwrite = warrior_cli_driver.main(sys.argv[1:])
     else:
-        filepath, cli_args = warrior_cli_driver.main(**kwargs)
+        # Launch from python function call
+        filepath, cli_args, overwrite = warrior_cli_driver.main(**kwargs)
 
     if cli_args.version:
         framework_detail.warrior_framework_details()
         sys.exit(0)
     if not filepath:
         print_error("Provide at least one xml file to execute")
-    status = execution(filepath, cli_args)
+    status = execution(filepath, cli_args, overwrite)
     status = {"true": True, "pass": True}.get(str(status).lower())
     # add code to send div finished using katana interface class
 

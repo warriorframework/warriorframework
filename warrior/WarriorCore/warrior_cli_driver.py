@@ -204,7 +204,7 @@ def decide_action(w_cli_obj, namespace):
                 filepath[index] = file_name + '.xml'
 
     # print filepath
-    return (filepath, namespace)
+    return (filepath, namespace, overwrite)
 
 
 def main(args):
