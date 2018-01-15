@@ -32,7 +32,6 @@ except:
 This is the Warrior executable
 """
 
-CSE_EXEC = False
 AUTO_DEFECTS = False
 IRON_CLAW = False
 VERSION = False
@@ -76,8 +75,9 @@ def add_live_table_divs(livehtmllocn, file_list):
     return
     
 
-def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
-         jiraproj, overwrite, jiraid, dbsystem, livehtmllocn):
+# def execution(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
+#          jiraproj, overwrite, jiraid, dbsystem, livehtmllocn):
+def execution(parameter_list, cli_args):
     """Parses the input parameters (i.e. sys.argv)
         If the input parameter is an xml file:
             - check if file exists, if exists
@@ -92,11 +92,18 @@ def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
         1. parameter_list = list of command line parameters supplied by
         the user to execute Warrior
     """
+    mockrun = cli_args.mockrun
+    a_defects = cli_args.ad
+    iron_claw = cli_args.ironclaw
+    jiraproj = cli_args.jiraproj
+    overwrite = cli_args.overwrite
+    jiraid = cli_args.jiraid
+    dbsystem = cli_args.dbsystem
+    livehtmllocn = cli_args.livehtmllocn
+
     status = False
 
-    if cse_execution:
-        status = cse_command_line_exec()
-    elif iron_claw:
+    if iron_claw:
         status = ironclaw_driver.main(parameter_list)
     else:
         abs_cur_dir = os.path.abspath(os.curdir)
@@ -184,26 +191,26 @@ def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
         
     return status
 
-if __name__ == '__main__':
+def main():
+    # (FILEPATH, mockrun, AUTO_DEFECTS, version, CSE_EXEC, IRON_CLAW, JIRAPROJ,
+    #  OVERWRITE, JIRAID, DBSYSTEM, LIVEHTMLLOCN) = warrior_cli_driver.main(sys.argv[1:])
+    filepath, cli_args = warrior_cli_driver.main(sys.argv[1:])
 
-    (FILEPATH, mockrun, AUTO_DEFECTS, version, CSE_EXEC, IRON_CLAW, JIRAPROJ,
-     OVERWRITE, JIRAID, DBSYSTEM, LIVEHTMLLOCN) = warrior_cli_driver.main(sys.argv[1:])
-
-    if version:
+    if cli_args.version:
         framework_detail.warrior_framework_details()
         sys.exit(0)
-    if not CSE_EXEC and len(FILEPATH) == 0:
+    if len(filepath) == 0:
         print_error("Provide at least one xml file to execute")
-    status = main(FILEPATH, mockrun, AUTO_DEFECTS, CSE_EXEC, IRON_CLAW,
-                  JIRAPROJ, OVERWRITE, JIRAID, DBSYSTEM, LIVEHTMLLOCN)
+    status = execution(filepath, cli_args)
     status = {"true": True, "pass": True}.get(str(status).lower())
     # add code to send div finished using katana interface class
     
     if status is True:
         print_info("DONE 0")
         sys.exit(0)
-        print "This line should not be printed"
     else:
         print_info("DONE 1")
         sys.exit(1)
-        print "This line should not be printed"
+
+if __name__ == '__main__':
+    main()

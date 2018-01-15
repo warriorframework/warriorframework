@@ -204,9 +204,7 @@ def decide_action(w_cli_obj, namespace):
                 filepath[index] = file_name + '.xml'
 
     # print filepath
-    return (filepath, namespace.mockrun, namespace.ad, namespace.version,
-            namespace.cse, namespace.ironclaw, namespace.jiraproj, overwrite,
-            namespace.jiraid, namespace.dbsystem, namespace.livehtmllocn)
+    return (filepath, namespace)
 
 
 def main(args):
