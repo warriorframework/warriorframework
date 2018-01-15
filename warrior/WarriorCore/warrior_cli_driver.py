@@ -119,6 +119,18 @@ def decide_overwrite_var(namespace):
     return overwrite
 
 
+def append_path(filepath, path_list, path):
+    """Append appropriate paths for testcase/suite/project in test folder
+    """
+    temp_list = []
+    for file_name in path_list:
+        file_name = path + file_name
+        temp_list.append(file_name)
+    if temp_list:
+        filepath.extend(temp_list)
+    return filepath
+
+
 def decide_action(w_cli_obj, namespace):
     """Prepare filepath and other arguments for Warrior main to use"""
     # First level, sleep
@@ -174,23 +186,14 @@ def decide_action(w_cli_obj, namespace):
     elif namespace.ujd:
         decide_ujd_actions(w_cli_obj, namespace)
 
-    def append_path(path_list, path):
-        """Append appropriate paths for testcase/suite/project in test folder
-        """
-        temp_list = []
-        for file_name in path_list:
-            file_name = path + file_name
-            temp_list.append(file_name)
-        filepath.extend(temp_list)
-
     if namespace.tc_name is not None:
-        append_path(namespace.tc_name, "Warriorspace/Testcases/")
+        filepath = append_path(filepath, namespace.tc_name, "Warriorspace/Testcases/")
 
     if namespace.ts_name is not None:
-        append_path(namespace.ts_name, "Warriorspace/Suites/")
+        filepath = append_path(filepath, namespace.ts_name, "Warriorspace/Suites/")
 
     if namespace.proj_name is not None:
-        append_path(namespace.proj_name, "Warriorspace/Projects/")
+        filepath = append_path(filepath, namespace.proj_name, "Warriorspace/Projects/")
 
     # overwrite layer
     overwrite = decide_overwrite_var(namespace)
