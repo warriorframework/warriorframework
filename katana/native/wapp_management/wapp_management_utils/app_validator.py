@@ -1,8 +1,6 @@
-import copy
 import os
 import re
-from distutils.version import LooseVersion
-
+from native.wapp_management.wapp_management_utils.wapp_mgmt_utils import get_version_list, check_against_version_list
 from utils.directory_traversal_utils import join_path, get_sub_dirs_and_files, \
     get_paths_of_subfiles, get_sub_folders
 from utils.json_utils import read_json_data
@@ -83,75 +81,29 @@ class AppValidator:
         output = {"status": True, "message": ""}
         warrior_version = self.navigator.get_wf_version()
         all_warrior_versions = self.navigator.get_all_wf_versions()
-        allowed, bounds = self.__get_version_list(data[self.mandatory_fields[2]], all_warrior_versions)
-        disallowed, excluded_bounds = self.__get_version_list(data[self.mandatory_fields[3]], all_warrior_versions)
+        allowed, bounds, err_alwd = get_version_list(data[self.mandatory_fields[2]], all_warrior_versions)
+        disallowed, excluded_bounds, err_disalwd = get_version_list(data[self.mandatory_fields[3]], all_warrior_versions)
 
-        in_allowed = self.__check_against_version_list(warrior_version, allowed, bounds)
-        in_disallowed = self.__check_against_version_list(warrior_version, disallowed, excluded_bounds)
+        in_allowed = check_against_version_list(warrior_version, allowed, bounds)
+        in_disallowed = check_against_version_list(warrior_version, disallowed, excluded_bounds)
 
         if not in_allowed:
             output["status"] = False
-            output["message"] = "-- An Error Occurred -- {0} (Version: {1}) incompatible with " \
-                                "the current WarriorFramework (Version: {2})."\
-                .format(self.app_name, data["version"], warrior_version)
+            if not err_alwd:
+                output["message"] = "-- An Error Occurred -- {0} (Version: {1}) incompatible with " \
+                                    "the current WarriorFramework (Version: {2})."\
+                    .format(self.app_name, data["version"], warrior_version)
+            else:
+                output["message"] = "-- An Error Occurred -- Compatible versions could not be verified."
         elif in_disallowed:
             output["status"] = False
-            output["message"] = "-- An Error Occurred -- {0} (Version: {1}) appears to be both, " \
-                                "compatible and incompatible with WarriorFramework (Version: {2})."\
+            output["message"] = "-- An Error Occurred -- {0} (Version: {1}) incompatible with " \
+                                "the current WarriorFramework (Version: {2})." \
                 .format(self.app_name, data["version"], warrior_version)
+        elif not in_disallowed and err_disalwd:
+            output["status"] = False
+            output["message"] = "-- An Error Occurred -- Incompatible versions could not be verified."
         return output
-
-    def __check_against_version_list(self, version, version_list, version_bounds):
-        status = False
-        for el in version_list:
-            if version == el:
-                status = True
-                break
-        if not status:
-            for bound in version_bounds:
-                if LooseVersion(version) <= LooseVersion(bound["upper"]):
-                    if "lower" in bound:
-                        if LooseVersion(version) >= LooseVersion(bound["lower"]):
-                            status = True
-                            break
-                    else:
-                        status = True
-                        break
-        return status
-
-    def __get_version_list(self, versions, existing_versions):
-        bounds = []
-        individual = []
-        version_list = versions.split(",")
-        for el in version_list:
-            el = el.strip()
-            bound = {}
-            if el.startswith(":"):
-                el = el[1:].strip()
-                if el in existing_versions:
-                    bound["upper"] = el
-                    bounds.append(copy.deepcopy(bound))
-                else:
-                    print "{0} is not a valid Warrior version.".format(el)
-            elif "::" in el:
-                el_list = el.split("::")
-                if el_list[1] in existing_versions:
-                    bound["upper"] = el_list[1]
-                    if el_list[0] in existing_versions:
-                        bound["lower"] = el_list[0]
-                    else:
-                        print "{0} is not a valid Warrior version.".format(el)
-                else:
-                    print "{0} is not a valid Warrior version.".format(el)
-                if len(bound.keys()) > 0:
-                    bounds.append(copy.deepcopy(bound))
-            else:
-                if el in existing_versions:
-                    individual.append(el)
-                else:
-                    print "{0} is not a valid Warrior version.".format(el)
-        return individual, bounds
-
 
     def __verify_db_details(self, db_details):
         output = {"status": True, "message": ""}

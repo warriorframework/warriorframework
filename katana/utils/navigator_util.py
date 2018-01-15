@@ -19,6 +19,7 @@ class Navigator(object):
         return warrior_dir
 
     def get_wf_version(self):
+        """Gets the current warriorframework version"""
         wf_dir = get_parent_directory(__file__, 3)
         version_file = join_path(wf_dir, "version.txt")
         with open(version_file, 'r') as f:
@@ -33,6 +34,7 @@ class Navigator(object):
         return version_line
 
     def get_all_wf_versions(self):
+        """Returns a list of all available warrior versions"""
         tags_list = False
         p = subprocess.Popen(["git", "ls-remote", "--tags", self.git_url], stdout=subprocess.PIPE,
                                   stderr=subprocess.PIPE)
@@ -43,13 +45,13 @@ class Navigator(object):
             print "-- Errors -- {0}".format(errors)
         else:
             temp_list = output.strip().split("\n")
-            tags_list = []
+            tags_list = set()
             for el in temp_list:
                 temp = el.split()[1].strip().split('/')[2]
                 if temp.startswith("warrior"):
                     if "^" in temp:
                         temp = temp.split('^')[0]
-                    tags_list.append(temp)
+                    tags_list.add(temp)
         return tags_list
 
     def search_folder_name(self, folder_name, given_dir):

@@ -3,5 +3,10 @@
   "color": "green",
   "developer": "Warrior Framework",
   "description": "This is the Official Warrior App Store",
-  "app" : {"name" : "Wapp Store", "url" : "/katana/wappstore/", "include": "native.wappstore.urls"}
+  "app" : {"name" : "Wapp Store", "url" : "/katana/wappstore/", "include": "native.wappstore.urls"},
+  "warrior-compatibility": ":warrior-3.7.0",
+  "warrior-incompatibility": "",
+  "version": "1.0.0",
+  "permissions": "",
+  "availability": ""
 }
