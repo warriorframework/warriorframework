@@ -65,7 +65,6 @@ def add_live_table_divs(livehtmllocn, file_list):
         elem.append(end_comment)
         # write the tree to the file
         xml_Utils.write_tree_to_file(root, livehtmllocn)
-    return
 
 def file_execution(parameter_list, cli_args, abs_filepath, default_repo):
     """
@@ -184,6 +183,7 @@ def execution(parameter_list, cli_args, overwrite):
         sys.exit(0)
     if not parameter_list:
         print_error("Provide at least one xml file to execute")
+        sys.exit(1)
 
     iron_claw = cli_args.ironclaw
     dbsystem = cli_args.dbsystem
