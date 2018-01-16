@@ -7,8 +7,14 @@
     <link rel="stylesheet" href="{% static 'cases/css/cases.css' %}">
 </head>
 <body>
+<div class="tool-bar">
+    <button class="button">New</button>
+</div>
+<div class="csrf-container">{% csrf_token %}</div>
 
-{{ data }}
+<div auto-init="cases.landing.init">
+    <div id="tree-div"></div>
+</div>
 
 </body>
 </html>
