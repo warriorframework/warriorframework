@@ -143,19 +143,17 @@ def group_execution(parameter_list, cli_args, abs_cur_dir, db_obj, overwrite, li
                     default_repo.update({'db_obj': False})
 
                 #pdate livehtmllocn to default repo
-                if livehtmllocn and livehtmlobj is None:
+                if livehtmllocn or livehtmlobj is not None:
                     live_html_dict = {}
-                    live_html_dict['livehtmllocn'] = livehtmllocn
+                    live_html_dict['livehtmllocn'] =\
+                        livehtmllocn if livehtmlobj is None else livehtmlobj
                     live_html_dict['iter'] = iter_count
 
                     default_repo.update({'live_html_dict': live_html_dict})
-                    if iter_count == 0:
+                    if iter_count == 0 and livehtmlobj is None:
                         add_live_table_divs(livehtmllocn, parameter_list)
-                elif livehtmlobj is not None:
-                    default_repo.update({'live_html_dict': livehtmlobj})
-                    if iter_count == 0:
+                    elif iter_count == 0 and livehtmlobj is not None:
                         add_live_table_divs(livehtmlobj, parameter_list)
-
 
                 result = file_execution(parameter_list, cli_args, abs_filepath, default_repo)
             else:
