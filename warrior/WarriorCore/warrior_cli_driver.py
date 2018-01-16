@@ -64,7 +64,10 @@ def add_live_table_divs(livehtmllocn, file_list):
         elem.append(start_comment)
         elem.append(end_comment)
         # write the tree to the file
-        xml_Utils.write_tree_to_file(root, livehtmllocn)
+        if isinstance(livehtmllocn, str):
+            xml_Utils.write_tree_to_file(root, livehtmllocn)
+        elif isinstance(livehtmllocn, dict):
+            livehtmllocn["html_result"] = xml_Utils.convert_element_to_string(root)
 
 def file_execution(parameter_list, cli_args, abs_filepath, default_repo):
     """
