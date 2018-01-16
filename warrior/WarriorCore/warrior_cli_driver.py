@@ -114,7 +114,7 @@ def file_execution(parameter_list, cli_args, abs_filepath, default_repo):
 
     return result
 
-def group_execution(parameter_list, cli_args, abs_cur_dir, db_obj, overwrite):
+def group_execution(parameter_list, cli_args, abs_cur_dir, db_obj, overwrite, livehtmlobj):
     """
         Process the parameter list and prepare environment for file_execution
     """
@@ -143,7 +143,7 @@ def group_execution(parameter_list, cli_args, abs_cur_dir, db_obj, overwrite):
                     default_repo.update({'db_obj': False})
 
                 #pdate livehtmllocn to default repo
-                if livehtmllocn:
+                if livehtmllocn and livehtmlobj is None:
                     live_html_dict = {}
                     live_html_dict['livehtmllocn'] = livehtmllocn
                     live_html_dict['iter'] = iter_count
@@ -151,6 +151,11 @@ def group_execution(parameter_list, cli_args, abs_cur_dir, db_obj, overwrite):
                     default_repo.update({'live_html_dict': live_html_dict})
                     if iter_count == 0:
                         add_live_table_divs(livehtmllocn, parameter_list)
+                elif livehtmlobj is not None:
+                    default_repo.update({'live_html_dict': livehtmlobj})
+                    if iter_count == 0:
+                        add_live_table_divs(livehtmlobj, parameter_list)
+
 
                 result = file_execution(parameter_list, cli_args, abs_filepath, default_repo)
             else:
@@ -163,7 +168,7 @@ def group_execution(parameter_list, cli_args, abs_cur_dir, db_obj, overwrite):
 
 # def execution(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
 #          jiraproj, overwrite, jiraid, dbsystem, livehtmllocn):
-def execution(parameter_list, cli_args, overwrite):
+def execution(parameter_list, cli_args, overwrite, livehtmlobj):
     """Parses the input parameters (i.e. sys.argv)
         If the input parameter is an xml file:
             - check if file exists, if exists
@@ -195,7 +200,8 @@ def execution(parameter_list, cli_args, overwrite):
     else:
         abs_cur_dir = os.path.abspath(os.curdir)
         db_obj = database_utils_class.create_database_connection(dbsystem=dbsystem)
-        status = group_execution(parameter_list, cli_args, abs_cur_dir, db_obj, overwrite)
+        status = group_execution(parameter_list, cli_args, abs_cur_dir,
+                                 db_obj, overwrite, livehtmlobj)
 
         if db_obj is not False and db_obj.status is True:
             db_obj.close_connection()

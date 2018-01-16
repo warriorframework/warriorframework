@@ -254,17 +254,11 @@ class WarriorHtmlResults:
         
         with open(livehtmllocn, 'w') as live_file:
             live_file.write(live_final_string)
-        
-        
-        return 
 
     def write_live_results(self, junitObj, givenPath, is_final):
         """ build the html givenPath: added this feature in case of later down the line calling from outside junit
         file ( no actual use as of now )
         """
-        
-
-        
         if junitObj:
             self.junit_file = junitObj
             self.junit_root = xml_Utils.getRoot(self.junit_file)
@@ -275,22 +269,21 @@ class WarriorHtmlResults:
         html = ''
         for item in self.lineObjs:
             html += item.html
-            
+
         if is_final is True:
             #html += '<div class="complete"></div>'
             pass
         live_html_dict = data_Utils.get_object_from_datarepository('live_html_dict', verbose=False)
         if live_html_dict:
-            livehtmllocn = live_html_dict['livehtmllocn'] 
+            livehtmllocn = live_html_dict['livehtmllocn']
             live_html_iter = live_html_dict['iter']
             self.create_live_table(html, livehtmllocn, live_html_iter)
-        
+
         html = self.merge_html(html)
         elem_file = open(self.get_path(), 'w')
         elem_file.write(html)
         elem_file.close()
 
-        
         self.lineObjs = []
         print_info("++++ Results Summary ++++")
         print_info("Open the Results summary file given below in a browser to "

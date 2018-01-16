@@ -22,9 +22,7 @@ try:
 except:
     raise
 
-"""
-This is the Warrior executable
-"""
+__description__ = """This is the Warrior executable"""
 
 def main(**kwargs):
     """
@@ -46,8 +44,9 @@ def main(**kwargs):
     else:
         # Launch from python function call
         filepath, cli_args, overwrite = warrior_cli_driver.main(**kwargs)
+    livehtmlobj = kwargs.get("livehtmlobj", None)
 
-    status = warrior_cli_driver.execution(filepath, cli_args, overwrite)
+    status = warrior_cli_driver.execution(filepath, cli_args, overwrite, livehtmlobj)
     status = {"true": True, "pass": True}.get(str(status).lower())
     # add code to send div finished using katana interface class
 
