@@ -50,6 +50,12 @@ class RedirectPrint(object):
         self.get_file(console_logfile)
 #         self.write_to_stdout = write_to_stdout
         self.stdout = sys.stdout
+        self.console_full_log = None
+        self.console_add = None
+
+    def katana_console_log(self, katana_obj):
+        self.console_full_log = katana_obj["console_full_log"]
+        self.console_add = katana_obj["console_add"]
 
     def get_file(self, console_logfile):
         """If the console logfile is not None redirect sys.stdout to
@@ -69,6 +75,10 @@ class RedirectPrint(object):
         data = ansi_escape.sub('', data)
         self.file.write(data)
         self.file.flush()
+        if self.console_full_log is not None:
+            self.console_full_log.write(data)
+        if self.console_full_log is not None:
+            self.console_full_log.write(data)
 
     def isatty(self):
         """Check if sys.stdout is a tty """
