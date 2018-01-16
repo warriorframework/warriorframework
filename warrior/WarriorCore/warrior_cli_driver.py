@@ -209,6 +209,39 @@ def execution(parameter_list, cli_args, overwrite, livehtmlobj):
 
     return status
 
+def warrior_execute_entry(args, **kwargs):
+    """
+        main method
+        filepath: required at least one
+        mockrun:
+        auto_defects:
+        version:
+        iron_claw:
+        jiraproj:
+        overwrite:
+        jiraid:
+        dbsystem:
+        livehtmllocn:
+    """
+    if not args:
+        # Launch from terminal/cli exeuction
+        filepath, cli_args, overwrite = main(sys.argv[1:])
+    else:
+        # Launch from python function call
+        filepath, cli_args, overwrite = main(args)
+    livehtmlobj = kwargs.get("livehtmlobj", None)
+
+    status = execution(filepath, cli_args, overwrite, livehtmlobj)
+    status = {"true": True, "pass": True}.get(str(status).lower())
+    # add code to send div finished using katana interface class
+
+    if status is True:
+        print_info("DONE 0")
+        sys.exit(0)
+    else:
+        print_info("DONE 1")
+        sys.exit(1)
+
 """Handle all the cli command, new functions may be added later"""
 
 def decide_runcat_actions(w_cli_obj, namespace):

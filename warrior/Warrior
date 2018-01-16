@@ -18,44 +18,10 @@ if sys.version_info < (2, 7):
 
 try:
     from WarriorCore import warrior_cli_driver
-    from Framework.Utils.print_Utils import print_info
 except:
     raise
 
 __description__ = """This is the Warrior executable"""
 
-def main(**kwargs):
-    """
-        main method
-        filepath: required at least one
-        mockrun:
-        auto_defects:
-        version:
-        iron_claw:
-        jiraproj:
-        overwrite:
-        jiraid:
-        dbsystem:
-        livehtmllocn:
-    """
-    if not kwargs:
-        # Launch from terminal/cli exeuction
-        filepath, cli_args, overwrite = warrior_cli_driver.main(sys.argv[1:])
-    else:
-        # Launch from python function call
-        filepath, cli_args, overwrite = warrior_cli_driver.main(**kwargs)
-    livehtmlobj = kwargs.get("livehtmlobj", None)
-
-    status = warrior_cli_driver.execution(filepath, cli_args, overwrite, livehtmlobj)
-    status = {"true": True, "pass": True}.get(str(status).lower())
-    # add code to send div finished using katana interface class
-
-    if status is True:
-        print_info("DONE 0")
-        sys.exit(0)
-    else:
-        print_info("DONE 1")
-        sys.exit(1)
-
 if __name__ == '__main__':
-    main()
+    warrior_cli_driver.warrior_execute_entry()
