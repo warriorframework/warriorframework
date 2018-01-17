@@ -416,11 +416,11 @@ var wdf = {
                 var key = $(content).find("[name='key']").prop("value");
                 var val = $(content).find("[name='value']").prop("value");
 
-                var type = $(content).find("[name='key']").prop("type");
+                var key_type = $(content).find("[name='key']").attr("key-type");
                 // Can't create a dict with dynamic key...
-                if (type == "@") {
+                if (key_type == "@") {
                     key = "@" + key;
-                } else if (type == "#") {
+                } else if (key_type == "#") {
                     key = "#text";
                 }
 
@@ -430,13 +430,18 @@ var wdf = {
             } else if ($(content).hasClass("child_tags")){
                 // Has child tags
                 var key = $(content).find("[name='key']").prop("value");
-                var val = []
-                $(content).find(".subcontent").each(function(ind, subcontent){
+                var val = {}
+                $(content).find(".wdf-subcontent").each(function(ind, subcontent){
                     var subkey = $(subcontent).find("[name='key']").prop("value");
                     var subval = $(subcontent).find("[name='value']").prop("value");
-                    var save = {};
-                    save[subkey] = subval;
-                    val.push(save);
+                    var key_type = $(subcontent).find("[name='key']").attr("key-type");
+                    console.log(key_type);
+                    if (key_type == "@") {
+                        subkey = "@" + subkey;
+                    } else if (key_type == "#") {
+                        subkey = "#text";
+                    }
+                    val[subkey] = subval;
                 });
                 var save = {};
                 save[key] = val;
@@ -444,6 +449,7 @@ var wdf = {
             }
         });
 
+        console.log(data);
         return data;
     },
 

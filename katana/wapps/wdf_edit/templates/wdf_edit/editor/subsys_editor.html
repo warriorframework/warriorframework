@@ -8,7 +8,7 @@
                         <i katana-click="wdf.addChild" class="fa fa-plus" title="Add Sub Data"/>
                         <i katana-click="wdf.deleteTag" class="fa fa-trash i-danger" title="Delete Data"/>
                     </label>
-                    <input class="wdf-input" name="key" katana-change="wdf.validateKey" value="{{ k|wdf_remove_prefix }}" type="{{ k|wdf_get_type }}" list="most_used_tags"/>
+                    <input class="wdf-input" name="key" katana-change="wdf.validateKey" value="{{ k|wdf_remove_prefix }}" key-type="{{ k|wdf_get_type }}" list="most_used_tags"/>
                     <input style="display: none;" class="wdf-input" name="value" value=""/>
                 </div>
                 {% for child_k, child_v in v.items %}
@@ -16,7 +16,7 @@
                         <label>
                             <i katana-click="wdf.deleteChildTag" class="fa fa-trash i-danger" title="Delete Sub Data"/>
                         </label>
-                        <input class="wdf-input" name="key" katana-change="wdf.validateKey" value="{{ child_k|wdf_remove_prefix }}" type="{{ child_k|wdf_get_type }}" list="most_used_tags"/>
+                        <input class="wdf-input" name="key" katana-change="wdf.validateKey" value="{{ child_k|wdf_remove_prefix }}" key-type="{{ child_k|wdf_get_type }}" list="most_used_tags"/>
                         <input class="wdf-input" name="value" value="{{ child_v }}"/>
                     </div>
                 {% endfor %}
@@ -28,7 +28,7 @@
                     <i katana-click="wdf.addChild" class="fa fa-plus" title="Add Sub Data"/>
                     <i katana-click="wdf.deleteTag" class="fa fa-trash i-danger" title="Delete Data"/>
                 </label>
-                <input class="wdf-input" name="key" katana-change="wdf.validateKey" value="{{ k|wdf_remove_prefix }}" type="{{ k|wdf_get_type }}" list="most_used_tags"/>
+                <input class="wdf-input" name="key" katana-change="wdf.validateKey" value="{{ k|wdf_remove_prefix }}" key-type="{{ k|wdf_get_type }}" list="most_used_tags"/>
                 <input class="wdf-input" name="value" value="{{ v }}"/>
             </div>
         {% endif %}
