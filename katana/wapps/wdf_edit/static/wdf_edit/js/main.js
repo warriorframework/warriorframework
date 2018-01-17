@@ -415,7 +415,15 @@ var wdf = {
                 // Pure content, no child tags
                 var key = $(content).find("[name='key']").prop("value");
                 var val = $(content).find("[name='value']").prop("value");
+
+                var type = $(content).find("[name='key']").prop("type");
                 // Can't create a dict with dynamic key...
+                if (type == "@") {
+                    key = "@" + key;
+                } else if (type == "#") {
+                    key = "#text";
+                }
+
                 var save = {};
                 save[key] = val;
                 data.push(save);

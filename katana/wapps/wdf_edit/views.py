@@ -20,40 +20,6 @@ def process_xml(data):
     if not isinstance(data[root]["system"], list):
         # The whole xml only has one system
         data[root]["system"] = [data[root]["system"]]
-    for sys in data[root]["system"]:
-        if "subsystem" in sys:
-            if isinstance(sys["subsystem"], list):
-                # Multiple subsystems
-                for subsys in sys["subsystem"]:
-                    for k, v in subsys.items():
-                        subsys[k] = "" if subsys[k] is None else subsys[k]
-                        if k.startswith("@") and k != "@name" and k != "@default":
-                            # Change attribute type value into tag type value
-                            subsys[k[1:]] = v
-                            del subsys[k]
-                        elif k == "#text":
-                            # Clear extra text in unwant place 
-                            # (tag type value doesn't generate #text)
-                            del subsys[k]
-            else:
-                # One subsystem
-                subsys = sys["subsystem"]
-                for k, v in sys["subsystem"].items():
-                    subsys[k] = "" if subsys[k] is None else subsys[k]
-                    if k.startswith("@") and k != "@name" and k != "@default":
-                        subsys[k[1:]] = v
-                        del subsys[k]
-                    elif k == "#text":
-                        del subsys[k]
-        else:
-            # No subsystem
-            for k, v in sys.items():
-                sys[k] = "" if sys[k] is None else sys[k]
-                if k.startswith("@") and k != "@name" and k != "@default":
-                    sys[k[1:]] = v
-                    del sys[k]
-                elif k == "#text":
-                    del sys[k]
     print(json.dumps(data[root], indent=4))
 
     ref_dict = copy.deepcopy(data[root])
@@ -120,12 +86,16 @@ def wdf_remove_name(data):
 def wdf_remove_prefix(data):
     if data.startswith("@"):
         return data[1:]
+    elif data == "#text":
+        return "value"
     return data
 
 @register.filter
 def wdf_get_type(data):
     if data.startswith("@"):
         return "@"
+    elif data == "#text":
+        return "#"
     return ""
 
 # Separation for functions used before/after saving the edited xml
