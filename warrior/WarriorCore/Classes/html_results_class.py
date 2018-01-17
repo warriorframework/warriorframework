@@ -16,7 +16,7 @@ import os
 import json
 import getpass
 import Tools
-from Framework.Utils import xml_Utils, file_Utils
+from Framework.Utils import xml_Utils, file_Utils, data_Utils
 from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.print_Utils import print_info
 from Framework.Utils.xml_Utils import getElementWithTagAttribValueMatch
