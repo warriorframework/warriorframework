@@ -237,7 +237,7 @@ class WarriorHtmlResults:
         if isinstance(livehtmllocn, str):
             with open(livehtmllocn) as live_file:
                 live_string = live_file.read()
-        elif isinstance(livehtmllocn, dict):
+        else:
             live_string = livehtmllocn["html_result"]
 
         marker_start = '<!--table-{0}starts-->'.format(str(live_html_iter))
@@ -251,7 +251,7 @@ class WarriorHtmlResults:
         if isinstance(livehtmllocn, str):
             with open(livehtmllocn, 'w') as live_file:
                 live_file.write(live_final_string)
-        elif isinstance(livehtmllocn, dict):
+        else:
             livehtmllocn["html_result"] = live_final_string
 
     def write_live_results(self, junitObj, givenPath, is_final):

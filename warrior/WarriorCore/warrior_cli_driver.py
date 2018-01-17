@@ -19,7 +19,7 @@ try:
     import Framework.Utils.email_utils as email
     import Framework.Utils as Utils
     import Framework.Utils.encryption_utils as Encrypt
-    from Framework.Utils import xml_Utils, file_Utils
+    from Framework.Utils import xml_Utils, file_Utils, config_Utils
     from Framework.Utils.print_Utils import print_error, print_info
     from Framework.ClassUtils import database_utils_class
     from WarriorCore import testcase_driver, testsuite_driver, project_driver
@@ -184,6 +184,9 @@ def execution(parameter_list, cli_args, overwrite, livehtmlobj):
         1. parameter_list = list of command line parameters supplied by
         the user to execute Warrior
     """
+    if livehtmlobj:
+        config_Utils.redirect_print.katana_console_log(livehtmlobj)
+
     if cli_args.version:
         framework_detail.warrior_framework_details()
         sys.exit(0)
@@ -209,7 +212,7 @@ def execution(parameter_list, cli_args, overwrite, livehtmlobj):
 
     return status
 
-def warrior_execute_entry(args, **kwargs):
+def warrior_execute_entry(*args, **kwargs):
     """
         main method
         filepath: required at least one
@@ -223,12 +226,12 @@ def warrior_execute_entry(args, **kwargs):
         dbsystem:
         livehtmllocn:
     """
-    if not args:
+    if not kwargs:
         # Launch from terminal/cli exeuction
         filepath, cli_args, overwrite = main(sys.argv[1:])
     else:
         # Launch from python function call
-        filepath, cli_args, overwrite = main(args)
+        filepath, cli_args, overwrite = main(*args)
     livehtmlobj = kwargs.get("livehtmlobj", None)
 
     status = execution(filepath, cli_args, overwrite, livehtmlobj)
