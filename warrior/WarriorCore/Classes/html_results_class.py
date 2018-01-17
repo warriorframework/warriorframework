@@ -15,6 +15,7 @@ import os
 
 import json
 import Tools
+import multiprocessing
 from xml.etree.ElementTree import fromstring
 from xml.dom.minidom import parseString
 from Framework.Utils import xml_Utils, file_Utils, data_Utils
@@ -217,7 +218,6 @@ class WarriorHtmlResults:
     def create_live_table(self, dynamic_cont, livehtmllocn, live_html_iter):
         """
         Create the table for live update by reading the
-
         table portion of live html file, and adding the dynamic content to it.
         The table will then be added to the live html result file
         """
@@ -233,11 +233,13 @@ class WarriorHtmlResults:
         lines.insert(len(lines)-1, dynamic_cont)
         table_string = ''.join(lines)
         table_string = table_string.replace('\n', '')
-        
+
         if isinstance(livehtmllocn, str):
+            # Passed as a path, means it is a cli execution
             with open(livehtmllocn) as live_file:
                 live_string = live_file.read()
-        else:
+        elif isinstance(livehtmllocn, multiprocessing.managers.DictProxy):
+            # Passed as a dict, means it is a python function call
             live_string = livehtmllocn["html_result"]
 
         marker_start = '<!--table-{0}starts-->'.format(str(live_html_iter))
@@ -251,7 +253,7 @@ class WarriorHtmlResults:
         if isinstance(livehtmllocn, str):
             with open(livehtmllocn, 'w') as live_file:
                 live_file.write(live_final_string)
-        else:
+        elif isinstance(livehtmllocn, multiprocessing.managers.DictProxy):
             livehtmllocn["html_result"] = live_final_string
 
     def write_live_results(self, junitObj, givenPath, is_final):
