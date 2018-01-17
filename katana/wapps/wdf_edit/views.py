@@ -72,7 +72,7 @@ def file_list(request):
     return render(request, 'wdf_edit/file_list.html', {})
 
 @register.filter
-def remove_name(data):
+def wdf_remove_name(data):
     """
         remove @name and @default key from dict
     """
@@ -82,6 +82,18 @@ def remove_name(data):
         if "@default" in data:
             del data["@default"]
     return data
+
+@register.filter
+def wdf_remove_prefix(data):
+    if data.startswith("@"):
+        return data[1:]
+    return data
+
+@register.filter
+def wdf_get_type(data):
+    if data.startswith("@"):
+        return "@"
+    return ""
 
 # Separation for functions used before/after saving the edited xml
 
