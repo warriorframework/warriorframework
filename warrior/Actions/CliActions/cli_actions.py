@@ -830,7 +830,6 @@ class CliActions(object):
         Utils.testcase_Utils.pNote("Datafile: {0}".format(self.datafile))
         session_id = Utils.data_Utils.get_session_id(system_name, session_name)
         session_object = Utils.data_Utils.get_object_from_datarepository(session_id)
-
         testdata, varconfigfile = Utils.data_Utils.get_td_vc(self.datafile,
                                                              system_name, td_tag, vc_tag)
         status, td_resp_dict = cli_Utils.send_commands_from_testdata(testdata,
