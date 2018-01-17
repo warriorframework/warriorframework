@@ -1,0 +1,36 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+            <Name>Untitled</Name>
+            <Title/>
+            <Category/>
+            <State>New</State>
+            <Engineer/>
+            <Date/>
+            <Time/>
+            <default_onError action="next" goto=""/>
+            <InputDataFile/>
+            <Datatype>Custom</Datatype>
+            <Logsdir/>
+            <Resultsdir/>
+            <ExpectedResults/>
+        </Details>
+       <Requirements>
+                <Requirement/>
+       </Requirements>
+        <Steps>
+            <step TS="" Driver="" Keyword="" >
+                <Arguments>
+                    <argument name="" value=""/>
+                </Arguments>
+                <Description/>
+                <Execute ExecType="Yes">
+                    <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                </Execute>
+                <runmode type="Standard" value=""/>
+                <iteration_type type="Standard"/>
+                <context>positive</context>
+                <impact>impact</impact>
+            </step>
+        </Steps>
+</Testcase>

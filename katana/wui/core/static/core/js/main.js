@@ -978,6 +978,38 @@ var katana = {
 
   },
 
+    jsTreeAPI: {
+
+      createJstree: function($treeElement, jsTreeData){
+        /*
+          API to create jstee in the specified element.
+          $treeElement: Element where the jstree data should be displayed.
+          jsTreeData: the contents of the jstree to be displayed.
+        */
+        var data = { 'core' : { 'data' : jsTreeData }, "plugins" : [ "sort" , "search"], };
+        $treeElement.jstree(data);
+        $treeElement.jstree().hide_dots();
+      },
+
+      createJstreeSearch: function ($treeElement, $searchBoxElement , jsTreeData) {
+        /*
+          API to create jstee with search in the specified element.
+          $treeElement: Element where the jstree data should be displayed.
+          $searchBoxElement: Search box element
+          jsTreeData: the contents of the jstree to be displayed.
+        */
+        katana.jsTreeAPI.createJstree($treeElement, jsTreeData);
+        var to = false;
+        $searchBoxElement.keyup(function () {
+          if(to) { clearTimeout(to); }
+          to = setTimeout(function () {
+            var v = $searchBoxElement.val();
+            $treeElement.jstree(true).search(v);
+            }, 250);
+          });
+        },
+    },
+
   fileExplorerAPI: {
 
     init: function() {

@@ -1,5 +1,5 @@
 import json
-from wui.core.core_utils.app_info_class import AppInformation
+import xmltodict
 from django.template.defaulttags import register
 from collections import OrderedDict
 
@@ -22,6 +22,19 @@ def read_json_data(file_path):
     except Exception as e:
         print "An Error Occurred: {0}".format(e)
     return data
+
+
+def read_xml_get_json(filepath):
+    json_data = {}
+    try:
+        xml_contents = open(filepath, 'r')
+    except Exception as e:
+        json_data["error"] = e
+    else:
+        ordered_dict_json = xmltodict.parse(xml_contents)
+        json_data = json.loads(json.dumps(ordered_dict_json))
+    return json_data
+
 
 @register.filter
 def get_item(data, key):

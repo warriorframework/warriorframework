@@ -1,0 +1,20 @@
+<body>
+<div>
+    <div style="height: 100%; width: 50%; float: left;">
+        {{ data.Testcase.Details }}
+        <br>
+        <br>
+        {{ data.Testcase.Requirements[0] }}
+        <br>
+        <br>
+        {% for step in data.Testcase.Steps.step %}
+        {{ step }}
+        <br>
+        <br>
+        {% endfor %}
+    </div>
+    <div style="height: 100%; width: 50%; float: left; background-color: lightgrey; overflow: auto">
+
+    </div>
+</div>
+</body>
