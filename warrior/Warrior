@@ -104,7 +104,7 @@ def add_live_table_divs(livehtmllocn, file_list):
     return
     
 
-def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
+def main(parameter_list, a_defects, cse_execution, iron_claw,
          jiraproj, overwrite, jiraid, dbsystem, headless, livehtmllocn):
     """Parses the input parameters (i.e. sys.argv)
         If the input parameter is an xml file:
@@ -162,14 +162,7 @@ def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
 
                     default_repo["wt_enable_headless"] = True if headless else False
 
-                    if mockrun:
-                        result = mockrun_driver.main(abs_filepath, len(parameter_list))
-                        
-                    
-                    
-
-                    
-                    elif Utils.xml_Utils.getRoot(abs_filepath).tag == 'Testcase':
+                    if Utils.xml_Utils.getRoot(abs_filepath).tag == 'Testcase':
                         default_repo['war_file_type'] = "Case"
                         result, tc_duration, data_repository = testcase_driver.main(
                                 abs_filepath, data_repository=default_repo,
@@ -217,8 +210,8 @@ def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
 
 if __name__ == '__main__':
 
-    (FILEPATH, mockrun, AUTO_DEFECTS, version, CSE_EXEC, IRON_CLAW, JIRAPROJ,
-     OVERWRITE, JIRAID, DBSYSTEM, HEADLESS, LIVEHTMLLOCN) = warrior_cli_driver.main(sys.argv[1:])
+    (FILEPATH, AUTO_DEFECTS, version, CSE_EXEC, IRON_CLAW, JIRAPROJ,
+     OVERWRITE, JIRAID, DBSYSTEM, LIVEHTMLLOCN, HEADLESS) = warrior_cli_driver.main(sys.argv[1:])
 
     if version:
         framework_detail.warrior_framework_details()
