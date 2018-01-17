@@ -68,6 +68,7 @@ from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.print_Utils import print_debug, print_info
 from WarriorCore import step_driver, common_execution_utils
 import WarriorCore.onerror_driver as onerror_driver
+import WarriorCore.exec_type_driver as exec_type_driver
 
 
 class HybridDriver(object):
@@ -213,6 +214,43 @@ class HybridDriver(object):
             if self.stop_after_current_step:
                 break
 
+            # Decide whether or not to execute keyword
+            # First decide if this step should be executed in this iteration
+            if not goto_stepnum or goto_stepnum == str(step_num):
+                # get Exectype information
+                run_current_step, trigger_action = exec_type_driver.main(step)
+                if not run_current_step:
+
+                    if trigger_action.upper() in ['ABORT', 'ABORT_AS_ERROR']:
+                        if any([self.iter_type_list[index] == "once_per_tc",
+                               self.iter_type_list[index] == "end_of_tc"]):
+                            pNote("step exectype check failed, fail action is set to {0} and"
+                                  "step iter_type={1} hence aborting execution compeletely".\
+                                  format(trigger_action.upper(), self.iter_type_list[index]), "debug")
+                            self.stop_after_current_iteration = True
+                            self.stop_after_current_step = True
+                        else:
+                            pNote("step exectype check failed, fail action is set to {0} and"
+                                  "step iter_type={1} hence aborting execution for this system".\
+                                  format(trigger_action.upper(), self.iter_type_list[index]), "debug")
+                        goto_stepnum = False
+                        break
+                    elif trigger_action.upper() in ['SKIP', 'NEXT']:
+                        result = self._update_skip_results(step, self.system_executed,
+                                                   step_num)
+                        self.kw_resultfile_list.append(result[1])
+                        continue
+                    # when 'onError:goto' value is less than the current step num,
+                    # change the next iteration point to goto value
+                    elif trigger_action and int(trigger_action) < step_num:
+                        result = self._update_skip_results(step, self.system_executed,
+                                                   step_num)
+                        self.kw_resultfile_list.append(result[1])
+                        step_num = int(trigger_action)-1
+                        trigger_action = False
+
+                    continue
+
             # when there is no goto
             if not goto_stepnum:
                 result = self._execute_step(self.system_executed, step_num,
@@ -234,11 +272,9 @@ class HybridDriver(object):
             step_status = result[0]
             kw_resultfile = result[1]
             step_impact = result[2]
-            exec_type_onerror = result[3]
 
             self._update_status_items(step_status, kw_resultfile, step_impact)
             goto_stepnum, step_num = self._compute_runmode_goto_operations(step, step_status,
-                                                                           exec_type_onerror,
                                                                            goto_stepnum, step_num)
             if (goto_stepnum == 'ABORT'):
                 if any([self.iter_type_list[index] == "once_per_tc",
@@ -253,17 +289,15 @@ class HybridDriver(object):
         return
 
     def _compute_runmode_goto_operations(self, step, step_status,
-                                         exec_type_onerror, goto_stepnum,
-                                         step_num):
+                                         goto_stepnum, step_num):
         """
         """
-        runmode, value = common_execution_utils.get_runmode_from_xmlfile(step)
+        runmode, value, _ = common_execution_utils.get_runmode_from_xmlfile(step)
 
         if runmode is not None:
             # if runmode is 'ruf' & step_status is False, skip the repeated
             # execution of same TC step and move to next actual step
-            if all(not exec_type_onerror, runmode == "ruf",
-                   step_status is False):
+            if all(runmode == "ruf", step_status is False):
                 goto_stepnum = str(value)
             # if runmode is 'rup' & step_status is True, skip the repeated
             # execution of same TC step and move to next actual step
@@ -272,19 +306,15 @@ class HybridDriver(object):
             else:
                 if any([step_status is False,
                        str(step_status).upper() == "ERROR",
-                       str(step_status).upper() == "EXCEPTION",
-                       exec_type_onerror is True]):
+                       str(step_status).upper() == "EXCEPTION"]):
                     goto_stepnum = onerror_driver.main(step, self.default_error_action,
-                                                       self.default_error_value,
-                                                       exec_type_onerror)
+                                                       self.default_error_value)
                     # if (goto_stepnum == 'ABORT'): break
         else:
             if any([step_status is False, str(step_status).upper() == "ERROR",
-                   str(step_status).upper() == "EXCEPTION",
-                   exec_type_onerror is True]):
+                   str(step_status).upper() == "EXCEPTION"]):
                 goto_stepnum = onerror_driver.main(step, self.default_error_action,
-                                                   self.default_error_value,
-                                                   exec_type_onerror)
+                                                   self.default_error_value)
                 if str(goto_stepnum).upper() == 'ABORT':
                     pass
                 # when 'onError:goto' value is less than the current step num,
@@ -395,6 +425,8 @@ class HybridDriver(object):
                                                                    "skipped", "skipped", "skipped",
                                                                    "skipped", "skipped",
                                                                    keyword_description)
+
+        self.data_repository['step_{}_result'.format(step_num)] = "SKIPPED"
         result = ("Skip", kw_resultfile, None, None)
         return result
 

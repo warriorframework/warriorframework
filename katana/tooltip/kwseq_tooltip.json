@@ -1,0 +1,62 @@
+{
+    "name": {
+        "tooltip": "This is the Wrapper Keyword name. Katana will save this Wrapper Keyword with the name provided in this field",
+        "protip": "",
+        "bantip": "No integer value accepted. No spaces or special characters but for the exception of underscores, hyphens, and periods",
+        "snowflake": "This is a mandatory field"
+    },
+    "dvname": {
+        "tooltip": "Select the Product Driver from the list of Product Drivers available to you.",
+        "protip": "",
+        "bantip": "",
+        "snowflake": "This is a mandatory field"
+    },
+    "file": {
+        "tooltip": "ActionFile Path respective to the above Selected driver would be populated here.",
+        "protip": "The selected path is the file path, wherein the Wrapper keyword will be saved.",
+        "bantip": "",
+        "snowflake": "This is a mandatory field."
+    },
+    "desc": {
+        "tooltip": "This indicates the Description of Wrapper Keyword.",
+        "protip": "",
+        "bantip": "Special characters Acceptable.",
+        "snowflake": "This is an optional field."
+    },
+    "driver": {
+        "tooltip": "Select the Product Driver from the list of Product Drivers available to you.",
+        "protip": "",
+        "bantip": "",
+        "snowflake": "This field is mandatory"
+    },
+    "keyword": {
+        "tooltip": "Select the Keyword",
+        "protip": "ProTip: Unsure what this keyword does? Select it and the documentation for it would appear on the side.",
+        "bantip": "",
+        "snowflake": "This field is mandatory"
+    },
+    "steparg": {
+        "tooltip": "These are all the arguments accepted by the keyword above.",
+        "protip": "ProTip: If you want to know which arguments are mandatory and which are not or if you want to know the default value of the non-mandatory arguments, you can go through the signature of the keyword in the signature and comment section.",
+        "bantip": "",
+        "snowflake": "If you can't see anything here, you probably have not selected a keyword."
+    },
+    "deletestep": {
+        "tooltip": "Click this to delete this subkeyword.",
+        "protip": "",
+        "bantip": "",
+        "snowflake": ""
+    },
+    "editstep": {
+        "tooltip": "Click this to edit this subkeyword.",
+        "protip": "",
+        "bantip": "",
+        "snowflake": "You can edit only one subkeyword at a time."
+    },
+    "insertstep": {
+        "tooltip": "Click this to insert a subkeyword below",
+        "protip": "",
+        "bantip": "",
+        "snowflake": ""
+    }
+}

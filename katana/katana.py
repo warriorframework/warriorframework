@@ -60,6 +60,3 @@ if __name__ == "__main__":
     
     
     os.system("{0} {1} {2} {3}".format(command, filepath, runserver, port))
-    
-    
-    

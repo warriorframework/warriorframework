@@ -11,22 +11,24 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-"""jira utils library which has functions related to
-interaction of Warrior framework with jira rest api and other related actions."""
+import json
+import os
 
-
-import urllib2, urllib
-import json,base64
-import sys,re
-import random
-import Tools, os
+import Tools
 from Framework.Utils.print_Utils import print_error, print_info, print_warning
-from Framework.Utils import xml_Utils, file_Utils
-from Framework.Utils.testcase_Utils import pNote
-import requests
-from requests.auth import HTTPBasicAuth
-        
-        
+from Framework.Utils import xml_Utils
+
+try:
+    import requests
+except ImportError:
+    print_warning("{0}: 'requests' module is not installed".format(os.path.abspath(__file__)))
+    print_warning("WarriorFramework uses 'requests' module for all Jira related activites")
+
+
+""" jira utils library which has functions related to interaction
+of Warrior framework with jira rest api and other related actions."""
+
+
 class Jira(object):
     """Warrior Jira class """
 
@@ -45,136 +47,124 @@ class Jira(object):
         self.server = credentials['url']
         self.username = credentials['username']
         self.password = credentials['password']
+        self.auth = (self.username, self.password)
         self.append = True if str(credentials['append_log']).lower().strip() == "true" else False
         self.status = True
         self.project_key = credentials['project_key']
         self.assignee = credentials['assignee']
 
-    def check_jira_issue(self, issue_summary, headers):
+    def check_jira_issue(self, issue_summary):
         """
             check jira server for any existing issue with the same summary(title)
-            :para,:
-                issue_summary: issue title
-                headers: auth header
-            :return:
-                the existing issue key or False if not found
+            :Arguments,:
+                1. issue_summary(str) - issue title
+            :Returns:
+                1. issue_id(str/boolean) - existing issue key or False if not found
         """
-        fetchuri = self.server
+        issue_id = False
         parsed_summary = issue_summary.replace("[", "\\\\[")
         parsed_summary = parsed_summary.replace("]", "\\\\]")
-        postdata_url=fetchuri+'/rest/api/2/search/?jql=summary~'+urllib.quote_plus('\"' + parsed_summary + '\"')
-        request=urllib2.Request(str(postdata_url), None, headers)
-        try:
-            handler = urllib2.urlopen(request)
-            extension=json.loads(handler.read())
-            for issue in extension["issues"]:
+        postdata_url = (self.server + '/rest/api/2/search/?jql=summary~' +
+                        '\"' + parsed_summary + '\"')
+        response = requests.get(postdata_url, auth=self.auth)
+
+        if response:
+            resp_dict = response.json()
+            for issue in resp_dict["issues"]:
                 if issue_summary[:-2].strip() == issue["fields"]["summary"].strip():
-                    return issue["key"]
+                    issue_id = issue["key"]
                 else:
                     # partially match title
                     pass
-            return False
-
-        except Exception as e:
-            pNote("Problem checking JIRA issue.","error")
-            pNote("JIRA Error Code: ({0})".format(e),"error")
+        else:
+            print_error("Problem checking JIRA issues with same issue summary")
+            print_error("JIRA Error code: ({0}), Error message: ({1})".
+                        format(response.status_code, response.reason))
+        return issue_id
 
     def update_jira_issue(self, jiraid, status):
         """
-            Update the jira issue using the jiraid
-            Transition to correct issue status based on warrior status
+        Update the jira issue using the jiraid
+        Transition to correct issue status based on warrior status
+        :Arguments:
+            1. jiraid(str) - Jira issue ID
+            2. status(str/boolean) - warrior execution status
+        :Returns:
+            1. oper_status(Boolean) - True/False
         """
-        issue_url = self.server + '/rest/api/2/issue/' + jiraid + "/transitions"
-        status_map = {"true":"pass", "false":"fail"}
-        status = status_map[str(status).lower()] if str(status).lower() in status_map else str(status).lower()
 
-        # Build Auth information
-        credential_handler=urllib2.HTTPPasswordMgrWithDefaultRealm()
-        credential_handler.add_password(None, issue_url, self.username, self.password)
-        auth = urllib2.HTTPBasicAuthHandler(credential_handler)
-        userpassword=self.username+":"+self.password
-        password=base64.b64encode(userpassword)
-        # Create an Authentication handler
-        opener = urllib2.build_opener(auth)
-        urllib2.install_opener(opener)
-        opener = urllib2.build_opener(urllib2.HTTPHandler(debuglevel=1))
+        print_info("Updating the status of the Jira issue '{0}'".format(jiraid))
+        issue_type = self.get_jira_issue_type(jiraid)
+        if not issue_type:
+            # when failed to get the type of the Jira issue
+            return False
 
-        # Find the correct jira system
+        oper_status = False
+        status_map = {"true": "pass", "false": "fail"}
+        status = status_map[str(status).lower()] if str(status).lower() in \
+            status_map else str(status).lower()
+
+        # Find the correct jira system from the jira_config.xml
         if self.jiraproj is not None:
-            element = xml_Utils.getElementWithTagAttribValueMatch(self.jira_template_xml,
-                                                                  'system',
-                                                                  'name',
-                                                                  self.jiraproj)
+            jiraproj = self.jiraproj
+            sys_elem = xml_Utils.getElementWithTagAttribValueMatch(self.jira_template_xml,
+                                                                   'system', 'name', jiraproj)
         else:
-            element = xml_Utils.getElementWithTagAttribValueMatch(self.jira_template_xml, 'system',
-                                                                  'default', "true")
+            jiraproj = "default"
+            sys_elem = xml_Utils.getElementWithTagAttribValueMatch(self.jira_template_xml,
+                                                                   'system', jiraproj, "true")
 
         # Find the correct issue type and status
-        if element is not None and element is not False:
-            system_data = xml_Utils.get_children_as_dict(element)
+        if sys_elem is not None and sys_elem is not False:
+            sys_data = xml_Utils.get_children_as_dict(sys_elem)
 
-            issue = None
-            for x in system_data["issue_type"]:
-                if x["type"] == ["story"]:
-                    issue = x
-            if issue is None:
-                for x in system_data["issue_type"]:
-                    if x["type"] == ["default"]:
-                        issue = x
+            type_matched = None
+            for t in sys_data["issue_type"]:
+                if t["type"] == [issue_type]:
+                    type_matched = t
+                    break
+            if type_matched is None:
+                for t in sys_data["issue_type"]:
+                    if t["type"] == ["default"]:
+                        type_matched = t
 
-            postdata = None
-            if issue is not None and status in issue.keys():
-                # Get the correct transition for changing status
-                headers = {"Authorization" : "Basic " + password}
-                request = urllib2.Request(str(issue_url), None, headers)
-                handler = urllib2.urlopen(request)
-                transitions = json.loads(handler.read())
-                for trans in transitions["transitions"]:
-                    if trans["to"]["name"].lower() == issue[status][0].lower():
-                        postdata = """
-                                    {
-                                        "transition":{
-                                            "id":""" + trans["id"] + """
-                                        }
-                                    }
-                                    """
-
-                if postdata is None:
-                    print_info("Cannot change status to " + str(issue[status][0]))
-                    print_info("The available status are: " + str([trans["to"]["name"] for trans in transitions["transitions"]]))
-                    return False
-            else:
-                print_error("Cannot find the correct issue type, unable to update jira status")
-                return False
-
-            # Update status
-            headers = {"Authorization" : "Basic " + password,"Content-Type": "application/json"}
-            request = urllib2.Request(str(issue_url), postdata, headers)
-            try:
-                handler = urllib2.urlopen(request)
-                if handler.getcode() == 204:
-                    print_info("Successfully update issue status")
-                    return True
+            if type_matched is not None and status in type_matched.keys():
+                # Change the jira issue status
+                if type_matched[status][0]:
+                    to_status = type_matched[status][0].lower()
+                    oper_status = self.set_jira_issue_status(jiraid, to_status)
                 else:
-                    print_error("Error occurs while updating issue status, error code: " + str(handler.getcode()))
-            except Exception as e:
-                print_info("Error occurs while updating issue status")
-                print_info(e)
+                    print_error("No value provided for the tag '{0}' under issue_type "
+                                "'{1}' of project '{2}' in jira_config file '{3}'.".
+                                format(status, issue_type, jiraproj,
+                                       "Tools/jira/jira_config.xml"))
+            else:
+                print_error("Cannot find the correct issue type in "
+                            "jira_config file, unable to update jira status")
         else:
-            msg = "There is no project with name: '{0}' "\
-            "in the jira config file: '{1}'".format(self.jiraproj, "Tools/jira/jira_config.xml")
-            print_warning(msg)
-        return False
+            print_error("There is no project with name: '{0}' in the jira config "
+                        "file: '{1}'".format(self.jiraproj, "Tools/jira/jira_config.xml"))
+
+        return oper_status
 
     def create_jira_issue(self, issue_summary, issue_description, issue_type='Bug'):
-        """Function to Create jira Ticket using JIRA rest API"""
-
-        issue_summary=issue_summary.replace('"', " ")
-        issue_description=issue_description.replace('"', "-")
-        # if description has any \n in it, it will cause a 400 http bad request error and unable to upload the issue
-        # issue_description=issue_description.replace('\n', "************")
-        fetchuri = self.server
-        postdata_url=fetchuri+'/rest/api/2/issue/'
+        """
+        Function to Create jira Ticket using JIRA rest API
+        :Arguments:
+            1. issue_summary(str) - Jira issue ID
+            2. issue_description(str) - warrior execution status
+            3. issue_type(str) - Jira issue type(Ex. Story/Bug/Task)
+        :Returns:
+            1. issue_id(str/boolean) - (a) issue_key if created
+                                       (b) False if not created
+                                       (c) issue_key if already exists and the append_log is True
+                                       (d) False if already exists and the append_log is not True
+        """
+        issue_id = False
+        issue_summary = issue_summary.replace('"', " ")
+        issue_description = issue_description.replace('"', "-")
+        postdata_url = self.server + '/rest/api/2/issue/'
+        headers = {"Content-Type": "application/json"}
         postdata = """
         {
             "fields": {
@@ -190,54 +180,61 @@ class Jira(object):
             }
         }
         """
-        credential_handler=urllib2.HTTPPasswordMgrWithDefaultRealm()
-        credential_handler.add_password(None,postdata_url,self.username,self.password)
-        auth = urllib2.HTTPBasicAuthHandler(credential_handler)
-        userpassword=self.username+":"+self.password
-        password=base64.b64encode(userpassword)
-        #Create an Authentication handler
-        opener = urllib2.build_opener(auth)
-        urllib2.install_opener(opener)
-        opener = urllib2.build_opener(urllib2.HTTPHandler(debuglevel=1))
-        #Create a POST request
-        headers={"Authorization" : "Basic "+password,"Content-Type": "application/json"}
-        existed = self.check_jira_issue(issue_summary, headers)
+
+        existed = self.check_jira_issue(issue_summary)
         if not existed:
-            request=urllib2.Request(str(postdata_url),postdata,headers)
-            try:
-                handler = urllib2.urlopen(request)
-                extension=json.loads(handler.read())
-                issue_id = str(extension['key'])
+            # POST request to create new Jira issue
+            response = requests.post(postdata_url, auth=self.auth,
+                                     headers=headers, data=postdata)
+            if response:
+                resp_dict = response.json()
+                issue_id = str(resp_dict['key'])
                 print_info("JIRA Issue Created. Issue-Id: {0}".format(issue_id))
-                return issue_id
-            except Exception as e:
-                pNote("Problem creating JIRA issue.","error")
-                pNote("JIRA Error Code: ({0})".format(e),"error")
-                exit(1)
+            else:
+                print_error("Problem creating JIRA issue")
+                print_error("JIRA Error code: ({0}), Error message: ({1})".
+                            format(response.status_code, response.reason))
         else:
             if self.append:
-                print_info("Issue already exist - " + str(existed) + ". Will update log")
-                return existed
+                print_info("Issue '{0}' already exists and the execution logs "
+                           "will be uploaded since the 'append_log' option is "
+                           "set to True in jira config file".format(str(existed)))
+                issue_id = existed
             else:
-                print_info("Issue already exist - " + str(existed) + ". Will not update log")
-                return None
+                print_info("Issue '{0}' already exists and the execution logs "
+                           "will not be uploaded since the 'append_log' option is "
+                           "not set to True in jira config file".format(str(existed)))
 
-    def upload_logfile_to_jira_issue(self, issue_id, logfile, attachment_name=None):
-        """Function to attach logs to jira Ticket using JIRA rest API"""
-        fetchuri = self.server
-        url=fetchuri+'/rest/api/2/issue/'+issue_id+'/attachments'
+        return issue_id
+
+    def upload_logfile_to_jira_issue(self, issue_id, logfile, attachment_name="Log file"):
+        """
+        Function to attach logs to jira Ticket using JIRA rest API
+        :Arguments:
+            1. issue_id(str) - Jira issue ID
+            2. logfile(str) - File(path) to be attached
+            3. attachment_name(str) - Name of the file to be attached
+        """
+
+        status = False
+        postdata_url = self.server + '/rest/api/2/issue/' + issue_id + '/attachments'
         print_info("logfile is : {0}".format(logfile))
         fileobj = open(logfile, 'rb').read()
-        logfilename = logfile.split(os.sep)[-1]
+        logfile_name = os.path.basename(logfile)
         headers = {"X-Atlassian-Token": "nocheck"}
-        r = requests.post(url, auth=(self.username, self.password),  files={"file": (logfilename, fileobj)},
-                          headers=headers)
-        if r:
-            print_info("Log File {0} uploaded to Issue-Id: {1}".format(logfilename, issue_id))
-        else:
-            pNote("Problem attaching logs to JIRA issue {0}".format(issue_id),"error")
-            pNote("JIRA Error code: ({0}), error msg: {1}".format(r.status_code, r.text),"error")
+        files = {"file": (logfile_name, fileobj)}
+        response = requests.post(postdata_url, auth=self.auth,
+                                 files=files, headers=headers)
 
+        if response:
+            status = True
+            print_info("{0} - '{1}' uploaded to Jira issue '{2}'"
+                       .format(attachment_name, logfile_name, issue_id))
+        else:
+            print_error("Problem attaching logs to Jira issue '{0}'".format(issue_id))
+            print_error("JIRA Error code: ({0}), Error message: ({1})".
+                        format(response.status_code, response.reason))
+        return status
 
     def create_issues_from_jsonlist(self, json_file_list,
                                     result_xml_file, issue_type='Bug'):
@@ -252,8 +249,9 @@ class Jira(object):
                                                   issue_description,
                                                   issue_type)
                 self.update_issue_in_resultxml(result_xml_file, issue_id, step_num)
-                if issue_id is not None:
-                    # The cases when issue_id is None are 1) error 2) issue exist and user chose not to append log
+                if issue_id:
+                    # The cases when issue_id is False/None are 1) error
+                    # 2) issue exist and user chose not to append log
                     issue_id_list.append(issue_id)
 
         print_info("Issue List: {0}".format(issue_id_list))
@@ -266,9 +264,8 @@ class Jira(object):
 
         tc_name, keyword, step_num, issue_summary = (None,)*4
         step = keyword
-        desc = '-'*18 +' Description '+'-'*18+  '\\n'
+        desc = '-'*18 + ' Description ' + '-'*18 + '\\n'
         p_header = '-'*18 + 'Problem Details' + '-'*18 + '\\n'
-
 
         with open(json_file) as issue_file:
             json_data = json.load(issue_file)
@@ -283,21 +280,22 @@ class Jira(object):
             elif 'step_num' in attr:
                 step_num = attr['step_num']
         if not all([tc_name, keyword, step_num]):
-            print_error("all/one of tc_name, keyword, step_num is missing.."\
+            print_error("all/one of tc_name, keyword, step_num is missing.."
                         "could not create jira ticket without these details")
         else:
-            issue_summary = "TC-"+ str(tc_name).strip() + ":" + "Keyword-" + str(keyword).strip()\
-                     + ":" + "Step{0}.".format(str(step_num)) + str(step).strip() + "[FAILED]" + '\\n'
+            issue_summary = ("TC-" + str(tc_name).strip() + ":" + "Keyword-" +
+                             str(keyword).strip() + ":" + "Step{0}.".format(str(step_num)) +
+                             str(step).strip() + "[FAILED]" + '\\n')
 
-            desc = desc + '\\n' + issue_summary + '\\n'  + '\\n' + p_header + '\\n'
+            desc = desc + '\\n' + issue_summary + '\\n' + '\\n' + p_header + '\\n'
             for attr in json_data:
                 for key, value in attr.items():
                     key = key.replace('\n', "\\n")
                     value = value.replace('\n', "\\n")
-                    desc = desc + str(key) +':' + str(value) +'\\n'
+                    desc = desc + str(key) + ':' + str(value) + '\\n'
 
-            desc = '\\n' + desc + '\\n' +  "-Attached logfiles" + '\\n' +\
-                    "-Attached actual testcase for steps to reproduce" + '\\n'
+            desc = ('\\n' + desc + '\\n' + "-Attached logfiles" + '\\n' +
+                    "-Attached actual testcase for steps to reproduce" + '\\n')
         return issue_summary, desc, str(step_num)
 
     @classmethod
@@ -339,8 +337,99 @@ class Jira(object):
                 output_dict[item] = xml_Utils.get_text_from_direct_child(element, item)
             return output_dict
         else:
-            msg = "There is no project with name: '{0}' "\
-            "in the jira config file: '{1}'".format(system_name, "Tools/jira/jira_config.xml")
+            msg = ("There is no project with name: '{0}' in the jira config "
+                   "file: '{1}'".format(system_name, "Tools/jira/jira_config.xml"))
             print_warning(msg)
             return False
 
+    def get_jira_issue_type(self, jiraid):
+        """
+        Returns the type of the Jira Issue in lower case.
+        :Arguments:
+            1. jiraid(str) - Jira issue ID
+        :Returns:
+            1. issue_type(str) or False(Bool)
+        """
+
+        issue_type = False
+        issue_url = self.server + '/rest/api/2/issue/' + jiraid
+        # Get the details of the the Jira ticket to find the issue type
+        response = requests.get(issue_url, auth=self.auth)
+        if response:
+            issue_details = response.json()
+            issue_type = issue_details['fields']['issuetype']['name'].lower()
+        else:
+            print_error("Problem getting type of the Jira issue '{0}'".format(jiraid))
+            print_error("JIRA Error code: ({0}), Error message: ({1})".
+                        format(response.status_code, response.reason))
+
+        return issue_type
+
+    def get_jira_issue_status(self, jiraid):
+        """
+        Returns the current status of the Jira Issue
+        :Arguments:
+            1. jiraid(str) - Jira issue ID
+        :Returns:
+            1. issue_status(str) or False(Bool)
+        """
+
+        issue_status = False
+        issue_url = self.server + '/rest/api/2/issue/' + jiraid
+        # Get the details of the the Jira ticket to find the issue status
+        response = requests.get(issue_url, auth=self.auth)
+        if response:
+            issue_details = response.json()
+            issue_status = issue_details['fields']['status']['name']
+        else:
+            print_error("Problem getting status of the Jira issue '{0}'".format(jiraid))
+            print_error("JIRA Error code: ({0}), Error message: ({1})".
+                        format(response.status_code, response.reason))
+
+        return issue_status
+
+    def set_jira_issue_status(self, jiraid, status):
+        """
+        Change the status of the jiraid
+        :Arguments:
+            1. jiraid(str) - Jira issue ID
+            2. status(str/boolean) - Transition status(Ex. Resolved/Closed/Reopened)
+        :Returns:
+            1. oper_status(Boolean) - True/False
+        """
+        oper_status = True
+        postdata = None
+        headers = {"Content-Type": "application/json"}
+        issue_trans_url = self.server + '/rest/api/2/issue/' + jiraid + "/transitions"
+        resp_get_trans = requests.get(issue_trans_url, auth=self.auth)
+        transitions = resp_get_trans.json()['transitions']
+        for trans in transitions:
+            if trans["to"]["name"].lower() == status.lower():
+                postdata = """
+                            {
+                                "transition":{
+                                    "id":""" + trans["id"] + """
+                                }
+                            }
+                            """
+        if postdata is None:
+            print_warning("Cannot change status to " + str(status))
+            available_statuses = str([trans["to"]["name"] for trans in transitions])
+            print_warning("The available statuses are: {}".format(available_statuses))
+            oper_status = False
+
+        if oper_status is True:
+            # Change the Jira issue status
+            resp_change_trans = requests.post(issue_trans_url, auth=self.auth,
+                                              headers=headers, data=postdata)
+            if resp_change_trans and resp_change_trans.status_code == 204:
+                print_info("Successfully changed the Jira issue status to "
+                           "'{0}'".format(trans["to"]["name"]))
+            else:
+                print_error("Error while changing Jira issue status")
+                print_error("JIRA Error code: ({0}), Error message: "
+                            "({1})".format(resp_change_trans.status_code,
+                                           resp_change_trans.reason))
+                oper_status = False
+
+        return oper_status

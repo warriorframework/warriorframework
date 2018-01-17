@@ -14,6 +14,9 @@ import os
 import re
 import sys
 from Framework.Utils import file_Utils
+import Tools
+from Framework.Utils import file_Utils
+from Framework.Utils.data_Utils import get_credentials
 from WarriorCore.Classes import war_cli_class
 from Framework.Utils.print_Utils import print_error, print_info
 import Framework.Utils.encryption_utils as Encrypt
@@ -94,20 +97,20 @@ def decide_overwrite_var(namespace):
     """
     overwrite = {}
     if namespace.datafile:
-        if namespace.datafile[0] != os.sep: 
+        if namespace.datafile[0] != os.sep:
             namespace.datafile = os.getcwd() + os.sep + namespace.datafile
         overwrite['ow_datafile'] = namespace.datafile
 
     if namespace.resultdir:
-        if namespace.resultdir[0] != os.sep: 
+        if namespace.resultdir[0] != os.sep:
             namespace.resultdir = os.getcwd() + os.sep + namespace.resultdir
         overwrite['ow_resultdir'] = namespace.resultdir
     if namespace.logdir:
-        if namespace.logdir[0] != os.sep: 
+        if namespace.logdir[0] != os.sep:
             namespace.logdir = os.getcwd() + os.sep + namespace.logdir
         overwrite['ow_logdir'] = namespace.logdir
     if namespace.outputdir:
-        if namespace.outputdir[0] != os.sep: 
+        if namespace.outputdir[0] != os.sep:
             namespace.outputdir = os.getcwd() + os.sep + namespace.outputdir
         overwrite['ow_resultdir'] = namespace.outputdir
         overwrite['ow_logdir'] = namespace.outputdir
@@ -115,7 +118,15 @@ def decide_overwrite_var(namespace):
         print_error("outputdir shouldn't be used with resultdir or logdir")
         exit(1)
     if namespace.jobid:
-        overwrite['jobid'] = "http://pharlap.tx.fnc.fujitsu.com/share/logs/"+str(namespace.jobid)
+        settings_xml = Tools.__path__[0] + os.sep + 'w_settings.xml'
+        job_url = get_credentials(settings_xml, 'job_url', ['url'], 'Setting')
+        if job_url['url'] is not None:
+            url = job_url['url']
+        else:
+            print_info("jobid is specified but no job url found in w_settings")
+            print_info("Using jobid only in JUnit file")
+            url = ""
+        overwrite['jobid'] = url + str(namespace.jobid)
     return overwrite
 
 
@@ -204,10 +215,9 @@ def decide_action(w_cli_obj, namespace):
                 filepath[index] = file_name + '.xml'
 
     # print filepath
-    return (filepath, namespace.mockrun, namespace.ad, namespace.version,
+    return (filepath, namespace.ad, namespace.version,
             namespace.cse, namespace.ironclaw, namespace.jiraproj, overwrite,
-            namespace.jiraid, namespace.dbsystem, namespace.livehtmllocn)
-
+            namespace.jiraid, namespace.dbsystem, namespace.livehtmllocn, namespace.headless)
 
 def main(args):
     """init a Warrior Cli Class object, parse its arguments and run it"""

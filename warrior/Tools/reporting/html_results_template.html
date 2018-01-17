@@ -13,7 +13,11 @@
 </script>
 <script type="application/javascript">
 
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> develop
 var printFormater = {
   table: '',
   bar: '',
@@ -30,7 +34,11 @@ var printFormater = {
   },
 
   barRelocate: function() {
+<<<<<<< HEAD
     printFormater.bar = printFormater.table.find('tr:first-child').insertBefore(printFormater.table).wrap('<div class="headingnav"></div>');
+=======
+    printFormater.bar = printFormater.table.find('tr:first-child').insertBefore(printFormater.table).wrap('<div class="nav"></div>');
+>>>>>>> develop
   },
 
   placeData: function() {
@@ -103,14 +111,22 @@ var printFormater = {
         printFormater.table.find('tr[name]').off('mouseover mouseleave');
       } else {
         printFormater.table.addClass('filtering');
+<<<<<<< HEAD
         var bar = $('<div class="filterBar" filterScope="' + ($('.headingnav tr th:contains("' + filterScope + '")').prevAll().length + 1) + '"></div>');
+=======
+        var bar = $('<div class="filterBar" filterScope="' + ($('.nav tr th:contains("' + filterScope + '")').prevAll().length + 1) + '"></div>');
+>>>>>>> develop
         for (var i = 0; filterList.length > i; i++) {
           var filter = $('<span>' + filterList[i] + '<input type="checkbox" value="' + filterList[i] + '"></span>').appendTo(bar);
           filter.find('input').on('change', function() {
             printFormater.sortingAPI.filter(bar);
           });
         }
+<<<<<<< HEAD
         bar.appendTo('.headingnav');
+=======
+        bar.appendTo('.nav');
+>>>>>>> develop
         printFormater.table.find('tr[name]').on('mouseover', 'td[rowspan]:nth-child(1)', function() {
           var $elem = $(this).closest('tr');
           $elem.addClass('hover').data().appendTo($elem);
@@ -175,6 +191,7 @@ a {
     color: inherit;
 }
 
+<<<<<<< HEAD
 .headingnav{
   display:inline-block;
   top:40px;
@@ -243,6 +260,12 @@ td[rowspan]:nth-child(9){
 .headingnav th:nth-child(10){
     display: none;
 }
+=======
+.nav th:nth-child(9) span{
+    font-size: 12px;
+}
+
+>>>>>>> develop
 td:not([rowspan]){
     font-size: 11px;
     text-align: center;
@@ -271,7 +294,11 @@ td:not([rowspan]):nth-last-child(5){
 }
 td:not([rowspan]):nth-last-child(6){
     left: calc( 73% + 22.5% );
+<<<<<<< HEAD
     width: 4.5%;
+=======
+    width: 5%;
+>>>>>>> develop
     display: block;
     font-size: 0;
     color: inherit;
@@ -300,19 +327,32 @@ tr[name] td:not([rowspan]):nth-last-child(6) ~ td:not([rowspan]) {
     display: none;
     font-size: 12px;
 }
+<<<<<<< HEAD
 .headingnav tr{
     position: absolute;
     left: 0;
     width: 100%;
     z-index: 1;
     padding-right: 17px;
+=======
+.nav tr{
+position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1;
+>>>>>>> develop
     color: white;
     background: #3699ff;
     -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.28);
     -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.28);
     box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.28);
 }
+<<<<<<< HEAD
 .headingnav th{
+=======
+.nav th{
+>>>>>>> develop
     font-size: 16px;
     height: 40px;
     line-height: 40px;
@@ -356,18 +396,24 @@ th {
 }
 td:not([rowspan]){font-size: 0;position: absolute;right: 0;}
 
+<<<<<<< HEAD
 td[rowspan]:last-child {}
 
 
 
+=======
+>>>>>>> develop
 * {
     box-sizing: border-box;
     font-family: sans-serif;
     -webkit-font-smoothing: antialiased;
 }
 
+<<<<<<< HEAD
 td {}
 
+=======
+>>>>>>> develop
 td > div {
     overflow: hidden;
     position: relative;
@@ -397,7 +443,37 @@ th span {
     font-size: 13px;
 }
 
+<<<<<<< HEAD
 
+=======
+td[rowspan]:nth-child(4):hover div:not(:empty) {
+    position: absolute;
+    background: #3699ff;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    color: white;
+    height: 40px;
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.28);
+    -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.28);
+    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.28);
+    transform: translate3d( -3px, 4px, 0);
+}
+
+td[rowspan]:nth-child(2):hover div:not(:empty) {
+    position: absolute;
+    background: #3699ff;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    color: white;
+    height: 40px;
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.28);
+    -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.28);
+    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.28);
+    transform: translate3d( -3px, 4px, 0);
+}
+>>>>>>> develop
 
 tbody {
     position: absolute;
@@ -437,7 +513,11 @@ tr.active {
     -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.28);
     -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.28);
     box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.28);
+<<<<<<< HEAD
     background: #6b6b6b !important;
+=======
+    background: #3699ff !important;
+>>>>>>> develop
     color: white;
 }
 
@@ -454,12 +534,19 @@ table#t1 th {
     line-height: 40px;
     font-weight: 400;
 }
+<<<<<<< HEAD
 .headingnav th:nth-child(6):before {content: "\f106";font: normal normal normal 14px/1 FontAwesome;position: absolute;right: 10px;line-height: 37px;}
 
 .headingnav th:nth-child(6).up:before {content: "\f107";}
 tr[name="TestcaseRecord"].active ~ tr:not([name]) td:not([rowspan]) {
 
 }
+=======
+.nav th:nth-child(7):before {content: "\f106";font: normal normal normal 14px/1 FontAwesome;position: absolute;right: 10px;line-height: 37px;}
+
+.nav th:nth-child(7).up:before {content: "\f107";}
+
+>>>>>>> develop
 tr[name="TestcaseRecord"].active ~ tr[name="TestcaseRecord"] ~ tr td:not([rowspan]){
     z-index: inherit;
     color: inherit;
@@ -469,6 +556,14 @@ td[rowspan]:nth-child(3):hover{
     overflow: visible;
 }
 
+<<<<<<< HEAD
+=======
+td[rowspan]:nth-child(4):hover{
+    overflow: visible;
+}
+
+
+>>>>>>> develop
 td[rowspan]:nth-child(3):hover div:not(:empty) {
     position: absolute;
     background: #3699ff;
@@ -483,9 +578,15 @@ td[rowspan]:nth-child(3):hover div:not(:empty) {
     transform: translate3d( -3px, 4px, 0);
 }
 
+<<<<<<< HEAD
 /*br {
     display: none;
 }*/
+=======
+br {
+    display: none;
+}
+>>>>>>> develop
 tr.hidden {
     display: none !important;
 }
@@ -524,7 +625,11 @@ tr[name="TestcaseRecord"] {
     top: 40px;
     position: absolute;
     left: 0;
+<<<<<<< HEAD
 }
+=======
+} 
+>>>>>>> develop
 .filterBar input {
     height: 40px;
     /* width: 100%; */
@@ -596,8 +701,27 @@ tr[name] td:not([rowspan]):nth-last-child(6):hover:before {
 }
 
 .version:before {
+<<<<<<< HEAD
     content: 'Warrior';
 }
+=======
+    content: 'Version : ';
+}
+
+.user {
+    position: fixed;
+    bottom: 0;
+    z-index: 999999;
+    font-size: 14px;
+    padding: 5px 15px;
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.user:before {
+    content: 'User : ';
+}
+
+>>>>>>> develop
 .EXCEPTION {
     color: #4ccbff;
 }
@@ -618,11 +742,83 @@ tr[name] td:not([rowspan]):nth-last-child(6):hover:before {
 tr[name="TestsuiteRecord"] .fa-book, tr[name="ProjectRecord"] .fa-book {
     display: none;
 }
+<<<<<<< HEAD
 	</style>
+=======
+.nav th:nth-child(1){
+    max-width: 5%;
+}
+td[rowspan]:nth-child(1){
+    max-width: 5%;
+}
+.nav th:nth-child(2){
+    max-width: 11%;
+}
+td[rowspan]:nth-child(2){
+    max-width: 11%;
+}
+.nav th:nth-child(3){
+    max-width: 15%;
+}
+td[rowspan]:nth-child(3){
+    max-width: 15%;
+}
+.nav th:nth-child(4){
+    max-width: 20%;
+}
+td[rowspan]:nth-child(4){
+    max-width: 20%;
+}
+.nav th:nth-child(5){
+    max-width: 9%;
+}
+td[rowspan]:nth-child(5){
+    max-width: 9%;
+}
+.nav th:nth-child(6){
+    max-width: 4%;
+}
+td[rowspan]:nth-child(6){
+    max-width: 4%;
+}
+.nav th:nth-child(7){
+    max-width: 6%;
+}
+td[rowspan]:nth-child(7){
+    max-width: 6%;
+}
+.nav th:nth-child(8){
+    max-width: 5%;
+}
+td[rowspan]:nth-child(8){
+    max-width: 5%;
+}
+.nav th:nth-child(9){
+    max-width: 6%;
+}
+td[rowspan]:nth-child(9){
+    max-width: 5%;
+}
+.nav th:nth-child(10){
+    max-width: 15%;
+}
+td[rowspan]:nth-child(10){
+    max-width: 15%;
+}
+.nav th:nth-child(11){
+    max-width: 5%;
+}
+td[rowspan]:nth-child(11){
+    max-width: 5%;
+}
+
+</style>
+>>>>>>> develop
 </head>
 <body>
 
 
+<<<<<<< HEAD
 	<!-- <h2>Results Summary</h2> -->
 	<table class="htmlResults" id="t1" name="ResultsSummaryTable">
 			<tr id="tr1" name="HeadingRow" >
@@ -645,10 +841,38 @@ tr[name="TestsuiteRecord"] .fa-book, tr[name="ProjectRecord"] .fa-book {
 
 <script>
 
+=======
+	<h2>Results Summary</h2>	
+	<table id="t1" name="ResultsSummaryTable">
+		<tr id="tr1" name="HeadingRow">
+			<th>Type</th>
+			<th>Name</th>
+		        <th>Info</th>
+			<th>Description</th>
+			<th>Timestamp</th>
+			<th>Duration</th>
+			<th>Status</th>
+			<th>Impact</th>
+            		<th>On Error</th>
+			<th>
+			<span style="padding-left:5px">Results (<i class="fa fa-line-chart">)</i></span><br/>
+			<span style="padding-left:5px">Logs (<i class="fa fa fa-book">)</i></span><br/>
+			<span style="padding-left:5px">Defects (<i class="fa fa fa-bug">)</i></span><br/>
+			</th>
+			<th colspan="6" id="summary">Summary</th>
+	   	 </tr>
+	</table>
+
+<script>
+	
+>>>>>>> develop
 	printFormater.init();
 
 </script>
 </body>
 </html>
+<<<<<<< HEAD
 <!-- <span style="padding-left:5px">Results (<i class="fa fa-line-chart">)</i></span><br/> -->
 
+=======
+>>>>>>> develop
