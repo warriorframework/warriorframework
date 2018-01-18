@@ -1,4 +1,4 @@
-language: python
+llanguage: python
 
 matrix:
   include:
@@ -44,6 +44,11 @@ matrix:
     #     firefox: "46.0"
     - os: linux
       env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/selenium_project.xml SELENIUM=yes
+      python: 2.7
+      addons:
+        firefox: "46.0"
+    - os: linux
+      env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/selenium_project.xml SELENIUM=yes SELENIUM3=yes
       python: 2.7
       addons:
         firefox: "46.0"
