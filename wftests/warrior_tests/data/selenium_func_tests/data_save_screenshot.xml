@@ -1,0 +1,9 @@
+<credentials>    
+    <system name="search_element_1">
+        <remote>no</remote>
+        <browser>
+            <browser_name>browser_3</browser_name>
+            <type>firefox</type>
+        </browser>
+    </system>
+</credentials>
