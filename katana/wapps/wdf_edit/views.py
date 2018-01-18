@@ -87,7 +87,7 @@ def wdf_remove_prefix(data):
     if data.startswith("@"):
         return data[1:]
     elif data == "#text":
-        return "value"
+        return "text"
     return data
 
 @register.filter
