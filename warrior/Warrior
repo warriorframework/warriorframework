@@ -85,7 +85,7 @@ def add_live_table_divs(livehtmllocn, file_list):
     """
 
     root_attribs = {'id': 'liveTables'}
-    root = xml_Utils.create_element("div", "", **root_attribs)
+    root = Utils.xml_Utils.create_element("div", "", **root_attribs)
 
     # for each iteration create a div with id = the iteration number, the table for tis iteration will be added 
     # under this div
@@ -94,13 +94,13 @@ def add_live_table_divs(livehtmllocn, file_list):
         marker_start = 'table-{0}starts'.format(str(i))
         marker_end = 'table-{0}ends'.format(str(i))
         div_attribs = {'id': str(i)}
-        elem = xml_Utils.create_subelement(root, 'div',  div_attribs)
-        start_comment = xml_Utils.create_comment_element(marker_start)
-        end_comment = xml_Utils.create_comment_element(marker_end)
+        elem = Utils.xml_Utils.create_subelement(root, 'div',  div_attribs)
+        start_comment = Utils.xml_Utils.create_comment_element(marker_start)
+        end_comment = Utils.xml_Utils.create_comment_element(marker_end)
         elem.append(start_comment)
         elem.append(end_comment)
         # write the tree to the file
-        xml_Utils.write_tree_to_file(root, livehtmllocn)
+        Utils.xml_Utils.write_tree_to_file(root, livehtmllocn)
     return
     
 
