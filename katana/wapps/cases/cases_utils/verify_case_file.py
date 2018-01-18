@@ -62,22 +62,11 @@ class VerifyCaseFile:
 
     def __verify_requirements(self):
         if self.major[1] not in self.data[self.root]:
-            self.data[self.root][self.major[1]] = []
-        elif not isinstance(self.data[self.root][self.major[1]], list):
-            self.data[self.root][self.major[1]] = [self.data[self.root][self.major[1]]]
-
-        for i in range(0, len(self.data[self.root][self.major[1]])):
-            for key, value in self.template_data[self.root][self.major[1]].iteritems():
-                key, value = self.__verified_req_key_value(key, value)
-                if key not in self.data[self.root][self.major[1]][i]:
-                    self.data[self.root][self.major[1]][i][key] = value
-                elif self.data[self.root][self.major[1]][i][key] is None:
-                    self.data[self.root][self.major[1]][i][key] = value
-
-    def __verified_req_key_value(self, key, value):
-        if value is None:
-            value = ""
-        return key, value
+            self.data[self.root][self.major[1]] = {"Requirement": []}
+        elif "Requirement" not in self.data[self.root][self.major[1]] or self.data[self.root][self.major[1]]["Requirement"] is None:
+            self.data[self.root][self.major[1]]["Requirement"] = []
+        elif not isinstance(self.data[self.root][self.major[1]]["Requirement"], list):
+            self.data[self.root][self.major[1]]["Requirement"] = [self.data[self.root][self.major[1]]["Requirement"]]
 
     def __verify_steps(self):
         if self.major[2] not in self.data[self.root]:

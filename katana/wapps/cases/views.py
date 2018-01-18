@@ -9,6 +9,7 @@ from django.views import View
 from utils.directory_traversal_utils import join_path
 from utils.json_utils import read_json_data, read_xml_get_json
 from utils.navigator_util import Navigator
+from utils.treeview_converter import TreeviewConverter
 from wapps.cases.cases_utils.verify_case_file import VerifyCaseFile
 
 navigator = Navigator()
@@ -38,6 +39,11 @@ def get_file(request):
         file_path = TEMPLATE
     vcf_obj = VerifyCaseFile(TEMPLATE, file_path)
     output, data = vcf_obj.verify_file()
-    # print output
-    # print json.dumps(data, indent=4, sort_keys=True)
-    return render(request, 'cases/display_case.html', {"data": data})
+    if output["status"]:
+        tvc_obj = TreeviewConverter(data)
+        tv_data = tvc_obj.convert()
+        details, reqs, steps = tv_data[0], tv_data[1], tv_data[2]
+    else:
+        details, reqs, steps = False, False, False
+    return JsonResponse({"status": output["status"], "message": output["message"],
+                         "case-data": data, "details": details, "requirements": reqs, "steps": steps})
