@@ -13,12 +13,13 @@ limitations under the License.
 
 """API for operations related to NetConf Interfaces
 Packages used = Requests (documentation available at http://docs.python-requests.org/)
-modified by ymizugaki 2016/01/15
-original = netconf_utils_class.py
+modified by ymizugaki 2017/07/11
+
 """
 from ast import literal_eval
-import netconf
+
 import traceback
+import netconf
 
 class WNetConf(object):
     """WNetConf class has methods required to interact with NetConf interfaces"""
@@ -50,18 +51,12 @@ class WNetConf(object):
         :Returns:
             1. connected(bool)= True / False
         """
-        nc_session = {'host':session_kwds.get('ip'),
-                      'port':int(session_kwds.get('nc_port', 830)),
-                      'username':session_kwds.get('username', None),
-                      'password':session_kwds.get('password', None),
-                      'timeout':int(session_kwds.get('timeout', None)),
-                      'allow_agent':literal_eval(session_kwds.get('allow_agent')),
-                      'look_for_keys':literal_eval(session_kwds.get('look_for_keys')),
-                      'hostkey_verify':literal_eval(session_kwds.get('hostkey_verify')),
-                      'unknown_host_cb':session_kwds.get('unknown_host_cb', None),
-                      'key_filename':session_kwds.get('key_filename', None),
-                      'ssh_config':session_kwds.get('ssh_config', None),
-                      'device_params':{"name":session_kwds.get("device_name", "default")}
+        nc_session = {'host': session_kwds.get('ip'),
+                      'port': int(session_kwds.get('nc_port', 830)),
+                      'username': session_kwds.get('username', None),
+                      'password': session_kwds.get('password', None),
+                      'hostkey_verify': literal_eval(session_kwds.get('hostkey_verify')),
+                      'protocol_version': session_kwds.get('protocol_version', 'None')
                      }
 
         try:
@@ -69,7 +64,11 @@ class WNetConf(object):
                                               nc_session['port'],
                                               nc_session['username'],
                                               nc_session['password'],
-                                              nc_session['hostkey_verify'])
+                                              nc_session['hostkey_verify'],
+                                              nc_session['protocol_version'])
+            # If connection fails return False
+            if self.nc_manager is None:
+                return False
         except:
             traceback.print_exc()
             return False
@@ -269,6 +268,56 @@ class WNetConf(object):
             result(bool)
         '''
         return self.nc_manager.waitfor_subscription(wait_string, timeout)
+
+    def clear_notification_buffer(self):
+        '''
+        clear notification buffer
+        :Arguments:
+            None
+        :Returns:
+            always true
+        '''
+        return self.nc_manager.clear_notification_buffer()
+
+    def get_schema(self, identifier, version_number=None, format_type=None):
+        '''
+        get-schema rpc
+        :Arguments:
+            1. identifier(string) = schema id (name of yang module)
+            2. version_number(string) = schema version (e.g. 1.0)
+            3. format_type(string) = format name (e.g. yang)
+        :Returns:
+            rpc reply
+        '''
+        return self.nc_manager.get_schema(identifier, version_number, format_type)
+
+    def get_notification_buffer(self, notification_type=None):
+        """get specified notification type from buffer
+            notification_type = Event | Alarm | DB-Change | 
+               any product specific notification type
+                 och-notif,
+                 dhcpv6-client-event etc..
+        """
+        templist = []
+        if notification_type is not None and \
+            not notification_type.lower() == "all":
+            if notification_type.lower() == "event":
+                notification_type = "event-notification"
+            elif notification_type.lower() == "alarm":
+                notification_type = "alarm-notification"
+            elif notification_type.lower() == "db-change":
+                notification_type = "netconf-config-change"
+            for notif in self.notification_data:
+                if notification_type in notif:
+                    templist.append(notif)
+        else:
+            templist = self.notification_data
+        return templist
+
+    def clear_notification_buffer_for_print(self):
+        """clear the notification print buffer
+        """
+        return self.nc_manager.clear_notification_print_buffer()
 
     @property
     def session_id(self):

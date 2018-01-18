@@ -52,6 +52,14 @@ Framework\.ClassUtils\.WNetwork\.network\_class module
     :undoc-members:
     :show-inheritance:
 
+Framework\.ClassUtils\.WNetwork\.warrior\_cli\_class module
+-----------------------------------------------------------
+
+.. automodule:: Framework.ClassUtils.WNetwork.warrior_cli_class
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 
 Module contents
 ---------------
