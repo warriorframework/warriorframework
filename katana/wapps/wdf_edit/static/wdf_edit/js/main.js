@@ -423,7 +423,7 @@ var wdf = {
                 // Has child tags
                 var key = $(content).find("[name='key']").prop("value");
                 var val = []
-                $(content).find(".subcontent").each(function(ind, subcontent){
+                $(content).find(".wdf-subcontent").each(function(ind, subcontent){
                     var subkey = $(subcontent).find("[name='key']").prop("value");
                     var subval = $(subcontent).find("[name='value']").prop("value");
                     var save = {};
