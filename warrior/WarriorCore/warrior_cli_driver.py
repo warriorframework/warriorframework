@@ -33,7 +33,7 @@ try:
     print "import database_utils_class was successful"
 except:
     print "\033[1;31m*********************************************"
-    print " !-Unable to import library in Warrior executable"
+    print " !-Unable to import library in for Warrior Framework in warrior_cli_driver"
     print " !-Successful imported libraries are printed above"
     print " !-Please check your import statements for any code added to the framework"
     print " !-Possible cause could be circular import"
@@ -45,7 +45,6 @@ import sys
 import Tools
 from Framework.Utils import config_Utils, file_Utils, xml_Utils
 from Framework.Utils.data_Utils import get_credentials
-from Framework.Utils.print_Utils import print_error, print_info
 import Framework.Utils.encryption_utils as Encrypt
 from WarriorCore.Classes import war_cli_class
 
@@ -82,18 +81,17 @@ def add_live_table_divs(livehtmllocn, file_list):
     """
     add the divs for the live html table
     """
-
     root_attribs = {'id': 'liveTables'}
     root = Utils.xml_Utils.create_element("div", "", **root_attribs)
 
-    # for each iteration create a div with id = the iteration number, the table for tis iteration will be added 
-    # under this div
-    
-    for i in range(0, len(file_list)):   
+    # for each iteration create a div with id = the iteration number
+    # the table for tis iteration will be added under this div
+
+    for i in range(0, len(file_list)):
         marker_start = 'table-{0}starts'.format(str(i))
         marker_end = 'table-{0}ends'.format(str(i))
         div_attribs = {'id': str(i)}
-        elem = Utils.xml_Utils.create_subelement(root, 'div',  div_attribs)
+        elem = Utils.xml_Utils.create_subelement(root, 'div', div_attribs)
         start_comment = Utils.xml_Utils.create_comment_element(marker_start)
         end_comment = Utils.xml_Utils.create_comment_element(marker_end)
         elem.append(start_comment)
@@ -105,7 +103,7 @@ def add_live_table_divs(livehtmllocn, file_list):
             livehtmllocn["html_result"] = xml_Utils.convert_element_to_string(root)
     return
 
-def file_execution(parameter_list, cli_args, abs_filepath, default_repo):
+def file_execution(cli_args, abs_filepath, default_repo):
     """
         Call the corresponded driver of each file type
     """
@@ -150,11 +148,12 @@ def file_execution(parameter_list, cli_args, abs_filepath, default_repo):
 
     return result
 
-def group_execution(parameter_list, cli_args, abs_cur_dir, db_obj, overwrite, livehtmlobj):
+def group_execution(parameter_list, cli_args, db_obj, overwrite, livehtmlobj):
     """
         Process the parameter list and prepare environment for file_execution
     """
     livehtmllocn = cli_args.livehtmllocn
+    abs_cur_dir = os.path.abspath(os.curdir)
 
     status = True
 
@@ -191,7 +190,7 @@ def group_execution(parameter_list, cli_args, abs_cur_dir, db_obj, overwrite, li
                     elif iter_count == 0 and livehtmlobj is not None:
                         add_live_table_divs(livehtmlobj, parameter_list)
 
-                result = file_execution(parameter_list, cli_args, abs_filepath, default_repo)
+                result = file_execution(cli_args, abs_filepath, default_repo)
             else:
                 print_error("file does not exist !! exiting!!")
         else:
@@ -235,10 +234,8 @@ def execution(parameter_list, cli_args, overwrite, livehtmlobj):
     if iron_claw:
         status = ironclaw_driver.main(parameter_list)
     else:
-        abs_cur_dir = os.path.abspath(os.curdir)
         db_obj = database_utils_class.create_database_connection(dbsystem=dbsystem)
-        status = group_execution(parameter_list, cli_args, abs_cur_dir,
-                                 db_obj, overwrite, livehtmlobj)
+        status = group_execution(parameter_list, cli_args, db_obj, overwrite, livehtmlobj)
 
         if db_obj is not False and db_obj.status is True:
             db_obj.close_connection()

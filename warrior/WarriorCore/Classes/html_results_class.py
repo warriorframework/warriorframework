@@ -275,7 +275,6 @@ class WarriorHtmlResults:
         live_html_dict = data_Utils.get_object_from_datarepository('live_html_dict', verbose=False)
         if live_html_dict:
             livehtmllocn = live_html_dict['livehtmllocn']
-
             live_html_iter = live_html_dict['iter']
             self.create_live_table(html, livehtmllocn, live_html_iter)
 
