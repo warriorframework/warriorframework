@@ -12,6 +12,7 @@ limitations under the License.
 '''
 import ast
 import traceback
+from io import IOBase
 from Framework.Utils.print_Utils import print_error, print_info, print_warning
 from Framework.Utils import config_Utils, file_Utils
 
@@ -31,7 +32,7 @@ class ArgumentDatatype(object):
                   'list': list,
                   'tuple': tuple,
                   'dict': dict,
-                  'file': file,
+                  'file': IOBase,
                   }
 
     def __init__(self, arg_name, arg_value):
@@ -81,7 +82,7 @@ class ArgumentDatatype(object):
         elif self.arg_name.startswith('dict_'):
             self.datatype = dict
         elif self.arg_name.startswith('file_'):
-            self.datatype = file
+            self.datatype = IOBase
             tc_path = config_Utils.tc_path
             fname = file_Utils.getAbsPath(self.arg_value, tc_path)
             try:
@@ -111,7 +112,7 @@ class ArgumentDatatype(object):
                     "string (default)\n")
         result = self.arg_value
         try:
-            if self.datatype is not file:
+            if self.datatype is not IOBase:
                 result = ast.literal_eval(self.arg_value)
         except Exception:
             print_error(err_msg)
@@ -119,7 +120,7 @@ class ArgumentDatatype(object):
             print_error('unexpected error: {0}'.format(traceback.format_exc()))
             result = self.arg_value
         else:
-            if self.datatype is not file and not isinstance(result, self.datatype):
+            if self.datatype is not IOBase and not isinstance(result, self.datatype):
                 print_error(err_msg)
                 print_info(info_msg)
                 result = self.arg_value
