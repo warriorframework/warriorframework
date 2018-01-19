@@ -131,8 +131,8 @@ def build_xml_dict(data):
     """
         Build a list of systems that can be unparsed into xmltodict format xml file
     """
-    # import pprint
-    # pprint.pprint(data)
+    import pprint
+    pprint.pprint(data)
 
     result = []
     for sys in data:
@@ -155,7 +155,7 @@ def build_xml_dict(data):
                 current_sys["subsystem"].append(current_subsys)
         if sys.get("@default", "") == "yes":
             current_sys["@default"] = "yes"
-        result.append(current_sys) 
+        result.append(current_sys)
     return result
 
 def on_post(request):
