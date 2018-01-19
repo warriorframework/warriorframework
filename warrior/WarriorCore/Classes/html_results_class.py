@@ -14,15 +14,17 @@ limitations under the License.
 import os
 
 import json
-import Tools
+import getpass
 import multiprocessing
-from xml.etree.ElementTree import fromstring
-from xml.dom.minidom import parseString
+import Tools
 from Framework.Utils import xml_Utils, file_Utils, data_Utils
 from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.print_Utils import print_info
 from Framework.Utils.xml_Utils import getElementWithTagAttribValueMatch
-import katana_interface_class
+import WarriorCore.Classes.katana_interface_class as katana_interface_class
+
+__author__ = 'Keenan Jabri'
+
 
 class LineResult:
     """Class that generates html result line items"""
@@ -31,7 +33,7 @@ class LineResult:
 
     def __init__(self):
         """Constructor for class LineResult"""
-        self.keys = ['type', 'name', 'info', 'timestamp', 'duration', 'status', 'impact', 'onerror', 'msc', 'static',
+        self.keys = ['type', 'name', 'info', 'description', 'timestamp', 'duration', 'status', 'impact', 'onerror', 'msc', 'static',
                      'dynamic']
 
     def get_info(self, line):
@@ -43,13 +45,13 @@ class LineResult:
 
     def set_dynamic_content(self, line):
         """sets content that is subjected to change"""
-        self.data['dynamic'] = [line.get("keywords"), line.get("passes"), line.get("failures"), line.get("errors"),
-                                line.get("exceptions"), line.get("skipped")]
+
+        self.data['dynamic'] = [line.get("keywords"), line.get("passes"), line.get("failures"),
+                                line.get("errors"), line.get("exceptions"), line.get("skipped")]
         self.data['timestamp'] = line.get("timestamp")
 
     def set_attributes(self, line, variant, stepcount):
         """sets attributes"""
-
         if 'Keyword' not in variant and 'step' not in variant:
             stepcount = ''
         result_path = line.get("resultsfile") if line.get("resultsfile") else line.get("resultsdir") if line.get("resultsdir") else ''
@@ -95,6 +97,7 @@ class LineResult:
                      'type': variant.replace('Test', '').replace('Keyword', 'step ') + str(stepcount),
                      'name': line.get("name"),
                      'info': self.get_info(line),
+                     'description': line.get("description"),
                      'timestamp': line.get("timestamp"),
                      'duration': line.get("time"),
                      'status': '<span class=' + status_name + '>' + status_name + '</span>',
@@ -103,12 +106,10 @@ class LineResult:
                      'msc': span_html,
                      'static': ['Count', 'Passed', 'Failed', 'Errors', 'Exceptions', 'Skipped'],
                      'locn': locn
-
                      }
 
     def set_html(self, line, variant, stepcount):
         """sets the html code"""
-
         if self.html == '':
             self.set_attributes(line, variant, stepcount)
         self.set_dynamic_content(line)
@@ -122,7 +123,6 @@ class LineResult:
                             top_level_next += '<td>' + (dynamicElem if dynamicElem else '0') + '</td>'
                     elif elem == 'static':
                         for staticElem in self.data['static']:
-
                             top_level += '<td>' + (staticElem if staticElem else '') + '</td>'
                     elif elem == 'name':
                         div_html = '<div data-path="{0}", data-type="{1}", katana-click="execution.resultsViewer.openXmlInApp">'.format(self.data['locn'], self.data['type'])
@@ -162,7 +162,6 @@ class WarriorHtmlResults:
 
     def create_line_result(self, line, variant):
         """ create new objs"""
-
         temp = LineResult()
         temp.set_html(line, variant, self.steps)
         self.lineObjs.append(temp)
@@ -260,7 +259,6 @@ class WarriorHtmlResults:
         """ build the html givenPath: added this feature in case of later down the line calling from outside junit
         file ( no actual use as of now )
         """
-
         if junitObj:
             self.junit_file = junitObj
             self.junit_root = xml_Utils.getRoot(self.junit_file)
@@ -271,7 +269,6 @@ class WarriorHtmlResults:
         html = ''
         for item in self.lineObjs:
             html += item.html
-
         if is_final is True:
             #html += '<div class="complete"></div>'
             pass

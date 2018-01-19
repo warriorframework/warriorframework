@@ -15,7 +15,6 @@ import sys
 if sys.version_info < (2, 7):
     print "Warrior doesn't support Python version lower than 2.7, now exiting"
     sys.exit(0)
-
 try:
     from WarriorCore import warrior_cli_driver
 except:

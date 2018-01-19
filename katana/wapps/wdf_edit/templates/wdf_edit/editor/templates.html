@@ -1,0 +1,98 @@
+<div id="system_template" auto-init="wdf.hide">
+    <div id="template-system" class="control-box">
+        <!-- Every system has a toolbar -->
+        <div class="sys-toolbar">
+            <div class="override-input-container">
+                <input type="checkbox" class="wdf-sys-checkbox" katana-click="wdf.sysDefaultCheck" name="default" title="Default"/>
+                <label/>
+            </div>
+            <input class="wdf-input" name="system_name" placeholder="System name" katana-change="wdf.sysNameChange" value="New System"/>
+            <div class="buttons">
+                <i katana-click="wdf.toggle" class="fa fa-toggle-up" title="Hide/Show"/>
+                <i katana-click="wdf.addTag" class="fa fa-plus" title="Add Data"/>
+                <i katana-click="wdf.addSubSystem" class="fa fa-plus-square" title="Add Subsystem"/>
+                <i katana-click="wdf.deleteSystem" class="fa fa-trash" title="Delete system"/>
+            </div>
+        </div>
+        <div id="template-subsys-editor" class="subsys-box" subsysid="1">
+            
+        </div>
+    </div>
+</div>
+
+<div id="subsystem_template" auto-init="wdf.hide">
+    <div id="template-subsys-editor" class="subsys-box" subsysid="1">
+        <div class="subsys-toolbar">
+            <div class="override-input-container">
+                <input type="checkbox" class="wdf-subsys-checkbox" katana-click="wdf.subsysDefaultCheck" name="subsys-default" title="Default Subsystem"/>
+                <label/>
+            </div>
+            <input class="wdf-input" name="subsystem_name" katana-change="wdf.subSysNameChange" value="New Subsystem"/>
+            <div class="buttons">
+                <i katana-click="wdf.toggle" class="fa fa-toggle-up" title="Hide/Show"/>
+                <i katana-click="wdf.addTag" class="fa fa-plus" title="Add Data"/>
+                <i katana-click="wdf.deleteSubSystem" class="fa fa-trash" title="Delete Subsystem"/>
+            </div>
+        </div>
+        <div class="field-inline dual-input wdf-content">
+            <label>
+                <i katana-click="wdf.addChild" class="fa fa-plus" title="Add Sub Data"/>
+                <i katana-click="wdf.deleteTag" class="fa fa-trash i-danger" title="Delete Data"/>
+            </label>
+            <input class="wdf-input" name="key" katana-change="wdf.validateKey" placeholder="Data key" list="most_used_tags"/>
+            <input class="wdf-input" name="value" placeholder="Data value" />
+        </div>
+    </div>
+</div>
+
+<div id="tag_template" auto-init="wdf.hide">
+    <div class="field-inline dual-input wdf-content">
+        <label>
+            <i katana-click="wdf.addChild" class="fa fa-plus" title=" Sub Data"/>
+            <i katana-click="wdf.deleteTag" class="fa fa-trash i-danger" title="Data"/>
+        </label>
+        <input class="wdf-input" name="key" katana-change="wdf.validateKey" placeholder="Data key" list="most_used_tags"/>
+        <input class="wdf-input" name="value" placeholder="Data value"/>
+    </div>
+</div>
+
+<div id="child_tag_template" auto-init="wdf.hide">
+    <div class="field-inline dual-input wdf-subcontent">
+        <label>
+            <i katana-click="wdf.deleteChildTag" class="fa fa-trash i-danger" title="Sub Data"/>
+        </label>
+        <input class="wdf-input" name="key" katana-change="wdf.validateKey" placeholder="Sub Data key" list="most_used_tags"/>
+        <input class="wdf-input" name="value" placeholder="Sub Data value"/>
+    </div>
+</div>
+
+<div id="navigator_template" auto-init="wdf.hide">
+    <div class="wdf-pad">
+        <div class="wdf-sys-nav">
+            <button class="btn wdf-wide-button" katana-click="wdf.jump_to" linkto="template-nav.linkto" type="button">
+                <i class="fa fa-server"/><span class="wdf-span"> New System</span></button>
+        </div>
+    </div>
+</div>
+
+<div id="navigator_button_template" auto-init="wdf.hide">
+    <div class="wdf-subsys-nav">
+        <button class="btn wdf-wide-button" katana-click="wdf.jump_to" linkto="template-nav.linkto" type="button">
+            <i class="fa fa-terminal"/><span class="wdf-span"> New Subsystem</span>
+        </button>
+    </div>
+</div>
+
+<datalist id="most_used_tags">
+    <option value="conn_type"/>
+    <option value="ip"/>
+    <option value="password"/>
+    <option value="prompt"/>
+    <option value="ssh_port"/>
+    <option value="telnet_port"/>
+    <option value="testdata"/>
+    <option value="timeout"/>
+    <option value="url"/>
+    <option value="username"/>
+    <option value="variable_config"/>
+</datalist>

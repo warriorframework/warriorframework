@@ -12,35 +12,71 @@ limitations under the License.
 '''
 
 try:
+    # Framework related import
     import os
-    import re
-    import sys
+    print "import os was successful"
     import shutil
+    print "import shutil was successful"
     import Framework.Utils.email_utils as email
+    print "import email was successful"
     import Framework.Utils as Utils
-    import Framework.Utils.encryption_utils as Encrypt
-    from Framework.Utils import xml_Utils, file_Utils, config_Utils
+    print "import Utils was successful"
     from Framework.Utils.print_Utils import print_error, print_info
-    from Framework.ClassUtils import database_utils_class
+    print "import print_Utils was successful"
     from WarriorCore import testcase_driver, testsuite_driver, project_driver
-    from WarriorCore import ironclaw_driver, mockrun_driver, framework_detail
-    from WarriorCore.Classes import war_cli_class
+    print "import testcase_driver, testsuite_driver, project_driver were successful"
+    from WarriorCore import ironclaw_driver, framework_detail
+    print "import ironclaw_driver, framework_detail were successful"
     from WarriorCore.Classes.jira_rest_class import Jira
+    print "import jira_rest_class was successful"
+    from Framework.ClassUtils import database_utils_class
+    print "import database_utils_class was successful"
 except:
+    print "\033[1;31m*********************************************"
+    print " !-Unable to import library in Warrior executable"
+    print " !-Successful imported libraries are printed above"
+    print " !-Please check your import statements for any code added to the framework"
+    print " !-Possible cause could be circular import"
+    print "*********************************************\033[0m"
     raise
+
+import re
+import sys
+import Tools
+from Framework.Utils import config_Utils, file_Utils, xml_Utils
+from Framework.Utils.data_Utils import get_credentials
+from Framework.Utils.print_Utils import print_error, print_info
+import Framework.Utils.encryption_utils as Encrypt
+from WarriorCore.Classes import war_cli_class
+
+"""Handle all the cli command, new functions may be added later"""
 
 def update_jira_by_id(jiraproj, jiraid, exec_dir, status):
     """ If jiraid is provided, upload the log and result file to jira """
     if jiraid is not False:
         jira_obj = Jira(jiraproj)
         if jira_obj.status is True:
+            # Get the current jira issue status
+            issue_status = jira_obj.get_jira_issue_status(jiraid)
+            isReopend = False
+            # Reopen the jira issue if it is closed, to upload the execution logs
+            if issue_status and issue_status.lower() == "closed":
+                print_info("Reopening Jira issue '{0}' to upload warrior "
+                           "execution logs".format(jiraid))
+                jira_obj.set_jira_issue_status(jiraid, "Reopened")
+                isReopend = True
+            # Upload execution logs
             zip_file = shutil.make_archive(exec_dir, 'zip', exec_dir)
             jira_obj.upload_logfile_to_jira_issue(jiraid, zip_file)
+            # Close the jira issue if it is reopened in the above if block
+            if isReopend is True:
+                print_info("Closing Jira issue '{0}' which was reopened "
+                           "earlier".format(jiraid))
+                jira_obj.set_jira_issue_status(jiraid, "Closed")
+            # Update Jira issue based on warrior execution status
             jira_obj.update_jira_issue(jiraid, status)
-
     else:
         print_info("jiraid not provided, will not update jira issue")
-
 
 def add_live_table_divs(livehtmllocn, file_list):
     """
@@ -48,19 +84,18 @@ def add_live_table_divs(livehtmllocn, file_list):
     """
 
     root_attribs = {'id': 'liveTables'}
-    root = xml_Utils.create_element("div", "", **root_attribs)
+    root = Utils.xml_Utils.create_element("div", "", **root_attribs)
 
-    # for each iteration create a div with id = the iteration number
-    # the table for tis iteration will be added
+    # for each iteration create a div with id = the iteration number, the table for tis iteration will be added 
     # under this div
-
-    for i in range(0, len(file_list)):
+    
+    for i in range(0, len(file_list)):   
         marker_start = 'table-{0}starts'.format(str(i))
         marker_end = 'table-{0}ends'.format(str(i))
         div_attribs = {'id': str(i)}
-        elem = xml_Utils.create_subelement(root, 'div', div_attribs)
-        start_comment = xml_Utils.create_comment_element(marker_start)
-        end_comment = xml_Utils.create_comment_element(marker_end)
+        elem = Utils.xml_Utils.create_subelement(root, 'div',  div_attribs)
+        start_comment = Utils.xml_Utils.create_comment_element(marker_start)
+        end_comment = Utils.xml_Utils.create_comment_element(marker_end)
         elem.append(start_comment)
         elem.append(end_comment)
         # write the tree to the file
@@ -68,6 +103,7 @@ def add_live_table_divs(livehtmllocn, file_list):
             xml_Utils.write_tree_to_file(root, livehtmllocn)
         elif isinstance(livehtmllocn, dict):
             livehtmllocn["html_result"] = xml_Utils.convert_element_to_string(root)
+    return
 
 def file_execution(parameter_list, cli_args, abs_filepath, default_repo):
     """
@@ -79,9 +115,7 @@ def file_execution(parameter_list, cli_args, abs_filepath, default_repo):
     jiraproj = cli_args.jiraproj
     jiraid = cli_args.jiraid
 
-    if mockrun:
-        result = mockrun_driver.main(abs_filepath, len(parameter_list))
-    elif Utils.xml_Utils.getRoot(abs_filepath).tag == 'Testcase':
+    if Utils.xml_Utils.getRoot(abs_filepath).tag == 'Testcase':
         default_repo['war_file_type'] = "Case"
         result, _, data_repository = testcase_driver.main(
             abs_filepath, data_repository=default_repo,
@@ -231,7 +265,7 @@ def warrior_execute_entry(*args, **kwargs):
         filepath, cli_args, overwrite = main(sys.argv[1:])
     else:
         # Launch from python function call
-        filepath, cli_args, overwrite = main(*args)
+        filepath, cli_args, overwrite = main(args)
     livehtmlobj = kwargs.get("livehtmlobj", None)
 
     status = execution(filepath, cli_args, overwrite, livehtmlobj)
@@ -321,20 +355,20 @@ def decide_overwrite_var(namespace):
     """
     overwrite = {}
     if namespace.datafile:
-        if namespace.datafile[0] != os.sep: 
+        if namespace.datafile[0] != os.sep:
             namespace.datafile = os.getcwd() + os.sep + namespace.datafile
         overwrite['ow_datafile'] = namespace.datafile
 
     if namespace.resultdir:
-        if namespace.resultdir[0] != os.sep: 
+        if namespace.resultdir[0] != os.sep:
             namespace.resultdir = os.getcwd() + os.sep + namespace.resultdir
         overwrite['ow_resultdir'] = namespace.resultdir
     if namespace.logdir:
-        if namespace.logdir[0] != os.sep: 
+        if namespace.logdir[0] != os.sep:
             namespace.logdir = os.getcwd() + os.sep + namespace.logdir
         overwrite['ow_logdir'] = namespace.logdir
     if namespace.outputdir:
-        if namespace.outputdir[0] != os.sep: 
+        if namespace.outputdir[0] != os.sep:
             namespace.outputdir = os.getcwd() + os.sep + namespace.outputdir
         overwrite['ow_resultdir'] = namespace.outputdir
         overwrite['ow_logdir'] = namespace.outputdir
@@ -342,7 +376,15 @@ def decide_overwrite_var(namespace):
         print_error("outputdir shouldn't be used with resultdir or logdir")
         exit(1)
     if namespace.jobid:
-        overwrite['jobid'] = "http://pharlap.tx.fnc.fujitsu.com/share/logs/"+str(namespace.jobid)
+        settings_xml = Tools.__path__[0] + os.sep + 'w_settings.xml'
+        job_url = get_credentials(settings_xml, 'job_url', ['url'], 'Setting')
+        if job_url['url'] is not None:
+            url = job_url['url']
+        else:
+            print_info("jobid is specified but no job url found in w_settings")
+            print_info("Using jobid only in JUnit file")
+            url = ""
+        overwrite['jobid'] = url + str(namespace.jobid)
     return overwrite
 
 
