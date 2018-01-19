@@ -17,7 +17,7 @@ import smtplib
 import os
 from os.path import basename
 from email import encoders
-from email.MIMEBase import MIMEBase
+from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from xml.etree import ElementTree as ET

@@ -231,7 +231,7 @@ class TestcaseUtils(object):
         try:
             txt = re.sub(r'[^\x20-\x7E|\x09-\x0A]','', txt)
             # remove non-ascii characters
-            txt = repr(txt).decode('unicode_escape').encode('ascii','ignore')[1:-1]
+            txt = repr(txt).encode('ascii','ignore')[1:-1]
         except Exception as exception:
             print_exception(exception)
         return txt

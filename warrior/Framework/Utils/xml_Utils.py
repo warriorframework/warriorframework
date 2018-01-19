@@ -15,6 +15,7 @@ import json
 import sys
 import difflib
 import os
+from io import IOBase
 
 from . import file_Utils
 import os.path
@@ -460,7 +461,7 @@ def getElementWithTagAttribValueMatch(start, tag, attrib, value):
     If there is not a match, it returns False.
     """
     node = False
-    if isinstance(start, (file, str)):
+    if isinstance(start, (IOBase, str)):
         # check if file exist here
         if file_Utils.fileExists(start):
             node = ElementTree.parse(start).getroot()
