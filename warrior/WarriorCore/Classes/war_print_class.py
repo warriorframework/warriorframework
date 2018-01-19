@@ -54,6 +54,9 @@ class RedirectPrint(object):
         self.console_add = None
 
     def katana_console_log(self, katana_obj):
+        """
+            set the console log object to be the katana communcation object
+        """
         self.console_full_log = katana_obj["console_full_log"]
         self.console_add = katana_obj["console_add"]
 
