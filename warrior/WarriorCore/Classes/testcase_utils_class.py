@@ -26,6 +26,7 @@ import re
 
 from Framework.Utils.print_Utils import  print_info, print_debug, print_warning,\
 print_error, print_exception, print_sub, print_notype
+import Framework.Utils.config_Utils as config_Utils 
 
 #import Framework.Utils.file_Utils as file_Utils
 #import Framework.Utils.config_Utils as config_Utils
@@ -78,7 +79,6 @@ class TestcaseUtils(object):
         """
 
         try:
-            import Framework.Utils.config_Utils as config_Utils 
             resultfile = config_Utils.resultfile
             tree = ET.ElementTree(self.root)
             tree.write(resultfile)
@@ -231,7 +231,7 @@ class TestcaseUtils(object):
         try:
             txt = re.sub(r'[^\x20-\x7E|\x09-\x0A]','', txt)
             # remove non-ascii characters
-            txt = repr(txt).encode('ascii','ignore')[1:-1]
+            txt = repr(txt)[1:-1]
         except Exception as exception:
             print_exception(exception)
         return txt
