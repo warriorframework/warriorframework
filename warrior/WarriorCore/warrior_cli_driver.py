@@ -110,7 +110,6 @@ def file_execution(parameter_list, cli_args, abs_filepath, default_repo):
         Call the corresponded driver of each file type
     """
     result = False
-    mockrun = cli_args.mockrun
     a_defects = cli_args.ad
     jiraproj = cli_args.jiraproj
     jiraid = cli_args.jiraid
@@ -201,7 +200,7 @@ def group_execution(parameter_list, cli_args, abs_cur_dir, db_obj, overwrite, li
         iter_count += 1
     return status
 
-# def execution(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
+# def execution(parameter_list, a_defects, cse_execution, iron_claw,
 #          jiraproj, overwrite, jiraid, dbsystem, livehtmllocn):
 def execution(parameter_list, cli_args, overwrite, livehtmlobj):
     """Parses the input parameters (i.e. sys.argv)
@@ -250,7 +249,6 @@ def warrior_execute_entry(*args, **kwargs):
     """
         main method
         filepath: required at least one
-        mockrun:
         auto_defects:
         version:
         iron_claw:
