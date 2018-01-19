@@ -51,7 +51,7 @@ def convert_csv_to_list_of_dict(input_csv_file):
         title = reader.fieldnames
         for row in reader:
             ordered_dict = OrderedDict()
-            for i in xrange(len(title)):
+            for i in range(len(title)):
                 if not title[i]:
                     continue
                 ordered_dict[title[i]] = row[title[i]]
@@ -98,7 +98,7 @@ def convert_excel_to_csv(input_excel_file,
         csv_file = open(ret_csv_file, 'wb+')
         wr = csv.writer(csv_file, quoting=csv.QUOTE_ALL)
 
-        for rownum in xrange(sh.nrows):
+        for rownum in range(sh.nrows):
             row_val = sh.row_values(rownum)
             for index, value in enumerate(row_val):
                 if sh.cell(rownum, index).ctype == 3:
@@ -162,16 +162,16 @@ def convert_csv_or_excel_to_xml(input_file,
             mapping_dict = data_Utils.get_credentials(mapping_file,
                                                       'mapping_scheme')
 
-            mapping_dictionary = {v: k for k, v in mapping_dict.iteritems()}
+            mapping_dictionary = {v: k for k, v in mapping_dict.items()}
         else:
             mapping_dictionary = {}
 
         result = []
         result.append(
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<systems>\n")
-        for i in xrange(len(dict_response)):
+        for i in range(len(dict_response)):
             result.append("  <system name="+"\""+str(i+1)+"\">\n")
-            for key, value in dict_response[i].iteritems():
+            for key, value in dict_response[i].items():
                 if mapping_dictionary:
                     if key in mapping_dictionary and mapping_dictionary[key]:
                         result.append(
@@ -243,7 +243,7 @@ def convert_xml_to_csv(input_file, mapping_file=None,
             mapping_dict = data_Utils.get_credentials(mapping_file,
                                                       'mapping_scheme')
 
-            mapping_dictionary = {v: k for k, v in mapping_dict.iteritems()}
+            mapping_dictionary = {v: k for k, v in mapping_dict.items()}
         else:
             mapping_dictionary = {}
 
@@ -259,14 +259,14 @@ def convert_xml_to_csv(input_file, mapping_file=None,
         csvwriter = csv.writer(f)
         for element in dict_response:
             if count == 0:
-                header = element.keys()
+                header = list(element.keys())
                 for index, val in enumerate(header):
-                    for key, value in mapping_dictionary.iteritems():
+                    for key, value in mapping_dictionary.items():
                         if val == value:
                             header[index] = key
                 csvwriter.writerow(header)
                 count += 1
-            csvwriter.writerow(element.values())
+            csvwriter.writerow(list(element.values()))
         f.close()
 
     except Exception as exception:

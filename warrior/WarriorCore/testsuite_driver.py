@@ -17,8 +17,8 @@ import traceback
 import shutil
 import copy
 import glob
-import sequential_testcase_driver
-import parallel_testcase_driver
+from . import sequential_testcase_driver
+from . import parallel_testcase_driver
 from WarriorCore.Classes import execution_files_class, junit_class
 from WarriorCore.Classes.iterative_testsuite_class import IterativeTestsuite
 from WarriorCore import testsuite_utils, common_execution_utils
@@ -339,7 +339,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
     ts_junit_object.add_property("resultsdir", suite_repository['suite_execution_dir'],
                                  "ts", suite_timestamp)
 
-    if suite_repository.has_key("data_file"):
+    if "data_file" in suite_repository:
         data_repository['suite_data_file'] = suite_repository['data_file']
 
     # jiraproj name

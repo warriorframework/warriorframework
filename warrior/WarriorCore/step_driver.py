@@ -202,7 +202,7 @@ def execute_step(step, step_num, data_repository, system_name, kw_parallel, queu
     string_status = {"TRUE": "PASS", "FALSE": "FAIL",
                      "ERROR": "ERROR", "EXCEPTION": "EXCEPTION", "SKIP": "SKIP", "RAN":"RAN"}
 
-    if str(keyword_status).upper() in string_status.keys():
+    if str(keyword_status).upper() in list(string_status.keys()):
         data_repository['step_%s_result' %
                         step_num] = string_status[str(keyword_status).upper()]
     else:
@@ -219,7 +219,7 @@ def execute_step(step, step_num, data_repository, system_name, kw_parallel, queu
     elif step_impact.upper() == 'NOIMPACT':
         msg = "Status of the executed step does not impact TC result"
     Utils.testcase_Utils.pNote_level(msg, "debug", "kw")
-    if data_repository.has_key('step-%s_exception' % step_num):
+    if 'step-%s_exception' % step_num in data_repository:
         msg = "Exception message: " + \
             data_repository['step-%s_exception' % step_num]
         Utils.testcase_Utils.pNote_level(msg, "debug", "kw", ptc=False)

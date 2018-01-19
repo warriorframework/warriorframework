@@ -233,7 +233,7 @@ def compute_testsuite_status(suite_status, tc_status, tc_impact):
 
     elif tc_impact.upper() == 'NOIMPACT': 
         print_info('result of this testcase does not impact the testsuite status')
-    print suite_status
+    print(suite_status)
     return suite_status
 
 

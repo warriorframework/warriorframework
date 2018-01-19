@@ -502,7 +502,7 @@ class TestcaseUtils(object):
                 resultfile.write(finalresult)
                 resultfile.flush()
                 resultfile.close()
-        except Exception, err:
+        except Exception as err:
             print_info('unexpected error: {0}'.format(str(err)))
 
     @staticmethod

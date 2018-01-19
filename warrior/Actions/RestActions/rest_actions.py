@@ -158,7 +158,7 @@ class RestActions(object):
                 Other Restrictions: Should be a valid file path
 
                 eg: userId=1;id=1;title=Changed Post;body=New Comment
-                    \u0075\u0073\u0065\u0072\u0049\u0064\u003d\u0031\u003b\u0069\u0064\u003d\u0031\u003b\u0074
+                    \\u0075\\u0073\\u0065\\u0072\\u0049\\u0064\\u003d\\u0031\\u003b\\u0069\\u0064\\u003d\\u0031\\u003b\\u0074
                     path/to/file/containing/data
 
             5. json: Represents the JSON data that goes into the body of the request
@@ -968,7 +968,7 @@ class RestActions(object):
                 Other Restrictions: Should be a valid file path
 
                 eg: userId=1;id=1;title=Changed Post;body=New Comment
-                    \u0075\u0073\u0065\u0072\u0049\u0064\u003d\u0031\u003b\u0069\u0064\u003d\u0031\u003b\u0074
+                    \\u0075\\u0073\\u0065\\u0072\\u0049\\u0064\\u003d\\u0031\\u003b\\u0069\\u0064\\u003d\\u0031\\u003b\\u0074
                     path/to/file/containing/data
 
             6. json: Represents the JSON data that goes into the body of the request
@@ -1382,7 +1382,7 @@ class RestActions(object):
                 Other Restrictions: Should be a valid file path
 
                 eg: userId=1;id=1;title=Changed Post;body=New Comment
-                    \u0075\u0073\u0065\u0072\u0049\u0064\u003d\u0031\u003b\u0069\u0064\u003d\u0031\u003b\u0074
+                    \\u0075\\u0073\\u0065\\u0072\\u0049\\u0064\\u003d\\u0031\\u003b\\u0069\\u0064\\u003d\\u0031\\u003b\\u0074
                     path/to/file/containing/data
 
             6. json: Represents the JSON data that goes into the body of the request
@@ -1795,7 +1795,7 @@ class RestActions(object):
                 Other Restrictions: Should be a valid file path
 
                 eg: userId=1;id=1;title=Changed Post;body=New Comment
-                    \u0075\u0073\u0065\u0072\u0049\u0064\u003d\u0031\u003b\u0069\u0064\u003d\u0031\u003b\u0074
+                    \\u0075\\u0073\\u0065\\u0072\\u0049\\u0064\\u003d\\u0031\\u003b\\u0069\\u0064\\u003d\\u0031\\u003b\\u0074
                     path/to/file/containing/data
 
             6. json: Represents the JSON data that goes into the body of the request
@@ -2208,7 +2208,7 @@ class RestActions(object):
                 Other Restrictions: Should be a valid file path
 
                 eg: userId=1;id=1;title=Changed Post;body=New Comment
-                    \u0075\u0073\u0065\u0072\u0049\u0064\u003d\u0031\u003b\u0069\u0064\u003d\u0031\u003b\u0074
+                    \\u0075\\u0073\\u0065\\u0072\\u0049\\u0064\\u003d\\u0031\\u003b\\u0069\\u0064\\u003d\\u0031\\u003b\\u0074
                     path/to/file/containing/data
 
             6. json: Represents the JSON data that goes into the body of the request
@@ -2622,7 +2622,7 @@ class RestActions(object):
                 Other Restrictions: Should be a valid file path
 
                 eg: userId=1;id=1;title=Changed Post;body=New Comment
-                    \u0075\u0073\u0065\u0072\u0049\u0064\u003d\u0031\u003b\u0069\u0064\u003d\u0031\u003b\u0074
+                    \\u0075\\u0073\\u0065\\u0072\\u0049\\u0064\\u003d\\u0031\\u003b\\u0069\\u0064\\u003d\\u0031\\u003b\\u0074
                     path/to/file/containing/data
 
             6. json: Represents the JSON data that goes into the body of the request

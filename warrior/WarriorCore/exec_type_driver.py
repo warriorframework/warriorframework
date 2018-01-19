@@ -16,7 +16,7 @@ conditional execution of a step in Testcase/Suite/Project """
 
 from Framework.Utils.data_Utils import get_object_from_datarepository, verify_data
 from Framework.Utils.print_Utils import print_error, print_info
-from Classes.argument_datatype_class import ArgumentDatatype
+from .Classes.argument_datatype_class import ArgumentDatatype
 from Framework.Utils.testcase_Utils import pNote
 
 MATH_OPERATION = {
@@ -316,7 +316,7 @@ def decision_maker(exec_node):
         status = expression_parser(expression, rules)
         if exec_type.upper() == 'IF NOT':
             status = not status
-    except ElseException, else_action:
+    except ElseException as else_action:
         # do something
         status = False
         if else_action.action is not None:

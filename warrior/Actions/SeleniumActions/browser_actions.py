@@ -14,7 +14,7 @@ limitations under the License.
 """ Selenium keywords for Generic Browser Actions """
 
 import os
-from urlparse import urlparse
+from urllib.parse import urlparse
 from Framework.ClassUtils.WSelenium.browser_mgmt import BrowserManagement
 from Actions.SeleniumActions.verify_actions import verify_actions
 from Actions.SeleniumActions.elementlocator_actions import elementlocator_actions

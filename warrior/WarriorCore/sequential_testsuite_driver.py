@@ -138,7 +138,7 @@ def execute_sequential_testsuites(testsuite_list, project_repository,
 
         string_status = {"TRUE": "PASS", "FALSE": "FAIL", "ERROR": "ERROR", "SKIP": "SKIP"}
 
-        if str(testsuite_status).upper() in string_status.keys():
+        if str(testsuite_status).upper() in list(string_status.keys()):
             data_repository['testsuite_{}_result'.format(suite_cntr)] = \
              string_status[str(testsuite_status).upper()]
         else:

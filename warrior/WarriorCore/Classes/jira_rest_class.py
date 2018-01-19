@@ -128,7 +128,7 @@ class Jira(object):
                     if t["type"] == ["default"]:
                         type_matched = t
 
-            if type_matched is not None and status in type_matched.keys():
+            if type_matched is not None and status in list(type_matched.keys()):
                 # Change the jira issue status
                 if type_matched[status][0]:
                     to_status = type_matched[status][0].lower()
@@ -289,7 +289,7 @@ class Jira(object):
 
             desc = desc + '\\n' + issue_summary + '\\n' + '\\n' + p_header + '\\n'
             for attr in json_data:
-                for key, value in attr.items():
+                for key, value in list(attr.items()):
                     key = key.replace('\n', "\\n")
                     value = value.replace('\n', "\\n")
                     desc = desc + str(key) + ':' + str(value) + '\\n'

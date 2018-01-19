@@ -27,7 +27,7 @@ class Connection(Base):
 
     def connect_ssh(self):
         """ """
-        print "ssh connection"
+        print("ssh connection")
 
     def connect_telnet(self):
         """ """

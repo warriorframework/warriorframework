@@ -32,8 +32,8 @@ def debug_file(console_filepath):
     try:
         console_logfile = open(console_filepath, 'a')
         redirect_print.get_file(console_logfile)
-    except Exception,e:
-        print "unexpected error %s" % str(e)
+    except Exception as e:
+        print("unexpected error %s" % str(e))
         console_logfile = None
 
 def junit_file(junit_filepath):
@@ -69,7 +69,7 @@ def set_datarepository(repository):
 def set_data_repository_for_parallel(repository):
     global par_data_repository
     par_data_repository.update(repository)
-    print par_data_repository
+    print(par_data_repository)
 
 def set_testcase_path(testcase_file_path):
     global tc_path

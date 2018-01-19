@@ -91,7 +91,7 @@ class TestData(object):
 
         """
         vc_file_list = None if vc_file is None else details_dict["vc_file_list"]
-        for param, _ in CMD_PARAMS.items():
+        for param, _ in list(CMD_PARAMS.items()):
             if param not in VARSUB_PARAM_LIST and param != "vc_file_list":
                 # list in here is just a list of strings
                 string_list = details_dict[param]
@@ -125,14 +125,14 @@ class TestData(object):
             return the particular list or None
         """
         dict_of_lists = cfg_elem_obj.get_list(text)
-        if len(dict_of_lists.values()) > 1:
-            if all(len(x) == len(dict_of_lists.values()[0]) for x in dict_of_lists.values()):
-                return len(dict_of_lists.values()[0])
+        if len(list(dict_of_lists.values())) > 1:
+            if all(len(x) == len(list(dict_of_lists.values())[0]) for x in list(dict_of_lists.values())):
+                return len(list(dict_of_lists.values())[0])
             else:
                 # There are multiple lists with different length!
                 return 'Error'
-        elif len(dict_of_lists.values()) == 1 and dict_of_lists.values()[0]:
-            return len(dict_of_lists.values()[0])
+        elif len(list(dict_of_lists.values())) == 1 and list(dict_of_lists.values())[0]:
+            return len(list(dict_of_lists.values())[0])
 
         return False
 
@@ -236,7 +236,7 @@ class TestData(object):
                 a list with expanded raw_str
         """
         expanded_str = []
-        for str_match, list_value in dict_of_list.items():
+        for str_match, list_value in list(dict_of_list.items()):
             if list_value:
                 # There is a list that needs to expand
                 if expanded_str == []:
@@ -278,7 +278,7 @@ class TestData(object):
             details_dict["verify_text_list"][cmd_index] = False
             return []
 
-        return cmd_result.values()
+        return list(cmd_result.values())
 
     def verify_sub(self, details_dict, cmd_index, varconfigfile, start_pat="${", end_pat="}"):
         """
@@ -301,7 +301,7 @@ class TestData(object):
             expanded_verify_text = []
 
             # add the value to the verify text list (1 cmd can have multiple verify text)
-            verify_text_match_list.append(verify_text_result.values())
+            verify_text_match_list.append(list(verify_text_result.values()))
 
             expanded_verify_text = self.string_sub(verify_text_string, verify_text_result,
                                                    start_pat, end_pat)
@@ -344,7 +344,7 @@ class TestData(object):
 
         for sub_cmd_index, cmd in enumerate(details_dict["command_list"][cmd_index]):
             # for every expanded cmd...
-            for param, _ in CMD_PARAMS.items():
+            for param, _ in list(CMD_PARAMS.items()):
                 if param not in VFY_PARAM_LIST and param != "command_list":
                     # list in here is just a list of strings
                     # insert duplicated element after the current element
@@ -403,7 +403,7 @@ class TestData(object):
         """
         for sub_cmd_index, cmd in enumerate(details_dict["command_list"][cmd_index]):
             # for every expanded cmd...
-            for param, _ in CMD_PARAMS.items():
+            for param, _ in list(CMD_PARAMS.items()):
                 if param != "command_list":
                     # list in here is just a list of strings
                     # insert duplicated element after the current element
@@ -471,7 +471,7 @@ class TestData(object):
                     self.align_both(details_dict, cmd_index, cmd_match, verify_text_match_list)
 
                     cmd_jump = len(details_dict["command_list"][cmd_index])
-                    for param in CMD_PARAMS.keys():
+                    for param in list(CMD_PARAMS.keys()):
                         del details_dict[param][cmd_index]
 
                     cmd_index += cmd_jump
@@ -481,7 +481,7 @@ class TestData(object):
 
                     self.align_cmd(details_dict, cmd_index, cmd_match)
 
-                    for param in CMD_PARAMS.keys():
+                    for param in list(CMD_PARAMS.keys()):
                         del details_dict[param][cmd_index]
 
                     cmd_index += cmd_jump
@@ -510,7 +510,7 @@ class TestData(object):
          provided by user in the datafile.
 
         """
-        for param, _ in CMD_PARAMS.items():
+        for param, _ in list(CMD_PARAMS.items()):
             if param not in VARSUB_PARAM_LIST and param!="vc_file_list":
                 string_list = details_dict[param]
                 td_sys_list = details_dict["sys_list"]
@@ -701,7 +701,7 @@ class TestDataIterations(object):
                 # in its list by n times, so that each command that was resolved
                 # has the corresponding parameter repeated.
                 ref_length = len(resolved_cmd_list)
-                for param, _ in CMD_PARAMS.items():
+                for param, _ in list(CMD_PARAMS.items()):
                     if param not in excl_list:
                         param_list = details_dict[param]
                         param_value = param_list[index]
@@ -744,7 +744,7 @@ class TestDataIterations(object):
                                       '${', '}')
             if cmd_value[0] is not False:
                 t_obj.align_cmd(details_dict, index, cmd_value)
-                for param in CMD_PARAMS.keys():
+                for param in list(CMD_PARAMS.keys()):
                     del details_dict[param][index]
         return details_dict
 
@@ -854,7 +854,7 @@ class TestDataIterations(object):
         if status is False or cmd_lst_length != cmd_loc_list[-1]:
             return details_dict
 
-        new_details_dict = {key: [] for key in details_dict.keys()}
+        new_details_dict = {key: [] for key in list(details_dict.keys())}
         new_cmd_loc_list = cmd_loc_list[:-1]
         while len(details_dict['command_list']) >\
                 len(new_details_dict['command_list']):
@@ -887,7 +887,7 @@ class TestDataIterations(object):
                 # remaining values in cmd_loc_list
                 cmd_loc_list[cmd_pos:] = [val+repeat_count-1 for val in
                                           cmd_loc_list[cmd_pos:]]
-                for param, _ in CMD_PARAMS.items():
+                for param, _ in list(CMD_PARAMS.items()):
                     param_list = details_dict[param]
                     element = param_list[index]
                     if param == 'repeat_list':
@@ -947,7 +947,7 @@ class TestDataIterations(object):
         supported_patterns = [""] if cmd_iter_pattern == ""\
             else ["", cmd_iter_pattern]
 
-        for param, attrib in CMD_PARAMS.items():
+        for param, attrib in list(CMD_PARAMS.items()):
             if param not in excl_list:
                 element = details_dict[param][index]
 
@@ -1293,7 +1293,7 @@ class TestDataIterations(object):
         status = True
         cmd_list = details_dict["command_list"]
         cmd_length = len(cmd_list)
-        for param, _ in CMD_PARAMS.items():
+        for param, _ in list(CMD_PARAMS.items()):
             param_list = details_dict[param]
             if len(param_list) == cmd_length:
                 cmd_status = True

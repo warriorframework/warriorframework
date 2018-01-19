@@ -965,7 +965,7 @@ class CloudShellActions(object):
            reservation
         returns the cloudshell reservation id
         '''
-        for attr, value in responseObject.__dict__.iteritems():
+        for attr, value in responseObject.__dict__.items():
             for val in value:
                 topo1 = val.Topologies[0]
                 topo2 = topo1.split("/", 2)

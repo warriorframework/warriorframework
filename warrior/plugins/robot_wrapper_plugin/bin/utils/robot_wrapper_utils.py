@@ -98,7 +98,7 @@ def create_case_junit(robot_tests):
 
         string_status = {"PASS": "TRUE", "FAIL": "FALSE"}
         # Convert robot test results
-        if str(tc_status).upper() in string_status.keys():
+        if str(tc_status).upper() in list(string_status.keys()):
             tc_status = string_status[str(tc_status).upper()]
         tc_junit_object.update_count(tc_status, "1", "ts", data_repository['wt_ts_timestamp'])
         tc_junit_object.update_count("tests", "1", "ts", data_repository['wt_ts_timestamp'])
@@ -130,7 +130,7 @@ def create_case_junit(robot_tests):
                     kw_desc = "No doc/desc provided"
 
                 # Convert robot keyword results
-                if str(kw_status).upper() in string_status.keys():
+                if str(kw_status).upper() in list(string_status.keys()):
                     kw_status = string_status[str(kw_status).upper()]
 
                 add_keyword_result(tc_junit_object, tc_timestamp, step_num,

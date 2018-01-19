@@ -437,7 +437,7 @@ class CreateTestSuite(object):
         if value is None:
             value = ""
         elem = ET.Element(name)
-        for key, val in attr.items():
+        for key, val in list(attr.items()):
             elem.set(str(key), val)
         elem.text = value
         return elem

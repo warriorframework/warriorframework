@@ -952,7 +952,7 @@ class NetconfActions(object):
         pNote(self.datafile)
         session_id = Utils.data_Utils.get_session_id(system_name, session_name)
         temp_dict = Utils.config_Utils.data_repository
-        for s0, s1 in temp_dict.items():
+        for s0, s1 in list(temp_dict.items()):
             if s0 != session_id and isinstance(s1, WNetConf):
                 s1.clear_notification_buffer()
         report_substep_status(True)

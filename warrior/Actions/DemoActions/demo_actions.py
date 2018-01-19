@@ -14,7 +14,7 @@ limitations under the License.
 """This is demo_actions module that has all demo test case related keywords """
 import base64
 import json
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 import os
 
 import Framework.Utils as Utils
@@ -212,20 +212,20 @@ class DemoActions(object):
             }
         }
         """
-        credential_handler=urllib2.HTTPPasswordMgrWithDefaultRealm()
+        credential_handler=urllib.request.HTTPPasswordMgrWithDefaultRealm()
         credential_handler.add_password(None, postdata_url, username, password)
-        auth = urllib2.HTTPBasicAuthHandler(credential_handler)
+        auth = urllib.request.HTTPBasicAuthHandler(credential_handler)
         userpassword = username + ":" + password
         password = base64.b64encode(userpassword)
         #Create an Authentication handler
-        opener = urllib2.build_opener(auth)
-        urllib2.install_opener(opener)
-        opener = urllib2.build_opener(urllib2.HTTPHandler(debuglevel=1))
+        opener = urllib.request.build_opener(auth)
+        urllib.request.install_opener(opener)
+        opener = urllib.request.build_opener(urllib.request.HTTPHandler(debuglevel=1))
         #Create a POST request
         headers={"Authorization" : "Basic "+password,"Content-Type": "application/json"}
-        request=urllib2.Request(str(postdata_url),postdata,headers)
+        request=urllib.request.Request(str(postdata_url),postdata,headers)
         try:
-            handler = urllib2.urlopen(request)
+            handler = urllib.request.urlopen(request)
             extension = json.loads(handler.read())
             issue_id = str(extension['key'])
             pNote("JIRA Issue Created. Issue-Id: {0}".format(issue_id))

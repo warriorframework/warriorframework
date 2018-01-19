@@ -17,7 +17,7 @@ import time
 import re
 
 from datetime import datetime
-from print_Utils import print_info, print_warning, print_error, print_debug
+from .print_Utils import print_info, print_warning, print_error, print_debug
 
 
 class Tnet_Comm(object):
@@ -46,7 +46,7 @@ class Tnet_Comm(object):
         try:
             self.tnet.open(host, port)
             self.log = open(self.logfile,'w')
-        except socket.error,err:
+        except socket.error as err:
             print_warning( "Login failed {0}".format(str(err)))
             return False
         else:

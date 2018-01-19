@@ -103,7 +103,7 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
                 step_status = result[0]
                 kw_resultfile = result[1]
                 step_impact = result[2]
-            except Exception, e:
+            except Exception as e:
                 print_error('unexpected error %s' % str(e))
                 step_status     = False
                 kw_resultfile   = None
@@ -117,7 +117,7 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
                 kw_resultfile = result[1]
                 step_impact = result[2]
 
-            except Exception, e:
+            except Exception as e:
                 print_error('unexpected error %s' % str(e))
                 step_status     = False
                 kw_resultfile   = None
@@ -237,7 +237,7 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
             # put result into multiprocessing queue and later retrieve in corresponding driver
             # parallel testcase sequenial keywords
             queue.put((step_status_list, kw_resultfile_list, system_name, step_impact_list, data_repository['wt_junit_object']))
-        except Exception, e:
+        except Exception as e:
             print_error(traceback.format_exc())
 
     else:

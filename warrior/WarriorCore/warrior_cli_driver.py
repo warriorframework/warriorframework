@@ -226,5 +226,5 @@ def main(args):
     return decide_action(w_cli_obj, parsed_args)
 
 if __name__ == "__main__":
-    print re.match(r"[g-z]", raw_input("Enter: "))
+    print(re.match(r"[g-z]", input("Enter: ")))
     main(sys.argv[1:])

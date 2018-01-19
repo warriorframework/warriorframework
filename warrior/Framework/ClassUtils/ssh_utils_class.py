@@ -59,7 +59,7 @@ class SSHComm(object):
             1. status(bool)= True / False
 
         """
-        for attempt in xrange(retries):
+        for attempt in range(retries):
             print_debug("Attempt{} connecting to {}".format(attempt+1,
                                                             self.target))
             try:
@@ -78,7 +78,7 @@ class SSHComm(object):
             except self.param.SSHException:
                 print_error(" ! could not connect to %s...check logs" % self.target)
                 return False
-            except Exception, err:
+            except Exception as err:
                 print_error("Login failed {0}".format(str(err)))
                 sleep(interval)
                 continue

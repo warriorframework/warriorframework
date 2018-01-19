@@ -28,7 +28,7 @@ class JsonUtils(object):
         into (key, value) pairs so that they're sorted
         """
         if isinstance(json_object, dict):
-            return sorted((k, self.sort_json_object(v)) for k, v in json_object.items())
+            return sorted((k, self.sort_json_object(v)) for k, v in list(json_object.items()))
         if isinstance(json_object, list):
             return sorted(self.sort_json_object(x) for x in json_object)
         else:
@@ -44,7 +44,7 @@ class JsonUtils(object):
 
         """
         if isinstance(json_object,dict):
-            return frozenset((key,self.nested_json_object(value)) for key,value in json_object.items())
+            return frozenset((key,self.nested_json_object(value)) for key,value in list(json_object.items()))
         elif isinstance(json_object,list):
             return tuple(self.nested_json_object(value) for value in json_object)
         return json_object
@@ -57,9 +57,9 @@ class JsonUtils(object):
                 Returns json object by converting either to lower or upper case."""
 
         if convert_to_lower == True:
-            json_object = dict({str(k).lower(): str(v).lower() for k, v in json_object.iteritems()})
+            json_object = dict({str(k).lower(): str(v).lower() for k, v in json_object.items()})
         else:
-            json_object = dict({str(k).upper(): str(v).upper() for k, v in json_object.iteritems()})
+            json_object = dict({str(k).upper(): str(v).upper() for k, v in json_object.items()})
         return json_object
 
     def diff_json_objects(self, json_object1, json_object2,case_conversion=False):
@@ -147,7 +147,7 @@ class JsonUtils(object):
             if check_for_subset:
                 json_object1 = self.sort_json_object(json_object1)
                 json_object2 = self.sort_json_object(json_object2)
-                result = all(item in json_object1.items() for item in json_object2.items())
+                result = all(item in list(json_object1.items()) for item in list(json_object2.items()))
             else:
                 result = self.sort_json_object(json_object1) == self.sort_json_object(json_object2)
             if not result and write_diff_to_console:
@@ -189,17 +189,17 @@ class JsonUtils(object):
         file which matches with search pattern"""
 
         json_object = json.load(open(json_file, 'r'))
-        for k, v in json_object.items():
+        for k, v in list(json_object.items()):
             if search_pattern == k:
                 print_info("Search pattern found in json")
                 return v
             else:
-                if not any(k == search_pattern for k in v.keys()):
+                if not any(k == search_pattern for k in list(v.keys())):
                     print_info("Search pattern not found")
                     return None
                 else:
                     print_info("Search pattern found in json")
-                    for key, value in v.items():
+                    for key, value in list(v.items()):
                         if key == search_pattern:
                             return value
                         else:

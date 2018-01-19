@@ -11,7 +11,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import cookielib
+import http.cookiejar
 import json
 import os
 import re
@@ -251,10 +251,10 @@ def resolve_value_of_cookies(element):
     if element is not None and element is not False and element != "":
         abs_path = file_Utils.getAbsPath(element, sys.path[0])
         if os.path.exists(abs_path):
-            element = cookielib.LWPCookieJar(element)
+            element = http.cookiejar.LWPCookieJar(element)
             try:
                 element.load()
-            except cookielib.LoadError:
+            except http.cookiejar.LoadError:
                 pNote("Cookies could not be loaded from {}.".format(element),
                       "error")
                 element = None
@@ -617,7 +617,7 @@ def resolve_value_of_data(element, datafile):
         element = check_ext_get_abspath(element, os.path.dirname(datafile))
         if os.path.exists(element):
             final_dict = open(element, 'rb')
-        elif isinstance(element, unicode):
+        elif isinstance(element, str):
             final_dict = element
         else:
             final_dict = convert_string_to_dict(element)

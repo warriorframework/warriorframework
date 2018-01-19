@@ -24,7 +24,7 @@ try:
     MOD = 'Pycrypto'
     from Crypto.Cipher import AES
     from Crypto import Random
-except ImportError, err:
+except ImportError as err:
     print_error(str(err))
     print_info("{0} module is not installed".format(MOD))
 

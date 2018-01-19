@@ -45,20 +45,20 @@ class ManualDefectClass(object):
         data_repository = {}
         full_list = json.load(open(filepath))
         for dictionary in full_list:
-            key = dictionary.keys()[0]
-            item = dictionary.values()[0]
+            key = list(dictionary.keys())[0]
+            item = list(dictionary.values())[0]
             if key == 'testcase_filepath'  or\
              key == 'defectsdir' or key == 'logsdir' or key == 'resultfile':
                 data_repository["wt_"+key] = item
         if len(data_repository) < 4:
-            print "not a valid json file"
+            print("not a valid json file")
             return None
         else:
             return data_repository
 
     def manual_defects(self, paths):
         """parse file list and create jira issue for each failures"""
-        print "manual-create defects"
+        print("manual-create defects")
 
         if self.path_type == "dir":
             defects_json_list = []
@@ -78,7 +78,7 @@ class ManualDefectClass(object):
                 else:
                     print_error("Directory does not exist in provided path {0} "\
                                 "relative to cwd".format(path))
-                print "\n"
+                print("\n")
         else:
             defects_json_list = []
             i = 0
@@ -88,10 +88,10 @@ class ManualDefectClass(object):
                 check_file = self.check_defect_file(path)
                 if check_file is not None:
                     defects_json_list.append(check_file)
-                print "\n"
+                print("\n")
 
         if len(defects_json_list) == 0:
-            print "No defect json files found"
+            print("No defect json files found")
             exit(0)
         elif len(defects_json_list) > 0:
             for j_file in defects_json_list:

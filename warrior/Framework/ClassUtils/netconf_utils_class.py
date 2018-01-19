@@ -19,7 +19,7 @@ modified by ymizugaki 2017/07/11
 from ast import literal_eval
 
 import traceback
-import netconf
+from . import netconf
 
 class WNetConf(object):
     """WNetConf class has methods required to interact with NetConf interfaces"""

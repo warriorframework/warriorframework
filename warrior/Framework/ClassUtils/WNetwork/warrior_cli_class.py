@@ -203,7 +203,7 @@ class WarriorCli(object):
             testdatafile, varconfigfile, var_sub=var_sub, title=title, row=row,
             system_name=system_name, datafile=datafile)
         finalresult = True if len(testdata_dict) > 0 else False
-        for key, details_dict in testdata_dict.iteritems():
+        for key, details_dict in testdata_dict.items():
             responses_dict[key] = ""
             command_list = details_dict["command_list"]
             stepdesc = "Send the following commands: "
@@ -249,7 +249,7 @@ class WarriorCli(object):
                     result = "ERROR"
                     finalresult = "ERROR"
                 finalresult = finalresult and result
-            responses_dict[key] = {k: v for d in resp_key_list for k, v in d.iteritems()}
+            responses_dict[key] = {k: v for d in resp_key_list for k, v in d.items()}
         return finalresult, td_resp_dict
 
     def update_resp_ref_to_repo(self, details_dict, resp_key_list, i,
@@ -264,7 +264,7 @@ class WarriorCli(object):
         """
 
         try:
-            for resp in resp_key_list[i].keys():
+            for resp in list(resp_key_list[i].keys()):
                 td_resp_dict = get_object_from_datarepository(str(session_id))
                 # checks if title_row value is not in td_resp_dict
                 if title_row not in td_resp_dict:
@@ -346,10 +346,10 @@ class WarriorCli(object):
                 # get the patterns from pattern entries in testdata file
                 patterns = []
                 # error out if any of the key element can not be retrieved
-                for key, resp_key in itertools.izip_longest(keys, resp_keys):
+                for key, resp_key in itertools.zip_longest(keys, resp_keys):
                     if isinstance(resp_key, xml.etree.ElementTree.Element):
                         patterns.append(resp_key.get("resp_pattern_req"))
-                    elif isinstance(resp_key, basestring):
+                    elif isinstance(resp_key, str):
                         print_error("There is no pattern element for key '{}' corresponding"
                                     " to '{}', please check".format(resp_key, key))
                         status = False
@@ -373,7 +373,7 @@ class WarriorCli(object):
                         grps = reobj.groups()
                         # update resp_key_list with resp_ref keys and
                         # their corresponding matched patterns
-                        resp_key_list.append(dict(zip(keys, grps)))
+                        resp_key_list.append(dict(list(zip(keys, grps))))
                         pNote(save_msg2.format(pattern))
                     else:
                         print_error("inorder search of patterns in response "
@@ -389,7 +389,7 @@ class WarriorCli(object):
                         presponse = reobj.group(0) if reobj is not None else ""
                         temp_resp_key_list.append(presponse)
                         pNote(save_msg2.format(pattern))
-                    resp_key_list.append(dict(zip(keys, temp_resp_key_list)))
+                    resp_key_list.append(dict(list(zip(keys, temp_resp_key_list))))
             else:
                 temp_resp_dict = {resp_ref: ""}
                 resp_key_list.append(temp_resp_dict)

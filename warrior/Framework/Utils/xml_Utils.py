@@ -16,14 +16,14 @@ import sys
 import difflib
 import os
 
-import file_Utils
+from . import file_Utils
 import os.path
 
 from xml.dom import minidom
 from xml.etree import ElementTree
 from xml.etree.ElementTree import tostring
 from Framework.OSS import xmltodict
-from print_Utils import print_debug, print_info, print_error, print_warning, print_exception
+from .print_Utils import print_debug, print_info, print_error, print_warning, print_exception
 from collections import OrderedDict
 
 try:
@@ -90,7 +90,7 @@ def getRoot(filename):
     try:
         tree = ElementTree.parse(filename)
         root = tree.getroot()
-    except ElementTree.ParseError, msg:
+    except ElementTree.ParseError as msg:
         print_error("The xml file: {0} is {1}".format(filename, msg))
         print_info("DONE 1")
         sys.exit(0)
@@ -385,7 +385,7 @@ def verifyNodesValueMatch (datafile, pnode, cnode, cvalue, rnode, rvalue, bnode,
     try:
         tree = ElementTree.parse(datafile)
         root = tree.getroot()
-    except Exception, e:
+    except Exception as e:
         print_error("unexpected error %s" % str(e))
         return False
 
@@ -588,7 +588,7 @@ def getChildElementsListWithSpecificXpath(parent, xpath):
 def create_element(tagname="", text="", **kwargs):
     """create an xml element with given name and a dict of attribute"""
     elem = ElementTree.Element(tagname)
-    for key, val in kwargs.items():
+    for key, val in list(kwargs.items()):
         elem.set(str(key), str(val))
     elem.text = text
     return elem

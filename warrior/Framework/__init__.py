@@ -11,7 +11,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import Utils
+from . import Utils
 
 Utils.import_utils.import_submodules(Utils)
 

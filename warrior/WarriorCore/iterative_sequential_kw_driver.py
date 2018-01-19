@@ -17,7 +17,7 @@ limitations under the License.
 the keywords of a testcase in sequential order, where data_type = iterative"""
 
 import traceback
-import testcase_steps_execution
+from . import testcase_steps_execution
 import Framework.Utils as Utils
 from Framework.Utils.print_Utils import print_debug, print_error
 

@@ -41,7 +41,7 @@ class Junit(object):
         result = {}
         for default_key in default_keys:
             result[default_key] = kwargs[default_key] if default_key in kwargs else "0"
-        for key, val in kwargs.items():
+        for key, val in list(kwargs.items()):
             result[key] = val
         return result
 
@@ -82,9 +82,9 @@ class Junit(object):
         if attr is None:
             attr = {}
         elem = ET.Element(tagname)
-        for key, val in attr.items():
+        for key, val in list(attr.items()):
             elem.set(str(key), str(val))
-        for key, val in kwargs.items():
+        for key, val in list(kwargs.items()):
             elem.set(str(key), str(val))
         return elem
 

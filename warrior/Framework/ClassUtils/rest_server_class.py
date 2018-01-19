@@ -231,24 +231,24 @@ class RestServer(object):
         if specific_res_list is not None:
             # Cond 1: special request
             def inner_method():
-                print "Content type: " + str(request.content_type)
+                print("Content type: " + str(request.content_type))
                 # This is paramaters
-                print "Query: " + str(request.query.items())
+                print("Query: " + str(list(request.query.items())))
                 # This is form data
-                print "Forms: " + str(request.forms.items())
-                print "Body: " + str(request.body.getvalue())
-                print "Json: " + str(request.json)
-                print "File: " + str(request.files.items())
+                print("Forms: " + str(list(request.forms.items())))
+                print("Body: " + str(request.body.getvalue()))
+                print("Json: " + str(request.json))
+                print("File: " + str(list(request.files.items())))
 
                 # Extract request type and values
                 # Look for specific type comparison for value
                 status = False
-                if request.query.items():
+                if list(request.query.items()):
                     # request param comparison
                     # All param must match
                     for specific_res in specific_res_list:
                         if "request_param" in specific_res:
-                            status = self.verify_param(request.query.items(), specific_res)
+                            status = self.verify_param(list(request.query.items()), specific_res)
 
                         if status:
                             break
@@ -282,7 +282,7 @@ class RestServer(object):
                     # search for all provided key, value pair
                     for specific_res in specific_res_list:
                         if "request_verify" in specific_res:
-                            status = self.verify_forms(request.forms.items(), specific_res)
+                            status = self.verify_forms(list(request.forms.items()), specific_res)
 
                         if status:
                             break
@@ -295,14 +295,14 @@ class RestServer(object):
             # Cond 2: general request
             # response with general response
             def inner_method():
-                print "Content type: " + str(request.content_type)
+                print("Content type: " + str(request.content_type))
                 # This is paramaters
-                print "Query: " + str(request.query.items())
+                print("Query: " + str(list(request.query.items())))
                 # This is form data
-                print "Forms: " + str(request.forms.items())
-                print "Body: " + str(request.body.getvalue())
-                print "Json: " + str(request.json)
-                print "File: " + str(request.files.items())
+                print("Forms: " + str(list(request.forms.items())))
+                print("Body: " + str(request.body.getvalue()))
+                print("Json: " + str(request.json))
+                print("File: " + str(list(request.files.items())))
 
                 return self.form_response(general_res)
         else:
@@ -310,11 +310,11 @@ class RestServer(object):
             def inner_method():
                 return "Not verifying anything, please check if datafile is correct"
 
-        print "\nBuild a " + method + " route with this route: " + route
+        print("\nBuild a " + method + " route with this route: " + route)
         import pprint
-        print "Special request: "
+        print("Special request: ")
         pprint.pprint(specific_res_list)
-        print "General request: "
+        print("General request: ")
         pprint.pprint(general_res)
 
         inner_method.__doc__ = route + "_" + method + " is the method name"
@@ -353,7 +353,7 @@ class RestServer(object):
                     route_methods[request_method].append(request)
 
             # Build route with the grouped conditions
-            for method_type, same_type_methods in route_methods.items():
+            for method_type, same_type_methods in list(route_methods.items()):
                 # A route can have general response and conditional response
                 specific_res = []
                 general_res = {}
@@ -371,20 +371,20 @@ class RestServer(object):
                             dict_of_info[info.tag] = [info.text]
 
                     # Extract request/response related info
-                    for key, value in dict_of_info.items():
+                    for key, value in list(dict_of_info.items()):
                         if key in request_verify_list:
                             method_req = {key:value}
                         elif key in response_list:
                             method_res[key] = value
 
-                    if any([key in request_verify_list for key in dict_of_info.keys()]):
+                    if any([key in request_verify_list for key in list(dict_of_info.keys())]):
                         # this condition has request/response pair
                         method_combine = method_req
                         method_combine.update(method_res)
                         specific_res.append(method_req)
                         # this ensure when all verification fail and no general response given
                         # there will be some responses
-                        if any([key in on_fail_response_list for key in dict_of_info.keys()]):
+                        if any([key in on_fail_response_list for key in list(dict_of_info.keys())]):
                             general_res.update(method_res)
                     else:
                         # this condition only has general response

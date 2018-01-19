@@ -59,7 +59,7 @@ class TestcaseJunit(object):
         if attr is None:
             attr = {}
         elem = ET.Element(name)
-        for key, val in attr.items():
+        for key, val in list(attr.items()):
             elem.set(str(key), val)
         return elem
 

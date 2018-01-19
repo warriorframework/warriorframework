@@ -38,7 +38,7 @@ def create_and_start_process_with_queue(target_module, args_dict, jobs_list, out
     # a tuple so first create a listout of the dict
     # and then convert the list into a tuple
     args_list = []
-    for _, value in args_dict.iteritems():
+    for _, value in args_dict.items():
         args_list.append(value)
     args_tuple = tuple(args_list)
 

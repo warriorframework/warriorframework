@@ -74,14 +74,14 @@ def get_testcase_details(testcase_filepath, data_repository, jiraproj):
     if def_on_error_value is None or def_on_error_value is False:
         def_on_error_value = None
 
-    if not data_repository.has_key('wt_results_execdir'):
-        if data_repository.has_key('ow_resultdir'):
+    if 'wt_results_execdir' not in data_repository:
+        if 'ow_resultdir' in data_repository:
             data_repository['wt_results_execdir'] = data_repository['ow_resultdir']
         else:
             data_repository['wt_results_execdir'] = None
 
-    if not data_repository.has_key('wt_logs_execdir'):
-        if data_repository.has_key('ow_logdir'):
+    if 'wt_logs_execdir' not in data_repository:
+        if 'ow_logdir' in data_repository:
             data_repository['wt_logs_execdir'] = data_repository['ow_logdir']
         else:
             data_repository['wt_logs_execdir'] = None
@@ -103,15 +103,15 @@ def get_testcase_details(testcase_filepath, data_repository, jiraproj):
        different data files with out actually changing the testcase.
     """
     # First priority for data files given through CLI##
-    if data_repository.has_key('ow_datafile'):
+    if 'ow_datafile' in data_repository:
         datafile = data_repository['ow_datafile']
         data_type = efile_obj.check_get_datatype(datafile)
     # Second priority for data files given in the Test suite step##
-    elif data_repository.has_key(testcase_filepath):
+    elif testcase_filepath in data_repository:
         datafile = data_repository[testcase_filepath]
         data_type = efile_obj.check_get_datatype(datafile)
     # Third priority for data files given in the Test Suite globally##
-    elif data_repository.has_key('suite_data_file'):
+    elif 'suite_data_file' in data_repository:
         datafile = data_repository['suite_data_file']
         data_type = efile_obj.check_get_datatype(datafile)
     # Fourth priority for data files given in the Testcase file##
@@ -167,7 +167,7 @@ def get_testcase_details(testcase_filepath, data_repository, jiraproj):
     data_repository['wt_def_on_error_value'] = def_on_error_value
 
     # For custom jira project name
-    if not data_repository.has_key('jiraproj'):
+    if 'jiraproj' not in data_repository:
         data_repository['jiraproj'] = jiraproj
 
     # write resultfile, logsdir, datafile, filename, logfile to config file
@@ -290,7 +290,7 @@ def report_testcase_result(tc_status, data_repository):
         if kw_status != "PASS" and kw_status != "RAN":
             fail_count += 1
             kw_name = value.find('Name').text
-            get_step_value = value.attrib.values()
+            get_step_value = list(value.attrib.values())
             step_num = ','.join(get_step_value)
             if fail_count == 1:
                 print_info("++++++++++++++++++++++++ Summary of Failed Keywords +++++++++++++++++++"
@@ -675,7 +675,7 @@ def execute_custom(datatype, runtype, driver, data_repository, step_list):
     """
     print_info("{0} {1}".format(datatype, runtype))
     tc_status = False
-    if data_repository.has_key("suite_exectype") and\
+    if "suite_exectype" in data_repository and\
         data_repository["suite_exectype"].upper() == "ITERATIVE":
         print_info("Testsuite execute type=iterative but the testcase datatype=custom. "
                    "All testcases in a iterative testsuite should have datatype=iterative, "

@@ -21,7 +21,7 @@ import traceback
 from collections import OrderedDict
 
 
-import testcase_driver
+from . import testcase_driver
 import Framework.Utils as Utils
 from Framework.Utils.print_Utils import print_error, print_debug
 from WarriorCore.multiprocessing_utils import create_and_start_process_with_queue, \

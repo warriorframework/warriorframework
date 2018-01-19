@@ -47,7 +47,7 @@ class ModuleOperations(object):
         try:
             for package in self.package_list:
                 Utils.import_utils.import_submodules(package)
-        except ImportError, err:
+        except ImportError as err:
             print_error("{0} : \n".format(str(err)))
             print_error('unexpected error: {0}'.format(traceback.format_exc()))
 
@@ -154,7 +154,7 @@ class KeywordOperations(object):
         default_dict = {}
         args, varargs, keyword, defaults = inspect.getargspec(self.exec_obj)
         if defaults:
-            default_dict = dict(zip(args[-len(defaults):], defaults))
+            default_dict = dict(list(zip(args[-len(defaults):], defaults)))
         return default_dict
 
     def get_mandatory_arguments(self):
@@ -176,12 +176,12 @@ class KeywordOperations(object):
         var = arg
         if not hasattr(self, 'tag_dict'):
             self.tag_dict = data_Utils.get_credentials(datafile, system)
-        if isinstance(arg, basestring) and arg.startswith("wtag"):
+        if isinstance(arg, str) and arg.startswith("wtag"):
             var = arg.split("=")[1].strip()
             if var in self.tag_dict:
                 value = self.tag_dict[var]
                 # substitute environment/datarepo variables in the value and return
-                if isinstance(value, (basestring, list, dict)):
+                if isinstance(value, (str, list, dict)):
                     return data_Utils.substitute_var_patterns(value)
                 else:
                     return value
@@ -270,7 +270,7 @@ class KeywordOperations(object):
         print_info("The Arguments passed for the current Step is: '{0}'".format(kwargs))
         if kw_status:
             # Execute the corresponding method
-            method_loader = self.exec_obj.im_class()
+            method_loader = self.exec_obj.__self__.__class__()
             try:
                 keyword_result = self.exec_obj(method_loader, **kwargs)
             except Exception as exception:

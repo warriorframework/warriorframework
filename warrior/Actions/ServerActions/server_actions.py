@@ -66,7 +66,7 @@ class ServerActions(object):
         server_thread = Utils.data_Utils.get_object_from_datarepository("{}_server_thread".format(system_name))
         
         if server_thread.is_alive():
-            print "Server doesn't shutdown correctly"
+            print("Server doesn't shutdown correctly")
             return False
         else:
             return True

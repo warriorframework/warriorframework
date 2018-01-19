@@ -62,7 +62,7 @@ class IronClaw(object):
             print_error("PARSING ERROR:{0}".format(err))
             return False
 
-        except AssertionError, err:
+        except AssertionError as err:
             print_error("Incorrect XML schema: {0}".format(err))
             return False
 
@@ -443,7 +443,7 @@ def get_action_dirlist(driverpath):
 
             return actions_package_list
         else:
-            print("file {0} does not exist".format(driverpath))
+            print(("file {0} does not exist".format(driverpath)))
             return actions_package_list
     except Exception as exception:
         print_exception(exception)

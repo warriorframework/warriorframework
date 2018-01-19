@@ -16,13 +16,13 @@ limitations under the License.
 import os
 import time
 import traceback
-import testcase_driver
-import onerror_driver
+from . import testcase_driver
+from . import onerror_driver
 import Framework.Utils as Utils
 from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.print_Utils import print_info, print_error, print_debug, print_warning
 from WarriorCore import testsuite_utils, common_execution_utils
-import exec_type_driver
+from . import exec_type_driver
 
 """This is sequential testcase driver which is used to execute
 the testcases of a suite in sequential order"""
@@ -242,7 +242,7 @@ def execute_sequential_testcases(testcase_list, suite_repository,
         string_status = {"TRUE": "PASS", "FALSE": "FAIL", "ERROR": "ERROR",
                          "SKIP": "SKIP"}
 
-        if str(tc_status).upper() in string_status.keys():
+        if str(tc_status).upper() in list(string_status.keys()):
             data_repository['testcase_%d_result' % tests] = string_status[
                                                     str(tc_status).upper()]
         else:

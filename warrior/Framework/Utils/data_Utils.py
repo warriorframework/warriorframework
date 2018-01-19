@@ -521,7 +521,7 @@ def _get_cmd_details(testdata, global_obj, system_name,
                     "cond_value_list", "cond_type_list"]
 
     # Initialize all lists
-    for param, attrib in cmd_params.items():
+    for param, attrib in list(cmd_params.items()):
         details_dict[param] = []
         if param == "verify_list":
             vfylist = _get_cmdparams_list(testdata, global_obj, "verify")
@@ -978,7 +978,7 @@ def verify_data(expected, key, data_type='str', comparison='eq'):
         exp = expected
         if data_type not in type_funcs:
             err_msg += ("type {} not supported, only one of {} supported\n".
-                        format(data_type, '/'.join(type_funcs.keys())))
+                        format(data_type, '/'.join(list(type_funcs.keys()))))
             result = "ERROR"
         else:
             convert = type_funcs[data_type]
@@ -992,7 +992,7 @@ def verify_data(expected, key, data_type='str', comparison='eq'):
                 result = "EXCEPTION"
         if comparison not in comp_funcs:
             err_msg += "valid comparisons are {}\n".\
-                format('/'.join(comp_funcs.keys()))
+                format('/'.join(list(comp_funcs.keys())))
             result = "ERROR"
         return result, err_msg, exp
 
@@ -1145,7 +1145,7 @@ def _update_search_index(match_list, verify_list, remote_resp_dict,
     for system in resp_details_dict:
         index = 0
         for i, tag in enumerate(verify_list):
-            if resp_details_dict[system].has_key(i) and \
+            if i in resp_details_dict[system] and \
             resp_details_dict[system][i].get('verify') == tag and \
             resp_details_dict[system][i].get('match') is True:
                 data = remote_resp_dict[system]
@@ -1544,7 +1544,7 @@ def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
             if len(extracted_var) > 0:
                 for string in extracted_var:
                     try:
-                        if isinstance(raw_value[k], (str, unicode)):
+                        if isinstance(raw_value[k], str):
                             raw_value[k] = raw_value[k].replace(
                                 start_pattern+string+end_pattern,
                                 get_var_by_string_prefix(string))

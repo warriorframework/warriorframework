@@ -26,7 +26,7 @@ def iron_claw_warrior_xml_files(filepath):
     their xsd schema files """
     try:
         root = xml_Utils.getRoot(filepath)
-    except ElementTree.ParseError, err:
+    except ElementTree.ParseError as err:
         print_error("PARSING ERROR:{0}".format(err))
         return False
     ironclaw_object = IronClaw()
@@ -60,7 +60,7 @@ def main(parameter_list):
     else:
         print_error("No input files provided to be validated")
         valid = False
-    print '\n'
+    print('\n')
     print_info("Validation Completed:")
     if valid:
         print_info("Files are compatible with WARRIOR \n")

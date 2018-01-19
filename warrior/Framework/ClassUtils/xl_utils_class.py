@@ -50,7 +50,7 @@ class Wxl(object):
         try:
             wb = self.load(wb_location)
         except Exception as err:
-            print err
+            print(err)
             print("Error loading workbook, check if file exists")
         else:
             value = wb

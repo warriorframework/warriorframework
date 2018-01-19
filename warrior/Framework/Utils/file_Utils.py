@@ -18,8 +18,8 @@ import os
 import sys
 import string
 import shutil
-import string_Utils
-from print_Utils import print_info, print_error, print_warning, print_exception
+from . import string_Utils
+from .print_Utils import print_info, print_error, print_warning, print_exception
 
 try:
     if 'linux' in sys.platform:
@@ -143,7 +143,7 @@ def createDir(path, dirname):
                 return dirpath
         try:
                 os.makedirs(dirpath)
-        except Exception,e:
+        except Exception as e:
                 print_error(str(e))
         #print_info("A new '%s' directory  created : '%s'" % (dirname, dirpath))
         return dirpath
@@ -278,13 +278,13 @@ def get_file_from_remote_server(remote_ip, remote_uname, remote_passwd, src, des
     child = pexpect.spawn('scp -r %s@%s:%s %s' % (remote_uname, remote_ip, src, dest ))
     try:
         child.logfile = open(logfile, "a")
-    except Exception,e:
+    except Exception as e:
         child.logfile = None
     child.expect('assword:*')
     child.sendline(remote_passwd)
     try:
         child.expect(pexpect.EOF)
-    except Exception,e:
+    except Exception as e:
         print_error("Import error, error : '%s'" % str(e))
         return False
     else:
@@ -297,7 +297,7 @@ def put_file_to_remote_server(remote_ip, remote_uname, remote_passwd, src, dest,
     child = pexpect.spawn(cmd)
     try:
         child.logfile = open(logfile, "a")
-    except Exception, e:
+    except Exception as e:
         child.logfile = None
     child.expect('assword:*')
     child.sendline(remote_passwd)
@@ -309,7 +309,7 @@ def put_file_to_remote_server(remote_ip, remote_uname, remote_passwd, src, dest,
             return True
         else:
             return False
-    except Exception, e:
+    except Exception as e:
         print_error("Import error, error : '%s'" % str(e))
         return False
 
@@ -444,13 +444,13 @@ def getLinesBetweenMatchingLines(srcfile, dstfile, start, end, no_of_search=1):
     while(i<len(lines)):
         #print lines[i]
 
-        printable_only = filter(lambda x:x in string.printable, lines[i])
+        printable_only = [x for x in lines[i] if x in string.printable]
 
         if printable_only == start:
             resultantList.append(lines[i])
             i+=1
             while (i<len(lines)):
-                printable_only = filter(lambda x:x in string.printable, lines[i])
+                printable_only = [x for x in lines[i] if x in string.printable]
                 if printable_only == end:
                     resultantList.append(lines[i])
                     iteration+=1
@@ -538,7 +538,7 @@ def getAbsPath(relative_path, start_directory="."):
             os.chdir(start_directory)
             path = os.path.abspath(relative_path)
             value = path
-        except Exception, err:
+        except Exception as err:
             print_error("{0} file does not exist in provided path".format(relative_path))
             print_error(err)
     return value
@@ -1002,7 +1002,7 @@ def get_next_line(fd):
         next line
     """
     try:
-        line = fd.next()
+        line = next(fd)
     except ValueError:
         print_error("file is already closed...")
         line = False

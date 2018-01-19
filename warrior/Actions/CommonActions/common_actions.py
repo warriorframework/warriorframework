@@ -224,7 +224,7 @@ class CommonActions(object):
                     get_json = json.load(json_handle)
                     if jsonkey in get_json:
                         env_dict = get_json[jsonkey]
-                        for var_key, var_value in env_dict.items():
+                        for var_key, var_value in list(env_dict.items()):
                             if overwrite == "NO" and os.getenv(var_key):
                                 print_info('Using ENV variable {0} set earlier with value '
                                            '{1}'.format(var_key, os.getenv(var_key)))

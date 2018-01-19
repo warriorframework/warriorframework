@@ -16,7 +16,7 @@ import os
 import re
 import traceback
 from time import sleep
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 from subprocess import check_output, CalledProcessError
 from distutils.version import LooseVersion
 from Framework.Utils.datetime_utils import get_current_timestamp
@@ -200,20 +200,20 @@ class BrowserManagement(object):
         """
         status = True
         try:
-            url_open = urllib2.urlopen(url)
+            url_open = urllib.request.urlopen(url)
             get_status_code = url_open.code
             pattern = re.compile('^2[0-9][0-9]$')
             if not pattern.match(str(get_status_code)) and get_status_code is not None:
                 print_info("The Status code for url : {} is {}".format(url, get_status_code))
                 status = False
-        except urllib2.HTTPError as http_error:
+        except urllib.error.HTTPError as http_error:
             print_warning("URLError: {} reason: ({}) status code: {}".format
                           (url, http_error.reason, http_error.code))
             status = False
-        except urllib2.URLError as url_err:
+        except urllib.error.URLError as url_err:
             status = False
             print_warning("URLError: {} reason: ({})".format(url, url_err.reason))
-        except Exception, err:
+        except Exception as err:
             print_warning("Exception: {0}".format(err))
             status = False
         return status, url
@@ -234,7 +234,7 @@ class BrowserManagement(object):
                             "possibly because of the url is not valid".format(url))
             else:
                 status = False
-        except Exception, err:
+        except Exception as err:
             print_error(err)
             status = False
             print_error("Unable to Navigate to URL:'%s'" % url)
@@ -603,7 +603,7 @@ class BrowserManagement(object):
 
         desired_capabilities_object = capabilities_type.copy()
 
-        if isinstance(desired_capabilities, (str, unicode)):
+        if isinstance(desired_capabilities, str):
             desired_capabilities = self._parse_capabilities_string(desired_capabilities)
 
         desired_capabilities_object.update(desired_capabilities or {})
