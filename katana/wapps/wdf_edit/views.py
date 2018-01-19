@@ -146,8 +146,8 @@ def build_xml_dict(data):
     """
         Build a list of systems that can be unparsed into xmltodict format xml file
     """
-    import pprint
-    pprint.pprint(data)
+    # import pprint
+    # pprint.pprint(data)
 
     result = []
     for sys in data:
