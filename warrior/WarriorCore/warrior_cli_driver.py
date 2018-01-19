@@ -262,8 +262,9 @@ def warrior_execute_entry(*args, **kwargs):
         # Launch from terminal/cli exeuction
         filepath, cli_args, overwrite = main(sys.argv[1:])
     else:
+        args = [] if not args else args
         # Launch from python function call
-        filepath, cli_args, overwrite = main(args)
+        filepath, cli_args, overwrite = main(*args)
     livehtmlobj = kwargs.get("livehtmlobj", None)
 
     status = execution(filepath, cli_args, overwrite, livehtmlobj)
