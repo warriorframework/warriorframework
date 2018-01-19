@@ -124,7 +124,22 @@ def combine_values(data):
     """
     result = OrderedDict()
     for pair in data:
-        result.update(pair)
+        key = pair.keys()[0]
+        val = pair.values()[0]
+        if isinstance(val, list):
+            # If the value is a list of dict
+            # that means there are multiple tags with same key name
+            # need to process the list into correct format first
+            # because the values may also have same key name
+            val = combine_values(val)
+        if key in result and isinstance(result[key], list):
+            # multiple tag with same key
+            result[key].append(val)
+        elif key in result:
+            # 2nd tag with same key
+            result[key] = [result[key], val]
+        else:
+            result[key] = val
     return result
 
 def build_xml_dict(data):
