@@ -265,7 +265,7 @@ def warrior_execute_entry(*args, **kwargs):
     livehtmlobj = kwargs.get("livehtmlobj", None)
 
     status = execution(filepath, cli_args, overwrite, livehtmlobj)
-    status = {"true": True, "pass": True}.get(str(status).lower())
+    status = {"true": True, "pass": True, "ran": True}.get(str(status).lower())
     # add code to send div finished using katana interface class
 
     if status is True:
