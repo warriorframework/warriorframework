@@ -42,6 +42,7 @@ except:
 
 import re
 import sys
+import multiprocessing
 import Tools
 from Framework.Utils import config_Utils, file_Utils, xml_Utils
 from Framework.Utils.data_Utils import get_credentials
@@ -99,9 +100,8 @@ def add_live_table_divs(livehtmllocn, file_list):
         # write the tree to the file
         if isinstance(livehtmllocn, str):
             xml_Utils.write_tree_to_file(root, livehtmllocn)
-        elif isinstance(livehtmllocn, dict):
+        elif isinstance(livehtmllocn, multiprocessing.managers.DictProxy):
             livehtmllocn["html_result"] = xml_Utils.convert_element_to_string(root)
-    return
 
 def file_execution(cli_args, abs_filepath, default_repo):
     """
