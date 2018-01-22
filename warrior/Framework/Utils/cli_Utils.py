@@ -10,6 +10,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+
+
 import os
 from Framework.Utils.print_Utils import print_info, print_warning
 from Framework.ClassUtils import WNetwork, ssh_utils_class
@@ -239,6 +241,7 @@ def get_connection_port(conn_type, inpdict):
     """
     wc_obj = WNetwork.warrior_cli_class.WarriorCli()
     inpdict = wc_obj.get_connection_port(conn_type, inpdict)
+
     return inpdict
 
 
@@ -495,12 +498,13 @@ def _get_match_status(retry_onmatch, response):
     """ Searchs retry_onmatch value in response """
     wc_obj = WNetwork.warrior_cli_class.WarriorCli()
     status = wc_obj._get_match_status(retry_onmatch, response)
+
     return status
 
 
 def _send_cmd_by_type(session_object, command):
-    """Determine the command type and send accordingly
-    """
+    """Determine the command type and
+    send accordingly """
 
     wc_obj = WNetwork.warrior_cli_class.WarriorCli()
     wc_obj._send_cmd_by_type(session_object, command)

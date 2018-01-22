@@ -1,0 +1,75 @@
+<?xml version="1.0" ?>
+<Testcase>
+	<Details>
+		<Name>tc_selenium_generic_1.xml</Name>
+		<Title>Test case to perform browser actions</Title>
+		<ExpectedResults>PASS</ExpectedResults>
+		<Category/>
+		<Engineer>Sanika Kulkarni</Engineer>
+		<Date/>
+		<Time/>
+		<default_onError action = 'next'  />
+		<InputDataFile>../../../data/selenium_func_tests/data_multi_sys.xml</InputDataFile>
+		<Datatype>Custom</Datatype>
+		<Logsdir/>
+		<Resultsdir/>
+	</Details>
+	<Requirements>
+		<Requirement>requirement-001</Requirement>
+		<Requirement>requirement-002</Requirement>
+	</Requirements>
+	<Steps>
+		<step TS= '1' Driver='selenium_driver' Keyword='browser_launch' >
+			<Arguments>
+				<argument name="system_name" value="search_element"/>
+				<argument name="browser_type" value="firefox"/>
+				<argument name="url" value="https://www.stackoverflow.com/"/>
+			</Arguments>
+		</step>
+		<step TS= '2' Driver='selenium_driver' Keyword='browser_maximize' >
+			<Arguments>
+				<argument name="system_name" value="search_element"/>
+			</Arguments>
+		</step>
+		<step TS= '3' Driver='selenium_driver' Keyword='navigate_backward' >
+			<Arguments>
+				<argument name="system_name" value="search_element"/>
+			</Arguments>
+		</step>
+		<step TS= '4' Driver='selenium_driver' Keyword='navigate_forward' >
+			<Arguments>
+				<argument name="system_name" value="search_element"/>
+			</Arguments>
+		</step>
+		<step TS= '5' Driver='selenium_driver' Keyword='browser_refresh' >
+			<Arguments>
+				<argument name="system_name" value="search_element"/>
+			</Arguments>
+		</step>
+		<step TS= '6' Driver='selenium_driver' Keyword='navigate_to_url' >
+			<Arguments>
+				<argument name="system_name" value="search_element"/>
+				<argument name="url" value="http://www.fujitsu.com/us/"/>
+			</Arguments>
+		</step>
+		<step TS= '7' Driver='selenium_driver' Keyword='set_window_size' >
+			<Arguments>
+				<argument name="system_name" value="search_element"/>
+				<argument name="xsize" value="250"/>
+				<argument name="ysize" value="600"/>
+			</Arguments>
+		</step>
+		<step TS= '8' Driver='selenium_driver' Keyword='set_window_position' >
+			<Arguments>
+				<argument name="system_name" value="search_element"/>
+				<argument name="xpos" value="500"/>
+				<argument name="ypos" value="200"/>
+			</Arguments>
+		</step>
+		<step TS= '9' Driver='selenium_driver' Keyword='browser_close' >
+			<Arguments>
+				<argument name="system_name" value="search_element"/>
+			</Arguments>
+		</step>
+	</Steps>
+</Testcase>

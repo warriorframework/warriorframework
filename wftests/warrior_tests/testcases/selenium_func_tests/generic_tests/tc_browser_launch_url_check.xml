@@ -1,0 +1,163 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+                <Name>tc_browser_launch_url_check</Name>
+                <Title>browser launch with url check</Title>
+                <ExpectedResults>PASS</ExpectedResults>
+                <Engineer>Warrior_user</Engineer>
+                <Date>2017-08-02</Date>
+                <Time>22:39</Time>
+                <default_onError action="next"/>
+                <InputDataFile>../../../data/selenium_func_tests/data_browser_launch_url_check.xml</InputDataFile>
+                <Datatype>Custom</Datatype>
+                <Logsdir/>
+                <Resultsdir/>
+        </Details>
+        <Requirements>
+                <Requirement>requirement-001</Requirement>
+                <Requirement>requirement-002</Requirement>
+        </Requirements>
+        <Steps>
+                <step Driver="selenium_driver" Keyword="browser_launch" TS="1">
+                        <Arguments>
+                                <argument name="system_name" value="search_element"/>
+                        </Arguments>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <onError action="next" value=""/>
+                        <Description/>
+                        <Iteration_type type="Standard"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                        <iteration_type type=""/>
+                </step>
+                <step Driver="selenium_driver" Keyword="browser_launch" TS="2" draft="no">
+                        <Arguments>
+                                <argument name="system_name" value="search_element_1"/>
+                                <argument name="url" value="http://wwwwww.stackoverflow.com"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type=""/>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="selenium_driver" Keyword="browser_launch" TS="3" draft="no">
+                        <Arguments>
+                                <argument name="system_name" value="search_element_3"/>
+                                <argument name="url" value="http://www.googsle.com"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type=""/>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="selenium_driver" Keyword="browser_launch" TS="4" draft="no">
+                        <Arguments>
+                                <argument name="system_name" value="search_element_4"/>
+                                <argument name="url" value="httpz://www.googsle.com"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>This step is expected to fail because of wrong scheme&quot;httpz&quot;</Description>
+                        <iteration_type type=""/>
+                        <Execute ExecType="Yes"/>
+                        <context>negative</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="selenium_driver" Keyword="browser_launch" TS="5" draft="no">
+                        <Arguments>
+                                <argument name="system_name" value="search_element_2"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>This step is expected to fail because of no scheme such as http/ftp/file,, etc</Description>
+                        <iteration_type type=""/>
+                        <Execute ExecType="Yes"/>
+                        <context>negative</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="selenium_driver" Keyword="browser_close" TS="6">
+                        <Arguments>
+                                <argument name="system_name" value="search_element"/>
+                        </Arguments>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <onError action="next" value=""/>
+                        <Description/>
+                        <Iteration_type type="Standard"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                        <iteration_type type=""/>
+                </step>
+                <step Driver="selenium_driver" Keyword="browser_close" TS="7">
+                        <Arguments>
+                                <argument name="system_name" value="search_element_1"/>
+                        </Arguments>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <onError action="next" value=""/>
+                        <Description/>
+                        <Iteration_type type="Standard"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                        <iteration_type type=""/>
+                </step>
+                <step Driver="selenium_driver" Keyword="browser_close" TS="8">
+                        <Arguments>
+                                <argument name="system_name" value="search_element_3"/>
+                        </Arguments>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <onError action="next" value=""/>
+                        <Description/>
+                        <Iteration_type type="Standard"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                        <iteration_type type=""/>
+                </step>
+                <step Driver="selenium_driver" Keyword="browser_close" TS="9">
+                        <Arguments>
+                                <argument name="system_name" value="search_element_4"/>
+                        </Arguments>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <onError action="next" value=""/>
+                        <Description/>
+                        <Iteration_type type="Standard"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                        <iteration_type type=""/>
+                </step>
+                <step Driver="selenium_driver" Keyword="browser_close" TS="10">
+                        <Arguments>
+                                <argument name="system_name" value="search_element_2"/>
+                        </Arguments>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <onError action="next" value=""/>
+                        <Description/>
+                        <Iteration_type type="Standard"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                        <iteration_type type=""/>
+                </step>
+        </Steps>
+</Testcase>

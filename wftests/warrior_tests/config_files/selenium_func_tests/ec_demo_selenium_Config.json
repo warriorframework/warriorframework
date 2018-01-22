@@ -1,0 +1,7 @@
+{
+  "name1": [{"name":"q"}],
+  "id1": [{"id": "nav-tags"}],
+  "source": [{"xpath": "//*[@id=\"ghx-pool\"]/div[2]/ul/li[4]/div/div/div"}, {"class": "ghx-column ui-sortable"}, {"id": "673"}],
+  "target": [{"xpath": "//*[@id=\"ghx-pool\"]/div[2]/ul/li[1]"}],
+  "source_element": [{"xpath":".//*[@id='draggable']"}]
+}

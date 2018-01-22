@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<credentials>
+    <system name="search_element_2">
+        <browser>
+            <tag1>log</tag1>
+            <browser_name>browser_2</browser_name>
+            <tag3>skulkarn</tag3>
+            <type>chrome</type>
+            <element_config_file>../../config_files/selenium_func_tests/ec_demo_selenium_Config.json</element_config_file>
+            <second_element_config_file>../../config_files/selenium_func_tests/ec_demo_selenium_Config_1.json</second_element_config_file>
+        </browser>
+    </system>
+</credentials>
+
+

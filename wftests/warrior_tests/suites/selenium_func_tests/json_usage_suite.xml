@@ -1,0 +1,44 @@
+<?xml version="1.0" ?>
+<TestSuite>
+	<Details>
+		<Name>df_usage_suite</Name>
+		<Title>selenium functional tests - datafile usage</Title>
+		<Engineer>Sanika Kulkarni</Engineer>
+		<Date>06/21/2016</Date>
+		<Time>16:07:26</Time>
+		<type exectype="sequential_testcases"/>
+		<default_onError action="next"/>
+		<Resultsdir/>
+	</Details>
+	<Requirements/>
+	<Testcases>
+		<Testcase>
+			<path>../../testcases/selenium_func_tests/json_usage/tc_json_usage_1.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>impact</impact>
+		</Testcase>
+		<Testcase>
+			<path>../../testcases/selenium_func_tests/json_usage/tc_json_usage_2.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>impact</impact>
+		</Testcase>
+		<Testcase>
+			<path>../../testcases/selenium_func_tests/json_usage/tc_json_usage_3.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>impact</impact>
+		</Testcase>
+		<Testcase>
+			<path>../../testcases/selenium_func_tests/json_usage/tc_multiple_key_press.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action="next"/>
+			<impact>impact</impact>
+		</Testcase>
+	</Testcases>
+</TestSuite>

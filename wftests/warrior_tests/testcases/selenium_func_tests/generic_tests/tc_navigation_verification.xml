@@ -1,0 +1,166 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+                <Name>Demo_Warrior_Web_Automation_With_Selenium</Name>
+                <Title>Demo_Warrior_Web_Automation_With_Selenium</Title>
+                <ExpectedResults>PASS</ExpectedResults>
+                <Category>Demo</Category>
+                <Engineer>Warrior_user</Engineer>
+                <Date>2017-03-17</Date>
+                <Time>21:32</Time>
+                <default_onError action="next"/>
+                <InputDataFile>../../../data/selenium_func_tests/navigation_verification_Data.xml</InputDataFile>
+                <Datatype>Custom</Datatype>
+                <Logsdir/>
+                <Resultsdir/>
+                <State>Released</State>
+        </Details>
+        <Requirements>
+                <Requirement>requirement-001</Requirement>
+                <Requirement>requirement-002</Requirement>
+        </Requirements>
+        <Steps>
+                <step Driver="selenium_driver" Keyword="browser_launch" TS="1" draft="no">
+                        <Arguments>
+                                <argument name="system_name" value="search_element"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Launch the Browser and navigate to the URL</Description>
+
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="selenium_driver" Keyword="browser_maximize" TS="2">
+                        <Arguments>
+                                <argument name="system_name" value="search_element"/>
+                        </Arguments>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <onError action="next" value=""/>
+                        <Description/>
+                        <Iteration_type type="Standard"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="selenium_driver" Keyword="navigate_to_url_with_verification" TS="1" draft="no">
+                        <Arguments>
+                                <argument name="system_name" value="search_element"/>
+                                <argument name="url" value="https://stackoverflow.com/"/>
+                                <argument name="locator" value="body"/>
+                                <argument name="locator_type" value="tag"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Navigate to the URL and verify its success</Description>
+
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="selenium_driver" Keyword="navigate_to_url_with_verification" TS="1" draft="no">
+                        <Arguments>
+                                <argument name="system_name" value="search_element"/>
+                                <argument name="url" value="https://www.google.com/"/>
+                                <argument name="locator" value="doesnotexist"/>
+                                <argument name="locator_type" value="tag"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Navigate to the URL and verify its success</Description>
+
+                        <Execute ExecType="Yes"/>
+                        <context>negative</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="selenium_driver" Keyword="navigate_to_url_with_verification" TS="1" draft="no">
+                        <Arguments>
+                                <argument name="system_name" value="search_element"/>
+                                <argument name="url" value="https://www.yahoo.com/"/>
+                                <argument name="value_type" value="title"/>
+                                <argument name="expected_value" value="Yahoo"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Navigate to the URL and verify its success</Description>
+
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="selenium_driver" Keyword="navigate_to_url_with_verification" TS="1" draft="no">
+                        <Arguments>
+                                <argument name="system_name" value="search_element"/>
+                                <argument name="url" value="https://stackoverflow.com/"/>
+                                <argument name="value_type" value="title"/>
+                                <argument name="expected_value" value="Wrong Title"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Navigate to the URL and verify its success</Description>
+
+                        <Execute ExecType="Yes"/>
+                        <context>negative</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="selenium_driver" Keyword="navigate_to_url_with_verification" TS="1" draft="no">
+                        <Arguments>
+                                <argument name="system_name" value="search_element"/>
+                                <argument name="url" value="https://google.com/"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Navigate to the URL and verify its success</Description>
+
+                        <Execute ExecType="Yes"/>
+                        <context>negative</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="selenium_driver" Keyword="navigate_to_url_with_verification" TS="1" draft="no">
+                        <Arguments>
+                                <argument name="system_name" value="search_element"/>
+                                <argument name="url" value="yahoo.com/"/>
+                                <argument name="value_type" value="title"/>
+                                <argument name="expected_value" value="Yahoo"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Navigate to the URL and verify its success</Description>
+
+                        <Execute ExecType="Yes"/>
+                        <context>negative</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="selenium_driver" Keyword="navigate_to_url_with_verification" TS="1" draft="no">
+                        <Arguments>
+                                <argument name="system_name" value="search_element"/>
+                                <argument name="url" value="stackoverflow.com/"/>
+                                <argument name="value_type" value="title"/>
+                                <argument name="expected_value" value="Stackoverflow"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Navigate to the URL and verify its success</Description>
+
+                        <Execute ExecType="Yes"/>
+                        <context>negative</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="selenium_driver" Keyword="browser_close" TS="13" draft="no">
+                        <Arguments>
+                                <argument name="system_name" value="search_element"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Close the Browser opened in Step-1</Description>
+
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+        </Steps>
+</Testcase>

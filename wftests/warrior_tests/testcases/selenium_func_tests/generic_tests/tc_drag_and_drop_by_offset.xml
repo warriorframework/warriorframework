@@ -1,0 +1,73 @@
+<?xml version="1.0" ?>
+<Testcase>
+    <Details>
+        <Name>tc_drag_and_drop_by_offset</Name>
+        <Title>drag_and_drop_by_offset</Title>
+        <ExpectedResults>PASS</ExpectedResults>
+        <Category>search</Category>
+        <Engineer>annalakshmi</Engineer>
+        <Date/>
+        <Time/>
+        <default_onError action = 'next'  />
+        <InputDataFile>../../../data/selenium_func_tests/data_drag_and_drop_by_offset.xml</InputDataFile>
+        <Datatype>Custom</Datatype>
+        <Logsdir/>
+        <Resultsdir/>
+    </Details>
+    <Steps>
+        <step TS= '1' Driver='selenium_driver' Keyword='browser_launch' >
+            <Arguments>
+                <argument name="system_name" value="search_element"/>
+                <argument name="url" value="http://www.seleniumlearn.com/drag-and-drop-html"/>
+            </Arguments>
+        </step>
+        <step TS= '2' Driver='selenium_driver' Keyword='drag_and_drop_by_offset' >
+             <Arguments>
+                 <argument name="system_name" value="search_element"/>
+                 <argument name="source_locator_type" value="xpath"/>
+                 <argument name="source_locator" value=".//*[@id='draggable']"/>
+                 <argument name="xoffset" value="150"/>
+                 <argument name="yoffset" value="100"/>
+             </Arguments>
+        </step>
+        <step TS= '3' Driver='selenium_driver' Keyword='browser_launch' >
+            <Arguments>
+                <argument name="system_name" value="search_element_1"/>
+                <argument name="url" value="http://www.seleniumlearn.com/drag-and-drop-html"/>
+            </Arguments>
+        </step>
+        <step TS= '4' Driver='selenium_driver' Keyword='set_window_size' >
+             <Arguments>
+                 <argument name="system_name" value="search_element_1"/>
+                 <argument name="xsize" value="1900"/>
+                 <argument name="ysize" value="1000"/>
+             </Arguments>
+        </step>
+        <step TS= '5' Driver='selenium_driver' Keyword='set_window_position' >
+             <Arguments>
+                 <argument name="system_name" value="search_element_1"/>
+                 <argument name="xpos" value="40"/>
+                 <argument name="ypos" value="0"/>
+             </Arguments>
+        </step>
+        <step TS= '6' Driver='selenium_driver' Keyword='drag_and_drop_by_offset' >
+             <Arguments>
+                 <argument name="system_name" value="search_element_1"/>
+                 <argument name="source_locator_type" value="xpath"/>
+                 <argument name="source_locator" value=".//*[@id='draggable']"/>
+                 <argument name="xoffset" value="150"/>
+                 <argument name="yoffset" value="100"/>
+             </Arguments>
+        </step>
+        <step TS= '7' Driver='selenium_driver' Keyword='browser_close' >
+            <Arguments>
+                <argument name="system_name" value="search_element"/>
+            </Arguments>
+        </step>
+        <step TS= '8' Driver='selenium_driver' Keyword='browser_close' >
+            <Arguments>
+                <argument name="system_name" value="search_element_1"/>
+            </Arguments>
+        </step>
+    </Steps>
+</Testcase>
