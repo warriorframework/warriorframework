@@ -37,7 +37,12 @@ var cases = {
                             data: {"path": data["node"]["li_attr"]["data-path"]}
                         }).done(function(data){
                             cases.invert();
-                            katana.$activeTab.find('#main-div').html(data);
+                            katana.$activeTab.find('#detail-block').treeview({"data": data.details,
+                    "collapseIcon": "fa fa-minus-circle", "expandIcon": "fa fa-plus-circle", "levels": 0});
+                            katana.$activeTab.find('#req-block').treeview({"data": data.requirements,
+                    "collapseIcon": "fa fa-minus-circle", "expandIcon": "fa fa-plus-circle", "levels": 0});
+                            katana.$activeTab.find('#step-block').treeview({"data": data.steps,
+                    "collapseIcon": "fa fa-minus-circle", "expandIcon": "fa fa-plus-circle", "levels": 0});
                         });
                     }
                 });
@@ -54,7 +59,12 @@ var cases = {
                 data: {"path": false}
             }).done(function(data){
                 cases.invert();
-                katana.$activeTab.find('#main-div').html(data);
+                katana.$activeTab.find('#detail-block').treeview({"data": data.details,
+                    "collapseIcon": "fa fa-minus-circle", "expandIcon": "fa fa-plus-circle", "levels": 0});
+                            katana.$activeTab.find('#req-block').treeview({"data": data.requirements,
+                    "collapseIcon": "fa fa-minus-circle", "expandIcon": "fa fa-plus-circle", "levels": 0});
+                katana.$activeTab.find('#step-block').treeview({"data": data.steps,
+                    "collapseIcon": "fa fa-minus-circle", "expandIcon": "fa fa-plus-circle", "levels": 0});
             });
         },
     },

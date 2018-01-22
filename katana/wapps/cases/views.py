@@ -42,7 +42,7 @@ def get_file(request):
     if output["status"]:
         tvc_obj = TreeviewConverter(data)
         tv_data = tvc_obj.convert()
-        details, reqs, steps = tv_data[0], tv_data[1], tv_data[2]
+        details, reqs, steps = tv_data[0]["nodes"][0]["nodes"], tv_data[0]["nodes"][1]["nodes"][0]["nodes"], tv_data[0]["nodes"][2]["nodes"][0]["nodes"]
     else:
         details, reqs, steps = False, False, False
     return JsonResponse({"status": output["status"], "message": output["message"],

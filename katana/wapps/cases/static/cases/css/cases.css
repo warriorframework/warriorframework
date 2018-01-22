@@ -2,7 +2,24 @@
     height: 100%;
     width: 50%;
     float: left;
+}
+
+.cases-left-top-block {
+    height: 63%;
+    width: 100%;
+    padding: 2rem;
+    float: left;
     overflow: auto;
+    background-color: lightgrey;
+}
+
+.cases-left-bottom-block {
+    height: 23%;
+    width: 100%;
+    padding: 2rem;
+    float: left;
+    overflow: auto;
+    background-color: lightgrey;
 }
 
 .cases-right-block {
@@ -10,5 +27,25 @@
     width: 50%;
     float: left;
     background-color: lightgrey;
+}
+
+.cases-right-step-block {
+    height: 93%;
+    width: 100%;
+    padding: 2rem;
     overflow: auto;
+    float: left;
+}
+
+.cases-header {
+    height: 7%;
+    width: 100%;
+    float: left;
+    background-color: #3b5f82;
+    border-right: 1px solid white;
+}
+
+.cases-header-title {
+    color: white;
+    padding: 0.7rem 1rem;
 }

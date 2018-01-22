@@ -1,5 +1,5 @@
+from collections import OrderedDict
 from datetime import datetime
-
 from utils.json_utils import read_xml_get_json
 from utils.navigator_util import Navigator
 
@@ -10,8 +10,8 @@ class VerifyCaseFile:
         self.navigator = Navigator()
         self.template = template
         self.file_path = file_path
-        self.template_data = read_xml_get_json(template)
-        self.data = read_xml_get_json(file_path)
+        self.template_data = read_xml_get_json(template, ordered_dict=True)
+        self.data = read_xml_get_json(file_path, ordered_dict=True)
         self.output = {"status": True, "message": ""}
         self.root = "Testcase"
         self.major = ("Details", "Requirements", "Steps")

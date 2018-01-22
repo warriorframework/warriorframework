@@ -24,16 +24,21 @@ def read_json_data(file_path):
     return data
 
 
-def read_xml_get_json(filepath):
+def read_xml_get_json(filepath, ordered_dict=False):
     json_data = {}
     try:
         xml_contents = open(filepath, 'r')
     except Exception as e:
         json_data["error"] = e
     else:
-        ordered_dict_json = xmltodict.parse(xml_contents)
-        json_data = json.loads(json.dumps(ordered_dict_json))
+        json_data = xmltodict.parse(xml_contents)
+        if not ordered_dict:
+            json_data = convert_ord_dict_to_json(json_data)
     return json_data
+
+
+def convert_ord_dict_to_json(ordered_dict):
+    return json.loads(json.dumps(ordered_dict))
 
 
 @register.filter
