@@ -87,7 +87,7 @@ class ModuleOperations(object):
         method_list = []
         method_name_list = []
         for class_object in self.class_list:
-            for name, obj in inspect.getmembers(class_object, inspect.ismethod):
+            for name, obj in inspect.getmembers(class_object, inspect.isfunction):
                 method_list.append(obj)
                 method_name_list.append(name)
         return method_list
@@ -270,9 +270,16 @@ class KeywordOperations(object):
         print_info("The Arguments passed for the current Step is: '{0}'".format(kwargs))
         if kw_status:
             # Execute the corresponding method
-            method_loader = self.exec_obj.__self__.__class__()
             try:
-                keyword_result = self.exec_obj(method_loader, **kwargs)
+                """
+
+                Hi there, major issue here
+
+                """
+                print(dir(self.exec_obj))
+                print(self.exec_obj.__class__)
+                print(self.exec_obj.__module__)
+                keyword_result = self.exec_obj(self.exec_obj, **kwargs)
             except Exception as exception:
                 trcback = print_exception(exception)
                 keyword_result = ("EXCEPTION", trcback)
