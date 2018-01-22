@@ -1784,6 +1784,11 @@ a.list-group-item.border-less:nth-child(1)
  > i{
      color: #b0a658;
  }
+    a.list-group-item.border-less:nth-child(9)
+> i{
+    color: #8FCAAD;
+}
+
 a.list-group-item.border-less:hover {
     background: #ededed;
 }
@@ -1974,6 +1979,10 @@ label.filelist.ng-binding.ng-scope:last-child {
 
 .tab.green {
     color: #3b7a4c;
+}
+
+.tab.cyan {
+    color: #8FCAAD;
 }
 .page {
     position: fixed;
@@ -2181,4 +2190,8 @@ b.text-danger > br {
     padding: 0;
     color: white;
     border-radius: 0;
+}
+
+select.hideopt > option[value^="?"] {
+    display: none;
 }

@@ -17,6 +17,11 @@ import json
 import os
 import platform
 import re
+import sys
+import inspect
+import importlib
+import imp
+import io
 import subprocess
 import threading
 import xml.etree.ElementTree
@@ -28,6 +33,7 @@ from bottle import route, run, static_file, template, redirect, post, request, \
     response
 from docstrings import read_lines, parse_docs, class_defs
 from scanfiles import fetch_action_file_names
+import pkgutil
 
 
 current_file_dir = os.path.dirname(os.path.realpath(__file__))
@@ -61,7 +67,7 @@ DEFTAGSFILE = os.path.normpath((os.path.join(current_file_dir, deftagsfile_relpa
 TOOLTIP_DIR = '{0}{1}{2}{1}'.format(current_file_dir, os.sep, 'tooltip')
 
 
-ROOT = '{0}{1}{2}{1}'.format(current_file_dir, os.sep, 'static') 
+ROOT = '{0}{1}{2}{1}'.format(current_file_dir, os.sep, 'static')
 
 
 @route('/assets/<filename:path>')
@@ -79,6 +85,51 @@ def katana():
     template_lookup = [current_file_dir, "{0}{1}{2}{1}".format(current_file_dir, os.sep, 'views')]
     return template('index', template_lookup=template_lookup)
 
+@route('/datafilepath/:path')
+def datafilepath(path):   
+    path = path.replace(">", os.sep)
+    subsystem_name_list = []
+    system_name_list = []
+    lines = ""
+    try:
+        with open(path, 'r') as f:
+            lines = f.read()
+        corrected_xml = remove_extra_newlines_char_xml(lines)
+        with open('output.txt', 'w') as files:
+            files.write(corrected_xml)
+        tree = xml.etree.ElementTree.parse('output.txt')
+        root = tree.getroot()
+        system = root.findall('system')
+        for val in system:
+            system_name_list.append(val.get('name') + ',')
+    except Exception:
+        print "Kindly provide the correct Relative path for Input data File, if auto-population of system & Subsystem name is needed."
+    return system_name_list
+
+
+@route('/sysName/:path/:filename')
+def sysName(path,filename): 
+    filename = filename.replace(">", os.sep)
+    lines = ""
+    subsystem_list = []
+    with open(filename, 'r') as f:
+       lines = f.read()
+    corrected_xml = remove_extra_newlines_char_xml(lines)
+    with open('output.txt', 'w') as files:
+        files.write(corrected_xml)
+    tree = xml.etree.ElementTree.parse('output.txt')
+    root = tree.getroot()
+    system = root.findall('system')
+    for val in system:
+        system_name = val.get('name')
+        if system_name == path:
+            sub_system = val.findall('subsystem')
+            if sub_system:
+                for valuee in sub_system:
+                    subsystem_list.append(valuee.get('name') + ',')
+            else:
+                 subsystem_list.append("No Subsystem Available" + ',')
+    return subsystem_list
 
 @route('/readconfig')
 def readconfig():
@@ -88,6 +139,148 @@ def readconfig():
     # print 'lines', lines
     cfg = json.loads("".join(lines))
     return cfg
+
+
+@route('/searchkw', method='POST')
+def searchkw():
+    """
+    This method returns the ActionFile Path of the selected Driver.
+    """
+    value = parseString("".join(request.body))
+    tree = get_correct_xml_and_root_element(value)
+    driver_name = tree.text
+    driver_file = os.path.join(gpysrcdir, 'ProductDrivers', driver_name + ".py")
+    actiondir_new = mkactiondirs(driver_file)
+    py_files = mkactionpyfiles(actiondir_new)
+    return py_files
+
+
+def get_correct_xml_and_root_element(value):
+    """ To get the correct xml format from Katana UI
+        and to get it's root element
+    """
+    indented_xml = "".join(value.toprettyxml(newl='\n'))
+    corrected_xml = remove_extra_newlines_char_xml(indented_xml)
+    tree = xml.etree.ElementTree.fromstring(corrected_xml)
+    return tree
+
+
+def get_action(driver, keyword):
+    """get action class corresponding to the keyword in the driver
+    """
+    drvmod = 'ProductDrivers.' + driver
+    drvmodobj = importlib.import_module(drvmod)
+    drvfile_methods = inspect.getmembers(drvmodobj, inspect.isroutine)
+    main_method = [item[1] for item in drvfile_methods if item[0] == 'main'][0]
+    main_src = inspect.getsource(main_method)
+    pkglstmatch = re.search(r'package_list.*=.*\[(.*)\]', main_src, re.MULTILINE | re.DOTALL)
+    pkglst = pkglstmatch.group(1).split(',')
+    for pkg in pkglst:
+        pkgobj = importlib.import_module(pkg)
+        pkgdir = os.path.dirname(pkgobj.__file__)
+        action_modules = [pkg+'.'+name for _, name, _ in pkgutil.iter_modules([pkgdir])]
+        action_module_objs = [importlib.import_module(action_module) for action_module in action_modules]
+        for action_module_obj in action_module_objs:
+            for action_class in inspect.getmembers(action_module_obj, inspect.isclass):
+                for func_name in inspect.getmembers(action_class[1], inspect.isroutine):
+                    if keyword == func_name[0]:
+                        return action_class[1]
+    return None
+
+
+@route('/parsexmlobj', method='POST')
+def parsexmlobj():
+    """
+    This method fetch the XML object from the Katana UI of Keyword sequencing tool screen.
+    And parse it to form a new Wrapper keyword & place it in the user provided file path.
+    """
+    # vars_to_replace is used for substituting the values in the template wrapper keyword
+    # the keys are the strings in the template which would be replaced with the values
+    # computed here
+    vars_to_replace = {'keyword_doc_list': ""}
+    keyword_sequencer_template_file = "keyword_sequencer_template"
+    keyword_doc_template = ("The keyword {} in Driver {} has defined arguments\n        {}.\n"
+                            "        You must send other values through data file\n        ")
+    xmlobj = parseString("".join(request.body))
+    tree = get_correct_xml_and_root_element(xmlobj)
+    vars_to_replace['wrapper_kw'] = tree[0][0].text
+    # To get the wrapper keyword name, Action file name and the
+    # description which is provided by the user.
+    ActionFile = tree[0][2].text.strip()
+    vars_to_replace['wdesc'] = tree[0][3].text
+    if not os.path.isfile(ActionFile):
+        return ("Action File '{}' does not exist or is not a file,"
+                " please check").format(ActionFile)
+    sys.path.insert(0, gpysrcdir)
+    actionmodfile = os.path.relpath(ActionFile, gpysrcdir)
+    # remove the extension
+    basename = os.path.splitext(actionmodfile)[0]
+    # convert basename in dir format separated by '/' to class format separated by '.'
+    classpath = ".".join(basename.split(os.sep))
+    mod_desc = imp.find_module(basename)
+    action_module = imp.load_module(basename, *mod_desc)
+    # get the class in which the wrapper keyword has to be put
+    action_class = inspect.getmembers(action_module, inspect.isclass)[0][1]
+    action_methods = [item[0] for item in inspect.getmembers(action_class, inspect.isroutine)]
+    print "Checking wrapper kw {} in {}".format(vars_to_replace['wrapper_kw'], actionmodfile)
+    if vars_to_replace['wrapper_kw'] in action_methods:
+        return ("Wrapper Keyword {} already exists;in {}. Create Wrapper Keyword"
+                " with different name.").format(vars_to_replace['wrapper_kw'], ActionFile)
+    Subkeyword_elem = tree.find('Subkeyword')
+    subkw_list = Subkeyword_elem.findall('Skw')
+    keyword_details = []
+    for subkeyword in subkw_list:
+        skw_attrs = subkeyword.attrib
+        action_code = get_action(skw_attrs['Driver'], skw_attrs['Keyword'])
+        if classpath != action_code.__module__:
+            # the sub keyword action is different from the wrapper keyword
+            # action, hence need to import
+            keyword_action_class = action_code.__module__+'.'+action_code.__name__
+        else:
+            # the sub keyword action is same as wrapper keyword action,
+            # hence can be called directly with self
+            keyword_action_class = ''
+        arguments = subkeyword.find('Arguments')
+        kw_args = {}
+        if arguments is not None:
+            argument_list = arguments.findall('argument')
+            kw_args = {arg.get('name'): arg.get('value') for arg in argument_list}
+        keyword_details.append((skw_attrs['Keyword'], keyword_action_class, kw_args))
+        # documenation of individual keywords in the katana is generated here
+        arg_list_str = ','.join(['{}="{}"'.format(key, value)
+                                 for (key, value) in kw_args.iteritems()])
+        vars_to_replace['keyword_doc_list'] += keyword_doc_template.format(
+                                                skw_attrs['Keyword'],
+                                                skw_attrs['Driver'], arg_list_str)
+    else:
+        # generating the code to substitute keyword_details in template
+        # this would be a list of three-tuples where each three tuple
+        # corresponds to a subkeyword with details of (keyword name,
+        # action class corresponding to the keyword, dictionary of named arguments)
+        ws27 = ',\n'+' '*27
+        ws28 = ws27+' '
+        inner_to_print_list = ['('+ws28.join(["'{}', '{}'".format(a, b),
+                                              str(c)])+')' for (a, b, c) in keyword_details]
+        outer_to_print = '['+ws27.join(inner_to_print_list)+']'
+        vars_to_replace['keyword_details'] = outer_to_print
+
+    # vars_to_replace is used here to sustitute the patterns in keyword template
+    # which would be appended as wrapper keyword in the corresponding action class
+    with io.open(keyword_sequencer_template_file) as kwdseqtemp:
+        kwdseqtempstr = kwdseqtemp.read()
+    from string import Template
+    kwdseqtemp = Template(kwdseqtempstr)
+    kwdseqtempstr = kwdseqtemp.substitute(vars_to_replace)
+
+    # appending the wrapper keyword code to the action class corresponding to wrapper keyword
+    try:
+        with io.open(ActionFile, 'a') as actfile:
+            actfile.write(kwdseqtempstr)
+    except Exception as e:
+        print "got exception <<{}>> while writing to action file".format(e)
+        return "Error writing keyword {} to actionfile {}".format(vars_to_replace['wrapper_kw'], ActionFile)
+
+    return "wrapper keyword {} saved;in the path {}".format(vars_to_replace['wrapper_kw'], ActionFile)
 
 
 @route('/readdeftagsfile')
@@ -122,8 +315,6 @@ def readstatesfile():
         lines = f.read()
     states = json.loads("".join(lines))
     return states
-
-
 
 
 @route('/readtooltip/:tab')
@@ -329,77 +520,60 @@ def namecase(s):
 gpysrcdir = ''
 
 
-def mkactiondirs(driverpath):  # changed
-    '''Given a directory name `drivername`, return its action python file name.'''
+def mkactiondirs(driverpath):
+    '''Given a directory name `drivername`, return its action python file name.
+    '''
     # FrameworkDirectory/ used to be the prefix in the directory name.
     actions_dirpath_list = []
     actions_package_list = get_action_dirlist(driverpath)
     if len(actions_package_list) == 0:
-        print "the driver {0} does not import any actions package or import format is wrong".format(
-            os.path.basename(driverpath))
-    # print "action package list in mkactions dir", actions_package_list
-    # print type(actions_package_list)
-
-    elif len(actions_package_list) > 0:
-        for package in actions_package_list:
-            try:
-                print package
-                package = package.replace(' ', '')
-                pkg = re.sub('[\n\t' '\\\]', '', package)
-                print pkg
-                print package
-                if pkg == 'Actions':
-                    actions_dirpath = gpysrcdir + os.sep + 'Actions'
-                elif pkg.startswith('Actions.'):
-                    path = pkg.replace('.', os.sep)
-                    actions_dirpath = gpysrcdir + os.sep + path
-                else:
-                    path = pkg.replace('.', os.sep)
-                    actions_dirpath = gpysrcdir + os.sep + 'Actions' + os.sep + path
-                    print actions_dirpath
-                if os.path.isdir(actions_dirpath):
-                    actions_dirpath_list.append(actions_dirpath)
-                else:
-                    print "the actions package {0} does not exist or the location is not compatible with warrior framework:".format(
-                        actions_dirpath)
-            except Exception, e:
-                print str(e)
+        print ("the driver {0} does not import any actions package or import "
+               "format is wrong").format(os.path.basename(driverpath))
+    for package in actions_package_list:
+        try:
+            print package
+            package = package.replace(' ', '')
+            pkg = re.sub('[\n\t' '\\\]', '', package)
+            print pkg
+            print package
+            if pkg == 'Actions':
+                actions_dirpath = os.path.join(gpysrcdir, 'Actions')
+            elif pkg.startswith('Actions.'):
+                pathlist = pkg.split('.')
+                actions_dirpath = os.path.join(gpysrcdir, *pathlist)
+            else:
+                pathlist = pkg.split('.')
+                actions_dirpath = os.path.join(gpysrcdir, 'Actions', *pathlist)
+            print actions_dirpath
+            if os.path.isdir(actions_dirpath):
+                actions_dirpath_list.append(actions_dirpath)
+            else:
+                print ("the actions package {0} does not exist or the location is not "
+                       "compatible with warrior framework:").format(actions_dirpath)
+        except Exception, e:
+            print str(e)
     return actions_dirpath_list
 
 
-def get_action_dirlist(driverpath):  # changed
-    """ Get the list of action directories """
+def get_action_dirlist(driverpath):
+    """ Get the list of action directories
+    """
     actions_package_list = []
     try:
         if os.path.isfile(driverpath):
-            '''
-            fobj = open(driverpath, 'r')
-            lines = fobj.readlines()
-            '''
-            lines = []
             with open(driverpath, 'r') as fobj:
-                lines = fobj.readlines()
-            lines_as_string = ''.join(lines)
+                drv_text = fobj.read()
             search_string = re.compile('package_list.*=.*\]',
                                        re.DOTALL | re.MULTILINE)
-            match = re.search(search_string, lines_as_string)
+            match = re.search(search_string, drv_text)
 
             if match:
                 match_string = match.group()
-                # print match_string
-                actions_package_list = match_string.split('[')[1].split(']')[
-                    0].split(',')
-                print "\n action package list: ", actions_package_list
-                # for line in lines:
-                # if re.search(search, line):
-                # print "package_list found"
-                # print line
-                # actions_package_list = line.split('[')[1].split(']')[0].split(',')
-                # print "\n action package list: ", actions_package_list
-            return actions_package_list
+                # extracting the text within [] and get the list of packages separated by ,
+                actions_package_list = re.findall(r'\[(.*)\]', match_string)[0].split(',')
+                print "\n actions package list: ", actions_package_list
         else:
             print "file {0} does not exist".format(driverpath)
-            return actions_package_list
     except Exception, e:
         print str(e)
     return actions_package_list
@@ -1401,7 +1575,7 @@ def get_jira_projects():
     node_dict[1] = "None"
     id = 2
     path = readconfig()
-    xml_file = os.path.join(path["pythonsrcdir"], "Tools", "jira",
+    xml_file = os.path.join(path["pythonsrcdir"], "Tools", "Jira",
                             "jira_config.xml")
     if os.path.exists(xml_file):
         tree = xml.etree.ElementTree.parse(xml_file)

@@ -16,9 +16,9 @@
             <div class="form-group">
                 <label for="Name"
                        class="col-sm-2 control-label mandatory-field ellipsis-the-overflow">Name</label>
-                    <div class="tooltip-on-right align-fa-icon-after-label">
-                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
-                        <span class="tooltip-content">
+                <div class="tooltip-on-right align-fa-icon-after-label">
+                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                    <span class="tooltip-content">
                             <div ng-if="testcaseTooltips.name.tooltip != ''">
                                 <i class="fa fa-rocket" aria-hidden="true"></i>
                                 &nbsp;
@@ -47,9 +47,9 @@
                                 <br>
                             </div>
                         </span>
-                    </div>
+                </div>
                 <div class="col-sm-6">
-                        <input type="text" class="form-control"
+                    <input type="text" class="form-control"
                            id="Name" autofocus required
                            placeholder="Name of this Case"
                            ng-model='model.Testcase.Details.Name'>
@@ -176,8 +176,8 @@
                 <label for="Category"
                        class="col-sm-2 control-label ellipsis-the-overflow">Category</label>
                 <div class="tooltip-on-right align-fa-icon-after-label">
-                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
-                        <span class="tooltip-content">
+                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                    <span class="tooltip-content">
                             <div ng-if="testcaseTooltips.category.tooltip != ''">
                                 <i class="fa fa-rocket" aria-hidden="true"></i>
                                 &nbsp;
@@ -206,7 +206,7 @@
                                 <br>
                             </div>
                         </span>
-                    </div>
+                </div>
                 <div class="col-sm-6">
                     <input type="text" class="form-control"
                            id="Category"
@@ -1013,9 +1013,9 @@
                     <!-- <input type="text" class="form-control" id="Resultsdir"
                           ng-model='model.Testcase.Details.ExpectedResults'
                           title="Location of the results directory."> -->
-            <textarea id="ExpectedResults" class="form-control"
-                      rows="3" ng-model='model.Testcase.Details.ExpectedResults'
-                      placeholder='Results expected out of this Case'></textarea>
+                    <textarea id="ExpectedResults" class="form-control"
+                              rows="3" ng-model='model.Testcase.Details.ExpectedResults'
+                              placeholder='Results expected out of this Case'></textarea>
                 </div>
                 <div class="col-sm-1 align-fa-icon-after-input">
                     <div class="tooltip-on-right">
@@ -1138,7 +1138,7 @@
                         <th class='text-muted'>Keyword</th> <!--  col-sm-2 -->
                         <th class='text-muted'>Description</th> <!--  col-sm-2 -->
                         <th class='text-muted'>Arguments</th>  <!-- col-sm-3 -->
-                        <th class='text-muted'>Execute</th> <!--  col-sm-2 -->
+                        <th class='text-muted'>Execute</th><!--  col-sm-2 -->
                         <th class='text-muted' ng-if="model.Testcase.Details.Datatype == 'Hybrid'">Iteration Type</th>
                         <th class='text-muted'>Run Mode</th>
                         <th class='text-muted'>Impact</th>
@@ -1196,18 +1196,21 @@
                         </td>
 
                         <td>
-                           {{ step.Description }}
+                            {{ step.Description }}
                         </td>
 
                         <td>
                             <div ng-if=" step.Arguments.argument.length !== undefined  ">
                                 <div ng-repeat='arg in step.Arguments.argument' ng-show="arg._name !== ''">
-                                    <div ng-show="arg._value !== ''">
+                                    <div ng-show="arg._value !== '' && arg._name != 'undefined'">
                                         {{ $index + 1 }}. {{ arg._name}} = {{arg._value }}
+                                    </div>
+                                    <div ng-show="arg._name == 'undefined'">
+                                        {{ $index + 1 }}. subsystem_name = {{arg._value }}
                                     </div>
                                     <div ng-show="arg._value == ''">
                                         {{ $index + 1 }}. {{ arg._name}}
-                                    </div>
+                                    </div> 
                                 </div>
                             </div>
                             <div ng-if=" step.Arguments.argument._name !== undefined && step.Arguments.argument._name !== ''">
@@ -1219,19 +1222,38 @@
                                 </div>
                             </div>
                         </td>
-
+                     
                         <td>
-                            Type = {{ step.Execute._ExecType }}<br>
-                            <div ng-if="step.Execute._ExecType == 'If' || step.Execute._ExecType == 'If Not'">
-                                Condition = {{ step.Execute.Rule._Condition}}
-                                <br>
-                                Condition value= {{ step.Execute.Rule._Condvalue}}
-                                <br>
-                                Else = {{ step.Execute.Rule._Else }}<br>
-                                <div ng-if="step.Execute.Rule._Else == 'goto'">
-                                    Else value= {{ step.Execute.Rule._Elsevalue}}
-                                </div>
-                            </div>
+                                <b> Type = </b> {{ step.Execute._ExecType }}
+                                <span ng-if="step.Execute._ExecType == 'If' || step.Execute._ExecType == 'If Not'">
+                                    <span ng-show="step.Execute._Expression == undefined">
+                                    &nbsp;&nbsp;<b> Multi Rule Expression = </b>Not Applicable 
+                                    </span>
+                                    <span ng-show="step.Execute._Expression !== undefined">
+                                    &nbsp;&nbsp;<b> Multi Rule Expression = </b>{{step.Execute._Expression}} 
+                                    </span>
+                                    <span ng-show="step.Execute._Else == undefined">
+                                    &nbsp;&nbsp;<b> Else = </b> next 
+                                    </span>
+                                    <span ng-show="step.Execute._Else !== undefined">
+                                    &nbsp;&nbsp;<b> Else = </b>{{step.Execute._Else}}
+                                    </span>
+                                    <span ng-if="step.Execute._Else == 'goto'">
+                                    &nbsp;&nbsp;<b> Else Value = </b>{{step.Execute._Elsevalue}} 
+                                    </span>
+                                    <div>
+                                        <div ng-repeat='rule in step.Execute.Rule'>
+                                            <b>Rule {{ $index + 1 }}.  </b>Condition = {{ rule._Condition}} <b>,</b>
+                                            <span ng-show="rule._Operator == undefined">
+                                            Operator = eq <b>,</b>
+                                            </span>
+                                            <span ng-show="rule._Operator !== undefined"> 
+                                            Operator = {{ rule._Operator}} <b>,</b>
+                                            </span>
+                                            Condition value = {{ rule._Condvalue}}
+                                        </div>
+                                    </div>
+                                </span>
                         </td>
 
                         <td ng-if="model.Testcase.Details.Datatype == 'Hybrid'">{{ step.iteration_type._type}}</td>
@@ -1242,6 +1264,9 @@
                             </div>
                             <div ng-show="step.runmode._type == 'Standard'">
                                 {{ step.runmode._type }}
+                            </div>
+                            <div ng-show="step.runmode._type == undefined">
+                                Standard
                             </div>
                         </td>
 
@@ -1353,7 +1378,7 @@
                             </div>
                         </td>
 
-                        <td ng-click="editStep(step._Driver, $index)" class='text-center' style='vertical-align:middle'>
+                        <td ng-click="editStep(step._Driver, $index);checkRule($index)" class='text-center' style='vertical-align:middle'>
                             <div class="tooltip-on-left-dark-big">
                                 <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                                 <span class="tooltip-content text-left">
@@ -1443,9 +1468,9 @@
                     </div>
                     <div class="col-sm-3">
                         <input style="color:rgb(214, 48, 48)" type="button"
-                                class="btn btn-default form-control ellipsis-the-overflow"
-                                ng-click='saveArguments()'
-                                title={{testcaseTooltips.stepsave.tooltip}} value="Save Step">
+                               class="btn btn-default form-control ellipsis-the-overflow"
+                               ng-click='saveArguments()'
+                               title={{testcaseTooltips.stepsave.tooltip}} value="Save Step">
                     </div>
                 </div>
 
@@ -1584,11 +1609,11 @@
                     <div class="col-sm-8">
                         <div class="input-group" ng-show="!status.kwCheckbox">
                             <select class='form-control' id='stepkwd'
-                                ng-model="status.keyword"
-                                ng-change="selectKeyword(status.keyword)"
-                                ng-options="o.fn as o.fn for o in xml.keywords">
-                            <option value=''>Select Keyword</option>
-                        </select>
+                                    ng-model="status.keyword"
+                                    ng-change="selectKeyword(status.keyword)"
+                                    ng-options="o.fn as o.fn for o in xml.keywords">
+                                <option value=''>Select Keyword</option>
+                            </select>
                             <span class="input-group-addon" style="background-color: white">
                                 <input id="kwCheckbox1" type="checkbox"
                                        ng-model='status.kwCheckbox'
@@ -1642,7 +1667,7 @@
                     </div>
                 </div>
 
-                 <div class="form-group" ng-show="status.stepdescription !== '' && status.stepdescription !== undefined">
+                <div class="form-group" ng-show="status.stepdescription !== '' && status.stepdescription !== undefined">
                     <label for='stepwdescription'
                            class="col-sm-3 offset-1 control-label ellipsis-the-overflow">WDescription</label>
                     <div class="tooltip-on-right align-fa-icon-after-label-step">
@@ -1796,7 +1821,7 @@
                     </div>
                     <div class="col-sm-9 col-sm-offset-3 ellipsis-the-overflow color-me-red mBots"
                          ng-if="status.step.context == 'negative'">
-                         <i class="fa fa-exclamation-triangle" aria-hidden="true" >&nbsp;FAILURE EXPECTED</i>
+                        <i class="fa fa-exclamation-triangle" aria-hidden="true" >&nbsp;FAILURE EXPECTED</i>
                     </div>
                 </div>
 
@@ -1843,8 +1868,80 @@
                                    There are no editable values for this function / keyword.
                                </b>
                            </div>
+
+                          <div ng-repeat="arg in xml.arglist"
+                                ng-if='status.keyword != "" && xml.arglist.length > 0 && arg == "system_name"' >
+                                
+                                <div class="form-group mArgs">
+                                   <label for="arg{{$index}}"
+                                          class="col-sm-5 control-label text-info breakword"
+                                          style="color: black">
+                                       {{arg}}
+                                   </label>
+                                   <label for="arg{{$index}}"
+                                          class="col-sm-5 control-label text-info ellipsis-the-overflow-arg"
+                                          style="color: black">
+                                       {{arg}}
+                                   </label>
+                                <div class="col-sm-7">
+                                    <input type="text"
+                                              class="form-control"
+                                              id="arg{{$index}}"
+                                              ng-model='xml.mapargs[arg]'
+                                              placeholder="" ng-hide="hideTxtBox">  
+
+                                    <select class='form-control hideopt'
+                                        id='arg{{$index}}'
+                                        ng-model="xml.mapargs[arg]" 
+                                        ng-change="showSubsys(xml.mapargs[arg])"
+                                        ng-options="res as res for res in sysList track by res" ng-hide="hideDropDwn">
+                                         <option value=''>Select System Name</option>
+                                     </select>
+
+                                   </div>
+                             </div>
+                     
+                           </div>
+
+                        <div ng-repeat="arg in xml.arglist"
+                                ng-if='status.keyword != "" && xml.arglist.length > 0 && arg == "subsystem_name" ' >
+                           <div ng-hide="hideSubsys">
+                                 
+                                <div class="form-group mArgs">
+                                   <label for="arg{{$index}}"
+                                          class="col-sm-5 control-label text-info breakword"
+                                          style="color: black">
+                                {{arg}}
+
+                                   </label>
+                                   <label for="arg{{$index}}"
+                                          class="col-sm-5 control-label text-info ellipsis-the-overflow-arg"
+                                          style="color: black">
+                                {{arg}}
+
+                                   </label> 
+                                  <div class="col-sm-7">
+                                     <input type="text"
+                                              class="form-control"
+                                              id="arg{{$index}}"
+                                              ng-model='xml.mapargs[arg]'
+                                              ng-hide="hideText"
+                                              placeholder="">
+
+                                    <select class='form-control hideopt'
+                                            id='arg{{$index}}'
+                                            ng-model="xml.mapargs[arg]" 
+                                            ng-options="sub as sub for sub in subSysList track by sub" ng-hide="hideDrop">
+                                    <option value=''>Select Subsystem Name</option>
+                                    </select>
+                                   </div> 
+                                
+                                </div>
+                           </div>
+                        </div>
+
                            <div ng-repeat="arg in xml.arglist"
-                                ng-if='status.keyword != "" && xml.arglist.length > 0 && arg != "self"'>
+                                ng-if='status.keyword != "" && xml.arglist.length > 0 && arg != "self" && arg != "system_name" && arg != "subsystem_name"'>
                                <div class="form-group mArgs">
                                    <label for="arg{{$index}}"
                                           class="col-sm-5 control-label text-info breakword"
@@ -1879,18 +1976,18 @@
                                                <span class="input-group-addon" ng-click="deleteArgFromList($index)">
                                                    <span class="fa fa-times-circle-o" aria-hidden="true"></span>
                                                </span>
-                                           </div>
-                                       </div>
-                                   </div>
-                               </div>
-                               <div class="form-group">
-                                   <div class="col-sm-4 col-sm-offset-5">
-                                       <input type="button" ng-click="addAnotherArgumentToList()" class="btn btn-default" value="Add">
-                                   </div>
-                               </div>
-                           </div>
-                       </div>
-                   </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-4 col-sm-offset-5">
+                                        <input type="button" ng-click="addAnotherArgumentToList()" class="btn btn-default" value="Add">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="col-sm-1">
                         <div class="tooltip-on-right-no-margin align-fa-icon-after-input-step">
                             <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
@@ -1927,14 +2024,14 @@
                     </div>
                 </div>
 
-                <div class="form-group">
+            <div class="form-group" style="margin-bottom:0px !important;">
                     <label for='stepexecute'
-                           class="col-sm-3 control-label ellipsis-the-overflow">Execute
-                        Type</label>
+                           class="col-sm-3 offset-1 control-label ellipsis-the-overflow">Execute Type
+                    </label>
                     <div class="tooltip-on-right align-fa-icon-after-label-step">
                         <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
                         <span class="tooltip-content">
-                             <div ng-if="testcaseTooltips.exectype.tooltip != ''">
+                                <div ng-if="testcaseTooltips.exectype.tooltip != ''">
                                 <i class="fa fa-rocket" aria-hidden="true"></i>
                                 &nbsp;
                                 {{testcaseTooltips.exectype.tooltip}}
@@ -1967,9 +2064,12 @@
                         <select class='form-control'
                                 id='stepexecute'
                                 ng-model="status.step.Execute._ExecType"
-                                ng-options="o as o for o in status.stepsexecutes">
+                                ng-options="o as o for o in status.stepsexecutes"
+                                ng-init="status.step.Execute._ExecType = status.stepsexecutes[0]"
+                                ng-change="showRules(status.step.Execute._ExecType);">
+                                <option value="" selected hidden /> 
                         </select>
-                    </div>
+                     </div>
                     <div class="col-sm-1">
                         <div class="tooltip-on-right-no-margin align-fa-icon-after-input-step">
                             <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
@@ -2004,51 +2104,255 @@
                             </span>
                         </div>
                     </div>
-                </div>
 
-                <div class="form-group"
-                     ng-if="status.step.Execute._ExecType == 'If' || status.step.Execute._ExecType == 'If Not'">
-                    <label for='steprulecondition' class="col-sm-3 control-label ellipsis-the-overflow mandatory-field">Condition</label>
+            </div>
+
+            <div class="form-group"  style="margin-top:10px !important;" ng-if="status.step.Execute._ExecType == 'If' || status.step.Execute._ExecType == 'If Not'">
+                    <label for='stepexp'
+                           class="col-sm-3 offset-1 control-label ellipsis-the-overflow">Multi Rule Expression</label>
                     <div class="tooltip-on-right align-fa-icon-after-label-step">
                         <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
                         <span class="tooltip-content">
-                             <div ng-if="testcaseTooltips.condition.tooltip != ''">
+                             <div ng-if="testcaseTooltips.expression.tooltip != ''">
                                 <i class="fa fa-rocket" aria-hidden="true"></i>
                                 &nbsp;
-                                {{testcaseTooltips.condition.tooltip}}
+                                {{testcaseTooltips.expression.tooltip}}
                                 <br>
                             </div>
-                            <div ng-if="testcaseTooltips.condition.protip != ''">
+                            <div ng-if="testcaseTooltips.expression.protip != ''">
                                 <br>
                                 <i class="fa fa-bolt" aria-hidden="true"></i>
                                 &nbsp;
-                                {{testcaseTooltips.condition.protip}}
+                                {{testcaseTooltips.expression.protip}}
                                 <br>
                             </div>
-                            <div ng-if="testcaseTooltips.condition.bantip != ''">
+                            <div ng-if="testcaseTooltips.expression.bantip != ''">
                                 <br>
                                 <i class="fa fa-ban" aria-hidden="true"></i>
                                 &nbsp;
-                                {{testcaseTooltips.condition.bantip}}
+                                {{testcaseTooltips.expression.bantip}}
                                 <br>
                             </div>
-                            <div ng-if="testcaseTooltips.condition.snowflake != ''">
+                            <div ng-if="testcaseTooltips.expression.snowflake != ''">
                                 <br>
                                 <i class="fa fa-snowflake-o" aria-hidden="true"></i>
                                 &nbsp;
-                                {{testcaseTooltips.condition.snowflake}}
+                                {{testcaseTooltips.expression.snowflake}}
                                 <br>
                             </div>
                         </span>
                     </div>
-                    <div class="col-sm-8">
+                    <div class="col-sm-8 mBot">
                         <input type="text" class="form-control"
-                               id="steprulecondition"
-                               ng-model='status.step.Execute.Rule._Condition'
-                               placeholder="">
+                               id="stepexp"
+                               ng-model='status.step.Execute._Expression'
+                               placeholder="Multi Rule Expression"> <br/>
                     </div>
                     <div class="col-sm-1">
                         <div class="tooltip-on-right-no-margin align-fa-icon-after-input-step">
+                            <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                            <span class="tooltip-content">
+                                 <div ng-if="testcaseTooltips.expression.tooltip != ''">
+                                    <i class="fa fa-rocket" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{testcaseTooltips.expression.tooltip}}
+                                    <br>
+                                </div>
+                                <div ng-if="testcaseTooltips.expression.protip != ''">
+                                    <br>
+                                    <i class="fa fa-bolt" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{testcaseTooltips.expression.protip}}
+                                    <br>
+                                </div>
+                                <div ng-if="testcaseTooltips.expression.bantip != ''">
+                                    <br>
+                                    <i class="fa fa-ban" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{testcaseTooltips.expression.bantip}}
+                                    <br>
+                                </div>
+                                <div ng-if="testcaseTooltips.expression.snowflake != ''">
+                                    <br>
+                                    <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{testcaseTooltips.expression.snowflake}}
+                                    <br>
+                                </div>
+                            </span>
+                        </div>
+                    </div>
+            </div>
+
+            <div class="form-group" ng-if="status.step.Execute._ExecType == 'If' || status.step.Execute._ExecType == 'If Not'">
+
+                <label for='stepexecelse' class="col-sm-3 offset-1 control-label ellipsis-the-overflow">Else</label>
+                    <div class="tooltip-on-right align-fa-icon-after-label-step">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                             <div ng-if="testcaseTooltips.execelse.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{testcaseTooltips.execelse.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="testcaseTooltips.execelse.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{testcaseTooltips.execelse.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="testcaseTooltips.execelse.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{testcaseTooltips.execelse.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="testcaseTooltips.execelse.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{testcaseTooltips.execelse.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                    <div class="col-sm-8 mBot">
+                        <select class='form-control'
+                            id='stepexecelse'
+                            ng-model="status.step.Execute._Else"
+                            ng-options="o as o for o in status.steperrors">
+                        </select> <br/>
+                    </div>
+                    <div class="col-sm-1">
+                        <div class="tooltip-on-right-no-margin align-fa-icon-after-input-step">
+                            <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                            <span class="tooltip-content">
+                                 <div ng-if="testcaseTooltips.execelse.tooltip != ''">
+                                    <i class="fa fa-rocket" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{testcaseTooltips.execelse.tooltip}}
+                                    <br>
+                                </div>
+                                <div ng-if="testcaseTooltips.execelse.protip != ''">
+                                    <br>
+                                    <i class="fa fa-bolt" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{testcaseTooltips.execelse.protip}}
+                                    <br>
+                                </div>
+                                <div ng-if="testcaseTooltips.execelse.bantip != ''">
+                                    <br>
+                                    <i class="fa fa-ban" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{testcaseTooltips.execelse.bantip}}
+                                    <br>
+                                </div>
+                                <div ng-if="testcaseTooltips.execelse.snowflake != ''">
+                                    <br>
+                                    <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{testcaseTooltips.execelse.snowflake}}
+                                    <br>
+                                </div>
+                            </span>
+                        </div>
+                    </div>
+            </div>
+
+
+            <div class="form-group" ng-if="(status.step.Execute._ExecType == 'If' || status.step.Execute._ExecType == 'If Not') && status.step.Execute._Else == 'goto'">
+
+                <label for='stepexecelsev' class="col-sm-3 offset-1 control-label ellipsis-the-overflow mandatory-field">Else Value</label>
+                    <div class="tooltip-on-right align-fa-icon-after-label-step">
+                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                        <span class="tooltip-content">
+                             <div ng-if="testcaseTooltips.execelseval.tooltip != ''">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                                &nbsp;
+                                {{testcaseTooltips.execelseval.tooltip}}
+                                <br>
+                            </div>
+                            <div ng-if="testcaseTooltips.execelseval.protip != ''">
+                                <br>
+                                <i class="fa fa-bolt" aria-hidden="true"></i>
+                                &nbsp;
+                                {{testcaseTooltips.execelseval.protip}}
+                                <br>
+                            </div>
+                            <div ng-if="testcaseTooltips.execelseval.bantip != ''">
+                                <br>
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                &nbsp;
+                                {{testcaseTooltips.execelseval.bantip}}
+                                <br>
+                            </div>
+                            <div ng-if="testcaseTooltips.execelseval.snowflake != ''">
+                                <br>
+                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                &nbsp;
+                                {{testcaseTooltips.execelseval.snowflake}}
+                                <br>
+                            </div>
+                        </span>
+                    </div>
+                    <div class="col-sm-8 mBot">
+                        <input type="text" class="form-control"
+                        id="stepexecelsev" required
+                        ng-model="status.step.Execute._Elsevalue"
+                        placeholder=""> <br/>
+                    </div>
+                    <div class="col-sm-1">
+                        <div class="tooltip-on-right-no-margin align-fa-icon-after-input-step">
+                            <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                            <span class="tooltip-content">
+                                 <div ng-if="testcaseTooltips.execelseval.tooltip != ''">
+                                    <i class="fa fa-rocket" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{testcaseTooltips.execelseval.tooltip}}
+                                    <br>
+                                </div>
+                                <div ng-if="testcaseTooltips.execelseval.protip != ''">
+                                    <br>
+                                    <i class="fa fa-bolt" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{testcaseTooltips.execelseval.protip}}
+                                    <br>
+                                </div>
+                                <div ng-if="testcaseTooltips.execelseval.bantip != ''">
+                                    <br>
+                                    <i class="fa fa-ban" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{testcaseTooltips.execelseval.bantip}}
+                                    <br>
+                                </div>
+                                <div ng-if="testcaseTooltips.execelseval.snowflake != ''">
+                                    <br>
+                                    <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                    &nbsp;
+                                    {{testcaseTooltips.execelseval.snowflake}}
+                                    <br>
+                                </div>
+                            </span>
+                        </div>
+                    </div>
+            </div>
+
+<div class="form-group">
+        <div class="col-sm-8" ng-show="showRulesBelow">
+           <div class= "">
+               <div class="">
+                   <div ng-repeat="Rule in rule_list track by $index" class="container pull-left" style="width:135%;margin-left:8%">
+                        <div class="form-group" style="visibility:hidden !important;">
+                                
+                        </div>
+
+                    <div class="form-group">
+                       <b style="padding-top:7px !important;">Rule {{ $index + 1 }}. &nbsp;</b>
+                           <label for="steprulecondition" class="col-sm-5 control-label mandatory-field" style="padding-top:7px !important;">Condition</label>
+                        <div class="tooltip-on-right align-fa-icon-after-label-step">
                             <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
                             <span class="tooltip-content">
                                  <div ng-if="testcaseTooltips.condition.tooltip != ''">
@@ -2080,240 +2384,212 @@
                                 </div>
                             </span>
                         </div>
-                    </div>
-                </div>
+                           <div class="col-sm-7">
+                               <div class="input-group">
+                                   <input id="steprulecondition" required type="text" class="form-control" ng-model="rule_list[$index]._Condition">
+                                  
+                               </div>
+                           </div>
 
-                <div class="form-group"
-                     ng-if="status.step.Execute._ExecType == 'If' || status.step.Execute._ExecType == 'If Not'">
-                    <label for='steprulecondvalue' class="col-sm-3 control-label mandatory-field ellipsis-the-overflow">Condition Value</label>
-                    <div class="tooltip-on-right align-fa-icon-after-label-step">
-                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
-                        <span class="tooltip-content">
-                             <div ng-if="testcaseTooltips.condvalue.tooltip != ''">
-                                <i class="fa fa-rocket" aria-hidden="true"></i>
-                                &nbsp;
-                                {{testcaseTooltips.condvalue.tooltip}}
-                                <br>
+                        <div class="col-sm-1">
+                            <div class="tooltip-on-right-no-margin align-fa-icon-after-input-step">
+                                <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                <span class="tooltip-content">
+                                     <div ng-if="testcaseTooltips.condition.tooltip != ''">
+                                        <i class="fa fa-rocket" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{testcaseTooltips.condition.tooltip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="testcaseTooltips.condition.protip != ''">
+                                        <br>
+                                        <i class="fa fa-bolt" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{testcaseTooltips.condition.protip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="testcaseTooltips.condition.bantip != ''">
+                                        <br>
+                                        <i class="fa fa-ban" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{testcaseTooltips.condition.bantip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="testcaseTooltips.condition.snowflake != ''">
+                                        <br>
+                                        <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{testcaseTooltips.condition.snowflake}}
+                                        <br>
+                                    </div>
+                                </span>
                             </div>
-                            <div ng-if="testcaseTooltips.condvalue.protip != ''">
-                                <br>
-                                <i class="fa fa-bolt" aria-hidden="true"></i>
-                                &nbsp;
-                                {{testcaseTooltips.condvalue.protip}}
-                                <br>
-                            </div>
-                            <div ng-if="testcaseTooltips.condvalue.bantip != ''">
-                                <br>
-                                <i class="fa fa-ban" aria-hidden="true"></i>
-                                &nbsp;
-                                {{testcaseTooltips.condvalue.bantip}}
-                                <br>
-                            </div>
-                            <div ng-if="testcaseTooltips.condvalue.snowflake != ''">
-                                <br>
-                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
-                                &nbsp;
-                                {{testcaseTooltips.condvalue.snowflake}}
-                                <br>
-                            </div>
-                        </span>
-                    </div>
-                    <div class="col-sm-8">
-                        <input type="text" class="form-control"
-                               id="steprulecondvalue"
-                               ng-model='status.step.Execute.Rule._Condvalue'
-                               placeholder="">
-                    </div>
-                    <div class="col-sm-1">
-                        <div class="tooltip-on-right-no-margin align-fa-icon-after-input-step">
-                            <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
-                            <span class="tooltip-content">
-                                 <div ng-if="testcaseTooltips.condvalue.tooltip != ''">
-                                    <i class="fa fa-rocket" aria-hidden="true"></i>
-                                    &nbsp;
-                                    {{testcaseTooltips.condvalue.tooltip}}
-                                    <br>
-                                </div>
-                                <div ng-if="testcaseTooltips.condvalue.protip != ''">
-                                    <br>
-                                    <i class="fa fa-bolt" aria-hidden="true"></i>
-                                    &nbsp;
-                                    {{testcaseTooltips.condvalue.protip}}
-                                    <br>
-                                </div>
-                                <div ng-if="testcaseTooltips.condvalue.bantip != ''">
-                                    <br>
-                                    <i class="fa fa-ban" aria-hidden="true"></i>
-                                    &nbsp;
-                                    {{testcaseTooltips.condvalue.bantip}}
-                                    <br>
-                                </div>
-                                <div ng-if="testcaseTooltips.condvalue.snowflake != ''">
-                                    <br>
-                                    <i class="fa fa-snowflake-o" aria-hidden="true"></i>
-                                    &nbsp;
-                                    {{testcaseTooltips.condvalue.snowflake}}
-                                    <br>
-                                </div>
-                            </span>
                         </div>
+                       </div>
+                       <div class="form-group">
+                            <label class="col-sm-5 control-label" style="padding-top:7px !important;" for="stepruleoperator{{$index}}">Operator</label>
+                            <div class="tooltip-on-right align-fa-icon-after-label-step">
+                                <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                <span class="tooltip-content">
+                                     <div ng-if="testcaseTooltips.operator.tooltip != ''">
+                                        <i class="fa fa-rocket" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{testcaseTooltips.operator.tooltip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="testcaseTooltips.operator.protip != ''">
+                                        <br>
+                                        <i class="fa fa-bolt" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{testcaseTooltips.operator.protip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="testcaseTooltips.operator.bantip != ''">
+                                        <br>
+                                        <i class="fa fa-ban" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{testcaseTooltips.operator.bantip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="testcaseTooltips.operator.snowflake != ''">
+                                        <br>
+                                        <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{testcaseTooltips.operator.snowflake}}
+                                        <br>
+                                    </div>
+                                </span>
+                            </div>
+                            <div class="col-sm-7">
+                                    <select class='form-control'
+                                    id='stepruleoperator{{$index}}'
+                                    ng-model='rule_list[$index]._Operator'
+                                    ng-options="o as o for o in status.operator">
+                                    </select>
+                            </div>
+                            <div class="col-sm-1">
+                                <div class="tooltip-on-right-no-margin align-fa-icon-after-input-step">
+                                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                    <span class="tooltip-content">
+                                         <div ng-if="testcaseTooltips.operator.tooltip != ''">
+                                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{testcaseTooltips.operator.tooltip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="testcaseTooltips.operator.protip != ''">
+                                            <br>
+                                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{testcaseTooltips.operator.protip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="testcaseTooltips.operator.bantip != ''">
+                                            <br>
+                                            <i class="fa fa-ban" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{testcaseTooltips.operator.bantip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="testcaseTooltips.operator.snowflake != ''">
+                                            <br>
+                                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{testcaseTooltips.operator.snowflake}}
+                                            <br>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+                       </div>
+                    <div class="form-group">
+                            <label for="steprulecondval" class="col-sm-5 control-label mandatory-field" style="padding-top:7px !important;">Condition Value</label>
+                            <div class="tooltip-on-right align-fa-icon-after-label-step">
+                                <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                <span class="tooltip-content">
+                                     <div ng-if="testcaseTooltips.condvalue.tooltip != ''">
+                                        <i class="fa fa-rocket" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{testcaseTooltips.condvalue.tooltip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="testcaseTooltips.condvalue.protip != ''">
+                                        <br>
+                                        <i class="fa fa-bolt" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{testcaseTooltips.condvalue.protip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="testcaseTooltips.condvalue.bantip != ''">
+                                        <br>
+                                        <i class="fa fa-ban" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{testcaseTooltips.condvalue.bantip}}
+                                        <br>
+                                    </div>
+                                    <div ng-if="testcaseTooltips.condvalue.snowflake != ''">
+                                        <br>
+                                        <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                        &nbsp;
+                                        {{testcaseTooltips.condvalue.snowflake}}
+                                        <br>
+                                    </div>
+                                </span>
+                            </div>
+                            <div class="col-sm-7">
+                                <div class="input-group">
+                                    <input type="text" id="steprulecondval" class="form-control" required ng-model="rule_list[$index]._Condvalue">
+                                   
+                                </div>
+                            </div>
+                            <div class="col-sm-1">
+                                <div class="tooltip-on-right-no-margin align-fa-icon-after-input-step">
+                                    <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
+                                    <span class="tooltip-content">
+                                         <div ng-if="testcaseTooltips.condvalue.tooltip != ''">
+                                            <i class="fa fa-rocket" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{testcaseTooltips.condvalue.tooltip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="testcaseTooltips.condvalue.protip != ''">
+                                            <br>
+                                            <i class="fa fa-bolt" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{testcaseTooltips.condvalue.protip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="testcaseTooltips.condvalue.bantip != ''">
+                                            <br>
+                                            <i class="fa fa-ban" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{testcaseTooltips.condvalue.bantip}}
+                                            <br>
+                                        </div>
+                                        <div ng-if="testcaseTooltips.condvalue.snowflake != ''">
+                                            <br>
+                                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                            &nbsp;
+                                            {{testcaseTooltips.condvalue.snowflake}}
+                                            <br>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
                     </div>
-                </div>
-
-                <div class="form-group"
-                     ng-if="status.step.Execute._ExecType == 'If' || status.step.Execute._ExecType == 'If Not'">
-                    <label for='stepruleelse' class="col-sm-3 control-label mandatory-field ellipsis-the-overflow">Else</label>
-                    <div class="tooltip-on-right align-fa-icon-after-label-step">
-                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
-                        <span class="tooltip-content">
-                             <div ng-if="testcaseTooltips.condelse.tooltip != ''">
-                                <i class="fa fa-rocket" aria-hidden="true"></i>
-                                &nbsp;
-                                {{testcaseTooltips.condelse.tooltip}}
-                                <br>
-                            </div>
-                            <div ng-if="testcaseTooltips.condelse.protip != ''">
-                                <br>
-                                <i class="fa fa-bolt" aria-hidden="true"></i>
-                                &nbsp;
-                                {{testcaseTooltips.condelse.protip}}
-                                <br>
-                            </div>
-                            <div ng-if="testcaseTooltips.condelse.bantip != ''">
-                                <br>
-                                <i class="fa fa-ban" aria-hidden="true"></i>
-                                &nbsp;
-                                {{testcaseTooltips.condelse.bantip}}
-                                <br>
-                            </div>
-                            <div ng-if="testcaseTooltips.condelse.snowflake != ''">
-                                <br>
-                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
-                                &nbsp;
-                                {{testcaseTooltips.condelse.snowflake}}
-                                <br>
-                            </div>
-                        </span>
-                    </div>
-                    <div class="col-sm-8">
-                        <select class='form-control'
-                                id='stepruleelse'
-                                ng-model="status.step.Execute.Rule._Else"
-                                ng-change='grabStepNum()'
-                                ng-options="o as o for o in status.steperrors"></select>
-                    </div>
-                    <div class="col-sm-1">
-                        <div class="tooltip-on-right-no-margin align-fa-icon-after-input-step">
-                            <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
-                            <span class="tooltip-content">
-                                 <div ng-if="testcaseTooltips.condelse.tooltip != ''">
-                                    <i class="fa fa-rocket" aria-hidden="true"></i>
-                                    &nbsp;
-                                    {{testcaseTooltips.condelse.tooltip}}
-                                    <br>
-                                </div>
-                                <div ng-if="testcaseTooltips.condelse.protip != ''">
-                                    <br>
-                                    <i class="fa fa-bolt" aria-hidden="true"></i>
-                                    &nbsp;
-                                    {{testcaseTooltips.condelse.protip}}
-                                    <br>
-                                </div>
-                                <div ng-if="testcaseTooltips.condelse.bantip != ''">
-                                    <br>
-                                    <i class="fa fa-ban" aria-hidden="true"></i>
-                                    &nbsp;
-                                    {{testcaseTooltips.condelse.bantip}}
-                                    <br>
-                                </div>
-                                <div ng-if="testcaseTooltips.condelse.snowflake != ''">
-                                    <br>
-                                    <i class="fa fa-snowflake-o" aria-hidden="true"></i>
-                                    &nbsp;
-                                    {{testcaseTooltips.condelse.snowflake}}
-                                    <br>
-                                </div>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group"
-                     ng-if="(status.step.Execute._ExecType == 'If' || status.step.Execute._ExecType == 'If Not') && status.step.Execute.Rule._Else == 'goto'">
-                    <label for='stepruleelsevalue' class="col-sm-3 control-label mandatory-field ellipsis-the-overflow">Else Value</label>
-                    <div class="tooltip-on-right align-fa-icon-after-label-step">
-                        <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
-                        <span class="tooltip-content">
-                             <div ng-if="testcaseTooltips.condelsevalue.tooltip != ''">
-                                <i class="fa fa-rocket" aria-hidden="true"></i>
-                                &nbsp;
-                                {{testcaseTooltips.condelsevalue.tooltip}}
-                                <br>
-                            </div>
-                            <div ng-if="testcaseTooltips.condelsevalue.protip != ''">
-                                <br>
-                                <i class="fa fa-bolt" aria-hidden="true"></i>
-                                &nbsp;
-                                {{testcaseTooltips.condelsevalue.protip}}
-                                <br>
-                            </div>
-                            <div ng-if="testcaseTooltips.condelsevalue.bantip != ''">
-                                <br>
-                                <i class="fa fa-ban" aria-hidden="true"></i>
-                                &nbsp;
-                                {{testcaseTooltips.condelsevalue.bantip}}
-                                <br>
-                            </div>
-                            <div ng-if="testcaseTooltips.condelsevalue.snowflake != ''">
-                                <br>
-                                <i class="fa fa-snowflake-o" aria-hidden="true"></i>
-                                &nbsp;
-                                {{testcaseTooltips.condelsevalue.snowflake}}
-                                <br>
-                            </div>
-                        </span>
-                    </div>
-                    <div class="col-sm-8">
-                        <input type="text" class="form-control"
-                               id="stepruleelsevalue"
-                               ng-model='status.step.Execute.Rule._Elsevalue'
-                               placeholder="">
-                    </div>
-                    <div class="col-sm-1">
-                        <div class="tooltip-on-right-no-margin align-fa-icon-after-input-step">
-                            <i class="fa fa-lightbulb-o hide-on-hover" aria-hidden="true"></i>
-                            <span class="tooltip-content">
-                                 <div ng-if="testcaseTooltips.condelsevalue.tooltip != ''">
-                                    <i class="fa fa-rocket" aria-hidden="true"></i>
-                                    &nbsp;
-                                    {{testcaseTooltips.condelsevalue.tooltip}}
-                                    <br>
-                                </div>
-                                <div ng-if="testcaseTooltips.condelsevalue.protip != ''">
-                                    <br>
-                                    <i class="fa fa-bolt" aria-hidden="true"></i>
-                                    &nbsp;
-                                    {{testcaseTooltips.condelsevalue.protip}}
-                                    <br>
-                                </div>
-                                <div ng-if="testcaseTooltips.condelsevalue.bantip != ''">
-                                    <br>
-                                    <i class="fa fa-ban" aria-hidden="true"></i>
-                                    &nbsp;
-                                    {{testcaseTooltips.condelsevalue.bantip}}
-                                    <br>
-                                </div>
-                                <div ng-if="testcaseTooltips.condelsevalue.snowflake != ''">
-                                    <br>
-                                    <i class="fa fa-snowflake-o" aria-hidden="true"></i>
-                                    &nbsp;
-                                    {{testcaseTooltips.condelsevalue.snowflake}}
-                                    <br>
-                                </div>
-                            </span>
-                        </div>
-                    </div>
-                </div>
+ 
+                        <button style="margin-top:5px !important;margin-bottom:10px !important;float:right;margin-right:8%;" type="button" ng-click="deleteRuleFromList($index)" class="btn btn-default" value="">Delete Rule</button>
+                        <br>
+                   </div>
+                   <div class="" >
+                       <div class="" style="margin-left:11%"> 
+                        <button type="button" ng-click="addAnotherRulesToList()" class="btn btn-default" value="">Add Rule</button>
+                       </div>
+                   </div>
+               </div>
+           </div>
+       </div>
+    </div>
 
                 <div class="form-group"
                      ng-if='model.Testcase.Details.Datatype == "Hybrid"'>
@@ -2435,7 +2711,11 @@
                     <div class="col-sm-8">
                         <select class='form-control' id='runtype'
                                 ng-model="status.step.runmode._type"
-                                ng-options="o as o for o in status.runmodes"></select>
+                                ng-init="status.step.runmode._type = status.runmodes[0]"
+                                ng-options="o as o for o in status.runmodes">
+                                <option value="" selected hidden />    
+                                </select>
+                                  
                     </div>
                     <div class="col-sm-1">
                         <div class="tooltip-on-right-no-margin align-fa-icon-after-input-step">
@@ -2902,22 +3182,22 @@
             <div class="col-sm-12">
                 <table class='table table-bordered table-condensed table-hover'>
                     <thead>
-                        <tr>
-                            <th class='text-muted text-right min-width-35'>#</th>
-                            <th class='text-muted'>Driver</th>
-                            <th class='text-muted'>Keyword</th> <!--  col-sm-2 -->
-                            <th class='text-muted'>Description</th> <!--  col-sm-2 -->
-                            <th class='text-muted'>Arguments</th>  <!-- col-sm-3 -->
-                            <th class='text-muted'>Execute</th> <!--  col-sm-2 -->
-                            <th class='text-muted' ng-if="model.Testcase.Details.Datatype == 'Hybrid'">Iteration Type</th>
-                            <th class='text-muted'>Run Mode</th>
-                            <th class='text-muted'>Impact</th>
-                            <th class='text-muted'>Context</th>
-                            <th class='text-muted'>onError</th>
-                            <th class='text-muted'>Insert</th>
-                            <th class='text-muted'>Edit</th>
-                            <th class='text-muted'>Delete</th>
-                        </tr>
+                    <tr>
+                        <th class='text-muted text-right min-width-35'>#</th>
+                        <th class='text-muted'>Driver</th>
+                        <th class='text-muted'>Keyword</th> <!--  col-sm-2 -->
+                        <th class='text-muted'>Description</th> <!--  col-sm-2 -->
+                        <th class='text-muted'>Arguments</th>  <!-- col-sm-3 -->
+                        <th class='text-muted'>Execute</th> <!--  col-sm-2 -->
+                        <th class='text-muted' ng-if="model.Testcase.Details.Datatype == 'Hybrid'">Iteration Type</th>
+                        <th class='text-muted'>Run Mode</th>
+                        <th class='text-muted'>Impact</th>
+                        <th class='text-muted'>Context</th>
+                        <th class='text-muted'>onError</th>
+                        <th class='text-muted'>Insert</th>
+                        <th class='text-muted'>Edit</th>
+                        <th class='text-muted'>Delete</th>
+                    </tr>
                     </thead>
                     <tbody>
                     <tr ng-repeat='step in model.Testcase.Steps.step' ng-show="$index > stepBeingEdited">
@@ -2966,18 +3246,22 @@
                         </td>
 
                         <td>
-                           {{ step.Description }}
+                            {{ step.Description }}
                         </td>
 
                         <td>
-                            <div ng-if=" step.Arguments.argument.length !== undefined  ">
+                        
+                           <div ng-if=" step.Arguments.argument.length !== undefined  ">
                                 <div ng-repeat='arg in step.Arguments.argument' ng-show="arg._name !== ''">
-                                    <div ng-show="arg._value !== ''">
+                                    <div ng-show="arg._value !== '' && arg._name != 'undefined'">
                                         {{ $index + 1 }}. {{ arg._name}} = {{arg._value }}
+                                    </div>
+                                    <div ng-show="arg._name == 'undefined'">
+                                        {{ $index + 1 }}. subsystem_name = {{arg._value }}
                                     </div>
                                     <div ng-show="arg._value == ''">
                                         {{ $index + 1 }}. {{ arg._name}}
-                                    </div>
+                                    </div> 
                                 </div>
                             </div>
                             <div ng-if=" step.Arguments.argument._name !== undefined && step.Arguments.argument._name !== ''">
@@ -2991,17 +3275,36 @@
                         </td>
 
                         <td>
-                            Type = {{ step.Execute._ExecType }}<br>
-                            <div ng-if="step.Execute._ExecType == 'If' || step.Execute._ExecType == 'If Not'">
-                                Condition = {{ step.Execute.Rule._Condition}}
-                                <br>
-                                Condition value= {{ step.Execute.Rule._Condvalue}}
-                                <br>
-                                Else = {{ step.Execute.Rule._Else }}<br>
-                                <div ng-if="step.Execute.Rule._Else == 'goto'">
-                                    Else value= {{ step.Execute.Rule._Elsevalue}}
-                                </div>
-                            </div>
+                                <b> Type = </b> {{ step.Execute._ExecType }}
+                                <span ng-if="step.Execute._ExecType == 'If' || step.Execute._ExecType == 'If Not'">
+                                    <span ng-show="step.Execute._Expression == undefined">
+                                    &nbsp;&nbsp;<b> Multi Rule Expression = </b>Not Applicable 
+                                    </span>
+                                    <span ng-show="step.Execute._Expression !== undefined">
+                                    &nbsp;&nbsp;<b> Multi Rule Expression = </b>{{step.Execute._Expression}} 
+                                    </span>
+                                    <span ng-show="step.Execute._Else == undefined">
+                                    &nbsp;&nbsp;<b> Else = </b> next 
+                                    </span>
+                                    <span ng-show="step.Execute._Else !== undefined">
+                                    &nbsp;&nbsp;<b> Else = </b>{{step.Execute._Else}}
+                                    </span>
+                                    <span ng-if="step.Execute._Else == 'goto'">
+                                    &nbsp;&nbsp;<b> Else Value = </b>{{step.Execute._Elsevalue}} 
+                                    </span>
+                                    <div>
+                                        <div ng-repeat='rule in step.Execute.Rule'>
+                                            <b>Rule {{ $index + 1 }}.  </b>Condition = {{ rule._Condition}} <b>,</b>
+                                            <span ng-show="rule._Operator == undefined">
+                                            Operator = eq <b>,</b>
+                                            </span>
+                                            <span ng-show="rule._Operator !== undefined"> 
+                                            Operator = {{ rule._Operator}} <b>,</b>
+                                            </span>
+                                            Condition value = {{ rule._Condvalue}}
+                                        </div>
+                                    </div>
+                                </span>
                         </td>
 
                         <td ng-if="model.Testcase.Details.Datatype == 'Hybrid'">{{ step.iteration_type._type}}</td>

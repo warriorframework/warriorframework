@@ -1,0 +1,55 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+            <Name>tc_selenium_headless</Name>
+            <Title>Test case to only run in system without GUI to test headless mode functionality</Title>
+            <ExpectedResults>PASS</ExpectedResults>
+            <Category>search</Category>
+            <Engineer>Ka Hei Chan</Engineer>
+            <Date/>
+            <Time/>
+            <default_onError action = 'next'  />
+            <InputDataFile>../../data/selenium_func_tests/data_selenium_headless.xml</InputDataFile>
+            <Datatype>Custom</Datatype>
+            <Logsdir/>
+            <Resultsdir/>
+        </Details>
+       <Requirements>
+                <Requirement>requirement-001</Requirement>
+                <Requirement>requirement-002</Requirement>
+       </Requirements>
+        <Steps>
+            <step TS= '1' Driver='selenium_driver' Keyword='browser_launch' >
+                <Arguments>
+                    <argument name="system_name" value="search_element_1"/>
+                    <argument name="url" value="http://www.google.com"/>
+                </Arguments>
+            </step>
+            <step TS= '2' Driver='selenium_driver' Keyword='browser_maximize' >
+                <Arguments>
+                    <argument name="system_name" value="search_element_1"/>
+                </Arguments>
+            </step>
+            <step TS= '3' Driver='selenium_driver' Keyword='browser_close' >
+                <Arguments>
+                    <argument name="system_name" value="search_element_1"/>
+                </Arguments>
+            </step>
+            <step TS= '4' Driver='selenium_driver' Keyword='browser_launch' >
+                <Arguments>
+                    <argument name="system_name" value="search_element_2"/>
+                    <argument name="url" value="http://www.google.com"/>
+                </Arguments>
+            </step>
+            <step TS= '5' Driver='selenium_driver' Keyword='browser_maximize' >
+                <Arguments>
+                    <argument name="system_name" value="search_element_2"/>
+                </Arguments>
+            </step>
+            <step TS= '6' Driver='selenium_driver' Keyword='browser_close' >
+                <Arguments>
+                    <argument name="system_name" value="search_element_2"/>
+                </Arguments>
+            </step>
+        </Steps>
+</Testcase>
