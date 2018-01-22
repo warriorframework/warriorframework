@@ -1,0 +1,136 @@
+<?xml version="1.0" ?>
+<Testcase>
+	<Details>
+		<Name>tc_wtag_unit_tests</Name>
+		<Title>test wtag feature</Title>
+		<Engineer>Arvind Kumar Sethuraman</Engineer>
+		<Date>2017-06-09</Date>
+		<Time>15:51</Time>
+		<State/>
+		<InputDataFile>../../data/framework_tests/data_wtag.xml</InputDataFile>
+		<Datatype/>
+		<default_onError action="next"/>
+		<Logsdir/>
+		<Resultsdir/>
+		<ExpectedResults/>
+	</Details>
+	<Requirements>
+		<Requirement/>
+	</Requirements>
+	<Steps>
+		<step Driver="ci_regression_driver" Keyword="check_values_from_datafile" TS="1">
+			<Arguments>
+				<argument name="system_name" value="sys_wtag"/>
+				<argument name="strvar" value="wtag=strvar"/>
+				<argument name="langs" value="wtag=lang_list"/>
+				<argument name="states" value="wtag=states"/>
+				<argument name="currencys" value="wtag=currency_map"/>
+				<argument name="ramspace" value="wtag=ram_space_available"/>
+				<argument name="configfile" value="cond_var/cond_var.xml"/>
+				<argument name="intvar" value="wtag=intvar"/>
+				<argument name="anotherfile" value="wtag=config"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>wtag</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+			<rmt/>
+		</step>
+		<step Driver="ci_regression_driver" Keyword="check_values_from_datafile" TS="2">
+			<Arguments>
+				<argument name="system_name" value="sys_wtag"/>
+				<argument name="strvar" value="wtag=strvar"/>
+				<argument name="langs" value="wtag=lang_list"/>
+				<argument name="currencys" value="wtag=currency_map"/>
+				<argument name="ramspace" value="wtag=ram_space_available"/>
+				<argument name="configfile" value="wtag=config"/>
+				<argument name="intvar" value="wtag=floatvar"/>
+				<argument name="anotherfile" value="wtag=intvar"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>wtag</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="Yes"/>
+			<context>negative</context>
+			<impact>noimpact</impact>
+			<rmt/>
+		</step>
+		<step Driver="ci_regression_driver" Keyword="check_values_from_datafile" TS="3">
+			<Arguments>
+				<argument name="system_name" value="sys_wtag"/>
+				<argument name="strvar" value="wtag=strvar"/>
+				<argument name="langs" value="wtag=lang_list"/>
+				<argument name="states" value="wtag=states"/>
+				<argument name="currencys" value="wtag=currency_map"/>
+				<argument name="ramspace" value="wtag=ram_space_available"/>
+				<argument name="configfile" value="wtag=config"/>
+				<argument name="intvar" value="tag=intvar"/>
+				<argument name="anotherfile" value="tag=config"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>wtag</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+			<rmt/>
+		</step>
+        <step Driver="demo_driver" Keyword="pc_replacement" TS="4">
+            <!-- for testing myInfo feature -->
+            <Arguments>
+                <argument name="system_name" value="PCs[HP]"/>
+            </Arguments>
+            <onError action="next"/>
+            <Description>Check if lab PC is current or need replacement</Description>
+            <Execute ExecType="Yes"/>
+            <context>positive</context>
+            <impact>impact</impact>
+            <Iteration_type type=""/>
+        </step>
+        <step Driver="demo_driver" Keyword="check_lab_equipment" TS="5" draft="no">
+            <!-- for testing getSystemData -->
+            <Arguments>
+                <argument name="system_name" value="PCs[HP]"/>
+            </Arguments>
+            <onError action="next"/>
+            <Description>Check lab PC replacement Status</Description>
+            <Execute ExecType="Yes"/>
+            <context>positive</context>
+            <impact>impact</impact>
+            <runmode type="Standard" value=""/>
+        </step>
+		<step Driver="ci_regression_driver" Keyword="check_opt_values_from_datafile" TS="6">
+		    <!-- for testing optional args with wtag when system name provided -->
+			<Arguments>
+				<argument name="langs" value="wtag=lang_list"/>
+				<argument name="system_name" value="sys_wtag"/>
+				<argument name="currencys" value="wtag=currency_map"/>
+				<argument name="intvar" value="tag=intvar"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>wtag</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+			<rmt/>
+		</step>
+		<step Driver="ci_regression_driver" Keyword="check_opt_values_from_datafile" TS="7">
+		    <!-- for testing optional args with wtag when system name not provided -->
+			<Arguments>
+				<argument name="langs" value="wtag=lang_list"/>
+				<argument name="currencys" value="wtag=currency_map"/>
+				<argument name="intvar" value="tag=intvar"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>wtag</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+			<rmt/>
+		</step>
+	</Steps>
+</Testcase>
