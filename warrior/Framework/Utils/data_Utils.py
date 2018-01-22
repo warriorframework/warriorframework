@@ -14,8 +14,10 @@ limitations under the License.
 from __future__ import division
 import os
 import re
+import ast
+import operator as op
 from collections import OrderedDict
-from ast import literal_eval
+
 from Framework.Utils import xml_Utils, string_Utils, testcase_Utils, config_Utils, file_Utils
 from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.print_Utils import (print_info, print_warning, print_error,
@@ -1067,27 +1069,48 @@ def verify_arith_exp(expression, expected, comparison='eq'):
             1. status(boolean)
     """
     status = True
+
+    # Customize power fun to not to support the values greater than 100
+    # It is to avoid high CPU/Memory usage
+    def power(a, b):
+        if any(abs(n) > 100 for n in [a, b]):
+            raise Exception("Power operation is not supported on values "
+                            "higher than 100: '{0}, {1}'".format(a, b))
+        return op.pow(a, b)
+
+    # supported operators
+    operators = {ast.Add: op.add, ast.Sub: op.sub, ast.Mult: op.mul,
+                 ast.Div: op.truediv, ast.Mod: op.mod, ast.Pow: power,
+                 ast.BitXor: op.xor}
+
+    def eval_exp(parsed_exp):
+        # number
+        if isinstance(parsed_exp, ast.Num):
+            return parsed_exp.n
+        # binary operator
+        elif isinstance(parsed_exp, ast.BinOp):
+            return operators[type(parsed_exp.op)](eval_exp(parsed_exp.left),
+                                                  eval_exp(parsed_exp.right))
+        # Unary operator
+        elif isinstance(parsed_exp, ast.UnaryOp):
+            return operators[type(parsed_exp.op)](eval_exp(parsed_exp.operand))
+        else:
+            raise Exception("Illegal expression")
+
     # Substitute env values in the expression & expected
     expression = sub_from_env_var(expression)
     expected = sub_from_env_var(expected)
     # Substitute data_repo values in the expression & expected
     expression = sub_from_data_repo(expression)
     expected = sub_from_data_repo(expected)
-    #Any possible unsafe expression from user will not pass through EVAL.
-    expression_pattern = "^[\d+(\.\d+)?^%+\-*\/\(\)]*$"
-    #Unresolved env/data_repo/unresolvable, non numerical string will be marked as ERROR
-    if not re.search(expression_pattern, expression):
-        print_error("Unable to evaluate the expression '{}' provided. \n"
-                    "Possible reasons: \n"
-                    "(i) Given env/data_repo values are not available\n"
-                    "(ii) Illegal expression".format(expression))
-        return "ERROR"
+
     try:
-        expression_ouput = eval(expression)
+        expression_ouput = eval_exp(ast.parse(expression, mode='eval').body)
         expected = float(expected)
     except SyntaxError:
-        print_error("Unable to evaluate the expression '{}' provided.\n "
-                    "Possible reason: \n (i) Invalid arithmetic expression".format(expression))
+        print_error("Unable to evaluate the expression '{}' provided.\n"
+                    "Possible reasons: \n1. Invalid arithmetic expression\n"
+                    "2. Given env/data_repo values are not available".format(expression))
 
         status = "ERROR"
     except ValueError:
@@ -1629,7 +1652,7 @@ def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
                             raw_value[k] = str(raw_value[k]).replace(
                                     start_pattern+string+end_pattern,
                                     get_var_by_string_prefix(string))
-                            raw_value[k] = literal_eval(raw_value[k])
+                            raw_value[k] = ast.literal_eval(raw_value[k])
                         else:
                             print_error("Unsupported format - " +
                                         error_msg2.format(string, value))
@@ -1644,7 +1667,7 @@ def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
                             search_obj = re.search(search_str,
                                                    str(raw_value[k]))
                             if search_obj:
-                                raw_value[k] = literal_eval(
+                                raw_value[k] = ast.literal_eval(
                                     str(raw_value[k]).replace(
                                         search_obj.group(), 'None'))
                     except SyntaxError:
@@ -1654,7 +1677,7 @@ def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
                         print_info("<<{}>>".format(raw_value[k]))
                         try:
                             raw_value[k] = tuc_obj.rem_nonprintable_ctrl_chars(raw_value[k])
-                            raw_value[k] = literal_eval(raw_value[k])
+                            raw_value[k] = ast.literal_eval(raw_value[k])
                         except Exception as exc:
                             print_error("Error - " + error_msg2.format(
                                         string, value, raw_value[k], exc))
