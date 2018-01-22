@@ -128,9 +128,9 @@ def get_cred_value_from_elem(element, tag, startdir=''):
     chelem = element.find(tag)
     if chelem is None:
         return xml_Utils.get_text_from_direct_child(element, tag)
-    if 'type' in chelem.attrib:
+    if 'wtype' in chelem.attrib:
         value = get_actual_cred_value(chelem.tag, chelem.text,
-                                      chelem.attrib['type'], startdir)
+                                      chelem.attrib['wtype'], startdir)
     else:
         value = chelem.text
     return value
@@ -192,9 +192,9 @@ def get_credentials(datafile, system_name, myInfo=[], tag_name="system",
         if len(myInfo) == 0:
             for child in element:
                 val = child.text
-                if 'type' in child.attrib:
+                if 'wtype' in child.attrib:
                     val = get_actual_cred_value(child.tag, child.text,
-                                                child.attrib['type'], startdir)
+                                                child.attrib['wtype'], startdir)
                 output_dict[child.tag] = val
 
             attrib_dict = element.attrib
@@ -214,10 +214,10 @@ def get_credentials(datafile, system_name, myInfo=[], tag_name="system",
                         cred_value = {}
                         for child in child_list:
                             cred_value[child.tag] = child.text
-                            if 'type' in child.attrib:
+                            if 'wtype' in child.attrib:
                                 cred_value[child.tag] = get_actual_cred_value(
                                                         child.tag, child.text,
-                                                        child.attrib['type'], startdir)
+                                                        child.attrib['wtype'], startdir)
                     else:
                         cred_value = get_cred_value_from_elem(element, x, startdir)
                 output_dict[x] = cred_value
