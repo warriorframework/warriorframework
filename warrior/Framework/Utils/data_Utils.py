@@ -1056,6 +1056,7 @@ def verify_arith_exp(expression, expected, comparison='eq'):
                 This can have env & data_repo values embedded in it.
                     Ex. expression: "10+${ENV.x}-${REPO.y}*10"
                 Expression will be evaluated based on python operator precedence
+                Supported operators: +, -, *, /, %, **, ^
             2. expected: Value to be compared with the expression output
                 This can be a env or data_repo or any numeral value.
             3. comparison: Type of comparison(eq/ne/gt/ge/lt/le)
@@ -1070,12 +1071,12 @@ def verify_arith_exp(expression, expected, comparison='eq'):
     """
     status = True
 
-    # Customize power fun to not to support the values greater than 100
-    # It is to avoid high CPU/Memory usage
+    # Customize power(exponentiation) fun to not to support the values greater
+    # than 1000 to avoid high CPU/Memory usage
     def power(a, b):
-        if any(abs(n) > 100 for n in [a, b]):
-            raise Exception("Power operation is not supported on values "
-                            "higher than 100: '{0}, {1}'".format(a, b))
+        if any(abs(n) > 1000 for n in [a, b]):
+            raise Exception("ValueError: Power operation is not supported on "
+                            "values higher than 1000: '{0}, {1}'".format(a, b))
         return op.pow(a, b)
 
     # supported operators
@@ -1095,7 +1096,7 @@ def verify_arith_exp(expression, expected, comparison='eq'):
         elif isinstance(parsed_exp, ast.UnaryOp):
             return operators[type(parsed_exp.op)](eval_exp(parsed_exp.operand))
         else:
-            raise Exception("Illegal expression")
+            raise Exception("TypeError: Illegal expression")
 
     # Substitute env values in the expression & expected
     expression = sub_from_env_var(expression)
