@@ -1074,6 +1074,7 @@ def verify_arith_exp(expression, expected, comparison='eq'):
     # Customize power(exponentiation) fun to not to support the values greater
     # than 1000 to avoid high CPU/Memory usage
     def power(a, b):
+        """ Customized operator-power(op.pow) function """
         if any(abs(n) > 1000 for n in [a, b]):
             raise Exception("ValueError: Power operation is not supported on "
                             "values higher than 1000: '{0}, {1}'".format(a, b))
@@ -1085,6 +1086,7 @@ def verify_arith_exp(expression, expected, comparison='eq'):
                  ast.BitXor: op.xor}
 
     def eval_exp(parsed_exp):
+        """ Evaluate arithmetic operations in an expression recursively """
         # number
         if isinstance(parsed_exp, ast.Num):
             return parsed_exp.n
