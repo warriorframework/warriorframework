@@ -141,12 +141,15 @@ def get_actual_cred_value(tag, value, etype, startdir=''):
     desired type and if file type get absolute path relative
     to the startdir
     """
-    adt = ArgumentDatatype(tag, value)
-    adt.datatype = adt.get_type_func(etype)
-    if adt.datatype is file:
-        val = file_Utils.getAbsPath(value, startdir)
-    else:
-        val = adt.convert_string_to_datatype()
+    try:
+        adt = ArgumentDatatype(tag, value)
+        adt.datatype = adt.get_type_func(etype)
+        if adt.datatype is file:
+            val = file_Utils.getAbsPath(value, startdir)
+        else:
+            val = adt.convert_string_to_datatype()
+    except KeyError:
+        val = value
     return val
 
 
