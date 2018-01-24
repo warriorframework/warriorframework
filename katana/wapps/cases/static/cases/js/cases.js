@@ -1,5 +1,71 @@
 var cases = {
 
+    mappings: {
+        newStep: {
+            title:  "New Step"
+        },
+        newReq: {
+            title: "New Requirement"
+        },
+        editDetails: {
+            title: "Edit Details"
+        }
+    },
+
+    header: {
+        toggleContents: function() {
+            var $elem = $(this);
+            if ($elem.attr('collapsed') === 'false') {
+                $elem.attr('collapsed', 'true');
+                $elem.removeClass('fa-chevron-circle-up');
+                $elem.addClass('fa-chevron-circle-down');
+                $elem.closest('.cases-header').next().hide()
+            } else {
+                $elem.attr('collapsed', 'false');
+                $elem.removeClass('fa-chevron-circle-down');
+                $elem.addClass('fa-chevron-circle-up');
+                $elem.closest('.cases-header').next().show()
+            }
+        },
+    },
+
+    drawer: {
+
+        toggleDrawer: function(){
+            var $elem = $(this);
+            console.log($elem.attr('collapsed'));
+            if ($elem.attr('collapsed') === 'true') {
+                console.log($elem.closest('.cases-side-drawer-closed'));
+                $elem.closest('.cases-side-drawer-closed').hide();
+                $elem.closest('.cases-side-drawer-closed').siblings('.cases-side-drawer-open').show();
+            } else {
+                $elem.closest('.cases-side-drawer-open').hide();
+                $elem.closest('.cases-side-drawer-open').siblings('.cases-side-drawer-closed').show();
+            }
+        },
+
+        open: {
+
+            switchView: function(){
+                var $elem = $(this);
+                var $sidebar = $elem.closest('.sidebar');
+                var $highlighted = $sidebar.find('.cases-icon-bg-color');
+                $highlighted.removeClass('cases-icon-bg-color');
+                $elem.parent().addClass('cases-icon-bg-color');
+                var marker = $elem.attr('ref');
+                $elem.closest('.cases-side-drawer-open').find('.cases-header-title').html(cases.mappings[marker].title);
+            }
+        },
+    },
+
+    tvArgs: {
+        "collapseIcon": "fa fa-minus-circle",
+        "expandIcon": "fa fa-plus-circle",
+        "levels": 0,
+        "onhoverColor": "#b1dfbb",
+        "expandOnHover": true
+    },
+
     invert: function(){
         var toolbarButtons = katana.$activeTab.find('.tool-bar').find('button');
         for(var i=0; i<toolbarButtons.length; i++){
@@ -37,12 +103,12 @@ var cases = {
                             data: {"path": data["node"]["li_attr"]["data-path"]}
                         }).done(function(data){
                             cases.invert();
-                            katana.$activeTab.find('#detail-block').treeview({"data": data.details,
-                    "collapseIcon": "fa fa-minus-circle", "expandIcon": "fa fa-plus-circle", "levels": 0});
-                            katana.$activeTab.find('#req-block').treeview({"data": data.requirements,
-                    "collapseIcon": "fa fa-minus-circle", "expandIcon": "fa fa-plus-circle", "levels": 0});
-                            katana.$activeTab.find('#step-block').treeview({"data": data.steps,
-                    "collapseIcon": "fa fa-minus-circle", "expandIcon": "fa fa-plus-circle", "levels": 0});
+                            cases.tvArgs["data"] = data.details;
+                            katana.$activeTab.find('#detail-block').treeview(cases.tvArgs);
+                            cases.tvArgs["data"] = data.requirements;
+                            katana.$activeTab.find('#req-block').treeview(cases.tvArgs);
+                            cases.tvArgs["data"] = data.steps;
+                            katana.$activeTab.find('#step-block').treeview(cases.tvArgs);
                         });
                     }
                 });
@@ -59,12 +125,12 @@ var cases = {
                 data: {"path": false}
             }).done(function(data){
                 cases.invert();
-                katana.$activeTab.find('#detail-block').treeview({"data": data.details,
-                    "collapseIcon": "fa fa-minus-circle", "expandIcon": "fa fa-plus-circle", "levels": 0});
-                            katana.$activeTab.find('#req-block').treeview({"data": data.requirements,
-                    "collapseIcon": "fa fa-minus-circle", "expandIcon": "fa fa-plus-circle", "levels": 0});
-                katana.$activeTab.find('#step-block').treeview({"data": data.steps,
-                    "collapseIcon": "fa fa-minus-circle", "expandIcon": "fa fa-plus-circle", "levels": 0});
+                cases.tvArgs["data"] = data.details;
+                katana.$activeTab.find('#detail-block').treeview(cases.tvArgs);
+                cases.tvArgs["data"] = data.requirements;
+                katana.$activeTab.find('#req-block').treeview(cases.tvArgs);
+                cases.tvArgs["data"] = data.steps;
+                katana.$activeTab.find('#step-block').treeview(cases.tvArgs);
             });
         },
     },

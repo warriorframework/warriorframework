@@ -40,11 +40,13 @@
 		selectedIcon: '',
 		checkedIcon: 'glyphicon glyphicon-check',
 		uncheckedIcon: 'glyphicon glyphicon-unchecked',
+		expandOnHover: false,
 
 		color: undefined, // '#000000',
 		backColor: undefined, // '#FFFFFF',
 		borderColor: undefined, // '#dddddd',
 		onhoverColor: '#F5F5F5',
+		onhoverFontColor: '#000000',
 		selectedColor: '#FFFFFF',
 		selectedBackColor: '#428bca',
 		searchResultColor: '#D9534F',
@@ -613,6 +615,10 @@
 			if (node.nodes && node.state.expanded && !node.state.disabled) {
 				return _this.buildTree(node.nodes, level);
 			}
+
+			if (_this.options.expandOnHover) {
+				treeItem.prepend('<span class="showme"></span>');
+			}
 		});
 	};
 
@@ -678,24 +684,28 @@
 		style += '}';
 
 		if (this.options.onhoverColor) {
-			style += '.node-' + this.elementId + ':not(.node-disabled):hover{' +
-				'background-color:' + this.options.onhoverColor + ';' +
-			'}';
-		}
+            style += '.node-' + this.elementId + ':not(.node-disabled):hover{' +
+                'background-color:' + this.options.onhoverColor + ' !important; color:'
+                + this.options.onhoverFontColor + '!important;' +
+                '}';
+        }
 
 		return this.css + style;
 	};
 
 	Tree.prototype.template = {
 		list: '<ul class="list-group"></ul>',
-		item: '<li class="list-group-item"></li>',
-		indent: '<span class="indent"></span>',
+		item: '<li class="list-group-item showchild"></li>',
+		indent: '<span class="tv-indent"></span>',
 		icon: '<span class="icon"></span>',
 		link: '<a href="#" style="color:inherit;"></a>',
 		badge: '<span class="badge"></span>'
 	};
 
-	Tree.prototype.css = '.treeview .list-group-item{cursor:pointer}.treeview span.indent{margin-left:10px;margin-right:10px}.treeview span.icon{width:12px;margin-right:5px}.treeview .node-disabled{color:silver;cursor:not-allowed}'
+	Tree.prototype.css = '.treeview .list-group-item{cursor:pointer}' +
+		'.treeview span.tv-indent{margin-left: 1.5rem; margin-right: 1.5rem;}' +
+		'.treeview span.icon{width:12px;margin-right:5px}' +
+		'.treeview .node-disabled{color:silver;cursor:not-allowed}';
 
 
 	/**
