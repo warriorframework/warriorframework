@@ -185,6 +185,10 @@
     padding: 40px 20px;
 }
 
+.cases-intentional-space-x {
+    padding: 40px calc(6% + 20px) 40px 20px;
+}
+
 .cases-label {
     text-align: left;
     padding-top: 8px;
@@ -207,4 +211,18 @@
 .cases-intentional-space > .container-fluid > .row > div > select {
     margin-top: 4px;
     background-color: white !important;
+}
+
+.cases-intentional-space-x > div > table > tbody > tr > th {
+    background-color: lightgrey;
+    max-width: 33%;
+    text-align: left;
+}
+
+.cases-intentional-space-x > div > table > tbody > tr > td {
+    text-align: left;
+    max-width: 67%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }

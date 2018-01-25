@@ -141,13 +141,18 @@ var cases = {
                             url: 'cases/get_file/',
                             data: {"path": data["node"]["li_attr"]["data-path"]}
                         }).done(function(data){
-                            cases.invert();
-                            cases.tvArgs["data"] = data.details;
-                            katana.$activeTab.find('#detail-block').treeview(cases.tvArgs);
-                            cases.tvArgs["data"] = data.requirements;
-                            katana.$activeTab.find('#req-block').treeview(cases.tvArgs);
-                            cases.tvArgs["data"] = data.steps;
-                            katana.$activeTab.find('#step-block').treeview(cases.tvArgs);
+                            console.log(data);
+                            if(data.status){
+                                cases.invert();
+                                katana.$activeTab.find('#detail-block').html(data.details);
+                                katana.$activeTab.find('#req-block').html(data.requirements);
+                                katana.$activeTab.find('#step-block').html(data.steps);
+                            } else {
+                                katana.openAlert({"alert_type": "danger",
+                                    "heading": "Could not open file",
+                                    "text": "Errors: " + data.message,
+                                    "show_cancel_btn": false})
+                            }
                         });
                     }
                 });
@@ -163,13 +168,18 @@ var cases = {
                 url: 'cases/get_file/',
                 data: {"path": false}
             }).done(function(data){
-                cases.invert();
-                cases.tvArgs["data"] = data.details;
-                katana.$activeTab.find('#detail-block').treeview(cases.tvArgs);
-                cases.tvArgs["data"] = data.requirements;
-                katana.$activeTab.find('#req-block').treeview(cases.tvArgs);
-                cases.tvArgs["data"] = data.steps;
-                katana.$activeTab.find('#step-block').treeview(cases.tvArgs);
+                console.log(data);
+                if(data.status){
+                    cases.invert();
+                    katana.$activeTab.find('#detail-block').html(data.details);
+                    katana.$activeTab.find('#req-block').html(data.requirements);
+                    katana.$activeTab.find('#step-block').html(data.steps);
+                } else {
+                    katana.openAlert({"alert_type": "danger",
+                        "heading": "Could not open file",
+                        "text": "Errors: " + data.message,
+                        "show_cancel_btn": false})
+                }
             });
         },
     },
@@ -177,6 +187,7 @@ var cases = {
     caseViewer:  {
         close: function () {
             cases.invert();
+            console.log(data);
         }
     },
 };

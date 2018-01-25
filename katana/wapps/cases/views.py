@@ -3,8 +3,10 @@ from __future__ import unicode_literals
 
 import json
 
-from django.http import JsonResponse
-from django.shortcuts import render
+from django.http import JsonResponse, HttpResponse
+from django.shortcuts import render, render_to_response
+from django.template.loader import render_to_string
+from django.utils.safestring import SafeText
 from django.views import View
 from utils.directory_traversal_utils import join_path
 from utils.json_utils import read_json_data, read_xml_get_json
@@ -40,13 +42,17 @@ def get_file(request):
     vcf_obj = VerifyCaseFile(TEMPLATE, file_path)
     output, data = vcf_obj.verify_file()
     if output["status"]:
-        tvc_obj = TreeviewConverter(data)
-        tv_data = tvc_obj.convert()
-        details, reqs, steps = tv_data[0]["nodes"][0]["nodes"], tv_data[0]["nodes"][1]["nodes"][0]["nodes"], tv_data[0]["nodes"][2]["nodes"][0]["nodes"]
+        details_tmpl = _get_details_tmpl('cases/details_display_template.html', data["Testcase"]["Details"])
+        reqs_tmpl = _get_details_tmpl('cases/requirements_display_template.html', data["Testcase"]["Requirements"])
+        steps_tmpl = _get_details_tmpl('cases/steps_display_template.html', data["Testcase"]["Steps"])
+        return JsonResponse({"status": output["status"], "message": output["message"],
+                             "details": str(details_tmpl), "requirements": str(reqs_tmpl), "steps": str(steps_tmpl)})
     else:
-        details, reqs, steps = False, False, False
-    return JsonResponse({"status": output["status"], "message": output["message"],
-                         "case-data": data, "details": details, "requirements": reqs, "steps": steps})
+        JsonResponse({"status": output["status"], "message": output["message"]})
+
+
+def _get_details_tmpl(template, data):
+    return render_to_string(template, {"data": data})
 
 
 def get_details_template(request):
