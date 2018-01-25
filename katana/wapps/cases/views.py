@@ -47,3 +47,15 @@ def get_file(request):
         details, reqs, steps = False, False, False
     return JsonResponse({"status": output["status"], "message": output["message"],
                          "case-data": data, "details": details, "requirements": reqs, "steps": steps})
+
+
+def get_details_template(request):
+    return render(request, 'cases/details_template.html')
+
+
+def get_steps_template(request):
+    return render(request, 'cases/steps_template.html')
+
+
+def get_reqs_template(request):
+    return render(request, 'cases/requirements_template.html')

@@ -175,7 +175,36 @@
 }
 
 .cases-drawer-open-body > .content {
-    height: 100%;
+    height: 720px;
     width: calc(100% - 60px);
     float: left;
+    overflow: auto;
+}
+
+.cases-intentional-space {
+    padding: 40px 20px;
+}
+
+.cases-label {
+    text-align: left;
+    padding-top: 8px;
+}
+
+.cases-label-text {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.cases-intentional-space > .container-fluid > .row > div > input:not([disabled]) {
+    background-color: white !important;
+}
+
+.cases-intentional-space > .container-fluid > .row > div > input:disabled {
+    cursor: not-allowed;
+}
+
+.cases-intentional-space > .container-fluid > .row > div > select {
+    margin-top: 4px;
+    background-color: white !important;
 }

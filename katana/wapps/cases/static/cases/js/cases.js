@@ -2,13 +2,43 @@ var cases = {
 
     mappings: {
         newStep: {
-            title:  "New Step"
+            savedContent: false,
+            title:  "New Step",
+            contents: function () {
+                return Promise.resolve(
+                    $.ajax({
+                        type: 'GET',
+                        url: 'cases/get_steps_template/',
+                        data: {"data": false}
+                    }).then(data => { return data })
+                );
+            },
         },
         newReq: {
-            title: "New Requirement"
+            savedContent: false,
+            title: "New Requirement",
+            contents: function () {
+                return Promise.resolve(
+                    $.ajax({
+                        type: 'GET',
+                        url: 'cases/get_reqs_template/',
+                        data: {"data": false}
+                    }).then(data => { return data })
+                );
+            },
         },
         editDetails: {
-            title: "Edit Details"
+            savedContent: false,
+            title: "Edit Details",
+            contents: function () {
+                return Promise.resolve(
+                    $.ajax({
+                        type: 'GET',
+                        url: 'cases/get_details_template/',
+                        data: {"data": false}
+                    }).then(data => { return data })
+                );
+            },
         }
     },
 
@@ -54,6 +84,15 @@ var cases = {
                 $elem.parent().addClass('cases-icon-bg-color');
                 var marker = $elem.attr('ref');
                 $elem.closest('.cases-side-drawer-open').find('.cases-header-title').html(cases.mappings[marker].title);
+                if (!cases.mappings[marker].savedContent) {
+                    var promise = cases.mappings[marker].contents();
+                    promise.then(function(data) {
+                        cases.mappings[marker].savedContent = data;
+                        $elem.closest('.cases-side-drawer-open').find('.content').html(data);
+                    });
+                } else {
+                    $elem.closest('.cases-side-drawer-open').find('.content').html(cases.mappings[marker].savedContent);
+                }
             }
         },
     },
