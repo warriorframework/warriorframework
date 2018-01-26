@@ -1,21 +1,29 @@
 <div class="cases-intentional-space-x">
-    <div style="height: auto; width: 50%; float: left; padding-right: 5px ">
+    <div class="cases-internal-space">
         <table class="table table-bordered">
             <tbody>
+            {% for req in data.Requirement %}
+            {% if forloop.counter <= mid_req %}
             <tr>
-                <th scope="row">1</th>
-                <td style=""></td>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ req }}</td>
             </tr>
+            {% endif %}
+            {% endfor %}
             </tbody>
         </table>
     </div>
-    <div style="height: auto; width: 50%; float: left; padding-left: 5px;">
+    <div class="cases-internal-space">
         <table class="table table-bordered">
             <tbody>
+            {% for req in data.Requirement %}
+            {% if forloop.counter > mid_req %}
             <tr>
-                <th scope="row">2</th>
-                <td style=""></td>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ req }}</td>
             </tr>
+            {% endif %}
+            {% endfor %}
             </tbody>
         </table>
     </div>

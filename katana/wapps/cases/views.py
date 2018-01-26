@@ -42,9 +42,10 @@ def get_file(request):
     vcf_obj = VerifyCaseFile(TEMPLATE, file_path)
     output, data = vcf_obj.verify_file()
     if output["status"]:
-        details_tmpl = _get_details_tmpl('cases/details_display_template.html', data["Testcase"]["Details"])
-        reqs_tmpl = _get_details_tmpl('cases/requirements_display_template.html', data["Testcase"]["Requirements"])
-        steps_tmpl = _get_details_tmpl('cases/steps_display_template.html', data["Testcase"]["Steps"])
+        details_tmpl = _get_details_tmpl('cases/details_display_template.html', {"data": data["Testcase"]["Details"]})
+        mid_req = (len(data["Testcase"]["Requirements"]["Requirement"]) + 1) / 2
+        reqs_tmpl = _get_details_tmpl('cases/requirements_display_template.html', {"data": data["Testcase"]["Requirements"], "mid_req": mid_req})
+        steps_tmpl = _get_details_tmpl('cases/steps_display_template.html', {"data": data["Testcase"]["Steps"]})
         return JsonResponse({"status": output["status"], "message": output["message"],
                              "details": str(details_tmpl), "requirements": str(reqs_tmpl), "steps": str(steps_tmpl)})
     else:
@@ -52,7 +53,7 @@ def get_file(request):
 
 
 def _get_details_tmpl(template, data):
-    return render_to_string(template, {"data": data})
+    return render_to_string(template, data)
 
 
 def get_details_template(request):
