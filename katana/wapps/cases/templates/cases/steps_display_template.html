@@ -1,52 +1,67 @@
-<div class="cases-intentional-space-x">
-    <table class="table table-bordered">
-        <thead>
-        <tr>
-            <th scope="col" class="col-sm-1">Step #</th>
-            <th scope="col" class="col-sm-1">Driver</th>
-            <th scope="col" class="col-sm-2">Keyword</th>
-            <th scope="col" class="col-sm-2">Description</th>
-            <th scope="col" class="col-sm-1">Execute</th>
-            <th scope="col" class="col-sm-1">Run Mode</th>
-            <th scope="col" class="col-sm-1">Iteration Type</th>
-            <th scope="col" class="col-sm-1">Context</th>
-            <th scope="col" class="col-sm-1">Impact</th>
-            <th scope="col" class="col-sm-1">On Error</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for step in data.step %}
-        <tr>
-            <td class="col-sm-1">{{ forloop.counter }}</td>
-            {% for key, value in step.items %}
-            {% if key == "@Driver" %}
-            <td class="col-sm-1">{{ value }}</td>
-            {% endif %}
-            {% if key == "@Keyword" %}
-            <td class="col-sm-2">{{ value }}</td>
-            {% endif %}
-            {% endfor %}
-            <td class="col-sm-2">{{ step.Description }}</td>
-            <td class="col-sm-1">
-                {% for key, value in step.Execute.items %}
-                {% if key == "@ExecType" %} {{ value }} {% endif %}
+<div class="cases-intentional-space-x cases-extra-left-padding">
+    <div class="cases-internal-section">
+        <div class="cases-step-table-parent">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th scope="col" class="col-sm-1">Step #</th>
+                    <th scope="col" class="col-sm-1">Driver</th>
+                    <th scope="col" class="col-sm-2">Keyword</th>
+                    <th scope="col" class="col-sm-2">Description</th>
+                    <th scope="col" class="col-sm-1">Execute</th>
+                    <th scope="col" class="col-sm-1">Run Mode</th>
+                    <th scope="col" class="col-sm-1">Iteration Type</th>
+                    <th scope="col" class="col-sm-1">Context</th>
+                    <th scope="col" class="col-sm-1">Impact</th>
+                    <th scope="col" class="col-sm-1">On Error</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for step in data.step %}
+                <tr katana-click="cases.stepSection.selectStep">
+                    <td class="col-sm-1">{{ forloop.counter }}</td>
+                    {% for key, value in step.items %}
+                    {% if key == "@Driver" %}
+                    <td class="col-sm-1">{{ value }}</td>
+                    {% endif %}
+                    {% if key == "@Keyword" %}
+                    <td class="col-sm-2">{{ value }}</td>
+                    {% endif %}
+                    {% endfor %}
+                    <td class="col-sm-2">{{ step.Description }}</td>
+                    <td class="col-sm-1">
+                        {% for key, value in step.Execute.items %}
+                        {% if key == "@ExecType" %} {{ value }} {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td class="col-sm-1">
+                        {% for key, value in step.runmode.items %}
+                        {% if key == "@type" %} {{ value }} {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td class="col-sm-1">
+                        {% for key, value in step.Iteration_type.ietms %}
+                        {% if key == "@type" %} {{ value }} {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td class="col-sm-1">{{ step.context }}</td>
+                    <td class="col-sm-1">{{ step.impact }}</td>
+                    <td class="col-sm-1">{{ step.on_error }}</td>
+                </tr>
                 {% endfor %}
-            </td>
-            <td class="col-sm-1">
-                {% for key, value in step.runmode.items %}
-                {% if key == "@type" %} {{ value }} {% endif %}
-                {% endfor %}
-            </td>
-            <td class="col-sm-1">
-                {% for key, value in step.Iteration_type.ietms %}
-                {% if key == "@type" %} {{ value }} {% endif %}
-                {% endfor %}
-            </td>
-            <td class="col-sm-1">{{ step.context }}</td>
-            <td class="col-sm-1">{{ step.impact }}</td>
-            <td class="col-sm-1">{{ step.on_error }}</td>
-        </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="cases-step-toolbar">
+            <div><i class="fa fa-pencil-square-o" aria-hidden="true"></i></div>
+            <div><i class="fa fa-reply" aria-hidden="true"></i></div>
+            <div><i class="fa fa-trash-o" aria-hidden="true"></i></div>
+            <div katana-click="cases.stepSection.toolbar.multiselect">
+                <i class="fa fa-th-list badged" aria-hidden="true" multiselect="on">
+                    <i class="fa fa-check-circle" aria-hidden="true"></i>
+                </i>
+            </div>
+        </div>
+    </div>
 </div>

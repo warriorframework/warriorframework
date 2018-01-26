@@ -168,7 +168,6 @@ var cases = {
                 url: 'cases/get_file/',
                 data: {"path": false}
             }).done(function(data){
-                console.log(data);
                 if(data.status){
                     cases.invert();
                     katana.$activeTab.find('#detail-block').html(data.details);
@@ -188,6 +187,49 @@ var cases = {
         close: function () {
             cases.invert();
             console.log(data);
+        }
+    },
+
+
+    stepSection: {
+        selectStep: function () {
+            var $elem = $(this);
+            var $allTrElems = $elem.parent().children('tr');
+            if ($elem.attr('marked') === 'true') {
+                $elem.attr('marked', 'false');
+                $elem.css('background-color', 'white');
+            } else {
+                var multiselect = katana.$activeTab.find('.cases-step-toolbar').find('.fa-th-list').attr('multiselect');
+                if (multiselect === 'off'){
+                    for (var i=0; i<$allTrElems.length; i++){
+                        $($allTrElems[i]).attr('marked', 'false');
+                        $($allTrElems[i]).css('background-color', 'white');
+                    }
+                }
+                $elem.attr('marked', 'true');
+                $elem.css('background-color', 'khaki');
+            }
+        },
+
+        toolbar: {
+            multiselect: function() {
+                var $elem = $(this);
+                var $iconElem = $elem.children('i');
+                if ($iconElem.attr('multiselect') === 'on'){
+                    $iconElem.attr('multiselect', 'off');
+                    $iconElem.removeClass('badged');
+                    $iconElem.children('i').hide()
+                    var $allTrElems = katana.$activeTab.find('#step-block').find('tbody').children('tr');
+                    for (var i=0; i<$allTrElems.length; i++){
+                        $($allTrElems[i]).attr('marked', 'false');
+                        $($allTrElems[i]).css('background-color', 'white');
+                    }
+                } else {
+                    $iconElem.attr('multiselect', 'on');
+                    $iconElem.addClass('badged');
+                    $iconElem.children('i').show()
+                }
+            }
         }
     },
 };

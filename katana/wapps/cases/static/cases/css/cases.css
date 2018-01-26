@@ -186,7 +186,7 @@
 }
 
 .cases-intentional-space-x {
-    padding: 40px calc(6% + 20px) 40px 20px;
+    padding: 40px 6% 40px 20px;
 }
 
 .cases-label {
@@ -234,25 +234,84 @@
     padding-right: 5px
 }
 
-.cases-intentional-space-x > table > tbody > tr > td {
+.cases-intentional-space-x > .cases-internal-section > div > table > tbody > tr > td {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     text-align: left;
 }
 
-.cases-intentional-space-x > table > tbody > tr:hover > td {
+.cases-intentional-space-x > .cases-internal-section > div > table > tbody > tr:hover > td {
     white-space: initial;
     word-break: break-all;
 }
 
-.cases-intentional-space-x > table > tbody > tr:hover {
+.cases-intentional-space-x > .cases-internal-section > div > table > tbody > tr:hover {
     background-color: lightblue;
     height: auto;
     white-space: initial;
     transition: all 0.2s ease-in-out;
 }
 
-.cases-intentional-space-x > table > thead > tr >th {
+.cases-intentional-space-x > .cases-internal-section > div > table:hover {
+}
 
+.cases-internal-section {
+    width: 100%;
+    height: auto;
+    float: left;
+}
+
+.cases-step-toolbar {
+    width: 40px;
+    height: fit-content;
+    float: left;
+    background-color: lightblue;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 50px;
+}
+
+.cases-extra-left-padding {
+    padding-right: calc(6% - 40px);
+}
+
+.cases-step-table-parent {
+    width: calc(100% - 40px);
+    float: left;
+}
+
+.cases-step-toolbar > div {
+    width: 100%;
+    height: 40px;
+    float: left;
+    text-align: center;
+    padding-top: 12px;
+    position: relative;
+}
+
+.cases-step-toolbar > div:hover {
+    background-color: khaki;
+    width: 112.5%;
+    height: 45px;
+    padding-top: 15px;
+    transition: all 0.2s ease-in-out;
+}
+
+.cases-step-toolbar > div > i > i {
+    font-size: 12px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: white;
+}
+
+.cases-step-toolbar > div:hover > i > i {
+    color: green;
+}
+
+.badged {}
+
+.cases-step-toolbar > div:hover > .badged {
+    color: darkgrey;
 }
