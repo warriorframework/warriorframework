@@ -31,11 +31,15 @@ var cases = {
             savedContent: false,
             title: "Edit Details",
             contents: function () {
+                var contextData = JSON.stringify(katana.$activeTab.find('#detail-block').find('table').data().dataObject);
                 return Promise.resolve(
                     $.ajax({
-                        type: 'GET',
+                        headers: {
+                            'X-CSRFToken': katana.$activeTab.find('input[name="csrfmiddlewaretoken"]').attr('value')
+                        },
+                        type: 'POST',
                         url: 'cases/get_details_template/',
-                        data: {"data": false}
+                        data: {"data": contextData}
                     }).then(data => { return data })
                 );
             },
@@ -144,9 +148,23 @@ var cases = {
                             console.log(data);
                             if(data.status){
                                 cases.invert();
-                                katana.$activeTab.find('#detail-block').html(data.details);
-                                katana.$activeTab.find('#req-block').html(data.requirements);
-                                katana.$activeTab.find('#step-block').html(data.steps);
+                                var $detailBlock = katana.$activeTab.find('#detail-block');
+                                $detailBlock.html(data.details);
+                                $detailBlock.find('table').data({"data-object": data.case_data_json.Testcase.Details});
+
+                                var $reqBlock = katana.$activeTab.find('#req-block');
+                                $reqBlock.html(data.requirements);
+                                var $reqBlockTable = $reqBlock.find('table');
+                                for(var i=0; i<data.case_data_json.Testcase.Requirements.Requirement.length; i++){
+                                    $reqBlockTable.find('[req-number=' + (i+1) +']').data({"data-object": data.case_data_json.Testcase.Requirements.Requirement[i]})
+                                }
+
+                                var $stepBlock = katana.$activeTab.find('#step-block');
+                                $stepBlock.html(data.steps);
+                                var $allTrElements = $stepBlock.find('tbody').children('tr');
+                                for (var i=0; i<$allTrElements.length; i++){
+                                    $($allTrElements[i]).data({"data-object": data.case_data_json.Testcase.Steps.step[i]});
+                                }
                             } else {
                                 katana.openAlert({"alert_type": "danger",
                                     "heading": "Could not open file",
@@ -156,7 +174,7 @@ var cases = {
                         });
                     }
                 });
-            });
+            })
         },
 
         openNewFile: function(){
@@ -170,9 +188,23 @@ var cases = {
             }).done(function(data){
                 if(data.status){
                     cases.invert();
-                    katana.$activeTab.find('#detail-block').html(data.details);
-                    katana.$activeTab.find('#req-block').html(data.requirements);
-                    katana.$activeTab.find('#step-block').html(data.steps);
+                    var $detailBlock = katana.$activeTab.find('#detail-block');
+                    $detailBlock.html(data.details);
+                    $detailBlock.find('table').data({"data-object": data.case_data_json.Testcase.Details});
+
+                    var $reqBlock = katana.$activeTab.find('#req-block');
+                    $reqBlock.html(data.requirements);
+                    var $reqBlockTable = $reqBlock.find('table');
+                    for(var i=0; i<data.case_data_json.Testcase.Requirements.Requirement.length; i++){
+                        $reqBlockTable.find('[req-number=' + (i+1) +']').data({"data-object": data.case_data_json.Testcase.Requirements.Requirement[i]})
+                    }
+
+                    var $stepBlock = katana.$activeTab.find('#step-block');
+                    $stepBlock.html(data.steps);
+                    var $allTrElements = $stepBlock.find('tbody').children('tr');
+                    for (var i=0; i<$allTrElements.length; i++){
+                        $($allTrElements[i]).data({"data-object": data.case_data_json.Testcase.Steps.step[i]});
+                    }
                 } else {
                     katana.openAlert({"alert_type": "danger",
                         "heading": "Could not open file",
