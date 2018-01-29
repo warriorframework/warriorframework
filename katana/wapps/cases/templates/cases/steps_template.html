@@ -45,7 +45,11 @@
                 <label class="cases-label">Execute</label>
             </div>
             <div class="col-sm-9">
-                <select katana-change="cases.drawer.stepsChange"></select>
+                <select katana-change="cases.drawer.stepsChange">
+                    {% for value in data.execute_types %}
+                    <option>{{value}}</option>
+                    {% endfor %}
+                </select>
             </div>
         </div>
          <div class="row">
@@ -69,7 +73,11 @@
                 <label class="cases-label">Else</label>
             </div>
             <div class="col-sm-9">
-                <select katana-change="cases.drawer.stepsChange"></select>
+                <select katana-change="cases.drawer.stepsChange">
+                    {% for value in data.execute_elses %}
+                    <option>{{value}}</option>
+                    {% endfor %}
+                </select>
             </div>
         </div>
          <div class="row">
@@ -85,7 +93,11 @@
                 <label class="cases-label">Run Mode</label>
             </div>
             <div class="col-sm-9">
-                <select katana-change="cases.drawer.stepsChange"></select>
+                <select katana-change="cases.drawer.stepsChange">
+                    {% for value in data.run_modes %}
+                    <option>{{value}}</option>
+                    {% endfor %}
+                </select>
             </div>
         </div>
          <div class="row">

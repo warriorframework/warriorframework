@@ -29,7 +29,11 @@
                 <label class="cases-label">State</label>
             </div>
             <div class="col-sm-9">
-                <select katana-change="cases.drawer.detailsChange"></select>
+                <select katana-change="cases.drawer.detailsChange">
+                    {% for value in data.states %}
+                    <option>{{value}}</option>
+                    {% endfor %}
+                </select>
             </div>
         </div>
         <div class="row">
@@ -61,7 +65,11 @@
                 <label class="cases-label">On Error (Default)</label>
             </div>
             <div class="col-sm-9">
-                <select katana-change="cases.drawer.detailsChange"></select>
+                <select katana-change="cases.drawer.detailsChange">
+                    {% for value in data.default_on_errors %}
+                    <option>{{value}}</option>
+                    {% endfor %}
+                </select>
             </div>
         </div>
         <div class="row">
@@ -77,7 +85,14 @@
                 <label class="cases-label">Input Data File</label>
             </div>
             <div class="col-sm-9">
-                <input value="{{ data.InputDataFile }}" katana-change="cases.drawer.detailsChange">
+                <div class="cases-input-div">
+                    <input value="{{ data.InputDataFile }}" katana-change="cases.drawer.detailsChange">
+                </div>
+                <div class="cases-icon-input-div">
+                    <i class="fa fa-folder-open" aria-hidden="true" katana-click="cases.drawer.openFileExplorer.inputdatafile"></i>
+                    &nbsp;
+                    <i class="fa fa-external-link-square" aria-hidden="true"></i>
+                </div>
             </div>
         </div>
         <div class="row">
@@ -85,7 +100,11 @@
                 <label class="cases-label">Data Type</label>
             </div>
             <div class="col-sm-9">
-                <select katana-change="cases.drawer.detailsChange"></select>
+                <select katana-change="cases.drawer.detailsChange">
+                    {% for value in data.datatypes %}
+                    <option>{{value}}</option>
+                    {% endfor %}
+                </select>
             </div>
         </div>
         <div class="row">
@@ -93,7 +112,14 @@
                 <label class="cases-label">Logs Directory</label>
             </div>
             <div class="col-sm-9">
-                <input value="{{ data.Logsdir }}" katana-change="cases.drawer.detailsChange">
+                <div class="cases-input-div">
+                    <input value="{{ data.Logsdir }}" katana-change="cases.drawer.detailsChange">
+                </div>
+                <div class="cases-icon-input-div">
+                    <i class="fa fa-folder-open" aria-hidden="true" katana-click="cases.drawer.openFileExplorer.logsdir"></i>
+                    &nbsp;
+                    <i class="fa fa-external-link-square cases-hidden-element" aria-hidden="true"></i>
+                </div>
             </div>
         </div>
         <div class="row">
@@ -101,7 +127,14 @@
                 <label class="cases-label">Results Directory</label>
             </div>
             <div class="col-sm-9">
-                <input value="{{ data.Resultsdir }}" katana-change="cases.drawer.detailsChange">
+                <div class="cases-input-div">
+                    <input value="{{ data.Resultsdir }}" katana-change="cases.drawer.detailsChange">
+                </div>
+                <div class="cases-icon-input-div">
+                    <i class="fa fa-folder-open" aria-hidden="true" katana-click="cases.drawer.openFileExplorer.resultsdir"></i>
+                    &nbsp;
+                    <i class="fa fa-external-link-square cases-hidden-element" aria-hidden="true"></i>
+                </div>
             </div>
         </div>
         <div class="row">

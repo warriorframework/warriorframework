@@ -19,6 +19,7 @@ CONFIG_FILE = join_path(navigator.get_katana_dir(), "config.json")
 APP_DIR = join_path(navigator.get_katana_dir(), "wapps", "cases")
 STATIC_DIR = join_path(APP_DIR, "static", "cases")
 TEMPLATE = join_path(STATIC_DIR, "base_templates", "Untitled.xml")
+ERRORS = ["Next", "Abort", "Abort as Error", "Go To"]
 
 
 class CasesView(View):
@@ -42,15 +43,38 @@ def get_file(request):
     vcf_obj = VerifyCaseFile(TEMPLATE, file_path)
     output, data = vcf_obj.verify_file()
     if output["status"]:
-        details_tmpl = _get_tmpl('cases/details_display_template.html', {"data": data["Testcase"]["Details"]})
-        mid_req = (len(data["Testcase"]["Requirements"]["Requirement"]) + 1) / 2
-        reqs_tmpl = _get_tmpl('cases/requirements_display_template.html', {"data": data["Testcase"]["Requirements"], "mid_req": mid_req})
-        steps_tmpl = _get_tmpl('cases/steps_display_template.html', {"data": data["Testcase"]["Steps"]})
+        details_tmpl = _get_tmpl('cases/details_display_template.html', get_details_data(data))
+
+        reqs_tmpl = _get_tmpl('cases/requirements_display_template.html', get_reqs_data(data))
+        steps_tmpl = _get_tmpl('cases/steps_display_template.html', get_steps_data(data))
         return JsonResponse({"status": output["status"], "message": output["message"],
                              "details": str(details_tmpl), "requirements": str(reqs_tmpl), "steps": str(steps_tmpl),
                              "case_data_json": data})
     else:
         JsonResponse({"status": output["status"], "message": output["message"]})
+
+
+def get_details_data(data):
+    output = {"data": data["Testcase"]["Details"]}
+    output["data"]["states"] = ["New", "Test-Assigned", "Released", "Add Another"]
+    output["data"]["default_on_errors"] = ERRORS
+    output["data"]["datatypes"] = ["Custom", "Iterative", "Hybrid"]
+    return output
+
+
+def get_reqs_data(data):
+    output = {"data": data["Testcase"]["Requirements"]}
+    mid_req = (len(data["Testcase"]["Requirements"]["Requirement"]) + 1) / 2
+    output["data"]["mid_req"] = mid_req
+    return output
+
+
+def get_steps_data(data):
+    output = {"data": data["Testcase"]["Steps"]}
+    output["data"]["execute_types"] = ["Yes", "No", "If", "If Not"]
+    output["data"]["execute_elses"] = ERRORS
+    output["data"]["run_modes"] = ["Run Multiple Times", "Run Until Pass", "Run Until Failure"]
+    return output
 
 
 def _get_tmpl(template, data):
@@ -63,6 +87,7 @@ def get_details_template(request):
 
 
 def get_steps_template(request):
+    print request.POST.get("data")
     return render(request, 'cases/steps_template.html')
 
 

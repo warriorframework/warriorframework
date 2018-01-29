@@ -357,3 +357,24 @@
 .cases-req:hover > .cases-req-options {
     display: block;
 }
+
+.cases-input-div {
+    width: 85%;
+    float: left;
+}
+
+.cases-icon-input-div {
+    width: 15%;
+    float: left;
+    text-align: center;
+    padding: 9px 0;
+}
+
+.cases-icon-input-div > i:hover {
+    font-size: 110%;
+    color: #3b5f82 ;
+}
+
+.cases-hidden-element {
+    visibility: hidden;
+}

@@ -3,7 +3,7 @@
         <table class="table table-bordered">
             <tbody>
             {% for req in data.Requirement %}
-            {% if forloop.counter <= mid_req %}
+            {% if forloop.counter <= data.mid_req %}
             <tr>
                 <th scope="row" req-number="{{ forloop.counter }}">{{ forloop.counter }}</th>
                 <td class="cases-req">
@@ -26,7 +26,7 @@
         <table class="table table-bordered">
             <tbody>
             {% for req in data.Requirement %}
-            {% if forloop.counter > mid_req %}
+            {% if forloop.counter > data.mid_req %}
             <tr>
                 <th scope="row" req-number="{{ forloop.counter }}">{{ forloop.counter }}</th>
                 <td class="cases-req">

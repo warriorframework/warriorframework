@@ -7,7 +7,10 @@ var cases = {
             contents: function () {
                 return Promise.resolve(
                     $.ajax({
-                        type: 'GET',
+                        headers: {
+                            'X-CSRFToken': katana.$activeTab.find('input[name="csrfmiddlewaretoken"]').attr('value')
+                        },
+                        type: 'POST',
                         url: 'cases/get_steps_template/',
                         data: {"data": false}
                     }).then(data => { return data })
@@ -20,7 +23,10 @@ var cases = {
             contents: function () {
                 return Promise.resolve(
                     $.ajax({
-                        type: 'GET',
+                        headers: {
+                            'X-CSRFToken': katana.$activeTab.find('input[name="csrfmiddlewaretoken"]').attr('value')
+                        },
+                        type: 'POST',
                         url: 'cases/get_reqs_template/',
                         data: {"data": false}
                     }).then(data => { return data })
@@ -139,6 +145,7 @@ var cases = {
 
         detailsChange: function(){
             var $elem = $(this);
+            console.log($elem);
             var $parent = $elem.closest('.cases-drawer-open-body');
             $parent.find('.fa-list-alt').attr('draft', 'true');
             $parent.find('.fa-list-alt').children('i').show();
@@ -173,6 +180,36 @@ var cases = {
             var index = $elem.index() - 1;
             var $switchElem = $($drawerOpenDiv.find('.sidebar').children()[index]).children('i');
             cases.drawer.open.switchView($switchElem);
+        },
+
+        openFileExplorer: {
+
+            logsdir: function () {
+                katana.fileExplorerAPI.openFileExplorer("Select a Path", false,
+                    katana.$activeTab.find('input[name="csrfmiddlewaretoken"]').attr('value'), false,
+                    function (inputValue){
+                        console.log(inputValue);
+                    },
+                    false)
+            },
+
+            resultsdir: function () {
+                katana.fileExplorerAPI.openFileExplorer("Select a Path", false,
+                    katana.$activeTab.find('input[name="csrfmiddlewaretoken"]').attr('value'), false,
+                    function (inputValue){
+                        console.log(inputValue);
+                    },
+                    false)
+            },
+
+            inputdatafile: function () {
+                katana.fileExplorerAPI.openFileExplorer("Select a Path", false,
+                    katana.$activeTab.find('input[name="csrfmiddlewaretoken"]').attr('value'), false,
+                    function (inputValue){
+                        console.log(inputValue);
+                    },
+                    false)
+            }
         },
     },
 
