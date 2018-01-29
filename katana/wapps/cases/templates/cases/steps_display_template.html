@@ -54,9 +54,15 @@
         </div>
 
         <div class="cases-step-toolbar">
-            <div><i class="fa fa-pencil-square-o" aria-hidden="true"></i></div>
-            <div><i class="fa fa-reply" aria-hidden="true"></i></div>
-            <div><i class="fa fa-trash-o" aria-hidden="true"></i></div>
+            <div katana-click="cases.stepSection.toolbar.editStep">
+                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+            </div>
+            <div katana-click="cases.stepSection.toolbar.insertStep">
+                <i class="fa fa-reply" aria-hidden="true"></i>
+            </div>
+            <div katana-click="cases.stepSection.toolbar.deleteStep">
+                <i class="fa fa-trash-o" aria-hidden="true"></i>
+            </div>
             <div katana-click="cases.stepSection.toolbar.multiselect">
                 <i class="fa fa-th-list badged" aria-hidden="true" multiselect="on">
                     <i class="fa fa-check-circle" aria-hidden="true"></i>

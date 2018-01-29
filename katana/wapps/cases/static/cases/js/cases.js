@@ -64,20 +64,38 @@ var cases = {
 
         editDetails: function() {
             var $elem = $(this);
-            var $openElem = $($elem.closest('#main-div').find('.cases-side-drawer-closed').children('div')[1]);
-            cases.drawer.openDrawer($openElem);
+            var $closedDrawerDiv = $elem.closest('#main-div').find('.cases-side-drawer-closed');
+            if ($closedDrawerDiv.is(":hidden")){
+                var $switchElem = $closedDrawerDiv.siblings('.cases-side-drawer-open').find('.sidebar').children([0]).children('i');
+                cases.drawer.open.switchView($switchElem);
+            } else {
+                var $openElem = $($closedDrawerDiv.children('div')[1]);
+                cases.drawer.openDrawer($openElem);
+            }
         },
 
         newReq: function() {
             var $elem = $(this);
-            var $openElem = $($elem.closest('#main-div').find('.cases-side-drawer-closed').children('div')[2]);
-            cases.drawer.openDrawer($openElem);
+            var $closedDrawerDiv = $elem.closest('#main-div').find('.cases-side-drawer-closed');
+            if ($closedDrawerDiv.is(":hidden")){
+                var $switchElem = $closedDrawerDiv.siblings('.cases-side-drawer-open').find('.sidebar').children([1]).children('i');
+                cases.drawer.open.switchView($switchElem);
+            } else {
+                var $openElem = $($elem.closest('#main-div').find('.cases-side-drawer-closed').children('div')[2]);
+                cases.drawer.openDrawer($openElem);
+            }
         },
 
         newStep: function() {
             var $elem = $(this);
-            var $openElem = $($elem.closest('#main-div').find('.cases-side-drawer-closed').children('div')[3]);
-            cases.drawer.openDrawer($openElem);
+            var $closedDrawerDiv = $elem.closest('#main-div').find('.cases-side-drawer-closed');
+            if ($closedDrawerDiv.is(":hidden")){
+                var $switchElem = $closedDrawerDiv.siblings('.cases-side-drawer-open').find('.sidebar').children([2]).children('i');
+                cases.drawer.open.switchView($switchElem);
+            } else {
+                var $openElem = $($elem.closest('#main-div').find('.cases-side-drawer-closed').children('div')[3]);
+                cases.drawer.openDrawer($openElem);
+            }
         },
     },
 
@@ -305,7 +323,7 @@ var cases = {
                 if ($iconElem.attr('multiselect') === 'on'){
                     $iconElem.attr('multiselect', 'off');
                     $iconElem.removeClass('badged');
-                    $iconElem.children('i').hide()
+                    $iconElem.children('i').hide();
                     var $allTrElems = katana.$activeTab.find('#step-block').find('tbody').children('tr');
                     for (var i=0; i<$allTrElems.length; i++){
                         $($allTrElems[i]).attr('marked', 'false');
@@ -316,7 +334,83 @@ var cases = {
                     $iconElem.addClass('badged');
                     $iconElem.children('i').show()
                 }
-            }
+            },
+
+            deleteStep: function () {
+                var $tbodyElem = katana.$activeTab.find('#step-block').find('tbody');
+                var $allTrElems = $tbodyElem.children('tr[marked="true"]');
+                if ($allTrElems.length === 0) {
+                    katana.openAlert({"alert_type": "danger",
+                        "heading": "No step selected for deletion",
+                        "text": "Please select at least one step to delete",
+                        "show_cancel_btn": "false"})
+                } else {
+                    var stepNumbers = "";
+                    for (var i=0; i<$allTrElems.length; i++){
+                        stepNumbers += ($($allTrElems[i]).index() + 1).toString() + ", "
+                    }
+                    stepNumbers = stepNumbers.slice(0, -2);
+                    katana.openAlert({"alert_type": "warning",
+                        "heading": "This would delete Steps " + stepNumbers,
+                        "text": "Are you sure you want to delete these steps?"},
+                        function(){
+                            for (i=0; i<$allTrElems.length; i++){
+                                $($allTrElems[i]).remove();
+                            }
+                            $allTrElems = $tbodyElem.children('tr');
+                            for (i=0; i<$allTrElems.length; i++){
+                                $($($allTrElems[i]).children('td')[0]).html(i+1);
+                            }
+                        })
+                }
+            },
+
+            insertStep: function () {
+                var $tbodyElem = katana.$activeTab.find('#step-block').find('tbody');
+                var $allTrElems = $tbodyElem.children('tr[marked="true"]');
+                if ($allTrElems.length === 0) {
+                    var insertAtIndex = $tbodyElem.children('tr').length;
+                } else if ($allTrElems.length > 1) {
+                    katana.openAlert({
+                        "alert_type": "danger",
+                        "heading": "Multiple Steps Selected",
+                        "text": "Only one step can be inserted at a time. Please select only one " +
+                        "step above which you want to insert another step.",
+                        "show_cancel_btn": false
+                    })
+                    return;
+                } else {
+                    insertAtIndex = $($allTrElems[0]).index();
+                    //insert tr
+                }
+                console.log(insertAtIndex);
+            },
+
+            editStep: function () {
+                var $tbodyElem = katana.$activeTab.find('#step-block').find('tbody');
+                var $allTrElems = $tbodyElem.children('tr[marked="true"]');
+                if ($allTrElems.length === 0) {
+                    katana.openAlert({
+                        "alert_type": "danger",
+                        "heading": "No Step Selected",
+                        "text": "Please select a step to edit.",
+                        "show_cancel_btn": false
+                    });
+                    return;
+                } else if ($allTrElems.length > 1) {
+                    katana.openAlert({
+                        "alert_type": "danger",
+                        "heading": "Multiple Steps Selected",
+                        "text": "Only one step can be edited at a time. Please select only one " +
+                        "step to edit.",
+                        "show_cancel_btn": false
+                    });
+                    return;
+                } else {
+                    var editIndex = $($allTrElems[0]).index();
+                }
+                console.log(editIndex);
+            },
         }
     },
 };
