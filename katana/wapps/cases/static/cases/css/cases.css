@@ -139,10 +139,16 @@
     float: left;
     text-align: center;
     padding: 20px 0;
+    position: relative;
 }
 
 .cases-side-drawer-closed > div > i {
     color: black;
+}
+
+.cases-side-drawer-closed > div:hover {
+    background-color: khaki;
+    transition: all 0.2s ease-in-out;
 }
 
 .cases-drawer-open-body {
@@ -164,6 +170,7 @@
     float: left;
     text-align: center;
     padding: 20px 0;
+    position: relative;
 }
 
 .cases-drawer-open-body > .sidebar > div > i {
@@ -315,3 +322,15 @@
 .cases-step-toolbar > div:hover > .badged {
     color: darkgrey;
 }
+
+.sidebar-badged {}
+
+.sidebar-badged > i {
+    font-size: 12px;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    color: red;
+}
+
+

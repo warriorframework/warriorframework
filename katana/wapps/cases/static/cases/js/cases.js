@@ -61,15 +61,32 @@ var cases = {
                 $elem.closest('.cases-header').next().show()
             }
         },
+
+        editDetails: function() {
+            var $elem = $(this);
+            var $openElem = $($elem.closest('#main-div').find('.cases-side-drawer-closed').children('div')[1]);
+            cases.drawer.openDrawer($openElem);
+        },
+
+        newReq: function() {
+            var $elem = $(this);
+            var $openElem = $($elem.closest('#main-div').find('.cases-side-drawer-closed').children('div')[2]);
+            cases.drawer.openDrawer($openElem);
+        },
+
+        newStep: function() {
+            var $elem = $(this);
+            var $openElem = $($elem.closest('#main-div').find('.cases-side-drawer-closed').children('div')[3]);
+            cases.drawer.openDrawer($openElem);
+        },
     },
 
     drawer: {
 
         toggleDrawer: function(){
-            var $elem = $(this);
-            console.log($elem.attr('collapsed'));
+            var $parent = $(this);
+            var $elem = $parent.children('i');
             if ($elem.attr('collapsed') === 'true') {
-                console.log($elem.closest('.cases-side-drawer-closed'));
                 $elem.closest('.cases-side-drawer-closed').hide();
                 $elem.closest('.cases-side-drawer-closed').siblings('.cases-side-drawer-open').show();
             } else {
@@ -80,8 +97,10 @@ var cases = {
 
         open: {
 
-            switchView: function(){
-                var $elem = $(this);
+            switchView: function($elem){
+                if ($elem === undefined){
+                    $elem = $(this);
+                }
                 var $sidebar = $elem.closest('.sidebar');
                 var $highlighted = $sidebar.find('.cases-icon-bg-color');
                 $highlighted.removeClass('cases-icon-bg-color');
@@ -98,6 +117,44 @@ var cases = {
                     $elem.closest('.cases-side-drawer-open').find('.content').html(cases.mappings[marker].savedContent);
                 }
             }
+        },
+
+        detailsChange: function(){
+            var $elem = $(this);
+            var $parent = $elem.closest('.cases-drawer-open-body');
+            $parent.find('.fa-list-alt').attr('draft', 'true');
+            $parent.find('.fa-list-alt').children('i').show();
+            $parent.parent().siblings('.cases-side-drawer-closed').find('.fa-list-alt').children('i').show();
+        },
+
+        reqsChange: function () {
+            var $elem = $(this);
+            var $parent = $elem.closest('.cases-drawer-open-body');
+            $parent.find('.fa-tags').attr('draft', 'true');
+            $parent.find('.fa-tags').children('i').show();
+            $parent.parent().siblings('.cases-side-drawer-closed').find('.fa-tags').children('i').show();
+        },
+
+        stepsChange: function () {
+            var $elem = $(this);
+            var $parent = $elem.closest('.cases-drawer-open-body');
+            $parent.find('.fa-star').attr('draft', 'true');
+            $parent.find('.fa-star').children('i').show();
+            $parent.parent().siblings('.cases-side-drawer-closed').find('.fa-star').children('i').show();
+        },
+
+        openDrawer: function ($elem) {
+            if($elem === undefined){
+                $elem = $(this);
+            }
+            var $toggler = $elem.parent().find('[katana-click="cases.drawer.toggleDrawer"]').children('i');
+            var $drawerClosedDiv = $toggler.closest('.cases-side-drawer-closed');
+            var $drawerOpenDiv = $toggler.closest('.cases-side-drawer-closed').siblings('.cases-side-drawer-open');
+            $drawerClosedDiv.hide();
+            $drawerOpenDiv.show();
+            var index = $elem.index() - 1;
+            var $switchElem = $($drawerOpenDiv.find('.sidebar').children()[index]).children('i');
+            cases.drawer.open.switchView($switchElem);
         },
     },
 
@@ -145,7 +202,6 @@ var cases = {
                             url: 'cases/get_file/',
                             data: {"path": data["node"]["li_attr"]["data-path"]}
                         }).done(function(data){
-                            console.log(data);
                             if(data.status){
                                 cases.invert();
                                 var $detailBlock = katana.$activeTab.find('#detail-block');
@@ -218,7 +274,6 @@ var cases = {
     caseViewer:  {
         close: function () {
             cases.invert();
-            console.log(data);
         }
     },
 
