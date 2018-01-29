@@ -248,6 +248,10 @@
     text-align: left;
 }
 
+.cases-intentional-space-x > .cases-internal-section > div > table > tbody > tr > td:nth-child(1) {
+    text-align: center;
+}
+
 .cases-intentional-space-x > .cases-internal-section > div > table > tbody > tr:hover > td {
     white-space: initial;
     word-break: break-all;
@@ -333,4 +337,23 @@
     color: red;
 }
 
+.cases-req {}
 
+.cases-req-options {
+    width: 10%;
+    float: left;
+    text-align: center;
+    display: none;
+}
+
+.cases-req:hover {
+    background-color: lightblue;
+    height: auto;
+    white-space: initial;
+    transition: all 0.2s ease-in-out;
+}
+
+
+.cases-req:hover > .cases-req-options {
+    display: block;
+}

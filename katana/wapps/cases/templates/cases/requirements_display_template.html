@@ -6,7 +6,16 @@
             {% if forloop.counter <= mid_req %}
             <tr>
                 <th scope="row" req-number="{{ forloop.counter }}">{{ forloop.counter }}</th>
-                <td>{{ req }}</td>
+                <td class="cases-req">
+                    <div style="width: 90%; float: left;">
+                        {{ req }}
+                    </div>
+                    <div class="cases-req-options">
+                        <i class="fa fa-pencil" aria-hidden="true" katana-click="cases.reqSection.editReq"></i>
+                        &nbsp;
+                        <i class="fa fa-trash-o" aria-hidden="true" katana-click="cases.reqSection.deleteReq"></i>
+                    </div>
+                </td>
             </tr>
             {% endif %}
             {% endfor %}
@@ -20,7 +29,16 @@
             {% if forloop.counter > mid_req %}
             <tr>
                 <th scope="row" req-number="{{ forloop.counter }}">{{ forloop.counter }}</th>
-                <td>{{ req }}</td>
+                <td class="cases-req">
+                    <div style="width: 90%; float: left;">
+                        {{ req }}
+                    </div>
+                    <div class="cases-req-options">
+                        <i class="fa fa-pencil" aria-hidden="true" katana-click="cases.reqSection.editReq"></i>
+                        &nbsp;
+                        <i class="fa fa-trash-o" aria-hidden="true" katana-click="cases.reqSection.deleteReq"></i>
+                    </div>
+                </td>
             </tr>
             {% endif %}
             {% endfor %}

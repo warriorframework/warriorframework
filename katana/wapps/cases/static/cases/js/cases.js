@@ -295,6 +295,46 @@ var cases = {
         }
     },
 
+    reqSection: {
+        deleteReq: function () {
+            var $elem = $(this);
+            var $tdParent = $elem.closest('td');
+            var reqNumber = $tdParent.siblings('th').html();
+            var $toBeDeleted = $elem.closest('tr');
+            var $topLevel = $elem.closest('.cases-intentional-space-x');
+            katana.openAlert({
+                "alert_type": "danger",
+                "heading": "Delete Requirement " + reqNumber + "?",
+                "text": "Are you sure you want to delete the requirement? This cannot be undone."
+            }, function(){
+                $toBeDeleted.remove();
+                var $tbody = $topLevel.find('tbody');
+                var tempList = [];
+                var $leftTrs = $($tbody[0]).children('tr');
+                for (var i=0; i<$leftTrs.length; i++){
+                    $($leftTrs[i]).children('th').html(i + 1);
+                    tempList.push($($leftTrs[i]).detach());
+                }
+                var $rightTrs = $($tbody[1]).children('tr');
+                for (i=0; i<$rightTrs.length; i++){
+                    $($rightTrs[i]).children('th').html($leftTrs.length + i + 1);
+                    tempList.push($($rightTrs[i]).detach());
+                }
+                $($tbody[0]).html();
+                $($tbody[1]).html();
+                for (i=0; i<tempList.length/2; i++) {
+                    $($tbody[0]).append(tempList[i]);
+                }
+                for (i=Math.ceil(tempList.length/2); i<tempList.length; i++) {
+                    $($tbody[1]).append(tempList[i]);
+                }
+            });
+        },
+
+        editReq: function () {
+
+        },
+    },
 
     stepSection: {
         selectStep: function () {
