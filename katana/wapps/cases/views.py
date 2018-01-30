@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 import json
+from collections import OrderedDict
 
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, render_to_response
@@ -47,11 +48,24 @@ def get_file(request):
 
         reqs_tmpl = _get_tmpl('cases/requirements_display_template.html', get_reqs_data(data))
         steps_tmpl = _get_tmpl('cases/steps_display_template.html', get_steps_data(data))
-        return JsonResponse({"status": output["status"], "message": output["message"],
+        new_step = _get_tmpl('cases/steps_template.html', _get_defaults(step=True, ts=len(data["Testcase"]["Steps"]["step"]) + 1))
+        return JsonResponse({"filepath": file_path, "status": output["status"], "message": output["message"],
                              "details": str(details_tmpl), "requirements": str(reqs_tmpl), "steps": str(steps_tmpl),
-                             "case_data_json": data})
+                             "case_data_json": data, "new_step": str(new_step)})
     else:
         JsonResponse({"status": output["status"], "message": output["message"]})
+
+
+def _get_defaults(details=False, requirement=False, step=False, ts="1"):
+    output = False
+    template_data = read_xml_get_json(TEMPLATE, ordered_dict=True)
+    if details:
+        return get_details_data(template_data)
+    if requirement:
+        return get_reqs_data(template_data)
+    if step:
+        return get_steps_data(template_data, ts=ts)
+    return output
 
 
 def get_details_data(data):
@@ -69,11 +83,17 @@ def get_reqs_data(data):
     return output
 
 
-def get_steps_data(data):
+def get_steps_data(data, ts="1"):
     output = {"data": data["Testcase"]["Steps"]}
+    if isinstance(output["data"]["step"], OrderedDict):
+        output["data"]["step"]["@TS"] = ts
     output["data"]["execute_types"] = ["Yes", "No", "If", "If Not"]
     output["data"]["execute_elses"] = ERRORS
     output["data"]["run_modes"] = ["Run Multiple Times", "Run Until Pass", "Run Until Failure"]
+    output["data"]["iteration_types"] = ["Standard", "Once Per Case", "End Of Case"]
+    output["data"]["contexts"] = ["Positive", "Negative"]
+    output["data"]["impacts"] = ["Impact", "No Impact"]
+    output["data"]["on_errors"] = ERRORS
     return output
 
 

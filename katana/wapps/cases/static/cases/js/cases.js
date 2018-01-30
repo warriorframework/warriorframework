@@ -1,5 +1,39 @@
 var cases = {
 
+    utils: {
+        getRelativeFilepath: function (basePath, path) {
+            if (basePath.indexOf('\\') > -1) {
+                basePath = basePath.replace('\\', '/');
+            }
+            if (path.indexOf('\\') > -1) {
+                path = path.replace('\\', '/');
+            }
+            var basePathSeries = basePath.split('/');
+            var pathSeries = path.split('/');
+            var hold = 0;
+            for (var i=0; i<basePathSeries.length && i < pathSeries.length; i++) {
+                if (basePathSeries[i] !== pathSeries[i]){
+                    hold = i;
+                    break;
+                }
+            }
+            var output = "";
+            for (i=(basePathSeries.length-1); i > hold; i--) {
+                output += "../"
+            }
+            if (output !== "") {
+                output = output.slice(0, -1);
+            }
+            for (i=hold; i<pathSeries.length; i++) {
+                output += "/" + pathSeries[i]
+            }
+            if (output.startsWith("/")) {
+                output = output.slice(1, output.length);
+            }
+            return output
+        },
+    },
+
     mappings: {
         newStep: {
             savedContent: false,
@@ -185,28 +219,35 @@ var cases = {
         openFileExplorer: {
 
             logsdir: function () {
+                var $elem = $(this);
+                var $inputElem = $elem.parent().prev().children('input');
                 katana.fileExplorerAPI.openFileExplorer("Select a Path", false,
                     katana.$activeTab.find('input[name="csrfmiddlewaretoken"]').attr('value'), false,
                     function (inputValue){
-                        console.log(inputValue);
+                        $inputElem.val(inputValue);
                     },
                     false)
             },
 
             resultsdir: function () {
+                var $elem = $(this);
+                var $inputElem = $elem.parent().prev().children('input');
                 katana.fileExplorerAPI.openFileExplorer("Select a Path", false,
                     katana.$activeTab.find('input[name="csrfmiddlewaretoken"]').attr('value'), false,
                     function (inputValue){
-                        console.log(inputValue);
+                        $inputElem.val(inputValue);
                     },
                     false)
             },
 
             inputdatafile: function () {
+                var $elem = $(this);
+                var $inputElem = $elem.parent().prev().children('input');
                 katana.fileExplorerAPI.openFileExplorer("Select a Path", false,
                     katana.$activeTab.find('input[name="csrfmiddlewaretoken"]').attr('value'), false,
                     function (inputValue){
-                        console.log(inputValue);
+                        var tcPath = katana.$activeTab.find('#main-div').attr("current-file");
+                        $inputElem.val(cases.utils.getRelativeFilepath(tcPath, inputValue));
                     },
                     false)
             }
@@ -259,6 +300,9 @@ var cases = {
                         }).done(function(data){
                             if(data.status){
                                 cases.invert();
+
+                                katana.$activeTab.find('#main-div').attr("current-file", data.filepath);
+
                                 var $detailBlock = katana.$activeTab.find('#detail-block');
                                 $detailBlock.html(data.details);
                                 $detailBlock.find('table').data({"data-object": data.case_data_json.Testcase.Details});
@@ -273,9 +317,13 @@ var cases = {
                                 var $stepBlock = katana.$activeTab.find('#step-block');
                                 $stepBlock.html(data.steps);
                                 var $allTrElements = $stepBlock.find('tbody').children('tr');
-                                for (var i=0; i<$allTrElements.length; i++){
+                                for (i=0; i<$allTrElements.length; i++){
                                     $($allTrElements[i]).data({"data-object": data.case_data_json.Testcase.Steps.step[i]});
                                 }
+
+                                var $drawerContent = katana.$activeTab.find('.content');
+                                $drawerContent.html(data.new_step);
+
                             } else {
                                 katana.openAlert({"alert_type": "danger",
                                     "heading": "Could not open file",
@@ -299,6 +347,9 @@ var cases = {
             }).done(function(data){
                 if(data.status){
                     cases.invert();
+
+                    katana.$activeTab.find('#main-div').attr("current-file", data.filepath);
+
                     var $detailBlock = katana.$activeTab.find('#detail-block');
                     $detailBlock.html(data.details);
                     $detailBlock.find('table').data({"data-object": data.case_data_json.Testcase.Details});

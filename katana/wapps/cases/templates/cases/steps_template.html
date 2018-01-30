@@ -5,7 +5,11 @@
                 <label class="cases-label">Step Number</label>
             </div>
             <div class="col-sm-9">
-                <input disabled>
+                {% for key, value in data.step.items %}
+                {% if key == "@TS" %}
+                <input disabled value="{{ value }}">
+                {% endif %}
+                {% endfor %}
             </div>
         </div>
         <div class="row">
@@ -37,7 +41,7 @@
                 <label class="cases-label">Description</label>
             </div>
             <div class="col-sm-9">
-                <input katana-change="cases.drawer.stepsChange">
+                <input katana-change="cases.drawer.stepsChange" value="{{new_step.data.Description}}">
             </div>
         </div>
          <div class="row">
@@ -113,7 +117,11 @@
                 <label class="cases-label">Iteration Type</label>
             </div>
             <div class="col-sm-9">
-                <select katana-change="cases.drawer.stepsChange"></select>
+                <select katana-change="cases.drawer.stepsChange">
+                    {% for value in data.iteration_types %}
+                    <option>{{value}}</option>
+                    {% endfor %}
+                </select>
             </div>
         </div>
          <div class="row">
@@ -121,7 +129,11 @@
                 <label class="cases-label">Context</label>
             </div>
             <div class="col-sm-9">
-                <select katana-change="cases.drawer.stepsChange"></select>
+                <select katana-change="cases.drawer.stepsChange">
+                    {% for value in data.contexts %}
+                    <option>{{value}}</option>
+                    {% endfor %}
+                </select>
             </div>
         </div>
          <div class="row">
@@ -129,7 +141,11 @@
                 <label class="cases-label">Impact</label>
             </div>
             <div class="col-sm-9">
-                <select katana-change="cases.drawer.stepsChange"></select>
+                <select katana-change="cases.drawer.stepsChange">
+                    {% for value in data.impacts %}
+                    <option>{{value}}</option>
+                    {% endfor %}
+                </select>
             </div>
         </div>
         <div class="row">
@@ -137,7 +153,11 @@
                 <label class="cases-label">On Error</label>
             </div>
             <div class="col-sm-9">
-                <select katana-change="cases.drawer.stepsChange"></select>
+                <select katana-change="cases.drawer.stepsChange">
+                    {% for value in data.on_errors %}
+                    <option>{{value}}</option>
+                    {% endfor %}
+                </select>
             </div>
         </div>
          <div class="row">
