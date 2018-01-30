@@ -1,0 +1,102 @@
+<?xml version="1.0" ?>
+<Project>
+	<Details>
+		<Name>cond_var</Name>
+		<Title>Project for testing conditional execution</Title>
+		<Engineer>Ka Hei Chan</Engineer>
+		<State>New</State>
+		<Date>08/23/2016</Date>
+		<Time>10:59:51</Time>
+		<default_onError action="next"/>
+	</Details>
+	<Testsuites>
+		<Testsuite>
+			<path>../suites/framework_tests/cond_var/pass.xml</path>
+			<Execute ExecType="Yes">
+				<Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+			</Execute>
+			<onError action="next" value=""/>
+			<impact>impact</impact>
+		</Testsuite>
+		<Testsuite>
+			<path>../suites/framework_tests/cond_var/fail.xml</path>
+			<Execute ExecType="If">
+				<Rule Condition="testsuite_1_result" Condvalue="PASS" Else="abort" Elsevalue=""/>
+			</Execute>
+			<onError action="next" value=""/>
+			<impact>noimpact</impact>
+		</Testsuite>
+		<Testsuite>
+			<path>../suites/framework_tests/cond_var/error.xml</path>
+			<Execute ExecType="If">
+				<Rule Condition="testsuite_2_result" Condvalue="FAIL" Else="abort" Elsevalue=""/>
+			</Execute>
+			<onError action="next" value=""/>
+			<impact>noimpact</impact>
+		</Testsuite>
+		<Testsuite>
+			<path>../suites/framework_tests/cond_var/pass.xml</path>
+			<Execute ExecType="If">
+				<Rule Condition="testsuite_3_result" Condvalue="ERROR" Else="abort" Elsevalue=""/>
+			</Execute>
+			<onError action="next" value=""/>
+			<impact>impact</impact>
+		</Testsuite>
+		<Testsuite>
+			<path>../suites/framework_tests/cond_var/pass.xml</path>
+			<Execute ExecType="No">
+				<Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+			</Execute>
+			<onError action="next" value=""/>
+			<impact>impact</impact>
+		</Testsuite>
+		<Testsuite>
+			<path>../suites/framework_tests/cond_var/fail.xml</path>
+			<Execute ExecType="If">
+				<Rule Condition="testsuite_5_result" Condvalue="SKIP" Else="abort" Elsevalue=""/>
+			</Execute>
+			<onError action="next" value=""/>
+			<impact>noimpact</impact>
+		</Testsuite>
+		<Testsuite>
+			<path>../suites/framework_tests/cond_var/pass.xml</path>
+			<Execute ExecType="If Not">
+				<Rule Condition="testsuite_6_result" Condvalue="PASS" Else="abort" Elsevalue=""/>
+			</Execute>
+			<onError action="next" value=""/>
+			<impact>impact</impact>
+		</Testsuite>
+		<Testsuite>
+			<path>../suites/framework_tests/cond_var/pass.xml</path>
+			<Execute ExecType="If Not">
+				<Rule Condition="testsuite_7_result" Condvalue="FAIL" Else="next" Elsevalue=""/>
+			</Execute>
+			<onError action="next" value=""/>
+			<impact>impact</impact>
+		</Testsuite>
+		<Testsuite>
+			<path>../suites/framework_tests/cond_var/error.xml</path>
+			<Execute ExecType="If Not">
+				<Rule Condition="testsuite_8_result" Condvalue="ERROR" Else="abort" Elsevalue=""/>
+			</Execute>
+			<onError action="next" value=""/>
+			<impact>noimpact</impact>
+		</Testsuite>
+		<Testsuite>
+			<path>../suites/framework_tests/cond_var/pass.xml</path>
+			<Execute ExecType="If Not">
+				<Rule Condition="testsuite_9_result" Condvalue="SKIP" Else="abort" Elsevalue=""/>
+			</Execute>
+			<onError action="next" value=""/>
+			<impact>impact</impact>
+		</Testsuite>
+		<Testsuite>
+			<path>../suites/framework_tests/cond_var/ts_exectype_rules_expression.xml</path>
+			<Execute ExecType="Yes">
+				<Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+			</Execute>
+			<onError action="next" value=""/>
+			<impact>impact</impact>
+		</Testsuite>
+	</Testsuites>
+</Project>

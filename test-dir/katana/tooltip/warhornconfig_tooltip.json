@@ -1,0 +1,194 @@
+{
+  "wcf_name": {
+    "tooltip": "Name of the file",
+    "protip": "",
+    "snowflake": "",
+    "bantip": ""
+  },
+  "warrior_url": {
+    "tooltip": "URL of the Warrior Repository",
+    "protip": "",
+    "snowflake": "",
+    "bantip": ""
+  },
+  "warrior_label": {
+    "tooltip": "Any Branch, Tag-Name, or Commit-ID of the Warrior Repository",
+    "protip": "",
+    "snowflake": "",
+    "bantip": ""
+  },
+  "warrior_dest": {
+    "tooltip": "Path to the directory in which Warrior should be cloned",
+    "protip": "",
+    "snowflake": "",
+    "bantip": ""
+  },
+  "warrior_clean_install": {
+    "tooltip": "When set to 'yes', it would delete the existing Warrior repository on your system and clone it anew",
+    "protip": "",
+    "snowflake": "",
+    "bantip": ""
+  },
+  "katana_url": {
+    "tooltip": "URL of the Katana Repository",
+    "protip": "",
+    "snowflake": "",
+    "bantip": ""
+  },
+  "katana_label": {
+    "tooltip": "Any Branch, Tag-Name, or Commit-ID of the Katana Repository",
+		"protip": "",
+		"bantip": "",
+		"snowflake": ""
+  },
+  "katana_dest": {
+    "tooltip": "Path to the directory in which Katana should be cloned",
+		"protip": "",
+		"bantip": "",
+		"snowflake": ""
+  },
+  "katana_clean_install": {
+    "tooltip": "When set to 'yes', it would delete the existing Katana repository on your system and clone it anew",
+		"protip": "",
+		"bantip": "",
+		"snowflake": ""
+  },
+  "katana_clone": {
+    "tooltip": "When set to 'no', Katana won't be cloned",
+		"protip": "",
+		"bantip": "",
+		"snowflake": ""
+  },
+  "kw_repo_url": {
+    "tooltip": "URL of the Keyword Repository",
+		"protip": "",
+		"bantip": "",
+		"snowflake": ""
+  },
+  "kw_repo_label": {
+    "tooltip": "Any Branch, Tag-Name, or Commit-ID of the Keyword Repository",
+		"protip": "",
+		"bantip": "",
+		"snowflake": ""
+  },
+  "kw_repo_add_repo": {
+    "tooltip": "Add a Keyword Repository",
+		"protip": "",
+		"bantip": "",
+		"snowflake": ""
+  },
+  "kw_repo_all_drivers": {
+    "tooltip": "When set to 'yes', all drivers in the Keyword Repository would be cloned",
+		"protip": "",
+		"bantip": "",
+		"snowflake": ""
+  },
+  "kw_repo_driver_name": {
+    "tooltip": "Name of the driver that you want to clone",
+		"protip": "",
+		"bantip": "",
+		"snowflake": ""
+  },
+  "kw_repo_delete_driver": {
+    "tooltip": "Delete this driver",
+		"protip": "",
+		"bantip": "",
+		"snowflake": ""
+  },
+  "kw_repo_add_driver": {
+    "tooltip": "Add another driver",
+		"protip": "",
+		"bantip": "",
+		"snowflake": ""
+  },
+  "kw_repo_clone": {
+    "tooltip": "When set to 'no', this Keyword Repository won't be cloned",
+		"protip": "",
+		"bantip": "",
+		"snowflake": ""
+  },
+  "kw_repo_overwrite": {
+    "tooltip": "When set to 'yes', the existing files would get overwritten by the newly cloned ones",
+		"protip": "",
+		"bantip": "",
+		"snowflake": ""
+  },
+  "kw_repo_delete": {
+    "tooltip": "Delete this Keyword Repository",
+		"protip": "",
+		"bantip": "",
+		"snowflake": ""
+  },
+  "ws_repo_add_repo": {
+    "tooltip": "Add a Warriorspace Repository",
+		"protip": "",
+		"bantip": "",
+		"snowflake": ""
+  },
+  "ws_repo_url": {
+    "tooltip": "URL of the Warriorspace Repository",
+		"protip": "",
+		"bantip": "",
+		"snowflake": ""
+  },
+  "ws_repo_label": {
+    "tooltip": "Any Branch, Tag-Name, or Commit-ID of the Warriorspace Repository",
+		"protip": "",
+		"bantip": "",
+		"snowflake": ""
+  },
+  "ws_repo_clone": {
+    "tooltip": "When set to 'no', this Warriorspace Repository won't be cloned",
+		"protip": "",
+		"bantip": "",
+		"snowflake": ""
+  },
+  "ws_repo_overwrite": {
+    "tooltip": "When set to 'yes', the existing files would get overwritten by the newly cloned ones",
+		"protip": "",
+		"bantip": "",
+		"snowflake": ""
+  },
+  "ws_repo_delete": {
+    "tooltip": "Delete this Warriorspace Repository",
+		"protip": "",
+		"bantip": "",
+		"snowflake": ""
+  },
+  "save_file": {
+    "tooltip": "Save this Warhorn Config File",
+		"protip": "",
+		"bantip": "",
+		"snowflake": ""
+  },
+  "cancel": {
+    "tooltip": "Exit the Editor",
+		"protip": "",
+		"bantip": "",
+		"snowflake": ""
+  },
+  "editKWRepo": {
+    "tooltip": "Edit this Keyword Repository",
+		"protip": "",
+		"bantip": "",
+		"snowflake": ""
+  },
+  "deleteKWRepo": {
+    "tooltip": "Delete this Keyword Repository",
+		"protip": "",
+		"bantip": "",
+		"snowflake": ""
+  },
+  "editWariosRepo": {
+    "tooltip": "Edit this Warriorspace Repository",
+		"protip": "",
+		"bantip": "",
+		"snowflake": ""
+  },
+  "deleteWariosRepo": {
+    "tooltip": "Delete this Warriorspace Repository",
+		"protip": "",
+		"bantip": "",
+		"snowflake": ""
+  }
+}

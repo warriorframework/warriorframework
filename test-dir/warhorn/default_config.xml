@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+
+<!-- To read full documentation for this file, please refer to user_generated/config_sample.xml -->
+
+<data>
+    <warhorn name="Warhorn">
+        <dependency name="jira" install="no" user="no"/>
+        <dependency name="lxml" install="yes" user="no"/>
+        <dependency name="ncclient" install="no" user="no"/>
+        <dependency name="paramiko" install="yes" user="no"/>
+        <dependency name="pexpect" install="yes" user="no"/>
+        <dependency name="pysnmp" install="yes" user="no"/>
+        <dependency name="requests" install="yes" user="no"/>
+        <dependency name="selenium" install="yes" user="no"/>
+        <dependency name="xlrd" install="no" user="no"/>
+        <dependency name="cloudshell-automation-api" install="yes" user="no"/>
+    </warhorn>
+
+    <!-- Fill this out with the details of the virtual environment
+         to be used. The name is mandatory for the virtual environment to be
+         used. Please note that if this is not used, then the warhorn
+         expects the dependency packages to be already installed or
+         admin privileges available for installing them. location is the
+         place where virtualenv binary can be found. The virtual env
+         would be created in the local directory itself with the name provided.
+         If install is set to yes, then warhorn expects atleast the
+         admin privileges to install virtual env.
+         -->
+
+    <virtualenv name="war_virtualenv" location="~/.local/bin/virtualenv" install="no" />
+
+	<warriorframework url="https://github.com/warriorframework/warriorframework.git"
+                      label="" clean_install="yes" clone="no">
+	</warriorframework>
+
+    <!--
+
+    Fill this out with the details of the repository that you want to clone
+
+    <tools url="http://repository/one/url.git" overwrite="yes" clone="yes">
+    </tools>
+
+    -->
+
+    <drivers>
+
+        <!--
+
+        Fill this out with the details of the repository that you want to clone
+
+        <repository url="http://repository/one/url.git" clone="yes" label="tag-name" all_drivers="no">
+            <driver name="driver_one_name" clone="yes"/>
+			<driver name="driver_two_name" clone=""/>
+			<driver name="driver_three_name" clone="no"/>
+			<driver name="driver_four_name"/>
+        </repository>
+
+        -->
+
+    </drivers>
+
+    <warriorspace>
+
+        <!--
+
+        Fill this out with the details of the repository that you want to clone
+
+        <repository url="http://warriorspace/repository/url.git" overwrite="no" label="commit-id" clone="yes">
+        </repository>
+
+        -->
+
+    </warriorspace>
+</data>

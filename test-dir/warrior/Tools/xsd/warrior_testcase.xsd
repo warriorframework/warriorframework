@@ -1,0 +1,177 @@
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="Testcase">
+    <xs:complexType mixed="true">
+      <xs:sequence>
+        <xs:element name="Details">
+          <xs:annotation>
+            <xs:documentation>Optional, uses default</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:all>
+              <xs:element type="xs:string" name="Name"/>
+              <xs:element type="xs:string" name="Title">
+                <xs:annotation>
+                  <xs:documentation>Required Testcase name or ID</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element type="xs:string" name="State" minOccurs="0"/>
+              <xs:element type="xs:string" name="ExpectedResults" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>Required Testcase title or Description</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element type="xs:string" name="Category" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>optional</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element type="xs:string" name="Engineer" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>Text field, Optional</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element type="xs:string" name="Date" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>Required</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element type="xs:string" name="Time" minOccurs="0"/>
+              <xs:element type="xs:string" name="InputDataFile" minOccurs="0">
+              </xs:element>
+              <xs:element type="xs:string" name="Datatype" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>Optional. The user shall be able to select a data file from a local machine. Relative Path is supported.</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="default_onError" minOccurs="0">
+                <xs:complexType>
+                  <xs:simpleContent>
+                    <xs:extension base="xs:string">
+                    <xs:annotation>
+                    <xs:documentation>Optional
+                                action = next, abort, goto
+                                value = used with action goto to specify step number
+                                Default Error Handling should be a drop down with default value of 'next'</xs:documentation>
+                    </xs:annotation>
+                      <xs:attribute type="xs:string" name="action"/>
+                      <xs:attribute type="xs:positiveInteger" name="value"/>
+                    </xs:extension>
+                  </xs:simpleContent>
+                </xs:complexType>
+              </xs:element>
+              <xs:element type="xs:string" name="Logsdir" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>Required if using InputDataFile Options: 'Iterative, Custom'
+                                Iterative: Expects a system based input data file. Will run the keywords on every system defined.
+                                Custom : Allows for a custom defined data file, with custome variables assigned to keyword to
+                                access the input data file</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element type="xs:string" name="Resultsdir" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>Optional, uses default</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+            </xs:all>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Requirements" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element type="xs:string" name="Requirement" maxOccurs="unbounded" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>The user shall be able to add as many requirements as neededOptional</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Steps">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="step" maxOccurs="unbounded" minOccurs="1">
+                <xs:annotation>
+                  <xs:documentation>The user shall be able to add as many steps as needed. At least one is required Default is impact. Used to decide if status of step will or will not impact
+                                        the testcase status.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType mixed="true">
+                  <xs:all>
+                    <xs:element type="xs:string" name="Description" minOccurs="0"/>
+                    <xs:element name="Execute" minOccurs="0">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="Rule"  minOccurs="0">
+                            <xs:complexType>
+                              <xs:simpleContent>
+                                <xs:extension base="xs:string">
+                                  <xs:attribute type="xs:string" name="Condition"/>
+                                  <xs:attribute name="Condvalue">
+                                    <xs:simpleType>
+                                     <xs:restriction base="xs:string">
+                                      <xs:pattern value="PASS|FAIL|ERROR|EXCEPTION|SKIP"/>
+                                     </xs:restriction>
+                                    </xs:simpleType>
+                                  </xs:attribute>
+                                  <xs:attribute type="xs:string" name="Else"/>
+                                  <xs:attribute type="xs:positiveInteger" name="Elsevalue"/>
+                                </xs:extension>
+                              </xs:simpleContent>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                        <xs:attribute type="xs:string" name="ExecType" />
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element type="xs:string" name="context" minOccurs="0"/>
+                    <xs:element name="Arguments" minOccurs="0">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="argument" maxOccurs="unbounded" minOccurs="0">
+                            <xs:complexType>
+                              <xs:simpleContent>
+                                <xs:extension base="xs:string">
+                                  <xs:attribute type="xs:string" name="name"/>
+                                  <xs:attribute type="xs:string" name="value"/>
+                                </xs:extension>
+                              </xs:simpleContent>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="iteration_type" minOccurs="0">
+                      <xs:complexType>
+                        <xs:simpleContent>
+                          <xs:extension base="xs:string">
+                            <xs:attribute type="xs:string" name="type"/>
+                          </xs:extension>
+                        </xs:simpleContent>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="onError" minOccurs="0">
+                      <xs:complexType>
+                        <xs:simpleContent>
+                          <xs:extension base="xs:string">
+                            <xs:attribute type="xs:string" name="action"/>
+                            <xs:attribute type="xs:positiveInteger" name="value"/>
+                          </xs:extension>
+                        </xs:simpleContent>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element type="xs:string" name="impact" minOccurs="0">
+                    </xs:element>
+                    <xs:element type="xs:positiveInteger" name="rmt" minOccurs="0"/>
+                  </xs:all>
+                  <xs:attribute type="xs:byte" name="TS" use="optional"/>
+                  <xs:attribute type="xs:string" name="Driver" use="optional"/>
+                  <xs:attribute type="xs:string" name="Keyword" use="optional"/>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
+

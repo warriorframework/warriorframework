@@ -1,0 +1,181 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+                <Name>tc_retry_cond</Name>
+                <Title>Test the retry tag in a tc step</Title>
+                <Datatype>Custom</Datatype>
+                <default_onError action="next"/>
+                <Logsdir>../../Execution</Logsdir>
+                <Resultsdir>../../Execution</Resultsdir>
+                <Date>2017-04-20</Date>
+                <Time>16:20</Time>
+                <InputDataFile>No_Data</InputDataFile>
+                <Engineer>Ka</Engineer>
+        </Details>
+        <Requirements>
+                <Requirement/>
+        </Requirements>
+        <Steps>
+                <step Driver="ci_regression_driver" Keyword="local_data_test" TS="1">
+                        <Arguments>
+                                <argument name="desired_status" value="pass"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>connect_ssh</Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
+                <step Driver="ci_regression_driver" Keyword="local_data_test" TS="1">
+                        <Arguments>
+                                <argument name="desired_status" value="fail"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>connect_ssh</Description>
+                        <Execute ExecType="Yes"/>
+                        <context>negative</context>
+                        <impact>impact</impact>
+                </step>
+                <!-- if + met -->
+                <step Driver="ci_regression_driver" Keyword="increase_value" TS="2">
+                        <Arguments>
+                                <argument name="key" value="tc_retry_if_cond_met_count"/>
+                                <argument name="status" value="pass"/>
+                                <argument name="max_value" value="3"/>
+                                <argument name="max_status" value="pass"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <!-- This should makes the keyword runs 4 times, currently it only runs 3 times -->
+                        <retry type="if" Condition="step_1_result" Condvalue="PASS" count="3" interval="0"/>
+                        <Description></Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
+                <step Driver="common_driver" Keyword="verify_data" TS="3">
+                        <Arguments>
+                                <argument name="expected" value="3"/>
+                                <argument name="object_key" value="tc_retry_if_cond_met_count"/>
+                                <argument name="type" value="int"/>
+                                <argument name="comparison" value="eq"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>connect_ssh</Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
+                <!-- if + not met -->
+                <step Driver="ci_regression_driver" Keyword="increase_value" TS="2">
+                        <Arguments>
+                                <argument name="key" value="tc_retry_if_cond_not_met_count"/>
+                                <argument name="status" value="pass"/>
+                                <argument name="max_value" value="4"/>
+                                <argument name="max_status" value="fail"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <retry type="if" Condition="step_1_result" Condvalue="FAIL" count="4" interval="0"/>
+                        <Description></Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
+                <step Driver="common_driver" Keyword="verify_data" TS="3">
+                        <Arguments>
+                                <argument name="expected" value="1"/>
+                                <argument name="object_key" value="tc_retry_if_cond_not_met_count"/>
+                                <argument name="type" value="int"/>
+                                <argument name="comparison" value="eq"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>connect_ssh</Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
+                <!-- if not + met -->
+                <step Driver="ci_regression_driver" Keyword="increase_value" TS="2">
+                        <Arguments>
+                                <argument name="key" value="tc_retry_if_not_cond_met_count"/>
+                                <argument name="status" value="pass"/>
+                                <argument name="max_value" value="5"/>
+                                <argument name="max_status" value="pass"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <retry type="if not" Condition="step_1_result" Condvalue="FAIL" count="5" interval="0"/>
+                        <Description></Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
+                <step Driver="common_driver" Keyword="verify_data" TS="3">
+                        <Arguments>
+                                <argument name="expected" value="5"/>
+                                <argument name="object_key" value="tc_retry_if_not_cond_met_count"/>
+                                <argument name="type" value="int"/>
+                                <argument name="comparison" value="eq"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>connect_ssh</Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
+                <!-- if not + not met -->
+                <step Driver="ci_regression_driver" Keyword="increase_value" TS="2">
+                        <Arguments>
+                                <argument name="key" value="tc_retry_if_not_cond_not_met_count"/>
+                                <argument name="status" value="pass"/>
+                                <argument name="max_value" value="6"/>
+                                <argument name="max_status" value="fail"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <retry type="if not" Condition="step_1_result" Condvalue="PASS" count="6" interval="0"/>
+                        <Description></Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
+                <step Driver="common_driver" Keyword="verify_data" TS="3">
+                        <Arguments>
+                                <argument name="expected" value="1"/>
+                                <argument name="object_key" value="tc_retry_if_not_cond_not_met_count"/>
+                                <argument name="type" value="int"/>
+                                <argument name="comparison" value="eq"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>connect_ssh</Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
+                <!-- flipped status -->
+                <step Driver="ci_regression_driver" Keyword="increase_value" TS="2">
+                        <Arguments>
+                                <argument name="key" value="tc_retry_if_cond_met_flip"/>
+                                <argument name="status" value="pass"/>
+                                <argument name="max_value" value="7"/>
+                                <argument name="max_status" value="pass"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <retry type="if" Condition="step_2_result" Condvalue="PASS" count="7" interval="0"/>
+                        <Description></Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
+                <step Driver="common_driver" Keyword="verify_data" TS="3">
+                        <Arguments>
+                                <argument name="expected" value="7"/>
+                                <argument name="object_key" value="tc_retry_if_cond_met_flip"/>
+                                <argument name="type" value="int"/>
+                                <argument name="comparison" value="eq"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>connect_ssh</Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
+        </Steps>
+</Testcase>

@@ -1,0 +1,102 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+                <Name>Case_for_network_diagnostic</Name>
+                <Title>Case_for_network_diagnostic</Title>
+                <Engineer>Warrior_user</Engineer>
+                <Date>2017-03-17</Date>
+                <Time>21:50</Time>
+                <State>Released</State>
+                <InputDataFile>../../Data/Samples/Network_Util_Data_Sample.xml</InputDataFile>
+                <Datatype>Custom</Datatype>
+                <default_onError action="next"/>
+                <Logsdir/>
+                <Resultsdir/>
+                <ExpectedResults/>
+                <Category>Demo</Category>
+        </Details>
+        <Requirements>
+                <Requirement/>
+        </Requirements>
+        <Steps>
+                <step Driver="cli_driver" Keyword="connect_all" TS="1">
+                        <Arguments>
+                                <argument/>
+                        </Arguments>
+                        <onError action="abort"/>
+                        <Description>Connect to all systems and subsystems in the datafile.</Description>
+
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="network_driver" Keyword="ping_from_remotehost" TS="2">
+                        <Arguments>
+                                <argument name="system_name" value="source"/>
+                                <argument name="dest_system" value="destination"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>ping  to destination system</Description>
+
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="RUP" value="1"/>
+                        <Iteration_type type="Standard"/>
+                </step>
+                <step Driver="network_driver" Keyword="ping_from_remotehost" TS="3">
+                        <Arguments>
+                                <argument name="system_name" value="destination"/>
+                                <argument name="dest_system" value="source"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>ping  to destination system</Description>
+
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="RMT" value="1"/>
+                        <Iteration_type type="Standard"/>
+                </step>
+                <step Driver="network_driver" Keyword="traceroute_from_remotehost" TS="4">
+                        <Arguments>
+                                <argument name="system_name" value="source"/>
+                                <argument name="dest_system" value="destination"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>traceroute to dest system</Description>
+
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="network_driver" Keyword="traceroute_from_remotehost" TS="5">
+                        <Arguments>
+                                <argument name="system_name" value="destination"/>
+                                <argument name="dest_system" value="source"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>traceroute to dest system</Description>
+
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+                </step>
+        </Steps>
+</Testcase>

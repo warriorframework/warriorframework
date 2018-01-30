@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+<Testcase>
+	<Details>
+		<Name>pass</Name>
+		<Title>simple pass tc</Title>
+		<Engineer>Ka Hei Chan</Engineer>
+		<Date>2016-08-22</Date>
+		<Time>15:51</Time>
+		<State/>
+		<InputDataFile>No_Data</InputDataFile>
+		<Datatype/>
+		<default_onError action="next"/>
+		<Logsdir/>
+		<Resultsdir/>
+		<ExpectedResults/>
+	</Details>
+	<Requirements>
+		<Requirement/>
+	</Requirements>
+	<Steps>
+		<step Driver="ci_regression_driver" Keyword="local_data_test" TS="1">
+			<Arguments>
+				<argument name="desired_status" value="pass"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>local_data_test</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+			<rmt/>
+		</step>
+	</Steps>
+</Testcase>

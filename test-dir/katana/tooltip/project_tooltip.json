@@ -1,0 +1,116 @@
+{
+    "name": {
+      "tooltip": "This is the Project name or ID. Katana will save the Project with this name.",
+      "protip": "",
+      "bantip": "No spaces or special characters but for the exception of underscores, hyphens, and periods",
+      "snowflake": "This is a mandatory field"
+    },
+    "title":{
+        "tooltip": "A short description about this Project",
+      "protip": "ProTip: Write down something distinct about this Project here so that it would be easier to understand what this Project is about when you come back to it later",
+		"bantip": "",
+		"snowflake": "This is a mandatory field."
+    },
+    "path":{
+        "tooltip": "Path to the Suite.",
+      "protip": "ProTip: Use relative path so that the Project becomes independent of the system on which it is run",
+		"bantip": "",
+		"snowflake": "Relative path is supported."
+    },
+    "defaultOnError": {
+        "tooltip": "This is where you set what happens if a Suite fails. You will be able to set different onError setting per Suite if needed. That will be done in the Suites case section below.",
+      "protip": "",
+		"bantip": "",
+		"snowflake": "When set, this becomes the default for all Suite-steps below. The default is 'next'"
+    },
+    "goto":{
+        "tooltip": "Specify which Case to go to in case of error.",
+      "protip": "ProTip: Be careful while setting this value to a step that is above the current step; you can get stuck in an infinite loop.",
+		"bantip": "",
+		"snowflake": ""
+    },
+    "onErrorAction":{
+        "tooltip": "Set what happens if the Suite fails. This will override the default of the Project.",
+		"protip": "",
+		"bantip": "",
+		"snowflake": "The default is what has been set as 'Default On Error' above in the Project section"
+    },
+    "resultdirectory":{
+        "tooltip": "Location of directory where result files will be stored.",
+		"protip": "",
+		"bantip": "",
+		"snowflake": "If field is left blank Warrior will use the default location under the Execution folder of the Warriorspace."
+    },
+    "engineer":{
+        "tooltip": "This field should contain the name of the Engineer who created and/or edited this Project.",
+		"protip": "",
+		"bantip": "",
+		"snowflake": "This is a mandatory field"
+    },
+    "time":{
+        "tooltip": "This is date & time on which this Project was created and/or last updated",
+		"protip": "",
+		"bantip": "",
+		"snowflake": "This field cannot be edited as this is a datetime-stamp."
+    },
+    "projectstate": {
+      "tooltip": "This indicates the current state the Project is in - new, test-assigned, released, and so on.",
+      "protip": "Protip: Adding a state to a Project keeps track of which stage of development the Project is in. New states can be added by selecting the 'Add Another' field in the dropdown menu.",
+      "bantip": "No spaces or special characters.",
+      "snowflake": "If the Project is in the 'New' state, you would be able to create a skeletal Project i.e. a Project without a single Suite; otherwise, a Project requires at least one Case."
+    },
+	"executeType_nonzero":{
+		"tooltip": "Decides if this Suite should be executed. Yes and No let you directly state whether you want to execute this Suite. If and If Not gives you the capabilities for executing the Suite when certain conditions are met.",
+		"protip": "ProTip: If want to execute this Suite if an existing condition is met, the choose 'If'. If want to execute this Suite if an existing condition is NOT met, the choose 'If Not'.",
+		"bantip": "",
+		"snowflake": ""
+	},
+	"executeType_zero":{
+		"tooltip": "Decides if this Suite should be executed. Yes and No let you directly state whether you want to execute this Suite.",
+		"protip": "",
+		"bantip": "",
+		"snowflake": ""
+	},
+    "condition":{
+        "tooltip": "This is the condition field for Execute Types 'If' and 'If Not'. If you want to execute this Suite based on he result of a previously executed Suite, then the syntax is testsuite_<case_number>_status.",
+        "protip": "",
+        "bantip": "While adding a condition that executes this Suite based on a previously executed Suite, the scope is limited to the Suites in this Project. Do not add a condition trying to access a Suite status from any other Project but this one.",
+        "snowflake": "This is a mandatory field."
+    },
+    "conditionValue":{
+        "tooltip": "This is the value for the condition given above",
+        "protip": "",
+        "bantip": "",
+        "snowflake": "This is a mandatory field."
+    },
+    "else":{
+        "tooltip": "This field is the 'Else' field for the 'If'/'If Not' above. This works similar to the 'On Error' field, you can choose between 'next', 'abort', and 'goto'.",
+        "protip": "ProTip: You should select 'abort' if you know that the failure of the condition above means nothing from this point onwards is going to Pass.",
+        "bantip": "",
+        "snowflake": "This is a mandatory field."
+    },
+    "elseValue":{
+        "tooltip": "This is Suite that you want to go to in case that the condition above is not met",
+        "protip": "ProTip: If you are selecting to go to a Suite above the current Suite, you may get stuck in an infinite loop.",
+        "bantip": "",
+        "snowflake": "This is a mandatory field."
+    },
+    "impact":{
+		"tooltip": "This field will determines if the status of Suite will or will not impact the Project status.",
+		"protip": "",
+		"bantip": "",
+		"snowflake": ""
+	},
+	"editSuite": {
+		"tooltip": "Click this to edit this Suite.",
+        "protip": "",
+        "bantip": "",
+        "snowflake": "You can edit only one Suite at a time."
+	},
+    "deleteSuite": {
+        "tooltip": "Click this to delete this Suite.",
+        "protip": "",
+        "bantip": "",
+        "snowflake": ""
+    }
+}

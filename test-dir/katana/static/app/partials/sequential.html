@@ -1,0 +1,210 @@
+<div class='row no-gutters'>
+    <div class='col-md-11'>
+
+		<h4 class="nav-font" style="color:rgb(0, 0, 0)" >
+			<b>Test Execution</b>
+		</h4>
+
+		<hr>
+
+        <form ng-submit="executeFiles()" class="form-horizontal" role="form"
+        	  ng-app="app"  ng-controller="sequentialCtrl">
+
+			<div class="form-group">
+                <label class="col-sm-2 control-label text-left">Mode</label>
+				<div class="col-sm-4">
+					<select class="form-control" ng-model="moduleType"  ng-change="moduleSelection(moduleType)" title={{sequentialTooltip.type}}>
+						<option>Run selected files in sequence</option>
+						<option>Run Keywords in Parallel</option>
+						<option>Performance Test Mode</option>
+					</select>
+				</div>
+			</div>
+
+		   <div class="form-group" ng-show = "showParallelType">
+                <label class="col-sm-2 control-label">Testcase Type</label>
+				<div class="col-sm-4">
+					<select class="form-control" ng-model="executionType"  ng-change="execSelection(executionType)" title={{sequentialTooltip.paralleltype}}>
+						<option>Sequential</option>
+						<option>Parallel</option>
+					</select>
+				</div>
+			</div>
+
+
+           <div class="form-group" ng-show="showPerformanceType">
+                <label class="col-sm-2 control-label">Testcase Type</label>
+				<div class="col-sm-4">
+					<select class="form-control" ng-model="executionType"  ng-change="execSelection(executionType)" title={{sequentialTooltip.performancetype}}>
+						<option>Parallel</option>
+						<option>Run Multiple Times</option>
+						<option>Run Until Failure</option>
+						<option>Run Until Pass</option>
+					</select>
+				</div>
+				<div class="col-sm-4">
+					<label ng-show="showIteration">Attempts &nbsp</label> <input type="number" min="1" max="999999" style="width:50%;height:30px ; color:#555" ng-model="iteration" ng-show="showIteration">
+				</div>
+				<br>
+
+            </div>
+			<hr>
+
+			<div class="form-group" >
+				<div class="col-sm-3 control-label form-inline">
+					<label for="repeatSelect" class="col-sm-2 control-label text-left"> AutoDefect</label>
+					<select class="form-control" id="repeatSelect" ng-model="autodefectvalue" ng-change=getAutoDefectvalue(autodefectvalue)>
+						<option ng-repeat="option in temp_nodes" class="dropdown-content">{{option}}</option>
+					</select>
+				</div>
+				<div  class="col-sm-2 control-label">
+					<label> Schedule Run &nbsp; </label>
+					<input  type="checkbox" ng-model="schedule" ng-change="scheduleOperation()" title={{sequentialTooltip.schedulerun}} />
+				</div>
+				<div class="col-sm-7">
+
+					<label ng-show="schedule"><i class="fa fa-calendar"></i> Select Date and Time</label>
+					<input type="text" class="form-control" maxlength="10" pattern="[0-9]{4}[-][0-9]{2}[-][0-9]{2}" style="width:25%" title={{sequentialTooltip.dateFormat}} ng-model="sharedDate" ng-show="schedule"><label ng-show="schedule">&nbsp(yyyy-mm-dd)</label>
+					<input type="text" class="form-control" maxlength="8"  pattern="[0-9]{2}[-][0-9]{2}[-][0-9]{2}" style="width:25%" title={{sequentialTooltip.timeFormat}} ng-model="sharedTime" ng-show="schedule"><label ng-show="schedule">&nbsp(hh-mm-ss )</label>
+				</div>
+			</div>
+
+			<hr>
+			<!--<div class="panel panel-info">
+				<div class="panel-heading">
+					<div class="panel-title">
+						<div class="col-sm-6">
+							<div class="col-sm-5">
+										Execution Type
+							</div>
+							<div class="col-sm-5">
+								<select class="form-control" ng-model="moduleType"  ng-change="moduleSelection(moduleType)">
+									<option>Sequential</option>
+									<option>Parallel</option>
+									<option>Performance</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="panel-body" ng-init="loadDescription()">
+					{{description}}
+				</div>
+			</div>  -->
+
+
+			<div ng-init="loadDescription()">
+				{{description}}
+			</div>
+			<br/>
+
+           <!-- <div class="panel panel-default mainpanel" >
+                <div class="panel-heading">
+                    Select Directory
+					<b> <input type="textinput"  class="form-control" ng-model="addDirectory" /> </b>
+					<input type="button" class="btn panel-default" value="Add" ng-click="fetchFiles()"/>
+					<input type="button" class="btn panel-default" value="Reset" ng-click="reset()"/>  &nbsp
+					<input type='checkbox' ng-model="selectAll" ng-change='selectAllFiles()'>
+					<label>Select All &nbsp<label>
+                </div>
+				<div style="overflow-y: scroll; height:360px; ">
+					<label  ng-repeat="file in files" class="filelist">
+						<br>
+						<input type='checkbox' ng-model="file.done" ng-change='selectedFiles(file)'>
+						{{file.filename}}  </input>
+					</label>
+				</div>
+            </div>    -->
+
+
+			<div class="panel panel-default" >
+                <div class="panel-heading">
+					<h3 style="color:rgb(214, 48, 48)" class="panel-title">Select Directory</h3> <br>
+					<b> <input type="textinput"  class="form-control" ng-model="addDirectory" title={{sequentialTooltip.directory}}></b> <br>
+					<input type="button" class="btn panel-default" value="Add" ng-click="fetchFiles()"/>
+					<input type="button" class="btn panel-default" value="Reset" ng-click="reset()"/>  &nbsp
+					<input type='checkbox' ng-model="selectAll" ng-change='selectAllFiles()'>
+					<label>Select All &nbsp</label>
+
+				</div>
+				<div class="panel-body" style="overflow-y: scroll; height:360px;">
+					<div class="panel-body" style="overflow-y: scroll; height:360px; ">
+					<div >
+						<label  ng-repeat="file in files" class="filelist">
+						<br>
+						<input type='checkbox' ng-model="file.done" ng-change='selectedFiles(file)'>
+						{{file.filename}}
+						</label>
+					</div>
+                </div>
+                </div>
+            </div>
+
+
+
+
+				<!--<div >
+					<label ng-repeat="option in options">
+						<input type="radio" name="optionRadio" ng-model="$parent.optionRadio" value="{{option.value}}">
+						{{option.text}}
+					</label>
+				</div> -->
+            <!-- col-sm-2 control-label <div class="form-group">
+                <div class="col-sm-2 control-label">
+                    <input  type="checkbox" ng-model="autoDefectCreation" /> Auto Defect &nbsp
+					<input  type="checkbox" ng-model="schedule" /> Schedule &nbsp
+                </div>
+            </div>  -->
+
+
+
+
+
+
+			<div  class="filelist execblock">
+				<div class="execrun">
+					<input type="submit" style="color:rgb(214, 48, 48)" class="btn panel-default" value="RUN"/>
+				</div>
+				<div class="execwarning" >{{warning}}</div>
+			</div>
+
+
+
+
+		<br>
+		<hr>
+
+		<!--<div style="  height: 90%;  min-height: 400px;" >
+			<div class="panel-heading">
+				Execution Result
+			</div>
+			<div style="overflow-y: scroll; height:200px; ">
+				<br>
+				<label class="filelist" id="resultLbl">{{result}}</label>
+				<br><br>
+				<label class="filelist" id="execResultLbl">{{execResult}}</label>
+			</div>
+        </div>   -->
+
+		<div style=" height: 90%;  min-height: 400px;" >
+			<div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 style="color:rgb(214, 48, 48)" class="panel-title">Execution Result</h3>
+                </div>
+				<div style="overflow-y: scroll; height:200px; ">
+					<div class="panel-body"> <br>
+						<label class="filelist" id="resultLbl"></label>
+						<br><br>
+						<label class="filelist" id="execResultLbl"></label>
+					</div>
+				</div>
+			</div>
+        </div>
+		<script>
+			setTimeout(function(){
+				$(document.body).find('input[value="Add"]').click();			
+			}, 900);
+		</script>
+		</form>
+    </div>
+</div>

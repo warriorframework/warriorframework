@@ -1,0 +1,66 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+                <Name>CLI_Sample</Name>
+                <Title>cli sample testcase</Title>
+                <Engineer>Warrior_user</Engineer>
+                <Date>2017-03-17</Date>
+                <Time>21:48</Time>
+                <InputDataFile>../../Data/Samples/CLI_Data_Sample.xml</InputDataFile>
+                <Datatype>Custom</Datatype>
+                <default_onError action="next"/>
+                <ExpectedResults/>
+                <Category>custom</Category>
+        </Details>
+        <Requirements>
+                <Requirement/>
+        </Requirements>
+        <Steps>
+                <step Driver="cli_driver" Keyword="connect" TS="1">
+                        <Arguments>
+                                <argument name="system_name" value="NE1"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>connect_ssh</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="cli_driver" Keyword="send_commands_by_testdata_title" TS="2">
+                        <Arguments>
+                                <argument name="system_name" value="NE1"/>
+                                <argument name="title" value="enter_config_mode"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>enter confd config mode</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+
+                </step>
+                <step Driver="cli_driver" Keyword="send_command" TS="3" draft="no">
+                        <Arguments>
+                                <argument name="system_name" value="NE1"/>
+                                <argument name="start_prompt" value=".*"/>
+                                <argument name="command" value="ls -lrt"/>
+                                <argument name="end_prompt" value="%$"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>List the files and folders in the Current working directory</Description>
+
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+        </Steps>
+</Testcase>

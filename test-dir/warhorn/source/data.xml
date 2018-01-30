@@ -1,0 +1,130 @@
+<tags>
+
+    <tag name="warhorn">
+        <child name="dependency">
+            <attribute name="name">
+                <value name="jira">
+                    <info>** Jira is necessary for Jira module to log defects to Jira. The recommended version is 1.0.3. If you decide to install jira, warhorn would automatically install jira 1.0.3.
+                    </info>
+                    <question>Do you want to install jira?</question>
+                </value>
+                <value name="lxml">
+                    <info>** lxml is used by IronClaw tool. The recommended version is 3.5. If you decide to install lxml, warhorn would automatically install lxml 3.5.
+                    </info>
+                    <question>Do you want to install lxml?</question>
+                </value>
+                <value name="ncclient">
+                    <info>** ncclient is used for netconf operations. The recommended version is 0.4.6. If you decide to install ncclient, warhorn would automatically install ncclient 0.4.6.
+                    </info>
+                    <question>Do you want to install ncclient?</question>
+                </value>
+                <value name="paramiko">
+                    <info>** paramiko is used by ncclient. The recommended version is 1.16.0. If you decide to install paramiko, warhorn would automatically install paramiko 1.16.0.
+                    </info>
+                    <question>Do you want to install paramiko?</question>
+                </value>
+                <value name="pexpect">
+                    <info>** pexpect is used by cli utilities. The recommended version is 4.2. If you decide to install pexpect, warhorn would automatically install pexpect 4.2.
+                    </info>
+                    <question>Do you want to install pexpect?</question>
+                </value>
+                <value name="pysnmp">
+                    <info>** pysnmp is used by snmp operations. The recommended version is 4.3.1. If you decide to install pysnmp, warhorn would automatically install pysnmp 4.3.1.
+                    </info>
+                    <question>Do you want to install pysnmp?</question>
+                </value>
+                <value name="requests">
+                    <info>** requests is used by rest operations. The recommended version is 2.9.1. If you decide to install requests, warhorn would automatically install requests 2.9.1.
+                    </info>
+                    <question>Do you want to install requests?</question>
+                </value>
+                <value name="selenium">
+                    <info>** selenium is used by web based testing. The recommended version is 2.48.0. If you decide to install selenium, warhorn would automatically install selenium 2.48.0.
+                    </info>
+                    <question>Do you want to install selenium?</question>
+                </value>
+                <value name="xlrd">
+                   <info>** xlrd is used for excel file related operations. The recommended version is 1.0.0. If you decide to install xlrd, warhorn would automatically install xlrd 1.0.0.
+                   </info>
+                   <question>Do you want to install xlrd?</question>
+               </value>
+               <value name="cloudshell-automation-api">
+                   <info>** cloudshell-automation-api is used for cloushell related operations. The recommended version is 7.1.0.34. If you decide to install cloudshell-automation-api, warhorn would automatically install cloudshell-automation-api 7.1.0.34.
+                   </info>
+                   <question>Do you want to install cloudshell-automation-api?</question>
+               </value>
+            </attribute>
+        </child>
+    </tag>
+
+    <tag name="katana">
+        <attribute name="clone">
+            <info>Katana is a Warrior Tool to create Testcases, Suites, and Projects</info>
+            <question>Do you want to clone Katana?</question>
+        </attribute>
+        <attribute name="url">
+            <question>Please provide an alternate URL: </question>
+        </attribute>
+        <attribute name="destination">
+            <info>If destination path is not provided, Katana would automatically get cloned at the same level as Warhorn</info>
+            <question>Please provide the path to the directory in which you want to clone Katana: </question>
+        </attribute>
+        <attribute name="label">
+            <info>label indicates any branch name, tag, or commit-id you want to check out. If nothing is specified, Katana would be cloned to the latest version available.</info>
+            <question>Please specify a label. If you don't want any specific branch, tag, or commit_id, hit enter/return: </question>
+        </attribute>
+        <attribute name="clean_install">
+            <info>Clean install, when set to yes, will delete the existing Katana in your system and start the installation afresh.</info>
+            <question>Do you want to perform a clean install? (yes[Enter]/no): </question>
+        </attribute>
+    </tag>
+
+    <tag name="warrior">
+        <attribute name="url">
+            <question>Please provide an alternate URL: </question>
+        </attribute>
+        <attribute name="destination">
+            <info>If destination path is not provided, Warrior would automatically get cloned at the same level as Warhorn</info>
+            <question>Please provide the path to the directory in which you want to clone Warrior: </question>
+        </attribute>
+        <attribute name="label">
+            <info>label indicates any branch name, tag, or commit-id you want to check out. If nothing is specified, Warrior would be cloned to the latest version available.</info>
+            <question>Please specify a label. If you don't want any specific branch, tag, or commit_id, hit enter/return: </question>
+        </attribute>
+        <attribute name="clean_install">
+            <info>Clean install, when set to yes, will delete the existing Warrior in your system and start the installation afresh.</info>
+            <question>Do you want to perform a clean install? (yes[Enter]/no): </question>
+        </attribute>
+    </tag>
+
+    <tag name="drivers">
+        <child name="repository">
+            <attribute name="name">
+                <question>Please provide the name of the repository that you want to clone: </question>
+            </attribute>
+            <attribute name="url">
+                <question>Please provide an alternate URL: </question>
+            </attribute>
+            <attribute name="label">
+                <info>label indicates any branch name, tag, or commit-id you want to check out. If nothing is specified, the master would be cloned.</info>
+                <question>Please specify a label. If you don't want any specific branch, tag, or commit_id, hit enter/return:</question>
+            </attribute>
+        </child>
+    </tag>
+
+    <tag name="warriorspace">
+        <child name="repository">
+            <attribute name="name">
+                <question>Please provide the name of the repository that you want to clone:</question>
+            </attribute>
+            <attribute name="url">
+                <question>Please provide an alternate URL:</question>
+            </attribute>
+            <attribute name="label">
+                <info>label indicates any branch name, tag, or commit-id you want to check out. If nothing is specified, the master would be cloned.</info>
+                <question>Please specify a label. If you don't want any specific branch, tag, or commit_id, hit enter/return:</question>
+            </attribute>
+        </child>
+    </tag>
+
+</tags>

@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+                <Name>tc_retry_cond_tc_level_if_not_met_not</Name>
+                <Title>support TC for tc level retry tag with if cond and not met</Title>
+                <Datatype>Custom</Datatype>
+                <default_onError action="next"/>
+                <Logsdir>../../Execution</Logsdir>
+                <Resultsdir>../../Execution</Resultsdir>
+                <Date>2017-04-20</Date>
+                <InputDataFile>No_Data</InputDataFile>
+                <Time>16:20</Time>
+                <Engineer>Ka</Engineer>
+        </Details>
+        <Requirements>
+                <Requirement/>
+        </Requirements>
+        <Steps>
+                <step Driver="ci_regression_driver" Keyword="increase_value" TS="2">
+                        <Arguments>
+                                <argument name="key" value="ts_retry_if_not_cond_not_met_count"/>
+                                <argument name="status" value="pass"/>
+                                <argument name="max_value" value="6"/>
+                                <argument name="max_status" value="fail"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description></Description>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                </step>
+        </Steps>
+</Testcase>

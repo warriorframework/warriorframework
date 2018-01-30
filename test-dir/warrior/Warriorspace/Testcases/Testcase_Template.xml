@@ -1,0 +1,49 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+                <Name>Name</Name>
+                <Title>Title</Title>
+                <ExpectedResults>ExpectedResults</ExpectedResults>
+                <Category>Feature</Category>
+                <Engineer>Warrior_user</Engineer>
+                <Date>2017-03-17</Date>
+                <Time>22:06</Time>
+                <default_onError action="goto" value="9"/>
+                <InputDataFile>Path_to_InputDataFile</InputDataFile>
+                <Datatype>Custom</Datatype>
+                <Logsdir/>
+                <Resultsdir/>
+                <State>New</State>
+        </Details>
+        <Requirements>
+                <Requirement>requirement-001</Requirement>
+                <Requirement>requirement-002</Requirement>
+        </Requirements>
+        <Steps>
+                <step Driver="DriverName" Keyword="KeywordName" TS="1">
+                        <Description>WDescdription text</Description>
+                        <Execute ExecType="If, If Not, Yes, No">
+                                <Rule Condition="variable" Condvalue="1" Else="next, abort, goto" Elsevalue="2"/>
+                        </Execute>
+                        <context>positive</context>
+                        <Arguments>
+                                <argument name="count" value="1"/>
+                        </Arguments>
+                        <onError action="next, abort, goto, abort_as_error" value="9"/>
+                        <impact>noimpact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="DriverName" Keyword="KeywordName" TS="2">
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <onError action="next" value=""/>
+                        <Description/>
+                        <Iteration_type type="Standard"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+        </Steps>
+</Testcase>

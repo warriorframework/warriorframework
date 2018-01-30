@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<Project>
+        <Details>
+                <Name>Demo_Project</Name>
+                <Title>Demo_Project</Title>
+                <Engineer>Warrior_user</Engineer>
+                <State>In Review</State>
+                <Date>03/17/2017</Date>
+                <Time>21:40:17</Time>
+                <default_onError action="abort" value=""/>
+        </Details>
+        <Testsuites>
+                <Testsuite>
+                        <path>../Suites/demo_suite.xml</path>
+                        <onError action="abort" value=""/>
+                        <impact>impact</impact>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                </Testsuite>
+        </Testsuites>
+</Project>

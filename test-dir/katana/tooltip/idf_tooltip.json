@@ -1,0 +1,74 @@
+{
+  "filename": {
+    "tooltip": "This is the data file name. Katana will save the data file with this name.",
+    "protip": "",
+    "bantip": "No spaces or special characters but for the exception of underscores, hyphens, and periods",
+    "snowflake": "This is a mandatory field"
+  },
+  "file_desc": {
+    "tooltip": "This is the data file description.",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "system_name": {
+    "tooltip": "This is the system name.",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "sys_tag_name": {
+    "tooltip": "This is the system tag name.",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "sys_tag_value": {
+    "tooltip": "This is the system tag value.",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "sys_child_tag_name": {
+    "tooltip": "This is the system child tag name.",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "sys_child_tag_value": {
+    "tooltip": "This is the system child tag value.",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "subsys_name": {
+    "tooltip": "This is the subsystem name.",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "subsys_tag_name": {
+    "tooltip": "This is the subsystem tag name.",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "subsys_tag_value": {
+    "tooltip": "This is the subsystem tag value.",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  },
+  "edit_system": {
+    "tooltip": "Click this to edit this System.",
+    "protip": "",
+    "bantip": "",
+    "snowflake": "You can edit only one system at a time"
+  },
+  "delete_system": {
+    "tooltip": "Click this to delete this System.",
+    "protip": "",
+    "bantip": "",
+    "snowflake": ""
+  }
+}
