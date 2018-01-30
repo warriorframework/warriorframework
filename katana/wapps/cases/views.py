@@ -4,15 +4,13 @@ from __future__ import unicode_literals
 import json
 from collections import OrderedDict
 
-from django.http import JsonResponse, HttpResponse
-from django.shortcuts import render, render_to_response
+from django.http import JsonResponse
+from django.shortcuts import render
 from django.template.loader import render_to_string
-from django.utils.safestring import SafeText
 from django.views import View
 from utils.directory_traversal_utils import join_path
 from utils.json_utils import read_json_data, read_xml_get_json
 from utils.navigator_util import Navigator
-from utils.treeview_converter import TreeviewConverter
 from wapps.cases.cases_utils.verify_case_file import VerifyCaseFile
 
 navigator = Navigator()
@@ -20,7 +18,7 @@ CONFIG_FILE = join_path(navigator.get_katana_dir(), "config.json")
 APP_DIR = join_path(navigator.get_katana_dir(), "wapps", "cases")
 STATIC_DIR = join_path(APP_DIR, "static", "cases")
 TEMPLATE = join_path(STATIC_DIR, "base_templates", "Untitled.xml")
-ERRORS = ["Next", "Abort", "Abort as Error", "Go To"]
+DROPDOWN_DEFAULTS = read_json_data(join_path(STATIC_DIR, "base_templates", "dropdowns_data.json"))
 
 
 class CasesView(View):
@@ -70,9 +68,7 @@ def _get_defaults(details=False, requirement=False, step=False, ts="1"):
 
 def get_details_data(data):
     output = {"data": data["Testcase"]["Details"]}
-    output["data"]["states"] = ["New", "Test-Assigned", "Released", "Add Another"]
-    output["data"]["default_on_errors"] = ERRORS
-    output["data"]["datatypes"] = ["Custom", "Iterative", "Hybrid"]
+    output["data"].update(DROPDOWN_DEFAULTS["details"])
     return output
 
 
@@ -87,13 +83,7 @@ def get_steps_data(data, ts="1"):
     output = {"data": data["Testcase"]["Steps"]}
     if isinstance(output["data"]["step"], OrderedDict):
         output["data"]["step"]["@TS"] = ts
-    output["data"]["execute_types"] = ["Yes", "No", "If", "If Not"]
-    output["data"]["execute_elses"] = ERRORS
-    output["data"]["run_modes"] = ["Run Multiple Times", "Run Until Pass", "Run Until Failure"]
-    output["data"]["iteration_types"] = ["Standard", "Once Per Case", "End Of Case"]
-    output["data"]["contexts"] = ["Positive", "Negative"]
-    output["data"]["impacts"] = ["Impact", "No Impact"]
-    output["data"]["on_errors"] = ERRORS
+    output["data"].update(DROPDOWN_DEFAULTS["step"])
     return output
 
 

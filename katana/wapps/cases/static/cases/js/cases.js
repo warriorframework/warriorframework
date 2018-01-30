@@ -32,6 +32,32 @@ var cases = {
             }
             return output
         },
+
+        getAbsoluteFilepath: function (basePath, relativePath) {
+            if (basePath.indexOf('\\') > -1) {
+                basePath = basePath.replace('\\', '/');
+            }
+            if (relativePath.indexOf('\\') > -1) {
+                relativePath = relativePath.replace('\\', '/');
+            }
+            var basePathSeries = basePath.split('/');
+            var relativePathSeries = relativePath.split('/');
+            var i = 0;
+            var hold = 0;
+            while (relativePathSeries[i] === ".."){
+                hold += 1;
+                i += 1;
+            }
+            var output = "";
+            for (i=0; i<(basePathSeries.length - hold - 1); i++) {
+                output += basePathSeries[i] + "/"
+            }
+            for (i=hold; i<relativePathSeries.length; i++) {
+                output += relativePathSeries[i] + "/"
+            }
+            output = output.slice(0, -1);
+            return output
+        },
     },
 
     mappings: {
@@ -104,6 +130,7 @@ var cases = {
 
         editDetails: function() {
             var $elem = $(this);
+            var data = $elem.parent().parent().siblings('#detail-block').find('table').data();
             var $closedDrawerDiv = $elem.closest('#main-div').find('.cases-side-drawer-closed');
             if ($closedDrawerDiv.is(":hidden")){
                 var $switchElem = $closedDrawerDiv.siblings('.cases-side-drawer-open').find('.sidebar').children([0]).children('i');
@@ -140,6 +167,36 @@ var cases = {
     },
 
     drawer: {
+
+        openDatafile: function () {
+            var $elem = $(this);
+            var $inputElem = $elem.parent().prev().children('input');
+            var tcPath = katana.$activeTab.find('#main-div').attr("current-file");
+            var idfPath = cases.utils.getAbsoluteFilepath(tcPath, $inputElem.val());
+            $.ajax({
+                headers: {
+                    'X-CSRFToken': katana.$activeTab.find('input[name="csrfmiddlewaretoken"]').attr('value')
+                },
+                type: 'POST',
+                url: 'check_if_file_exists/',
+                data: {"path": idfPath}
+            }).done(function(data){
+                var pd = { type: 'POST',
+                    headers: {'X-CSRFToken': katana.$activeTab.find('input[name="csrfmiddlewaretoken"]').attr('value')},
+                    data:  {"path": idfPath}};
+                if (data.exists) {
+                    katana.templateAPI.load('/katana/wdf/index/', '/static/wdf_edit/js/main.js,',
+                        null, 'WDF Editor', null, pd)
+                } else {
+                    katana.openAlert({
+                        "alert_type": "danger",
+                        "heading": "Problem Opening " + $inputElem.val(),
+                        "text": "It seems like the file may not be available for viewing.",
+                        "show_cancel_btn": false
+                    });
+                }
+            });
+        },
 
         toggleDrawer: function(){
             var $parent = $(this);
@@ -179,6 +236,8 @@ var cases = {
 
         detailsChange: function(){
             var $elem = $(this);
+            var key = $elem.attr('key');
+            console.log(key);
             console.log($elem);
             var $parent = $elem.closest('.cases-drawer-open-body');
             $parent.find('.fa-list-alt').attr('draft', 'true');

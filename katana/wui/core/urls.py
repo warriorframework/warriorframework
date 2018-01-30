@@ -5,4 +5,5 @@ urlpatterns = [
     url(r'^$', views.CoreView.as_view(), name='index'),
     url(r'^get_file_explorer_data/$', views.get_file_explorer_data, name='get_file_explorer_data'),
     url(r'^refresh_landing_page/$', views.refresh_landing_page, name='refresh_landing_page'),
+    url(r'^check_if_file_exists/$', views.check_if_file_exists, name='check_if_file_exists'),
 ]

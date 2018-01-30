@@ -19,7 +19,7 @@ from django.shortcuts import render
 from django.views import View
 import json
 
-from utils.directory_traversal_utils import get_parent_directory, join_path
+from utils.directory_traversal_utils import get_parent_directory, join_path, file_or_dir_exists
 from utils.navigator_util import Navigator
 from wui.core.apps import AppInformation
 
@@ -66,4 +66,18 @@ def get_file_explorer_data(request):
     else:
         start_dir = join_path(nav_obj.get_warrior_dir(), "Warriorspace")
     output = nav_obj.get_dir_tree_json(start_dir_path=start_dir)
+    return JsonResponse(output)
+
+
+def check_if_file_exists(request):
+    filename = request.POST.get("filename")
+    directory = request.POST.get("directory")
+    extension = request.POST.get("extension")
+    path = request.POST.get("path")
+
+    if path is not None:
+        output = {"exists": file_or_dir_exists(path)}
+    else:
+        output = {"exists": file_or_dir_exists(join_path(directory, filename + extension))}
+
     return JsonResponse(output)

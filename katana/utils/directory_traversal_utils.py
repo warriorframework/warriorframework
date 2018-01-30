@@ -207,3 +207,10 @@ def delete_dir(src):
         print e
         output = False
     return output
+
+
+def file_or_dir_exists(filepath):
+    output = False
+    if os.path.exists(filepath):
+        output = True
+    return output
