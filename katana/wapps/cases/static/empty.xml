@@ -1,0 +1,22 @@
+<Testcase>
+    <Details>
+        <Name/>
+        <Title/>
+        <Engineer/>
+        <Date/>
+        <Time/>
+        <State/>
+        <InputDataFile/>
+        <Datatype/>
+        <default_onError action="next" goto=""/>
+        <Logsdir/>
+        <Resultsdir/>
+        <ExpectedResults/>
+        <Category/>
+    </Details>
+    <Requirements>
+        <Requirement/>
+    </Requirements>
+    <Steps>
+    </Steps>
+</Testcase>

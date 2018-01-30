@@ -1,8 +1,29 @@
 
 
-.case-configuration-table {}
+/* INPUT */
+.cases-title-label {
+  float: left;
+  font-size: 28;
+
+}
+
+
+.cases-checkbox {
+  border:1px solid red;
+  border-radius:2px;
+  background:#ebebeb;
+  float: left;
+  width: 15px;
+
+}
+.case-configuration-table {
+  font-size: 12px;
+
+  
+}
 .case-configuration-table table {
   border-collapse: collapse;
+
 }
 .case-configuration-table td {
   text-align: left;
@@ -23,12 +44,12 @@
     vertical-align: top;
     font-weight: 400;
     color: #FFF;
-    background-color: #577BA0;
+    background: #4ea4e0;
 }
 
 .case-configuration-table i{
     padding: 4px;
-    font-size: 16px;
+   
 }
 
 .case-configuration-table tr:nth-child(even){background-color: #f2f2ff}
@@ -72,6 +93,11 @@
  
 }
 
+.case-no-padding { 
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
 .case-req-configuration-table th {
   text-align: left;
   border: 0px ;
@@ -85,7 +111,7 @@
     vertical-align: top;
     font-weight: 400;
     color: #FFF;
-    background-color: #577BA0;
+    background: #4ea4e0;
 }
 
 .case-req-configuration-table i{
@@ -98,11 +124,22 @@
 .case-req-configuration-table tr th:nth-child(1), .case-req-configuration-table tr td:nth-child(1) {
     flex-grow: .3;
 }
-.case-req-configuration-table tr th:nth-child(1), .case-req-configuration-table tr td:nth-child(1) {
-    flex-grow: .3;
+.case-req-configuration-table tr th:nth-child(2), .case-req-configuration-table tr td:nth-child(2) {
+    flex-grow: 3;
 }
 
 .case-req-configuration-table tr th:last-child, .case-req-configuration-table tr td:last-child {
-    flex-grow: 1.1;
+    flex-grow: 2;
     font-size: 18px;
 }
+
+.case-signature { 
+  border-style: dotted; 
+  border-width: 1px; 
+  font-style: italic;
+}
+
+.case-scrollable-source-text { 
+  overflow:auto;
+  background: '#bbb';
+ }

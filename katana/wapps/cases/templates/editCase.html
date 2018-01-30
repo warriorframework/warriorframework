@@ -1,30 +1,35 @@
 {% load static %} 
-
-<body>
-    <link rel="stylesheet" href="{% static "./case_tables.css" %}">
+<link rel="stylesheet" href="{% static 'cases/css/cases.css' %}">
+<link rel="stylesheet" href="{% static 'cases/css/jquery-editable-select.css' %}">
     <div class="tool-bar">
-        <i id="addStep" class="btn btn-success" katana-click="caseApp.addNewTestStepToUI">Add Step To Case</i>
-        <i class="btn btn-success" katana-click="caseApp.addRequirementToCase">Add Requirement</i>
-        <i class="btn btn-success" katana-click="caseApp.sendCaseToServer">Write Changes To Disk</i>
-       
-        <label class="col-md-2 text-righ" t>Save file to </label>
-        <input class="text-right col-md-4" type="text" id="my_file_to_save" name="my_file_to_save" value="{{savefilename}}" />
+        <label class="cases-title-label">Edit Case</label>
+        <button id="addNewCase" class="button" katana-click="cases.startNewCase">Add New Case</button>
+        <button id="addStep" class="button" katana-click="cases.addNewTestStepToUI">Add Step To Case</button>
+        <button class="button" katana-click="cases.addRequirementToCase">Add Requirement</button>
+        <button class="button" katana-click="cases.sendCaseToServer">Save</button>
+
+        
     </div>
-    <div class="container-fluid" auto-init="caseApp.init">
+
+
+<div class="csrf-container">{% csrf_token %}</div>
+
+   <div auto-init="cases.mapFullCaseJson" on-switch="cases.onTabSwitch"> 
+    <div class="container-fluid" >
         <div class="row">
             <div class="col-md-9">
                 <div class="row ">
                     <div class="col">
                         <label>Name*:</label>
-                        <input type="text" id="caseName" value="{{caseName}}" />
+                        <input required type="text" id="caseName" value="{{caseName}}" />
                     </div>
                     <div class="col">
                         <label>Title*:</label>
-                        <input type="text" id="caseTitle" value="{{caseTitle}}" />
+                        <input required type="text" id="caseTitle" value="{{caseTitle}}" />
                     </div>
                     <div class="col">
-                        <label>Category*:</label>
-                        <input type="text" id="caseCategory" value="{{caseCategory}}" />
+                        <label>Category:</label>
+                        <input required type="text" id="caseCategory" value="{{caseCategory}}" />
                     </div>
                 </div>
                 <div class="row ">
@@ -35,28 +40,28 @@
                     <div class="col">
                         <label>Expected Results:</label>
                        
-                         <select class="text-right" type="text" id="caseExpectedResults" value="{{caseExpectedResults}}">
-                            <option value="PASS">PASS</option>
-                            <option value="FAIL">FAIL</option>
-                        </select>
+                         <input  class="text-right" type="text" id="caseExpectedResults" value="{{caseExpectedResults}}">
+                        </input>
                     </div>
                     <div class="col">
-                        <label>Engineer:</label>
+                        <label>Engineer*:</label>
                         <input type="text" id="caseEngineer" value="{{caseEngineer}}" />
                     </div>
                 </div>
                 <div class="row ">
                     <div class="col-md-2">
-                        <label>Date:</label>
+                        <label>Last Updated:</label>
                         <input type="text" id="caseDate" value="{{caseDate}} {{caseTime}}" />
                     </div>
                     <div class="col">
                         <label>Warrior Data File:</label>
-                        <div class="btn-group col-md-12">
+                        <input  class="cases-checkbox " type="checkbox" id="ck_dataPath" name="ck_dataPath" value="No Data Path"></input>
+
+                        <div class="btn-group case-no-padding col-md-12 case-results-dir">
                         <input type="text" id="caseInputDataFile" value="{{caseInputDataFile}}" />
                         
-                        <button class="btn btn-info" katana-click="caseApp.getResultsDirForCase">...</button>
-                        <button class="btn btn-info" katana-click="caseApp.start_wdfEditor()">WDF</button>
+                        <button class="button case-results-dir" katana-click="cases.getCaseInputDataFile">...</button>
+                        <button class="button fa fa-pencil case-results-dir" katana-click="cases.start_wdfEditor">WDF</button>
                         </div>
                     </div>
 
@@ -65,28 +70,31 @@
                     <div class="col-md-2">
                         <label class=" text-right" for="default_onError">Default On Error:</label>
                         <select class="text-right" type="text" id="default_onError" name="default_onError" value="{{default_onError}}">
-                            <option value="next">Next</option>
-                            <option value="abort">Abort</option>
-                            <option value="abort_as_error">Abort as Error</option>
-                            <option value="goto">Go to</option>
-                        </select>
+                                <option value="next">next</option>
+                                <option value="abort">abort</option>
+                                <option value="abort_as_error">abort as error</option>
+                                <option value="goto">goto</option>
+                          </select>
                         <select class="text-right" type="text" id="default_onError_goto" name="default_onError_goto" value="{{default_onError}}">
                         </select>
+                      
+
                     </div>
                     <div class="col-md-2">
                         <label>Case State:</label>
-                        <select class="text-right" type="text" id="caseState" name="caseState" value="{{caseState}}">
+                        <select class="text-right" type="text" id="caseState" name="caseState" value="{{caseState}}" katana-click="cases.getCaseStateString">
                             {% for x in caseStateOptions %}
                             <option id="{{x}}">{{x}}</option>
                             {% endfor %}
                         </select>
                     </div>
                     <div class="col-md-2">
-                        <div>
-                            <input type="checkbox" id="ck_dataPath" name="ck_dataPath" value="No Data Path">
-                            <label class="text-right " id="caseDatatype_lbl">Data Type:</label>
-                        </div>
-                        <select class="text-right  case-results-dir" type="text" id="caseDatatype" name="caseDatatype" value="{{caseDatatype}}">
+                        <span>
+                        <label for="ck_dataPath" id="caseDatatype_lbl">Data Type:</label>
+                        
+                        </span>
+                         
+                        <select class="text-right  " type="text" id="caseDatatype" name="caseDatatype" value="{{caseDatatype}}">
                             <option value="Custom">Custom</option>
                             <option value="Hybrid">Hybrid</option>
                             <option value="Iterative">Iterative</option>
@@ -94,9 +102,9 @@
                     </div>
                     <div class="col">
                         <label class="text-right " id="caseDatatype_lbl">Results Directory:</label>
-                        <div class="btn-group col-md-12">
+                        <div class="btn-group case-no-padding col-md-12">
                         <input class="text-right " type="text" id="caseResultsdir" value="{{caseResultsdir}}">
-                        <!--<button class="btn btn-success r" katana-click="caseApp.getResultsDirForCase('#caseResultsdir')">...</button>-->
+                        <button class="button" katana-click="cases.getResultsDirForCases">...</button>
                         </div>
                     </div>
                 </div>
@@ -106,14 +114,14 @@
             </div>
             <div id="savesubdir" class="hidden">{{savesubdir}}</div>   
             <div id="savefilepath" class="hidden">{{savefilepath}}</div>  <!-- Used for absolute path resolution -->
-            <div id="xmlfilename" class="hidden" >{{myfile}}</div>
+            <div id="fullpathname" class="hidden" >{{fullpathname}}</div>
             <div id="emptyTestCaseData" class="hidden"> {{emptyTestCase}} </div>
             <div id="listOfTestStepsForCase" class="hidden"> {{fulljsonstring}} </div> 
         </div>
-        <div class="container-fluid">
-            <div class="row">
-                <div id="tableOfTestStepsForCase" class="col-md-12 "></div>
-            </div>
+        <div class="row">
+          
+                <div id="tableOfTestStepsForCase" class="col-md-12"></div>
+      
         </div>
         <div class="container-fluid">
             <div class="row" id="editCaseStepDiv" class="hidden">
@@ -124,15 +132,34 @@
                                 <label>Row</label>
                                 <input type="text" id="StepRowToEdit" value="" />
                             </div>
+                            <div>
+                            <button class="btn btn-success center" id="saveEditCaseStep" katana-click="cases.saveTestCaseChanges">Save Changes To Test Step </button>
+                            </div>                           
+                            <div>
+                                
+                                 <input class=" cases-checkbox" type="checkbox" id="StepDriverCkBx" name="StepDriverCkBx" value="TBD" >To be developed</input>
+                
+                            </div>
+                            
+
                             <div class="field">
                                 <label>Driver</label>
                                 <select type="text" id="StepDriver" value="" />
+                                <input type="text" class="hidden" id="StepDriverText" value="" />
+                               
                             </div>
-                            <div class="field">
-                                <label>Keyword</label>
-                                <select type="text" id="StepKeyword" value="" />
+
+                            <div>
+                                 <input class=" cases-checkbox" type="checkbox" id="StepKeywordCkBx" name="StepKeywordCkBx" value="TBD">To be developed</input> 
+                             </div>    
+
+                             <div class="field">
+                                 <label>Keyword</label>
+                                 <select type="text" id="StepKeyword" value="" />
+                                <input type="text" class="hidden" id="StepkeywordText" value="" />
+                               
                             </div>
-                            <div class="field">
+                            <div class="field  hidden">
                                 <label>TS</label>
                                 <input type="text" id="StepTS" value="" />
                             </div>
@@ -140,67 +167,46 @@
                                 <label>Description</label>
                                 <input type="text" id="StepDescription" value="" />
                             </div>
+
                             <div class="field">
-                                <label>Context</label>
-                                <input type="text" id="StepContext" value="" />
+                                <label>wDescription</label>
+                                <input type="text" id="StepWDescription" disabled  value="" />
                             </div>
+
+                            <label class="text-right">Arguments, Values</label>
+                           
+                            <div id="arguments-textarea"> </div>
+
+                            <div>
+                                <button class="btn btn-success case-args-tbd hidden" id="appendArgument" katana-click="cases.appendPopupArgument">Append Argument </button>
+                                
+                            </div>
+
                             <div class="field">
                                 <label class=" text-right">ExecType:</label>
-                                <select type="text" class="text-right" id="Execute-at-ExecType" value="">
-                                    <option value="Yes">Yes</option>
-                                    <option value="No">No</option>
-                                    <option value="If">If</option>
-                                    <option value="If Not">If Not</option>
+                                <select type="text" class="text-right" id="casesExecuteAtExecType" value="">
+                                    <option value="yes">Yes</option>
+                                    <option value="no">No</option>
+                                    <option value="if">If</option>
+                                    <option value="if not">If Not</option>
                                 </select>
                             </div>
-                            <div class="field ">
-                                <label class="rule-condition">Rule Condition:</label>
-                                <input type="text" class="rule-condition" id="executeRuleAtCondition" value="" />
+
+                            <div id="caseStepAllRules"/>
+                            <div>
+                                  <button class="btn btn-success rule-condition" id="addRuleToStep" katana-click="cases.addNewRuleToStep">Add Rule</button>
                             </div>
-                            <div class="field ">
-                                <label class="rule-condition">Rule Condition Value:</label>
-                                <select type="text" class="rule-condition text-right" id="executeRuleAtCondvalue" value="">
-                                    <option value="PASS">PASS</option>
-                                    <option value="FAIL">FAIL</option>
-                                    <option value="ERROR">ERROR</option>
-                                    <option value="SKIP">SKIP</option>
-                                </select>
-                            </div>
-                            <div class="field ">
-                                <label class="rule-condition">Rule Else:</label>
-                                <select type="text" class="rule-condition text-right" id="executeRuleAtElse" value="">
-                                    <option value="next">next</option>
-                                    <option value="abort_as_error">abort_as_error</option>
-                                    <option value="goto">goto</option>
-                                </select>
-                            </div>
-                            <div class="field ">
-                                <label class="rule-condition">Rule Else Value:</label>
-                                <input class="rule-condition" type="text" id="executeRuleAtElsevalue" value="" />
-                            </div>
-                            <div class="field ">
-                            </div>
-                            <div class="field">
-                                <label class="col-md-2 text-right">On Error Action </label>
-                                <select type="text" class="text-right" id="SteponError-at-action" value="">
-                                    <option value="next">next</option>
-                                    <option value="abort">abort</option>
-                                    <option value="abort_as_error">abort_as_error</option>
-                                    <option value="goto">goto</option>
-                                </select>
-                                <select type="text" class="text-right" id="SteponError-at-value" value="">
-                                </select>
-                            </div>
+                            
                             <div class="field">
                                 <label class="text-right">Run mode type:</label>
-                                  <select type="text" class="text-right" id="runmode-at-value" value="">
-                                    <option value="RMT">Standard</option>
+                                  <select type="text" class="text-right" id="runmode-at-type" value="">
+                                    <option value="standard">Standard</option>
                                     <option value="RMT">RMT</option>
                                     <option value="RUF">RUF</option>
                                     <option value="RUP">RUP</option>
                                 </select>
                                 <label class="text-right runmode-value">Run mode value:</label>
-                                <input type="text" class="text-right" id="runmode-at-type" value="" />
+                                <input class="text-right runmode-value" type="text"  id="runmode-at-value" value="" />
                             </div>
                             <div class="field">
                                 <label class="text-right">impact</label>
@@ -209,19 +215,41 @@
                                     <option value="noimpact">noimpact</option>
                                 </select>
                             </div>
-                            <div class="field col-md-3">
-                                <label>Warrior Data File:</label>
-                                 <button class="btn btn-info" katana-click="caseApp.getResultsDirForCaseStep">...</button>
-                                <input type="text" id="StepInputDataFile" value="" />
+                            <div class="field">
+                                <label>Context</label>
+                                <select type="text" class="text-right" id="StepContext" value="">
+                                    <option value="positive">positive</option>
+                                    <option value="negative">negative</option>
+                                </select>
+
                             </div>
-                            <div id="arguments-textarea"> </div>
-                            <div>
-                                <button class="btn btn-success" id="appendArgument" katana-click="caseApp.appendPopupArgument">Append Argument </button>
-                                <button class="btn btn-success" id="saveEditCaseStep" katana-click="caseApp.saveTestCaseChanges">Save Changes To Test Step </button>
+
+                            <div class="field">
+                                <label class="text-right">On Error Action </label>
+                                <select type="text" class="text-right" id="SteponError-at-action" value="">
+
+                                    <option value="next">next</option>
+                                    <option value="abort">abort</option>
+                                    <option value="abort_as_error">abort as error</option>
+                                    <option value="goto">goto</option>
+
+                                </select>
+                                <select type="text" class="text-right" id="SteponError-at-value" value="">
+                                </select>
+                            </div>
+
+                            
+                         <button class="btn btn-success center" id="saveEditCaseStep2" katana-click="cases.saveTestCaseChanges">Save Changes To Test Step </button>
                                
-                            </div>
                         </div>
-                        <div id="sourceCaseFileText" class="col-md-8" style='overflow:auto;'> Source file </div>
+
+                         <div class="col-md-8">
+                            <div id="sourceCaseFileDef" class='case-signature'> Signature </div>
+                            <pre id="sourceCaseFileText" class='case-scrollable-source-text' height="100%"> Source file </pre>
+                       
+
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -232,4 +260,3 @@
     </div>
 
     
-</body>

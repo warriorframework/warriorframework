@@ -1,9 +1,9 @@
 {
   "icon": "briefcase",
   "color": "red",
-  "name" : "Cases",
-  "url" : "/katana/cases/",
   "developer": "Warrior Framework",
   "description": "Edit your Cases with this App",
+  "url" : "/katana/cases/",
+  "name" : "Cases",
   "app" : [{"name" : "Cases", "url" : "/katana/cases/", "include": "wapps.cases.urls"}]
 }
