@@ -1,0 +1,9 @@
+{
+  "icon": "sliders",
+  "color": "red",
+  "name" : "KW Sequencer",
+  "url" : "/katana/kw_sequencer/",
+  "developer": "Warrior Framework",
+  "description": "Create wrapper keywords using this App",
+  "app" : [{"name" : "KW SEQUENCER", "url" : "/katana/kw_sequencer/", "include": "wapps.kw_sequencer.urls"}]
+}
