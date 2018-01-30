@@ -15,6 +15,10 @@ limitations under the License.
 from Framework.Utils.print_Utils import print_warning
 
 
+
+
+
+
 def get_runmode_from_xmlfile(element):
     """Get 'runmode:type' & 'runmode:value' of a step/testcase from the
     testcase.xml/testsuite.xml file. Supported values - 'ruf, rup, rmt',
