@@ -97,7 +97,13 @@ def get_details_template(request):
 
 
 def get_steps_template(request):
-    return render(request, 'cases/steps_template.html')
+    output = {"data": {"step": {}}}
+    if request.POST.get("data") == "false":
+        output["data"]["step"] = _get_defaults(step=True)
+    else:
+        output["data"]["step"] = json.loads(request.POST.get("data"))
+    output["data"].update(DROPDOWN_DEFAULTS["step"])
+    return render(request, 'cases/steps_template.html', output)
 
 
 def get_reqs_template(request):
@@ -118,3 +124,13 @@ def get_reqs_display_template(request):
     mid_req = (len(output["data"]["Requirement"]) + 1) / 2
     output["data"]["mid_req"] = mid_req
     return render(request, 'cases/requirements_display_template.html', output)
+
+
+def get_steps_display_template(request):
+    print request.POST.get("data")
+    if request.POST.get("data") == "false":
+        output = {"data": _get_defaults(step=True)}
+    else:
+        output = {"data": json.loads(request.POST.get("data"))}
+    output["data"].update(DROPDOWN_DEFAULTS["step"])
+    return render(request, 'cases/steps_display_template.html', output)

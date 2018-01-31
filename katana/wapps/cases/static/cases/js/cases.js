@@ -76,6 +76,11 @@ var cases = {
             savedContent: false,
             title:  "New Step",
             contents: function () {
+                if (katana.$activeTab.find('#step-block').find('[being-edited="true"]').length > 0){
+                    var contextData = JSON.stringify(katana.$activeTab.find('#step-block').find('[being-edited="true"]').data().dataObject);
+                } else {
+                    contextData = false;
+                }
                 return Promise.resolve(
                     $.ajax({
                         headers: {
@@ -83,7 +88,7 @@ var cases = {
                         },
                         type: 'POST',
                         url: 'cases/get_steps_template/',
-                        data: {"data": false}
+                        data: {"data": contextData}
                     }).then(data => { return data })
                 );
             },
@@ -296,6 +301,11 @@ var cases = {
                 steps: function($elem) {
                     if ($elem === undefined){
                         $elem = $(this);
+                    }
+                    if ($elem.attr('draft') !== 'true'){
+                        if($elem.closest('#main-div').find('#step-block').find('[being-edited="true"]').length > 0){
+                            $elem.data({"data-object": $elem.closest('#main-div').find('#step-block').find('[being-edited="true"]').data().dataObject});
+                        }
                     }
                     var $sidebar = $elem.closest('.sidebar');
                     var $highlighted = $sidebar.find('.cases-icon-bg-color');
@@ -686,32 +696,38 @@ var cases = {
         editReq: function () {
             var $elem = $(this);
             var $trElem = $elem.closest('tr');
-            $trElem.attr('being-edited', 'true');
+            var $allTrs = $trElem.closest('.cases-intentional-space-x').find('[being-edited="true"]');
             var $mainDiv = $trElem.closest('#main-div');
-            if ($mainDiv.find('.cases-side-drawer-open').is(':visible')){
-                var draft = $mainDiv.find('.cases-side-drawer-open').find('.sidebar').find('.fa-tags').attr("draft")
-            } else {
-                draft = $mainDiv.find('.cases-side-drawer-closed').find('.fa-tags').children('i').is(':visible')
-            }
-            if (draft) {
-                katana.openAlert({
-                    "alert_type": "warning",
-                    "heading": "Another req is being edited in the Requirements Editor.",
-                    "text": "Please save or discard that requirement before editing or creating a new requirement.",
-                    "show_cancel_btn": false
-                })
-
-            } else {
-                var data = $trElem.data();
-                var $closedDrawerDiv = $elem.closest('#main-div').find('.cases-side-drawer-closed');
-                var $switchElem = $($closedDrawerDiv.siblings('.cases-side-drawer-open').find('.sidebar').children()[1]).children('i');
-                $switchElem.data(data);
-                if ($closedDrawerDiv.is(":hidden")){
-                    cases.drawer.open.switchView.requirements($switchElem);
+            if ($allTrs.length > 0){
+                if ($mainDiv.find('.cases-side-drawer-open').is(':visible')){
+                    var draft = $mainDiv.find('.cases-side-drawer-open').find('.sidebar').find('.fa-tags').attr("draft") === 'true';
                 } else {
-                    var $openElem = $($closedDrawerDiv.children('div')[2]);
-                    cases.drawer.openDrawer.requirements($openElem);
+                    draft = $mainDiv.find('.cases-side-drawer-closed').find('.fa-tags').children('i').is(':visible')
                 }
+                if (draft) {
+                    katana.openAlert({
+                        "alert_type": "warning",
+                        "heading": "Another req is being edited in the Requirements Editor.",
+                        "text": "Please save or discard that requirement before editing or creating a new requirement.",
+                        "show_cancel_btn": false
+                    });
+                    return;
+                }
+            }
+            for (var i=0; i<$allTrs.length; i++){
+                $($allTrs[i]).attr('being-edited', 'false');
+                cases.mappings.newReq.savedContent = false;
+            }
+            $trElem.attr('being-edited', 'true');
+            var data = $trElem.data();
+            var $closedDrawerDiv = $elem.closest('#main-div').find('.cases-side-drawer-closed');
+            var $switchElem = $($closedDrawerDiv.siblings('.cases-side-drawer-open').find('.sidebar').children()[1]).children('i');
+            $switchElem.data(data);
+            if ($closedDrawerDiv.is(":hidden")){
+                cases.drawer.open.switchView.requirements($switchElem);
+            } else {
+                var $openElem = $($closedDrawerDiv.children('div')[2]);
+                cases.drawer.openDrawer.requirements($openElem);
             }
         },
     },
@@ -797,7 +813,7 @@ var cases = {
                         "text": "Only one step can be inserted at a time. Please select only one " +
                         "step above which you want to insert another step.",
                         "show_cancel_btn": false
-                    })
+                    });
                     return;
                 } else {
                     insertAtIndex = $($allTrElems[0]).index();
@@ -807,6 +823,7 @@ var cases = {
             },
 
             editStep: function () {
+                var $elem = $(this);
                 var $tbodyElem = katana.$activeTab.find('#step-block').find('tbody');
                 var $allTrElems = $tbodyElem.children('tr[marked="true"]');
                 if ($allTrElems.length === 0) {
@@ -816,7 +833,6 @@ var cases = {
                         "text": "Please select a step to edit.",
                         "show_cancel_btn": false
                     });
-                    return;
                 } else if ($allTrElems.length > 1) {
                     katana.openAlert({
                         "alert_type": "danger",
@@ -827,9 +843,40 @@ var cases = {
                     });
                     return;
                 } else {
-                    var editIndex = $($allTrElems[0]).index();
+                    var $allEditedTrElems = $tbodyElem.children('tr[being-edited="true"]');
+                    var $mainDiv = $tbodyElem.closest('#main-div');
+                    if($allEditedTrElems.length > 0){
+                        if ($mainDiv.find('.cases-side-drawer-open').is(':visible')){
+                            var draft = $mainDiv.find('.cases-side-drawer-open').find('.sidebar').find('.fa-star').attr("draft") === 'true';
+                        } else {
+                            draft = $mainDiv.find('.cases-side-drawer-closed').find('.fa-star').children('i').is(':visible')
+                        }
+                        if (draft) {
+                            katana.openAlert({
+                                "alert_type": "warning",
+                                "heading": "Another Step is being edited in the Step Editor.",
+                                "text": "Please save or discard that Step before editing or creating a new one.",
+                                "show_cancel_btn": false
+                            });
+                            return;
+                        }
+                    }
+                    for (var i=0; i<$allEditedTrElems.length; i++) {
+                        $($allEditedTrElems[i]).attr('being-edited', 'false');
+                        cases.mappings.newStep.savedContent = false;
+                    }
+                    $allTrElems.attr('being-edited', 'true');
+                    var data = $allTrElems.data();
+                    var $closedDrawerDiv = $elem.closest('#main-div').find('.cases-side-drawer-closed');
+                    var $switchElem = $($closedDrawerDiv.siblings('.cases-side-drawer-open').find('.sidebar').children()[2]).children('i');
+                    $switchElem.data(data);
+                    if ($closedDrawerDiv.is(":hidden")){
+                        cases.drawer.open.switchView.steps($switchElem);
+                    } else {
+                        var $openElem = $($closedDrawerDiv.children('div')[3]);
+                        cases.drawer.openDrawer.steps($openElem);
+                    }
                 }
-                console.log(editIndex);
             },
         }
     },
