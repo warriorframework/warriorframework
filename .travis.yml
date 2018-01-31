@@ -6,9 +6,6 @@ matrix:
       env: INSTALL=no TESTFILE=./wftests/warrior_tests/projects/pj_common_actions.xml
       python: 2.7
     - os: linux
-      env: INSTALL=no  TESTFILE=./wftests/warrior_tests/projects/pj_common_actions.xml COPILOT=yes
-      python: 2.7
-    - os: linux
       env: INSTALL=yes TESTFILE=./wftests/ci/pylint.sh PYLINT=yes
       python: 2.7
     - os: linux
@@ -45,7 +42,9 @@ matrix:
       python: 2.7
       addons:
         firefox: "46.0"
-
+    - os: linux
+      env: INSTALL=no  TESTFILE=./wftests/warrior_tests/projects/pj_common_actions.xml COPILOT=yes
+      python: 2.7
 install:
     - if [ ${COPILOT} = "yes" ]; then
         python setup.py install ;
