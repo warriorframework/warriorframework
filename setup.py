@@ -9,6 +9,6 @@ setup(
     author="warriroramework org",
     author_email="sathyamoorthy.radhakrishnan@us.fujitsu.com",
     url="https://github.com/warriorframework/warriorframework",
-    install_requires=["requests", "numpy", "Django==1.9.6"],
+    install_requires=["pexpect==4.2", "requests==2.9.1", "selenium==2.53.0"],
 
 )
