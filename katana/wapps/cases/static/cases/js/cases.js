@@ -1,6 +1,17 @@
 var cases = {
 
     utils: {
+
+        updateData: function (data, key, value) {
+            if (key.indexOf('[') > -1) {
+                var temp = key.split('[');
+                data[temp[0]] = cases.utils.updateData(data[temp[0]], temp[1].slice(0, -1), value)
+            } else {
+                data[key] = value;
+            }
+            return data
+        },
+
         getRelativeFilepath: function (basePath, path) {
             if (basePath.indexOf('\\') > -1) {
                 basePath = basePath.replace('\\', '/');
@@ -132,12 +143,13 @@ var cases = {
             var $elem = $(this);
             var data = $elem.parent().parent().siblings('#detail-block').find('table').data();
             var $closedDrawerDiv = $elem.closest('#main-div').find('.cases-side-drawer-closed');
+            var $switchElem = $($closedDrawerDiv.siblings('.cases-side-drawer-open').find('.sidebar').children()[0]).children('i');
+            $switchElem.data(data);
             if ($closedDrawerDiv.is(":hidden")){
-                var $switchElem = $closedDrawerDiv.siblings('.cases-side-drawer-open').find('.sidebar').children([0]).children('i');
-                cases.drawer.open.switchView($switchElem);
+                cases.drawer.open.switchView.details($switchElem);
             } else {
                 var $openElem = $($closedDrawerDiv.children('div')[1]);
-                cases.drawer.openDrawer($openElem);
+                cases.drawer.openDrawer.details($openElem);
             }
         },
 
@@ -146,10 +158,10 @@ var cases = {
             var $closedDrawerDiv = $elem.closest('#main-div').find('.cases-side-drawer-closed');
             if ($closedDrawerDiv.is(":hidden")){
                 var $switchElem = $closedDrawerDiv.siblings('.cases-side-drawer-open').find('.sidebar').children([1]).children('i');
-                cases.drawer.open.switchView($switchElem);
+                cases.drawer.open.switchView.requirements($switchElem);
             } else {
                 var $openElem = $($elem.closest('#main-div').find('.cases-side-drawer-closed').children('div')[2]);
-                cases.drawer.openDrawer($openElem);
+                cases.drawer.openDrawer.requirements($openElem);
             }
         },
 
@@ -158,10 +170,10 @@ var cases = {
             var $closedDrawerDiv = $elem.closest('#main-div').find('.cases-side-drawer-closed');
             if ($closedDrawerDiv.is(":hidden")){
                 var $switchElem = $closedDrawerDiv.siblings('.cases-side-drawer-open').find('.sidebar').children([2]).children('i');
-                cases.drawer.open.switchView($switchElem);
+                cases.drawer.open.switchView.steps($switchElem);
             } else {
                 var $openElem = $($elem.closest('#main-div').find('.cases-side-drawer-closed').children('div')[3]);
-                cases.drawer.openDrawer($openElem);
+                cases.drawer.openDrawer.steps($openElem);
             }
         },
     },
@@ -212,37 +224,132 @@ var cases = {
 
         open: {
 
-            switchView: function($elem){
-                if ($elem === undefined){
-                    $elem = $(this);
+            switchView: {
+
+                details: function($elem) {
+                    if ($elem === undefined){
+                        $elem = $(this);
+                    }
+                    if ($elem.attr('draft') !== 'true'){
+                        $elem.data({"data-object": $elem.closest('#main-div').find('#detail-block').find('table').data().dataObject})
+                    }
+                    var $sidebar = $elem.closest('.sidebar');
+                    var $highlighted = $sidebar.find('.cases-icon-bg-color');
+                    $highlighted.removeClass('cases-icon-bg-color');
+                    $elem.parent().addClass('cases-icon-bg-color');
+                    var marker = $elem.attr('ref');
+                    $elem.closest('.cases-side-drawer-open').find('.cases-header-title').html(cases.mappings[marker].title);
+                    if (!cases.mappings[marker].savedContent) {
+                        var promise = cases.mappings[marker].contents();
+                        promise.then(function(data) {
+                            cases.mappings[marker].savedContent = data;
+                            $elem.closest('.cases-side-drawer-open').find('.content').html(data);
+                        });
+                    } else {
+                        $elem.closest('.cases-side-drawer-open').find('.content').html(cases.mappings[marker].savedContent);
+                    }
+                },
+
+                requirements: function($elem) {
+                    if ($elem === undefined){
+                        $elem = $(this);
+                    }
+                    var $sidebar = $elem.closest('.sidebar');
+                    var $highlighted = $sidebar.find('.cases-icon-bg-color');
+                    $highlighted.removeClass('cases-icon-bg-color');
+                    $elem.parent().addClass('cases-icon-bg-color');
+                    var marker = $elem.attr('ref');
+                    $elem.closest('.cases-side-drawer-open').find('.cases-header-title').html(cases.mappings[marker].title);
+                    if (!cases.mappings[marker].savedContent) {
+                        var promise = cases.mappings[marker].contents();
+                        promise.then(function(data) {
+                            cases.mappings[marker].savedContent = data;
+                            $elem.closest('.cases-side-drawer-open').find('.content').html(data);
+                        });
+                    } else {
+                        $elem.closest('.cases-side-drawer-open').find('.content').html(cases.mappings[marker].savedContent);
+                    }
+                },
+
+                steps: function($elem) {
+                    if ($elem === undefined){
+                        $elem = $(this);
+                    }
+                    var $sidebar = $elem.closest('.sidebar');
+                    var $highlighted = $sidebar.find('.cases-icon-bg-color');
+                    $highlighted.removeClass('cases-icon-bg-color');
+                    $elem.parent().addClass('cases-icon-bg-color');
+                    var marker = $elem.attr('ref');
+                    $elem.closest('.cases-side-drawer-open').find('.cases-header-title').html(cases.mappings[marker].title);
+                    if (!cases.mappings[marker].savedContent) {
+                        var promise = cases.mappings[marker].contents();
+                        promise.then(function(data) {
+                            cases.mappings[marker].savedContent = data;
+                            $elem.closest('.cases-side-drawer-open').find('.content').html(data);
+                        });
+                    } else {
+                        $elem.closest('.cases-side-drawer-open').find('.content').html(cases.mappings[marker].savedContent);
+                    }
+                },
+
+            },
+
+            saveContents: function () {
+                var $elem = $(this);
+                var $openDrawer = $elem.closest('.cases-side-drawer-open');
+                var $switchElem = $openDrawer.find('.cases-drawer-open-body').find('.sidebar').find('[draft="true"]');
+                if ($switchElem) {
+                    var reference = $switchElem.attr('ref');
+                    if (reference === "editDetails") {
+                        cases.drawer.open._saveContents.details($switchElem.data(), $switchElem);
+                    } else if (reference === "newReq") {
+                        cases.drawer.open._saveContents.requirements($switchElem.data(), $switchElem);
+                    } else if (reference === "newStep") {
+                        cases.drawer.open._saveContents.steps($switchElem.data(), $switchElem);
+                    }
                 }
-                var $sidebar = $elem.closest('.sidebar');
-                var $highlighted = $sidebar.find('.cases-icon-bg-color');
-                $highlighted.removeClass('cases-icon-bg-color');
-                $elem.parent().addClass('cases-icon-bg-color');
-                var marker = $elem.attr('ref');
-                $elem.closest('.cases-side-drawer-open').find('.cases-header-title').html(cases.mappings[marker].title);
-                if (!cases.mappings[marker].savedContent) {
-                    var promise = cases.mappings[marker].contents();
-                    promise.then(function(data) {
-                        cases.mappings[marker].savedContent = data;
-                        $elem.closest('.cases-side-drawer-open').find('.content').html(data);
+            },
+
+            _saveContents: {
+                details: function (data, $source) {
+                    var $target = $source.closest('#main-div').find('#detail-block').find('table');
+                    $target.data({'data-object': data.dataObject});
+                    $.ajax({
+                        headers: {
+                            'X-CSRFToken': katana.$activeTab.find('input[name="csrfmiddlewaretoken"]').attr('value')
+                        },
+                        url: 'cases/get_details_display_template/',
+                        type: 'POST',
+                        data: {"data": JSON.stringify(data.dataObject)}
+                    }).done(function(data){
+                        console.log(data);
+                        $source.closest('#main-div').find('#detail-block').html(data);
+                        $source.children('i').hide();
+                        $source.attr('draft', 'false');
+                        $source.closest('.cases-side-drawer-open').hide();
+                        $source.closest('.cases-side-drawer-open').siblings('.cases-side-drawer-closed').find('.fa-list-alt').children('i').hide();
+                        $source.closest('.cases-side-drawer-open').siblings('.cases-side-drawer-closed').show();
                     });
-                } else {
-                    $elem.closest('.cases-side-drawer-open').find('.content').html(cases.mappings[marker].savedContent);
-                }
-            }
+                },
+
+                requirements: function (data, $source) {},
+
+                steps: function (data, $source) {},
+            },
+
+            discardContents: function () {
+
+            },
         },
 
         detailsChange: function(){
             var $elem = $(this);
-            var key = $elem.attr('key');
-            console.log(key);
-            console.log($elem);
             var $parent = $elem.closest('.cases-drawer-open-body');
-            $parent.find('.fa-list-alt').attr('draft', 'true');
-            $parent.find('.fa-list-alt').children('i').show();
+            var $switchElem = $parent.find('.fa-list-alt');
+            $switchElem.attr('draft', 'true');
+            $switchElem.children('i').show();
             $parent.parent().siblings('.cases-side-drawer-closed').find('.fa-list-alt').children('i').show();
+            $switchElem.data({"data-object": cases.utils.updateData($switchElem.data().dataObject, $elem.attr('key'), $elem.val())});
         },
 
         reqsChange: function () {
@@ -261,18 +368,46 @@ var cases = {
             $parent.parent().siblings('.cases-side-drawer-closed').find('.fa-star').children('i').show();
         },
 
-        openDrawer: function ($elem) {
-            if($elem === undefined){
-                $elem = $(this);
-            }
-            var $toggler = $elem.parent().find('[katana-click="cases.drawer.toggleDrawer"]').children('i');
-            var $drawerClosedDiv = $toggler.closest('.cases-side-drawer-closed');
-            var $drawerOpenDiv = $toggler.closest('.cases-side-drawer-closed').siblings('.cases-side-drawer-open');
-            $drawerClosedDiv.hide();
-            $drawerOpenDiv.show();
-            var index = $elem.index() - 1;
-            var $switchElem = $($drawerOpenDiv.find('.sidebar').children()[index]).children('i');
-            cases.drawer.open.switchView($switchElem);
+        openDrawer: {
+
+            details: function ($elem) {
+                if($elem === undefined){
+                    $elem = $(this);
+                }
+                var $toggler = $elem.parent().find('[katana-click="cases.drawer.toggleDrawer"]').children('i');
+                var $drawerClosedDiv = $toggler.closest('.cases-side-drawer-closed');
+                var $drawerOpenDiv = $toggler.closest('.cases-side-drawer-closed').siblings('.cases-side-drawer-open');
+                $drawerClosedDiv.hide();
+                $drawerOpenDiv.show();
+                var $switchElem = $($drawerOpenDiv.find('.sidebar').children()[0]).children('i');
+                cases.drawer.open.switchView.details($switchElem);
+            },
+
+            requirements: function ($elem) {
+                if($elem === undefined){
+                    $elem = $(this);
+                }
+                var $toggler = $elem.parent().find('[katana-click="cases.drawer.toggleDrawer"]').children('i');
+                var $drawerClosedDiv = $toggler.closest('.cases-side-drawer-closed');
+                var $drawerOpenDiv = $toggler.closest('.cases-side-drawer-closed').siblings('.cases-side-drawer-open');
+                $drawerClosedDiv.hide();
+                $drawerOpenDiv.show();
+                var $switchElem = $($drawerOpenDiv.find('.sidebar').children()[1]).children('i');
+                cases.drawer.open.switchView.requirements($switchElem);
+            },
+
+            steps: function ($elem) {
+                if($elem === undefined){
+                    $elem = $(this);
+                }
+                var $toggler = $elem.parent().find('[katana-click="cases.drawer.toggleDrawer"]').children('i');
+                var $drawerClosedDiv = $toggler.closest('.cases-side-drawer-closed');
+                var $drawerOpenDiv = $toggler.closest('.cases-side-drawer-closed').siblings('.cases-side-drawer-open');
+                $drawerClosedDiv.hide();
+                $drawerOpenDiv.show();
+                var $switchElem = $($drawerOpenDiv.find('.sidebar').children()[2]).children('i');
+                cases.drawer.open.switchView.steps($switchElem);
+            },
         },
 
         openFileExplorer: {

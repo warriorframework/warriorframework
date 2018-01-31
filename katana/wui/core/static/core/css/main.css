@@ -497,6 +497,10 @@ span.close:before {
 	color: #3b7a4c;
 }
 
+.white {
+	color: white;
+}
+
 .page-content .tab:hover {
 	opacity: .9;
 	-webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.22);

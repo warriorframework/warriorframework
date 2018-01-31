@@ -4,8 +4,8 @@
         <div>
             <h4 class="cases-header-title"><i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp;Details</h4>
         </div>
-        <div><i class="fa fa-chevron-circle-up" katana-click="cases.header.toggleContents" collapsed="false" aria-hidden="true" style="color: white;"></i></div>
-        <div><i class="fa fa-pencil" aria-hidden="true" katana-click="cases.header.editDetails" style="color: white"></i></div>
+        <div><i class="fa fa-chevron-circle-up white" katana-click="cases.header.toggleContents" collapsed="false" aria-hidden="true"></i></div>
+        <div><i class="fa fa-pencil white" aria-hidden="true" katana-click="cases.header.editDetails"></i></div>
         <div></div>
     </div>
     <div class="cases-left-top-block" id="detail-block">
@@ -14,8 +14,8 @@
         <div>
             <h4 class="cases-header-title"><i class="fa fa-tags" aria-hidden="true"></i>&nbsp;Requirements</h4>
         </div>
-        <div><i class="fa fa-chevron-circle-up" katana-click="cases.header.toggleContents" collapsed="false" aria-hidden="true" style="color: white"></i></div>
-        <div><i class="fa fa-plus-circle" aria-hidden="true" style="color: white" katana-click="cases.header.newReq"></i></div>
+        <div><i class="fa fa-chevron-circle-up white" katana-click="cases.header.toggleContents" collapsed="false" aria-hidden="true"></i></div>
+        <div><i class="fa fa-plus-circle white" aria-hidden="true" katana-click="cases.header.newReq"></i></div>
         <div></div>
     </div>
     <div class="cases-left-bottom-block" id="req-block">
@@ -24,8 +24,8 @@
         <div>
             <h4 class="cases-header-title"><i class="fa fa-star" aria-hidden="true"></i>&nbsp;Steps</h4>
         </div>
-        <div><i class="fa fa-chevron-circle-up" katana-click="cases.header.toggleContents" collapsed="false" aria-hidden="true" style="color: white"></i></div>
-        <div><i class="fa fa-plus-circle" aria-hidden="true" style="color: white" katana-click="cases.header.newStep"></i></div>
+        <div><i class="fa fa-chevron-circle-up white" katana-click="cases.header.toggleContents" collapsed="false" aria-hidden="true"></i></div>
+        <div><i class="fa fa-plus-circle white" aria-hidden="true" katana-click="cases.header.newStep"></i></div>
         <div></div>
     </div>
     <div class="cases-right-step-block" id="step-block">
@@ -33,28 +33,28 @@
     <div class="cases-side-drawer-open" style="display: none;">
         <div class="cases-drawer-open-header">
             <div katana-click="cases.drawer.toggleDrawer">
-                <i class="fa fa-chevron-circle-right" collapsed="false" aria-hidden="true" style="color: white"></i>
+                <i class="fa fa-chevron-circle-right white" collapsed="false" aria-hidden="true"></i>
             </div>
             <div>
                 <h4 class="cases-header-title">New Step</h4>
             </div>
-            <div><i class="fa fa-check-circle" aria-hidden="true" style="color: white"></i></div>
-            <div><i class="fa fa-times-circle" aria-hidden="true" style="color: white"></i></div>
+            <div><i class="fa fa-floppy-o white" aria-hidden="true" katana-click="cases.drawer.open.saveContents"></i></div>
+            <div><i class="fa fa-trash-o white" aria-hidden="true" katana-click="cases.drawer.open.discardContents"></i></div>
         </div>
         <div class="cases-drawer-open-body">
             <div class="sidebar">
                 <div>
-                    <i class="fa fa-list-alt sidebar-badged" aria-hidden="true" katana-click="cases.drawer.open.switchView" ref="editDetails">
+                    <i class="fa fa-list-alt sidebar-badged" aria-hidden="true" katana-click="cases.drawer.open.switchView.details" ref="editDetails">
                         <i class="fa fa-commenting" aria-hidden="true" style="display: none;"></i>
                     </i>
                 </div>
                 <div>
-                    <i class="fa fa-tags sidebar-badged" aria-hidden="true" katana-click="cases.drawer.open.switchView" ref="newReq">
+                    <i class="fa fa-tags sidebar-badged" aria-hidden="true" katana-click="cases.drawer.open.switchView.requirements" ref="newReq">
                         <i class="fa fa-commenting" aria-hidden="true" style="display: none;"></i>
                     </i>
                 </div>
                 <div class="cases-icon-bg-color">
-                    <i class="fa fa-star sidebar-badged" katana-click="cases.drawer.open.switchView" aria-hidden="true" ref="newStep">
+                    <i class="fa fa-star sidebar-badged" katana-click="cases.drawer.open.switchView.steps" aria-hidden="true" ref="newStep">
                         <i class="fa fa-commenting" aria-hidden="true" style="display: none;"></i>
                     </i>
                 </div>
@@ -68,17 +68,17 @@
         <div katana-click="cases.drawer.toggleDrawer">
             <i class="fa fa-chevron-circle-left" collapsed="true" aria-hidden="true"></i>
         </div>
-        <div katana-click="cases.drawer.openDrawer">
+        <div katana-click="cases.drawer.openDrawer.details">
             <i class="fa fa-list-alt sidebar-badged" aria-hidden="true">
                 <i class="fa fa-commenting" aria-hidden="true" style="display: none"></i>
             </i>
         </div>
-        <div katana-click="cases.drawer.openDrawer">
+        <div katana-click="cases.drawer.openDrawer.requirements">
             <i class="fa fa-tags sidebar-badged" aria-hidden="true">
                 <i class="fa fa-commenting" aria-hidden="true" style="display: none"></i>
             </i>
         </div>
-        <div katana-click="cases.drawer.openDrawer">
+        <div katana-click="cases.drawer.openDrawer.steps">
             <i class="fa fa-star sidebar-badged" aria-hidden="true">
                 <i class="fa fa-commenting" aria-hidden="true" style="display: none"></i>
             </i>
