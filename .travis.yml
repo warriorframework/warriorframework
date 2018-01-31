@@ -48,7 +48,7 @@ matrix:
 
 install:
     - if [ ${COPILOT} = "yes" ]; then
-        python setup.py install
+        python setup.py install ;
       fi
 
     - if [ ${INSTALL} = "yes" ]; then
