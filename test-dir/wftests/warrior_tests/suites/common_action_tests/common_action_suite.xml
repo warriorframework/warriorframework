@@ -1,0 +1,51 @@
+<?xml version="1.0" ?>
+<TestSuite>
+        <Details>
+                <Name>common_action_suite</Name>
+                <Title>common_action_suite</Title>
+                <Engineer>Warrior_user</Engineer>
+                <Date>08/21/2017</Date>
+                <Time>23:25:53</Time>
+                <type Max_Attempts="" Number_Attempts="2" exectype="RUN_MULTIPLE"/>
+                <State/>
+                <default_onError action="next" value=""/>
+                <Resultsdir/>
+                <InputDataFile/>
+        </Details>
+        <Requirements>
+                <Requirement/>
+        </Requirements>
+        <Testcases>
+                <Testcase>
+                        <path>../../testcases/common_actions_tests/comparison.xml</path>
+                        <context>positive</context>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next" value=""/>
+                        <impact>impact</impact>
+                        <InputDataFile/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                        <runmode type="RMT" value="2"/>
+                </Testcase>
+                <Testcase>
+                        <path>../../testcases/common_actions_tests/set_env_variable.xml</path>
+                        <context>positive</context>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next" value=""/>
+                        <impact>impact</impact>
+                        <InputDataFile/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                        <runmode type="RUP" value="3"/>
+                </Testcase>
+          		<Testcase>
+                <path>../../testcases/common_actions_tests/verify_data_test.xml</path>
+                <context>positive</context>
+                <runtype>sequential_keywords</runtype>
+                <onError action="next"/>
+                <impact>impact</impact>
+		         </Testcase>
+        </Testcases>
+</TestSuite>

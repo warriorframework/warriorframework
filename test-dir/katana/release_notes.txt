@@ -1,0 +1,96 @@
+Release: Katana(beta)
+Version: development (or) master
+
+===================
+1: Release details
+===================
+
+This is the development environment for Katana(beta)
+
+-------------------------------
+1.1: List of available releases
+-------------------------------
+
+1. Katana(beta) --> 1.0
+
+
+==================
+2. Version Details
+==================
+
+You are on the master branch of Katana(beta), this is a version under development.
+Please checkout a stable version to get stable functionalities.
+Procedure to get a specific version is available in section-3 of this document.
+
+================================================
+3. Procedure to get a specific version of Katana
+================================================
+
+1. Clone Katana
+	$ git clone https://github.com/warriorframework/warriorframework.git
+
+2. go to katana directory
+	$cd warriorframework
+	$cd katana
+
+3. To check the list of versions available, execute "git tag --list" command
+	$ git tag --list
+	1.0
+
+3. To Check the current version you are at, execute "git branch" command
+
+	$ git branch
+	* master
+	$
+	
+- * indicates the active version.
+- In the above example master is the active version.
+- If the active version is master it means you are using a version of katana_beta that is under development. It is 
+not a stable tested version.
+
+
+4. To switch to a specific version from master, execute 'git checkout <version_name>' command.
+	$ git checkout 1.0
+	Note: checking out '1.0'.
+	
+	You are in 'detached HEAD' state. You can look around, make experimental
+	changes and commit them, and you can discard any commits you make in this
+	state without impacting any branches by performing another checkout.
+	
+	If you want to create a new branch to retain commits you create, you may
+	do so (now or later) by using -b with the checkout command again. Example:
+	
+	  git checkout -b <new-branch-name>
+	
+	HEAD is now at 146313d... reduce command timeout, wait after timeout=60
+	$
+	
+5. Execute git branch command to verify the active version.
+	$ git branch
+	* (HEAD detached at v1.0)
+  	master
+	$ 
+	
+- * indicates the active version.
+
+6. Switch from one version to another (current=v1.0, switch to v1.1)
+
+	$ git checkout v1.1
+	Previous HEAD position was 146313d... reduce command timeout, wait after timeout=60
+	HEAD is now at ecb6373... WAR-180, handle nd prompt on timeout
+	$ 
+	$ git branch
+	* (HEAD detached at v1.1)
+  	master
+	$ 
+
+7. Switch to master branch again.
+	$ git checkout master
+	Previous HEAD position was ecb6373... WAR-180, handle nd prompt on timeout
+	Switched to branch 'master'
+	Your branch is up-to-date with 'origin/master'.
+	$ 
+	$ 
+	$ git branch
+	* master
+	$

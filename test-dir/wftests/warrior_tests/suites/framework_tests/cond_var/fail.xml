@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<TestSuite>
+	<Details>
+		<Name>fail</Name>
+		<Title>simple fail testsuite</Title>
+		<Engineer>Ka Hei Chan</Engineer>
+		<Date>08/23/2016</Date>
+		<Time>11:05:20</Time>
+		<type exectype="sequential_testcases"/>
+		<State/>
+		<default_onError action="next"/>
+		<Resultsdir/>
+		<IDF/>
+	</Details>
+	<Requirements>
+		<Requirement/>
+	</Requirements>
+	<Testcases>
+		<Testcase>
+			<path>../../../testcases/framework_tests/cond_var/fail.xml</path>
+			<context>positive</context>
+			<runtype>sequential_keywords</runtype>
+			<onError action=" " value=""/>
+			<Execute ExecType="Yes">
+				<Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+			</Execute>
+			<rmt/>
+			<impact>impact</impact>
+		</Testcase>
+	</Testcases>
+</TestSuite>

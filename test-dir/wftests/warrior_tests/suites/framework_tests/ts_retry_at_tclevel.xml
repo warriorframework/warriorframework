@@ -1,0 +1,66 @@
+<?xml version="1.0" ?>
+<TestSuite>
+        <Details>
+                <Name>ts_retry_at_tclevel</Name>
+                <Title>ts_retry_at_tclevel</Title>
+                <Engineer>Ka</Engineer>
+                <Date>04/20/2017</Date>
+                <Time>17:14:26</Time>
+                <type exectype="sequential_testcases"/>
+                <default_onError action="next"/>
+                <Resultsdir/>
+        </Details>
+        <Requirements>
+                <Requirement>Requirement-001</Requirement>
+                <Requirement>Requirement-002</Requirement>
+        </Requirements>
+        <Testcases>
+                <Testcase>
+                        <path>../../testcases/framework_tests/cond_var/pass.xml</path>
+                        <context>positive</context>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next"/>
+                        <impact>impact</impact>
+                </Testcase>
+                <Testcase>
+                        <path>../../testcases/framework_tests/retry/tc_retry_cond_tc_level_if_met.xml</path>
+                        <context>positive</context>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next"/>
+                        <impact>impact</impact>
+                        <retry type="if" Condition="testcase_1_result" Condvalue="PASS" count="3" interval="0"/>
+                </Testcase>
+                <Testcase>
+                        <path>../../testcases/framework_tests/retry/tc_retry_cond_tc_level_if_met_not.xml</path>
+                        <context>positive</context>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next"/>
+                        <impact>impact</impact>
+                        <retry type="if" Condition="testcase_1_result" Condvalue="FAIL" count="4" interval="0"/>
+                </Testcase>
+                <Testcase>
+                        <path>../../testcases/framework_tests/retry/tc_retry_cond_tc_level_if_not_met.xml</path>
+                        <context>positive</context>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next"/>
+                        <impact>impact</impact>
+                        <retry type="if not" Condition="testcase_1_result" Condvalue="FAIL" count="5" interval="0"/>
+                </Testcase>
+                <Testcase>
+                        <path>../../testcases/framework_tests/retry/tc_retry_cond_tc_level_if_not_met_not.xml</path>
+                        <context>positive</context>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next"/>
+                        <impact>impact</impact>
+                        <retry type="if not" Condition="testcase_1_result" Condvalue="PASS" count="6" interval="0"/>
+                </Testcase>
+                <Testcase>
+                        <path>../../testcases/framework_tests/retry/tc_retry_cond_tc_level_verify.xml</path>
+                        <context>positive</context>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next"/>
+                        <impact>impact</impact>
+                </Testcase>
+        </Testcases>
+</TestSuite>
+

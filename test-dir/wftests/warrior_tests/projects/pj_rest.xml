@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<Project>
+	<Details>
+		<Name>pj_rest</Name>
+		<Title>rest functional tests</Title>
+		<Engineer>Sanika Kulkarni</Engineer>
+		<Date>10/12/2016</Date>
+		<Time>13:41:45</Time>
+		<default_onError action="next"/>
+	</Details>
+	<Testsuites>
+		<Testsuite>
+			<path>../suites/rest_functional_tests/rest_json_test_Suite.xml</path>
+			<onError action="next" value=""/>
+			<impact>impact</impact>
+		</Testsuite>
+	</Testsuites>
+</Project>

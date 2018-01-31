@@ -1,0 +1,244 @@
+<!--  This is Warrior standard system datafile
+System/Device/Application under test are represented as
+system's in this data file
+
+- This data file is provided as the input datafile in warrior testcase
+- User can provide all data required to run a testcase in this datafile. However for the sake of reusablility and 
+easy maintainence of data user can reference other datafiles in this datafile like <testdata> and <variable_config>
+shown below.
+
+ -->
+
+<credentials>
+
+<!--  	
+
+1. Providing system and subsystem
+- Each system under test is provided as a system block in this datafile
+		- If a system has multiple subsystems to it they can be represented as subsystems
+		as shown in system="NE2", subsystems "dip", "cli", "if1" 
+		- The system, subsystem is identified by its name
+
+2. Default subsystem:
+	- If a system has multiple subsystems it, one of the subsystems can be marked as the default subsystem
+	by using the parameter default="yes".
+	- If there are multiple subsystem with default="yes" the first subsystem with default="yes" 
+	will be considered default.
+	- If there are no subsystem with default="yes", the first subsystem will be considered default.
+	
+3. Providing data to a system
+	- The data to a system can be provided as tags and the value for the data as text to the
+		tags as shown in the below example for system name="NE1" 
+	- Data can also be provided as attributes as shown below for system name="NE2" and its subsystems
+	- Warrior Frameowrk ustilities data_Utils.getSystemData() and get_credentials() can handle both tag and attributes
+	while reading this datafile.
+	- If both tag and attribute are provided for the same parameter then attribute takes priority.
+	
+	
+4. !!!!!!!! CAUTION !!!!!!!! 
+	This data files supports The following 
+	1. system with data for the system
+	2. a system with subsystem with data only for the subsystems.
+	
+	The case of system with subsystem with data for both system and subsystem is NOT supported.
+	In such a case user should create the data for the system as a separate subsystem within the system.
+	 
+5. wtag feature
+    type fields can be associated with each of the fields in the system which can be used from testcase using
+    wtag=field format
+
+-->
+4.a: Template input data file for command line interface module. Please refer to the CLI Keywords and User guide for more details.
+	<system name="Command Line Interface"> <!--The value here corresponds to the system_name in the Keyword argument. --> 
+		<ip>please provide either an ip address or a domain name</ip>
+		<conn_type>ssh/telnet</conn_type>
+		<ssh_port>20002</ssh_port>
+		<prompt>you could either give a reg_Exp pattern or a unique prompt</prompt>
+		<timeout>120</timeout>
+		<username>admin</username>
+		<password>admin</password>
+		<variable_config>Use variable config file when substituting values for Testdata files</variable_config>
+		<testdata>Either a relative file path or an absolute file path</testdata>
+	</system>
+
+    <system name="NE2" >
+    	<subsystem name="Debugger" ip="1.1.1.1" conn_type="ssh" ssh_port="22"
+	    	username="admin" password="admin1" prompt="admin@xyz:"
+	    	testdata="../Config_files/Cli_testdata.xml" >
+	    </subsystem>
+
+    	<subsystem name="cli" ip="mycli" conn_type="ssh" ssh_port="22"
+	    	username="username" password="password" prompt="username@xyz:"
+	    	testdata="../Config_files/Cli_testdata.xml" variable_config="../Config_files/Cli_varconfig.xml" 
+	    	default="yes">
+	    </subsystem>
+	</system>
+
+4.b: Template input data file for NetConf module. Please refer to the Netconf Keywords and User guide for more details.
+
+    <system name="ConfD"> <!--The value here corresponds to the system_name in the Keyword argument. -->
+        <ip>2.2.2.2</ip>
+        <nc_port>2022</nc_port>
+        <username>admin</username>
+        <password>admin</password>
+        <timeout>30</timeout>
+        <hostkey_verify>False</hostkey_verify>
+        <allow_agent>False</allow_agent>
+        <look_for_keys>False</look_for_keys>
+        <device_name>default</device_name>
+        <netconf_data>../../Config_files/samples/netconf_config_data_sample.xml</netconf_data>
+    </system>
+
+4.c: Template input data file for Cloudshell module. Please refer to the Cloudshell Keywords and User guide for more details.
+
+    <system name='cloudshell'>  <!--The value here corresponds to the system_name in the Keyword argument. -->
+        <ip>168.127.132.78</ip>
+        <cloudshell_port>8029</cloudshell_port>
+        <conn_type>telnet</conn_type>
+        <username>admin</username>
+        <password>admin</password>
+        <domain>Global</domain>
+        <testdata></testdata>
+        <variable_config></variable_config>
+    </system>
+
+4.d: Template input data file for Rest module. Please refer to the Rest Keywords and User guide for more details.
+
+        <system name="http_bin_1"> <!--The value here corresponds to the system_name in the Keyword argument. -->
+                <url>http://httpbin.org</url>
+                <cookies>cookie</cookies>
+                <cookiejar>dict</cookiejar>
+        </system>
+
+        <system name="http_bin_2"> <!--The value here corresponds to the system_name in the Keyword argument. -->
+                <url_1>http://httpbin.org/put</url_1>
+                <user_1>Warrior_user</user_1>
+                <password_1>536ett</password_1>
+                <content_type_1>text</content_type_1>
+                <expected_response_1>200</expected_response_1>
+                <params_1>{'key1': 'value1', 'key2': ['value2', 'value3']}</params_1>
+                <url_2>http://httpbin.org/delete</url_2>
+                <user_2>Warrior_user2</user_2>
+                <password_2>hjcs212</password_2>
+                <content_type_2>text</content_type_2>
+                <expected_response_2/>
+                <params_2>key1 = value1 ; key2 = value2, value3</params_2>
+                <cookies type="cookiejar">cookie</cookies>
+                <url_3>http://httpbin.org/patch</url_3>
+        </system>
+
+4.e: Template input data file for SNMP module. Please refer to the SNMP Keywords and User guide for more details.
+
+        <system name="SNMP_CLIENT"> <!--The value here corresponds to the system_name in the Keyword argument. -->
+                <ip>8.8.8.8</ip>
+                <conn_type>ssh</conn_type>
+                <ssh_port>30305</ssh_port>
+                <prompt>></prompt>
+                <timeout>120</timeout>
+                <username>warrior</username>
+                <password>hello</password>
+                <snmp_trap_port>30310</snmp_trap_port>
+        </system>
+
+4.f: Template input data file for Selenium module. Please refer to the Selenium Keywords and User guide for more details.
+
+    <system name="My_application">
+        <ip>9.9.9.9</ip>
+        <remote>no</remote>
+        <browser>
+            <browser_name>browser_instance_1</browser_name>
+            <type>firefox</type>
+            <url>https://github.com/</url>
+            <element_config_file>../Config_files/tc_Config.json</element_config_file>
+        </browser>
+    </system>
+
+4.g: Template input data file with type fields (wtag feature)
+
+        <system name="sys_wtag"> <!--The value here corresponds to the system_name in the Keyword argument. -->
+            <strvar>I am a string variable</strvar> <!-- string is default hence type='str' is not required -->
+            <lang_list type='list'>['English', 'Chinese', 'French']</lang_list>
+            <states type='tuple'>('texas', 'newyork')</states>
+            <currency_map type='dict'>{'USA':'USD', 'India': 'INR'}</currency_map>
+            <ram_space_available type='bool'>False</ram_space_available>
+            <hd_space_available type='bool'>True</hd_space_available>
+            <config type='file'>rest_functional_tests/rest_variable_in_json_test_Data.xml</config>
+            <intvar type='int'>456</intvar>
+            <floatvar type='float'>345.65</floatvar>
+        </system>
+
+  
+<!-- 5. Substituting values form environment variables:
+Substituting values from environment variables is supported in input datafile
+
+To reference the environment variables use the pattern ${ENV.variable_name}
+where variable_name is the name of the variable in the environment settings of the OS
+Eg ${ENV.IPADDR} will be replaced with the value of IPADDR variable in the environment settings
+
+  -->
+
+    <system name="My_application">
+    	<subsystem name="Interface-1">
+	    	<ip>${ENV.IPADDR}</ip> 
+	    	<conn_type>ssh</conn_type>
+	    	<ssh_port>${ENV.SSH_PORT}</ssh_port>
+	    	<username>username</username>
+	    	<password>password</password>
+	    	<prompt>username@xyz:</prompt>
+	    	<testdata>../Config_files/Cli_testdata.xml</testdata>
+	    	<variable_config>../Config_files/Cli_varconfig.xml</variable_config>
+	    	<!-- By default the core keywords to send commands from testdata
+	    	will use the values provided for the tag/attribute 'testdata' & 'variable_config' 
+	    	to get the location of testdata and variable config files.
+	    	
+	    	If the user wishes to use a different test data or variable config file for a 
+	    	particular step in the testcase then they can provide the details in any user-defined
+	    	tag/attribute as shown below and provide the name of tag/attribute as value to the
+	    	argument td_tag/vc_tag in the steps.
+	    	
+	    	-->
+	    	<td1>../Config_files/Cli_testdata1.xml</td1>
+	    	<td2>../Config_files/Cli_testdata2.xml</td2>
+	    	<vc1>../Config_files/Cli_varconfig1.xml</vc1>
+	    	<vc2>../Config_files/Cli_varconfig2.xml</vc2>
+	   	</subsystem>
+
+	</system>
+
+  <Testsets>
+
+
+<!-- 6. Testsets -->
+<!-- This section describes how to provide data for a testset 
+
+a. Data for testset should be provided in the format specified in 
+testset config file details on how to provide data for testsets
+is available in the test set config sample file (located in ../Config_files/testset_config_sample.xml)
+
+b. This test set config file can be provided as a separate file or the contents of the 
+testset config fiel can be provided in this file itself as testset tags as
+shown in the example i, ii below.
+
+-->
+
+<!-- i. Refer to an external test set config file -->
+
+    <testset_config_file>../Config_files/testset_config_sample.xml</testset_config_file>
+
+
+<!-- ii. Provide testset data locally -->
+    <test_set name="JDSUTBerd" make="JDSU" model="TBerd" conn_type="telnet" port="8000" ip="167.254.212.185" serial_number="222" >
+      <init_parameters function='SONET'  module= 'BERT' application= 'TermOc192Sts192cBert' side= 'OPPS' slice_id= 'SLIC1' signal= 'OC192' rate= 'STS192C'/>
+      <data_set>
+        
+        <condition_name alarm_los="alarm_PHY_LOS" alarm_aisl="alarm_AISL"/>
+        <alarm>LOS</alarm>
+        <alarm_type>LOS</alarm_type>
+        <error_type err_ty1='TSE' err_ty2='error_B1'  err_ty3='error_B2' err_ty4='error_B3' err_ty5='error_CVV' verr_ty1='FAS' verr_ty2='B1'  verr_ty3='B2' verr_ty4='B3'/>
+        <insert_rate rate_e9="rate_1E-9" rate_e7="rate_1E-7"></insert_rate>
+        <insert_mode mode_rate="insert_RATE" mode_single="insert_SING"></insert_mode>
+      </data_set>
+    </test_set>
+
+  </Testsets>
+</credentials>

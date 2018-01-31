@@ -1,0 +1,44 @@
+<credentials>
+
+	<system name="http_bin_1">
+		<url>http://httpbin.org</url>
+                <url1>http://httpbin.org/${ENV.rest_action}</url1>
+		<cookies>cookie</cookies>
+		<cookiejar>dict</cookiejar>
+		<variable_config>../../config_files/rest_functional_tests/var_config.xml</variable_config>
+        <chelsea_fc>This is such a brand new command; no command is more brand new than this one.</chelsea_fc>
+        <tag9>../../config_files/rest_functional_tests/json_data.json</tag9>
+	</system>
+
+	<system name="http_bin_2">
+		<url_1>http://httpbin.org/put</url_1>
+		<user_1>Sanika</user_1>
+		<password_1>536ett</password_1>
+		<content_type_1>text</content_type_1>
+		<expected_response_1>200</expected_response_1>
+		<params_1>{'key1': 'value1', 'key2': ['value2', 'value3']}</params_1>
+
+		<url_2>http://httpbin.org/delete</url_2>
+		<user_2>Sanika_new</user_2>
+		<password_2>hjcs212</password_2>
+		<content_type_2>text</content_type_2>
+		<expected_response_2/>
+		<params_2>{'key1': 'value1', 'key2': ['value2', 'value3']}</params_2>
+		<cookies type="cookiejar">cookie</cookies>
+
+		<url_3>http://httpbin.org/patch</url_3>
+		<variable_config>../../config_files/rest_functional_tests/var_config.xml</variable_config>
+        <dallas_cowboys>Today's Date: 10/12/2016 - We won the last Superbowl in 1995.</dallas_cowboys>
+	</system>
+
+	<system name="http_bin_3">
+		<url>http://httpbin.org/get</url>
+		<user>Sanika</user>
+		<password>536ett</password>
+		<content_type>text</content_type>
+		<expected_response>200</expected_response>
+		<params>{'key1': 'value1', 'key2': ['value2', 'value3']}</params>
+		<variable_config>../../config_files/rest_functional_tests/var_config.xml</variable_config>
+	</system>
+
+</credentials>

@@ -1,0 +1,158 @@
+<?xml version="1.0" ?>
+<Testcase>
+	<Details>
+		<Name>cond_var</Name>
+		<Title>Accept non-string condition value for exec type in tc/ts/pj</Title>
+		<Engineer>Ka Hei Chan</Engineer>
+		<Date>2016-08-22</Date>
+		<Time>15:53</Time>
+		<State/>
+		<InputDataFile>No_Data</InputDataFile>
+		<Datatype/>
+		<default_onError action="next"/>
+		<Logsdir/>
+		<Resultsdir/>
+		<ExpectedResults/>
+	</Details>
+	<Requirements>
+		<Requirement/>
+	</Requirements>
+	<Steps>
+		<step Driver="ci_regression_driver" Keyword="local_data_test" TS="1">
+			<Arguments>
+				<argument name="desired_status" value="pass"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>local_data_test</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+			<rmt/>
+		</step>
+		<step Driver="ci_regression_driver" Keyword="local_data_test" TS="2">
+			<Arguments>
+				<argument name="desired_status" value="fail"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>local_data_test</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="If">
+				<Rule Condition="step_1_result" Condvalue="PASS" Else="abort"/>
+			</Execute>
+			<context>positive</context>
+			<impact>noimpact</impact>
+			<rmt/>
+		</step>
+		<step Driver="ci_regression_driver" Keyword="local_data_test" TS="3">
+			<Arguments>
+				<argument name="desired_status" value="ABORT"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>local_data_test</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="If">
+				<Rule Condition="step_2_result" Condvalue="FAIL" Else="abort"/>
+			</Execute>
+			<context>positive</context>
+			<impact>noimpact</impact>
+			<rmt/>
+		</step>
+		<step Driver="ci_regression_driver" Keyword="local_data_test" TS="4">
+			<Arguments>
+				<argument name="desired_status" value="pass"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>local_data_test</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="If">
+				<Rule Condition="step_3_result" Condvalue="EXCEPTION" Else="abort"/>
+			</Execute>
+			<context>positive</context>
+			<impact>impact</impact>
+			<rmt/>
+		</step>
+		<step Driver="ci_regression_driver" Keyword="local_data_test" TS="5">
+			<Arguments>
+				<argument/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>dis should skip</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="No"/>
+			<context>positive</context>
+			<impact>impact</impact>
+			<rmt/>
+		</step>
+		<step Driver="ci_regression_driver" Keyword="local_data_test" TS="6">
+			<Arguments>
+				<argument name="desired_status" value="fail"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>local_data_test</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="If">
+				<Rule Condition="step_5_result" Condvalue="SKIP" Else="abort"/>
+			</Execute>
+			<context>positive</context>
+			<impact>noimpact</impact>
+			<rmt/>
+		</step>
+		<step Driver="ci_regression_driver" Keyword="local_data_test" TS="7">
+			<Arguments>
+				<argument name="desired_status" value="pass"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>local_data_test</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="If Not">
+				<Rule Condition="step_6_result" Condvalue="PASS" Else="abort"/>
+			</Execute>
+			<context>positive</context>
+			<impact>impact</impact>
+			<rmt/>
+		</step>
+		<step Driver="ci_regression_driver" Keyword="local_data_test" TS="8">
+			<Arguments>
+				<argument name="desired_status" value="pass"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>local_data_test</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="If Not">
+				<Rule Condition="step_7_result" Condvalue="FAIL" Else="abort"/>
+			</Execute>
+			<context>positive</context>
+			<impact>impact</impact>
+			<rmt/>
+		</step>
+		<step Driver="ci_regression_driver" Keyword="local_data_test" TS="9">
+			<Arguments>
+				<argument name="desired_status" value="ABORT"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>local_data_test</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="If Not">
+				<Rule Condition="step_8_result" Condvalue="ERROR" Else="abort"/>
+			</Execute>
+			<context>positive</context>
+			<impact>noimpact</impact>
+			<rmt/>
+		</step>
+		<step Driver="ci_regression_driver" Keyword="local_data_test" TS="10">
+			<Arguments>
+				<argument name="desired_status" value="pass"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>local_data_test</Description>
+			<iteration_type type=""/>
+			<Execute ExecType="If Not">
+				<Rule Condition="step_9_result" Condvalue="SKIP" Else="abort"/>
+			</Execute>
+			<context>positive</context>
+			<impact>impact</impact>
+			<rmt/>
+		</step>
+	</Steps>
+</Testcase>
