@@ -101,10 +101,20 @@ def get_steps_template(request):
 
 
 def get_reqs_template(request):
-    return render(request, 'cases/requirements_template.html')
+    print request.POST
+    data = {"data": json.loads(request.POST.get("data"))}
+    return render(request, 'cases/requirements_template.html', data)
 
 
 def get_details_display_template(request):
     output = {"data": json.loads(request.POST.get("data"))}
     output["data"].update(DROPDOWN_DEFAULTS["details"])
     return render(request, 'cases/details_display_template.html', output)
+
+
+def get_reqs_display_template(request):
+    output = {"data": {}}
+    output["data"]["Requirement"] = json.loads(request.POST.get("data"))
+    mid_req = (len(output["data"]["Requirement"]) + 1) / 2
+    output["data"]["mid_req"] = mid_req
+    return render(request, 'cases/requirements_display_template.html', output)

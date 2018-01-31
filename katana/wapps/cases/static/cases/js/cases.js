@@ -92,6 +92,11 @@ var cases = {
             savedContent: false,
             title: "New Requirement",
             contents: function () {
+                if (katana.$activeTab.find('#req-block').find('[being-edited="true"]').length > 0){
+                    var contextData = JSON.stringify(katana.$activeTab.find('#req-block').find('[being-edited="true"]').data().dataObject);
+                } else {
+                    contextData = JSON.stringify("");
+                }
                 return Promise.resolve(
                     $.ajax({
                         headers: {
@@ -99,7 +104,7 @@ var cases = {
                         },
                         type: 'POST',
                         url: 'cases/get_reqs_template/',
-                        data: {"data": false}
+                        data: {"data": contextData}
                     }).then(data => { return data })
                 );
             },
@@ -155,9 +160,11 @@ var cases = {
 
         newReq: function() {
             var $elem = $(this);
+            var data = {dataObject: ""};
             var $closedDrawerDiv = $elem.closest('#main-div').find('.cases-side-drawer-closed');
+            var $switchElem = $closedDrawerDiv.siblings('.cases-side-drawer-open').find('.sidebar').children([1]).children('i');
+            $switchElem.data(data);
             if ($closedDrawerDiv.is(":hidden")){
-                var $switchElem = $closedDrawerDiv.siblings('.cases-side-drawer-open').find('.sidebar').children([1]).children('i');
                 cases.drawer.open.switchView.requirements($switchElem);
             } else {
                 var $openElem = $($elem.closest('#main-div').find('.cases-side-drawer-closed').children('div')[2]);
@@ -259,6 +266,11 @@ var cases = {
                     if ($elem === undefined){
                         $elem = $(this);
                     }
+                    if ($elem.attr('draft') !== 'true'){
+                        if($elem.closest('#main-div').find('#req-block').find('[being-edited="true"]').length > 0){
+                            $elem.data({"data-object": $elem.closest('#main-div').find('#req-block').find('[being-edited="true"]').data().dataObject});
+                        }
+                    }
                     var $sidebar = $elem.closest('.sidebar');
                     var $highlighted = $sidebar.find('.cases-icon-bg-color');
                     $highlighted.removeClass('cases-icon-bg-color');
@@ -312,7 +324,7 @@ var cases = {
             saveContents: function () {
                 var $elem = $(this);
                 var $openDrawer = $elem.closest('.cases-side-drawer-open');
-                var $switchElem = $openDrawer.find('.cases-drawer-open-body').find('.sidebar').find('[draft="true"]');
+                var $switchElem = $openDrawer.find('.cases-drawer-open-body').find('.sidebar').find('.cases-icon-bg-color').children('i');
                 if ($switchElem) {
                     var reference = $switchElem.attr('ref');
                     if (reference === "editDetails") {
@@ -326,6 +338,7 @@ var cases = {
             },
 
             _saveContents: {
+
                 details: function (data, $source) {
                     $.ajax({
                         headers: {
@@ -346,7 +359,42 @@ var cases = {
                     });
                 },
 
-                requirements: function (data, $source) {},
+                requirements: function (data, $source) {
+                    var $allTrs = $source.closest('#main-div').find('#req-block').find('tr');
+                    var completeData = [];
+                    var flag = true;
+                    for (var i=0; i < $allTrs.length; i++) {
+                        if($($allTrs[i]).attr('being-edited') !== 'true'){
+                            completeData.push($($allTrs[i]).data().dataObject);
+                        } else {
+                            flag = false;
+                            completeData.push(data.dataObject);
+                        }
+                    }
+                    if (flag) {
+                        completeData.push(data.dataObject);
+                    }
+                    $.ajax({
+                        headers: {
+                            'X-CSRFToken': katana.$activeTab.find('input[name="csrfmiddlewaretoken"]').attr('value')
+                        },
+                        url: 'cases/get_reqs_display_template/',
+                        type: 'POST',
+                        data: {"data": JSON.stringify(completeData)}
+                    }).done(function(html_data){
+                        $source.closest('#main-div').find('#req-block').html(html_data);
+                        $allTrs = $source.closest('#main-div').find('#req-block').find('tr');
+                        for (i=0; i < $allTrs.length; i++) {
+                            $($allTrs[i]).data({"data-object": completeData[i]})
+                        }
+                        $source.children('i').hide();
+                        $source.attr('draft', 'false');
+                        $source.closest('.cases-side-drawer-open').hide();
+                        $source.closest('.cases-side-drawer-open').siblings('.cases-side-drawer-closed').find('.fa-tags').children('i').hide();
+                        $source.closest('.cases-side-drawer-open').siblings('.cases-side-drawer-closed').show();
+                        cases.mappings.newReq.savedContent = false;
+                    });
+                },
 
                 steps: function (data, $source) {},
             },
@@ -372,10 +420,13 @@ var cases = {
 
         reqsChange: function () {
             var $elem = $(this);
+            $elem.attr('value', $elem.val());
             var $parent = $elem.closest('.cases-drawer-open-body');
-            $parent.find('.fa-tags').attr('draft', 'true');
-            $parent.find('.fa-tags').children('i').show();
+            var $switchElem = $parent.find('.fa-tags');
+            $switchElem.attr('draft', 'true');
+            $switchElem.children('i').show();
             $parent.parent().siblings('.cases-side-drawer-closed').find('.fa-tags').children('i').show();
+            $switchElem.data({"data-object": $elem.val()});
         },
 
         stepsChange: function () {
@@ -577,7 +628,7 @@ var cases = {
                     var $stepBlock = katana.$activeTab.find('#step-block');
                     $stepBlock.html(data.steps);
                     var $allTrElements = $stepBlock.find('tbody').children('tr');
-                    for (var i=0; i<$allTrElements.length; i++){
+                    for (i=0; i<$allTrElements.length; i++){
                         $($allTrElements[i]).data({"data-object": data.case_data_json.Testcase.Steps.step[i]});
                     }
                 } else {
@@ -633,7 +684,35 @@ var cases = {
         },
 
         editReq: function () {
+            var $elem = $(this);
+            var $trElem = $elem.closest('tr');
+            $trElem.attr('being-edited', 'true');
+            var $mainDiv = $trElem.closest('#main-div');
+            if ($mainDiv.find('.cases-side-drawer-open').is(':visible')){
+                var draft = $mainDiv.find('.cases-side-drawer-open').find('.sidebar').find('.fa-tags').attr("draft")
+            } else {
+                draft = $mainDiv.find('.cases-side-drawer-closed').find('.fa-tags').children('i').is(':visible')
+            }
+            if (draft) {
+                katana.openAlert({
+                    "alert_type": "warning",
+                    "heading": "Another req is being edited in the Requirements Editor.",
+                    "text": "Please save or discard that requirement before editing or creating a new requirement.",
+                    "show_cancel_btn": false
+                })
 
+            } else {
+                var data = $trElem.data();
+                var $closedDrawerDiv = $elem.closest('#main-div').find('.cases-side-drawer-closed');
+                var $switchElem = $($closedDrawerDiv.siblings('.cases-side-drawer-open').find('.sidebar').children()[1]).children('i');
+                $switchElem.data(data);
+                if ($closedDrawerDiv.is(":hidden")){
+                    cases.drawer.open.switchView.requirements($switchElem);
+                } else {
+                    var $openElem = $($closedDrawerDiv.children('div')[2]);
+                    cases.drawer.openDrawer.requirements($openElem);
+                }
+            }
         },
     },
 
