@@ -1,6 +1,4 @@
 language: python
-install:
-  - python setup.py install
 matrix:
   include:
     - os: linux
