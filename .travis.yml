@@ -5,7 +5,7 @@ matrix:
     - os: linux
       env: INSTALL=no TESTFILE=./wftests/warrior_tests/projects/pj_common_actions.xml
       python: 2.7
-     - os: linux
+    - os: linux
       env: INSTALL=no  TESTFILE=./wftests/warrior_tests/projects/pj_common_actions.xml COPILOT=yes
       python: 2.7
     - os: linux
