@@ -55,7 +55,7 @@
                 <step Driver="common_driver" Keyword="verify_data" TS="3" draft="no">
                         <Arguments>
                                 <argument name="expected" value="1"/>
-                                <argument name="object_key" value="demovar.child.demograndchild"/>
+                                <argument name="object_key" value="demovar.demochild.demograndchild"/>
                         </Arguments>
                         <onError action="next"/>
                         <Description/>
@@ -63,7 +63,7 @@
                         <Execute ExecType="Yes">
                                 <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
                         </Execute>
-                        <context>negative</context>
+                        <context>positive</context>
                         <impact>impact</impact>
                         <runmode type="Standard" value=""/>
                         <Iteration_type type="Standard"/>
