@@ -97,7 +97,6 @@ def get_details_template(request):
 
 
 def get_steps_template(request):
-    print request.POST.get("data")
     return render(request, 'cases/steps_template.html')
 
 
@@ -106,7 +105,6 @@ def get_reqs_template(request):
 
 
 def get_details_display_template(request):
-    print request.POST
     output = {"data": json.loads(request.POST.get("data"))}
     output["data"].update(DROPDOWN_DEFAULTS["details"])
     return render(request, 'cases/details_display_template.html', output)

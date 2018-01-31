@@ -29,7 +29,7 @@
                 <label class="cases-label">State</label>
             </div>
             <div class="col-sm-9">
-                <input key="State" list="states" value="{{data.State}}">
+                <input key="State" list="states" value="{{data.State}}" katana-change="cases.drawer.detailsChange">
                 <datalist id="states" katana-change="cases.drawer.detailsChange">
                     {% for value in data.states %}
                     <option value="{{value}}"></option>

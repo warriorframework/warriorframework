@@ -235,6 +235,11 @@ var cases = {
                     }
                     var $sidebar = $elem.closest('.sidebar');
                     var $highlighted = $sidebar.find('.cases-icon-bg-color');
+                    if ($highlighted.children('i').attr('ref') === "newReq") {
+                        cases.mappings.newReq.savedContent = $elem.closest('.cases-side-drawer-open').find('.content').html();
+                    } else if ($highlighted.children('i').attr('ref') === "newStep"){
+                        cases.mappings.newStep.savedContent = $elem.closest('.cases-side-drawer-open').find('.content').html();
+                    }
                     $highlighted.removeClass('cases-icon-bg-color');
                     $elem.parent().addClass('cases-icon-bg-color');
                     var marker = $elem.attr('ref');
@@ -257,6 +262,11 @@ var cases = {
                     var $sidebar = $elem.closest('.sidebar');
                     var $highlighted = $sidebar.find('.cases-icon-bg-color');
                     $highlighted.removeClass('cases-icon-bg-color');
+                    if ($highlighted.children('i').attr('ref') === "editDetails") {
+                        cases.mappings.editDetails.savedContent = $elem.closest('.cases-side-drawer-open').find('.content').html();
+                    } else if ($highlighted.children('i').attr('ref') === "newStep"){
+                        cases.mappings.newStep.savedContent = $elem.closest('.cases-side-drawer-open').find('.content').html();
+                    }
                     $elem.parent().addClass('cases-icon-bg-color');
                     var marker = $elem.attr('ref');
                     $elem.closest('.cases-side-drawer-open').find('.cases-header-title').html(cases.mappings[marker].title);
@@ -278,6 +288,11 @@ var cases = {
                     var $sidebar = $elem.closest('.sidebar');
                     var $highlighted = $sidebar.find('.cases-icon-bg-color');
                     $highlighted.removeClass('cases-icon-bg-color');
+                    if ($highlighted.children('i').attr('ref') === "newReq") {
+                        cases.mappings.newReq.savedContent = $elem.closest('.cases-side-drawer-open').find('.content').html();
+                    } else if ($highlighted.children('i').attr('ref') === "editDetails"){
+                        cases.mappings.editDetails.savedContent = $elem.closest('.cases-side-drawer-open').find('.content').html();
+                    }
                     $elem.parent().addClass('cases-icon-bg-color');
                     var marker = $elem.attr('ref');
                     $elem.closest('.cases-side-drawer-open').find('.cases-header-title').html(cases.mappings[marker].title);
@@ -312,8 +327,6 @@ var cases = {
 
             _saveContents: {
                 details: function (data, $source) {
-                    var $target = $source.closest('#main-div').find('#detail-block').find('table');
-                    $target.data({'data-object': data.dataObject});
                     $.ajax({
                         headers: {
                             'X-CSRFToken': katana.$activeTab.find('input[name="csrfmiddlewaretoken"]').attr('value')
@@ -321,14 +334,15 @@ var cases = {
                         url: 'cases/get_details_display_template/',
                         type: 'POST',
                         data: {"data": JSON.stringify(data.dataObject)}
-                    }).done(function(data){
-                        console.log(data);
-                        $source.closest('#main-div').find('#detail-block').html(data);
+                    }).done(function(html_data){
+                        $source.closest('#main-div').find('#detail-block').html(html_data);
+                        $source.closest('#main-div').find('#detail-block').find('table').data({'data-object': data.dataObject});
                         $source.children('i').hide();
                         $source.attr('draft', 'false');
                         $source.closest('.cases-side-drawer-open').hide();
                         $source.closest('.cases-side-drawer-open').siblings('.cases-side-drawer-closed').find('.fa-list-alt').children('i').hide();
                         $source.closest('.cases-side-drawer-open').siblings('.cases-side-drawer-closed').show();
+                        cases.mappings.editDetails.savedContent = false;
                     });
                 },
 
@@ -344,6 +358,7 @@ var cases = {
 
         detailsChange: function(){
             var $elem = $(this);
+            $elem.attr('value', $elem.val());
             var $parent = $elem.closest('.cases-drawer-open-body');
             var $switchElem = $parent.find('.fa-list-alt');
             $switchElem.attr('draft', 'true');
