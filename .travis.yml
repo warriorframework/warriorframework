@@ -6,7 +6,7 @@ matrix:
       env: INSTALL=no TESTFILE=./wftests/warrior_tests/projects/pj_common_actions.xml
       python: 2.7
      - os: linux
-      env: COPILOT=yes TESTFILE=./wftests/warrior_tests/projects/pj_common_actions.xml 
+      env: INSTALL=no  TESTFILE=./wftests/warrior_tests/projects/pj_common_actions.xml COPILOT=yes
       python: 2.7
     - os: linux
       env: INSTALL=yes TESTFILE=./wftests/ci/pylint.sh PYLINT=yes
