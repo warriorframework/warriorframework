@@ -356,9 +356,12 @@ var cases = {
             },
         },
 
-        detailsChange: function(){
-            var $elem = $(this);
-            $elem.attr('value', $elem.val());
+        detailsChange: function($elem, value){
+            if ($elem === undefined) {
+                $elem = $(this);
+                value = $elem.val();
+            }
+            $elem.attr('value', value);
             var $parent = $elem.closest('.cases-drawer-open-body');
             var $switchElem = $parent.find('.fa-list-alt');
             $switchElem.attr('draft', 'true');
@@ -433,7 +436,7 @@ var cases = {
                 katana.fileExplorerAPI.openFileExplorer("Select a Path", false,
                     katana.$activeTab.find('input[name="csrfmiddlewaretoken"]').attr('value'), false,
                     function (inputValue){
-                        $inputElem.val(inputValue);
+                        cases.drawer.detailsChange($inputElem, inputValue);
                     },
                     false)
             },
@@ -444,7 +447,7 @@ var cases = {
                 katana.fileExplorerAPI.openFileExplorer("Select a Path", false,
                     katana.$activeTab.find('input[name="csrfmiddlewaretoken"]').attr('value'), false,
                     function (inputValue){
-                        $inputElem.val(inputValue);
+                        cases.drawer.detailsChange($inputElem, inputValue);
                     },
                     false)
             },
@@ -456,7 +459,8 @@ var cases = {
                     katana.$activeTab.find('input[name="csrfmiddlewaretoken"]').attr('value'), false,
                     function (inputValue){
                         var tcPath = katana.$activeTab.find('#main-div').attr("current-file");
-                        $inputElem.val(cases.utils.getRelativeFilepath(tcPath, inputValue));
+                        var relPath = cases.utils.getRelativeFilepath(tcPath, inputValue);
+                        cases.drawer.detailsChange($inputElem, relPath)
                     },
                     false)
             }
