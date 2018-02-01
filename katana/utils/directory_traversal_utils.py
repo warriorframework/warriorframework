@@ -214,3 +214,27 @@ def file_or_dir_exists(filepath):
     if os.path.exists(filepath):
         output = True
     return output
+
+
+def get_direct_sub_files(path, abs_path=False, extension=re.compile("\..*")):
+    """
+    Gets the direct child sub-files of the given directory
+    Args:
+        path: Absolute path to the directory
+        abs_path: If set to True, it returns a list of absolute paths to the sub-files instead of
+                  file names only
+
+    Returns:
+        only_files: [list of sub-files]
+
+    """
+    files = glob.glob(path + os.sep + "*.*")
+    only_files = [f.replace("\\", '/') for f in files]
+    if not abs_path:
+        only_files = map(lambda f: f.rpartition('/')[2], only_files)
+    final_files = []
+    for sub_file in only_files:
+        if extension.match(os.path.splitext(sub_file)[1]):
+            final_files.append(sub_file)
+    return only_files
+
