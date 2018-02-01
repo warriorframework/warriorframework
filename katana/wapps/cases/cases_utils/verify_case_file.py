@@ -2,6 +2,12 @@ from collections import OrderedDict
 from datetime import datetime
 from utils.json_utils import read_xml_get_json
 from utils.navigator_util import Navigator
+from wapps.cases.cases_utils.defaults import inverted_contexts_list, inverted_impacts_list, \
+    inverted_iteration_types_list, inverted_runmodes_list
+
+
+def inverted_on_error_list():
+    pass
 
 
 class VerifyCaseFile:
@@ -15,6 +21,13 @@ class VerifyCaseFile:
         self.output = {"status": True, "message": ""}
         self.root = "Testcase"
         self.major = ("Details", "Requirements", "Steps")
+        self.defaults = {
+            "context": inverted_contexts_list(),
+            "impact": inverted_impacts_list(),
+            "Iteration_type": inverted_iteration_types_list(),
+            "onError": inverted_on_error_list(),
+            "runmode": inverted_runmodes_list()
+        }
 
     def verify_file(self):
         self.output = self.__verify_root()
@@ -85,5 +98,9 @@ class VerifyCaseFile:
     def __verified_steps_key_value(self, key, value):
         if value is None:
             value = ""
+
+        if isinstance(value, dict):
+            for k, v in value.iteritems():
+                value[k] = self.__verified_steps_key_value(k, v)
 
         return key, value

@@ -412,6 +412,7 @@ var cases = {
                 steps: function (data, $source) {
                     var $allTrs = $source.closest('#main-div').find('#step-block').find('tr');
                     var completeData = [];
+                    var ts = false;
                     var flag = true;
                     for (var i=0; i < $allTrs.length; i++) {
                         if($($allTrs[i]).attr('being-edited') !== 'true'){
@@ -419,10 +420,12 @@ var cases = {
                         } else {
                             flag = false;
                             completeData.push(data.dataObject);
+                            ts = completeData.length - 1 ;
                         }
                     }
                     if (flag) {
                         completeData.push(data.dataObject);
+                        ts = completeData.length - 1;
                     }
                     $.ajax({
                         headers: {
@@ -430,7 +433,7 @@ var cases = {
                         },
                         url: 'cases/get_steps_display_template/',
                         type: 'POST',
-                        data: {"data": JSON.stringify(completeData)}
+                        data: {"data": JSON.stringify(completeData), "ts": ts}
                     }).done(function(html_data){
                         $source.closest('#main-div').find('#step-block').html(html_data);
                         $allTrs = $source.closest('#main-div').find('#step-block').find('tr');
@@ -486,6 +489,7 @@ var cases = {
             $switchElem.children('i').show();
             $parent.parent().siblings('.cases-side-drawer-closed').find('.fa-star').children('i').show();
             $switchElem.data({"data-object": cases.utils.updateData($switchElem.data().dataObject, $elem.attr('key'), $elem.val())});
+            console.log($switchElem.data())
         },
 
         openDrawer: {

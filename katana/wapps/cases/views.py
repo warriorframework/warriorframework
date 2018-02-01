@@ -11,6 +11,7 @@ from django.views import View
 from utils.directory_traversal_utils import join_path
 from utils.json_utils import read_json_data, read_xml_get_json
 from utils.navigator_util import Navigator
+from wapps.cases.cases_utils.defaults import impacts, on_errors, runmodes, iteration_types, contexts
 from wapps.cases.cases_utils.get_drivers import GetDriversActions
 from wapps.cases.cases_utils.verify_case_file import VerifyCaseFile
 
@@ -135,6 +136,19 @@ def get_steps_display_template(request):
     if request.POST.get("data") == "false":
         output["data"]["step"] = _get_defaults(step=True)
     else:
-        output["data"]["step"] = json.loads(request.POST.get("data"))
-    output["data"].update(DROPDOWN_DEFAULTS["step"])
+        output["data"]["step"] = convert_data(json.loads(request.POST.get("data")), int(request.POST.get("ts")))
     return render(request, 'cases/steps_display_template.html', output)
+
+
+def convert_data(data, ts):
+    if data[ts]["impact"] in impacts():
+        data[ts]["impact"] = impacts()[data[ts]["impact"]]
+    if data[ts]["context"] in contexts():
+        data[ts]["context"] = contexts()[data[ts]["context"]]
+    if data[ts]["Execute"]["Rule"]["@Else"] in on_errors():
+        data[ts]["Execute"]["Rule"]["@Else"] = on_errors()[data[ts]["Execute"]["Rule"]["@Else"]]
+    if data[ts]["runmode"]["@type"] in runmodes():
+        data[ts]["runmode"]["@type"] = runmodes()[data[ts]["runmode"]["@type"]]
+    if data[ts]["Iteration_type"]["@type"] in iteration_types():
+        data[ts]["Iteration_type"]["@type"] = iteration_types()[data[ts]["Iteration_type"]["@type"]]
+    return data
