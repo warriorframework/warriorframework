@@ -78,8 +78,11 @@ var cases = {
             contents: function () {
                 if (katana.$activeTab.find('#step-block').find('[being-edited="true"]').length > 0){
                     var contextData = JSON.stringify(katana.$activeTab.find('#step-block').find('[being-edited="true"]').data().dataObject);
+                    var ts = false;
                 } else {
                     contextData = false;
+                    ts = katana.$activeTab.find('#step-block').find('tr').length;
+                    alert(ts);
                 }
                 return Promise.resolve(
                     $.ajax({
@@ -88,7 +91,7 @@ var cases = {
                         },
                         type: 'POST',
                         url: 'cases/get_steps_template/',
-                        data: {"data": contextData}
+                        data: {"data": contextData, "ts": ts}
                     }).then(data => { return data })
                 );
             },
@@ -632,9 +635,6 @@ var cases = {
                                 for (i=0; i<$allTrElements.length; i++){
                                     $($allTrElements[i]).data({"data-object": data.case_data_json.Testcase.Steps.step[i]});
                                 }
-
-                                var $drawerContent = katana.$activeTab.find('.content');
-                                $drawerContent.html(data.new_step);
 
                             } else {
                                 katana.openAlert({"alert_type": "danger",

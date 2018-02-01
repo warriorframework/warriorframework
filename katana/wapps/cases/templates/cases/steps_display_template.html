@@ -1,3 +1,4 @@
+{% load cases_filters %}
 <div class="cases-intentional-space-x cases-extra-left-padding">
     <div class="cases-internal-section">
         <div class="cases-step-table-parent">
@@ -36,17 +37,27 @@
                     </td>
                     <td class="col-sm-1">
                         {% for key, value in step.runmode.items %}
-                        {% if key == "@type" %} {{ value }} {% endif %}
+                        {% if key == "@type" %} {{ value|convert_runmodes }} {% endif %}
+                        {% endfor %}
+                        {% for key, value in step.runmode.items %}
+                        {% if key == "@value" and value != "" %} = {{ value }} {% endif %}
                         {% endfor %}
                     </td>
                     <td class="col-sm-1">
-                        {% for key, value in step.Iteration_type.ietms %}
-                        {% if key == "@type" %} {{ value }} {% endif %}
+                        {% for key, value in step.Iteration_type.items %}
+                        {% if key == "@type" %} {{ value|convert_iteration_types }} {% endif %}
                         {% endfor %}
                     </td>
-                    <td class="col-sm-1">{{ step.context }}</td>
-                    <td class="col-sm-1">{{ step.impact }}</td>
-                    <td class="col-sm-1">{{ step.on_error }}</td>
+                    <td class="col-sm-1">{{ step.context|convert_contexts }}</td>
+                    <td class="col-sm-1">{{ step.impact|convert_impacts }}</td>
+                    <td class="col-sm-1">
+                        {% for key, value in step.onError.items %}
+                        {% if key == "@action" %} {{ value|convert_on_errors }} {% endif %}
+                        {% endfor %}
+                        {% for key, value in step.onError.items %}
+                        {% if key == "@value" and value != "" %} = {{ value }} {% endif %}
+                        {% endfor %}
+                    </td>
                 </tr>
                 {% endfor %}
                 </tbody>

@@ -11,6 +11,7 @@ from django.views import View
 from utils.directory_traversal_utils import join_path
 from utils.json_utils import read_json_data, read_xml_get_json
 from utils.navigator_util import Navigator
+from wapps.cases.cases_utils.get_drivers import GetDriversActions
 from wapps.cases.cases_utils.verify_case_file import VerifyCaseFile
 
 navigator = Navigator()
@@ -45,11 +46,10 @@ def get_file(request):
         details_tmpl = _get_tmpl('cases/details_display_template.html', get_details_data(data))
 
         reqs_tmpl = _get_tmpl('cases/requirements_display_template.html', get_reqs_data(data))
-        steps_tmpl = _get_tmpl('cases/steps_display_template.html', get_steps_data(data))
-        new_step = _get_tmpl('cases/steps_template.html', _get_defaults(step=True, ts=len(data["Testcase"]["Steps"]["step"]) + 1))
+        steps_tmpl = _get_tmpl('cases/steps_display_template.html', get_steps_data(data, default=True))
         return JsonResponse({"filepath": file_path, "status": output["status"], "message": output["message"],
                              "details": str(details_tmpl), "requirements": str(reqs_tmpl), "steps": str(steps_tmpl),
-                             "case_data_json": data, "new_step": str(new_step)})
+                             "case_data_json": data})
     else:
         JsonResponse({"status": output["status"], "message": output["message"]})
 
@@ -62,7 +62,7 @@ def _get_defaults(details=False, requirement=False, step=False, ts="1"):
     if requirement:
         return get_reqs_data(template_data)
     if step:
-        return get_steps_data(template_data, ts=ts)
+        return get_steps_data(template_data, ts=ts, default=True)
     return output
 
 
@@ -79,11 +79,17 @@ def get_reqs_data(data):
     return output
 
 
-def get_steps_data(data, ts="1"):
-    output = {"data": data["Testcase"]["Steps"]}
+def get_steps_data(data, ts="1", default=False):
+    output = {"data": {}}
+    if default:
+        output["data"] = data["Testcase"]["Steps"]
+    else:
+        output["data"] = {"step": data}
     if isinstance(output["data"]["step"], OrderedDict):
         output["data"]["step"]["@TS"] = ts
     output["data"].update(DROPDOWN_DEFAULTS["step"])
+    da_obj = GetDriversActions(navigator.get_warrior_dir()[:-1])
+    output["data"]["drivers"] = da_obj.get_all_actions()
     return output
 
 
@@ -97,12 +103,10 @@ def get_details_template(request):
 
 
 def get_steps_template(request):
-    output = {"data": {"step": {}}}
     if request.POST.get("data") == "false":
-        output["data"]["step"] = _get_defaults(step=True)
+        output = _get_defaults(step=True, ts=request.POST.get("ts"))
     else:
-        output["data"]["step"] = json.loads(request.POST.get("data"))
-    output["data"].update(DROPDOWN_DEFAULTS["step"])
+        output = get_steps_data(json.loads(request.POST.get("data")))
     return render(request, 'cases/steps_template.html', output)
 
 

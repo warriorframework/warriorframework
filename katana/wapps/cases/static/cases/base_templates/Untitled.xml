@@ -8,7 +8,7 @@
             <Engineer/>
             <Date/>
             <Time/>
-            <default_onError action="next" goto=""/>
+            <default_onError action="next" value=""/>
             <InputDataFile/>
             <Datatype>Custom</Datatype>
             <Logsdir/>
@@ -27,10 +27,11 @@
                 <Execute ExecType="Yes">
                     <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
                 </Execute>
-                <runmode type="Standard" value=""/>
-                <Iteration_type type="Standard"/>
+                <runmode type="standard" value=""/>
+                <Iteration_type type="standard"/>
                 <context>positive</context>
                 <impact>impact</impact>
+                <onError action="next" value=""/>
             </step>
         </Steps>
 </Testcase>

@@ -1,5 +1,3 @@
-import json
-
 from utils.directory_traversal_utils import join_path, get_dir_from_path, get_direct_sub_files, get_paths_of_subfiles
 from utils.regex_utils import compile_regex
 

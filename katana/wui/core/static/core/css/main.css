@@ -3247,7 +3247,7 @@ div .tool-bar-links:active {
   	vertical-align: bottom;
 }
 .execution.execution-button.browse {
-	margin: 5px 5px 0px 2px;
+	margin: 5px 5px 0 2px;
 	padding: 5px 3px;
 	line-height: 1.5;
 	//-webkit-appearance: button;
@@ -3256,7 +3256,6 @@ div .tool-bar-links:active {
 
 /* execution app related styles ends*/
 
--
 /* wdf editor app related styles starts */
 
 .wdf-button {
