@@ -406,7 +406,42 @@ var cases = {
                     });
                 },
 
-                steps: function (data, $source) {},
+                steps: function (data, $source) {
+                    var $allTrs = $source.closest('#main-div').find('#step-block').find('tr');
+                    var completeData = [];
+                    var flag = true;
+                    for (var i=0; i < $allTrs.length; i++) {
+                        if($($allTrs[i]).attr('being-edited') !== 'true'){
+                            completeData.push($($allTrs[i]).data().dataObject);
+                        } else {
+                            flag = false;
+                            completeData.push(data.dataObject);
+                        }
+                    }
+                    if (flag) {
+                        completeData.push(data.dataObject);
+                    }
+                    $.ajax({
+                        headers: {
+                            'X-CSRFToken': katana.$activeTab.find('input[name="csrfmiddlewaretoken"]').attr('value')
+                        },
+                        url: 'cases/get_steps_display_template/',
+                        type: 'POST',
+                        data: {"data": JSON.stringify(completeData)}
+                    }).done(function(html_data){
+                        $source.closest('#main-div').find('#step-block').html(html_data);
+                        $allTrs = $source.closest('#main-div').find('#step-block').find('tr');
+                        for (i=0; i < $allTrs.length; i++) {
+                            $($allTrs[i]).data({"data-object": completeData[i]})
+                        }
+                        $source.children('i').hide();
+                        $source.attr('draft', 'false');
+                        $source.closest('.cases-side-drawer-open').hide();
+                        $source.closest('.cases-side-drawer-open').siblings('.cases-side-drawer-closed').find('.fa-star').children('i').hide();
+                        $source.closest('.cases-side-drawer-open').siblings('.cases-side-drawer-closed').show();
+                        cases.mappings.newStep.savedContent = false;
+                    });
+                },
             },
 
             discardContents: function () {
@@ -441,10 +476,13 @@ var cases = {
 
         stepsChange: function () {
             var $elem = $(this);
+            $elem.attr('value', $elem.val());
             var $parent = $elem.closest('.cases-drawer-open-body');
-            $parent.find('.fa-star').attr('draft', 'true');
-            $parent.find('.fa-star').children('i').show();
+            var $switchElem = $parent.find('.fa-star');
+            $switchElem.attr('draft', 'true');
+            $switchElem.children('i').show();
             $parent.parent().siblings('.cases-side-drawer-closed').find('.fa-star').children('i').show();
+            $switchElem.data({"data-object": cases.utils.updateData($switchElem.data().dataObject, $elem.attr('key'), $elem.val())});
         },
 
         openDrawer: {
@@ -841,7 +879,6 @@ var cases = {
                         "step to edit.",
                         "show_cancel_btn": false
                     });
-                    return;
                 } else {
                     var $allEditedTrElems = $tbodyElem.children('tr[being-edited="true"]');
                     var $mainDiv = $tbodyElem.closest('#main-div');
