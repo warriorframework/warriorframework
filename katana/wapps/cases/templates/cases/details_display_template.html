@@ -47,7 +47,7 @@
             <tr>
                 <th scope="row">Go To Step (If Applicable)</th>
                 {% for key, value in data.default_onError.items %}
-                    {% if key == "@goto" %}
+                    {% if key == "@value" %}
                         <td>{{ value }}</td>
                     {% endif %}
                 {% endfor %}

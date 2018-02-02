@@ -5,7 +5,14 @@ var cases = {
         updateData: function (data, key, value) {
             if (key.indexOf('[') > -1) {
                 var temp = key.split('[');
-                data[temp[0]] = cases.utils.updateData(data[temp[0]], temp[1].slice(0, -1), value)
+                var remaining = "";
+                for (var i=1; i<temp.length; i++){
+                    remaining += temp[i] + "[";
+                }
+                if (remaining.endsWith("[")){
+                    remaining = remaining.slice(0, -1);
+                }
+                data[temp[0]] = cases.utils.updateData(data[temp[0]], remaining.slice(0, -1), value)
             } else {
                 data[key] = value;
             }
@@ -82,7 +89,6 @@ var cases = {
                 } else {
                     contextData = false;
                     ts = katana.$activeTab.find('#step-block').find('tr').length;
-                    alert(ts);
                 }
                 return Promise.resolve(
                     $.ajax({
@@ -489,7 +495,6 @@ var cases = {
             $switchElem.children('i').show();
             $parent.parent().siblings('.cases-side-drawer-closed').find('.fa-star').children('i').show();
             $switchElem.data({"data-object": cases.utils.updateData($switchElem.data().dataObject, $elem.attr('key'), $elem.val())});
-            console.log($switchElem.data())
         },
 
         openDrawer: {

@@ -27,8 +27,8 @@
                 <Execute ExecType="Yes">
                     <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
                 </Execute>
-                <runmode type="standard" value=""/>
-                <Iteration_type type="standard"/>
+                <runmode type="Standard" value=""/>
+                <Iteration_type type="Standard"/>
                 <context>positive</context>
                 <impact>impact</impact>
                 <onError action="next" value=""/>

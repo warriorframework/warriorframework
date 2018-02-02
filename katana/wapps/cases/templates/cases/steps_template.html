@@ -43,14 +43,36 @@
         </div>
         {% endif %}
         {% endfor %}
+
+
          <div class="row">
             <div class="col-sm-3">
                 <label class="cases-label">Arguments</label>
             </div>
-            <div class="col-sm-9">
-                <input katana-change="cases.drawer.stepsChange">
-            </div>
+             <div class="col-sm-9">
+                 <div class="container-fluid">
+                     <div class="row">
+                         {% for arg in data.step.Arguments.argument %}
+                         {% for key, value in arg.iteritems %}
+                         {% if key == "@name" %}
+                         <div class="col-sm-4" style="font: 400 13.3333px Arial; padding: 4px 5px 4px 20px;">
+                            <label class="cases-label">{{ value }}</label>
+                        </div>
+                         {% endif %}
+                         {% endfor %}
+                         {% for key, value in arg.iteritems %}
+                         {% if key == "@value" %}
+                        <div class="col-sm-8">
+                            <input katana-change="cases.drawer.stepsChange" value="{{ value }}">
+                        </div>
+                         {% endif %}
+                         {% endfor %}
+                         {% endfor %}
+                     </div>
+                 </div>
+             </div>
         </div>
+
          <div class="row">
             <div class="col-sm-3">
                 <label class="cases-label">Description</label>
@@ -79,7 +101,9 @@
                 {% endfor %}
             </div>
         </div>
-        {% for key, value in data.step.Execute.Rule.items %}
+
+        {% for rule in data.step.Execute.Rule %}
+        {% for key, value in rule.items %}
         {% if key == "@Condition" %}
          <div class="row">
             <div class="col-sm-3">
@@ -90,6 +114,8 @@
             </div>
         </div>
         {% endif %}
+        {% endfor %}
+        {% for key, value in rule.items %}
         {% if key == "@Condvalue" %}
          <div class="row">
             <div class="col-sm-3 cases-label-text">
@@ -100,6 +126,8 @@
             </div>
         </div>
         {% endif %}
+        {% endfor %}
+        {% for key, value in rule.items %}
         {% if key == "@Else" %}
          <div class="row">
             <div class="col-sm-3">
@@ -118,6 +146,8 @@
             </div>
         </div>
         {% endif %}
+        {% endfor %}
+        {% for key, value in rule.items %}
         {% if key == "@Elsevalue" %}
          <div class="row">
             <div class="col-sm-3">
@@ -129,6 +159,8 @@
         </div>
         {% endif %}
         {% endfor %}
+        {% endfor %}
+
         {% for key, value in data.step.runmode.items %}
         {% if key == "@type" %}
          <div class="row">

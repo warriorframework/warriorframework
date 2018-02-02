@@ -54,10 +54,7 @@ class VerifyCaseFile:
             self.data[self.root][self.major[0]] = {}
         for key, value in self.template_data[self.root][self.major[0]].iteritems():
             key, value = self.__verified_details_key_value(key, value)
-            if key not in self.data[self.root][self.major[0]]:
-                self.data[self.root][self.major[0]][key] = value
-            elif self.data[self.root][self.major[0]][key] is None:
-                self.data[self.root][self.major[0]][key] = value
+            self.data[self.root][self.major[0]][key] = self.__verify_values(key, value, self.data[self.root][self.major[0]])
 
     def __verified_details_key_value(self, key, value):
         if value is None:
@@ -89,18 +86,45 @@ class VerifyCaseFile:
 
         for i in range(0, len(self.data[self.root][self.major[2]]["step"])):
             for key, value in self.template_data[self.root][self.major[2]]["step"].iteritems():
-                key, value = self.__verified_steps_key_value(key, value)
-                if key not in self.data[self.root][self.major[2]]["step"][i]:
-                    self.data[self.root][self.major[2]]["step"][i][key] = value
-                elif self.data[self.root][self.major[2]]["step"][i][key] is None:
-                    self.data[self.root][self.major[2]]["step"][i][key] = value
+                key, value, self.data[self.root][self.major[2]]["step"][i] = \
+                    self.__verified_steps_key_value(key, value, self.data[self.root][self.major[2]]["step"][i])
+                self.data[self.root][self.major[2]]["step"][i][key] = \
+                    self.__verify_values(key, value, self.data[self.root][self.major[2]]["step"][i])
 
-    def __verified_steps_key_value(self, key, value):
+    @staticmethod
+    def __verified_steps_key_value(key, value, verify_data):
         if value is None:
             value = ""
 
-        if isinstance(value, dict):
-            for k, v in value.iteritems():
-                value[k] = self.__verified_steps_key_value(k, v)
+        if key == "Arguments":
+            if "argument" not in verify_data[key] or verify_data[key]["argument"] is None:
+                verify_data[key]["argument"] = [{}]
+            elif not isinstance(verify_data[key]["argument"], list):
+                verify_data[key]["argument"] = [verify_data[key]["argument"]]
 
-        return key, value
+        if key == "Execute":
+            if "Rule" not in verify_data[key] or verify_data[key]["Rule"] is None:
+                verify_data[key]["Rule"] = [{}]
+            elif not isinstance(verify_data[key]["Rule"], list):
+                verify_data[key]["Rule"] = [verify_data[key]["Rule"]]
+
+        return key, value, verify_data
+
+    def __verify_values(self, tmpl_key, tmpl_value, parent):
+        if tmpl_key not in parent:
+            output = tmpl_value
+        elif parent[tmpl_key] is None:
+            output = tmpl_value
+        else:
+            if isinstance(parent[tmpl_key], list):
+                for i in range(0, len(parent[tmpl_key])):
+                    for k, v in tmpl_value.items():
+                        parent[tmpl_key][i][k] = self.__verify_values(k, v, parent[tmpl_key][i])
+                    output = parent[tmpl_key]
+            elif isinstance(tmpl_value, OrderedDict):
+                for k, v in tmpl_value.items():
+                    parent[tmpl_key][k] = self.__verify_values(k, v, parent[tmpl_key])
+                output = parent[tmpl_key]
+            else:
+                output = parent[tmpl_key]
+        return output

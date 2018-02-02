@@ -3,7 +3,7 @@ from utils.dict_utils import invert_dict
 
 def runmodes():
     return {
-        "Standard": "standard",
+        "Standard": "Standard",
         "Run Multiple Times": "RMT",
         "Run Until Pass": "RUP",
         "Run Until Failure": "RUF"
@@ -45,7 +45,7 @@ def inverted_on_errors_list():
 
 def iteration_types():
     return {
-        "Standard": "standard",
+        "Standard": "Standard",
         "Once Per Case": "once_per_tc",
         "End Of Case": "end_of_tc"
     }
