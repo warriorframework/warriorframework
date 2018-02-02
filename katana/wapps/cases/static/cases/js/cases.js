@@ -94,13 +94,17 @@ var cases = {
         newStep: {
             savedContent: false,
             title:  "New Step",
-            contents: function () {
+            contents: function (index) {
                 if (katana.$activeTab.find('#step-block').find('[being-edited="true"]').length > 0){
                     var contextData = JSON.stringify(katana.$activeTab.find('#step-block').find('[being-edited="true"]').data().dataObject);
                     var ts = false;
                 } else {
                     contextData = false;
-                    ts = katana.$activeTab.find('#step-block').find('tr').length;
+                    if (index === undefined) {
+                        ts = katana.$activeTab.find('#step-block').find('tr').length;
+                    } else {
+                        ts = index;
+                    }
                 }
                 return Promise.resolve(
                     $.ajax({
@@ -200,13 +204,15 @@ var cases = {
 
         newStep: function() {
             var $elem = $(this);
+            var $tbodyElem = katana.$activeTab.find('#step-block').find('tbody');
+            var $allTrElems = $tbodyElem.children('tr');
             var $closedDrawerDiv = $elem.closest('#main-div').find('.cases-side-drawer-closed');
             if ($closedDrawerDiv.is(":hidden")){
                 var $switchElem = $closedDrawerDiv.siblings('.cases-side-drawer-open').find('.sidebar').children([2]).children('i');
-                cases.drawer.open.switchView.steps($switchElem);
+                cases.drawer.open.switchView.steps($switchElem, $allTrElems.length+1);
             } else {
                 var $openElem = $($elem.closest('#main-div').find('.cases-side-drawer-closed').children('div')[3]);
-                cases.drawer.openDrawer.steps($openElem);
+                cases.drawer.openDrawer.steps($openElem, $allTrElems.length+1);
             }
         },
     },
@@ -319,7 +325,7 @@ var cases = {
                     }
                 },
 
-                steps: function($elem) {
+                steps: function($elem, index) {
                     if ($elem === undefined){
                         $elem = $(this);
                     }
@@ -340,10 +346,27 @@ var cases = {
                     var marker = $elem.attr('ref');
                     $elem.closest('.cases-side-drawer-open').find('.cases-header-title').html(cases.mappings[marker].title);
                     if (!cases.mappings[marker].savedContent) {
-                        var promise = cases.mappings[marker].contents();
+                        var promise = cases.mappings[marker].contents(index);
                         promise.then(function(data) {
                             cases.mappings[marker].savedContent = data;
                             $elem.closest('.cases-side-drawer-open').find('.content').html(data);
+                            if (index !== undefined) {
+                                $elem.closest('.cases-side-drawer-open').find('.fa-star').data({"data-object":
+                                {
+                                    "@TS": index,
+                                    "@Driver": "",
+                                    "@Keyword": "",
+                                    "Arguments": { "argument": [{ "@name": "", "@value": ""}]},
+                                    "Description": "",
+                                    "Execute": { "@ExecType": "Yes", "Rule" : [{"@Condition": "", "@Condvalue": "", "@Else": "next", "@Elsevalue": ""}]},
+                                    "runmode": {"@type": "Standard", "@value": ""},
+                                    "Iteration_type": {"@type": "Standard"},
+                                    "context": "positive",
+                                    "impact": "impact",
+                                    "onError": {"@action": "next", "@value": ""}
+                                    }
+                                });
+                            }
                         });
                     } else {
                         $elem.closest('.cases-side-drawer-open').find('.content').html(cases.mappings[marker].savedContent);
@@ -442,8 +465,9 @@ var cases = {
                         }
                     }
                     if (flag) {
-                        completeData.push(data.dataObject);
-                        ts = completeData.length - 1;
+                        var index = parseInt(data.dataObject["@TS"]) - 1;
+                        completeData.splice(index, 0, data.dataObject);
+                        ts = index;
                     }
                     $.ajax({
                         headers: {
@@ -537,7 +561,7 @@ var cases = {
                 cases.drawer.open.switchView.requirements($switchElem);
             },
 
-            steps: function ($elem) {
+            steps: function ($elem, index) {
                 if($elem === undefined){
                     $elem = $(this);
                 }
@@ -547,7 +571,7 @@ var cases = {
                 $drawerClosedDiv.hide();
                 $drawerOpenDiv.show();
                 var $switchElem = $($drawerOpenDiv.find('.sidebar').children()[2]).children('i');
-                cases.drawer.open.switchView.steps($switchElem);
+                cases.drawer.open.switchView.steps($switchElem, index);
             },
         },
 
@@ -712,7 +736,53 @@ var cases = {
 
     caseViewer:  {
         close: function () {
+            katana.$activeTab.find('#detail-block').html("");
+            katana.$activeTab.find('#req-block').html("");
+            katana.$activeTab.find('#step-block').html("");
             cases.invert();
+        },
+
+        save: function () {
+            var final_json = {"Testcase": {"Details": {}, "Requirements": {"Requirement": []}, "Steps": {"step": []}}};
+            var filepath = katana.$activeTab.find('#main-div').attr("current-file");
+            var $detailBlock = katana.$activeTab.find('#detail-block');
+            final_json.Testcase.Details = $detailBlock.find('table').data().dataObject;
+
+            var $reqTrs = katana.$activeTab.find('#req-block').find('table').find('tbody').children('tr');
+            for(var i=0; i<$reqTrs.length; i++){
+                final_json.Testcase.Requirements.Requirement.push($($reqTrs[i]).data().dataObject);
+            }
+
+            var $stepTrs = katana.$activeTab.find('#step-block').find('tbody').children('tr');
+            for(i=0; i<$stepTrs.length; i++){
+                final_json.Testcase.Steps.step.push($($stepTrs[i]).data().dataObject);
+            }
+            $.ajax({
+                headers: {
+                    'X-CSRFToken': katana.$activeTab.find('input[name="csrfmiddlewaretoken"]').attr('value')
+                },
+                type: 'POST',
+                url: 'cases/save_file/',
+                data: {"data": JSON.stringify(final_json),
+                    "filepath": filepath}
+            }).done(function(data){
+                if (data.status) {
+                    katana.openAlert({
+                        "alert_type": "success",
+                        "heading": "File Saved",
+                        "text": filepath + " has been saved successfully",
+                        "show_cancel_btn": false
+                    });
+                    cases.caseViewer.close();
+                } else {
+                    katana.openAlert({
+                        "alert_type": "danger",
+                        "heading": "File Not Saved",
+                        "text": "Some problem occurred while saving the file: " + filepath,
+                        "show_cancel_btn": false
+                    })
+                }
+            });
         }
     },
 
@@ -861,6 +931,7 @@ var cases = {
             },
 
             insertStep: function () {
+                var $elem = $(this);
                 var $tbodyElem = katana.$activeTab.find('#step-block').find('tbody');
                 var $allTrElems = $tbodyElem.children('tr[marked="true"]');
                 if ($allTrElems.length === 0) {
@@ -876,9 +947,10 @@ var cases = {
                     return;
                 } else {
                     insertAtIndex = $($allTrElems[0]).index();
-                    //insert tr
                 }
-                console.log(insertAtIndex);
+                var $closedDrawerDiv = $elem.closest('#main-div').find('.cases-side-drawer-closed');
+                var $openElem = $($closedDrawerDiv.children('div')[3]);
+                cases.drawer.openDrawer.steps($openElem, insertAtIndex+1);
             },
 
             editStep: function () {

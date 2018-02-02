@@ -12,4 +12,5 @@ urlpatterns = [
     url(r'^get_details_display_template/$', views.get_details_display_template, name='get_details_display_template'),
     url(r'^get_reqs_display_template/$', views.get_reqs_display_template, name='get_reqs_display_template'),
     url(r'^get_steps_display_template/$', views.get_steps_display_template, name='get_steps_display_template'),
+    url(r'^save_file/$', views.save_file, name='save_file'),
 ]

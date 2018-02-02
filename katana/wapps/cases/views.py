@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 import json
 from collections import OrderedDict
 
+import xmltodict
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.template.loader import render_to_string
@@ -155,5 +156,19 @@ def convert_data(data, ts):
         data[ts]["Iteration_type"]["@type"] = iteration_types()[data[ts]["Iteration_type"]["@type"]]
     if data[ts]["onError"]["@action"] in iteration_types():
         data[ts]["onError"]["@action"] = on_errors()[data[ts]["onError"]["@action"]]
-    print json.dumps(data[ts], indent=1)
     return data
+
+
+def save_file(request):
+    output = {"status": True, "message": ""}
+    data = request.POST.get("data")
+    xml_data = xmltodict.unparse(json.loads(data))
+    filepath = request.POST.get("filepath")
+    try:
+        with open(filepath, 'w') as f:
+            f.write(xml_data)
+    except Exception as e:
+        output["status"] = False
+        output["message"] = e
+        print "-- An Error Occurred -- {0}".format(e)
+    return JsonResponse(output)
