@@ -5,14 +5,26 @@ var cases = {
         updateData: function (data, key, value) {
             if (key.indexOf('[') > -1) {
                 var temp = key.split('[');
+                new_key = false;
+                var index = false;
+                if (temp[0].indexOf('(') > -1){
+                    var temp2 = temp[0].split('(');
+                    var new_key = temp2[0];
+                    index = parseInt(temp2[1].slice(0, -1));
+                }
                 var remaining = "";
                 for (var i=1; i<temp.length; i++){
+                    remaining += temp[i] + "[";
                     remaining += temp[i] + "[";
                 }
                 if (remaining.endsWith("[")){
                     remaining = remaining.slice(0, -1);
                 }
-                data[temp[0]] = cases.utils.updateData(data[temp[0]], remaining.slice(0, -1), value)
+                if (new_key) {
+                    data[new_key][index] = cases.utils.updateData(data[new_key][index], remaining.slice(0, -1), value)
+                } else {
+                    data[temp[0]] = cases.utils.updateData(data[temp[0]], remaining.slice(0, -1), value)
+                }
             } else {
                 data[key] = value;
             }
@@ -416,7 +428,7 @@ var cases = {
                 },
 
                 steps: function (data, $source) {
-                    var $allTrs = $source.closest('#main-div').find('#step-block').find('tr');
+                    var $allTrs = $source.closest('#main-div').find('#step-block').find('tbody').find('tr');
                     var completeData = [];
                     var ts = false;
                     var flag = true;

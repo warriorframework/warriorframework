@@ -146,8 +146,9 @@ def convert_data(data, ts):
         data[ts]["impact"] = impacts()[data[ts]["impact"]]
     if data[ts]["context"] in contexts():
         data[ts]["context"] = contexts()[data[ts]["context"]]
-    if data[ts]["Execute"]["Rule"]["@Else"] in on_errors():
-        data[ts]["Execute"]["Rule"]["@Else"] = on_errors()[data[ts]["Execute"]["Rule"]["@Else"]]
+    for i in range(0, len(data[ts]["Execute"]["Rule"])):
+        if data[ts]["Execute"]["Rule"][i]["@Else"] in on_errors():
+            data[ts]["Execute"]["Rule"][i]["@Else"] = on_errors()[data[ts]["Execute"]["Rule"][i]["@Else"]]
     if data[ts]["runmode"]["@type"] in runmodes():
         data[ts]["runmode"]["@type"] = runmodes()[data[ts]["runmode"]["@type"]]
     if data[ts]["Iteration_type"]["@type"] in iteration_types():

@@ -1,14 +1,8 @@
 from django import template
-from wapps.cases.cases_utils.defaults import runmodes, inverted_on_errors, iteration_types, inverted_contexts, \
-    inverted_impacts, inverted_runmodes, inverted_iteration_types, contexts
+from wapps.cases.cases_utils.defaults import inverted_on_errors, inverted_contexts, \
+    inverted_impacts, inverted_runmodes, inverted_iteration_types
 
 register = template.Library()
-
-
-@register.filter(name='replace_char')
-def replace_char(value, replace_with=""):
-    return value.replace(" ", replace_with)
-
 
 @register.filter(name='convert_runmodes')
 def convert_runmodes(value):

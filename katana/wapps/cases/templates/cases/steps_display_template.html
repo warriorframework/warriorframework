@@ -25,6 +25,8 @@
                     {% if key == "@Driver" %}
                     <td class="col-sm-1">{{ value }}</td>
                     {% endif %}
+                    {% endfor %}
+                    {% for key, value in step.items %}
                     {% if key == "@Keyword" %}
                     <td class="col-sm-2">{{ value }}</td>
                     {% endif %}
