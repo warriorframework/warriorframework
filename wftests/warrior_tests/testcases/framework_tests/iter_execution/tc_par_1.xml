@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+                <Name>tc_par_1</Name>
+                <Title>TC runs TC sequentially and kw sequentially</Title>
+                <Engineer>ka</Engineer>
+                <Date>2017-05-23</Date>
+                <Time>13:34</Time>
+                <InputDataFile>No_Data</InputDataFile>
+                <Datatype/>
+                <default_onError action="next"/>
+                <Logsdir/>
+                <Resultsdir/>
+                <ExpectedResults/>
+        </Details>
+        <Requirements>
+                <Requirement/>
+        </Requirements>
+        <Steps>
+                <step Driver="ci_regression_driver" Keyword="create_tmp_dir" TS="1" draft="yes">
+                        <Arguments>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type=""/>
+                        <Execute ExecType="Yes"/>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+        </Steps>
+</Testcase>

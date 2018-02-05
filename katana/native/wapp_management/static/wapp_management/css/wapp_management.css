@@ -1,0 +1,61 @@
+.wapp-management-error-border{
+    border: 1px solid red;
+}
+
+.wapp-management-config-padding {
+    padding-top: 0.5rem;
+}
+
+.wapp-management-header-div {
+    width: 100%;
+    height: 10rem;
+    padding: 4rem 0 0 5.5rem;
+}
+
+.wapp-management-no-top-padding {
+    padding: 0 5rem 5rem 5rem;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.wapp-management-outer-card {
+    width: 20rem;
+    height: 26rem;
+    padding: 2rem;
+}
+
+.wapp-management-custom-card {
+    width: 16rem;
+    height: 22rem;
+}
+
+.wapp-management-card-icon {
+    line-height:inherit!important;
+}
+
+.wapp-management-overflow-nowrap {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.wapp-management-overflow-wrap {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.wapp-management-overflow-fade {
+    overflow: hidden;
+    text-overflow: fade(100%);
+}
+
+.wapp-management-card-title-color {
+    background-color: #98afc7;
+}
+
+.wapp-management-toolbar-child {
+    height: 100%;
+    padding-left:0.9rem;
+}

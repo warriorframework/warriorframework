@@ -104,6 +104,8 @@ def get_parent_directory(directory_path, level=1):
     Returns:
 
     """
+    if directory_path.endswith(os.sep):
+        directory_path = directory_path[:-1]
     for i in range(0, level):
         directory_path = os.path.dirname(directory_path)
     return directory_path

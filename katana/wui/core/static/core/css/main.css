@@ -358,6 +358,7 @@ span.close:before {
 		position: absolute;
 		left: 0;
 		top: 0;
+		border-bottom: none;
 }
 .tab.active {
 	background: rgb(255, 255, 255) !important;
@@ -534,11 +535,13 @@ span.close:before {
 	transform: translateZ(0);
 	-webkit-transition: max-width 0.2s ease, -webkit-transform 0.2s ease;
 	transition: max-width 0.2s ease, transform 0.2s ease;
+	text-overflow: initial;
 }
 
 .nav .tab.active[uid="launchpad"] {
 	max-width: 200px;
 	font-size: inherit;
+	text-overflow: ellipsis;
 }
 
 .nav .tab.active[uid="launchpad"]:before {
@@ -552,7 +555,7 @@ span.close:before {
 	text-rendering: auto;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-	content: "\f0c9";
+	content: "\f015";
 	font-size: 17px;
 	line-height: 28px;
 }
@@ -1481,6 +1484,16 @@ i.active {
 	top: 50px;
 }
 
+.alert-overlay {
+	background: rgba(128, 128, 128, 0.51);
+	z-index: 9;
+	position: fixed;
+	height: calc(100% - 50px);
+	width: 100%;
+	left: 0;
+	top: 50px;
+}
+
 .popup .close:hover,
 .popup .min:hover {
 	color: #ef3e33;
@@ -1875,13 +1888,23 @@ i.active {
 	color: inherit;
 }
 
+.htmlResults td[rowspan]:nth-child(2):hover,
 .htmlResults td[rowspan]:nth-child(3):hover,
-.htmlResults td[rowspan]:nth-child(4):hover {
+.htmlResults td[rowspan]:nth-child(4):hover,
+.htmlResults td[rowspan]:nth-child(5):hover,
+.htmlResults td[rowspan]:nth-child(6):hover,
+.htmlResults td[rowspan]:nth-child(7):hover,
+.htmlResults td[rowspan]:nth-child(8):hover{
 	overflow: visible;
 }
 
+.htmlResults td[rowspan]:nth-child(2):hover div:not(:empty),
 .htmlResults td[rowspan]:nth-child(3):hover div:not(:empty),
-.htmlResults td[rowspan]:nth-child(4):hover div:not(:empty) {
+.htmlResults td[rowspan]:nth-child(4):hover div:not(:empty),
+.htmlResults td[rowspan]:nth-child(5):hover div:not(:empty),
+.htmlResults td[rowspan]:nth-child(6):hover div:not(:empty),
+.htmlResults td[rowspan]:nth-child(7):hover div:not(:empty),
+.htmlResults td[rowspan]:nth-child(8):hover div:not(:empty) {
 	position: absolute;
 	background: #3699ff;
 	z-index: 1;
@@ -2535,9 +2558,21 @@ textarea {
 	font-size: 30px;
 	line-height: inherit;
 	font-weight: 600;
-	padding-left: 35px;
+	padding-left: 54px;
 }
-
+.logo-image {
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    left: 20px;
+    top: 5px;
+    background-size: 95%;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: block;
+    background-color: white;
+    border-radius: 9px;
+}
 .close {
 	float: none;
 	font-size: inherit;
@@ -3000,7 +3035,7 @@ div .tool-bar-links:active {
 	left: 15%;
 	min-width: 70%;
 	height: 600px;
-	width: -webkit-fit-content;
+	width: 75%;
 	border-radius: 2px;
 	-webkit-animation: fadeEffect 1s;
 	color: black;
@@ -3013,8 +3048,8 @@ div .tool-bar-links:active {
 	transition: opacity 400ms ease-in;
 }
 .execution.dialog-container.small {
-    left:25%;
-    min-width: 50%;
+    left:15%;
+    min-width: 40%;
     height: 250px;
 }
 
@@ -3047,7 +3082,7 @@ div .tool-bar-links:active {
 	margin-top: 40px;
 	height: calc(100% - 80px);
 	padding: 0;
-	overflow: hidden;
+	//overflow: hidden;
 }
 
 .execution.cmd-options-menu {
@@ -3217,233 +3252,6 @@ div .tool-bar-links:active {
 
 /* execution app related styles ends*/
 
--
-/* wdf editor app related styles starts */
-
-.wdf-button {
-	position: absolute;
-	top: 10%;
-}
-
-.wdf-wide-button {
-	display: block;
-	width: 100% !important;
-	max-width: 100% !important;
-	text-align: left;
-	background-color: #f9f9f9;
-	border: none;
-}
-
-.wdf-sys-nav {
-	padding-top: 3px;
-}
-
-.wdf-subsys-nav {
-	padding-top: 3px;
-	padding-left: 25px;
-}
-
-hr.wdf-hr {
-	display: block;
-}
-
-.wdf-container {
-	padding: 1%;
-}
-
-.wdf-scroll {
-	overflow: auto;
-	height: 83vh;
-}
-
-.wdf-lg-col {
-	width: 57%;
-	float: left;
-}
-
-.wdf-lg-col>.btn {
-	padding: 8px;
-}
-
-.wdf-sm-col {
-	width: 35%;
-	float: left;
-}
-
-.wdf-indent {
-	width: calc(100% - 214px) !important;
-	margin-left: 214px !important;
-	background: #cccccc !important;
-}
-
-.sub-tool-bar .button {
-	margin-top: 4px;
-}
-
-.side-navigator {
-	position: relative;
-	position: sticky;
-	top: 4px;
-	right: 0;
-	height: 100%;
-	background: #dcdcdc;
-	-ms-flex: 0 0 25%;
-	/* flex: 0 0 20%; */
-	/* max-width: 20%; */
-	flex: none;
-	max-width: none;
-	width: 300px;
-	margin-left: 30px;
-	margin-top: 15px;
-	-webkit-box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.22);
-	-moz-box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.22);
-	box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.22);
-	transition: all .1s ease;
-	padding: 18px;
-	background-color: #f9f9f9;
-}
-
-.side-navigator .to-scroll {
-	padding: 5px 28px;
-}
-
-div#wdf-editor-col {
-	flex: none;
-	max-width: none;
-	width: calc(100% - 360px);
-	height: auto;
-	overflow: visible;
-	background: white;
-	margin-top: 15px;
-	padding: 0;
-	margin-left: 15px;
-	/* -webkit-box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.22); */
-	-moz-box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.22);
-	/* box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.22); */
-	transition: all .1s ease;
-}
-
-#wdf-navigator {
-	padding-left: 5px;
-	padding-right: 5px;
-}
-
-div#wdf-navigator .btn:hover {
-	background: #eaeaea;
-}
-
-.wdf-container {
-	padding: 0;
-}
-
-.wdf-pad {
-	padding: 0;
-}
-
-.wdf-container .row {
-	margin-left: 0;
-	margin-right: 0;
-}
-
-.wdf-pad .fa {
-	color: #4ea4e0;
-	font-size: 20px;
-}
-
-@-webkit-keyframes wdf-highlight {
-	from {
-		background-color: #ecff91;
-	}
-	to {
-		background-color: inherit;
-	}
-}
-
-@keyframes wdf-highlight {
-	from {
-		background-color: #ecff91;
-	}
-	to {
-		background-color: inherit;
-	}
-}
-
-.wdf-highlight {
-	-webkit-animation: -webkit-wdf-highlight 1s ease;
-	animation: wdf-highlight 1s ease;
-}
-
-.wdf-warning {
-	background: #ecff91;
-	background-color: #ecff91;
-}
-
-.wdf-tall-label {
-	padding-bottom: 5px;
-}
-
-.wdf-span {
-	padding-left: 5px;
-}
-
-.wdf-label {
-	border: 0px !important;
-}
-
-.control-box {
-	padding: 10px;
-	margin-bottom: 12px;
-	-webkit-box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.22);
-	-moz-box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.22);
-	box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.22);
-	padding-top: 45px;
-	position: relative;
-}
-
-.sub-tool-bar>.field {
-	width: 40px;
-	overflow: hidden;
-	margin: 0;
-	position: absolute;
-	left: 7px;
-	top: 3px;
-	text-align: -webkit-left;
-	font-size: 0;
-}
-
-.sub-tool-bar>.field.title-block {
-	left: 45px;
-	top: 0;
-	width: calc(100% - 200px);
-	margin: 0;
-	/* padding: 0; */
-	overflow: hidden;
-	position: absolute;
-	display: block;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	max-width: none;
-	color: white;
-}
-
-.sub-tool-bar>.field.title-block>input,
-.sub-tool-bar>.field.title-block>input::placeholder {
-	background: transparent;
-	color: white;
-	font-size: 20px;
-}
-
-.sub-tool-bar input[type="checkbox"]+label:before {
-	border-color: white;
-}
-
-.control-box:empty {
-	display: none;
-}
-
-
-/* wdf editor app related styles ends */
-
 .translator {
 	display: none;
 }
@@ -3491,12 +3299,6 @@ input[type="checkbox"]+label {
 	text-align: center;
 	display: inline-block;
 	color: #636363;
-}
-
-.wdf-container .sub-tool-bar .title {
-	background: transparent;
-	text-align: left;
-	color: white;
 }
 
 .add:before {
@@ -3604,67 +3406,6 @@ input[type="checkbox"]+label {
 
 #explorer-up:hover {color: white;}
 
-.wapp-management-error-border{
-    border: 1px solid red;
-}
-
-.wapp-management-config-padding {
-    padding-top: 0.5rem;
-}
-
-.wapp-management-header-div {
-    width: 100%;
-    height: 10rem;
-    padding: 4rem 0 0 5.5rem;
-}
-
-.wapp-management-no-top-padding {
-    padding: 0 5rem 5rem 5rem;
-}
-
-.full-width {
-    width: 100%;
-}
-
-.wapp-management-outer-card {
-    width: 20rem;
-    height: 26rem;
-    padding: 2rem;
-}
-
-.wapp-management-custom-card {
-    width: 16rem;
-    height: 22rem;
-}
-
-.wapp-management-card-icon {
-    line-height:inherit!important;
-}
-
-.wapp-management-overflow-nowrap {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
-
-.wapp-management-overflow-wrap {
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.wapp-management-overflow-fade {
-    overflow: hidden;
-    text-overflow: fade(100%);
-}
-
-.wapp-management-card-title-color {
-    background-color: #98afc7;
-}
-
-.wapp-management-toolbar-child {
-    height: 100%;
-    padding-left:0.9rem;
-}
 .nav .tab span {
     position: relative;
     top: 0;

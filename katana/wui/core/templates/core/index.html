@@ -4,16 +4,17 @@
 				<meta name="viewport" content="width=device-width, initial-scale=1">
 				 {% load staticfiles %}
 				<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
-
-				<script src="{% static 'core/js/jquery.min.js' %}"></script>
-				<script src="{% static 'core/js/jquery-ui.min.js' %}"></script>
+				<script src="{% static 'oss/js/jquery.min.js' %}"></script>
+				<script src="{% static 'oss/js/jquery-ui.min.js' %}"></script>
 				<script src="{% static 'core/js/main.js' %}"></script>
-				<script src="{% static 'core/js/jstree.min.js' %}" async></script>
+				<script src="{% static 'oss/js/jstree.min.js' %}" async></script>
+				<script src="{% static 'oss/js/d3v4/d3.min.js' %}" async></script>
 				<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
-				<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-				<link rel="stylesheet" href="{% static 'core/css/jstree/jstree.min.css' %}">
-				<link rel="stylesheet" href="{% static 'core/css/bootstrap.min.css' %}">
-        <link rel="stylesheet" type="text/css" href="{% static 'core/css/main.css' %}" />
+				<link rel="stylesheet" href="{% static 'oss/fonts/font-awesome-4.7.0/css/font-awesome.css' %}">
+				<link rel="stylesheet" href="{% static 'oss/css/jstree/jstree.min.css' %}">
+				<link rel="stylesheet" href="{% static 'oss/css/bootstrap.min.css' %}">
+				<link rel="icon" href="{% static 'core/images/logo.png' %}" type="image/png">
+        		<link rel="stylesheet" type="text/css" href="{% static 'core/css/main.css' %}" />
 				<style id="bg-style">
 					{% if userData.bgImage != "" %}
 						.page{background-image: url({{ userData.bgImage }})}
@@ -25,7 +26,9 @@
 
 			<div class="view activeView">
 				<div class="header">
-					<h1>WARRIOR</h1>
+					<h1>
+						<div class="logo-image" style="background-image: url({% static 'core/images/logo.png' %})"></div>
+						WARRIOR</h1>
 					<div class="quick-user" katana-click="katana.toggleActiveGlobal" >
 						<i class="fa fa-cog" katana-click="katana.templateAPI.load" url="/katana/settings/" jsurls="  /static/settings/js/settings.js,"></i>
 						<div class="profile-image image" style="background-image: url({{ userData.Base64image }})"></div>
@@ -45,12 +48,7 @@
 				</div>
 				<div class="page" id="launchpad">
 					<div class="page-content">
-						<div class="tabs">
-
-							{% for app in apps %}
-								<div class="tab {{ app.data.color }}" katana-click="katana.templateAPI.load" url="{{ app.data.url }}" jsUrls=" {% for url in app.data.js_urls %} {{ url }},{% endfor %}"><i class="fa fa-{{ app.data.icon }}"></i><span>{{ app.data.name }}</span></div>
-							{% endfor %}
-						</div>
+						{% include 'core/landing_page.html' %}
 					</div>
 				</div>
 			</div>
