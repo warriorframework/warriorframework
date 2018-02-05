@@ -19,3 +19,7 @@ from django.shortcuts import render
 
 def index(request):
     return render(request, 'kw_sequencer/index.html')
+
+
+def addKeyword(request):
+    return render(request, 'kw_sequencer/addKeyword.html')
