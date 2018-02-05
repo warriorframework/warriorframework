@@ -82,10 +82,10 @@ class ExecFilesClass(object):
 
             #get default results directory
             default_xml = Tools.__path__[0] + os.sep + 'w_settings.xml'
-            default_resultsdir = get_credentials(default_xml, 'def_dir',['Resultsdir'], 'Setting')
+            default_resultsdir = get_credentials(default_xml, 'def_dir', ['Resultsdir'], 'Setting')
             #use the default directory if user didn't define it in test case/test suite/project
-            if results_location is None or results_location is False :
-                if default_resultsdir['Resultsdir'] is not None :
+            if results_location is None or results_location is False:
+                if default_resultsdir['Resultsdir'] is not None:
                     results_location = default_resultsdir['Resultsdir']
 
             if results_location is None or results_location is False\
@@ -249,7 +249,7 @@ class ExecFilesClass(object):
 
         if str(datafile).strip().upper() != 'NO_DATA' and datafile is not False:
             if not file_Utils.fileExists(datafile):
-                print '\n'
+                print_info('\n')
                 print_error("!!! *** InputDataFile does not exist in provided path:"\
                             "{0} *** !!!".format(datafile))
         return datafile

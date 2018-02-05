@@ -74,6 +74,7 @@ class Settings:
                 new_json = json.load(a)
                 new_json['engineer'] = data[0]['firstName']
                 a.seek(0)
+                a.truncate()
                 a.write(json.dumps(new_json, sort_keys=True, indent=4, separators=(',', ': ')))
         else:
             with open(json_file,'r') as f:

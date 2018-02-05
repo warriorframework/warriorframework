@@ -504,6 +504,10 @@ var execution = {
 					//Download progress
 					xhr.addEventListener("progress", function(evt){
 						console_div.html(evt.currentTarget.response);
+						var page_content_inner = console_div.parent().parent();
+						console.log('page_content_inner: ', page_content_inner);
+						var scroll_height = page_content_inner.prop("scrollHeight");
+						page_content_inner.scrollTop(scroll_height);
 					}, false);
 					return xhr;
 					},
