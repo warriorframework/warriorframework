@@ -23,8 +23,12 @@ import WarriorCore.Classes.manual_defect_class as manual_defect_class
 
 class WarriorCliClass(object):
     """Handle the command line input for warrior"""
-    cmdprint = False
+    # Class variable for warmock functionality
+    mock = False
+    sim = False
+
     def __init__(self):
+        """empty constructor"""
         return None
 
     @classmethod
@@ -36,15 +40,15 @@ class WarriorCliClass(object):
                 target_time, '%Y-%m-%d-%H-%M-%S')
             current_time = datetime.datetime.now().replace(microsecond=0)
             if target_time >= current_time:
-                print 'warrior will sleep until ' + str(target_time)
-                print 'please do not close this window'
+                print_info('warrior will sleep until ' + str(target_time))
+                print_info('please do not close this window')
                 time.sleep((target_time-current_time).total_seconds())
-                print 'warrior is now awake'
+                print_info('warrior is now awake')
             else:
-                print 'Please enter a future time'
+                print_info('Please enter a future time')
                 exit(1)
         except ValueError:
-            print 'Please enter a legit time in yyyy-mm-dd-hh-mm-ss format'
+            print_error('Please enter a legit time in yyyy-mm-dd-hh-mm-ss format')
             exit(1)
 
     @classmethod
@@ -59,9 +63,9 @@ class WarriorCliClass(object):
                 if Utils.xml_Utils.getRoot(xmlfile_abspath).tag == 'Testcase':
                     result.append(xmlfile_abspath)
                 else:
-                    print xmlfile_abspath + " is not a valid testcase xml"
+                    print_info(xmlfile_abspath + " is not a valid testcase xml")
             else:
-                print xmlfile_abspath + " is not a xml file"
+                print_info(xmlfile_abspath + " is not a xml file")
         return result
 
     def check_tag(self, category_list, dirlist):
@@ -89,7 +93,7 @@ class WarriorCliClass(object):
                             if len(set(category_list) & set(cat_text)) > 0:
                                 result.append(xmlfile)
             else:
-                print folder, "is not a directory"
+                print_error(str(folder) + "is not a directory")
         print_info("Number of matching testcases: {0}".format(len(result)))
         return result
 
@@ -169,14 +173,14 @@ class WarriorCliClass(object):
                 suite.create_suite({"tc_type":tc_type, "kw_type":kw_type, "val":val})
                 filepath = suite.output_file()
             else:
-                print "None of the provided xml files are valid testcases"
+                print_error("None of the provided xml files are valid testcases")
                 exit(1)
         else:
-            print "**********\nWrong combination of CLI arguments,"\
-                " please choose only one testcase exec_type"\
-                " and one keyword exec_type, Warrior CLI commands"\
-                " does not support RMT and RUF with exec_type=parallel_keywords"\
-                "\n**********"
+            print_error("**********\nWrong combination of CLI arguments,"\
+                            " please choose only one testcase exec_type"\
+                            " and one keyword exec_type, Warrior CLI commands"\
+                            " does not support RMT and RUF with exec_type=parallel_keywords"\
+                            "\n**********")
             exit(1)
         return filepath
 
@@ -335,25 +339,10 @@ class WarriorCliClass(object):
 
         parser.add_argument('-jobid', action='store', nargs='?',
                             help="create a property in test junit files which name is "\
-                            "resultlocation and value http://pharlap.tx.fnc.fujitsu.com/share/logs/<jobid>")
+                            "resultlocation and value is <job_url<url>> + <jobid>")
 
         parser.add_argument('-encrypt', action='store', nargs='*', dest="encrypt", help="encrypt data string")
 
-        parser.add_argument('-cmdprint', action='store_true', default=False,
-                            help=":cmdprint: print the command to be executed "\
-                            "without actually executing...")
-
-        parser.add_argument('-mockrun', action='store_true', default=False,
-                            help=":mockrun: print the command to be executed "\
-                            "without actually executing...")
-
-        parser.add_argument('-debug', action='store_true', default=False,
-                            help=":debug: It should be used along with the mockrun command "\
-                            "...")
-
-        parser.add_argument('-summary', action='store_true', default=False,
-                            help=":summary: It should be used along with the mockrun command "\
-                            "...")
         # Run Testcases/Suites/Projects in default locations
         parser.add_argument('-wt', action='store', nargs='*', dest="tc_name",
                             help="Runs testcases available in default path, "\
@@ -398,10 +387,33 @@ class WarriorCliClass(object):
                             "Will be set when katana executes warrior " \
                             "UI will read live html results from this location" \
                             "and display html results in a live fashion " )
-        
+
+        #Running Warrior in Mock mode and Test mode
+        parser.add_argument('-mock', action='store_true', default=False,
+                            help=":mock mode: In this mode, connection to server "\
+                            "will be mocked (won't actually connect) and keywords will run. "\
+                            "User can verify input value from console output/result file")
+
+        #Running Warrior in Mock mode and Test mode
+        parser.add_argument('-sim', action='store_true', default=False,
+                            help=":mock mode: In this mode, connection to server "\
+                            "will be mocked (won't actually connect) and keywords will run. "\
+                            "A response file can be specified in testdata file inside global tag."\
+                            "Instead of actual server response, Warrior will use the response "\
+                            "in the response file to do command verification"\
+                            "or other CLI related operation."
+                            "User can verify input value from console output/result file")
+
+        parser.add_argument('-headless', action='store_true', default=False,
+                            help="If headless mode is enabled, all selenium tests will run in xfvb "\
+                            "which will not need a GUI")
+
         namespace = parser.parse_args(arglist)
-        if namespace.cmdprint:
-            WarriorCliClass.cmdprint = True
+        #see if the below line is requried
+        if namespace.mock:
+            WarriorCliClass.mock = True
+        if namespace.sim:
+            WarriorCliClass.sim = True
         return namespace
 
 class CreateTestSuite(object):

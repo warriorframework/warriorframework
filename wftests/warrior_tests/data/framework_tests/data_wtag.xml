@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+<credentials>
+    <system name="sys_wtag">
+		<strvar>I am a string variable</strvar>
+		<lang_list wtype='list'>['English', 'Chinese', 'French']</lang_list>
+		<states wtype='tuple'>('texas', 'newyork')</states>
+		<currency_map wtype='dict'>{'USA':'USD', 'India': 'INR'}</currency_map>
+		<ram_space_available wtype='bool'>False</ram_space_available>
+		<hd_space_available wtype='bool'>True</hd_space_available>
+        <config wtype='file'>../../config_files/check_file_type</config>
+		<intvar wtype='int'>456</intvar>
+		<floatvar wtype='float'>345.65</floatvar>
+    </system>
+    <system name="PCs">
+        <subsystem name="abc">
+            <eqpt_type>lab_pc</eqpt_type>
+            <dom>2013-05-02</dom>
+            <user>John</user>
+            <os>window</os>
+            <testdata>../../config_files/demo_wtag_myInfo.xml</testdata>
+        </subsystem>
+        <subsystem name="HP">
+            <eqpt_type wtype='str'>'lab_pc'</eqpt_type>
+            <dom>2014-03-05</dom>
+            <user>Jim</user>
+            <os>RedHat</os>
+            <testdata wtype='file'>../../config_files/demo_wtag_myInfo.xml</testdata>
+        </subsystem>
+        <subsystem name="Dell" eqpt_type="lab_pc" dom="2009-07-15" user="Jerry"
+                   os="Ubuntu" testdata="../../config_files/demo_wtag_myInfo.xml">
+        </subsystem>
+    </system>
+</credentials>
