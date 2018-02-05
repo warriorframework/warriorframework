@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+<TestSuite>
+        <Details>
+                <Name>ts_glob1</Name>
+                <Title>Test asterisk(*) support in case/suite path(using python glob module)</Title>
+                <Engineer>Warrior_user</Engineer>
+                <Date>01/09/2018</Date>
+                <Time>14:34:28</Time>
+                <type exectype="sequential_testcases"/>
+                <State/>
+                <default_onError action="next"/>
+                <Resultsdir/>
+                <InputDataFile/>
+        </Details>
+        <Requirements>
+                <Requirement/>
+        </Requirements>
+        <Testcases>
+                <Testcase>
+                        <path>../../../testcases/framework_tests/glob_tests/tc_glob1*</path>
+                        <context>positive</context>
+                        <InputDataFile/>
+                        <runtype>sequential_keywords</runtype>
+                        <onError action="next" value=""/>
+                        <runmode type="Standard" value=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                        <impact>impact</impact>
+                </Testcase>
+        </Testcases>
+</TestSuite>
