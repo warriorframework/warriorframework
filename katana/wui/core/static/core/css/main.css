@@ -41,7 +41,9 @@ h1 {
 	margin: 0 auto;
 	overflow: auto;
 	background-size: cover;
-	background: #404040 url(/static/core/images/image.jpg) center;
+	background-color: #404040;
+    background-image: url(/static/core/images/image.jpg);
+    background-position: center;
 	height: 100%;
 	position: absolute;
 	top: 0;
