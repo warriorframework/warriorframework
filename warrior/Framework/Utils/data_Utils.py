@@ -10,21 +10,25 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+
+from __future__ import division
 import os
 import re
-import sys
+import ast
+import operator as op
 from collections import OrderedDict
-from ast import literal_eval
-from Framework.Utils import xml_Utils, string_Utils, testcase_Utils,\
-config_Utils, file_Utils
+
+from Framework.Utils import xml_Utils, string_Utils, testcase_Utils, config_Utils, file_Utils
 from Framework.Utils.testcase_Utils import pNote
-from Framework.Utils.print_Utils import print_info, print_warning,\
-print_error, print_debug, print_exception
+from Framework.Utils.print_Utils import (print_info, print_warning, print_error,
+                                         print_debug, print_exception)
 from Framework.ClassUtils.testdata_class import TestData, TestDataIterations
 from Framework.Utils.xml_Utils import get_attributevalue_from_directchildnode as av_fromdc
 from Framework.Utils.string_Utils import sub_from_varconfigfile
 from Framework.ClassUtils import database_utils_class
-from __builtin__ import str
+from WarriorCore.Classes.argument_datatype_class import ArgumentDatatype
+from WarriorCore.Classes.warmock_class import mocked
+from WarriorCore.Classes.testcase_utils_class import TestcaseUtils
 
 cmd_params = OrderedDict([("command_list", "send"),
                           ("sys_list", "sys"),
@@ -43,6 +47,8 @@ cmd_params = OrderedDict([("command_list", "send"),
                           ("resp_ref_list", "resp_ref"),
                           ("resp_req_list", "resp_req"),
                           ("resp_pat_req_list", "resp_pat_req"),
+                          ("resp_key_list", "resp_keys"),
+                          ("inorder_resp_ref_list", "inorder_resp_ref"),
                           ("log_list", "monitor"),
                           ("verify_on_list", "verify_on"),
                           ("inorder_search_list", "inorder"),
@@ -107,14 +113,48 @@ def getSystemData(datafile, system_name, cnode, system='system'):
         3. If a tag is present but has no text its value=None
     """
     value = False
+    startdir = os.path.dirname(datafile)
     element = _get_system_or_subsystem(datafile, system_name, tag=system)
     if element is not None:
         value = element.get(cnode, None)
         if value is None:
-            value = xml_Utils.get_text_from_direct_child(element, cnode)
+            value = get_cred_value_from_elem(element, cnode, startdir)
         value = sub_from_env_var(value)
+        value = sub_from_data_repo(value)
 
     return value
+
+
+def get_cred_value_from_elem(element, tag, startdir=''):
+    """given an credential element find the credential
+    value desired
+    """
+    chelem = element.find(tag)
+    if chelem is None:
+        return xml_Utils.get_text_from_direct_child(element, tag)
+    if 'wtype' in chelem.attrib:
+        value = get_actual_cred_value(chelem.tag, chelem.text,
+                                      chelem.attrib['wtype'], startdir)
+    else:
+        value = chelem.text
+    return value
+
+
+def get_actual_cred_value(tag, value, etype, startdir=''):
+    """get the credential value after converting to the
+    desired type and if file type get absolute path relative
+    to the startdir
+    """
+    try:
+        adt = ArgumentDatatype(tag, value)
+        adt.datatype = adt.get_type_func(etype)
+        if adt.datatype is file:
+            val = file_Utils.getAbsPath(value, startdir)
+        else:
+            val = adt.convert_string_to_datatype()
+    except KeyError:
+        val = value
+    return val
 
 
 def get_credentials(datafile, system_name, myInfo=[], tag_name="system",
@@ -149,6 +189,7 @@ def get_credentials(datafile, system_name, myInfo=[], tag_name="system",
         3. If an attribute or tag is not present its value=boolean False
         4. If a tag is present but has no text its value=None
     """
+    startdir = os.path.dirname(datafile)
     # Find the parent system
     element = _get_system_or_subsystem(datafile, system_name, tag=tag_name,
                                        attr=attr_name)
@@ -157,7 +198,12 @@ def get_credentials(datafile, system_name, myInfo=[], tag_name="system",
         output_dict = {}
         if len(myInfo) == 0:
             for child in element:
-                output_dict[child.tag] = child.text
+                val = child.text
+                if 'wtype' in child.attrib:
+                    val = get_actual_cred_value(child.tag, child.text,
+                                                child.attrib['wtype'], startdir)
+                output_dict[child.tag] = val
+
             attrib_dict = element.attrib
             output_dict.update(attrib_dict)
         else:
@@ -175,12 +221,16 @@ def get_credentials(datafile, system_name, myInfo=[], tag_name="system",
                         cred_value = {}
                         for child in child_list:
                             cred_value[child.tag] = child.text
+                            if 'wtype' in child.attrib:
+                                cred_value[child.tag] = get_actual_cred_value(
+                                                        child.tag, child.text,
+                                                        child.attrib['wtype'], startdir)
                     else:
-                        cred_value = xml_Utils.get_text_from_direct_child(element,
-                                                                          x)
+                        cred_value = get_cred_value_from_elem(element, x, startdir)
                 output_dict[x] = cred_value
         value = output_dict
     updated_dict = sub_from_env_var(value)
+    updated_dict = sub_from_data_repo(updated_dict)
     return updated_dict
 
 
@@ -215,6 +265,7 @@ def _get_system_or_subsystem(datafile, system_name, tag="system", attr='name'):
     if element is None or element is False:
         pNote(msg, "warn")
     return element
+
 
 def get_session_id(system_name, session_name=None):
     """Returns the session-id based on the provided system_name
@@ -279,10 +330,14 @@ def update_datarepository(input_dict):
 
 
 def get_object_from_datarepository(object_key, verbose=True):
-    """Gets the value for the object with the provided name from datarepositoy """
+    """ Gets the value for the object with the provided name from data repository.
+    object_key contains .(dot) will be treated as nested key """
     try:
         data_repository = config_Utils.data_repository
-        obj = data_repository[object_key]
+        keys = object_key.split('.')
+        obj = data_repository[keys[0]]
+        for key in keys[1:]:
+            obj = obj[key]
     except KeyError:
         obj = False
         if verbose:
@@ -290,6 +345,7 @@ def get_object_from_datarepository(object_key, verbose=True):
     return obj
 
 
+@mocked
 def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
     """Gets the command_list, startprompt_list, endprompt_list,
     verify_list from testdata """
@@ -307,8 +363,8 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
     if isinstance(testdatafile, dict):
         print_info("Resolving testdata details from DB system - "
                    "'{}'".format(testdatafile.get('td_system')))
-        db_td_obj = database_utils_class.\
-         create_database_connection('dataservers', testdatafile.get('td_system'))
+        db_td_obj = database_utils_class.create_database_connection(
+                        'dataservers', testdatafile.get('td_system'))
         root = db_td_obj.get_tdblock_as_xmlobj(testdatafile)
 
         # if testdata block in the datafile has separate db system
@@ -316,9 +372,8 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
         if testdatafile.get('global_system') is not None:
             print_info("Resolving testdata-global block from DB system - "
                        "'{}'".format(testdatafile.get('global_system')))
-            db_tdglobal_obj = database_utils_class.\
-             create_database_connection('dataservers',
-                                        testdatafile.get('global_system'))
+            db_tdglobal_obj = database_utils_class.create_database_connection(
+                                'dataservers', testdatafile.get('global_system'))
             global_obj = db_tdglobal_obj.get_globalblock_as_xmlobj(testdatafile)
             db_tdglobal_obj.close_connection()
         else:
@@ -334,8 +389,8 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
     if isinstance(varconfigfile, dict):
         print_info("Resolving varconfig details from DB system - "
                    "'{}'".format(varconfigfile.get('var_system')))
-        db_var_obj = database_utils_class.\
-         create_database_connection('dataservers', varconfigfile.get('var_system'))
+        db_var_obj = database_utils_class.create_database_connection(
+                        'dataservers', varconfigfile.get('var_system'))
         varconfigfile = db_var_obj.get_varblock_as_xmlobj(varconfigfile)
         db_var_obj.close_connection()
 
@@ -344,9 +399,8 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
         exec_flag = get_exec_flag(testdata, title, row)
         exec_text = testdata.get("execute").strip()
         execute_req = string_Utils.conv_str_to_bool(exec_text)
-        if  execute_req and exec_flag:
-            testdata_key = "{0}{1}".format(testdata.get('title', ""), \
-                                         _get_row(testdata))
+        if execute_req and exec_flag:
+            testdata_key = "{0}{1}".format(testdata.get('title', ""), _get_row(testdata))
             details_dict = _get_cmd_details(testdata, global_obj, system_name,
                                             varconfigfile, var_sub=var_sub)
             start_pat = _get_pattern_list(testdata, global_obj)
@@ -355,41 +409,43 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
 
             print_info("var_sub:{0}".format(var_sub))
             td_obj = TestData()
-            details_dict = td_obj.varsub_varconfig_substitutions\
-            (details_dict, vc_file=None, var_sub=var_sub, start_pat=start_pat, end_pat=end_pat)
+            details_dict = td_obj.varsub_varconfig_substitutions(
+                            details_dict, vc_file=None, var_sub=var_sub,
+                            start_pat=start_pat, end_pat=end_pat)
 
-            details_dict = td_obj.wdf_substitutions(details_dict, datafile, kw_system_name=system_name)
+            details_dict = td_obj.wdf_substitutions(details_dict, datafile,
+                                                    kw_system_name=system_name)
             details_dict = sub_from_env_var(details_dict)
             details_dict = sub_from_data_repo(details_dict)
 
             td_iter_obj = TestDataIterations()
-            details_dict, cmd_loc_list = td_iter_obj.resolve_iteration_patterns\
-            (details_dict)
+            details_dict, cmd_loc_list = td_iter_obj.resolve_iteration_patterns(details_dict)
             iter_type = testdata.get('iter_type', None)
             # Type-2 iteration - per_td_block
             if iter_type == "per_td_block":
-                details_dict, cmd_loc_list = td_iter_obj.repeat_per_td_block\
-                (details_dict, cmd_loc_list)
-                details_dict = td_iter_obj.arrange_per_td_block\
-                (details_dict, cmd_loc_list)
+                details_dict, cmd_loc_list = td_iter_obj.repeat_per_td_block(
+                                                details_dict, cmd_loc_list)
+                details_dict = td_iter_obj.arrange_per_td_block(details_dict,
+                                                                cmd_loc_list)
 
-            # List substitution happens after iteration because list sub cannot recognize the + sign in iteration
-            cmd_list_substituted, verify_text_substituted = td_obj.list_substitution_precheck(varconfigfile, details_dict, start_pat, end_pat)
-            td_obj.list_substitution(details_dict, varconfigfile, cmd_list_substituted, verify_text_substituted, start_pat, end_pat)
+            # List substitution happens after iteration because
+            # list sub cannot recognize the + sign in iteration
+            cmd_list_substituted, verify_text_substituted = td_obj.list_substitution_precheck(
+                                                                varconfigfile, details_dict,
+                                                                start_pat, end_pat)
+            td_obj.list_substitution(details_dict, varconfigfile, cmd_list_substituted,
+                                     verify_text_substituted, start_pat, end_pat)
 
-            details_dict = td_obj.varsub_varconfig_substitutions\
-            (details_dict, vc_file=varconfigfile, var_sub=None, start_pat=start_pat, end_pat=end_pat)
+            details_dict = td_obj.varsub_varconfig_substitutions(
+                            details_dict, vc_file=varconfigfile, var_sub=None,
+                            start_pat=start_pat, end_pat=end_pat)
             testdata_dict[testdata_key] = details_dict
-            found = 1
-
         else:
             not_found += 1
 
     if not_found == len(root.findall("testdata")):
-        print_warning('There are no rows with execute=yes ' \
-                      'and title={0}, row={1} in testdata {2} '.format(title,
-                                                                       row,
-                                                                       testdatafile))
+        print_warning('There are no rows with execute=yes and title={0}, row={1}'
+                      ' in testdata {2} '.format(title, row, testdatafile))
     return testdata_dict
 
 
@@ -412,7 +468,7 @@ def _get_mapping_details(global_obj, vfylist):
                     # Check if the verify list has combo value, if yes,
                     # expand the mapping list as well
                     combo_value = av_fromdc(g_verify, sub_element,
-                        "combo") if g_verify is not None else False
+                                            "combo") if g_verify is not None else False
                     if combo_value:
                         for i in combo_value.split(","):
                             if ':m' in i.lower():
@@ -430,6 +486,43 @@ def _get_mapping_details(global_obj, vfylist):
     return (vfylist, map_list)
 
 
+def _get_key_elements(testdata, global_obj, keys):
+    """given keys in a comma separated key names, get the elements
+    corresponding to each key in the testdata or global testdata block
+    :RETURN:
+    list of xml elements corresponding to the keys in testdata or global
+    testdata block. if the element is not found in testdata or global_obj,
+    the same key name in string would be appended
+    """
+    elem_list = []
+    if keys is None:
+        return None
+    keylist = [key.strip() for key in keys.split(',')]
+    for key in keylist:
+        # get the key_elem from test case corresponding to key from
+        # the testdata or global section. Return None if it is not
+        # found in both testdata and global section
+        if testdata.find(key) is not None:
+            elem_list.append(testdata.find(key))
+            continue
+        key_found = False
+        if global_obj is not None:
+            global_key_elem = global_obj.find("keys")
+            global_keys = xml_Utils.get_child_node_list(global_key_elem)
+            # return the first matched entry in global section with tag=key
+            for glob_key in global_keys:
+                if glob_key.tag == key:
+                    elem_list.append(glob_key)
+                    key_found = True
+                    break
+        if not key_found:
+            print_error("There is no pattern element for key '{}',"
+                        " please check".format(key))
+            elem_list.append(key)
+    return elem_list
+
+
+@mocked
 def _get_cmd_details(testdata, global_obj, system_name,
                      varconfigfile, var_sub=None):
     """Get the command details from testdata file
@@ -461,9 +554,15 @@ def _get_cmd_details(testdata, global_obj, system_name,
             vfylist = details_dict["verify_list"]
             vfylist, maplist = _get_mapping_details(global_obj, vfylist)
             resultant_list = maplist
+        elif param == "resp_key_list":
+            keyslist = _get_cmdparams_list(testdata, global_obj, attrib)
+            resultant_list = [_get_key_elements(testdata, global_obj, keys) for keys in keyslist]
         else:
             resultant_list = _get_cmdparams_list(testdata, global_obj, attrib)
             if param == "sys_list":
+                # substitute sys tag value from var_config file
+                resultant_list = string_Utils.sub_from_varconfig(varconfigfile,
+                                                                 resultant_list)
                 details_dict["vc_file_list"] = []
                 vc_file_list = _get_vc_details(resultant_list, system_name,
                                                varconfigfile)
@@ -524,7 +623,7 @@ def _get_verification_details(testdata, global_obj, verify_list, cmd_attrib,
                 # Get the attribute value(name:'combo') of the element in
                 # the "global/verifications" section
                 combo_value = av_fromdc(g_verify, element,
-                              "combo") if g_verify is not None else False
+                                        "combo") if g_verify is not None else False
                 # Add combo value if exists else add verify tag in new list
                 if combo_value:
                     new_verify_sublist.extend(combo_value.split(","))
@@ -553,6 +652,7 @@ def _get_verification_details(testdata, global_obj, verify_list, cmd_attrib,
                 resultant_sublist.append(value)
             resultant_list.append(resultant_sublist)
     return resultant_list
+
 
 def _get_vc_details(sys_list, system_name, varconfigfile):
     """ To get the variable_config files specific to
@@ -623,7 +723,7 @@ def get_exec_flag(testdata, title, row):
         elif testdata.get('title', None) == title and process_row == '':
             exec_flag = True
     elif row:
-        if process_row == row and testdata.get('title', None) == None:
+        if process_row == row and testdata.get('title', None) is None:
             exec_flag = True
         elif process_row == row and testdata.get('title', None) == 'none':
             exec_flag = True
@@ -719,15 +819,13 @@ def verify_resp_across_sys(match_list, context_list, command,
             # context_list[i])
             try:
                 data = remote_resp_dict[verify_on_list[i][j]]
-                tmp_status = verify_cmd_response(
-                                [match_list[i]], [context_list[i]], command,
-                                data, verify_on_list[i][j], varconfigfile,
-                                endprompt, verify_group)
+                tmp_status = verify_cmd_response([match_list[i]], [context_list[i]], command,
+                                                 data, verify_on_list[i][j], varconfigfile,
+                                                 endprompt, verify_group)
                 status = status and tmp_status
             except KeyError:
                 print_error("Response could not be collected for {0}, hence, "
-                            "it cannot be verified".format(
-                                                verify_on_list[i][j]))
+                            "it cannot be verified".format(verify_on_list[i][j]))
                 status = "ERROR"
                 # print "\n---------- END OF VERIFICATION ----------\n"
     return status
@@ -742,7 +840,7 @@ def get_no_impact_logic(context_str):
               'Y:NOIMPACT': (True, 'YES'),
               'Y': (False, 'YES'),
               'NO:NOIMPACT': (True, 'No'),
-              'NO': (False, 'No'), 
+              'NO': (False, 'No'),
               'N:NOIMPACT': (True, 'No'),
               'N': (False, 'No'),
             }.get(context_str.upper(), False)
@@ -756,24 +854,32 @@ def convert2type(value, data_type='str'):
     """
     type_funcs = {'str': str, 'int': int, 'float': float}
     convert = type_funcs[data_type]
-    return convert(value)
+    cvalue = value
+    try:
+        cvalue = convert(value)
+    except ValueError:
+        print_error("'{}' should be of type {}, please correct".format(value, data_type))
+    except Exception as exception:
+        print_exception(exception)
+    return cvalue
 
-
+@mocked
 def verify_cmd_response(match_list, context_list, command, response,
                         verify_on_system, varconfigfile=None, endprompt="",
                         verify_group=None):
     """Verifies the response with the provided
     match and context list
     """
-    err_msg = "Incorrect or no value provided for verification search/found, "
-    "check the verification data provided for the command. Command result will"
-    " be marked as ERROR"
+    err_msg = ("Incorrect or no value provided for verification search/found, "
+               "check the verification data provided for the command. Command "
+               "result will be marked as ERROR")
 
     if varconfigfile and varconfigfile is not None:
         match_list = string_Utils.sub_from_varconfig(varconfigfile, match_list)
     verify_status = True
 
     for i in range(0, len(match_list)):
+        pattern_match = False
         nogroup = False
         if context_list[i] and match_list[i]:
             noiimpact, found = get_no_impact_logic(context_list[i])
@@ -784,9 +890,9 @@ def verify_cmd_response(match_list, context_list, command, response,
                 match_object = False
             if match_object:
                 match = match_object.group()
-                msg = "{0} '{1}' in  response to '{2}' on {4} :[{3}]:".format(
-                        "Found ", match, command, "pattern matched",
-                        verify_on_system)
+                msg = "Found '{0}' in response to '{1}' on {2} & "\
+                    "'Found' tag is set to '{3}', so the {4}"
+                pattern_match = True
                 cond_value = verify_group[1][i]
                 if cond_value:
                     grps = match_object.groups()
@@ -810,9 +916,8 @@ def verify_cmd_response(match_list, context_list, command, response,
                     status = True
             else:
                 match = match_list[i]
-                msg = "{0} '{1}' in  response to '{2}' on {4} :[{3}]:".format(
-                        "Did not find", match, command, "pattern match failed",
-                        verify_on_system)
+                msg = "Did not find '{0}' in response to '{1}' on {2} & "\
+                    "'Found' tag is set to '{3}' so the {4}"
                 status = False
             if found is status:
                 result = False if not found and nogroup else True
@@ -827,7 +932,18 @@ def verify_cmd_response(match_list, context_list, command, response,
                                          "would not impact command status")
                 else:
                     result = False
-            testcase_Utils.pNote(msg, "debug")
+            if pattern_match is True and found is True:
+                print_info(msg .format(match_list[i], command, verify_on_system,
+                                       "Yes", "verification Passed"))
+            elif pattern_match is True and found is False:
+                print_debug(msg .format(match_list[i], command, verify_on_system,
+                                        "No", "verification Failed"))
+            elif pattern_match is False and found is True:
+                print_debug(msg .format(match_list[i], command, verify_on_system,
+                                        "Yes", "verification Failed"))
+            elif pattern_match is False and found is False:
+                print_info(msg .format(match_list[i], command, verify_on_system,
+                                       "No", "verification Passed"))
         elif context_list[i] and match_list[i] == "":
             noiimpact, found = get_no_impact_logic(context_list[i])
             found = string_Utils.conv_str_to_bool(found)
@@ -840,8 +956,8 @@ def verify_cmd_response(match_list, context_list, command, response,
             else:
                 result = False if response == "" else True
 
-            verification_text = "verification success" if result else "veri"
-            "fication failed"
+            verification_text = "verification "
+            verification_text += "success" if result else "failed"
             msg = "Response " if found else "No response "
             msg += "found from command '{0}' on {2} :[{1}]:".format(
                             command, verification_text, verify_on_system)
@@ -858,8 +974,11 @@ def verify_cmd_response(match_list, context_list, command, response,
 
 
 def verify_data(expected, key, data_type='str', comparison='eq'):
-    """Verify the value of the key in data repository matches
-    with expected value
+    """
+        Verify the value of the key in data repository matches
+        with expected value
+        the comparison will compare expected to key with comparison value
+        eg. expected=5, value of key=3, comparison='ge' mean 5 >= 3
     """
     def validate():
         """Verify the value of the key in data repository matches
@@ -867,17 +986,17 @@ def verify_data(expected, key, data_type='str', comparison='eq'):
         """
         result = "TRUE"
         err_msg = ""
+        exp = expected
         if data_type not in type_funcs:
-            err_msg += "type {} not supported, only one of {} supported\n".\
-                format(data_type, '/'.join(type_funcs.keys()))
+            err_msg += ("type {} not supported, only one of {} supported\n".
+                        format(data_type, '/'.join(type_funcs.keys())))
             result = "ERROR"
         else:
             convert = type_funcs[data_type]
             try:
                 exp = convert(expected)
             except ValueError:
-                err_msg += "expected {} should be of type {}\n".format(
-                                                        expected, data_type)
+                err_msg += "expected {} should be of type {}\n".format(expected, data_type)
                 result = "ERROR"
             except Exception as e:
                 err_msg += "Got unknown exception {}, please check\n".format(e)
@@ -898,18 +1017,136 @@ def verify_data(expected, key, data_type='str', comparison='eq'):
         'le': lambda x, y: x <= y
     }
     result, err_msg, exp = validate()
-    keys = key.split('.')
-    value = get_object_from_datarepository(keys[0])
-    for k in keys[1:]:
-        value = value[k]
-    if not value:
-        err_msg += "key {} not present in data repository\n".format(key)
+    value = get_object_from_datarepository(key)
+    key_err_msg = "In the given key '{0}', '{1}' is not present in data repository"
+    if value:
+        try:
+            if result == "ERROR" or result == "EXCEPTION":
+                print_error(err_msg)
+            elif not comp_funcs[comparison](value, exp):
+                result = "FALSE"
+                if type(value) != type(exp):
+                    print_warning("The expected value '{0}' is of {1} and data_repository value "
+                                  "'{2}' is of {3}".format(exp, type(exp), value, type(value)))
+                else:
+                    print_warning("The key, value pair '{0}:{1}' present in the "
+                                  "data_repository doesn't satisfy the expected value: '{2}' & "
+                                  "condition: '{3}'".format(key, value, expected, comparison))
+            else:
+                print_info("The key, value pair '{0}:{1}' present in the  "
+                           "data_repository satisfies the expected type & condition "
+                           "'{2}:{3}'".format(key, value, data_type, comparison))
+        except Exception as e:
+            err_msg += "Got unknown exception {}\n".format(e)
+            result = "EXCEPTION"
+    else:
+        # when the value is not in data_repo(value is False)
         result = "ERROR"
-    if result != "TRUE":
-        print_error(err_msg)
-    elif not comp_funcs[comparison](value, exp):
-        result = "FALSE"
+        print_error(key_err_msg.format(key, key.split('.')[0]))
+
     return result, value
+
+
+def verify_arith_exp(expression, expected, comparison='eq'):
+    """ Verify the output of the arithmetic expression matches the expected(float comparison)
+        Note : Binary floating-point arithmetic holds many surprises.
+        Please refer to link, https://docs.python.org/2/tutorial/floatingpoint.html
+        This Keyword inherits errors in Python float operations.
+        :Arguments:
+            1. expression: Arithmetic expression to be compared with expected.
+                This can have env & data_repo values embedded in it.
+                    Ex. expression: "10+${ENV.x}-${REPO.y}*10"
+                Expression will be evaluated based on python operator precedence
+                Supported operators: +, -, *, /, %, **, ^
+            2. expected: Value to be compared with the expression output
+                This can be a env or data_repo or any numeral value.
+            3. comparison: Type of comparison(eq/ne/gt/ge/lt/le)
+                eq - check if both are same(equal)
+                ne - check if both are not same(not equal)
+                gt - check if expression output is greater than expected
+                ge - check if expression output is greater than or equal to expected
+                lt - check if expression output is lesser than expected
+                le - check if expression output is lesser than or equal to expected
+        :Returns:
+            1. status(boolean)
+    """
+    status = True
+
+    # Customize power(exponentiation) fun to not to support the values greater
+    # than 1000 to avoid high CPU/Memory usage
+    def power(a, b):
+        """ Customized operator-power(op.pow) function """
+        if any(abs(n) > 1000 for n in [a, b]):
+            raise Exception("ValueError: Power operation is not supported on "
+                            "values higher than 1000: '{0}, {1}'".format(a, b))
+        return op.pow(a, b)
+
+    # supported operators
+    operators = {ast.Add: op.add, ast.Sub: op.sub, ast.Mult: op.mul,
+                 ast.Div: op.truediv, ast.Mod: op.mod, ast.Pow: power,
+                 ast.BitXor: op.xor}
+
+    def eval_exp(parsed_exp):
+        """ Evaluate arithmetic operations in an expression recursively """
+        # number
+        if isinstance(parsed_exp, ast.Num):
+            return parsed_exp.n
+        # binary operator
+        elif isinstance(parsed_exp, ast.BinOp):
+            return operators[type(parsed_exp.op)](eval_exp(parsed_exp.left),
+                                                  eval_exp(parsed_exp.right))
+        # Unary operator
+        elif isinstance(parsed_exp, ast.UnaryOp):
+            return operators[type(parsed_exp.op)](eval_exp(parsed_exp.operand))
+        else:
+            raise Exception("TypeError: Illegal expression")
+
+    # Substitute env values in the expression & expected
+    expression = sub_from_env_var(expression)
+    expected = sub_from_env_var(expected)
+    # Substitute data_repo values in the expression & expected
+    expression = sub_from_data_repo(expression)
+    expected = sub_from_data_repo(expected)
+
+    try:
+        expression_ouput = eval_exp(ast.parse(expression, mode='eval').body)
+        expected = float(expected)
+    except SyntaxError:
+        print_error("Unable to evaluate the expression '{}' provided.\n"
+                    "Possible reasons: \n1. Invalid arithmetic expression\n"
+                    "2. Given env/data_repo values are not available".format(expression))
+
+        status = "ERROR"
+    except ValueError:
+        print_error("Unable to convert expected value '{}' to float".format((expected)))
+        status = "ERROR"
+    except Exception as exception:
+        print_exception(exception)
+        status = "ERROR"
+
+    comp_funcs = {
+        'eq': lambda x, y: x == y,
+        'ne': lambda x, y: x != y,
+        'gt': lambda x, y: x > y,
+        'ge': lambda x, y: x >= y,
+        'lt': lambda x, y: x < y,
+        'le': lambda x, y: x <= y
+    }
+
+    if comparison not in comp_funcs:
+        print_error("Valid comparisons are {}".format('/'.join(comp_funcs.keys())))
+        status = "ERROR"
+
+    if status is True:
+        comp_result = comp_funcs[comparison](expression_ouput, expected)
+        if comp_result is True:
+            print_info("Expression output satisfies the given condition: "
+                       "'{0} {1} {2}'".format(expression_ouput, comparison, expected))
+        else:
+            status = False
+            print_info("Expression output does not satisfy the given condition: "
+                       "'{0} {1} {2}'".format(expression_ouput, comparison, expected))
+    return status
 
 
 def verify_resp_inorder(match_list, context_list, command, response,
@@ -918,7 +1155,8 @@ def verify_resp_inorder(match_list, context_list, command, response,
                         verify_group=None):
     """ Method for in-order search.
     Verifies the 'search strings' in the system response
-    and also verifies whether they are in order or not """
+    and also verifies whether they are in order or not
+    """
 
     msg = ("In-order verification requested for the command: "
            "'{0}' ".format(command))
@@ -1040,7 +1278,7 @@ def _get_resp_order(context_list, verify_list, resp_details_dict):
             index_list.append(resp_details_dict[system][i]['start_index'])
 
         rcv_all_resp_order = []
-        for val in sorted(enumerate(index_list), key=lambda x:x[1]):
+        for val in sorted(enumerate(index_list), key=lambda x: x[1]):
             if val[1] is not None:
                 rcv_all_resp_order.append(verify_list[val[0]])
 
@@ -1068,6 +1306,7 @@ def _get_resp_order(context_list, verify_list, resp_details_dict):
 
     return resp_details_dict
 
+
 def _validate_index_value(index, index_list, context_list):
     """ Returns True if the value in the given index is in expected order """
     status = True
@@ -1088,9 +1327,7 @@ def _validate_index_value(index, index_list, context_list):
 
 
 def verify_relation(actual_value, cond_value, operator, cond_type):
-    """
-        use verify_data to do comparison of two values
-    """
+    """verify the actual_value with the expected value"""
     ver_args = {}
     if cond_type:
         pNote("cond_type is {}".format(cond_type))
@@ -1105,6 +1342,7 @@ def verify_relation(actual_value, cond_value, operator, cond_type):
     return status
 
 
+@mocked
 def verify_inorder_cmd_response(match_list, verify_list, system, command,
                                 verify_dict, verify_group=None):
     """ Verifies search strings in the system response and matches the
@@ -1123,9 +1361,8 @@ def verify_inorder_cmd_response(match_list, verify_list, system, command,
                 if verify_order is True:
                     verify_status = True
                     if found is True:
-                        msg = ("Found '{0}' in response to '{1}' on {2} "
-                               "and '{0}' is in the correct order").format(
-                                                match_list[i], command, system)
+                        msg = ("Found '{0}' in response to '{1}' on {2} and '{0}' is in the"
+                               " correct order").format(match_list[i], command, system)
                         if verify_group:
                             cond_value = verify_group[1][i]
                             operator = verify_group[0][i]
@@ -1162,9 +1399,8 @@ def verify_inorder_cmd_response(match_list, verify_list, system, command,
                     verify_status = False
                     verify_order_list.append(tag)
                     if found is True:
-                        msg = ("Found '{0}' in response to '{1}' on {2} but"
-                               " '{0}' not in the correct order").format(
-                                    match_list[i], command, system)
+                        msg = ("Found '{0}' in response to '{1}' on {2} but '{0}' not in the"
+                               " correct order").format(match_list[i], command, system)
                     else:
                         if verify_group[1][i] and not actual_value:
                             msg = ("Found '{0}' in response to '{1}' on {2} in"
@@ -1203,9 +1439,8 @@ def verify_inorder_cmd_response(match_list, verify_list, system, command,
     rcv_all_resp_order = verify_dict.get('rcv_all_resp_order', [])
     rcv_all_resp_string = ",".join(rcv_all_resp_order)
 
-    pNote("Search string(s) is/are found in the following order for the "
-          "command '{0}': '{1}' on {2}".format(
-                    command, rcv_all_resp_string, system), "debug")
+    pNote("Search string(s) is/are found in the following order for the command '{0}':"
+          " '{1}' on {2}".format(command, rcv_all_resp_string, system), "debug")
 
     if verify_order_list:
         verify_order_str = ",".join(verify_order_list)
@@ -1216,6 +1451,7 @@ def verify_inorder_cmd_response(match_list, verify_list, system, command,
               "{0}".format(system), "debug")
 
     return status
+
 
 def get_cse_script_args_string(datafile, system_name):
     """Form the argument string for the CSE script from the arguments
@@ -1232,7 +1468,8 @@ def get_cse_script_args_string(datafile, system_name):
             attr = '-' + tag_list[x]
             value = value_list[x]
             script_args_list.append(attr)
-            if value is None: value = ''
+            if value is None:
+                value = ''
             script_args_list.append(value)
         args_string = ' '.join(script_args_list)
 
@@ -1245,8 +1482,7 @@ def evaluate_tc_argument_value(element):
     temp_list = element.split("=")
     if len(temp_list) > 1:
         return temp_list[1]
-    else:
-        return False
+    return False
 
 
 def resolve_argument_value_to_get_tag_value(datafile, system_name,
@@ -1272,31 +1508,27 @@ def resolve_argument_value_to_get_tag_value(datafile, system_name,
     if element_value_in_argument.startswith("tag="):
         tag_name = evaluate_tc_argument_value(element_value_in_argument)
         if tag_name:
-            system_name_list = xml_Utils.get_matching_firstlevel_children_from_root(datafile, 
-                                                                                    "system")
+            system_name_list = xml_Utils.get_matching_firstlevel_children_from_root(
+                                                                datafile, "system")
             if system_name_list == [] or system_name_list is None or system_name_list is False:
                 return element_value_in_argument
-            else:
-                for system in system_name_list:
-                    if system.attrib["name"] == system_name:
-                        node_list = xml_Utils.get_matching_firstlevel_children_from_node(system, 
-                                                                                         tag_name)
-                        if node_list == [] or node_list is None or node_list is False:
-                            print_error("The tag value: {0} is not defined in the datafile:{1}"\
-                                .format(tag_name, datafile))
-                            return False
-                        else:
-                            tag_value = node_list[0].text
-                            tag_value = sub_from_env_var(tag_value)
-                            tag_value = sub_from_data_repo(tag_value)
-                            return tag_value
-                return element_value_in_argument
-        else:
-            print_error("The value for arg {0} is not defined in the case".
-                        format(element_value_in_argument))
+            for system in system_name_list:
+                if system.attrib["name"] == system_name:
+                    node_list = xml_Utils.get_matching_firstlevel_children_from_node(
+                                                                    system, tag_name)
+                    if node_list == [] or node_list is None or node_list is False:
+                        print_error("The tag value: {0} is not defined in the "
+                                    "datafile:{1}".format(tag_name, datafile))
+                        return False
+                    tag_value = node_list[0].text
+                    tag_value = sub_from_env_var(tag_value)
+                    tag_value = sub_from_data_repo(tag_value)
+                    return tag_value
             return element_value_in_argument
-    else:
+        print_error("The value for arg {0} is not defined in the case".
+                    format(element_value_in_argument))
         return element_value_in_argument
+    return element_value_in_argument
 
 
 def get_user_specified_tag_values_in_tc(datafile, system_name, **kwargs):
@@ -1315,7 +1547,8 @@ def get_user_specified_tag_values_in_tc(datafile, system_name, **kwargs):
     credentials = get_credentials(datafile, system_name, in_list)
     for element in kwargs:
         if kwargs[element] is not None:
-            credentials[element] = resolve_argument_value_to_get_tag_value(datafile, system_name, kwargs[element])
+            credentials[element] = resolve_argument_value_to_get_tag_value(
+                                    datafile, system_name, kwargs[element])
     return credentials
 
 
@@ -1377,12 +1610,8 @@ def get_var_by_string_prefix(string):
     if string.startswith("ENV."):
         return os.environ[string.split('.', 1)[1]]
     if string.startswith("REPO."):
-        keys = string.split('.')
-        val = get_object_from_datarepository(keys[1])
-        for key in keys[2:]:
-            val = val[key]
-        else:
-            return val
+        keys = string.split('.', 1)
+        return get_object_from_datarepository(keys[1])
 
 
 def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
@@ -1402,10 +1631,12 @@ def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
     source could be environment or datarepository for now.
     """
     error_msg1 = ("Could not find any %s variable {0!r} corresponding to {1!r}"
-                  "provided in input data/testdata file. \nWill default to "
+                  " provided in input data/testdata file.\nWill default to "
                   "None") % (prefix)
     error_msg2 = ("Unable to substitute %s variable {0!r} corresponding to "
-                  "{1!r} provided in input data/testdata file") % (prefix)
+                  "{1!r} provided in input data/testdata file.\nThe value "
+                  "processed till now is {2!r} whose evaluation resulted in "
+                  "{3!r} exception") % (prefix)
     if type(raw_value) == dict:
         for k in raw_value:
             value = raw_value[k]
@@ -1422,10 +1653,10 @@ def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
                                 start_pattern+string+end_pattern,
                                 get_var_by_string_prefix(string))
                         elif isinstance(raw_value[k], (list, dict)):
-                            raw_value[k] = literal_eval(
-                                str(raw_value[k]).replace(
+                            raw_value[k] = str(raw_value[k]).replace(
                                     start_pattern+string+end_pattern,
-                                    get_var_by_string_prefix(string)))
+                                    get_var_by_string_prefix(string))
+                            raw_value[k] = ast.literal_eval(raw_value[k])
                         else:
                             print_error("Unsupported format - " +
                                         error_msg2.format(string, value))
@@ -1440,23 +1671,30 @@ def subst_var_patterns_by_prefix(raw_value, start_pattern="${",
                             search_obj = re.search(search_str,
                                                    str(raw_value[k]))
                             if search_obj:
-                                raw_value[k] = literal_eval(
+                                raw_value[k] = ast.literal_eval(
                                     str(raw_value[k]).replace(
                                         search_obj.group(), 'None'))
                     except SyntaxError:
-                        print_error("Syntax Error - " +
-                                    error_msg2.format(string, value))
-    elif type(raw_value) == str:
+                        tuc_obj = TestcaseUtils()
+                        print_info("Cannot convert below value into correct format, removing "
+                                   "non-printable characters, will attempt conversion again")
+                        print_info("<<{}>>".format(raw_value[k]))
+                        try:
+                            raw_value[k] = tuc_obj.rem_nonprintable_ctrl_chars(raw_value[k])
+                            raw_value[k] = ast.literal_eval(raw_value[k])
+                        except Exception as exc:
+                            print_error("Error - " + error_msg2.format(
+                                        string, value, raw_value[k], exc))
+    elif isinstance(raw_value, str):
         extracted_var = string_Utils.return_quote(str(raw_value),
                                                   start_pattern, end_pattern)
         extracted_var = [string for string in extracted_var
                          if prefix in string]
-        if len(extracted_var) > 0:
+        if extracted_var != []:
             for string in extracted_var:
                 try:
-                    raw_value = raw_value.replace(
-                                start_pattern+string+end_pattern,
-                                get_var_by_string_prefix(string))
+                    raw_value = raw_value.replace(start_pattern+string+end_pattern,
+                                                  get_var_by_string_prefix(string))
                 except KeyError:
                     print_error(error_msg1.format(string, raw_value))
                     raw_value = None
@@ -1477,23 +1715,12 @@ def sub_from_data_repo(raw_value, start_pattern="${", end_pattern="}"):
 
 
 def substitute_var_patterns(raw_value, start_pattern="${", end_pattern="}"):
+    """substitute variable inside start and end pattern
     """
-        substitute variable inside start and end pattern
-    """
-    def get_data(var):
-        """
-            get data from datarepo
-        """
-        repokeys = var.split('.')
-        val = get_object_from_datarepository(repokeys[0])
-        for key in repokeys[1:]:
-            val = val[key]
-        else:
-            return val
     prefixes = {'ENV': ('environment', lambda var: os.environ[var]),
-                'REPO': ('data repository', get_data)}
+                'REPO': ('data repository', get_object_from_datarepository)}
     error_msg = ("Could not find any {0} variable {1!r} corresponding to {2!r}"
-                 "provided in input data/testdata file. \nWill default to None"
+                 " provided in input data/testdata file.\nWill default to None"
                  )
     if raw_value is None:
         return raw_value
@@ -1511,24 +1738,20 @@ def substitute_var_patterns(raw_value, start_pattern="${", end_pattern="}"):
             if val:
                 raw_value = raw_value.replace(start_pattern+string+end_pattern,
                                               val)
-        else:
-            return raw_value
+        return raw_value
     elif isinstance(raw_value, list):
-        return map(lambda val: substitute_var_patterns(val, start_pattern,
-                                                       end_pattern), raw_value)
+        return [substitute_var_patterns(val, start_pattern, end_pattern) for val in raw_value]
     elif isinstance(raw_value, dict):
         for key in raw_value:
             raw_value[key] = substitute_var_patterns(raw_value[key],
                                                      start_pattern,
                                                      end_pattern)
-        else:
-            return raw_value
+        return raw_value
     else:
         print_error("Unsupported format - raw_value should either be a string,"
                     " list or dictionary")
-        print_error("raw_value: #{}# and its type is {}".format(raw_value,
-                                                                type(raw_value)
-                                                                ))
+        print_error("raw_value: #{}# and its type is {}".format(
+                                    raw_value, type(raw_value)))
     return raw_value
 
 
@@ -1566,7 +1789,8 @@ def process_subsystem_list(datafile, system_name, subsystem=None):
                                                                   'subsystem',
                                                                   'name')
             else:  # when subsystem_list is empty, set it to None
-                if len(subsystem_list) == 0: subsystem_list = None
+                if subsystem_list == []:
+                    subsystem_list = None
         else:
             subsystem_list = None
     else:
@@ -1622,6 +1846,7 @@ def get_td_vc(datafile, system_name, td_tag, vc_tag):
 
     return testdata, varconfigfile
 
+
 def get_nc_config_string(config_datafile, config_name, var_configfile=None):
     """
     Get the config of netconf as a list
@@ -1645,25 +1870,28 @@ def get_nc_config_string(config_datafile, config_name, var_configfile=None):
                 for filepath in filepath_list:
                     if filepath:
                         rel_path = filepath.firstChild.data
-                        abs_filepath = file_Utils.getAbsPath(rel_path, os.path.dirname(config_datafile))
+                        abs_filepath = file_Utils.getAbsPath(
+                                        rel_path, os.path.dirname(config_datafile))
                         root = xml_Utils.get_document_root(abs_filepath)
                         config_node = xml_Utils.get_child_with_matching_tag(root, "config")
                         if config_node:
                             configuration = xml_Utils.convert_dom_to_string(config_node)
                             if var_configfile:
-                                configuration = sub_from_varconfigfile(configuration, var_configfile)
+                                configuration = sub_from_varconfigfile(
+                                                    configuration, var_configfile)
                             configuration_list.append(configuration)
                         else:
-                            testcase_Utils.pNote("no <config> found in file {0}".format(abs_filepath), "error")
+                            testcase_Utils.pNote("no <config> found in file {0}"
+                                                 .format(abs_filepath), "error")
 
                 if not filepath_list:
-                    testcase_Utils.pNote("neither <config> nor a file containing <config> "\
-					                     "provided for the config_data = {0} in config file "\
-										 "= {1}".format(config_name, config_datafile), "error")
+                    testcase_Utils.pNote("neither <config> nor a file containing <config> provided"
+                                         " for the config_data = {0} in config file = {1}".format(
+                                                            config_name, config_datafile), "error")
                     status = "error"
         else:
-            testcase_Utils.pNote("config_data={0} is not found in config "\
-			                     "file ={1}".format(config_name, config_datafile), "error")
+            testcase_Utils.pNote("config_data={0} is not found in config file "
+                                 "={1}".format(config_name, config_datafile), "error")
             status = "error"
 
     except IOError as err:
@@ -1674,6 +1902,7 @@ def get_nc_config_string(config_datafile, config_name, var_configfile=None):
         print_exception(exception)
         status = "error"
     return status, configuration_list
+
 
 def _check_tag_or_attr_exists(datafile, system_name, cnode, system='system'):
     """Check if the given tag/attribute(cnode) exists for the system_name in
@@ -1701,7 +1930,8 @@ def get_default_ecf_and_et(arguments_dict, current_datafile, current_browser,
                 else:
                     arguments_dict[def_name_tuple[j]] = current_browser.get(name_tuple[j], None)
             else:
-                if arguments_dict[name_tuple[j]].startswith("tag") and "=" in arguments_dict[name_tuple[j]]:
+                if ((arguments_dict[name_tuple[j]].startswith("tag") and
+                     "=" in arguments_dict[name_tuple[j]])):
                     temp_list = arguments_dict[name_tuple[j]].split("=")
                     temp_var = temp_list[1]
                     for i in range(2, len(temp_list)):
@@ -1731,14 +1961,16 @@ def get_default_ecf_and_et(arguments_dict, current_datafile, current_browser,
 
     return arguments_dict
 
+
 def get_all_system_or_subsystem(datafile, system_name=None):
     """
         return all the system elements or all the children of a system element with specific name
     """
     if system_name is None:
         return xml_Utils.getElementListWithSpecificXpath(datafile, "./system")
-    else:
-        return xml_Utils.getElementListWithSpecificXpath(datafile, "./system[@name='" + system_name + "']/*")
+    return xml_Utils.getElementListWithSpecificXpath(datafile, "./system[@name"
+                                                     "='%s']/*" % (system_name))
+
 
 def group_systems_with_same_tag_value(root, tag, value):
     """
@@ -1746,9 +1978,11 @@ def group_systems_with_same_tag_value(root, tag, value):
         and all other system in another list
     """
     all_system_list = xml_Utils.getChildElementsListWithSpecificXpath(root, "./system")
-    system_list = xml_Utils.getChildElementsListWithSpecificXpath(root, "./system/[" + tag + "='" + value + "']")
+    system_list = xml_Utils.getChildElementsListWithSpecificXpath(root, "./system/[" + tag +
+                                                                  "='" + value + "']")
     other_system_list = [ele for ele in all_system_list if ele not in system_list]
     return system_list, other_system_list
+
 
 def group_systems_with_unique_tag_value(root, tag):
     """
@@ -1756,6 +1990,7 @@ def group_systems_with_unique_tag_value(root, tag):
     """
     all_system_list = xml_Utils.getChildElementsListWithSpecificXpath(root, "./system")
     return _helper_unique_group(all_system_list, tag)
+
 
 def _helper_unique_group(all_system_list, tag):
     """
@@ -1778,6 +2013,7 @@ def _helper_unique_group(all_system_list, tag):
     other_system_list.insert(0, system_list)
     return other_system_list
 
+
 def get_system_list(datafile, node_req=False):
     """Get the list of systems from the datafile
     if node_req = True returns 1. list of system names, 2. list of system nodes
@@ -1788,23 +2024,25 @@ def get_system_list(datafile, node_req=False):
     system_list = []
     system_node_list = []
     for system in systems:
-        #check if the system has subsystem or not.
+        # check if the system has subsystem or not.
         subsystems = system.findall('subsystem')
         if subsystems != []:
             first_subsystem = True
             for subsystem in subsystems:
-                #if the system has subsystem, find the default subsystem for the system and use it to execute the keyword.
+                # if the system has subsystem, find the default subsystem for the system and
+                # use it to execute the keyword.
                 default = subsystem.get('default')
                 if default == "yes":
                     subsystem_name = subsystem.get('name')
                     system_name = system.get('name') + '[' + subsystem_name + ']'
                     break
-                #if none of the subsystems have default="yes" then the default subsystem will be the first subsystem under the system.
-                elif first_subsystem == True:
+                # if none of the subsystems have default="yes" then the default subsystem
+                # will be the first subsystem under the system.
+                elif first_subsystem is True:
                     subsystem_name = subsystem.get('name')
                     system_name = system.get('name') + '[' + subsystem_name + ']'
                     first_subsystem = False
-        #if there is no subsystem use the system.
+        # if there is no subsystem use the system.
         else:
             system_name = system.get('name')
             system_node = system
@@ -1812,9 +2050,7 @@ def get_system_list(datafile, node_req=False):
         system_node_list.append(system_node)
     if node_req:
         return system_list, system_node_list
-    else:
-        return system_list
-
+    return system_list
 
 
 def get_iteration_syslist(system_node_list, system_name_list):
@@ -1827,12 +2063,13 @@ def get_iteration_syslist(system_node_list, system_name_list):
 
     iteration_sysnamelist = []
     iteration_sysnodelist = []
-    for i in range (0, len(system_node_list)):
+    for i in range(0, len(system_node_list)):
         system = system_node_list[i]
         iter_flag = system.get("iter", None)
         if iter_flag is None:
             iter_flag = xml_Utils.get_text_from_direct_child(system, "iter")
         iter_flag = sub_from_env_var(iter_flag)
+        iter_flag = sub_from_data_repo(iter_flag)
 
         if str(iter_flag).lower() == "no":
             pass
@@ -1845,6 +2082,7 @@ def get_iteration_syslist(system_node_list, system_name_list):
                 iteration_sysnodelist.append(system)
 
     return iteration_sysnamelist, iteration_sysnodelist
+
 
 def generate_datafile(lists_of_systems, output_dir, filename):
     """
