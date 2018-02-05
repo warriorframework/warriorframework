@@ -10,12 +10,12 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+import ast
+import sys
 """
 Use ast module to check custom rules enforced by warrior dev team
 """
-import ast
-import sys
+
 
 def func_check(node, kw=False):
     '''
@@ -43,10 +43,11 @@ def func_check(node, kw=False):
         elif child != node and isinstance(child, ast.ClassDef):
             tmp_status = class_check(child, kw)
             status &= tmp_status
-        elif isinstance(child, ast.Print):
+        elif 'war_print_class.py' not in sys.argv[1] and isinstance(child, ast.Print):
             # check for print statement
             status = False
-            print "Please use print_Utils instead of print in {}: {}".format(sys.argv[1], child.lineno)
+            print "Please use print_Utils instead of print in {}: {}".format(
+                                                    sys.argv[1], child.lineno)
         elif isinstance(child, ast.Return):
             # check for return statement
             have_return = True
@@ -66,6 +67,7 @@ def func_check(node, kw=False):
         print node.name, "have non-pair pSubStepreport_substep_status"
         status = False
     return status
+
 
 def class_check(node, kw=False):
     '''
@@ -94,6 +96,7 @@ def class_check(node, kw=False):
         status = False
     return status
 
+
 def main(kw=False):
     """
     main method to build ast tree and call subseq functions
@@ -102,7 +105,12 @@ def main(kw=False):
         scan for class - class check
         scan for function - function check
     """
-    f = open(sys.argv[1])
+    try:
+        f = open(sys.argv[1])
+    except IOError:
+        print "Can't find {}".format(sys.argv[1])
+        exit(0)
+    print sys.argv[1]
     if "Actions/" in sys.argv:
         kw = True
     root = ast.parse(f.read())

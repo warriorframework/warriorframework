@@ -22,7 +22,7 @@ class Uninstaller:
         self.related_plugins = self.__extract_plugin_names()
         self.pkg_in_settings = self.__get_setting_file_info()
         self.include_urls = self.__get_urls_info()
-        self.valid_app_types = {"apps"}
+        self.valid_app_types = {"wapps"}
         self.cache_dir = create_dir(join_path(self.base_directory, "katana", ".data", self.app_name))
         self.settings_backup = []
         self.urls_backup = []

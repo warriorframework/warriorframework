@@ -1,0 +1,167 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+                <Name>verify_data_test</Name>
+                <Title>verify_data</Title>
+                <Engineer>suganya</Engineer>
+                <Date>2017-10-30</Date>
+                <Time>13:13</Time>
+                <State/>
+                <InputDataFile>No_Data</InputDataFile>
+                <Datatype/>
+                <default_onError action="next"/>
+                <Logsdir/>
+                <Resultsdir/>
+                <ExpectedResults/>
+        </Details>
+        <Requirements>
+                <Requirement/>
+        </Requirements>
+        <Steps>
+                <step Driver="common_driver" Keyword="store_in_repo" TS="1" draft="no">
+                        <Arguments>
+                                <argument name="datavar" value="demovar.demochild.demograndchild"/>
+                                <argument name="datavalue" value="1"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                        <Iteration_type type="Standard"/>
+                </step>
+                <step Driver="common_driver" Keyword="verify_data" TS="2" draft="no">
+                        <Arguments>
+                                <argument name="expected" value="1"/>
+                                <argument name="comparison" value="eq"/>
+                                <argument name="type" value="int"/>
+                                <argument name="object_key" value="demovar.demochild.demograndchild"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>negative</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                        <Iteration_type type="Standard"/>
+                </step>
+                <step Driver="common_driver" Keyword="verify_data" TS="3" draft="no">
+                        <Arguments>
+                                <argument name="expected" value="1"/>
+                                <argument name="object_key" value="demovar.demochild.demograndchild"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                        <Iteration_type type="Standard"/>
+                </step>
+                <step Driver="common_driver" Keyword="store_in_repo" TS="4" draft="no">
+                        <Arguments>
+                                <argument name="datavar" value="demovar"/>
+                                <argument name="datavalue" value="demovalue"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                        <Iteration_type type="Standard"/>
+                </step>
+                <step Driver="common_driver" Keyword="verify_data" TS="5" draft="no">
+                        <Arguments>
+                                <argument name="expected" value="demovalue"/>
+                                <argument name="object_key" value="demovar"/>
+                                <argument name="comparison" value="eq"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                        <Iteration_type type="Standard"/>
+                </step>
+                <step Driver="common_driver" Keyword="verify_data" TS="6" draft="no">
+                        <Arguments>
+                                <argument name="expected" value="1"/>
+                                <argument name="object_key" value="demovar"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type=""/>
+                        <Execute ExecType="Yes"/>
+                        <context>negative</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                </step>
+                <step Driver="common_driver" Keyword="store_in_repo" TS="7" draft="no">
+                        <Arguments>
+                                <argument name="datavar" value="demovar.demochild"/>
+                                <argument name="datavalue" value="demovalue"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                        <Iteration_type type="Standard"/>
+                </step>
+                <step Driver="common_driver" Keyword="verify_data" TS="8" draft="no">
+                        <Arguments>
+                                <argument name="expected" value="demovalue"/>
+                                <argument name="object_key" value="demovar.demochild"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                        <Iteration_type type="Standard"/>
+                </step>
+                <step Driver="common_driver" Keyword="verify_data" TS="9" draft="no">
+                        <Arguments>
+                                <argument name="expected" value="1"/>
+                                <argument name="type" value="int"/>
+                                <argument name="object_key" value="demovar.demochild"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description/>
+                        <iteration_type type=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>negative</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                        <Iteration_type type="Standard"/>
+                </step>
+        </Steps>
+</Testcase>

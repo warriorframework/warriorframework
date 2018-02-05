@@ -1,0 +1,102 @@
+<?xml version="1.0" ?>
+<Testcase>
+        <Details>
+                <Name>rest_variable_substitution</Name>
+                <Title>Rest Sample Testcase</Title>
+                <Engineer>Warrior_user</Engineer>
+                <Date>2017-07-27</Date>
+                <Time>17:06</Time>
+                <InputDataFile>../../data/rest_functional_tests/rest_variable_in_json_test_Data.xml</InputDataFile>
+                <Datatype>Custom</Datatype>
+                <default_onError action="next"/>
+                <Logsdir/>
+                <Resultsdir/>
+                <ExpectedResults>PASS</ExpectedResults>
+                <Category>Feature</Category>
+                <State>Released</State>
+        </Details>
+        <Requirements>
+                <Requirement/>
+        </Requirements>
+        <Steps>
+                <step Driver="common_driver" Keyword="set_env_var" TS="1" draft="no">
+                        <Arguments>
+                                <argument name="var_value" value="post"/>
+                                <argument name="var_key" value="rest_action"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>Using ENV variable which can be used in Testcase args and in Data file</Description>
+                        <iteration_type type=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                        <Iteration_type type="Standard"/>
+                </step>
+                <step Driver="rest_driver" Keyword="perform_http_post" TS="2">
+                        <Arguments>
+                                <argument name="system_name" value="http_bin_1"/>
+                                <argument name="url" value="http://httpbin.org/post"/>
+                                <argument name="data" value="userId=1;id=1;title=Changed Post;body=New Comment"/>
+                                <argument name="json" value="{&quot;postId&quot;:1, &quot;comments&quot;:&quot;${trial1.blew1.var1.value} ${trial1.blew2.var1.list} ${trial1.blew3.var1.list}&quot;}"/>
+                                <argument name="cookies" value="cookie=cookie_name"/>
+                                <argument name="allow_redirects" value="yes"/>
+                                <argument name="expected_response" value="200, 302, 404"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>This step tests the POST capability of REST</Description>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>negative</context>
+                        <impact>impact</impact>
+                        <Iteration_type type="Standard"/>
+                        <runmode type="Standard" value=""/>
+                        <iteration_type type=""/>
+                </step>
+                <step Driver="rest_driver" Keyword="perform_http_post" TS="3" draft="no">
+                        <Arguments>
+                                <argument name="system_name" value="http_bin_1"/>
+                                <argument name="cookies" value="cookie=cookie_name"/>
+                                <argument name="url" value="http://httpbin.org/${ENV.rest_action}"/>
+                                <argument name="json" value="{&quot;postId&quot;:1, &quot;comments&quot;:&quot;${trial1.blew+.var+.value}&quot;}"/>
+                                <argument name="expected_response" value="200, 302, 404"/>
+                                <argument name="data" value="userId=1;id=1;title=Changed Post;body=New Comment"/>
+                                <argument name="allow_redirects" value="yes"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>This step tests the ENV variable substitution</Description>
+                        <iteration_type type=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                        <Iteration_type type="Standard"/>
+                </step>
+                <step Driver="rest_driver" Keyword="perform_http_post" TS="4" draft="no">
+                        <Arguments>
+                                <argument name="system_name" value="http_bin_1"/>
+                                <argument name="cookies" value="cookie=cookie_name"/>
+                                <argument name="url" value="tag=url1"/>
+                                <argument name="json" value="{&quot;postId&quot;:1, &quot;comments&quot;:&quot;${trial1.blew+.var+.list}&quot;}"/>
+                                <argument name="expected_response" value="200, 302, 404"/>
+                                <argument name="data" value="userId=1;id=1;title=Changed Post;body=New Comment"/>
+                                <argument name="allow_redirects" value="yes"/>
+                        </Arguments>
+                        <onError action="next"/>
+                        <Description>This step tests tag= function </Description>
+                        <iteration_type type=""/>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="" Elsevalue=""/>
+                        </Execute>
+                        <context>positive</context>
+                        <impact>impact</impact>
+                        <runmode type="Standard" value=""/>
+                        <Iteration_type type="Standard"/>
+                </step>
+        </Steps>
+</Testcase>
