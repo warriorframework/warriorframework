@@ -973,6 +973,7 @@ var cases = {
                         "show_cancel_btn": false
                     });
                 } else {
+                    cases.mappings.newStep.savedContent = false;
                     var $allEditedTrElems = $tbodyElem.children('tr[being-edited="true"]');
                     var $mainDiv = $tbodyElem.closest('#main-div');
                     if($allEditedTrElems.length > 0){
