@@ -2844,12 +2844,6 @@ input[type="checkbox"]+label {
 	color: #636363;
 }
 
-.wdf-container .sub-tool-bar .title {
-	background: transparent;
-	text-align: left;
-	color: white;
-}
-
 .add:before {
 	content: "\f067";
 	font: normal normal normal 14px/1 FontAwesome;
