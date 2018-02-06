@@ -22,6 +22,7 @@ except ImportError:
     use_py_server = True
 except Exception as e:
     print "-- An Error Occurred -- {0}".format(e)
+    use_py_server = True
 
 
 if __name__ == "__main__":
