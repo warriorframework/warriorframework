@@ -880,7 +880,7 @@ var katana = {
       return data;
     },
 
-    post: function(url, csrf, toSend, callBack, fallBack) {
+    post: function(url, csrf, toSend, callBack, fallBack, callBackData, fallBackData ) {
       var $elem = this && this != katana.templateAPI ? this : katana.$activeTab;
       var toSend = toSend ? toSend : $elem.find('input:not([name="csrfmiddlewaretoken"])').serializeArray();
       var url = url ? url : $elem.attr('post-url');
@@ -899,9 +899,9 @@ var katana = {
           data: toSend
         }
       }).done(function(data) {
-        callBack && callBack(data);
+        callBack && callBack(data, callBackData);
       }).fail(function(data) {
-        fallBack && fallBack(data);
+        fallBack && fallBack(data, fallBackData);
       });
     },
 
