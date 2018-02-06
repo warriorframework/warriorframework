@@ -1,0 +1,33 @@
+<div class="child_tags">
+    <div class="field-inline dual-input wdf-content">
+        <label>
+            <i katana-click="wdf.addChild" class="fa fa-plus" title="Add Sub Data"/>
+            <i katana-click="wdf.deleteTag" class="fa fa-trash i-danger" title="Delete Data"/>
+        </label>
+        <input class="wdf-input" name="key" katana-change="wdf.validateKey" value="{{ k }}" list="most_used_tags"/>
+        <input style="display: none;" class="wdf-input" name="value" value=""/>
+    </div>
+    {% for child_k, child_v in child_tag.items %}
+        {% if child_v|is_list == "true" %}
+        <!-- If multiple child tags have same name -->
+            {% for grandchild_v in child_v %}
+                <div class="field-inline dual-input wdf-subcontent">
+                    <label>
+                        <i katana-click="wdf.deleteChildTag" class="fa fa-trash i-danger" title="Delete Sub Data"/>
+                    </label>
+                    <input class="wdf-input" name="key" katana-change="wdf.validateKey" value="{{ child_k }}" list="most_used_tags"/>
+                    <input class="wdf-input" name="value" value="{{ grandchild_v }}"/>
+                </div>
+            {% endfor %}
+        {% else %}
+        <!-- Unique child tag name in tag -->
+            <div class="field-inline dual-input wdf-subcontent">
+                <label>
+                    <i katana-click="wdf.deleteChildTag" class="fa fa-trash i-danger" title="Delete Sub Data"/>
+                </label>
+                <input class="wdf-input" name="key" katana-change="wdf.validateKey" value="{{ child_k }}" list="most_used_tags"/>
+                <input class="wdf-input" name="value" value="{{ child_v }}"/>
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>

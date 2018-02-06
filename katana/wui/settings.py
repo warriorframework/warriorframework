@@ -40,12 +40,11 @@ INSTALLED_APPS = [
     'native.wapp_management',
     'native.wappstore',
     'native.settings',
-    'native.projects',
-    'native.suites',
-    'native.cases',
-    'native.execution',
-    'native.wdf_edit',
-
+    'wapps.projects',
+    'wapps.suites',
+    'wapps.cases',
+    'wapps.execution',
+    'wapps.wdf_edit',
 ]
 
 MIDDLEWARE = [
@@ -123,7 +122,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
-
+STATICFILES_DIRS = [
+        os.path.join(BASE_DIR, 'static')
+    ]
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10242880
 
 LOGGING = {
