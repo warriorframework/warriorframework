@@ -126,3 +126,64 @@ STATICFILES_DIRS = [
         os.path.join(BASE_DIR, 'static')
     ]
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10242880
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            #'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+            'format': '%(levelname)s %(asctime)s %(module)s %(funcName)s %(lineno)d %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR + os.sep + 'logs' + os.sep + 'katana.log',
+        },
+        'project_file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR + os.sep + 'logs' + os.sep + 'katana_projects.log',
+            'formatter' : 'verbose',
+        },
+        'suite_file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR + os.sep + 'logs' + os.sep + 'katana_suites.log',
+            'formatter' : 'verbose',
+        },
+        'case_file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR + os.sep + 'logs' + os.sep + 'katana_cases.log',
+            'formatter' : 'verbose',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'native.projects': {
+            'handlers': ['project_file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'native.suites': {
+            'handlers': ['suite_file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'native.cases': {
+            'handlers': ['case_file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
