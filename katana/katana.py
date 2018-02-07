@@ -11,9 +11,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 """
-
-import os
 import sys
+import os
+from simple_server import main
+use_py_server = False
+
+try:
+    import django
+except ImportError:
+    use_py_server = True
+except Exception as e:
+    print "-- An Error Occurred -- {0}".format(e)
+    use_py_server = True
+
 
 if __name__ == "__main__":
 
@@ -57,9 +67,8 @@ if __name__ == "__main__":
             else:
                 port = args[i+1]
             break
-    
-    
-    os.system("{0} {1} {2} {3}".format(command, filepath, runserver, port))
-    
-    
-    
+
+    if not use_py_server:
+        os.system("{0} {1} {2} {3}".format(command, filepath, runserver, port))
+    else:
+        main(port)
