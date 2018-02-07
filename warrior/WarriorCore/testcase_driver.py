@@ -702,7 +702,7 @@ def check_robot_wrapper_case(testcase_filepath):
     return isRobotWrapperCase
 
 
-def main(testcase_filepath, data_repository = {}, tc_context='POSITIVE',
+def main(testcase_filepath, data_repository={}, tc_context='POSITIVE',
          runtype='SEQUENTIAL_KEYWORDS', tc_parallel=False, auto_defects=False, suite=None,
          tc_onError_action=None, iter_ts_sys=None, queue=None, jiraproj=None):
 

@@ -105,6 +105,7 @@ def main(parameter_list, a_defects, cse_execution, iron_claw, jiraproj, overwrit
         status = True
         db_obj = database_utils_class.create_database_connection(dbsystem=dbsystem)
         for parameter in parameter_list:
+            default_repo = {}
             result = False
             # check if the input parameter is an xml file
             if Utils.file_Utils.get_extension_from_path(parameter) == '.xml':
@@ -114,9 +115,7 @@ def main(parameter_list, a_defects, cse_execution, iron_claw, jiraproj, overwrit
                 print_info('Absolute path: {0}'.format(abs_filepath))
                 if Utils.file_Utils.fileExists(abs_filepath):
                     if len(overwrite.items()) > 0:
-                        default_repo = overwrite
-                    else:
-                        default_repo = {}
+                        default_repo.update(overwrite)
 
                     if db_obj is not False and db_obj.status is True:
                         default_repo.update({'db_obj': db_obj})
