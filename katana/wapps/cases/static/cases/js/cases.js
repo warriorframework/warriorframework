@@ -15,7 +15,6 @@ var cases = {
                 var remaining = "";
                 for (var i=1; i<temp.length; i++){
                     remaining += temp[i] + "[";
-                    remaining += temp[i] + "[";
                 }
                 if (remaining.endsWith("[")){
                     remaining = remaining.slice(0, -1);
@@ -92,6 +91,7 @@ var cases = {
 
     mappings: {
         newStep: {
+            drivers: false,
             savedContent: false,
             title:  "New Step",
             contents: function (index) {
@@ -531,6 +531,56 @@ var cases = {
             $switchElem.children('i').show();
             $parent.parent().siblings('.cases-side-drawer-closed').find('.fa-star').children('i').show();
             $switchElem.data({"data-object": cases.utils.updateData($switchElem.data().dataObject, $elem.attr('key'), $elem.val())});
+            if ($elem.attr('key') === "@Driver" && $elem.attr('value') !== ""){
+                $switchElem.data({"data-object": cases.drawer._updateOnDriverChange($elem, $switchElem.data().dataObject)});
+            } else if ($elem.attr('key') === "@Keyword" && $elem.attr('value') !== ""){
+                $switchElem.data({"data-object": cases.drawer._updateOnKwChange($elem, $switchElem.data().dataObject)});
+            }
+        },
+
+        _updateOnDriverChange: function($elem, data){
+            var $dlElem = $elem.closest('.row').next().find('#keywords');
+            var $kwInputElem = $elem.closest('.row').next().find('[key="@Keyword"]');
+            $dlElem.html('');
+            $kwInputElem.val('');
+            $kwInputElem.attr('value', '');
+            data["@Keyword"] = "";
+            if ($elem.attr('value') in cases.mappings.newStep.drivers){
+                for (var key in cases.mappings.newStep.drivers[$elem.attr('value')].actions) {
+                    if (cases.mappings.newStep.drivers[$elem.attr('value')].actions.hasOwnProperty(key)){
+                        $dlElem.append('<option>' + key + '</option>');
+                    }
+                }
+            }
+            var $argElem = $elem.closest('.row').next().next().find('.container-fluid').find('.row');
+            $argElem.find('.col-sm-4').html('<label class="cases-label"></label>');
+            $argElem.find('.col-sm-8').html('<input katana-change="cases.drawer.stepsChange" value="" key="Arguments[argument(0)[@value]]">');
+            data["Arguments"]["argument"] = [{"@name": "", "@value": ""}];
+            var $descInpElem = $elem.closest('.row').next().next().next().find('input');
+            $descInpElem.attr('value', '');
+            $descInpElem.val('');
+            data["Description"] = "";
+            return data;
+        },
+
+        _updateOnKwChange: function($elem, data) {
+            var driverName = $elem.closest('.row').prev().find('input').attr('value');
+            var $argElem = $elem.closest('.row').next().find('.container-fluid').find('.row');
+            $argElem.html('');
+            data["Arguments"]["argument"] = [];
+            if ($elem.attr('value') in cases.mappings.newStep.drivers[driverName].actions){
+                for (var i=0; i<cases.mappings.newStep.drivers[driverName].actions[$elem.attr('value')].arguments.length; i++) {
+                    var name = cases.mappings.newStep.drivers[driverName].actions[$elem.attr('value')].arguments[i];
+                    $argElem.append('<div class="col-sm-4 cases-arg-label"><label class="cases-label">' + name + '</label></div>');
+                    $argElem.append('<div class="col-sm-8"><input katana-change="cases.drawer.stepsChange" value="" key="Arguments[argument(' + i + ')[@value]]"></div>');
+                    data["Arguments"]["argument"].push({"@name": name, "@value": ""})
+                }
+            }
+            var $descInpElem = $elem.closest('.row').next().next().find('input');
+            $descInpElem.attr('value', '');
+            $descInpElem.val('');
+            data["Description"] = "";
+            return data;
         },
 
         openDrawer: {
@@ -681,6 +731,8 @@ var cases = {
                                     $($allTrElements[i]).data({"data-object": data.case_data_json.Testcase.Steps.step[i]});
                                 }
 
+                                cases.mappings.newStep.drivers = data.drivers;
+
                             } else {
                                 katana.openAlert({"alert_type": "danger",
                                     "heading": "Could not open file",
@@ -724,6 +776,8 @@ var cases = {
                     for (i=0; i<$allTrElements.length; i++){
                         $($allTrElements[i]).data({"data-object": data.case_data_json.Testcase.Steps.step[i]});
                     }
+
+                    cases.mappings.newStep.drivers = data.drivers;
                 } else {
                     katana.openAlert({"alert_type": "danger",
                         "heading": "Could not open file",

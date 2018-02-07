@@ -48,10 +48,11 @@ def get_file(request):
         details_tmpl = _get_tmpl('cases/details_display_template.html', get_details_data(data))
 
         reqs_tmpl = _get_tmpl('cases/requirements_display_template.html', get_reqs_data(data))
-        steps_tmpl = _get_tmpl('cases/steps_display_template.html', get_steps_data(data, default=True))
+        steps_data = get_steps_data(data, default=True)
+        steps_tmpl = _get_tmpl('cases/steps_display_template.html', steps_data)
         return JsonResponse({"filepath": file_path, "status": output["status"], "message": output["message"],
                              "details": str(details_tmpl), "requirements": str(reqs_tmpl), "steps": str(steps_tmpl),
-                             "case_data_json": data})
+                             "case_data_json": data, "drivers": steps_data["data"]["drivers"]})
     else:
         JsonResponse({"status": output["status"], "message": output["message"]})
 
@@ -107,6 +108,10 @@ def get_details_template(request):
 def get_steps_template(request):
     if request.POST.get("data") == "false":
         output = _get_defaults(step=True, ts=request.POST.get("ts"))
+        if not isinstance(output["data"]["step"]["Arguments"]["argument"], list):
+            output["data"]["step"]["Arguments"]["argument"] = [output["data"]["step"]["Arguments"]["argument"]]
+        if not isinstance(output["data"]["step"]["Execute"]["Rule"], list):
+            output["data"]["step"]["Execute"]["Rule"] = [output["data"]["step"]["Execute"]["Rule"]]
     else:
         output = get_steps_data(json.loads(request.POST.get("data")))
     return render(request, 'cases/steps_template.html', output)
