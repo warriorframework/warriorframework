@@ -513,6 +513,7 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                 runtype.upper() == 'PARALLEL_KEYWORDS':
             tc_junit_object.remove_html_obj()
             data_repository["war_parallel"] = True
+            Utils.config_Utils.data_repository = data_repository
             tc_status = execute_custom(data_type, runtype,
                                        custom_parallel_kw_driver,
                                        data_repository, step_list)
@@ -536,6 +537,7 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                 runtype.upper() == 'PARALLEL_KEYWORDS':
             tc_junit_object.remove_html_obj()
             data_repository["war_parallel"] = True
+            Utils.config_Utils.data_repository = data_repository
             print_info("iterative parallel")
             system_list = get_system_list(data_repository['wt_datafile'],
                                           iter_req=True) \

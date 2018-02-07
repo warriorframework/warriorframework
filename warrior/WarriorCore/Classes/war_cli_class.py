@@ -255,10 +255,6 @@ class WarriorCliClass(object):
                             "Multiple files of different type can be provided "\
                             "(separated by a space)")
 
-        # Trigger cse execution
-        parser.add_argument('-cse', action='store_true', default=False,
-                            help=':cse: Run CSE execution from Warrior command line')
-
         # Run Ironclaw tool
         parser.add_argument('-ironclaw', action='store_true', default=False,
                             help=":ironclaw: Run Warrior's IronClaw tool. "
