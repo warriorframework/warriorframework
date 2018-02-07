@@ -338,7 +338,8 @@ var katana = {
 	        "accept_btn_text": "Ok (by default), Save, etc",
 	        "show_cancel_btn": "true (by default), false",
 	        "cancel_btn_text": "Cancel (by default), No, etc",
-	        "prompt": "false (by default), true"
+	        "prompt": "false (by default), true",
+	        "prompt_default": "'' by default"
 	    }
 
 	    <div class="overlay">
@@ -506,18 +507,23 @@ var katana = {
 
       add_break = "";
     }
-
+    
     var sub_heading = "";
 
     if (data.sub_heading) {
       sub_heading = '<p>' + data.sub_heading + '</p>';
     }
-
+    
     var prompt = ""
+    var prompt_default = ""
+    
+    if(data.prompt_default){
+	     prompt_default = data.prompt_default;
+	  }
 
-    if (data.prompt) {
-      prompt = "<div><input id='alert-box-prompt' katana-change='katana.changeBorderColor' value=''></div>"
-    }
+    if(data.prompt) {
+	      prompt = "<div><input id='alert-box-prompt' katana-change='katana.changeBorderColor' value='"+ prompt_default +"'></div>"
+	  }
 
     var $alert_box = '<div class="col-sm-5 centered">' +
       '<div class="alert alert-' + data.alert_type + '" role="alert">' +
