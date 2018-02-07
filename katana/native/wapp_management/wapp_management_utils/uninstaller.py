@@ -73,9 +73,8 @@ class Uninstaller:
         if "app" in self.config_file_data:
             app_info = self.config_file_data["app"]
 
-        for app in app_info:
-            if "include" in app:
-                include.append(app["include"])
+        if "include" in app_info:
+            include.append(app_info["include"])
         return include
 
     def __copy_app_to_cache(self):
