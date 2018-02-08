@@ -3,6 +3,7 @@ import xmltodict
 from django.template.defaulttags import register
 from collections import OrderedDict
 
+
 def read_json_data(file_path):
     """
     This function reads a file contents and converts the string type to JSON (dict)
@@ -16,19 +17,23 @@ def read_json_data(file_path):
         with open(file_path) as data_file:
             data = json.load(data_file)
     except IOError:
-        print "An Error Occurred: {0} file does not exist".format(file_path)
+        print "-- An Error Occurred -- {0} file does not exist".format(file_path)
     except ValueError:
-        print "An Error Occurred: Incorrect JSON format found in {0}".format(file_path)
+        print "-- An Error Occurred -- Incorrect JSON format found in {0}".format(file_path)
     except Exception as e:
-        print "An Error Occurred: {0}".format(e)
+        print "-- An Error Occurred -- {0}".format(e)
     return data
 
 
-def read_xml_get_json(filepath, ordered_dict=False):
+  def read_xml_get_json(filepath, ordered_dict=False):
     json_data = {}
     try:
-        xml_contents = open(filepath, 'r')
+        xml_contents = open(file_path, 'r')
+    except IOError:
+        print "-- An Error Occurred -- {0} file does not exist".format(file_path)
+        json_data["error"] = "File does not exist".format(file_path)
     except Exception as e:
+        print "-- An Error Occurred -- {0}".format(e)
         json_data["error"] = e
     else:
         json_data = xmltodict.parse(xml_contents)
@@ -40,7 +45,7 @@ def read_xml_get_json(filepath, ordered_dict=False):
 def convert_ord_dict_to_json(ordered_dict):
     return json.loads(json.dumps(ordered_dict))
 
-
+  
 @register.filter
 def get_item(data, key):
     """
@@ -51,6 +56,7 @@ def get_item(data, key):
     else:
         return ""
 
+
 @register.filter
 def is_dict(data):
     return "true" if isinstance(data, OrderedDict) or isinstance(data, dict) else "false"
@@ -58,6 +64,7 @@ def is_dict(data):
 @register.filter
 def is_list(data):
     return "true" if isinstance(data, list) else "false"
+
 
 @register.filter
 def get_length(data):

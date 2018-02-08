@@ -30,6 +30,11 @@ class Navigator(object):
         if profile_data is not None:
             name = (profile_data["firstName"] + " " + profile_data["lastName"]).strip()
         return name
+      
+    def get_warhorn_dir(self):
+        """will get warriors main directory"""
+        warrior_dir = get_parent_directory(__file__, 3) + os.sep + 'warhorn' + os.sep
+        return warrior_dir
 
     def get_wf_version(self):
         """Gets the current warriorframework version"""

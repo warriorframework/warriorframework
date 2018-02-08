@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<data>
+
+    <tools url="" label="" clone=""/>
+
+    <drivers>
+
+        <repository url="" clone="yes" label="" all_drivers="yes">
+            <driver name="" clone="yes"/>
+        </repository>
+
+    </drivers>
+
+    <warriorspace>
+
+        <repository url="" overwrite="yes" label="" clone="yes"/>
+
+    </warriorspace>
+</data>

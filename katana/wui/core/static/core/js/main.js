@@ -434,7 +434,7 @@ var katana = {
     } else {
         $alertElement.remove();
     }
-
+    
     if (callBack_on_dismiss) {
       callBack_on_dismiss();
     }
@@ -513,9 +513,9 @@ var katana = {
     if (data.sub_heading) {
       sub_heading = '<p>' + data.sub_heading + '</p>';
     }
-    
-    var prompt = ""
-    var prompt_default = ""
+
+    var prompt = "";
+    var prompt_default = "";
     
     if(data.prompt_default){
 	     prompt_default = data.prompt_default;
@@ -532,10 +532,10 @@ var katana = {
       '</div>' +
       '<h4 class="alert-heading">' + data.heading + '</h4>' + sub_heading +
       '<hr>' +
-      '<p class="mb-0">' + data.text + '</p>' + prompt + add_break +
+      '<p class="mb-0 alert-content">' + data.text + '</p>' + prompt + add_break +
       buttons +
       '</div>' +
-      '</div>'
+      '</div>';
 
     callBack(data, $alert_box, callBack_on_accept, callBack_on_dismiss);
   },
@@ -554,7 +554,7 @@ var katana = {
       "info": "Heads Up!",
       "light": "Hi There!",
       "dark": "Hello!"
-    }
+    };
 
     if (!("alert_type" in data)) {
       data["alert_type"] = "info";
@@ -1022,35 +1022,35 @@ var katana = {
 
     init: function() {
       var $elem = this;
-      input = $elem.parent().find('input');
+      var input = $elem.parent().find('input');
       katana.fileExplorerAPI.openFileExplorer(null, null, null, null, function(str) {
         input.val(str).trigger('change');
       });
     },
 
     openFileExplorer: function(heading, start_directory, csrftoken, parent, callBack_on_accept, callBack_on_dismiss) {
-      if (!heading || heading == "" || heading == undefined) {
+      if (!heading || heading === "" || heading === undefined) {
         heading = "Select a file"
       }
-      if (start_directory == undefined || start_directory == "") {
+      if (start_directory === undefined || start_directory === "") {
         start_directory = false;
       }
-      if (!parent || parent == "" || parent == undefined) {
+      if (!parent || parent === "" || parent === undefined) {
         var $currentPage = katana.$activeTab;
         var $tabContent = $currentPage.find('.page-content-inner');
       } else {
         $tabContent = parent;
       }
       katana.templateAPI.post('get_file_explorer_data/', csrftoken, {
-          "path": start_directory
+          "start_dir": start_directory
         },
         function(data) {
-          var explorer_modal_html = $($('#file-explorer-template').html())
+          var explorer_modal_html = $($('#file-explorer-template').html());
           var $fileExplorerHeading = explorer_modal_html.find('#file-explorer-heading');
           $fileExplorerHeading.text(heading);
 
           $(explorer_modal_html).prependTo($tabContent);
-          $directoryData = $tabContent.find('#directory-data');
+          var $directoryData = $tabContent.find('#directory-data');
           $directoryData.jstree({
             "core": {
               "data": [data]
@@ -1061,7 +1061,7 @@ var katana = {
               var nodeB = this.get_node(b);
               var lengthA = nodeA.children.length;
               var lengthB = nodeB.children.length;
-              if ((lengthA == 0 && lengthB == 0) || (lengthA > 0 && lengthB > 0))
+              if ((lengthA === 0 && lengthB === 0) || (lengthA > 0 && lengthB > 0))
                 return this.get_text(a).toLowerCase() > this.get_text(b).toLowerCase() ? 1 : -1;
               else
                 return lengthA > lengthB ? -1 : 1;
@@ -1082,15 +1082,15 @@ var katana = {
     },
 
     acceptFileExplorer: function(callBack, parent) {
-      if (!parent || parent == "" || parent == undefined) {
+      if (!parent || parent === "" || parent === undefined) {
         var $currentPage = katana.$activeTab;
       } else {
         $currentPage = parent;
       }
-      $fileExplorerElement = $currentPage.find('div[class="overlay"]');
-      $selectedValue = $fileExplorerElement.find('[aria-selected=true]')
+      var $fileExplorerElement = $currentPage.find('div[class="overlay"]');
+      var $selectedValue = $fileExplorerElement.find('[aria-selected=true]');
       var data_path = $selectedValue.attr("data-path");
-      if (data_path == undefined) {
+      if (data_path === undefined) {
         alert("Nothing selected");
         return;
       }
@@ -1099,18 +1099,18 @@ var katana = {
     },
 
     dismissFileExplorer: function(callBack, parent) {
-      if (!parent || parent == "" || parent == undefined) {
+      if (!parent || parent === "" || parent === undefined) {
         var $currentPage = katana.$activeTab;
       } else {
-        var $currentPage = parent;
+        $currentPage = parent;
       }
-      $fileExplorerElement = $currentPage.find('div[class="overlay"]');
+      var $fileExplorerElement = $currentPage.find('div[class="overlay"]');
       $fileExplorerElement.remove();
       callBack && callBack();
     },
 
     upFileExplorer: function(currentPath, csrftoken, parent) {
-      if (!parent || parent == undefined || parent == "") {
+      if (!parent || parent === undefined || parent === "") {
         var $currentPage = katana.$activeTab;
         var $tabContent = $currentPage.find('.page-content-inner');
       } else {
@@ -1123,7 +1123,7 @@ var katana = {
 
           var $directoryDataDiv = $tabContent.find('.directory-data-div');
           $directoryDataDiv.html("");
-          $directoryDataDiv.append("<div id='directory-data' class='full-size'></div>")
+          $directoryDataDiv.append("<div id='directory-data' class='full-size'></div>");
           var $directoryData = $currentPage.find('#directory-data');
           $directoryData.jstree({
             "core": {
@@ -1135,7 +1135,7 @@ var katana = {
               var nodeB = this.get_node(b);
               var lengthA = nodeA.children.length;
               var lengthB = nodeB.children.length;
-              if ((lengthA == 0 && lengthB == 0) || (lengthA > 0 && lengthB > 0))
+              if ((lengthA === 0 && lengthB === 0) || (lengthA > 0 && lengthB > 0))
                 return this.get_text(a).toLowerCase() > this.get_text(b).toLowerCase() ? 1 : -1;
               else
                 return lengthA > lengthB ? -1 : 1;

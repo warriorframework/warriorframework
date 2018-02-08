@@ -1,0 +1,68 @@
+.assembler-no-bg {
+    background-color: white !important;
+}
+
+.assembler-popup-loading {
+	content: '';
+	border: 8px solid #f3f3f3;
+	border-radius: 50%;
+	border-top: 8px solid #dc3545;
+	width: 80px;
+	height: 80px;
+	-webkit-animation: spin 2s ease-in-out infinite;
+	animation: spin 2s ease-in-out infinite;
+	position: absolute;
+	top: 40%;
+	left: 0;
+	right: 0;
+	margin: 0 auto;
+}
+
+.assembler-disable-div {
+    pointer-events: none;
+    background-color: #eaeaea;
+}
+
+.assembler-icon-pos-right {
+    float:right;
+    line-height:inherit!important;
+}
+
+.assembler-description {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.assembler-description .assembler-description-text {
+    visibility: hidden;
+    width: 200px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    top: -5px;
+    left: 115%;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.assembler-description .assembler-description-text::after {
+    content: "";
+    position: absolute;
+    top: 40%;
+    right: 100%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent #555 transparent transparent;
+}
+
+.assembler-description:hover .assembler-description-text {
+    visibility: visible;
+    opacity: 1;
+    font-size: 1rem;
+}
