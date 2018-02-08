@@ -15,6 +15,7 @@ from __future__ import division
 import os
 import re
 import ast
+import copy
 import operator as op
 from collections import OrderedDict
 
@@ -431,8 +432,9 @@ def get_command_details_from_testdata(testdatafile, varconfigfile=None, **attr):
 
             # Update 'cmd_loc_list' based on list substitution, this is
             # required for per_td_block iteration
-            for i in range(len(cmd_loc_list)-2):
-                for j in range(cmd_loc_list[i], cmd_loc_list[i+1]):
+            ref_cmd_loc_list = copy.deepcopy(cmd_loc_list)
+            for i in range(len(cmd_loc_list)-1):
+                for j in range(ref_cmd_loc_list[i], ref_cmd_loc_list[i+1]):
                     if cmd_list_substituted[j]:
                         pos = i+1
                         for _ in range(len(cmd_loc_list[i+1:])):
