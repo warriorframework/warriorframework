@@ -2,9 +2,12 @@
 
   "icon": "cube",
   "color": "tan",
-  "name" : "Suites",
-  "url" : "/katana/suites/",
   "developer": "Warrior Framework",
   "description": "Edit your suites using this App.",
-  "app" : [{"name" : "Suites", "url" : "/katana/suites/", "include": "wapps.suites.urls"}]
+  "app" : {"name" : "Suites", "url" : "/katana/suites/", "include": "wapps.suites.urls"},
+  "warrior-compatibility": ":warrior-3.7.0",
+  "warrior-incompatibility": "",
+  "version": "1.0.0",
+  "permissions": "",
+  "availability": ""
 }

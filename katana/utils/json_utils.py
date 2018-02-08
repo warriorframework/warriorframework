@@ -26,13 +26,15 @@ def read_json_data(file_path):
 
 
 def read_xml_get_json(file_path):
-    json_data = None
+    json_data = {}
     try:
         xml_contents = open(file_path, 'r')
     except IOError:
         print "-- An Error Occurred -- {0} file does not exist".format(file_path)
+        json_data["error"] = "File does not exist".format(file_path)
     except Exception as e:
         print "-- An Error Occurred -- {0}".format(e)
+        json_data["error"] = e
     else:
         ordered_dict_json = xmltodict.parse(xml_contents)
         json_data = json.loads(json.dumps(ordered_dict_json))

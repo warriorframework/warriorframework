@@ -1,11 +1,12 @@
-
 import os
-from directory_traversal_utils import get_parent_directory
+from directory_traversal_utils import get_parent_directory, join_path
+import subprocess
+
 
 class Navigator(object):
 
     def __init__(self):
-        pass
+        self.git_url = "https://github.com/warriorframework/warriorframework.git"
 
     def get_katana_dir(self):
         """will get katanas main directory"""
@@ -21,6 +22,42 @@ class Navigator(object):
         """will get warriors main directory"""
         warrior_dir = get_parent_directory(__file__, 3) + os.sep + 'warhorn' + os.sep
         return warrior_dir
+
+    def get_wf_version(self):
+        """Gets the current warriorframework version"""
+        wf_dir = get_parent_directory(__file__, 3)
+        version_file = join_path(wf_dir, "version.txt")
+        with open(version_file, 'r') as f:
+            data = f.readlines()
+        version_line = False
+        for line in data:
+            if line.strip().startswith("Version"):
+                version_line = line.strip()
+                break
+        if version_line:
+            return version_line.split(":")[1].strip()
+        return version_line
+
+    def get_all_wf_versions(self):
+        """Returns a list of all available warrior versions"""
+        tags_list = False
+        p = subprocess.Popen(["git", "ls-remote", "--tags", self.git_url], stdout=subprocess.PIPE,
+                                  stderr=subprocess.PIPE)
+        output, errors = p.communicate()
+        if p.returncode != 0:
+            print "-- An Error Occurred -- WarriorFramework versions could not be retrieved"
+            print "-- Output -- {0}".format(output)
+            print "-- Errors -- {0}".format(errors)
+        else:
+            temp_list = output.strip().split("\n")
+            tags_list = set()
+            for el in temp_list:
+                temp = el.split()[1].strip().split('/')[2]
+                if temp.startswith("warrior"):
+                    if "^" in temp:
+                        temp = temp.split('^')[0]
+                    tags_list.add(temp)
+        return tags_list
 
     def search_folder_name(self, folder_name, given_dir):
         """searches for folder by name in all subdir until found or bottom level directory"""

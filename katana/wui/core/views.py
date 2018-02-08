@@ -25,6 +25,7 @@ from utils.navigator_util import Navigator
 from wui.core.apps import AppInformation
 
 
+
 class CoreView(View):
     
     def __init__(self):

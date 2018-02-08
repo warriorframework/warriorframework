@@ -1,0 +1,24 @@
+<data>
+    <global>
+        <command_params sys="" session="" start=".*" end="" timeout="60" sleep="0" retry="n"
+                            retry_timer="60" retry_count="5" resp_req="y" resp_ref="" verify=""
+                            retry_onmatch="" resp_pat_req="" resp_keys="" inorder_resp_ref="" monitor="" inorder="" repeat=""/>
+        <variable_pattern start_pattern="${" end_pattern="}"/>
+        <verifications>
+            <verification found="yes" search="" verify_on="" cond_value="" cont_type="str" operator="eq"/>
+            <combination combo=""/>
+        </verifications>
+        <keys>
+            <key resp_pattern_req=""/>
+        </keys>
+    </global>
+    <testdata execute="yes" title="" row="" monitor="" iter_type="per_td_block">
+        <command send="" sys="" session="" start=".*" end="" timeout="60" sleep="0" retry="n"
+                        retry_timer="60" retry_count="5" resp_req="y" resp_ref="" verify=""
+                        retry_onmatch="" resp_pat_req="" resp_keys="" inorder_resp_ref="" monitor=""
+                        inorder="" repeat=""/>
+        <verification found="yes" search="" verify_on="" cond_value="" cont_type="str" operator="eq"/>
+        <key resp_pattern_req=""/>
+        <variable_pattern start_pattern="${" end_pattern="}"/>
+    </testdata>
+</data>

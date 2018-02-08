@@ -1,9 +1,12 @@
 {
   "icon": "play-circle",
   "color": "blue",
-  "name" : "Execution",
-  "url" : "/katana/execution/",
   "developer": "Warrior Framework",
   "description": "Execute Warrior using this App",
-  "app" : [{"name" : "Execution", "url" : "/katana/execution/", "include": "wapps.execution.urls"}]
+  "app" : {"name" : "Execution", "url" : "/katana/execution/", "include": "wapps.execution.urls"},
+  "warrior-compatibility": ":warrior-3.7.0",
+  "warrior-incompatibility": "",
+  "version": "1.0.0",
+  "permissions": "",
+  "availability": ""
 }

@@ -186,7 +186,7 @@ var katana = {
 
     open: function(content, title, callBack, size) {
       this.body = katana.$view;
-      var popup = this.template.clone().appendTo(katana.popupController.body);
+      var popup = this.template.clone().appendTo(katana.popupController.body.find('#wui-popups'));
       content && popup.find('.page-content').append(content);
       size && popup.addClass(size);
       katana.popupController.initEvents(popup);
@@ -203,7 +203,7 @@ var katana = {
 
     createTab: function(popup) {
       if (!katana.popupController.tabBar) {
-        katana.popupController.tabBar = katana.popupController.tabTemplate.clone().appendTo(katana.popupController.body);
+        katana.popupController.tabBar = katana.popupController.tabTemplate.clone().appendTo(katana.popupController.body.find('#wui-popup-nav'));
         katana.popupController.tabBar.find('.tab').remove();
       }
       var tab = katana.popupController.tabTemplate.find('.tab').first().clone().appendTo(katana.popupController.tabBar);
@@ -214,11 +214,13 @@ var katana = {
     },
 
     openWindow: function(popup) {
-      var activePopup = katana.popupController.body.find('.popup.active');
-      if (activePopup.get(0) != popup.get(0)) {
+      var activePopup = katana.popupController.body.find('#wui-popups').find('.popup.active');
+      if (activePopup.get(0) !== popup.get(0)) {
         activePopup.removeClass('active');
         popup.removeClass('removeing hidden').addClass('active');
       }
+      activePopup = katana.popupController.body.find('#wui-popups').find('.popup.active').detach();
+      katana.popupController.body.find('#wui-popups').append(activePopup);
     },
 
     close: function(popup) {
@@ -230,8 +232,8 @@ var katana = {
     },
 
     updateActiveWindow: function(popup) {
-      var activePopup = katana.popupController.body.find('.popup.active');
-      if (activePopup.get(0) != popup.get(0)) {
+      var activePopup = katana.popupController.body.find('#wui-popups').find('.popup.active');
+      if (activePopup.get(0) !== popup.get(0)) {
         activePopup.removeClass('active');
         popup.addClass('active');
       }
@@ -336,7 +338,8 @@ var katana = {
 	        "accept_btn_text": "Ok (by default), Save, etc",
 	        "show_cancel_btn": "true (by default), false",
 	        "cancel_btn_text": "Cancel (by default), No, etc",
-	        "prompt": "false (by default), true"
+	        "prompt": "false (by default), true",
+	        "prompt_default": "'' by default"
 	    }
 
 	    <div class="overlay">
@@ -504,7 +507,7 @@ var katana = {
 
       add_break = "";
     }
-
+    
     var sub_heading = "";
 
     if (data.sub_heading) {
@@ -512,10 +515,15 @@ var katana = {
     }
 
     var prompt = "";
+    var prompt_default = "";
+    
+    if(data.prompt_default){
+	     prompt_default = data.prompt_default;
+	  }
 
-    if (data.prompt) {
-      prompt = "<div><input id='alert-box-prompt' katana-change='katana.changeBorderColor' value=''></div>"
-    }
+    if(data.prompt) {
+	      prompt = "<div><input id='alert-box-prompt' katana-change='katana.changeBorderColor' value='"+ prompt_default +"'></div>"
+	  }
 
     var $alert_box = '<div class="col-sm-5 centered">' +
       '<div class="alert alert-' + data.alert_type + '" role="alert">' +
@@ -880,7 +888,7 @@ var katana = {
       return data;
     },
 
-    post: function(url, csrf, toSend, callBack, fallBack) {
+    post: function(url, csrf, toSend, callBack, fallBack, callBackData, fallBackData ) {
       var $elem = this && this != katana.templateAPI ? this : katana.$activeTab;
       var toSend = toSend ? toSend : $elem.find('input:not([name="csrfmiddlewaretoken"])').serializeArray();
       var url = url ? url : $elem.attr('post-url');
@@ -899,9 +907,9 @@ var katana = {
           data: toSend
         }
       }).done(function(data) {
-        callBack && callBack(data);
+        callBack && callBack(data, callBackData);
       }).fail(function(data) {
-        fallBack && fallBack(data);
+        fallBack && fallBack(data, fallBackData);
       });
     },
 

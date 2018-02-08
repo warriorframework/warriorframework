@@ -78,16 +78,12 @@ class Installer:
     def __edit_urls_py(self):
         checker = "RedirectView.as_view(url='/katana/')"
         data = read_json_data(self.wf_config_file)
-        if "app" in data:
-            if not isinstance(data["app"], list):
-                data["app"] = [data["app"]]
 
-        for app_details in data["app"]:
-            if app_details["url"].startswith("/"):
-                app_url = app_details["url"][1:]
-            else:
-                app_url = app_details["url"]
-            self.urls_inclusions.append("url(r'^" + app_url + "', include('" + app_details["include"] + "')),")
+        if data["app"]["url"].startswith("/"):
+            app_url = data["app"]["url"][1:]
+        else:
+            app_url = data["app"]["url"]
+        self.urls_inclusions.append("url(r'^" + app_url + "', include('" + data["app"]["include"] + "')),")
 
         data = readlines_from_file(self.urls_file)
         self.urls_backup = data

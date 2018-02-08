@@ -1,3 +1,7 @@
+<head>
+    {% load staticfiles %}
+    <link rel="stylesheet" href="{% static 'execution/css/execution.css' %}">
+</head>
 <body>
       <div class="csrf-container">{% csrf_token %} </div>
       <div id="execution-container" class="execution exec-container" >
