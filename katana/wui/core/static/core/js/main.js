@@ -991,24 +991,56 @@ var katana = {
 
   },
 
+    jsTreeAPI: {
+
+      createJstree: function($treeElement, jsTreeData){
+        /*
+          API to create jstee in the specified element.
+          $treeElement: Element where the jstree data should be displayed.
+          jsTreeData: the contents of the jstree to be displayed.
+        */
+        var data = { 'core' : { 'data' : jsTreeData }, "plugins" : [ "sort" , "search"], };
+        $treeElement.jstree(data);
+        $treeElement.jstree().hide_dots();
+      },
+
+      createJstreeSearch: function ($treeElement, $searchBoxElement , jsTreeData) {
+        /*
+          API to create jstee with search in the specified element.
+          $treeElement: Element where the jstree data should be displayed.
+          $searchBoxElement: Search box element
+          jsTreeData: the contents of the jstree to be displayed.
+        */
+        katana.jsTreeAPI.createJstree($treeElement, jsTreeData);
+        var to = false;
+        $searchBoxElement.keyup(function () {
+          if(to) { clearTimeout(to); }
+          to = setTimeout(function () {
+            var v = $searchBoxElement.val();
+            $treeElement.jstree(true).search(v);
+            }, 250);
+          });
+        },
+    },
+
   fileExplorerAPI: {
 
     init: function() {
       var $elem = this;
-      input = $elem.parent().find('input');
+      var input = $elem.parent().find('input');
       katana.fileExplorerAPI.openFileExplorer(null, null, null, null, function(str) {
         input.val(str).trigger('change');
       });
     },
 
     openFileExplorer: function(heading, start_directory, csrftoken, parent, callBack_on_accept, callBack_on_dismiss) {
-      if (!heading || heading == "" || heading == undefined) {
+      if (!heading || heading === "" || heading === undefined) {
         heading = "Select a file"
       }
-      if (start_directory == undefined || start_directory == "") {
+      if (start_directory === undefined || start_directory === "") {
         start_directory = false;
       }
-      if (!parent || parent == "" || parent == undefined) {
+      if (!parent || parent === "" || parent === undefined) {
         var $currentPage = katana.$activeTab;
         var $tabContent = $currentPage.find('.page-content-inner');
       } else {
@@ -1018,12 +1050,12 @@ var katana = {
           "path": start_directory
         },
         function(data) {
-          var explorer_modal_html = $($('#file-explorer-template').html())
+          var explorer_modal_html = $($('#file-explorer-template').html());
           var $fileExplorerHeading = explorer_modal_html.find('#file-explorer-heading');
           $fileExplorerHeading.text(heading);
 
           $(explorer_modal_html).prependTo($tabContent);
-          $directoryData = $tabContent.find('#directory-data');
+          var $directoryData = $tabContent.find('#directory-data');
           $directoryData.jstree({
             "core": {
               "data": [data]
@@ -1034,7 +1066,7 @@ var katana = {
               var nodeB = this.get_node(b);
               var lengthA = nodeA.children.length;
               var lengthB = nodeB.children.length;
-              if ((lengthA == 0 && lengthB == 0) || (lengthA > 0 && lengthB > 0))
+              if ((lengthA === 0 && lengthB === 0) || (lengthA > 0 && lengthB > 0))
                 return this.get_text(a).toLowerCase() > this.get_text(b).toLowerCase() ? 1 : -1;
               else
                 return lengthA > lengthB ? -1 : 1;
@@ -1055,15 +1087,15 @@ var katana = {
     },
 
     acceptFileExplorer: function(callBack, parent) {
-      if (!parent || parent == "" || parent == undefined) {
+      if (!parent || parent === "" || parent === undefined) {
         var $currentPage = katana.$activeTab;
       } else {
         $currentPage = parent;
       }
-      $fileExplorerElement = $currentPage.find('div[class="overlay"]');
-      $selectedValue = $fileExplorerElement.find('[aria-selected=true]')
+      var $fileExplorerElement = $currentPage.find('div[class="overlay"]');
+      var $selectedValue = $fileExplorerElement.find('[aria-selected=true]');
       var data_path = $selectedValue.attr("data-path");
-      if (data_path == undefined) {
+      if (data_path === undefined) {
         alert("Nothing selected");
         return;
       }
@@ -1072,18 +1104,18 @@ var katana = {
     },
 
     dismissFileExplorer: function(callBack, parent) {
-      if (!parent || parent == "" || parent == undefined) {
+      if (!parent || parent === "" || parent === undefined) {
         var $currentPage = katana.$activeTab;
       } else {
-        var $currentPage = parent;
+        $currentPage = parent;
       }
-      $fileExplorerElement = $currentPage.find('div[class="overlay"]');
+      var $fileExplorerElement = $currentPage.find('div[class="overlay"]');
       $fileExplorerElement.remove();
       callBack && callBack();
     },
 
     upFileExplorer: function(currentPath, csrftoken, parent) {
-      if (!parent || parent == undefined || parent == "") {
+      if (!parent || parent === undefined || parent === "") {
         var $currentPage = katana.$activeTab;
         var $tabContent = $currentPage.find('.page-content-inner');
       } else {
@@ -1096,7 +1128,7 @@ var katana = {
 
           var $directoryDataDiv = $tabContent.find('.directory-data-div');
           $directoryDataDiv.html("");
-          $directoryDataDiv.append("<div id='directory-data' class='full-size'></div>")
+          $directoryDataDiv.append("<div id='directory-data' class='full-size'></div>");
           var $directoryData = $currentPage.find('#directory-data');
           $directoryData.jstree({
             "core": {
@@ -1108,7 +1140,7 @@ var katana = {
               var nodeB = this.get_node(b);
               var lengthA = nodeA.children.length;
               var lengthB = nodeB.children.length;
-              if ((lengthA == 0 && lengthB == 0) || (lengthA > 0 && lengthB > 0))
+              if ((lengthA === 0 && lengthB === 0) || (lengthA > 0 && lengthB > 0))
                 return this.get_text(a).toLowerCase() > this.get_text(b).toLowerCase() ? 1 : -1;
               else
                 return lengthA > lengthB ? -1 : 1;
