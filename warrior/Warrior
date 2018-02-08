@@ -166,6 +166,7 @@ def main(parameter_list, a_defects, cse_execution, iron_claw, jiraproj, overwrit
             db_obj.close_connection()
     return status
 
+
 if __name__ == '__main__':
 
     FILEPATH, AUTO_DEFECTS, version, CSE_EXEC, IRON_CLAW, JIRAPROJ, \
