@@ -40,10 +40,10 @@ h1 {
 	/* max-width: 1400px; */
 	margin: 0 auto;
 	overflow: auto;
-	background-color: #404040;
-	background-image: url(/static/core/images/image.jpg);
 	background-size: cover;
-  background-position: center;
+	background-color: #404040;
+    background-image: url(/static/core/images/image.jpg);
+    background-position: center;
 	height: 100%;
 	position: absolute;
 	top: 0;
@@ -477,6 +477,14 @@ span.close:before {
 	color: #108c82;
 }
 
+.tab.skyblue {
+    color: #4ea4e0;
+}
+
+.tab.lightgrey {
+    color: #4ea4e0;
+}
+
 .tan {
 	color: #987150;
 }
@@ -495,6 +503,18 @@ span.close:before {
 
 .green {
 	color: #3b7a4c;
+}
+
+.skyblue{
+    color: #4ea4e0;
+}
+
+.lightgrey {
+    color: #4ea4e0;
+}
+
+.lightblue {
+    color: #108c82;
 }
 
 .page-content .tab:hover {
@@ -1420,8 +1440,8 @@ div#launchpad.page.hidden .tabs {
 }
 
 .fa-toggle-on {
-	-webkit-transform: scaleX(-1);
-	transform: scaleX(-1);
+	/*-webkit-transform: scaleX(-1);
+	transform: scaleX(-1);*/
 }
 
 i.active {
@@ -1526,7 +1546,7 @@ i.active {
 	left: 0;
 	width: 100%;
 	height:60px;
-	//z-index: 1;
+	/*z-index: 1;*/
 	padding-right: 17px;
 	color: white;
 	background: #3699ff;
@@ -1714,7 +1734,7 @@ i.active {
 }
 [name="HeadingRow"] {
 	position: relative;
-	//top: -40px;
+	/*top: -40px;*/
 	left: 0;
 	color: white;
 	background: #3699ff !important;
@@ -1784,7 +1804,7 @@ i.active {
 	position: relative;
 	left: 0;
 	width: 100%;
-	//height: calc( 100% - 40px);
+	/*height: calc( 100% - 40px);*/
 	overflow: hidden;
 	-webkit-transform: translate3d( 0, 0, 0);
 	transform: translate3d( 0, 0, 0);
@@ -1963,7 +1983,7 @@ i.active {
 	background: #2578c1;
 	height: 40px;
 	top: 40px;
-	//position: absolute;
+	/*position: absolute;*/
 	left: 0;
 }
 
@@ -2302,7 +2322,7 @@ i.active {
 	margin: 0 auto;
 }
 
-.loading:before {
+. :before {
 	content: '';
 	border: 8px solid #f3f3f3;
 	border-radius: 50%;
@@ -2980,4 +3000,13 @@ input[type="checkbox"]+label {
 }
 .tab-template {
     display: none !important;
+<<<<<<< HEAD
 }
+
+.alert-content {
+	max-height: 15rem;
+	overflow: auto;
+}
+=======
+}
+>>>>>>> origin/katana-apps-demo

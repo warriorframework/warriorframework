@@ -18,6 +18,11 @@ class Navigator(object):
         warrior_dir = get_parent_directory(__file__, 3) + os.sep + 'warrior' + os.sep
         return warrior_dir
 
+    def get_warhorn_dir(self):
+        """will get warriors main directory"""
+        warrior_dir = get_parent_directory(__file__, 3) + os.sep + 'warhorn' + os.sep
+        return warrior_dir
+
     def get_wf_version(self):
         """Gets the current warriorframework version"""
         wf_dir = get_parent_directory(__file__, 3)

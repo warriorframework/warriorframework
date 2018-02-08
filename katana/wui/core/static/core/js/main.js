@@ -434,7 +434,7 @@ var katana = {
     } else {
         $alertElement.remove();
     }
-
+    
     if (callBack_on_dismiss) {
       callBack_on_dismiss();
     }
@@ -513,9 +513,9 @@ var katana = {
     if (data.sub_heading) {
       sub_heading = '<p>' + data.sub_heading + '</p>';
     }
-    
-    var prompt = ""
-    var prompt_default = ""
+
+    var prompt = "";
+    var prompt_default = "";
     
     if(data.prompt_default){
 	     prompt_default = data.prompt_default;
@@ -532,10 +532,10 @@ var katana = {
       '</div>' +
       '<h4 class="alert-heading">' + data.heading + '</h4>' + sub_heading +
       '<hr>' +
-      '<p class="mb-0">' + data.text + '</p>' + prompt + add_break +
+      '<p class="mb-0 alert-content">' + data.text + '</p>' + prompt + add_break +
       buttons +
       '</div>' +
-      '</div>'
+      '</div>';
 
     callBack(data, $alert_box, callBack_on_accept, callBack_on_dismiss);
   },
@@ -554,7 +554,7 @@ var katana = {
       "info": "Heads Up!",
       "light": "Hi There!",
       "dark": "Hello!"
-    }
+    };
 
     if (!("alert_type" in data)) {
       data["alert_type"] = "info";
@@ -1042,7 +1042,7 @@ var katana = {
         $tabContent = parent;
       }
       katana.templateAPI.post('get_file_explorer_data/', csrftoken, {
-          "path": start_directory
+          "start_dir": start_directory
         },
         function(data) {
           var explorer_modal_html = $($('#file-explorer-template').html());

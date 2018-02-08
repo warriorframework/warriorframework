@@ -1,0 +1,94 @@
+<body>
+    <style>
+        .assembler-description {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .assembler-description .assembler-description-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            top: -5px;
+            left: 115%;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .assembler-description .assembler-description-text::after {
+            content: "";
+            position: absolute;
+            top: 40%;
+            right: 100%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: transparent #555 transparent transparent;
+        }
+
+        .assembler-description:hover .assembler-description-text {
+            visibility: visible;
+            opacity: 1;
+            font-size: 1rem;
+        }
+    </style>
+    <div class="tool-bar">
+        <button class="button" katana-click="katana.closeSubApp">Close</button>
+    </div>
+    <div class="csrf-container">{% csrf_token %}</div>
+    <div style="padding: 2rem; width: 100%;">
+        <div style="padding: 1rem;">
+            <h4>Pre-Requisites</h4>
+        </div>
+        <div class="row" id="dependency-div">
+            {% for prerequisite in data %}
+            <div style="padding: 1rem;">
+                <div class="card border-secondary" style="width: 350px; height:190px; padding: 1rem;">
+                    <div class="card-block">
+                        <h4 class="card-title assembler-description">{{ prerequisite.name }}
+                            <span class="assembler-description-text">{{ prerequisite.description }}</span>
+                        </h4>
+                        <h6 class="card-subtitle mb-2 text-muted">Version: {{ prerequisite.version }}</h6>
+                        <hr>
+                        <h6 class="card-subtitle mb-2 text-muted">Available Version: {{ prerequisite.available_version }}</h6>
+                        <br>
+                        <button class="btn btn-success" katana-click="settings.prerequisites.installDependency"
+                                aria-selected="false" status="{{ prerequisite.status }}" version="{{ prerequisite.version }}"
+                                prerequisite-name="{{ prerequisite.name }}">
+                            {{ prerequisite.installBtnText }} &nbsp;
+                            {% if prerequisite.installBtnText == 'Installed' %}
+                                <i class="fa fa-check-circle skyblue" aria-hidden="true"></i>
+                            {% elif prerequisite.installBtnText == 'Upgrade'%}
+                                <i class="fa fa-exclamation-triangle tan" aria-hidden="true"></i>
+                            {% endif %}
+                        </button>
+                        <div class="card" style="padding: 0.5rem 1rem; display: none;">
+                            <div class="row">
+                                <div class="col-sm-10">Install As:&nbsp;</div>
+                                <div class="col-sm-1" style="padding-bottom: 0.4rem;">
+                                    <i class="fa fa-times" aria-hidden="true" katana-click="settings.prerequisites.cancelDependencyInstallation"></i>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-2"></div>
+                                <div class="col-sm-8">
+                                    <button class="btn btn-info" katana-click="settings.prerequisites.installDependencyAsAdmin">Admin</button>
+                                    <button class="btn btn-info" katana-click="settings.prerequisites.installDependencyAsUser">User</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</body>
