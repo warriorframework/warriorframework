@@ -1,0 +1,46 @@
+<data>
+    <global>
+        <command_params sys="" session="" start=".*" end="" timeout="60" sleep="0" retry="n"
+                            retry_timer="60" retry_count="5" resp_req="y" resp_ref="" verify=""
+                            retry_onmatch="" resp_pat_req="" resp_keys="" inorder_resp_ref="" monitor="" inorder="" repeat=""/>
+        <variable_pattern start_pattern="${" end_pattern="}"/>
+        <verifications>
+            <v1 found="no" search="sanika" verify_on="NE1" cond_value="blah" cont_type="str" operator="ne"/>
+            <v2 found="no" search="sanika" verify_on="NE1" cond_value="blah" cont_type="str" operator="ne"/>
+            <v3 found="no" search="sanika" verify_on="NE1" cond_value="blah" cont_type="str" operator="ne"/>
+            <v4 found="no" search="sanika" verify_on="NE1" cond_value="blah" cont_type="str" operator="ne"/>
+            <v5 found="yes" search="" verify_on="" cond_value="" cont_type="str" operator="eq"/>
+            <c1 combo="combo one"/>
+            <c2 combo="combo two"/>
+            <c3 combo="combo three"/>
+        </verifications>
+        <keys>
+            <k1 resp_pattern_req="pattern 1"/>
+            <k2 resp_pattern_req="pattern 2"/>
+            <k3 resp_pattern_req="pattern 3"/>
+            <k4 resp_pattern_req="pattern 4"/>
+            <k5 resp_pattern_req="pattern 5"/>
+            <k6 resp_pattern_req="pattern 6"/>
+        </keys>
+    </global>
+    <testdata execute="yes" title="" row="" monitor="" iter_type="per_td_block">
+        <command send="" sys="" session="" start=".*" end="" timeout="60" sleep="0" retry="n"
+                        retry_timer="60" retry_count="5" resp_req="y" resp_ref="" verify=""
+                        retry_onmatch="" resp_pat_req="" resp_keys="" inorder_resp_ref="" monitor=""
+                        inorder="" repeat=""/>
+        <command send="2" sys="2" session="2" start=".*" end="2" timeout="60" sleep="0" retry="n"
+                        retry_timer="60" retry_count="5" resp_req="y" resp_ref="2" verify="2"
+                        retry_onmatch="2" resp_pat_req="2" resp_keys="2" inorder_resp_ref="2" monitor="2"
+                        inorder="2" repeat="2"/>
+        <command send="3" sys="3" session="3" start=".*" end="3" timeout="60" sleep="0" retry="n"
+                        retry_timer="60" retry_count="5" resp_req="y" resp_ref="3" verify="3"
+                        retry_onmatch="3" resp_pat_req="3" resp_keys="3" inorder_resp_ref="3" monitor="3"
+                        inorder="3" repeat="3"/>
+        <v6 found="no" search="sanika" verify_on="NE1" cond_value="blah" cont_type="str" operator="ne"/>
+        <v7 found="no" search="sanika" verify_on="NE1" cond_value="blah" cont_type="str" operator="ne"/>
+        <v8 found="yes" search="" verify_on="" cond_value="" cont_type="str" operator="eq"/>
+        <k7 resp_pattern_req="pattern 1"/>
+
+        <variable_pattern start_pattern="${" end_pattern="}"/>
+    </testdata>
+</data>

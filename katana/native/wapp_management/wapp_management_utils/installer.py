@@ -9,18 +9,18 @@ class Installer:
 
     def __init__(self, base_directory, path_to_app):
         self.base_directory = base_directory
-        self.app_directory = join_path(self.base_directory, "katana", "apps")
+        self.app_directory = join_path(self.base_directory, "katana", "wapps")
         self.plugin_directory = join_path(self.base_directory, "warrior", "plugins")
         self.settings_file = join_path(self.base_directory, "katana", "wui", "settings.py")
         self.urls_file = join_path(self.base_directory, "katana", "wui", "urls.py")
 
-        self.app_name = get_sub_folders(join_path(path_to_app, "warriorframework", "katana", "apps"))[0]
-        self.path_to_app = join_path(path_to_app, "warriorframework", "katana", "apps", self.app_name)
+        self.app_name = get_sub_folders(join_path(path_to_app, "warriorframework", "katana", "wapps"))[0]
+        self.path_to_app = join_path(path_to_app, "warriorframework", "katana", "wapps", self.app_name)
         self.path_to_plugin_dir = join_path(path_to_app, "warriorframework", "warrior", "plugins")
         self.wf_config_file = join_path(self.path_to_app, "wf_config.json")
 
         self.plugins_paths = get_sub_folders(self.path_to_plugin_dir, abs_path=True)
-        self.pkg_in_settings = "apps.{0}".format(self.app_name)
+        self.pkg_in_settings = "wapps.{0}".format(self.app_name)
         self.urls_inclusions = []
         self.settings_backup = []
         self.urls_backup = []
@@ -78,16 +78,12 @@ class Installer:
     def __edit_urls_py(self):
         checker = "RedirectView.as_view(url='/katana/')"
         data = read_json_data(self.wf_config_file)
-        if "app" in data:
-            if not isinstance(data["app"], list):
-                data["app"] = [data["app"]]
 
-        for app_details in data["app"]:
-            if app_details["url"].startswith("/"):
-                app_url = app_details["url"][1:]
-            else:
-                app_url = app_details["url"]
-            self.urls_inclusions.append("url(r'^" + app_url + "', include('" + app_details["include"] + "')),")
+        if data["app"]["url"].startswith("/"):
+            app_url = data["app"]["url"][1:]
+        else:
+            app_url = data["app"]["url"]
+        self.urls_inclusions.append("url(r'^" + app_url + "', include('" + data["app"]["include"] + "')),")
 
         data = readlines_from_file(self.urls_file)
         self.urls_backup = data

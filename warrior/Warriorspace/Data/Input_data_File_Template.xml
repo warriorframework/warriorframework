@@ -30,7 +30,7 @@ shown below.
 	- The data to a system can be provided as tags and the value for the data as text to the
 		tags as shown in the below example for system name="NE1" 
 	- Data can also be provided as attributes as shown below for system name="NE2" and its subsystems
-	- Warrior Frameowrk ustilities data_Utils.get_system_data() and get_credentials() can handle both tag and attributes
+	- Warrior Frameowrk ustilities data_Utils.getSystemData() and get_credentials() can handle both tag and attributes
 	while reading this datafile.
 	- If both tag and attribute are provided for the same parameter then attribute takes priority.
 	
@@ -43,8 +43,12 @@ shown below.
 	The case of system with subsystem with data for both system and subsystem is NOT supported.
 	In such a case user should create the data for the system as a separate subsystem within the system.
 	 
+5. wtag feature
+    type fields can be associated with each of the fields in the system which can be used from testcase using
+    wtag=field format
+
 -->
-4.a: Template input data file for command line interface module. Please refer to the Netconf Keywords and User guide for more details.
+4.a: Template input data file for command line interface module. Please refer to the CLI Keywords and User guide for more details.
 	<system name="Command Line Interface"> <!--The value here corresponds to the system_name in the Keyword argument. --> 
 		<ip>please provide either an ip address or a domain name</ip>
 		<conn_type>ssh/telnet</conn_type>
@@ -68,6 +72,7 @@ shown below.
 	    	testdata="../Config_files/Cli_testdata.xml" variable_config="../Config_files/Cli_varconfig.xml" 
 	    	default="yes">
 	    </subsystem>
+	</system>
 
 4.b: Template input data file for NetConf module. Please refer to the Netconf Keywords and User guide for more details.
 
@@ -83,7 +88,6 @@ shown below.
         <device_name>default</device_name>
         <netconf_data>../../Config_files/samples/netconf_config_data_sample.xml</netconf_data>
     </system>
-</credentials>
 
 4.c: Template input data file for Cloudshell module. Please refer to the Cloudshell Keywords and User guide for more details.
 
@@ -149,6 +153,20 @@ shown below.
         </browser>
     </system>
 
+4.g: Template input data file with type fields (wtag feature)
+
+        <system name="sys_wtag"> <!--The value here corresponds to the system_name in the Keyword argument. -->
+            <strvar>I am a string variable</strvar> <!-- string is default hence type='str' is not required -->
+            <lang_list type='list'>['English', 'Chinese', 'French']</lang_list>
+            <states type='tuple'>('texas', 'newyork')</states>
+            <currency_map type='dict'>{'USA':'USD', 'India': 'INR'}</currency_map>
+            <ram_space_available type='bool'>False</ram_space_available>
+            <hd_space_available type='bool'>True</hd_space_available>
+            <config type='file'>rest_functional_tests/rest_variable_in_json_test_Data.xml</config>
+            <intvar type='int'>456</intvar>
+            <floatvar type='float'>345.65</floatvar>
+        </system>
+
   
 <!-- 5. Substituting values form environment variables:
 Substituting values from environment variables is supported in input datafile
@@ -159,6 +177,7 @@ Eg ${ENV.IPADDR} will be replaced with the value of IPADDR variable in the envir
 
   -->
 
+    <system name="My_application">
     	<subsystem name="Interface-1">
 	    	<ip>${ENV.IPADDR}</ip> 
 	    	<conn_type>ssh</conn_type>

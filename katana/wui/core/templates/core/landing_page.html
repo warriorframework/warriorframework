@@ -3,7 +3,7 @@
         <div class="tab {{ app.data.color }}" katana-rclick="katana.rcPanel" katana-click="katana.templateAPI.load"
              url="{{ app.data.url }}" jsUrls=" {% for url in app.data.js_urls %} {{ url }},{% endfor %}">
             <i class="fa fa-{{ app.data.icon }}"></i>
-            <span>{{ app.data.name }}</span>
+            <span>{{ app.data.app.name }}</span>
         </div>
     {% endfor %}
     <ul class="rc-menu" style="display:none;">

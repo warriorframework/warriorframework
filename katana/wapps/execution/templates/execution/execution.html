@@ -1,0 +1,283 @@
+<head>
+    {% load staticfiles %}
+    <link rel="stylesheet" href="{% static 'execution/css/execution.css' %}">
+</head>
+<body>
+      <div class="csrf-container">{% csrf_token %} </div>
+      <div id="execution-container" class="execution exec-container" >
+                  <div class="execution layout-panel"  auto-init="execution.layoutViewer.loadWs">
+                          <div class="execution panels-heading">
+                            <label>Layouts</label>
+                            <div class="execution panels-heading-icon">
+                              <i title="Layout Settings" class="fa fa-edit" id="configure_layout_btn" katana-click="execution.layoutViewer.configureLayout"></i>
+                            </div>
+                            <div class="execution panels-heading-icon">
+                              <i title="Refresh" class="fa fa-refresh" id="execution_load_layout_btn" katana-click="execution.layoutViewer.loadWs"></i>
+                            </div>
+                            <div class="execution panels-heading-icon">
+                              <i title="Copy to Selections Area" class="fa fa-arrow-right" id="execution-execute-btn" katana-click="execution.selectionViewer.add_selected"></i>
+                            </div>
+                          </div>
+                          <div class="execution panels-body ">
+                            <div id="execution_layout_container"  data-startdir="{{defaults.start_dir}}" ></div>
+                          </div>
+                  </div>
+
+
+                  <div class="execution selections-panel" id="execution-selections-panel">
+                          <div class="execution panels-heading" id="execution-selections-panel-heading">
+                                <label>Selections</label>
+                                <div class="execution panels-heading-icon ">
+                                  <i title="Erase" class="fa fa-eraser" id="execution-erase-btn" katana-click="execution.selectionViewer.erase"></i>
+                                </div>
+                                <div class="execution panels-heading-icon ">
+                                  <i title="Command Options" class="fa fa-cogs" id="execution-execute-btn"  katana-click="cmdBuilder.cmdOptionsViewer.openCmdOptionsDialog" ></i>
+                                </div>
+                                <div class="execution panels-heading-icon">
+                                  <i title="Execute" class="fa fa-play-circle" id="execution-execute-btn" katana-click="execution.resultsViewer.execute" ></i>
+                                </div>
+                          </div>
+                          <div class="execution selections-panels-body">
+                            <ul id="execution_items" class="execution selection-items" auto-init="execution.selectionViewer.createSelectionsSort"></ul>
+                          </div>
+                  </div>
+
+
+        </div>
+
+<!-- new cmd options dialog -->
+<div  class="execution dialog-container small" id="configure_layout_dialog" >
+      <div class="title"><label>Layout Settings</label> <i class="fa fa-times" katana-click="execution.layoutViewer.close_configuration_dialog" ></i> </div>
+      <form  id="configure_layout_form">
+      <div class="execution dialog-content">
+           <div class="execution configure-layout-data" name="configure-layout-warriorspace-data" id="configure-layout-warriorspace-data">
+             	<div class="feild execution configure-layout-data-ws">
+	             	<label>Warriorspace</label>
+	             	<input name="warriorspace" key="type" type="text" value="" placeholder="Enter the path to your warriorspace directory" required>
+             	</div>
+				<div class="execution  execution-button browse" id="browse-ws"  katana-click="execution.layoutViewer.openExplorer">Browse</div> 
+         	</div>
+             <div class="execution cmd-options-qns-button-bar">
+             	   
+               <div class="execution  execution-button" id="clear" type="reset" katana-click="execution.layoutViewer.clear">Reset</div>
+               <div class="execution  execution-button" name="configure_layout_confirm" type="submit" katana-click="execution.layoutViewer.confirm">Save</div>
+             </div>
+
+      </div>
+  </form>
+</div>
+
+<div class="execution dialog-container" id="cmd-options-dialog"  data-cmdCreatorObject="" auto-init="execution.setCmdCreatorObject">
+      <div class="title"><label>Command Options</label> <i class="fa fa-times" katana-click="cmdBuilder.cmdOptionsViewer.closeCmdOptionsDialog" ></i> </div>
+      <div class="execution dialog-content">
+            <div class="execution cmd-options-menu" id="cmd-options-slider">
+              <!-- <i title="" name="left" class="fa fa-chevron-left" katana-click="cmdBuilder.cmdOptionsViewer.moveIconsLeft"></i> -->
+              <div class='execution cmd-options-icons-bar'>
+                <div class="execution cmd-options-icon" katana-click="cmdBuilder.cmdOptionsViewer.openOptionsForm"  data-showId="jira-options-form">
+                  <i title="jira options" class="jira-32 "></i>
+                  <span>Jira Options</span>
+                </div>
+                <div class="execution cmd-options-icon red" katana-click="cmdBuilder.cmdOptionsViewer.openOptionsForm" data-showId="case-options-form">
+                  <i title="mode options" class="fa fa-square execution cmd-options-icon-wrapper " ></i>
+                  <span>Case Options</span>
+                </div>
+                <div class="execution cmd-options-icon green" katana-click="cmdBuilder.cmdOptionsViewer.openOptionsForm" data-showId="dataBase-options-form">
+                  <i title="database options" class="fa fa-database execution cmd-options-icon-wrapper" ></i>
+                  <span>DataBase Options</span>
+                </div>
+                <div class="execution cmd-options-icon" katana-click="cmdBuilder.cmdOptionsViewer.openOptionsForm" data-showId="schedule-options-form">
+                  <i title="date time options" class="date-time-32"  ></i>
+                  <span>Scheduling Options</span>
+                </div>
+                <div class="execution cmd-options-icon"  katana-click="cmdBuilder.cmdOptionsViewer.openOptionsForm" data-showId="custom-options-form">
+                  <i title="custom options" class="edit-32"  ></i>
+                  <span>Custom</span>
+                </div>
+              </div>
+              <!-- <i title="" name="right" class="fa fa-chevron-right" katana-click="cmdBuilder.cmdOptionsViewer.moveIconsRight" ></i> -->
+            </div>
+
+            <!-- Jira options questionaire form -->
+            <form id="jira-options-form" name='jiraOptions' class="execution cmd-options-qns questionaire" data-questionaireObject="">
+                  <div class="title">Jira Options <i class="fa fa-times" katana-click="questionaire.closeQuestionaire"></i></div>
+                  <div class="execution cmd-options-qn questionaire-qn" name="jira-ad" data-onNext="" data-displayed="" data-nextValidation="cmdBuilder.cmdOptions.vaidateJiraAdNext">
+                        <div class="feild"><label>Do you want to automatically create new issues in Jira for the defects found during execution?</label></div>
+                        <div class="feild">
+                          <input type="radio" name="ad-yes-no" id="jira-ad-yes" value="" katana-click="questionaire.actOnInput" data-show="jira-project-data" data-setOnNext="qnComplete" >
+                          <label for="jira-ad-yes">yes</label>
+                        </div>
+                        <div class="feild">
+                          <input type="radio" name="ad-yes-no" id="jira-ad-no" value="" katana-click="questionaire.actOnInput" data-show="" data-nextValidation="cmdBuilder.cmdOptions.vaidateJiraIdNext">
+                          <label for="jira-ad-no">no</label>
+                        </div>
+                  </div>
+                  <div class="execution cmd-options-qn questionaire-qn" name="jira-id" data-onNext="" data-nextValidation="cmdBuilder.cmdOptions.vaidateJiraIdNext">
+                        <div class="feild"><label>Do you want update existing issues in Jira with results of execution?</label></div>
+                        <div class="feild">
+                          <input type="radio" name="id-yes-no" id="jira-id-yes" value="" katana-click="questionaire.actOnInput" data-show="jira-project-data,jira-id-data">
+                          <label for="jira-id-yes">yes</label>
+                        </div>
+                        <div class="feild">
+                          <input type="radio" name="id-yes-no" id="jira-id-no" value="" katana-click="questionaire.actOnInput" data-show="" >
+                          <label for="jira-id-no">no</label>
+                        </div>
+                  </div>
+                  <div class="execution cmd-options-qn questionaire-qn" name="qnComplete" data-broughtBy='' ><label>Completed!! Hit Save to confirm.</label></div>
+
+                  <div class="execution cmd-options-data questionaire-data" name="jira-project-data" id="jira-project-data">
+                      <div class="feild" >
+                        <label for="jira-project-value">Jira Project Name</label>
+                        <!-- <input list="jira-project-value" id="jira_proj_list" type="text"> -->
+                        <select id="jira-project-value" name="jira-project-value" key="Select a Jira Project" placeholder="Select a Jira Project ">
+                       		{% if not defaults.jira_proj.strip %}
+                       			<option value="" placeholder="Select a Jira Project" selected></option>
+                       		{% endif %}
+                         	{%for proj in jira_proj%}                        		
+                         		{% ifequal proj.name defaults.jira_proj %}
+                         			<option value="{{proj.name}}" selected>{{proj.name}}</option>
+                         		{% else %}
+                         			<option value="{{proj.name}}" >{{proj.name}}</option>
+                         		{% endifequal %}
+                         	{% endfor %} 
+<!--                        
+                         	<option value='proj1' >proj1</option>
+                         	<option value='proj2' >proj2</option>
+-->
+                        </select>
+<!--                         <input id="jira-project-value" name="jira-project-value" key="type" type="text" value="" placeholder="Enter Jira Project Name from settings -> Jira settings" required>
+ -->                      </div>
+                  </div>
+                  <div class="execution cmd-options-data questionaire-data" name="jira-id-data" id="jira-id-data">
+                      <div class="feild">
+                        <label for="jira-id-value" >Jira Issue Id</label>
+                        <input id="jira-id-value" name="Jira Issue Id" key="type" type="text" value="" placeholder="Enter Jira Issue Id" required>
+                      </div>
+                  </div>
+                  <div class="execution cmd-options-qns-button-bar">
+                    <div class="execution  execution-button " name="previous" katana-click="questionaire.onPrevious">Previous</div>
+                    <div class="execution  execution-button " name="next" katana-click="questionaire.onNext">next</div>
+                    <div class="execution  execution-button " name="reset" katana-click='questionaire.startOver' form='jira-options-form' data-callBack='cmdBuilder.cmdOptions.clearOptions'>Reset</div>
+                    <div class="execution  execution-button " name="submit" katana-click='questionaire.submitQuestionaire' data-callBack='cmdBuilder.cmdOptions.submitJiraOptions'>Save</div>
+                  </div>
+            </form>
+
+            <!-- Case options questionaire form -->
+            <form id="case-options-form" name='caseOptions' class="execution cmd-options-qns questionaire" data-questionaireObject="">
+                  <div class="title">Case Options <i class="fa fa-times" katana-click="questionaire.closeQuestionaire" ></i></div>
+                  <div class="execution cmd-options-qn questionaire-qn" name="qn1" data-onNext="" data-nextValidation="cmdBuilder.cmdOptions.validateCaseOnceMulti">
+                        <div class="feild"><label>How many times do you want to execte the list of Cases in your Selections ?</label></div>
+                        <div class="feild">
+                            <input type="radio" name="case-once-multiple" id="case-once" value="" katana-click="questionaire.actOnInput" data-show="" data-setOnNext="case-mode-qn">
+                            <label for="case-once">once</label>
+                        </div>
+                        <div class="feild">
+                            <input type="radio" name="case-once-multiple" id="case-multi" value="" katana-click="questionaire.actOnInput" data-show="next"  data-setOnNext="multi-mode-qn">
+                            <label for="case-multi">multiple</label>
+                        </div>
+                    </div>
+                    <div class="execution cmd-options-qn questionaire-qn" name="multi-mode-qn" data-nextValidation="cmdBuilder.cmdOptions.validateMultiMode" >
+                        <div class="feild"><label>Do you want to execute the list of cases in your selections until they fail?</label></div>
+                        <div class="feild">
+                          <input type="radio" name="case-mode" id="case-ruf" value="" katana-click="questionaire.actOnInput" data-show="case-ruf-value-data,next" data-setOnNext="qnComplete">
+                          <label for="case-ruf">yes</label>
+                        </div>
+                        <div class="feild">
+                          <input type="radio" name="case-mode" id="case-rmt" value="" katana-click="questionaire.actOnInput" data-show="case-rmt-value-data,next" data-setOnNext="qnComplete">
+                          <label for="case-ruf">no</label>
+                        </div>
+                    </div>
+                    <div class="execution cmd-options-qn questionaire-qn" name="case-mode-qn" data-onNext="" data-nextValidation="cmdBuilder.cmdOptions.validateCaseMode">
+                        <div class="feild"><label>How do you want to execute the list of cases in your selections?</label></div>
+                        <div class="feild">
+                            <input type="radio" name="case-mode" id="case-sequence" value="" katana-click="questionaire.actOnInput" data-show="next" data-setOnNext="kw-mode-qn">
+                            <label for="case-sequence">in sequence</label>
+                        </div>
+                        <div class="feild">
+                            <input type="radio" name="case-mode" id="case-parallel" value="" katana-click="questionaire.actOnInput" data-show="next" data-setOnNext="kw-mode-qn">
+                            <label for="case-parallel">in parallel</label>
+                        </div>
+                    </div>
+                    <div class="execution cmd-options-qn questionaire-qn" name="kw-mode-qn " data-onNext="" data-nextValidation="cmdBuilder.cmdOptions.validateKwMode">
+                      <div class="feild"><label>How do you want to execute the keywords in each case?</label>
+                        <div class="feild">
+                            <input type="radio" name="kw-mode" id="kw-sequence" value="" katana-click="questionaire.actOnInput" data-show="next" data-setOnNext="qnComplete">
+                            <label for="kw-sequence">in sequence</label>
+                        </div>
+                        <div class="feild">
+                            <input type="radio" name="kw-mode" id="kw-parallel" value="" katana-click="questionaire.actOnInput" data-show="next" data-setOnNext="qnComplete">
+                            <label for="kw-parallel">in parallel</label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="execution cmd-options-qn questionaire-qn" name="qnComplete" ><label>Completed!! Hit Save to confirm.</label></div>
+
+                    <div class="execution cmd-options-data questionaire-data" name="case-rmt-value-data" id="case-rmt-value-data">
+                      <div class="feild">
+                        <label for='case-rmt-value'>Number of attempts</label>
+                        <input id="case-rmt-value" name="tcoptions-rmt-value" key="type" type="text" value="" placeholder="Enter # of attempts" required>
+                      </div>
+                    </div>
+                    <div class="execution cmd-options-data questionaire-data" name="case-ruf-value-data" id="case-ruf-value-data">
+                      <div class="feild">
+                        <label for='case-ruf-value'>Max number of attempts to try for a failure</label>
+                        <input id="case-ruf-value" name="tcoptions-ruf-value" key="type" type="text" value="" placeholder="Enter # of attempts" required>
+                      </div>
+                    </div>
+                  <div class="execution cmd-options-qns-button-bar">
+                    <div class="execution  execution-button" name="previous" katana-click="questionaire.onPrevious">Previous</div>
+                    <div class="execution  execution-button" name="next" katana-click="questionaire.onNext">next</div>
+                    <div class="execution  execution-button" name="reset" katana-click='questionaire.startOver' form='case-options-form' data-callBack='cmdBuilder.cmdOptions.clearOptions'>Reset</div>
+                    <div class="execution  execution-button" name="submit" katana-click='questionaire.submitQuestionaire' data-callBack='cmdBuilder.cmdOptions.submitCaseOptions'>Save</div>
+                  </div>
+            </form>
+            <form id="dataBase-options-form" name='dataBaseOptions' class="execution cmd-options-qns questionaire" data-questionaireObject="">
+                  <div class="title">DataBase Options <i class="fa fa-times" katana-click="questionaire.closeQuestionaire" ></i></div>
+                  <div class="execution cmd-options-qn questionaire-qn" name="db-value-data" id="db-value-data">
+                        <div class="feild execution cmd-options-data">
+                          <label for="db-value">Database System Name</label>
+                          <input id="db-value" name="db-value" key="type" type="text" value="" placeholder="Enter DB system name from settings -> database settings" required>
+                        </div>
+                  </div>
+                  <div class="execution cmd-options-qns-button-bar">
+                    <div class="execution  execution-button" name="reset" katana-click='questionaire.startOver' form='dataBase-options-form' data-callBack='cmdBuilder.cmdOptions.clearOptions'>Reset</div>
+                    <div class="execution  execution-button" name="submit" katana-click='questionaire.submitQuestionaire' data-callBack='cmdBuilder.cmdOptions.submitDataBaseOptions'>Save</div>
+                  </div>
+            </form>
+            <form id="schedule-options-form" name='schedulingOptions' class="execution cmd-options-qns questionaire" data-questionaireObject="">
+                  <div class="title">Scheduling Options <i class="fa fa-times" katana-click="questionaire.closeQuestionaire" ></i></div>
+                  <div class="execution cmd-options-qn questionaire-qn" name="schedule-data" id="schedule-date-data">
+                        <div class="feild execution cmd-options-data">
+                          <label for="schedule-date-value">Date</label>
+                          <input id="schedule-date-value" name="schedule-date-value" key="type" type="text" value="" placeholder="Enter future date in yyyy-mm-dd format" required>
+                        </div>
+                        <div class="feild execution cmd-options-data">
+                          <label for="schedule-time-value">Time</label>
+                          <input id="schedule-time-value" name="schedule-time-value" key="type" type="text" value="" placeholder="Enter future time in hh-mm-ss format" required>
+                        </div>
+                  </div>
+                  <div class="execution cmd-options-qns-button-bar">
+                    <div class="execution  execution-button" name="reset" katana-click='questionaire.startOver' form='dataBase-options-form' data-callBack='cmdBuilder.cmdOptions.clearOptions'>Reset</div>
+                    <div class="execution  execution-button" name="submit" katana-click='questionaire.submitQuestionaire' data-callBack='cmdBuilder.cmdOptions.submitSchedulingOptions'>Save</div>
+                  </div>
+            </form>
+            <form id="custom-options-form" name='customOptions' class="execution cmd-options-qns questionaire" data-questionaireObject="">
+                  <div class="title">Custom Command Options <i class="fa fa-times" katana-click="questionaire.closeQuestionaire" ></i></div>
+                  <div class="execution cmd-options-qn questionaire-qn " name="custom-data" id="schedule-date-data">
+                        <div class="feild execution cmd-options-data">
+                          <label for="custom-options-value">Options</label>
+                          <input id="custom-options-value" name="custom-options-value" key="type" type="text" value="" placeholder="Enter your custom warrior command options" required>
+                        </div>
+                  </div>
+                  <div class="execution cmd-options-qns-button-bar">
+                    <div class="execution  execution-button" name="reset" katana-click='questionaire.startOver' form='dataBase-options-form' data-callBack='cmdBuilder.cmdOptions.clearOptions'>Reset</div>
+                    <div class="execution  execution-button" name="submit" katana-click='questionaire.submitQuestionaire' data-callBack='cmdBuilder.cmdOptions.submitCustomOptions'>Save</div>
+                  </div>
+            </form>
+
+      </div>
+
+</div>
+
+
+
+</body>

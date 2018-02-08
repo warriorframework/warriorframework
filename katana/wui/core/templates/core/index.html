@@ -9,7 +9,7 @@
 				<script src="{% static 'oss/js/jstree.min.js' %}" async></script>
 				<script src="{% static 'oss/js/d3v4/d3.min.js' %}" async></script>
 				<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
-				<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+				<link rel="stylesheet" href="{% static 'oss/fonts/font-awesome-4.7.0/css/font-awesome.css' %}">
 				<link rel="stylesheet" href="{% static 'oss/css/jstree/jstree.min.css' %}">
 				<link rel="stylesheet" href="{% static 'oss/css/bootstrap.min.css' %}">
 				<link rel="icon" href="{% static 'core/images/logo.png' %}" type="image/png">
@@ -49,6 +49,8 @@
 						{% include 'core/landing_page.html' %}
 					</div>
 				</div>
+				<div id="wui-popups"></div>
+				<div id="wui-popup-nav"></div>
 			</div>
 
 

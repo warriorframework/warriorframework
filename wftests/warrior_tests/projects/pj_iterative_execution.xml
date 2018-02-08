@@ -1,0 +1,46 @@
+<?xml version="1.0" ?>
+<Project>
+        <Details>
+                <Name>pj_iterative_execution</Name>
+                <Title>Test the iterative sequential TS and iterative parallel TS</Title>
+                <Engineer>ka</Engineer>
+                <State/>
+                <Date>06/02/2017</Date>
+                <Time>11:22:10</Time>
+                <default_onError action="next"/>
+        </Details>
+        <Testsuites>
+                <Testsuite>
+                        <path>../suites/framework_tests/iter_execution/ts_iter_seq.xml</path>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                        <onError action="next" value=""/>
+                        <impact>impact</impact>
+                </Testsuite>
+                <Testsuite>
+                        <path>../suites/framework_tests/iter_execution/ts_iter_par_1.xml</path>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                        <onError action="next" value=""/>
+                        <impact>impact</impact>
+                </Testsuite>
+                <Testsuite>
+                        <path>../suites/framework_tests/iter_execution/ts_iter_par_2.xml</path>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                        <onError action="next" value=""/>
+                        <impact>impact</impact>
+                </Testsuite>
+                <Testsuite>
+                        <path>../suites/framework_tests/iter_execution/ts_iter_par_3.xml</path>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                        <onError action="next" value=""/>
+                        <impact>impact</impact>
+                </Testsuite>
+        </Testsuites>
+</Project>

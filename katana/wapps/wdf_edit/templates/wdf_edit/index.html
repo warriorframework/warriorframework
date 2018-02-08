@@ -1,0 +1,31 @@
+<div id="main_info" class="wdf-container">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'wdf_edit/css/wdf_editor.css' %}" />
+    <div class="csrf-container">{% csrf_token %}</div>
+
+    <div class="row sub-tool-bar">
+        <div class="expandable-container col-sm-9">
+            <div class="to-expand">
+                <div class="field"><input class="wdf-input" id="xml_filepath" placeholder="Filepath:" name="filepath" value="{{ filepath }}"/></div>
+            </div>
+            <div class="to-expand">
+                <div class="field"><input class="wdf-input" id="xml_description" placeholder="Description" name="description" value="{{ desc }}"/></div>
+            </div>
+        </div>
+        <div class="buttons col-md-3">
+            <div class="button i-info close" katana-click="wdf.cancel">Cancel</div>
+            <div class="button i-info save" katana-click="wdf.submit">Save</div>
+            <div class="button i-info" katana-click="wdf.addSystem"><i class="fa fa-plus"/> System</div>
+        </div>
+    </div>
+
+    <div class="row to-scroll">
+        <div class="col-md-9" id="wdf-editor-col">
+        {% for system in data.system %}
+            {% include "wdf_edit/editor/sys_editor.html" %}
+        {% endfor %}
+        </div>
+        {% include "wdf_edit/editor/navigator.html" %}
+    </div>
+    {% include "wdf_edit/editor/templates.html" %}
+</div>

@@ -19,9 +19,11 @@ from django.shortcuts import render
 from django.views import View
 import json
 
-from utils.directory_traversal_utils import get_parent_directory, join_path
+from utils.directory_traversal_utils import get_parent_directory, join_path, file_or_dir_exists
+from utils.json_utils import read_json_data
 from utils.navigator_util import Navigator
 from wui.core.apps import AppInformation
+
 
 
 class CoreView(View):
@@ -61,9 +63,30 @@ def refresh_landing_page(request):
 
 def get_file_explorer_data(request):
     nav_obj = Navigator()
-    if "data[path]" in request.POST and request.POST["data[path]"] != "false":
+    if "data[start_dir]" in request.POST and request.POST["data[start_dir]"] != "false":
+        start_dir = request.POST["data[start_dir]"]
+    elif "data[path]" in request.POST and request.POST["data[path]"] != "false":
         start_dir = get_parent_directory(request.POST["data[path]"])
     else:
         start_dir = join_path(nav_obj.get_warrior_dir(), "Warriorspace")
     output = nav_obj.get_dir_tree_json(start_dir_path=start_dir)
+    return JsonResponse(output)
+
+
+def read_config_file(request):
+    nav_obj = Navigator()
+    config_file_path = join_path(nav_obj.get_katana_dir(), "config.json")
+    data = read_json_data(config_file_path)
+    if data is None:
+        data = False
+    return JsonResponse(data)
+
+
+def check_if_file_exists(request):
+    filename = request.POST.get("filename")
+    directory = request.POST.get("directory")
+    extension = request.POST.get("extension")
+
+    output = {"exists": file_or_dir_exists(join_path(directory, filename + extension))}
+
     return JsonResponse(output)
