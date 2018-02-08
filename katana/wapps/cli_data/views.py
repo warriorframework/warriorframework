@@ -9,7 +9,7 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
 from wapps.cli_data.cli_data_utils.verify_cli_data_class import VerifyCliDataClass
-from utils.directory_traversal_utils import join_path, get_dir_from_path
+from utils.directory_traversal_utils import join_path, get_dir_from_path, get_parent_dir_path
 from utils.navigator_util import Navigator
 
 
@@ -41,7 +41,7 @@ class CliDataFileClass(View):
             name, _ = os.path.splitext(get_dir_from_path(filepath))
         vcdc_obj = VerifyCliDataClass(filepath, base_filepath)
         json_data = vcdc_obj.verify_contents()
-        return JsonResponse({"contents": json_data, "name": name})
+        return JsonResponse({"contents": json_data, "name": name, "filepath": get_parent_dir_path(filepath)})
 
     def post(self, request):
         json_data = json.loads(request.POST.get('json_data'))
