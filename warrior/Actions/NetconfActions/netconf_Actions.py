@@ -197,7 +197,10 @@ class NetconfActions(object):
                 pNote("netconf session-id = %s" % self.netconf_object.session_id)
                 output_dict[session_id] = self.netconf_object
         report_substep_status(status)
-        return status, output_dict
+        if output_dict:
+            return status, output_dict
+        else:
+            return status
 
     def close_netconf(self, system_name, session_name=None):
         """
