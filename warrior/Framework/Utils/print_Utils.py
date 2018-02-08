@@ -59,6 +59,10 @@ def print_info(message, *args):
             color_message = message[:msg_upper.index(":PASS") + 1] + "\033[1;32m" + "PASS" +\
             "\033[0m" + message[msg_upper.index(":PASS") + 5:]
 
+        elif ":RAN" in msg_upper:
+            color_message = message[:msg_upper.index(":RAN") + 1] + "\033[1;32m" + "RAN" +\
+            "\033[0m" + message[msg_upper.index(":RAN") + 5:]
+
         elif ":FAIL" in msg_upper:
             color_message = message[:msg_upper.index(":FAIL") + 1] + "\033[1;31m" + "FAIL" +\
             "\033[0m" + message[msg_upper.index(":FAIL") + 5:]
@@ -93,7 +97,7 @@ def print_error(message, *args):
 
 def print_exception(exception):
     """Print details of an exception to the console """
-    print '\n'
+    print_info('\n')
     print_error("!!! *** Exception occurred during execution *** !!!")
     print_error("Exception Name: {0}".format(exception.__class__.__name__))
     print_error("Exception trace back: \n \t{0}".format(traceback.format_exc()))

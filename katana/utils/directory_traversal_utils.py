@@ -237,4 +237,3 @@ def get_direct_sub_files(path, abs_path=False, extension=re.compile("\..*")):
         if extension.match(os.path.splitext(sub_file)[1]):
             final_files.append(sub_file)
     return only_files
-

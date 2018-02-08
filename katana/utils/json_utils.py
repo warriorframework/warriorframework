@@ -53,7 +53,11 @@ def get_item(data, key):
 
 @register.filter
 def is_dict(data):
-    return "true" if type(data) == OrderedDict or type(data) == dict else "false"
+    return "true" if isinstance(data, OrderedDict) or isinstance(data, dict) else "false"
+
+@register.filter
+def is_list(data):
+    return "true" if isinstance(data, list) else "false"
 
 @register.filter
 def get_length(data):

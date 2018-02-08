@@ -10,15 +10,272 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import os
+
+try:
+    # Framework related import
+    import os
+    print "import os was successful"
+    import shutil
+    print "import shutil was successful"
+    import Framework.Utils.email_utils as email
+    print "import email was successful"
+    import Framework.Utils as Utils
+    print "import Utils was successful"
+    from Framework.Utils.print_Utils import print_error, print_info
+    print "import print_Utils was successful"
+    from WarriorCore import testcase_driver, testsuite_driver, project_driver
+    print "import testcase_driver, testsuite_driver, project_driver were successful"
+    from WarriorCore import ironclaw_driver, framework_detail
+    print "import ironclaw_driver, framework_detail were successful"
+    from WarriorCore.Classes.jira_rest_class import Jira
+    print "import jira_rest_class was successful"
+    from Framework.ClassUtils import database_utils_class
+    print "import database_utils_class was successful"
+except:
+    print "\033[1;31m*********************************************"
+    print " !-Unable to import library in for Warrior Framework in warrior_cli_driver"
+    print " !-Successful imported libraries are printed above"
+    print " !-Please check your import statements for any code added to the framework"
+    print " !-Possible cause could be circular import"
+    print "*********************************************\033[0m"
+    raise
+
 import re
 import sys
-from Framework.Utils import file_Utils
-from WarriorCore.Classes import war_cli_class
-from Framework.Utils.print_Utils import print_error, print_info
+import multiprocessing
+import Tools
+from Framework.Utils import config_Utils, file_Utils, xml_Utils
+from Framework.Utils.data_Utils import get_credentials
 import Framework.Utils.encryption_utils as Encrypt
+from WarriorCore.Classes import war_cli_class
+
 """Handle all the cli command, new functions may be added later"""
 
+def update_jira_by_id(jiraproj, jiraid, exec_dir, status):
+    """ If jiraid is provided, upload the log and result file to jira """
+    if jiraid is not False:
+        jira_obj = Jira(jiraproj)
+        if jira_obj.status is True:
+            # Get the current jira issue status
+            issue_status = jira_obj.get_jira_issue_status(jiraid)
+            isReopend = False
+            # Reopen the jira issue if it is closed, to upload the execution logs
+            if issue_status and issue_status.lower() == "closed":
+                print_info("Reopening Jira issue '{0}' to upload warrior "
+                           "execution logs".format(jiraid))
+                jira_obj.set_jira_issue_status(jiraid, "Reopened")
+                isReopend = True
+            # Upload execution logs
+            zip_file = shutil.make_archive(exec_dir, 'zip', exec_dir)
+            jira_obj.upload_logfile_to_jira_issue(jiraid, zip_file)
+            # Close the jira issue if it is reopened in the above if block
+            if isReopend is True:
+                print_info("Closing Jira issue '{0}' which was reopened "
+                           "earlier".format(jiraid))
+                jira_obj.set_jira_issue_status(jiraid, "Closed")
+            # Update Jira issue based on warrior execution status
+            jira_obj.update_jira_issue(jiraid, status)
+    else:
+        print_info("jiraid not provided, will not update jira issue")
+
+def add_live_table_divs(livehtmllocn, file_list):
+    """
+    add the divs for the live html table
+    """
+    root_attribs = {'id': 'liveTables'}
+    root = Utils.xml_Utils.create_element("div", "", **root_attribs)
+
+    # for each iteration create a div with id = the iteration number
+    # the table for tis iteration will be added under this div
+
+    for i in range(0, len(file_list)):
+        marker_start = 'table-{0}starts'.format(str(i))
+        marker_end = 'table-{0}ends'.format(str(i))
+        div_attribs = {'id': str(i)}
+        elem = Utils.xml_Utils.create_subelement(root, 'div', div_attribs)
+        start_comment = Utils.xml_Utils.create_comment_element(marker_start)
+        end_comment = Utils.xml_Utils.create_comment_element(marker_end)
+        elem.append(start_comment)
+        elem.append(end_comment)
+        # write the tree to the file
+        if isinstance(livehtmllocn, str):
+            xml_Utils.write_tree_to_file(root, livehtmllocn)
+        elif isinstance(livehtmllocn, multiprocessing.managers.DictProxy):
+            livehtmllocn["html_result"] = xml_Utils.convert_element_to_string(root)
+
+def file_execution(cli_args, abs_filepath, default_repo):
+    """
+        Call the corresponded driver of each file type
+    """
+    result = False
+    a_defects = cli_args.ad
+    jiraproj = cli_args.jiraproj
+    jiraid = cli_args.jiraid
+
+    if Utils.xml_Utils.getRoot(abs_filepath).tag == 'Testcase':
+        default_repo['war_file_type'] = "Case"
+        result, _, data_repository = testcase_driver.main(
+            abs_filepath, data_repository=default_repo,
+            runtype='SEQUENTIAL_KEYWORDS',
+            auto_defects=a_defects, jiraproj=jiraproj)
+        update_jira_by_id(jiraproj, jiraid, os.path.dirname(
+            data_repository['wt_resultsdir']), result)
+        email.compose_send_email("Test Case: ", abs_filepath,
+                                 data_repository['wt_logsdir'],
+                                 data_repository['wt_resultsdir'], result)
+    elif Utils.xml_Utils.getRoot(abs_filepath).tag == 'TestSuite':
+        default_repo['war_file_type'] = "Suite"
+        result, suite_repository = testsuite_driver.main(
+            abs_filepath, auto_defects=a_defects,
+            jiraproj=jiraproj, data_repository=default_repo)
+        update_jira_by_id(jiraproj, jiraid,
+                          suite_repository['suite_execution_dir'], result)
+        email.compose_send_email("Test Suite: ", abs_filepath,
+                                 suite_repository['ws_logs_execdir'],
+                                 suite_repository['ws_results_execdir'], result)
+    elif Utils.xml_Utils.getRoot(abs_filepath).tag == 'Project':
+        default_repo['war_file_type'] = "Project"
+        result, project_repository = project_driver.main(
+            abs_filepath, auto_defects=a_defects,
+            jiraproj=jiraproj, data_repository=default_repo)
+        update_jira_by_id(jiraproj, jiraid,
+                          project_repository['project_execution_dir'], result)
+        email.compose_send_email("Project: ", abs_filepath,
+                                 project_repository['wp_logs_execdir'],
+                                 project_repository['wp_results_execdir'], result)
+    else:
+        print_error("Unrecognized root tag in the input xml file ! exiting!!!")
+
+    return result
+
+def group_execution(parameter_list, cli_args, db_obj, overwrite, livehtmlobj):
+    """
+        Process the parameter list and prepare environment for file_execution
+    """
+    livehtmllocn = cli_args.livehtmllocn
+    abs_cur_dir = os.path.abspath(os.curdir)
+
+    status = True
+
+    iter_count = 0 ## this iter is used for live html results
+    for parameter in parameter_list:
+        result = False
+        # check if the input parameter is an xml file
+        if Utils.file_Utils.get_extension_from_path(parameter) == '.xml':
+            filepath = parameter
+            framework_detail.warrior_banner()
+            abs_filepath = Utils.file_Utils.getAbsPath(filepath, abs_cur_dir)
+            print_info('Absolute path: {0}'.format(abs_filepath))
+            if Utils.file_Utils.fileExists(abs_filepath):
+                if overwrite.items():
+                    default_repo = overwrite
+                else:
+                    default_repo = {}
+
+                if db_obj is not False and db_obj.status is True:
+                    default_repo.update({'db_obj': db_obj})
+                else:
+                    default_repo.update({'db_obj': False})
+
+                #pdate livehtmllocn to default repo
+                if livehtmllocn or livehtmlobj is not None:
+                    live_html_dict = {}
+                    live_html_dict['livehtmllocn'] =\
+                        livehtmllocn if livehtmlobj is None else livehtmlobj
+                    live_html_dict['iter'] = iter_count
+
+                    default_repo.update({'live_html_dict': live_html_dict})
+                    if iter_count == 0 and livehtmlobj is None:
+                        add_live_table_divs(livehtmllocn, parameter_list)
+                    elif iter_count == 0 and livehtmlobj is not None:
+                        add_live_table_divs(livehtmlobj, parameter_list)
+
+                result = file_execution(cli_args, abs_filepath, default_repo)
+            else:
+                print_error("file does not exist !! exiting!!")
+        else:
+            print_error("unrecognized file format !!!")
+        status = status and result
+        iter_count += 1
+    return status
+
+# def execution(parameter_list, a_defects, cse_execution, iron_claw,
+#          jiraproj, overwrite, jiraid, dbsystem, livehtmllocn):
+def execution(parameter_list, cli_args, overwrite, livehtmlobj):
+    """Parses the input parameters (i.e. sys.argv)
+        If the input parameter is an xml file:
+            - check if file exists, if exists
+                - if the input is a testcase xml file, execute the testcase
+                - if the input is a testsuite xml file, excute the testsuite
+                - if the input is a project xml file, excute the project
+
+        If the input is not an xml file:
+            - check if it is a json object/array respresenting a valid Warrior
+            suite structure, if yes to execute a build
+    Arguments:
+        1. parameter_list = list of command line parameters supplied by
+        the user to execute Warrior
+    """
+    if livehtmlobj:
+        config_Utils.redirect_print.katana_console_log(livehtmlobj)
+
+    if cli_args.version:
+        framework_detail.warrior_framework_details()
+        sys.exit(0)
+    if not parameter_list:
+        print_error("Provide at least one xml file to execute")
+        sys.exit(1)
+
+    iron_claw = cli_args.ironclaw
+    dbsystem = cli_args.dbsystem
+
+    status = False
+
+    if iron_claw:
+        status = ironclaw_driver.main(parameter_list)
+    else:
+        db_obj = database_utils_class.create_database_connection(dbsystem=dbsystem)
+        status = group_execution(parameter_list, cli_args, db_obj, overwrite, livehtmlobj)
+
+        if db_obj is not False and db_obj.status is True:
+            db_obj.close_connection()
+
+    return status
+
+def warrior_execute_entry(*args, **kwargs):
+    """
+        main method
+        filepath: required at least one
+        auto_defects:
+        version:
+        iron_claw:
+        jiraproj:
+        overwrite:
+        jiraid:
+        dbsystem:
+        livehtmllocn:
+    """
+    if not kwargs:
+        # Launch from terminal/cli exeuction
+        filepath, cli_args, overwrite = main(sys.argv[1:])
+    else:
+        args = [] if not args else args
+        # Launch from python function call
+        filepath, cli_args, overwrite = main(*args)
+    livehtmlobj = kwargs.get("livehtmlobj", None)
+
+    status = execution(filepath, cli_args, overwrite, livehtmlobj)
+    status = {"true": True, "pass": True, "ran": True}.get(str(status).lower())
+    # add code to send div finished using katana interface class
+
+    if status is True:
+        print_info("DONE 0")
+        sys.exit(0)
+    else:
+        print_info("DONE 1")
+        sys.exit(1)
+
+"""Handle all the cli command, new functions may be added later"""
 
 def decide_runcat_actions(w_cli_obj, namespace):
     """Decide the actions to be taken for runcat tag """
@@ -94,20 +351,20 @@ def decide_overwrite_var(namespace):
     """
     overwrite = {}
     if namespace.datafile:
-        if namespace.datafile[0] != os.sep: 
+        if namespace.datafile[0] != os.sep:
             namespace.datafile = os.getcwd() + os.sep + namespace.datafile
         overwrite['ow_datafile'] = namespace.datafile
 
     if namespace.resultdir:
-        if namespace.resultdir[0] != os.sep: 
+        if namespace.resultdir[0] != os.sep:
             namespace.resultdir = os.getcwd() + os.sep + namespace.resultdir
         overwrite['ow_resultdir'] = namespace.resultdir
     if namespace.logdir:
-        if namespace.logdir[0] != os.sep: 
+        if namespace.logdir[0] != os.sep:
             namespace.logdir = os.getcwd() + os.sep + namespace.logdir
         overwrite['ow_logdir'] = namespace.logdir
     if namespace.outputdir:
-        if namespace.outputdir[0] != os.sep: 
+        if namespace.outputdir[0] != os.sep:
             namespace.outputdir = os.getcwd() + os.sep + namespace.outputdir
         overwrite['ow_resultdir'] = namespace.outputdir
         overwrite['ow_logdir'] = namespace.outputdir
@@ -115,8 +372,28 @@ def decide_overwrite_var(namespace):
         print_error("outputdir shouldn't be used with resultdir or logdir")
         exit(1)
     if namespace.jobid:
-        overwrite['jobid'] = "http://pharlap.tx.fnc.fujitsu.com/share/logs/"+str(namespace.jobid)
+        settings_xml = Tools.__path__[0] + os.sep + 'w_settings.xml'
+        job_url = get_credentials(settings_xml, 'job_url', ['url'], 'Setting')
+        if job_url['url'] is not None:
+            url = job_url['url']
+        else:
+            print_info("jobid is specified but no job url found in w_settings")
+            print_info("Using jobid only in JUnit file")
+            url = ""
+        overwrite['jobid'] = url + str(namespace.jobid)
     return overwrite
+
+
+def append_path(filepath, path_list, path):
+    """Append appropriate paths for testcase/suite/project in test folder
+    """
+    temp_list = []
+    for file_name in path_list:
+        file_name = path + file_name
+        temp_list.append(file_name)
+    if temp_list:
+        filepath.extend(temp_list)
+    return filepath
 
 
 def decide_action(w_cli_obj, namespace):
@@ -174,23 +451,13 @@ def decide_action(w_cli_obj, namespace):
     elif namespace.ujd:
         decide_ujd_actions(w_cli_obj, namespace)
 
-    def append_path(path_list, path):
-        """Append appropriate paths for testcase/suite/project in test folder
-        """
-        temp_list = []
-        for file_name in path_list:
-            file_name = path + file_name
-            temp_list.append(file_name)
-        filepath.extend(temp_list)
-
+    # append additional path
     if namespace.tc_name is not None:
-        append_path(namespace.tc_name, "Warriorspace/Testcases/")
-
+        filepath = append_path(filepath, namespace.tc_name, "Warriorspace/Testcases/")
     if namespace.ts_name is not None:
-        append_path(namespace.ts_name, "Warriorspace/Suites/")
-
+        filepath = append_path(filepath, namespace.ts_name, "Warriorspace/Suites/")
     if namespace.proj_name is not None:
-        append_path(namespace.proj_name, "Warriorspace/Projects/")
+        filepath = append_path(filepath, namespace.proj_name, "Warriorspace/Projects/")
 
     # overwrite layer
     overwrite = decide_overwrite_var(namespace)
@@ -203,11 +470,7 @@ def decide_action(w_cli_obj, namespace):
             if len(file_name.split('.')) == 1:
                 filepath[index] = file_name + '.xml'
 
-    # print filepath
-    return (filepath, namespace.mockrun, namespace.ad, namespace.version,
-            namespace.cse, namespace.ironclaw, namespace.jiraproj, overwrite,
-            namespace.jiraid, namespace.dbsystem, namespace.livehtmllocn)
-
+    return (filepath, namespace, overwrite)
 
 def main(args):
     """init a Warrior Cli Class object, parse its arguments and run it"""
