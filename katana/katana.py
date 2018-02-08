@@ -20,30 +20,28 @@ class Katana:
         pass
 
     def runProcess(self, osString):
-        subprocess.Popen([osString], shell=True,
+        print osString
+        proc = subprocess.Popen([osString], shell=False,
              stdin=None, stdout=None, stderr=None, close_fds=True)
+        return proc
 
     def to_string(self, args):
         args[0] = 'manage.py'
-        if args[1] == 'database':
+        if len(args) > 1 and args[1] == 'database':
             args.remove('database')
         return 'python ' + ' '.join(args)
 
-    def to_katana_dir(self):
-        dir_path = os.path.dirname(os.path.realpath(__file__))
-        os.chdir(dir_path)
-
     def katana_init(self, args):
         args[0] = 'manage.py'
-        self.to_katana_dir()
-        has_db = True if args[1] == 'database' else False
         self.runProcess( self.to_string(args) )
-        if has_db:
+        if len(args) > 1 and args[1] == 'database':
             args = self.database_init(args)
 
     def database_init(self, args):
-        self.runProcess('python manage.py makemigrations')
-        self.runProcess('python manage.py migrate --run-syncdb')
+        proc = self.runProcess('python manage.py makemigrations')
+        proc.wait()
+        proc = self.runProcess('python manage.py migrate --run-syncdb')
+        proc.wait()
 
 if __name__ == "__main__":
     katana = Katana()
