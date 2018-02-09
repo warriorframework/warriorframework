@@ -26,6 +26,7 @@ class NetconfActions(object):
     related to actions performed on basic netconf interface """
 
     def __init__(self):
+        """ Constructor for NetconfActions class """
         self.resultfile = Utils.config_Utils.resultfile
         self.datafile = Utils.config_Utils.datafile
         self.logsdir = Utils.config_Utils.logsdir
