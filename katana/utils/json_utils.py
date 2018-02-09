@@ -25,7 +25,7 @@ def read_json_data(file_path):
     return data
 
 
-  def read_xml_get_json(filepath, ordered_dict=False):
+def read_xml_get_json(file_path, ordered_dict=False):
     json_data = {}
     try:
         xml_contents = open(file_path, 'r')

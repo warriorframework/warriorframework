@@ -38,7 +38,19 @@
             </div>
             <div class="col-sm-9">
                 <input list="keywords" katana-change="cases.drawer.stepsChange" key="@Keyword" value="{{value}}">
-                <datalist id="keywords"></datalist>
+                <datalist id="keywords">
+                    {% for k_new, v_new in data.step.items %}
+                    {% if k_new == "@Driver" %}
+                    {% for k, v in data.drivers.items %}
+                    {% if k == v_new %}
+                    {% for action_name, details in v.actions.items %}
+                    <option>{{ action_name }}</option>
+                    {% endfor %}
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                    {% endfor %}
+                </datalist>
             </div>
         </div>
         {% endif %}

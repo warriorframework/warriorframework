@@ -96,7 +96,7 @@ class GetDriversActions:
                 "wdesc": self.__get_wdesc(block),
                 "comments": self.__get_comments(block),
                 "arguments": self.__get_arguments(block),
-                "signaure": self.__get_signature(block)
+                "signature": self.__get_signature(block)
                 }
             })
         return actions
