@@ -29,6 +29,13 @@ var katana = {
       var toCall = $elem.attr('katana-click').replace(/\(.*?\)/, '');
       katana.methodCaller(toCall, $elem);
     });
+    katana.$view.on('contextmenu', '[katana-rclick]', function(e) {
+      $elem = $(this);
+      e.stopPropagation();
+      e.preventDefault();
+      var toCall = $elem.attr('katana-rclick').replace(/\(.*?\)/, '');
+      katana.methodCaller(toCall, $elem, e);
+    });
     katana.$view.on('change', '[katana-change]', function(e) {
       $elem = $(this);
       e.stopPropagation();
@@ -326,47 +333,44 @@ var katana = {
     });
   },
 
+
+  rcPanel: function(event) {
+    katana.$view.find('.rc-menu.active').remove();
+    var rcMenu = this.closest('.rc-container').find('.rc-menu');
+    rcMenu = rcMenu.clone().appendTo(this);
+    rcMenu.css({
+      'left': event.clientX,
+      'top': event.clientY
+    }).addClass('active');
+    $(window).one('click contextmenu scroll resize', function() {
+      katana.$view.find('.rc-menu.active').remove();
+    });
+  },
+
+  editOrder: function() {
+    var tabContainer = this.closest('.tabs');
+    katana.$view.addClass('edit-mode');
+    tabContainer.sortable({
+      items: "div:not(.complete)"
+    });
+    tabContainer.sortable("option", "disabled", false);
+    tabContainer.append('<div class="complete fa fa-check" katana-click="katana.finishOrder"></div>');
+    katana.$view.find('.rc-menu.active').remove();
+  },
+
+
+  finishOrder: function() {
+    var tabContainer = this.closest('.tabs');
+    katana.$view.removeClass('edit-mode');
+    tabContainer.sortable("disable");
+    this.remove();
+  },
+
+  removeApp: function() {
+    this.closest('.tab').remove();
+  },
+
   openAlert: function(data, callBack_on_accept, callBack_on_dismiss) {
-    /*
-	    data = {
-	        "alert_type": "primary/secondary/success/danger/warning/info(default)/light/dark",
-	        "heading": "This is the heading of the alert.",
-	        "sub_heading": "false (by default), This is alert sub-heading",
-	        "text": "This is text of the alert.",
-	        "timer": "false (by default), 500, 1000, etc",
-	        "show_accept_btn": "true (by default), false",
-	        "accept_btn_text": "Ok (by default), Save, etc",
-	        "show_cancel_btn": "true (by default), false",
-	        "cancel_btn_text": "Cancel (by default), No, etc",
-	        "prompt": "false (by default), true",
-	        "prompt_default": "'' by default"
-	    }
-
-	    <div class="overlay">
-            <div class="col-sm-5 centered">
-                <div class="alert alert-data.alert_type" role="alert">
-                    <div class="col" style="float: right;">
-                        <i class="fa fa-times" style="float: right;"></i>
-                    </div>
-                    <h4 class="alert-heading">Heading</h4>
-                    <p>Sub-Heading</p>
-                    <hr>
-                    <p class="mb-0">Text</p>
-                    <hr>
-                    <div class="col" style="text-align: right;">
-                    {% if show_accept_btn %}
-                        <button class="btn btn-success">accept_btn_text</button>
-                    {% endif %}
-                    {% if show_cancel_btn %}
-                        <button class="btn btn-danger">cancel_btn_text</button>
-                    {% endif %}
-                    </div>
-                </div>
-            </div>
-        </div>
-
-	    */
-
     if (callBack_on_accept == undefined) {
       callBack_on_accept = false;
     }
@@ -394,7 +398,7 @@ var katana = {
     var $body = $('body');
     var $alertElement = $body.find('div .alert-overlay');
     $allAlerts = $alertElement.children();
-    $alertToBeDismissed = $alertElement.children('[alert-number="'+ index + '"]');
+    $alertToBeDismissed = $alertElement.children('[alert-number="' + index + '"]');
     var $prompt = $body.find('#alert-box-prompt');
 
     var inputValue = false;
@@ -407,11 +411,11 @@ var katana = {
       katana.changeBorderColor("red");
     } else {
 
-        if($allAlerts.length > 1){
-            $alertToBeDismissed.remove();
-        } else {
-            $alertElement.remove();
-        }
+      if ($allAlerts.length > 1) {
+        $alertToBeDismissed.remove();
+      } else {
+        $alertElement.remove();
+      }
 
       if (callBack_on_accept) {
         if (!inputValue) {
@@ -428,11 +432,11 @@ var katana = {
     var $body = $('body');
     $alertElement = $body.find('div .alert-overlay');
     $allAlerts = $alertElement.children();
-    $alertToBeDismissed = $alertElement.children('[alert-number="'+ index + '"]');
-    if($allAlerts.length > 1){
-        $alertToBeDismissed.remove();
+    $alertToBeDismissed = $alertElement.children('[alert-number="' + index + '"]');
+    if ($allAlerts.length > 1) {
+      $alertToBeDismissed.remove();
     } else {
-        $alertElement.remove();
+      $alertElement.remove();
     }
     
     if (callBack_on_dismiss) {
@@ -445,34 +449,34 @@ var katana = {
     var $view = katana.$view;
     var $existingOverlay = $view.find('.alert-overlay');
     var index = 0;
-    if($existingOverlay.length > 0){
-        var $overlayChildren = $existingOverlay.children();
-        var lastIndex = parseInt($($overlayChildren[0]).attr('alert-number'));
-        if (lastIndex >= $overlayChildren.length){
-            index = lastIndex + 1;
-        } else {
-            index = $overlayChildren.length;
-        }
+    if ($existingOverlay.length > 0) {
+      var $overlayChildren = $existingOverlay.children();
+      var lastIndex = parseInt($($overlayChildren[0]).attr('alert-number'));
+      if (lastIndex >= $overlayChildren.length) {
+        index = lastIndex + 1;
+      } else {
+        index = $overlayChildren.length;
+      }
     }
     var $alertBox = $(alert_box);
     $alertBox.attr('alert-number', index)
 
     $alertBox.find('#cancel-alert').one('click', function() {
-        katana.dismissAlert(index, callBack_on_dismiss);
+      katana.dismissAlert(index, callBack_on_dismiss);
     });
     $alertBox.find('#cancel-alert-icon').one('click', function() {
-        katana.dismissAlert(index, callBack_on_dismiss);
+      katana.dismissAlert(index, callBack_on_dismiss);
     });
     $alertBox.find('#accept-alert').on('click', function() {
-        katana.acceptAlert(index, callBack_on_accept);
+      katana.acceptAlert(index, callBack_on_accept);
     });
 
-    if($existingOverlay.length > 0){
-        $alertBox.prependTo($existingOverlay);
+    if ($existingOverlay.length > 0) {
+      $alertBox.prependTo($existingOverlay);
     } else {
-        $totalAlertBox = $('<div class="alert-overlay"></div>');
-        $totalAlertBox.html($alertBox);
-        $totalAlertBox.prependTo($view);
+      $totalAlertBox = $('<div class="alert-overlay"></div>');
+      $totalAlertBox.html($alertBox);
+      $totalAlertBox.prependTo($view);
     }
 
     if (data.timer) {
@@ -692,7 +696,6 @@ var katana = {
       var checkStatus = $elem.get(0).checked;
       var input = $elem.parent().parent().closest('.field').find('> input');
       value = checkStatus ? (input.val() + $elem.val() + ', ') : (input.val().replace($elem.val() + ', ', ''));
-      console.log('test', checkStatus, value, $elem, input, $elem.val());
       input.val(value);
       $elem.parent().parent().siblings('.dropdown-placeholder').text(value);
     } else {
@@ -827,21 +830,23 @@ var katana = {
 
   templateAPI: {
     load: function(url, jsURL, limitedStyles, tabTitle, callBack, options) {
-      var $elem = this;
-      url = url ? url : $elem ? $elem.attr('url') : '';
-      tabTitle = tabTitle ? tabTitle : 'Tab';
-      if ($elem != katana.templateAPI) {
-        var jsURL = jsURL ? jsURL.split(',') : $elem.attr('jsurls').split(',');
-        if (jsURL.length > 0) {
-          jsURL.pop();
-          katana.templateAPI.importJS(jsURL, function() {
+      if (!katana.$view.hasClass('edit-mode')) {
+        var $elem = this;
+        url = url ? url : $elem ? $elem.attr('url') : '';
+        tabTitle = tabTitle ? tabTitle : 'Tab';
+        if ($elem != katana.templateAPI) {
+          var jsURL = jsURL ? jsURL.split(',') : $elem.attr('jsurls').split(',');
+          if (jsURL.length > 0) {
+            jsURL.pop();
+            katana.templateAPI.importJS(jsURL, function() {
+              katana.templateAPI.tabRequst($elem, tabTitle, url, limitedStyles, callBack, options);
+            });
+          } else {
             katana.templateAPI.tabRequst($elem, tabTitle, url, limitedStyles, callBack, options);
-          });
-        } else {
-          katana.templateAPI.tabRequst($elem, tabTitle, url, limitedStyles, callBack, options);
-        }
-      } else
-        katana.templateAPI.tabRequst(katana.$activeTab, tabTitle, url, limitedStyles, callBack, options);
+          }
+        } else
+          katana.templateAPI.tabRequst(katana.$activeTab, tabTitle, url, limitedStyles, callBack, options);
+      }
     },
 
     tabRequst: function($elem, tabTitle, url, limitedStyles, callBack, options) {
