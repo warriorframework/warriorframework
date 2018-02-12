@@ -371,10 +371,11 @@ var katana = {
   validationAPI: {
       flag: [],
 
-      init: function() {
+      init: function( $container ) {
         this.flag = [];
         var validationObj = this;
-        katana.$activeTab.find('[validation-check]').each(function() {
+	$container = $container ? $container : katana.$activeTab;
+        $container.find('[validation-check]').each(function() {
           var $elem = $(this);
           if ($elem.closest('.field').hasClass('required') && $elem.val() == '')
       validationObj.flag.push({
