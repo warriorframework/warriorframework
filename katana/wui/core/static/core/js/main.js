@@ -934,66 +934,71 @@ var katana = {
     },
 
     post: function(url, csrf, toSend, callBack, fallBack, callBackData, fallBackData ) {
-      var $elem = this && this != katana.templateAPI ? this : katana.$activeTab;
-      var toSend = toSend ? toSend : $elem.find('input:not([name="csrfmiddlewaretoken"])').serializeArray();
-      var url = url ? url : $elem.attr('post-url');
-      var csrf = csrf ? csrf : $elem.find('.csrf-container > input').val();
-
-      $.ajaxSetup({
-        beforeSend: function(xhr, settings) {
-          if (!this.crossDomain)
-            xhr.setRequestHeader("X-CSRFToken", csrf);
-        }
-      });
-      $.ajax({
-        url: url,
-        type: "POST",
-        data: {
-          data: toSend
-        }
-      }).done(function(data) {
-        callBack && callBack(data, callBackData);
-      }).fail(function(data) {
-        fallBack && fallBack(data, fallBackData);
-      });
+      var $elem = this && this !== katana.templateAPI ? this : katana.$activeTab;
+      toSend = toSend ? toSend : $elem.find('input:not([name="csrfmiddlewaretoken"])').serializeArray();
+      url = url ? url : $elem.attr('post-url');
+      csrf = csrf ? csrf : $elem.find('.csrf-container > input').val();
+      if(url === undefined || url === ""){
+        console.log("Error in post(): No URL found. POST request could not be completed.");
+      } else {
+        $.ajaxSetup({
+          beforeSend: function(xhr, settings) {
+            if (!this.crossDomain)
+              xhr.setRequestHeader("X-CSRFToken", csrf);
+          }
+        });
+        $.ajax({
+          url: url,
+          type: "POST",
+          data: {
+            data: toSend
+          }
+        }).done(function(data) {
+          callBack && callBack(data, callBackData);
+        }).fail(function(data) {
+          fallBack && fallBack(data, fallBackData);
+        });
+      }
     },
 
     get: function(url, csrf, toSend, dataType, successCallBack, successCallBackData) {
-
       // intialize values for url, csrf, dataType, toSend
       var $elem = this ? this : katana.$activeTab;
-      var toSend = toSend ? toSend : $elem.find('input:not([name="csrfmiddlewaretoken"])').serializeArray();
-      var url = url ? url : $elem.attr('get-url');
-      var csrf = csrf ? csrf : $elem.find('.csrf-container > input').val();
-      var dataType = dataType ? dataType : 'text'
+      toSend = toSend ? toSend : $elem.find('input:not([name="csrfmiddlewaretoken"])').serializeArray();
+      url = url ? url : $elem.attr('get-url');
+      csrf = csrf ? csrf : $elem.find('.csrf-container > input').val();
+      dataType = dataType ? dataType : 'text';
+      if(url === undefined || url === ""){
+        console.log("Error in get(): No URL found. GET request could not be completed.");
+      } else {
+        // setup csrf token in xhr header
+        $.ajaxSetup({
+          beforeSend: function(xhr, settings) {
+            if (!this.crossDomain)
+              xhr.setRequestHeader("X-CSRFToken", csrf);
+          }
+        });
 
-      // setup csrf token in xhr header
-      $.ajaxSetup({
-        beforeSend: function(xhr, settings) {
-          if (!this.crossDomain)
-            xhr.setRequestHeader("X-CSRFToken", csrf);
-        }
-      });
-
-      // make an ajax get call using the intialized variables,
-      // on sucess the data is sent to success cal back function if one was provided
-      $.ajax({
-        url: url,
-        type: "GET",
-        dataType: dataType,
-        data: {
-          data: toSend
-        },
-        success: function(data) {
-          //console.log('success');
-          successCallBack && successCallBack(data, successCallBackData);
-        },
-        error: function(xhr, textStatus, error) {
-          console.log(xhr.statusText);
-          console.log(textStatus);
-          console.log(error);
-        },
-      });
+        // make an ajax get call using the intialized variables,
+        // on sucess the data is sent to success cal back function if one was provided
+        $.ajax({
+          url: url,
+          type: "GET",
+          dataType: dataType,
+          data: {
+            data: toSend
+          },
+          success: function(data) {
+            //console.log('success');
+            successCallBack && successCallBack(data, successCallBackData);
+          },
+          error: function(xhr, textStatus, error) {
+            console.log(xhr.statusText);
+            console.log(textStatus);
+            console.log(error);
+          },
+        });
+      }
     },
 
     trigger: function(url, callBack) {
