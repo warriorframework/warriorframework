@@ -368,7 +368,7 @@ var katana = {
   removeApp: function() {
     this.closest('.tab').remove();
   },
-  validation: {
+  validationAPI: {
       flag: [],
 
       init: function() {
@@ -412,9 +412,9 @@ var katana = {
     PCV: {
       validateIP: function($elem) {
         if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test($elem.val()))
-    return true;
+    			return true;
         else
-    configuration.validation.addFlag($elem, 'invalid-ip');
+   				katana.validationAPI.addFlag($elem, 'invalid-ip');
       }
     }
   },
