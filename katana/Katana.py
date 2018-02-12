@@ -15,13 +15,24 @@ limitations under the License.
 import os
 import sys
 import subprocess
+from simple_server import main
+use_py_server = False
+
+try:
+    import django
+except ImportError:
+    use_py_server = True
+except Exception as e:
+    print "-- An Error Occurred -- {0}".format(e)
+    use_py_server = True
+
 class Katana:
     def __init__(self):
         pass
 
     def runProcess(self, osString):
         print osString
-        proc = subprocess.Popen([osString], shell=False,
+        proc = subprocess.Popen([osString], shell=True,
              stdin=None, stdout=None, stderr=None, close_fds=True)
         return proc
 
@@ -44,5 +55,8 @@ class Katana:
         proc.wait()
 
 if __name__ == "__main__":
-    katana = Katana()
-    katana.katana_init(sys.argv)
+    if not use_py_server:
+        katana = Katana()
+        katana.katana_init(sys.argv)
+    else:
+        main(port)
