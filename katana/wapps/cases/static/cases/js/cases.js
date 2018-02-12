@@ -288,10 +288,13 @@ var cases = {
                         promise.then(function(data) {
                             cases.mappings[marker].savedContent = data;
                             $elem.closest('.cases-side-drawer-open').find('.content').html(data);
+                            cases.drawer._updateDefaultOnError($elem.closest('.cases-side-drawer-open').find('.content').find('[key="default_onError[@action]"]'));
                         });
                     } else {
                         $elem.closest('.cases-side-drawer-open').find('.content').html(cases.mappings[marker].savedContent);
+                        cases.drawer._updateDefaultOnError($elem.closest('.cases-side-drawer-open').find('.content').find('[key="default_onError[@action]"]'));
                     }
+
                 },
 
                 requirements: function($elem) {
@@ -367,9 +370,18 @@ var cases = {
                                     }
                                 });
                             }
+                            setTimeout(function(){
+                                cases.drawer._updateRunmodeValue($elem.closest('.cases-side-drawer-open').find('.content').find('[key="runmode[@type]"]'));
+                                cases.drawer._updateOnErrorValue($elem.closest('.cases-side-drawer-open').find('.content').find('[key="onError[@action]"]'));
+                                cases.drawer._updateExecuteValue($elem.closest('.cases-side-drawer-open').find('.content').find('[key="Execute[@ExecType]"]'));
+                            }, 250);
                         });
                     } else {
-                        $elem.closest('.cases-side-drawer-open').find('.content').html(cases.mappings[marker].savedContent);
+                        setTimeout(function(){
+                            cases.drawer._updateRunmodeValue($elem.closest('.cases-side-drawer-open').find('.content').find('[key="runmode[@type]"]'));
+                            cases.drawer._updateOnErrorValue($elem.closest('.cases-side-drawer-open').find('.content').find('[key="onError[@action]"]'));
+                            cases.drawer._updateExecuteValue($elem.closest('.cases-side-drawer-open').find('.content').find('[key="Execute[@ExecType]"]'));
+                        }, 250);
                     }
                 },
 
@@ -509,6 +521,18 @@ var cases = {
             $switchElem.children('i').show();
             $parent.parent().siblings('.cases-side-drawer-closed').find('.fa-list-alt').children('i').show();
             $switchElem.data({"data-object": cases.utils.updateData($switchElem.data().dataObject, $elem.attr('key'), $elem.val())});
+            if($elem.attr('key') === "default_onError[@action]"){
+                cases.drawer._updateDefaultOnError($elem);
+            }
+        },
+
+        _updateDefaultOnError: function($elem){
+            var $gotoInputElem = $elem.closest('.row').next();
+            if ($elem.find(':selected').text() === "Go To"){
+                $gotoInputElem.show();
+            } else {
+                $gotoInputElem.hide();
+            }
         },
 
         reqsChange: function () {
@@ -535,6 +559,65 @@ var cases = {
                 $switchElem.data({"data-object": cases.drawer._updateOnDriverChange($elem, $switchElem.data().dataObject)});
             } else if ($elem.attr('key') === "@Keyword" && $elem.attr('value') !== ""){
                 $switchElem.data({"data-object": cases.drawer._updateOnKwChange($elem, $switchElem.data().dataObject)});
+            }
+            if($elem.attr('key') === "runmode[@type]"){
+                cases.drawer._updateRunmodeValue($elem);
+            } else if($elem.attr('key') === "onError[@action]"){
+                cases.drawer._updateOnErrorValue($elem);
+            } else if($elem.attr('key') === "Execute[@ExecType]"){
+                cases.drawer._updateExecuteValue($elem);
+            } else if($elem.attr('key').endsWith("[@Else]]")){
+                cases.drawer._updateOnErrorElseValue($elem);
+            }
+        },
+
+        _updateRunmodeValue: function($elem){
+            var $runmodeValueInp = $elem.closest('.row').next();
+            if($elem.find(':selected').text() === "Standard"){
+                $runmodeValueInp.hide();
+            } else {
+                $runmodeValueInp.show();
+            }
+        },
+
+        _updateOnErrorValue: function($elem) {
+            var $onErrorValueInp = $elem.closest('.row').next();
+            if($elem.find(':selected').text() === "Go To"){
+                $onErrorValueInp.show();
+            } else {
+                $onErrorValueInp.hide();
+            }
+        },
+
+        _updateExecuteValue: function($elem) {
+            var $allRuleInputs = $elem.closest('.container-fluid').find('[key^="Execute[Rule"]');
+            if($elem.find(':selected').text() === "Yes" || $elem.find(':selected').text() === "No"){
+                for(var i=0; i<$allRuleInputs.length; i++){
+                    if(!$($allRuleInputs[i]).attr('key').endsWith("[@Elsevalue]]")){
+                        $($allRuleInputs[i]).closest('.row').hide();
+                        if($($allRuleInputs[i]).attr('key').endsWith("[@Else]]")){
+                            cases.drawer._updateOnErrorElseValue($($allRuleInputs[i]));
+                        }
+                    }
+                }
+            } else {
+                for(i=0; i<$allRuleInputs.length; i++){
+                    if(!$($allRuleInputs[i]).attr('key').endsWith("[@Elsevalue]]")){
+                        $($allRuleInputs[i]).closest('.row').show();
+                        if($($allRuleInputs[i]).attr('key').endsWith("[@Else]]")){
+                            cases.drawer._updateOnErrorElseValue($($allRuleInputs[i]));
+                        }
+                    }
+                }
+            }
+        },
+
+        _updateOnErrorElseValue: function($elem) {
+            var $elseValueInp = $elem.closest('.row').next();
+            if($elem.find(":selected").text() === "Go To"){
+                $elseValueInp.show();
+            } else {
+                $elseValueInp.hide();
             }
         },
 

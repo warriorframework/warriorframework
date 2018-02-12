@@ -146,7 +146,7 @@
                 <label class="cases-label">Else</label>
             </div>
             <div class="col-sm-9">
-                <select katana-change="cases.drawer.stepsChange" key="Execute[Rule({{ forloop.parentloop.counter0 }})[@Else]]">
+                <select katana-change="cases.drawer.stepsChange" value="{{ value }}" key="Execute[Rule({{ forloop.parentloop.counter0 }})[@Else]]">
                     {% for val in data.execute_elses %}
                     {% if val|convert_on_errors == value %}
                     <option selected="selected">{{val}}</option>
