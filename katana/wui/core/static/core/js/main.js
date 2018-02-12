@@ -368,7 +368,57 @@ var katana = {
   removeApp: function() {
     this.closest('.tab').remove();
   },
+  validation: {
+      flag: [],
 
+      init: function() {
+        this.flag = [];
+        var validationObj = this;
+        katana.$activeTab.find('[validation-check]').each(function() {
+          var $elem = $(this);
+          if ($elem.closest('.field').hasClass('required') && $elem.val() == '')
+      validationObj.flag.push({
+        '$elem': $elem,
+        'response': 'Required'
+      });
+          katana.methodCaller($elem.attr('validation-check'), $elem);
+        });
+        if (this.flag.length == 0)
+          return true;
+        else
+          this.warning();
+        return false;
+      },
+
+      warning: function() {
+        $.each(this.flag, function() {
+          var $elem = this.$elem;
+          var field = $elem.closest('.field');
+          field.find('.invalid').remove();
+          field.prepend('<div class="invalid">' + this.response + '</div>');
+          this.$elem.one('change', function() {
+            field.find('.invalid').remove();
+          });
+        });
+    },
+
+    addFlag: function($elem, response) {
+      this.flag.push({
+        '$elem': $elem,
+        'response': response
+      });
+    },
+
+    PCV: {
+      validateIP: function($elem) {
+        if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test($elem.val()))
+    return true;
+        else
+    configuration.validation.addFlag($elem, 'invalid-ip');
+      }
+    }
+  },
+  
   openAlert: function(data, callBack_on_accept, callBack_on_dismiss) {
     /*
 	    data = {
