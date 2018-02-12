@@ -1,0 +1,9 @@
+{
+  "icon": "play-circle",
+  "color": "blue",
+  "name" : "Editor",
+  "url" : "/katana/editor/",
+  "developer": "Warrior Framework",
+  "description": "Edit Files using this App",
+  "app" : [{"name" : "Editor", "url" : "/katana/editor/", "include": "native.editor.urls"}]
+}

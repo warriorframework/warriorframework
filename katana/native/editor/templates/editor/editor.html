@@ -1,0 +1,44 @@
+<body>
+   {% load static %}
+  <div class = "csrf-container"> {% csrf_token %} </div>
+  <div id="execution-container" class="execution exec-container" >
+              <div class="execution layout-panel"  auto-init="editor.filesViewer.loadFilesTree">
+                      <div class="execution panels-heading">
+                        <label>Files</label>
+                        <div class="execution panels-heading-icon">
+                          <i title="Layout Settings" class="fa fa-edit" id="configure_layout_btn" katana-click="execution.layoutViewer.configureLayout"></i>
+                        </div>
+                        <div class="execution panels-heading-icon">
+                          <i title="Refresh" class="fa fa-refresh" id="execution_load_layout_btn" katana-click="execution.layoutViewer.loadWs"></i>
+                        </div>
+                        <div class="execution panels-heading-icon">
+                          <i title="Copy to Selections Area" class="fa fa-arrow-right" id="execution-execute-btn" katana-click="editor.filesEditor.loadSelectFile"></i>
+                        </div>
+                      </div>
+                      <div class="execution panels-body ">
+                        <div id="editor_layout_container"  data-startdir="{{defaults.start_dir}}" ></div>
+                      </div>
+              </div>
+
+
+              <div class="execution selections-panel" id="execution-selections-panel">
+                      <div class="execution panels-heading" id="execution-selections-panel-heading">
+                            <label>Selections</label>
+                            <div class="execution panels-heading-icon ">
+                              <i title="Erase" class="fa fa-eraser" id="execution-erase-btn" katana-click="execution.selectionViewer.erase"></i>
+                            </div>
+                            <div class="execution panels-heading-icon ">
+                              <i title="Command Options" class="fa fa-cogs" id="execution-execute-btn"  katana-click="cmdBuilder.cmdOptionsViewer.openCmdOptionsDialog" ></i>
+                            </div>
+                            <div class="execution panels-heading-icon">
+                              <i title="Execute" class="fa fa-play-circle" id="execution-execute-btn" katana-click="execution.resultsViewer.execute" ></i>
+                            </div>
+                      </div>
+                      <div class="execution selections-panels-body">
+                        <textarea min-height = "95%" id ='code' class ='hidden' ></textarea>
+                      </div>
+
+              </div>
+
+
+</body>
