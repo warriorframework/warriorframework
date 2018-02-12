@@ -10,7 +10,7 @@
         <default_onError action="next"/>
     </Details>
     <Testsuites>
-        <!-- RUF support at suite level -->
+<!-- RUF support at suite level -->
         <Testsuite>
             <path>../suites/framework_tests/ts_runmode_ruf_at_suite_level.xml</path>
             <Execute ExecType="Yes"/>
@@ -43,38 +43,63 @@
         </Testsuite>
         <!-- retry if condition not met -->
         <Testsuite>
-			<path>../suites/framework_tests/ts_retry_cond_tc_level_if_met_not.xml</path>
-			<onError action="next" value=""/>
-			<retry type="if" Condition="testsuite_1_result" Condvalue="FAIL" count="4" interval="0"/>
-			<impact>impact</impact>
-	    </Testsuite>
-	    <!-- retry if condition met -->
+            <path>../suites/framework_tests/ts_retry_cond_tc_level_if_met_not.xml</path>
+            <onError action="next" value=""/>
+            <retry type="if" Condition="testsuite_1_result" Condvalue="FAIL" count="4" interval="0"/>
+            <impact>impact</impact>
+        </Testsuite>
+        <!-- retry if condition met -->
         <Testsuite>
-			<path>../suites/framework_tests/ts_retry_cond_tc_level_if_met.xml</path>
-			<onError action="next" value=""/>
-			<retry type="if" Condition="testsuite_1_result" Condvalue="PASS" count="3" interval="0"/>
-			<impact>impact</impact>
-	    </Testsuite>
-	    <!-- retry if not condition not met -->
+            <path>../suites/framework_tests/ts_retry_cond_tc_level_if_met.xml</path>
+            <onError action="next" value=""/>
+            <retry type="if" Condition="testsuite_1_result" Condvalue="PASS" count="3" interval="0"/>
+            <impact>impact</impact>
+        </Testsuite>
+        <!-- retry if not condition not met -->
         <Testsuite>
-			<path>../suites/framework_tests/ts_retry_cond_tc_level_if_not_met_not.xml</path>
-			<onError action="next" value=""/>
-			<retry type="if not" Condition="testsuite_1_result" Condvalue="FAIL" count="5" interval="0"/>
-			<impact>impact</impact>
-	    </Testsuite>
-	    <!-- retry if not condition met -->
+            <path>../suites/framework_tests/ts_retry_cond_tc_level_if_not_met_not.xml</path>
+            <onError action="next" value=""/>
+            <retry type="if not" Condition="testsuite_1_result" Condvalue="FAIL" count="5" interval="0"/>
+            <impact>impact</impact>
+        </Testsuite>
+        <!-- retry if not condition met -->
         <Testsuite>
-			<path>../suites/framework_tests/ts_retry_cond_tc_level_if_not_met.xml</path>
-			<onError action="next" value=""/>
-			<retry type="if not" Condition="testsuite_1_result" Condvalue="PASS" count="6" interval="0"/>
-			<impact>impact</impact>
-	    </Testsuite>
-	    <!-- verify retry feature -->
+            <path>../suites/framework_tests/ts_retry_cond_tc_level_if_not_met.xml</path>
+            <onError action="next" value=""/>
+            <retry type="if not" Condition="testsuite_1_result" Condvalue="PASS" count="6" interval="0"/>
+            <impact>impact</impact>
+        </Testsuite>
+        <!-- verify retry feature -->
         <Testsuite>
-			<path>../suites/framework_tests/ts_retry_cond_tc_level_verify.xml</path>
-			<onError action="next" value=""/>
-			<impact>impact</impact>
-	    </Testsuite>
+            <path>../suites/framework_tests/ts_retry_cond_tc_level_verify.xml</path>
+            <onError action="next" value=""/>
+            <impact>impact</impact>
+        </Testsuite>
+
+
+        <!-- runmode at suite global level (inside detail-exectype tag) -->
+        <Testsuite>
+            <path>../suites/framework_tests/runmode_tests/ts_runmode_rmt_at_ts_global_level.xml</path>
+            <onError action="next" value=""/>
+            <impact>impact</impact>
+        </Testsuite>
+        <Testsuite>
+            <path>../suites/framework_tests/runmode_tests/ts_runmode_rup_at_ts_global_level.xml</path>
+            <onError action="next" value=""/>
+            <impact>impact</impact>
+        </Testsuite>
+        <Testsuite>
+            <path>../suites/framework_tests/runmode_tests/ts_runmode_ruf_at_ts_global_level.xml</path>
+            <onError action="next" value=""/>
+            <impact>noimpact</impact>
+        </Testsuite>
+
+        <!-- verify runmode at suite global level -->
+        <Testsuite>
+            <path>../suites/framework_tests/runmode_tests/ts_runmode_verify_at_ts_global_level.xml</path>
+            <onError action="next" value=""/>
+            <impact>impact</impact>
+        </Testsuite>
 	</Testsuites>
 </Project>
 

@@ -1,9 +1,12 @@
 {
   "icon": "cog",
   "color": "blue",
-  "name" : "Settings",
   "developer": "Warrior Framework",
   "description": "Lets you manage your Warrior settings",
-  "url" : "/katana/settings/",
-  "app" : [{"name" : "Wapp Management", "url" : "/katana/wapp_management/", "include": "native.wapp_management.urls"}]
+  "app" : {"name" : "Settings", "url" : "/katana/settings/", "include": "native.settings.urls"},
+  "warrior-compatibility": ":warrior-3.7.0",
+  "warrior-incompatibility": "",
+  "version": "1.0.0",
+  "permissions": "",
+  "availability": ""
 }

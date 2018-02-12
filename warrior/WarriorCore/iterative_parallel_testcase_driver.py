@@ -11,27 +11,24 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
+import traceback
+from collections import OrderedDict
+
+import Framework.Utils as Utils
+from Framework.Utils.print_Utils import print_error, print_debug
+from WarriorCore.multiprocessing_utils import create_and_start_process_with_queue, \
+ get_results_from_queue, update_ts_junit_resultfile
+from WarriorCore import sequential_testcase_driver
 
 """
 This is  iterative parallel testcase driver which is used to execute
 the testcases of a suite in parallely across the systems in the suite data file
 """
 
-import os
-import traceback
-from collections import OrderedDict
-
-
-import testcase_driver
-import Framework.Utils as Utils
-from Framework.Utils.print_Utils import print_error, print_debug
-from WarriorCore.multiprocessing_utils import create_and_start_process_with_queue, \
-get_results_from_queue, update_ts_junit_resultfile
-from WarriorCore import testsuite_utils, sequential_testcase_driver
 
 def execute_iterative_parallel_testcases(system_list, testcase_list, suite_repository,
-                               data_repository, from_project, tc_parallel=True,
-                               auto_defects=False):
+                                         data_repository, from_project, tc_parallel=True,
+                                         auto_defects=False):
     """Takes a list of systems as input and executes the testcases in parallel by
     creating separate process of testcase_driver for each of these systems """
 
@@ -40,20 +37,19 @@ def execute_iterative_parallel_testcases(system_list, testcase_list, suite_repos
 
     for system in system_list:
         target_module = sequential_testcase_driver.main
-        
-        #args_list = [testcase_list, suite_repository, data_repository, from_project,
-        #             auto_defects, system, tc_parallel]    
         tc_args_dict = OrderedDict([("testcase_list", testcase_list),
-                                  ("suite_repository", suite_repository),
-                                  ("data_repository", data_repository),
-                                  ("from_project", from_project),
-                                  ("auto_defects", auto_defects),
-                                  ("system", system),
-                                  ("tc_parallel", tc_parallel),
-                                  ("output_q", output_q)
-                                  ])
+                                    ("suite_repository", suite_repository),
+                                    ("data_repository", data_repository),
+                                    ("from_project", from_project),
+                                    ("auto_defects", auto_defects),
+                                    ("system", system),
+                                    ("tc_parallel", tc_parallel),
+                                    ("output_q", output_q),
+                                    ("ts_iter", True)
+                                    ])
 
-        process, jobs_list, output_q = create_and_start_process_with_queue(target_module, tc_args_dict, jobs_list, output_q)
+        process, jobs_list, output_q = create_and_start_process_with_queue(
+         target_module, tc_args_dict, jobs_list, output_q)
 
     print_debug("process: {0}".format(process))
     for job in jobs_list:
@@ -65,7 +61,8 @@ def execute_iterative_parallel_testcases(system_list, testcase_list, suite_repos
     tc_name_list = []
     tc_impact_list = []
     tc_duration_list = []
-    # Get the junit object of each testcase, extract the information from it and combine with testsuite junit object
+    # Get the junit object of each testcase, extract the information from it
+    # and combine with testsuite junit object
     tc_junit_list = []
 
     # Suite results
@@ -76,7 +73,7 @@ def execute_iterative_parallel_testcases(system_list, testcase_list, suite_repos
             tc_name_list.append(result[1])
             tc_impact_list.append(result[2][val])
             tc_duration_list.append(result[3][val])
-            tc_junit_list.append(result[4][val])
+        tc_junit_list.append(result[4])
     # parallel testcases generate multiple testcase junit result files
     # each files log the result for one testcase and not intergrated
     # update testsuite junit result file with individual testcase result files
@@ -86,15 +83,14 @@ def execute_iterative_parallel_testcases(system_list, testcase_list, suite_repos
     return testsuite_status
 
 
-def main(system_list, testcase_list, suite_repository, data_repository, from_project, tc_parallel=False,
-         auto_defects=False):
+def main(system_list, testcase_list, suite_repository, data_repository,
+         from_project, tc_parallel=False, auto_defects=False):
     """Executes the list of testcases in parallel
     Computes and returns the testsuite status"""
     try:
-        testsuite_status = execute_iterative_parallel_testcases(system_list, testcase_list, suite_repository,
-                                                                data_repository,
-                                                                from_project, tc_parallel,
-                                                                auto_defects)
+        testsuite_status = execute_iterative_parallel_testcases(
+         system_list, testcase_list, suite_repository, data_repository,
+         from_project, tc_parallel, auto_defects)
     except Exception:
         testsuite_status = False
         print_error('unexpected error {0}'.format(traceback.format_exc()))

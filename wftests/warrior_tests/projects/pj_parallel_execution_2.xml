@@ -1,0 +1,38 @@
+<?xml version="1.0" ?>
+<Project>
+        <Details>
+                <Name>pj_parallel_execution_2</Name>
+                <Title>Test the parallel tc in TS and parallel kw in TC</Title>
+                <Engineer>ka</Engineer>
+                <State/>
+                <Date>05/23/2017</Date>
+                <Time>14:42:10</Time>
+                <default_onError action="next"/>
+        </Details>
+        <Testsuites>
+                <Testsuite>
+                        <path>../suites/framework_tests/seq_par_execution/ts_par_tc_par_1.xml</path>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                        <onError action="next" value=""/>
+                        <impact>impact</impact>
+                </Testsuite>
+                <Testsuite>
+                        <path>../suites/framework_tests/seq_par_execution/ts_par_tc_par_2.xml</path>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                        <onError action="next" value=""/>
+                        <impact>impact</impact>
+                </Testsuite>
+                <Testsuite>
+                        <path>../suites/framework_tests/seq_par_execution/ts_par_tc_par_3.xml</path>
+                        <Execute ExecType="Yes">
+                                <Rule Condition="" Condvalue="" Else="next" Elsevalue=""/>
+                        </Execute>
+                        <onError action="next" value=""/>
+                        <impact>impact</impact>
+                </Testsuite>
+        </Testsuites>
+</Project>

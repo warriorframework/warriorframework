@@ -147,6 +147,19 @@ def get_dir_from_path(path):
     return os.path.basename(path)
 
 
+def get_parent_dir_path(path):
+    """
+    This function is wrapper function for os.path.dirname(os.path.normpath(<path>)).
+
+    Args:
+        path: a file path [Eg: /home/user/Documents/GitHub/warriorframework]
+
+    Returns:
+        The parent directory path: [Eg: /home/user/Documents/GitHub]
+    """
+    return os.path.dirname(os.path.normpath(path))
+
+
 def join_path(path, *paths):
     """
     This function is wrapper function for os.path.join.
@@ -206,4 +219,11 @@ def delete_dir(src):
     except Exception as e:
         print e
         output = False
+    return output
+
+
+def file_or_dir_exists(filepath):
+    output = False
+    if os.path.exists(filepath):
+        output = True
     return output

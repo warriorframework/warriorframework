@@ -1,0 +1,43 @@
+{% with subsystem|remove_name as subsystem %}
+    {% for k, v in subsystem.items %}
+        {% if v|is_dict == "true" %}
+        <!-- It's a child tag -->
+            {% with v as child_tag%}
+                {% include "wdf_edit/editor/child_tag_editor.html" %}
+            {% endwith %}
+        {% elif k != "@name" %}
+        <!-- It's not a child tag -->
+            {% if v|is_list == "true" %}
+            <!-- if multiple tags have same name -->
+                {% for child_v in v %}
+                    {% if child_v|is_dict == "true" %}
+                    <!-- if each tag has child tags -->
+                        {% with child_v as child_tag%}
+                            {% include "wdf_edit/editor/child_tag_editor.html" %}
+                        {% endwith %}
+                    {% else %}
+                    <!-- each tag contains only text value -->
+                        <div class="field-inline dual-input wdf-content">
+                            <label>
+                                <i katana-click="wdf.addChild" class="fa fa-plus" title="Add Sub Data"/>
+                                <i katana-click="wdf.deleteTag" class="fa fa-trash i-danger" title="Delete Data"/>
+                            </label>
+                            <input class="wdf-input" name="key" katana-change="wdf.validateKey" value="{{ k }}" list="most_used_tags"/>
+                            <input class="wdf-input" name="value" value="{{ child_v }}"/>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+            <!-- unique tag name in the (sub)system -->
+                <div class="field-inline dual-input wdf-content">
+                    <label>
+                        <i katana-click="wdf.addChild" class="fa fa-plus" title="Add Sub Data"/>
+                        <i katana-click="wdf.deleteTag" class="fa fa-trash i-danger" title="Delete Data"/>
+                    </label>
+                    <input class="wdf-input" name="key" katana-change="wdf.validateKey" value="{{ k }}" list="most_used_tags"/>
+                    <input class="wdf-input" name="value" value="{{ v }}"/>
+                </div>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+{% endwith %}

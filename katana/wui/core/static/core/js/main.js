@@ -29,6 +29,13 @@ var katana = {
       var toCall = $elem.attr('katana-click').replace(/\(.*?\)/, '');
       katana.methodCaller(toCall, $elem);
     });
+    katana.$view.on('contextmenu', '[katana-rclick]', function(e) {
+      $elem = $(this);
+      e.stopPropagation();
+      e.preventDefault();
+      var toCall = $elem.attr('katana-rclick').replace(/\(.*?\)/, '');
+      katana.methodCaller(toCall, $elem, e);
+    });
     katana.$view.on('change', '[katana-change]', function(e) {
       $elem = $(this);
       e.stopPropagation();
@@ -186,7 +193,7 @@ var katana = {
 
     open: function(content, title, callBack, size) {
       this.body = katana.$view;
-      var popup = this.template.clone().appendTo(katana.popupController.body);
+      var popup = this.template.clone().appendTo(katana.popupController.body.find('#wui-popups'));
       content && popup.find('.page-content').append(content);
       size && popup.addClass(size);
       katana.popupController.initEvents(popup);
@@ -203,7 +210,7 @@ var katana = {
 
     createTab: function(popup) {
       if (!katana.popupController.tabBar) {
-        katana.popupController.tabBar = katana.popupController.tabTemplate.clone().appendTo(katana.popupController.body);
+        katana.popupController.tabBar = katana.popupController.tabTemplate.clone().appendTo(katana.popupController.body.find('#wui-popup-nav'));
         katana.popupController.tabBar.find('.tab').remove();
       }
       var tab = katana.popupController.tabTemplate.find('.tab').first().clone().appendTo(katana.popupController.tabBar);
@@ -214,11 +221,13 @@ var katana = {
     },
 
     openWindow: function(popup) {
-      var activePopup = katana.popupController.body.find('.popup.active');
-      if (activePopup.get(0) != popup.get(0)) {
+      var activePopup = katana.popupController.body.find('#wui-popups').find('.popup.active');
+      if (activePopup.get(0) !== popup.get(0)) {
         activePopup.removeClass('active');
         popup.removeClass('removeing hidden').addClass('active');
       }
+      activePopup = katana.popupController.body.find('#wui-popups').find('.popup.active').detach();
+      katana.popupController.body.find('#wui-popups').append(activePopup);
     },
 
     close: function(popup) {
@@ -230,8 +239,8 @@ var katana = {
     },
 
     updateActiveWindow: function(popup) {
-      var activePopup = katana.popupController.body.find('.popup.active');
-      if (activePopup.get(0) != popup.get(0)) {
+      var activePopup = katana.popupController.body.find('#wui-popups').find('.popup.active');
+      if (activePopup.get(0) !== popup.get(0)) {
         activePopup.removeClass('active');
         popup.addClass('active');
       }
@@ -324,6 +333,42 @@ var katana = {
     });
   },
 
+  rcPanel: function(event) {
+    katana.$view.find('.rc-menu.active').remove();
+    var rcMenu = this.closest('.rc-container').find('.rc-menu');
+    rcMenu = rcMenu.clone().appendTo(this);
+    rcMenu.css({
+      'left': event.clientX,
+      'top': event.clientY
+    }).addClass('active');
+    $(window).one('click contextmenu scroll resize', function() {
+      katana.$view.find('.rc-menu.active').remove();
+    });
+  },
+
+  editOrder: function() {
+    var tabContainer = this.closest('.tabs');
+    katana.$view.addClass('edit-mode');
+    tabContainer.sortable({
+      items: "div:not(.complete)"
+    });
+    tabContainer.sortable("option", "disabled", false);
+    tabContainer.append('<div class="complete fa fa-check" katana-click="katana.finishOrder"></div>');
+    katana.$view.find('.rc-menu.active').remove();
+  },
+
+
+  finishOrder: function() {
+    var tabContainer = this.closest('.tabs');
+    katana.$view.removeClass('edit-mode');
+    tabContainer.sortable("disable");
+    this.remove();
+  },
+
+  removeApp: function() {
+    this.closest('.tab').remove();
+  },
+
   openAlert: function(data, callBack_on_accept, callBack_on_dismiss) {
     /*
 	    data = {
@@ -336,7 +381,8 @@ var katana = {
 	        "accept_btn_text": "Ok (by default), Save, etc",
 	        "show_cancel_btn": "true (by default), false",
 	        "cancel_btn_text": "Cancel (by default), No, etc",
-	        "prompt": "false (by default), true"
+	        "prompt": "false (by default), true",
+	        "prompt_default": "'' by default"
 	    }
 
 	    <div class="overlay">
@@ -511,11 +557,16 @@ var katana = {
       sub_heading = '<p>' + data.sub_heading + '</p>';
     }
 
-    var prompt = ""
+    var prompt = "";
+    var prompt_default = "";
 
-    if (data.prompt) {
-      prompt = "<div><input id='alert-box-prompt' katana-change='katana.changeBorderColor' value=''></div>"
-    }
+    if(data.prompt_default){
+	     prompt_default = data.prompt_default;
+	  }
+
+    if(data.prompt) {
+	      prompt = "<div><input id='alert-box-prompt' katana-change='katana.changeBorderColor' value='"+ prompt_default +"'></div>"
+	  }
 
     var $alert_box = '<div class="col-sm-5 centered">' +
       '<div class="alert alert-' + data.alert_type + '" role="alert">' +
@@ -524,10 +575,10 @@ var katana = {
       '</div>' +
       '<h4 class="alert-heading">' + data.heading + '</h4>' + sub_heading +
       '<hr>' +
-      '<p class="mb-0">' + data.text + '</p>' + prompt + add_break +
+      '<p class="mb-0 alert-content">' + data.text + '</p>' + prompt + add_break +
       buttons +
       '</div>' +
-      '</div>'
+      '</div>';
 
     callBack(data, $alert_box, callBack_on_accept, callBack_on_dismiss);
   },
@@ -546,7 +597,7 @@ var katana = {
       "info": "Heads Up!",
       "light": "Hi There!",
       "dark": "Hello!"
-    }
+    };
 
     if (!("alert_type" in data)) {
       data["alert_type"] = "info";
@@ -819,21 +870,23 @@ var katana = {
 
   templateAPI: {
     load: function(url, jsURL, limitedStyles, tabTitle, callBack, options) {
-      var $elem = this;
-      url = url ? url : $elem ? $elem.attr('url') : '';
-      tabTitle = tabTitle ? tabTitle : 'Tab';
-      if ($elem != katana.templateAPI) {
-        var jsURL = jsURL ? jsURL.split(',') : $elem.attr('jsurls').split(',');
-        if (jsURL.length > 0) {
-          jsURL.pop();
-          katana.templateAPI.importJS(jsURL, function() {
+      if (!katana.$view.hasClass('edit-mode')) {
+        var $elem = this;
+        url = url ? url : $elem ? $elem.attr('url') : '';
+        tabTitle = tabTitle ? tabTitle : 'Tab';
+        if ($elem != katana.templateAPI) {
+          var jsURL = jsURL ? jsURL.split(',') : $elem.attr('jsurls').split(',');
+          if (jsURL.length > 0) {
+            jsURL.pop();
+            katana.templateAPI.importJS(jsURL, function() {
+              katana.templateAPI.tabRequst($elem, tabTitle, url, limitedStyles, callBack, options);
+            });
+          } else {
             katana.templateAPI.tabRequst($elem, tabTitle, url, limitedStyles, callBack, options);
-          });
-        } else {
-          katana.templateAPI.tabRequst($elem, tabTitle, url, limitedStyles, callBack, options);
-        }
-      } else
-        katana.templateAPI.tabRequst(katana.$activeTab, tabTitle, url, limitedStyles, callBack, options);
+          }
+        } else
+          katana.templateAPI.tabRequst(katana.$activeTab, tabTitle, url, limitedStyles, callBack, options);
+      }
     },
 
     tabRequst: function($elem, tabTitle, url, limitedStyles, callBack, options) {
@@ -880,7 +933,7 @@ var katana = {
       return data;
     },
 
-    post: function(url, csrf, toSend, callBack, fallBack) {
+    post: function(url, csrf, toSend, callBack, fallBack, callBackData, fallBackData ) {
       var $elem = this && this != katana.templateAPI ? this : katana.$activeTab;
       var toSend = toSend ? toSend : $elem.find('input:not([name="csrfmiddlewaretoken"])').serializeArray();
       var url = url ? url : $elem.attr('post-url');
@@ -899,9 +952,9 @@ var katana = {
           data: toSend
         }
       }).done(function(data) {
-        callBack && callBack(data);
+        callBack && callBack(data, callBackData);
       }).fail(function(data) {
-        fallBack && fallBack(data);
+        fallBack && fallBack(data, fallBackData);
       });
     },
 
@@ -978,39 +1031,71 @@ var katana = {
 
   },
 
+    jsTreeAPI: {
+
+      createJstree: function($treeElement, jsTreeData){
+        /*
+          API to create jstee in the specified element.
+          $treeElement: Element where the jstree data should be displayed.
+          jsTreeData: the contents of the jstree to be displayed.
+        */
+        var data = { 'core' : { 'data' : jsTreeData }, "plugins" : [ "sort" , "search"], };
+        $treeElement.jstree(data);
+        $treeElement.jstree().hide_dots();
+      },
+
+      createJstreeSearch: function ($treeElement, $searchBoxElement , jsTreeData) {
+        /*
+          API to create jstee with search in the specified element.
+          $treeElement: Element where the jstree data should be displayed.
+          $searchBoxElement: Search box element
+          jsTreeData: the contents of the jstree to be displayed.
+        */
+        katana.jsTreeAPI.createJstree($treeElement, jsTreeData);
+        var to = false;
+        $searchBoxElement.keyup(function () {
+          if(to) { clearTimeout(to); }
+          to = setTimeout(function () {
+            var v = $searchBoxElement.val();
+            $treeElement.jstree(true).search(v);
+            }, 250);
+          });
+        },
+    },
+
   fileExplorerAPI: {
 
     init: function() {
       var $elem = this;
-      input = $elem.parent().find('input');
+      var input = $elem.parent().find('input');
       katana.fileExplorerAPI.openFileExplorer(null, null, null, null, function(str) {
         input.val(str).trigger('change');
       });
     },
 
     openFileExplorer: function(heading, start_directory, csrftoken, parent, callBack_on_accept, callBack_on_dismiss) {
-      if (!heading || heading == "" || heading == undefined) {
+      if (!heading || heading === "" || heading === undefined) {
         heading = "Select a file"
       }
-      if (start_directory == undefined || start_directory == "") {
+      if (start_directory === undefined || start_directory === "") {
         start_directory = false;
       }
-      if (!parent || parent == "" || parent == undefined) {
+      if (!parent || parent === "" || parent === undefined) {
         var $currentPage = katana.$activeTab;
         var $tabContent = $currentPage.find('.page-content-inner');
       } else {
         $tabContent = parent;
       }
       katana.templateAPI.post('get_file_explorer_data/', csrftoken, {
-          "path": start_directory
+          "start_dir": start_directory
         },
         function(data) {
-          var explorer_modal_html = $($('#file-explorer-template').html())
+          var explorer_modal_html = $($('#file-explorer-template').html());
           var $fileExplorerHeading = explorer_modal_html.find('#file-explorer-heading');
           $fileExplorerHeading.text(heading);
 
           $(explorer_modal_html).prependTo($tabContent);
-          $directoryData = $tabContent.find('#directory-data');
+          var $directoryData = $tabContent.find('#directory-data');
           $directoryData.jstree({
             "core": {
               "data": [data]
@@ -1021,7 +1106,7 @@ var katana = {
               var nodeB = this.get_node(b);
               var lengthA = nodeA.children.length;
               var lengthB = nodeB.children.length;
-              if ((lengthA == 0 && lengthB == 0) || (lengthA > 0 && lengthB > 0))
+              if ((lengthA === 0 && lengthB === 0) || (lengthA > 0 && lengthB > 0))
                 return this.get_text(a).toLowerCase() > this.get_text(b).toLowerCase() ? 1 : -1;
               else
                 return lengthA > lengthB ? -1 : 1;
@@ -1042,15 +1127,15 @@ var katana = {
     },
 
     acceptFileExplorer: function(callBack, parent) {
-      if (!parent || parent == "" || parent == undefined) {
+      if (!parent || parent === "" || parent === undefined) {
         var $currentPage = katana.$activeTab;
       } else {
         $currentPage = parent;
       }
-      $fileExplorerElement = $currentPage.find('div[class="overlay"]');
-      $selectedValue = $fileExplorerElement.find('[aria-selected=true]')
+      var $fileExplorerElement = $currentPage.find('div[class="overlay"]');
+      var $selectedValue = $fileExplorerElement.find('[aria-selected=true]');
       var data_path = $selectedValue.attr("data-path");
-      if (data_path == undefined) {
+      if (data_path === undefined) {
         alert("Nothing selected");
         return;
       }
@@ -1059,18 +1144,18 @@ var katana = {
     },
 
     dismissFileExplorer: function(callBack, parent) {
-      if (!parent || parent == "" || parent == undefined) {
+      if (!parent || parent === "" || parent === undefined) {
         var $currentPage = katana.$activeTab;
       } else {
-        var $currentPage = parent;
+        $currentPage = parent;
       }
-      $fileExplorerElement = $currentPage.find('div[class="overlay"]');
+      var $fileExplorerElement = $currentPage.find('div[class="overlay"]');
       $fileExplorerElement.remove();
       callBack && callBack();
     },
 
     upFileExplorer: function(currentPath, csrftoken, parent) {
-      if (!parent || parent == undefined || parent == "") {
+      if (!parent || parent === undefined || parent === "") {
         var $currentPage = katana.$activeTab;
         var $tabContent = $currentPage.find('.page-content-inner');
       } else {
@@ -1083,7 +1168,7 @@ var katana = {
 
           var $directoryDataDiv = $tabContent.find('.directory-data-div');
           $directoryDataDiv.html("");
-          $directoryDataDiv.append("<div id='directory-data' class='full-size'></div>")
+          $directoryDataDiv.append("<div id='directory-data' class='full-size'></div>");
           var $directoryData = $currentPage.find('#directory-data');
           $directoryData.jstree({
             "core": {
@@ -1095,7 +1180,7 @@ var katana = {
               var nodeB = this.get_node(b);
               var lengthA = nodeA.children.length;
               var lengthB = nodeB.children.length;
-              if ((lengthA == 0 && lengthB == 0) || (lengthA > 0 && lengthB > 0))
+              if ((lengthA === 0 && lengthB === 0) || (lengthA > 0 && lengthB > 0))
                 return this.get_text(a).toLowerCase() > this.get_text(b).toLowerCase() ? 1 : -1;
               else
                 return lengthA > lengthB ? -1 : 1;
