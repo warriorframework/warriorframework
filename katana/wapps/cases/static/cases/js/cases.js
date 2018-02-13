@@ -1034,8 +1034,8 @@ var cases = {
 
         save: function () {
             var callBack_on_accept = function(inputValue){
-              var final_json = {"Testcase": {"Details": {}, "Requirements": {"Requirement": []}, "Steps": {"step": []}}};
-                var filepath = katana.$activeTab.find('#main-div').attr("current-file");
+                var final_json = {"Testcase": {"Details": {}, "Requirements": {"Requirement": []}, "Steps": {"step": []}}};
+                var directory = katana.$activeTab.find('#main-div').attr("current-file");
                 var $detailBlock = katana.$activeTab.find('#detail-block');
                 final_json.Testcase.Details = $detailBlock.find('table').data().dataObject;
 
@@ -1055,13 +1055,13 @@ var cases = {
                     type: 'POST',
                     url: 'cases/save_file/',
                     data: {data: JSON.stringify(final_json),
-                        filepath: filepath, filename: inputValue, extension: ".xml"}
+                        directory: directory, filename: inputValue, extension: ".xml"}
                 }).done(function(data){
                     if (data.status) {
                         katana.openAlert({
                             "alert_type": "success",
                             "heading": "File Saved",
-                            "text": filepath + " has been saved successfully",
+                            "text": inputValue + " has been saved successfully",
                             "show_cancel_btn": false
                         });
                         cases.caseViewer.close();
@@ -1085,7 +1085,7 @@ var cases = {
                 function(inputValue){
                     $.ajax({
                         headers: {
-                            'X-CSRFToken': $currentPage.find('input[name="csrfmiddlewaretoken"]').attr('value')
+                            'X-CSRFToken': katana.$activeTab.find('input[name="csrfmiddlewaretoken"]').attr('value')
                         },
                         type: 'POST',
                         url: 'check_if_file_exists/',

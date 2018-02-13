@@ -15,6 +15,7 @@ from utils.navigator_util import Navigator
 from wapps.cases.cases_utils.defaults import impacts, on_errors, runmodes, iteration_types, contexts
 from wapps.cases.cases_utils.get_drivers import GetDriversActions
 from wapps.cases.cases_utils.verify_case_file import VerifyCaseFile
+from utils.directory_traversal_utils import get_parent_dir_path
 
 navigator = Navigator()
 CONFIG_FILE = join_path(navigator.get_katana_dir(), "config.json")
@@ -42,6 +43,9 @@ def get_file(request):
     file_path = request.GET.get('path')
     if file_path == "false":
         file_path = TEMPLATE
+        directory = read_json_data(join_path(navigator.get_katana_dir(), "config.json"))["xmldir"]
+    else:
+        directory = get_parent_dir_path(file_path)
     vcf_obj = VerifyCaseFile(TEMPLATE, file_path)
     output, data = vcf_obj.verify_file()
     if output["status"]:
@@ -50,7 +54,7 @@ def get_file(request):
         reqs_tmpl = _get_tmpl('cases/requirements_display_template.html', get_reqs_data(data))
         steps_data = get_steps_data(data, default=True)
         steps_tmpl = _get_tmpl('cases/steps_display_template.html', steps_data)
-        return JsonResponse({"filepath": file_path, "status": output["status"], "message": output["message"],
+        return JsonResponse({"filepath": directory, "status": output["status"], "message": output["message"],
                              "details": str(details_tmpl), "requirements": str(reqs_tmpl), "steps": str(steps_tmpl),
                              "case_data_json": data, "drivers": steps_data["data"]["drivers"]})
     else:
@@ -167,7 +171,10 @@ def save_file(request):
     output = {"status": True, "message": ""}
     data = request.POST.get("data")
     xml_data = xmltodict.unparse(json.loads(data))
-    filepath = request.POST.get("filepath")
+    directory = request.POST.get("directory")
+    filename = request.POST.get("filename")
+    extension = request.POST.get("extension")
+    filepath = join_path(directory, filename + extension)
     try:
         with open(filepath, 'w') as f:
             f.write(xml_data)
