@@ -3011,3 +3011,73 @@ input[type="checkbox"]+label {
 	max-height: 15rem;
 	overflow: auto;
 }
+
+.rc-menu {
+    width: 150px;
+    height: auto;
+    background: #eeeeee;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.22);
+    -moz-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.22);
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.22);
+		position: fixed;
+    z-index: 99;
+}
+
+.rc-menu.active {
+    display: block !important;
+}
+
+.rc-menu li {
+    display: block;
+    width: 100%;
+    height: 36px;
+    line-height: 36px;
+    padding: 0 8px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #444444;
+}
+.rc-menu li:hover {
+    background: #d5d5d5;
+}
+.tabs > .complete {
+    position: absolute;
+    top:  0;
+    right: 0;
+    margin: 0;
+    background: white;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    font-size: 24px;
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.22);
+    -moz-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.22);
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.22);
+    color: green;
+		border-bottom-right-radius: 5px;
+		border-bottom-left-radius: 5px;
+}
+
+.tabs > .complete:hover {
+    background: #ededed;
+}
+.view.edit-mode .header, .view.edit-mode .nav {
+		-webkit-transform: translateY(-100%);
+    transform: translateY(-100%);
+}
+.view .header, .view .nav {
+    -webkit-transition: transform .3s ease;
+    transition: transform .3s ease;
+}
+.edit-mode .page-content {
+    top: 0;
+    height: 100%;
+    transition: all .3s ease;
+    background: rgba(0, 0, 0, 0.37) !important;
+}

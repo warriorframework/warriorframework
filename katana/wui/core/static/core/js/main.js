@@ -29,6 +29,13 @@ var katana = {
       var toCall = $elem.attr('katana-click').replace(/\(.*?\)/, '');
       katana.methodCaller(toCall, $elem);
     });
+    katana.$view.on('contextmenu', '[katana-rclick]', function(e) {
+      $elem = $(this);
+      e.stopPropagation();
+      e.preventDefault();
+      var toCall = $elem.attr('katana-rclick').replace(/\(.*?\)/, '');
+      katana.methodCaller(toCall, $elem, e);
+    });
     katana.$view.on('change', '[katana-change]', function(e) {
       $elem = $(this);
       e.stopPropagation();
@@ -326,6 +333,42 @@ var katana = {
     });
   },
 
+  rcPanel: function(event) {
+    katana.$view.find('.rc-menu.active').remove();
+    var rcMenu = this.closest('.rc-container').find('.rc-menu');
+    rcMenu = rcMenu.clone().appendTo(this);
+    rcMenu.css({
+      'left': event.clientX,
+      'top': event.clientY
+    }).addClass('active');
+    $(window).one('click contextmenu scroll resize', function() {
+      katana.$view.find('.rc-menu.active').remove();
+    });
+  },
+
+  editOrder: function() {
+    var tabContainer = this.closest('.tabs');
+    katana.$view.addClass('edit-mode');
+    tabContainer.sortable({
+      items: "div:not(.complete)"
+    });
+    tabContainer.sortable("option", "disabled", false);
+    tabContainer.append('<div class="complete fa fa-check" katana-click="katana.finishOrder"></div>');
+    katana.$view.find('.rc-menu.active').remove();
+  },
+
+
+  finishOrder: function() {
+    var tabContainer = this.closest('.tabs');
+    katana.$view.removeClass('edit-mode');
+    tabContainer.sortable("disable");
+    this.remove();
+  },
+
+  removeApp: function() {
+    this.closest('.tab').remove();
+  },
+
   openAlert: function(data, callBack_on_accept, callBack_on_dismiss) {
     /*
 	    data = {
@@ -434,7 +477,7 @@ var katana = {
     } else {
         $alertElement.remove();
     }
-    
+
     if (callBack_on_dismiss) {
       callBack_on_dismiss();
     }
@@ -507,7 +550,7 @@ var katana = {
 
       add_break = "";
     }
-    
+
     var sub_heading = "";
 
     if (data.sub_heading) {
@@ -516,7 +559,7 @@ var katana = {
 
     var prompt = "";
     var prompt_default = "";
-    
+
     if(data.prompt_default){
 	     prompt_default = data.prompt_default;
 	  }
@@ -827,21 +870,23 @@ var katana = {
 
   templateAPI: {
     load: function(url, jsURL, limitedStyles, tabTitle, callBack, options) {
-      var $elem = this;
-      url = url ? url : $elem ? $elem.attr('url') : '';
-      tabTitle = tabTitle ? tabTitle : 'Tab';
-      if ($elem != katana.templateAPI) {
-        var jsURL = jsURL ? jsURL.split(',') : $elem.attr('jsurls').split(',');
-        if (jsURL.length > 0) {
-          jsURL.pop();
-          katana.templateAPI.importJS(jsURL, function() {
+      if (!katana.$view.hasClass('edit-mode')) {
+        var $elem = this;
+        url = url ? url : $elem ? $elem.attr('url') : '';
+        tabTitle = tabTitle ? tabTitle : 'Tab';
+        if ($elem != katana.templateAPI) {
+          var jsURL = jsURL ? jsURL.split(',') : $elem.attr('jsurls').split(',');
+          if (jsURL.length > 0) {
+            jsURL.pop();
+            katana.templateAPI.importJS(jsURL, function() {
+              katana.templateAPI.tabRequst($elem, tabTitle, url, limitedStyles, callBack, options);
+            });
+          } else {
             katana.templateAPI.tabRequst($elem, tabTitle, url, limitedStyles, callBack, options);
-          });
-        } else {
-          katana.templateAPI.tabRequst($elem, tabTitle, url, limitedStyles, callBack, options);
-        }
-      } else
-        katana.templateAPI.tabRequst(katana.$activeTab, tabTitle, url, limitedStyles, callBack, options);
+          }
+        } else
+          katana.templateAPI.tabRequst(katana.$activeTab, tabTitle, url, limitedStyles, callBack, options);
+      }
     },
 
     tabRequst: function($elem, tabTitle, url, limitedStyles, callBack, options) {
