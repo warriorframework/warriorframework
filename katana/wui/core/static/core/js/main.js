@@ -961,7 +961,8 @@ var katana = {
       }
     },
 
-    get: function(url, csrf, toSend, dataType, successCallBack, successCallBackData) {
+
+    get: function({url, csrf, toSend, dataType, callBack, fallBack, callBackData, fallBackData}={}) {
       // intialize values for url, csrf, dataType, toSend
       var $elem = this ? this : katana.$activeTab;
       toSend = toSend ? toSend : $elem.find('input:not([name="csrfmiddlewaretoken"])').serializeArray();
@@ -978,26 +979,20 @@ var katana = {
               xhr.setRequestHeader("X-CSRFToken", csrf);
           }
         });
-
         // make an ajax get call using the intialized variables,
         // on sucess the data is sent to success cal back function if one was provided
         $.ajax({
-          url: url,
-          type: "GET",
-          dataType: dataType,
-          data: {
-            data: toSend
-          },
-          success: function(data) {
-            //console.log('success');
-            successCallBack && successCallBack(data, successCallBackData);
-          },
-          error: function(xhr, textStatus, error) {
-            console.log(xhr.statusText);
-            console.log(textStatus);
-            console.log(error);
-          },
-        });
+            url: url,
+            type: "GET",
+            dataType: dataType,
+            data: {
+              data: toSend
+            }
+          }).done(function(data) {
+            callBack && callBack(data, callBackData);
+          }).fail(function(data) {
+            fallBack && fallBack(data, fallBackData);
+          });
       }
     },
 
