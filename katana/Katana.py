@@ -15,6 +15,7 @@ limitations under the License.
 import os
 import sys
 import subprocess
+import signal
 from simple_server import main
 use_py_server = False
 
@@ -30,9 +31,13 @@ class Katana:
     def __init__(self):
         pass
 
+    def signal_handler(self, signal, frame):
+        print('Ended Server')
+        self.ogProc
+
     def runProcess(self, osString):
         print osString
-        proc = subprocess.Popen([osString], shell=True,
+        proc = subprocess.Popen(osString.split(" "), shell=False,
              stdin=None, stdout=None, stderr=None, close_fds=True)
         return proc
 
@@ -44,9 +49,11 @@ class Katana:
 
     def katana_init(self, args):
         args[0] = 'manage.py'
-        self.runProcess( self.to_string(args) )
+        self.ogProc = self.runProcess( self.to_string(args) )
+        signal.signal(signal.SIGINT, self.signal_handler)
         if len(args) > 1 and args[1] == 'database':
             args = self.database_init(args)
+        signal.pause()
 
     def database_init(self, args):
         proc = self.runProcess('python manage.py makemigrations')
