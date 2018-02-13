@@ -71,7 +71,7 @@ class VerifyCaseFile:
         return key, value
 
     def __verify_requirements(self):
-        if self.major[1] not in self.data[self.root]:
+        if self.major[1] not in self.data[self.root] or self.data[self.root][self.major[1]] is None:
             self.data[self.root][self.major[1]] = {"Requirement": []}
         elif "Requirement" not in self.data[self.root][self.major[1]] or self.data[self.root][self.major[1]]["Requirement"] is None:
             self.data[self.root][self.major[1]]["Requirement"] = []
