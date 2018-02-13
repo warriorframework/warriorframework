@@ -6,7 +6,6 @@ Subpackages
 
 .. toctree::
 
-    Framework.ClassUtils.TL1Parser
     Framework.ClassUtils.WNetwork
     Framework.ClassUtils.WSelenium
 
@@ -89,14 +88,6 @@ Framework\.ClassUtils\.testdata\_class module
 ---------------------------------------------
 
 .. automodule:: Framework.ClassUtils.testdata_class
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-Framework\.ClassUtils\.warrior\_connect\_class module
------------------------------------------------------
-
-.. automodule:: Framework.ClassUtils.warrior_connect_class
     :members:
     :undoc-members:
     :show-inheritance:

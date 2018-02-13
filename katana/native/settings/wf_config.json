@@ -1,6 +1,12 @@
 {
   "icon": "cog",
   "color": "blue",
-  "name" : "Settings",
-  "url" : "/katana/settings/"
+  "developer": "Warrior Framework",
+  "description": "Lets you manage your Warrior settings",
+  "app" : {"name" : "Settings", "url" : "/katana/settings/", "include": "native.settings.urls"},
+  "warrior-compatibility": ":warrior-3.7.0",
+  "warrior-incompatibility": "",
+  "version": "1.0.0",
+  "permissions": "",
+  "availability": ""
 }

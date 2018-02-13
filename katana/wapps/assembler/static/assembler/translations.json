@@ -1,0 +1,68 @@
+{
+  "data": [
+    {
+      "key": "toolsRepoClone",
+      "toolTip": "Switch cloning the Tools Repository on and off here."
+    },
+    {
+      "key": "toolsRepo",
+      "toolTip": "Add Tools Repository URL here. To clone a private repository, please use (git) SSH cloning - support for HTTPS will be added in future releases."
+    },
+    {
+      "key": "toolsRepoLabel",
+      "toolTip": "Add a commit-id, branch-name, or tag information here, if required."
+    },
+    {
+      "key": "kwRepoClone",
+      "toolTip": "Switch cloning the Keyword Repository on and off here."
+    },
+    {
+      "key": "kwRepo",
+      "toolTip": "Add Keyword Repository URL here. To clone a private repository, please use (git) SSH cloning - support for HTTPS will be added in future releases."
+    },
+    {
+      "key": "kwRepoLabel",
+      "toolTip": "Add a commit-id, branch-name, or tag information here, if required."
+    },
+    {
+      "key": "kwRepoDelete",
+      "toolTip": "Delete the Keyword Repository"
+    },
+    {
+      "key": "kwRepoAdd",
+      "toolTip": "Add another Keyword Repository"
+    },
+    {
+      "key": "kwRepoAllDrivers",
+      "toolTip": "Clone all drivers available in this Keyword Repository."
+    },
+    {
+      "key": "kwRepoDriver",
+      "toolTip": "Clone this Driver."
+    },
+    {
+      "key": "wsRepoClone",
+      "toolTip": "Switch cloning the Warriorspace Repository on and off here."
+    },
+    {
+      "key": "wsRepo",
+      "toolTip": "Add a Warriorspace Repository URL here. To clone a private repository, please use (git) SSH cloning - support for HTTPS will be added in future releases."
+    },
+    {
+      "key": "wsRepoLabel",
+      "toolTip": "Add a commit-id, branch-name, or tag information here, if required."
+    },
+    {
+      "key": "wsRepoOverwrite",
+      "toolTip": "Overwrite older files with the same names."
+    },
+    {
+      "key": "wsRepoDelete",
+      "toolTip": "Delete the Warriorspace Repository"
+    },
+    {
+      "key": "wsRepoAdd",
+      "toolTip": "Add Another Warriorspace Repository"
+    }
+  ]
+}

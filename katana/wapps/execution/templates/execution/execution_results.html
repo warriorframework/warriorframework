@@ -1,0 +1,29 @@
+<body>
+  <!-- <div class='page-content-inner'> -->
+  <div class="csrf-container">{% csrf_token %} </div>
+  <div class="execution-results-container" id="execution-results-container" data-liveHtmlFpath="{{fpath}}">
+    <div class='execution results-tab tool-bar'>
+        <button class='tablinks' id='console-logs-button' katana-click="execution.resultsViewer.switchTabs" data-content="console-logs-content">
+          <label>Console Logs</label>
+        </button>
+        <button class='tablinks' id='html-results-button' katana-click="execution.resultsViewer.switchTabs" data-content="html-results-content">
+          <label>Html Results</label>
+        </button>
+    </div>
+  <div class='page-content-inner'>
+    <div  id="console-logs-container" >
+      <div id="console-logs-content" class="execution tab-content">
+
+      </div>
+    </div>
+
+    <div  id="html-results-container" >
+        <div id="html-results-content" class="execution tab-content">
+        </div>
+
+    </div>
+  </div>
+
+
+</div>
+</body>

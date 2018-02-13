@@ -55,3 +55,21 @@ def remove_trailing_characters_from_list(element_list, char_list):
         for el in char_list:
             element_list[i] = element_list[i].strip(el)
     return element_list
+
+
+def replace_char(input_str, old, new, count=None):
+    return input_str.replace(old=old, new=new, count=count)
+
+
+def get_repository_name(url):
+    """ This function returns the name of the repository for splitting the
+    url of the repository.
+    :Arguments:
+    1. url (str) = url of the repository as stated by the user in
+    the xml file
+    :Returns:
+    string = name of the repository
+    """
+    li_temp_1 = url.rsplit('/', 1)
+    return li_temp_1[1][:-4] if \
+        li_temp_1[1].endswith(".git") else li_temp_1[1]

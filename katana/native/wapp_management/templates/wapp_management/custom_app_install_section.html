@@ -1,0 +1,43 @@
+<section id="app_installation">
+    <div class="wapp-management-header-div">
+        <h1>&nbsp;Install Custom Apps</h1>
+    </div>
+
+    <div id="app_installation_div">
+        <div class="container-fluid">
+            <div class="row wapp-management-no-top-padding">
+                <div class="card full-width">
+                    <div class="card-body">
+                        <h4 class="card-title">Add App Information</h4>
+                        <h6 class="card-subtitle mb-2 text-muted">To Install New Apps, you can give a path to the App directory or zipped file,
+                            or provide git repository url to install an app here. <br> To clone a private
+                            repository please provide an SSH url to the git rpository</h6>
+                    </div>
+                    <div class="card-body">
+                        <div id="form-for-paths"></div>
+                        <br>
+                        <button id="add_app_path" class="btn btn-primary"
+                                katana-click="wapp_management.addAnotherApp" input_num="2">Add</button>
+                        <button class="btn btn-success" katana-click="wapp_management.installAnApp" save_config="yes">Install</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="preferences_div">
+        <div class="container-fluid">
+            <div class="row wapp-management-no-top-padding">
+                <div class="card full-width">
+                    <div class="card-body">
+                        <h4 class="card-title">Retrieve Saved Configuration</h4>
+                    </div>
+                    <div id="saved-preferences" class="card-body">
+                            {% include 'wapp_management/saved_preferences.html' %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>

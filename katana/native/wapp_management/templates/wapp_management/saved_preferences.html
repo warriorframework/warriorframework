@@ -1,0 +1,16 @@
+<div id="saved_preferences">
+    {% if data.preferences %}
+    <div id="config-file-div">
+        {% for preference in data.preferences %}
+            <div class="card">
+                <div class="card-header wapp-management-card-title-color" id="{{preference}}" katana-click="wapp_management.getPreferenceDetails">{{preference}}</div>
+                <div id="config-details-{{preference}}" class="card-block" >
+                    {% include 'wapp_management/config_details.html'  %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>You don't have any configurations saved today</p>
+    {% endif %}
+</div>

@@ -1,0 +1,14 @@
+
+{% load static %}
+
+<body>
+<div class="tool-bar">   
+      <button id="addNewCase" class="btn btn-success" onclick="suiteApp.startNewSuite()">Add New Suite</button>
+  </div>
+<div class="csrf-container">{% csrf_token %}</div>
+<h2>List of Suites</h2>		
+  <div id="mySuite" auto-init="suiteApp.displayTreeOfSuites">		</div>
+
+<div id="mySuiteTree"></div>
+</body>
+

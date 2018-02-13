@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-import os
-import fcntl
-from time import sleep
-
+import json
 from django.apps import AppConfig
-from utils.date_time_stamp_utils import get_current_datetime_stamp
-from utils.directory_traversal_utils import get_parent_directory, get_abs_path
-from utils.error_log_class import ErrorLog
+from utils.directory_traversal_utils import get_abs_path, join_path
+from utils.json_utils import read_json_data
+from utils.navigator_util import Navigator
 from wui.core.core_utils.app_info_class import AppInformation
 from wui.core.core_utils.apps_class import Apps
 from wui.core.core_utils.core_index_class_utils import CoreIndex
+from wui.core.core_utils.core_utils import validate_config_json
 
 
 class CoreConfig(AppConfig):
@@ -22,38 +20,13 @@ class CoreConfig(AppConfig):
         The ready function is trigger only on events like server start up and server reload
         """
         # print "***************You are in Core Katana App Config Class***************"
+        nav_obj = Navigator()
 
-        base_directory = get_parent_directory(os.path.dirname(os.path.realpath(__file__)), 2)
-
-        logs_dir = "logs"
-        log_file = "logs - {0}.txt".format(get_current_datetime_stamp())
-        dummy_file = "dummy.txt"
-        file_path = os.path.join(base_directory, logs_dir, log_file)
-        dummy_path = os.path.join(base_directory, logs_dir, dummy_file)
-
-        if os.path.exists(dummy_path):
-            f = open(dummy_path)
-            status = True
-            while status:
-                try:
-                    fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
-                except IOError:
-                    sleep(1)
-                    pass
-                else:
-                    status = False
-                    file_path = f.read()
-                    fcntl.flock(f, fcntl.LOCK_UN)
-                    os.remove(dummy_path)
-        else:
-            f = open(dummy_path, 'w')
-            fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
-            f.write(file_path)
-
-        AppInformation.log_obj = ErrorLog(file_path)
-
+        base_directory = nav_obj.get_katana_dir()
+        warrior_dir = nav_obj.get_warrior_dir()
         config_file_name = "wf_config.json"
-        settings_file_path = get_abs_path(os.path.join("wui", "settings.py"), base_directory)
+        config_json_file = join_path(base_directory, "config.json")
+        settings_file_path = get_abs_path(join_path("wui", "settings.py"), base_directory)
         core_index_obj = CoreIndex(base_directory, settings_file_path=settings_file_path)
 
         available_apps = core_index_obj.get_available_apps()
@@ -65,5 +38,9 @@ class CoreConfig(AppConfig):
                                              'config_file_name': config_file_name,
                                              'available_apps': available_apps,
                                              'settings_apps': settings_apps})
+
+        ordered_json = validate_config_json(read_json_data(config_json_file), warrior_dir)
+        with open(config_json_file, "w") as f:
+            f.write(json.dumps(ordered_json, indent=4))
 
         # print "***************You are in Core Katana App Config Class***************"

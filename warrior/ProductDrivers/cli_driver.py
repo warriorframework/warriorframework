@@ -15,7 +15,6 @@ limitations under the License.
 from WarriorCore import kw_driver
 import Actions.CliActions
 
-
 def main(keyword, data_repository, args_repository):
     """Import all actions related to cli driver and call the driver Utils
     to execute a keyword """

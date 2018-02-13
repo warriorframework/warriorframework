@@ -35,13 +35,6 @@ def execute_keyword(keyword, data_repository, args_repository, package_list):
     3. If class method matching the keyword is found in the actions package executes it
         else searches for independent fucntions matching the keyword name and executes it
     """
-#     print "\n\n printing data repository here..."
-#     for x in data_repository:
-#         print_info(x + ":" +str(data_repository[x]))
-#     
-#     print "\n\n"
-    
-    
     package_name_list = get_package_name_list(package_list)
 
     drv_obj = ModuleOperations(package_list, keyword)

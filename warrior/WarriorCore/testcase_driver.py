@@ -40,8 +40,11 @@ def get_testcase_details(testcase_filepath, data_repository, jiraproj):
     by user assigns default values.
     """
 
+    Utils.config_Utils.set_datarepository(data_repository)
     name = Utils.xml_Utils.getChildTextbyParentTag(testcase_filepath, 'Details', 'Name')
     title = Utils.xml_Utils.getChildTextbyParentTag(testcase_filepath, 'Details', 'Title')
+    expResults = Utils.xml_Utils.getChildTextbyParentTag(testcase_filepath,'Details',
+                                                         'ExpectedResults')
     category = Utils.xml_Utils.getChildTextbyParentTag(testcase_filepath, 'Details', 'Category')
     def_on_error_action = Utils.testcase_Utils.get_defonerror_fromxml_file(testcase_filepath)
     def_on_error_value = Utils.xml_Utils.getChildAttributebyParentTag(testcase_filepath, 'Details',
@@ -64,6 +67,9 @@ def get_testcase_details(testcase_filepath, data_repository, jiraproj):
         title = "None"
     else:
         title = str(title).strip()
+
+    if expResults is None or expResults is False:
+        expResults = "None"
 
     if def_on_error_value is None or def_on_error_value is False:
         def_on_error_value = None
@@ -96,7 +102,6 @@ def get_testcase_details(testcase_filepath, data_repository, jiraproj):
        By this feature we allow the user to run the same testcases, with
        different data files with out actually changing the testcase.
     """
-
     # First priority for data files given through CLI##
     if data_repository.has_key('ow_datafile'):
         datafile = data_repository['ow_datafile']
@@ -112,7 +117,9 @@ def get_testcase_details(testcase_filepath, data_repository, jiraproj):
     # Fourth priority for data files given in the Testcase file##
     else:
         datafile, data_type = efile_obj.get_data_files()
-
+    #To check the whether data file is a well formed xml file.
+    if datafile and datafile is not "NO_DATA":
+        Utils.xml_Utils.getRoot(datafile)
     # tc_execution_dir = Utils.file_Utils.createDir_addtimestamp(execution_dir, nameonly)
     # datafile, data_type = get_testcase_datafile(testcase_filepath)
     # resultfile, resultsdir = get_testcase_resultfile(testcase_filepath, tc_execution_dir,
@@ -125,7 +132,8 @@ def get_testcase_details(testcase_filepath, data_repository, jiraproj):
     Utils.config_Utils.debug_file(console_logfile)
     # objLogFile = Utils.testcase_Utils.pOpen(logfile)
 
-    to_strip_list = [name, title, category, datafile, data_type, logsdir, resultsdir, defectsdir]
+    to_strip_list = [name, title, category, datafile, data_type, logsdir,
+                     resultsdir, defectsdir, expResults]
     stripped_list = Utils.string_Utils.strip_white_spaces(to_strip_list)
 
     name = stripped_list[0]
@@ -136,6 +144,7 @@ def get_testcase_details(testcase_filepath, data_repository, jiraproj):
     logsdir = stripped_list[5]
     resultsdir = stripped_list[6]
     defectsdir = stripped_list[7]
+    expResults = stripped_list[8]
 
     # Add variables to data_repository
     data_repository['wt_name'] = name
@@ -150,6 +159,8 @@ def get_testcase_details(testcase_filepath, data_repository, jiraproj):
     data_repository['wt_logsdir'] = logsdir
     data_repository['wt_kw_results_dir'] = kw_results_dir
     data_repository['wt_defectsdir'] = defectsdir
+    data_repository['wt_console_logfile'] = console_logfile
+    data_repository['wt_expResults'] = expResults
     # data_repository['wt_logfile'] = objLogFile
     data_repository['wt_operating_system'] = operating_system.upper()
     data_repository['wt_def_on_error_action'] = def_on_error_action.upper()
@@ -221,7 +232,7 @@ def get_steps_list(testcase_filepath):
         new_step_list = Steps.findall('step')
         # execute step multiple times
         for _, step in enumerate(new_step_list):
-            runmode, value = common_execution_utils.get_runmode_from_xmlfile(step)
+            runmode, value, _ = common_execution_utils.get_runmode_from_xmlfile(step)
             retry_type, _, _, retry_value, _ = common_execution_utils.get_retry_from_xmlfile(step)
             if runmode is not None and value > 0:
                 go_next = len(step_list) + value + 1
@@ -268,23 +279,22 @@ def report_testcase_result(tc_status, data_repository):
         2. data_repository (dict) = data_repository of the executed  testcase
     """
     print_info("\n**** Testcase Result ***")
-
     print_info("TESTCASE:{0}  STATUS:{1}".format(data_repository['wt_name'],
                                                  convertLogic(tc_status)))
-
     print_info("\n")
     Utils.testcase_Utils.pTestResult(tc_status, data_repository['wt_resultfile'])
     root = Utils.xml_Utils.getRoot(data_repository['wt_resultfile'])
     fail_count = 0
     for value in root.findall('Keyword'):
         kw_status = value.find('KeywordStatus').text
-        if kw_status != "PASS":
+        if kw_status != "PASS" and kw_status != "RAN":
             fail_count += 1
             kw_name = value.find('Name').text
             get_step_value = value.attrib.values()
             step_num = ','.join(get_step_value)
             if fail_count == 1:
-                print_info("++++++++++++++++++++++++ Summary of Failed Keywords ++++++++++++++++++++++++")
+                print_info("++++++++++++++++++++++++ Summary of Failed Keywords +++++++++++++++++++"
+                           "+++++")
                 print_info("{0:15} {1:45} {2:10}".format('StepNumber', 'KeywordName', 'Status'))
                 print_info("{0:15} {1:45} {2:10}".format(str(step_num), str(kw_name),
                                                          str(kw_status)))
@@ -359,14 +369,17 @@ def get_system_list(datafile, node_req=False, iter_req=False):
 def print_testcase_details_to_console(testcase_filepath, data_repository):
     """Prints the testcase details to the console """
     framework_detail.warrior_framework_details()
-    print_info("\n===============================  TC-DETAILS  ==================================================")
+    print_info("\n===============================  TC-DETAILS  ===================================="
+               "==============")
     print_info("Title: %s" % data_repository['wt_title'])
     print_info("Results directory: %s" % data_repository['wt_resultsdir'])
     print_info("Logs directory: %s" % data_repository['wt_logsdir'])
     print_info("Defects directory: {0}".format(data_repository["wt_defectsdir"]))
     print_info("Datafile: %s" % data_repository['wt_datafile'])
+    print_info("Expected Results: %s" % data_repository['wt_expResults'])
     report_testcase_requirements(testcase_filepath)
-    print_info("================================================================================================")
+    print_info("==================================================================================="
+               "=============")
     time.sleep(2)
 
 
@@ -469,6 +482,8 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
     # Need to remove these after making resultsdir, logsdir as part of properties tag in testcase
     tc_junit_object.add_property("resultsdir", os.path.dirname(data_repository['wt_resultsdir']),
                                  "tc", tc_timestamp)
+    tc_junit_object.update_attr("console_logfile", data_repository['wt_console_logfile'],
+                                 "tc", tc_timestamp)
     tc_junit_object.update_attr("title", data_repository['wt_title'], "tc", tc_timestamp)
 
     data_repository['wt_junit_object'] = tc_junit_object
@@ -498,6 +513,7 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                 runtype.upper() == 'PARALLEL_KEYWORDS':
             tc_junit_object.remove_html_obj()
             data_repository["war_parallel"] = True
+            Utils.config_Utils.data_repository = data_repository
             tc_status = execute_custom(data_type, runtype,
                                        custom_parallel_kw_driver,
                                        data_repository, step_list)
@@ -521,6 +537,7 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                 runtype.upper() == 'PARALLEL_KEYWORDS':
             tc_junit_object.remove_html_obj()
             data_repository["war_parallel"] = True
+            Utils.config_Utils.data_repository = data_repository
             print_info("iterative parallel")
             system_list = get_system_list(data_repository['wt_datafile'],
                                           iter_req=True) \
@@ -556,7 +573,8 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
             tc_status = not tc_status
 
     if tc_status == False and tc_onError_action and tc_onError_action.upper() == 'ABORT_AS_ERROR':
-        print_info("Testcase status will be marked as ERROR as onError action is set to 'abort_as_error'")
+        print_info("Testcase status will be marked as ERROR as onError "
+                   "action is set to 'abort_as_error'")
         tc_status = "ERROR"
     defectsdir = data_repository['wt_defectsdir']
     check_and_create_defects(tc_status, auto_defects, data_repository, tc_junit_object)
@@ -591,7 +609,8 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
         tc_junit_object.update_attr("status", str(tc_status), "ts",
                                     data_repository['wt_ts_timestamp'])
         tc_junit_object.update_attr("status", str(tc_status), "pj", "not appicable")
-        tc_junit_object.update_attr("time", str(tc_duration), "ts", data_repository['wt_ts_timestamp'])
+        tc_junit_object.update_attr("time", str(tc_duration), "ts",
+                                    data_repository['wt_ts_timestamp'])
         tc_junit_object.update_attr("time", str(tc_duration), "pj", "not appicable")
 
         tc_junit_object.output_junit(data_repository['wt_resultsdir'])
@@ -705,7 +724,8 @@ def main(testcase_filepath, data_repository = {}, tc_context='POSITIVE',
             tc_status = False
 
     else:
-        print_error("Testcase xml file does not exist in provided path: {0}".format(testcase_filepath))
+        print_error("Testcase xml file does not exist in provided path: {0}"
+                    .format(testcase_filepath))
         tc_status = False
         if tc_parallel:
             queue.put(('ERROR', str(testcase_filepath), 'IMPACT', '0'))

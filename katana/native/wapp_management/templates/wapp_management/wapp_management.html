@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wapp Management</title>
+    {% load staticfiles %}
+    <link rel="stylesheet" href="{% static 'wapp_management/css/wapp_management.css' %}">
+</head>
+
+<body>
+    <div class="csrf-container">{% csrf_token %}</div>
+
+    <div class="tool-bar">
+        <div class="row text-center wapp-management-toolbar-child">
+            <div class="col-md-2 tool-bar-links" katana-click="wapp_management.goToElement" elem-link="installed_apps">Installed Apps</div>
+            <div class="col-md-2 tool-bar-links" katana-click="wapp_management.goToElement" elem-link="app_installation">Install Custom Apps</div>
+        </div>
+    </div>
+
+    <div class="auto-init" auto-init="wapp_management.initFunction">
+
+        {% include 'wapp_management/installed_apps_section.html' %}
+        {% include 'wapp_management/custom_app_install_section.html' %}
+
+    </div>
+
+</body>
+
+</html>

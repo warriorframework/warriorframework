@@ -13,7 +13,7 @@
 </script>
 <script type="application/javascript">
 
-        
+
 var printFormater = {
   table: '',
   bar: '',
@@ -30,7 +30,7 @@ var printFormater = {
   },
 
   barRelocate: function() {
-    printFormater.bar = printFormater.table.find('tr:first-child').insertBefore(printFormater.table).wrap('<div class="nav"></div>');
+    printFormater.bar = printFormater.table.find('tr:first-child').insertBefore(printFormater.table).wrap('<div class="headingnav"></div>');
   },
 
   placeData: function() {
@@ -103,14 +103,14 @@ var printFormater = {
         printFormater.table.find('tr[name]').off('mouseover mouseleave');
       } else {
         printFormater.table.addClass('filtering');
-        var bar = $('<div class="filterBar" filterScope="' + ($('.nav tr th:contains("' + filterScope + '")').prevAll().length + 1) + '"></div>');
+        var bar = $('<div class="filterBar" filterScope="' + ($('.headingnav tr th:contains("' + filterScope + '")').prevAll().length + 1) + '"></div>');
         for (var i = 0; filterList.length > i; i++) {
           var filter = $('<span>' + filterList[i] + '<input type="checkbox" value="' + filterList[i] + '"></span>').appendTo(bar);
           filter.find('input').on('change', function() {
             printFormater.sortingAPI.filter(bar);
           });
         }
-        bar.appendTo('.nav');
+        bar.appendTo('.headingnav');
         printFormater.table.find('tr[name]').on('mouseover', 'td[rowspan]:nth-child(1)', function() {
           var $elem = $(this).closest('tr');
           $elem.addClass('hover').data().appendTo($elem);
@@ -155,74 +155,81 @@ var printFormater = {
 
 </script>
 
-	<style>
+    <style>
 
-	table#t1 {
-		 font-size:11pt;
-	}
+    table#t1 {
+         font-size:11pt;
+    }
 
-	table#t1 th	{
-	    background-color: black;
-	    color: white;
-	}
-	
-	td#summary {
-		padding:0 15px;
-		border: 100px;
-	}
+    table#t1 th {
+        background-color: black;
+        color: white;
+    }
+
+    td#summary {
+        padding:0 15px;
+        border: 100px;
+    }
 
 a {
     color: inherit;
 }
-.nav th:nth-child(1){
+
+.headingnav{
+  display:inline-block;
+  top:40px;
+
+}
+
+.headingnav th:nth-child(1){
     flex-grow: .3;
 }
 td[rowspan]:nth-child(1){
     flex-grow: .3;
 }
-.nav th:nth-child(2){
+.headingnav th:nth-child(2){
     flex-grow: 1;
 }
 td[rowspan]:nth-child(2){
     flex-grow: 1;
 }
 
-.nav th:nth-child(5){
+.headingnav th:nth-child(5){
     flex-grow: .3;
 }
 td[rowspan]:nth-child(5){
     flex-grow: .3;
 }
-.nav th:nth-child(6){
+.headingnav th:nth-child(6){
     flex-grow: .3;
 }
 td[rowspan]:nth-child(6){
     flex-grow: .3;
 }
-.nav th:nth-child(7){
+.headingnav th:nth-child(7){
     flex-grow: .3;
 }
 td[rowspan]:nth-child(7){
     flex-grow: .3;
 }
-.nav th:nth-child(8){
+.headingnav th:nth-child(8){
     flex-grow: .3;
 }
 td[rowspan]:nth-child(8){
     flex-grow: .3;
 }
 
-.nav th:nth-child(9){
+.headingnav th:nth-child(9){
     flex-grow: .5;
     padding-right: 0px;
     min-width: 140px;
     margin-right: -17px;
-		white-space: nowrap;
+        white-space: nowrap;
 }
-.nav th:nth-child(4) {
+.headingnav th:nth-child(4) {
     flex-grow: .4;
 }
-.nav th:nth-child(9) span{
+.headingnav th:nth-child(9) span{
     font-size: 12px;
 }
 td[rowspan]:nth-child(4) {
@@ -233,14 +240,14 @@ td[rowspan]:nth-child(9){
     padding-right: 60px;
     min-width: 140px;
 }
-.nav th:nth-child(10){
+.headingnav th:nth-child(10){
     display: none;
 }
 td:not([rowspan]){
     font-size: 11px;
     text-align: center;
     padding: 0 2px;
-		display: none;
+        display: none;
 }
 td:not([rowspan]):nth-last-child(1){
     left: 73%;
@@ -279,7 +286,7 @@ tr[name] td:not([rowspan]):nth-last-child(6):hover ~ td:not([rowspan]), tr[name]
     -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.28);
     box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.28);
     transform: translate3d( -3px, 4px, 0);
-		font-size: 12px;
+        font-size: 12px;
 }
 
 tr[name] td:not([rowspan]):nth-last-child(6):before {
@@ -293,9 +300,8 @@ tr[name] td:not([rowspan]):nth-last-child(6) ~ td:not([rowspan]) {
     display: none;
     font-size: 12px;
 }
-.nav tr{
-position: absolute;
-    top: 0;
+.headingnav tr{
+    position: absolute;
     left: 0;
     width: 100%;
     z-index: 1;
@@ -306,13 +312,13 @@ position: absolute;
     -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.28);
     box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.28);
 }
-.nav th{
+.headingnav th{
     font-size: 16px;
     height: 40px;
     line-height: 40px;
     font-weight: 400;
-		position: relative;
-		text-align: center;
+        position: relative;
+        text-align: center;
 }
 td[rowspan] {
     flex-grow: 1;
@@ -431,7 +437,7 @@ tr.active {
     -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.28);
     -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.28);
     box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.28);
-    background: #3699ff !important;
+    background: #6b6b6b !important;
     color: white;
 }
 
@@ -448,9 +454,9 @@ table#t1 th {
     line-height: 40px;
     font-weight: 400;
 }
-.nav th:nth-child(6):before {content: "\f106";font: normal normal normal 14px/1 FontAwesome;position: absolute;right: 10px;line-height: 37px;}
+.headingnav th:nth-child(6):before {content: "\f106";font: normal normal normal 14px/1 FontAwesome;position: absolute;right: 10px;line-height: 37px;}
 
-.nav th:nth-child(6).up:before {content: "\f107";}
+.headingnav th:nth-child(6).up:before {content: "\f107";}
 tr[name="TestcaseRecord"].active ~ tr:not([name]) td:not([rowspan]) {
 
 }
@@ -477,9 +483,9 @@ td[rowspan]:nth-child(3):hover div:not(:empty) {
     transform: translate3d( -3px, 4px, 0);
 }
 
-br {
+/*br {
     display: none;
-}
+}*/
 tr.hidden {
     display: none !important;
 }
@@ -511,14 +517,14 @@ tr[name="TestcaseRecord"] {
     padding-left: 10px;
 }
 .filterBar {
-		width: 100%;
+        width: 100%;
     z-index: 0;
     background: #2578c1;
     height: 40px;
     top: 40px;
     position: absolute;
     left: 0;
-} 
+}
 .filterBar input {
     height: 40px;
     /* width: 100%; */
@@ -540,7 +546,7 @@ tbody{
 @keyframes openTab {
     0% {-webkit-transform: scaleY(0); transform: scaleY(0);}
     70% {-webkit-transform: scaleY(0); transform: scaleY(0);}
-	  100% {-webkit-transform: scaleY(1);transform: scaleY(1);}
+      100% {-webkit-transform: scaleY(1);transform: scaleY(1);}
 }
 .hoverConainer {
     width: 100%;
@@ -549,8 +555,8 @@ tbody{
     bottom: 100%;
     z-index: 1;
     background: grey;
-		transform-origin: bottom;
-		animation: 1s ease openTab;
+        transform-origin: bottom;
+        animation: 1s ease openTab;
     -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.28);
     -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.28);
     box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.28);
@@ -568,7 +574,7 @@ tr.hover {
     content:  '';
 }
 .hoverConainer > tr {
-		border: none;
+        border: none;
     background: #2578c1 !important;
     color: white;
 }
@@ -607,41 +613,41 @@ tr[name] td:not([rowspan]):nth-last-child(6):hover:before {
     color: #43ff43;
 }
 .SKIPPED{
-		color: #4ccbff;
+        color: #4ccbff;
 }
 tr[name="TestsuiteRecord"] .fa-book, tr[name="ProjectRecord"] .fa-book {
     display: none;
 }
-	</style>
+    </style>
 </head>
 <body>
 
 
-	<h2>Results Summary</h2>	
-	<table id="t1" name="ResultsSummaryTable">
-		<tr id="tr1" name="HeadingRow">
-			<th>Type</th>
-			<th>Name</th>
-			<th>Info</th>
-			<th>Timestamp</th>
-			<th>Duration</th>
-			<th>Status</th>
-			<th>Impact</th>
-			<th>On Error</th>
-			<th>
-			<span style="padding-left:5px">Results (<i class="fa fa-line-chart">)</i></span><br/>
-			<span style="padding-left:5px">Logs (<i class="fa fa fa-book">)</i></span><br/>
-			<span style="padding-left:5px">Defects (<i class="fa fa fa-bug">)</i></span><br/>
-			</th>
-			<th colspan="6" id="summary">Summary</th>
-		</tr>
+    <!-- <h2>Results Summary</h2> -->
+    <table class="htmlResults" id="t1" name="ResultsSummaryTable">
+            <tr id="tr1" name="HeadingRow" >
+                <th>Type</th>
+                <th>Name</th>
+                <th>Info</th>
+                <th>Timestamp</th>
+                <th>Duration</th>
+                <th katana-click="execution.resultsViewer.htmlFilter">Status</th>
+                <th>Impact</th>
+                <th>On Error</th>
+                <th>
+                <span >Logs (<i class="fa fa fa-book">)</i></span>
+                <span >Defects (<i class="fa fa fa-bug">)</i></span>
+                </th>
+                <th colspan="6" id="summary">Summary</th>
+            </tr>
 
-	</table>
+    </table>
 
 <script>
-	
-	printFormater.init();
+
+    printFormater.init();
 
 </script>
 </body>
 </html>
+<!-- <span style="padding-left:5px">Results (<i class="fa fa-line-chart">)</i></span><br/> -->

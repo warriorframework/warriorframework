@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<data>
+    <warhorn>
+        <dependency name="jira" install="no" user="no" version="1.0.3" description="This library is used for Jira logging"/>
+        <dependency name="lxml" install="no" user="no" version="3.5" description="This library is used by IronClaw tool"/>
+        <dependency name="paramiko" install="no" user="no" version="1.16.0" description="This library is used for Netconf Operations"/>
+        <dependency name="pexpect" install="no" user="no" version="4.2.0" description="This library is used by the CLI Keywords"/>
+        <dependency name="pysnmp" install="no" user="no" version="4.3.2" description="This library is used by the SNMP Keywords"/>
+        <dependency name="requests" install="no" user="no" version="2.9.1" description="This library is used by the REST Keywords"/>
+        <dependency name="selenium" install="no" user="no" version="2.48.0" description="This library is used by the Selenium Keywords"/>
+        <dependency name="xlrd" install="no" user="no" version="1.0.0" description="This library is used for Excel Operations"/>
+        <dependency name="cloudshell-automation-api" install="no" user="no" version="7.1.0.34" description="This library is used by the Cloudshell Keywords"/>
+    </warhorn>
+</data>

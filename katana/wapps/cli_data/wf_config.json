@@ -1,0 +1,12 @@
+{
+  "icon": "map-signs",
+  "color": "yellow",
+  "developer": "Warrior Framework",
+  "description": "Edit your CLI Data Files here.",
+  "app" : {"name" : "CLI Data", "url" : "/katana/cli_data/", "include": "wapps.cli_data.urls"},
+  "warrior-compatibility": ":warrior-3.7.0",
+  "warrior-incompatibility": "",
+  "version": "1.0.0",
+  "permissions": "",
+  "availability": ""
+}

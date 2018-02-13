@@ -1,0 +1,182 @@
+{% load static %}
+
+
+<body>
+<link rel="stylesheet" href="{% static "./project_table.css" %}" > 
+<!-- <script type="text/javascript" src="{% static "./doProjectHandling.js" %}" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+-->
+<div class="tool-bar">
+	    	{% csrf_token %}
+	    	
+			<button id="addSuite" class="btn btn-primary" katana-click="projectApp.addSuiteToProject">Add Suite To Project</button>-->
+			<!-- <button class="btn btn-primary" onclick="resetUIfromFile()">Discard Changes</button>  -->
+			<button class="btn btn-success save" katana-click="projectApp.mapUiToProjectJson">Save Changes to : </button>
+			<input class="col-md-4 text-right" type="text" id="my_file_to_save" name="my_file_to_save" value="{{projectName}}.xml"/>
+</div>
+<div auto-init="projectApp.mapFullProjectJson">
+	<div class="col-md-12 row">
+			<div class="field col-md-3 input_padding">
+				<label for="projectName">Name*:</label>
+				<input type="text-right" type="text" id="projectName" name="projectName" value="{{projectName}}"/>
+			</div>
+			<div class="field col-md-3 input_padding">	
+				<label for="projectTitle">Project Title*:</label>
+				<input  type="text-right" type="text" id="projectTitle" name="projectTitle" value="{{projectTitle}}" />
+			</div>
+			<div class="field col-md-3 input_padding">
+				<label class="text-right">Engineer*:</label>
+				<input class="text-right" type="text" id="projectEngineer" name="projectEngineer" value="{{projectEngineer}}" />
+			</div>
+			<div class="field col-md-3 input_padding">	
+				
+				<label class="text-right">Last Updated:</label>
+				<input class="text-right" type="text" id="projectDate" name="projectDate" value="{{projectDate}} {{projectTime}}" />
+			</div>
+
+			<div class="field col-md-3 input_padding">
+				<label class="text-right">State:</label>
+				<select class="text-right" type="text" id="projectState" name="projectState" value="{{projectState}}" >
+					<option value="New">New</option>
+					<option value="In Review">In Review</option>
+					<option value="Released">Released</option>
+					<option value="Add">Add Another</option>
+				</select>
+			</div>
+			<div class="field col-md-3 input_padding">
+				<label class="text-right">defaultOnError:</label>
+				<select class="text-right" type="text" id="default_onError" name="default_onError"  value="{{projectdefaultOnError}}" >
+					<option value="next">Next</option>
+					<option value="abort">Abort</option>
+					<option value="abort_as_error">Abort As Error</option>
+					<option value="goto">Goto</option>
+				</select>
+				<select class="text-right" type="text" id="default_onError_goto" name="default_onError_goto" value="{{projectdefaultOnError_goto}}" >
+				</select>
+
+			</div>
+			<div class="field col-md-3 input_padding ">	
+			
+				<label class="hidden text-right" for="projectDatatype">Data Type:</label>
+				<select class="hidden text-right" type="text" id="projectDatatype" name="projectDatatype" value="{{projectDatatype}}" >
+					<option value="Custom">Custom</option>
+					<option value="Hybrid">Hybrid</option>
+					<option value="Iterative">Iterative</option>
+				</select>
+			
+			</div>
+			<div class="field col-md-3 input_padding">	
+				
+				<label class="text-right">Results Dir:</label>
+				<button class="btn btn-info" onclick="projectApp.getResultsDirForProject()">...</button>
+				<div class="" id="fileNames"></div>
+				<input class="text-right" type="text" id="projectResultsDir" name="projectResultsDir" value="{{resultsDir}}" />
+			</div>
+
+			<!-- <button value="Hello" onClick="prompt('eatme','no')" >ddd</button> -->
+		</div>
+	</div>	
+	<div class="container-fluid row">
+		<div id="tableOfTestSuitesForProject"  class="col-md-12" />
+		<div id="editTestSuiteEntry" class="form-group col-md-3 hidden">
+				<div class="field hidden" > 
+				<label >Row Id</label>
+				<input type="text" id="suiteRowToEdit" value=""/>
+				</div>			
+				<div class="field ">
+				<label >Path*:</label>
+
+				<button class="btn btn-info hidden" text-id="suitePath" onclick="getSuiteDataForProject()">...</button>
+				<input type="text" id="suitePath" value=""/>
+				</div>
+				<div class="field ">
+				<label class=" text-right" >ExecType:</label>
+				<select type="text" class="text-right" id="Execute-at-ExecType" value="" >
+				<option value="yes">Yes</option> 
+				<option value="if">If</option> 
+				<option value="if not">If Not</option> 				
+				<option value="no">No</option> 
+				</select>
+				</div>
+				<div >		
+				<div class="field ">
+				<label class="rule-condition" >Rule Condition:</label>
+				<input type="text" class="rule-condition" id="executeRuleAtCondition" value=""/>
+				</div>			
+
+				<div class="field ">
+				<label  class="rule-condition" >Rule Condition Value:</label>
+				<select type="text" class="rule-condition text-right" id="executeRuleAtCondvalue" value="" >
+				<option value="PASS">PASS</option> 
+				<option value="FAIL">FAIL</option> 
+				<option value="ERROR">ERROR</option> 
+				<option value="SKIP">SKIP</option> 
+				</select>
+				</div>	
+
+					<div class="field ">
+					<label class="rule-condition" >Rule Else:</label>
+						
+						<select type="text" class="rule-condition text-right" id="executeRuleAtElse"  value="" >
+						<option value="next">next</option>
+						<option value="abort_as_error">abort_as_error</option>
+						<option value="goto">goto</option>
+						</select>
+					</div>
+						<div class="field ">
+						<label class="rule-condition" >Rule Else Value:</label>
+						<input class="rule-condition" type="text" id="executeRuleAtElsevalue"  value=""  />
+						</div>			
+						<div class="field ">
+						</div>			
+				
+
+				</div>
+				
+				<div class="field ">
+				<label for="onError-at-action">On Error Action*:</label>
+				
+				<select type="text" class="text-right" id="onError-at-action" value="" >
+				<option value="next">next</option>
+				<option value="abort">abort</option>
+				<option value="abort_as_error">abort_as_error</option>
+				<option value="goto">goto</option>
+				</select>
+				</div>
+
+				<div class="field ">
+
+				<select type="text" class="text-right" id="onError-at-value" value="" >
+				</select>
+				</div>
+					
+			<div class="field ">
+			<label class="text-right" >Run mode:</label>
+			<select type="text" class="text-right" id="runmode-at-type" value="standard" >
+				<option value="standard">standard</option>
+					<option value="RMT">RMT</option> 
+				<option value="RUF">RUF</option> 
+				<option value="RUP">RUP</option> 
+			</select>
+			<input type="text" class="text-right" id="runmode-at-value" value="" />
+			
+			</div>
+			<div class="field ">
+				<label class="text-right" >impact</label>
+					<select type="text" id="impact" value="" >
+					<option value="impact">impact</option> 
+					<option value="noimpact">noimpact</option> 
+					</select>
+					<br>
+				</div>
+			<button class="btn col-md-3 center" id="saveChangesToRow" katana-click="projectApp.saveChangesToRowCB">Save Changes</button>>
+			</div>
+
+	</div>
+
+
+	<div id="listOfTestSuitesForProject" class="hidden">{{fulljson}}</div>
+	<div id="savefilepath" class="hidden">{{savefilepath}}</div>
+	<div id="fullpathname" class="hidden">{{fullpathname}}</div>
+</div>
+</body>

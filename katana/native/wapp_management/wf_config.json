@@ -1,0 +1,12 @@
+{
+  "icon": "wrench",
+  "color": "red",
+  "developer": "Warrior Framework",
+  "description": "Manage your wapps with this wapp manager.",
+  "app" : {"name" : "Wapp Management", "url" : "/katana/wapp_management/", "include": "native.wapp_management.urls"},
+  "warrior-compatibility": ":warrior-3.7.0",
+  "warrior-incompatibility": "",
+  "version": "1.0.0",
+  "permissions": "",
+  "availability": ""
+}
