@@ -1,0 +1,293 @@
+{% load cases_filters %}
+<div class="cases-intentional-space">
+    <div class="container-fluid">
+        {% for key, value in data.step.items %}
+        {% if key == "@TS" %}
+        <div class="row">
+            <div class="col-sm-3">
+                <label class="cases-label">Step Number</label>
+            </div>
+            <div class="col-sm-9">
+                <input disabled value="{{ value }}" key="@TS">
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+        {% for key, value in data.step.items %}
+        {% if key == "@Driver" %}
+        <div class="row">
+            <div class="col-sm-3">
+                <label class="cases-label">Driver<span>*</span></label>
+            </div>
+            <div class="col-sm-9">
+                <input list="drivers" katana-change="cases.drawer.stepsChange" key="@Driver" value="{{value}}">
+                <datalist id="drivers">
+                    {% for k, v in data.drivers.items %}
+                    <option>{{ k }}</option>
+                    {% endfor %}
+                </datalist>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+        {% for key, value in data.step.items %}
+        {% if key == "@Keyword" %}
+        <div class="row">
+            <div class="col-sm-3">
+                <label class="cases-label">Keyword<span>*</span></label>
+            </div>
+            <div class="col-sm-9">
+                <input list="keywords" katana-change="cases.drawer.stepsChange" key="@Keyword" value="{{value}}">
+                <datalist id="keywords">
+                    {% for k_new, v_new in data.step.items %}
+                    {% if k_new == "@Driver" %}
+                    {% for k, v in data.drivers.items %}
+                    {% if k == v_new %}
+                    {% for action_name, details in v.actions.items %}
+                    <option>{{ action_name }}</option>
+                    {% endfor %}
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                    {% endfor %}
+                </datalist>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+
+
+         <div class="row">
+            <div class="col-sm-3">
+                <label class="cases-label">Arguments</label>
+            </div>
+             <div class="col-sm-9">
+                 <div class="container-fluid">
+                     <div class="row">
+                         {% for arg in data.step.Arguments.argument %}
+                         {% for key, value in arg.iteritems %}
+                         {% if key == "@name" %}
+                         <div class="col-sm-4 cases-arg-label">
+                            <label class="cases-label">{{ value }}</label>
+                        </div>
+                         {% endif %}
+                         {% endfor %}
+                         {% for key, value in arg.iteritems %}
+                         {% if key == "@value" %}
+                        <div class="col-sm-8">
+                            <input katana-change="cases.drawer.stepsChange" value="{{ value }}" key="Arguments[argument({{forloop.parentloop.counter0}})[@value]]">
+                        </div>
+                         {% endif %}
+                         {% endfor %}
+                         {% endfor %}
+                     </div>
+                 </div>
+             </div>
+        </div>
+
+         <div class="row">
+            <div class="col-sm-3">
+                <label class="cases-label">Description</label>
+            </div>
+            <div class="col-sm-9">
+                <input katana-change="cases.drawer.stepsChange" value="{{data.step.Description}}" key="Description">
+            </div>
+        </div>
+         <div class="row">
+            <div class="col-sm-3">
+                <label class="cases-label">Execute</label>
+            </div>
+            <div class="col-sm-9">
+                {% for key, value in data.step.Execute.items %}
+                {% if key == "@ExecType" %}
+                <select katana-change="cases.drawer.stepsChange" key="Execute[@ExecType]">
+                    {% for val in data.execute_types %}
+                    {% if val == value %}
+                    <option selected="selected">{{val}}</option>
+                    {% else %}
+                    <option>{{val}}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        {% for rule in data.step.Execute.Rule %}
+        {% for key, value in rule.items %}
+        {% if key == "@Condition" %}
+         <div class="row">
+            <div class="col-sm-3">
+                <label class="cases-label">Condition<span>*</span></label>
+            </div>
+            <div class="col-sm-9">
+                <input katana-change="cases.drawer.stepsChange" value="{{value}}" key="Execute[Rule({{ forloop.parentloop.counter0 }})[@Condition]]">
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+        {% for key, value in rule.items %}
+        {% if key == "@Condvalue" %}
+         <div class="row">
+            <div class="col-sm-3 cases-label-text">
+                <label class="cases-label">Condition Value<span>*</span></label>
+            </div>
+            <div class="col-sm-9">
+                <input katana-change="cases.drawer.stepsChange" value="{{value}}" key="Execute[Rule({{ forloop.parentloop.counter0 }})[@Condvalue]]">
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+        {% for key, value in rule.items %}
+        {% if key == "@Else" %}
+         <div class="row">
+            <div class="col-sm-3">
+                <label class="cases-label">Else<span>*</span></label>
+            </div>
+            <div class="col-sm-9">
+                <select katana-change="cases.drawer.stepsChange" value="{{ value }}" key="Execute[Rule({{ forloop.parentloop.counter0 }})[@Else]]">
+                    {% for val in data.execute_elses %}
+                    {% if val|convert_on_errors == value %}
+                    <option selected="selected">{{val}}</option>
+                    {% else %}
+                    <option>{{val}}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+        {% for key, value in rule.items %}
+        {% if key == "@Elsevalue" %}
+         <div class="row">
+            <div class="col-sm-3">
+                <label class="cases-label">Else Value<span>*</span></label>
+            </div>
+            <div class="col-sm-9">
+                <input katana-change="cases.drawer.stepsChange" value="{{value}}" key="Execute[Rule({{ forloop.parentloop.counter0 }})[@Elsevalue]]">
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+        {% endfor %}
+
+        {% for key, value in data.step.runmode.items %}
+        {% if key == "@type" %}
+         <div class="row">
+            <div class="col-sm-3">
+                <label class="cases-label">Run Mode</label>
+            </div>
+            <div class="col-sm-9">
+                <select katana-change="cases.drawer.stepsChange" key="runmode[@type]">
+                    {% for val in data.run_modes %}
+                    {% if val|convert_runmodes == value %}
+                    <option selected="selected">{{val}}</option>
+                    {% else %}
+                    <option>{{val}}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+        {% for key, value in data.step.runmode.items %}
+        {% if key == "@value" %}
+         <div class="row">
+            <div class="col-sm-3">
+                <label class="cases-label">Run Mode Value<span>*</span></label>
+            </div>
+            <div class="col-sm-9">
+                <input katana-change="cases.drawer.stepsChange" value="{{value}}" key="runmode[@value]">
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+        {% for key, value in data.step.Iteration_type.items %}
+        {% if key == "@type" %}
+         <div class="row">
+            <div class="col-sm-3">
+                <label class="cases-label">Iteration Type</label>
+            </div>
+            <div class="col-sm-9">
+                <select katana-change="cases.drawer.stepsChange" key="Iteration_type[@type]">
+                    {% for val in data.iteration_types %}
+                    {% if val|convert_iteration_types == value %}
+                    <option selected="selected">{{val}}</option>
+                    {% else %}
+                    <option>{{val}}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+         <div class="row">
+            <div class="col-sm-3">
+                <label class="cases-label">Context</label>
+            </div>
+            <div class="col-sm-9">
+                <select katana-change="cases.drawer.stepsChange" key="context">
+                    {% for val in data.contexts %}
+                    {% if val|convert_contexts == data.step.context %}
+                    <option selected="selected">{{val}}</option>
+                    {% else %}
+                    <option>{{val}}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+         <div class="row">
+            <div class="col-sm-3">
+                <label class="cases-label">Impact</label>
+            </div>
+            <div class="col-sm-9">
+                <select katana-change="cases.drawer.stepsChange" key="impact">
+                    {% for val in data.impacts %}
+                    {% if val|convert_impacts == data.step.impact %}
+                    <option selected="selected">{{val}}</option>
+                    {% else %}
+                    <option>{{val}}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        {% for key, value in data.step.onError.items %}
+        {% if key == "@action" %}
+        <div class="row">
+            <div class="col-sm-3">
+                <label class="cases-label">On Error</label>
+            </div>
+            <div class="col-sm-9">
+                <select katana-change="cases.drawer.stepsChange" key="onError[@action]">
+                    {% for val in data.on_errors %}
+                    {% if val|convert_on_errors == value %}
+                    <option selected="selected">{{val}}</option>
+                    {% else %}
+                    <option>{{val}}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+        {% for key, value in data.step.onError.items %}
+        {% if key == "@value" %}
+         <div class="row">
+            <div class="col-sm-3">
+                <label class="cases-label">Go To Step<span>*</span></label>
+            </div>
+            <div class="col-sm-9">
+                <input katana-change="cases.drawer.stepsChange" value="{{value}}" key="onError[@value]">
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+</div>

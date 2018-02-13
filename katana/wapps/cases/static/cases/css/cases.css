@@ -1,0 +1,389 @@
+.cases-left-block {
+    height: 100%;
+    width: 50%;
+    float: left;
+}
+
+.cases-left-top-block {
+    height: auto;
+    width: 100%;
+    padding: 2rem;
+    float: left;
+}
+
+.cases-left-bottom-block {
+    height: auto;
+    width: 100%;
+    padding: 2rem;
+    float: left;
+}
+
+.cases-right-block {
+    height: 100%;
+    width: 50%;
+    float: left;
+}
+
+.cases-right-step-block {
+    height: auto;
+    width: 100%;
+    padding: 2rem;
+    float: left;
+}
+
+.cases-header {
+    height: 60px;
+    width: 100%;
+    float: left;
+    background-color: #3b5f82;
+    border-bottom: 2px solid white;
+}
+
+.cases-header-title {
+    color: white;
+    padding: 1rem 1rem;
+}
+
+.cases-header > div:first-child {
+    width: 90%;
+    height: 100%;
+    float: left;
+    padding: 0 2%;
+}
+
+.cases-header > div:nth-child(2) {
+    width: 2%;
+    height: 100%;
+    float: left;
+    text-align: center;
+    padding: 20px 0;
+}
+
+.cases-header > div:nth-child(3) {
+    width: 2%;
+    height: 100%;
+    float: left;
+    text-align: center;
+    padding: 20px 0;
+}
+
+.cases-header > div:nth-child(4) {
+    width: 6%;
+    height: 100%;
+    float: left;
+    text-align: center;
+    padding: 20px 0;
+}
+
+.cases-side-drawer-open {
+    height: 100%;
+    width: 40%;
+    min-width: 600px;
+    position: fixed;
+    top: 90px;
+    right: 0;
+    background-color: white;
+}
+
+.cases-drawer-open-header {
+    height: 60px;
+    width: 100%;
+    float: left;
+    background-color: #3b5f82;
+    border-left: 2px solid lightgrey;
+}
+
+.cases-drawer-open-header > div:nth-child(1) {
+    width: 7%;
+    height: 100%;
+    float: left;
+    text-align: center;
+    padding: 20px 0;
+}
+
+.cases-drawer-open-header > div:nth-child(2) {
+    width: 83%;
+    height: 100%;
+    float: left;
+    padding: 0 2%;
+}
+
+.cases-drawer-open-header > div:nth-child(3) {
+    width: 5%;
+    height: 100%;
+    float: left;
+    text-align: center;
+    padding: 20px 0;
+}
+
+.cases-drawer-open-header > div:nth-child(4) {
+    width: 5%;
+    height: 100%;
+    float: left;
+    text-align: center;
+    padding: 20px 0;
+}
+
+.cases-side-drawer-closed {
+    height: 100%;
+    width: 60px;
+    position: fixed;
+    top: 90px;
+    right: 0;
+    background-color: lightgrey;
+}
+
+.cases-side-drawer-closed > div {
+    width: 100%;
+    height: 60px;
+    float: left;
+    text-align: center;
+    padding: 20px 0;
+    position: relative;
+}
+
+.cases-side-drawer-closed > div > i {
+    color: black;
+}
+
+.cases-side-drawer-closed > div:hover {
+    background-color: khaki;
+    transition: all 0.2s ease-in-out;
+}
+
+.cases-drawer-open-body {
+    width: 100%;
+    height: 100%;
+    background-color: white;
+}
+
+.cases-drawer-open-body > .sidebar {
+    height: 100%;
+    width: 60px;
+    background-color: lightgrey;
+    float: left;
+}
+
+.cases-drawer-open-body > .sidebar > div {
+    width: 100%;
+    height: 60px;
+    float: left;
+    text-align: center;
+    padding: 20px 0;
+    position: relative;
+}
+
+.cases-drawer-open-body > .sidebar > div > i {
+    color: black;
+}
+
+.cases-icon-bg-color {
+    background-color: grey;
+}
+
+.cases-drawer-open-body > .content {
+    height: 720px;
+    width: calc(100% - 60px);
+    float: left;
+    overflow: auto;
+}
+
+.cases-intentional-space {
+    padding: 40px 20px;
+}
+
+.cases-intentional-space-x {
+    padding: 40px 6% 40px 20px;
+}
+
+.cases-label {
+    text-align: left;
+    padding-top: 8px;
+}
+
+.cases-label-text {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.cases-intentional-space > .container-fluid > .row > div > input:not([disabled]) {
+    background-color: white !important;
+}
+
+.cases-intentional-space > .container-fluid > .row > div > input:disabled {
+    cursor: not-allowed;
+}
+
+.cases-intentional-space > .container-fluid > .row > div > select {
+    margin-top: 4px;
+    background-color: white !important;
+}
+
+.cases-intentional-space-x > div > table > tbody > tr > th {
+    background-color: lightgrey;
+    max-width: 33%;
+    text-align: left;
+}
+
+.cases-intentional-space-x > div > table > tbody > tr > td {
+    text-align: left;
+    max-width: 67%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cases-intentional-space-x > .cases-internal-space {
+    height: auto;
+    width: 50%;
+    float: left;
+    padding-right: 5px
+}
+
+.cases-intentional-space-x > .cases-internal-section > div > table > tbody > tr > td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left;
+}
+
+.cases-intentional-space-x > .cases-internal-section > div > table > tbody > tr > td:nth-child(1) {
+    text-align: center;
+}
+
+.cases-intentional-space-x > .cases-internal-section > div > table > tbody > tr:hover > td {
+    white-space: initial;
+    word-break: break-all;
+}
+
+.cases-intentional-space-x > .cases-internal-section > div > table > tbody > tr:hover {
+    background-color: lightblue;
+    height: auto;
+    white-space: initial;
+    transition: all 0.2s ease-in-out;
+}
+
+.cases-intentional-space-x > .cases-internal-section > div > table:hover {
+}
+
+.cases-internal-section {
+    width: 100%;
+    height: auto;
+    float: left;
+}
+
+.cases-step-toolbar {
+    width: 40px;
+    height: fit-content;
+    float: left;
+    background-color: lightblue;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 50px;
+}
+
+.cases-extra-left-padding {
+    padding-right: calc(6% - 40px);
+}
+
+.cases-step-table-parent {
+    width: calc(100% - 40px);
+    float: left;
+}
+
+.cases-step-toolbar > div {
+    width: 100%;
+    height: 40px;
+    float: left;
+    text-align: center;
+    padding-top: 12px;
+    position: relative;
+}
+
+.cases-step-toolbar > div:hover {
+    background-color: khaki;
+    width: 112.5%;
+    height: 45px;
+    padding-top: 15px;
+    transition: all 0.2s ease-in-out;
+}
+
+.cases-step-toolbar > div > i > i {
+    font-size: 12px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: white;
+}
+
+.cases-step-toolbar > div:hover > i > i {
+    color: green;
+}
+
+.badged {}
+
+.cases-step-toolbar > div:hover > .badged {
+    color: darkgrey;
+}
+
+.sidebar-badged {}
+
+.sidebar-badged > i {
+    font-size: 12px;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    color: red;
+}
+
+.cases-req {}
+
+.cases-req-options {
+    width: 10%;
+    float: left;
+    text-align: center;
+    display: none;
+}
+
+.cases-req:hover {
+    background-color: lightblue;
+    height: auto;
+    white-space: initial;
+    transition: all 0.2s ease-in-out;
+}
+
+
+.cases-req:hover > .cases-req-options {
+    display: block;
+}
+
+.cases-input-div {
+    width: 85%;
+    float: left;
+}
+
+.cases-icon-input-div {
+    width: 15%;
+    float: left;
+    text-align: center;
+    padding: 9px 0;
+}
+
+.cases-icon-input-div > i:hover {
+    font-size: 110%;
+    color: #3b5f82 ;
+}
+
+.cases-hidden-element {
+    visibility: hidden;
+}
+
+.cases-arg-label {
+    font: 400 13.3333px Arial;
+    padding: 4px 5px 4px 20px;
+}
+
+.cases-label > span {
+    color: red;
+}

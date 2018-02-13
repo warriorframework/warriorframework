@@ -1,0 +1,48 @@
+<div class="cases-intentional-space-x">
+    <div class="cases-internal-space">
+        <table class="table table-bordered">
+            <tbody>
+            {% for req in data.Requirement %}
+            {% if forloop.counter <= data.mid_req %}
+            <tr req-number="{{ forloop.counter }}">
+                <th scope="row">{{ forloop.counter }}</th>
+                <td class="cases-req">
+                    <div style="width: 90%; float: left;">
+                        {{ req }}
+                    </div>
+                    <div class="cases-req-options">
+                        <i class="fa fa-pencil" aria-hidden="true" katana-click="cases.reqSection.editReq"></i>
+                        &nbsp;
+                        <i class="fa fa-trash-o" aria-hidden="true" katana-click="cases.reqSection.deleteReq"></i>
+                    </div>
+                </td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="cases-internal-space">
+        <table class="table table-bordered">
+            <tbody>
+            {% for req in data.Requirement %}
+            {% if forloop.counter > data.mid_req %}
+            <tr req-number="{{ forloop.counter }}">
+                <th scope="row">{{ forloop.counter }}</th>
+                <td class="cases-req">
+                    <div style="width: 90%; float: left;">
+                        {{ req }}
+                    </div>
+                    <div class="cases-req-options">
+                        <i class="fa fa-pencil" aria-hidden="true" katana-click="cases.reqSection.editReq"></i>
+                        &nbsp;
+                        <i class="fa fa-trash-o" aria-hidden="true" katana-click="cases.reqSection.deleteReq"></i>
+                    </div>
+                </td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
