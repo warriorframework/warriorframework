@@ -383,3 +383,7 @@
     font: 400 13.3333px Arial;
     padding: 4px 5px 4px 20px;
 }
+
+.cases-label > span {
+    color: red;
+}

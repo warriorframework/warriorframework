@@ -403,104 +403,257 @@ var cases = {
                 }
             },
 
+            _verifyContents: {
+
+                details: function(data) {
+                    var alertData = {
+                        "alert_type": "warning",
+                        "heading": "",
+                        "text": "",
+                        "show_cancel_btn": false
+                    };
+                    if(data.dataObject.Name === ""){
+                        alertData.heading = "Name is mandatory.";
+                        alertData.text = "Please fill out the Name of this Case to save the changes.";
+                        katana.openAlert(alertData);
+                        return false;
+                    }
+                    if (data.dataObject.Title === ""){
+                        alertData.heading = "Title is mandatory.";
+                        alertData.text = "Please fill out the Title of this Case to save the changes.";
+                        katana.openAlert(alertData);
+                        return false;
+                    }
+                    if (data.dataObject.Engineer === ""){
+                        alertData.heading = "Engineer Name is mandatory.";
+                        alertData.text = "Please fill out the Engineer Name of this Case to save the changes.";
+                        katana.openAlert(alertData);
+                        return false;
+                    }
+                    if (data.dataObject.Engineer === ""){
+                        alertData.heading = "Engineer Name is mandatory.";
+                        alertData.text = "Please fill out the Engineer Name of this Case to save the changes.";
+                        katana.openAlert(alertData);
+                        return false;
+                    }
+                    if (data.dataObject.default_onError["@action"] === "Go To" || data.dataObject.default_onError["@action"] === "goto"){
+                        if(data.dataObject.default_onError["@value"] === ""){
+                            alertData.heading = "Step Number is manadatory.";
+                            alertData.text = "Please fill out the step number for Go To and then save the Case Datails.";
+                            katana.openAlert(alertData);
+                            return false;
+                        }
+                        if (isNaN(data.dataObject.default_onError["@value"])){
+                            alertData.heading = "Step Number has to be an Integer.";
+                            alertData.text = "The step number for Go To has be an integer. Please correct that and then save the Case Datails.";
+                            katana.openAlert(alertData);
+                            return false;
+                        }
+                    }
+                    return true;
+                },
+
+                requirements: function (data) {
+                    var alertData = {
+                        "alert_type": "warning",
+                        "heading": "",
+                        "text": "",
+                        "show_cancel_btn": false
+                    };
+                    if(data.dataObject === ""){
+                        alertData.heading = "Requirement Name is mandatory.";
+                        alertData.text = "Please fill out the Name of the Requirement to save it.";
+                        katana.openAlert(alertData);
+                        return false;
+                    }
+                    return true;
+                },
+
+                steps: function(data) {
+                    var alertData = {
+                        "alert_type": "warning",
+                        "heading": "",
+                        "text": "",
+                        "show_cancel_btn": false
+                    };
+                    if(data.dataObject["@Driver"] === ""){
+                        alertData.heading = "Driver Name is mandatory.";
+                        alertData.text = "Please fill out the Name of the Driver before saving the step.";
+                        katana.openAlert(alertData);
+                        return false;
+                    }
+                    if(data.dataObject["@Keyword"] === ""){
+                        alertData.heading = "Driver Name is mandatory.";
+                        alertData.text = "Please fill out the Name of the Driver before saving the step.";
+                        katana.openAlert(alertData);
+                        return false;
+                    }
+                    if(data.dataObject.Execute["@ExecType"] === "If" || data.dataObject.Execute["@ExecType"] === "If Not"){
+                        for(var i=0; i<data.dataObject.Execute.Rule.length; i++){
+                            if(data.dataObject.Execute.Rule[i]["@Condition"] === ""){
+                                alertData.heading = "Condition is mandatory.";
+                                alertData.text = "Please fill out the Condition (" + (i+1) + ") before saving the step.";
+                                katana.openAlert(alertData);
+                                return false;
+                            }
+                            if(data.dataObject.Execute.Rule[i]["@Condvalue"] === ""){
+                                alertData.heading = "Condition Value is mandatory.";
+                                alertData.text = "Please fill out the Value for the Condition(" + (i+1) + ") before saving the step.";
+                                katana.openAlert(alertData);
+                                return false;
+                            }
+                            if(data.dataObject.Execute.Rule[i]["@Else"] === "Go To" || data.dataObject.Execute.Rule[i]["@Else"] === "goto"){
+                                if(data.dataObject.Execute.Rule[i]["@Elsevalue"] === ""){
+                                    alertData.heading = "Else Value is mandatory.";
+                                    alertData.text = "Please fill out the Value for Else(" + (i+1) + ") before saving the step.";
+                                    katana.openAlert(alertData);
+                                    return false;
+                                }
+                                if(isNaN(data.dataObject.Execute.Rule[i]["@Elsevalue"])){
+                                    alertData.heading = "Else Value has to be an Integer.";
+                                    alertData.text = "The Value for the Else(" + (i+1) + ") can only be an integer.";
+                                    katana.openAlert(alertData);
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                    if(data.dataObject.runmode["@type"] !== "Standard"){
+                        if(data.dataObject.runmode["@value"] === ""){
+                            alertData.heading = "Run Mode Value is mandatory.";
+                            alertData.text = "Please fill out the Run Mode Value before saving the step.";
+                            katana.openAlert(alertData);
+                            return false;
+                        }
+                        if(isNaN(data.dataObject.runmode["@value"])){
+                            alertData.heading = "Run Mode Value has to be an Integer.";
+                            alertData.text = "The Value for Run Mode can only be an integer.";
+                            katana.openAlert(alertData);
+                            return false;
+                        }
+                    }
+                    if(data.dataObject.onError["@action"] === "Go To" || data.dataObject.onError["@action"] === "goto"){
+                        if(data.dataObject.onError["@value"] === ""){
+                            alertData.heading = "Go To Step Number is mandatory.";
+                            alertData.text = "Please fill out the Go To Step Number before saving the step.";
+                            katana.openAlert(alertData);
+                            return false;
+                        }
+                        if(isNaN(data.dataObject.onError["@value"])){
+                            alertData.heading = "Go To Step Number has to be an Integer.";
+                            alertData.text = "The Value for Go To Step Number can only be an integer.";
+                            katana.openAlert(alertData);
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+            },
+
             _saveContents: {
 
                 details: function (data, $source) {
-                    $.ajax({
-                        headers: {
-                            'X-CSRFToken': katana.$activeTab.find('input[name="csrfmiddlewaretoken"]').attr('value')
-                        },
-                        url: 'cases/get_details_display_template/',
-                        type: 'POST',
-                        data: {"data": JSON.stringify(data.dataObject)}
-                    }).done(function(html_data){
-                        $source.closest('#main-div').find('#detail-block').html(html_data);
-                        $source.closest('#main-div').find('#detail-block').find('table').data({'data-object': data.dataObject});
-                        $source.children('i').hide();
-                        $source.attr('draft', 'false');
-                        $source.closest('.cases-side-drawer-open').hide();
-                        $source.closest('.cases-side-drawer-open').siblings('.cases-side-drawer-closed').find('.fa-list-alt').children('i').hide();
-                        $source.closest('.cases-side-drawer-open').siblings('.cases-side-drawer-closed').show();
-                        cases.mappings.editDetails.savedContent = false;
-                    });
+                    if (cases.drawer.open._verifyContents.details(data)){
+                        $.ajax({
+                            headers: {
+                                'X-CSRFToken': katana.$activeTab.find('input[name="csrfmiddlewaretoken"]').attr('value')
+                            },
+                            url: 'cases/get_details_display_template/',
+                            type: 'POST',
+                            data: {"data": JSON.stringify(data.dataObject)}
+                        }).done(function(html_data){
+                            $source.closest('#main-div').find('#detail-block').html(html_data);
+                            $source.closest('#main-div').find('#detail-block').find('table').data({'data-object': data.dataObject});
+                            $source.children('i').hide();
+                            $source.attr('draft', 'false');
+                            $source.closest('.cases-side-drawer-open').hide();
+                            $source.closest('.cases-side-drawer-open').siblings('.cases-side-drawer-closed').find('.fa-list-alt').children('i').hide();
+                            $source.closest('.cases-side-drawer-open').siblings('.cases-side-drawer-closed').show();
+                            cases.mappings.editDetails.savedContent = false;
+                        });
+                    }
                 },
 
                 requirements: function (data, $source) {
-                    var $allTrs = $source.closest('#main-div').find('#req-block').find('tr');
-                    var completeData = [];
-                    var flag = true;
-                    for (var i=0; i < $allTrs.length; i++) {
-                        if($($allTrs[i]).attr('being-edited') !== 'true'){
-                            completeData.push($($allTrs[i]).data().dataObject);
-                        } else {
-                            flag = false;
+                    if (cases.drawer.open._verifyContents.requirements(data)) {
+                        var $allTrs = $source.closest('#main-div').find('#req-block').find('tr');
+                        var completeData = [];
+                        var flag = true;
+                        for (var i=0; i < $allTrs.length; i++) {
+                            if($($allTrs[i]).attr('being-edited') !== 'true'){
+                                completeData.push($($allTrs[i]).data().dataObject);
+                            } else {
+                                flag = false;
+                                completeData.push(data.dataObject);
+                            }
+                        }
+                        if (flag) {
                             completeData.push(data.dataObject);
                         }
+                        $.ajax({
+                            headers: {
+                                'X-CSRFToken': katana.$activeTab.find('input[name="csrfmiddlewaretoken"]').attr('value')
+                            },
+                            url: 'cases/get_reqs_display_template/',
+                            type: 'POST',
+                            data: {"data": JSON.stringify(completeData)}
+                        }).done(function(html_data){
+                            $source.closest('#main-div').find('#req-block').html(html_data);
+                            $allTrs = $source.closest('#main-div').find('#req-block').find('tr');
+                            for (i=0; i < $allTrs.length; i++) {
+                                $($allTrs[i]).data({"data-object": completeData[i]})
+                            }
+                            $source.children('i').hide();
+                            $source.attr('draft', 'false');
+                            $source.closest('.cases-side-drawer-open').hide();
+                            $source.closest('.cases-side-drawer-open').siblings('.cases-side-drawer-closed').find('.fa-tags').children('i').hide();
+                            $source.closest('.cases-side-drawer-open').siblings('.cases-side-drawer-closed').show();
+                            cases.mappings.newReq.savedContent = false;
+                        });
                     }
-                    if (flag) {
-                        completeData.push(data.dataObject);
-                    }
-                    $.ajax({
-                        headers: {
-                            'X-CSRFToken': katana.$activeTab.find('input[name="csrfmiddlewaretoken"]').attr('value')
-                        },
-                        url: 'cases/get_reqs_display_template/',
-                        type: 'POST',
-                        data: {"data": JSON.stringify(completeData)}
-                    }).done(function(html_data){
-                        $source.closest('#main-div').find('#req-block').html(html_data);
-                        $allTrs = $source.closest('#main-div').find('#req-block').find('tr');
-                        for (i=0; i < $allTrs.length; i++) {
-                            $($allTrs[i]).data({"data-object": completeData[i]})
-                        }
-                        $source.children('i').hide();
-                        $source.attr('draft', 'false');
-                        $source.closest('.cases-side-drawer-open').hide();
-                        $source.closest('.cases-side-drawer-open').siblings('.cases-side-drawer-closed').find('.fa-tags').children('i').hide();
-                        $source.closest('.cases-side-drawer-open').siblings('.cases-side-drawer-closed').show();
-                        cases.mappings.newReq.savedContent = false;
-                    });
                 },
 
                 steps: function (data, $source) {
-                    var $allTrs = $source.closest('#main-div').find('#step-block').find('tbody').find('tr');
-                    var completeData = [];
-                    var ts = false;
-                    var flag = true;
-                    for (var i=0; i < $allTrs.length; i++) {
-                        if($($allTrs[i]).attr('being-edited') !== 'true'){
-                            completeData.push($($allTrs[i]).data().dataObject);
-                        } else {
-                            flag = false;
-                            completeData.push(data.dataObject);
-                            ts = completeData.length - 1 ;
+                    if (cases.drawer.open._verifyContents.steps(data)) {
+                        var $allTrs = $source.closest('#main-div').find('#step-block').find('tbody').find('tr');
+                        var completeData = [];
+                        var ts = false;
+                        var flag = true;
+                        for (var i=0; i < $allTrs.length; i++) {
+                            if($($allTrs[i]).attr('being-edited') !== 'true'){
+                                completeData.push($($allTrs[i]).data().dataObject);
+                            } else {
+                                flag = false;
+                                completeData.push(data.dataObject);
+                                ts = completeData.length - 1 ;
+                            }
                         }
-                    }
-                    if (flag) {
-                        var index = parseInt(data.dataObject["@TS"]) - 1;
-                        completeData.splice(index, 0, data.dataObject);
-                        ts = index;
-                    }
-                    $.ajax({
-                        headers: {
-                            'X-CSRFToken': katana.$activeTab.find('input[name="csrfmiddlewaretoken"]').attr('value')
-                        },
-                        url: 'cases/get_steps_display_template/',
-                        type: 'POST',
-                        data: {"data": JSON.stringify(completeData), "ts": ts}
-                    }).done(function(html_data){
-                        $source.closest('#main-div').find('#step-block').html(html_data);
-                        $allTrs = $source.closest('#main-div').find('#step-block').find('tr');
-                        for (i=0; i < $allTrs.length; i++) {
-                            $($allTrs[i]).data({"data-object": completeData[i]})
+                        if (flag) {
+                            var index = parseInt(data.dataObject["@TS"]) - 1;
+                            completeData.splice(index, 0, data.dataObject);
+                            ts = index;
                         }
-                        $source.children('i').hide();
-                        $source.attr('draft', 'false');
-                        $source.closest('.cases-side-drawer-open').hide();
-                        $source.closest('.cases-side-drawer-open').siblings('.cases-side-drawer-closed').find('.fa-star').children('i').hide();
-                        $source.closest('.cases-side-drawer-open').siblings('.cases-side-drawer-closed').show();
-                        cases.mappings.newStep.savedContent = false;
-                    });
+                        $.ajax({
+                            headers: {
+                                'X-CSRFToken': katana.$activeTab.find('input[name="csrfmiddlewaretoken"]').attr('value')
+                            },
+                            url: 'cases/get_steps_display_template/',
+                            type: 'POST',
+                            data: {"data": JSON.stringify(completeData), "ts": ts}
+                        }).done(function(html_data){
+                            $source.closest('#main-div').find('#step-block').html(html_data);
+                            $allTrs = $source.closest('#main-div').find('#step-block').find('tr');
+                            for (i=0; i < $allTrs.length; i++) {
+                                $($allTrs[i]).data({"data-object": completeData[i]})
+                            }
+                            $source.children('i').hide();
+                            $source.attr('draft', 'false');
+                            $source.closest('.cases-side-drawer-open').hide();
+                            $source.closest('.cases-side-drawer-open').siblings('.cases-side-drawer-closed').find('.fa-star').children('i').hide();
+                            $source.closest('.cases-side-drawer-open').siblings('.cases-side-drawer-closed').show();
+                            cases.mappings.newStep.savedContent = false;
+                        });
+                    }
                 },
             },
 

@@ -2,7 +2,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-3">
-                <label class="cases-label">Name</label>
+                <label class="cases-label">Name<span>*</span></label>
             </div>
             <div class="col-sm-9">
                 <input key="Name" value="{{ data.Name }}" katana-change="cases.drawer.detailsChange">
@@ -10,7 +10,7 @@
         </div>
         <div class="row">
             <div class="col-sm-3">
-                <label class="cases-label">Title</label>
+                <label class="cases-label">Title<span>*</span></label>
             </div>
             <div class="col-sm-9">
                 <input key="Title" value="{{ data.Title }}" katana-change="cases.drawer.detailsChange">
@@ -39,7 +39,7 @@
         </div>
         <div class="row">
             <div class="col-sm-3">
-                <label class="cases-label">Engineer</label>
+                <label class="cases-label">Engineer<span>*</span></label>
             </div>
             <div class="col-sm-9">
                 <input key="Engineer" value="{{ data.Engineer }}" katana-change="cases.drawer.detailsChange">
@@ -78,7 +78,7 @@
                 <label class="cases-label">Go To Step</label>
             </div>
             <div class="col-sm-9">
-                <input key="default_onError[@goto]" katana-change="cases.drawer.detailsChange">
+                <input key="default_onError[@value]" katana-change="cases.drawer.detailsChange">
             </div>
         </div>
         <div class="row">
@@ -98,7 +98,7 @@
         </div>
         <div class="row">
             <div class="col-sm-3">
-                <label class="cases-label">Data Type</label>
+                <label class="cases-label">Data Type<span>*</span></label>
             </div>
             <div class="col-sm-9">
                 <select key="Datatype" katana-change="cases.drawer.detailsChange" value="{{ data.Datatype }}">

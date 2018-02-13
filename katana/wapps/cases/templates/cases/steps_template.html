@@ -17,7 +17,7 @@
         {% if key == "@Driver" %}
         <div class="row">
             <div class="col-sm-3">
-                <label class="cases-label">Driver</label>
+                <label class="cases-label">Driver<span>*</span></label>
             </div>
             <div class="col-sm-9">
                 <input list="drivers" katana-change="cases.drawer.stepsChange" key="@Driver" value="{{value}}">
@@ -34,7 +34,7 @@
         {% if key == "@Keyword" %}
         <div class="row">
             <div class="col-sm-3">
-                <label class="cases-label">Keyword</label>
+                <label class="cases-label">Keyword<span>*</span></label>
             </div>
             <div class="col-sm-9">
                 <input list="keywords" katana-change="cases.drawer.stepsChange" key="@Keyword" value="{{value}}">
@@ -119,7 +119,7 @@
         {% if key == "@Condition" %}
          <div class="row">
             <div class="col-sm-3">
-                <label class="cases-label">Condition</label>
+                <label class="cases-label">Condition<span>*</span></label>
             </div>
             <div class="col-sm-9">
                 <input katana-change="cases.drawer.stepsChange" value="{{value}}" key="Execute[Rule({{ forloop.parentloop.counter0 }})[@Condition]]">
@@ -131,7 +131,7 @@
         {% if key == "@Condvalue" %}
          <div class="row">
             <div class="col-sm-3 cases-label-text">
-                <label class="cases-label">Condition Value</label>
+                <label class="cases-label">Condition Value<span>*</span></label>
             </div>
             <div class="col-sm-9">
                 <input katana-change="cases.drawer.stepsChange" value="{{value}}" key="Execute[Rule({{ forloop.parentloop.counter0 }})[@Condvalue]]">
@@ -143,7 +143,7 @@
         {% if key == "@Else" %}
          <div class="row">
             <div class="col-sm-3">
-                <label class="cases-label">Else</label>
+                <label class="cases-label">Else<span>*</span></label>
             </div>
             <div class="col-sm-9">
                 <select katana-change="cases.drawer.stepsChange" value="{{ value }}" key="Execute[Rule({{ forloop.parentloop.counter0 }})[@Else]]">
@@ -163,7 +163,7 @@
         {% if key == "@Elsevalue" %}
          <div class="row">
             <div class="col-sm-3">
-                <label class="cases-label">Else Value</label>
+                <label class="cases-label">Else Value<span>*</span></label>
             </div>
             <div class="col-sm-9">
                 <input katana-change="cases.drawer.stepsChange" value="{{value}}" key="Execute[Rule({{ forloop.parentloop.counter0 }})[@Elsevalue]]">
@@ -197,7 +197,7 @@
         {% if key == "@value" %}
          <div class="row">
             <div class="col-sm-3">
-                <label class="cases-label">Run Mode Value</label>
+                <label class="cases-label">Run Mode Value<span>*</span></label>
             </div>
             <div class="col-sm-9">
                 <input katana-change="cases.drawer.stepsChange" value="{{value}}" key="runmode[@value]">
@@ -281,10 +281,10 @@
         {% if key == "@value" %}
          <div class="row">
             <div class="col-sm-3">
-                <label class="cases-label">Go To Step</label>
+                <label class="cases-label">Go To Step<span>*</span></label>
             </div>
             <div class="col-sm-9">
-                <input katana-change="cases.drawer.stepsChange" value="{{value}}" key="onError[@goto]">
+                <input katana-change="cases.drawer.stepsChange" value="{{value}}" key="onError[@value]">
             </div>
         </div>
         {% endif %}

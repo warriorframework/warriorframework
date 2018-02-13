@@ -118,7 +118,6 @@ def get_steps_template(request):
 
 
 def get_reqs_template(request):
-    print request.POST
     data = {"data": json.loads(request.POST.get("data"))}
     return render(request, 'cases/requirements_template.html', data)
 
@@ -147,7 +146,6 @@ def get_steps_display_template(request):
 
 
 def convert_data(data, ts):
-    print json.dumps(data[ts], indent=1)
     if data[ts]["impact"] in impacts():
         data[ts]["impact"] = impacts()[data[ts]["impact"]]
     if data[ts]["context"] in contexts():
@@ -159,8 +157,9 @@ def convert_data(data, ts):
         data[ts]["runmode"]["@type"] = runmodes()[data[ts]["runmode"]["@type"]]
     if data[ts]["Iteration_type"]["@type"] in iteration_types():
         data[ts]["Iteration_type"]["@type"] = iteration_types()[data[ts]["Iteration_type"]["@type"]]
-    if data[ts]["onError"]["@action"] in iteration_types():
+    if data[ts]["onError"]["@action"] in on_errors():
         data[ts]["onError"]["@action"] = on_errors()[data[ts]["onError"]["@action"]]
+
     return data
 
 

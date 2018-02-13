@@ -34,7 +34,38 @@
                     <td class="col-sm-2">{{ step.Description }}</td>
                     <td class="col-sm-1">
                         {% for key, value in step.Execute.items %}
-                        {% if key == "@ExecType" %} {{ value }} {% endif %}
+                        {% if key == "@ExecType" %}
+                        {{ value }}
+                        {% if value == "If" or value == "If Not" %}
+                        {% for rule in step.Execute.Rule %}
+                        <br>
+                        {% for k, v in rule.items %}
+                        {% if k == "@Condition" %}
+                        Condition = {{v}}
+                        {% endif %}
+                        {% endfor %}
+                        <br>
+                        {% for k, v in rule.items %}
+                        {% if k == "@Condvalue" %}
+                        Condition Value = {{v}}
+                        {% endif %}
+                        {% endfor %}
+                        <br>
+                        {% for k, v in rule.items %}
+                        {% if k == "@Else" %}
+                        Else = {{v|convert_on_errors}}
+                        {% endif %}
+                        {% endfor %}
+                        <br>
+                        {% for k, v in rule.items %}
+                        {% if k == "@Elsevalue" %}
+                        Else Value = {{v}}
+                        {% endif %}
+                        {% endfor %}
+
+                        {% endfor %}
+                        {% endif %}
+                        {% endif %}
                         {% endfor %}
                     </td>
                     <td class="col-sm-1">
