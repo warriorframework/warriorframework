@@ -1033,45 +1033,76 @@ var cases = {
         },
 
         save: function () {
-            var final_json = {"Testcase": {"Details": {}, "Requirements": {"Requirement": []}, "Steps": {"step": []}}};
-            var filepath = katana.$activeTab.find('#main-div').attr("current-file");
-            var $detailBlock = katana.$activeTab.find('#detail-block');
-            final_json.Testcase.Details = $detailBlock.find('table').data().dataObject;
+            var callBack_on_accept = function(inputValue){
+              var final_json = {"Testcase": {"Details": {}, "Requirements": {"Requirement": []}, "Steps": {"step": []}}};
+                var filepath = katana.$activeTab.find('#main-div').attr("current-file");
+                var $detailBlock = katana.$activeTab.find('#detail-block');
+                final_json.Testcase.Details = $detailBlock.find('table').data().dataObject;
 
-            var $reqTrs = katana.$activeTab.find('#req-block').find('table').find('tbody').children('tr');
-            for(var i=0; i<$reqTrs.length; i++){
-                final_json.Testcase.Requirements.Requirement.push($($reqTrs[i]).data().dataObject);
-            }
-
-            var $stepTrs = katana.$activeTab.find('#step-block').find('tbody').children('tr');
-            for(i=0; i<$stepTrs.length; i++){
-                final_json.Testcase.Steps.step.push($($stepTrs[i]).data().dataObject);
-            }
-            $.ajax({
-                headers: {
-                    'X-CSRFToken': katana.$activeTab.find('input[name="csrfmiddlewaretoken"]').attr('value')
-                },
-                type: 'POST',
-                url: 'cases/save_file/',
-                data: {"data": JSON.stringify(final_json),
-                    "filepath": filepath}
-            }).done(function(data){
-                if (data.status) {
-                    katana.openAlert({
-                        "alert_type": "success",
-                        "heading": "File Saved",
-                        "text": filepath + " has been saved successfully",
-                        "show_cancel_btn": false
-                    });
-                    cases.caseViewer.close();
-                } else {
-                    katana.openAlert({
-                        "alert_type": "danger",
-                        "heading": "File Not Saved",
-                        "text": "Some problem occurred while saving the file: " + filepath,
-                        "show_cancel_btn": false
-                    })
+                var $reqTrs = katana.$activeTab.find('#req-block').find('table').find('tbody').children('tr');
+                for(var i=0; i<$reqTrs.length; i++){
+                    final_json.Testcase.Requirements.Requirement.push($($reqTrs[i]).data().dataObject);
                 }
+
+                var $stepTrs = katana.$activeTab.find('#step-block').find('tbody').children('tr');
+                for(i=0; i<$stepTrs.length; i++){
+                    final_json.Testcase.Steps.step.push($($stepTrs[i]).data().dataObject);
+                }
+                $.ajax({
+                    headers: {
+                        'X-CSRFToken': katana.$activeTab.find('input[name="csrfmiddlewaretoken"]').attr('value')
+                    },
+                    type: 'POST',
+                    url: 'cases/save_file/',
+                    data: {data: JSON.stringify(final_json),
+                        filepath: filepath, filename: inputValue, extension: ".xml"}
+                }).done(function(data){
+                    if (data.status) {
+                        katana.openAlert({
+                            "alert_type": "success",
+                            "heading": "File Saved",
+                            "text": filepath + " has been saved successfully",
+                            "show_cancel_btn": false
+                        });
+                        cases.caseViewer.close();
+                    } else {
+                        katana.openAlert({
+                            "alert_type": "danger",
+                            "heading": "File Not Saved",
+                            "text": "Some problem occurred while saving the file: " + inputValue,
+                            "show_cancel_btn": false
+                        })
+                    }
+                });
+            };
+            katana.openAlert({
+                "alert_type": "light",
+                "heading": "Name for the file",
+                "text": "",
+                "prompt": "true",
+                "prompt_default": katana.$activeTab.find('#detail-block').find('table').data().dataObject.Name
+                },
+                function(inputValue){
+                    $.ajax({
+                        headers: {
+                            'X-CSRFToken': $currentPage.find('input[name="csrfmiddlewaretoken"]').attr('value')
+                        },
+                        type: 'POST',
+                        url: 'check_if_file_exists/',
+                        data: {"filename": inputValue, "directory": katana.$activeTab.find('#main-div').attr("current-file"), "extension": ".xml"}
+                    }).done(function(data){
+                         if(data.exists){
+                            katana.openAlert({
+                                "alert_type": "warning",
+                                "heading": "File Exists",
+                                "text": "A file with the name " + inputValue + " already exists; do you want to overwrite it?",
+                                "accept_btn_text": "Yes",
+                                "cancel_btn_text": "No"
+                                }, function() {callBack_on_accept(inputValue)})
+                         } else {
+                            callBack_on_accept(inputValue);
+                         }
+                    });
             });
         }
     },
