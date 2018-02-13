@@ -15,7 +15,7 @@ import json
 import sys
 import difflib
 import os
-
+import re
 import file_Utils
 import os.path
 
@@ -986,7 +986,9 @@ def compare_xml_using_xpath(response, list_of_xpath, list_of_expected_api_respon
         for index, xpath_pattern in enumerate(list_of_xpath):
             xpath = xpath_pattern.strip("xpath=")
             value = getValuebyTagFromStringWithXpath(response, xpath, None)
-            if value != list_of_expected_api_responses[index]:
+            # Check if the expected value/pattern is in actual response
+            match = re.search(list_of_expected_api_responses[index], value)
+            if not match:
                 status = False
                 print_error("For the given {0} the expected response value is"
                             " {1} but the actual response"

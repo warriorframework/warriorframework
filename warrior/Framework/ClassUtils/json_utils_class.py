@@ -13,6 +13,7 @@ limitations under the License.
 
 """API for json related operations """
 import json
+import re
 from Framework.Utils.print_Utils import print_info, print_exception, print_error
 from Framework.Utils.testcase_Utils import pNote,pSubStep
 import difflib
@@ -254,14 +255,16 @@ class JsonUtils(object):
         for index, jsonpath in enumerate(list_of_jsonpath):
             json_path = jsonpath.strip("jsonpath=")
             value = self.get_value_for_nested_key(json_response, json_path)
-            if value != list_of_expected_api_responses[index]:
+            # Check if the expected value/pattern is in actual response
+            match = re.search(list_of_expected_api_responses[index], value)
+            if not match:
                 status = False
                 print_error("For the given {0} the expected response value is"
                             " {1} but the actual response"
                             " value is {2}".format(jsonpath,
                             list_of_expected_api_responses[index], value))
         return status
-    
+
     def get_value_for_nested_key(self, json_response, json_path):
         """
             Returns the value of the nested key in the dictionary

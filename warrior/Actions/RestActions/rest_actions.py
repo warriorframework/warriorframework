@@ -2993,8 +2993,9 @@ class RestActions(object):
                 3. expected_api_response: expected api response given by
                    the user.
 
-                    pattern: can be string or file name and response can be
-                    simple text or xml or json
+                    pattern: can be string or file name(expected string will be
+                    treated as python regular expression during match)
+                    and response can be simple text or xml or json
                     Multiple Values: No
                     Max Number of values accepted: 1
 
