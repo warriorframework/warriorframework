@@ -30,14 +30,13 @@ def main(port):
 
     handler_class = SimpleHTTPRequestHandler
     server_class = BaseHTTPServer.HTTPServer
-    ip = "localhost"
 
     handler_class.protocol_version = "HTTP/1.0"
-    httpd = server_class((ip, int(port)), SimpleHandler)
+    httpd = server_class(("localhost", int(port)), SimpleHandler)
     address, port_number = httpd.socket.getsockname()
     print "-- WARNING -- Serving django-less server on http://{0}:{1}\n".format(address, port_number)
 
-    open_browser(ip, port)
+    open_browser(address, port_number)
 
     try:
         httpd.serve_forever()
