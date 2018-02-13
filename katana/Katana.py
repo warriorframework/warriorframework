@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -12,7 +11,6 @@ limitations under the License.
 
 """
 
-import os
 import sys
 import subprocess
 import signal
@@ -27,17 +25,17 @@ except Exception as e:
     print "-- An Error Occurred -- {0}".format(e)
     use_py_server = True
 
+
 class Katana:
     def __init__(self):
         pass
 
     def signal_handler(self, signal, frame):
         print('Ended Server')
-        self.ogProc
+        self.og_proc.kill()
 
-    def runProcess(self, osString):
-        print osString
-        proc = subprocess.Popen(osString.split(" "), shell=False,
+    def run_process(self, os_string):
+        proc = subprocess.Popen(os_string.split(" "), shell=False,
              stdin=None, stdout=None, stderr=None, close_fds=True)
         return proc
 
@@ -49,16 +47,16 @@ class Katana:
 
     def katana_init(self, args):
         args[0] = 'manage.py'
-        self.ogProc = self.runProcess( self.to_string(args) )
+        self.og_proc = self.run_process(self.to_string(args))
         signal.signal(signal.SIGINT, self.signal_handler)
         if len(args) > 1 and args[1] == 'database':
             args = self.database_init(args)
         signal.pause()
 
     def database_init(self, args):
-        proc = self.runProcess('python manage.py makemigrations')
+        proc = self.run_process('python manage.py makemigrations')
         proc.wait()
-        proc = self.runProcess('python manage.py migrate --run-syncdb')
+        proc = self.run_process('python manage.py migrate --run-syncdb')
         proc.wait()
 
 if __name__ == "__main__":
@@ -66,4 +64,4 @@ if __name__ == "__main__":
         katana = Katana()
         katana.katana_init(sys.argv)
     else:
-        main(port)
+        main('8000')
