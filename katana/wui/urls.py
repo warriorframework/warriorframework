@@ -31,4 +31,6 @@ urlpatterns = [
     url(r'^katana/execution/', include('wapps.execution.urls')),
     url(r'^katana/assembler/', include('wapps.assembler.urls')),
     url(r'^katana/cli_data/', include('wapps.cli_data.urls')),
+    url(r'^katana/editor/', include('native.editor.urls')),
+
 ]

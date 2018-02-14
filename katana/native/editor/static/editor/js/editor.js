@@ -23,7 +23,8 @@ var editor = {
      katana.$activeTab.find('#code').html(data);
       editor.codeEditor = CodeMirror.fromTextArea(katana.$activeTab.find('#code')[0], {
         lineNumbers: true,
-        value: data
+        mode: "text/html",
+        theme: 'mbo'
 
      });
 
