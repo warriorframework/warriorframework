@@ -108,5 +108,43 @@
 			<context>positive</context>
 			<impact>impact</impact>
 		</step>
+		<step Driver="rest_driver" Keyword="perform_http_get" TS="7">
+			<Arguments>
+				<argument name="system_name" value="http_bin_1"/>
+				<argument name="url" value="http://httpbin.org/response-headers?key=5"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>This step tests the GET capability of REST</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="rest_driver" Keyword="verify_response" TS="8">
+			<Arguments>
+				<argument name="system_name" value="http_bin_1"/>
+				<argument name="expected_api_response" value="[4-7]"/>
+				<argument name="expected_response_type" value="json"/>
+				<argument name="comparison_mode" value="jsonpath=key"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>This step verifies the API response with the expected API response(with python regex)</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
+		<step Driver="rest_driver" Keyword="verify_response" TS="9">
+			<Arguments>
+				<argument name="system_name" value="http_bin_2"/>
+				<argument name="expected_api_response" value="Date.+of pub.*on"/>
+				<argument name="expected_response_type" value="xml"/>
+				<argument name="request_id" value="123"/>
+				<argument name="comparison_mode" value="xpath=/*/@date"/>
+			</Arguments>
+			<onError action="next"/>
+			<Description>This step verifies the API response with the expected API response(with python regex)</Description>
+			<Execute ExecType="Yes"/>
+			<context>positive</context>
+			<impact>impact</impact>
+		</step>
 	</Steps>
 </Testcase>

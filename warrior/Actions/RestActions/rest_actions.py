@@ -3005,7 +3005,7 @@ class RestActions(object):
                     jsonpath/xpath comparison_modes and will be searched
                     in the actual api response. Use 'regex=expression' as
                     comparison_mode to support python regular expression
-                    for string response.
+                    for text response.
 
                 5. comparison_mode:
                    This is the mode in which you wish to compare
