@@ -3,6 +3,8 @@
     <link rel="stylesheet" href="{% static 'editor/css/editor.css' %}">
     <link rel="stylesheet" href="{% static 'editor/css/codemirror.css' %}">
     <script src="{ static 'editor/js/xml.js'}"></script>
+    <script src="{ static 'editor/js/javascript.js'}"></script>
+
 </head>
 <body>
 
@@ -12,12 +14,6 @@
                       <div class="editor panels-heading">
                         <label>Files</label>
                         <div class="editor panels-heading-icon">
-                          <i title="Layout Settings" class="fa fa-edit" id="configure_layout_btn" katana-click="editor.layoutViewer.configureLayout"></i>
-                        </div>
-                        <div class="editor panels-heading-icon">
-                          <i title="Refresh" class="fa fa-refresh" id="editor_load_layout_btn" katana-click="editor.layoutViewer.loadWs"></i>
-                        </div>
-                        <div class="editor panels-heading-icon">
                           <i title="Copy to Selections Area" class="fa fa-arrow-right" id="editor-edit-btn" katana-click="editor.filesEditor.loadSelectFile"></i>
                         </div>
                       </div>
@@ -26,11 +22,12 @@
                       </div>
               </div>
     <div class = "editor selections-panel" id="editor-selections-panel">
-      <div class = "editor panels-heading" id = "editor-selections-panel-heading">
+      <div class = "editor panels-heading" id="editor-selections-panel-heading">
         <label> Code Editor </label>
+          <label title ="Save changes" class="fa fa-play-circle" id="editor-edit-btn" katana-click="editor.filesEditor.saveFile"> Save File</label>
       </div>
       <div class = "editor selections-panels-body">
-        <textarea id = "code"></textarea>
+        <textarea id="code"></textarea>
       </div>
     </div>
 

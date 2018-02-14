@@ -72,21 +72,21 @@ class Editor(object):
         return JsonResponse(layout)
 
 
-    def get_file_content(self,request):   #r   eturn content of the file
+    def get_file_content(self,request):   #return content of the file
         #print request.POST.get('data')
         file_dict = request.POST.get('data') #load the request object 'data'
         print file_dict
         with open(file_dict) as f:
             myfile = f.readlines()
 
-
-        #print (myfile.toprettyxml())
-        #for a in myfile:
-        #    print(a)
-        #file_dir = file_dict['default_ws'] #need to pull the file path
-        #print myfile
-        #return myfile
         return HttpResponse(myfile)
+
+    def save_file_content(self,request):        #need the filepath to open and text to write to file
+        json_content = json.loads(request.GET.get('data'))
+        file_content = json_content['text']
+        print file_content
+
+        return HttpResponse(file_content)
 
 def update_jira_proj_list(jira_settings_file, editor_settings_json):
     """

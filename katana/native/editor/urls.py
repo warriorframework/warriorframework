@@ -9,5 +9,5 @@ urlpatterns = [
     url(r'^$', editor.index, name='index'),
     url(r'getFiles', editor.get_files, name ='get_files'),
     url(r'getFileContent', editor.get_file_content, name = 'get_file_content'),
-
+    url(r'saveFile', editor.save_file_content, name = 'save_file_content'),
 ]
