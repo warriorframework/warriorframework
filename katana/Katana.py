@@ -14,6 +14,7 @@ limitations under the License.
 import sys
 import subprocess
 import signal
+from utils.directory_traversal_utils import get_parent_dir_path, join_path
 from simple_server import main
 use_py_server = False
 
@@ -27,41 +28,42 @@ except Exception as e:
 
 
 class Katana:
-    def __init__(self):
-        pass
+    def __init__(self, path):
+        self.og_process = None
+        self.manage_path = path
 
-    def signal_handler(self, signal, frame):
+    def signal_handler(self):
         print('Ended Server')
-        self.og_proc.kill()
+        self.og_process.kill()
 
-    def run_process(self, os_string):
-        proc = subprocess.Popen(os_string.split(" "), shell=False,
-             stdin=None, stdout=None, stderr=None, close_fds=True)
-        return proc
+    @staticmethod
+    def run_process(os_string):
+        return subprocess.Popen(os_string.split(), shell=False, stdin=None, stdout=None, stderr=None, close_fds=True)
 
     def to_string(self, args):
-        args[0] = 'manage.py'
+        args[0] = self.manage_path
         if len(args) > 1 and args[1] == 'database':
             args.remove('database')
         return 'python ' + ' '.join(args)
 
     def katana_init(self, args):
-        args[0] = 'manage.py'
-        self.og_proc = self.run_process(self.to_string(args))
+        args[0] = self.manage_path
+        self.og_process = self.run_process(self.to_string(args))
         signal.signal(signal.SIGINT, self.signal_handler)
         if len(args) > 1 and args[1] == 'database':
-            args = self.database_init(args)
+            self.database_init()
         signal.pause()
 
-    def database_init(self, args):
-        proc = self.run_process('python manage.py makemigrations')
+    def database_init(self):
+        proc = self.run_process('python {0} makemigrations'.format(self.manage_path))
         proc.wait()
-        proc = self.run_process('python manage.py migrate --run-syncdb')
+        proc = self.run_process('python {0} migrate --run-syncdb'.format(self.manage_path))
         proc.wait()
+
 
 if __name__ == "__main__":
     if not use_py_server:
-        katana = Katana()
+        katana = Katana(join_path(get_parent_dir_path(sys.argv[0]), "manage.py"))
         katana.katana_init(sys.argv)
     else:
         main('8000')
