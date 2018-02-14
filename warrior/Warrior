@@ -17,15 +17,30 @@ if sys.version_info < (2, 7):
     sys.exit(0)
 try:
     import os
+    print "import os was successful"
     import shutil
+    print "import shutil was successful"
     import Framework.Utils.email_utils as email
+    print "import email was successful"
     import Framework.Utils as Utils
+    print "import Utils was successful"
     from Framework.Utils.print_Utils import print_error, print_info
+    print "import print_Utils was successful"
     from WarriorCore import warrior_cli_driver, testcase_driver, testsuite_driver, project_driver
-    from WarriorCore import ironclaw_driver, mockrun_driver, framework_detail
+    print "import warrior_cli_driver, testcase_driver, testsuite_driver, project_driver were successful"
+    from WarriorCore import ironclaw_driver, framework_detail
+    print "import ironclaw_driver, framework_detail were successful"
     from WarriorCore.Classes.jira_rest_class import Jira
+    print "import jira_rest_class was successful"
     from Framework.ClassUtils import database_utils_class
+    print "import database_utils_class was successful"
 except:
+    print "\033[1;31m*********************************************"
+    print " !-Unable to import library in Warrior executable"
+    print " !-Successful imported libraries are printed above"
+    print " !-Please check your import statements for any code added to the framework"
+    print " !-Possible cause could be circular import"
+    print "*********************************************\033[0m"
     raise
 """
 This is the Warrior executable
@@ -42,15 +57,29 @@ def update_jira_by_id(jiraproj, jiraid, exec_dir, status):
     if jiraid is not False:
         jira_obj = Jira(jiraproj)
         if jira_obj.status is True:
-            if jira_obj.update_jira_issue(jiraid, status):
-                zip_file = shutil.make_archive(exec_dir, 'zip', exec_dir)
-                jira_obj.upload_logfile_to_jira_issue(jiraid, zip_file)
+            # Get the current jira issue status
+            issue_status = jira_obj.get_jira_issue_status(jiraid)
+            isReopend = False
+            # Reopen the jira issue if it is closed, to upload the execution logs
+            if issue_status and issue_status.lower() == "closed":
+                print_info("Reopening Jira issue '{0}' to upload warrior "
+                           "execution logs".format(jiraid))
+                jira_obj.set_jira_issue_status(jiraid, "Reopened")
+                isReopend = True
+            # Upload execution logs
+            zip_file = shutil.make_archive(exec_dir, 'zip', exec_dir)
+            jira_obj.upload_logfile_to_jira_issue(jiraid, zip_file)
+            # Close the jira issue if it is reopened in the above if block
+            if isReopend is True:
+                print_info("Closing Jira issue '{0}' which was reopened "
+                           "earlier".format(jiraid))
+                jira_obj.set_jira_issue_status(jiraid, "Closed")
+            # Update Jira issue based on warrior execution status
+            jira_obj.update_jira_issue(jiraid, status)
     else:
         print_info("jiraid not provided, will not update jira issue")
 
-
-def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
-         jiraproj, overwrite, jiraid, dbsystem):
+def main(parameter_list, a_defects, cse_execution, iron_claw, jiraproj, overwrite, jiraid, dbsystem, headless):
     """Parses the input parameters (i.e. sys.argv)
         If the input parameter is an xml file:
             - check if file exists, if exists
@@ -94,9 +123,9 @@ def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
                     else:
                         default_repo.update({'db_obj': False})
 
-                    if mockrun:
-                        result = mockrun_driver.main(abs_filepath, len(parameter_list))
-                    elif Utils.xml_Utils.getRoot(abs_filepath).tag == 'Testcase':
+                    default_repo["wt_enable_headless"] = True if headless else False
+
+                    if Utils.xml_Utils.getRoot(abs_filepath).tag == 'Testcase':
                         default_repo['war_file_type'] = "Case"
                         result, tc_duration, data_repository = testcase_driver.main(
                                 abs_filepath, data_repository=default_repo,
@@ -140,17 +169,17 @@ def main(parameter_list, mockrun, a_defects, cse_execution, iron_claw,
 
 if __name__ == '__main__':
 
-    (FILEPATH, mockrun, AUTO_DEFECTS, version, CSE_EXEC, IRON_CLAW, JIRAPROJ,
-     OVERWRITE, JIRAID, DBSYSTEM) = warrior_cli_driver.main(sys.argv[1:])
+    FILEPATH, AUTO_DEFECTS, version, CSE_EXEC, IRON_CLAW, JIRAPROJ, \
+    OVERWRITE, JIRAID, DBSYSTEM, HEADLESS = warrior_cli_driver.main(sys.argv[1:])
     if version:
         framework_detail.warrior_framework_details()
         sys.exit(0)
     if not CSE_EXEC and len(FILEPATH) == 0:
-        print_error("Provide at least one xml file to execute")
-    status = main(FILEPATH, mockrun, AUTO_DEFECTS, CSE_EXEC, IRON_CLAW,
-                  JIRAPROJ, OVERWRITE, JIRAID, DBSYSTEM)
-    status = {"true": True, "pass": True}.get(str(status).lower())
-    if status is True:
+        print_error("Provide atleast one xml file to execute")
+    status = main(FILEPATH, AUTO_DEFECTS, CSE_EXEC, IRON_CLAW,
+                  JIRAPROJ, OVERWRITE, JIRAID, DBSYSTEM, HEADLESS)
+    status = {"true": True, "pass": True, "ran": "RAN"}.get(str(status).lower())
+    if status is True or status == "RAN":
         print_info("DONE 0")
         sys.exit(0)
         print "This line should not be printed"

@@ -10,18 +10,17 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+import inspect
+import traceback
+import Framework.Utils as Utils
+from Framework.Utils import data_Utils
+from Framework.Utils.print_Utils import print_info, print_error, print_exception
+from Framework.Utils.testcase_Utils import pNote_level
+from WarriorCore.Classes.war_cli_class import WarriorCliClass
 """Driver utils module which handles gathers the argument
 information about the keywords, executes the keywords and reports the
 keyword status back to the product driver """
 
-
-import inspect
-import traceback
-import Framework.Utils as Utils
-from Framework.Utils.print_Utils import print_info, print_error, print_exception
-from Framework.Utils.testcase_Utils import pNote_level
-from WarriorCore.Classes.war_cli_class import WarriorCliClass
 
 class ModuleOperations(object):
     """Module operations class has methods
@@ -42,12 +41,6 @@ class ModuleOperations(object):
         self.function_list = self.get_function_list_from_modlist()
         self.matching_method_list = self.search_keyword_in_list(keyword, self.method_list)
         self.matching_function_list = self.search_keyword_in_list(keyword, self.function_list)
-#         print "methods"
-#         for method in self.method_list:
-#             print method.__name__
-#         print "functions"
-#         for function in self.function_list:
-#             print function.__name__
 
     def import_sub_modules(self):
         """Import sub modules for the given package """
@@ -71,7 +64,7 @@ class ModuleOperations(object):
         module present in the package and sub-packages"""
 
         for name, obj in inspect.getmembers(package, inspect.ismodule):
-            #name_only = Utils.file_Utils.getNameOnly(os.path.basename(obj.__file__))
+            # name_only = Utils.file_Utils.getNameOnly(os.path.basename(obj.__file__))
             mod_list.append(obj)
             if name == '__init__.py':
                 self.get_module_list_from_pkg_rcrsv(obj, mod_list)
@@ -118,8 +111,16 @@ class ModuleOperations(object):
         match_list = []
         for element in input_list:
             if element.__name__ == keyword:
-                match_list.append(element)
+                if WarriorCliClass.mock or WarriorCliClass.sim:
+                    if element.__dict__.get("mockready") is None:
+                        pNote_level("The selected keyword {} isn't supported in trial mode".format(element.__name__), "ERROR")
+                    else:
+                        pNote_level("Keyword {} is being mocked".format(element.__name__), "INFO")
+                        match_list.append(element)
+                else:
+                    match_list.append(element)
         return match_list
+
 
 class KeywordOperations(object):
     """KeywordOperations class has methods that
@@ -137,6 +138,7 @@ class KeywordOperations(object):
         self.all_args_list = self.get_all_arguments()
         self.req_args_list = self.get_mandatory_arguments()
         self.optional_args_list = list(set(self.all_args_list) - set(self.req_args_list))
+        self.default_dict = self.get_defaults()
 
     def get_all_arguments(self):
         """Returns a list of all arguments required for
@@ -146,8 +148,18 @@ class KeywordOperations(object):
             args.remove('self')
         return args
 
+    def get_defaults(self):
+        """Returns a dictionary of optional arguments with their default values for
+        the provided function/method object """
+        default_dict = {}
+        args, varargs, keyword, defaults = inspect.getargspec(self.exec_obj)
+        if defaults:
+            default_dict = dict(zip(args[-len(defaults):], defaults))
+        return default_dict
+
     def get_mandatory_arguments(self):
-        """Returns a list of mandatory arguments required for the provided function/method """
+        """Returns a list of mandatory arguments required for the provided function/method
+        """
         args, varargs, keyword, defaults = inspect.getargspec(self.exec_obj)
 
         if defaults is not None:
@@ -157,33 +169,86 @@ class KeywordOperations(object):
             args.remove('self')
         return args
 
+    def get_credential_value(self, arg, system):
+        """get the value of arg in data file corresponding to system
+        """
+        datafile = self.data_repository['wt_datafile']
+        var = arg
+        if not hasattr(self, 'tag_dict'):
+            self.tag_dict = data_Utils.get_credentials(datafile, system)
+        if isinstance(arg, basestring) and arg.startswith("wtag"):
+            var = arg.split("=")[1].strip()
+            if var in self.tag_dict:
+                value = self.tag_dict[var]
+                # substitute environment/datarepo variables in the value and return
+                if isinstance(value, (basestring, list, dict)):
+                    return data_Utils.substitute_var_patterns(value)
+                else:
+                    return value
+        return var
+
     def get_values_for_mandatory_args(self):
-        """The th values for mandatory arguments as a
-        python dictionary """
+        """The values for mandatory arguments as a python dictionary
+        """
+        def get_value(arg):
+            """get the value for arg from args or data repository
+            """
+            if arg in self.args_repository:
+                return self.args_repository[arg]
+            if arg in self.data_repository:
+                return self.data_repository[arg]
+            print_error("value for mandatory argument '{0}' not available in "
+                        "data_repository/args_repository".format(args))
+            return None
         print_info("getting values for mandatory arguments")
         arg_kv = {}
-        for args in self.req_args_list:
-            if self.args_repository.has_key(args) is True:
-                arg_kv[args] = self.args_repository[args]
-            elif  self.data_repository.has_key(args) is True:
-                arg_kv[args] = self.data_repository[args]
+        sysname = 'system_name'
+        args_list = self.req_args_list[:]
+        if sysname in args_list:
+            arg_kv[sysname] = get_value(sysname)
+            if arg_kv[sysname] is None:
+                del arg_kv[sysname]
+            args_list.remove(sysname)
+        for args in args_list:
+            value = get_value(args)
+            if value is None:
+                continue
+            if sysname in arg_kv:
+                # the args can be direct values or mentioned as
+                # wtag var (except system_name) like 'wtag=<wtag var>',
+                # which would be fetched from the input data file
+                value = self.get_credential_value(value, arg_kv[sysname])
+                if value is not None:
+                    arg_kv[args] = value
             else:
-                print_error("value for mandatory argument '%s' "\
-                                  "not available in data_repository/args_repository" % args)
+                arg_kv[args] = value
         return arg_kv
 
     def get_values_for_optional_args(self, arg_kv):
-        """The th values for optional arguments as a
-        python dictionary """
+        """The values for optional arguments as a python dictionary
+        """
         print_info("getting values for optional arguments")
         for args in self.optional_args_list:
-            if self.args_repository.has_key(args) is True:
+            if args in self.args_repository:
                 arg_kv[args] = self.args_repository[args]
-            elif self.data_repository.has_key(args) is True:
+            elif args in self.data_repository:
                 arg_kv[args] = self.data_repository[args]
             else:
-                print_info("executing with default values "\
-                                 "for optional argument '{0}'".format(args))
+                arg_kv[args] = self.default_dict[args]
+                print_info("executing with default value '{0}' for optional "
+                           "argument '{1}'".format(arg_kv[args], args))
+        for args in self.optional_args_list:
+            # requires another loop since system_name may not be at beginning
+            if args != 'system_name' and 'system_name' in arg_kv:
+                # the args can be direct values or mentioned as
+                # wtag var (except system_name) like 'wtag=<wtag var>',
+                # which would be fetched from the input data file
+                value = self.get_credential_value(arg_kv[args], arg_kv['system_name'])
+                if value is not None:
+                    arg_kv[args] = value
+        else:
+            if hasattr(self, 'tag_dict'):
+                del self.tag_dict
         return arg_kv
 
     def get_argument_as_keywords(self):
@@ -201,17 +266,12 @@ class KeywordOperations(object):
     def execute_method_for_keyword(self):
         """Executes a method corresponding to keyword """
 
-        Utils.config_Utils.set_datarepository(self.data_repository)
         kwargs, kw_status = self.get_argument_as_keywords()
+        print_info("The Arguments passed for the current Step is: '{0}'".format(kwargs))
         if kw_status:
             # Execute the corresponding method
             method_loader = self.exec_obj.im_class()
             try:
-                if WarriorCliClass.cmdprint:
-                    sessid = kwargs['system_name']
-                    if 'session_name' in kwargs: sessid += kwargs['session_name']
-                    print_info("{:*^80}".format(' System: '+sessid+' '))
-                    self.data_repository.update({sessid : sessid, sessid+'_td_response' : {}})
                 keyword_result = self.exec_obj(method_loader, **kwargs)
             except Exception as exception:
                 trcback = print_exception(exception)
@@ -224,12 +284,11 @@ class KeywordOperations(object):
 
     def execute_function_for_keyword(self):
         """Executes a function for a keyword"""
-        Utils.config_Utils.set_datarepository(self.data_repository)
         kwargs, kw_status = self.get_argument_as_keywords()
 
+        print_info("The Arguments passed for the current Step is: '{0}'".format(kwargs))
         if kw_status:
             # Execute the corresponding function
-            # print_info ( 'kwargs: ', kwargs)
             try:
                 keyword_result = self.exec_obj(**kwargs)
             except Exception as exception:
@@ -244,57 +303,67 @@ class KeywordOperations(object):
 
     @staticmethod
     def update_data_repository(keyword, keyword_result, data_repository):
-        """updates the datarepository based on the return from the keyword execution"""
+        """updates the datarepository based on the return from the keyword execution
+        """
 
         step_num = data_repository['step_num']
 
         if keyword_result is None:
-            pNote_level("Keyword '{0}' did not return anything".format(keyword), "debug", "kw")
+            pNote_level("Keyword '{0}' did not return anything".format(keyword),
+                        "debug", "kw")
             data_repository['step-%s_status' % step_num] = 'ERROR'
 
         elif isinstance(keyword_result, str):
-            if keyword_result.upper() == "ERROR" or \
-            keyword_result.upper() == "EXCEPTION":
+            if keyword_result.upper() in ["ERROR", "EXCEPTION", "RAN"]:
                 pNote_level("Keyword '{0}' returned an {1}".format(keyword, keyword_result),
                             "debug", "kw")
                 data_repository['step-%s_status' % step_num] = keyword_result.upper()
-        
+
         elif isinstance(keyword_result, bool):
-            pNote_level("Keyword '{0}' returned a status only....".format(keyword), "debug", "kw")
+            pNote_level("Keyword '{0}' returned a status only....".format(keyword),
+                        "debug", "kw")
             data_repository['step-%s_status' % step_num] = keyword_result
 
         elif isinstance(keyword_result, dict):
-            pNote_level("Keyword '{0}' returned only a dictionary .. "\
+            pNote_level("Keyword '{0}' returned only a dictionary .. "
                         "updating data_repository".format(keyword), "debug", "kw")
-            pNote_level("Keyword '{0}' did not return any status ".format(keyword), "debug", "kw")
+            pNote_level("Keyword '{0}' did not return any status ".format(keyword),
+                        "debug", "kw")
             data_repository.update(keyword_result)
             data_repository['step-%s_status' % step_num] = 'Error'
 
         elif isinstance(keyword_result, tuple):
             if isinstance(keyword_result[0], str) and keyword_result[0] == "EXCEPTION":
-                pNote_level("Keyword  '{0}' execution raised an"\
+                pNote_level("Keyword  '{0}' execution raised an"
                             "exception".format(keyword), "debug", "kw")
                 data_repository['step-%s_status' % step_num] = keyword_result[0]
                 data_repository['step-%s_exception' % step_num] = keyword_result[1]
+            elif isinstance(keyword_result[0], str) and keyword_result[0].upper() == "RAN":
+                pNote_level("Keyword '{0}' returned "\
+                            "a status..".format(keyword), "debug", "kw")
+                data_repository['step-%s_status' % step_num] = "RAN"
             else:
-                pNote_level("Keyword '{0}' returned multiple"\
+                pNote_level("Keyword '{0}' returned multiple"
                             "values ".format(keyword), "debug", "kw")
                 data_repository['step-%s_status' % step_num] = 'Error'
                 for element in keyword_result:
                     if isinstance(element, bool):
-                        pNote_level("Keyword '{0}' returned"\
+                        pNote_level("Keyword '{0}' returned"
                                     "a status..".format(keyword), "debug", "kw")
                         data_repository['step-%s_status' % step_num] = element
                     elif isinstance(element, dict):
-                        pNote_level("Keyword '{0}' returned a dictionary.. "\
-                                    "will update data_repository".format(keyword), "debug", "kw")
+                        pNote_level("Keyword '{0}' returned a dictionary.. "
+                                    "will update data_repository".format(keyword),
+                                    "debug", "kw")
                         data_repository.update(element)
                     else:
-                        pNote_level("unexpected return type form keyword '{0}'... "\
-                                    "expecting bool or dict ".format(keyword), "debug", "kw")
+                        pNote_level("unexpected return type form keyword '{0}'... "
+                                    "expecting bool or dict ".format(keyword),
+                                    "debug", "kw")
         else:
-            pNote_level("unexpected return type form keyword '{0}'... "\
-                        "expecting bool/dict/error/exception".format(keyword), "debug", "kw")
+            pNote_level("unexpected return type form keyword '{0}'... "
+                        "expecting bool/dict/error/exception".format(keyword),
+                        "debug", "kw")
             data_repository['step-%s_status' % step_num] = False
 
         return data_repository
