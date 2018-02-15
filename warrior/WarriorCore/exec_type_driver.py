@@ -327,7 +327,7 @@ def decision_maker(exec_node):
 
     return status, action
 
-def main(step):
+def main(step, skip_recovery=False):
     """
         Entry function for execute nodes in a step
         Handle checking and call the logical decision functions
@@ -353,7 +353,7 @@ def main(step):
     elif exec_type.upper() == 'YES':
         decision = True
     elif exec_type.upper() == "RECOVERY":
-        decision = False
+        decision = not skip_recovery
         trigger_action = "SKIP_RECOVERY"
     else:
         decision = False
