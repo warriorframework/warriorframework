@@ -23,7 +23,7 @@ Returns the actions that should e taken corresponding to the failure
 """
 
 
-def main(node, def_on_error_action, def_on_error_value, exec_type=False):
+def main(node, def_on_error_action, def_on_error_value, exec_type=False, skip_recovery=True):
     """Takes a xml element (steps/step codntion / testcase/ tesuite)
     as input and return the action to be performed for failure
     conditions """
@@ -39,7 +39,7 @@ def main(node, def_on_error_action, def_on_error_value, exec_type=False):
     function = {'NEXT': next, 'GOTO': goto, 'ABORT': abort,
                 'ABORT_AS_ERROR': abortAsError, "GOTO_RETURN": gotoReturn}.get(action.upper())
 
-    error_handle = function(action, value, error_handle)
+    error_handle = function(action, value, error_handle, skip_recovery=skip_recovery)
     result = get_failure_results(error_handle)
     return result
 
@@ -106,7 +106,7 @@ def getErrorHandlingParameters(node, def_on_error_action, def_on_error_value, ex
     return action, value
 
 
-def next(action, value, error_handle):
+def next(action, value, error_handle, skip_recovery=True):
     """returns 'NEXT' for on_error action = next """
 
     print_info("failure action= next")
@@ -114,16 +114,20 @@ def next(action, value, error_handle):
     return error_handle
 
 
-def goto(action, value, error_handle):
+def goto(action, value, error_handle, skip_recovery=True):
     """returns goto_step_num for on_error action = goto """
-
-    print_info("failed: failure action= goto  %s" % value)
-    error_handle['action'] = 'GOTO'
-    error_handle['value'] = value
+    if skip_recovery:
+        print_info("failed: failure action= goto  %s" % value)
+        error_handle['action'] = 'GOTO'
+        error_handle['value'] = value
+    else:
+        print_warning("Recovery Step cannot have goto as its onError mechanism")
+        print_info("Setting on Error to default: NEXT")
+        error_handle = next(action, value, error_handle, skip_recovery=skip_recovery)
     return error_handle
 
 
-def abort(action, value, error_handle):
+def abort(action, value, error_handle, skip_recovery=True):
     """returns ABORT for on_error action = abort """
 
     print_info("failed: failure action= Abort")
@@ -131,7 +135,7 @@ def abort(action, value, error_handle):
     return error_handle
 
 
-def abortAsError(action, value, error_handle):
+def abortAsError(action, value, error_handle, skip_recovery=True):
     """returns ABORT_AS_ERROR for on_error action = abort_as_error """
 
     print_info("failed: failure action= abort_as_error")
@@ -139,10 +143,15 @@ def abortAsError(action, value, error_handle):
     return error_handle
 
 
-def gotoReturn(action, value, error_handle):
+def gotoReturn(action, value, error_handle, skip_recovery=True):
     """returns ABORT_AS_ERROR for on_error action = abort_as_error """
 
-    print_info("failed: failure action= goto_return")
-    error_handle['action'] = 'GOTO_RETURN'
-    error_handle['value'] = value
+    if skip_recovery:
+        print_info("failed: failure action= goto_return")
+        error_handle['action'] = 'GOTO_RETURN'
+        error_handle['value'] = value
+    else:
+        print_warning("Recovery Step cannot have goto_return as its onError mechanism")
+        print_info("Setting on Error to default: NEXT")
+        error_handle = next(action, value, error_handle, skip_recovery=skip_recovery)
     return error_handle

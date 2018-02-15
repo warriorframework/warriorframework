@@ -102,7 +102,6 @@ def _execute_step(step_list, step_num, goto_stepnum, kw_resultfile_list, data_re
                                      step_status_list, step_impact_list, goto_stepnum)
 
     step_status_list.append(step_status)
-    print step_status_list
     kw_resultfile_list.append(kw_resultfile)
     step_impact_list.append(step_impact)
     runmode, value, runmode_timer = common_execution_utils.get_runmode_from_xmlfile(step)
@@ -113,7 +112,7 @@ def _execute_step(step_list, step_num, goto_stepnum, kw_resultfile_list, data_re
         return _execute_runmode_step(runmode_timer, runmode, step_status, value, step,
                                      default_error_action, default_error_value, step_num,
                                      kw_resultfile_list, data_repository, step_status_list,
-                                     step_impact_list, goto_stepnum)
+                                     step_impact_list, goto_stepnum, skip_recovery=skip_recovery)
 
     elif retry_type is not None:
         return _execute_retry_type_step(retry_type, data_repository, retry_cond, retry_cond_value,
@@ -123,7 +122,7 @@ def _execute_step(step_list, step_num, goto_stepnum, kw_resultfile_list, data_re
         return _execute_step_otherwise(step_list, system_name, step_status, step,
                                        default_error_action, default_error_value, step_num,
                                        kw_resultfile_list, data_repository, step_status_list,
-                                       step_impact_list, goto_stepnum)
+                                       step_impact_list, goto_stepnum, skip_recovery=skip_recovery)
 
 
 def _report_step_as_not_run(step, data_repository, system_name, step_num, kw_resultfile_list,
@@ -208,7 +207,7 @@ def _skip_because_of_goto(step, data_repository, system_name, step_num, kw_resul
 
 def _execute_runmode_step(runmode_timer, runmode, step_status, value, step, default_error_action,
                           default_error_value, step_num, kw_resultfile_list, data_repository,
-                          step_status_list, step_impact_list, goto_stepnum):
+                          step_status_list, step_impact_list, goto_stepnum, skip_recovery=True):
     if runmode_timer is not None and \
             any([runmode == "RMT",
                  runmode == "RUF" and step_status is True,
@@ -227,7 +226,7 @@ def _execute_runmode_step(runmode_timer, runmode, step_status, value, step, defa
         if step_status is False or str(step_status).upper() == "ERROR" \
                 or str(step_status).upper() == "EXCEPTION":
             goto_stepnum = onerror_driver.main(step, default_error_action,
-                                               default_error_value)
+                                               default_error_value, skip_recovery=skip_recovery)
             if goto_stepnum in ['ABORT', 'ABORT_AS_ERROR']:
                 return step_num, kw_resultfile_list, data_repository, step_status_list, step_impact_list, goto_stepnum, "break"
     return step_num, kw_resultfile_list, data_repository, step_status_list, step_impact_list, goto_stepnum, "continue"
@@ -282,10 +281,10 @@ def _execute_retry_type_step(retry_type, data_repository, retry_cond, retry_cond
 
 def _execute_step_otherwise(step_list, system_name, step_status, step, default_error_action,
                             default_error_value, step_num, kw_resultfile_list, data_repository,
-                            step_status_list, step_impact_list, goto_stepnum):
+                            step_status_list, step_impact_list, goto_stepnum, skip_recovery=True):
     if step_status is False or str(step_status).upper() == "ERROR" \
             or str(step_status).upper() == "EXCEPTION":
-        goto_stepnum = onerror_driver.main(step, default_error_action, default_error_value)
+        goto_stepnum = onerror_driver.main(step, default_error_action, default_error_value, skip_recovery=skip_recovery)
         if goto_stepnum in ['ABORT', 'ABORT_AS_ERROR']:
             return step_num, kw_resultfile_list, data_repository, step_status_list, step_impact_list, goto_stepnum, "break"
         # when 'onError:goto' value is less than the current step num,
@@ -293,10 +292,12 @@ def _execute_step_otherwise(step_list, system_name, step_status, step, default_e
         elif isinstance(goto_stepnum, list):
             for goto_step in goto_stepnum:
                 if int(goto_step) - 1 < len(step_list):
-                    _, kw_resultfile_list, data_repository, step_status_list, step_impact_list, _, _ = _execute_step(
+                    _, kw_resultfile_list, data_repository, step_status_list, step_impact_list, _, do_continue = _execute_step(
                         step_list, int(goto_step) - 1, False, kw_resultfile_list,
                         data_repository, default_error_action, default_error_value,
                         step_status_list, step_impact_list, system_name, skip_recovery=False)
+                    if do_continue == "break":
+                        return step_num, kw_resultfile_list, data_repository, step_status_list, step_impact_list, goto_stepnum, do_continue
         elif goto_stepnum and int(goto_stepnum) < step_num:
             step_num = int(goto_stepnum) - 1
             goto_stepnum = False
