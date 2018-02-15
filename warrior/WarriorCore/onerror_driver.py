@@ -37,7 +37,7 @@ def main(node, def_on_error_action, def_on_error_value, exec_type=False):
                                                def_on_error_value, exec_type)
 
     function = {'NEXT': next, 'GOTO': goto, 'ABORT': abort,
-                'ABORT_AS_ERROR': abortAsError,}.get(action.upper())
+                'ABORT_AS_ERROR': abortAsError, "GOTO_RETURN": gotoReturn}.get(action.upper())
 
     error_handle = function(action, value, error_handle)
     result = get_failure_results(error_handle)
@@ -82,7 +82,7 @@ def getErrorHandlingParameters(node, def_on_error_action, def_on_error_value, ex
         action = def_on_error_action
 
     elif action is not None and action is not False:
-        supported_values = ['next', 'goto', 'abort', 'abort_as_error']
+        supported_values = ['next', 'goto', 'abort', 'abort_as_error', "goto_return"]
         action = str(action).strip()
         if action.lower() not in supported_values:
             print_warning("unsupported option '{0}' provided for onError action, supported values are {1}".format(action, supported_values))
@@ -90,7 +90,15 @@ def getErrorHandlingParameters(node, def_on_error_action, def_on_error_value, ex
             action = def_on_error_action
 
     if value is None or value is False:
-        value = def_on_error_value
+        if action == "goto_return":
+            print_warning("No step numbers given to go to for goto_return")
+            print_info("Hence using default_onError action")
+            action = def_on_error_action
+        else:
+            value = def_on_error_value
+    else:
+        if action == "goto_return":
+            value = [x.strip() for x in value.split(",")]
 
     return action, value
 
@@ -118,6 +126,13 @@ def abort(action, value, error_handle):
     return error_handle
 
 def abortAsError(action, value, error_handle):
+    """returns ABORT_AS_ERROR for on_error action = abort_as_error """
+
+    print_info("failed: failure action= abort_as_error")
+    error_handle['action'] = 'ABORT_AS_ERROR'
+    return error_handle
+
+def gotoReturn(action, value, error_handle):
     """returns ABORT_AS_ERROR for on_error action = abort_as_error """
 
     print_info("failed: failure action= abort_as_error")

@@ -54,6 +54,7 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
                                                     data_repository['wt_logsdir'],
                                                     '{0}_consoleLogs'.format(system_name))
     while step_num < len(step_list):
+        print step_list
         step = step_list[step_num]
         # execute steps
         step_num += 1
@@ -85,9 +86,13 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
                     impact_dict.get(step_impact.upper()), "N/A")
                 data_repository['step_{}_result'.format(step_num)] = "SKIPPED"
 
+                print trigger_action
                 if trigger_action.upper() in ['ABORT', 'ABORT_AS_ERROR']:
                     break
                 elif trigger_action.upper() in ['SKIP', 'NEXT']:
+                    continue
+                elif trigger_action == "SKIP_RECOVERY":
+                    print_info("Skipping this step as it is a recovery step.")
                     continue
                 # when 'onError:goto' value is less than the current step num,
                 # change the next iteration point to goto value

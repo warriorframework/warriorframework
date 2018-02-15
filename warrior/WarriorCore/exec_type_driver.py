@@ -352,9 +352,12 @@ def main(step):
         trigger_action = "SKIP"
     elif exec_type.upper() == 'YES':
         decision = True
+    elif exec_type.upper() == "RECOVERY":
+        decision = False
+        trigger_action = "SKIP_RECOVERY"
     else:
         decision = False
-        supported_values = ['no', 'yes', 'if', 'if not']
+        supported_values = ['no', 'yes', 'if', 'if not', "recovery"]
         print_error("Unsupported value used for ExecType, supported values are:"
                     "{0} and case-insensitive".format(supported_values))
 
