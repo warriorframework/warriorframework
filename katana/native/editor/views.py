@@ -78,15 +78,20 @@ class Editor(object):
         print file_dict
         with open(file_dict) as f:
             myfile = f.readlines()
+        f.close()
 
         return HttpResponse(myfile)
 
     def save_file_content(self,request):        #need the filepath to open and text to write to file
-        json_content = json.loads(request.GET.get('data'))
-        file_content = json_content['text']
+        file_path = request.POST.get('data[filePath]')
+        file_content = request.POST.get('data[Text]')
+        print file_path
         print file_content
+        wr = open(file_path, 'w')
+        wr.write(file_content)
+        wr.close()
 
-        return HttpResponse(file_content)
+        return HttpResponse(file_path)
 
 def update_jira_proj_list(jira_settings_file, editor_settings_json):
     """

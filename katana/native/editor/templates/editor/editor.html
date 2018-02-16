@@ -2,9 +2,12 @@
     {% load staticfiles %}
     <link rel="stylesheet" href="{% static 'editor/css/editor.css' %}">
     <link rel="stylesheet" href="{% static 'editor/css/codemirror.css' %}">
-    <script src="{ static 'editor/js/xml.js'}"></script>
-    <script src="{ static 'editor/js/javascript.js'}"></script>
-
+    <script src = "{% static 'editor/js/codemirror.js' %}"></script>
+    <script src = "{% static 'editor/js/javascript.js' %}"></script>
+    <script src = "{% static 'editor/js/xml.js' %}"></script>
+    <script src = "{% static 'editor/js/python.js' %}"></script>
+    <script src = "{% static 'editor/js/css.js' %}"></script>
+    <script src = "{% static 'editor/js/htmlmixed.js' %}"></script>
 </head>
 <body>
 
@@ -13,6 +16,9 @@
               <div class="editor layout-panel"  auto-init="editor.filesViewer.loadFilesTree">
                       <div class="editor panels-heading">
                         <label>Files</label>
+                        <div class="editor panels-heading-icon">
+                          <i title="Layout Settings" class="fa fa-edit" id="configure_layout_btn" katana-click="editor.filesViewer.configureLayout"></i>
+                        </div>
                         <div class="editor panels-heading-icon">
                           <i title="Copy to Selections Area" class="fa fa-arrow-right" id="editor-edit-btn" katana-click="editor.filesEditor.loadSelectFile"></i>
                         </div>
@@ -32,4 +38,25 @@
     </div>
 
 </div>
+<div  class="editor dialog-container small" id="configure_layout_dialog" >
+      <div class="title"><label>Layout Settings</label> <i class="fa fa-times" katana-click="editor.filesViewer.close_configuration_dialog" ></i> </div>
+      <form  id="configure_layout_form">
+      <div class="editor dialog-content">
+           <div class="editor configure-layout-data" name="configure-layout-warriorspace-data" id="configure-layout-warriorspace-data">
+             	<div class="feild editor configure-layout-data-ws">
+	             	<label>Warriorspace</label>
+	             	<input name="warriorspace" key="type" type="text" value="" placeholder="Enter the path to your warriorspace directory" required>
+             	</div>
+				<div class="editor  editor-button browse" id="browse-ws"  katana-click="editor.filesViewer.openExplorer">Browse</div>
+         	</div>
+             <div class="editor cmd-options-qns-button-bar">
+
+               <div class="editor  editor-button" id="clear" type="reset" katana-click="editor.filesViewer.clear">Reset</div>
+               <div class="editor  editor-button" name="configure_layout_confirm" type="submit" katana-click="editor.filesViewer.confirm">Save</div>
+             </div>
+
+      </div>
+  </form>
+</div>
+
 </body>
