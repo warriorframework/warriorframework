@@ -150,6 +150,9 @@ def _report_step_as_not_run(step, data_repository, system_name, step_num, kw_res
     if trigger_action.upper() in ['ABORT', 'ABORT_AS_ERROR']:
         return step_num, kw_resultfile_list, data_repository, step_status_list, step_impact_list, goto_stepnum, "break"
     elif trigger_action.upper() in ['SKIP', 'NEXT']:
+        if not skip_recovery:
+            print_error("Step has not been marked as 'Recovery', yet is being run as 'Recovery'")
+            print_info("Step will be skipped")
         return step_num, kw_resultfile_list, data_repository, step_status_list, step_impact_list, goto_stepnum, "continue"
     elif trigger_action == "SKIP_RECOVERY":
         if skip_recovery:
@@ -290,6 +293,7 @@ def _execute_step_otherwise(step_list, system_name, step_status, step, default_e
         # when 'onError:goto' value is less than the current step num,
         # change the next iteration point to goto value
         elif isinstance(goto_stepnum, list):
+            print_info("------Starting Recovery------")
             for goto_step in goto_stepnum:
                 if int(goto_step) - 1 < len(step_list):
                     _, kw_resultfile_list, data_repository, step_status_list, step_impact_list, _, do_continue = _execute_step(
@@ -297,7 +301,9 @@ def _execute_step_otherwise(step_list, system_name, step_status, step, default_e
                         data_repository, default_error_action, default_error_value,
                         step_status_list, step_impact_list, system_name, skip_recovery=False)
                     if do_continue == "break":
-                        return step_num, kw_resultfile_list, data_repository, step_status_list, step_impact_list, goto_stepnum, do_continue
+                        return step_num, kw_resultfile_list, data_repository, step_status_list, step_impact_list, False, do_continue
+            goto_stepnum = False
+            print_info("------Recovery Finished------")
         elif goto_stepnum and int(goto_stepnum) < step_num:
             step_num = int(goto_stepnum) - 1
             goto_stepnum = False
