@@ -32,7 +32,7 @@ def print_main(message, print_type, color_message=None, *kwargs):
         print_string = print_type + " " + str(color_message)
     elif color_message is None:
         print_string = print_type + " " + str(message)
-    if len(kwargs) > 0:
+    if kwargs:
         print_string = (print_type + " " + str(message) + str(kwargs))
     # print print_string
     sys.stdout.write(print_string + '\n')
@@ -78,7 +78,8 @@ class RedirectPrint(object):
         data = ansi_escape.sub('', data)
         self.file.write(data)
         self.file.flush()
-        if self.katana_obj is not None and "console_full_log" in self.katana_obj and "console_add" in self.katana_obj:
+        if self.katana_obj is not None and "console_full_log" in self.katana_obj\
+        and "console_add" in self.katana_obj:
             self.katana_obj["console_full_log"] += data
             self.katana_obj["console_add"] += data
 
