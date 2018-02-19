@@ -1,15 +1,26 @@
+var global_select;
 var editor = {
 
 
 
   filesEditor:{
-    loadSelectFile: function(){
+    loadSelectFile: function(path){
+      if(path == ''){
       var selected = katana.$activeTab.find('#editor_layout_container').jstree('get_selected', true);
+      global_select = selected;
       //find the file name in which the user selected from the file tree (Json object), reference get_files function in Editor class in Views.py
-
+      if(selected.length == 0 || selected['0'].children != ''){
+        return 0;
+      }
       var data = JSON.stringify(selected);  //
       var obj = JSON.parse(data);
       var filePath = obj[0]['li_attr']['data-path'];
+      }
+      else{
+        filePath = path;
+        path = '';
+      }
+      console.log(filePath);
       //find the json property thats holds the full file path to be passed to get_file_content function in Editor class in Views.py
       //****This path needs to be saved globally or passed to the saveFile function
       var url = 'editor/getFileContent';
@@ -19,7 +30,6 @@ var editor = {
       katana.templateAPI.post(url,katana.$activeTab.find(".csrf-container input").val(),filePath, function(data){
 
         mode_type = editor.filesEditor.fileExtension(filePath);
-        console.log(mode_type)
   //function to create codemirror instance
 
      if(!editor.codeEditor){    //check to see if a codemirror instance is already alive, if so just se the new data selected
@@ -27,7 +37,6 @@ var editor = {
        //*********Need to add function to allow multiple codemirror instance to be created in different tabs***********
 
        //Regex function to check the extension of the file, changes the mode for codemirror
-       console.log("WHERE")
       editor.codeEditor = CodeMirror.fromTextArea(katana.$activeTab.find('#code')[0], {
         lineNumbers: true,
         mode: mode_type,
@@ -51,7 +60,7 @@ var editor = {
         }else if(ext =='js'){
           mode = 'javascript'
         }
-        else if(ext == 'txt'){
+        else if(ext == ''){
           mode = ''
         }else {
           mode = 'text/html'
@@ -60,10 +69,12 @@ var editor = {
         return mode
     },
     saveFile: function(){
-      var selected = katana.$activeTab.find('#editor_layout_container').jstree('get_selected', true);
-      var data = JSON.stringify(selected);
+    //  var selected = katana.$activeTab.find('#editor_layout_container').jstree('get_selected', true);
+
+      var data = JSON.stringify(global_select);
       var obj = JSON.parse(data);
       var filePath = obj[0]['li_attr']['data-path'];
+
       var newFileContent = editor.codeEditor.getValue();
       var url = 'editor/saveFile';
       var dataType = 'json';
@@ -127,13 +138,27 @@ var editor = {
 
       var editor_layout_container = katana.$activeTab.find('#editor_layout_container');
       var $inputs = $(katana.$activeTab.find('#configure_layout_form :input'));
+      filePath =$inputs['0'].defaultValue;
+      ext = filePath.split('/').pop();
+      ext_2 = ext.split('.').pop();
+      if( ext_2 == ext)
+      {
+        console.log("Not a file");
+        alert("Please Select a file");
+      }
+      else{
+        editor.filesViewer.showHideDialog('hide');
+        editor.filesEditor.loadSelectFile(filePath);
+        global_select =[{'li_attr' :  {'data-path': filePath }}]
+      }
+      /*console.log(ext_2);
       var values = {}
       for (var i = 0; i < $inputs.length; i++ ){
         values[$inputs[i].name] = $inputs[i].value;
       }
       editor_layout_container.attr('data-startdir', values['warriorspace']);
       editor.filesViewer.showHideDialog('hide');
-      editor.filesViewer.loadFilesTree();
+      editor.filesViewer.loadFilesTree();*/
     },
 
     clear: function(){
@@ -181,6 +206,7 @@ var editor = {
     },
 
     buildTree: function(data){
+      var ph = '';
       katana.$activeTab.find('#editor_layout_container').jstree({
         'core': {
           'data': [data],
@@ -188,7 +214,7 @@ var editor = {
       });
       katana.$activeTab.find('#editor_layout_container').jstree().hide_dots();
       $(katana.$activeTab.find('#editor_layout_container')).bind("dblclick.jstree", function (event) {
-          editor.filesEditor.loadSelectFile();
+          editor.filesEditor.loadSelectFile(ph);
       });
     },
     clearTree: function(){

@@ -116,7 +116,7 @@ position: relative;
 	/*display: block;*/
 	overflow: auto;
 	height: calc(100% - 70px);
-	margin-top: 15px;
+/*	margin-top: 15px;*/
 	/*margin-bottom: 5px;*/
 }
 
@@ -418,7 +418,7 @@ position: relative;
 	float: left
 }
 
-.editor.edit-button {
+.editor.editor-button {
 	display: inline-block;
 	margin: 5px 5px 0px 2px;
 	padding: 2px 5px;

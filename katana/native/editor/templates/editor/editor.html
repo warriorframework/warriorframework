@@ -20,10 +20,9 @@
                      <div class="editor panels-heading">
                         <label>Files</label>
                         <div class="editor panels-heading-icon">
-                          <i title="Layout Settings" class="fa fa-edit" id="eplorer_up" katana-click="editor.filesViewer.configureLayout"></i>
                         </div>
                         <div class="editor panels-heading-icon">
-                          <i title="Copy to Selections Area" class="fa fa-arrow-right" id="editor-edit-btn" katana-click="editor.filesEditor.loadSelectFile"></i>
+                          <i title="Open File" class="fa fa-edit" id="editor-edit-btn" katana-click="editor.filesViewer.configureLayout"></i>
                         </div>
                       </div>
                       <div class="editor panels-body" >
@@ -56,9 +55,7 @@
 				<div class="editor  editor-button browse" id="browse-ws"  katana-click="editor.filesViewer.openExplorer">Browse</div>
          	</div>
              <div class="editor cmd-options-qns-button-bar">
-
-               <div class="editor  editor-button" id="clear" type="reset" katana-click="editor.filesViewer.clear">Reset</div>
-               <div class="editor  editor-button" name="configure_layout_confirm" type="submit" katana-click="editor.filesViewer.confirm">Save</div>
+               <div class="editor  editor-button" name="configure_layout_confirm" type="submit" katana-click="editor.filesViewer.confirm">Open File</div>
              </div>
 
       </div>
