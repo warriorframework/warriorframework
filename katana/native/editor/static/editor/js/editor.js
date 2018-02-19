@@ -1,8 +1,8 @@
 var editor = {
 
 
-  filesEditor:{
 
+  filesEditor:{
     loadSelectFile: function(){
       var selected = katana.$activeTab.find('#editor_layout_container').jstree('get_selected', true);
       //find the file name in which the user selected from the file tree (Json object), reference get_files function in Editor class in Views.py
@@ -187,6 +187,9 @@ var editor = {
         },
       });
       katana.$activeTab.find('#editor_layout_container').jstree().hide_dots();
+      $(katana.$activeTab.find('#editor_layout_container')).bind("dblclick.jstree", function (event) {
+          editor.filesEditor.loadSelectFile();
+      });
     },
     clearTree: function(){
       // clears an exisitng js tree in the layout panel

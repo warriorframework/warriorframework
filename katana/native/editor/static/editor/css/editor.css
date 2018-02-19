@@ -8,14 +8,33 @@
 	height: 100%;
 }
 textarea {
+		border: none;
      height:100%;
      width: 100%;
      -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
      -moz-box-sizing: border-box;    /* Firefox, other Gecko */
      box-sizing: border-box;         /* Opera/IE 8+ */
 }
+#save{
+
+	padding: 2px 5px;
+    height: 32px;
+    vertical-align: top;
+    max-width: 200px;
+    min-width: 84px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+		margin: 5px 5px 0px 2px;
+background: rgb(244, 244, 244);
+border: solid #d2d2d2 1px;
+color: #333;
+width: auto;
+text-align: center;
+position: relative;
+}
 .editor.layout-panel {
-	min-width: 30%;
+	min-width: 15%;
 	width: calc(20% - 4px);
 	height: 100%;
 	background: #fff;

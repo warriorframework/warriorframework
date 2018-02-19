@@ -752,6 +752,11 @@ var katana = {
     }
   },
 
+  aboutUs: function(){
+
+    katana.popupController.open("About us Page","About Us",function(){console.log("success")});
+
+  },
   openProfile: function() {
     var $elem = this;
     $elem.closest('.active').removeClass('active');
@@ -934,7 +939,7 @@ var katana = {
     },
 
     post: function(url, csrf, toSend, callBack, fallBack, callBackData, fallBackData ) {
-      
+
       var $elem = this && this != katana.templateAPI ? this : katana.$activeTab;
       var toSend = toSend ? toSend : $elem.find('input:not([name="csrfmiddlewaretoken"])').serializeArray();
       var url = url ? url : $elem.attr('post-url');

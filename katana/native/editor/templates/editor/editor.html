@@ -11,33 +11,39 @@
 </head>
 <body>
 
+
   <div class = "csrf-container"> {% csrf_token %} </div>
   <div id="editor-container" class="editor edit-container" >
-              <div class="editor layout-panel"  auto-init="editor.filesViewer.loadFilesTree">
-                      <div class="editor panels-heading">
+
+        <div class="editor layout-panel"  auto-init="editor.filesViewer.loadFilesTree">
+
+                     <div class="editor panels-heading">
                         <label>Files</label>
                         <div class="editor panels-heading-icon">
-                          <i title="Layout Settings" class="fa fa-edit" id="configure_layout_btn" katana-click="editor.filesViewer.configureLayout"></i>
+                          <i title="Layout Settings" class="fa fa-edit" id="eplorer_up" katana-click="editor.filesViewer.configureLayout"></i>
                         </div>
                         <div class="editor panels-heading-icon">
                           <i title="Copy to Selections Area" class="fa fa-arrow-right" id="editor-edit-btn" katana-click="editor.filesEditor.loadSelectFile"></i>
                         </div>
                       </div>
-                      <div class="editor panels-body ">
+                      <div class="editor panels-body" >
                         <div id="editor_layout_container"  data-startdir="{{defaults.start_dir}}" ></div>
                       </div>
-              </div>
-    <div class = "editor selections-panel" id="editor-selections-panel">
+        </div>
+        <div class = "editor selections-panel" id="editor-selections-panel">
       <div class = "editor panels-heading" id="editor-selections-panel-heading">
         <label> Code Editor </label>
-          <label title ="Save changes" class="fa fa-play-circle" id="editor-edit-btn" katana-click="editor.filesEditor.saveFile"> Save File</label>
+          <button title ="Save changes" id="save" class = "button" katana-click="editor.filesEditor.saveFile" style> Save File</button>
+          <div></div>
       </div>
-      <div class = "editor selections-panels-body">
-        <textarea id="code"></textarea>
-      </div>
-    </div>
 
+          <div class = "editor selections-panels-body">
+            <textarea id="code"></textarea>
+
+          </div>
+        </div>
 </div>
+
 <div  class="editor dialog-container small" id="configure_layout_dialog" >
       <div class="title"><label>Layout Settings</label> <i class="fa fa-times" katana-click="editor.filesViewer.close_configuration_dialog" ></i> </div>
       <form  id="configure_layout_form">
