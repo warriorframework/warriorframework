@@ -753,8 +753,8 @@ var katana = {
   },
 
   aboutUs: function(){
-
-    katana.popupController.open("About us Page","About Us",function(){console.log("success")});
+    var aboutUs = "Warrior Framework started out as side project in 2015 and rapidly gained popularity within Fujitsu to become topmost provider of automation services in the company. <br><br> The potential of Warrior Framework did not go unnoticed and it was made publicly available under the Apache 2.0 License in mid 2017.<br><br> Today, Warrior Framework has successfully transformed into an Open Source Automation Platform wherein the user community can contribute back to the Platform by creating their Apps";
+    katana.popupController.open(aboutUs,"About Us",function(){console.log("success")});
 
   },
   openProfile: function() {
