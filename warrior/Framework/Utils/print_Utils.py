@@ -46,6 +46,15 @@ def print_notype(message, *args):
     print_main(message, print_type, color_message)
     return message
 
+def print_normal(message, *args):
+    """Prints with out print type(-I-,-E-),with color cyan in bold TEXT """
+    print_type = ""
+    if len(args) > 0:
+        for arg in args:
+            message += arg + ", "
+    print_main(message, print_type)
+    return message
+
 def print_info(message, *args):
     """Print an info message to the terminal """
     print_type = "-I-"

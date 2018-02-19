@@ -18,7 +18,7 @@ import WarriorCore.exec_type_driver as exec_type_driver
 import Framework.Utils as Utils
 from WarriorCore import common_execution_utils
 from Framework.Utils.testcase_Utils import pNote
-from Framework.Utils.print_Utils import print_info, print_warning, print_error
+from Framework.Utils.print_Utils import print_info, print_warning, print_error, print_normal
 from Framework.Utils.datetime_utils import wait_for_timeout
 
 """This module is used for sequential execution of testcase steps """
@@ -34,7 +34,7 @@ def get_system_console_log(filename, logsdir, console_name):
     return console_logfile
 
 
-def execute_steps(step_list, data_repository, system_name, parallel, queue):
+def execute_steps(step_list, data_repository, system_name, parallel, queue, skip_invoked=True, step_num=None):
     """
         Take in a list of steps
         iterate through each of them and decide if each should run (pre-run check)
@@ -47,20 +47,34 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
     kw_resultfile_list = []
     step_status_list = []
     step_impact_list = []
-    step_num = 0
 
     if parallel is True:
         system_console_log = get_system_console_log(data_repository['wt_filename'],
                                                     data_repository['wt_logsdir'],
                                                     '{0}_consoleLogs'.format(system_name))
-    while step_num < len(step_list):
-        step_num, kw_resultfile_list, data_repository, step_status_list, step_impact_list, \
-        goto_stepnum, do_continue = _execute_step(step_list, step_num, goto_stepnum,
-                                                  kw_resultfile_list, data_repository,
-                                                  default_error_action, default_error_value,
-                                                  step_status_list, step_impact_list, system_name)
-        if do_continue == "break":
-            break
+    if step_num is None:
+        step_num = 0
+        while step_num < len(step_list):
+            step_num, kw_resultfile_list, data_repository, step_status_list, step_impact_list, \
+            goto_stepnum, do_continue = _execute_step(step_list, step_num, goto_stepnum,
+                                                      kw_resultfile_list, data_repository,
+                                                      default_error_action, default_error_value,
+                                                      step_status_list, step_impact_list, system_name,
+                                                      parallel, queue, skip_invoked=skip_invoked)
+            if do_continue == "break":
+                break
+    else:
+        for _step_num in step_num:
+            if 0 <= _step_num < len(step_list):
+                _, kw_resultfile_list, data_repository, step_status_list, step_impact_list, \
+                goto_stepnum, do_continue = _execute_step(step_list, _step_num, goto_stepnum,
+                                                          kw_resultfile_list, data_repository,
+                                                          default_error_action, default_error_value,
+                                                          step_status_list, step_impact_list,
+                                                          system_name,
+                                                          parallel, queue, skip_invoked=skip_invoked)
+            else:
+                print_error("Step number {0} does not exist. Skipping.".format(_step_num+1))
 
     if parallel is True:
         try:
@@ -72,12 +86,15 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
             print_error(e)
 
     else:
-        return step_status_list, kw_resultfile_list, step_impact_list
+        if skip_invoked:
+            return step_status_list, kw_resultfile_list, step_impact_list
+        else:
+            return step_status_list, kw_resultfile_list, step_impact_list, data_repository, do_continue
 
 
 def _execute_step(step_list, step_num, goto_stepnum, kw_resultfile_list, data_repository,
                   default_error_action, default_error_value, step_status_list, step_impact_list,
-                  system_name, skip_recovery=True):
+                  system_name, parallel, queue, skip_invoked=True):
     step = step_list[step_num]
     # execute steps
     step_num += 1
@@ -87,10 +104,10 @@ def _execute_step(step_list, step_num, goto_stepnum, kw_resultfile_list, data_re
     # First decide if this step should be executed in this iteration
     if not goto_stepnum or goto_stepnum == str(step_num):
         # get Exectype information
-        run_current_step, trigger_action = exec_type_driver.main(step, skip_recovery=skip_recovery)
+        run_current_step, trigger_action = exec_type_driver.main(step, skip_invoked=skip_invoked)
         if not run_current_step:
             return _report_step_as_not_run(step, data_repository, system_name, step_num,
-                                           kw_resultfile_list, trigger_action, skip_recovery,
+                                           kw_resultfile_list, trigger_action, skip_invoked,
                                            step_status_list, step_impact_list, goto_stepnum)
 
     if not goto_stepnum or goto_stepnum == str(step_num):
@@ -112,7 +129,7 @@ def _execute_step(step_list, step_num, goto_stepnum, kw_resultfile_list, data_re
         return _execute_runmode_step(runmode_timer, runmode, step_status, value, step,
                                      default_error_action, default_error_value, step_num,
                                      kw_resultfile_list, data_repository, step_status_list,
-                                     step_impact_list, goto_stepnum, skip_recovery=skip_recovery)
+                                     step_impact_list, goto_stepnum, skip_invoked=skip_invoked)
 
     elif retry_type is not None:
         return _execute_retry_type_step(retry_type, data_repository, retry_cond, retry_cond_value,
@@ -122,11 +139,11 @@ def _execute_step(step_list, step_num, goto_stepnum, kw_resultfile_list, data_re
         return _execute_step_otherwise(step_list, system_name, step_status, step,
                                        default_error_action, default_error_value, step_num,
                                        kw_resultfile_list, data_repository, step_status_list,
-                                       step_impact_list, goto_stepnum, skip_recovery=skip_recovery)
+                                       step_impact_list, goto_stepnum, parallel, queue, skip_invoked=skip_invoked)
 
 
 def _report_step_as_not_run(step, data_repository, system_name, step_num, kw_resultfile_list,
-                            trigger_action, skip_recovery, step_status_list, step_impact_list, goto_stepnum):
+                            trigger_action, skip_invoked, step_status_list, step_impact_list, goto_stepnum):
     keyword = step.get('Keyword')
     kw_resultfile = step_driver.get_keyword_resultfile(data_repository, system_name,
                                                        step_num, keyword)
@@ -150,13 +167,10 @@ def _report_step_as_not_run(step, data_repository, system_name, step_num, kw_res
     if trigger_action.upper() in ['ABORT', 'ABORT_AS_ERROR']:
         return step_num, kw_resultfile_list, data_repository, step_status_list, step_impact_list, goto_stepnum, "break"
     elif trigger_action.upper() in ['SKIP', 'NEXT']:
-        if not skip_recovery:
-            print_error("Step has not been marked as 'Recovery', yet is being run as 'Recovery'")
-            print_info("Step will be skipped")
         return step_num, kw_resultfile_list, data_repository, step_status_list, step_impact_list, goto_stepnum, "continue"
-    elif trigger_action == "SKIP_RECOVERY":
-        if skip_recovery:
-            print_info("Skipping this step as it is a recovery step.")
+    elif trigger_action == "SKIP_INVOKED":
+        if skip_invoked:
+            print_info("Skipping this step as it is an invoked step.")
             return step_num, kw_resultfile_list, data_repository, step_status_list, step_impact_list, goto_stepnum,"continue"
     # when 'onError:goto' value is less than the current step num,
     # change the next iteration point to goto value
@@ -210,7 +224,7 @@ def _skip_because_of_goto(step, data_repository, system_name, step_num, kw_resul
 
 def _execute_runmode_step(runmode_timer, runmode, step_status, value, step, default_error_action,
                           default_error_value, step_num, kw_resultfile_list, data_repository,
-                          step_status_list, step_impact_list, goto_stepnum, skip_recovery=True):
+                          step_status_list, step_impact_list, goto_stepnum, skip_invoked=True):
     if runmode_timer is not None and \
             any([runmode == "RMT",
                  runmode == "RUF" and step_status is True,
@@ -229,7 +243,7 @@ def _execute_runmode_step(runmode_timer, runmode, step_status, value, step, defa
         if step_status is False or str(step_status).upper() == "ERROR" \
                 or str(step_status).upper() == "EXCEPTION":
             goto_stepnum = onerror_driver.main(step, default_error_action,
-                                               default_error_value, skip_recovery=skip_recovery)
+                                               default_error_value, skip_invoked=skip_invoked)
             if goto_stepnum in ['ABORT', 'ABORT_AS_ERROR']:
                 return step_num, kw_resultfile_list, data_repository, step_status_list, step_impact_list, goto_stepnum, "break"
     return step_num, kw_resultfile_list, data_repository, step_status_list, step_impact_list, goto_stepnum, "continue"
@@ -282,28 +296,33 @@ def _execute_retry_type_step(retry_type, data_repository, retry_cond, retry_cond
     return step_num, kw_resultfile_list, data_repository, step_status_list, step_impact_list, goto_stepnum, "continue"
 
 
-def _execute_step_otherwise(step_list, system_name, step_status, step, default_error_action,
+def _execute_step_otherwise(steps_list, system_name, step_status, step, default_error_action,
                             default_error_value, step_num, kw_resultfile_list, data_repository,
-                            step_status_list, step_impact_list, goto_stepnum, skip_recovery=True):
+                            step_status_list, step_impact_list, goto_stepnum, parallel, queue, skip_invoked=True):
     if step_status is False or str(step_status).upper() == "ERROR" \
             or str(step_status).upper() == "EXCEPTION":
-        goto_stepnum = onerror_driver.main(step, default_error_action, default_error_value, skip_recovery=skip_recovery)
+        goto_stepnum = onerror_driver.main(step, default_error_action, default_error_value, skip_invoked=skip_invoked)
         if goto_stepnum in ['ABORT', 'ABORT_AS_ERROR']:
             return step_num, kw_resultfile_list, data_repository, step_status_list, step_impact_list, goto_stepnum, "break"
+        elif goto_stepnum is 'RESUME':
+            return step_num, kw_resultfile_list, data_repository, step_status_list, step_impact_list, goto_stepnum, "resume"
         # when 'onError:goto' value is less than the current step num,
         # change the next iteration point to goto value
         elif isinstance(goto_stepnum, list):
-            print_info("------Starting Recovery------")
-            for goto_step in goto_stepnum:
-                if int(goto_step) - 1 < len(step_list):
-                    _, kw_resultfile_list, data_repository, step_status_list, step_impact_list, _, do_continue = _execute_step(
-                        step_list, int(goto_step) - 1, False, kw_resultfile_list,
-                        data_repository, default_error_action, default_error_value,
-                        step_status_list, step_impact_list, system_name, skip_recovery=False)
-                    if do_continue == "break":
-                        return step_num, kw_resultfile_list, data_repository, step_status_list, step_impact_list, False, do_continue
+            print_normal("\n----------------- Starting Invoked Steps Execution -----------------\n")
+            temp_step_list = list(steps_list)
+            for x in goto_stepnum:
+                if 0 <= x < len(steps_list):
+                    temp_step_list[x] = steps_list[x]
+            temp_status_list, temp_kw_result_list, temp_impact_list, temp_data_repo, do_continue = execute_steps(temp_step_list, data_repository,
+                                                                                    system_name, parallel,
+                                                                                    queue, skip_invoked=False, step_num=goto_stepnum)
+            step_status_list.extend(temp_status_list)
+            kw_resultfile_list.extend(temp_kw_result_list)
+            step_impact_list.append(temp_impact_list)
+            data_repository.update(temp_data_repo)
             goto_stepnum = False
-            print_info("------Recovery Finished------")
+            print_normal("\n----------------- Invoked Steps Execution Finished -----------------\n")
         elif goto_stepnum and int(goto_stepnum) < step_num:
             step_num = int(goto_stepnum) - 1
             goto_stepnum = False

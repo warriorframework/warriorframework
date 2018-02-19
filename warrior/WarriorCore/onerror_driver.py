@@ -23,7 +23,7 @@ Returns the actions that should e taken corresponding to the failure
 """
 
 
-def main(node, def_on_error_action, def_on_error_value, exec_type=False, skip_recovery=True):
+def main(node, def_on_error_action, def_on_error_value, exec_type=False, skip_invoked=True):
     """Takes a xml element (steps/step codntion / testcase/ tesuite)
     as input and return the action to be performed for failure
     conditions """
@@ -37,9 +37,9 @@ def main(node, def_on_error_action, def_on_error_value, exec_type=False, skip_re
                                                def_on_error_value, exec_type)
 
     function = {'NEXT': next, 'GOTO': goto, 'ABORT': abort,
-                'ABORT_AS_ERROR': abortAsError, "GOTO_RETURN": gotoReturn}.get(action.upper())
+                'ABORT_AS_ERROR': abortAsError, 'EXECUTE_AND_RESUME': execute_and_resume}.get(action.upper())
 
-    error_handle = function(action, value, error_handle, skip_recovery=skip_recovery)
+    error_handle = function(action, value, error_handle, skip_invoked=skip_invoked)
     result = get_failure_results(error_handle)
     return result
 
@@ -52,9 +52,9 @@ def get_failure_results(error_repository):
     """
     if error_repository['action'] is 'NEXT':
         return False
-    elif error_repository['action'] is 'GOTO' or error_repository['action'] is 'GOTO_RETURN':
+    elif error_repository['action'] in ['GOTO', 'EXECUTE_AND_RESUME']:
         return error_repository['value']
-    elif error_repository['action'] in ['ABORT', 'ABORT_AS_ERROR']:
+    elif error_repository['action'] in ['ABORT', 'ABORT_AS_ERROR', 'RESUME']:
         return error_repository['action']
     else:
         return False
@@ -83,7 +83,7 @@ def getErrorHandlingParameters(node, def_on_error_action, def_on_error_value, ex
         action = def_on_error_action
 
     elif action is not None and action is not False:
-        supported_values = ['next', 'goto', 'abort', 'abort_as_error', "goto_return"]
+        supported_values = ['next', 'goto', 'abort', 'abort_as_error', "execute_and_resume"]
         action = str(action).strip()
         if action.lower() not in supported_values:
             print_warning(
@@ -93,65 +93,76 @@ def getErrorHandlingParameters(node, def_on_error_action, def_on_error_value, ex
             action = def_on_error_action
 
     if value is None or value is False:
-        if action == "goto_return":
-            print_warning("No step numbers given to go to for goto_return")
+        if action == "execute_and_resume":
+            print_warning("No step numbers given to go to for execute_and_resume")
             print_info("Hence using default_onError action")
             action = def_on_error_action
         else:
             value = def_on_error_value
     else:
-        if action == "goto_return":
-            value = [x.strip() for x in value.split(",")]
+        if action == "execute_and_resume":
+            value = [int(x.strip())-1 for x in value.split(",")]
 
     return action, value
 
 
-def next(action, value, error_handle, skip_recovery=True):
+def next(action, value, error_handle, skip_invoked=True, print_w=True):
     """returns 'NEXT' for on_error action = next """
 
-    print_info("failure action= next")
-    error_handle['action'] = 'NEXT'
+    if skip_invoked:
+        print_info("failure action= next")
+        error_handle['action'] = 'NEXT'
+    else:
+        if print_w:
+            print_warning("Overriding onError '{0}' since this is an Invoked Step.".format('next'))
+        error_handle['action'] = 'NEXT'
     return error_handle
 
 
-def goto(action, value, error_handle, skip_recovery=True):
+def goto(action, value, error_handle, skip_invoked=True):
     """returns goto_step_num for on_error action = goto """
-    if skip_recovery:
+    if skip_invoked:
         print_info("failed: failure action= goto  %s" % value)
         error_handle['action'] = 'GOTO'
         error_handle['value'] = value
     else:
-        print_warning("Recovery Step cannot have goto as its onError mechanism")
-        print_info("Setting on Error to default: NEXT")
-        error_handle = next(action, value, error_handle, skip_recovery=skip_recovery)
+        print_warning("Overriding on error '{0}={1}' since this is an Invoked Step.".format('goto', value))
+        error_handle = next(action, value, error_handle, skip_invoked=skip_invoked, print_w=False)
     return error_handle
 
 
-def abort(action, value, error_handle, skip_recovery=True):
+def abort(action, value, error_handle, skip_invoked=True):
     """returns ABORT for on_error action = abort """
 
-    print_info("failed: failure action= Abort")
-    error_handle['action'] = 'ABORT'
+    if skip_invoked:
+        print_info("failed: failure action= Abort")
+        error_handle['action'] = 'ABORT'
+    else:
+        print_warning("Overriding on error '{0}' since this is an Invoked Step.".format('abort'))
+        error_handle = next(action, value, error_handle, skip_invoked=skip_invoked, print_w=False)
     return error_handle
 
 
-def abortAsError(action, value, error_handle, skip_recovery=True):
+def abortAsError(action, value, error_handle, skip_invoked=True):
     """returns ABORT_AS_ERROR for on_error action = abort_as_error """
 
-    print_info("failed: failure action= abort_as_error")
-    error_handle['action'] = 'ABORT_AS_ERROR'
+    if skip_invoked:
+        print_info("failed: failure action= abort_as_error")
+        error_handle['action'] = 'ABORT_AS_ERROR'
+    else:
+        print_warning("Overriding on error '{0}' since this is an Invoked Step.".format('abort_as_error'))
+        error_handle = next(action, value, error_handle, skip_invoked=skip_invoked, print_w=False)
     return error_handle
 
 
-def gotoReturn(action, value, error_handle, skip_recovery=True):
+def execute_and_resume(action, value, error_handle, skip_invoked=True):
     """returns ABORT_AS_ERROR for on_error action = abort_as_error """
 
-    if skip_recovery:
-        print_info("failed: failure action= goto_return")
-        error_handle['action'] = 'GOTO_RETURN'
+    if skip_invoked:
+        print_info("failed: failure action= execute_and_resume")
+        error_handle['action'] = 'EXECUTE_AND_RESUME'
         error_handle['value'] = value
     else:
-        print_warning("Recovery Step cannot have goto_return as its onError mechanism")
-        print_info("Setting on Error to default: NEXT")
-        error_handle = next(action, value, error_handle, skip_recovery=skip_recovery)
+        print_warning("Overriding on error '{0}={1}' since this is an Invoked Step.".format('execute_and_resume', value))
+        error_handle = next(action, value, error_handle, skip_invoked=skip_invoked, print_w=False)
     return error_handle

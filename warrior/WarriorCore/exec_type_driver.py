@@ -327,7 +327,7 @@ def decision_maker(exec_node):
 
     return status, action
 
-def main(step, skip_recovery=True):
+def main(step, skip_invoked=True):
     """
         Entry function for execute nodes in a step
         Handle checking and call the logical decision functions
@@ -345,29 +345,18 @@ def main(step, skip_recovery=True):
     trigger_action = None
     exec_type = exec_node.get("ExecType", "")
     if exec_type.upper() == 'IF' or exec_type.upper() == 'IF NOT':
-        if skip_recovery:
-            decision, trigger_action = decision_maker(exec_node)
-        else:
-            decision = False
-            trigger_action = "SKIP"
+        decision, trigger_action = decision_maker(exec_node)
     elif exec_type.upper() == 'NO':
         decision = False
-        if skip_recovery:
-            trigger_action = "SKIP"
-        else:
-            trigger_action = "SKIP"
+        trigger_action = "SKIP"
     elif exec_type.upper() == 'YES':
-        if skip_recovery:
-            decision = True
-        else:
-            decision = False
-            trigger_action = "SKIP"
-    elif exec_type.upper() == "RECOVERY":
-        decision = not skip_recovery
-        trigger_action = "SKIP_RECOVERY"
+        decision = True
+    elif exec_type.upper() == "INVOKED":
+        decision = not skip_invoked
+        trigger_action = "SKIP_INVOKED"
     else:
         decision = False
-        supported_values = ['no', 'yes', 'if', 'if not', "recovery"]
+        supported_values = ['no', 'yes', 'if', 'if not', "invoked"]
         print_error("Unsupported value used for ExecType, supported values are:"
                     "{0} and case-insensitive".format(supported_values))
 
