@@ -108,7 +108,9 @@ def execute_parallel_testcases(testcase_list, suite_repository,
     # parallel testcases generate multiple testcase junit result files
     # each files log the result for one testcase and not intergrated
     # update testsuite junit result file with individual testcase result files
-    data_repository['wt_junit_object'] = update_ts_junit_resultfile(data_repository['wt_junit_object'], tc_junit_list)
+    data_repository['wt_junit_object'] = update_ts_junit_resultfile(
+        data_repository['wt_junit_object'], tc_junit_list,
+        data_repository['wt_ts_timestamp'])
     testsuite_status = Utils.testcase_Utils.compute_status_using_impact(tc_status_list,
                                                                         tc_impact_list)
     return testsuite_status
