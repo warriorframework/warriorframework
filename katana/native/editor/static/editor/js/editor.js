@@ -1,3 +1,5 @@
+var count = 0;
+var global_path = [];
 var global_select;
 var editor = {
 
@@ -83,11 +85,6 @@ var editor = {
       katana.templateAPI.post(url,katana.$activeTab.find(".csrf-container input").val(),json_data, function(data){
         alert("Saved File");
       });
-
-      //katana.templateAPI.post(url,katana.$activeTab.find(".csrf-container input").val(),json_data, function(data){ alert("Saved...");}
-      //katana.templateAPI.post( url,katana.$activeTab.find(".csrf-container input").val(), newFileContent, funcion(data){ });
-
-
     }
 
   },
@@ -121,15 +118,17 @@ var editor = {
     },
 
     upDirectory: function(csrftoken){
-
+      count++;
+      console.log(count);
       var currentPath = katana.$activeTab.find('#editor_layout_container').attr('data-startdir');
-
+     global_path.push(currentPath);
+     console.log(global_path)
       katana.templateAPI.post('editor/getData', csrftoken, {
           "path": currentPath
         },
 
         function(data) {
-          console.log(data)
+          //console.log(data)
             newPath = data['li_attr']['data-path'];
           katana.$activeTab.find('#editor_layout_container').attr("data-startdir", newPath);
           editor.filesViewer.loadFilesTree();
@@ -137,17 +136,20 @@ var editor = {
     },
 
     downDirectory: function(csrftoken){
+      count--;
 
       var currentPath = katana.$activeTab.find('#editor_layout_container').attr('data-startdir');
+      if(count == -1){
+        count++;
+        console.log("No Path")
+        return
+      }
+      currentPath = global_path[count];
+      console.log(count + " global_path" + currentPath)
+      katana.$activeTab.find('#editor_layout_container').attr("data-startdir", currentPath);
+      editor.filesViewer.loadFilesTree();
+        global_path.pop();
 
-      katana.templateAPI.post('editor/getDataDown', csrftoken, {
-          "path": currentPath
-        },
-        function(data) {
-            newPath = data['li_attr']['data-path'];
-          katana.$activeTab.find('#editor_layout_container').attr("data-startdir", newPath);
-          editor.filesViewer.loadFilesTree();
-        });
     },
 
     configureLayout: function(){
@@ -181,14 +183,7 @@ var editor = {
         editor.filesEditor.loadSelectFile(filePath);
         global_select =[{'li_attr' :  {'data-path': filePath }}]
       }
-      /*console.log(ext_2);
-      var values = {}
-      for (var i = 0; i < $inputs.length; i++ ){
-        values[$inputs[i].name] = $inputs[i].value;
-      }
-      editor_layout_container.attr('data-startdir', values['warriorspace']);
-      editor.filesViewer.showHideDialog('hide');
-      editor.filesViewer.loadFilesTree();*/
+
     },
 
     clear: function(){
@@ -228,7 +223,7 @@ var editor = {
 
     loadFilesTree: function(){
       var dataToSend = JSON.stringify({'start_dir': katana.$activeTab.find('#editor_layout_container').attr('data-startdir')});
-      console.log(dataToSend);
+      //console.log(dataToSend);
       var url = 'editor/getFiles';
       var dataType = 'json';
       editor.filesViewer.clearTree();

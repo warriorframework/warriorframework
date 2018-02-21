@@ -11,6 +11,5 @@ urlpatterns = [
     url(r'getFileContent', editor.get_file_content, name = 'get_file_content'),
     url(r'saveFile', editor.save_file_content, name = 'save_file_content'),
     url(r'getData', editor.get_file_data, name = 'get_file_data'),
-    url(r'getDataDown', editor.get_file_data_down, name = 'get_file_data_down'),
 
 ]

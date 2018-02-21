@@ -96,19 +96,12 @@ class Editor(object):
 
     def get_file_data(self,request):
         nav_obj = Navigator()
-        print request.POST.get('data[path]')
         start_dir = get_parent_directory(request.POST.get('data[path]'))
         output = nav_obj.get_dir_tree_json(start_dir_path=start_dir)
 
         return JsonResponse(output)
 
-    def get_file_data_down(self,request):
-        nav_obj = Navigator()
-        print request.POST.get('data[path]')
-        start_dir = get_parent_directory(request.POST.get('data[path]'))
-        output = nav_obj.get_dir_tree_json(start_dir_path=start_dir)
-
-        return JsonResponse(output)
+    
 
 def update_jira_proj_list(jira_settings_file, editor_settings_json):
     """
