@@ -19,7 +19,7 @@ from WarriorCore.Classes.war_cli_class import WarriorCliClass
 """
 onerror driver handles all the failures in Warrior framework
 at levels like step/step conditions/testcase/testsuite/project.
-Returns the actions that should e taken corresponding to the failure 
+Returns the actions that should e taken corresponding to the failure
 """
 
 
@@ -36,10 +36,10 @@ def main(node, def_on_error_action, def_on_error_value, exec_type=False, skip_in
     action, value = getErrorHandlingParameters(node, def_on_error_action,
                                                def_on_error_value, exec_type)
 
-    function = {'NEXT': next, 'GOTO': goto, 'ABORT': abort,
-                'ABORT_AS_ERROR': abortAsError, 'EXECUTE_AND_RESUME': execute_and_resume}.get(action.upper())
+    call_function = {'NEXT': next, 'GOTO': goto, 'ABORT': abort, 'ABORT_AS_ERROR': abortAsError,
+                     'EXECUTE_AND_RESUME': execute_and_resume}.get(action.upper())
 
-    error_handle = function(action, value, error_handle, skip_invoked=skip_invoked)
+    error_handle = call_function(action, value, error_handle, skip_invoked=skip_invoked)
     result = get_failure_results(error_handle)
     return result
 
@@ -50,14 +50,13 @@ def get_failure_results(error_repository):
     Arguments:
     1. error_repository    = (dict) dictionary containing the onError action, values
     """
-    if error_repository['action'] is 'NEXT':
+    if error_repository['action'] == 'NEXT':
         return False
     elif error_repository['action'] in ['GOTO', 'EXECUTE_AND_RESUME']:
         return error_repository['value']
     elif error_repository['action'] in ['ABORT', 'ABORT_AS_ERROR', 'RESUME']:
         return error_repository['action']
-    else:
-        return False
+    return False
 
 
 def getErrorHandlingParameters(node, def_on_error_action, def_on_error_value, exec_type):
@@ -86,9 +85,8 @@ def getErrorHandlingParameters(node, def_on_error_action, def_on_error_value, ex
         supported_values = ['next', 'goto', 'abort', 'abort_as_error', "execute_and_resume"]
         action = str(action).strip()
         if action.lower() not in supported_values:
-            print_warning(
-                "unsupported option '{0}' provided for onError action, supported values are {1}".format(
-                    action, supported_values))
+            print_warning("unsupported option '{0}' provided for onError action, supported "
+                          "values are {1}".format(action, supported_values))
             print_info("Hence using default_onError action")
             action = def_on_error_action
 
@@ -126,7 +124,8 @@ def goto(action, value, error_handle, skip_invoked=True):
         error_handle['action'] = 'GOTO'
         error_handle['value'] = value
     else:
-        print_warning("Overriding on error '{0}={1}' since this is an Invoked Step.".format('goto', value))
+        print_warning("Overriding on error '{0}={1}' since this is an Invoked "
+                      "Step.".format('goto', value))
         error_handle = next(action, value, error_handle, skip_invoked=skip_invoked, print_w=False)
     return error_handle
 
@@ -150,7 +149,8 @@ def abortAsError(action, value, error_handle, skip_invoked=True):
         print_info("failed: failure action= abort_as_error")
         error_handle['action'] = 'ABORT_AS_ERROR'
     else:
-        print_warning("Overriding on error '{0}' since this is an Invoked Step.".format('abort_as_error'))
+        print_warning("Overriding on error '{0}' since this is an Invoked "
+                      "Step.".format('abort_as_error'))
         error_handle = next(action, value, error_handle, skip_invoked=skip_invoked, print_w=False)
     return error_handle
 
@@ -163,6 +163,7 @@ def execute_and_resume(action, value, error_handle, skip_invoked=True):
         error_handle['action'] = 'EXECUTE_AND_RESUME'
         error_handle['value'] = value
     else:
-        print_warning("Overriding on error '{0}={1}' since this is an Invoked Step.".format('execute_and_resume', value))
+        print_warning("Overriding on error '{0}={1}' since this is an Invoked "
+                      "Step.".format('execute_and_resume', value))
         error_handle = next(action, value, error_handle, skip_invoked=skip_invoked, print_w=False)
     return error_handle

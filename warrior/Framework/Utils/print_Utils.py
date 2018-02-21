@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2017, Fujitsu Network Communications, Inc.
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -9,7 +9,11 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
+
+from WarriorCore.Classes.war_print_class import print_main
+import sys
+import traceback
 
 """
 Warrior Frameworks print library
@@ -21,9 +25,6 @@ as it will lead to cyclic imports.
 
 """
 
-from WarriorCore.Classes.war_print_class import print_main
-import sys
-import traceback
 
 def print_debug(message, *args):
     """Print a debug message to the terminal """
@@ -33,6 +34,7 @@ def print_debug(message, *args):
             message += arg + ", "
     print_main(message, print_type)
     return message
+
 
 def print_notype(message, *args):
     """Prints with out print type(-I-,-E-),with color cyan in bold TEXT """
@@ -46,6 +48,7 @@ def print_notype(message, *args):
     print_main(message, print_type, color_message)
     return message
 
+
 def print_normal(message, *args):
     """Prints with out print type(-I-,-E-),with color cyan in bold TEXT """
     print_type = ""
@@ -54,6 +57,7 @@ def print_normal(message, *args):
             message += arg + ", "
     print_main(message, print_type)
     return message
+
 
 def print_info(message, *args):
     """Print an info message to the terminal """
@@ -65,31 +69,32 @@ def print_info(message, *args):
     if sys.stdout.isatty():
         msg_upper = message.upper()
         if ":PASS" in msg_upper:
-            color_message = message[:msg_upper.index(":PASS") + 1] + "\033[1;32m" + "PASS" +\
-            "\033[0m" + message[msg_upper.index(":PASS") + 5:]
+            color_message = message[:msg_upper.index(":PASS") + 1] + "\033[1;32m" + "PASS" + \
+                            "\033[0m" + message[msg_upper.index(":PASS") + 5:]
 
         elif ":RAN" in msg_upper:
-            color_message = message[:msg_upper.index(":RAN") + 1] + "\033[1;32m" + "RAN" +\
-            "\033[0m" + message[msg_upper.index(":RAN") + 5:]
+            color_message = message[:msg_upper.index(":RAN") + 1] + "\033[1;32m" + "RAN" + \
+                            "\033[0m" + message[msg_upper.index(":RAN") + 5:]
 
         elif ":FAIL" in msg_upper:
-            color_message = message[:msg_upper.index(":FAIL") + 1] + "\033[1;31m" + "FAIL" +\
-            "\033[0m" + message[msg_upper.index(":FAIL") + 5:]
+            color_message = message[:msg_upper.index(":FAIL") + 1] + "\033[1;31m" + "FAIL" + \
+                            "\033[0m" + message[msg_upper.index(":FAIL") + 5:]
 
         elif ":EXCEPTION" in msg_upper:
-            color_message = message[:msg_upper.index(":EXCEPTION") + 1] + "\033[1;31m" + "EXCEPTION" +\
-            "\033[0m" + message[msg_upper.index(":EXCEPTION") + 10:]
+            color_message = message[:msg_upper.index(":EXCEPTION") + 1] + "\033[1;31m" + \
+                            "EXCEPTION" + "\033[0m" + message[msg_upper.index(":EXCEPTION") + 10:]
 
         elif ":ERROR" in msg_upper:
-            color_message = message[:msg_upper.index(":ERROR") + 1] + "\033[1;31m" + "ERROR" +\
-            "\033[0m" + message[msg_upper.index(":ERROR") + 6:]
+            color_message = message[:msg_upper.index(":ERROR") + 1] + "\033[1;31m" + "ERROR" + \
+                            "\033[0m" + message[msg_upper.index(":ERROR") + 6:]
 
         elif ":SKIPPED" in msg_upper:
-            color_message = message[:msg_upper.index(":SKIPPED") + 1] + "\033[1;33m" + "SKIPPED" +\
-            "\033[0m" + message[msg_upper.index(":SKIPPED") + 9:]
+            color_message = message[:msg_upper.index(":SKIPPED") + 1] + "\033[1;33m" + "SKIPPED" + \
+                            "\033[0m" + message[msg_upper.index(":SKIPPED") + 9:]
 
     print_main(message, print_type, color_message)
     return message
+
 
 def print_error(message, *args):
     """Prints an error message to the terminal """
@@ -104,6 +109,7 @@ def print_error(message, *args):
     print_main(message, print_type, color_message)
     return message
 
+
 def print_exception(exception):
     """Print details of an exception to the console """
     print_info('\n')
@@ -111,6 +117,7 @@ def print_exception(exception):
     print_error("Exception Name: {0}".format(exception.__class__.__name__))
     print_error("Exception trace back: \n \t{0}".format(traceback.format_exc()))
     return traceback.format_exc()
+
 
 def print_warning(message, *args):
     """Prints a warning message to the terminal """
@@ -124,6 +131,7 @@ def print_warning(message, *args):
         color_message = "\033[1;33m" + str(message) + "\033[0m"
     print_main(message, print_type, color_message)
     return message
+
 
 def print_sub(message, *args):
     """Substitutes the string with *args tuple provided

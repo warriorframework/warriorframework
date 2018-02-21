@@ -95,6 +95,11 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue, skip
 def _execute_step(step_list, step_num, goto_stepnum, kw_resultfile_list, data_repository,
                   default_error_action, default_error_value, step_status_list, step_impact_list,
                   system_name, parallel, queue, skip_invoked=True):
+    """
+    This function executes the determined step - step_num (integer index) from the step_list. This
+    function is called either from the while loop (normal execution) in function execute_steps() or
+    from a for loop (invoked execution)
+    """
     step = step_list[step_num]
     # execute steps
     step_num += 1
@@ -144,6 +149,9 @@ def _execute_step(step_list, step_num, goto_stepnum, kw_resultfile_list, data_re
 
 def _report_step_as_not_run(step, data_repository, system_name, step_num, kw_resultfile_list,
                             trigger_action, skip_invoked, step_status_list, step_impact_list, goto_stepnum):
+    """
+    This function handles reporting of a step as not run.
+    """
     keyword = step.get('Keyword')
     kw_resultfile = step_driver.get_keyword_resultfile(data_repository, system_name,
                                                        step_num, keyword)
@@ -180,6 +188,9 @@ def _report_step_as_not_run(step, data_repository, system_name, step_num, kw_res
 
 
 def _execute_step_on_goto(step, step_num, data_repository, system_name):
+    """
+    This function actually executes a given step and returns necessary details about that step.
+    """
     try:
         result = step_driver.main(step, step_num, data_repository, system_name)
         step_status = result[0]
@@ -197,6 +208,9 @@ def _execute_step_on_goto(step, step_num, data_repository, system_name):
 
 def _skip_because_of_goto(step, data_repository, system_name, step_num, kw_resultfile_list,
                           step_status_list, step_impact_list, goto_stepnum):
+    """
+    This function would skip step because of goto
+    """
     keyword = step.get('Keyword')
     kw_resultfile = step_driver.get_keyword_resultfile(data_repository, system_name,
                                                        step_num, keyword)
@@ -225,6 +239,9 @@ def _skip_because_of_goto(step, data_repository, system_name, step_num, kw_resul
 def _execute_runmode_step(runmode_timer, runmode, step_status, value, step, default_error_action,
                           default_error_value, step_num, kw_resultfile_list, data_repository,
                           step_status_list, step_impact_list, goto_stepnum, skip_invoked=True):
+    """
+    This function will execute a runmode step
+    """
     if runmode_timer is not None and \
             any([runmode == "RMT",
                  runmode == "RUF" and step_status is True,
@@ -252,6 +269,10 @@ def _execute_runmode_step(runmode_timer, runmode, step_status, value, step, defa
 def _execute_retry_type_step(retry_type, data_repository, retry_cond, retry_cond_value,
                              retry_interval, retry_value, step_num, kw_resultfile_list,
                              step_status_list, step_impact_list, goto_stepnum):
+    """
+    This function will execute a retry step
+
+    """
     if retry_type.upper() == 'IF':
         try:
             if data_repository[retry_cond] == retry_cond_value:
@@ -299,6 +320,10 @@ def _execute_retry_type_step(retry_type, data_repository, retry_cond, retry_cond
 def _execute_step_otherwise(steps_list, system_name, step_status, step, default_error_action,
                             default_error_value, step_num, kw_resultfile_list, data_repository,
                             step_status_list, step_impact_list, goto_stepnum, parallel, queue, skip_invoked=True):
+    """
+
+    This function will execute a step's onError functionality
+    """
     if step_status is False or str(step_status).upper() == "ERROR" \
             or str(step_status).upper() == "EXCEPTION":
         goto_stepnum = onerror_driver.main(step, default_error_action, default_error_value, skip_invoked=skip_invoked)
