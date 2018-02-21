@@ -10,7 +10,17 @@ var execution = {
 
 	cleanupDataLiveDir: function(){
 		// clean up the .data/live dir of the app on start up
-		katana.templateAPI.get.call(katana.$activeTab, 'execution/cleanupDataLiveDir', null, null, 'html');
+		get_call_args = 				{
+				'url': 'execution/cleanupDataLiveDir', 
+				'csrf':null, 
+				'toSend':null, 
+				'dataType':'html', 
+				'callBack':null, 
+				'fallBack':null, 
+				'callBackData':null, 
+				'fallBackData':null
+			}
+		katana.templateAPI.get.call(katana.$activeTab, get_call_args);
 		
 	},
 
@@ -55,7 +65,20 @@ var execution = {
 				var url = 'execution/getWs';
 				var dataType = 'json';
 				execution.layoutViewer.clearTree();
-				katana.templateAPI.get.call(katana.$activeTab, url, null, dataToSend, dataType, execution.layoutViewer.buildTree);
+				get_call_args = 				{
+						'url': url, 
+						'csrf':'null', 
+						'toSend':dataToSend, 
+						'dataType':dataType, 
+						'callBack':execution.layoutViewer.buildTree, 
+						'fallBack':null, 
+						'callBackData':null, 
+						'fallBackData':null
+					}
+				katana.templateAPI.get.call(katana.$activeTab, get_call_args);
+
+				
+				
 			},
 
 
@@ -85,7 +108,6 @@ var execution = {
 				/*build a new jstree in the layout panel
 				 * the data is the json of directory tree recieved form the server
 				 * */ 
-				
 				katana.$activeTab.find('#execution_layout_container').jstree({
 					'core': {
 						'data': [data],
@@ -241,7 +263,18 @@ var execution = {
 						execution.resultsViewer.execution_list.push(items[i].dataset.path);
 					}
 
-					katana.templateAPI.get.call(katana.$activeTab, 'execution/getResultsIndex', null, null, 'html', execution.resultsViewer.startExecution);
+					get_call_args = 				{
+							'url': 'execution/getResultsIndex', 
+							'csrf':null, 
+							'toSend':null, 
+							'dataType':'html', 
+							'callBack':execution.resultsViewer.startExecution, 
+							'fallBack':null, 
+							'callBackData':null, 
+							'fallBackData':null
+						}
+					
+					katana.templateAPI.get.call(katana.$activeTab, get_call_args);
 
 				}
 		},
@@ -334,7 +367,19 @@ var execution = {
 			
 			//make a ajax call to get the contents of the json file
 			var data_to_send = JSON.stringify({'logpath': logpath, 'logtype': 'defects'});
-			katana.templateAPI.get.call(katana.$activeTab, 'execution/getLogFileContents', null, data_to_send, 'html', execution.resultsViewer.openDefectsJsonInPopup);
+			get_call_args = 				{
+					'url': 'execution/getLogFileContents', 
+					'csrf':null, 
+					'toSend':data_to_send, 
+					'dataType':'html', 
+					'callBack':execution.resultsViewer.openDefectsJsonInPopup, 
+					'fallBack':null, 
+					'callBackData':null, 
+					'fallBackData':null
+				}
+			
+			
+			katana.templateAPI.get.call(katana.$activeTab, get_call_args);
 		},
 		openConsoleLogFile: function(){
 			elem = $(this);
@@ -342,7 +387,19 @@ var execution = {
 			
 			//make a ajax call to get the contents of the json file
 			var data_to_send = JSON.stringify({'logpath': logpath, 'logtype': 'console_logs'});
-			katana.templateAPI.get.call(katana.$activeTab, 'execution/getLogFileContents', null, data_to_send, 'html', execution.resultsViewer.openDefectsJsonInPopup);
+			
+			get_call_args = 				{
+					'url': 'execution/getLogFileContents', 
+					'csrf':null, 
+					'toSend':data_to_send, 
+					'dataType':'html', 
+					'callBack':execution.resultsViewer.openDefectsJsonInPopup, 
+					'fallBack':null, 
+					'callBackData':null, 
+					'fallBackData':null
+				}
+			
+			katana.templateAPI.get.call(katana.$activeTab, get_call_args);
 		},
 		openDefectsJsonInPopup: function(data){
 			data = JSON.parse(data);
@@ -595,7 +652,19 @@ var execution = {
 		 deleteLiveHtmlFile(){
 			 /*Deletes the live html file post find eoc*/
 			 var data_to_send = JSON.stringify({'liveHtmlFpath': this.liveHtmlFpath});
-			 katana.templateAPI.get.call(katana.$activeTab, 'execution/deleteLiveHtmlFile', null, data_to_send, 'html');
+			 
+				get_call_args = 				{
+						'url': 'execution/deleteLiveHtmlFile', 
+						'csrf':null, 
+						'toSend':data_to_send, 
+						'dataType':'html', 
+						'callBack':execution.resultsViewer.openDefectsJsonInPopup, 
+						'fallBack':null, 
+						'callBackData':null, 
+						'fallBackData':null
+					}
+			 
+			 katana.templateAPI.get.call(katana.$activeTab, get_call_args);
 
 		 }
 		 disableHref(){
