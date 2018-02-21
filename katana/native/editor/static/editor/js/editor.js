@@ -120,6 +120,36 @@ var editor = {
       katana.fileExplorerAPI.openFileExplorer('Select a directory', dir, csrf, null, editor.filesViewer.setWs);
     },
 
+    upDirectory: function(csrftoken){
+
+      var currentPath = katana.$activeTab.find('#editor_layout_container').attr('data-startdir');
+
+      katana.templateAPI.post('editor/getData', csrftoken, {
+          "path": currentPath
+        },
+
+        function(data) {
+          console.log(data)
+            newPath = data['li_attr']['data-path'];
+          katana.$activeTab.find('#editor_layout_container').attr("data-startdir", newPath);
+          editor.filesViewer.loadFilesTree();
+        });
+    },
+
+    downDirectory: function(csrftoken){
+
+      var currentPath = katana.$activeTab.find('#editor_layout_container').attr('data-startdir');
+
+      katana.templateAPI.post('editor/getDataDown', csrftoken, {
+          "path": currentPath
+        },
+        function(data) {
+            newPath = data['li_attr']['data-path'];
+          katana.$activeTab.find('#editor_layout_container').attr("data-startdir", newPath);
+          editor.filesViewer.loadFilesTree();
+        });
+    },
+
     configureLayout: function(){
       // show the configure layout dialog, have checks to see if warriospace field is epty or not.
       var elems = editor.filesViewer.initConfig();

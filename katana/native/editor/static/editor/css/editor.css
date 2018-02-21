@@ -104,11 +104,17 @@ position: relative;
 	padding-left: 10px;
 }
 
+#explorer-up{
+	color: #4ea5e1;
+}
+.up-btn-bar{
+	background: #ffffff;
+}
 .editor.panels-body {
 	/*display: block;*/
 	overflow: auto;
 	height: calc(100% - 70px);
-	margin-top: 15px;
+	/*margin-top: 15px;*/
 	/*margin-bottom: 5px;*/
 }
 

@@ -1195,6 +1195,7 @@ var katana = {
           $directoryData.jstree().hide_dots();
           $tabContent.find('#explorer-up').off('click');
           $tabContent.find('#explorer-up').on('click', function() {
+            console.log("click");
             katana.fileExplorerAPI.upFileExplorer(data.li_attr["data-path"], csrftoken, parent);
           });
         });
