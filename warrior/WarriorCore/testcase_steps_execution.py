@@ -341,7 +341,7 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue, skip
                    tc_step_exec_obj.step_impact_list
         else:
             return tc_step_exec_obj.step_status_list, tc_step_exec_obj.kw_resultfile_list, \
-                   tc_step_exec_obj.step_impact_list, data_repository
+                   tc_step_exec_obj.step_impact_list, tc_step_exec_obj.data_repository
 
 
 def main(step_list, data_repository, system_name=None, parallel=False, queue=False):
