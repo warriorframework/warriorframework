@@ -71,14 +71,14 @@ class TestCaseStepsExecutionClass(object):
 
         # Decide whether or not to execute keyword
         # First decide if this step should be executed in this iteration
-        if not self.go_to_step_number or self.go_to_step_number == str(self.current_step_number):
+        if not self.go_to_step_number or self.go_to_step_number == str(self.next_step):
             # get Exectype information
             self.run_current_step, self.current_triggered_action = \
                 exec_type_driver.main(self.current_step, skip_invoked=self.skip_invoked)
             if not self.run_current_step:
                 return self._report_step_as_not_run()
 
-        if not self.go_to_step_number or self.go_to_step_number == str(self.current_step_number):
+        if not self.go_to_step_number or self.go_to_step_number == str(self.next_step):
             self.step_status = self._execute_step_on_goto()
         else:
             # Skip because of goto
@@ -104,7 +104,7 @@ class TestCaseStepsExecutionClass(object):
         """
         keyword = self.current_step.get('Keyword')
         kw_resultfile = step_driver.get_keyword_resultfile(self.data_repository, self.system_name,
-                                                           self.current_step_number, keyword)
+                                                           self.next_step, keyword)
         Utils.config_Utils.set_resultfile(kw_resultfile)
         Utils.testcase_Utils.pKeyword(keyword, self.current_step.get('Driver'))
         Utils.testcase_Utils.reportStatus('Skip')
@@ -117,10 +117,10 @@ class TestCaseStepsExecutionClass(object):
         step_impact = Utils.testcase_Utils.get_impact_from_xmlfile(self.current_step)
         impact_dict = {"IMPACT": "Impact", "NOIMPACT": "No Impact"}
         self.data_repository['wt_junit_object'].add_keyword_result(
-            self.data_repository['wt_tc_timestamp'], self.current_step_number, keyword,
+            self.data_repository['wt_tc_timestamp'], self.next_step, keyword,
             "SKIPPED", kw_start_time, "0", "skipped",
             impact_dict.get(step_impact.upper()), "N/A")
-        self.data_repository['step_{}_result'.format(self.current_step_number + 1)] = "SKIPPED"
+        self.data_repository['step_{}_result'.format(self.next_step)] = "SKIPPED"
 
         if self.current_triggered_action.upper() in ['ABORT', 'ABORT_AS_ERROR']:
             return self.next_step, self.go_to_step_number, "break"
@@ -133,7 +133,7 @@ class TestCaseStepsExecutionClass(object):
                 return self.next_step, self.go_to_step_number, "continue"
         # when 'onError:goto' value is less than the current step num,
         # change the next iteration point to goto value
-        elif self.current_triggered_action and int(self.current_triggered_action) < self.current_step_number:
+        elif self.current_triggered_action and int(self.current_triggered_action) < self.next_step:
             self.next_step = int(self.current_triggered_action) - 1
         return self.next_step, self.go_to_step_number, "continue"
 
@@ -142,7 +142,7 @@ class TestCaseStepsExecutionClass(object):
         This function actually executes a given step and returns necessary details about that step.
         """
         try:
-            result = step_driver.main(self.current_step, self.current_step_number + 1, self.data_repository, self.system_name)
+            result = step_driver.main(self.current_step, self.next_step, self.data_repository, self.system_name)
             step_status = result[0]
             kw_resultfile = result[1]
             step_impact = result[2]
@@ -164,7 +164,7 @@ class TestCaseStepsExecutionClass(object):
         """
         keyword = self.current_step.get('Keyword')
         kw_resultfile = step_driver.get_keyword_resultfile(self.data_repository, self.system_name,
-                                                           self.current_step_number, keyword)
+                                                           self.next_step, keyword)
         Utils.config_Utils.set_resultfile(kw_resultfile)
         Utils.testcase_Utils.pKeyword(keyword, self.current_step.get('Driver'))
         Utils.testcase_Utils.reportStatus('Skip')
@@ -180,10 +180,10 @@ class TestCaseStepsExecutionClass(object):
 
         impact_dict = {"IMPACT": "Impact", "NOIMPACT": "No Impact"}
         self.data_repository['wt_junit_object']. \
-            add_keyword_result(self.data_repository['wt_tc_timestamp'], self.current_step_number, keyword, "SKIPPED",
+            add_keyword_result(self.data_repository['wt_tc_timestamp'], self.next_step, keyword, "SKIPPED",
                                kw_start_time, "0", "skipped",
                                impact_dict.get(step_impact.upper()), "N/A", step_description)
-        self.data_repository['step_{}_result'.format(self.current_step_number)] = "SKIPPED"
+        self.data_repository['step_{}_result'.format(self.next_step)] = "SKIPPED"
         return self.next_step, self.go_to_step_number, "continue"
 
     def _execute_runmode_step(self, runmode_timer, runmode, step_status, value):
