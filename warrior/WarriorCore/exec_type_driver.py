@@ -344,6 +344,7 @@ def main(step, skip_invoked=True):
 
     trigger_action = None
     exec_type = exec_node.get("ExecType", "")
+    print exec_type
     if exec_type.upper() == 'IF' or exec_type.upper() == 'IF NOT':
         decision, trigger_action = decision_maker(exec_node)
     elif exec_type.upper() == 'NO':

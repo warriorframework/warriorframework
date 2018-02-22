@@ -54,7 +54,7 @@ def get_failure_results(error_repository):
         return False
     elif error_repository['action'] in ['GOTO', 'EXECUTE_AND_RESUME']:
         return error_repository['value']
-    elif error_repository['action'] in ['ABORT', 'ABORT_AS_ERROR', 'RESUME']:
+    elif error_repository['action'] in ['ABORT', 'ABORT_AS_ERROR']:
         return error_repository['action']
     return False
 

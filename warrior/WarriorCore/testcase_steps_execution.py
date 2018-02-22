@@ -76,7 +76,7 @@ class TestCaseStepsExecutionClass(object):
             self.run_current_step, self.current_triggered_action = \
                 exec_type_driver.main(self.current_step, skip_invoked=self.skip_invoked)
             if not self.run_current_step:
-                return self._report_step_as_not_run(self.current_triggered_action)
+                return self._report_step_as_not_run()
 
         if not self.go_to_step_number or self.go_to_step_number == str(self.current_step_number):
             self.step_status = self._execute_step_on_goto()
@@ -98,7 +98,7 @@ class TestCaseStepsExecutionClass(object):
         else:
             return self._execute_step_otherwise(self.step_status)
 
-    def _report_step_as_not_run(self, trigger_action):
+    def _report_step_as_not_run(self):
         """
         This function handles reporting of a step as not run.
         """
@@ -120,20 +120,21 @@ class TestCaseStepsExecutionClass(object):
             self.data_repository['wt_tc_timestamp'], self.current_step_number, keyword,
             "SKIPPED", kw_start_time, "0", "skipped",
             impact_dict.get(step_impact.upper()), "N/A")
-        self.data_repository['step_{}_result'.format(self.current_step_number)] = "SKIPPED"
+        self.data_repository['step_{}_result'.format(self.current_step_number + 1)] = "SKIPPED"
 
-        if trigger_action.upper() in ['ABORT', 'ABORT_AS_ERROR']:
+        if self.current_triggered_action.upper() in ['ABORT', 'ABORT_AS_ERROR']:
             return self.next_step, self.go_to_step_number, "break"
-        elif trigger_action.upper() in ['SKIP', 'NEXT']:
+        elif self.current_triggered_action.upper() in ['SKIP', 'NEXT']:
+            print self.data_repository
             return self.next_step, self.go_to_step_number, "continue"
-        elif trigger_action == "SKIP_INVOKED":
+        elif self.current_triggered_action == "SKIP_INVOKED":
             if self.skip_invoked:
                 print_info("Skipping this step as it is an invoked step.")
                 return self.next_step, self.go_to_step_number, "continue"
         # when 'onError:goto' value is less than the current step num,
         # change the next iteration point to goto value
-        elif trigger_action and int(trigger_action) < self.current_step_number:
-            self.next_step = int(trigger_action) - 1
+        elif self.current_triggered_action and int(self.current_triggered_action) < self.current_step_number:
+            self.next_step = int(self.current_triggered_action) - 1
         return self.next_step, self.go_to_step_number, "continue"
 
     def _execute_step_on_goto(self):
