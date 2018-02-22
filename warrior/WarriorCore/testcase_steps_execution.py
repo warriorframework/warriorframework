@@ -189,7 +189,10 @@ class TestCaseStepsExecutionClass(object):
         """
         This function will execute a runmode step
         """
-        if runmode_timer is not None and any([runmode == "RMT", runmode == "RUF" and step_status is True, runmode == "RUP" and step_status is False]):
+        runmode_evaluation = any([runmode == "RMT",
+                                  runmode == "RUF" and step_status is True,
+                                  runmode == "RUP" and step_status is False])
+        if runmode_timer is not None and runmode_evaluation:
             pNote("Wait for {0}sec before the next runmode attempt ".format(runmode_timer))
             wait_for_timeout(runmode_timer)
         # if runmode is 'ruf' & step_status is False, skip the repeated
@@ -201,8 +204,7 @@ class TestCaseStepsExecutionClass(object):
         elif runmode == "RUP" and step_status is True:
             self.go_to_step_number = str(value)
         else:
-            if step_status is False or str(step_status).upper() == "ERROR" \
-                    or str(step_status).upper() == "EXCEPTION":
+            if step_status is False or str(step_status).upper() in ["ERROR", "EXCEPTION"]:
                 self.go_to_step_number = onerror_driver.main(self.current_step, self.default_error_action,
                                                    self.default_error_value, skip_invoked=self.skip_invoked)
                 if self.go_to_step_number in ['ABORT', 'ABORT_AS_ERROR']:
@@ -218,7 +220,7 @@ class TestCaseStepsExecutionClass(object):
             try:
                 if self.data_repository[retry_cond] == retry_cond_value:
                     condition_met = True
-                    pNote("Wait for {0}sec before retrying".format(retry_interval))
+                    pNote("Wait for {0} sec before retrying".format(retry_interval))
                     pNote("The given condition '{0}' matches the expected "
                           "value '{1}'".format(self.data_repository[retry_cond], retry_cond_value))
                     wait_for_timeout(retry_interval)
@@ -261,34 +263,33 @@ class TestCaseStepsExecutionClass(object):
         """
         This function will execute a step's onError functionality
         """
-        if step_status is False or str(step_status).upper() == "ERROR" \
-                or str(step_status).upper() == "EXCEPTION":
-            self.go_to_step_number = onerror_driver.main(self.current_step, self.default_error_action, self.default_error_value,
-                                               skip_invoked=self.skip_invoked)
+        if step_status is False or str(step_status).upper() in ["ERROR", "EXCEPTION"]:
+            self.go_to_step_number = onerror_driver.main(self.current_step,
+                                                         self.default_error_action,
+                                                         self.default_error_value,
+                                                         skip_invoked=self.skip_invoked)
             if self.go_to_step_number in ['ABORT', 'ABORT_AS_ERROR']:
                 return self.next_step, self.go_to_step_number, "break"
-            elif self.go_to_step_number is 'RESUME':
-                return self.next_step, self.go_to_step_number, "resume"
             # when 'onError:goto' value is less than the current step num,
             # change the next iteration point to goto value
             elif isinstance(self.go_to_step_number, list):
-                print_normal(
-                    "\n----------------- Starting Invoked Steps Execution -----------------\n")
+                print_normal("\n----------------- Starting Invoked Steps Execution "
+                             "-----------------\n")
                 temp_step_list = list(self.step_list)
                 for x in self.go_to_step_number:
                     if 0 <= x < len(self.step_list):
                         temp_step_list[x] = self.step_list[x]
-                temp_status_list, temp_kw_result_list, temp_impact_list, \
-                temp_data_repo = execute_steps(temp_step_list, self.data_repository,
-                                               self.system_name, self.parallel, self.queue,
-                                               skip_invoked=False, step_num=self.go_to_step_number)
+                temp_status_list, temp_kw_result_list, temp_impact_list, temp_data_repo = \
+                    execute_steps(temp_step_list, self.data_repository, self.system_name,
+                                  self.parallel, self.queue, skip_invoked=False,
+                                  step_num=self.go_to_step_number)
                 self.step_status_list.extend(temp_status_list)
                 self.kw_resultfile_list.extend(temp_kw_result_list)
                 self.step_impact_list.append(temp_impact_list)
                 self.data_repository.update(temp_data_repo)
                 self.go_to_step_number = False
-                print_normal(
-                    "\n----------------- Invoked Steps Execution Finished -----------------\n")
+                print_normal("\n----------------- Invoked Steps Execution Finished "
+                             "-----------------\n")
             elif self.go_to_step_number and int(self.go_to_step_number) < self.next_step:
                 self.next_step = int(self.go_to_step_number) - 1
                 self.go_to_step_number = False
@@ -308,7 +309,8 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue, skip
                                                     '{0}_consoleLogs'.format(system_name))
     goto_stepnum = False
     tc_step_exec_obj = TestCaseStepsExecutionClass(step_list, data_repository, goto_stepnum,
-                                                   system_name, parallel, queue, skip_invoked=skip_invoked)
+                                                   system_name, parallel, queue,
+                                                   skip_invoked=skip_invoked)
 
     if step_num is None:
         step_num = 0
@@ -340,7 +342,6 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue, skip
         else:
             return tc_step_exec_obj.step_status_list, tc_step_exec_obj.kw_resultfile_list, \
                    tc_step_exec_obj.step_impact_list, data_repository
-
 
 
 def main(step_list, data_repository, system_name=None, parallel=False, queue=False):
