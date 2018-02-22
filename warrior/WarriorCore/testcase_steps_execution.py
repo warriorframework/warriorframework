@@ -322,7 +322,7 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue, skip
     else:
         for _step_num in step_num:
             if 0 <= _step_num < len(step_list):
-                _, goto_stepnum, _ = tc_step_exec_obj.execute_step(step_num, goto_stepnum)
+                _, goto_stepnum, _ = tc_step_exec_obj.execute_step(_step_num, goto_stepnum)
             else:
                 print_error("Step number {0} does not exist. Skipping.".format(_step_num+1))
 
