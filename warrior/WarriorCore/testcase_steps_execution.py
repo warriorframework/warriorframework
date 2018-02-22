@@ -286,7 +286,7 @@ class TestCaseStepsExecutionClass(object):
                                   step_num=self.go_to_step_number)
                 self.step_status_list.extend(temp_status_list)
                 self.kw_resultfile_list.extend(temp_kw_result_list)
-                self.step_impact_list.append(temp_impact_list)
+                self.step_impact_list.extend(temp_impact_list)
                 self.data_repository.update(temp_data_repo)
                 self.go_to_step_number = False
                 print_normal("\n----------------- Invoked Steps Execution Finished "
