@@ -569,7 +569,7 @@ class CIregressionActions(object):
                         format(str(stored_delta), float_min_val))
         return status
 
-    def instantiate_key_in_data_repository(self, key):
+    def instantiate_list_key_in_data_repository(self, key):
         """
         This will create a key in the data_repository
         :param key: name of the key that should be created in the data_repository.
@@ -583,7 +583,7 @@ class CIregressionActions(object):
         pNote("Updating Data Repository with key: {0}".format(key))
         return status, output_dict
 
-    def update_key_in_data_repository(self, key, value, status="True"):
+    def update_list_key_in_data_repository(self, key, value, status="True"):
         """
         This keyword will update an existing key in the data repository
         :param key: key name
@@ -600,7 +600,7 @@ class CIregressionActions(object):
         pNote("Updating {0} value wih {1}".format(key, format(value)))
         return status, updated_dict
 
-    def verify_key_value_in_data_repo(self, key, expected_value):
+    def verify_list_key_value_in_data_repo(self, key, expected_value):
         """
         This keyword will update an existing key in the data repository
         :param key: key name

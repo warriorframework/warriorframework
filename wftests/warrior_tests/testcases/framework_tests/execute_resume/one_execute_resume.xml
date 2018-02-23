@@ -15,7 +15,7 @@
     </Details>
     <Requirements/>
     <Steps>
-        <step Driver="ci_regression_driver" Keyword="instantiate_key_in_data_repository" TS="1">
+        <step Driver="ci_regression_driver" Keyword="instantiate_list_key_in_data_repository" TS="1">
             <Arguments>
                 <argument name="key" value="framework_testing_key_1"/>
             </Arguments>
@@ -27,7 +27,7 @@
             <runmode type="Standard" value=""/>
             <Iteration_type type="Standard"/>
         </step>
-        <step Driver="ci_regression_driver" Keyword="update_key_in_data_repository" TS="2">
+        <step Driver="ci_regression_driver" Keyword="update_list_key_in_data_repository" TS="2">
             <Arguments>
                 <argument name="key" value="framework_testing_key_1"/>
                 <argument name="value" value="2"/>
@@ -41,7 +41,7 @@
             <runmode type="Standard" value=""/>
             <Iteration_type type="Standard"/>
         </step>
-        <step Driver="ci_regression_driver" Keyword="update_key_in_data_repository" TS="3">
+        <step Driver="ci_regression_driver" Keyword="update_list_key_in_data_repository" TS="3">
             <Arguments>
                 <argument name="key" value="framework_testing_key_1"/>
                 <argument name="value" value="3"/>
@@ -54,7 +54,7 @@
             <runmode type="Standard" value=""/>
             <Iteration_type type="Standard"/>
         </step>
-        <step Driver="ci_regression_driver" Keyword="update_key_in_data_repository" TS="4">
+        <step Driver="ci_regression_driver" Keyword="update_list_key_in_data_repository" TS="4">
             <Arguments>
                 <argument name="key" value="framework_testing_key_1"/>
                 <argument name="value" value="4"/>
@@ -67,7 +67,7 @@
             <runmode type="Standard" value=""/>
             <Iteration_type type="Standard"/>
         </step>
-        <step Driver="ci_regression_driver" Keyword="update_key_in_data_repository" TS="5">
+        <step Driver="ci_regression_driver" Keyword="update_list_key_in_data_repository" TS="5">
             <Arguments>
                 <argument name="key" value="framework_testing_key_1"/>
                 <argument name="value" value="5"/>
@@ -80,7 +80,7 @@
             <runmode type="Standard" value=""/>
             <Iteration_type type="Standard"/>
         </step>
-        <step Driver="ci_regression_driver" Keyword="verify_key_value_in_data_repo" TS="6">
+        <step Driver="ci_regression_driver" Keyword="verify_list_key_value_in_data_repo" TS="6">
             <Arguments>
                 <argument name="key" value="framework_testing_key_1"/>
                 <argument name="expected_value" value="2, 4, 3, 4, 5"/>
