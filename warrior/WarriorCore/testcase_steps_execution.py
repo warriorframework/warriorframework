@@ -125,7 +125,6 @@ class TestCaseStepsExecutionClass(object):
         if self.current_triggered_action.upper() in ['ABORT', 'ABORT_AS_ERROR']:
             return self.next_step, self.go_to_step_number, "break"
         elif self.current_triggered_action.upper() in ['SKIP', 'NEXT']:
-            print self.data_repository
             return self.next_step, self.go_to_step_number, "continue"
         elif self.current_triggered_action == "SKIP_INVOKED":
             if self.skip_invoked:
