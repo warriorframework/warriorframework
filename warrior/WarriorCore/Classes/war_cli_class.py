@@ -255,10 +255,6 @@ class WarriorCliClass(object):
                             "Multiple files of different type can be provided "\
                             "(separated by a space)")
 
-        # Trigger cse execution
-        parser.add_argument('-cse', action='store_true', default=False,
-                            help=':cse: Run CSE execution from Warrior command line')
-
         # Run Ironclaw tool
         parser.add_argument('-ironclaw', action='store_true', default=False,
                             help=":ironclaw: Run Warrior's IronClaw tool. "
@@ -380,6 +376,13 @@ class WarriorCliClass(object):
                             "and xml results will be stored in this " \
                             "database server, database config file " \
                             "location = Tools/database/database_config.xml.")
+
+        parser.add_argument('-livehtmllocn', action='store', nargs='?',
+                            help=":livehtmllocn: locn of live html results file. "\
+                            "TO be used by Katana only " \
+                            "Will be set when katana executes warrior " \
+                            "UI will read live html results from this location" \
+                            "and display html results in a live fashion " )
 
         #Running Warrior in Mock mode and Test mode
         parser.add_argument('-mock', action='store_true', default=False,

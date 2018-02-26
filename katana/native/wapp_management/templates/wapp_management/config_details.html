@@ -1,0 +1,40 @@
+{% if preference_details %}
+<br>
+{% for detail in preference_details %}
+    <div class="row">
+        <div class="col-sm-2 text-center wapp-management-config-padding">
+            {% if detail.type == "repository" %}
+                <label>Git Repository:</label>
+            {% elif detail.type == "zip" %}
+                <label>Zipped File:</label>
+            {% else %}
+                <label>Directory Path:</label>
+            {% endif %}
+        </div>
+        {% if detail.needs_update %}
+        <div class="col-sm-5">
+            <input class="form-control wapp-management-error-border" value="{{detail.name}}" disabled>
+
+            <h6 class="text-muted">This information may be outdated. Please update it.</h6>
+        </div>
+        {% else %}
+            <div class="col-sm-5">
+                <input class="form-control" value="{{detail.name}}" disabled>
+            </div>
+        {% endif %}
+    </div>
+{% endfor %}
+    <br>
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-2">
+            <button class="btn btn-info btn-block" katana-click="wapp_management.editConfig" config_name="{{config_name}}">Edit Configuration</button>
+        </div>
+        {% if show_install_btn %}
+        <div class="col-sm-2">
+            <button class="btn btn-success btn-block" katana-click="wapp_management.installAppsFromConfig" config_name="{{config_name}}">Install Apps</button>
+        </div>
+        {% endif %}
+    </div>
+<br>
+{% endif %}

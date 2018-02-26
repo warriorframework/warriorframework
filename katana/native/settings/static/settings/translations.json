@@ -1,0 +1,141 @@
+{
+  "data": [
+    {
+      "key": "@mail_on",
+      "translateTo": "Email Frequency",
+      "required" : true
+    },
+    {
+      "key": "smtp_host",
+      "translateTo": "SMTP Host Server"
+    },
+    {
+      "key": "sender",
+      "translateTo": "Sender’s Email Address"
+    },
+    {
+      "key": "Logsdir",
+      "toolTip": "Overwrite default log file location with your own custom location",
+      "translateTo": "Location of Log Files"
+    },
+    {
+      "key": "Resultsdir",
+      "toolTip": "Overwrite default result location with your own custom location",
+      "translateTo": "Location of Result Files"
+    },
+    {
+      "key": "receiver",
+      "translateTo": "Receiver’s Email Address"
+    },
+    {
+      "key": "subject",
+      "translateTo": "Email Subject"
+    },
+    {
+      "key": "warhorn_config",
+      "toolTip": "Wahorn config file path",
+      "translateTo": "Location of Warhorn Config File"
+    },
+    {
+      "key": "pythonsrcdir",
+      "toolTip": "current location of the warrior framework dir",
+      "translateTo": "Location of Warrior"
+    },
+    {
+      "key": "pythonpath",
+      "toolTip": "",
+      "translateTo": "Location of Python"
+    },
+    {
+      "key": "xmldir",
+      "toolTip": "The case directory is where the XML files created by this application are stored.",
+      "translateTo": "Location of Case Files"
+    },
+    {
+      "key": "testsuitedir",
+      "toolTip": "The suite directory is where the XML files created by this application are stored.",
+      "translateTo": "Location of Suite Files"
+    },
+    {
+      "key": "projdir",
+      "toolTip": "The project directory is where the XML files created by this application are stored.",
+      "translateTo": "Location of Project Files"
+    },
+    {
+      "key": "idfdir",
+      "toolTip": "",
+      "translateTo": "Location of Warrior Data Files"
+    },
+    {
+      "key": "testdata",
+      "toolTip": "path to CLI Data Files",
+      "translateTo": "Location of CLI Data File"
+    },
+    {
+      "key": "lastName",
+      "translateTo": "Last Name"
+    },
+    {
+      "key": "firstName",
+      "translateTo": "First Name"
+    },
+    {
+      "key": "Username",
+      "translateTo": "User Name"
+    },
+    {
+      "key": "Email_Adress",
+      "translateTo": "Email Adress"
+    },
+    {
+      "key": "url",
+      "toolTip": "URL of JIRA project to be used",
+      "translateTo": "Project URL"
+    },
+    {
+      "key": "username",
+      "toolTip": "username to be used in connection with the JIRA project above",
+      "translateTo": "Username"
+    },
+    {
+      "key": "type",
+      "translateTo": "Type"
+    },
+    {
+      "key": "pass",
+      "translateTo": "Pass"
+    },
+    {
+      "key": "error",
+      "translateTo": "Error"
+    },
+    {
+      "key": "fail",
+      "translateTo": "Fail"
+    },
+    {
+      "key": "skip",
+      "translateTo": "Skip"
+    },
+    {
+      "key": "password",
+      "toolTip": "Password to be used in connection with the username above",
+      "translateTo": "Password"
+    },
+    {
+      "key": "project_key",
+      "toolTip": "JIRA Project Key",
+      "translateTo": "Project Key"
+    },
+    {
+      "key": "search_string",
+      "toolTip": "String or regexp used to identify the system",
+      "translateTo": "Identification Criteria"
+    },
+    {
+      "key": "engineer",
+      "toolTip": "All testcase created/modified in this session will be tagged with this Engineer name",
+      "translateTo": "Name of Engineer"
+    }
+  ]
+}

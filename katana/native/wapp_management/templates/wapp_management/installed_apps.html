@@ -1,0 +1,27 @@
+<div class="container-fluid" style="padding: 0 5rem 5rem 5rem;">
+	<div class="row">
+        {% for app in data.app%}
+        <div class="wapp-management-outer-card">
+            <div class="card wapp-management-custom-card">
+                <div class="card-body text-center">
+                    <i class="fa fa-{{ app.data.icon }} fa-3x {{app.data.color}} wapp-management-card-icon"></i>
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title-custom wapp-management-overflow-nowrap">{{ app.data.app.name }}</h4>
+                    <h6 class="card-subtitle mb-2 text-muted wapp-management-overflow-wrap">By {{ app.data.developer }}</h6>
+                    <p class="card-text-custom wapp-management-overflow-fade">{{ app.data.description }}</p>
+                </div>
+                 <div class="card-body">
+                    <button katana-click="katana.templateAPI.load" url="{{ app.data.app.url }}"
+                            jsUrls=" {% for url in app.data.js_urls %} {{ url }},{% endfor %}"
+                            class="btn btn-primary">OPEN</button>
+                     {% if app.app_type != "native" %}
+                        <button class="btn btn-success" katana-click="wapp_management.uninstallAnApp"
+                                app_path="{{ app.path }}" app_type="{{ app.app_type }}" app_name="{{ app.data.app.name }}">UNINSTALL</button>
+                     {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+	</div>
+</div>

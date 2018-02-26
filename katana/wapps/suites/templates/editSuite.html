@@ -1,0 +1,232 @@
+
+{% load static %}
+
+
+<body>
+<link rel="stylesheet" href="{% static "./suite_table.css" %}"> 
+
+{% csrf_token %}
+<div class="tool-bar">
+	
+	<button class="btn" katana-click="suiteApp.addRequirementToSuite" id="addRequirementEntry">Add Requirement</button>
+	<button id="addSuite" class="btn btn-primary" katana-click="suiteApp.addCaseToSuite()">Add Case To Suite</button>
+	<button class="btn btn-success" katana-click="suiteApp.mapUiToSuiteJson">Save Changes to: </button>
+	<input class="col-md-4 text-right" type="text" id="my_file_to_save" name="my_file_to_save" value="{{suiteName}}.xml"/>
+	
+</div>
+
+<div class="container-fluid">
+<div class="row">
+	<div class="col-md-8">
+		<div class="row">
+				<div class="field col-md-3">
+					<label >Name*:</label>
+					<input type="text" id="suiteName"  value="{{suiteName}}"/>
+				</div>
+				<div class="field col-md-3">
+					<label >Title*:</label>
+					<input type="text" id="suiteTitle"  value="{{suiteTitle}}"/>
+				</div>
+				<div class="field col-md-3">
+					<label >Engineer*:</label>
+					<input type="text" id="suiteEngineer"  value="{{suiteEngineer}}"/>
+				</div>
+		</div>
+		<div class="row">
+				<div class="field col-md-3">
+					<label >Date:</label>
+					<input type="text" id="suiteDate"  value="{{suiteDate}} {{suiteTime}}"/>
+				</div>
+				<div class="field col-md-3">	
+					<label class=" text-right" for="default_onError">Default On Error:</label>
+					<select class="text-right" type="text" id="default_onError" name="default_onError" value="{{suitedefault_onError}}" >
+						<option value="next">Next</option>
+						<option value="abort">Abort</option>
+						<option value="abort_as_error">Abort As Error</option>
+						<option value="goto">Goto</option>
+					</select>
+					<select class="text-right" type="text" id="suite_default_onError_goto" name="default_onError_goto" value="{{suitedefault_onError_goto}}" >
+					</select>
+					
+				</div>
+				<div class="field col-md-3">	
+					<label class=" text-right" >Type:</label>
+					<select class="text-right" type="text" id="suiteDatatype"  value="{{suiteDatatype}}" >
+						<option value="sequential_testcases">Sequential Test cases</option>
+						<option value="parallel_testcases">Parallel Test cases</option>
+						<option value="iterative_parallel">Iterative Parallel</option>
+						<option value="iterative_sequential">Iteractive Sequential</option>
+						<option value="RUF">Run Until Fail</option>
+						<option value="RUP">Run Until Pass</option>
+						<option value="RMT">Run Multiple</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="field col-md-3">
+					<label >Results*:</label>
+					<button class="btn btn-info" katana-click="suiteApp.getResultsDirForSuite">...</button>
+					<input type="text" id="suiteResults"  value="{{suiteResultsdir}}"/>
+				</div>
+				
+				<div class="field col-md-3">
+					<label >Warrior Data File:</label>
+					<button class="btn btn-info" katana-click="suiteApp.getInputDataForSuite">...</button>
+					<input type="text" id="suiteInputDataFile"  value="{{suiteInputDataFile}}"/>
+				</div>
+				<div class="field col-md-3">
+					<label class=" text-right" >State:</label>
+					<select class="text-right" type="text" id="suiteState"  value="{{suiteState}}" >
+						<option value="New">New</option>
+						<option value="In Review">In Review</option>
+						<option value="Released">Released</option>
+						<option value="Add Another">Add Another</option>
+					</select>
+				</div>
+			</div>	
+	</div>
+	<div id="tableOfTestRequirements" class="col-md-4"></div>
+	</div>
+</div>
+
+
+<div class="container-fluid">
+
+		<div class="row">
+			<div class="btn-group col-md-6" role="group">   
+		</div>
+		</div>
+
+		<div class="row">
+			<div id="tableOfTestcasesForSuite" class="col-md-12" style='overflow:auto;' ></div>
+			<div id="editTestcaseEntry"        class="col-md-3 hidden" >
+				
+
+					<div class="field hidden"> 
+					<label >Row Id</label>
+					<input type="text" id="CaseRowToEdit" value=""/>
+					</div>			
+
+					<div class="field">
+					<label >Path*:</label>
+					<input type="text" id="CasePath" value=""/>
+					</div>
+
+					<div class="field">
+					<label >Context:</label>
+					<select type="text" class="text-right" id="CaseContext" value="positive" >
+					<option value="positive">positive</option>
+					<option value="negative">negative</option>
+					</select>
+
+					</div>
+					<div class="field">
+					<label >Run Type:</label>
+					<select type="text" class="text-right" id="CaseRuntype" value="sequential_keywords" >
+					<option value="sequential_keywords">sequential_keywords</option>
+					<option value="parallel_keywords">parallel_keywords</option>
+					</select>
+
+
+					</div>
+					<div class="field">
+					<label >Run Mode:</label>
+					
+					<select type="text" class="text-right" id="CaseRunmode" value="standard" >
+					<option value="standard">Standard</option>
+					<option value="rmt">RMT</option>
+					<option value="ruf">RUF</option>
+					<option value="rup">RUP</option>
+					</select>
+					<input type="text" class="runmode_condition" id="runmodeAtValue" value=""/>	
+					</div>
+
+
+					<div class="field">
+					<label class=" text-right" >ExecType:</label>
+					<select type="text" class="text-right" id="Execute-at-ExecType" value="" >
+					<option value="yes">Yes</option> 
+					<option value="no">No</option> 
+					<option value="if">If</option> 
+					<option value="if not">If Not</option> 
+					</select>	
+					</div>
+
+
+						<div class="field ">
+						<label class="rule-condition" >Rule Condition:</label>
+						<input type="text" class="rule-condition" id="executeRuleAtCondition" value=""/>
+						</div>			
+
+						<div class="field ">
+						<label  class="rule-condition" >Rule Condition Value:</label>
+						<select type="text" class="rule-condition text-right" id="executeRuleAtCondvalue" value="" >
+						<option value="PASS">PASS</option> 
+						<option value="FAIL">FAIL</option> 
+						<option value="ERROR">ERROR</option> 
+						<option value="SKIP">SKIP</option> 
+						</select>
+						</div>	
+
+					<div class="field ">
+					<label class="rule-condition" >Rule Else:</label>
+						
+						<select type="text" class="rule-condition text-right" id="executeRuleAtElse"  value="" >
+						<option value="next">next</option>
+						<option value="abort_as_error">abort_as_error</option>
+						<option value="goto">goto</option>
+						</select>
+					</div>
+						<div class="field ">
+						<label class="rule-condition" >Rule Else Value:</label>
+						<input class="rule-condition" type="text" id="executeRuleAtElsevalue"  value=""  />
+						</div>			
+						<div class="field ">
+						</div>			
+				
+
+					<div class="field col-md-3">
+					<label >Warrior Data File:</label>
+					<button class="btn btn-info" onclick="getResultsDirForSuiteRow">...</button>
+					<input type="text" id="StepInputDataFile"  value=""/>
+					</div>		
+	
+
+					<div class="field">
+					<label >Impact:</label>
+
+					<select type="text" class="text-right" id="CaseImpact" value="impact" >
+					<option value="impact">impact</option>
+					<option value="noimpact">noimpact</option>
+					</select>
+
+					</div>
+
+					<div class="field">
+					<label class="text-right" >On Error action:</label>
+					<select type="text" class="text-right" id="caseonError-at-action" value="" >
+					<option value="next">next</option>
+					<option value="abort">abort</option>
+					<option value="abort_as_error">abort_as_error</option>
+					<option value="goto">goto</option>
+					</select>
+					<select type="text" class="text-right" id="caseonError-at-value" value="" >
+					</select>
+					</div>		
+					<button class="center button save" id="editTestcase" katana-click="suiteApp.saveSuitesCaseUI">"Save Changes </button>
+				</div>
+
+		</div>
+
+</div>
+
+	
+</div>	
+	<div id="tableOfFileContents"  class="hidden">fileContents</label></div>
+	<div id="listOfTestcasesForSuite" class="hidden">{{fulljson}}</div>
+	<div id="savefilepath" class="hidden">{{savefilepath}}</div>
+	<div id="fullpathname" class="hidden">{{fullpathname}}</div>
+
+
+</body>

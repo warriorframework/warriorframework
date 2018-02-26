@@ -1,0 +1,13 @@
+{
+
+  "icon": "cubes",
+  "color": "orange",
+  "developer": "Warrior Framework",
+  "description": "Edit your Projects with this App",
+  "app" : {"name" : "Projects", "url" : "/katana/projects/", "include": "wapps.projects.urls"},
+  "warrior-compatibility": ":warrior-3.7.0",
+  "warrior-incompatibility": "",
+  "version": "1.0.0",
+  "permissions": "",
+  "availability": ""
+}

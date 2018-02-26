@@ -1,0 +1,16 @@
+{% load static %}
+
+<body> 
+<div class="tool-bar">
+<button id="addSuite" class="btn btn-success" katana-click="projectApp.startNewProject">Add New Project</button>
+</div >
+
+<h2>List of Projects</h2>
+
+<div id="myProject" auto-init="projectApp.initProjectTree">
+</div>
+ 
+<div id="myProjectTree"></div>
+
+
+</body>

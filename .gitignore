@@ -13,7 +13,9 @@ workspace.*
 # Directories     #
 ###################
 #/Warriorspace/Execution
-
+/katana/logs
+/katana/native/wapp_management/.data
+/katana/native/assembler/.data
 
 
 # Created by .ignore support plugin (hsz.mobi) #

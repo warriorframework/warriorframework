@@ -2,14 +2,14 @@
 <credentials>
     <system name="sys_wtag">
 		<strvar>I am a string variable</strvar>
-		<lang_list type='list'>['English', 'Chinese', 'French']</lang_list>
-		<states type='tuple'>('texas', 'newyork')</states>
-		<currency_map type='dict'>{'USA':'USD', 'India': 'INR'}</currency_map>
-		<ram_space_available type='bool'>False</ram_space_available>
-		<hd_space_available type='bool'>True</hd_space_available>
-        <config type='file'>../../config_files/check_file_type</config>
-		<intvar type='int'>456</intvar>
-		<floatvar type='float'>345.65</floatvar>
+		<lang_list wtype='list'>['English', 'Chinese', 'French']</lang_list>
+		<states wtype='tuple'>('texas', 'newyork')</states>
+		<currency_map wtype='dict'>{'USA':'USD', 'India': 'INR'}</currency_map>
+		<ram_space_available wtype='bool'>False</ram_space_available>
+		<hd_space_available wtype='bool'>True</hd_space_available>
+        <config wtype='file'>../../config_files/check_file_type</config>
+		<intvar wtype='int'>456</intvar>
+		<floatvar wtype='float'>345.65</floatvar>
     </system>
     <system name="PCs">
         <subsystem name="abc">
@@ -20,11 +20,11 @@
             <testdata>../../config_files/demo_wtag_myInfo.xml</testdata>
         </subsystem>
         <subsystem name="HP">
-            <eqpt_type type='str'>'lab_pc'</eqpt_type>
+            <eqpt_type wtype='str'>'lab_pc'</eqpt_type>
             <dom>2014-03-05</dom>
             <user>Jim</user>
             <os>RedHat</os>
-            <testdata type='file'>../../config_files/demo_wtag_myInfo.xml</testdata>
+            <testdata wtype='file'>../../config_files/demo_wtag_myInfo.xml</testdata>
         </subsystem>
         <subsystem name="Dell" eqpt_type="lab_pc" dom="2009-07-15" user="Jerry"
                    os="Ubuntu" testdata="../../config_files/demo_wtag_myInfo.xml">

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CLI Data</title>
+    {% load staticfiles %}
+    <link rel="stylesheet" href="{% static 'cli_data/css/cli_data.css' %}">
+</head>
+<body>
+    <div id="files-div">
+		<div class="tool-bar">
+            <div class="title"></div>
+            <button katana-click="cliData.fileDisplayAPI.newFile" class="button">New</button>
+            <button katana-click="cliData.Editor.closeFile" class="button">Close</button>
+            <button katana-click="cliData.Editor.saveFile" class="button">Save</button>
+        </div>
+        <div id="contentDiv" auto-init="cliData.fileDisplayAPI.init">
+            <div id="display-files" >
+            </div>
+            <div id="display-error-message" class="text-center" style="width: 100%; padding: 5rem;">
+                <h4>Please set up the configuration to use this App</h4>
+            </div>
+            <div id="main-div">
+                <div class="cli-data-left-column"></div>
+                <div class="cli-data-right-column">
+                    <div class="cli-data-full-width"></div>
+                </div>
+            </div>
+        </div>
+	</div>
+
+    <div class="csrf-container">{% csrf_token %}</div>
+</body>
+</html>

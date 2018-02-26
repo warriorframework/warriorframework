@@ -353,7 +353,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
                                      tests=no_of_tests, failures='0',
                                      time='0', timestamp=suite_timestamp)
     testsuite_utils.pSuite_property(junit_resultfile, 'title', suite_repository['suite_title'])
-    testsuite_utils.pSuite_property(junit_resultfile, 'location', testsuite_filepath)
+    ts_junit_object.add_property('location', testsuite_filepath, "ts", suite_timestamp)
     if "jobid" in data_repository:
         testsuite_utils.pSuite_property(junit_resultfile, 'resultlocation',
                                         data_repository["jobid"])
@@ -367,6 +367,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
     if execution_type.upper() == 'PARALLEL_TESTCASES':
         ts_junit_object.remove_html_obj()
         data_repository["war_parallel"] = True
+        Utils.config_Utils.data_repository = data_repository
         print_info("Executing testcases in parallel")
         test_suite_status = parallel_testcase_driver.main(testcase_list, suite_repository,
                                                           data_repository, from_project,
@@ -445,6 +446,7 @@ def execute_testsuite(testsuite_filepath, data_repository, from_project,
         ts_junit_object.remove_html_obj()
         print_info("Iterative parallel suite")
         data_repository["war_parallel"] = True
+        Utils.config_Utils.data_repository = data_repository
         iter_seq_ts_obj = IterativeTestsuite(testcase_list, suite_repository,
                                              data_repository, from_project, auto_defects)
 
@@ -515,7 +517,6 @@ def main(testsuite_filepath, data_repository={}, from_project=False, auto_defect
                                                                 res_startdir, logs_startdir,
                                                                 ts_onError_action, queue,
                                                                 ts_parallel)
-
     except Exception:
         print_error('unexpected error {0}'.format(traceback.format_exc()))
         test_suite_status, suite_repository = False, None

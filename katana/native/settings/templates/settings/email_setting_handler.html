@@ -1,0 +1,35 @@
+<body>
+<div class="tool-bar"><div class="title">Email Settings</div><div katana-click="settings.closeSetting" class="button close">Close</div><div katana-click="settings.save" class="button save saved">Save</div></div>
+
+<div class="flex-rows to-save" auto-init="settings.mail.init" post-url="settings/email_setting_handler">
+    <div class="field-block to-scroll">
+      {% for k, v in setting.Setting.items %}
+        {% if k == '@name' %}
+          <input key="{{ k }}" type="hidden"  value="{{ v }}">
+        {% else %}
+          <div class="field"><label>{{ k }}</label><input key="{{ k }}" type="text" {% if v  %} value="{{ v }}" {% endif %} placeholder="{{ k }}"></div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  <div class="csrf-container">{% csrf_token %}</div>
+  <div class="translator" url="{% load staticfiles %} {% static 'settings/translations.json'  %}"></div>
+  <div class="tab-template">EmailSettings</div>
+  <script type="text/template" id="multi-select">
+    <div class="dropdown-placeholder" katana-click="katana.toggleActive"></div>
+    <div class="multi-select-dropdown hidden">
+      <div class="field pocket-field">
+        <input type="checkbox" value="per_execution" katana-change="katana.multiSelect">
+        <label>For every execution</label>
+      </div>
+      <div class="field pocket-field">
+        <input type="checkbox" value="first_failure" katana-change="katana.multiSelect">
+        <label>At first failure</label>
+      </div>
+      <div class="field pocket-field">
+        <input type="checkbox" value="every_failure" katana-change="katana.multiSelect">
+        <label>For every failure</label>
+      </div>
+    </div>
+  </script>
+</div>
+</body>

@@ -102,7 +102,6 @@ def get_testcase_details(testcase_filepath, data_repository, jiraproj):
        By this feature we allow the user to run the same testcases, with
        different data files with out actually changing the testcase.
     """
-    #import pdb; pdb.set_trace()
     # First priority for data files given through CLI##
     if data_repository.has_key('ow_datafile'):
         datafile = data_repository['ow_datafile']
@@ -160,6 +159,7 @@ def get_testcase_details(testcase_filepath, data_repository, jiraproj):
     data_repository['wt_logsdir'] = logsdir
     data_repository['wt_kw_results_dir'] = kw_results_dir
     data_repository['wt_defectsdir'] = defectsdir
+    data_repository['wt_console_logfile'] = console_logfile
     data_repository['wt_expResults'] = expResults
     # data_repository['wt_logfile'] = objLogFile
     data_repository['wt_operating_system'] = operating_system.upper()
@@ -482,6 +482,8 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
     # Need to remove these after making resultsdir, logsdir as part of properties tag in testcase
     tc_junit_object.add_property("resultsdir", os.path.dirname(data_repository['wt_resultsdir']),
                                  "tc", tc_timestamp)
+    tc_junit_object.update_attr("console_logfile", data_repository['wt_console_logfile'],
+                                 "tc", tc_timestamp)
     tc_junit_object.update_attr("title", data_repository['wt_title'], "tc", tc_timestamp)
 
     data_repository['wt_junit_object'] = tc_junit_object
@@ -511,6 +513,7 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                 runtype.upper() == 'PARALLEL_KEYWORDS':
             tc_junit_object.remove_html_obj()
             data_repository["war_parallel"] = True
+            Utils.config_Utils.data_repository = data_repository
             tc_status = execute_custom(data_type, runtype,
                                        custom_parallel_kw_driver,
                                        data_repository, step_list)
@@ -534,6 +537,7 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
                 runtype.upper() == 'PARALLEL_KEYWORDS':
             tc_junit_object.remove_html_obj()
             data_repository["war_parallel"] = True
+            Utils.config_Utils.data_repository = data_repository
             print_info("iterative parallel")
             system_list = get_system_list(data_repository['wt_datafile'],
                                           iter_req=True) \

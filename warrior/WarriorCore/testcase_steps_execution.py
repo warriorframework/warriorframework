@@ -103,7 +103,6 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
                 step_status = result[0]
                 kw_resultfile = result[1]
                 step_impact = result[2]
-
             except Exception, e:
                 print_error('unexpected error %s' % str(e))
                 step_status     = False
@@ -142,8 +141,7 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
                                                             data_repository['wt_tc_timestamp'])
             kw_start_time = Utils.datetime_utils.get_current_timestamp()
             step_impact = Utils.testcase_Utils.get_impact_from_xmlfile(step)
-
-            impact_dict = {"IMPACT":"Impact", "NOIMPACT":"No Impact"}
+            impact_dict = {"IMPACT": "Impact", "NOIMPACT": "No Impact"}
             data_repository['wt_junit_object'].\
                 add_keyword_result(data_repository['wt_tc_timestamp'], step_num, keyword, "SKIPPED",
                                    kw_start_time, "0", "skipped",
@@ -188,6 +186,7 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
                         pNote("Wait for {0}sec before retrying".format(retry_interval))
                         pNote("The given condition '{0}' matches the expected "
                               "value '{1}'".format(data_repository[retry_cond], retry_cond_value))
+
                         wait_for_timeout(retry_interval)
                     else:
                         condition_met = False
@@ -209,6 +208,7 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
                             pNote("The condition value '{0}' does not match with the expected "
                                   "value '{1}'".format(data_repository[retry_cond],
                                                        retry_cond_value))
+
                             wait_for_timeout(retry_interval)
                         else:
                             condition_met = False
@@ -225,6 +225,7 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
             or str(step_status).upper() == "EXCEPTION":
                 goto_stepnum = onerror_driver.main(step, default_error_action, default_error_value)
                 if goto_stepnum in ['ABORT', 'ABORT_AS_ERROR']: break
+
                 # when 'onError:goto' value is less than the current step num,
                 # change the next iteration point to goto value
                 elif goto_stepnum and int(goto_stepnum) < step_num:
@@ -238,7 +239,6 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue):
             queue.put((step_status_list, kw_resultfile_list, system_name, step_impact_list, data_repository['wt_junit_object']))
         except Exception, e:
             print_error(traceback.format_exc())
-
 
     else:
         return  step_status_list, kw_resultfile_list, step_impact_list

@@ -425,6 +425,7 @@ class HybridDriver(object):
                                                                    "skipped", "skipped", "skipped",
                                                                    "skipped", "skipped",
                                                                    keyword_description)
+
         self.data_repository['step_{}_result'.format(step_num)] = "SKIPPED"
         result = ("Skip", kw_resultfile, None, None)
         return result

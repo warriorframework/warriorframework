@@ -25,7 +25,6 @@ except ImportError:
                "without pexpect module. Users can however create"
                "their own custom libraries for cli interaction \n")
 
-
 def pexpect_spawn_with_env(pexpect_obj, command, timeout, escape=False, env=None):
     """ spawn a pexpect object with environment variable """
 
@@ -202,7 +201,6 @@ def send_smart_cmd(connect_testdata, session_object, tag_value, call_system_name
     """
     wc_obj = WNetwork.warrior_cli_class.WarriorCli()
     wc_obj.send_smart_cmd(connect_testdata, session_object, tag_value, call_system_name, pre_tag)
-
 
 def smart_action(datafile, call_system_name, raw_prompt, session_object, tag_value,
                  connect_testdata=None):
@@ -468,7 +466,6 @@ def _get_obj_session(details_dict, obj_session, kw_system_name, index):
             details_dict, kw_system_name, index)
 
     return value, kw_system_name, details_dict
-
 
 @mocked
 def _send_command_retrials(obj_session, details_dict, index, **kwargs):

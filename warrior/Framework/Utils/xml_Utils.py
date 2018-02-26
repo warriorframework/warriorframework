@@ -145,6 +145,13 @@ def write_tree_to_file(root, file_path):
     tree = ElementTree.ElementTree(root)
     tree.write(file_path)
 
+def create_comment_element(text):
+    """
+    creates and returns a xml comment element
+    """
+    elem = ElementTree.Comment(text)
+    
+    return elem
 
 def get_matching_firstlevel_children_from_root(filename, child_tag):
     """Takes a xml file as input and returns a list of first

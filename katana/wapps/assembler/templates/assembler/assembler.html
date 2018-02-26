@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Assembler</title>
+
+    {% load staticfiles %}
+    <link rel="stylesheet" href="{% static 'assembler/css/assembler.css' %}">
+</head>
+<body>
+    <div class="tool-bar">
+        <div class="title"></div>
+        <div class="button" katana-click="assembler.init">New</div>
+        <div class="button" katana-click="assembler.openFileExplorer">Open</div>
+        <div class="button" katana-click="assembler.saveFile">Save</div>
+        <div class="button" katana-click="assembler.saveFileRunWarhorn">Assemble!</div>
+    </div>
+    <div class="translator" url="{% load staticfiles %} {% static 'assembler/translations.json'  %}"></div>
+    <div class="csrf-container">{% csrf_token %}</div>
+    <div id="main-div" auto-init="assembler.init" execution="1">
+        {% include 'assembler/configFileDetails.html' %}
+    </div>
+</body>
+</html>

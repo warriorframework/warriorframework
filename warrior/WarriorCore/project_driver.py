@@ -30,6 +30,11 @@ from WarriorCore import common_execution_utils, sequential_testsuite_driver, \
 Warrior testsuites """
 
 
+# !/usr/bin/python
+"""This the project driver that executes a collections of
+Warrior testsuites """
+
+
 def get_project_details(project_filepath, res_startdir, logs_startdir, data_repository):
     """Gets all details of the Project from its xml file"""
 
@@ -242,6 +247,7 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
     if execution_type.upper() == 'PARALLEL_SUITES':
         pj_junit_object.remove_html_obj()
         data_repository["war_parallel"] = True
+        Utils.config_Utils.data_repository = data_repository
         print_info("Executing suites in parallel")
         project_status = parallel_testsuite_driver.main(testsuite_list, project_repository,
                                                         data_repository, auto_defects,

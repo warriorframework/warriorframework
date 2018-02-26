@@ -1,0 +1,1 @@
+Logs of the session will be captured here

@@ -57,6 +57,7 @@ def warrior_framework_details():
             if re.match('(Version.*):(.*)', line):
                 match = re.match(r'(Version.*):(.*)', line)
                 version = match.group(2)
+
     user = getpass.getuser()
     if release and version and version_file_path:
         pNote("========================== WARRIOR FRAMEWORK DETAILS ==========================",

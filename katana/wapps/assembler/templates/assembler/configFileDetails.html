@@ -1,0 +1,35 @@
+<body>
+
+    {% include 'assembler/prerequisites.html' %}
+
+    <div style="padding: 2rem; width: 100%;">
+        <div style="padding: 1rem;">
+            <h4>Tools</h4>
+        </div>
+        <div id="tools-div"></div>
+    </div>
+
+    <div style="padding: 2rem; width: 100%;">
+        <div class="row" style="padding: 1rem;">
+            <div class="col">
+                <h4>Keyword Repositories</h4>
+            </div>
+            <div class="col" style="padding: 0.6rem;">
+                <i class="fa fa-plus" katana-click="assembler.addKwRepository" style="float: right" aria-hidden="true" key="kwRepoAdd">&nbsp;Repository</i>
+            </div>
+        </div>
+        <div id="kw-div"></div>
+    </div>
+
+    <div style="padding: 2rem; width: 100%;">
+        <div class="row" style="padding: 1rem;">
+            <div class="col">
+                <h4>Warriorspace Repositories</h4>
+            </div>
+            <div class="col" style="padding: 0.6rem;">
+                <i class="fa fa-plus" katana-click="assembler.addWsRepository" style="float: right" aria-hidden="true" key="wsRepoAdd">&nbsp;Repository</i>
+            </div>
+        </div>
+        <div id="ws-div"></div>
+    </div>
+</body>

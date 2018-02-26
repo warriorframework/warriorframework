@@ -1,0 +1,16 @@
+<body>
+<div class="tool-bar"><div katana-click="settings.closeSetting" class="button close">Close</div><div katana-click="settings.saveSetting" class="button save">Save</div></div>
+<div class="two-rows" auto-init="settings.generalSettings.init">
+  {% for setting in settings%}
+    <div class="feild-block general-settings to-scroll">
+      {% for k, v in setting.items %}
+        {% if k == '@name' %}
+          <div class="title">{{ v }}</div>
+        {% else %}
+        <div class="feild"><label>{{ k }}</label><input type="text" {% if v  %} value="{{ v }}" {% endif %} placeholder="{{ k }}"></div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% endfor %}
+</div>
+</body>

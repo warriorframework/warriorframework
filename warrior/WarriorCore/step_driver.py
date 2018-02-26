@@ -266,7 +266,6 @@ def execute_step(step, step_num, data_repository, system_name, kw_parallel, queu
                                          print_summary=False)
     return keyword_status, kw_resultfile, step_impact
 
-
 def add_keyword_result(tc_junit_object, tc_timestamp, step_num, keyword,
                        keyword_status, kw_start_time, kw_duration,
                        kw_resultfile, impact, onerror, step_description,

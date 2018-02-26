@@ -15,11 +15,13 @@ import os
 
 import json
 import getpass
+import multiprocessing
 import Tools
-from Framework.Utils import xml_Utils, file_Utils
+from Framework.Utils import xml_Utils, file_Utils, data_Utils
 from Framework.Utils.testcase_Utils import pNote
 from Framework.Utils.print_Utils import print_info
 from Framework.Utils.xml_Utils import getElementWithTagAttribValueMatch
+import WarriorCore.Classes.katana_interface_class as katana_interface_class
 
 __author__ = 'Keenan Jabri'
 
@@ -31,7 +33,6 @@ class LineResult:
 
     def __init__(self):
         """Constructor for class LineResult"""
-
         self.keys = ['type', 'name', 'info', 'description', 'timestamp', 'duration', 'status', 'impact', 'onerror', 'msc', 'static',
                      'dynamic']
 
@@ -44,6 +45,7 @@ class LineResult:
 
     def set_dynamic_content(self, line):
         """sets content that is subjected to change"""
+
         self.data['dynamic'] = [line.get("keywords"), line.get("passes"), line.get("failures"),
                                 line.get("errors"), line.get("exceptions"), line.get("skipped")]
         self.data['timestamp'] = line.get("timestamp")
@@ -52,9 +54,45 @@ class LineResult:
         """sets attributes"""
         if 'Keyword' not in variant and 'step' not in variant:
             stepcount = ''
-        result_file = line.get("resultfile") if line.get("resultfile") else line.get("resultsdir") if line.get(
-            "resultsdir") else ''
+        result_path = line.get("resultsfile") if line.get("resultsfile") else line.get("resultsdir") if line.get("resultsdir") else ''
+        logs_path = line.get("console_logfile") if line.get("console_logfile") else ''
+#         defects_path = line.get("defects") if line.get("defects") else ''
         status_name = line.get("status") if line.get("status") else ''
+
+        #
+        #katana-click='execution.resultsViewer.openLogs'
+
+        # There won't be results link in html anymore as we decided we will not be linking xml files in our html results
+#         results_span = "<span style='padding-left:10px; padding-right: 10px;'>"\
+#                         "<a  name='results-link' href='{0}' target='_blank' >"\
+#                         "<i name='results-icon' class='fa fa-line-chart'  data-logPath='{0}' katana-click='execution.resultsViewer.openLogs'> </i>"\
+#                         "</a>"\
+#                         "</span>".format(result_path)
+
+        # the link to logs should only be applied to a testcase and it will open the console logs of the testcase
+        logs_span = "<span style='padding-left:10px; padding-right: 10px;'>"\
+                    "<a  name='results-link' href='{0}' target='_blank' >"\
+                    "<i name='logs-icon' class='fa fa-book'  data-logPath='{0}' katana-click='execution.resultsViewer.openConsoleLogFile' > </i>"\
+                    "</a>"\
+                    "</span>".format(line.get("console_logfile")) if line.get("console_logfile") else ''
+
+        # link to defects will only be applied to a keyword and it will open the defects json file in a popup
+        defects_span = "<span style='padding-left:10px; padding-right: 10px;'>"\
+                        "<a name='bug-link' href='{0}' target='_blank' >"\
+                        "<i name='bug-icon' class='fa fa-bug'  data-logPath='{0}' katana-click='execution.resultsViewer.openDefectsJson'> </i>"\
+                        "</a>"\
+                        "</span>".format(line.get("defects"))  if line.get("defects") else ''
+        span_html = ""
+        if variant == "Testcase":
+            span_html =  logs_span
+            locn = line.get('testcasefile_path')
+        elif variant =="Keyword":
+            span_html = defects_span
+            locn =""
+        else:
+            locn_tag = line.find('./properties/property[@name="location"]')
+            locn = locn_tag.get('value') if locn_tag is not None else ""
+
         self.data = {'nameAttr': variant + 'Record',
                      'type': variant.replace('Test', '').replace('Keyword', 'step ') + str(stepcount),
                      'name': line.get("name"),
@@ -65,14 +103,9 @@ class LineResult:
                      'status': '<span class=' + status_name + '>' + status_name + '</span>',
                      'impact': line.get("impact"),
                      'onerror': line.get("onerror"),
-                     'msc': '<span style="padding-left:10px; padding-right: 10px;"><a href="' + result_file
-                            + '"><i class="fa fa-line-chart"> </i></a></span>' + (
-                                '' if variant == 'Keyword' else '<span style="padding-left:10px; padding-right: 10px;"><a href="' + (
-                                    line.get("logsdir") if line.get(
-                                        "logsdir") else '') + '"><i class="fa fa-book"> </i></a></span>') + (
-                            '<span style="padding-left:10px; padding-right: 10px;"><a href="' + line.get("defects")
-                            + '"><i class="fa fa-bug"> </i></a></span>' if line.get("defects") else ''),
-                     'static': ['Count', 'Passed', 'Failed', 'Errors', 'Exceptions', 'Skipped']
+                     'msc': span_html,
+                     'static': ['Count', 'Passed', 'Failed', 'Errors', 'Exceptions', 'Skipped'],
+                     'locn': locn
                      }
 
     def set_html(self, line, variant, stepcount):
@@ -91,6 +124,16 @@ class LineResult:
                     elif elem == 'static':
                         for staticElem in self.data['static']:
                             top_level += '<td>' + (staticElem if staticElem else '') + '</td>'
+                    elif elem == 'name':
+                        div_html = '<div data-path="{0}", data-type="{1}", katana-click="execution.resultsViewer.openXmlInApp">'.format(self.data['locn'], self.data['type'])
+                        top_level += '<td rowspan="2">'+ div_html + (
+                            self.data[elem] if self.data[elem] else '') + '</div></td>'
+
+                    elif elem == 'type':
+                        div_html = '<div  katana-click="execution.resultsViewer.openAccordian">'
+                        top_level += '<td rowspan="2">'+ div_html + (
+                            self.data[elem] if self.data[elem] else '') + '</div></td>'
+
                     else:
                         top_level += '<td rowspan="2"><div>' + (
                             self.data[elem] if self.data[elem] else '') + '</div></td>'
@@ -102,7 +145,6 @@ class LineResult:
                             self.data[elem] if self.data[elem] else '') + '</div></td>'
 
             self.html = '<tr name="' + self.data['nameAttr'] + '">' + top_level + '</tr>' + top_level_next
-
 
 class WarriorHtmlResults:
     """Class that generates html results using hte junit result file """
@@ -161,7 +203,7 @@ class WarriorHtmlResults:
         template_html = temp.read().replace('\n', '')
         temp.close()
         index = template_html.rfind('</table>')
-        return template_html[:index] + dynamic_html + template_html[index:] + self.get_war_version() + self.get_user()
+        return template_html[:index] + dynamic_html + template_html[index:] + self.get_war_version()
 
     def get_war_version(self):
         """ find the warrior version """
@@ -169,19 +211,88 @@ class WarriorHtmlResults:
         if os.path.isfile(path):
             version = open(path, 'r').read().splitlines()[1].split(':')[1]
             return '<div class="version">' + version + '</div>'
-        return ''
+        else:
+            return ''
 
-    def get_user(self):
-        """ find the user who executed the testcase """
-	try:
-	    user = getpass.getuser()
-	except Exception:
-	    user = "Unknown_user"
-        return '<div class="user">' + user + '</div>'
+    def create_live_table(self, dynamic_cont, livehtmllocn, live_html_iter):
+        """
+        Create the table for live update by reading the
+        table portion of live html file, and adding the dynamic content to it.
+        The table will then be added to the live html result file
+        """
 
-    def generate_html(self, junitObj, givenPath):
-        """ build the html givenPath: added this feature in case of later down the line
-        calling from outside junit file ( no actual use as of now )
+        template_file = open(self.html_template)
+
+        for num, line in enumerate(template_file, 1):
+            if '<table ' in line:
+                table_start = num
+            if '</table>' in line:
+                table_end = num
+        lines = file_Utils.get_lines_between(template_file, table_start, table_end)
+        lines.insert(len(lines)-1, dynamic_cont)
+        table_string = ''.join(lines)
+        table_string = table_string.replace('\n', '')
+
+        if isinstance(livehtmllocn, str):
+            # Passed as a path, means it is a cli execution
+            with open(livehtmllocn) as live_file:
+                live_string = live_file.read()
+        elif isinstance(livehtmllocn, multiprocessing.managers.DictProxy):
+            # Passed as a dict, means it is a python function call
+            live_string = livehtmllocn["html_result"]
+
+        marker_start = '<!--table-{0}starts-->'.format(str(live_html_iter))
+        marker_end = '<!--table-{0}ends-->'.format(str(live_html_iter))
+
+        prefix = live_string.split(marker_start)[0]
+        suffix = live_string.split(marker_end)[-1]
+
+        live_final_string = prefix + marker_start + table_string + marker_end + suffix
+
+        if isinstance(livehtmllocn, str):
+            with open(livehtmllocn, 'w') as live_file:
+                live_file.write(live_final_string)
+        elif isinstance(livehtmllocn, multiprocessing.managers.DictProxy):
+            livehtmllocn["html_result"] = live_final_string
+
+    def write_live_results(self, junitObj, givenPath, is_final):
+        """ build the html givenPath: added this feature in case of later down the line calling from outside junit
+        file ( no actual use as of now )
+        """
+        if junitObj:
+            self.junit_file = junitObj
+            self.junit_root = xml_Utils.getRoot(self.junit_file)
+        if givenPath:
+            self.givenPath = givenPath
+
+        self.set_line_objs()
+        html = ''
+        for item in self.lineObjs:
+            html += item.html
+        if is_final is True:
+            #html += '<div class="complete"></div>'
+            pass
+        live_html_dict = data_Utils.get_object_from_datarepository('live_html_dict', verbose=False)
+        if live_html_dict:
+            livehtmllocn = live_html_dict['livehtmllocn']
+            live_html_iter = live_html_dict['iter']
+            self.create_live_table(html, livehtmllocn, live_html_iter)
+
+        html = self.merge_html(html)
+        elem_file = open(self.get_path(), 'w')
+        elem_file.write(html)
+        elem_file.close()
+
+        self.lineObjs = []
+        print_info("++++ Results Summary ++++")
+        print_info("Open the Results summary file given below in a browser to "
+                   "view results summary for this execution")
+        print_info("Results sumary file: {0}".format(self.get_path()))
+        print_info("+++++++++++++++++++++++++")
+
+    def generate_html(self, junitObj, givenPath, is_final):
+        """ build the html givenPath: added this feature in case of later down the line calling from outside junit
+        file ( no actual use as of now )
         """
         if junitObj:
             self.junit_file = junitObj
@@ -195,9 +306,18 @@ class WarriorHtmlResults:
             html += item.html
         html = self.merge_html(html)
 
+        if is_final is True:
+            html += '<div class="complete"></div>'
+
         elem_file = open(self.get_path(), 'w')
         elem_file.write(html)
         elem_file.close()
+        katana = katana_interface_class.KatanaInterface()
+        katana.send_file(self.get_path(), '/execution/updateHtmlResult')
+
+        if is_final is True:
+            katana.end_comunication()
+
         self.lineObjs = []
         print_info("++++ Results Summary ++++")
         print_info("Open the Results summary file given below in a browser to "

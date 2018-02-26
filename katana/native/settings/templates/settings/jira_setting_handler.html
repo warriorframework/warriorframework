@@ -1,0 +1,49 @@
+<body>
+<div class="tool-bar"><div class="title">Jira Settings</div><div katana-click="settings.addSystem" class="button add">System</div><div katana-click="settings.closeSetting" class="button close">Close</div><div katana-click="settings.save" class="button save saved">Save</div></div>
+<div class="flex-rows to-save" auto-init="settings.changeDetection" post-url="settings/jira_setting_handler">
+  {% for system in jira.jira.system %}
+    <div class="field-block">
+      {% for k, v in system.items%}
+        {% if k == '@name' %}
+          <div class="title"><input key="{{ k }}" type="text" value="{{ v }}" placeholder="Title"></div>
+        {% endif %}
+      {% endfor %}
+      <div class="relative-tool-bar"><i title="Make Default" key="@default" katana-click="settings.jira.defaultClick" class="bool fa fa-toggle-on"></i><i katana-click="katana.toggleActive" key="append_log" title="Append Log" class="bool fa fa-toggle-on"></i><i katana-click="settings.jira.addIssueType" title="Add Issue Type" class="fa fa-plus"></i><i katana-click="settings.jira.addBlock" title="Add New System" class="fa fa-plus-circle"></i><i katana-click="settings.jira.deleteBlock" title="Delete System" class="fa fa-times"></i></div>
+      <div class="to-scroll">
+        {% for k, v in system.items%}
+          {% if k != '@name' %}
+            <div class="field"><label>{{ k }}</label><input auto-init="settings.jira.{{ k }}" key="{{ k }}" type="text" {% if v  %} value="{{ v }}" {% endif %} placeholder="System Name"></div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  {% endfor %}
+  <div class="csrf-container">{% csrf_token %}</div>
+  <div class="translator" url="{% load staticfiles %} {% static 'settings/translations.json'  %}"></div>
+  <div class="tab-template">JiraSettings</div>
+  <script type="text/template" id="issue_type">
+    <div class="pocket-fields" key="issue_type">
+      <div class="title">Issue Type</div>
+      <div class="field"><label>Type</label><select key="type"><option value="story" selected>Story</option><option value="test">Test</option><option value="bug">Bug</option><option value="task">Task</option></select></div>
+      <div class="field"><label>Pass</label><input key="pass" type="text" value="" placeholder="Pass"></div>
+      <div class="field"><label>Fail</label><input key="fail" type="text" value="" placeholder="Fail"></div>
+      <div class="field"><label>Error</label><input key="error" type="text" value="" placeholder="Error"></div>
+      <div class="field"><label>Skip</label><input key="skip" type="text" value="" placeholder="Skip"></div>
+      <div class="close fa fa-times" katana-click="katana.closePocketFields"></div>
+    </div>
+  </script>
+  <script type="text/template" id="block-template">
+    <div class="field-block">
+      <div class="title"><input key="@name" type="text" value="" placeholder="System Name"></div>
+      <div class="relative-tool-bar"><i title="Make Default" key="@default" katana-click="settings.jira.defaultClick" class="bool fa fa-toggle-on"></i><i katana-click="katana.toggleActive" key="append_log" title="Append Log" class="bool fa fa-toggle-on"></i><i katana-click="settings.jira.addIssueType" title="Add Issue Type" class="fa fa-plus"></i><i katana-click="settings.jira.addBlock" title="Add New System" class="fa fa-plus-circle"></i><i katana-click="settings.jira.deleteBlock" title="Delete System" class="fa fa-times"></i></div>
+      <div class="to-scroll">
+        <div class="field"><label>Username</label><input key="username" type="text" placeholder="Username" title="username to be used in connection with the JIRA project above"></div>
+        <div class="field"><label>Project URL</label><input key="url" type="text" placeholder="url" title="URL of JIRA project to be used"></div>
+        <div class="field"><label>Project Key</label><input key="project_key" type="text" placeholder="Project Key" title="JIRA Project Key"></div>
+        <div class="field"><label>Assignee</label><input key="Assignee" type="text" placeholder="Assignee"></div>
+        <div class="field"><label>password</label><input key="password" type="password" title="Password to be used in connection with the username above"></div>
+      </div>
+    </div>
+  </script>
+</div>
+</body>
