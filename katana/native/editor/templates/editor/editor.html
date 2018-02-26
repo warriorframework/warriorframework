@@ -1,5 +1,13 @@
 <head>
     {% load staticfiles %}
+    <link rel="stylesheet" href="{% static 'editor/css/theme/abcdef.css' %}">
+    <link rel="stylesheet" href="{% static 'editor/css/theme/base16-dark.css' %}">
+    <link rel="stylesheet" href="{% static 'editor/css/theme/cobalt.css' %}">
+    <link rel="stylesheet" href="{% static 'editor/css/theme/dracula.css' %}">
+    <link rel="stylesheet" href="{% static 'editor/css/theme/neo.css' %}">
+    <link rel="stylesheet" href="{% static 'editor/css/theme/shadowfox.css' %}">
+    <link rel="stylesheet" href="{% static 'editor/css/theme/zenburn.css' %}">
+
     <link rel="stylesheet" href="{% static 'editor/css/editor.css' %}">
     <link rel="stylesheet" href="{% static 'editor/css/codemirror.css' %}">
     <script src = "{% static 'editor/js/codemirror.js' %}"></script>
@@ -42,6 +50,21 @@
       </div>
 
           <div class = "editor selections-panels-body">
+            <div>
+              <p>Select a Theme:
+                <select onchange= "editor.filesEditor.changeTheme(this)" id = "select">
+                  <option selected> default</option>
+                  <option>abcdef</option>
+                  <option>base16-dark</option>
+                  <option>cobalt</option>
+                  <option>dracula</option>
+                  <option>neo</option>
+                  <option>shadowfox</option>
+                  <option>zenburn</option>
+
+                </select>
+              </p>
+            </div>
             <textarea id="code"></textarea>
 
           </div>

@@ -15,6 +15,19 @@ textarea {
      -moz-box-sizing: border-box;    /* Firefox, other Gecko */
      box-sizing: border-box;         /* Opera/IE 8+ */
 }
+select {
+	width: 10%;
+	font-size: 10px;
+    padding: 9px;
+    border: solid 1px #dcdcdc;
+    font-family: inherit;
+    background: #f9f9f9;
+}
+p {
+	font-size: 10px;
+	margin-bottom: 0;
+	display: block;
+}
 #save{
 
 	padding: 2px 5px;

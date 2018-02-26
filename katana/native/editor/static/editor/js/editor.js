@@ -6,6 +6,13 @@ var editor = {
 
 
   filesEditor:{
+    changeTheme: function(s){
+      editor.codeEditor.setOption("theme",s[s.selectedIndex].value);
+      editor.codeEditor.setOption("mode",'xml');
+
+      //console.log(s[s.selectedIndex].value);
+    },
+
     loadSelectFile: function(path){
       if(path == ''){
       var selected = katana.$activeTab.find('#editor_layout_container').jstree('get_selected', true);
@@ -42,6 +49,7 @@ var editor = {
       editor.codeEditor = CodeMirror.fromTextArea(katana.$activeTab.find('#code')[0], {
         lineNumbers: true,
         mode: mode_type,
+        theme: 'default',
      });
 
         editor.codeEditor.setValue(data);
