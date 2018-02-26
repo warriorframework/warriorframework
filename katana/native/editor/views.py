@@ -67,6 +67,7 @@ class Editor(object):
 
 
     def get_files(self, request):
+        print "here"
         data_dict = json.loads(request.GET.get('data'))
         ws_dir = data_dict['start_dir']
         layout = self.nav.get_dir_tree_json(ws_dir)
@@ -101,7 +102,7 @@ class Editor(object):
 
         return JsonResponse(output)
 
-    
+
 
 def update_jira_proj_list(jira_settings_file, editor_settings_json):
     """

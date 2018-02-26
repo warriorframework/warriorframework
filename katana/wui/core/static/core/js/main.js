@@ -870,7 +870,6 @@ var katana = {
       });
 
     },
-
   },
 
   templateAPI: {
@@ -965,6 +964,7 @@ var katana = {
     },
 
     get: function({url, csrf, toSend, dataType, callBack, fallBack, callBackData, fallBackData}={}) {
+      
 
       // intialize values for url, csrf, dataType, toSend
       var $elem = this ? this : katana.$activeTab;

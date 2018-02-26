@@ -8,6 +8,10 @@ h1 {
 	margin: 0;
 }
 
+textarea {
+	width: 100%;
+}
+
 * {
 	box-sizing: border-box;
 	-webkit-font-smoothing: antialiased;

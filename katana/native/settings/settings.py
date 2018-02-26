@@ -71,6 +71,16 @@ class Settings:
                     'fromJson': validate_config_json(json_data, self.navigator.get_warrior_dir())}
             return data
 
+
+    def profile_about_handler(self, request):
+        json_file = self.navigator.get_katana_dir() + os.sep + 'user_profile.json'
+        config_json_file = self.navigator.get_katana_dir() + os.sep + 'config.json'
+        with open(json_file,'r') as f:
+            json_data = json.load(f)
+
+
+        return json_data
+
     def profile_setting_handler(self, request):
         json_file = self.navigator.get_katana_dir() + os.sep + 'user_profile.json'
         config_json_file = self.navigator.get_katana_dir() + os.sep + 'config.json'

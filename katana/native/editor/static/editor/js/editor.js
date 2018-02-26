@@ -1,14 +1,16 @@
 var count = 0;
 var global_path = [];
 var global_select;
+var theme_cd = 'default';
 var editor = {
 
 
 
   filesEditor:{
     changeTheme: function(s){
+      theme_cd = s[s.selectedIndex].value;
       editor.codeEditor.setOption("theme",s[s.selectedIndex].value);
-      editor.codeEditor.setOption("mode",'xml');
+//      editor.codeEditor.setOption("mode",'xml');
 
       //console.log(s[s.selectedIndex].value);
     },
@@ -49,7 +51,7 @@ var editor = {
       editor.codeEditor = CodeMirror.fromTextArea(katana.$activeTab.find('#code')[0], {
         lineNumbers: true,
         mode: mode_type,
-        theme: 'default',
+        theme: theme_cd,
      });
 
         editor.codeEditor.setValue(data);
@@ -126,9 +128,13 @@ var editor = {
     },
 
     upDirectory: function(csrftoken){
+      var currentPath = katana.$activeTab.find('#editor_layout_container').attr('data-startdir');
+      if(currentPath =="/home" ){
+        console.log("Path:")
+        return
+      }
       count++;
       console.log(count);
-      var currentPath = katana.$activeTab.find('#editor_layout_container').attr('data-startdir');
      global_path.push(currentPath);
      console.log(global_path)
       katana.templateAPI.post('editor/getData', csrftoken, {
@@ -234,11 +240,24 @@ var editor = {
       //console.log(dataToSend);
       var url = 'editor/getFiles';
       var dataType = 'json';
+
       editor.filesViewer.clearTree();
-      katana.templateAPI.get.call(katana.$activeTab, url, null, dataToSend, dataType, editor.filesViewer.buildTree);
+      get_call_args =     {
+        'url': url,
+        'csrf':'null',
+        'toSend':dataToSend,
+        'dataType':dataType,
+        'callBack':editor.filesViewer.buildTree,
+        'fallBack':null,
+        'callBackData':null,
+        'fallBackData':null
+
+      }
+      katana.templateAPI.get.call(katana.$activeTab, get_call_args );
     },
 
     buildTree: function(data){
+      console.log("Success");
       var ph = '';
       katana.$activeTab.find('#editor_layout_container').jstree({
         'core': {

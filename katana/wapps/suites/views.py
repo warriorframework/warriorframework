@@ -17,7 +17,7 @@ limitations under the License.
 
 from django.shortcuts import render, redirect
 from django.template.context_processors import csrf
-import os, sys, glob, copy 
+import os, sys, glob, copy
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
 import xmltodict
@@ -40,7 +40,7 @@ def getSuiteListTree(request):
 	return JsonResponse({'treejs': jtree })
 
 def getJSONSuiteData(request):
-	path_to_config_file = navigator.get_katana_dir() + os.sep + "config.json"   
+	path_to_config_file = navigator.get_katana_dir() + os.sep + "config.json"
 	x= json.loads(open(path_to_config_file).read());
 	path_to_testcases = x['testsuitedir'];
 	filename = request.GET.get('fname')
@@ -65,36 +65,36 @@ def index(request):
 
 	tt = navigator.get_dir_tree_json(fpath)
 	tt['state']= { 'opened': True };
-	
 
-	context = { 
-		'title' : 'List of Suites',	
+
+	context = {
+		'title' : 'List of Suites',
 		'docSpec': 'SuiteSpec',
-		'myfiles': myfiles, 
+		'myfiles': myfiles,
 		'basedir': fpath,
-		'treejs'  : tt 
+		'treejs'  : tt
 	}
 	context.update(csrf(request))
 	return HttpResponse(template.render(context, request))
 
 
 def getEmpty():
-	edata = {"TestSuite": 
-		{"Testcases": 
-			{"Testcase": 
+	edata = {"TestSuite":
+		{"Testcases":
+			{"Testcase":
 				[{"impact": "impact",
 				  "Execute": {"@ExecType": "yes", "Rule": {"@Elsevalue": "", "@Condvalue": "", "@Condition": "", "@Else": "next"}},
-				 "InputDataFile": "", "onError": {"@action": "next", "@value": ""}, 
-				 "runmode": {"@type": "Standard", "@value": ""}, "context": "positive", "runtype": "sequential_keywords", "path": "../Cases/.xml"}, 
-				 {"impact": "impact", "Execute": {"@ExecType": "Yes", "Rule": {"@Elsevalue": "", "@Condvalue": "", "@Condition": "", "@Else": "next"}}, 
-				 "InputDataFile": "", "onError": {"@action": "next", "@value": ""}, 
-				 "runmode": {"@type": "Standard", "@value": ""}, "context": "positive", "runtype": "sequential_keywords", "path": "../Cases/tc_disconnect.xml"}]}, 
-				 "Requirements": {"Requirement": ["Requirement-demo-001", "Requirement-demo-002"]}, "Details": {"Name": "Name Here", "Title": "Title", 
-				 "Resultsdir": "", 
-				 "State": "Released", 
-				 "Time": "23:37:23", 
-				 "Date": "03/01/2017", 
-				 "default_onError": {"@action": "next"}, 
+				 "InputDataFile": "", "onError": {"@action": "next", "@value": ""},
+				 "runmode": {"@type": "Standard", "@value": ""}, "context": "positive", "runtype": "sequential_keywords", "path": "../Cases/.xml"},
+				 {"impact": "impact", "Execute": {"@ExecType": "Yes", "Rule": {"@Elsevalue": "", "@Condvalue": "", "@Condition": "", "@Else": "next"}},
+				 "InputDataFile": "", "onError": {"@action": "next", "@value": ""},
+				 "runmode": {"@type": "Standard", "@value": ""}, "context": "positive", "runtype": "sequential_keywords", "path": "../Cases/tc_disconnect.xml"}]},
+				 "Requirements": {"Requirement": ["Requirement-demo-001", "Requirement-demo-002"]}, "Details": {"Name": "Name Here", "Title": "Title",
+				 "Resultsdir": "",
+				 "State": "Released",
+				 "Time": "23:37:23",
+				 "Date": "03/01/2017",
+				 "default_onError": {"@action": "next"},
 				 "type": {"@exectype": "sequential_testcases", "@Number_Attempts": "", "@Max_Attempts": ""}, "Engineer": "Engineer"}}};
 	return edata;
 
@@ -104,7 +104,7 @@ def getEmpty():
 ##
 def editSuite(request):
 	"""
-	Set up JSON object for editing a Suite file. 
+	Set up JSON object for editing a Suite file.
 	"""
 	navigator = Navigator();
 	path_to_config = navigator.get_katana_dir() + os.sep + "config.json"
@@ -115,9 +115,9 @@ def editSuite(request):
 	template = loader.get_template("./editSuite.html")
 	filename = request.GET.get('fname')
 	print "Asked for ", filename
-	if filename.find("..") == 0: 
+	if filename.find("..") == 0:
 		filename = fpath + os.sep + filename
-	print "Attempting to read ...", filename 
+	print "Attempting to read ...", filename
 
 
 	xml_r = {}
@@ -139,7 +139,7 @@ def editSuite(request):
 	xml_r["TestSuite"]["Details"]["onError"]['@value']= ""
 
 	xml_r["TestSuite"]["Testcases"] = { 'Testcase' :[] }
-	
+
 	if filename.upper() == 'NEW':
 		xml_d = copy.deepcopy(xml_r);
 	else:
@@ -148,7 +148,7 @@ def editSuite(request):
 
 	# Map the input to the response collector
 	for xstr in ["Name", "Title", "Category", "Date", "Time", "Engineer", "Datatype", 'Resultsdir', 'InputDataFile']:
-		try: 
+		try:
 			xml_r["TestSuite"]["Details"][xstr] = copy.copy(xml_d["TestSuite"]["Details"].get(xstr,""))
 		except:
 			pass
@@ -166,13 +166,13 @@ def editSuite(request):
 	except:
 		xml_r["TestSuite"]["Details"]["type"]['@exectype'] = "sequential_testcases"
 
-	#xml_r["TestSuite"]["Details"]["default_onError"] = "" 
+	#xml_r["TestSuite"]["Details"]["default_onError"] = ""
 
 	fulljsonstring = str(json.loads(json.dumps(xml_r['TestSuite'])));
 	fulljsonstring = fulljsonstring.replace('u"',"'").replace("u'",'"').replace("'",'"');
 	fulljsonstring = fulljsonstring.replace('None','""')
 
-	context = { 
+	context = {
 		'savefilename': "save_" + os.path.split(filename)[1],
 		'savefilepath': os.path.split(filename)[0],
 		'fullpathname': filename,
@@ -197,9 +197,9 @@ def editSuite(request):
 		'fulljson': fulljsonstring,
 		'suiteResults': "",
 		}
-	# 
+	#
 	# I have to add json objects for every test suite.
-	# 
+	#
 
 	return HttpResponse(template.render(context, request))
 
@@ -218,17 +218,17 @@ def getSuiteDataBack(request):
 
 	fname = request.POST.get(u'filetosave')
 	ufpath = request.POST.get(u'savefilepath')
-	#ijs = request.POST.get(u'json')  # This is a json string 
-	
+	#ijs = request.POST.get(u'json')  # This is a json string
+
 	#print "--------------TREE----------------"
-	#xml = request.POST.get(u'Suite') 
-	ijs = request.POST.get(u'json')  # This is a json string 
+	#xml = request.POST.get(u'Suite')
+	ijs = request.POST.get(u'json')  # This is a json string
 	print ijs;
 	xml = xmltodict.unparse(json.loads(ijs), pretty=True)
-	
+
 	#print "---
 	if fname.find(".xml") < 2: fname = fname + ".xml"
-	print "save to ", ufpath + os.sep + fname 
+	print "save to ", ufpath + os.sep + fname
 	fd = open(fpath + os.sep + fname,'w');
 	fd.write(xml);
 	fd.close();

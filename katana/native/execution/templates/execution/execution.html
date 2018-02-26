@@ -55,10 +55,10 @@
 	             	<label>Warriorspace</label>
 	             	<input name="warriorspace" key="type" type="text" value="" placeholder="Enter the path to your warriorspace directory" required>
              	</div>
-				<div class="execution  execution-button browse" id="browse-ws"  katana-click="execution.layoutViewer.openExplorer">Browse</div> 
+				<div class="execution  execution-button browse" id="browse-ws"  katana-click="execution.layoutViewer.openExplorer">Browse</div>
          	</div>
              <div class="execution cmd-options-qns-button-bar">
-             	   
+
                <div class="execution  execution-button" id="clear" type="reset" katana-click="execution.layoutViewer.clear">Reset</div>
                <div class="execution  execution-button" name="configure_layout_confirm" type="submit" katana-click="execution.layoutViewer.confirm">Save</div>
              </div>
@@ -132,14 +132,14 @@
                        		{% if not defaults.jira_proj.strip %}
                        			<option value="" placeholder="Select a Jira Project" selected></option>
                        		{% endif %}
-                         	{%for proj in jira_proj%}                        		
+                         	{%for proj in jira_proj%}
                          		{% ifequal proj.name defaults.jira_proj %}
                          			<option value="{{proj.name}}" selected>{{proj.name}}</option>
                          		{% else %}
                          			<option value="{{proj.name}}" >{{proj.name}}</option>
                          		{% endifequal %}
-                         	{% endfor %} 
-<!--                        
+                         	{% endfor %}
+<!--
                          	<option value='proj1' >proj1</option>
                          	<option value='proj2' >proj2</option>
 -->
