@@ -109,12 +109,12 @@ def next(action, value, error_handle, skip_invoked=True, print_w=True):
     """returns 'NEXT' for on_error action = next """
 
     if skip_invoked:
-        error_handle['action'] = 'NEXT' + print_info("failure action= next")
+        print_info("failure action= next")
         error_handle['action'] = 'NEXT'
     else:
         if print_w:
             print_warning("Overriding onError '{0}' since this is an Invoked Step.".format('next'))
-            error_handle['action'] = 'NEXT'
+        error_handle['action'] = 'NEXT'
     return error_handle
 
 
