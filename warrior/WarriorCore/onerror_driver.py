@@ -162,6 +162,6 @@ def execute_and_resume(action, value, error_handle, skip_invoked=True):
         error_handle['value'] = value
     else:
         print_warning("Overriding on error '{0}={1}' since this is an Invoked "
-                      "Step.".format('execute_and_resume', value))
+                      "Step.".format('execute_and_resume', [x + 1 for x in value]))
         error_handle = next(action, value, error_handle, skip_invoked=skip_invoked, print_w=False)
     return error_handle
