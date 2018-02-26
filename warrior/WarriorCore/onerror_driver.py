@@ -159,11 +159,11 @@ def execute_and_resume(action, value, error_handle, skip_invoked=True):
     """returns ABORT_AS_ERROR for on_error action = abort_as_error """
 
     if skip_invoked:
-        print_info("failed: failure action= execute_and_resume")
+        print_info("failed: failure action= execute_and_resume: {0}".format([x + 1 for x in value]))
         error_handle['action'] = 'EXECUTE_AND_RESUME'
         error_handle['value'] = value
     else:
         print_warning("Overriding on error '{0}={1}' since this is an Invoked "
-                      "Step.".format('execute_and_resume', value))
+                      "Step.".format('execute_and_resume', [x + 1 for x in value]))
         error_handle = next(action, value, error_handle, skip_invoked=skip_invoked, print_w=False)
     return error_handle
