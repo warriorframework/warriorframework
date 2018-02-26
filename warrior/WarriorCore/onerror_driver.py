@@ -157,7 +157,7 @@ def abortAsError(action, value, error_handle, skip_invoked=True):
 def execute_and_resume(action, value, error_handle, skip_invoked=True):
     """returns EXECUTE_AND_RESUME for on_error action = execute_and_resume """
     if skip_invoked:
-        print_info("failed: failure action= execute_and_resume")
+        print_info("failed: failure action= execute_and_resume: {0}".format([x + 1 for x in value]))
         error_handle['action'] = 'EXECUTE_AND_RESUME'
         error_handle['value'] = value
     else:
