@@ -312,6 +312,10 @@ var katana = {
 
   },
 
+  toggleSideBar: function(){
+    this.closest('.page').toggleClass('side-bar-hidden');
+  },
+
   translate: function(url, container) {
     $.ajaxSetup({
       async: false
@@ -419,7 +423,7 @@ var katana = {
       }
     }
   },
-  
+
   openAlert: function(data, callBack_on_accept, callBack_on_dismiss) {
     /*
 	    data = {
