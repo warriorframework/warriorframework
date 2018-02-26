@@ -38,6 +38,17 @@ class TestCaseStepsExecutionClass(object):
     """ Step Execution Class """
 
     def __init__(self, step_list, data_repository, go_to_step_number, system_name, parallel, queue, skip_invoked=True):
+        """
+        Constructor for testcase_steps_execution_class.
+
+        :param step_list: List of steps
+        :param data_repository: Inital data_repository
+        :param go_to_step_number: go to step_number
+        :param system_name: System Name
+        :param parallel: parallel
+        :param queue: queue
+        :param skip_invoked: True by default
+        """
         self.step_list = step_list
         self.data_repository = data_repository
         self.system_name = system_name
