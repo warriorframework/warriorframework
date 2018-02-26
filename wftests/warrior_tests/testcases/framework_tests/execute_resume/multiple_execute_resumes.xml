@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <Testcase>
     <Details>
-        <Name>one_execute_resume</Name>
+        <Name>multiple_execute_resumes</Name>
         <Title>This testcase has one execute and resume onError</Title>
         <InputDataFile>No_Data</InputDataFile>
         <Datatype>Custom</Datatype>

@@ -121,7 +121,7 @@ class TestCaseStepsExecutionClass(object):
             "SKIPPED", kw_start_time, "0", "skipped",
             impact_dict.get(step_impact.upper()), "N/A")
         self.data_repository['step_{}_result'.format(self.next_step)] = "SKIPPED"
-
+        self.go_to_step_number = False
         if self.current_triggered_action.upper() in ['ABORT', 'ABORT_AS_ERROR']:
             return self.next_step, self.go_to_step_number, "break"
         elif self.current_triggered_action.upper() in ['SKIP', 'NEXT']:
