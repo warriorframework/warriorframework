@@ -1,17 +1,17 @@
 <?xml version="1.0" ?>
 <Project>
     <Details>
-        <Name>pj_retry</Name>
-        <Title>Project for testing retry tag in test files</Title>
-        <Engineer>Ka</Engineer>
+        <Name>pj_execute_resume</Name>
+        <Title>Project for testing execute resume functionality</Title>
+        <Engineer>Sanika</Engineer>
         <State>New</State>
-        <Date>04/21/2017</Date>
-        <Time>11:59:51</Time>
+        <Date>02/26/2018</Date>
+        <Time>11:43:51</Time>
         <default_onError action="next"/>
     </Details>
     <Testsuites>
         <Testsuite>
-            <path>../suites/framework_tests/ts_framework_tests.xml</path>
+            <path>../suites/framework_tests/execute_resume/ts_execute_resume.xml</path>
             <Execute ExecType="Yes"/>
             <onError action="next" value=""/>
             <impact>impact</impact>
