@@ -568,3 +568,58 @@ class CIregressionActions(object):
                     pNote("Delta: {} not meet minimum value {}".\
                         format(str(stored_delta), float_min_val))
         return status
+    
+    def instantiate_list_key_in_data_repository(self, key):
+        """
+        This will create a key in the data_repository
+        :param key: name of the key that should be created in the data_repository.
+                    The data type of it's value will be list.
+        :return: status (bool), output_dict (dict)
+        """
+        wdesc = "This keyword will create a key in the data repository"
+        pNote(wdesc)
+        status = True
+        output_dict = {key: []}
+        pNote("Updating Data Repository with key: {0}".format(key))
+        return status, output_dict
+
+    def update_list_key_in_data_repository(self, key, value, status="True"):
+        """
+        This keyword will update an existing key in the data repository
+        :param key: key name
+        :param value: value to be updated
+        :param: status: kw will pass/fail accordingly
+        :return: status (bool), updated_dict (dict)
+        """
+        wdesc = "This keyword will update an existing key in the data repository"
+        pNote(wdesc)
+        status = not status.lower() == "false"
+        data = data_Utils.get_object_from_datarepository(key)
+        data.append(value)
+        updated_dict = {key: data}
+        pNote("Updating {0} value wih {1}".format(key, format(value)))
+        return status, updated_dict
+
+    def verify_list_key_value_in_data_repo(self, key, expected_value):
+        """
+        This keyword will update an existing key in the data repository
+        :param key: key name
+        :param value: value to be updated
+        :return: status (bool), updated_dict (dict)
+        """
+        wdesc = "This keyword will verify an existing key's value"
+        pNote(wdesc)
+        status = False
+        data = data_Utils.get_object_from_datarepository(key)
+        pNote("{1} Value (as stored in Data Repository): {0}".format(data, key))
+        compare_value = [x.strip() for x in expected_value.split(",")]
+        pNote("Expected Value: {0}".format(compare_value))
+        if len(data) == len(compare_value):
+            for d, c in zip(data, compare_value):
+                if d != c:
+                    break
+            else:
+                status = True
+        if not status:
+            pNote("Expected Value and Existing Value do not match", "error")
+        return status
