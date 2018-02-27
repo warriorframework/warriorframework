@@ -926,7 +926,6 @@ var katana = {
         url = url ? url : $elem ? $elem.attr('url') : '';
         tabTitle = tabTitle ? tabTitle : 'Tab';
         if ($elem !== katana.templateAPI) {
-          console.log($elem.attr('jsurls'));
           var jsURLString = jsURL ? jsURL.trim() : $elem.attr('jsurls').trim();
           var jsURL = jsURLString === "" ? [] : jsURLString.split(',');
           if (jsURL.length > 0) {
