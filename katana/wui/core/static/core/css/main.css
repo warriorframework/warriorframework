@@ -3115,17 +3115,20 @@ input[type="checkbox"]+label {
 
 .side-bar-toggle {
     position: absolute;
-    top: calc(50% - 80px);
+    top: 0;
     right: 0px;
-    width: 14px;
-    background: white;
+    width: 20px;
+    /* background: white; */
     text-align: center;
     height: 30px;
     line-height: 27px;
-    border: solid 1px #c1c1c1;
-    border-top-left-radius: 3px;
-    border-bottom-left-radius: 3px;
+    /* border: solid 1px #c1c1c1; */
+    /* border-top-left-radius: 3px; */
+    /* border-bottom-left-radius: 3px; */
+    height: 100%;
+    border-left: 1px solid #b9b8b8;
     display: none;
+    font-size: 25px;
 }
 
 div#launchpad.hidden .side-bar-toggle{
@@ -3135,7 +3138,16 @@ div#launchpad.hidden .side-bar-toggle{
 div#launchpad.hidden.side-bar-hidden {
     width: 40px;
 }
-
+div#launchpad.hidden .side-bar-toggle:before {
+    top: calc(50% - 80px);
+    height: 30px;
+    font-size: 24px;
+    line-height: 30px;
+    right: 0;
+    text-align: center;
+    width: 100%;
+    position: absolute;
+}
 div#launchpad.hidden.side-bar-hidden .tabs {
     display: none;
 }
