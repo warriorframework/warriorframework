@@ -44,6 +44,8 @@ class Main:
         self.noSpaceName = data['name'].replace(' ', '_')
         self.details = data['details']
         self.icon = data['icon']
+        self.color = data['color']
+        self.developer = data['developer']
 
     def clone_template(self):
         shutil.copytree(self.file_path + os.sep + 'template_app', self.file_path + os.sep + self.clone_name, symlinks=False, ignore=None)
@@ -62,7 +64,7 @@ class Main:
                 page = f.read()
                 f.seek(0)
                 f.truncate()
-                page = page.replace('toReplace', self.noSpaceName).replace('toFormatedReplace', self.name).replace('toIconReplace', self.icon).replace('toDetailsReplace', self.details)
+                page = page.replace('toReplace', self.noSpaceName).replace('toFormatedReplace', self.name).replace('toIconReplace', self.icon).replace('toDetailsReplace', self.details).replace('toDeveloperReplace', self.developer).replace('toColorReplace', self.color)
                 f.write(page)
 
     def install_app(self):
