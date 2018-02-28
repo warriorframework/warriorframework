@@ -1,0 +1,12 @@
+{
+  "icon": "toIconReplace",
+  "color": "blue",
+  "developer": "Warrior Framework",
+  "description": "toDetailsReplace",
+  "app" : {"name" : "toFormatedReplace", "url" : "/katana/toReplace/", "include": "wapps.toReplace.urls"},
+  "warrior-compatibility": "",
+  "warrior-incompatibility": "",
+  "version": "1.0.0",
+  "permissions": "",
+  "availability": ""
+}

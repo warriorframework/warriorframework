@@ -1,0 +1,10 @@
+<head>
+    {% load staticfiles %}
+    <link rel="stylesheet" href="{% static 'toReplace/css/main.css' %}">
+</head>
+<body>
+      <div class="toReplace" auto-init="toReplace.init">
+
+      </div>
+      <div class="csrf-container">{% csrf_token %} </div>
+</body>
