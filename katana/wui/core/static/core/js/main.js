@@ -1009,22 +1009,13 @@ var katana = {
       });
     },
 
-    get: function({url, csrf, toSend, dataType, callBack, fallBack, callBackData, fallBackData}={}) {
+    get: function({url, toSend, dataType, callBack, fallBack, callBackData, fallBackData}={}) {
 
       // intialize values for url, csrf, dataType, toSend
       var $elem = this ? this : katana.$activeTab;
-      var toSend = toSend ? toSend : $elem.find('input:not([name="csrfmiddlewaretoken"])').serializeArray();
-      var url = url ? url : $elem.attr('get-url');
-      var csrf = csrf ? csrf : $elem.find('.csrf-container > input').val();
-      var dataType = dataType ? dataType : 'text'
-
-      // setup csrf token in xhr header
-      $.ajaxSetup({
-        beforeSend: function(xhr, settings) {
-          if (!this.crossDomain)
-            xhr.setRequestHeader("X-CSRFToken", csrf);
-        }
-      });
+      toSend = toSend ? toSend : $elem.find('input:not([name="csrfmiddlewaretoken"])').serializeArray();
+      url = url ? url : $elem.attr('get-url');
+      dataType = dataType ? dataType : 'text';
 
       // make an ajax get call using the intialized variables,
       // on sucess the data is sent to success cal back function if one was provided
