@@ -124,21 +124,21 @@ def goto(action, value, error_handle):
     return error_handle
 
 
-def abort(action, value, error_handle, skip_invoked=True):
+def abort(action, value, error_handle):
     """returns ABORT for on_error action = abort """
     print_info("failed: failure action= Abort")
     error_handle['action'] = 'ABORT'
     return error_handle
 
 
-def abortAsError(action, value, error_handle, skip_invoked=True):
+def abortAsError(action, value, error_handle):
     """returns ABORT_AS_ERROR for on_error action = abort_as_error """
     print_info("failed: failure action= abort_as_error")
     error_handle['action'] = 'ABORT_AS_ERROR'
     return error_handle
 
 
-def execute_and_resume(action, value, error_handle, skip_invoked=True):
+def execute_and_resume(action, value, error_handle):
     """returns ABORT_AS_ERROR for on_error action = abort_as_error """
     print_info("failed: failure action= execute_and_resume: {0}".format([x + 1 for x in value]))
     error_handle['action'] = 'EXECUTE_AND_RESUME'
