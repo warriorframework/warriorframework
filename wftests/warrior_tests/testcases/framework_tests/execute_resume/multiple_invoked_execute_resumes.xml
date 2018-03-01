@@ -2,7 +2,7 @@
 <Testcase>
     <Details>
         <Name>multiple_invoked_execute_resumes</Name>
-        <Title>This testcase has one execute and resume onError</Title>
+        <Title>This testcase has multiple execute and resume onErrors which call multiple invoked steps</Title>
         <InputDataFile>No_Data</InputDataFile>
         <Datatype>Custom</Datatype>
         <default_onError action="next"/>

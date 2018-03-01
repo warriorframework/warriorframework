@@ -2,7 +2,7 @@
 <Testcase>
     <Details>
         <Name>nested_invoked_execute_resumes</Name>
-        <Title>This testcase has one execute and resume onError</Title>
+        <Title>This testcase has nested execute and resume onError which call invoked steps</Title>
         <InputDataFile>No_Data</InputDataFile>
         <Datatype>Custom</Datatype>
         <default_onError action="next"/>

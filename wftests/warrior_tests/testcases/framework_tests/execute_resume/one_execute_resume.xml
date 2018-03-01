@@ -2,7 +2,7 @@
 <Testcase>
     <Details>
         <Name>one_execute_resume</Name>
-        <Title>This testcase has one execute and resume onError</Title>
+        <Title>This testcase has one execute and resume onError which calls a regular step</Title>
         <InputDataFile>No_Data</InputDataFile>
         <Datatype>Custom</Datatype>
         <default_onError action="next"/>

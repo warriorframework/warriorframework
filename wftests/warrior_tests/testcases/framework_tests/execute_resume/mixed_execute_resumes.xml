@@ -2,7 +2,7 @@
 <Testcase>
     <Details>
         <Name>mixed_execute_resumes</Name>
-        <Title>This testcase has one execute and resume onError</Title>
+        <Title>This testcase has a mixture of execute and resume onError calling regular and invoked steps</Title>
         <InputDataFile>No_Data</InputDataFile>
         <Datatype>Custom</Datatype>
         <default_onError action="next"/>
