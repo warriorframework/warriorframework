@@ -63,7 +63,6 @@ class TestCaseStepsExecutionClass(object):
         self.step_impact_list = []
         self.current_step = False
         self.current_step_number = False
-        self.next_step = False
         self.run_current_step = False
         self.current_triggered_action = False
         self.step_status = None
@@ -74,23 +73,24 @@ class TestCaseStepsExecutionClass(object):
         This function is called either from the while loop (normal execution) in function
         execute_steps() or from a for loop (invoked execution)
         """
-        self.current_step_number = current_step_number
-        self.current_step = self.step_list[self.current_step_number]
+        self.current_step = self.step_list[current_step_number]
+        # Incrementing current_step_number for printing purposes.
+        self.current_step_number = current_step_number + 1
+
         self.go_to_step_number = go_to_step_number
         # execute steps
-        self.next_step = self.current_step_number + 1
 
         # Decide whether or not to execute keyword
         # First decide if this step should be executed in this iteration
-        if not self.go_to_step_number or self.go_to_step_number == str(self.next_step):
+        if not self.go_to_step_number or self.go_to_step_number == str(self.current_step_number):
             # get Exectype information
             self.run_current_step, self.current_triggered_action = \
                 exec_type_driver.main(self.current_step, skip_invoked=self.skip_invoked)
             if not self.run_current_step:
                 return self._report_step_as_not_run()
 
-        if not self.go_to_step_number or self.go_to_step_number == str(self.next_step):
-            self.step_status = self._execute_step_on_goto()
+        if not self.go_to_step_number or self.go_to_step_number == str(self.current_step_number):
+            self.step_status = self._execute_current_step()
         else:
             # Skip because of goto
             return self._skip_because_of_goto()
@@ -115,7 +115,7 @@ class TestCaseStepsExecutionClass(object):
         """
         keyword = self.current_step.get('Keyword')
         kw_resultfile = step_driver.get_keyword_resultfile(self.data_repository, self.system_name,
-                                                           self.next_step, keyword)
+                                                           self.current_step_number, keyword)
         Utils.config_Utils.set_resultfile(kw_resultfile)
         Utils.testcase_Utils.pKeyword(keyword, self.current_step.get('Driver'))
         Utils.testcase_Utils.reportStatus('Skip')
@@ -128,31 +128,31 @@ class TestCaseStepsExecutionClass(object):
         step_impact = Utils.testcase_Utils.get_impact_from_xmlfile(self.current_step)
         impact_dict = {"IMPACT": "Impact", "NOIMPACT": "No Impact"}
         self.data_repository['wt_junit_object'].add_keyword_result(
-            self.data_repository['wt_tc_timestamp'], self.next_step, keyword,
+            self.data_repository['wt_tc_timestamp'], self.current_step_number, keyword,
             "SKIPPED", kw_start_time, "0", "skipped",
             impact_dict.get(step_impact.upper()), "N/A")
-        self.data_repository['step_{}_result'.format(self.next_step)] = "SKIPPED"
+        self.data_repository['step_{}_result'.format(self.current_step_number)] = "SKIPPED"
         self.go_to_step_number = False
         if self.current_triggered_action.upper() in ['ABORT', 'ABORT_AS_ERROR']:
-            return self.next_step, self.go_to_step_number, "break"
+            return self.current_step_number, self.go_to_step_number, "break"
         elif self.current_triggered_action.upper() in ['SKIP', 'NEXT']:
-            return self.next_step, self.go_to_step_number, "continue"
+            return self.current_step_number, self.go_to_step_number, "continue"
         elif self.current_triggered_action == "SKIP_INVOKED":
             if self.skip_invoked:
                 print_info("Skipping this step as it is an invoked step.")
-                return self.next_step, self.go_to_step_number, "continue"
+                return self.current_step_number, self.go_to_step_number, "continue"
         # when 'onError:goto' value is less than the current step num,
         # change the next iteration point to goto value
-        elif self.current_triggered_action and int(self.current_triggered_action) < self.next_step:
-            self.next_step = int(self.current_triggered_action) - 1
-        return self.next_step, self.go_to_step_number, "continue"
+        elif self.current_triggered_action and int(self.current_triggered_action) < self.current_step_number:
+            self.current_step_number = int(self.current_triggered_action) - 1
+        return self.current_step_number, self.go_to_step_number, "continue"
 
-    def _execute_step_on_goto(self):
+    def _execute_current_step(self):
         """
         This function actually executes a given step and returns necessary details about that step.
         """
         try:
-            result = step_driver.main(self.current_step, self.next_step, self.data_repository, self.system_name)
+            result = step_driver.main(self.current_step, self.current_step_number, self.data_repository, self.system_name)
             step_status = result[0]
             kw_resultfile = result[1]
             step_impact = result[2]
@@ -174,7 +174,7 @@ class TestCaseStepsExecutionClass(object):
         """
         keyword = self.current_step.get('Keyword')
         kw_resultfile = step_driver.get_keyword_resultfile(self.data_repository, self.system_name,
-                                                           self.next_step, keyword)
+                                                           self.current_step_number, keyword)
         Utils.config_Utils.set_resultfile(kw_resultfile)
         Utils.testcase_Utils.pKeyword(keyword, self.current_step.get('Driver'))
         Utils.testcase_Utils.reportStatus('Skip')
@@ -190,11 +190,11 @@ class TestCaseStepsExecutionClass(object):
 
         impact_dict = {"IMPACT": "Impact", "NOIMPACT": "No Impact"}
         self.data_repository['wt_junit_object']. \
-            add_keyword_result(self.data_repository['wt_tc_timestamp'], self.next_step, keyword, "SKIPPED",
+            add_keyword_result(self.data_repository['wt_tc_timestamp'], self.current_step_number, keyword, "SKIPPED",
                                kw_start_time, "0", "skipped",
                                impact_dict.get(step_impact.upper()), "N/A", step_description)
-        self.data_repository['step_{}_result'.format(self.next_step)] = "SKIPPED"
-        return self.next_step, self.go_to_step_number, "continue"
+        self.data_repository['step_{}_result'.format(self.current_step_number)] = "SKIPPED"
+        return self.current_step_number, self.go_to_step_number, "continue"
 
     def _execute_runmode_step(self, runmode_timer, runmode, step_status, value):
         """
@@ -219,8 +219,8 @@ class TestCaseStepsExecutionClass(object):
                 self.go_to_step_number = onerror_driver.main(self.current_step, self.default_error_action,
                                                    self.default_error_value, skip_invoked=self.skip_invoked)
                 if self.go_to_step_number in ['ABORT', 'ABORT_AS_ERROR']:
-                    return self.next_step, self.go_to_step_number, "break"
-        return self.next_step, self.go_to_step_number, "continue"
+                    return self.current_step_number, self.go_to_step_number, "break"
+        return self.current_step_number, self.go_to_step_number, "continue"
 
     def _execute_retry_type_step(self, retry_type, retry_cond, retry_cond_value, retry_interval, retry_value):
         """
@@ -268,7 +268,7 @@ class TestCaseStepsExecutionClass(object):
                           "value '{1}'".format(self.data_repository[retry_cond],
                                                retry_cond_value))
                     self.go_to_step_number = str(retry_value)
-        return self.next_step, self.go_to_step_number, "continue"
+        return self.current_step_number, self.go_to_step_number, "continue"
 
     def _execute_step_otherwise(self, step_status):
         """
@@ -280,7 +280,7 @@ class TestCaseStepsExecutionClass(object):
                                                          self.default_error_value,
                                                          skip_invoked=self.skip_invoked)
             if self.go_to_step_number in ['ABORT', 'ABORT_AS_ERROR']:
-                return self.next_step, self.go_to_step_number, "break"
+                return self.current_step_number, self.go_to_step_number, "break"
             # when 'onError:goto' value is less than the current step num,
             # change the next iteration point to goto value
             elif isinstance(self.go_to_step_number, list):
@@ -301,10 +301,10 @@ class TestCaseStepsExecutionClass(object):
                 self.go_to_step_number = False
                 print_normal("\n----------------- Invoked Steps Execution Finished "
                              "-----------------\n")
-            elif self.go_to_step_number and int(self.go_to_step_number) < self.next_step:
-                self.next_step = int(self.go_to_step_number) - 1
+            elif self.go_to_step_number and int(self.go_to_step_number) < self.current_step_number:
+                self.current_step_number = int(self.go_to_step_number) - 1
                 self.go_to_step_number = False
-        return self.next_step, self.go_to_step_number, "continue"
+        return self.current_step_number, self.go_to_step_number, "continue"
 
 
 def execute_steps(step_list, data_repository, system_name, parallel, queue, skip_invoked=True, step_num=None):

@@ -39,7 +39,11 @@ def main(node, def_on_error_action, def_on_error_value, exec_type=False, skip_in
     call_function = {'NEXT': next, 'GOTO': goto, 'ABORT': abort, 'ABORT_AS_ERROR': abortAsError,
                      'EXECUTE_AND_RESUME': execute_and_resume}.get(action.upper())
 
-    error_handle = call_function(action, value, error_handle, skip_invoked=skip_invoked)
+    if skip_invoked:
+        error_handle = call_function(action, value, error_handle)
+    else:
+        print_warning("Overriding on error {0} {1} since this is an Invoked Step.".format(action, value))
+        error_handle = next(action, value, error_handle, skip_invoked=skip_invoked)
     result = get_failure_results(error_handle)
     return result
 
@@ -104,66 +108,39 @@ def getErrorHandlingParameters(node, def_on_error_action, def_on_error_value, ex
     return action, value
 
 
-def next(action, value, error_handle, skip_invoked=True, print_w=True):
+def next(action, value, error_handle, skip_invoked=True):
     """returns 'NEXT' for on_error action = next """
-
+    error_handle['action'] = 'NEXT'
     if skip_invoked:
         print_info("failure action= next")
-        error_handle['action'] = 'NEXT'
-    else:
-        if print_w:
-            print_warning("Overriding onError '{0}' since this is an Invoked Step.".format('next'))
-        error_handle['action'] = 'NEXT'
     return error_handle
 
 
-def goto(action, value, error_handle, skip_invoked=True):
+def goto(action, value, error_handle):
     """returns goto_step_num for on_error action = goto """
-    if skip_invoked:
-        print_info("failed: failure action= goto  %s" % value)
-        error_handle['action'] = 'GOTO'
-        error_handle['value'] = value
-    else:
-        print_warning("Overriding on error '{0}={1}' since this is an Invoked "
-                      "Step.".format('goto', value))
-        error_handle = next(action, value, error_handle, skip_invoked=skip_invoked, print_w=False)
+    print_info("failed: failure action= goto  %s" % value)
+    error_handle['action'] = 'GOTO'
+    error_handle['value'] = value
     return error_handle
 
 
 def abort(action, value, error_handle, skip_invoked=True):
     """returns ABORT for on_error action = abort """
-
-    if skip_invoked:
-        print_info("failed: failure action= Abort")
-        error_handle['action'] = 'ABORT'
-    else:
-        print_warning("Overriding on error '{0}' since this is an Invoked Step.".format('abort'))
-        error_handle = next(action, value, error_handle, skip_invoked=skip_invoked, print_w=False)
+    print_info("failed: failure action= Abort")
+    error_handle['action'] = 'ABORT'
     return error_handle
 
 
 def abortAsError(action, value, error_handle, skip_invoked=True):
     """returns ABORT_AS_ERROR for on_error action = abort_as_error """
-
-    if skip_invoked:
-        print_info("failed: failure action= abort_as_error")
-        error_handle['action'] = 'ABORT_AS_ERROR'
-    else:
-        print_warning("Overriding on error '{0}' since this is an Invoked "
-                      "Step.".format('abort_as_error'))
-        error_handle = next(action, value, error_handle, skip_invoked=skip_invoked, print_w=False)
+    print_info("failed: failure action= abort_as_error")
+    error_handle['action'] = 'ABORT_AS_ERROR'
     return error_handle
 
 
 def execute_and_resume(action, value, error_handle, skip_invoked=True):
     """returns ABORT_AS_ERROR for on_error action = abort_as_error """
-
-    if skip_invoked:
-        print_info("failed: failure action= execute_and_resume: {0}".format([x + 1 for x in value]))
-        error_handle['action'] = 'EXECUTE_AND_RESUME'
-        error_handle['value'] = value
-    else:
-        print_warning("Overriding on error '{0}={1}' since this is an Invoked "
-                      "Step.".format('execute_and_resume', [x + 1 for x in value]))
-        error_handle = next(action, value, error_handle, skip_invoked=skip_invoked, print_w=False)
+    print_info("failed: failure action= execute_and_resume: {0}".format([x + 1 for x in value]))
+    error_handle['action'] = 'EXECUTE_AND_RESUME'
+    error_handle['value'] = value
     return error_handle
