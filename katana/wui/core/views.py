@@ -13,17 +13,14 @@ limitations under the License.
 
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
 import json
-
 from utils.directory_traversal_utils import get_parent_directory, join_path, file_or_dir_exists
 from utils.json_utils import read_json_data
 from utils.navigator_util import Navigator
 from wui.core.apps import AppInformation
-
 
 
 class CoreView(View):
@@ -86,7 +83,9 @@ def check_if_file_exists(request):
     filename = request.POST.get("filename")
     directory = request.POST.get("directory")
     extension = request.POST.get("extension")
-
-    output = {"exists": file_or_dir_exists(join_path(directory, filename + extension))}
-
+    path = request.POST.get("path")
+    if path is not None:
+        output = {"exists": file_or_dir_exists(path)}
+    else:
+        output = {"exists": file_or_dir_exists(join_path(directory, filename + extension))}
     return JsonResponse(output)

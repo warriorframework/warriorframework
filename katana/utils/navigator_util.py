@@ -1,5 +1,6 @@
 import os
 from directory_traversal_utils import get_parent_directory, join_path
+from utils.json_utils import read_json_data
 import subprocess
 
 
@@ -18,6 +19,18 @@ class Navigator(object):
         warrior_dir = get_parent_directory(__file__, 3) + os.sep + 'warrior' + os.sep
         return warrior_dir
 
+    def get_engineer_name(self):
+        """
+        This function returns the full name (if given in the user_profile.json) of the user.
+        :return:
+        """
+        user_profile = join_path(self.get_katana_dir(), "user_profile.json")
+        profile_data = read_json_data(user_profile)
+        name = ""
+        if profile_data is not None:
+            name = (profile_data["firstName"] + " " + profile_data["lastName"]).strip()
+        return name
+      
     def get_warhorn_dir(self):
         """will get warriors main directory"""
         warrior_dir = get_parent_directory(__file__, 3) + os.sep + 'warhorn' + os.sep

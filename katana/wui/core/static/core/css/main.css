@@ -505,6 +505,10 @@ span.close:before {
 	color: #3b7a4c;
 }
 
+.white {
+	color: white;
+}
+
 .skyblue{
     color: #4ea4e0;
 }
@@ -2998,6 +3002,7 @@ input[type="checkbox"]+label {
     font-style: normal;
     color: #4f606c;
 }
+
 .tab-template {
     display: none !important;
 }
