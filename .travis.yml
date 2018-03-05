@@ -33,6 +33,9 @@ matrix:
       env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/pj_parallel_execution_2.xml
       python: 2.7
     - os: linux
+      env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/pj_exec_summary.xml
+      python: 2.7
+    - os: linux
       env: INSTALL=yes TESTFILE=./wftests/warrior_tests/testcases/selenium_tests/tc_selenium_headless.xml SELENIUM=yes
       python: 2.7
       addons:
