@@ -136,15 +136,15 @@ def construct_mail_body(exec_type, abs_filepath, logs_dir, results_dir):
     # complete html body that will be sent through mail
     if exec_type == 'Project: ':
         for proj in project_sum:
-            project = project + ('<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td></tr>'
+            project = project + ('<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td></tr>\n'
                                  .format(proj[0], proj[1], proj[2], proj[3]))
         for value in suite_tc_sum:
-            suite_tc = suite_tc + ('<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td></tr>'
+            suite_tc = suite_tc + ('<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td></tr>\n'
                                    .format(value[0], value[1], value[2], value[3]))
         body = body_arg + project + suite_tc + "</table></body></html>"
     elif exec_type == 'Test Suite: ' or exec_type == 'Test Case: ':
         for value in suite_tc_sum:
-            suite_tc = suite_tc + ('<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td></tr>'
+            suite_tc = suite_tc + ('<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td></tr>\n'
                                    .format(value[0], value[1], value[2], value[3]))
         body = body_arg + suite_tc + "</table></body></html>"
     return body
