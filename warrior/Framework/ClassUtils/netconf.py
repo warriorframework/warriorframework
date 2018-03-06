@@ -544,7 +544,10 @@ class client(Thread):
             if filter_type == "subtree":
                 xml += "<filter type='subtree'>%s</filter>" % filter_string
             elif filter_type == "xpath":
-                xml += "<filter type='xpath' select='%s'/>" % filter_string
+                if "'" in filter_string:
+                    xml += "<filter type='xpath' select=\"%s\"/>" % filter_string
+                else:
+                    xml += "<filter type='xpath' select='%s'/>" % filter_string
             else:
                 xml += "%s" %filter_string
         xml += "</get>"
