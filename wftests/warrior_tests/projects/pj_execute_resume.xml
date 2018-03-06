@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<Project>
+    <Details>
+        <Name>pj_execute_resume</Name>
+        <Title>Project for testing execute resume functionality</Title>
+        <Engineer>Sanika</Engineer>
+        <State>New</State>
+        <Date>02/26/2018</Date>
+        <Time>11:43:51</Time>
+        <default_onError action="next"/>
+    </Details>
+    <Testsuites>
+        <Testsuite>
+            <path>../suites/framework_tests/execute_resume/ts_execute_resume.xml</path>
+            <Execute ExecType="Yes"/>
+            <onError action="next" value=""/>
+            <impact>impact</impact>
+        </Testsuite>
+    </Testsuites>
+</Project>
