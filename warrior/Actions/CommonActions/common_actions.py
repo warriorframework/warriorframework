@@ -112,7 +112,7 @@ class CommonActions(object):
         return status
 
     def store_in_repo(self, datavar=None, datavalue=None, datatype='str',
-                      filepath=None, jsonkey="repo_variables",):
+                      filepath=None, jsonkey="repo_variables"):
         """Stores datavalue in datavar of datarepository
         :Argument:
             1. datavar = Key to be used to store datavalue in data_repository,
