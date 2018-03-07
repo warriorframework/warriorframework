@@ -111,7 +111,7 @@ class CommonActions(object):
         Utils.testcase_Utils.report_substep_status(status)
         return status
 
-    def store_in_repo(self, datavar=None, datavalue=None, datatype='str',
+    def store_in_repo(self, datavar=None, datavalue=None, type='str',
                       filepath=None, jsonkey="repo_variables"):
         """Stores datavalue in datavar of datarepository
         :Argument:
@@ -120,7 +120,7 @@ class CommonActions(object):
                             i.e., if var is k1.k2.k3 then the data value would be
                             stored as a value in datarepository[k1][k2][k3]
             2. datavalue = Value to be stored
-            3. datatype = Type of datavalue(string/int/float)
+            3. type = Type of datavalue(string/int/float)
             4. filepath = Json file where datarepository variables are defined.
                           It is to store multiple key,value pairs in datarepository.
             5. jsonkey = The key where all the REPO variables & values are
@@ -132,6 +132,9 @@ class CommonActions(object):
                          "var1": {"type": "int", "value": "10"},
                          "var2.var3": {"value": "10"},
                          "var4.var5": "1"
+                         },
+                     "user_defined_tag":{
+                         "var6" : {"type": "int", "value": "40"}
                          }
                  }
             All three formats in the above sample block are allowed. If 'type'
@@ -159,9 +162,9 @@ class CommonActions(object):
         pass_msg = "Value: {0} is stored in a Key: {1} of Warrior data_repository"
 
         if datavar is not None and datavalue is not None:
-            if datatype == 'int':
+            if type == 'int':
                 datavalue = int(datavalue)
-            elif datatype == 'float':
+            elif type == 'float':
                 datavalue = float(datavalue)
             dict_to_update = get_dict_to_update(datavar, datavalue)
             update_datarepository(dict_to_update)
@@ -202,7 +205,7 @@ class CommonActions(object):
             except Exception as error:
                 print_error('Encountered {0} error'.format(error))
 
-        if (datatype is None or datavalue is None) and filepath is None:
+        if (type is None or datavalue is None) and filepath is None:
             print_error('Either Provide values to arguments \"datavar\" & '
                         '\"datavalue\" or to argument \"filepath\"')
 
