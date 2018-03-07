@@ -220,6 +220,8 @@ class TestCaseStepsExecutionClass(object):
                                                    self.default_error_value, skip_invoked=self.skip_invoked)
                 if self.go_to_step_number in ['ABORT', 'ABORT_AS_ERROR']:
                     return self.current_step_number, self.go_to_step_number, "break"
+                elif type(self.go_to_step_number) is list:
+                    self.__run_execute_and_resume_mode()
         return self.current_step_number, self.go_to_step_number, "continue"
 
     def _execute_retry_type_step(self, retry_type, retry_cond, retry_cond_value, retry_interval, retry_value):
@@ -283,28 +285,26 @@ class TestCaseStepsExecutionClass(object):
                 return self.current_step_number, self.go_to_step_number, "break"
             # when 'onError:goto' value is less than the current step num,
             # change the next iteration point to goto value
-            elif isinstance(self.go_to_step_number, list):
-                print_normal("\n----------------- Starting Invoked Steps Execution "
-                             "-----------------\n")
-                temp_step_list = list(self.step_list)
-                for x in self.go_to_step_number:
-                    if 0 <= x < len(self.step_list):
-                        temp_step_list[x] = self.step_list[x]
-                temp_status_list, temp_kw_result_list, temp_impact_list, temp_data_repo = \
-                    execute_steps(temp_step_list, self.data_repository, self.system_name,
-                                  self.parallel, self.queue, skip_invoked=False,
-                                  step_num=self.go_to_step_number)
-                self.step_status_list.extend(temp_status_list)
-                self.kw_resultfile_list.extend(temp_kw_result_list)
-                self.step_impact_list.extend(temp_impact_list)
-                self.data_repository.update(temp_data_repo)
-                self.go_to_step_number = False
-                print_normal("\n----------------- Invoked Steps Execution Finished "
-                             "-----------------\n")
+            elif type(self.go_to_step_number) is list:
+                self.__run_execute_and_resume_mode()
             elif self.go_to_step_number and int(self.go_to_step_number) < self.current_step_number:
                 self.current_step_number = int(self.go_to_step_number) - 1
                 self.go_to_step_number = False
         return self.current_step_number, self.go_to_step_number, "continue"
+
+    def __run_execute_and_resume_mode(self):
+        temp_step_list = list(self.step_list)
+        for x in self.go_to_step_number:
+            if 0 <= x < len(self.step_list):
+                temp_step_list[x] = self.step_list[x]
+        result = execute_steps(temp_step_list, self.data_repository, self.system_name,
+                               self.parallel, self.queue, skip_invoked=False,
+                               step_num=self.go_to_step_number)
+        self.step_status_list.extend(result[0])
+        self.kw_resultfile_list.extend(result[1])
+        self.step_impact_list.extend(result[2])
+        self.data_repository.update(result[3])
+        self.go_to_step_number = False
 
 
 def execute_steps(step_list, data_repository, system_name, parallel, queue, skip_invoked=True, step_num=None):
@@ -330,11 +330,13 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue, skip
             if do_continue == "break":
                 break
     else:
+        print_normal("\n----------------- Starting Invoked Steps Execution -----------------\n")
         for _step_num in step_num:
             if 0 <= _step_num < len(step_list):
                 _, goto_stepnum, _ = tc_step_exec_obj.execute_step(_step_num, goto_stepnum)
             else:
                 print_error("Step number {0} does not exist. Skipping.".format(_step_num+1))
+        print_normal("\n----------------- Invoked Steps Execution Finished -----------------\n")
 
     if parallel is True:
         try:
