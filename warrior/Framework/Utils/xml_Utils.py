@@ -15,7 +15,7 @@ import json
 import sys
 import difflib
 import os
-
+import re
 import file_Utils
 import os.path
 
@@ -993,12 +993,23 @@ def compare_xml_using_xpath(response, list_of_xpath, list_of_expected_api_respon
         for index, xpath_pattern in enumerate(list_of_xpath):
             xpath = xpath_pattern.strip("xpath=")
             value = getValuebyTagFromStringWithXpath(response, xpath, None)
-            if value != list_of_expected_api_responses[index]:
+            # Equality_match: Check if the expected response is equal to API response
+            match = True if value == list_of_expected_api_responses[index] else False
+            # Perform Regex_search if equality match fails
+            if match is False:
+                try:
+                    # Regex_search: Check if the expected response pattern is in API response
+                    match = re.search(list_of_expected_api_responses[index], value)
+                except Exception:
+                    print_warning("Python regex search failed, invalid "
+                                  "expected_response_pattern '{}' is "
+                                  "provided".format(list_of_expected_api_responses[index]))
+            if not match:
                 status = False
-                print_error("For the given {0} the expected response value is"
-                            " {1} but the actual response"
-                            " value is {2}".format(xpath_pattern,
-                            list_of_expected_api_responses[index], value))
+                print_error("For the given '{0}' the expected response value is '{1}'. "
+                            "It doesn't match or available in the actual response value "
+                            "'{2}'".format(xpath_pattern, list_of_expected_api_responses[index],
+                                           value))
     return status
 
 def list_path_responses_datafile(datafile, system_name):
