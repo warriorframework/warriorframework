@@ -293,6 +293,7 @@ class TestCaseStepsExecutionClass(object):
         return self.current_step_number, self.go_to_step_number, "continue"
 
     def __run_execute_and_resume_mode(self):
+        print_normal("\n----------------- Starting Invoked Steps Execution -----------------\n")
         temp_step_list = list(self.step_list)
         for x in self.go_to_step_number:
             if 0 <= x < len(self.step_list):
@@ -305,6 +306,7 @@ class TestCaseStepsExecutionClass(object):
         self.step_impact_list.extend(result[2])
         self.data_repository.update(result[3])
         self.go_to_step_number = False
+        print_normal("\n----------------- Invoked Steps Execution Finished -----------------\n")
 
 
 def execute_steps(step_list, data_repository, system_name, parallel, queue, skip_invoked=True, step_num=None):
@@ -330,13 +332,11 @@ def execute_steps(step_list, data_repository, system_name, parallel, queue, skip
             if do_continue == "break":
                 break
     else:
-        print_normal("\n----------------- Starting Invoked Steps Execution -----------------\n")
         for _step_num in step_num:
             if 0 <= _step_num < len(step_list):
                 _, goto_stepnum, _ = tc_step_exec_obj.execute_step(_step_num, goto_stepnum)
             else:
                 print_error("Step number {0} does not exist. Skipping.".format(_step_num+1))
-        print_normal("\n----------------- Invoked Steps Execution Finished -----------------\n")
 
     if parallel is True:
         try:
