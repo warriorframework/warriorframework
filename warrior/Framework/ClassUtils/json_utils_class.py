@@ -255,9 +255,11 @@ class JsonUtils(object):
         for index, jsonpath in enumerate(list_of_jsonpath):
             json_path = jsonpath.strip("jsonpath=")
             value = self.get_value_for_nested_key(json_response, json_path)
-            # Check if the expected value/pattern is in actual response
-            match = re.search(list_of_expected_api_responses[index], value)
-            if not match:
+            # Equality match: Check if the expected response is equal to API response
+            eq_match = True if value == list_of_expected_api_responses[index] else False
+            # Regex search: Check if the expected response pattern is in API response
+            regex_match = re.search(list_of_expected_api_responses[index], value)
+            if not(eq_match or regex_match):
                 status = False
                 print_error("For the given {0} the expected response value is"
                             " {1} but the actual response"

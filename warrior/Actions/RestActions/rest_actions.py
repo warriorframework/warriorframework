@@ -2993,19 +2993,21 @@ class RestActions(object):
                 3. expected_api_response: expected api response given by
                    the user.
 
-                    pattern: can be string or file name(expected string will be
-                    treated as python regular expression during match)
-                    and response can be simple text or xml or json
+                    pattern: can be string or file name and response can be
+                    simple text or xml or json
                     Multiple Values: No
                     Max Number of values accepted: 1
 
                 4. expected_response_type: The type of expected response
-                    Can be xml or json or text. Expected response values
-                    will be treated as python regular expressions for
-                    jsonpath/xpath comparison_modes and will be searched
-                    in the actual api response. Use 'regex=expression' as
-                    comparison_mode to support python regular expression
-                    for text response.
+                    Can be xml or json or text
+                    For jsonpath & xpath comparison_modes, verify status will
+                    be marked as pass if anyone the below operations is successful:
+                        1. Equality match: Check if the expected response is
+                        equal to API response
+                        2. Regex search: Check if the expected
+                        response(pattern) is in API response
+                    Use 'regex=expression' as comparison_mode to support
+                    python regular expression for text response.
 
                 5. comparison_mode:
                    This is the mode in which you wish to compare

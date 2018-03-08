@@ -986,9 +986,11 @@ def compare_xml_using_xpath(response, list_of_xpath, list_of_expected_api_respon
         for index, xpath_pattern in enumerate(list_of_xpath):
             xpath = xpath_pattern.strip("xpath=")
             value = getValuebyTagFromStringWithXpath(response, xpath, None)
-            # Check if the expected value/pattern is in actual response
-            match = re.search(list_of_expected_api_responses[index], value)
-            if not match:
+            # Equality match: Check if the expected response is equal to API response
+            eq_match = True if value == list_of_expected_api_responses[index] else False
+            # Regex search: Check if the expected response pattern is in API response
+            regex_match = re.search(list_of_expected_api_responses[index], value)
+            if not(eq_match or regex_match):
                 status = False
                 print_error("For the given {0} the expected response value is"
                             " {1} but the actual response"
