@@ -486,6 +486,16 @@ def execute_testcase(testcase_filepath, data_repository, tc_context,
 
     data_repository['wt_junit_object'] = tc_junit_object
     print_testcase_details_to_console(testcase_filepath, data_repository)
+    filename = os.path.basename(testcase_filepath)
+    # Prints the path of result summary file at the beginning of execution
+    if data_repository['war_file_type'] == "Case":
+        html_filepath = os.path.join(data_repository['wt_resultsdir'],
+                                     Utils.file_Utils.getNameOnly(filename)) + '.html'
+        print_info("++++++++++++++  Result Summary  +++++++++++++++")
+        print_info("Open the result summary file in a browser to view result "
+                   "summary which will be updated along with the execution")
+        print_info("Result summary file: {0}".format(html_filepath))
+        print_info("+++++++++++++++++++++++++++++++++++++++++++++++")
     step_list = get_steps_list(testcase_filepath)
 
     tc_state = Utils.xml_Utils.getChildTextbyParentTag(testcase_filepath,

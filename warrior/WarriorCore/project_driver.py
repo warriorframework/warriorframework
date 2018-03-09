@@ -202,6 +202,16 @@ def execute_project(project_filepath, auto_defects, jiraproj, res_startdir, logs
                                              data_repository)
     project_repository['project_title'] = project_title
     testsuite_list = get_testsuite_list(project_filepath)
+    # Prints the path of result summary file at the beginning of execution
+    filename = os.path.basename(project_filepath)
+    if data_repository['war_file_type'] == "Project":
+        html_filepath = os.path.join(project_repository['project_execution_dir'],
+                                     Utils.file_Utils.getNameOnly(filename))+'.html'
+        print_info("++++++++++++++  Result Summary  +++++++++++++++")
+        print_info("Open the result summary file in a browser to view result "
+                   "summary which will be updated along with the execution")
+        print_info("Result summary file: {0}".format(html_filepath))
+        print_info("+++++++++++++++++++++++++++++++++++++++++++++++")
 
     # project_resultfile = project_repository['project_resultfile']
 
