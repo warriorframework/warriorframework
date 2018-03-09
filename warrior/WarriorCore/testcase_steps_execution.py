@@ -152,7 +152,9 @@ class TestCaseStepsExecutionClass(object):
         This function actually executes a given step and returns necessary details about that step.
         """
         try:
-            result = step_driver.main(self.current_step, self.current_step_number, self.data_repository, self.system_name)
+            result = step_driver.main(self.current_step, self.current_step_number,
+                                      self.data_repository, self.system_name,
+                                      skip_invoked=self.skip_invoked)
             step_status = result[0]
             kw_resultfile = result[1]
             step_impact = result[2]

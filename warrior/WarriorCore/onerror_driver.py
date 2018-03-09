@@ -42,7 +42,11 @@ def main(node, def_on_error_action, def_on_error_value, exec_type=False, skip_in
     if skip_invoked:
         error_handle = call_function(action, value, error_handle)
     else:
-        print_warning("Overriding on error {0} {1} since this is an Invoked Step.".format(action, value))
+        if value:
+            print_warning("Overriding on error {0}={1} since this is an Invoked "
+                          "Step.".format(action, value))
+        else:
+            print_warning("Overriding on error {0} since this is an Invoked Step.".format(action))
         error_handle = next(action, value, error_handle, skip_invoked=skip_invoked)
     result = get_failure_results(error_handle)
     return result
