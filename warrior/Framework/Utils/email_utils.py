@@ -119,12 +119,12 @@ def construct_mail_body(exec_type, abs_filepath, logs_dir, results_dir):
     :Returns:
         1. body - return mail body
     """
-    junit_result_file = results_dir + os.sep + \
-        file_Utils.getNameOnly(file_Utils.getFileName(abs_filepath)) + "_junit.xml"
+    junit_result_file = os.path.join(
+        results_dir, file_Utils.getNameOnly(file_Utils.getFileName(abs_filepath))) + "_junit.xml"
     junit_object = ExecutionSummary(junit_result_file)
     project_sum = junit_object.project_summary(junit_result_file)
     suite_tc_sum = junit_object.suite_summary(junit_result_file)
-    suite_tc, project = "", ""
+    suite_tc, body = "", ""
     body_arg = ('<html><body><p><b>{0}</b>{1}</p>'
                 '<p><b>Logs directory:</b>{2}</p>'
                 '<p><b>Results directory:</b>{3}</p>'
@@ -135,6 +135,7 @@ def construct_mail_body(exec_type, abs_filepath, logs_dir, results_dir):
                                                     logs_dir, results_dir)
     # complete html body that will be sent through mail
     if exec_type == 'Project: ':
+        project = ""
         for proj in project_sum:
             project = project + ('<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td></tr>\n'
                                  .format(proj[0], proj[1], proj[2], proj[3]))
@@ -207,7 +208,7 @@ def send_email(smtp_host, sender, receivers, subject, body, files):
     receivers_list = [receiver.strip() for receiver in receivers.split(',')]
     message['Subject'] = subject
 
-    # For formatting the execution summary in mail body, changed plain text to html
+    # HTML is used for better formatting of mail body
     part = MIMEText(body, 'html')
     message.attach(part)
 
