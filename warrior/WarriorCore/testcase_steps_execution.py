@@ -295,6 +295,10 @@ class TestCaseStepsExecutionClass(object):
         return self.current_step_number, self.go_to_step_number, "continue"
 
     def __run_execute_and_resume_mode(self):
+        """
+        This function runs the list of step_numbers (stored in self.go_to_step_number) in the
+        Invoked (execute_and_resume) mode.
+        """
         print_normal("\n----------------- Starting Invoked Steps Execution -----------------\n")
         temp_step_list = list(self.step_list)
         for x in self.go_to_step_number:
