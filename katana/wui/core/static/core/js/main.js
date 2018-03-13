@@ -1196,4 +1196,65 @@ var katana = {
 
   },
 
+    utils: {
+
+        getRelativeFilepath: function (basePath, path) {
+            if (basePath.indexOf('\\') > -1) {
+                basePath = basePath.replace('\\', '/');
+            }
+            if (path.indexOf('\\') > -1) {
+                path = path.replace('\\', '/');
+            }
+            var basePathSeries = basePath.split('/');
+            var pathSeries = path.split('/');
+            var hold = 0;
+            for (var i=0; i<basePathSeries.length && i < pathSeries.length; i++) {
+                if (basePathSeries[i] !== pathSeries[i]){
+                    hold = i;
+                    break;
+                }
+            }
+            var output = "";
+            for (i=(basePathSeries.length-1); i > hold; i--) {
+                output += "../"
+            }
+            if (output !== "") {
+                output = output.slice(0, -1);
+            }
+            for (i=hold; i<pathSeries.length; i++) {
+                output += "/" + pathSeries[i]
+            }
+            if (output.startsWith("/")) {
+                output = output.slice(1, output.length);
+            }
+            return output
+        },
+
+        getAbsoluteFilepath: function (basePath, relativePath) {
+            if (basePath.indexOf('\\') > -1) {
+                basePath = basePath.replace('\\', '/');
+            }
+            if (relativePath.indexOf('\\') > -1) {
+                relativePath = relativePath.replace('\\', '/');
+            }
+            var basePathSeries = basePath.split('/');
+            var relativePathSeries = relativePath.split('/');
+            var i = 0;
+            var hold = 0;
+            while (relativePathSeries[i] === ".."){
+                hold += 1;
+                i += 1;
+            }
+            var output = "";
+            for (i=0; i<(basePathSeries.length - hold - 1); i++) {
+                output += basePathSeries[i] + "/"
+            }
+            for (i=hold; i<relativePathSeries.length; i++) {
+                output += relativePathSeries[i] + "/"
+            }
+            output = output.slice(0, -1);
+            return output
+        }
+    },
+
 };
