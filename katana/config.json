@@ -1,10 +1,10 @@
 {
-    "engineer": "",
-    "pythonsrcdir": "",
-    "xmldir": "",
-    "testsuitedir": "",
-    "projdir": "",
-    "idfdir": "",
-    "testdata": "",
+    "engineer": "", 
+    "pythonsrcdir": "", 
+    "xmldir": "", 
+    "testsuitedir": "", 
+    "projdir": "", 
+    "idfdir": "", 
+    "testdata": "", 
     "pythonpath": ""
 }

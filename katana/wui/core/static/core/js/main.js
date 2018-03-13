@@ -368,7 +368,58 @@ var katana = {
   removeApp: function() {
     this.closest('.tab').remove();
   },
+  validationAPI: {
+      flag: [],
 
+      init: function( $container ) {
+        this.flag = [];
+        var validationObj = this;
+	$container = $container ? $container : katana.$activeTab;
+        $container.find('[validation-check]').each(function() {
+          var $elem = $(this);
+          if ($elem.closest('.field').hasClass('required') && $elem.val() == '')
+      validationObj.flag.push({
+        '$elem': $elem,
+        'response': 'Required'
+      });
+          katana.methodCaller($elem.attr('validation-check'), $elem);
+        });
+        if (this.flag.length == 0)
+          return true;
+        else
+          this.warning();
+        return false;
+      },
+
+      warning: function() {
+        $.each(this.flag, function() {
+          var $elem = this.$elem;
+          var field = $elem.closest('.field');
+          field.find('.invalid').remove();
+          field.prepend('<div class="invalid">' + this.response + '</div>');
+          this.$elem.one('change', function() {
+            field.find('.invalid').remove();
+          });
+        });
+    },
+
+    addFlag: function($elem, response) {
+      this.flag.push({
+        '$elem': $elem,
+        'response': response
+      });
+    },
+
+    PCV: {
+      validateIP: function($elem) {
+        if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test($elem.val()))
+    			return true;
+        else
+   				katana.validationAPI.addFlag($elem, 'invalid-ip');
+      }
+    }
+  },
+  
   openAlert: function(data, callBack_on_accept, callBack_on_dismiss) {
     /*
 	    data = {
@@ -958,7 +1009,7 @@ var katana = {
       });
     },
 
-    get: function(url, csrf, toSend, dataType, successCallBack, successCallBackData) {
+    get: function({url, csrf, toSend, dataType, callBack, fallBack, callBackData, fallBackData}={}) {
 
       // intialize values for url, csrf, dataType, toSend
       var $elem = this ? this : katana.$activeTab;
@@ -984,15 +1035,10 @@ var katana = {
         data: {
           data: toSend
         },
-        success: function(data) {
-          //console.log('success');
-          successCallBack && successCallBack(data, successCallBackData);
-        },
-        error: function(xhr, textStatus, error) {
-          console.log(xhr.statusText);
-          console.log(textStatus);
-          console.log(error);
-        },
+      }).done(function(data) {
+        callBack && callBack(data, callBackData);
+      }).fail(function(data) {
+        fallBack && fallBack(data, fallBackData);
       });
     },
 
