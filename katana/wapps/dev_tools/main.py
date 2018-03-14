@@ -15,14 +15,14 @@ limitations under the License.
 import os, json, shutil
 from utils.navigator_util import Navigator
 from wui.core.core_utils.app_install.installer import Installer
-from utils.directory_traversal_utils import get_parent_directory
+from utils.directory_traversal_utils import get_dir_from_path, get_sub_files
 
 class Main:
     clone_name = 'temp'
     file_path = os.path.dirname(os.path.abspath(__file__))
     wapp_path = '/warriorframework/katana/wapps'
     rel_path = wapp_path + '/toReplace'
-    paths = ['/views.py', '/urls.py', '/templates/toReplace/index.html', '/static/toReplace/js/main.js', '/static/toReplace/css/main.css', '/wf_config.json']
+    paths = ['/views.py', '/urls.py', '/apps.py', '/templates/toReplace/index.html', '/static/toReplace/js/main.js', '/static/toReplace/css/main.css', '/wf_config.json']
     directorys = ['/templates/toReplace', '/static/toReplace']
     clone_path = file_path + os.sep + clone_name + rel_path
 
@@ -30,14 +30,16 @@ class Main:
         pass
 
     def build_new_app(self, request):
-        print json.loads(request.POST.get('data'))[0]
         self.set_variables( json.loads(request.POST.get('data'))[0] )
         self.clone_template()
         self.replace_vars()
         self.rename_path()
         self.install_app()
         self.remove_template()
-        return self.clone_path
+        return 'success'
+
+    def edit_dev_app(self):
+        pass
 
     def set_variables(self, data):
         self.name = data['name']
@@ -74,3 +76,33 @@ class Main:
 
     def remove_template(self):
         shutil.rmtree(self.file_path + os.sep + self.clone_name)
+
+    def get_urls(self, request):
+        op_path = request.POST.get('data')
+        app_name = get_dir_from_path( op_path )
+        urlObj = {};
+        types = {'js' : op_path + '/static/' + app_name + '/js', 'python' : op_path, 'css' : op_path + '/static/' + app_name + '/css', 'html' : op_path + '/templates/' + app_name }
+        for k, v in types.items():
+            urlObj[k] = get_sub_files(v, abs_path=True)
+        print 'test', urlObj
+        return { 'data' : urlObj }
+
+    def open_file(self, request):
+        op_path = request.POST.get('data')
+        with open( op_path, 'r') as f:
+            lines = f.read()
+        return { 'data' : lines }
+
+    def save_file(self, request):
+        obj = json.loads(request.POST.get('data'))
+        with open( obj['url'], 'w') as f:
+            lines = f.write( obj['file'] )
+        return { 'data' : lines }
+
+    def create_method(self, request):
+        """obj = json.loads(request.POST.get('data'))
+        files = get_sub_files(self.file_path + os.sep + 'method_templates', abs_path=True)
+        for fileItem in files:
+            with open( fileItem, 'r') as f:
+                lines = f.read()"""
+        pass

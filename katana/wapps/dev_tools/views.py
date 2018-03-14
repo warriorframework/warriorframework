@@ -30,3 +30,15 @@ def new_app(request):
 
 def build_new_app(request):
     return render(request, 'dev_tools/new_app.html', {"data": controls.build_new_app(request)})
+
+def edit_app(request):
+    return render(request, 'dev_tools/edit_app.html', {"data": ""})
+
+def get_urls(request):
+    return JsonResponse(controls.get_urls(request))
+
+def open_file(request):
+    return JsonResponse(controls.open_file(request))
+
+def save_file(request):
+    return JsonResponse(controls.save_file(request))
