@@ -9,7 +9,7 @@ matrix:
       env: INSTALL=yes TESTFILE=./wftests/ci/pylint.sh PYLINT=yes
       python: 2.7
     - os: linux
-      env: INSTALL=no TESTFILE=./wftests/warrior_tests/projects/pj_common_actions.xml COPILOT=yes
+      env: INSTALL=no TESTFILE=./wftests/warrior_tests/testcases/framework_tests/cond_var/pass.xml COPILOT=yes
       python: 2.7
     - os: linux
       env: INSTALL=yes TESTFILES=yes
@@ -28,7 +28,6 @@ install:
     - if [ ${COPILOT} = "yes" ]; then
         python setup.py install ;
       fi
-
     - if [ ${INSTALL} = "yes" ]; then
         pip install pexpect==4.2 ;
         pip install requests==2.9.1 ;
@@ -52,8 +51,10 @@ install:
 script:
     - if [ ${PYLINT} = "yes" ]; then
         $TESTFILE ;
+      elif [ ${TRAVIS_PULL_REQUEST_BRANCH} = "" ]; then
+        python ./warrior/Warrior ./wftests/warrior_tests/testcases/framework_tests/cond_var/pass.xml ;
       elif [ ${TESTFILES} = "yes" ]; then
-        python .warrior/Warrior ./wftests/warrior_tests/projects/pj_runmode_retry_at_suite_level_at_project_file.xml ./wftests/warrior_tests/projects/pj_iterative_execution.xml ./wftests/warrior_tests/projects/pj_parallel_execution.xml ./wftests/warrior_tests/projects/pj_cond_var.xml ./wftests/warrior_tests/projects/pj_glob.xml ./wftests/warrior_tests/projects/pj_rest.xml ./wftests/warrior_tests/projects/pj_retry.xml ./wftests/warrior_tests/projects/pj_parallel_execution_2.xml
+        python ./warrior/Warrior ./wftests/warrior_tests/projects/pj_runmode_retry_at_suite_level_at_project_file.xml ./wftests/warrior_tests/projects/pj_iterative_execution.xml ./wftests/warrior_tests/projects/pj_parallel_execution.xml ./wftests/warrior_tests/projects/pj_cond_var.xml ./wftests/warrior_tests/projects/pj_glob.xml ./wftests/warrior_tests/projects/pj_rest.xml ./wftests/warrior_tests/projects/pj_retry.xml ./wftests/warrior_tests/projects/pj_parallel_execution_2.xml
       else
         python ./warrior/Warrior $TESTFILE ;
       fi
