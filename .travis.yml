@@ -4,6 +4,7 @@ matrix:
   include:
     - sudo: false
       dist: trusty
+      env: INSTALL=no TESTFILE=./wftests/warrior_tests/projects/pj_common_actions.xml
       python: 2.7
 
 script:
