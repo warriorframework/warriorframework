@@ -4,66 +4,11 @@ matrix:
   include:
     - sudo: false
       dist: trusty
-      env: INSTALL=no TESTFILE=./wftests/warrior_tests/projects/pj_common_actions.xml
       python: 2.7
-    - sudo: false
-      dist: trusty
-      env: INSTALL=yes TESTFILE=./wftests/ci/pylint.sh PYLINT=yes
-      python: 2.7
-    - sudo: false
-      dist: trusty
-      env: INSTALL=no TESTFILE=./wftests/warrior_tests/testcases/framework_tests/cond_var/pass.xml COPILOT=yes
-      python: 2.7
-    - sudo: false
-      dist: trusty
-      env: INSTALL=yes TESTFILES=yes
-      python: 2.7
-    - sudo: required
-      dist: trusty
-      env: INSTALL=yes TESTFILE=./wftests/warrior_tests/testcases/selenium_tests/tc_selenium_headless.xml SELENIUM=yes
-      python: 2.7
-      addons:
-        firefox: "46.0"
-    - sudo: required
-      dist: trusty
-      env: INSTALL=yes TESTFILE=./wftests/warrior_tests/testcases/selenium_tests/tc_selenium_headless.xml SELENIUM=yes SELENIUM3=yes
-      python: 2.7
-      addons:
-        firefox: "46.0"
-install:
-    - if [[ ${COPILOT} = "yes" ]]; then
-        python setup.py install ;
-      fi
-    - if [[ ${INSTALL} = "yes" ]]; then
-        pip install pexpect==4.2 ;
-        pip install requests==2.9.1 ;
-        pip install selenium==2.53.0 ;
-        pip install lxml==3.3.3 ;
-        pip install paramiko==1.16.0 ;
-        pip install pysnmp==4.3.2 ;
-      fi
-    - if [[ ${SELENIUM} = "yes" ]]; then
-        pip install pyvirtualdisplay==0.2.1 ;
-        sudo apt-get install xvfb ;
-        wget https://chromedriver.storage.googleapis.com/2.34/chromedriver_linux64.zip;
-        unzip chromedriver_linux64.zip;
-        chmod +x chromedriver;
-        sudo mv chromedriver /usr/local/bin/;
-      fi
-    - if [[ ${SELENIUM3} = "yes" ]]; then
-        pip install selenium==3.8 ;
-      fi
 
 script:
-    - if [[ ${PYLINT} = "yes" ]]; then
-        $TESTFILE ;
-      elif [[ ${TRAVIS_PULL_REQUEST_BRANCH} = "" ]]; then
-        python ./warrior/Warrior ./wftests/warrior_tests/testcases/framework_tests/cond_var/pass.xml ;
-      elif [[ ${TESTFILES} = "yes" ]]; then
-        python ./warrior/Warrior ./wftests/warrior_tests/projects/pj_runmode_retry_at_suite_level_at_project_file.xml ./wftests/warrior_tests/projects/pj_iterative_execution.xml ./wftests/warrior_tests/projects/pj_parallel_execution.xml ./wftests/warrior_tests/projects/pj_cond_var.xml ./wftests/warrior_tests/projects/pj_glob.xml ./wftests/warrior_tests/projects/pj_rest.xml ./wftests/warrior_tests/projects/pj_retry.xml ./wftests/warrior_tests/projects/pj_parallel_execution_2.xml ;
+    - if [[ ${TRAVIS_PULL_REQUEST_BRANCH} = "" ]]; then
+        echo "Yes" ;
       else
-        python ./warrior/Warrior $TESTFILE ;
+        echo ${TRAVIS_PULL_REQUEST_BRANCH} ;
       fi
-
-after_success:
-  - bash <(curl -s https://copilot.blackducksoftware.com/ci/travis/scripts/upload)
