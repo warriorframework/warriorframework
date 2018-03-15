@@ -32,12 +32,12 @@ install:
         python setup.py install ;
       fi
     - if [[ ${INSTALL} = "yes" ]]; then
-        pip install -u pexpect==4.2 ;
-        pip install -u requests==2.9.1 ;
-        pip install -u selenium==2.53.0 ;
-        pip install -u lxml==3.3.3 ;
-        pip install -u paramiko==1.16.0 ;
-        pip install -u pysnmp==4.3.2 ;
+        pip install --user pexpect==4.2 ;
+        pip install --user requests==2.9.1 ;
+        pip install --user selenium==2.53.0 ;
+        pip install --user lxml==3.3.3 ;
+        pip install --user paramiko==1.16.0 ;
+        pip install --user pysnmp==4.3.2 ;
       fi
     - if [[ ${SELENIUM} = "yes" ]]; then
         pip install pyvirtualdisplay==0.2.1 ;
