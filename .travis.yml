@@ -3,34 +3,13 @@ language: python
 matrix:
   include:
     - os: linux
-      env: INSTALL=no TESTFILE=./wftests/warrior_tests/projects/pj_common_actions.xml
+      env: INSTALL=no TESTFILE=./wftests/warrior_tests/projects/pj_common_actions.xml COPILOT=yes
       python: 2.7
     - os: linux
       env: INSTALL=yes TESTFILE=./wftests/ci/pylint.sh PYLINT=yes
       python: 2.7
     - os: linux
-      env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/pj_runmode_retry_at_suite_level_at_project_file.xml
-      python: 2.7
-    - os: linux
-      env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/pj_iterative_execution.xml
-      python: 2.7
-    - os: linux
-      env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/pj_parallel_execution.xml
-      python: 2.7
-    - os: linux
-      env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/pj_cond_var.xml
-      python: 2.7
-    - os: linux
-      env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/pj_glob.xml
-      python: 2.7
-    - os: linux
-      env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/pj_rest.xml
-      python: 2.7
-    - os: linux
-      env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/pj_retry.xml
-      python: 2.7
-    - os: linux
-      env: INSTALL=yes TESTFILE=./wftests/warrior_tests/projects/pj_parallel_execution_2.xml
+      env: INSTALL=yes TESTFILES=yes
       python: 2.7
     - os: linux
       env: INSTALL=yes TESTFILE=./wftests/warrior_tests/testcases/selenium_tests/tc_selenium_headless.xml SELENIUM=yes
@@ -42,9 +21,6 @@ matrix:
       python: 2.7
       addons:
         firefox: "46.0"
-    - os: linux
-      env: INSTALL=no  TESTFILE=./wftests/warrior_tests/projects/pj_common_actions.xml COPILOT=yes
-      python: 2.7
 install:
     - if [ ${COPILOT} = "yes" ]; then
         python setup.py install ;
@@ -73,8 +49,11 @@ install:
 script:
     - if [ ${PYLINT} = "yes" ]; then
         $TESTFILE ;
+      elif [ ${TESTFILES} = "yes" ]; then
+        python .warrior/Warrior ./wftests/warrior_tests/projects/pj_runmode_retry_at_suite_level_at_project_file.xml ./wftests/warrior_tests/projects/pj_iterative_execution.xml ./wftests/warrior_tests/projects/pj_parallel_execution.xml ./wftests/warrior_tests/projects/pj_cond_var.xml ./wftests/warrior_tests/projects/pj_glob.xml ./wftests/warrior_tests/projects/pj_rest.xml ./wftests/warrior_tests/projects/pj_retry.xml ./wftests/warrior_tests/projects/pj_parallel_execution_2.xml
       else
         python ./warrior/Warrior $TESTFILE ;
       fi
+
 after_success:
   - bash <(curl -s https://copilot.blackducksoftware.com/ci/travis/scripts/upload)
