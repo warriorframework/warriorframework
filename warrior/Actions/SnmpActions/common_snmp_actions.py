@@ -700,6 +700,7 @@ class CommonSnmpActions(object):
         Utils.testcase_Utils.report_substep_status(status)
         return status
 
+
     def add_snmp_v3_user(self, port, username, securityEngineId,
                          authkey=None, privkey=None,
                          authProtocol=None, privProtocol=None):
