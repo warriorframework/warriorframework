@@ -681,7 +681,7 @@ class CommonSnmpActions(object):
                     testcase_Utils.pNote("No SNMP Result Present!", 'error')
         for element in result_list:
             if mib_string:
-                if mib_string in element[0] and snmp_result in element[-1]:
+                if re.search(mib_string, element[0]) and re.search(snmp_result, element[-1]):
                     status = True
                     testcase_Utils.pNote('%s and %s found in SNMP Output' %(
                         mib_string, snmp_result))
