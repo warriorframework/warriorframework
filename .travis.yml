@@ -8,7 +8,7 @@ matrix:
 
 script:
     - if [ ${TRAVIS_PULL_REQUEST_BRANCH} = "" ]; then
-        echo "Yes" ;
+        echo "Yes"
       else
         echo ${TRAVIS_PULL_REQUEST_BRANCH} ;
       fi
