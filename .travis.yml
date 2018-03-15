@@ -7,8 +7,8 @@ matrix:
       python: 2.7
 
 script:
-    - if [ ${TRAVIS_PULL_REQUEST_BRANCH} = "" ]; then
-        echo "Yes"
+    - if [[ ${TRAVIS_PULL_REQUEST_BRANCH} = "" ]]; then
+        echo "Yes" ;
       else
         echo ${TRAVIS_PULL_REQUEST_BRANCH} ;
       fi
