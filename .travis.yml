@@ -10,19 +10,22 @@ matrix:
       dist: trusty
       env: INSTALL=yes TESTFILE=./wftests/ci/pylint.sh PYLINT=yes
       python: 2.7
-    - os: linux
+    - sudo: false
+      dist: trusty
       env: INSTALL=no TESTFILE=./wftests/warrior_tests/testcases/framework_tests/cond_var/pass.xml COPILOT=yes
       python: 2.7
     - sudo: false
       dist: trusty
       env: INSTALL=yes TESTFILES=yes
       python: 2.7
-    - os: linux
+    - sudo: required
+      dist: trusty
       env: INSTALL=yes TESTFILE=./wftests/warrior_tests/testcases/selenium_tests/tc_selenium_headless.xml SELENIUM=yes
       python: 2.7
       addons:
         firefox: "46.0"
-    - os: linux
+    - sudo: required
+      dist: trusty
       env: INSTALL=yes TESTFILE=./wftests/warrior_tests/testcases/selenium_tests/tc_selenium_headless.xml SELENIUM=yes SELENIUM3=yes
       python: 2.7
       addons:
@@ -32,12 +35,12 @@ install:
         python setup.py install ;
       fi
     - if [[ ${INSTALL} = "yes" ]]; then
-        pip install --user pexpect==4.2 ;
-        pip install --user requests==2.9.1 ;
-        pip install --user selenium==2.53.0 ;
-        pip install --user lxml==3.3.3 ;
-        pip install --user paramiko==1.16.0 ;
-        pip install --user pysnmp==4.3.2 ;
+        pip install pexpect==4.2 ;
+        pip install requests==2.9.1 ;
+        pip install selenium==2.53.0 ;
+        pip install lxml==3.3.3 ;
+        pip install paramiko==1.16.0 ;
+        pip install pysnmp==4.3.2 ;
       fi
     - if [[ ${SELENIUM} = "yes" ]]; then
         pip install pyvirtualdisplay==0.2.1 ;
